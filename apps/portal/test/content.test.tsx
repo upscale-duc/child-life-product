@@ -291,12 +291,13 @@ describe('B02 article editor', () => {
 
   it('edits the safe blocks and shows the app reader preview', () => {
     const html = editor(itemOf(fullArticle()));
-    expect(html).toContain('Bài viết › Giấc ngủ của bé sơ sinh');
-    expect(html).toContain('Các khối nội dung (4/60)');
+    // The editor bar: back to the list, the title, the status, the next step.
+    expect(html).toContain('Bài viết Giấc ngủ của bé sơ sinh Nháp');
+    expect(html).toContain('Nội dung bài (4/60 khối)');
     for (const kind of ['Đoạn văn', 'Tiêu đề mục', 'Danh sách', 'Hộp lưu ý']) {
       expect(html).toContain(kind);
     }
-    expect(html).toContain('23/90 ký tự');
+    expect(html).toContain('Tiêu đề 23/90');
     expect(html).toContain('Xem trước trên app');
     expect(html).toContain('Nội dung minh hoạ · chờ chuyên môn duyệt');
     expect(html).toContain('Khi nào nên hỏi bác sĩ');
@@ -307,7 +308,7 @@ describe('B02 article editor', () => {
   it('a new article starts as an unsaved draft without workflow buttons', () => {
     const html = editor(null);
     expect(html).toContain('Bài viết mới');
-    expect(html).toContain('Có thay đổi chưa lưu');
+    expect(html).toContain('Chưa lưu');
     expect(html).not.toContain('Gửi duyệt');
   });
 
@@ -431,8 +432,8 @@ describe('B05 / B06 stage content', () => {
         />,
       ),
     );
-    expect(html).toContain('Nội dung theo giai đoạn › 3–4 tuần');
-    expect(html).toContain('39/60 ký tự');
+    expect(html).toContain('Nội dung theo giai đoạn 3–4 tuần · Bé nhìn theo mặt người');
+    expect(html).toContain('Tiêu đề trên thẻ 39/60');
     expect(html).toContain('Bé đang thế nào (tối đa 3 ý) 2/3');
     expect(html).toContain('Ba mẹ có thể thử (tối đa 3 ý) 1/3');
     expect(html).toContain('Bài viết liên quan (tối đa 2) 1/2');
@@ -468,8 +469,11 @@ describe('B07 / B08 milestones', () => {
   };
 
   it('lists by group with the reference ages and the no-judgement note', () => {
-    const html = text(render(<MilestonesBody view={milestoneView} onOpen={() => undefined} />));
-    expect(html).toContain('App không đánh giá sớm hay muộn');
+    const raw = render(<MilestonesBody view={milestoneView} onOpen={() => undefined} />);
+    const html = text(raw);
+    // The no-judgement note sits behind the "?" of the reference-age column.
+    expect(raw).toMatch(/Độ tuổi tham khảo<button[^>]*aria-label="Giải thích"/);
+    expect(html).toContain('Đang trên app 9');
     expect(html.indexOf('Vận động')).toBeLessThan(html.indexOf('Cảm xúc – xã hội'));
     expect(html).toContain('1–3 tháng');
     expect(html).toContain('4–12 tuần');

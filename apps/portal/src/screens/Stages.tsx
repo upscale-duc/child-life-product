@@ -10,47 +10,55 @@ import {
   type StageDraft,
   type StageUnit,
 } from '@child-life/contracts';
-import { useEffect, useMemo, useState } from 'react';
+import { CalendarRange, Plus } from 'lucide-react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad } from '../api';
-import { routePaths, subPath, useStaff } from '../context';
 import {
-  Button,
-  Empty,
-  Loaded,
-  Page,
-  Panel,
-  SelectMenu,
-  TableScroll,
-  errorMessageId,
-  useSort,
-} from '../ui';
+  EditorBar,
+  EditorLayout,
+  EmptyState,
+  Field,
+  FilterBar,
+  OverflowMenu,
+  SearchInput,
+  Section,
+  useGuardedLeave,
+} from '../content-kit';
+import { routePaths, subPath, useStaff } from '../context';
+import { Button, Loaded, Page, SelectMenu, TableScroll, useSort } from '../ui';
 import {
   ActDialog,
   AudienceField,
   ContentImagesProvider,
   CoverField,
+  EditorNotices,
   ImageThumb,
-  IssuesList,
   LangTabs,
   LinkPicker,
   NumberField,
   PhoneFrame,
   PointsField,
+  PreviewCard,
   ReviewLine,
-  SeedButton,
   SourcesField,
   StatusCell,
   TextField,
-  WorkflowButtons,
+  WorkflowMain,
   actionsFor,
   asApiError,
   dateTime,
   reviewOf,
+  splitActions,
   stageAgeText,
+  statusOptions,
   textOf,
   useContentList,
+  useSeedItem,
   weeksLabel,
+  workflowMenu,
   type ContentItemView,
   type ContentListView,
   type ContentRow,
@@ -113,6 +121,7 @@ function StagesListScreen({ go }: { go: (p: Path) => void }) {
   const staff = useStaff();
   const [load, reload] = useContentList('stage');
   const canEdit = staffCan(staff.levels, 'content.edit');
+  const seed = useSeedItem('stage', reload);
   return (
     <Page
       title={<FormattedMessage id="stages.title" />}
@@ -120,8 +129,9 @@ function StagesListScreen({ go }: { go: (p: Path) => void }) {
       actions={
         canEdit && (
           <>
-            <SeedButton kind="stage" onDone={reload} />
+            <OverflowMenu items={[seed]} />
             <Button kind="primary" onClick={() => go({ id: null, bucket: null })}>
+              <Plus />
               <FormattedMessage id="stages.new" />
             </Button>
           </>
@@ -142,14 +152,17 @@ function StagesListScreen({ go }: { go: (p: Path) => void }) {
   );
 }
 
-const bucketTone: Record<CoverageBucket['state'], string> = {
-  published: 'cl-cov--published',
-  pending: 'cl-cov--pending',
-  draft: 'cl-cov--draft',
-  missing: 'cl-cov--missing',
+const bucketDot: Record<CoverageBucket['state'], string> = {
+  published: 'bg-primary',
+  pending: 'bg-[var(--sunshine)]',
+  draft: 'bg-chart-5',
+  missing: 'border border-dashed border-destructive bg-transparent',
 };
 
-/** B05 "Độ phủ 0–24 tháng": one bar per range; a bar opens its item or starts one. */
+/**
+ * B05 "Độ phủ 0–24 tháng": one chip per range (opens its item, or starts one where nothing is
+ * written yet). Folded while every range has content.
+ */
 export function CoverageStrip({
   buckets,
   covered,
@@ -167,16 +180,16 @@ export function CoverageStrip({
 }) {
   const intl = useIntl();
   const gaps = buckets.filter((b) => b.state === 'missing');
+  const count = <FormattedMessage id="stages.covered" values={{ n: covered, total }} />;
   return (
-    <Panel
+    <Section
       title={<FormattedMessage id="stages.coverage" />}
-      aside={
-        <strong>
-          <FormattedMessage id="stages.covered" values={{ n: covered, total }} />
-        </strong>
-      }
+      collapsible
+      defaultOpen={gaps.length > 0}
+      summary={count}
+      actions={<span className="text-sm font-medium tabular-nums">{count}</span>}
     >
-      <ol className="cl-coverage">
+      <ol className="grid grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] gap-2">
         {buckets.map((b) => {
           const label = stageAgeText(intl, b);
           const state = intl.formatMessage({ id: `stages.state.${b.state}` });
@@ -186,26 +199,31 @@ export function CoverageStrip({
             <li key={b.id}>
               <button
                 type="button"
-                className={`cl-cov ${bucketTone[b.state]}`}
+                className={cn(
+                  'flex w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted disabled:cursor-default disabled:hover:bg-transparent',
+                  b.state === 'missing' && 'border-dashed border-destructive/60 text-destructive',
+                )}
                 title={`${label} · ${state}`}
                 aria-label={`${label} · ${state}`}
                 disabled={disabled}
                 onClick={() => (target ? onOpen(target) : onCreate(b.id))}
-              />
-              <span className="cl-cov__label">{label}</span>
+              >
+                <span className={cn('size-2.5 shrink-0 rounded-full', bucketDot[b.state])} />
+                <span className="truncate">{label}</span>
+              </button>
             </li>
           );
         })}
       </ol>
-      <ul className="cl-legend">
+      <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         {(['published', 'pending', 'draft'] as const).map((s) => (
-          <li key={s}>
-            <span className={`cl-dot ${bucketTone[s]}`} aria-hidden="true" />
+          <li key={s} className="flex items-center gap-1.5">
+            <span className={cn('size-2.5 rounded-full', bucketDot[s])} aria-hidden="true" />
             <FormattedMessage id={`stages.state.${s}`} />
           </li>
         ))}
-        <li className={gaps.length ? 'error' : 'muted'}>
-          <span className={`cl-dot ${bucketTone.missing}`} aria-hidden="true" />
+        <li className={cn('flex items-center gap-1.5', gaps.length && 'text-destructive')}>
+          <span className={cn('size-2.5 rounded-full', bucketDot.missing)} aria-hidden="true" />
           {gaps.length ? (
             <FormattedMessage
               id="stages.gaps"
@@ -216,7 +234,7 @@ export function CoverageStrip({
           )}
         </li>
       </ul>
-    </Panel>
+    </Section>
   );
 }
 
@@ -259,7 +277,7 @@ export function StagesBody({
   );
   const opt = (id: string, value: string) => ({ value, label: intl.formatMessage({ id }) });
   return (
-    <>
+    <div className="grid gap-4">
       {view.coverage && (
         <CoverageStrip
           buckets={view.coverage.buckets}
@@ -270,33 +288,27 @@ export function StagesBody({
           onCreate={onCreate}
         />
       )}
-      <Panel className="panel--flush">
-        <div className="toolbar cl-toolbar">
-          <input
-            className="field__input cl-search"
-            type="search"
+      <div className="overflow-hidden rounded-xl border bg-card">
+        <FilterBar
+          active={!!q || status !== 'all' || audience !== 'all'}
+          onClear={() => {
+            setQ('');
+            setStatus('all');
+            setAudience('all');
+          }}
+          shown={rows.length}
+          total={view.rows.length}
+        >
+          <SearchInput
             value={q}
-            aria-label={intl.formatMessage({ id: 'stages.search' })}
             placeholder={intl.formatMessage({ id: 'stages.search' })}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={setQ}
           />
           <SelectMenu
             label={intl.formatMessage({ id: 'content.filter.status' })}
             value={status}
             onChange={setStatus}
-            options={[
-              opt('content.filter.allStatuses', 'all'),
-              ...(
-                [
-                  'draft',
-                  'in_review',
-                  'approved',
-                  'published',
-                  'needs_rereview',
-                  'archived',
-                ] as const
-              ).map((s) => opt(`content.status.${s}`, s)),
-            ]}
+            options={statusOptions(intl)}
           />
           <SelectMenu
             label={intl.formatMessage({ id: 'content.audience' })}
@@ -307,7 +319,7 @@ export function StagesBody({
               ...memberRoles.map((r) => opt(`content.audience.${r}`, r)),
             ]}
           />
-        </div>
+        </FilterBar>
         {shown.length ? (
           <TableScroll min={860}>
             <table className="table">
@@ -331,17 +343,23 @@ export function StagesBody({
               <tbody>
                 {shown.map((r) => (
                   <tr key={r.id} className="cl-row" onClick={() => onOpen(r.id)}>
-                    <td className="nowrap">{r.age ? stageAgeText(intl, r.age) : '—'}</td>
-                    <td>
-                      <button type="button" className="link-button" onClick={() => onOpen(r.id)}>
+                    <td className="nowrap font-medium">
+                      {r.age ? stageAgeText(intl, r.age) : '—'}
+                    </td>
+                    <td className="max-w-[26rem]">
+                      <button
+                        type="button"
+                        className="link-button line-clamp-2 text-left"
+                        onClick={() => onOpen(r.id)}
+                      >
                         {textOf(intl, r.title) || (
-                          <span className="muted">
+                          <span className="text-muted-foreground">
                             <FormattedMessage id="content.untitled" />
                           </span>
                         )}
                       </button>
                     </td>
-                    <td className="nowrap">
+                    <td className="nowrap tabular-nums">
                       <FormattedMessage
                         id="stages.points"
                         values={{
@@ -351,26 +369,32 @@ export function StagesBody({
                         }}
                       />
                     </td>
-                    <td>
+                    <td className="tabular-nums">
                       {r.links.articles.length}/{contentLimits.stageArticles}
                     </td>
-                    <td>{r.links.milestones.length}</td>
+                    <td className="tabular-nums">{r.links.milestones.length}</td>
                     <td>
                       <StatusCell row={r} />
                     </td>
-                    <td className="nowrap">{dateTime(intl, r.updatedAt)}</td>
+                    <td
+                      className="nowrap text-muted-foreground tabular-nums"
+                      title={r.lastEditorName}
+                    >
+                      {dateTime(intl, r.updatedAt)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </TableScroll>
         ) : (
-          <Empty>
-            <FormattedMessage id={view.rows.length ? 'content.noMatch' : 'stages.empty'} />
-          </Empty>
+          <EmptyState
+            icon={CalendarRange}
+            title={<FormattedMessage id={view.rows.length ? 'content.noMatch' : 'stages.empty'} />}
+          />
         )}
-      </Panel>
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -483,6 +507,15 @@ export function StageEditor({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [act, setAct] = useState<EditorialAction | null>(null);
+  const [start] = useState(() =>
+    JSON.stringify({
+      data: item ? item.data : blankStage(bucket),
+      reviewerLabel: item?.row.reviewerLabel ?? '',
+      notes: item?.notes ?? '',
+    }),
+  );
+  const changed = dirty && JSON.stringify({ data, reviewerLabel, notes }) !== start;
+  const { leave, dialog } = useGuardedLeave(changed, onBack);
   const edit = (fn: (d: StageDraft) => void) => {
     setData((d) => {
       const next = structuredClone(d);
@@ -512,6 +545,7 @@ export function StageEditor({
       })
       .then((r) => {
         setDirty(false);
+        toast.success(intl.formatMessage({ id: 'content.savedToast' }));
         onSaved(r.id);
       })
       .catch((e: unknown) => setError(asApiError(e)))
@@ -528,91 +562,72 @@ export function StageEditor({
     .filter((m) => m.status !== 'archived')
     .map((m) => ({ id: m.id, title: textOf(intl, m.title) || m.id }));
   const ageLabel = ageOk ? stageAgeText(intl, data.age) : '—';
+  const issues = row && row.status === 'draft' && !strict.success ? strict.error.issues : [];
+  const { main, rest } = splitActions(actions.filter((a) => a !== 'submit' || strict.success));
+  const title = textOf(intl, data.title);
   return (
-    <section className="page cl-editor">
-      <header className="cl-editbar">
-        <nav className="cl-crumbs" aria-label={intl.formatMessage({ id: 'nav.breadcrumb' })}>
-          <button type="button" className="link-button" onClick={onBack}>
-            <FormattedMessage id="stages.title" />
-          </button>
-          <span aria-hidden="true"> › </span>
-          <strong>{ageLabel}</strong>
-        </nav>
-        {row && <StatusCell row={row} />}
-        <div className="cl-editbar__actions">
-          {dirty && (
-            <span className="muted" role="status">
-              <FormattedMessage id="content.unsaved" />
-            </span>
-          )}
-          {canEdit && (
-            <Button kind={dirty ? 'primary' : 'secondary'} disabled={busy || !dirty} onClick={save}>
-              <FormattedMessage id={busy ? 'content.saving' : 'content.save'} />
-            </Button>
-          )}
-          <WorkflowButtons
-            actions={actions.filter((a) => a !== 'submit' || strict.success)}
-            onPick={setAct}
-          />
-        </div>
-      </header>
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      {row?.rejection && (
-        <p className="note note--warn">
-          <FormattedMessage id="content.rejected" values={row.rejection} />
-        </p>
-      )}
-      {row && row.status === 'draft' && (
-        <IssuesList issues={strict.success ? [] : strict.error.issues} />
-      )}
-      <div className="cols cols--2-1">
-        <Panel
-          aside={<LangTabs value={lang} onChange={setLang} />}
-          title={<FormattedMessage id="stages.card" />}
+    <section>
+      <EditorBar
+        backLabel={<FormattedMessage id="stages.title" />}
+        onBack={leave}
+        title={
+          <>
+            {ageLabel}
+            {title && <span className="font-normal text-muted-foreground"> · {title}</span>}
+          </>
+        }
+        badges={row && <StatusCell row={row} />}
+        dirty={dirty}
+        saving={busy}
+        onSave={canEdit ? save : undefined}
+        actions={<WorkflowMain actions={main} onPick={setAct} />}
+        menu={workflowMenu(rest, setAct)}
+      />
+      <EditorNotices error={error} rejection={row?.rejection} issues={issues} />
+      <EditorLayout
+        aside={
+          <PreviewCard lang={lang}>
+            <StagePreview
+              data={data}
+              lang={lang}
+              articles={articles}
+              milestones={milestones}
+              review={reviewOf(item)}
+            />
+          </PreviewCard>
+        }
+      >
+        <Section
+          title={<FormattedMessage id="stages.ageRange" />}
+          description={<FormattedMessage id="stages.ageHelp" values={{ label: ageLabel }} />}
         >
-          <div className="stack">
-            <fieldset className="field">
-              <legend className="field__label">
-                <FormattedMessage id="stages.ageRange" />
-              </legend>
-              <div className="cl-grid3">
-                <div className="field">
-                  <span className="field__label">
-                    <FormattedMessage id="stages.unit" />
-                  </span>
-                  <FieldSelect<StageUnit>
-                    value={data.age.unit}
-                    ariaLabel={intl.formatMessage({ id: 'stages.unit' })}
-                    options={stageUnits.map((u) => ({
-                      value: u,
-                      label: intl.formatMessage({ id: `stages.unit.${u}` }),
-                    }))}
-                    onChange={(unit) => edit((d) => void (d.age.unit = unit))}
-                  />
-                </div>
-                <NumberField
-                  label={<FormattedMessage id="stages.from" />}
-                  value={data.age.from}
-                  min={0}
-                  max={contentLimits.maxAgeWeeks}
-                  onChange={(v) => edit((d) => void (d.age.from = v))}
-                />
-                <NumberField
-                  label={<FormattedMessage id="stages.to" />}
-                  value={data.age.to}
-                  min={1}
-                  max={contentLimits.maxAgeWeeks}
-                  onChange={(v) => edit((d) => void (d.age.to = v))}
-                />
-              </div>
-              <p className="field__help">
-                <FormattedMessage id="stages.ageHelp" values={{ label: ageLabel }} />
-              </p>
-            </fieldset>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <UnitField
+              value={data.age.unit}
+              onChange={(unit) => edit((d) => void (d.age.unit = unit))}
+            />
+            <NumberField
+              label={<FormattedMessage id="stages.from" />}
+              value={data.age.from}
+              min={0}
+              max={contentLimits.maxAgeWeeks}
+              onChange={(v) => edit((d) => void (d.age.from = v))}
+            />
+            <NumberField
+              label={<FormattedMessage id="stages.to" />}
+              value={data.age.to}
+              min={1}
+              max={contentLimits.maxAgeWeeks}
+              hint={<FormattedMessage id="stages.toHint" />}
+              onChange={(v) => edit((d) => void (d.age.to = v))}
+            />
+          </div>
+        </Section>
+        <Section
+          title={<FormattedMessage id="stages.card" />}
+          actions={<LangTabs value={lang} onChange={setLang} />}
+        >
+          <div className="grid gap-4">
             <TextField
               label={<FormattedMessage id="stages.titleField" />}
               value={data.title[lang]}
@@ -620,22 +635,28 @@ export function StageEditor({
               counter
               onChange={(v) => edit((d) => void (d.title[lang] = v))}
             />
-            <PointsField
-              key={`doing-${lang}`}
-              label={<FormattedMessage id="stages.doing" />}
-              value={data.doing[lang]}
-              max={contentLimits.stagePoints}
-              itemMax={contentLimits.stagePoint}
-              onChange={(v) => edit((d) => void (d.doing[lang] = v))}
-            />
-            <PointsField
-              key={`try-${lang}`}
-              label={<FormattedMessage id="stages.tryThis" />}
-              value={data.tryThis[lang]}
-              max={contentLimits.stagePoints}
-              itemMax={contentLimits.stagePoint}
-              onChange={(v) => edit((d) => void (d.tryThis[lang] = v))}
-            />
+            <div className="grid gap-5">
+              <PointsField
+                key={`doing-${lang}`}
+                label={<FormattedMessage id="stages.doing" />}
+                value={data.doing[lang]}
+                max={contentLimits.stagePoints}
+                itemMax={contentLimits.stagePoint}
+                onChange={(v) => edit((d) => void (d.doing[lang] = v))}
+              />
+              <PointsField
+                key={`try-${lang}`}
+                label={<FormattedMessage id="stages.tryThis" />}
+                value={data.tryThis[lang]}
+                max={contentLimits.stagePoints}
+                itemMax={contentLimits.stagePoint}
+                onChange={(v) => edit((d) => void (d.tryThis[lang] = v))}
+              />
+            </div>
+          </div>
+        </Section>
+        <Section title={<FormattedMessage id="stages.linksAndAudience" />}>
+          <div className="grid gap-5">
             <LinkPicker
               label={<FormattedMessage id="stages.articles" />}
               value={data.articleIds}
@@ -656,11 +677,31 @@ export function StageEditor({
               value={data.audience}
               onChange={(v) => edit((d) => void (d.audience = v))}
             />
-            <CoverField
-              value={data.cover}
-              lang={lang}
-              onChange={(v) => edit((d) => void (d.cover = v))}
-            />
+          </div>
+        </Section>
+        <Section
+          title={<FormattedMessage id="content.cover" />}
+          collapsible
+          defaultOpen={!!data.cover}
+          summary={
+            <FormattedMessage id={data.cover ? 'content.cover.set' : 'content.cover.none'} />
+          }
+        >
+          <CoverField
+            value={data.cover}
+            lang={lang}
+            onChange={(v) => edit((d) => void (d.cover = v))}
+          />
+        </Section>
+        <Section
+          title={<FormattedMessage id="content.sourcesAndReview" />}
+          collapsible
+          defaultOpen={false}
+          summary={
+            <FormattedMessage id="content.sourcesCount" values={{ n: data.sources.length }} />
+          }
+        >
+          <div className="grid gap-5">
             <SourcesField
               value={data.sources}
               max={contentLimits.stageSources}
@@ -670,7 +711,7 @@ export function StageEditor({
               label={<FormattedMessage id="content.reviewerLabel" />}
               value={reviewerLabel}
               max={contentLimits.reviewerLabel}
-              help={<FormattedMessage id="content.reviewerLabelHelp" />}
+              hint={<FormattedMessage id="content.reviewerLabelHelp" />}
               onChange={(v) => {
                 setReviewerLabel(v);
                 setDirty(true);
@@ -687,23 +728,15 @@ export function StageEditor({
               }}
             />
           </div>
-        </Panel>
-        <Panel title={<FormattedMessage id="content.preview" />}>
-          <StagePreview
-            data={data}
-            lang={lang}
-            articles={articles}
-            milestones={milestones}
-            review={reviewOf(item)}
-          />
-        </Panel>
-      </div>
+        </Section>
+      </EditorLayout>
+      {dialog}
       {act && row && (
         <ActDialog
           kind="stage"
           id={row.id}
           action={act}
-          title={`${ageLabel} · ${textOf(intl, data.title)}`}
+          title={`${ageLabel} · ${title}`}
           requireReview={requireReview}
           today={today}
           sameEditor={item?.lastEditorUid === staffUid}
@@ -715,6 +748,25 @@ export function StageEditor({
         />
       )}
     </section>
+  );
+}
+
+/** Tuần or tháng, for an age range. */
+function UnitField({ value, onChange }: { value: StageUnit; onChange: (u: StageUnit) => void }) {
+  const intl = useIntl();
+  const id = useId();
+  return (
+    <Field label={<FormattedMessage id="stages.unit" />} htmlFor={id}>
+      <FieldSelect<StageUnit>
+        id={id}
+        value={value}
+        options={stageUnits.map((u) => ({
+          value: u,
+          label: intl.formatMessage({ id: `stages.unit.${u}` }),
+        }))}
+        onChange={onChange}
+      />
+    </Field>
   );
 }
 

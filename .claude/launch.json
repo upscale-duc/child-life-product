@@ -55,6 +55,22 @@
         "VITE_CL_EMULATORS": "true"
       },
       "port": 5174
+    },
+    {
+      "name": "portal-dev-backend",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "child-life-portal",
+        "exec",
+        "vite",
+        "--mode",
+        "dev",
+        "--port",
+        "5175",
+        "--strictPort"
+      ],
+      "port": 5175
     }
   ]
 }

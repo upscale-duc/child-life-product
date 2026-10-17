@@ -5,10 +5,45 @@ import {
   type FirstAidSituation,
   type FirstAidText,
 } from '@child-life/contracts';
-import { createContext, useContext, useId, useMemo, useState, type ReactNode } from 'react';
+import {
+  ChevronDown,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  ImageIcon,
+  Plus,
+  Trash2,
+  Upload,
+} from 'lucide-react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import { ApiError, useApi, type Api, type FirstAidImage } from '../api';
-import { Button, Modal, Segmented, errorMessageId } from '../ui';
+import {
+  EmptyState,
+  Field,
+  Hint,
+  OverflowMenu,
+  SearchInput,
+  Section,
+  useConfirm,
+} from '../content-kit';
+import { Modal, errorMessageId } from '../ui';
 import { CheckRow, FieldSelect, FilePicker, IconButton } from './form-controls';
 
 /**
@@ -16,6 +51,8 @@ import { CheckRow, FieldSelect, FilePicker, IconButton } from './form-controls';
  * plus the guide-wide settings (emergency number, groups, quick search). The whole pack is checked
  * with `firstAidPackSchema` in the browser before "Lưu nháp"; the server checks it again and also
  * refuses a pack that points at a picture that was never uploaded (`image-missing`).
+ * Laid out with the content kit (D-063): sections in the order an editor works, steps as compact
+ * cards that fold to one line, technical ids under "Nâng cao".
  */
 
 export type Variant = FirstAidSituation['variants'][number];
@@ -169,7 +206,7 @@ export function blankSituation(pack: FirstAidPack): FirstAidSituation {
   };
 }
 
-/** Where to start when nothing was ever published (dev, first run). */
+/** Where to start when nothing was ever published (first run). */
 export function starterPack(): FirstAidPack {
   const pack: FirstAidPack = {
     emergencyNumber: '115',
@@ -235,6 +272,34 @@ function useIssue(path: Path | null): string | undefined {
   return hit ? issueText(intl, hit) : undefined;
 }
 
+/** Whether a shown issue sits at or under a path (a folded card or section opens for it). */
+function useIssueUnder(): (path: Path) => boolean {
+  const { issues, show } = useContext(IssuesContext);
+  return (path) => {
+    if (!show) return false;
+    const key = pathKey(path);
+    for (const k of issues.keys()) if (k === key || k.startsWith(`${key}.`)) return true;
+    return false;
+  };
+}
+
+/**
+ * Scrolls to the field of an issue (and focuses it when it is a control). Fields carry their
+ * path in `data-path`; the deepest one that is on the page wins.
+ */
+export function revealPath(path: Path) {
+  if (typeof document === 'undefined') return;
+  for (let n = path.length; n > 0; n--) {
+    const key = pathKey(path.slice(0, n));
+    const el = document.querySelector<HTMLElement>(`[data-path="${CSS.escape(key)}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (el.matches('input, textarea, button')) el.focus({ preventScroll: true });
+      return;
+    }
+  }
+}
+
 export const LibraryContext = createContext<{
   images: FirstAidImage[];
   canUpload: boolean;
@@ -242,8 +307,10 @@ export const LibraryContext = createContext<{
 }>({ images: [], canUpload: false, onUploaded: () => undefined });
 
 function FieldError({ text }: { text?: string }) {
-  return text ? <p className="error fa-err">{text}</p> : null;
+  return text ? <p className="text-xs text-destructive">{text}</p> : null;
 }
+
+const labelClass = 'flex min-h-5 items-center gap-1.5 text-[13px] font-medium';
 
 // ---------- Fields ----------
 
@@ -255,6 +322,8 @@ export function LocField({
   multiline,
   max,
   help,
+  hint,
+  counter,
 }: {
   label: ReactNode;
   value: FirstAidText;
@@ -262,39 +331,61 @@ export function LocField({
   path: Path;
   multiline?: boolean;
   max: number;
+  /** A line under the two boxes. */
   help?: ReactNode;
+  /** A "?" next to the label (needs a TooltipProvider above). */
+  hint?: ReactNode;
+  /** Shows "n/max" for each language (short texts shown on cards). */
+  counter?: boolean;
 }) {
   const intl = useIntl();
   const id = useId();
   const errVi = useIssue([...path, 'vi']);
   const errEn = useIssue([...path, 'en']);
   const errAll = useIssue(path);
-  const input = (lang: 'vi' | 'en') => {
-    const props = {
-      id: `${id}-${lang}`,
-      className: 'field__input',
-      value: value[lang],
-      maxLength: max,
-      'aria-invalid': (lang === 'vi' ? errVi : errEn) ? true : undefined,
-      onChange: (e: { target: { value: string } }) =>
-        onChange({ ...value, [lang]: e.target.value }),
-    };
-    return multiline ? <textarea rows={3} {...props} /> : <input {...props} />;
-  };
   return (
-    <fieldset className="fa-loc">
-      <legend className="field__label">{label}</legend>
-      {(['vi', 'en'] as const).map((lang) => (
-        <div key={lang} className="field">
-          <label className="fa-lang" htmlFor={`${id}-${lang}`}>
-            {intl.formatMessage({ id: `firstAid.lang.${lang}` })}
-          </label>
-          {input(lang)}
-          <FieldError text={lang === 'vi' ? errVi : errEn} />
-        </div>
-      ))}
+    <fieldset className="grid min-w-0 gap-1.5" data-path={pathKey(path)}>
+      <legend className={cn(labelClass, 'mb-1.5')}>
+        {label}
+        {hint && <Hint>{hint}</Hint>}
+      </legend>
+      <div className="grid gap-x-3 gap-y-2 sm:grid-cols-2">
+        {(['vi', 'en'] as const).map((lang) => {
+          const err = lang === 'vi' ? errVi : errEn;
+          const props = {
+            id: `${id}-${lang}`,
+            value: value[lang],
+            maxLength: max,
+            'data-path': pathKey([...path, lang]),
+            'aria-invalid': err ? true : undefined,
+            onChange: (e: { target: { value: string } }) =>
+              onChange({ ...value, [lang]: e.target.value }),
+          };
+          return (
+            <div key={lang} className="grid min-w-0 content-start gap-1">
+              <div className="flex items-center gap-2">
+                <label htmlFor={`${id}-${lang}`} className="text-xs text-muted-foreground">
+                  {intl.formatMessage({ id: `firstAid.lang.${lang}` })}
+                </label>
+                {counter && (
+                  <span
+                    className={cn(
+                      'ml-auto text-xs tabular-nums',
+                      value[lang].length > max ? 'text-destructive' : 'text-muted-foreground',
+                    )}
+                  >
+                    {value[lang].length}/{max}
+                  </span>
+                )}
+              </div>
+              {multiline ? <Textarea rows={3} {...props} /> : <Input {...props} />}
+              <FieldError text={err} />
+            </div>
+          );
+        })}
+      </div>
       <FieldError text={errAll} />
-      {help && <p className="field__help fa-loc__help">{help}</p>}
+      {help && <p className="text-xs text-muted-foreground">{help}</p>}
     </fieldset>
   );
 }
@@ -337,10 +428,10 @@ export function LocList({
   const intl = useIntl();
   const errList = useIssue(path);
   return (
-    <fieldset className="fa-list">
-      <legend className="field__label">
-        {label}{' '}
-        <span className="muted">
+    <fieldset className="grid min-w-0 gap-2" data-path={pathKey(path)}>
+      <legend className={cn(labelClass, 'mb-1.5')}>
+        {label}
+        <span className="text-xs font-normal text-muted-foreground tabular-nums">
           {items.length}/{max}
         </span>
       </legend>
@@ -357,15 +448,35 @@ export function LocList({
       ))}
       <FieldError text={errList} />
       <div>
-        <Button
-          kind="ghost"
-          disabled={items.length >= max}
-          onClick={() => onChange([...items, { vi: '', en: '' }])}
-        >
+        <AddButton disabled={items.length >= max} onClick={() => onChange([...items, loc()])}>
           {addLabel}
-        </Button>
+        </AddButton>
       </div>
     </fieldset>
+  );
+}
+
+function AddButton({
+  children,
+  disabled,
+  onClick,
+}: {
+  children: ReactNode;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="-ml-2 text-primary hover:text-primary"
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <Plus />
+      {children}
+    </Button>
   );
 }
 
@@ -388,20 +499,24 @@ function LocRow({
   const errVi = useIssue([...path, 'vi']);
   const errEn = useIssue([...path, 'en']);
   return (
-    <div className="fa-row">
-      {(['vi', 'en'] as const).map((lang) => (
-        <div key={lang} className="field">
-          <input
-            className="field__input"
-            value={value[lang]}
-            maxLength={max}
-            placeholder={intl.formatMessage({ id: `firstAid.lang.${lang}` })}
-            aria-label={intl.formatMessage({ id: `firstAid.lang.${lang}` })}
-            onChange={(e) => onChange({ ...value, [lang]: e.target.value })}
-          />
-          <FieldError text={lang === 'vi' ? errVi : errEn} />
-        </div>
-      ))}
+    <div className="grid min-w-0 items-start gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+      {(['vi', 'en'] as const).map((lang) => {
+        const err = lang === 'vi' ? errVi : errEn;
+        return (
+          <div key={lang} className="grid min-w-0 gap-1">
+            <Input
+              value={value[lang]}
+              maxLength={max}
+              data-path={pathKey([...path, lang])}
+              aria-invalid={err ? true : undefined}
+              placeholder={intl.formatMessage({ id: `firstAid.lang.${lang}` })}
+              aria-label={intl.formatMessage({ id: `firstAid.lang.${lang}` })}
+              onChange={(e) => onChange({ ...value, [lang]: e.target.value })}
+            />
+            <FieldError text={err} />
+          </div>
+        );
+      })}
       <IconButton icon="remove" label={removeLabel} onClick={onRemove} />
     </div>
   );
@@ -413,32 +528,32 @@ function TextField({
   onChange,
   path,
   help,
+  hint,
   mono,
+  className,
 }: {
   label: ReactNode;
   value: string;
   onChange: (v: string) => void;
   path: Path;
   help?: ReactNode;
+  hint?: ReactNode;
   mono?: boolean;
+  className?: string;
 }) {
   const id = useId();
   const err = useIssue(path);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <input
+    <Field label={label} htmlFor={id} hint={hint} help={help} error={err} className={className}>
+      <Input
         id={id}
-        className={`field__input ${mono ? 'mono' : ''}`}
+        className={mono ? 'font-mono' : undefined}
         value={value}
+        data-path={pathKey(path)}
         aria-invalid={err ? true : undefined}
         onChange={(e) => onChange(e.target.value)}
       />
-      <FieldError text={err} />
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    </Field>
   );
 }
 
@@ -451,6 +566,7 @@ function NumField({
   path,
   nullable,
   placeholder,
+  hint,
 }: {
   label: ReactNode;
   value: number | null;
@@ -458,24 +574,23 @@ function NumField({
   path: Path;
   nullable?: boolean;
   placeholder?: string;
+  hint?: ReactNode;
 }) {
   const id = useId();
   const err = useIssue(path);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <input
+    <Field label={label} htmlFor={id} hint={hint} error={err}>
+      <Input
         id={id}
-        className="field__input input--sm"
+        className="w-28 tabular-nums"
         inputMode="numeric"
         placeholder={placeholder}
+        data-path={pathKey(path)}
+        aria-invalid={err ? true : undefined}
         value={value === null || Number.isNaN(value) ? '' : value}
         onChange={(e) => onChange(nullable && e.target.value === '' ? null : num(e.target.value))}
       />
-      <FieldError text={err} />
-    </div>
+    </Field>
   );
 }
 
@@ -485,36 +600,26 @@ function SelectField<T extends string>({
   options,
   onChange,
   path,
+  hint,
+  className,
 }: {
   label: ReactNode;
   value: T;
   options: Array<{ value: T; label: string }>;
   onChange: (v: T) => void;
   path: Path;
+  hint?: ReactNode;
+  className?: string;
 }) {
   const id = useId();
   const err = useIssue(path);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <FieldSelect id={id} value={value} options={options} onChange={onChange} />
-      <FieldError text={err} />
-    </div>
+    <Field label={label} htmlFor={id} hint={hint} error={err} className={className}>
+      <div data-path={pathKey(path)} className="min-w-0">
+        <FieldSelect id={id} value={value} options={options} onChange={onChange} />
+      </div>
+    </Field>
   );
-}
-
-function CheckField({
-  label,
-  checked,
-  onChange,
-}: {
-  label: ReactNode;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return <CheckRow label={label} checked={checked} onChange={onChange} />;
 }
 
 /** "Chỉ cho bé từ … đến … tháng" (to empty = no upper bound). */
@@ -529,17 +634,16 @@ function AgeField({
   onChange: (v: AgeRange) => void;
   path: Path;
 }) {
-  const intl = useIntl();
   const err = useIssue(path);
   return (
-    <div className="field">
-      <CheckField
+    <div className="grid min-w-0 gap-2" data-path={pathKey(path)}>
+      <CheckRow
         label={label}
         checked={value !== null}
         onChange={(on) => onChange(on ? { from: 0, to: 12 } : null)}
       />
       {value && (
-        <div className="fa-inline">
+        <div className="flex flex-wrap items-start gap-3 pl-6">
           <NumField
             label={<FormattedMessage id="firstAid.age.from" />}
             value={value.from}
@@ -551,10 +655,10 @@ function AgeField({
             value={value.to}
             nullable
             placeholder="∞"
+            hint={<FormattedMessage id="firstAid.age.help" />}
             path={[...path, 'to']}
             onChange={(v) => onChange({ ...value, to: v })}
           />
-          <p className="field__help">{intl.formatMessage({ id: 'firstAid.age.help' })}</p>
         </div>
       )}
       <FieldError text={err} />
@@ -593,33 +697,44 @@ export function ImageField({
   kind: 'icon' | 'picture';
   nullable?: boolean;
 }) {
+  const intl = useIntl();
   const { images } = useContext(LibraryContext);
   const err = useIssue(path);
   const [open, setOpen] = useState(false);
   const missing = !!value && !images.some((i) => i.id === value);
   return (
-    <div className="field">
-      <span className="field__label">{label}</span>
-      <div className="fa-image-field">
-        <ImageThumb id={value || null} />
-        <div className="stack fa-tight">
-          <span className="mono muted">{value || <FormattedMessage id="firstAid.noImage" />}</span>
+    <div className="grid min-w-0 content-start gap-1.5" data-path={pathKey(path)}>
+      <span className={labelClass}>{label}</span>
+      <div
+        className={cn(
+          'flex min-w-0 items-center gap-3 rounded-lg border bg-background p-2',
+          (err || missing) && 'border-destructive/60',
+        )}
+      >
+        <ImageThumb id={value || null} size={44} />
+        <div className="grid min-w-0 flex-1 gap-0.5">
+          <span
+            className="truncate font-mono text-xs text-muted-foreground"
+            title={value || undefined}
+          >
+            {value || <FormattedMessage id="firstAid.noImage" />}
+          </span>
           {missing && (
-            <span className="error">
+            <span className="text-xs text-destructive">
               <FormattedMessage id="firstAid.imageNotInLibrary" />
             </span>
           )}
-          <div className="actions">
-            <Button onClick={() => setOpen(true)}>
-              <FormattedMessage id="firstAid.pickImage" />
-            </Button>
-            {nullable && value && (
-              <Button kind="ghost" onClick={() => onChange(null)}>
-                <FormattedMessage id="firstAid.clearImage" />
-              </Button>
-            )}
-          </div>
         </div>
+        <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <FormattedMessage id={value ? 'firstAid.changeImage' : 'firstAid.pickImage'} />
+        </Button>
+        {nullable && value && (
+          <IconButton
+            icon="remove"
+            label={intl.formatMessage({ id: 'firstAid.clearImage' })}
+            onClick={() => onChange(null)}
+          />
+        )}
       </div>
       <FieldError text={err} />
       {open && (
@@ -637,12 +752,41 @@ export function ImageField({
   );
 }
 
-type ImageFilter = 'picture' | 'icon' | 'all';
+export type ImageFilter = 'picture' | 'icon' | 'all';
 
 export function filterImages(images: FirstAidImage[], filter: ImageFilter, query: string) {
   const q = query.trim().toLowerCase();
   return images.filter(
     (i) => (filter === 'all' || (filter === 'icon') === isIcon(i.id)) && (!q || i.id.includes(q)),
+  );
+}
+
+/** Tất cả / Ảnh minh hoạ / Biểu tượng. */
+export function ImageKindFilter({
+  value,
+  onChange,
+  order = ['all', 'picture', 'icon'],
+}: {
+  value: ImageFilter;
+  onChange: (v: ImageFilter) => void;
+  order?: ImageFilter[];
+}) {
+  const intl = useIntl();
+  return (
+    <ToggleGroup
+      type="single"
+      variant="outline"
+      size="sm"
+      value={value}
+      aria-label={intl.formatMessage({ id: 'firstAid.imageKind' })}
+      onValueChange={(v) => v && onChange(v as ImageFilter)}
+    >
+      {order.map((f) => (
+        <ToggleGroupItem key={f} value={f} className="px-3">
+          <FormattedMessage id={`firstAid.filter.${f}`} />
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }
 
@@ -661,32 +805,37 @@ function ImagePicker({
   const { images, canUpload } = useContext(LibraryContext);
   const [filter, setFilter] = useState<ImageFilter>(kind);
   const [query, setQuery] = useState('');
+  const [uploading, setUploading] = useState(false);
   const shown = filterImages(images, filter, query);
   return (
     <Modal wide title={<FormattedMessage id="firstAid.pickerTitle" />} onClose={onClose}>
-      <div className="toolbar">
-        <Segmented
-          label={intl.formatMessage({ id: 'firstAid.library' })}
-          value={filter}
-          onChange={setFilter}
-          options={(['picture', 'icon', 'all'] as const).map((f) => ({
-            value: f,
-            label: <FormattedMessage id={`firstAid.filter.${f}`} />,
-          }))}
-        />
-        <input
-          className="field__input fa-search"
-          type="search"
+      <div className="flex flex-wrap items-center gap-2">
+        <ImageKindFilter value={filter} onChange={setFilter} order={['picture', 'icon', 'all']} />
+        <SearchInput
           value={query}
+          onChange={setQuery}
           placeholder={intl.formatMessage({ id: 'firstAid.searchImages' })}
-          aria-label={intl.formatMessage({ id: 'firstAid.searchImages' })}
-          onChange={(e) => setQuery(e.target.value)}
         />
+        {canUpload && (
+          <Button
+            type="button"
+            variant={uploading ? 'secondary' : 'outline'}
+            size="sm"
+            className="ml-auto"
+            aria-expanded={uploading}
+            onClick={() => setUploading((u) => !u)}
+          >
+            <Upload />
+            <FormattedMessage id="firstAid.upload.open" />
+          </Button>
+        )}
       </div>
-      {canUpload && <UploadBox icon={kind === 'icon'} onDone={(img) => onPick(img.id)} />}
-      <ImageGrid images={shown} selected={value} onPick={onPick} />
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      {uploading && <UploadBox icon={kind === 'icon'} onDone={(img) => onPick(img.id)} />}
+      <div className="max-h-[50vh] min-h-40 overflow-y-auto overscroll-contain">
+        <ImageGrid images={shown} selected={value} onPick={onPick} />
+      </div>
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
       </div>
@@ -706,42 +855,51 @@ export function ImageGrid({
   usage?: Map<string, number>;
 }) {
   if (!images.length) {
-    return (
-      <p className="muted">
-        <FormattedMessage id="firstAid.noImages" />
-      </p>
-    );
+    return <EmptyState icon={ImageIcon} title={<FormattedMessage id="firstAid.noImages" />} />;
   }
   return (
-    <ul className="fa-grid">
+    <ul className="grid grid-cols-[repeat(auto-fill,minmax(128px,1fr))] gap-3">
       {images.map((img) => {
+        const on = img.id === selected;
+        const used = usage?.get(img.id) ?? 0;
         const body = (
           <>
-            <img src={img.url} alt="" loading="lazy" />
-            <span className="mono fa-grid__id">{img.id}</span>
+            <span className="block aspect-square overflow-hidden rounded-md bg-muted">
+              <img src={img.url} alt="" loading="lazy" className="size-full object-contain" />
+            </span>
+            <span className="truncate font-mono text-[11px] leading-4" title={img.id}>
+              {img.id}
+            </span>
             {usage && (
-              <span className="muted fa-grid__use">
-                <FormattedMessage id="firstAid.usedTimes" values={{ n: usage.get(img.id) ?? 0 }} />
+              <span
+                className={cn(
+                  'text-xs tabular-nums',
+                  used ? 'text-muted-foreground' : 'text-muted-foreground/70 italic',
+                )}
+              >
+                <FormattedMessage id="firstAid.usedTimes" values={{ n: used }} />
               </span>
             )}
           </>
         );
+        const box = 'grid w-full min-w-0 content-start gap-1.5 rounded-lg border bg-card p-2';
         return (
-          <li
-            key={img.id}
-            className={`fa-grid__item ${img.id === selected ? 'fa-grid__item--on' : ''}`}
-          >
+          <li key={img.id} className="min-w-0">
             {onPick ? (
               <button
                 type="button"
-                className="fa-grid__pick"
-                aria-pressed={img.id === selected}
+                aria-pressed={on}
+                className={cn(
+                  box,
+                  'text-left transition-colors outline-none hover:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                  on && 'border-primary bg-accent/50 ring-1 ring-primary/40',
+                )}
                 onClick={() => onPick(img.id)}
               >
                 {body}
               </button>
             ) : (
-              body
+              <div className={box}>{body}</div>
             )}
           </li>
         );
@@ -761,6 +919,7 @@ export function UploadBox({
   onDone?: (img: FirstAidImage) => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
   const id = useId();
   const { onUploaded } = useContext(LibraryContext);
   const [file, setFile] = useState<File | null>(null);
@@ -771,11 +930,12 @@ export function UploadBox({
   const [error, setError] = useState<ApiError | null>(null);
   const nameOk = imageNameOk(name) && (!icon || isIcon(name));
   return (
-    <div className="fa-upload">
-      <div className="field">
-        <label className="field__label" htmlFor={id}>
-          <FormattedMessage id="firstAid.upload.file" />
-        </label>
+    <div className="grid gap-3 rounded-lg border bg-muted/40 p-4">
+      <Field
+        label={<FormattedMessage id="firstAid.upload.file" />}
+        htmlFor={id}
+        help={<FormattedMessage id="firstAid.upload.help" />}
+      >
         <FilePicker
           id={id}
           accept={imageTypes.join(',')}
@@ -789,67 +949,66 @@ export function UploadBox({
             setName(kebabName(f.name, icon));
           }}
         />
-        <p className="field__help">
-          <FormattedMessage id="firstAid.upload.help" />
-        </p>
-      </div>
+      </Field>
       {file && (
-        <div className="fa-inline">
-          <CheckField
-            label={<FormattedMessage id="firstAid.upload.icon" />}
-            checked={icon}
-            onChange={(on) => {
-              setIcon(on);
-              setName(kebabName(file.name, on));
-            }}
-          />
-          <div className="field">
-            <label className="field__label" htmlFor={`${id}-name`}>
-              <FormattedMessage id="firstAid.upload.name" />
-            </label>
-            <input
+        <div className="flex flex-wrap items-start gap-3">
+          <Field
+            label={<FormattedMessage id="firstAid.upload.name" />}
+            htmlFor={`${id}-name`}
+            error={nameOk ? undefined : <FormattedMessage id="firstAid.upload.badName" />}
+            className="min-w-48 flex-1"
+          >
+            <Input
               id={`${id}-name`}
-              className="field__input mono"
+              className="font-mono"
               value={name}
               maxLength={40}
+              aria-invalid={nameOk ? undefined : true}
               onChange={(e) => setName(e.target.value)}
             />
-            {!nameOk && (
-              <p className="error fa-err">
-                <FormattedMessage id="firstAid.upload.badName" />
-              </p>
-            )}
+          </Field>
+          <div className="flex items-center gap-3 pt-7">
+            <CheckRow
+              label={<FormattedMessage id="firstAid.upload.icon" />}
+              checked={icon}
+              onChange={(on) => {
+                setIcon(on);
+                setName(kebabName(file.name, on));
+              }}
+            />
+            <Button
+              type="button"
+              disabled={busy || !nameOk || !!problem}
+              onClick={() => {
+                setBusy(true);
+                setError(null);
+                fileToBase64(file)
+                  .then((data) => api.call<FirstAidImage>('staffFirstAidImage', { name, data }))
+                  .then((img) => {
+                    onUploaded(img);
+                    setFile(null);
+                    toast.success(intl.formatMessage({ id: 'firstAid.toast.uploaded' }));
+                    onDone?.(img);
+                  })
+                  .catch((e: unknown) =>
+                    setError(e instanceof ApiError ? e : new ApiError('unknown', null)),
+                  )
+                  .finally(() => setBusy(false));
+              }}
+            >
+              <Upload />
+              <FormattedMessage id={busy ? 'firstAid.upload.busy' : 'firstAid.upload.go'} />
+            </Button>
           </div>
-          <Button
-            kind="primary"
-            disabled={busy || !nameOk || !!problem}
-            onClick={() => {
-              setBusy(true);
-              setError(null);
-              fileToBase64(file)
-                .then((data) => api.call<FirstAidImage>('staffFirstAidImage', { name, data }))
-                .then((img) => {
-                  onUploaded(img);
-                  setFile(null);
-                  onDone?.(img);
-                })
-                .catch((e: unknown) =>
-                  setError(e instanceof ApiError ? e : new ApiError('unknown', null)),
-                )
-                .finally(() => setBusy(false));
-            }}
-          >
-            <FormattedMessage id={busy ? 'firstAid.upload.busy' : 'firstAid.upload.go'} />
-          </Button>
         </div>
       )}
       {problem && (
-        <p className="error" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           <FormattedMessage id={problem} />
         </p>
       )}
       {error && (
-        <p className="error" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
         </p>
       )}
@@ -857,17 +1016,9 @@ export function UploadBox({
   );
 }
 
-// ---------- One situation ----------
+// ---------- List items ----------
 
-function Section({ title, children }: { title: ReactNode; children: ReactNode }) {
-  return (
-    <section className="fa-section">
-      <h3 className="fa-section__title">{title}</h3>
-      {children}
-    </section>
-  );
-}
-
+/** ↑ ↓ ✕ on a card. */
 function ItemTools({
   index,
   count,
@@ -883,7 +1034,7 @@ function ItemTools({
 }) {
   const intl = useIntl();
   return (
-    <span className="fa-tools">
+    <span className="flex shrink-0 items-center">
       <IconButton
         icon="up"
         label={intl.formatMessage({ id: 'firstAid.moveUp' })}
@@ -906,6 +1057,101 @@ function ItemTools({
   );
 }
 
+const calloutEdge: Record<Callout['tone'], string> = {
+  negative: 'border-l-destructive',
+  warning: 'border-l-warning',
+  positive: 'border-l-success',
+};
+
+/** A repeated item (step, group): one line with its tools; opens to edit. */
+function ItemCard({
+  title,
+  summary,
+  open,
+  onOpenChange,
+  tools,
+  path,
+  children,
+}: {
+  title: ReactNode;
+  summary?: ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  tools: ReactNode;
+  path: Path;
+  children: ReactNode;
+}) {
+  return (
+    <Collapsible
+      open={open}
+      onOpenChange={onOpenChange}
+      className="rounded-lg border bg-card"
+      data-path={pathKey(path)}
+    >
+      <div className="flex items-center gap-2 py-1 pr-1 pl-2">
+        <CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1.5 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50">
+          <ChevronDown
+            className={cn(
+              'size-4 shrink-0 text-muted-foreground transition-transform',
+              !open && '-rotate-90',
+            )}
+            aria-hidden="true"
+          />
+          <span className="shrink-0 text-sm font-semibold">{title}</span>
+          {summary && (
+            <span className="min-w-0 truncate text-sm text-muted-foreground">{summary}</span>
+          )}
+        </CollapsibleTrigger>
+        {tools}
+      </div>
+      <CollapsibleContent className="grid gap-4 border-t px-4 pt-3 pb-4">
+        {children}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+/**
+ * Open cards by position, kept in step with moves and removals. Cards with a shown issue open
+ * and stay open once the issue is fixed (no card folds away while it is being typed in).
+ */
+function useOpenSet(initial: () => number[], forced: number[]) {
+  const [open, setOpen] = useState<Set<number>>(() => new Set(initial()));
+  const forcedKey = forced.join(',');
+  useEffect(() => {
+    if (!forced.length) return;
+    setOpen((s) => (forced.every((i) => s.has(i)) ? s : new Set([...s, ...forced])));
+    // `forcedKey` stands for `forced`.
+  }, [forcedKey]);
+  return {
+    has: (i: number) => open.has(i) || forced.includes(i),
+    set: (i: number, on: boolean) =>
+      setOpen((s) => {
+        const next = new Set(s);
+        if (on) next.add(i);
+        else next.delete(i);
+        return next;
+      }),
+    all: (n: number, on: boolean) =>
+      setOpen(new Set(on ? Array.from({ length: n }, (_, i) => i) : [])),
+    moved: (i: number, j: number) =>
+      setOpen((s) => {
+        const next = new Set(s);
+        const a = s.has(i);
+        const b = s.has(j);
+        next.delete(i);
+        next.delete(j);
+        if (a) next.add(j);
+        if (b) next.add(i);
+        return next;
+      }),
+    removed: (i: number) =>
+      setOpen((s) => new Set([...s].filter((x) => x !== i).map((x) => (x > i ? x - 1 : x)))),
+  };
+}
+
+// ---------- One situation ----------
+
 export function SituationEditor({
   pack,
   index,
@@ -923,300 +1169,361 @@ export function SituationEditor({
   onVariant: (v: number) => void;
 }) {
   const intl = useIntl();
+  const confirm = useConfirm();
   const s = pack.situations[index]!;
   const base: Path = ['situations', index];
   const set = (fn: (s: FirstAidSituation) => void) => edit((p) => fn(p.situations[index]!));
   const vi = intl.locale.startsWith('vi');
   const variantsErr = useIssue([...base, 'variants']);
+  const under = useIssueUnder();
   const v = Math.min(variant, s.variants.length - 1);
+  const current = s.variants[v]!;
+  const vpath: Path = [...base, 'variants', v];
+  const variantName = (x: Variant) => (x.label ? (vi ? x.label.vi : x.label.en) || x.id : x.id);
+  // "Nâng cao" opens for an issue inside and stays open once it is fixed.
+  const advancedIssue = ['id', 'code', 'tool', 'ageMonths', 'keywords'].some((k) =>
+    under([...base, k]),
+  );
+  const [advancedSeen, setAdvancedSeen] = useState(false);
+  useEffect(() => {
+    if (advancedIssue) setAdvancedSeen(true);
+  }, [advancedIssue]);
+  const advancedOpen = advancedIssue || advancedSeen;
+  const many = s.variants.length > 1;
   return (
-    <div className="stack fa-editor">
-      <Section title={<FormattedMessage id="firstAid.section.basics" />}>
-        <div className="fa-cols">
-          {idLocked ? (
-            <div className="field">
-              <span className="field__label">
-                <FormattedMessage id="firstAid.field.id" />
-              </span>
-              <span className="mono">{s.id}</span>
-              <p className="field__help">
-                <FormattedMessage id="firstAid.field.idLocked" />
-              </p>
-            </div>
-          ) : (
-            <TextField
-              mono
-              label={<FormattedMessage id="firstAid.field.id" />}
-              value={s.id}
-              path={[...base, 'id']}
-              help={<FormattedMessage id="firstAid.field.idHelp" />}
-              onChange={(id) => {
+    <TooltipProvider>
+      <div className="grid min-w-0 gap-4">
+        <Section title={<FormattedMessage id="firstAid.section.basics" />}>
+          <div className="grid gap-5">
+            <LocField
+              counter
+              label={<FormattedMessage id="firstAid.field.title" />}
+              value={s.title}
+              max={firstAidLimits.title}
+              path={[...base, 'title']}
+              onChange={(t) =>
                 set((x) => {
-                  x.id = id;
-                });
-              }}
-            />
-          )}
-          <TextField
-            mono
-            label={<FormattedMessage id="firstAid.field.code" />}
-            value={s.code ?? ''}
-            path={[...base, 'code']}
-            help={<FormattedMessage id="firstAid.field.codeHelp" />}
-            onChange={(c) =>
-              set((x) => {
-                x.code = c.trim() === '' ? null : c.toUpperCase();
-              })
-            }
-          />
-          <SelectField
-            label={<FormattedMessage id="firstAid.field.category" />}
-            value={s.category}
-            path={[...base, 'category']}
-            options={pack.categories.map((c) => ({
-              value: c.id,
-              label: vi ? c.title.vi : c.title.en,
-            }))}
-            onChange={(c) =>
-              set((x) => {
-                x.category = c;
-              })
-            }
-          />
-          <SelectField
-            label={<FormattedMessage id="firstAid.field.tool" />}
-            value={s.tool ?? ''}
-            path={[...base, 'tool']}
-            options={[
-              { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
-              {
-                value: 'seizureTimer',
-                label: intl.formatMessage({ id: 'firstAid.tool.seizureTimer' }),
-              },
-            ]}
-            onChange={(t) =>
-              set((x) => {
-                x.tool = t === '' ? null : t;
-              })
-            }
-          />
-        </div>
-        <div className="actions">
-          <CheckField
-            label={<FormattedMessage id="firstAid.field.emergency" />}
-            checked={s.emergency}
-            onChange={(on) =>
-              set((x) => {
-                x.emergency = on;
-              })
-            }
-          />
-          <CheckField
-            label={<FormattedMessage id="firstAid.field.monitoring" />}
-            checked={s.monitoring}
-            onChange={(on) =>
-              set((x) => {
-                x.monitoring = on;
-              })
-            }
-          />
-        </div>
-        <AgeField
-          label={<FormattedMessage id="firstAid.field.ageMonths" />}
-          value={s.ageMonths}
-          path={[...base, 'ageMonths']}
-          onChange={(a) =>
-            set((x) => {
-              x.ageMonths = a;
-            })
-          }
-        />
-      </Section>
-
-      <Section title={<FormattedMessage id="firstAid.section.text" />}>
-        <LocField
-          label={<FormattedMessage id="firstAid.field.title" />}
-          value={s.title}
-          max={firstAidLimits.title}
-          path={[...base, 'title']}
-          onChange={(t) =>
-            set((x) => {
-              x.title = t;
-            })
-          }
-        />
-        <LocField
-          label={<FormattedMessage id="firstAid.field.lead" />}
-          value={s.lead}
-          max={firstAidLimits.lead}
-          path={[...base, 'lead']}
-          help={<FormattedMessage id="firstAid.field.leadHelp" />}
-          onChange={(t) =>
-            set((x) => {
-              x.lead = t;
-            })
-          }
-        />
-        <LocList
-          label={<FormattedMessage id="firstAid.field.keywords" />}
-          items={s.keywords}
-          max={firstAidLimits.keywords}
-          itemMax={firstAidLimits.heading}
-          path={[...base, 'keywords']}
-          addLabel={<FormattedMessage id="firstAid.addKeyword" />}
-          onChange={(k) =>
-            set((x) => {
-              x.keywords = k;
-            })
-          }
-        />
-      </Section>
-
-      <Section title={<FormattedMessage id="firstAid.section.images" />}>
-        <div className="fa-cols">
-          <ImageField
-            kind="icon"
-            label={<FormattedMessage id="firstAid.field.icon" />}
-            value={s.icon}
-            path={[...base, 'icon']}
-            onChange={(id) =>
-              set((x) => {
-                x.icon = id ?? '';
-              })
-            }
-          />
-          <ImageField
-            kind="picture"
-            label={<FormattedMessage id="firstAid.field.hero" />}
-            value={s.hero}
-            path={[...base, 'hero']}
-            onChange={(id) =>
-              set((x) => {
-                x.hero = id ?? '';
-              })
-            }
-          />
-        </div>
-      </Section>
-
-      <Section title={<FormattedMessage id="firstAid.section.variants" />}>
-        <div className="toolbar">
-          <Segmented
-            label={intl.formatMessage({ id: 'firstAid.section.variants' })}
-            value={v}
-            onChange={onVariant}
-            options={s.variants.map((x, i) => ({
-              value: i,
-              label: x.label ? (vi ? x.label.vi : x.label.en) || x.id : x.id,
-            }))}
-          />
-          <div className="actions fa-end">
-            <SelectField
-              label={<FormattedMessage id="firstAid.field.variantKind" />}
-              value={s.variantKind ?? ''}
-              path={[...base, 'variantKind']}
-              options={[
-                { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
-                { value: 'age', label: intl.formatMessage({ id: 'firstAid.variantKind.age' }) },
-                {
-                  value: 'condition',
-                  label: intl.formatMessage({ id: 'firstAid.variantKind.condition' }),
-                },
-              ]}
-              onChange={(k) =>
-                set((x) => {
-                  x.variantKind = k === '' ? null : k;
+                  x.title = t;
                 })
               }
             />
-            <Button
-              disabled={s.variants.length >= firstAidLimits.variants}
-              onClick={() => {
+            <LocField
+              counter
+              label={<FormattedMessage id="firstAid.field.lead" />}
+              hint={<FormattedMessage id="firstAid.field.leadHelp" />}
+              value={s.lead}
+              max={firstAidLimits.lead}
+              path={[...base, 'lead']}
+              onChange={(t) =>
                 set((x) => {
-                  x.variants.push(
-                    blankVariant(
-                      freeId(
-                        x.variants.map((y) => y.id),
-                        'bien-the',
-                      ),
-                    ),
-                  );
-                });
-                onVariant(s.variants.length);
-              }}
-            >
-              <FormattedMessage id="firstAid.addVariant" />
-            </Button>
+                  x.lead = t;
+                })
+              }
+            />
+            <div className="grid items-end gap-4 sm:grid-cols-[minmax(0,16rem)_1fr]">
+              <SelectField
+                label={<FormattedMessage id="firstAid.field.category" />}
+                value={s.category}
+                path={[...base, 'category']}
+                options={pack.categories.map((c) => ({
+                  value: c.id,
+                  label: (vi ? c.title.vi : c.title.en) || c.id,
+                }))}
+                onChange={(c) =>
+                  set((x) => {
+                    x.category = c;
+                  })
+                }
+              />
+              <div className="flex min-h-9 flex-wrap items-center gap-x-6 gap-y-2">
+                <CheckRow
+                  label={<FormattedMessage id="firstAid.field.emergency" />}
+                  checked={s.emergency}
+                  onChange={(on) =>
+                    set((x) => {
+                      x.emergency = on;
+                    })
+                  }
+                />
+                <CheckRow
+                  label={<FormattedMessage id="firstAid.field.monitoring" />}
+                  checked={s.monitoring}
+                  onChange={(on) =>
+                    set((x) => {
+                      x.monitoring = on;
+                    })
+                  }
+                />
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <ImageField
+                kind="icon"
+                label={<FormattedMessage id="firstAid.field.icon" />}
+                value={s.icon}
+                path={[...base, 'icon']}
+                onChange={(id) =>
+                  set((x) => {
+                    x.icon = id ?? '';
+                  })
+                }
+              />
+              <ImageField
+                kind="picture"
+                label={<FormattedMessage id="firstAid.field.hero" />}
+                value={s.hero}
+                path={[...base, 'hero']}
+                onChange={(id) =>
+                  set((x) => {
+                    x.hero = id ?? '';
+                  })
+                }
+              />
+            </div>
           </div>
-        </div>
-        <FieldError text={variantsErr} />
-        <p className="field__help">
-          <FormattedMessage id="firstAid.variantsHelp" values={{ max: firstAidLimits.variants }} />
-        </p>
-        <VariantEditor
-          key={`${index}-${v}`}
-          variant={s.variants[v]!}
-          path={[...base, 'variants', v]}
-          canRemove={s.variants.length > 1}
-          onRemove={() => {
-            set((x) => {
-              x.variants.splice(v, 1);
-            });
-            onVariant(Math.max(0, v - 1));
-          }}
+        </Section>
+
+        <Section
+          title={<FormattedMessage id="firstAid.section.variants" />}
+          hint={
+            <FormattedMessage
+              id="firstAid.variantsHelp"
+              values={{ max: firstAidLimits.variants }}
+            />
+          }
+          description={
+            many ? (
+              <FormattedMessage id="firstAid.variantsCount" values={{ n: s.variants.length }} />
+            ) : (
+              <FormattedMessage id="firstAid.variantsOne" />
+            )
+          }
+          actions={
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={s.variants.length >= firstAidLimits.variants}
+                onClick={() => {
+                  set((x) => {
+                    x.variants.push(
+                      blankVariant(
+                        freeId(
+                          x.variants.map((y) => y.id),
+                          'bien-the',
+                        ),
+                      ),
+                    );
+                  });
+                  onVariant(s.variants.length);
+                }}
+              >
+                <Plus />
+                <FormattedMessage id="firstAid.addVariant" />
+              </Button>
+              {many && (
+                <OverflowMenu
+                  items={[
+                    {
+                      key: 'remove',
+                      destructive: true,
+                      icon: Trash2,
+                      label: <FormattedMessage id="firstAid.removeVariant" />,
+                      onSelect: () =>
+                        confirm.ask({
+                          title: intl.formatMessage(
+                            { id: 'firstAid.removeVariantConfirm' },
+                            { name: variantName(current) },
+                          ),
+                          body: <FormattedMessage id="firstAid.removeVariantNote" />,
+                          confirmLabel: <FormattedMessage id="firstAid.remove" />,
+                          destructive: true,
+                          onConfirm: () => {
+                            set((x) => {
+                              x.variants.splice(v, 1);
+                            });
+                            onVariant(Math.max(0, v - 1));
+                          },
+                        }),
+                    },
+                  ]}
+                />
+              )}
+            </>
+          }
+        >
+          <div className="grid gap-5">
+            <div className="flex flex-wrap items-end gap-4">
+              {many && (
+                <Tabs value={String(v)} onValueChange={(x) => onVariant(Number(x))}>
+                  <TabsList aria-label={intl.formatMessage({ id: 'firstAid.section.variants' })}>
+                    {s.variants.map((x, i) => (
+                      <TabsTrigger key={i} value={String(i)} className="px-3">
+                        {variantName(x)}
+                        {under([...base, 'variants', i]) && (
+                          <span
+                            className="size-1.5 rounded-full bg-destructive"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </Tabs>
+              )}
+              <SelectField
+                className="w-56"
+                label={<FormattedMessage id="firstAid.field.variantKind" />}
+                value={s.variantKind ?? ''}
+                path={[...base, 'variantKind']}
+                options={[
+                  { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
+                  { value: 'age', label: intl.formatMessage({ id: 'firstAid.variantKind.age' }) },
+                  {
+                    value: 'condition',
+                    label: intl.formatMessage({ id: 'firstAid.variantKind.condition' }),
+                  },
+                ]}
+                onChange={(k) =>
+                  set((x) => {
+                    x.variantKind = k === '' ? null : k;
+                  })
+                }
+              />
+            </div>
+            <FieldError text={variantsErr} />
+            <VariantFields
+              key={`${index}-${v}`}
+              variant={current}
+              path={vpath}
+              set={(fn) => set((x) => fn(x.variants[v]!))}
+            />
+          </div>
+        </Section>
+
+        <StepsSection
+          key={`steps-${index}-${v}`}
+          variant={current}
+          variantName={many ? variantName(current) : null}
+          path={vpath}
           set={(fn) => set((x) => fn(x.variants[v]!))}
         />
-      </Section>
-    </div>
+
+        <CalloutsSection
+          variant={current}
+          variantName={many ? variantName(current) : null}
+          path={vpath}
+          set={(fn) => set((x) => fn(x.variants[v]!))}
+        />
+
+        <Section
+          key={advancedOpen ? 'advanced-issue' : 'advanced'}
+          collapsible
+          defaultOpen={advancedOpen}
+          title={<FormattedMessage id="firstAid.section.advanced" />}
+          description={<FormattedMessage id="firstAid.section.advancedNote" />}
+          summary={[s.id, s.code].filter(Boolean).join(' · ')}
+        >
+          <div className="grid gap-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {idLocked ? (
+                <Field
+                  label={<FormattedMessage id="firstAid.field.id" />}
+                  help={<FormattedMessage id="firstAid.field.idLocked" />}
+                >
+                  <span className="flex h-9 items-center rounded-md border bg-muted/50 px-3 font-mono text-sm">
+                    {s.id}
+                  </span>
+                </Field>
+              ) : (
+                <TextField
+                  mono
+                  label={<FormattedMessage id="firstAid.field.id" />}
+                  value={s.id}
+                  path={[...base, 'id']}
+                  hint={<FormattedMessage id="firstAid.field.idHelp" />}
+                  onChange={(id) => {
+                    set((x) => {
+                      x.id = id;
+                    });
+                  }}
+                />
+              )}
+              <TextField
+                mono
+                label={<FormattedMessage id="firstAid.field.code" />}
+                value={s.code ?? ''}
+                path={[...base, 'code']}
+                hint={<FormattedMessage id="firstAid.field.codeHelp" />}
+                onChange={(c) =>
+                  set((x) => {
+                    x.code = c.trim() === '' ? null : c.toUpperCase();
+                  })
+                }
+              />
+              <SelectField
+                label={<FormattedMessage id="firstAid.field.tool" />}
+                value={s.tool ?? ''}
+                path={[...base, 'tool']}
+                options={[
+                  { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
+                  {
+                    value: 'seizureTimer',
+                    label: intl.formatMessage({ id: 'firstAid.tool.seizureTimer' }),
+                  },
+                ]}
+                onChange={(t) =>
+                  set((x) => {
+                    x.tool = t === '' ? null : t;
+                  })
+                }
+              />
+            </div>
+            <AgeField
+              label={<FormattedMessage id="firstAid.field.ageMonths" />}
+              value={s.ageMonths}
+              path={[...base, 'ageMonths']}
+              onChange={(a) =>
+                set((x) => {
+                  x.ageMonths = a;
+                })
+              }
+            />
+            <LocList
+              label={<FormattedMessage id="firstAid.field.keywords" />}
+              items={s.keywords}
+              max={firstAidLimits.keywords}
+              itemMax={firstAidLimits.heading}
+              path={[...base, 'keywords']}
+              addLabel={<FormattedMessage id="firstAid.addKeyword" />}
+              onChange={(k) =>
+                set((x) => {
+                  x.keywords = k;
+                })
+              }
+            />
+          </div>
+        </Section>
+      </div>
+      {confirm.dialog}
+    </TooltipProvider>
   );
 }
 
-function VariantEditor({
+/** The selected variant's own settings: label, age, banner, header picture, CPR, id. */
+function VariantFields({
   variant,
   path,
   set,
-  canRemove,
-  onRemove,
 }: {
   variant: Variant;
   path: Path;
   set: (fn: (v: Variant) => void) => void;
-  canRemove: boolean;
-  onRemove: () => void;
 }) {
   const intl = useIntl();
-  const stepsErr = useIssue([...path, 'steps']);
-  const calloutsErr = useIssue([...path, 'callouts']);
   return (
-    <div className="stack fa-variant">
-      <div className="fa-cols">
-        <TextField
-          mono
-          label={<FormattedMessage id="firstAid.field.variantId" />}
-          value={variant.id}
-          path={[...path, 'id']}
-          onChange={(id) =>
-            set((v) => {
-              v.id = id;
-            })
-          }
-        />
-        <SelectField
-          label={<FormattedMessage id="firstAid.field.cpr" />}
-          value={variant.cpr ?? ''}
-          path={[...path, 'cpr']}
-          options={[
-            { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
-            { value: 'infant', label: intl.formatMessage({ id: 'firstAid.cpr.infant' }) },
-            { value: 'child', label: intl.formatMessage({ id: 'firstAid.cpr.child' }) },
-          ]}
-          onChange={(c) =>
-            set((v) => {
-              v.cpr = c === '' ? null : c;
-            })
-          }
-        />
-      </div>
+    <div className="grid gap-5">
       <OptionalLocField
         label={<FormattedMessage id="firstAid.field.variantLabel" />}
         value={variant.label}
@@ -1250,142 +1557,284 @@ function VariantEditor({
           })
         }
       />
-      <ImageField
-        nullable
-        kind="picture"
-        label={<FormattedMessage id="firstAid.field.variantHero" />}
-        value={variant.hero}
-        path={[...path, 'hero']}
-        onChange={(h) =>
-          set((v) => {
-            v.hero = h;
-          })
-        }
-      />
-
-      <h4 className="fa-sub">
-        <FormattedMessage
-          id="firstAid.steps"
-          values={{ n: variant.steps.length, max: firstAidLimits.steps }}
-        />
-      </h4>
-      <FieldError text={stepsErr} />
-      {variant.steps.map((st, i) => (
-        <div key={i} className="fa-card">
-          <div className="fa-card__head">
-            <strong>
-              <FormattedMessage id="firstAid.stepN" values={{ n: i + 1 }} />
-            </strong>
-            <ItemTools
-              index={i}
-              count={variant.steps.length}
-              onMove={(by) => set((v) => moveItem(v.steps, i, by))}
-              onRemove={() =>
-                set((v) => {
-                  v.steps.splice(i, 1);
-                })
-              }
-            />
-          </div>
-          <StepEditor
-            step={st}
-            path={[...path, 'steps', i]}
-            set={(fn) => set((v) => fn(v.steps[i]!))}
-          />
-        </div>
-      ))}
-      <div>
-        <Button
-          disabled={variant.steps.length >= firstAidLimits.steps}
-          onClick={() =>
+      <div className="grid gap-4 md:grid-cols-2">
+        <ImageField
+          nullable
+          kind="picture"
+          label={<FormattedMessage id="firstAid.field.variantHero" />}
+          value={variant.hero}
+          path={[...path, 'hero']}
+          onChange={(h) =>
             set((v) => {
-              v.steps.push(blankStep());
+              v.hero = h;
             })
           }
-        >
-          <FormattedMessage id="firstAid.addStep" />
-        </Button>
+        />
+        <div className="grid content-start gap-4 sm:grid-cols-2">
+          <SelectField
+            label={<FormattedMessage id="firstAid.field.cpr" />}
+            value={variant.cpr ?? ''}
+            path={[...path, 'cpr']}
+            options={[
+              { value: '', label: intl.formatMessage({ id: 'firstAid.none' }) },
+              { value: 'infant', label: intl.formatMessage({ id: 'firstAid.cpr.infant' }) },
+              { value: 'child', label: intl.formatMessage({ id: 'firstAid.cpr.child' }) },
+            ]}
+            onChange={(c) =>
+              set((v) => {
+                v.cpr = c === '' ? null : c;
+              })
+            }
+          />
+          <TextField
+            mono
+            label={<FormattedMessage id="firstAid.field.variantId" />}
+            value={variant.id}
+            path={[...path, 'id']}
+            onChange={(id) =>
+              set((v) => {
+                v.id = id;
+              })
+            }
+          />
+        </div>
       </div>
+    </div>
+  );
+}
 
-      <h4 className="fa-sub">
+function StepsSection({
+  variant,
+  variantName,
+  path,
+  set,
+}: {
+  variant: Variant;
+  variantName: string | null;
+  path: Path;
+  set: (fn: (v: Variant) => void) => void;
+}) {
+  const intl = useIntl();
+  const stepsErr = useIssue([...path, 'steps']);
+  const under = useIssueUnder();
+  const n = variant.steps.length;
+  const bad = variant.steps.map((_, i) => i).filter((i) => under([...path, 'steps', i]));
+  // Short lists open whole; longer ones start with the first step open.
+  const open = useOpenSet(() => (n <= 2 ? variant.steps.map((_, i) => i) : [0]), bad);
+  const allOpen = variant.steps.every((_, i) => open.has(i));
+  return (
+    <Section
+      title={<FormattedMessage id="firstAid.steps" values={{ n, max: firstAidLimits.steps }} />}
+      description={
+        variantName ? (
+          <FormattedMessage id="firstAid.forVariant" values={{ name: variantName }} />
+        ) : undefined
+      }
+      actions={
+        n > 1 && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
+            onClick={() => open.all(n, !allOpen)}
+          >
+            {allOpen ? <ChevronsDownUp /> : <ChevronsUpDown />}
+            <FormattedMessage id={allOpen ? 'firstAid.collapseAll' : 'firstAid.expandAll'} />
+          </Button>
+        )
+      }
+    >
+      <div className="grid gap-2">
+        <FieldError text={stepsErr} />
+        {variant.steps.map((st, i) => {
+          const at: Path = [...path, 'steps', i];
+          return (
+            <ItemCard
+              key={i}
+              path={at}
+              open={open.has(i)}
+              onOpenChange={(on) => open.set(i, on)}
+              title={
+                <span className="flex items-center gap-2">
+                  <span className="grid size-6 place-items-center rounded-full bg-accent text-xs font-semibold text-accent-foreground tabular-nums">
+                    {i + 1}
+                  </span>
+                  <span className="sr-only">
+                    <FormattedMessage id="firstAid.stepN" values={{ n: i + 1 }} />
+                  </span>
+                  {bad.includes(i) && (
+                    <span className="size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                  )}
+                </span>
+              }
+              summary={
+                <>
+                  <span className={st.title.vi ? 'text-foreground' : 'italic'}>
+                    {st.title.vi || intl.formatMessage({ id: 'firstAid.untitledStep' })}
+                  </span>
+                  {(st.image || st.chips.length > 0 || st.count) && (
+                    <span className="ml-2 text-xs">
+                      {[
+                        st.image && intl.formatMessage({ id: 'firstAid.stepHasImage' }),
+                        st.chips.length > 0 &&
+                          intl.formatMessage({ id: 'firstAid.stepChips' }, { n: st.chips.length }),
+                        st.count &&
+                          intl.formatMessage({ id: 'firstAid.stepCount' }, { n: st.count }),
+                      ]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  )}
+                </>
+              }
+              tools={
+                <ItemTools
+                  index={i}
+                  count={n}
+                  onMove={(by) => {
+                    set((v) => moveItem(v.steps, i, by));
+                    if (i + by >= 0 && i + by < n) open.moved(i, i + by);
+                  }}
+                  onRemove={() => {
+                    set((v) => {
+                      v.steps.splice(i, 1);
+                    });
+                    open.removed(i);
+                  }}
+                />
+              }
+            >
+              <StepEditor step={st} path={at} set={(fn) => set((v) => fn(v.steps[i]!))} />
+            </ItemCard>
+          );
+        })}
+        <div>
+          <AddButton
+            disabled={n >= firstAidLimits.steps}
+            onClick={() => {
+              set((v) => {
+                v.steps.push(blankStep());
+              });
+              open.set(n, true);
+            }}
+          >
+            <FormattedMessage id="firstAid.addStep" />
+          </AddButton>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function CalloutsSection({
+  variant,
+  variantName,
+  path,
+  set,
+}: {
+  variant: Variant;
+  variantName: string | null;
+  path: Path;
+  set: (fn: (v: Variant) => void) => void;
+}) {
+  const intl = useIntl();
+  const calloutsErr = useIssue([...path, 'callouts']);
+  return (
+    <Section
+      title={
         <FormattedMessage
           id="firstAid.callouts"
           values={{ n: variant.callouts.length, max: firstAidLimits.callouts }}
         />
-      </h4>
-      <FieldError text={calloutsErr} />
-      {variant.callouts.map((c, i) => (
-        <div key={i} className={`fa-card fa-card--${c.tone}`}>
-          <div className="fa-card__head">
-            <SelectField
-              label={<FormattedMessage id="firstAid.field.tone" />}
-              value={c.tone}
-              path={[...path, 'callouts', i, 'tone']}
-              options={(['negative', 'warning', 'positive'] as const).map((t) => ({
-                value: t,
-                label: intl.formatMessage({ id: `firstAid.tone.${t}` }),
-              }))}
-              onChange={(t) =>
+      }
+      hint={<FormattedMessage id="firstAid.calloutsHelp" />}
+      description={
+        variantName ? (
+          <FormattedMessage id="firstAid.forVariant" values={{ name: variantName }} />
+        ) : undefined
+      }
+    >
+      <div className="grid gap-3">
+        <FieldError text={calloutsErr} />
+        {variant.callouts.map((c, i) => (
+          <div
+            key={i}
+            className={cn(
+              'grid gap-4 rounded-lg border border-l-4 bg-card p-4',
+              calloutEdge[c.tone],
+            )}
+            data-path={pathKey([...path, 'callouts', i])}
+          >
+            <div className="flex items-start gap-3">
+              <SelectField
+                className="w-64 max-w-full"
+                label={<FormattedMessage id="firstAid.field.tone" />}
+                value={c.tone}
+                path={[...path, 'callouts', i, 'tone']}
+                options={(['negative', 'warning', 'positive'] as const).map((t) => ({
+                  value: t,
+                  label: intl.formatMessage({ id: `firstAid.tone.${t}` }),
+                }))}
+                onChange={(t) =>
+                  set((v) => {
+                    v.callouts[i]!.tone = t;
+                  })
+                }
+              />
+              <span className="ml-auto">
+                <ItemTools
+                  index={i}
+                  count={variant.callouts.length}
+                  onMove={(by) => set((v) => moveItem(v.callouts, i, by))}
+                  onRemove={() =>
+                    set((v) => {
+                      v.callouts.splice(i, 1);
+                    })
+                  }
+                />
+              </span>
+            </div>
+            <LocField
+              label={<FormattedMessage id="firstAid.field.heading" />}
+              value={c.heading}
+              max={firstAidLimits.heading}
+              path={[...path, 'callouts', i, 'heading']}
+              onChange={(h) =>
                 set((v) => {
-                  v.callouts[i]!.tone = t;
+                  v.callouts[i]!.heading = h;
                 })
               }
             />
-            <ItemTools
-              index={i}
-              count={variant.callouts.length}
-              onMove={(by) => set((v) => moveItem(v.callouts, i, by))}
-              onRemove={() =>
+            <LocList
+              label={<FormattedMessage id="firstAid.field.items" />}
+              items={c.items}
+              max={firstAidLimits.calloutItems}
+              itemMax={firstAidLimits.item}
+              path={[...path, 'callouts', i, 'items']}
+              addLabel={<FormattedMessage id="firstAid.addItem" />}
+              onChange={(items) =>
                 set((v) => {
-                  v.callouts.splice(i, 1);
+                  v.callouts[i]!.items = items;
                 })
               }
             />
           </div>
-          <LocField
-            label={<FormattedMessage id="firstAid.field.heading" />}
-            value={c.heading}
-            max={firstAidLimits.heading}
-            path={[...path, 'callouts', i, 'heading']}
-            onChange={(h) =>
+        ))}
+        <div>
+          <AddButton
+            disabled={variant.callouts.length >= firstAidLimits.callouts}
+            onClick={() =>
               set((v) => {
-                v.callouts[i]!.heading = h;
+                v.callouts.push(blankCallout());
               })
             }
-          />
-          <LocList
-            label={<FormattedMessage id="firstAid.field.items" />}
-            items={c.items}
-            max={firstAidLimits.calloutItems}
-            itemMax={firstAidLimits.item}
-            path={[...path, 'callouts', i, 'items']}
-            addLabel={<FormattedMessage id="firstAid.addItem" />}
-            onChange={(items) =>
-              set((v) => {
-                v.callouts[i]!.items = items;
-              })
-            }
-          />
+          >
+            <FormattedMessage id="firstAid.addCallout" />
+          </AddButton>
         </div>
-      ))}
-      <div className="actions">
-        <Button
-          disabled={variant.callouts.length >= firstAidLimits.callouts}
-          onClick={() =>
-            set((v) => {
-              v.callouts.push(blankCallout());
-            })
-          }
-        >
-          <FormattedMessage id="firstAid.addCallout" />
-        </Button>
-        {canRemove && (
-          <Button kind="danger" onClick={onRemove}>
-            <FormattedMessage id="firstAid.removeVariant" />
-          </Button>
-        )}
       </div>
-    </div>
+    </Section>
   );
 }
 
@@ -1399,9 +1848,11 @@ function StepEditor({
   set: (fn: (s: Step) => void) => void;
 }) {
   const intl = useIntl();
+  const chipsErr = useIssue([...path, 'chips']);
   return (
-    <div className="stack fa-tight">
+    <>
       <LocField
+        counter
         label={<FormattedMessage id="firstAid.field.stepTitle" />}
         value={step.title}
         max={firstAidLimits.heading}
@@ -1424,7 +1875,7 @@ function StepEditor({
           })
         }
       />
-      <div className="fa-cols">
+      <div className="grid gap-4 md:grid-cols-2">
         <ImageField
           nullable
           kind="picture"
@@ -1437,10 +1888,11 @@ function StepEditor({
             })
           }
         />
-        <div className="stack fa-tight">
+        <div className="grid content-start gap-4 sm:grid-cols-2">
           <NumField
             nullable
             label={<FormattedMessage id="firstAid.field.count" />}
+            hint={<FormattedMessage id="firstAid.field.countHelp" />}
             value={step.count}
             path={[...path, 'count']}
             onChange={(c) =>
@@ -1469,15 +1921,15 @@ function StepEditor({
           />
         </div>
       </div>
-      <fieldset className="fa-list">
-        <legend className="field__label">
-          <FormattedMessage id="firstAid.field.chips" />{' '}
-          <span className="muted">
+      <fieldset className="grid min-w-0 gap-2" data-path={pathKey([...path, 'chips'])}>
+        <legend className={cn(labelClass, 'mb-1.5')}>
+          <FormattedMessage id="firstAid.field.chips" />
+          <span className="text-xs font-normal text-muted-foreground tabular-nums">
             {step.chips.length}/{firstAidLimits.chips}
           </span>
         </legend>
         {step.chips.map((c, i) => (
-          <div key={i} className="fa-chip-row">
+          <div key={i} className="grid min-w-0 items-start gap-2 sm:grid-cols-[minmax(0,1fr)_8rem]">
             <LocRow
               value={c.label}
               path={[...path, 'chips', i, 'label']}
@@ -1495,7 +1947,7 @@ function StepEditor({
               }
             />
             <FieldSelect
-              className="fa-chip-tone w-auto"
+              className="max-sm:row-start-1"
               value={c.tone}
               ariaLabel={intl.formatMessage({ id: 'firstAid.field.tone' })}
               options={(['mint', 'neutral'] as const).map((t) => ({
@@ -1510,21 +1962,21 @@ function StepEditor({
             />
           </div>
         ))}
+        <FieldError text={chipsErr} />
         <div>
-          <Button
-            kind="ghost"
+          <AddButton
             disabled={step.chips.length >= firstAidLimits.chips}
             onClick={() =>
               set((s) => {
-                s.chips.push({ label: { vi: '', en: '' }, tone: 'mint' });
+                s.chips.push({ label: loc(), tone: 'mint' });
               })
             }
           >
             <FormattedMessage id="firstAid.addChip" />
-          </Button>
+          </AddButton>
         </div>
       </fieldset>
-    </div>
+    </>
   );
 }
 
@@ -1534,131 +1986,181 @@ export function GeneralEditor({ pack, edit }: { pack: FirstAidPack; edit: Edit }
   const intl = useIntl();
   const used = useMemo(() => new Set(pack.situations.map((s) => s.category)), [pack.situations]);
   const categoriesErr = useIssue(['categories']);
+  const under = useIssueUnder();
+  const open = useOpenSet(
+    () => [],
+    pack.categories.map((_, i) => i).filter((i) => under(['categories', i])),
+  );
+  const vi = intl.locale.startsWith('vi');
   return (
-    <div className="stack fa-editor">
-      <Section title={<FormattedMessage id="firstAid.section.emergency" />}>
-        <TextField
-          label={<FormattedMessage id="firstAid.field.emergencyNumber" />}
-          value={pack.emergencyNumber}
-          path={['emergencyNumber']}
-          help={<FormattedMessage id="firstAid.field.emergencyNumberHelp" />}
-          onChange={(n) =>
-            edit((p) => {
-              p.emergencyNumber = n.trim();
-            })
-          }
-        />
-      </Section>
-      <Section title={<FormattedMessage id="firstAid.section.categories" />}>
-        <FieldError text={categoriesErr} />
-        {pack.categories.map((c, i) => (
-          <div key={i} className="fa-card">
-            <div className="fa-card__head">
-              <strong>{intl.locale.startsWith('vi') ? c.title.vi : c.title.en || c.id}</strong>
-              <ItemTools
-                index={i}
-                count={pack.categories.length}
-                canRemove={!used.has(c.id) && pack.categories.length > 1}
-                onMove={(by) => edit((p) => moveItem(p.categories, i, by))}
-                onRemove={() =>
-                  edit((p) => {
-                    p.categories.splice(i, 1);
-                  })
-                }
-              />
-            </div>
-            <div className="fa-cols">
-              <TextField
-                mono
-                label={<FormattedMessage id="firstAid.field.categoryId" />}
-                value={c.id}
-                path={['categories', i, 'id']}
-                onChange={(id) =>
-                  edit((p) => {
-                    // Situations follow their group when its id changes.
-                    for (const s of p.situations) if (s.category === c.id) s.category = id;
-                    p.categories[i]!.id = id;
-                  })
-                }
-              />
-              <SelectField
-                label={<FormattedMessage id="firstAid.field.layout" />}
-                value={c.layout}
-                path={['categories', i, 'layout']}
-                options={(['grid', 'list'] as const).map((l) => ({
-                  value: l,
-                  label: intl.formatMessage({ id: `firstAid.layout.${l}` }),
-                }))}
-                onChange={(l) =>
-                  edit((p) => {
-                    p.categories[i]!.layout = l;
-                  })
-                }
-              />
-              <SelectField
-                label={<FormattedMessage id="firstAid.field.categoryTone" />}
-                value={c.tone}
-                path={['categories', i, 'tone']}
-                options={(['danger', 'sunshine', 'mint'] as const).map((t) => ({
-                  value: t,
-                  label: intl.formatMessage({ id: `firstAid.categoryTone.${t}` }),
-                }))}
-                onChange={(t) =>
-                  edit((p) => {
-                    p.categories[i]!.tone = t;
-                  })
-                }
-              />
-            </div>
-            <LocField
-              label={<FormattedMessage id="firstAid.field.categoryTitle" />}
-              value={c.title}
-              max={firstAidLimits.heading}
-              path={['categories', i, 'title']}
-              onChange={(t) =>
-                edit((p) => {
-                  p.categories[i]!.title = t;
-                })
-              }
-            />
-          </div>
-        ))}
-        <div>
-          <Button
-            disabled={pack.categories.length >= 8}
-            onClick={() =>
+    <TooltipProvider>
+      <div className="grid min-w-0 gap-4">
+        <Section title={<FormattedMessage id="firstAid.section.emergency" />}>
+          <TextField
+            className="max-w-xs"
+            label={<FormattedMessage id="firstAid.field.emergencyNumber" />}
+            value={pack.emergencyNumber}
+            path={['emergencyNumber']}
+            help={<FormattedMessage id="firstAid.field.emergencyNumberHelp" />}
+            onChange={(n) =>
               edit((p) => {
-                p.categories.push({
-                  id: freeId(
-                    p.categories.map((x) => x.id),
-                    'nhom',
-                  ),
-                  title: { vi: '', en: '' },
-                  layout: 'list',
-                  tone: 'mint',
-                });
+                p.emergencyNumber = n.trim();
               })
             }
-          >
-            <FormattedMessage id="firstAid.addCategory" />
-          </Button>
-        </div>
-      </Section>
-      <Section title={<FormattedMessage id="firstAid.section.quickSearch" />}>
-        <LocList
-          label={<FormattedMessage id="firstAid.field.quickSearch" />}
-          items={pack.quickSearch}
-          max={12}
-          itemMax={firstAidLimits.heading}
-          path={['quickSearch']}
-          addLabel={<FormattedMessage id="firstAid.addQuickSearch" />}
-          onChange={(q) =>
-            edit((p) => {
-              p.quickSearch = q;
-            })
+          />
+        </Section>
+        <Section
+          title={<FormattedMessage id="firstAid.section.categories" />}
+          description={
+            <FormattedMessage
+              id="firstAid.categoriesCount"
+              values={{ n: pack.categories.length }}
+            />
           }
-        />
-      </Section>
-    </div>
+          hint={<FormattedMessage id="firstAid.categoriesHelp" />}
+        >
+          <div className="grid gap-2">
+            <FieldError text={categoriesErr} />
+            {pack.categories.map((c, i) => {
+              const at: Path = ['categories', i];
+              const name = (vi ? c.title.vi : c.title.en) || c.title.vi || c.id;
+              return (
+                <ItemCard
+                  key={i}
+                  path={at}
+                  open={open.has(i)}
+                  onOpenChange={(on) => open.set(i, on)}
+                  title={name || <FormattedMessage id="firstAid.untitled" />}
+                  summary={
+                    <>
+                      <FormattedMessage id={`firstAid.layout.${c.layout}`} />
+                      {' · '}
+                      <FormattedMessage id={`firstAid.categoryTone.${c.tone}`} />
+                      {' · '}
+                      <FormattedMessage
+                        id="firstAid.categoryUsed"
+                        values={{ n: pack.situations.filter((s) => s.category === c.id).length }}
+                      />
+                    </>
+                  }
+                  tools={
+                    <ItemTools
+                      index={i}
+                      count={pack.categories.length}
+                      canRemove={!used.has(c.id) && pack.categories.length > 1}
+                      onMove={(by) => {
+                        edit((p) => moveItem(p.categories, i, by));
+                        if (i + by >= 0 && i + by < pack.categories.length) open.moved(i, i + by);
+                      }}
+                      onRemove={() => {
+                        edit((p) => {
+                          p.categories.splice(i, 1);
+                        });
+                        open.removed(i);
+                      }}
+                    />
+                  }
+                >
+                  <LocField
+                    label={<FormattedMessage id="firstAid.field.categoryTitle" />}
+                    value={c.title}
+                    max={firstAidLimits.heading}
+                    path={['categories', i, 'title']}
+                    onChange={(t) =>
+                      edit((p) => {
+                        p.categories[i]!.title = t;
+                      })
+                    }
+                  />
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <SelectField
+                      label={<FormattedMessage id="firstAid.field.layout" />}
+                      value={c.layout}
+                      path={['categories', i, 'layout']}
+                      options={(['grid', 'list'] as const).map((l) => ({
+                        value: l,
+                        label: intl.formatMessage({ id: `firstAid.layout.${l}` }),
+                      }))}
+                      onChange={(l) =>
+                        edit((p) => {
+                          p.categories[i]!.layout = l;
+                        })
+                      }
+                    />
+                    <SelectField
+                      label={<FormattedMessage id="firstAid.field.categoryTone" />}
+                      value={c.tone}
+                      path={['categories', i, 'tone']}
+                      options={(['danger', 'sunshine', 'mint'] as const).map((t) => ({
+                        value: t,
+                        label: intl.formatMessage({ id: `firstAid.categoryTone.${t}` }),
+                      }))}
+                      onChange={(t) =>
+                        edit((p) => {
+                          p.categories[i]!.tone = t;
+                        })
+                      }
+                    />
+                    <TextField
+                      mono
+                      label={<FormattedMessage id="firstAid.field.categoryId" />}
+                      hint={<FormattedMessage id="firstAid.field.categoryIdHelp" />}
+                      value={c.id}
+                      path={['categories', i, 'id']}
+                      onChange={(id) =>
+                        edit((p) => {
+                          // Situations follow their group when its id changes.
+                          for (const s of p.situations) if (s.category === c.id) s.category = id;
+                          p.categories[i]!.id = id;
+                        })
+                      }
+                    />
+                  </div>
+                </ItemCard>
+              );
+            })}
+            <div>
+              <AddButton
+                disabled={pack.categories.length >= 8}
+                onClick={() => {
+                  edit((p) => {
+                    p.categories.push({
+                      id: freeId(
+                        p.categories.map((x) => x.id),
+                        'nhom',
+                      ),
+                      title: loc(),
+                      layout: 'list',
+                      tone: 'mint',
+                    });
+                  });
+                  open.set(pack.categories.length, true);
+                }}
+              >
+                <FormattedMessage id="firstAid.addCategory" />
+              </AddButton>
+            </div>
+          </div>
+        </Section>
+        <Section
+          title={<FormattedMessage id="firstAid.section.quickSearch" />}
+          hint={<FormattedMessage id="firstAid.quickSearchHelp" />}
+        >
+          <LocList
+            label={<FormattedMessage id="firstAid.field.quickSearch" />}
+            items={pack.quickSearch}
+            max={12}
+            itemMax={firstAidLimits.heading}
+            path={['quickSearch']}
+            addLabel={<FormattedMessage id="firstAid.addQuickSearch" />}
+            onChange={(q) =>
+              edit((p) => {
+                p.quickSearch = q;
+              })
+            }
+          />
+        </Section>
+      </div>
+    </TooltipProvider>
   );
 }

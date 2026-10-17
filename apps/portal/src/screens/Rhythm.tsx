@@ -1,17 +1,35 @@
 import {
   defaultRhythmRules,
+  needs,
   rankingWeights,
   staffCan,
   type Activity,
   type AgeCard,
   type Flags,
+  type Need,
   type ReferenceStage,
   type RhythmContent,
   type RhythmDoc,
   type RhythmRules,
 } from '@child-life/contracts';
-import { Fragment, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Pencil, Plus } from 'lucide-react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import {
   ApiError,
   useApi,
@@ -25,33 +43,46 @@ import {
   type RhythmVersion,
   type RhythmView,
 } from '../api';
+import {
+  EditorBar,
+  EditorLayout,
+  EmptyState,
+  Field,
+  FilterBar,
+  HelpPopover,
+  Hint,
+  Notice,
+  OverflowMenu,
+  SearchInput,
+  Section,
+  useConfirm,
+  useLeaveGuard,
+  type MenuItem,
+} from '../content-kit';
 import { routePaths, subPath, useNavigate, useStaff } from '../context';
 import { ZONE } from '../format';
 import {
-  Button,
-  Empty,
   Loaded,
   LockNote,
   Modal,
   Page,
-  Panel,
   Pill,
-  ReasonField,
   RowActions,
-  Segmented,
+  SelectMenu,
   TableScroll,
   errorMessageId,
   reasonOk,
   type PillTone,
 } from '../ui';
-import { IssuesContext, moveItem, type Issue } from './FirstAidEditor';
 import {
   ActivityEditor,
   AgeCardEditor,
   HealthEditor,
+  IssuesContext,
+  LangSwitch,
   ModelEditor,
-  StageEditor,
   NumberInput,
+  StageEditor,
   TextInput,
   blankActivity,
   blankAgeCard,
@@ -59,16 +90,18 @@ import {
   contentDraftFrom,
   dmy,
   forbiddenPhrases,
+  matches,
   monthsOf,
+  moveItem,
   referenceDraftFrom,
   rhythmActRequest,
   rhythmIssueText,
   rhythmReviewFrom,
-  sendRhythmAct,
   ruleIssueText,
   rulesIssues,
   saveRhythmDraft,
   saveRhythmRules,
+  sendRhythmAct,
   starterContent,
   starterReference,
   validateRhythmDraft,
@@ -79,6 +112,8 @@ import {
   type Check,
   type Edit,
   type ForbiddenHit,
+  type Issue,
+  type Lang,
   type ReviewInput,
 } from './RhythmEditor';
 
@@ -90,11 +125,15 @@ import {
  * another person with "Nội dung · Duyệt", whose approval publishes it (on prod with the qualified
  * review). Rules (`config/rhythm`, PN04) are versioned thresholds saved with a reason
  * (Tính năng · Sửa). Every step is in the audit log.
+ *
+ * Layout (D-063 content kit): each tab opens on its list with the live status in one line and one
+ * main action; the model details, history, kill switches and explanations are folded away.
  */
 
 export type Tab = 'reference' | 'content' | 'rules';
 const tabs: Tab[] = ['reference', 'content', 'rules'];
 type ContentTab = 'activities' | 'ageCards' | 'health';
+const contentTabs: ContentTab[] = ['activities', 'ageCards', 'health'];
 
 const statusTone: Record<string, PillTone> = {
   draft: 'muted',
@@ -233,6 +272,7 @@ export function RhythmBody({
   useEffect(() => setShowRefDraft(!!rd), [rd?.versionId]);
   useEffect(() => setShowContentDraft(!!cd), [cd?.versionId]);
   const [dialog, setDialog] = useState<Dialog>(null);
+  const { ask, dialog: confirmDialog } = useConfirm();
 
   const shownRef: ReferenceDraftData | null =
     ref.editing ?? (showRefDraft && rd ? rd.data : (view.reference.current ?? null));
@@ -248,15 +288,18 @@ export function RhythmBody({
   );
 
   // Leaving with unsaved changes asks first.
-  const dirty = (ref.editing && ref.dirty) || (content.editing && content.dirty);
-  useEffect(() => {
-    if (!dirty) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [dirty]);
-  const confirmLeave = (isDirty: boolean) =>
-    !isDirty || window.confirm(intl.formatMessage({ id: 'firstAid.leaveConfirm' }));
+  const dirty = !!((ref.editing && ref.dirty) || (content.editing && content.dirty));
+  useLeaveGuard(dirty);
+  const leave = (isDirty: boolean, then: () => void) =>
+    isDirty
+      ? ask({
+          title: <FormattedMessage id="rhythm.leave.title" />,
+          body: <FormattedMessage id="rhythm.leave.body" />,
+          confirmLabel: <FormattedMessage id="kit.leaveConfirm" />,
+          destructive: true,
+          onConfirm: then,
+        })
+      : then();
 
   // Activities a stage can link: the content being edited, else its draft, else what is live.
   const activityOptions: ActivityOption[] = (
@@ -269,18 +312,16 @@ export function RhythmBody({
   const [dueDate, setDueDate] = useState(() => today ?? todayIso());
 
   return (
-    <div className="stack">
-      <Segmented
-        label={intl.formatMessage({ id: 'rhythm.title' })}
-        value={tab}
-        onChange={setTab}
-        options={tabs.map((t) => ({
-          value: t,
-          label: <FormattedMessage id={`rhythm.tab.${t}`} />,
-        }))}
-      />
+    <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-5">
+      <TabsList aria-label={intl.formatMessage({ id: 'rhythm.title' })}>
+        {tabs.map((t) => (
+          <TabsTrigger key={t} value={t} className="px-3">
+            <FormattedMessage id={`rhythm.tab.${t}`} />
+          </TabsTrigger>
+        ))}
+      </TabsList>
 
-      {tab === 'reference' && (
+      <TabsContent value="reference" className="grid grid-cols-1 gap-4">
         <IssuesContext.Provider
           value={{ issues: refCheck?.issues ?? new Map(), show: ref.showIssues }}
         >
@@ -303,7 +344,12 @@ export function RhythmBody({
               );
               setShowRefDraft(!!rd);
             }}
-            onStop={() => confirmLeave(ref.dirty) && ref.stop()}
+            onStop={(then) =>
+              leave(ref.dirty, () => {
+                ref.stop();
+                then?.();
+              })
+            }
             onSave={() => {
               ref.setShowIssues(true);
               if (refCheck?.ok) setDialog({ kind: 'save', doc: 'reference' });
@@ -315,13 +361,13 @@ export function RhythmBody({
             flags={flags}
           />
         </IssuesContext.Provider>
-      )}
+      </TabsContent>
 
-      {tab === 'content' && (
+      <TabsContent value="content" className="grid grid-cols-1 gap-4">
         <IssuesContext.Provider
           value={{ issues: contentCheck?.issues ?? new Map(), show: content.showIssues }}
         >
-          <ContentTab
+          <ContentTabView
             view={view}
             shown={shownContent}
             working={content}
@@ -341,7 +387,12 @@ export function RhythmBody({
               );
               setShowContentDraft(!!cd);
             }}
-            onStop={() => confirmLeave(content.dirty) && content.stop()}
+            onStop={(then) =>
+              leave(content.dirty, () => {
+                content.stop();
+                then?.();
+              })
+            }
             onSave={() => {
               content.setShowIssues(true);
               if (contentCheck?.ok) setDialog({ kind: 'save', doc: 'content' });
@@ -349,16 +400,16 @@ export function RhythmBody({
             onAct={(act, versionId) => setDialog({ kind: 'act', doc: 'content', act, versionId })}
           />
         </IssuesContext.Provider>
-      )}
+      </TabsContent>
 
-      {tab === 'rules' && (
+      <TabsContent value="rules" className="grid grid-cols-1 gap-4">
         <RulesTab
           canView={canViewRules}
           canEdit={canEditRules}
           rules={rules}
           content={view.content.current}
         />
-      )}
+      </TabsContent>
 
       {dialog?.kind === 'save' && (
         <SaveDialog
@@ -388,13 +439,14 @@ export function RhythmBody({
           onDone={onChanged}
         />
       )}
-    </div>
+      {confirmDialog}
+    </Tabs>
   );
 }
 
 type Working<T> = ReturnType<typeof useWorking<T>>;
 
-// ---------- Status, edit bar, history (shared by both documents) ----------
+// ---------- Status line, editor bar, issues, history (shared by both documents) ----------
 
 function ReviewText({ review }: { review: RhythmReview }) {
   return review ? (
@@ -411,23 +463,28 @@ function ReviewText({ review }: { review: RhythmReview }) {
   );
 }
 
-/** D-073 #2: content nobody qualified signed off yet is labelled, never hidden. */
-export function TechnicalDraftBadge() {
-  return (
-    <Pill tone="warn">
-      <FormattedMessage id="rhythm.technicalDraft" />
-    </Pill>
-  );
+/**
+ * The workflow steps one person can take on the open version: the main one (a button) and the
+ * rest (the "⋯" menu). Draft: the author's team sends it or drops it; pending: an approver.
+ */
+export function draftActions(
+  status: 'draft' | 'pending',
+  canEdit: boolean,
+  canApprove: boolean,
+): { main: Act | null; more: Act[] } {
+  if (status === 'draft')
+    return canEdit ? { main: 'submit', more: ['discard'] } : { main: null, more: [] };
+  return canApprove ? { main: 'approve', more: ['reject'] } : { main: null, more: [] };
 }
 
-function StatusPanels({
+/** The live version in one line, the open version under it, and the one main action. */
+function DocStatus({
   doc,
   docView,
   size,
-  currentReview,
+  stat,
   canEdit,
   canApprove,
-  editing,
   showDraft,
   onToggleDraft,
   onEdit,
@@ -436,10 +493,10 @@ function StatusPanels({
   doc: RhythmDoc;
   docView: RhythmDocView<{ version: string; publishedAt: string | null }, unknown>;
   size: (v: RhythmVersion) => ReactNode;
-  currentReview: ReactNode;
+  /** The live version's review, in a few words. */
+  stat: ReactNode;
   canEdit: boolean;
   canApprove: boolean;
-  editing: boolean;
   showDraft: boolean;
   onToggleDraft: () => void;
   onEdit: () => void;
@@ -448,50 +505,68 @@ function StatusPanels({
   const intl = useIntl();
   const c = docView.current;
   const d = docView.draft;
+  const steps = d ? draftActions(d.status, canEdit, canApprove) : { main: null, more: [] };
+  // The approver's job on a pending version is the decision; everyone else's is the editing.
+  const decisionFirst = d?.status === 'pending' && steps.main === 'approve';
+  // "Trả lại" sits next to "Duyệt & xuất bản", as on the other content screens.
+  const reject = steps.more.includes('reject');
+  const menu: MenuItem[] = d
+    ? steps.more
+        .filter((act) => act !== 'reject')
+        .map((act) => ({
+          key: act,
+          label: <FormattedMessage id={`rhythm.act.${act}`} />,
+          destructive: act === 'discard',
+          onSelect: () => onAct(act, d.versionId),
+        }))
+    : [];
   return (
-    <>
-      <div className="toolbar">
-        <span className="chips">
-          {c ? (
-            <>
-              <Pill tone="ok">
-                <FormattedMessage id="rhythm.inUse" values={{ v: c.version }} />
-              </Pill>
-              <span className="muted">
-                <FormattedMessage
-                  id="rhythm.publishedAt"
-                  values={{ when: dateTime(intl, c.publishedAt) }}
-                />
-              </span>
-              {currentReview}
-            </>
-          ) : (
-            <Pill tone="muted">
-              <FormattedMessage id="rhythm.notPublished" />
+    <div className="grid gap-3 rounded-xl border bg-card px-4 py-3 text-card-foreground">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        {c ? (
+          <>
+            <Pill tone="ok">
+              <FormattedMessage id="rhythm.inUse" values={{ v: c.version }} />
             </Pill>
-          )}
-        </span>
-        {canEdit && !editing && (
-          <div className="actions">
-            <Button kind={d ? 'secondary' : 'primary'} onClick={onEdit}>
-              <FormattedMessage id={d ? 'rhythm.editDraft' : 'rhythm.newVersion'} />
-            </Button>
-          </div>
+            <span className="text-sm text-muted-foreground tabular-nums">
+              <FormattedMessage
+                id="rhythm.publishedAt"
+                values={{ when: dateTime(intl, c.publishedAt) }}
+              />
+            </span>
+            {stat && <span className="text-sm text-muted-foreground">{stat}</span>}
+          </>
+        ) : (
+          <Pill tone="muted">
+            <FormattedMessage id="rhythm.notPublished" />
+          </Pill>
+        )}
+        {canEdit && (
+          <Button
+            className="ml-auto"
+            variant={decisionFirst ? 'outline' : 'default'}
+            onClick={onEdit}
+          >
+            {d ? <Pencil /> : <Plus />}
+            <FormattedMessage id={d ? 'rhythm.editDraft' : 'rhythm.newVersion'} />
+          </Button>
         )}
       </div>
 
       {d && (
-        <Panel
-          className="draft-panel"
-          title={
-            <span className="chips">
-              <Pill tone={statusTone[d.status] ?? 'muted'}>
-                <FormattedMessage id={`rhythm.status.${d.status}`} />
-              </Pill>
-              <FormattedMessage id={`rhythm.openVersion.${doc}`} />
-            </span>
-          }
-          note={
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t pt-3">
+          <Pill tone={statusTone[d.status] ?? 'muted'}>
+            <FormattedMessage id={`rhythm.status.${d.status}`} />
+          </Pill>
+          <span className="text-sm font-medium">
+            <FormattedMessage id={`rhythm.openVersion.${doc}`} />
+          </span>
+          {d.status === 'pending' && (
+            <Hint>
+              <FormattedMessage id="rhythm.waitOther" />
+            </Hint>
+          )}
+          <span className="min-w-0 text-sm text-muted-foreground tabular-nums">
             <FormattedMessage
               id="rhythm.draftBy"
               values={{
@@ -500,133 +575,294 @@ function StatusPanels({
                 size: size(d),
               }}
             />
-          }
-          aside={
-            <div className="actions">
-              {c && !editing && (
-                <Button kind="ghost" onClick={onToggleDraft}>
-                  <FormattedMessage id={showDraft ? 'rhythm.showCurrent' : 'rhythm.showDraft'} />
-                </Button>
-              )}
-              {canEdit && d.status === 'draft' && (
-                <>
-                  <Button onClick={() => onAct('discard', d.versionId)}>
-                    <FormattedMessage id="rhythm.act.discard" />
-                  </Button>
-                  <Button
-                    kind="primary"
-                    disabled={editing}
-                    onClick={() => onAct('submit', d.versionId)}
-                  >
-                    <FormattedMessage id="rhythm.act.submit" />
-                  </Button>
-                </>
-              )}
-              {canApprove && d.status === 'pending' && (
-                <>
-                  <Button disabled={editing} onClick={() => onAct('reject', d.versionId)}>
-                    <FormattedMessage id="rhythm.act.reject" />
-                  </Button>
-                  <Button
-                    kind="primary"
-                    disabled={editing}
-                    onClick={() => onAct('approve', d.versionId)}
-                  >
-                    <FormattedMessage id="rhythm.act.approve" />
-                  </Button>
-                </>
-              )}
-            </div>
-          }
-        >
-          {d.notes && <p className="quote">{d.notes}</p>}
+          </span>
+          {d.notes && (
+            <span className="max-w-full min-w-0 truncate text-sm italic" title={d.notes}>
+              “{d.notes}”
+            </span>
+          )}
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {c && (
+              <Button variant="ghost" size="sm" onClick={onToggleDraft}>
+                <FormattedMessage id={showDraft ? 'rhythm.showCurrent' : 'rhythm.showDraft'} />
+              </Button>
+            )}
+            {reject && (
+              <Button
+                variant="outline"
+                className="text-destructive hover:text-destructive"
+                onClick={() => onAct('reject', d.versionId)}
+              >
+                <FormattedMessage id="rhythm.act.reject" />
+              </Button>
+            )}
+            {steps.main && (
+              <Button
+                variant={decisionFirst || !canEdit ? 'default' : 'outline'}
+                onClick={() => onAct(steps.main!, d.versionId)}
+              >
+                <FormattedMessage id={`rhythm.act.${steps.main}`} />
+              </Button>
+            )}
+            <OverflowMenu items={menu} />
+          </div>
           {d.rejection && (
-            <p className="note note--warn">
+            <Notice tone="warn" className="basis-full">
               <FormattedMessage
                 id="rhythm.rejected"
                 values={{ name: d.rejection.by, reason: d.rejection.reason }}
               />
-            </p>
+            </Notice>
           )}
-          {d.status === 'pending' && (
-            <p className="muted">
-              <FormattedMessage id="rhythm.waitOther" />
-            </p>
-          )}
-        </Panel>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** The sticky bar while a document is being edited, with what to know before saving. */
+function EditingBar({
+  doc,
+  docView,
+  working,
+  canEdit,
+  onSave,
+  onStop,
+  onAct,
+}: {
+  doc: RhythmDoc;
+  docView: RhythmDocView<unknown, unknown>;
+  working: { dirty: boolean };
+  canEdit: boolean;
+  onSave: () => void;
+  onStop: () => void;
+  onAct: (act: Act, versionId: string) => void;
+}) {
+  const d = docView.draft;
+  return (
+    <>
+      <EditorBar
+        titleAs="h2"
+        backLabel={<FormattedMessage id="rhythm.stopEditing" />}
+        onBack={onStop}
+        title={<FormattedMessage id={`rhythm.editingTitle.${doc}`} />}
+        badges={
+          d ? (
+            <Pill tone={statusTone[d.status] ?? 'muted'}>
+              <FormattedMessage id={`rhythm.status.${d.status}`} />
+            </Pill>
+          ) : (
+            <Pill tone="info">
+              <FormattedMessage id="rhythm.newDraft" />
+            </Pill>
+          )
+        }
+        dirty={working.dirty}
+        onSave={onSave}
+        saveLabel={<FormattedMessage id="rhythm.saveDraft" />}
+        menu={
+          d && d.status === 'draft' && canEdit
+            ? [
+                {
+                  key: 'discard',
+                  destructive: true,
+                  label: <FormattedMessage id="rhythm.act.discard" />,
+                  onSelect: () => onAct('discard', d.versionId),
+                },
+              ]
+            : undefined
+        }
+      />
+      {d?.status === 'pending' && (
+        <Notice tone="info">
+          <FormattedMessage id="rhythm.saveNotePending" />
+        </Notice>
+      )}
+      {d?.rejection && (
+        <Notice tone="warn">
+          <FormattedMessage
+            id="rhythm.rejected"
+            values={{ name: d.rejection.by, reason: d.rejection.reason }}
+          />
+        </Notice>
       )}
     </>
   );
 }
 
-function EditBar({
-  dirty,
-  pending,
+const fieldNames: Record<string, string> = {
+  name: 'rhythm.field.name',
+  signs: 'rhythm.field.signs',
+  skills: 'rhythm.field.skills',
+  notice: 'rhythm.stage.notice',
+  title: 'rhythm.field.title',
+  body: 'rhythm.field.body',
+  summary: 'rhythm.field.summary',
+  steps: 'rhythm.field.steps',
+  safety: 'rhythm.field.safety',
+  tips: 'rhythm.field.tips',
+  watchFor: 'rhythm.field.watchFor',
+  sources: 'rhythm.field.sources',
+  url: 'rhythm.field.sourceUrl',
+  id: 'rhythm.field.itemId',
+  number: 'rhythm.field.number',
+  startOffsetDays: 'rhythm.field.start',
+  endOffsetDays: 'rhythm.field.end',
+  activityIds: 'rhythm.stageCol.activities',
+  needs: 'rhythm.field.needs',
+  interests: 'rhythm.field.interests',
+  locales: 'rhythm.field.locales',
+  regions: 'rhythm.field.regions',
+  ageDays: 'rhythm.itemCol.age',
+  from: 'rhythm.field.ageFrom',
+  to: 'rhythm.field.ageTo',
+  durationMin: 'rhythm.field.duration',
+  timeOfDay: 'rhythm.field.timeOfDay',
+  status: 'rhythm.field.itemStatus',
+  whileWaiting: 'rhythm.field.whileWaiting',
+  disclaimer: 'rhythm.field.disclaimer',
+  health: 'rhythm.sub.health',
+  maxAgeDays: 'rhythm.field.maxAgeDays',
+  country: 'rhythm.field.country',
+  emergencyNumber: 'rhythm.field.emergencyNumber',
+};
+
+/** "Dấu hiệu có thể gặp · VI · #2" for the rest of an issue's path, in the form's words. */
+function fieldPath(intl: IntlShape, path: Issue['path'], from = 0): string {
+  const out: string[] = [];
+  for (let k = from; k < path.length; k++) {
+    const seg = path[k]!;
+    if (typeof seg === 'number') out.push(`#${seg + 1}`);
+    else if (seg === 'vi' || seg === 'en') out.push(seg.toUpperCase());
+    else if (seg === 'label') {
+      const parent = path[k - 2];
+      const id =
+        parent === 'sources'
+          ? 'rhythm.field.sourceLabel'
+          : parent === 'signs'
+            ? 'rhythm.field.signLabel'
+            : 'rhythm.field.label';
+      out.push(intl.formatMessage({ id }));
+    } else if (seg === 'signs' && path[0] === 'health')
+      out.push(intl.formatMessage({ id: 'rhythm.health.signsShort' }));
+    else out.push(fieldNames[seg] ? intl.formatMessage({ id: fieldNames[seg] }) : seg);
+  }
+  return out.join(' · ');
+}
+
+/** "Còn n chỗ chưa hợp lệ": each one a link to the item that has it. */
+function IssuesNotice({
   check,
   show,
   place,
   onOpen,
-  onSave,
-  onCancel,
 }: {
-  dirty: boolean;
-  pending: boolean;
   check: Check | null;
   show: boolean;
-  /** "Giai đoạn 2 · signs.vi.0" for one issue. */
   place: (issue: Issue) => string;
   onOpen: (issue: Issue) => void;
-  onSave: () => void;
-  onCancel: () => void;
 }) {
   const intl = useIntl();
   const issues = show ? (check?.list ?? []) : [];
+  if (!issues.length) return null;
   return (
-    <Panel
-      className="fa-editbar"
-      title={<FormattedMessage id="rhythm.editing" />}
-      note={
-        <FormattedMessage
-          id={
-            pending ? 'firstAid.editingPending' : dirty ? 'firstAid.unsaved' : 'firstAid.noChanges'
-          }
-        />
-      }
-      aside={
-        <div className="actions">
-          <Button onClick={onCancel}>
-            <FormattedMessage id="rhythm.stopEditing" />
-          </Button>
-          <Button kind="primary" disabled={!dirty} onClick={onSave}>
-            <FormattedMessage id="rhythm.saveDraft" />
-          </Button>
-        </div>
-      }
+    <Notice
+      tone="error"
+      title={<FormattedMessage id="rhythm.issues" values={{ n: issues.length }} />}
     >
-      {issues.length > 0 && (
-        <div className="fa-issues" role="alert">
-          <p className="error">
-            <FormattedMessage id="firstAid.issues" values={{ n: issues.length }} />
-          </p>
-          <ul>
-            {issues.slice(0, 12).map((i, k) => (
-              <li key={k}>
-                <button type="button" className="linkbtn" onClick={() => onOpen(i)}>
-                  {place(i)}
-                </button>
-                {': '}
-                {rhythmIssueText(intl, i)}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </Panel>
+      <ul className="grid gap-1">
+        {issues.slice(0, 12).map((i, k) => (
+          <li key={k}>
+            <button
+              type="button"
+              className="text-left font-medium underline underline-offset-2 hover:no-underline"
+              onClick={() => onOpen(i)}
+            >
+              {place(i)}
+            </button>
+            {': '}
+            {rhythmIssueText(intl, i)}
+          </li>
+        ))}
+        {issues.length > 12 && (
+          <li>
+            <FormattedMessage id="rhythm.issuesMore" values={{ n: issues.length - 12 }} />
+          </li>
+        )}
+      </ul>
+    </Notice>
   );
 }
 
-/** PN01 "Danh sách phiên bản": every version but the discarded ones, newest first. */
-function HistoryPanel({
+/** Back to the list, the item's name, and previous / next through the list as filtered. */
+function ItemNav({
+  backLabel,
+  title,
+  meta,
+  badges,
+  index,
+  order,
+  onBack,
+  onGo,
+}: {
+  backLabel: ReactNode;
+  title: ReactNode;
+  meta?: ReactNode;
+  badges?: ReactNode;
+  index: number;
+  /** The indices in the order the list showed them. */
+  order: number[];
+  onBack: () => void;
+  onGo: (index: number) => void;
+}) {
+  const intl = useIntl();
+  const at = order.indexOf(index);
+  const prev = at > 0 ? order[at - 1] : undefined;
+  const next = at >= 0 && at < order.length - 1 ? order[at + 1] : undefined;
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={onBack}>
+        <ArrowLeft />
+        {backLabel}
+      </Button>
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+        <h2 className="min-w-0 truncate text-base font-semibold">{title}</h2>
+        {badges}
+        {meta && <span className="font-mono text-xs text-muted-foreground">{meta}</span>}
+      </div>
+      {at >= 0 && order.length > 1 && (
+        <div className="flex items-center gap-1">
+          <span className="mr-1 text-sm text-muted-foreground tabular-nums">
+            {at + 1}/{order.length}
+          </span>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label={intl.formatMessage({ id: 'rhythm.prevItem' })}
+            title={intl.formatMessage({ id: 'rhythm.prevItem' })}
+            disabled={prev === undefined}
+            onClick={() => prev !== undefined && onGo(prev)}
+          >
+            <ChevronLeft />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label={intl.formatMessage({ id: 'rhythm.nextItem' })}
+            title={intl.formatMessage({ id: 'rhythm.nextItem' })}
+            disabled={next === undefined}
+            onClick={() => next !== undefined && onGo(next)}
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** PN01 "Danh sách phiên bản": every version but the discarded ones, newest first (folded). */
+function HistorySection({
   doc,
   docView,
   size,
@@ -641,78 +877,137 @@ function HistoryPanel({
   canApprove: boolean;
   onRollback: (versionId: string) => void;
 }) {
-  const intl = useIntl();
   const items = docView.history.filter((h) => h.status !== 'discarded');
   if (!items.length) return null;
+  return (
+    <Section
+      title={<FormattedMessage id={`rhythm.history.${doc}`} />}
+      collapsible
+      defaultOpen={false}
+      flush
+      summary={<FormattedMessage id="rhythm.history.count" values={{ n: items.length }} />}
+    >
+      <HistoryTable
+        docView={docView}
+        size={size}
+        locales={locales}
+        canApprove={canApprove}
+        onRollback={onRollback}
+      />
+    </Section>
+  );
+}
+
+export function HistoryTable({
+  docView,
+  size,
+  locales,
+  canApprove,
+  onRollback,
+}: {
+  docView: RhythmDocView<{ version: string }, unknown>;
+  size: (v: RhythmVersion) => ReactNode;
+  locales: (v: RhythmVersion) => string;
+  canApprove: boolean;
+  onRollback: (versionId: string) => void;
+}) {
+  const intl = useIntl();
+  const items = docView.history.filter((h) => h.status !== 'discarded');
   // The version in use is already live; any other published or replaced one can come back.
   const canReuse = (h: RhythmVersion) =>
     h.status === 'retired' || (h.status === 'published' && h.label !== docView.current?.version);
   return (
-    <Panel className="panel--flush" title={<FormattedMessage id={`rhythm.history.${doc}`} />}>
-      <TableScroll min={900}>
-        <table className="table">
-          <thead>
-            <tr>
-              {(
-                [
-                  'version',
-                  'status',
-                  'size',
-                  'review',
-                  'locales',
-                  'people',
-                  'when',
-                  'notes',
-                ] as const
-              ).map((c) => (
+    <TableScroll min={860}>
+      <table className="table">
+        <thead>
+          <tr>
+            {(['version', 'status', 'size', 'review', 'locales', 'people', 'when'] as const).map(
+              (c) => (
                 <th key={c}>
                   <FormattedMessage id={`rhythm.col.${c}`} />
                 </th>
-              ))}
-              <th />
+              ),
+            )}
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((h) => (
+            <tr key={h.versionId}>
+              <td>
+                <span className="block font-mono text-[13px]">{h.label ?? '—'}</span>
+                {h.notes && (
+                  <span
+                    className="block max-w-56 truncate text-xs text-muted-foreground"
+                    title={h.notes}
+                  >
+                    {h.notes}
+                  </span>
+                )}
+              </td>
+              <td>
+                <Pill tone={statusTone[h.status] ?? 'muted'}>
+                  <FormattedMessage id={`rhythm.status.${h.status}`} />
+                </Pill>
+              </td>
+              <td className="nowrap">{size(h)}</td>
+              <td className="text-muted-foreground">
+                <ReviewText review={h.review} />
+              </td>
+              <td className="nowrap">{locales(h)}</td>
+              <td className="text-muted-foreground">
+                <FormattedMessage
+                  id="rhythm.historyBy"
+                  values={{ author: h.authorName || '—', approver: h.approverName ?? '—' }}
+                />
+              </td>
+              <td className="nowrap tabular-nums">
+                {dateTime(intl, h.approvedAt ?? h.updatedAt ?? h.createdAt)}
+              </td>
+              <td className="cell-actions">
+                {canApprove && canReuse(h) && (
+                  <Button variant="ghost" size="sm" onClick={() => onRollback(h.versionId)}>
+                    <FormattedMessage id="rhythm.act.rollback" />
+                  </Button>
+                )}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {items.map((h) => (
-              <tr key={h.versionId}>
-                <td className="mono">{h.label ?? '—'}</td>
-                <td>
-                  <Pill tone={statusTone[h.status] ?? 'muted'}>
-                    <FormattedMessage id={`rhythm.status.${h.status}`} />
-                  </Pill>
-                </td>
-                <td className="nowrap">{size(h)}</td>
-                <td>
-                  <ReviewText review={h.review} />
-                </td>
-                <td className="nowrap">{locales(h)}</td>
-                <td>
-                  <FormattedMessage
-                    id="rhythm.historyBy"
-                    values={{ author: h.authorName || '—', approver: h.approverName ?? '—' }}
-                  />
-                </td>
-                <td className="nowrap">
-                  {dateTime(intl, h.approvedAt ?? h.updatedAt ?? h.createdAt)}
-                </td>
-                <td className="muted">{h.notes || '—'}</td>
-                <td className="cell-actions">
-                  {canApprove && canReuse(h) && (
-                    <Button kind="ghost" onClick={() => onRollback(h.versionId)}>
-                      <FormattedMessage id="rhythm.act.rollback" />
-                    </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScroll>
-    </Panel>
+          ))}
+        </tbody>
+      </table>
+    </TableScroll>
   );
 }
 
 // ---------- Dialogs ----------
+
+/** A reason or a note: 500 characters at most, with the count. */
+function NoteField({
+  label,
+  value,
+  onChange,
+}: {
+  label: ReactNode;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const id = useId();
+  return (
+    <Field label={label} htmlFor={id} counter={{ n: value.length, max: 500 }}>
+      <Textarea
+        id={id}
+        rows={3}
+        maxLength={500}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
+  );
+}
+
+function DialogActions({ children }: { children: ReactNode }) {
+  return <div className="flex flex-wrap justify-end gap-2 pt-1">{children}</div>;
+}
 
 export function ActDialog({
   doc,
@@ -730,6 +1025,8 @@ export function ActDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
+  const ids = { reviewer: useId(), credential: useId(), reviewedOn: useId() };
   const [reason, setReason] = useState('');
   const [review, setReview] = useState<ReviewInput>({
     reviewer: '',
@@ -755,76 +1052,79 @@ export function ActDialog({
       title={<FormattedMessage id={`rhythm.confirm.${act}`} />}
       onClose={onClose}
     >
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id={`rhythm.confirm.${act}.note`} />
       </p>
       {withReview && (
-        <fieldset className="fa-review">
-          <legend className="field__label">
+        <fieldset className="grid gap-4 rounded-lg border p-4">
+          <legend className="px-1 text-[13px] font-semibold">
             <FormattedMessage
               id={requireReview ? 'rhythm.review.required' : 'rhythm.review.optional'}
             />
           </legend>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="rhythm.review.reviewer" />
-            </span>
-            <input
-              className="field__input"
-              value={review.reviewer}
-              maxLength={120}
-              required={requireReview}
-              onChange={(e) => setReview({ ...review, reviewer: e.target.value })}
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="rhythm.review.credential" />
-            </span>
-            <input
-              className="field__input"
-              value={review.credential}
-              maxLength={120}
-              required={requireReview}
-              onChange={(e) => setReview({ ...review, credential: e.target.value })}
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="rhythm.review.reviewedOn" />
-            </span>
-            <input
-              className="field__input"
-              type="date"
-              value={review.reviewedOn}
-              required={requireReview}
-              onChange={(e) => setReview({ ...review, reviewedOn: e.target.value })}
-            />
-          </label>
+          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_10rem]">
+            <Field label={<FormattedMessage id="rhythm.review.reviewer" />} htmlFor={ids.reviewer}>
+              <Input
+                id={ids.reviewer}
+                value={review.reviewer}
+                maxLength={120}
+                required={requireReview}
+                onChange={(e) => setReview({ ...review, reviewer: e.target.value })}
+              />
+            </Field>
+            <Field
+              label={<FormattedMessage id="rhythm.review.credential" />}
+              htmlFor={ids.credential}
+            >
+              <Input
+                id={ids.credential}
+                value={review.credential}
+                maxLength={120}
+                required={requireReview}
+                onChange={(e) => setReview({ ...review, credential: e.target.value })}
+              />
+            </Field>
+            <Field
+              label={<FormattedMessage id="rhythm.review.reviewedOn" />}
+              htmlFor={ids.reviewedOn}
+            >
+              <Input
+                id={ids.reviewedOn}
+                type="date"
+                value={review.reviewedOn}
+                required={requireReview}
+                onChange={(e) => setReview({ ...review, reviewedOn: e.target.value })}
+              />
+            </Field>
+          </div>
           {!reviewOk && (
-            <p className={touched ? 'error' : 'field__help'}>
+            <p className={cn('text-xs', touched ? 'text-destructive' : 'text-muted-foreground')}>
               <FormattedMessage id="rhythm.review.incomplete" />
             </p>
           )}
           {!requireReview && (
-            <p className="field__help">
-              <FormattedMessage id="rhythm.review.devHelp" />
+            <p className="text-xs text-muted-foreground">
+              <FormattedMessage id="rhythm.review.optionalHelp" />
             </p>
           )}
         </fieldset>
       )}
-      <ReasonField value={reason} onChange={setReason} required />
+      <NoteField
+        label={<FormattedMessage id="reason.labelRequired" />}
+        value={reason}
+        onChange={setReason}
+      />
       {error && (
-        <p className="error" role="alert">
+        <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
-        </p>
+        </Notice>
       )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      <DialogActions>
+        <Button variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          kind={act === 'discard' || act === 'reject' ? 'danger' : 'primary'}
+          variant={act === 'discard' || act === 'reject' ? 'destructive' : 'default'}
           disabled={busy || !req}
           onClick={() => {
             if (!req) return;
@@ -841,6 +1141,7 @@ export function ActDialog({
             )
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
+                toast.success(intl.formatMessage({ id: `rhythm.toast.${act}` }));
                 onClose();
                 onDone();
               })
@@ -850,7 +1151,7 @@ export function ActDialog({
         >
           <FormattedMessage id={`rhythm.act.${act}`} />
         </Button>
-      </div>
+      </DialogActions>
     </Modal>
   );
 }
@@ -871,26 +1172,30 @@ function SaveDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
   const [notes, setNotes] = useState(initialNotes);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   return (
     <Modal title={<FormattedMessage id={`rhythm.saveTitle.${doc}`} />} onClose={onClose}>
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id={pending ? 'rhythm.saveNotePending' : 'rhythm.saveNote'} />
       </p>
-      <ReasonField value={notes} onChange={setNotes} />
+      <NoteField
+        label={<FormattedMessage id="rhythm.saveNotes" />}
+        value={notes}
+        onChange={setNotes}
+      />
       {error && (
-        <p className="error" role="alert">
+        <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
-        </p>
+        </Notice>
       )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      <DialogActions>
+        <Button variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          kind="primary"
           disabled={busy}
           onClick={() => {
             setBusy(true);
@@ -898,6 +1203,7 @@ function SaveDialog({
             saveRhythmDraft(api, doc, data, notes)
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
+                toast.success(intl.formatMessage({ id: 'rhythm.toast.saved' }));
                 onClose();
                 onDone();
               })
@@ -907,8 +1213,85 @@ function SaveDialog({
         >
           <FormattedMessage id="rhythm.saveDraft" />
         </Button>
-      </div>
+      </DialogActions>
     </Modal>
+  );
+}
+
+// ---------- Small read-only pieces ----------
+
+/** Label / value rows. */
+function Rows({ children }: { children: ReactNode }) {
+  return (
+    <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
+      {children}
+    </dl>
+  );
+}
+
+function Row({ label, children }: { label: ReactNode; children: ReactNode }) {
+  return (
+    <>
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </>
+  );
+}
+
+function Bullets({ items, ordered }: { items: string[]; ordered?: boolean }) {
+  if (!items.length) return <span className="text-muted-foreground">—</span>;
+  const List = ordered ? 'ol' : 'ul';
+  return (
+    <List className={cn('grid gap-1 pl-5', ordered ? 'list-decimal' : 'list-disc')}>
+      {items.map((t, i) => (
+        <li key={i}>{t}</li>
+      ))}
+    </List>
+  );
+}
+
+function Sources({ list }: { list: Array<{ label: string; url: string }> }) {
+  if (!list.length) return <span className="text-muted-foreground">—</span>;
+  return (
+    <ol className="grid list-decimal gap-1 pl-5">
+      {list.map((s, i) => (
+        <li key={i}>
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-primary underline-offset-2 [overflow-wrap:anywhere] hover:underline"
+          >
+            {s.label}
+          </a>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** vi on the left, en on the right (read-only). */
+function BothLangs({ render }: { render: (lang: Lang) => ReactNode }) {
+  return (
+    <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
+      {(['vi', 'en'] as const).map((lang) => (
+        <div key={lang} className="grid min-w-0 content-start gap-3">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            <FormattedMessage id={`rhythm.lang.${lang}`} />
+          </p>
+          {render(lang)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Labeled({ label, children }: { label: ReactNode; children: ReactNode }) {
+  return (
+    <div className="grid gap-1 text-sm">
+      <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
+      <div>{children}</div>
+    </div>
   );
 }
 
@@ -944,7 +1327,7 @@ function ReferenceTab({
   showDraft: boolean;
   onToggleDraft: () => void;
   onStart: () => void;
-  onStop: () => void;
+  onStop: (then?: () => void) => void;
   onSave: () => void;
   onAct: (act: Act, versionId: string) => void;
   dueDate: string;
@@ -966,133 +1349,156 @@ function ReferenceTab({
     setSelected(i);
     window.scrollTo?.(0, 0);
   };
+  const viewingDraft = !editing && showDraft && !!doc.draft;
   return (
     <>
-      <StatusPanels
-        doc="reference"
-        docView={doc}
-        size={size}
-        currentReview={
-          doc.current &&
-          (doc.current.review ? (
-            <span className="muted">
-              <ReviewText review={doc.current.review} />
-            </span>
-          ) : (
-            <TechnicalDraftBadge />
-          ))
-        }
-        canEdit={canEdit}
-        canApprove={canApprove}
-        editing={!!editing}
-        showDraft={showDraft}
-        onToggleDraft={onToggleDraft}
-        onEdit={onStart}
-        onAct={onAct}
-      />
+      {editing ? (
+        <EditingBar
+          doc="reference"
+          docView={doc}
+          working={working}
+          canEdit={canEdit}
+          onSave={onSave}
+          onStop={() =>
+            onStop(() => {
+              // A stage added in this session is gone with it: back to the list.
+              const after = (doc.draft?.data ?? doc.current)?.stages.length ?? 0;
+              if (selected !== null && selected >= after) setSelected(null);
+            })
+          }
+          onAct={onAct}
+        />
+      ) : (
+        <DocStatus
+          doc="reference"
+          docView={doc}
+          size={size}
+          stat={doc.current && <ReviewText review={doc.current.review} />}
+          canEdit={canEdit}
+          canApprove={canApprove}
+          showDraft={showDraft}
+          onToggleDraft={onToggleDraft}
+          onEdit={onStart}
+          onAct={onAct}
+        />
+      )}
       {editing && (
-        <EditBar
-          dirty={working.dirty}
-          pending={doc.draft?.status === 'pending'}
+        <IssuesNotice
           check={check}
           show={working.showIssues}
           place={(i) => {
             if (i.path[0] === 'stages' && typeof i.path[1] === 'number') {
               const s = editing.stages[i.path[1]];
               const name = s ? stageName(intl, s, i.path[1]) : `#${i.path[1] + 1}`;
-              return i.path.length > 2 ? `${name} · ${i.path.slice(2).join('.')}` : name;
+              return i.path.length > 2 ? `${name} · ${fieldPath(intl, i.path, 2)}` : name;
             }
-            return i.path.join('.') || '—';
+            return fieldPath(intl, i.path) || '—';
           }}
           onOpen={(i) =>
             open(i.path[0] === 'stages' && typeof i.path[1] === 'number' ? i.path[1] : null)
           }
-          onSave={onSave}
-          onCancel={() => {
-            onStop();
-            if (selected !== null && selected >= (shown?.stages.length ?? 0)) setSelected(null);
-          }}
         />
       )}
 
       {!shown ? (
-        <Panel>
-          <Empty>
-            <FormattedMessage id={canEdit ? 'rhythm.emptyEdit' : 'rhythm.empty'} />
-          </Empty>
-        </Panel>
+        <Section title={<FormattedMessage id="rhythm.tab.reference" />}>
+          <EmptyState title={<FormattedMessage id="rhythm.empty" />}>
+            {canEdit && <FormattedMessage id="rhythm.emptyEdit" />}
+          </EmptyState>
+        </Section>
       ) : stage && selected !== null ? (
-        <div className="stack">
-          <div className="toolbar">
-            <button type="button" className="linkbtn" onClick={() => open(null)}>
-              ← <FormattedMessage id="rhythm.backStages" />
-            </button>
-            <span className="muted">{stageName(intl, stage, selected)}</span>
-          </div>
-          <div className="cols cols--2-1">
-            <Panel>
-              {editing ? (
-                <StageEditor
-                  key={selected}
-                  model={editing}
-                  index={selected}
-                  edit={working.edit}
-                  idLocked={liveIds.has(stage.id)}
-                  dueDate={dueDate}
-                  activities={activities}
-                />
-              ) : (
-                <StageSummary stage={stage} dueDate={dueDate} activities={activities} />
-              )}
-            </Panel>
-            <div className="stack">
-              <DueDatePanel dueDate={dueDate} onDueDate={onDueDate} />
-              <SourcesReviewPanel model={shown} />
-              <ForbiddenPanel hits={hits.filter((h) => h.stage === selected)} model={shown} />
-            </div>
-          </div>
-        </div>
+        <>
+          <ItemNav
+            backLabel={<FormattedMessage id="rhythm.backStages" />}
+            title={stageName(intl, stage, selected)}
+            index={selected}
+            order={shown.stages.map((_, i) => i)}
+            onBack={() => open(null)}
+            onGo={open}
+          />
+          <EditorLayout
+            aside={
+              <StageAside
+                stage={stage}
+                dueDate={dueDate}
+                onDueDate={onDueDate}
+                hits={hits.filter((h) => h.stage === selected)}
+                model={shown}
+                editing={!!editing}
+              />
+            }
+          >
+            {editing ? (
+              <StageEditor
+                key={selected}
+                model={editing}
+                index={selected}
+                edit={working.edit}
+                idLocked={liveIds.has(stage.id)}
+                dueDate={dueDate}
+                activities={activities}
+              />
+            ) : (
+              <StageSummary stage={stage} dueDate={dueDate} activities={activities} />
+            )}
+          </EditorLayout>
+        </>
       ) : (
         <>
-          <div className="cols cols--2-1">
-            <Panel
-              title={
-                <span className="chips">
-                  <FormattedMessage id="rhythm.model" values={{ label: shown.label || '—' }} />
-                  {!shown.review && <TechnicalDraftBadge />}
-                </span>
-              }
-            >
-              {editing ? (
-                <ModelEditor model={editing} edit={working.edit} />
-              ) : (
-                <ModelSummary model={shown} />
-              )}
-            </Panel>
-            <div className="stack">
-              <DueDatePanel dueDate={dueDate} onDueDate={onDueDate} />
-              <ForbiddenPanel hits={hits} model={shown} />
-            </div>
-          </div>
-          <StagesTable
-            model={shown}
-            editing={editing ? working.edit : null}
-            dueDate={dueDate}
-            hits={hits}
-            check={working.showIssues ? check : null}
-            onOpen={open}
-            onAdd={() => {
-              if (!editing) return;
-              working.edit((m) => {
-                m.stages.push(blankStage(m.stages));
-              });
-              open(editing.stages.length);
-            }}
-          />
+          {hits.length > 0 && <ForbiddenNotice hits={hits} model={shown} onOpen={open} />}
+          <Section
+            flush
+            title={
+              <>
+                <FormattedMessage id="rhythm.stages" values={{ n: shown.stages.length, max: 30 }} />
+                {viewingDraft && (
+                  <Pill tone="wait">
+                    <FormattedMessage id="rhythm.viewingDraft" />
+                  </Pill>
+                )}
+              </>
+            }
+            hint={<FormattedMessage id="rhythm.stagesNote" />}
+            actions={
+              <>
+                <DueDateControl dueDate={dueDate} onDueDate={onDueDate} />
+                <NeverWriteHelp />
+                <HelpPopover title={<FormattedMessage id="rhythm.how" />} wide>
+                  <HowItWorks />
+                </HelpPopover>
+                {editing && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={shown.stages.length >= 30}
+                    onClick={() => {
+                      working.edit((m) => {
+                        m.stages.push(blankStage(m.stages));
+                      });
+                      open(editing.stages.length);
+                    }}
+                  >
+                    <Plus />
+                    <FormattedMessage id="rhythm.addStage" />
+                  </Button>
+                )}
+              </>
+            }
+          >
+            <StagesTable
+              model={shown}
+              editing={editing ? working.edit : null}
+              dueDate={dueDate}
+              hits={hits}
+              check={working.showIssues ? check : null}
+              onOpen={open}
+            />
+          </Section>
+          <ModelSection model={shown} edit={editing ? working.edit : null} />
         </>
       )}
 
-      <HistoryPanel
+      <HistorySection
         doc="reference"
         docView={doc}
         size={size}
@@ -1100,139 +1506,164 @@ function ReferenceTab({
         canApprove={canApprove}
         onRollback={(versionId) => onAct('rollback', versionId)}
       />
-      <div className="cols cols--1-1">
-        <HowItWorksPanel />
-        <KillSwitchPanel flags={flags} />
-      </div>
+      <KillSwitchPanel flags={flags} />
     </>
   );
 }
 
-function DueDatePanel({ dueDate, onDueDate }: { dueDate: string; onDueDate: (d: string) => void }) {
+/** The sample due date, only to preview each stage's window (not saved). */
+function DueDateControl({
+  dueDate,
+  onDueDate,
+}: {
+  dueDate: string;
+  onDueDate: (d: string) => void;
+}) {
+  const id = useId();
   return (
-    <Panel title={<FormattedMessage id="rhythm.dueDate" />}>
-      <label className="field">
-        <span className="field__label">
-          <FormattedMessage id="rhythm.dueDate.label" />
-        </span>
-        <input
-          className="field__input"
-          type="date"
-          value={dueDate}
-          onChange={(e) => onDueDate(e.target.value)}
-        />
-        <span className="field__help">
-          <FormattedMessage id="rhythm.dueDate.help" />
-        </span>
-      </label>
-    </Panel>
+    <div className="flex items-center gap-1.5">
+      <Label htmlFor={id} className="text-[13px] whitespace-nowrap text-muted-foreground">
+        <FormattedMessage id="rhythm.dueDate.label" />
+      </Label>
+      <Input
+        id={id}
+        type="date"
+        className="h-8 w-[9.5rem] tabular-nums"
+        value={dueDate}
+        onChange={(e) => onDueDate(e.target.value)}
+      />
+      <Hint>
+        <FormattedMessage id="rhythm.dueDate.help" />
+      </Hint>
+    </div>
   );
 }
 
-function ModelSummary({ model }: { model: ReferenceDraftData }) {
+/** "Mô hình · Wonder Weeks": its name, review and sources, folded away. */
+function ModelSection({
+  model,
+  edit,
+}: {
+  model: ReferenceDraftData;
+  edit: Edit<ReferenceDraftData> | null;
+}) {
+  const { issues, show } = useContext(IssuesContext);
+  const bad =
+    !!edit &&
+    show &&
+    [...issues.keys()].some((k) => k === 'label' || k === 'sources' || k.startsWith('sources.'));
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="rhythm.field.label" />
-      </dt>
-      <dd>{model.label}</dd>
-      <dt>
-        <FormattedMessage id="rhythm.col.size" />
-      </dt>
-      <dd>
-        <FormattedMessage id="rhythm.size.reference" values={{ n: model.stages.length }} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.col.review" />
-      </dt>
-      <dd>
-        <ReviewText review={model.review} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.sources" />
-      </dt>
-      <dd>
-        <Sources list={model.sources} />
-      </dd>
-    </dl>
+    <Section
+      key={bad ? 'open' : 'closed'}
+      title={<FormattedMessage id="rhythm.model" values={{ label: model.label || '—' }} />}
+      collapsible
+      defaultOpen={bad}
+      summary={
+        <>
+          <FormattedMessage id="rhythm.sourcesCount" values={{ n: model.sources.length }} />
+          {' · '}
+          <ReviewText review={model.review} />
+        </>
+      }
+    >
+      {edit ? (
+        <ModelEditor model={model} edit={edit} />
+      ) : (
+        <Rows>
+          <Row label={<FormattedMessage id="rhythm.field.label" />}>{model.label}</Row>
+          <Row label={<FormattedMessage id="rhythm.col.size" />}>
+            <FormattedMessage id="rhythm.size.reference" values={{ n: model.stages.length }} />
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.col.review" />}>
+            <ReviewText review={model.review} />
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.sources" />}>
+            <Sources list={model.sources} />
+          </Row>
+        </Rows>
+      )}
+    </Section>
   );
 }
 
-function Sources({ list }: { list: Array<{ label: string; url: string }> }) {
-  if (!list.length) return <>—</>;
+/** PN02 "Không được viết" behind a button. */
+function NeverWriteHelp() {
   return (
-    <ol className="rh-sources">
-      {list.map((s, i) => (
-        <li key={i}>
-          <a href={s.url} target="_blank" rel="noreferrer noopener">
-            {s.label}
-          </a>
-        </li>
-      ))}
-    </ol>
+    <HelpPopover title={<FormattedMessage id="rhythm.forbidden" />}>
+      <p className="text-muted-foreground">
+        <FormattedMessage id="rhythm.forbidden.examples" />
+      </p>
+    </HelpPopover>
   );
 }
 
-function SourcesReviewPanel({ model }: { model: ReferenceDraftData }) {
-  return (
-    <Panel title={<FormattedMessage id="rhythm.sourcesReview" />}>
-      <dl className="kv">
-        <dt>
-          <FormattedMessage id="rhythm.field.sources" />
-        </dt>
-        <dd>
-          <Sources list={model.sources} />
-        </dd>
-        <dt>
-          <FormattedMessage id="rhythm.col.review" />
-        </dt>
-        <dd>{model.review ? <ReviewText review={model.review} /> : <TechnicalDraftBadge />}</dd>
-      </dl>
-    </Panel>
-  );
-}
-
-/** PN02 "Không được viết", and the stage texts that slipped into it. */
-export function ForbiddenPanel({
+/** The stage texts that slipped into "Không được viết", each a link to its stage. */
+export function ForbiddenNotice({
   hits,
   model,
+  onOpen,
 }: {
   hits: ForbiddenHit[];
   model: ReferenceDraftData;
+  onOpen?: (stage: number) => void;
 }) {
   const intl = useIntl();
   return (
-    <Panel title={<FormattedMessage id="rhythm.forbidden" />}>
-      <p className="muted">
-        <FormattedMessage id="rhythm.forbidden.examples" />
-      </p>
-      {hits.length > 0 && (
-        <div className="note note--warn" role="alert">
-          <strong>
-            <FormattedMessage id="rhythm.forbidden.found" values={{ n: hits.length }} />
-          </strong>
-          <ul className="rh-hits">
-            {hits.map((h, k) => {
-              const s = model.stages[h.stage];
-              return (
-                <li key={k}>
-                  <FormattedMessage
-                    id="rhythm.forbidden.hit"
-                    values={{
-                      stage: s ? stageName(intl, s, h.stage) : `#${h.stage + 1}`,
-                      field: intl.formatMessage({ id: `rhythm.hitField.${h.field}` }),
-                      lang: h.lang.toUpperCase(),
-                      text: h.text,
-                      phrase: h.phrase,
-                    }}
-                  />
-                </li>
-              );
-            })}
-          </ul>
+    <Notice
+      tone="warn"
+      title={<FormattedMessage id="rhythm.forbidden.found" values={{ n: hits.length }} />}
+    >
+      <ul className="grid gap-1">
+        {hits.map((h, k) => {
+          const s = model.stages[h.stage];
+          const line = (
+            <FormattedMessage
+              id="rhythm.forbidden.hit"
+              values={{
+                stage: s ? stageName(intl, s, h.stage) : `#${h.stage + 1}`,
+                field: intl.formatMessage({ id: `rhythm.hitField.${h.field}` }),
+                lang: h.lang.toUpperCase(),
+                text: h.text,
+                phrase: h.phrase,
+              }}
+            />
+          );
+          return (
+            <li key={k}>
+              {onOpen ? (
+                <button
+                  type="button"
+                  className="text-left underline-offset-2 hover:underline"
+                  onClick={() => onOpen(h.stage)}
+                >
+                  {line}
+                </button>
+              ) : (
+                line
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Notice>
+  );
+}
+
+/** PN01 "Phiên bản đang phát hành": how the app counts, stated once. */
+export function HowItWorks() {
+  return (
+    <dl className="grid gap-2">
+      {(['calc', 'noDue', 'estimated', 'change', 'overlap'] as const).map((k) => (
+        <div key={k} className="grid gap-0.5">
+          <dt className="font-medium">
+            <FormattedMessage id={`rhythm.how.${k}`} />
+          </dt>
+          <dd className="text-muted-foreground">
+            <FormattedMessage id={`rhythm.how.${k}.value`} />
+          </dd>
         </div>
-      )}
-    </Panel>
+      ))}
+    </dl>
   );
 }
 
@@ -1243,7 +1674,6 @@ function StagesTable({
   hits,
   check,
   onOpen,
-  onAdd,
 }: {
   model: ReferenceDraftData;
   editing: Edit<ReferenceDraftData> | null;
@@ -1251,107 +1681,89 @@ function StagesTable({
   hits: ForbiddenHit[];
   check: Check | null;
   onOpen: (i: number) => void;
-  onAdd: () => void;
 }) {
   const intl = useIntl();
-  const problems = new Map<number, number>();
-  for (const i of check?.list ?? []) {
-    if (i.path[0] === 'stages' && typeof i.path[1] === 'number') {
-      problems.set(i.path[1], (problems.get(i.path[1]) ?? 0) + 1);
-    }
-  }
+  const { ask, dialog } = useConfirm();
+  const problems = rowProblems(check, 'stages');
+  // "Cần xem" only when a stage has something to look at.
+  const flagged = hits.length > 0 || problems.size > 0;
+  const cols = ['stage', 'offsets', 'window', ...(flagged ? (['flags'] as const) : [])] as const;
   return (
-    <Panel
-      className="panel--flush"
-      title={<FormattedMessage id="rhythm.stages" values={{ n: model.stages.length, max: 30 }} />}
-      note={<FormattedMessage id="rhythm.stagesNote" values={{ due: dmy(dueDate) }} />}
-      aside={
-        editing ? (
-          <Button disabled={model.stages.length >= 30} onClick={onAdd}>
-            <FormattedMessage id="rhythm.addStage" />
-          </Button>
-        ) : undefined
-      }
-    >
-      <TableScroll min={900}>
+    <>
+      <TableScroll min={760}>
         <table className="table">
           <thead>
             <tr>
-              <th>#</th>
-              {(
-                ['stage', 'offsets', 'window', 'signs', 'activities', 'notice', 'flags'] as const
-              ).map((c) => (
+              <th className="w-12">#</th>
+              {cols.map((c) => (
                 <th key={c}>
                   <FormattedMessage id={`rhythm.stageCol.${c}`} />
                 </th>
               ))}
-              <th />
+              {editing && <th className="w-12" />}
             </tr>
           </thead>
           <tbody>
             {model.stages.map((s, i) => {
               const w = windowPreview(dueDate, s);
               const n = hits.filter((h) => h.stage === i).length;
+              const name = stageName(intl, s, i);
               return (
-                <tr key={`${i}-${s.id}`}>
-                  <td className="muted">{s.number}</td>
-                  <td>
-                    <button type="button" className="linkbtn" onClick={() => onOpen(i)}>
-                      {stageName(intl, s, i)}
-                    </button>
-                    <span className="muted fa-sub-line mono">{s.id}</span>
+                <tr key={`${i}-${s.id}`} className="cursor-pointer" onClick={() => onOpen(i)}>
+                  <td className="text-muted-foreground tabular-nums">{s.number}</td>
+                  <td className="w-full max-w-0">
+                    <RowTitle onOpen={() => onOpen(i)}>{name}</RowTitle>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      <FormattedMessage
+                        id="rhythm.stageLine"
+                        values={{ n: s.signs.vi.length, a: s.activityIds.length }}
+                      />
+                      {s.notice && (
+                        <>
+                          {' · '}
+                          <FormattedMessage id="rhythm.stageLine.notice" />
+                        </>
+                      )}
+                    </span>
                   </td>
-                  <td className="nowrap">
+                  <td className="nowrap tabular-nums">
                     <FormattedMessage
                       id="rhythm.offsets"
                       values={{ start: s.startOffsetDays, end: s.endOffsetDays }}
                     />
                   </td>
-                  <td className="nowrap">{w ? `${dmy(w.start)} – ${dmy(w.end)}` : '—'}</td>
-                  <td className="nowrap">
-                    <FormattedMessage
-                      id="rhythm.counts.lang"
-                      values={{ vi: s.signs.vi.length, en: s.signs.en.length }}
-                    />
+                  <td className="nowrap tabular-nums">
+                    {w ? `${dmy(w.start)} – ${dmy(w.end)}` : '—'}
                   </td>
-                  <td>{s.activityIds.length}</td>
-                  <td>
-                    {s.notice ? (
-                      <FormattedMessage id="rhythm.yes" />
-                    ) : (
-                      <span className="muted">—</span>
-                    )}
-                  </td>
-                  <td>
-                    <span className="chips">
-                      {n > 0 && (
-                        <Pill tone="warn">
-                          <FormattedMessage id="rhythm.badge.forbidden" values={{ n }} />
-                        </Pill>
-                      )}
-                      {problems.has(i) && (
-                        <Pill tone="error">
-                          <FormattedMessage
-                            id="firstAid.badge.issues"
-                            values={{ n: problems.get(i) }}
-                          />
-                        </Pill>
-                      )}
-                    </span>
-                  </td>
-                  <td className="cell-actions">
-                    {editing && (
-                      <RowActions
-                        label={intl.formatMessage(
-                          { id: 'table.actionsFor' },
-                          { name: stageName(intl, s, i) },
+                  {flagged && (
+                    <td>
+                      <span className="flex flex-wrap gap-1">
+                        {n > 0 && (
+                          <Pill tone="warn">
+                            <FormattedMessage id="rhythm.badge.forbidden" values={{ n }} />
+                          </Pill>
                         )}
+                        {problems.has(i) && (
+                          <Pill tone="error">
+                            <FormattedMessage
+                              id="rhythm.badge.issues"
+                              values={{ n: problems.get(i) }}
+                            />
+                          </Pill>
+                        )}
+                      </span>
+                    </td>
+                  )}
+                  {editing && (
+                    <td className="cell-actions" onClick={(e) => e.stopPropagation()}>
+                      <RowActions
+                        label={intl.formatMessage({ id: 'table.actionsFor' }, { name })}
                         actions={[
                           ...(i > 0
                             ? [
                                 {
                                   key: 'up',
-                                  label: <FormattedMessage id="firstAid.moveUp" />,
+                                  label: <FormattedMessage id="rhythm.moveUp" />,
                                   onSelect: () => editing((m) => moveItem(m.stages, i, -1)),
                                 },
                               ]
@@ -1360,7 +1772,7 @@ function StagesTable({
                             ? [
                                 {
                                   key: 'down',
-                                  label: <FormattedMessage id="firstAid.moveDown" />,
+                                  label: <FormattedMessage id="rhythm.moveDown" />,
                                   onSelect: () => editing((m) => moveItem(m.stages, i, 1)),
                                 },
                               ]
@@ -1370,33 +1782,96 @@ function StagesTable({
                                 {
                                   key: 'remove',
                                   destructive: true,
-                                  label: <FormattedMessage id="firstAid.remove" />,
-                                  onSelect: () => {
-                                    if (
-                                      window.confirm(
-                                        intl.formatMessage(
-                                          { id: 'rhythm.removeConfirm' },
-                                          { name: stageName(intl, s, i) },
-                                        ),
-                                      )
-                                    ) {
-                                      editing((m) => void m.stages.splice(i, 1));
-                                    }
-                                  },
+                                  label: <FormattedMessage id="rhythm.remove" />,
+                                  onSelect: () =>
+                                    ask({
+                                      title: (
+                                        <FormattedMessage
+                                          id="rhythm.removeConfirm"
+                                          values={{ name }}
+                                        />
+                                      ),
+                                      confirmLabel: <FormattedMessage id="rhythm.remove" />,
+                                      destructive: true,
+                                      onConfirm: () => editing((m) => void m.stages.splice(i, 1)),
+                                    }),
                                 },
                               ]
                             : []),
                         ]}
                       />
-                    )}
-                  </td>
+                    </td>
+                  )}
                 </tr>
               );
             })}
           </tbody>
         </table>
       </TableScroll>
-    </Panel>
+      {dialog}
+    </>
+  );
+}
+
+/** The row's name: a button for the keyboard; the whole row opens the item for the mouse. */
+function RowTitle({ children, onOpen }: { children: ReactNode; onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      className="block max-w-full truncate text-left font-medium underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen();
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function StageAside({
+  stage,
+  dueDate,
+  onDueDate,
+  hits,
+  model,
+  editing,
+}: {
+  stage: ReferenceStage;
+  dueDate: string;
+  onDueDate: (d: string) => void;
+  hits: ForbiddenHit[];
+  model: ReferenceDraftData;
+  /** The editor shows the window itself, next to the days. */
+  editing: boolean;
+}) {
+  const w = windowPreview(dueDate, stage);
+  return (
+    <>
+      <Section title={<FormattedMessage id="rhythm.dueDate" />}>
+        <div className="grid gap-3">
+          <DueDateControl dueDate={dueDate} onDueDate={onDueDate} />
+          {!editing && (
+            <p className="rounded-lg bg-muted/60 px-3 py-2 text-sm tabular-nums">
+              {w ? (
+                <FormattedMessage
+                  id="rhythm.stage.preview"
+                  values={{ due: dmy(dueDate), start: dmy(w.start), end: dmy(w.end) }}
+                />
+              ) : (
+                <FormattedMessage id="rhythm.stage.previewNone" />
+              )}
+            </p>
+          )}
+        </div>
+      </Section>
+      {hits.length > 0 && <ForbiddenNotice hits={hits} model={model} />}
+      <Section title={<FormattedMessage id="rhythm.forbidden" />}>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage id="rhythm.forbidden.examples" />
+        </p>
+      </Section>
+    </>
   );
 }
 
@@ -1411,151 +1886,149 @@ function StageSummary({
 }) {
   const w = windowPreview(dueDate, s);
   const names = new Map(activities.map((a) => [a.id, a.title]));
-  const list = (items: string[]) =>
-    items.length ? (
-      <ul className="rh-list">
-        {items.map((t, i) => (
-          <li key={i}>{t}</li>
-        ))}
-      </ul>
-    ) : (
-      '—'
-    );
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="rhythm.field.stageId" />
-      </dt>
-      <dd className="mono">{s.id}</dd>
-      <dt>
-        <FormattedMessage id="rhythm.stageCol.offsets" />
-      </dt>
-      <dd>
-        <FormattedMessage
-          id="rhythm.offsets"
-          values={{ start: s.startOffsetDays, end: s.endOffsetDays }}
+    <>
+      <Section title={<FormattedMessage id="rhythm.stage.content" />}>
+        <BothLangs
+          render={(lang) => (
+            <>
+              <p className="font-semibold">{s.name[lang] || '—'}</p>
+              <Labeled label={<FormattedMessage id="rhythm.field.signs" />}>
+                <Bullets items={s.signs[lang]} />
+              </Labeled>
+              <Labeled label={<FormattedMessage id="rhythm.field.skills" />}>
+                <Bullets items={s.skills[lang]} />
+              </Labeled>
+            </>
+          )}
         />
-        {w && (
-          <>
-            <br />
-            <span className="muted">
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.stage.timing" />}>
+        <Rows>
+          <Row label={<FormattedMessage id="rhythm.stageCol.offsets" />}>
+            <span className="tabular-nums">
               <FormattedMessage
-                id="rhythm.stage.preview"
-                values={{ due: dmy(dueDate), start: dmy(w.start), end: dmy(w.end) }}
+                id="rhythm.offsets"
+                values={{ start: s.startOffsetDays, end: s.endOffsetDays }}
               />
             </span>
-          </>
-        )}
-      </dd>
-      {(['vi', 'en'] as const).map((lang) => (
-        <Fragment key={lang}>
-          <dt>
-            <FormattedMessage id={`firstAid.lang.${lang}`} />
-          </dt>
-          <dd>
-            <strong>{s.name[lang]}</strong>
-            <p className="fa-sub">
-              <FormattedMessage id="rhythm.field.signs" />
-            </p>
-            {list(s.signs[lang])}
-            <p className="fa-sub">
-              <FormattedMessage id="rhythm.field.skills" />
-            </p>
-            {list(s.skills[lang])}
-            {s.notice && (
-              <>
-                <p className="fa-sub">
-                  <FormattedMessage id="rhythm.stage.notice" />
-                </p>
-                <p className="quote">
-                  <strong>{s.notice.title[lang]}</strong>
-                  {'\n'}
-                  {s.notice.body[lang]}
-                </p>
-              </>
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.stageCol.window" />}>
+            <span className="tabular-nums">{w ? `${dmy(w.start)} – ${dmy(w.end)}` : '—'}</span>
+          </Row>
+        </Rows>
+      </Section>
+      <Section
+        title={
+          <FormattedMessage
+            id="rhythm.field.activities"
+            values={{ n: s.activityIds.length, max: 8 }}
+          />
+        }
+      >
+        <Bullets items={s.activityIds.map((id) => names.get(id) || id)} />
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.stage.notice" />}>
+        {s.notice ? (
+          <BothLangs
+            render={(lang) => (
+              <div className="grid gap-1 rounded-lg border bg-background/40 p-3 text-sm">
+                <p className="font-medium">{s.notice!.title[lang]}</p>
+                <p className="text-muted-foreground">{s.notice!.body[lang]}</p>
+              </div>
             )}
-          </dd>
-        </Fragment>
-      ))}
-      <dt>
-        <FormattedMessage id="rhythm.stageCol.activities" />
-      </dt>
-      <dd>{s.activityIds.map((id) => names.get(id) || id).join(' · ') || '—'}</dd>
-    </dl>
+          />
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage id="rhythm.stage.noNotice" />
+          </p>
+        )}
+      </Section>
+    </>
   );
 }
 
-/** PN01 "Phiên bản đang phát hành": how the app counts, stated once. */
-function HowItWorksPanel() {
-  return (
-    <Panel title={<FormattedMessage id="rhythm.how" />}>
-      <dl className="kv">
-        {(['calc', 'noDue', 'estimated', 'change', 'overlap'] as const).map((k) => (
-          <Fragment key={k}>
-            <dt>
-              <FormattedMessage id={`rhythm.how.${k}`} />
-            </dt>
-            <dd>
-              <FormattedMessage id={`rhythm.how.${k}.value`} />
-            </dd>
-          </Fragment>
-        ))}
-      </dl>
-    </Panel>
-  );
-}
+// ---------- Kill switches (PN01) ----------
 
 const killSwitches = ['rhythm', 'personalization', 'ai_assist'] as const;
 
-/** PN01 "Công tắc khẩn cấp": the flags' state; they are switched (with a reason) in A10. */
+/** PN01 "Công tắc khẩn cấp": the flags' state (folded); they are switched with a reason in A10. */
 export function KillSwitchPanel({ flags }: { flags: Flags | null | undefined }) {
   const staff = useStaff();
   if (!staffCan(staff.levels, 'features.view')) {
     return (
-      <Panel title={<FormattedMessage id="rhythm.switches" />}>
+      <Section
+        title={<FormattedMessage id="rhythm.switches" />}
+        collapsible
+        defaultOpen={false}
+        summary={<FormattedMessage id="rhythm.switches.lockedShort" />}
+      >
         <LockNote>
           <FormattedMessage id="rhythm.switches.locked" />
         </LockNote>
-      </Panel>
+      </Section>
     );
   }
-  return flags === undefined ? <KillSwitchLoader /> : <KillSwitchList flags={flags} />;
+  return flags === undefined ? <KillSwitchLoader /> : <KillSwitchSection flags={flags} />;
 }
 
 function KillSwitchLoader() {
   const [load] = useLoad<FlagsView>('staffFlags', {}, 'flags');
-  return <KillSwitchList flags={load.status === 'ok' ? load.data.flags : null} />;
+  return <KillSwitchSection flags={load.status === 'ok' ? load.data.flags : null} />;
 }
 
-function KillSwitchList({ flags }: { flags: Flags | null }) {
+function KillSwitchSection({ flags }: { flags: Flags | null }) {
   const navigate = useNavigate();
+  const on = killSwitches.filter((k) => flags?.[k]?.enabled).length;
   return (
-    <Panel
+    <Section
       title={<FormattedMessage id="rhythm.switches" />}
-      aside={
-        <Button kind="ghost" onClick={() => navigate('features')}>
+      collapsible
+      defaultOpen={false}
+      summary={
+        flags ? (
+          <FormattedMessage
+            id="rhythm.switches.summary"
+            values={{ on, total: killSwitches.length }}
+          />
+        ) : undefined
+      }
+      actions={
+        <Button variant="ghost" size="sm" onClick={() => navigate('features')}>
+          <ExternalLink />
           <FormattedMessage id="rhythm.switches.open" />
         </Button>
       }
     >
-      <dl className="kv">
+      <KillSwitchList flags={flags} />
+    </Section>
+  );
+}
+
+export function KillSwitchList({ flags }: { flags: Flags | null }) {
+  return (
+    <div className="grid gap-4">
+      <ul className="grid gap-3">
         {killSwitches.map((k) => {
           const f = flags?.[k];
           return (
-            <Fragment key={k}>
-              <dt>
+            <li
+              key={k}
+              className="grid gap-1 sm:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] sm:gap-4"
+            >
+              <span className="text-sm font-medium">
                 <FormattedMessage id={`flag.${k}`} />
-              </dt>
-              <dd>
+              </span>
+              <span className="grid gap-0.5">
                 {!f ? (
-                  <span className="muted">—</span>
+                  <span className="text-sm text-muted-foreground">—</span>
                 ) : (
-                  <span className="chips">
+                  <span className="flex flex-wrap items-center gap-2">
                     <Pill tone={f.enabled ? 'ok' : 'muted'}>
                       <FormattedMessage id={f.enabled ? 'rhythm.switch.on' : 'rhythm.switch.off'} />
                     </Pill>
                     {f.enabled && (
-                      <span className="muted">
+                      <span className="text-sm text-muted-foreground">
                         <FormattedMessage
                           id={`scope.${f.scope}`}
                           values={{ p: f.scope === 'all' ? 100 : f.percent }}
@@ -1564,18 +2037,18 @@ function KillSwitchList({ flags }: { flags: Flags | null }) {
                     )}
                   </span>
                 )}
-                <span className="muted fa-sub-line">
+                <span className="text-xs text-muted-foreground">
                   <FormattedMessage id={`flag.${k}.offEffect`} />
                 </span>
-              </dd>
-            </Fragment>
+              </span>
+            </li>
           );
         })}
-      </dl>
+      </ul>
       <LockNote>
         <FormattedMessage id="rhythm.switches.note" />
       </LockNote>
-    </Panel>
+    </div>
   );
 }
 
@@ -1583,18 +2056,30 @@ function KillSwitchList({ flags }: { flags: Flags | null }) {
 
 type Selected = { kind: 'activity' | 'ageCard'; index: number } | null;
 
+/** "~0–3 tháng" for long ranges, "7–13 ngày" for short ones; the full range on hover. */
 function AgeText({ age }: { age: { from: number; to: number } }) {
+  const intl = useIntl();
+  const full = intl.formatMessage(
+    { id: 'rhythm.ageDays' },
+    { from: age.from, to: age.to, mFrom: monthsOf(age.from), mTo: monthsOf(age.to) },
+  );
+  const short =
+    age.to - age.from < 31
+      ? intl.formatMessage({ id: 'rhythm.ageShort.days' }, { from: age.from, to: age.to })
+      : intl.formatMessage(
+          { id: 'rhythm.ageShort.months' },
+          { from: monthsOf(age.from), to: monthsOf(age.to) },
+        );
   return (
-    <FormattedMessage
-      id="rhythm.ageDays"
-      values={{ from: age.from, to: age.to, mFrom: monthsOf(age.from), mTo: monthsOf(age.to) }}
-    />
+    <span title={full} className="tabular-nums">
+      {short}
+    </span>
   );
 }
 
 function ItemReview({ review }: { review: RhythmReview }) {
   return review ? (
-    <span className="muted">
+    <span className="text-muted-foreground">
       <ReviewText review={review} />
     </span>
   ) : (
@@ -1604,7 +2089,44 @@ function ItemReview({ review }: { review: RhythmReview }) {
   );
 }
 
-function ContentTab({
+type ReviewFilter = 'all' | 'reviewed' | 'awaiting';
+type StatusFilter = 'all' | Activity['status'];
+export interface ItemFilter {
+  query: string;
+  need: 'all' | Need;
+  status: StatusFilter;
+  review: ReviewFilter;
+}
+const noFilter: ItemFilter = { query: '', need: 'all', status: 'all', review: 'all' };
+const filterOn = (f: ItemFilter) =>
+  !!f.query.trim() || f.need !== 'all' || f.status !== 'all' || f.review !== 'all';
+
+const reviewPass = (f: ItemFilter, review: RhythmReview) =>
+  f.review === 'all' || (f.review === 'reviewed') === !!review;
+
+/** The activities the filter keeps, as indices into the pack (the order the table shows). */
+export function filterActivities(items: Activity[], f: ItemFilter): number[] {
+  return items.flatMap((a, i) =>
+    matches(f.query, a.title.vi, a.title.en, a.id) &&
+    (f.need === 'all' || a.needs.includes(f.need)) &&
+    (f.status === 'all' || a.status === f.status) &&
+    reviewPass(f, a.review)
+      ? [i]
+      : [],
+  );
+}
+
+export function filterAgeCards(items: AgeCard[], f: ItemFilter): number[] {
+  return items.flatMap((c, i) =>
+    matches(f.query, c.title.vi, c.title.en, c.id) &&
+    (f.status === 'all' || c.status === f.status) &&
+    reviewPass(f, c.review)
+      ? [i]
+      : [],
+  );
+}
+
+function ContentTabView({
   view,
   shown,
   working,
@@ -1627,7 +2149,7 @@ function ContentTab({
   showDraft: boolean;
   onToggleDraft: () => void;
   onStart: () => void;
-  onStop: () => void;
+  onStop: (then?: () => void) => void;
   onSave: () => void;
   onAct: (act: Act, versionId: string) => void;
 }) {
@@ -1636,6 +2158,8 @@ function ContentTab({
   const editing = working.editing;
   const [sub, setSub] = useState<ContentTab>('activities');
   const [selected, setSelected] = useState<Selected>(null);
+  const [actFilter, setActFilter] = useState<ItemFilter>(noFilter);
+  const [cardFilter, setCardFilter] = useState<ItemFilter>(noFilter);
   const live = useMemo(
     () =>
       new Set([
@@ -1674,49 +2198,47 @@ function ContentTab({
         : shown.ageCards[selected.index]
       : undefined;
   const r = doc.current ? reviewed(doc.current) : null;
+  const actOrder = shown ? filterActivities(shown.activities, actFilter) : [];
+  const cardOrder = shown ? filterAgeCards(shown.ageCards, cardFilter) : [];
+  const viewingDraft = !editing && showDraft && !!doc.draft;
   return (
     <>
-      <StatusPanels
-        doc="content"
-        docView={doc}
-        size={size}
-        currentReview={
-          r &&
-          (r.done < r.total ? (
-            <>
-              <span className="muted">
-                <FormattedMessage id="rhythm.reviewedCount" values={r} />
-              </span>
-              <TechnicalDraftBadge />
-            </>
-          ) : (
-            <span className="muted">
-              <FormattedMessage id="rhythm.reviewedCount" values={r} />
-            </span>
-          ))
-        }
-        canEdit={canEdit}
-        canApprove={canApprove}
-        editing={!!editing}
-        showDraft={showDraft}
-        onToggleDraft={onToggleDraft}
-        onEdit={onStart}
-        onAct={onAct}
-      />
+      {editing ? (
+        <EditingBar
+          doc="content"
+          docView={doc}
+          working={working}
+          canEdit={canEdit}
+          onSave={onSave}
+          onStop={() => onStop(() => open(null))}
+          onAct={onAct}
+        />
+      ) : (
+        <DocStatus
+          doc="content"
+          docView={doc}
+          size={size}
+          stat={r && <FormattedMessage id="rhythm.reviewedCount" values={r} />}
+          canEdit={canEdit}
+          canApprove={canApprove}
+          showDraft={showDraft}
+          onToggleDraft={onToggleDraft}
+          onEdit={onStart}
+          onAct={onAct}
+        />
+      )}
       {editing && (
-        <EditBar
-          dirty={working.dirty}
-          pending={doc.draft?.status === 'pending'}
+        <IssuesNotice
           check={check}
           show={working.showIssues}
           place={(i) => {
-            const [head, at, ...rest] = i.path;
+            const [head, at] = i.path;
             if ((head === 'activities' || head === 'ageCards') && typeof at === 'number') {
               const x = head === 'activities' ? editing.activities[at] : editing.ageCards[at];
               const name = x ? textOf(intl, x.title) || x.id : `#${at + 1}`;
-              return rest.length ? `${name} · ${rest.join('.')}` : name;
+              return i.path.length > 2 ? `${name} · ${fieldPath(intl, i.path, 2)}` : name;
             }
-            return i.path.join('.') || '—';
+            return fieldPath(intl, i.path) || '—';
           }}
           onOpen={(i) => {
             const [head, at] = i.path;
@@ -1731,29 +2253,50 @@ function ContentTab({
               open(null);
             }
           }}
-          onSave={onSave}
-          onCancel={() => {
-            onStop();
-            open(null);
-          }}
         />
       )}
 
       {!shown ? (
-        <Panel>
-          <Empty>
-            <FormattedMessage id={canEdit ? 'rhythm.emptyEdit' : 'rhythm.empty'} />
-          </Empty>
-        </Panel>
+        <Section title={<FormattedMessage id="rhythm.tab.content" />}>
+          <EmptyState title={<FormattedMessage id="rhythm.empty" />}>
+            {canEdit && <FormattedMessage id="rhythm.emptyEdit" />}
+          </EmptyState>
+        </Section>
       ) : item && selected ? (
-        <div className="stack">
-          <div className="toolbar">
-            <button type="button" className="linkbtn" onClick={() => open(null)}>
-              ← <FormattedMessage id={`rhythm.back.${selected.kind}`} />
-            </button>
-            <span className="muted">{textOf(intl, item.title) || item.id}</span>
-          </div>
-          <Panel>
+        <>
+          <ItemNav
+            backLabel={<FormattedMessage id={`rhythm.back.${selected.kind}`} />}
+            title={textOf(intl, item.title) || item.id}
+            meta={`${item.id} · v${item.version}`}
+            badges={
+              <Pill tone={itemTone[item.status] ?? 'muted'}>
+                <FormattedMessage id={`rhythm.itemStatus.${item.status}`} />
+              </Pill>
+            }
+            index={selected.index}
+            order={
+              selected.kind === 'activity'
+                ? actOrder.includes(selected.index)
+                  ? actOrder
+                  : shown.activities.map((_, i) => i)
+                : cardOrder.includes(selected.index)
+                  ? cardOrder
+                  : shown.ageCards.map((_, i) => i)
+            }
+            onBack={() => open(null)}
+            onGo={(index) => open({ kind: selected.kind, index })}
+          />
+          <EditorLayout
+            aside={
+              editing ? (
+                selected.kind === 'activity' ? (
+                  <ActivityPreview a={item as Activity} />
+                ) : (
+                  <AgeCardPreview c={item as AgeCard} />
+                )
+              ) : undefined
+            }
+          >
             {editing ? (
               selected.kind === 'activity' ? (
                 <ActivityEditor
@@ -1777,68 +2320,76 @@ function ContentTab({
             ) : (
               <AgeCardSummary c={item as AgeCard} />
             )}
-          </Panel>
-        </div>
+          </EditorLayout>
+        </>
       ) : (
-        <>
-          <Segmented
-            label={intl.formatMessage({ id: 'rhythm.tab.content' })}
-            value={sub}
-            onChange={setSub}
-            options={(['activities', 'ageCards', 'health'] as const).map((t) => ({
-              value: t,
-              label: <FormattedMessage id={`rhythm.sub.${t}`} />,
-            }))}
-          />
-          {sub === 'activities' && (
+        <Tabs value={sub} onValueChange={(v) => setSub(v as ContentTab)} className="gap-3">
+          <TabsList variant="line" aria-label={intl.formatMessage({ id: 'rhythm.tab.content' })}>
+            {contentTabs.map((t) => (
+              <TabsTrigger key={t} value={t} className="px-3">
+                <FormattedMessage id={`rhythm.sub.${t}`} />
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <TabsContent value="activities">
             <ActivitiesTable
               data={shown}
+              viewingDraft={viewingDraft}
+              filter={actFilter}
+              onFilter={setActFilter}
+              order={actOrder}
               editing={editing ? working.edit : null}
               check={working.showIssues ? check : null}
               onOpen={(index) => open({ kind: 'activity', index })}
               onAdd={() => {
                 if (!editing) return;
                 working.edit((d) => void d.activities.push(blankActivity(d.activities)));
+                setActFilter(noFilter);
                 open({ kind: 'activity', index: editing.activities.length });
               }}
             />
-          )}
-          {sub === 'ageCards' && (
+          </TabsContent>
+          <TabsContent value="ageCards">
             <AgeCardsTable
               data={shown}
+              viewingDraft={viewingDraft}
+              filter={cardFilter}
+              onFilter={setCardFilter}
+              order={cardOrder}
               editing={editing ? working.edit : null}
               check={working.showIssues ? check : null}
               onOpen={(index) => open({ kind: 'ageCard', index })}
               onAdd={() => {
                 if (!editing) return;
                 working.edit((d) => void d.ageCards.push(blankAgeCard(d.ageCards)));
+                setCardFilter(noFilter);
                 open({ kind: 'ageCard', index: editing.ageCards.length });
               }}
             />
-          )}
-          {sub === 'health' && (
-            <Panel
-              title={
-                <span className="chips">
-                  <FormattedMessage id="rhythm.health" />
-                  <Pill tone="info">
-                    <FormattedMessage id="rhythm.health.free" />
-                  </Pill>
-                </span>
-              }
-              note={<FormattedMessage id="rhythm.health.note" />}
-            >
-              {editing ? (
-                <HealthEditor data={editing} edit={working.edit} />
-              ) : (
+          </TabsContent>
+          <TabsContent value="health" className="grid grid-cols-1 gap-4">
+            {editing ? (
+              <HealthEditor data={editing} edit={working.edit} />
+            ) : (
+              <Section
+                title={
+                  <>
+                    <FormattedMessage id="rhythm.health" />
+                    <Pill tone="info">
+                      <FormattedMessage id="rhythm.health.free" />
+                    </Pill>
+                  </>
+                }
+                hint={<FormattedMessage id="rhythm.health.note" />}
+              >
                 <HealthSummary health={shown.health} />
-              )}
-            </Panel>
-          )}
-        </>
+              </Section>
+            )}
+          </TabsContent>
+        </Tabs>
       )}
 
-      <HistoryPanel
+      <HistorySection
         doc="content"
         docView={doc}
         size={size}
@@ -1878,33 +2429,127 @@ function RemoveAction<T>({
   list: (d: ContentDraftData) => T[];
 }) {
   const intl = useIntl();
+  const { ask, dialog } = useConfirm();
   return (
-    <RowActions
-      label={intl.formatMessage({ id: 'table.actionsFor' }, { name })}
-      actions={[
-        {
-          key: 'remove',
-          destructive: true,
-          label: <FormattedMessage id="firstAid.remove" />,
-          onSelect: () => {
-            if (window.confirm(intl.formatMessage({ id: 'rhythm.removeConfirm' }, { name }))) {
-              editing((d) => void list(d).splice(index, 1));
-            }
+    <>
+      <RowActions
+        label={intl.formatMessage({ id: 'table.actionsFor' }, { name })}
+        actions={[
+          {
+            key: 'remove',
+            destructive: true,
+            label: <FormattedMessage id="rhythm.remove" />,
+            onSelect: () =>
+              ask({
+                title: <FormattedMessage id="rhythm.removeConfirm" values={{ name }} />,
+                confirmLabel: <FormattedMessage id="rhythm.remove" />,
+                destructive: true,
+                onConfirm: () => editing((d) => void list(d).splice(index, 1)),
+              }),
           },
-        },
-      ]}
+        ]}
+      />
+      {dialog}
+    </>
+  );
+}
+
+/** Search, need, status and review filters over a list. */
+function ItemFilters({
+  filter,
+  onFilter,
+  withNeed,
+  shown,
+  total,
+  placeholder,
+}: {
+  filter: ItemFilter;
+  onFilter: (f: ItemFilter) => void;
+  withNeed?: boolean;
+  shown: number;
+  total: number;
+  placeholder: string;
+}) {
+  const intl = useIntl();
+  const t = (id: string) => intl.formatMessage({ id });
+  return (
+    <FilterBar
+      active={filterOn(filter)}
+      onClear={() => onFilter(noFilter)}
+      shown={shown}
+      total={total}
+    >
+      <SearchInput
+        value={filter.query}
+        onChange={(query) => onFilter({ ...filter, query })}
+        placeholder={placeholder}
+      />
+      {withNeed && (
+        <SelectMenu
+          label={t('rhythm.filter.need')}
+          value={filter.need}
+          onChange={(need) => onFilter({ ...filter, need })}
+          options={[
+            { value: 'all' as const, label: t('rhythm.filter.allNeeds') },
+            ...needs.map((n) => ({ value: n, label: t(`rhythm.need.${n}`) })),
+          ]}
+        />
+      )}
+      <SelectMenu
+        label={t('rhythm.filter.status')}
+        value={filter.status}
+        onChange={(status) => onFilter({ ...filter, status })}
+        options={[
+          { value: 'all' as const, label: t('rhythm.filter.allStatuses') },
+          ...(['published', 'draft', 'retired'] as const).map((s) => ({
+            value: s,
+            label: t(`rhythm.itemStatus.${s}`),
+          })),
+        ]}
+      />
+      <SelectMenu
+        label={t('rhythm.filter.review')}
+        value={filter.review}
+        onChange={(review) => onFilter({ ...filter, review })}
+        options={(['all', 'awaiting', 'reviewed'] as const).map((v) => ({
+          value: v,
+          label: t(`rhythm.filter.review.${v}`),
+        }))}
+      />
+    </FilterBar>
+  );
+}
+
+function NoMatch({ onClear }: { onClear: () => void }) {
+  return (
+    <EmptyState
+      title={<FormattedMessage id="rhythm.noMatch" />}
+      action={
+        <Button variant="outline" size="sm" onClick={onClear}>
+          <FormattedMessage id="kit.clearFilters" />
+        </Button>
+      }
     />
   );
 }
 
 export function ActivitiesTable({
   data,
+  viewingDraft,
+  filter,
+  onFilter,
+  order,
   editing,
   check,
   onOpen,
   onAdd,
 }: {
   data: ContentDraftData;
+  viewingDraft?: boolean;
+  filter: ItemFilter;
+  onFilter: (f: ItemFilter) => void;
+  /** Indices of the activities the filter keeps. */
+  order: number[];
   editing: Edit<ContentDraftData> | null;
   check: Check | null;
   onOpen: (i: number) => void;
@@ -1913,94 +2558,144 @@ export function ActivitiesTable({
   const intl = useIntl();
   const problems = rowProblems(check, 'activities');
   return (
-    <Panel
-      className="panel--flush"
-      title={<FormattedMessage id="rhythm.activities" values={{ n: data.activities.length }} />}
-      note={<FormattedMessage id="rhythm.activitiesNote" />}
-      aside={
+    <Section
+      flush
+      title={
+        <>
+          <FormattedMessage id="rhythm.activities" values={{ n: data.activities.length }} />
+          {viewingDraft && (
+            <Pill tone="wait">
+              <FormattedMessage id="rhythm.viewingDraft" />
+            </Pill>
+          )}
+        </>
+      }
+      hint={<FormattedMessage id="rhythm.activitiesNote" />}
+      actions={
         editing ? (
-          <Button disabled={data.activities.length >= 300} onClick={onAdd}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={data.activities.length >= 300}
+            onClick={onAdd}
+          >
+            <Plus />
             <FormattedMessage id="rhythm.addActivity" />
           </Button>
         ) : undefined
       }
     >
-      <TableScroll min={900}>
-        <table className="table">
-          <thead>
-            <tr>
-              {(['activity', 'age', 'needs', 'status', 'review', 'locales'] as const).map((c) => (
-                <th key={c}>
-                  <FormattedMessage id={`rhythm.itemCol.${c}`} />
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {data.activities.map((a, i) => (
-              <tr key={`${i}-${a.id}`}>
-                <td>
-                  <button type="button" className="linkbtn" onClick={() => onOpen(i)}>
-                    {textOf(intl, a.title) || a.id}
-                  </button>
-                  <span className="muted fa-sub-line">
-                    <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} /> ·{' '}
-                    <span className="mono">{a.id}</span> · v{a.version}
-                  </span>
-                </td>
-                <td className="nowrap">
-                  <AgeText age={a.ageDays} />
-                </td>
-                <td>
-                  {a.needs.map((n) => intl.formatMessage({ id: `rhythm.need.${n}` })).join(' · ')}
-                </td>
-                <td>
-                  <span className="chips">
-                    <Pill tone={itemTone[a.status] ?? 'muted'}>
-                      <FormattedMessage id={`rhythm.itemStatus.${a.status}`} />
-                    </Pill>
-                    {problems.has(i) && (
-                      <Pill tone="error">
-                        <FormattedMessage
-                          id="firstAid.badge.issues"
-                          values={{ n: problems.get(i) }}
-                        />
-                      </Pill>
-                    )}
-                  </span>
-                </td>
-                <td>
-                  <ItemReview review={a.review} />
-                </td>
-                <td className="nowrap">{a.locales.map((l) => l.toUpperCase()).join(' · ')}</td>
-                <td className="cell-actions">
-                  {editing && (
-                    <RemoveAction
-                      name={textOf(intl, a.title) || a.id}
-                      index={i}
-                      editing={editing}
-                      list={(d) => d.activities}
-                    />
-                  )}
-                </td>
+      {data.activities.length > 0 && (
+        <ItemFilters
+          filter={filter}
+          onFilter={onFilter}
+          withNeed
+          shown={order.length}
+          total={data.activities.length}
+          placeholder={intl.formatMessage({ id: 'rhythm.search.activities' })}
+        />
+      )}
+      {data.activities.length === 0 ? (
+        <EmptyState title={<FormattedMessage id="rhythm.noActivities" />} />
+      ) : order.length === 0 ? (
+        <NoMatch onClear={() => onFilter(noFilter)} />
+      ) : (
+        <TableScroll min={900}>
+          <table className="table">
+            <thead>
+              <tr>
+                {(['activity', 'age', 'needs', 'status', 'review', 'locales'] as const).map((c) => (
+                  <th key={c}>
+                    <FormattedMessage id={`rhythm.itemCol.${c}`} />
+                  </th>
+                ))}
+                {editing && <th className="w-12" />}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScroll>
-    </Panel>
+            </thead>
+            <tbody>
+              {order.map((i) => {
+                const a = data.activities[i]!;
+                const name = textOf(intl, a.title) || a.id;
+                return (
+                  <tr key={`${i}-${a.id}`} className="cursor-pointer" onClick={() => onOpen(i)}>
+                    <td className="w-full max-w-0">
+                      <RowTitle onOpen={() => onOpen(i)}>{name}</RowTitle>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
+                        {' · '}
+                        <FormattedMessage id={`rhythm.timeOfDay.${a.timeOfDay}`} />
+                      </span>
+                    </td>
+                    <td className="nowrap">
+                      <AgeText age={a.ageDays} />
+                    </td>
+                    <td>
+                      <span className="block max-w-44 truncate">
+                        {a.needs
+                          .map((n) => intl.formatMessage({ id: `rhythm.need.${n}` }))
+                          .join(' · ')}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex flex-wrap gap-1">
+                        <Pill tone={itemTone[a.status] ?? 'muted'}>
+                          <FormattedMessage id={`rhythm.itemStatus.${a.status}`} />
+                        </Pill>
+                        {problems.has(i) && (
+                          <Pill tone="error">
+                            <FormattedMessage
+                              id="rhythm.badge.issues"
+                              values={{ n: problems.get(i) }}
+                            />
+                          </Pill>
+                        )}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="block max-w-52 truncate">
+                        <ItemReview review={a.review} />
+                      </span>
+                    </td>
+                    <td className="nowrap text-muted-foreground">
+                      {a.locales.map((l) => l.toUpperCase()).join(' · ')}
+                    </td>
+                    {editing && (
+                      <td className="cell-actions" onClick={(e) => e.stopPropagation()}>
+                        <RemoveAction
+                          name={name}
+                          index={i}
+                          editing={editing}
+                          list={(d) => d.activities}
+                        />
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </TableScroll>
+      )}
+    </Section>
   );
 }
 
 export function AgeCardsTable({
   data,
+  viewingDraft,
+  filter,
+  onFilter,
+  order,
   editing,
   check,
   onOpen,
   onAdd,
 }: {
   data: ContentDraftData;
+  viewingDraft?: boolean;
+  filter: ItemFilter;
+  onFilter: (f: ItemFilter) => void;
+  order: number[];
   editing: Edit<ContentDraftData> | null;
   check: Check | null;
   onOpen: (i: number) => void;
@@ -2009,273 +2704,350 @@ export function AgeCardsTable({
   const intl = useIntl();
   const problems = rowProblems(check, 'ageCards');
   return (
-    <Panel
-      className="panel--flush"
-      title={<FormattedMessage id="rhythm.ageCards" values={{ n: data.ageCards.length }} />}
-      note={<FormattedMessage id="rhythm.ageCardsNote" />}
-      aside={
+    <Section
+      flush
+      title={
+        <>
+          <FormattedMessage id="rhythm.ageCards" values={{ n: data.ageCards.length }} />
+          {viewingDraft && (
+            <Pill tone="wait">
+              <FormattedMessage id="rhythm.viewingDraft" />
+            </Pill>
+          )}
+        </>
+      }
+      hint={<FormattedMessage id="rhythm.ageCardsNote" />}
+      actions={
         editing ? (
-          <Button disabled={data.ageCards.length >= 200} onClick={onAdd}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={data.ageCards.length >= 200}
+            onClick={onAdd}
+          >
+            <Plus />
             <FormattedMessage id="rhythm.addAgeCard" />
           </Button>
         ) : undefined
       }
     >
-      <TableScroll min={760}>
-        <table className="table">
-          <thead>
-            <tr>
-              {(['age', 'title', 'status', 'review'] as const).map((c) => (
-                <th key={c}>
-                  <FormattedMessage id={`rhythm.itemCol.${c}`} />
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {data.ageCards.map((c, i) => (
-              <tr key={`${i}-${c.id}`}>
-                <td className="nowrap">
-                  <AgeText age={c.ageDays} />
-                </td>
-                <td>
-                  <button type="button" className="linkbtn" onClick={() => onOpen(i)}>
-                    {textOf(intl, c.title) || c.id}
-                  </button>
-                  <span className="muted fa-sub-line mono">{c.id}</span>
-                </td>
-                <td>
-                  <span className="chips">
-                    <Pill tone={itemTone[c.status] ?? 'muted'}>
-                      <FormattedMessage id={`rhythm.itemStatus.${c.status}`} />
-                    </Pill>
-                    {problems.has(i) && (
-                      <Pill tone="error">
-                        <FormattedMessage
-                          id="firstAid.badge.issues"
-                          values={{ n: problems.get(i) }}
-                        />
-                      </Pill>
-                    )}
-                  </span>
-                </td>
-                <td>
-                  <ItemReview review={c.review} />
-                </td>
-                <td className="cell-actions">
-                  {editing && (
-                    <RemoveAction
-                      name={textOf(intl, c.title) || c.id}
-                      index={i}
-                      editing={editing}
-                      list={(d) => d.ageCards}
-                    />
-                  )}
-                </td>
+      {data.ageCards.length > 0 && (
+        <ItemFilters
+          filter={filter}
+          onFilter={onFilter}
+          shown={order.length}
+          total={data.ageCards.length}
+          placeholder={intl.formatMessage({ id: 'rhythm.search.ageCards' })}
+        />
+      )}
+      {data.ageCards.length === 0 ? (
+        <EmptyState title={<FormattedMessage id="rhythm.noAgeCards" />} />
+      ) : order.length === 0 ? (
+        <NoMatch onClear={() => onFilter(noFilter)} />
+      ) : (
+        <TableScroll min={760}>
+          <table className="table">
+            <thead>
+              <tr>
+                {(['age', 'title', 'status', 'review'] as const).map((c) => (
+                  <th key={c}>
+                    <FormattedMessage id={`rhythm.itemCol.${c}`} />
+                  </th>
+                ))}
+                {editing && <th className="w-12" />}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScroll>
-    </Panel>
+            </thead>
+            <tbody>
+              {order.map((i) => {
+                const c = data.ageCards[i]!;
+                const name = textOf(intl, c.title) || c.id;
+                return (
+                  <tr key={`${i}-${c.id}`} className="cursor-pointer" onClick={() => onOpen(i)}>
+                    <td className="nowrap">
+                      <AgeText age={c.ageDays} />
+                    </td>
+                    <td className="w-full max-w-0">
+                      <RowTitle onOpen={() => onOpen(i)}>{name}</RowTitle>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {textOf(intl, c.body)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex flex-wrap gap-1">
+                        <Pill tone={itemTone[c.status] ?? 'muted'}>
+                          <FormattedMessage id={`rhythm.itemStatus.${c.status}`} />
+                        </Pill>
+                        {problems.has(i) && (
+                          <Pill tone="error">
+                            <FormattedMessage
+                              id="rhythm.badge.issues"
+                              values={{ n: problems.get(i) }}
+                            />
+                          </Pill>
+                        )}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="block max-w-52 truncate">
+                        <ItemReview review={c.review} />
+                      </span>
+                    </td>
+                    {editing && (
+                      <td className="cell-actions" onClick={(e) => e.stopPropagation()}>
+                        <RemoveAction
+                          name={name}
+                          index={i}
+                          editing={editing}
+                          list={(d) => d.ageCards}
+                        />
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </TableScroll>
+      )}
+    </Section>
   );
 }
 
-function LocBlock({
-  label,
-  value,
+function ReviewAndSources({
+  review,
+  sources,
 }: {
-  label: ReactNode;
-  value: { vi: string; en: string } | null;
+  review: RhythmReview;
+  sources: Array<{ label: string; url: string }>;
 }) {
   return (
-    <>
-      <dt>{label}</dt>
-      <dd>
-        {value ? (
-          <>
-            {value.vi}
-            <br />
-            <span className="muted">{value.en}</span>
-          </>
-        ) : (
-          '—'
-        )}
-      </dd>
-    </>
-  );
-}
-
-function ListBlock({ label, value }: { label: ReactNode; value: { vi: string[]; en: string[] } }) {
-  return (
-    <>
-      <dt>{label}</dt>
-      <dd>
-        {value.vi.length || value.en.length ? (
-          <div className="cols cols--1-1">
-            {(['vi', 'en'] as const).map((l) => (
-              <ol key={l} className={`rh-list ${l === 'en' ? 'muted' : ''}`}>
-                {value[l].map((t, i) => (
-                  <li key={i}>{t}</li>
-                ))}
-              </ol>
-            ))}
-          </div>
-        ) : (
-          '—'
-        )}
-      </dd>
-    </>
+    <Section title={<FormattedMessage id="rhythm.section.reviewSources" />}>
+      <Rows>
+        <Row label={<FormattedMessage id="rhythm.itemCol.review" />}>
+          <ItemReview review={review} />
+        </Row>
+        <Row label={<FormattedMessage id="rhythm.field.sources" />}>
+          <Sources list={sources} />
+        </Row>
+      </Rows>
+    </Section>
   );
 }
 
 function ActivitySummary({ a }: { a: Activity }) {
   const intl = useIntl();
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="rhythm.field.itemId" />
-      </dt>
-      <dd className="mono">
-        {a.id} · v{a.version}
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.status" />
-      </dt>
-      <dd>
-        <FormattedMessage id={`rhythm.itemStatus.${a.status}`} />
-      </dd>
-      <LocBlock label={<FormattedMessage id="rhythm.field.title" />} value={a.title} />
-      <LocBlock label={<FormattedMessage id="rhythm.field.summary" />} value={a.summary} />
-      <ListBlock label={<FormattedMessage id="rhythm.field.steps" />} value={a.steps} />
-      <LocBlock label={<FormattedMessage id="rhythm.field.safety" />} value={a.safety} />
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.age" />
-      </dt>
-      <dd>
-        <AgeText age={a.ageDays} /> ·{' '}
-        <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} /> ·{' '}
-        <FormattedMessage id={`rhythm.timeOfDay.${a.timeOfDay}`} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.needs" />
-      </dt>
-      <dd>{a.needs.map((n) => intl.formatMessage({ id: `rhythm.need.${n}` })).join(' · ')}</dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.interests" />
-      </dt>
-      <dd>
-        {a.interests.map((n) => intl.formatMessage({ id: `rhythm.interest.${n}` })).join(' · ') ||
-          '—'}
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.locales" />
-      </dt>
-      <dd>{a.locales.map((l) => l.toUpperCase()).join(' · ')}</dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.regions" />
-      </dt>
-      <dd>{a.regions.join(', ') || <FormattedMessage id="rhythm.allRegions" />}</dd>
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.review" />
-      </dt>
-      <dd>
-        <ItemReview review={a.review} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.sources" />
-      </dt>
-      <dd>
-        <Sources list={a.sources} />
-      </dd>
-    </dl>
+    <>
+      <Section title={<FormattedMessage id="rhythm.section.basics" />}>
+        <BothLangs
+          render={(lang) => (
+            <>
+              <p className="font-semibold">{a.title[lang] || '—'}</p>
+              <p className="text-sm">{a.summary[lang] || '—'}</p>
+              <Labeled label={<FormattedMessage id="rhythm.field.steps" />}>
+                <Bullets items={a.steps[lang]} ordered />
+              </Labeled>
+              <Labeled label={<FormattedMessage id="rhythm.field.safety" />}>
+                {a.safety?.[lang] || <span className="text-muted-foreground">—</span>}
+              </Labeled>
+            </>
+          )}
+        />
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.section.when" />}>
+        <Rows>
+          <Row label={<FormattedMessage id="rhythm.itemCol.age" />}>
+            <FormattedMessage
+              id="rhythm.ageDays"
+              values={{
+                from: a.ageDays.from,
+                to: a.ageDays.to,
+                mFrom: monthsOf(a.ageDays.from),
+                mTo: monthsOf(a.ageDays.to),
+              }}
+            />
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.duration" />}>
+            <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
+            {' · '}
+            <FormattedMessage id={`rhythm.timeOfDay.${a.timeOfDay}`} />
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.needs" />}>
+            {a.needs.map((n) => intl.formatMessage({ id: `rhythm.need.${n}` })).join(' · ')}
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.interests" />}>
+            {a.interests
+              .map((n) => intl.formatMessage({ id: `rhythm.interest.${n}` }))
+              .join(' · ') || '—'}
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.locales" />}>
+            {a.locales.map((l) => l.toUpperCase()).join(' · ')}
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.regions" />}>
+            {a.regions.join(', ') || <FormattedMessage id="rhythm.allRegions" />}
+          </Row>
+        </Rows>
+      </Section>
+      <ReviewAndSources review={a.review} sources={a.sources} />
+    </>
   );
 }
 
 function AgeCardSummary({ c }: { c: AgeCard }) {
+  const intl = useIntl();
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="rhythm.field.itemId" />
-      </dt>
-      <dd className="mono">
-        {c.id} · v{c.version}
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.age" />
-      </dt>
-      <dd>
+    <>
+      <Section
+        title={<FormattedMessage id="rhythm.section.basics" />}
+        actions={
+          <span className="text-sm text-muted-foreground tabular-nums">
+            <FormattedMessage
+              id="rhythm.ageDays"
+              values={{
+                from: c.ageDays.from,
+                to: c.ageDays.to,
+                mFrom: monthsOf(c.ageDays.from),
+                mTo: monthsOf(c.ageDays.to),
+              }}
+            />
+          </span>
+        }
+      >
+        <BothLangs
+          render={(lang) => (
+            <>
+              <p className="font-semibold">{c.title[lang] || '—'}</p>
+              <p className="text-sm">{c.body[lang] || '—'}</p>
+              <Labeled label={<FormattedMessage id="rhythm.field.tips" />}>
+                <Bullets items={c.tips[lang]} />
+              </Labeled>
+              <Labeled label={<FormattedMessage id="rhythm.field.watchFor" />}>
+                <Bullets items={c.watchFor[lang]} />
+              </Labeled>
+            </>
+          )}
+        />
+        <p className="mt-4 text-sm text-muted-foreground">
+          <FormattedMessage id="rhythm.field.interests" />
+          {': '}
+          {c.interests.map((n) => intl.formatMessage({ id: `rhythm.interest.${n}` })).join(' · ') ||
+            '—'}
+        </p>
+      </Section>
+      <ReviewAndSources review={c.review} sources={c.sources} />
+    </>
+  );
+}
+
+/** How the item reads in the app, in one language at a time. */
+function PreviewCard({
+  children,
+  onLang,
+  lang,
+}: {
+  children: ReactNode;
+  lang: Lang;
+  onLang: (l: Lang) => void;
+}) {
+  return (
+    <Section
+      title={<FormattedMessage id="rhythm.preview" />}
+      actions={<LangSwitch value={lang} onChange={onLang} />}
+    >
+      <div className="grid gap-3 rounded-xl border bg-background p-4 text-sm shadow-xs">
+        {children}
+      </div>
+    </Section>
+  );
+}
+
+function ActivityPreview({ a }: { a: Activity }) {
+  const [lang, setLang] = useState<Lang>('vi');
+  return (
+    <PreviewCard lang={lang} onLang={setLang}>
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill tone="info">
+          <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
+        </Pill>
+        <span className="text-xs text-muted-foreground">
+          <FormattedMessage id={`rhythm.timeOfDay.${a.timeOfDay}`} />
+        </span>
+      </div>
+      <p className="text-base font-semibold">{a.title[lang] || '—'}</p>
+      {a.summary[lang] && <p className="text-muted-foreground">{a.summary[lang]}</p>}
+      {a.steps[lang].length > 0 && <Bullets items={a.steps[lang]} ordered />}
+      {a.safety?.[lang] && (
+        <p className="rounded-lg bg-warning/10 px-3 py-2 text-[13px]">{a.safety[lang]}</p>
+      )}
+    </PreviewCard>
+  );
+}
+
+function AgeCardPreview({ c }: { c: AgeCard }) {
+  const [lang, setLang] = useState<Lang>('vi');
+  return (
+    <PreviewCard lang={lang} onLang={setLang}>
+      <span className="text-xs text-muted-foreground">
         <AgeText age={c.ageDays} />
-      </dd>
-      <LocBlock label={<FormattedMessage id="rhythm.field.title" />} value={c.title} />
-      <LocBlock label={<FormattedMessage id="rhythm.field.body" />} value={c.body} />
-      <ListBlock label={<FormattedMessage id="rhythm.field.tips" />} value={c.tips} />
-      <ListBlock label={<FormattedMessage id="rhythm.field.watchFor" />} value={c.watchFor} />
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.review" />
-      </dt>
-      <dd>
-        <ItemReview review={c.review} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.sources" />
-      </dt>
-      <dd>
-        <Sources list={c.sources} />
-      </dd>
-    </dl>
+      </span>
+      <p className="text-base font-semibold">{c.title[lang] || '—'}</p>
+      {c.body[lang] && <p className="text-muted-foreground">{c.body[lang]}</p>}
+      {c.tips[lang].length > 0 && <Bullets items={c.tips[lang]} />}
+      {c.watchFor[lang].length > 0 && (
+        <div className="rounded-lg bg-muted/60 px-3 py-2">
+          <p className="mb-1 text-[13px] font-medium">
+            <FormattedMessage id="rhythm.field.watchFor" />
+          </p>
+          <Bullets items={c.watchFor[lang]} />
+        </div>
+      )}
+    </PreviewCard>
   );
 }
 
 function HealthSummary({ health: h }: { health: ContentDraftData['health'] }) {
   const intl = useIntl();
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="rhythm.health.signs" values={{ n: h.signs.length, max: 20 }} />
-      </dt>
-      <dd>
-        <ul className="rh-list">
+    <Rows>
+      <Row
+        label={
+          <FormattedMessage id="rhythm.health.signs" values={{ n: h.signs.length, max: 20 }} />
+        }
+      >
+        <ul className="grid list-disc gap-1 pl-5">
           {h.signs.map((s) => (
             <li key={s.id}>
               {textOf(intl, s.label)}{' '}
               {s.maxAgeDays !== null && (
-                <span className="muted">
+                <span className="text-muted-foreground">
                   <FormattedMessage id="rhythm.health.under" values={{ n: s.maxAgeDays }} />
                 </span>
               )}
             </li>
           ))}
         </ul>
-      </dd>
-      <ListBlock
-        label={<FormattedMessage id="rhythm.field.whileWaiting" />}
-        value={h.whileWaiting}
-      />
-      <LocBlock label={<FormattedMessage id="rhythm.field.disclaimer" />} value={h.disclaimer} />
-      <dt>
-        <FormattedMessage id="rhythm.health.regions" values={{ n: h.regions.length }} />
-      </dt>
-      <dd>
-        {h.regions.map((r) => `${r.country} (${r.emergencyNumber})`).join(' · ') || '—'}
-        <span className="muted fa-sub-line">
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.field.whileWaiting" />}>
+        <Bullets items={intl.locale.startsWith('vi') ? h.whileWaiting.vi : h.whileWaiting.en} />
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.field.disclaimer" />}>
+        {textOf(intl, h.disclaimer) || '—'}
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.health.regions" values={{ n: h.regions.length }} />}>
+        <span className="tabular-nums">
+          {h.regions.map((r) => `${r.country} (${r.emergencyNumber})`).join(' · ') || '—'}
+        </span>
+        <span className="block text-xs text-muted-foreground">
           <FormattedMessage id="rhythm.health.otherRegions" />
         </span>
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.itemCol.review" />
-      </dt>
-      <dd>
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.itemCol.review" />}>
         <ItemReview review={h.review} />
-      </dd>
-      <dt>
-        <FormattedMessage id="rhythm.field.sources" />
-      </dt>
-      <dd>
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.field.sources" />}>
         <Sources list={h.sources} />
-      </dd>
-    </dl>
+      </Row>
+    </Rows>
   );
 }
 
@@ -2305,20 +3077,32 @@ function RulesTab({
   return (
     <>
       {!canView ? (
-        <Panel title={<FormattedMessage id="rhythm.rules" />}>
+        <Section title={<FormattedMessage id="rhythm.rules" />}>
           <LockNote>
             <FormattedMessage id="rhythm.rules.noAccess" />
           </LockNote>
-        </Panel>
+        </Section>
       ) : rules === undefined ? (
         <RulesLoader canEdit={canEdit} />
       ) : rules ? (
         <RulesPanel view={rules} canEdit={canEdit} onSaved={() => undefined} />
       ) : null}
-      <div className="cols cols--1-1">
-        <RankingPanel />
-        <HealthRoutingPanel content={content} />
-      </div>
+      <Section
+        title={<FormattedMessage id="rhythm.ranking" />}
+        collapsible
+        defaultOpen={false}
+        summary={<span className="font-mono text-xs">{rankingWeights.version}</span>}
+      >
+        <RankingDetails />
+      </Section>
+      <Section
+        title={<FormattedMessage id="rhythm.health.routing" />}
+        collapsible
+        defaultOpen={false}
+        summary={<FormattedMessage id="rhythm.health.first" />}
+      >
+        <HealthRoutingDetails content={content} />
+      </Section>
     </>
   );
 }
@@ -2357,13 +3141,13 @@ function ruleValue(intl: IntlShape, key: RuleKey, v: number) {
 export function RulesSummary({ rules: r }: { rules: RhythmRules }) {
   const intl = useIntl();
   return (
-    <dl className="kv">
+    <dl className="grid gap-x-6 gap-y-2 rounded-lg bg-muted/50 p-4 text-sm sm:grid-cols-[minmax(0,9rem)_minmax(0,1fr)]">
       {(['baseline', 'validDay', 'change', 'repeat'] as const).map((k) => (
-        <Fragment key={k}>
-          <dt>
+        <div key={k} className="contents">
+          <dt className="font-medium">
             <FormattedMessage id={`rhythm.rules.summary.${k}`} />
           </dt>
-          <dd>
+          <dd className="text-muted-foreground">
             <FormattedMessage
               id={`rhythm.rules.summary.${k}.value`}
               values={{
@@ -2375,7 +3159,7 @@ export function RulesSummary({ rules: r }: { rules: RhythmRules }) {
               }}
             />
           </dd>
-        </Fragment>
+        </div>
       ))}
     </dl>
   );
@@ -2396,6 +3180,7 @@ export function RulesPanel({
   const [saving, setSaving] = useState(false);
   const issues = useMemo(() => rulesIssues(rules), [rules]);
   const dirty = JSON.stringify(rules) !== JSON.stringify(view.rules);
+  useLeaveGuard(canEdit && dirty);
   const err = (key: string) => {
     const hit = issues.get(key);
     return hit ? ruleIssueText(intl, hit) : undefined;
@@ -2403,14 +3188,14 @@ export function RulesPanel({
   const crossIssues = [...issues.values()].filter((i) => i.path.length <= 1);
   const defaults = JSON.stringify(rules) === JSON.stringify(defaultRhythmRules);
   return (
-    <Panel
+    <Section
       title={
-        <span className="chips">
+        <>
           <FormattedMessage id="rhythm.rules" />
           <Pill tone="muted">{view.rules.version}</Pill>
-        </span>
+        </>
       }
-      note={
+      description={
         view.stored ? (
           <FormattedMessage
             id="rhythm.rules.updated"
@@ -2423,32 +3208,20 @@ export function RulesPanel({
           <FormattedMessage id="rhythm.rules.default" />
         )
       }
-      aside={
-        canEdit ? (
-          <div className="actions">
-            {!defaults && (
-              <Button
-                kind="ghost"
-                onClick={() => setRules({ ...defaultRhythmRules, version: rules.version })}
-              >
-                <FormattedMessage id="rhythm.rules.useDefaults" />
-              </Button>
-            )}
-            <Button
-              kind="primary"
-              disabled={!dirty || issues.size > 0}
-              onClick={() => setSaving(true)}
-            >
-              <FormattedMessage id="rhythm.rules.save" />
-            </Button>
-          </div>
+      hint={<FormattedMessage id="rhythm.rules.lead" />}
+      actions={
+        canEdit && !defaults ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setRules({ ...defaultRhythmRules, version: rules.version })}
+          >
+            <FormattedMessage id="rhythm.rules.useDefaults" />
+          </Button>
         ) : undefined
       }
     >
-      <div className="stack">
-        <p className="note">
-          <FormattedMessage id="rhythm.rules.lead" />
-        </p>
+      <div className="grid gap-6">
         {!canEdit && (
           <LockNote>
             <FormattedMessage id="rhythm.rules.readOnly" />
@@ -2462,55 +3235,80 @@ export function RulesPanel({
             mono
             max={40}
             path={['version']}
-            help={<FormattedMessage id="rhythm.rules.versionHelp" />}
+            hint={<FormattedMessage id="rhythm.rules.versionHelp" />}
+            className="sm:max-w-xs"
             onChange={(v) => setRules({ ...rules, version: v })}
           />
         )}
-        {canEdit && err('version') && <p className="error">{err('version')}</p>}
+        {canEdit && err('version') && <p className="text-xs text-destructive">{err('version')}</p>}
         {ruleGroups.map((g) => (
-          <section key={g.id} className="fa-section">
-            <h3 className="fa-section__title">
+          <div key={g.id} className="grid gap-3">
+            <h3 className="text-sm font-semibold">
               <FormattedMessage id={`rhythm.rules.group.${g.id}`} />
             </h3>
-            <div className="rh-rules">
+            <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
               {g.keys.map((k) =>
                 canEdit ? (
-                  <div key={k}>
+                  <div key={k} className="grid content-start gap-1">
                     <NumberInput
                       label={<FormattedMessage id={`rhythm.rule.${k}`} />}
                       value={rules[k]}
                       step={k === 'minDeltaShare' ? '0.01' : '1'}
                       path={[k]}
-                      help={<FormattedMessage id={`rhythm.rule.${k}.help`} />}
+                      hint={<FormattedMessage id={`rhythm.rule.${k}.help`} />}
                       onChange={(v) => setRules({ ...rules, [k]: v ?? Number.NaN })}
                     />
-                    {err(k) && <p className="error fa-err">{err(k)}</p>}
+                    {err(k) && <p className="text-xs text-destructive">{err(k)}</p>}
                   </div>
                 ) : (
-                  <div key={k} className="field">
-                    <span className="field__label">
+                  <div key={k} className="grid content-start gap-1">
+                    <span className="flex min-h-5 items-center gap-1.5 text-[13px] font-medium text-muted-foreground">
                       <FormattedMessage id={`rhythm.rule.${k}`} />
+                      <Hint>
+                        <FormattedMessage id={`rhythm.rule.${k}.help`} />
+                      </Hint>
                     </span>
-                    <strong>{ruleValue(intl, k, rules[k])}</strong>
-                    <span className="field__help">
-                      <FormattedMessage id={`rhythm.rule.${k}.help`} />
-                    </span>
+                    <strong className="text-base tabular-nums">
+                      {ruleValue(intl, k, rules[k])}
+                    </strong>
                   </div>
                 ),
               )}
             </div>
-          </section>
+          </div>
         ))}
         {crossIssues.length > 0 && (
-          <div role="alert">
+          <Notice tone="error">
             {crossIssues.map((i, k) => (
-              <p key={k} className="error">
-                {ruleIssueText(intl, i)}
-              </p>
+              <p key={k}>{ruleIssueText(intl, i)}</p>
             ))}
-          </div>
+          </Notice>
         )}
       </div>
+      {canEdit && (
+        <div className="sticky bottom-0 z-10 -mx-5 mt-6 -mb-5 flex flex-wrap items-center gap-3 rounded-b-xl border-t bg-card/95 px-5 py-3 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+          <span
+            className={cn(
+              'flex items-center gap-1.5 text-[13px]',
+              dirty ? 'text-warning' : 'text-muted-foreground',
+            )}
+            role="status"
+          >
+            {dirty && <span className="size-2 rounded-full bg-warning" aria-hidden="true" />}
+            <FormattedMessage id={dirty ? 'kit.unsaved' : 'rhythm.rules.noChanges'} />
+          </span>
+          <div className="ml-auto flex items-center gap-2">
+            {dirty && (
+              <Button variant="ghost" onClick={() => setRules(view.rules)}>
+                <FormattedMessage id="rhythm.rules.undo" />
+              </Button>
+            )}
+            <Button disabled={!dirty || issues.size > 0} onClick={() => setSaving(true)}>
+              <FormattedMessage id="rhythm.rules.save" />
+            </Button>
+          </div>
+        </div>
+      )}
       {saving && (
         <RulesDialog
           before={view.rules}
@@ -2519,7 +3317,7 @@ export function RulesPanel({
           onDone={onSaved}
         />
       )}
-    </Panel>
+    </Section>
   );
 }
 
@@ -2544,37 +3342,40 @@ function RulesDialog({
   );
   return (
     <Modal title={<FormattedMessage id="rhythm.rules.saveTitle" />} onClose={onClose}>
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id="rhythm.rules.saveNote" />
       </p>
-      <dl className="kv">
+      <dl className="grid gap-x-4 gap-y-1.5 rounded-lg bg-muted/50 p-3 text-sm sm:grid-cols-[minmax(0,1fr)_auto]">
         {changed.map((k) => (
-          <Fragment key={k}>
-            <dt>
+          <div key={k} className="contents">
+            <dt className="text-muted-foreground">
               <FormattedMessage
                 id={k === 'version' ? 'rhythm.rules.version' : `rhythm.rule.${k}`}
               />
             </dt>
-            <dd>
+            <dd className="font-medium tabular-nums">
               {k === 'version'
                 ? `${before.version} → ${rules.version}`
                 : `${ruleValue(intl, k, before[k])} → ${ruleValue(intl, k, rules[k])}`}
             </dd>
-          </Fragment>
+          </div>
         ))}
       </dl>
-      <ReasonField value={reason} onChange={setReason} required />
+      <NoteField
+        label={<FormattedMessage id="reason.labelRequired" />}
+        value={reason}
+        onChange={setReason}
+      />
       {error && (
-        <p className="error" role="alert">
+        <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
-        </p>
+        </Notice>
       )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      <DialogActions>
+        <Button variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          kind="primary"
           disabled={busy || !reasonOk(reason)}
           onClick={() => {
             setBusy(true);
@@ -2582,6 +3383,7 @@ function RulesDialog({
             saveRhythmRules(api, rules, reason)
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
+                toast.success(intl.formatMessage({ id: 'rhythm.toast.rules' }));
                 onClose();
                 onDone();
               })
@@ -2591,34 +3393,21 @@ function RulesDialog({
         >
           <FormattedMessage id="rhythm.rules.save" />
         </Button>
-      </div>
+      </DialogActions>
     </Modal>
   );
 }
 
-/** PN04 "Xếp hạng gợi ý": the weights are versioned in code (`rankingWeights`). */
-function RankingPanel() {
+/** PN04 "Xếp hạng gợi ý": the weights ship with the app (`rankingWeights`), read-only here. */
+export function RankingDetails() {
   const w = rankingWeights;
   return (
-    <Panel
-      title={
-        <span className="chips">
-          <FormattedMessage id="rhythm.ranking" />
-          <Pill tone="muted">{w.version}</Pill>
-        </span>
-      }
-    >
-      <dl className="kv">
-        <dt>
-          <FormattedMessage id="rhythm.ranking.filter" />
-        </dt>
-        <dd>
+    <div className="grid gap-4">
+      <Rows>
+        <Row label={<FormattedMessage id="rhythm.ranking.filter" />}>
           <FormattedMessage id="rhythm.ranking.filter.value" />
-        </dd>
-        <dt>
-          <FormattedMessage id="rhythm.ranking.score" />
-        </dt>
-        <dd>
+        </Row>
+        <Row label={<FormattedMessage id="rhythm.ranking.score" />}>
           <FormattedMessage
             id="rhythm.ranking.score.value"
             values={{
@@ -2629,63 +3418,41 @@ function RankingPanel() {
               notSuitable: -w.notSuitable,
             }}
           />
-        </dd>
-        <dt>
-          <FormattedMessage id="rhythm.ranking.tie" />
-        </dt>
-        <dd>
+        </Row>
+        <Row label={<FormattedMessage id="rhythm.ranking.tie" />}>
           <FormattedMessage id="rhythm.ranking.tie.value" />
-        </dd>
-      </dl>
+        </Row>
+      </Rows>
       <LockNote>
         <FormattedMessage id="rhythm.ranking.code" />
       </LockNote>
-    </Panel>
+    </div>
   );
 }
 
 /** PN04 "Định tuyến sức khoẻ": always first, always free; edited in the content pack. */
-function HealthRoutingPanel({ content }: { content: RhythmContent | null }) {
+export function HealthRoutingDetails({ content }: { content: RhythmContent | null }) {
   const intl = useIntl();
   const h = content?.health;
   return (
-    <Panel
-      title={
-        <span className="chips">
-          <FormattedMessage id="rhythm.health.routing" />
-          <Pill tone="info">
-            <FormattedMessage id="rhythm.health.first" />
-          </Pill>
-        </span>
-      }
-    >
-      <dl className="kv">
-        <dt>
-          <FormattedMessage id="rhythm.health.signsShort" />
-        </dt>
-        <dd>{h ? h.signs.map((s) => textOf(intl, s.label)).join(' · ') : '—'}</dd>
-        <dt>
-          <FormattedMessage id="rhythm.health.action" />
-        </dt>
-        <dd>
-          <FormattedMessage id="rhythm.health.action.value" />
-        </dd>
-        <dt>
-          <FormattedMessage id="rhythm.health.countries" />
-        </dt>
-        <dd>
+    <Rows>
+      <Row label={<FormattedMessage id="rhythm.health.signsShort" />}>
+        {h ? h.signs.map((s) => textOf(intl, s.label)).join(' · ') : '—'}
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.health.action" />}>
+        <FormattedMessage id="rhythm.health.action.value" />
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.health.countries" />}>
+        <span className="tabular-nums">
           {h?.regions.map((r) => `${r.country} (${r.emergencyNumber})`).join(' · ') || '—'}
-          <span className="muted fa-sub-line">
-            <FormattedMessage id="rhythm.health.otherRegions" />
-          </span>
-        </dd>
-        <dt>
-          <FormattedMessage id="rhythm.health.noAi" />
-        </dt>
-        <dd>
-          <FormattedMessage id="rhythm.health.noAi.value" />
-        </dd>
-      </dl>
-    </Panel>
+        </span>
+        <span className="block text-xs text-muted-foreground">
+          <FormattedMessage id="rhythm.health.otherRegions" />
+        </span>
+      </Row>
+      <Row label={<FormattedMessage id="rhythm.health.noAi" />}>
+        <FormattedMessage id="rhythm.health.noAi.value" />
+      </Row>
+    </Rows>
   );
 }

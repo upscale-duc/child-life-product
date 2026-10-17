@@ -62,6 +62,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { Toaster } from '@/components/ui/sonner';
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -317,6 +318,8 @@ export function Shell({
               locale={locale}
               onLocale={onLocale}
             />
+            {/* "Đã lưu", "Đã gửi duyệt": short confirmations after an action (content screens). */}
+            <Toaster position="bottom-right" closeButton />
           </SidebarProvider>
         </TooltipProvider>
       </BadgesContext.Provider>

@@ -2,13 +2,26 @@ import { firstAidPackSchema, type FirstAidPack } from '@child-life/contracts';
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider, createIntl } from 'react-intl';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { describe, expect, it } from 'vitest';
 import { ApiContext, type Api, type FirstAidView } from '../src/api';
 import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
 import { Sidebar } from '../src/Shell';
-import { ActDialog, FirstAidBody, reviewFrom } from '../src/screens/FirstAid';
 import {
+  ActDialog,
+  FirstAidBody,
+  GeneralSummary,
+  HistoryTable,
+  Library,
+  SituationList,
+  canReuseVersion,
+  draftActions,
+  issuePlace,
+  reviewFrom,
+} from '../src/screens/FirstAid';
+import {
+  GeneralEditor,
   IssuesContext,
   LibraryContext,
   SituationEditor,
@@ -23,7 +36,9 @@ import {
 import { levelsForRoles, staffRoles, type StaffRole } from './fixtures';
 
 // Sơ cứu on the portal (D-058, P-141): status, history, the two-person approval with the medical
-// review, permissions, and the editor's pack passing the shared schema. Server-rendered, no network.
+// review, permissions, and the editor's pack passing the shared schema. Server-rendered, no network:
+// Radix menus, folded sections and dialogs do not render here, so what sits behind "⋯" is checked
+// through the functions that build it (draftActions, canReuseVersion).
 const noApi: Api = { call: () => Promise.reject(new Error('no network in tests')) };
 
 function render(node: ReactNode, roles: StaffRole[] = ['admin'], locale: 'vi' | 'en' = 'vi') {
@@ -292,36 +307,63 @@ describe('Sơ cứu: messages (D-012)', () => {
       ...['negative', 'warning', 'positive'].map((x) => `firstAid.tone.${x}`),
       ...['infant', 'child'].map((x) => `firstAid.cpr.${x}`),
       'firstAid.tool.seizureTimer',
+      'firstAid.toast.saved',
+      ...['submit', 'approve', 'reject', 'discard', 'rollback'].map((a) => `firstAid.toast.${a}`),
     ];
     for (const id of ids) {
       expect(messages.vi[id], id).toBeTruthy();
       expect(messages.en[id], id).toBeTruthy();
     }
   });
+
+  it('no development notes in the Sơ cứu copy (vi and en)', () => {
+    const devNote =
+      /\b(dev|figma|seed|engineering)\b|môi trường|environment|kỹ thuật|chưa vẽ|\b[DPRGQ]-\d{3}\b/i;
+    for (const catalog of [messages.vi, messages.en]) {
+      for (const [id, copy] of Object.entries(catalog)) {
+        if (id.startsWith('firstAid.')) expect(copy, id).not.toMatch(devNote);
+      }
+    }
+  });
 });
 
 describe('Sơ cứu: status, history and actions', () => {
-  it('shows the version in use, the open version and the history', () => {
+  it('shows the version in use in one line, the open draft as a notice, then the list', () => {
     const html = text(render(body(view, true, true)));
     expect(html).toContain('● Bản đang dùng · fa_20261010_01');
     expect(html).toContain('Xuất bản 09:00 10/10/2026 · 2 tình huống');
-    expect(html).toContain('2 tình huống');
     expect(html).toContain('Chờ duyệt Bản đang soạn');
     expect(html).toContain('Soạn: Minh Phạm');
     expect(html).toContain('BS. Hà trả lại: “Thiếu nguồn”');
     expect(html).toContain('Thêm biến thể từ 1 tuổi');
-    // History: published and retired rows; the open version is not repeated there.
-    expect(html).toContain('Lịch sử phiên bản');
-    expect(html).toContain('fa_20261010_01 Đang dùng 2 Soạn: Minh Phạm · Duyệt: BS. Hà');
-    expect(html).toContain('fa_20261001_01 Đã thay 1 Soạn: Linh Trần · Duyệt: BS. Hà');
-    // Only the replaced version can come back.
-    expect(html.match(/Dùng lại bản này/g)).toHaveLength(1);
-    // The list of situations with badges and counts.
+    // Tabs (shadcn) with counts.
+    expect(html).toContain('Tình huống 2 Cài đặt chung Thư viện ảnh 5');
+    // The list of situations: code, name and lead, group, badges, counts.
     expect(html).toContain(
       'TH02 Hóc dị vật Bé ho sặc, khó thở Khẩn cấp Khẩn cấp 2 biến thể · 2 bước',
     );
     expect(html).toContain('TH21 Sốt');
     expect(html).toContain('Theo dõi');
+    expect(render(body(view, true, true))).toContain('placeholder="Tìm theo tên hoặc mã"');
+    // History is folded away: its title and size show, its rows (and notes) do not.
+    expect(html).toContain('Lịch sử phiên bản');
+    expect(html).toContain('2 phiên bản');
+    expect(html).not.toContain('Bản thử');
+  });
+
+  it('the history table: published and replaced versions, the open one not repeated', () => {
+    const history = (canApprove: boolean) =>
+      render(<HistoryTable view={view} canApprove={canApprove} onRollback={() => undefined} />);
+    const html = text(history(true));
+    expect(html).toContain('fa_20261010_01 Đang dùng 2 Soạn: Minh Phạm · Duyệt: BS. Hà');
+    expect(html).toContain('fa_20261001_01 Đã thay 1 Soạn: Linh Trần · Duyệt: BS. Hà');
+    expect(html).toContain('Bản thử');
+    // Only the replaced version can come back ("Dùng lại bản này" in its row menu).
+    expect(canReuseVersion(view, view.history[1]!)).toBe(false);
+    expect(canReuseVersion(view, view.history[2]!)).toBe(true);
+    expect(history(true)).toContain('aria-label="Thao tác cho fa_20261001_01"');
+    expect(history(true)).not.toContain('aria-label="Thao tác cho fa_20261010_01"');
+    expect(history(false)).not.toContain('Thao tác cho');
   });
 
   it('nothing published yet: an empty state, and "Sửa" for editors', () => {
@@ -334,31 +376,34 @@ describe('Sơ cứu: status, history and actions', () => {
   it('actions follow the permission and the status', () => {
     // Xem only (Hỗ trợ): nothing to press.
     const viewer = text(render(body(view, false, false), ['support']));
-    for (const label of ['Sửa', 'Gửi duyệt', 'Huỷ nháp', 'Duyệt & xuất bản', 'Trả lại']) {
+    for (const label of ['Sửa', 'Gửi duyệt', 'Huỷ bản nháp', 'Duyệt & xuất bản', 'Trả lại']) {
       expect(viewer).not.toContain(label);
     }
-    expect(viewer).not.toContain('Dùng lại bản này');
+    expect(draftActions('pending', false, false)).toEqual({ next: [], more: [] });
+    expect(draftActions('draft', false, false)).toEqual({ next: [], more: [] });
     // Sửa (Vận hành) on a pending version: may edit, may not approve or send back.
     const editor = text(render(body(view, true, false), ['ops']));
-    expect(editor).toContain('Sửa bản nháp');
+    expect(editor).toContain('Tiếp tục sửa bản nháp');
     expect(editor).not.toContain('Duyệt & xuất bản');
     expect(editor).not.toContain('Trả lại');
     expect(editor).not.toContain('Gửi duyệt'); // already submitted
-    // A draft: Gửi duyệt and Huỷ nháp for editors, nothing to approve yet.
+    expect(draftActions('pending', true, false)).toEqual({ next: [], more: [] });
+    // A draft: Gửi duyệt as the next step, Huỷ bản nháp behind "⋯", nothing to approve yet.
     const draft: FirstAidView = { ...view, draft: { ...view.draft!, status: 'draft' } };
-    const editorDraft = text(render(body(draft, true, false), ['ops']));
-    expect(editorDraft).toContain('Gửi duyệt');
-    expect(editorDraft).toContain('Huỷ nháp');
-    // Duyệt (chuyên gia) on a pending version.
+    const editorDraft = render(body(draft, true, false), ['ops']);
+    expect(text(editorDraft)).toContain('Gửi duyệt');
+    expect(editorDraft).toContain('aria-label="Thao tác khác"');
+    expect(draftActions('draft', true, false)).toEqual({ next: ['submit'], more: ['discard'] });
+    // Duyệt (chuyên gia) on a pending version: approve first, send back next to it.
     const approver = text(render(body(view, true, true), ['expert']));
-    expect(approver).toContain('Duyệt & xuất bản');
-    expect(approver).toContain('Trả lại');
-    expect(approver).toContain('Dùng lại bản này');
+    expect(approver).toContain('Duyệt & xuất bản Trả lại');
+    expect(draftActions('pending', true, true)).toEqual({ next: ['approve', 'reject'], more: [] });
   });
 
   it('a situation page shows the phone preview of what the app shows', () => {
     const html = text(render(body(view, false, false, 'choking')));
     expect(html).toContain('Tất cả tình huống');
+    expect(html).toContain('TH02 · Hóc dị vật');
     expect(html).toContain('Xem trước trên app');
     expect(html).toContain('Hóc dị vật Bé ho sặc, khó thở Dưới 1 tuổi Từ 1 tuổi');
     expect(html).toContain('Gọi 115 nếu bé không thở');
@@ -368,6 +413,10 @@ describe('Sơ cứu: status, history and actions', () => {
     expect(render(body(view, false, false, 'choking'))).toContain(
       'https://example.test/hoc-di-vat_1a2b3c4d.webp',
     );
+    // Read-only facts; ids and codes folded under "Nâng cao"; "Sửa" only for editors.
+    expect(html).toContain('Nâng cao');
+    expect(html).not.toContain('Sửa');
+    expect(text(render(body(view, true, false, 'choking')))).toContain('Tiếp tục sửa bản nháp');
   });
 });
 
@@ -391,6 +440,10 @@ describe('Sơ cứu: approving needs the medical review on prod', () => {
     );
     const reject = text(render(<ActDialog act="reject" requireReview {...props} />));
     expect(reject).not.toContain('Người rà soát');
+    expect(reject).toContain('Lý do (bắt buộc, ghi vào nhật ký)');
+    // Where the server does not require it, the review is optional, said plainly.
+    const optional = text(render(<ActDialog act="approve" requireReview={false} {...props} />));
+    expect(optional).toContain('Rà soát chuyên môn (không bắt buộc)');
   });
 
   it('review fields are required when the server requires them', () => {
@@ -408,7 +461,7 @@ describe('Sơ cứu: approving needs the medical review on prod', () => {
       ok: true,
       review: { reviewer: 'BS. Hà', reviewedOn: '2026-10-12', sources: ['WHO 2024', 'Bộ Y tế'] },
     });
-    // Dev: no review is fine; a half-filled one is not.
+    // Not required: no review is fine; a half-filled one is not.
     expect(reviewFrom(empty, false)).toEqual({ ok: true, review: null });
     expect(reviewFrom({ ...empty, reviewer: 'B' }, false).ok).toBe(false);
   });
@@ -490,37 +543,83 @@ describe('Sơ cứu: the editor', () => {
     expect(issueText(intl, check.issues.get('situations.1.variants')!)).toContain('đặt nhãn');
   });
 
+  const editor = (p: FirstAidPack, index: number, show: boolean) =>
+    render(
+      <IssuesContext.Provider value={{ issues: validatePack(p).issues, show }}>
+        <LibraryContext.Provider value={{ images, canUpload: true, onUploaded: () => undefined }}>
+          <SituationEditor
+            pack={p}
+            index={index}
+            edit={() => undefined}
+            idLocked
+            variant={0}
+            onVariant={() => undefined}
+          />
+        </LibraryContext.Provider>
+      </IssuesContext.Provider>,
+    );
+
   it('the editor shows vi and en side by side, and per-field errors once saving was tried', () => {
     const broken = structuredClone(pack);
     broken.situations[1]!.lead.en = '';
-    const editor = (show: boolean) =>
-      render(
-        <IssuesContext.Provider value={{ issues: validatePack(broken).issues, show }}>
-          <LibraryContext.Provider value={{ images, canUpload: true, onUploaded: () => undefined }}>
-            <SituationEditor
-              pack={broken}
-              index={1}
-              edit={() => undefined}
-              idLocked
-              variant={0}
-              onVariant={() => undefined}
-            />
-          </LibraryContext.Provider>
-        </IssuesContext.Provider>,
-      );
-    const html = editor(true);
+    const html = editor(broken, 1, true);
     expect(html).toContain('value="Sốt"');
     expect(html).toContain('value="Fever"');
-    expect(text(html)).toContain('Tên tình huống Tiếng Việt English');
-    expect(text(html)).toContain('Mô tả ngắn Tiếng Việt English Bắt buộc.');
+    expect(text(html)).toContain('Tên tình huống Tiếng Việt 3/60 English 5/60');
+    expect(text(html)).toContain('Mô tả ngắn');
+    expect(text(html)).toContain('English 0/120 Bắt buộc.');
     expect(html).toContain('https://example.test/icon-fever_3c4d5e6f.webp');
     expect(text(html)).toContain('Bước 1');
     expect(text(html)).toContain('Thêm lưu ý');
-    expect(text(editor(false))).not.toContain('Bắt buộc.');
+    expect(text(editor(broken, 1, false))).not.toContain('Bắt buộc.');
+    // Sections in working order; ids, codes and keywords folded under "Nâng cao".
+    expect(text(html)).toMatch(
+      /Thông tin chung.*Biến thể.*Các bước \(1\/8\).*Lưu ý \(0\/4\).*Nâng cao/,
+    );
+    expect(html).not.toContain('value="TH21"');
     // shadcn controls (D-063): no browser select, checkbox or arrow buttons left.
     expect(html).not.toMatch(/<select[^>]*class="field__input|class="icon-btn"/);
     expect(html).toContain('data-slot="select-trigger"');
     expect(html).toContain('data-slot="checkbox"');
+  });
+
+  it('long step lists fold to one line per step; a step or section with an issue opens', () => {
+    const long = structuredClone(pack);
+    const steps = long.situations[1]!.variants[0]!.steps;
+    steps.push(
+      { ...blankStep(), title: t('Lau mát', 'Sponge'), body: t('Bằng nước ấm.', 'Warm water.') },
+      { ...blankStep(), title: t('Cho bé bú', 'Feed'), body: t('Bú nhiều hơn.', 'More often.') },
+    );
+    const folded = editor(long, 1, false);
+    // Step 1 open; steps 2 and 3 show their title on one line only.
+    expect(folded).toContain('value="Đo nhiệt độ"');
+    expect(text(folded)).toContain('Cho bé bú');
+    expect(folded).not.toContain('value="Cho bé bú"');
+    expect(text(folded)).toContain('Mở tất cả');
+    // An issue in step 3 and in a keyword: both open once saving was tried.
+    long.situations[1]!.variants[0]!.steps[2]!.body.en = '';
+    long.situations[1]!.keywords = [t('', 'heat')];
+    const open = editor(long, 1, true);
+    expect(open).toContain('value="Cho bé bú"');
+    expect(open).toContain('value="heat"');
+    expect(open).toContain('data-path="situations.1.keywords.0.vi"');
+  });
+
+  it('the issues summary names the place in words', () => {
+    const intl = createIntl({ locale: 'vi', messages: messages.vi });
+    const at = (path: Array<string | number>) =>
+      issuePlace(intl, pack, { path, code: 'too_small', message: '' });
+    expect(at(['situations', 0, 'variants', 0, 'steps', 0, 'count'])).toBe(
+      'TH02 Hóc dị vật · Dưới 1 tuổi · Bước 1 · Số lần đếm (2–10)',
+    );
+    expect(at(['situations', 0, 'variants', 1, 'steps', 0, 'chips', 0, 'label', 'vi'])).toBe(
+      'TH02 Hóc dị vật · Từ 1 tuổi · Bước 1 · Nhãn nhỏ 1 · Tiếng Việt',
+    );
+    expect(at(['situations', 1, 'variants', 0, 'callouts', 1, 'items', 2, 'en'])).toBe(
+      'TH21 Sốt · Biến thể 1 · Lưu ý 2 · Ý 3 · English',
+    );
+    expect(at(['categories', 1, 'title', 'en'])).toBe('Sức khoẻ · Tên nhóm · English');
+    expect(at(['emergencyNumber'])).toBe('Số gọi cấp cứu');
   });
 
   it('picture names come from the file name, kebab-cased', () => {
@@ -530,6 +629,61 @@ describe('Sơ cứu: the editor', () => {
     expect(kebabName('icon-fever.png', true)).toBe('icon-fever');
     expect(kebabName('x'.repeat(60) + '.png', false)).toHaveLength(40);
     expect(kebabName('!.png', false)).toBe('anh');
+  });
+});
+
+describe('Sơ cứu: list, settings and pictures', () => {
+  const withLibrary = (node: ReactNode) => (
+    <TooltipProvider>
+      <LibraryContext.Provider value={{ images, canUpload: true, onUploaded: () => undefined }}>
+        {node}
+      </LibraryContext.Provider>
+    </TooltipProvider>
+  );
+
+  it('while editing, the list adds situations and each row has its own menu', () => {
+    const list = (editing: boolean) =>
+      render(
+        withLibrary(
+          <SituationList
+            pack={pack}
+            editing={editing}
+            edit={() => undefined}
+            issues={validatePack({ ...pack, emergencyNumber: '' }).list}
+            onOpen={() => undefined}
+            onAdd={() => undefined}
+            onRemove={() => undefined}
+          />,
+        ),
+      );
+    expect(text(list(true))).toContain('Thêm tình huống');
+    expect(list(true)).toContain('aria-label="Thao tác cho Hóc dị vật"');
+    expect(text(list(false))).not.toContain('Thêm tình huống');
+    expect(list(false)).not.toContain('Thao tác cho');
+  });
+
+  it('the settings: read-only summary, and the editor with groups folded to one line', () => {
+    const summary = text(render(withLibrary(<GeneralSummary pack={pack} />)));
+    expect(summary).toContain('Số khẩn cấp 115');
+    expect(summary).toContain('Khẩn cấp Lưới thẻ 1 tình huống');
+    expect(summary).toContain('khó thở');
+    const editor = render(withLibrary(<GeneralEditor pack={pack} edit={() => undefined} />));
+    expect(editor).toContain('value="115"');
+    expect(text(editor)).toContain('Khẩn cấp Lưới thẻ · Đỏ · 1 tình huống');
+    expect(text(editor)).toContain('Thêm nhóm');
+    expect(editor).toContain('value="khó thở"');
+  });
+
+  it('the picture library: a grid with how often each picture is used, upload behind a button', () => {
+    const html = render(withLibrary(<Library pack={pack} canUpload />));
+    expect(text(html)).toContain('Thư viện ảnh');
+    expect(text(html)).toContain('5 ảnh');
+    expect(text(html)).toContain('Tải ảnh lên');
+    expect(text(html)).toContain('vo-lung_2b3c4d5e Dùng ở 1 tình huống');
+    expect(html).toContain('https://example.test/sot_4d5e6f70.webp');
+    expect(text(render(withLibrary(<Library pack={pack} canUpload={false} />)))).not.toContain(
+      'Tải ảnh lên',
+    );
   });
 });
 

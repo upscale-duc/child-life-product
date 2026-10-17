@@ -703,7 +703,7 @@ export async function contentSeed(db: Firestore, staff: Staff | null, data: unkn
         data: item.data,
         status: 'draft',
         reviewerLabel: item.reviewerLabel,
-        notes: 'Bản nháp kỹ thuật (D-073 #2) · chờ chuyên môn duyệt',
+        notes: 'Bản nháp mẫu · chờ chuyên môn duyệt',
         createdAt: now,
         createdByUid: s.uid,
         createdByName: s.name,

@@ -16,19 +16,19 @@ import {
   type RhythmDoc,
   type RhythmRules,
 } from '@child-life/contracts';
-import { useContext, useId, useState, type ReactNode } from 'react';
+import { Plus, X } from 'lucide-react';
+import { createContext, useContext, useId, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/lib/utils';
 import type { Api, ContentDraftData, ReferenceDraftData, RhythmReview } from '../api';
-import { Button, Segmented, reasonOk } from '../ui';
-import {
-  IssuesContext,
-  LocField,
-  OptionalLocField,
-  issueText,
-  moveItem,
-  pathKey,
-  type Issue,
-} from './FirstAidEditor';
+import { Field, Hint, SearchInput, Section } from '../content-kit';
+import { reasonOk } from '../ui';
 import { CheckRow, FieldSelect, IconButton } from './form-controls';
 
 /**
@@ -36,7 +36,60 @@ import { CheckRow, FieldSelect, IconButton } from './form-controls';
  * activities, age cards and health routing. Drafts are checked with the shared contract
  * (`rhythmDraftSchema`) in the browser before "Lưu nháp"; the server checks them again, and the
  * approval re-validates the published document. Pure helpers here are what the tests drive.
+ * The forms are built from the content kit (D-063): sections, fields with hints, and what is used
+ * less (ids, versions, sources) folded away.
  */
+
+// ---------- Issues (the schema's problems, keyed by their dotted path) ----------
+
+export interface Issue {
+  path: Array<string | number>;
+  code: string;
+  message: string;
+  origin?: string;
+  minimum?: number;
+  maximum?: number;
+  expected?: string;
+}
+
+export const pathKey = (path: ReadonlyArray<PropertyKey>) => path.map(String).join('.');
+
+/** The problems of the document being edited, and whether to show them yet (after "Lưu nháp"). */
+export const IssuesContext = createContext<{ issues: Map<string, Issue>; show: boolean }>({
+  issues: new Map(),
+  show: false,
+});
+
+/** Moves item `i` by `by` places (−1 up, +1 down); out of range does nothing. */
+export function moveItem<T>(list: T[], i: number, by: number): void {
+  const j = i + by;
+  if (j < 0 || j >= list.length) return;
+  const [item] = list.splice(i, 1);
+  list.splice(j, 0, item!);
+}
+
+/** A readable message for one schema issue (the schema's own text is for engineers). */
+function issueText(intl: IntlShape, issue: Issue): string {
+  const f = (id: string, values?: Record<string, number>) =>
+    intl.formatMessage({ id: `rhythm.err.${id}` }, values);
+  if (issue.code === 'custom') return f(issue.message === 'duplicate id' ? 'duplicate' : 'invalid');
+  const min = issue.minimum ?? 0;
+  const max = issue.maximum ?? 0;
+  if (issue.code === 'too_small') {
+    if (issue.origin === 'string') return min <= 1 ? f('required') : f('tooShort', { min });
+    if (issue.origin === 'array') return f('tooFew', { min });
+    return f('min', { min });
+  }
+  if (issue.code === 'too_big') {
+    if (issue.origin === 'string') return f('tooLong', { max });
+    if (issue.origin === 'array') return f('tooMany', { max });
+    return f('max', { max });
+  }
+  if (issue.code === 'invalid_format') return f('format');
+  if (issue.code === 'invalid_type')
+    return issue.expected === 'number' ? f('number') : f('required');
+  return f('invalid');
+}
 
 type Path = Array<string | number>;
 export type Edit<T> = (fn: (data: T) => void) => void;
@@ -525,9 +578,22 @@ function useHasIssue(prefix: Path, lang?: Lang): boolean {
   return false;
 }
 
-function FieldError({ text }: { text?: string }) {
-  return text ? <p className="error fa-err">{text}</p> : null;
+/** Whether one of these fields, or anything under them, has a problem (opens a folded section). */
+function useIssueUnder(paths: Path[]): boolean {
+  const { issues, show } = useContext(IssuesContext);
+  if (!show) return false;
+  const keys = paths.map(pathKey);
+  for (const key of issues.keys()) {
+    if (keys.some((k) => key === k || key.startsWith(`${k}.`))) return true;
+  }
+  return false;
 }
+
+function FieldError({ text, className }: { text?: string; className?: string }) {
+  return text ? <p className={cn('text-xs text-destructive', className)}>{text}</p> : null;
+}
+
+const monoInput = 'font-mono text-[13px]';
 
 export function TextInput({
   label,
@@ -535,48 +601,55 @@ export function TextInput({
   onChange,
   path,
   help,
+  hint,
   mono,
   disabled,
   max,
   counter,
+  multiline,
+  className,
 }: {
   label: ReactNode;
   value: string;
   onChange: (v: string) => void;
   path: Path;
   help?: ReactNode;
+  hint?: ReactNode;
   mono?: boolean;
   disabled?: boolean;
   max?: number;
   /** Shows "n/limit" and turns red past it (PN02 notice). */
   counter?: number;
+  /** Two lines (a notification body). */
+  multiline?: boolean;
+  className?: string;
 }) {
   const id = useId();
   const err = useRhythmIssue(path);
-  const n = charCount(value);
+  const props = {
+    id,
+    value,
+    maxLength: max,
+    disabled,
+    'aria-invalid': err ? true : undefined,
+    onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+  };
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-        {counter !== undefined && (
-          <span className={`rh-counter ${n > counter ? 'error' : 'muted'}`}>
-            {' '}
-            {n}/{counter}
-          </span>
-        )}
-      </label>
-      <input
-        id={id}
-        className={`field__input ${mono ? 'mono' : ''}`}
-        value={value}
-        maxLength={max}
-        disabled={disabled}
-        aria-invalid={err ? true : undefined}
-        onChange={(e) => onChange(e.target.value)}
-      />
-      <FieldError text={err} />
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    <Field
+      label={label}
+      htmlFor={id}
+      hint={hint}
+      help={help}
+      error={err}
+      counter={counter !== undefined ? { n: charCount(value), max: counter } : undefined}
+      className={className}
+    >
+      {multiline ? (
+        <Textarea rows={2} className="min-h-0" {...props} />
+      ) : (
+        <Input className={cn(mono && monoInput)} {...props} />
+      )}
+    </Field>
   );
 }
 
@@ -588,6 +661,8 @@ export function NumberInput({
   onChange,
   path,
   help,
+  hint,
+  unit,
   nullable,
   placeholder,
   step,
@@ -597,6 +672,9 @@ export function NumberInput({
   onChange: (v: number | null) => void;
   path: Path;
   help?: ReactNode;
+  hint?: ReactNode;
+  /** Words after the box ("ngày sau dự sinh"). */
+  unit?: ReactNode;
   nullable?: boolean;
   placeholder?: string;
   step?: string;
@@ -604,25 +682,23 @@ export function NumberInput({
   const id = useId();
   const err = useRhythmIssue(path);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        id={id}
-        className="field__input rh-num"
-        type="number"
-        step={step ?? '1'}
-        placeholder={placeholder}
-        value={value === null || Number.isNaN(value) ? '' : value}
-        aria-invalid={err ? true : undefined}
-        onChange={(e) =>
-          onChange(nullable && e.target.value === '' ? null : toNumber(e.target.value))
-        }
-      />
-      <FieldError text={err} />
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    <Field label={label} htmlFor={id} hint={hint} help={help} error={err}>
+      <div className="flex items-center gap-2">
+        <Input
+          id={id}
+          type="number"
+          step={step ?? '1'}
+          placeholder={placeholder}
+          className="w-28 tabular-nums"
+          value={value === null || Number.isNaN(value) ? '' : value}
+          aria-invalid={err ? true : undefined}
+          onChange={(e) =>
+            onChange(nullable && e.target.value === '' ? null : toNumber(e.target.value))
+          }
+        />
+        {unit && <span className="text-sm text-muted-foreground">{unit}</span>}
+      </div>
+    </Field>
   );
 }
 
@@ -632,12 +708,14 @@ export function LinesInput({
   value,
   onChange,
   path,
+  help,
   max = 12,
 }: {
   label: ReactNode;
   value: string[];
   onChange: (v: string[]) => void;
   path: Path;
+  help?: ReactNode;
   max?: number;
 }) {
   const id = useId();
@@ -651,20 +729,14 @@ export function LinesInput({
         .map((_, i) => issues.get(pathKey([...path, i])))
         .find((x): x is Issue => x !== undefined)
     : undefined;
+  const err = errList ?? (itemErr ? rhythmIssueText(intl, itemErr) : undefined);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}{' '}
-        <span className={value.length > max ? 'error' : 'muted'}>
-          {value.length}/{max}
-        </span>
-      </label>
-      <textarea
+    <Field label={label} htmlFor={id} counter={{ n: value.length, max }} help={help} error={err}>
+      <Textarea
         id={id}
-        className="field__input"
         rows={Math.min(8, Math.max(3, value.length + 1))}
         value={text}
-        aria-invalid={errList || itemErr ? true : undefined}
+        aria-invalid={err ? true : undefined}
         onChange={(e) => {
           setText(e.target.value);
           onChange(
@@ -675,11 +747,30 @@ export function LinesInput({
           );
         }}
       />
-      <p className="field__help">
-        <FormattedMessage id="rhythm.field.onePerLine" />
-      </p>
-      <FieldError text={errList ?? (itemErr ? rhythmIssueText(intl, itemErr) : undefined)} />
-    </div>
+    </Field>
+  );
+}
+
+/** A group of fields under one label (a `<fieldset>`), with an optional "?" hint. */
+function Group({
+  label,
+  hint,
+  children,
+  className,
+}: {
+  label: ReactNode;
+  hint?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <fieldset className={cn('min-w-0', className)}>
+      <legend className="mb-2 flex items-center gap-1.5 text-[13px] font-medium">
+        {label}
+        {hint && <Hint>{hint}</Hint>}
+      </legend>
+      {children}
+    </fieldset>
   );
 }
 
@@ -697,18 +788,89 @@ export function LocLines({
 }) {
   const intl = useIntl();
   return (
-    <fieldset className="fa-loc">
-      <legend className="field__label">{label}</legend>
-      {langs.map((lang) => (
-        <LinesInput
-          key={lang}
-          label={intl.formatMessage({ id: `firstAid.lang.${lang}` })}
-          value={value[lang]}
-          path={[...path, lang]}
-          onChange={(v) => onChange({ ...value, [lang]: v })}
-        />
-      ))}
-    </fieldset>
+    <Group label={label} hint={<FormattedMessage id="rhythm.field.onePerLine" />}>
+      <div className="grid gap-3 md:grid-cols-2">
+        {langs.map((lang) => (
+          <LinesInput
+            key={lang}
+            label={intl.formatMessage({ id: `rhythm.lang.${lang}` })}
+            value={value[lang]}
+            path={[...path, lang]}
+            onChange={(v) => onChange({ ...value, [lang]: v })}
+          />
+        ))}
+      </div>
+    </Group>
+  );
+}
+
+/** A text in both languages, side by side. */
+export function LocField({
+  label,
+  value,
+  onChange,
+  path,
+  multiline,
+  max,
+  help,
+  hint,
+}: {
+  label: ReactNode;
+  value: Localized;
+  onChange: (v: Localized) => void;
+  path: Path;
+  multiline?: boolean;
+  max: number;
+  help?: ReactNode;
+  hint?: ReactNode;
+}) {
+  const intl = useIntl();
+  const id = useId();
+  const errs = { vi: useRhythmIssue([...path, 'vi']), en: useRhythmIssue([...path, 'en']) };
+  const errAll = useRhythmIssue(path);
+  return (
+    <Group label={label} hint={hint}>
+      <div className="grid gap-3 md:grid-cols-2">
+        {langs.map((lang) => {
+          const props = {
+            id: `${id}-${lang}`,
+            value: value[lang],
+            maxLength: max,
+            'aria-invalid': errs[lang] ? true : undefined,
+            onChange: (e: { target: { value: string } }) =>
+              onChange({ ...value, [lang]: e.target.value }),
+          };
+          return (
+            <div key={lang} className="grid min-w-0 gap-1">
+              <Label htmlFor={props.id} className="text-xs font-normal text-muted-foreground">
+                {intl.formatMessage({ id: `rhythm.lang.${lang}` })}
+              </Label>
+              {multiline ? <Textarea rows={3} {...props} /> : <Input {...props} />}
+              <FieldError text={errs[lang]} />
+            </div>
+          );
+        })}
+      </div>
+      <FieldError text={errAll} className="mt-1.5" />
+      {help && <p className="mt-1.5 text-xs text-muted-foreground">{help}</p>}
+    </Group>
+  );
+}
+
+/** A text that may be absent (safety note): both languages empty = none. */
+export function OptionalLocField(
+  props: Omit<Parameters<typeof LocField>[0], 'value' | 'onChange'> & {
+    value: Localized | null;
+    onChange: (v: Localized | null) => void;
+  },
+) {
+  return (
+    <LocField
+      {...props}
+      value={props.value ?? { vi: '', en: '' }}
+      onChange={(v) => props.onChange(!v.vi && !v.en ? null : v)}
+      help={props.help ?? <FormattedMessage id="rhythm.optionalText" />}
+    />
   );
 }
 
@@ -718,13 +880,13 @@ function CodesInput({
   value,
   onChange,
   path,
-  help,
+  hint,
 }: {
   label: ReactNode;
   value: string[];
   onChange: (v: string[]) => void;
   path: Path;
-  help?: ReactNode;
+  hint?: ReactNode;
 }) {
   const id = useId();
   const intl = useIntl();
@@ -736,14 +898,17 @@ function CodesInput({
       )
     : undefined;
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <input
+    <Field
+      label={label}
+      htmlFor={id}
+      hint={hint}
+      error={err ? rhythmIssueText(intl, err) : undefined}
+    >
+      <Input
         id={id}
-        className="field__input mono"
+        className={cn(monoInput, 'sm:w-64')}
         value={text}
+        placeholder="VN, SG"
         onChange={(e) => {
           setText(e.target.value);
           onChange(
@@ -754,9 +919,7 @@ function CodesInput({
           );
         }}
       />
-      <FieldError text={err ? rhythmIssueText(intl, err) : undefined} />
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    </Field>
   );
 }
 
@@ -777,9 +940,8 @@ function Checks<T extends string>({
 }) {
   const err = useRhythmIssue(path);
   return (
-    <fieldset className="fa-list">
-      <legend className="field__label">{label}</legend>
-      <div className="rh-checks">
+    <Group label={label}>
+      <div className="flex flex-wrap gap-x-5 gap-y-2">
         {options.map((o) => (
           <CheckRow
             key={o}
@@ -795,8 +957,8 @@ function Checks<T extends string>({
           />
         ))}
       </div>
-      <FieldError text={err} />
-    </fieldset>
+      <FieldError text={err} className="mt-1.5" />
+    </Group>
   );
 }
 
@@ -805,20 +967,39 @@ function SelectInput<T extends string>({
   value,
   options,
   onChange,
+  hint,
+  className,
 }: {
   label: ReactNode;
   value: T;
   options: Array<{ value: T; label: string }>;
   onChange: (v: T) => void;
+  hint?: ReactNode;
+  className?: string;
 }) {
   const id = useId();
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
+    <Field label={label} htmlFor={id} hint={hint} className={className}>
       <FieldSelect id={id} value={value} options={options} onChange={onChange} />
-    </div>
+    </Field>
+  );
+}
+
+/** "Thêm …" under a list: a quiet button with a plus. */
+function AddButton({
+  children,
+  disabled,
+  onClick,
+}: {
+  children: ReactNode;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Button variant="outline" size="sm" disabled={disabled} onClick={onClick}>
+      <Plus />
+      {children}
+    </Button>
   );
 }
 
@@ -839,13 +1020,12 @@ export function SourcesInput({
   const intl = useIntl();
   const errList = useRhythmIssue(path);
   return (
-    <fieldset className="fa-list">
-      <legend className="field__label">
-        <FormattedMessage id="rhythm.field.sources" />{' '}
-        <span className="muted">
-          {value.length}/{max}
-        </span>
-      </legend>
+    <div className="grid gap-2">
+      {value.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage id="rhythm.noSources" />
+        </p>
+      )}
       {value.map((s, i) => (
         <SourceRow
           key={i}
@@ -853,20 +1033,22 @@ export function SourcesInput({
           path={[...path, i]}
           onChange={(v) => onChange(value.map((x, j) => (j === i ? v : x)))}
           onRemove={() => onChange(value.filter((_, j) => j !== i))}
-          removeLabel={intl.formatMessage({ id: 'firstAid.remove' })}
+          removeLabel={intl.formatMessage({ id: 'rhythm.remove' })}
         />
       ))}
       <FieldError text={errList} />
-      <div>
-        <Button
-          kind="ghost"
+      <div className="flex items-center gap-3">
+        <AddButton
           disabled={value.length >= max}
           onClick={() => onChange([...value, { label: '', url: 'https://' }])}
         >
           <FormattedMessage id="rhythm.field.addSource" />
-        </Button>
+        </AddButton>
+        <span className="text-xs text-muted-foreground tabular-nums">
+          {value.length}/{max}
+        </span>
       </div>
-    </fieldset>
+    </div>
   );
 }
 
@@ -887,25 +1069,26 @@ function SourceRow({
   const errLabel = useRhythmIssue([...path, 'label']);
   const errUrl = useRhythmIssue([...path, 'url']);
   return (
-    <div className="fa-row">
-      <div className="field">
-        <input
-          className="field__input"
+    <div className="grid items-start gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_auto]">
+      <div className="grid gap-1">
+        <Input
           value={value.label}
           maxLength={200}
           placeholder={intl.formatMessage({ id: 'rhythm.field.sourceLabel' })}
           aria-label={intl.formatMessage({ id: 'rhythm.field.sourceLabel' })}
+          aria-invalid={errLabel ? true : undefined}
           onChange={(e) => onChange({ ...value, label: e.target.value })}
         />
         <FieldError text={errLabel} />
       </div>
-      <div className="field">
-        <input
-          className="field__input mono"
+      <div className="grid gap-1">
+        <Input
+          className={monoInput}
           value={value.url}
           maxLength={500}
           placeholder="https://"
           aria-label={intl.formatMessage({ id: 'rhythm.field.sourceUrl' })}
+          aria-invalid={errUrl ? true : undefined}
           onChange={(e) => onChange({ ...value, url: e.target.value })}
         />
         <FieldError text={errUrl} />
@@ -919,18 +1102,21 @@ function AgeDaysInput({
   value,
   onChange,
   path,
+  hint,
 }: {
   value: { from: number; to: number };
   onChange: (v: { from: number; to: number }) => void;
   path: Path;
+  hint?: ReactNode;
 }) {
   const err = useRhythmIssue(path);
   return (
-    <div className="field">
-      <div className="fa-inline">
+    <div className="grid gap-1.5">
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
         <NumberInput
           label={<FormattedMessage id="rhythm.field.ageFrom" />}
           value={value.from}
+          hint={hint}
           path={[...path, 'ageDays', 'from']}
           onChange={(v) => onChange({ ...value, from: v ?? Number.NaN })}
         />
@@ -940,7 +1126,7 @@ function AgeDaysInput({
           path={[...path, 'ageDays', 'to']}
           onChange={(v) => onChange({ ...value, to: v ?? Number.NaN })}
         />
-        <p className="field__help">
+        <span className="pb-2 text-sm text-muted-foreground tabular-nums">
           <FormattedMessage
             id="rhythm.field.ageHelp"
             values={{
@@ -948,19 +1134,99 @@ function AgeDaysInput({
               to: Number.isFinite(value.to) ? monthsOf(value.to) : '—',
             }}
           />
-        </p>
+        </span>
       </div>
       <FieldError text={err} />
     </div>
   );
 }
 
-function Section({ title, children }: { title: ReactNode; children: ReactNode }) {
+/** "Tiếng Việt | English" for forms that show one language at a time; a dot marks problems. */
+export function LangSwitch({
+  value,
+  onChange,
+  bad,
+}: {
+  value: Lang;
+  onChange: (l: Lang) => void;
+  bad?: Partial<Record<Lang, boolean>>;
+}) {
+  const intl = useIntl();
   return (
-    <section className="fa-section">
-      <h3 className="fa-section__title">{title}</h3>
-      {children}
-    </section>
+    <ToggleGroup
+      type="single"
+      variant="outline"
+      size="sm"
+      value={value}
+      aria-label={intl.formatMessage({ id: 'rhythm.lang.switch' })}
+      onValueChange={(v) => v && onChange(v as Lang)}
+    >
+      {langs.map((l) => (
+        <ToggleGroupItem key={l} value={l} className="gap-1.5 px-3">
+          <FormattedMessage id={`rhythm.lang.${l}`} />
+          {bad?.[l] && (
+            <>
+              <span className="size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+              <span className="sr-only">
+                <FormattedMessage id="rhythm.lang.hasIssues" />
+              </span>
+            </>
+          )}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
+  );
+}
+
+/**
+ * "Nâng cao": ids and version numbers, folded away. It opens by itself when one of its fields
+ * has a problem (the key remounts it with the new default).
+ */
+function AdvancedSection({
+  bad,
+  summary,
+  children,
+}: {
+  bad: boolean;
+  summary: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <Section
+      key={bad ? 'open' : 'closed'}
+      title={<FormattedMessage id="rhythm.advanced" />}
+      collapsible
+      defaultOpen={bad}
+      summary={summary}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">{children}</div>
+    </Section>
+  );
+}
+
+/** "Nguồn" of one item, folded with the count; opens when a link is wrong. */
+function SourcesSection({
+  value,
+  onChange,
+  path,
+  max,
+}: {
+  value: Source[];
+  onChange: (v: Source[]) => void;
+  path: Path;
+  max: number;
+}) {
+  const bad = useIssueUnder([path]);
+  return (
+    <Section
+      key={bad ? 'open' : 'closed'}
+      title={<FormattedMessage id="rhythm.section.sources" />}
+      collapsible
+      defaultOpen={bad}
+      summary={<FormattedMessage id="rhythm.sourcesCount" values={{ n: value.length }} />}
+    >
+      <SourcesInput value={value} max={max} path={path} onChange={onChange} />
+    </Section>
   );
 }
 
@@ -974,29 +1240,32 @@ export function ModelEditor({
   edit: Edit<ReferenceDraftData>;
 }) {
   return (
-    <div className="fa-editor">
+    <div className="grid gap-5">
       <TextInput
         label={<FormattedMessage id="rhythm.field.label" />}
         value={model.label}
         max={60}
         path={['label']}
-        help={<FormattedMessage id="rhythm.field.labelHelp" />}
+        hint={<FormattedMessage id="rhythm.field.labelHelp" />}
+        className="sm:max-w-sm"
         onChange={(v) =>
           edit((m) => {
             m.label = v;
           })
         }
       />
-      <SourcesInput
-        value={model.sources}
-        max={10}
-        path={['sources']}
-        onChange={(v) =>
-          edit((m) => {
-            m.sources = v;
-          })
-        }
-      />
+      <Group label={<FormattedMessage id="rhythm.field.sources" />}>
+        <SourcesInput
+          value={model.sources}
+          max={10}
+          path={['sources']}
+          onChange={(v) =>
+            edit((m) => {
+              m.sources = v;
+            })
+          }
+        />
+      </Group>
     </div>
   );
 }
@@ -1007,7 +1276,16 @@ export interface ActivityOption {
   durationMin: number;
 }
 
-/** PN02: timing with a preview for a sample due date, VI/EN content, activities, notice. */
+const fold = (s: string) =>
+  s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
+
+/** Whether `query` is in one of the texts, ignoring case and Vietnamese marks. */
+export const matches = (query: string, ...texts: Array<string | null | undefined>) => {
+  const q = fold(query.trim());
+  return !q || texts.some((t) => !!t && fold(t).includes(q));
+};
+
+/** PN02: VI/EN content, timing with a preview for a sample due date, activities, notice. */
 export function StageEditor({
   model,
   index,
@@ -1028,6 +1306,7 @@ export function StageEditor({
   const s = model.stages[index]!;
   const base: Path = ['stages', index];
   const [lang, setLang] = useState<Lang>('vi');
+  const [query, setQuery] = useState('');
   const set = (fn: (st: ReferenceStage) => void) =>
     edit((m) => {
       fn(m.stages[index]!);
@@ -1036,84 +1315,34 @@ export function StageEditor({
   const preview = windowPreview(dueDate, s);
   const viBad = useHasIssue(base, 'vi');
   const enBad = useHasIssue(base, 'en');
-  const known = new Set(activities.map((a) => a.id));
+  const advBad = useIssueUnder([
+    [...base, 'id'],
+    [...base, 'number'],
+  ]);
+  const titles = new Map(activities.map((a) => [a.id, a]));
+  const shown = activities.filter((a) => matches(query, a.title, a.id));
+  const unlink = (id: string) =>
+    set((st) => void (st.activityIds = st.activityIds.filter((x) => x !== id)));
   return (
-    <div className="fa-editor">
-      <Section title={<FormattedMessage id="rhythm.stage.timing" />}>
-        <div className="fa-cols">
-          <TextInput
-            label={<FormattedMessage id="rhythm.field.stageId" />}
-            value={s.id}
-            mono
-            disabled={idLocked}
-            path={[...base, 'id']}
-            help={
-              <FormattedMessage id={idLocked ? 'rhythm.field.idLocked' : 'rhythm.field.idHelp'} />
-            }
-            onChange={(v) => set((st) => void (st.id = v))}
-          />
-          <NumberInput
-            label={<FormattedMessage id="rhythm.field.number" />}
-            value={s.number}
-            path={[...base, 'number']}
-            onChange={(v) => set((st) => void (st.number = v ?? Number.NaN))}
-          />
-          <NumberInput
-            label={<FormattedMessage id="rhythm.field.start" />}
-            value={s.startOffsetDays}
-            path={[...base, 'startOffsetDays']}
-            help={<FormattedMessage id="rhythm.field.startHelp" />}
-            onChange={(v) => set((st) => void (st.startOffsetDays = v ?? Number.NaN))}
-          />
-          <NumberInput
-            label={<FormattedMessage id="rhythm.field.end" />}
-            value={s.endOffsetDays}
-            path={[...base, 'endOffsetDays']}
-            help={<FormattedMessage id="rhythm.field.endHelp" />}
-            onChange={(v) => set((st) => void (st.endOffsetDays = v ?? Number.NaN))}
-          />
-        </div>
-        <FieldError text={windowErr} />
-        <p className="note">
-          {preview ? (
-            <FormattedMessage
-              id="rhythm.stage.preview"
-              values={{ due: dmy(dueDate), start: dmy(preview.start), end: dmy(preview.end) }}
-            />
-          ) : (
-            <FormattedMessage id="rhythm.stage.previewNone" />
-          )}
-        </p>
-      </Section>
-
-      <Section title={<FormattedMessage id="rhythm.stage.content" />}>
-        <Segmented
-          label={intl.formatMessage({ id: 'rhythm.stage.content' })}
-          value={lang}
-          onChange={setLang}
-          options={langs.map((l) => ({
-            value: l,
-            label: (
-              <>
-                <FormattedMessage id={`firstAid.lang.${l}`} />
-                {(l === 'vi' ? viBad : enBad) && <span className="error"> •</span>}
-              </>
-            ),
-          }))}
-        />
-        <div className="stack" key={lang}>
+    <div className="grid gap-4">
+      <Section
+        title={<FormattedMessage id="rhythm.stage.content" />}
+        actions={<LangSwitch value={lang} onChange={setLang} bad={{ vi: viBad, en: enBad }} />}
+      >
+        <div className="grid gap-4" key={lang}>
           <TextInput
             label={<FormattedMessage id="rhythm.field.name" />}
             value={s.name[lang]}
             max={2000}
             path={[...base, 'name', lang]}
-            help={<FormattedMessage id="rhythm.field.nameHelp" />}
+            hint={<FormattedMessage id="rhythm.field.nameHelp" />}
             onChange={(v) => set((st) => void (st.name[lang] = v))}
           />
           <LinesInput
             label={<FormattedMessage id="rhythm.field.signs" />}
             value={s.signs[lang]}
             path={[...base, 'signs', lang]}
+            help={<FormattedMessage id="rhythm.field.onePerLine" />}
             onChange={(v) => set((st) => void (st.signs[lang] = v))}
           />
           <LinesInput
@@ -1125,6 +1354,37 @@ export function StageEditor({
         </div>
       </Section>
 
+      <Section title={<FormattedMessage id="rhythm.stage.timing" />}>
+        <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
+          <NumberInput
+            label={<FormattedMessage id="rhythm.field.start" />}
+            value={s.startOffsetDays}
+            unit={<FormattedMessage id="rhythm.field.offsetUnit" />}
+            path={[...base, 'startOffsetDays']}
+            onChange={(v) => set((st) => void (st.startOffsetDays = v ?? Number.NaN))}
+          />
+          <NumberInput
+            label={<FormattedMessage id="rhythm.field.end" />}
+            value={s.endOffsetDays}
+            unit={<FormattedMessage id="rhythm.field.offsetUnit" />}
+            hint={<FormattedMessage id="rhythm.field.endHelp" />}
+            path={[...base, 'endOffsetDays']}
+            onChange={(v) => set((st) => void (st.endOffsetDays = v ?? Number.NaN))}
+          />
+        </div>
+        <FieldError text={windowErr} className="mt-2" />
+        <p className="mt-3 rounded-lg bg-muted/60 px-3 py-2 text-sm tabular-nums">
+          {preview ? (
+            <FormattedMessage
+              id="rhythm.stage.preview"
+              values={{ due: dmy(dueDate), start: dmy(preview.start), end: dmy(preview.end) }}
+            />
+          ) : (
+            <FormattedMessage id="rhythm.stage.previewNone" />
+          )}
+        </p>
+      </Section>
+
       <Section
         title={
           <FormattedMessage
@@ -1133,99 +1393,184 @@ export function StageEditor({
           />
         }
       >
-        {activities.length === 0 ? (
-          <p className="muted">
-            <FormattedMessage id="rhythm.stage.noActivities" />
-          </p>
-        ) : (
-          <div className="rh-picker">
-            {activities.map((a) => (
-              <CheckRow
-                key={a.id}
-                label={
-                  <span>
-                    {a.title || a.id}{' '}
-                    <span className="muted">
-                      · <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
+        <div className="grid gap-3">
+          {s.activityIds.length > 0 && (
+            <ul
+              className="flex flex-wrap gap-1.5"
+              aria-label={intl.formatMessage({ id: 'rhythm.stage.linked' })}
+            >
+              {s.activityIds.map((id) => {
+                const a = titles.get(id);
+                return (
+                  <li
+                    key={id}
+                    className={cn(
+                      'inline-flex max-w-full items-center gap-1 rounded-full border py-0.5 pr-1 pl-2.5 text-xs',
+                      a ? 'bg-secondary' : 'border-warning/50 bg-warning/10',
+                    )}
+                  >
+                    <span className="truncate">
+                      {a ? (
+                        a.title || a.id
+                      ) : (
+                        <FormattedMessage id="rhythm.stage.unknownActivity" values={{ id }} />
+                      )}
                     </span>
-                  </span>
-                }
-                checked={s.activityIds.includes(a.id)}
-                disabled={!s.activityIds.includes(a.id) && s.activityIds.length >= 8}
-                onChange={(on) =>
-                  set((st) => {
-                    st.activityIds = on
-                      ? [...st.activityIds, a.id]
-                      : st.activityIds.filter((x) => x !== a.id);
-                  })
-                }
-              />
-            ))}
-          </div>
-        )}
-        {s.activityIds.some((id) => !known.has(id)) && (
-          <div className="chips">
-            {s.activityIds
-              .filter((id) => !known.has(id))
-              .map((id) => (
-                <span key={id} className="pill pill--warn">
-                  <FormattedMessage id="rhythm.stage.unknownActivity" values={{ id }} />
-                  <IconButton
-                    icon="remove"
-                    label={intl.formatMessage({ id: 'firstAid.remove' })}
-                    onClick={() =>
-                      set((st) => void (st.activityIds = st.activityIds.filter((x) => x !== id)))
+                    <button
+                      type="button"
+                      className="grid size-5 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+                      aria-label={intl.formatMessage(
+                        { id: 'rhythm.stage.unlink' },
+                        { name: a?.title || id },
+                      )}
+                      onClick={() => unlink(id)}
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {activities.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage id="rhythm.stage.noActivities" />
+            </p>
+          ) : (
+            <>
+              {activities.length > 8 && (
+                <SearchInput
+                  value={query}
+                  onChange={setQuery}
+                  placeholder={intl.formatMessage({ id: 'rhythm.stage.searchActivities' })}
+                  className="sm:w-72"
+                />
+              )}
+              <div className="grid max-h-80 gap-x-5 gap-y-2 overflow-y-auto p-0.5 sm:grid-cols-2">
+                {shown.map((a) => (
+                  <CheckRow
+                    key={a.id}
+                    label={
+                      <span className="min-w-0">
+                        {a.title || a.id}{' '}
+                        <span className="font-normal text-muted-foreground">
+                          · <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
+                        </span>
+                      </span>
+                    }
+                    checked={s.activityIds.includes(a.id)}
+                    disabled={!s.activityIds.includes(a.id) && s.activityIds.length >= 8}
+                    onChange={(on) =>
+                      set((st) => {
+                        st.activityIds = on
+                          ? [...st.activityIds, a.id]
+                          : st.activityIds.filter((x) => x !== a.id);
+                      })
                     }
                   />
-                </span>
-              ))}
-          </div>
-        )}
+                ))}
+                {shown.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    <FormattedMessage id="rhythm.noMatch" />
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </Section>
 
-      <Section title={<FormattedMessage id="rhythm.stage.notice" />}>
-        <CheckRow
-          label={<FormattedMessage id="rhythm.field.noticeOn" />}
-          checked={s.notice !== null}
-          onChange={(on) =>
-            set((st) => {
-              st.notice = on ? { title: loc(), body: loc() } : null;
-            })
+      <NoticeSection stage={s} base={base} set={set} />
+
+      <AdvancedSection bad={advBad} summary={<span className="font-mono text-xs">{s.id}</span>}>
+        <TextInput
+          label={<FormattedMessage id="rhythm.field.stageId" />}
+          value={s.id}
+          mono
+          disabled={idLocked}
+          path={[...base, 'id']}
+          help={
+            <FormattedMessage id={idLocked ? 'rhythm.field.idLocked' : 'rhythm.field.idHelp'} />
           }
+          onChange={(v) => set((st) => void (st.id = v))}
         />
-        {s.notice && (
-          <div className="stack" key={`notice-${lang}`}>
-            <TextInput
-              label={
-                <FormattedMessage
-                  id="rhythm.field.noticeTitle"
-                  values={{ max: noticeLimits.title }}
-                />
-              }
-              value={s.notice.title[lang]}
-              counter={noticeLimits.title}
-              path={[...base, 'notice', 'title', lang]}
-              onChange={(v) => set((st) => void (st.notice!.title[lang] = v))}
-            />
-            <TextInput
-              label={
-                <FormattedMessage
-                  id="rhythm.field.noticeBody"
-                  values={{ max: noticeLimits.body }}
-                />
-              }
-              value={s.notice.body[lang]}
-              counter={noticeLimits.body}
-              path={[...base, 'notice', 'body', lang]}
-              onChange={(v) => set((st) => void (st.notice!.body[lang] = v))}
-            />
-            <p className="field__help">
-              <FormattedMessage id="rhythm.field.noticeHelp" />
-            </p>
-          </div>
-        )}
-      </Section>
+        <NumberInput
+          label={<FormattedMessage id="rhythm.field.number" />}
+          value={s.number}
+          hint={<FormattedMessage id="rhythm.field.numberHelp" />}
+          path={[...base, 'number']}
+          onChange={(v) => set((st) => void (st.number = v ?? Number.NaN))}
+        />
+      </AdvancedSection>
     </div>
+  );
+}
+
+/** PN02 reminder: short enough for a phone notification, both languages side by side. */
+function NoticeSection({
+  stage: s,
+  base,
+  set,
+}: {
+  stage: ReferenceStage;
+  base: Path;
+  set: (fn: (st: ReferenceStage) => void) => void;
+}) {
+  const id = useId();
+  return (
+    <Section
+      title={<FormattedMessage id="rhythm.stage.notice" />}
+      hint={<FormattedMessage id="rhythm.field.noticeHelp" />}
+      actions={
+        <div className="flex items-center gap-2">
+          <Switch
+            id={id}
+            checked={s.notice !== null}
+            onCheckedChange={(on) =>
+              set((st) => {
+                st.notice = on ? { title: loc(), body: loc() } : null;
+              })
+            }
+          />
+          <Label htmlFor={id} className="text-[13px]">
+            <FormattedMessage id="rhythm.field.noticeOn" />
+          </Label>
+        </div>
+      }
+    >
+      {s.notice ? (
+        <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
+          {langs.map((lang) => (
+            <Group key={lang} label={<FormattedMessage id={`rhythm.lang.${lang}`} />}>
+              <div className="grid gap-4">
+                <TextInput
+                  label={<FormattedMessage id="rhythm.field.noticeTitle" />}
+                  value={s.notice!.title[lang]}
+                  counter={noticeLimits.title}
+                  path={[...base, 'notice', 'title', lang]}
+                  onChange={(v) => set((st) => void (st.notice!.title[lang] = v))}
+                />
+                <TextInput
+                  label={<FormattedMessage id="rhythm.field.noticeBody" />}
+                  value={s.notice!.body[lang]}
+                  counter={noticeLimits.body}
+                  multiline
+                  path={[...base, 'notice', 'body', lang]}
+                  // A notification body is one line.
+                  onChange={(v) =>
+                    set((st) => void (st.notice!.body[lang] = v.replace(/\s*\n\s*/g, ' ')))
+                  }
+                />
+              </div>
+            </Group>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage id="rhythm.stage.noNotice" />
+        </p>
+      )}
+    </Section>
   );
 }
 
@@ -1234,24 +1579,45 @@ export function StageEditor({
 const itemStatuses = ['draft', 'published', 'retired'] as const;
 const timesOfDay = ['any', 'evening', 'day'] as const;
 
-function StatusAndId({
-  id,
+function StatusSelect({
   status,
-  idLocked,
-  path,
-  onId,
   onStatus,
 }: {
-  id: string;
   status: (typeof itemStatuses)[number];
-  idLocked: boolean;
-  path: Path;
-  onId: (v: string) => void;
   onStatus: (v: (typeof itemStatuses)[number]) => void;
 }) {
   const intl = useIntl();
   return (
-    <div className="fa-cols">
+    <SelectInput
+      label={<FormattedMessage id="rhythm.field.itemStatus" />}
+      hint={<FormattedMessage id="rhythm.field.statusHelp" />}
+      value={status}
+      className="sm:max-w-xs"
+      options={itemStatuses.map((s) => ({
+        value: s,
+        label: intl.formatMessage({ id: `rhythm.itemStatus.${s}` }),
+      }))}
+      onChange={onStatus}
+    />
+  );
+}
+
+/** The item's id (fixed once published) and its content version, in "Nâng cao". */
+function ItemIdFields({
+  id,
+  version,
+  idLocked,
+  path,
+  onId,
+}: {
+  id: string;
+  version: number;
+  idLocked: boolean;
+  path: Path;
+  onId: (v: string) => void;
+}) {
+  return (
+    <>
       <TextInput
         label={<FormattedMessage id="rhythm.field.itemId" />}
         value={id}
@@ -1263,16 +1629,16 @@ function StatusAndId({
         }
         onChange={onId}
       />
-      <SelectInput
-        label={<FormattedMessage id="rhythm.field.itemStatus" />}
-        value={status}
-        options={itemStatuses.map((s) => ({
-          value: s,
-          label: intl.formatMessage({ id: `rhythm.itemStatus.${s}` }),
-        }))}
-        onChange={onStatus}
-      />
-    </div>
+      <div className="grid content-start gap-1.5">
+        <span className="flex min-h-5 items-center gap-1.5 text-[13px] font-medium">
+          <FormattedMessage id="rhythm.field.version" />
+          <Hint>
+            <FormattedMessage id="rhythm.field.versionHelp" />
+          </Hint>
+        </span>
+        <span className="flex h-9 items-center font-mono text-sm tabular-nums">v{version}</span>
+      </div>
+    </>
   );
 }
 
@@ -1294,115 +1660,129 @@ export function ActivityEditor({
     edit((d) => {
       fn(d.activities[index]!);
     });
+  const advBad = useIssueUnder([[...base, 'id']]);
   return (
-    <div className="fa-editor">
+    <div className="grid gap-4">
       <Section title={<FormattedMessage id="rhythm.section.basics" />}>
-        <StatusAndId
+        <div className="grid gap-5">
+          <LocField
+            label={<FormattedMessage id="rhythm.field.title" />}
+            value={a.title}
+            max={2000}
+            path={[...base, 'title']}
+            onChange={(v) => set((x) => void (x.title = v))}
+          />
+          <LocField
+            label={<FormattedMessage id="rhythm.field.summary" />}
+            value={a.summary}
+            multiline
+            max={2000}
+            path={[...base, 'summary']}
+            onChange={(v) => set((x) => void (x.summary = v))}
+          />
+          <StatusSelect status={a.status} onStatus={(v) => set((x) => void (x.status = v))} />
+        </div>
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.section.howTo" />}>
+        <div className="grid gap-5">
+          <LocLines
+            label={<FormattedMessage id="rhythm.field.steps" />}
+            value={a.steps}
+            path={[...base, 'steps']}
+            onChange={(v) => set((x) => void (x.steps = v))}
+          />
+          <OptionalLocField
+            label={<FormattedMessage id="rhythm.field.safety" />}
+            value={a.safety}
+            multiline
+            max={2000}
+            path={[...base, 'safety']}
+            onChange={(v) => set((x) => void (x.safety = v))}
+          />
+        </div>
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.section.when" />}>
+        <div className="grid gap-5">
+          <div className="flex flex-wrap items-start gap-x-6 gap-y-4">
+            <NumberInput
+              label={<FormattedMessage id="rhythm.field.duration" />}
+              value={a.durationMin}
+              path={[...base, 'durationMin']}
+              onChange={(v) => set((x) => void (x.durationMin = v ?? Number.NaN))}
+            />
+            <SelectInput
+              label={<FormattedMessage id="rhythm.field.timeOfDay" />}
+              value={a.timeOfDay}
+              className="w-64"
+              options={timesOfDay.map((t) => ({
+                value: t,
+                label: intl.formatMessage({ id: `rhythm.timeOfDay.${t}` }),
+              }))}
+              onChange={(v) => set((x) => void (x.timeOfDay = v))}
+            />
+          </div>
+          <AgeDaysInput
+            value={a.ageDays}
+            path={base}
+            onChange={(v) => set((x) => void (x.ageDays = v))}
+          />
+          <Checks
+            label={<FormattedMessage id="rhythm.field.needs" />}
+            options={needs}
+            value={a.needs}
+            path={[...base, 'needs']}
+            labelOf={(n) => intl.formatMessage({ id: `rhythm.need.${n}` })}
+            onChange={(v) => set((x) => void (x.needs = v))}
+          />
+          <Checks
+            label={<FormattedMessage id="rhythm.field.interests" />}
+            options={interests}
+            value={a.interests}
+            path={[...base, 'interests']}
+            labelOf={(n) => intl.formatMessage({ id: `rhythm.interest.${n}` })}
+            onChange={(v) => set((x) => void (x.interests = v))}
+          />
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Checks
+              label={<FormattedMessage id="rhythm.field.locales" />}
+              options={langs}
+              value={a.locales}
+              path={[...base, 'locales']}
+              labelOf={(l) => intl.formatMessage({ id: `rhythm.lang.${l}` })}
+              onChange={(v) => set((x) => void (x.locales = v))}
+            />
+            <CodesInput
+              label={<FormattedMessage id="rhythm.field.regions" />}
+              value={a.regions}
+              path={[...base, 'regions']}
+              hint={<FormattedMessage id="rhythm.field.regionsHelp" />}
+              onChange={(v) => set((x) => void (x.regions = v))}
+            />
+          </div>
+        </div>
+      </Section>
+      <SourcesSection
+        value={a.sources}
+        max={6}
+        path={[...base, 'sources']}
+        onChange={(v) => set((x) => void (x.sources = v))}
+      />
+      <AdvancedSection
+        bad={advBad}
+        summary={
+          <span className="font-mono text-xs">
+            {a.id} · v{a.version}
+          </span>
+        }
+      >
+        <ItemIdFields
           id={a.id}
-          status={a.status}
+          version={a.version}
           idLocked={idLocked}
           path={base}
           onId={(v) => set((x) => void (x.id = v))}
-          onStatus={(v) => set((x) => void (x.status = v))}
         />
-        <p className="field__help">
-          <FormattedMessage id="rhythm.field.statusHelp" />
-        </p>
-        <LocField
-          label={<FormattedMessage id="rhythm.field.title" />}
-          value={a.title}
-          max={2000}
-          path={[...base, 'title']}
-          onChange={(v) => set((x) => void (x.title = v))}
-        />
-        <LocField
-          label={<FormattedMessage id="rhythm.field.summary" />}
-          value={a.summary}
-          multiline
-          max={2000}
-          path={[...base, 'summary']}
-          onChange={(v) => set((x) => void (x.summary = v))}
-        />
-      </Section>
-      <Section title={<FormattedMessage id="rhythm.section.howTo" />}>
-        <LocLines
-          label={<FormattedMessage id="rhythm.field.steps" />}
-          value={a.steps}
-          path={[...base, 'steps']}
-          onChange={(v) => set((x) => void (x.steps = v))}
-        />
-        <OptionalLocField
-          label={<FormattedMessage id="rhythm.field.safety" />}
-          value={a.safety}
-          multiline
-          max={2000}
-          path={[...base, 'safety']}
-          onChange={(v) => set((x) => void (x.safety = v))}
-        />
-      </Section>
-      <Section title={<FormattedMessage id="rhythm.section.when" />}>
-        <div className="fa-cols">
-          <NumberInput
-            label={<FormattedMessage id="rhythm.field.duration" />}
-            value={a.durationMin}
-            path={[...base, 'durationMin']}
-            onChange={(v) => set((x) => void (x.durationMin = v ?? Number.NaN))}
-          />
-          <SelectInput
-            label={<FormattedMessage id="rhythm.field.timeOfDay" />}
-            value={a.timeOfDay}
-            options={timesOfDay.map((t) => ({
-              value: t,
-              label: intl.formatMessage({ id: `rhythm.timeOfDay.${t}` }),
-            }))}
-            onChange={(v) => set((x) => void (x.timeOfDay = v))}
-          />
-        </div>
-        <AgeDaysInput
-          value={a.ageDays}
-          path={base}
-          onChange={(v) => set((x) => void (x.ageDays = v))}
-        />
-        <Checks
-          label={<FormattedMessage id="rhythm.field.needs" />}
-          options={needs}
-          value={a.needs}
-          path={[...base, 'needs']}
-          labelOf={(n) => intl.formatMessage({ id: `rhythm.need.${n}` })}
-          onChange={(v) => set((x) => void (x.needs = v))}
-        />
-        <Checks
-          label={<FormattedMessage id="rhythm.field.interests" />}
-          options={interests}
-          value={a.interests}
-          path={[...base, 'interests']}
-          labelOf={(n) => intl.formatMessage({ id: `rhythm.interest.${n}` })}
-          onChange={(v) => set((x) => void (x.interests = v))}
-        />
-        <Checks
-          label={<FormattedMessage id="rhythm.field.locales" />}
-          options={langs}
-          value={a.locales}
-          path={[...base, 'locales']}
-          labelOf={(l) => intl.formatMessage({ id: `firstAid.lang.${l}` })}
-          onChange={(v) => set((x) => void (x.locales = v))}
-        />
-        <CodesInput
-          label={<FormattedMessage id="rhythm.field.regions" />}
-          value={a.regions}
-          path={[...base, 'regions']}
-          help={<FormattedMessage id="rhythm.field.regionsHelp" />}
-          onChange={(v) => set((x) => void (x.regions = v))}
-        />
-      </Section>
-      <Section title={<FormattedMessage id="rhythm.section.sources" />}>
-        <SourcesInput
-          value={a.sources}
-          max={6}
-          path={[...base, 'sources']}
-          onChange={(v) => set((x) => void (x.sources = v))}
-        />
-      </Section>
+      </AdvancedSection>
     </div>
   );
 }
@@ -1425,71 +1805,81 @@ export function AgeCardEditor({
     edit((d) => {
       fn(d.ageCards[index]!);
     });
+  const advBad = useIssueUnder([[...base, 'id']]);
   return (
-    <div className="fa-editor">
+    <div className="grid gap-4">
       <Section title={<FormattedMessage id="rhythm.section.basics" />}>
-        <StatusAndId
+        <div className="grid gap-5">
+          <AgeDaysInput
+            value={c.ageDays}
+            path={base}
+            hint={<FormattedMessage id="rhythm.field.ageCardHelp" />}
+            onChange={(v) => set((x) => void (x.ageDays = v))}
+          />
+          <LocField
+            label={<FormattedMessage id="rhythm.field.title" />}
+            value={c.title}
+            max={2000}
+            path={[...base, 'title']}
+            onChange={(v) => set((x) => void (x.title = v))}
+          />
+          <LocField
+            label={<FormattedMessage id="rhythm.field.body" />}
+            value={c.body}
+            multiline
+            max={2000}
+            path={[...base, 'body']}
+            onChange={(v) => set((x) => void (x.body = v))}
+          />
+          <StatusSelect status={c.status} onStatus={(v) => set((x) => void (x.status = v))} />
+        </div>
+      </Section>
+      <Section title={<FormattedMessage id="rhythm.section.tips" />}>
+        <div className="grid gap-5">
+          <LocLines
+            label={<FormattedMessage id="rhythm.field.tips" />}
+            value={c.tips}
+            path={[...base, 'tips']}
+            onChange={(v) => set((x) => void (x.tips = v))}
+          />
+          <LocLines
+            label={<FormattedMessage id="rhythm.field.watchFor" />}
+            value={c.watchFor}
+            path={[...base, 'watchFor']}
+            onChange={(v) => set((x) => void (x.watchFor = v))}
+          />
+          <Checks
+            label={<FormattedMessage id="rhythm.field.interests" />}
+            options={interests}
+            value={c.interests}
+            path={[...base, 'interests']}
+            labelOf={(n) => intl.formatMessage({ id: `rhythm.interest.${n}` })}
+            onChange={(v) => set((x) => void (x.interests = v))}
+          />
+        </div>
+      </Section>
+      <SourcesSection
+        value={c.sources}
+        max={6}
+        path={[...base, 'sources']}
+        onChange={(v) => set((x) => void (x.sources = v))}
+      />
+      <AdvancedSection
+        bad={advBad}
+        summary={
+          <span className="font-mono text-xs">
+            {c.id} · v{c.version}
+          </span>
+        }
+      >
+        <ItemIdFields
           id={c.id}
-          status={c.status}
+          version={c.version}
           idLocked={idLocked}
           path={base}
           onId={(v) => set((x) => void (x.id = v))}
-          onStatus={(v) => set((x) => void (x.status = v))}
         />
-        <AgeDaysInput
-          value={c.ageDays}
-          path={base}
-          onChange={(v) => set((x) => void (x.ageDays = v))}
-        />
-        <p className="field__help">
-          <FormattedMessage id="rhythm.field.ageCardHelp" />
-        </p>
-        <LocField
-          label={<FormattedMessage id="rhythm.field.title" />}
-          value={c.title}
-          max={2000}
-          path={[...base, 'title']}
-          onChange={(v) => set((x) => void (x.title = v))}
-        />
-        <LocField
-          label={<FormattedMessage id="rhythm.field.body" />}
-          value={c.body}
-          multiline
-          max={2000}
-          path={[...base, 'body']}
-          onChange={(v) => set((x) => void (x.body = v))}
-        />
-      </Section>
-      <Section title={<FormattedMessage id="rhythm.section.tips" />}>
-        <LocLines
-          label={<FormattedMessage id="rhythm.field.tips" />}
-          value={c.tips}
-          path={[...base, 'tips']}
-          onChange={(v) => set((x) => void (x.tips = v))}
-        />
-        <LocLines
-          label={<FormattedMessage id="rhythm.field.watchFor" />}
-          value={c.watchFor}
-          path={[...base, 'watchFor']}
-          onChange={(v) => set((x) => void (x.watchFor = v))}
-        />
-        <Checks
-          label={<FormattedMessage id="rhythm.field.interests" />}
-          options={interests}
-          value={c.interests}
-          path={[...base, 'interests']}
-          labelOf={(n) => intl.formatMessage({ id: `rhythm.interest.${n}` })}
-          onChange={(v) => set((x) => void (x.interests = v))}
-        />
-      </Section>
-      <Section title={<FormattedMessage id="rhythm.section.sources" />}>
-        <SourcesInput
-          value={c.sources}
-          max={6}
-          path={[...base, 'sources']}
-          onChange={(v) => set((x) => void (x.sources = v))}
-        />
-      </Section>
+      </AdvancedSection>
     </div>
   );
 }
@@ -1512,78 +1902,16 @@ export function HealthEditor({
   const signsErr = useRhythmIssue([...base, 'signs']);
   // Check-ins answer these ids (NL05b); a sign outside the list could never be asked.
   const unusedSign = healthSigns.find((id) => !h.signs.some((s) => s.id === id));
-  const remove = intl.formatMessage({ id: 'firstAid.remove' });
+  const remove = intl.formatMessage({ id: 'rhythm.remove' });
   return (
-    <div className="fa-editor">
+    <div className="grid gap-4">
       <Section
         title={
           <FormattedMessage id="rhythm.health.signs" values={{ n: h.signs.length, max: 20 }} />
         }
-      >
-        <p className="field__help">
-          <FormattedMessage id="rhythm.health.signsHelp" />
-        </p>
-        {h.signs.map((s, i) => (
-          <div key={i} className="rh-card">
-            <div className="rh-card__head">
-              <strong className="mono">{s.id || `#${i + 1}`}</strong>
-              <span className="fa-tools">
-                <IconButton
-                  icon="up"
-                  label={intl.formatMessage({ id: 'firstAid.moveUp' })}
-                  disabled={i === 0}
-                  onClick={() => set((x) => moveItem(x.signs, i, -1))}
-                />
-                <IconButton
-                  icon="down"
-                  label={intl.formatMessage({ id: 'firstAid.moveDown' })}
-                  disabled={i === h.signs.length - 1}
-                  onClick={() => set((x) => moveItem(x.signs, i, 1))}
-                />
-                <IconButton
-                  icon="remove"
-                  label={remove}
-                  disabled={h.signs.length <= 1}
-                  onClick={() => set((x) => void x.signs.splice(i, 1))}
-                />
-              </span>
-            </div>
-            <div className="fa-cols">
-              <div>
-                <SelectInput
-                  label={<FormattedMessage id="rhythm.field.signId" />}
-                  value={s.id}
-                  options={[...new Set<string>([...healthSigns, s.id])].map((id) => ({
-                    value: id,
-                    label: id,
-                  }))}
-                  onChange={(v) => set((x) => void (x.signs[i]!.id = v))}
-                />
-                <SignIdError path={[...base, 'signs', i, 'id']} />
-              </div>
-              <NumberInput
-                label={<FormattedMessage id="rhythm.field.maxAgeDays" />}
-                value={s.maxAgeDays}
-                nullable
-                placeholder="∞"
-                path={[...base, 'signs', i, 'maxAgeDays']}
-                help={<FormattedMessage id="rhythm.field.maxAgeDaysHelp" />}
-                onChange={(v) => set((x) => void (x.signs[i]!.maxAgeDays = v))}
-              />
-            </div>
-            <LocField
-              label={<FormattedMessage id="rhythm.field.signLabel" />}
-              value={s.label}
-              max={2000}
-              path={[...base, 'signs', i, 'label']}
-              onChange={(v) => set((x) => void (x.signs[i]!.label = v))}
-            />
-          </div>
-        ))}
-        <FieldError text={signsErr} />
-        <div>
-          <Button
-            kind="ghost"
+        hint={<FormattedMessage id="rhythm.health.signsHelp" />}
+        actions={
+          <AddButton
             disabled={!unusedSign}
             onClick={() =>
               unusedSign &&
@@ -1591,59 +1919,134 @@ export function HealthEditor({
             }
           >
             <FormattedMessage id="rhythm.health.addSign" />
-          </Button>
+          </AddButton>
+        }
+      >
+        <div className="grid gap-3">
+          {h.signs.map((s, i) => (
+            <div key={i} className="grid gap-4 rounded-lg border bg-background/40 p-4">
+              <div className="flex items-center gap-2">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-muted text-xs font-medium tabular-nums">
+                  {i + 1}
+                </span>
+                <span className="min-w-0 truncate text-sm font-medium">
+                  {s.label.vi || <span className="font-mono text-xs">{s.id}</span>}
+                </span>
+                <span className="ml-auto flex shrink-0 items-center">
+                  <IconButton
+                    icon="up"
+                    label={intl.formatMessage({ id: 'rhythm.moveUp' })}
+                    disabled={i === 0}
+                    onClick={() => set((x) => moveItem(x.signs, i, -1))}
+                  />
+                  <IconButton
+                    icon="down"
+                    label={intl.formatMessage({ id: 'rhythm.moveDown' })}
+                    disabled={i === h.signs.length - 1}
+                    onClick={() => set((x) => moveItem(x.signs, i, 1))}
+                  />
+                  <IconButton
+                    icon="remove"
+                    label={remove}
+                    disabled={h.signs.length <= 1}
+                    onClick={() => set((x) => void x.signs.splice(i, 1))}
+                  />
+                </span>
+              </div>
+              <LocField
+                label={<FormattedMessage id="rhythm.field.signLabel" />}
+                value={s.label}
+                max={2000}
+                path={[...base, 'signs', i, 'label']}
+                onChange={(v) => set((x) => void (x.signs[i]!.label = v))}
+              />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid content-start gap-1">
+                  <SelectInput
+                    label={<FormattedMessage id="rhythm.field.signId" />}
+                    value={s.id}
+                    options={[...new Set<string>([...healthSigns, s.id])].map((id) => ({
+                      value: id,
+                      label: id,
+                    }))}
+                    onChange={(v) => set((x) => void (x.signs[i]!.id = v))}
+                  />
+                  <SignIdError path={[...base, 'signs', i, 'id']} />
+                </div>
+                <NumberInput
+                  label={<FormattedMessage id="rhythm.field.maxAgeDays" />}
+                  value={s.maxAgeDays}
+                  nullable
+                  placeholder="∞"
+                  path={[...base, 'signs', i, 'maxAgeDays']}
+                  hint={<FormattedMessage id="rhythm.field.maxAgeDaysHelp" />}
+                  onChange={(v) => set((x) => void (x.signs[i]!.maxAgeDays = v))}
+                />
+              </div>
+            </div>
+          ))}
+          <FieldError text={signsErr} />
         </div>
       </Section>
       <Section title={<FormattedMessage id="rhythm.health.waiting" />}>
-        <LocLines
-          label={<FormattedMessage id="rhythm.field.whileWaiting" />}
-          value={h.whileWaiting}
-          path={[...base, 'whileWaiting']}
-          onChange={(v) => set((x) => void (x.whileWaiting = v))}
-        />
-        <LocField
-          label={<FormattedMessage id="rhythm.field.disclaimer" />}
-          value={h.disclaimer}
-          multiline
-          max={2000}
-          path={[...base, 'disclaimer']}
-          onChange={(v) => set((x) => void (x.disclaimer = v))}
-        />
+        <div className="grid gap-5">
+          <LocLines
+            label={<FormattedMessage id="rhythm.field.whileWaiting" />}
+            value={h.whileWaiting}
+            path={[...base, 'whileWaiting']}
+            onChange={(v) => set((x) => void (x.whileWaiting = v))}
+          />
+          <LocField
+            label={<FormattedMessage id="rhythm.field.disclaimer" />}
+            value={h.disclaimer}
+            multiline
+            max={2000}
+            path={[...base, 'disclaimer']}
+            onChange={(v) => set((x) => void (x.disclaimer = v))}
+          />
+        </div>
       </Section>
       <Section
         title={<FormattedMessage id="rhythm.health.regions" values={{ n: h.regions.length }} />}
-      >
-        <p className="field__help">
-          <FormattedMessage id="rhythm.health.regionsHelp" />
-        </p>
-        {h.regions.map((r, i) => (
-          <RegionRow
-            key={i}
-            value={r}
-            path={[...base, 'regions', i]}
-            removeLabel={remove}
-            onChange={(v) => set((x) => void (x.regions[i] = v))}
-            onRemove={() => set((x) => void x.regions.splice(i, 1))}
-          />
-        ))}
-        <div>
-          <Button
-            kind="ghost"
+        hint={<FormattedMessage id="rhythm.health.regionsHelp" />}
+        actions={
+          <AddButton
             disabled={h.regions.length >= 60}
             onClick={() => set((x) => void x.regions.push({ country: '', emergencyNumber: '' }))}
           >
             <FormattedMessage id="rhythm.health.addRegion" />
-          </Button>
+          </AddButton>
+        }
+      >
+        <div className="grid gap-2">
+          {h.regions.length > 0 && (
+            <div className="grid grid-cols-[6rem_8rem_auto] gap-2 text-xs text-muted-foreground">
+              <span>
+                <FormattedMessage id="rhythm.field.country" />
+              </span>
+              <span>
+                <FormattedMessage id="rhythm.field.emergencyNumber" />
+              </span>
+            </div>
+          )}
+          {h.regions.map((r, i) => (
+            <RegionRow
+              key={i}
+              value={r}
+              path={[...base, 'regions', i]}
+              removeLabel={remove}
+              onChange={(v) => set((x) => void (x.regions[i] = v))}
+              onRemove={() => set((x) => void x.regions.splice(i, 1))}
+            />
+          ))}
         </div>
       </Section>
-      <Section title={<FormattedMessage id="rhythm.section.sources" />}>
-        <SourcesInput
-          value={h.sources}
-          max={10}
-          path={[...base, 'sources']}
-          onChange={(v) => set((x) => void (x.sources = v))}
-        />
-      </Section>
+      <SourcesSection
+        value={h.sources}
+        max={10}
+        path={[...base, 'sources']}
+        onChange={(v) => set((x) => void (x.sources = v))}
+      />
     </div>
   );
 }
@@ -1669,26 +2072,28 @@ function RegionRow({
   const errCountry = useRhythmIssue([...path, 'country']);
   const errNumber = useRhythmIssue([...path, 'emergencyNumber']);
   return (
-    <div className="fa-row">
-      <div className="field">
-        <input
-          className="field__input mono"
+    <div className="grid grid-cols-[6rem_8rem_auto] items-start gap-2">
+      <div className="grid gap-1">
+        <Input
+          className={monoInput}
           value={value.country}
           maxLength={2}
           placeholder="VN"
           aria-label={intl.formatMessage({ id: 'rhythm.field.country' })}
+          aria-invalid={errCountry ? true : undefined}
           onChange={(e) => onChange({ ...value, country: e.target.value.toUpperCase() })}
         />
         <FieldError text={errCountry} />
       </div>
-      <div className="field">
-        <input
-          className="field__input mono"
+      <div className="grid gap-1">
+        <Input
+          className={cn(monoInput, 'tabular-nums')}
           value={value.emergencyNumber}
           maxLength={4}
           inputMode="numeric"
           placeholder="115"
           aria-label={intl.formatMessage({ id: 'rhythm.field.emergencyNumber' })}
+          aria-invalid={errNumber ? true : undefined}
           onChange={(e) => onChange({ ...value, emergencyNumber: e.target.value.trim() })}
         />
         <FieldError text={errNumber} />

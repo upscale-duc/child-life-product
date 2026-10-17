@@ -17,9 +17,26 @@ import {
   type StageAge,
   type StageUnit,
 } from '@child-life/contracts';
-import { createContext, useContext, useId, useState, type ReactNode } from 'react';
+import { Check, ImageIcon, Plus, Search, Trash2, Upload, X } from 'lucide-react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { Button as UiButton } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad, type Api } from '../api';
+import { Field, Notice, type MenuItem, type StatItem } from '../content-kit';
 import { ZONE } from '../format';
 import {
   Button,
@@ -27,7 +44,6 @@ import {
   Modal,
   Pill,
   ReasonField,
-  Segmented,
   errorMessageId,
   reasonOk,
   type PillTone,
@@ -212,10 +228,20 @@ export const statusTone: Record<EditorialDisplayStatus, PillTone> = {
   needs_rereview: 'high',
 };
 
-/** Workflow status, plus "Trên app · rev n" and "Minh hoạ" when something is live. */
+/** The statuses a list can filter on, in workflow order. */
+export const displayStatuses = [
+  'draft',
+  'in_review',
+  'approved',
+  'published',
+  'needs_rereview',
+  'archived',
+] as const;
+
+/** Workflow status, plus "Trên app · bản n" and "Minh hoạ" when something is live. */
 export function StatusCell({ row }: { row: ContentRow }) {
   return (
-    <span className="cl-status">
+    <span className="inline-flex items-center gap-1 whitespace-nowrap">
       <Pill tone={statusTone[row.displayStatus]}>
         <FormattedMessage id={`content.status.${row.displayStatus}`} />
       </Pill>
@@ -233,49 +259,109 @@ export function StatusCell({ row }: { row: ContentRow }) {
   );
 }
 
+/** The count tiles over a list; each one filters the list to what it counts. */
+export type Tile = 'all' | 'live' | 'pending' | 'draft' | 'due';
+
+/** Mirrors the server's counts (content-library.ts). */
+export function tileMatch(r: ContentRow, tile: Tile | undefined): boolean {
+  switch (tile ?? 'all') {
+    case 'live':
+      return !!r.live;
+    case 'pending':
+      return r.status === 'in_review' || r.status === 'approved';
+    case 'draft':
+      return r.status === 'draft';
+    case 'due':
+      return !!r.live?.dueForReview;
+    default:
+      return true;
+  }
+}
+
+export function contentTiles(c: ContentCounts, tile: Tile, onTile: (t: Tile) => void): StatItem[] {
+  const pick = (t: Tile) => () => onTile(tile === t ? 'all' : t);
+  return [
+    {
+      key: 'live',
+      label: <FormattedMessage id="content.kpi.inApp" />,
+      value: c.inApp,
+      active: tile === 'live',
+      onClick: pick('live'),
+    },
+    {
+      key: 'pending',
+      label: <FormattedMessage id="content.kpi.pending" />,
+      value: c.pending,
+      tone: c.pending ? 'warn' : 'muted',
+      foot: c.approved ? (
+        <FormattedMessage id="content.kpi.pendingFoot" values={{ n: c.approved }} />
+      ) : undefined,
+      active: tile === 'pending',
+      onClick: pick('pending'),
+    },
+    {
+      key: 'draft',
+      label: <FormattedMessage id="content.kpi.drafts" />,
+      value: c.drafts,
+      tone: c.drafts ? 'default' : 'muted',
+      active: tile === 'draft',
+      onClick: pick('draft'),
+    },
+    {
+      key: 'due',
+      label: <FormattedMessage id="content.kpi.due" />,
+      value: c.dueForReview,
+      tone: c.dueForReview ? 'error' : 'muted',
+      foot: <FormattedMessage id="content.kpi.dueFoot" />,
+      active: tile === 'due',
+      onClick: pick('due'),
+    },
+  ];
+}
+
+export const statusOptions = (intl: IntlShape) => [
+  { value: 'all', label: intl.formatMessage({ id: 'content.filter.allStatuses' }) },
+  ...displayStatuses.map((s) => ({
+    value: s,
+    label: intl.formatMessage({ id: `content.status.${s}` }),
+  })),
+];
+
 export function useContentList<T = ContentListView>(view: ContentKind | 'queue') {
   return useLoad<T>('staffContentList', { view }, `content:${view}`);
 }
 
-/** "Nhập bản nháp mẫu": imports the engineering drafts that are not there yet. */
-export function SeedButton({ kind, onDone }: { kind: ContentKind; onDone: () => void }) {
+/** "Nhập bản nháp mẫu" in a screen's "⋯": imports the drafts that are not there yet. */
+export function useSeedItem(kind: ContentKind, onDone: () => void): MenuItem {
   const api = useApi();
+  const intl = useIntl();
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ added: number; skipped: number } | null>(null);
-  const [error, setError] = useState<ApiError | null>(null);
-  return (
-    <span className="cl-seed">
-      <Button
-        disabled={busy}
-        onClick={() => {
-          setBusy(true);
-          setError(null);
-          api
-            .call<{ added: Record<string, number>; skipped: number }>('staffContentSeed', {
-              kinds: [kind],
-            })
-            .then((r) => {
-              setDone({ added: r.added[kind] ?? 0, skipped: r.skipped });
-              onDone();
-            })
-            .catch((e: unknown) => setError(asApiError(e)))
-            .finally(() => setBusy(false));
-        }}
-      >
-        <FormattedMessage id="content.seed" />
-      </Button>
-      {done && (
-        <span className="muted" role="status">
-          <FormattedMessage id="content.seedDone" values={done} />
-        </span>
-      )}
-      {error && (
-        <span className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </span>
-      )}
-    </span>
-  );
+  return {
+    key: 'seed',
+    icon: Upload,
+    disabled: busy,
+    label: <FormattedMessage id="content.seed" />,
+    onSelect: () => {
+      setBusy(true);
+      api
+        .call<{ added: Record<string, number>; skipped: number }>('staffContentSeed', {
+          kinds: [kind],
+        })
+        .then((r) => {
+          toast.success(
+            intl.formatMessage(
+              { id: 'content.seedDone' },
+              { added: r.added[kind] ?? 0, skipped: r.skipped },
+            ),
+          );
+          onDone();
+        })
+        .catch((e: unknown) =>
+          toast.error(intl.formatMessage({ id: errorMessageId(asApiError(e)) })),
+        )
+        .finally(() => setBusy(false));
+    },
+  };
 }
 
 // ---------- Workflow ----------
@@ -292,6 +378,16 @@ export function actionsFor(
   if (row.live && can.approve) out.push('reconfirm', 'unpublish');
   if (['draft', 'in_review', 'approved'].includes(row.status) && can.edit) out.push('archive');
   return out;
+}
+
+/** The next step of the workflow, shown as a button; the rest goes behind "⋯". */
+const forwardActions: EditorialAction[] = ['submit', 'approve', 'publish'];
+const destructiveActions: EditorialAction[] = ['unpublish', 'archive'];
+
+export function splitActions(actions: EditorialAction[]) {
+  const main = actions.filter((a) => forwardActions.includes(a) || a === 'reject');
+  const rest = actions.filter((a) => !main.includes(a));
+  return { main, rest };
 }
 
 export interface ActInput {
@@ -371,6 +467,7 @@ export function ActDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
   const reviewId = useId();
   const [input, setInput] = useState<ActInput>(() => blankActInput(today));
   const [busy, setBusy] = useState(false);
@@ -380,27 +477,38 @@ export function ActDialog({
   const takesReview = action === 'approve' || action === 'reconfirm';
   const set = (patch: Partial<ActInput>) => setInput((i) => ({ ...i, ...patch }));
   return (
-    <Modal title={<FormattedMessage id={`content.act.${action}.title`} />} onClose={onClose}>
-      <p className="modal__sub">
-        <strong>{title}</strong>
-      </p>
-      <p className="muted">
-        <FormattedMessage id={`content.act.${action}.body`} />
-      </p>
-      {blocked && (
-        <p className="error" role="alert">
-          <FormattedMessage id="content.act.samePerson" />
+    <Modal
+      wide={action === 'approve'}
+      title={<FormattedMessage id={`content.act.${action}.title`} />}
+      onClose={onClose}
+    >
+      <div className="grid gap-1">
+        <p className="font-medium">{title}</p>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage id={`content.act.${action}.body`} />
         </p>
+      </div>
+      {blocked && (
+        <Notice tone="warn">
+          <FormattedMessage id="content.act.samePerson" />
+        </Notice>
       )}
       {action === 'approve' && (
-        <fieldset className="cl-checks">
-          <legend className="field__label">
-            <FormattedMessage id="content.checks.title" />
+        <fieldset className="grid gap-2 rounded-lg border p-3">
+          <legend className="px-1 text-[13px] font-medium">
+            <FormattedMessage id="content.checks.title" />{' '}
+            <span className="text-muted-foreground tabular-nums">
+              {input.checks.length}/{editorialChecks.length}
+            </span>
           </legend>
           {editorialChecks.map((c) => (
             <CheckRow
               key={c}
-              label={<FormattedMessage id={`content.check.${c}`} />}
+              label={
+                <span className="text-sm">
+                  <FormattedMessage id={`content.check.${c}`} />
+                </span>
+              }
               checked={input.checks.includes(c)}
               onChange={(on) =>
                 set({
@@ -412,54 +520,57 @@ export function ActDialog({
         </fieldset>
       )}
       {takesReview && (
-        <fieldset className="cl-review">
-          <legend className="field__label">
+        <fieldset className="grid gap-3 rounded-lg border p-3">
+          <legend className="px-1 text-[13px] font-medium">
             <FormattedMessage id="content.review.title" />
           </legend>
           {requireReview ? (
-            <p className="muted">
+            <p className="text-sm text-muted-foreground">
               <FormattedMessage id="content.review.required" />
             </p>
           ) : (
             <CheckRow
-              label={<FormattedMessage id="content.review.optional" />}
+              label={
+                <span className="text-sm">
+                  <FormattedMessage id="content.review.optional" />
+                </span>
+              }
               checked={input.withReview}
               onChange={(on) => set({ withReview: on })}
             />
           )}
           {(input.withReview || requireReview) && (
-            <div className="cl-grid3">
+            <div className="grid gap-3 sm:grid-cols-3">
               {(['reviewer', 'credential'] as const).map((f) => (
-                <div className="field" key={f}>
-                  <label className="field__label" htmlFor={`${reviewId}-${f}`}>
-                    <FormattedMessage id={`content.review.${f}`} />
-                  </label>
-                  <input
+                <Field
+                  key={f}
+                  htmlFor={`${reviewId}-${f}`}
+                  label={<FormattedMessage id={`content.review.${f}`} />}
+                >
+                  <Input
                     id={`${reviewId}-${f}`}
-                    className="field__input"
                     maxLength={120}
                     value={input.review[f]}
                     onChange={(e) => set({ review: { ...input.review, [f]: e.target.value } })}
                   />
-                </div>
+                </Field>
               ))}
-              <div className="field">
-                <label className="field__label" htmlFor={`${reviewId}-on`}>
-                  <FormattedMessage id="content.review.reviewedOn" />
-                </label>
-                <input
+              <Field
+                htmlFor={`${reviewId}-on`}
+                label={<FormattedMessage id="content.review.reviewedOn" />}
+              >
+                <Input
                   id={`${reviewId}-on`}
-                  className="field__input"
                   type="date"
                   max={today}
                   value={input.review.reviewedOn}
                   onChange={(e) => set({ review: { ...input.review, reviewedOn: e.target.value } })}
                 />
-              </div>
+              </Field>
             </div>
           )}
           {!requireReview && !input.withReview && (
-            <p className="field__help">
+            <p className="text-xs text-muted-foreground">
               <FormattedMessage id="content.review.illustrativeNote" />
             </p>
           )}
@@ -471,9 +582,9 @@ export function ActDialog({
         required={action === 'reject' || action === 'unpublish'}
       />
       {error && (
-        <p className="error" role="alert">
+        <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
-        </p>
+        </Notice>
       )}
       <div className="modal__actions">
         <Button onClick={onClose}>
@@ -487,7 +598,10 @@ export function ActDialog({
             setBusy(true);
             setError(null);
             sendContentAct(api, request)
-              .then(onDone)
+              .then(() => {
+                toast.success(intl.formatMessage({ id: `content.done.${action}` }));
+                onDone();
+              })
               .catch((e: unknown) => setError(asApiError(e)))
               .finally(() => setBusy(false));
           }}
@@ -499,7 +613,7 @@ export function ActDialog({
   );
 }
 
-/** The workflow buttons under an item, each opening the dialog. */
+/** The next workflow step(s) as buttons (the editor bar, the review queue). */
 export function WorkflowButtons({
   actions,
   onPick,
@@ -507,8 +621,9 @@ export function WorkflowButtons({
   actions: EditorialAction[];
   onPick: (a: EditorialAction) => void;
 }) {
+  if (!actions.length) return null;
   return (
-    <div className="actions">
+    <div className="flex flex-wrap items-center gap-2">
       {actions.map((a) => (
         <Button
           key={a}
@@ -517,7 +632,7 @@ export function WorkflowButtons({
               ? 'danger'
               : a === 'archive'
                 ? 'ghost'
-                : a === 'publish' || a === 'approve' || a === 'submit'
+                : forwardActions.includes(a)
                   ? 'primary'
                   : 'secondary'
           }
@@ -530,20 +645,86 @@ export function WorkflowButtons({
   );
 }
 
+/** The workflow steps that are not the next one, for the editor bar's "⋯". */
+export function workflowMenu(
+  actions: EditorialAction[],
+  onPick: (a: EditorialAction) => void,
+): MenuItem[] {
+  return actions.map((a) => ({
+    key: a,
+    label: <FormattedMessage id={`content.action.${a}`} />,
+    destructive: destructiveActions.includes(a),
+    onSelect: () => onPick(a),
+  }));
+}
+
+/** The editor bar's buttons: "Trả lại" outlined, the step forward filled. */
+export function WorkflowMain({
+  actions,
+  onPick,
+}: {
+  actions: EditorialAction[];
+  onPick: (a: EditorialAction) => void;
+}) {
+  return (
+    <>
+      {actions.map((a) => (
+        <UiButton
+          key={a}
+          variant={a === 'reject' ? 'outline' : 'default'}
+          className={cn(a === 'reject' && 'text-destructive hover:text-destructive')}
+          onClick={() => onPick(a)}
+        >
+          <FormattedMessage id={`content.action.${a}`} />
+        </UiButton>
+      ))}
+    </>
+  );
+}
+
+/** What stops "Gửi duyệt", a rejection and a save error, above the form. */
+export function EditorNotices({
+  error,
+  rejection,
+  issues,
+}: {
+  error: ApiError | null;
+  rejection: { by: string; reason: string } | null | undefined;
+  issues: ParseIssue[];
+}) {
+  if (!error && !rejection && !issues.length) return null;
+  return (
+    <div className="mb-4 grid gap-3">
+      {error && (
+        <Notice tone="error">
+          <FormattedMessage id={errorMessageId(error)} />
+        </Notice>
+      )}
+      {rejection && (
+        <Notice tone="warn" title={<FormattedMessage id="content.rejectedTitle" />}>
+          <FormattedMessage id="content.rejected" values={rejection} />
+        </Notice>
+      )}
+      <IssuesList issues={issues} />
+    </div>
+  );
+}
+
 // ---------- Fields ----------
 
+/** "Tiếng Việt · Tiếng Anh": which language the form and the preview show. */
 export function LangTabs({ value, onChange }: { value: Lang; onChange: (l: Lang) => void }) {
   const intl = useIntl();
   return (
-    <Segmented
-      label={intl.formatMessage({ id: 'content.lang' })}
-      value={value}
-      onChange={onChange}
-      options={langs.map((l) => ({
-        value: l,
-        label: <FormattedMessage id={`content.lang.${l}`} />,
-      }))}
-    />
+    <Tabs value={value} onValueChange={(v) => onChange(v as Lang)}>
+      <TabsList aria-label={intl.formatMessage({ id: 'content.lang' })}>
+        {langs.map((l) => (
+          <TabsTrigger key={l} value={l} className="px-3">
+            <FormattedMessage id={`content.lang.${l}`} />
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   );
 }
 
@@ -555,7 +736,10 @@ export function TextField({
   counter,
   multiline,
   help,
+  hint,
   placeholder,
+  rows,
+  className,
 }: {
   label: ReactNode;
   value: string;
@@ -564,43 +748,43 @@ export function TextField({
   counter?: boolean;
   multiline?: boolean;
   help?: ReactNode;
+  hint?: ReactNode;
   placeholder?: string;
+  rows?: number;
+  className?: string;
 }) {
   const id = useId();
   const n = charCount(value);
+  const over = n > max;
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-        {counter && (
-          <span className={`cl-counter ${n > max ? 'error' : 'muted'}`}>
-            {' '}
-            <FormattedMessage id="content.chars" values={{ n, max }} />
-          </span>
-        )}
-      </label>
+    <Field
+      label={label}
+      htmlFor={id}
+      hint={hint}
+      counter={counter ? { n, max } : undefined}
+      help={help}
+      className={className}
+    >
       {multiline ? (
-        <textarea
+        <Textarea
           id={id}
-          className="field__input"
-          rows={Math.min(10, Math.max(3, Math.ceil(n / 90)))}
+          rows={rows ?? Math.min(12, Math.max(3, Math.ceil(n / 80)))}
           value={value}
           placeholder={placeholder}
-          aria-invalid={n > max ? true : undefined}
+          aria-invalid={over ? true : undefined}
+          className="leading-relaxed"
           onChange={(e) => onChange(e.target.value)}
         />
       ) : (
-        <input
+        <Input
           id={id}
-          className="field__input"
           value={value}
           placeholder={placeholder}
-          aria-invalid={n > max ? true : undefined}
+          aria-invalid={over ? true : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       )}
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    </Field>
   );
 }
 
@@ -611,6 +795,8 @@ export function NumberField({
   min,
   max,
   help,
+  hint,
+  suffix,
 }: {
   label: ReactNode;
   value: number;
@@ -618,28 +804,36 @@ export function NumberField({
   min: number;
   max: number;
   help?: ReactNode;
+  hint?: ReactNode;
+  suffix?: ReactNode;
 }) {
   const id = useId();
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        id={id}
-        className="field__input cl-num"
-        type="number"
-        min={min}
-        max={max}
-        value={Number.isFinite(value) ? value : ''}
-        onChange={(e) => onChange(e.target.value === '' ? Number.NaN : Number(e.target.value))}
-      />
-      {help && <p className="field__help">{help}</p>}
-    </div>
+    <Field label={label} htmlFor={id} help={help} hint={hint}>
+      <div className="relative">
+        <Input
+          id={id}
+          type="number"
+          min={min}
+          max={max}
+          className={cn('tabular-nums', suffix && 'pr-14')}
+          value={Number.isFinite(value) ? value : ''}
+          onChange={(e) => onChange(e.target.value === '' ? Number.NaN : Number(e.target.value))}
+        />
+        {suffix && (
+          <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-muted-foreground">
+            {suffix}
+          </span>
+        )}
+      </div>
+    </Field>
   );
 }
 
-/** "Mỗi dòng một ý": up to [max] points; the counter turns red past it. */
+/**
+ * Up to [max] short points, one box each (Enter starts the next one); empty boxes are left out
+ * of the saved list. The counter turns red past [max].
+ */
 export function PointsField({
   label,
   value,
@@ -653,37 +847,79 @@ export function PointsField({
   max: number;
   itemMax: number;
 }) {
-  const id = useId();
-  const [text, setText] = useState(value.join('\n'));
+  const intl = useIntl();
+  const [rows, setRows] = useState<string[]>(() => (value.length ? value : ['']));
+  const [focus, setFocus] = useState<number | null>(null);
+  const boxes = useRef<Array<HTMLTextAreaElement | null>>([]);
+  useEffect(() => {
+    if (focus === null) return;
+    boxes.current[focus]?.focus();
+    setFocus(null);
+  }, [focus]);
+  const update = (next: string[]) => {
+    setRows(next.length ? next : ['']);
+    onChange(next.map((l) => l.trim()).filter(Boolean));
+  };
+  const filled = value.length;
   const tooLong = value.some((v) => charCount(v) > itemMax);
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}{' '}
-        <span className={value.length > max ? 'error' : 'muted'}>
-          {value.length}/{max}
-        </span>
-      </label>
-      <textarea
-        id={id}
-        className="field__input"
-        rows={Math.max(3, Math.min(8, value.length + 1))}
-        value={text}
-        aria-invalid={value.length > max || tooLong ? true : undefined}
-        onChange={(e) => {
-          setText(e.target.value);
-          onChange(
-            e.target.value
-              .split('\n')
-              .map((l) => l.trim())
-              .filter(Boolean),
-          );
-        }}
-      />
-      <p className={`field__help ${tooLong ? 'error' : ''}`}>
-        <FormattedMessage id="content.onePerLine" values={{ max: itemMax }} />
-      </p>
-    </div>
+    <Field
+      label={label}
+      counter={{ n: filled, max }}
+      error={
+        tooLong ? <FormattedMessage id="content.pointTooLong" values={{ max: itemMax }} /> : null
+      }
+    >
+      <ol className="grid gap-2">
+        {rows.map((r, i) => (
+          <li key={i} className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-start gap-2">
+            <span className="mt-2 grid size-5 place-items-center rounded-full bg-muted text-[11px] font-semibold text-muted-foreground tabular-nums">
+              {i + 1}
+            </span>
+            <Textarea
+              ref={(el) => {
+                boxes.current[i] = el;
+              }}
+              rows={1}
+              value={r}
+              aria-label={intl.formatMessage({ id: 'content.block.item' }, { n: i + 1 })}
+              aria-invalid={charCount(r.trim()) > itemMax || i >= max ? true : undefined}
+              className="min-h-9 py-1.5 leading-relaxed"
+              onChange={(e) => update(rows.map((x, j) => (j === i ? e.target.value : x)))}
+              onKeyDown={(e) => {
+                if (e.key !== 'Enter' || e.shiftKey || e.nativeEvent.isComposing) return;
+                e.preventDefault();
+                if (rows.length >= max) return;
+                update([...rows.slice(0, i + 1), '', ...rows.slice(i + 1)]);
+                setFocus(i + 1);
+              }}
+            />
+            <IconButton
+              icon="remove"
+              label={intl.formatMessage({ id: 'content.remove' })}
+              disabled={rows.length === 1 && !r}
+              onClick={() => update(rows.filter((_, j) => j !== i))}
+            />
+          </li>
+        ))}
+      </ol>
+      {rows.length < max && (
+        <div className="pl-8">
+          <UiButton
+            variant="ghost"
+            size="sm"
+            className="text-primary"
+            onClick={() => {
+              update([...rows, '']);
+              setFocus(rows.length);
+            }}
+          >
+            <Plus />
+            <FormattedMessage id="content.block.addItem" />
+          </UiButton>
+        </div>
+      )}
+    </Field>
   );
 }
 
@@ -700,17 +936,19 @@ export function SourcesField({
 }) {
   const intl = useIntl();
   return (
-    <fieldset className="cl-sources">
-      <legend className="field__label">
-        <FormattedMessage id="content.sources" />{' '}
-        <span className="muted">
+    <fieldset className="grid gap-2">
+      <legend className="mb-1.5 flex w-full items-center text-[13px] font-medium">
+        <FormattedMessage id="content.sources" />
+        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
           {value.length}/{max}
         </span>
       </legend>
       {value.map((s, i) => (
-        <div className="cl-source" key={i}>
-          <input
-            className="field__input"
+        <div
+          className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto] items-center gap-2"
+          key={i}
+        >
+          <Input
             aria-label={intl.formatMessage({ id: 'content.source.label' })}
             placeholder={intl.formatMessage({ id: 'content.source.label' })}
             value={s.label}
@@ -719,8 +957,8 @@ export function SourcesField({
               onChange(value.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))
             }
           />
-          <input
-            className="field__input mono"
+          <Input
+            className="font-mono text-xs"
             aria-label={intl.formatMessage({ id: 'content.source.url' })}
             placeholder="https://"
             value={s.url}
@@ -737,9 +975,16 @@ export function SourcesField({
         </div>
       ))}
       {value.length < max && (
-        <Button kind="ghost" onClick={() => onChange([...value, { label: '', url: '' }])}>
-          <FormattedMessage id="content.source.add" />
-        </Button>
+        <div>
+          <UiButton
+            variant="outline"
+            size="sm"
+            onClick={() => onChange([...value, { label: '', url: '' }])}
+          >
+            <Plus />
+            <FormattedMessage id="content.source.add" />
+          </UiButton>
+        </div>
       )}
     </fieldset>
   );
@@ -754,24 +999,26 @@ export function AudienceField({
   onChange: (v: MemberRole[]) => void;
 }) {
   return (
-    <fieldset className="field">
-      <legend className="field__label">
+    <fieldset className="grid gap-1.5">
+      <legend className="mb-1.5 text-[13px] font-medium">
         <FormattedMessage id="content.audience" />
       </legend>
-      <div className="chips">
+      <div className="flex flex-wrap gap-2">
         {memberRoles.map((r) => {
           const on = value.includes(r);
           return (
-            <button
+            <UiButton
               key={r}
               type="button"
-              className={`chip ${on ? 'chip--on' : ''}`}
+              size="sm"
+              variant={on ? 'default' : 'outline'}
               aria-pressed={on}
+              className={cn('rounded-full', !on && 'text-muted-foreground')}
               onClick={() => onChange(on ? value.filter((x) => x !== r) : [...value, r])}
             >
-              {on ? '✓ ' : ''}
+              {on && <Check />}
               <FormattedMessage id={`content.audience.${r}`} />
-            </button>
+            </UiButton>
           );
         })}
       </div>
@@ -803,53 +1050,66 @@ export function LinkPicker({
     (o) => !q.trim() || `${o.title} ${o.id}`.toLowerCase().includes(q.trim().toLowerCase()),
   );
   return (
-    <div className="field">
-      <span className="field__label">
-        {label}{' '}
-        <span className={value.length > max ? 'error' : 'muted'}>
+    <div className="grid gap-1.5">
+      <div className="flex items-center text-[13px] font-medium">
+        {label}
+        <span
+          className={cn(
+            'ml-auto text-xs tabular-nums',
+            value.length > max ? 'font-medium text-destructive' : 'text-muted-foreground',
+          )}
+        >
           {value.length}/{max}
         </span>
-      </span>
-      <div className="chips">
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
         {value.map((id) => (
-          <span key={id} className={`cl-tag cl-tag--${tone}`}>
-            {titleOf(id)}
+          <span key={id} className={`cl-tag cl-tag--${tone} max-w-full`}>
+            <span className="truncate">{titleOf(id)}</span>
             <button
               type="button"
               className="cl-tag__x"
               aria-label={intl.formatMessage({ id: 'content.remove' })}
               onClick={() => onChange(value.filter((x) => x !== id))}
             >
-              ×
+              <X className="size-3.5" />
             </button>
           </span>
         ))}
         {value.length < max && (
-          <button type="button" className="chip" onClick={() => setOpen(true)}>
+          <UiButton variant="outline" size="sm" onClick={() => setOpen(true)}>
+            <Plus />
             <FormattedMessage id="content.link.add" />
-          </button>
+          </UiButton>
         )}
       </div>
       {open && (
         <Modal title={label} onClose={() => setOpen(false)}>
-          <input
-            className="field__input"
-            type="search"
-            value={q}
-            aria-label={intl.formatMessage({ id: 'content.search' })}
-            placeholder={intl.formatMessage({ id: 'content.search' })}
-            onChange={(e) => setQ(e.target.value)}
-          />
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              type="search"
+              className="pl-8"
+              value={q}
+              aria-label={intl.formatMessage({ id: 'content.search' })}
+              placeholder={intl.formatMessage({ id: 'content.search' })}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
           {shown.length ? (
-            <ul className="cl-pick">
+            <ul className="grid max-h-[50vh] gap-0.5 overflow-y-auto">
               {shown.map((o) => {
                 const on = value.includes(o.id);
                 return (
-                  <li key={o.id}>
+                  <li key={o.id} className="rounded-md px-2 py-1.5 hover:bg-muted">
                     <CheckRow
                       label={
-                        <span>
-                          {o.title} {o.meta && <span className="muted">· {o.meta}</span>}
+                        <span className="text-sm">
+                          {o.title}{' '}
+                          {o.meta && <span className="text-muted-foreground">· {o.meta}</span>}
                         </span>
                       }
                       checked={on}
@@ -913,7 +1173,7 @@ export function ImageThumb({ id, size = 64 }: { id: string | null; size?: number
     <img className="cl-thumb" src={url} alt="" width={size} height={size} loading="lazy" />
   ) : (
     <span className="cl-thumb cl-thumb--empty" style={{ width: size, height: size }} aria-hidden>
-      {id ? '!' : '—'}
+      {id ? '!' : <ImageIcon className="size-5" />}
     </span>
   );
 }
@@ -921,7 +1181,14 @@ export function ImageThumb({ id, size = 64 }: { id: string | null; size?: number
 const imageTypes = ['image/png', 'image/jpeg', 'image/webp'];
 
 /** Picks an uploaded picture or uploads a new one (re-encoded to WebP by the server). */
-export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) {
+export function ImagePickerButton({
+  onPick,
+  label,
+}: {
+  onPick: (id: string) => void;
+  /** The button's words; "Chọn ảnh" by default. */
+  label?: ReactNode;
+}) {
   const intl = useIntl();
   const api = useApi();
   const fileId = useId();
@@ -936,9 +1203,10 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
   const shown = images.filter((i) => !q.trim() || i.id.includes(q.trim().toLowerCase()));
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
-        <FormattedMessage id="content.image.pick" />
-      </Button>
+      <UiButton variant="outline" size="sm" onClick={() => setOpen(true)}>
+        <ImageIcon />
+        {label ?? <FormattedMessage id="content.image.pick" />}
+      </UiButton>
       {open && (
         <Modal
           wide
@@ -946,10 +1214,11 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
           onClose={() => setOpen(false)}
         >
           {canUpload && (
-            <div className="cl-upload">
+            <div className="grid gap-3 rounded-lg border border-dashed p-3">
               <FilePicker
                 id={fileId}
                 accept={imageTypes.join(',')}
+                label={<FormattedMessage id="content.image.uploadNew" />}
                 onFile={(f) => {
                   setFile(f);
                   setError(null);
@@ -961,14 +1230,20 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
                 }}
               />
               {file && (
-                <div className="actions">
-                  <input
-                    className="field__input mono"
-                    aria-label={intl.formatMessage({ id: 'content.image.name' })}
-                    value={name}
-                    maxLength={40}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                <div className="flex flex-wrap items-end gap-2">
+                  <Field
+                    className="min-w-56 flex-1"
+                    htmlFor={`${fileId}-name`}
+                    label={<FormattedMessage id="content.image.name" />}
+                  >
+                    <Input
+                      id={`${fileId}-name`}
+                      className="font-mono text-xs"
+                      value={name}
+                      maxLength={40}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </Field>
                   <Button
                     kind="primary"
                     disabled={busy || !!problem || !imageNameOk(name)}
@@ -998,27 +1273,33 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
                 </div>
               )}
               {problem && (
-                <p className="error" role="alert">
+                <p className="text-sm text-destructive" role="alert">
                   <FormattedMessage id={problem} />
                 </p>
               )}
               {error && (
-                <p className="error" role="alert">
+                <p className="text-sm text-destructive" role="alert">
                   <FormattedMessage id={errorMessageId(error)} />
                 </p>
               )}
             </div>
           )}
-          <input
-            className="field__input"
-            type="search"
-            value={q}
-            aria-label={intl.formatMessage({ id: 'content.search' })}
-            placeholder={intl.formatMessage({ id: 'content.search' })}
-            onChange={(e) => setQ(e.target.value)}
-          />
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              type="search"
+              className="pl-8"
+              value={q}
+              aria-label={intl.formatMessage({ id: 'content.search' })}
+              placeholder={intl.formatMessage({ id: 'content.search' })}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
           {shown.length ? (
-            <ul className="cl-images">
+            <ul className="cl-images max-h-[50vh] overflow-y-auto">
               {shown.map((img) => (
                 <li key={img.id}>
                   <button
@@ -1029,7 +1310,7 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
                     }}
                   >
                     <img src={img.url} alt="" loading="lazy" />
-                    <span className="mono">{img.id}</span>
+                    <span className="truncate font-mono">{img.id}</span>
                   </button>
                 </li>
               ))}
@@ -1045,6 +1326,60 @@ export function ImagePickerButton({ onPick }: { onPick: (id: string) => void }) 
   );
 }
 
+/** A picture with alt text per language (or none): the cover, a milestone's illustration. */
+export function PictureField({
+  label,
+  value,
+  onChange,
+  lang,
+  altMax = contentLimits.alt,
+}: {
+  /** Absent when the section around it already says what it is. */
+  label?: ReactNode;
+  value: { image: string; alt: Loc } | null;
+  onChange: (v: { image: string; alt: Loc } | null) => void;
+  lang: Lang;
+  altMax?: number;
+}) {
+  return (
+    <div className="grid gap-1.5">
+      {label && <span className="text-[13px] font-medium">{label}</span>}
+      <div className="flex items-start gap-3">
+        <ImageThumb id={value?.image ?? null} size={72} />
+        <div className="grid min-w-0 flex-1 gap-2">
+          <div className="flex flex-wrap gap-2">
+            <ImagePickerButton
+              label={value ? <FormattedMessage id="content.image.change" /> : undefined}
+              onPick={(image) => onChange({ image, alt: value?.alt ?? { vi: '', en: '' } })}
+            />
+            {value && (
+              <UiButton
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground"
+                onClick={() => onChange(null)}
+              >
+                <Trash2 />
+                <FormattedMessage id="content.image.clear" />
+              </UiButton>
+            )}
+          </div>
+          {value && (
+            <TextField
+              label={
+                <FormattedMessage id="content.image.alt" values={{ lang: lang.toUpperCase() }} />
+              }
+              value={value.alt[lang]}
+              max={altMax}
+              onChange={(v) => onChange({ ...value, alt: { ...value.alt, [lang]: v } })}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Cover picture with alt text per language (or none). */
 export function CoverField({
   value,
@@ -1055,38 +1390,7 @@ export function CoverField({
   onChange: (v: { image: string; alt: Loc } | null) => void;
   lang: Lang;
 }) {
-  return (
-    <div className="field">
-      <span className="field__label">
-        <FormattedMessage id="content.cover" />
-      </span>
-      <div className="cl-cover">
-        <ImageThumb id={value?.image ?? null} />
-        <div className="stack cl-tight">
-          <div className="actions">
-            <ImagePickerButton
-              onPick={(image) => onChange({ image, alt: value?.alt ?? { vi: '', en: '' } })}
-            />
-            {value && (
-              <Button kind="ghost" onClick={() => onChange(null)}>
-                <FormattedMessage id="content.image.clear" />
-              </Button>
-            )}
-          </div>
-          {value && (
-            <TextField
-              label={
-                <FormattedMessage id="content.image.alt" values={{ lang: lang.toUpperCase() }} />
-              }
-              value={value.alt[lang]}
-              max={contentLimits.alt}
-              onChange={(v) => onChange({ ...value, alt: { ...value.alt, [lang]: v } })}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  return <PictureField value={value} onChange={onChange} lang={lang} />;
 }
 
 // ---------- Issues (what blocks "Gửi duyệt") ----------
@@ -1112,17 +1416,25 @@ export function issuePlace(intl: IntlShape, path: ReadonlyArray<PropertyKey>): s
 export function IssuesList({ issues }: { issues: ParseIssue[] }) {
   const intl = useIntl();
   if (!issues.length) return null;
+  const places = [...new Set(issues.map((i) => issuePlace(intl, i.path)))];
   return (
-    <div className="cl-issues" role="alert">
-      <strong>
-        <FormattedMessage id="content.issues" values={{ n: issues.length }} />
-      </strong>
-      <ul>
-        {issues.slice(0, 12).map((i, n) => (
-          <li key={n}>{issuePlace(intl, i.path)}</li>
+    <Notice
+      tone="warn"
+      title={<FormattedMessage id="content.issues" values={{ n: issues.length }} />}
+    >
+      <ul className="mt-1 flex flex-wrap gap-1.5">
+        {places.slice(0, 12).map((p) => (
+          <li key={p}>
+            <Badge variant="outline" className="font-normal">
+              {p}
+            </Badge>
+          </li>
         ))}
+        {places.length > 12 && (
+          <li className="text-xs text-muted-foreground">+{places.length - 12}</li>
+        )}
       </ul>
-    </div>
+    </Notice>
   );
 }
 
@@ -1170,6 +1482,36 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
     <div className="cl-phone" aria-label="preview">
       {children}
     </div>
+  );
+}
+
+/** The preview card in an editor's side column; it follows the form's language. */
+export function PreviewCard({
+  lang,
+  onLang,
+  children,
+}: {
+  lang: Lang;
+  /** A language switch on the card itself (when the form has none). */
+  onLang?: (l: Lang) => void;
+  children: ReactNode;
+}) {
+  return (
+    <section className="grid gap-3 rounded-xl border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-[15px] font-semibold">
+          <FormattedMessage id="content.preview" />
+        </h2>
+        {onLang ? (
+          <LangTabs value={lang} onChange={onLang} />
+        ) : (
+          <Badge variant="outline" className="font-normal text-muted-foreground">
+            <FormattedMessage id={`content.lang.${lang}`} />
+          </Badge>
+        )}
+      </div>
+      {children}
+    </section>
   );
 }
 

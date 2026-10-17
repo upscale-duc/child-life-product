@@ -5,8 +5,36 @@ import {
   type FirstAidPack,
   type FirstAidSituation,
 } from '@child-life/contracts';
-import { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  ArrowDown,
+  ArrowUp,
+  Eye,
+  LifeBuoy,
+  LogOut,
+  Pencil,
+  Plus,
+  SearchX,
+  Trash2,
+  Upload,
+} from 'lucide-react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, createIntl, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import {
   ApiError,
   useApi,
@@ -15,28 +43,40 @@ import {
   type FirstAidVersion,
   type FirstAidView,
 } from '../api';
+import {
+  EditorBar,
+  EditorLayout,
+  EmptyState,
+  Field,
+  FilterBar,
+  HelpPopover,
+  Notice,
+  OverflowMenu,
+  SearchInput,
+  Section,
+  useConfirm,
+  useLeaveGuard,
+  type MenuItem,
+} from '../content-kit';
 import { routePaths, subPath, useStaff } from '../context';
 import { ZONE } from '../format';
 import { messages } from '../messages';
 import {
-  Button,
-  Empty,
   Loaded,
   Modal,
   Page,
-  Panel,
   Pill,
-  ReasonField,
-  Segmented,
+  RowActions,
+  SelectMenu,
   TableScroll,
   errorMessageId,
   reasonOk,
   type PillTone,
-  RowActions,
 } from '../ui';
 import {
   GeneralEditor,
   ImageGrid,
+  ImageKindFilter,
   ImageThumb,
   IssuesContext,
   LibraryContext,
@@ -46,10 +86,12 @@ import {
   filterImages,
   issueText,
   moveItem,
+  revealPath,
   saveFirstAidDraft,
   starterPack,
   validatePack,
   type Edit,
+  type ImageFilter,
   type Issue,
 } from './FirstAidEditor';
 
@@ -59,6 +101,8 @@ import {
  * it to a different person with "Nội dung · Duyệt" (on prod an expert, who records the review),
  * and approval publishes it to `publicConfig/content_firstAid`. Every step asks for a reason and
  * is in the audit log. "/first-aid/<situationId>" opens one situation with a phone preview.
+ * Laid out with the content kit (D-063): the list first, the open draft as a notice with its next
+ * step, history folded away; while editing, a sticky editor bar replaces the page header.
  */
 
 const statusTone: Record<string, PillTone> = {
@@ -93,22 +137,25 @@ const textOf = (intl: IntlShape, t: { vi: string; en: string } | null | undefine
 export function FirstAidScreen() {
   const staff = useStaff();
   const [load, reload] = useLoad<FirstAidView>('staffFirstAid', {}, 'firstAid');
+  if (load.status !== 'ok') {
+    return (
+      <Page
+        title={<FormattedMessage id="firstAid.title" />}
+        subtitle={<FormattedMessage id="firstAid.sub" />}
+      >
+        <Loaded load={load} reload={reload}>
+          {() => null}
+        </Loaded>
+      </Page>
+    );
+  }
   return (
-    <Page
-      title={<FormattedMessage id="firstAid.title" />}
-      subtitle={<FormattedMessage id="firstAid.sub" />}
-    >
-      <Loaded load={load} reload={reload}>
-        {(view) => (
-          <FirstAidBody
-            view={view}
-            canEdit={staffCan(staff.levels, 'content.edit')}
-            canApprove={staffCan(staff.levels, 'content.approve')}
-            onChanged={reload}
-          />
-        )}
-      </Loaded>
-    </Page>
+    <FirstAidBody
+      view={load.data}
+      canEdit={staffCan(staff.levels, 'content.edit')}
+      canApprove={staffCan(staff.levels, 'content.approve')}
+      onChanged={reload}
+    />
   );
 }
 
@@ -132,6 +179,7 @@ export function FirstAidBody({
   initialSituation?: string | null;
 }) {
   const intl = useIntl();
+  const confirm = useConfirm();
   const d = view.draft;
   const [showDraft, setShowDraft] = useState(!!d);
   const draftId = d?.versionId ?? null;
@@ -152,6 +200,7 @@ export function FirstAidBody({
   const shown: FirstAidPack | null =
     editing ?? (showDraft && d ? d.pack : (view.current?.pack ?? null));
   const check = useMemo(() => (editing ? validatePack(editing) : null), [editing]);
+  const issues = showIssues ? (check?.list ?? []) : [];
 
   // Selected situation by position (ids can be edited); the address carries its id.
   const [selected, setSelected] = useState<number | null>(() => {
@@ -193,12 +242,7 @@ export function FirstAidBody({
   };
 
   // Leaving with unsaved changes asks first.
-  useEffect(() => {
-    if (!editing || !dirty) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [editing, dirty]);
+  useLeaveGuard(!!editing && dirty);
 
   const edit: Edit = useCallback((fn) => {
     setEditing((p) => {
@@ -210,130 +254,348 @@ export function FirstAidBody({
     setDirty(true);
   }, []);
 
+  /** Keeps the open situation (by id) when the pack on screen changes. */
+  const follow = (pack: FirstAidPack | null) => {
+    if (selected === null) return;
+    const at = pack?.situations.findIndex((s) => s.id === selectedSituation?.id) ?? -1;
+    if (at >= 0) setSelected(at);
+    else open(null);
+  };
+
   const startEditing = () => {
-    setEditing(structuredClone(d?.pack ?? view.current?.pack ?? starterPack()));
+    const pack = structuredClone(d?.pack ?? view.current?.pack ?? starterPack());
+    follow(pack);
+    setEditing(pack);
     setShowDraft(!!d);
     setDirty(false);
     setShowIssues(false);
   };
-  const stopEditing = () => {
-    if (dirty && !window.confirm(intl.formatMessage({ id: 'firstAid.leaveConfirm' }))) return;
+  const leave = () => {
+    follow(d?.pack ?? view.current?.pack ?? null);
     setEditing(null);
     setDirty(false);
     setShowIssues(false);
-    const saved = d?.pack ?? view.current?.pack;
-    if (selected !== null && (!saved || selected >= saved.situations.length)) open(null);
+  };
+  const stopEditing = () => {
+    if (!dirty) return leave();
+    confirm.ask({
+      title: intl.formatMessage({ id: 'firstAid.leaveConfirm' }),
+      body: <FormattedMessage id="firstAid.leaveConfirmNote" />,
+      confirmLabel: <FormattedMessage id="kit.leaveConfirm" />,
+      destructive: true,
+      onConfirm: leave,
+    });
+  };
+  const trySave = () => {
+    setShowIssues(true);
+    if (check?.ok) setDialog('save');
+    else if (check) {
+      toast.error(intl.formatMessage({ id: 'firstAid.issues' }, { n: check.list.length }));
+    }
+  };
+  const askRemove = (i: number, after?: () => void) => {
+    const s = shown?.situations[i];
+    if (!s) return;
+    confirm.ask({
+      title: intl.formatMessage({ id: 'firstAid.removeConfirm' }, { name: s.title.vi || s.id }),
+      body: <FormattedMessage id="firstAid.removeConfirmNote" />,
+      confirmLabel: <FormattedMessage id="firstAid.remove" />,
+      destructive: true,
+      onConfirm: () => {
+        edit((p) => {
+          p.situations.splice(i, 1);
+        });
+        after?.();
+      },
+    });
+  };
+  /** From the issues summary to the field: the situation (and variant) or the settings tab. */
+  const jump = (issue: Issue) => {
+    const [head, at, key, v] = issue.path;
+    if (head === 'situations' && typeof at === 'number') {
+      setTab('situations');
+      open(at);
+      if (key === 'variants' && typeof v === 'number') setVariant(v);
+    } else {
+      open(null);
+      setTab('general');
+    }
+    window.setTimeout(() => revealPath(issue.path), 80);
+  };
+  const addSituation = () => {
+    if (!editing) return;
+    const added = blankSituation(editing);
+    edit((p) => {
+      p.situations.push(structuredClone(added));
+    });
+    window.history.pushState({}, '', `${routePaths.firstAid}/${added.id}`);
+    setSelected(editing.situations.length);
+    setVariant(0);
+    window.scrollTo?.(0, 0);
   };
 
   const liveIds = useMemo(
     () => new Set(view.current?.pack.situations.map((s) => s.id) ?? []),
     [view.current],
   );
+  const saveLabel = <FormattedMessage id="firstAid.saveDraft" />;
+  const editLabel = (
+    <>
+      <Pencil />
+      <FormattedMessage id={d ? 'firstAid.editDraft' : 'firstAid.edit'} />
+    </>
+  );
+  const issuesNotice = editing && issues.length > 0 && (
+    <IssuesNotice issues={issues} pack={editing} onJump={jump} />
+  );
+
+  let screen: ReactNode;
+  if (selectedSituation && selected !== null && shown) {
+    // One situation: the editor (or a read-only summary) beside the phone preview.
+    const n = shown.situations.length;
+    const own = issues.filter((i) => i.path[0] === 'situations' && i.path[1] === selected);
+    const menu: MenuItem[] = editing
+      ? [
+          {
+            key: 'up',
+            icon: ArrowUp,
+            label: <FormattedMessage id="firstAid.moveUp" />,
+            disabled: selected === 0,
+            onSelect: () => {
+              edit((p) => moveItem(p.situations, selected, -1));
+              setSelected(selected - 1);
+            },
+          },
+          {
+            key: 'down',
+            icon: ArrowDown,
+            label: <FormattedMessage id="firstAid.moveDown" />,
+            disabled: selected >= n - 1,
+            onSelect: () => {
+              edit((p) => moveItem(p.situations, selected, 1));
+              setSelected(selected + 1);
+            },
+          },
+          {
+            key: 'exit',
+            icon: LogOut,
+            label: <FormattedMessage id="firstAid.stopEditing" />,
+            onSelect: stopEditing,
+          },
+          {
+            key: 'remove',
+            icon: Trash2,
+            destructive: true,
+            disabled: n <= 1,
+            label: <FormattedMessage id="firstAid.removeSituation" />,
+            onSelect: () => askRemove(selected, () => open(null)),
+          },
+        ]
+      : [];
+    screen = (
+      <>
+        <EditorBar
+          backLabel={<FormattedMessage id="firstAid.back" />}
+          onBack={() => open(null)}
+          title={
+            [selectedSituation.code, textOf(intl, selectedSituation.title) || selectedSituation.id]
+              .filter(Boolean)
+              .join(' · ') || intl.formatMessage({ id: 'firstAid.untitled' })
+          }
+          badges={
+            editing ? (
+              own.length > 0 && (
+                <Pill tone="warn">
+                  <FormattedMessage id="firstAid.badge.issues" values={{ n: own.length }} />
+                </Pill>
+              )
+            ) : (
+              <VersionPill view={view} showDraft={showDraft} />
+            )
+          }
+          dirty={editing ? dirty : undefined}
+          onSave={editing ? trySave : undefined}
+          saveLabel={saveLabel}
+          actions={
+            !editing && canEdit ? <Button onClick={startEditing}>{editLabel}</Button> : undefined
+          }
+          menu={editing ? menu : undefined}
+        />
+        <div className="grid gap-4">
+          {issuesNotice}
+          <EditorLayout
+            aside={
+              <PhonePreview
+                pack={shown}
+                situation={selectedSituation}
+                variant={variant}
+                onVariant={setVariant}
+              />
+            }
+          >
+            {editing ? (
+              <SituationEditor
+                pack={shown}
+                index={selected}
+                edit={edit}
+                idLocked={liveIds.has(selectedSituation.id)}
+                variant={variant}
+                onVariant={setVariant}
+              />
+            ) : (
+              <SituationSummary pack={shown} situation={selectedSituation} />
+            )}
+          </EditorLayout>
+        </div>
+      </>
+    );
+  } else {
+    const content = !shown ? (
+      <div className="rounded-xl border bg-card">
+        <EmptyState icon={LifeBuoy} title={<FormattedMessage id="firstAid.notPublished" />}>
+          <FormattedMessage id={canEdit ? 'firstAid.emptyEdit' : 'firstAid.empty'} />
+        </EmptyState>
+      </div>
+    ) : (
+      <Tabs value={tab} onValueChange={(t) => setTab(t as Tab)} className="gap-4">
+        <TabsList aria-label={intl.formatMessage({ id: 'firstAid.title' })}>
+          {(['situations', 'general', 'library'] as const).map((t) => (
+            <TabsTrigger key={t} value={t} className="px-3">
+              <FormattedMessage id={`firstAid.tab.${t}`} />
+              {t !== 'general' && (
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t === 'situations' ? shown.situations.length : images.length}
+                </span>
+              )}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value="situations">
+          <SituationList
+            pack={shown}
+            editing={!!editing}
+            edit={edit}
+            issues={issues}
+            onOpen={open}
+            onAdd={addSituation}
+            onRemove={(i) => askRemove(i)}
+          />
+        </TabsContent>
+        <TabsContent value="general">
+          {editing ? <GeneralEditor pack={editing} edit={edit} /> : <GeneralSummary pack={shown} />}
+        </TabsContent>
+        <TabsContent value="library">
+          <Library pack={shown} canUpload={canEdit} />
+        </TabsContent>
+      </Tabs>
+    );
+    const history = (
+      <HistorySection
+        view={view}
+        canApprove={canApprove}
+        onRollback={(versionId) => setDialog({ act: 'rollback', versionId })}
+      />
+    );
+    screen = editing ? (
+      <>
+        <EditorBar
+          backLabel={<FormattedMessage id="firstAid.stopEditing" />}
+          onBack={stopEditing}
+          title={<FormattedMessage id="firstAid.title" />}
+          badges={
+            d ? (
+              <Pill tone={statusTone[d.status] ?? 'muted'}>
+                <FormattedMessage id={`firstAid.status.${d.status}`} />
+              </Pill>
+            ) : (
+              <Pill tone="muted">
+                <FormattedMessage id="firstAid.newDraft" />
+              </Pill>
+            )
+          }
+          dirty={dirty}
+          onSave={trySave}
+          saveLabel={saveLabel}
+          menu={
+            d?.status === 'draft' && canEdit
+              ? [
+                  {
+                    key: 'discard',
+                    icon: Trash2,
+                    destructive: true,
+                    label: <FormattedMessage id="firstAid.act.discard" />,
+                    onSelect: () => setDialog({ act: 'discard', versionId: d.versionId }),
+                  },
+                ]
+              : undefined
+          }
+        />
+        <div className="grid gap-4">
+          {issuesNotice}
+          {d?.status === 'pending' && (
+            <Notice tone="warn">
+              <FormattedMessage id="firstAid.editingPending" />
+            </Notice>
+          )}
+          {d?.rejection && (
+            <Notice tone="warn">
+              <FormattedMessage
+                id="firstAid.rejected"
+                values={{ name: d.rejection.by, reason: d.rejection.reason }}
+              />
+            </Notice>
+          )}
+          {content}
+          {history}
+        </div>
+      </>
+    ) : (
+      <Page
+        title={<FormattedMessage id="firstAid.title" />}
+        subtitle={<FormattedMessage id="firstAid.sub" />}
+        actions={
+          <>
+            <HelpPopover title={<FormattedMessage id="firstAid.howTitle" />} wide>
+              <ol className="grid list-decimal gap-1.5 pl-5 text-muted-foreground">
+                {(['edit', 'save', 'submit', 'approve'] as const).map((k) => (
+                  <li key={k}>
+                    <FormattedMessage id={`firstAid.how.${k}`} />
+                  </li>
+                ))}
+              </ol>
+            </HelpPopover>
+            {canEdit && <Button onClick={startEditing}>{editLabel}</Button>}
+          </>
+        }
+      >
+        <div className="grid gap-4">
+          <StatusLine view={view} />
+          {d && (
+            <DraftNotice
+              draft={d}
+              canEdit={canEdit}
+              canApprove={canApprove}
+              showDraft={showDraft}
+              canToggle={!!view.current}
+              onToggle={() => {
+                // Keep the same situation open (by id) when switching between the two versions.
+                follow(!showDraft ? d.pack : (view.current?.pack ?? null));
+                setShowDraft(!showDraft);
+              }}
+              onAct={(act) => setDialog({ act, versionId: d.versionId })}
+            />
+          )}
+          {content}
+          {history}
+        </div>
+      </Page>
+    );
+  }
 
   return (
     <LibraryContext.Provider value={{ images, canUpload: canEdit, onUploaded }}>
       <IssuesContext.Provider value={{ issues: check?.issues ?? new Map(), show: showIssues }}>
-        <div className="stack">
-          <StatusPanels
-            view={view}
-            canEdit={canEdit}
-            canApprove={canApprove}
-            editing={!!editing}
-            showDraft={showDraft}
-            onToggleDraft={() => {
-              // Keep the same situation open (by id) when switching between the two versions.
-              const next = !showDraft && d ? d.pack : (view.current?.pack ?? null);
-              const at = next?.situations.findIndex((s) => s.id === selectedSituation?.id) ?? -1;
-              setSelected(at >= 0 ? at : null);
-              setShowDraft(!showDraft);
-            }}
-            onEdit={startEditing}
-            onAct={(act, versionId) => setDialog({ act, versionId })}
-          />
-
-          {editing && (
-            <EditBar
-              dirty={dirty}
-              pending={d?.status === 'pending'}
-              issues={showIssues ? (check?.list ?? []) : []}
-              pack={editing}
-              onOpen={(i) => {
-                setTab('situations');
-                open(i);
-              }}
-              onSave={() => {
-                setShowIssues(true);
-                if (check?.ok) setDialog('save');
-              }}
-              onCancel={stopEditing}
-            />
-          )}
-
-          {!shown ? (
-            <Panel>
-              <Empty>
-                <FormattedMessage id={canEdit ? 'firstAid.emptyEdit' : 'firstAid.empty'} />
-              </Empty>
-            </Panel>
-          ) : selectedSituation && selected !== null ? (
-            <SituationPage
-              pack={shown}
-              index={selected}
-              editing={!!editing}
-              edit={edit}
-              idLocked={liveIds.has(selectedSituation.id) || !editing}
-              variant={variant}
-              onVariant={setVariant}
-              onBack={() => open(null)}
-            />
-          ) : (
-            <>
-              <Segmented
-                label={intl.formatMessage({ id: 'firstAid.title' })}
-                value={tab}
-                onChange={setTab}
-                options={(['situations', 'general', 'library'] as const).map((t) => ({
-                  value: t,
-                  label: <FormattedMessage id={`firstAid.tab.${t}`} />,
-                }))}
-              />
-              {tab === 'situations' && (
-                <SituationList
-                  pack={shown}
-                  editing={!!editing}
-                  edit={edit}
-                  issues={showIssues ? (check?.list ?? []) : []}
-                  onOpen={open}
-                  onAdd={() => {
-                    if (!editing) return;
-                    const added = blankSituation(editing);
-                    edit((p) => {
-                      p.situations.push(structuredClone(added));
-                    });
-                    window.history.pushState({}, '', `${routePaths.firstAid}/${added.id}`);
-                    setSelected(editing.situations.length);
-                    setVariant(0);
-                  }}
-                />
-              )}
-              {tab === 'general' &&
-                (editing ? (
-                  <Panel>
-                    <GeneralEditor pack={editing} edit={edit} />
-                  </Panel>
-                ) : (
-                  <GeneralSummary pack={shown} />
-                ))}
-              {tab === 'library' && <Library pack={shown} canUpload={canEdit} />}
-            </>
-          )}
-
-          <HistoryPanel
-            view={view}
-            canApprove={canApprove}
-            onRollback={(versionId) => setDialog({ act: 'rollback', versionId })}
-          />
-        </div>
+        <TooltipProvider>{screen}</TooltipProvider>
 
         {dialog === 'save' && editing && (
           <SaveDialog
@@ -359,157 +621,211 @@ export function FirstAidBody({
             onDone={onChanged}
           />
         )}
+        {confirm.dialog}
       </IssuesContext.Provider>
     </LibraryContext.Provider>
   );
 }
 
-// ---------- Status, actions, history ----------
+// ---------- Status, the open draft, history ----------
 
-function StatusPanels({
-  view,
-  canEdit,
-  canApprove,
-  editing,
-  showDraft,
-  onToggleDraft,
-  onEdit,
-  onAct,
-}: {
-  view: FirstAidView;
-  canEdit: boolean;
-  canApprove: boolean;
-  editing: boolean;
-  showDraft: boolean;
-  onToggleDraft: () => void;
-  onEdit: () => void;
-  onAct: (act: Act, versionId: string) => void;
-}) {
-  const intl = useIntl();
-  const c = view.current;
-  const d = view.draft;
-  const review = c?.pack.review;
+function Dot() {
   return (
-    <>
-      <div className="toolbar">
-        <span className="chips">
-          {c ? (
-            <>
-              <Pill tone="ok">
-                <FormattedMessage id="firstAid.inUse" values={{ v: c.version }} />
-              </Pill>
-              <span className="muted">
-                <FormattedMessage
-                  id="firstAid.publishedAt"
-                  values={{ when: dateTime(intl, c.publishedAt), n: c.pack.situations.length }}
-                />
-              </span>
-              {review && (
-                <span className="muted">
-                  <FormattedMessage
-                    id="firstAid.reviewedBy"
-                    values={{ name: review.reviewer, date: review.reviewedOn }}
-                  />
-                </span>
-              )}
-            </>
-          ) : (
-            <Pill tone="muted">
-              <FormattedMessage id="firstAid.notPublished" />
-            </Pill>
-          )}
-        </span>
-        {canEdit && !editing && (
-          <div className="actions">
-            <Button kind={d ? 'secondary' : 'primary'} onClick={onEdit}>
-              <FormattedMessage id={d ? 'firstAid.editDraft' : 'firstAid.edit'} />
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {d && (
-        <Panel
-          className="draft-panel"
-          title={
-            <span className="chips">
-              <Pill tone={statusTone[d.status] ?? 'muted'}>
-                <FormattedMessage id={`firstAid.status.${d.status}`} />
-              </Pill>
-              <FormattedMessage id="firstAid.openVersion" />
-            </span>
-          }
-          note={
-            <FormattedMessage
-              id="firstAid.draftBy"
-              values={{
-                name: d.authorName || '—',
-                when: dateTime(intl, d.updatedAt),
-                n: d.pack.situations.length,
-              }}
-            />
-          }
-          aside={
-            <div className="actions">
-              {c && !editing && (
-                <Button kind="ghost" onClick={onToggleDraft}>
-                  <FormattedMessage
-                    id={showDraft ? 'firstAid.showCurrent' : 'firstAid.showDraft'}
-                  />
-                </Button>
-              )}
-              {canEdit && d.status === 'draft' && (
-                <>
-                  <Button onClick={() => onAct('discard', d.versionId)}>
-                    <FormattedMessage id="firstAid.act.discard" />
-                  </Button>
-                  <Button
-                    kind="primary"
-                    disabled={editing}
-                    onClick={() => onAct('submit', d.versionId)}
-                  >
-                    <FormattedMessage id="firstAid.act.submit" />
-                  </Button>
-                </>
-              )}
-              {canApprove && d.status === 'pending' && (
-                <>
-                  <Button disabled={editing} onClick={() => onAct('reject', d.versionId)}>
-                    <FormattedMessage id="firstAid.act.reject" />
-                  </Button>
-                  <Button
-                    kind="primary"
-                    disabled={editing}
-                    onClick={() => onAct('approve', d.versionId)}
-                  >
-                    <FormattedMessage id="firstAid.act.approve" />
-                  </Button>
-                </>
-              )}
-            </div>
-          }
-        >
-          {d.notes && <p className="quote">{d.notes}</p>}
-          {d.rejection && (
-            <p className="note note--warn">
-              <FormattedMessage
-                id="firstAid.rejected"
-                values={{ name: d.rejection.by, reason: d.rejection.reason }}
-              />
-            </p>
-          )}
-          {d.status === 'pending' && (
-            <p className="muted">
-              <FormattedMessage id="firstAid.waitOther" />
-            </p>
-          )}
-        </Panel>
-      )}
-    </>
+    <span className="text-muted-foreground/60" aria-hidden="true">
+      ·
+    </span>
   );
 }
 
-function HistoryPanel({
+/** One line: the version in use, when it was published, who reviewed it. */
+function StatusLine({ view }: { view: FirstAidView }) {
+  const intl = useIntl();
+  const c = view.current;
+  const review = c?.pack.review;
+  return (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground">
+      {c ? (
+        <>
+          <Pill tone="ok">
+            <FormattedMessage id="firstAid.inUse" values={{ v: c.version }} />
+          </Pill>
+          <span className="tabular-nums">
+            <FormattedMessage
+              id="firstAid.publishedAt"
+              values={{ when: dateTime(intl, c.publishedAt), n: c.pack.situations.length }}
+            />
+          </span>
+          {review && (
+            <>
+              <Dot />
+              <span>
+                <FormattedMessage
+                  id="firstAid.reviewedBy"
+                  values={{ name: review.reviewer, date: review.reviewedOn }}
+                />
+              </span>
+            </>
+          )}
+        </>
+      ) : (
+        <Pill tone="muted">
+          <FormattedMessage id="firstAid.notPublished" />
+        </Pill>
+      )}
+    </div>
+  );
+}
+
+/** Which version a read-only page shows when there is an open draft. */
+function VersionPill({ view, showDraft }: { view: FirstAidView; showDraft: boolean }) {
+  const d = view.draft;
+  if (!d) return null;
+  return showDraft ? (
+    <Pill tone={statusTone[d.status] ?? 'muted'}>
+      <FormattedMessage id={`firstAid.status.${d.status}`} />
+    </Pill>
+  ) : (
+    <Pill tone="ok">
+      <FormattedMessage id="firstAid.status.published" />
+    </Pill>
+  );
+}
+
+/** The open draft's next step for this person, and what goes behind "⋯". */
+export function draftActions(
+  status: 'draft' | 'pending',
+  canEdit: boolean,
+  canApprove: boolean,
+): { next: Act[]; more: Act[] } {
+  if (status === 'draft') return canEdit ? { next: ['submit'], more: ['discard'] } : none;
+  return canApprove ? { next: ['approve', 'reject'], more: [] } : none;
+}
+const none = { next: [] as Act[], more: [] as Act[] };
+
+function DraftNotice({
+  draft: d,
+  canEdit,
+  canApprove,
+  showDraft,
+  canToggle,
+  onToggle,
+  onAct,
+}: {
+  draft: NonNullable<FirstAidView['draft']>;
+  canEdit: boolean;
+  canApprove: boolean;
+  showDraft: boolean;
+  canToggle: boolean;
+  onToggle: () => void;
+  onAct: (act: Act) => void;
+}) {
+  const intl = useIntl();
+  const { next, more } = draftActions(d.status, canEdit, canApprove);
+  return (
+    <Notice
+      tone={d.rejection ? 'warn' : 'info'}
+      title={
+        <span className="flex flex-wrap items-center gap-2">
+          <Pill tone={statusTone[d.status] ?? 'muted'}>
+            <FormattedMessage id={`firstAid.status.${d.status}`} />
+          </Pill>
+          <FormattedMessage id="firstAid.openVersion" />
+        </span>
+      }
+      action={
+        <div className="flex flex-wrap items-center gap-2">
+          {canToggle && (
+            <Button variant="ghost" size="sm" onClick={onToggle}>
+              <Eye />
+              <FormattedMessage id={showDraft ? 'firstAid.showCurrent' : 'firstAid.showDraft'} />
+            </Button>
+          )}
+          {next.map((a, k) => (
+            <Button
+              key={a}
+              size="sm"
+              variant={k === 0 ? 'default' : 'outline'}
+              onClick={() => onAct(a)}
+            >
+              <FormattedMessage id={`firstAid.act.${a}`} />
+            </Button>
+          ))}
+          <OverflowMenu
+            items={more.map((a) => ({
+              key: a,
+              icon: a === 'discard' ? Trash2 : undefined,
+              destructive: a === 'discard',
+              label: intl.formatMessage({ id: `firstAid.act.${a}` }),
+              onSelect: () => onAct(a),
+            }))}
+          />
+        </div>
+      }
+    >
+      <div className="grid gap-1">
+        <p className="tabular-nums">
+          <FormattedMessage
+            id="firstAid.draftBy"
+            values={{
+              name: d.authorName || '—',
+              when: dateTime(intl, d.updatedAt),
+              n: d.pack.situations.length,
+            }}
+          />
+        </p>
+        {d.notes && (
+          <p className="line-clamp-2 text-muted-foreground italic" title={d.notes}>
+            “{d.notes}”
+          </p>
+        )}
+        {d.rejection && (
+          <p className="font-medium text-foreground">
+            <FormattedMessage
+              id="firstAid.rejected"
+              values={{ name: d.rejection.by, reason: d.rejection.reason }}
+            />
+          </p>
+        )}
+        {d.status === 'pending' && (
+          <p className="text-muted-foreground">
+            <FormattedMessage id="firstAid.waitOther" />
+          </p>
+        )}
+      </div>
+    </Notice>
+  );
+}
+
+/** The version in use is already live; any other published or replaced one can come back. */
+export function canReuseVersion(view: FirstAidView, h: FirstAidVersion): boolean {
+  return h.status === 'retired' || (h.status === 'published' && h.label !== view.current?.version);
+}
+
+function HistorySection({
+  view,
+  canApprove,
+  onRollback,
+}: {
+  view: FirstAidView;
+  canApprove: boolean;
+  onRollback: (versionId: string) => void;
+}) {
+  const items = view.history.filter((h) => h.status !== 'draft' && h.status !== 'pending');
+  if (!items.length) return null;
+  return (
+    <Section
+      collapsible
+      defaultOpen={false}
+      flush
+      title={<FormattedMessage id="firstAid.history" />}
+      summary={<FormattedMessage id="firstAid.historyCount" values={{ n: items.length }} />}
+    >
+      <HistoryTable view={view} canApprove={canApprove} onRollback={onRollback} />
+    </Section>
+  );
+}
+
+export function HistoryTable({
   view,
   canApprove,
   onRollback,
@@ -520,70 +836,82 @@ function HistoryPanel({
 }) {
   const intl = useIntl();
   const items = view.history.filter((h) => h.status !== 'draft' && h.status !== 'pending');
-  if (!items.length) return null;
-  // The version in use is already live; any other published or replaced one can come back.
-  const canReuse = (h: FirstAidVersion) =>
-    h.status === 'retired' || (h.status === 'published' && h.label !== view.current?.version);
   return (
-    <Panel className="panel--flush" title={<FormattedMessage id="firstAid.history" />}>
-      <TableScroll min={760}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>
-                <FormattedMessage id="firstAid.col.version" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.status" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.situations" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.people" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.when" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.notes" />
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((h) => (
-              <tr key={h.versionId}>
-                <td className="mono">{h.label ?? '—'}</td>
-                <td>
-                  <Pill tone={statusTone[h.status] ?? 'muted'}>
-                    <FormattedMessage id={`firstAid.status.${h.status}`} />
-                  </Pill>
-                </td>
-                <td>{h.situations}</td>
-                <td>
-                  <FormattedMessage
-                    id="firstAid.historyBy"
-                    values={{ author: h.authorName || '—', approver: h.approverName ?? '—' }}
+    <TableScroll min={760}>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>
+              <FormattedMessage id="firstAid.col.version" />
+            </th>
+            <th>
+              <FormattedMessage id="firstAid.col.status" />
+            </th>
+            <th>
+              <FormattedMessage id="firstAid.col.situations" />
+            </th>
+            <th>
+              <FormattedMessage id="firstAid.col.people" />
+            </th>
+            <th>
+              <FormattedMessage id="firstAid.col.when" />
+            </th>
+            <th>
+              <FormattedMessage id="firstAid.col.notes" />
+            </th>
+            <th>
+              <span className="sr-only">
+                <FormattedMessage id="firstAid.col.actions" />
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((h) => (
+            <tr key={h.versionId}>
+              <td className="font-mono text-[13px] whitespace-nowrap">{h.label ?? '—'}</td>
+              <td>
+                <Pill tone={statusTone[h.status] ?? 'muted'}>
+                  <FormattedMessage id={`firstAid.status.${h.status}`} />
+                </Pill>
+              </td>
+              <td className="tabular-nums">{h.situations}</td>
+              <td className="whitespace-nowrap">
+                <FormattedMessage
+                  id="firstAid.historyBy"
+                  values={{ author: h.authorName || '—', approver: h.approverName ?? '—' }}
+                />
+              </td>
+              <td className="whitespace-nowrap tabular-nums">
+                {dateTime(intl, h.approvedAt ?? h.updatedAt ?? h.createdAt)}
+              </td>
+              <td className="w-[28%] max-w-0">
+                <span className="block truncate text-muted-foreground" title={h.notes || undefined}>
+                  {h.notes || '—'}
+                </span>
+              </td>
+              <td className="cell-actions w-10">
+                {canApprove && canReuseVersion(view, h) && (
+                  <RowActions
+                    label={intl.formatMessage(
+                      { id: 'table.actionsFor' },
+                      { name: h.label ?? h.versionId },
+                    )}
+                    actions={[
+                      {
+                        key: 'rollback',
+                        label: <FormattedMessage id="firstAid.act.rollback" />,
+                        onSelect: () => onRollback(h.versionId),
+                      },
+                    ]}
                   />
-                </td>
-                <td className="nowrap">
-                  {dateTime(intl, h.approvedAt ?? h.updatedAt ?? h.createdAt)}
-                </td>
-                <td className="muted">{h.notes || '—'}</td>
-                <td className="cell-actions">
-                  {canApprove && canReuse(h) && (
-                    <Button kind="ghost" onClick={() => onRollback(h.versionId)}>
-                      <FormattedMessage id="firstAid.act.rollback" />
-                    </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScroll>
-    </Panel>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableScroll>
   );
 }
 
@@ -595,7 +923,7 @@ export interface ReviewInput {
   sources: string;
 }
 
-/** The review the approver records; required on prod, optional (all empty = none) elsewhere. */
+/** The review the approver records; required when the server says so, else optional (all empty = none). */
 export function reviewFrom(
   input: ReviewInput,
   required: boolean,
@@ -619,6 +947,43 @@ export function reviewFrom(
 
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: ZONE });
 
+/** "Lý do (ghi vào nhật ký thao tác)": 3–500 characters when required, as the server asks. */
+function ReasonInput({
+  value,
+  onChange,
+  required,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  label?: ReactNode;
+}) {
+  const id = useId();
+  return (
+    <Field
+      label={label ?? <FormattedMessage id={required ? 'reason.labelRequired' : 'reason.label'} />}
+      htmlFor={id}
+    >
+      <Textarea
+        id={id}
+        rows={3}
+        maxLength={500}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
+  );
+}
+
+function DialogError({ error }: { error: ApiError | null }) {
+  return error ? (
+    <Notice tone="error">
+      <FormattedMessage id={errorMessageId(error)} />
+    </Notice>
+  ) : null;
+}
+
 export function ActDialog({
   act,
   versionId,
@@ -635,6 +1000,8 @@ export function ActDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
+  const id = useId();
   const [reason, setReason] = useState('');
   const [review, setReview] = useState<ReviewInput>({
     reviewer: initialReview?.reviewer ?? '',
@@ -654,74 +1021,64 @@ export function ActDialog({
       title={<FormattedMessage id={`firstAid.confirm.${act}`} />}
       onClose={onClose}
     >
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id={`firstAid.confirm.${act}.note`} />
       </p>
       {withReview && (
-        <fieldset className="fa-review">
-          <legend className="field__label">
+        <fieldset className="grid min-w-0 gap-4 rounded-lg border p-4">
+          <legend className="px-1 text-[13px] font-semibold">
             <FormattedMessage
               id={requireReview ? 'firstAid.review.required' : 'firstAid.review.optional'}
             />
           </legend>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="firstAid.review.reviewer" />
-            </span>
-            <input
-              className="field__input"
-              value={review.reviewer}
-              maxLength={120}
-              required={requireReview}
-              onChange={(e) => setReview({ ...review, reviewer: e.target.value })}
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="firstAid.review.reviewedOn" />
-            </span>
-            <input
-              className="field__input"
-              type="date"
-              value={review.reviewedOn}
-              required={requireReview}
-              onChange={(e) => setReview({ ...review, reviewedOn: e.target.value })}
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">
-              <FormattedMessage id="firstAid.review.sources" />
-            </span>
-            <textarea
-              className="field__input"
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={<FormattedMessage id="firstAid.review.reviewer" />} htmlFor={`${id}-r`}>
+              <Input
+                id={`${id}-r`}
+                value={review.reviewer}
+                maxLength={120}
+                required={requireReview}
+                onChange={(e) => setReview({ ...review, reviewer: e.target.value })}
+              />
+            </Field>
+            <Field label={<FormattedMessage id="firstAid.review.reviewedOn" />} htmlFor={`${id}-d`}>
+              <Input
+                id={`${id}-d`}
+                type="date"
+                value={review.reviewedOn}
+                required={requireReview}
+                onChange={(e) => setReview({ ...review, reviewedOn: e.target.value })}
+              />
+            </Field>
+          </div>
+          <Field
+            label={<FormattedMessage id="firstAid.review.sources" />}
+            htmlFor={`${id}-s`}
+            help={<FormattedMessage id="firstAid.review.sourcesHelp" />}
+          >
+            <Textarea
+              id={`${id}-s`}
               rows={3}
               value={review.sources}
               required={requireReview}
               onChange={(e) => setReview({ ...review, sources: e.target.value })}
             />
-            <span className="field__help">
-              <FormattedMessage id="firstAid.review.sourcesHelp" />
-            </span>
-          </label>
+          </Field>
           {!checked.ok && (
-            <p className={touched ? 'error' : 'field__help'}>
+            <p className={touched ? 'text-sm text-destructive' : 'text-xs text-muted-foreground'}>
               <FormattedMessage id="firstAid.review.incomplete" />
             </p>
           )}
         </fieldset>
       )}
-      <ReasonField value={reason} onChange={setReason} required />
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      <ReasonInput value={reason} onChange={setReason} required />
+      <DialogError error={error} />
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          kind={act === 'discard' || act === 'reject' ? 'danger' : 'primary'}
+          variant={act === 'discard' || act === 'reject' ? 'destructive' : 'default'}
           disabled={busy || !reasonOk(reason) || !checked.ok}
           onClick={() => {
             if (!checked.ok) return;
@@ -735,6 +1092,7 @@ export function ActDialog({
                 review: checked.review,
               })
               .then(() => {
+                toast.success(intl.formatMessage({ id: `firstAid.toast.${act}` }));
                 onClose();
                 onDone();
               })
@@ -751,86 +1109,154 @@ export function ActDialog({
 
 // ---------- Editing ----------
 
-/** Where an issue sits, for the summary ("TH03 Đuối nước · variants.0.steps.1.title.vi"). */
+/** Field names for the issues summary; some depend on where they sit (a step's title). */
+const fieldIds: Record<string, string> = {
+  title: 'firstAid.field.title',
+  lead: 'firstAid.field.lead',
+  keywords: 'firstAid.field.keywords',
+  icon: 'firstAid.field.icon',
+  hero: 'firstAid.field.hero',
+  category: 'firstAid.field.category',
+  code: 'firstAid.field.code',
+  id: 'firstAid.field.id',
+  ageMonths: 'firstAid.field.ageMonths',
+  variantKind: 'firstAid.field.variantKind',
+  variants: 'firstAid.section.variants',
+  tool: 'firstAid.field.tool',
+  label: 'firstAid.field.variantLabel',
+  banner: 'firstAid.field.banner',
+  cpr: 'firstAid.field.cpr',
+  steps: 'firstAid.place.steps',
+  callouts: 'firstAid.place.callouts',
+  body: 'firstAid.field.stepBody',
+  image: 'firstAid.field.stepImage',
+  count: 'firstAid.field.count',
+  cprRole: 'firstAid.field.cprRole',
+  chips: 'firstAid.field.chips',
+  heading: 'firstAid.field.heading',
+  items: 'firstAid.field.items',
+  tone: 'firstAid.field.tone',
+  emergencyNumber: 'firstAid.field.emergencyNumber',
+  quickSearch: 'firstAid.field.quickSearch',
+  categories: 'firstAid.section.categories',
+  layout: 'firstAid.field.layout',
+  from: 'firstAid.age.from',
+  to: 'firstAid.age.to',
+  vi: 'firstAid.lang.vi',
+  en: 'firstAid.lang.en',
+};
+const scopedIds: Record<string, Record<string, string>> = {
+  variant: {
+    id: 'firstAid.field.variantId',
+    hero: 'firstAid.field.variantHero',
+    ageMonths: 'firstAid.field.variantAge',
+  },
+  step: { title: 'firstAid.field.stepTitle' },
+  category: {
+    id: 'firstAid.field.categoryId',
+    title: 'firstAid.field.categoryTitle',
+    tone: 'firstAid.field.categoryTone',
+  },
+};
+const itemIds: Record<string, string> = {
+  steps: 'firstAid.stepN',
+  callouts: 'firstAid.place.callout',
+  chips: 'firstAid.place.chip',
+  items: 'firstAid.place.item',
+  keywords: 'firstAid.place.keyword',
+  quickSearch: 'firstAid.place.quickSearch',
+};
+
+/**
+ * Where an issue sits, in words, for the summary
+ * ("TH02 Hóc dị vật · Dưới 1 tuổi · Bước 1 · Số lần đếm (2–10)").
+ */
 export function issuePlace(intl: IntlShape, pack: FirstAidPack, issue: Issue): string {
-  const [head, at, ...rest] = issue.path;
-  if (head === 'situations' && typeof at === 'number') {
-    const s = pack.situations[at];
-    const name = s
-      ? [s.code, textOf(intl, s.title) || s.id].filter(Boolean).join(' ')
-      : `#${at + 1}`;
-    return rest.length ? `${name} · ${rest.join('.')}` : name;
+  const f = (id: string, values?: Record<string, number>) => intl.formatMessage({ id }, values);
+  const p = issue.path;
+  const parts: string[] = [];
+  let scope = 'pack';
+  let situation: FirstAidSituation | undefined;
+  let k = 0;
+  if (p[0] === 'situations' && typeof p[1] === 'number') {
+    situation = pack.situations[p[1]];
+    parts.push(
+      situation
+        ? [situation.code, textOf(intl, situation.title) || situation.id].filter(Boolean).join(' ')
+        : `#${p[1] + 1}`,
+    );
+    scope = 'situation';
+    k = 2;
   }
-  return issue.path.join('.') || '—';
+  for (; k < p.length; k++) {
+    const seg = p[k]!;
+    const at = p[k + 1];
+    if (typeof seg === 'string' && typeof at === 'number') {
+      const n = at + 1;
+      if (seg === 'variants') {
+        parts.push(
+          textOf(intl, situation?.variants[at]?.label) || f('firstAid.place.variant', { n }),
+        );
+        scope = 'variant';
+      } else if (seg === 'categories') {
+        parts.push(textOf(intl, pack.categories[at]?.title) || f('firstAid.place.category', { n }));
+        scope = 'category';
+      } else {
+        parts.push(itemIds[seg] ? f(itemIds[seg], { n }) : `${seg} ${n}`);
+        scope = seg === 'steps' ? 'step' : seg === 'chips' ? 'chip' : scope;
+      }
+      k++;
+      continue;
+    }
+    if (typeof seg === 'number') {
+      parts.push(`#${seg + 1}`);
+      continue;
+    }
+    if (scope === 'chip' && seg === 'label') continue;
+    const id = scopedIds[scope]?.[seg] ?? fieldIds[seg];
+    parts.push(id ? f(id) : seg);
+  }
+  return parts.join(' · ') || '—';
 }
 
-function EditBar({
-  dirty,
-  pending,
+/** "Còn n chỗ chưa hợp lệ": each one jumps to its field. */
+function IssuesNotice({
   issues,
   pack,
-  onOpen,
-  onSave,
-  onCancel,
+  onJump,
 }: {
-  dirty: boolean;
-  pending: boolean;
   issues: Issue[];
   pack: FirstAidPack;
-  onOpen: (situation: number) => void;
-  onSave: () => void;
-  onCancel: () => void;
+  onJump: (issue: Issue) => void;
 }) {
   const intl = useIntl();
+  const max = 12;
   return (
-    <Panel
-      className="fa-editbar"
-      title={<FormattedMessage id="firstAid.editing" />}
-      note={
-        <FormattedMessage
-          id={
-            pending ? 'firstAid.editingPending' : dirty ? 'firstAid.unsaved' : 'firstAid.noChanges'
-          }
-        />
-      }
-      aside={
-        <div className="actions">
-          <Button onClick={onCancel}>
-            <FormattedMessage id="firstAid.stopEditing" />
-          </Button>
-          <Button kind="primary" disabled={!dirty} onClick={onSave}>
-            <FormattedMessage id="firstAid.saveDraft" />
-          </Button>
-        </div>
-      }
+    <Notice
+      tone="error"
+      title={<FormattedMessage id="firstAid.issues" values={{ n: issues.length }} />}
     >
-      {issues.length > 0 && (
-        <div className="fa-issues" role="alert">
-          <p className="error">
-            <FormattedMessage id="firstAid.issues" values={{ n: issues.length }} />
-          </p>
-          <ul>
-            {issues.slice(0, 12).map((i, k) => (
-              <li key={k}>
-                {i.path[0] === 'situations' && typeof i.path[1] === 'number' ? (
-                  <button
-                    type="button"
-                    className="linkbtn"
-                    onClick={() => onOpen(i.path[1] as number)}
-                  >
-                    {issuePlace(intl, pack, i)}
-                  </button>
-                ) : (
-                  <span className="mono">{issuePlace(intl, pack, i)}</span>
-                )}
-                {': '}
-                {issueText(intl, i)}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </Panel>
+      <ul className="mt-1 grid max-h-48 gap-1 overflow-y-auto overscroll-contain">
+        {issues.slice(0, max).map((i, k) => (
+          <li key={k}>
+            <button
+              type="button"
+              className="rounded-sm text-left underline-offset-2 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              onClick={() => onJump(i)}
+            >
+              <span className="font-medium">{issuePlace(intl, pack, i)}</span>
+              {': '}
+              {issueText(intl, i)}
+            </button>
+          </li>
+        ))}
+        {issues.length > max && (
+          <li className="text-muted-foreground">
+            <FormattedMessage id="firstAid.issuesMore" values={{ n: issues.length - max }} />
+          </li>
+        )}
+      </ul>
+    </Notice>
   );
 }
 
@@ -848,26 +1274,26 @@ function SaveDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
   const [notes, setNotes] = useState(initialNotes);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   return (
     <Modal title={<FormattedMessage id="firstAid.saveTitle" />} onClose={onClose}>
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id={pending ? 'firstAid.saveNotePending' : 'firstAid.saveNote'} />
       </p>
-      <ReasonField value={notes} onChange={setNotes} />
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
+      <ReasonInput
+        value={notes}
+        onChange={setNotes}
+        label={<FormattedMessage id="firstAid.saveNotes" />}
+      />
+      <DialogError error={error} />
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="outline" onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          kind="primary"
           disabled={busy}
           onClick={() => {
             setBusy(true);
@@ -875,6 +1301,7 @@ function SaveDialog({
             saveFirstAidDraft(api, pack, notes)
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
+                toast.success(intl.formatMessage({ id: 'firstAid.toast.saved' }));
                 onClose();
                 onDone();
               })
@@ -893,6 +1320,12 @@ function SaveDialog({
 
 const stepCount = (s: FirstAidSituation) => s.variants.reduce((n, v) => n + v.steps.length, 0);
 
+/** Lowercase without accents, so "duoi nuoc" finds "Đuối nước". */
+const fold = (s: string) =>
+  s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
+
+type Flag = 'all' | 'emergency' | 'monitoring' | 'issues';
+
 export function SituationList({
   pack,
   editing,
@@ -900,6 +1333,7 @@ export function SituationList({
   issues,
   onOpen,
   onAdd,
+  onRemove,
 }: {
   pack: FirstAidPack;
   editing: boolean;
@@ -907,8 +1341,12 @@ export function SituationList({
   issues: Issue[];
   onOpen: (i: number) => void;
   onAdd: () => void;
+  onRemove: (i: number) => void;
 }) {
   const intl = useIntl();
+  const [query, setQuery] = useState('');
+  const [group, setGroup] = useState('all');
+  const [flag, setFlag] = useState<Flag>('all');
   const categories = new Map(pack.categories.map((c) => [c.id, c]));
   const problems = new Map<number, number>();
   for (const i of issues) {
@@ -916,201 +1354,217 @@ export function SituationList({
       problems.set(i.path[1], (problems.get(i.path[1]) ?? 0) + 1);
     }
   }
+  const q = fold(query.trim());
+  const rows = pack.situations
+    .map((s, i) => ({ s, i }))
+    .filter(
+      ({ s, i }) =>
+        (!q ||
+          fold([s.code ?? '', s.id, s.title.vi, s.title.en, s.lead.vi].join(' ')).includes(q)) &&
+        (group === 'all' || s.category === group) &&
+        (flag === 'all' ||
+          (flag === 'emergency' && s.emergency) ||
+          (flag === 'monitoring' && s.monitoring) ||
+          (flag === 'issues' && problems.has(i))),
+    );
+  const filtered = !!q || group !== 'all' || flag !== 'all';
+  const full = pack.situations.length >= 40;
   return (
-    <Panel
-      className="panel--flush"
-      title={
-        <FormattedMessage
-          id="firstAid.situations"
-          values={{ n: pack.situations.length, max: 40 }}
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <FilterBar
+        active={filtered}
+        onClear={() => {
+          setQuery('');
+          setGroup('all');
+          setFlag('all');
+        }}
+        shown={rows.length}
+        total={pack.situations.length}
+      >
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder={intl.formatMessage({ id: 'firstAid.searchSituations' })}
         />
-      }
-      aside={
-        editing ? (
-          <Button disabled={pack.situations.length >= 40} onClick={onAdd}>
+        <SelectMenu
+          label={intl.formatMessage({ id: 'firstAid.col.category' })}
+          value={group}
+          onChange={setGroup}
+          options={[
+            { value: 'all', label: intl.formatMessage({ id: 'firstAid.filter.allGroups' }) },
+            ...pack.categories.map((c) => ({ value: c.id, label: textOf(intl, c.title) || c.id })),
+          ]}
+        />
+        <SelectMenu<Flag>
+          label={intl.formatMessage({ id: 'firstAid.col.flags' })}
+          value={flag}
+          onChange={setFlag}
+          options={[
+            { value: 'all', label: intl.formatMessage({ id: 'firstAid.filter.allFlags' }) },
+            { value: 'emergency', label: intl.formatMessage({ id: 'firstAid.badge.emergency' }) },
+            { value: 'monitoring', label: intl.formatMessage({ id: 'firstAid.badge.monitoring' }) },
+            ...(problems.size
+              ? [
+                  {
+                    value: 'issues' as const,
+                    label: intl.formatMessage({ id: 'firstAid.filter.issues' }),
+                  },
+                ]
+              : []),
+          ]}
+        />
+        {editing && (
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(!filtered && 'ml-auto')}
+            disabled={full}
+            title={full ? intl.formatMessage({ id: 'firstAid.situationsFull' }) : undefined}
+            onClick={onAdd}
+          >
+            <Plus />
             <FormattedMessage id="firstAid.addSituation" />
           </Button>
-        ) : undefined
-      }
-    >
-      <TableScroll min={760}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>
-                <FormattedMessage id="firstAid.col.code" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.title" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.category" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.flags" />
-              </th>
-              <th>
-                <FormattedMessage id="firstAid.col.content" />
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {pack.situations.map((s, i) => (
-              <tr key={`${i}-${s.id}`}>
-                <td className="muted">{i + 1}</td>
-                <td className="mono">{s.code ?? '—'}</td>
-                <td>
-                  <span className="fa-title-cell">
-                    <ImageThumb id={s.icon || null} size={32} />
-                    <button type="button" className="linkbtn" onClick={() => onOpen(i)}>
-                      {s.title.vi || <FormattedMessage id="firstAid.untitled" />}
-                    </button>
-                  </span>
-                  <span className="muted fa-sub-line">{s.lead.vi}</span>
-                </td>
-                <td>{textOf(intl, categories.get(s.category)?.title) || s.category}</td>
-                <td>
-                  <span className="chips">
-                    {s.emergency && (
-                      <Pill tone="error">
-                        <FormattedMessage id="firstAid.badge.emergency" />
-                      </Pill>
-                    )}
-                    {s.monitoring && (
-                      <Pill tone="info">
-                        <FormattedMessage id="firstAid.badge.monitoring" />
-                      </Pill>
-                    )}
-                    {problems.has(i) && (
-                      <Pill tone="warn">
-                        <FormattedMessage
-                          id="firstAid.badge.issues"
-                          values={{ n: problems.get(i) }}
-                        />
-                      </Pill>
-                    )}
-                  </span>
-                </td>
-                <td className="nowrap">
-                  <FormattedMessage
-                    id="firstAid.counts"
-                    values={{ v: s.variants.length, n: stepCount(s) }}
-                  />
-                </td>
-                <td className="cell-actions">
-                  {editing && (
-                    <RowActions
-                      label={intl.formatMessage(
-                        { id: 'table.actionsFor' },
-                        { name: s.title.vi || s.id },
-                      )}
-                      actions={[
-                        ...(i > 0
-                          ? [
-                              {
-                                key: 'up',
-                                label: <FormattedMessage id="firstAid.moveUp" />,
-                                onSelect: () => edit((p) => moveItem(p.situations, i, -1)),
-                              },
-                            ]
-                          : []),
-                        ...(i < pack.situations.length - 1
-                          ? [
-                              {
-                                key: 'down',
-                                label: <FormattedMessage id="firstAid.moveDown" />,
-                                onSelect: () => edit((p) => moveItem(p.situations, i, 1)),
-                              },
-                            ]
-                          : []),
-                        ...(pack.situations.length > 1
-                          ? [
-                              {
-                                key: 'remove',
-                                destructive: true,
-                                label: <FormattedMessage id="firstAid.remove" />,
-                                onSelect: () => {
-                                  if (
-                                    window.confirm(
-                                      intl.formatMessage(
-                                        { id: 'firstAid.removeConfirm' },
-                                        { name: s.title.vi || s.id },
-                                      ),
-                                    )
-                                  ) {
-                                    edit((p) => {
-                                      p.situations.splice(i, 1);
-                                    });
-                                  }
-                                },
-                              },
-                            ]
-                          : []),
-                      ]}
-                    />
-                  )}
-                </td>
+        )}
+      </FilterBar>
+      {rows.length === 0 ? (
+        <EmptyState icon={SearchX} title={<FormattedMessage id="firstAid.noMatch" />} />
+      ) : (
+        <TableScroll min={760}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th className="w-20">
+                  <FormattedMessage id="firstAid.col.code" />
+                </th>
+                <th>
+                  <FormattedMessage id="firstAid.col.title" />
+                </th>
+                <th>
+                  <FormattedMessage id="firstAid.col.category" />
+                </th>
+                <th>
+                  <FormattedMessage id="firstAid.col.flags" />
+                </th>
+                <th>
+                  <FormattedMessage id="firstAid.col.content" />
+                </th>
+                {editing && (
+                  <th>
+                    <span className="sr-only">
+                      <FormattedMessage id="firstAid.col.actions" />
+                    </span>
+                  </th>
+                )}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableScroll>
-    </Panel>
-  );
-}
-
-function SituationPage({
-  pack,
-  index,
-  editing,
-  edit,
-  idLocked,
-  variant,
-  onVariant,
-  onBack,
-}: {
-  pack: FirstAidPack;
-  index: number;
-  editing: boolean;
-  edit: Edit;
-  idLocked: boolean;
-  variant: number;
-  onVariant: (v: number) => void;
-  onBack: () => void;
-}) {
-  const intl = useIntl();
-  const s = pack.situations[index]!;
-  return (
-    <div className="stack">
-      <div className="toolbar">
-        <button type="button" className="linkbtn" onClick={onBack}>
-          ← <FormattedMessage id="firstAid.back" />
-        </button>
-        <span className="muted">
-          {[s.code, textOf(intl, s.title) || s.id].filter(Boolean).join(' · ')}
-        </span>
-      </div>
-      <div className="fa-split">
-        <Panel>
-          {editing ? (
-            <SituationEditor
-              pack={pack}
-              index={index}
-              edit={edit}
-              idLocked={idLocked}
-              variant={variant}
-              onVariant={onVariant}
-            />
-          ) : (
-            <SituationSummary pack={pack} situation={s} />
-          )}
-        </Panel>
-        <div className="fa-preview-col">
-          <PhonePreview pack={pack} situation={s} variant={variant} onVariant={onVariant} />
-        </div>
-      </div>
+            </thead>
+            <tbody>
+              {rows.map(({ s, i }) => (
+                <tr
+                  key={`${i}-${s.id}`}
+                  className={cn('cursor-pointer', problems.has(i) && 'bg-destructive/5')}
+                  onClick={() => onOpen(i)}
+                >
+                  <td className="font-mono text-[13px] whitespace-nowrap text-muted-foreground">
+                    {s.code ?? '—'}
+                  </td>
+                  <td className="w-[46%] max-w-0">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <ImageThumb id={s.icon || null} size={36} />
+                      <div className="grid min-w-0">
+                        <button
+                          type="button"
+                          className="truncate text-left font-medium outline-none hover:underline focus-visible:underline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpen(i);
+                          }}
+                        >
+                          {s.title.vi || <FormattedMessage id="firstAid.untitled" />}
+                        </button>
+                        <span className="truncate text-[13px] text-muted-foreground">
+                          {s.lead.vi}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap">
+                    {textOf(intl, categories.get(s.category)?.title) || s.category}
+                  </td>
+                  <td>
+                    <span className="flex flex-wrap items-center gap-1">
+                      {s.emergency && (
+                        <Pill tone="error">
+                          <FormattedMessage id="firstAid.badge.emergency" />
+                        </Pill>
+                      )}
+                      {s.monitoring && (
+                        <Pill tone="info">
+                          <FormattedMessage id="firstAid.badge.monitoring" />
+                        </Pill>
+                      )}
+                      {problems.has(i) && (
+                        <Pill tone="warn">
+                          <FormattedMessage
+                            id="firstAid.badge.issues"
+                            values={{ n: problems.get(i) }}
+                          />
+                        </Pill>
+                      )}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap text-muted-foreground tabular-nums">
+                    <FormattedMessage
+                      id="firstAid.counts"
+                      values={{ v: s.variants.length, n: stepCount(s) }}
+                    />
+                  </td>
+                  {editing && (
+                    <td className="cell-actions w-10" onClick={(e) => e.stopPropagation()}>
+                      <RowActions
+                        label={intl.formatMessage(
+                          { id: 'table.actionsFor' },
+                          { name: s.title.vi || s.id },
+                        )}
+                        actions={[
+                          ...(i > 0 && !filtered
+                            ? [
+                                {
+                                  key: 'up',
+                                  label: <FormattedMessage id="firstAid.moveUp" />,
+                                  onSelect: () => edit((p) => moveItem(p.situations, i, -1)),
+                                },
+                              ]
+                            : []),
+                          ...(i < pack.situations.length - 1 && !filtered
+                            ? [
+                                {
+                                  key: 'down',
+                                  label: <FormattedMessage id="firstAid.moveDown" />,
+                                  onSelect: () => edit((p) => moveItem(p.situations, i, 1)),
+                                },
+                              ]
+                            : []),
+                          ...(pack.situations.length > 1
+                            ? [
+                                {
+                                  key: 'remove',
+                                  destructive: true,
+                                  label: <FormattedMessage id="firstAid.remove" />,
+                                  onSelect: () => onRemove(i),
+                                },
+                              ]
+                            : []),
+                        ]}
+                      />
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableScroll>
+      )}
     </div>
   );
 }
@@ -1127,119 +1581,182 @@ function SituationSummary({
   const category = pack.categories.find((c) => c.id === s.category);
   const age = (a: FirstAidSituation['ageMonths']) =>
     a ? intl.formatMessage({ id: 'firstAid.ageRange' }, { from: a.from, to: a.to ?? '∞' }) : '—';
+  const both = (t: { vi: string; en: string }) => (
+    <>
+      <span className="block">{t.vi || '—'}</span>
+      <span className="block text-muted-foreground" lang="en">
+        {t.en || '—'}
+      </span>
+    </>
+  );
+  const row = (label: ReactNode, value: ReactNode) => (
+    <div className="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-4">
+      <dt className="text-[13px] text-muted-foreground">{label}</dt>
+      <dd className="min-w-0 text-sm">{value}</dd>
+    </div>
+  );
   return (
-    <dl className="kv">
-      <dt>
-        <FormattedMessage id="firstAid.field.id" />
-      </dt>
-      <dd className="mono">{s.id}</dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.category" />
-      </dt>
-      <dd>{textOf(intl, category?.title) || s.category}</dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.title" />
-      </dt>
-      <dd>
-        {s.title.vi}
-        <br />
-        <span className="muted">{s.title.en}</span>
-      </dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.lead" />
-      </dt>
-      <dd>
-        {s.lead.vi}
-        <br />
-        <span className="muted">{s.lead.en}</span>
-      </dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.keywords" />
-      </dt>
-      <dd>{s.keywords.map((k) => k.vi).join(' · ') || '—'}</dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.ageMonths" />
-      </dt>
-      <dd>{age(s.ageMonths)}</dd>
-      <dt>
-        <FormattedMessage id="firstAid.section.variants" />
-      </dt>
-      <dd>
-        {s.variants
-          .map((v) => `${textOf(intl, v.label) || v.id} (${v.steps.length}, ${age(v.ageMonths)})`)
-          .join(' · ')}
-      </dd>
-      <dt>
-        <FormattedMessage id="firstAid.field.tool" />
-      </dt>
-      <dd>{s.tool ? <FormattedMessage id={`firstAid.tool.${s.tool}`} /> : '—'}</dd>
-    </dl>
+    <>
+      <Section title={<FormattedMessage id="firstAid.section.basics" />}>
+        <dl className="grid gap-3">
+          {row(<FormattedMessage id="firstAid.field.title" />, both(s.title))}
+          {row(<FormattedMessage id="firstAid.field.lead" />, both(s.lead))}
+          {row(
+            <FormattedMessage id="firstAid.field.category" />,
+            textOf(intl, category?.title) || s.category,
+          )}
+          {row(
+            <FormattedMessage id="firstAid.col.flags" />,
+            s.emergency || s.monitoring ? (
+              <span className="flex flex-wrap gap-1">
+                {s.emergency && (
+                  <Pill tone="error">
+                    <FormattedMessage id="firstAid.badge.emergency" />
+                  </Pill>
+                )}
+                {s.monitoring && (
+                  <Pill tone="info">
+                    <FormattedMessage id="firstAid.badge.monitoring" />
+                  </Pill>
+                )}
+              </span>
+            ) : (
+              '—'
+            ),
+          )}
+        </dl>
+      </Section>
+      <Section title={<FormattedMessage id="firstAid.section.variants" />}>
+        <ul className="grid gap-2">
+          {s.variants.map((v) => (
+            <li
+              key={v.id}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border px-3 py-2 text-sm"
+            >
+              <span className="font-medium">{textOf(intl, v.label) || v.id}</span>
+              <span className="text-muted-foreground tabular-nums">
+                <FormattedMessage id="firstAid.stepsCount" values={{ n: v.steps.length }} />
+              </span>
+              {v.ageMonths && <span className="text-muted-foreground">{age(v.ageMonths)}</span>}
+              {v.cpr && (
+                <Pill tone="info">
+                  <FormattedMessage id={`firstAid.cpr.${v.cpr}`} />
+                </Pill>
+              )}
+            </li>
+          ))}
+        </ul>
+      </Section>
+      <Section
+        collapsible
+        defaultOpen={false}
+        title={<FormattedMessage id="firstAid.section.advanced" />}
+        summary={[s.id, s.code].filter(Boolean).join(' · ')}
+      >
+        <dl className="grid gap-3">
+          {row(
+            <FormattedMessage id="firstAid.field.id" />,
+            <span className="font-mono">{s.id}</span>,
+          )}
+          {row(<FormattedMessage id="firstAid.field.code" />, s.code ?? '—')}
+          {row(
+            <FormattedMessage id="firstAid.field.keywords" />,
+            s.keywords.map((k) => k.vi).join(' · ') || '—',
+          )}
+          {row(<FormattedMessage id="firstAid.field.ageMonths" />, age(s.ageMonths))}
+          {row(
+            <FormattedMessage id="firstAid.field.tool" />,
+            s.tool ? <FormattedMessage id={`firstAid.tool.${s.tool}`} /> : '—',
+          )}
+        </dl>
+      </Section>
+    </>
   );
 }
 
-function GeneralSummary({ pack }: { pack: FirstAidPack }) {
+export function GeneralSummary({ pack }: { pack: FirstAidPack }) {
   const intl = useIntl();
   return (
-    <div className="cols cols--1-1">
-      <Panel title={<FormattedMessage id="firstAid.section.categories" />}>
-        <dl className="kv">
-          <dt>
-            <FormattedMessage id="firstAid.field.emergencyNumber" />
-          </dt>
-          <dd className="mono">{pack.emergencyNumber}</dd>
-          {pack.categories.map((c) => (
-            <Fragment key={c.id}>
-              <dt className="mono">{c.id}</dt>
-              <dd>
-                {textOf(intl, c.title)} · <FormattedMessage id={`firstAid.layout.${c.layout}`} /> ·{' '}
-                <FormattedMessage id={`firstAid.categoryTone.${c.tone}`} />
-              </dd>
-            </Fragment>
-          ))}
-        </dl>
-      </Panel>
-      <Panel title={<FormattedMessage id="firstAid.section.quickSearch" />}>
-        <span className="chips">
-          {pack.quickSearch.length
-            ? pack.quickSearch.map((q, i) => (
-                <span key={i} className="qa-tag">
+    <div className="grid items-start gap-4 lg:grid-cols-2">
+      <div className="grid gap-4">
+        <Section title={<FormattedMessage id="firstAid.section.emergency" />}>
+          <p className="text-2xl font-bold tracking-tight tabular-nums">{pack.emergencyNumber}</p>
+        </Section>
+        <Section title={<FormattedMessage id="firstAid.section.quickSearch" />}>
+          {pack.quickSearch.length ? (
+            <span className="flex flex-wrap gap-1.5">
+              {pack.quickSearch.map((q, i) => (
+                <span key={i} className="rounded-full border bg-muted/50 px-2.5 py-0.5 text-sm">
                   {textOf(intl, q)}
                 </span>
-              ))
-            : '—'}
-        </span>
+              ))}
+            </span>
+          ) : (
+            <p className="text-sm text-muted-foreground">—</p>
+          )}
+        </Section>
         {pack.cpr.length > 0 && (
-          <dl className="kv">
-            {pack.cpr.map((c) => (
-              <Fragment key={c.id}>
-                <dt>
-                  <FormattedMessage id={`firstAid.cpr.${c.id}`} />
-                </dt>
-                <dd>
-                  <FormattedMessage
-                    id="firstAid.cprFacts"
-                    values={{
-                      rate: c.ratePerMinute,
-                      compressions: c.compressions,
-                      breaths: c.breaths,
-                    }}
-                  />
-                </dd>
-              </Fragment>
-            ))}
-          </dl>
+          <Section title={<FormattedMessage id="firstAid.section.cpr" />}>
+            <dl className="grid gap-2 text-sm">
+              {pack.cpr.map((c) => (
+                <div key={c.id} className="flex flex-wrap justify-between gap-2">
+                  <dt className="text-muted-foreground">
+                    <FormattedMessage id={`firstAid.cpr.${c.id}`} />
+                  </dt>
+                  <dd className="tabular-nums">
+                    <FormattedMessage
+                      id="firstAid.cprFacts"
+                      values={{
+                        rate: c.ratePerMinute,
+                        compressions: c.compressions,
+                        breaths: c.breaths,
+                      }}
+                    />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Section>
         )}
-      </Panel>
+      </div>
+      <Section
+        flush
+        title={<FormattedMessage id="firstAid.section.categories" />}
+        description={
+          <FormattedMessage id="firstAid.categoriesCount" values={{ n: pack.categories.length }} />
+        }
+      >
+        <ul className="divide-y">
+          {pack.categories.map((c) => (
+            <li
+              key={c.id}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 text-sm"
+            >
+              <span className={`fa-tag fa-tag--${c.tone}`}>{textOf(intl, c.title) || c.id}</span>
+              <span className="text-muted-foreground">
+                <FormattedMessage id={`firstAid.layout.${c.layout}`} />
+              </span>
+              <span className="ml-auto text-muted-foreground tabular-nums">
+                <FormattedMessage
+                  id="firstAid.categoryUsed"
+                  values={{ n: pack.situations.filter((s) => s.category === c.id).length }}
+                />
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Section>
     </div>
   );
 }
 
 // ---------- Picture library ----------
 
-function Library({ pack, canUpload }: { pack: FirstAidPack; canUpload: boolean }) {
+export function Library({ pack, canUpload }: { pack: FirstAidPack; canUpload: boolean }) {
   const intl = useIntl();
-  const [filter, setFilter] = useState<'picture' | 'icon' | 'all'>('all');
+  const [filter, setFilter] = useState<ImageFilter>('all');
   const [query, setQuery] = useState('');
+  const [uploading, setUploading] = useState(false);
   const usage = useMemo(() => {
     const m = new Map<string, number>();
     for (const s of pack.situations) {
@@ -1250,35 +1767,50 @@ function Library({ pack, canUpload }: { pack: FirstAidPack; canUpload: boolean }
     return m;
   }, [pack]);
   const { images } = useContext(LibraryContext);
+  const shown = filterImages(images, filter, query);
+  const filtered = filter !== 'all' || !!query.trim();
   return (
-    <Panel
+    <Section
       title={<FormattedMessage id="firstAid.library" />}
-      note={<FormattedMessage id="firstAid.libraryNote" values={{ n: images.length }} />}
+      hint={<FormattedMessage id="firstAid.libraryNote" />}
+      description={<FormattedMessage id="firstAid.libraryCount" values={{ n: images.length }} />}
+      actions={
+        canUpload && (
+          <Button size="sm" onClick={() => setUploading(true)}>
+            <Upload />
+            <FormattedMessage id="firstAid.upload.open" />
+          </Button>
+        )
+      }
     >
-      <div className="stack">
-        {canUpload && <UploadBox />}
-        <div className="toolbar">
-          <Segmented
-            label={intl.formatMessage({ id: 'firstAid.library' })}
-            value={filter}
-            onChange={setFilter}
-            options={(['all', 'picture', 'icon'] as const).map((f) => ({
-              value: f,
-              label: <FormattedMessage id={`firstAid.filter.${f}`} />,
-            }))}
-          />
-          <input
-            className="field__input fa-search"
-            type="search"
+      <div className="grid gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <ImageKindFilter value={filter} onChange={setFilter} />
+          <SearchInput
             value={query}
+            onChange={setQuery}
             placeholder={intl.formatMessage({ id: 'firstAid.searchImages' })}
-            aria-label={intl.formatMessage({ id: 'firstAid.searchImages' })}
-            onChange={(e) => setQuery(e.target.value)}
           />
+          {filtered && (
+            <span className="ml-auto text-sm text-muted-foreground tabular-nums" role="status">
+              <FormattedMessage
+                id="kit.results"
+                values={{ n: shown.length, total: images.length }}
+              />
+            </span>
+          )}
         </div>
-        <ImageGrid images={filterImages(images, filter, query)} usage={usage} />
+        <ImageGrid images={shown} usage={usage} />
       </div>
-    </Panel>
+      {uploading && (
+        <Modal
+          title={<FormattedMessage id="firstAid.upload.open" />}
+          onClose={() => setUploading(false)}
+        >
+          <UploadBox onDone={() => setUploading(false)} />
+        </Modal>
+      )}
+    </Section>
   );
 }
 
@@ -1309,26 +1841,32 @@ export function PhonePreview({
   const hero = v.hero ?? s.hero;
   const say = (x: { vi: string; en: string } | null | undefined) => (x ? x[lang] : '');
   return (
-    <Panel
-      title={<FormattedMessage id="firstAid.preview" />}
-      aside={
-        <Segmented
-          label={intl.formatMessage({ id: 'firstAid.preview' })}
+    <section className="grid gap-3 rounded-xl border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-[15px] font-semibold">
+          <FormattedMessage id="firstAid.preview" />
+        </h2>
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          size="sm"
           value={lang}
-          onChange={setLang}
-          options={(['vi', 'en'] as const).map((l) => ({
-            value: l,
-            label: <FormattedMessage id={`firstAid.lang.${l}`} />,
-          }))}
-        />
-      }
-    >
+          aria-label={intl.formatMessage({ id: 'firstAid.previewLang' })}
+          onValueChange={(l) => l && setLang(l as 'vi' | 'en')}
+        >
+          {(['vi', 'en'] as const).map((l) => (
+            <ToggleGroupItem key={l} value={l} className="px-3">
+              <FormattedMessage id={`firstAid.lang.${l}`} />
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </div>
       <div className="fa-phone" lang={lang}>
         <div className="fa-phone__hero">
           <ImageThumb id={hero || null} size={343} />
         </div>
         <div className="fa-phone__body">
-          <span className="chips">
+          <span className="flex flex-wrap items-center gap-1.5">
             {category && (
               <span className={`fa-tag fa-tag--${category.tone}`}>{say(category.title)}</span>
             )}
@@ -1366,7 +1904,7 @@ export function PhonePreview({
                   <p>{say(st.body)}</p>
                   {st.image && <ImageThumb id={st.image} size={240} />}
                   {(st.chips.length > 0 || st.count) && (
-                    <span className="chips">
+                    <span className="flex flex-wrap items-center gap-1.5">
                       {st.chips.map((c, k) => (
                         <span key={k} className={`fa-chip fa-chip--${c.tone}`}>
                           {say(c.label)}
@@ -1419,6 +1957,6 @@ export function PhonePreview({
           </div>
         )}
       </div>
-    </Panel>
+    </section>
   );
 }

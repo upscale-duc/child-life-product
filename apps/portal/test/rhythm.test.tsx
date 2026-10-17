@@ -19,10 +19,24 @@ import { ApiContext, ApiError, type Api, type RhythmRulesView, type RhythmView }
 import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
 import { Sidebar } from '../src/Shell';
-import { ActDialog, RhythmBody, RulesPanel, ruleGroups } from '../src/screens/Rhythm';
-import { IssuesContext } from '../src/screens/FirstAidEditor';
+import { TooltipProvider } from '../src/components/ui/tooltip';
+import {
+  ActDialog,
+  HealthRoutingDetails,
+  HistoryTable,
+  HowItWorks,
+  KillSwitchList,
+  RankingDetails,
+  RhythmBody,
+  RulesPanel,
+  draftActions,
+  filterActivities,
+  filterAgeCards,
+  ruleGroups,
+} from '../src/screens/Rhythm';
 import {
   ActivityEditor,
+  IssuesContext,
   StageEditor,
   blankActivity,
   blankStage,
@@ -85,7 +99,7 @@ function render(
             levels: levelsForRoles(roles),
           }}
         >
-          {node}
+          <TooltipProvider>{node}</TooltipProvider>
         </StaffContext.Provider>
       </ApiContext.Provider>
     </IntlProvider>,
@@ -406,6 +420,32 @@ describe('Nhịp lớn lên: fixtures and messages', () => {
       ]),
       ...['activity', 'ageCard'].map((x) => `rhythm.back.${x}`),
       ...['activities', 'ageCards', 'health'].map((x) => `rhythm.sub.${x}`),
+      ...['reference', 'content'].map((d) => `rhythm.editingTitle.${d}`),
+      ...['saved', 'submit', 'approve', 'reject', 'discard', 'rollback', 'rules'].map(
+        (x) => `rhythm.toast.${x}`,
+      ),
+      ...['all', 'awaiting', 'reviewed'].map((x) => `rhythm.filter.review.${x}`),
+      ...['vi', 'en'].map((x) => `rhythm.lang.${x}`),
+      ...[
+        'required',
+        'tooShort',
+        'tooLong',
+        'tooFew',
+        'tooMany',
+        'min',
+        'max',
+        'format',
+        'number',
+        'duplicate',
+        'invalid',
+        'window',
+        'ageRange',
+        'url',
+      ].map((x) => `rhythm.err.${x}`),
+      ...['version', 'status', 'size', 'review', 'locales', 'people', 'when'].map(
+        (x) => `rhythm.col.${x}`,
+      ),
+      ...['stage', 'offsets', 'window', 'flags', 'activities'].map((x) => `rhythm.stageCol.${x}`),
       ...['baseline', 'validDay', 'change', 'repeat'].flatMap((x) => [
         `rhythm.rules.summary.${x}`,
         `rhythm.rules.summary.${x}.value`,
@@ -439,54 +479,108 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     expect(calls[0]!.name).toBe('staffRhythm');
     const html = text(render(body(data, { edit: true, approve: true })));
     expect(html).toContain('Mô hình tham khảo Hoạt động & thẻ theo tuổi Quy tắc');
-    expect(html).toContain('● Đang phát hành · ref_20261010_01');
-    expect(html).toContain('Xuất bản 09:00 10/10/2026');
-    // Nobody qualified signed the live model off yet (D-073 #2).
-    expect(html).toContain('Bản nháp kỹ thuật · chờ chuyên môn duyệt');
+    // The live status in one line: version, date, review.
+    expect(html).toContain(
+      '● Đang phát hành · ref_20261010_01 Xuất bản 09:00 10/10/2026 Chưa duyệt chuyên môn',
+    );
+    // Nobody qualified signed the live model off yet (D-073 #2): said plainly, no dev badge.
+    expect(html).not.toContain('kỹ thuật');
     expect(html).toContain('Bản nháp · chờ duyệt Phiên bản mô hình đang soạn');
     expect(html).toContain('Soạn: Minh Phạm');
     expect(html).toContain('3 giai đoạn');
     expect(html).toContain('BS. Hà trả lại: “Thiếu nguồn”');
     expect(html).toContain('Thêm giai đoạn 3');
     // The draft is shown: three stages, the window for the sample due date (PN02 21/09 + 21..30).
-    expect(html).toContain('Giai đoạn · 3/30');
+    expect(html).toContain('Giai đoạn · 3/30 Đang xem bản nháp');
     expect(html).toContain('+21 → +30 ngày 12/10/2026 – 21/10/2026');
+    expect(html).toContain('Giai đoạn 1 (Wonder Weeks) 2 dấu hiệu · 1 hoạt động · có thông báo');
     expect(html).toContain('Giai đoạn 3');
-    // History (PN01): status, reviewer, languages; discarded versions are not listed.
-    expect(html).toContain('Danh sách phiên bản mô hình');
+    // Technical ids stay out of the list.
+    expect(html).not.toContain('stage_01');
+    // An approver on a pending version: the decision is the main button ("Trả lại" is in ⋯).
+    expect(html).toContain('Duyệt & xuất bản');
+    expect(html).toContain('Tiếp tục sửa bản nháp');
+    // Folded: model details, history, kill switches (with their counts).
+    expect(html).toContain('Mô hình · Wonder Weeks 1 nguồn · Chưa duyệt chuyên môn');
+    expect(html).toContain('Danh sách phiên bản mô hình 3 phiên bản');
+    expect(html).toContain('Công tắc khẩn cấp 1/3 đang bật');
+    expect(html).not.toContain('Dùng lại bản này');
+    expect(html).toContain('Cách app dùng mô hình');
+  });
+
+  it('the history lists every version but the discarded ones; only replaced ones come back', () => {
+    const size = (v: { stages?: number }) => `${v.stages ?? 0} giai đoạn`;
+    const history = (canApprove: boolean) =>
+      text(
+        render(
+          <HistoryTable
+            docView={view.reference}
+            size={size}
+            locales={() => 'VI · EN'}
+            canApprove={canApprove}
+            onRollback={() => undefined}
+          />,
+        ),
+      );
+    const html = history(true);
     expect(html).toContain(
-      'ref_20261001_01 Đã thay thế 1 giai đoạn BS. Hà (nhi khoa) · 01/10/2026 VI · EN',
+      'ref_20261001_01 Bản thử Đã thay thế 1 giai đoạn BS. Hà (nhi khoa) · 01/10/2026 VI · EN',
     );
     expect(html).toContain(
-      'ref_20261010_01 Đang phát hành 2 giai đoạn Chưa duyệt chuyên môn VI · EN',
+      'ref_20261010_01 Bản đầu Đang phát hành 2 giai đoạn Chưa duyệt chuyên môn VI · EN',
     );
     expect(html).not.toContain('Bỏ');
-    // Only the replaced version can come back; the approver sees the pending actions.
     expect(html.match(/Dùng lại bản này/g)).toHaveLength(1);
-    expect(html).toContain('Trả lại');
-    expect(html).toContain('Duyệt & xuất bản');
-    expect(html).toContain('Sửa bản nháp');
-    // PN01 kill switches and how the app counts.
-    expect(html).toContain('Công tắc khẩn cấp');
-    expect(html).toContain('Nhịp lớn lên (lịch tham khảo & check-in) Đang bật Mở dần · 25%');
-    expect(html).toContain('Gợi ý theo nhu cầu (nhóm A) Đang tắt');
-    expect(html).toContain('không dùng ngày sinh thay thế');
+    expect(history(false)).not.toContain('Dùng lại bản này');
+  });
+
+  it('the kill switches and how the app counts, behind their folds', () => {
+    const switches = text(
+      render(
+        <KillSwitchList
+          flags={{
+            ...defaultFlags,
+            rhythm: { enabled: true, scope: 'percent', percent: 25, notice: null },
+          }}
+        />,
+      ),
+    );
+    expect(switches).toContain('Nhịp lớn lên (lịch tham khảo & check-in) Đang bật Mở dần · 25%');
+    expect(switches).toContain('Gợi ý theo nhu cầu (nhóm A) Đang tắt');
+    expect(text(render(<HowItWorks />))).toContain('không dùng ngày sinh thay thế');
   });
 
   it('the content tab lists activities and age cards with status, review and languages', () => {
     const html = text(render(body(view, { edit: true, approve: true }, 'content')));
     expect(html).toContain('● Đang phát hành · rc_20261010_01');
     expect(html).toContain('2/4 mục đã duyệt chuyên môn');
+    expect(html).toContain('Hoạt động gợi ý Thẻ theo tuổi Sức khoẻ');
     expect(html).toContain('Thư viện hoạt động · 2');
     expect(html).toContain(
-      'Bế áp da trong phòng ánh sáng dịu 10 phút · act_skin_to_skin · v1 0–91 ngày (~0–3 tháng) Cần được dỗ · Gắn kết Phát hành BS. Hà (nhi khoa) · 01/10/2026 VI · EN',
+      'Bế áp da trong phòng ánh sáng dịu 10 phút · Lúc nào cũng được ~0–3 tháng Cần được dỗ · Gắn kết Phát hành BS. Hà (nhi khoa) · 01/10/2026 VI · EN',
     );
     expect(html).toContain(
-      'Tiếng ồn trắng trước giấc đêm 15 phút · act_white_noise · v2 0–182 ngày (~0–6 tháng) Ngủ Nháp Chờ chuyên môn VI',
+      'Tiếng ồn trắng trước giấc đêm 15 phút · Buổi tối (“Thử tối nay”) ~0–6 tháng Ngủ Nháp Chờ chuyên môn VI',
     );
-    expect(html).toContain('+ Tạo phiên bản mới');
-    expect(html).toContain('Danh sách phiên bản nội dung');
-    expect(html).toContain('rc_20261010_01 Đang phát hành 2 hoạt động · 1 thẻ theo tuổi');
+    // Ids and versions are in the item, not in the list.
+    expect(html).not.toContain('act_skin_to_skin');
+    expect(html).toContain('Tạo phiên bản mới');
+    expect(html).toContain('Danh sách phiên bản nội dung 1 phiên bản');
+    expect(html).not.toContain('kỹ thuật');
+  });
+
+  it('filters the activity and age-card lists', () => {
+    const all = { query: '', need: 'all', status: 'all', review: 'all' } as const;
+    expect(filterActivities(content.activities, all)).toEqual([0, 1]);
+    expect(filterActivities(content.activities, { ...all, need: 'sleep' })).toEqual([1]);
+    expect(filterActivities(content.activities, { ...all, status: 'published' })).toEqual([0]);
+    expect(filterActivities(content.activities, { ...all, review: 'awaiting' })).toEqual([1]);
+    // Without marks or case, in either language, or by id.
+    expect(filterActivities(content.activities, { ...all, query: 'TIENG ON' })).toEqual([1]);
+    expect(filterActivities(content.activities, { ...all, query: 'skin-to' })).toEqual([0]);
+    expect(filterActivities(content.activities, { ...all, query: 'act_skin' })).toEqual([0]);
+    expect(filterAgeCards(content.ageCards, { ...all, query: 'tuan dau' })).toEqual([0]);
+    expect(filterAgeCards(content.ageCards, { ...all, review: 'reviewed' })).toEqual([]);
   });
 
   it('a viewer sees everything read-only', () => {
@@ -497,17 +591,18 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     expect(viewer).toContain('● Đang phát hành · ref_20261010_01');
     for (const label of [
       'Tạo phiên bản mới',
-      'Sửa bản nháp',
+      'Tiếp tục sửa bản nháp',
       'Gửi duyệt',
       'Huỷ nháp',
       'Duyệt & xuất bản',
       'Trả lại',
       'Dùng lại bản này',
-      '+ Thêm giai đoạn',
     ]) {
       expect(viewer, label).not.toContain(label);
     }
-    expect(viewer).toContain('Cần quyền “Tính năng · Xem” để thấy trạng thái công tắc.');
+    // "Thêm giai đoạn 3" is the draft's note; the add button is not there.
+    expect(viewer).not.toMatch(/Thêm giai đoạn(?! 3)/);
+    expect(viewer).toContain('Công tắc khẩn cấp Không có quyền xem');
     const contentViewer = text(
       render(body(view, { edit: false, approve: false }, 'content'), ['support']),
     );
@@ -519,16 +614,24 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     );
     expect(rules).toContain('Cần quyền “Tính năng · Xem” để xem quy tắc.');
     expect(rules).toContain('Xếp hạng gợi ý');
-    // An editor on a draft: Gửi duyệt and Huỷ nháp, nothing to approve.
+    // An editor on a draft: Gửi duyệt (Huỷ nháp in ⋯), nothing to approve.
     const draft: RhythmView = {
       ...view,
       reference: { ...view.reference, draft: { ...view.reference.draft!, status: 'draft' } },
     };
     const editor = text(render(body(draft, { edit: true, approve: false }), ['ops']));
     expect(editor).toContain('Gửi duyệt');
-    expect(editor).toContain('Huỷ nháp');
+    expect(editor).toContain('Tiếp tục sửa bản nháp');
     expect(editor).not.toContain('Duyệt & xuất bản');
     expect(editor).not.toContain('Dùng lại bản này');
+  });
+
+  it('who can take which workflow step', () => {
+    expect(draftActions('draft', true, false)).toEqual({ main: 'submit', more: ['discard'] });
+    expect(draftActions('draft', false, true)).toEqual({ main: null, more: [] });
+    expect(draftActions('pending', true, false)).toEqual({ main: null, more: [] });
+    expect(draftActions('pending', false, true)).toEqual({ main: 'approve', more: ['reject'] });
+    expect(draftActions('pending', true, true)).toEqual({ main: 'approve', more: ['reject'] });
   });
 
   it('flags stage texts that promise or count down', () => {
@@ -550,6 +653,7 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
 
     const html = text(render(body(view, { edit: false, approve: false })));
     expect(html).toContain('Không được viết');
+    expect(html).not.toContain('“bão chắc chắn đến”'); // the guidance is behind the button
     expect(html).toContain('Có 2 chỗ cần viết lại:');
     expect(html).toContain(
       'Giai đoạn 3 · Dấu hiệu (VI): “Bé chắc chắn sẽ quấy khóc” · có “chắc chắn”',
@@ -666,16 +770,43 @@ describe('Nhịp lớn lên: drafts', () => {
     );
     const html = text(raw);
     expect(html).toContain('Xem trước với dự sinh 21/09/2026 → giai đoạn 12/10/2026 – 21/10/2026.');
-    expect(html).toContain('startOffsetDays');
-    expect(html).toContain('Tiếng Việt • English');
+    expect(html).toContain('Bắt đầu ngày sau ngày dự sinh');
+    expect(raw).toContain('value="21"');
+    expect(html).not.toContain('startOffsetDays');
+    // The language with a problem is marked.
+    expect(html).toContain('Tiếng Việt (có lỗi) English');
     expect(raw).toContain('value="Giai đoạn 1 (Wonder Weeks)"');
     expect(html).toContain('Có thể cần được bế, dỗ nhiều hơn');
-    expect(html).toContain('Tiêu đề (≤40 ký tự) 41/40');
+    // The reminder in both languages, with its counters.
+    expect(html).toContain('Tiếng Việt Tiêu đề 41/40');
     expect(html).toContain('Tối đa 40 ký tự.');
-    expect(html).toContain('Nội dung (≤90 ký tự) 46/90');
+    expect(html).toContain('Nội dung 46/90');
+    expect(html).toContain('English Tiêu đề 17/40');
     expect(html).toContain('Hoạt động gắn kèm · 1/8');
     expect(html).toContain('Bế áp da · 10 phút');
-    expect(html).toContain('Đã phát hành nên không đổi mã được');
+    // Ids are folded under "Nâng cao"…
+    expect(html).toContain('Nâng cao stage_01');
+    expect(html).not.toContain('Mã giai đoạn');
+    // …which opens by itself when the id has a problem.
+    draft.stages[1]!.id = 'stage_01';
+    const dup = text(
+      render(
+        <IssuesContext.Provider
+          value={{ issues: validateRhythmDraft('reference', draft).issues, show: true }}
+        >
+          <StageEditor
+            model={draft}
+            index={1}
+            edit={() => undefined}
+            idLocked={false}
+            dueDate="2026-09-21"
+            activities={[]}
+          />
+        </IssuesContext.Provider>,
+      ),
+    );
+    expect(dup).toContain('Mã giai đoạn');
+    expect(dup).toContain('Mã này đã được dùng.');
     expect(windowPreview('2026-09-21', { startOffsetDays: 21, endOffsetDays: 30 })).toEqual({
       start: '2026-10-12',
       end: '2026-10-21',
@@ -702,7 +833,9 @@ describe('Nhịp lớn lên: drafts', () => {
     expect(html).toContain('Thời điểm phù hợp');
     expect(html).toContain('≈ 0–6 tháng');
     expect(raw).toContain('value="VN"');
-    expect(html).toContain('+ Thêm nguồn');
+    // Sources and ids are folded, with what is inside.
+    expect(html).toContain('Nguồn Chưa có nguồn');
+    expect(html).toContain('Nâng cao act_white_noise · v2');
   });
 });
 
@@ -787,8 +920,9 @@ describe('Nhịp lớn lên: approve, reject, roll back', () => {
     expect(render(<ActDialog act="approve" requireReview {...props} />)).toMatch(
       /<button data-slot="button" data-variant="default"[^>]* disabled="">Duyệt &amp; xuất bản/,
     );
-    const dev = text(render(<ActDialog act="approve" requireReview={false} {...props} />));
-    expect(dev).toContain('Rà soát chuyên môn (tuỳ chọn trên dev)');
+    const optional = text(render(<ActDialog act="approve" requireReview={false} {...props} />));
+    expect(optional).toContain('Rà soát chuyên môn (tuỳ chọn)');
+    expect(optional).not.toContain('dev');
     const reject = text(render(<ActDialog act="reject" requireReview {...props} />));
     expect(reject).not.toContain('Người rà soát');
     expect(reject).toContain('Bản quay về nháp');
@@ -831,10 +965,10 @@ describe('Nhịp lớn lên: rules (PN04)', () => {
     const editor = render(<RulesPanel view={rulesView} canEdit onSaved={() => {}} />, ['eng']);
     expect(editor).toContain('type="number"');
     expect(editor).toContain('value="360"');
-    expect(text(editor)).toContain('Lưu quy tắc…');
-    expect(text(editor)).toContain(
-      'Ngày có một quãng dài hơn số phút này mà không ghi gì sẽ không được tính (D-073 #1).',
-    );
+    expect(text(editor)).toContain('Chưa có thay đổi Lưu quy tắc…');
+    expect(editor).toMatch(/disabled="">Lưu quy tắc…/);
+    expect(text(editor)).toContain('Ngày hợp lệ (tự động)');
+    expect(text(editor)).not.toContain('D-073');
     expect(text(editor)).toContain(
       '7 ngày hợp lệ gần nhất trong 14 ngày trước 3 ngày đang so sánh · tối thiểu 5 ngày',
     );
@@ -855,16 +989,19 @@ describe('Nhịp lớn lên: rules (PN04)', () => {
         <RulesPanel view={{ ...rulesView, stored: false }} canEdit={false} onSaved={() => {}} />,
       ),
     );
-    expect(unsaved).toContain('Đang dùng mặc định trong mã');
-    // The rules tab also shows the ranking and the health routing, read-only.
+    expect(unsaved).toContain('Đang dùng giá trị mặc định');
+    // The rules tab also has the ranking and the health routing, read-only and folded.
     const tab = text(
       render(body(view, { edit: false, approve: false, rules: true }, 'rules'), ['ops']),
     );
-    expect(tab).toContain(
+    expect(tab).toContain('Xếp hạng gợi ý');
+    expect(tab).toContain('Định tuyến sức khoẻ Ưu tiên cao nhất');
+    expect(text(render(<RankingDetails />))).toContain(
       '3×khớp nhu cầu + 2×khớp sở thích + 1×từng có ích − 2×đã xem gần đây − 4×không phù hợp',
     );
-    expect(tab).toContain('VN (115)');
-    expect(tab).toContain('Sốt từ 38°C ở bé dưới 3 tháng · Khó thở');
+    const routing = text(render(<HealthRoutingDetails content={content} />));
+    expect(routing).toContain('VN (115)');
+    expect(routing).toContain('Sốt từ 38°C ở bé dưới 3 tháng · Khó thở');
   });
 });
 

@@ -9,48 +9,61 @@ import {
   type MilestoneGroup,
   type ReferenceMilestoneDraft,
 } from '@child-life/contracts';
+import { Plus, Star, Upload } from 'lucide-react';
 import { useEffect, useId, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 import { ApiError, useApi, useLoad } from '../api';
-import { routePaths, subPath, useStaff } from '../context';
 import {
-  Button,
-  Empty,
-  Kpi,
-  Loaded,
-  LockNote,
-  Page,
-  Panel,
-  SelectMenu,
-  TableScroll,
-  errorMessageId,
-} from '../ui';
+  EditorBar,
+  EditorLayout,
+  EmptyState,
+  Field,
+  FilterBar,
+  Hint,
+  Notice,
+  OverflowMenu,
+  SearchInput,
+  Section,
+  StatTiles,
+  useGuardedLeave,
+} from '../content-kit';
+import { routePaths, subPath, useStaff } from '../context';
+import { Button, Loaded, Modal, Page, SelectMenu, TableScroll, errorMessageId } from '../ui';
 import {
   ActDialog,
   ContentImagesProvider,
-  ImagePickerButton,
+  EditorNotices,
   ImageThumb,
-  IssuesList,
   LangTabs,
   NumberField,
   PhoneFrame,
+  PictureField,
+  PreviewCard,
   ReviewLine,
   SourcesField,
   StatusCell,
   TextField,
-  WorkflowButtons,
+  WorkflowMain,
   actionsFor,
   asApiError,
+  contentTiles,
   dateTime,
   reviewOf,
+  splitActions,
+  statusOptions,
   textOf,
+  tileMatch,
   useContentList,
+  workflowMenu,
   type ContentItemView,
   type ContentListView,
   type ContentRow,
   type Lang,
+  type Tile,
 } from './content-common';
-import { CheckRow, FieldSelect, FilePicker } from './form-controls';
+import { FieldSelect, FilePicker } from './form-controls';
 
 /**
  * Mốc phát triển (Figma B07 `319:44574`, B08 `319:44815`; D-076 #6): the reference milestones the
@@ -96,6 +109,7 @@ function MilestonesListScreen({ go }: { go: (p: Path) => void }) {
   const staff = useStaff();
   const [load, reload] = useContentList('milestone');
   const canEdit = staffCan(staff.levels, 'content.edit');
+  const [seeding, setSeeding] = useState(false);
   return (
     <Page
       title={<FormattedMessage id="milestones.title" />}
@@ -103,8 +117,18 @@ function MilestonesListScreen({ go }: { go: (p: Path) => void }) {
       actions={
         canEdit && (
           <>
-            <MilestoneSeedButton onDone={reload} />
+            <OverflowMenu
+              items={[
+                {
+                  key: 'seed',
+                  icon: Upload,
+                  label: <FormattedMessage id="content.seed" />,
+                  onSelect: () => setSeeding(true),
+                },
+              ]}
+            />
             <Button kind="primary" onClick={() => go({ id: null })}>
+              <Plus />
               <FormattedMessage id="milestones.new" />
             </Button>
           </>
@@ -114,6 +138,7 @@ function MilestonesListScreen({ go }: { go: (p: Path) => void }) {
       <Loaded load={load} reload={reload}>
         {(view) => <MilestonesBody view={view} onOpen={(id) => go({ id })} />}
       </Loaded>
+      {seeding && <MilestoneSeedDialog onClose={() => setSeeding(false)} onDone={reload} />}
     </Page>
   );
 }
@@ -145,8 +170,10 @@ export function MilestonesBody({
   const [q, setQ] = useState('');
   const [group, setGroup] = useState('all');
   const [status, setStatus] = useState('all');
+  const [tile, setTile] = useState<Tile>('all');
   const rows = view.rows.filter(
     (r) =>
+      tileMatch(r, tile) &&
       (!q.trim() ||
         `${r.title.vi} ${r.title.en} ${r.id}`.toLowerCase().includes(q.trim().toLowerCase())) &&
       (group === 'all' || r.group === group) &&
@@ -165,36 +192,26 @@ export function MilestonesBody({
         ),
     }))
     .filter((g) => g.rows.length);
-  const c = view.counts;
   const opt = (id: string, value: string) => ({ value, label: intl.formatMessage({ id }) });
   return (
-    <>
-      <div className="kpis">
-        <Kpi label={<FormattedMessage id="content.kpi.inApp" />} value={c.inApp} />
-        <Kpi
-          label={<FormattedMessage id="content.kpi.pending" />}
-          value={c.pending}
-          tone={c.pending ? 'warn' : 'muted'}
-        />
-        <Kpi label={<FormattedMessage id="content.kpi.drafts" />} value={c.drafts} />
-        <Kpi
-          label={<FormattedMessage id="content.kpi.due" />}
-          value={c.dueForReview}
-          tone={c.dueForReview ? 'error' : 'muted'}
-        />
-      </div>
-      <LockNote>
-        <FormattedMessage id="milestones.noJudgement" />
-      </LockNote>
-      <Panel className="panel--flush">
-        <div className="toolbar cl-toolbar">
-          <input
-            className="field__input cl-search"
-            type="search"
+    <div className="grid gap-4">
+      <StatTiles items={contentTiles(view.counts, tile, setTile)} />
+      <div className="overflow-hidden rounded-xl border bg-card">
+        <FilterBar
+          active={!!q || group !== 'all' || status !== 'all' || tile !== 'all'}
+          onClear={() => {
+            setQ('');
+            setGroup('all');
+            setStatus('all');
+            setTile('all');
+          }}
+          shown={rows.length}
+          total={view.rows.length}
+        >
+          <SearchInput
             value={q}
-            aria-label={intl.formatMessage({ id: 'milestones.search' })}
             placeholder={intl.formatMessage({ id: 'milestones.search' })}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={setQ}
           />
           <SelectMenu
             label={intl.formatMessage({ id: 'milestones.group' })}
@@ -209,34 +226,27 @@ export function MilestonesBody({
             label={intl.formatMessage({ id: 'content.filter.status' })}
             value={status}
             onChange={setStatus}
-            options={[
-              opt('content.filter.allStatuses', 'all'),
-              ...(
-                [
-                  'draft',
-                  'in_review',
-                  'approved',
-                  'published',
-                  'needs_rereview',
-                  'archived',
-                ] as const
-              ).map((s) => opt(`content.status.${s}`, s)),
-            ]}
+            options={statusOptions(intl)}
           />
-        </div>
+        </FilterBar>
         {byGroup.length ? (
-          <TableScroll min={760}>
+          <TableScroll min={720}>
             <table className="table">
               <thead>
                 <tr>
-                  <th>
+                  <th className="w-20">
                     <FormattedMessage id="milestones.col.order" />
                   </th>
                   <th>
                     <FormattedMessage id="content.col.title" />
                   </th>
                   <th>
-                    <FormattedMessage id="milestones.col.age" />
+                    <span className="inline-flex items-center gap-1">
+                      <FormattedMessage id="milestones.col.age" />
+                      <Hint>
+                        <FormattedMessage id="milestones.noJudgement" />
+                      </Hint>
+                    </span>
                   </th>
                   <th>
                     <FormattedMessage id="content.col.status" />
@@ -251,18 +261,20 @@ export function MilestonesBody({
                   <tr className="cl-group-row">
                     <th colSpan={5} scope="rowgroup">
                       <FormattedMessage id={`milestones.group.${g.group}`} />{' '}
-                      <span className="muted">· {g.rows.length}</span>
+                      <span className="font-normal text-muted-foreground">· {g.rows.length}</span>
                     </th>
                   </tr>
                   {g.rows.map((r) => {
                     const age = ageRangeOf(r);
                     return (
                       <tr key={r.id} className="cl-row" onClick={() => onOpen(r.id)}>
-                        <td>{String(r.order ?? '—')}</td>
+                        <td className="text-muted-foreground tabular-nums">
+                          {String(r.order ?? '—')}
+                        </td>
                         <td>
                           <button
                             type="button"
-                            className="link-button"
+                            className="link-button text-left font-medium"
                             onClick={() => onOpen(r.id)}
                           >
                             {textOf(intl, r.title) || r.id}
@@ -272,7 +284,12 @@ export function MilestonesBody({
                         <td>
                           <StatusCell row={r} />
                         </td>
-                        <td className="nowrap">{dateTime(intl, r.updatedAt)}</td>
+                        <td
+                          className="nowrap text-muted-foreground tabular-nums"
+                          title={r.lastEditorName}
+                        >
+                          {dateTime(intl, r.updatedAt)}
+                        </td>
                       </tr>
                     );
                   })}
@@ -281,12 +298,15 @@ export function MilestonesBody({
             </table>
           </TableScroll>
         ) : (
-          <Empty>
-            <FormattedMessage id={view.rows.length ? 'content.noMatch' : 'milestones.empty'} />
-          </Empty>
+          <EmptyState
+            icon={Star}
+            title={
+              <FormattedMessage id={view.rows.length ? 'content.noMatch' : 'milestones.empty'} />
+            }
+          />
         )}
-      </Panel>
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -294,80 +314,76 @@ export function MilestonesBody({
  * "Nhập bản nháp mẫu": the milestones slice's seed file (`content/milestones/milestones.seed.json`),
  * checked here and on the server; ids already there are left alone.
  */
-function MilestoneSeedButton({ onDone }: { onDone: () => void }) {
+function MilestoneSeedDialog({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const api = useApi();
+  const intl = useIntl();
   const id = useId();
-  const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ added: number; skipped: number } | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>
-        <FormattedMessage id="content.seed" />
-      </Button>
-      {open && (
-        <div className="cl-seed-file">
-          <FilePicker
-            id={id}
-            accept="application/json,.json"
-            label={<FormattedMessage id="milestones.seedFile" />}
-            onFile={(file) => {
-              setProblem(null);
-              setError(null);
-              setResult(null);
-              if (!file) return;
-              setBusy(true);
-              file
-                .text()
-                .then((t) => {
-                  const seed: unknown = JSON.parse(t);
-                  if (!milestoneSeedSchema.safeParse(seed).success) {
-                    setProblem('milestones.seedInvalid');
-                    return;
-                  }
-                  return api
-                    .call<{ added: Record<string, number>; skipped: number }>('staffContentSeed', {
-                      kinds: ['milestone'],
-                      milestoneSeed: seed,
-                    })
-                    .then((r) => {
-                      setResult({ added: r.added.milestone ?? 0, skipped: r.skipped });
-                      onDone();
-                    });
+    <Modal title={<FormattedMessage id="content.seed" />} onClose={onClose}>
+      <p className="text-sm text-muted-foreground">
+        <FormattedMessage id="milestones.seedHelp" />
+      </p>
+      <FilePicker
+        id={id}
+        accept="application/json,.json"
+        disabled={busy}
+        label={<FormattedMessage id="milestones.seedFile" />}
+        onFile={(file) => {
+          setProblem(null);
+          setError(null);
+          if (!file) return;
+          setBusy(true);
+          file
+            .text()
+            .then((t) => {
+              const seed: unknown = JSON.parse(t);
+              if (!milestoneSeedSchema.safeParse(seed).success) {
+                setProblem('milestones.seedInvalid');
+                return;
+              }
+              return api
+                .call<{ added: Record<string, number>; skipped: number }>('staffContentSeed', {
+                  kinds: ['milestone'],
+                  milestoneSeed: seed,
                 })
-                .catch((e: unknown) =>
-                  e instanceof SyntaxError
-                    ? setProblem('milestones.seedInvalid')
-                    : setError(asApiError(e)),
-                )
-                .finally(() => setBusy(false));
-            }}
-          />
-          {busy && (
-            <span className="muted" role="status">
-              <FormattedMessage id="state.loading" />
-            </span>
-          )}
-          {result && (
-            <span className="muted" role="status">
-              <FormattedMessage id="content.seedDone" values={result} />
-            </span>
-          )}
-          {problem && (
-            <span className="error" role="alert">
-              <FormattedMessage id={problem} />
-            </span>
-          )}
-          {error && (
-            <span className="error" role="alert">
-              <FormattedMessage id={errorMessageId(error)} />
-            </span>
-          )}
-        </div>
+                .then((r) => {
+                  toast.success(
+                    intl.formatMessage(
+                      { id: 'content.seedDone' },
+                      { added: r.added.milestone ?? 0, skipped: r.skipped },
+                    ),
+                  );
+                  onDone();
+                  onClose();
+                });
+            })
+            .catch((e: unknown) =>
+              e instanceof SyntaxError
+                ? setProblem('milestones.seedInvalid')
+                : setError(asApiError(e)),
+            )
+            .finally(() => setBusy(false));
+        }}
+      />
+      {busy && (
+        <p className="text-sm text-muted-foreground" role="status">
+          <FormattedMessage id="state.loading" />
+        </p>
       )}
-    </>
+      {problem && (
+        <Notice tone="error">
+          <FormattedMessage id={problem} />
+        </Notice>
+      )}
+      {error && (
+        <Notice tone="error">
+          <FormattedMessage id={errorMessageId(error)} />
+        </Notice>
+      )}
+    </Modal>
   );
 }
 
@@ -465,6 +481,15 @@ export function MilestoneEditor({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [act, setAct] = useState<EditorialAction | null>(null);
+  const [start] = useState(() =>
+    JSON.stringify({
+      data: item ? item.data : blankMilestone(),
+      reviewerLabel: item?.row.reviewerLabel ?? '',
+      notes: item?.notes ?? '',
+    }),
+  );
+  const changed = dirty && JSON.stringify({ data, reviewerLabel, notes }) !== start;
+  const { leave, dialog } = useGuardedLeave(changed, onBack);
   const edit = (fn: (d: ReferenceMilestoneDraft) => void) => {
     setData((d) => {
       const next = structuredClone(d);
@@ -494,124 +519,82 @@ export function MilestoneEditor({
       })
       .then((r) => {
         setDirty(false);
+        toast.success(intl.formatMessage({ id: 'content.savedToast' }));
         onSaved(r.id);
       })
       .catch((e: unknown) => setError(asApiError(e)))
       .finally(() => setBusy(false));
   };
+  const issues = row && row.status === 'draft' && !strict.success ? strict.error.issues : [];
+  const { main, rest } = splitActions(actions.filter((a) => a !== 'submit' || strict.success));
   return (
-    <section className="page cl-editor">
-      <header className="cl-editbar">
-        <nav className="cl-crumbs" aria-label={intl.formatMessage({ id: 'nav.breadcrumb' })}>
-          <button type="button" className="link-button" onClick={onBack}>
-            <FormattedMessage id="milestones.title" />
-          </button>
-          <span aria-hidden="true"> › </span>
-          <strong>{textOf(intl, data.title) || <FormattedMessage id="milestones.new" />}</strong>
-        </nav>
-        {row && <StatusCell row={row} />}
-        <div className="cl-editbar__actions">
-          {dirty && (
-            <span className="muted" role="status">
-              <FormattedMessage id="content.unsaved" />
-            </span>
-          )}
-          {canEdit && (
-            <Button kind={dirty ? 'primary' : 'secondary'} disabled={busy || !dirty} onClick={save}>
-              <FormattedMessage id={busy ? 'content.saving' : 'content.save'} />
-            </Button>
-          )}
-          <WorkflowButtons
-            actions={actions.filter((a) => a !== 'submit' || strict.success)}
-            onPick={setAct}
-          />
-        </div>
-      </header>
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      {row?.rejection && (
-        <p className="note note--warn">
-          <FormattedMessage id="content.rejected" values={row.rejection} />
-        </p>
-      )}
-      {row && row.status === 'draft' && (
-        <IssuesList issues={strict.success ? [] : strict.error.issues} />
-      )}
-      <div className="cols cols--2-1">
-        <Panel
-          title={<FormattedMessage id="milestones.card" />}
-          aside={<LangTabs value={lang} onChange={setLang} />}
+    <section>
+      <EditorBar
+        backLabel={<FormattedMessage id="milestones.title" />}
+        onBack={leave}
+        title={textOf(intl, data.title) || <FormattedMessage id="milestones.new" />}
+        badges={row && <StatusCell row={row} />}
+        dirty={dirty}
+        saving={busy}
+        onSave={canEdit ? save : undefined}
+        actions={<WorkflowMain actions={main} onPick={setAct} />}
+        menu={workflowMenu(rest, setAct)}
+      />
+      <EditorNotices error={error} rejection={row?.rejection} issues={issues} />
+      <EditorLayout
+        aside={
+          <PreviewCard lang={lang}>
+            <MilestonePreview data={data} lang={lang} review={reviewOf(item)} />
+          </PreviewCard>
+        }
+      >
+        <Section
+          title={<FormattedMessage id="milestones.placement" />}
+          description={
+            <FormattedMessage
+              id="milestones.ageHelp"
+              values={{ label: milestoneAgeText(intl, data.ageRange) }}
+            />
+          }
+          hint={<FormattedMessage id="milestones.noJudgement" />}
         >
-          <div className="stack">
-            <div className="cl-grid2">
-              <div className="field">
-                <span className="field__label">
-                  <FormattedMessage id="milestones.group" />
-                </span>
-                <FieldSelect<MilestoneGroup>
-                  value={data.group}
-                  ariaLabel={intl.formatMessage({ id: 'milestones.group' })}
-                  options={milestoneGroups.map((g) => ({
-                    value: g,
-                    label: intl.formatMessage({ id: `milestones.group.${g}` }),
-                  }))}
-                  onChange={(g) => edit((d) => void (d.group = g))}
-                />
-              </div>
-              <NumberField
-                label={<FormattedMessage id="milestones.col.order" />}
-                value={data.order}
-                min={0}
-                max={9999}
-                onChange={(v) => edit((d) => void (d.order = v))}
-              />
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="sm:col-span-2">
+              <GroupField value={data.group} onChange={(g) => edit((d) => void (d.group = g))} />
             </div>
-            <fieldset className="field">
-              <legend className="field__label">
-                <FormattedMessage id="milestones.ageRange" />
-              </legend>
-              <div className="cl-grid3">
-                <div className="field">
-                  <span className="field__label">
-                    <FormattedMessage id="stages.unit" />
-                  </span>
-                  <FieldSelect<'weeks' | 'months'>
-                    value={data.ageRange.unit}
-                    ariaLabel={intl.formatMessage({ id: 'stages.unit' })}
-                    options={(['weeks', 'months'] as const).map((u) => ({
-                      value: u,
-                      label: intl.formatMessage({
-                        id: `stages.unit.${u === 'weeks' ? 'week' : 'month'}`,
-                      }),
-                    }))}
-                    onChange={(u) => edit((d) => void (d.ageRange.unit = u))}
-                  />
-                </div>
-                <NumberField
-                  label={<FormattedMessage id="stages.from" />}
-                  value={data.ageRange.from}
-                  min={0}
-                  max={L.maxAgeWeeks}
-                  onChange={(v) => edit((d) => void (d.ageRange.from = v))}
-                />
-                <NumberField
-                  label={<FormattedMessage id="milestones.to" />}
-                  value={data.ageRange.to}
-                  min={0}
-                  max={L.maxAgeWeeks}
-                  onChange={(v) => edit((d) => void (d.ageRange.to = v))}
-                />
-              </div>
-              <p className="field__help">
-                <FormattedMessage
-                  id="milestones.ageHelp"
-                  values={{ label: milestoneAgeText(intl, data.ageRange) }}
-                />
-              </p>
-            </fieldset>
+            <NumberField
+              label={<FormattedMessage id="milestones.col.order" />}
+              value={data.order}
+              min={0}
+              max={9999}
+              hint={<FormattedMessage id="milestones.orderHint" />}
+              onChange={(v) => edit((d) => void (d.order = v))}
+            />
+            <UnitField
+              value={data.ageRange.unit}
+              onChange={(u) => edit((d) => void (d.ageRange.unit = u))}
+            />
+            <NumberField
+              label={<FormattedMessage id="stages.from" />}
+              value={data.ageRange.from}
+              min={0}
+              max={L.maxAgeWeeks}
+              onChange={(v) => edit((d) => void (d.ageRange.from = v))}
+            />
+            <NumberField
+              label={<FormattedMessage id="milestones.to" />}
+              value={data.ageRange.to}
+              min={0}
+              max={L.maxAgeWeeks}
+              onChange={(v) => edit((d) => void (d.ageRange.to = v))}
+            />
+          </div>
+        </Section>
+        <Section
+          title={<FormattedMessage id="milestones.card" />}
+          actions={<LangTabs value={lang} onChange={setLang} />}
+        >
+          <div className="grid gap-4">
             <TextField
               label={<FormattedMessage id="milestones.titleField" />}
               value={data.title[lang]}
@@ -627,65 +610,53 @@ export function MilestoneEditor({
               multiline
               onChange={(v) => edit((d) => void (d.howToRecognise[lang] = v))}
             />
-            <CheckRow
-              label={<FormattedMessage id="milestones.doctorToggle" />}
-              checked={data.talkToDoctor !== null}
-              onChange={(on) => edit((d) => void (d.talkToDoctor = on ? { vi: '', en: '' } : null))}
-            />
-            {data.talkToDoctor && (
-              <TextField
-                label={<FormattedMessage id="milestones.doctor" />}
-                value={data.talkToDoctor[lang]}
-                max={L.talkToDoctorMax}
-                counter
-                multiline
-                onChange={(v) => edit((d) => void (d.talkToDoctor![lang] = v))}
-              />
-            )}
-            <div className="field">
-              <span className="field__label">
-                <FormattedMessage id="milestones.illustration" />
-              </span>
-              <div className="cl-cover">
-                <ImageThumb id={data.illustration?.image ?? null} />
-                <div className="stack cl-tight">
-                  <div className="actions">
-                    <ImagePickerButton
-                      onPick={(image) =>
-                        edit(
-                          (d) =>
-                            void (d.illustration = {
-                              image,
-                              alt: d.illustration?.alt ?? { vi: '', en: '' },
-                            }),
-                        )
-                      }
-                    />
-                    {data.illustration && (
-                      <Button
-                        kind="ghost"
-                        onClick={() => edit((d) => void (d.illustration = null))}
-                      >
-                        <FormattedMessage id="content.image.clear" />
-                      </Button>
-                    )}
-                  </div>
-                  {data.illustration && (
-                    <TextField
-                      label={
-                        <FormattedMessage
-                          id="content.image.alt"
-                          values={{ lang: lang.toUpperCase() }}
-                        />
-                      }
-                      value={data.illustration.alt[lang]}
-                      max={L.altMax}
-                      onChange={(v) => edit((d) => void (d.illustration!.alt[lang] = v))}
-                    />
-                  )}
-                </div>
-              </div>
+            <div className="grid gap-3 rounded-lg border p-3">
+              <label className="flex items-center justify-between gap-3 text-[13px] font-medium">
+                <FormattedMessage id="milestones.doctorToggle" />
+                <Switch
+                  checked={data.talkToDoctor !== null}
+                  onCheckedChange={(on) =>
+                    edit((d) => void (d.talkToDoctor = on ? { vi: '', en: '' } : null))
+                  }
+                />
+              </label>
+              {data.talkToDoctor && (
+                <TextField
+                  label={<FormattedMessage id="milestones.doctor" />}
+                  value={data.talkToDoctor[lang]}
+                  max={L.talkToDoctorMax}
+                  counter
+                  multiline
+                  onChange={(v) => edit((d) => void (d.talkToDoctor![lang] = v))}
+                />
+              )}
             </div>
+          </div>
+        </Section>
+        <Section
+          title={<FormattedMessage id="milestones.illustration" />}
+          collapsible
+          defaultOpen={!!data.illustration}
+          summary={
+            <FormattedMessage id={data.illustration ? 'content.cover.set' : 'content.cover.none'} />
+          }
+        >
+          <PictureField
+            value={data.illustration}
+            lang={lang}
+            altMax={L.altMax}
+            onChange={(v) => edit((d) => void (d.illustration = v))}
+          />
+        </Section>
+        <Section
+          title={<FormattedMessage id="content.sourcesAndReview" />}
+          collapsible
+          defaultOpen={false}
+          summary={
+            <FormattedMessage id="content.sourcesCount" values={{ n: data.sources.length }} />
+          }
+        >
+          <div className="grid gap-5">
             <SourcesField
               value={data.sources}
               max={L.sourcesMax}
@@ -695,7 +666,7 @@ export function MilestoneEditor({
               label={<FormattedMessage id="content.reviewerLabel" />}
               value={reviewerLabel}
               max={80}
-              help={<FormattedMessage id="content.reviewerLabelHelp" />}
+              hint={<FormattedMessage id="content.reviewerLabelHelp" />}
               onChange={(v) => {
                 setReviewerLabel(v);
                 setDirty(true);
@@ -712,11 +683,9 @@ export function MilestoneEditor({
               }}
             />
           </div>
-        </Panel>
-        <Panel title={<FormattedMessage id="content.preview" />}>
-          <MilestonePreview data={data} lang={lang} review={reviewOf(item)} />
-        </Panel>
-      </div>
+        </Section>
+      </EditorLayout>
+      {dialog}
       {act && row && (
         <ActDialog
           kind="milestone"
@@ -734,6 +703,54 @@ export function MilestoneEditor({
         />
       )}
     </section>
+  );
+}
+
+function GroupField({
+  value,
+  onChange,
+}: {
+  value: MilestoneGroup;
+  onChange: (g: MilestoneGroup) => void;
+}) {
+  const intl = useIntl();
+  const id = useId();
+  return (
+    <Field label={<FormattedMessage id="milestones.group" />} htmlFor={id}>
+      <FieldSelect<MilestoneGroup>
+        id={id}
+        value={value}
+        options={milestoneGroups.map((g) => ({
+          value: g,
+          label: intl.formatMessage({ id: `milestones.group.${g}` }),
+        }))}
+        onChange={onChange}
+      />
+    </Field>
+  );
+}
+
+function UnitField({
+  value,
+  onChange,
+}: {
+  value: 'weeks' | 'months';
+  onChange: (u: 'weeks' | 'months') => void;
+}) {
+  const intl = useIntl();
+  const id = useId();
+  return (
+    <Field label={<FormattedMessage id="stages.unit" />} htmlFor={id}>
+      <FieldSelect<'weeks' | 'months'>
+        id={id}
+        value={value}
+        options={(['weeks', 'months'] as const).map((u) => ({
+          value: u,
+          label: intl.formatMessage({ id: `stages.unit.${u === 'weeks' ? 'week' : 'month'}` }),
+        }))}
+        onChange={onChange}
+      />
+    </Field>
   );
 }
 
