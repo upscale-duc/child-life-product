@@ -29,6 +29,7 @@ import 'care_format.dart';
 import 'care_models.dart';
 import '../../core/widgets/cl_segmented.dart';
 import 'growth_chart.dart';
+import 'growth_reference.dart';
 import 'growth_standards_screen.dart';
 import 'who_growth.dart';
 import 'care_repository.dart';
@@ -1268,6 +1269,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
     final cl = context.cl;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final care = cl.care.growth;
+    final reference = ref.watch(growthReferenceProvider);
     final all = [...widget.records]
       ..sort(
         (a, b) => (b.measuredOn ?? b.occurredAt).compareTo(
@@ -1363,7 +1365,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
     final currentAge = current == null ? null : ageOn(current);
     final band = boy == null || currentAge == null || currentValue == null
         ? null
-        : WhoGrowth.band(
+        : reference.band(
             measure,
             boy: boy,
             ageDays: currentAge,
@@ -1371,7 +1373,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
           );
     final range = boy == null || currentAge == null
         ? null
-        : WhoGrowth.range(measure, boy: boy, ageDays: currentAge);
+        : reference.range(measure, boy: boy, ageDays: currentAge);
     String ageText(int days) => days < 14
         ? l10n.ageDays(days)
         : days < 13 * 7
@@ -1539,6 +1541,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
                     boy: boy,
                     points: whoPoints,
                     unit: unit,
+                    reference: reference,
                     axisLabel: (a) => a.value == 0
                         ? l10n.whoBirth
                         : a.weeks

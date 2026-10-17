@@ -47,8 +47,10 @@ class VaccineDef {
   int get doses => months.length;
 }
 
-VaccineDef? vaccineById(String id) =>
-    vaccineSchedule.where((v) => v.id == id).firstOrNull;
+VaccineDef? vaccineById(
+  String id, [
+  List<VaccineDef> schedule = vaccineSchedule,
+]) => schedule.where((v) => v.id == id).firstOrNull;
 
 /// VX 2 "Chọn một trong hai".
 enum DtpChoice { sixInOne, fiveInOne }
@@ -263,13 +265,14 @@ class DoseGroup {
 
 /// The book for a baby on [today]: every dose of the plan's schedule with its status.
 class VaccineBook {
-  VaccineBook._(this.items, this.today, this.plan);
+  VaccineBook._(this.items, this.today, this.plan, this.schedule);
 
   factory VaccineBook.of({
     required DateTime dob,
     required DateTime today,
     required VaccinePlan plan,
     required Map<String, VaccineDoseRecord> records,
+    List<VaccineDef> schedule = vaccineSchedule,
   }) {
     final day = DateTime(today.year, today.month, today.day);
     final raw =
@@ -282,7 +285,7 @@ class VaccineBook {
             VaccineDoseRecord? record,
           })
         >[];
-    for (final def in vaccineSchedule) {
+    for (final def in schedule) {
       if (def.only5in1 && plan.dtp != DtpChoice.fiveInOne) continue;
       for (var i = 0; i < def.months.length; i++) {
         final record = records[doseKeyOf(def.id, i + 1)];
@@ -325,12 +328,15 @@ class VaccineBook {
           },
         ),
     ];
-    return VaccineBook._(items, day, plan);
+    return VaccineBook._(items, day, plan, schedule);
   }
 
   final List<DoseItem> items;
   final DateTime today;
   final VaccinePlan plan;
+
+  /// The schedule the book was built from (published reference data or the bundled one).
+  final List<VaccineDef> schedule;
 
   /// "Đã tiêm N / 30 mũi": declined doses leave the total.
   int get given => items.where((i) => i.status == DoseStatus.given).length;
@@ -344,7 +350,7 @@ class VaccineBook {
 
   /// The vaccines shown, in schedule order.
   List<VaccineDef> get vaccines => [
-    for (final def in vaccineSchedule)
+    for (final def in schedule)
       if (!def.only5in1 || plan.dtp == DtpChoice.fiveInOne) def,
   ];
 

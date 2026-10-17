@@ -1,6 +1,14 @@
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
-import { localDateIn, plannedDate, scheduleFor, type VaccineDef } from '@child-life/contracts';
+import {
+  localDateIn,
+  plannedDate,
+  referenceDocIds,
+  referencePublicSchema,
+  referenceRowsSchemas,
+  vaccineSchedule,
+  type VaccineDef,
+} from '@child-life/contracts';
 import { notifyUsers } from './notifications.js';
 import type { PushSender } from './social.js';
 
@@ -69,9 +77,11 @@ export function openDoses(
   dob: string,
   dtp: '6in1' | '5in1' | null,
   records: Map<string, { status: string; plannedOn: string | null }>,
+  schedule: readonly VaccineDef[] = vaccineSchedule,
 ): OpenDose[] {
   const out: OpenDose[] = [];
-  for (const def of scheduleFor(dtp)) {
+  for (const def of schedule) {
+    if (def.only5in1 && dtp !== '5in1') continue;
     def.months.forEach((months, i) => {
       const r = records.get(`${def.id}_${i + 1}`);
       if (r?.status === 'given' || r?.status === 'declined') return;
@@ -156,6 +166,18 @@ export function vaccineCopy(kind: Kind, doses: OpenDose[], language: string) {
   };
 }
 
+/**
+ * The schedule the app shows (P-138): the approved `vaccines.schedule` version published to
+ * `publicConfig/reference_vaccines`, else the bundled one.
+ */
+export async function publishedSchedule(db: Firestore): Promise<readonly VaccineDef[]> {
+  const snap = await db.doc(`publicConfig/${referenceDocIds['vaccines.schedule']}`).get();
+  const doc = referencePublicSchema.safeParse(snap.data());
+  if (!doc.success || doc.data.dataset !== 'vaccines.schedule') return vaccineSchedule;
+  const rows = referenceRowsSchemas['vaccines.schedule'].safeParse(doc.data.rows);
+  return rows.success ? (rows.data as readonly VaccineDef[]) : vaccineSchedule;
+}
+
 /** Every 5 minutes: ring what is due for every baby with reminders on. */
 export async function ringVaccineReminders(
   db: Firestore,
@@ -165,6 +187,7 @@ export async function ringVaccineReminders(
   const plans = await db.collectionGroup('vaccinePlan').where('remind', '==', true).get();
   let rang = 0;
   let sent = 0;
+  const schedule = plans.empty ? vaccineSchedule : await publishedSchedule(db);
   for (const plan of plans.docs) {
     if (plan.id !== 'main') continue;
     const babyRef = plan.ref.parent.parent!;
@@ -190,7 +213,7 @@ export async function ringVaccineReminders(
     const snoozes = snoozeDocs.docs.map((d) => d.get('date') as string);
     const due = dueReminders(
       zone,
-      openDoses(dob, (plan.get('dtp') as '6in1' | '5in1' | null) ?? null, records),
+      openDoses(dob, (plan.get('dtp') as '6in1' | '5in1' | null) ?? null, records, schedule),
       snoozes,
       now,
     );

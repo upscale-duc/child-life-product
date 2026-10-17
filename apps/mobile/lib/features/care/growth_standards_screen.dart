@@ -16,6 +16,7 @@ import '../home/home_shell.dart';
 import 'care_format.dart' show growthMeasureTab;
 import 'care_models.dart';
 import 'care_repository.dart';
+import 'growth_reference.dart';
 import 'who_growth.dart';
 
 /// 20i "Tiêu chuẩn tăng trưởng WHO" (v1.0 improvement, 347:806): the WHO weight / length bands
@@ -74,6 +75,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
     final boy = _boy ?? babyBoy ?? true;
     final weeks = _weeks ?? (ageDays == null || ageDays < 14 * 7);
     final ages = WhoGrowth.ages(weeks: weeks);
+    final reference = ref.watch(growthReferenceProvider);
     final fixed = NumberFormat('0.0', locale);
 
     // The baby's latest measurement of this kind, placed at their age on that day.
@@ -92,7 +94,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
       final on = DateUtils.dateOnly(latest.measuredOn ?? latest.occurredAt);
       final days = on.difference(dob).inDays;
       final value = latest.measure(_measure)!;
-      youBand = WhoGrowth.band(_measure, boy: boy, ageDays: days, value: value);
+      youBand = reference.band(_measure, boy: boy, ageDays: days, value: value);
       if (youBand != null && days <= ages.last.days + (weeks ? 6 : 30)) {
         youRow = WhoGrowth.rowFor(ages, days);
         final unit = _measure == GrowthMeasure.weight ? 'kg' : 'cm';
@@ -214,7 +216,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
                         ),
                         for (final (i, a) in ages.indexed) ...[
                           () {
-                            final r = WhoGrowth.range(
+                            final r = reference.range(
                               _measure,
                               boy: boy,
                               ageDays: a.days,

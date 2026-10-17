@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { vaccineSchedule } from '@child-life/contracts';
 import { atLocalHour, dueReminders, openDoses, vaccineCopy } from '../src/vaccine-reminders.js';
 
 // Sổ tiêm chủng reminders (VX 2 / 8 / 9a, P-133): Teddy, born 17/9/2026, in Hồ Chí Minh (UTC+7).
@@ -61,6 +62,18 @@ describe('when they ring', () => {
       .filter((d) => d.months === 2)
       .map((d) => `${d.def.id}_${d.dose}`);
     expect(keys).toEqual(['polio_1', 'pcv_1']);
+  });
+});
+
+describe('the published schedule (P-138)', () => {
+  it('reminders follow an approved version', () => {
+    const schedule = vaccineSchedule.map((v) =>
+      v.id === 'pcv' ? { ...v, months: [3, 4, 5, 12] } : v,
+    );
+    const atTwo = openDoses('2026-09-17', null, birth, schedule)
+      .filter((d) => d.months === 2)
+      .map((d) => d.def.id);
+    expect(atTwo).toEqual(['dtp', 'rota']);
   });
 });
 

@@ -1784,7 +1784,7 @@ class VaccineInfoScreen extends ConsumerWidget {
     final cl = context.cl;
     final locale = vxLocale(context);
     return _withBook(context, ref, (me, book, dob) {
-      final def = vaccineById(vaccineId);
+      final def = vaccineById(vaccineId, book.schedule);
       if (def == null) return const _VxPage(children: []);
       final oral = def.route == VaccineRoute.oral;
       final nickname = ref.watch(babyProvider(me.babyId)).value?.nickname ?? '';

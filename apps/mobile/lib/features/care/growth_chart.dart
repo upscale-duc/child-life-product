@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/design/cl_theme.dart';
+import 'growth_reference.dart';
 import 'who_growth.dart';
 
 /// 20d growth card chart (v1.0 improvement): the WHO normal band (3rd–97th percentile) shaded,
@@ -15,6 +16,7 @@ class WhoGrowthChart extends StatelessWidget {
     required this.points,
     required this.unit,
     required this.axisLabel,
+    this.reference = GrowthReference.bundled,
     this.height = 180,
     super.key,
   });
@@ -28,6 +30,9 @@ class WhoGrowthChart extends StatelessWidget {
 
   /// "Sinh" / "1 tuần" / "3 tháng" for an age tick.
   final String Function(GrowthAge) axisLabel;
+
+  /// The standards the band and median come from (published tables or bundled WHO).
+  final GrowthReference reference;
   final double height;
 
   @override
@@ -43,6 +48,7 @@ class WhoGrowthChart extends StatelessWidget {
           points: points,
           unit: unit,
           axisLabel: axisLabel,
+          reference: reference,
           band: cl.colors.mintSoft,
           median: cl.colors.mintDeep,
           line: cl.colors.peach,
@@ -62,6 +68,7 @@ class _GrowthPainter extends CustomPainter {
     required this.points,
     required this.unit,
     required this.axisLabel,
+    required this.reference,
     required this.band,
     required this.median,
     required this.line,
@@ -75,6 +82,7 @@ class _GrowthPainter extends CustomPainter {
   final List<(int, double)> points;
   final String unit;
   final String Function(GrowthAge) axisLabel;
+  final GrowthReference reference;
   final Color band;
   final Color median;
   final Color line;
@@ -106,7 +114,7 @@ class _GrowthPainter extends CustomPainter {
     // Value range from the band and the points, rounded to whole ticks.
     var lo = double.infinity, hi = 0.0;
     for (var d = 0; d <= maxDays; d += math.max(1, maxDays ~/ 40)) {
-      final r = WhoGrowth.range(measure, boy: boy, ageDays: d);
+      final r = reference.range(measure, boy: boy, ageDays: d);
       if (r == null) continue;
       lo = math.min(lo, r.low);
       hi = math.max(hi, r.high);
@@ -151,7 +159,7 @@ class _GrowthPainter extends CustomPainter {
     final lower = <Offset>[];
     final mid = <Offset>[];
     for (var d = 0; d <= maxDays; d += math.max(1, maxDays ~/ 60)) {
-      final r = WhoGrowth.range(measure, boy: boy, ageDays: d)!;
+      final r = reference.range(measure, boy: boy, ageDays: d)!;
       upper.add(Offset(x(d), y(r.high)));
       lower.add(Offset(x(d), y(r.low)));
       mid.add(Offset(x(d), y(r.median)));
@@ -201,5 +209,6 @@ class _GrowthPainter extends CustomPainter {
       old.points != points ||
       old.measure != measure ||
       old.boy != boy ||
+      old.reference != reference ||
       old.band != band;
 }

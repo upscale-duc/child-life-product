@@ -18,6 +18,8 @@ import '../core/design/cl_theme.dart';
 import '../core/design/tokens.g.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/care/bottle_suggestions.dart';
+import '../features/care/growth_reference.dart';
+import '../features/vaccines/vaccine_reference.dart';
 import '../l10n/app_localizations.dart';
 import 'locale.dart';
 import 'router.dart';
@@ -44,6 +46,8 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
     WidgetsBinding.instance.addObserver(this);
     // Reference data (P-138): one read per launch; the bundled copy until it lands.
     unawaited(ref.read(bottleTableProvider.notifier).refresh());
+    unawaited(ref.read(growthReferenceProvider.notifier).refresh());
+    unawaited(ref.read(vaccineScheduleProvider.notifier).refresh());
   }
 
   @override

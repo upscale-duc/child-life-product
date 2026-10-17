@@ -8,6 +8,7 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import 'vaccine_models.dart';
+import 'vaccine_reference.dart';
 import 'vaccine_repository.dart';
 
 /// VX 1a "Xem lịch tiêm theo": kept on this device.
@@ -86,6 +87,7 @@ final vaccineBookProvider = Provider.family<VaccineBookState, Membership>((
       today: babyToday(zone, now),
       plan: plan,
       records: records,
+      schedule: ref.watch(vaccineScheduleProvider).defs,
     ),
     day,
   );
