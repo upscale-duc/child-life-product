@@ -123,16 +123,29 @@ Future<void> _tap(WidgetTester tester, String text) async {
   await tester.pumpAndSettle();
 }
 
+/// The family fixture on the day these goldens were drawn: the baby chip reads Teddy's age
+/// (born 17 Sep) from the clock, and on the real date "3 tuần" became "4 tuần".
+List<Override> _family({
+  Membership? me,
+  bool anonymous = false,
+  List<MyInvite> myInvites = const [],
+}) => familyOverrides(
+  me: me,
+  anonymous: anonymous,
+  myInvites: myInvites,
+  now: DateTime(2026, 10, 8, 10),
+);
+
 final _cases = <String, _Case>{
   '14a_family': (
     build: () => const Scaffold(body: FamilyScreen()),
-    overrides: familyOverrides,
+    overrides: _family,
     act: null,
   ),
   // An invite mailed to me: red dot on the switcher, a row in Chọn bé (owner, 2026-10-11).
   '9x_baby_picker_invited': (
     build: () => const Scaffold(body: FamilyScreen()),
-    overrides: () => familyOverrides(myInvites: [binInvite]),
+    overrides: () => _family(myInvites: [binInvite]),
     act: (t) async {
       await t.tap(find.byType(ClBabySwitcher));
       await t.pumpAndSettle();
@@ -140,7 +153,7 @@ final _cases = <String, _Case>{
   ),
   '9x_invite_sheet': (
     build: () => const Scaffold(body: FamilyScreen()),
-    overrides: () => familyOverrides(myInvites: [binInvite]),
+    overrides: () => _family(myInvites: [binInvite]),
     act: (t) async {
       await t.tap(find.byType(ClBabySwitcher));
       await t.pumpAndSettle();
@@ -150,17 +163,17 @@ final _cases = <String, _Case>{
   ),
   '14f_member': (
     build: () => const Scaffold(body: FamilyScreen()),
-    overrides: familyOverrides,
+    overrides: _family,
     act: (t) => _tap(t, 'Cô Lan'),
   ),
   '14b_invite_role': (
     build: () => const InviteRoleScreen(),
-    overrides: familyOverrides,
+    overrides: _family,
     act: null,
   ),
   '14b2_relative_rights': (
     build: () => const InviteRoleScreen(),
-    overrides: familyOverrides,
+    overrides: _family,
     act: (t) async {
       final l10n = await _l10n(t);
       await _tap(t, l10n.roleRelative);
@@ -169,12 +182,12 @@ final _cases = <String, _Case>{
   ),
   '14c_invite_send': (
     build: () => InviteSendScreen(args: _sendArgs()),
-    overrides: familyOverrides,
+    overrides: _family,
     act: null,
   ),
   '14c2_cant_scan': (
     build: () => InviteSendScreen(args: _sendArgs()),
-    overrides: familyOverrides,
+    overrides: _family,
     act: (t) async {
       final l10n = await _l10n(t);
       await _tap(t, l10n.inviteCantScan(l10n.relationGrandmother));
@@ -182,7 +195,7 @@ final _cases = <String, _Case>{
   ),
   '14d_sent': (
     build: () => InviteSentScreen(args: _sendArgs(email: 'ba.ngoai@gmail.com')),
-    overrides: familyOverrides,
+    overrides: _family,
     act: null,
   ),
   '15_enter_code': (
@@ -224,7 +237,7 @@ final _cases = <String, _Case>{
   ),
   '16d_save_account': (
     build: () => const Scaffold(body: FamilyScreen()),
-    overrides: () => familyOverrides(me: lan, anonymous: true),
+    overrides: () => _family(me: lan, anonymous: true),
     act: (t) async => _tap(t, (await _l10n(t)).unsavedBannerAction),
   ),
   '17_expired': (

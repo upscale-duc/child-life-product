@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
@@ -33,7 +34,7 @@ final faBabyProvider = Provider.family<FaBaby?, AppLocalizations>((ref, l10n) {
   final dob = me.canViewBabyInfo
       ? ref.watch(babyPrivateProfileProvider(me.babyId)).value?.dateOfBirth
       : null;
-  final today = DateTime.now();
+  final today = ref.watch(minuteClockProvider).value ?? DateTime.now();
   int? months;
   if (dob != null) {
     months = (today.year - dob.year) * 12 + today.month - dob.month;
