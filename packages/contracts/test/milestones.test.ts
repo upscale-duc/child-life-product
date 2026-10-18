@@ -178,7 +178,7 @@ describe('milestone seed (content/milestones, D-073 #2 engineering draft)', () =
   const ms = parsed.milestones;
   const lower = (s: string) => s.toLowerCase();
 
-  it('covers 0–24 months in all four groups, in both languages', () => {
+  it('covers 0–36 months in all four groups, in both languages (D-080)', () => {
     expect(ms.length).toBeGreaterThanOrEqual(40);
     for (const g of ['motor', 'communication', 'cognitive', 'socialEmotional'] as const) {
       expect(ms.filter((m) => m.group === g).length, g).toBeGreaterThanOrEqual(8);
@@ -186,7 +186,7 @@ describe('milestone seed (content/milestones, D-073 #2 engineering draft)', () =
     const months = (m: (typeof ms)[number]) =>
       m.ageRange.unit === 'months' ? m.ageRange.from : m.ageRange.from / 4.35;
     expect(Math.min(...ms.map(months))).toBe(0);
-    expect(Math.max(...ms.map((m) => (m.ageRange.unit === 'months' ? m.ageRange.to : 0)))).toBe(24);
+    expect(Math.max(...ms.map((m) => (m.ageRange.unit === 'months' ? m.ageRange.to : 0)))).toBe(36);
   });
 
   it('keeps the design’s items and the Kỷ niệm preset ids that mean the same thing', () => {

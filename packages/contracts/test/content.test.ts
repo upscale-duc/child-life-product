@@ -173,8 +173,8 @@ describe('content · stages', () => {
     ]);
   });
 
-  it('reports coverage over the 16 ranges, drafts included, with the gaps', () => {
-    expect(stageBuckets).toHaveLength(16);
+  it('reports coverage over the 18 ranges (0–36 months), drafts included, with the gaps', () => {
+    expect(stageBuckets).toHaveLength(18);
     const c = stageCoverage([
       { age: { unit: 'week', from: 0, to: 3 }, status: 'published', live: true },
       { age: { unit: 'week', from: 3, to: 5 }, status: 'draft', live: true },
@@ -193,10 +193,12 @@ describe('content · stages', () => {
       m12: 'pending',
       m15: 'pending',
       m18: 'missing',
+      m24: 'missing',
+      m30: 'missing',
     });
     expect(c.covered).toBe(6);
     expect(c.published).toBe(2);
-    expect(c.total).toBe(16);
+    expect(c.total).toBe(18);
     expect(c.gaps).toContain('m3');
   });
 });

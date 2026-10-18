@@ -9803,4 +9803,133 @@ export const seedStages: SeedStage[] = [
       sources: [S.cdc24m, S.cdc18m, S.whoSitLessPlayMore],
     },
   },
+  // 24–36 months (D-080), from docs/product/content-review-2026-10/library-24-36-months.json.
+  {
+    id: 'stg_m24',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      age: {
+        unit: 'month',
+        from: 24,
+        to: 30,
+      },
+      title: {
+        vi: 'Câu ngắn, câu hỏi và trí tưởng tượng',
+        en: 'Short sentences and a big imagination',
+      },
+      doing: {
+        vi: [
+          'Bé ghép từ thành câu ngắn có từ chỉ hành động như “chó chạy”; nhiều bé nói khoảng 50 từ, gọi tên đồ vật trong sách.',
+          'Bé bật nhảy hai chân, vặn nắp hộp, xoay tay nắm cửa và tự cởi được áo khoác đã mở cúc.',
+          'Bé chơi giả vờ, coi khối gỗ là cái bánh, chơi cạnh các bạn và hay gọi “nhìn con này!”.',
+        ],
+        en: [
+          'Your child puts words together with an action, like “doggie run”; many say about 50 words and name things in books.',
+          'Your child jumps with both feet, unscrews lids, turns door handles and takes off an open jacket.',
+          'Your child pretends a block is a cake, plays next to other children and calls “look at me!”.',
+        ],
+      },
+      tryThis: {
+        vi: [
+          'Đọc sách tranh mỗi ngày, hỏi “Cái gì đây?”, “Bạn đang làm gì?” rồi chờ bé trả lời: bé học từ qua hỏi đáp.',
+          'Bé đã mở được cửa, nắp lọ: khoá cửa ban công, cầu thang; cất thuốc, hoá chất trên cao, trong tủ khoá.',
+          'Cho bé giúp việc nhỏ như cất đồ chơi, xếp dép, và dặn hai bước: “Cất xe rồi đi rửa tay nhé.”',
+        ],
+        en: [
+          'Read picture books daily, ask “What’s this?” or “What is she doing?” and wait: question games build words.',
+          'They can open doors and jars now: lock balcony and stair doors, keep medicines and chemicals high and locked.',
+          'Let your child help with small jobs like tidying toys, and give two-step requests: “Park the car, then wash hands.”',
+        ],
+      },
+      articleIds: ['art_toddler_tantrums', 'art_screens_language'],
+      milestoneIds: [
+        'action_word_phrases',
+        'jumps_two_feet',
+        'twists_lids',
+        'pretend_with_objects',
+        'two_step_directions',
+        'plays_near_children',
+        'shows_look_at_me',
+      ],
+      audience: ['coParent', 'caregiver', 'relative'],
+      cover: null,
+      sources: [
+        {
+          label: 'CDC — Learn the Signs. Act Early.: Milestones by 30 months',
+          url: 'https://www.cdc.gov/act-early/milestones/30-months.html',
+        },
+        {
+          label: 'AAP · HealthyChildren.org · Developmental milestones: 2 year olds',
+          url: 'https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx',
+        },
+        {
+          label: 'WHO — To grow up healthy, children need to sit less and play more (2019)',
+          url: 'https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more',
+        },
+      ],
+    },
+  },
+  {
+    id: 'stg_m30',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      age: {
+        unit: 'month',
+        from: 30,
+        to: 36,
+      },
+      title: {
+        vi: 'Hỏi “tại sao”, trò chuyện và sẵn sàng đi lớp',
+        en: 'Asking “why”, chatting and getting ready for preschool',
+      },
+      doing: {
+        vi: [
+          'Bé trò chuyện qua lại vài lượt, hỏi “ai”, “cái gì”, “ở đâu”, nói được tên mình; người ngoài hiểu phần lớn lời bé.',
+          'Bé tự xúc ăn bằng nĩa, thìa, xâu hạt to, tự mặc quần rộng hay áo khoác và vẽ theo được nét tròn.',
+          'Bé để ý các bạn, nhập vào chơi cùng, và khi chia tay ở nhà trẻ thường dịu lại trong khoảng 10 phút.',
+        ],
+        en: [
+          'Your child chats back and forth, asks who, what and where, says their name, and others understand most of it.',
+          'Your child uses a fork, threads large beads, pulls on loose trousers or a jacket and copies a circle.',
+          'Your child notices other children and joins in, and usually settles within about 10 minutes of a goodbye.',
+        ],
+      },
+      tryThis: {
+        vi: [
+          'Trả lời câu hỏi “tại sao” ngắn gọn, đúng, và hỏi lại bé: “Con nghĩ vì sao?” để bé tập suy nghĩ, diễn đạt.',
+          'Tập đi vệ sinh khi bé có dấu hiệu sẵn sàng như báo khi tã ướt, giữ tã khô lâu; khen, không la mắng khi bé lỡ.',
+          'Chuẩn bị đi lớp: kể trước về lớp, đến thăm cùng bé, giữ nghi thức chào ngắn và đón đúng giờ đã hứa.',
+        ],
+        en: [
+          'Answer “why” questions briefly and honestly, and ask back: “Why do you think?” so your child practises explaining.',
+          'Start toilet training when your child shows readiness, like telling you about a wet diaper; praise, never scold.',
+          'Prepare for preschool: talk about it, visit together, keep goodbyes short and pick up when you promised.',
+        ],
+      },
+      articleIds: ['art_separation_anxiety', 'art_toddler_tantrums'],
+      milestoneIds: [
+        'asks_questions',
+        'back_and_forth_talk',
+        'uses_fork',
+        'draws_circle',
+        'settles_after_goodbye',
+      ],
+      audience: ['coParent', 'caregiver', 'relative'],
+      cover: null,
+      sources: [
+        {
+          label: 'CDC — Learn the Signs. Act Early.: Milestones by 3 years',
+          url: 'https://www.cdc.gov/act-early/milestones/3-years.html',
+        },
+        {
+          label: 'NHS — How to potty train',
+          url: 'https://www.nhs.uk/baby/babys-development/potty-training-and-bedwetting/how-to-potty-train/',
+        },
+        {
+          label: 'AAP · HealthyChildren.org · Developmental milestones: 2 year olds',
+          url: 'https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx',
+        },
+      ],
+    },
+  },
 ];

@@ -115,8 +115,9 @@ and answers: `docs/product/content-review-2026-10/library.md`.
   `art_preterm_corrected_age`, `art_picky_eating_toddler`, `art_toddler_milk`,
   `art_toddler_tantrums`, `art_newborn_skin_rashes`, `art_heat_cold_safety`, `art_medicine_safety`
   (44 in all).
-- **Stages:** three P3 wording fixes. 24–36 month milestones and stages are drafted for V1.1 in
-  `docs/product/content-review-2026-10/library-24-36-months.json`, not imported.
+- **Stages:** three P3 wording fixes. The 24–36 month milestones and stages drafted in
+  `docs/product/content-review-2026-10/library-24-36-months.json` were imported on 2026-10-18
+  (D-080): stages `stg_m24`, `stg_m30` in two new buckets, 12 milestones.
 - **For the clinician:** button batteries (NHS nothing by mouth vs US honey for children over 1),
   iron for breastfed babies (AAP 2026 vs NHS), the Vietnamese HFMD exclusion period, the children's
   motorbike-helmet rule, and every help-line number.

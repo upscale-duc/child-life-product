@@ -497,6 +497,9 @@ export const stageBuckets: readonly StageBucket[] = [
   { id: 'm12', unit: 'month', from: 12, to: 15 },
   { id: 'm15', unit: 'month', from: 15, to: 18 },
   { id: 'm18', unit: 'month', from: 18, to: 24 },
+  // 24–36 months (D-080): two half-year stages.
+  { id: 'm24', unit: 'month', from: 24, to: 30 },
+  { id: 'm30', unit: 'month', from: 30, to: 36 },
 ];
 
 /** Bucket state, best first: on the app, waiting for review / publish, a draft, nothing. */

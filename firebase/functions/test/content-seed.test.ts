@@ -124,7 +124,7 @@ describe('editorial seed', () => {
     }
   });
 
-  it('one stage per range, 3 + 3 points, linked to seed articles and milestones, covering 0–24 months', () => {
+  it('one stage per range, 3 + 3 points, linked to seed articles and milestones, covering 0–36 months', () => {
     expect(seedStages.map((s) => s.data.age)).toEqual(
       stageBuckets.map((b) => ({ unit: b.unit, from: b.from, to: b.to })),
     );
@@ -152,7 +152,7 @@ describe('editorial seed', () => {
     const c = stageCoverage(
       seedStages.map((s) => ({ age: s.data.age, status: 'draft', live: false })),
     );
-    expect(c.covered).toBe(16);
+    expect(c.covered).toBe(18);
     expect(c.gaps).toEqual([]);
   });
 });
