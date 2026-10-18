@@ -13,8 +13,8 @@
     {
       "id": "wounds",
       "title": {
-        "vi": "Vết thương & bỏng",
-        "en": "Wounds & burns"
+        "vi": "Chấn thương & bỏng",
+        "en": "Injuries & burns"
       },
       "layout": "list",
       "tone": "sunshine"
@@ -50,8 +50,8 @@
         "en": "CPR"
       },
       "lead": {
-        "vi": "Bé bất tỉnh, không thở hoặc thở ngáp",
-        "en": "Baby is unconscious, not breathing or only gasping"
+        "vi": "Bé bất tỉnh, không thở hoặc chỉ thở ngáp",
+        "en": "Unresponsive, not breathing or only gasping"
       },
       "keywords": [
         {
@@ -88,7 +88,7 @@
         }
       ],
       "icon": "icon-hoi-suc-tim-phoi",
-      "hero": "ep-tim-so-sinh",
+      "hero": "ep-tim-so-sinh-hai-ngon-cai",
       "ageMonths": null,
       "variantKind": "age",
       "variants": [
@@ -104,20 +104,34 @@
           },
           "hero": null,
           "banner": {
-            "vi": "Gọi {emergency} ngay. Có người khác: nhờ gọi giúp.",
-            "en": "Call {emergency} now. If someone else is there, ask them to call."
+            "vi": "Gọi {emergency} ngay, bật loa ngoài để vừa nghe hướng dẫn vừa làm. Có người khác: nhờ gọi giúp và tìm máy AED. Ở một mình, không có điện thoại: làm hồi sức 1 phút rồi mới đi gọi.",
+            "en": "Call {emergency} now and put the phone on speaker so you can follow the operator while you work. If someone else is there, ask them to call and fetch an AED. Alone with no phone: do CPR for 1 minute first, then go for help."
           },
           "steps": [
+            {
+              "title": {
+                "vi": "Kiểm tra bé",
+                "en": "Check baby"
+              },
+              "body": {
+                "vi": "Gọi to, vỗ nhẹ vào bé. Nhìn ngực bé tối đa 10 giây. Bé không thở hoặc chỉ thở ngáp: bắt đầu ngay.",
+                "en": "Call out and tap baby gently. Watch the chest for up to 10 seconds. If baby isn’t breathing, or is only gasping, start now."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
             {
               "title": {
                 "vi": "Mở đường thở",
                 "en": "Open the airway"
               },
               "body": {
-                "vi": "Một tay đặt lên trán, ngửa nhẹ đầu, nâng cằm. Có vật cản thấy rõ trong miệng: lấy ra.",
-                "en": "One hand on the forehead, tilt the head back slightly, lift the chin. If you can clearly see something in the mouth, take it out."
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng. Một tay trên trán giữ đầu bé thẳng, không ngửa quá; tay kia nâng cằm. Thấy rõ vật trong miệng: lấy ra. Không móc mò.",
+                "en": "Lay baby on their back on a firm surface. One hand on the forehead keeps the head level, not tipped far back; the other lifts the chin. If you can clearly see something in the mouth, take it out. Don’t sweep blindly."
               },
-              "image": "mo-duong-tho",
+              "image": null,
               "chips": [],
               "count": null,
               "cprRole": null
@@ -128,8 +142,8 @@
                 "en": "Give 5 rescue breaths"
               },
               "body": {
-                "vi": "Miệng bạn trùm cả miệng và mũi bé. Thổi nhẹ, đều, nhìn ngực bé phồng lên.",
-                "en": "Cover baby’s mouth and nose with your mouth. Blow gently and evenly; watch the chest rise."
+                "vi": "Miệng bạn trùm cả miệng và mũi bé. Thổi nhẹ, đều, mỗi lần khoảng 1 giây, nhìn ngực bé phồng lên.",
+                "en": "Cover baby’s mouth and nose with your mouth. Blow gently and evenly, about 1 second each; watch the chest rise."
               },
               "image": null,
               "chips": [],
@@ -142,8 +156,8 @@
                 "en": "Give 30 chest compressions"
               },
               "body": {
-                "vi": "2 ngón tay giữa ngực, ngay dưới đường nối hai núm vú. Ấn sâu khoảng 4 cm, 100–120 lần/phút.",
-                "en": "Two fingers in the middle of the chest, just below the nipple line. Press about 4 cm deep, 100–120 times a minute."
+                "vi": "Hai tay ôm quanh ngực bé, hai ngón cái đặt cạnh nhau ở nửa dưới xương ức, ngay dưới đường nối hai núm vú. Ấn sâu 1/3 bề dày ngực (khoảng 4 cm), 100–120 lần/phút, để ngực nở lại hết sau mỗi lần. Không ôm được ngực: dùng gót một bàn tay.",
+                "en": "Wrap both hands around baby’s chest with your thumbs side by side on the lower half of the breastbone, just below the nipple line. Press down a third of the chest depth (about 4 cm / 1½ in), 100–120 times a minute, letting the chest come all the way back up. If you can’t wrap your hands around, use the heel of one hand."
               },
               "image": null,
               "chips": [
@@ -171,13 +185,27 @@
                 "en": "Give 2 breaths, repeat"
               },
               "body": {
-                "vi": "Cứ 30 lần ép ngực, thổi 2 lần. Tiếp tục đến khi bé thở lại hoặc nhân viên y tế tới.",
-                "en": "After every 30 compressions, give 2 breaths. Keep going until baby breathes again or medical staff arrive."
+                "vi": "Cứ 30 lần ép ngực, thổi 2 lần. Không thổi ngạt được: cứ ép ngực liên tục. Làm đến khi bé thở lại hoặc nhân viên y tế tới.",
+                "en": "After every 30 compressions, give 2 breaths. If you can’t give breaths, keep doing compressions without stopping. Keep going until baby breathes again or medical help arrives."
               },
               "image": null,
               "chips": [],
               "count": null,
               "cprRole": "breaths"
+            },
+            {
+              "title": {
+                "vi": "Có máy AED: dùng ngay",
+                "en": "If there’s an AED, use it"
+              },
+              "body": {
+                "vi": "Có máy sốc điện tự động (AED): bật máy, dán miếng dán theo hình trên máy và làm theo hướng dẫn bằng giọng nói. Vẫn ép ngực trong lúc chờ máy.",
+                "en": "If an AED (defibrillator) is available: switch it on, put the pads on as the pictures show and follow the voice prompts. Keep doing compressions while it gets ready."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -195,6 +223,27 @@
                 {
                   "vi": "Ép trên bụng hoặc đầu xương ức",
                   "en": "Pressing on the belly or the tip of the breastbone"
+                },
+                {
+                  "vi": "Lắc mạnh bé để gọi tỉnh",
+                  "en": "Shaking baby to wake them"
+                }
+              ]
+            },
+            {
+              "tone": "positive",
+              "heading": {
+                "vi": "Khi bé thở lại",
+                "en": "Once baby breathes again"
+              },
+              "items": [
+                {
+                  "vi": "Bế bé nghiêng trên tay, đầu hơi thấp",
+                  "en": "Hold baby on their side in your arms, head slightly low"
+                },
+                {
+                  "vi": "Ở cạnh, theo dõi hơi thở đến khi nhân viên y tế tới",
+                  "en": "Stay close and watch the breathing until help arrives"
                 }
               ]
             },
@@ -226,20 +275,34 @@
           },
           "hero": "ep-tim-tre-lon",
           "banner": {
-            "vi": "Gọi {emergency} ngay. Có người khác: nhờ gọi giúp.",
-            "en": "Call {emergency} now. If someone else is there, ask them to call."
+            "vi": "Gọi {emergency} ngay, bật loa ngoài để vừa nghe hướng dẫn vừa làm. Có người khác: nhờ gọi giúp và tìm máy AED. Ở một mình, không có điện thoại: làm hồi sức 1 phút rồi mới đi gọi.",
+            "en": "Call {emergency} now and put the phone on speaker so you can follow the operator while you work. If someone else is there, ask them to call and fetch an AED. Alone with no phone: do CPR for 1 minute first, then go for help."
           },
           "steps": [
+            {
+              "title": {
+                "vi": "Kiểm tra bé",
+                "en": "Check the child"
+              },
+              "body": {
+                "vi": "Gọi to, vỗ nhẹ vào vai bé. Nhìn ngực bé tối đa 10 giây. Bé không thở hoặc chỉ thở ngáp: bắt đầu ngay.",
+                "en": "Call out and tap the child’s shoulder. Watch the chest for up to 10 seconds. If they aren’t breathing, or are only gasping, start now."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
             {
               "title": {
                 "vi": "Mở đường thở",
                 "en": "Open the airway"
               },
               "body": {
-                "vi": "Một tay đặt lên trán, ngửa đầu, nâng cằm. Có vật cản thấy rõ trong miệng: lấy ra.",
-                "en": "One hand on the forehead, tilt the head back, lift the chin. If you can clearly see something in the mouth, take it out."
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng. Một tay đặt lên trán, ngửa đầu, tay kia nâng cằm. Thấy rõ vật trong miệng: lấy ra. Không móc mò.",
+                "en": "Lay the child on their back on a firm surface. One hand on the forehead, tilt the head back, lift the chin with the other. If you can clearly see something in the mouth, take it out. Don’t sweep blindly."
               },
-              "image": null,
+              "image": "mo-duong-tho",
               "chips": [],
               "count": null,
               "cprRole": null
@@ -250,8 +313,8 @@
                 "en": "Give 5 rescue breaths"
               },
               "body": {
-                "vi": "Bịt mũi bé, miệng bạn trùm kín miệng bé. Thổi đều, nhìn ngực bé phồng lên.",
-                "en": "Pinch the child’s nose and seal your mouth over theirs. Blow steadily; watch the chest rise."
+                "vi": "Bịt mũi bé, miệng bạn trùm kín miệng bé. Thổi đều, mỗi lần khoảng 1 giây, nhìn ngực bé phồng lên.",
+                "en": "Pinch the child’s nose and seal your mouth over theirs. Blow steadily, about 1 second each; watch the chest rise."
               },
               "image": null,
               "chips": [],
@@ -264,10 +327,10 @@
                 "en": "Give 30 chest compressions"
               },
               "body": {
-                "vi": "Gót một bàn tay giữa ngực, nửa dưới xương ức. Ấn sâu khoảng 5 cm, 100–120 lần/phút.",
-                "en": "Heel of one hand in the middle of the chest, on the lower half of the breastbone. Press about 5 cm deep, 100–120 times a minute."
+                "vi": "Gót một bàn tay ở nửa dưới xương ức, giữa ngực. Ấn sâu 1/3 bề dày ngực (khoảng 5 cm), 100–120 lần/phút, để ngực nở lại hết sau mỗi lần. Trẻ lớn: chồng hai tay lên nhau, không ấn sâu quá 6 cm.",
+                "en": "Heel of one hand on the lower half of the breastbone, in the middle of the chest. Press down a third of the chest depth (about 5 cm / 2 in), 100–120 times a minute, letting the chest come all the way back up. For a bigger child, use both hands, one on top of the other, no deeper than 6 cm."
               },
-              "image": null,
+              "image": "ep-tim-tre-lon",
               "chips": [
                 {
                   "label": {
@@ -293,13 +356,27 @@
                 "en": "Give 2 breaths, repeat"
               },
               "body": {
-                "vi": "Cứ 30 lần ép ngực, thổi 2 lần. Tiếp tục đến khi bé thở lại hoặc nhân viên y tế tới.",
-                "en": "After every 30 compressions, give 2 breaths. Keep going until baby breathes again or medical staff arrive."
+                "vi": "Cứ 30 lần ép ngực, thổi 2 lần. Không thổi ngạt được: cứ ép ngực liên tục. Làm đến khi bé thở lại hoặc nhân viên y tế tới.",
+                "en": "After every 30 compressions, give 2 breaths. If you can’t give breaths, keep doing compressions without stopping. Keep going until the child breathes again or medical help arrives."
               },
               "image": null,
               "chips": [],
               "count": null,
               "cprRole": "breaths"
+            },
+            {
+              "title": {
+                "vi": "Có máy AED: dùng ngay",
+                "en": "If there’s an AED, use it"
+              },
+              "body": {
+                "vi": "Có máy sốc điện tự động (AED): bật máy, dán miếng dán theo hình trên máy và làm theo hướng dẫn bằng giọng nói. Vẫn ép ngực trong lúc chờ máy.",
+                "en": "If an AED (defibrillator) is available: switch it on, put the pads on as the pictures show and follow the voice prompts. Keep doing compressions while it gets ready."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -317,6 +394,27 @@
                 {
                   "vi": "Ép trên bụng hoặc đầu xương ức",
                   "en": "Pressing on the belly or the tip of the breastbone"
+                },
+                {
+                  "vi": "Lắc mạnh bé để gọi tỉnh",
+                  "en": "Shaking the child to wake them"
+                }
+              ]
+            },
+            {
+              "tone": "positive",
+              "heading": {
+                "vi": "Khi bé thở lại",
+                "en": "Once the child breathes again"
+              },
+              "items": [
+                {
+                  "vi": "Đặt bé nằm nghiêng an toàn",
+                  "en": "Put the child in the recovery position (on their side)"
+                },
+                {
+                  "vi": "Ở cạnh, theo dõi hơi thở đến khi nhân viên y tế tới",
+                  "en": "Stay close and watch the breathing until help arrives"
                 }
               ]
             },
@@ -324,12 +422,12 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Luôn gọi {emergency}, kể cả khi bé đã thở lại",
-                  "en": "Always call {emergency}, even if baby is breathing again"
+                  "en": "Always call {emergency}, even if the child is breathing again"
                 }
               ]
             }
@@ -350,8 +448,8 @@
         "en": "Choking"
       },
       "lead": {
-        "vi": "Bé ho sặc, không khóc, không thở được",
-        "en": "Baby is coughing and choking, can’t cry or breathe"
+        "vi": "Bé đột ngột không thở, không ho, không khóc được",
+        "en": "Suddenly can’t breathe, cough or cry"
       },
       "keywords": [
         {
@@ -404,8 +502,8 @@
           },
           "hero": null,
           "banner": {
-            "vi": "Nếu bé còn ho, khóc được: để bé tự ho ra, không vỗ, theo dõi sát.",
-            "en": "If baby can still cough or cry: let them cough it out, don’t pat, watch closely."
+            "vi": "Bé còn ho, khóc được: để bé tự ho, không vỗ, theo dõi sát. Bé không ho, không khóc, không thở được: nhờ người gọi {emergency} và làm ngay các bước dưới.",
+            "en": "If baby can still cough or cry: let them cough, don’t pat, watch closely. If baby can’t cough, cry or breathe: have someone call {emergency} and start the steps below now."
           },
           "steps": [
             {
@@ -414,8 +512,8 @@
                 "en": "Give 5 back blows"
               },
               "body": {
-                "vi": "Đặt bé nằm sấp dọc cẳng tay, đầu thấp hơn ngực, đỡ cằm bé. Dùng gót bàn tay vỗ mạnh 5 lần giữa hai bả vai.",
-                "en": "Lay baby face-down along your forearm, head lower than the chest, supporting the chin. With the heel of your hand, strike firmly 5 times between the shoulder blades."
+                "vi": "Đặt bé nằm sấp dọc cẳng tay, tựa tay lên đùi, đầu thấp hơn ngực, đỡ cằm bé. Dùng gót bàn tay vỗ mạnh 5 lần giữa hai bả vai.",
+                "en": "Lay baby face-down along your forearm, resting it on your thigh, head lower than the chest, supporting the chin. With the heel of your hand, strike firmly 5 times between the shoulder blades."
               },
               "image": null,
               "chips": [],
@@ -428,10 +526,10 @@
                 "en": "Give 5 chest thrusts"
               },
               "body": {
-                "vi": "Lật bé nằm ngửa, đầu thấp. Đặt 2 ngón tay giữa ngực, ngay dưới đường nối hai núm vú, ấn mạnh 5 lần.",
-                "en": "Turn baby onto the back, head low. Put two fingers in the middle of the chest, just below the nipple line, and press firmly 5 times."
+                "vi": "Lật bé nằm ngửa dọc cẳng tay, đầu thấp hơn ngực. Ấn mạnh, dứt khoát 5 lần vào nửa dưới xương ức, ngay dưới đường nối hai núm vú, bằng gót một bàn tay hoặc hai ngón cái.",
+                "en": "Turn baby face-up along your forearm, head lower than the chest. Give 5 sharp, firm pushes on the lower half of the breastbone, just below the nipple line, with the heel of one hand or both thumbs."
               },
-              "image": "an-nguc",
+              "image": null,
               "chips": [],
               "count": 5,
               "cprRole": null
@@ -442,8 +540,22 @@
                 "en": "Repeat until the object comes out"
               },
               "body": {
-                "vi": "Xen kẽ 5 lần vỗ lưng và 5 lần ấn ngực. Bé lả đi, không thở: gọi {emergency} ngay.",
-                "en": "Alternate 5 back blows and 5 chest thrusts. If baby goes limp or stops breathing: call {emergency} now."
+                "vi": "Xen kẽ 5 lần vỗ lưng và 5 lần ấn ngực. Chưa ai gọi cấp cứu: gọi {emergency}, bật loa ngoài.",
+                "en": "Alternate 5 back blows and 5 chest thrusts. If nobody has called for help yet: call {emergency} on speaker."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Bé lả đi: hồi sức tim phổi",
+                "en": "Baby goes limp: start CPR"
+              },
+              "body": {
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng, gọi {emergency} và bắt đầu hồi sức tim phổi (CPR). Trước mỗi lần thổi ngạt, nhìn vào miệng: thấy dị vật thì lấy ra.",
+                "en": "Lay baby on their back on a firm surface, call {emergency} and start CPR. Before each set of breaths, look in the mouth and take out any object you can see."
               },
               "image": null,
               "chips": [],
@@ -460,12 +572,16 @@
               },
               "items": [
                 {
-                  "vi": "Thò tay vào miệng bé để móc dị vật",
-                  "en": "Reaching into baby’s mouth to hook the object out"
+                  "vi": "Thò tay vào miệng bé để móc mò dị vật",
+                  "en": "Sweeping a finger blindly in baby’s mouth"
                 },
                 {
-                  "vi": "Dốc ngược bé lên",
-                  "en": "Holding baby upside down"
+                  "vi": "Dốc ngược bé lên bằng hai chân",
+                  "en": "Holding baby upside down by the legs"
+                },
+                {
+                  "vi": "Cho uống nước hay nuốt cơm để đẩy dị vật xuống",
+                  "en": "Giving water or a mouthful of rice to push it down"
                 }
               ]
             },
@@ -483,6 +599,10 @@
                 {
                   "vi": "Đã lấy được dị vật nhưng bé vẫn ho, khó thở",
                   "en": "The object is out but baby still coughs or struggles to breathe"
+                },
+                {
+                  "vi": "Đã phải ấn ngực: luôn cho bé đi khám, kể cả khi bé đã ổn",
+                  "en": "You gave chest thrusts: always get a check-up, even if baby seems fine"
                 }
               ]
             }
@@ -501,32 +621,46 @@
           },
           "hero": "ep-bung",
           "banner": {
-            "vi": "Nếu bé còn ho, khóc được: để bé tự ho ra, không vỗ, theo dõi sát.",
-            "en": "If baby can still cough or cry: let them cough it out, don’t pat, watch closely."
+            "vi": "Bé còn ho, nói hoặc khóc được: khuyến khích bé ho, không vỗ, theo dõi sát. Bé không ho, không nói, không thở được: nhờ người gọi {emergency} và làm ngay các bước dưới.",
+            "en": "If the child can still cough, speak or cry: encourage coughing, don’t pat, watch closely. If they can’t cough, speak or breathe: have someone call {emergency} and start the steps below now."
           },
           "steps": [
             {
               "title": {
-                "vi": "Đứng sau lưng bé",
-                "en": "Stand behind the child"
+                "vi": "Vỗ lưng 5 lần",
+                "en": "Give 5 back blows"
               },
               "body": {
-                "vi": "Quỳ hoặc đứng phía sau, vòng tay ôm eo, để bé hơi cúi người về trước.",
-                "en": "Kneel or stand behind, put your arms around the waist and let the child lean forward slightly."
+                "vi": "Đứng hoặc quỳ phía sau, hơi lệch sang bên. Một tay đỡ ngực, cho bé cúi người ra trước. Dùng gót bàn tay vỗ mạnh 5 lần giữa hai bả vai. Bé nhỏ: có thể đặt nằm sấp ngang đùi bạn, đầu thấp.",
+                "en": "Stand or kneel behind and slightly to the side. Support the chest with one hand and lean the child forward. With the heel of your other hand, strike firmly 5 times between the shoulder blades. A small child can lie face-down across your lap, head low."
               },
-              "image": "ep-bung",
+              "image": "vo-lung-tre-lon",
               "chips": [],
-              "count": null,
+              "count": 5,
               "cprRole": null
             },
             {
               "title": {
-                "vi": "Đặt nắm tay trên rốn",
-                "en": "Place a fist above the navel"
+                "vi": "Ép bụng 5 lần",
+                "en": "Give 5 abdominal thrusts"
               },
               "body": {
-                "vi": "Nắm tay đặt trên rốn, dưới xương ức. Tay kia ôm lấy nắm tay.",
-                "en": "Put your fist above the navel, below the breastbone. Grasp the fist with your other hand."
+                "vi": "Quỳ hoặc đứng sau lưng bé, vòng tay ôm eo. Đặt nắm tay giữa rốn và đầu dưới xương ức, tay kia ôm lấy nắm tay. Giật mạnh vào trong, lên trên, 5 lần.",
+                "en": "Kneel or stand behind and wrap your arms around the waist. Put a fist between the navel and the bottom of the breastbone and grasp it with your other hand. Pull sharply inwards and upwards, 5 times."
+              },
+              "image": "ep-bung",
+              "chips": [],
+              "count": 5,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Lặp lại đến khi dị vật ra",
+                "en": "Repeat until the object comes out"
+              },
+              "body": {
+                "vi": "Xen kẽ 5 lần vỗ lưng và 5 lần ép bụng. Chưa ai gọi cấp cứu: gọi {emergency}, bật loa ngoài.",
+                "en": "Alternate 5 back blows and 5 abdominal thrusts. If nobody has called for help yet: call {emergency} on speaker."
               },
               "image": null,
               "chips": [],
@@ -535,12 +669,12 @@
             },
             {
               "title": {
-                "vi": "Ấn mạnh vào trong, lên trên",
-                "en": "Thrust hard inwards and upwards"
+                "vi": "Bé lả đi: hồi sức tim phổi",
+                "en": "Child goes limp: start CPR"
               },
               "body": {
-                "vi": "Ấn nhanh, dứt khoát. Lặp lại đến khi dị vật bật ra.",
-                "en": "Press quickly and firmly. Repeat until the object comes out."
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng, gọi {emergency} và bắt đầu hồi sức tim phổi (CPR). Trước mỗi lần thổi ngạt, nhìn vào miệng: thấy dị vật thì lấy ra.",
+                "en": "Lay the child on their back on a firm surface, call {emergency} and start CPR. Before each set of breaths, look in the mouth and take out any object you can see."
               },
               "image": null,
               "chips": [],
@@ -557,12 +691,20 @@
               },
               "items": [
                 {
-                  "vi": "Thò tay vào miệng bé để móc dị vật",
-                  "en": "Reaching into baby’s mouth to hook the object out"
+                  "vi": "Thò tay vào miệng bé để móc mò dị vật",
+                  "en": "Sweeping a finger blindly in the child’s mouth"
                 },
                 {
-                  "vi": "Dốc ngược bé lên",
-                  "en": "Holding baby upside down"
+                  "vi": "Dốc ngược bé lên bằng hai chân",
+                  "en": "Holding the child upside down by the legs"
+                },
+                {
+                  "vi": "Cho uống nước hay nuốt cơm để đẩy dị vật xuống",
+                  "en": "Giving water or a mouthful of rice to push it down"
+                },
+                {
+                  "vi": "Ép bụng trẻ dưới 1 tuổi",
+                  "en": "Giving abdominal thrusts to a baby under 1"
                 }
               ]
             },
@@ -570,16 +712,20 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Bé tím tái, lả đi, ngừng thở: gọi {emergency}",
-                  "en": "Baby turns blue, goes limp or stops breathing: call {emergency}"
+                  "en": "The child turns blue, goes limp or stops breathing: call {emergency}"
                 },
                 {
                   "vi": "Đã lấy được dị vật nhưng bé vẫn ho, khó thở",
-                  "en": "The object is out but baby still coughs or struggles to breathe"
+                  "en": "The object is out but the child still coughs or struggles to breathe"
+                },
+                {
+                  "vi": "Đã phải ép bụng: luôn cho bé đi khám, kể cả khi bé đã ổn",
+                  "en": "You gave abdominal thrusts: always get a check-up, even if they seem fine"
                 }
               ]
             }
@@ -597,7 +743,7 @@
       "monitoring": false,
       "title": {
         "vi": "Sặc sữa",
-        "en": "Milk choking"
+        "en": "Choking on milk"
       },
       "lead": {
         "vi": "Sữa trào lên, bé ho sặc, tím tái",
@@ -639,7 +785,10 @@
           "label": null,
           "ageMonths": null,
           "hero": null,
-          "banner": null,
+          "banner": {
+            "vi": "Bé tím tái, không thở hoặc không khóc được: gọi {emergency} và làm như hóc dị vật (vỗ lưng, ấn ngực).",
+            "en": "If baby is blue, not breathing or can’t cry: call {emergency} and act as for choking (back blows, chest thrusts)."
+          },
           "steps": [
             {
               "title": {
@@ -675,8 +824,8 @@
                 "en": "If still blue"
               },
               "body": {
-                "vi": "Đỡ chắc cằm, lật úp bé trên cẳng tay, đầu hơi cúi. Vỗ giữa hai bả vai.",
-                "en": "Hold the chin firmly, turn baby face-down along your forearm, head slightly down. Pat between the shoulder blades."
+                "vi": "Lật úp bé dọc cẳng tay, đầu thấp, đỡ chắc cằm. Vỗ mạnh 5 lần giữa hai bả vai bằng gót bàn tay. Chưa đỡ: lật ngửa, ấn ngực 5 lần như khi hóc dị vật. Bé lả đi: bắt đầu hồi sức tim phổi (CPR).",
+                "en": "Hold the chin firmly and turn baby face-down along your forearm, head low. Give 5 firm back blows between the shoulder blades with the heel of your hand. If that doesn’t work, turn baby over and give 5 chest thrusts as for choking. If baby goes limp: start CPR."
               },
               "image": "vo-lung",
               "chips": [],
@@ -788,7 +937,10 @@
           "label": null,
           "ageMonths": null,
           "hero": null,
-          "banner": null,
+          "banner": {
+            "vi": "Kích thích khoảng 10 giây mà bé chưa thở lại: gọi {emergency} và bắt đầu hồi sức tim phổi (CPR) ngay.",
+            "en": "If baby hasn’t started breathing after about 10 seconds of stimulation: call {emergency} and start CPR now."
+          },
           "steps": [
             {
               "title": {
@@ -796,8 +948,8 @@
                 "en": "Keep head, neck and body in line"
               },
               "body": {
-                "vi": "Đặt bé nằm ngửa, ngửa nhẹ đầu, nâng cằm.",
-                "en": "Lay baby on the back, tilt the head back slightly, lift the chin."
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng, đầu ở tư thế thẳng, nâng nhẹ cằm.",
+                "en": "Lay baby on their back on a firm surface, head level, chin gently lifted."
               },
               "image": null,
               "chips": [],
@@ -824,8 +976,8 @@
                 "en": "Watch until breathing is regular"
               },
               "body": {
-                "vi": "Nếu bé chưa khóc, búng nhẹ lòng bàn chân. Chờ đến khi bé khóc và thở đều trở lại.",
-                "en": "If baby hasn’t cried yet, flick the sole gently. Wait until baby cries and breathes regularly again."
+                "vi": "Bé thở lại, hồng hào: vẫn ở cạnh và theo dõi. Bé chưa thở: không chờ thêm, gọi {emergency} và làm hồi sức tim phổi.",
+                "en": "Once baby breathes and pinks up, stay close and keep watching. If baby still isn’t breathing, don’t wait: call {emergency} and start CPR."
               },
               "image": null,
               "chips": [],
@@ -834,6 +986,23 @@
             }
           ],
           "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Lắc mạnh bé",
+                  "en": "Shaking baby"
+                },
+                {
+                  "vi": "Dốc ngược bé, thổi vào mặt bé",
+                  "en": "Holding baby upside down or blowing on their face"
+                }
+              ]
+            },
             {
               "tone": "warning",
               "heading": {
@@ -844,6 +1013,10 @@
                 {
                   "vi": "Bé không thở lại, không phản ứng: gọi {emergency}, làm hồi sức tim phổi (CPR)",
                   "en": "Baby doesn’t start breathing or respond: call {emergency} and start CPR"
+                },
+                {
+                  "vi": "Bé đã thở lại: vẫn đưa bé đi khám ngay trong ngày",
+                  "en": "Baby is breathing again: still see a doctor today"
                 }
               ]
             }
@@ -916,7 +1089,7 @@
               },
               "body": {
                 "vi": "Để bé trên mặt phẳng an toàn.",
-                "en": "Keep baby on a safe, flat surface."
+                "en": "Keep your child on a safe, flat surface."
               },
               "image": null,
               "chips": [],
@@ -926,11 +1099,11 @@
             {
               "title": {
                 "vi": "Đặt bé nằm nghiêng",
-                "en": "Lay baby on the side"
+                "en": "Turn your child on their side"
               },
               "body": {
-                "vi": "Giúp đờm dãi chảy ra, không chảy ngược vào đường thở.",
-                "en": "This lets saliva drain out instead of back into the airway."
+                "vi": "Nếu được, đặt bé nằm nghiêng để đờm dãi chảy ra. Không ghì giữ. Hết giật: để bé nằm nghiêng an toàn, kiểm tra hơi thở.",
+                "en": "If you can, turn your child on their side so saliva drains out. Don’t hold them down. Once the jerking stops, keep them in the recovery position and check their breathing."
               },
               "image": null,
               "chips": [],
@@ -968,11 +1141,11 @@
             {
               "title": {
                 "vi": "Đưa bé đi khám",
-                "en": "Take baby to a doctor"
+                "en": "Get your child checked"
               },
               "body": {
-                "vi": "Khi hết cơn giật. Bé sốt: dùng thuốc hạ sốt theo chỉ định bác sĩ.",
-                "en": "Once the seizure is over. If baby has a fever: give fever medicine only as a doctor advises."
+                "vi": "Co giật lần đầu: gọi {emergency} hoặc đưa đi cấp cứu ngay. Đã từng co giật do sốt: vẫn cho bé đi khám khi hết cơn. Thuốc hạ sốt giúp bé dễ chịu nhưng không ngăn được co giật.",
+                "en": "A first-ever seizure: call {emergency} or go to the emergency department now. If your child has had febrile seizures before, still see a doctor once it stops. Fever medicine makes them comfortable but doesn’t prevent seizures."
               },
               "image": null,
               "chips": [],
@@ -990,15 +1163,19 @@
               "items": [
                 {
                   "vi": "Cho bất cứ thứ gì vào miệng bé, kể cả khăn",
-                  "en": "Putting anything in baby’s mouth, even a cloth"
+                  "en": "Putting anything in your child’s mouth, even a cloth"
                 },
                 {
-                  "vi": "Cho uống thuốc, uống nước khi đang giật",
-                  "en": "Giving medicine or water during the seizure"
+                  "vi": "Cho uống thuốc, nước khi đang giật (trừ thuốc cắt cơn bác sĩ đã kê)",
+                  "en": "Giving medicine or water during the seizure (except rescue medicine a doctor prescribed)"
                 },
                 {
                   "vi": "Cố giữ chặt hay hạn chế cử động của bé",
-                  "en": "Holding baby down or stopping their movements"
+                  "en": "Holding your child down or stopping their movements"
+                },
+                {
+                  "vi": "Lau người bằng nước lạnh, cồn; cạo gió, châm kim, bấm huyệt",
+                  "en": "Sponging with cold water or alcohol, coin-rubbing, pricking or pressing points"
                 }
               ]
             },
@@ -1006,7 +1183,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -1014,8 +1191,20 @@
                   "en": "The seizure lasts over 5 minutes, or several come in a row: call {emergency}"
                 },
                 {
-                  "vi": "Bé khó thở, tím tái, không tỉnh lại sau cơn",
-                  "en": "Baby struggles to breathe, turns blue, or doesn’t wake up after the seizure"
+                  "vi": "Bé co giật lần đầu, hoặc giật một bên người",
+                  "en": "It’s the first seizure, or only one side of the body jerks"
+                },
+                {
+                  "vi": "Bé khó thở, tím tái, hoặc lơ mơ quá 1 giờ sau cơn",
+                  "en": "Trouble breathing, turning blue, or still very drowsy an hour after"
+                },
+                {
+                  "vi": "Cổ cứng, thóp phồng, phát ban không mất khi ấn cốc",
+                  "en": "Stiff neck, bulging soft spot, or a rash that doesn’t fade under a glass"
+                },
+                {
+                  "vi": "Bé dưới 6 tháng bị co giật khi sốt",
+                  "en": "A baby under 6 months has a seizure with fever"
                 }
               ]
             }
@@ -1080,18 +1269,32 @@
           "ageMonths": null,
           "hero": null,
           "banner": {
-            "vi": "Gọi {emergency} ngay khi nghi ngờ sốc phản vệ.",
-            "en": "Call {emergency} as soon as you suspect anaphylaxis."
+            "vi": "Gọi {emergency} ngay khi nghi sốc phản vệ, kể cả khi đã tiêm adrenaline.",
+            "en": "Call {emergency} as soon as you suspect anaphylaxis, even after using adrenaline."
           },
           "steps": [
             {
               "title": {
-                "vi": "Nằm ngửa, kê cao chân",
-                "en": "Lie on the back, legs raised"
+                "vi": "Tiêm adrenaline ngay nếu có",
+                "en": "Use the adrenaline pen if you have one"
               },
               "body": {
-                "vi": "Nếu bé nôn, cho nằm nghiêng để tránh sặc.",
-                "en": "If baby vomits, turn them on the side to avoid choking."
+                "vi": "Bé có bút tiêm adrenaline do bác sĩ kê: tiêm ngay vào mặt ngoài đùi, qua quần áo cũng được. Đây là thuốc quan trọng nhất. Không có bút: gọi {emergency} ngay.",
+                "en": "If your child has an adrenaline (epinephrine) auto-injector, use it now in the outer thigh, through clothing if needed. It is the most important treatment. If you don’t have one, call {emergency} straight away."
+              },
+              "image": "tiem-adrenaline-dui",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Nằm ngửa, kê cao chân",
+                "en": "Lie flat, legs raised"
+              },
+              "body": {
+                "vi": "Không cho bé đứng hay đi lại. Khó thở: cho ngồi, duỗi chân. Bé nhỏ: bế nằm ngang, không bế dựng. Nôn hoặc bất tỉnh: đặt nằm nghiêng.",
+                "en": "Don’t let your child stand or walk. If breathing is hard, let them sit with legs out. Hold a young child flat, not upright. If they vomit or are unconscious, put them on their side."
               },
               "image": null,
               "chips": [],
@@ -1114,12 +1317,26 @@
             },
             {
               "title": {
-                "vi": "Theo dõi nhịp thở",
-                "en": "Watch the breathing"
+                "vi": "Tiêm thêm liều nếu chưa đỡ",
+                "en": "Give another dose if no better"
               },
               "body": {
-                "vi": "Ở cạnh bé đến khi nhân viên y tế tới. Làm theo hướng dẫn của tổng đài.",
-                "en": "Stay with baby until medical staff arrive. Follow the operator’s instructions."
+                "vi": "Sau 5 phút chưa đỡ và có bút thứ hai: tiêm tiếp. Bé ngừng thở: bắt đầu hồi sức tim phổi (CPR).",
+                "en": "If there’s no improvement after 5 minutes and you have a second pen, use it. If your child stops breathing, start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Ở cạnh bé",
+                "en": "Stay with your child"
+              },
+              "body": {
+                "vi": "Theo dõi nhịp thở đến khi nhân viên y tế tới. Làm theo hướng dẫn của tổng đài.",
+                "en": "Watch their breathing until help arrives. Follow the operator’s instructions."
               },
               "image": null,
               "chips": [],
@@ -1136,8 +1353,20 @@
               },
               "items": [
                 {
+                  "vi": "Cho bé đứng dậy, đi lại",
+                  "en": "Letting your child stand up or walk"
+                },
+                {
+                  "vi": "Chỉ dùng thuốc chống dị ứng thay cho adrenaline",
+                  "en": "Giving only antihistamine instead of adrenaline"
+                },
+                {
+                  "vi": "Chờ xem triệu chứng có tự hết không",
+                  "en": "Waiting to see if it settles"
+                },
+                {
                   "vi": "Để nhiều người vây quanh bé",
-                  "en": "Letting a crowd gather around baby"
+                  "en": "Letting a crowd gather around your child"
                 }
               ]
             },
@@ -1145,12 +1374,16 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Khó thở, khò khè, tím tái, lả đi: gọi {emergency}",
                   "en": "Trouble breathing, wheezing, turning blue, going limp: call {emergency}"
+                },
+                {
+                  "vi": "Luôn đến viện sau sốc phản vệ, kể cả khi đã đỡ: phản ứng có thể quay lại",
+                  "en": "Always go to hospital after anaphylaxis, even if better: it can come back"
                 }
               ]
             }
@@ -1214,12 +1447,12 @@
           "steps": [
             {
               "title": {
-                "vi": "Gọi {emergency} ngay",
-                "en": "Call {emergency} now"
+                "vi": "Gọi {poison} ngay",
+                "en": "Call {poison} now"
               },
               "body": {
-                "vi": "Giữ bình tĩnh, làm theo hướng dẫn của tổng đài.",
-                "en": "Stay calm and follow the operator’s instructions."
+                "vi": "Bé co giật, khó thở, lơ mơ hoặc bất tỉnh: gọi {emergency}. Giữ bình tĩnh, làm theo hướng dẫn được đưa ra.",
+                "en": "If your child has a seizure, struggles to breathe, is drowsy or unconscious: call {emergency}. Stay calm and follow the advice you’re given."
               },
               "image": null,
               "chips": [],
@@ -1233,7 +1466,7 @@
               },
               "body": {
                 "vi": "Bé lơ mơ, bất tỉnh: đặt nằm nghiêng để tránh sặc.",
-                "en": "If drowsy or unconscious: lay them on the side to avoid choking."
+                "en": "If drowsy or unconscious: lay them on their side to avoid choking."
               },
               "image": "nam-nghieng-an-toan",
               "chips": [],
@@ -1246,8 +1479,22 @@
                 "en": "Rinse the mouth with clean water"
               },
               "body": {
-                "vi": "Cho bé súc miệng rồi nhổ ra. Chỉ cho uống khi nhân viên y tế hướng dẫn.",
-                "en": "Have the child rinse and spit. Only give a drink when medical staff say so."
+                "vi": "Lấy hết thuốc, hoá chất còn trong miệng. Cho bé súc miệng rồi nhổ ra. Chỉ cho uống khi nhân viên y tế hướng dẫn.",
+                "en": "Take any pills or chemicals out of the mouth. Have your child rinse and spit. Only give a drink when medical staff say so."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Hoá chất dính da, mắt",
+                "en": "Chemical on skin or in eyes"
+              },
+              "body": {
+                "vi": "Cởi bỏ quần áo dính hoá chất. Xối nước sạch chảy liên tục lên da hoặc mắt ít nhất 15 phút.",
+                "en": "Take off any clothes with the chemical on them. Rinse the skin or eyes under clean running water for at least 15 minutes."
               },
               "image": null,
               "chips": [],
@@ -1260,8 +1507,8 @@
                 "en": "Bring the medicine pack or bottle"
               },
               "body": {
-                "vi": "Giúp bác sĩ biết bé đã uống gì, bao nhiêu.",
-                "en": "This helps the doctor know what and how much was swallowed."
+                "vi": "Giúp bác sĩ biết bé đã uống gì, bao nhiêu, lúc nào.",
+                "en": "This helps the doctor know what, how much and when."
               },
               "image": "mang-theo-vo-thuoc",
               "chips": [],
@@ -1279,11 +1526,15 @@
               "items": [
                 {
                   "vi": "Tự gây nôn, móc họng cho bé",
-                  "en": "Making the child vomit or putting fingers down the throat"
+                  "en": "Making your child vomit or putting fingers down the throat"
                 },
                 {
-                  "vi": "Tự cho uống thuốc giải, sữa hay nước khi chưa được hướng dẫn",
-                  "en": "Giving an antidote, milk or water before you are told to"
+                  "vi": "Cho uống sữa, nước, lòng trắng trứng, nước đỗ xanh hay “thuốc giải” khi chưa được hướng dẫn",
+                  "en": "Giving milk, water, egg white, mung-bean water or any “antidote” before you’re told to"
+                },
+                {
+                  "vi": "Để bé nằm ngửa khi bé lơ mơ",
+                  "en": "Leaving a drowsy child lying on their back"
                 }
               ]
             },
@@ -1291,12 +1542,20 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
-                  "vi": "Luôn đưa bé đến cơ sở y tế, kể cả khi bé có vẻ bình thường",
-                  "en": "Always take the child to a medical facility, even if they seem fine"
+                  "vi": "Luôn cho bé đi khám, kể cả khi bé có vẻ bình thường",
+                  "en": "Always get your child checked, even if they seem fine, unless the poison centre says it’s safe at home"
+                },
+                {
+                  "vi": "Nuốt pin cúc áo, nam châm: xem trang Nuốt dị vật, pin, nam châm",
+                  "en": "Swallowed a button battery or magnet: see Swallowed object, battery or magnet"
+                },
+                {
+                  "vi": "Nuốt dầu hoả, xăng, thuốc thông cống, thuốc trừ sâu: gọi {emergency}",
+                  "en": "Swallowed kerosene, gasoline, drain cleaner or pesticide: call {emergency}"
                 }
               ]
             }
@@ -1392,8 +1651,8 @@
                 "en": "Keep head, neck and back still"
               },
               "body": {
-                "vi": "Nghi chấn thương: không di chuyển đầu, cổ hay bất kỳ bộ phận nào của bé.",
-                "en": "If you suspect an injury, don’t move the head, neck or any part of the body."
+                "vi": "Nghi chấn thương: không di chuyển đầu, cổ, lưng của bé, chờ xe cấp cứu. Bắt buộc phải tự chuyển: nhiều người cùng nâng, giữ đầu, cổ, thân thẳng hàng, cho bé nằm phẳng.",
+                "en": "If you suspect an injury, don’t move the head, neck or back; wait for the ambulance. If you truly must move the child yourself, lift with several people, keep head, neck and body in line, and keep them lying flat."
               },
               "image": null,
               "chips": [],
@@ -1438,12 +1697,16 @@
               },
               "items": [
                 {
-                  "vi": "Bế xốc hoặc gập người bé. Cần 2–3 người cùng nâng bé lên ván cứng",
-                  "en": "Yanking the child up or bending their body. Use 2–3 people to lift them onto a rigid board"
+                  "vi": "Bế xốc, gập người bé hoặc chở bé bằng xe máy khi nghi chấn thương cổ, lưng",
+                  "en": "Yanking the child up, bending them, or carrying them on a motorbike if you suspect a neck or back injury"
                 },
                 {
-                  "vi": "Cho bé ăn uống khi bị chấn thương bụng",
-                  "en": "Giving food or drink after a belly injury"
+                  "vi": "Tháo mũ bảo hiểm của bé, trừ khi bé không thở hoặc đang nôn",
+                  "en": "Taking off the child’s helmet unless they aren’t breathing or are vomiting"
+                },
+                {
+                  "vi": "Cho bé ăn uống (bé có thể cần phẫu thuật)",
+                  "en": "Giving food or drink (they may need surgery)"
                 }
               ]
             },
@@ -1451,12 +1714,16 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Mọi tai nạn giao thông đều cần đưa bé đi khám",
                   "en": "Every traffic accident needs a medical check"
+                },
+                {
+                  "vi": "Bé lơ mơ, nôn, co giật, chảy máu hoặc dịch ở tai, mũi: gọi {emergency}",
+                  "en": "Drowsy, vomiting, a seizure, or blood or fluid from the ears or nose: call {emergency}"
                 }
               ]
             }
@@ -1530,12 +1797,12 @@
             },
             {
               "title": {
-                "vi": "Bóp cánh mũi 10 phút",
-                "en": "Pinch the nose for 10 minutes"
+                "vi": "Bóp mũi 10–15 phút",
+                "en": "Pinch the nose for 10–15 minutes"
               },
               "body": {
-                "vi": "Ép nhẹ cánh mũi bên chảy máu. Chảy cả hai bên: kẹp chặt hai cánh mũi. Bé thở bằng miệng.",
-                "en": "Press gently on the bleeding side. If both sides bleed, pinch both firmly. The child breathes through the mouth."
+                "vi": "Bóp chặt phần mềm của mũi, ngay trên hai lỗ mũi, liên tục 10–15 phút, không thả ra để xem. Bé thở bằng miệng.",
+                "en": "Pinch the soft part of the nose, just above the nostrils, firmly for 10–15 minutes without letting go to check. Your child breathes through the mouth."
               },
               "image": null,
               "chips": [],
@@ -1570,8 +1837,8 @@
                   "en": "Tilting the head back"
                 },
                 {
-                  "vi": "Nhét bông vào mũi",
-                  "en": "Stuffing cotton into the nose"
+                  "vi": "Nhét bông, giấy hay lá vào mũi",
+                  "en": "Stuffing cotton, tissue or leaves into the nose"
                 }
               ]
             },
@@ -1579,12 +1846,24 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
-                  "vi": "Sau 10 phút máu vẫn chảy",
-                  "en": "Still bleeding after 10 minutes"
+                  "vi": "Bóp mũi 15 phút máu vẫn chảy, hoặc chảy rất nhiều",
+                  "en": "Still bleeding after 15 minutes of pinching, or bleeding heavily"
+                },
+                {
+                  "vi": "Chảy máu sau va đập vào đầu, mặt",
+                  "en": "Bleeding after a knock to the head or face"
+                },
+                {
+                  "vi": "Bé khó thở, xanh xao, chóng mặt",
+                  "en": "Trouble breathing, very pale or dizzy"
+                },
+                {
+                  "vi": "Hay chảy máu cam, dễ bầm tím: đi khám",
+                  "en": "Frequent nosebleeds or easy bruising: see a doctor"
                 }
               ]
             }
@@ -1673,12 +1952,12 @@
             },
             {
               "title": {
-                "vi": "Nâng cao vùng bị thương",
-                "en": "Raise the injured part"
+                "vi": "Ép liên tục ít nhất 10 phút",
+                "en": "Keep pressing for at least 10 minutes"
               },
               "body": {
-                "vi": "Giữ bé ở tư thế thoải mái.",
-                "en": "Keep the child comfortable."
+                "vi": "Ép chặt, không mở ra xem. Máu thấm qua: đặt thêm gạc lên trên và tiếp tục ép.",
+                "en": "Press hard and don’t lift it to check. If blood soaks through, add more gauze on top and keep pressing."
               },
               "image": null,
               "chips": [],
@@ -1702,19 +1981,36 @@
           ],
           "callouts": [
             {
-              "tone": "warning",
+              "tone": "negative",
               "heading": {
-                "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "vi": "Không được làm",
+                "en": "Do not"
               },
               "items": [
                 {
-                  "vi": "Máu chảy nhiều, không cầm được",
-                  "en": "Heavy bleeding that won’t stop"
+                  "vi": "Rắc bột thuốc, đắp lá hay chất không rõ nguồn gốc lên vết thương",
+                  "en": "Sprinkling powders, or putting leaves or unknown substances on the wound"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Máu chảy nhiều, không cầm được: gọi {emergency}",
+                  "en": "Heavy bleeding that won’t stop: call {emergency}"
                 },
                 {
-                  "vi": "Vết thương sâu, rộng hoặc có dị vật",
-                  "en": "The wound is deep or wide, or something is stuck in it"
+                  "vi": "Vết thương sâu, rộng, há miệng hoặc có dị vật",
+                  "en": "The wound is deep, wide, gaping, or something is stuck in it"
+                },
+                {
+                  "vi": "Đâm phải đinh, vật bẩn, vết thương dính đất: hỏi bác sĩ về tiêm uốn ván",
+                  "en": "A nail, dirty object or soil in the wound: ask a doctor about a tetanus shot"
                 }
               ]
             }
@@ -1796,7 +2092,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -1887,8 +2183,8 @@
                 "en": "Clean and dry"
               },
               "body": {
-                "vi": "Rửa vết thương bằng nước sạch hoặc dung dịch sát trùng, lau khô nhẹ.",
-                "en": "Rinse the wound with clean water or antiseptic, then pat dry gently."
+                "vi": "Rửa vết thương dưới vòi nước sạch vài phút cho trôi hết bụi bẩn, rồi lau khô nhẹ. Không cần đổ cồn hay oxy già vào vết thương.",
+                "en": "Rinse the wound under clean running water for a few minutes to wash out dirt, then pat dry gently. Don’t pour alcohol or hydrogen peroxide into it."
               },
               "image": null,
               "chips": [],
@@ -1915,8 +2211,8 @@
                 "en": "Wrap from the bottom up"
               },
               "body": {
-                "vi": "Quấn đều, vừa tay. Cố định bằng băng keo y tế.",
-                "en": "Wrap evenly and snugly. Secure with medical tape."
+                "vi": "Quấn đều, vừa tay. Cố định bằng băng keo y tế. Thay băng khi băng bị ướt, bẩn.",
+                "en": "Wrap evenly and snugly. Secure with medical tape. Change the dressing when it gets wet or dirty."
               },
               "image": null,
               "chips": [],
@@ -1935,23 +2231,31 @@
                 {
                   "vi": "Quấn quá chặt làm sưng, tím đầu ngón",
                   "en": "Wrapping so tight that fingertips or toes swell or turn blue"
+                },
+                {
+                  "vi": "Đắp lá, rắc bột thuốc lên vết thương",
+                  "en": "Putting leaves or powders on the wound"
                 }
               ]
             },
             {
               "tone": "warning",
               "heading": {
-                "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "vi": "Khi nào cần đi khám",
+                "en": "When to see a doctor"
               },
               "items": [
                 {
-                  "vi": "Vết thương sưng, đỏ, chảy mủ hoặc bé đau nhiều",
-                  "en": "The wound is swollen, red or oozing pus, or the child is in a lot of pain"
+                  "vi": "Vết thương sưng, đỏ, nóng, chảy mủ hoặc bé sốt",
+                  "en": "The wound is swollen, red, hot or oozing pus, or your child has a fever"
                 },
                 {
-                  "vi": "Thay băng khi băng bị ướt, bẩn",
-                  "en": "Change the bandage when it gets wet or dirty"
+                  "vi": "Vết cắt há miệng, sâu: có thể cần khâu",
+                  "en": "A gaping or deep cut: it may need stitches"
+                },
+                {
+                  "vi": "Do đinh, vật bẩn: hỏi bác sĩ về tiêm uốn ván",
+                  "en": "Caused by a nail or something dirty: ask about a tetanus shot"
                 }
               ]
             }
@@ -1968,12 +2272,12 @@
       "emergency": false,
       "monitoring": false,
       "title": {
-        "vi": "Bỏng nước sôi",
-        "en": "Scald"
+        "vi": "Bỏng nước sôi, bỏng nhiệt",
+        "en": "Scalds and heat burns"
       },
       "lead": {
-        "vi": "Nước sôi, canh nóng, hơi nóng",
-        "en": "Boiling water, hot soup, steam"
+        "vi": "Nước sôi, canh nóng, hơi nóng, bô xe, bàn là",
+        "en": "Boiling water, hot soup, steam, exhaust pipes, irons"
       },
       "keywords": [
         {
@@ -1999,6 +2303,14 @@
         {
           "vi": "Bỏng bô xe",
           "en": "Exhaust pipe burn"
+        },
+        {
+          "vi": "Bỏng bàn là",
+          "en": "Iron burn"
+        },
+        {
+          "vi": "Bỏng lửa",
+          "en": "Fire burn"
         }
       ],
       "icon": "icon-bong-nuoc-soi",
@@ -2015,12 +2327,12 @@
           "steps": [
             {
               "title": {
-                "vi": "Xả nước mát 15–20 phút",
-                "en": "Cool running water for 15–20 minutes"
+                "vi": "Xả nước mát 20 phút",
+                "en": "Cool running water for 20 minutes"
               },
               "body": {
-                "vi": "Giúp hạ nhiệt, giảm sưng và đau.",
-                "en": "This cools the burn and eases swelling and pain."
+                "vi": "Xả nước mát (không lạnh buốt) chảy liên tục lên vết bỏng 20 phút, càng sớm càng tốt; trong 3 giờ đầu vẫn có ích. Cởi quần áo, trang sức quanh vết bỏng, trừ chỗ dính vào da. Giữ ấm phần người còn lại.",
+                "en": "Run cool (not icy) water over the burn for 20 minutes, as soon as you can; it still helps up to 3 hours later. Take off clothes and jewelry near the burn unless stuck to the skin. Keep the rest of your child warm."
               },
               "image": null,
               "chips": [],
@@ -2033,8 +2345,8 @@
                 "en": "Cover with clean gauze"
               },
               "body": {
-                "vi": "Gạc mỏng hoặc vải sạch, giảm nguy cơ nhiễm trùng.",
-                "en": "Thin gauze or a clean cloth lowers the risk of infection."
+                "vi": "Phủ hờ màng bọc thực phẩm hoặc gạc sạch không xơ. Không chọc vỡ bọng nước.",
+                "en": "Lay plastic wrap (cling film) or a clean non-fluffy dressing loosely over it. Don’t pop blisters."
               },
               "image": null,
               "chips": [],
@@ -2065,8 +2377,16 @@
               },
               "items": [
                 {
-                  "vi": "Bôi kem đánh răng, mỡ trăn hay chất không rõ nguồn gốc",
-                  "en": "Putting toothpaste, python fat or unknown substances on it"
+                  "vi": "Bôi kem đánh răng, nước mắm, lòng trắng trứng, mỡ trăn, dầu, bơ hay lá cây",
+                  "en": "Putting toothpaste, fish sauce, egg white, butter, oil or leaves on it"
+                },
+                {
+                  "vi": "Chườm đá hoặc nước đá",
+                  "en": "Using ice or iced water"
+                },
+                {
+                  "vi": "Chọc vỡ bọng nước",
+                  "en": "Popping blisters"
                 }
               ]
             },
@@ -2074,16 +2394,24 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
-                  "vi": "Bỏng rộng, sâu, phồng rộp lớn",
-                  "en": "A large or deep burn, or big blisters"
+                  "vi": "Vết bỏng lớn hơn lòng bàn tay bé, da trắng bệch hoặc cháy đen",
+                  "en": "A burn bigger than your child’s palm, or white or charred skin"
                 },
                 {
-                  "vi": "Bỏng ở mặt, tay, bộ phận sinh dục",
-                  "en": "A burn on the face, hands or genitals"
+                  "vi": "Bỏng ở mặt, bàn tay, bàn chân, bộ phận sinh dục, khớp",
+                  "en": "A burn on the face, hands, feet, genitals or a joint"
+                },
+                {
+                  "vi": "Bỏng điện, bỏng hoá chất, hít phải khói hoặc hơi nóng",
+                  "en": "Electrical or chemical burns, or breathing in smoke or steam"
+                },
+                {
+                  "vi": "Bé dưới 5 tuổi bị bỏng phồng rộp",
+                  "en": "A child under 5 with a blistering burn"
                 }
               ]
             }
@@ -2190,12 +2518,37 @@
           ],
           "callouts": [
             {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Xoa bóp, xoa dầu nóng, rượu thuốc hay đắp lá",
+                  "en": "Massaging, heat rubs, herbal liniments or leaf poultices"
+                },
+                {
+                  "vi": "Đưa bé đến thầy lang nắn, bó thuốc",
+                  "en": "Taking your child to a traditional bone-setter"
+                }
+              ]
+            },
+            {
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
+                {
+                  "vi": "Bé không đứng, không đi hoặc không cử động được chỗ đau",
+                  "en": "Your child can’t stand, walk on it or move it"
+                },
+                {
+                  "vi": "Đau dữ dội, sưng nhanh, biến dạng",
+                  "en": "Severe pain, fast swelling or an odd shape"
+                },
                 {
                   "vi": "Đau, sưng không giảm sau 48 giờ",
                   "en": "Pain and swelling not better after 48 hours"
@@ -2280,8 +2633,8 @@
                 "en": "Splint it for now"
               },
               "body": {
-                "vi": "Dùng thanh thẳng (gậy, thước) đặt dọc chi bị gãy, quấn vải giữ cố định.",
-                "en": "Lay something straight (a stick, a ruler) along the broken limb and wrap cloth around to hold it still."
+                "vi": "Giữ chi ở nguyên tư thế đang có. Chỉ nẹp khi phải tự đưa bé đi: đặt nẹp (gậy, thước, bìa cứng) dọc chi, qua cả khớp trên và dưới chỗ gãy, quấn vải giữ, không quấn chặt.",
+                "en": "Keep the limb in the position you found it. Only splint if you must take your child in yourself: lay something straight (a stick, ruler, stiff cardboard) along the limb, past the joints above and below, and tie it loosely with cloth."
               },
               "image": null,
               "chips": [],
@@ -2294,8 +2647,8 @@
                 "en": "Open wound: stop the bleeding"
               },
               "body": {
-                "vi": "Lau nhẹ, băng vừa phải để máu vẫn lưu thông.",
-                "en": "Wipe gently and bandage firmly but not tight, so blood can still flow."
+                "vi": "Phủ gạc sạch lên vết thương, ép nhẹ xung quanh để cầm máu. Không ấn lên đầu xương lòi ra, không đẩy vào trong.",
+                "en": "Cover the wound with clean gauze and press gently around it to stop the bleeding. Don’t press on bone that is showing or push it back in."
               },
               "image": null,
               "chips": [],
@@ -2308,8 +2661,8 @@
                 "en": "Take the child to hospital"
               },
               "body": {
-                "vi": "Thuốc giảm đau chỉ dùng theo chỉ định bác sĩ.",
-                "en": "Only give painkillers as a doctor advises."
+                "vi": "Không cho bé ăn uống (có thể cần gây mê). Thuốc giảm đau chỉ dùng theo chỉ định bác sĩ.",
+                "en": "Don’t give food or drink (they may need an anaesthetic). Only give painkillers as a doctor advises."
               },
               "image": null,
               "chips": [],
@@ -2332,6 +2685,10 @@
                 {
                   "vi": "Di chuyển tay, chân hay vùng bé đang đau",
                   "en": "Moving the arm, leg or area that hurts"
+                },
+                {
+                  "vi": "Đưa bé đến thầy lang bó thuốc, đắp lá",
+                  "en": "Taking your child to a traditional bone-setter or using herbal wraps"
                 }
               ]
             },
@@ -2339,7 +2696,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -2349,6 +2706,10 @@
                 {
                   "vi": "Nghi chấn thương đầu, cổ, lưng: gọi {emergency}",
                   "en": "Suspected head, neck or back injury: call {emergency}"
+                },
+                {
+                  "vi": "Xương lòi ra, tay chân lạnh, tím, tê dưới chỗ gãy",
+                  "en": "Bone showing, or the hand or foot is cold, blue or numb"
                 }
               ]
             }
@@ -2396,6 +2757,14 @@
         {
           "vi": "Rửa mắt",
           "en": "Rinse the eye"
+        },
+        {
+          "vi": "Hoá chất vào mắt",
+          "en": "Chemical in the eye"
+        },
+        {
+          "vi": "Vôi bắn vào mắt",
+          "en": "Lime in the eye"
         }
       ],
       "icon": "icon-ton-thuong-mat",
@@ -2420,7 +2789,7 @@
               },
               "body": {
                 "vi": "Nhắc bé không dụi mắt.",
-                "en": "Remind the child not to rub the eye."
+                "en": "Remind your child not to rub the eye."
               },
               "image": null,
               "chips": [],
@@ -2448,7 +2817,21 @@
               },
               "body": {
                 "vi": "Che nhẹ mắt bằng gạc sạch, đưa bé đến bác sĩ.",
-                "en": "Cover the eye lightly with clean gauze and take the child to a doctor."
+                "en": "Cover the eye lightly with clean gauze and take your child to a doctor."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Vật cắm vào mắt: không rút",
+                "en": "Something stuck in the eye: leave it"
+              },
+              "body": {
+                "vi": "Không rút ra. Úp một cốc giấy che quanh mắt, không chạm vào vật. Gọi {emergency} hoặc đi cấp cứu ngay.",
+                "en": "Don’t pull it out. Tape a paper cup over the eye without touching the object. Call {emergency} or go to the emergency department now."
               },
               "image": null,
               "chips": [],
@@ -2465,12 +2848,16 @@
               },
               "items": [
                 {
-                  "vi": "Xoa, dụi mắt",
-                  "en": "Rubbing the eye"
+                  "vi": "Xoa, dụi hoặc ấn lên mắt",
+                  "en": "Rubbing or pressing on the eye"
                 },
                 {
-                  "vi": "Tự nhỏ thuốc hay dung dịch không rõ nguồn gốc",
-                  "en": "Putting in drops or liquids of unknown origin"
+                  "vi": "Nhỏ sữa mẹ, nước lá hay thuốc không rõ nguồn gốc vào mắt",
+                  "en": "Putting breast milk, herbal water or unknown drops in the eye"
+                },
+                {
+                  "vi": "Rút vật đâm vào mắt ra",
+                  "en": "Pulling out anything stuck in the eye"
                 }
               ]
             },
@@ -2478,7 +2865,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -2488,6 +2875,14 @@
                 {
                   "vi": "Dị vật không ra, máu không ngừng chảy",
                   "en": "The object won’t come out, or bleeding won’t stop"
+                },
+                {
+                  "vi": "Vật nhọn đâm, vật bắn vào mắt với tốc độ cao",
+                  "en": "Something sharp or fast-moving hit the eye"
+                },
+                {
+                  "vi": "Hoá chất vào mắt: xối nước rồi đi khám ngay",
+                  "en": "Chemical in the eye: rinse, then see a doctor now"
                 }
               ]
             }
@@ -2560,8 +2955,8 @@
                   "en": "Rubbing or pressing on the eye"
                 },
                 {
-                  "vi": "Tự nhỏ thuốc hay dung dịch không rõ nguồn gốc",
-                  "en": "Putting in drops or liquids of unknown origin"
+                  "vi": "Nhỏ sữa mẹ, nước lá hay thuốc không rõ nguồn gốc vào mắt",
+                  "en": "Putting breast milk, herbal water or unknown drops in the eye"
                 },
                 {
                   "vi": "Rút vật đâm vào mắt ra",
@@ -2573,7 +2968,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -2583,6 +2978,104 @@
                 {
                   "vi": "Dị vật không ra, máu không ngừng chảy",
                   "en": "The object won’t come out, or bleeding won’t stop"
+                },
+                {
+                  "vi": "Vật nhọn đâm, vật bắn vào mắt với tốc độ cao",
+                  "en": "Something sharp or fast-moving hit the eye"
+                },
+                {
+                  "vi": "Hoá chất vào mắt: xối nước rồi đi khám ngay",
+                  "en": "Chemical in the eye: rinse, then see a doctor now"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        },
+        {
+          "id": "chemical",
+          "label": {
+            "vi": "Hoá chất",
+            "en": "Chemical"
+          },
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Xối nước ngay, không chờ. Mỗi giây đều quan trọng.",
+            "en": "Rinse straight away; don’t wait. Every second counts."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Xối nước liên tục 15–20 phút",
+                "en": "Rinse for 15–20 minutes"
+              },
+              "body": {
+                "vi": "Giữ mí mắt mở, mắt bị hoá chất ở phía dưới. Xối nước sạch chảy nhẹ, liên tục từ góc mắt trong ra ngoài, ít nhất 15–20 phút.",
+                "en": "Hold the eyelids open with the affected eye lower. Run clean water gently from the inner corner outwards, without stopping, for at least 15–20 minutes."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Nhờ người gọi cấp cứu",
+                "en": "Have someone call for help"
+              },
+              "body": {
+                "vi": "Vừa xối vừa nhờ người gọi {emergency}. Mang theo chai hoá chất đến viện.",
+                "en": "Keep rinsing while someone calls {emergency}. Take the chemical bottle to hospital."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Luôn đi khám mắt",
+                "en": "Always get the eye checked"
+              },
+              "body": {
+                "vi": "Kể cả khi mắt đã đỡ đau. Vôi, xi măng, nước tẩy, nước thông cống rất nguy hiểm cho mắt.",
+                "en": "Even if it feels better. Lime, cement, bleach and drain cleaner are very harmful to the eye."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Dụi mắt, băng ép mắt",
+                  "en": "Rubbing the eye or bandaging it tightly"
+                },
+                {
+                  "vi": "Dùng sữa, giấm hay chất khác để “trung hoà”",
+                  "en": "Using milk, vinegar or anything else to “neutralise” it"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Mọi trường hợp hoá chất vào mắt",
+                  "en": "Any chemical in the eye"
                 }
               ]
             }
@@ -2599,8 +3092,8 @@
       "emergency": false,
       "monitoring": false,
       "title": {
-        "vi": "Chó cắn",
-        "en": "Dog bite"
+        "vi": "Chó, mèo cắn",
+        "en": "Dog or cat bite"
       },
       "lead": {
         "vi": "Vết cắn, vết cào của chó, mèo",
@@ -2630,6 +3123,14 @@
         {
           "vi": "Tiêm phòng dại",
           "en": "Rabies vaccine"
+        },
+        {
+          "vi": "Dơi cắn",
+          "en": "Bat bite"
+        },
+        {
+          "vi": "Khỉ cắn",
+          "en": "Monkey bite"
         }
       ],
       "icon": "icon-cho-can",
@@ -2646,12 +3147,12 @@
           "steps": [
             {
               "title": {
-                "vi": "Rửa xà phòng 10–15 phút",
-                "en": "Wash with soap for 10–15 minutes"
+                "vi": "Rửa xà phòng ít nhất 15 phút",
+                "en": "Wash with soap for 15 minutes"
               },
               "body": {
-                "vi": "Dưới vòi nước chảy. Đây là bước quan trọng nhất.",
-                "en": "Under running water. This is the most important step."
+                "vi": "Xối nước chảy và xà phòng lên vết cắn, vết cào ít nhất 15 phút, kể cả vết xước nhỏ. Đây là bước quan trọng nhất.",
+                "en": "Wash every bite or scratch, even a small one, with soap under running water for at least 15 minutes. This is the most important step."
               },
               "image": null,
               "chips": [],
@@ -2664,8 +3165,8 @@
                 "en": "Disinfect"
               },
               "body": {
-                "vi": "Dùng cồn 70 độ hoặc dung dịch iod.",
-                "en": "Use 70% alcohol or iodine solution."
+                "vi": "Bôi cồn 70 độ hoặc dung dịch povidone-iod.",
+                "en": "Apply 70% alcohol (rubbing alcohol) or povidone-iodine."
               },
               "image": null,
               "chips": [],
@@ -2674,12 +3175,12 @@
             },
             {
               "title": {
-                "vi": "Băng lại, đi tiêm phòng",
-                "en": "Cover it, get vaccinated"
+                "vi": "Che hờ, đi tiêm phòng ngay",
+                "en": "Cover loosely, get shots today"
               },
               "body": {
-                "vi": "Đưa bé đến cơ sở y tế để được tư vấn tiêm vắc xin.",
-                "en": "Take the child to a medical facility for vaccine advice."
+                "vi": "Che hờ bằng gạc sạch, không băng kín. Đưa bé đến cơ sở y tế ngay trong ngày để được tư vấn tiêm phòng dại, uốn ván. Không chờ theo dõi con vật rồi mới đi tiêm.",
+                "en": "Cover loosely with clean gauze; don’t seal it. Take your child to a clinic the same day for advice on rabies and tetanus shots. Don’t delay: the doctor decides whether shots are needed."
               },
               "image": null,
               "chips": [],
@@ -2700,8 +3201,12 @@
                   "en": "Squeezing blood out of the bite"
                 },
                 {
-                  "vi": "Đắp lá hay thuốc không rõ nguồn gốc",
-                  "en": "Putting leaves or unknown remedies on it"
+                  "vi": "Đắp lá, thuốc nam hay chữa dại bằng thầy lang",
+                  "en": "Putting leaves or herbal remedies on it, or using traditional healers for rabies"
+                },
+                {
+                  "vi": "Khâu kín hoặc băng chặt vết cắn",
+                  "en": "Closing or tightly bandaging the bite"
                 }
               ]
             },
@@ -2709,12 +3214,24 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
-                  "vi": "Mọi vết cắn đều cần đưa bé đi khám",
-                  "en": "Every bite needs a doctor’s check"
+                  "vi": "Mọi vết cắn, cào đều cần đưa bé đi khám",
+                  "en": "Every bite or scratch needs a doctor’s check"
+                },
+                {
+                  "vi": "Vết cắn ở mặt, đầu, cổ, bàn tay hoặc chảy máu nhiều: đi ngay",
+                  "en": "Bites on the face, head, neck or hands, or heavy bleeding: go now"
+                },
+                {
+                  "vi": "Bị dơi, khỉ, chuột cắn hoặc cào: cũng cần tư vấn tiêm phòng",
+                  "en": "Bat, monkey or rat bites or scratches also need advice on shots"
+                },
+                {
+                  "vi": "Vết cắn sưng, nóng, đỏ, chảy mủ hoặc bé sốt",
+                  "en": "The bite becomes swollen, hot, red or oozes pus, or your child gets a fever"
                 }
               ]
             }
@@ -2782,8 +3299,8 @@
                 "en": "Flick the stinger out"
               },
               "body": {
-                "vi": "Dùng nhíp hoặc thẻ cứng khều nhẹ. Không bóp, không nặn.",
-                "en": "Use tweezers or a stiff card to flick it out gently. Don’t pinch or squeeze."
+                "vi": "Khều hoặc gạt ngòi ra càng sớm càng tốt bằng móng tay, thẻ cứng. Không bóp túi nọc.",
+                "en": "Scrape the stinger out as soon as you can with a fingernail or a stiff card. Don’t squeeze the venom sac."
               },
               "image": null,
               "chips": [],
@@ -2806,12 +3323,12 @@
             },
             {
               "title": {
-                "vi": "Sát khuẩn nhẹ",
-                "en": "Disinfect gently"
+                "vi": "Giảm đau, giảm ngứa",
+                "en": "Ease pain and itching"
               },
               "body": {
-                "vi": "Bôi dung dịch sát khuẩn như cồn 70 độ.",
-                "en": "Apply an antiseptic such as 70% alcohol."
+                "vi": "Kê cao chỗ sưng. Hỏi dược sĩ về thuốc giảm đau, thuốc chống ngứa hợp tuổi bé.",
+                "en": "Raise the swollen area. Ask a pharmacist about pain relief or anti-itch medicine suitable for your child’s age."
               },
               "image": null,
               "chips": [],
@@ -2821,15 +3338,44 @@
           ],
           "callouts": [
             {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Nặn, bóp chỗ bị đốt",
+                  "en": "Squeezing the sting"
+                },
+                {
+                  "vi": "Đắp vôi, kem đánh răng hay lá cây",
+                  "en": "Putting lime, toothpaste or leaves on it"
+                }
+              ]
+            },
+            {
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Phát ban, khó thở, sưng lớn, nôn: dấu hiệu sốc phản vệ, gọi {emergency}",
                   "en": "Rash, trouble breathing, large swelling, vomiting: signs of anaphylaxis, call {emergency}"
+                },
+                {
+                  "vi": "Bị đốt nhiều nốt, nhất là ong vò vẽ, ong bắp cày: đi viện ngay dù bé chưa mệt",
+                  "en": "Many stings, especially from wasps or hornets: go to hospital even if your child seems well"
+                },
+                {
+                  "vi": "Bị đốt trong miệng, họng",
+                  "en": "A sting inside the mouth or throat"
+                },
+                {
+                  "vi": "Bé từng phản ứng nặng với ong đốt",
+                  "en": "Your child has had a bad reaction to stings before"
                 }
               ]
             }
@@ -2907,8 +3453,8 @@
                 "en": "Wash under running water now"
               },
               "body": {
-                "vi": "Nếu lỡ chạm hoặc chà xát, rửa sạch bằng xà phòng.",
-                "en": "If it was touched or rubbed, wash well with soap."
+                "vi": "Rửa sạch vùng da bằng xà phòng và nước. Rửa tay bé, giặt quần áo, khăn đã chạm vào kiến.",
+                "en": "Wash the skin well with soap and water. Wash your child’s hands and any clothes or towels the beetle touched."
               },
               "image": null,
               "chips": [],
@@ -2932,15 +3478,40 @@
           ],
           "callouts": [
             {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Đập, chà xát kiến trên da",
+                  "en": "Crushing or rubbing the beetle on the skin"
+                },
+                {
+                  "vi": "Gãi, đắp lá, bôi kem đánh răng hay nước mắm",
+                  "en": "Scratching, or putting leaves, toothpaste or fish sauce on it"
+                }
+              ]
+            },
+            {
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Vết thương lan rộng, phồng rộp nhiều, gần mắt",
                   "en": "The mark spreads, there are many blisters, or it’s near the eyes"
+                },
+                {
+                  "vi": "Dịch kiến dính vào mắt: xối nước sạch, đi khám mắt",
+                  "en": "Beetle fluid in the eye: rinse with clean water and see a doctor"
+                },
+                {
+                  "vi": "Vết thương sưng, chảy mủ hoặc bé sốt",
+                  "en": "The area swells, oozes pus, or your child gets a fever"
                 }
               ]
             }
@@ -3009,7 +3580,21 @@
               },
               "body": {
                 "vi": "Đưa bé vào chỗ tối, chiếu đèn vào ống tai để côn trùng bò ra theo ánh sáng.",
-                "en": "Take the child somewhere dark and shine a light into the ear so the insect crawls out towards it."
+                "en": "Take your child somewhere dark and shine a light into the ear so the insect crawls out towards it."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Nhỏ vài giọt dầu",
+                "en": "Add a few drops of oil"
+              },
+              "body": {
+                "vi": "Côn trùng chưa ra, bé đau: nghiêng tai lên, nhỏ vài giọt dầu ô liu hoặc dầu em bé (không nóng) để côn trùng nổi ra. Không làm nếu bé có ống thông tai, thủng màng nhĩ hay tai đang chảy dịch.",
+                "en": "If it’s still in and hurting: tilt the ear up and put in a few drops of olive or baby oil (not warm) so the insect floats out. Don’t do this if your child has ear tubes, a burst eardrum or fluid coming from the ear."
               },
               "image": null,
               "chips": [],
@@ -3023,7 +3608,7 @@
               },
               "body": {
                 "vi": "Đưa bé đến bác sĩ tai mũi họng.",
-                "en": "Take the child to an ear, nose and throat doctor."
+                "en": "Take your child to an ear, nose and throat doctor."
               },
               "image": null,
               "chips": [],
@@ -3042,6 +3627,10 @@
                 {
                   "vi": "Dùng tăm, que hay vật nhọn ngoáy tai",
                   "en": "Poking in the ear with toothpicks, sticks or sharp objects"
+                },
+                {
+                  "vi": "Nhỏ dầu nóng, cồn hay nước vào tai",
+                  "en": "Putting hot oil, alcohol or water in the ear"
                 }
               ]
             },
@@ -3049,12 +3638,16 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Bé đau nhiều, chảy máu hoặc dịch ở tai",
                   "en": "A lot of pain, or blood or fluid from the ear"
+                },
+                {
+                  "vi": "Pin cúc áo, nam châm trong tai hoặc mũi: đi cấp cứu ngay",
+                  "en": "A button battery or magnet in the ear or nose: go to the emergency department now"
                 }
               ]
             }
@@ -3110,16 +3703,19 @@
           "label": null,
           "ageMonths": null,
           "hero": null,
-          "banner": null,
+          "banner": {
+            "vi": "Gọi {emergency} hoặc đưa bé đến bệnh viện gần nhất có huyết thanh kháng nọc rắn.",
+            "en": "Call {emergency} or go to the nearest hospital that has antivenom."
+          },
           "steps": [
             {
               "title": {
                 "vi": "Trấn an, giữ bé nằm yên",
-                "en": "Calm the child, keep them still"
+                "en": "Calm your child, keep them still"
               },
               "body": {
-                "vi": "Hạn chế cử động để nọc độc lan chậm hơn.",
-                "en": "Less movement means the venom spreads more slowly."
+                "vi": "Hạn chế cử động để nọc độc lan chậm hơn. Bế bé, không để bé tự đi.",
+                "en": "Less movement means the venom spreads more slowly. Carry your child; don’t let them walk."
               },
               "image": null,
               "chips": [],
@@ -3128,14 +3724,28 @@
             },
             {
               "title": {
-                "vi": "Băng nhẹ, tháo trang sức",
-                "en": "Light bandage, remove jewelry"
+                "vi": "Tháo trang sức, nẹp chi bị cắn",
+                "en": "Remove jewelry, splint the limb"
               },
               "body": {
-                "vi": "Quấn gạc nhẹ quanh vết cắn. Tháo quần áo chật, trang sức ở vùng bị cắn.",
-                "en": "Wrap gauze loosely around the bite. Take off tight clothing and jewelry near it."
+                "vi": "Tháo nhẫn, vòng, quần áo chật gần vết cắn. Nẹp cả chi bị cắn như khi gãy xương, để ngang tầm tim.",
+                "en": "Take off rings, bracelets and tight clothing near the bite. Splint the whole bitten limb as for a broken bone, at about heart level."
               },
               "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Băng ép: chỉ với rắn gây liệt",
+                "en": "Pressure bandage: paralysing snakes only"
+              },
+              "body": {
+                "vi": "Nghi rắn hổ mang, cạp nong, cạp nia: quấn băng thun từ vết cắn lên hết chi, chặt như băng bong gân, vẫn luồn được một ngón tay. Rắn lục (vết cắn sưng nhanh, chảy máu): chỉ nẹp, không băng ép.",
+                "en": "If it may be a cobra or krait: wrap an elastic bandage from the bite up the whole limb, as firm as for a sprain, so a finger still slips under. For pit vipers (fast swelling, bleeding at the bite): splint only, no pressure bandage."
+              },
+              "image": "ran-can-bang-nhe",
               "chips": [],
               "count": null,
               "cprRole": null
@@ -3146,8 +3756,8 @@
                 "en": "Go to hospital now"
               },
               "body": {
-                "vi": "Ghi nhớ hình dạng, màu sắc của rắn.",
-                "en": "Remember the snake’s shape and color."
+                "vi": "Chụp ảnh rắn từ xa nếu an toàn. Không cố bắt hay giết rắn.",
+                "en": "Take a photo of the snake from a safe distance if you can. Don’t try to catch or kill it."
               },
               "image": null,
               "chips": [],
@@ -3164,12 +3774,20 @@
               },
               "items": [
                 {
-                  "vi": "Garo hay buộc chặt",
-                  "en": "Using a tourniquet or tying it tight"
+                  "vi": "Garo hay buộc chặt bằng dây",
+                  "en": "Using a tourniquet or tying it tight with string"
                 },
                 {
-                  "vi": "Chườm đá, bôi thuốc lên vết cắn",
-                  "en": "Putting ice or medicine on the bite"
+                  "vi": "Rạch, chích, hút nọc độc",
+                  "en": "Cutting the bite or sucking out venom"
+                },
+                {
+                  "vi": "Chườm đá, đắp lá, thuốc nam lên vết cắn",
+                  "en": "Putting ice, leaves or herbal remedies on the bite"
+                },
+                {
+                  "vi": "Đưa bé đến thầy lang thay vì bệnh viện",
+                  "en": "Going to a traditional healer instead of a hospital"
                 }
               ]
             },
@@ -3177,12 +3795,16 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Mọi vết rắn cắn đều cần đưa bé đi viện ngay",
                   "en": "Every snake bite needs hospital right away"
+                },
+                {
+                  "vi": "Sụp mi, khó nuốt, khó thở, chảy máu chân răng: gọi {emergency}",
+                  "en": "Drooping eyelids, trouble swallowing or breathing, bleeding gums: call {emergency}"
                 }
               ]
             }
@@ -3250,8 +3872,8 @@
                 "en": "Move to somewhere cool"
               },
               "body": {
-                "vi": "Nơi thoáng gió. Tình trạng không khá lên: gọi {emergency}.",
-                "en": "Somewhere airy. If it doesn’t get better: call {emergency}."
+                "vi": "Nơi thoáng mát, có bóng râm hoặc điều hoà. Bé lơ mơ, lú lẫn, co giật hoặc không đỡ: gọi {emergency} ngay.",
+                "en": "Somewhere airy and shaded or air-conditioned. If your child is drowsy, confused, has a seizure or isn’t improving: call {emergency} now."
               },
               "image": null,
               "chips": [],
@@ -3264,8 +3886,8 @@
                 "en": "Cool the body"
               },
               "body": {
-                "vi": "Cởi bớt quần áo, quạt mát. Đắp khăn mát ở nách, bẹn, cổ.",
-                "en": "Take off some clothes and fan. Put cool cloths on the armpits, groin and neck."
+                "vi": "Cởi bớt quần áo. Làm ướt khắp da bé bằng nước mát và quạt liên tục. Đặt thêm khăn mát ở nách, bẹn, cổ.",
+                "en": "Take off extra clothes. Wet your child’s whole body with cool water and fan constantly. Add cool cloths to the armpits, groin and neck."
               },
               "image": null,
               "chips": [],
@@ -3278,8 +3900,8 @@
                 "en": "Give water"
               },
               "body": {
-                "vi": "Nước hoặc dung dịch điện giải, chỉ khi bé tỉnh táo và uống được.",
-                "en": "Water or an electrolyte drink, only if the child is alert and can drink."
+                "vi": "Bé tỉnh táo, uống được: cho uống từng ngụm nước hoặc dung dịch bù nước (ORS). Bé dưới 6 tháng: cho bú mẹ hoặc sữa công thức.",
+                "en": "Only if your child is alert and can drink: give sips of water or oral rehydration solution (ORS). Babies under 6 months: breast milk or formula."
               },
               "image": null,
               "chips": [],
@@ -3311,7 +3933,15 @@
               "items": [
                 {
                   "vi": "Cho bé uống khi đang lơ mơ",
-                  "en": "Giving drinks while the child is drowsy"
+                  "en": "Giving drinks while your child is drowsy"
+                },
+                {
+                  "vi": "Lau người bằng cồn hoặc nước đá lạnh buốt",
+                  "en": "Sponging with alcohol or ice-cold water"
+                },
+                {
+                  "vi": "Cho uống thuốc hạ sốt (không có tác dụng với say nóng)",
+                  "en": "Giving fever medicine (it doesn’t help heatstroke)"
                 }
               ]
             },
@@ -3319,7 +3949,7 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -3329,6 +3959,10 @@
                 {
                   "vi": "Sốt cao, nôn, co giật",
                   "en": "High fever, vomiting, seizures"
+                },
+                {
+                  "vi": "Bé bị bỏ quên trong xe nóng",
+                  "en": "Your child was left in a hot car"
                 }
               ]
             }
@@ -3396,8 +4030,8 @@
                 "en": "Choose a thermometer"
               },
               "body": {
-                "vi": "Nhiệt kế điện tử hoặc hồng ngoại. Vệ sinh trước và sau khi đo.",
-                "en": "A digital or infrared thermometer. Clean it before and after use."
+                "vi": "Dùng nhiệt kế điện tử đo ở nách: hợp với mọi lứa tuổi. Nhiệt kế đo tai: chỉ dùng cho bé từ 6 tháng. Đo trán chỉ để đo nhanh; số đo cao thì đo lại ở nách. Không dùng miếng dán trán, nhiệt kế thuỷ ngân.",
+                "en": "A digital thermometer under the armpit works at every age. Ear thermometers: only from 6 months. Forehead readings are a quick check; if high, re-check under the arm. Don’t use forehead strips or mercury thermometers."
               },
               "image": null,
               "chips": [],
@@ -3410,8 +4044,8 @@
                 "en": "Measure the right way"
               },
               "body": {
-                "vi": "Điện tử: kẹp dưới nách 1–2 phút. Hồng ngoại: đo ở trán hoặc tai, vùng đo sạch, khô.",
-                "en": "Digital: under the armpit for 1–2 minutes. Infrared: forehead or ear, on clean, dry skin."
+                "vi": "Điện tử: đặt đầu nhiệt kế sát hõm nách, khép tay bé lại, giữ đến khi máy kêu. Máy đo tai, trán: làm theo hướng dẫn của máy, đo trên da sạch, khô.",
+                "en": "Digital: put the tip deep in the armpit, hold your child’s arm against their side until it beeps. Ear or forehead: follow the device instructions, on clean, dry skin."
               },
               "image": null,
               "chips": [],
@@ -3420,12 +4054,12 @@
             },
             {
               "title": {
-                "vi": "Đợi 15 phút sau khi ăn uống",
-                "en": "Wait 15 minutes after eating or drinking"
+                "vi": "Đo lúc bé nằm yên",
+                "en": "Measure when your child is settled"
               },
               "body": {
-                "vi": "Giữ cố định nhiệt kế khi đo cho trẻ nhỏ.",
-                "en": "Hold the thermometer steady for young children."
+                "vi": "Không đo ngay sau khi tắm, ủ chăn dày hay vừa chạy nhảy. Ghi lại nhiệt độ, giờ đo và thuốc đã dùng.",
+                "en": "Not straight after a bath, heavy wrapping or running around. Write down the temperature, the time and any medicine given."
               },
               "image": null,
               "chips": [],
@@ -3443,15 +4077,19 @@
               "items": [
                 {
                   "vi": "Dưới 3 tháng: từ 38°C đưa đi viện ngay",
-                  "en": "Under 3 months: 38°C or more, go to hospital now"
+                  "en": "Under 3 months: 38°C (100.4°F) or more, go to hospital now"
                 },
                 {
-                  "vi": "3 tháng – 3 tuổi: trên 38,5°C theo dõi sát, hỏi bác sĩ về thuốc hạ sốt",
-                  "en": "3 months to 3 years: above 38.5°C, watch closely and ask a doctor about fever medicine"
+                  "vi": "3–6 tháng: từ 39°C đi khám ngay trong ngày",
+                  "en": "3–6 months: 39°C (102.2°F) or more, see a doctor today"
                 },
                 {
-                  "vi": "Trên 3 tuổi: sốt kéo dài, mệt nhiều, có dấu hiệu bất thường",
-                  "en": "Over 3 years: a fever that lasts, very tired, or anything unusual"
+                  "vi": "Sốt từ 5 ngày trở lên, bé mệt nhiều, bỏ ăn uống",
+                  "en": "Fever for 5 days or more, very tired, not eating or drinking"
+                },
+                {
+                  "vi": "Sốt kèm chấm đỏ dưới da, đau bụng, chảy máu cam, chảy máu chân răng: nghi sốt xuất huyết, đi khám",
+                  "en": "Fever with tiny red spots, tummy pain, nose or gum bleeding: may be dengue, see a doctor"
                 }
               ]
             },
@@ -3459,12 +4097,41 @@
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
                   "vi": "Sốt kèm co giật, khó thở, li bì: gọi {emergency}",
                   "en": "Fever with seizures, trouble breathing or very drowsy: call {emergency}"
+                },
+                {
+                  "vi": "Phát ban không mất khi ấn cốc thuỷ tinh lên, cổ cứng, thóp phồng",
+                  "en": "A rash that doesn’t fade under a glass, stiff neck, bulging soft spot"
+                },
+                {
+                  "vi": "Bé khó đánh thức, không uống được, rất ít đi tiểu",
+                  "en": "Hard to wake, can’t drink, hardly peeing"
+                }
+              ]
+            },
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Lau người bằng nước lạnh, cồn; cạo gió, đánh cảm",
+                  "en": "Sponging with cold water or alcohol, coin-rubbing"
+                },
+                {
+                  "vi": "Ủ ấm, quấn chăn dày khi bé sốt",
+                  "en": "Bundling your child up in thick blankets"
+                },
+                {
+                  "vi": "Cho uống aspirin; nghi sốt xuất huyết: không dùng ibuprofen",
+                  "en": "Giving aspirin; if dengue is possible, no ibuprofen either"
                 }
               ]
             }
@@ -3532,12 +4199,12 @@
           "steps": [
             {
               "title": {
-                "vi": "Bù nước cho bé",
-                "en": "Keep the child hydrated"
+                "vi": "Bù nước bằng ORS",
+                "en": "Rehydrate with ORS"
               },
               "body": {
-                "vi": "Cho uống nhiều nước, dung dịch bù nước theo hướng dẫn của bác sĩ, dược sĩ.",
-                "en": "Give plenty of fluids and rehydration solution as a doctor or pharmacist advises."
+                "vi": "Cho uống dung dịch bù nước (ORS, Oresol) từng thìa, từng ngụm nhỏ sau mỗi lần nôn hoặc đi ngoài. Pha đúng lượng nước ghi trên gói, không pha đặc hơn. Bé bú mẹ: cho bú nhiều hơn.",
+                "en": "Give oral rehydration solution (ORS) in small spoonfuls or sips after each vomit or loose stool. Mix it with exactly the amount of water on the packet; never make it stronger. If breastfed, keep breastfeeding, more often."
               },
               "image": null,
               "chips": [],
@@ -3547,11 +4214,11 @@
             {
               "title": {
                 "vi": "Không tự dùng thuốc cầm tiêu chảy",
-                "en": "Don’t give anti-diarrhea medicine yourself"
+                "en": "No anti-diarrhea medicine on your own"
               },
               "body": {
-                "vi": "Có thể gây biến chứng nguy hiểm.",
-                "en": "It can cause dangerous complications."
+                "vi": "Thuốc cầm tiêu chảy, chống nôn và kháng sinh chỉ dùng khi bác sĩ kê.",
+                "en": "Only give anti-diarrhea medicine, anti-sickness medicine or antibiotics if a doctor prescribes them."
               },
               "image": null,
               "chips": [],
@@ -3564,8 +4231,22 @@
                 "en": "Watch closely"
               },
               "body": {
-                "vi": "Số lần nôn, đi ngoài, lượng nước bé uống.",
-                "en": "How often they vomit or pass stools, and how much they drink."
+                "vi": "Số lần nôn, đi ngoài, lượng bé uống và số lần đi tiểu (số tã ướt).",
+                "en": "How often they vomit or pass stools, how much they drink, and how often they pee (wet diapers)."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Cho ăn lại sớm",
+                "en": "Start food again early"
+              },
+              "body": {
+                "vi": "Hết nôn: cho ăn lại bữa nhỏ, món bé quen. Tránh nước ngọt có ga, nước ép.",
+                "en": "Once the vomiting settles, offer small meals of usual foods. Avoid fizzy drinks and fruit juice."
               },
               "image": null,
               "chips": [],
@@ -3575,19 +4256,56 @@
           ],
           "callouts": [
             {
-              "tone": "warning",
+              "tone": "negative",
               "heading": {
-                "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "vi": "Không được làm",
+                "en": "Do not"
               },
               "items": [
                 {
-                  "vi": "Sốt cao trên 39°C, lừ đừ, tim đập nhanh",
-                  "en": "High fever above 39°C, listless, fast heartbeat"
+                  "vi": "Pha ORS đặc hơn hướng dẫn hoặc chia gói pha ít nước",
+                  "en": "Making ORS stronger than the packet says, or using part of a packet in less water"
                 },
                 {
-                  "vi": "Nôn kéo dài trên 12 giờ",
-                  "en": "Vomiting for more than 12 hours"
+                  "vi": "Cho uống nước ngọt, nước tăng lực thay ORS",
+                  "en": "Using soft drinks or sports drinks instead of ORS"
+                },
+                {
+                  "vi": "Nhịn ăn kéo dài, ngừng cho bú",
+                  "en": "Stopping food for a long time, or stopping breastfeeding"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Sốt cao trên 39°C, lừ đừ, khó đánh thức",
+                  "en": "High fever above 39°C (102.2°F), listless or hard to wake"
+                },
+                {
+                  "vi": "Nôn hết mọi thứ, không uống được",
+                  "en": "Vomits everything, can’t keep drinks down"
+                },
+                {
+                  "vi": "Nôn ra dịch xanh, phân có máu",
+                  "en": "Green vomit, or blood in the stool"
+                },
+                {
+                  "vi": "Rất ít tiểu, môi khô, mắt trũng, khóc không có nước mắt",
+                  "en": "Hardly peeing, dry lips, sunken eyes, crying without tears"
+                },
+                {
+                  "vi": "Bé dưới 6 tháng bị nôn hoặc tiêu chảy",
+                  "en": "A baby under 6 months with vomiting or diarrhea"
+                },
+                {
+                  "vi": "Đau bụng dữ dội, bụng chướng",
+                  "en": "Severe tummy pain or a swollen tummy"
                 }
               ]
             }
@@ -3669,8 +4387,8 @@
                 "en": "Warm up slowly"
               },
               "body": {
-                "vi": "Quấn chăn ấm, khăn mềm. Túi chườm ấm không đặt trực tiếp lên da.",
-                "en": "Wrap in a warm blanket or soft towel. Never put a hot-water bottle straight on the skin."
+                "vi": "Quấn chăn ấm, đội mũ, đi tất. Bé nhỏ: áp da kề da với ba mẹ. Túi chườm ấm không đặt trực tiếp lên da.",
+                "en": "Wrap in a warm blanket, add a hat and socks. A baby can go skin-to-skin on a parent’s chest. Never put a hot-water bottle straight on the skin."
               },
               "image": null,
               "chips": [],
@@ -3683,8 +4401,8 @@
                 "en": "Give a warm drink"
               },
               "body": {
-                "vi": "Nước ấm hoặc sữa ấm.",
-                "en": "Warm water or warm milk."
+                "vi": "Bé tỉnh, uống được: nước ấm hoặc sữa ấm. Bé dưới 6 tháng: chỉ bú mẹ hoặc sữa công thức. Không cho uống khi bé lơ mơ.",
+                "en": "If your child is alert and can drink: warm water or warm milk. Babies under 6 months: breast milk or formula only. No drinks if drowsy."
               },
               "image": null,
               "chips": [],
@@ -3694,10 +4412,27 @@
           ],
           "callouts": [
             {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Xoa rượu, dầu gió, cạo gió hoặc chà xát mạnh tay chân",
+                  "en": "Rubbing with alcohol or balms, coin-rubbing or rubbing limbs hard"
+                },
+                {
+                  "vi": "Tắm nước nóng, hơ lửa hoặc đốt than sưởi trong phòng kín",
+                  "en": "Hot baths, warming over a fire, or burning charcoal in a closed room"
+                }
+              ]
+            },
+            {
               "tone": "warning",
               "heading": {
                 "vi": "Đưa bé đi viện ngay khi",
-                "en": "Take baby to hospital right away if"
+                "en": "Go to hospital right away if"
               },
               "items": [
                 {
@@ -3707,6 +4442,10 @@
                 {
                   "vi": "Lả đi, khó thở, không phản ứng",
                   "en": "Limp, trouble breathing, not responding"
+                },
+                {
+                  "vi": "Trẻ sơ sinh lạnh, bú kém, ngủ li bì",
+                  "en": "A newborn who feels cold, feeds poorly or is very sleepy"
                 }
               ]
             }
@@ -3773,7 +4512,10 @@
           "label": null,
           "ageMonths": null,
           "hero": null,
-          "banner": null,
+          "banner": {
+            "vi": "Nhìn bằng mắt dễ đánh giá sai mức vàng da. Không chắc: nhờ bác sĩ đo bilirubin. Xem bé ở nơi đủ sáng tự nhiên; da sẫm màu: xem lòng trắng mắt, lợi, lòng bàn tay.",
+            "en": "It’s easy to misjudge jaundice by eye. If unsure, ask a doctor to measure bilirubin. Look in good daylight; on darker skin, check the whites of the eyes, gums and palms."
+          },
           "steps": [],
           "callouts": [
             {
@@ -3784,8 +4526,8 @@
               },
               "items": [
                 {
-                  "vi": "Vàng nhẹ ở mặt, cổ, ngực, bụng trên rốn",
-                  "en": "Mild yellow on the face, neck, chest and belly above the navel"
+                  "vi": "Vàng nhẹ ở mặt, cổ, ngực",
+                  "en": "Mild yellow on the face, neck and chest"
                 },
                 {
                   "vi": "Xuất hiện 48–72 giờ sau sinh",
@@ -3809,20 +4551,45 @@
               },
               "items": [
                 {
-                  "vi": "Vàng đậm toàn thân và cả mắt",
-                  "en": "Deep yellow all over the body and in the eyes"
+                  "vi": "Vàng đậm toàn thân và cả mắt, lan xuống lòng bàn tay, bàn chân",
+                  "en": "Deep yellow all over and in the eyes, spreading to palms and soles"
                 },
                 {
-                  "vi": "Xuất hiện ngay ngày đầu sau sinh",
-                  "en": "Appears on the first day after birth"
+                  "vi": "Xuất hiện trong 24 giờ đầu sau sinh",
+                  "en": "Appears within the first 24 hours after birth"
                 },
                 {
                   "vi": "Kéo dài quá 2 tuần (sinh non: quá 3 tuần)",
                   "en": "Lasts more than 2 weeks (premature: more than 3 weeks)"
                 },
                 {
-                  "vi": "Bỏ bú, nôn, sốt, lừ đừ, phân bạc màu",
-                  "en": "Refuses feeds, vomiting, fever, listless, pale stools"
+                  "vi": "Phân bạc màu (trắng, vàng nhạt), nước tiểu sẫm màu",
+                  "en": "Pale stools (white or pale yellow) or dark urine"
+                },
+                {
+                  "vi": "Bỏ bú, nôn, sốt, lừ đừ",
+                  "en": "Refuses feeds, vomiting, fever, listless"
+                }
+              ]
+            },
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không nên",
+                "en": "Avoid"
+              },
+              "items": [
+                {
+                  "vi": "Phơi nắng để chữa vàng da",
+                  "en": "Putting baby in the sun to treat jaundice"
+                },
+                {
+                  "vi": "Cho uống nước, nước đường hay nước lá",
+                  "en": "Giving water, sugar water or herbal drinks"
+                },
+                {
+                  "vi": "Tự ngừng cho bú",
+                  "en": "Stopping breastfeeding on your own"
                 }
               ]
             },
@@ -3834,8 +4601,1874 @@
               },
               "items": [
                 {
-                  "vi": "Nghi vàng da bệnh lý: đưa bé đi khám ngay",
-                  "en": "If you suspect jaundice that needs care: see a doctor now"
+                  "vi": "Bé li bì, khó đánh thức, bỏ bú, ưỡn cong người, khóc thét hoặc co giật: đi cấp cứu ngay",
+                  "en": "Baby is very sleepy, hard to wake, won’t feed, arches their back, has a high-pitched cry or a seizure: go to emergency now"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "drowning",
+      "code": "TH25",
+      "category": "urgent",
+      "emergency": true,
+      "monitoring": false,
+      "title": {
+        "vi": "Đuối nước",
+        "en": "Drowning"
+      },
+      "lead": {
+        "vi": "Bé bị chìm, ngạt nước, có thể bất tỉnh",
+        "en": "Your child went under water and may be unconscious"
+      },
+      "keywords": [
+        {
+          "vi": "Chết đuối",
+          "en": "Near drowning"
+        },
+        {
+          "vi": "Ngạt nước",
+          "en": "Inhaled water"
+        },
+        {
+          "vi": "Rơi xuống ao",
+          "en": "Fell into a pond"
+        },
+        {
+          "vi": "Bể bơi",
+          "en": "Swimming pool"
+        },
+        {
+          "vi": "Chậu nước",
+          "en": "Bucket of water"
+        },
+        {
+          "vi": "Sặc nước",
+          "en": "Choked on water"
+        },
+        {
+          "vi": "Ngã xuống nước",
+          "en": "Fell into water"
+        }
+      ],
+      "icon": "icon-duoi-nuoc",
+      "hero": "keo-len-bo",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Gọi {emergency} ngay. Có người khác: nhờ gọi giúp và tìm máy AED.",
+            "en": "Call {emergency} now. If someone else is there, ask them to call and fetch an AED."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Đưa bé lên bờ an toàn",
+                "en": "Get your child out safely"
+              },
+              "body": {
+                "vi": "Kéo bé lên bằng sào, phao hay dây nếu bạn không biết bơi. Không tự lao xuống nước sâu.",
+                "en": "Reach with a pole, float or rope if you can’t swim. Don’t jump into deep water yourself."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Kiểm tra hơi thở",
+                "en": "Check breathing"
+              },
+              "body": {
+                "vi": "Đặt bé nằm ngửa trên mặt phẳng cứng. Gọi to, nhìn ngực bé tối đa 10 giây.",
+                "en": "Lay your child on their back on a firm surface. Call out and watch the chest for up to 10 seconds."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không thở: thổi ngạt 5 lần",
+                "en": "Not breathing: 5 rescue breaths"
+              },
+              "body": {
+                "vi": "Mở đường thở, thổi ngạt 5 lần rồi ép ngực ngay, như trang Hồi sức tim phổi. Trẻ đuối nước cần được thổi ngạt sớm.",
+                "en": "Open the airway, give 5 rescue breaths, then start chest compressions straight away, as on the CPR page. A child who has drowned needs breaths early."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Tiếp tục 30 ép, 2 thổi",
+                "en": "Keep going: 30 compressions, 2 breaths"
+              },
+              "body": {
+                "vi": "Làm liên tục đến khi bé thở lại hoặc nhân viên y tế tới. Bé nôn: nghiêng đầu bé sang bên, lau sạch rồi làm tiếp.",
+                "en": "Don’t stop until your child breathes or help arrives. If they vomit, turn the head to the side, wipe the mouth and carry on."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Bé thở lại: giữ ấm, nằm nghiêng",
+                "en": "Breathing again: keep warm, on the side"
+              },
+              "body": {
+                "vi": "Cởi đồ ướt, quấn khăn khô. Đặt bé nằm nghiêng, ở cạnh theo dõi hơi thở.",
+                "en": "Take off wet clothes and wrap in a dry towel. Put your child on their side and keep watching their breathing."
+              },
+              "image": "nam-nghieng-an-toan",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Dốc ngược bé, vác chạy hay ấn bụng để xốc nước ra",
+                  "en": "Holding your child upside down, running with them over your shoulder, or pressing the belly to get water out"
+                },
+                {
+                  "vi": "Mất thời gian làm nước chảy ra thay vì hồi sức ngay",
+                  "en": "Wasting time draining water instead of starting CPR"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Mọi trường hợp đuối nước đều cần đi viện, kể cả khi bé đã tỉnh",
+                  "en": "Every drowning needs a hospital check, even if your child seems fine"
+                },
+                {
+                  "vi": "Ho nhiều, thở nhanh, khò khè, lơ mơ trong vài giờ sau: gọi {emergency}",
+                  "en": "Coughing a lot, fast or noisy breathing, or drowsiness in the hours after: call {emergency}"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "unconscious",
+      "code": "TH26",
+      "category": "urgent",
+      "emergency": true,
+      "monitoring": false,
+      "title": {
+        "vi": "Bất tỉnh nhưng còn thở",
+        "en": "Unresponsive but breathing"
+      },
+      "lead": {
+        "vi": "Gọi không tỉnh, vẫn thở bình thường",
+        "en": "Won’t wake up but is breathing normally"
+      },
+      "keywords": [
+        {
+          "vi": "Ngất",
+          "en": "Fainted"
+        },
+        {
+          "vi": "Hôn mê",
+          "en": "Unconscious"
+        },
+        {
+          "vi": "Tư thế nằm nghiêng an toàn",
+          "en": "Recovery position"
+        },
+        {
+          "vi": "Lơ mơ",
+          "en": "Drowsy"
+        },
+        {
+          "vi": "Không tỉnh",
+          "en": "Won’t wake up"
+        },
+        {
+          "vi": "Ngất xỉu",
+          "en": "Passed out"
+        }
+      ],
+      "icon": "icon-bat-tinh",
+      "hero": "nam-nghieng-an-toan",
+      "ageMonths": null,
+      "variantKind": "age",
+      "variants": [
+        {
+          "id": "under-1",
+          "label": {
+            "vi": "Dưới 1 tuổi",
+            "en": "Under 1 year"
+          },
+          "ageMonths": {
+            "from": 0,
+            "to": 12
+          },
+          "hero": null,
+          "banner": {
+            "vi": "Gọi {emergency} ngay.",
+            "en": "Call {emergency} now."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Kiểm tra hơi thở",
+                "en": "Check breathing"
+              },
+              "body": {
+                "vi": "Gọi to, vỗ nhẹ vào bé. Nhìn ngực bé tối đa 10 giây. Bé không thở hoặc chỉ thở ngáp: làm hồi sức tim phổi (CPR).",
+                "en": "Call out and tap baby gently. Watch the chest for up to 10 seconds. If baby isn’t breathing or is only gasping: start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Bế nghiêng, đầu hơi thấp",
+                "en": "Hold on the side, head slightly low"
+              },
+              "body": {
+                "vi": "Bế bé nằm nghiêng trên tay bạn, đầu thấp hơn thân một chút để đờm dãi, chất nôn chảy ra ngoài.",
+                "en": "Cradle baby on their side in your arms, head a little lower than the body, so saliva or vomit can drain out."
+              },
+              "image": "be-nghieng-so-sinh",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Theo dõi đến khi có người tới",
+                "en": "Watch until help arrives"
+              },
+              "body": {
+                "vi": "Kiểm tra hơi thở liên tục. Bé ngừng thở: đặt nằm ngửa, làm hồi sức tim phổi.",
+                "en": "Keep checking the breathing. If baby stops breathing, lay them on their back and start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Lắc mạnh bé để gọi tỉnh",
+                  "en": "Shaking baby to wake them"
+                },
+                {
+                  "vi": "Cho bé bú, uống nước hay uống thuốc",
+                  "en": "Feeding baby or giving water or medicine"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Take baby to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Bé bất tỉnh, dù chỉ một lúc: luôn gọi {emergency}",
+                  "en": "Baby was unresponsive, even briefly: always call {emergency}"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        },
+        {
+          "id": "from-1",
+          "label": {
+            "vi": "Từ 1 tuổi",
+            "en": "1 year and over"
+          },
+          "ageMonths": {
+            "from": 12,
+            "to": null
+          },
+          "hero": null,
+          "banner": {
+            "vi": "Gọi {emergency} ngay.",
+            "en": "Call {emergency} now."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Kiểm tra hơi thở",
+                "en": "Check breathing"
+              },
+              "body": {
+                "vi": "Gọi to, vỗ nhẹ vào vai bé. Nhìn ngực bé tối đa 10 giây. Bé không thở hoặc chỉ thở ngáp: làm hồi sức tim phổi (CPR).",
+                "en": "Call out and tap the child’s shoulder. Watch the chest for up to 10 seconds. If they aren’t breathing or are only gasping: start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Đặt nằm nghiêng an toàn",
+                "en": "Recovery position"
+              },
+              "body": {
+                "vi": "Duỗi tay bé phía gần bạn lên trên. Gập gối chân phía xa, kéo bé nghiêng về phía bạn. Ngửa nhẹ đầu, má tựa lên mu bàn tay.",
+                "en": "Put the near arm out at a right angle. Bend the far knee and roll your child towards you onto their side. Tilt the head back slightly, cheek resting on the back of their hand."
+              },
+              "image": "nam-nghieng-an-toan",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Nghi chấn thương cổ, lưng",
+                "en": "Possible neck or back injury"
+              },
+              "body": {
+                "vi": "Sau ngã cao, tai nạn: chỉ nghiêng bé khi bé nôn hoặc khó thở, giữ đầu, cổ, thân thẳng hàng.",
+                "en": "After a big fall or crash: only roll your child if they vomit or the airway is blocked, keeping head, neck and body in line."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Theo dõi đến khi có người tới",
+                "en": "Watch until help arrives"
+              },
+              "body": {
+                "vi": "Kiểm tra hơi thở liên tục. Bé ngừng thở: đặt nằm ngửa, làm hồi sức tim phổi.",
+                "en": "Keep checking the breathing. If your child stops breathing, lay them on their back and start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Cho bé ăn uống hay uống thuốc",
+                  "en": "Giving food, drink or medicine"
+                },
+                {
+                  "vi": "Để bé nằm ngửa một mình",
+                  "en": "Leaving your child alone on their back"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Bé bất tỉnh, dù chỉ một lúc: luôn gọi {emergency}",
+                  "en": "Your child was unresponsive, even briefly: always call {emergency}"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "head-injury",
+      "code": "TH27",
+      "category": "wounds",
+      "emergency": false,
+      "monitoring": true,
+      "title": {
+        "vi": "Ngã, va đập đầu",
+        "en": "Fall or bump to the head"
+      },
+      "lead": {
+        "vi": "Bé ngã, đập đầu, nổi u, có thể nôn",
+        "en": "A fall or knock to the head, a lump, maybe vomiting"
+      },
+      "keywords": [
+        {
+          "vi": "Ngã giường",
+          "en": "Fell off the bed"
+        },
+        {
+          "vi": "Ngã cầu thang",
+          "en": "Fell down the stairs"
+        },
+        {
+          "vi": "Nổi u đầu",
+          "en": "Lump on the head"
+        },
+        {
+          "vi": "Chấn thương đầu",
+          "en": "Head injury"
+        },
+        {
+          "vi": "Chấn động não",
+          "en": "Concussion"
+        },
+        {
+          "vi": "Ngã cao",
+          "en": "Fall from a height"
+        },
+        {
+          "vi": "Đập đầu",
+          "en": "Hit the head"
+        }
+      ],
+      "icon": "icon-nga-dap-dau",
+      "hero": "chuom-lanh-dau",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": null,
+          "steps": [
+            {
+              "title": {
+                "vi": "Kiểm tra bé",
+                "en": "Check your child"
+              },
+              "body": {
+                "vi": "Bé khóc ngay, tỉnh táo, cử động bình thường? Bé bất tỉnh, co giật, khó thở: gọi {emergency}. Nghi chấn thương cổ: không di chuyển bé.",
+                "en": "Did your child cry straight away, and are they alert and moving normally? If unconscious, having a seizure or struggling to breathe: call {emergency}. If you suspect a neck injury, don’t move them."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Chườm lạnh chỗ u",
+                "en": "Cool the lump"
+              },
+              "body": {
+                "vi": "Bọc túi đá trong khăn, chườm 10–15 phút. Vết rách chảy máu: ép gạc sạch.",
+                "en": "Wrap an ice pack in a cloth and hold it on for 10–15 minutes. If a cut bleeds, press clean gauze on it."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Theo dõi sát 24 giờ",
+                "en": "Watch closely for 24 hours"
+              },
+              "body": {
+                "vi": "Có người lớn ở cạnh bé ít nhất 24 giờ. Bé ngủ được; khi bé thức, xem bé có tỉnh táo, nói chuyện, đi lại như bình thường không.",
+                "en": "Keep an adult with your child for at least 24 hours. It’s fine for them to sleep; when awake, check they are alert, talking and moving as usual."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Xoa dầu, day mạnh hay lăn trứng lên chỗ u",
+                  "en": "Rubbing balm on the lump, kneading it or rolling an egg on it"
+                },
+                {
+                  "vi": "Cho bé uống thuốc ngủ, thuốc an thần",
+                  "en": "Giving sleeping or calming medicine"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Bất tỉnh, dù chỉ một lúc, hoặc co giật: gọi {emergency}",
+                  "en": "Unconscious even briefly, or a seizure: call {emergency}"
+                },
+                {
+                  "vi": "Nôn sau khi ngã",
+                  "en": "Vomiting since the fall"
+                },
+                {
+                  "vi": "Chảy máu, dịch trong ở tai, mũi; bầm tím sau tai, quanh mắt",
+                  "en": "Blood or clear fluid from the ears or nose; bruising behind the ears or around the eyes"
+                },
+                {
+                  "vi": "Đau đầu không giảm, quấy khóc hơn hẳn, thay đổi tính nết",
+                  "en": "A headache that won’t go, much more crying than usual, or a change in behavior"
+                },
+                {
+                  "vi": "Nhìn mờ, nói khó, yếu tay chân, đi loạng choạng",
+                  "en": "Blurred vision, trouble speaking, weak arms or legs, unsteady walking"
+                },
+                {
+                  "vi": "Ngã từ trên cao hoặc bị xe đâm",
+                  "en": "A fall from a height, or hit by a vehicle"
+                },
+                {
+                  "vi": "Bé dưới 1 tuổi có u sưng lớn hoặc bầm trên đầu",
+                  "en": "A baby under 1 with a big swelling or bruise on the head"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "swallowed-object",
+      "code": "TH28",
+      "category": "urgent",
+      "emergency": true,
+      "monitoring": false,
+      "title": {
+        "vi": "Nuốt dị vật, pin, nam châm",
+        "en": "Swallowed object, battery or magnet"
+      },
+      "lead": {
+        "vi": "Nuốt đồng xu, pin cúc áo, nam châm, vật nhỏ",
+        "en": "Swallowed a coin, button battery, magnet or small object"
+      },
+      "keywords": [
+        {
+          "vi": "Pin cúc áo",
+          "en": "Button battery"
+        },
+        {
+          "vi": "Pin đồng hồ",
+          "en": "Watch battery"
+        },
+        {
+          "vi": "Nam châm",
+          "en": "Magnet"
+        },
+        {
+          "vi": "Nuốt đồng xu",
+          "en": "Swallowed a coin"
+        },
+        {
+          "vi": "Nuốt hạt",
+          "en": "Swallowed a bead"
+        },
+        {
+          "vi": "Hóc xương cá",
+          "en": "Fish bone stuck"
+        },
+        {
+          "vi": "Nuốt đồ chơi",
+          "en": "Swallowed a toy"
+        }
+      ],
+      "icon": "icon-nuot-di-vat",
+      "hero": "pin-cuc-ao-mat-ong",
+      "ageMonths": null,
+      "variantKind": "condition",
+      "variants": [
+        {
+          "id": "battery-magnet",
+          "label": {
+            "vi": "Pin cúc áo, nam châm",
+            "en": "Battery or magnet"
+          },
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Pin cúc áo có thể làm bỏng thủng thực quản chỉ trong 2 giờ. Đi cấp cứu ngay, kể cả khi bé vẫn bình thường.",
+            "en": "A button battery can burn through the food pipe in as little as 2 hours. Go to the emergency department now, even if your child seems fine."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Đi cấp cứu ngay",
+                "en": "Go to the emergency department now"
+              },
+              "body": {
+                "vi": "Gọi {emergency} hoặc đưa bé đến bệnh viện có chụp X-quang ngay. Mang theo vỏ pin hoặc thiết bị.",
+                "en": "Call {emergency} or take your child straight to a hospital that can do an X-ray. Bring the battery packet or the device."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Từ 1 tuổi: cho ăn mật ong",
+                "en": "Age 1 and over: give honey"
+              },
+              "body": {
+                "vi": "Nuốt pin trong vòng 12 giờ: cho 2 thìa cà phê (10 ml) mật ong mỗi 10 phút, tối đa 6 lần, trên đường đi viện. Không dùng cho bé dưới 1 tuổi. Không vì mật ong mà đi viện chậm.",
+                "en": "If the battery was swallowed in the last 12 hours: give 2 teaspoons (10 ml) of honey every 10 minutes, up to 6 times, on the way to hospital. Not for babies under 1. Don’t delay going to hospital for it."
+              },
+              "image": "pin-cuc-ao-mat-ong",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không cho ăn uống gì khác",
+                "en": "Nothing else by mouth"
+              },
+              "body": {
+                "vi": "Ngoài mật ong, không cho bé ăn uống đến khi bác sĩ khám. Không gây nôn.",
+                "en": "Apart from honey, give no food or drink until a doctor has seen your child. Don’t make them vomit."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Gây nôn, móc họng",
+                  "en": "Making your child vomit"
+                },
+                {
+                  "vi": "Chờ xem pin có tự ra theo phân không",
+                  "en": "Waiting to see if it comes out in the stool"
+                },
+                {
+                  "vi": "Cho mật ong khi bé dưới 1 tuổi",
+                  "en": "Giving honey to a baby under 1"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Nuốt từ 2 viên nam châm trở lên, hoặc nam châm cùng vật kim loại",
+                  "en": "Swallowed 2 or more magnets, or a magnet plus something metal"
+                },
+                {
+                  "vi": "Khó thở, chảy nhiều nước dãi, đau ngực, nôn ra máu: gọi {emergency}",
+                  "en": "Trouble breathing, drooling, chest pain or vomiting blood: call {emergency}"
+                },
+                {
+                  "vi": "Pin, nam châm nhét vào tai, mũi cũng là cấp cứu",
+                  "en": "A battery or magnet in the ear or nose is also an emergency"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        },
+        {
+          "id": "other",
+          "label": {
+            "vi": "Vật khác",
+            "en": "Other objects"
+          },
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Bé ho sặc, khó thở: làm theo trang Hóc dị vật.",
+            "en": "Coughing hard or struggling to breathe: follow the Choking page."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Bé thở bình thường?",
+                "en": "Is your child breathing normally?"
+              },
+              "body": {
+                "vi": "Bé khó thở, ho không dứt, tím tái: làm như hóc dị vật và gọi {emergency}.",
+                "en": "If they struggle to breathe, keep coughing or turn blue: act as for choking and call {emergency}."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không gây nôn",
+                "en": "Don’t make them vomit"
+              },
+              "body": {
+                "vi": "Không móc họng, không cho uống nước để đẩy xuống. Nuốt vật sắc nhọn (kim, xương, mảnh kính): đi cấp cứu ngay.",
+                "en": "Don’t put fingers down the throat or give drinks to wash it down. Sharp objects (pins, bones, glass): go to the emergency department now."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Đi khám",
+                "en": "See a doctor"
+              },
+              "body": {
+                "vi": "Bác sĩ sẽ quyết định có cần chụp X-quang không. Ghi lại vật bé nuốt và giờ nuốt.",
+                "en": "The doctor will decide whether an X-ray is needed. Note what was swallowed and when."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Cho ăn cơm, chuối, uống giấm để đẩy xuống, kể cả khi hóc xương cá",
+                  "en": "Giving rice, banana or vinegar to push it down, even for a fish bone"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Chảy nước dãi, nuốt đau, không ăn uống được",
+                  "en": "Drooling, painful swallowing, or can’t eat or drink"
+                },
+                {
+                  "vi": "Đau bụng, nôn, bụng chướng, đi ngoài ra máu",
+                  "en": "Tummy pain, vomiting, a swollen tummy or blood in the stool"
+                },
+                {
+                  "vi": "Nuốt vật sắc nhọn, vật dài hoặc hạt nở to khi gặp nước",
+                  "en": "Swallowed something sharp, long, or beads that swell in water"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "electric-shock",
+      "code": "TH29",
+      "category": "urgent",
+      "emergency": true,
+      "monitoring": false,
+      "title": {
+        "vi": "Điện giật",
+        "en": "Electric shock"
+      },
+      "lead": {
+        "vi": "Chạm ổ điện, dây điện hở",
+        "en": "Touched a socket or a bare wire"
+      },
+      "keywords": [
+        {
+          "vi": "Giật điện",
+          "en": "Shocked"
+        },
+        {
+          "vi": "Ổ cắm",
+          "en": "Power socket"
+        },
+        {
+          "vi": "Dây điện",
+          "en": "Electric wire"
+        },
+        {
+          "vi": "Bỏng điện",
+          "en": "Electrical burn"
+        },
+        {
+          "vi": "Sét đánh",
+          "en": "Lightning strike"
+        },
+        {
+          "vi": "Sạc điện thoại",
+          "en": "Phone charger"
+        }
+      ],
+      "icon": "icon-dien-giat",
+      "hero": "ngat-cau-dao",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Ngắt điện trước khi chạm vào bé.",
+            "en": "Cut the power before you touch your child."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Ngắt nguồn điện",
+                "en": "Cut the power"
+              },
+              "body": {
+                "vi": "Rút phích cắm hoặc ngắt cầu dao, aptomat. Không ngắt được: đứng trên vật khô (gỗ, nhựa), dùng gậy gỗ khô đẩy dây điện ra.",
+                "en": "Unplug it or switch off at the main switch or breaker. If you can’t: stand on something dry (wood, plastic) and push the wire away with a dry wooden stick."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Kiểm tra hơi thở",
+                "en": "Check breathing"
+              },
+              "body": {
+                "vi": "Bé không thở bình thường: gọi {emergency}, bắt đầu hồi sức tim phổi (CPR).",
+                "en": "If your child isn’t breathing normally: call {emergency} and start CPR."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Làm mát vết bỏng",
+                "en": "Cool any burns"
+              },
+              "body": {
+                "vi": "Xối nước mát chảy 20 phút lên chỗ bỏng, phủ màng bọc thực phẩm hoặc gạc sạch.",
+                "en": "Run cool water over any burns for 20 minutes, then cover with plastic wrap or clean gauze."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Luôn đi khám",
+                "en": "Always get checked"
+              },
+              "body": {
+                "vi": "Bỏng bên trong và rối loạn nhịp tim có thể không thấy ngay. Bác sĩ cần kiểm tra bé.",
+                "en": "Internal burns and heart rhythm problems may not show at first. A doctor needs to check your child."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Chạm tay trần vào bé khi chưa ngắt điện",
+                  "en": "Touching your child with bare hands before the power is off"
+                },
+                {
+                  "vi": "Dùng vật ẩm ướt hoặc kim loại để gạt dây",
+                  "en": "Using anything wet or metal to move the wire"
+                },
+                {
+                  "vi": "Đến gần dây điện cao thế bị đứt: đứng xa, gọi {emergency}",
+                  "en": "Going near fallen high-voltage lines: stay well away and call {emergency}"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Bất tỉnh, khó thở, co giật, tim đập bất thường: gọi {emergency}",
+                  "en": "Unconscious, trouble breathing, a seizure or an irregular heartbeat: call {emergency}"
+                },
+                {
+                  "vi": "Có vết bỏng, đau, tê hoặc yếu tay chân",
+                  "en": "Any burn, pain, numbness or weakness"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "chemical-burn",
+      "code": "TH30",
+      "category": "wounds",
+      "emergency": false,
+      "monitoring": false,
+      "title": {
+        "vi": "Bỏng hoá chất, vôi",
+        "en": "Chemical burn"
+      },
+      "lead": {
+        "vi": "Vôi, chất tẩy rửa, nước thông cống dính da",
+        "en": "Lime, cleaning products or drain cleaner on the skin"
+      },
+      "keywords": [
+        {
+          "vi": "Bỏng vôi",
+          "en": "Lime burn"
+        },
+        {
+          "vi": "Vôi tôi",
+          "en": "Slaked lime"
+        },
+        {
+          "vi": "Nước tẩy",
+          "en": "Bleach"
+        },
+        {
+          "vi": "Nước thông cống",
+          "en": "Drain cleaner"
+        },
+        {
+          "vi": "Xi măng",
+          "en": "Cement"
+        },
+        {
+          "vi": "Axit",
+          "en": "Acid"
+        },
+        {
+          "vi": "Hoá chất dính da",
+          "en": "Chemical on the skin"
+        }
+      ],
+      "icon": "icon-bong-hoa-chat",
+      "hero": "xa-nuoc-mat",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": null,
+          "steps": [
+            {
+              "title": {
+                "vi": "Bảo vệ tay bạn",
+                "en": "Protect your hands"
+              },
+              "body": {
+                "vi": "Đeo găng hoặc bọc tay bằng túi ni lông. Cởi quần áo, trang sức dính hoá chất.",
+                "en": "Put on gloves or cover your hands with plastic bags. Take off clothes and jewelry with the chemical on them."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Phủi bột khô trước",
+                "en": "Brush off dry powder first"
+              },
+              "body": {
+                "vi": "Vôi bột, xi măng khô: phủi nhẹ hết bột ra khỏi da rồi mới xối nước.",
+                "en": "Dry powder (lime, cement): brush it gently off the skin before rinsing."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Xối nước chảy ít nhất 20 phút",
+                "en": "Rinse for at least 20 minutes"
+              },
+              "body": {
+                "vi": "Xối nước sạch chảy liên tục, cho nước chảy ra xa vùng da lành.",
+                "en": "Run clean water over it without stopping, letting the water drain away from healthy skin."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Mang theo chai hoá chất, đi khám",
+                "en": "Bring the bottle, see a doctor"
+              },
+              "body": {
+                "vi": "Phủ gạc sạch, đưa bé đi viện. Mang theo vỏ chai, nhãn hoá chất.",
+                "en": "Cover with clean gauze and take your child to hospital. Bring the bottle or label."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Tự dùng giấm, nước vôi hay chất khác để “trung hoà”",
+                  "en": "Using vinegar, lime water or anything else to “neutralise” it"
+                },
+                {
+                  "vi": "Ngâm vùng bỏng trong chậu nước đọng",
+                  "en": "Soaking the burn in a bowl of standing water"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Mọi trường hợp bỏng hoá chất đều cần đi khám",
+                  "en": "Every chemical burn needs a doctor"
+                },
+                {
+                  "vi": "Hoá chất bắn vào mắt: xối nước ngay, xem trang Tổn thương ở mắt",
+                  "en": "Chemical in the eye: rinse now and see the Eye injury page"
+                },
+                {
+                  "vi": "Bé nuốt phải hoá chất: xem trang Uống nhầm thuốc, hoá chất",
+                  "en": "Swallowed a chemical: see the Swallowed medicine or chemicals page"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "allergic-reaction",
+      "code": "TH31",
+      "category": "health",
+      "emergency": false,
+      "monitoring": true,
+      "title": {
+        "vi": "Dị ứng, nổi mề đay",
+        "en": "Allergic reaction, hives"
+      },
+      "lead": {
+        "vi": "Nổi mẩn ngứa, mề đay, sưng nhẹ môi, mắt",
+        "en": "Itchy rash, hives, mild swelling of lips or eyes"
+      },
+      "keywords": [
+        {
+          "vi": "Mề đay",
+          "en": "Hives"
+        },
+        {
+          "vi": "Mẩn ngứa",
+          "en": "Itchy rash"
+        },
+        {
+          "vi": "Dị ứng thức ăn",
+          "en": "Food allergy"
+        },
+        {
+          "vi": "Dị ứng thuốc",
+          "en": "Drug allergy"
+        },
+        {
+          "vi": "Sưng môi",
+          "en": "Swollen lips"
+        },
+        {
+          "vi": "Nổi mẩn đỏ",
+          "en": "Red welts"
+        },
+        {
+          "vi": "Dị ứng sữa",
+          "en": "Milk allergy"
+        }
+      ],
+      "icon": "icon-di-ung",
+      "hero": "me-day-tay",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Khó thở, khò khè, khàn tiếng, sưng lưỡi, nôn nhiều hay lả đi là sốc phản vệ: gọi {emergency} ngay.",
+            "en": "Trouble breathing, wheezing, a hoarse voice, a swollen tongue, repeated vomiting or going floppy means anaphylaxis: call {emergency} now."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Ngừng thứ nghi gây dị ứng",
+                "en": "Stop the likely trigger"
+              },
+              "body": {
+                "vi": "Ngừng cho ăn, uống thức ăn hay thuốc nghi ngờ. Rửa vùng da đã tiếp xúc.",
+                "en": "Stop the food or medicine you suspect. Wash any skin that touched it."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Ở cạnh, theo dõi sát",
+                "en": "Stay close and watch"
+              },
+              "body": {
+                "vi": "Theo dõi nhịp thở, giọng nói, màu da. Sốc phản vệ có thể xuất hiện rất nhanh.",
+                "en": "Watch breathing, voice and skin color. Anaphylaxis can come on very quickly."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Hỏi về thuốc",
+                "en": "Ask about medicine"
+              },
+              "body": {
+                "vi": "Thuốc chống dị ứng (kháng histamin) chỉ dùng theo hướng dẫn của bác sĩ, dược sĩ, đúng liều theo tuổi.",
+                "en": "Only give antihistamine as a doctor or pharmacist advises, at the right dose for your child’s age."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Chụp ảnh, ghi lại",
+                "en": "Take photos, make notes"
+              },
+              "body": {
+                "vi": "Chụp ảnh vết mẩn, ghi lại bé đã ăn, dùng gì để báo bác sĩ.",
+                "en": "Photograph the rash and note what your child ate or used, to show the doctor."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Cho ăn lại thức ăn nghi gây dị ứng để thử",
+                  "en": "Giving the suspected food again to test it"
+                },
+                {
+                  "vi": "Tắm lá, đắp lá, bôi dầu gió",
+                  "en": "Herbal baths, leaf poultices or balms"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Khó thở, khò khè, ho liên tục, khàn tiếng: gọi {emergency}",
+                  "en": "Trouble breathing, wheezing, constant coughing, hoarse voice: call {emergency}"
+                },
+                {
+                  "vi": "Sưng lưỡi, họng, khó nuốt",
+                  "en": "Swollen tongue or throat, trouble swallowing"
+                },
+                {
+                  "vi": "Lả đi, xanh tái, nôn nhiều, đau bụng dữ dội sau khi ăn",
+                  "en": "Floppy, pale, repeated vomiting or severe tummy pain after eating"
+                },
+                {
+                  "vi": "Bé từng bị sốc phản vệ",
+                  "en": "Your child has had anaphylaxis before"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Khi nào cần đi khám",
+                "en": "When to see a doctor"
+              },
+              "items": [
+                {
+                  "vi": "Lần đầu dị ứng thức ăn: hỏi bác sĩ trước khi cho ăn lại",
+                  "en": "A first food reaction: ask a doctor before offering it again"
+                },
+                {
+                  "vi": "Mề đay kéo dài nhiều ngày hoặc hay tái phát",
+                  "en": "Hives that last for days or keep coming back"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "breath-holding",
+      "code": "TH32",
+      "category": "health",
+      "emergency": false,
+      "monitoring": true,
+      "title": {
+        "vi": "Nín khóc, tím tái",
+        "en": "Breath-holding spell"
+      },
+      "lead": {
+        "vi": "Khóc dữ rồi nín thở, tím tái, có thể lả đi",
+        "en": "Cries hard, stops breathing, turns blue, may go floppy"
+      },
+      "keywords": [
+        {
+          "vi": "Nín thở",
+          "en": "Breath holding"
+        },
+        {
+          "vi": "Khóc ngất",
+          "en": "Crying until passing out"
+        },
+        {
+          "vi": "Ngất khi khóc",
+          "en": "Fainting when crying"
+        },
+        {
+          "vi": "Tím tái khi khóc",
+          "en": "Turns blue when crying"
+        },
+        {
+          "vi": "Lặng khóc",
+          "en": "Holds breath when upset"
+        }
+      ],
+      "icon": "icon-nin-tho",
+      "hero": "nam-nghieng-an-toan",
+      "ageMonths": {
+        "from": 6,
+        "to": 72
+      },
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": null,
+          "steps": [
+            {
+              "title": {
+                "vi": "Giữ bình tĩnh, giữ bé an toàn",
+                "en": "Stay calm, keep your child safe"
+              },
+              "body": {
+                "vi": "Đặt bé nằm nghiêng trên sàn, tránh xa vật cứng. Cơn thường tự hết trong chưa đến 1 phút.",
+                "en": "Lay your child on their side on the floor, away from hard objects. Spells usually stop on their own in under a minute."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không lắc, không cho gì vào miệng",
+                "en": "Don’t shake or put anything in the mouth"
+              },
+              "body": {
+                "vi": "Bé sẽ tự thở lại. Ở cạnh bé đến khi bé tỉnh hẳn.",
+                "en": "Your child will start breathing again. Stay with them until fully awake."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Sau cơn: dỗ dành bình thường",
+                "en": "Afterwards: comfort as usual"
+              },
+              "body": {
+                "vi": "Ôm, trấn an bé như mọi khi, không quát mắng hay chiều theo đòi hỏi.",
+                "en": "Cuddle and reassure your child as usual, without scolding or giving in to demands."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Lần đầu: đi khám",
+                "en": "First time: see a doctor"
+              },
+              "body": {
+                "vi": "Bác sĩ cần khám để loại trừ co giật, bệnh tim và có thể kiểm tra thiếu máu thiếu sắt.",
+                "en": "A doctor should check for seizures or heart problems, and may test for iron-deficiency anemia."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Lắc mạnh, té nước hay thổi vào mặt bé",
+                  "en": "Shaking your child, splashing water or blowing on their face"
+                },
+                {
+                  "vi": "Bấm huyệt, châm kim",
+                  "en": "Pressing points or pricking with needles"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Không thở lại sau 1 phút, hoặc giật kéo dài: gọi {emergency}, làm hồi sức nếu cần",
+                  "en": "No breathing after a minute, or long jerking: call {emergency} and start CPR if needed"
+                },
+                {
+                  "vi": "Cơn xảy ra khi bé không khóc, không có lý do hoặc lúc ngủ",
+                  "en": "A spell with no crying or trigger, or during sleep"
+                },
+                {
+                  "vi": "Bé dưới 6 tháng",
+                  "en": "Your baby is under 6 months"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "dental-injury",
+      "code": "TH33",
+      "category": "wounds",
+      "emergency": false,
+      "monitoring": false,
+      "title": {
+        "vi": "Gãy, bật răng",
+        "en": "Broken or knocked-out tooth"
+      },
+      "lead": {
+        "vi": "Va đập làm răng gãy, lung lay, bật ra",
+        "en": "A knock breaks, loosens or knocks out a tooth"
+      },
+      "keywords": [
+        {
+          "vi": "Gãy răng",
+          "en": "Broken tooth"
+        },
+        {
+          "vi": "Bật răng",
+          "en": "Knocked-out tooth"
+        },
+        {
+          "vi": "Răng lung lay",
+          "en": "Loose tooth"
+        },
+        {
+          "vi": "Chảy máu miệng",
+          "en": "Bleeding mouth"
+        },
+        {
+          "vi": "Rách môi",
+          "en": "Split lip"
+        },
+        {
+          "vi": "Ngã đập miệng",
+          "en": "Fell on the mouth"
+        }
+      ],
+      "icon": "icon-gay-rang",
+      "hero": "ngam-rang-sua",
+      "ageMonths": null,
+      "variantKind": "condition",
+      "variants": [
+        {
+          "id": "baby-tooth",
+          "label": {
+            "vi": "Răng sữa",
+            "en": "Baby tooth"
+          },
+          "ageMonths": {
+            "from": 0,
+            "to": 72
+          },
+          "hero": null,
+          "banner": null,
+          "steps": [
+            {
+              "title": {
+                "vi": "Cầm máu",
+                "en": "Stop the bleeding"
+              },
+              "body": {
+                "vi": "Ép gạc sạch vào chỗ chảy máu khoảng 10 phút. Bé biết súc miệng: cho súc nước sạch.",
+                "en": "Press clean gauze on the bleeding spot for about 10 minutes. If your child can rinse, let them rinse with clean water."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không cắm lại răng sữa",
+                "en": "Don’t put a baby tooth back"
+              },
+              "body": {
+                "vi": "Răng sữa bật ra: không cố cắm lại vì có thể hỏng mầm răng vĩnh viễn bên dưới.",
+                "en": "If a baby tooth is knocked out, don’t push it back in; it can damage the adult tooth underneath."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Chườm lạnh, đi nha sĩ",
+                "en": "Cool it, see a dentist"
+              },
+              "body": {
+                "vi": "Chườm lạnh môi, má. Đưa bé đến nha sĩ trong ngày.",
+                "en": "Hold something cold on the lip or cheek. See a dentist the same day."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Chảy máu không cầm sau 10–15 phút ép",
+                  "en": "Bleeding that won’t stop after 10–15 minutes of pressure"
+                },
+                {
+                  "vi": "Có thể đã hít phải mảnh răng: bé ho, khó thở",
+                  "en": "A piece of tooth may have been breathed in: coughing or trouble breathing"
+                },
+                {
+                  "vi": "Va đập mạnh vào đầu: xem trang Ngã, va đập đầu",
+                  "en": "A hard knock to the head: see Fall or bump to the head"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        },
+        {
+          "id": "adult-tooth",
+          "label": {
+            "vi": "Răng vĩnh viễn",
+            "en": "Adult tooth"
+          },
+          "ageMonths": {
+            "from": 72,
+            "to": null
+          },
+          "hero": null,
+          "banner": {
+            "vi": "Răng vĩnh viễn bật ra: cắm lại hoặc đến nha sĩ trong vòng 1 giờ.",
+            "en": "Adult tooth knocked out: put it back or see a dentist within 1 hour."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Cầm răng ở thân răng",
+                "en": "Hold the tooth by the crown"
+              },
+              "body": {
+                "vi": "Nhặt răng, chỉ cầm ở phần trắng (thân răng), không chạm vào chân răng.",
+                "en": "Pick it up by the white part (the crown) only; don’t touch the root."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Rửa nhanh, cắm lại nếu được",
+                "en": "Rinse briefly, put it back if you can"
+              },
+              "body": {
+                "vi": "Răng bẩn: rửa dưới vòi nước lạnh không quá 10 giây. Cắm lại đúng chỗ, cho bé cắn nhẹ lên khăn sạch.",
+                "en": "If dirty, rinse under cold running water for no more than 10 seconds. Push it back into place and have your child bite gently on a clean cloth."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không cắm được: ngâm sữa",
+                "en": "Can’t put it back: keep it in milk"
+              },
+              "body": {
+                "vi": "Ngâm răng trong sữa tươi hoặc nước muối sinh lý. Không để răng khô, không ngâm nước lọc.",
+                "en": "Put the tooth in fresh milk or saline. Don’t let it dry out, and don’t keep it in plain water."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Đến nha sĩ ngay",
+                "en": "See a dentist now"
+              },
+              "body": {
+                "vi": "Càng sớm càng tốt, tốt nhất trong vòng 1 giờ.",
+                "en": "As soon as possible, ideally within 1 hour."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Cầm vào chân răng, chà rửa hay lau khô răng",
+                  "en": "Holding the root, scrubbing the tooth or drying it"
+                },
+                {
+                  "vi": "Ngâm răng trong nước lọc",
+                  "en": "Keeping the tooth in plain water"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Chảy máu không cầm, hoặc va đập mạnh vào đầu",
+                  "en": "Bleeding that won’t stop, or a hard knock to the head"
+                }
+              ]
+            }
+          ],
+          "cpr": null
+        }
+      ],
+      "tool": null
+    },
+    {
+      "id": "asthma-attack",
+      "code": "TH34",
+      "category": "health",
+      "emergency": true,
+      "monitoring": false,
+      "title": {
+        "vi": "Cơn hen",
+        "en": "Asthma attack"
+      },
+      "lead": {
+        "vi": "Khó thở, khò khè, ho nhiều, nói không thành câu",
+        "en": "Short of breath, wheezing, coughing, can’t finish sentences"
+      },
+      "keywords": [
+        {
+          "vi": "Hen suyễn",
+          "en": "Asthma"
+        },
+        {
+          "vi": "Khò khè",
+          "en": "Wheezing"
+        },
+        {
+          "vi": "Khó thở",
+          "en": "Trouble breathing"
+        },
+        {
+          "vi": "Bình xịt hen",
+          "en": "Inhaler"
+        },
+        {
+          "vi": "Buồng đệm",
+          "en": "Spacer"
+        },
+        {
+          "vi": "Lên cơn hen",
+          "en": "Asthma flare-up"
+        }
+      ],
+      "icon": "icon-con-hen",
+      "hero": "xit-hen-buong-dem",
+      "ageMonths": null,
+      "variantKind": null,
+      "variants": [
+        {
+          "id": "main",
+          "label": null,
+          "ageMonths": null,
+          "hero": null,
+          "banner": {
+            "vi": "Làm theo kế hoạch xử trí hen bác sĩ đã đưa nếu có.",
+            "en": "Follow your child’s asthma action plan if they have one."
+          },
+          "steps": [
+            {
+              "title": {
+                "vi": "Ngồi thẳng, giữ bình tĩnh",
+                "en": "Sit up straight, stay calm"
+              },
+              "body": {
+                "vi": "Cho bé ngồi thẳng, nới quần áo. Không cho bé nằm.",
+                "en": "Sit your child up straight and loosen tight clothing. Don’t lie them down."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Xịt thuốc cắt cơn qua buồng đệm",
+                "en": "Reliever inhaler with a spacer"
+              },
+              "body": {
+                "vi": "Bình xịt cắt cơn (thường màu xanh dương) qua buồng đệm: 1 nhát mỗi 30–60 giây, tối đa 10 nhát.",
+                "en": "Give the reliever inhaler (usually blue) through a spacer: 1 puff every 30–60 seconds, up to 10 puffs."
+              },
+              "image": "xit-hen-buong-dem",
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Không đỡ: gọi cấp cứu",
+                "en": "No better: call for help"
+              },
+              "body": {
+                "vi": "Sau 10 nhát vẫn khó thở hoặc bé mệt dần: gọi {emergency}. Xe chưa tới sau 10 phút: xịt lại như bước trên.",
+                "en": "If still struggling after 10 puffs, or getting worse: call {emergency}. If help hasn’t arrived in 10 minutes, repeat the puffs."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            },
+            {
+              "title": {
+                "vi": "Đi khám trong ngày",
+                "en": "See a doctor today"
+              },
+              "body": {
+                "vi": "Kể cả khi đã đỡ, đưa bé đi khám trong ngày để chỉnh thuốc.",
+                "en": "Even if better, see a doctor today to review the treatment."
+              },
+              "image": null,
+              "chips": [],
+              "count": null,
+              "cprRole": null
+            }
+          ],
+          "callouts": [
+            {
+              "tone": "negative",
+              "heading": {
+                "vi": "Không được làm",
+                "en": "Do not"
+              },
+              "items": [
+                {
+                  "vi": "Cho bé nằm khi đang khó thở",
+                  "en": "Lying your child down while breathless"
+                },
+                {
+                  "vi": "Xông lá, xông tinh dầu, cho uống thuốc ho",
+                  "en": "Herbal or essential-oil steam, or cough medicine"
+                }
+              ]
+            },
+            {
+              "tone": "warning",
+              "heading": {
+                "vi": "Đưa bé đi viện ngay khi",
+                "en": "Go to hospital right away if"
+              },
+              "items": [
+                {
+                  "vi": "Môi tái tím, quá mệt để nói, ăn, thở rút lõm ngực, lả đi: gọi {emergency}",
+                  "en": "Blue lips, too breathless to talk or eat, ribs sucking in, floppy: call {emergency}"
+                },
+                {
+                  "vi": "Chưa từng được chẩn đoán hen mà khó thở, khò khè",
+                  "en": "Breathless or wheezing without an asthma diagnosis"
                 }
               ]
             }
@@ -3853,10 +6486,10 @@
       "compressions": 30,
       "breaths": 2,
       "compressionText": {
-        "vi": "2 ngón tay giữa ngực, ấn sâu khoảng 4 cm. Ấn theo nhịp tiếng bíp.",
-        "en": "Two fingers in the middle of the chest, press about 4 cm deep. Press with the beep."
+        "vi": "Hai ngón cái giữa ngực, hai tay ôm quanh ngực bé, ấn sâu khoảng 4 cm. Ấn theo nhịp tiếng bíp.",
+        "en": "Both thumbs on the middle of the chest, hands wrapped around it; press about 4 cm (1½ in) deep. Press with the beep."
       },
-      "image": "ep-tim-so-sinh"
+      "image": "ep-tim-so-sinh-hai-ngon-cai"
     },
     {
       "id": "child",
@@ -3865,7 +6498,7 @@
       "breaths": 2,
       "compressionText": {
         "vi": "Gót một bàn tay giữa ngực, ấn sâu khoảng 5 cm. Ấn theo nhịp tiếng bíp.",
-        "en": "Heel of one hand in the middle of the chest, press about 5 cm deep. Press with the beep."
+        "en": "Heel of one hand in the middle of the chest, press about 5 cm (2 in) deep. Press with the beep."
       },
       "image": "ep-tim-tre-lon"
     }
@@ -3880,12 +6513,36 @@
       "en": "turning blue"
     },
     {
+      "vi": "sốt",
+      "en": "fever"
+    },
+    {
+      "vi": "co giật",
+      "en": "seizure"
+    },
+    {
       "vi": "chảy máu",
       "en": "bleeding"
     },
     {
+      "vi": "bỏng",
+      "en": "burn"
+    },
+    {
+      "vi": "ngã đập đầu",
+      "en": "head bump"
+    },
+    {
       "vi": "nôn",
       "en": "vomiting"
+    },
+    {
+      "vi": "nuốt dị vật",
+      "en": "swallowed object"
+    },
+    {
+      "vi": "đuối nước",
+      "en": "drowning"
     },
     {
       "vi": "phát ban",

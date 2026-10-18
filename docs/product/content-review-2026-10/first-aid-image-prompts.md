@@ -231,3 +231,37 @@ trẻ nằm yên.
 
 `so-sanh-vang-da` (vàng da sơ sinh) cũng nên có thêm ví dụ trên da sẫm màu (lòng trắng mắt, lợi).
 Việc này cần bác sĩ góp ý về màu da nên để sau, chưa có prompt.
+
+## Kết quả lần vẽ 2026-10-18
+
+22/24 hình đạt và đã được đưa vào `content/first-aid/images/`. Hai hình chưa đạt; các bước dùng hai
+hình này tạm hiển thị không có hình cho tới khi có bản vẽ lại:
+
+- **`an-nguc-hai-ngon-cai`** (P0): mẹ ấn bằng cả bàn tay và đầu ngón tay, lại sát cổ bé; đầu bé
+  không thấp hơn ngực. Vẽ lại bằng prompt dưới đây.
+- **`mo-duong-tho-so-sinh`**: ngón tay đặt ở mũi và môi bé thay vì nâng cằm.
+
+Hai bản thay thế không dùng: cảnh mật ong có em bé (dễ hiểu là cho trẻ dưới 1 tuổi ăn mật ong) và
+hình răng có em bé phía sau. Dùng bản tĩnh vật và bản cận cảnh.
+
+**`an-nguc-hai-ngon-cai.png`**, vẽ lại:
+
+```text
+Infant chest thrusts for choking, side view. The mother sits on a chair, her forearm resting on her
+thigh and sloping DOWN toward her knee. The baby (about 6 months) lies FACE UP along that forearm,
+her hand cradling the back of the baby's head, and the baby's head is clearly LOWER than its chest
+(the whole baby tilted head-down about 30 degrees). Her OTHER hand is a loose fist with only the
+HEEL OF THE PALM touching the baby's chest, in the middle of the chest just below the nipple line,
+well away from the neck and the belly; fingers lifted off the body. One small red arrow points
+straight down at the heel of the hand. Mint background.
+```
+
+**`mo-duong-tho-so-sinh.png`**, vẽ lại:
+
+```text
+Opening a baby's airway, side view. A baby (about 6 months) lies on its back on a firm surface.
+The mother places one hand gently on the baby's forehead. With the tip of ONE finger of her other
+hand she lifts the BONY TIP OF THE CHIN from underneath, at the very bottom of the jaw, far from the
+mouth and nose; the mouth and nose are completely uncovered. The baby's head stays level (neutral):
+the face points straight up, not tilted back. Mint background.
+```

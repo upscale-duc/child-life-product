@@ -16,8 +16,8 @@ void main() {
   final pack = seedFirstAidPack();
 
   group('the pack', () {
-    test('25 situations in 4 groups, every picture named', () {
-      expect(pack.situations, hasLength(25));
+    test('35 situations in 4 groups, every picture named', () {
+      expect(pack.situations, hasLength(35));
       expect(pack.categories.map((c) => c.id), [
         'urgent',
         'wounds',
@@ -76,7 +76,7 @@ void main() {
       );
       expect(find.text('Sơ cứu trẻ em'), findsOneWidget);
       expect(
-        find.text('25 tình huống · dùng khi không có mạng'),
+        find.text('35 tình huống · dùng khi không có mạng'),
         findsOneWidget,
       );
       await tester.tap(find.byKey(const Key('utFirstAid')));
@@ -156,7 +156,8 @@ void main() {
       expect(find.byKey(const Key('faReadAloud')), findsOneWidget);
       await tester.tap(find.text('Từ 1 tuổi'));
       await tester.pumpAndSettle();
-      expect(find.text('Đứng sau lưng bé'), findsOneWidget);
+      // From 1 year: back blows and abdominal thrusts (AHA / ERC 2025).
+      expect(find.text('Ép bụng 5 lần'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Không được làm'), 300);
       expect(find.text('Không được làm'), findsOneWidget);
       await tester.scrollUntilVisible(
@@ -205,7 +206,7 @@ void main() {
       expect(find.text('Gọi 115'), findsNothing);
       expect(find.text('Nói với tổng đài'), findsOneWidget);
       expect(
-        find.text('Bé ho sặc, không khóc, không thở được'),
+        find.text('Bé đột ngột không thở, không ho, không khóc được'),
         findsNWidgets(2),
       );
     },
