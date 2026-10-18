@@ -21,6 +21,7 @@ import {
   type ContentLibraryDeps,
 } from '../functions/src/content-library.js';
 import { seedArticles, seedStages } from '../functions/src/content-seed.js';
+import { contentPolicyView, setContentPolicy } from '../functions/src/content-policy.js';
 import type { Staff } from '../functions/src/staff.js';
 
 // Editorial content (D-076 #5–#7, B01–B08) against the Firestore emulator: roles, the engineering
@@ -103,6 +104,8 @@ beforeEach(async () => {
     await db.recursiveDelete(db.collection(c));
   }
   await db.recursiveDelete(db.collection('staffAudit'));
+  // D-079: every test starts on the default policy (two people, review on prod).
+  await db.doc('config/content').delete();
 });
 
 describe('roles', () => {
@@ -313,6 +316,58 @@ const realMilestoneSeed: unknown = JSON.parse(
 );
 const importMilestones = () =>
   contentSeed(db, ops, { kinds: ['milestone'], milestoneSeed: realMilestoneSeed }, now);
+
+describe('content policy (D-079)', () => {
+  const owner: Staff = { uid: 's_owner', name: 'Duckie', roles: ['owner'] };
+
+  it('the Owner approves their own work only once the policy says so; others never', async () => {
+    const mine = await newArticle(owner);
+    await act(owner, mine, 'submit');
+    expect(await reason(act(owner, mine, 'approve', { checks }))).toBe('same-person');
+    // Only the Owner changes the policy, with a reason.
+    const on = { ownerSelfApprove: true, reason: 'Một mình vận hành nội dung' };
+    expect(await reason(setContentPolicy(db, admin, on, now))).toBe('owner-only');
+    expect(await reason(setContentPolicy(db, ops, on, now))).toBe('role');
+    expect(await reason(setContentPolicy(db, owner, { ownerSelfApprove: true }, now))).toBe(
+      'malformed',
+    );
+    expect(await setContentPolicy(db, owner, on, now)).toEqual({
+      ownerSelfApprove: true,
+      reviewRequiredOnProd: true,
+    });
+    expect(await act(owner, mine, 'approve', { checks })).toMatchObject({ status: 'approved' });
+    expect(await act(owner, mine, 'publish')).toMatchObject({ status: 'published' });
+    // An editor who is not the Owner still needs a second person.
+    const theirs = await newArticle(ops);
+    await act(ops, theirs, 'submit');
+    const opsExpert: Staff = { ...expert, uid: ops.uid };
+    expect(await reason(act(opsExpert, theirs, 'approve', { checks }))).toBe('same-person');
+    const audit = await db.collection('staffAudit').where('action', '==', 'content.policy').get();
+    expect(audit.docs.map((d) => d.get('detail.after.ownerSelfApprove'))).toEqual([true]);
+    expect((await contentPolicyView(db, ops)).canChange).toBe(false);
+    expect((await contentPolicyView(db, owner)).canChange).toBe(true);
+  });
+
+  it('prod publishes without a review once the Owner turns the gate off (D-078 #6)', async () => {
+    const prod = deps(true);
+    const id = await newArticle();
+    await act(ops, id, 'submit', {}, 'article', prod);
+    expect(await reason(act(expert, id, 'approve', { checks }, 'article', prod))).toBe(
+      'review-required',
+    );
+    const owner: Staff = { uid: 's_owner', name: 'Duckie', roles: ['owner'] };
+    await setContentPolicy(
+      db,
+      owner,
+      { reviewRequiredOnProd: false, reason: 'Bác sĩ duyệt sau' },
+      now,
+    );
+    await act(expert, id, 'approve', { checks }, 'article', prod);
+    await act(expert, id, 'publish', {}, 'article', prod);
+    const pub = await db.doc(`contentArticles/${id}`).get();
+    expect(pub.get('illustrative')).toBe(true);
+  });
+});
 
 describe('seed, lists and coverage', () => {
   it('imports the engineering drafts once, as drafts the importer cannot approve', async () => {

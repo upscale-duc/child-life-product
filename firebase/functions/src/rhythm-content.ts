@@ -14,6 +14,7 @@ import {
 } from '@child-life/contracts';
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
+import { mayApproveOwn, readContentPolicy, reviewRequired } from './content-policy.js';
 
 /**
  * Nhịp lớn lên content on the portal (PN01–PN04, D-073 #2), the Sơ cứu workflow (`content.ts`):
@@ -92,7 +93,7 @@ export async function rhythmView(db: Firestore, deps: RhythmContentDeps, staff: 
       history: history.docs.map((d) => versionView(doc, d)),
     };
   }
-  return { ...out, requireReview: deps.requireReview };
+  return { ...out, requireReview: reviewRequired(deps.requireReview, await readContentPolicy(db)) };
 }
 
 /** Save the open draft of one document (editing a version under review withdraws it). */
@@ -250,17 +251,19 @@ export async function rhythmAct(
     case 'approve':
     case 'rollback': {
       const s = requireStaff(staff, 'content.approve');
+      const policy = await readContentPolicy(db);
       if (req.action === 'approve') {
         if (status !== 'pending') throw new StaffError('failed-precondition', 'not-pending');
-        // Two people: whoever wrote the version cannot approve it (D-058, D-073 #2).
-        if (snap.get('authorUid') === s.uid) {
+        // Two people: whoever wrote the version cannot approve it (D-058, D-073 #2), unless the
+        // Owner may approve their own (D-079).
+        if (snap.get('authorUid') === s.uid && !mayApproveOwn(s, policy)) {
           throw new StaffError('failed-precondition', 'same-person');
         }
       } else if (status !== 'retired' && status !== 'published') {
         throw new StaffError('failed-precondition', 'not-retired');
       }
       const review: Review = req.review ?? (snap.get('review') as Review | undefined) ?? null;
-      if (deps.requireReview && !review) {
+      if (reviewRequired(deps.requireReview, policy) && !review) {
         throw new StaffError('failed-precondition', 'review-required');
       }
       const label = await nextLabel(db, req.doc, now);

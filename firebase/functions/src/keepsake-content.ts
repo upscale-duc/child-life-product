@@ -13,6 +13,7 @@ import {
 } from '@child-life/contracts';
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
+import { mayApproveOwn, readContentPolicy } from './content-policy.js';
 
 /**
  * Mẫu kỷ niệm on the portal (D-068 #7: template artwork is controlled and distributed from the
@@ -228,8 +229,9 @@ export async function keepsakeAct(db: Firestore, staff: Staff | null, data: unkn
       const s = requireStaff(staff, 'content.approve');
       if (req.action === 'approve') {
         if (status !== 'pending') throw new StaffError('failed-precondition', 'not-pending');
-        // Two people: whoever wrote the version cannot approve it (P-138 pattern, D-058).
-        if (snap.get('authorUid') === s.uid) {
+        // Two people: whoever wrote the version cannot approve it (P-138 pattern, D-058), unless
+        // the Owner may approve their own (D-079).
+        if (snap.get('authorUid') === s.uid && !mayApproveOwn(s, await readContentPolicy(db))) {
           throw new StaffError('failed-precondition', 'same-person');
         }
       } else if (status !== 'retired' && status !== 'published') {

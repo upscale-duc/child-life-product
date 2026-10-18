@@ -11,6 +11,7 @@ import {
 import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { ApiError, useApi, useLoad, type ReferenceView } from '../api';
+import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
 import { ZONE } from '../format';
 import {
@@ -168,6 +169,7 @@ export function ReferenceBody({
   onChanged: () => void;
 }) {
   const intl = useIntl();
+  const ownWorkBlocked = useOwnWorkBlocked(selfUid);
   const [showDraft, setShowDraft] = useState(!!view.draft);
   // A draft that just appeared (saved, imported) is what the editor wants to see.
   const draftId = view.draft?.versionId ?? null;
@@ -267,9 +269,9 @@ export function ReferenceBody({
                   </Button>
                   <Button
                     kind="primary"
-                    disabled={d.authorUid === selfUid}
+                    disabled={ownWorkBlocked(d.authorUid)}
                     title={
-                      d.authorUid === selfUid
+                      ownWorkBlocked(d.authorUid)
                         ? intl.formatMessage({ id: 'error.same-person' })
                         : undefined
                     }
@@ -291,7 +293,7 @@ export function ReferenceBody({
               />
             </p>
           )}
-          {d.status === 'pending' && d.authorUid === selfUid && (
+          {d.status === 'pending' && ownWorkBlocked(d.authorUid) && (
             <p className="muted">
               <FormattedMessage id="reference.waitOther" />
             </p>

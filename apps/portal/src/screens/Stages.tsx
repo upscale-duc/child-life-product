@@ -27,6 +27,7 @@ import {
   Section,
   useGuardedLeave,
 } from '../content-kit';
+import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
 import { Button, Loaded, Page, SelectMenu, TableScroll, useSort } from '../ui';
 import {
@@ -496,6 +497,7 @@ export function StageEditor({
   initialLang?: Lang;
 }) {
   const intl = useIntl();
+  const ownWorkBlocked = useOwnWorkBlocked(staffUid);
   const api = useApi();
   const [data, setData] = useState<StageDraft>(() =>
     item ? structuredClone(item.data) : blankStage(bucket),
@@ -739,7 +741,7 @@ export function StageEditor({
           title={`${ageLabel} · ${title}`}
           requireReview={requireReview}
           today={today}
-          sameEditor={item?.lastEditorUid === staffUid}
+          sameEditor={ownWorkBlocked(item?.lastEditorUid)}
           onClose={() => setAct(null)}
           onDone={() => {
             setAct(null);

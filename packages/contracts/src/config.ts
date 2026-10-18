@@ -122,6 +122,34 @@ export const limitsSchema = z.object({
 });
 export type Limits = z.infer<typeof limitsSchema>;
 
+/**
+ * How content and reference data are approved (`config/content`, D-079). The safe defaults are the
+ * two-person rule (D-058, P-138) and the qualified review on prod (D-058, D-073 #2); the Owner may
+ * relax them while they are the only staff, and switch them back on without a release.
+ * - `ownerSelfApprove`: the Owner may approve and publish what they wrote themselves (audited as
+ *   such); every other role still needs a second person.
+ * - `reviewRequiredOnProd`: prod publishing needs the reviewer, credential and date. Off, content
+ *   ships with `review: null` and keeps its "chờ chuyên môn duyệt" label (D-078 #6).
+ */
+export const contentPolicySchema = z.object({
+  ownerSelfApprove: z.boolean().default(false),
+  reviewRequiredOnProd: z.boolean().default(true),
+});
+export type ContentPolicy = z.infer<typeof contentPolicySchema>;
+
+export const defaultContentPolicy: ContentPolicy = {
+  ownerSelfApprove: false,
+  reviewRequiredOnProd: true,
+};
+
+/** `staffSetContentPolicy`: the Owner changes one or both switches, with a reason (P-139). */
+export const setContentPolicyRequestSchema = z.object({
+  ownerSelfApprove: z.boolean().optional(),
+  reviewRequiredOnProd: z.boolean().optional(),
+  reason: z.string().trim().min(3).max(500),
+});
+export type SetContentPolicyRequest = z.infer<typeof setContentPolicyRequestSchema>;
+
 const GB = 1024 ** 3;
 
 export const defaultLimits: Limits = {

@@ -52,6 +52,7 @@ import {
   StatTiles,
   useGuardedLeave,
 } from '../content-kit';
+import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
 import { Button, Loaded, Page, SelectMenu, TableScroll, useSort } from '../ui';
 import {
@@ -514,6 +515,7 @@ export function ArticleEditor({
   initialLang?: Lang;
 }) {
   const intl = useIntl();
+  const ownWorkBlocked = useOwnWorkBlocked(staffUid);
   const api = useApi();
   const [data, setData] = useState<ArticleDraft>(() =>
     item ? structuredClone(item.data) : blankArticle(),
@@ -837,7 +839,7 @@ export function ArticleEditor({
           title={textOf(intl, data.title)}
           requireReview={requireReview}
           today={today}
-          sameEditor={item?.lastEditorUid === staffUid}
+          sameEditor={ownWorkBlocked(item?.lastEditorUid)}
           onClose={() => setAct(null)}
           onDone={() => {
             setAct(null);

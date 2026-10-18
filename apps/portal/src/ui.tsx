@@ -516,6 +516,7 @@ export const reasonMessages = [
   'unknown-role',
   'already-requested',
   'same-person',
+  'owner-only',
   'not-requested',
   'past',
   'not-eligible',

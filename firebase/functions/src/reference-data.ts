@@ -14,6 +14,7 @@ import {
 } from '@child-life/contracts';
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
+import { mayApproveOwn, readContentPolicy } from './content-policy.js';
 
 /**
  * Dữ liệu tham chiếu (Figma C01–C04, P-138). One open version per dataset (Nháp or Chờ duyệt);
@@ -309,8 +310,11 @@ export async function referenceAct(db: Firestore, staff: Staff | null, data: unk
       const s = requireStaff(staff, 'reference.approve');
       if (req.action === 'approve') {
         if (status !== 'pending') throw new StaffError('failed-precondition', 'not-pending');
-        // Two people: whoever wrote the version cannot approve it (P-138, P-139).
-        if (author === s.uid) throw new StaffError('failed-precondition', 'same-person');
+        // Two people: whoever wrote the version cannot approve it (P-138, P-139), unless the Owner
+        // may approve their own (D-079).
+        if (author === s.uid && !mayApproveOwn(s, await readContentPolicy(db))) {
+          throw new StaffError('failed-precondition', 'same-person');
+        }
       } else if (status !== 'retired') {
         throw new StaffError('failed-precondition', 'not-retired');
       }

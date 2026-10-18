@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLoad } from '../api';
+import { ContentPolicyPanel, useOwnWorkBlocked } from '../content-policy';
 import { routePaths, useStaff } from '../context';
 import { Button, Empty, Kpi, Loaded, Page, Panel, Segmented, TableScroll } from '../ui';
 import { ArticlePreview } from './Articles';
@@ -125,6 +126,7 @@ export function ReviewBody({
           <FormattedMessage id="review.viewOnly" />
         </p>
       )}
+      <ContentPolicyPanel />
       <div className="cols cols--list">
         <Panel className="panel--flush">
           <div className="toolbar cl-toolbar">
@@ -295,7 +297,8 @@ export function ReviewDetail({
   const [lang, setLang] = useState<Lang>('vi');
   const [act, setAct] = useState<EditorialAction | null>(null);
   const row = item.row;
-  const sameEditor = item.lastEditorUid === staffUid;
+  const ownWorkBlocked = useOwnWorkBlocked(staffUid);
+  const sameEditor = ownWorkBlocked(item.lastEditorUid);
   const actions = actionsFor(row, can).filter((a) => a !== 'archive' && a !== 'submit');
   const sources = (item.data.sources as Array<{ label: string; url: string }> | undefined) ?? [];
   const review = reviewOf(item);

@@ -41,6 +41,7 @@ import type { FirstAidImageStore } from './content.js';
 import { milestoneAdapter } from './content-milestones.js';
 import { seedArticles, seedStages } from './content-seed.js';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
+import { mayApproveOwn, readContentPolicy, reviewRequired } from './content-policy.js';
 
 /**
  * Editorial content on the portal (D-076 #5–#7; Figma B01–B08): Thư viện chăm bé articles,
@@ -257,6 +258,7 @@ export async function contentList(
   now: Date,
 ) {
   requireStaff(staff, 'content.view');
+  const requireReview = reviewRequired(deps.requireReview, await readContentPolicy(db));
   const { view } = parse(contentListRequestSchema, data);
   const today = todayOf(now);
   const snap =
@@ -277,7 +279,7 @@ export async function contentList(
       ),
       totals: countsOf(rows),
       available: contentKinds,
-      requireReview: deps.requireReview,
+      requireReview,
     };
   }
   return {
@@ -287,7 +289,7 @@ export async function contentList(
     counts: countsOf(rows),
     ...(view === 'stage' ? { coverage: coverageOf(rows) } : {}),
     available: contentKinds,
-    requireReview: deps.requireReview,
+    requireReview,
   };
 }
 
@@ -429,6 +431,8 @@ export async function contentAct(
 ) {
   if (!staff) throw new StaffError('permission-denied', 'not-staff');
   const req = parse(contentActRequestSchema, data);
+  const policy = await readContentPolicy(db);
+  const requireReview = reviewRequired(deps.requireReview, policy);
   const adapter = adapterOf(req.kind);
   const ref = drafts(db).doc(req.id);
   const first = await ref.get();
@@ -468,15 +472,16 @@ export async function contentAct(
     case 'approve': {
       const s = requireStaff(staff, 'content.approve');
       const review = req.review ?? null;
-      if (deps.requireReview && !review) {
+      if (requireReview && !review) {
         throw new StaffError('failed-precondition', 'review-required');
       }
       return within((snap, tx) => {
         if (statusOf(snap) !== 'in_review') {
           throw new StaffError('failed-precondition', 'not-pending');
         }
-        // Two people: whoever edited last cannot approve it (D-058, D-073 #2).
-        if (snap.get('lastEditorUid') === s.uid) {
+        // Two people: whoever edited last cannot approve it (D-058, D-073 #2), unless the Owner
+        // may approve their own (D-079).
+        if (snap.get('lastEditorUid') === s.uid && !mayApproveOwn(s, policy)) {
           throw new StaffError('failed-precondition', 'same-person');
         }
         tx.update(ref, {
@@ -522,7 +527,7 @@ export async function contentAct(
         const pubRef = publicRef(db, req.kind, req.id);
         await tx.get(pubRef);
         const review = (snap.get('pendingReview') as EditorialReview | undefined) ?? null;
-        if (deps.requireReview && !review) {
+        if (requireReview && !review) {
           throw new StaffError('failed-precondition', 'review-required');
         }
         const live = liveOf(snap);
@@ -608,13 +613,13 @@ export async function contentAct(
     case 'reconfirm': {
       const s = requireStaff(staff, 'content.approve');
       const review = req.review ?? null;
-      if (deps.requireReview && !review) {
+      if (requireReview && !review) {
         throw new StaffError('failed-precondition', 'review-required');
       }
       return within(async (snap, tx) => {
         const live = liveOf(snap);
         if (!live) throw new StaffError('failed-precondition', 'not-live');
-        if (snap.get('lastEditorUid') === s.uid) {
+        if (snap.get('lastEditorUid') === s.uid && !mayApproveOwn(s, policy)) {
           throw new StaffError('failed-precondition', 'same-person');
         }
         const pubRef = publicRef(db, req.kind, req.id);

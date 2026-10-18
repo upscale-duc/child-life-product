@@ -100,6 +100,9 @@ export type Callable =
   | 'staffContentSeed'
   | 'staffContentImage'
   | 'staffContentImages'
+  // Approval policy (D-079; mirrors content-policy.ts)
+  | 'staffContentPolicy'
+  | 'staffSetContentPolicy'
   | 'sendAuthEmail';
 
 export interface Api {

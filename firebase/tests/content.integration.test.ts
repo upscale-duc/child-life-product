@@ -126,7 +126,8 @@ describe('Sơ cứu on the portal', () => {
     expect(out).toEqual({ status: 'published', version: 'fa_20261012_01' });
     const pub = await db.doc('publicConfig/content_firstAid').get();
     expect(pub.get('version')).toBe('fa_20261012_01');
-    expect(pub.get('pack.situations')).toHaveLength(25);
+    // The reviewed pack (2026-10-16): 25 corrected situations and 10 new ones.
+    expect(pub.get('pack.situations')).toHaveLength(35);
     const view = await firstAidView(db, deps(), support);
     expect(view.current?.version).toBe('fa_20261012_01');
     expect(view.draft).toBeNull();

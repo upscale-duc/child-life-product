@@ -29,6 +29,7 @@ import {
   StatTiles,
   useGuardedLeave,
 } from '../content-kit';
+import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
 import { Button, Loaded, Modal, Page, SelectMenu, TableScroll, errorMessageId } from '../ui';
 import {
@@ -470,6 +471,7 @@ export function MilestoneEditor({
   initialLang?: Lang;
 }) {
   const intl = useIntl();
+  const ownWorkBlocked = useOwnWorkBlocked(staffUid);
   const api = useApi();
   const [data, setData] = useState<ReferenceMilestoneDraft>(() =>
     item ? structuredClone(item.data) : blankMilestone(),
@@ -694,7 +696,7 @@ export function MilestoneEditor({
           title={textOf(intl, data.title)}
           requireReview={requireReview}
           today={today}
-          sameEditor={item?.lastEditorUid === staffUid}
+          sameEditor={ownWorkBlocked(item?.lastEditorUid)}
           onClose={() => setAct(null)}
           onDone={() => {
             setAct(null);

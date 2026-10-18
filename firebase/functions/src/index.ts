@@ -121,6 +121,7 @@ import {
   contentUploadImage,
   type ContentLibraryDeps,
 } from './content-library.js';
+import { contentPolicyView, setContentPolicy } from './content-policy.js';
 import { appUpdateSave, appUpdateUploadImage, appUpdateView } from './app-update.js';
 import {
   KeepsakeJobError,
@@ -2125,6 +2126,13 @@ export const staffContentSave = staffCall('staffContentSave', (s, d) =>
 );
 export const staffContentAct = staffCall('staffContentAct', (s, d) =>
   contentAct(getFirestore(), contentLibraryDeps(), s, d, new Date()),
+);
+/** D-079: who approves content and reference data (two people, or the Owner alone). */
+export const staffContentPolicy = staffCall('staffContentPolicy', (s) =>
+  contentPolicyView(getFirestore(), s),
+);
+export const staffSetContentPolicy = staffCall('staffSetContentPolicy', (s, d) =>
+  setContentPolicy(getFirestore(), s, d, new Date()),
 );
 export const staffContentSeed = staffCall('staffContentSeed', (s, d) =>
   contentSeed(getFirestore(), s, d, new Date()),
