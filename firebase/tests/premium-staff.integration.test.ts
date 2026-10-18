@@ -235,4 +235,43 @@ describe('promo grants', () => {
       expect.objectContaining({ id: 'campaign:beta-a', source: 'beta', fromCampaign: true }),
     ]);
   });
+
+  it('says what the app is told: the flags on for the family and why a feature is closed', async () => {
+    await db.doc('config/entitlements').set({
+      ...defaultEntitlementsConfig,
+      regions: { advanced: ['VN'] },
+      betaCampaigns: [{ ...campaign, families: [familyId] }],
+    });
+    await db.doc('config/flags').set({
+      ...defaultFlags,
+      personalization: { enabled: true, scope: 'internal', percent: 0, notice: null },
+      ai_assist: {
+        enabled: true,
+        scope: 'internal',
+        percent: 0,
+        notice: null,
+        families: [familyId],
+      },
+    });
+    const vn = await familyPremium(db, ops, { code }, now, 'test');
+    expect(vn.access).toMatchObject({
+      internal: false,
+      regionSupported: true,
+      flags: { ai_assist: true, personalization: false },
+    });
+    expect(vn.access!.capabilities['ai.assistance']).toEqual({
+      allowed: true,
+      reason: null,
+      via: 'beta',
+    });
+    expect(vn.access!.capabilities['personalization.cross_module'].reason).toBe(
+      'FEATURE_DISABLED',
+    );
+    // Outside the open regions the campaign does not reach the family at all.
+    await db.doc(`families/${familyId}`).set({ country: 'US' }, { merge: true });
+    const us = await familyPremium(db, ops, { code }, now, 'test');
+    expect(us.access!.regionSupported).toBe(false);
+    expect(us.access!.capabilities['ai.assistance'].reason).toBe('REGION_UNAVAILABLE');
+    expect(us.grants).toEqual([]);
+  });
 });

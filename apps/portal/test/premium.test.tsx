@@ -1,10 +1,12 @@
 import {
   capabilities,
   defaultEntitlementsConfig,
+  flagKeys,
   grantStatuses,
   householdPlans,
   staffEntitlementsConfigSchema,
   type BetaCampaign,
+  type FlagKey,
   type StaffFamilyPremium,
 } from '@child-life/contracts';
 import type { ReactNode } from 'react';
@@ -24,7 +26,10 @@ import {
   grantRevocable,
   savePremiumConfig,
   withCampaign,
+  campaignFamilyIssues,
+  draftChanges,
 } from '../src/screens/Premium';
+import { RecentList } from '../src/screens/Features';
 import { errorMessageId } from '../src/ui';
 import { levelsForRoles, type StaffRole } from './fixtures';
 
@@ -176,50 +181,65 @@ describe('Premium: configuration', () => {
     expect(staffEntitlementsConfigSchema.safeParse(view.config).success).toBe(true);
   });
 
-  it('renders the config the server returns: regions, quotas, campaigns, recent changes', async () => {
+  it('renders the campaigns, then the configuration tab: regions, quotas, credits', async () => {
     const { api } = fakeApi({ staffPremium: view });
     const data = await api.call<StaffPremiumView>('staffPremium');
-    const raw = render(<PremiumBody data={data} onChanged={() => {}} now={now} />);
+    const campaigns = text(render(<PremiumBody data={data} onChanged={() => {}} now={now} />));
+    expect(campaigns).toContain('Chiến dịch 2 Gia đình Cấu hình Chính sách AI');
+    expect(campaigns).toContain('Chiến dịch beta');
+    expect(campaigns).toContain('beta-a-vn');
+    expect(campaigns).toContain('Đang chạy');
+    expect(campaigns).toContain('Sắp chạy');
+    expect(campaigns).toContain('Gợi ý xuyên mô-đun Nhịp lớn lên nâng cao');
+    // Ends are exclusive: 1/12 00:00 UTC is 07:00 in Vietnam, so 1/12 is the last day included.
+    expect(campaigns).toContain('1/10/2026 – 1/12/2026');
+    expect(campaigns).toContain('1 gia đình được chọn');
+    expect(campaigns).toContain('F-7Q2K');
+    expect(campaigns).toContain('Mọi khu vực mở');
+    expect(campaigns).toContain('Mở dần · 25%');
+    expect(campaigns).toContain('Thêm chiến dịch');
+    // Nothing unsaved yet: no save bar.
+    expect(campaigns).not.toContain('Lưu thay đổi…');
+    const raw = render(
+      <PremiumBody data={data} onChanged={() => {}} now={now} initialTab="config" />,
+    );
     const html = text(raw);
-    expect(html).toContain('Khu vực & hạn mức');
+    expect(html).toContain('Vùng mở Premium');
     expect(html).toContain('Việt Nam · VN');
     expect(html).toContain('Singapore · SG');
-    expect(raw).toContain('value="policy-v2"');
-    expect(html).toContain('Chiến dịch beta');
-    expect(html).toContain('beta-a-vn');
-    expect(html).toContain('Đang chạy');
-    expect(html).toContain('Sắp chạy');
-    expect(html).toContain('Gợi ý xuyên mô-đun, Nhịp lớn lên nâng cao');
-    // Ends are exclusive: 1/12 00:00 UTC is 07:00 in Vietnam, so 1/12 is the last day included.
-    expect(html).toContain('1/10/2026 – 1/12/2026');
-    expect(html).toContain('1 gia đình được chọn');
-    expect(html).toContain('F-7Q2K');
-    expect(html).toContain('Mọi khu vực mở');
-    expect(html).toContain('Mở dần · 25%');
-    expect(html).toContain('Cấp quyền khuyến mãi cho F-7Q2K');
-    expect(html).toContain('Linh · 13/10 · Hỗ trợ khiếu nại');
-    expect(html).toContain('Thêm chiến dịch');
-    expect(html).toContain('Lưu thay đổi…');
-    expect(html).toContain('Mỗi chiến dịch beta tự chọn tính năng Premium mở miễn phí');
+    // The policy version is folded, its value in the summary.
+    expect(html).toContain('Phiên bản chính sách policy-v2');
     // D-075 #1: the assistant credit pool is editable here (shared by chat and AI summaries).
     expect(html).toContain('Credit trợ lý AI · một quỹ chung cho trò chuyện và tóm tắt AI');
     expect(html).toContain('Credit · Miễn phí (mỗi tháng lịch)');
     expect(raw).toContain('value="200"');
     expect(html).toContain('Mỗi tóm tắt AI tạo mới dùng 1 credit');
     expect(html).not.toContain('AI · mỗi bé mỗi ngày');
+    expect(text(render(<RecentList recent={view.recent} />))).toContain(
+      'Linh · 13/10 · Hỗ trợ khiếu nại',
+    );
     expect(text(render(<EnvPill env="test" />))).toContain('Môi trường quyền: thử nghiệm (test)');
     expect(text(render(<EnvPill env="production" />, ['admin'], 'en'))).toContain(
       'Grant environment: production',
     );
     // English: country names follow the portal language.
     expect(
-      text(render(<PremiumBody data={view} onChanged={() => {}} now={now} />, ['admin'], 'en')),
+      text(
+        render(
+          <PremiumBody data={view} onChanged={() => {}} now={now} initialTab="config" />,
+          ['admin'],
+          'en',
+        ),
+      ),
     ).toContain('Vietnam · VN');
   });
 
   it('a viewer without premium.config sees it read-only', () => {
     // Vận hành: Tính năng "Xem" → premium.view, not premium.config.
-    const raw = render(<PremiumBody data={view} onChanged={() => {}} now={now} />, ['ops']);
+    const raw = render(
+      <PremiumBody data={view} onChanged={() => {}} now={now} initialTab="config" />,
+      ['ops'],
+    );
     const html = text(raw);
     expect(html).toContain('Bạn chỉ xem được');
     expect(html).toContain('1 video · mỗi tháng lịch');
@@ -227,16 +247,23 @@ describe('Premium: configuration', () => {
     expect(html).toContain('Credit · Premium (kỳ thanh toán; beta: mỗi tháng) 200 credit');
     expect(html).toContain('Credit cho một tác vụ ảnh 3 credit');
     expect(html).toContain('policy-v2');
-    expect(html).toContain('beta-a-vn');
-    expect(html).not.toContain('Lưu thay đổi');
-    expect(html).not.toContain('Thêm chiến dịch');
     expect(raw).not.toContain('type="number"');
     expect(raw).not.toContain('Bỏ Việt Nam');
+    const campaigns = text(
+      render(<PremiumBody data={view} onChanged={() => {}} now={now} />, ['ops']),
+    );
+    expect(campaigns).toContain('beta-a-vn');
+    expect(campaigns).not.toContain('Thêm chiến dịch');
     // An engineer (Sửa) may edit.
-    const eng = render(<PremiumBody data={view} onChanged={() => {}} now={now} />, ['eng']);
-    expect(text(eng)).toContain('Lưu thay đổi…');
+    const eng = render(
+      <PremiumBody data={view} onChanged={() => {}} now={now} initialTab="config" />,
+      ['eng'],
+    );
     expect(eng).toContain('type="number"');
     expect(eng).toContain('aria-label="Bỏ Việt Nam"');
+    expect(
+      text(render(<PremiumBody data={view} onChanged={() => {}} now={now} />, ['eng'])),
+    ).toContain('Thêm chiến dịch');
   });
 
   it('saving a campaign sends the whole config with family codes and the reason', async () => {
@@ -400,6 +427,52 @@ describe('Premium: configuration', () => {
     );
     expect(errorMessageId(new ApiError('invalid-argument', 'malformed'))).toBe('error.invalid');
     expect(errorMessageId(new ApiError('permission-denied', 'role'))).toBe('error.role');
+  });
+});
+
+describe('Premium: will a campaign reach its families?', () => {
+  const allFlags = Object.fromEntries(flagKeys.map((k) => [k, true])) as Record<FlagKey, boolean>;
+  const reach = (
+    over: Partial<StaffFamilyPremium>,
+    flags: Partial<Record<FlagKey, boolean>> = {},
+  ) =>
+    campaignFamilyIssues(
+      {
+        ...blankCampaign(now),
+        id: 'qa',
+        capabilities: ['ai.assistance', 'assistant.premium_budget'],
+      },
+      ['VN'],
+      {
+        ...family,
+        ...over,
+        access: {
+          internal: false,
+          regionSupported: true,
+          flags: { ...allFlags, ...flags },
+          capabilities: {} as never,
+        },
+      },
+    );
+  it('a family outside the open regions, or without a country, is not reached', () => {
+    expect(reach({ country: 'US' }).country).toBe('outside');
+    expect(reach({ country: null }).country).toBe('none');
+    expect(reach({ country: 'VN' }).country).toBeNull();
+  });
+  it('names the flags the family still needs for what the campaign opens', () => {
+    expect(reach({}, { assistant: false, ai_assist: false }).flags).toEqual([
+      'ai_assist',
+      'assistant',
+    ]);
+    expect(reach({}).flags).toEqual([]);
+  });
+  it('the unsaved bar says what changed', () => {
+    const next = {
+      ...view.config,
+      regions: { advanced: ['VN', 'SG', 'US'] },
+      betaCampaigns: [{ ...view.config.betaCampaigns[0]!, families: ['F-7Q2K', 'F-NJAT'] }],
+    };
+    expect(draftChanges(view.config, next)).toEqual(['campaigns:2', 'regions']);
   });
 });
 

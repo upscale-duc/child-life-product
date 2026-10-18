@@ -878,10 +878,6 @@ td .lock {
   color: var(--foreground);
   font-weight: 600;
 }
-.check {
-  color: var(--primary);
-  font-weight: 700;
-}
 .thread {
   list-style: none;
   margin: 0;
@@ -990,32 +986,6 @@ td .lock {
 }
 .budget {
   font: 600 16px/24px var(--font-family);
-}
-.budget__bar {
-  position: relative;
-  height: 12px;
-  border-radius: var(--radius-pill);
-  background: var(--muted);
-  margin: 12px 0 8px;
-}
-.budget__fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  border-radius: inherit;
-  background: var(--mint);
-}
-.budget__fill--warn {
-  background: #f59e0b;
-}
-.budget__tick {
-  position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 2px;
-  background: #f59e0b;
-}
-.budget + .budget__bar + .muted + .note {
-  margin-top: 12px;
 }
 
 /* ---------- Charts (shadcn chart in ui.tsx; legend dots for the storage bar) ---------- */

@@ -22,9 +22,12 @@ import { messages } from '../src/messages';
 import { allowedRoute } from '../src/Shell';
 import {
   AssistantScreen,
-  AssistantTabs,
+  ModelDetails,
+  SwitchRecent,
   SwitchesView,
+  TaskBreakdown,
   TaskLookup,
+  TaskTechnical,
   TaskView,
   UsageView,
   lookupTask,
@@ -256,12 +259,23 @@ const text = (raw: string) =>
     .replace(/\s+/g, ' ');
 const buttons = (raw: string) =>
   [...raw.matchAll(/<button[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]!).trim());
+const tabs = (raw: string) =>
+  [...raw.matchAll(/<button[^>]*role="tab"[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]!).trim());
+const attr = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+// Nothing on a read-only view sends anything: no field, no switch, no submit.
+const noControls = (raw: string) =>
+  expect(raw).not.toMatch(/<input|<textarea|role="switch"|type="submit"/);
 
 describe('Trợ lý AI › screen', () => {
   it('has Mức dùng, Tra cứu tác vụ and Công tắc tabs; the sidebar keeps it to premium.view', () => {
-    const raw = html(<AssistantTabs label="Mục" value="usage" onChange={() => {}} />);
-    expect(buttons(raw)).toEqual(['Mức dùng', 'Tra cứu tác vụ', 'Công tắc']);
-    expect(text(html(<AssistantScreen />))).toContain('Trợ lý AI');
+    const raw = html(<AssistantScreen />);
+    expect(tabs(raw)).toEqual(['Mức dùng', 'Tra cứu tác vụ', 'Công tắc']);
+    expect(raw).toContain('aria-selected="true"');
+    expect(text(raw)).toContain('Trợ lý AI');
+    // Another tab can open first; only its content is mounted.
+    const lookup = html(<AssistantScreen initialTab="tasks" />);
+    expect(text(lookup)).toContain('Tra cứu một tác vụ');
     expect(routePaths.assistant).toBe('/assistant');
     expect(routeOf('/assistant')).toBe('assistant');
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
@@ -274,65 +288,116 @@ describe('Trợ lý AI › screen', () => {
 });
 
 describe('Trợ lý AI › Mức dùng', () => {
-  it('shows the pool by budget, tasks, errors, model counters and links to Premium', async () => {
+  it('leads with spend against the AI budget, failures and households out of credits', async () => {
     const { api, calls } = fakeApi({ staffAssistantUsage: usage });
     const data = await api.call<StaffAssistantUsage>('staffAssistantUsage');
     expect(calls).toEqual([{ name: 'staffAssistantUsage', data: undefined }]);
-    const raw = html(<UsageView data={data} />, ['ops']);
+    const raw = html(<UsageView data={data} now={now} />, ['ops']);
     const t = text(raw);
     expect(t).toContain('không có tin nhắn, ảnh, nội dung bản nháp hay tên');
+    // Spend vs budget: 250.000 đ of 15.000.000 đ, the assistant's own calls and cost.
+    expect(t).toContain('Ngân sách AI · Tháng 10');
+    expect(t).toContain('250.000 đ / 15 triệu đ');
+    expect(t).toContain('Ngày 15/31 trong tháng');
+    expect(t).toContain('Trợ lý, 30 ngày: 38 lần gọi AI · ước tính 15.000 đ');
+    expect(raw).toContain('role="progressbar"');
+    expect(t).not.toContain('Đã dùng hết ngân sách');
     expect(t).toContain('Tác vụ 30 ngày 40');
     expect(t).toContain('2 hỗ trợ sức khoẻ · 2 bị chặn');
+    expect(t).toContain('Tác vụ lỗi 4');
+    expect(t).toContain('Mã lỗi nhiều nhất: OCR_UNREADABLE');
+    expect(t).toContain('Hộ hết credit 2');
     expect(t).toContain('Credit đã tính 47');
     expect(t).toContain('9 đã trả lại · 1 đang giữ');
-    expect(t).toContain('Mã lỗi nhiều nhất: OCR_UNREADABLE');
-    expect(t).toContain('Lần gọi AI 38');
-    expect(t).toContain('Ước tính 15.000 đ');
     expect(t).toContain('Miễn phí');
     expect(t).toContain('Beta');
     expect(t).toContain('9 chat · 3 tóm tắt');
-    expect(t).toContain('Đang hỏi lại');
-    expect(t).toContain('Ảnh không đọc được');
-    expect(t).toContain('Chưa có kết quả');
     expect(t).toContain('USAGE_EXHAUSTED');
-    expect(t).toContain('openai:gpt-4.1-mini');
-    expect(t).toContain('4,2 giây trung vị · 12,5 giây p95 · 30 mẫu');
     expect(t).toContain('Tác vụ ảnh 3 credit');
     expect(t).toContain('Tóm tắt AI 1 credit');
+    // Breakdowns and model counters fold away, with what is inside said on the fold.
+    expect(t).toContain('34 chữ · 6 ảnh · 2 hỗ trợ sức khoẻ');
+    expect(t).toContain('38 lần gọi · p95 12,5 giây');
     // Credits are edited in Premium (D-075 #1): a link, no editing here.
-    expect(buttons(raw)).toEqual(['Sửa ở Premium']);
+    expect(buttons(raw)).toContain('Sửa ở Premium');
+    noControls(raw);
     expect(t).not.toContain('Có quá nhiều bản ghi');
-    const en = text(html(<UsageView data={data} />, ['ops'], 'en'));
+    const en = text(html(<UsageView data={data} now={now} />, ['ops'], 'en'));
     expect(en).toContain('Credits counted 47');
+    expect(en).toContain('Households out of credits 2');
     expect(en).toContain('9 chat · 3 summaries');
     expect(en).toContain('Photo task 3 credits');
+    expect(en).toContain('Assistant, 30 days: 38 AI calls · estimated');
+  });
+
+  it('warns first when the shared AI budget passes 80% or runs out', () => {
+    const near = text(
+      html(
+        <UsageView
+          data={{ ...usage, budget: { ...usage.budget, spentVnd: 12_750_000 } }}
+          now={now}
+        />,
+      ),
+    );
+    expect(near).toContain('Đã dùng 85% ngân sách AI tháng này');
+    expect(near).toContain('dùng chung với tóm tắt AI và gợi ý câu chuyện');
+    const over = text(
+      html(
+        <UsageView
+          data={{ ...usage, budget: { ...usage.budget, spentVnd: 15_000_000 } }}
+          now={now}
+        />,
+      ),
+    );
+    expect(over).toContain('Đã dùng hết ngân sách AI tháng này');
+  });
+
+  it('the folded breakdown and model counters show states, outcomes, models and timings', () => {
+    const b = text(html(<TaskBreakdown tasks={usage.tasks} />));
+    expect(b).toContain('Đang hỏi lại');
+    expect(b).toContain('Ảnh không đọc được');
+    expect(b).toContain('Chưa có kết quả');
+    expect(b).toContain('Tác vụ chữ 34');
+    expect(b).toContain('Hỗ trợ sức khoẻ 2');
+    const m = text(html(<ModelDetails model={usage.model} />));
+    expect(m).toContain('38 lần gọi · 35 tác vụ');
+    expect(m).toContain('15.000 đ');
+    expect(m).toContain('openai:gpt-4.1-mini');
+    expect(m).toContain('assistant-v3');
+    expect(m).toContain('4,2 giây trung vị · 12,5 giây p95 · 30 mẫu');
   });
 
   it('says when the bounded reads were cut, and an empty month reads as such', () => {
+    const tasks = { total: 0, byState: {}, byOutcome: {}, byModality: {}, health: 0, errors: [] };
+    const model = {
+      calls: 0,
+      tasksWithCalls: 0,
+      estimatedCostVnd: 0,
+      byModel: [],
+      timeToReady: { samples: 0, p50Ms: null, p95Ms: null },
+    };
     const t = text(
       html(
         <UsageView
           data={{
             ...usage,
             truncated: { tasks: true, ops: false },
-            tasks: { total: 0, byState: {}, byOutcome: {}, byModality: {}, health: 0, errors: [] },
-            model: {
-              calls: 0,
-              tasksWithCalls: 0,
-              estimatedCostVnd: 0,
-              byModel: [],
-              timeToReady: { samples: 0, p50Ms: null, p95Ms: null },
-            },
+            tasks,
+            model,
             credits: { ...usage.credits, stored: false },
           }}
+          now={now}
         />,
       ),
     );
     expect(t).toContain('Có quá nhiều bản ghi trong 30 ngày');
-    expect(t).toContain('Chưa có tác vụ nào trong 30 ngày.');
     expect(t).toContain('Không có lỗi');
-    expect(t).toContain('Chưa có mẫu');
     expect(t).toContain('Đang dùng mặc định');
+    expect(t).toContain('0 lần gọi · p95 —');
+    expect(text(html(<TaskBreakdown tasks={tasks} />))).toContain(
+      'Chưa có tác vụ nào trong 30 ngày.',
+    );
+    expect(text(html(<ModelDetails model={model} />))).toContain('Chưa có mẫu');
   });
 });
 
@@ -363,11 +428,15 @@ describe('Trợ lý AI › Tra cứu tác vụ', () => {
     expect(t).toContain('F-7Q2K · B-K3QZ');
     expect(t).toContain('Về bé · luồng chung');
     expect(t).toContain('Sẵn sàng');
+    expect(t).toContain('Thời gian đến sẵn sàng 4 giây');
     expect(t).toContain('1 credit · đã tính');
     expect(t).toContain('Bản nháp · 2 bản nháp');
     expect(t).toContain('time.ampm · vòng 1 · đã trả lời');
-    expect(t).toContain('2 lần gọi · 1 lần chạy');
-    expect(t).toContain('assistant-v3 · assistant-qa-v3/policy-v2');
+    // Model and versions fold away; the fold names the model.
+    expect(t).toContain('Kỹ thuật openai:gpt-4.1-mini');
+    const tech = text(html(<TaskTechnical task={task} now={now} />));
+    expect(tech).toContain('2 lần gọi · 1 lần chạy');
+    expect(tech).toContain('assistant-v3 · assistant-qa-v3/policy-v2');
     expect(t).toContain('Đã tính');
     expect(t).toContain('assistant_cal_2026-10 · assistant_tk_aaaaaaaa…');
     expect(t).toContain('Bú bình');
@@ -378,15 +447,22 @@ describe('Trợ lý AI › Tra cứu tác vụ', () => {
     expect(t).toContain('giữ với chi tiêu');
     expect(t).toContain('Ảnh bị từ chối');
     expect(t).toContain('drafts_ready');
-    expect(buttons(raw)).toEqual([]);
+    // The only buttons copy the codes (and fold the technical section).
+    noControls(raw);
+    for (const code of [taskId, 'F-7Q2K', 'B-K3QZ']) {
+      expect(raw).toContain(`aria-label="Chép ${code}"`);
+    }
     const en = text(html(<TaskView task={task} now={now} />, ['ops'], 'en'));
     expect(en).toContain('About the baby · shared thread');
     expect(en).toContain('time.ampm · round 1 · answered');
   });
 
   it('the lookup panel carries the no-content note; a health task without reservation', () => {
-    const t = text(html(<TaskLookup />, ['ops']));
+    const raw = html(<TaskLookup />, ['ops']);
+    const t = text(raw);
     expect(t).toContain('Tra cứu một tác vụ');
+    // One field and a submit button that stays off until an id is typed.
+    expect(raw).toMatch(/<button[^>]*type="submit"[^>]*disabled=""/);
     expect(t).toContain('không có tin nhắn, nội dung bản nháp, câu trả lời hỏi lại');
     const h = text(
       html(
@@ -425,12 +501,20 @@ describe('Trợ lý AI › Công tắc', () => {
     const t = text(raw);
     for (const key of assistantSwitchKeys) {
       expect(t).toContain(messages.vi[`flag.${key}`]!);
-      expect(t).toContain(messages.vi[`flag.${key}.offEffect`]!);
+      expect(t).toContain(messages.vi[`flag.${key}.desc`]!);
+      // What turning off does sits behind the "?" next to the name.
+      expect(raw).toContain(`aria-label="Khi tắt: ${attr(messages.vi[`flag.${key}.offEffect`]!)}"`);
     }
     expect(t).toContain('chỉ Kỹ sư, Admin hoặc Owner; luôn cần lý do');
     expect(t).toContain('1 gia đình được chọn');
+    expect(t).toContain('Đang tắt');
     expect(t).toContain('Minh · ');
-    expect(t).toContain('nhà cung cấp lỗi');
+    // Recent changes fold away; the fold counts them.
+    expect(t).toContain('Thay đổi gần đây 1 thay đổi');
+    const recent = text(html(<SwitchRecent recent={switches.recent} />));
+    expect(recent).toContain('Minh · ');
+    expect(recent).toContain('nhà cung cấp lỗi');
+    expect(text(html(<SwitchRecent recent={[]} />))).toContain('Chưa có thay đổi nào.');
     expect(switchCount(raw)).toBe(6);
     // Kỹ sư may switch (flags.toggle) …
     expect(disabledCount(raw)).toBe(0);

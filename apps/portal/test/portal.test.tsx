@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import type { FlagKey } from '@child-life/contracts';
 import {
   accountDeletionSteps,
   auditCategories,
@@ -37,7 +38,19 @@ import { ago, csvCell, gb, pct, usageTone, when } from '../src/format';
 import { messages } from '../src/messages';
 import { reasonMessages } from '../src/ui';
 import { AuditTable } from '../src/screens/Audit';
-import { AuditActionText, FeaturesView, defaultNotice, nextStep } from '../src/screens/Features';
+import {
+  AuditActionText,
+  FeaturesView,
+  LimitsList,
+  bulkPlan,
+  bulkSkip,
+  checkAreas,
+  flagGroups,
+  RecentList,
+  RolloutLadder,
+  defaultNotice,
+  nextStep,
+} from '../src/screens/Features';
 import { jobState } from '../src/screens/Jobs';
 import { OverviewView } from '../src/screens/Overview';
 import { SignInScreen, authErrorId, type SignInActions } from '../src/screens/SignIn';
@@ -182,6 +195,9 @@ describe('message catalogs (D-012)', () => {
               n: 1,
               p: 1,
               cols: 'x',
+              families: 'F-7Q2K',
+              country: 'Việt Nam',
+              flags: 'Trợ lý chat',
               babies: 1,
               people: 1,
               flag: 'x',
@@ -735,15 +751,85 @@ describe('A06 jobs, A10 features, A12 audit', () => {
     expect(nextStep({ enabled: true, scope: 'percent', percent: 50, notice: null })).toBe(100);
     expect(nextStep({ enabled: true, scope: 'all', percent: 0, notice: null })).toBeNull();
   });
+  it('every flag sits in one group; families are added only where the list counts', () => {
+    expect(flagGroups.flatMap((g) => g.keys).sort()).toEqual([...flagKeys].sort());
+    const f = {
+      ...flags.flags,
+      assistant: {
+        enabled: true,
+        scope: 'internal' as const,
+        percent: 0,
+        notice: null,
+        families: ['F-6TEA'],
+      },
+      rhythm: { enabled: false, scope: 'internal' as const, percent: 0, notice: null },
+    };
+    expect(bulkSkip(f.video_upload)).toBe('everyone');
+    expect(bulkSkip(f.ai_story_drafts)).toBe('percent');
+    expect(bulkPlan(f, ['assistant', 'rhythm', 'video_upload'], ['F-NJAT'])).toEqual([
+      { key: 'assistant', families: ['F-6TEA', 'F-NJAT'], added: 1 },
+      { key: 'rhythm', families: ['F-NJAT'], added: 1 },
+    ]);
+  });
+  it('a family check says what shows and why the rest does not', () => {
+    const on = Object.fromEntries(flagKeys.map((k) => [k, false])) as Record<FlagKey, boolean>;
+    const state = (allowed: boolean, reason: string | null) => ({ allowed, reason, via: null });
+    const areas = checkAreas({
+      internal: false,
+      regionSupported: false,
+      flags: {
+        ...on,
+        assistant: true,
+        assistant_live: true,
+        assistant_writes: true,
+        ai_assist: true,
+      },
+      capabilities: {
+        'ai.assistance': state(false, 'REGION_UNAVAILABLE'),
+        'personalization.cross_module': state(false, 'FEATURE_DISABLED'),
+        'rhythm.advanced': state(false, 'FEATURE_DISABLED'),
+        'templates.premium': state(false, 'REGION_UNAVAILABLE'),
+      } as never,
+    });
+    const by = Object.fromEntries(areas.map((a) => [a.id, a]));
+    expect(by.assistant).toMatchObject({
+      open: true,
+      missingExtras: ['assistant_images', 'assistant_care', 'assistant_upsell'],
+    });
+    expect(by.rhythm).toMatchObject({
+      open: false,
+      reason: 'FEATURE_DISABLED',
+      missingFlags: ['rhythm'],
+    });
+    expect(by.aiAssist).toMatchObject({ open: false, reason: 'REGION_UNAVAILABLE' });
+  });
   it('kill switches are for engineering; rollout steps for operations', () => {
     const ops = render(<FeaturesView data={flags} ai={null} onChanged={() => undefined} />, [
       'ops',
     ]);
     expect(text(ops)).toContain('Mở dần · 50%');
-    expect(text(ops)).toContain('Mở cho 100% gia đình');
     expect(text(ops)).toContain('Linh · 2/10');
-    expect(text(ops)).toContain('Mở “AI gợi ý câu chuyện” lên 50%');
-    expect(text(ops)).toContain('Tự lưu kỷ niệm · mỗi lần tải lên Tối đa 200 mục');
+    // The ladder, the limits and the recent changes are folded; each renders on its own.
+    expect(
+      text(
+        render(
+          <RolloutLadder
+            flag={flags.flags.ai_story_drafts}
+            ai={null}
+            canToggle={false}
+            canRollout
+            onStep={() => undefined}
+          />,
+          ['ops'],
+        ),
+      ),
+    ).toContain('Mở cho 100% gia đình');
+    expect(text(render(<RecentList recent={flags.recent} />))).toContain(
+      'Mở “AI gợi ý câu chuyện” lên 50%',
+    );
+    expect(text(render(<LimitsList limits={flags.limits} />))).toContain(
+      'Tự lưu kỷ niệm · mỗi lần tải lên Tối đa 200 mục',
+    );
     expect(ops.match(/role="switch"[^>]*disabled=""/g)?.length).toBe(flagKeys.length);
     const eng = render(<FeaturesView data={flags} ai={null} onChanged={() => undefined} />, [
       'eng',

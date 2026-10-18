@@ -9,6 +9,7 @@ import type {
 import { Fragment, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { useLoad } from '../api';
+import { Notice, StatTiles } from '../content-kit';
 import { useNavigate } from '../context';
 import { ZONE, num, pct, shortDate, vnd, when } from '../format';
 import {
@@ -81,35 +82,44 @@ export function AiPolicyView({
   const problems = Object.entries(data.reports.byProblem) as Array<[string, number]>;
   return (
     <div className="grid">
-      <LockNote>
+      <Notice tone="info">
         <FormattedMessage id="premium.ai.audit" />
-      </LockNote>
-      <div className="kpis">
-        <Kpi
-          label={<FormattedMessage id="premium.ai.generated" />}
-          value={num(intl, t.generated)}
-          foot={
-            <FormattedMessage id="premium.ai.generatedFoot" values={{ ai: t.ai, cache: t.cache }} />
-          }
-        />
-        <Kpi
-          label={<FormattedMessage id="premium.ai.fallbackRate" />}
-          value={pct(intl, t.fallbackRate)}
-          foot={<FormattedMessage id="premium.ai.fallbackFoot" values={{ n: t.fallback }} />}
-        />
-        <Kpi
-          label={<FormattedMessage id="premium.ai.technicalRate" />}
-          value={pct(intl, t.technicalRate)}
-          foot={<FormattedMessage id="premium.ai.technicalFoot" />}
-          tone={t.technicalRate !== null && t.technicalRate >= 0.1 ? 'warn' : 'muted'}
-        />
-        <Kpi
-          label={<FormattedMessage id="premium.ai.reportsOpen" />}
-          value={num(intl, data.reports.open)}
-          foot={<FormattedMessage id="premium.ai.reportsFoot" />}
-          tone={data.reports.byProblem.unsafe_advice ? 'error' : 'muted'}
-        />
-      </div>
+      </Notice>
+      <StatTiles
+        items={[
+          {
+            key: 'generated',
+            label: <FormattedMessage id="premium.ai.generated" />,
+            value: num(intl, t.generated),
+            foot: (
+              <FormattedMessage
+                id="premium.ai.generatedFoot"
+                values={{ ai: t.ai, cache: t.cache }}
+              />
+            ),
+          },
+          {
+            key: 'fallback',
+            label: <FormattedMessage id="premium.ai.fallbackRate" />,
+            value: pct(intl, t.fallbackRate),
+            foot: <FormattedMessage id="premium.ai.fallbackFoot" values={{ n: t.fallback }} />,
+          },
+          {
+            key: 'technical',
+            label: <FormattedMessage id="premium.ai.technicalRate" />,
+            value: pct(intl, t.technicalRate),
+            foot: <FormattedMessage id="premium.ai.technicalFoot" />,
+            tone: t.technicalRate !== null && t.technicalRate >= 0.1 ? 'warn' : 'default',
+          },
+          {
+            key: 'reports',
+            label: <FormattedMessage id="premium.ai.reportsOpen" />,
+            value: num(intl, data.reports.open),
+            foot: <FormattedMessage id="premium.ai.reportsFoot" />,
+            tone: data.reports.byProblem.unsafe_advice ? 'error' : 'default',
+          },
+        ]}
+      />
       <div className="cols cols--2-1">
         <Panel
           title={<FormattedMessage id="premium.ai.daily" />}

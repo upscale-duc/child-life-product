@@ -1,17 +1,24 @@
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
+  capabilities,
+  capabilityFlag,
   defaultEntitlementsConfig,
   entitlementsConfigSchema,
   familyPremiumSchema,
+  flagKeys,
   grantPromoSchema,
   householdPlan,
+  resolveCapability,
   revokeGrantSchema,
   setEntitlementsConfigSchema,
+  type Capability,
+  type CapabilityState,
   type EntitlementsConfig,
+  type FlagKey,
   type GrantEnvironment,
   type StaffFamilyPremium,
 } from '@child-life/contracts';
-import { loadEntitlementContext, serverGrantEnvironment } from './entitlements.js';
+import { flagOn, loadEntitlementContext, serverGrantEnvironment } from './entitlements.js';
 import {
   familyCode,
   familyIdsOf,
@@ -132,6 +139,34 @@ export async function familyPremium(
   // The staff member is not a member: the context is used for grants and family fields only.
   const ctx = await loadEntitlementContext(db, 'portal-staff', babyId, now, environment);
   const plan = householdPlan(ctx.grants, environment, now);
+  // What the app is told (getCapabilities), seen as the owner: flags, region, then grants.
+  const regionSupported =
+    ctx.family.country !== null && ctx.config.regions.advanced.includes(ctx.family.country);
+  const flags = Object.fromEntries(flagKeys.map((k) => [k, flagOn(ctx, k)])) as Record<
+    FlagKey,
+    boolean
+  >;
+  const caps = Object.fromEntries(
+    capabilities.map((capability): [Capability, CapabilityState] => {
+      const flag = capabilityFlag[capability];
+      const r = resolveCapability({
+        capability,
+        now,
+        member: true,
+        roleAllows: true,
+        featureEnabled: flag === null || flags[flag],
+        regionSupported,
+        environment,
+        grants: ctx.grants,
+      });
+      return [
+        capability,
+        r.allowed
+          ? { allowed: true, reason: null, via: r.via }
+          : { allowed: false, reason: r.reason, via: null },
+      ];
+    }),
+  ) as Record<Capability, CapabilityState>;
   return {
     code,
     country: ctx.family.country,
@@ -150,6 +185,7 @@ export async function familyPremium(
       autoRenew: g.autoRenew ?? null,
       fromCampaign: g.id.startsWith('campaign:'),
     })),
+    access: { internal: ctx.family.internal, regionSupported, flags, capabilities: caps },
   };
 }
 

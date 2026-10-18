@@ -301,7 +301,7 @@ describe('Premium › AI', () => {
     const t = text(html(<AiPolicyView data={data} onOpenLimits={() => {}} />, ['ops']));
     expect(t).toContain('Credit · Miễn phí (mỗi tháng lịch) 20 credit');
     expect(t).toContain('Credit · Premium (kỳ thanh toán; beta: mỗi tháng) 200 credit');
-    expect(t).toContain('mỗi tóm tắt AI tạo mới dùng 1 credit');
+    expect(t).toContain('Mỗi tóm tắt AI tạo mới dùng 1 credit');
     expect(t).not.toContain('AI · mỗi bé mỗi ngày');
     const en = text(html(<AiPolicyView data={data} onOpenLimits={() => {}} />, ['ops'], 'en'));
     expect(en).toContain('200 credits');
@@ -333,9 +333,9 @@ describe('Premium › AI', () => {
     expect(aiSwitchNote({ enabled: true, scope: 'all', percent: 0, families: 0 }).tone).toBe('ok');
   });
 
-  it('the Premium screen has Cấu hình and AI tabs; the sidebar keeps it to premium.view', () => {
+  it('the Premium screen has four tabs; the sidebar keeps it to premium.view', () => {
     const raw = html(<PremiumTabs label="Mục Premium" value="ai" onChange={() => {}} />);
-    expect(buttons(raw)).toEqual(['Cấu hình', 'AI']);
+    expect(buttons(raw)).toEqual(['Chiến dịch', 'Gia đình', 'Cấu hình', 'Chính sách AI']);
     // The screen itself only shows loading until the callable answers (no network in tests).
     expect(text(html(<PremiumScreen />))).toContain('Premium & Cá nhân hoá');
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
@@ -371,7 +371,7 @@ describe('Premium › Tra cứu gia đình › Quota & thanh toán', () => {
     });
   });
 
-  it('shows windows, held units, hashed store accounts, events and the D-074 note', () => {
+  it('shows windows, held units, hashed store accounts, events and the not-connected note', () => {
     const raw = html(
       <PremiumBody
         data={view}
@@ -384,7 +384,7 @@ describe('Premium › Tra cứu gia đình › Quota & thanh toán', () => {
     );
     const t = text(raw);
     expect(t).toContain('Quota & thanh toán');
-    expect(t).toContain('chưa kết nối (D-074)');
+    expect(t).toContain('Google Play chưa kết nối: chưa có giao dịch');
     expect(t).toContain('video_cal_2026-10');
     expect(t).toContain('0 đã dùng · 1 giữ chỗ · hạn mức 1');
     expect(t).toContain('ai_day_B-K3QZ_2026-10-15');
@@ -403,7 +403,7 @@ describe('Premium › Tra cứu gia đình › Quota & thanh toán', () => {
       expect(buttons(section)).toEqual([]);
     }
     const en = text(html(<FamilyQuotaView data={quota} now={now} />, ['ops'], 'en'));
-    expect(en).toContain('not connected yet (D-074)');
+    expect(en).toContain('payments are not connected yet: there are no real');
     expect(en).toContain('1 unit held');
   });
 

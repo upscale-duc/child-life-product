@@ -481,4 +481,15 @@ export interface StaffFamilyPremium {
     /** From open campaigns, not stored: cannot be revoked one family at a time. */
     fromCampaign: boolean;
   }[];
+  /**
+   * What the family's app is told, computed like `getCapabilities` (owner's view, membership
+   * aside): the rollout flags on for it and each capability with the reason it is closed. Lets
+   * the portal say why a feature does not show (country, flag, no grant).
+   */
+  access?: {
+    internal: boolean;
+    regionSupported: boolean;
+    flags: Record<FlagKey, boolean>;
+    capabilities: Record<Capability, CapabilityState>;
+  };
 }

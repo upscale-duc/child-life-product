@@ -8,7 +8,7 @@ import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
 import { Sidebar } from '../src/Shell';
 import { ArticleEditor, ArticlesBody, blankArticle, filterArticles } from '../src/screens/Articles';
-import { ReviewBody, ReviewDetail, queueRows } from '../src/screens/ContentReview';
+import { ReviewBody, ReviewDetail, ReviewSteps, queueRows } from '../src/screens/ContentReview';
 import { MilestoneEditor, MilestonesBody } from '../src/screens/Milestones';
 import { StageEditor, StagesBody, blankStage } from '../src/screens/Stages';
 import {
@@ -529,10 +529,11 @@ describe('B03 / B04 review queue', () => {
     expect(queueRows(queue.rows, 'approved').map((r) => r.kind)).toEqual(['stage']);
     expect(queueRows(queue.rows, 'due').map((r) => r.id)).toEqual(['art_fever_when_to_call']);
     const html = text(render(<ReviewBody view={queue} onChanged={() => undefined} />));
-    expect(html).toContain('Chờ duyệt · 1');
-    expect(html).toContain('Đã duyệt · 1');
-    expect(html).toContain('Cần rà soát lại · 1');
-    expect(html).toContain('Nháp Chờ duyệt Đã duyệt Đã xuất bản');
+    // The count tiles are the tabs.
+    expect(html).toContain('Chờ duyệt 1 Kiểm tra và duyệt');
+    expect(html).toContain('Đã duyệt 1 Chờ xuất bản lên app');
+    expect(html).toContain('Cần rà soát lại 1 Quá 12 tháng từ lần duyệt');
+    expect(text(render(<ReviewSteps />))).toContain('Nháp Chờ duyệt Đã duyệt Đã xuất bản');
     const published = text(
       render(<ReviewBody view={queue} onChanged={() => undefined} initialTab="approved" />),
     );

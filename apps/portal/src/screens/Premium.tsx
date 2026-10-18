@@ -5,32 +5,37 @@ import {
   staffEntitlementsConfigSchema,
   type BetaCampaign,
   type Capability,
+  type FlagKey,
   type GrantEnvironment,
   type HouseholdPlan,
   type StaffFamilyPremium,
   type StaffFamilyQuota,
 } from '@child-life/contracts';
-import { useEffect, useId, useState, type ReactNode } from 'react';
+import { Plus, Search, Upload } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { Button as UiButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ApiError,
   useApi,
   useLoad,
   type Api,
+  type FlagsView,
   type StaffPremiumConfig,
   type StaffPremiumView,
 } from '../api';
+import { EmptyState, Field, Notice, Section } from '../content-kit';
 import { useStaff } from '../context';
-import { ZONE, shortDate } from '../format';
+import { ZONE } from '../format';
 import {
   Button,
   Loaded,
-  LockNote,
   Modal,
   Page,
-  Panel,
   Pill,
   ReasonField,
   RowActions,
@@ -40,70 +45,69 @@ import {
   reasonOk,
   type PillTone,
 } from '../ui';
-import { AuditActionText, FamilyPicker } from './Features';
+import {
+  BulkFamiliesDialog,
+  FamilyAccessCard,
+  FamilyPicker,
+  RecentList,
+  resolveFamilyCodes,
+  type BulkInit,
+} from './Features';
 import { CheckRow, FieldSelect } from './form-controls';
 import { AiPolicyLoader, FamilyQuotaView } from './PremiumOps';
 
 /**
- * Premium & Cá nhân hoá (plan §5.6): advanced regions, quotas, the assistant credit pool and beta
- * campaigns in `config/entitlements`, and one family's plan and grants with promo grants and
- * revokes. Every number is configuration, not a commercial commitment (Q-071); a beta campaign may
- * open any Premium feature — group A, Cao cấp templates, the Premium credit budget (D-075 #1);
- * health and logging stay free in every plan state (brief p.3).
+ * Premium & Cá nhân hoá (plan §5.6), in four tabs: beta campaigns, one family (what its app shows,
+ * its grants, quota and store records), the configuration (advanced regions, video quotas, the
+ * assistant credit pool) and the AI policy. Campaigns and configuration are one draft of
+ * `config/entitlements`, saved together with a reason from the bar that shows while it is
+ * unsaved. Every number is configuration, not a commercial commitment (Q-071); a beta campaign
+ * may open any Premium feature (D-075 #1); health and logging stay free in every plan state.
  * Staff actions: `premium.view` / `premium.config` / `premium.grant` (owner, admin).
  */
 export function PremiumScreen() {
-  const intl = useIntl();
-  const [tab, setTab] = useState<PremiumTab>('config');
   const [load, reload] = useLoad<StaffPremiumView>('staffPremium', {}, 'premium');
   return (
     <Page
       title={<FormattedMessage id="premium.title" />}
       subtitle={<FormattedMessage id="premium.sub" />}
-      actions={
-        <>
-          <PremiumTabs
-            label={intl.formatMessage({ id: 'premium.tabs' })}
-            value={tab}
-            onChange={setTab}
-          />
-          {load.status === 'ok' && <EnvPill env={load.data.environment} />}
-        </>
-      }
+      actions={load.status === 'ok' && <EnvPill env={load.data.environment} />}
     >
-      {tab === 'ai' ? (
-        // Plan §5.6 "AI policy": the limits themselves are edited on the Cấu hình tab.
-        <AiPolicyLoader onOpenLimits={() => setTab('config')} />
-      ) : (
-        <Loaded load={load} reload={reload}>
-          {(data) => <PremiumBody data={data} onChanged={reload} />}
-        </Loaded>
-      )}
+      <Loaded load={load} reload={reload}>
+        {(data) => <PremiumBody data={data} onChanged={reload} />}
+      </Loaded>
     </Page>
   );
 }
 
-export type PremiumTab = 'config' | 'ai';
+export type PremiumTab = 'campaigns' | 'families' | 'config' | 'ai';
+export const premiumTabs: PremiumTab[] = ['campaigns', 'families', 'config', 'ai'];
 
 export function PremiumTabs({
   label,
   value,
   onChange,
+  campaigns,
 }: {
   label: string;
   value: PremiumTab;
   onChange: (t: PremiumTab) => void;
+  /** Shown next to "Chiến dịch". */
+  campaigns?: number;
 }) {
   return (
-    <Segmented
-      label={label}
-      value={value}
-      onChange={onChange}
-      options={(['config', 'ai'] as const).map((t) => ({
-        value: t,
-        label: <FormattedMessage id={`premium.tab.${t}`} />,
-      }))}
-    />
+    <Tabs value={value} onValueChange={(v) => onChange(v as PremiumTab)}>
+      <TabsList aria-label={label}>
+        {premiumTabs.map((t) => (
+          <TabsTrigger key={t} value={t} className="px-3">
+            <FormattedMessage id={`premium.tab.${t}`} />
+            {t === 'campaigns' && campaigns !== undefined && (
+              <span className="text-xs text-muted-foreground tabular-nums">{campaigns}</span>
+            )}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   );
 }
 
@@ -271,6 +275,147 @@ export function grantRevocable(g: FamilyGrant): boolean {
   );
 }
 
+// ---------- Families picked for a campaign: will it reach them? ----------
+
+/** The rollout flags a family needs to see what a campaign capability opens. */
+export const capabilityUiFlags: Partial<Record<Capability, readonly FlagKey[]>> = {
+  'personalization.cross_module': ['personalization'],
+  'rhythm.advanced': ['rhythm', 'personalization'],
+  'ai.assistance': ['ai_assist'],
+  'assistant.premium_budget': ['assistant'],
+};
+
+export type CampaignFamilyIssue = {
+  /** The family has no country, or one the campaign (or the open regions) does not cover. */
+  country: 'none' | 'outside' | null;
+  /** Flags the family still needs for what the campaign opens. */
+  flags: FlagKey[];
+};
+
+/** Why a campaign would not show for a family, from its lookup (server truth for flags). */
+export function campaignFamilyIssues(
+  c: BetaCampaign,
+  regions: readonly string[],
+  family: StaffFamilyPremium,
+): CampaignFamilyIssue {
+  const covered = c.countries.length > 0 ? c.countries : regions;
+  const country = !family.country
+    ? 'none'
+    : covered.includes(family.country) && regions.includes(family.country)
+      ? null
+      : 'outside';
+  const needed = [...new Set(c.capabilities.flatMap((cap) => capabilityUiFlags[cap] ?? []))];
+  const flags = family.access ? needed.filter((k) => !family.access!.flags[k]) : [];
+  return { country, flags };
+}
+
+type FamilyCheck = StaffFamilyPremium | 'failed';
+
+/** Looks the given families up once each (at most 12) and keeps the answers. */
+export function useFamilyChecks(codes: readonly string[], version = 0) {
+  const api = useApi();
+  const [found, setFound] = useState<Record<string, FamilyCheck>>({});
+  const asked = useRef(new Map<string, number>());
+  const key = codes.slice(0, 12).join(',');
+  useEffect(() => {
+    let live = true;
+    for (const code of key ? key.split(',') : []) {
+      if (asked.current.get(code) === version) continue;
+      asked.current.set(code, version);
+      api
+        .call<StaffFamilyPremium>('staffFamilyPremium', { code })
+        .then((f) => live && setFound((m) => ({ ...m, [code]: f })))
+        .catch(() => live && setFound((m) => ({ ...m, [code]: 'failed' })));
+    }
+    return () => {
+      live = false;
+    };
+  }, [api, key, version]);
+  return found;
+}
+
+/** One warning line per picked family the campaign will not reach as it is. */
+function CampaignWarnings({
+  campaign,
+  regions,
+  checks,
+  canFix,
+  onFix,
+  onCheck,
+}: {
+  campaign: BetaCampaign;
+  regions: readonly string[];
+  checks: Record<string, FamilyCheck>;
+  canFix: boolean;
+  onFix: (code: string, keys: FlagKey[]) => void;
+  /** Opens the family on the Gia đình tab. */
+  onCheck?: (code: string) => void;
+}) {
+  const intl = useIntl();
+  if (campaign.scope !== 'internal') return null;
+  const rows = (campaign.families ?? [])
+    .map((code) => ({ code, f: checks[code] }))
+    .filter((r): r is { code: string; f: StaffFamilyPremium } => !!r.f && r.f !== 'failed')
+    .map((r) => ({ ...r, issue: campaignFamilyIssues(campaign, regions, r.f) }))
+    .filter((r) => r.issue.country || r.issue.flags.length);
+  if (!rows.length) return null;
+  return (
+    <Notice tone="warn" title={<FormattedMessage id="premium.warn.title" />}>
+      <ul className="mt-1 grid gap-1.5">
+        {rows.map(({ code, f, issue }) => (
+          <li key={code} className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="font-mono font-semibold">{code}</span>
+            <span>
+              {[
+                issue.country === 'none'
+                  ? intl.formatMessage({ id: 'premium.warn.noCountry' })
+                  : issue.country === 'outside'
+                    ? intl.formatMessage(
+                        { id: 'premium.warn.outside' },
+                        { country: countryName(intl.locale, f.country!) },
+                      )
+                    : null,
+                issue.flags.length
+                  ? intl.formatMessage(
+                      { id: 'premium.warn.flags' },
+                      {
+                        flags: issue.flags
+                          .map((k) => intl.formatMessage({ id: `flag.${k}` }))
+                          .join(', '),
+                      },
+                    )
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </span>
+            {canFix && issue.flags.length > 0 && (
+              <UiButton
+                variant="link"
+                size="sm"
+                className="h-auto p-0"
+                onClick={() => onFix(code, issue.flags)}
+              >
+                <FormattedMessage id="premium.warn.fix" />
+              </UiButton>
+            )}
+            {onCheck && (
+              <UiButton
+                variant="link"
+                size="sm"
+                className="h-auto p-0"
+                onClick={() => onCheck(code)}
+              >
+                <FormattedMessage id="premium.warn.check" />
+              </UiButton>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Notice>
+  );
+}
+
 // ---------- The screen ----------
 
 export function PremiumBody({
@@ -279,6 +424,7 @@ export function PremiumBody({
   now = new Date(),
   initialFamily = null,
   initialQuota = null,
+  initialTab,
 }: {
   data: StaffPremiumView;
   onChanged: () => void;
@@ -287,10 +433,16 @@ export function PremiumBody({
   initialFamily?: StaffFamilyPremium | null;
   /** That family's quota and billing (tests). */
   initialQuota?: StaffFamilyQuota | null;
+  initialTab?: PremiumTab;
 }) {
+  const intl = useIntl();
   const staff = useStaff();
   const canConfig = staffCan(staff.levels, 'premium.config');
   const canGrant = staffCan(staff.levels, 'premium.grant');
+  const canFlags = staffCan(staff.levels, 'flags.rollout');
+  const [tab, setTab] = useState<PremiumTab>(
+    initialTab ?? (initialFamily ? 'families' : 'campaigns'),
+  );
   const saved = JSON.stringify(data.config);
   const [draft, setDraft] = useState<StaffPremiumConfig>(data.config);
   // A reload after a grant keeps unsaved edits; a new stored config replaces them.
@@ -300,85 +452,117 @@ export function PremiumBody({
     null,
   );
   const [saving, setSaving] = useState(false);
+  const [flagsLoad, reloadFlags] = useLoad<FlagsView>('staffFlags', {}, 'flags');
+  const flags = flagsLoad.status === 'ok' ? flagsLoad.data.flags : null;
+  const [bulk, setBulk] = useState<BulkInit | null>(null);
+  // Bumped after flags change, so the family checks ask again.
+  const [checkVersion, setCheckVersion] = useState(0);
+  const [lookFor, setLookFor] = useState<string | null>(null);
+  const campaignCodes = [
+    ...new Set(
+      draft.betaCampaigns.flatMap((c) => (c.scope === 'internal' ? (c.families ?? []) : [])),
+    ),
+  ];
+  const checks = useFamilyChecks(campaignCodes, checkVersion);
+  const openRegion = (country: string) => {
+    if (draft.regions.advanced.includes(country)) return;
+    setDraft({ ...draft, regions: { advanced: [...draft.regions.advanced, country] } });
+    toast.info(
+      intl.formatMessage(
+        { id: 'premium.regionAdded' },
+        { country: countryName(intl.locale, country) },
+      ),
+    );
+  };
   return (
-    <div className="cols cols--2-1">
-      <div className="stack">
-        {!data.stored && (
-          <LockNote>
-            <FormattedMessage id="premium.notStored" />
-          </LockNote>
-        )}
-        {!canConfig && (
-          <LockNote>
-            <FormattedMessage id="premium.readOnly" />
-          </LockNote>
-        )}
-        <RegionsPanel config={draft} editable={canConfig} onChange={setDraft} />
-        <CampaignsPanel
+    <div className="grid gap-4">
+      <PremiumTabs
+        label={intl.formatMessage({ id: 'premium.tabs' })}
+        value={tab}
+        onChange={setTab}
+        campaigns={draft.betaCampaigns.length}
+      />
+      {canConfig && dirty && (tab === 'campaigns' || tab === 'config' || tab === 'families') && (
+        <SaveBar
+          config={draft}
+          saved={JSON.parse(saved) as StaffPremiumConfig}
+          onDiscard={() => setDraft(JSON.parse(saved) as StaffPremiumConfig)}
+          onSave={() => setSaving(true)}
+        />
+      )}
+      {!data.stored && tab !== 'ai' && (
+        <Notice tone="info">
+          <FormattedMessage id="premium.notStored" />
+        </Notice>
+      )}
+      {!canConfig && (tab === 'campaigns' || tab === 'config') && (
+        <Notice tone="info">
+          <FormattedMessage id="premium.readOnly" />
+        </Notice>
+      )}
+      {tab === 'campaigns' && (
+        <CampaignsSection
           config={draft}
           editable={canConfig}
           now={now}
+          checks={checks}
+          canFix={canFlags && !!flags}
+          onFix={(code, keys) => setBulk({ families: [code], keys })}
+          onCheck={(code) => {
+            setLookFor(code);
+            setTab('families');
+          }}
           onAdd={() => setEditing({ index: null, campaign: blankCampaign(now) })}
           onEdit={(index) => setEditing({ index, campaign: draft.betaCampaigns[index]! })}
           onRemove={(index) =>
             setDraft({ ...draft, betaCampaigns: draft.betaCampaigns.filter((_, i) => i !== index) })
           }
         />
-        {canConfig && (
-          <Panel>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="muted">
-                <FormattedMessage id={dirty ? 'premium.unsaved' : 'premium.saved'} />
-              </span>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  disabled={!dirty}
-                  onClick={() => setDraft(JSON.parse(saved) as StaffPremiumConfig)}
-                >
-                  <FormattedMessage id="premium.discard" />
-                </Button>
-                <Button kind="primary" disabled={!dirty} onClick={() => setSaving(true)}>
-                  <FormattedMessage id="premium.save" />
-                </Button>
-              </div>
-            </div>
-          </Panel>
-        )}
+      )}
+      {tab === 'families' && (
         <FamilyLookup
+          key={lookFor ?? 'lookup'}
           canGrant={canGrant}
+          canFlags={canFlags}
+          canConfig={canConfig}
+          regions={draft.regions.advanced}
+          flags={flags}
+          checkVersion={checkVersion}
           onChanged={onChanged}
+          onEnable={(code, keys) => setBulk({ families: [code], keys })}
+          onOpenRegion={openRegion}
           now={now}
           initial={initialFamily}
           initialQuota={initialQuota}
+          initialCode={lookFor}
         />
-      </div>
-      <div className="stack">
-        <Panel title={<FormattedMessage id="premium.rules" />}>
-          <ul className="recent">
-            {[
-              'premium.rule.config',
-              'premium.rule.beta',
-              'premium.rule.free',
-              'premium.rule.paid',
-            ].map((id) => (
-              <li key={id}>
-                <FormattedMessage id={id} />
-              </li>
-            ))}
-          </ul>
-        </Panel>
-        <RecentPanel recent={data.recent} />
-      </div>
+      )}
+      {tab === 'config' && (
+        <ConfigSections
+          config={draft}
+          editable={canConfig}
+          onChange={setDraft}
+          recent={data.recent}
+        />
+      )}
+      {tab === 'ai' && (
+        // Plan §5.6 "AI policy": the limits themselves are edited on the Cấu hình tab.
+        <AiPolicyLoader onOpenLimits={() => setTab('config')} />
+      )}
       {editing && (
         <CampaignDialog
           initial={editing.campaign}
           index={editing.index}
           all={draft.betaCampaigns}
           regions={draft.regions.advanced}
+          checkVersion={checkVersion}
+          canFix={canFlags && !!flags}
+          onFix={(code, keys) => setBulk({ families: [code], keys })}
           onClose={() => setEditing(null)}
           onApply={(c) => {
             setDraft(withCampaign(draft, c, editing.index));
             setEditing(null);
+            toast.info(intl.formatMessage({ id: 'premium.beta.applied' }));
           }}
         />
       )}
@@ -388,10 +572,77 @@ export function PremiumBody({
           onClose={() => setSaving(false)}
           onDone={() => {
             setSaving(false);
+            toast.success(intl.formatMessage({ id: 'premium.savedToast' }));
             onChanged();
           }}
         />
       )}
+      {bulk && flags && (
+        <BulkFamiliesDialog
+          flags={flags}
+          initial={bulk}
+          onClose={() => setBulk(null)}
+          onDone={() => {
+            setBulk(null);
+            reloadFlags();
+            setCheckVersion((v) => v + 1);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+/** What changed in the draft, in a few words: "1 chiến dịch, khu vực mở". */
+export function draftChanges(saved: StaffPremiumConfig, draft: StaffPremiumConfig): string[] {
+  const out: string[] = [];
+  const ids = new Set([...saved.betaCampaigns, ...draft.betaCampaigns].map((c) => c.id));
+  const changed = [...ids].filter((id) => {
+    const a = saved.betaCampaigns.find((c) => c.id === id);
+    const b = draft.betaCampaigns.find((c) => c.id === id);
+    return JSON.stringify(a) !== JSON.stringify(b);
+  }).length;
+  if (changed) out.push(`campaigns:${changed}`);
+  if (JSON.stringify(saved.regions) !== JSON.stringify(draft.regions)) out.push('regions');
+  if (JSON.stringify(saved.quotas) !== JSON.stringify(draft.quotas)) out.push('quotas');
+  if (saved.policyVersion !== draft.policyVersion) out.push('policy');
+  return out;
+}
+
+/** Stays under the header while the draft is unsaved: what changed, discard, save. */
+function SaveBar({
+  config,
+  saved,
+  onDiscard,
+  onSave,
+}: {
+  config: StaffPremiumConfig;
+  saved: StaffPremiumConfig;
+  onDiscard: () => void;
+  onSave: () => void;
+}) {
+  const intl = useIntl();
+  const parts = draftChanges(saved, config).map((c) => {
+    const [what, n] = c.split(':');
+    return intl.formatMessage({ id: `premium.changed.${what}` }, { n: Number(n ?? 0) });
+  });
+  return (
+    <div className="sticky top-14 z-10 -mx-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-warning/40 bg-background/95 px-4 py-2.5 backdrop-blur md:-mx-8 md:px-8">
+      <span className="size-2 rounded-full bg-warning" aria-hidden="true" />
+      <span className="text-sm" role="status">
+        <strong className="font-medium">
+          <FormattedMessage id="premium.unsaved" />
+        </strong>
+        {parts.length > 0 && <span className="text-muted-foreground"> · {parts.join(', ')}</span>}
+      </span>
+      <div className="ml-auto flex gap-2">
+        <Button onClick={onDiscard}>
+          <FormattedMessage id="premium.discard" />
+        </Button>
+        <Button kind="primary" onClick={onSave}>
+          <FormattedMessage id="premium.save" />
+        </Button>
+      </div>
     </div>
   );
 }
@@ -409,34 +660,35 @@ function NumberField({
 }) {
   const id = useId();
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
+    <Field label={label} htmlFor={id}>
       <Input
         id={id}
         type="number"
         min={0}
         max={max}
         step={1}
+        className="tabular-nums"
         value={value}
         onChange={(e) => onChange(Math.max(0, Math.round(Number(e.target.value) || 0)))}
       />
-    </div>
+    </Field>
   );
 }
 
 type Window = StaffPremiumConfig['quotas']['video']['free']['window'];
 const windows: Window[] = ['calendar_month', 'billing_period'];
 
-function RegionsPanel({
+/** Cấu hình: open regions, video quotas, assistant credits, policy version, rules, history. */
+function ConfigSections({
   config,
   editable,
   onChange,
+  recent,
 }: {
   config: StaffPremiumConfig;
   editable: boolean;
   onChange: (c: StaffPremiumConfig) => void;
+  recent: StaffPremiumView['recent'];
 }) {
   const intl = useIntl();
   const policyId = useId();
@@ -468,25 +720,35 @@ function RegionsPanel({
     value: w,
     label: intl.formatMessage({ id: `premium.window.${w}` }),
   }));
+  const windowField = (plan: 'free' | 'premium') => (
+    <Field label={<FormattedMessage id="premium.quota.window" />}>
+      <FieldSelect
+        value={video[plan].window}
+        options={windowOptions}
+        onChange={(window) => setVideo(plan, { window })}
+        ariaLabel={intl.formatMessage({
+          id:
+            plan === 'free' ? 'premium.quota.videoFreeWindow' : 'premium.quota.videoPremiumWindow',
+        })}
+      />
+    </Field>
+  );
   return (
-    <Panel
-      title={<FormattedMessage id="premium.regions.title" />}
-      note={<FormattedMessage id="premium.regions.note" />}
-    >
-      <div className="stack">
-        <div className="field">
-          <span className="field__label">
-            <FormattedMessage id="premium.regions.advanced" />
-          </span>
+    <div className="grid gap-4">
+      <Section
+        title={<FormattedMessage id="premium.regions.title" />}
+        description={<FormattedMessage id="premium.regions.note" />}
+      >
+        <div className="grid gap-3">
           {regions.length === 0 ? (
-            <p className="field__help">
+            <p className="text-sm text-muted-foreground">
               <FormattedMessage id="premium.regions.none" />
             </p>
           ) : (
-            <ul className="family-picker__list">
+            <ul className="flex flex-wrap gap-1.5">
               {regions.map((r) => (
                 <li key={r}>
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="gap-1 py-1 pr-1.5 text-sm font-normal">
                     {countryName(intl.locale, r)} · {r}
                     {editable && (
                       <button
@@ -512,7 +774,7 @@ function RegionsPanel({
             </ul>
           )}
           {editable && (
-            <div className="family-picker__row">
+            <div className="flex max-w-sm gap-2">
               <Input
                 value={code}
                 maxLength={2}
@@ -532,151 +794,154 @@ function RegionsPanel({
             </div>
           )}
           {problem && (
-            <p className="error" role="alert">
+            <p className="text-sm text-destructive" role="alert">
               <FormattedMessage id="premium.regions.bad" />
             </p>
           )}
         </div>
+      </Section>
+      <Section title={<FormattedMessage id="premium.quota.title" />}>
         {editable ? (
-          <>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <NumberField
-                label={<FormattedMessage id="premium.quota.videoFree" />}
-                value={video.free.limit}
-                onChange={(limit) => setVideo('free', { limit })}
-              />
-              <div className="field">
-                <span className="field__label">
-                  <FormattedMessage id="premium.quota.window" />
-                </span>
-                <FieldSelect
-                  value={video.free.window}
-                  options={windowOptions}
-                  onChange={(window) => setVideo('free', { window })}
-                  ariaLabel={intl.formatMessage({ id: 'premium.quota.videoFreeWindow' })}
-                />
-              </div>
-              <NumberField
-                label={<FormattedMessage id="premium.quota.videoPremium" />}
-                value={video.premium.limit}
-                onChange={(limit) => setVideo('premium', { limit })}
-              />
-              <div className="field">
-                <span className="field__label">
-                  <FormattedMessage id="premium.quota.window" />
-                </span>
-                <FieldSelect
-                  value={video.premium.window}
-                  options={windowOptions}
-                  onChange={(window) => setVideo('premium', { window })}
-                  ariaLabel={intl.formatMessage({ id: 'premium.quota.videoPremiumWindow' })}
-                />
-              </div>
-            </div>
-            <fieldset className="stack">
-              <legend className="field__label">
-                <FormattedMessage id="premium.credits.title" />
-              </legend>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <NumberField
-                  label={<FormattedMessage id="premium.credits.free" />}
-                  value={credits.free}
-                  onChange={(free) => setCredits({ free })}
-                />
-                <NumberField
-                  label={<FormattedMessage id="premium.credits.premium" />}
-                  value={credits.premium}
-                  onChange={(premium) => setCredits({ premium })}
-                />
-                <NumberField
-                  label={<FormattedMessage id="premium.credits.text" />}
-                  value={credits.textCredits}
-                  max={20}
-                  onChange={(textCredits) => setCredits({ textCredits: Math.min(20, textCredits) })}
-                />
-                <NumberField
-                  label={<FormattedMessage id="premium.credits.image" />}
-                  value={credits.imageCredits}
-                  max={20}
-                  onChange={(imageCredits) =>
-                    setCredits({ imageCredits: Math.min(20, imageCredits) })
-                  }
-                />
-              </div>
-              <p className="field__help">
-                <FormattedMessage id="premium.credits.note" />
-              </p>
-            </fieldset>
-            <div className="field">
-              <label className="field__label" htmlFor={policyId}>
-                <FormattedMessage id="premium.policyVersion" />
-              </label>
-              <Input
-                id={policyId}
-                value={config.policyVersion}
-                maxLength={40}
-                onChange={(e) => onChange({ ...config, policyVersion: e.target.value })}
-              />
-            </div>
-          </>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <NumberField
+              label={<FormattedMessage id="premium.quota.videoFree" />}
+              value={video.free.limit}
+              onChange={(limit) => setVideo('free', { limit })}
+            />
+            {windowField('free')}
+            <NumberField
+              label={<FormattedMessage id="premium.quota.videoPremium" />}
+              value={video.premium.limit}
+              onChange={(limit) => setVideo('premium', { limit })}
+            />
+            {windowField('premium')}
+          </div>
         ) : (
           <dl className="kv">
-            <dt>
-              <FormattedMessage id="premium.quota.videoFree" />
-            </dt>
-            <dd>
-              <FormattedMessage
-                id="premium.quota.videoValue"
-                values={{
-                  n: video.free.limit,
-                  label: intl.formatMessage({ id: `premium.window.${video.free.window}` }),
-                }}
-              />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.quota.videoPremium" />
-            </dt>
-            <dd>
-              <FormattedMessage
-                id="premium.quota.videoValue"
-                values={{
-                  n: video.premium.limit,
-                  label: intl.formatMessage({ id: `premium.window.${video.premium.window}` }),
-                }}
-              />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.credits.free" />
-            </dt>
-            <dd>
-              <FormattedMessage id="premium.credits.value" values={{ n: credits.free }} />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.credits.premium" />
-            </dt>
-            <dd>
-              <FormattedMessage id="premium.credits.value" values={{ n: credits.premium }} />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.credits.text" />
-            </dt>
-            <dd>
-              <FormattedMessage id="premium.credits.value" values={{ n: credits.textCredits }} />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.credits.image" />
-            </dt>
-            <dd>
-              <FormattedMessage id="premium.credits.value" values={{ n: credits.imageCredits }} />
-            </dd>
-            <dt>
-              <FormattedMessage id="premium.policyVersion" />
-            </dt>
-            <dd>{config.policyVersion}</dd>
+            {(['free', 'premium'] as const).map((plan) => (
+              <ReadRow
+                key={plan}
+                label={
+                  <FormattedMessage
+                    id={plan === 'free' ? 'premium.quota.videoFree' : 'premium.quota.videoPremium'}
+                  />
+                }
+              >
+                <FormattedMessage
+                  id="premium.quota.videoValue"
+                  values={{
+                    n: video[plan].limit,
+                    label: intl.formatMessage({ id: `premium.window.${video[plan].window}` }),
+                  }}
+                />
+              </ReadRow>
+            ))}
           </dl>
         )}
-      </div>
-    </Panel>
+      </Section>
+      <Section
+        title={<FormattedMessage id="premium.credits.title" />}
+        description={<FormattedMessage id="premium.credits.note" />}
+      >
+        {editable ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <NumberField
+              label={<FormattedMessage id="premium.credits.free" />}
+              value={credits.free}
+              onChange={(free) => setCredits({ free })}
+            />
+            <NumberField
+              label={<FormattedMessage id="premium.credits.premium" />}
+              value={credits.premium}
+              onChange={(premium) => setCredits({ premium })}
+            />
+            <NumberField
+              label={<FormattedMessage id="premium.credits.text" />}
+              value={credits.textCredits}
+              max={20}
+              onChange={(textCredits) => setCredits({ textCredits: Math.min(20, textCredits) })}
+            />
+            <NumberField
+              label={<FormattedMessage id="premium.credits.image" />}
+              value={credits.imageCredits}
+              max={20}
+              onChange={(imageCredits) => setCredits({ imageCredits: Math.min(20, imageCredits) })}
+            />
+          </div>
+        ) : (
+          <dl className="kv">
+            {(
+              [
+                ['premium.credits.free', credits.free],
+                ['premium.credits.premium', credits.premium],
+                ['premium.credits.text', credits.textCredits],
+                ['premium.credits.image', credits.imageCredits],
+              ] as const
+            ).map(([id, n]) => (
+              <ReadRow key={id} label={<FormattedMessage id={id} />}>
+                <FormattedMessage id="premium.credits.value" values={{ n }} />
+              </ReadRow>
+            ))}
+          </dl>
+        )}
+      </Section>
+      <Section
+        collapsible
+        defaultOpen={false}
+        title={<FormattedMessage id="premium.policyVersion" />}
+        summary={<span className="font-mono">{config.policyVersion}</span>}
+        hint={<FormattedMessage id="premium.policyHint" />}
+      >
+        {editable ? (
+          <Field
+            className="max-w-sm"
+            htmlFor={policyId}
+            label={<FormattedMessage id="premium.policyVersion" />}
+          >
+            <Input
+              id={policyId}
+              className="font-mono"
+              value={config.policyVersion}
+              maxLength={40}
+              onChange={(e) => onChange({ ...config, policyVersion: e.target.value })}
+            />
+          </Field>
+        ) : (
+          <p className="font-mono text-sm">{config.policyVersion}</p>
+        )}
+      </Section>
+      <Section collapsible defaultOpen={false} title={<FormattedMessage id="premium.rules" />}>
+        <ul className="grid list-disc gap-2 pl-5 text-sm text-muted-foreground">
+          {[
+            'premium.rule.config',
+            'premium.rule.beta',
+            'premium.rule.free',
+            'premium.rule.paid',
+          ].map((id) => (
+            <li key={id}>
+              <FormattedMessage id={id} />
+            </li>
+          ))}
+        </ul>
+      </Section>
+      <Section
+        collapsible
+        defaultOpen={false}
+        title={<FormattedMessage id="features.recent" />}
+        summary={<FormattedMessage id="features.recentCount" values={{ n: recent.length }} />}
+      >
+        <RecentList recent={recent} />
+      </Section>
+    </div>
+  );
+}
+
+function ReadRow({ label, children }: { label: ReactNode; children: ReactNode }) {
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd>{children}</dd>
+    </>
   );
 }
 
@@ -704,16 +969,20 @@ function ScopeLabel({ c }: { c: BetaCampaign }) {
     );
   }
   return (
-    <span className="muted">
+    <span className="text-muted-foreground">
       <FormattedMessage id="scope.all" />
     </span>
   );
 }
 
-function CampaignsPanel({
+function CampaignsSection({
   config,
   editable,
   now,
+  checks,
+  canFix,
+  onFix,
+  onCheck,
   onAdd,
   onEdit,
   onRemove,
@@ -721,6 +990,10 @@ function CampaignsPanel({
   config: StaffPremiumConfig;
   editable: boolean;
   now: Date;
+  checks: Record<string, FamilyCheck>;
+  canFix: boolean;
+  onFix: (code: string, keys: FlagKey[]) => void;
+  onCheck: (code: string) => void;
   onAdd: () => void;
   onEdit: (index: number) => void;
   onRemove: (index: number) => void;
@@ -728,110 +1001,108 @@ function CampaignsPanel({
   const intl = useIntl();
   const list = config.betaCampaigns;
   return (
-    <Panel
+    <Section
+      flush
       title={<FormattedMessage id="premium.beta.title" />}
-      note={<FormattedMessage id="premium.beta.note" />}
-      className="panel--flush"
-      aside={
-        editable && list.length < 20 ? (
-          <Button onClick={onAdd}>
+      description={<FormattedMessage id="premium.beta.note" />}
+      actions={
+        editable &&
+        list.length < 20 && (
+          <Button kind="primary" onClick={onAdd}>
+            <Plus />
             <FormattedMessage id="premium.beta.add" />
           </Button>
-        ) : undefined
+        )
       }
     >
       {list.length === 0 ? (
-        <p className="panel__pad muted">
-          <FormattedMessage id="premium.beta.none" />
-        </p>
+        <EmptyState icon={Upload} title={<FormattedMessage id="premium.beta.none" />} />
       ) : (
-        <TableScroll min={760}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>
-                  <FormattedMessage id="premium.col.campaign" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.capabilities" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.validity" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.countries" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.scope" />
-                </th>
-                {editable && (
-                  <th>
-                    <span className="sr-only">
-                      <FormattedMessage id="premium.col.actions" />
+        <ul className="divide-y">
+          {list.map((c, i) => {
+            const state = campaignState(c, now);
+            return (
+              <li key={`${c.id}-${i}`} className="grid gap-2 px-5 py-4">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <strong className="font-mono text-[15px]">{c.id}</strong>
+                  <Pill tone={state.tone}>
+                    <FormattedMessage id={state.id} />
+                  </Pill>
+                  <span className="text-sm text-muted-foreground tabular-nums">
+                    <Range from={c.validFrom} until={c.validUntil} />
+                  </span>
+                  {editable && (
+                    <span className="ml-auto">
+                      <RowActions
+                        label={intl.formatMessage({ id: 'premium.beta.actions' }, { id: c.id })}
+                        actions={[
+                          {
+                            key: 'edit',
+                            label: <FormattedMessage id="premium.beta.edit" />,
+                            onSelect: () => onEdit(i),
+                          },
+                          {
+                            key: 'remove',
+                            label: <FormattedMessage id="premium.beta.remove" />,
+                            onSelect: () => onRemove(i),
+                            destructive: true,
+                          },
+                        ]}
+                      />
                     </span>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((c, i) => {
-                const state = campaignState(c, now);
-                return (
-                  <tr key={`${c.id}-${i}`}>
-                    <td>
-                      <strong>{c.id}</strong>
-                      <br />
-                      <Pill tone={state.tone}>
-                        <FormattedMessage id={state.id} />
-                      </Pill>
-                    </td>
-                    <td>{capabilityList(intl, c.capabilities)}</td>
-                    <td className="nowrap">
-                      <Range from={c.validFrom} until={c.validUntil} />
-                    </td>
-                    <td>
-                      {c.countries.length === 0 ? (
-                        <span className="muted">
-                          <FormattedMessage id="premium.beta.everyRegion" />
-                        </span>
-                      ) : (
-                        c.countries.map((r) => countryName(intl.locale, r)).join(', ')
-                      )}
-                    </td>
-                    <td>
-                      <ScopeLabel c={c} />
-                      {c.scope === 'internal' && (c.families?.length ?? 0) > 0 && (
-                        <p className="muted">{c.families!.join(', ')}</p>
-                      )}
-                    </td>
-                    {editable && (
-                      <td>
-                        <RowActions
-                          label={intl.formatMessage({ id: 'premium.beta.actions' }, { id: c.id })}
-                          actions={[
-                            {
-                              key: 'edit',
-                              label: <FormattedMessage id="premium.beta.edit" />,
-                              onSelect: () => onEdit(i),
-                            },
-                            {
-                              key: 'remove',
-                              label: <FormattedMessage id="premium.beta.remove" />,
-                              onSelect: () => onRemove(i),
-                              destructive: true,
-                            },
-                          ]}
-                        />
-                      </td>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {c.capabilities.map((cap) => (
+                    <Badge key={cap} variant="outline" className="font-normal">
+                      <FormattedMessage id={`premium.cap.${cap}`} />
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                  <span>
+                    <span className="text-muted-foreground">
+                      <FormattedMessage id="premium.col.countries" />:
+                    </span>{' '}
+                    {c.countries.length === 0 ? (
+                      <FormattedMessage id="premium.beta.everyRegion" />
+                    ) : (
+                      c.countries.map((r) => countryName(intl.locale, r)).join(', ')
                     )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </TableScroll>
+                  </span>
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-muted-foreground">
+                      <FormattedMessage id="features.who" />:
+                    </span>
+                    <ScopeLabel c={c} />
+                    {c.scope === 'internal' &&
+                      (c.families ?? []).map((code) => (
+                        <button
+                          key={code}
+                          type="button"
+                          className="rounded-md bg-secondary px-1.5 py-0.5 font-mono text-xs hover:bg-accent"
+                          title={intl.formatMessage({ id: 'premium.warn.check' })}
+                          onClick={() => onCheck(code)}
+                        >
+                          {code}
+                        </button>
+                      ))}
+                  </span>
+                </div>
+                <CampaignWarnings
+                  campaign={c}
+                  regions={config.regions.advanced}
+                  checks={checks}
+                  canFix={canFix}
+                  onFix={onFix}
+                  onCheck={onCheck}
+                />
+              </li>
+            );
+          })}
+        </ul>
       )}
-    </Panel>
+    </Section>
   );
 }
 
@@ -846,17 +1117,14 @@ function DayField({
 }) {
   const id = useId();
   return (
-    <div className="field">
-      <label className="field__label" htmlFor={id}>
-        {label}
-      </label>
+    <Field label={label} htmlFor={id}>
       <Input
         id={id}
         type="date"
         value={value}
         onChange={(e) => e.target.value && onChange(e.target.value)}
       />
-    </div>
+    </Field>
   );
 }
 
@@ -866,6 +1134,9 @@ export function CampaignDialog({
   index,
   all,
   regions,
+  checkVersion = 0,
+  canFix = false,
+  onFix = () => undefined,
   onClose,
   onApply,
 }: {
@@ -873,6 +1144,9 @@ export function CampaignDialog({
   index: number | null;
   all: readonly BetaCampaign[];
   regions: readonly string[];
+  checkVersion?: number;
+  canFix?: boolean;
+  onFix?: (code: string, keys: FlagKey[]) => void;
   onClose: () => void;
   onApply: (c: BetaCampaign) => void;
 }) {
@@ -882,6 +1156,7 @@ export function CampaignDialog({
   const [c, setC] = useState<BetaCampaign>(initial);
   const issues = campaignIssues(c, all, index);
   const countries = [...new Set([...regions, ...c.countries])];
+  const checks = useFamilyChecks(c.scope === 'internal' ? (c.families ?? []) : [], checkVersion);
   const toggle = <T,>(list: readonly T[], x: T, on: boolean) =>
     on ? [...new Set([...list, x])] : list.filter((y) => y !== x);
   return (
@@ -895,55 +1170,60 @@ export function CampaignDialog({
       }
       onClose={onClose}
     >
-      <div className="field">
-        <label className="field__label" htmlFor={idField}>
-          <FormattedMessage id="premium.beta.id" />
-        </label>
+      <Field
+        htmlFor={idField}
+        label={<FormattedMessage id="premium.beta.id" />}
+        help={<FormattedMessage id="premium.beta.idHelp" />}
+      >
         <Input
           id={idField}
+          className="font-mono"
           value={c.id}
           maxLength={40}
           disabled={index !== null}
           onChange={(e) => setC({ ...c, id: e.target.value.trim().toLowerCase() })}
         />
-        <p className="field__help">
-          <FormattedMessage id="premium.beta.idHelp" />
-        </p>
-      </div>
-      <div className="field">
-        <span className="field__label">
+      </Field>
+      <fieldset className="grid gap-2">
+        <legend className="mb-1.5 text-[13px] font-medium">
           <FormattedMessage id="premium.col.capabilities" />
-        </span>
+        </legend>
         {/* D-075 #1: any Premium feature, grouped; roles never change with a plan. */}
-        {campaignCapabilityGroups.map((g) => (
-          <div
-            key={g.id}
-            className="stack"
-            role="group"
-            aria-label={intl.formatMessage({ id: `premium.capGroup.${g.id}` })}
-          >
-            <span className="muted">
-              <FormattedMessage id={`premium.capGroup.${g.id}`} />
-            </span>
-            {g.capabilities.map((cap) => (
-              <CheckRow
-                key={cap}
-                label={<FormattedMessage id={`premium.cap.${cap}`} />}
-                checked={c.capabilities.includes(cap)}
-                onChange={(on) => setC({ ...c, capabilities: toggle(c.capabilities, cap, on) })}
-              />
-            ))}
-            {g.id !== 'groupA' && (
-              <p className="field__help">
-                <FormattedMessage id={`premium.capHelp.${g.id}`} />
-              </p>
-            )}
-          </div>
-        ))}
-        <p className="field__help">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {campaignCapabilityGroups.map((g) => (
+            <div
+              key={g.id}
+              className="grid content-start gap-1.5 rounded-lg border p-3"
+              role="group"
+              aria-label={intl.formatMessage({ id: `premium.capGroup.${g.id}` })}
+            >
+              <span className="text-xs font-semibold text-muted-foreground">
+                <FormattedMessage id={`premium.capGroup.${g.id}`} />
+              </span>
+              {g.capabilities.map((cap) => (
+                <CheckRow
+                  key={cap}
+                  label={
+                    <span className="text-sm">
+                      <FormattedMessage id={`premium.cap.${cap}`} />
+                    </span>
+                  }
+                  checked={c.capabilities.includes(cap)}
+                  onChange={(on) => setC({ ...c, capabilities: toggle(c.capabilities, cap, on) })}
+                />
+              ))}
+              {g.id !== 'groupA' && (
+                <p className="text-xs text-muted-foreground">
+                  <FormattedMessage id={`premium.capHelp.${g.id}`} />
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
           <FormattedMessage id="premium.beta.capsHelp" />
         </p>
-      </div>
+      </fieldset>
       <div className="grid gap-4 sm:grid-cols-2">
         <DayField
           label={<FormattedMessage id="premium.beta.from" />}
@@ -956,40 +1236,42 @@ export function CampaignDialog({
           onChange={(d) => setC({ ...c, validUntil: isoFromDay(d, true) })}
         />
       </div>
-      <div className="field">
-        <span className="field__label">
+      <div className="grid gap-2">
+        <span className="text-[13px] font-medium">
           <FormattedMessage id="premium.col.countries" />
         </span>
         {countries.length === 0 ? (
-          <p className="field__help">
+          <p className="text-xs text-muted-foreground">
             <FormattedMessage id="premium.beta.noRegions" />
           </p>
         ) : (
           <>
-            <div className="chips">
+            <div className="flex flex-wrap gap-2">
               {countries.map((r) => {
                 const on = c.countries.includes(r);
                 return (
-                  <button
+                  <UiButton
                     key={r}
                     type="button"
-                    className={`chip ${on ? 'chip--on' : ''}`}
+                    size="sm"
+                    variant={on ? 'default' : 'outline'}
+                    className="rounded-full"
                     aria-pressed={on}
                     onClick={() => setC({ ...c, countries: toggle(c.countries, r, !on) })}
                   >
                     {countryName(intl.locale, r)}
-                  </button>
+                  </UiButton>
                 );
               })}
             </div>
-            <p className="field__help">
+            <p className="text-xs text-muted-foreground">
               <FormattedMessage id="premium.beta.countriesHelp" />
             </p>
           </>
         )}
       </div>
-      <div className="field">
-        <span className="field__label">
+      <div className="grid gap-2">
+        <span className="text-[13px] font-medium">
           <FormattedMessage id="features.who" />
         </span>
         <Segmented
@@ -1002,10 +1284,11 @@ export function CampaignDialog({
           }))}
         />
         {c.scope === 'percent' && (
-          <div className="field">
-            <label className="field__label" htmlFor={percentField}>
-              <FormattedMessage id="premium.beta.percent" />
-            </label>
+          <Field
+            className="max-w-48"
+            htmlFor={percentField}
+            label={<FormattedMessage id="premium.beta.percent" />}
+          >
             <Input
               id={percentField}
               type="number"
@@ -1014,7 +1297,7 @@ export function CampaignDialog({
               value={c.percent}
               onChange={(e) => setC({ ...c, percent: Math.round(Number(e.target.value) || 0) })}
             />
-          </div>
+          </Field>
         )}
         {c.scope === 'internal' && (
           <>
@@ -1022,25 +1305,34 @@ export function CampaignDialog({
               value={c.families ?? []}
               onChange={(families) => setC({ ...c, families })}
             />
-            <p className="field__help">
+            <p className="text-xs text-muted-foreground">
               <FormattedMessage id="premium.beta.internalHelp" />
             </p>
+            <CampaignWarnings
+              campaign={c}
+              regions={regions}
+              checks={checks}
+              canFix={canFix}
+              onFix={onFix}
+            />
           </>
         )}
       </div>
       {issues.length > 0 && (
-        <ul className="error">
-          {issues.map((id) => (
-            <li key={id}>
-              <FormattedMessage id={id} />
-            </li>
-          ))}
-        </ul>
+        <Notice tone="error">
+          <ul className="grid gap-0.5">
+            {issues.map((id) => (
+              <li key={id}>
+                <FormattedMessage id={id} />
+              </li>
+            ))}
+          </ul>
+        </Notice>
       )}
-      <p className="field__help">
-        <FormattedMessage id="premium.beta.applyHelp" />
-      </p>
       <div className="modal__actions">
+        <span className="mr-auto self-center text-xs text-muted-foreground">
+          <FormattedMessage id="premium.beta.applyHelp" />
+        </span>
         <Button onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
@@ -1062,6 +1354,7 @@ function SaveDialog({
   onDone: () => void;
 }) {
   const api = useApi();
+  const intl = useIntl();
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
@@ -1075,28 +1368,24 @@ function SaveDialog({
   };
   return (
     <Modal title={<FormattedMessage id="premium.saveTitle" />} onClose={onClose}>
-      <p className="modal__sub">
+      <p className="text-sm text-muted-foreground">
         <FormattedMessage id="premium.saveEffect" />
       </p>
       <dl className="kv">
         <dt>
           <FormattedMessage id="premium.regions.advanced" />
         </dt>
-        <dd>{config.regions.advanced.join(', ') || '—'}</dd>
+        <dd>{config.regions.advanced.map((r) => countryName(intl.locale, r)).join(', ') || '—'}</dd>
         <dt>
           <FormattedMessage id="premium.beta.title" />
         </dt>
         <dd>{config.betaCampaigns.map((c) => c.id).join(', ') || '—'}</dd>
-        <dt>
-          <FormattedMessage id="premium.policyVersion" />
-        </dt>
-        <dd>{config.policyVersion}</dd>
       </dl>
       <ReasonField value={reason} onChange={setReason} required />
       {error && (
-        <p className="error" role="alert">
+        <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
-        </p>
+        </Notice>
       )}
       <div className="modal__actions">
         <Button onClick={onClose}>
@@ -1107,32 +1396,6 @@ function SaveDialog({
         </Button>
       </div>
     </Modal>
-  );
-}
-
-function RecentPanel({ recent }: { recent: StaffPremiumView['recent'] }) {
-  const intl = useIntl();
-  return (
-    <Panel title={<FormattedMessage id="features.recent" />}>
-      {recent.length === 0 ? (
-        <p className="muted">
-          <FormattedMessage id="features.noRecent" />
-        </p>
-      ) : (
-        <ul className="recent">
-          {recent.map((r, i) => (
-            <li key={i}>
-              <p>
-                <AuditActionText action={r.action} target={r.target} detail={null} />
-              </p>
-              <p className="muted">
-                {r.by.split(' ')[0]} · {shortDate(intl, r.at)} · {r.reason}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Panel>
   );
 }
 
@@ -1162,20 +1425,37 @@ export async function lookupFamily(
 
 function FamilyLookup({
   canGrant,
+  canFlags,
+  canConfig,
+  regions,
+  flags,
+  checkVersion,
   onChanged,
+  onEnable,
+  onOpenRegion,
   now,
   initial,
   initialQuota,
+  initialCode,
 }: {
   canGrant: boolean;
+  canFlags: boolean;
+  canConfig: boolean;
+  regions: readonly string[];
+  flags: FlagsView['flags'] | null;
+  checkVersion: number;
   onChanged: () => void;
+  onEnable: (code: string, keys: FlagKey[]) => void;
+  onOpenRegion: (country: string) => void;
   now: Date;
   initial: StaffFamilyPremium | null;
   initialQuota: StaffFamilyQuota | null;
+  /** Looked up at once (a family picked on the Chiến dịch tab). */
+  initialCode: string | null;
 }) {
   const intl = useIntl();
   const api = useApi();
-  const [code, setCode] = useState(initial?.code ?? '');
+  const [code, setCode] = useState(initialCode ?? initial?.code ?? '');
   const [result, setResult] = useState<StaffFamilyPremium | null>(initial);
   // Quota & thanh toán: its own call, so a failure there never hides the grants.
   const [quota, setQuota] = useState<StaffFamilyQuota | 'failed' | null>(initialQuota);
@@ -1184,14 +1464,16 @@ function FamilyLookup({
   const [granting, setGranting] = useState(false);
   const [revoking, setRevoking] = useState<FamilyGrant | null>(null);
   const look = async (raw: string) => {
-    const text = raw.trim().toUpperCase();
-    if (!/^F-[A-Z2-9]{4}$/.test(text)) {
-      setProblem('premium.lookup.hint');
-      return;
-    }
+    if (!raw.trim()) return;
     setBusy(true);
     setProblem(null);
-    const answer = await lookupFamily(api, text);
+    const found = await resolveFamilyCodes(api, raw);
+    if ('problem' in found) {
+      setProblem(found.problem);
+      setBusy(false);
+      return;
+    }
+    const answer = await lookupFamily(api, found.codes[0]!);
     if (answer.ok) {
       setResult(answer.premium);
       setQuota(answer.quota);
@@ -1202,51 +1484,108 @@ function FamilyLookup({
     }
     setBusy(false);
   };
+  // A family opened from a campaign, and a fresh look after its flags change.
+  const asked = useRef<string | null>(null);
+  useEffect(() => {
+    const target = result?.code ?? initialCode;
+    const k = `${target}:${checkVersion}`;
+    if (!target || asked.current === k || (checkVersion === 0 && !initialCode)) return;
+    asked.current = k;
+    void look(target);
+  }, [initialCode, checkVersion]);
   const done = () => {
     setGranting(false);
     setRevoking(null);
     if (result) void look(result.code);
     onChanged();
   };
+  const country = result?.country ?? null;
   return (
-    <Panel
-      title={<FormattedMessage id="premium.lookup.title" />}
-      note={<FormattedMessage id="premium.lookup.note" />}
-    >
-      <div className="family-picker__row">
-        <Input
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              void look(code);
+    <div className="grid gap-4">
+      <Section
+        title={<FormattedMessage id="premium.lookup.title" />}
+        description={<FormattedMessage id="premium.lookup.note" />}
+      >
+        <div className="flex max-w-xl gap-2">
+          <div className="relative flex-1">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              className="pl-8"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  void look(code);
+                }
+              }}
+              placeholder={intl.formatMessage({ id: 'features.familyFind' })}
+              aria-label={intl.formatMessage({ id: 'premium.lookup.code' })}
+            />
+          </div>
+          <Button kind="primary" disabled={busy || !code.trim()} onClick={() => void look(code)}>
+            <FormattedMessage id="premium.lookup.go" />
+          </Button>
+        </div>
+        {problem && (
+          <p className="mt-2 text-sm text-destructive" role="alert">
+            <FormattedMessage id={problem} />
+          </p>
+        )}
+        {result && (
+          <div className="mt-4 grid gap-4">
+            <FamilyPremiumResult
+              result={result}
+              canGrant={canGrant}
+              onGrant={() => setGranting(true)}
+              onRevoke={setRevoking}
+            />
+          </div>
+        )}
+      </Section>
+      {result?.access && flags && (
+        <Section
+          title={<FormattedMessage id="premium.access.title" />}
+          description={<FormattedMessage id="premium.access.sub" />}
+        >
+          <FamilyAccessCard
+            family={result}
+            flags={flags}
+            canEnable={canFlags}
+            showHeader={false}
+            onEnable={(keys) => onEnable(result.code, keys)}
+            regionAction={
+              canConfig && country && !regions.includes(country) ? (
+                <UiButton size="sm" variant="outline" onClick={() => onOpenRegion(country)}>
+                  <FormattedMessage
+                    id="premium.access.openRegion"
+                    values={{ country: countryName(intl.locale, country) }}
+                  />
+                </UiButton>
+              ) : undefined
             }
-          }}
-          placeholder="F-7Q2K"
-          aria-label={intl.formatMessage({ id: 'premium.lookup.code' })}
-        />
-        <Button kind="primary" disabled={busy || !code.trim()} onClick={() => void look(code)}>
-          <FormattedMessage id="premium.lookup.go" />
-        </Button>
-      </div>
-      {problem && (
-        <p className="error" role="alert">
-          <FormattedMessage id={problem} />
-        </p>
-      )}
-      {result && (
-        <FamilyPremiumResult
-          result={result}
-          canGrant={canGrant}
-          onGrant={() => setGranting(true)}
-          onRevoke={setRevoking}
-        />
+            premiumAction={
+              canGrant ? (
+                <UiButton
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-primary"
+                  onClick={() => setGranting(true)}
+                >
+                  <FormattedMessage id="premium.access.grant" />
+                </UiButton>
+              ) : undefined
+            }
+          />
+        </Section>
       )}
       {result && quota === 'failed' && (
-        <p className="muted mt-4">
+        <Notice tone="warn">
           <FormattedMessage id="premium.fq.error" />
-        </p>
+        </Notice>
       )}
       {result && quota && quota !== 'failed' && quota.code === result.code && (
         <FamilyQuotaView data={quota} now={now} />
@@ -1267,7 +1606,7 @@ function FamilyLookup({
           onDone={done}
         />
       )}
-    </Panel>
+    </div>
   );
 }
 
@@ -1303,22 +1642,18 @@ export function FamilyPremiumResult({
 }) {
   const intl = useIntl();
   return (
-    <div className="stack mt-4">
-      <dl className="kv">
-        <dt>
-          <FormattedMessage id="premium.lookup.family" />
-        </dt>
-        <dd>{result.code}</dd>
-        <dt>
-          <FormattedMessage id="premium.lookup.plan" />
-        </dt>
-        <dd>
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+        <span className="font-mono text-base font-semibold">{result.code}</span>
+        <span className="flex items-center gap-1.5">
+          <span className="text-muted-foreground">
+            <FormattedMessage id="premium.lookup.plan" />
+          </span>
           <Pill tone={planTone[result.plan]}>
             <FormattedMessage id={`premium.plan.${result.plan}`} />
           </Pill>
           {result.validUntil && (
-            <span className="muted">
-              {' '}
+            <span className="text-muted-foreground">
               <FormattedMessage
                 id="premium.lookup.until"
                 values={{
@@ -1327,119 +1662,115 @@ export function FamilyPremiumResult({
               />
             </span>
           )}
-        </dd>
-        <dt>
-          <FormattedMessage id="premium.lookup.country" />
-        </dt>
-        <dd>
+        </span>
+        <span>
+          <span className="text-muted-foreground">
+            <FormattedMessage id="premium.lookup.country" />
+          </span>{' '}
           {result.country ? (
             `${countryName(intl.locale, result.country)} · ${result.country}`
           ) : (
-            <span className="muted">
+            <span className="text-muted-foreground">
               <FormattedMessage id="premium.lookup.noCountry" />
             </span>
           )}
-        </dd>
-        <dt>
-          <FormattedMessage id="premium.lookup.version" />
-        </dt>
-        <dd>{result.entitlementVersion}</dd>
-      </dl>
+        </span>
+        <span className="text-muted-foreground">
+          <FormattedMessage id="premium.lookup.version" /> {result.entitlementVersion}
+        </span>
+        {canGrant && (
+          <UiButton size="sm" variant="outline" className="ml-auto" onClick={onGrant}>
+            <Plus />
+            <FormattedMessage id="premium.grant" />
+          </UiButton>
+        )}
+      </div>
       {result.grants.length === 0 ? (
-        <p className="muted">
+        <p className="text-sm text-muted-foreground">
           <FormattedMessage id="premium.grants.none" />
         </p>
       ) : (
-        <TableScroll min={820}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>
-                  <FormattedMessage id="premium.col.source" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.status" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.capabilities" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.validity" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.provider" />
-                </th>
-                <th>
-                  <FormattedMessage id="premium.col.autoRenew" />
-                </th>
-                {canGrant && (
+        <div className="overflow-hidden rounded-lg border">
+          <TableScroll min={760}>
+            <table className="table">
+              <thead>
+                <tr>
                   <th>
-                    <span className="sr-only">
-                      <FormattedMessage id="premium.col.actions" />
-                    </span>
+                    <FormattedMessage id="premium.col.source" />
                   </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {result.grants.map((g) => (
-                <tr key={g.id}>
-                  <td>
-                    <strong>
-                      <FormattedMessage id={`premium.source.${g.source}`} />
-                    </strong>
-                    {g.fromCampaign && (
-                      <>
-                        {' '}
-                        <Pill tone="purple">
-                          <FormattedMessage id="premium.grants.fromCampaign" />
-                        </Pill>
-                      </>
-                    )}
-                    <br />
-                    <span className="muted">
-                      <FormattedMessage id={`premium.env.${g.environment}`} />
-                    </span>
-                  </td>
-                  <td>
-                    <Pill tone={statusTone[g.status]}>
-                      <FormattedMessage id={`premium.status.${g.status}`} />
-                    </Pill>
-                  </td>
-                  <td>{capabilityList(intl, g.capabilities)}</td>
-                  <td className="nowrap">
-                    <Range from={g.validFrom} until={g.validUntil} />
-                  </td>
-                  <td>
-                    {g.provider ? <FormattedMessage id={`premium.provider.${g.provider}`} /> : '—'}
-                  </td>
-                  <td>
-                    {g.autoRenew === null ? (
-                      '—'
-                    ) : (
-                      <FormattedMessage id={g.autoRenew ? 'premium.yes' : 'premium.no'} />
-                    )}
-                  </td>
+                  <th>
+                    <FormattedMessage id="premium.col.status" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="premium.col.capabilities" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="premium.col.validity" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="premium.col.provider" />
+                  </th>
                   {canGrant && (
-                    <td>
-                      {grantRevocable(g) && (
-                        <Button kind="ghost" onClick={() => onRevoke(g)}>
-                          <FormattedMessage id="premium.revoke" />
-                        </Button>
-                      )}
-                    </td>
+                    <th>
+                      <span className="sr-only">
+                        <FormattedMessage id="premium.col.actions" />
+                      </span>
+                    </th>
                   )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableScroll>
-      )}
-      {canGrant && (
-        <div>
-          <Button onClick={onGrant}>
-            <FormattedMessage id="premium.grant" />
-          </Button>
+              </thead>
+              <tbody>
+                {result.grants.map((g) => (
+                  <tr key={g.id}>
+                    <td>
+                      <span className="flex flex-wrap items-center gap-1.5 font-medium">
+                        <FormattedMessage id={`premium.source.${g.source}`} />
+                        {g.fromCampaign && (
+                          <Pill tone="purple">
+                            <FormattedMessage id="premium.grants.fromCampaign" />
+                          </Pill>
+                        )}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        <FormattedMessage id={`premium.env.${g.environment}`} />
+                      </span>
+                    </td>
+                    <td>
+                      <Pill tone={statusTone[g.status]}>
+                        <FormattedMessage id={`premium.status.${g.status}`} />
+                      </Pill>
+                    </td>
+                    <td className="max-w-[18rem]">{capabilityList(intl, g.capabilities)}</td>
+                    <td className="nowrap tabular-nums">
+                      <Range from={g.validFrom} until={g.validUntil} />
+                    </td>
+                    <td>
+                      {g.provider ? (
+                        <FormattedMessage id={`premium.provider.${g.provider}`} />
+                      ) : (
+                        '—'
+                      )}
+                      {g.autoRenew !== null && (
+                        <span className="block text-xs text-muted-foreground">
+                          <FormattedMessage id="premium.col.autoRenew" />:{' '}
+                          <FormattedMessage id={g.autoRenew ? 'premium.yes' : 'premium.no'} />
+                        </span>
+                      )}
+                    </td>
+                    {canGrant && (
+                      <td className="cell-actions">
+                        {grantRevocable(g) && (
+                          <Button kind="ghost" onClick={() => onRevoke(g)}>
+                            <FormattedMessage id="premium.revoke" />
+                          </Button>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableScroll>
         </div>
       )}
     </div>
