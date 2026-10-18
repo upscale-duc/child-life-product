@@ -31,6 +31,7 @@ import 'milestone_models.dart';
 import 'milestone_repository.dart';
 import 'milestone_sheets.dart';
 import 'milestone_widgets.dart';
+import 'picked_preview.dart';
 
 /// Mốc phát triển (Figma v1.1 3a–3g; D-076 #6). Reference milestones come from the portal
 /// (`contentMilestones`); the baby's records are a Cùng nuôi's (`moments.create`), and others
@@ -843,8 +844,13 @@ class _SavedView extends ConsumerWidget {
           MediaTile(item: m, radius: 18),
           () => openViewer(context, items: photos, start: i),
         ),
-      for (final p in pending.take(2 - photos.take(2).length))
-        photoTile(MtPickedImage(p), null),
+      // Kept on this phone until "Tạo kỷ niệm": open the phone's copy (a photo zooms, a video
+      // plays).
+      for (final (i, p) in pending.take(2 - photos.take(2).length).indexed)
+        photoTile(
+          MtPickedImage(p, notInMemories: true),
+          () => openPickedPreview(context, items: pending, start: i),
+        ),
     ];
 
     Widget memoryRow(Memory m) {

@@ -16178,6 +16178,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor';
 
   @override
+  String get mtNotInMemoriesTile => 'Not in Memories yet';
+
+  @override
   String mtReviewed(String reviewer) {
     return 'Reviewed by $reviewer';
   }

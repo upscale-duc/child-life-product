@@ -667,8 +667,11 @@ class MtPhotoStrip extends StatelessWidget {
 /// A picked photo or video from the phone (its thumbnail, else the file); a video has a play
 /// badge as in Kỷ niệm's grid.
 class MtPickedImage extends StatelessWidget {
-  const MtPickedImage(this.picked, {super.key});
+  const MtPickedImage(this.picked, {this.notInMemories = false, super.key});
   final PickedMedia picked;
+
+  /// A small "Chưa vào Kỷ niệm" chip: picked on this phone, sent to Kỷ niệm only by "Tạo kỷ niệm".
+  final bool notInMemories;
 
   @override
   Widget build(BuildContext context) {
@@ -691,27 +694,49 @@ class MtPickedImage extends StatelessWidget {
         errorBuilder: (_, _, _) => fallback,
       );
     }
-    if (!video) return image;
+    if (!video && !notInMemories) return image;
     return Stack(
       fit: StackFit.expand,
       children: [
         image,
-        Positioned(
-          left: 6,
-          bottom: 6,
-          child: Container(
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: const Icon(
-              Icons.play_arrow_rounded,
-              size: 14,
-              color: Colors.white,
+        if (video)
+          Positioned(
+            left: 6,
+            bottom: 6,
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(
+                Icons.play_arrow_rounded,
+                size: 14,
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
+        if (notInMemories)
+          Positioned(
+            right: 6,
+            top: 6,
+            child: Container(
+              key: const Key('mtNotInMemories'),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(ClRadius.pill),
+              ),
+              child: Text(
+                AppLocalizations.of(context).mtNotInMemoriesTile,
+                style: context.cl.text.caption.copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

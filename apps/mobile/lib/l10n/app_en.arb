@@ -4208,6 +4208,7 @@
   "mtFollowingTag": "Following",
   "mtCreateOwn": "Create your own milestone",
   "mtIllustrative": "Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor",
+  "mtNotInMemoriesTile": "Not in Memories yet",
   "mtReviewed": "Reviewed by {reviewer}",
   "mtEmptyTitle": "No reference milestones yet",
   "mtEmptyBody": "The guide is being prepared. You can still create your own milestones.",

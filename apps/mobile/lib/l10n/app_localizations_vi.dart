@@ -15168,6 +15168,9 @@ class AppLocalizationsVi extends AppLocalizations {
       'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ';
 
   @override
+  String get mtNotInMemoriesTile => 'Chưa vào Kỷ niệm';
+
+  @override
   String mtReviewed(String reviewer) {
     return 'Nội dung được $reviewer rà soát';
   }

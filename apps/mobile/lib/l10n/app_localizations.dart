@@ -25356,6 +25356,12 @@ abstract class AppLocalizations {
   /// **'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ'**
   String get mtIllustrative;
 
+  /// Chip on a milestone photo or video kept on this phone until "Tạo kỷ niệm"; tapping opens it.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa vào Kỷ niệm'**
+  String get mtNotInMemoriesTile;
+
   /// Footer once reviewed.
   ///
   /// In vi, this message translates to:

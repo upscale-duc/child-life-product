@@ -22487,6 +22487,10 @@
   "@mtIllustrative": {
     "description": "Small footer while the reference content has no qualified review (D-082 wording)."
   },
+  "mtNotInMemoriesTile": "Chưa vào Kỷ niệm",
+  "@mtNotInMemoriesTile": {
+    "description": "Chip on a milestone photo or video kept on this phone until \"Tạo kỷ niệm\"; tapping opens it."
+  },
   "mtReviewed": "Nội dung được {reviewer} rà soát",
   "@mtReviewed": {
     "description": "Footer once reviewed.",
