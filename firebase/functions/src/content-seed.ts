@@ -9105,6 +9105,3472 @@ export const seedArticles: SeedArticle[] = [
       ],
     },
   },
+  // ----- Added 2026-10-18 (D-080): night waking, weaning, work, dummies, dengue, thrush, ears,
+  // eyes, childcare, flat head, first steps, genital care. Engineering drafts, review null. -----
+  {
+    id: 'art_night_waking_settling',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'sleep',
+      format: 'article',
+      ageWeeks: {
+        from: 26,
+        to: 104,
+      },
+      readingMinutes: 7,
+      cover: null,
+      title: {
+        vi: 'Bé 6–24 tháng hay thức đêm: hiểu nguyên nhân và giúp bé tự ngủ lại',
+        en: 'Night waking at 6–24 months: why it happens and how to help your child resettle',
+      },
+      summary: {
+        vi: 'Tỉnh giấc giữa đêm là bình thường; điều ba mẹ có thể giúp là cách bé ngủ lại. Bài viết giải thích thói quen gắn với giấc ngủ, các cách dỗ từ từ, sự đồng lòng giữa người chăm và khi nào thức đêm là dấu hiệu bệnh.',
+        en: 'Waking in the night is normal; what you can help with is how your child falls back asleep. This covers sleep associations, gradual settling methods, carers working together and when night waking points to illness.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Bé nào cũng tỉnh giấc vài lần mỗi đêm; điều thay đổi được là cách bé chìm lại vào giấc ngủ. Hãy thay đổi từ từ, để mọi người chăm cùng làm một cách, và luôn nghĩ đến bệnh trước khi tập cho bé tự ngủ.',
+          },
+          {
+            type: 'heading',
+            text: 'Thức đêm thế nào là bình thường?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Giấc ngủ của bé gồm nhiều chu kỳ ngắn hơn người lớn. Cuối mỗi chu kỳ, bé hay trở mình, cựa quậy, có khi ê a hoặc khóc ngắn rồi ngủ tiếp. Theo AAP, bé 6 tháng thức dậy rồi tự ngủ lại sau vài phút là bình thường. NHS cho biết trong khoảng 6–12 tháng, một số bé không còn cần bú đêm, nhưng mọc răng, đói hay ốm vẫn có thể làm bé thức. Ở tuổi 1–2, lo xa ba mẹ, tập đi hay bắt đầu đi nhà trẻ cũng khiến bé thức nhiều hơn một thời gian. Số giờ ngủ theo từng tuổi có trong bài Giấc ngủ theo tháng tuổi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Không phải bé nào thức đêm cũng cần “sửa”. Nếu bé thức một hai lần, ngủ lại nhanh, ban ngày vui khoẻ và cả nhà vẫn ổn, ba mẹ cứ tiếp tục như hiện tại. Nên cân nhắc thay đổi khi bé thức nhiều lần mỗi đêm, chỉ ngủ lại khi được bú, bế hay đưa võng, kéo dài nhiều tuần, và ba mẹ đang kiệt sức.',
+          },
+          {
+            type: 'heading',
+            text: 'Thói quen gắn với giấc ngủ là gì?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Khi tỉnh giữa đêm, bé thường muốn có lại đúng những điều đã có lúc bé thiếp đi. Nếu bé ngủ thiếp trên ngực mẹ, trong vòng tay, trên võng đang đưa hay khi đang ngậm bình, lúc tỉnh giữa hai chu kỳ bé sẽ tìm lại điều đó và gọi ba mẹ. Đây không phải là bé “hư”, mà là cách bé học. AAP lưu ý bé được bế hoặc ru đến khi ngủ hẳn có thể khó tự ngủ lại khi thức giữa đêm.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ba mẹ không cần bỏ hết những khoảnh khắc âu yếm. Bú mẹ, ôm ấp, hát ru vẫn là phần đẹp của buổi tối. Mục tiêu chỉ là bước cuối cùng, lúc bé chìm vào giấc ngủ, diễn ra ở chỗ ngủ của bé.',
+          },
+          {
+            type: 'heading',
+            text: 'Nếp đi ngủ giúp bé dễ ngủ lại',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bú hoặc uống sữa ở đầu nếp đi ngủ, rồi mới đánh răng, đọc truyện; như vậy bé không quen “bú là ngủ”.',
+              'Giữ nếp ngủ ngắn, khoảng 20–30 phút, cùng một thứ tự, ở chính phòng bé ngủ, đèn dịu.',
+              'Đặt bé xuống khi bé đã buồn ngủ nhưng còn thức, kèm một câu chúc ngủ ngon quen thuộc.',
+              'Giữ điều kiện lúc bé thiếp đi giống lúc nửa đêm: nếu bật đèn ngủ hay tiếng ồn đều thì để suốt đêm, không tắt sau khi bé ngủ.',
+              'Bắt đầu nếp ngủ khi thấy bé dụi mắt, ngáp, nhìn xa xăm; bé quá mệt thường khó ngủ và hay thức hơn.',
+              'Từ 12 tháng có thể cho bé một vật quen để ôm; với bé dưới 12 tháng, chỗ ngủ vẫn trống, không gối, chăn dày hay thú bông (xem bài Ngủ an toàn).',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Chờ một chút trước khi vào',
+            text: 'Bé cựa quậy, ê a hay khóc ngắn không phải lúc nào cũng cần ba mẹ. Chờ vài phút xem bé có tự ngủ lại không. Nếu bé khóc to, hoảng hốt hoặc có vẻ đau, hãy đến với bé ngay.',
+          },
+          {
+            type: 'heading',
+            text: 'Giúp bé ngủ lại: các cách từ từ',
+          },
+          {
+            type: 'paragraph',
+            text: 'Không có một cách duy nhất đúng. Hãy chọn cách hợp với bé và gia đình, và bắt đầu khi bé khoẻ, không trong đợt ốm, mọc răng hay vừa có thay đổi lớn như đi nhà trẻ, chuyển nhà. Mỗi cách cần vài ngày đến vài tuần kiên trì.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Dỗ tại chỗ: khi bé thức, đến xoa lưng, vỗ nhẹ, nói nhỏ nhưng để bé nằm yên ở chỗ ngủ; qua từng đêm giảm dần mức dỗ, từ vỗ sang chỉ đặt tay, rồi chỉ nói.',
+              'Bớt dần thói quen cũ: nếu bé chỉ ngủ khi được bú, rút ngắn dần cữ bú trước ngủ và dừng khi bé còn thức; nếu bé quen được bế, bế đến khi bé dịu rồi đặt xuống.',
+              'Ngồi cạnh rồi lùi dần: ngồi cạnh chỗ ngủ đến khi bé ngủ, vài đêm lại lùi ghế xa hơn, cuối cùng ra ngoài cửa.',
+              'Vào dỗ cách quãng dài dần: đặt bé xuống, ra khỏi phòng; nếu bé khóc, vào dỗ ngắn sau 2 phút, lần sau 4 phút, rồi 6 phút, không bế bé ra. Cách này thường dùng từ khoảng 6 tháng.',
+              'Lùi giờ đi ngủ: nếu bé nằm rất lâu mới ngủ, tạm cho bé đi ngủ muộn hơn 15–30 phút, đúng lúc bé buồn ngủ thật, rồi kéo sớm dần.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Nhiều ba mẹ lo các cách có để bé khóc sẽ làm tổn thương sự gắn bó. Một thử nghiệm ở Úc năm 2016 với bé 6–16 tháng thấy cách vào dỗ cách quãng dài dần và cách lùi giờ đi ngủ đều giúp bé ngủ nhanh hơn, không làm tăng hormone căng thẳng và không ảnh hưởng đến sự gắn bó an toàn giữa bé và mẹ một năm sau. Một nghiên cứu lớn hơn ở Úc theo dõi trẻ đến 6 tuổi cũng không thấy khác biệt về cảm xúc, hành vi hay sự gần gũi với cha mẹ. Nếu ba mẹ không muốn để bé khóc, các cách nhẹ nhàng hơn vẫn dùng được, chỉ có thể lâu hơn. Dù chọn cách nào, đó không phải là bỏ mặc bé.',
+          },
+          {
+            type: 'heading',
+            text: 'Mọi người chăm cùng một cách',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bé học nhanh nhất khi mọi người phản ứng giống nhau. Nếu mẹ dỗ tại chỗ nhưng bà bế ra võng, hay ba pha bình mỗi lần bé thức, bé sẽ khóc lâu hơn để chờ cách mình thích nhất. Trước khi bắt đầu, cả nhà nên thống nhất: bé ngủ ở đâu, ai dậy đêm nào, làm gì khi bé thức, và sau bao lâu thì xem lại.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ông bà thương cháu, nghe cháu khóc là xót. Hãy giải thích rằng cách mới không bỏ mặc bé mà giúp bé ngủ ngon hơn, và nhờ ông bà giữ cùng nếp đi ngủ khi trông bé ngủ trưa. Ba mẹ có thể chia ca để mỗi người được ngủ một mạch vài đêm trong tuần.',
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Ghi lại để thấy tiến bộ',
+            text: 'Ghi giờ bé thức, cách dỗ và bao lâu bé ngủ lại trong Child Life suốt 1–2 tuần. Tiến bộ thường đến từng chút, và vài đêm đầu có thể khó hơn trước khi khá lên.',
+          },
+          {
+            type: 'heading',
+            text: 'Khi thức đêm là dấu hiệu sức khoẻ',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Ốm: sốt, nghẹt mũi, ho làm bé thức và quấy hơn. Khi bé ốm, hãy dỗ và chăm bé như bé cần, tạm dừng việc tập ngủ đến khi bé khoẻ hẳn.',
+              'Đau tai: bé kéo tai, khóc nhiều hơn khi nằm, thường kèm sốt hoặc vừa bị cảm.',
+              'Ngứa và khó chịu: chàm, hăm, táo bón có thể làm bé thức nhiều lần.',
+              'Ngáy và ngừng thở khi ngủ: bé ngáy to gần như mỗi đêm, thở bằng miệng, có lúc ngừng thở rồi thở hắt, ngủ vặn mình, vã mồ hôi; ban ngày mệt, cáu kỉnh. Nguyên nhân hay gặp là VA và amidan to; bé cần được khám.',
+              'Thiếu sắt: bé sinh non, nhẹ cân, ăn ít thịt cá, hoặc uống quá nhiều sữa bò dễ thiếu sắt. Thiếu sắt có thể làm bé xanh xao, mệt, và một số nghiên cứu thấy liên quan với ngủ không yên. Bác sĩ có thể cho xét nghiệm máu; đừng tự cho bé uống sắt.',
+              'Đói: bé ăn dặm ít hoặc chậm tăng cân có thể thức vì đói thật; hãy xem lại bữa ăn ban ngày với bác sĩ.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bé ngáy to gần như mỗi đêm, có lúc ngừng thở, thở hắt hoặc thở gắng sức khi ngủ; thức đêm kèm sốt, đau tai, nôn hay khóc thét không dỗ được; ban ngày lờ đờ, xanh xao, chậm tăng cân; gãi ngứa nhiều về đêm; thức đêm kéo dài nhiều tuần dù đã giữ nếp ngủ đều; hoặc ba mẹ kiệt sức, buồn bã. Gọi 115 nếu bé tím tái, khó thở hoặc khó đánh thức.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Every child wakes several times a night; what can change is how they drift back to sleep. Make changes gradually, have every carer respond the same way, and always think about illness before working on independent settling.',
+          },
+          {
+            type: 'heading',
+            text: 'How much night waking is normal?',
+          },
+          {
+            type: 'paragraph',
+            text: "A baby's sleep is made up of cycles that are shorter than an adult's. At the end of each cycle, babies often turn, stir, babble or cry briefly and then go back to sleep. The AAP says it is normal for a 6-month-old to wake and fall back asleep after a few minutes. The NHS notes that between 6 and 12 months some babies no longer need night feeds, but teething, hunger or illness can still wake them. Between 1 and 2, separation anxiety, learning to walk or starting childcare can also bring more waking for a while. Sleep hours by age are covered in Sleep by age.",
+          },
+          {
+            type: 'paragraph',
+            text: 'Not every child who wakes at night needs “fixing”. If your child wakes once or twice, resettles quickly, is happy and well in the day and the family is coping, carry on as you are. It is worth making changes when your child wakes many times a night, only resettles with a feed, a cuddle or a swing in the hammock, this has gone on for weeks and you are exhausted.',
+          },
+          {
+            type: 'heading',
+            text: 'What are sleep associations?',
+          },
+          {
+            type: 'paragraph',
+            text: 'When they wake in the night, children usually want exactly what they had when they fell asleep. If your child drifts off at the breast, in your arms, in a moving hammock or with a bottle, then between cycles they look for the same thing and call for you. This is not being “naughty”; it is how they learn. The AAP notes that babies who are held or rocked until fully asleep may find it hard to fall back asleep when they wake in the night.',
+          },
+          {
+            type: 'paragraph',
+            text: "You don't need to give up the cosy moments. Breastfeeds, cuddles and lullabies are still a lovely part of the evening. The aim is only that the last step, the moment your child falls asleep, happens in their own sleep space.",
+          },
+          {
+            type: 'heading',
+            text: 'A bedtime routine that makes resettling easier',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Give the breastfeed or milk at the start of the routine, then teeth and a story, so your child doesn't learn that “feeding means sleeping”.",
+              'Keep the routine short, about 20–30 minutes, in the same order, in the room where your child sleeps, with soft light.',
+              'Lay your child down drowsy but awake, with a familiar goodnight phrase.',
+              'Keep conditions at sleep time the same as in the middle of the night: if you use a night light or steady background sound, leave it on all night rather than switching it off once they are asleep.',
+              'Start the routine when you see eye rubbing, yawning or staring into space; overtired children often struggle to settle and wake more.',
+              'From 12 months you can offer a familiar comfort object; under 12 months, keep the sleep space bare, with no pillows, thick blankets or soft toys (see Safe sleep).',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Pause before you go in',
+            text: "Stirring, babbling or a short cry doesn't always need you. Wait a few minutes to see whether your child resettles. If they cry hard, sound panicked or seem to be in pain, go to them straight away.",
+          },
+          {
+            type: 'heading',
+            text: 'Helping your child resettle: gradual methods',
+          },
+          {
+            type: 'paragraph',
+            text: 'There is no single right way. Choose what suits your child and family, and start when your child is well, not during an illness, teething or just after a big change such as starting childcare or moving house. Each method takes a few days to a few weeks of patience.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Settling in place: when your child wakes, go in and rub their back, pat gently or talk softly while they stay lying in their sleep space; over the nights, do a little less each time, from patting to just a hand resting, then just your voice.',
+              'Fading an old habit: if your child only falls asleep feeding, gradually shorten the bedtime feed and stop while they are still awake; if they are used to being held, hold them until calm, then lay them down.',
+              'Sitting nearby, then moving away: sit next to the sleep space until your child falls asleep, and every few nights move your chair further away, finally to the doorway.',
+              'Checking in at longer intervals: lay your child down and leave the room; if they cry, go in briefly after 2 minutes, then 4, then 6, without picking them up. This is usually used from around 6 months.',
+              'Bedtime fading: if your child lies awake for a long time, temporarily move bedtime 15–30 minutes later, to when they are truly sleepy, then bring it gradually earlier.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Many parents worry that methods involving some crying might harm attachment. A 2016 Australian trial in babies aged 6–16 months found that checking in at longer intervals and bedtime fading both helped babies fall asleep faster, did not raise stress hormone levels and did not affect secure attachment between baby and mother a year later. A larger Australian study following children to age 6 also found no differences in emotions, behaviour or closeness to parents. If you would rather not let your child cry, gentler methods can still work, though they may take longer. Whatever you choose, it is not leaving your child alone.',
+          },
+          {
+            type: 'heading',
+            text: 'Every carer, the same approach',
+          },
+          {
+            type: 'paragraph',
+            text: 'Children learn fastest when everyone responds the same way. If mum settles in place but grandma carries the baby to the hammock, or dad makes up a bottle at every waking, your child will cry longer, waiting for the response they like best. Before you start, agree as a family: where your child sleeps, who gets up on which night, what to do when they wake, and when you will review how it is going.',
+          },
+          {
+            type: 'paragraph',
+            text: "Grandparents love their grandchildren and find the crying hard to hear. Explain that the new approach doesn't abandon the child but helps them sleep better, and ask them to keep the same routine when they look after naps. Parents can take turns so that each of you gets a full night's sleep a few nights a week.",
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Keep a log to see progress',
+            text: 'Note waking times, how you settled your child and how long it took in Child Life for 1–2 weeks. Progress usually comes bit by bit, and the first few nights can be harder before things improve.',
+          },
+          {
+            type: 'heading',
+            text: 'When night waking is a health sign',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Illness: fever, a blocked nose or a cough make children wake and fuss more. When your child is unwell, comfort and care for them as they need, and pause sleep changes until they are fully better.',
+              'Ear pain: pulling at the ear, crying more when lying down, often with a fever or after a cold.',
+              'Itching and discomfort: eczema, nappy rash or constipation can cause repeated waking.',
+              'Snoring and pauses in breathing: loud snoring most nights, mouth breathing, pauses in breathing followed by gasps, restless sleep, heavy sweating; daytime tiredness or irritability. Enlarged adenoids and tonsils are a common cause; your child needs to be seen.',
+              "Iron deficiency: children born early or small, who eat little meat or fish, or who drink too much cow's milk are more likely to lack iron. It can cause paleness and tiredness, and some studies link it with restless sleep. A doctor can arrange a blood test; don't give iron supplements on your own.",
+              'Hunger: a child who eats few solids or is gaining weight slowly may truly wake from hunger; review daytime meals with your doctor.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: "Your child snores loudly most nights, pauses breathing, gasps or works hard to breathe in sleep; wakes with fever, ear pain, vomiting or a high-pitched cry you can't soothe; is drowsy, pale or gaining weight slowly; scratches a lot at night; keeps waking for weeks despite a steady routine; or you are exhausted or low. Call 115 (Việt Nam) or local emergency services if your child turns blue, struggles to breathe or is hard to wake.",
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'thức đêm',
+          'dỗ ngủ',
+          'tự ngủ lại',
+          'luyện ngủ',
+          'nếp đi ngủ',
+          'thói quen ngủ',
+          'ngáy',
+          'ngừng thở khi ngủ',
+          'thiếu sắt',
+        ],
+        en: [
+          'night waking',
+          'settling',
+          'self-settling',
+          'sleep training',
+          'bedtime routine',
+          'sleep associations',
+          'snoring',
+          'sleep apnoea',
+          'iron deficiency',
+        ],
+      },
+      relatedArticleIds: [
+        'art_sleep_by_age',
+        'art_safe_sleep',
+        'art_night_weaning',
+        'art_vitamin_d_iron',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Getting your baby to sleep',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx',
+        },
+        {
+          label: 'NHS — Helping your baby to sleep',
+          url: 'https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/',
+        },
+        {
+          label:
+            'Canadian Paediatric Society (Caring for Kids) — Healthy sleep for your baby and child',
+          url: 'https://caringforkids.cps.ca/handouts/pregnancy-and-babies/healthy_sleep_for_your_baby_and_child',
+        },
+        {
+          label:
+            'PubMed — Pediatrics 2016: Behavioral interventions for infant sleep problems: a randomized controlled trial',
+          url: 'https://pubmed.ncbi.nlm.nih.gov/27221288/',
+        },
+        {
+          label:
+            'PubMed — Pediatrics 2012: Five-year follow-up of harms and benefits of behavioral infant sleep intervention: randomized trial',
+          url: 'https://pubmed.ncbi.nlm.nih.gov/22966034/',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_night_weaning',
+    reviewerLabel: 'Nhóm chuyên môn · Tư vấn sữa mẹ (IBCLC)',
+    data: {
+      library: 'care',
+      topic: 'feeding',
+      format: 'article',
+      ageWeeks: {
+        from: 26,
+        to: 156,
+      },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Cai bú đêm và cai sữa nhẹ nhàng: khi nào, làm từng bước thế nào',
+        en: 'Night weaning and stopping breast or bottle feeds gently: when and how',
+      },
+      summary: {
+        vi: 'Không có tuổi “phải” cai sữa; WHO khuyên bú mẹ đến 2 tuổi hoặc lâu hơn. Khi mẹ và bé sẵn sàng, bớt từng cữ một, dỗ bé bằng cách khác và chăm ngực mẹ để tránh căng tức, viêm tuyến vú.',
+        en: 'There is no age you “must” wean; WHO recommends breastfeeding to 2 years or beyond. When you are both ready, drop one feed at a time, comfort your child in other ways and look after your breasts to avoid engorgement and mastitis.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Cai bú đêm hay cai sữa hẳn là quyết định của mẹ và bé, không có mốc tuổi bắt buộc. Làm chậm, bớt từng cữ một, giúp bé dễ chịu hơn và ngực mẹ ít bị căng tức hay viêm.',
+          },
+          {
+            type: 'heading',
+            text: 'Bú mẹ đến bao lâu?',
+          },
+          {
+            type: 'paragraph',
+            text: 'WHO và UNICEF khuyên cho bé bú mẹ hoàn toàn trong 6 tháng đầu, sau đó ăn dặm và tiếp tục bú mẹ đến 2 tuổi hoặc lâu hơn. AAP cũng khuyên tiếp tục bú mẹ đến 2 tuổi hoặc hơn, miễn là mẹ và bé đều muốn. NHS nhấn mạnh việc dừng lúc nào là do mẹ và bé quyết định. Thôi cho bú sớm hơn vì đi làm, vì sức khoẻ hay vì hoàn cảnh không phải là thất bại.',
+          },
+          {
+            type: 'heading',
+            text: 'Khi nào bé không còn cần bú đêm?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Không có mốc chung cho mọi bé. NHS cho biết cữ đêm thường thưa dần từ khoảng 3–6 tháng, và trong khoảng 6–12 tháng một số bé không còn cần bú đêm để đủ chất. Nhiều bé khác, nhất là bé bú mẹ, vẫn bú đêm đến tuổi tập đi, và điều đó vẫn bình thường. Bé bú đêm không chỉ vì đói mà còn để được gần mẹ, được an ủi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bé có thể sẵn sàng bớt cữ đêm khi bé ăn dặm tốt, tăng cân đều theo biểu đồ, bú ban ngày đủ, và cữ đêm chỉ mút lơ mơ vài phút rồi ngủ. Bé sinh non, nhẹ cân, chậm tăng cân hoặc có bệnh lý: hỏi bác sĩ trước khi bớt cữ đêm.',
+          },
+          {
+            type: 'heading',
+            text: 'Cai bú đêm từng bước',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Chọn lúc bé khoẻ, không ốm, không đau vì mọc răng, và không trùng với thay đổi lớn như mẹ vừa đi làm lại hay bé mới đi nhà trẻ.',
+              'Cho bé ăn dặm và bú đủ ban ngày, nhất là bữa tối và cữ bú đầu nếp đi ngủ, để bé bù lượng sữa ban đêm.',
+              'Tách bú khỏi giấc ngủ: cho bú ở đầu nếp đi ngủ, rồi mới đọc truyện và đặt bé xuống khi còn thức.',
+              'Bớt mỗi lần một cữ đêm, bắt đầu từ cữ bé có vẻ ít cần nhất, chờ vài đêm cho bé quen rồi mới bớt tiếp.',
+              'Rút ngắn dần: bú mẹ thì bớt 1–2 phút mỗi cữ sau vài đêm; bú bình thì bớt khoảng 30 ml mỗi vài đêm. Khi chỉ còn rất ít, thay hẳn bằng dỗ.',
+              'Những đêm đầu, nhờ ba hoặc người thân dỗ bé khi bé thức; bé bú mẹ thường đòi bú nhiều hơn khi ngửi thấy mẹ ở gần.',
+              'Không cho bé ngậm bình đi ngủ, không thay sữa bằng nước đường hay nước trái cây trong bình.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Dỗ bé không cần ti mẹ hay bình',
+            text: 'Ôm bé, xoa lưng, hát một câu ru quen, cho vài ngụm nước bằng cốc nếu bé trên 6 tháng, và từ 12 tháng có thể cho bé ôm một vật quen. Bé có thể phản đối vài đêm; hãy ở bên bé, bình tĩnh và làm giống nhau mỗi đêm.',
+          },
+          {
+            type: 'heading',
+            text: 'Cai sữa hẳn: chậm mà chắc',
+          },
+          {
+            type: 'paragraph',
+            text: 'AAP và NHS đều khuyên bỏ một cữ mỗi lần. Khi bé và ngực mẹ đã quen, thường sau vài ngày đến một tuần, mới bỏ tiếp cữ khác. Cả quá trình có thể mất vài tuần đến vài tháng. Cữ sáng sớm và cữ trước khi ngủ thường là cữ bé giữ lâu nhất, nên để lại sau cùng. Mẹ cũng có thể giữ lại một hai cữ mà cả hai thích.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Tránh những dấu hiệu gợi bé đòi bú: không ngồi vào chỗ quen cho bú, không thay áo trước mặt bé; đổi chỗ, đổi hoạt động vào giờ bé hay đòi.',
+              'Ôm ấp, chơi, đọc truyện nhiều hơn để bù cho sự gần gũi khi bú.',
+              'Đánh lạc hướng bằng bữa phụ, đồ uống trong cốc, đi dạo hay một trò chơi mới.',
+              'Ông bà có thể khuyên bôi dầu gió, ớt lên ngực hay gửi bé đi xa vài hôm cho “dứt”. Cách này làm bé hoảng sợ, có thể làm cay mắt, rát miệng bé, và cai đột ngột dễ khiến ngực mẹ căng tức, viêm. Nên cai từ từ như trên.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bé uống gì thay cữ bú?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Dưới 1 tuổi, sữa mẹ hoặc sữa công thức vẫn là thức uống chính: mỗi cữ bú mẹ bỏ đi được thay bằng sữa mẹ vắt hoặc sữa công thức, từ 6 tháng có thể cho uống bằng cốc. Không dùng sữa bò tươi làm thức uống chính trước 1 tuổi. Từ 1 tuổi, khi bé đã ăn đa dạng, NHS cho biết không cần cữ thay thế; lượng và loại sữa phù hợp có trong bài Bé từ 1 tuổi uống sữa gì.',
+          },
+          {
+            type: 'heading',
+            text: 'Chăm ngực mẹ khi cai sữa',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Giảm từ từ là cách tốt nhất để phòng căng tức và viêm tuyến vú.',
+              'Nếu ngực căng khó chịu, vắt tay hoặc hút ra một ít, vừa đủ cho dễ chịu; không vắt cạn, vì vắt cạn báo cho cơ thể tiếp tục tạo nhiều sữa.',
+              'Chườm mát khoảng 10 phút, mặc áo ngực vừa vặn, nâng đỡ tốt; không bó chặt ngực.',
+              'Không tự dùng thuốc làm mất sữa; nếu cần, hỏi bác sĩ.',
+              'Một vùng ngực sưng, nóng, đỏ, đau hoặc có cục cứng, kèm sốt, ớn lạnh, mệt như cúm có thể là viêm tuyến vú; nếu không đỡ sau 12–24 giờ tự chăm, mẹ nên đi khám.',
+              'Nhiều mẹ thấy cảm xúc lẫn lộn khi thôi cho bú. Hãy chia sẻ với người thân, và tìm hỗ trợ nếu buồn bã kéo dài.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé sụt cân hoặc chậm tăng cân sau khi bớt cữ; bé từ chối cả cốc lẫn bình và uống rất ít; bé thức đêm kèm sốt, đau tai hay khóc bất thường. Mẹ nên đi khám khi ngực sưng nóng đỏ đau kèm sốt không đỡ sau 12–24 giờ. Gọi 115 nếu bé lả, khó đánh thức hoặc có dấu hiệu mất nước nặng.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Stopping night feeds or weaning altogether is a decision for you and your child, with no required age. Going slowly, one feed at a time, is easier on your child and less likely to leave your breasts engorged or inflamed.',
+          },
+          {
+            type: 'heading',
+            text: 'How long to breastfeed?',
+          },
+          {
+            type: 'paragraph',
+            text: 'WHO and UNICEF recommend exclusive breastfeeding for the first 6 months, then solid foods alongside continued breastfeeding to 2 years or beyond. The AAP also advises continuing to 2 years or beyond, as long as mother and child both want to. The NHS stresses that when to stop is up to you and your baby. Stopping earlier because of work, health or circumstances is not a failure.',
+          },
+          {
+            type: 'heading',
+            text: 'When does a baby no longer need night feeds?',
+          },
+          {
+            type: 'paragraph',
+            text: 'There is no single age for every baby. The NHS says night feeds usually become less frequent from around 3–6 months, and that between 6 and 12 months some babies no longer need them for nutrition. Many others, especially breastfed babies, still feed at night into toddlerhood, and that is normal too. Night feeds are not only about hunger; they are also about closeness and comfort.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Your baby may be ready to drop night feeds when they eat solids well, grow steadily along their chart, feed well in the day, and night feeds are just a few sleepy minutes of sucking. If your baby was born early or small, is gaining weight slowly or has a health condition, ask your doctor before cutting night feeds.',
+          },
+          {
+            type: 'heading',
+            text: 'Night weaning step by step',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Choose a time when your child is well, not ill or in pain from teething, and not alongside a big change such as you returning to work or starting childcare.',
+              'Make sure your child eats and feeds well in the day, especially the evening meal and the feed at the start of the bedtime routine, so they can make up for night milk.',
+              'Separate feeding from falling asleep: feed at the start of the bedtime routine, then read a story and lay your child down awake.',
+              'Drop one night feed at a time, starting with the one your child seems to need least, and wait a few nights before dropping the next.',
+              'Shorten gradually: for breastfeeds, cut 1–2 minutes from each feed every few nights; for bottles, reduce by about 30 ml every few nights. When very little is left, replace it with comforting.',
+              'For the first few nights, ask your partner or another family member to settle your child when they wake; breastfed children often ask to feed more when they can smell their mother nearby.',
+              "Don't put your child to bed with a bottle, and don't swap milk for sugary water or juice in the bottle.",
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Comfort without the breast or bottle',
+            text: 'Cuddle, rub their back, sing a familiar lullaby, offer a few sips of water from a cup if they are over 6 months, and from 12 months a familiar comfort object. Your child may protest for a few nights; stay with them, stay calm and do the same thing each night.',
+          },
+          {
+            type: 'heading',
+            text: 'Stopping altogether: slow and steady',
+          },
+          {
+            type: 'paragraph',
+            text: 'The AAP and NHS both advise dropping one feed at a time. Once your child and your breasts have adjusted, usually after a few days to a week, drop another. The whole process can take a few weeks to several months. The early-morning and bedtime feeds are usually the last to go, so leave them until the end. You can also keep one or two feeds you both enjoy.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Avoid cues that prompt a feed: don't sit in your usual feeding spot or change clothes in front of your child; change places and activities at the times they usually ask.",
+              'Offer more cuddles, play and stories to make up for the closeness of feeding.',
+              'Distract with a snack, a drink from a cup, a walk or a new game.',
+              'Grandparents may suggest putting menthol oil or chilli on the breast, or sending the child away for a few days to make a clean break. This frightens children, can sting their eyes and mouth, and stopping suddenly makes engorgement and mastitis more likely. Wean gradually as above instead.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'What to give instead of a feed',
+          },
+          {
+            type: 'paragraph',
+            text: "Under 1 year, breast milk or formula is still the main drink: replace each dropped breastfeed with expressed breast milk or formula, from a cup if your baby is over 6 months. Cow's milk is not suitable as a main drink before 1 year. From 1 year, once your child eats a variety of foods, the NHS says no replacement feed is needed; the right type and amount of milk are covered in Milk from age 1.",
+          },
+          {
+            type: 'heading',
+            text: 'Looking after your breasts while weaning',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cutting down gradually is the best way to prevent engorgement and mastitis.',
+              "If your breasts feel uncomfortably full, hand express or pump a little, just enough to feel comfortable; don't empty them, as that tells your body to keep making plenty of milk.",
+              "Use a cold compress for about 10 minutes and wear a well-fitting, supportive bra; don't bind your breasts.",
+              "Don't take medicines to dry up milk on your own; ask a doctor if needed.",
+              "A swollen, hot, red or painful area or a hard lump, with fever, chills or flu-like tiredness, may be mastitis; if it isn't better after 12–24 hours of self-care, see a doctor.",
+              'Many mothers have mixed feelings when breastfeeding ends. Talk to people close to you, and seek support if low mood lasts.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: "Your child has far fewer wet nappies, dark urine, a dry mouth or is listless; loses weight or grows slowly after feeds are cut; refuses both cup and bottle and drinks very little; or wakes at night with fever, ear pain or unusual crying. See a doctor yourself if a red, hot, painful breast with fever isn't better after 12–24 hours. Call 115 (Việt Nam) or local emergency services if your child is floppy, hard to wake or severely dehydrated.",
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'cai sữa',
+          'cai bú đêm',
+          'bú đêm',
+          'cai bú mẹ',
+          'cai bình',
+          'căng tức ngực',
+          'viêm tuyến vú',
+          'bú mẹ đến 2 tuổi',
+        ],
+        en: [
+          'weaning',
+          'night weaning',
+          'night feeds',
+          'stopping breastfeeding',
+          'stopping the bottle',
+          'engorgement',
+          'mastitis',
+          'breastfeeding to 2 years',
+        ],
+      },
+      relatedArticleIds: [
+        'art_toddler_milk',
+        'art_night_waking_settling',
+        'art_pacifier_bottle_habits',
+        'art_expressing_storing_milk',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'WHO — Infant and young child feeding (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Weaning your baby',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/breastfeeding/Pages/Weaning-Your-Baby.aspx',
+        },
+        {
+          label: 'NHS — How to stop breastfeeding',
+          url: 'https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding/how-to-stop/',
+        },
+        {
+          label: 'NHS — Helping your baby to sleep (night feeds)',
+          url: 'https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/',
+        },
+        {
+          label: 'NHS — Mastitis',
+          url: 'https://www.nhs.uk/conditions/mastitis/',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_back_to_work_breastfeeding',
+    reviewerLabel: 'Nhóm chuyên môn · Tư vấn sữa mẹ (IBCLC)',
+    data: {
+      library: 'care',
+      topic: 'feeding',
+      format: 'step_guide',
+      ageWeeks: {
+        from: 6,
+        to: 104,
+      },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Đi làm lại mà vẫn cho con bú mẹ: chuẩn bị và duy trì từng bước',
+        en: 'Going back to work and keeping breastfeeding: step by step',
+      },
+      summary: {
+        vi: 'Chuẩn bị từ vài tuần trước, tập cho bé bú bình hoặc uống cốc, trữ vừa đủ sữa, hút sữa đều ở chỗ làm, hướng dẫn người chăm cho bú theo nhịp bé, và cho bú nhiều hơn khi ở nhà.',
+        en: 'Plan a few weeks ahead, help your baby take a bottle or cup, store just enough milk, pump regularly at work, show carers how to pace feeds, and breastfeed more when you are together.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Đi làm lại không có nghĩa là phải thôi cho bú. Chuẩn bị sớm, hút sữa đều khi xa bé và cho bú nhiều hơn khi ở bên bé giúp giữ nguồn sữa.',
+          },
+          {
+            type: 'heading',
+            text: 'Bước 1: Lên kế hoạch từ 4–6 tuần trước',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Trao đổi với nơi làm việc trước ngày đi làm: một chỗ riêng tư, sạch để hút sữa (không phải nhà vệ sinh), tủ lạnh để trữ sữa, chỗ rửa dụng cụ và giờ nghỉ để hút.',
+              'Hỏi về việc đi làm giữa tuần để tuần đầu ngắn hơn, làm bán thời gian một thời gian, hoặc gửi bé gần nơi làm để có thể cho bú giờ nghỉ.',
+              'Chọn máy hút phù hợp; máy hút đôi giúp tiết kiệm thời gian. Tập hút hoặc vắt tay ở nhà cho quen.',
+              'Chọn người chăm bé và nói trước cách cho bé ăn sữa mẹ. Ở mỗi nước, quyền lợi của mẹ cho con bú khác nhau; hãy tìm hiểu quy định nơi ba mẹ sống.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: theo Bộ luật Lao động 2019, mẹ nuôi con dưới 12 tháng tuổi được nghỉ 60 phút mỗi ngày trong giờ làm việc mà vẫn hưởng đủ lương, và không phải làm đêm, làm thêm giờ hay đi công tác xa nếu mẹ không đồng ý. Thời gian nghỉ thai sản là 6 tháng. Hãy trao đổi với nơi làm để dùng 60 phút này cho việc hút sữa hoặc cho bé bú.',
+          },
+          {
+            type: 'heading',
+            text: 'Bước 2: Tập cho bé bú bình hoặc uống cốc',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Khi việc bú mẹ đã ổn định, thường sau ít nhất 4 tuần, cho bé thử sữa mẹ vắt bằng bình khoảng 1–2 tuần trước khi đi làm.',
+              'Để người khác cho bé bú bình, như ba, bà hay người trông bé; bé thường dễ nhận hơn khi mẹ không ở gần.',
+              'Thử khi bé hơi đói chứ chưa đói lả. Nếu bé từ chối, thử lúc khác, đổi tư thế hoặc đổi núm ti chảy chậm.',
+              'Cốc nhỏ không nắp cũng là một lựa chọn thay bình; từ 6 tháng thì càng nên tập cho bé uống cốc.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 3: Trữ một ít sữa, đừng hút quá nhiều',
+          },
+          {
+            type: 'paragraph',
+            text: 'Khoảng 2–3 tuần trước khi đi làm, hút thêm một lần mỗi ngày, thường vào buổi sáng sau cữ bú đầu tiên, lúc ngực nhiều sữa. Chỉ cần đủ cho một hai ngày đầu và một ít dự phòng; sau đó, sữa hút ở chỗ làm hôm nay sẽ dùng cho bé ngày mai. Hút quá nhiều có thể làm thừa sữa, căng tức, tắc tia sữa và khiến mẹ thêm mệt.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Trữ mỗi túi khoảng 60–120 ml, bằng một cữ bé ăn, để không phí sữa; ghi ngày và chừa chỗ vì sữa nở khi đông đá.',
+              'Rã đông trong ngăn mát và dùng trong 24 giờ; không cấp đông lại sữa đã rã đông. Thời gian trữ chi tiết có trong bài Vắt và trữ sữa mẹ an toàn.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 4: Hút sữa ở nơi làm việc',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Hút vào những giờ bé thường bú ở nhà. Với ngày làm 8 tiếng, thường cần 2–3 lần, ví dụ giữa buổi sáng, giờ trưa và giữa buổi chiều; bé càng nhỏ càng cần hút thường hơn.',
+              'Mỗi lần thường 10–15 phút, chưa kể thời gian đi lại và rửa dụng cụ. AAP khuyên hút ít nhất 10 phút ngay cả khi sữa đã chảy chậm, để giữ nguồn sữa.',
+              'Rửa tay trước khi hút và rửa sạch dụng cụ sau mỗi lần; nếu không có chỗ rửa, mang thêm bộ phụ kiện để thay.',
+              'Cất sữa vào tủ lạnh, hoặc túi giữ lạnh có túi đá đông lạnh; trong túi giữ lạnh như vậy, sữa giữ được đến 24 giờ. Về nhà thì cho vào tủ lạnh hoặc cấp đông. Ghi tên và ngày lên bình.',
+              'Nhìn ảnh bé, nghe đoạn ghi âm tiếng bé, thở chậm và xoa nhẹ ngực trước khi hút giúp sữa xuống dễ hơn.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 5: Hướng dẫn người chăm cho bú bình theo nhịp bé',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé ăn khi bé có dấu hiệu đói như mút tay, quay đầu tìm vú, chứ không cứng nhắc theo đồng hồ hay chờ bé khóc.',
+              'Bế bé gần như ngồi thẳng, đỡ đầu; chạm núm ti vào môi trên để bé tự há miệng ngậm, không đẩy núm vào miệng.',
+              'Giữ bình gần nằm ngang, chỉ nghiêng đủ để núm ti có sữa, để bé tự điều chỉnh nhịp bú; cho bé nghỉ, ợ hơi giữa chừng và đổi bên tay như khi bú mẹ.',
+              'Dừng khi bé có dấu hiệu no: nhả núm, quay đi, mút chậm hay ngủ thiếp. Không ép bé uống hết bình.',
+              'Sữa đã hâm hoặc để ở nhiệt độ phòng dùng trong 2 giờ; sữa bé bú dở bỏ đi sau 2 giờ.',
+              'Tránh cho bé bú bình sát giờ mẹ về, để bé còn muốn bú mẹ khi gặp mẹ.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 6: Cho bú nhiều hơn khi ở bên bé',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cho bé bú ngay khi đón bé, buổi tối, ban đêm và những ngày nghỉ. Nhiều bé ăn ít khi xa mẹ rồi bú nhiều hơn vào chiều tối và ban đêm; đây gọi là “bú đảo ngược” và là điều bình thường. Khi đó mẹ có thể cần hút ít hơn vào ban ngày. Đặt nôi của bé trong phòng ba mẹ giúp mẹ cho bú đêm đỡ mệt mà vẫn giữ bé ngủ an toàn.',
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Khi sữa có vẻ ít đi',
+            text: 'Lượng sữa hút được hay giảm vào cuối tuần làm việc, thường do bỏ lỡ hoặc rút ngắn lần hút. Hút đủ lần, đủ lâu, cho bú nhiều hơn vào ngày nghỉ, uống đủ nước và nghỉ ngơi thường giúp sữa về lại. Nếu sữa vẫn giảm, hãy gặp chuyên viên tư vấn sữa mẹ.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé từ chối cả bình lẫn cốc gần như cả ngày; bé chậm tăng cân. Mẹ nên đi khám khi ngực có vùng sưng, nóng, đỏ, đau kèm sốt, ớn lạnh mà không đỡ sau 12–24 giờ, hoặc khi mẹ buồn bã, lo âu kéo dài. Gọi 115 nếu bé lả, khó đánh thức.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "Going back to work doesn't mean you have to stop breastfeeding. Planning early, pumping regularly while you are apart and breastfeeding more when you are together help protect your milk supply.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 1: Plan 4–6 weeks ahead',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Talk to your employer before you go back: a clean, private space to pump (not a toilet), a fridge for milk, somewhere to wash pump parts, and break times to pump.',
+              'Ask about starting mid-week so the first week is shorter, working part-time for a while, or using childcare near work so you can breastfeed on breaks.',
+              'Choose a suitable pump; a double pump saves time. Practise pumping or hand expressing at home first.',
+              "Choose your baby's carer and explain in advance how to feed breast milk. Rights for breastfeeding employees differ by country; check the rules where you live.",
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'In Việt Nam: under the 2019 Labour Code, a mother caring for a child under 12 months is entitled to 60 minutes off each working day with full pay, and cannot be required to work nights, overtime or long-distance business trips unless she agrees. Maternity leave is 6 months. Talk to your employer about using the 60 minutes to pump or to breastfeed your baby.',
+          },
+          {
+            type: 'heading',
+            text: 'Step 2: Help your baby take a bottle or cup',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Once breastfeeding is going well, usually after at least 4 weeks, offer expressed milk in a bottle about 1–2 weeks before you go back.',
+              "Have someone else give the bottle, such as your partner, a grandparent or the carer; babies often accept it more easily when their mother isn't close by.",
+              'Try when your baby is a little hungry but not starving. If they refuse, try again another time, change position or try a slow-flow teat.',
+              'A small open cup is another option instead of a bottle; from 6 months it is a good time to start cup drinking anyway.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: "Step 3: Store a little milk, don't over-pump",
+          },
+          {
+            type: 'paragraph',
+            text: 'About 2–3 weeks before you go back, add one pumping session a day, usually in the morning after the first feed, when your breasts are fullest. You only need enough for the first day or two plus a little in reserve; after that, milk you pump at work today feeds your baby tomorrow. Pumping too much can cause oversupply, engorgement and blocked ducts, and leaves you more tired.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Store about 60–120 ml per bag, the amount of one feed, to avoid waste; write the date and leave space at the top, as milk expands when frozen.',
+              'Thaw milk in the fridge and use it within 24 hours; never refreeze thawed milk. Detailed storage times are in Expressing and storing breast milk safely.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 4: Pumping at work',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Pump at the times your baby would usually feed. For an 8-hour day this is often 2–3 times, for example mid-morning, lunchtime and mid-afternoon; the younger your baby, the more often you may need to pump.',
+              'Each session usually takes 10–15 minutes, plus time to get there and wash up. The AAP suggests pumping for at least 10 minutes even after the flow slows, to protect your supply.',
+              'Wash your hands before pumping and clean the parts after each use; if there is no sink, bring spare sets.',
+              'Keep milk in a fridge, or in an insulated cool bag with frozen ice packs, where it keeps for up to 24 hours. At home, put it in the fridge or freezer. Label it with your name and the date.',
+              'Looking at a photo of your baby, listening to a recording of them, breathing slowly and gently massaging your breasts before pumping can help your milk flow.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 5: Show carers how to pace bottle feeds',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Feed when your baby shows hunger cues such as sucking their hands or turning to root, rather than strictly by the clock or waiting for crying.',
+              'Hold your baby fairly upright with their head supported; touch the teat to the upper lip so they open wide and take it, rather than pushing it in.',
+              'Keep the bottle close to horizontal, tilted just enough to fill the teat, so your baby controls the pace; allow pauses and burps, and switch sides as with breastfeeding.',
+              'Stop when your baby shows they are full: letting go of the teat, turning away, sucking slowly or falling asleep. Never push them to finish the bottle.',
+              'Use warmed or room-temperature milk within 2 hours; throw away leftover milk from a feed after 2 hours.',
+              'Avoid giving a bottle just before you get home, so your baby is keen to breastfeed when you arrive.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 6: Breastfeed more when you are together',
+          },
+          {
+            type: 'paragraph',
+            text: "Breastfeed as soon as you pick your baby up, in the evening, at night and on days off. Many babies eat less while apart and feed more in the evening and at night; this is called “reverse cycling” and is normal. If it happens, you may need to pump less during the day. Keeping your baby's cot in your room makes night feeds less tiring while keeping sleep safe.",
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'If your supply seems to drop',
+            text: 'Pumped amounts often dip towards the end of the working week, usually because sessions were missed or cut short. Pumping often enough and for long enough, breastfeeding more on days off, drinking enough and resting usually bring it back. If it keeps falling, see a lactation consultant.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: "Your baby has far fewer wet nappies, dark urine, a dry mouth or is listless; refuses both bottle and cup for most of the day; or is gaining weight slowly. See a doctor yourself if a swollen, hot, red, painful area of the breast with fever or chills isn't better after 12–24 hours, or if low mood or anxiety lasts. Call 115 (Việt Nam) or local emergency services if your baby is floppy or hard to wake.",
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'đi làm lại',
+          'hút sữa',
+          'hút sữa ở công ty',
+          'trữ sữa',
+          'bú bình theo nhịp',
+          'bú đảo ngược',
+          'nghỉ cho con bú',
+          'giữ nguồn sữa',
+        ],
+        en: [
+          'back to work',
+          'pumping',
+          'pumping at work',
+          'storing milk',
+          'paced bottle feeding',
+          'reverse cycling',
+          'breastfeeding breaks',
+          'milk supply',
+        ],
+      },
+      relatedArticleIds: [
+        'art_expressing_storing_milk',
+        'art_breastfeeding_start',
+        'art_night_weaning',
+        'art_parent_wellbeing',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: "Office on Women's Health (US HHS) — Breastfeeding and going back to work",
+          url: 'https://womenshealth.gov/breastfeeding/breastfeeding-home-work-and-public/breastfeeding-and-going-back-work',
+        },
+        {
+          label: 'CDC — Breastfeeding and returning to your workplace',
+          url: 'https://www.cdc.gov/infant-toddler-nutrition/breastfeeding/returning-to-your-workplace.html',
+        },
+        {
+          label:
+            'HealthyChildren.org (AAP) — Expressing breast milk at work: tips for nursing parents',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/breastfeeding/Pages/Expressing-Breastmilk-on-the-Job.aspx',
+        },
+        {
+          label: 'CDC — Breast milk storage and preparation',
+          url: 'https://www.cdc.gov/breastfeeding/breast-milk-preparation-and-storage/handling-breastmilk.html',
+        },
+        {
+          label:
+            "Alder Hey Children's NHS Foundation Trust — Paced responsive feeding (bottle feeding)",
+          url: 'https://www.alderhey.nhs.uk/conditions/patient-information-leaflets/paced-responsive-feeding-bottle-feeding/',
+        },
+        {
+          label: 'Cổng PBGDPL TP. Cần Thơ — Bộ luật Lao động số 45/2019/QH14 (Điều 137, Điều 139)',
+          url: 'https://pbgdpl.cantho.gov.vn/attachment/261',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_pacifier_bottle_habits',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'daily_care',
+      format: 'quick_qa',
+      ageWeeks: {
+        from: 26,
+        to: 156,
+      },
+      readingMinutes: 2,
+      cover: null,
+      title: {
+        vi: 'Hỏi nhanh: Cai ti giả và bình sữa — khi nào, cách nào?',
+        en: 'Quick Q&A: Giving up the dummy and the bottle — when and how?',
+      },
+      summary: {
+        vi: 'Tập uống cốc từ 6 tháng, bỏ bình quanh 1 tuổi, không ngậm bình đi ngủ, và thu hẹp dần ti giả sau 1 tuổi để bảo vệ răng và tai của bé.',
+        en: "Start cup drinking from 6 months, phase out the bottle around age 1, no bottle in bed, and gradually limit the dummy after age 1 to protect your child's teeth and ears.",
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Ti giả và bình sữa giúp bé dễ chịu, nhưng dùng lâu có thể ảnh hưởng răng và tai. Tập cốc từ 6 tháng, bỏ bình quanh 1 tuổi, và sau 1 tuổi chỉ dùng ti giả khi ngủ.',
+          },
+          {
+            type: 'heading',
+            text: 'Khi nào nên bỏ bình sữa?',
+          },
+          {
+            type: 'paragraph',
+            text: 'NHS khuyên không cho bé bú bình nữa từ 1 tuổi; AAP khuyên giảm dần và bỏ hẳn trong khoảng 12–18 tháng. Child Life theo cách thận trọng hơn: bắt đầu bớt bình quanh 1 tuổi và cố gắng bỏ hẳn trước 18 tháng.',
+          },
+          {
+            type: 'heading',
+            text: 'Bỏ bình thế nào cho nhẹ nhàng?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bỏ các cữ bình giữa ngày trước, cữ trước khi ngủ sau cùng. Cho bé uống sữa bằng cốc trong bữa ăn. Thay bình lúc đi ngủ bằng ôm ấp, đọc truyện, hát ru. Mọi người chăm bé cùng làm giống nhau.',
+          },
+          {
+            type: 'heading',
+            text: 'Tập uống cốc từ khi nào?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Từ khoảng 6 tháng, cho bé uống vài ngụm nước bằng cốc không nắp hoặc cốc không van trong bữa ăn. Cốc có van khiến bé vẫn mút như bú bình; cốc mở tốt hơn cho răng. Đổ vương một chút là bình thường.',
+          },
+          {
+            type: 'heading',
+            text: 'Ngậm bình đi ngủ có hại gì?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Sữa hay nước ngọt đọng quanh răng suốt đêm dễ gây sâu răng sớm. Bú bình khi nằm cũng làm tăng nguy cơ viêm tai. Hãy cho bé uống xong, đánh răng, rồi mới đặt bé ngủ. Không cho đồ uống có đường vào bình.',
+          },
+          {
+            type: 'heading',
+            text: 'Ti giả dùng đến bao giờ?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Dưới 1 tuổi, cho bé ngậm ti giả khi ngủ có thể giảm nguy cơ đột tử, nên không cần vội bỏ. AAP cho biết mút mạnh kéo dài quá khoảng 2–4 tuổi có thể làm lệch răng; Hội Nhi khoa Canada khuyên bỏ trước 3–4 tuổi và lưu ý ti giả có thể làm bé hay bị viêm tai. Child Life theo cách thận trọng hơn: sau 1 tuổi chỉ dùng khi ngủ, cố gắng bỏ quanh 2 tuổi, sớm hơn nếu bé hay viêm tai.',
+          },
+          {
+            type: 'heading',
+            text: 'Cai ti giả thế nào?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Giới hạn dần, chỉ dùng ở chỗ ngủ. Khen khi bé không cần ti, dùng bảng dán sao, cho bé tự “tạm biệt” ti. Không quát mắng, chê cười, không bôi ớt hay dầu gió. Không nhúng ti vào đường, mật ong, không buộc dây quanh cổ bé.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Răng có đốm trắng đục, vệt nâu hoặc lỗ sâu; răng cửa hô, khớp cắn lệch; bé hay đau tai, kéo tai, sốt hoặc chảy dịch tai; bé gần 2 tuổi vẫn bú bình nhiều mà ăn ít, xanh xao.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Dummies and bottles comfort children, but long use can affect teeth and ears. Start a cup from 6 months, phase out the bottle around age 1, and after age 1 keep the dummy for sleep only.',
+          },
+          {
+            type: 'heading',
+            text: 'When should the bottle go?',
+          },
+          {
+            type: 'paragraph',
+            text: 'The NHS advises discouraging bottle feeding from age 1; the AAP advises cutting down gradually and finishing between 12 and 18 months. Child Life follows the more cautious advice: start cutting down around age 1 and aim to stop completely before 18 months.',
+          },
+          {
+            type: 'heading',
+            text: 'How do I phase out the bottle gently?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Drop the daytime bottles first and the bedtime bottle last. Offer milk in a cup at meals. Replace the bedtime bottle with cuddles, a story and a lullaby. Make sure every carer does the same.',
+          },
+          {
+            type: 'heading',
+            text: 'When should cup drinking start?',
+          },
+          {
+            type: 'paragraph',
+            text: 'From around 6 months, offer sips of water from an open cup or a free-flow cup without a valve at meals. Valved cups keep children sucking like a bottle; open cups are better for teeth. A little spilling is normal.',
+          },
+          {
+            type: 'heading',
+            text: "What's wrong with a bottle in bed?",
+          },
+          {
+            type: 'paragraph',
+            text: 'Milk or sweet drinks pooling around the teeth all night can cause early tooth decay. Bottle feeding while lying down also raises the risk of ear infections. Finish the drink, brush teeth, then lay your child down. Never put sugary drinks in a bottle.',
+          },
+          {
+            type: 'heading',
+            text: 'How long can a dummy be used?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Under 1 year, a dummy at sleep time may lower the risk of SIDS, so there is no rush to stop. The AAP says strong sucking beyond about 2–4 years can affect tooth alignment; the Canadian Paediatric Society advises stopping by 3–4 years and notes dummies may lead to repeated ear infections. Child Life follows the more cautious advice: after age 1 use it for sleep only, aim to stop around 2, sooner if your child gets frequent ear infections.',
+          },
+          {
+            type: 'heading',
+            text: 'How do I wean off the dummy?',
+          },
+          {
+            type: 'paragraph',
+            text: "Limit it gradually to the sleep space. Praise your child when they manage without it, use a sticker chart, and let them say “bye-bye” to it. Don't scold or tease, and don't put chilli or menthol oil on it. Never dip it in sugar or honey or tie it around their neck.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: 'Chalky white spots, brown marks or holes on the teeth; front teeth sticking out or a misaligned bite; frequent ear pain, ear pulling, fever or ear discharge; or a child nearing 2 who still drinks a lot from bottles, eats little and looks pale.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'ti giả',
+          'núm vú giả',
+          'cai bình',
+          'uống cốc',
+          'sâu răng',
+          'viêm tai',
+          'ngậm bình đi ngủ',
+        ],
+        en: [
+          'dummy',
+          'pacifier',
+          'stopping the bottle',
+          'cup drinking',
+          'tooth decay',
+          'ear infections',
+          'bottle in bed',
+        ],
+      },
+      relatedArticleIds: [
+        'art_teething',
+        'art_toddler_milk',
+        'art_night_weaning',
+        'art_water_juice',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label:
+            'HealthyChildren.org (AAP) — From bottle to cup: helping your child make a healthy transition',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Discontinuing-the-Bottle.aspx',
+        },
+        {
+          label:
+            'HealthyChildren.org (AAP) — Baby pacifiers and thumb sucking: what parents need to know',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/Pacifiers-and-Thumb-Sucking.aspx',
+        },
+        {
+          label: 'Canadian Paediatric Society (Caring for Kids) — Pacifiers (soothers)',
+          url: 'https://caringforkids.cps.ca/handouts/pregnancy-and-babies/pacifiers',
+        },
+        {
+          label: 'Canadian Paediatric Society (Caring for Kids) — Ear infections',
+          url: 'https://caringforkids.cps.ca/handouts/health-conditions-and-treatments/ear_infections',
+        },
+        {
+          label: 'NHS — Drinks and cups for babies and young children',
+          url: 'https://www.nhs.uk/baby/weaning-and-feeding/drinks-and-cups-for-babies-and-young-children/',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_dengue_mosquito',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: {
+        from: 0,
+        to: 156,
+      },
+      readingMinutes: 7,
+      cover: null,
+      title: {
+        vi: 'Sốt xuất huyết ở trẻ nhỏ: dấu hiệu nguy hiểm và cách phòng muỗi cho bé',
+        en: 'Dengue in babies and toddlers: warning signs and protecting your child from mosquitoes',
+      },
+      summary: {
+        vi: 'Sốt xuất huyết do muỗi vằn truyền, hay gặp ở Việt Nam và Đông Nam Á. Giai đoạn nguy hiểm thường đến khi bé vừa hạ sốt. Cho bé bú, uống đủ, chỉ dùng paracetamol, và chống muỗi đốt cả ngày lẫn đêm.',
+        en: 'Dengue is spread by Aedes mosquitoes and is common in Việt Nam and South-East Asia. The dangerous phase often comes as the fever falls. Keep your child drinking, use only paracetamol, and prevent bites day and night.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Sốt xuất huyết là bệnh do virus dengue, lây qua muỗi vằn đốt, hay gặp ở Việt Nam và nhiều nước Đông Nam Á. Bệnh thường gây sốt cao 2–7 ngày; giai đoạn nguy hiểm hay đến đúng lúc bé bắt đầu hạ sốt. Cho bé bú, uống đủ, chỉ hạ sốt bằng paracetamol, không tự dùng ibuprofen hay aspirin, và đưa bé đi khám ngay khi có dấu hiệu cảnh báo.',
+          },
+          {
+            type: 'heading',
+            text: 'Vì sao gia đình ở Việt Nam và Đông Nam Á cần biết',
+          },
+          {
+            type: 'paragraph',
+            text: 'Virus dengue do muỗi vằn (muỗi Aedes) truyền. Loại muỗi này đẻ trứng ở chỗ nước đọng quanh nhà và đốt cả ban ngày lẫn ban đêm. Bệnh có ở hầu hết các tỉnh thành Việt Nam và phổ biến ở Thái Lan, Singapore, Malaysia, Indonesia, Philippines. Gia đình ở nước ngoài đưa bé về thăm quê hay du lịch trong vùng cũng cần phòng bệnh như người sống tại chỗ.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Hiện chưa có thuốc đặc trị sốt xuất huyết. Phần lớn người bệnh khỏi sau 1–2 tuần, nhưng một số chuyển nặng với thoát huyết tương, sốc hoặc chảy máu. Bé nhỏ chưa nói được mình đau ở đâu, nên ba mẹ cần nhìn vào cách bé bú, chơi và tỉnh táo ra sao.',
+          },
+          {
+            type: 'heading',
+            text: 'Ba giai đoạn của bệnh',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Giai đoạn sốt (thường 2–7 ngày): sốt cao đột ngột, bé quấy, bỏ bú hoặc biếng ăn, có thể nôn, nổi ban, có chấm đỏ dưới da hoặc chảy máu cam nhẹ. Trẻ nhỏ thường không kể được đau đầu, đau mỏi người như người lớn.',
+              'Giai đoạn nguy hiểm (bắt đầu khi sốt lui, thường kéo dài 24–48 giờ): nhiều bé khỏe dần, nhưng ở một số bé, huyết tương thoát ra khỏi lòng mạch và bệnh có thể nặng lên rất nhanh, chỉ trong vài giờ. Vì vậy hết sốt chưa có nghĩa là đã khỏi.',
+              'Giai đoạn hồi phục: bé ăn ngon hơn, tiểu nhiều hơn, tỉnh táo hơn. Một số bé nổi ban ngứa hoặc bong da nhẹ. Vẫn cần tái khám theo hẹn.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Dấu hiệu cảnh báo: đưa bé đến viện ngay',
+          },
+          {
+            type: 'paragraph',
+            text: 'Theo WHO, CDC (Mỹ) và Bệnh viện Nhi Trung ương, những dấu hiệu dưới đây cần được khám ngay, nhất là khi bé vừa hạ sốt:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Đau bụng: bé ôm bụng, co chân, khóc khi chạm vào bụng.',
+              'Nôn nhiều lần (CDC lấy mốc từ 3 lần trong 24 giờ), nôn liên tục, hoặc không bú, không uống được.',
+              'Chảy máu chân răng, chảy máu cam, nôn ra máu, đi ngoài phân đen hoặc có máu, nhiều chấm xuất huyết mới trên da.',
+              'Bé lừ đừ, li bì, khó đánh thức, hoặc ngược lại vật vã, bứt rứt, quấy khóc khác thường.',
+              'Tay chân lạnh, da xanh tái hoặc nổi vân, vã mồ hôi.',
+              'Tiểu ít: số tã ướt ít hẳn so với mọi ngày.',
+              'Thở nhanh, thở mệt.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Chăm bé tại nhà khi bác sĩ cho theo dõi ở nhà',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé bú mẹ hoặc bú sữa thường xuyên hơn. Bé đã ăn dặm có thể uống thêm nước lọc hoặc oresol pha đúng hướng dẫn trên gói, chia nhiều lần, từng ngụm nhỏ.',
+              'Theo dõi cữ bú, số tã ướt, nhiệt độ và các dấu hiệu cảnh báo mỗi vài giờ, cả ban đêm. Ghi lại để đưa bác sĩ xem (có thể ghi trong Child Life).',
+              'Ở Việt Nam: Bệnh viện Nhi Trung ương khuyên tránh nước có ga và đồ ăn, đồ uống màu đỏ hoặc nâu đen, để ba mẹ dễ nhận ra nếu bé nôn ra máu hay đi ngoài phân đen.',
+              'Đi khám lại đúng hẹn, kể cả khi bé đã hết sốt; bác sĩ thường cho xét nghiệm máu nhiều lần để theo dõi.',
+              'Cho bé nằm màn cả ngày lẫn đêm khi đang ốm, để muỗi không đốt bé rồi truyền bệnh sang người khác trong nhà.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Thuốc: chỉ paracetamol, không tự điều trị',
+          },
+          {
+            type: 'paragraph',
+            text: 'WHO khuyên dùng paracetamol để giảm đau, hạ sốt và tránh ibuprofen, aspirin vì chúng làm tăng nguy cơ chảy máu. Bệnh viện Nhi Trung ương cũng nhấn mạnh không dùng ibuprofen hạ sốt cho trẻ bị sốt xuất huyết. Aspirin không bao giờ dùng cho trẻ dưới 16 tuổi. Hỏi bác sĩ hoặc dược sĩ liều paracetamol theo cân nặng và khoảng cách giữa các lần.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Không tự cho bé uống kháng sinh: sốt xuất huyết do virus, kháng sinh không có tác dụng.',
+              'Không tự truyền dịch, tiêm thuốc cho bé ở nhà hay ở nơi không đủ điều kiện theo dõi; bù dịch qua đường truyền phải do bác sĩ tính toán và theo dõi sát.',
+              'Không dùng thuốc không rõ nguồn gốc, thuốc nam, thuốc bắc, và không cạo gió cho bé; những cách này không chữa được bệnh và có thể làm chậm việc đi khám.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Phòng muỗi đốt cho bé',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cách bảo vệ bé tốt nhất là không để muỗi chạm vào da bé và không cho muỗi có chỗ đẻ trứng. Với bé nhỏ, màn, quần áo và lưới chắn là lớp bảo vệ chính.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé ngủ màn cả giấc ngày lẫn giấc đêm. Phủ màn hoặc lưới chống muỗi lên nôi, xe đẩy và địu khi ra ngoài.',
+              'Mặc cho bé áo dài tay, quần dài, tất mỏng bằng vải thoáng mát, để bé được che kín mà không bị nóng.',
+              'Lắp lưới chống muỗi ở cửa sổ, cửa ra vào; đóng cửa không có lưới vào lúc nhiều muỗi.',
+              'Mỗi tuần dành khoảng 10 phút diệt lăng quăng: đậy kín lu, khạp, bể chứa nước; thay nước bình hoa; lật úp chậu, xô; dọn chai lọ, vỏ dừa, lốp xe cũ và rác có thể đọng nước.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Thuốc chống muỗi bôi da: dùng từ khi nào?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Các cơ quan y tế không hoàn toàn giống nhau. Theo CDC (Mỹ), thuốc chống muỗi chứa DEET, picaridin hoặc IR3535 dùng được cho trẻ không giới hạn tuổi; sản phẩm chứa dầu khuynh diệp chanh (OLE) hoặc PMD không dùng cho trẻ dưới 3 tuổi. WHO cũng khuyên dùng DEET, picaridin hoặc IR3535. Bang Victoria (Úc) thận trọng hơn: bé dưới 12 tháng nên ở trong nhà khi nhiều muỗi, mặc đồ dài, dùng màn. Child Life theo cách thận trọng: trong năm đầu, bé dựa chủ yếu vào màn và quần áo, chỉ bôi thuốc chống muỗi khi thật cần.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Chọn sản phẩm có nhãn ghi rõ dùng được cho tuổi của bé; hỏi bác sĩ hoặc dược sĩ nếu bé còn nhỏ hoặc da nhạy cảm.',
+              'Người lớn bôi vào tay mình rồi xoa nhẹ lên vùng da hở của bé. Không bôi lên tay bé (bé hay mút tay, dụi mắt), quanh mắt, miệng, vết xước hay chỗ da đang kích ứng.',
+              'Chỉ bôi vừa đủ lên da hở hoặc mặt ngoài quần áo. Không dùng loại kết hợp kem chống nắng với chống muỗi.',
+              'Khi vào nhà, rửa sạch chỗ da đã bôi bằng xà phòng và nước.',
+              'Không để bé tự cầm, tự xịt thuốc chống muỗi; cất xa tầm tay trẻ. Permethrin chỉ dùng để tẩm quần áo, màn, không bôi lên da.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Mẹo nhỏ',
+            text: 'Đặt nhắc việc hằng tuần để cả nhà cùng đi một vòng đổ nước đọng: đĩa lót chậu cây, khay hứng nước, xô chậu, đồ chơi ngoài sân. Không có lăng quăng thì không có sốt xuất huyết.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé li bì, khó đánh thức hoặc vật vã, bứt rứt; tay chân lạnh, da tái hoặc nổi vân; đau bụng nhiều; nôn liên tục, không bú, không uống được; chảy máu chân răng, chảy máu cam, nôn ra máu, đi ngoài phân đen; tiểu rất ít; thở nhanh, thở mệt; co giật. Những dấu hiệu này hay xuất hiện khi bé vừa hạ sốt. Đừng chờ, gọi 115 ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé sốt cao từ ngày thứ 2 khi đang ở vùng có sốt xuất huyết hoặc vừa đi về từ vùng có dịch; có chấm đỏ, ban dưới da; bú kém, ít tã ướt; hoặc ba mẹ thấy lo. Bé dưới 3 tháng sốt từ 38 °C cần được khám ngay. Nếu bác sĩ đã cho theo dõi tại nhà, đi khám lại đúng hẹn kể cả khi bé đã hết sốt.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Dengue is a viral illness spread by Aedes mosquito bites, common in Việt Nam and many South-East Asian countries. It usually causes a high fever for 2–7 days; the dangerous phase often comes just as the fever starts to fall. Keep your child feeding and drinking, use only paracetamol for fever, never ibuprofen or aspirin on your own, and get medical help straight away if any warning sign appears.',
+          },
+          {
+            type: 'heading',
+            text: 'Why families in Việt Nam and South-East Asia need to know',
+          },
+          {
+            type: 'paragraph',
+            text: 'The dengue virus is spread by Aedes mosquitoes, which breed in standing water around the home and bite during the day as well as at night. Dengue is found in almost every province of Việt Nam and is common in Thailand, Singapore, Malaysia, Indonesia and the Philippines. Families living abroad who take their child home or travel in the region need the same protection as people who live there.',
+          },
+          {
+            type: 'paragraph',
+            text: "There is no specific medicine that cures dengue. Most people recover within 1–2 weeks, but some develop severe dengue with plasma leakage, shock or bleeding. Young children can't tell you where it hurts, so watch how your child feeds, plays and stays alert.",
+          },
+          {
+            type: 'heading',
+            text: 'The three phases of dengue',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Fever phase (usually 2–7 days): a sudden high fever, fussiness, poor feeding or eating, sometimes vomiting, a rash, tiny red spots under the skin or a mild nosebleed. Young children usually can't describe a headache or body aches the way adults do.",
+              'Critical phase (starts as the fever falls, usually lasts 24–48 hours): many children get better, but in some, plasma leaks out of the blood vessels and the illness can become severe very quickly, within hours. So no fever does not yet mean recovered.',
+              'Recovery phase: your child eats better, passes more urine and is more alert. Some get an itchy rash or mild peeling. Keep any follow-up appointments.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Warning signs: take your child to hospital now',
+          },
+          {
+            type: 'paragraph',
+            text: "According to WHO, the CDC (US) and Vietnam National Children's Hospital, the signs below need to be checked straight away, especially just after the fever has come down:",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Tummy pain: your child holds their tummy, pulls up their legs or cries when it is touched.',
+              'Repeated vomiting (the CDC uses 3 or more times in 24 hours), constant vomiting, or not feeding or drinking at all.',
+              'Bleeding gums, a nosebleed, vomiting blood, black or bloody poo, or many new tiny bleeding spots on the skin.',
+              'Your child is listless, very drowsy or hard to wake, or the opposite: agitated, restless or crying in an unusual way.',
+              'Cold hands and feet, pale or blotchy skin, cold sweats.',
+              'Passing little urine: far fewer wet diapers than usual.',
+              'Fast or laboured breathing.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Caring for your child at home when the doctor says it is safe',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Offer breast or formula feeds more often. Babies on solids can also have water or oral rehydration solution made up exactly as the packet says, in small sips, often.',
+              'Every few hours, including at night, check feeds, wet diapers, temperature and the warning signs. Write them down for the doctor (you can log them in Child Life).',
+              "In Việt Nam: Vietnam National Children's Hospital advises avoiding fizzy drinks and red or dark brown foods and drinks, so it is easier to spot vomited blood or black poo.",
+              'Go back to every follow-up appointment, even once the fever has gone; doctors often repeat blood tests to track the illness.',
+              "Keep your sick child under a net day and night, so mosquitoes can't bite them and pass the virus to others at home.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Medicines: paracetamol only, no self-treatment',
+          },
+          {
+            type: 'paragraph',
+            text: "WHO advises paracetamol for pain and fever and avoiding ibuprofen and aspirin, because they increase the risk of bleeding. Vietnam National Children's Hospital also stresses never using ibuprofen for fever in a child with dengue. Aspirin is never given to anyone under 16. Ask a doctor or pharmacist for the paracetamol dose for your child's weight and how far apart doses should be.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Don't give antibiotics on your own: dengue is caused by a virus, and antibiotics don't work against it.",
+              "Don't arrange drips or injections at home or anywhere without proper monitoring; fluids through a drip must be worked out and closely monitored by a doctor.",
+              "Don't use medicines of unknown origin or herbal remedies, and don't do coin rubbing (cạo gió); these don't treat dengue and can delay getting care.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Protecting your child from mosquito bites',
+          },
+          {
+            type: 'paragraph',
+            text: "The best protection is to keep mosquitoes off your child's skin and give them nowhere to breed. For young babies, nets, clothing and screens are the main line of defence.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Use a net for daytime naps as well as at night. Cover the cot, stroller and baby carrier with mosquito netting when you are out.',
+              'Dress your child in long sleeves, long trousers and thin socks made of breathable fabric, so they are covered without overheating.',
+              'Fit screens on windows and doors; keep unscreened doors closed when mosquitoes are around.',
+              'Spend about 10 minutes each week getting rid of mosquito larvae: cover water jars and tanks, change the water in vases, turn buckets and basins upside down, and clear away bottles, coconut shells, old tyres and rubbish that can hold water.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Repellents on the skin: from what age?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Health bodies do not fully agree. The CDC (US) says repellents containing DEET, picaridin or IR3535 can be used on children with no age restriction, while products with oil of lemon eucalyptus (OLE) or PMD should not be used under 3 years. WHO also recommends DEET, picaridin or IR3535. Victoria (Australia) is more cautious: babies under 12 months should stay indoors when mosquitoes are active, wear long clothing and use nets. Child Life follows the cautious approach: in the first year, babies rely mainly on nets and clothing, with repellent only when really needed.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Choose a product labelled as suitable for your child's age; ask a doctor or pharmacist if your baby is very young or has sensitive skin.",
+              "Put the repellent on your own hands first, then gently spread it on your child's exposed skin. Don't put it on their hands (they suck their hands and rub their eyes), around the eyes or mouth, or on cuts or irritated skin.",
+              "Use just enough to cover exposed skin or the outside of clothing. Don't use combined sunscreen and repellent products.",
+              'When you come indoors, wash the treated skin with soap and water.',
+              'Never let your child hold or spray repellent; store it out of reach. Permethrin is only for treating clothes and nets, never for the skin.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Tip',
+            text: 'Set a weekly reminder for the whole family to walk around the home and tip out standing water: plant saucers, drip trays, buckets and outdoor toys. No larvae, no dengue.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: "Your child is listless, hard to wake, agitated or restless; has cold hands and feet, pale or blotchy skin; bad tummy pain; keeps vomiting or can't feed or drink; bleeding gums, a nosebleed, vomits blood or has black poo; passes very little urine; breathes fast or with effort; or has a fit. These signs often appear just as the fever falls. Don't wait: call emergency services.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your child has had a high fever from day 2 while in an area with dengue, or has just come back from one; has red spots or a rash under the skin; feeds poorly or has fewer wet diapers; or you are worried. A baby under 3 months with 38 °C or more must be seen straight away. If the doctor has said to watch at home, go back as arranged even if the fever has gone.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'sốt xuất huyết',
+          'dengue',
+          'muỗi vằn',
+          'chống muỗi',
+          'ngủ màn',
+          'diệt lăng quăng',
+          'paracetamol',
+          'dấu hiệu cảnh báo',
+        ],
+        en: [
+          'dengue',
+          'dengue fever',
+          'Aedes mosquito',
+          'insect repellent',
+          'mosquito net',
+          'standing water',
+          'paracetamol',
+          'warning signs',
+        ],
+      },
+      relatedArticleIds: [
+        'art_fever_when_to_call',
+        'art_medicine_safety',
+        'art_diarrhoea_dehydration',
+        'art_heat_cold_safety',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'WHO — Dengue and severe dengue (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue',
+        },
+        {
+          label: 'CDC — Clinical signs and symptoms of dengue',
+          url: 'https://www.cdc.gov/dengue/hcp/clinical-signs/index.html',
+        },
+        {
+          label: 'CDC — Preventing mosquito bites',
+          url: 'https://www.cdc.gov/mosquitoes/prevention/index.html',
+        },
+        {
+          label:
+            'CDC Yellow Book — Mosquitoes, ticks and other arthropods (repellents and children)',
+          url: 'https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/mosquitoes-ticks-and-other-arthropods.html',
+        },
+        {
+          label: 'Victoria State Government (Australia) — Insect repellent',
+          url: 'https://www.vic.gov.au/insect-repellent',
+        },
+        {
+          label: 'Bệnh viện Nhi Trung ương — Chăm sóc trẻ bị sốt xuất huyết tại nhà',
+          url: 'https://benhviennhitrunguong.gov.vn/cham-soc-tre-bi-sot-xuat-huyet-tai-nha.html',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_thrush_cradle_cap',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: {
+        from: 0,
+        to: 26,
+      },
+      readingMinutes: 6,
+      cover: null,
+      title: {
+        vi: 'Tưa lưỡi và cứt trâu ở bé: phân biệt, chăm sóc và khi nào cần khám',
+        en: 'Oral thrush and cradle cap: how to tell, how to care, when to see a doctor',
+      },
+      summary: {
+        vi: 'Tưa lưỡi là nấm miệng, cần bác sĩ khám và kê thuốc; mẹ đang cho bú có thể cần chữa cùng lúc. Cứt trâu thường vô hại và tự hết: làm mềm vảy, gội nhẹ, chải mềm, không cạy.',
+        en: "Oral thrush is a yeast infection that needs a doctor to examine and prescribe; a breastfeeding mother may need treating too. Cradle cap is harmless and clears by itself: soften, wash gently, brush softly, don't pick.",
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Tưa lưỡi (nấm miệng) là những mảng trắng trong miệng bé, không lau đi được như cặn sữa. Bệnh do nấm Candida, cần bác sĩ khám và kê thuốc; nếu mẹ đang cho bú, cả mẹ và bé thường cần chữa cùng lúc. Cứt trâu (viêm da tiết bã) là vảy vàng, nhờn trên da đầu, vô hại và thường tự hết: làm mềm, gội nhẹ, chải mềm, không cạy.',
+          },
+          {
+            type: 'heading',
+            text: 'Tưa lưỡi là gì?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Nấm Candida vốn sống sẵn trong miệng. Khi niêm mạc miệng bị kích ứng hay trầy xước, nấm có thể phát triển quá mức và gây tưa. Bé nhỏ, bé ngậm núm vú giả hay núm bình lâu, hoặc vừa dùng kháng sinh dễ bị hơn. Tưa lưỡi hay gặp và thường không nguy hiểm, nhưng có thể làm bé khó chịu, quấy và bú kém.',
+          },
+          {
+            type: 'heading',
+            text: 'Tưa lưỡi hay cặn sữa?',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cặn sữa: lớp trắng mỏng, thường chỉ ở mặt lưỡi, lau nhẹ bằng gạc sạch thấm nước là hết, và tự nhạt đi sau cữ bú một lúc.',
+              'Tưa lưỡi: mảng trắng hoặc trắng xám như sữa đông, có thể ở lưỡi, lợi, vòm miệng, mặt trong má hoặc môi; lau nhẹ không đi, hoặc lau ra thì bên dưới đỏ, có thể rớm máu.',
+              'Dấu hiệu đi kèm: bé quấy khi bú, nhả vú, bỏ bú; có lớp trắng ở môi; hăm tã đỏ, bóng ở nếp da, có chấm đỏ nhỏ và khó khỏi (có thể là nấm ở vùng tã).',
+              'Chỉ lau thử thật nhẹ một lần để phân biệt. Không cố cạo, rơ mạnh cho sạch mảng trắng.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Điều trị: cần bác sĩ khám và kê đơn',
+          },
+          {
+            type: 'paragraph',
+            text: 'Tưa nhẹ đôi khi tự hết, nhưng Child Life khuyên cho bé đi khám khi thấy mảng trắng, nhất là bé dưới 4 tháng. NHS (Anh) cho biết gel bôi miệng bán tại nhà thuốc chỉ dành cho bé từ 4 tháng; bé nhỏ hơn cần bác sĩ khám và kê thuốc. Thuốc chống nấm dạng gel hoặc dạng nước phải chạm vào chỗ có tưa mới có tác dụng.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Dùng đúng thuốc, đúng số lần bác sĩ dặn; hỏi bác sĩ hoặc dược sĩ cách bôi và liều theo tuổi, cân nặng của bé.',
+              'Dùng đủ thời gian, kể cả khi mảng trắng đã hết; Hội Nhi khoa Canada khuyên dùng tiếp thêm 2 ngày sau khi hết.',
+              'Thuốc thường giúp đỡ sau vài ngày. Nếu sau khoảng 1 tuần không đỡ, hoặc bé bú kém, đưa bé đi khám lại.',
+              'Không tự dùng thuốc của người lớn, thuốc kê cho bé khác hay thuốc không rõ nguồn gốc.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Mẹ đang cho con bú: nấm ở đầu ti',
+          },
+          {
+            type: 'paragraph',
+            text: 'Nấm có thể truyền qua lại giữa miệng bé và đầu ti mẹ. Nghĩ đến nấm khi mẹ đột nhiên đau cả hai đầu ti hoặc hai bên ngực sau cữ bú, dù trước đó cho bú không đau; cơn đau có thể kéo dài đến một giờ sau mỗi cữ. Đầu ti có thể đỏ, hồng, nhạy cảm, quầng vú bong vảy. Nếu chỉ đau một bên, mẹ sốt, hoặc có mảng đỏ nóng trên một bên vú, nhiều khả năng là nguyên nhân khác như tắc tia sữa hay viêm vú, mẹ cần đi khám.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Theo NHS, nếu mẹ hoặc bé bị nấm, cả hai cần được chữa cùng lúc vì nấm dễ lây qua lại. Mẹ đi khám để được kê thuốc phù hợp cho đầu ti.',
+              'Mẹ vẫn cho con bú bình thường trong thời gian chữa.',
+              'Sữa vắt ra trong lúc đang chữa nên cho bé dùng luôn; NHS khuyên không trữ đông để dùng sau vì có thể làm nấm quay lại.',
+              'Rửa tay kỹ sau khi thay tã và sau khi bôi thuốc; dùng khăn riêng; thay miếng lót thấm sữa thường xuyên, chọn loại không có lớp nhựa; giặt áo ngực bằng nước nóng.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Vệ sinh bình sữa, núm vú giả và đồ chơi',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Tiệt trùng bình sữa và núm bình sau mỗi lần dùng; tiệt trùng núm vú giả thường xuyên.',
+              'Rửa sạch và tiệt trùng các bộ phận máy hút sữa chạm vào sữa, cùng đồ chơi bé hay ngậm.',
+              'NHS gợi ý thay núm bình và miếng bảo vệ đầu ti mới mỗi tuần để phòng nấm.',
+              'Không cho bé ngậm bình đi ngủ hay ngậm núm quá lâu; mút quá lâu làm niêm mạc miệng dễ bị kích ứng và nhiễm nấm hơn.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: nhiều gia đình có thói quen rơ lưỡi cho bé hằng ngày bằng khăn hoặc gạc quấn ngón tay chấm nước muối, mật ong, hoặc giã lá cây rồi bôi lên lưỡi. Ông bà làm vì muốn miệng cháu sạch, nhưng miệng bé không cần rơ mới sạch. Chà xát dễ làm xước niêm mạc, khiến nấm dễ bám hơn; muối và lá cây không chữa được nấm; còn mật ong không dùng cho trẻ dưới 12 tháng vì nguy cơ ngộ độc botulinum.',
+          },
+          {
+            type: 'heading',
+            text: 'Cứt trâu (viêm da tiết bã) là gì?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cứt trâu là những mảng vảy vàng hoặc trắng, nhờn, đóng thành lớp trên da đầu bé, đôi khi có ở mặt, sau tai, lông mày hoặc vùng tã. Đây là tình trạng vô hại, không do bẩn, không do dị ứng và không lây. Bé thường không ngứa, không đau. Phần lớn tự hết sau vài tuần đến vài tháng, và thường hết trước 1 tuổi.',
+          },
+          {
+            type: 'heading',
+            text: 'Chăm sóc cứt trâu tại nhà',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Làm mềm vảy: xoa nhẹ một lớp kem dưỡng ẩm không mùi, dầu dừa hoặc sáp dầu khoáng lên chỗ có vảy. Với vảy dày, AAP gợi ý để qua đêm rồi gội.',
+              'Chải nhẹ bằng bàn chải lông mềm hoặc lược mềm dành cho em bé để vảy bong ra, rồi gội bằng dầu gội dịu nhẹ dành cho em bé.',
+              'Gội đầu đều đặn, khoảng cách ngày. Không dùng xà phòng, dầu gội người lớn hay sản phẩm có hương liệu.',
+              'Không cạy, gỡ vảy bằng móng tay hay lược sắc: dễ trầy da và nhiễm trùng. Tóc có thể rụng theo vảy và sẽ mọc lại.',
+              'NHS khuyên không dùng dầu ô liu và dầu lạc (dầu đậu phộng) để làm mềm vảy.',
+              'Hỏi bác sĩ trước khi dùng dầu gội hay kem có thuốc.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: một số gia đình gỡ cứt trâu bằng móng tay, lược bí, hoặc gội, đắp nước lá cho bé. Cạy gỡ làm trầy da, còn nước lá có thể gây kích ứng da non của bé. Cứ kiên nhẫn làm mềm và chải nhẹ, vảy sẽ bong dần.',
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Mẹo nhỏ',
+            text: 'Bôi dầu hoặc kem làm mềm vảy một lúc trước giờ tắm, rồi chải nhẹ theo vòng tròn khi gội. Làm từng ít một qua nhiều ngày, không cần gỡ sạch trong một lần.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé bỏ bú hoàn toàn, rất ít tã ướt, môi miệng khô; li bì, lả mềm hoặc khó đánh thức; khóc yếu hoặc khóc thét không dỗ được; khó thở; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám khi',
+            text: 'Thấy mảng trắng trong miệng bé, nhất là bé dưới 4 tháng; bé quấy hoặc bú kém khi bú; tưa không đỡ sau khoảng 1 tuần dùng thuốc; mẹ đau đầu ti khi cho bú; hăm tã đỏ khó khỏi. Với cứt trâu: không đỡ sau vài tuần chăm sóc; lan ra nhiều vùng trên cơ thể; vảy chảy máu, chảy dịch, có mủ, sưng hoặc có mùi; hoặc bé có vẻ ngứa, đau.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "Oral thrush is white patches in your baby's mouth that don't wipe off the way milk does. It is caused by the yeast Candida and needs a doctor to examine and prescribe treatment; if you are breastfeeding, mother and baby usually need treating at the same time. Cradle cap (seborrhoeic dermatitis) is yellow, greasy scales on the scalp; it is harmless and usually clears by itself: soften, wash gently, brush softly, don't pick.",
+          },
+          {
+            type: 'heading',
+            text: 'What is oral thrush?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Candida yeast normally lives in the mouth. When the lining of the mouth is irritated or damaged, the yeast can overgrow and cause thrush. Young babies, babies who suck on a dummy or bottle teat for long periods, and babies who have recently had antibiotics are more likely to get it. Thrush is common and usually not serious, but it can make your baby uncomfortable, fussy and feed poorly.',
+          },
+          {
+            type: 'heading',
+            text: 'Thrush or milk residue?',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Milk residue: a thin white coating, usually only on the top of the tongue, that comes off with a gentle wipe of a clean damp gauze and fades a while after a feed.',
+              "Thrush: white or greyish patches like cottage cheese, on the tongue, gums, roof of the mouth, inside the cheeks or lips; they don't come off with a gentle wipe, or leave red, sometimes bleeding spots underneath.",
+              "Other signs: fussing at the breast or bottle, pulling off, refusing feeds; a white film on the lips; a red, shiny diaper rash in the skin folds with small red spots that won't clear (possibly yeast in the diaper area).",
+              "Wipe very gently just once to tell them apart. Don't scrape or rub hard to clean off white patches.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Treatment needs a doctor and a prescription',
+          },
+          {
+            type: 'paragraph',
+            text: 'Mild thrush sometimes clears on its own, but Child Life recommends having your baby seen when you notice white patches, especially under 4 months. The NHS (UK) says the mouth gel sold in pharmacies is only for babies from 4 months; younger babies need a doctor to examine them and prescribe. An antifungal gel or liquid only works if it touches the patches.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Use the right medicine as often as the doctor says; ask a doctor or pharmacist how to apply it and the dose for your baby's age and weight.",
+              'Use it for the full time, even after the patches have gone; the Canadian Paediatric Society advises continuing for 2 days after they clear.',
+              'Treatment usually helps within a few days. If there is no improvement after about a week, or your baby feeds poorly, go back to the doctor.',
+              "Don't use adult medicines, medicine prescribed for another child, or products of unknown origin.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Breastfeeding mothers: thrush on the nipples',
+          },
+          {
+            type: 'paragraph',
+            text: "Thrush can pass back and forth between your baby's mouth and your nipples. Think of thrush if you suddenly have pain in both nipples or both breasts after feeds when feeding did not hurt before; the pain can last up to an hour after each feed. Nipples may look red or pink, feel sensitive, or the areola may be flaky. If the pain is on one side only, you have a fever, or there is a hot red patch on one breast, another cause such as a blocked duct or mastitis is more likely, and you need to be seen.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'The NHS says that if either of you has thrush, you both need treating at the same time because it spreads easily between you. See a doctor for a suitable treatment for your nipples.',
+              'Keep breastfeeding as usual during treatment.',
+              'Give your baby any milk you express during treatment; the NHS advises not freezing it for later because that may bring the thrush back.',
+              'Wash your hands well after diaper changes and after applying treatment; use separate towels; change breast pads often and choose ones without a plastic backing; wash bras on a hot wash.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Cleaning bottles, dummies and toys',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Sterilise bottles and teats after every use, and sterilise dummies regularly.',
+              'Clean and sterilise breast pump parts that touch milk, and toys your baby puts in their mouth.',
+              'The NHS suggests replacing teats and nipple shields every week to help prevent thrush.',
+              "Don't let your baby fall asleep sucking a bottle or suck on a teat for very long; prolonged sucking irritates the lining of the mouth and makes thrush more likely.",
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: many families clean the baby's tongue every day (rơ lưỡi) with a cloth or gauze wrapped round a finger and dipped in salt water or honey, or rub crushed herbal leaves on the tongue. Grandparents do this to keep the baby's mouth clean, but a baby's mouth does not need scrubbing. Rubbing can damage the lining and help yeast take hold; salt and leaves don't treat thrush; and honey must not be given to babies under 12 months because of the risk of botulism.",
+          },
+          {
+            type: 'heading',
+            text: 'What is cradle cap (seborrhoeic dermatitis)?',
+          },
+          {
+            type: 'paragraph',
+            text: "Cradle cap is yellow or white, greasy scales that build up on a baby's scalp, sometimes also on the face, behind the ears, on the eyebrows or in the diaper area. It is harmless, not caused by poor hygiene or allergy, and not contagious. It usually isn't itchy or painful. Most cases clear by themselves within weeks to months, usually by 1 year.",
+          },
+          {
+            type: 'heading',
+            text: 'Caring for cradle cap at home',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Soften the scales: gently massage a fragrance-free moisturiser, coconut oil or petroleum jelly into the scaly areas. For thick scales, the AAP suggests leaving it on overnight, then washing.',
+              'Brush gently with a soft baby brush or baby comb to loosen the scales, then wash with a mild baby shampoo.',
+              "Wash the hair regularly, about every other day. Don't use soap, adult shampoo or fragranced products.",
+              "Don't pick or scrape the scales with fingernails or a fine-toothed comb: it can break the skin and cause infection. Some hair may come away with the scales and will grow back.",
+              'The NHS advises against olive oil and peanut oil for softening the scales.',
+              'Ask a doctor before using a medicated shampoo or cream.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: some families pick cradle cap off with a fingernail or a fine-toothed lice comb, or wash and compress the scalp with herbal leaf water. Picking breaks the skin, and leaf water can irritate a baby's delicate skin. Be patient: soften and brush gently, and the scales will come away bit by bit.",
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Tip',
+            text: 'Apply the oil or moisturiser a while before bath time, then brush gently in small circles while you wash. Do a little at a time over several days; there is no need to clear it all at once.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: "Your baby refuses all feeds, has very few wet diapers or a dry mouth; is listless, floppy or hard to wake; has a weak, high-pitched or inconsolable cry; struggles to breathe; or is under 3 months with a temperature of 38 °C or more. Don't wait: call emergency services.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor if',
+            text: "You see white patches in your baby's mouth, especially under 4 months; your baby fusses or feeds poorly; thrush hasn't improved after about a week of treatment; your nipples hurt when feeding; or a red diaper rash won't clear. For cradle cap: no improvement after a few weeks of care; it spreads over much of the body; the crusts bleed, ooze, have pus, look swollen or smell; or your baby seems itchy or in pain.",
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'tưa lưỡi',
+          'nấm miệng',
+          'cứt trâu',
+          'viêm da tiết bã',
+          'nấm đầu ti',
+          'rơ lưỡi',
+          'tiệt trùng bình sữa',
+          'cặn sữa',
+        ],
+        en: [
+          'oral thrush',
+          'mouth thrush',
+          'cradle cap',
+          'seborrhoeic dermatitis',
+          'nipple thrush',
+          'tongue cleaning',
+          'sterilising bottles',
+          'milk tongue',
+        ],
+      },
+      relatedArticleIds: [
+        'art_newborn_skin_rashes',
+        'art_breastfeeding_start',
+        'art_formula_bottle',
+        'art_diaper_rash',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'NHS — Oral thrush (mouth thrush)',
+          url: 'https://www.nhs.uk/conditions/oral-thrush-in-babies/',
+        },
+        {
+          label: 'NHS 111 Wales — Breastfeeding and thrush',
+          url: 'https://111.wales.nhs.uk/livewell/pregnancy/breastfeedingthrush/',
+        },
+        {
+          label: 'Canadian Paediatric Society (Caring for Kids) — Thrush',
+          url: 'https://caringforkids.cps.ca/handouts/pregnancy-and-babies/thrush',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Thrush and other Candida infections',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/infections/Pages/Thrush-and-Other-Candida-Infections.aspx',
+        },
+        {
+          label: 'NHS — Cradle cap',
+          url: 'https://www.nhs.uk/conditions/cradle-cap/',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — What is cradle cap?',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/bathing-skin-care/Pages/Cradle-Cap.aspx',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_ear_infection',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: {
+        from: 13,
+        to: 156,
+      },
+      readingMinutes: 6,
+      cover: null,
+      title: {
+        vi: 'Viêm tai giữa ở trẻ nhỏ: nhận biết, giảm đau và khi nào cần kháng sinh',
+        en: 'Middle ear infections in young children: signs, pain relief and when antibiotics help',
+      },
+      summary: {
+        vi: 'Viêm tai giữa hay đến sau cảm lạnh. Phần lớn tự khỏi trong vài ngày, và giảm đau là việc quan trọng nhất. Bác sĩ quyết định cho kháng sinh ngay hay theo dõi. Không nhỏ, nhét gì vào tai khi chưa có đơn.',
+        en: 'Middle ear infections often follow a cold. Most clear within a few days, and pain relief matters most. The doctor decides between antibiotics now or watchful waiting. Put nothing in the ear unless prescribed.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Viêm tai giữa là nhiễm trùng ở khoang phía sau màng nhĩ, rất hay gặp ở trẻ nhỏ và thường đến sau cảm lạnh. Phần lớn tự khỏi trong khoảng 3 ngày, có khi đến 1 tuần. Việc ba mẹ cần làm trước tiên là giảm đau cho bé. Kháng sinh cần cho một số bé, do bác sĩ quyết định sau khi soi tai. Không nhỏ, nhét gì vào tai bé khi chưa có đơn.',
+          },
+          {
+            type: 'heading',
+            text: 'Vì sao bé hay bị viêm tai sau cảm lạnh?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Tai giữa thông với họng qua một ống nhỏ gọi là vòi nhĩ. Ở trẻ nhỏ, ống này ngắn, hẹp và nằm ngang hơn ở người lớn. Khi bé cảm lạnh, niêm mạc mũi họng sưng làm vòi nhĩ bị tắc, dịch ứ lại sau màng nhĩ, và vi khuẩn hoặc virus dễ phát triển ở đó. Vì vậy, viêm tai thường xuất hiện vài ngày sau khi bé sổ mũi, ho.',
+          },
+          {
+            type: 'heading',
+            text: 'Dấu hiệu ở bé chưa biết nói',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Kéo, dụi, cào tai kèm quấy khóc. Lưu ý: nhiều bé kéo tai chỉ để tự dỗ, nên kéo tai mà không kèm dấu hiệu nào khác chưa chắc là viêm tai.',
+              'Sốt, quấy hơn hẳn, khó ngủ, hay thức giấc, khóc nhiều khi nằm.',
+              'Bỏ bú, biếng ăn.',
+              'Ít phản ứng với âm thanh, không quay về phía tiếng gọi như mọi khi.',
+              'Dịch vàng, mủ hoặc lẫn máu chảy ra từ tai.',
+              'Bé đã biết đi có thể mất thăng bằng, hay ngã hơn.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Giảm đau cho bé',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Thuốc giảm đau là phần chính của việc chăm bé viêm tai, kể cả khi bé có dùng kháng sinh. Hỏi bác sĩ hoặc dược sĩ liều theo cân nặng của bé.',
+              'Bé dưới 6 tháng: CDC (Mỹ) khuyên chỉ dùng paracetamol, và Hội Nhi khoa Canada khuyên không cho bé dưới 6 tháng dùng ibuprofen khi chưa hỏi bác sĩ. Bé lớn hơn chỉ dùng ibuprofen khi bé vẫn bú, uống được.',
+              'Không bao giờ dùng aspirin cho trẻ.',
+              'Đặt khăn ướt mát hoặc hơi ấm lên vành tai ngoài khoảng 20 phút có thể giúp bé dễ chịu (AAP). Thử nhiệt độ khăn trước, không để quá nóng hay quá lạnh.',
+              'Cho bé bú, uống đủ và nghỉ ngơi. Khi bú bình, bế bé đầu cao hơn bụng.',
+              'Không dùng thuốc thông mũi hay thuốc kháng histamin để chữa viêm tai: NHS cho biết không có bằng chứng giúp ích.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Kháng sinh ngay hay theo dõi?',
+          },
+          {
+            type: 'paragraph',
+            text: 'AAP cho biết khoảng 80% ca viêm tai ở trẻ tự khỏi không cần thuốc, còn kháng sinh có thể gây tác dụng phụ như tiêu chảy, phát ban. Vì vậy với ca nhẹ, bác sĩ có thể theo dõi 2–3 ngày, hoặc kê đơn nhưng dặn chỉ dùng nếu bé không đỡ. Theo hướng dẫn năm 2013 của AAP (Mỹ), bác sĩ thường cho kháng sinh ngay khi:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Bé dưới 6 tháng bị viêm tai giữa.',
+              'Bé 6–23 tháng bị viêm cả hai tai, hoặc có dịch chảy ra từ tai.',
+              'Bé ở bất kỳ tuổi nào có triệu chứng nặng: đau nhiều, sốt từ 39 °C, hoặc triệu chứng kéo dài hơn 2–3 ngày, nặng dần.',
+              'Bé có bệnh nền hoặc hệ miễn dịch yếu.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Bé từ 2 tuổi bị viêm tai nhẹ, không chảy dịch tai, thường có thể được theo dõi trước. Ở Anh, NHS khuyên bé dưới 12 tháng nghi viêm tai nên được bác sĩ khám, và bé dưới 12 tháng đau cả hai tai cần được khám gấp. Child Life theo cách thận trọng: bé dưới 2 tuổi nghi viêm tai nên được đi khám để bác sĩ soi tai và quyết định.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Nếu được kê kháng sinh: cho bé uống đủ liều, đủ ngày theo đơn, kể cả khi bé đã đỡ.',
+              'Nếu bác sĩ cho theo dõi: đưa bé khám lại khi sau 2–3 ngày không đỡ hoặc nặng hơn.',
+              'Không tự mua kháng sinh, không dùng lại thuốc thừa của lần trước hay của anh chị em.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Không nhỏ, nhét gì vào tai bé',
+          },
+          {
+            type: 'paragraph',
+            text: 'Chỉ nhỏ thuốc vào tai khi bác sĩ đã khám và kê đơn. Không dùng tăm bông, ngón tay hay vật gì để ngoáy tai bé (NHS). Nếu có dịch chảy ra, chỉ lau nhẹ phần ngoài vành tai bằng bông sạch. Giữ cho nước và dầu gội không vào tai khi tắm cho đến khi khỏi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: một số gia đình nhỏ dầu, nước tỏi, nước lá cây hoặc sữa mẹ vào tai bé để chữa đau tai. Những cách này chưa được chứng minh có tác dụng; nếu màng nhĩ đã thủng, chất lỏng có thể vào sâu bên trong và gây hại thêm. Hãy giảm đau cho bé và cho bé đi khám.',
+          },
+          {
+            type: 'heading',
+            text: 'Ứ dịch tai giữa và thính lực',
+          },
+          {
+            type: 'paragraph',
+            text: 'Sau một đợt viêm, dịch có thể đọng lại sau màng nhĩ vài tuần (ứ dịch tai giữa, còn gọi là “tai keo”). Bé thường không đau nhưng có thể nghe kém hơn một thời gian. AAP cho biết khoảng 90% trường hợp dịch tự hết trong 1–2 tháng, và tổn thương thính lực lâu dài rất hiếm. Nếu bé có vẻ nghe kém kéo dài, chậm nói, hoặc viêm tai nhiều lần, hãy cho bé khám lại để kiểm tra thính lực; một số bé cần đặt ống thông khí nhỏ qua màng nhĩ.',
+          },
+          {
+            type: 'heading',
+            text: 'Phòng viêm tai cho bé',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé bú mẹ: CDC khuyên bú mẹ hoàn toàn đến 6 tháng và tiếp tục ít nhất đến 12 tháng.',
+              'Không để bé hít khói thuốc lá, kể cả khói bám trên quần áo, đồ đạc.',
+              'Tiêm chủng đầy đủ, gồm vắc xin phế cầu và vắc xin cúm hằng năm theo tư vấn của bác sĩ.',
+              'Không cho bé bú bình khi nằm thẳng, không để bé ngậm bình đi ngủ.',
+              'Rửa tay thường xuyên để bé bớt cảm lạnh, nhất là khi bé đi nhà trẻ.',
+              'Núm vú giả: nếu bé hay bị viêm tai, Hội Nhi khoa Canada khuyên giảm dùng núm vú giả.',
+              'Chuyển dần từ bình sang cốc vào khoảng 1 tuổi.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Mẹo nhỏ',
+            text: 'Ghi lại giờ cho thuốc giảm đau, nhiệt độ và giấc ngủ của bé trong Child Life. Khi đi khám lại, bác sĩ dễ biết bé đã đỡ hay chưa và có cần đổi cách chữa không.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Vùng sau tai sưng, đỏ, đau, đẩy vành tai ra phía trước; bé cổ cứng, khó cúi đầu; li bì, khó đánh thức hoặc quấy khóc dữ dội không dỗ được; nôn nhiều lần; co giật; ban không mất màu khi ấn cốc; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 6 tháng nghi viêm tai; bé dưới 2 tuổi đau tai, nhất là đau cả hai tai; có dịch, mủ hoặc máu chảy ra từ tai; sốt từ 39 °C; đau nhiều dù đã dùng thuốc giảm đau; không đỡ sau 2–3 ngày, hoặc vẫn đau sau 2 ngày dùng kháng sinh; sốt quá 48 giờ; bé có vẻ nghe kém.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "A middle ear infection is an infection in the space behind the eardrum. It is very common in young children and often follows a cold. Most clear up within about 3 days, sometimes up to a week. The first thing to do is ease your child's pain. Some children need antibiotics; the doctor decides after looking in the ear. Put nothing in your child's ear unless it has been prescribed.",
+          },
+          {
+            type: 'heading',
+            text: 'Why do ear infections follow colds?',
+          },
+          {
+            type: 'paragraph',
+            text: 'The middle ear is connected to the throat by a small tube called the Eustachian tube. In young children this tube is shorter, narrower and more horizontal than in adults. During a cold, the swollen lining of the nose and throat blocks the tube, fluid builds up behind the eardrum, and bacteria or viruses can grow there. That is why ear infections often start a few days after a runny nose or cough.',
+          },
+          {
+            type: 'heading',
+            text: "Signs in a baby who can't talk yet",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Pulling, rubbing or scratching at the ear along with crying. Note: many babies tug their ears just to soothe themselves, so ear pulling on its own, with no other signs, is not necessarily an infection.',
+              'Fever, being much fussier than usual, trouble sleeping, waking often, crying more when lying down.',
+              'Refusing feeds or food.',
+              'Responding less to sounds, not turning to your voice as usual.',
+              'Yellow, pus-like or bloody fluid coming out of the ear.',
+              'A child who walks may lose their balance or fall more often.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Easing the pain',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Pain medicine is the main part of caring for an ear infection, even if your child also takes antibiotics. Ask a doctor or pharmacist for the dose for your child's weight.",
+              'Under 6 months: the CDC (US) advises paracetamol only, and the Canadian Paediatric Society says not to give ibuprofen to babies under 6 months without asking a doctor first. Older children should only have ibuprofen if they are feeding and drinking.',
+              'Never give aspirin to children.',
+              'A cool or slightly warm wet cloth on the outer ear for about 20 minutes may help (AAP). Test the temperature first so it is not too hot or too cold.',
+              'Keep up feeds and fluids and let your child rest. When bottle-feeding, hold your baby with their head higher than their tummy.',
+              "Don't use decongestants or antihistamines for an ear infection: the NHS says there is no evidence they help.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Antibiotics now or watchful waiting?',
+          },
+          {
+            type: 'paragraph',
+            text: "The AAP says about 80% of ear infections in children clear up without medicine, and antibiotics can cause side effects such as diarrhoea and rashes. So for mild cases, the doctor may suggest watching for 2–3 days, or give a prescription to use only if your child doesn't improve. Under the AAP (US) 2013 guideline, doctors usually give antibiotics straight away when:",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'A baby under 6 months has a middle ear infection.',
+              'A child aged 6–23 months has an infection in both ears, or fluid coming out of the ear.',
+              'A child of any age has severe symptoms: a lot of pain, a fever of 39 °C or more, or symptoms lasting more than 2–3 days and getting worse.',
+              'A child has a long-term condition or a weakened immune system.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Children aged 2 and over with a mild infection and no fluid coming from the ear can often be watched first. In the UK, the NHS advises that babies under 12 months with a suspected ear infection see a GP, and that babies under 12 months with earache in both ears are seen urgently. Child Life follows the more cautious approach: a child under 2 with a suspected ear infection should be seen so a doctor can look in the ear and decide.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'If antibiotics are prescribed: give the full course as directed, even when your child seems better.',
+              'If the doctor suggests watching: go back if your child is not better after 2–3 days or gets worse.',
+              "Don't buy antibiotics without a prescription or use leftovers from a previous illness or a sibling.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: "Put nothing in your child's ear",
+          },
+          {
+            type: 'paragraph',
+            text: "Only use ear drops when a doctor has examined your child and prescribed them. Don't use cotton buds, a finger or anything else to clean inside the ear (NHS). If fluid is coming out, gently wipe only the outer ear with clean cotton wool. Keep water and shampoo out of the ear when bathing until it has healed.",
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: some families put oil, garlic juice, herbal leaf water or breast milk in a child's ear to treat earache. None of these has been shown to work, and if the eardrum has a hole, liquid can get deeper inside and cause further harm. Ease the pain and have your child seen instead.",
+          },
+          {
+            type: 'heading',
+            text: 'Glue ear and hearing',
+          },
+          {
+            type: 'paragraph',
+            text: "After an infection, fluid can stay behind the eardrum for a few weeks (otitis media with effusion, also called glue ear). It usually doesn't hurt but can make hearing duller for a while. The AAP says the fluid clears by itself within 1–2 months in about 90% of children, and lasting hearing damage is very rare. If your child seems to hear poorly for a long time, is slow to talk, or has many ear infections, go back to have their hearing checked; some children need small ventilation tubes placed in the eardrum.",
+          },
+          {
+            type: 'heading',
+            text: 'Preventing ear infections',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Breastfeed if you can: the CDC advises breastfeeding only until 6 months and continuing for at least 12 months.',
+              'Keep your child away from tobacco smoke, including smoke left on clothes and furniture.',
+              'Keep vaccinations up to date, including the pneumococcal vaccine and a yearly flu vaccine as your doctor advises.',
+              "Don't bottle-feed your baby lying flat, and don't put them to bed with a bottle.",
+              'Wash hands often to cut down on colds, especially once your child starts nursery.',
+              'Dummies: if your child gets ear infections often, the Canadian Paediatric Society advises cutting down dummy use.',
+              'Move from bottle to cup around 1 year.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Tip',
+            text: 'Log pain medicine times, temperatures and sleep in Child Life. At the follow-up visit, the doctor can see whether your child is improving and whether treatment needs to change.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: "There is swelling, redness and pain behind the ear that pushes the ear forward; your child has a stiff neck and can't bend their head forward; is very drowsy, hard to wake or crying in a way you can't settle; vomits repeatedly; has a fit; has a rash that does not fade under a glass; or is under 3 months with 38 °C or more. Don't wait: call emergency services.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your baby is under 6 months with a possible ear infection; a child under 2 has earache, especially in both ears; fluid, pus or blood is coming from the ear; the fever is 39 °C or more; pain is severe despite pain medicine; there is no improvement after 2–3 days, or still pain after 2 days of antibiotics; the fever lasts more than 48 hours; or your child seems not to hear well.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'viêm tai giữa',
+          'đau tai',
+          'chảy mủ tai',
+          'kháng sinh',
+          'ứ dịch tai giữa',
+          'thính lực',
+          'kéo tai',
+          'vắc xin phế cầu',
+        ],
+        en: [
+          'middle ear infection',
+          'earache',
+          'ear discharge',
+          'antibiotics',
+          'glue ear',
+          'hearing',
+          'ear pulling',
+          'pneumococcal vaccine',
+        ],
+      },
+      relatedArticleIds: [
+        'art_cold_cough',
+        'art_fever_when_to_call',
+        'art_medicine_safety',
+        'art_after_vaccines',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Ear infections in children: information for parents',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/ear-nose-throat/Pages/Ear-Infection-Information.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Ear infection questions (symptom checker)',
+          url: 'https://www.healthychildren.org/English/tips-tools/symptom-checker/Pages/symptomviewer.aspx?symptom=Ear+Infection+Questions',
+        },
+        {
+          label:
+            'American Family Physician — Should children with acute otitis media routinely be treated with antibiotics? (summary of the AAP 2013 guideline)',
+          url: 'https://www.aafp.org/pubs/afp/issues/2013/1001/od2.html',
+        },
+        {
+          label: 'CDC — Ear infection basics',
+          url: 'https://www.cdc.gov/ear-infection/about/index.html',
+        },
+        {
+          label: 'NHS — Ear infections',
+          url: 'https://www.nhs.uk/conditions/ear-infections/',
+        },
+        {
+          label: 'Canadian Paediatric Society (Caring for Kids) — Ear infections',
+          url: 'https://caringforkids.cps.ca/handouts/health-conditions-and-treatments/ear_infections',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_eye_discharge',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: {
+        from: 0,
+        to: 156,
+      },
+      readingMinutes: 6,
+      cover: null,
+      title: {
+        vi: 'Mắt bé có ghèn, chảy nước mắt: tắc tuyến lệ, đau mắt đỏ và khi nào cần khám gấp',
+        en: 'Sticky and watery eyes: blocked tear ducts, conjunctivitis and when to get help fast',
+      },
+      summary: {
+        vi: 'Bé sơ sinh chảy nước mắt, có ghèn thường do tắc tuyến lệ và tự hết trước 1 tuổi. Đau mắt đỏ hay do virus. Mi sưng đỏ, bé dưới 1 tháng có mủ ở mắt, chấn thương mắt hay đồng tử trắng cần khám gấp.',
+        en: 'Watery, sticky eyes in newborns are usually a blocked tear duct that clears by age 1. Conjunctivitis is often viral. Red swollen lids, pus in a baby under 1 month, an eye injury or a white pupil need urgent care.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Phần lớn mắt bé có ghèn (dử mắt), chảy nước mắt là do tắc tuyến lệ hoặc đau mắt đỏ và không nguy hiểm. Lau mắt bằng nước đun sôi để nguội, rửa tay kỹ, và chỉ nhỏ thuốc khi bác sĩ kê đơn. Cần khám gấp khi mi mắt sưng đỏ, bé dưới 1 tháng có mắt đỏ nhiều mủ, mắt bị thương hay dính hoá chất, đồng tử có ánh trắng trên ảnh, hoặc mắt lệch kéo dài.',
+          },
+          {
+            type: 'heading',
+            text: 'Tắc tuyến lệ ở bé sơ sinh',
+          },
+          {
+            type: 'paragraph',
+            text: 'Nước mắt thường chảy qua một ống nhỏ ở góc trong mắt xuống mũi. Khoảng 1 trên 10 bé sơ sinh có ống này chưa thông (AAP), đôi khi cả hai bên. Bé chảy nước mắt liên tục kể cả khi không khóc, có ghèn trắng hoặc vàng ở góc mắt, mi dính khi ngủ dậy, nhưng lòng trắng mắt không đỏ và mi không sưng. Ba mẹ thường thấy rõ khi bé khoảng 1–2 tháng, lúc bé tiết nhiều nước mắt hơn. Hơn 9 trên 10 trường hợp tự thông trước 1 tuổi.',
+          },
+          {
+            type: 'heading',
+            text: 'Lau mắt và xoa túi lệ đúng cách',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Rửa tay trước và sau khi lau mắt cho bé.',
+              'Dùng bông gòn sạch thấm nước đun sôi để nguội, lau nhẹ từ góc trong (cạnh mũi) ra góc ngoài. Mỗi lần lau dùng một miếng bông mới, mỗi mắt một miếng riêng.',
+              'Nếu ghèn khô dính mi, đặt bông ẩm lên một lúc cho mềm rồi mới lau, không cạy.',
+              'Ghèn chuyển thành mủ nhiều, mi dính chặt hoặc mắt đỏ: có thể đã nhiễm trùng, cần cho bác sĩ khám để kê thuốc nhỏ mắt.',
+              'Bé quá 12 tháng vẫn chảy nước mắt: bác sĩ có thể giới thiệu khám chuyên khoa mắt; một số bé cần thủ thuật thông lệ đạo.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Xoa túi lệ không bắt buộc, và các hướng dẫn chưa giống nhau. AAP cho biết có bác sĩ khuyên làm, có bác sĩ không; nếu làm, dùng đầu tăm bông ấn nhẹ ở góc trong mắt, đẩy nhẹ lên trên, không quá một lần mỗi ngày. Một bệnh viện thuộc NHS (Anh) hướng dẫn dùng ngón tay út đã rửa sạch, ấn nhẹ giữa góc trong mắt và sống mũi rồi vuốt xuống phía miệng, tối đa 10 lần, ngày 2 lần. Child Life khuyên ba mẹ chỉ xoa khi bác sĩ đã chỉ trực tiếp, và làm đúng như bác sĩ hướng dẫn.',
+          },
+          {
+            type: 'heading',
+            text: 'Đau mắt đỏ (viêm kết mạc)',
+          },
+          {
+            type: 'paragraph',
+            text: 'Đau mắt đỏ làm lòng trắng mắt đỏ hoặc hồng, chảy nước mắt, cộm, có ghèn, thường ở cả hai mắt. Do virus: mắt hồng, chảy nhiều nước, ít mủ, hay đi kèm cảm lạnh; kháng sinh không có tác dụng và bệnh tự khỏi. Do vi khuẩn: nhiều mủ vàng hoặc xanh, mi dính chặt khi ngủ dậy và mủ lại xuất hiện trong ngày; bác sĩ có thể kê thuốc nhỏ mắt kháng sinh. Đau mắt đỏ do dị ứng thì không lây.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Lau sạch ghèn bằng nước đun sôi để nguội trước mỗi lần nhỏ thuốc, vì thuốc khó thấm qua mủ.',
+              'Mọi loại thuốc nhỏ mắt, kể cả thuốc kháng sinh, chỉ dùng khi bác sĩ khám và kê đơn. Không dùng thuốc nhỏ mắt của người lớn, của người khác hay lọ đã mở từ lần trước.',
+              'Rửa tay sau khi chạm vào mắt bé; dùng khăn mặt, gối riêng; giặt khăn, vỏ gối bằng nước nóng.',
+              'Đi nhà trẻ: NHS cho biết trẻ không cần nghỉ trừ khi mệt; AAP gợi ý bé đau mắt có mủ đi học lại khi mủ còn ít, sau 24 giờ nhỏ kháng sinh. Hãy hỏi thêm quy định của nhà trẻ.',
+              'Gọi bác sĩ nếu đã nhỏ thuốc hơn 3 ngày mà vẫn còn mủ.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Những điều không nên làm',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: một số gia đình nhỏ sữa mẹ, nước lá, nước muối tự pha vào mắt bé, hoặc đắp lá lên mắt. Các hướng dẫn mà bài này tham khảo chỉ khuyên lau mắt bằng nước đun sôi để nguội. Sữa mẹ và nước lá không phải thuốc nhỏ mắt, không chữa được nguyên nhân, có thể mang thêm vi khuẩn vào mắt và làm chậm việc đi khám. Cũng không tự nhỏ thuốc có corticoid hay thuốc không rõ nguồn gốc cho bé.',
+          },
+          {
+            type: 'heading',
+            text: 'Những dấu hiệu cần khám gấp',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Mi mắt sưng đỏ, nóng, đau, thường ở một bên, có thể kèm sốt: có thể là nhiễm trùng mô quanh mắt, cần khám ngay.',
+              'Bé dưới 1 tháng, nhất là 2 tuần đầu sau sinh, có mắt đỏ, nhiều mủ hoặc mi sưng. NHS khuyên bé dưới 30 ngày tuổi có mắt đỏ, có ghèn cần được khám gấp, vì nhiễm trùng mắt mắc phải lúc sinh có thể ảnh hưởng đến mắt nếu chữa chậm.',
+              'Mắt bị va đập, trầy xước, có dị vật hoặc dính hoá chất, vôi, chất tẩy rửa: làm theo mục Sơ cứu trẻ em › Tổn thương ở mắt trong Child Life, rồi đưa bé đi khám ngay.',
+              'Đồng tử (con ngươi) có ánh trắng thay vì ánh đỏ trên ảnh chụp có đèn flash, hoặc thấy được khi nhìn trong ánh sáng yếu. Hiếm gặp, nhưng có thể là dấu hiệu của u nguyên bào võng mạc; NHS khuyên đặt lịch khám gấp.',
+              'Mắt lệch (lác): bé dưới 3 tháng thỉnh thoảng lệch mắt là thường gặp. Mắt lệch liên tục ở bất kỳ tuổi nào, hoặc vẫn lúc lệch lúc không sau 3 tháng tuổi, cần cho bé khám mắt; chữa sớm giúp phòng nhược thị.',
+              'Bé đau mắt nhiều, sợ ánh sáng, nhìn mờ, lòng đen (giác mạc) bị đục, hoặc mắt rất đỏ.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Mẹo nhỏ',
+            text: 'Đun sôi nước rồi để nguội trong cốc có nắp, dùng trong ngày. Chuẩn bị sẵn bông gòn sạch và một túi nhỏ để bỏ ngay bông đã dùng, tránh vương ghèn mủ ra gối, đồ chơi của bé.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Mắt dính hoá chất, vôi, chất tẩy rửa (xối rửa ngay theo mục Sơ cứu trẻ em › Tổn thương ở mắt); mắt bị vật sắc đâm, chảy máu hoặc biến dạng; mi mắt sưng đỏ kèm sốt cao, bé lừ đừ, li bì; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 1 tháng có mắt đỏ, có mủ hoặc mi sưng; mi mắt đỏ, sưng; có cục đỏ ở góc trong mắt; mắt đau, sợ ánh sáng, nhìn mờ, lòng đen đục; mủ nhiều; đã nhỏ thuốc 3 ngày vẫn còn mủ. Đặt lịch khám mắt sớm khi thấy ánh trắng ở đồng tử hoặc mắt lệch kéo dài.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Most sticky, watery eyes in babies are caused by a blocked tear duct or conjunctivitis and are not serious. Clean the eyes with cooled boiled water, wash your hands well, and only use eye drops a doctor has prescribed. Get urgent help for red swollen eyelids, a baby under 1 month with a red eye and a lot of pus, an eye injury or chemical in the eye, a white glow in the pupil in photos, or an eye that keeps turning.',
+          },
+          {
+            type: 'heading',
+            text: 'Blocked tear ducts in newborns',
+          },
+          {
+            type: 'paragraph',
+            text: "Tears normally drain through a small duct at the inner corner of the eye into the nose. In about 1 in 10 newborns this duct is not fully open (AAP), sometimes on both sides. The eye waters all the time, even when your baby isn't crying, there is white or yellow sticky discharge in the corner and the lids stick together after sleep, but the white of the eye is not red and the lids are not swollen. Parents often notice it at 1–2 months, when babies make more tears. More than 9 in 10 open by themselves before age 1.",
+          },
+          {
+            type: 'heading',
+            text: 'Cleaning the eye and massaging the tear sac',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Wash your hands before and after cleaning your baby's eyes.",
+              'Dip clean cotton wool in cooled boiled water and wipe gently from the inner corner (by the nose) outwards. Use a fresh piece for each wipe and a separate piece for each eye.',
+              "If dried discharge is stuck to the lashes, hold a damp piece on it for a moment to soften it before wiping; don't pick it off.",
+              'If the discharge turns to a lot of pus, the lids are stuck shut or the eye is red, it may be infected: have a doctor check and prescribe drops.',
+              'Still watering after 12 months: the doctor may refer your child to an eye specialist; some children need a procedure to open the duct.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: "Massaging the tear sac is optional, and guidance differs. The AAP says some doctors recommend it and others don't; if you do it, use a cotton bud to press gently at the inner corner of the eye, pushing slightly upwards, no more than once a day. One NHS hospital (UK) describes using a clean little finger to press gently between the inner corner of the eye and the bridge of the nose, then sliding it down towards the mouth, up to 10 strokes twice a day. Child Life suggests only massaging once a doctor has shown you how, and doing it exactly as they showed you.",
+          },
+          {
+            type: 'heading',
+            text: 'Conjunctivitis (pink eye)',
+          },
+          {
+            type: 'paragraph',
+            text: "Conjunctivitis makes the white of the eye red or pink, watery, gritty and sticky, usually in both eyes. Viral: pink, very watery, little pus, often with a cold; antibiotics don't help and it gets better by itself. Bacterial: lots of yellow or green pus, lids glued shut after sleep and pus that comes back during the day; the doctor may prescribe antibiotic eye drops. Allergic conjunctivitis is not contagious.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Clean away the discharge with cooled boiled water before each dose of drops, because drops don't work well through pus.",
+              "Use any eye drops, including antibiotic drops, only when a doctor has examined your child and prescribed them. Don't use adult eye drops, someone else's, or a bottle opened during an earlier illness.",
+              "Wash your hands after touching your child's eyes; use separate face cloths and pillows; wash towels and pillowcases on a hot wash.",
+              "Nursery: the NHS says children don't need to stay away unless they feel very unwell; the AAP suggests a child with pus can go back once there is only a little pus, after 24 hours of antibiotic drops. Check your nursery's own rules too.",
+              'Call the doctor if there is still pus after more than 3 days of drops.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'What not to do',
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: some families put breast milk, herbal leaf water or homemade salt water in a baby's eye, or place leaves over the eye. The guidance this article follows only advises cleaning with cooled boiled water. Breast milk and leaf water are not eye medicine, don't treat the cause, can bring more germs into the eye and can delay getting care. Also don't use steroid drops or eye drops of unknown origin on your child.",
+          },
+          {
+            type: 'heading',
+            text: 'Signs that need urgent care',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Red, swollen, hot, painful eyelids, usually on one side, possibly with fever: this may be an infection of the tissue around the eye and needs to be seen now.',
+              'A baby under 1 month, especially in the first 2 weeks after birth, with a red eye, a lot of pus or swollen lids. The NHS advises that a baby under 30 days old with red, sticky eyes is seen urgently, because an eye infection picked up at birth can affect the eye if treated late.',
+              'An eye that has been hit, scratched, has something in it, or has been splashed with chemicals, lime or cleaning products: follow the Sơ cứu trẻ em (First aid) › Eye injury guide in Child Life, then get your child seen straight away.',
+              'A white glow instead of a red reflection in the pupil in flash photos, or seen in dim light. This is rare but can be a sign of retinoblastoma; the NHS advises asking for an urgent appointment.',
+              'A turning eye (squint): an eye that wanders now and then is common under 3 months. An eye that turns all the time at any age, or still comes and goes after 3 months, needs an eye check; early treatment helps prevent a lazy eye.',
+              'Your child has a lot of eye pain, is bothered by light, has blurred vision, a cloudy cornea (the clear front of the eye), or a very red eye.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Tip',
+            text: "Boil water and let it cool in a covered cup to use that day. Keep clean cotton wool ready and a small bag to throw used pieces away straight away, so discharge doesn't end up on your baby's pillow or toys.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: "A chemical, lime or cleaning product gets in the eye (rinse straight away as in Sơ cứu trẻ em (First aid) › Eye injury); the eye is pierced by something sharp, is bleeding or looks misshapen; red swollen eyelids come with a high fever or your child is listless or very drowsy; or a baby under 3 months has 38 °C or more. Don't wait: call emergency services.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'A baby under 1 month has a red eye, pus or swollen lids; the eyelids are red and swollen; there is a red lump at the inner corner of the eye; the eye hurts, light bothers your child, vision is blurred or the cornea looks cloudy; there is a lot of pus; or there is still pus after 3 days of drops. Book an eye check soon if you notice a white pupil or an eye that keeps turning.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'ghèn mắt',
+          'dử mắt',
+          'chảy nước mắt',
+          'tắc tuyến lệ',
+          'đau mắt đỏ',
+          'viêm kết mạc',
+          'mắt lác',
+          'đồng tử trắng',
+        ],
+        en: [
+          'sticky eye',
+          'eye discharge',
+          'watery eye',
+          'blocked tear duct',
+          'pink eye',
+          'conjunctivitis',
+          'squint',
+          'white pupil',
+        ],
+      },
+      relatedArticleIds: [
+        'art_cold_cough',
+        'art_fever_when_to_call',
+        'art_medicine_safety',
+        'art_home_safety_falls',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Tear duct, blocked (symptom checker)',
+          url: 'https://www.healthychildren.org/English/tips-tools/symptom-checker/Pages/symptomviewer.aspx?symptom=Tear+Duct+-+Blocked',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Eye, pus or discharge (symptom checker)',
+          url: 'https://www.healthychildren.org/English/tips-tools/symptom-checker/Pages/symptomviewer.aspx?symptom=Eye+-+Pus+or+Discharge',
+        },
+        {
+          label: 'Hull University Teaching Hospitals NHS Trust — Blocked tear ducts in babies',
+          url: 'https://www.hey.nhs.uk/patient-leaflet/blocked-tear-ducts-in-babies/',
+        },
+        {
+          label: 'NHS — Conjunctivitis',
+          url: 'https://www.nhs.uk/conditions/conjunctivitis/',
+        },
+        {
+          label: 'NHS — Symptoms of retinoblastoma',
+          url: 'https://www.nhs.uk/conditions/retinoblastoma/symptoms/',
+        },
+        {
+          label: 'NHS — Squint',
+          url: 'https://www.nhs.uk/conditions/squint/',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_starting_childcare',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: {
+        from: 26,
+        to: 156,
+      },
+      readingMinutes: 7,
+      cover: null,
+      title: {
+        vi: 'Bé đi nhà trẻ hoặc có người chăm mới: chọn nơi gửi, làm quen và ốm vặt',
+        en: 'Starting nursery or a new carer: choosing, settling in and the first colds',
+      },
+      summary: {
+        vi: 'Chọn nơi gửi an toàn, cho bé làm quen dần, chào tạm biệt ngắn gọn và đón đúng hẹn. Vài tháng đầu bé hay ốm vặt; cho bé ở nhà khi sốt, nôn hoặc tiêu chảy.',
+        en: 'Choose a safe setting, settle your child in gradually, keep goodbyes short and pick up on time. Expect lots of colds at first; keep your child home with a fever, vomiting or diarrhoea.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Chọn nơi có ít trẻ trên mỗi người chăm, cho bé ngủ nằm ngửa, giữ vệ sinh tốt và có quy định rõ về ốm và dị ứng. Cho bé làm quen dần, luôn chào tạm biệt và quay lại đúng hẹn. Bé khóc khi chia tay là bình thường. Vài tháng đầu bé hay ốm vặt; cho bé ở nhà khi sốt, nôn hoặc tiêu chảy.',
+          },
+          {
+            type: 'heading',
+            text: 'Chọn nơi gửi: nên hỏi những gì',
+          },
+          {
+            type: 'paragraph',
+            text: 'Dù là nhà trẻ, nhóm trẻ gia đình, người giúp việc hay ông bà, ba mẹ nên đến xem vào giờ đang trông trẻ, quan sát cách người chăm nói chuyện, ôm ấp và để trẻ chơi. Hội Nhi khoa Canada khuyên hỏi xem cơ sở có được cấp phép không, ba mẹ có được ghé thăm bất ngờ không, và nói chuyện với phụ huynh đang gửi con ở đó.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Số trẻ trên mỗi người chăm: AAP (Mỹ) khuyên mỗi người chăm tối đa 3 bé dưới 12 tháng, nhóm không quá 6 bé; với bé 13–35 tháng, tối đa 4 bé cho mỗi người, nhóm không quá 8 bé. Quy định mỗi nơi khác nhau; càng ít trẻ trên một người càng tốt.',
+              'Ngủ an toàn: bé dưới 1 tuổi được đặt nằm ngửa ở mọi giấc, trên mặt phẳng chắc, không gối, chăn hay thú bông, không ngủ trong ghế ngồi, xe đẩy hay địu. Luôn có người trông, kể cả lúc trẻ ngủ.',
+              'Vệ sinh: người chăm rửa tay sau khi thay tã, lau mũi và trước khi cho ăn; chỗ thay tã tách khỏi chỗ chuẩn bị đồ ăn; đồ chơi được rửa thường xuyên.',
+              'Khi trẻ ốm: có quy định bằng văn bản về khi nào trẻ phải ở nhà và cách báo cho ba mẹ; chỉ cho trẻ dùng thuốc khi có hướng dẫn rõ ràng, và ghi lại giờ cho thuốc.',
+              'Dị ứng và bệnh mạn tính: hỏi cách họ tránh thực phẩm bé bị dị ứng, ai biết dùng thuốc cấp cứu nếu bé được bác sĩ kê, và có kế hoạch xử trí bằng văn bản không.',
+              'An toàn: người chăm được học sơ cứu và hồi sức tim phổi cho trẻ; chỉ người lớn đã đăng ký mới được đón bé; nơi trông trẻ không có khói thuốc, kể cả thuốc lá điện tử.',
+              'Người chăm ổn định: hỏi người chăm làm ở đây bao lâu và ai thay khi họ nghỉ. Trẻ nhỏ gắn bó tốt hơn với một vài người quen thuộc.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: nhà trẻ, trường mầm non công lập, dân lập và tư thục cần được chính quyền cấp xã, phường cho phép thành lập và cho phép hoạt động giáo dục. Ba mẹ có thể đề nghị xem quyết định này, hoặc hỏi Ủy ban nhân dân xã, phường nơi cơ sở đặt địa điểm. Với người trông trẻ tại nhà, hãy tìm hiểu kỹ như với một cơ sở: kinh nghiệm, người giới thiệu, cách cho bé ngủ và cho bé ăn.',
+          },
+          {
+            type: 'heading',
+            text: 'Làm quen dần, chào tạm biệt rõ ràng',
+          },
+          {
+            type: 'paragraph',
+            text: 'Hội Nhi khoa Canada khuyên chuyển tiếp từ từ để nơi mới trở nên quen thuộc trước ngày đầu tiên ở cả ngày, và chuẩn bị tinh thần rằng bé cần vài ngày đến vài tuần để thích nghi.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Những ngày đầu: ở lại cùng bé một lúc, sau đó để bé lại một thời gian ngắn, rồi tăng dần. Nếu được, cho bé bắt đầu đi trước khi ba mẹ đi làm lại một, hai tuần.',
+              'Mang theo một món đồ quen từ nhà, như khăn nhỏ hay đồ chơi, nếu nơi gửi cho phép. Với bé dưới 1 tuổi, không để đồ này trong chỗ ngủ.',
+              'Giữ một nghi thức tạm biệt ngắn, giống nhau mỗi ngày: ôm, hôn, vẫy tay và nói khi nào ba mẹ quay lại, ví dụ “Ngủ trưa dậy, ăn chiều xong là mẹ đón”.',
+              'Luôn chào trước khi đi, đừng lén đi lúc bé không để ý. Lén đi có thể khiến bé hoảng hơn và khó tin tưởng hơn ở những lần sau.',
+              'Chào xong thì đi, đừng quay lại nhiều lần. Phần lớn trẻ nín sau khi ba mẹ đi ít phút; ba mẹ có thể nhắn hỏi người chăm.',
+              'Đón đúng giờ, rồi dành thời gian âu yếm, chơi cùng bé khi về nhà. Hỏi người chăm về ngày của bé: ăn, ngủ, chơi và tâm trạng.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Bé khóc khi chia tay là bình thường',
+            text: 'Từ khoảng 6–8 tháng đến 2 tuổi, nhiều bé sợ xa ba mẹ và dè chừng người lạ. Đây là dấu hiệu bé gắn bó với ba mẹ, không phải ba mẹ làm sai. Nếu sau vài tuần bé vẫn rất sợ hãi khi đến nơi gửi, ăn ngủ kém kéo dài, hoặc sợ một người cụ thể, hãy nói chuyện với người chăm và cân nhắc lại lựa chọn.',
+          },
+          {
+            type: 'heading',
+            text: 'Thông tin cần giao cho người chăm',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Sổ tiêm chủng: cho bé tiêm đủ mũi và đúng hẹn trước khi đi nhà trẻ. Tiêm chủng là cách tốt nhất bảo vệ bé khỏi các bệnh dễ lây như sởi, thuỷ đậu và cúm.',
+              'Nếp sinh hoạt: tên gọi ở nhà, giờ ngủ và cách dỗ ngủ, giờ ăn, lượng sữa, cách hâm sữa mẹ trữ, món bé chưa ăn hoặc không ăn được.',
+              'Sức khoẻ: dị ứng, bệnh mạn tính, thuốc đang dùng, và kế hoạch xử trí cấp cứu do bác sĩ viết nếu có.',
+              'Liên lạc: số điện thoại của ba mẹ và hai người lớn khác, phòng khám hoặc bác sĩ của bé, và danh sách những người được phép đón bé.',
+              'Đồ dùng: quần áo dự phòng, tã, khăn, bình sữa hoặc cốc, tất cả ghi tên bé.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Vài tháng đầu: bé ốm vặt nhiều hơn',
+          },
+          {
+            type: 'paragraph',
+            text: 'Theo Hội Nhi khoa Canada, phần lớn trẻ nhỏ bị cảm lạnh 8–10 lần mỗi năm, và trẻ ít ốm dần khi lớn hơn. Khi mới đi nhà trẻ, bé gặp nhiều virus mới nên có thể ốm nối tiếp nhau trong mùa đầu. Rửa tay cho bé và cả nhà khi đón bé về, tiêm chủng đủ và cho bé ngủ đủ giúp hạn chế lây bệnh.',
+          },
+          {
+            type: 'heading',
+            text: 'Khi nào nên cho bé ở nhà',
+          },
+          {
+            type: 'paragraph',
+            text: 'Các tổ chức có mốc hơi khác nhau. Bài này theo cách thận trọng hơn, kết hợp hướng dẫn của AAP (Mỹ) và NHS (Anh). Luôn làm theo cả quy định riêng của nơi gửi trẻ.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Sốt: cho bé ở nhà đến khi đã hết sốt ít nhất 24 giờ mà không cần dùng thuốc hạ sốt (AAP). Đừng cho thuốc hạ sốt để bé đi học được.',
+              'Nôn hoặc tiêu chảy: cho bé ở nhà đến khi đã hết nôn và tiêu chảy ít nhất 48 giờ (NHS). Mốc này chặt hơn mốc của AAP.',
+              'Phát ban kèm sốt hoặc bé khác thường: cho bé ở nhà đến khi được bác sĩ khám và loại trừ bệnh lây. Ban không mất màu khi ấn cốc thuỷ tinh lên cần đi cấp cứu ngay.',
+              'Bé mệt, quấy nhiều, thở khó hoặc không thể chơi, sinh hoạt như bình thường, dù không sốt.',
+              'Thuỷ đậu: ở nhà đến khi tất cả nốt đã đóng vảy. Vết loét da chảy dịch không che kín được, và các bệnh lây khác đã được chẩn đoán: hỏi bác sĩ và nơi gửi trẻ khi nào bé đi lại được.',
+              'Sổ mũi, ho nhẹ, không sốt và bé vẫn chơi được: theo AAP và NHS, thường không cần nghỉ.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Lên kế hoạch cho ngày bé ốm',
+            text: 'Bé đi nhà trẻ sẽ có những ngày phải nghỉ. Hãy tính trước ai trông bé khi bé ốm, để không phải gửi bé khi chưa khoẻ.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Gọi 115 hoặc đến cấp cứu ngay khi bé khó thở, tím tái, li bì khó đánh thức, co giật, hoặc có ban không mất màu khi ấn cốc. Đưa bé đi khám trong ngày khi bé sốt từ 5 ngày trở lên, ăn uống kém, ít tã ướt, nôn nhiều; khi bé ốm nối tiếp mà ngày càng mệt hơn; hoặc khi bé thay đổi rõ sau khi có người chăm mới, như sợ hãi một người cụ thể, thu mình, có vết bầm hay vết thương không rõ lý do.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Choose a setting with few children per carer, back-to-sleep for babies, good hygiene and clear rules on illness and allergies. Settle your child in gradually, always say goodbye and come back when you said you would. Crying at drop-off is normal. Expect lots of minor illnesses in the first months; keep your child home with a fever, vomiting or diarrhoea.',
+          },
+          {
+            type: 'heading',
+            text: 'Choosing care: what to ask',
+          },
+          {
+            type: 'paragraph',
+            text: 'Whether it is a nursery, a home-based carer, a nanny or grandparents, visit while children are being cared for and watch how the carers talk to, comfort and play with them. The Canadian Paediatric Society suggests asking whether the setting is licensed and whether you can drop in unannounced, and talking to parents whose children already go there.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Children per carer: the AAP (US) recommends no more than 3 babies under 12 months per carer, in groups of up to 6; for 13–35 months, no more than 4 per carer, in groups of up to 8. Rules differ by country; the fewer children per adult, the better.',
+              'Safe sleep: babies under 1 are put down on their back for every sleep, on a firm flat surface with no pillows, blankets or soft toys, and not left to sleep in seats, buggies or slings. Children are supervised at all times, including while asleep.',
+              'Hygiene: carers wash their hands after nappy changes and wiping noses and before handling food; the changing area is separate from where food is prepared; toys are cleaned regularly.',
+              'Illness: there is a written policy on when children must stay home and how parents are contacted; medicine is only given with clear written instructions, and the time is recorded.',
+              'Allergies and long-term conditions: ask how they keep your child away from foods they are allergic to, who can give emergency medicine if your child has been prescribed it, and whether there is a written action plan.',
+              'Safety: carers are trained in first aid and child CPR; only registered adults can collect your child; the setting is smoke-free and vape-free.',
+              'Stable carers: ask how long staff have been there and who covers when they are away. Young children settle best with a few familiar people.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: public and private nurseries and kindergartens need permission from the commune or ward authorities to be set up and to provide care and education. You can ask to see this decision, or check with the local commune or ward People's Committee. With a carer who looks after children at home, check just as carefully: experience, references, and how they handle sleep and feeding.",
+          },
+          {
+            type: 'heading',
+            text: 'Settle in gradually, say a clear goodbye',
+          },
+          {
+            type: 'paragraph',
+            text: 'The Canadian Paediatric Society advises a gradual start so the new place feels familiar before the first full day, and to expect a settling-in period of days or weeks.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'The first days: stay with your child for a while, then leave them for a short time, and build up gradually. If you can, start a week or two before you go back to work.',
+              'Bring a familiar comforter from home, such as a small cloth or toy, if the setting allows. For babies under 1, keep it out of the cot.',
+              "Keep a short goodbye ritual that is the same every day: a hug, a kiss, a wave, and when you will be back, such as “After your nap and snack, I'll come and get you”.",
+              "Always say goodbye; don't slip away while your child isn't looking. Sneaking off can make children more upset and less trusting next time.",
+              "Once you have said goodbye, leave; don't keep coming back. Most children calm down a few minutes after their parent goes, and you can message the carer to check.",
+              "Pick up on time, then make time for cuddles and play at home. Ask the carer about your child's day: eating, sleeping, play and mood.",
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Crying at goodbye is normal',
+            text: 'From around 6–8 months to 2 years, many children fear being apart from their parents and are wary of strangers. It is a sign of a healthy bond, not something you did wrong. If after a few weeks your child is still very frightened of going, is eating or sleeping poorly, or fears one particular person, talk to the carer and think again about the arrangement.',
+          },
+          {
+            type: 'heading',
+            text: 'Information to hand over to the carer',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Vaccination record: make sure your child's vaccines are up to date before starting. Vaccines are the best protection against easily spread illnesses such as measles, chickenpox and flu.",
+              "Daily routine: the name your child is called at home, nap times and how they settle, mealtimes, milk amounts, how to warm stored breast milk, and foods your child hasn't had yet or can't eat.",
+              "Health: allergies, long-term conditions, current medicines, and any written emergency plan from your child's doctor.",
+              "Contacts: phone numbers for both parents and two other adults, your child's clinic or doctor, and a list of who may collect your child.",
+              "Supplies: spare clothes, nappies, cloths, and bottles or cups, all labelled with your child's name.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'The first months: more minor illnesses',
+          },
+          {
+            type: 'paragraph',
+            text: 'According to the Canadian Paediatric Society, most young children have 8–10 colds a year, and they get ill less often as they grow. When children start nursery they meet many new viruses, so one illness may follow another in the first season. Washing hands for your child and the whole family after pick-up, keeping vaccines up to date and good sleep all help to limit the spread.',
+          },
+          {
+            type: 'heading',
+            text: 'When to keep your child at home',
+          },
+          {
+            type: 'paragraph',
+            text: "Organisations set slightly different rules. This article follows the more cautious option, combining AAP (US) and NHS (UK) advice. Always follow your setting's own policy as well.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Fever: keep your child home until they have had no fever for at least 24 hours without fever medicine (AAP). Don't give fever medicine so they can go in.",
+              'Vomiting or diarrhoea: keep your child home until 48 hours after the last episode (NHS). This is stricter than the AAP rule.',
+              'A rash with fever or a change in behaviour: keep your child home until a doctor has checked them and ruled out an infection that spreads. A rash that does not fade under a pressed glass needs emergency care.',
+              "Your child is tired, very unsettled, has trouble breathing or can't join in normal activities, even without a fever.",
+              "Chickenpox: stay home until every spot has crusted over. For weeping skin sores that can't be covered, and other diagnosed infections, ask the doctor and the setting when your child can return.",
+              'A runny nose or mild cough with no fever, and your child is playing as usual: AAP and NHS advice is that they usually do not need to stay home.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Plan for sick days',
+            text: 'A child at nursery will have days at home. Plan ahead for who will look after them when they are ill, so you are not forced to send them in before they are well.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: 'Call emergency services or go to the emergency department straight away if your child struggles to breathe, turns blue, is floppy or hard to wake, has a fit, or has a rash that does not fade under a glass. See a doctor the same day for a fever lasting 5 days or more, poor eating or drinking, fewer wet nappies or a lot of vomiting; if one illness follows another and your child seems more and more unwell; or if your child changes clearly after starting with a new carer, such as fearing one person, withdrawing, or having unexplained bruises or injuries.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'đi nhà trẻ',
+          'người trông trẻ',
+          'làm quen nhà trẻ',
+          'sợ xa ba mẹ',
+          'ốm vặt',
+          'nghỉ học khi ốm',
+          'tỷ lệ trẻ trên cô',
+          'tiêm chủng',
+        ],
+        en: [
+          'nursery',
+          'childcare',
+          'settling in',
+          'separation anxiety',
+          'frequent colds',
+          'keeping child home sick',
+          'staff ratio',
+          'vaccinations',
+        ],
+      },
+      relatedArticleIds: [
+        'art_separation_anxiety',
+        'art_cold_cough',
+        'art_fever_when_to_call',
+        'art_diarrhoea_dehydration',
+      ],
+      milestoneIds: ['stranger_wariness', 'knows_familiar_faces', 'waves_bye'],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Choosing a child care center',
+          url: 'https://www.healthychildren.org/English/family-life/work-and-child-care/Pages/choosing-a-child-care-center.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — When to keep your child home from child care',
+          url: 'https://www.healthychildren.org/English/family-life/work-and-child-care/Pages/when-to-keep-your-child-home-from-child-care.aspx',
+        },
+        {
+          label:
+            'Caring for Kids (Canadian Paediatric Society) — Child care: making the best choice for your family',
+          url: 'https://caringforkids.cps.ca/handouts/behavior-and-development/child_care',
+        },
+        {
+          label: 'Caring for Kids (Canadian Paediatric Society) — Common infections and your child',
+          url: 'https://caringforkids.cps.ca/handouts/health-conditions-and-treatments/common_infections_and_your_child',
+        },
+        {
+          label: 'NHS — Is my child too ill for school?',
+          url: 'https://www.nhs.uk/live-well/is-my-child-too-ill-for-school/',
+        },
+        {
+          label:
+            'Cổng thông tin Chính phủ — Chủ tịch UBND cấp xã có thẩm quyền thành lập trường mầm non, tiểu học, trung học cơ sở',
+          url: 'https://xaydungchinhsach.chinhphu.vn/chu-tich-ubnd-cap-xa-co-tham-quyen-thanh-lap-truong-mam-non-tieu-hoc-trung-hoc-co-so-119250614082831617.htm',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_flat_head',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: {
+        from: 0,
+        to: 52,
+      },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Bé bị bẹp đầu, vẹo cổ: phòng ngừa, cho bé nằm sấp và khi nào cần khám',
+        en: 'Flat head and a tight neck: prevention, tummy time and when to see a doctor',
+      },
+      summary: {
+        vi: 'Bẹp đầu do tư thế rất hay gặp, không hại não và thường đỡ dần. Vẫn luôn cho bé ngủ nằm ngửa; cho nằm sấp khi thức, đổi tư thế, bế nhiều hơn. Không dùng gối chống bẹp đầu.',
+        en: "A flat spot from lying in one position is common, does not harm the brain and usually improves. Keep back-sleeping; add tummy time, change positions and hold your baby more. Don't use head-shaping pillows.",
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Đầu bé bị bẹp một bên hoặc phía sau rất hay gặp, không ảnh hưởng tới não và thường đỡ dần khi bé lớn. Vẫn luôn cho bé ngủ nằm ngửa. Cho bé nằm sấp khi thức, đổi hướng nằm, bế bé nhiều hơn và hạn chế thời gian trong ghế. Không dùng gối chống bẹp đầu. Cho bác sĩ xem nếu bé luôn nghiêng đầu một bên hoặc dáng đầu bất thường.',
+          },
+          {
+            type: 'heading',
+            text: 'Vì sao đầu bé bị bẹp?',
+          },
+          {
+            type: 'paragraph',
+            text: 'Xương sọ của bé nhỏ còn mềm nên dễ phẳng đi ở chỗ bé hay tì lên. Có thể bẹp một bên phía sau, làm tai và trán bên đó hơi lệch ra trước, hoặc bẹp đều cả phía sau khiến đầu trông rộng. Theo AAP, phần lớn trường hợp xuất hiện trong khoảng 4–12 tuần đầu. Bé sinh non, sinh đôi, hay quay đầu về một phía, hoặc ít được nằm sấp dễ gặp hơn. Bẹp đầu do tư thế chỉ ảnh hưởng dáng đầu, không làm hại não hay trí tuệ của bé.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Vẹo cổ là khi cơ ở một bên cổ bị căng, ngắn, khiến bé hay nghiêng đầu về một vai và khó quay sang phía còn lại. Vì bé luôn tì đầu một bên, đầu dễ bị bẹp bên đó. AAP cho biết vẹo cổ bẩm sinh thường được phát hiện trong 6–8 tuần đầu, đôi khi sờ thấy một cục nhỏ ở cơ cổ. Bác sĩ có thể hướng dẫn ba mẹ các động tác kéo giãn nhẹ nhàng hoặc giới thiệu bé đến chuyên viên vật lý trị liệu. Điều trị sớm cho kết quả tốt hơn.',
+          },
+          {
+            type: 'heading',
+            text: 'Ngủ nằm ngửa: không thay đổi vì bẹp đầu',
+          },
+          {
+            type: 'paragraph',
+            text: 'Đặt bé nằm ngửa ở mọi giấc ngủ là cách quan trọng nhất để giảm nguy cơ đột tử ở trẻ nhỏ. NHS (Anh) nhấn mạnh không đổi sang cho bé ngủ sấp hay ngủ nghiêng để tránh bẹp đầu. Dáng đầu có thể cải thiện dần; còn đột tử thì không thể cứu vãn.',
+          },
+          {
+            type: 'heading',
+            text: 'Những việc ba mẹ làm được mỗi ngày',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé nằm sấp khi thức và có người lớn ngay bên cạnh, từ những ngày đầu: vài phút mỗi lần, nhiều lần trong ngày. AAP khuyên tăng dần đến tổng cộng 15–30 phút mỗi ngày khi bé khoảng 7 tuần, và nhiều hơn khi bé lớn.',
+              'Đổi hướng nằm: luân phiên đặt đầu bé ở hai đầu nôi theo từng ngày, để bé quay sang các phía khác nhau khi nhìn ba mẹ, cửa sổ hay ánh đèn. Bé vẫn nằm ngửa.',
+              'Đổi tay bế và bên cho bú, kể cả khi bú bình, để bé quay đầu luân phiên hai bên.',
+              'Khi bé thức và nằm ngửa, đặt đồ chơi, nói chuyện với bé ở phía bé ít quay sang.',
+              'Bế bé thẳng người hoặc địu đúng cách nhiều hơn, để đầu bé không tì lâu lên mặt phẳng.',
+              'Hạn chế thời gian bé nằm trong ghế ô tô, ghế rung, xích đu và xe đẩy dạng ghế. Ghế ô tô là để đi xe; tới nơi thì bế bé ra. Nếu bé ngủ thiếp trong ghế, chuyển bé sang nằm ngửa trong nôi.',
+              'Kiểm tra dáng đầu sau khi tắm, lúc tóc còn ướt: nhìn từ trên xuống, phía sau đầu nên tròn đều, hai tai ngang nhau, trán và hai bên đầu cân đối.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: gối chống bẹp đầu, gối lõm, gối hạt và đệm chặn hai bên vẫn được bán rộng rãi và hay được người thân khuyên dùng. Các loại này không được khuyến nghị.',
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Không dùng gối chống bẹp đầu',
+            text: 'Gối chống bẹp đầu và các loại đệm định hình không giúp phòng bẹp đầu mà có thể làm bé ngạt thở. AAP khuyên bé ngủ trên mặt phẳng chắc, không gối, không chăn, không thú bông, và cho biết FDA (Mỹ) không thấy bằng chứng các loại gối này có tác dụng. Đặt bé nằm thẳng trên nệm phẳng, không kê gì dưới đầu.',
+          },
+          {
+            type: 'heading',
+            text: 'Mũ chỉnh hình đầu: quyết định của bác sĩ chuyên khoa',
+          },
+          {
+            type: 'paragraph',
+            text: 'Theo NHS, bẹp đầu thường đỡ dần trong 1–2 năm đầu khi bé ngồi, bò và ít nằm hơn. Với trường hợp bẹp vừa hoặc nặng không cải thiện khi đã đổi tư thế đến khoảng 5–6 tháng, AAP cho biết có thể cân nhắc mũ chỉnh hình do chuyên gia đo và làm riêng; mũ phải đội gần như cả ngày trong nhiều tháng. NHS thì không cung cấp mũ vì chưa đủ bằng chứng mũ có hiệu quả. Vì bằng chứng chưa thống nhất, đây là quyết định cần bác sĩ chuyên khoa khám và trao đổi kỹ với ba mẹ, không nên tự mua.',
+          },
+          {
+            type: 'heading',
+            text: 'Khi dáng đầu méo không phải do tư thế',
+          },
+          {
+            type: 'paragraph',
+            text: 'Hiếm hơn, đầu méo là do dính khớp sọ sớm: các đường nối giữa xương sọ liền lại quá sớm. Tình trạng này không đỡ khi đổi tư thế và thường cần phẫu thuật. Hãy cho bác sĩ xem nếu thấy:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Một gờ cứng sờ thấy dọc theo đường nối xương sọ, ví dụ trên đỉnh đầu hoặc giữa trán.',
+              'Dáng đầu bất thường từ lúc mới sinh và không tròn lại sau vài tuần, như đầu dài và hẹp, trán nhọn hình tam giác, hoặc một bên trán và lông mày bị kéo lên.',
+              'Thóp trước không còn sờ thấy sớm, trước 1 tuổi, hoặc kích thước đầu bé có vẻ khác thường so với tuổi.',
+              'Dáng đầu ngày càng méo hơn dù ba mẹ đã đổi tư thế và cho bé nằm sấp đều đặn.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bé luôn nghiêng đầu về một bên hoặc khó quay đầu sang một phía; bé chỉ chịu nhìn hay bú một bên dù đã được khuyến khích bên kia; sờ thấy cục ở cổ; độ nghiêng không đỡ sau vài tuần tập; đầu bẹp ngày càng rõ, hai bên mặt trông lệch, hoặc có dấu hiệu dính khớp sọ ở trên. Bé lớn hơn đột ngột bị vẹo cổ kèm đau, sốt hoặc không chịu cử động cổ cần được khám ngay.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "A flat spot on one side or the back of the head is very common, does not affect the brain and usually improves as your baby grows. Always put your baby to sleep on their back. Give tummy time while awake, vary their position, hold them more and limit time in seats. Don't use head-shaping pillows. See a doctor if your baby always tilts their head or their head shape looks unusual.",
+          },
+          {
+            type: 'heading',
+            text: 'Why do babies get a flat head?',
+          },
+          {
+            type: 'paragraph',
+            text: "A young baby's skull is soft, so it flattens where it rests most. The flat spot may be on one side at the back, pushing the ear and forehead on that side slightly forward, or across the whole back, making the head look wide. According to the AAP, most cases appear between 4 and 12 weeks. Premature babies, twins, babies who prefer turning one way and babies who get little tummy time are more likely to have it. A positional flat head affects only the shape, not the brain or your baby's development.",
+          },
+          {
+            type: 'paragraph',
+            text: 'Torticollis is when a muscle on one side of the neck is tight and short, so the baby tilts their head towards one shoulder and finds it hard to turn the other way. Because the head always rests on one side, that side tends to flatten. The AAP says congenital torticollis is usually noticed in the first 6–8 weeks, sometimes with a small lump in the neck muscle. A doctor may show you gentle stretches or refer your baby to a physiotherapist. Starting early gives better results.',
+          },
+          {
+            type: 'heading',
+            text: "Back to sleep: don't change it because of a flat spot",
+          },
+          {
+            type: 'paragraph',
+            text: 'Placing your baby on their back for every sleep is the most important way to lower the risk of sudden infant death. The NHS (UK) stresses that you should not switch to tummy or side sleeping to prevent a flat head. Head shape can improve over time; sudden infant death cannot be undone.',
+          },
+          {
+            type: 'heading',
+            text: 'What you can do every day',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Give tummy time while your baby is awake and an adult is right there, from the first days: a few minutes at a time, several times a day. The AAP suggests building up to 15–30 minutes in total a day by about 7 weeks, and more as your baby grows.',
+              "Change direction: alternate which end of the cot your baby's head is at each day, so they turn different ways to look at you, the window or the light. They still sleep on their back.",
+              'Switch the arm you hold your baby in and the side you feed from, including bottle feeds, so they turn their head both ways.',
+              'When your baby is awake on their back, put toys and talk to them on the side they turn to less.',
+              'Hold your baby upright or carry them in a sling used safely more often, so the head is not resting on a flat surface for long.',
+              'Limit time in car seats, bouncers, swings and seat-style buggies. A car seat is for travelling; take your baby out when you arrive. If they fall asleep in a seat, move them onto their back in the cot.',
+              "Check your baby's head after a bath, when the hair is wet: looking from above, the back should be evenly round, the ears level, and the forehead and sides balanced.",
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'In Việt Nam: head-shaping pillows, pillows with a hollow, filled pillows and side wedges are widely sold and often recommended by relatives. None of these is recommended.',
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: "Don't use head-shaping pillows",
+            text: 'Head-shaping pillows and positioning cushions do not prevent a flat head and can cause suffocation. The AAP advises a firm, flat sleep surface with no pillows, blankets or soft toys, and notes that the US FDA has found no evidence these pillows work. Lay your baby on a flat mattress with nothing under the head.',
+          },
+          {
+            type: 'heading',
+            text: 'Helmets: a decision for a specialist',
+          },
+          {
+            type: 'paragraph',
+            text: 'According to the NHS, a flat head usually improves over 1–2 years as babies sit, crawl and spend less time lying down. For moderate or severe flattening that has not improved with repositioning by about 5–6 months, the AAP says a custom helmet fitted by a specialist may be considered; it is worn almost all day for several months. The NHS does not provide helmets because there is not enough evidence that they work. As the evidence is mixed, this is a decision for a specialist to make with you after an examination, not something to buy yourself.',
+          },
+          {
+            type: 'heading',
+            text: 'When an unusual head shape is not positional',
+          },
+          {
+            type: 'paragraph',
+            text: 'Less often, an unusual head shape is caused by craniosynostosis, when the seams between the skull bones join too early. It does not improve with repositioning and usually needs surgery. Show a doctor if you notice:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'A hard ridge along a seam of the skull, for example over the top of the head or down the middle of the forehead.',
+              'An unusual shape from birth that does not round out after a few weeks, such as a long narrow head, a pointed triangular forehead, or one side of the forehead and eyebrow pulled up.',
+              "The soft spot can no longer be felt early, before 1 year, or your baby's head size seems unusual for their age.",
+              'A shape that keeps getting worse even though you have been changing positions and doing tummy time regularly.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: 'Your baby always tilts their head to one side or has trouble turning one way; they will only look or feed to one side despite encouragement; you feel a lump in the neck; the tilt does not improve after a few weeks of exercises; the flat spot is getting worse, the face looks uneven, or you see any of the craniosynostosis signs above. An older baby who suddenly develops a painful tilted neck, a fever, or will not move their neck needs to be seen straight away.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'bẹp đầu',
+          'méo đầu',
+          'vẹo cổ',
+          'nằm sấp',
+          'gối chống bẹp đầu',
+          'mũ chỉnh hình đầu',
+          'dính khớp sọ',
+          'ngủ nằm ngửa',
+        ],
+        en: [
+          'flat head',
+          'plagiocephaly',
+          'torticollis',
+          'tummy time',
+          'head-shaping pillow',
+          'helmet therapy',
+          'craniosynostosis',
+          'back to sleep',
+        ],
+      },
+      relatedArticleIds: [
+        'art_tummy_time',
+        'art_safe_sleep',
+        'art_car_motorbike',
+        'art_preterm_corrected_age',
+      ],
+      milestoneIds: ['lifts_head', 'pushes_up_arms'],
+      sources: [
+        {
+          label: 'NHS — Flat head syndrome (plagiocephaly and brachycephaly)',
+          url: 'https://www.nhs.uk/conditions/plagiocephaly-brachycephaly/',
+        },
+        {
+          label:
+            "HealthyChildren.org (AAP) — When a baby's head is misshapen: positional skull deformities",
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/Cleft-Craniofacial/Pages/Positional-Skull-Deformities-and-Torticollis.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Head tilt (torticollis)',
+          url: 'https://www.healthychildren.org/english/health-issues/conditions/cleft-craniofacial/pages/head-tilt.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Uneven head shape in babies: craniosynostosis',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/Cleft-Craniofacial/Pages/Uneven-Head-Shape-Craniosynostosis.aspx',
+        },
+        {
+          label: 'NHS — Craniosynostosis',
+          url: 'https://www.nhs.uk/conditions/craniosynostosis/',
+        },
+        {
+          label:
+            'HealthyChildren.org (AAP) — Safe sleep: back is best, avoid soft bedding, inclined surfaces and bed sharing',
+          url: 'https://www.healthychildren.org/English/news/Pages/safe-sleep-back-is-best-avoid-soft-bedding-inclined-surfaces-and-bedsharing.aspx',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_first_steps',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: {
+        from: 36,
+        to: 104,
+      },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Bé tập đi: mốc bình thường, giày dép, xe tập đi và khi nào cần khám',
+        en: 'Learning to walk: the normal range, first shoes, baby walkers and when to check',
+      },
+      summary: {
+        vi: 'Trẻ khoẻ mạnh tự đi trong khoảng 8 đến gần 18 tháng. Cho bé chân trần trong nhà, không dùng xe tập đi có bánh, chắn cầu thang, và cho bé đi khám nếu 18 tháng chưa tự đi.',
+        en: "Healthy children take their first steps anywhere from about 8 to nearly 18 months. Go barefoot indoors, skip wheeled baby walkers, gate the stairs, and see a doctor if your child isn't walking by 18 months.",
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Mỗi bé đi những bước đầu tiên vào một thời điểm khác nhau; theo WHO, trẻ khoẻ mạnh tự đi trong khoảng 8 đến gần 18 tháng. Cho bé chơi nhiều trên sàn và đi chân trần trong nhà. Không dùng xe tập đi có bánh xe. Chân bẹt và chân hơi vòng kiềng ở tuổi này thường là bình thường. Cho bé đi khám nếu 18 tháng bé chưa tự đi, hoặc bé mất kỹ năng đã có.',
+          },
+          {
+            type: 'heading',
+            text: 'Bé tập đi qua từng giai đoạn',
+          },
+          {
+            type: 'paragraph',
+            text: 'Trước khi đi, bé thường ngồi vững, bò hoặc trườn, vịn đồ để đứng lên, rồi vịn ghế, bàn đi ngang (đi men). Có bé không bò mà lết mông rồi đi luôn; điều này thường không đáng lo nếu bé vẫn tiến bộ đều. Những bước đầu tiên bé thường dạng chân rộng, giơ tay cao để giữ thăng bằng và hay ngã ngồi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Nghiên cứu của WHO trên trẻ khoẻ mạnh ở năm quốc gia cho thấy khoảng bình thường rất rộng: vịn đồ đi được trong khoảng 6–14 tháng, tự đứng một mình khoảng 7–17 tháng, và tự đi khoảng 8–18 tháng. CDC (Mỹ) dùng mốc phần lớn trẻ đã tự đi không cần vịn lúc 18 tháng. Với bé sinh non, hãy tính theo tuổi hiệu chỉnh.',
+          },
+          {
+            type: 'heading',
+            text: 'Giúp bé tập đi',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé nhiều thời gian chơi trên sàn sạch, an toàn để bé tự bò, vịn và đứng dậy. Không cần ép bé đứng hay dắt tay bé đi thật lâu.',
+              'Xếp đồ đạc chắc chắn gần nhau để bé đi men, và đặt đồ chơi xa một chút để bé có lý do bước tới.',
+              'Xe đẩy đồ chơi có tay cầm, chắc, khó lật có thể dùng khi bé đã tự đứng được, và luôn có người lớn trông.',
+              'Trong nhà, để bé đi chân trần: bé cảm nhận mặt sàn, các cơ bàn chân được vận động, và ít trơn trượt hơn đi tất.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Chọn đôi giày đầu tiên',
+          },
+          {
+            type: 'paragraph',
+            text: 'AAP cho biết bàn chân bé phát triển tốt nhất khi không bị bó trong giày. Giày chủ yếu để bảo vệ chân khi bé đi ngoài trời, trên mặt đất nóng, sỏi đá hoặc có vật sắc.',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Đế mềm, dẻo, có rãnh chống trơn; mũi giày đủ rộng để các ngón chân cử động.',
+              'Vừa chân: đầu ngón cái cách mũi giày khoảng một ngón tay người lớn. Chân bé lớn rất nhanh, nên kiểm tra khoảng mỗi tháng; đôi đầu tiên có thể chỉ đi được 2–3 tháng.',
+              'Có quai hoặc khoá giữ chắc gót để giày không tuột khi bé bước.',
+              'Không cần giày đắt tiền hay giày “chỉnh hình” khi chân bé không có vấn đề gì. Đi chân trần còn tốt hơn đi giày chật.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Xe tập đi: không an toàn, không giúp bé đi sớm',
+          },
+          {
+            type: 'paragraph',
+            text: 'AAP khuyên không dùng xe tập đi có bánh xe và kêu gọi cấm bán loại xe này. Ngồi trong xe tập đi, bé có thể lao đi gần 1 mét trong 1 giây, nhanh hơn phản xạ của người lớn đứng ngay cạnh. Mỗi năm có hàng nghìn trẻ phải vào viện vì xe tập đi, hay gặp nhất là lao xuống cầu thang gây gãy xương và chấn thương đầu; bé còn có thể với tới đồ nóng, thuốc, hoặc lao vào chỗ có nước. Xe tập đi cũng không giúp bé biết đi sớm hơn, thậm chí có thể làm chậm.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: xe tập đi (xe tròn có bánh) vẫn được bán rộng rãi và hay được tặng khi bé biết ngồi. Nếu muốn bé có chỗ chơi ở tư thế đứng, hãy chọn bàn chơi đứng cố định không có bánh xe, hoặc một khu quây an toàn trên sàn.',
+          },
+          {
+            type: 'heading',
+            text: 'Phòng ngã khi bé bắt đầu đi',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Lắp cổng chắn ở đầu và chân cầu thang; chặn lối ra ban công, sân thượng; cửa sổ có khoá hoặc song chắn.',
+              'Cố định tủ, kệ, ti vi vào tường và bọc góc bàn nhọn, vì bé hay vịn đồ để đứng lên.',
+              'Để phích, nồi nước nóng, thuốc và hoá chất ngoài tầm với; úp hoặc đậy kín xô, chậu nước.',
+              'Ngã ngồi, ngã nhẹ khi tập đi là chuyện thường; ở gần bé và để bé tự đứng dậy.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Chân bẹt, chân vòng kiềng: thường là bình thường',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Bàn chân bẹt: hầu hết trẻ nhỏ có bàn chân bẹt; vòm bàn chân thường hình thành dần trong khoảng 3–10 tuổi (NHS). Không cần giày đặc biệt nếu bé không đau.',
+              'Chân vòng kiềng: nhiều trẻ có chân hơi cong ra ngoài đến khoảng 2 tuổi, sau đó chân hơi chụm gối (chân chữ X) đến khoảng 6–7 tuổi, rồi thẳng dần (AAP). Nắn hay bó chân không cần thiết và không giúp ích.',
+              'Đi kiễng chân: hay gặp khi bé mới tập đi. AAP khuyên cho bé đi khám nếu bé vẫn đi kiễng chân sau 2 tuổi.',
+              'Ngón chân quay vào trong khi đi: hay gặp và phần lớn tự hết khi bé lớn.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Đừng so với con nhà hàng xóm',
+            text: 'Bé đi sớm hay muộn trong khoảng bình thường không nói lên bé thông minh hay khoẻ hơn. Điều quan trọng là bé tiến bộ dần: hôm nay vịn đứng, tháng sau đi men, rồi tự bước.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bé 18 tháng chưa tự đi, hoặc 15 tháng chưa muốn vịn đứng, đi men; bé mất kỹ năng đã có; bé vẫn thường xuyên đi kiễng chân sau 2 tuổi, hoặc chỉ kiễng một chân; đi khập khiễng, nhất là kèm đau, sưng, sốt hoặc không chịu đứng; chỉ một chân bị cong, chân cong nặng hoặc cong hơn sau 2 tuổi; bé hay ngã bất thường, khó đứng dậy, phải chống tay lên đùi để đứng, hoặc đi lạch bạch. Sau cú ngã, gọi 115 nếu bé bất tỉnh, co giật, nôn nhiều lần hoặc lơ mơ.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "Every child takes their first steps at a different time; WHO data show healthy children start walking alone anywhere from about 8 to nearly 18 months. Give plenty of floor play and let them go barefoot indoors. Don't use a wheeled baby walker. Flat feet and mildly bowed legs are usually normal at this age. See a doctor if your child isn't walking alone by 18 months or loses skills they had.",
+          },
+          {
+            type: 'heading',
+            text: 'Learning to walk, step by step',
+          },
+          {
+            type: 'paragraph',
+            text: 'Before walking, babies usually sit steadily, crawl or creep, pull up to stand on furniture, then walk sideways holding on to chairs and tables (cruising). Some skip crawling, shuffle on their bottom and then walk; this is usually fine if they keep making progress. First steps are typically wide-legged, with arms held up for balance and plenty of sitting down with a bump.',
+          },
+          {
+            type: 'paragraph',
+            text: 'A WHO study of healthy children in five countries found a very wide normal range: walking while holding on at about 6–14 months, standing alone at about 7–17 months, and walking alone at about 8–18 months. The CDC (US) uses 18 months as the age by which most children walk without holding on. For babies born early, use their corrected age.',
+          },
+          {
+            type: 'heading',
+            text: 'Helping your child walk',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Give lots of time on a clean, safe floor so your child can crawl, pull up and stand by themselves. There is no need to make them stand or walk them by the hands for long periods.',
+              'Arrange sturdy furniture close together for cruising, and put toys a little out of reach to give them a reason to step.',
+              "A sturdy push-along toy with a handle that doesn't tip easily can be used once your child can stand alone, always with an adult watching.",
+              'Indoors, let your child go barefoot: they can feel the floor, the foot muscles work, and they slip less than in socks.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Choosing first shoes',
+          },
+          {
+            type: 'paragraph',
+            text: "The AAP says babies' feet develop best when they are not confined in shoes. Shoes are mainly to protect the feet outdoors, on hot ground, gravel or where there may be sharp objects.",
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Soft, flexible, non-slip soles, with a toe box wide enough for the toes to move.',
+              "Good fit: about an adult finger's width between the big toe and the end of the shoe. Feet grow fast, so check about once a month; a first pair may last only 2–3 months.",
+              "A strap or fastening that holds the heel so the shoe doesn't slip off.",
+              "There is no need for expensive or “corrective” shoes if your child's feet are healthy. Going barefoot is better than wearing shoes that are too tight.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Baby walkers: unsafe and no help with walking',
+          },
+          {
+            type: 'paragraph',
+            text: 'The AAP advises against wheeled baby walkers and has called for a ban on their sale. In a walker a baby can move almost a metre in a second, faster than an adult standing right next to them can react. Walkers send thousands of children to hospital each year, most often from falling down stairs, causing broken bones and head injuries; children can also reach hot things or medicines, or roll into water. Walkers do not help children walk sooner and may even delay walking.',
+          },
+          {
+            type: 'paragraph',
+            text: 'In Việt Nam: wheeled baby walkers are widely sold and often given as gifts once a baby can sit. If you want a place for your child to play standing up, choose a stationary activity centre with no wheels, or a safe fenced play area on the floor.',
+          },
+          {
+            type: 'heading',
+            text: 'Preventing falls once your child is on the move',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Fit safety gates at the top and bottom of stairs; block access to balconies and roof terraces; use window locks or guards.',
+              'Fix cabinets, shelves and TVs to the wall and cover sharp table corners, because children pull up on furniture.',
+              'Keep flasks, pans of hot water, medicines and chemicals out of reach; empty or cover buckets and basins of water.',
+              'Small tumbles while learning are normal; stay close and let your child get back up by themselves.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Flat feet and bow legs: usually normal',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Flat feet: most young children have flat feet; the arch usually develops between about 3 and 10 years (NHS). No special shoes are needed if there is no pain.',
+              'Bow legs: many children are bow-legged until about 2, then knock-kneed until about 6–7, and then the legs gradually straighten (AAP). Massaging or binding the legs is not needed and does not help.',
+              'Toe walking: common when children first learn to walk. The AAP advises a check-up if your child still walks on their toes after age 2.',
+              'Toes turning in while walking: common, and it usually fades as children grow.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Try not to compare',
+            text: 'Walking earlier or later within the normal range does not mean a child is cleverer or stronger. What matters is steady progress: pulling up today, cruising next month, then stepping alone.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: "Your child isn't walking alone at 18 months, or at 15 months shows no interest in pulling up or cruising; loses skills they had; still often walks on their toes after 2, or on one foot only; limps, especially with pain, swelling, fever or refusing to stand; has only one bowed leg, severe bowing, or bowing that gets worse after 2; falls unusually often, struggles to get up, pushes on their thighs to stand, or waddles. After a fall, call emergency services if your child is unconscious, has a fit, vomits repeatedly or is drowsy.",
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'tập đi',
+          'bước đi đầu tiên',
+          'đi men',
+          'xe tập đi',
+          'giày tập đi',
+          'bàn chân bẹt',
+          'chân vòng kiềng',
+          'đi kiễng chân',
+        ],
+        en: [
+          'learning to walk',
+          'first steps',
+          'cruising',
+          'baby walker',
+          'first shoes',
+          'flat feet',
+          'bow legs',
+          'toe walking',
+        ],
+      },
+      relatedArticleIds: [
+        'art_home_safety_falls',
+        'art_preterm_corrected_age',
+        'art_vitamin_d_iron',
+        'art_talk_play_first_year',
+      ],
+      milestoneIds: ['stands', 'cruises', 'first_steps', 'climbs_furniture', 'runs'],
+      sources: [
+        {
+          label: 'WHO — Motor development milestones: windows of achievement',
+          url: 'https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones',
+        },
+        {
+          label: 'CDC — Important milestones: your child by 18 months',
+          url: 'https://www.cdc.gov/act-early/milestones/18-months.html',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Baby walkers: a dangerous choice',
+          url: 'https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Baby-Walkers-A-Dangerous-Choice.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Shoes for active toddlers',
+          url: 'https://www.healthychildren.org/English/ages-stages/toddler/Pages/Shoes-for-Active-Toddlers.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Bowlegs and knock-knees',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/orthopedic/Pages/Bowlegs-and-Knock-Knees.aspx',
+        },
+        {
+          label: 'NHS — Flat feet',
+          url: 'https://www.nhs.uk/conditions/flat-feet/',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_genital_care',
+    reviewerLabel: 'Nhóm chuyên môn · Điều dưỡng nhi',
+    data: {
+      library: 'care',
+      topic: 'daily_care',
+      format: 'step_guide',
+      ageWeeks: {
+        from: 0,
+        to: 104,
+      },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Vệ sinh vùng kín cho bé trai và bé gái: từng bước',
+        en: "Cleaning your baby's genitals, girls and boys: step by step",
+      },
+      summary: {
+        vi: 'Rửa vùng kín bằng nước ấm mỗi lần thay tã. Bé gái lau từ trước ra sau. Bé trai không kéo bao quy đầu, vì nó tự tách dần trong nhiều năm. Biết các dấu hiệu cần đi khám.',
+        en: "Wash the genital area with warm water at every change. Wipe girls front to back. Don't pull back a boy's foreskin; it separates on its own over years. Know the signs that need a doctor.",
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Vùng kín của bé chỉ cần rửa nhẹ bằng nước ấm mỗi lần thay tã và khi tắm. Với bé gái, luôn lau từ trước ra sau. Với bé trai, không kéo bao quy đầu ra: lúc nhỏ bao quy đầu còn dính, và sẽ tự tách dần trong nhiều năm. Dịch trắng hay chút máu trên tã bé gái trong vài ngày đầu là bình thường.',
+          },
+          {
+            type: 'heading',
+            text: 'Chuẩn bị',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Rửa tay. Chuẩn bị nước ấm sạch, bông hoặc khăn mềm, hoặc khăn ướt không mùi, không cồn.',
+              'Tã sạch, khăn khô, và kem bảo vệ da nếu bé hay bị hăm.',
+              'Không dùng xà phòng có mùi thơm, phấn rôm, dung dịch sát khuẩn hay tăm bông cho vùng kín của bé.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 1: Làm sạch vùng tã',
+          },
+          {
+            type: 'paragraph',
+            text: 'Dùng phần sạch của tã cũ lau bớt phân, rồi rửa bằng nước ấm, nhớ lau cả các nếp da ở bẹn và đùi. Thay tã ngay sau khi bé tè hoặc đi ngoài; bé nhỏ có thể cần thay 10–12 lần mỗi ngày.',
+          },
+          {
+            type: 'heading',
+            text: 'Bước 2: Với bé gái',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Luôn lau từ trước ra sau, từ âm hộ về phía hậu môn, mỗi lượt lau dùng một miếng bông sạch, để vi khuẩn từ phân không vào âm đạo và đường tiểu.',
+              'Nếu phân dính vào giữa hai môi âm hộ, nhẹ nhàng lau sạch; không cần banh rộng hay rửa sâu vào bên trong.',
+              'Vài ngày đầu sau sinh, có thể thấy dịch trắng trên tã, đôi khi lẫn chút máu như một kỳ kinh nhỏ. Đó là do nội tiết tố của mẹ truyền sang và sẽ tự hết (NHS). Theo AAP, dịch lẫn máu thường không kéo dài quá 3–4 ngày.',
+              'Có thể thấy một mẩu da hồng nhỏ ở cửa âm đạo do màng trinh hơi sưng vì nội tiết tố của mẹ. Đây là bình thường và sẽ nhỏ dần trong 2–4 tuần (AAP).',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Bước 3: Với bé trai',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Rửa dương vật, bìu và vùng xung quanh bằng nước ấm như phần còn lại của vùng tã, nhớ lau cả nếp da dưới bìu.',
+              'Không kéo bao quy đầu ra để rửa. Lúc mới sinh, bao quy đầu dính vào đầu dương vật và tự tách dần trong nhiều tháng đến nhiều năm. Theo NHS, phần lớn trẻ đến khoảng 5 tuổi mới kéo được bao quy đầu, có trẻ đến 10 tuổi hoặc muộn hơn.',
+              'Cố kéo bao quy đầu khi chưa tách có thể gây đau, chảy máu và rách da.',
+              'Bao quy đầu phồng lên khi bé tè rồi xẹp xuống, dòng tiểu vẫn bình thường và bé không đau: thường là bình thường (NHS).',
+              'Những cục trắng như hạt ngọc dưới da bao quy đầu là chất bựa bình thường, sẽ tự thoát ra khi bao quy đầu tách dần; không cần nặn.',
+              'Khi bao quy đầu đã tự tách, thỉnh thoảng có thể kéo nhẹ đến chỗ dễ kéo, tráng nước rồi kéo trở lại như cũ. Khi bé lớn, dạy bé tự làm.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: nhiều người thân vẫn khuyên tuột bao quy đầu cho bé hằng ngày “để vệ sinh” hoặc để “không bị hẹp”. AAP và NHS không khuyên làm vậy: bao quy đầu chưa tách là bình thường, và kéo ép có thể gây đau, rách da. Nếu lo bao quy đầu hẹp, hãy hỏi bác sĩ.',
+          },
+          {
+            type: 'heading',
+            text: 'Bước 4: Nếu bé trai đã cắt bao quy đầu',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cắt bao quy đầu hay không là lựa chọn của mỗi gia đình, tuỳ văn hoá, tôn giáo và tư vấn y tế. Sau khi cắt, làm theo hướng dẫn của nơi thực hiện. Theo AAP, đầu dương vật thường hơi đỏ và có thể có dịch vàng trong vài ngày đầu, hết dần trong khoảng một tuần; giữ sạch và lau nhẹ phân dính vào.',
+          },
+          {
+            type: 'heading',
+            text: 'Bước 5: Lau khô và giữ da khoẻ',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Thấm khô nhẹ bằng khăn mềm, không chà xát. Nếu trời ấm, để bé không mặc tã một lúc.',
+              'Thoa một lớp kem bảo vệ da nếu bé hay bị hăm, rồi mặc tã sạch và rửa tay.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Những điều nên để ý khi thay tã',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Dính môi âm hộ: hai môi nhỏ dính vào nhau một phần, hay gặp do kích ứng vùng tã. Phần lớn không cần điều trị và tự tách khi bé lớn (AAP). Không tự tách bằng tay.',
+              'Tinh hoàn: khi tắm, để ý xem bìu có đủ hai tinh hoàn không. Tinh hoàn chưa xuống thường tự xuống trong 12 tuần đầu; nếu không, bác sĩ sẽ giới thiệu bé đến chuyên khoa (NHS).',
+              'Cục phồng mềm ở bẹn, bìu hoặc môi lớn, to lên khi bé khóc, rặn và nhỏ lại khi bé nằm yên, có thể là thoát vị bẹn và cần được khám. Bìu sưng mềm do có nước cũng hay gặp ở bé sơ sinh; bác sĩ sẽ phân biệt hai tình trạng này (AAP).',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bao quy đầu bị kéo lui mà không trở lại được, đầu dương vật sưng và đau; hoặc cục ở bẹn, bìu hay môi lớn trở nên cứng, đau, đỏ hoặc tím, không xẹp khi bé nằm yên, nhất là khi bé nôn, quấy khóc không dỗ được hoặc bụng chướng.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên đưa bé đi khám',
+            text: 'Bao quy đầu đỏ, sưng, đau, có mủ hoặc mùi hôi; bé đau hay khóc khi tè, dòng tiểu chỉ nhỏ giọt, hoặc bao quy đầu phồng kèm đau; vết cắt bao quy đầu đỏ kéo dài, sưng hoặc có vết loét đóng vảy vàng; môi âm hộ dính che lỗ tiểu, bé tè khó, nước tiểu rỉ ra sau khi tè hoặc hay bị nhiễm trùng tiểu; dịch âm đạo lẫn máu kéo dài, nhiều hoặc có mùi hôi; có cục phồng ở bẹn, bìu hoặc môi lớn; bìu thiếu một hoặc cả hai tinh hoàn.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: "Your baby's genitals only need a gentle wash with warm water at each nappy change and at bath time. For girls, always wipe from front to back. For boys, don't pull the foreskin back: it is attached when they are small and separates by itself over years. A white discharge or a little blood in a baby girl's nappy in the first days is normal.",
+          },
+          {
+            type: 'heading',
+            text: 'Get ready',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Wash your hands. Have clean warm water and cotton wool or a soft cloth ready, or fragrance-free, alcohol-free baby wipes.',
+              'A clean nappy, a dry towel, and barrier cream if your baby gets nappy rash.',
+              "Don't use perfumed soap, talcum powder, antiseptics or cotton buds on your baby's genitals.",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 1: Clean the nappy area',
+          },
+          {
+            type: 'paragraph',
+            text: 'Use a clean part of the old nappy to wipe away most of the poo, then wash with warm water, including the skin folds at the groin and thighs. Change the nappy soon after every wee or poo; young babies may need 10–12 changes a day.',
+          },
+          {
+            type: 'heading',
+            text: 'Step 2: For girls',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Always wipe from front to back, from the vulva towards the bottom, with a fresh piece of cotton wool each time, so germs from poo don't get into the vagina or urinary tract.",
+              'If poo gets between the labia, gently wipe it away; there is no need to spread them wide or wash inside.',
+              "In the first days after birth you may see a white discharge in the nappy, sometimes with a little blood like a tiny period. It comes from the mother's hormones and soon stops (NHS). According to the AAP, blood-tinged discharge usually lasts no more than 3–4 days.",
+              "You may see a small pink tag of tissue at the vaginal opening, a slightly swollen hymen caused by the mother's hormones. It is normal and shrinks over 2–4 weeks (AAP).",
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 3: For boys',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Wash the penis, scrotum and surrounding skin with warm water like the rest of the nappy area, including the fold under the scrotum.',
+              "Don't pull back the foreskin to clean. At birth it is attached to the head of the penis and separates gradually over months to years. According to the NHS, most foreskins don't pull back until around age 5, and some not until 10 or later.",
+              "Forcing a foreskin that hasn't separated can cause pain, bleeding and tears in the skin.",
+              'A foreskin that balloons while your son wees and then goes down, with a normal stream and no pain, is usually normal (NHS).',
+              "White, pearl-like lumps under the foreskin are normal smegma that works its way out as the foreskin separates; don't squeeze them.",
+              'Once the foreskin has separated on its own, you can occasionally ease it back only as far as it goes easily, rinse, then return it. As your son grows, teach him to do this himself.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: "In Việt Nam: relatives often still advise pulling back a baby's foreskin every day “to keep it clean” or “so it won't be tight”. The AAP and NHS do not recommend this: a foreskin that hasn't separated is normal, and forcing it can cause pain and tears. If you are worried the foreskin is tight, ask a doctor.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 4: If your son has been circumcised',
+          },
+          {
+            type: 'paragraph',
+            text: "Whether to circumcise is each family's choice, shaped by culture, religion and medical advice. Afterwards, follow the instructions from where it was done. According to the AAP, the tip often looks red with some yellow discharge for the first few days, fading within about a week; keep it clean and gently wipe away any poo.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 5: Dry and protect the skin',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Pat dry gently with a soft towel; don't rub. If it's warm enough, give your baby some nappy-free time.",
+              'Apply a thin layer of barrier cream if your baby is prone to nappy rash, put on a clean nappy, and wash your hands.',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Things to look out for at nappy changes',
+          },
+          {
+            type: 'bullets',
+            items: [
+              "Labial adhesions: the inner labia partly stick together, often after nappy-area irritation. Most need no treatment and separate as the child grows (AAP). Don't try to pull them apart.",
+              'Testicles: at bath time, check that both testicles are in the scrotum. An undescended testicle often comes down by itself in the first 12 weeks; if not, the doctor will refer your son to a specialist (NHS).',
+              'A soft bulge in the groin, scrotum or labia that grows when your baby cries or strains and shrinks when they are relaxed may be an inguinal hernia and needs a check. A soft, fluid-filled swelling of the scrotum is also common in newborns; a doctor can tell the two apart (AAP).',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call emergency services or go to the emergency department now if',
+            text: "The foreskin has been pulled back and won't return, with a swollen, painful tip; or a lump in the groin, scrotum or labia becomes hard, painful, red or dark and doesn't go down when your baby is calm, especially with vomiting, crying that can't be soothed or a swollen tummy.",
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to see a doctor',
+            text: 'The foreskin is red, swollen, sore, has pus or smells bad; your son has pain or cries when weeing, the stream is only a trickle, or the foreskin balloons with pain; a circumcision wound stays red, swells or has crusty yellow sores; labial adhesions cover the urine opening, your daughter struggles to wee, dribbles afterwards or keeps getting urine infections; vaginal discharge with blood lasts, is heavy or smells bad; there is a bulge in the groin, scrotum or labia; one or both testicles are missing from the scrotum.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'vệ sinh vùng kín',
+          'bao quy đầu',
+          'tuột bao quy đầu',
+          'cắt bao quy đầu',
+          'dính môi âm hộ',
+          'thoát vị bẹn',
+          'tinh hoàn ẩn',
+          'thay tã',
+        ],
+        en: [
+          'genital care',
+          'foreskin',
+          'retracting foreskin',
+          'circumcision',
+          'labial adhesions',
+          'inguinal hernia',
+          'undescended testicle',
+          'nappy change',
+        ],
+      },
+      relatedArticleIds: ['art_diaper_rash', 'art_bathing_at_home', 'art_newborn_skin_rashes'],
+      milestoneIds: [],
+      sources: [
+        {
+          label: "NHS — How to change your baby's nappy",
+          url: 'https://www.nhs.uk/baby/caring-for-a-newborn/how-to-change-your-babys-nappy/',
+        },
+        {
+          label: "HealthyChildren.org (AAP) — How to care for your baby's penis",
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/bathing-skin-care/Pages/Caring-For-Your-Sons-Penis.aspx',
+        },
+        {
+          label: 'NHS — Tight foreskin (phimosis)',
+          url: 'https://www.nhs.uk/conditions/phimosis/',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Labial adhesions in babies and children',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/genitourinary-tract/Pages/Labial-Adhesions.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Inguinal hernia in infants and children',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/abdominal/Pages/Inguinal-Hernia.aspx',
+        },
+        {
+          label: 'NHS — Undescended testicles',
+          url: 'https://www.nhs.uk/conditions/undescended-testicles/',
+        },
+      ],
+    },
+  },
 ];
 
 // ---------- Stage content: Giai đoạn của bé (the 16 fixed buckets) ----------

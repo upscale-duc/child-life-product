@@ -384,8 +384,9 @@ describe('seed, lists and coverage', () => {
       counts: { drafts: number; inApp: number };
       coverage: { covered: number; published: number; total: number; gaps: string[] };
     };
-    expect(stages.counts).toMatchObject({ drafts: 16, inApp: 0 });
-    expect(stages.coverage).toMatchObject({ covered: 16, published: 0, total: 16, gaps: [] });
+    // 18 ranges, 0–36 months (D-080).
+    expect(stages.counts).toMatchObject({ drafts: 18, inApp: 0 });
+    expect(stages.coverage).toMatchObject({ covered: 18, published: 0, total: 18, gaps: [] });
 
     // Seed links resolve, so the drafts can go through review.
     const first = seedStages[1]!.id;
@@ -474,7 +475,7 @@ describe('seed, lists and coverage', () => {
       coverage: { covered: number; gaps: string[] };
     };
     expect(list.coverage.covered).toBe(1);
-    expect(list.coverage.gaps).toHaveLength(15);
+    expect(list.coverage.gaps).toHaveLength(17);
     expect(list.coverage.gaps).not.toContain('w0');
   });
 

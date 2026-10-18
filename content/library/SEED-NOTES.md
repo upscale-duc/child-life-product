@@ -115,6 +115,15 @@ and answers: `docs/product/content-review-2026-10/library.md`.
   `art_preterm_corrected_age`, `art_picky_eating_toddler`, `art_toddler_milk`,
   `art_toddler_tantrums`, `art_newborn_skin_rashes`, `art_heat_cold_safety`, `art_medicine_safety`
   (44 in all).
+- **2026-10-18 (D-080):** 12 more articles, 56 in all: `art_night_waking_settling`,
+  `art_night_weaning`, `art_back_to_work_breastfeeding`, `art_pacifier_bottle_habits`,
+  `art_dengue_mosquito`, `art_thrush_cradle_cap`, `art_ear_infection`, `art_eye_discharge`,
+  `art_starting_childcare`, `art_flat_head`, `art_first_steps`, `art_genital_care`. Written from
+  WHO, AAP, CDC, NHS, CPS, BV Nhi Trung ương and the Labour Code 2019 (Art. 137, 139); every source
+  page was opened when written. For the reviewer: NICE and Raising Children Network pages did not
+  load and are not cited; the lactation step sizes in night weaning and the Labour Code article
+  numbers (a consolidated text dated 12/02/2026 exists) need a check; Bộ Y tế pages did not load,
+  so dengue cites BV Nhi Trung ương.
 - **Stages:** three P3 wording fixes. The 24–36 month milestones and stages drafted in
   `docs/product/content-review-2026-10/library-24-36-months.json` were imported on 2026-10-18
   (D-080): stages `stg_m24`, `stg_m30` in two new buckets, 12 milestones.
