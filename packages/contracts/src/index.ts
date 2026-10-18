@@ -38,6 +38,7 @@ export * from './premium-ops.js';
 export * from './assistant-staff.js';
 export * from './content.js';
 export * from './nutrition.js';
+export * from './solids.js';
 export * from './milestones.js';
 // Notification centre (D-076 #2): inbox, EN07 settings, quiet hours.
 export * from './notifications.js';

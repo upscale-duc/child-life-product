@@ -73,6 +73,15 @@ service cloud.firestore {
       allow read: if signedIn() && resource.data.status == 'published';
       allow write: if false;
     }
+    // Ăn dặm (D-085): the food catalogue and recipes, the same way.
+    match /contentFoods/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+    match /contentRecipes/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
 
     // Own account document only; written by Functions (createBabyProfile, later profile edits).
     match /users/{uid} {
@@ -432,6 +441,31 @@ service cloud.firestore {
         allow create, update: if docId == 'vitaminA' && isParent(babyId) && babyOpen(babyId) &&
           validVitaminA();
         allow delete: if docId == 'vitaminA' && isParent(babyId) && babyOpen(babyId);
+      }
+
+      // Ăn dặm settings (D-085, P-164 #3, 5a): one document, `settings`. Members who read care
+      // read it; Cùng nuôi write it ("Bắt đầu theo dõi", "Không gợi ý món này", "Bác sĩ đã cho ăn
+      // lại"); never deleted from a client. Mirrors `solidsSettingsSchema`.
+      match /solids/{docId} {
+        allow get: if docId == 'settings' && canReadCare(babyId);
+        allow list: if false;
+        allow create, update: if docId == 'settings' && isParent(babyId) && babyOpen(babyId) &&
+          validSolidsSettings();
+        allow delete: if false;
+      }
+
+      // Bữa ăn dặm (D-085, P-164 #4–#6, #13): written by the app like care records (client ids,
+      // the Firestore cache as the offline outbox). Never hard-deleted by clients: "Xoá" is a soft
+      // delete with undo and the 30-day bin, purged by the bin job with the meal's photo. Cùng nuôi
+      // edit any meal, Người chăm sóc only their own (D-022); relatives with "Chăm sóc hằng ngày"
+      // only read. The 6-month start is the app's gate (D-085 #4), not checked here. Mirrors
+      // `mealSchema`.
+      match /meals/{mealId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewMeal(babyId, mealId);
+        allow update: if canLog(babyId) && babyOpen(babyId) && canEditRecord(babyId) &&
+          validMealUpdate(babyId);
+        allow delete: if false;
       }
 
       // "Đã ghi hôm nay" per baby-local date, kept by the onCareRecordWrite trigger.
@@ -1146,6 +1180,114 @@ service cloud.firestore {
         d.recipients is list && d.recipients.size() <= 20 &&
         d.bookPhotos is list && d.bookPhotos.size() <= 10 &&
         d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    // ---------- Ăn dặm (D-085; packages/contracts/src/solids.ts, `solidsLimits`) ----------
+
+    function validSolidsSettings() {
+      let d = request.resource.data;
+      let fields = ['enabled', 'startedOn', 'showOnToday', 'method', 'hidden', 'cleared',
+        'updatedAt', 'updatedBy'];
+      return d.keys().hasOnly(fields) && d.keys().hasAll(fields) &&
+        d.enabled is bool && (d.startedOn == null || isoDate(d.startedOn)) &&
+        d.showOnToday is bool && d.method in ['spoon', 'blw', 'mixed'] &&
+        d.hidden is list && d.hidden.size() <= 50 &&
+        d.cleared is list && d.cleared.size() <= 50 &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    function mealFields() {
+      return ['id', 'babyId', 'occurredAt', 'slot', 'dish', 'foodIds', 'freeFoods', 'amount',
+        'reaction', 'symptoms', 'note', 'recipeId', 'photoPath', 'createdBy', 'author',
+        'createdAt', 'clientCreatedAt', 'updatedAt', 'updatedBy', 'deleted', 'deletedAt',
+        'deletedBy'];
+    }
+
+    // Rules cannot loop: the catalogue ids (≤ 12) and free names (≤ 3) are checked one by one.
+    function mealFoodAt(l, i) {
+      return l.size() <= i || (l[i] is string && l[i].matches('^fd_[a-z0-9_]{2,40}$'));
+    }
+
+    function mealFoodIds(l) {
+      return l is list && l.size() <= 12 &&
+        mealFoodAt(l, 0) && mealFoodAt(l, 1) && mealFoodAt(l, 2) && mealFoodAt(l, 3) &&
+        mealFoodAt(l, 4) && mealFoodAt(l, 5) && mealFoodAt(l, 6) && mealFoodAt(l, 7) &&
+        mealFoodAt(l, 8) && mealFoodAt(l, 9) && mealFoodAt(l, 10) && mealFoodAt(l, 11);
+    }
+
+    function mealFreeAt(l, i) {
+      return l.size() <= i ||
+        (l[i] is string && l[i].trim().size() >= 1 && l[i].size() <= 40);
+    }
+
+    function mealFreeFoods(l) {
+      return l is list && l.size() <= 3 && mealFreeAt(l, 0) && mealFreeAt(l, 1) && mealFreeAt(l, 2);
+    }
+
+    // "Vài thìa · ½ chén · 1 chén" or "Tự nhập": a number and a unit; or not said.
+    function validMealAmount(a) {
+      return a == null ||
+        (a is map && a.keys().hasOnly(['preset']) && a.keys().hasAll(['preset']) &&
+          a.preset in ['fewSpoons', 'halfBowl', 'fullBowl']) ||
+        (a is map && a.keys().hasOnly(['value', 'unit']) && a.keys().hasAll(['value', 'unit']) &&
+          (a.value is int || a.value is float) && a.value > 0 && a.value <= 1000 &&
+          a.unit in ['spoon', 'bowl', 'ml', 'g']);
+    }
+
+    // When (never in the future: 5 min of clock skew, G-021), what, how much, how it went.
+    function validMealBody(d, babyId) {
+      return notFuture(d.occurredAt) &&
+        d.slot in ['morning', 'noon', 'afternoon', 'evening', 'snack'] &&
+        d.dish is string && d.dish.size() <= 60 &&
+        mealFoodIds(d.foodIds) && mealFreeFoods(d.freeFoods) &&
+        // A dish or at least one ingredient (5c).
+        (d.dish.trim().size() > 0 || d.foodIds.size() > 0 || d.freeFoods.size() > 0) &&
+        validMealAmount(d.amount) &&
+        d.reaction in [null, 'liked', 'neutral', 'notYet'] &&
+        d.symptoms is list && d.symptoms.size() <= 7 &&
+        d.symptoms.hasOnly(['rash', 'vomit', 'diarrhea', 'fussy', 'swelling', 'breathing',
+          'other']) &&
+        d.note is string && d.note.size() <= 300 &&
+        (d.recipeId == null ||
+          (d.recipeId is string && d.recipeId.matches('^rcp_[a-z0-9_]{2,40}$'))) &&
+        // The meal's photo (D-085 #2) lives under this baby's meals in Storage.
+        (d.photoPath == null || (d.photoPath is string &&
+          d.photoPath.matches('^babies/' + babyId + '/meals/[A-Za-z0-9_-]{8,64}[.]jpg$')));
+    }
+
+    function validNewMeal(babyId, mealId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(mealFields()) && d.keys().hasAll(mealFields()) &&
+        mealId.matches('^m_[a-f0-9]{32}$') && d.id == mealId && d.babyId == babyId &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        d.clientCreatedAt is timestamp &&
+        d.deleted == false && d.deletedAt == null && d.deletedBy == null &&
+        // "Mẹ ghi" / "Cô Lan ghi" (D-024): the writer's own membership.
+        ownAuthor(d.author, me) &&
+        validMealBody(d, babyId);
+    }
+
+    // As `validRecordUpdate`: who, which baby and when it was made never change.
+    function validMealUpdate(babyId) {
+      let d = request.resource.data;
+      let o = resource.data;
+      let changed = d.diff(o).affectedKeys();
+      let deleteKeys = ['deleted', 'deletedAt', 'deletedBy', 'updatedAt', 'updatedBy'];
+      return d.updatedBy == request.auth.uid && d.updatedAt == request.time && (
+        // "Sửa": the meal's details only.
+        (o.deleted == false && d.deleted == false &&
+          changed.hasOnly(['occurredAt', 'slot', 'dish', 'foodIds', 'freeFoods', 'amount',
+            'reaction', 'symptoms', 'note', 'recipeId', 'photoPath', 'updatedAt', 'updatedBy']) &&
+          validMealBody(d, babyId)) ||
+        // "Xoá" → soft delete.
+        (o.deleted == false && d.deleted == true && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == request.time && d.deletedBy == request.auth.uid) ||
+        // "Hoàn tác" or restore from "Đã xoá gần đây".
+        (o.deleted == true && d.deleted == false && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == null && d.deletedBy == null)
+      );
     }
 
     // ---------- Chi tiêu (D-055, P-140) ----------

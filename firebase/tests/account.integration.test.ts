@@ -125,7 +125,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await fetch(
-    `http://127.0.0.1:8080/emulator/v1/projects/${projectId}/databases/(default)/documents`,
+    `http://${process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080'}/emulator/v1/projects/${projectId}/databases/(default)/documents`,
     {
       method: 'DELETE',
     },
@@ -574,7 +574,8 @@ describe('devices, exports and help', () => {
     ).toBe('export-running');
     expect(await runExport(db, store, async () => null as never, jobId, now, 24)).toBe('ready');
     const job = (await get(`dataJobs/${jobId}`))!;
-    expect(store.zips.get(job.path)).toEqual(['care.json', 'care.csv']);
+    // Ăn dặm meals (D-085 #3) ride along as their own sheet.
+    expect(store.zips.get(job.path)).toEqual(['care.json', 'care.csv', 'meals.csv']);
     expect((job.expiresAt as Timestamp).toMillis()).toBe(now.getTime() + 24 * 3_600_000);
     // "Tải tệp về" in the email: the token's hash on the job, the token in the queued mail only.
     expect(job.downloadTokenHash).toMatch(/^[a-f0-9]{64}$/);

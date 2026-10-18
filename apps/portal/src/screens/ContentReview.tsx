@@ -1,13 +1,17 @@
 import {
   contentKinds,
   nutritionCopyProblems,
+  recipeAgeProblems,
+  solidsCopyProblems,
   staffCan,
   type ArticleDraft,
   type ContentKind,
   type EditorialAction,
+  type FoodDraft,
   type NutrientDraft,
   type NutritionRuleDraft,
   type NutritionStageDraft,
+  type RecipeDraft,
   type ReferenceMilestoneDraft,
   type StageDraft,
 } from '@child-life/contracts';
@@ -63,11 +67,22 @@ import {
   monthsText,
   nutritionEditorUrl,
 } from './nutrition-common';
+import { FoodPreview, RecipePreviewLoaded } from './SolidsPreviews';
+import {
+  AgeProblemsNotice,
+  CopyProblemsNotice,
+  catalogueOf,
+  fromMonthsText,
+  isSolidsKind,
+  solidsAgeOf,
+  solidsEditorUrl,
+} from './solids-common';
 import { StagePreview } from './Stages';
 
 /**
  * Duyệt nội dung (Figma B03 `317:43747`, B04 `317:43979`; D-076 #7): one queue across articles,
- * stage content, reference milestones and Dinh dưỡng (D-083: stages, micronutrients, rules).
+ * stage content, reference milestones, Dinh dưỡng (D-083: stages, micronutrients, rules) and Ăn
+ * dặm (D-085: foods, recipes).
  * "Chờ duyệt" is the review step (checklist, sources, the qualified review; never the person who
  * edited last unless the policy lets the Owner approve alone, D-058 / D-079), "Đã duyệt" the publish step (Nháp → Chờ duyệt → Đã duyệt → Xuất bản),
  * and "Cần rà soát lại" the items whose 12-month re-review date has passed. The count tiles are
@@ -84,6 +99,7 @@ export function queueRows(rows: ContentRow[], tab: QueueTab): ContentRow[] {
 /** Where the selected item is edited. */
 export function editorUrlOf(kind: ContentKind, id: string): string {
   if (isNutritionKind(kind)) return nutritionEditorUrl(kind, id);
+  if (isSolidsKind(kind)) return solidsEditorUrl(kind, id);
   const base = {
     article: routePaths.articles,
     stage: routePaths.stages,
@@ -300,6 +316,10 @@ export function ReviewBody({
 function ageLine(intl: ReturnType<typeof useIntl>, r: ContentRow): string {
   if (r.ageWeeks) return weeksLabel(intl, r.ageWeeks);
   if (r.age) return stageAgeText(intl, r.age);
+  // Ăn dặm: foods carry their minimum age.
+  if (r.kind === 'food' && typeof r.minAgeMonths === 'number') {
+    return fromMonthsText(intl, r.minAgeMonths);
+  }
   // Dinh dưỡng: stages and rules carry their months, micronutrients their focus.
   const months =
     ageOf(r.ageMonths) ?? ageOf((r.focus as { ageMonths?: unknown } | null | undefined)?.ageMonths);
@@ -379,6 +399,8 @@ export function ReviewDetail({
   const hasSources = row.kind !== 'nutritionRule';
   // P-163 #16: the server refuses a step while the text has a forbidden word or a dose.
   const problems = isNutritionKind(row.kind) ? nutritionCopyProblems(item.data) : [];
+  // P-164 #10: and, for foods and recipes, an added seasoning.
+  const solidsProblems = isSolidsKind(row.kind) ? solidsCopyProblems(item.data) : [];
   const review = reviewOf(item);
   const editorUrl = editorUrlOf(row.kind, row.id);
   const facts: Array<[string, string | null | undefined]> = [
@@ -458,6 +480,8 @@ export function ReviewDetail({
             problems={problems}
           />
         )}
+        <CopyProblemsNotice problems={solidsProblems} />
+        {row.kind === 'recipe' && <RecipeAgeCheck data={item.data as unknown as RecipeDraft} />}
         {hasSources && (
           <div className="grid gap-1.5">
             <span className="text-[13px] font-medium">
@@ -526,6 +550,16 @@ export function ReviewDetail({
         {row.kind === 'nutritionRule' && (
           <NutritionRulePreview data={item.data as unknown as NutritionRuleDraft} lang={lang} />
         )}
+        {row.kind === 'food' && (
+          <FoodPreview data={item.data as unknown as FoodDraft} lang={lang} review={review} />
+        )}
+        {row.kind === 'recipe' && (
+          <RecipePreviewLoaded
+            data={item.data as unknown as RecipeDraft}
+            lang={lang}
+            review={review}
+          />
+        )}
       </PreviewCard>
       {act && (
         <ActDialog
@@ -544,5 +578,20 @@ export function ReviewDetail({
         />
       )}
     </section>
+  );
+}
+
+/** `food-too-young` (Duyệt and Xuất bản are refused too): checked against the catalogue. */
+function RecipeAgeCheck({ data }: { data: RecipeDraft }) {
+  const [load] = useContentList('food');
+  const foods = catalogueOf(load.status === 'ok' ? load.data.rows : []);
+  const age = solidsAgeOf(data.ageMonths);
+  if (!age || !Array.isArray(data.ingredients)) return null;
+  return (
+    <AgeProblemsNotice
+      problems={recipeAgeProblems({ ...data, ageMonths: age }, foods)}
+      foods={foods}
+      from={age.from}
+    />
   );
 }

@@ -1,4 +1,5 @@
 import type { DocumentSnapshot, Firestore, Timestamp } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import {
   conflictIdOf,
   datesTouched,
@@ -15,7 +16,8 @@ import {
  * - `babies/{b}/days/{date}` — "Đã ghi hôm nay" per baby-local date, recomputed from scratch
  *   for every day a write touches, so retries and out-of-order triggers converge (idempotent);
  * - `members/{uid}.recordCount` — "đã ghi 46 lần" on 14f (R-038);
- * - the 30-day bin: soft-deleted records are purged after 30 days (P-009, "Đã xoá gần đây").
+ * - the 30-day bin: soft-deleted records are purged after 30 days (P-009, "Đã xoá gần đây"), and
+ *   so are soft-deleted Ăn dặm meals with their photo (D-085, P-164 #4).
  * Care payloads are never logged.
  */
 
@@ -258,18 +260,58 @@ export async function recountMember(
   await member.update({ recordCount: count.data().count, recordCountAt: now });
 }
 
-/** Hard-deletes records that have been in the bin for 30 days. Returns how many. */
-export async function purgeDeletedRecords(db: Firestore, now: Date): Promise<number> {
+/** Removes one Storage object (a purged meal's photo); a missing object is fine. */
+export interface BinPhotoStore {
+  delete(path: string): Promise<void>;
+}
+
+/** The default bucket, opened only when a purged meal has a photo. */
+const bucketPhotos: BinPhotoStore = {
+  async delete(path) {
+    await getStorage().bucket().file(path).delete({ ignoreNotFound: true });
+  },
+};
+
+/** A meal's own photo (`babies/{babyId}/meals/{file}.jpg`, as Rules allow), else null. */
+function mealPhotoPath(doc: DocumentSnapshot): string | null {
+  const path = doc.get('photoPath') as unknown;
+  const babyId = doc.ref.parent.parent?.id;
+  if (typeof path !== 'string' || !babyId) return null;
+  return path.startsWith(`babies/${babyId}/meals/`) &&
+    /^babies\/[^/]+\/meals\/[A-Za-z0-9_-]{8,64}\.jpg$/.test(path)
+    ? path
+    : null;
+}
+
+/**
+ * Hard-deletes care records and Ăn dặm meals that have been in the bin for 30 days; a meal's photo
+ * goes first, so a failure leaves the meal to retry the next day. Returns how many documents.
+ */
+export async function purgeDeletedRecords(
+  db: Firestore,
+  now: Date,
+  photos: BinPhotoStore = bucketPhotos,
+): Promise<number> {
   const cutoff = new Date(now.getTime() - binDays * DAY_MS);
-  const due = await db
-    .collectionGroup('records')
-    .where('deleted', '==', true)
-    .where('deletedAt', '<=', cutoff)
-    .limit(400)
-    .get();
-  if (due.empty) return 0;
-  const batch = db.batch();
-  for (const doc of due.docs) batch.delete(doc.ref);
-  await batch.commit();
-  return due.size;
+  let purged = 0;
+  for (const group of ['records', 'meals'] as const) {
+    const due = await db
+      .collectionGroup(group)
+      .where('deleted', '==', true)
+      .where('deletedAt', '<=', cutoff)
+      .limit(400)
+      .get();
+    if (due.empty) continue;
+    if (group === 'meals') {
+      for (const doc of due.docs) {
+        const path = mealPhotoPath(doc);
+        if (path) await photos.delete(path);
+      }
+    }
+    const batch = db.batch();
+    for (const doc of due.docs) batch.delete(doc.ref);
+    await batch.commit();
+    purged += due.size;
+  }
+  return purged;
 }

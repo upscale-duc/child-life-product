@@ -68,6 +68,20 @@ service firebase.storage {
       allow update: if false;
     }
 
+    // Bữa ăn dặm photos (5c, D-085 #2): one per meal, like the vaccine book photos. Cùng nuôi and
+    // Người chăm sóc add a JPEG up to 4 MB; whoever reads care reads them; Cùng nuôi remove them
+    // (the meal's writer is not checkable here). The 30-day bin job removes a purged meal's photo.
+    // Never shown in Kỷ niệm, story links or exports.
+    match /babies/{babyId}/meals/{file} {
+      allow read: if request.auth != null && readsCare(member(babyId));
+      allow create: if request.auth != null && file.matches('^[A-Za-z0-9_-]{8,64}[.]jpg$') &&
+        logsCare(member(babyId)) && request.resource.contentType == 'image/jpeg' &&
+        request.resource.size <= 4 * 1024 * 1024;
+      allow delete: if request.auth != null && active(member(babyId)) &&
+        member(babyId).role == 'coParent';
+      allow update: if false;
+    }
+
     // Chi tiêu receipts ("Ảnh hoá đơn", 8c / 8g, P-140): whoever may record or see spending adds and
     // reads them (a recorder only learns the paths of their own items); Cùng nuôi remove them.
     // Never in Kỷ niệm, story links or the CSV.

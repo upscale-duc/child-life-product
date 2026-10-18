@@ -422,21 +422,33 @@ export function copyStructure(from: ContentBlock[]): ContentBlock[] {
   return structuredClone(from);
 }
 
-function ArticleEditorScreen({
+/** Where an article is edited from: Bài viết, or Ăn dặm › Hướng dẫn (D-085, same editor). */
+type EditorPlace = {
+  /** A new article starts from this (Ăn dặm presets library "solids", topic "feeding"). */
+  blank?: () => ArticleDraft;
+  backLabel?: ReactNode;
+};
+
+export function ArticleEditorScreen({
   id,
   onOpen,
+  ...place
 }: {
   id: string | null;
   onOpen: (id: string | null) => void;
-}) {
+} & EditorPlace) {
   return id ? (
-    <ExistingArticle id={id} onOpen={onOpen} />
+    <ExistingArticle id={id} onOpen={onOpen} {...place} />
   ) : (
-    <ArticleEditorShell item={null} onOpen={onOpen} reload={() => undefined} />
+    <ArticleEditorShell item={null} onOpen={onOpen} reload={() => undefined} {...place} />
   );
 }
 
-function ExistingArticle({ id, onOpen }: { id: string; onOpen: (id: string | null) => void }) {
+function ExistingArticle({
+  id,
+  onOpen,
+  ...place
+}: { id: string; onOpen: (id: string | null) => void } & EditorPlace) {
   const [item, reload] = useLoad<ContentItemView<ArticleDraft>>(
     'staffContentItem',
     { kind: 'article', id },
@@ -444,7 +456,7 @@ function ExistingArticle({ id, onOpen }: { id: string; onOpen: (id: string | nul
   );
   return (
     <Loaded load={item} reload={reload}>
-      {(view) => <ArticleEditorShell item={view} onOpen={onOpen} reload={reload} />}
+      {(view) => <ArticleEditorShell item={view} onOpen={onOpen} reload={reload} {...place} />}
     </Loaded>
   );
 }
@@ -453,11 +465,13 @@ function ArticleEditorShell({
   item,
   onOpen,
   reload,
+  blank,
+  backLabel,
 }: {
   item: ContentItemView<ArticleDraft> | null;
   onOpen: (id: string | null) => void;
   reload: () => void;
-}) {
+} & EditorPlace) {
   const staff = useStaff();
   const [list] = useContentList('article');
   const canEdit = staffCan(staff.levels, 'content.edit');
@@ -476,6 +490,8 @@ function ArticleEditorShell({
         onBack={() => onOpen(null)}
         onSaved={(newId) => (newId !== item?.row.id ? onOpen(newId) : reload())}
         onChanged={reload}
+        blank={blank}
+        backLabel={backLabel}
       />
     </ContentImagesProvider>
   );
@@ -501,6 +517,8 @@ export function ArticleEditor({
   onSaved,
   onChanged,
   initialLang = 'vi',
+  blank = blankArticle,
+  backLabel,
 }: {
   item: ContentItemView<ArticleDraft> | null;
   articles: ContentRow[];
@@ -513,12 +531,15 @@ export function ArticleEditor({
   onSaved: (id: string) => void;
   onChanged: () => void;
   initialLang?: Lang;
+  /** A new article starts from this (Ăn dặm › Hướng dẫn: library "solids", topic "feeding"). */
+  blank?: () => ArticleDraft;
+  backLabel?: ReactNode;
 }) {
   const intl = useIntl();
   const ownWorkBlocked = useOwnWorkBlocked(staffUid);
   const api = useApi();
   const [data, setData] = useState<ArticleDraft>(() =>
-    item ? structuredClone(item.data) : blankArticle(),
+    item ? structuredClone(item.data) : blank(),
   );
   const [reviewerLabel, setReviewerLabel] = useState(item?.row.reviewerLabel ?? '');
   const [notes, setNotes] = useState(item?.notes ?? '');
@@ -530,7 +551,7 @@ export function ArticleEditor({
   const [act, setAct] = useState<EditorialAction | null>(null);
   const [start] = useState(() =>
     JSON.stringify({
-      data: item ? item.data : blankArticle(),
+      data: item ? item.data : blank(),
       reviewerLabel: item?.row.reviewerLabel ?? '',
       notes: item?.notes ?? '',
     }),
@@ -597,7 +618,7 @@ export function ArticleEditor({
   return (
     <section>
       <EditorBar
-        backLabel={<FormattedMessage id="articles.title" />}
+        backLabel={backLabel ?? <FormattedMessage id="articles.title" />}
         onBack={leave}
         title={textOf(intl, data.title) || <FormattedMessage id="articles.new" />}
         badges={row && <StatusCell row={row} />}

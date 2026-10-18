@@ -3,10 +3,12 @@ import {
   answerOwnershipSchema,
   babyDeletionSteps,
   accountDeletionSteps,
+  contentCollections,
   createSupportTicketSchema,
   deleteAccountSchema,
   deleteBabySchema,
   familyStorageRequestSchema,
+  foodIdSchema,
   localDateIn,
   maxBabyAgeYears,
   noteBytesEstimate,
@@ -577,6 +579,8 @@ const authoredCollections: Array<[string, string] | [string, string, string]> = 
   ['episodes', 'closedBy', 'closedByDeleted'],
   // Stored AI summaries (plan §5.5) stay with the family; who asked becomes "đã xoá".
   ['summaries', 'requestedBy'],
+  // Ăn dặm meals (D-085) stay with the family like care records.
+  ['meals', 'createdBy'],
 ];
 
 async function accountStep(
@@ -1025,7 +1029,75 @@ const csvCell = (v: unknown) => {
 const BOM = String.fromCharCode(0xfeff);
 const iso = (v: unknown) => (v instanceof Timestamp ? v.toDate().toISOString() : v);
 
-async function* careEntries(db: Firestore, babyId: string) {
+/** One CSV with the BOM, from rows and the header naming their fields in order. */
+const csvOf = (header: string[], rows: Record<string, unknown>[]) =>
+  BOM +
+  [header.join(','), ...rows.map((r) => header.map((h) => csvCell(r[h])).join(','))].join('\n');
+
+/**
+ * The "Bữa ăn dặm" sheet (D-085 #3): live meals, oldest first, with the catalogue names in the
+ * export's language (the id when a food is not on the app). No photos.
+ */
+async function mealsCsv(db: Firestore, babyId: string, locale: Locale): Promise<string> {
+  const snap = await db.collection(`babies/${babyId}/meals`).where('deleted', '==', false).get();
+  const meals = snap.docs.map((d) => d.data());
+  const list = (v: unknown) =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  const ids = [...new Set(meals.flatMap((m) => list(m.foodIds)))].filter(
+    (id) => foodIdSchema.safeParse(id).success,
+  );
+  const names = new Map<string, string>();
+  const foods = ids.length
+    ? await db.getAll(...ids.map((id) => db.collection(contentCollections.food).doc(id)))
+    : [];
+  for (const f of foods) {
+    if (!f.exists || f.get('status') !== 'published') continue;
+    const name = f.get('name') as { vi?: string; en?: string } | undefined;
+    const text = (locale === 'en' ? name?.en : name?.vi) || name?.vi || '';
+    if (text) names.set(f.id, text);
+  }
+  const amount = (a: unknown) => {
+    const x = a as { preset?: string; value?: number; unit?: string } | null | undefined;
+    return x?.preset ?? (x?.value != null ? `${x.value} ${x.unit ?? ''}`.trim() : null);
+  };
+  const rows = meals
+    .map((m) => ({
+      id: m.id,
+      occurredAt: iso(m.occurredAt),
+      slot: m.slot ?? null,
+      dish: m.dish ?? '',
+      foods: [...list(m.foodIds).map((id) => names.get(id) ?? id), ...list(m.freeFoods)].join('; '),
+      foodIds: list(m.foodIds).join(' '),
+      amount: amount(m.amount),
+      reaction: m.reaction ?? null,
+      symptoms: list(m.symptoms).join(' '),
+      note: m.note ?? '',
+      recipeId: m.recipeId ?? null,
+      author: m.author?.name || null,
+      createdAt: iso(m.createdAt),
+    }))
+    .sort((a, b) => String(a.occurredAt).localeCompare(String(b.occurredAt)));
+  return csvOf(
+    [
+      'id',
+      'occurredAt',
+      'slot',
+      'dish',
+      'foods',
+      'foodIds',
+      'amount',
+      'reaction',
+      'symptoms',
+      'note',
+      'recipeId',
+      'author',
+      'createdAt',
+    ],
+    rows,
+  );
+}
+
+async function* careEntries(db: Firestore, babyId: string, locale: Locale = 'vi') {
   const records = await db
     .collection(`babies/${babyId}/records`)
     .where('deleted', '==', false)
@@ -1056,6 +1128,9 @@ async function* careEntries(db: Firestore, babyId: string) {
   ].join('\n');
   yield { name: 'care.json', open: async () => Readable.from([Buffer.from(json)]) };
   yield { name: 'care.csv', open: async () => Readable.from([Buffer.from(`${BOM}${csv}`)]) };
+  // Ăn dặm meals (D-085 #3) read their own collection; the care record types stay as they are.
+  const meals = await mealsCsv(db, babyId, locale);
+  yield { name: 'meals.csv', open: async () => Readable.from([Buffer.from(meals)]) };
 }
 
 async function* mediaEntries(
@@ -1099,7 +1174,9 @@ export async function runExport(
   try {
     const path = exportPath(uid, jobId, kind);
     const entries =
-      kind === 'care' ? careEntries(db, babyId) : mediaEntries(db, babyId, openObject);
+      kind === 'care'
+        ? careEntries(db, babyId, (job.get('locale') as Locale | undefined) ?? 'vi')
+        : mediaEntries(db, babyId, openObject);
     const bytes = await store.zip(path, entries);
     // "Tải về" straight from the email: a 24 h token whose hash stays on the job; the page re-checks
     // the right at every click (exportDownload, P-123).
@@ -1202,4 +1279,4 @@ export async function createSupportTicket(
   });
 }
 
-export const _test = { sameName, isActive, csvCell };
+export const _test = { sameName, isActive, csvCell, mealsCsv };

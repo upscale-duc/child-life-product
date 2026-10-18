@@ -13,6 +13,15 @@ import {
   ruleFits,
 } from './nutrition.js';
 import { contentReviewSchema, contentSourceSchema, daysBetweenIso } from './rhythm.js';
+import {
+  foodDraftSchema,
+  foodIdSchema,
+  solidsFoodSchema,
+  recipeDraftSchema,
+  recipeIdSchema,
+  solidsRecipeSchema,
+  recipeStepsSame,
+} from './solids.js';
 
 /**
  * Editorial content (D-076 #5–#7; Figma portal B01–B08, app 2a/2b, 3a–3g, 4a–4f): Thư viện chăm bé
@@ -44,6 +53,9 @@ export const contentKinds = [
   'nutritionStage',
   'nutrient',
   'nutritionRule',
+  // Ăn dặm (D-085): the food catalogue and recipes.
+  'food',
+  'recipe',
 ] as const;
 export type ContentKind = (typeof contentKinds)[number];
 
@@ -55,6 +67,8 @@ export const contentCollections: Record<ContentKind, string> = {
   nutritionStage: 'contentNutritionStages',
   nutrient: 'contentNutrients',
   nutritionRule: 'contentNutritionRules',
+  food: 'contentFoods',
+  recipe: 'contentRecipes',
 };
 /** Staff-only drafts (one per item, same id as the published document). */
 export const contentDraftsCollection = 'contentDrafts';
@@ -396,6 +410,21 @@ export const contentNutritionRuleSchema = nutritionRuleSchema(true)
   .refine(ruleFits, 'This condition does not apply to the metric');
 export type ContentNutritionRule = z.infer<typeof contentNutritionRuleSchema>;
 
+/** `contentFoods/{id}` (D-085). */
+export const contentFoodSchema = solidsFoodSchema(true)
+  .extend({ id: foodIdSchema, ...publishedMeta })
+  .strict()
+  .refine(reviewConsistent, 'illustrative must match review');
+export type ContentFood = z.infer<typeof contentFoodSchema>;
+
+/** `contentRecipes/{id}` (D-085). */
+export const contentRecipeSchema = solidsRecipeSchema(true)
+  .extend({ id: recipeIdSchema, ...publishedMeta })
+  .strict()
+  .refine(reviewConsistent, 'illustrative must match review')
+  .refine(recipeStepsSame, 'vi and en steps differ');
+export type ContentRecipe = z.infer<typeof contentRecipeSchema>;
+
 // ---------- Review workflow (B03/B04) ----------
 
 /** Nháp → Chờ duyệt → Đã duyệt → Xuất bản; Lưu trữ = taken off the app or dropped. */
@@ -662,6 +691,22 @@ export const contentSaveRequestSchema = z.discriminatedUnion('kind', [
       kind: z.literal('nutritionRule'),
       id: nutritionRuleIdSchema.nullable(),
       data: nutritionRuleDraftSchema,
+      ...saveCommon,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('food'),
+      id: foodIdSchema.nullable(),
+      data: foodDraftSchema,
+      ...saveCommon,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('recipe'),
+      id: recipeIdSchema.nullable(),
+      data: recipeDraftSchema,
       ...saveCommon,
     })
     .strict(),

@@ -406,7 +406,8 @@ export const contentVi: Record<string, string> = {
   // Server reasons
   'error.not-approved': 'Nội dung chưa được duyệt.',
   'error.not-live': 'Nội dung không còn trên app.',
-  'error.link-missing': 'Có bài viết, mốc hoặc vi chất liên kết không còn tồn tại.',
+  'error.link-missing':
+    'Có bài viết, mốc, vi chất hoặc thực phẩm liên kết không còn tồn tại hoặc chưa có trên app.',
 };
 
 export const contentEn: Record<string, string> = {
@@ -752,5 +753,6 @@ export const contentEn: Record<string, string> = {
 
   'error.not-approved': 'The content has not been approved.',
   'error.not-live': 'The content is no longer on the app.',
-  'error.link-missing': 'A linked article, milestone or micronutrient no longer exists.',
+  'error.link-missing':
+    'A linked article, milestone, micronutrient or food no longer exists or is not on the app yet.',
 };

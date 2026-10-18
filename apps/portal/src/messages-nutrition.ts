@@ -365,7 +365,7 @@ export const nutritionVi: Record<string, string> = {
   'review.kind.nutrient': 'Vi chất',
   'review.kind.nutritionRule': 'Quy tắc gợi ý',
   'error.unsafe-copy':
-    'Nội dung có từ app không dùng hoặc một liều thuốc. Sửa các chỗ được đánh dấu rồi gửi lại.',
+    'Nội dung có từ app không dùng, một liều thuốc hoặc gia vị nêm thêm cho bé. Sửa các chỗ được đánh dấu rồi gửi lại.',
   'error.stage-overlap':
     'Khoảng tháng trùng với một giai đoạn khác đang trên app hoặc đã duyệt. Sửa khoảng tháng trước khi duyệt hoặc xuất bản.',
 };
@@ -645,7 +645,7 @@ export const nutritionEn: Record<string, string> = {
   'review.kind.nutrient': 'Micronutrient',
   'review.kind.nutritionRule': 'Suggestion rule',
   'error.unsafe-copy':
-    'The text has a word the app never uses or a dose. Fix the marked places and try again.',
+    'The text has a word the app never uses, a dose or an added seasoning. Fix the marked places and try again.',
   'error.stage-overlap':
     'The months overlap another stage that is on the app or approved. Change the months before approving or publishing.',
 };

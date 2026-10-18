@@ -32,6 +32,7 @@ import {
   Server,
   ShieldCheck,
   Smartphone,
+  Soup,
   Sparkles,
   Star,
   Sun,
@@ -113,6 +114,7 @@ import { PremiumScreen } from './screens/Premium';
 import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
 import { RhythmScreen } from './screens/Rhythm';
+import { SolidsScreen } from './screens/Solids';
 import { StaffScreen } from './screens/Staff';
 import { StagesScreen } from './screens/Stages';
 import { StorageScreen } from './screens/Storage';
@@ -147,6 +149,8 @@ const nav: NavItem[] = [
   { route: 'milestones', icon: Star, group: 'content', can: 'content.view' },
   // Dinh dưỡng theo giai đoạn (D-083, Figma D01–D04): stages, micronutrients, suggestion rules.
   { route: 'nutrition', icon: Milk, group: 'content', can: 'content.view' },
+  // Ăn dặm (D-085, plan §6): food catalogue, recipes, solids guides.
+  { route: 'solids', icon: Soup, group: 'content', can: 'content.view' },
   { route: 'contentReview', icon: BadgeCheck, group: 'content', can: 'content.view' },
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
@@ -355,6 +359,8 @@ function Screen({ route }: { route: Route }) {
       return <MilestonesScreen />;
     case 'nutrition':
       return <NutritionScreen />;
+    case 'solids':
+      return <SolidsScreen />;
     case 'contentReview':
       return <ContentReviewScreen />;
     case 'staff':

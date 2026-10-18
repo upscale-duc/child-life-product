@@ -1,6 +1,7 @@
 import type { SupportedLocale } from '@child-life/web-config';
 import { contentEn, contentVi } from './messages-content';
 import { nutritionEn, nutritionVi } from './messages-nutrition';
+import { solidsEn, solidsVi } from './messages-solids';
 
 /**
  * ICU messages (D-012). Vietnamese is the source (Figma Admin portal copy, `08-admin-portal.md`);
@@ -6209,8 +6210,8 @@ const en: Record<string, string> = {
 };
 
 // Editorial content (D-076 #5–#7) keeps its catalogs in messages-content.ts, Dinh dưỡng (D-083)
-// in messages-nutrition.ts.
+// in messages-nutrition.ts, Ăn dặm (D-085) in messages-solids.ts.
 export const messages: Record<SupportedLocale, Record<string, string>> = {
-  vi: { ...vi, ...contentVi, ...nutritionVi },
-  en: { ...en, ...contentEn, ...nutritionEn },
+  vi: { ...vi, ...contentVi, ...nutritionVi, ...solidsVi },
+  en: { ...en, ...contentEn, ...nutritionEn, ...solidsEn },
 };

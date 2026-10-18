@@ -278,7 +278,8 @@ describe('navigation and addresses', () => {
 
   it('adds NỘI DUNG › Dinh dưỡng for Nội dung · Xem, before Duyệt nội dung', () => {
     for (const role of ['admin', 'ops', 'expert'] as const) {
-      expect(sidebar([role])).toContain('Mốc phát triển Dinh dưỡng Duyệt nội dung');
+      // Ăn dặm (D-085) follows Dinh dưỡng.
+      expect(sidebar([role])).toContain('Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung');
     }
     expect(sidebar(['eng'])).not.toContain('Dinh dưỡng');
     expect(sidebar(['admin'], 'en')).toContain('Nutrition');

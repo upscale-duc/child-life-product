@@ -46,19 +46,22 @@ import {
   nutritionRuleAdapter,
   nutritionStageAdapter,
 } from './content-nutrition.js';
+import { foodAdapter, recipeAdapter, recipeItemRow, solidsList } from './content-solids.js';
 import { seedArticles, seedStages } from './content-seed.js';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
 import { mayApproveOwn, readContentPolicy, reviewRequired } from './content-policy.js';
 
 /**
  * Editorial content on the portal (D-076 #5–#7; Figma B01–B08): Thư viện chăm bé articles,
- * "Nội dung theo giai đoạn" (app "Giai đoạn của bé"), reference Mốc phát triển and Dinh dưỡng
- * theo giai đoạn (D-083: stages, micronutrients, suggestion rules; `content-nutrition.ts`). One
- * draft per item in `contentDrafts/{id}` (staff-only, through these callables):
+ * "Nội dung theo giai đoạn" (app "Giai đoạn của bé"), reference Mốc phát triển, Dinh dưỡng
+ * theo giai đoạn (D-083: stages, micronutrients, suggestion rules; `content-nutrition.ts`) and Ăn
+ * dặm (D-085: foods, recipes; `content-solids.ts`). One draft per item in `contentDrafts/{id}`
+ * (staff-only, through these callables):
  *
  *   Nháp → Gửi duyệt → Duyệt (a different person than the last editor, D-058; the qualified
  *   review on prod) → Xuất bản (writes `contentArticles` / `contentStages` / `contentMilestones`,
- *   or `contentNutritionStages` / `contentNutrients` / `contentNutritionRules`)
+ *   `contentNutritionStages` / `contentNutrients` / `contentNutritionRules`, or `contentFoods` /
+ *   `contentRecipes`)
  *
  * Editing a published item opens a new draft while the published revision stays on the app.
  * "Gỡ khỏi app" deletes the published document; "Xác nhận lại" renews the 12-month re-review.
@@ -190,6 +193,8 @@ const adapters: Record<ContentKind, ContentKindAdapter> = {
   nutritionStage: nutritionStageAdapter,
   nutrient: nutrientAdapter,
   nutritionRule: nutritionRuleAdapter,
+  food: foodAdapter,
+  recipe: recipeAdapter,
 };
 
 function adapterOf(kind: ContentKind): ContentKindAdapter {
@@ -300,9 +305,10 @@ function nutritionCoverageOf(rows: Row[]) {
 const todayOf = (now: Date) => localDateIn(ZONE, now);
 
 /**
- * B01 / B05 / B07 / D01–D04 lists (one kind, with counts; stages also get the 0–36 month bucket
- * coverage, nutrition stages the 0–36 month strip) and the B03 / B04 queue (every kind: waiting
- * for review, approved, due for re-review).
+ * B01 / B05 / B07 / D01–D04 / Ăn dặm lists (one kind, with counts; stages also get the 0–36 month
+ * bucket coverage, nutrition stages the 0–36 month strip, foods and recipes their coverage and
+ * recipes their allergens) and the B03 / B04 queue (every kind: waiting for review, approved, due
+ * for re-review).
  */
 export async function contentList(
   db: Firestore,
@@ -336,13 +342,16 @@ export async function contentList(
       requireReview,
     };
   }
+  // Ăn dặm (D-085): recipe rows get their allergens from the catalogue; both kinds a coverage.
+  const solids = view === 'food' || view === 'recipe' ? await solidsList(db, view, rows) : null;
   return {
     view,
     today,
-    rows,
+    rows: solids?.rows ?? rows,
     counts: countsOf(rows),
     ...(view === 'stage' ? { coverage: coverageOf(rows) } : {}),
     ...(view === 'nutritionStage' ? { coverage: nutritionCoverageOf(rows) } : {}),
+    ...(solids ? { coverage: solids.coverage } : {}),
     available: contentKinds,
     requireReview,
   };
@@ -355,8 +364,9 @@ export async function contentItem(db: Firestore, staff: Staff | null, data: unkn
   const snap = await drafts(db).doc(req.id).get();
   if (!snap.exists || snap.get('kind') !== req.kind) throw new StaffError('not-found', 'not-found');
   const pub = await publicRef(db, req.kind, req.id).get();
+  const row = rowOf(snap, todayOf(now));
   return {
-    row: rowOf(snap, todayOf(now)),
+    row: req.kind === 'recipe' ? await recipeItemRow(db, row) : row,
     data: snap.get('data') as Data,
     notes: (snap.get('notes') as string | undefined) ?? '',
     lastEditorUid: (snap.get('lastEditorUid') as string | undefined) ?? null,

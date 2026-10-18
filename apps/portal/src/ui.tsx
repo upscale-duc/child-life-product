@@ -554,6 +554,8 @@ export const reasonMessages = [
   // Dinh dưỡng (D-083, P-163 #16, #17).
   'unsafe-copy',
   'stage-overlap',
+  // Ăn dặm (D-085, P-164 #10): an ingredient above the recipe's first month.
+  'food-too-young',
 ];
 
 export function errorMessageId(error: ApiError): string {

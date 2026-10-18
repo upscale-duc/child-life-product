@@ -1,20 +1,24 @@
 // Content release: moves the editorial content between projects as a checked bundle.
 //
 //   export  reads what a project publishes (Sơ cứu, Nhịp lớn lên, Mẫu kỷ niệm, Dữ liệu tham chiếu,
-//           Thư viện chăm bé, Giai đoạn, Mốc phát triển, Dinh dưỡng) and every picture / video /
-//           music file those name, into a folder: bundle.json (validated) + assets/<storage path>.
-//   seeds   builds the same bundle from the repo's seed files (content/, content-seed.ts).
+//           Thư viện chăm bé, Giai đoạn, Mốc phát triển, Dinh dưỡng, Ăn dặm foods and recipes) and
+//           every picture / video / music file those name, into a folder: bundle.json (validated)
+//           + assets/<storage path>.
+//   seeds   builds the same bundle from the repo's seed files (content/, content-seed.ts,
+//           nutrition-seed.ts, solids-catalog-seed.ts).
 //   import  puts a bundle into a project AS DRAFTS: assets are copied byte for byte (the ids are
 //           content hashes, so they stay valid), each pack becomes its open draft, each article /
-//           stage / milestone / nutrition stage, nutrient and rule its Nháp under the same id. Nothing is approved or published: in the
-//           portal someone other than the importer submits, approves and publishes, and on prod
-//           approval still needs the qualified review (D-058, D-073 #2).
+//           stage / milestone / nutrition stage, nutrient, rule, food and recipe its Nháp under the
+//           same id. Nothing is approved or published: in the portal someone other than the
+//           importer submits, approves and publishes, and on prod approval still needs the
+//           qualified review (D-058, D-073 #2).
 //
 //   policy  sets the approval policy (D-079) as the Owner, with a reason, through the same function
 //           as the portal's "Chính sách duyệt" (audited as content.policy).
 //   publish takes every open draft through submit → approve → publish with the server's own
 //           functions, as --as: the Owner alone when the policy allows it (D-079), and on prod
 //           with no qualified review only when the policy turns that gate off (D-078 #6).
+//           Recipes go last: publishing one needs its foods and guides on the app (D-085).
 //
 // Default is a dry run that prints the plan; --apply writes. Prod also needs
 // CHILD_LIFE_PROD_APPROVED=yes (owner approval, as scripts/deploy.sh). Auth: gcloud ADC
@@ -69,6 +73,7 @@ import { readContentPolicy, setContentPolicy } from '../src/content-policy.js';
 import { milestoneAdapter } from '../src/content-milestones.js';
 import { seedArticles, seedStages } from '../src/content-seed.js';
 import { seedNutrients, seedNutritionRules, seedNutritionStages } from '../src/nutrition-seed.js';
+import { seedFoods, seedRecipes } from '../src/solids-catalog-seed.js';
 import { keepsakeAct, keepsakeDraft } from '../src/keepsake-content.js';
 import { referenceAct, referenceDraft } from '../src/reference-data.js';
 import { rhythmAct, rhythmDraft } from '../src/rhythm-content.js';
@@ -86,6 +91,8 @@ const sections = [
   'nutritionStages',
   'nutrients',
   'nutritionRules',
+  'foods',
+  'recipes',
 ] as const;
 type Section = (typeof sections)[number];
 // The sections on the editorial workflow (content-library.ts), one kind each.
@@ -96,10 +103,15 @@ const libraryKinds = {
   nutritionStages: 'nutritionStage',
   nutrients: 'nutrient',
   nutritionRules: 'nutritionRule',
+  foods: 'food',
+  recipes: 'recipe',
 } as const satisfies Partial<Record<Section, ContentKind>>;
 type LibrarySection = keyof typeof libraryKinds;
 const librarySections = Object.keys(libraryKinds) as LibrarySection[];
-/** The library items of a bundle; bundles made before Dinh dưỡng (D-083) have no nutrition arrays. */
+/**
+ * The library items of a bundle; bundles made before Dinh dưỡng (D-083) or Ăn dặm (D-085) have no
+ * nutrition or solids arrays.
+ */
 const libraryItems = (b: Bundle, of: readonly LibrarySection[] = librarySections) =>
   of.flatMap((s) => b[s] ?? []);
 
@@ -127,6 +139,8 @@ interface Bundle {
   nutritionStages?: ContentImportItem[];
   nutrients?: ContentImportItem[];
   nutritionRules?: ContentImportItem[];
+  foods?: ContentImportItem[];
+  recipes?: ContentImportItem[];
   assets: Asset[];
 }
 
@@ -237,7 +251,9 @@ function writeBundle(out: string, b: Bundle, files: Map<string, Buffer>) {
       `reference ${Object.keys(b.reference).length} tables, ${b.articles.length} articles, ` +
       `${b.stages.length} stages, ${b.milestones.length} milestones, ` +
       `nutrition ${b.nutritionStages?.length ?? 0} stages / ${b.nutrients?.length ?? 0} nutrients / ` +
-      `${b.nutritionRules?.length ?? 0} rules, ${b.assets.length} assets (${mb.toFixed(1)} MB)`,
+      `${b.nutritionRules?.length ?? 0} rules, ` +
+      `solids ${b.foods?.length ?? 0} foods / ${b.recipes?.length ?? 0} recipes, ` +
+      `${b.assets.length} assets (${mb.toFixed(1)} MB)`,
   );
 }
 
@@ -255,6 +271,8 @@ const emptyBundle = (source: string): Bundle => ({
   nutritionStages: [],
   nutrients: [],
   nutritionRules: [],
+  foods: [],
+  recipes: [],
   assets: [],
 });
 
@@ -388,12 +406,14 @@ function seedsBundle(out: string) {
     if (!seed) fail('content/milestones/milestones.seed.json does not match milestoneSeedSchema');
     b.milestones = seed!.map((s) => ({ kind: 'milestone', ...s }));
   }
-  const nutrition = [
+  const typed = [
     ['nutritionStages', seedNutritionStages],
     ['nutrients', seedNutrients],
     ['nutritionRules', seedNutritionRules],
+    ['foods', seedFoods],
+    ['recipes', seedRecipes],
   ] as const;
-  for (const [section, seed] of nutrition) {
+  for (const [section, seed] of typed) {
     if (!only.has(section)) continue;
     b[section] = seed.map((s) => ({
       kind: libraryKinds[section],
@@ -527,7 +547,7 @@ async function importBundle(project: string, dir: string, as: string, apply: boo
     }
   }
 
-  // 3. Articles, stages, milestones, nutrition: Nháp under the same ids.
+  // 3. Articles, stages, milestones, nutrition, Ăn dặm: Nháp under the same ids.
   const items = libraryItems(
     b,
     librarySections.filter((s) => only.has(s)),
@@ -664,7 +684,12 @@ async function publishAll(project: string, as: string, apply: boolean) {
       .collection(contentDraftsCollection)
       .where('status', 'in', ['draft', 'in_review', 'approved'])
       .get();
-    for (const d of drafts.docs.filter((x) => kinds.includes(x.get('kind') as ContentKind))) {
+    // Recipes last: Xuất bản refuses a recipe whose foods or guides are not on the app yet.
+    const last = (x: (typeof drafts.docs)[number]) => (x.get('kind') === 'recipe' ? 1 : 0);
+    const todo = drafts.docs
+      .filter((x) => kinds.includes(x.get('kind') as ContentKind))
+      .sort((a, b) => last(a) - last(b));
+    for (const d of todo) {
       const kind = d.get('kind') as ContentKind;
       const act = (action: string, extra: Data = {}) =>
         contentAct(db, deps, staff, { kind, id: d.id, action, reason, ...extra }, now());
