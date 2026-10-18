@@ -10,6 +10,12 @@
 //           portal someone other than the importer submits, approves and publishes, and on prod
 //           approval still needs the qualified review (D-058, D-073 #2).
 //
+//   policy  sets the approval policy (D-079) as the Owner, with a reason, through the same function
+//           as the portal's "Chính sách duyệt" (audited as content.policy).
+//   publish takes every open draft through submit → approve → publish with the server's own
+//           functions, as --as: the Owner alone when the policy allows it (D-079), and on prod
+//           with no qualified review only when the policy turns that gate off (D-078 #6).
+//
 // Default is a dry run that prints the plan; --apply writes. Prod also needs
 // CHILD_LIFE_PROD_APPROVED=yes (owner approval, as scripts/deploy.sh). Auth: gcloud ADC
 // (`gcloud auth application-default login`); --as is the portal staff account the drafts are
@@ -18,6 +24,10 @@
 //   cd firebase/functions
 //   pnpm exec tsx scripts/content-release.ts export --project child-life-dev --out ~/cl-bundles/2026-10-16
 //   pnpm exec tsx scripts/content-release.ts seeds --out ~/cl-bundles/seeds
+//   pnpm exec tsx scripts/content-release.ts policy --project child-life-dev --as you@childlife.app \
+//     --self-approve on --review-on-prod off --reason "…" [--apply]
+//   pnpm exec tsx scripts/content-release.ts publish --project child-life-dev --as you@childlife.app \
+//     --reason "…" [--only …] [--apply]
 //   pnpm exec tsx scripts/content-release.ts import --project child-life-prod \
 //     --bundle ~/cl-bundles/2026-10-16 --as you@childlife.app [--only firstAid,articles] [--apply]
 //
@@ -29,6 +39,7 @@ import { fileURLToPath } from 'node:url';
 import {
   contentCollections,
   contentDraftsCollection,
+  editorialChecks,
   contentImagePath,
   contentImages,
   firstAidImagePath,
@@ -52,13 +63,14 @@ import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
-import { firstAidDraft } from '../src/content.js';
-import { contentImport, type ContentImportItem } from '../src/content-library.js';
+import { firstAidAct, firstAidDraft } from '../src/content.js';
+import { contentAct, contentImport, type ContentImportItem } from '../src/content-library.js';
+import { readContentPolicy, setContentPolicy } from '../src/content-policy.js';
 import { milestoneAdapter } from '../src/content-milestones.js';
 import { seedArticles, seedStages } from '../src/content-seed.js';
-import { keepsakeDraft } from '../src/keepsake-content.js';
-import { referenceDraft } from '../src/reference-data.js';
-import { rhythmDraft } from '../src/rhythm-content.js';
+import { keepsakeAct, keepsakeDraft } from '../src/keepsake-content.js';
+import { referenceAct, referenceDraft } from '../src/reference-data.js';
+import { rhythmAct, rhythmDraft } from '../src/rhythm-content.js';
 import { resolveStaff } from '../src/staff-access.js';
 
 type Data = Record<string, unknown>;
@@ -501,6 +513,144 @@ async function importBundle(project: string, dir: string, as: string, apply: boo
   );
 }
 
+async function staffFor(db: ReturnType<typeof getFirestore>, project: string, as: string) {
+  const user = await getAuth()
+    .getUserByEmail(as)
+    .catch(() => fail(`No account ${as} in ${project}`));
+  const staff = await resolveStaff(
+    db,
+    { uid: user.uid, token: user.customClaims ?? {} },
+    new Date(),
+  );
+  if (!staff) fail(`${as} is not active staff in ${project}`);
+  return staff!;
+}
+
+const onOff = (name: string) => {
+  const v = arg(name);
+  if (v === undefined) return undefined;
+  if (v !== 'on' && v !== 'off') fail(`--${name} on|off`);
+  return v === 'on';
+};
+
+/** `policy`: the Owner's "Chính sách duyệt" switches (D-079), audited like the portal. */
+async function setPolicy(project: string, as: string, apply: boolean) {
+  const reason = arg('reason');
+  if (!reason) fail('policy needs --reason "…" (written to the audit log)');
+  if (apply && project === 'child-life-prod' && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
+    fail('Changing prod needs owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run.');
+  }
+  const { db } = connect(project);
+  const staff = await staffFor(db, project, as);
+  const change = {
+    ownerSelfApprove: onOff('self-approve'),
+    reviewRequiredOnProd: onOff('review-on-prod'),
+  };
+  console.log(`${apply ? 'APPLY' : 'DRY RUN'}: ${project} policy now`, await readContentPolicy(db));
+  console.log('change to', change, 'as', staff.name);
+  if (apply)
+    console.log('saved', await setContentPolicy(db, staff, { ...change, reason }, new Date()));
+}
+
+/** `publish`: every open draft through submit → approve → publish, with the server's functions. */
+async function publishAll(project: string, as: string, apply: boolean) {
+  const reason = arg('reason');
+  if (!reason || reason.trim().length < 3)
+    fail('publish needs --reason "…" (written to the audit log)');
+  const prod = project === 'child-life-prod';
+  if (apply && prod && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
+    fail('Publishing to prod needs owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run.');
+  }
+  const { db, bucket } = connect(project);
+  const staff = await staffFor(db, project, as);
+  const policy = await readContentPolicy(db);
+  console.log(`${apply ? 'APPLY' : 'DRY RUN'}: publish on ${project} as ${staff.name}`, policy);
+  const now = () => new Date();
+  const done: string[] = [];
+  const step = async (label: string, run: () => Promise<unknown>) => {
+    done.push(label);
+    if (apply) await run();
+  };
+  const open = async (path: string) =>
+    (await db.collection(path).where('status', 'in', ['draft', 'pending']).get()).docs;
+
+  if (only.has('firstAid')) {
+    const deps = { requireReview: prod, images: imageStore(bucket, 'content/first-aid/') };
+    for (const v of await open('content/firstAid/versions')) {
+      const act = (action: string) =>
+        firstAidAct(db, deps, staff, { versionId: v.id, action, reason, review: null }, now());
+      if (v.get('status') === 'draft') await step(`first aid ${v.id}: submit`, () => act('submit'));
+      await step(`first aid ${v.id}: approve and publish`, () => act('approve'));
+    }
+  }
+  if (only.has('rhythm')) {
+    for (const d of ['reference', 'content'] as const) {
+      for (const v of await open(`content/rhythm/${d}`)) {
+        const act = (action: string) =>
+          rhythmAct(
+            db,
+            { requireReview: prod },
+            staff,
+            { doc: d, versionId: v.id, action, reason, review: null },
+            now(),
+          );
+        if (v.get('status') === 'draft')
+          await step(`rhythm ${d} ${v.id}: submit`, () => act('submit'));
+        await step(`rhythm ${d} ${v.id}: approve and publish`, () => act('approve'));
+      }
+    }
+  }
+  if (only.has('keepsakes')) {
+    for (const v of await open('content/keepsakes/versions')) {
+      const act = (action: string) =>
+        keepsakeAct(db, staff, { versionId: v.id, action, reason }, now());
+      if (v.get('status') === 'draft') await step(`keepsakes ${v.id}: submit`, () => act('submit'));
+      await step(`keepsakes ${v.id}: approve and publish`, () => act('approve'));
+    }
+  }
+  if (only.has('reference')) {
+    for (const dataset of referenceDatasets) {
+      for (const v of await open(`referenceData/${dataset}/versions`)) {
+        const act = (action: string) =>
+          referenceAct(db, staff, { versionId: v.id, action, reason }, now());
+        if (v.get('status') === 'draft')
+          await step(`reference ${dataset} ${v.id}: submit`, () => act('submit'));
+        await step(`reference ${dataset} ${v.id}: approve and publish`, () => act('approve'));
+      }
+    }
+  }
+  const kinds = (['articles', 'stages', 'milestones'] as const)
+    .filter((x) => only.has(x))
+    .map((x) => kindOf[x]);
+  if (kinds.length) {
+    const deps = { requireReview: prod, images: imageStore(bucket, 'content/library/') };
+    const drafts = await db
+      .collection(contentDraftsCollection)
+      .where('status', 'in', ['draft', 'in_review', 'approved'])
+      .get();
+    for (const d of drafts.docs.filter((x) => kinds.includes(x.get('kind') as ContentKind))) {
+      const kind = d.get('kind') as ContentKind;
+      const act = (action: string, extra: Data = {}) =>
+        contentAct(db, deps, staff, { kind, id: d.id, action, reason, ...extra }, now());
+      const status = d.get('status') as string;
+      if (status === 'draft') await step(`${kind} ${d.id}: submit`, () => act('submit'));
+      if (status !== 'approved') {
+        await step(`${kind} ${d.id}: approve`, () =>
+          act('approve', { checks: [...editorialChecks] }),
+        );
+      }
+      await step(`${kind} ${d.id}: publish`, () => act('publish'));
+    }
+  }
+  const count = (w: string) => done.filter((x) => x.endsWith(w)).length;
+  console.log(
+    `${done.length} steps: ${count('submit')} submit, ${count('approve')} approve, ` +
+      `${count('approve and publish')} approve and publish, ${count('publish')} publish`,
+  );
+  if (process.env.VERBOSE) for (const x of done) console.log(`  ${x}`);
+  console.log(apply ? 'Done.' : 'Dry run only: nothing was written. Re-run with --apply.');
+}
+
 function imageStore(bucket: ReturnType<ReturnType<typeof getStorage>['bucket']>, prefix: string) {
   const path = (id: string) => `${prefix}${id}.webp`;
   return {
@@ -535,6 +685,18 @@ if (command === 'export') {
     );
   }
   await importBundle(arg('project')!, arg('bundle')!, arg('as')!, flag('apply'));
+} else if (command === 'policy') {
+  if (!arg('project') || !arg('as')) {
+    fail(
+      'policy --project <id> --as <owner email> [--self-approve on|off] [--review-on-prod on|off] --reason "…" [--apply]',
+    );
+  }
+  await setPolicy(arg('project')!, arg('as')!, flag('apply'));
+} else if (command === 'publish') {
+  if (!arg('project') || !arg('as')) {
+    fail('publish --project <id> --as <staff email> --reason "…" [--only …] [--apply]');
+  }
+  await publishAll(arg('project')!, arg('as')!, flag('apply'));
 } else {
-  fail('Usage: content-release.ts export | seeds | import (see the header)');
+  fail('Usage: content-release.ts export | seeds | import | policy | publish (see the header)');
 }
