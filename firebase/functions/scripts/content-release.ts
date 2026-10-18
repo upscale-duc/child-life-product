@@ -1,12 +1,12 @@
 // Content release: moves the editorial content between projects as a checked bundle.
 //
 //   export  reads what a project publishes (Sơ cứu, Nhịp lớn lên, Mẫu kỷ niệm, Dữ liệu tham chiếu,
-//           Thư viện chăm bé, Giai đoạn, Mốc phát triển) and every picture / video / music file
-//           those name, into a folder: bundle.json (validated) + assets/<storage path>.
+//           Thư viện chăm bé, Giai đoạn, Mốc phát triển, Dinh dưỡng) and every picture / video /
+//           music file those name, into a folder: bundle.json (validated) + assets/<storage path>.
 //   seeds   builds the same bundle from the repo's seed files (content/, content-seed.ts).
 //   import  puts a bundle into a project AS DRAFTS: assets are copied byte for byte (the ids are
 //           content hashes, so they stay valid), each pack becomes its open draft, each article /
-//           stage / milestone its Nháp under the same id. Nothing is approved or published: in the
+//           stage / milestone / nutrition stage, nutrient and rule its Nháp under the same id. Nothing is approved or published: in the
 //           portal someone other than the importer submits, approves and publishes, and on prod
 //           approval still needs the qualified review (D-058, D-073 #2).
 //
@@ -68,6 +68,7 @@ import { contentAct, contentImport, type ContentImportItem } from '../src/conten
 import { readContentPolicy, setContentPolicy } from '../src/content-policy.js';
 import { milestoneAdapter } from '../src/content-milestones.js';
 import { seedArticles, seedStages } from '../src/content-seed.js';
+import { seedNutrients, seedNutritionRules, seedNutritionStages } from '../src/nutrition-seed.js';
 import { keepsakeAct, keepsakeDraft } from '../src/keepsake-content.js';
 import { referenceAct, referenceDraft } from '../src/reference-data.js';
 import { rhythmAct, rhythmDraft } from '../src/rhythm-content.js';
@@ -82,13 +83,25 @@ const sections = [
   'articles',
   'stages',
   'milestones',
+  'nutritionStages',
+  'nutrients',
+  'nutritionRules',
 ] as const;
 type Section = (typeof sections)[number];
-const kindOf: Record<'articles' | 'stages' | 'milestones', ContentKind> = {
+// The sections on the editorial workflow (content-library.ts), one kind each.
+const libraryKinds = {
   articles: 'article',
   stages: 'stage',
   milestones: 'milestone',
-};
+  nutritionStages: 'nutritionStage',
+  nutrients: 'nutrient',
+  nutritionRules: 'nutritionRule',
+} as const satisfies Partial<Record<Section, ContentKind>>;
+type LibrarySection = keyof typeof libraryKinds;
+const librarySections = Object.keys(libraryKinds) as LibrarySection[];
+/** The library items of a bundle; bundles made before Dinh dưỡng (D-083) have no nutrition arrays. */
+const libraryItems = (b: Bundle, of: readonly LibrarySection[] = librarySections) =>
+  of.flatMap((s) => b[s] ?? []);
 
 interface Asset {
   path: string;
@@ -111,6 +124,9 @@ interface Bundle {
   articles: ContentImportItem[];
   stages: ContentImportItem[];
   milestones: ContentImportItem[];
+  nutritionStages?: ContentImportItem[];
+  nutrients?: ContentImportItem[];
+  nutritionRules?: ContentImportItem[];
   assets: Asset[];
 }
 
@@ -180,7 +196,7 @@ function assetPaths(b: Bundle): string[] {
       for (const a of keepsakeTemplateAssets(t)) out.add(keepsakeAssetPath(a));
     for (const m of b.keepsakes.catalog.music) out.add(keepsakeAssetPath(m.asset));
   }
-  for (const item of [...b.articles, ...b.stages, ...b.milestones])
+  for (const item of libraryItems(b))
     for (const id of contentImages(item.kind, item.data)) out.add(contentImagePath(id));
   return [...out].sort();
 }
@@ -195,7 +211,7 @@ function validate(b: Bundle) {
     rhythmContentSchema.omit({ version: true, publishedAt: true }).parse(b.rhythm.content);
   if (b.keepsakes) keepsakeCatalogSchema.parse(b.keepsakes.catalog);
   const ids = new Set<string>();
-  for (const item of [...b.articles, ...b.stages, ...b.milestones]) {
+  for (const item of libraryItems(b)) {
     if (ids.has(item.id)) fail(`Duplicate id ${item.id}`);
     ids.add(item.id);
   }
@@ -219,7 +235,9 @@ function writeBundle(out: string, b: Bundle, files: Map<string, Buffer>) {
     `Bundle ${out}: first aid ${b.firstAid ? `${b.firstAid.pack.situations.length} situations` : '—'}, ` +
       `rhythm ${b.rhythm ? 'yes' : '—'}, keepsakes ${b.keepsakes?.catalog.templates.length ?? '—'} templates, ` +
       `reference ${Object.keys(b.reference).length} tables, ${b.articles.length} articles, ` +
-      `${b.stages.length} stages, ${b.milestones.length} milestones, ${b.assets.length} assets (${mb.toFixed(1)} MB)`,
+      `${b.stages.length} stages, ${b.milestones.length} milestones, ` +
+      `nutrition ${b.nutritionStages?.length ?? 0} stages / ${b.nutrients?.length ?? 0} nutrients / ` +
+      `${b.nutritionRules?.length ?? 0} rules, ${b.assets.length} assets (${mb.toFixed(1)} MB)`,
   );
 }
 
@@ -234,6 +252,9 @@ const emptyBundle = (source: string): Bundle => ({
   articles: [],
   stages: [],
   milestones: [],
+  nutritionStages: [],
+  nutrients: [],
+  nutritionRules: [],
   assets: [],
 });
 
@@ -283,9 +304,9 @@ async function exportProject(project: string, out: string) {
         b.reference[dataset] = { version: pub.version as string, rows: pub.rows as unknown[] };
     }
   }
-  for (const section of ['articles', 'stages', 'milestones'] as const) {
+  for (const section of librarySections) {
     if (!only.has(section)) continue;
-    const kind = kindOf[section];
+    const kind = libraryKinds[section];
     const [pubs, drafts] = await Promise.all([
       db.collection(contentCollections[kind]).get(),
       db.collection(contentDraftsCollection).where('kind', '==', kind).get(),
@@ -366,6 +387,20 @@ function seedsBundle(out: string) {
     const seed = milestoneAdapter.seed(read('content/milestones/milestones.seed.json'));
     if (!seed) fail('content/milestones/milestones.seed.json does not match milestoneSeedSchema');
     b.milestones = seed!.map((s) => ({ kind: 'milestone', ...s }));
+  }
+  const nutrition = [
+    ['nutritionStages', seedNutritionStages],
+    ['nutrients', seedNutrients],
+    ['nutritionRules', seedNutritionRules],
+  ] as const;
+  for (const [section, seed] of nutrition) {
+    if (!only.has(section)) continue;
+    b[section] = seed.map((s) => ({
+      kind: libraryKinds[section],
+      id: s.id,
+      reviewerLabel: s.reviewerLabel,
+      data: s.data as unknown as Data,
+    }));
   }
   // Keepsakes and reference tables have no repo seed in this format: export them from a project.
   only.delete('keepsakes');
@@ -492,10 +527,11 @@ async function importBundle(project: string, dir: string, as: string, apply: boo
     }
   }
 
-  // 3. Articles, stages, milestones: Nháp under the same ids.
-  const items = (['articles', 'stages', 'milestones'] as const)
-    .filter((s) => only.has(s))
-    .flatMap((s) => b[s]);
+  // 3. Articles, stages, milestones, nutrition: Nháp under the same ids.
+  const items = libraryItems(
+    b,
+    librarySections.filter((s) => only.has(s)),
+  );
   if (items.length) {
     const deps = { requireReview: true, images: imageStore(bucket, 'content/library/') };
     const result = await contentImport(db, deps, staff, items, now, { notes, dryRun: !apply });
@@ -619,9 +655,9 @@ async function publishAll(project: string, as: string, apply: boolean) {
       }
     }
   }
-  const kinds = (['articles', 'stages', 'milestones'] as const)
+  const kinds: ContentKind[] = librarySections
     .filter((x) => only.has(x))
-    .map((x) => kindOf[x]);
+    .map((x) => libraryKinds[x]);
   if (kinds.length) {
     const deps = { requireReview: prod, images: imageStore(bucket, 'content/library/') };
     const drafts = await db

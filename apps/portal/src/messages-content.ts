@@ -7,8 +7,10 @@
 
 /** App copy shown in the previews, in the content's language whatever the portal's locale. */
 const preview: Record<string, string> = {
-  'content.preview.illustrative.vi': 'Nội dung minh hoạ · chờ chuyên môn duyệt',
-  'content.preview.illustrative.en': 'Illustrative content · awaiting expert review',
+  'content.preview.illustrative.vi':
+    'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ',
+  'content.preview.illustrative.en':
+    'Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor',
   'content.preview.reviewed.vi': '{who} · rà soát {on}',
   'content.preview.reviewed.en': '{who} · reviewed {on}',
   'content.preview.minutes.vi': '{n} phút đọc',
@@ -59,7 +61,7 @@ const preview: Record<string, string> = {
 
 export const contentVi: Record<string, string> = {
   ...preview,
-  'nav.articles': 'Bài viết',
+  'nav.articles': 'Thư viện chăm bé',
   'nav.stages': 'Nội dung theo giai đoạn',
   'nav.milestones': 'Mốc phát triển',
   'nav.contentReview': 'Duyệt nội dung',
@@ -215,7 +217,7 @@ export const contentVi: Record<string, string> = {
   'content.act.reject.body': 'Nội dung về Nháp kèm lý do của bạn.',
   'content.act.publish.title': 'Xuất bản lên app',
   'content.act.publish.body':
-    'Bản đã duyệt sẽ hiện trên app. Nếu chưa có người có chuyên môn ký duyệt, app hiện "Nội dung minh hoạ · chờ chuyên môn duyệt".',
+    'Bản đã duyệt sẽ hiện trên app. Nếu chưa có người có chuyên môn ký duyệt, app ghi chú nhỏ ở cuối: “Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ” (D-082).',
   'content.act.unpublish.title': 'Gỡ khỏi app',
   'content.act.unpublish.body': 'Nội dung biến khỏi app ở lần mở tiếp theo. Bản nháp vẫn được giữ.',
   'content.act.archive.title': 'Huỷ bản nháp',
@@ -257,8 +259,8 @@ export const contentVi: Record<string, string> = {
   'content.forReviewer': 'Cho người duyệt',
 
   // B01 / B02
-  'articles.title': 'Bài viết',
-  'articles.sub': 'Nội dung cho Thư viện chăm bé',
+  'articles.title': 'Thư viện chăm bé',
+  'articles.sub': 'Bài viết hướng dẫn chăm bé mà ba mẹ đọc trong app',
   'articles.new': 'Bài viết mới',
   'articles.search': 'Tìm bài viết…',
   'articles.empty': 'Chưa có bài viết. Tạo bài mới hoặc nhập bản nháp mẫu.',
@@ -369,7 +371,8 @@ export const contentVi: Record<string, string> = {
   'review.pickHint.in_review': 'Chọn một mục bên trái để xem nội dung, nguồn và duyệt.',
   'review.pickHint.approved': 'Chọn một mục bên trái để xem lại và xuất bản lên app.',
   'review.pickHint.due': 'Chọn một mục bên trái để xác nhận lại nội dung còn đúng.',
-  'review.sub': 'Bài viết, giai đoạn và mốc chờ duyệt, chờ xuất bản hoặc cần rà soát lại.',
+  'review.sub':
+    'Bài viết, giai đoạn, mốc và dinh dưỡng chờ duyệt, chờ xuất bản hoặc cần rà soát lại.',
   'review.tab.in_review': 'Chờ duyệt',
   'review.tab.approved': 'Đã duyệt',
   'review.tab.due': 'Cần rà soát lại',
@@ -388,7 +391,7 @@ export const contentVi: Record<string, string> = {
   'policy.on': 'Bật',
   'policy.off': 'Tắt',
   'policy.note':
-    'Mặc định: hai người (người sửa không tự duyệt) và bản chính thức cần chuyên môn ký. Khi chỉ có một người vận hành, Owner có thể nới; nội dung chưa duyệt vẫn hiện nhãn "chờ chuyên môn duyệt". Mọi lần đổi đều ghi vào nhật ký.',
+    'Mặc định: hai người (người sửa không tự duyệt) và bản chính thức cần chuyên môn ký. Khi chỉ có một người vận hành, Owner có thể nới; nội dung chưa duyệt vẫn ghi chú “Tham khảo, không thay thế bác sĩ”. Mọi lần đổi đều ghi vào nhật ký.',
   'policy.change': 'Đổi chính sách',
   'policy.save': 'Lưu chính sách',
   'policy.saved': 'Đã lưu chính sách duyệt',
@@ -403,12 +406,12 @@ export const contentVi: Record<string, string> = {
   // Server reasons
   'error.not-approved': 'Nội dung chưa được duyệt.',
   'error.not-live': 'Nội dung không còn trên app.',
-  'error.link-missing': 'Có bài viết hoặc mốc liên quan không còn tồn tại.',
+  'error.link-missing': 'Có bài viết, mốc hoặc vi chất liên kết không còn tồn tại.',
 };
 
 export const contentEn: Record<string, string> = {
   ...preview,
-  'nav.articles': 'Articles',
+  'nav.articles': 'Baby-care library',
   'nav.stages': 'Stage content',
   'nav.milestones': 'Milestones',
   'nav.contentReview': 'Content review',
@@ -562,7 +565,7 @@ export const contentEn: Record<string, string> = {
   'content.act.reject.body': 'The content goes back to Draft with your reason.',
   'content.act.publish.title': 'Publish to the app',
   'content.act.publish.body':
-    'The approved version appears in the app. Without a qualified reviewer’s sign-off the app shows "Illustrative content · awaiting expert review".',
+    'The approved version appears in the app. Without a qualified reviewer’s sign-off the app adds a small note at the end: “Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor” (D-082).',
   'content.act.unpublish.title': 'Remove from app',
   'content.act.unpublish.body':
     'The content disappears from the app the next time it opens. The draft is kept.',
@@ -604,8 +607,8 @@ export const contentEn: Record<string, string> = {
   'content.sourcesCount': '{n, plural, one {# source} other {# sources}}',
   'content.forReviewer': 'For the reviewer',
 
-  'articles.title': 'Articles',
-  'articles.sub': 'Content for the baby-care library',
+  'articles.title': 'Baby-care library',
+  'articles.sub': 'The baby-care articles parents read in the app',
   'articles.new': 'New article',
   'articles.search': 'Search articles…',
   'articles.empty': 'No articles yet. Create one or import the sample drafts.',
@@ -716,7 +719,7 @@ export const contentEn: Record<string, string> = {
   'review.pickHint.approved': 'Pick an item on the left to look it over and publish it.',
   'review.pickHint.due': 'Pick an item on the left to confirm it is still right.',
   'review.sub':
-    'Articles, stages and milestones waiting for review, for publishing or for a re-review.',
+    'Articles, stages, milestones and nutrition waiting for review, for publishing or for a re-review.',
   'review.tab.in_review': 'In review',
   'review.tab.approved': 'Approved',
   'review.tab.due': 'Needs re-review',
@@ -735,7 +738,7 @@ export const contentEn: Record<string, string> = {
   'policy.on': 'On',
   'policy.off': 'Off',
   'policy.note':
-    'By default: two people (the editor never approves their own work) and an expert signs before production. While one person runs the content, the Owner may relax this; unreviewed content keeps its "awaiting expert review" label. Every change is in the audit log.',
+    'By default: two people (the editor never approves their own work) and an expert signs before production. While one person runs the content, the Owner may relax this; unreviewed content keeps its “For reference, not a substitute for a doctor” note. Every change is in the audit log.',
   'policy.change': 'Change policy',
   'policy.save': 'Save policy',
   'policy.saved': 'Approval policy saved',
@@ -749,5 +752,5 @@ export const contentEn: Record<string, string> = {
 
   'error.not-approved': 'The content has not been approved.',
   'error.not-live': 'The content is no longer on the app.',
-  'error.link-missing': 'A related article or milestone no longer exists.',
+  'error.link-missing': 'A linked article, milestone or micronutrient no longer exists.',
 };

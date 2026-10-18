@@ -163,11 +163,14 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(y('Ăn dặm'), lessThan(y('Kiến thức chăm bé')));
+      expect(y('Mốc phát triển'), lessThan(y('Kiến thức chăm bé')));
       expect(y('Kiến thức chăm bé'), lessThan(y('Thư viện chăm bé')));
       // D-076 #5: "Thẻ theo tuổi" is "Giai đoạn của bé" in the app.
       expect(find.text('Giai đoạn của bé'), findsOneWidget);
-      expect(find.text('Dinh dưỡng'), findsNothing);
+      // D-083: Dinh dưỡng in "Chăm hằng ngày" (a teaser until a stage is published); no more
+      // "Ăn dặm" teaser (P-163 #11).
+      expect(y('Dinh dưỡng'), lessThan(y('Hiểu con & phát triển')));
+      expect(find.text('Ăn dặm'), findsNothing);
     });
 
     testWidgets('caregiver: no Tăng trưởng (370:2174)', (tester) async {

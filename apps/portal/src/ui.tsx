@@ -551,6 +551,9 @@ export const reasonMessages = [
   'not-approved',
   'not-live',
   'link-missing',
+  // Dinh dưỡng (D-083, P-163 #16, #17).
+  'unsafe-copy',
+  'stage-overlap',
 ];
 
 export function errorMessageId(error: ApiError): string {

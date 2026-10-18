@@ -173,9 +173,10 @@ describe('navigation', () => {
     for (const role of ['admin', 'ops', 'support', 'expert'] as const) {
       const s = sidebar([role]);
       for (const label of [
-        'Bài viết',
+        'Thư viện chăm bé',
         'Nội dung theo giai đoạn',
         'Mốc phát triển',
+        'Dinh dưỡng',
         'Duyệt nội dung',
       ]) {
         expect(s).toContain(label);
@@ -292,14 +293,16 @@ describe('B02 article editor', () => {
   it('edits the safe blocks and shows the app reader preview', () => {
     const html = editor(itemOf(fullArticle()));
     // The editor bar: back to the list, the title, the status, the next step.
-    expect(html).toContain('Bài viết Giấc ngủ của bé sơ sinh Nháp');
+    expect(html).toContain('Thư viện chăm bé Giấc ngủ của bé sơ sinh Nháp');
     expect(html).toContain('Nội dung bài (4/60 khối)');
     for (const kind of ['Đoạn văn', 'Tiêu đề mục', 'Danh sách', 'Hộp lưu ý']) {
       expect(html).toContain(kind);
     }
     expect(html).toContain('Tiêu đề 23/90');
     expect(html).toContain('Xem trước trên app');
-    expect(html).toContain('Nội dung minh hoạ · chờ chuyên môn duyệt');
+    expect(html).toContain(
+      'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ',
+    );
     expect(html).toContain('Khi nào nên hỏi bác sĩ');
     expect(html).toContain('Gửi duyệt');
     expect(html).not.toContain('<b>');

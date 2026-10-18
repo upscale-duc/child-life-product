@@ -1,8 +1,13 @@
 import {
+  contentKinds,
+  nutritionCopyProblems,
   staffCan,
   type ArticleDraft,
   type ContentKind,
   type EditorialAction,
+  type NutrientDraft,
+  type NutritionRuleDraft,
+  type NutritionStageDraft,
   type ReferenceMilestoneDraft,
   type StageDraft,
 } from '@child-life/contracts';
@@ -46,13 +51,25 @@ import {
   type Lang,
 } from './content-common';
 import { MilestonePreview, milestoneAgeText } from './Milestones';
+import {
+  NutrientPreview,
+  NutritionRulePreview,
+  NutritionStagePreviewLoaded,
+} from './NutritionPreviews';
+import {
+  NutritionNotices,
+  ageOf,
+  isNutritionKind,
+  monthsText,
+  nutritionEditorUrl,
+} from './nutrition-common';
 import { StagePreview } from './Stages';
 
 /**
  * Duyệt nội dung (Figma B03 `317:43747`, B04 `317:43979`; D-076 #7): one queue across articles,
- * stage content and reference milestones. "Chờ duyệt" is the review step (checklist, sources, the
- * qualified review; never the person who edited last unless the policy lets the Owner approve
- * alone, D-058 / D-079), "Đã duyệt" the publish step (Nháp → Chờ duyệt → Đã duyệt → Xuất bản),
+ * stage content, reference milestones and Dinh dưỡng (D-083: stages, micronutrients, rules).
+ * "Chờ duyệt" is the review step (checklist, sources, the qualified review; never the person who
+ * edited last unless the policy lets the Owner approve alone, D-058 / D-079), "Đã duyệt" the publish step (Nháp → Chờ duyệt → Đã duyệt → Xuất bản),
  * and "Cần rà soát lại" the items whose 12-month re-review date has passed. The count tiles are
  * the tabs; the list sits next to the selected item, its next step on top.
  */
@@ -64,11 +81,16 @@ export function queueRows(rows: ContentRow[], tab: QueueTab): ContentRow[] {
   return rows.filter((r) => (tab === 'due' ? !!r.live?.dueForReview : r.status === tab));
 }
 
-const editorRoute: Record<ContentKind, string> = {
-  article: routePaths.articles,
-  stage: routePaths.stages,
-  milestone: routePaths.milestones,
-};
+/** Where the selected item is edited. */
+export function editorUrlOf(kind: ContentKind, id: string): string {
+  if (isNutritionKind(kind)) return nutritionEditorUrl(kind, id);
+  const base = {
+    article: routePaths.articles,
+    stage: routePaths.stages,
+    milestone: routePaths.milestones,
+  }[kind];
+  return `${base}/${encodeURIComponent(id)}`;
+}
 
 export function ContentReviewScreen() {
   const [load, reload] = useContentList<ContentQueueView>('queue');
@@ -188,7 +210,7 @@ export function ReviewBody({
               onChange={setKind}
               options={[
                 { value: 'all', label: intl.formatMessage({ id: 'review.kind.all' }) },
-                ...(['article', 'stage', 'milestone'] as const).map((k) => ({
+                ...contentKinds.map((k) => ({
                   value: k,
                   label: intl.formatMessage({ id: `review.kind.${k}` }),
                 })),
@@ -213,7 +235,7 @@ export function ReviewBody({
                         <FormattedMessage id={`review.kind.${r.kind}`} />
                       </Badge>
                       <span className="truncate text-xs text-muted-foreground">
-                        {ageOf(intl, r)}
+                        {ageLine(intl, r)}
                       </span>
                     </span>
                     <span className="line-clamp-2 font-medium">
@@ -275,9 +297,13 @@ export function ReviewBody({
   );
 }
 
-function ageOf(intl: ReturnType<typeof useIntl>, r: ContentRow): string {
+function ageLine(intl: ReturnType<typeof useIntl>, r: ContentRow): string {
   if (r.ageWeeks) return weeksLabel(intl, r.ageWeeks);
   if (r.age) return stageAgeText(intl, r.age);
+  // Dinh dưỡng: stages and rules carry their months, micronutrients their focus.
+  const months =
+    ageOf(r.ageMonths) ?? ageOf((r.focus as { ageMonths?: unknown } | null | undefined)?.ageMonths);
+  if (months) return monthsText(intl, months);
   const m = r.ageRange as { unit: 'weeks' | 'months'; from: number; to: number } | undefined;
   return m ? milestoneAgeText(intl, m) : '';
 }
@@ -349,8 +375,12 @@ export function ReviewDetail({
   const main = reviewSteps.filter((a) => actions.includes(a));
   const rest = actions.filter((a) => !main.includes(a));
   const sources = (item.data.sources as Array<{ label: string; url: string }> | undefined) ?? [];
+  // Suggestion rules have no sources of their own.
+  const hasSources = row.kind !== 'nutritionRule';
+  // P-163 #16: the server refuses a step while the text has a forbidden word or a dose.
+  const problems = isNutritionKind(row.kind) ? nutritionCopyProblems(item.data) : [];
   const review = reviewOf(item);
-  const editorUrl = `${editorRoute[row.kind]}/${encodeURIComponent(row.id)}`;
+  const editorUrl = editorUrlOf(row.kind, row.id);
   const facts: Array<[string, string | null | undefined]> = [
     ['review.lastEditor', row.lastEditorName],
     ['review.submittedBy', row.submittedByName],
@@ -419,33 +449,44 @@ export function ReviewDetail({
             {item.notes}
           </Notice>
         )}
-        <div className="grid gap-1.5">
-          <span className="text-[13px] font-medium">
-            <FormattedMessage id="content.sources" />{' '}
-            <span className="text-muted-foreground tabular-nums">{sources.length}</span>
-          </span>
-          {sources.length ? (
-            <ul className="grid gap-1 text-sm">
-              {sources.map((s, i) => (
-                <li key={i}>
-                  <a
-                    href={s.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="inline-flex items-center gap-1 text-primary hover:underline"
-                  >
-                    {s.label}
-                    <ExternalLink className="size-3.5" aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <Notice tone="warn">
-              <FormattedMessage id="review.noSources" />
-            </Notice>
-          )}
-        </div>
+        {problems.length > 0 && (
+          <NutritionNotices
+            className="grid gap-3"
+            error={null}
+            rejection={null}
+            issues={[]}
+            problems={problems}
+          />
+        )}
+        {hasSources && (
+          <div className="grid gap-1.5">
+            <span className="text-[13px] font-medium">
+              <FormattedMessage id="content.sources" />{' '}
+              <span className="text-muted-foreground tabular-nums">{sources.length}</span>
+            </span>
+            {sources.length ? (
+              <ul className="grid gap-1 text-sm">
+                {sources.map((s, i) => (
+                  <li key={i}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
+                    >
+                      {s.label}
+                      <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <Notice tone="warn">
+                <FormattedMessage id="review.noSources" />
+              </Notice>
+            )}
+          </div>
+        )}
       </div>
       <PreviewCard lang={lang} onLang={setLang}>
         {row.kind === 'article' && (
@@ -466,6 +507,24 @@ export function ReviewDetail({
             lang={lang}
             review={review}
           />
+        )}
+        {row.kind === 'nutritionStage' && (
+          <NutritionStagePreviewLoaded
+            data={item.data as unknown as NutritionStageDraft}
+            lang={lang}
+            review={review}
+            today={today}
+          />
+        )}
+        {row.kind === 'nutrient' && (
+          <NutrientPreview
+            data={item.data as unknown as NutrientDraft}
+            lang={lang}
+            review={review}
+          />
+        )}
+        {row.kind === 'nutritionRule' && (
+          <NutritionRulePreview data={item.data as unknown as NutritionRuleDraft} lang={lang} />
         )}
       </PreviewCard>
       {act && (

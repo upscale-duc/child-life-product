@@ -1,5 +1,6 @@
 import type { SupportedLocale } from '@child-life/web-config';
 import { contentEn, contentVi } from './messages-content';
+import { nutritionEn, nutritionVi } from './messages-nutrition';
 
 /**
  * ICU messages (D-012). Vietnamese is the source (Figma Admin portal copy, `08-admin-portal.md`);
@@ -2414,7 +2415,7 @@ const vi: Record<string, string> = {
   'rhythm.review.reviewedOn': 'Ngày rà soát',
   'rhythm.review.incomplete': 'Ghi đủ người rà soát, chuyên môn và ngày rà soát.',
   'rhythm.review.optionalHelp':
-    'Để trống nếu chưa có người rà soát: app hiện “Nội dung minh hoạ · chờ chuyên môn duyệt”.',
+    'Để trống nếu chưa có người rà soát: app ghi chú “Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ”.',
   'rhythm.history.reference': 'Danh sách phiên bản mô hình',
   'rhythm.history.content': 'Danh sách phiên bản nội dung',
   'rhythm.history.count': '{n} phiên bản',
@@ -5520,7 +5521,7 @@ const en: Record<string, string> = {
   'rhythm.review.reviewedOn': 'Review date',
   'rhythm.review.incomplete': 'Fill in the reviewer, credential and review date.',
   'rhythm.review.optionalHelp':
-    'Leave empty while nobody has reviewed it: the app shows “Sample content · awaiting expert review”.',
+    'Leave empty while nobody has reviewed it: the app notes “Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor”.',
   'rhythm.history.reference': 'Model versions',
   'rhythm.history.content': 'Content versions',
   'rhythm.history.count': '{n, plural, one {# version} other {# versions}}',
@@ -6207,8 +6208,9 @@ const en: Record<string, string> = {
   'assistant.switches.noRecent': 'No changes yet.',
 };
 
-// Editorial content (D-076 #5–#7) keeps its catalogs in messages-content.ts.
+// Editorial content (D-076 #5–#7) keeps its catalogs in messages-content.ts, Dinh dưỡng (D-083)
+// in messages-nutrition.ts.
 export const messages: Record<SupportedLocale, Record<string, string>> = {
-  vi: { ...vi, ...contentVi },
-  en: { ...en, ...contentEn },
+  vi: { ...vi, ...contentVi, ...nutritionVi },
+  en: { ...en, ...contentEn, ...nutritionEn },
 };

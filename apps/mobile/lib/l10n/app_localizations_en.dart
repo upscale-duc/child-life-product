@@ -17363,4 +17363,490 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get growthMeasureNone =>
       'Nothing measured yet. Add it at the next measurement.';
+
+  @override
+  String get careNutrition => 'Nutrition';
+
+  @override
+  String get careNutritionSub => 'Stage by stage';
+
+  @override
+  String careNutritionStage(String range) {
+    return 'Stage $range';
+  }
+
+  @override
+  String get careNutritionNoDob => 'Needs the date of birth';
+
+  @override
+  String get nuTitle => 'Nutrition';
+
+  @override
+  String nuMonthsRange(int from, int to) {
+    return '$from–$to months';
+  }
+
+  @override
+  String get nuCurrent => 'Current';
+
+  @override
+  String get nuOffline =>
+      'No connection. Nutrition is showing the copy saved on this phone.';
+
+  @override
+  String get nuEmptyTitle => 'Nutrition guidance is on its way';
+
+  @override
+  String get nuEmptyBody =>
+      'Stage-by-stage guidance shows here as soon as it is published.';
+
+  @override
+  String get nuNoDobViewerTitle => 'The baby\'s stage isn\'t known yet';
+
+  @override
+  String nuNoDobBody(String name) {
+    return 'Nutrition by stage needs $name\'s age.';
+  }
+
+  @override
+  String nuNoDobViewer(String name) {
+    return 'You can\'t see $name\'s date of birth, so the app doesn\'t know the stage yet.';
+  }
+
+  @override
+  String get nuStageMissing => 'This is no longer available';
+
+  @override
+  String get nuStageMissingBody =>
+      'It may have been updated. Go back to see the latest.';
+
+  @override
+  String get nuFooter =>
+      'Not a substitute for a doctor\'s advice. Oral medicines and micronutrients: only as a doctor prescribes.';
+
+  @override
+  String get nuFooterDose =>
+      'Oral medicines and micronutrients: only as a doctor prescribes.';
+
+  @override
+  String get nuShareFailed =>
+      'Couldn\'t open the share sheet. Try again later.';
+
+  @override
+  String nuStageAge(String age, String range) {
+    return '$age · $range stage';
+  }
+
+  @override
+  String get nuStagePast => 'Your baby is past the stages in the app.';
+
+  @override
+  String get nuSeeStages => 'See the stages';
+
+  @override
+  String get nuSeeSuggestions => 'See suggestions';
+
+  @override
+  String get nuMilkTitle => 'Milk per day';
+
+  @override
+  String get nuMilkSub => 'Reference for bottle-fed babies';
+
+  @override
+  String nuMilkAverage(String name, String ml) {
+    return '$name averages $ml ml a day (last 7 days)';
+  }
+
+  @override
+  String get nuMilkNotEnough =>
+      'Not enough bottle feeds in the last 7 days for an average';
+
+  @override
+  String nuMilkFeeds(String feeds, String perFeed) {
+    return '$feeds feeds of $perFeed ml';
+  }
+
+  @override
+  String nuMilkFeedsOnly(String feeds) {
+    return '$feeds feeds a day';
+  }
+
+  @override
+  String nuMilkPerFeedOnly(String perFeed) {
+    return '$perFeed ml a feed';
+  }
+
+  @override
+  String nuMilkBreast(String note) {
+    return 'Breastfeeding: $note';
+  }
+
+  @override
+  String nuMilkBandLabel(String range) {
+    return 'Reference range $range ml a day';
+  }
+
+  @override
+  String nuMilkMarkerLabel(String ml) {
+    return 'Average $ml ml a day';
+  }
+
+  @override
+  String get nuGrowthTitle => 'Growth vs the WHO standard';
+
+  @override
+  String nuGrowthLast(String date) {
+    return 'Last measured $date';
+  }
+
+  @override
+  String get nuGrowthNone => 'No measurement yet';
+
+  @override
+  String get nuWeight => 'Weight';
+
+  @override
+  String get nuLength => 'Length';
+
+  @override
+  String get nuTagIn => 'Within the normal range';
+
+  @override
+  String get nuTagBelow => 'Below the normal range';
+
+  @override
+  String get nuTagAbove => 'Above the normal range';
+
+  @override
+  String get nuNutrientsTitle => 'To watch at this stage';
+
+  @override
+  String get nuSampleTitle => 'A sample day';
+
+  @override
+  String get nuSlotMorning => 'Morning';
+
+  @override
+  String get nuSlotNoon => 'Noon';
+
+  @override
+  String get nuSlotAfternoon => 'Afternoon';
+
+  @override
+  String get nuSlotEvening => 'Evening';
+
+  @override
+  String get nuSlotNight => 'Night';
+
+  @override
+  String nuTipsTitle(String name) {
+    return 'Ideas for $name';
+  }
+
+  @override
+  String get nuMilkPageTitle => 'Milk amounts';
+
+  @override
+  String get nuMilkPageIntro =>
+      'For bottle-fed babies. Every baby differs: feed by hunger and fullness cues.';
+
+  @override
+  String get nuChartTitle => 'Last 14 days';
+
+  @override
+  String nuChartBand(String range) {
+    return 'Shaded: reference range $range ml';
+  }
+
+  @override
+  String get nuChartNoBand => 'This stage has no daily reference range';
+
+  @override
+  String nuChartTooltip(String date, String ml) {
+    return '$date · $ml ml';
+  }
+
+  @override
+  String get nuChartEmpty => 'No bottle feeds in the last 14 days.';
+
+  @override
+  String get nuByStageTitle => 'By stage';
+
+  @override
+  String nuPerFeed(String range) {
+    return '$range ml a feed';
+  }
+
+  @override
+  String nuPerDay(String range) {
+    return '$range ml a day';
+  }
+
+  @override
+  String nuFeeds(String range) {
+    return '$range feeds';
+  }
+
+  @override
+  String get nuMilkTalkDoctor =>
+      'If your baby often drinks more or less than this, talk to a paediatrician.';
+
+  @override
+  String get nuWhy => 'Why it matters';
+
+  @override
+  String get nuFoodsTitle => 'Foods to offer';
+
+  @override
+  String get nuTip => 'Tip';
+
+  @override
+  String get nuCampaignTitle => 'Health station days';
+
+  @override
+  String nuNextRound(String days) {
+    return 'Next round: $days';
+  }
+
+  @override
+  String nuGrowthWeightTitle(String name) {
+    return '$name\'s weight';
+  }
+
+  @override
+  String nuGrowthLengthTitle(String name) {
+    return '$name\'s length';
+  }
+
+  @override
+  String get nuWhoBoy => 'WHO standard · boy';
+
+  @override
+  String get nuWhoGirl => 'WHO standard · girl';
+
+  @override
+  String get nuLegendBand => 'Normal range';
+
+  @override
+  String get nuWhileWaiting => 'While you wait for the check-up';
+
+  @override
+  String nuRemindDays(int days) {
+    return 'Remind me to re-measure in $days days';
+  }
+
+  @override
+  String nuRemindWeeks(int weeks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      weeks,
+      locale: localeName,
+      other: 'Remind me to re-measure in $weeks weeks',
+      one: 'Remind me to re-measure in 1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nuReminded(String date) {
+    return 'Reminder set · $date';
+  }
+
+  @override
+  String nuRemindToast(String date) {
+    return 'Re-measure reminder set for $date';
+  }
+
+  @override
+  String get nuRemeasureWeight => 'Re-measure baby\'s weight';
+
+  @override
+  String get nuRemeasureLength => 'Re-measure baby\'s length';
+
+  @override
+  String get nuExport => 'Export a report for the doctor';
+
+  @override
+  String get nuGrowthFooter =>
+      'General suggestions from expert rules, not a diagnosis.';
+
+  @override
+  String get nuGrowthNoneTitle => 'No suggestions right now';
+
+  @override
+  String nuGrowthNoSignal(String name) {
+    return '$name\'s latest measurements need no suggestion right now.';
+  }
+
+  @override
+  String get nuBoy => 'boy';
+
+  @override
+  String get nuGirl => 'girl';
+
+  @override
+  String get nuReportTitle => 'Growth summary · Child Life';
+
+  @override
+  String get nuReportSubject => 'Growth summary';
+
+  @override
+  String nuReportAge(String age) {
+    return 'Age: $age';
+  }
+
+  @override
+  String nuReportSex(String sex) {
+    return 'Sex: $sex';
+  }
+
+  @override
+  String get nuReportMeasures => 'Latest measurements (vs WHO, P3–P97):';
+
+  @override
+  String nuReportMilk(String ml) {
+    return 'Bottle milk, 7-day average: $ml ml a day';
+  }
+
+  @override
+  String get nuReportMilkNone =>
+      'Bottle milk: not enough data in the last 7 days';
+
+  @override
+  String nuReportNote(String banner) {
+    return 'Note from the app: $banner';
+  }
+
+  @override
+  String nuReportFooter(String date) {
+    return 'Recorded by the family in Child Life, as of $date. Not a diagnosis.';
+  }
+
+  @override
+  String get nuReportBaby => 'the baby';
+
+  @override
+  String get nuStagesTitle => 'Stages';
+
+  @override
+  String nuVitaIntro(String ages, String place) {
+    return 'Children $ages get it free at $place, in the rounds below.';
+  }
+
+  @override
+  String nuVitaIntroNoPlace(String ages) {
+    return 'Children $ages get it free in the rounds below.';
+  }
+
+  @override
+  String nuVitaFrom(String name, int months) {
+    return '$name can have it from $months months old.';
+  }
+
+  @override
+  String nuVitaFirst(String days) {
+    return 'First round: $days.';
+  }
+
+  @override
+  String nuRoundTitle(String month) {
+    return '$month round';
+  }
+
+  @override
+  String nuRoundDaysLine(String days) {
+    return '$days';
+  }
+
+  @override
+  String nuRoundTaken(String date) {
+    return 'Taken $date';
+  }
+
+  @override
+  String get nuRoundNext => 'Coming up';
+
+  @override
+  String get nuRoundPast => 'Passed, not recorded';
+
+  @override
+  String get nuRoundTooYoung => 'Too young then';
+
+  @override
+  String get nuRoundTooOld => 'Past the age';
+
+  @override
+  String get nuVitaReadOnly => 'Only co-parents can record a round.';
+
+  @override
+  String get nuVitaFuture => 'This round hasn\'t come yet.';
+
+  @override
+  String get nuVitaDate => 'Date taken';
+
+  @override
+  String get nuVitaMark => 'Mark as taken';
+
+  @override
+  String get nuVitaUnmark => 'Unmark';
+
+  @override
+  String nuVitaMarked(String round) {
+    return '$round recorded';
+  }
+
+  @override
+  String get nuVitaUnmarked => 'Unmarked';
+
+  @override
+  String get nuVitaRemind => 'Set reminder';
+
+  @override
+  String nuVitaSheetTitle(String name) {
+    return '$name reminder';
+  }
+
+  @override
+  String nuVitaSheetBody(String date) {
+    return 'Reminder the day before, at 8:00 am on $date. Exact days follow your local health station\'s notice.';
+  }
+
+  @override
+  String nuVitaSheetBodySameDay(String date) {
+    return 'Reminder at 8:00 am on $date. Exact days follow your local health station\'s notice.';
+  }
+
+  @override
+  String get nuVitaRecipient => 'Recipient';
+
+  @override
+  String get nuVitaCalendar => 'Add to phone calendar';
+
+  @override
+  String nuVitaReminderTitle(String name, String days) {
+    return '$name at the health station · $days';
+  }
+
+  @override
+  String nuVitaIcsSummary(String name) {
+    return '$name for baby at the health station';
+  }
+
+  @override
+  String get nuVitaLocalNote =>
+      'Exact days follow your local health station\'s notice.';
+
+  @override
+  String nuVitaSetToast(String date) {
+    return 'Reminder set for 8:00 on $date';
+  }
+
+  @override
+  String nuAbout(String name) {
+    return 'About $name';
+  }
+
+  @override
+  String nuMilkPerDayOnly(String range) {
+    return 'Reference $range ml a day';
+  }
 }

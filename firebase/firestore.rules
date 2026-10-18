@@ -60,6 +60,19 @@ service cloud.firestore {
       allow read: if signedIn() && resource.data.status == 'published';
       allow write: if false;
     }
+    // Dinh dưỡng theo giai đoạn (D-083): stages, micronutrients and suggestion rules, the same way.
+    match /contentNutritionStages/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+    match /contentNutrients/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+    match /contentNutritionRules/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
 
     // Own account document only; written by Functions (createBabyProfile, later profile edits).
     match /users/{uid} {
@@ -408,6 +421,17 @@ service cloud.firestore {
       // Vaccination reminder bookkeeping (sent / snoozed): the scheduler Function only.
       match /vaccineReminders/{id} {
         allow read, write: if false;
+      }
+
+      // Vitamin A campaign rounds taken (D-083, plan §3, 9g): one document, `vitaminA`. Active
+      // members read it; Cùng nuôi mark and unmark rounds (an empty `taken` or a delete clears
+      // it). Mirrors `vitaminTakenSchema` (packages/contracts/src/nutrition.ts).
+      match /nutrition/{docId} {
+        allow get: if docId == 'vitaminA' && activeMember(babyId);
+        allow list: if false;
+        allow create, update: if docId == 'vitaminA' && isParent(babyId) && babyOpen(babyId) &&
+          validVitaminA();
+        allow delete: if docId == 'vitaminA' && isParent(babyId) && babyOpen(babyId);
       }
 
       // "Đã ghi hôm nay" per baby-local date, kept by the onCareRecordWrite trigger.
@@ -1084,6 +1108,31 @@ service cloud.firestore {
           'facility', 'reaction', 'declineReason', 'plannedOn', 'photoPath', 'updatedAt',
           'updatedBy']) &&
         validVaccineFields(d, doseKey);
+    }
+
+    // `taken`: { "YYYY-MM": "YYYY-MM-DD" }, a round per month key. Rules cannot loop, so the
+    // entries are checked one by one up to 16 (Việt Nam runs 2 rounds a year over 6–36 months).
+    function vitaminEntry(t, ks, i) {
+      return ks.size() <= i ||
+        (ks[i].matches('^[0-9]{4}-(0[1-9]|1[0-2])$') && isoDate(t[ks[i]]));
+    }
+
+    function vitaminTaken(t, ks) {
+      return ks.size() <= 16 &&
+        vitaminEntry(t, ks, 0) && vitaminEntry(t, ks, 1) && vitaminEntry(t, ks, 2) &&
+        vitaminEntry(t, ks, 3) && vitaminEntry(t, ks, 4) && vitaminEntry(t, ks, 5) &&
+        vitaminEntry(t, ks, 6) && vitaminEntry(t, ks, 7) && vitaminEntry(t, ks, 8) &&
+        vitaminEntry(t, ks, 9) && vitaminEntry(t, ks, 10) && vitaminEntry(t, ks, 11) &&
+        vitaminEntry(t, ks, 12) && vitaminEntry(t, ks, 13) && vitaminEntry(t, ks, 14) &&
+        vitaminEntry(t, ks, 15);
+    }
+
+    function validVitaminA() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['taken', 'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['taken', 'updatedAt', 'updatedBy']) &&
+        d.taken is map && vitaminTaken(d.taken, d.taken.keys()) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
     }
 
     function validVaccinePlan(babyId) {

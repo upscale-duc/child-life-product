@@ -658,12 +658,12 @@ describe('two-person re-run (P-139) and the v1.0 sidebar', () => {
         ),
       );
     expect(sidebar(['admin'])).toContain(
-      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Bài viết Nội dung theo giai đoạn Mốc phát triển Duyệt nội dung HỆ THỐNG Hệ thống & AI Tính năng & phát hành Premium & Cá nhân hoá Trợ lý AI Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
+      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Duyệt nội dung HỆ THỐNG Hệ thống & AI Tính năng & phát hành Premium & Cá nhân hoá Trợ lý AI Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
     );
     expect(sidebar(['analyst'])).toContain('Tổng quan Phân tích PHÁT TRIỂN Sổ tay kiểm thử');
     expect(sidebar(['analyst'])).not.toContain('Gia đình');
     expect(sidebar(['expert'])).toContain(
-      'VẬN HÀNH Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Bài viết Nội dung theo giai đoạn Mốc phát triển Duyệt nội dung PHÁT TRIỂN',
+      'VẬN HÀNH Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Duyệt nội dung PHÁT TRIỂN',
     );
     expect(sidebar(['admin'])).toContain('Admin');
   });

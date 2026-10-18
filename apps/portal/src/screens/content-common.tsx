@@ -145,7 +145,8 @@ export interface ContentQueueView {
   view: 'queue';
   today: string;
   rows: ContentRow[];
-  counts: Record<ContentKind, ContentCounts>;
+  /** Per kind (a server that does not know a kind yet leaves it out). */
+  counts: Partial<Record<ContentKind, ContentCounts>>;
   totals: ContentCounts;
   available: ContentKind[];
   requireReview: boolean;

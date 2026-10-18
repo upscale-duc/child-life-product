@@ -16319,4 +16319,483 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get growthMeasureNone =>
       'Chưa có số đo này. Thêm khi đo cho bé lần tới.';
+
+  @override
+  String get careNutrition => 'Dinh dưỡng';
+
+  @override
+  String get careNutritionSub => 'Theo từng giai đoạn tuổi';
+
+  @override
+  String careNutritionStage(String range) {
+    return 'Giai đoạn $range';
+  }
+
+  @override
+  String get careNutritionNoDob => 'Cần ngày sinh của bé';
+
+  @override
+  String get nuTitle => 'Dinh dưỡng';
+
+  @override
+  String nuMonthsRange(int from, int to) {
+    return '$from–$to tháng';
+  }
+
+  @override
+  String get nuCurrent => 'Hiện tại';
+
+  @override
+  String get nuOffline =>
+      'Không có kết nối. Dinh dưỡng đang hiện bản đã lưu trên máy.';
+
+  @override
+  String get nuEmptyTitle => 'Nội dung dinh dưỡng đang được chuẩn bị';
+
+  @override
+  String get nuEmptyBody =>
+      'Gợi ý theo giai đoạn tuổi sẽ hiện ở đây ngay khi được xuất bản.';
+
+  @override
+  String get nuNoDobViewerTitle => 'Chưa biết bé đang ở giai đoạn nào';
+
+  @override
+  String nuNoDobBody(String name) {
+    return 'Dinh dưỡng theo giai đoạn cần biết tuổi của $name.';
+  }
+
+  @override
+  String nuNoDobViewer(String name) {
+    return 'Bạn chưa được xem ngày sinh của $name, nên app chưa biết bé đang ở giai đoạn nào.';
+  }
+
+  @override
+  String get nuStageMissing => 'Nội dung này không còn';
+
+  @override
+  String get nuStageMissingBody =>
+      'Có thể nội dung đã được cập nhật. Quay lại để xem bản mới nhất.';
+
+  @override
+  String get nuFooter =>
+      'Không thay thế tư vấn của bác sĩ. Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.';
+
+  @override
+  String get nuFooterDose => 'Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.';
+
+  @override
+  String get nuShareFailed => 'Chưa mở được bảng chia sẻ. Thử lại sau.';
+
+  @override
+  String nuStageAge(String age, String range) {
+    return '$age · giai đoạn $range';
+  }
+
+  @override
+  String get nuStagePast => 'Bé đã qua các giai đoạn trong app.';
+
+  @override
+  String get nuSeeStages => 'Xem các giai đoạn';
+
+  @override
+  String get nuSeeSuggestions => 'Xem gợi ý';
+
+  @override
+  String get nuMilkTitle => 'Sữa mỗi ngày';
+
+  @override
+  String get nuMilkSub => 'Tham khảo cho bé bú bình';
+
+  @override
+  String nuMilkAverage(String name, String ml) {
+    return '$name trung bình $ml ml/ngày (7 ngày qua)';
+  }
+
+  @override
+  String get nuMilkNotEnough =>
+      'Chưa đủ cữ bú bình 7 ngày qua để tính trung bình';
+
+  @override
+  String nuMilkFeeds(String feeds, String perFeed) {
+    return '$feeds cữ, $perFeed ml mỗi cữ';
+  }
+
+  @override
+  String nuMilkFeedsOnly(String feeds) {
+    return '$feeds cữ mỗi ngày';
+  }
+
+  @override
+  String nuMilkPerFeedOnly(String perFeed) {
+    return '$perFeed ml mỗi cữ';
+  }
+
+  @override
+  String nuMilkBreast(String note) {
+    return 'Bú mẹ: $note';
+  }
+
+  @override
+  String nuMilkBandLabel(String range) {
+    return 'Khoảng tham khảo $range ml mỗi ngày';
+  }
+
+  @override
+  String nuMilkMarkerLabel(String ml) {
+    return 'Trung bình $ml ml mỗi ngày';
+  }
+
+  @override
+  String get nuGrowthTitle => 'Tăng trưởng so với chuẩn WHO';
+
+  @override
+  String nuGrowthLast(String date) {
+    return 'Lần đo gần nhất $date';
+  }
+
+  @override
+  String get nuGrowthNone => 'Chưa có lần đo';
+
+  @override
+  String get nuWeight => 'Cân nặng';
+
+  @override
+  String get nuLength => 'Chiều dài';
+
+  @override
+  String get nuTagIn => 'Trong khoảng chuẩn';
+
+  @override
+  String get nuTagBelow => 'Thấp hơn khoảng chuẩn';
+
+  @override
+  String get nuTagAbove => 'Cao hơn khoảng chuẩn';
+
+  @override
+  String get nuNutrientsTitle => 'Cần chú ý ở giai đoạn này';
+
+  @override
+  String get nuSampleTitle => 'Một ngày tham khảo';
+
+  @override
+  String get nuSlotMorning => 'Sáng';
+
+  @override
+  String get nuSlotNoon => 'Trưa';
+
+  @override
+  String get nuSlotAfternoon => 'Chiều';
+
+  @override
+  String get nuSlotEvening => 'Tối';
+
+  @override
+  String get nuSlotNight => 'Đêm';
+
+  @override
+  String nuTipsTitle(String name) {
+    return 'Gợi ý cho $name';
+  }
+
+  @override
+  String get nuMilkPageTitle => 'Lượng sữa';
+
+  @override
+  String get nuMilkPageIntro =>
+      'Tham khảo cho bé bú bình. Mỗi bé mỗi khác: cho bé bú theo dấu hiệu đói, no.';
+
+  @override
+  String get nuChartTitle => '14 ngày qua';
+
+  @override
+  String nuChartBand(String range) {
+    return 'Vùng màu: khoảng tham khảo $range ml';
+  }
+
+  @override
+  String get nuChartNoBand =>
+      'Giai đoạn này không có khoảng tham khảo theo ngày';
+
+  @override
+  String nuChartTooltip(String date, String ml) {
+    return '$date · $ml ml';
+  }
+
+  @override
+  String get nuChartEmpty => 'Chưa có cữ bú bình nào trong 14 ngày qua.';
+
+  @override
+  String get nuByStageTitle => 'Theo giai đoạn';
+
+  @override
+  String nuPerFeed(String range) {
+    return '$range ml/cữ';
+  }
+
+  @override
+  String nuPerDay(String range) {
+    return '$range ml/ngày';
+  }
+
+  @override
+  String nuFeeds(String range) {
+    return '$range cữ';
+  }
+
+  @override
+  String get nuMilkTalkDoctor =>
+      'Bé thường xuyên bú nhiều hoặc ít hơn khoảng này: trao đổi với bác sĩ nhi.';
+
+  @override
+  String get nuWhy => 'Vì sao cần';
+
+  @override
+  String get nuFoodsTitle => 'Thực phẩm gợi ý cho bé';
+
+  @override
+  String get nuTip => 'Mẹo';
+
+  @override
+  String get nuCampaignTitle => 'Lịch uống tại trạm y tế';
+
+  @override
+  String nuNextRound(String days) {
+    return 'Đợt tới: $days';
+  }
+
+  @override
+  String nuGrowthWeightTitle(String name) {
+    return 'Cân nặng của $name';
+  }
+
+  @override
+  String nuGrowthLengthTitle(String name) {
+    return 'Chiều dài của $name';
+  }
+
+  @override
+  String get nuWhoBoy => 'Theo chuẩn WHO · bé trai';
+
+  @override
+  String get nuWhoGirl => 'Theo chuẩn WHO · bé gái';
+
+  @override
+  String get nuLegendBand => 'Khoảng chuẩn';
+
+  @override
+  String get nuWhileWaiting => 'Gợi ý trong lúc chờ khám';
+
+  @override
+  String nuRemindDays(int days) {
+    return 'Nhắc đo lại sau $days ngày';
+  }
+
+  @override
+  String nuRemindWeeks(int weeks) {
+    return 'Nhắc đo lại sau $weeks tuần';
+  }
+
+  @override
+  String nuReminded(String date) {
+    return 'Đã đặt nhắc · $date';
+  }
+
+  @override
+  String nuRemindToast(String date) {
+    return 'Đã đặt nhắc đo lại ngày $date';
+  }
+
+  @override
+  String get nuRemeasureWeight => 'Đo lại cân nặng cho bé';
+
+  @override
+  String get nuRemeasureLength => 'Đo lại chiều dài cho bé';
+
+  @override
+  String get nuExport => 'Xuất báo cáo cho bác sĩ';
+
+  @override
+  String get nuGrowthFooter =>
+      'Gợi ý chung theo quy tắc của chuyên gia, không thay thế chẩn đoán.';
+
+  @override
+  String get nuGrowthNoneTitle => 'Không có gợi ý lúc này';
+
+  @override
+  String nuGrowthNoSignal(String name) {
+    return 'Các lần đo gần nhất của $name không cần gợi ý nào lúc này.';
+  }
+
+  @override
+  String get nuBoy => 'bé trai';
+
+  @override
+  String get nuGirl => 'bé gái';
+
+  @override
+  String get nuReportTitle => 'Tóm tắt tăng trưởng · Child Life';
+
+  @override
+  String get nuReportSubject => 'Tóm tắt tăng trưởng';
+
+  @override
+  String nuReportAge(String age) {
+    return 'Tuổi: $age';
+  }
+
+  @override
+  String nuReportSex(String sex) {
+    return 'Giới tính: $sex';
+  }
+
+  @override
+  String get nuReportMeasures =>
+      'Các lần đo gần nhất (so với chuẩn WHO, P3–P97):';
+
+  @override
+  String nuReportMilk(String ml) {
+    return 'Sữa bú bình trung bình 7 ngày qua: $ml ml/ngày';
+  }
+
+  @override
+  String get nuReportMilkNone => 'Sữa bú bình: chưa đủ số liệu 7 ngày qua';
+
+  @override
+  String nuReportNote(String banner) {
+    return 'Ghi chú từ app: $banner';
+  }
+
+  @override
+  String nuReportFooter(String date) {
+    return 'Số liệu do gia đình ghi trong Child Life, tính đến $date. Không phải chẩn đoán.';
+  }
+
+  @override
+  String get nuReportBaby => 'bé';
+
+  @override
+  String get nuStagesTitle => 'Các giai đoạn';
+
+  @override
+  String nuVitaIntro(String ages, String place) {
+    return 'Trẻ $ages được uống miễn phí tại $place, theo các đợt dưới đây.';
+  }
+
+  @override
+  String nuVitaIntroNoPlace(String ages) {
+    return 'Trẻ $ages được uống miễn phí theo các đợt dưới đây.';
+  }
+
+  @override
+  String nuVitaFrom(String name, int months) {
+    return '$name sẽ được uống từ $months tháng tuổi.';
+  }
+
+  @override
+  String nuVitaFirst(String days) {
+    return 'Đợt đầu tiên: $days.';
+  }
+
+  @override
+  String nuRoundTitle(String month) {
+    return 'Đợt tháng $month';
+  }
+
+  @override
+  String nuRoundDaysLine(String days) {
+    return 'Ngày $days';
+  }
+
+  @override
+  String nuRoundTaken(String date) {
+    return 'Đã uống $date';
+  }
+
+  @override
+  String get nuRoundNext => 'Sắp tới';
+
+  @override
+  String get nuRoundPast => 'Đã qua, chưa ghi nhận';
+
+  @override
+  String get nuRoundTooYoung => 'Chưa tới tuổi';
+
+  @override
+  String get nuRoundTooOld => 'Đã qua độ tuổi';
+
+  @override
+  String get nuVitaReadOnly => 'Chỉ Cùng nuôi ghi được đợt đã uống.';
+
+  @override
+  String get nuVitaFuture => 'Đợt này chưa tới.';
+
+  @override
+  String get nuVitaDate => 'Ngày uống';
+
+  @override
+  String get nuVitaMark => 'Đánh dấu đã uống';
+
+  @override
+  String get nuVitaUnmark => 'Bỏ đánh dấu';
+
+  @override
+  String nuVitaMarked(String round) {
+    return 'Đã ghi $round';
+  }
+
+  @override
+  String get nuVitaUnmarked => 'Đã bỏ đánh dấu';
+
+  @override
+  String get nuVitaRemind => 'Đặt nhắc';
+
+  @override
+  String nuVitaSheetTitle(String name) {
+    return 'Nhắc uống $name';
+  }
+
+  @override
+  String nuVitaSheetBody(String date) {
+    return 'Nhắc trước 1 ngày, lúc 8:00 sáng $date. Lịch cụ thể theo thông báo của trạm y tế địa phương.';
+  }
+
+  @override
+  String nuVitaSheetBodySameDay(String date) {
+    return 'Nhắc lúc 8:00 sáng $date. Lịch cụ thể theo thông báo của trạm y tế địa phương.';
+  }
+
+  @override
+  String get nuVitaRecipient => 'Người nhận';
+
+  @override
+  String get nuVitaCalendar => 'Thêm vào lịch điện thoại';
+
+  @override
+  String nuVitaReminderTitle(String name, String days) {
+    return 'Uống $name tại trạm y tế · $days';
+  }
+
+  @override
+  String nuVitaIcsSummary(String name) {
+    return 'Uống $name cho bé tại trạm y tế';
+  }
+
+  @override
+  String get nuVitaLocalNote =>
+      'Lịch cụ thể theo thông báo của trạm y tế địa phương.';
+
+  @override
+  String nuVitaSetToast(String date) {
+    return 'Đã đặt nhắc lúc 8:00 ngày $date';
+  }
+
+  @override
+  String nuAbout(String name) {
+    return 'Về $name';
+  }
+
+  @override
+  String nuMilkPerDayOnly(String range) {
+    return 'Tham khảo $range ml mỗi ngày';
+  }
 }

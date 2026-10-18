@@ -23,6 +23,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   LogOut,
+  Milk,
   Monitor,
   Moon,
   Newspaper,
@@ -105,6 +106,7 @@ import { FeaturesScreen } from './screens/Features';
 import { FirstAidScreen } from './screens/FirstAid';
 import { KeepsakesScreen } from './screens/Keepsakes';
 import { MilestonesScreen } from './screens/Milestones';
+import { NutritionScreen } from './screens/Nutrition';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
 import { PremiumScreen } from './screens/Premium';
@@ -143,6 +145,8 @@ const nav: NavItem[] = [
   { route: 'articles', icon: Newspaper, group: 'content', can: 'content.view' },
   { route: 'stages', icon: CalendarRange, group: 'content', can: 'content.view' },
   { route: 'milestones', icon: Star, group: 'content', can: 'content.view' },
+  // Dinh dưỡng theo giai đoạn (D-083, Figma D01–D04): stages, micronutrients, suggestion rules.
+  { route: 'nutrition', icon: Milk, group: 'content', can: 'content.view' },
   { route: 'contentReview', icon: BadgeCheck, group: 'content', can: 'content.view' },
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
@@ -349,6 +353,8 @@ function Screen({ route }: { route: Route }) {
       return <StagesScreen />;
     case 'milestones':
       return <MilestonesScreen />;
+    case 'nutrition':
+      return <NutritionScreen />;
     case 'contentReview':
       return <ContentReviewScreen />;
     case 'staff':

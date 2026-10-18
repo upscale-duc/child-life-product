@@ -27353,6 +27353,750 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa có số đo này. Thêm khi đo cho bé lần tới.'**
   String get growthMeasureNone;
+
+  /// 9a Chăm sóc tile title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng'**
+  String get careNutrition;
+
+  /// 9a tile subline while it is a teaser (nothing published for the baby's age). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo từng giai đoạn tuổi'**
+  String get careNutritionSub;
+
+  /// 9a tile subline: the current stage, e.g. "Giai đoạn 6–8 tháng". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn {range}'**
+  String careNutritionStage(String range);
+
+  /// 9a tile subline without a date of birth. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần ngày sinh của bé'**
+  String get careNutritionNoDob;
+
+  /// 9b title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng'**
+  String get nuTitle;
+
+  /// A stage's age range in completed months, e.g. 6–8 tháng. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to} tháng'**
+  String nuMonthsRange(int from, int to);
+
+  /// Tag on the current stage / by-age row. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện tại'**
+  String get nuCurrent;
+
+  /// Offline banner on 9b / 9f. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có kết nối. Dinh dưỡng đang hiện bản đã lưu trên máy.'**
+  String get nuOffline;
+
+  /// 9b / 9f when nothing is published for the baby's age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung dinh dưỡng đang được chuẩn bị'**
+  String get nuEmptyTitle;
+
+  /// 9b / 9f empty state. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo giai đoạn tuổi sẽ hiện ở đây ngay khi được xuất bản.'**
+  String get nuEmptyBody;
+
+  /// 9b no-DOB card for a member who may not see the date of birth. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa biết bé đang ở giai đoạn nào'**
+  String get nuNoDobViewerTitle;
+
+  /// 9b no-DOB card (Cùng nuôi), above "Thêm ngày sinh". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng theo giai đoạn cần biết tuổi của {name}.'**
+  String nuNoDobBody(String name);
+
+  /// 9b no-DOB card for caregivers / relatives. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa được xem ngày sinh của {name}, nên app chưa biết bé đang ở giai đoạn nào.'**
+  String nuNoDobViewer(String name);
+
+  /// A stage or nutrient that was withdrawn. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung này không còn'**
+  String get nuStageMissing;
+
+  /// Withdrawn item body. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể nội dung đã được cập nhật. Quay lại để xem bản mới nhất.'**
+  String get nuStageMissingBody;
+
+  /// 9b footer after the guidance / reviewer line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thay thế tư vấn của bác sĩ. Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.'**
+  String get nuFooter;
+
+  /// 9b footer after the D-082 guidance footnote, which already says it is not a substitute for a doctor. D-083 Dinh dưỡng theo giai đoạn. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.'**
+  String get nuFooterDose;
+
+  /// Share sheet failed (9e report, 9g calendar file). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được bảng chia sẻ. Thử lại sau.'**
+  String get nuShareFailed;
+
+  /// 9b stage card label, e.g. "7 tháng · giai đoạn 6–8 tháng". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{age} · giai đoạn {range}'**
+  String nuStageAge(String age, String range);
+
+  /// 9b stage card past the last stage (P-163 #9). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã qua các giai đoạn trong app.'**
+  String get nuStagePast;
+
+  /// 9b link to 9f. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem các giai đoạn'**
+  String get nuSeeStages;
+
+  /// 9b growth banner action → 9e. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem gợi ý'**
+  String get nuSeeSuggestions;
+
+  /// 9b milk card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa mỗi ngày'**
+  String get nuMilkTitle;
+
+  /// 9b milk card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo cho bé bú bình'**
+  String get nuMilkSub;
+
+  /// 9b milk card: the 7-day bottle average. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} trung bình {ml} ml/ngày (7 ngày qua)'**
+  String nuMilkAverage(String name, String ml);
+
+  /// 9b milk card with fewer than 3 days of bottle amounts (P-163 #4). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ cữ bú bình 7 ngày qua để tính trung bình'**
+  String get nuMilkNotEnough;
+
+  /// 9b milk card: feeds and per-feed amount. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{feeds} cữ, {perFeed} ml mỗi cữ'**
+  String nuMilkFeeds(String feeds, String perFeed);
+
+  /// 9b milk card: feeds only. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{feeds} cữ mỗi ngày'**
+  String nuMilkFeedsOnly(String feeds);
+
+  /// 9b milk card: per-feed amount only. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{perFeed} ml mỗi cữ'**
+  String nuMilkPerFeedOnly(String perFeed);
+
+  /// 9b / 9c breastfeeding note from the stage. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ: {note}'**
+  String nuMilkBreast(String note);
+
+  /// Accessibility label of the milk band. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng tham khảo {range} ml mỗi ngày'**
+  String nuMilkBandLabel(String range);
+
+  /// Accessibility label of the milk band marker. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình {ml} ml mỗi ngày'**
+  String nuMilkMarkerLabel(String ml);
+
+  /// 9b growth card title (Cùng nuôi). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng so với chuẩn WHO'**
+  String get nuGrowthTitle;
+
+  /// 9b growth card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đo gần nhất {date}'**
+  String nuGrowthLast(String date);
+
+  /// 9b growth card without a measurement. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lần đo'**
+  String get nuGrowthNone;
+
+  /// 9b growth tile. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get nuWeight;
+
+  /// 9b growth tile. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài'**
+  String get nuLength;
+
+  /// WHO position tag: P3–P97. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong khoảng chuẩn'**
+  String get nuTagIn;
+
+  /// WHO position tag: under P3 (never a diagnosis). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thấp hơn khoảng chuẩn'**
+  String get nuTagBelow;
+
+  /// WHO position tag: over P97 (never a diagnosis). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao hơn khoảng chuẩn'**
+  String get nuTagAbove;
+
+  /// 9b micronutrients section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần chú ý ở giai đoạn này'**
+  String get nuNutrientsTitle;
+
+  /// 9b sample day section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một ngày tham khảo'**
+  String get nuSampleTitle;
+
+  /// Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng'**
+  String get nuSlotMorning;
+
+  /// Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưa'**
+  String get nuSlotNoon;
+
+  /// Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều'**
+  String get nuSlotAfternoon;
+
+  /// Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get nuSlotEvening;
+
+  /// Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm'**
+  String get nuSlotNight;
+
+  /// 9b tips section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho {name}'**
+  String nuTipsTitle(String name);
+
+  /// 9c title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa'**
+  String get nuMilkPageTitle;
+
+  /// 9c intro. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo cho bé bú bình. Mỗi bé mỗi khác: cho bé bú theo dấu hiệu đói, no.'**
+  String get nuMilkPageIntro;
+
+  /// 9c chart title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'14 ngày qua'**
+  String get nuChartTitle;
+
+  /// 9c chart subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vùng màu: khoảng tham khảo {range} ml'**
+  String nuChartBand(String range);
+
+  /// 9c chart subline without a daily band. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn này không có khoảng tham khảo theo ngày'**
+  String get nuChartNoBand;
+
+  /// 9c bar tooltip. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · {ml} ml'**
+  String nuChartTooltip(String date, String ml);
+
+  /// 9c chart without data. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cữ bú bình nào trong 14 ngày qua.'**
+  String get nuChartEmpty;
+
+  /// 9c / 9d section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo giai đoạn'**
+  String get nuByStageTitle;
+
+  /// 9c stage row amount per feed. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} ml/cữ'**
+  String nuPerFeed(String range);
+
+  /// 9c stage row amount per day. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} ml/ngày'**
+  String nuPerDay(String range);
+
+  /// 9c stage row feeds. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} cữ'**
+  String nuFeeds(String range);
+
+  /// 9c banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé thường xuyên bú nhiều hoặc ít hơn khoảng này: trao đổi với bác sĩ nhi.'**
+  String get nuMilkTalkDoctor;
+
+  /// 9d card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao cần'**
+  String get nuWhy;
+
+  /// 9d foods section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thực phẩm gợi ý cho bé'**
+  String get nuFoodsTitle;
+
+  /// 9d tip card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹo'**
+  String get nuTip;
+
+  /// 9d campaign card → 9g. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch uống tại trạm y tế'**
+  String get nuCampaignTitle;
+
+  /// 9d campaign card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt tới: {days}'**
+  String nuNextRound(String days);
+
+  /// 9e title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng của {name}'**
+  String nuGrowthWeightTitle(String name);
+
+  /// 9e title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài của {name}'**
+  String nuGrowthLengthTitle(String name);
+
+  /// 9e chart header. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo chuẩn WHO · bé trai'**
+  String get nuWhoBoy;
+
+  /// 9e chart header. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo chuẩn WHO · bé gái'**
+  String get nuWhoGirl;
+
+  /// 9e chart legend: P3–P97. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng chuẩn'**
+  String get nuLegendBand;
+
+  /// 9e tips section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý trong lúc chờ khám'**
+  String get nuWhileWaiting;
+
+  /// 9e primary button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc đo lại sau {days} ngày'**
+  String nuRemindDays(int days);
+
+  /// 9e primary button (whole weeks). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc đo lại sau {weeks} tuần'**
+  String nuRemindWeeks(int weeks);
+
+  /// 9e / 9g once the reminder is open. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt nhắc · {date}'**
+  String nuReminded(String date);
+
+  /// 9e toast. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt nhắc đo lại ngày {date}'**
+  String nuRemindToast(String date);
+
+  /// 9e reminder title (Nhắc nhở; no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đo lại cân nặng cho bé'**
+  String get nuRemeasureWeight;
+
+  /// 9e reminder title (Nhắc nhở; no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đo lại chiều dài cho bé'**
+  String get nuRemeasureLength;
+
+  /// 9e secondary button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất báo cáo cho bác sĩ'**
+  String get nuExport;
+
+  /// 9e footer. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý chung theo quy tắc của chuyên gia, không thay thế chẩn đoán.'**
+  String get nuGrowthFooter;
+
+  /// 9e for a rule that no longer applies / a caregiver. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có gợi ý lúc này'**
+  String get nuGrowthNoneTitle;
+
+  /// 9e when the rule no longer fires. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần đo gần nhất của {name} không cần gợi ý nào lúc này.'**
+  String nuGrowthNoSignal(String name);
+
+  /// Doctor's summary: sex. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bé trai'**
+  String get nuBoy;
+
+  /// Doctor's summary: sex. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bé gái'**
+  String get nuGirl;
+
+  /// Doctor's summary, first line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tăng trưởng · Child Life'**
+  String get nuReportTitle;
+
+  /// Doctor's summary share subject. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tăng trưởng'**
+  String get nuReportSubject;
+
+  /// Doctor's summary: the baby's age (no name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi: {age}'**
+  String nuReportAge(String age);
+
+  /// Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới tính: {sex}'**
+  String nuReportSex(String sex);
+
+  /// Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần đo gần nhất (so với chuẩn WHO, P3–P97):'**
+  String get nuReportMeasures;
+
+  /// Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa bú bình trung bình 7 ngày qua: {ml} ml/ngày'**
+  String nuReportMilk(String ml);
+
+  /// Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa bú bình: chưa đủ số liệu 7 ngày qua'**
+  String get nuReportMilkNone;
+
+  /// Doctor's summary: the rule's banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú từ app: {banner}'**
+  String nuReportNote(String banner);
+
+  /// Doctor's summary, last line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số liệu do gia đình ghi trong Child Life, tính đến {date}. Không phải chẩn đoán.'**
+  String nuReportFooter(String date);
+
+  /// Doctor's summary: replaces the baby's name in the rule's banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bé'**
+  String get nuReportBaby;
+
+  /// 9f title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các giai đoạn'**
+  String get nuStagesTitle;
+
+  /// 9g intro. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trẻ {ages} được uống miễn phí tại {place}, theo các đợt dưới đây.'**
+  String nuVitaIntro(String ages, String place);
+
+  /// 9g intro without a place. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trẻ {ages} được uống miễn phí theo các đợt dưới đây.'**
+  String nuVitaIntroNoPlace(String ages);
+
+  /// 9g before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} sẽ được uống từ {months} tháng tuổi.'**
+  String nuVitaFrom(String name, int months);
+
+  /// 9g before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt đầu tiên: {days}.'**
+  String nuVitaFirst(String days);
+
+  /// 9g round title (month number in vi, month name in en). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt tháng {month}'**
+  String nuRoundTitle(String month);
+
+  /// 9g round subline: its days. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {days}'**
+  String nuRoundDaysLine(String days);
+
+  /// 9g round taken. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã uống {date}'**
+  String nuRoundTaken(String date);
+
+  /// 9g next round tag. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get nuRoundNext;
+
+  /// 9g past round not recorded (neutral, never red). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã qua, chưa ghi nhận'**
+  String get nuRoundPast;
+
+  /// 9g round before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tới tuổi'**
+  String get nuRoundTooYoung;
+
+  /// 9g round past the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã qua độ tuổi'**
+  String get nuRoundTooOld;
+
+  /// 9g toast for others tapping a round. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ Cùng nuôi ghi được đợt đã uống.'**
+  String get nuVitaReadOnly;
+
+  /// 9g toast for a round not begun. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt này chưa tới.'**
+  String get nuVitaFuture;
+
+  /// 9g mark sheet row. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày uống'**
+  String get nuVitaDate;
+
+  /// 9g mark sheet button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đã uống'**
+  String get nuVitaMark;
+
+  /// 9g mark sheet button for a taken round. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ đánh dấu'**
+  String get nuVitaUnmark;
+
+  /// 9g toast after marking. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi {round}'**
+  String nuVitaMarked(String round);
+
+  /// 9g toast after undo. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ đánh dấu'**
+  String get nuVitaUnmarked;
+
+  /// 9g button and sheet primary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt nhắc'**
+  String get nuVitaRemind;
+
+  /// 9g reminder sheet title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc uống {name}'**
+  String nuVitaSheetTitle(String name);
+
+  /// 9g reminder sheet body. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc trước 1 ngày, lúc 8:00 sáng {date}. Lịch cụ thể theo thông báo của trạm y tế địa phương.'**
+  String nuVitaSheetBody(String date);
+
+  /// 9g reminder sheet once the day before has passed. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc lúc 8:00 sáng {date}. Lịch cụ thể theo thông báo của trạm y tế địa phương.'**
+  String nuVitaSheetBodySameDay(String date);
+
+  /// 9g reminder sheet row: one member, default me. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người nhận'**
+  String get nuVitaRecipient;
+
+  /// 9g reminder sheet toggle (.ics share). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào lịch điện thoại'**
+  String get nuVitaCalendar;
+
+  /// 9g reminder title in Nhắc nhở (no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Uống {name} tại trạm y tế · {days}'**
+  String nuVitaReminderTitle(String name, String days);
+
+  /// 9g calendar event title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Uống {name} cho bé tại trạm y tế'**
+  String nuVitaIcsSummary(String name);
+
+  /// 9g footer and calendar note. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch cụ thể theo thông báo của trạm y tế địa phương.'**
+  String get nuVitaLocalNote;
+
+  /// 9g toast. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt nhắc lúc 8:00 ngày {date}'**
+  String nuVitaSetToast(String date);
+
+  /// 9g link to the nutrient article (9d). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Về {name}'**
+  String nuAbout(String name);
+
+  /// 9b milk card when the stage gives only a daily amount (12–36 months: milk is a drink). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo {range} ml mỗi ngày'**
+  String nuMilkPerDayOnly(String range);
 }
 
 class _AppLocalizationsDelegate

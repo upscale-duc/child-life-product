@@ -1,5 +1,17 @@
 import { z } from 'zod';
 import { memberRoles } from './baby.js';
+import {
+  nutrientDraftSchema,
+  nutrientIdSchema,
+  nutrientSchema,
+  nutritionRuleDraftSchema,
+  nutritionRuleIdSchema,
+  nutritionRuleSchema,
+  nutritionStageDraftSchema,
+  nutritionStageIdSchema,
+  nutritionStageSchema,
+  ruleFits,
+} from './nutrition.js';
 import { contentReviewSchema, contentSourceSchema, daysBetweenIso } from './rhythm.js';
 
 /**
@@ -24,7 +36,15 @@ import { contentReviewSchema, contentSourceSchema, daysBetweenIso } from './rhyt
 
 // ---------- Kinds, collections, limits ----------
 
-export const contentKinds = ['article', 'stage', 'milestone'] as const;
+export const contentKinds = [
+  'article',
+  'stage',
+  'milestone',
+  // Dinh dưỡng theo giai đoạn (D-083): stages, micronutrients, suggestion rules.
+  'nutritionStage',
+  'nutrient',
+  'nutritionRule',
+] as const;
 export type ContentKind = (typeof contentKinds)[number];
 
 /** Where the app reads each published kind. */
@@ -32,6 +52,9 @@ export const contentCollections: Record<ContentKind, string> = {
   article: 'contentArticles',
   stage: 'contentStages',
   milestone: 'contentMilestones',
+  nutritionStage: 'contentNutritionStages',
+  nutrient: 'contentNutrients',
+  nutritionRule: 'contentNutritionRules',
 };
 /** Staff-only drafts (one per item, same id as the published document). */
 export const contentDraftsCollection = 'contentDrafts';
@@ -351,6 +374,28 @@ export const contentStageSchema = stageContentSchema(true)
   .refine(sameLists, 'vi and en lists differ in length');
 export type ContentStage = z.infer<typeof contentStageSchema>;
 
+/** `contentNutritionStages/{id}` (D-083). */
+export const contentNutritionStageSchema = nutritionStageSchema(true)
+  .extend({ id: nutritionStageIdSchema, ...publishedMeta })
+  .strict()
+  .refine(reviewConsistent, 'illustrative must match review');
+export type ContentNutritionStage = z.infer<typeof contentNutritionStageSchema>;
+
+/** `contentNutrients/{id}` (D-083). */
+export const contentNutrientSchema = nutrientSchema(true)
+  .extend({ id: nutrientIdSchema, ...publishedMeta })
+  .strict()
+  .refine(reviewConsistent, 'illustrative must match review');
+export type ContentNutrient = z.infer<typeof contentNutrientSchema>;
+
+/** `contentNutritionRules/{id}` (D-083). */
+export const contentNutritionRuleSchema = nutritionRuleSchema(true)
+  .extend({ id: nutritionRuleIdSchema, ...publishedMeta })
+  .strict()
+  .refine(reviewConsistent, 'illustrative must match review')
+  .refine(ruleFits, 'This condition does not apply to the metric');
+export type ContentNutritionRule = z.infer<typeof contentNutritionRuleSchema>;
+
 // ---------- Review workflow (B03/B04) ----------
 
 /** Nháp → Chờ duyệt → Đã duyệt → Xuất bản; Lưu trữ = taken off the app or dropped. */
@@ -593,6 +638,30 @@ export const contentSaveRequestSchema = z.discriminatedUnion('kind', [
       kind: z.literal('milestone'),
       id: contentMilestoneRefSchema.nullable(),
       data: z.record(z.string(), z.unknown()),
+      ...saveCommon,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('nutritionStage'),
+      id: nutritionStageIdSchema.nullable(),
+      data: nutritionStageDraftSchema,
+      ...saveCommon,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('nutrient'),
+      id: nutrientIdSchema.nullable(),
+      data: nutrientDraftSchema,
+      ...saveCommon,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('nutritionRule'),
+      id: nutritionRuleIdSchema.nullable(),
+      data: nutritionRuleDraftSchema,
       ...saveCommon,
     })
     .strict(),

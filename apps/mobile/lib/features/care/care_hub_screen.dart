@@ -18,6 +18,9 @@ import '../home/home_shell.dart';
 import '../library/content_repository.dart';
 import '../library/library_routes.dart';
 import '../me/me_widgets.dart';
+import '../nutrition/nutrition_routes.dart';
+import '../nutrition/nutrition_format.dart' show nuAgeLabel;
+import '../nutrition/nutrition_state.dart';
 import '../premium/premium_repository.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
@@ -28,8 +31,9 @@ import 'history_screen.dart' show HistoryFilter;
 
 /// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174), grouped as the owner asked
 /// (2026-10-14, D-069): "Chăm hằng ngày" (Nhắc nhở · Tiêm chủng · Thống kê · Lịch sử · Tăng
-/// trưởng), "Hiểu con & phát triển" (Wonder Weeks · Giai đoạn của bé · Mốc phát triển · Ăn dặm)
-/// and "Kiến thức chăm bé" (Thư viện chăm bé), the last two still coming soon. Sơ cứu and Chi
+/// trưởng · Dinh dưỡng, D-083), "Hiểu con & phát triển" (Wonder Weeks · Giai đoạn của bé · Mốc
+/// phát triển) and "Kiến thức chăm bé" (Thư viện chăm bé); the "Ăn dặm" teaser is gone since
+/// Dinh dưỡng covers solids by stage (P-163 #11). Sơ cứu and Chi
 /// tiêu are in Tiện ích. Caregivers see no Tăng trưởng tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
@@ -91,6 +95,10 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           )
         : l10n.careRemindersOn(rules.length + upcoming.length);
 
+    void soon() => showClToast(context, message: l10n.careSoonToast);
+    // Dinh dưỡng (9a, D-083): live once a published stage covers the baby's age, "Cần ngày sinh
+    // của bé" without a date of birth, a "Sớm ra mắt" teaser otherwise (P-163 #11).
+    final nutrition = ref.watch(nuTileProvider);
     final daily = [
       _Tile(
         icon: ClIcons.clock,
@@ -144,9 +152,25 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             '${Routes.history}?filter=${HistoryFilter.growth.name}',
           ),
         ),
+      _Tile(
+        key: const Key('careNutrition'),
+        icon: ClIcons.feed,
+        tint: cl.care.bottle.soft,
+        title: l10n.careNutrition,
+        subtitle: switch (nutrition) {
+          NuTileLive(:final stage) => l10n.careNutritionStage(
+            nuAgeLabel(l10n, stage.age),
+          ),
+          NuTileNoDob() => l10n.careNutritionNoDob,
+          NuTileTeaser() => l10n.careNutritionSub,
+        },
+        soon: nutrition is NuTileTeaser,
+        onTap: nutrition is NuTileTeaser
+            ? soon
+            : () => context.push(NuRoutes.home),
+      ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 
-    void soon() => showClToast(context, message: l10n.careSoonToast);
     // 450:6424: drawn like the live tiles, each with its own chip; only the badge marks them.
     List<_Tile> teasers(List<(ClIcons, Color, String, String)> items) => [
       for (final (icon, tint, title, subtitle) in items)
@@ -214,12 +238,6 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             l10n.careAgeCards,
             l10n.careAgeCardsSub,
           ),
-        (
-          ClIcons.feed,
-          cl.care.bottle.soft,
-          l10n.careSolids,
-          l10n.careSolidsSub,
-        ),
       ]),
     ];
     final knowledge = [

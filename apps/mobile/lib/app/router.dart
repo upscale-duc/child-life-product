@@ -33,6 +33,7 @@ import '../features/memories/memories_screen.dart';
 import '../features/memories/messages_screen.dart';
 import '../features/milestones/milestone_routes.dart';
 import '../features/memories/memory_models.dart' show MilestoneRef;
+import '../features/nutrition/nutrition_routes.dart';
 import '../features/stories/share_screens.dart';
 import '../features/stories/story_editor.dart';
 import '../features/stories/story_models.dart';
@@ -474,6 +475,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                       ),
                     ],
                   ),
+                  // Dinh dưỡng theo giai đoạn (9b – 9g, D-083).
+                  nutritionRoute(),
                   // S7 reminders (8a–8e, 12f).
                   _route(
                     path: 'reminders',

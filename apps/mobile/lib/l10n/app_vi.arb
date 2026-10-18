@@ -24191,5 +24191,765 @@
   "growthMeasureNone": "Chưa có số đo này. Thêm khi đo cho bé lần tới.",
   "@growthMeasureNone": {
     "description": "20d: the selected measure (e.g. head circumference) has no value yet. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "careNutrition": "Dinh dưỡng",
+  "@careNutrition": {
+    "description": "9a Chăm sóc tile title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "careNutritionSub": "Theo từng giai đoạn tuổi",
+  "@careNutritionSub": {
+    "description": "9a tile subline while it is a teaser (nothing published for the baby's age). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "careNutritionStage": "Giai đoạn {range}",
+  "@careNutritionStage": {
+    "description": "9a tile subline: the current stage, e.g. \"Giai đoạn 6–8 tháng\". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "careNutritionNoDob": "Cần ngày sinh của bé",
+  "@careNutritionNoDob": {
+    "description": "9a tile subline without a date of birth. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTitle": "Dinh dưỡng",
+  "@nuTitle": {
+    "description": "9b title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMonthsRange": "{from}–{to} tháng",
+  "@nuMonthsRange": {
+    "description": "A stage's age range in completed months, e.g. 6–8 tháng. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "nuCurrent": "Hiện tại",
+  "@nuCurrent": {
+    "description": "Tag on the current stage / by-age row. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuOffline": "Không có kết nối. Dinh dưỡng đang hiện bản đã lưu trên máy.",
+  "@nuOffline": {
+    "description": "Offline banner on 9b / 9f. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuEmptyTitle": "Nội dung dinh dưỡng đang được chuẩn bị",
+  "@nuEmptyTitle": {
+    "description": "9b / 9f when nothing is published for the baby's age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuEmptyBody": "Gợi ý theo giai đoạn tuổi sẽ hiện ở đây ngay khi được xuất bản.",
+  "@nuEmptyBody": {
+    "description": "9b / 9f empty state. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuNoDobViewerTitle": "Chưa biết bé đang ở giai đoạn nào",
+  "@nuNoDobViewerTitle": {
+    "description": "9b no-DOB card for a member who may not see the date of birth. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuNoDobBody": "Dinh dưỡng theo giai đoạn cần biết tuổi của {name}.",
+  "@nuNoDobBody": {
+    "description": "9b no-DOB card (Cùng nuôi), above \"Thêm ngày sinh\". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuNoDobViewer": "Bạn chưa được xem ngày sinh của {name}, nên app chưa biết bé đang ở giai đoạn nào.",
+  "@nuNoDobViewer": {
+    "description": "9b no-DOB card for caregivers / relatives. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuStageMissing": "Nội dung này không còn",
+  "@nuStageMissing": {
+    "description": "A stage or nutrient that was withdrawn. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuStageMissingBody": "Có thể nội dung đã được cập nhật. Quay lại để xem bản mới nhất.",
+  "@nuStageMissingBody": {
+    "description": "Withdrawn item body. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuFooter": "Không thay thế tư vấn của bác sĩ. Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.",
+  "@nuFooter": {
+    "description": "9b footer after the guidance / reviewer line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuFooterDose": "Thuốc, vi chất dạng uống: theo chỉ định bác sĩ.",
+  "@nuFooterDose": {
+    "description": "9b footer after the D-082 guidance footnote, which already says it is not a substitute for a doctor. D-083 Dinh dưỡng theo giai đoạn. EN is an engineering draft for owner review."
+  },
+  "nuShareFailed": "Chưa mở được bảng chia sẻ. Thử lại sau.",
+  "@nuShareFailed": {
+    "description": "Share sheet failed (9e report, 9g calendar file). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuStageAge": "{age} · giai đoạn {range}",
+  "@nuStageAge": {
+    "description": "9b stage card label, e.g. \"7 tháng · giai đoạn 6–8 tháng\". D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuStagePast": "Bé đã qua các giai đoạn trong app.",
+  "@nuStagePast": {
+    "description": "9b stage card past the last stage (P-163 #9). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSeeStages": "Xem các giai đoạn",
+  "@nuSeeStages": {
+    "description": "9b link to 9f. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSeeSuggestions": "Xem gợi ý",
+  "@nuSeeSuggestions": {
+    "description": "9b growth banner action → 9e. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMilkTitle": "Sữa mỗi ngày",
+  "@nuMilkTitle": {
+    "description": "9b milk card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMilkSub": "Tham khảo cho bé bú bình",
+  "@nuMilkSub": {
+    "description": "9b milk card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMilkAverage": "{name} trung bình {ml} ml/ngày (7 ngày qua)",
+  "@nuMilkAverage": {
+    "description": "9b milk card: the 7-day bottle average. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkNotEnough": "Chưa đủ cữ bú bình 7 ngày qua để tính trung bình",
+  "@nuMilkNotEnough": {
+    "description": "9b milk card with fewer than 3 days of bottle amounts (P-163 #4). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMilkFeeds": "{feeds} cữ, {perFeed} ml mỗi cữ",
+  "@nuMilkFeeds": {
+    "description": "9b milk card: feeds and per-feed amount. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "feeds": {
+        "type": "String"
+      },
+      "perFeed": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkFeedsOnly": "{feeds} cữ mỗi ngày",
+  "@nuMilkFeedsOnly": {
+    "description": "9b milk card: feeds only. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "feeds": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkPerFeedOnly": "{perFeed} ml mỗi cữ",
+  "@nuMilkPerFeedOnly": {
+    "description": "9b milk card: per-feed amount only. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "perFeed": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkBreast": "Bú mẹ: {note}",
+  "@nuMilkBreast": {
+    "description": "9b / 9c breastfeeding note from the stage. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkBandLabel": "Khoảng tham khảo {range} ml mỗi ngày",
+  "@nuMilkBandLabel": {
+    "description": "Accessibility label of the milk band. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkMarkerLabel": "Trung bình {ml} ml mỗi ngày",
+  "@nuMilkMarkerLabel": {
+    "description": "Accessibility label of the milk band marker. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "nuGrowthTitle": "Tăng trưởng so với chuẩn WHO",
+  "@nuGrowthTitle": {
+    "description": "9b growth card title (Cùng nuôi). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuGrowthLast": "Lần đo gần nhất {date}",
+  "@nuGrowthLast": {
+    "description": "9b growth card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuGrowthNone": "Chưa có lần đo",
+  "@nuGrowthNone": {
+    "description": "9b growth card without a measurement. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuWeight": "Cân nặng",
+  "@nuWeight": {
+    "description": "9b growth tile. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuLength": "Chiều dài",
+  "@nuLength": {
+    "description": "9b growth tile. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTagIn": "Trong khoảng chuẩn",
+  "@nuTagIn": {
+    "description": "WHO position tag: P3–P97. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTagBelow": "Thấp hơn khoảng chuẩn",
+  "@nuTagBelow": {
+    "description": "WHO position tag: under P3 (never a diagnosis). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTagAbove": "Cao hơn khoảng chuẩn",
+  "@nuTagAbove": {
+    "description": "WHO position tag: over P97 (never a diagnosis). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuNutrientsTitle": "Cần chú ý ở giai đoạn này",
+  "@nuNutrientsTitle": {
+    "description": "9b micronutrients section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSampleTitle": "Một ngày tham khảo",
+  "@nuSampleTitle": {
+    "description": "9b sample day section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSlotMorning": "Sáng",
+  "@nuSlotMorning": {
+    "description": "Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSlotNoon": "Trưa",
+  "@nuSlotNoon": {
+    "description": "Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSlotAfternoon": "Chiều",
+  "@nuSlotAfternoon": {
+    "description": "Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSlotEvening": "Tối",
+  "@nuSlotEvening": {
+    "description": "Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuSlotNight": "Đêm",
+  "@nuSlotNight": {
+    "description": "Sample day slot. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTipsTitle": "Gợi ý cho {name}",
+  "@nuTipsTitle": {
+    "description": "9b tips section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkPageTitle": "Lượng sữa",
+  "@nuMilkPageTitle": {
+    "description": "9c title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuMilkPageIntro": "Tham khảo cho bé bú bình. Mỗi bé mỗi khác: cho bé bú theo dấu hiệu đói, no.",
+  "@nuMilkPageIntro": {
+    "description": "9c intro. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuChartTitle": "14 ngày qua",
+  "@nuChartTitle": {
+    "description": "9c chart title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuChartBand": "Vùng màu: khoảng tham khảo {range} ml",
+  "@nuChartBand": {
+    "description": "9c chart subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuChartNoBand": "Giai đoạn này không có khoảng tham khảo theo ngày",
+  "@nuChartNoBand": {
+    "description": "9c chart subline without a daily band. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuChartTooltip": "{date} · {ml} ml",
+  "@nuChartTooltip": {
+    "description": "9c bar tooltip. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "nuChartEmpty": "Chưa có cữ bú bình nào trong 14 ngày qua.",
+  "@nuChartEmpty": {
+    "description": "9c chart without data. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuByStageTitle": "Theo giai đoạn",
+  "@nuByStageTitle": {
+    "description": "9c / 9d section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuPerFeed": "{range} ml/cữ",
+  "@nuPerFeed": {
+    "description": "9c stage row amount per feed. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuPerDay": "{range} ml/ngày",
+  "@nuPerDay": {
+    "description": "9c stage row amount per day. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuFeeds": "{range} cữ",
+  "@nuFeeds": {
+    "description": "9c stage row feeds. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkTalkDoctor": "Bé thường xuyên bú nhiều hoặc ít hơn khoảng này: trao đổi với bác sĩ nhi.",
+  "@nuMilkTalkDoctor": {
+    "description": "9c banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuWhy": "Vì sao cần",
+  "@nuWhy": {
+    "description": "9d card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuFoodsTitle": "Thực phẩm gợi ý cho bé",
+  "@nuFoodsTitle": {
+    "description": "9d foods section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuTip": "Mẹo",
+  "@nuTip": {
+    "description": "9d tip card title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuCampaignTitle": "Lịch uống tại trạm y tế",
+  "@nuCampaignTitle": {
+    "description": "9d campaign card → 9g. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuNextRound": "Đợt tới: {days}",
+  "@nuNextRound": {
+    "description": "9d campaign card subline. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "nuGrowthWeightTitle": "Cân nặng của {name}",
+  "@nuGrowthWeightTitle": {
+    "description": "9e title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuGrowthLengthTitle": "Chiều dài của {name}",
+  "@nuGrowthLengthTitle": {
+    "description": "9e title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuWhoBoy": "Theo chuẩn WHO · bé trai",
+  "@nuWhoBoy": {
+    "description": "9e chart header. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuWhoGirl": "Theo chuẩn WHO · bé gái",
+  "@nuWhoGirl": {
+    "description": "9e chart header. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuLegendBand": "Khoảng chuẩn",
+  "@nuLegendBand": {
+    "description": "9e chart legend: P3–P97. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuWhileWaiting": "Gợi ý trong lúc chờ khám",
+  "@nuWhileWaiting": {
+    "description": "9e tips section. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuRemindDays": "Nhắc đo lại sau {days} ngày",
+  "@nuRemindDays": {
+    "description": "9e primary button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "nuRemindWeeks": "Nhắc đo lại sau {weeks} tuần",
+  "@nuRemindWeeks": {
+    "description": "9e primary button (whole weeks). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "nuReminded": "Đã đặt nhắc · {date}",
+  "@nuReminded": {
+    "description": "9e / 9g once the reminder is open. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRemindToast": "Đã đặt nhắc đo lại ngày {date}",
+  "@nuRemindToast": {
+    "description": "9e toast. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRemeasureWeight": "Đo lại cân nặng cho bé",
+  "@nuRemeasureWeight": {
+    "description": "9e reminder title (Nhắc nhở; no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuRemeasureLength": "Đo lại chiều dài cho bé",
+  "@nuRemeasureLength": {
+    "description": "9e reminder title (Nhắc nhở; no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuExport": "Xuất báo cáo cho bác sĩ",
+  "@nuExport": {
+    "description": "9e secondary button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuGrowthFooter": "Gợi ý chung theo quy tắc của chuyên gia, không thay thế chẩn đoán.",
+  "@nuGrowthFooter": {
+    "description": "9e footer. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuGrowthNoneTitle": "Không có gợi ý lúc này",
+  "@nuGrowthNoneTitle": {
+    "description": "9e for a rule that no longer applies / a caregiver. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuGrowthNoSignal": "Các lần đo gần nhất của {name} không cần gợi ý nào lúc này.",
+  "@nuGrowthNoSignal": {
+    "description": "9e when the rule no longer fires. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuBoy": "bé trai",
+  "@nuBoy": {
+    "description": "Doctor's summary: sex. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuGirl": "bé gái",
+  "@nuGirl": {
+    "description": "Doctor's summary: sex. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuReportTitle": "Tóm tắt tăng trưởng · Child Life",
+  "@nuReportTitle": {
+    "description": "Doctor's summary, first line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuReportSubject": "Tóm tắt tăng trưởng",
+  "@nuReportSubject": {
+    "description": "Doctor's summary share subject. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuReportAge": "Tuổi: {age}",
+  "@nuReportAge": {
+    "description": "Doctor's summary: the baby's age (no name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "nuReportSex": "Giới tính: {sex}",
+  "@nuReportSex": {
+    "description": "Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "sex": {
+        "type": "String"
+      }
+    }
+  },
+  "nuReportMeasures": "Các lần đo gần nhất (so với chuẩn WHO, P3–P97):",
+  "@nuReportMeasures": {
+    "description": "Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuReportMilk": "Sữa bú bình trung bình 7 ngày qua: {ml} ml/ngày",
+  "@nuReportMilk": {
+    "description": "Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "nuReportMilkNone": "Sữa bú bình: chưa đủ số liệu 7 ngày qua",
+  "@nuReportMilkNone": {
+    "description": "Doctor's summary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuReportNote": "Ghi chú từ app: {banner}",
+  "@nuReportNote": {
+    "description": "Doctor's summary: the rule's banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "banner": {
+        "type": "String"
+      }
+    }
+  },
+  "nuReportFooter": "Số liệu do gia đình ghi trong Child Life, tính đến {date}. Không phải chẩn đoán.",
+  "@nuReportFooter": {
+    "description": "Doctor's summary, last line. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuReportBaby": "bé",
+  "@nuReportBaby": {
+    "description": "Doctor's summary: replaces the baby's name in the rule's banner. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuStagesTitle": "Các giai đoạn",
+  "@nuStagesTitle": {
+    "description": "9f title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaIntro": "Trẻ {ages} được uống miễn phí tại {place}, theo các đợt dưới đây.",
+  "@nuVitaIntro": {
+    "description": "9g intro. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ages": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaIntroNoPlace": "Trẻ {ages} được uống miễn phí theo các đợt dưới đây.",
+  "@nuVitaIntroNoPlace": {
+    "description": "9g intro without a place. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ages": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaFrom": "{name} sẽ được uống từ {months} tháng tuổi.",
+  "@nuVitaFrom": {
+    "description": "9g before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "nuVitaFirst": "Đợt đầu tiên: {days}.",
+  "@nuVitaFirst": {
+    "description": "9g before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRoundTitle": "Đợt tháng {month}",
+  "@nuRoundTitle": {
+    "description": "9g round title (month number in vi, month name in en). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRoundDaysLine": "Ngày {days}",
+  "@nuRoundDaysLine": {
+    "description": "9g round subline: its days. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRoundTaken": "Đã uống {date}",
+  "@nuRoundTaken": {
+    "description": "9g round taken. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuRoundNext": "Sắp tới",
+  "@nuRoundNext": {
+    "description": "9g next round tag. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuRoundPast": "Đã qua, chưa ghi nhận",
+  "@nuRoundPast": {
+    "description": "9g past round not recorded (neutral, never red). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuRoundTooYoung": "Chưa tới tuổi",
+  "@nuRoundTooYoung": {
+    "description": "9g round before the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuRoundTooOld": "Đã qua độ tuổi",
+  "@nuRoundTooOld": {
+    "description": "9g round past the eligible age. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaReadOnly": "Chỉ Cùng nuôi ghi được đợt đã uống.",
+  "@nuVitaReadOnly": {
+    "description": "9g toast for others tapping a round. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaFuture": "Đợt này chưa tới.",
+  "@nuVitaFuture": {
+    "description": "9g toast for a round not begun. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaDate": "Ngày uống",
+  "@nuVitaDate": {
+    "description": "9g mark sheet row. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaMark": "Đánh dấu đã uống",
+  "@nuVitaMark": {
+    "description": "9g mark sheet button. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaUnmark": "Bỏ đánh dấu",
+  "@nuVitaUnmark": {
+    "description": "9g mark sheet button for a taken round. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaMarked": "Đã ghi {round}",
+  "@nuVitaMarked": {
+    "description": "9g toast after marking. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "round": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaUnmarked": "Đã bỏ đánh dấu",
+  "@nuVitaUnmarked": {
+    "description": "9g toast after undo. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaRemind": "Đặt nhắc",
+  "@nuVitaRemind": {
+    "description": "9g button and sheet primary. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaSheetTitle": "Nhắc uống {name}",
+  "@nuVitaSheetTitle": {
+    "description": "9g reminder sheet title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaSheetBody": "Nhắc trước 1 ngày, lúc 8:00 sáng {date}. Lịch cụ thể theo thông báo của trạm y tế địa phương.",
+  "@nuVitaSheetBody": {
+    "description": "9g reminder sheet body. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaSheetBodySameDay": "Nhắc lúc 8:00 sáng {date}. Lịch cụ thể theo thông báo của trạm y tế địa phương.",
+  "@nuVitaSheetBodySameDay": {
+    "description": "9g reminder sheet once the day before has passed. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaRecipient": "Người nhận",
+  "@nuVitaRecipient": {
+    "description": "9g reminder sheet row: one member, default me. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaCalendar": "Thêm vào lịch điện thoại",
+  "@nuVitaCalendar": {
+    "description": "9g reminder sheet toggle (.ics share). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaReminderTitle": "Uống {name} tại trạm y tế · {days}",
+  "@nuVitaReminderTitle": {
+    "description": "9g reminder title in Nhắc nhở (no baby name). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaIcsSummary": "Uống {name} cho bé tại trạm y tế",
+  "@nuVitaIcsSummary": {
+    "description": "9g calendar event title. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuVitaLocalNote": "Lịch cụ thể theo thông báo của trạm y tế địa phương.",
+  "@nuVitaLocalNote": {
+    "description": "9g footer and calendar note. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review."
+  },
+  "nuVitaSetToast": "Đã đặt nhắc lúc 8:00 ngày {date}",
+  "@nuVitaSetToast": {
+    "description": "9g toast. D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nuAbout": "Về {name}",
+  "@nuAbout": {
+    "description": "9g link to the nutrient article (9d). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nuMilkPerDayOnly": "Tham khảo {range} ml mỗi ngày",
+  "@nuMilkPerDayOnly": {
+    "description": "9b milk card when the stage gives only a daily amount (12–36 months: milk is a drink). D-083 Dinh dưỡng theo giai đoạn (plan docs/product/nutrition-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -28,6 +28,7 @@ import {
   type ContentKind,
   type EditorialReview,
   type EditorialStatus,
+  type NutritionAge,
   type StageAge,
 } from '@child-life/contracts';
 import {
@@ -39,17 +40,25 @@ import {
 } from 'firebase-admin/firestore';
 import type { FirstAidImageStore } from './content.js';
 import { milestoneAdapter } from './content-milestones.js';
+import {
+  nutrientAdapter,
+  nutritionCoverage,
+  nutritionRuleAdapter,
+  nutritionStageAdapter,
+} from './content-nutrition.js';
 import { seedArticles, seedStages } from './content-seed.js';
 import { StaffError, parse, requireStaff, staffAudit, type Staff } from './staff.js';
 import { mayApproveOwn, readContentPolicy, reviewRequired } from './content-policy.js';
 
 /**
  * Editorial content on the portal (D-076 #5–#7; Figma B01–B08): Thư viện chăm bé articles,
- * "Nội dung theo giai đoạn" (app "Giai đoạn của bé") and reference Mốc phát triển. One draft per
- * item in `contentDrafts/{id}` (staff-only, through these callables):
+ * "Nội dung theo giai đoạn" (app "Giai đoạn của bé"), reference Mốc phát triển and Dinh dưỡng
+ * theo giai đoạn (D-083: stages, micronutrients, suggestion rules; `content-nutrition.ts`). One
+ * draft per item in `contentDrafts/{id}` (staff-only, through these callables):
  *
  *   Nháp → Gửi duyệt → Duyệt (a different person than the last editor, D-058; the qualified
- *   review on prod) → Xuất bản (writes `contentArticles` / `contentStages` / `contentMilestones`)
+ *   review on prod) → Xuất bản (writes `contentArticles` / `contentStages` / `contentMilestones`,
+ *   or `contentNutritionStages` / `contentNutrients` / `contentNutritionRules`)
  *
  * Editing a published item opens a new draft while the published revision stays on the app.
  * "Gỡ khỏi app" deletes the published document; "Xác nhận lại" renews the 12-month re-review.
@@ -64,10 +73,13 @@ export interface ContentLibraryDeps {
   images: FirstAidImageStore;
 }
 
+/** The workflow steps a kind may add its own checks to (`ContentKindAdapter.gate`). */
+export type ContentGateStep = 'submit' | 'approve' | 'publish';
+
 /**
  * How one kind is validated and published. Articles and stages are defined here; reference
- * milestones come from the milestones slice (`content-milestones.ts`) so both slices share the
- * workflow without sharing a schema.
+ * milestones come from the milestones slice (`content-milestones.ts`) and the nutrition kinds from
+ * `content-nutrition.ts`, so the slices share the workflow without sharing a schema.
  */
 export interface ContentKindAdapter {
   /** A fresh id for "+ mới". */
@@ -88,6 +100,16 @@ export interface ContentKindAdapter {
   seed(
     payload?: unknown,
   ): Array<{ id: string; reviewerLabel: string | null; data: Record<string, unknown> }> | null;
+  /** The list title; default `title`, else `name`. */
+  title?(data: Record<string, unknown>): { vi: string; en: string };
+  /**
+   * Extra checks on Gửi duyệt, Duyệt and Xuất bản, inside the step's transaction after the status
+   * checks (nutrition: `unsafe-copy`, `stage-overlap`, `link-missing`). Throws a StaffError.
+   */
+  gate?(
+    step: ContentGateStep,
+    ctx: { tx: Transaction; db: Firestore; id: string; data: Record<string, unknown> },
+  ): Promise<void>;
 }
 
 export interface PublishedMeta {
@@ -160,14 +182,33 @@ const stageAdapter: ContentKindAdapter = {
   seed: () => seedStages.map((s) => ({ ...s, data: s.data as unknown as Data })),
 };
 
+/** Every kind has its adapter (the Record keeps it exhaustive when a kind is added). */
+const adapters: Record<ContentKind, ContentKindAdapter> = {
+  article: articleAdapter,
+  stage: stageAdapter,
+  milestone: milestoneAdapter,
+  nutritionStage: nutritionStageAdapter,
+  nutrient: nutrientAdapter,
+  nutritionRule: nutritionRuleAdapter,
+};
+
 function adapterOf(kind: ContentKind): ContentKindAdapter {
-  if (kind === 'article') return articleAdapter;
-  if (kind === 'stage') return stageAdapter;
-  return milestoneAdapter;
+  const adapter = Object.hasOwn(adapters, kind) ? adapters[kind] : undefined;
+  // A draft of an unknown kind (or a caller bypassing the request schema) never falls back.
+  if (!adapter) throw new StaffError('invalid-argument', 'malformed');
+  return adapter;
 }
 
-const titleOf = (d: Data) =>
-  ((d.title ?? d.name) as { vi?: string; en?: string } | undefined) ?? { vi: '', en: '' };
+function titleOf(kind: ContentKind, d: Data): { vi: string; en: string } {
+  let t: { vi?: string; en?: string } | undefined;
+  try {
+    t = adapterOf(kind).title?.(d);
+  } catch {
+    t = undefined;
+  }
+  t ??= (d.title ?? d.name) as { vi?: string; en?: string } | undefined;
+  return { vi: t?.vi ?? '', en: t?.en ?? '' };
+}
 
 function rowOf(snap: DocumentSnapshot, today: string) {
   const kind = snap.get('kind') as ContentKind;
@@ -199,7 +240,7 @@ function rowOf(snap: DocumentSnapshot, today: string) {
           dueForReview: live.reviewDueOn < today,
         }
       : null,
-    title: { vi: titleOf(data).vi ?? '', en: titleOf(data).en ?? '' },
+    title: titleOf(kind, data),
     reviewerLabel: (snap.get('reviewerLabel') as string | null | undefined) ?? null,
     lastEditorName: (snap.get('lastEditorName') as string | undefined) ?? '',
     updatedAt: iso(snap.get('updatedAt')),
@@ -244,11 +285,24 @@ function coverageOf(rows: Row[]) {
   };
 }
 
+/** D01: the 0–36 month strip of the nutrition stages (`nutritionCoverage`). */
+function nutritionCoverageOf(rows: Row[]) {
+  return nutritionCoverage(
+    rows.flatMap((r) => {
+      const age = (r as Row & { ageMonths?: NutritionAge | null }).ageMonths;
+      return r.kind === 'nutritionStage' && age
+        ? [{ id: r.id, ageMonths: age, status: r.status, live: !!r.live }]
+        : [];
+    }),
+  );
+}
+
 const todayOf = (now: Date) => localDateIn(ZONE, now);
 
 /**
- * B01 / B05 / B07 lists (one kind, with counts; stages also get the 0–24 month coverage) and the
- * B03 / B04 queue (every kind: waiting for review, approved, due for re-review).
+ * B01 / B05 / B07 / D01–D04 lists (one kind, with counts; stages also get the 0–36 month bucket
+ * coverage, nutrition stages the 0–36 month strip) and the B03 / B04 queue (every kind: waiting
+ * for review, approved, due for re-review).
  */
 export async function contentList(
   db: Firestore,
@@ -288,6 +342,7 @@ export async function contentList(
     rows,
     counts: countsOf(rows),
     ...(view === 'stage' ? { coverage: coverageOf(rows) } : {}),
+    ...(view === 'nutritionStage' ? { coverage: nutritionCoverageOf(rows) } : {}),
     available: contentKinds,
     requireReview,
   };
@@ -456,8 +511,9 @@ export async function contentAct(
       }
       await checkImages(deps, req.kind, body);
       await checkLinks(db, req.kind, req.id, body);
-      return within((snap, tx) => {
+      return within(async (snap, tx) => {
         if (statusOf(snap) !== 'draft') throw new StaffError('failed-precondition', 'not-draft');
+        await adapter.gate?.('submit', { tx, db, id: req.id, data: snap.get('data') as Data });
         tx.update(ref, {
           status: 'in_review',
           submittedAt: now,
@@ -475,7 +531,7 @@ export async function contentAct(
       if (requireReview && !review) {
         throw new StaffError('failed-precondition', 'review-required');
       }
-      return within((snap, tx) => {
+      return within(async (snap, tx) => {
         if (statusOf(snap) !== 'in_review') {
           throw new StaffError('failed-precondition', 'not-pending');
         }
@@ -484,6 +540,7 @@ export async function contentAct(
         if (snap.get('lastEditorUid') === s.uid && !mayApproveOwn(s, policy)) {
           throw new StaffError('failed-precondition', 'same-person');
         }
+        await adapter.gate?.('approve', { tx, db, id: req.id, data: snap.get('data') as Data });
         tx.update(ref, {
           status: 'approved',
           approverUid: s.uid,
@@ -530,6 +587,7 @@ export async function contentAct(
         if (requireReview && !review) {
           throw new StaffError('failed-precondition', 'review-required');
         }
+        await adapter.gate?.('publish', { tx, db, id: req.id, data: snap.get('data') as Data });
         const live = liveOf(snap);
         const nowIso = now.toISOString();
         const meta: PublishedMeta = {

@@ -24,6 +24,8 @@ export type Route =
   | 'articles'
   | 'stages'
   | 'milestones'
+  // Dinh dưỡng theo giai đoạn (D-083): D01–D04.
+  | 'nutrition'
   | 'contentReview'
   | 'system'
   | 'systemAi'
@@ -49,6 +51,7 @@ export const routePaths: Record<Route, string> = {
   articles: '/articles',
   stages: '/stages',
   milestones: '/milestones',
+  nutrition: '/nutrition',
   contentReview: '/content-review',
   system: '/system',
   systemAi: '/system/ai',
@@ -72,6 +75,7 @@ const nestedRoutes: Route[] = [
   'articles',
   'stages',
   'milestones',
+  'nutrition',
   'contentReview',
 ];
 
