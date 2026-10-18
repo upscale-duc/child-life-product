@@ -987,7 +987,7 @@ void main() {
     );
 
     testWidgets(
-      'CH16 unreviewed: steps from the content, "chờ chuyên môn duyệt", '
+      'CH16 unreviewed: steps from the content, the guidance footnote (D-082), '
       '"Thử tối nay" is an intention',
       (tester) async {
         final repo = FakeAssistantRepository(
@@ -1000,8 +1000,8 @@ void main() {
         expect(_text('Tắm ấm hoặc lau người.'), findsOneWidget);
         expect(
           _text(
-            'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên '
-            'nhân.',
+            'Biên soạn theo hướng dẫn WHO, AAP, NHS · tham khảo, không thay thế '
+            'bác sĩ. Không khẳng định nguyên nhân.',
           ),
           findsOneWidget,
         );

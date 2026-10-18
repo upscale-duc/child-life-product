@@ -176,7 +176,8 @@ void main() {
       expect(find.text('Hợp với Teddy · 3 tuần'), findsOneWidget);
       // Ăn dặm is a separate library.
       expect(find.text('Cháo rây đầu tiên'), findsNothing);
-      expect(find.byKey(const Key('lbIllustrative')), findsWidgets);
+      // D-082: no review note on cards and rows; only a footnote at the end of an article.
+      expect(find.byKey(const Key('lbIllustrative')), findsNothing);
       await tester.tap(find.byKey(const Key('lbTopic_sleep')));
       await tester.pumpAndSettle();
       expect(visits.last.location, '/library/search?topic=sleep');

@@ -11879,7 +11879,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Suggestions, age content and reference calendar';
 
   @override
-  String get rhReviewPending => 'Illustrative content · pending expert review';
+  String get rhReviewPending =>
+      'Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor';
 
   @override
   String rhReviewedBy(String reviewer, String credential) {
@@ -15278,7 +15279,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asContentUnreviewed =>
-      'Illustrative content · pending expert review. Doesn’t claim a cause.';
+      'Written from WHO, AAP and NHS guidance · for reference, not a substitute for a doctor. Doesn’t claim a cause.';
 
   @override
   String get asContentReviewed =>
@@ -15607,10 +15608,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get lbIllustrative => 'Illustrative content · awaiting expert review';
-
-  @override
-  String get lbIllustrativeShort => 'Illustrative · not reviewed yet';
+  String get lbIllustrative =>
+      'Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor';
 
   @override
   String get lbOfflineLibrary =>
@@ -16175,7 +16174,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mtCreateOwn => 'Create your own milestone';
 
   @override
-  String get mtIllustrative => 'Illustrative content · pending expert review';
+  String get mtIllustrative =>
+      'Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor';
 
   @override
   String mtReviewed(String reviewer) {

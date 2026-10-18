@@ -153,8 +153,6 @@ class _StagesScreenState extends ConsumerState<StagesScreen> {
     final dob = baby?.dob;
     final current = dob == null ? null : lbStageFor(stages, dob, baby!.today);
     if (current != null) _scrollToCurrent();
-    final allIllustrative =
-        stages.isNotEmpty && stages.every((s) => s.illustrative);
 
     return LbPage(
       children: [
@@ -169,14 +167,6 @@ class _StagesScreenState extends ConsumerState<StagesScreen> {
             color: cl.colors.inkMuted,
           ),
         ),
-        // One note when nothing is reviewed yet; otherwise each unreviewed row says so.
-        if (allIllustrative) ...[
-          const SizedBox(height: ClSpace.s3),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: LbIllustrativeBadge(),
-          ),
-        ],
         LbOfflineNote(l10n.lbOfflineStages, top: ClSpace.s3),
         if (baby != null && dob == null) ...[
           const SizedBox(height: 14),
@@ -197,7 +187,6 @@ class _StagesScreenState extends ConsumerState<StagesScreen> {
             _StageRow(
               key: s == current ? _current : Key('lbStage_${s.id}'),
               stage: s,
-              badge: !allIllustrative && s.illustrative,
               time: dob == null
                   ? LbStageTime.future
                   : lbStageTime(s, current, dob, baby!.today),
@@ -211,15 +200,9 @@ class _StagesScreenState extends ConsumerState<StagesScreen> {
 /// 2a row: picture 52 · range (+ "Bé đang ở đây") · title · chevron. The current stage is
 /// sunshine-soft with a sunshine border; past stages are muted (still open).
 class _StageRow extends StatelessWidget {
-  const _StageRow({
-    required this.stage,
-    required this.time,
-    required this.badge,
-    super.key,
-  });
+  const _StageRow({required this.stage, required this.time, super.key});
   final LbStage stage;
   final LbStageTime time;
-  final bool badge;
 
   @override
   Widget build(BuildContext context) {
@@ -288,7 +271,6 @@ class _StageRow extends StatelessWidget {
                             ),
                           ),
                         ),
-                      if (badge) const LbIllustrativeBadge(compact: true),
                     ],
                   ),
                   const SizedBox(height: 3),
@@ -419,7 +401,6 @@ class StageDetailScreen extends ConsumerWidget {
             ),
             if (isCurrent && ageLabel != null)
               LbChip('${baby!.name} · $ageLabel'),
-            if (stage.illustrative) const LbIllustrativeBadge(),
           ],
         ),
         const SizedBox(height: ClSpace.s3),
@@ -586,6 +567,8 @@ class StageDetailScreen extends ConsumerWidget {
             if (stage.review != null && !stage.illustrative)
               lbReviewLabel(l10n, stage.review!),
             l10n.lbStageFootnote,
+            // D-082: a footnote, not a badge, until an expert signs the stage.
+            if (stage.illustrative) l10n.lbIllustrative,
           ].join(' · '),
           style: cl.text.caption.copyWith(
             fontSize: 12,

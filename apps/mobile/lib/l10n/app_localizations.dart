@@ -18451,10 +18451,10 @@ abstract class AppLocalizations {
   /// **'Gợi ý, tuần tuổi và lịch tham khảo'**
   String get rhSectionForYouSub;
 
-  /// Footnote on content with review null (D-073 #2, PS01 590:6474).
+  /// Footnote on content with review null (D-082 wording, PS01 590:6474).
   ///
   /// In vi, this message translates to:
-  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  /// **'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ'**
   String get rhReviewPending;
 
   /// Footnote on reviewed content.
@@ -23991,7 +23991,7 @@ abstract class AppLocalizations {
   /// CH16 disclaimer while reviewed is false (D-073 #2).
   ///
   /// In vi, this message translates to:
-  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.'**
+  /// **'Biên soạn theo hướng dẫn WHO, AAP, NHS · tham khảo, không thay thế bác sĩ. Không khẳng định nguyên nhân.'**
   String get asContentUnreviewed;
 
   /// CH16 line when the content is reviewed. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -24444,17 +24444,11 @@ abstract class AppLocalizations {
   /// **'Được {reviewer} · {credential} rà soát {month}'**
   String lbReviewedBy(String reviewer, String credential, String month);
 
-  /// Badge until an expert approves (D-073 #2).
+  /// Small footnote at the end of an article or stage until an expert signs it (D-082; was a badge).
   ///
   /// In vi, this message translates to:
-  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  /// **'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ'**
   String get lbIllustrative;
-
-  /// Compact badge on rows and cards.
-  ///
-  /// In vi, this message translates to:
-  /// **'Minh hoạ · chờ duyệt'**
-  String get lbIllustrativeShort;
 
   /// Offline banner (2c pattern).
   ///
@@ -25356,10 +25350,10 @@ abstract class AppLocalizations {
   /// **'Tạo mốc riêng'**
   String get mtCreateOwn;
 
-  /// Footer while the reference content has no qualified review (D-073 #2).
+  /// Small footer while the reference content has no qualified review (D-082 wording).
   ///
   /// In vi, this message translates to:
-  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  /// **'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ'**
   String get mtIllustrative;
 
   /// Footer once reviewed.

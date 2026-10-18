@@ -453,33 +453,21 @@ class LbOfflineNote extends ConsumerWidget {
   }
 }
 
-/// "Nội dung minh hoạ · chờ chuyên môn duyệt": until an expert signs the item (D-073 #2).
-class LbIllustrativeBadge extends StatelessWidget {
-  const LbIllustrativeBadge({this.compact = false, super.key});
-  final bool compact;
+/// "Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ" (D-082): a small
+/// footnote at the end of an article until an expert signs it (D-073 #2); never a badge up top.
+class LbGuidanceNote extends StatelessWidget {
+  const LbGuidanceNote({super.key});
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    final l10n = AppLocalizations.of(context);
-    return Container(
+    return Text(
+      AppLocalizations.of(context).lbIllustrative,
       key: const Key('lbIllustrative'),
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 8 : 10,
-        vertical: compact ? 3 : 5,
-      ),
-      decoration: BoxDecoration(
-        color: cl.colors.sunshineSoft,
-        borderRadius: BorderRadius.circular(ClRadius.pill),
-      ),
-      child: Text(
-        compact ? l10n.lbIllustrativeShort : l10n.lbIllustrative,
-        style: cl.text.caption.copyWith(
-          fontSize: compact ? 11 : 12,
-          fontWeight: FontWeight.w600,
-          // Ink on soft warm fills, also in Night care.
-          color: cl.colors.ink,
-        ),
+      style: cl.text.caption.copyWith(
+        fontSize: 11,
+        height: 1.4,
+        color: cl.colors.inkMuted,
       ),
     );
   }
@@ -634,10 +622,6 @@ class LbArticleRow extends StatelessWidget {
                       color: cl.colors.inkMuted,
                     ),
                   ),
-                  if (article.illustrative) ...[
-                    const SizedBox(height: 6),
-                    const LbIllustrativeBadge(compact: true),
-                  ],
                 ],
               ),
             ),

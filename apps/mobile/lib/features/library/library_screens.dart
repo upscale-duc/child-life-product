@@ -325,12 +325,6 @@ class _ArticleCard extends StatelessWidget {
                   radius: 0,
                   topic: article.topic,
                 ),
-                if (article.illustrative)
-                  const Positioned(
-                    left: 8,
-                    top: 8,
-                    child: LbIllustrativeBadge(compact: true),
-                  ),
               ],
             ),
             Padding(
@@ -974,12 +968,7 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
           ),
         ),
         const SizedBox(height: ClSpace.s2),
-        if (article.illustrative)
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: LbIllustrativeBadge(),
-          )
-        else if (article.review != null)
+        if (!article.illustrative && article.review != null)
           Row(
             children: [
               ClIcon(ClIcons.check, size: 14, color: cl.colors.inkMuted),
@@ -1015,6 +1004,10 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
                 ),
               ),
             ),
+        ],
+        if (article.illustrative) ...[
+          const SizedBox(height: ClSpace.s2),
+          const LbGuidanceNote(),
         ],
         if (related.isNotEmpty) ...[
           LbSection(l10n.lbRelated),

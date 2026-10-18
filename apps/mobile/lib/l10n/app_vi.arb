@@ -16554,9 +16554,9 @@
   "@rhSectionForYouSub": {
     "description": "Tuỳ chỉnh Hôm nay: what the section holds."
   },
-  "rhReviewPending": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "rhReviewPending": "Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ",
   "@rhReviewPending": {
-    "description": "Footnote on content with review null (D-073 #2, PS01 590:6474)."
+    "description": "Footnote on content with review null (D-082 wording, PS01 590:6474)."
   },
   "rhReviewedBy": "Đã duyệt bởi {reviewer} · {credential}",
   "@rhReviewedBy": {
@@ -21281,7 +21281,7 @@
       }
     }
   },
-  "asContentUnreviewed": "Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.",
+  "asContentUnreviewed": "Biên soạn theo hướng dẫn WHO, AAP, NHS · tham khảo, không thay thế bác sĩ. Không khẳng định nguyên nhân.",
   "@asContentUnreviewed": {
     "description": "CH16 disclaimer while reviewed is false (D-073 #2)."
   },
@@ -21717,13 +21717,9 @@
       }
     }
   },
-  "lbIllustrative": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "lbIllustrative": "Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ",
   "@lbIllustrative": {
-    "description": "Badge until an expert approves (D-073 #2)."
-  },
-  "lbIllustrativeShort": "Minh hoạ · chờ duyệt",
-  "@lbIllustrativeShort": {
-    "description": "Compact badge on rows and cards."
+    "description": "Small footnote at the end of an article or stage until an expert signs it (D-082; was a badge)."
   },
   "lbOfflineLibrary": "Không có kết nối. Thư viện đang hiện bản đã lưu trên máy.",
   "@lbOfflineLibrary": {
@@ -22487,9 +22483,9 @@
   "@mtCreateOwn": {
     "description": "3a dashed button."
   },
-  "mtIllustrative": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "mtIllustrative": "Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ",
   "@mtIllustrative": {
-    "description": "Footer while the reference content has no qualified review (D-073 #2)."
+    "description": "Small footer while the reference content has no qualified review (D-082 wording)."
   },
   "mtReviewed": "Nội dung được {reviewer} rà soát",
   "@mtReviewed": {

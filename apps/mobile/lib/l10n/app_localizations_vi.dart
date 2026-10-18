@@ -11093,7 +11093,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhSectionForYouSub => 'Gợi ý, tuần tuổi và lịch tham khảo';
 
   @override
-  String get rhReviewPending => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
+  String get rhReviewPending =>
+      'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ';
 
   @override
   String rhReviewedBy(String reviewer, String credential) {
@@ -14354,7 +14355,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asContentUnreviewed =>
-      'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.';
+      'Biên soạn theo hướng dẫn WHO, AAP, NHS · tham khảo, không thay thế bác sĩ. Không khẳng định nguyên nhân.';
 
   @override
   String get asContentReviewed =>
@@ -14636,10 +14637,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get lbIllustrative => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
-
-  @override
-  String get lbIllustrativeShort => 'Minh hoạ · chờ duyệt';
+  String get lbIllustrative =>
+      'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ';
 
   @override
   String get lbOfflineLibrary =>
@@ -15165,7 +15164,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mtCreateOwn => 'Tạo mốc riêng';
 
   @override
-  String get mtIllustrative => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
+  String get mtIllustrative =>
+      'Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ';
 
   @override
   String mtReviewed(String reviewer) {
