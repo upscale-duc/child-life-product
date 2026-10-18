@@ -17849,4 +17849,1112 @@ class AppLocalizationsEn extends AppLocalizations {
   String nuMilkPerDayOnly(String range) {
     return 'Reference $range ml a day';
   }
+
+  @override
+  String get lbSavedCare => 'Care';
+
+  @override
+  String get lbSavedSolids => 'Solids';
+
+  @override
+  String get sdAddFood => 'Add';
+
+  @override
+  String sdAddFree(String name) {
+    return 'Add “$name”';
+  }
+
+  @override
+  String get sdAll => 'All';
+
+  @override
+  String get sdAmount => 'How much baby ate';
+
+  @override
+  String sdAmountBowls(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bowls',
+      one: '1 bowl',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdAmountCustom => 'Enter amount';
+
+  @override
+  String get sdAmountFewSpoons => 'A few spoons';
+
+  @override
+  String get sdAmountFullBowl => '1 bowl';
+
+  @override
+  String get sdAmountHalfBowl => '½ bowl';
+
+  @override
+  String get sdAmountInvalid =>
+      'Enter an amount from 0.1 to 1000, or unselect “Enter amount”.';
+
+  @override
+  String sdAmountSpoons(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count spoons',
+      one: '1 spoon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdAmountValue(String value, String unit) {
+    return '$value $unit';
+  }
+
+  @override
+  String get sdAnaphylaxis => 'First aid: Anaphylaxis';
+
+  @override
+  String get sdAskParents => 'Ask a parent to turn on solids tracking';
+
+  @override
+  String get sdAskParentsBody =>
+      'Once a parent turns it on, you can log meals and see the baby\'s solids diary. The solids library is always open to you.';
+
+  @override
+  String get sdBenefitHistory => 'Meal history and the foods tried';
+
+  @override
+  String get sdBenefitLibrary => 'Solids library: guides and how to start';
+
+  @override
+  String get sdBenefitLog => 'Log the meal, dish and amount in a few taps';
+
+  @override
+  String get sdClear => 'Doctor said it\'s OK again';
+
+  @override
+  String get sdClearedNote =>
+      'A doctor said this food is OK again. The app keeps the history of signs.';
+
+  @override
+  String get sdDate => 'Date';
+
+  @override
+  String sdDayMeals(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return '$day · $_temp0';
+  }
+
+  @override
+  String get sdDelete => 'Delete meal';
+
+  @override
+  String get sdDeleteTitle => 'Delete this meal?';
+
+  @override
+  String get sdDeletedToast => 'Meal deleted';
+
+  @override
+  String get sdDiary => 'Diary';
+
+  @override
+  String get sdDish => 'Dish';
+
+  @override
+  String get sdDishHint => 'E.g. carrot and chicken porridge';
+
+  @override
+  String get sdDoctorNote =>
+      'Ask your baby\'s doctor when to start solids and which way suits your baby.';
+
+  @override
+  String get sdEarlyNote =>
+      'If your doctor advised starting earlier, follow their advice and use the library to prepare. The solids diary opens at 6 months.';
+
+  @override
+  String get sdEmptyDay => 'No meals on this day';
+
+  @override
+  String get sdEmptyToday => 'No meals yet today';
+
+  @override
+  String sdFirstToday(String foods) {
+    return 'First time: $foods';
+  }
+
+  @override
+  String sdFirstTried(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return 'First tried $day · $_temp0';
+  }
+
+  @override
+  String sdFirstTryChip(String food) {
+    return '$food · first time';
+  }
+
+  @override
+  String get sdFirstTryLegend => '✦ First time baby tried it';
+
+  @override
+  String sdFoodMeals(int count) {
+    return 'Meals with this food · $count';
+  }
+
+  @override
+  String get sdFoodMissing => 'Food not found';
+
+  @override
+  String get sdFoodMissingBody => 'It may have been removed from the meals.';
+
+  @override
+  String get sdFoodSearch => 'Search foods…';
+
+  @override
+  String get sdFoodSignsNote =>
+      'Baby had signs after eating this food. Hold off and ask your baby\'s doctor; the app won\'t suggest it until a parent marks “Doctor said it\'s OK again”.';
+
+  @override
+  String get sdFormatArticle => 'Article';
+
+  @override
+  String get sdFormatQuickQa => 'Quick Q&A';
+
+  @override
+  String get sdFormatStepGuide => 'Step by step';
+
+  @override
+  String sdFromMonths(int months) {
+    return 'Usually from $months months';
+  }
+
+  @override
+  String sdGroupCount(String group, int count) {
+    return '$group · $count';
+  }
+
+  @override
+  String get sdGroupDairy => 'Dairy';
+
+  @override
+  String get sdGroupFat => 'Fats';
+
+  @override
+  String get sdGroupFruit => 'Fruit';
+
+  @override
+  String get sdGroupGrain => 'Grains & starches';
+
+  @override
+  String get sdGroupLegume => 'Legumes & nuts';
+
+  @override
+  String get sdGroupOther => 'Other';
+
+  @override
+  String get sdGroupProtein => 'Meat, fish & eggs';
+
+  @override
+  String get sdGroupVegetable => 'Vegetables';
+
+  @override
+  String sdGuideKicker(String format) {
+    return 'Guide · $format';
+  }
+
+  @override
+  String get sdGuides => 'Guides';
+
+  @override
+  String get sdHide => 'Don\'t suggest this food';
+
+  @override
+  String get sdHistoryEmpty => 'No meals yet';
+
+  @override
+  String get sdHistoryEmptyBody => 'Logged meals show here, newest first.';
+
+  @override
+  String get sdHistoryTitle => 'Meal history';
+
+  @override
+  String get sdIngredients => 'Ingredients';
+
+  @override
+  String sdLatest(String dish, String time) {
+    return 'Latest: $dish · $time';
+  }
+
+  @override
+  String get sdLibraryEmpty => 'Solids guides will show here once published.';
+
+  @override
+  String get sdLibraryNoResults =>
+      'Try other words or clear the age or format filter.';
+
+  @override
+  String get sdLibrarySearch => 'Search dishes, ingredients, guides…';
+
+  @override
+  String get sdLibrarySub => 'Solids guides by age';
+
+  @override
+  String get sdLibraryTitle => 'Solids library';
+
+  @override
+  String get sdLogMeal => 'Log meal';
+
+  @override
+  String get sdMealAfternoon => 'Afternoon meal';
+
+  @override
+  String get sdMealEvening => 'Dinner';
+
+  @override
+  String get sdMealMissing => 'Meal not found';
+
+  @override
+  String get sdMealMissingBody => 'It may have been deleted.';
+
+  @override
+  String get sdMealMorning => 'Breakfast';
+
+  @override
+  String get sdMealNoon => 'Lunch';
+
+  @override
+  String get sdMealSnack => 'Snack';
+
+  @override
+  String get sdMealsTab => 'Meals';
+
+  @override
+  String get sdMethodBlw => 'Baby-led';
+
+  @override
+  String get sdMethodBlwHelp =>
+      'Baby feeds themselves soft, finger-sized foods.';
+
+  @override
+  String get sdMethodMixed => 'Mixed';
+
+  @override
+  String get sdMethodMixedHelp => 'Some spoon-feeding, some finger foods.';
+
+  @override
+  String get sdMethodSpoon => 'Spoon-fed';
+
+  @override
+  String get sdMethodSpoonHelp =>
+      'Spoon-feeding, from smooth to thicker textures.';
+
+  @override
+  String get sdMethodTitle => 'Feeding style (optional)';
+
+  @override
+  String get sdNeedDish => 'Add a dish name or at least one ingredient.';
+
+  @override
+  String get sdNoCatalogue =>
+      'The food list is on its way. You can still type a food name above (up to 3).';
+
+  @override
+  String sdNoDobBody(String name) {
+    return 'The solids diary opens when $name is 6 months old. Add the date of birth so the app knows when.';
+  }
+
+  @override
+  String sdNoDobViewer(String name) {
+    return 'You can\'t see $name\'s date of birth, so the app can\'t tell whether the baby is 6 months yet.';
+  }
+
+  @override
+  String get sdNotTried => 'Not tried yet';
+
+  @override
+  String sdNotYetSoon(String name, String age, String date) {
+    return '$name is $age and solids are coming soon. The diary opens at 6 months, on $date. Meanwhile, see whether baby shows the signs of readiness.';
+  }
+
+  @override
+  String get sdNotYetTitle => 'Not time for solids yet';
+
+  @override
+  String sdNotYetYoung(String name, String age, String date) {
+    return '$name is $age. Breast milk or formula is all baby needs for now. The solids diary opens at 6 months, on $date.';
+  }
+
+  @override
+  String get sdNote => 'Note (optional)';
+
+  @override
+  String get sdNoteHint => 'Add a note…';
+
+  @override
+  String sdNutritionRow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return 'Solids today · $_temp0';
+  }
+
+  @override
+  String get sdOffBody =>
+      'A parent can turn on solids tracking in Care › Solids.';
+
+  @override
+  String get sdOffTitle => 'Solids tracking is off';
+
+  @override
+  String get sdOpenDiary => 'Open diary';
+
+  @override
+  String get sdReaction => 'How baby took it';
+
+  @override
+  String get sdReactionLiked => 'Liked';
+
+  @override
+  String get sdReactionNeutral => 'Okay';
+
+  @override
+  String get sdReactionNotYet => 'Not yet';
+
+  @override
+  String get sdReadinessKicker => 'Signs of readiness';
+
+  @override
+  String get sdRecipes => 'Recipes';
+
+  @override
+  String sdRecipesFor(String band) {
+    return 'Recipes · $band';
+  }
+
+  @override
+  String get sdRemindMe => 'Remind me when baby is nearly 6 months';
+
+  @override
+  String sdRemindSet(String date) {
+    return 'Reminder set · $date';
+  }
+
+  @override
+  String sdRemindToast(String date) {
+    return 'Reminder set for $date';
+  }
+
+  @override
+  String sdReminderTitle(String name) {
+    return '$name is nearly 6 months: how to start solids';
+  }
+
+  @override
+  String sdRemoveFood(String food) {
+    return 'Remove $food';
+  }
+
+  @override
+  String get sdSave => 'Save meal';
+
+  @override
+  String sdSavedToast(String meal) {
+    return 'Logged · $meal';
+  }
+
+  @override
+  String get sdSectionToday => 'Solids today';
+
+  @override
+  String get sdSectionTodaySub => 'Latest meal and today\'s first tries';
+
+  @override
+  String get sdSeeAll => 'See all';
+
+  @override
+  String get sdSettings => 'Settings';
+
+  @override
+  String get sdSheetEditTitle => 'Edit meal';
+
+  @override
+  String get sdSheetTitle => 'Log a meal';
+
+  @override
+  String get sdShowMore => 'Show more';
+
+  @override
+  String get sdShowOnToday => 'Show “Solids today” on Today';
+
+  @override
+  String get sdSignsTag => 'Signs noted';
+
+  @override
+  String get sdSlotAfternoon => 'Afternoon';
+
+  @override
+  String get sdSlotEvening => 'Evening';
+
+  @override
+  String get sdSlotMorning => 'Morning';
+
+  @override
+  String get sdSlotNoon => 'Midday';
+
+  @override
+  String get sdSlotSnack => 'Snack';
+
+  @override
+  String sdSlotTime(String slot, String time) {
+    return '$slot · $time';
+  }
+
+  @override
+  String get sdStart => 'Start tracking';
+
+  @override
+  String get sdStartBody =>
+      'Log each meal quickly, look back at the foods baby has tried and read guidance from the expert team.';
+
+  @override
+  String get sdStartTitle => 'Track solids';
+
+  @override
+  String get sdStartedOn => 'Start date';
+
+  @override
+  String get sdStartedOnAuto => 'From the first meal';
+
+  @override
+  String sdStartedOnAutoDate(String date) {
+    return 'First meal · $date';
+  }
+
+  @override
+  String get sdStartedOnReset => 'Use the first meal\'s date';
+
+  @override
+  String get sdStartedToast => 'Solids tracking is on';
+
+  @override
+  String get sdStop => 'Stop tracking';
+
+  @override
+  String get sdStopBody =>
+      'Logged meals are kept. A parent can turn it back on any time.';
+
+  @override
+  String get sdStopTitle => 'Stop tracking solids?';
+
+  @override
+  String sdSuggestionsTitle(String name) {
+    return 'Ideas for $name today';
+  }
+
+  @override
+  String get sdSymptomBreathing => 'Trouble breathing, cough, wheeze';
+
+  @override
+  String get sdSymptomDiarrhea => 'Diarrhoea';
+
+  @override
+  String get sdSymptomFussy => 'Unusual crying';
+
+  @override
+  String get sdSymptomOther => 'Other';
+
+  @override
+  String get sdSymptomRash => 'Rash or hives';
+
+  @override
+  String get sdSymptomSwelling => 'Swollen lips or face';
+
+  @override
+  String get sdSymptomVomit => 'Vomiting';
+
+  @override
+  String get sdSymptomsNone => 'None';
+
+  @override
+  String get sdSymptomsNote =>
+      'The new foods in this meal will be marked “Signs after eating”. Ask your baby\'s doctor if you\'re worried.';
+
+  @override
+  String get sdSymptomsQuestion => 'Any unusual signs after eating?';
+
+  @override
+  String get sdSymptomsTitle => 'Signs after eating';
+
+  @override
+  String get sdTileFrom6 => 'From 6 months';
+
+  @override
+  String get sdTileSoon => 'Solids coming soon';
+
+  @override
+  String get sdTileStart => 'Start tracking';
+
+  @override
+  String sdTileToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return 'Today · $_temp0';
+  }
+
+  @override
+  String get sdTime => 'Time';
+
+  @override
+  String get sdToday => 'Today';
+
+  @override
+  String sdTodayCard(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return 'Solids today · $_temp0';
+  }
+
+  @override
+  String get sdTodayLower => 'today';
+
+  @override
+  String get sdTried => 'Tried';
+
+  @override
+  String get sdTriedEmpty =>
+      'The foods baby has tried show here after the first meal.';
+
+  @override
+  String get sdTriedEmptyTitle => 'No foods yet';
+
+  @override
+  String get sdTriedFootnote =>
+      'This is your family\'s record, not a nutrition assessment or recommendation.';
+
+  @override
+  String sdTriedReaction(String reaction) {
+    return 'Tried · $reaction';
+  }
+
+  @override
+  String get sdTriedTab => 'Foods tried';
+
+  @override
+  String sdTriedTitle(int count) {
+    return 'Foods tried · $count';
+  }
+
+  @override
+  String get sdUnclear => 'Undo “Doctor said it\'s OK again”';
+
+  @override
+  String get sdUnhide => 'Suggest this food again';
+
+  @override
+  String get sdUnitBowl => 'bowls';
+
+  @override
+  String get sdUnitSpoon => 'spoons';
+
+  @override
+  String sdUpdated(String date) {
+    return 'updated $date';
+  }
+
+  @override
+  String sdUrgent(String number) {
+    return 'Call $number now if baby has trouble breathing, swollen lips or tongue, or goes floppy.';
+  }
+
+  @override
+  String get sdViewOnly =>
+      'Someone else logged this meal: you can only view it.';
+
+  @override
+  String get sdYesterday => 'Yesterday';
+
+  @override
+  String get sdPhoto => 'Meal photo';
+
+  @override
+  String get sdPhotoAdd => 'Add a meal photo';
+
+  @override
+  String get sdPhotoReplace => 'Change photo';
+
+  @override
+  String get sdPhotoRemove => 'Remove photo';
+
+  @override
+  String get sdPhotoPrivate =>
+      'Only the people caring for your baby in your family can see this photo.';
+
+  @override
+  String get sdPhotoFailed =>
+      'The photo didn\'t upload. The meal still saves; try adding the photo again later.';
+
+  @override
+  String get sdPhotoOffline =>
+      'Adding a photo needs a connection. The meal still saves offline.';
+
+  @override
+  String get sdHistoryFilter => 'Solids';
+
+  @override
+  String get sdHistoryWhat => 'a solid meal';
+
+  @override
+  String sdHistoryOnDay(String date) {
+    return 'Solids on $date';
+  }
+
+  @override
+  String get sdHistoryMeals => 'Meals';
+
+  @override
+  String get sdHistoryNewFoods => 'New foods';
+
+  @override
+  String sdMealsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdFoodsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count foods',
+      one: '1 food',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdHistoryLink => 'Solids diary';
+
+  @override
+  String get sdHistoryLinkHint => 'Foods tried, meal history and suggestions';
+
+  @override
+  String get sdStatsTitle => 'Solid meals';
+
+  @override
+  String sdStatsHint(int days) {
+    return 'Last $days days · for information only';
+  }
+
+  @override
+  String get sdStatsTodayHint => 'Today · for information only';
+
+  @override
+  String sdStatsAvg(String value) {
+    return 'Avg $value meals/day';
+  }
+
+  @override
+  String sdStatsDayTip(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return '$day: $_temp0';
+  }
+
+  @override
+  String get sdStatsMealsToday => 'Meals today';
+
+  @override
+  String get sdStatsPerDay => 'Meals a day (avg)';
+
+  @override
+  String get sdStatsNewThisWeek => 'New foods this week';
+
+  @override
+  String get sdStatsNewPerWeek => 'New foods each week';
+
+  @override
+  String sdStatsWeekOf(String date) {
+    return 'Week of $date';
+  }
+
+  @override
+  String get sdStatsNote =>
+      'These are your family\'s notes, not targets for meals or foods.';
+
+  @override
+  String sdRecipeMeta(int minutes) {
+    return 'Recipe · $minutes min';
+  }
+
+  @override
+  String sdForBaby(String name) {
+    return 'For $name';
+  }
+
+  @override
+  String get sdRecipesNone => 'No recipes match these filters yet.';
+
+  @override
+  String sdRecipesWith(String foods) {
+    return 'Recipes with $foods';
+  }
+
+  @override
+  String get sdRecipesWithNone =>
+      'No recipe for your baby\'s age and feeding method has these foods yet. See the other recipes in the library.';
+
+  @override
+  String get sdRecipeMissing => 'Recipe not found';
+
+  @override
+  String get sdRecipeMissingBody =>
+      'It may have been removed, or it hasn\'t downloaded yet.';
+
+  @override
+  String get sdTextureSmooth => 'Smooth';
+
+  @override
+  String get sdTextureMashed => 'Mashed, soft lumps';
+
+  @override
+  String get sdTextureSoftPieces => 'Soft small pieces';
+
+  @override
+  String get sdTextureFinger => 'Finger food';
+
+  @override
+  String get sdTextureFamily => 'Family meals';
+
+  @override
+  String sdServings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count servings',
+      one: '1 serving',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdPrepCook(int prep, int cook) {
+    return 'Prep $prep min · cook $cook min';
+  }
+
+  @override
+  String get sdSteps => 'Method';
+
+  @override
+  String get sdStorage => 'Storage';
+
+  @override
+  String get sdTip => 'Tip';
+
+  @override
+  String get sdNotTriedMark => '✦ Not tried yet';
+
+  @override
+  String get sdSignsMark => '⚠ Signs after eating';
+
+  @override
+  String sdContains(String list) {
+    return 'Contains $list';
+  }
+
+  @override
+  String get sdAllergenEgg => 'egg';
+
+  @override
+  String get sdAllergenPeanut => 'peanut';
+
+  @override
+  String get sdAllergenMilk => 'cow\'s milk';
+
+  @override
+  String get sdAllergenWheat => 'wheat';
+
+  @override
+  String get sdAllergenSoy => 'soy';
+
+  @override
+  String get sdAllergenFish => 'fish';
+
+  @override
+  String get sdAllergenShellfish => 'shellfish';
+
+  @override
+  String get sdAllergenSesame => 'sesame';
+
+  @override
+  String get sdAllergenTreeNut => 'tree nuts';
+
+  @override
+  String sdAgeNotice(int from, String name, String age) {
+    return 'This recipe is for babies from $from months. $name is $age: pick a recipe for this age or ask your baby\'s doctor.';
+  }
+
+  @override
+  String get sdLogRecipe => 'Log to diary';
+
+  @override
+  String get sdIngUnitTbsp => 'tbsp';
+
+  @override
+  String get sdIngUnitTsp => 'tsp';
+
+  @override
+  String get sdIngUnitBowl => 'bowl';
+
+  @override
+  String get sdIngUnitPiece => 'piece';
+
+  @override
+  String sdIngBowls(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bowls',
+      one: '1 bowl',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdIngPieces(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pieces',
+      one: '1 piece',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdSuggestLater => 'Later';
+
+  @override
+  String get sdSuggestHideWhich => 'Stop suggesting which food?';
+
+  @override
+  String sdSuggestHidden(String food) {
+    return '$food won\'t be suggested again';
+  }
+
+  @override
+  String sdSuggestSnoozedFood(String food) {
+    return '$food is hidden from suggestions on this device for 30 days';
+  }
+
+  @override
+  String get sdSuggestSnoozed => 'We\'ll suggest this again in 3 days';
+
+  @override
+  String get sdActReadReactions => 'Read: Spotting a reaction';
+
+  @override
+  String get sdActRecipes => 'See recipes';
+
+  @override
+  String get sdActIdeas => 'See ideas';
+
+  @override
+  String get sdActGuide => 'Read the guide';
+
+  @override
+  String get sdOr => 'or';
+
+  @override
+  String sdIronMark(String food) {
+    return '$food (iron-rich)';
+  }
+
+  @override
+  String get sdTryEgg => 'well-cooked egg';
+
+  @override
+  String get sdTryPeanut => 'thinned smooth peanut butter (never whole nuts)';
+
+  @override
+  String get sdTryMilk => 'yoghurt, or cow\'s milk cooked into food';
+
+  @override
+  String get sdTryWheat => 'wheat (bread, soft-cooked pasta)';
+
+  @override
+  String get sdTryFish => 'well-cooked fish, all bones removed';
+
+  @override
+  String get sdTrySoy => 'tofu, or soy milk cooked into food';
+
+  @override
+  String get sdTrySesame => 'finely ground sesame stirred into food';
+
+  @override
+  String get sdTryShellfish => 'well-cooked prawn or crab, finely chopped';
+
+  @override
+  String get sdTryTreeNut =>
+      'thinned nut butter (almond, cashew), never whole nuts';
+
+  @override
+  String sdS1Title(String date, String foods) {
+    return 'Keep an eye on baby after the signs on $date ($foods). Hold off new foods for a few days and ask the doctor if you\'re still worried.';
+  }
+
+  @override
+  String sdS1TitlePlain(String date) {
+    return 'Keep an eye on baby after the signs on $date. Hold off new foods for a few days and ask the doctor if you\'re still worried.';
+  }
+
+  @override
+  String sdS1Why(String date) {
+    return 'Because signs after eating were noted on $date.';
+  }
+
+  @override
+  String sdS2Title(String name, String foods) {
+    return 'Next food for $name: $foods.';
+  }
+
+  @override
+  String sdS2Why(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count foods',
+      one: '1 food',
+      zero: 'no foods',
+    );
+    return 'Because $name has tried $_temp0 so far: start with vegetables, starches and an iron-rich food, one new food at a time.';
+  }
+
+  @override
+  String sdS3Title(String allergen) {
+    return 'Time to try $allergen: in the morning, at home, a small amount.';
+  }
+
+  @override
+  String sdS3Why(String name, int count, int days) {
+    return 'Because $name knows $count foods and has had solids for $days days: common allergens are best introduced one at a time, a few days apart.';
+  }
+
+  @override
+  String sdS4Title(String name, String allergen) {
+    return 'Give $name $allergen again this week to keep it up.';
+  }
+
+  @override
+  String sdS4Why(String allergen, String date) {
+    return 'Because baby last had $allergen on $date: foods baby knows are best kept up regularly.';
+  }
+
+  @override
+  String sdS5Title(String foods) {
+    return 'Add an iron-rich food today: $foods.';
+  }
+
+  @override
+  String sdS5Why(String name) {
+    return 'Because $name\'s meals in the last 2 days had no iron-rich food; from 6 months babies need iron from food every day.';
+  }
+
+  @override
+  String sdS6Title(String foods) {
+    return 'Next new food: $foods.';
+  }
+
+  @override
+  String sdS6Why(String name, String group, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count foods',
+      one: '1 food',
+      zero: 'none yet',
+    );
+    return 'Because $name hasn\'t tried a new food in 2 days; in $group, baby has tried $_temp0.';
+  }
+
+  @override
+  String sdS7Title(String food, String liked, String name) {
+    return 'Try $food again another way: smoother, or mixed with $liked, which $name likes.';
+  }
+
+  @override
+  String sdS7TitlePlain(String food) {
+    return 'Try $food again another way: smoother, or cooked differently.';
+  }
+
+  @override
+  String sdS7Why(String name, String food, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tries',
+      one: '1 try',
+    );
+    return 'Because $name wasn\'t keen on $food last time ($_temp0). Babies can need 8–15 tries to get used to a food.';
+  }
+
+  @override
+  String sdS8Title(String name, String group) {
+    return '$name hasn\'t had any $group this week.';
+  }
+
+  @override
+  String sdS8Why(String group, String date) {
+    return 'Because baby last had $group on $date; variety helps baby get used to many tastes.';
+  }
+
+  @override
+  String sdS9Title(String name, int months, String texture) {
+    return '$name at $months months: $texture.';
+  }
+
+  @override
+  String sdS9Why(String name, String stage) {
+    return 'Because $name has just moved to the $stage stage in Nutrition; food gets coarser stage by stage.';
+  }
+
+  @override
+  String sdIdeasTitle(String group) {
+    return 'Ideas: $group';
+  }
+
+  @override
+  String get sdIdeasHint => 'Tap a food to log a meal.';
 }

@@ -21,12 +21,15 @@ import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
 import '../care/care_repository.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../solids/solids_today.dart' show sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 
 /// The parts of Hôm nay that "Tuỳ chỉnh Hôm nay" arranges (v1.0 improvement 370:1525). The first
 /// three are the design's; the others are opt-in (owner, 2026-10-12) and start hidden.
 /// [forYou] is "Dành cho bé hôm nay" (559:57583, `today_for_baby.dart`): right after the quick-track
-/// tiles by default (D-076 #8); it shows only when the family's `rhythm` flag is on.
+/// tiles by default (D-076 #8); it shows only when the family's `rhythm` flag is on. [solids] is
+/// 5h "Ăn dặm hôm nay" (D-085): listed while the baby's solids tracking is on with its 5a toggle
+/// "Hiện trên Hôm nay" on, visible by default.
 enum TodaySection {
   forYou,
   tiles,
@@ -35,6 +38,7 @@ enum TodaySection {
   vaccine,
   spending,
   rhythm,
+  solids,
 }
 
 /// Shortcuts in "Tạo nhanh" (owner, 2026-10-12), each shown only to who may do it.
@@ -58,6 +62,7 @@ class TodayLayout {
   static const defaultOrder = [
     TodaySection.tiles,
     TodaySection.forYou,
+    TodaySection.solids,
     TodaySection.reminders,
     TodaySection.quickActions,
     TodaySection.vaccine,
@@ -210,15 +215,18 @@ List<QuickAction> allowedActions(Membership me) => [
 ];
 
 /// Sections [me] can have: spending needs "Xem toàn bộ" (or Cùng nuôi), shortcuts need one,
-/// "Dành cho bé hôm nay" the family's `rhythm` flag.
+/// "Dành cho bé hôm nay" the family's `rhythm` flag, "Ăn dặm hôm nay" the baby's solids tracking
+/// shown on Hôm nay ([solids], `sdOnTodayProvider`).
 List<TodaySection> allowedSections(
   Membership me, {
   required bool hasTiles,
   bool rhythm = false,
+  bool solids = false,
 }) => [
   for (final s in TodaySection.values)
     if (switch (s) {
       TodaySection.forYou => rhythm,
+      TodaySection.solids => solids,
       TodaySection.tiles => hasTiles,
       TodaySection.quickActions => allowedActions(me).isNotEmpty,
       TodaySection.spending => SpendingAccess.of(me).viewAll,
@@ -285,6 +293,7 @@ class _CustomizeSheetState extends ConsumerState<_CustomizeSheet> {
           hasTiles: trackers.isNotEmpty,
           rhythm:
               ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false,
+          solids: ref.watch(sdOnTodayProvider),
         ).contains(s))
           s,
     ];
@@ -309,6 +318,7 @@ class _CustomizeSheetState extends ConsumerState<_CustomizeSheet> {
       TodaySection.vaccine => (l10n.sectionVaccine, l10n.sectionVaccineSub),
       TodaySection.spending => (l10n.sectionSpending, l10n.sectionSpendingSub),
       TodaySection.rhythm => (l10n.sectionRhythm, l10n.sectionRhythmSub),
+      TodaySection.solids => (l10n.sdSectionToday, l10n.sdSectionTodaySub),
     };
 
     return Column(

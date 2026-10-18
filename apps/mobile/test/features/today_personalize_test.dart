@@ -42,9 +42,11 @@ void main() {
   group('Tuỳ chỉnh Hôm nay (D-076 #8)', () {
     test('"Dành cho bé hôm nay" comes right after the tiles by default', () {
       const d = TodayLayout();
-      expect(d.order.take(3), [
+      expect(d.order.take(4), [
         TodaySection.tiles,
         TodaySection.forYou,
+        // D-085: 5h "Ăn dặm hôm nay" (while solids tracking is on).
+        TodaySection.solids,
         TodaySection.reminders,
       ]);
       expect(d.toJson()['v'], TodayLayout.version);
@@ -67,12 +69,14 @@ void main() {
         TodaySection.rhythm,
         TodaySection.tiles,
         TodaySection.forYou,
+        TodaySection.solids,
         TodaySection.reminders,
         TodaySection.quickActions,
         TodaySection.vaccine,
         TodaySection.spending,
       ]);
       expect(layout.shows(TodaySection.forYou), isTrue);
+      expect(layout.shows(TodaySection.solids), isTrue);
     });
 
     test('hidden stays hidden; a version-2 order is the person\'s own', () {

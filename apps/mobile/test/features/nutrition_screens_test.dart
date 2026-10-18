@@ -737,7 +737,8 @@ void main() {
         find.descendant(of: tile, matching: find.text('Giai đoạn 6–8 tháng')),
         findsOneWidget,
       );
-      expect(find.text('Ăn dặm'), findsNothing);
+      // D-085: "Ăn dặm" is its own live tile now (P-164 #1), not a Dinh dưỡng teaser.
+      expect(find.byKey(const Key('careSolids')), findsOneWidget);
       await tester.tap(tile);
       await tester.pumpAndSettle();
       expect(visits.last.location, '/care/nutrition');
@@ -750,7 +751,16 @@ void main() {
         overrides: _overrides(noDob: true),
       );
       await _see(tester, find.byKey(const Key('careNutrition')));
-      expect(find.text('Cần ngày sinh của bé'), findsOneWidget);
+      // The Ăn dặm tile asks for it too (D-085, plan §3 #2).
+      for (final key in ['careNutrition', 'careSolids']) {
+        expect(
+          find.descendant(
+            of: find.byKey(Key(key)),
+            matching: find.text('Cần ngày sinh của bé'),
+          ),
+          findsOneWidget,
+        );
+      }
     });
 
     testWidgets('no stage for the age: a teaser that only says so', (

@@ -24,6 +24,9 @@ import 'care_models.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show weekdayShort;
 import 'stacked_days_chart.dart';
+import '../solids/solids_calc.dart';
+import '../solids/solids_format.dart' show sdShortDate;
+import '../solids/solids_state.dart';
 
 /// "Hôm nay · 7 ngày · 30 ngày" — remembered per screen ("Remembers the last choice").
 final _windowProvider = NotifierProvider.family<_Window, StatsWindow, String>(
@@ -712,8 +715,184 @@ class FeedStatsScreen extends ConsumerWidget {
                   ),
               ],
             ),
+          // D-085 #3: solid meals while tracking is on, as information only.
+          _SolidsStatsCard(
+            window: window,
+            custom: custom,
+            zone: zone,
+            now: now,
+          ),
         ];
       },
+    );
+  }
+}
+
+/// "Bữa ăn dặm" (D-085 #3; plan §3 #4): meals per day over the chosen range and new foods per
+/// week, from `babies/{b}/meals`, while solids tracking is on. Counts only, never a target
+/// (P-164 #17).
+class _SolidsStatsCard extends ConsumerWidget {
+  const _SolidsStatsCard({
+    required this.window,
+    required this.custom,
+    required this.zone,
+    required this.now,
+  });
+
+  final StatsWindow window;
+  final CustomRange? custom;
+  final String zone;
+  final DateTime now;
+
+  /// Weeks listed at most (the latest).
+  static const _maxWeeks = 6;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sd = ref.watch(sdStateProvider);
+    if (sd == null || !sd.tracking || !sd.me.sdReads) {
+      return const SizedBox.shrink();
+    }
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final bottle = cl.care.bottle;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final today = window == StatsWindow.today && custom == null;
+    final days = custom?.days ?? daysOf(window);
+    final anchor = custom?.end ?? now;
+    final range = windowDays(zone, anchor, days);
+    final live = [
+      for (final m in sd.meals)
+        if (!m.deleted) m,
+    ];
+    final perDay = [
+      for (final d in range)
+        live
+            .where(
+              (m) =>
+                  !m.occurredAt.isBefore(d.start) &&
+                  m.occurredAt.isBefore(d.end),
+            )
+            .length,
+    ];
+    final total = perDay.fold(0, (a, b) => a + b);
+    // New foods per week (Monday first), from the range's first week to the anchor's week.
+    final firstDays = [
+      for (final t in sdTriedFoods(live, sd.foods)) sdDayOf(zone, t.firstAt),
+    ];
+    final lastWeek = sdWeekStart(sdDayOf(zone, anchor));
+    final firstWeek = sdWeekStart(sdDayOf(zone, range.first.start));
+    final weeks = <DateTime>[
+      for (
+        var w = lastWeek;
+        !w.isBefore(firstWeek);
+        w = DateTime(w.year, w.month, w.day - 7)
+      )
+        w,
+    ].take(_maxWeeks).toList();
+    int newIn(DateTime week) {
+      final end = DateTime(week.year, week.month, week.day + 7);
+      return firstDays
+          .where((d) => !d.isBefore(week) && d.isBefore(end))
+          .length;
+    }
+
+    final perWeek = [for (final w in weeks) newIn(w)];
+    final maxWeek = perWeek.fold(0, math.max);
+    final labels = [
+      for (final d in range) _dayLabel(locale, zone, d.start, days),
+    ];
+    final avg = days == 0 ? 0.0 : total / days;
+    final avgLabel = avg == avg.roundToDouble()
+        ? '${avg.round()}'
+        : decimal(locale, (avg * 10).round() / 10);
+
+    return _Card(
+      title: l10n.sdStatsTitle,
+      subtitle: today ? l10n.sdStatsTodayHint : l10n.sdStatsHint(days),
+      children: [
+        Row(
+          key: const Key('sdStatsKpis'),
+          children: [
+            Expanded(
+              child: _Big(
+                today ? l10n.sdMealsCount(perDay.last) : avgLabel,
+                today ? l10n.sdStatsMealsToday : l10n.sdStatsPerDay,
+              ),
+            ),
+            Expanded(
+              child: _Big(
+                l10n.sdFoodsCount(perWeek.isEmpty ? 0 : perWeek.first),
+                l10n.sdStatsNewThisWeek,
+              ),
+            ),
+          ],
+        ),
+        if (!today && days > 1) ...[
+          const SizedBox(height: ClSpace.s3),
+          StackedDaysChart(
+            key: const Key('sdStatsChart'),
+            bottoms: [for (final n in perDay) n.toDouble()],
+            tops: [for (final _ in perDay) 0],
+            labels: labels,
+            bottomColor: bottle.accent,
+            topColor: bottle.accent,
+            average: avg,
+            averageLabel: l10n.sdStatsAvg(avgLabel),
+            tickLabel: (v) => '${v.round()}',
+            tipOf: (i) => l10n.sdStatsDayTip(labels[i], perDay[i]),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          Text(
+            l10n.sdStatsNewPerWeek,
+            style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          for (final (i, w) in weeks.indexed)
+            Padding(
+              key: Key('sdStatsWeek_$i'),
+              padding: const EdgeInsets.only(bottom: ClSpace.s2),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 112,
+                    child: Text(
+                      l10n.sdStatsWeekOf(sdShortDate(locale, w)),
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, c) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          height: 8,
+                          width: maxWeek == 0
+                              ? 4
+                              : math.max(4, c.maxWidth * perWeek[i] / maxWeek),
+                          decoration: BoxDecoration(
+                            color: perWeek[i] == 0
+                                ? cl.colors.surface2
+                                : bottle.accent,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: ClSpace.s2),
+                  Text(
+                    l10n.sdFoodsCount(perWeek[i]),
+                    style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+        ],
+        _Insight(l10n.sdStatsNote),
+      ],
     );
   }
 }

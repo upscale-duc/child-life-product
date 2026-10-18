@@ -14,6 +14,7 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../../app/session.dart';
@@ -24,9 +25,12 @@ import 'content_models.dart';
 import 'content_repository.dart';
 import 'library_routes.dart';
 import 'library_widgets.dart';
+import '../solids/solids_recipes.dart'
+    show SdSavedRecipeRow, sdSavedRecipeListProvider;
 
 /// Thư viện chăm bé (Figma v1.1 4a home, 4b search, 4c filters, 4d reader, 4e saved toast, 4f
-/// saved list; D-076 #7). Only the "Chăm bé" library: Ăn dặm (5f) has its own screens later.
+/// saved list; D-076 #7). 4a–4c show the "Chăm bé" library only: Ăn dặm (5f) has its own screen
+/// (`features/solids`, D-085); the reader and 4f "Đã lưu" (Chăm bé | Ăn dặm) serve both.
 
 /// Published care-library articles (Ăn dặm excluded).
 List<LbArticle> _care(LbFeed<LbArticle>? feed) => [
@@ -67,7 +71,8 @@ Future<void> lbToggleSaved(
     toaster.show(
       message: l10n.lbSavedToast,
       actionLabel: l10n.lbView,
-      onAction: () => unawaited(router.push(LbRoutes.saved)),
+      onAction: () =>
+          unawaited(router.push(LbRoutes.savedFor(article.library))),
     );
   }
 }
@@ -1345,11 +1350,23 @@ class _Callout extends StatelessWidget {
 
 // ---------- 4f Bài đã lưu ----------
 
-class SavedArticlesScreen extends ConsumerWidget {
-  const SavedArticlesScreen({super.key});
+/// 4f with the "Chăm bé | Ăn dặm" segment (the design's, D-085): each library's saved articles.
+class SavedArticlesScreen extends ConsumerStatefulWidget {
+  const SavedArticlesScreen({this.library = LbLibrary.care, super.key});
+
+  /// The segment it opens on.
+  final LbLibrary library;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SavedArticlesScreen> createState() =>
+      _SavedArticlesScreenState();
+}
+
+class _SavedArticlesScreenState extends ConsumerState<SavedArticlesScreen> {
+  late LbLibrary _library = widget.library;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final saved = ref.watch(lbSavedProvider);
@@ -1360,9 +1377,13 @@ class SavedArticlesScreen extends ConsumerWidget {
     final today = baby?.today ?? DateTime.now();
     final rows = [
       for (final s in saved.value ?? const <LbSaved>[])
-        if (byId[s.id] case final a?) (a, s),
+        if (byId[s.id] case final a? when a.library == _library) (a, s),
     ];
     final updated = rows.where((r) => r.$1.revision > r.$2.revision).toList();
+    // "Đã lưu › Ăn dặm" also lists saved recipes (5g "Lưu", D-085), newest save first.
+    final recipes = _library == LbLibrary.solids
+        ? ref.watch(sdSavedRecipeListProvider)
+        : const <Never>[];
 
     String savedOn(LbArticle a, LbSaved s) {
       final at = s.savedAt;
@@ -1379,34 +1400,54 @@ class SavedArticlesScreen extends ConsumerWidget {
       );
     }
 
+    final items = <(DateTime, Widget)>[
+      for (final (a, s) in rows)
+        (
+          s.savedAt ?? DateTime.now(),
+          LbArticleRow(
+            key: Key('lbSaved_${a.id}'),
+            article: a,
+            thumb: 56,
+            meta: savedOn(a, s),
+            saved: true,
+            onBookmark: () => unawaited(lbToggleSaved(context, ref, a)),
+            onTap: () => context.push(LbRoutes.articleOf(a.id)),
+          ),
+        ),
+      for (final r in recipes)
+        (
+          r.savedAt,
+          SdSavedRecipeRow(recipe: r.recipe, savedAt: r.savedAt, today: today),
+        ),
+    ];
+    if (recipes.isNotEmpty) items.sort((x, y) => y.$1.compareTo(x.$1));
+
     return LbPage(
       children: [
         LbTitle(l10n.lbSaved),
+        const SizedBox(height: ClSpace.s3),
+        ClSegmented<LbLibrary>(
+          key: const Key('lbSavedSegments'),
+          options: LbLibrary.values,
+          selected: _library,
+          labelOf: (l) => switch (l) {
+            LbLibrary.care => l10n.lbSavedCare,
+            LbLibrary.solids => l10n.lbSavedSolids,
+          },
+          onChanged: (l) => setState(() => _library = l),
+        ),
         LbOfflineNote(l10n.lbOfflineLibrary, top: ClSpace.s3),
         const SizedBox(height: ClSpace.s4),
-        if (saved.isLoading && rows.isEmpty)
+        if (saved.isLoading && rows.isEmpty && recipes.isEmpty)
           const SizedBox(height: 120)
-        else if (rows.isEmpty)
+        else if (rows.isEmpty && recipes.isEmpty)
           LbEmpty(
             icon: ClIcons.bookmark,
             title: l10n.lbSavedEmptyTitle,
             body: l10n.lbSavedEmptyBody,
           )
         else ...[
-          LbGroup(
-            children: [
-              for (final (a, s) in rows)
-                LbArticleRow(
-                  key: Key('lbSaved_${a.id}'),
-                  article: a,
-                  thumb: 56,
-                  meta: savedOn(a, s),
-                  saved: true,
-                  onBookmark: () => unawaited(lbToggleSaved(context, ref, a)),
-                  onTap: () => context.push(LbRoutes.articleOf(a.id)),
-                ),
-            ],
-          ),
+          LbGroup(children: [for (final (_, row) in items) row]),
           for (final (a, _) in updated) ...[
             const SizedBox(height: ClSpace.s3),
             ClPressable(

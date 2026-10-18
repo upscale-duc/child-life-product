@@ -13,6 +13,7 @@ import '../care/care_format.dart' show decimal;
 import '../care/history_screen.dart' show HistoryFilter;
 import '../care/who_growth.dart';
 import '../library/library_widgets.dart' show LbOfflineNote;
+import '../solids/solids_today.dart' show SdNutritionRow;
 import 'nutrition_calc.dart';
 import 'nutrition_format.dart';
 import 'nutrition_models.dart';
@@ -111,6 +112,8 @@ List<Widget> _stageBody(
       past: personal && content.past,
       link: personal,
     ),
+    // Ăn dặm (P-164 #1): "Ăn dặm hôm nay · N bữa · Mở nhật ký" while tracking is on.
+    if (personal) const SdNutritionRow(),
     if (milk != null) ...[
       const SizedBox(height: ClSpace.s3),
       _MilkCard(

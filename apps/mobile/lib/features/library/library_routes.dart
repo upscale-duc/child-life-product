@@ -15,8 +15,11 @@ abstract final class LbRoutes {
   /// 4b (+ 4c sheet): `?q=…&topic=sleep&age=m0to3&focus=1`.
   static const search = '/library/search';
 
-  /// 4f.
+  /// 4f; `?library=solids` opens the "Ăn dặm" segment (D-085).
   static const saved = '/library/saved';
+
+  static String savedFor(LbLibrary library) =>
+      library == LbLibrary.solids ? '$saved?library=solids' : saved;
 
   /// 4d / 4e: `/library/a/{articleId}`.
   static const article = '/library/a';
@@ -71,7 +74,14 @@ List<RouteBase> libraryRoutes() => [
       focus: q['focus'] == '1',
     );
   }),
-  _page(LbRoutes.saved, (_, _) => const SavedArticlesScreen()),
+  _page(
+    LbRoutes.saved,
+    (_, s) => SavedArticlesScreen(
+      library: s.uri.queryParameters['library'] == 'solids'
+          ? LbLibrary.solids
+          : LbLibrary.care,
+    ),
+  ),
   _page(
     '${LbRoutes.article}/:id',
     (_, s) => ArticleScreen(articleId: s.pathParameters['id'] ?? ''),

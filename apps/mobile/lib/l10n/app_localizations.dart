@@ -28097,6 +28097,1686 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tham khảo {range} ml mỗi ngày'**
   String nuMilkPerDayOnly(String range);
+
+  /// 4f Đã lưu segment: the care library. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm bé'**
+  String get lbSavedCare;
+
+  /// 4f Đã lưu segment: the solids library. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm'**
+  String get lbSavedSolids;
+
+  /// 5c chip opening the ingredient picker. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get sdAddFood;
+
+  /// 5c picker row adding a free-text food (group Khác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm “{name}”'**
+  String sdAddFree(String name);
+
+  /// 5e group chip for every food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get sdAll;
+
+  /// 5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng bé ăn'**
+  String get sdAmount;
+
+  /// A typed whole number of bowls. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} chén}}'**
+  String sdAmountBowls(int count);
+
+  /// 5c amount: type a number and a unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự nhập'**
+  String get sdAmountCustom;
+
+  /// 5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vài thìa'**
+  String get sdAmountFewSpoons;
+
+  /// 5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 chén'**
+  String get sdAmountFullBowl;
+
+  /// 5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'½ chén'**
+  String get sdAmountHalfBowl;
+
+  /// 5c error for a typed amount out of range. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lượng từ 0,1 đến 1000, hoặc bỏ chọn “Tự nhập”.'**
+  String get sdAmountInvalid;
+
+  /// A typed whole number of spoons. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} thìa}}'**
+  String sdAmountSpoons(int count);
+
+  /// A typed amount with its unit ("1,5 chén", "120 ml"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{value} {unit}'**
+  String sdAmountValue(String value, String unit);
+
+  /// 5c urgent card link to the Sơ cứu anaphylaxis page (TH05). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ cứu: Sốc phản vệ'**
+  String get sdAnaphylaxis;
+
+  /// 5a for caregivers: only Cùng nuôi turn it on (P-164 #13). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ ba mẹ bật theo dõi ăn dặm'**
+  String get sdAskParents;
+
+  /// 5a for caregivers. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi ba mẹ bật, bạn có thể ghi bữa và xem nhật ký ăn dặm của bé. Thư viện ăn dặm luôn mở cho bạn.'**
+  String get sdAskParentsBody;
+
+  /// 5a benefit row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử bữa ăn và danh sách món đã thử'**
+  String get sdBenefitHistory;
+
+  /// 5a benefit row (recipes arrive later). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện ăn dặm: hướng dẫn, cách bắt đầu'**
+  String get sdBenefitLibrary;
+
+  /// 5a benefit row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bữa, món, lượng chỉ vài chạm'**
+  String get sdBenefitLog;
+
+  /// Food detail (Cùng nuôi): a food with signs may be suggested again. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bác sĩ đã cho ăn lại'**
+  String get sdClear;
+
+  /// Food detail banner once cleared. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bác sĩ đã cho ăn lại món này. App vẫn giữ lịch sử dấu hiệu.'**
+  String get sdClearedNote;
+
+  /// 5c date field (up to 7 days back). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get sdDate;
+
+  /// 5b day header ("Hôm nay · 2 bữa"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {count, plural, other{{count} bữa}}'**
+  String sdDayMeals(String day, int count);
+
+  /// Meal detail action (soft delete with undo, 30-day bin). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bữa'**
+  String get sdDelete;
+
+  /// Meal delete confirmation title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bữa ăn này?'**
+  String get sdDeleteTitle;
+
+  /// Toast after deleting a meal (with Hoàn tác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá bữa ăn'**
+  String get sdDeletedToast;
+
+  /// 5b segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký'**
+  String get sdDiary;
+
+  /// 5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món'**
+  String get sdDish;
+
+  /// 5c dish placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Cháo cà rốt thịt gà'**
+  String get sdDishHint;
+
+  /// 5a banner. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi bác sĩ của bé khi nào nên bắt đầu ăn dặm và cách phù hợp với bé.'**
+  String get sdDoctorNote;
+
+  /// Chưa đến lúc page note (P-164 #2). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu bác sĩ khuyên bé bắt đầu sớm hơn, hãy làm theo bác sĩ và dùng thư viện để chuẩn bị. Nhật ký ăn dặm mở khi bé đủ 6 tháng.'**
+  String get sdEarlyNote;
+
+  /// 5b empty past day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bữa nào trong ngày này'**
+  String get sdEmptyDay;
+
+  /// 5b empty day, 5h card without a meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bữa nào hôm nay'**
+  String get sdEmptyToday;
+
+  /// 5h chip with today's first tries. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu: {foods}'**
+  String sdFirstToday(String foods);
+
+  /// 5e row line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu {day} · {count, plural, other{{count} lần}}'**
+  String sdFirstTried(String day, int count);
+
+  /// First-try ingredient chip (5c, meal detail) and its spoken label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{food} · lần đầu'**
+  String sdFirstTryChip(String food);
+
+  /// 5b legend under the meal cards. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'✦ Lần đầu bé thử'**
+  String get sdFirstTryLegend;
+
+  /// Food detail section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bữa có món này · {count}'**
+  String sdFoodMeals(int count);
+
+  /// Food detail when nothing matches. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy món này'**
+  String get sdFoodMissing;
+
+  /// Food detail when nothing matches. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món có thể đã được bỏ khỏi các bữa ăn.'**
+  String get sdFoodMissingBody;
+
+  /// 5c ingredient picker search. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm món, nguyên liệu…'**
+  String get sdFoodSearch;
+
+  /// Food detail banner (P-164 #6; never 'dị ứng' as a fact). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé có dấu hiệu sau khi ăn món này. Tạm chưa cho lại và hỏi bác sĩ của bé; app sẽ không gợi ý món này cho đến khi ba mẹ đánh dấu “Bác sĩ đã cho ăn lại”.'**
+  String get sdFoodSignsNote;
+
+  /// 5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết'**
+  String get sdFormatArticle;
+
+  /// 5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi nhanh'**
+  String get sdFormatQuickQa;
+
+  /// 5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từng bước'**
+  String get sdFormatStepGuide;
+
+  /// 5c picker: a food above the baby's age. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thường từ {months} tháng'**
+  String sdFromMonths(int months);
+
+  /// 5e group chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{group} · {count}'**
+  String sdGroupCount(String group, int count);
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa và chế phẩm'**
+  String get sdGroupDairy;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chất béo'**
+  String get sdGroupFat;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trái cây'**
+  String get sdGroupFruit;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tinh bột'**
+  String get sdGroupGrain;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đậu và hạt'**
+  String get sdGroupLegume;
+
+  /// Food group of free-text foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get sdGroupOther;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đạm động vật'**
+  String get sdGroupProtein;
+
+  /// Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Rau củ'**
+  String get sdGroupVegetable;
+
+  /// 5f featured card eyebrow. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng dẫn · {format}'**
+  String sdGuideKicker(String format);
+
+  /// 5f section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng dẫn'**
+  String get sdGuides;
+
+  /// Food detail (Cùng nuôi): adds it to settings.hidden. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gợi ý món này'**
+  String get sdHide;
+
+  /// 5d empty. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bữa nào'**
+  String get sdHistoryEmpty;
+
+  /// 5d empty. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bữa đã ghi sẽ hiện ở đây, mới nhất ở trên.'**
+  String get sdHistoryEmptyBody;
+
+  /// 5d title and the 5b link. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử bữa ăn'**
+  String get sdHistoryTitle;
+
+  /// 5c field label and the picker title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguyên liệu'**
+  String get sdIngredients;
+
+  /// 5h card line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần nhất: {dish} · {time}'**
+  String sdLatest(String dish, String time);
+
+  /// 5f with nothing published. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bài hướng dẫn ăn dặm sẽ hiện ở đây khi được xuất bản.'**
+  String get sdLibraryEmpty;
+
+  /// 5f without results. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử từ khoá khác hoặc bỏ bớt bộ lọc độ tuổi, loại bài.'**
+  String get sdLibraryNoResults;
+
+  /// 5f search placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm món, nguyên liệu, hướng dẫn…'**
+  String get sdLibrarySearch;
+
+  /// Row opening 5f from 5a. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng dẫn ăn dặm theo độ tuổi'**
+  String get sdLibrarySub;
+
+  /// 5f title and the 5b segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện ăn dặm'**
+  String get sdLibraryTitle;
+
+  /// 5b FAB, 5h button. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bữa'**
+  String get sdLogMeal;
+
+  /// 5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa chiều'**
+  String get sdMealAfternoon;
+
+  /// 5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa tối'**
+  String get sdMealEvening;
+
+  /// Meal detail of a deleted meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy bữa ăn'**
+  String get sdMealMissing;
+
+  /// Meal detail of a deleted meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn có thể đã được xoá.'**
+  String get sdMealMissingBody;
+
+  /// 5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa sáng'**
+  String get sdMealMorning;
+
+  /// 5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa trưa'**
+  String get sdMealNoon;
+
+  /// 5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa phụ'**
+  String get sdMealSnack;
+
+  /// 5d segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn'**
+  String get sdMealsTab;
+
+  /// 5a feeding style. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'BLW'**
+  String get sdMethodBlw;
+
+  /// 5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé tự cầm thức ăn mềm, cắt thanh vừa tay.'**
+  String get sdMethodBlwHelp;
+
+  /// 5a feeding style (default). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết hợp'**
+  String get sdMethodMixed;
+
+  /// 5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa đút thìa vừa cho bé tự cầm, tuỳ món.'**
+  String get sdMethodMixedHelp;
+
+  /// 5a feeding style. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Truyền thống'**
+  String get sdMethodSpoon;
+
+  /// 5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đút thìa, từ nghiền mịn rồi đặc dần.'**
+  String get sdMethodSpoonHelp;
+
+  /// 5a and settings label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách cho ăn (không bắt buộc)'**
+  String get sdMethodTitle;
+
+  /// 5c error. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm tên món hoặc ít nhất một nguyên liệu.'**
+  String get sdNeedDish;
+
+  /// 5c picker before foods are published. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên món ở trên (tối đa 3).'**
+  String get sdNoCatalogue;
+
+  /// 5a without a date of birth (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký ăn dặm mở khi {name} đủ 6 tháng. Thêm ngày sinh để app biết khi nào.'**
+  String sdNoDobBody(String name);
+
+  /// 5a without a date of birth (others). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa được xem ngày sinh của {name}, nên app chưa biết bé đã đủ 6 tháng chưa.'**
+  String sdNoDobViewer(String name);
+
+  /// 5c picker and food detail. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thử'**
+  String get sdNotTried;
+
+  /// Chưa đến lúc page, 4–5 months (P-164 #2). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} {age}, sắp đến lúc ăn dặm. Nhật ký mở khi bé tròn 6 tháng, ngày {date}. Trong lúc chờ, xem bé đã có dấu hiệu sẵn sàng chưa.'**
+  String sdNotYetSoon(String name, String age, String date);
+
+  /// Chưa đến lúc page title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đến lúc ăn dặm'**
+  String get sdNotYetTitle;
+
+  /// Chưa đến lúc page, under 4 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} {age}. Sữa mẹ hoặc sữa công thức là đủ cho bé lúc này. Nhật ký ăn dặm mở khi bé tròn 6 tháng, ngày {date}.'**
+  String sdNotYetYoung(String name, String age, String date);
+
+  /// 5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú (không bắt buộc)'**
+  String get sdNote;
+
+  /// 5c note placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ghi chú…'**
+  String get sdNoteHint;
+
+  /// Dinh dưỡng 9b row while tracking is on (P-164 #1). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm hôm nay · {count, plural, other{{count} bữa}}'**
+  String sdNutritionRow(int count);
+
+  /// Diary pages while tracking is off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ có thể bật theo dõi ăn dặm trong Chăm sóc › Ăn dặm.'**
+  String get sdOffBody;
+
+  /// Diary pages while tracking is off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa bật theo dõi ăn dặm'**
+  String get sdOffTitle;
+
+  /// Dinh dưỡng 9b row link. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở nhật ký'**
+  String get sdOpenDiary;
+
+  /// 5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé ăn thế nào'**
+  String get sdReaction;
+
+  /// Reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thích'**
+  String get sdReactionLiked;
+
+  /// Reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình thường'**
+  String get sdReactionNeutral;
+
+  /// Reaction (neutral, never a warning, P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa hợp'**
+  String get sdReactionNotYet;
+
+  /// Chưa đến lúc page: the readiness guide row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dấu hiệu sẵn sàng'**
+  String get sdReadinessKicker;
+
+  /// 5f recipes section (phase C). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức'**
+  String get sdRecipes;
+
+  /// 5f recipes section for an age band (phase C). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức · {band}'**
+  String sdRecipesFor(String band);
+
+  /// Chưa đến lúc page: a one-time reminder at 5 months 2 weeks. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc tôi khi bé gần 6 tháng'**
+  String get sdRemindMe;
+
+  /// Chưa đến lúc page once the reminder is set. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt nhắc · {date}'**
+  String sdRemindSet(String date);
+
+  /// Toast after setting the 6-month reminder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt nhắc ngày {date}'**
+  String sdRemindToast(String date);
+
+  /// Reminder title in Nhắc nhở. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} gần 6 tháng: xem cách bắt đầu ăn dặm'**
+  String sdReminderTitle(String name);
+
+  /// Spoken label of a removable ingredient chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ {food}'**
+  String sdRemoveFood(String food);
+
+  /// 5c primary button. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu bữa'**
+  String get sdSave;
+
+  /// Toast after logging a meal (with Hoàn tác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi · {meal}'**
+  String sdSavedToast(String meal);
+
+  /// Tuỳ chỉnh Hôm nay row for the 5h card. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm hôm nay'**
+  String get sdSectionToday;
+
+  /// Tuỳ chỉnh Hôm nay row subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa gần nhất và món mới hôm nay'**
+  String get sdSectionTodaySub;
+
+  /// 5b link to 5e. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get sdSeeAll;
+
+  /// 5b settings pill and sheet title (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get sdSettings;
+
+  /// 5c title when editing. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa bữa ăn'**
+  String get sdSheetEditTitle;
+
+  /// 5c title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bữa ăn'**
+  String get sdSheetTitle;
+
+  /// 5d: more days. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get sdShowMore;
+
+  /// 5a and settings toggle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện “Ăn dặm hôm nay” trên Hôm nay'**
+  String get sdShowOnToday;
+
+  /// Tag on a meal or food with signs after eating (never 'dị ứng'). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có dấu hiệu'**
+  String get sdSignsTag;
+
+  /// 5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều'**
+  String get sdSlotAfternoon;
+
+  /// 5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get sdSlotEvening;
+
+  /// 5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng'**
+  String get sdSlotMorning;
+
+  /// 5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưa'**
+  String get sdSlotNoon;
+
+  /// 5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phụ'**
+  String get sdSlotSnack;
+
+  /// 5b card head ("Bữa sáng · 08:10"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{slot} · {time}'**
+  String sdSlotTime(String slot, String time);
+
+  /// 5a primary (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu theo dõi'**
+  String get sdStart;
+
+  /// 5a subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh từng bữa, xem lại những món bé đã thử và đọc hướng dẫn từ đội chuyên môn.'**
+  String get sdStartBody;
+
+  /// 5a title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi ăn dặm'**
+  String get sdStartTitle;
+
+  /// Settings: when tracking started. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày bắt đầu'**
+  String get sdStartedOn;
+
+  /// Settings: no start date set and no meal yet. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo bữa đầu tiên'**
+  String get sdStartedOnAuto;
+
+  /// Settings: the first meal's date. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa đầu tiên · {date}'**
+  String sdStartedOnAutoDate(String date);
+
+  /// Settings: clear the start date. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng ngày bữa đầu tiên'**
+  String get sdStartedOnReset;
+
+  /// Toast after 5a. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bật theo dõi ăn dặm'**
+  String get sdStartedToast;
+
+  /// Settings action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng theo dõi'**
+  String get sdStop;
+
+  /// Stop tracking confirmation. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bữa đã ghi vẫn được giữ. Ba mẹ có thể bật lại bất cứ lúc nào.'**
+  String get sdStopBody;
+
+  /// Stop tracking confirmation title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng theo dõi ăn dặm?'**
+  String get sdStopTitle;
+
+  /// 5b suggestions section (phase D). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho {name} hôm nay'**
+  String sdSuggestionsTitle(String name);
+
+  /// Symptom chip (urgent: shows the 115 card). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khó thở, ho, khò khè'**
+  String get sdSymptomBreathing;
+
+  /// Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu chảy'**
+  String get sdSymptomDiarrhea;
+
+  /// Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quấy khóc bất thường'**
+  String get sdSymptomFussy;
+
+  /// Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get sdSymptomOther;
+
+  /// Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nổi mẩn, mề đay'**
+  String get sdSymptomRash;
+
+  /// Symptom chip (urgent: shows the 115 card). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sưng môi, mặt'**
+  String get sdSymptomSwelling;
+
+  /// Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nôn'**
+  String get sdSymptomVomit;
+
+  /// Meal detail: no signs recorded. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có'**
+  String get sdSymptomsNone;
+
+  /// 5c and meal detail when signs are recorded (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các món mới trong bữa này sẽ được đánh dấu “Có dấu hiệu sau khi ăn”. Hỏi bác sĩ của bé nếu bạn còn lo.'**
+  String get sdSymptomsNote;
+
+  /// 5c field label (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có dấu hiệu bất thường sau khi ăn?'**
+  String get sdSymptomsQuestion;
+
+  /// Meal and food detail label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dấu hiệu sau khi ăn'**
+  String get sdSymptomsTitle;
+
+  /// Care tile under 4 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ 6 tháng'**
+  String get sdTileFrom6;
+
+  /// Care tile at 4–5 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp đến lúc ăn dặm'**
+  String get sdTileSoon;
+
+  /// Care tile from 6 months, tracking off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu theo dõi'**
+  String get sdTileStart;
+
+  /// Care tile while tracking is on. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {count, plural, other{{count} bữa}}'**
+  String sdTileToday(int count);
+
+  /// 5c time field. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ'**
+  String get sdTime;
+
+  /// Day label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get sdToday;
+
+  /// 5h card head. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm hôm nay · {count, plural, other{{count} bữa}}'**
+  String sdTodayCard(int count);
+
+  /// Day label inside a sentence (5e "Lần đầu hôm nay"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get sdTodayLower;
+
+  /// 5c picker: a food tried before. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử'**
+  String get sdTried;
+
+  /// 5b / 5e without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các món bé đã thử sẽ hiện ở đây sau bữa đầu tiên.'**
+  String get sdTriedEmpty;
+
+  /// 5e without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có món nào'**
+  String get sdTriedEmptyTitle;
+
+  /// 5e footnote (P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là ghi chép của gia đình bạn, không phải đánh giá hay khuyến nghị dinh dưỡng.'**
+  String get sdTriedFootnote;
+
+  /// 5c picker: tried, with the latest reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử · {reaction}'**
+  String sdTriedReaction(String reaction);
+
+  /// 5d / 5e segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món đã thử'**
+  String get sdTriedTab;
+
+  /// 5b section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món đã thử · {count}'**
+  String sdTriedTitle(int count);
+
+  /// Food detail (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ đánh dấu “Bác sĩ đã cho ăn lại”'**
+  String get sdUnclear;
+
+  /// Food detail (Cùng nuôi): removes it from settings.hidden. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý lại món này'**
+  String get sdUnhide;
+
+  /// Typed amount unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chén'**
+  String get sdUnitBowl;
+
+  /// Typed amount unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'thìa'**
+  String get sdUnitSpoon;
+
+  /// 5f featured card meta. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'cập nhật {date}'**
+  String sdUpdated(String date);
+
+  /// 5c red card for swelling or breathing, before saving (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi {number} ngay nếu bé khó thở, sưng môi hoặc lưỡi, lả đi.'**
+  String sdUrgent(String number);
+
+  /// Meal detail for who cannot edit it (P-164 #13). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa này do người khác ghi: bạn chỉ xem được.'**
+  String get sdViewOnly;
+
+  /// Day label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua'**
+  String get sdYesterday;
+
+  /// 5c photo field label and meal detail row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bữa ăn'**
+  String get sdPhoto;
+
+  /// 5c dashed photo button and the source sheet title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh bữa ăn'**
+  String get sdPhotoAdd;
+
+  /// 5c: replace the meal photo. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh'**
+  String get sdPhotoReplace;
+
+  /// 5c: remove the meal photo (the corner ×). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh'**
+  String get sdPhotoRemove;
+
+  /// Photo source sheet privacy line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ những người chăm bé trong gia đình xem được ảnh này.'**
+  String get sdPhotoPrivate;
+
+  /// Toast when a meal photo fails to pick, compress or upload. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được ảnh. Bữa ăn vẫn lưu được; thử thêm ảnh lại sau nhé.'**
+  String get sdPhotoFailed;
+
+  /// 5c photo field while offline (the meal saves, the photo needs the network). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần có mạng để thêm ảnh. Bữa ăn vẫn lưu được khi không có mạng.'**
+  String get sdPhotoOffline;
+
+  /// Lịch sử filter chip for solid meals (while tracking is on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm'**
+  String get sdHistoryFilter;
+
+  /// Lịch sử empty day, inserted into emptyTodayTitle / logNow / backLog. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bữa ăn dặm'**
+  String get sdHistoryWhat;
+
+  /// Lịch sử solids summary title for a past day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm ngày {date}'**
+  String sdHistoryOnDay(String date);
+
+  /// Lịch sử solids summary row label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số bữa'**
+  String get sdHistoryMeals;
+
+  /// Lịch sử solids summary row label: foods tried for the first time that day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món mới'**
+  String get sdHistoryNewFoods;
+
+  /// A number of solid meals. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} bữa}}'**
+  String sdMealsCount(int count);
+
+  /// A number of foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} món}}'**
+  String sdFoodsCount(int count);
+
+  /// Lịch sử solids link card title (opens 5b). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký ăn dặm'**
+  String get sdHistoryLink;
+
+  /// Lịch sử solids link card subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món đã thử, lịch sử bữa ăn và gợi ý cho bé'**
+  String get sdHistoryLinkHint;
+
+  /// Thống kê card title (while tracking is on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn dặm'**
+  String get sdStatsTitle;
+
+  /// Thống kê solids card subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{days} ngày gần đây · chỉ để tham khảo'**
+  String sdStatsHint(int days);
+
+  /// Thống kê solids card subtitle on the Hôm nay window. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · chỉ để tham khảo'**
+  String get sdStatsTodayHint;
+
+  /// Thống kê solids chart average line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {value} bữa/ngày'**
+  String sdStatsAvg(String value);
+
+  /// Thống kê solids chart callout for a day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day}: {count, plural, other{{count} bữa}}'**
+  String sdStatsDayTip(String day, int count);
+
+  /// Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa hôm nay'**
+  String get sdStatsMealsToday;
+
+  /// Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa mỗi ngày (TB)'**
+  String get sdStatsPerDay;
+
+  /// Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món mới tuần này'**
+  String get sdStatsNewThisWeek;
+
+  /// Thống kê solids: heading of the per-week rows. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món mới mỗi tuần'**
+  String get sdStatsNewPerWeek;
+
+  /// Thống kê solids per-week row label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần từ {date}'**
+  String sdStatsWeekOf(String date);
+
+  /// Thống kê solids footnote (information only, P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là ghi chép của gia đình, không phải mục tiêu số bữa hay số món.'**
+  String get sdStatsNote;
+
+  /// 5f recipe row meta (total minutes). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức · {minutes} phút'**
+  String sdRecipeMeta(int minutes);
+
+  /// 5f section of recipes ranked for the baby (plan §7). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dành cho {name}'**
+  String sdForBaby(String name);
+
+  /// 5f recipes with filters that match nothing. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có công thức hợp bộ lọc này.'**
+  String get sdRecipesNone;
+
+  /// Recipe list opened from a suggestion ("Xem công thức"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức có {foods}'**
+  String sdRecipesWith(String foods);
+
+  /// Recipe list from a suggestion with no match. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có công thức hợp tuổi và cách cho ăn của bé có món này. Xem các công thức khác trong thư viện.'**
+  String get sdRecipesWithNone;
+
+  /// 5g when the recipe is not published (or not on the device yet). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy công thức'**
+  String get sdRecipeMissing;
+
+  /// 5g missing recipe body. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức có thể đã được gỡ hoặc chưa tải về máy.'**
+  String get sdRecipeMissingBody;
+
+  /// Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghiền mịn'**
+  String get sdTextureSmooth;
+
+  /// Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghiền lợn cợn'**
+  String get sdTextureMashed;
+
+  /// Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cắt nhỏ, mềm'**
+  String get sdTextureSoftPieces;
+
+  /// Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cầm tay'**
+  String get sdTextureFinger;
+
+  /// Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn cùng gia đình'**
+  String get sdTextureFamily;
+
+  /// 5g servings. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} phần ăn'**
+  String sdServings(int count);
+
+  /// 5g preparation and cooking minutes. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ chế {prep} phút · nấu {cook} phút'**
+  String sdPrepCook(int prep, int cook);
+
+  /// 5g steps heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách làm'**
+  String get sdSteps;
+
+  /// 5g storage heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảo quản'**
+  String get sdStorage;
+
+  /// 5g tip heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹo'**
+  String get sdTip;
+
+  /// 5g ingredient: a catalogue food the baby has not had (tracking on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'✦ Bé chưa thử'**
+  String get sdNotTriedMark;
+
+  /// 5g ingredient: a food with recorded symptoms (never "dị ứng" as a fact, P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'⚠ Có dấu hiệu'**
+  String get sdSignsMark;
+
+  /// 5g allergen line from recipeAllergens ("Có trứng"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có {list}'**
+  String sdContains(String list);
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'trứng'**
+  String get sdAllergenEgg;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'đậu phộng'**
+  String get sdAllergenPeanut;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'sữa bò'**
+  String get sdAllergenMilk;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'lúa mì'**
+  String get sdAllergenWheat;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'đậu nành'**
+  String get sdAllergenSoy;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'cá'**
+  String get sdAllergenFish;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'tôm, cua, sò'**
+  String get sdAllergenShellfish;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'vừng (mè)'**
+  String get sdAllergenSesame;
+
+  /// Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'các loại hạt'**
+  String get sdAllergenTreeNut;
+
+  /// 5g notice when the recipe starts above the baby's age. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức cho bé từ {from} tháng. {name} mới {age}: chọn công thức hợp tuổi hoặc hỏi bác sĩ của bé.'**
+  String sdAgeNotice(int from, String name, String age);
+
+  /// 5g primary button: opens 5c with the dish, its foods and the recipe. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi vào nhật ký'**
+  String get sdLogRecipe;
+
+  /// Recipe unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'thìa canh'**
+  String get sdIngUnitTbsp;
+
+  /// Recipe unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'thìa cà phê'**
+  String get sdIngUnitTsp;
+
+  /// Recipe unit (with a decimal quantity). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chén'**
+  String get sdIngUnitBowl;
+
+  /// Recipe unit (with a decimal quantity). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'miếng'**
+  String get sdIngUnitPiece;
+
+  /// Recipe quantity in bowls. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} chén}}'**
+  String sdIngBowls(int count);
+
+  /// Recipe quantity in pieces. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} miếng}}'**
+  String sdIngPieces(int count);
+
+  /// Suggestion card: snooze it for 3 days on this device. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get sdSuggestLater;
+
+  /// Sheet title when a card suggests several foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gợi ý món nào?'**
+  String get sdSuggestHideWhich;
+
+  /// Toast after a parent hides a food (settings.hidden). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ không gợi ý {food} nữa'**
+  String sdSuggestHidden(String food);
+
+  /// Toast after a caregiver hides a food (device snooze; settings are Cùng nuôi's). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn {food} khỏi gợi ý trên máy này trong 30 ngày'**
+  String sdSuggestSnoozedFood(String food);
+
+  /// Toast after "Để sau". D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ gợi ý lại sau 3 ngày'**
+  String get sdSuggestSnoozed;
+
+  /// S1 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc: Nhận biết phản ứng'**
+  String get sdActReadReactions;
+
+  /// S3 / S5 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem công thức'**
+  String get sdActRecipes;
+
+  /// S8 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem gợi ý'**
+  String get sdActIdeas;
+
+  /// S9 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc hướng dẫn'**
+  String get sdActGuide;
+
+  /// Joins the last of several suggested foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'hoặc'**
+  String get sdOr;
+
+  /// A suggested iron-rich food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{food} (giàu sắt)'**
+  String sdIronMark(String food);
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'trứng chín kỹ'**
+  String get sdTryEgg;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bơ đậu phộng pha loãng (không cho cả hạt)'**
+  String get sdTryPeanut;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'sữa chua hoặc sữa bò nấu trong món'**
+  String get sdTryMilk;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'lúa mì (bánh mì, mì nấu mềm)'**
+  String get sdTryWheat;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'cá chín kỹ, gỡ hết xương'**
+  String get sdTryFish;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'đậu phụ hoặc sữa đậu nành nấu trong món'**
+  String get sdTrySoy;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'vừng (mè) xay mịn trộn vào món'**
+  String get sdTrySesame;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'tôm hoặc cua chín kỹ, băm nhỏ'**
+  String get sdTryShellfish;
+
+  /// S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bơ hạt (hạnh nhân, điều) pha loãng, không cho cả hạt'**
+  String get sdTryTreeNut;
+
+  /// S1 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi sau dấu hiệu hôm {date} ({foods}). Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.'**
+  String sdS1Title(String date, String foods);
+
+  /// S1 card title without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi sau dấu hiệu hôm {date}. Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.'**
+  String sdS1TitlePlain(String date);
+
+  /// S1 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì bữa hôm {date} có ghi dấu hiệu sau khi ăn.'**
+  String sdS1Why(String date);
+
+  /// S2 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món tiếp theo cho {name}: {foods}.'**
+  String sdS2Title(String name, String foods);
+
+  /// S2 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì {name} mới thử {count} món: bắt đầu từ rau củ, tinh bột và một món giàu sắt, mỗi lần một món mới.'**
+  String sdS2Why(String name, int count);
+
+  /// S3 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đến lúc thử {allergen}: buổi sáng, ở nhà, một lượng nhỏ.'**
+  String sdS3Title(String allergen);
+
+  /// S3 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì {name} đã quen {count} món và ăn dặm được {days} ngày: các món thường gây dị ứng nên cho làm quen từng món một, cách nhau vài ngày.'**
+  String sdS3Why(String name, int count, int days);
+
+  /// S4 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho {name} ăn lại {allergen} tuần này để duy trì.'**
+  String sdS4Title(String name, String allergen);
+
+  /// S4 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì lần gần nhất bé ăn {allergen} là {date}: món đã quen nên được ăn đều đặn.'**
+  String sdS4Why(String allergen, String date);
+
+  /// S5 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay thêm một món giàu sắt: {foods}.'**
+  String sdS5Title(String foods);
+
+  /// S5 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì 2 ngày qua các bữa của {name} chưa có món giàu sắt; từ 6 tháng bé cần sắt từ thức ăn mỗi ngày.'**
+  String sdS5Why(String name);
+
+  /// S6 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món mới tiếp theo: {foods}.'**
+  String sdS6Title(String foods);
+
+  /// S6 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì {name} chưa thử món mới 2 ngày; nhóm {group} bé mới thử {count} món.'**
+  String sdS6Why(String name, String group, int count);
+
+  /// S7 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại {food} theo cách khác: nghiền mịn hơn hoặc trộn với {liked} {name} thích.'**
+  String sdS7Title(String food, String liked, String name);
+
+  /// S7 card title without a liked food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại {food} theo cách khác: nghiền mịn hơn hoặc đổi cách nấu.'**
+  String sdS7TitlePlain(String food);
+
+  /// S7 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì lần gần nhất {name} chưa hợp {food} (đã thử {count} lần). Bé có thể cần 8–15 lần mới quen một món.'**
+  String sdS7Why(String name, String food, int count);
+
+  /// S8 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này {name} chưa ăn {group} nào.'**
+  String sdS8Title(String name, String group);
+
+  /// S8 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì lần gần nhất bé ăn {group} là {date}; đổi món giúp bé quen nhiều vị.'**
+  String sdS8Why(String group, String date);
+
+  /// S9 card title (texture from the Dinh dưỡng stage). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} {months} tháng: {texture}.'**
+  String sdS9Title(String name, int months, String texture);
+
+  /// S9 "vì sao" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì {name} vừa sang giai đoạn {stage} trong Dinh dưỡng; thức ăn thô dần theo từng giai đoạn.'**
+  String sdS9Why(String name, String stage);
+
+  /// S8 "Xem gợi ý" sheet title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý: {group}'**
+  String sdIdeasTitle(String group);
+
+  /// S8 ideas sheet hint. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm một món để ghi bữa.'**
+  String get sdIdeasHint;
 }
 
 class _AppLocalizationsDelegate

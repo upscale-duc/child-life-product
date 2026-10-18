@@ -24951,5 +24951,1586 @@
         "type": "String"
       }
     }
+  },
+  "lbSavedCare": "Chăm bé",
+  "@lbSavedCare": {
+    "description": "4f Đã lưu segment: the care library. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "lbSavedSolids": "Ăn dặm",
+  "@lbSavedSolids": {
+    "description": "4f Đã lưu segment: the solids library. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAddFood": "Thêm",
+  "@sdAddFood": {
+    "description": "5c chip opening the ingredient picker. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAddFree": "Thêm “{name}”",
+  "@sdAddFree": {
+    "description": "5c picker row adding a free-text food (group Khác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdAll": "Tất cả",
+  "@sdAll": {
+    "description": "5e group chip for every food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmount": "Lượng bé ăn",
+  "@sdAmount": {
+    "description": "5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountBowls": "{count, plural, other{{count} chén}}",
+  "@sdAmountBowls": {
+    "description": "A typed whole number of bowls. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdAmountCustom": "Tự nhập",
+  "@sdAmountCustom": {
+    "description": "5c amount: type a number and a unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountFewSpoons": "Vài thìa",
+  "@sdAmountFewSpoons": {
+    "description": "5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountFullBowl": "1 chén",
+  "@sdAmountFullBowl": {
+    "description": "5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountHalfBowl": "½ chén",
+  "@sdAmountHalfBowl": {
+    "description": "5c amount preset. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountInvalid": "Nhập lượng từ 0,1 đến 1000, hoặc bỏ chọn “Tự nhập”.",
+  "@sdAmountInvalid": {
+    "description": "5c error for a typed amount out of range. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAmountSpoons": "{count, plural, other{{count} thìa}}",
+  "@sdAmountSpoons": {
+    "description": "A typed whole number of spoons. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdAmountValue": "{value} {unit}",
+  "@sdAmountValue": {
+    "description": "A typed amount with its unit (\"1,5 chén\", \"120 ml\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "sdAnaphylaxis": "Sơ cứu: Sốc phản vệ",
+  "@sdAnaphylaxis": {
+    "description": "5c urgent card link to the Sơ cứu anaphylaxis page (TH05). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAskParents": "Nhờ ba mẹ bật theo dõi ăn dặm",
+  "@sdAskParents": {
+    "description": "5a for caregivers: only Cùng nuôi turn it on (P-164 #13). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAskParentsBody": "Khi ba mẹ bật, bạn có thể ghi bữa và xem nhật ký ăn dặm của bé. Thư viện ăn dặm luôn mở cho bạn.",
+  "@sdAskParentsBody": {
+    "description": "5a for caregivers. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdBenefitHistory": "Lịch sử bữa ăn và danh sách món đã thử",
+  "@sdBenefitHistory": {
+    "description": "5a benefit row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdBenefitLibrary": "Thư viện ăn dặm: hướng dẫn, cách bắt đầu",
+  "@sdBenefitLibrary": {
+    "description": "5a benefit row (recipes arrive later). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdBenefitLog": "Ghi bữa, món, lượng chỉ vài chạm",
+  "@sdBenefitLog": {
+    "description": "5a benefit row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdClear": "Bác sĩ đã cho ăn lại",
+  "@sdClear": {
+    "description": "Food detail (Cùng nuôi): a food with signs may be suggested again. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdClearedNote": "Bác sĩ đã cho ăn lại món này. App vẫn giữ lịch sử dấu hiệu.",
+  "@sdClearedNote": {
+    "description": "Food detail banner once cleared. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDate": "Ngày",
+  "@sdDate": {
+    "description": "5c date field (up to 7 days back). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDayMeals": "{day} · {count, plural, other{{count} bữa}}",
+  "@sdDayMeals": {
+    "description": "5b day header (\"Hôm nay · 2 bữa\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdDelete": "Xoá bữa",
+  "@sdDelete": {
+    "description": "Meal detail action (soft delete with undo, 30-day bin). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDeleteTitle": "Xoá bữa ăn này?",
+  "@sdDeleteTitle": {
+    "description": "Meal delete confirmation title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDeletedToast": "Đã xoá bữa ăn",
+  "@sdDeletedToast": {
+    "description": "Toast after deleting a meal (with Hoàn tác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDiary": "Nhật ký",
+  "@sdDiary": {
+    "description": "5b segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDish": "Món",
+  "@sdDish": {
+    "description": "5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDishHint": "VD: Cháo cà rốt thịt gà",
+  "@sdDishHint": {
+    "description": "5c dish placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdDoctorNote": "Hỏi bác sĩ của bé khi nào nên bắt đầu ăn dặm và cách phù hợp với bé.",
+  "@sdDoctorNote": {
+    "description": "5a banner. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdEarlyNote": "Nếu bác sĩ khuyên bé bắt đầu sớm hơn, hãy làm theo bác sĩ và dùng thư viện để chuẩn bị. Nhật ký ăn dặm mở khi bé đủ 6 tháng.",
+  "@sdEarlyNote": {
+    "description": "Chưa đến lúc page note (P-164 #2). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdEmptyDay": "Chưa có bữa nào trong ngày này",
+  "@sdEmptyDay": {
+    "description": "5b empty past day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdEmptyToday": "Chưa có bữa nào hôm nay",
+  "@sdEmptyToday": {
+    "description": "5b empty day, 5h card without a meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFirstToday": "Lần đầu: {foods}",
+  "@sdFirstToday": {
+    "description": "5h chip with today's first tries. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdFirstTried": "Lần đầu {day} · {count, plural, other{{count} lần}}",
+  "@sdFirstTried": {
+    "description": "5e row line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFirstTryChip": "{food} · lần đầu",
+  "@sdFirstTryChip": {
+    "description": "First-try ingredient chip (5c, meal detail) and its spoken label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdFirstTryLegend": "✦ Lần đầu bé thử",
+  "@sdFirstTryLegend": {
+    "description": "5b legend under the meal cards. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFoodMeals": "Các bữa có món này · {count}",
+  "@sdFoodMeals": {
+    "description": "Food detail section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFoodMissing": "Không tìm thấy món này",
+  "@sdFoodMissing": {
+    "description": "Food detail when nothing matches. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFoodMissingBody": "Món có thể đã được bỏ khỏi các bữa ăn.",
+  "@sdFoodMissingBody": {
+    "description": "Food detail when nothing matches. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFoodSearch": "Tìm món, nguyên liệu…",
+  "@sdFoodSearch": {
+    "description": "5c ingredient picker search. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFoodSignsNote": "Bé có dấu hiệu sau khi ăn món này. Tạm chưa cho lại và hỏi bác sĩ của bé; app sẽ không gợi ý món này cho đến khi ba mẹ đánh dấu “Bác sĩ đã cho ăn lại”.",
+  "@sdFoodSignsNote": {
+    "description": "Food detail banner (P-164 #6; never 'dị ứng' as a fact). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFormatArticle": "Bài viết",
+  "@sdFormatArticle": {
+    "description": "5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFormatQuickQa": "Hỏi nhanh",
+  "@sdFormatQuickQa": {
+    "description": "5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFormatStepGuide": "Từng bước",
+  "@sdFormatStepGuide": {
+    "description": "5f format filter. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdFromMonths": "Thường từ {months} tháng",
+  "@sdFromMonths": {
+    "description": "5c picker: a food above the baby's age. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "sdGroupCount": "{group} · {count}",
+  "@sdGroupCount": {
+    "description": "5e group chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "group": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdGroupDairy": "Sữa và chế phẩm",
+  "@sdGroupDairy": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupFat": "Chất béo",
+  "@sdGroupFat": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupFruit": "Trái cây",
+  "@sdGroupFruit": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupGrain": "Tinh bột",
+  "@sdGroupGrain": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupLegume": "Đậu và hạt",
+  "@sdGroupLegume": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupOther": "Khác",
+  "@sdGroupOther": {
+    "description": "Food group of free-text foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupProtein": "Đạm động vật",
+  "@sdGroupProtein": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGroupVegetable": "Rau củ",
+  "@sdGroupVegetable": {
+    "description": "Food group. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdGuideKicker": "Hướng dẫn · {format}",
+  "@sdGuideKicker": {
+    "description": "5f featured card eyebrow. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "sdGuides": "Hướng dẫn",
+  "@sdGuides": {
+    "description": "5f section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHide": "Không gợi ý món này",
+  "@sdHide": {
+    "description": "Food detail (Cùng nuôi): adds it to settings.hidden. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryEmpty": "Chưa có bữa nào",
+  "@sdHistoryEmpty": {
+    "description": "5d empty. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryEmptyBody": "Các bữa đã ghi sẽ hiện ở đây, mới nhất ở trên.",
+  "@sdHistoryEmptyBody": {
+    "description": "5d empty. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryTitle": "Lịch sử bữa ăn",
+  "@sdHistoryTitle": {
+    "description": "5d title and the 5b link. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngredients": "Nguyên liệu",
+  "@sdIngredients": {
+    "description": "5c field label and the picker title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLatest": "Gần nhất: {dish} · {time}",
+  "@sdLatest": {
+    "description": "5h card line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "dish": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sdLibraryEmpty": "Các bài hướng dẫn ăn dặm sẽ hiện ở đây khi được xuất bản.",
+  "@sdLibraryEmpty": {
+    "description": "5f with nothing published. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLibraryNoResults": "Thử từ khoá khác hoặc bỏ bớt bộ lọc độ tuổi, loại bài.",
+  "@sdLibraryNoResults": {
+    "description": "5f without results. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLibrarySearch": "Tìm món, nguyên liệu, hướng dẫn…",
+  "@sdLibrarySearch": {
+    "description": "5f search placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLibrarySub": "Hướng dẫn ăn dặm theo độ tuổi",
+  "@sdLibrarySub": {
+    "description": "Row opening 5f from 5a. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLibraryTitle": "Thư viện ăn dặm",
+  "@sdLibraryTitle": {
+    "description": "5f title and the 5b segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdLogMeal": "Ghi bữa",
+  "@sdLogMeal": {
+    "description": "5b FAB, 5h button. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealAfternoon": "Bữa chiều",
+  "@sdMealAfternoon": {
+    "description": "5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealEvening": "Bữa tối",
+  "@sdMealEvening": {
+    "description": "5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealMissing": "Không tìm thấy bữa ăn",
+  "@sdMealMissing": {
+    "description": "Meal detail of a deleted meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealMissingBody": "Bữa ăn có thể đã được xoá.",
+  "@sdMealMissingBody": {
+    "description": "Meal detail of a deleted meal. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealMorning": "Bữa sáng",
+  "@sdMealMorning": {
+    "description": "5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealNoon": "Bữa trưa",
+  "@sdMealNoon": {
+    "description": "5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealSnack": "Bữa phụ",
+  "@sdMealSnack": {
+    "description": "5b card slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealsTab": "Bữa ăn",
+  "@sdMealsTab": {
+    "description": "5d segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodBlw": "BLW",
+  "@sdMethodBlw": {
+    "description": "5a feeding style. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodBlwHelp": "Bé tự cầm thức ăn mềm, cắt thanh vừa tay.",
+  "@sdMethodBlwHelp": {
+    "description": "5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodMixed": "Kết hợp",
+  "@sdMethodMixed": {
+    "description": "5a feeding style (default). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodMixedHelp": "Vừa đút thìa vừa cho bé tự cầm, tuỳ món.",
+  "@sdMethodMixedHelp": {
+    "description": "5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodSpoon": "Truyền thống",
+  "@sdMethodSpoon": {
+    "description": "5a feeding style. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodSpoonHelp": "Đút thìa, từ nghiền mịn rồi đặc dần.",
+  "@sdMethodSpoonHelp": {
+    "description": "5a feeding style help line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMethodTitle": "Cách cho ăn (không bắt buộc)",
+  "@sdMethodTitle": {
+    "description": "5a and settings label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNeedDish": "Thêm tên món hoặc ít nhất một nguyên liệu.",
+  "@sdNeedDish": {
+    "description": "5c error. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNoCatalogue": "Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên món ở trên (tối đa 3).",
+  "@sdNoCatalogue": {
+    "description": "5c picker before foods are published. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNoDobBody": "Nhật ký ăn dặm mở khi {name} đủ 6 tháng. Thêm ngày sinh để app biết khi nào.",
+  "@sdNoDobBody": {
+    "description": "5a without a date of birth (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNoDobViewer": "Bạn chưa được xem ngày sinh của {name}, nên app chưa biết bé đã đủ 6 tháng chưa.",
+  "@sdNoDobViewer": {
+    "description": "5a without a date of birth (others). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNotTried": "Chưa thử",
+  "@sdNotTried": {
+    "description": "5c picker and food detail. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNotYetSoon": "{name} {age}, sắp đến lúc ăn dặm. Nhật ký mở khi bé tròn 6 tháng, ngày {date}. Trong lúc chờ, xem bé đã có dấu hiệu sẵn sàng chưa.",
+  "@sdNotYetSoon": {
+    "description": "Chưa đến lúc page, 4–5 months (P-164 #2). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNotYetTitle": "Chưa đến lúc ăn dặm",
+  "@sdNotYetTitle": {
+    "description": "Chưa đến lúc page title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNotYetYoung": "{name} {age}. Sữa mẹ hoặc sữa công thức là đủ cho bé lúc này. Nhật ký ăn dặm mở khi bé tròn 6 tháng, ngày {date}.",
+  "@sdNotYetYoung": {
+    "description": "Chưa đến lúc page, under 4 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNote": "Ghi chú (không bắt buộc)",
+  "@sdNote": {
+    "description": "5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNoteHint": "Thêm ghi chú…",
+  "@sdNoteHint": {
+    "description": "5c note placeholder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNutritionRow": "Ăn dặm hôm nay · {count, plural, other{{count} bữa}}",
+  "@sdNutritionRow": {
+    "description": "Dinh dưỡng 9b row while tracking is on (P-164 #1). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdOffBody": "Ba mẹ có thể bật theo dõi ăn dặm trong Chăm sóc › Ăn dặm.",
+  "@sdOffBody": {
+    "description": "Diary pages while tracking is off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdOffTitle": "Chưa bật theo dõi ăn dặm",
+  "@sdOffTitle": {
+    "description": "Diary pages while tracking is off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdOpenDiary": "Mở nhật ký",
+  "@sdOpenDiary": {
+    "description": "Dinh dưỡng 9b row link. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdReaction": "Bé ăn thế nào",
+  "@sdReaction": {
+    "description": "5c field label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdReactionLiked": "Thích",
+  "@sdReactionLiked": {
+    "description": "Reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdReactionNeutral": "Bình thường",
+  "@sdReactionNeutral": {
+    "description": "Reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdReactionNotYet": "Chưa hợp",
+  "@sdReactionNotYet": {
+    "description": "Reaction (neutral, never a warning, P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdReadinessKicker": "Dấu hiệu sẵn sàng",
+  "@sdReadinessKicker": {
+    "description": "Chưa đến lúc page: the readiness guide row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipes": "Công thức",
+  "@sdRecipes": {
+    "description": "5f recipes section (phase C). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipesFor": "Công thức · {band}",
+  "@sdRecipesFor": {
+    "description": "5f recipes section for an age band (phase C). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "band": {
+        "type": "String"
+      }
+    }
+  },
+  "sdRemindMe": "Nhắc tôi khi bé gần 6 tháng",
+  "@sdRemindMe": {
+    "description": "Chưa đến lúc page: a one-time reminder at 5 months 2 weeks. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRemindSet": "Đã đặt nhắc · {date}",
+  "@sdRemindSet": {
+    "description": "Chưa đến lúc page once the reminder is set. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdRemindToast": "Đã đặt nhắc ngày {date}",
+  "@sdRemindToast": {
+    "description": "Toast after setting the 6-month reminder. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdReminderTitle": "{name} gần 6 tháng: xem cách bắt đầu ăn dặm",
+  "@sdReminderTitle": {
+    "description": "Reminder title in Nhắc nhở. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdRemoveFood": "Bỏ {food}",
+  "@sdRemoveFood": {
+    "description": "Spoken label of a removable ingredient chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSave": "Lưu bữa",
+  "@sdSave": {
+    "description": "5c primary button. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSavedToast": "Đã ghi · {meal}",
+  "@sdSavedToast": {
+    "description": "Toast after logging a meal (with Hoàn tác). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSectionToday": "Ăn dặm hôm nay",
+  "@sdSectionToday": {
+    "description": "Tuỳ chỉnh Hôm nay row for the 5h card. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSectionTodaySub": "Bữa gần nhất và món mới hôm nay",
+  "@sdSectionTodaySub": {
+    "description": "Tuỳ chỉnh Hôm nay row subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSeeAll": "Xem tất cả",
+  "@sdSeeAll": {
+    "description": "5b link to 5e. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSettings": "Cài đặt",
+  "@sdSettings": {
+    "description": "5b settings pill and sheet title (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSheetEditTitle": "Sửa bữa ăn",
+  "@sdSheetEditTitle": {
+    "description": "5c title when editing. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSheetTitle": "Ghi bữa ăn",
+  "@sdSheetTitle": {
+    "description": "5c title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdShowMore": "Xem thêm",
+  "@sdShowMore": {
+    "description": "5d: more days. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdShowOnToday": "Hiện “Ăn dặm hôm nay” trên Hôm nay",
+  "@sdShowOnToday": {
+    "description": "5a and settings toggle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSignsTag": "Có dấu hiệu",
+  "@sdSignsTag": {
+    "description": "Tag on a meal or food with signs after eating (never 'dị ứng'). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotAfternoon": "Chiều",
+  "@sdSlotAfternoon": {
+    "description": "5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotEvening": "Tối",
+  "@sdSlotEvening": {
+    "description": "5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotMorning": "Sáng",
+  "@sdSlotMorning": {
+    "description": "5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotNoon": "Trưa",
+  "@sdSlotNoon": {
+    "description": "5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotSnack": "Phụ",
+  "@sdSlotSnack": {
+    "description": "5c slot. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSlotTime": "{slot} · {time}",
+  "@sdSlotTime": {
+    "description": "5b card head (\"Bữa sáng · 08:10\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sdStart": "Bắt đầu theo dõi",
+  "@sdStart": {
+    "description": "5a primary (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartBody": "Ghi nhanh từng bữa, xem lại những món bé đã thử và đọc hướng dẫn từ đội chuyên môn.",
+  "@sdStartBody": {
+    "description": "5a subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartTitle": "Theo dõi ăn dặm",
+  "@sdStartTitle": {
+    "description": "5a title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartedOn": "Ngày bắt đầu",
+  "@sdStartedOn": {
+    "description": "Settings: when tracking started. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartedOnAuto": "Theo bữa đầu tiên",
+  "@sdStartedOnAuto": {
+    "description": "Settings: no start date set and no meal yet. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartedOnAutoDate": "Bữa đầu tiên · {date}",
+  "@sdStartedOnAutoDate": {
+    "description": "Settings: the first meal's date. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdStartedOnReset": "Dùng ngày bữa đầu tiên",
+  "@sdStartedOnReset": {
+    "description": "Settings: clear the start date. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStartedToast": "Đã bật theo dõi ăn dặm",
+  "@sdStartedToast": {
+    "description": "Toast after 5a. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStop": "Dừng theo dõi",
+  "@sdStop": {
+    "description": "Settings action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStopBody": "Các bữa đã ghi vẫn được giữ. Ba mẹ có thể bật lại bất cứ lúc nào.",
+  "@sdStopBody": {
+    "description": "Stop tracking confirmation. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStopTitle": "Dừng theo dõi ăn dặm?",
+  "@sdStopTitle": {
+    "description": "Stop tracking confirmation title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSuggestionsTitle": "Gợi ý cho {name} hôm nay",
+  "@sdSuggestionsTitle": {
+    "description": "5b suggestions section (phase D). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSymptomBreathing": "Khó thở, ho, khò khè",
+  "@sdSymptomBreathing": {
+    "description": "Symptom chip (urgent: shows the 115 card). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomDiarrhea": "Tiêu chảy",
+  "@sdSymptomDiarrhea": {
+    "description": "Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomFussy": "Quấy khóc bất thường",
+  "@sdSymptomFussy": {
+    "description": "Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomOther": "Khác",
+  "@sdSymptomOther": {
+    "description": "Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomRash": "Nổi mẩn, mề đay",
+  "@sdSymptomRash": {
+    "description": "Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomSwelling": "Sưng môi, mặt",
+  "@sdSymptomSwelling": {
+    "description": "Symptom chip (urgent: shows the 115 card). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomVomit": "Nôn",
+  "@sdSymptomVomit": {
+    "description": "Symptom chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomsNone": "Không có",
+  "@sdSymptomsNone": {
+    "description": "Meal detail: no signs recorded. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomsNote": "Các món mới trong bữa này sẽ được đánh dấu “Có dấu hiệu sau khi ăn”. Hỏi bác sĩ của bé nếu bạn còn lo.",
+  "@sdSymptomsNote": {
+    "description": "5c and meal detail when signs are recorded (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomsQuestion": "Có dấu hiệu bất thường sau khi ăn?",
+  "@sdSymptomsQuestion": {
+    "description": "5c field label (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSymptomsTitle": "Dấu hiệu sau khi ăn",
+  "@sdSymptomsTitle": {
+    "description": "Meal and food detail label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTileFrom6": "Từ 6 tháng",
+  "@sdTileFrom6": {
+    "description": "Care tile under 4 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTileSoon": "Sắp đến lúc ăn dặm",
+  "@sdTileSoon": {
+    "description": "Care tile at 4–5 months. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTileStart": "Bắt đầu theo dõi",
+  "@sdTileStart": {
+    "description": "Care tile from 6 months, tracking off. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTileToday": "Hôm nay · {count, plural, other{{count} bữa}}",
+  "@sdTileToday": {
+    "description": "Care tile while tracking is on. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdTime": "Giờ",
+  "@sdTime": {
+    "description": "5c time field. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdToday": "Hôm nay",
+  "@sdToday": {
+    "description": "Day label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTodayCard": "Ăn dặm hôm nay · {count, plural, other{{count} bữa}}",
+  "@sdTodayCard": {
+    "description": "5h card head. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdTodayLower": "hôm nay",
+  "@sdTodayLower": {
+    "description": "Day label inside a sentence (5e \"Lần đầu hôm nay\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTried": "Đã thử",
+  "@sdTried": {
+    "description": "5c picker: a food tried before. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTriedEmpty": "Các món bé đã thử sẽ hiện ở đây sau bữa đầu tiên.",
+  "@sdTriedEmpty": {
+    "description": "5b / 5e without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTriedEmptyTitle": "Chưa có món nào",
+  "@sdTriedEmptyTitle": {
+    "description": "5e without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTriedFootnote": "Đây là ghi chép của gia đình bạn, không phải đánh giá hay khuyến nghị dinh dưỡng.",
+  "@sdTriedFootnote": {
+    "description": "5e footnote (P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTriedReaction": "Đã thử · {reaction}",
+  "@sdTriedReaction": {
+    "description": "5c picker: tried, with the latest reaction. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "reaction": {
+        "type": "String"
+      }
+    }
+  },
+  "sdTriedTab": "Món đã thử",
+  "@sdTriedTab": {
+    "description": "5d / 5e segment. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTriedTitle": "Món đã thử · {count}",
+  "@sdTriedTitle": {
+    "description": "5b section. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdUnclear": "Bỏ đánh dấu “Bác sĩ đã cho ăn lại”",
+  "@sdUnclear": {
+    "description": "Food detail (Cùng nuôi). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdUnhide": "Gợi ý lại món này",
+  "@sdUnhide": {
+    "description": "Food detail (Cùng nuôi): removes it from settings.hidden. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdUnitBowl": "chén",
+  "@sdUnitBowl": {
+    "description": "Typed amount unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdUnitSpoon": "thìa",
+  "@sdUnitSpoon": {
+    "description": "Typed amount unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdUpdated": "cập nhật {date}",
+  "@sdUpdated": {
+    "description": "5f featured card meta. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdUrgent": "Gọi {number} ngay nếu bé khó thở, sưng môi hoặc lưỡi, lả đi.",
+  "@sdUrgent": {
+    "description": "5c red card for swelling or breathing, before saving (P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "sdViewOnly": "Bữa này do người khác ghi: bạn chỉ xem được.",
+  "@sdViewOnly": {
+    "description": "Meal detail for who cannot edit it (P-164 #13). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdYesterday": "Hôm qua",
+  "@sdYesterday": {
+    "description": "Day label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhoto": "Ảnh bữa ăn",
+  "@sdPhoto": {
+    "description": "5c photo field label and meal detail row. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoAdd": "Thêm ảnh bữa ăn",
+  "@sdPhotoAdd": {
+    "description": "5c dashed photo button and the source sheet title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoReplace": "Đổi ảnh",
+  "@sdPhotoReplace": {
+    "description": "5c: replace the meal photo. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoRemove": "Bỏ ảnh",
+  "@sdPhotoRemove": {
+    "description": "5c: remove the meal photo (the corner ×). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoPrivate": "Chỉ những người chăm bé trong gia đình xem được ảnh này.",
+  "@sdPhotoPrivate": {
+    "description": "Photo source sheet privacy line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoFailed": "Chưa tải được ảnh. Bữa ăn vẫn lưu được; thử thêm ảnh lại sau nhé.",
+  "@sdPhotoFailed": {
+    "description": "Toast when a meal photo fails to pick, compress or upload. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdPhotoOffline": "Cần có mạng để thêm ảnh. Bữa ăn vẫn lưu được khi không có mạng.",
+  "@sdPhotoOffline": {
+    "description": "5c photo field while offline (the meal saves, the photo needs the network). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryFilter": "Ăn dặm",
+  "@sdHistoryFilter": {
+    "description": "Lịch sử filter chip for solid meals (while tracking is on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryWhat": "bữa ăn dặm",
+  "@sdHistoryWhat": {
+    "description": "Lịch sử empty day, inserted into emptyTodayTitle / logNow / backLog. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryOnDay": "Ăn dặm ngày {date}",
+  "@sdHistoryOnDay": {
+    "description": "Lịch sử solids summary title for a past day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdHistoryMeals": "Số bữa",
+  "@sdHistoryMeals": {
+    "description": "Lịch sử solids summary row label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryNewFoods": "Món mới",
+  "@sdHistoryNewFoods": {
+    "description": "Lịch sử solids summary row label: foods tried for the first time that day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMealsCount": "{count, plural, other{{count} bữa}}",
+  "@sdMealsCount": {
+    "description": "A number of solid meals. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFoodsCount": "{count, plural, other{{count} món}}",
+  "@sdFoodsCount": {
+    "description": "A number of foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdHistoryLink": "Nhật ký ăn dặm",
+  "@sdHistoryLink": {
+    "description": "Lịch sử solids link card title (opens 5b). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdHistoryLinkHint": "Món đã thử, lịch sử bữa ăn và gợi ý cho bé",
+  "@sdHistoryLinkHint": {
+    "description": "Lịch sử solids link card subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsTitle": "Bữa ăn dặm",
+  "@sdStatsTitle": {
+    "description": "Thống kê card title (while tracking is on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsHint": "{days} ngày gần đây · chỉ để tham khảo",
+  "@sdStatsHint": {
+    "description": "Thống kê solids card subtitle. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "sdStatsTodayHint": "Hôm nay · chỉ để tham khảo",
+  "@sdStatsTodayHint": {
+    "description": "Thống kê solids card subtitle on the Hôm nay window. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsAvg": "TB {value} bữa/ngày",
+  "@sdStatsAvg": {
+    "description": "Thống kê solids chart average line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sdStatsDayTip": "{day}: {count, plural, other{{count} bữa}}",
+  "@sdStatsDayTip": {
+    "description": "Thống kê solids chart callout for a day. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdStatsMealsToday": "Bữa hôm nay",
+  "@sdStatsMealsToday": {
+    "description": "Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsPerDay": "Bữa mỗi ngày (TB)",
+  "@sdStatsPerDay": {
+    "description": "Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsNewThisWeek": "Món mới tuần này",
+  "@sdStatsNewThisWeek": {
+    "description": "Thống kê solids KPI label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsNewPerWeek": "Món mới mỗi tuần",
+  "@sdStatsNewPerWeek": {
+    "description": "Thống kê solids: heading of the per-week rows. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStatsWeekOf": "Tuần từ {date}",
+  "@sdStatsWeekOf": {
+    "description": "Thống kê solids per-week row label. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdStatsNote": "Đây là ghi chép của gia đình, không phải mục tiêu số bữa hay số món.",
+  "@sdStatsNote": {
+    "description": "Thống kê solids footnote (information only, P-164 #17). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipeMeta": "Công thức · {minutes} phút",
+  "@sdRecipeMeta": {
+    "description": "5f recipe row meta (total minutes). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sdForBaby": "Dành cho {name}",
+  "@sdForBaby": {
+    "description": "5f section of recipes ranked for the baby (plan §7). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdRecipesNone": "Chưa có công thức hợp bộ lọc này.",
+  "@sdRecipesNone": {
+    "description": "5f recipes with filters that match nothing. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipesWith": "Công thức có {foods}",
+  "@sdRecipesWith": {
+    "description": "Recipe list opened from a suggestion (\"Xem công thức\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdRecipesWithNone": "Chưa có công thức hợp tuổi và cách cho ăn của bé có món này. Xem các công thức khác trong thư viện.",
+  "@sdRecipesWithNone": {
+    "description": "Recipe list from a suggestion with no match. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipeMissing": "Không tìm thấy công thức",
+  "@sdRecipeMissing": {
+    "description": "5g when the recipe is not published (or not on the device yet). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdRecipeMissingBody": "Công thức có thể đã được gỡ hoặc chưa tải về máy.",
+  "@sdRecipeMissingBody": {
+    "description": "5g missing recipe body. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTextureSmooth": "Nghiền mịn",
+  "@sdTextureSmooth": {
+    "description": "Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTextureMashed": "Nghiền lợn cợn",
+  "@sdTextureMashed": {
+    "description": "Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTextureSoftPieces": "Cắt nhỏ, mềm",
+  "@sdTextureSoftPieces": {
+    "description": "Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTextureFinger": "Cầm tay",
+  "@sdTextureFinger": {
+    "description": "Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTextureFamily": "Ăn cùng gia đình",
+  "@sdTextureFamily": {
+    "description": "Recipe texture chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdServings": "{count} phần ăn",
+  "@sdServings": {
+    "description": "5g servings. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdPrepCook": "Sơ chế {prep} phút · nấu {cook} phút",
+  "@sdPrepCook": {
+    "description": "5g preparation and cooking minutes. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "prep": {
+        "type": "int"
+      },
+      "cook": {
+        "type": "int"
+      }
+    }
+  },
+  "sdSteps": "Cách làm",
+  "@sdSteps": {
+    "description": "5g steps heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdStorage": "Bảo quản",
+  "@sdStorage": {
+    "description": "5g storage heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTip": "Mẹo",
+  "@sdTip": {
+    "description": "5g tip heading. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdNotTriedMark": "✦ Bé chưa thử",
+  "@sdNotTriedMark": {
+    "description": "5g ingredient: a catalogue food the baby has not had (tracking on). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSignsMark": "⚠ Có dấu hiệu",
+  "@sdSignsMark": {
+    "description": "5g ingredient: a food with recorded symptoms (never \"dị ứng\" as a fact, P-164 #6). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdContains": "Có {list}",
+  "@sdContains": {
+    "description": "5g allergen line from recipeAllergens (\"Có trứng\"). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "sdAllergenEgg": "trứng",
+  "@sdAllergenEgg": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenPeanut": "đậu phộng",
+  "@sdAllergenPeanut": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenMilk": "sữa bò",
+  "@sdAllergenMilk": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenWheat": "lúa mì",
+  "@sdAllergenWheat": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenSoy": "đậu nành",
+  "@sdAllergenSoy": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenFish": "cá",
+  "@sdAllergenFish": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenShellfish": "tôm, cua, sò",
+  "@sdAllergenShellfish": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenSesame": "vừng (mè)",
+  "@sdAllergenSesame": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAllergenTreeNut": "các loại hạt",
+  "@sdAllergenTreeNut": {
+    "description": "Common allergen name (lower case, in sentences). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdAgeNotice": "Công thức cho bé từ {from} tháng. {name} mới {age}: chọn công thức hợp tuổi hoặc hỏi bác sĩ của bé.",
+  "@sdAgeNotice": {
+    "description": "5g notice when the recipe starts above the baby's age. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "sdLogRecipe": "Ghi vào nhật ký",
+  "@sdLogRecipe": {
+    "description": "5g primary button: opens 5c with the dish, its foods and the recipe. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngUnitTbsp": "thìa canh",
+  "@sdIngUnitTbsp": {
+    "description": "Recipe unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngUnitTsp": "thìa cà phê",
+  "@sdIngUnitTsp": {
+    "description": "Recipe unit. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngUnitBowl": "chén",
+  "@sdIngUnitBowl": {
+    "description": "Recipe unit (with a decimal quantity). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngUnitPiece": "miếng",
+  "@sdIngUnitPiece": {
+    "description": "Recipe unit (with a decimal quantity). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIngBowls": "{count, plural, other{{count} chén}}",
+  "@sdIngBowls": {
+    "description": "Recipe quantity in bowls. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdIngPieces": "{count, plural, other{{count} miếng}}",
+  "@sdIngPieces": {
+    "description": "Recipe quantity in pieces. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdSuggestLater": "Để sau",
+  "@sdSuggestLater": {
+    "description": "Suggestion card: snooze it for 3 days on this device. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSuggestHideWhich": "Không gợi ý món nào?",
+  "@sdSuggestHideWhich": {
+    "description": "Sheet title when a card suggests several foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdSuggestHidden": "Sẽ không gợi ý {food} nữa",
+  "@sdSuggestHidden": {
+    "description": "Toast after a parent hides a food (settings.hidden). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSuggestSnoozedFood": "Đã ẩn {food} khỏi gợi ý trên máy này trong 30 ngày",
+  "@sdSuggestSnoozedFood": {
+    "description": "Toast after a caregiver hides a food (device snooze; settings are Cùng nuôi's). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSuggestSnoozed": "Sẽ gợi ý lại sau 3 ngày",
+  "@sdSuggestSnoozed": {
+    "description": "Toast after \"Để sau\". D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdActReadReactions": "Đọc: Nhận biết phản ứng",
+  "@sdActReadReactions": {
+    "description": "S1 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdActRecipes": "Xem công thức",
+  "@sdActRecipes": {
+    "description": "S3 / S5 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdActIdeas": "Xem gợi ý",
+  "@sdActIdeas": {
+    "description": "S8 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdActGuide": "Đọc hướng dẫn",
+  "@sdActGuide": {
+    "description": "S9 action. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdOr": "hoặc",
+  "@sdOr": {
+    "description": "Joins the last of several suggested foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdIronMark": "{food} (giàu sắt)",
+  "@sdIronMark": {
+    "description": "A suggested iron-rich food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdTryEgg": "trứng chín kỹ",
+  "@sdTryEgg": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryPeanut": "bơ đậu phộng pha loãng (không cho cả hạt)",
+  "@sdTryPeanut": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryMilk": "sữa chua hoặc sữa bò nấu trong món",
+  "@sdTryMilk": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryWheat": "lúa mì (bánh mì, mì nấu mềm)",
+  "@sdTryWheat": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryFish": "cá chín kỹ, gỡ hết xương",
+  "@sdTryFish": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTrySoy": "đậu phụ hoặc sữa đậu nành nấu trong món",
+  "@sdTrySoy": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTrySesame": "vừng (mè) xay mịn trộn vào món",
+  "@sdTrySesame": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryShellfish": "tôm hoặc cua chín kỹ, băm nhỏ",
+  "@sdTryShellfish": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdTryTreeNut": "bơ hạt (hạnh nhân, điều) pha loãng, không cho cả hạt",
+  "@sdTryTreeNut": {
+    "description": "S3: how to offer the allergen. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdS1Title": "Theo dõi sau dấu hiệu hôm {date} ({foods}). Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.",
+  "@sdS1Title": {
+    "description": "S1 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS1TitlePlain": "Theo dõi sau dấu hiệu hôm {date}. Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.",
+  "@sdS1TitlePlain": {
+    "description": "S1 card title without foods. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS1Why": "Vì bữa hôm {date} có ghi dấu hiệu sau khi ăn.",
+  "@sdS1Why": {
+    "description": "S1 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS2Title": "Món tiếp theo cho {name}: {foods}.",
+  "@sdS2Title": {
+    "description": "S2 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS2Why": "Vì {name} mới thử {count} món: bắt đầu từ rau củ, tinh bột và một món giàu sắt, mỗi lần một món mới.",
+  "@sdS2Why": {
+    "description": "S2 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdS3Title": "Đã đến lúc thử {allergen}: buổi sáng, ở nhà, một lượng nhỏ.",
+  "@sdS3Title": {
+    "description": "S3 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "allergen": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS3Why": "Vì {name} đã quen {count} món và ăn dặm được {days} ngày: các món thường gây dị ứng nên cho làm quen từng món một, cách nhau vài ngày.",
+  "@sdS3Why": {
+    "description": "S3 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "sdS4Title": "Cho {name} ăn lại {allergen} tuần này để duy trì.",
+  "@sdS4Title": {
+    "description": "S4 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "allergen": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS4Why": "Vì lần gần nhất bé ăn {allergen} là {date}: món đã quen nên được ăn đều đặn.",
+  "@sdS4Why": {
+    "description": "S4 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "allergen": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS5Title": "Hôm nay thêm một món giàu sắt: {foods}.",
+  "@sdS5Title": {
+    "description": "S5 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS5Why": "Vì 2 ngày qua các bữa của {name} chưa có món giàu sắt; từ 6 tháng bé cần sắt từ thức ăn mỗi ngày.",
+  "@sdS5Why": {
+    "description": "S5 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS6Title": "Món mới tiếp theo: {foods}.",
+  "@sdS6Title": {
+    "description": "S6 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "foods": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS6Why": "Vì {name} chưa thử món mới 2 ngày; nhóm {group} bé mới thử {count} món.",
+  "@sdS6Why": {
+    "description": "S6 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdS7Title": "Thử lại {food} theo cách khác: nghiền mịn hơn hoặc trộn với {liked} {name} thích.",
+  "@sdS7Title": {
+    "description": "S7 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      },
+      "liked": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS7TitlePlain": "Thử lại {food} theo cách khác: nghiền mịn hơn hoặc đổi cách nấu.",
+  "@sdS7TitlePlain": {
+    "description": "S7 card title without a liked food. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS7Why": "Vì lần gần nhất {name} chưa hợp {food} (đã thử {count} lần). Bé có thể cần 8–15 lần mới quen một món.",
+  "@sdS7Why": {
+    "description": "S7 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "food": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdS8Title": "Tuần này {name} chưa ăn {group} nào.",
+  "@sdS8Title": {
+    "description": "S8 card title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS8Why": "Vì lần gần nhất bé ăn {group} là {date}; đổi món giúp bé quen nhiều vị.",
+  "@sdS8Why": {
+    "description": "S8 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "group": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS9Title": "{name} {months} tháng: {texture}.",
+  "@sdS9Title": {
+    "description": "S9 card title (texture from the Dinh dưỡng stage). D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "months": {
+        "type": "int"
+      },
+      "texture": {
+        "type": "String"
+      }
+    }
+  },
+  "sdS9Why": "Vì {name} vừa sang giai đoạn {stage} trong Dinh dưỡng; thức ăn thô dần theo từng giai đoạn.",
+  "@sdS9Why": {
+    "description": "S9 \"vì sao\" line. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "sdIdeasTitle": "Gợi ý: {group}",
+  "@sdIdeasTitle": {
+    "description": "S8 \"Xem gợi ý\" sheet title. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "sdIdeasHint": "Chạm một món để ghi bữa.",
+  "@sdIdeasHint": {
+    "description": "S8 ideas sheet hint. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
   }
 }

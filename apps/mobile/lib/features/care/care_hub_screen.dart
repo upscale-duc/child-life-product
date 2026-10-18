@@ -24,6 +24,9 @@ import '../nutrition/nutrition_state.dart';
 import '../premium/premium_repository.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
+import '../solids/solids_format.dart' show sdTileLine;
+import '../solids/solids_routes.dart';
+import '../solids/solids_state.dart';
 import '../utilities/utilities_screen.dart' show CareSoonBadge;
 import '../vaccines/vaccine_format.dart';
 import 'care_repository.dart';
@@ -31,9 +34,9 @@ import 'history_screen.dart' show HistoryFilter;
 
 /// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174), grouped as the owner asked
 /// (2026-10-14, D-069): "Chăm hằng ngày" (Nhắc nhở · Tiêm chủng · Thống kê · Lịch sử · Tăng
-/// trưởng · Dinh dưỡng, D-083), "Hiểu con & phát triển" (Wonder Weeks · Giai đoạn của bé · Mốc
-/// phát triển) and "Kiến thức chăm bé" (Thư viện chăm bé); the "Ăn dặm" teaser is gone since
-/// Dinh dưỡng covers solids by stage (P-163 #11). Sơ cứu and Chi
+/// trưởng · Dinh dưỡng, D-083 · Ăn dặm, D-085), "Hiểu con & phát triển" (Wonder Weeks · Giai đoạn
+/// của bé · Mốc phát triển) and "Kiến thức chăm bé" (Thư viện chăm bé). "Ăn dặm" is a live tile
+/// again (P-164 #1; the P-163 #11 teaser is gone): 5a before tracking, 5b after. Sơ cứu and Chi
 /// tiêu are in Tiện ích. Caregivers see no Tăng trưởng tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
@@ -168,6 +171,20 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         onTap: nutrition is NuTileTeaser
             ? soon
             : () => context.push(NuRoutes.home),
+      ),
+      // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
+      // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).
+      _Tile(
+        key: const Key('careSolids'),
+        icon: ClIcons.feed,
+        tint: cl.colors.sunshineSoft,
+        title: l10n.careSolids,
+        subtitle: sdTileLine(
+          l10n,
+          ref.watch(sdStateProvider),
+          ref.watch(sdTodayProvider),
+        ),
+        onTap: () => context.push(SdRoutes.home),
       ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 

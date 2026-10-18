@@ -79,8 +79,21 @@ enum LbTopic {
       values.where((t) => t.wire == j).firstOrNull;
 }
 
-/// `contentLibraries`: Chăm bé, Ăn dặm (5f, not built in the app yet).
+/// `contentLibraries`: Chăm bé (4a–4f) and Ăn dặm (5f, `features/solids`, D-085).
 enum LbLibrary { care, solids }
+
+/// `articleFormats`: Bài viết · Hướng dẫn từng bước · Hỏi nhanh (the 5f format filter).
+enum LbFormat {
+  article('article'),
+  stepGuide('step_guide'),
+  quickQa('quick_qa');
+
+  const LbFormat(this.wire);
+  final String wire;
+
+  static LbFormat? parse(Object? j) =>
+      values.where((f) => f.wire == j).firstOrNull;
+}
 
 /// Who signed the item off (`contentReviewSchema`); null = engineering draft (D-073 #2).
 @immutable
@@ -253,6 +266,7 @@ class LbArticle {
     required this.readingMinutes,
     required this.title,
     required this.body,
+    this.format = LbFormat.article,
     this.summary,
     this.cover,
     this.keywords = LbTextList.empty,
@@ -269,6 +283,7 @@ class LbArticle {
   final String id;
   final LbLibrary library;
   final LbTopic topic;
+  final LbFormat format;
   final LbWeeks weeks;
   final int readingMinutes;
   final LbText title;
@@ -343,6 +358,7 @@ class LbArticle {
       id: id,
       library: j['library'] == 'solids' ? LbLibrary.solids : LbLibrary.care,
       topic: topic,
+      format: LbFormat.parse(j['format']) ?? LbFormat.article,
       weeks: LbWeeks(from.toInt(), to.toInt()),
       readingMinutes: minutes is num && minutes >= 1 ? minutes.toInt() : 1,
       title: title,

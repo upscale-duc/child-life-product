@@ -33,6 +33,7 @@ import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
 import '../notifications/notification_bell.dart'; // D-076 #2
+import '../solids/solids_today.dart' show SdTodayCard, sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 import 'today_cards.dart';
 import 'today_for_baby.dart';
@@ -248,6 +249,14 @@ class TodayScreen extends ConsumerWidget {
                   if (SpendingAccess.of(membership).viewAll) ...[
                     const SizedBox(height: ClSpace.s6),
                     const TodaySpendingCard(),
+                  ],
+                ],
+                // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
+                // nay" on (the card draws nothing otherwise).
+                TodaySection.solids => [
+                  if (ref.watch(sdOnTodayProvider)) ...[
+                    const SizedBox(height: ClSpace.s4),
+                    const SdTodayCard(),
                   ],
                 ],
                 TodaySection.rhythm => [

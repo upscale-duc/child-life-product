@@ -27,6 +27,8 @@ import '../baby/baby_repository.dart';
 import '../feedback/review_prompt.dart';
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show trackerArt;
+import '../solids/solids_sheet.dart' show openMealSheet;
+import '../solids/solids_today.dart' show SdQuickLogTile, sdQuickLogProvider;
 import 'bottle_suggestions.dart';
 import 'care_format.dart';
 import 'care_models.dart';
@@ -192,6 +194,20 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
             const SizedBox(width: ClSpace.s3),
             tile(CareType.pump, l10n.trackerPump),
           ],
+        ),
+        // Ăn dặm (P-164 #1): while tracking is on, for who logs.
+        Consumer(
+          builder: (_, ref, _) => ref.watch(sdQuickLogProvider)
+              ? Padding(
+                  padding: const EdgeInsets.only(top: ClSpace.s3),
+                  child: SdQuickLogTile(
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      unawaited(openMealSheet(host));
+                    },
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );

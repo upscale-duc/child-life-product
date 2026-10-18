@@ -36,9 +36,18 @@ import 'care_repository.dart';
 import 'care_screens.dart';
 import 'care_sheets.dart';
 import 'timer_models.dart';
+import '../solids/solids_calc.dart';
+import '../solids/solids_format.dart';
+import '../solids/solids_models.dart';
+import '../solids/solids_routes.dart';
+import '../solids/solids_sheet.dart' show openMealSheet;
+import '../solids/solids_state.dart';
+import '../solids/solids_widgets.dart' show SdTag;
 
-/// Filter chips (single-select): Tất cả · Bú · Hút sữa · Ngủ · Tã · Tăng trưởng (20–20d).
-enum HistoryFilter { all, feed, pump, sleep, diaper, growth }
+/// Filter chips (single-select): Tất cả · Bú · Hút sữa · Ngủ · Tã · Tăng trưởng (20–20d), and
+/// "Ăn dặm" while solids tracking is on (D-085 #3: meal rows from `babies/{b}/meals`; "Tất cả"
+/// shows them too).
+enum HistoryFilter { all, feed, pump, sleep, diaper, growth, solids }
 
 bool _matchesType(HistoryFilter f, CareType type) => switch (f) {
   HistoryFilter.all => true,
@@ -48,6 +57,8 @@ bool _matchesType(HistoryFilter f, CareType type) => switch (f) {
   HistoryFilter.sleep => type == CareType.sleep,
   HistoryFilter.diaper => type == CareType.diaper,
   HistoryFilter.growth => type == CareType.growth,
+  // Meals are not care records (plan §3 #4): they come from the meals collection.
+  HistoryFilter.solids => false,
 };
 
 bool _matches(HistoryFilter f, CareRecord r) => _matchesType(f, r.type);
@@ -59,6 +70,7 @@ String _filterLabel(AppLocalizations l10n, HistoryFilter f) => switch (f) {
   HistoryFilter.sleep => l10n.filterSleep,
   HistoryFilter.diaper => l10n.filterDiaper,
   HistoryFilter.growth => l10n.filterGrowth,
+  HistoryFilter.solids => l10n.sdHistoryFilter,
 };
 
 /// "T2 … T7, CN" (vi) / "Mon" (en).
@@ -143,14 +155,26 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             .value ??
         const <CareRecord>[];
     final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
+    // D-085 #3: meals join the timeline while tracking is on, for members who read the diary.
+    final sd = ref.watch(sdStateProvider);
+    final solidsOn =
+        sd != null && sd.tracking && sd.me.sdReads && sd.baby.babyId == babyId;
+    final filter = _filter == HistoryFilter.solids && !solidsOn
+        ? HistoryFilter.all
+        : _filter;
+    final meals =
+        solidsOn &&
+            (filter == HistoryFilter.all || filter == HistoryFilter.solids)
+        ? sdMealsOn(sd.meals, zone, day)
+        : const <SdMeal>[];
     final matching = [
       for (final r in records)
-        if (_matches(_filter, r)) r,
+        if (_matches(filter, r)) r,
     ];
     final entries = timelineOf(matching, zone, bounds.start, bounds.end);
     final timers = [
       for (final type in TimerType.values)
-        if (isToday && _matchesType(_filter, type.careType))
+        if (isToday && _matchesType(filter, type.careType))
           ?ref.watch(careTimerProvider((babyId, type))).value,
     ];
     final readOnly = me.role == MemberRole.relative;
@@ -201,7 +225,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         ),
         const SizedBox(height: ClSpace.s3),
       ],
-      if (_filter != HistoryFilter.growth) ...[
+      if (filter != HistoryFilter.growth) ...[
         _DayStrip(
           today: today,
           selected: day,
@@ -216,12 +240,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (final (i, f) in HistoryFilter.values.indexed) ...[
+            for (final (i, f) in [
+              for (final f in HistoryFilter.values)
+                if (f != HistoryFilter.solids || solidsOn) f,
+            ].indexed) ...[
               if (i > 0) const SizedBox(width: ClSpace.s2),
               ClFilterChip(
-                key: _filter == f ? _selectedChip : null,
+                key: filter == f
+                    ? _selectedChip
+                    : (f == HistoryFilter.solids
+                          ? const Key('historySolids')
+                          : null),
                 label: _filterLabel(l10n, f),
-                selected: _filter == f,
+                selected: filter == f,
                 onTap: () => setState(() => _filter = f),
               ),
             ],
@@ -231,7 +262,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       const SizedBox(height: ClSpace.s4),
     ];
 
-    if (_filter == HistoryFilter.growth) {
+    if (filter == HistoryFilter.growth) {
       children.add(
         _GrowthPanel(
           records: growth,
@@ -242,22 +273,46 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           readOnly: readOnly,
         ),
       );
-    } else if (entries.isEmpty && timers.isEmpty) {
+    } else if (entries.isEmpty && timers.isEmpty && meals.isEmpty) {
       children.add(
         _EmptyDay(
-          filter: _filter,
+          filter: filter,
           isToday: isToday,
           dateLabel: dateLabel,
-          readOnly: readOnly,
-          onLog: () => _backLog(context, day, isToday, zone),
+          readOnly:
+              readOnly || (filter == HistoryFilter.solids && !sd!.me.sdLogs),
+          onLog: () => filter == HistoryFilter.solids
+              ? openMealSheet(context, day: isToday ? null : day)
+              : _backLog(context, day, isToday, zone),
           onSeeAll: () => setState(() => _filter = HistoryFilter.all),
         ),
       );
+    } else if (filter == HistoryFilter.solids) {
+      children
+        ..add(
+          _SolidsSummary(
+            meals: meals,
+            all: sd!.meals,
+            isToday: isToday,
+            dateLabel: dateLabel,
+          ),
+        )
+        ..add(const SizedBox(height: ClSpace.s4))
+        ..add(
+          _Timeline(
+            entries: const [],
+            timers: const [],
+            meals: meals,
+            zone: zone,
+            myUid: me.uid,
+            now: now,
+          ),
+        );
     } else {
       children
         ..add(
           _SummaryCard(
-            filter: _filter,
+            filter: filter,
             records: records,
             bounds: bounds,
             now: now,
@@ -273,6 +328,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           _Timeline(
             entries: entries,
             timers: timers.whereType<CareTimer>().toList(),
+            meals: meals,
             zone: zone,
             myUid: me.uid,
             now: now,
@@ -617,9 +673,58 @@ class _SummaryCard extends ConsumerWidget {
           ],
           note: l10n.pumpNotIntake,
         );
-      case HistoryFilter.growth:
+      case HistoryFilter.growth || HistoryFilter.solids:
         return const SizedBox.shrink();
     }
+  }
+}
+
+/// "Ăn dặm hôm nay" (D-085 #3): meals and foods tried for the first time that day, and the way
+/// to the diary. Information only.
+class _SolidsSummary extends StatelessWidget {
+  const _SolidsSummary({
+    required this.meals,
+    required this.all,
+    required this.isToday,
+    required this.dateLabel,
+  });
+
+  final List<SdMeal> meals;
+  final List<SdMeal> all;
+  final bool isToday;
+  final String dateLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bottle = context.cl.care.bottle;
+    final firsts = {for (final m in meals) ...sdFirstTryIds(m, all)};
+    return Column(
+      children: [
+        _StatCard(
+          title: isToday ? l10n.sdSectionToday : l10n.sdHistoryOnDay(dateLabel),
+          rows: [
+            (
+              bottle.accent,
+              l10n.sdHistoryMeals,
+              l10n.sdMealsCount(meals.length),
+            ),
+            (
+              bottle.accent,
+              l10n.sdHistoryNewFoods,
+              l10n.sdFoodsCount(firsts.length),
+            ),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s3),
+        _LinkCard(
+          color: bottle,
+          title: l10n.sdHistoryLink,
+          subtitle: l10n.sdHistoryLinkHint,
+          onTap: () => context.push(SdRoutes.home),
+        ),
+      ],
+    );
   }
 }
 
@@ -768,10 +873,14 @@ class _Timeline extends StatelessWidget {
     required this.zone,
     required this.myUid,
     required this.now,
+    this.meals = const [],
   });
 
   final List<TimelineEntry> entries;
   final List<CareTimer> timers;
+
+  /// Solid meals of the day (D-085 #3), merged by time with the records.
+  final List<SdMeal> meals;
   final String zone;
   final String myUid;
   final DateTime now;
@@ -790,14 +899,34 @@ class _Timeline extends StatelessWidget {
         groups.add((period, [row]));
       }
     }
-    for (final e in entries) {
-      final row = _TimelineRow(entry: e, zone: zone, myUid: myUid);
-      if (groups.isNotEmpty && groups.last.$1 == e.period) {
+    void place(CarePeriod period, Widget row) {
+      if (groups.isNotEmpty && groups.last.$1 == period) {
         groups.last.$2.add(row);
       } else {
-        groups.add((e.period, [row]));
+        groups.add((period, [row]));
       }
     }
+
+    // Newest first: records (already in order; a span from the night before sits at the day's
+    // start) and meals merged by time.
+    final dayMeals = [...meals]..sort((a, b) => sdCompareMeals(b, a));
+    var m = 0;
+    void mealsAfter(DateTime? at) {
+      while (m < dayMeals.length &&
+          (at == null || !dayMeals[m].occurredAt.isBefore(at))) {
+        final meal = dayMeals[m++];
+        place(
+          periodOfHour(inBabyZone(zone, meal.occurredAt).hour),
+          _MealTimelineRow(meal: meal, zone: zone, myUid: myUid),
+        );
+      }
+    }
+
+    for (final e in entries) {
+      mealsAfter(e.startedBefore ? null : e.record.occurredAt);
+      place(e.period, _TimelineRow(entry: e, zone: zone, myUid: myUid));
+    }
+    mealsAfter(null);
     String name(CarePeriod p) => switch (p) {
       CarePeriod.lateNight || CarePeriod.night => l10n.periodNight,
       CarePeriod.evening => l10n.periodEvening,
@@ -1069,6 +1198,113 @@ class _TimelineRow extends StatelessWidget {
   }
 }
 
+/// A solid meal in the timeline (D-085 #3): its time, the feeding marker, the dish, "Ăn dặm ·
+/// ½ chén · Thích · Mẹ ghi", "Có dấu hiệu"; opens meal detail.
+class _MealTimelineRow extends ConsumerWidget {
+  const _MealTimelineRow({
+    required this.meal,
+    required this.zone,
+    required this.myUid,
+  });
+  final SdMeal meal;
+  final String zone;
+  final String myUid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    final tag = locale.toLanguageTag();
+    final hm = DateFormat.Hm(tag);
+    final bottle = cl.care.bottle;
+    final foods = ref.watch(sdStateProvider)?.foods ?? const <String, SdFood>{};
+    final title = sdMealTitle(meal, foods, locale);
+    final detail = [
+      l10n.careSolids,
+      if (sdMealLine(l10n, tag, meal) case final line when line.isNotEmpty)
+        line,
+      sdLoggedBy(l10n, meal, myUid),
+    ].join(' · ');
+    final time = hm.format(inBabyZone(zone, meal.occurredAt));
+    return ClPressable(
+      key: Key('historyMeal_${meal.id}'),
+      onPressed: () => context.push(SdRoutes.meal(meal.id)),
+      pressedOpacity: ClPressable.surfaceOpacity,
+      semanticLabel: [
+        '$time, $title, $detail',
+        if (meal.hasSymptoms) l10n.sdSignsTag,
+        if (meal.pending) l10n.carePending,
+      ].join(', '),
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 48,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ClTabularText(
+                    time,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ),
+              ),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: bottle.soft,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: ClIcon(ClIcons.feed, size: 20, color: bottle.ink),
+              ),
+              const SizedBox(width: ClSpace.s3),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: cl.text.bodyStrong,
+                            ),
+                          ),
+                          if (meal.pending)
+                            PendingChip(label: l10n.pendingChip),
+                        ],
+                      ),
+                      Text(
+                        detail,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                      if (meal.hasSymptoms) ...[
+                        const SizedBox(height: ClSpace.s1),
+                        SdTag.signs(context),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// A running timer in today's timeline (G-067).
 class _RunningRow extends ConsumerWidget {
   const _RunningRow({required this.timer, required this.myUid});
@@ -1167,6 +1403,7 @@ class _EmptyDay extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final what = switch (filter) {
+      HistoryFilter.solids => l10n.sdHistoryWhat,
       HistoryFilter.feed => l10n.emptyFeedWhat,
       HistoryFilter.pump => l10n.emptyPumpWhat,
       HistoryFilter.sleep => l10n.emptySleepWhat,
@@ -1174,7 +1411,7 @@ class _EmptyDay extends StatelessWidget {
       _ => l10n.emptyAllWhat,
     };
     final art = switch (filter) {
-      HistoryFilter.feed => ClIllustration.miniBottle,
+      HistoryFilter.feed || HistoryFilter.solids => ClIllustration.miniBottle,
       HistoryFilter.pump => ClIllustration.miniPump,
       HistoryFilter.sleep => ClIllustration.miniMoon,
       HistoryFilter.diaper => ClIllustration.miniDiaper,

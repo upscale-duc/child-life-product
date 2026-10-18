@@ -367,6 +367,10 @@ class FakeContentStore extends ContentStore {
       calls.add('save ${a.id} r${a.revision}');
 
   @override
+  Future<void> saveId(String uid, String id, int revision) async =>
+      calls.add('save $id r$revision');
+
+  @override
   Future<void> unsave(String uid, String id) async => calls.add('unsave $id');
 
   @override

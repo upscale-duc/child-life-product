@@ -125,7 +125,8 @@ service cloud.firestore {
       match /savedArticles/{articleId} {
         allow read, delete: if signedIn() && request.auth.uid == uid;
         allow create, update: if signedIn() && request.auth.uid == uid &&
-          articleId.matches('^art_[a-z0-9_]{2,60}$') &&
+          // Guides (`art_…`) and Ăn dặm recipes (`rcp_…`, 5g "Lưu", D-085).
+          articleId.matches('^(art_[a-z0-9_]{2,60}|rcp_[a-z0-9_]{2,40})$') &&
           request.resource.data.keys().hasOnly(['savedAt', 'revision']) &&
           request.resource.data.keys().hasAll(['savedAt', 'revision']) &&
           request.resource.data.revision is int && request.resource.data.revision >= 1 &&

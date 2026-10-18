@@ -16798,4 +16798,1073 @@ class AppLocalizationsVi extends AppLocalizations {
   String nuMilkPerDayOnly(String range) {
     return 'Tham khảo $range ml mỗi ngày';
   }
+
+  @override
+  String get lbSavedCare => 'Chăm bé';
+
+  @override
+  String get lbSavedSolids => 'Ăn dặm';
+
+  @override
+  String get sdAddFood => 'Thêm';
+
+  @override
+  String sdAddFree(String name) {
+    return 'Thêm “$name”';
+  }
+
+  @override
+  String get sdAll => 'Tất cả';
+
+  @override
+  String get sdAmount => 'Lượng bé ăn';
+
+  @override
+  String sdAmountBowls(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chén',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdAmountCustom => 'Tự nhập';
+
+  @override
+  String get sdAmountFewSpoons => 'Vài thìa';
+
+  @override
+  String get sdAmountFullBowl => '1 chén';
+
+  @override
+  String get sdAmountHalfBowl => '½ chén';
+
+  @override
+  String get sdAmountInvalid =>
+      'Nhập lượng từ 0,1 đến 1000, hoặc bỏ chọn “Tự nhập”.';
+
+  @override
+  String sdAmountSpoons(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count thìa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdAmountValue(String value, String unit) {
+    return '$value $unit';
+  }
+
+  @override
+  String get sdAnaphylaxis => 'Sơ cứu: Sốc phản vệ';
+
+  @override
+  String get sdAskParents => 'Nhờ ba mẹ bật theo dõi ăn dặm';
+
+  @override
+  String get sdAskParentsBody =>
+      'Khi ba mẹ bật, bạn có thể ghi bữa và xem nhật ký ăn dặm của bé. Thư viện ăn dặm luôn mở cho bạn.';
+
+  @override
+  String get sdBenefitHistory => 'Lịch sử bữa ăn và danh sách món đã thử';
+
+  @override
+  String get sdBenefitLibrary => 'Thư viện ăn dặm: hướng dẫn, cách bắt đầu';
+
+  @override
+  String get sdBenefitLog => 'Ghi bữa, món, lượng chỉ vài chạm';
+
+  @override
+  String get sdClear => 'Bác sĩ đã cho ăn lại';
+
+  @override
+  String get sdClearedNote =>
+      'Bác sĩ đã cho ăn lại món này. App vẫn giữ lịch sử dấu hiệu.';
+
+  @override
+  String get sdDate => 'Ngày';
+
+  @override
+  String sdDayMeals(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return '$day · $_temp0';
+  }
+
+  @override
+  String get sdDelete => 'Xoá bữa';
+
+  @override
+  String get sdDeleteTitle => 'Xoá bữa ăn này?';
+
+  @override
+  String get sdDeletedToast => 'Đã xoá bữa ăn';
+
+  @override
+  String get sdDiary => 'Nhật ký';
+
+  @override
+  String get sdDish => 'Món';
+
+  @override
+  String get sdDishHint => 'VD: Cháo cà rốt thịt gà';
+
+  @override
+  String get sdDoctorNote =>
+      'Hỏi bác sĩ của bé khi nào nên bắt đầu ăn dặm và cách phù hợp với bé.';
+
+  @override
+  String get sdEarlyNote =>
+      'Nếu bác sĩ khuyên bé bắt đầu sớm hơn, hãy làm theo bác sĩ và dùng thư viện để chuẩn bị. Nhật ký ăn dặm mở khi bé đủ 6 tháng.';
+
+  @override
+  String get sdEmptyDay => 'Chưa có bữa nào trong ngày này';
+
+  @override
+  String get sdEmptyToday => 'Chưa có bữa nào hôm nay';
+
+  @override
+  String sdFirstToday(String foods) {
+    return 'Lần đầu: $foods';
+  }
+
+  @override
+  String sdFirstTried(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lần',
+    );
+    return 'Lần đầu $day · $_temp0';
+  }
+
+  @override
+  String sdFirstTryChip(String food) {
+    return '$food · lần đầu';
+  }
+
+  @override
+  String get sdFirstTryLegend => '✦ Lần đầu bé thử';
+
+  @override
+  String sdFoodMeals(int count) {
+    return 'Các bữa có món này · $count';
+  }
+
+  @override
+  String get sdFoodMissing => 'Không tìm thấy món này';
+
+  @override
+  String get sdFoodMissingBody => 'Món có thể đã được bỏ khỏi các bữa ăn.';
+
+  @override
+  String get sdFoodSearch => 'Tìm món, nguyên liệu…';
+
+  @override
+  String get sdFoodSignsNote =>
+      'Bé có dấu hiệu sau khi ăn món này. Tạm chưa cho lại và hỏi bác sĩ của bé; app sẽ không gợi ý món này cho đến khi ba mẹ đánh dấu “Bác sĩ đã cho ăn lại”.';
+
+  @override
+  String get sdFormatArticle => 'Bài viết';
+
+  @override
+  String get sdFormatQuickQa => 'Hỏi nhanh';
+
+  @override
+  String get sdFormatStepGuide => 'Từng bước';
+
+  @override
+  String sdFromMonths(int months) {
+    return 'Thường từ $months tháng';
+  }
+
+  @override
+  String sdGroupCount(String group, int count) {
+    return '$group · $count';
+  }
+
+  @override
+  String get sdGroupDairy => 'Sữa và chế phẩm';
+
+  @override
+  String get sdGroupFat => 'Chất béo';
+
+  @override
+  String get sdGroupFruit => 'Trái cây';
+
+  @override
+  String get sdGroupGrain => 'Tinh bột';
+
+  @override
+  String get sdGroupLegume => 'Đậu và hạt';
+
+  @override
+  String get sdGroupOther => 'Khác';
+
+  @override
+  String get sdGroupProtein => 'Đạm động vật';
+
+  @override
+  String get sdGroupVegetable => 'Rau củ';
+
+  @override
+  String sdGuideKicker(String format) {
+    return 'Hướng dẫn · $format';
+  }
+
+  @override
+  String get sdGuides => 'Hướng dẫn';
+
+  @override
+  String get sdHide => 'Không gợi ý món này';
+
+  @override
+  String get sdHistoryEmpty => 'Chưa có bữa nào';
+
+  @override
+  String get sdHistoryEmptyBody =>
+      'Các bữa đã ghi sẽ hiện ở đây, mới nhất ở trên.';
+
+  @override
+  String get sdHistoryTitle => 'Lịch sử bữa ăn';
+
+  @override
+  String get sdIngredients => 'Nguyên liệu';
+
+  @override
+  String sdLatest(String dish, String time) {
+    return 'Gần nhất: $dish · $time';
+  }
+
+  @override
+  String get sdLibraryEmpty =>
+      'Các bài hướng dẫn ăn dặm sẽ hiện ở đây khi được xuất bản.';
+
+  @override
+  String get sdLibraryNoResults =>
+      'Thử từ khoá khác hoặc bỏ bớt bộ lọc độ tuổi, loại bài.';
+
+  @override
+  String get sdLibrarySearch => 'Tìm món, nguyên liệu, hướng dẫn…';
+
+  @override
+  String get sdLibrarySub => 'Hướng dẫn ăn dặm theo độ tuổi';
+
+  @override
+  String get sdLibraryTitle => 'Thư viện ăn dặm';
+
+  @override
+  String get sdLogMeal => 'Ghi bữa';
+
+  @override
+  String get sdMealAfternoon => 'Bữa chiều';
+
+  @override
+  String get sdMealEvening => 'Bữa tối';
+
+  @override
+  String get sdMealMissing => 'Không tìm thấy bữa ăn';
+
+  @override
+  String get sdMealMissingBody => 'Bữa ăn có thể đã được xoá.';
+
+  @override
+  String get sdMealMorning => 'Bữa sáng';
+
+  @override
+  String get sdMealNoon => 'Bữa trưa';
+
+  @override
+  String get sdMealSnack => 'Bữa phụ';
+
+  @override
+  String get sdMealsTab => 'Bữa ăn';
+
+  @override
+  String get sdMethodBlw => 'BLW';
+
+  @override
+  String get sdMethodBlwHelp => 'Bé tự cầm thức ăn mềm, cắt thanh vừa tay.';
+
+  @override
+  String get sdMethodMixed => 'Kết hợp';
+
+  @override
+  String get sdMethodMixedHelp => 'Vừa đút thìa vừa cho bé tự cầm, tuỳ món.';
+
+  @override
+  String get sdMethodSpoon => 'Truyền thống';
+
+  @override
+  String get sdMethodSpoonHelp => 'Đút thìa, từ nghiền mịn rồi đặc dần.';
+
+  @override
+  String get sdMethodTitle => 'Cách cho ăn (không bắt buộc)';
+
+  @override
+  String get sdNeedDish => 'Thêm tên món hoặc ít nhất một nguyên liệu.';
+
+  @override
+  String get sdNoCatalogue =>
+      'Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên món ở trên (tối đa 3).';
+
+  @override
+  String sdNoDobBody(String name) {
+    return 'Nhật ký ăn dặm mở khi $name đủ 6 tháng. Thêm ngày sinh để app biết khi nào.';
+  }
+
+  @override
+  String sdNoDobViewer(String name) {
+    return 'Bạn chưa được xem ngày sinh của $name, nên app chưa biết bé đã đủ 6 tháng chưa.';
+  }
+
+  @override
+  String get sdNotTried => 'Chưa thử';
+
+  @override
+  String sdNotYetSoon(String name, String age, String date) {
+    return '$name $age, sắp đến lúc ăn dặm. Nhật ký mở khi bé tròn 6 tháng, ngày $date. Trong lúc chờ, xem bé đã có dấu hiệu sẵn sàng chưa.';
+  }
+
+  @override
+  String get sdNotYetTitle => 'Chưa đến lúc ăn dặm';
+
+  @override
+  String sdNotYetYoung(String name, String age, String date) {
+    return '$name $age. Sữa mẹ hoặc sữa công thức là đủ cho bé lúc này. Nhật ký ăn dặm mở khi bé tròn 6 tháng, ngày $date.';
+  }
+
+  @override
+  String get sdNote => 'Ghi chú (không bắt buộc)';
+
+  @override
+  String get sdNoteHint => 'Thêm ghi chú…';
+
+  @override
+  String sdNutritionRow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return 'Ăn dặm hôm nay · $_temp0';
+  }
+
+  @override
+  String get sdOffBody =>
+      'Ba mẹ có thể bật theo dõi ăn dặm trong Chăm sóc › Ăn dặm.';
+
+  @override
+  String get sdOffTitle => 'Chưa bật theo dõi ăn dặm';
+
+  @override
+  String get sdOpenDiary => 'Mở nhật ký';
+
+  @override
+  String get sdReaction => 'Bé ăn thế nào';
+
+  @override
+  String get sdReactionLiked => 'Thích';
+
+  @override
+  String get sdReactionNeutral => 'Bình thường';
+
+  @override
+  String get sdReactionNotYet => 'Chưa hợp';
+
+  @override
+  String get sdReadinessKicker => 'Dấu hiệu sẵn sàng';
+
+  @override
+  String get sdRecipes => 'Công thức';
+
+  @override
+  String sdRecipesFor(String band) {
+    return 'Công thức · $band';
+  }
+
+  @override
+  String get sdRemindMe => 'Nhắc tôi khi bé gần 6 tháng';
+
+  @override
+  String sdRemindSet(String date) {
+    return 'Đã đặt nhắc · $date';
+  }
+
+  @override
+  String sdRemindToast(String date) {
+    return 'Đã đặt nhắc ngày $date';
+  }
+
+  @override
+  String sdReminderTitle(String name) {
+    return '$name gần 6 tháng: xem cách bắt đầu ăn dặm';
+  }
+
+  @override
+  String sdRemoveFood(String food) {
+    return 'Bỏ $food';
+  }
+
+  @override
+  String get sdSave => 'Lưu bữa';
+
+  @override
+  String sdSavedToast(String meal) {
+    return 'Đã ghi · $meal';
+  }
+
+  @override
+  String get sdSectionToday => 'Ăn dặm hôm nay';
+
+  @override
+  String get sdSectionTodaySub => 'Bữa gần nhất và món mới hôm nay';
+
+  @override
+  String get sdSeeAll => 'Xem tất cả';
+
+  @override
+  String get sdSettings => 'Cài đặt';
+
+  @override
+  String get sdSheetEditTitle => 'Sửa bữa ăn';
+
+  @override
+  String get sdSheetTitle => 'Ghi bữa ăn';
+
+  @override
+  String get sdShowMore => 'Xem thêm';
+
+  @override
+  String get sdShowOnToday => 'Hiện “Ăn dặm hôm nay” trên Hôm nay';
+
+  @override
+  String get sdSignsTag => 'Có dấu hiệu';
+
+  @override
+  String get sdSlotAfternoon => 'Chiều';
+
+  @override
+  String get sdSlotEvening => 'Tối';
+
+  @override
+  String get sdSlotMorning => 'Sáng';
+
+  @override
+  String get sdSlotNoon => 'Trưa';
+
+  @override
+  String get sdSlotSnack => 'Phụ';
+
+  @override
+  String sdSlotTime(String slot, String time) {
+    return '$slot · $time';
+  }
+
+  @override
+  String get sdStart => 'Bắt đầu theo dõi';
+
+  @override
+  String get sdStartBody =>
+      'Ghi nhanh từng bữa, xem lại những món bé đã thử và đọc hướng dẫn từ đội chuyên môn.';
+
+  @override
+  String get sdStartTitle => 'Theo dõi ăn dặm';
+
+  @override
+  String get sdStartedOn => 'Ngày bắt đầu';
+
+  @override
+  String get sdStartedOnAuto => 'Theo bữa đầu tiên';
+
+  @override
+  String sdStartedOnAutoDate(String date) {
+    return 'Bữa đầu tiên · $date';
+  }
+
+  @override
+  String get sdStartedOnReset => 'Dùng ngày bữa đầu tiên';
+
+  @override
+  String get sdStartedToast => 'Đã bật theo dõi ăn dặm';
+
+  @override
+  String get sdStop => 'Dừng theo dõi';
+
+  @override
+  String get sdStopBody =>
+      'Các bữa đã ghi vẫn được giữ. Ba mẹ có thể bật lại bất cứ lúc nào.';
+
+  @override
+  String get sdStopTitle => 'Dừng theo dõi ăn dặm?';
+
+  @override
+  String sdSuggestionsTitle(String name) {
+    return 'Gợi ý cho $name hôm nay';
+  }
+
+  @override
+  String get sdSymptomBreathing => 'Khó thở, ho, khò khè';
+
+  @override
+  String get sdSymptomDiarrhea => 'Tiêu chảy';
+
+  @override
+  String get sdSymptomFussy => 'Quấy khóc bất thường';
+
+  @override
+  String get sdSymptomOther => 'Khác';
+
+  @override
+  String get sdSymptomRash => 'Nổi mẩn, mề đay';
+
+  @override
+  String get sdSymptomSwelling => 'Sưng môi, mặt';
+
+  @override
+  String get sdSymptomVomit => 'Nôn';
+
+  @override
+  String get sdSymptomsNone => 'Không có';
+
+  @override
+  String get sdSymptomsNote =>
+      'Các món mới trong bữa này sẽ được đánh dấu “Có dấu hiệu sau khi ăn”. Hỏi bác sĩ của bé nếu bạn còn lo.';
+
+  @override
+  String get sdSymptomsQuestion => 'Có dấu hiệu bất thường sau khi ăn?';
+
+  @override
+  String get sdSymptomsTitle => 'Dấu hiệu sau khi ăn';
+
+  @override
+  String get sdTileFrom6 => 'Từ 6 tháng';
+
+  @override
+  String get sdTileSoon => 'Sắp đến lúc ăn dặm';
+
+  @override
+  String get sdTileStart => 'Bắt đầu theo dõi';
+
+  @override
+  String sdTileToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return 'Hôm nay · $_temp0';
+  }
+
+  @override
+  String get sdTime => 'Giờ';
+
+  @override
+  String get sdToday => 'Hôm nay';
+
+  @override
+  String sdTodayCard(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return 'Ăn dặm hôm nay · $_temp0';
+  }
+
+  @override
+  String get sdTodayLower => 'hôm nay';
+
+  @override
+  String get sdTried => 'Đã thử';
+
+  @override
+  String get sdTriedEmpty =>
+      'Các món bé đã thử sẽ hiện ở đây sau bữa đầu tiên.';
+
+  @override
+  String get sdTriedEmptyTitle => 'Chưa có món nào';
+
+  @override
+  String get sdTriedFootnote =>
+      'Đây là ghi chép của gia đình bạn, không phải đánh giá hay khuyến nghị dinh dưỡng.';
+
+  @override
+  String sdTriedReaction(String reaction) {
+    return 'Đã thử · $reaction';
+  }
+
+  @override
+  String get sdTriedTab => 'Món đã thử';
+
+  @override
+  String sdTriedTitle(int count) {
+    return 'Món đã thử · $count';
+  }
+
+  @override
+  String get sdUnclear => 'Bỏ đánh dấu “Bác sĩ đã cho ăn lại”';
+
+  @override
+  String get sdUnhide => 'Gợi ý lại món này';
+
+  @override
+  String get sdUnitBowl => 'chén';
+
+  @override
+  String get sdUnitSpoon => 'thìa';
+
+  @override
+  String sdUpdated(String date) {
+    return 'cập nhật $date';
+  }
+
+  @override
+  String sdUrgent(String number) {
+    return 'Gọi $number ngay nếu bé khó thở, sưng môi hoặc lưỡi, lả đi.';
+  }
+
+  @override
+  String get sdViewOnly => 'Bữa này do người khác ghi: bạn chỉ xem được.';
+
+  @override
+  String get sdYesterday => 'Hôm qua';
+
+  @override
+  String get sdPhoto => 'Ảnh bữa ăn';
+
+  @override
+  String get sdPhotoAdd => 'Thêm ảnh bữa ăn';
+
+  @override
+  String get sdPhotoReplace => 'Đổi ảnh';
+
+  @override
+  String get sdPhotoRemove => 'Bỏ ảnh';
+
+  @override
+  String get sdPhotoPrivate =>
+      'Chỉ những người chăm bé trong gia đình xem được ảnh này.';
+
+  @override
+  String get sdPhotoFailed =>
+      'Chưa tải được ảnh. Bữa ăn vẫn lưu được; thử thêm ảnh lại sau nhé.';
+
+  @override
+  String get sdPhotoOffline =>
+      'Cần có mạng để thêm ảnh. Bữa ăn vẫn lưu được khi không có mạng.';
+
+  @override
+  String get sdHistoryFilter => 'Ăn dặm';
+
+  @override
+  String get sdHistoryWhat => 'bữa ăn dặm';
+
+  @override
+  String sdHistoryOnDay(String date) {
+    return 'Ăn dặm ngày $date';
+  }
+
+  @override
+  String get sdHistoryMeals => 'Số bữa';
+
+  @override
+  String get sdHistoryNewFoods => 'Món mới';
+
+  @override
+  String sdMealsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdFoodsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count món',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdHistoryLink => 'Nhật ký ăn dặm';
+
+  @override
+  String get sdHistoryLinkHint => 'Món đã thử, lịch sử bữa ăn và gợi ý cho bé';
+
+  @override
+  String get sdStatsTitle => 'Bữa ăn dặm';
+
+  @override
+  String sdStatsHint(int days) {
+    return '$days ngày gần đây · chỉ để tham khảo';
+  }
+
+  @override
+  String get sdStatsTodayHint => 'Hôm nay · chỉ để tham khảo';
+
+  @override
+  String sdStatsAvg(String value) {
+    return 'TB $value bữa/ngày';
+  }
+
+  @override
+  String sdStatsDayTip(String day, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bữa',
+    );
+    return '$day: $_temp0';
+  }
+
+  @override
+  String get sdStatsMealsToday => 'Bữa hôm nay';
+
+  @override
+  String get sdStatsPerDay => 'Bữa mỗi ngày (TB)';
+
+  @override
+  String get sdStatsNewThisWeek => 'Món mới tuần này';
+
+  @override
+  String get sdStatsNewPerWeek => 'Món mới mỗi tuần';
+
+  @override
+  String sdStatsWeekOf(String date) {
+    return 'Tuần từ $date';
+  }
+
+  @override
+  String get sdStatsNote =>
+      'Đây là ghi chép của gia đình, không phải mục tiêu số bữa hay số món.';
+
+  @override
+  String sdRecipeMeta(int minutes) {
+    return 'Công thức · $minutes phút';
+  }
+
+  @override
+  String sdForBaby(String name) {
+    return 'Dành cho $name';
+  }
+
+  @override
+  String get sdRecipesNone => 'Chưa có công thức hợp bộ lọc này.';
+
+  @override
+  String sdRecipesWith(String foods) {
+    return 'Công thức có $foods';
+  }
+
+  @override
+  String get sdRecipesWithNone =>
+      'Chưa có công thức hợp tuổi và cách cho ăn của bé có món này. Xem các công thức khác trong thư viện.';
+
+  @override
+  String get sdRecipeMissing => 'Không tìm thấy công thức';
+
+  @override
+  String get sdRecipeMissingBody =>
+      'Công thức có thể đã được gỡ hoặc chưa tải về máy.';
+
+  @override
+  String get sdTextureSmooth => 'Nghiền mịn';
+
+  @override
+  String get sdTextureMashed => 'Nghiền lợn cợn';
+
+  @override
+  String get sdTextureSoftPieces => 'Cắt nhỏ, mềm';
+
+  @override
+  String get sdTextureFinger => 'Cầm tay';
+
+  @override
+  String get sdTextureFamily => 'Ăn cùng gia đình';
+
+  @override
+  String sdServings(int count) {
+    return '$count phần ăn';
+  }
+
+  @override
+  String sdPrepCook(int prep, int cook) {
+    return 'Sơ chế $prep phút · nấu $cook phút';
+  }
+
+  @override
+  String get sdSteps => 'Cách làm';
+
+  @override
+  String get sdStorage => 'Bảo quản';
+
+  @override
+  String get sdTip => 'Mẹo';
+
+  @override
+  String get sdNotTriedMark => '✦ Bé chưa thử';
+
+  @override
+  String get sdSignsMark => '⚠ Có dấu hiệu';
+
+  @override
+  String sdContains(String list) {
+    return 'Có $list';
+  }
+
+  @override
+  String get sdAllergenEgg => 'trứng';
+
+  @override
+  String get sdAllergenPeanut => 'đậu phộng';
+
+  @override
+  String get sdAllergenMilk => 'sữa bò';
+
+  @override
+  String get sdAllergenWheat => 'lúa mì';
+
+  @override
+  String get sdAllergenSoy => 'đậu nành';
+
+  @override
+  String get sdAllergenFish => 'cá';
+
+  @override
+  String get sdAllergenShellfish => 'tôm, cua, sò';
+
+  @override
+  String get sdAllergenSesame => 'vừng (mè)';
+
+  @override
+  String get sdAllergenTreeNut => 'các loại hạt';
+
+  @override
+  String sdAgeNotice(int from, String name, String age) {
+    return 'Công thức cho bé từ $from tháng. $name mới $age: chọn công thức hợp tuổi hoặc hỏi bác sĩ của bé.';
+  }
+
+  @override
+  String get sdLogRecipe => 'Ghi vào nhật ký';
+
+  @override
+  String get sdIngUnitTbsp => 'thìa canh';
+
+  @override
+  String get sdIngUnitTsp => 'thìa cà phê';
+
+  @override
+  String get sdIngUnitBowl => 'chén';
+
+  @override
+  String get sdIngUnitPiece => 'miếng';
+
+  @override
+  String sdIngBowls(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chén',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdIngPieces(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count miếng',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sdSuggestLater => 'Để sau';
+
+  @override
+  String get sdSuggestHideWhich => 'Không gợi ý món nào?';
+
+  @override
+  String sdSuggestHidden(String food) {
+    return 'Sẽ không gợi ý $food nữa';
+  }
+
+  @override
+  String sdSuggestSnoozedFood(String food) {
+    return 'Đã ẩn $food khỏi gợi ý trên máy này trong 30 ngày';
+  }
+
+  @override
+  String get sdSuggestSnoozed => 'Sẽ gợi ý lại sau 3 ngày';
+
+  @override
+  String get sdActReadReactions => 'Đọc: Nhận biết phản ứng';
+
+  @override
+  String get sdActRecipes => 'Xem công thức';
+
+  @override
+  String get sdActIdeas => 'Xem gợi ý';
+
+  @override
+  String get sdActGuide => 'Đọc hướng dẫn';
+
+  @override
+  String get sdOr => 'hoặc';
+
+  @override
+  String sdIronMark(String food) {
+    return '$food (giàu sắt)';
+  }
+
+  @override
+  String get sdTryEgg => 'trứng chín kỹ';
+
+  @override
+  String get sdTryPeanut => 'bơ đậu phộng pha loãng (không cho cả hạt)';
+
+  @override
+  String get sdTryMilk => 'sữa chua hoặc sữa bò nấu trong món';
+
+  @override
+  String get sdTryWheat => 'lúa mì (bánh mì, mì nấu mềm)';
+
+  @override
+  String get sdTryFish => 'cá chín kỹ, gỡ hết xương';
+
+  @override
+  String get sdTrySoy => 'đậu phụ hoặc sữa đậu nành nấu trong món';
+
+  @override
+  String get sdTrySesame => 'vừng (mè) xay mịn trộn vào món';
+
+  @override
+  String get sdTryShellfish => 'tôm hoặc cua chín kỹ, băm nhỏ';
+
+  @override
+  String get sdTryTreeNut =>
+      'bơ hạt (hạnh nhân, điều) pha loãng, không cho cả hạt';
+
+  @override
+  String sdS1Title(String date, String foods) {
+    return 'Theo dõi sau dấu hiệu hôm $date ($foods). Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.';
+  }
+
+  @override
+  String sdS1TitlePlain(String date) {
+    return 'Theo dõi sau dấu hiệu hôm $date. Tạm chưa thử món mới vài ngày và hỏi bác sĩ nếu còn lo.';
+  }
+
+  @override
+  String sdS1Why(String date) {
+    return 'Vì bữa hôm $date có ghi dấu hiệu sau khi ăn.';
+  }
+
+  @override
+  String sdS2Title(String name, String foods) {
+    return 'Món tiếp theo cho $name: $foods.';
+  }
+
+  @override
+  String sdS2Why(String name, int count) {
+    return 'Vì $name mới thử $count món: bắt đầu từ rau củ, tinh bột và một món giàu sắt, mỗi lần một món mới.';
+  }
+
+  @override
+  String sdS3Title(String allergen) {
+    return 'Đã đến lúc thử $allergen: buổi sáng, ở nhà, một lượng nhỏ.';
+  }
+
+  @override
+  String sdS3Why(String name, int count, int days) {
+    return 'Vì $name đã quen $count món và ăn dặm được $days ngày: các món thường gây dị ứng nên cho làm quen từng món một, cách nhau vài ngày.';
+  }
+
+  @override
+  String sdS4Title(String name, String allergen) {
+    return 'Cho $name ăn lại $allergen tuần này để duy trì.';
+  }
+
+  @override
+  String sdS4Why(String allergen, String date) {
+    return 'Vì lần gần nhất bé ăn $allergen là $date: món đã quen nên được ăn đều đặn.';
+  }
+
+  @override
+  String sdS5Title(String foods) {
+    return 'Hôm nay thêm một món giàu sắt: $foods.';
+  }
+
+  @override
+  String sdS5Why(String name) {
+    return 'Vì 2 ngày qua các bữa của $name chưa có món giàu sắt; từ 6 tháng bé cần sắt từ thức ăn mỗi ngày.';
+  }
+
+  @override
+  String sdS6Title(String foods) {
+    return 'Món mới tiếp theo: $foods.';
+  }
+
+  @override
+  String sdS6Why(String name, String group, int count) {
+    return 'Vì $name chưa thử món mới 2 ngày; nhóm $group bé mới thử $count món.';
+  }
+
+  @override
+  String sdS7Title(String food, String liked, String name) {
+    return 'Thử lại $food theo cách khác: nghiền mịn hơn hoặc trộn với $liked $name thích.';
+  }
+
+  @override
+  String sdS7TitlePlain(String food) {
+    return 'Thử lại $food theo cách khác: nghiền mịn hơn hoặc đổi cách nấu.';
+  }
+
+  @override
+  String sdS7Why(String name, String food, int count) {
+    return 'Vì lần gần nhất $name chưa hợp $food (đã thử $count lần). Bé có thể cần 8–15 lần mới quen một món.';
+  }
+
+  @override
+  String sdS8Title(String name, String group) {
+    return 'Tuần này $name chưa ăn $group nào.';
+  }
+
+  @override
+  String sdS8Why(String group, String date) {
+    return 'Vì lần gần nhất bé ăn $group là $date; đổi món giúp bé quen nhiều vị.';
+  }
+
+  @override
+  String sdS9Title(String name, int months, String texture) {
+    return '$name $months tháng: $texture.';
+  }
+
+  @override
+  String sdS9Why(String name, String stage) {
+    return 'Vì $name vừa sang giai đoạn $stage trong Dinh dưỡng; thức ăn thô dần theo từng giai đoạn.';
+  }
+
+  @override
+  String sdIdeasTitle(String group) {
+    return 'Gợi ý: $group';
+  }
+
+  @override
+  String get sdIdeasHint => 'Chạm một món để ghi bữa.';
 }

@@ -74,10 +74,12 @@ class ContentStore {
       );
 
   /// "Lưu" (4e). Only the id, the time and the revision read: nothing about a child.
-  Future<void> save(String uid, LbArticle a) => _saved(uid).doc(a.id).set({
-    'savedAt': FieldValue.serverTimestamp(),
-    'revision': a.revision,
-  });
+  Future<void> save(String uid, LbArticle a) => saveId(uid, a.id, a.revision);
+
+  /// "Lưu" by id: guides and Ăn dặm recipes (`rcp_…`, 5g, D-085) share the collection.
+  Future<void> saveId(String uid, String id, int revision) => _saved(uid)
+      .doc(id)
+      .set({'savedAt': FieldValue.serverTimestamp(), 'revision': revision});
 
   Future<void> unsave(String uid, String id) => _saved(uid).doc(id).delete();
 

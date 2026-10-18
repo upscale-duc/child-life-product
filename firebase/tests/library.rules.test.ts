@@ -98,7 +98,9 @@ describe('users/{uid}/savedArticles', () => {
 
   it('refuses other ids, other fields and made-up times or revisions', async () => {
     const ok = { savedAt: serverTimestamp(), revision: 1 };
-    // Only article ids (`art_…`, contracts `articleIdSchema`).
+    // Only article ids (`art_…`, contracts `articleIdSchema`) and recipe ids (`rcp_…`, D-085).
+    await assertSucceeds(setDoc(saved('mom', 'rcp_chao_bi_do'), ok));
+    await assertFails(setDoc(saved('mom', 'fd_egg'), ok));
     await assertFails(setDoc(saved('mom', 'stg_w3'), ok));
     await assertFails(setDoc(saved('mom', 'Art_Upper'), ok));
     // Nothing else is stored (no title, note or baby).

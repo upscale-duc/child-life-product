@@ -167,10 +167,17 @@ void main() {
       expect(y('Kiến thức chăm bé'), lessThan(y('Thư viện chăm bé')));
       // D-076 #5: "Thẻ theo tuổi" is "Giai đoạn của bé" in the app.
       expect(find.text('Giai đoạn của bé'), findsOneWidget);
-      // D-083: Dinh dưỡng in "Chăm hằng ngày" (a teaser until a stage is published); no more
-      // "Ăn dặm" teaser (P-163 #11).
+      // D-083: Dinh dưỡng in "Chăm hằng ngày" (a teaser until a stage is published); D-085:
+      // "Ăn dặm" is a live tile right after it (P-164 #1; Teddy is 3 weeks: "Từ 6 tháng").
+      await tester.scrollUntilVisible(
+        find.text('Ăn dặm'),
+        -200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(y('Dinh dưỡng'), lessThan(y('Hiểu con & phát triển')));
-      expect(find.text('Ăn dặm'), findsNothing);
+      expect(y('Dinh dưỡng'), lessThan(y('Ăn dặm')));
+      expect(y('Ăn dặm'), lessThan(y('Hiểu con & phát triển')));
+      expect(find.text('Từ 6 tháng'), findsOneWidget);
     });
 
     testWidgets('caregiver: no Tăng trưởng (370:2174)', (tester) async {
@@ -284,6 +291,8 @@ void main() {
         TodaySection.tiles,
         // D-076 #8: right after the tiles.
         TodaySection.forYou,
+        // D-085: 5h "Ăn dặm hôm nay", shown while solids tracking is on.
+        TodaySection.solids,
         TodaySection.reminders,
         TodaySection.quickActions,
         TodaySection.vaccine,
@@ -303,11 +312,13 @@ void main() {
           for (final s in d.order)
             if (d.shows(s)) s,
         ],
-        // "Dành cho bé hôm nay" draws only with the family's rhythm flag.
+        // "Dành cho bé hôm nay" draws only with the family's rhythm flag; "Ăn dặm hôm nay" only
+        // while solids tracking is on (D-085).
         [
           TodaySection.tiles,
           // D-076 #8: "Dành cho bé hôm nay" right after the tiles.
           TodaySection.forYou,
+          TodaySection.solids,
           TodaySection.reminders,
           TodaySection.rhythm,
         ],
@@ -492,11 +503,14 @@ void main() {
       await tester.tap(find.text('Xong'));
       await tester.pumpAndSettle();
       final layout = container.read(todayLayoutProvider(teddyId));
-      // "Dành cho bé hôm nay" (not offered without the rhythm flag) keeps its place.
-      expect(layout.order.where((s) => s != TodaySection.forYou).take(2), [
-        TodaySection.reminders,
-        TodaySection.rhythm,
-      ]);
+      // "Dành cho bé hôm nay" (not offered without the rhythm flag) and "Ăn dặm hôm nay" (not
+      // offered while solids tracking is off) keep their places.
+      expect(
+        layout.order
+            .where((s) => s != TodaySection.forYou && s != TodaySection.solids)
+            .take(2),
+        [TodaySection.reminders, TodaySection.rhythm],
+      );
     });
 
     testWidgets('tiles follow the order chosen here', (tester) async {
