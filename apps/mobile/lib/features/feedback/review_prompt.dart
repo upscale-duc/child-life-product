@@ -273,12 +273,19 @@ const _kState = 'review.state';
 
 /// FB5's rules on this install. Callers report what happened ([opened], [logged],
 /// [bugReported]) and the happy moments ([trigger]); [contextOf] reads the app at that moment.
+/// [clock] is the time of a trigger, the same one [contextOf] reports (tests pin both).
 class ReviewPrompter {
-  ReviewPrompter(this._prefs, this._platform, this._contextOf);
+  ReviewPrompter(
+    this._prefs,
+    this._platform,
+    this._contextOf, {
+    this._clock = DateTime.now,
+  });
 
   final SharedPreferences _prefs;
   final ReviewPlatform _platform;
   final ReviewContext Function() _contextOf;
+  final DateTime Function() _clock;
 
   ReviewState _read(DateTime now) {
     final raw = _prefs.getString(_kState);
@@ -296,7 +303,7 @@ class ReviewPrompter {
   Future<void> _write(ReviewState s) =>
       _prefs.setString(_kState, jsonEncode(s.toJson()));
 
-  ReviewState get state => _read(DateTime.now());
+  ReviewState get state => _read(_clock());
 
   /// The app came to the foreground: an active day, and the version (an update starts a quiet
   /// day).
@@ -335,14 +342,15 @@ class ReviewPrompter {
 
   /// A happy moment; returns whether the OS was asked.
   Future<bool> trigger(ReviewTrigger trigger) async {
-    var s = _read(DateTime.now());
+    final now = _clock();
+    var s = _read(now);
     if (trigger == ReviewTrigger.firstReaction) {
       if (s.reacted) return false;
       s = s.copyWith(reacted: true);
       await _write(s);
     }
     // Most moments end here; the app is read only for an install that qualifies.
-    if (eligibilityBlock(s, DateTime.now()) != null) return false;
+    if (eligibilityBlock(s, now) != null) return false;
     final c = _contextOf();
     final d = decideReview(s, c);
     if (!d.eligible) return false;
@@ -378,12 +386,18 @@ final reviewPlatformProvider = Provider<ReviewPlatform>(
   ),
 );
 
-final reviewPrompterProvider = Provider<ReviewPrompter>(
-  (ref) => ReviewPrompter(
+/// The wall clock for FB5's day and window rules; tests pin it.
+final reviewClockProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
+
+final reviewPrompterProvider = Provider<ReviewPrompter>((ref) {
+  final clock = ref.watch(reviewClockProvider);
+  return ReviewPrompter(
     ref.watch(sharedPreferencesProvider),
     ref.watch(reviewPlatformProvider),
     () => ReviewContext(
-      now: DateTime.now(),
+      now: clock(),
       version: ref.read(appVersionProvider).value ?? '',
       night: ref.read(paletteProvider) == ClPalette.nightCare,
       timerRunning: ref.read(nightCareTimerRunningProvider),
@@ -396,5 +410,6 @@ final reviewPrompterProvider = Provider<ReviewPrompter>(
           .startsWith(Routes.firstAid),
       afterError: ReviewSession.afterError,
     ),
-  ),
-);
+    clock: clock,
+  );
+});

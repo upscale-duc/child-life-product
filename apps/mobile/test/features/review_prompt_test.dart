@@ -139,6 +139,7 @@ void main() {
         track: (e) async => events.add(e),
       ),
       () => context,
+      clock: () => context.now,
     );
 
     setUp(() async {
