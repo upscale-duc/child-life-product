@@ -242,14 +242,27 @@ class _VaccineBookScreenState extends ConsumerState<VaccineBookScreen> {
       _maintain(me, book, dob);
       final next = book.nextGroup;
       final overdue = book.overdue;
+      // D-084: the family's country has its own schedule here; D-078: it does not.
+      final local = countryScheduleOf(book.country);
       final abroad = switch (ref.watch(selectedFamilyCountryProvider)) {
-        final code? when code != 'VN' => code,
+        final code? when code != 'VN' && local == null => code,
         _ => null,
       };
       return _VxPage(
         children: [
           _Title(l10n.vxTitle),
           const SizedBox(height: ClSpace.s3),
+          if (local != null) ...[
+            Text(
+              l10n.vxCountryNotice(
+                local.programmeName.of(locale),
+                vxDate(DateTime.parse(local.checkedOn)),
+              ),
+              key: const Key('vxCountry'),
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+            const SizedBox(height: ClSpace.s3),
+          ],
           // D-078: the schedule is Việt Nam's; a family elsewhere follows its own clinic.
           if (abroad != null) ...[
             Container(
@@ -1463,7 +1476,8 @@ class _ShotRow extends StatelessWidget {
       DoseStatus.declined => l10n.vxLegendDeclined,
       _ when title != null => l10n.vxPlannedOn(vxDate(item.planned)),
       _ =>
-        '${vxRouteLabel(l10n, item.def)} · ${vxProgrammeLabel(l10n, item.def)}',
+        '${vxRouteLabel(l10n, item.def)} · '
+            '${vxProgrammeLabel(l10n, item.def, national: book.country != null)}',
     };
     return ClPressable(
       onPressed: onTap,
@@ -1872,7 +1886,10 @@ class VaccineInfoScreen extends ConsumerWidget {
                   l10n.vxIntervalValue(def.minIntervalWeeks!),
                 ),
               kv(l10n.vxRoute, vxRouteLabel(l10n, def)),
-              kv(l10n.vxPlace, vxProgrammeLabel(l10n, def)),
+              kv(
+                l10n.vxPlace,
+                vxProgrammeLabel(l10n, def, national: book.country != null),
+              ),
             ],
           ),
           const SizedBox(height: ClSpace.s4),

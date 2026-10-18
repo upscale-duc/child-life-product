@@ -78,7 +78,8 @@ describe('ringing (VX 8)', () => {
   });
 
   it('a family abroad hears only of the doses it dated itself (D-078)', async () => {
-    await db.doc('families/f_vx_abroad').set({ ownerUid: 'mom', country: 'US' });
+    // France: no schedule of its own in the app yet (D-084), so Việt Nam's applies.
+    await db.doc('families/f_vx_abroad').set({ ownerUid: 'mom', country: 'FR' });
     await db.doc(`babies/${babyId}`).set({ familyId: 'f_vx_abroad' }, { merge: true });
     try {
       expect((await ringVaccineReminders(db, sender, vn('2026-11-16', 19, 0))).rang).toBe(0);
@@ -90,6 +91,19 @@ describe('ringing (VX 8)', () => {
       expect(sent[0]!.data).toMatchObject({ date: '2026-11-20' });
     } finally {
       await db.doc('families/f_vx_abroad').delete();
+    }
+  });
+
+  it('a family in a country with its own schedule is reminded of that one (D-084)', async () => {
+    await db.doc('families/f_vx_us').set({ ownerUid: 'mom', country: 'US' });
+    await db.doc(`babies/${babyId}`).set({ familyId: 'f_vx_us' }, { merge: true });
+    try {
+      // CDC: hepatitis B at 1 month (born 17/9 → 17/10): the evening before, at 19:00.
+      const { rang } = await ringVaccineReminders(db, sender, vn('2026-10-16', 19, 0));
+      expect(rang).toBe(1);
+      expect(sent[0]!.data).toMatchObject({ date: '2026-10-17', months: '1' });
+    } finally {
+      await db.doc('families/f_vx_us').delete();
     }
   });
 

@@ -10317,6 +10317,26 @@
   "@vxProgChoice": {
     "description": "Programme."
   },
+  "vxProgNational": "Chương trình quốc gia",
+  "@vxProgNational": {
+    "description": "Programme label for a schedule outside Việt Nam (D-084)."
+  },
+  "vxProgRecommended": "Khuyến nghị, có thể tự chi trả",
+  "@vxProgRecommended": {
+    "description": "Recommended but often paid, outside Việt Nam (D-084)."
+  },
+  "vxCountryNotice": "Theo {programme}, cập nhật {date}. Lịch của bé có thể khác tuỳ bác sĩ hoặc vùng nơi bạn sống.",
+  "@vxCountryNotice": {
+    "description": "Sổ tiêm chủng note when the family's country has its own schedule (D-084).",
+    "placeholders": {
+      "programme": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "vxRemind": "Nhắc trước 3 ngày",
   "@vxRemind": {
     "description": "VX 2 toggle."

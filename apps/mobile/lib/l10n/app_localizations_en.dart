@@ -7271,6 +7271,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vxProgChoice => '6-in-1 private or 5-in-1 free';
 
   @override
+  String get vxProgNational => 'National programme';
+
+  @override
+  String get vxProgRecommended => 'Recommended, may be paid';
+
+  @override
+  String vxCountryNotice(String programme, String date) {
+    return 'Follows the $programme, checked $date. Your child\'s plan may differ by doctor or region.';
+  }
+
+  @override
   String get vxRemind => 'Remind 3 days before';
 
   @override

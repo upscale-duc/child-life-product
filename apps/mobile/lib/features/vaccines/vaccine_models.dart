@@ -47,6 +47,31 @@ class VaccineDef {
   int get doses => months.length;
 }
 
+/// A routine schedule outside Việt Nam (D-084): the country's own, named on the book.
+class CountryVaccineSchedule {
+  const CountryVaccineSchedule({
+    required this.country,
+    required this.programmeName,
+    required this.checkedOn,
+    required this.sources,
+    required this.defs,
+  });
+
+  final String country;
+  final VxText programmeName;
+
+  /// YYYY-MM-DD: when the official pages were read.
+  final String checkedOn;
+  final List<({String label, String url})> sources;
+  final List<VaccineDef> defs;
+}
+
+/// The schedule of a family in [country] when the app has it; null = Việt Nam's.
+CountryVaccineSchedule? countryScheduleOf(String? country) =>
+    country == null || country == 'VN'
+    ? null
+    : countryVaccineSchedules[country];
+
 VaccineDef? vaccineById(
   String id, [
   List<VaccineDef> schedule = vaccineSchedule,
@@ -265,7 +290,7 @@ class DoseGroup {
 
 /// The book for a baby on [today]: every dose of the plan's schedule with its status.
 class VaccineBook {
-  VaccineBook._(this.items, this.today, this.plan, this.schedule);
+  VaccineBook._(this.items, this.today, this.plan, this.schedule, this.country);
 
   factory VaccineBook.of({
     required DateTime dob,
@@ -273,6 +298,7 @@ class VaccineBook {
     required VaccinePlan plan,
     required Map<String, VaccineDoseRecord> records,
     List<VaccineDef> schedule = vaccineSchedule,
+    String? country,
   }) {
     final day = DateTime(today.year, today.month, today.day);
     final raw =
@@ -328,7 +354,7 @@ class VaccineBook {
           },
         ),
     ];
-    return VaccineBook._(items, day, plan, schedule);
+    return VaccineBook._(items, day, plan, schedule, country);
   }
 
   final List<DoseItem> items;
@@ -337,6 +363,9 @@ class VaccineBook {
 
   /// The schedule the book was built from (published reference data or the bundled one).
   final List<VaccineDef> schedule;
+
+  /// The country whose own schedule this is (D-084); null = Việt Nam's.
+  final String? country;
 
   /// "Đã tiêm N / 30 mũi": declined doses leave the total.
   int get given => items.where((i) => i.status == DoseStatus.given).length;

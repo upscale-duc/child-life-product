@@ -1,6 +1,7 @@
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import {
+  countryScheduleOf,
   localDateIn,
   plannedDate,
   referenceDocIds,
@@ -220,18 +221,19 @@ export async function ringVaccineReminders(
       .where('kind', '==', 'snooze')
       .get();
     const snoozes = snoozeDocs.docs.map((d) => d.get('date') as string);
+    // D-084: a family abroad follows its country's schedule when the app has one; elsewhere the
+    // schedule is Việt Nam's and only the doses whose date the family set are reminded (D-078).
+    const country = await countryOf(baby.get('familyId') as string | undefined);
+    const local = countryScheduleOf(country);
     const doses = openDoses(
       dob,
       (plan.get('dtp') as '6in1' | '5in1' | null) ?? null,
       records,
-      schedule,
+      local ? local.defs : schedule,
     );
-    // D-078: the schedule is Việt Nam's. A family living elsewhere is reminded only of the doses
-    // whose date it set itself.
-    const country = await countryOf(baby.get('familyId') as string | undefined);
     const due = dueReminders(
       zone,
-      country && country !== 'VN' ? doses.filter((d) => d.rescheduled) : doses,
+      !local && country && country !== 'VN' ? doses.filter((d) => d.rescheduled) : doses,
       snoozes,
       now,
     );

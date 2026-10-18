@@ -1,5 +1,6 @@
 import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
+import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
 import 'package:child_life/features/vaccines/vaccine_notifications.dart';
 import 'package:child_life/features/vaccines/vaccine_screens.dart';
@@ -34,6 +35,44 @@ void main() {
       expect(find.text('18/9'), findsOneWidget); // BCG given
       expect(find.text('Theo vắc xin'), findsOneWidget);
     });
+
+    testWidgets(
+      'a family in the US gets the CDC schedule, named in a small note (D-084)',
+      (tester) async {
+        await pumpRouted(
+          tester,
+          const VaccineBookScreen(),
+          overrides: [
+            ...careOverrides(vaccines: vxBirthDoses(), vaccinePlan: vxSetUp),
+            selectedFamilyCountryProvider.overrideWithValue('US'),
+          ],
+        );
+        expect(find.byKey(const Key('vxCountry')), findsOneWidget);
+        expect(find.textContaining('CDC'), findsWidgets);
+        // No Việt Nam 6in1 / 5in1 choice, no "follow your clinic" notice.
+        expect(find.text('6in1 hoặc 5in1'), findsNothing);
+        expect(find.byKey(const Key('vxAbroad')), findsNothing);
+        final us = countryScheduleOf('US')!;
+        expect(us.defs.any((d) => d.dtpSeries), isFalse);
+      },
+    );
+
+    testWidgets(
+      'a family in a country without a schedule keeps Việt Nam\'s, with the notice',
+      (tester) async {
+        await pumpRouted(
+          tester,
+          const VaccineBookScreen(),
+          overrides: [
+            ...careOverrides(vaccines: vxBirthDoses(), vaccinePlan: vxSetUp),
+            selectedFamilyCountryProvider.overrideWithValue('FR'),
+          ],
+        );
+        expect(find.byKey(const Key('vxAbroad')), findsOneWidget);
+        expect(find.byKey(const Key('vxCountry')), findsNothing);
+        expect(find.text('6in1 hoặc 5in1'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'VX 5: tick Rota 1 today, at the clinic; the toast names dose 2',

@@ -6825,6 +6825,17 @@ class AppLocalizationsVi extends AppLocalizations {
   String get vxProgChoice => '6in1 dịch vụ hoặc 5in1 miễn phí';
 
   @override
+  String get vxProgNational => 'Chương trình quốc gia';
+
+  @override
+  String get vxProgRecommended => 'Khuyến nghị, có thể tự chi trả';
+
+  @override
+  String vxCountryNotice(String programme, String date) {
+    return 'Theo $programme, cập nhật $date. Lịch của bé có thể khác tuỳ bác sĩ hoặc vùng nơi bạn sống.';
+  }
+
+  @override
   String get vxRemind => 'Nhắc trước 3 ngày';
 
   @override

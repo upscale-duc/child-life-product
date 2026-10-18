@@ -285,6 +285,8 @@ export const vaccinePlanSchema = z.object({
 });
 export type VaccinePlan = z.infer<typeof vaccinePlanSchema>;
 
+export * from './vaccine-countries.js';
+
 /** Rows that apply to a plan (polio only on the 5in1 path). */
 export const scheduleFor = (dtp: '6in1' | '5in1' | null) =>
   vaccineSchedule.filter((v) => !v.only5in1 || dtp === '5in1');

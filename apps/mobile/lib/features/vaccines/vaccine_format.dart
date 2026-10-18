@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
+import '../premium/premium_repository.dart';
 import 'vaccine_models.dart';
 import 'vaccine_reference.dart';
 import 'vaccine_repository.dart';
@@ -81,13 +82,16 @@ final vaccineBookProvider = Provider.family<VaccineBookState, Membership>((
   final now = ref.watch(careClockProvider).value ?? DateTime.now();
   final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
   final day = DateTime(dob.year, dob.month, dob.day);
+  // D-084: a family abroad gets its country's schedule when the app has one.
+  final local = countryScheduleOf(ref.watch(selectedFamilyCountryProvider));
   return VaccineBookReady(
     VaccineBook.of(
       dob: day,
       today: babyToday(zone, now),
       plan: plan,
       records: records,
-      schedule: ref.watch(vaccineScheduleProvider).defs,
+      schedule: local?.defs ?? ref.watch(vaccineScheduleProvider).defs,
+      country: local?.country,
     ),
     day,
   );
@@ -187,13 +191,19 @@ String vxPlaceLabel(AppLocalizations l10n, VaccinePlace p) => switch (p) {
   VaccinePlace.station => l10n.vxPlaceStation,
 };
 
-String vxProgrammeLabel(AppLocalizations l10n, VaccineDef def) =>
-    switch (def.programme) {
-      VaccineProgramme.epi => l10n.vxProgEpi,
-      VaccineProgramme.service => l10n.vxProgService,
-      VaccineProgramme.hospital => l10n.vxProgHospital,
-      VaccineProgramme.choice => l10n.vxProgChoice,
-    };
+/// [national]: a schedule outside Việt Nam (D-084), where "Tiêm chủng mở rộng" and "Dịch vụ" read
+/// as the national programme and as recommended but often paid.
+String vxProgrammeLabel(
+  AppLocalizations l10n,
+  VaccineDef def, {
+  bool national = false,
+}) => switch (def.programme) {
+  VaccineProgramme.epi => national ? l10n.vxProgNational : l10n.vxProgEpi,
+  VaccineProgramme.service =>
+    national ? l10n.vxProgRecommended : l10n.vxProgService,
+  VaccineProgramme.hospital => l10n.vxProgHospital,
+  VaccineProgramme.choice => l10n.vxProgChoice,
+};
 
 String vxRouteLabel(AppLocalizations l10n, VaccineDef def) =>
     def.route == VaccineRoute.oral ? l10n.vxRouteOral : l10n.vxRouteInjection;

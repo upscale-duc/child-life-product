@@ -11431,6 +11431,24 @@ abstract class AppLocalizations {
   /// **'6in1 dịch vụ hoặc 5in1 miễn phí'**
   String get vxProgChoice;
 
+  /// Programme label for a schedule outside Việt Nam (D-084).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chương trình quốc gia'**
+  String get vxProgNational;
+
+  /// Recommended but often paid, outside Việt Nam (D-084).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khuyến nghị, có thể tự chi trả'**
+  String get vxProgRecommended;
+
+  /// Sổ tiêm chủng note when the family's country has its own schedule (D-084).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo {programme}, cập nhật {date}. Lịch của bé có thể khác tuỳ bác sĩ hoặc vùng nơi bạn sống.'**
+  String vxCountryNotice(String programme, String date);
+
   /// VX 2 toggle.
   ///
   /// In vi, this message translates to:
