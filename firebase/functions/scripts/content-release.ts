@@ -496,7 +496,7 @@ async function importBundle(project: string, dir: string, as: string, apply: boo
   }
   console.log(
     apply
-      ? `Done. In the ${project} portal, someone other than ${staff!.name} submits, approves (with the qualified review on prod) and publishes.`
+      ? `Done. In the ${project} portal, submit, approve and publish: someone other than ${staff!.name}, or the Owner alone when "Chính sách duyệt" allows it (D-079); prod needs the qualified review unless the policy turns it off.`
       : 'Dry run only: nothing was written. Re-run with --apply.',
   );
 }
