@@ -56,6 +56,11 @@ describe('editorial seed', () => {
     expect(seedArticles.filter((a) => a.data.library === 'solids').length).toBeGreaterThanOrEqual(
       4,
     );
+    // Thư viện ăn dặm (D-085): the 7 seeded guides plus the 16 in solids-seed.ts.
+    expect(
+      seedArticles.filter((a) => a.data.library === 'solids').length,
+      'solids articles',
+    ).toBeGreaterThanOrEqual(20);
     // Every 4c age band has something to read.
     for (const [from, to] of [
       [0, 13],

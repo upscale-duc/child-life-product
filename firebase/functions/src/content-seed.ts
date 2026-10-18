@@ -1,4 +1,5 @@
 import type { ContentBlock, StageContent, ArticleContent } from '@child-life/contracts';
+import { seedSolidsArticles } from './solids-seed.js';
 
 /**
  * Engineering drafts of the editorial library (D-073 #2, "làm nội dung như 1 chuyên môn"; owner,
@@ -12571,6 +12572,7 @@ export const seedArticles: SeedArticle[] = [
       ],
     },
   },
+  ...seedSolidsArticles,
 ];
 
 // ---------- Stage content: Giai đoạn của bé (the 16 fixed buckets) ----------
