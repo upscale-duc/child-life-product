@@ -163,13 +163,13 @@ void main() {
       expect(find.text('Mở với Premium'), findsOneWidget);
       expect(find.text('Dùng mẫu cơ bản'), findsOneWidget);
       expect(
-        find.textContaining('Gói beta hiện tại của nhà mình chưa gồm mẫu Premium'),
+        find.textContaining(
+          'Gói beta hiện tại của nhà mình chưa gồm mẫu Premium',
+        ),
         findsOneWidget,
       );
-      expect(
-        find.text('Thẻ Premium không trừ lượt xuất video'),
-        findsOneWidget,
-      );
+      // D-081: the template sheet no longer carries a credit footnote.
+      expect(find.text('Thẻ Premium không trừ lượt xuất video'), findsNothing);
       await tester.tap(find.text('Dùng mẫu cơ bản'));
       await tester.pumpAndSettle();
       expect(find.text('Mở với Premium'), findsNothing);

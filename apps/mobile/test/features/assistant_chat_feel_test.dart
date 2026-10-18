@@ -309,9 +309,10 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Gửi').last);
       await tester.pumpAndSettle();
       expect(_text('Chưa gửi được'), findsOneWidget);
+      // D-081: the friendly error no longer mentions credits.
       expect(
         _text(
-          'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.',
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.',
         ),
         findsOneWidget,
       );

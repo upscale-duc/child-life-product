@@ -1580,10 +1580,6 @@ class AsPartialBar extends StatelessWidget {
               label: l10n.asRetryFailed,
               onPressed: retrying ? null : onRetry,
             ),
-            Text(
-              l10n.asRetryFree,
-              style: cl.text.caption.copyWith(color: cl.colors.ink),
-            ),
             const SizedBox(height: 4),
           ] else
             const SizedBox(height: 4),
@@ -1881,14 +1877,6 @@ class AsHealthCard extends StatelessWidget {
           cl.colors.surface,
           cl.colors.ink,
           onOpenHealth,
-        ),
-        const SizedBox(height: ClSpace.s2),
-        Text(
-          l10n.asHealthFree,
-          style: cl.text.caption.copyWith(
-            fontSize: 11,
-            color: cl.colors.inkMuted,
-          ),
         ),
       ],
     );

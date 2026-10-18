@@ -82,7 +82,6 @@ enum PremiumTemplateChoice { unlock, unlocked, useFree, dismissed }
 Future<PremiumTemplateChoice> showPremiumTemplateSheet(
   BuildContext context, {
   required String templateName,
-  required bool card,
   required Capabilities? caps,
   PurchaseResume Function()? keep,
 }) async {
@@ -105,7 +104,6 @@ Future<PremiumTemplateChoice> showPremiumTemplateSheet(
         l10n.pmUseFreeTemplate,
         () => Navigator.of(sheet).pop(PremiumTemplateChoice.useFree),
       ),
-      footnote: card ? l10n.pmCardNoQuota : null,
     ),
   );
   if (choice == PremiumTemplateChoice.unlock && context.mounted) {
@@ -147,7 +145,6 @@ Future<bool> ensureTemplateAllowed(
   final choice = await showPremiumTemplateSheet(
     context,
     templateName: template.name.of(Localizations.localeOf(context)),
-    card: template.kind == KeepsakeKind.card,
     caps: caps,
     keep: keep,
   );
@@ -167,12 +164,10 @@ class _GateBody extends StatelessWidget {
     this.body,
     this.primary,
     this.badge,
-    this.footnote,
   });
   final String title;
   final String? body;
   final String? badge;
-  final String? footnote;
   final (String, VoidCallback)? primary;
   final (String, VoidCallback) secondary;
 
@@ -224,14 +219,6 @@ class _GateBody extends StatelessWidget {
               : ClButtonStyle.secondary,
           onPressed: secondary.$2,
         ),
-        if (footnote != null) ...[
-          const SizedBox(height: ClSpace.s3),
-          Text(
-            footnote!,
-            textAlign: TextAlign.center,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-          ),
-        ],
         const SizedBox(height: ClSpace.s4),
       ],
     );

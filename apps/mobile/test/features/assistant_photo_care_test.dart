@@ -294,7 +294,8 @@ void main() {
         final q = repo.named('quoteTask').single.args;
         expect(q['modality'], 'image');
         expect(q['attachmentCount'], 1);
-        expect(_text('Đọc 1 ảnh dùng 3 lượt hỗ trợ AI'), findsOneWidget);
+        // D-081: the quote is still fetched but its cost box is not shown.
+        expect(_text('Đọc 1 ảnh dùng 3 lượt hỗ trợ AI'), findsNothing);
         expect(_text('Giữ ảnh hoá đơn cùng khoản chi'), findsOneWidget);
         expect(
           tester.widget<CupertinoSwitch>(find.byType(CupertinoSwitch)).value,
@@ -331,11 +332,9 @@ void main() {
         expect(start['attachmentIds'], [attachment1]);
         expect(start['text'], isNull);
         expect(_text('Đang đọc ảnh…'), findsOneWidget);
+        // D-081: no credit mention while the photo is read.
         expect(
-          _text(
-            'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. '
-            'Lỗi hệ thống không trừ lượt.',
-          ),
+          _text('Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại.'),
           findsOneWidget,
         );
       },
@@ -382,10 +381,8 @@ void main() {
       await _tap(tester, _text('Huỷ'));
       expect(uploader.uploads.single.canceled, isTrue);
       expect(repo.named('startTask'), isEmpty);
-      expect(
-        _text('Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.'),
-        findsOneWidget,
-      );
+      // D-081: the cancel note no longer mentions credits.
+      expect(_text('Đã huỷ tải lên. Ảnh vẫn được chọn.'), findsOneWidget);
       // The same photo can still be sent.
       expect(_text('Gửi ảnh'), findsOneWidget);
     });
@@ -876,7 +873,8 @@ void main() {
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
       expect(_text('Ảnh hơi mờ'), findsOneWidget);
-      expect(_text('Lần đọc này không trừ lượt.'), findsOneWidget);
+      // D-081: no "costs no credit" footnote in the chat.
+      expect(_text('Lần đọc này không trừ lượt.'), findsNothing);
       expect(_text('Có lỗi xảy ra. Chưa có gì được lưu.'), findsNothing);
       // This phone has no copy of a restored photo: "Chụp lại" opens the sheet.
       await _tap(tester, _text('Chụp lại'));
@@ -974,9 +972,10 @@ void main() {
           ),
           findsOneWidget,
         );
+        // D-081: no "costs no credit" footnote in the chat.
         expect(
           _text('Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.'),
-          findsOneWidget,
+          findsNothing,
         );
         await _tap(tester, _text('Khó vào giấc'));
         final c = repo.named('submitClarification').single.args;
@@ -1085,7 +1084,8 @@ void main() {
         await _pump(tester, repo: repo, prefs: _thread([taskA]));
         expect(find.textContaining('Bạn có dịp thử'), findsOneWidget);
         expect(_text('Chưa thử'), findsOneWidget);
-        expect(_text('Phản hồi không trừ lượt hỗ trợ AI.'), findsOneWidget);
+        // D-081: no "costs no credit" footnote in the chat.
+        expect(_text('Phản hồi không trừ lượt hỗ trợ AI.'), findsNothing);
         await _tap(tester, _text('Có ích'));
         final fb = repo.named('submitAssistantFeedback').single.args;
         expect(fb['outcome'], 'helpful');
@@ -1270,7 +1270,8 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(_text('Gọi 115'), findsOneWidget);
-        expect(_text('Không trừ lượt'), findsOneWidget);
+        // D-081: no "costs no credit" note on the health card.
+        expect(_text('Không trừ lượt'), findsNothing);
         await _tap(tester, _text('Gọi 115'));
         expect(dialled, ['115']);
         expect(repo.named('quoteTask'), isEmpty);

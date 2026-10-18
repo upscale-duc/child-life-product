@@ -465,7 +465,6 @@ Future<bool> showVoiceIntro(BuildContext context) async {
                   row(ClIcons.edit, l10n.asVoiceIntroWords),
                   row(ClIcons.globe, voiceServerLine(l10n)),
                   row(ClIcons.lock, l10n.asVoiceIntroNothingKept),
-                  row(ClIcons.spark, l10n.asVoiceIntroFree),
                 ],
               ),
             ),

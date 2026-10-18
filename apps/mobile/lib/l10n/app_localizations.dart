@@ -20883,7 +20883,7 @@ abstract class AppLocalizations {
   /// ST01 card 3 body.
   ///
   /// In vi, this message translates to:
-  /// **'Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.'**
+  /// **'Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.'**
   String get aiStateErrorBody;
 
   /// QUOTA_EXCEEDED eyebrow. EN is an engineering draft for owner review.
@@ -20985,7 +20985,7 @@ abstract class AppLocalizations {
   /// The call failed body. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.'**
+  /// **'Ghi nhận của nhà mình vẫn giữ nguyên.'**
   String get aiStateFailedBody;
 
   /// Caregiver, nothing stored. EN is an engineering draft for owner review.
@@ -22395,7 +22395,7 @@ abstract class AppLocalizations {
   /// A canceled task. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã huỷ. Không trừ lượt.'**
+  /// **'Đã huỷ.'**
   String get asCanceled;
 
   /// Kept input bubble marker (CH21 / CH25). Deviates from the frame on purpose (business rule wins; see the A4 report).
@@ -22731,7 +22731,7 @@ abstract class AppLocalizations {
   /// A system failure on an item (retryable). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa lưu được. Thử lại không trừ lượt.'**
+  /// **'Chưa lưu được. Bạn thử lại nhé.'**
   String get asErrSaveFailed;
 
   /// SCOPE_CHANGED. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -23181,7 +23181,7 @@ abstract class AppLocalizations {
   /// CH21 / CH24 note, now with a link. Deviates from the frame on purpose (business rule wins; see the A4 report).
   ///
   /// In vi, this message translates to:
-  /// **'Hướng dẫn sức khoẻ thiết yếu vẫn mở, không cần lượt.'**
+  /// **'Hướng dẫn sức khoẻ thiết yếu vẫn mở.'**
   String get asHealthStillOpen;
 
   /// Link to HL01 (CH21, CH24, CH27, CH28).
@@ -23649,7 +23649,7 @@ abstract class AppLocalizations {
   /// After cancelling an upload. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.'**
+  /// **'Đã huỷ tải lên. Ảnh vẫn được chọn.'**
   String get asUploadCanceled;
 
   /// CH10 attachment label (neutral: it may not be a receipt). Deviates from the frame on purpose (business rule wins; see the A4 report).
@@ -23685,13 +23685,13 @@ abstract class AppLocalizations {
   /// CH10 note (no notification promise: none is built). Deviates from the frame on purpose (business rule wins; see the A4 report).
   ///
   /// In vi, this message translates to:
-  /// **'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.'**
+  /// **'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại.'**
   String get asPhotoLeaveScreen;
 
   /// CH25 for a photo upload / start failure. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.'**
+  /// **'Ảnh chưa được đọc và chưa có gì được lưu. Ảnh vẫn được chọn.'**
   String get asPhotoFailBody;
 
   /// CH11 card title.
@@ -25497,19 +25497,19 @@ abstract class AppLocalizations {
   /// 3c label.
   ///
   /// In vi, this message translates to:
-  /// **'Ảnh (không bắt buộc)'**
+  /// **'Ảnh, video (không bắt buộc)'**
   String get mtPhotosOptional;
 
   /// Camera slot a11y.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm ảnh'**
+  /// **'Thêm ảnh, video'**
   String get mtAddPhotos;
 
   /// Thumbnail a11y.
   ///
   /// In vi, this message translates to:
-  /// **'Bỏ ảnh này'**
+  /// **'Bỏ mục này'**
   String get mtRemovePhoto;
 
   /// 3c / 3g primary button.
@@ -26301,7 +26301,7 @@ abstract class AppLocalizations {
   /// CH25 as a Lumi bubble (no blame), followed by "Thử lại" and "Ghi trực tiếp". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.'**
+  /// **'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.'**
   String get asErrorFriendly;
 
   /// Typing indicator of a photo task. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.

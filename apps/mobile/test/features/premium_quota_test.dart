@@ -128,7 +128,8 @@ void main() {
   });
 
   group('MO04 on the video screens', () {
-    testWidgets('the templates and MM07 show this period’s exports', (
+    // D-081: credits and quotas stay out of the main screens ("Chi tiết" only).
+    testWidgets('the templates and MM07 never show this period’s exports', (
       tester,
     ) async {
       await pumpRouted(
@@ -136,10 +137,11 @@ void main() {
         const MemoryStoryTemplatesScreen(),
         overrides: on(q: quota),
       );
-      expect(find.text('3 / 5'), findsOneWidget);
+      expect(find.text('3 / 5'), findsNothing);
+      expect(find.text('Lượt xuất video kỳ này'), findsNothing);
     });
 
-    testWidgets('MM07 shows what "Tạo video" takes', (tester) async {
+    testWidgets('MM07 never shows what "Tạo video" takes', (tester) async {
       await pumpRouted(
         tester,
         MemoryStoryFinishScreen(draft: draft()),
@@ -147,7 +149,7 @@ void main() {
       );
       await tester.drag(find.byType(ListView).first, const Offset(0, -1200));
       await tester.pumpAndSettle();
-      expect(find.text('3 / 5'), findsOneWidget);
+      expect(find.text('3 / 5'), findsNothing);
     });
 
     testWidgets('no ledger answer: nothing about quota', (tester) async {
@@ -246,7 +248,7 @@ void main() {
       expect(visits.last.location, '/memories/card?occasion=m1');
     });
 
-    testWidgets('a failed export says its reservation came back', (
+    testWidgets('a failed export says nothing about its reservation', (
       tester,
     ) async {
       final jobs = FakeKeepsakeJobs()
@@ -262,13 +264,12 @@ void main() {
         MemoryStoryJobScreen(babyId: teddyId, jobId: videoJob().id),
         overrides: on(jobs: jobs, q: quota),
       );
-      expect(
-        find.text('Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('lượt'), findsNothing);
     });
 
-    testWidgets('a queued export holds one', (tester) async {
+    testWidgets('a queued export says nothing about holding one', (
+      tester,
+    ) async {
       final jobs = FakeKeepsakeJobs()
         ..put(
           videoJob(
@@ -283,7 +284,7 @@ void main() {
         overrides: on(jobs: jobs, q: quota),
       );
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text('Giữ 1 lượt · bạn có thể rời màn hình'), findsOneWidget);
+      expect(find.textContaining('lượt'), findsNothing);
     });
   });
 

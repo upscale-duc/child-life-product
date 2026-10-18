@@ -18734,7 +18734,7 @@
   "@aiStateErrorEyebrow": {
     "description": "ST01 card 3 eyebrow."
   },
-  "aiStateErrorBody": "Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.",
+  "aiStateErrorBody": "Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.",
   "@aiStateErrorBody": {
     "description": "ST01 card 3 body."
   },
@@ -18824,7 +18824,7 @@
   "@aiStateFailedTitle": {
     "description": "The call failed with nothing stored. EN is an engineering draft for owner review."
   },
-  "aiStateFailedBody": "Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.",
+  "aiStateFailedBody": "Ghi nhận của nhà mình vẫn giữ nguyên.",
   "@aiStateFailedBody": {
     "description": "The call failed body. EN is an engineering draft for owner review."
   },
@@ -20020,7 +20020,7 @@
   "@asCancelTask": {
     "description": "Cancel a task still being prepared (no charge without a useful answer). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asCanceled": "Đã huỷ. Không trừ lượt.",
+  "asCanceled": "Đã huỷ.",
   "@asCanceled": {
     "description": "A canceled task. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -20279,7 +20279,7 @@
   "@asErrStale": {
     "description": "DRAFT_STALE. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asErrSaveFailed": "Chưa lưu được. Thử lại không trừ lượt.",
+  "asErrSaveFailed": "Chưa lưu được. Bạn thử lại nhé.",
   "@asErrSaveFailed": {
     "description": "A system failure on an item (retryable). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -20673,7 +20673,7 @@
   "@asUpgradeContinue": {
     "description": "CH21 primary (paywall; resumes the kept question once after a verified purchase)."
   },
-  "asHealthStillOpen": "Hướng dẫn sức khoẻ thiết yếu vẫn mở, không cần lượt.",
+  "asHealthStillOpen": "Hướng dẫn sức khoẻ thiết yếu vẫn mở.",
   "@asHealthStillOpen": {
     "description": "CH21 / CH24 note, now with a link. Deviates from the frame on purpose (business rule wins; see the A4 report)."
   },
@@ -21015,7 +21015,7 @@
   "@asUploadFree": {
     "description": "CH10 note while uploading. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asUploadCanceled": "Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.",
+  "asUploadCanceled": "Đã huỷ tải lên. Ảnh vẫn được chọn.",
   "@asUploadCanceled": {
     "description": "After cancelling an upload. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -21039,11 +21039,11 @@
   "@asPhotoCanceled": {
     "description": "Attachment of a cancelled task. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asPhotoLeaveScreen": "Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.",
+  "asPhotoLeaveScreen": "Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại.",
   "@asPhotoLeaveScreen": {
     "description": "CH10 note (no notification promise: none is built). Deviates from the frame on purpose (business rule wins; see the A4 report)."
   },
-  "asPhotoFailBody": "Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.",
+  "asPhotoFailBody": "Ảnh chưa được đọc và chưa có gì được lưu. Ảnh vẫn được chọn.",
   "@asPhotoFailBody": {
     "description": "CH25 for a photo upload / start failure. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -22589,15 +22589,15 @@
   "@mtNoteHint": {
     "description": "Note placeholder."
   },
-  "mtPhotosOptional": "Ảnh (không bắt buộc)",
+  "mtPhotosOptional": "Ảnh, video (không bắt buộc)",
   "@mtPhotosOptional": {
     "description": "3c label."
   },
-  "mtAddPhotos": "Thêm ảnh",
+  "mtAddPhotos": "Thêm ảnh, video",
   "@mtAddPhotos": {
     "description": "Camera slot a11y."
   },
-  "mtRemovePhoto": "Bỏ ảnh này",
+  "mtRemovePhoto": "Bỏ mục này",
   "@mtRemovePhoto": {
     "description": "Thumbnail a11y."
   },
@@ -23257,7 +23257,7 @@
   "@asResend": {
     "description": "Inline action under a bubble that could not be sent. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asErrorFriendly": "Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.",
+  "asErrorFriendly": "Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.",
   "@asErrorFriendly": {
     "description": "CH25 as a Lumi bubble (no blame), followed by \"Thử lại\" and \"Ghi trực tiếp\". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },

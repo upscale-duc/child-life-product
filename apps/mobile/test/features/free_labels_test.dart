@@ -5,7 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// D-076 #9: no "Miễn phí" / "Luôn miễn phí" / "Bản theo mẫu luôn miễn phí" / "free" label on the
 /// Premium-feature and AI screens (Nhịp lớn lên `rh`, Premium `pm`, AI summaries `ai`, the
-/// assistant `as`, Kỷ niệm 2.0 `ks`). Honest cost lines stay ("không trừ lượt" = 0 credits).
+/// assistant `as`, Kỷ niệm 2.0 `ks`). Credit lines live only on the usage page and in the
+/// out-of-credit states (D-081).
 void main() {
   const prefixes = ['rh', 'pm', 'ai', 'as', 'ks'];
 

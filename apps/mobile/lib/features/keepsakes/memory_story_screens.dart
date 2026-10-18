@@ -375,11 +375,6 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
             allLabel: l10n.filterAll,
             onSelect: (o) => setState(() => _filter = o),
           ),
-        // MO04: this period's exports, when the server keeps a ledger for the household.
-        if (ref.watch(videoQuotaProvider(c.babyId)).value case final q?) ...[
-          const SizedBox(height: ClSpace.s3),
-          VideoQuotaCard(quota: q),
-        ],
         const SizedBox(height: ClSpace.s4),
         if (catalog.isLoading && !catalog.hasValue)
           const ClSkeleton(height: 280)
@@ -2036,12 +2031,6 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
                       ),
                     ],
                   ),
-                  // MO04: what "Tạo video" takes from this period's exports.
-                  if (ref.watch(videoQuotaProvider(c.babyId)).value
-                      case final q?) ...[
-                    const SizedBox(height: ClSpace.s4),
-                    VideoQuotaCard(quota: q),
-                  ],
                   const SizedBox(height: ClSpace.s6),
                 ],
               ),
@@ -2244,16 +2233,6 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
         ? null
         : byId[job.mediaIds.first]?.displayPath;
     final video = job.outputMediaId == null ? null : byId[job.outputMediaId];
-    // MO04: the household's export ledger, when the server keeps one (null: say nothing).
-    final ledger = ref.watch(videoQuotaProvider(widget.babyId)).value != null;
-    Widget quotaNote(String text) => Padding(
-      padding: const EdgeInsets.only(top: ClSpace.s2),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-      ),
-    );
 
     Widget body;
     switch (job.status) {
@@ -2283,8 +2262,6 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
               textAlign: TextAlign.center,
               style: cl.text.body.copyWith(color: cl.colors.inkMuted),
             ),
-            if (ledger && job.status == KeepsakeJobStatus.queued)
-              quotaNote(l10n.pmQuotaReserved),
             const SizedBox(height: ClSpace.s4),
             Container(
               padding: const EdgeInsets.all(ClSpace.s3),
@@ -2474,8 +2451,6 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
               textAlign: TextAlign.center,
               style: cl.text.body.copyWith(color: cl.colors.inkMuted),
             ),
-            // A failed export gives its reservation back; a retry takes no extra one.
-            if (ledger) quotaNote(l10n.pmQuotaReleased),
             const SizedBox(height: ClSpace.s4),
             ClButton(
               label: l10n.actionRetry,

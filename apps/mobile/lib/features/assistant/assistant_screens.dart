@@ -403,15 +403,15 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     }
   }
 
-  /// CH09: "Gửi ảnh để trợ lý đọc" (camera or library, what it costs), then the exact quote in
-  /// the thread. Nothing is uploaded here.
+  /// CH09: "Gửi ảnh để trợ lý đọc" (camera or library), then the photo in the thread. No cost
+  /// shown (D-081). Nothing is uploaded here.
   Future<void> _choosePhoto(String key, AssistantUsage? usage) async {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
     _focus.unfocus();
     final source = await showClSheet<PhotoSource>(
       context: context,
-      builder: (_) => _PhotoSourceSheet(usage: usage),
+      builder: (_) => const _PhotoSourceSheet(),
     );
     if (source == null || !mounted) return;
     _forceBottom = true;
@@ -1113,11 +1113,6 @@ class _ThreadView {
       out.addAll(_threadEntries(context, t));
       _lastAt = _endOf(t) ?? _lastAt;
     }
-    if (chat.resumed && chat.threads.isNotEmpty) {
-      out.add(
-        _Entry('resumedNote', _Side.note, AsFootnote(text: l10n.asResumedNote)),
-      );
-    }
     if (chat.restoring && chat.threads.every((t) => t.snapshot == null)) {
       out.add(_typing(context, 'restore', l10n.asLoadingChat));
     }
@@ -1557,8 +1552,6 @@ class _ThreadView {
         ),
         AsPhotoReadyCard(
           bytes: photo.bytes,
-          credits: quote.credits,
-          remaining: quote.usage?.remaining ?? chat.usageView?.remaining ?? 0,
           keep: photo.keep,
           canceled: photo.canceled,
           onKeep: ctl.setKeepPhoto,
@@ -1576,7 +1569,6 @@ class _ThreadView {
           onCancel: ctl.cancelUpload,
           cancelLabel: l10n.asCancelUpload,
         ),
-        AsFootnote(icon: ClIcons.check, text: l10n.asUploadFree),
       ],
       PhotoStage.starting => [
         AsPhotoBubble(
@@ -1808,7 +1800,6 @@ class _ThreadView {
               ),
           ],
         ),
-      if (chat.hasReadyDrafts) AsFootnote(text: l10n.asReadyStillSave),
       _healthNote(context),
     ];
   }
@@ -2183,7 +2174,6 @@ class _ThreadView {
               ),
             ],
           ),
-        AsFootnote(icon: ClIcons.lock, text: l10n.asFeedbackFree),
       ];
     }
     final q = care.followUp;
@@ -2212,7 +2202,6 @@ class _ThreadView {
               ),
           ],
         ),
-      AsFootnote(icon: ClIcons.lock, text: l10n.asFeedbackFree),
     ];
   }
 
@@ -2238,7 +2227,6 @@ class _ThreadView {
                 AsChip(label: l10n.asTypeInstead, onPressed: onTypeIn),
               ],
             ),
-            AsFootnote(text: l10n.asUnreadableFree),
           ];
         case AssistantReason.aiUnavailable || null:
           return [
@@ -2366,10 +2354,6 @@ class _ThreadView {
           AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData)
         else
           const SizedBox.shrink(),
-        if (pending)
-          const SizedBox.shrink()
-        else
-          AsFootnote(text: l10n.asClarifyFree),
         // CH15: red flags go to health guidance, free, whatever the credits.
         if (task.care?.topic == 'sleep_concern')
           AsSafetyNote(
@@ -3310,8 +3294,7 @@ class _EmptyState extends StatelessWidget {
 /// costs from the household's policy, and "Huỷ" (0 credits). The exact quote follows in the
 /// thread before anything is uploaded.
 class _PhotoSourceSheet extends StatelessWidget {
-  const _PhotoSourceSheet({required this.usage});
-  final AssistantUsage? usage;
+  const _PhotoSourceSheet();
 
   @override
   Widget build(BuildContext context) {
@@ -3365,7 +3348,6 @@ class _PhotoSourceSheet extends StatelessWidget {
             ),
           ),
         );
-    final u = usage;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3383,49 +3365,6 @@ class _PhotoSourceSheet extends StatelessWidget {
           ClIcons.memories,
           l10n.avatarLibrary,
           l10n.asPhotoLibrarySub,
-        ),
-        const SizedBox(height: ClSpace.s3),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: c.mintSoft,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: ClIcon(ClIcons.spark, size: 15, color: c.mintText),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.asPhotoQuoteExact(u?.imageCredits ?? 3),
-                      style: cl.text.label.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: c.mintText,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      u == null
-                          ? l10n.asPhotoSheetBodyUnknown
-                          : l10n.asPhotoSheetBody(UsageView.of(u).remaining),
-                      style: cl.text.caption.copyWith(
-                        height: 1.4,
-                        color: c.mintText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
         const SizedBox(height: ClSpace.s3),
         AsButton(

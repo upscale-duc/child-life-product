@@ -459,7 +459,12 @@ void main() {
         ),
       );
       expect(find.text('Dành cho bé hôm nay'), findsOneWidget);
-      expect(find.text('Theo điều bạn quan tâm'), findsOneWidget);
+      // Owner 2026-10-18: interests are a button by the title, not a line under it.
+      expect(find.text('Theo điều bạn quan tâm'), findsNothing);
+      expect(
+        find.bySemanticsLabel(RegExp('^Theo điều bạn quan tâm · Đổi')),
+        findsOneWidget,
+      );
       // Nhịp lớn lên is a compact row of "Tuần này của Teddy" (no "Beta" pill to parents).
       expect(find.text('Tuần này của Teddy'), findsOneWidget);
       expect(find.text('Nhịp lớn lên · Beta'), findsNothing);
@@ -500,8 +505,10 @@ void main() {
           ),
         ),
       );
-      expect(find.text('Chưa chọn điều bạn quan tâm'), findsOneWidget);
-      expect(find.text('Chọn'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(RegExp('^Chưa chọn điều bạn quan tâm · Chọn')),
+        findsOneWidget,
+      );
       expect(
         find.textContaining('cần được dỗ nhiều hơn 2 ngày qua'),
         findsOneWidget,

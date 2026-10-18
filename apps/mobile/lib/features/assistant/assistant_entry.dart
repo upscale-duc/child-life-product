@@ -11,14 +11,10 @@ import '../../core/widgets/cl_misc.dart' show ClTourTip;
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
-import '../baby/baby_repository.dart' show babyProvider;
 import '../home/home_shell.dart' show selectedMembershipProvider;
 import '../premium/premium_repository.dart' show capabilitiesProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
-import 'assistant_labels.dart';
 import 'assistant_models.dart';
-import 'assistant_repository.dart';
-import 'assistant_rules.dart';
 import 'assistant_screens.dart';
 import 'assistant_widgets.dart';
 
@@ -43,8 +39,8 @@ final assistantAccessProvider = Provider.family<AssistantAccess?, String>((
   return AssistantAccess(images: caps.features.assistantImages);
 });
 
-/// CH01 · "Trợ lý Child Life" on Hôm nay: a composer-look entry, the household's credits from the
-/// server, and chips that only prefill. Every role sees it; a viewer opens it to ask (CH27).
+/// CH01 · "Trợ lý Child Life" on Hôm nay: a composer-look entry and chips that only prefill. No
+/// credits here (D-081: they live in "Chi tiết" only). Every role sees it; a viewer opens it to ask (CH27).
 class AssistantTodayCard extends ConsumerWidget {
   const AssistantTodayCard({super.key});
 
@@ -56,16 +52,7 @@ class AssistantTodayCard extends ConsumerWidget {
     if (access == null) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final language = Localizations.localeOf(context).languageCode;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final usage = ref
-        .watch(assistantUsageProvider((me.babyId, language)))
-        .value;
-    final view = usage == null ? null : UsageView.of(usage);
     final scope = AssistantScope.child(me.babyId);
-    final zone =
-        ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
-        'Asia/Ho_Chi_Minh';
     final writer = me.role != MemberRole.relative;
     void open({String? prefill}) =>
         openAssistant(context, scope, prefill: prefill);
@@ -98,19 +85,6 @@ class AssistantTodayCard extends ConsumerWidget {
                     ),
                   ),
                 ),
-                if (view != null)
-                  Text(
-                    view.level == UsageLevel.out
-                        ? l10n.asEntryOut(resetDate(locale, view.usage, zone))
-                        : l10n.asEntryLeft(view.remaining, view.limit),
-                    style: cl.text.caption.copyWith(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: view.level == UsageLevel.out
-                          ? cl.colors.error
-                          : cl.colors.inkMuted,
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: ClSpace.s3),

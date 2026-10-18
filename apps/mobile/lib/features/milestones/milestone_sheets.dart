@@ -55,17 +55,12 @@ Future<bool> _write(Future<void> write) async {
   }
 }
 
-/// Photos picked from the library (photos only; videos go through Kỷ niệm itself).
+/// Photos and videos picked from the library. They wait on the phone until "Tạo kỷ niệm" sends
+/// them through Kỷ niệm's upload, which takes both (a video picked here was dropped silently).
 Future<List<PickedMedia>> pickMilestonePhotos(
   BuildContext context,
   WidgetRef ref,
-) async {
-  final picked = await pickFromLibrary(context, ref);
-  return [
-    for (final p in picked ?? const <PickedMedia>[])
-      if (p.type == MediaKind.photo) p,
-  ];
-}
+) async => await pickFromLibrary(context, ref) ?? const <PickedMedia>[];
 
 // ---------- 3c Ghi nhận mốc ----------
 

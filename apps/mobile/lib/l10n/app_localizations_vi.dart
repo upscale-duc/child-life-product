@@ -12545,7 +12545,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get aiStateErrorBody =>
-      'Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.';
+      'Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.';
 
   @override
   String get aiStateQuotaEyebrow => 'ĐÃ DÙNG HẾT LƯỢT AI';
@@ -12606,8 +12606,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get aiStateFailedTitle => 'Chưa tạo được bản bàn giao';
 
   @override
-  String get aiStateFailedBody =>
-      'Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.';
+  String get aiStateFailedBody => 'Ghi nhận của nhà mình vẫn giữ nguyên.';
 
   @override
   String get aiReadEmptyTitle => 'Chưa có bản bàn giao';
@@ -13443,7 +13442,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asCancelTask => 'Huỷ';
 
   @override
-  String get asCanceled => 'Đã huỷ. Không trừ lượt.';
+  String get asCanceled => 'Đã huỷ.';
 
   @override
   String get asUnsent => 'Chưa gửi';
@@ -13627,7 +13626,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asErrStale => 'Bản nháp vừa thay đổi. Xem lại rồi lưu.';
 
   @override
-  String get asErrSaveFailed => 'Chưa lưu được. Thử lại không trừ lượt.';
+  String get asErrSaveFailed => 'Chưa lưu được. Bạn thử lại nhé.';
 
   @override
   String get asErrScope => 'Bé đang chọn đã đổi. Mở lại đúng bé để lưu.';
@@ -13888,8 +13887,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asUpgradeContinue => 'Nâng cấp & tiếp tục câu hỏi';
 
   @override
-  String get asHealthStillOpen =>
-      'Hướng dẫn sức khoẻ thiết yếu vẫn mở, không cần lượt.';
+  String get asHealthStillOpen => 'Hướng dẫn sức khoẻ thiết yếu vẫn mở.';
 
   @override
   String get asOpenHealth => 'Mở Hướng dẫn sức khoẻ';
@@ -14160,8 +14158,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asUploadFree => 'Huỷ khi đang tải lên không trừ lượt.';
 
   @override
-  String get asUploadCanceled =>
-      'Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.';
+  String get asUploadCanceled => 'Đã huỷ tải lên. Ảnh vẫn được chọn.';
 
   @override
   String get asPhotoReading => 'Đang đọc ảnh…';
@@ -14180,11 +14177,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asPhotoLeaveScreen =>
-      'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.';
+      'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại.';
 
   @override
   String get asPhotoFailBody =>
-      'Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.';
+      'Ảnh chưa được đọc và chưa có gì được lưu. Ảnh vẫn được chọn.';
 
   @override
   String get asReceiptTitle => 'Chi tiêu từ hoá đơn';
@@ -15243,13 +15240,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mtNoteHint => 'Bé làm được lúc nào, ở đâu, với ai…';
 
   @override
-  String get mtPhotosOptional => 'Ảnh (không bắt buộc)';
+  String get mtPhotosOptional => 'Ảnh, video (không bắt buộc)';
 
   @override
-  String get mtAddPhotos => 'Thêm ảnh';
+  String get mtAddPhotos => 'Thêm ảnh, video';
 
   @override
-  String get mtRemovePhoto => 'Bỏ ảnh này';
+  String get mtRemovePhoto => 'Bỏ mục này';
 
   @override
   String get mtSave => 'Lưu mốc';
@@ -15696,7 +15693,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asErrorFriendly =>
-      'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.';
+      'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.';
 
   @override
   String get asReadingPhoto => 'Lumi đang đọc ảnh…';

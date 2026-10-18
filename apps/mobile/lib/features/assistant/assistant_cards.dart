@@ -217,8 +217,6 @@ class _Paper extends StatelessWidget {
 class AsPhotoReadyCard extends StatelessWidget {
   const AsPhotoReadyCard({
     required this.bytes,
-    required this.credits,
-    required this.remaining,
     required this.keep,
     required this.onKeep,
     required this.onSend,
@@ -229,9 +227,6 @@ class AsPhotoReadyCard extends StatelessWidget {
 
   final Uint8List? bytes;
 
-  /// The quote's exact credits (never an estimate the app made up).
-  final int credits;
-  final int remaining;
   final bool keep;
   final ValueChanged<bool>? onKeep;
   final VoidCallback? onSend;
@@ -274,47 +269,6 @@ class AsPhotoReadyCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        const SizedBox(height: ClSpace.s3),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: c.mintSoft,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: ClIcon(ClIcons.spark, size: 15, color: c.mintText),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.asPhotoQuoteExact(credits),
-                      style: _semi(
-                        context,
-                        13,
-                        c.mintText,
-                      ).copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      l10n.asPhotoQuoteBody(remaining),
-                      style: cl.text.caption.copyWith(
-                        height: 1.4,
-                        color: c.mintText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
         const SizedBox(height: ClSpace.s3),
         MergeSemantics(

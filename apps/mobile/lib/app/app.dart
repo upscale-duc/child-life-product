@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/appearance/appearance_providers.dart';
 import '../core/design/cl_theme.dart';
 import '../core/design/tokens.g.dart';
+import '../core/widgets/cl_keyboard.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/care/bottle_suggestions.dart';
 import '../features/care/growth_reference.dart';
@@ -98,7 +99,10 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
                     child: GlanceSync(
                       child: DeletionWatcher(
                         // FB4 screenshot toast, FB5 active days (D-065).
-                        child: FeedbackHost(child: child!),
+                        child: FeedbackHost(
+                          // A tap outside a field closes the keyboard everywhere.
+                          child: ClKeyboardDismiss(child: child!),
+                        ),
                       ),
                     ),
                   ),

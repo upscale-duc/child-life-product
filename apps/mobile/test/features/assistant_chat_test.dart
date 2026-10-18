@@ -118,7 +118,7 @@ Future<void> _send(WidgetTester tester) async {
 
 void main() {
   group('CH01 / CH01b entry points', () {
-    testWidgets('Home card: server credits; chips only prefill', (
+    testWidgets('Home card: no credit line (D-081); chips only prefill', (
       tester,
     ) async {
       final repo = FakeAssistantRepository();
@@ -128,7 +128,8 @@ void main() {
         screen: const Scaffold(body: AssistantTodayCard()),
       );
       expect(_text('Trợ lý Child Life'), findsOneWidget);
-      expect(_text('Còn 18/20 lượt'), findsOneWidget);
+      // D-081: credits live only on the usage page, not the Home card.
+      expect(_text('Còn 18/20 lượt'), findsNothing);
       await tester.tap(_text('Ghi cữ bú'));
       await tester.pumpAndSettle();
       expect(visits.last.location, '/assistant?scope=child%3A$teddyId');
@@ -397,7 +398,8 @@ void main() {
       await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(_text('Thử lại mục lỗi'), findsOneWidget);
-      expect(_text('Thử lại không trừ lượt.'), findsOneWidget);
+      // D-081: no "costs no credit" footnote in the chat.
+      expect(_text('Thử lại không trừ lượt.'), findsNothing);
       repo.confirmAnswer = null;
       await tester.tap(_text('Thử lại mục lỗi'));
       await tester.pumpAndSettle();
@@ -512,9 +514,10 @@ void main() {
         },
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      // D-081: no "costs no credit" footnote in the chat.
       expect(
         _text('Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.'),
-        findsOneWidget,
+        findsNothing,
       );
       repo.tasks[taskA] = batchSnapshot();
       await tester.tap(_text('9:00 – 10:00'));
@@ -747,10 +750,11 @@ void main() {
       expect(_text('Đã hết lượt AI tháng này'), findsOneWidget);
       expect(tester.widget<TextField>(find.byType(TextField)).readOnly, isTrue);
       expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsOneWidget);
-      // Ready drafts still save at 0 credits (brief p.17).
+      // Ready drafts still save at 0 credits (brief p.17); D-081 dropped the
+      // footnote saying so.
       expect(
         _text('Bản nháp đã sẵn sàng vẫn lưu được, không cần lượt.'),
-        findsOneWidget,
+        findsNothing,
       );
       await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
@@ -1008,10 +1012,10 @@ void main() {
         },
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      // CH25 as Lumi says it: no blame, nothing saved, nothing charged.
+      // CH25 as Lumi says it: no blame, nothing saved (D-081: no credit talk).
       expect(
         _text(
-          'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.',
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.',
         ),
         findsOneWidget,
       );
@@ -1024,7 +1028,7 @@ void main() {
       );
       expect(
         _text(
-          'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.',
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.',
         ),
         findsNothing,
       );
@@ -1159,7 +1163,8 @@ void main() {
         prefs: _thread([taskA]),
       );
       expect(_text('Hãy liên hệ hỗ trợ y tế ngay'), findsOneWidget);
-      expect(_text('Không trừ lượt'), findsOneWidget);
+      // D-081: no "costs no credit" note on the health card.
+      expect(_text('Không trừ lượt'), findsNothing);
       expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
       await tester.tap(_text('Gọi 115'));
       await tester.pumpAndSettle();
@@ -1286,7 +1291,9 @@ void main() {
       await tester.tap(_text('Huỷ'));
       await tester.pumpAndSettle();
       expect(repo.named('cancelTask').single.args['taskId'], taskA);
-      expect(_text('Đã huỷ. Không trừ lượt.'), findsOneWidget);
+      // D-081: the cancel note no longer mentions credits.
+      expect(_text('Đã huỷ.'), findsOneWidget);
+      expect(_text('Đã huỷ. Không trừ lượt.'), findsNothing);
     });
 
     testWidgets('another scope is another chat: nothing carries across', (

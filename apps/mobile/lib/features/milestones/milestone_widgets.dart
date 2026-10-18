@@ -19,6 +19,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show babyToday;
 import '../home/home_shell.dart';
 import '../memories/memories_screen.dart' show MemoryCtx, memoryCtx;
+import '../memories/memory_models.dart' show MediaKind;
 import '../memories/upload_queue.dart' show PickedMedia;
 import '../rhythm/rhythm_access.dart';
 import 'milestone_models.dart';
@@ -86,6 +87,32 @@ String rangeChipLabel(AppLocalizations l10n, MilestoneAgeRange r) =>
     r.unit == AgeUnit.weeks
     ? l10n.mtRangeChipWeeks(r.from, r.to)
     : l10n.mtRangeChipMonths(r.from, r.to);
+
+// ---------- Reading ----------
+
+final _sentenceEnd = RegExp(r'(?<=[.!?…])\s+(?=[\p{Lu}"“‘])', unicode: true);
+
+/// Splits a portal paragraph ("Cách nhận biết") into short points to scan. A fragment under
+/// [minLength] (a quoted reply such as "Ăn cơm.") stays with the sentence before it.
+List<String> readingChunks(String text, {int minLength = 32}) {
+  final paragraphs = text
+      .split(RegExp(r'\n\s*'))
+      .map((p) => p.trim())
+      .where((p) => p.isNotEmpty);
+  final chunks = <String>[];
+  for (final p in paragraphs) {
+    var first = true;
+    for (final s in p.split(_sentenceEnd)) {
+      if (!first && chunks.isNotEmpty && s.length < minLength) {
+        chunks.last = '${chunks.last} $s';
+      } else {
+        chunks.add(s);
+      }
+      first = false;
+    }
+  }
+  return chunks;
+}
 
 // ---------- Dates ----------
 
@@ -637,7 +664,8 @@ class MtPhotoStrip extends StatelessWidget {
   }
 }
 
-/// A picked photo from the phone (its thumbnail, else the file).
+/// A picked photo or video from the phone (its thumbnail, else the file); a video has a play
+/// badge as in Kỷ niệm's grid.
 class MtPickedImage extends StatelessWidget {
   const MtPickedImage(this.picked, {super.key});
   final PickedMedia picked;
@@ -646,17 +674,45 @@ class MtPickedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bytes = picked.thumbBytes;
     final fallback = ColoredBox(color: context.cl.colors.surface2);
+    final video = picked.type == MediaKind.video;
+    final Widget image;
     if (bytes != null) {
-      return Image.memory(
+      image = Image.memory(
         bytes,
         fit: BoxFit.cover,
         errorBuilder: (_, _, _) => fallback,
       );
+    } else if (video) {
+      image = fallback;
+    } else {
+      image = Image.file(
+        File(picked.file.path),
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => fallback,
+      );
     }
-    return Image.file(
-      File(picked.file.path),
-      fit: BoxFit.cover,
-      errorBuilder: (_, _, _) => fallback,
+    if (!video) return image;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        image,
+        Positioned(
+          left: 6,
+          bottom: 6,
+          child: Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Icon(
+              Icons.play_arrow_rounded,
+              size: 14,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -473,37 +473,86 @@ class MilestoneDetailScreen extends ConsumerWidget {
   }
 }
 
-/// The 3b hero: the portal's picture, or the group's art on its tint.
+/// The 3b hero: the portal's picture only. Without one there is no hero: the group's art alone
+/// filled the space with nothing to read (the group chip keeps its icon). The art stays as the
+/// fallback when a supplied picture fails to load.
 class _Hero extends ConsumerWidget {
-  const _Hero(this.m, this.lang);
+  const _Hero(this.m, this.lang, this.image);
   final ReferenceMilestone m;
   final String lang;
+  final String image;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final style = groupStyle(context, m.group);
-    final art = Container(
-      color: style.fill,
-      alignment: Alignment.center,
-      child: ClIcon(style.icon, size: 56, color: context.cl.colors.ink),
-    );
-    final image = m.illustration;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: AspectRatio(
-        aspectRatio: 343 / 170,
-        child: image == null
-            ? ExcludeSemantics(child: art)
-            : Semantics(
-                image: true,
-                label: m.illustrationAlt?.of(lang),
-                child: Image(
-                  image: ref.watch(milestoneImageProvider)(image),
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => art,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: AspectRatio(
+          aspectRatio: 343 / 170,
+          child: Semantics(
+            image: true,
+            label: m.illustrationAlt?.of(lang),
+            child: Image(
+              image: ref.watch(milestoneImageProvider)(image),
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => ExcludeSemantics(
+                child: Container(
+                  color: style.fill,
+                  alignment: Alignment.center,
+                  child: ClIcon(
+                    style.icon,
+                    size: 56,
+                    color: context.cl.colors.ink,
+                  ),
                 ),
               ),
+            ),
+          ),
+        ),
       ),
+    );
+  }
+}
+
+/// A titled 3b card body: the portal paragraph as short points, so it scans on a phone.
+class _Points extends StatelessWidget {
+  const _Points(this.text, {required this.style, required this.dot});
+  final String text;
+  final TextStyle style;
+  final Color dot;
+
+  @override
+  Widget build(BuildContext context) {
+    final chunks = readingChunks(text);
+    if (chunks.length < 2) return Text(text, style: style);
+    final lineHeight = (style.fontSize ?? 16) * (style.height ?? 1.5);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (i, t) in chunks.indexed) ...[
+          if (i > 0) const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: (lineHeight - 6) / 2,
+                  left: 2,
+                  right: 10,
+                ),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
+                ),
+              ),
+              Expanded(child: Text(t, style: style)),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }
@@ -556,13 +605,16 @@ class _ReferenceViewState extends ConsumerState<_ReferenceView> {
         ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false;
     return MtPage(
       children: [
-        _Hero(m, c.lang),
-        const SizedBox(height: 14),
+        if (m.illustration case final image?) _Hero(m, c.lang, image),
         Wrap(
           spacing: ClSpace.s2,
           runSpacing: ClSpace.s2,
           children: [
-            MtChip(label: groupLabel(l10n, m.group), fill: style.fill),
+            MtChip(
+              label: groupLabel(l10n, m.group),
+              fill: style.fill,
+              icon: style.icon,
+            ),
             MtChip(
               label: rangeChipLabel(l10n, m.ageRange),
               fill: cl.colors.surface2,
@@ -580,7 +632,7 @@ class _ReferenceViewState extends ConsumerState<_ReferenceView> {
         MtTitle(m.title.of(c.lang)),
         const SizedBox(height: 14),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
           decoration: BoxDecoration(
             color: cl.colors.surface,
             borderRadius: BorderRadius.circular(20),
@@ -593,10 +645,11 @@ class _ReferenceViewState extends ConsumerState<_ReferenceView> {
                 l10n.mtHowTo,
                 style: cl.text.bodyStrong.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 6),
-              Text(
+              const SizedBox(height: 10),
+              _Points(
                 m.howToRecognise.of(c.lang),
-                style: cl.text.body.copyWith(fontSize: 14, height: 1.55),
+                style: cl.text.body,
+                dot: cl.colors.mintText,
               ),
             ],
           ),
@@ -604,26 +657,34 @@ class _ReferenceViewState extends ConsumerState<_ReferenceView> {
         if (m.talkToDoctor != null) ...[
           const SizedBox(height: 14),
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
             decoration: BoxDecoration(
               color: cl.colors.sunshineSoft,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Ink on soft warm fills, also in Night care.
-                Text(
-                  l10n.mtTalkToDoctor,
-                  style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
+                Row(
+                  children: [
+                    ClIcon(ClIcons.alert, size: 18, color: cl.colors.ink),
+                    const SizedBox(width: ClSpace.s2),
+                    Expanded(
+                      child: Text(
+                        l10n.mtTalkToDoctor,
+                        style: cl.text.bodyStrong.copyWith(
+                          color: cl.colors.ink,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   m.talkToDoctor!.of(c.lang),
-                  style: cl.text.label.copyWith(
-                    color: cl.colors.ink,
-                    height: 1.45,
-                  ),
+                  style: cl.text.body.copyWith(color: cl.colors.ink),
                 ),
               ],
             ),

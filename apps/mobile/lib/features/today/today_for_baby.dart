@@ -9,7 +9,6 @@ import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
-import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../ai/handover_screen.dart' show HandoverEntry;
 import '../baby/baby_repository.dart';
@@ -107,8 +106,9 @@ class TodayHandoverRow extends ConsumerWidget {
   }
 }
 
-/// "Dành cho bé hôm nay" and the line under it: "Theo điều bạn quan tâm · Đổi", or "Chưa chọn
-/// … · Chọn" before the person picked anything.
+/// "Dành cho bé hôm nay" with a small interests button at its end (owner, 2026-10-18: the line
+/// "Theo điều bạn quan tâm · Đổi" took a row that is rarely needed). Before the person picked
+/// anything, the button carries a dot so "Chọn" is still noticed.
 class ForBabyHeader extends StatelessWidget {
   const ForBabyHeader({required this.hasInterests, super.key});
   final bool hasInterests;
@@ -118,50 +118,59 @@ class ForBabyHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final link = hasInterests ? l10n.hnForBabyChange : l10n.hnForBabyPick;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClSectionHeader(title: l10n.rhSectionForYou),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: ClSpace.s1),
-          child: Row(
-            children: [
-              ClIcon(ClIcons.sliders, size: 14, color: cl.colors.inkMuted),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  hasInterests
-                      ? l10n.hnForBabyBecause
-                      : l10n.hnForBabyNoInterests,
-                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                ),
-              ),
-              ClPressable(
-                key: const Key('forBabyChange'),
-                onPressed: () => context.push(Routes.rhythmInterests),
-                semanticLabel: '$link · ${l10n.rhInterestsRow}',
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: ClSpace.tapMin,
-                    minWidth: ClSpace.tapMin,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    widthFactor: 1,
-                    child: Text(
-                      link,
-                      style: cl.text.label.copyWith(
-                        color: cl.colors.mintText,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    final why = hasInterests
+        ? l10n.hnForBabyBecause
+        : l10n.hnForBabyNoInterests;
+    return Padding(
+      padding: const EdgeInsets.only(left: ClSpace.s1),
+      child: Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(l10n.rhSectionForYou, style: cl.text.headline),
+            ),
           ),
-        ),
-      ],
+          ClPressable(
+            key: const Key('forBabyChange'),
+            onPressed: () => context.push(Routes.rhythmInterests),
+            semanticLabel: '$why · $link · ${l10n.rhInterestsRow}',
+            child: SizedBox.square(
+              dimension: ClSpace.tapMin,
+              child: Center(
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: cl.colors.surface2,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClIcon(ClIcons.sliders, size: 18, color: cl.colors.ink),
+                      if (!hasInterests)
+                        Positioned(
+                          right: -3,
+                          top: -3,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: cl.colors.mintText,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

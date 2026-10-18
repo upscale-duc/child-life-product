@@ -13371,8 +13371,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiStateErrorEyebrow => 'AI DIDN’T RESPOND';
 
   @override
-  String get aiStateErrorBody =>
-      'No AI quota is used on errors. Logging and health guidance are unaffected.';
+  String get aiStateErrorBody => 'Logging and health guidance are unaffected.';
 
   @override
   String get aiStateQuotaEyebrow => 'AI LIMIT REACHED';
@@ -13432,8 +13431,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiStateFailedTitle => 'Couldn’t make the handover';
 
   @override
-  String get aiStateFailedBody =>
-      'Your family’s notes are unchanged. No AI quota is used on errors.';
+  String get aiStateFailedBody => 'Your family’s notes are unchanged.';
 
   @override
   String get aiReadEmptyTitle => 'No handover yet';
@@ -14337,7 +14335,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asCancelTask => 'Cancel';
 
   @override
-  String get asCanceled => 'Canceled. No AI help used.';
+  String get asCanceled => 'Canceled.';
 
   @override
   String get asUnsent => 'Not sent';
@@ -14527,7 +14525,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asErrStale => 'This draft just changed. Check it, then save.';
 
   @override
-  String get asErrSaveFailed => 'Couldn’t save. Retrying doesn’t use AI help.';
+  String get asErrSaveFailed => 'Couldn’t save. Please try again.';
 
   @override
   String get asErrScope =>
@@ -14808,8 +14806,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asUpgradeContinue => 'Upgrade & continue';
 
   @override
-  String get asHealthStillOpen =>
-      'Essential health guidance stays open, no AI help needed.';
+  String get asHealthStillOpen => 'Essential health guidance stays open.';
 
   @override
   String get asOpenHealth => 'Open Health guidance';
@@ -15082,8 +15079,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asUploadFree => 'Cancelling while uploading uses no AI help.';
 
   @override
-  String get asUploadCanceled =>
-      'Upload cancelled · no AI help used. The photo is still chosen.';
+  String get asUploadCanceled => 'Upload cancelled. The photo is still chosen.';
 
   @override
   String get asPhotoReading => 'Reading the photo…';
@@ -15102,11 +15098,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asPhotoLeaveScreen =>
-      'You can leave this screen; the result stays here when you come back. System errors use no AI help.';
+      'You can leave this screen; the result stays here when you come back.';
 
   @override
   String get asPhotoFailBody =>
-      'The photo wasn’t read, nothing was saved and no AI help was used. The photo is still chosen.';
+      'The photo wasn’t read and nothing was saved. The photo is still chosen.';
 
   @override
   String get asReceiptTitle => 'Expense from receipt';
@@ -16261,13 +16257,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mtNoteHint => 'When, where, with whom…';
 
   @override
-  String get mtPhotosOptional => 'Photos (optional)';
+  String get mtPhotosOptional => 'Photos and videos (optional)';
 
   @override
-  String get mtAddPhotos => 'Add photos';
+  String get mtAddPhotos => 'Add photos or videos';
 
   @override
-  String get mtRemovePhoto => 'Remove this photo';
+  String get mtRemovePhoto => 'Remove this item';
 
   @override
   String get mtSave => 'Save milestone';
@@ -16738,7 +16734,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asErrorFriendly =>
-      'I couldn’t answer just now. Nothing was saved and no AI help was used — try again, or log it directly.';
+      'I couldn’t answer just now. Nothing was saved — try again, or log it directly.';
 
   @override
   String get asReadingPhoto => 'Lumi is reading the photo…';

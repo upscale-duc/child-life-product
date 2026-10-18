@@ -274,7 +274,7 @@ void main() {
     });
 
     testWidgets(
-      'AI error: template, "không trừ lượt", retry is a new attempt',
+      'AI error: template, no credit line (D-081), retry is a new attempt',
       (tester) async {
         final (_, ai) = await _handover(
           tester,
@@ -285,6 +285,8 @@ void main() {
         expect(find.text(l10n.aiStateErrorEyebrow), findsOneWidget);
         expect(find.text(l10n.aiStateTemplateTitle), findsOneWidget);
         expect(find.text(l10n.aiStateErrorBody), findsOneWidget);
+        // D-081: the error body no longer mentions credits.
+        expect(find.textContaining('lượt'), findsNothing);
         ai.answer = handover();
         await _tap(tester, find.text(l10n.rhRetry));
         expect(ai.calls, hasLength(2));
