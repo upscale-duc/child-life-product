@@ -263,3 +263,131 @@ before the end), `readTypedAnswer` in `submitClarification` (unreadable → the 
 question. Cases `firebase/tests/assistant-e2e/cases/16-care-ongoing-l1.json` (on-10…on-18, live
 9/9). The timer card shows "Từ 11:21 · 5 phút" with the existing "Bắt đầu tính giờ ngủ · 11:21"
 button; "Lưu và bắt đầu đếm" and "huỷ" as an answer are not done.
+
+## 11. The conversation itself: review and redesign (2026-10-19, afternoon)
+
+**Owner request:** "Hiện tại vấn đề lớn là nó không hiểu được prompt người dùng cho những follow-up
+conversation … review và đề xuất cách triển khai mới về chatbox hoạt động tốt hơn." Two device
+conversations on dev, 13:54 and 14:00 (after L1 and L2 were deployed):
+
+| Turn                                       | Lumi                                        | What happened on the server (dev task docs, structure only)                        |
+| ------------------------------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| "Bé đã bú bình 180ml"                      | "Việc này lúc mấy giờ?" — **no chips**      | Rule-read task, `awaiting_clarification` `time.missing` with 3 chips (Vừa xong, 30 phút trước, 1 tiếng trước), still open |
+| "13:00"                                    | "Bạn muốn xem nhật ký hay ghi thêm?" — no chips | A **new task** (model path): nothing to log → the model's `intent` question; the bottle task is left waiting |
+| "Ghi"                                      | "Ok! Mình ở đây khi bạn cần."               | A new task: small talk `ack`                                                       |
+| "Hỏi mấy giờ xong ko ghi gì là sao"        | "Bạn muốn xem nhật ký hay ghi thêm?"        | A new task: `intent` again                                                         |
+| "Em bé đã thay tã" → "Bây giờ"             | the same two steps                          | the same                                                                           |
+
+Two messages in between (13:59, 14:00) failed with `REGION_UNSUPPORTED`: a care topic (guidance)
+is blocked when the family's country is not in `regions.advanced` (`assistant-care.ts:213`). The
+family of the test baby is set to a country outside that list; a separate check (§11.4).
+
+### 11.1 Root cause of the dead end: the app never sees the open question
+
+- The server keeps the open question in the task document as **`pendingClarification`** and the
+  rounds in `clarifications[]` as `{id, field, round, answer}` (no question, no chips;
+  `assistant-worker.ts:1306-1312`). The callable view maps it to `clarification`
+  (`assistant-store.ts:110`).
+- The e2e harness feeds every typed answer through `submitClarification` (`harness.ts:769-792`);
+  only `on-16` sends words as a new message, scripted with a model that returns nothing, so the
+  fake suite never meets a real model's `clar: intent` for a bare clock. No case types "Bây giờ".
+- The app reads `clarification` from the view, or **`clarifications[].clarification`** from a raw
+  document (`assistant_models.dart:2156-2164`), a form the server has never written; its unit test
+  (`assistant_test.dart:183`) asserts that invented form. It never reads `pendingClarification`.
+  A raw document therefore parses with **`clarification == null`**.
+- The Firestore listener on the task document (`assistant_repository.dart:472`) delivers that raw
+  task; `mergeTask` lets an incoming task of the **same version** replace the current one
+  (`assistant_rules.dart:591-595`). So whichever arrives last wins.
+- Before L2: `startTask` returned a `queued` task; the worker ran on the trigger; the events
+  listener saw `clarification_required` and called `getAssistantTask`; the view (with the
+  question) usually arrived after the raw document and won. Fragile, but it held.
+- After L2: `startTask` runs the worker inline and **returns the finished snapshot** (view, with
+  the question, events already accepted by the client). The listener then delivers the raw
+  document of the same version, replaces the task, and the question is gone: no chips, and
+  `openQuestionFor` finds nothing, so the typed "13:00" starts a new task. L1's typed-answer
+  routing was never reached. Any app build is affected, because the order of arrival changed on
+  the server side.
+
+### 11.2 What the review says about the design
+
+The regression exposed the real limits of the model, which are not L1/L2's:
+
+1. **No conversation state, only tasks.** A message is read on its own; "follow-up" exists only as
+   (a) server questions inside one task (≤ 4 rounds) and (b) `previousTurnOf`, the previous task's
+   text and drafts, for corrections (`assistant-text.ts:1790`). A bare reply ("13:00", "Bây giờ",
+   "Ghi", "sáng", "180 chứ không phải 120") read alone has nothing to log, so it falls to small
+   talk, the help text or the `intent` question. The rule reader (L2) does not see the previous
+   turn at all.
+2. **The open question lives in the client's head.** Only the app decides that typed words answer
+   the question (`send()` → `openQuestionFor`). The server will happily start a new task while its
+   own question is open in the same conversation for the same author. A notification reply, voice,
+   an older app, or a lost listener all break it.
+3. **Two sources of truth for a task.** The callable view and the raw Firestore document differ in
+   shape, both reach the same state object, and "same version wins" chooses by arrival order.
+4. **Questions the phone could answer** (§3.2 already): "Bé đã bú bình 180ml" — past tense, no time —
+   asks for a time instead of taking **now** and letting the card's time be edited. The question
+   turns a one-message log into a three-message one, and every extra turn is a chance to fall off.
+5. **Dead ends read like a chatbot.** "Bạn muốn xem nhật ký hay ghi thêm?" with no chips, "Ok! Mình
+   ở đây khi bạn cần." to "Ghi", and the same question again to a complaint. Lumi never says what
+   it is waiting for.
+
+### 11.3 The redesign (P-168)
+
+**Principle: the conversation, not the message, is the unit of understanding.** Every message is
+first resolved against the state of the conversation for this author; only then is it read.
+
+1. **Dialogue state on the server.** `assistantConversations/{cv}/dialogue/{uid}` written in the
+   worker's finalize and on every confirm/discard: the open question (task, field, chips, asked
+   at), the drafts still waiting to be saved (kind, key fields, draft ids), the last saved records
+   (kind, time, record id, for 30 min), the running timers, the last Lumi answer kind, and the
+   last 3 turns compacted to kinds and times (no free text beyond the current message). Replaces
+   `previousTurnOf`; expires with the question TTL / 2 hours.
+2. **A resolver before any reader.** In `startTask`, before rules or the model, for the author's
+   dialogue state:
+   - **Answer**: a question is open → the message is its answer (`readTypedAnswer`, else re-ask
+     with the chips and "Hoặc gõ: 13:00, vừa xong, 30 phút trước"). The app's `openQuestionFor`
+     becomes a hint only; the server is the authority, so voice, notifications and old apps work.
+   - **Correction / addition** of a waiting draft or a record saved in the last 30 minutes: "180
+     chứ", "bình chứ không phải mẹ", "thêm 10 phút", "lúc 13h mới đúng", "xoá cái vừa ghi" →
+     `patchDraft` / an edit draft of the record (Phase 3 §6), never a new log.
+   - **Continuation**: "rồi ngủ lúc 10h", "xong rồi bé ngủ" → a new log that inherits the
+     previous one's day and order.
+   - **Meta**: "là sao", "sao không ghi", "mình gõ rồi mà" → Lumi restates what it is waiting for
+     ("Mình đang chờ giờ của cữ bú 180ml — chọn ở trên hoặc gõ giờ") with the chips again.
+   - **New intent** → rules (L2), then the model, both receiving the compacted dialogue state;
+     the model's schema gets `replyTo` (question / draft / record) and `corrects` fields.
+   Short replies (≤ 3 words, a number, a time, ừ/ok/đúng/không) are **never** read as a new task
+   while anything is waiting.
+3. **Ask less, show more.** A completed log with no time takes **now** (anchor) and the card shows
+   "Lúc 13:54 · Sửa giờ"; `time.missing` is asked only when the words say the time is not now
+   ("sáng nay", "hồi nãy" without a length) or when a span needs it. The morning/evening question
+   stays as L1 left it. The `intent` question ("xem nhật ký hay ghi thêm") is asked only for a bare
+   kind word with nothing waiting; otherwise Lumi answers with the day's facts and a chip to log.
+4. **One task shape, one merge rule.** The task document and the view carry the same
+   `clarification` (the server writes it into the document too; the app also reads
+   `pendingClarification`); `mergeTask` prefers, at equal versions, the task that carries more
+   (a question, drafts) and never drops an open question for a null; the inline snapshot marks
+   the listener state as already current. A client replay test runs the two arrival orders.
+5. **The composer shows what it will do.** While a question is open: a line above the field
+   "Đang trả lời: Việc này lúc mấy giờ?" with × ("Hỏi việc khác"); the chips stay under the
+   question; typing and sending answers it. While a draft waits: "Đang chờ bạn lưu cữ bú 180ml"
+   with "Lưu" and "Bỏ". Nothing is sent by itself.
+6. **Every reply says what Lumi did or needs.** No bare "Ok!"; an unreadable reply gets the
+   question back with examples; a complaint gets the state; a new topic while a question is
+   open closes the question ("Mình bỏ câu hỏi về cữ bú 180ml nhé" with "Giữ lại").
+7. **Tests at conversation level.** The e2e harness runs scripted conversations (log → question →
+   typed answer → correction → "xoá cái vừa ghi" → "hôm nay bé bú mấy cữ"), with the fake model and
+   a live subset; the app replay feeds each step through both arrival orders (view first, document
+   first). The two device conversations above become fixtures.
+
+### 11.4 Slices
+
+| Slice | Content                                                                                   | Size | Touches                                                                                       |
+| ----- | ----------------------------------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------- |
+| L1b   | **Hotfix now**: app reads `pendingClarification`; server writes `clarification` into the document; `mergeTask` never drops an open question; `startTask` answers the author's open question in that conversation instead of starting a new text task; `openQuestionInsteadOfHelp` also covers the `intent` question and small-talk `ack` while a question is open; "bây giờ / giờ / vừa xong / mới xong" as a typed answer reads as `ago_0` (today it leaves the time in review); `openQuestionFor` skips a thread without a snapshot instead of giving up; replay test for both arrival orders; the two conversations as fixtures (e2e `say "Bé đã bú bình 180ml"` then `say "13:00"` / `"Bây giờ"` with the model scripted to `clar: intent`) | S | app models/rules/controller, `assistant-worker.ts` finalize, `assistant.ts` start, `assistant-text.ts` typed answers, tests |
+| L7    | §11.3 #1–#2, #6: dialogue state, the resolver, meta replies                               | L    | `assistant.ts`, worker, a `dialogue` doc, model schema `replyTo` / `corrects`, e2e scripts     |
+| L8    | §11.3 #3, #5: now by default with "Sửa giờ", composer state line, `intent` question narrowed | M    | server planner, app composer + ARB                                                            |
+| —     | Region: why the test family's country blocks care guidance on dev (`regions.advanced`); decide whether guidance follows the content country of D-087 | S | config / owner check                                                                      |
+
+Order: L1b at once (it blocks every question on dev), then L6 as agreed, then L7 and L8 with
+Phase 2 reads (they share the resolver and the composer).
