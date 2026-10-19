@@ -230,8 +230,8 @@ time, not to judge how long the baby sleeps.
 
 ## 9. Owner answers (2026-10-19) and what is still open
 
-1. **Open:** proposed order — Phase 1 now (L1, L2), Phase 2 reads with Phase 4 next steps, Phase 3
-   per module, the notification (L6) after L1.
+1. **Order (agreed):** L1 and L2 first, then L6 "Bé dậy chưa?", then Phase 2 reads together with
+   Phase 4 next steps (L3, L4), and Phase 3 writes last, one module at a time (L5…).
 2. Rule-read logs and read cards cost **0 lượt** (§8).
 3. **No `minInstances`**; keep the functions warm with a scheduled ping instead (§4.4).
 4. **"Bé dậy chưa?"** yes, personal and well timed (§7.1).
