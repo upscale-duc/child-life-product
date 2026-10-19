@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   contentFoodSchema,
   contentRecipeSchema,
+  familyRecipeSchema,
   foodContentSchema,
   mealSchema,
   recipeAgeProblems,
@@ -187,6 +188,41 @@ describe('per baby', () => {
       true,
     );
     expect(mealSchema.safeParse({ ...meal, id: 'r_x' }).success).toBe(false);
+  });
+
+  it("a meal links a Child Life recipe or one of the family's own (D-086)", () => {
+    expect(mealSchema.safeParse({ ...meal, recipeId: 'rcp_chao_bi_do' }).success).toBe(true);
+    expect(mealSchema.safeParse({ ...meal, recipeId: `fr_${'b'.repeat(32)}` }).success).toBe(true);
+    expect(mealSchema.safeParse({ ...meal, recipeId: 'fd_egg' }).success).toBe(false);
+  });
+
+  it('a family recipe: a title and at least one ingredient; steps and quantities optional', () => {
+    const own = {
+      id: `fr_${'c'.repeat(32)}`,
+      babyId: 'b1',
+      title: 'Cháo gà bí đỏ của bà',
+      photoPath: null,
+      ingredients: [
+        { foodId: 'fd_chicken', name: 'Thịt gà', qty: 30, unit: 'g' },
+        { foodId: null, name: 'Nước dùng xương', qty: null, unit: null },
+      ],
+      steps: ['Nấu cháo nhừ.', 'Thêm gà xay và bí đỏ nghiền.'],
+      note: '',
+      createdBy: 'u1',
+      author: { name: 'Mai', relation: 'mother', relationCustom: null },
+      createdAt: at,
+      clientCreatedAt: at,
+      updatedAt: at,
+      updatedBy: 'u1',
+      deleted: false,
+      deletedAt: null,
+      deletedBy: null,
+    };
+    expect(familyRecipeSchema.safeParse(own).success).toBe(true);
+    expect(familyRecipeSchema.safeParse({ ...own, steps: [] }).success).toBe(true);
+    expect(familyRecipeSchema.safeParse({ ...own, ingredients: [] }).success).toBe(false);
+    expect(familyRecipeSchema.safeParse({ ...own, title: ' ' }).success).toBe(false);
+    expect(familyRecipeSchema.safeParse({ ...own, id: 'rcp_x1' }).success).toBe(false);
   });
 
   it('settings', () => {

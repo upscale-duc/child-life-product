@@ -29777,6 +29777,372 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chạm một món để ghi bữa.'**
   String get sdIdeasHint;
+
+  /// Recipe page: how many meals were cooked from this recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã làm {count} lần'**
+  String sdMadeCount(int count);
+
+  /// Recipe page: the latest meal cooked from it (dd/MM). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'gần nhất {date}'**
+  String sdMadeLast(String date);
+
+  /// Recipe page: latest reaction of the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} thích'**
+  String sdMadeLiked(String name);
+
+  /// Recipe page: latest reaction of the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} ăn bình thường'**
+  String sdMadeNeutral(String name);
+
+  /// Recipe page: latest reaction (neutral wording, P-164 #17). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} chưa hợp'**
+  String sdMadeNotYet(String name);
+
+  /// Recipe page: section listing the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần đã làm'**
+  String get sdMadeTitle;
+
+  /// Meal detail: the recipe the meal was cooked from (opens it). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo công thức: {name}'**
+  String sdFromRecipe(String name);
+
+  /// Meal detail: save the meal as a family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thành công thức'**
+  String get sdSaveAsRecipe;
+
+  /// Family recipes: section header in 5f and 4f, and the tag on a family recipe row. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình'**
+  String get sdFamily;
+
+  /// Family recipe page: the kind chip. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức nhà mình'**
+  String get sdFamilyRecipes;
+
+  /// 5f: create a family recipe; also the editor title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm công thức nhà mình'**
+  String get sdFamilyAdd;
+
+  /// 5f Nhà mình header link to add a family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get sdFamilyAddShort;
+
+  /// 5f card body before the family has any recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu món nhà hay nấu cho bé, lần sau ghi bữa chỉ một chạm.'**
+  String get sdFamilyAddBody;
+
+  /// 5f: show every family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả · {count}'**
+  String sdFamilyAll(int count);
+
+  /// Family recipe row and chip: ingredient count. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} nguyên liệu'**
+  String sdFamilyIngredientsCount(int count);
+
+  /// Family recipe row: meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã làm {count} lần'**
+  String sdFamilyMade(int count);
+
+  /// Family recipe page: who added it (Mẹ, Cô Lan, Bạn). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} thêm'**
+  String sdFamilyAddedBy(String who);
+
+  /// Family recipe editor title when editing. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa công thức'**
+  String get sdFamilyEditTitle;
+
+  /// Family recipe editor: title field label. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên món'**
+  String get sdFamilyName;
+
+  /// Family recipe editor: title placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Cháo bí đỏ thịt bằm'**
+  String get sdFamilyNameHint;
+
+  /// Family recipe editor: photo field label. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh món (không bắt buộc)'**
+  String get sdFamilyPhoto;
+
+  /// Family recipe editor: add photo button. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh món'**
+  String get sdFamilyPhotoAdd;
+
+  /// Family recipe editor: quantity placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng'**
+  String get sdFamilyQtyHint;
+
+  /// Family recipe editor: unit chip and sheet title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn vị'**
+  String get sdFamilyUnit;
+
+  /// Family recipe editor: no unit. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không ghi'**
+  String get sdFamilyUnitNone;
+
+  /// Family recipe editor: invalid quantity. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lượng từ 0,1 đến 2000, hoặc để trống.'**
+  String get sdFamilyQtyInvalid;
+
+  /// Family recipe editor: ingredients hint. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn trong danh mục hoặc gõ tên khác; lượng không bắt buộc.'**
+  String get sdFamilyIngredientsHint;
+
+  /// Family recipe editor: step placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {n}'**
+  String sdFamilyStepHint(int n);
+
+  /// Family recipe editor: add a step (up to 12). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm bước'**
+  String get sdFamilyAddStep;
+
+  /// Family recipe editor: reorder (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đưa bước {n} lên'**
+  String sdFamilyStepUp(int n);
+
+  /// Family recipe editor: reorder (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đưa bước {n} xuống'**
+  String sdFamilyStepDown(int n);
+
+  /// Family recipe editor: remove a step (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ bước {n}'**
+  String sdFamilyStepRemove(int n);
+
+  /// Family recipe: note label and section. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú'**
+  String get sdFamilyNote;
+
+  /// Family recipe editor: note placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹo, cách bảo quản… (không bắt buộc)'**
+  String get sdFamilyNoteHint;
+
+  /// Family recipe editor: save button. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu công thức'**
+  String get sdFamilySave;
+
+  /// Family recipe editor: missing title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm tên món.'**
+  String get sdFamilyNeedTitle;
+
+  /// Family recipe editor: no ingredient. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ít nhất một nguyên liệu.'**
+  String get sdFamilyNeedIngredient;
+
+  /// Toast after saving a new family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu công thức · {title}'**
+  String sdFamilySavedToast(String title);
+
+  /// Family recipe page: delete button and confirm. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get sdFamilyDelete;
+
+  /// Family recipe delete confirmation title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá công thức này?'**
+  String get sdFamilyDeleteTitle;
+
+  /// Family recipe delete confirmation body. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức được giữ 30 ngày trong “Đã xoá gần đây”. Các bữa đã ghi theo công thức vẫn còn.'**
+  String get sdFamilyDeleteBody;
+
+  /// Toast after deleting a family recipe (with undo). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá công thức'**
+  String get sdFamilyDeletedToast;
+
+  /// Family recipe page: not found. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức có thể đã được xoá.'**
+  String get sdFamilyMissingBody;
+
+  /// Family recipe page: read-only note. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức này do người khác thêm: bạn chỉ xem được.'**
+  String get sdFamilyViewOnly;
+
+  /// 5c: one-tap chips of recent family recipes. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món nhà mình'**
+  String get sdFamilyChips;
+
+  /// 4f Ăn dặm: header of the saved guides and recipes below Nhà mình. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã lưu'**
+  String get sdSavedByMe;
+
+  /// Family recipe nudges: title (never blocks). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ý cho bé'**
+  String get sdNudgeTitle;
+
+  /// Family recipe nudge: honey under 12 months. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật ong chỉ cho bé từ 12 tháng tuổi: trước đó có nguy cơ ngộ độc.'**
+  String get sdNudgeHoney;
+
+  /// Family recipe nudge: a food usually given later. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{food} thường cho bé từ {months} tháng.'**
+  String sdNudgeTooYoung(String food, int months);
+
+  /// Family recipe nudge: added seasoning. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thêm gia vị ({list}). Thức ăn của bé không cần muối, đường hay nước mắm.'**
+  String sdNudgeSeasoning(String list);
+
+  /// Family recipe nudge: the catalogue choking note of a food. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{food}: {note}'**
+  String sdNudgeChoking(String food, String note);
+
+  /// Family recipe nudges footer. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công thức của nhà mình: app chỉ lưu ý, không chặn.'**
+  String get sdNudgeFooter;
+
+  /// Ingredient picker without a catalogue (family recipes). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên nguyên liệu ở trên.'**
+  String get sdNoCatalogueFree;
+
+  /// 5d: the month calendar view. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch'**
+  String get sdCalendarTab;
+
+  /// 5d calendar: previous month (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng trước'**
+  String get sdCalendarPrev;
+
+  /// 5d calendar: next month (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng sau'**
+  String get sdCalendarNext;
+
+  /// 5d calendar: nothing chosen in this month. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm một ngày để xem các bữa.'**
+  String get sdCalendarHint;
+
+  /// 5d search placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm món, nguyên liệu, công thức…'**
+  String get sdHistorySearch;
+
+  /// 5d search: result count. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bữa có “{query}”'**
+  String sdHistorySearchCount(int count, String query);
+
+  /// 5d search: no result. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bữa nào có “{query}”.'**
+  String sdHistorySearchNone(String query);
+
+  /// Food detail: every meal with the food, with its day. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những lần bé đã ăn · {count}'**
+  String sdFoodDays(int count);
 }
 
 class _AppLocalizationsDelegate

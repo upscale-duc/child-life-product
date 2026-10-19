@@ -276,6 +276,11 @@ extension SdRoles on Membership {
   bool sdEdits(SdMeal m) =>
       role == MemberRole.coParent ||
       (role == MemberRole.caregiver && m.createdBy == uid);
+
+  /// "Công thức nhà mình" (D-086): the writer or a Cùng nuôi edits and deletes it.
+  bool sdEditsRecipe(SdFamilyRecipe r) =>
+      role == MemberRole.coParent ||
+      (role == MemberRole.caregiver && r.createdBy == uid);
 }
 
 // ---------- Ingredient picker (5c) ----------
@@ -482,4 +487,101 @@ class SdLibraryFilter {
     });
     return [for (final (r, _) in scored) r];
   }
+}
+
+// ---------- Dishes made (D-086 §12 #1) ----------
+
+/// "Nhà mình đã làm N lần · gần nhất 07/10 · Na thích": the meals cooked from a recipe (their
+/// `recipeId`), newest first, and the reaction of the latest one that has one.
+typedef SdDishesMade = ({List<SdMeal> meals, SdReaction? reaction});
+
+SdDishesMade sdDishesMade(Iterable<SdMeal> meals, String recipeId) {
+  final made = [
+    for (final m in meals)
+      if (!m.deleted && m.recipeId == recipeId) m,
+  ]..sort((a, b) => sdCompareMeals(b, a));
+  return (
+    meals: made,
+    reaction: made.where((m) => m.reaction != null).firstOrNull?.reaction,
+  );
+}
+
+/// The latest meal cooked from each recipe (5c "Món nhà mình": recently made first).
+Map<String, DateTime> sdLastMadeByRecipe(Iterable<SdMeal> meals) {
+  final out = <String, DateTime>{};
+  for (final m in meals) {
+    final id = m.recipeId;
+    if (m.deleted || id == null) continue;
+    final last = out[id];
+    if (last == null || m.occurredAt.isAfter(last)) out[id] = m.occurredAt;
+  }
+  return out;
+}
+
+// ---------- Which day the baby ate what (D-086 §12 #3) ----------
+
+/// 5d search over dish, ingredient (catalogue names and synonyms, free names) and recipe names
+/// ([recipeNames]: id → both titles): every word of [query] must start a word (folded, without
+/// marks), so "Cà rốt" finds every meal with carrot. Newest first; empty without a query.
+List<SdMeal> sdSearchMeals(
+  Iterable<SdMeal> meals,
+  String query, {
+  Map<String, SdFood> foods = const {},
+  Map<String, String> recipeNames = const {},
+}) {
+  final words = lbFold(query).split(' ').where((w) => w.isNotEmpty).toList();
+  if (words.isEmpty) return const [];
+  bool hit(SdMeal m) {
+    final text =
+        ' ${lbFold([
+          m.dish,
+          for (final id in m.foodIds) ...[...?foods[id]?.searchNames, id.replaceFirst('fd_', '').replaceAll('_', ' ')],
+          ...m.freeFoods,
+          ?recipeNames[m.recipeId],
+        ].join(' '))} ';
+    return words.every((w) => text.contains(' $w'));
+  }
+
+  return [
+    for (final m in meals)
+      if (!m.deleted && hit(m)) m,
+  ]..sort((a, b) => sdCompareMeals(b, a));
+}
+
+/// 5d "Lịch": how many meals on each local day.
+Map<DateTime, int> sdMealCounts(Iterable<SdMeal> meals, String zone) {
+  final out = <DateTime, int>{};
+  for (final m in meals) {
+    if (m.deleted) continue;
+    final d = sdDayOf(zone, m.occurredAt);
+    out[d] = (out[d] ?? 0) + 1;
+  }
+  return out;
+}
+
+/// The months "Lịch" pages through, newest first: today's month back to the first meal's (just
+/// today's month without meals).
+List<DateTime> sdCalendarMonths(DateTime? firstMeal, DateTime today) {
+  final last = DateTime(today.year, today.month);
+  final first = firstMeal == null
+      ? last
+      : DateTime(firstMeal.year, firstMeal.month);
+  return [
+    for (var m = last; !m.isBefore(first); m = DateTime(m.year, m.month - 1)) m,
+  ];
+}
+
+/// [month]'s grid, Monday first: null for the padding days before the 1st and after the last.
+List<DateTime?> sdMonthGrid(DateTime month) {
+  final first = DateTime(month.year, month.month);
+  final days = DateTime(month.year, month.month + 1, 0).day;
+  final lead = first.weekday - DateTime.monday;
+  final cells = <DateTime?>[
+    for (var i = 0; i < lead; i++) null,
+    for (var d = 1; d <= days; d++) DateTime(month.year, month.month, d),
+  ];
+  while (cells.length % 7 != 0) {
+    cells.add(null);
+  }
+  return cells;
 }

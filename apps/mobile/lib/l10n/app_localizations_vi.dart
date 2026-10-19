@@ -17867,4 +17867,236 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sdIdeasHint => 'Chạm một món để ghi bữa.';
+
+  @override
+  String sdMadeCount(int count) {
+    return 'Nhà mình đã làm $count lần';
+  }
+
+  @override
+  String sdMadeLast(String date) {
+    return 'gần nhất $date';
+  }
+
+  @override
+  String sdMadeLiked(String name) {
+    return '$name thích';
+  }
+
+  @override
+  String sdMadeNeutral(String name) {
+    return '$name ăn bình thường';
+  }
+
+  @override
+  String sdMadeNotYet(String name) {
+    return '$name chưa hợp';
+  }
+
+  @override
+  String get sdMadeTitle => 'Các lần đã làm';
+
+  @override
+  String sdFromRecipe(String name) {
+    return 'Theo công thức: $name';
+  }
+
+  @override
+  String get sdSaveAsRecipe => 'Lưu thành công thức';
+
+  @override
+  String get sdFamily => 'Nhà mình';
+
+  @override
+  String get sdFamilyRecipes => 'Công thức nhà mình';
+
+  @override
+  String get sdFamilyAdd => 'Thêm công thức nhà mình';
+
+  @override
+  String get sdFamilyAddShort => 'Thêm';
+
+  @override
+  String get sdFamilyAddBody =>
+      'Lưu món nhà hay nấu cho bé, lần sau ghi bữa chỉ một chạm.';
+
+  @override
+  String sdFamilyAll(int count) {
+    return 'Xem tất cả · $count';
+  }
+
+  @override
+  String sdFamilyIngredientsCount(int count) {
+    return '$count nguyên liệu';
+  }
+
+  @override
+  String sdFamilyMade(int count) {
+    return 'đã làm $count lần';
+  }
+
+  @override
+  String sdFamilyAddedBy(String who) {
+    return '$who thêm';
+  }
+
+  @override
+  String get sdFamilyEditTitle => 'Sửa công thức';
+
+  @override
+  String get sdFamilyName => 'Tên món';
+
+  @override
+  String get sdFamilyNameHint => 'VD: Cháo bí đỏ thịt bằm';
+
+  @override
+  String get sdFamilyPhoto => 'Ảnh món (không bắt buộc)';
+
+  @override
+  String get sdFamilyPhotoAdd => 'Thêm ảnh món';
+
+  @override
+  String get sdFamilyQtyHint => 'Lượng';
+
+  @override
+  String get sdFamilyUnit => 'Đơn vị';
+
+  @override
+  String get sdFamilyUnitNone => 'Không ghi';
+
+  @override
+  String get sdFamilyQtyInvalid => 'Nhập lượng từ 0,1 đến 2000, hoặc để trống.';
+
+  @override
+  String get sdFamilyIngredientsHint =>
+      'Chọn trong danh mục hoặc gõ tên khác; lượng không bắt buộc.';
+
+  @override
+  String sdFamilyStepHint(int n) {
+    return 'Bước $n';
+  }
+
+  @override
+  String get sdFamilyAddStep => 'Thêm bước';
+
+  @override
+  String sdFamilyStepUp(int n) {
+    return 'Đưa bước $n lên';
+  }
+
+  @override
+  String sdFamilyStepDown(int n) {
+    return 'Đưa bước $n xuống';
+  }
+
+  @override
+  String sdFamilyStepRemove(int n) {
+    return 'Bỏ bước $n';
+  }
+
+  @override
+  String get sdFamilyNote => 'Ghi chú';
+
+  @override
+  String get sdFamilyNoteHint => 'Mẹo, cách bảo quản… (không bắt buộc)';
+
+  @override
+  String get sdFamilySave => 'Lưu công thức';
+
+  @override
+  String get sdFamilyNeedTitle => 'Thêm tên món.';
+
+  @override
+  String get sdFamilyNeedIngredient => 'Thêm ít nhất một nguyên liệu.';
+
+  @override
+  String sdFamilySavedToast(String title) {
+    return 'Đã lưu công thức · $title';
+  }
+
+  @override
+  String get sdFamilyDelete => 'Xoá';
+
+  @override
+  String get sdFamilyDeleteTitle => 'Xoá công thức này?';
+
+  @override
+  String get sdFamilyDeleteBody =>
+      'Công thức được giữ 30 ngày trong “Đã xoá gần đây”. Các bữa đã ghi theo công thức vẫn còn.';
+
+  @override
+  String get sdFamilyDeletedToast => 'Đã xoá công thức';
+
+  @override
+  String get sdFamilyMissingBody => 'Công thức có thể đã được xoá.';
+
+  @override
+  String get sdFamilyViewOnly =>
+      'Công thức này do người khác thêm: bạn chỉ xem được.';
+
+  @override
+  String get sdFamilyChips => 'Món nhà mình';
+
+  @override
+  String get sdSavedByMe => 'Bạn đã lưu';
+
+  @override
+  String get sdNudgeTitle => 'Lưu ý cho bé';
+
+  @override
+  String get sdNudgeHoney =>
+      'Mật ong chỉ cho bé từ 12 tháng tuổi: trước đó có nguy cơ ngộ độc.';
+
+  @override
+  String sdNudgeTooYoung(String food, int months) {
+    return '$food thường cho bé từ $months tháng.';
+  }
+
+  @override
+  String sdNudgeSeasoning(String list) {
+    return 'Có thêm gia vị ($list). Thức ăn của bé không cần muối, đường hay nước mắm.';
+  }
+
+  @override
+  String sdNudgeChoking(String food, String note) {
+    return '$food: $note';
+  }
+
+  @override
+  String get sdNudgeFooter =>
+      'Công thức của nhà mình: app chỉ lưu ý, không chặn.';
+
+  @override
+  String get sdNoCatalogueFree =>
+      'Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên nguyên liệu ở trên.';
+
+  @override
+  String get sdCalendarTab => 'Lịch';
+
+  @override
+  String get sdCalendarPrev => 'Tháng trước';
+
+  @override
+  String get sdCalendarNext => 'Tháng sau';
+
+  @override
+  String get sdCalendarHint => 'Chạm một ngày để xem các bữa.';
+
+  @override
+  String get sdHistorySearch => 'Tìm món, nguyên liệu, công thức…';
+
+  @override
+  String sdHistorySearchCount(int count, String query) {
+    return '$count bữa có “$query”';
+  }
+
+  @override
+  String sdHistorySearchNone(String query) {
+    return 'Chưa có bữa nào có “$query”.';
+  }
+
+  @override
+  String sdFoodDays(int count) {
+    return 'Những lần bé đã ăn · $count';
+  }
 }

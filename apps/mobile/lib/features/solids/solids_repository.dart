@@ -7,7 +7,8 @@ import '../../app/session.dart';
 import '../library/content_repository.dart' show LbFeed;
 import 'solids_models.dart';
 
-/// Ăn dặm data (D-085): the published food catalogue, and per baby the settings and the meals.
+/// Ăn dặm data (D-085): the published food catalogue, and per baby the settings, the meals and
+/// "Công thức nhà mình" (D-086, written exactly like meals).
 ///
 /// Meals are written like care records (`care_repository.dart`): straight to Firestore, which
 /// queues them on the device while offline and across restarts; nothing waits for the server, so
@@ -132,6 +133,86 @@ class SolidsStore {
         })
         .catchError((Object e) => onError?.call(e));
   }
+  // ---------- "Công thức nhà mình" (D-086) ----------
+
+  /// A family keeps far fewer recipes than meals; newest first.
+  static const familyLimit = 500;
+
+  CollectionReference<Map<String, dynamic>> _family(String babyId) =>
+      _db().collection('babies/$babyId/recipes');
+
+  /// Live family recipes, newest first, with pending flags. Ordered on the client-set
+  /// `clientCreatedAt` (no composite index, stable while a write is pending); soft-deleted ones
+  /// (kept 30 days) are dropped here.
+  Stream<List<SdFamilyRecipe>> watchFamilyRecipes(
+    String babyId,
+  ) => _family(babyId)
+      .orderBy('clientCreatedAt', descending: true)
+      .limit(familyLimit)
+      .snapshots(includeMetadataChanges: true)
+      .map(
+        (q) => [
+          for (final d in q.docs)
+            if (SdFamilyRecipe.fromSnapshot(d) case final r? when !r.deleted) r,
+        ],
+      );
+
+  void createFamilyRecipe(
+    SdFamilyRecipe recipe, {
+    void Function(Object error)? onError,
+  }) {
+    _family(recipe.babyId)
+        .doc(recipe.id)
+        .set(recipe.toCreateJson())
+        .catchError((Object e) => onError?.call(e));
+  }
+
+  void editFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    _family(recipe.babyId)
+        .doc(recipe.id)
+        .update(recipe.toEditJson(uid))
+        .catchError((Object e) => onError?.call(e));
+  }
+
+  /// "Xoá": into the 30-day bin (the photo stays until the bin purge, so "Hoàn tác" keeps it).
+  void softDeleteFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    _family(recipe.babyId)
+        .doc(recipe.id)
+        .update({
+          'deleted': true,
+          'deletedAt': FieldValue.serverTimestamp(),
+          'deletedBy': uid,
+          'updatedAt': FieldValue.serverTimestamp(),
+          'updatedBy': uid,
+        })
+        .catchError((Object e) => onError?.call(e));
+  }
+
+  /// "Hoàn tác".
+  void restoreFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    _family(recipe.babyId)
+        .doc(recipe.id)
+        .update({
+          'deleted': false,
+          'deletedAt': null,
+          'deletedBy': null,
+          'updatedAt': FieldValue.serverTimestamp(),
+          'updatedBy': uid,
+        })
+        .catchError((Object e) => onError?.call(e));
+  }
 }
 
 final solidsStoreProvider = Provider<SolidsStore>(
@@ -177,3 +258,10 @@ final sdMealsProvider = StreamProvider.family<List<SdMeal>, String>((
   if (!_canRead(ref)) return Stream.value(const []);
   return ref.watch(solidsStoreProvider).watchMeals(babyId);
 });
+
+/// A baby's live family recipes, newest first (members who read care, `canReadCare`).
+final sdFamilyRecipesProvider =
+    StreamProvider.family<List<SdFamilyRecipe>, String>((ref, babyId) {
+      if (!_canRead(ref)) return Stream.value(const []);
+      return ref.watch(solidsStoreProvider).watchFamilyRecipes(babyId);
+    });

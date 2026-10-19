@@ -8,6 +8,7 @@ import '../library/content_models.dart';
 import '../nutrition/nutrition_format.dart' show nuAgeLabel;
 import '../nutrition/nutrition_models.dart' show NuStage;
 import 'solids_calc.dart';
+import 'solids_family.dart';
 import 'solids_models.dart';
 import 'solids_state.dart';
 
@@ -270,4 +271,72 @@ String sdOrList(AppLocalizations l10n, List<String> names) {
   if (names.length <= 1) return names.join();
   return '${names.sublist(0, names.length - 1).join(', ')} '
       '${l10n.sdOr} ${names.last}';
+}
+
+// ---------- Dishes made and family recipes (D-086) ----------
+
+/// "Na thích" / "Na ăn bình thường" / "Na chưa hợp" (neutral, P-164 #17).
+String sdMadeReaction(AppLocalizations l10n, SdReaction r, String name) =>
+    switch (r) {
+      SdReaction.liked => l10n.sdMadeLiked(name),
+      SdReaction.neutral => l10n.sdMadeNeutral(name),
+      SdReaction.notYet => l10n.sdMadeNotYet(name),
+    };
+
+/// "Nhà mình đã làm 3 lần · gần nhất 07/10 · Na thích"; null when never made.
+String? sdMadeLine(
+  AppLocalizations l10n,
+  String tag,
+  SdDishesMade made,
+  String zone,
+  String name,
+) {
+  final last = made.meals.firstOrNull;
+  if (last == null) return null;
+  return [
+    l10n.sdMadeCount(made.meals.length),
+    l10n.sdMadeLast(sdShortDate(tag, sdDayOf(zone, last.occurredAt))),
+    if (made.reaction != null) sdMadeReaction(l10n, made.reaction!, name),
+  ].join(' · ');
+}
+
+/// A family recipe quantity ("30 g", "1 thìa cà phê"); null without one.
+String? sdFamilyQty(
+  AppLocalizations l10n,
+  String locale,
+  SdFamilyIngredient i,
+) => sdIngredientQty(l10n, locale, i.asIngredient);
+
+/// The unit chips of the family recipe editor ("g", "thìa canh", "miếng").
+String sdIngredientUnitLabel(AppLocalizations l10n, SdIngredientUnit u) =>
+    switch (u) {
+      SdIngredientUnit.g => 'g',
+      SdIngredientUnit.ml => 'ml',
+      SdIngredientUnit.tbsp => l10n.sdIngUnitTbsp,
+      SdIngredientUnit.tsp => l10n.sdIngUnitTsp,
+      SdIngredientUnit.bowl => l10n.sdIngUnitBowl,
+      SdIngredientUnit.piece => l10n.sdIngUnitPiece,
+    };
+
+/// A nudge in words (D-086 §12 #2: points things out, never blocks).
+String sdNudgeText(AppLocalizations l10n, SdNudge n) => switch (n.kind) {
+  SdNudgeKind.honey => l10n.sdNudgeHoney,
+  SdNudgeKind.tooYoung => l10n.sdNudgeTooYoung(
+    n.names.join(', '),
+    n.minAgeMonths ?? SdLimits.startMonths,
+  ),
+  SdNudgeKind.seasoning => l10n.sdNudgeSeasoning(n.names.join(', ')),
+  SdNudgeKind.choking => l10n.sdNudgeChoking(n.names.first, n.names.last),
+};
+
+/// The common allergens in a family recipe's catalogue foods ("Có trứng").
+List<SdAllergen> sdFamilyAllergens(
+  SdFamilyRecipe r,
+  Map<String, SdFood> foods,
+) {
+  final found = {for (final id in r.foodIds) ?foods[id]?.allergen};
+  return [
+    for (final a in SdAllergen.values)
+      if (found.contains(a)) a,
+  ];
 }

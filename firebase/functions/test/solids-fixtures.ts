@@ -1,4 +1,4 @@
-import type { FoodContent, RecipeContent } from '@child-life/contracts';
+import type { FamilyRecipe, FoodContent, RecipeContent } from '@child-life/contracts';
 
 // Small, complete Ăn dặm items (D-085) for the server tests, independent of the catalogue seed
 // (`solids-catalog-seed.ts`), which the content team fills on its own schedule.
@@ -81,6 +81,41 @@ export function recipeFixture(
     tip: l('Không nêm muối.', 'No added salt.'),
     relatedArticleIds: [],
     sources: [{ label: 'WHO complementary feeding', url: 'https://www.who.int/' }],
+    ...over,
+  };
+}
+
+/**
+ * A complete "Công thức nhà mình" (D-086, `familyRecipeSchema`) by Mẹ Na: catalogue and free
+ * ingredients, with and without quantities, two steps. Dates as the server reads them back.
+ */
+export function familyRecipeFixture(
+  id: string,
+  babyId: string,
+  over: Partial<FamilyRecipe> = {},
+): FamilyRecipe {
+  const at = new Date('2026-10-18T04:31:00Z');
+  return {
+    id,
+    babyId,
+    title: 'Cháo cá hồi bí đỏ',
+    photoPath: null,
+    ingredients: [
+      { foodId: 'fd_salmon', name: 'Cá hồi', qty: 30, unit: 'g' },
+      { foodId: 'fd_pumpkin', name: 'Bí đỏ', qty: 2, unit: 'tbsp' },
+      { foodId: null, name: 'Nước dùng rau', qty: null, unit: null },
+    ],
+    steps: ['Hấp cá và bí cho chín mềm.', 'Nghiền mịn, trộn với cháo trắng.'],
+    note: 'Na thích ăn ấm, "không quá đặc"',
+    createdBy: 'mom',
+    author: { name: 'Mẹ Na', relation: 'mother', relationCustom: null },
+    createdAt: at,
+    clientCreatedAt: at,
+    updatedAt: at,
+    updatedBy: 'mom',
+    deleted: false,
+    deletedAt: null,
+    deletedBy: null,
     ...over,
   };
 }

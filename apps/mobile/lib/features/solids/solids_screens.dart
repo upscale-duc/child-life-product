@@ -32,10 +32,12 @@ import '../nutrition/nutrition_widgets.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/reminder_screens.dart' show maybeAskForNotifications;
 import 'solids_calc.dart';
+import 'solids_family.dart' show SdPick;
+import 'solids_family_screens.dart' show SdFamilyLibrarySection;
 import 'solids_format.dart';
 import 'solids_models.dart';
 import 'solids_personal.dart';
-import 'solids_recipes.dart' show SdRecipeRow;
+import 'solids_recipes.dart' show SdRecipeRow, sdPickRow;
 import 'solids_repository.dart';
 import 'solids_routes.dart';
 import 'solids_sheet.dart';
@@ -1006,9 +1008,10 @@ class SolidsLibraryScreen extends StatelessWidget {
 
 /// 5f body (P-164 #11): search over titles, keywords and ingredient names; the age band preset
 /// from the baby, the content type (Hướng dẫn · Công thức), the recipe method and the guide
-/// format; "Dành cho {bé}" (plan §7, while tracking is on), the featured guide (the newest for
-/// the filters), "Công thức · {band}" (3, then "Xem tất cả") and the guides. Works without
-/// tracking. Guides open the article reader (4d), recipes 5g.
+/// format; "Nhà mình" first (the family's own recipes and "Thêm công thức nhà mình", D-086),
+/// "Dành cho {bé}" (plan §7, while tracking is on, the family's recipes among them), the featured
+/// guide (the newest for the filters), "Công thức · {band}" (3, then "Xem tất cả") and the
+/// guides. Works without tracking. Guides open the article reader (4d), recipes 5g.
 class SdLibraryBody extends ConsumerStatefulWidget {
   const SdLibraryBody({super.key});
 
@@ -1094,8 +1097,14 @@ class _SdLibraryBodyState extends ConsumerState<SdLibraryBody> {
             _f.type != SdLibraryType.guides &&
             _f.format == null &&
             state != null
-        ? ref.watch(sdForBabyProvider).take(3).toList()
-        : const <SdRecipe>[];
+        ? ref.watch(sdForBabyPicksProvider).take(3).toList()
+        : const <SdPick>[];
+    // D-086: the family's own recipes first, for members who read care (recipes, any band).
+    final showFamily =
+        state != null &&
+        state.me.sdReads &&
+        _f.type != SdLibraryType.guides &&
+        _f.format == null;
     final saved = {
       for (final s in ref.watch(lbSavedProvider).value ?? const <LbSaved>[])
         s.id,
@@ -1228,6 +1237,7 @@ class _SdLibraryBodyState extends ConsumerState<SdLibraryBody> {
           ),
         ),
         LbOfflineNote(l10n.lbOfflineLibrary, top: ClSpace.s3),
+        if (showFamily) SdFamilyLibrarySection(query: _f.query, foods: foods),
         if (loading)
           const SizedBox(height: 120)
         else if (solids.isEmpty && recipes.isEmpty)
@@ -1242,12 +1252,8 @@ class _SdLibraryBodyState extends ConsumerState<SdLibraryBody> {
             LbGroup(
               key: const Key('sdForBaby'),
               children: [
-                for (final r in forBaby)
-                  SdRecipeRow(
-                    key: Key('sdForBaby_${r.id}'),
-                    recipe: r,
-                    onTap: () => context.push(SdRoutes.recipe(r.id)),
-                  ),
+                for (final p in forBaby)
+                  sdPickRow(context, p, keyPrefix: 'sdForBaby_'),
               ],
             ),
           ],

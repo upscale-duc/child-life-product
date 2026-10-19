@@ -574,8 +574,13 @@ describe('devices, exports and help', () => {
     ).toBe('export-running');
     expect(await runExport(db, store, async () => null as never, jobId, now, 24)).toBe('ready');
     const job = (await get(`dataJobs/${jobId}`))!;
-    // Ăn dặm meals (D-085 #3) ride along as their own sheet.
-    expect(store.zips.get(job.path)).toEqual(['care.json', 'care.csv', 'meals.csv']);
+    // Ăn dặm meals (D-085 #3) and family recipes (D-086) ride along as their own sheets.
+    expect(store.zips.get(job.path)).toEqual([
+      'care.json',
+      'care.csv',
+      'meals.csv',
+      'family-recipes.csv',
+    ]);
     expect((job.expiresAt as Timestamp).toMillis()).toBe(now.getTime() + 24 * 3_600_000);
     // "Tải tệp về" in the email: the token's hash on the job, the token in the queued mail only.
     expect(job.downloadTokenHash).toMatch(/^[a-f0-9]{64}$/);

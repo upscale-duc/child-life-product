@@ -34,6 +34,8 @@ import 'solids_models.dart';
 /// Cùng nuôi delete them. So a Cùng nuôi who replaces or removes a photo deletes the old object
 /// when the meal is saved; a caregiver only clears `photoPath` (the bin purge removes photos of
 /// deleted meals). Child data: no path, size or file name is ever logged.
+///
+/// "Công thức nhà mình" (D-086) keep one photo the same way, in `babies/{babyId}/recipes/`.
 
 /// The Storage Rules' limit.
 const sdPhotoMaxBytes = 4 * 1024 * 1024;
@@ -45,6 +47,7 @@ Future<String?> sdAddMealPhoto(
   WidgetRef ref,
   String babyId, {
   void Function(bool busy)? onBusy,
+  String folder = 'meals',
 }) async {
   final l10n = AppLocalizations.of(context);
   final source = await showClSheet<ImageSource>(
@@ -62,7 +65,7 @@ Future<String?> sdAddMealPhoto(
       return null;
     }
     onBusy?.call(true);
-    return await store.upload(babyId, jpeg, folder: 'meals');
+    return await store.upload(babyId, jpeg, folder: folder);
   } on PlatformException catch (e) {
     final denied = e.code.contains('denied') || e.code.contains('access');
     toaster.show(
@@ -82,8 +85,8 @@ Future<String?> sdAddMealPhoto(
   return null;
 }
 
-/// Deletes [paths] from Storage when [manages] (Cùng nuôi; Storage Rules refuse anyone else).
-/// Best effort: offline or already gone, the meal no longer points at them.
+/// Deletes [paths] (meal or family-recipe photos) from Storage when [manages] (Cùng nuôi; Storage
+/// Rules refuse anyone else). Best effort: offline or already gone, nothing points at them.
 void sdDropPhotos(
   VaccinePhotoStore store,
   Iterable<String?> paths, {
@@ -91,7 +94,9 @@ void sdDropPhotos(
 }) {
   if (!manages) return;
   for (final p in {...paths}) {
-    if (p != null && sdMealPhotoPath(p)) unawaited(store.remove(p));
+    if (p != null && (sdMealPhotoPath(p) || sdRecipePhotoPath(p))) {
+      unawaited(store.remove(p));
+    }
   }
 }
 
@@ -104,6 +109,8 @@ class SdPhotoField extends ConsumerWidget {
     required this.busy,
     required this.onBusy,
     required this.onChanged,
+    this.folder = 'meals',
+    this.addLabel,
     super.key,
   });
 
@@ -113,8 +120,20 @@ class SdPhotoField extends ConsumerWidget {
   final ValueChanged<bool> onBusy;
   final ValueChanged<String?> onChanged;
 
+  /// `meals`, or `recipes` for a family recipe (D-086).
+  final String folder;
+
+  /// Defaults to "Thêm ảnh bữa ăn".
+  final String? addLabel;
+
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final p = await sdAddMealPhoto(context, ref, babyId, onBusy: onBusy);
+    final p = await sdAddMealPhoto(
+      context,
+      ref,
+      babyId,
+      onBusy: onBusy,
+      folder: folder,
+    );
     if (p != null) onChanged(p);
   }
 
@@ -130,7 +149,7 @@ class SdPhotoField extends ConsumerWidget {
         children: [
           VxPhotoButton(
             key: const Key('sdPhotoAdd'),
-            label: l10n.sdPhotoAdd,
+            label: addLabel ?? l10n.sdPhotoAdd,
             busy: busy,
             onPressed: online ? () => unawaited(_add(context, ref)) : null,
           ),

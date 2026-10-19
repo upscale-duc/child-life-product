@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'solids_family_screens.dart';
 import 'solids_history.dart';
-import 'solids_models.dart' show sdFoodId;
+import 'solids_models.dart' show sdFamilyRecipeId, sdFoodId, sdMealId;
 import 'solids_recipes.dart';
 import 'solids_screens.dart';
 
@@ -19,9 +20,10 @@ abstract final class SdRoutes {
   /// 5f on its own (from 5a, or for members who do not read the diary).
   static const library = '/care/solids/library';
 
-  /// 5d; `?tab=foods` opens 5e.
+  /// 5d; `?tab=foods` opens 5e, `?tab=calendar` the "Lịch" view (D-086).
   static const history = '/care/solids/history';
   static const foods = '/care/solids/history?tab=foods';
+  static const calendar = '/care/solids/history?tab=calendar';
 
   /// Meal detail: `/care/solids/meal/{mealId}`.
   static String meal(String id) => '$home/meal/$id';
@@ -29,8 +31,15 @@ abstract final class SdRoutes {
   /// Food detail: `/care/solids/food/{fd_… | x_…}` (path-safe keys, `sdFreeKey`).
   static String food(String key) => '$home/food/$key';
 
-  /// 5g: `/care/solids/recipe/{rcp_…}`.
+  /// 5g: `/care/solids/recipe/{rcp_…}`, or a family recipe `/care/solids/recipe/{fr_…}` (D-086).
   static String recipe(String id) => '$home/recipe/$id';
+
+  /// "Thêm công thức nhà mình" (5f); `?meal={m_…}` is "Lưu thành công thức" of a meal (D-086).
+  static const familyNew = '$home/family/new';
+  static String familyFromMeal(String mealId) => '$familyNew?meal=$mealId';
+
+  /// "Sửa" of a family recipe: the editor on `/care/solids/family/{fr_…}`.
+  static String familyEdit(String id) => '$home/family/$id';
 
   /// "Xem công thức" of a suggestion: the recipes with one of [foodIds].
   static String recipesFor(List<String> foodIds) =>
@@ -61,8 +70,10 @@ GoRoute solidsRoute() => _page(
     _page('library', (_, _) => const SolidsLibraryScreen()),
     _page(
       'history',
-      (_, s) =>
-          MealHistoryScreen(foods: s.uri.queryParameters['tab'] == 'foods'),
+      (_, s) => MealHistoryScreen(
+        foods: s.uri.queryParameters['tab'] == 'foods',
+        calendar: s.uri.queryParameters['tab'] == 'calendar',
+      ),
     ),
     _page(
       'meal/:id',
@@ -75,6 +86,24 @@ GoRoute solidsRoute() => _page(
     _page(
       'recipe/:id',
       (_, s) => SdRecipeScreen(recipeId: s.pathParameters['id'] ?? ''),
+    ),
+    _page(
+      'family/new',
+      (_, s) => SdFamilyEditorScreen(
+        fromMealId: switch (s.uri.queryParameters['meal']) {
+          final id? when sdMealId(id) => id,
+          _ => null,
+        },
+      ),
+    ),
+    _page(
+      'family/:id',
+      (_, s) => SdFamilyEditorScreen(
+        recipeId: switch (s.pathParameters['id']) {
+          final id? when sdFamilyRecipeId(id) => id,
+          _ => null,
+        },
+      ),
     ),
     _page(
       'recipes',

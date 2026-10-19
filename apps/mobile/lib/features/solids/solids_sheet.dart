@@ -30,6 +30,8 @@ import '../premium/premium_repository.dart' show selectedFamilyCountryProvider;
 import '../vaccines/vaccine_photos.dart'
     show VaccinePhotoStore, vaccinePhotoStoreProvider;
 import 'solids_calc.dart';
+import 'solids_family.dart' show sdFamilyMealFill;
+import 'solids_family_screens.dart' show SdFamilyChips;
 import 'solids_format.dart';
 import 'solids_models.dart';
 import 'solids_photos.dart';
@@ -38,7 +40,8 @@ import 'solids_state.dart';
 import 'solids_widgets.dart';
 
 /// 5c Ghi bữa ăn (Figma `313:1872`; plan §5, P-164 #5–#7): a sheet from 5b, the quick log, the
-/// Today card, and later 5g "Ghi vào nhật ký" and a suggestion ([SdMealPrefill]).
+/// Today card, 5g "Ghi vào nhật ký" and a suggestion ([SdMealPrefill]). A new meal starts with
+/// the "Món nhà mình" chips (D-086): a recent family recipe fills it and keeps its id.
 ///
 /// Saved like a care record: straight to the local cache (synced later when offline), with
 /// "Hoàn tác". The urgent symptoms show the "Gọi 115" card before saving (P-164 #6).
@@ -108,6 +111,9 @@ class _MealSheetState extends ConsumerState<MealSheet> {
   late bool _custom = widget.edit?.amount?.value != null;
   late SdUnit _unit = widget.edit?.amount?.unit ?? SdUnit.spoon;
   late SdReaction? _reaction = widget.edit?.reaction;
+
+  /// The recipe it was cooked from (5g, a family recipe page, a "Món nhà mình" chip).
+  late String? _recipeId = widget.edit?.recipeId ?? widget.prefill?.recipeId;
   late final Set<SdSymptom> _symptoms = {...?widget.edit?.symptoms};
   late String? _photoPath = widget.edit?.photoPath;
 
@@ -296,11 +302,23 @@ class _MealSheetState extends ConsumerState<MealSheet> {
     });
   }
 
+  /// "Món nhà mình" (D-086): the recipe's dish and ingredients, and its id; tapped again, the
+  /// meal no longer points at it.
+  void _pickFamily(SdFamilyRecipe r) => setState(() {
+    if (_recipeId == r.id) {
+      _recipeId = null;
+      return;
+    }
+    final fill = sdFamilyMealFill(r);
+    _dish.text = fill.dish;
+    _foodIds = [...fill.foodIds];
+    _free = [...fill.freeFoods];
+    _recipeId = r.id;
+    _error = null;
+  });
+
   Future<void> _pickFoods(SdState? s) async {
-    final picked = await showClSheet<({List<String> ids, List<String> free})>(
-      context: context,
-      builder: (_) => _FoodPicker(ids: _foodIds, free: _free),
-    );
+    final picked = await sdPickFoods(context, ids: _foodIds, free: _free);
     if (picked != null && mounted) {
       setState(() {
         _foodIds = picked.ids;
@@ -367,7 +385,7 @@ class _MealSheetState extends ConsumerState<MealSheet> {
             reaction: _reaction,
             symptoms: symptoms,
             note: _note.text.trim(),
-            recipeId: widget.prefill?.recipeId,
+            recipeId: _recipeId,
             photoPath: _photoPath,
           );
     if (edit != null) {
@@ -434,6 +452,9 @@ class _MealSheetState extends ConsumerState<MealSheet> {
         onPressed: _uploading ? null : _save,
       ),
       children: [
+        // D-086: recent family recipes, one tap (new meals not started from a recipe).
+        if (widget.edit == null && widget.prefill?.recipeId == null)
+          SdFamilyChips(selected: _recipeId, onPick: _pickFamily),
         SdSlotPicker(
           selected: _slot,
           onChanged: (x) => setState(() {
@@ -851,12 +872,42 @@ class _UrgentCard extends ConsumerWidget {
   }
 }
 
+/// The ingredient picker ([_FoodPicker]): the chosen catalogue ids and free names, or null when
+/// dismissed. A meal takes up to 12 foods and 3 free names; a family recipe (D-086) passes its own
+/// limits ([maxTotal] together).
+Future<({List<String> ids, List<String> free})?> sdPickFoods(
+  BuildContext context, {
+  required List<String> ids,
+  required List<String> free,
+  int maxIds = SdLimits.mealFoods,
+  int maxFree = SdLimits.mealFree,
+  int? maxTotal,
+}) => showClSheet<({List<String> ids, List<String> free})>(
+  context: context,
+  builder: (_) => _FoodPicker(
+    ids: ids,
+    free: free,
+    maxIds: maxIds,
+    maxFree: maxFree,
+    maxTotal: maxTotal,
+  ),
+);
+
 /// 5c ingredient picker: the published catalogue (names and synonyms, liked and recent first, the
 /// group shown) and up to 3 free names ("Thêm tên khác", group "Khác").
 class _FoodPicker extends ConsumerStatefulWidget {
-  const _FoodPicker({required this.ids, required this.free});
+  const _FoodPicker({
+    required this.ids,
+    required this.free,
+    this.maxIds = SdLimits.mealFoods,
+    this.maxFree = SdLimits.mealFree,
+    this.maxTotal,
+  });
   final List<String> ids;
   final List<String> free;
+  final int maxIds;
+  final int maxFree;
+  final int? maxTotal;
 
   @override
   ConsumerState<_FoodPicker> createState() => _FoodPickerState();
@@ -879,9 +930,12 @@ class _FoodPickerState extends ConsumerState<_FoodPicker> {
     super.dispose();
   }
 
+  bool get _full =>
+      widget.maxTotal != null && _ids.length + _free.length >= widget.maxTotal!;
+
   void _addFree(String name) {
     final n = name.trim();
-    if (n.isEmpty || _free.length >= SdLimits.mealFree) return;
+    if (n.isEmpty || _free.length >= widget.maxFree || _full) return;
     final key = sdFreeKey(n);
     if (_free.any((f) => sdFreeKey(f) == key)) return;
     setState(() {
@@ -910,7 +964,8 @@ class _FoodPickerState extends ConsumerState<_FoodPicker> {
     final exact = hits.any(
       (f) => f.searchNames.any((n) => sdFreeKey(n) == sdFreeKey(q)),
     );
-    final canFree = q.isNotEmpty && !exact && _free.length < SdLimits.mealFree;
+    final canFree =
+        q.isNotEmpty && !exact && _free.length < widget.maxFree && !_full;
     final months = s?.months;
 
     String sub(SdFood f) {
@@ -1022,7 +1077,9 @@ class _FoodPickerState extends ConsumerState<_FoodPicker> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    l10n.sdNoCatalogue,
+                    widget.maxFree == SdLimits.mealFree
+                        ? l10n.sdNoCatalogue
+                        : l10n.sdNoCatalogueFree,
                     key: const Key('sdNoCatalogue'),
                     style: cl.text.label.copyWith(
                       height: 1.45,
@@ -1038,7 +1095,7 @@ class _FoodPickerState extends ConsumerState<_FoodPicker> {
                   onPressed: () => setState(() {
                     if (_ids.contains(f.id)) {
                       _ids.remove(f.id);
-                    } else if (_ids.length < SdLimits.mealFoods) {
+                    } else if (_ids.length < widget.maxIds && !_full) {
                       _ids.add(f.id);
                     }
                   }),

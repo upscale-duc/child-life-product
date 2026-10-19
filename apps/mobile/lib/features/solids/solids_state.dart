@@ -77,3 +77,12 @@ final sdTodayProvider = Provider<SdDaySummary?>((ref) {
   if (s == null || !s.tracking || !s.me.sdReads) return null;
   return sdDaySummary(s.meals, s.baby.zone, s.baby.today);
 });
+
+/// The selected baby's "Công thức nhà mình" (D-086), newest first: members who read care see them
+/// (Rules `canReadCare`), with or without tracking (5f works without it).
+final sdFamilyListProvider = Provider<List<SdFamilyRecipe>>((ref) {
+  final me = ref.watch(selectedMembershipProvider);
+  if (me == null || !me.sdReads) return const [];
+  return ref.watch(sdFamilyRecipesProvider(me.babyId)).value ??
+      const <SdFamilyRecipe>[];
+});

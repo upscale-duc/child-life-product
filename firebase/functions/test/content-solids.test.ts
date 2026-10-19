@@ -1,4 +1,4 @@
-import { foodAllergens } from '@child-life/contracts';
+import { familyRecipeSchema, foodAllergens } from '@child-life/contracts';
 import type { DocumentSnapshot, Firestore } from 'firebase-admin/firestore';
 import { describe, expect, it } from 'vitest';
 import {
@@ -16,7 +16,13 @@ import {
   type FoodFacts,
 } from '../src/content-solids.js';
 import { seedFoods, seedRecipes } from '../src/solids-catalog-seed.js';
-import { eggFixture, foodFixture, milkFixture, recipeFixture } from './solids-fixtures.js';
+import {
+  eggFixture,
+  familyRecipeFixture,
+  foodFixture,
+  milkFixture,
+  recipeFixture,
+} from './solids-fixtures.js';
 
 // Ăn dặm on the editorial workflow (D-085, P-164 #8–#10, plan §6): the food and recipe adapters'
 // ids, schemas, list rows and titles, the food-too-young / unsafe-copy / link-missing gates, the
@@ -423,5 +429,28 @@ describe('coverage (portal §6)', () => {
     expect(c.allergens.liveMissing).toEqual(foodAllergens.filter((a) => a !== 'egg'));
     expect(c.allergens.byAllergen).toHaveLength(9);
     expect(c.ironRich).toEqual({ total: 2, published: 1 });
+  });
+});
+
+// The family recipe the rules and server suites write (D-086) is a valid contract document, so
+// they test the real shape; the contract and Rules agree it needs an ingredient.
+describe('family recipe fixture (D-086)', () => {
+  const id = `fr_${'a'.repeat(32)}`;
+  it('parses with familyRecipeSchema', () => {
+    expect(familyRecipeSchema.safeParse(familyRecipeFixture(id, 'b1')).success).toBe(true);
+    expect(
+      familyRecipeSchema.safeParse(
+        familyRecipeFixture(id, 'b1', { photoPath: 'babies/b1/recipes/photo_rec_1.jpg' }),
+      ).success,
+    ).toBe(true);
+  });
+
+  it('is refused without an ingredient or with a markup title', () => {
+    expect(
+      familyRecipeSchema.safeParse(familyRecipeFixture(id, 'b1', { ingredients: [] })).success,
+    ).toBe(false);
+    expect(
+      familyRecipeSchema.safeParse(familyRecipeFixture(id, 'b1', { title: '<b>x</b>' })).success,
+    ).toBe(false);
   });
 });

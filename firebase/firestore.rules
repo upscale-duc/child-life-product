@@ -469,6 +469,20 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // Công thức nhà mình (D-086, plan §12 #2): the family's own recipes, written like meals
+      // (client ids `fr_…`, soft delete with undo and the 30-day bin, purged with their photo).
+      // Cùng nuôi and Người chăm sóc create; the writer or a Cùng nuôi edits and deletes (D-022);
+      // relatives with "Chăm sóc hằng ngày" only read. The family's own text is never blocked like
+      // editorial copy (the app only nudges). Mirrors `familyRecipeSchema`.
+      match /recipes/{recipeId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) &&
+          validNewFamilyRecipe(babyId, recipeId);
+        allow update: if canLog(babyId) && babyOpen(babyId) && canEditRecord(babyId) &&
+          validFamilyRecipeUpdate(babyId);
+        allow delete: if false;
+      }
+
       // "Đã ghi hôm nay" per baby-local date, kept by the onCareRecordWrite trigger.
       match /days/{date} {
         allow read: if canReadCare(babyId);
@@ -1249,8 +1263,9 @@ service cloud.firestore {
         d.symptoms.hasOnly(['rash', 'vomit', 'diarrhea', 'fussy', 'swelling', 'breathing',
           'other']) &&
         d.note is string && d.note.size() <= 300 &&
-        (d.recipeId == null ||
-          (d.recipeId is string && d.recipeId.matches('^rcp_[a-z0-9_]{2,40}$'))) &&
+        // A Child Life recipe (`rcp_…`) or one of the family's own (`fr_…`, D-086).
+        (d.recipeId == null || (d.recipeId is string &&
+          d.recipeId.matches('^(rcp_[a-z0-9_]{2,40}|fr_[a-f0-9]{32})$'))) &&
         // The meal's photo (D-085 #2) lives under this baby's meals in Storage.
         (d.photoPath == null || (d.photoPath is string &&
           d.photoPath.matches('^babies/' + babyId + '/meals/[A-Za-z0-9_-]{8,64}[.]jpg$')));
@@ -1282,6 +1297,93 @@ service cloud.firestore {
           changed.hasOnly(['occurredAt', 'slot', 'dish', 'foodIds', 'freeFoods', 'amount',
             'reaction', 'symptoms', 'note', 'recipeId', 'photoPath', 'updatedAt', 'updatedBy']) &&
           validMealBody(d, babyId)) ||
+        // "Xoá" → soft delete.
+        (o.deleted == false && d.deleted == true && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == request.time && d.deletedBy == request.auth.uid) ||
+        // "Hoàn tác" or restore from "Đã xoá gần đây".
+        (o.deleted == true && d.deleted == false && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == null && d.deletedBy == null)
+      );
+    }
+
+    // ---------- Công thức nhà mình (D-086; `familyRecipeSchema`) ----------
+
+    function familyRecipeFields() {
+      return ['id', 'babyId', 'title', 'photoPath', 'ingredients', 'steps', 'note', 'createdBy',
+        'author', 'createdAt', 'clientCreatedAt', 'updatedAt', 'updatedBy', 'deleted', 'deletedAt',
+        'deletedBy'];
+    }
+
+    // Each element read costs expressions against the 1000-per-request budget (a parameter is
+    // re-read from `request.resource.data` at every use), so 15 ingredients and 12 steps cannot be
+    // checked field by field. Ingredients: exactly the four keys and a name of 1–40 characters once
+    // trimmed (as the contract); the food id, quantity and unit are not checked here (the app reads
+    // them defensively). Steps: checked whole, each 1–300 characters and none blank.
+    function familyIngredient(x) {
+      return x.keys().toSet() == ['foodId', 'name', 'qty', 'unit'].toSet() &&
+        x.name.trim().matches('(?s).{1,40}');
+    }
+
+    // An index past the end errors, and `|| l.size() <= i` turns that into "nothing to check";
+    // a present element is checked without reading the size.
+    function familyIngredientAt(l, i) {
+      return familyIngredient(l[i]) || l.size() <= i;
+    }
+
+    function familyIngredients(l) {
+      return l is list && l.size() >= 1 && l.size() <= 15 &&
+        familyIngredientAt(l, 0) && familyIngredientAt(l, 1) && familyIngredientAt(l, 2) &&
+        familyIngredientAt(l, 3) && familyIngredientAt(l, 4) && familyIngredientAt(l, 5) &&
+        familyIngredientAt(l, 6) && familyIngredientAt(l, 7) && familyIngredientAt(l, 8) &&
+        familyIngredientAt(l, 9) && familyIngredientAt(l, 10) && familyIngredientAt(l, 11) &&
+        familyIngredientAt(l, 12) && familyIngredientAt(l, 13) && familyIngredientAt(l, 14);
+    }
+
+    // Up to 12 steps in one go: joined on U+001F and split back, the list comes back equal only if
+    // every step is a string without that character; then each is 1–300 characters and none is
+    // blank.
+    function familySteps(l) {
+      return l is list && l.size() <= 12 && (l.size() == 0 || (
+        l.join('\u001f').split('\\x1f') == l &&
+        l.join('\u001f').matches('(?s)[^\\x1f]{1,300}(\\x1f[^\\x1f]{1,300}){0,11}') &&
+        !l.join('\u001f').matches('(?s)(.*\\x1f)?\\s*(\\x1f.*)?')));
+    }
+
+    // Title, photo, ingredients, steps, note. The photo is the recipe's own, under this baby's
+    // recipes in Storage (never a meal's: the bin purges each with its own document).
+    function validFamilyRecipeBody(d, babyId) {
+      return d.title is string && d.title.trim().size() >= 1 && d.title.size() <= 60 &&
+        familyIngredients(d.ingredients) && familySteps(d.steps) &&
+        d.note is string && d.note.size() <= 300 &&
+        (d.photoPath == null || (d.photoPath is string && d.photoPath.size() <= 200 &&
+          d.photoPath.matches('^babies/' + babyId + '/recipes/[A-Za-z0-9_-]{8,64}[.]jpg$')));
+    }
+
+    function validNewFamilyRecipe(babyId, recipeId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(familyRecipeFields()) && d.keys().hasAll(familyRecipeFields()) &&
+        recipeId.matches('^fr_[a-f0-9]{32}$') && d.id == recipeId && d.babyId == babyId &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        d.clientCreatedAt is timestamp &&
+        d.deleted == false && d.deletedAt == null && d.deletedBy == null &&
+        ownAuthor(d.author, me) &&
+        validFamilyRecipeBody(d, babyId);
+    }
+
+    // As `validMealUpdate`: who, which baby and when it was made never change.
+    function validFamilyRecipeUpdate(babyId) {
+      let d = request.resource.data;
+      let o = resource.data;
+      let changed = d.diff(o).affectedKeys();
+      let deleteKeys = ['deleted', 'deletedAt', 'deletedBy', 'updatedAt', 'updatedBy'];
+      return d.updatedBy == request.auth.uid && d.updatedAt == request.time && (
+        // "Sửa": the recipe's content only.
+        (o.deleted == false && d.deleted == false &&
+          changed.hasOnly(['title', 'photoPath', 'ingredients', 'steps', 'note', 'updatedAt',
+            'updatedBy']) &&
+          validFamilyRecipeBody(d, babyId)) ||
         // "Xoá" → soft delete.
         (o.deleted == false && d.deleted == true && changed.hasOnly(deleteKeys) &&
           d.deletedAt == request.time && d.deletedBy == request.auth.uid) ||

@@ -131,6 +131,20 @@
       ]
     },
     {
+      "collectionGroup": "recipes",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "deleted",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "deletedAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "records",
       "queryScope": "COLLECTION",
       "fields": [
@@ -906,6 +920,20 @@
     },
     {
       "collectionGroup": "meals",
+      "fieldPath": "createdBy",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "recipes",
       "fieldPath": "createdBy",
       "indexes": [
         {

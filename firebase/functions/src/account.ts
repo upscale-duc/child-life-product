@@ -581,6 +581,8 @@ const authoredCollections: Array<[string, string] | [string, string, string]> = 
   ['summaries', 'requestedBy'],
   // Ăn dặm meals (D-085) stay with the family like care records.
   ['meals', 'createdBy'],
+  // So do the family's own recipes ("Công thức nhà mình", D-086, plan §12 #2).
+  ['recipes', 'createdBy'],
 ];
 
 async function accountStep(
@@ -1097,6 +1099,50 @@ async function mealsCsv(db: Firestore, babyId: string, locale: Locale): Promise<
   );
 }
 
+/** Ingredient units as the app shows them ("thìa canh", D-086), else the stored code. */
+const unitLabels: Record<Locale, Record<string, string>> = {
+  vi: { g: 'g', ml: 'ml', tbsp: 'thìa canh', tsp: 'thìa cà phê', bowl: 'chén', piece: 'miếng' },
+  en: { g: 'g', ml: 'ml', tbsp: 'tbsp', tsp: 'tsp', bowl: 'bowl', piece: 'piece' },
+};
+
+/**
+ * The "Công thức nhà mình" sheet (D-086, plan §12 #2): live family recipes, oldest first, the
+ * family's own words (ingredient names as written, "Cà rốt 30 g; Gạo 2 thìa canh"), numbered
+ * steps, who wrote it and when. No photos.
+ */
+async function familyRecipesCsv(db: Firestore, babyId: string, locale: Locale): Promise<string> {
+  const snap = await db.collection(`babies/${babyId}/recipes`).where('deleted', '==', false).get();
+  const units = locale === 'en' ? unitLabels.en : unitLabels.vi;
+  const ingredient = (x: unknown) => {
+    const i = (x ?? {}) as { name?: unknown; qty?: unknown; unit?: unknown };
+    const name = typeof i.name === 'string' ? i.name : '';
+    const unit = typeof i.unit === 'string' ? (units[i.unit] ?? i.unit) : '';
+    const qty = typeof i.qty === 'number' ? `${i.qty} ${unit}`.trim() : '';
+    return [name, qty].filter(Boolean).join(' ');
+  };
+  const items = (v: unknown) => (Array.isArray(v) ? v : []);
+  const rows = snap.docs
+    .map((d) => d.data())
+    .map((r) => ({
+      id: r.id,
+      title: r.title ?? '',
+      ingredients: items(r.ingredients).map(ingredient).filter(Boolean).join('; '),
+      steps: items(r.steps)
+        .filter((s): s is string => typeof s === 'string')
+        .map((s, i) => `${i + 1}. ${s}`)
+        .join('\n'),
+      note: r.note ?? '',
+      author: r.author?.name || null,
+      createdAt: iso(r.createdAt),
+      updatedAt: iso(r.updatedAt),
+    }))
+    .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+  return csvOf(
+    ['id', 'title', 'ingredients', 'steps', 'note', 'author', 'createdAt', 'updatedAt'],
+    rows,
+  );
+}
+
 async function* careEntries(db: Firestore, babyId: string, locale: Locale = 'vi') {
   const records = await db
     .collection(`babies/${babyId}/records`)
@@ -1131,6 +1177,9 @@ async function* careEntries(db: Firestore, babyId: string, locale: Locale = 'vi'
   // Ăn dặm meals (D-085 #3) read their own collection; the care record types stay as they are.
   const meals = await mealsCsv(db, babyId, locale);
   yield { name: 'meals.csv', open: async () => Readable.from([Buffer.from(meals)]) };
+  // The family's own recipes (D-086), likewise from their collection.
+  const recipes = await familyRecipesCsv(db, babyId, locale);
+  yield { name: 'family-recipes.csv', open: async () => Readable.from([Buffer.from(recipes)]) };
 }
 
 async function* mediaEntries(
@@ -1279,4 +1328,4 @@ export async function createSupportTicket(
   });
 }
 
-export const _test = { sameName, isActive, csvCell, mealsCsv };
+export const _test = { sameName, isActive, csvCell, mealsCsv, familyRecipesCsv };

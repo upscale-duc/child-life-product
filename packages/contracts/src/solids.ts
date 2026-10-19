@@ -55,6 +55,12 @@ export const solidsLimits = {
   hidden: 50,
   /** A meal can be logged up to 7 days back (5c date field). */
   backDays: 7,
+  /** "Công thức nhà mình" (D-086). */
+  familyTitle: 60,
+  familyIngredients: 15,
+  familySteps: 12,
+  familyStep: 300,
+  familyNote: 300,
 } as const;
 const S = solidsLimits;
 
@@ -160,6 +166,10 @@ export const foodIdSchema = z.string().regex(/^fd_[a-z0-9_]{2,40}$/);
 export const recipeIdSchema = z.string().regex(/^rcp_[a-z0-9_]{2,40}$/);
 /** Client ids like care records: `m_` + 32 hex, stable across retries. */
 export const mealIdSchema = z.string().regex(/^m_[a-f0-9]{32}$/);
+/** "Công thức nhà mình" (D-086): client ids `fr_` + 32 hex. */
+export const familyRecipeIdSchema = z.string().regex(/^fr_[a-f0-9]{32}$/);
+/** What a meal was cooked from: a Child Life recipe or one of the family's own. */
+export const mealRecipeRefSchema = z.union([recipeIdSchema, familyRecipeIdSchema]);
 /** Same shapes as `content.ts` (kept here so this file does not import it). */
 const imageIdSchema = z.string().regex(/^[a-z0-9-]{2,48}_[a-f0-9]{8}$/);
 const articleRefSchema = z.string().regex(/^art_[a-z0-9_]{2,60}$/);
@@ -436,7 +446,8 @@ export const mealSchema = z
     reaction: z.enum(mealReactions).nullable(),
     symptoms: z.array(z.enum(mealSymptoms)).max(mealSymptoms.length),
     note: text(S.mealNote, 0),
-    recipeId: recipeIdSchema.nullable(),
+    /** The recipe it was cooked from (`rcp_…` or the family's own `fr_…`, D-086). */
+    recipeId: mealRecipeRefSchema.nullable(),
     /** `babies/{babyId}/meals/{file}.jpg` in Storage (owner: photos allowed, D-085 #2). */
     photoPath: z.string().max(200).nullable(),
     createdBy: z.string(),
@@ -456,6 +467,47 @@ export const mealSchema = z
     'A meal needs a dish or an ingredient',
   );
 export type Meal = z.infer<typeof mealSchema>;
+
+/**
+ * `babies/{babyId}/recipes/{familyRecipeId}`: "Công thức nhà mình" (D-086), written by whoever
+ * logs care for the baby (Cùng nuôi, Người chăm sóc) like meals: client ids, soft delete, the
+ * 30-day bin; caregivers edit their own. The family's own text, so it is never blocked like
+ * editorial copy: the app only nudges (honey under 12 months, added seasonings, choking notes).
+ */
+export const familyRecipeSchema = z
+  .object({
+    id: familyRecipeIdSchema,
+    babyId: z.string(),
+    title: text(S.familyTitle, 1),
+    /** `babies/{babyId}/recipes/{file}.jpg` in Storage. */
+    photoPath: z.string().max(200).nullable(),
+    ingredients: z
+      .array(
+        z
+          .object({
+            foodId: foodIdSchema.nullable(),
+            name: text(S.ingredientName, 1),
+            qty: z.number().positive().max(S.maxQty).nullable(),
+            unit: z.enum(ingredientUnits).nullable(),
+          })
+          .strict(),
+      )
+      .max(S.familyIngredients),
+    steps: z.array(text(S.familyStep, 1)).max(S.familySteps),
+    note: text(S.familyNote, 0),
+    createdBy: z.string(),
+    author: mealAuthorSchema,
+    createdAt: z.date(),
+    clientCreatedAt: z.date(),
+    updatedAt: z.date(),
+    updatedBy: z.string(),
+    deleted: z.boolean(),
+    deletedAt: z.date().nullable(),
+    deletedBy: z.string().nullable(),
+  })
+  .strict()
+  .refine((r) => r.ingredients.length > 0, 'A recipe needs at least one ingredient');
+export type FamilyRecipe = z.infer<typeof familyRecipeSchema>;
 
 // ---------- Pure helpers (mirrored in the app) ----------
 

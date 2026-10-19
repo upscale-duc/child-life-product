@@ -233,3 +233,38 @@ Na, born 2026-03-01, viewed on 2026-10-08 (7 months), method Kết hợp, starte
 2. Meal photos: allowed (stored like Kỷ niệm).
 3. Meals in Lịch sử, Thống kê and the care export: yes.
 4. Tracking starts from 6 months only.
+
+## 12. Owner additions (2026-10-19, D-086)
+
+**Owner request:** "cả 2 và cần biết được lịch sử bé ngày nào đã ăn món gì này nọ … rồi cá nhân hoá
+gợi ý ăn dặm món phù hợp" (Figma `313:1681`, `313:1746`, `314:1786`).
+
+1. **Dishes made.** A recipe page (Child Life or the family's own) shows "Nhà mình đã làm N lần ·
+   gần nhất 07/10 · Na thích" (the latest reaction of those meals) and "Các lần đã làm" (the meals
+   cooked from it, newest first). Meal detail shows "Theo công thức: {tên} ›". It reads the meals'
+   `recipeId`, now `rcp_…` or the family's `fr_…`.
+2. **Công thức nhà mình** (`babies/{b}/recipes/{fr_…}`, `familyRecipeSchema`):
+   - Created from scratch ("Thêm công thức nhà mình" in 5f) or with "Lưu thành công thức" on a meal
+     (title = the dish, its ingredients prefilled).
+   - Title, one photo (Storage `babies/{b}/recipes/{file}.jpg`, like meal photos), ingredients from
+     the catalogue or free names with optional quantity and unit, up to 12 steps, a note.
+   - Shared by everyone who cares for the baby. Cùng nuôi and Người chăm sóc create; the writer or a
+     Cùng nuôi edits and deletes (soft delete, undo, the 30-day bin); relatives with daily-care
+     rights read.
+   - The family's own text is never blocked. The app nudges: honey under 12 months, an added
+     seasoning (the same phrases as `solidsCopyProblems`), the catalogue choking note for the baby's
+     age, "⚠ Có dấu hiệu" on foods with recorded symptoms, "✦ Bé chưa thử" on new foods.
+   - Shown first in 5f ("Nhà mình"), in 4f "Đã lưu › Ăn dặm" under "Nhà mình", and as one-tap chips
+     at the top of 5c ("Món nhà mình": recent family recipes prefill the meal and `recipeId`).
+   - Purged with the baby; a deleted member's recipes keep "Người dùng đã xoá"; the care export adds
+     `family-recipes.csv`.
+3. **Which day the baby ate what.**
+   - 5d gets "Lịch": a month calendar with a dot and the number of meals per day, back to the first
+     meal, tap a day for its meals (5b layout).
+   - 5d search over dish, ingredient and recipe names: "Cà rốt" lists every day with carrot, grouped
+     by day, newest first.
+   - Food detail lists every date the food was eaten (paged), with the reaction and any signs.
+   - 5b's week strip scrolls to earlier weeks and has "Hôm nay".
+4. **Personalization** is built (§7, free). Family recipes now join "Dành cho {bé}" with the same
+   ranking and a "Nhà mình" tag, so a dish the family already makes and the baby likes comes back as
+   a suggestion when it fits the day's rule.

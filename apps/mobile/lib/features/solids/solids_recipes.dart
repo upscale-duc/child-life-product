@@ -20,18 +20,19 @@ import '../library/library_routes.dart';
 import '../library/library_widgets.dart';
 import '../nutrition/nutrition_widgets.dart' show NuBanner;
 import 'solids_calc.dart';
+import 'solids_family.dart';
+import 'solids_family_screens.dart';
 import 'solids_format.dart';
 import 'solids_models.dart';
 import 'solids_repository.dart';
 import 'solids_routes.dart';
 import 'solids_sheet.dart';
 import 'solids_state.dart';
-import 'solids_suggest.dart';
 import 'solids_widgets.dart' show SdTag;
 
 /// Recipes of Ăn dặm (phase C; Figma 5f `314:1987`, 5g `314:2095`; plan §3 #9, #11, §5): the
-/// rows of 5f, the recipe page 5g with "Lưu" and "Ghi vào nhật ký", and the list a suggestion's
-/// "Xem công thức" opens.
+/// rows of 5f, the recipe page 5g with "Lưu", "Ghi vào nhật ký" and "Nhà mình đã làm" (D-086), and
+/// the list a suggestion's "Xem công thức" opens (with the family's recipes, D-086 §12 #4).
 
 // ---------- Saved recipes (4f "Đã lưu › Ăn dặm") ----------
 
@@ -229,6 +230,10 @@ class SdRecipeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // D-086: `fr_…` is one of the family's own recipes (same route).
+    if (sdFamilyRecipeId(recipeId)) {
+      return SdFamilyRecipeScreen(recipeId: recipeId);
+    }
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = Localizations.localeOf(context);
@@ -355,6 +360,8 @@ class SdRecipeScreen extends ConsumerWidget {
             color: cl.colors.inkMuted,
           ),
         ),
+        // D-086 §12 #1: "Nhà mình đã làm N lần" and "Các lần đã làm".
+        SdDishesMadeLine(recipeId: recipe.id),
         // Plan §5 5g: a notice when the recipe starts above the baby's age.
         if (s != null &&
             months != null &&
@@ -418,7 +425,7 @@ class SdRecipeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               for (final (n, i) in recipe.ingredients.indexed)
-                _IngredientRow(
+                SdIngredientRow(
                   key: Key('sdIngredientRow_$n'),
                   ingredient: i,
                   qty: sdIngredientQty(l10n, tag, i),
@@ -448,40 +455,7 @@ class SdRecipeScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: ClSpace.s3),
-          for (final (n, step) in steps.indexed)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 9,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: cl.colors.mintSoft,
-                      borderRadius: BorderRadius.circular(ClRadius.pill),
-                    ),
-                    child: Text(
-                      '${n + 1}',
-                      style: cl.text.label.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: cl.colors.mintText,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      step,
-                      style: cl.text.body.copyWith(fontSize: 15, height: 1.55),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          SdRecipeSteps(steps: steps),
         ],
         if (recipe.storage != null) ...[
           LbSection(l10n.sdStorage),
@@ -499,6 +473,7 @@ class SdRecipeScreen extends ConsumerWidget {
             warm: false,
           ),
         ],
+        SdDishesMadeList(recipeId: recipe.id),
         const SizedBox(height: ClSpace.s4),
         // D-082: the footnote until a qualified reviewer signs it, then the reviewer.
         if (recipe.illustrative || recipe.review == null)
@@ -556,9 +531,60 @@ class SdRecipeScreen extends ConsumerWidget {
 
 String _clip(String s, int max) => s.length <= max ? s : s.substring(0, max);
 
-/// An ingredient: check, the name (and its note), the quantity, and the ✦ / ⚠ marks.
-class _IngredientRow extends StatelessWidget {
-  const _IngredientRow({
+/// The numbered steps of 5g (and of a family recipe).
+class SdRecipeSteps extends StatelessWidget {
+  const SdRecipeSteps({required this.steps, super.key});
+  final List<String> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (n, step) in steps.indexed)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintSoft,
+                    borderRadius: BorderRadius.circular(ClRadius.pill),
+                  ),
+                  child: Text(
+                    '${n + 1}',
+                    style: cl.text.label.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: cl.colors.mintText,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    step,
+                    style: cl.text.body.copyWith(fontSize: 15, height: 1.55),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// An ingredient: check, the name (and its note), the quantity, and the ✦ / ⚠ marks (5g and the
+/// family recipe page).
+class SdIngredientRow extends StatelessWidget {
+  const SdIngredientRow({
     required this.ingredient,
     required this.qty,
     required this.notTried,
@@ -727,7 +753,8 @@ class _RecipeBar extends StatelessWidget {
 // ---------- "Xem công thức" (plan §7) ----------
 
 /// The "Dành cho {bé}" ranking for a card's foods: recipes with one of [foodIds] for the baby's
-/// age and method. Without tracking (or an age), the published recipes with those foods.
+/// age and method, the family's own among them ("Nhà mình", D-086 §12 #4). Without tracking (or
+/// an age), the published and family recipes with those foods.
 class SdRecipeListScreen extends ConsumerWidget {
   const SdRecipeListScreen({required this.foodIds, super.key});
   final List<String> foodIds;
@@ -738,6 +765,7 @@ class SdRecipeListScreen extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final recipes =
         ref.watch(sdRecipesProvider).value?.items ?? const <SdRecipe>[];
+    final family = ref.watch(sdFamilyListProvider);
     final foods = {
       for (final f
           in ref.watch(sdFoodsProvider).value?.items ?? const <SdFood>[])
@@ -745,10 +773,11 @@ class SdRecipeListScreen extends ConsumerWidget {
     };
     final s = ref.watch(sdStateProvider);
     final wanted = foodIds.toSet();
-    final List<SdRecipe> list;
+    final List<SdPick> list;
     if (s != null && s.tracking && s.months != null) {
-      list = sdRecipesFor(
+      list = sdForBabyPicks(
         recipes: recipes,
+        family: family,
         months: s.months!,
         settings: s.settings,
         foods: foods,
@@ -758,7 +787,9 @@ class SdRecipeListScreen extends ConsumerWidget {
     } else {
       list = [
         for (final r in recipes)
-          if (r.foodIds.any(wanted.contains)) r,
+          if (r.foodIds.any(wanted.contains)) SdPick.editorial(r),
+        for (final r in family)
+          if (r.foodIds.any(wanted.contains)) SdPick.family(r),
       ];
     }
     final names = sdOrList(l10n, [
@@ -775,17 +806,30 @@ class SdRecipeListScreen extends ConsumerWidget {
             body: l10n.sdRecipesWithNone,
           )
         else
-          LbGroup(
-            children: [
-              for (final r in list)
-                SdRecipeRow(
-                  key: Key('sdRecipe_${r.id}'),
-                  recipe: r,
-                  onTap: () => context.push(SdRoutes.recipe(r.id)),
-                ),
-            ],
-          ),
+          LbGroup(children: [for (final p in list) sdPickRow(context, p)]),
       ],
     );
   }
+}
+
+/// A ranked pick's row: 5f's recipe row, or the family's with the "Nhà mình" tag.
+Widget sdPickRow(
+  BuildContext context,
+  SdPick p, {
+  String keyPrefix = 'sdRecipe_',
+}) {
+  final family = p.family;
+  if (family != null) {
+    return SdFamilyRecipeRow(
+      key: Key('$keyPrefix${family.id}'),
+      recipe: family,
+      onTap: () => context.push(SdRoutes.recipe(family.id)),
+    );
+  }
+  final r = p.recipe!;
+  return SdRecipeRow(
+    key: Key('$keyPrefix${r.id}'),
+    recipe: r,
+    onTap: () => context.push(SdRoutes.recipe(r.id)),
+  );
 }

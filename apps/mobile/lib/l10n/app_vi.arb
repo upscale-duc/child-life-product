@@ -26532,5 +26532,363 @@
   "sdIdeasHint": "Chạm một món để ghi bữa.",
   "@sdIdeasHint": {
     "description": "S8 ideas sheet hint. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review."
+  },
+  "sdMadeCount": "Nhà mình đã làm {count} lần",
+  "@sdMadeCount": {
+    "description": "Recipe page: how many meals were cooked from this recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdMadeLast": "gần nhất {date}",
+  "@sdMadeLast": {
+    "description": "Recipe page: the latest meal cooked from it (dd/MM). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sdMadeLiked": "{name} thích",
+  "@sdMadeLiked": {
+    "description": "Recipe page: latest reaction of the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdMadeNeutral": "{name} ăn bình thường",
+  "@sdMadeNeutral": {
+    "description": "Recipe page: latest reaction of the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdMadeNotYet": "{name} chưa hợp",
+  "@sdMadeNotYet": {
+    "description": "Recipe page: latest reaction (neutral wording, P-164 #17). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdMadeTitle": "Các lần đã làm",
+  "@sdMadeTitle": {
+    "description": "Recipe page: section listing the meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFromRecipe": "Theo công thức: {name}",
+  "@sdFromRecipe": {
+    "description": "Meal detail: the recipe the meal was cooked from (opens it). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sdSaveAsRecipe": "Lưu thành công thức",
+  "@sdSaveAsRecipe": {
+    "description": "Meal detail: save the meal as a family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamily": "Nhà mình",
+  "@sdFamily": {
+    "description": "Family recipes: section header in 5f and 4f, and the tag on a family recipe row. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyRecipes": "Công thức nhà mình",
+  "@sdFamilyRecipes": {
+    "description": "Family recipe page: the kind chip. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyAdd": "Thêm công thức nhà mình",
+  "@sdFamilyAdd": {
+    "description": "5f: create a family recipe; also the editor title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyAddShort": "Thêm",
+  "@sdFamilyAddShort": {
+    "description": "5f Nhà mình header link to add a family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyAddBody": "Lưu món nhà hay nấu cho bé, lần sau ghi bữa chỉ một chạm.",
+  "@sdFamilyAddBody": {
+    "description": "5f card body before the family has any recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyAll": "Xem tất cả · {count}",
+  "@sdFamilyAll": {
+    "description": "5f: show every family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyIngredientsCount": "{count} nguyên liệu",
+  "@sdFamilyIngredientsCount": {
+    "description": "Family recipe row and chip: ingredient count. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyMade": "đã làm {count} lần",
+  "@sdFamilyMade": {
+    "description": "Family recipe row: meals cooked from it. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyAddedBy": "{who} thêm",
+  "@sdFamilyAddedBy": {
+    "description": "Family recipe page: who added it (Mẹ, Cô Lan, Bạn). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "sdFamilyEditTitle": "Sửa công thức",
+  "@sdFamilyEditTitle": {
+    "description": "Family recipe editor title when editing. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyName": "Tên món",
+  "@sdFamilyName": {
+    "description": "Family recipe editor: title field label. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyNameHint": "VD: Cháo bí đỏ thịt bằm",
+  "@sdFamilyNameHint": {
+    "description": "Family recipe editor: title placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyPhoto": "Ảnh món (không bắt buộc)",
+  "@sdFamilyPhoto": {
+    "description": "Family recipe editor: photo field label. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyPhotoAdd": "Thêm ảnh món",
+  "@sdFamilyPhotoAdd": {
+    "description": "Family recipe editor: add photo button. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyQtyHint": "Lượng",
+  "@sdFamilyQtyHint": {
+    "description": "Family recipe editor: quantity placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyUnit": "Đơn vị",
+  "@sdFamilyUnit": {
+    "description": "Family recipe editor: unit chip and sheet title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyUnitNone": "Không ghi",
+  "@sdFamilyUnitNone": {
+    "description": "Family recipe editor: no unit. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyQtyInvalid": "Nhập lượng từ 0,1 đến 2000, hoặc để trống.",
+  "@sdFamilyQtyInvalid": {
+    "description": "Family recipe editor: invalid quantity. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyIngredientsHint": "Chọn trong danh mục hoặc gõ tên khác; lượng không bắt buộc.",
+  "@sdFamilyIngredientsHint": {
+    "description": "Family recipe editor: ingredients hint. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyStepHint": "Bước {n}",
+  "@sdFamilyStepHint": {
+    "description": "Family recipe editor: step placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyAddStep": "Thêm bước",
+  "@sdFamilyAddStep": {
+    "description": "Family recipe editor: add a step (up to 12). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyStepUp": "Đưa bước {n} lên",
+  "@sdFamilyStepUp": {
+    "description": "Family recipe editor: reorder (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyStepDown": "Đưa bước {n} xuống",
+  "@sdFamilyStepDown": {
+    "description": "Family recipe editor: reorder (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyStepRemove": "Bỏ bước {n}",
+  "@sdFamilyStepRemove": {
+    "description": "Family recipe editor: remove a step (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sdFamilyNote": "Ghi chú",
+  "@sdFamilyNote": {
+    "description": "Family recipe: note label and section. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyNoteHint": "Mẹo, cách bảo quản… (không bắt buộc)",
+  "@sdFamilyNoteHint": {
+    "description": "Family recipe editor: note placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilySave": "Lưu công thức",
+  "@sdFamilySave": {
+    "description": "Family recipe editor: save button. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyNeedTitle": "Thêm tên món.",
+  "@sdFamilyNeedTitle": {
+    "description": "Family recipe editor: missing title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyNeedIngredient": "Thêm ít nhất một nguyên liệu.",
+  "@sdFamilyNeedIngredient": {
+    "description": "Family recipe editor: no ingredient. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilySavedToast": "Đã lưu công thức · {title}",
+  "@sdFamilySavedToast": {
+    "description": "Toast after saving a new family recipe. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "sdFamilyDelete": "Xoá",
+  "@sdFamilyDelete": {
+    "description": "Family recipe page: delete button and confirm. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyDeleteTitle": "Xoá công thức này?",
+  "@sdFamilyDeleteTitle": {
+    "description": "Family recipe delete confirmation title. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyDeleteBody": "Công thức được giữ 30 ngày trong “Đã xoá gần đây”. Các bữa đã ghi theo công thức vẫn còn.",
+  "@sdFamilyDeleteBody": {
+    "description": "Family recipe delete confirmation body. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyDeletedToast": "Đã xoá công thức",
+  "@sdFamilyDeletedToast": {
+    "description": "Toast after deleting a family recipe (with undo). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyMissingBody": "Công thức có thể đã được xoá.",
+  "@sdFamilyMissingBody": {
+    "description": "Family recipe page: not found. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyViewOnly": "Công thức này do người khác thêm: bạn chỉ xem được.",
+  "@sdFamilyViewOnly": {
+    "description": "Family recipe page: read-only note. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdFamilyChips": "Món nhà mình",
+  "@sdFamilyChips": {
+    "description": "5c: one-tap chips of recent family recipes. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdSavedByMe": "Bạn đã lưu",
+  "@sdSavedByMe": {
+    "description": "4f Ăn dặm: header of the saved guides and recipes below Nhà mình. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdNudgeTitle": "Lưu ý cho bé",
+  "@sdNudgeTitle": {
+    "description": "Family recipe nudges: title (never blocks). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdNudgeHoney": "Mật ong chỉ cho bé từ 12 tháng tuổi: trước đó có nguy cơ ngộ độc.",
+  "@sdNudgeHoney": {
+    "description": "Family recipe nudge: honey under 12 months. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdNudgeTooYoung": "{food} thường cho bé từ {months} tháng.",
+  "@sdNudgeTooYoung": {
+    "description": "Family recipe nudge: a food usually given later. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      },
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "sdNudgeSeasoning": "Có thêm gia vị ({list}). Thức ăn của bé không cần muối, đường hay nước mắm.",
+  "@sdNudgeSeasoning": {
+    "description": "Family recipe nudge: added seasoning. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNudgeChoking": "{food}: {note}",
+  "@sdNudgeChoking": {
+    "description": "Family recipe nudge: the catalogue choking note of a food. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "food": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "sdNudgeFooter": "Công thức của nhà mình: app chỉ lưu ý, không chặn.",
+  "@sdNudgeFooter": {
+    "description": "Family recipe nudges footer. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdNoCatalogueFree": "Danh mục món đang được cập nhật. Bạn vẫn có thể gõ tên nguyên liệu ở trên.",
+  "@sdNoCatalogueFree": {
+    "description": "Ingredient picker without a catalogue (family recipes). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdCalendarTab": "Lịch",
+  "@sdCalendarTab": {
+    "description": "5d: the month calendar view. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdCalendarPrev": "Tháng trước",
+  "@sdCalendarPrev": {
+    "description": "5d calendar: previous month (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdCalendarNext": "Tháng sau",
+  "@sdCalendarNext": {
+    "description": "5d calendar: next month (screen reader). D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdCalendarHint": "Chạm một ngày để xem các bữa.",
+  "@sdCalendarHint": {
+    "description": "5d calendar: nothing chosen in this month. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdHistorySearch": "Tìm món, nguyên liệu, công thức…",
+  "@sdHistorySearch": {
+    "description": "5d search placeholder. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review."
+  },
+  "sdHistorySearchCount": "{count} bữa có “{query}”",
+  "@sdHistorySearchCount": {
+    "description": "5d search: result count. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "sdHistorySearchNone": "Chưa có bữa nào có “{query}”.",
+  "@sdHistorySearchNone": {
+    "description": "5d search: no result. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "sdFoodDays": "Những lần bé đã ăn · {count}",
+  "@sdFoodDays": {
+    "description": "Food detail: every meal with the food, with its day. D-086 Ăn dặm (plan docs/product/solids-plan.md §12). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

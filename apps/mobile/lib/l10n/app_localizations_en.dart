@@ -18957,4 +18957,261 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sdIdeasHint => 'Tap a food to log a meal.';
+
+  @override
+  String sdMadeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Made at home $count times',
+      one: 'Made at home once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdMadeLast(String date) {
+    return 'last on $date';
+  }
+
+  @override
+  String sdMadeLiked(String name) {
+    return '$name liked it';
+  }
+
+  @override
+  String sdMadeNeutral(String name) {
+    return '$name was okay with it';
+  }
+
+  @override
+  String sdMadeNotYet(String name) {
+    return '$name wasn\'t keen yet';
+  }
+
+  @override
+  String get sdMadeTitle => 'Times made';
+
+  @override
+  String sdFromRecipe(String name) {
+    return 'From recipe: $name';
+  }
+
+  @override
+  String get sdSaveAsRecipe => 'Save as a recipe';
+
+  @override
+  String get sdFamily => 'Family';
+
+  @override
+  String get sdFamilyRecipes => 'Family recipe';
+
+  @override
+  String get sdFamilyAdd => 'Add a family recipe';
+
+  @override
+  String get sdFamilyAddShort => 'Add';
+
+  @override
+  String get sdFamilyAddBody =>
+      'Save the dishes you often cook for baby; next time, log the meal in one tap.';
+
+  @override
+  String sdFamilyAll(int count) {
+    return 'See all · $count';
+  }
+
+  @override
+  String sdFamilyIngredientsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ingredients',
+      one: '1 ingredient',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sdFamilyMade(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return 'made $_temp0';
+  }
+
+  @override
+  String sdFamilyAddedBy(String who) {
+    return 'Added by $who';
+  }
+
+  @override
+  String get sdFamilyEditTitle => 'Edit recipe';
+
+  @override
+  String get sdFamilyName => 'Dish name';
+
+  @override
+  String get sdFamilyNameHint => 'E.g. pumpkin congee with minced pork';
+
+  @override
+  String get sdFamilyPhoto => 'Photo (optional)';
+
+  @override
+  String get sdFamilyPhotoAdd => 'Add a photo';
+
+  @override
+  String get sdFamilyQtyHint => 'Qty';
+
+  @override
+  String get sdFamilyUnit => 'Unit';
+
+  @override
+  String get sdFamilyUnitNone => 'None';
+
+  @override
+  String get sdFamilyQtyInvalid =>
+      'Enter an amount from 0.1 to 2000, or leave it empty.';
+
+  @override
+  String get sdFamilyIngredientsHint =>
+      'Pick from the list or type another name; amounts are optional.';
+
+  @override
+  String sdFamilyStepHint(int n) {
+    return 'Step $n';
+  }
+
+  @override
+  String get sdFamilyAddStep => 'Add a step';
+
+  @override
+  String sdFamilyStepUp(int n) {
+    return 'Move step $n up';
+  }
+
+  @override
+  String sdFamilyStepDown(int n) {
+    return 'Move step $n down';
+  }
+
+  @override
+  String sdFamilyStepRemove(int n) {
+    return 'Remove step $n';
+  }
+
+  @override
+  String get sdFamilyNote => 'Notes';
+
+  @override
+  String get sdFamilyNoteHint => 'Tips, storage… (optional)';
+
+  @override
+  String get sdFamilySave => 'Save recipe';
+
+  @override
+  String get sdFamilyNeedTitle => 'Add the dish name.';
+
+  @override
+  String get sdFamilyNeedIngredient => 'Add at least one ingredient.';
+
+  @override
+  String sdFamilySavedToast(String title) {
+    return 'Recipe saved · $title';
+  }
+
+  @override
+  String get sdFamilyDelete => 'Delete';
+
+  @override
+  String get sdFamilyDeleteTitle => 'Delete this recipe?';
+
+  @override
+  String get sdFamilyDeleteBody =>
+      'The recipe is kept for 30 days in “Recently deleted”. Meals logged from it stay.';
+
+  @override
+  String get sdFamilyDeletedToast => 'Recipe deleted';
+
+  @override
+  String get sdFamilyMissingBody => 'It may have been deleted.';
+
+  @override
+  String get sdFamilyViewOnly =>
+      'Someone else added this recipe: you can only view it.';
+
+  @override
+  String get sdFamilyChips => 'Family dishes';
+
+  @override
+  String get sdSavedByMe => 'Saved by you';
+
+  @override
+  String get sdNudgeTitle => 'Worth knowing';
+
+  @override
+  String get sdNudgeHoney =>
+      'Honey is only for babies from 12 months: before that it can cause botulism.';
+
+  @override
+  String sdNudgeTooYoung(String food, int months) {
+    return '$food: usually from $months months.';
+  }
+
+  @override
+  String sdNudgeSeasoning(String list) {
+    return 'Seasoning is added ($list). Baby\'s food doesn\'t need salt, sugar or fish sauce.';
+  }
+
+  @override
+  String sdNudgeChoking(String food, String note) {
+    return '$food: $note';
+  }
+
+  @override
+  String get sdNudgeFooter =>
+      'It\'s your family\'s recipe: the app only points things out, it never blocks.';
+
+  @override
+  String get sdNoCatalogueFree =>
+      'The food list is on its way. You can still type an ingredient name above.';
+
+  @override
+  String get sdCalendarTab => 'Calendar';
+
+  @override
+  String get sdCalendarPrev => 'Previous month';
+
+  @override
+  String get sdCalendarNext => 'Next month';
+
+  @override
+  String get sdCalendarHint => 'Tap a day to see its meals.';
+
+  @override
+  String get sdHistorySearch => 'Search dishes, ingredients, recipes…';
+
+  @override
+  String sdHistorySearchCount(int count, String query) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return '$_temp0 with “$query”';
+  }
+
+  @override
+  String sdHistorySearchNone(String query) {
+    return 'No meals with “$query” yet.';
+  }
+
+  @override
+  String sdFoodDays(int count) {
+    return 'Every time baby had it · $count';
+  }
 }

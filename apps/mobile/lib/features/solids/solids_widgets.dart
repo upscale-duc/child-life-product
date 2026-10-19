@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -522,9 +524,10 @@ class SdMealCard extends StatelessWidget {
   }
 }
 
-/// 5b week strip: seven days T2 → CN with a dot on days with meals; swipe right (or "‹") for
-/// earlier weeks, back to [today]'s week at most. Days after today and before [first] are muted
-/// and not selectable.
+/// 5b week strip: seven days T2 → CN with a dot on days with meals; swipe right for earlier
+/// weeks, back to [today]'s week at most. Days after today and before [first] are muted and not
+/// selectable. Above it, the week shown ("05/10 – 11/10") and, away from today, "Hôm nay"
+/// (D-086 §12 #3).
 class SdWeekStrip extends StatefulWidget {
   const SdWeekStrip({
     required this.today,
@@ -551,6 +554,27 @@ class _SdWeekStripState extends State<SdWeekStrip> {
   late final PageController _pages = PageController(
     initialPage: _weeksBack(widget.selected),
   );
+  late int _page = _weeksBack(widget.selected);
+
+  /// "Hôm nay": today selected, back to this week.
+  void _toToday() {
+    widget.onSelect(widget.today);
+    if (_pages.hasClients) {
+      final duration = context.motion(ClMotion.standard);
+      if (duration == Duration.zero) {
+        _pages.jumpToPage(0);
+      } else {
+        unawaited(
+          _pages.animateToPage(
+            0,
+            duration: duration,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+      }
+    }
+    setState(() => _page = 0);
+  }
 
   int _weeksBack(DateTime day) =>
       sdWeekStart(widget.today).difference(sdWeekStart(day)).inDays ~/ 7;
@@ -604,6 +628,7 @@ class _SdWeekStripState extends State<SdWeekStrip> {
           semanticLabel: label,
           child: AnimatedContainer(
             duration: context.motion(ClMotion.quick),
+            width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
               color: selected ? cl.colors.mintDeep : cl.colors.surface,
@@ -645,26 +670,84 @@ class _SdWeekStripState extends State<SdWeekStrip> {
       );
     }
 
-    return SizedBox(
-      height: 64,
-      child: PageView.builder(
-        key: const Key('sdWeekStrip'),
-        controller: _pages,
-        reverse: true,
-        itemCount: _count,
-        itemBuilder: (context, i) {
-          final start = sdWeekStart(today);
-          final monday = DateTime(start.year, start.month, start.day - 7 * i);
-          return Row(
+    final l10n = AppLocalizations.of(context);
+    final start = sdWeekStart(today);
+    final shown = DateTime(start.year, start.month, start.day - 7 * _page);
+    final away = _page != 0 || widget.selected != today;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 36,
+          child: Row(
             children: [
-              for (var k = 0; k < 7; k++) ...[
-                if (k > 0) const SizedBox(width: 6),
-                cell(DateTime(monday.year, monday.month, monday.day + k)),
-              ],
+              Expanded(
+                child: Text(
+                  '${sdShortDate(locale, shown)} – '
+                  '${sdShortDate(locale, DateTime(shown.year, shown.month, shown.day + 6))}',
+                  key: const Key('sdWeekRange'),
+                  style: cl.text.label.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: cl.colors.inkMuted,
+                  ),
+                ),
+              ),
+              if (away)
+                ClPressable(
+                  key: const Key('sdWeekToday'),
+                  onPressed: _toToday,
+                  semanticLabel: l10n.sdToday,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cl.colors.mintSoft,
+                      borderRadius: BorderRadius.circular(ClRadius.pill),
+                    ),
+                    child: Text(
+                      l10n.sdToday,
+                      style: cl.text.label.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: cl.colors.mintText,
+                      ),
+                    ),
+                  ),
+                ),
             ],
-          );
-        },
-      ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        SizedBox(
+          height: 64,
+          child: PageView.builder(
+            key: const Key('sdWeekStrip'),
+            controller: _pages,
+            reverse: true,
+            itemCount: _count,
+            onPageChanged: (p) => setState(() => _page = p),
+            itemBuilder: (context, i) {
+              final start = sdWeekStart(today);
+              final monday = DateTime(
+                start.year,
+                start.month,
+                start.day - 7 * i,
+              );
+              return Row(
+                children: [
+                  for (var k = 0; k < 7; k++) ...[
+                    if (k > 0) const SizedBox(width: 6),
+                    cell(DateTime(monday.year, monday.month, monday.day + k)),
+                  ],
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

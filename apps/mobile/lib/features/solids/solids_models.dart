@@ -11,8 +11,9 @@ import '../library/content_models.dart';
 ///
 /// - the food catalogue, published by the portal to `contentFoods/{fd_…}` (`contentFoodSchema`);
 /// - per baby, written by the app: `babies/{babyId}/solids/settings` (`solidsSettingsSchema`,
-///   Cùng nuôi only) and `babies/{babyId}/meals/{m_…}` (`mealSchema`, written like care records:
-///   client ids, the Firestore cache as the offline outbox, soft delete only).
+///   Cùng nuôi only), `babies/{babyId}/meals/{m_…}` (`mealSchema`, written like care records:
+///   client ids, the Firestore cache as the offline outbox, soft delete only) and "Công thức nhà
+///   mình" `babies/{babyId}/recipes/{fr_…}` (`familyRecipeSchema`, D-086, written like meals).
 ///
 /// Meals, tried foods, symptoms and settings are child data: never in logs, analytics or crash
 /// keys (CLAUDE.md, plan §4).
@@ -35,6 +36,15 @@ abstract final class SdLimits {
 
   /// A meal can be logged up to 7 days back (5c date field).
   static const backDays = 7;
+
+  /// "Công thức nhà mình" (D-086, `familyRecipeSchema`).
+  static const familyTitle = 60;
+  static const familyIngredients = 15;
+  static const familySteps = 12;
+  static const familyStep = 300;
+  static const familyNote = 300;
+  static const ingredientName = 40;
+  static const maxQty = 2000;
 }
 
 /// 5e groups (`foodGroups`): Rau củ · Trái cây · Tinh bột · Đạm động vật · Đậu và hạt · Sữa và chế
@@ -111,19 +121,36 @@ T? _enum<T extends Enum>(List<T> values, Object? name) =>
 final _foodId = RegExp(r'^fd_[a-z0-9_]{2,40}$');
 final _recipeId = RegExp(r'^rcp_[a-z0-9_]{2,40}$');
 final _mealId = RegExp(r'^m_[a-f0-9]{32}$');
+final _familyRecipeId = RegExp(r'^fr_[a-f0-9]{32}$');
 final _articleId = RegExp(r'^art_[a-z0-9_]{2,60}$');
 
 /// A meal photo in Storage: `babies/{babyId}/meals/{file}.jpg` (Storage Rules:
 /// `^[A-Za-z0-9_-]{8,64}[.]jpg$`, JPEG ≤ 4 MB; owner: photos allowed, D-085 #2).
 final _mealPhoto = RegExp(r'^babies/[^/]+/meals/[A-Za-z0-9_-]{8,64}[.]jpg$');
 
+/// A family recipe's photo: `babies/{babyId}/recipes/{file}.jpg` (D-086, same rules as meals).
+final _recipePhoto = RegExp(
+  r'^babies/[^/]+/recipes/[A-Za-z0-9_-]{8,64}[.]jpg$',
+);
+
 bool sdFoodId(Object? id) => id is String && _foodId.hasMatch(id);
 bool sdRecipeId(Object? id) => id is String && _recipeId.hasMatch(id);
 bool sdMealId(Object? id) => id is String && _mealId.hasMatch(id);
 bool sdMealPhotoPath(Object? p) => p is String && _mealPhoto.hasMatch(p);
+bool sdRecipePhotoPath(Object? p) => p is String && _recipePhoto.hasMatch(p);
+
+/// "Công thức nhà mình" (`familyRecipeIdSchema`): `fr_` + 32 hex.
+bool sdFamilyRecipeId(Object? id) =>
+    id is String && _familyRecipeId.hasMatch(id);
+
+/// What a meal was cooked from (`mealRecipeRefSchema`, D-086): a Child Life recipe or the family's.
+bool sdMealRecipeRef(Object? id) => sdRecipeId(id) || sdFamilyRecipeId(id);
 
 /// `m_` + 32 hex: generated once per sheet so a double tap or a retry writes the same doc.
 String newMealId() => 'm_${const Uuid().v4().replaceAll('-', '')}';
+
+/// `fr_` + 32 hex: generated once per editor, like meals.
+String newFamilyRecipeId() => 'fr_${const Uuid().v4().replaceAll('-', '')}';
 
 // ---------- Food (catalogue, `contentFoods`) ----------
 
@@ -530,7 +557,7 @@ class SdMeal {
   final List<SdSymptom> symptoms;
   final String note;
 
-  /// From 5g "Ghi vào nhật ký".
+  /// From 5g "Ghi vào nhật ký" or a "Món nhà mình" chip: `rcp_…` or the family's `fr_…` (D-086).
   final String? recipeId;
 
   /// `babies/{babyId}/meals/{file}.jpg` (owner: photos allowed, D-085 #2; `solids_photos.dart`).
@@ -691,7 +718,7 @@ class SdMeal {
           for (final s in j['symptoms']! as List) ?_enum(SdSymptom.values, s),
       ],
       note: (j['note'] as String? ?? '').trim(),
-      recipeId: recipe is String && _recipeId.hasMatch(recipe) ? recipe : null,
+      recipeId: sdMealRecipeRef(recipe) ? recipe as String : null,
       photoPath: photo is String && photo.isNotEmpty ? photo : null,
       createdBy: j['createdBy'] as String? ?? '',
       author: CareAuthor.fromJson(j['author']),
@@ -704,4 +731,276 @@ class SdMeal {
 
   static SdMeal? fromSnapshot(DocumentSnapshot<Map<String, dynamic>> doc) =>
       fromJson(doc.id, doc.data(), pending: doc.metadata.hasPendingWrites);
+}
+
+// ---------- "Công thức nhà mình" (`babies/{babyId}/recipes/{fr_…}`, D-086) ----------
+
+String _clipText(String s, int max) {
+  final t = s.trim();
+  return t.length <= max ? t : t.substring(0, max).trim();
+}
+
+/// Control characters (U+0000–U+001F, U+007F) as spaces: the Rules refuse them in steps and
+/// names (one line each), and count the length before trimming, so this runs before [_clipText].
+final _control = RegExp('[\u0000-\u001F\u007F]+');
+String _oneLine(String s) => s.replaceAll(_control, ' ');
+
+/// One family-recipe ingredient (`{ foodId | null, name, qty, unit }`): a catalogue food (its
+/// name kept as it was when added) or a free name, with an optional quantity and unit.
+@immutable
+class SdFamilyIngredient {
+  const SdFamilyIngredient({
+    required this.name,
+    this.foodId,
+    this.qty,
+    this.unit,
+  });
+
+  final String? foodId;
+  final String name;
+  final num? qty;
+  final SdIngredientUnit? unit;
+
+  SdFamilyIngredient copyWith({
+    num? qty,
+    bool clearQty = false,
+    SdIngredientUnit? unit,
+    bool clearUnit = false,
+  }) => SdFamilyIngredient(
+    name: name,
+    foodId: foodId,
+    qty: clearQty ? null : (qty ?? this.qty),
+    unit: clearUnit ? null : (unit ?? this.unit),
+  );
+
+  /// As a recipe ingredient: the 5g rows and quantities ("30 g", "1 thìa cà phê").
+  SdIngredient get asIngredient => SdIngredient(
+    name: LbText(name, name),
+    foodId: foodId,
+    qty: qty,
+    unit: unit,
+  );
+
+  static bool _validQty(Object? q) =>
+      q is num && q.isFinite && q > 0 && q <= SdLimits.maxQty;
+
+  Map<String, Object?> toJson() => {
+    'foodId': sdFoodId(foodId) ? foodId : null,
+    'name': _clipText(_oneLine(name), SdLimits.ingredientName),
+    'qty': _validQty(qty) ? qty : null,
+    'unit': unit?.name,
+  };
+
+  /// Defensive: the Rules check the four keys and the name (1–40) but not each ingredient's
+  /// `foodId`, `qty` or `unit`, so a malformed id reads as a free name and a bad quantity or unit
+  /// as none.
+  static SdFamilyIngredient? fromJson(Object? j) {
+    if (j is! Map) return null;
+    final name = j['name'];
+    if (name is! String || name.trim().isEmpty) return null;
+    final qty = j['qty'];
+    return SdFamilyIngredient(
+      name: name.trim(),
+      foodId: sdFoodId(j['foodId']) ? j['foodId'] as String : null,
+      qty: _validQty(qty) ? qty as num : null,
+      unit: _enum(SdIngredientUnit.values, j['unit']),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is SdFamilyIngredient &&
+      other.foodId == foodId &&
+      other.name == name &&
+      other.qty == qty &&
+      other.unit == unit;
+
+  @override
+  int get hashCode => Object.hash(foodId, name, qty, unit);
+}
+
+/// A recipe the family makes for the baby (D-086 §12 #2; `familyRecipeSchema`). Written like
+/// meals by Cùng nuôi and Người chăm sóc; the writer or a Cùng nuôi edits and deletes it (soft
+/// delete, the 30-day bin); relatives with daily-care rights read it. The family's own text, so
+/// the app never blocks it, only nudges (`solids_family.dart`). [pending] = this device only.
+@immutable
+class SdFamilyRecipe {
+  const SdFamilyRecipe({
+    required this.id,
+    required this.babyId,
+    required this.title,
+    required this.ingredients,
+    required this.createdBy,
+    required this.author,
+    this.photoPath,
+    this.steps = const [],
+    this.note = '',
+    this.createdAt,
+    this.clientCreatedAt,
+    this.updatedAt,
+    this.deleted = false,
+    this.pending = false,
+  });
+
+  final String id;
+  final String babyId;
+  final String title;
+
+  /// `babies/{babyId}/recipes/{file}.jpg`.
+  final String? photoPath;
+  final List<SdFamilyIngredient> ingredients;
+
+  /// Up to 12, in order.
+  final List<String> steps;
+  final String note;
+  final String createdBy;
+  final CareAuthor author;
+  final DateTime? createdAt;
+  final DateTime? clientCreatedAt;
+  final DateTime? updatedAt;
+  final bool deleted;
+  final bool pending;
+
+  /// The linked catalogue foods, each once, in recipe order.
+  List<String> get foodIds => {
+    for (final i in ingredients)
+      if (i.foodId != null) i.foodId!,
+  }.toList();
+
+  /// The free names (group "Khác"), in recipe order.
+  List<String> get freeNames => [
+    for (final i in ingredients)
+      if (i.foodId == null) i.name,
+  ];
+
+  /// "Newest" in rankings: when it was first saved.
+  DateTime get savedAt =>
+      createdAt ?? clientCreatedAt ?? updatedAt ?? DateTime(2000);
+
+  static SdFamilyRecipe create({
+    required String id,
+    required Membership me,
+    required String title,
+    required List<SdFamilyIngredient> ingredients,
+    String? photoPath,
+    List<String> steps = const [],
+    String note = '',
+  }) => SdFamilyRecipe(
+    id: id,
+    babyId: me.babyId,
+    title: title,
+    photoPath: photoPath,
+    ingredients: ingredients,
+    steps: steps,
+    note: note,
+    createdBy: me.uid,
+    author: CareAuthor.of(me),
+    clientCreatedAt: DateTime.now(),
+    pending: true,
+  );
+
+  /// "Sửa": everything but who wrote it and when.
+  SdFamilyRecipe edited({
+    required String title,
+    required String? photoPath,
+    required List<SdFamilyIngredient> ingredients,
+    required List<String> steps,
+    required String note,
+  }) => SdFamilyRecipe(
+    id: id,
+    babyId: babyId,
+    title: title,
+    photoPath: photoPath,
+    ingredients: ingredients,
+    steps: steps,
+    note: note,
+    createdBy: createdBy,
+    author: author,
+    createdAt: createdAt,
+    clientCreatedAt: clientCreatedAt,
+    updatedAt: updatedAt,
+    deleted: deleted,
+    pending: true,
+  );
+
+  /// Only a photo in this baby's `recipes` folder (the Rules refuse a meal photo path here).
+  Map<String, Object?> _body() => {
+    'title': _clipText(_oneLine(title), SdLimits.familyTitle),
+    'photoPath': sdRecipePhotoPath(photoPath) ? photoPath : null,
+    'ingredients': [
+      for (final i in ingredients.take(SdLimits.familyIngredients))
+        if (_oneLine(i.name).trim().isNotEmpty) i.toJson(),
+    ],
+    // Trimmed and on one line before the 300-character limit (Rules count before trimming).
+    'steps': [
+      for (final s in steps)
+        if (_oneLine(s).trim().isNotEmpty)
+          _clipText(_oneLine(s), SdLimits.familyStep),
+    ].take(SdLimits.familySteps).toList(),
+    'note': _clipText(note, SdLimits.familyNote),
+  };
+
+  /// The whole new document (`familyRecipeSchema`, strict; Rules as meals).
+  Map<String, Object?> toCreateJson() => {
+    'id': id,
+    'babyId': babyId,
+    ..._body(),
+    'createdBy': createdBy,
+    'author': author.toJson(),
+    'createdAt': FieldValue.serverTimestamp(),
+    'clientCreatedAt': Timestamp.fromDate(clientCreatedAt ?? DateTime.now()),
+    'updatedAt': FieldValue.serverTimestamp(),
+    'updatedBy': createdBy,
+    'deleted': false,
+    'deletedAt': null,
+    'deletedBy': null,
+  };
+
+  /// "Sửa": the body only, plus who and when (as meals).
+  Map<String, Object?> toEditJson(String uid) => {
+    ..._body(),
+    'updatedAt': FieldValue.serverTimestamp(),
+    'updatedBy': uid,
+  };
+
+  static SdFamilyRecipe? fromJson(
+    String id,
+    Map<String, Object?>? j, {
+    bool pending = false,
+  }) {
+    if (j == null || !_familyRecipeId.hasMatch(id)) return null;
+    final title = j['title'];
+    if (title is! String || title.trim().isEmpty) return null;
+    final ingredients = [
+      if (j['ingredients'] is List)
+        for (final i in j['ingredients']! as List)
+          ?SdFamilyIngredient.fromJson(i),
+    ];
+    if (ingredients.isEmpty) return null;
+    final photo = j['photoPath'];
+    return SdFamilyRecipe(
+      id: id,
+      babyId: j['babyId'] as String? ?? '',
+      title: title.trim(),
+      photoPath: sdRecipePhotoPath(photo) ? photo as String : null,
+      ingredients: ingredients,
+      steps: [
+        if (j['steps'] is List)
+          for (final s in j['steps']! as List)
+            if (s is String && s.trim().isNotEmpty) s.trim(),
+      ],
+      note: (j['note'] as String? ?? '').trim(),
+      createdBy: j['createdBy'] as String? ?? '',
+      author: CareAuthor.fromJson(j['author']),
+      createdAt: dateOf(j['createdAt']),
+      clientCreatedAt: dateOf(j['clientCreatedAt']),
+      updatedAt: dateOf(j['updatedAt']),
+      deleted: j['deleted'] == true,
+      pending: pending,
+    );
+  }
+
+  static SdFamilyRecipe? fromSnapshot(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) => fromJson(doc.id, doc.data(), pending: doc.metadata.hasPendingWrites);
 }

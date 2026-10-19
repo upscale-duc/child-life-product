@@ -22,6 +22,7 @@ import '../nutrition/nutrition_models.dart' show NuStage;
 import '../nutrition/nutrition_state.dart';
 import '../nutrition/nutrition_widgets.dart' show NuSection;
 import 'solids_calc.dart';
+import 'solids_family.dart';
 import 'solids_format.dart';
 import 'solids_models.dart';
 import 'solids_repository.dart';
@@ -353,6 +354,29 @@ final sdForBabyProvider = Provider<List<SdRecipe>>((ref) {
   );
 });
 
+/// "Dành cho {bé}" with the family's own recipes (D-086 §12 #4): one ranking, the family's
+/// carrying the "Nhà mình" tag.
+final sdForBabyPicksProvider = Provider<List<SdPick>>((ref) {
+  final s = ref.watch(sdStateProvider);
+  if (s == null || !s.tracking || !s.me.sdReads || s.months == null) {
+    return const [];
+  }
+  final recipes =
+      ref.watch(sdRecipesProvider).value?.items ?? const <SdRecipe>[];
+  final family = ref.watch(sdFamilyListProvider);
+  if (recipes.isEmpty && family.isEmpty) return const [];
+  final snoozes = ref.watch(sdSnoozesProvider(s.baby.babyId));
+  return sdForBabyPicks(
+    recipes: recipes,
+    family: family,
+    months: s.months!,
+    settings: s.settings,
+    foods: s.foods,
+    tried: {for (final t in ref.watch(sdTriedProvider)) t.key: t},
+    snoozedFoods: sdActiveSnoozes(snoozes.foods, s.baby.today),
+  );
+});
+
 // ---------- Actions and feedback ----------
 
 /// The card's one action.
@@ -405,10 +429,12 @@ Future<void> sdRunSuggestion(
       }
       if (!context.mounted) return;
       final s = ref.read(sdStateProvider);
-      final recipes = s == null || s.months == null
-          ? const <SdRecipe>[]
-          : sdRecipesFor(
+      // D-086 §12 #4: the family's own recipes with these foods count too.
+      final picks = s == null || s.months == null
+          ? const <SdPick>[]
+          : sdForBabyPicks(
               recipes: published,
+              family: ref.read(sdFamilyListProvider),
               months: s.months!,
               settings: s.settings,
               foods: s.foods,
@@ -417,8 +443,8 @@ Future<void> sdRunSuggestion(
             );
       unawaited(
         context.push(
-          recipes.length == 1
-              ? SdRoutes.recipe(recipes.single.id)
+          picks.length == 1
+              ? SdRoutes.recipe(picks.single.id)
               : SdRoutes.recipesFor(c.foodIds),
         ),
       );
@@ -505,9 +531,11 @@ class SdSuggestionsSection extends ConsumerWidget {
     final items = ref.watch(sdSuggestionsProvider(lang));
     final s = ref.watch(sdStateProvider);
     if (items.isEmpty || s == null) return const SizedBox.shrink();
-    // "Xem công thức" ranks the published recipes: keep them at hand.
+    // "Xem công thức" ranks the published and the family's recipes: keep them at hand.
     if (items.any((c) => c.card.action == SdCardAction.viewRecipes)) {
-      ref.watch(sdRecipesProvider);
+      ref
+        ..watch(sdRecipesProvider)
+        ..watch(sdFamilyListProvider);
     }
     return Column(
       key: const Key('sdSuggestions'),

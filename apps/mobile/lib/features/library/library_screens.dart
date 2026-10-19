@@ -25,8 +25,11 @@ import 'content_models.dart';
 import 'content_repository.dart';
 import 'library_routes.dart';
 import 'library_widgets.dart';
+import '../solids/solids_family_screens.dart' show SdFamilySavedSection;
+import '../solids/solids_models.dart' show SdFamilyRecipe;
 import '../solids/solids_recipes.dart'
     show SdSavedRecipeRow, sdSavedRecipeListProvider;
+import '../solids/solids_state.dart' show sdFamilyListProvider;
 
 /// Thư viện chăm bé (Figma v1.1 4a home, 4b search, 4c filters, 4d reader, 4e saved toast, 4f
 /// saved list; D-076 #7). 4a–4c show the "Chăm bé" library only: Ăn dặm (5f) has its own screen
@@ -1384,6 +1387,10 @@ class _SavedArticlesScreenState extends ConsumerState<SavedArticlesScreen> {
     final recipes = _library == LbLibrary.solids
         ? ref.watch(sdSavedRecipeListProvider)
         : const <Never>[];
+    // …and the family's own recipes under "Nhà mình" (D-086), shared by the baby's carers.
+    final family = _library == LbLibrary.solids
+        ? ref.watch(sdFamilyListProvider)
+        : const <SdFamilyRecipe>[];
 
     String savedOn(LbArticle a, LbSaved s) {
       final at = s.savedAt;
@@ -1438,16 +1445,24 @@ class _SavedArticlesScreenState extends ConsumerState<SavedArticlesScreen> {
         ),
         LbOfflineNote(l10n.lbOfflineLibrary, top: ClSpace.s3),
         const SizedBox(height: ClSpace.s4),
-        if (saved.isLoading && rows.isEmpty && recipes.isEmpty)
+        if (saved.isLoading &&
+            rows.isEmpty &&
+            recipes.isEmpty &&
+            family.isEmpty)
           const SizedBox(height: 120)
-        else if (rows.isEmpty && recipes.isEmpty)
+        else if (rows.isEmpty && recipes.isEmpty && family.isEmpty)
           LbEmpty(
             icon: ClIcons.bookmark,
             title: l10n.lbSavedEmptyTitle,
             body: l10n.lbSavedEmptyBody,
           )
         else ...[
-          LbGroup(children: [for (final (_, row) in items) row]),
+          if (family.isNotEmpty) ...[
+            const SdFamilySavedSection(),
+            if (items.isNotEmpty) LbSection(l10n.sdSavedByMe),
+          ],
+          if (items.isNotEmpty)
+            LbGroup(children: [for (final (_, row) in items) row]),
           for (final (a, _) in updated) ...[
             const SizedBox(height: ClSpace.s3),
             ClPressable(

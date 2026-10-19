@@ -17,7 +17,8 @@ import {
  *   for every day a write touches, so retries and out-of-order triggers converge (idempotent);
  * - `members/{uid}.recordCount` — "đã ghi 46 lần" on 14f (R-038);
  * - the 30-day bin: soft-deleted records are purged after 30 days (P-009, "Đã xoá gần đây"), and
- *   so are soft-deleted Ăn dặm meals with their photo (D-085, P-164 #4).
+ *   so are soft-deleted Ăn dặm meals (D-085, P-164 #4) and family recipes ("Công thức nhà mình",
+ *   D-086), each with its photo.
  * Care payloads are never logged.
  */
 
@@ -260,32 +261,44 @@ export async function recountMember(
   await member.update({ recordCount: count.data().count, recordCountAt: now });
 }
 
-/** Removes one Storage object (a purged meal's photo); a missing object is fine. */
+/** Removes one Storage object (a purged meal's or recipe's photo); a missing object is fine. */
 export interface BinPhotoStore {
   delete(path: string): Promise<void>;
 }
 
-/** The default bucket, opened only when a purged meal has a photo. */
+/** The default bucket, opened only when a purged meal or recipe has a photo. */
 const bucketPhotos: BinPhotoStore = {
   async delete(path) {
     await getStorage().bucket().file(path).delete({ ignoreNotFound: true });
   },
 };
 
-/** A meal's own photo (`babies/{babyId}/meals/{file}.jpg`, as Rules allow), else null. */
-function mealPhotoPath(doc: DocumentSnapshot): string | null {
+/** Photo names as Rules allow them, per bin group with photos (meals, family recipes). */
+const photoNames = {
+  meals: /^babies\/[^/]+\/meals\/[A-Za-z0-9_-]{8,64}\.jpg$/,
+  recipes: /^babies\/[^/]+\/recipes\/[A-Za-z0-9_-]{8,64}\.jpg$/,
+};
+
+/**
+ * The document's own photo (`babies/{babyId}/{group}/{file}.jpg`), else null: a path elsewhere
+ * (another baby, another folder) is never deleted from Storage.
+ */
+function ownPhotoPath(doc: DocumentSnapshot, group: keyof typeof photoNames): string | null {
   const path = doc.get('photoPath') as unknown;
   const babyId = doc.ref.parent.parent?.id;
   if (typeof path !== 'string' || !babyId) return null;
-  return path.startsWith(`babies/${babyId}/meals/`) &&
-    /^babies\/[^/]+\/meals\/[A-Za-z0-9_-]{8,64}\.jpg$/.test(path)
+  return path.startsWith(`babies/${babyId}/${group}/`) && photoNames[group].test(path)
     ? path
     : null;
 }
 
+/** Only family recipes (`babies/{babyId}/recipes/{id}`) are purged from the `recipes` group. */
+const isBabyDoc = (doc: DocumentSnapshot) => doc.ref.parent.parent?.parent.id === 'babies';
+
 /**
- * Hard-deletes care records and Ăn dặm meals that have been in the bin for 30 days; a meal's photo
- * goes first, so a failure leaves the meal to retry the next day. Returns how many documents.
+ * Hard-deletes care records, Ăn dặm meals and family recipes that have been in the bin for 30
+ * days; a meal's or recipe's photo goes first, so a failure leaves the document to retry the next
+ * day. Returns how many documents.
  */
 export async function purgeDeletedRecords(
   db: Firestore,
@@ -294,24 +307,25 @@ export async function purgeDeletedRecords(
 ): Promise<number> {
   const cutoff = new Date(now.getTime() - binDays * DAY_MS);
   let purged = 0;
-  for (const group of ['records', 'meals'] as const) {
-    const due = await db
+  for (const group of ['records', 'meals', 'recipes'] as const) {
+    const snap = await db
       .collectionGroup(group)
       .where('deleted', '==', true)
       .where('deletedAt', '<=', cutoff)
       .limit(400)
       .get();
-    if (due.empty) continue;
-    if (group === 'meals') {
-      for (const doc of due.docs) {
-        const path = mealPhotoPath(doc);
+    const due = group === 'recipes' ? snap.docs.filter(isBabyDoc) : snap.docs;
+    if (due.length === 0) continue;
+    if (group !== 'records') {
+      for (const doc of due) {
+        const path = ownPhotoPath(doc, group);
         if (path) await photos.delete(path);
       }
     }
     const batch = db.batch();
-    for (const doc of due.docs) batch.delete(doc.ref);
+    for (const doc of due) batch.delete(doc.ref);
     await batch.commit();
-    purged += due.size;
+    purged += due.length;
   }
   return purged;
 }

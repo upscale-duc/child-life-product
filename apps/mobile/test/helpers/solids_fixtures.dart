@@ -271,6 +271,7 @@ SdMeal meal(
   List<SdSymptom> symptoms = const [],
   Membership? by,
   bool pending = false,
+  String? recipeId,
 }) {
   final who = by ?? mai;
   return SdMeal(
@@ -284,6 +285,7 @@ SdMeal meal(
     amount: amount,
     reaction: reaction,
     symptoms: symptoms,
+    recipeId: recipeId,
     createdBy: who.uid,
     author: CareAuthor.of(who),
     createdAt: pending ? null : at.add(const Duration(minutes: 1)),
@@ -387,20 +389,131 @@ SdSettings naSettings({
   updatedBy: mai.uid,
 );
 
-/// An in-memory store: writes land in [meals] / [settings] and the streams update, as the
-/// Firestore cache does on the device.
+var _familySeq = 0;
+
+/// A family recipe ("Công thức nhà mình", D-086) by [by] (default Mai), as the app writes it.
+SdFamilyRecipe familyRecipe(
+  String title, {
+  List<SdFamilyIngredient>? ingredients,
+  List<String> steps = const ['Nấu chín mềm.', 'Nghiền mịn.'],
+  String note = '',
+  String? photoPath,
+  Membership? by,
+  DateTime? createdAt,
+  String? id,
+}) {
+  final who = by ?? mai;
+  final at = createdAt ?? vnOn(10, 1, 9, 0);
+  return SdFamilyRecipe(
+    id: id ?? 'fr_${(++_familySeq).toRadixString(16).padLeft(32, '0')}',
+    babyId: teddyId,
+    title: title,
+    ingredients:
+        ingredients ??
+        const [
+          SdFamilyIngredient(
+            foodId: 'fd_rice',
+            name: 'Gạo',
+            qty: 30,
+            unit: SdIngredientUnit.g,
+          ),
+          SdFamilyIngredient(
+            foodId: 'fd_pumpkin',
+            name: 'Bí đỏ',
+            qty: 50,
+            unit: SdIngredientUnit.g,
+          ),
+        ],
+    steps: steps,
+    note: note,
+    photoPath: photoPath,
+    createdBy: who.uid,
+    author: CareAuthor.of(who),
+    createdAt: at,
+    clientCreatedAt: at,
+    updatedAt: at,
+  );
+}
+
+/// An in-memory store: writes land in [meals] / [settings] / [family] and the streams update, as
+/// the Firestore cache does on the device.
 class FakeSolidsStore extends SolidsStore {
-  FakeSolidsStore({List<SdMeal>? meals, this.settings, List<SdFood>? foods})
-    : meals = [...?meals],
-      foods = foods ?? fixtureFoods(),
-      super(() => throw UnimplementedError());
+  FakeSolidsStore({
+    List<SdMeal>? meals,
+    this.settings,
+    List<SdFood>? foods,
+    List<SdFamilyRecipe>? family,
+  }) : meals = [...?meals],
+       family = [...?family],
+       foods = foods ?? fixtureFoods(),
+       super(() => throw UnimplementedError());
 
   final List<SdMeal> meals;
   SdSettings? settings;
   final List<SdFood> foods;
+
+  /// "Công thức nhà mình" (D-086).
+  final List<SdFamilyRecipe> family;
   final calls = <String>[];
   final _mealsNow = StreamController<List<SdMeal>>.broadcast();
   final _settingsNow = StreamController<SdSettings?>.broadcast();
+  final _familyNow = StreamController<List<SdFamilyRecipe>>.broadcast();
+
+  List<SdFamilyRecipe> get _liveFamily => [
+    for (final r in family)
+      if (!r.deleted) r,
+  ]..sort((a, b) => b.savedAt.compareTo(a.savedAt));
+
+  @override
+  Stream<List<SdFamilyRecipe>> watchFamilyRecipes(String babyId) async* {
+    yield _liveFamily;
+    yield* _familyNow.stream;
+  }
+
+  void _emitFamily() => _familyNow.add(_liveFamily);
+
+  @override
+  void createFamilyRecipe(
+    SdFamilyRecipe recipe, {
+    void Function(Object error)? onError,
+  }) {
+    calls.add('createRecipe ${recipe.id}');
+    family.add(recipe);
+    _emitFamily();
+  }
+
+  @override
+  void editFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    calls.add('editRecipe ${recipe.id}');
+    family[family.indexWhere((r) => r.id == recipe.id)] = recipe;
+    _emitFamily();
+  }
+
+  @override
+  void softDeleteFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    calls.add('deleteRecipe ${recipe.id}');
+    family.removeWhere((r) => r.id == recipe.id);
+    _emitFamily();
+  }
+
+  @override
+  void restoreFamilyRecipe(
+    SdFamilyRecipe recipe,
+    String uid, {
+    void Function(Object error)? onError,
+  }) {
+    calls.add('restoreRecipe ${recipe.id}');
+    family.add(recipe);
+    _emitFamily();
+  }
 
   List<SdMeal> get _live => [
     for (final m in meals)
@@ -523,6 +636,7 @@ List<Override> solidsOverrides({
     solidsStoreProvider.overrideWithValue(s),
     sdSettingsProvider.overrideWith((ref, id) => s.watchSettings(id)),
     sdMealsProvider.overrideWith((ref, id) => s.watchMeals(id)),
+    sdFamilyRecipesProvider.overrideWith((ref, id) => s.watchFamilyRecipes(id)),
     sdFoodsProvider.overrideWith(
       (ref) => Stream.value((items: s.foods, fromCache: false)),
     ),
