@@ -445,6 +445,14 @@ fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_
 - The model request carries the calendar only when a date word, money or a reminder is in the words
   (with the previous turn and the answers), the household categories only for money;
   `max_completion_tokens` 1 100 (all 6 items fit; 400 would cut a 3-feed reply).
+- **Compact output (prompt `assistant-extract-v7`, 2026-10-19).** The strict schema has one branch
+  per intent kind with only the fields the planner reads for it (`intentKindFields`: a bottle writes
+  `amountMl`, `milk`, `time`, `dayOffset`; an expense `title`, `amount`, `currency`, `categoryId`,
+  `merchant`, `date`…), `correctsPrevious` only when a previous turn travels, and the evidence /
+  uncertain / missing lists defined once (`$defs`). `parseExtraction` fills every other field with
+  null, so `planTextIntents` reads the same extraction as from a v6 reply (still accepted). About
+  half the output tokens and ≈ 0.6 s less per model call:
+  [`latency-2026-10-19.md`](latency-2026-10-19.md) §5.
 
 ## Worker (`runAssistantTask` trigger on `assistantTasks/{taskId}`)
 

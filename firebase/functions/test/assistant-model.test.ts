@@ -7,6 +7,8 @@ import {
   extractionJsonSchema,
   extractionSystemPrompt,
   fakeModelGateway,
+  intentFieldNames,
+  intentKindFields,
   ModelUnavailable,
   openAiModelGateway,
   parseExtraction,
@@ -40,6 +42,12 @@ const dig = (o: unknown, path: string): Json =>
     .split('.')
     .filter(Boolean)
     .reduce<unknown>((x, k) => (x as Json)[k], o) as Json;
+
+/** v7: the strict branch of one intent kind in an extraction schema. */
+const branchOf = (schema: unknown, kind: string): Json =>
+  (dig(schema, 'properties.intents.items').anyOf as Json[]).find(
+    (b) => (dig(b, 'properties.kind').enum as string[])[0] === kind,
+  )!;
 
 /** Records the request and answers with [content] as the model message. */
 function recordingFetch(content: unknown, status = 200) {
@@ -122,15 +130,42 @@ describe('OpenAI extraction request', () => {
     );
   });
 
-  it('narrows the schema enums to the allowlists and requires every field', () => {
+  it('narrows the schema to the allowlists: one strict branch per kind with only its fields', () => {
     const schema = extractionJsonSchema(['bottle', 'sleep'], ['care_summary']);
-    const intent = dig(schema, 'properties.intents.items');
-    expect(dig(intent, 'properties.kind').enum).toEqual(['bottle', 'sleep']);
+    const branches = dig(schema, 'properties.intents.items').anyOf as Json[];
+    expect(branches.map((b) => dig(b, 'properties.kind').enum)).toEqual([['bottle'], ['sleep']]);
     expect(dig(schema, 'properties.reads.items.properties.tool').enum).toEqual(['care_summary']);
-    expect(intent.additionalProperties).toBe(false);
-    expect(dig(intent, 'properties.fields').required).toEqual(
-      Object.keys(dig(intent, 'properties.fields.properties')),
-    );
+    for (const kind of ['bottle', 'sleep'] as const) {
+      const b = branchOf(schema, kind);
+      expect(b.additionalProperties).toBe(false);
+      expect(b.required).toEqual(Object.keys(dig(b, 'properties')));
+      expect(dig(b, 'properties.fields').additionalProperties).toBe(false);
+      expect(dig(b, 'properties.fields').required).toEqual([...intentKindFields[kind]]);
+      expect(Object.keys(dig(b, 'properties.fields.properties'))).toEqual([
+        ...intentKindFields[kind],
+      ]);
+      // Evidence, doubts and gaps: one shared definition (the schema is counted as input).
+      expect(dig(b, 'properties.evidence')).toEqual({ $ref: '#/$defs/evidence' });
+      expect(dig(b, 'properties.uncertainFields')).toEqual({ $ref: '#/$defs/fieldNames' });
+      expect(dig(b, 'properties.missingFields')).toEqual({ $ref: '#/$defs/fieldNames' });
+    }
+    expect(dig(schema, '$defs.fieldName').enum).toEqual([...intentFieldNames]);
+    expect(dig(schema, '$defs.evidence.items.properties.field')).toEqual({
+      $ref: '#/$defs/fieldName',
+    });
+    expect(Object.keys(dig(branchOf(schema, 'bottle'), 'properties.fields.properties'))).toEqual([
+      'amountMl',
+      'milk',
+      'time',
+      'dayOffset',
+    ]);
+    // Timers are the server's: never a branch, even if asked.
+    expect(
+      (
+        dig(extractionJsonSchema(['bottle', 'timer'], []), 'properties.intents.items')
+          .anyOf as Json[]
+      ).length,
+    ).toBe(1);
     expect(schema.required).toEqual([
       'intents',
       'reads',
@@ -144,22 +179,42 @@ describe('OpenAI extraction request', () => {
 
   it('v3 (rework 2026-10-15): expense / reminder fields, the household categories only, corrections', () => {
     const schema = extractionJsonSchema(['expense', 'reminder'], [], ['c_milk', 'c_hocboi']);
-    const intent = dig(schema, 'properties.intents.items');
-    expect(intent.required).toContain('correctsPrevious');
-    const fields = dig(intent, 'properties.fields.properties');
-    for (const k of ['amount', 'currency', 'categoryId', 'merchant', 'date', 'assigneeText']) {
-      expect(Object.keys(fields)).toContain(k);
-    }
+    const expense = branchOf(schema, 'expense');
+    expect(expense.required).toContain('correctsPrevious');
+    const fields = dig(expense, 'properties.fields.properties');
+    expect(Object.keys(fields)).toEqual([
+      'title',
+      'amount',
+      'currency',
+      'categoryId',
+      'merchant',
+      'date',
+    ]);
+    expect(Object.keys(dig(branchOf(schema, 'reminder'), 'properties.fields.properties'))).toEqual([
+      'time',
+      'title',
+      'date',
+      'assigneeText',
+    ]);
     expect(dig(fields, 'categoryId.anyOf.0').enum).toEqual(['c_milk', 'c_hocboi']);
     expect(dig(fields, 'currency.anyOf.0').enum).toContain('VND');
-    expect(dig(fields, 'dayOffset.anyOf.0').enum).toEqual([0, -1, -2]);
+    expect(
+      dig(branchOf(extractionJsonSchema(['bottle'], []), 'bottle'), 'properties.fields.properties')
+        .dayOffset,
+    ).toEqual({ anyOf: [{ type: 'integer', enum: [0, -1, -2] }, { type: 'null' }] });
     // Without categories the model cannot name one.
     expect(
-      dig(
-        extractionJsonSchema(['expense'], []),
-        'properties.intents.items.properties.fields.properties.categoryId',
+      Object.keys(
+        dig(
+          branchOf(extractionJsonSchema(['expense'], []), 'expense'),
+          'properties.fields.properties',
+        ),
       ),
-    ).toEqual({ type: 'null' });
+    ).not.toContain('categoryId');
+    // v7: no previous turn, nothing to correct: no `correctsPrevious` key to write.
+    const alone = branchOf(extractionJsonSchema(['bottle'], [], [], false), 'bottle');
+    expect(alone.required).not.toContain('correctsPrevious');
+    expect(Object.keys(dig(alone, 'properties'))).not.toContain('correctsPrevious');
     const prompt = extractionSystemPrompt();
     for (const words of [
       '"500k" = 500000',
@@ -173,7 +228,7 @@ describe('OpenAI extraction request', () => {
       expect(prompt).toContain(words);
     }
     // Lumi fixes 2026-10-16 (v5): pump / diaper / growth, "12h" is noon, each time its period.
-    expect(assistantPromptVersion).toBe('assistant-extract-v6');
+    expect(assistantPromptVersion).toBe('assistant-extract-v7');
     // Owner 2026-10-16 (v6): head circumference is stored; plans / questions are not expenses.
     for (const words of [
       'headCm = head circumference',
@@ -185,9 +240,9 @@ describe('OpenAI extraction request', () => {
     for (const words of ['pump (', 'diaper (', 'growth (', '"12h" / "12 giờ" alone is noon']) {
       expect(prompt).toContain(words);
     }
-    for (const k of ['diaper', 'weightKg', 'lengthCm', 'headCm']) {
-      expect(Object.keys(fields)).toContain(k);
-    }
+    expect(intentKindFields.diaper).toContain('diaper');
+    expect(intentKindFields.growth).toEqual(['dayOffset', 'weightKg', 'lengthCm', 'headCm']);
+    expect(prompt).toContain('only the "fields" of its kind');
     const context = {
       currency: 'VND',
       categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
@@ -207,19 +262,30 @@ describe('OpenAI extraction request', () => {
     });
     // Lumi L2: a plain care log sends neither the calendar nor the categories (a shorter prompt).
     const care = buildExtractRequest(
-      { ...input, ...context, text: 'bé bú 120ml lúc 8h, ngủ từ 9h đến 10h' },
+      {
+        ...input,
+        ...context,
+        allowedIntents: ['bottle', 'sleep', 'expense'],
+        text: 'bé bú 120ml lúc 8h, ngủ từ 9h đến 10h',
+      },
       'gpt-test',
     );
     expect(JSON.parse(dig(care, 'messages.1').content as string)).toMatchObject({
       spending_categories: [],
       calendar: [],
     });
+    const careSchema = dig(care, 'response_format.json_schema.schema');
     expect(
-      dig(
-        care,
-        'response_format.json_schema.schema.properties.intents.items.properties.fields.properties.categoryId',
-      ),
-    ).toEqual({ type: 'null' });
+      Object.keys(dig(branchOf(careSchema, 'expense'), 'properties.fields.properties')),
+    ).not.toContain('categoryId');
+    // The previous turn travels: its items may correct it.
+    expect(branchOf(careSchema, 'bottle').required).toContain('correctsPrevious');
+    expect(
+      branchOf(
+        dig(buildExtractRequest(input, 'gpt-test'), 'response_format.json_schema.schema'),
+        'bottle',
+      ).required,
+    ).not.toContain('correctsPrevious');
     // A day word keeps the calendar ("hôm qua", "thứ 6", "20/10", reminders).
     for (const text of ['hôm qua bé bú 120ml', 'nhắc thứ 6 đi tiêm', 'tiêm ngày 20/10']) {
       const b = buildExtractRequest({ ...input, ...context, text }, 'gpt-test');
@@ -291,6 +357,36 @@ describe('OpenAI extraction request', () => {
 describe('strict output schema (E01)', () => {
   it('accepts the documented shape', () => {
     expect(parseExtraction(valid).ok).toBe(true);
+  });
+  it("v7: a compact item (only its kind's fields) reads as the full v6 item", () => {
+    const full = parseExtraction(valid);
+    const compact = parseExtraction({
+      ...valid,
+      intents: [
+        {
+          ...valid.intents[0],
+          fields: { amountMl: 120, milk: null, time: '08:00', dayOffset: 0 },
+        },
+      ],
+    });
+    expect(compact.ok && full.ok).toBe(true);
+    if (!compact.ok || !full.ok) return;
+    expect(Object.keys(compact.value.intents[0]!.fields).sort()).toEqual(
+      [...intentFieldNames].sort(),
+    );
+    for (const k of intentFieldNames) {
+      expect(compact.value.intents[0]!.fields[k] ?? null, k).toEqual(
+        full.value.intents[0]!.fields[k] ?? null,
+      );
+    }
+    expect(compact.value.intents[0]!.fields.headCm).toBeNull();
+    // Still strict: an unknown field in a compact item is rejected.
+    expect(
+      parseExtraction({
+        ...valid,
+        intents: [{ ...valid.intents[0], fields: { amountMl: 120, path: '/x' } }],
+      }).ok,
+    ).toBe(false);
   });
   it('rejects an unknown tool, an unknown intent, an extra key or an unknown field name', () => {
     expect(parseExtraction({ kind: 'tool', name: 'deleteAllRecords' }).ok).toBe(false);

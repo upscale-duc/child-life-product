@@ -41,7 +41,8 @@ Two model modes, one catalogue:
   rules: evidence words, `"time"` in `missingFields` when no time was said, `phase` for ongoing
   states, `pump` / `diaper` / `growth` with `diaper`, `weightKg`, `lengthCm`). Fields the running
   code's strict schema does not know are dropped, so a reply written for a newer prompt still runs
-  on older code. A kind the contracts do not have yet can be written `"x|meal"`: the first one the
+  on older code; since v7 (2026-10-19) an item keeps only its kind's fields (`intentKindFields`),
+  as the per-kind schema lets the model write them. A kind the contracts do not have yet can be written `"x|meal"`: the first one the
   code knows is used. Device-bug cases and the "… live" cases script what a deployed / live model
   actually returned (a wrong kind, a misread hour, a guessed side), so the server's backstops are
   tested on them. The harness sends `clientDraftKinds` (every kind) like the current app, except on

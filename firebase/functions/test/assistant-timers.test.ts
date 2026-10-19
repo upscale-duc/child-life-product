@@ -143,11 +143,28 @@ describe('timer replies and ids', () => {
 });
 
 describe('model v4: phase', () => {
-  it('the schema requires phase on every item and the prompt explains states vs observations', () => {
+  it('the schema requires phase on sleep / breast items and the prompt explains states vs observations', () => {
     const schema = extractionJsonSchema(['sleep', 'breast', 'observation'], ['care_summary']) as {
-      properties: { intents: { items: { properties: { fields: { required: string[] } } } } };
+      properties: {
+        intents: {
+          items: {
+            anyOf: {
+              properties: { kind: { enum: string[] }; fields: { required: string[] } };
+            }[];
+          };
+        };
+      };
     };
-    expect(schema.properties.intents.items.properties.fields.required).toContain('phase');
+    // v7 (2026-10-19): each kind writes only its own fields; phase is a sleep / breast field.
+    const required = Object.fromEntries(
+      schema.properties.intents.items.anyOf.map((b) => [
+        b.properties.kind.enum[0],
+        b.properties.fields.required,
+      ]),
+    );
+    expect(required.sleep).toContain('phase');
+    expect(required.breast).toContain('phase');
+    expect(required.observation).not.toContain('phase');
     const prompt = extractionSystemPrompt();
     expect(prompt).toContain('A plain state or log is NEVER an observation');
     expect(prompt).toContain('phase (sleep and breast only');

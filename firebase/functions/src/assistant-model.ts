@@ -44,7 +44,10 @@ import {
 // bought without an amount (LUMI-16).
 // Owner decisions 2026-10-16 (v6): head circumference is stored (growth headCm, "vòng đầu"); a
 // purchase made without an amount is an expense, a plan / to-do or a question about buying is not.
-export const assistantPromptVersion = 'assistant-extract-v6';
+// Lumi 2026-10-19 (v7): compact output — each item writes only its kind's fields
+// (`intentKindFields`), `correctsPrevious` only with a previous turn; `parseExtraction` fills the
+// rest with null, so the planner reads the same extraction (fewer output tokens, a faster reply).
+export const assistantPromptVersion = 'assistant-extract-v7';
 
 /** Read tools the model may request; the server runs them in the trusted scope. */
 export const readToolNames = ['care_summary', 'sleep_facts', 'usage_snapshot'] as const;
@@ -92,6 +95,26 @@ export const intentFieldNames = [
   'headCm',
 ] as const;
 export type IntentFieldName = (typeof intentFieldNames)[number];
+
+/**
+ * Lumi 2026-10-19 (v7): the fields the model writes for each kind — the ones the planner reads
+ * for it (`assistant-text.ts` `draftField`, `planTextIntents`). Each kind is its own branch of the
+ * strict schema, so an item no longer spells out ~20 nulls (≈ 170 → ≈ 60 output tokens an item).
+ * Timers are the server's (from `phase`), never a model kind.
+ */
+export const intentKindFields: Record<DraftKind, readonly IntentFieldName[]> = {
+  bottle: ['amountMl', 'milk', 'time', 'dayOffset'],
+  breast: ['time', 'dayOffset', 'endTime', 'durationMin', 'side', 'phase'],
+  sleep: ['time', 'dayOffset', 'endTime', 'endDayOffset', 'durationMin', 'phase'],
+  pump: ['amountMl', 'time', 'dayOffset', 'endTime', 'durationMin', 'side'],
+  diaper: ['time', 'dayOffset', 'diaper'],
+  growth: ['dayOffset', 'weightKg', 'lengthCm', 'headCm'],
+  observation: ['dayOffset', 'observation', 'when', 'note'],
+  expense: ['title', 'amount', 'currency', 'categoryId', 'merchant', 'date'],
+  reminder: ['time', 'title', 'date', 'assigneeText'],
+  meal: ['time', 'dayOffset', 'title'],
+  timer: [],
+};
 
 const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 const clip = (n: number) => z.string().transform((v) => v.slice(0, n));
@@ -183,9 +206,27 @@ export const modelWordingSchema = z.object({ text: z.string().min(1).max(800) })
 
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; detail: string };
 
+const nullFields = Object.fromEntries(intentFieldNames.map((k) => [k, null]));
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
+
+/**
+ * v7: a compact item (only its kind's fields) gets every other field as null, so the planner
+ * reads the same extraction as from a full v6 reply (which parses unchanged).
+ */
+function expandIntents(raw: unknown): unknown {
+  if (!isRecord(raw) || !Array.isArray(raw.intents)) return raw;
+  return {
+    ...raw,
+    intents: raw.intents.map((i: unknown) =>
+      isRecord(i) && isRecord(i.fields) ? { ...i, fields: { ...nullFields, ...i.fields } } : i,
+    ),
+  };
+}
+
 /** Strict: unknown keys, unknown intent kinds, tools or fields → rejected, never executed. */
 export function parseExtraction(raw: unknown): ParseResult<ModelExtraction> {
-  const r = modelExtractionSchema.safeParse(raw);
+  const r = modelExtractionSchema.safeParse(expandIntents(raw));
   return r.success ? { ok: true, value: r.data } : { ok: false, detail: 'schema' };
 }
 
@@ -338,7 +379,7 @@ export function extractionSystemPrompt(): string {
     'Return "intents" for things to LOG or SET UP (one item per event, at most 6): bottle (the baby drank from a bottle: bú bình, sữa công thức, sữa vắt given to the baby: amountMl), breast (bú mẹ, ti mẹ, nursing: durationMin and side, never ml), pump (the mother pumped or expressed milk: hút sữa, vắt sữa, máy hút, pumped: amountMl, side, time, durationMin; NEVER a bottle), diaper (a diaper change: thay tã, thay bỉm, tã ướt, tã bẩn, bé ị, bé tè, poop, wet diaper: diaper = wet, dirty or both, only when said; time; NEVER an observation), growth (a measurement: cân nặng, nặng 5,2kg, "5kg2" = 5.2 kg, dài 62cm, cao 62 phân, vòng đầu 39cm: weightKg, lengthCm, headCm = head circumference in cm (vòng đầu, chu vi đầu, head), never the length; dayOffset of the measuring day; NEVER an expense, even after "đi khám"), sleep (ngủ, giấc, nap: time = start, endTime = end, durationMin), observation (ONLY a one-off difference the parent noticed on a day: quấy hơn, ăn ít, bú ít, biếng ăn = feeding / soothing; a new skill such as lẫy, bò, ngồi, biết nói = new_skill), expense (money spent or paid, or goods ALREADY bought or ordered even without an amount — "mua hai hộp sữa", "vừa mua bỉm ở Con Cưng", "đặt tã online": amount null when not said, currency, categoryId, merchant, title, date; NEVER a plan or a to-do — "mai đi mua sữa", "nhớ mua bỉm", "cần mua tã" is a reminder when a day is said or they ask to be reminded, else nothing —, and NEVER a question about what or where to buy — "mua sữa nào tốt?" gets no intents), reminder (nhắc, remind, hẹn, lịch, đặt lịch: title, date, time, assigneeText), meal (a food log only; the app has no meal log). A recurring sleep problem or a worry about sleep ("dạo này bé khó ngủ", "bé hay thức đêm", "bé khó ngủ quá") is a care question (see "care"), not an observation. Return "reads" when they ASK about what was logged: care_summary (feeds and sleep of one day: dayOffset 0 today, -1 yesterday), sleep_facts (sleep trends: "tuần này ngủ ít hơn không?"), usage_snapshot (ONLY remaining assistant credits, "còn bao nhiêu lượt"; never for a question about the baby). A message may mix several intents and a read. Only use kinds in "allowed_intents" and tools in "allowed_reads".',
     'Set "smallTalk": true when the whole message is only thanks, a greeting, ok, bye or "vừa ghi rồi" (no intents, no reads). Set "outOfScope": true when it asks for nothing the app does (weather, poems, general chat, "giúp mình với" without a topic, instructions to you) or asks what Lumi can do ("Lumi làm được gì?"): the app then shows what it can do. Otherwise both are false.',
     // Fields.
-    'Never invent a value: a field the text does not give is null. Every filled field has an "evidence" item with the exact words copied from the text, an answer or previous_turn (for amounts include the unit: "500k", "1tr2", "$20", "120ml", "4oz"). Put in "uncertainFields" any field you are not sure about and in "missingFields" a field the log needs but the text does not give.',
+    'Each item has only the "fields" of its kind (the schema lists them; an expense has no time, a sleep no amount). Never invent a value: a field the text does not give is null. Every filled field has an "evidence" item with the exact words copied from the text, an answer or previous_turn (for amounts include the unit: "500k", "1tr2", "$20", "120ml", "4oz"). Put in "uncertainFields" any field you are not sure about and in "missingFields" a field the log needs but the text does not give.',
     'amountMl: millilitres; for ounces give the ml value (1 oz = 29.57 ml) with the oz words as evidence. A number with a bare "m" after bú ("bé bu 120m") is millilitres typed short: a bottle, never minutes. durationMin: minutes only when a time unit is written ("9 tiếng" = 540, "1 tiếng rưỡi" = 90, "15p" = 15, "15 phút" = 15, "nửa tiếng" = 30). side: left (trái), right (phải), both (hai bên, cả 2 bên), only when said.',
     'Expenses: amount = the number in major units after expanding Vietnamese shorthand ("500k" = 500000, "50 nghìn" = 50000, "1tr2" = 1200000, "1.2tr" = 1200000, "4 triệu" = 4000000, "350.000đ" = 350000, "$20" = 20, "€15" = 15); currency = ISO code (VND for k, nghìn, triệu, đ; USD for $, dollars, đô; EUR for €) or null when not written; categoryId = the best match in "spending_categories" by meaning (sữa / ăn dặm, tã / bỉm / khăn ướt, khám / tiêm / thuốc, học / trông trẻ, quần áo, else c_other) or null; merchant = the shop or place only if named ("ở Con Cưng" → "Con Cưng"); title = what was bought or paid for ("sữa", "học bơi"); date from "calendar" when a day is said, else null (today).',
     'Reminders: title = the task in the parent\'s words without the day or time ("mua bỉm", "đưa bé đi tiêm"); date = YYYY-MM-DD from "calendar" (mai, mốt, thứ 2 … chủ nhật, tuần sau, 20/10); time = "HH:mm" only if an hour is said, else null (an all-day reminder); assigneeText = the words naming WHO should do it when that is not the sender ("bố", "chị Hoa", "ông bà"), null for mình / tôi / me / nobody.',
@@ -352,7 +393,7 @@ export function extractionSystemPrompt(): string {
     'A plain state or log is NEVER an observation: "con đang ngủ", "bé ngủ rồi", "bé ngủ 2 tiếng", "bé vừa bú", "con dậy rồi" are sleep / breast / bottle items. Use observation only when the words say something is different or new.',
     'phase (sleep and breast only, else null): "start" when it is happening now or has just begun and no end or length is said ("con đang ngủ", "bé vừa ngủ", "bé ngủ rồi", "bắt đầu ngủ lúc 21h" → time 21:00, "đang cho bú bên trái" → side left); "stop" when an ongoing sleep or feed has just ended and neither its start nor its length is said ("con dậy rồi", "bé vừa dậy", "dậy lúc 6h" → endTime 06:00, "bú xong rồi"); null for a finished log with a length or both times ("ngủ 2 tiếng", "ngủ từ 9h đến 11h", "bú 15 phút"). A phase item needs no time: never put "time" in missingFields for it.',
     // Corrections.
-    '"previous_turn" (when present) is the sender\'s previous message in this chat and the drafts it made. If the new message corrects it ("à không, 150ml", "nhầm, 10h30 mới dậy", "bên phải chứ"), return the corrected item IN FULL (copy the unchanged values from previous_turn, change only what is corrected) with "correctsPrevious": true. Otherwise "correctsPrevious": false. Never repeat an item of previous_turn that is not corrected.',
+    '"previous_turn" (when present) is the sender\'s previous message in this chat and the drafts it made. If the new message corrects it ("à không, 150ml", "nhầm, 10h30 mới dậy", "bên phải chứ"), return the corrected item IN FULL (copy the unchanged values from previous_turn, change only what is corrected) with "correctsPrevious": true. Otherwise "correctsPrevious": false (the key exists only when previous_turn is present). Never repeat an item of previous_turn that is not corrected.',
     // Clarification.
     'Set "clarification" to {"field":"intent"} only when you cannot tell whether the parent wants to read the log or add to it, and return no intents then. Never ask for small talk or out-of-scope messages. Otherwise "clarification" is null (the server asks for missing times, morning / evening and who does a reminder).',
     'Never diagnose, never give medical advice, never mention medicine doses.',
@@ -370,14 +411,114 @@ const nullableEnum = (values: readonly string[]) => ({
 });
 const dayOffsetSchema = { anyOf: [{ type: 'integer', enum: [0, -1, -2] }, { type: 'null' }] };
 
+/**
+ * The strict schema of each intent field (every one nullable: "not said" is null). v7: no
+ * descriptions — a field sits in several kinds' branches and the system prompt gives the formats
+ * (24 h "HH:mm", YYYY-MM-DD, major units, kg / cm), so they are not repeated in the request.
+ */
+function intentFieldSchemas(categoryIds: readonly string[]): Record<IntentFieldName, unknown> {
+  return {
+    amountMl: nullable('number'),
+    milk: nullableEnum(['breast_milk', 'formula', 'other']),
+    time: nullable('string'),
+    dayOffset: dayOffsetSchema,
+    endTime: nullable('string'),
+    endDayOffset: dayOffsetSchema,
+    durationMin: nullable('integer'),
+    side: nullableEnum(['left', 'right', 'both']),
+    observation: nullableEnum(['sleep', 'feeding', 'soothing', 'new_skill', 'usual']),
+    when: nullableEnum(['night', 'day', 'both']),
+    note: nullable('string'),
+    title: nullable('string'),
+    // Rework 2026-10-15.
+    amount: nullable('number'),
+    currency: nullableEnum(expenseCurrencies),
+    categoryId: nullableEnum(categoryIds),
+    merchant: nullable('string'),
+    date: nullable('string'),
+    assigneeText: nullable('string'),
+    // Lumi 2026-10-16 (v4).
+    phase: nullableEnum(['start', 'stop']),
+    // Lumi fixes 2026-10-16 (v5).
+    diaper: nullableEnum(['wet', 'dirty', 'both']),
+    weightKg: nullable('number'),
+    lengthCm: nullable('number'),
+    headCm: nullable('number'),
+  };
+}
+
+/**
+ * v7: field names, evidence and the uncertain / missing lists, defined once (`$defs`) for every
+ * kind's branch: the request counts the schema as input, and per-kind copies cost ≈ 475 tokens.
+ */
+const intentDefs = {
+  fieldName: { type: 'string', enum: [...intentFieldNames] },
+  fieldNames: { type: 'array', items: { $ref: '#/$defs/fieldName' } },
+  evidence: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['field', 'text'],
+      properties: { field: { $ref: '#/$defs/fieldName' }, text: { type: 'string' } },
+    },
+  },
+};
+
+/**
+ * v7: one strict branch per allowed kind with only that kind's fields. `correctsPrevious` exists
+ * only when there is a previous turn.
+ */
+function intentItemSchemas(
+  allowedIntents: readonly DraftKind[],
+  categoryIds: readonly string[],
+  previousTurn: boolean,
+): Record<string, unknown>[] {
+  const schemas = intentFieldSchemas(categoryIds);
+  return allowedIntents.flatMap((kind) => {
+    // Without the household's categories the model cannot name one.
+    const names = intentKindFields[kind].filter((f) => f !== 'categoryId' || categoryIds.length);
+    if (names.length === 0) return [];
+    return [
+      {
+        type: 'object',
+        additionalProperties: false,
+        required: [
+          'kind',
+          'fields',
+          ...(previousTurn ? ['correctsPrevious'] : []),
+          'evidence',
+          'uncertainFields',
+          'missingFields',
+        ],
+        properties: {
+          kind: { type: 'string', enum: [kind] },
+          fields: {
+            type: 'object',
+            additionalProperties: false,
+            required: [...names],
+            properties: Object.fromEntries(names.map((f) => [f, schemas[f]])),
+          },
+          ...(previousTurn ? { correctsPrevious: { type: 'boolean' } } : {}),
+          evidence: { $ref: '#/$defs/evidence' },
+          uncertainFields: { $ref: '#/$defs/fieldNames' },
+          missingFields: { $ref: '#/$defs/fieldNames' },
+        },
+      },
+    ];
+  });
+}
+
 /** Strict JSON schema of `modelExtractionSchema`, narrowed to this request's allowlists. */
 export function extractionJsonSchema(
   allowedIntents: readonly DraftKind[],
   allowedReads: readonly ReadToolName[],
   /** Rework 2026-10-15: the household's spending category ids (the only ones allowed). */
   categoryIds: readonly string[] = [],
+  /** v7: the sender's previous turn travels with the request (corrections possible). */
+  previousTurn = true,
 ): Record<string, unknown> {
-  const fieldNames = { type: 'string', enum: [...intentFieldNames] };
+  const items = intentItemSchemas(allowedIntents, categoryIds, previousTurn);
   return {
     type: 'object',
     additionalProperties: false,
@@ -393,66 +534,8 @@ export function extractionJsonSchema(
     properties: {
       intents: {
         type: 'array',
-        items: {
-          type: 'object',
-          additionalProperties: false,
-          required: [
-            'kind',
-            'fields',
-            'evidence',
-            'uncertainFields',
-            'missingFields',
-            'correctsPrevious',
-          ],
-          properties: {
-            kind: { type: 'string', enum: [...allowedIntents] },
-            fields: {
-              type: 'object',
-              additionalProperties: false,
-              required: [...intentFieldNames],
-              properties: {
-                amountMl: nullable('number'),
-                milk: nullableEnum(['breast_milk', 'formula', 'other']),
-                time: nullable('string', { description: 'HH:mm, 24 h, local' }),
-                dayOffset: dayOffsetSchema,
-                endTime: nullable('string', { description: 'HH:mm, 24 h, local' }),
-                endDayOffset: dayOffsetSchema,
-                durationMin: nullable('integer'),
-                side: nullableEnum(['left', 'right', 'both']),
-                observation: nullableEnum(['sleep', 'feeding', 'soothing', 'new_skill', 'usual']),
-                when: nullableEnum(['night', 'day', 'both']),
-                note: nullable('string'),
-                title: nullable('string'),
-                // Rework 2026-10-15.
-                amount: nullable('number', { description: 'major units, shorthand expanded' }),
-                currency: nullableEnum(expenseCurrencies),
-                categoryId: categoryIds.length ? nullableEnum(categoryIds) : { type: 'null' },
-                merchant: nullable('string'),
-                date: nullable('string', { description: 'YYYY-MM-DD' }),
-                assigneeText: nullable('string'),
-                // Lumi 2026-10-16 (v4).
-                phase: nullableEnum(['start', 'stop']),
-                // Lumi fixes 2026-10-16 (v5).
-                diaper: nullableEnum(['wet', 'dirty', 'both']),
-                weightKg: nullable('number', { description: 'kilograms' }),
-                lengthCm: nullable('number', { description: 'centimetres' }),
-                headCm: nullable('number', { description: 'centimetres' }),
-              },
-            },
-            correctsPrevious: { type: 'boolean' },
-            evidence: {
-              type: 'array',
-              items: {
-                type: 'object',
-                additionalProperties: false,
-                required: ['field', 'text'],
-                properties: { field: fieldNames, text: { type: 'string' } },
-              },
-            },
-            uncertainFields: { type: 'array', items: fieldNames },
-            missingFields: { type: 'array', items: fieldNames },
-          },
-        },
+        // No kind allowed: no item can match (the server's allowlist is empty).
+        items: items.length ? { anyOf: items } : { type: 'string', enum: ['none'] },
       },
       reads: {
         type: 'array',
@@ -486,6 +569,7 @@ export function extractionJsonSchema(
       smallTalk: { type: 'boolean' },
       outOfScope: { type: 'boolean' },
     },
+    $defs: intentDefs,
   };
 }
 
@@ -533,9 +617,10 @@ export function extractContextNeeds(
 }
 
 /**
- * Output cap: the strict schema writes every field of every item (~170 tokens an item, ~1 000 for
- * the 6 allowed); 1 100 fits them all. The plan's 400 would cut a 3-feed message mid-JSON
- * (rejected), and a cap does not speed up a reply shorter than it (Lumi L2).
+ * Output cap. Up to v6 the strict schema wrote every field of every item (~170 tokens an item,
+ * ~1 000 for the 6 allowed), so 1 100 fit them all and the plan's 400 would cut a 3-feed message
+ * mid-JSON (rejected). v7 writes only each kind's fields (≈ 60 an item); the cap stays as the
+ * margin for long evidence, since a cap does not speed up a reply shorter than it (Lumi L2).
  */
 export const extractMaxCompletionTokens = 1100;
 
@@ -576,6 +661,7 @@ export function buildExtractRequest(input: ExtractInput, model: string): Record<
           input.allowedIntents,
           input.allowedReads,
           categories.map((c) => c.id),
+          !!input.previous,
         ),
       },
     },

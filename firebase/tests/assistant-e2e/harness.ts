@@ -38,6 +38,7 @@ import {
 import {
   fakeModelGateway,
   intentFieldNames,
+  intentKindFields,
   ModelUnavailable,
   openAiModelGateway,
   type FakeStep,
@@ -165,20 +166,28 @@ export function extractionOf(m: FakeModel): FakeStep<unknown> {
   if (m.error) return new ModelUnavailable(m.error === 'timeout' ? 'timeout' : 'http', 500, null);
   if (m.raw !== undefined) return m.raw;
   return {
-    intents: (m.i ?? []).map((x) => ({
-      kind: pickKind(x.k),
+    intents: (m.i ?? []).map((x) => {
+      const kind = pickKind(x.k);
       // Only the fields the running schema knows (a reply written for a newer prompt, e.g. v4
-      // `phase`, is cut down to what this code's strict schema accepts).
-      fields: Object.fromEntries(
-        Object.entries({ ...F0, ...(x.f ?? {}) }).filter(([k]) => known.has(k)),
-      ),
-      evidence: Object.entries(x.ev ?? {})
-        .filter(([field]) => known.has(field))
-        .map(([field, text]) => ({ field, text })),
-      uncertainFields: x.unc ?? [],
-      missingFields: x.miss ?? [],
-      correctsPrevious: x.cp ?? false,
-    })),
+      // `phase`, is cut down to what this code's strict schema accepts) — since v7 (2026-10-19)
+      // only the kind's own fields, as the per-kind strict schema lets the model write.
+      const own = new Set<string>(
+        intentKindFields[kind as keyof typeof intentKindFields] ?? intentFieldNames,
+      );
+      const keep = (k: string) => known.has(k) && own.has(k);
+      return {
+        kind,
+        fields: Object.fromEntries(
+          Object.entries({ ...F0, ...(x.f ?? {}) }).filter(([k]) => keep(k)),
+        ),
+        evidence: Object.entries(x.ev ?? {})
+          .filter(([field]) => keep(field))
+          .map(([field, text]) => ({ field, text })),
+        uncertainFields: (x.unc ?? []).filter(keep),
+        missingFields: (x.miss ?? []).filter(keep),
+        correctsPrevious: x.cp ?? false,
+      };
+    }),
     reads: m.reads ?? [],
     clarification: m.clar ? { field: m.clar } : null,
     care: m.care
