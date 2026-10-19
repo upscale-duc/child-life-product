@@ -414,6 +414,13 @@ class FakeTransport implements UploadTransport {
   @override
   Future<void> handOff(List<UploadJob> jobs) async => handedOff.addAll(jobs);
 
+  /// What the lock screen was told the whole lô is, per call.
+  final expected = <(String, int)>[];
+
+  @override
+  Future<void> expect(String babyId, int count) async =>
+      expected.add((babyId, count));
+
   @override
   void cancelAll() => cancelledAll++;
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -116,6 +115,10 @@ class BackgroundTransport implements UploadTransport {
     }
   }
 
+  @override
+  Future<void> expect(String babyId, int count) =>
+      _channel.invokeMethod<void>('expect', {'babyId': babyId, 'count': count});
+
   /// A broken resumable session (closed, expired), a dropped connection, or a transfer the
   /// platform lost while the app was gone (`lost`, see the native reconcile): one fresh start.
   static const _restartable = {
@@ -201,18 +204,3 @@ class BackgroundTransport implements UploadTransport {
 /// The host machine as the phone sees it, for the local emulators (Android: 10.0.2.2).
 String get emulatorHost =>
     defaultTargetPlatform == TargetPlatform.android ? '10.0.2.2' : 'localhost';
-
-/// Rewrites the recording at [src] to [dst] with its index first, without re-encoding (iOS:
-/// AVFoundation; Android: FastStart.kt). False elsewhere or when it fails (the caller copies the
-/// file instead).
-Future<bool> faststartVideo(String src, String dst) async {
-  if (kIsWeb || !(Platform.isIOS || Platform.isAndroid)) return false;
-  try {
-    return await const MethodChannel(
-          'childlife/uploads',
-        ).invokeMethod<bool>('faststart', {'src': src, 'dst': dst}) ??
-        false;
-  } on Object {
-    return false;
-  }
-}

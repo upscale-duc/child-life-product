@@ -1203,11 +1203,13 @@ class QueueSheet extends ConsumerWidget {
     final sent = items.fold<int>(0, (s, i) => s + math.min(i.sent, i.bytes));
     final bytes = items.fold<int>(0, (s, i) => s + i.bytes);
     final notify = batches.any((b) => b.notifyFamily && !b.done);
-    final finished = batches.every((b) => b.done);
+    // Items of the lô still being prepared (Tự lưu parts, D-070) count toward "x/69".
+    final incoming = view.preparingFor(ctx.babyId);
+    final finished = incoming == 0 && batches.every((b) => b.done);
 
     return _sheet([
       ClSheetHeader(title: l10n.qTitle),
-      if (items.isEmpty)
+      if (items.isEmpty && incoming == 0)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: ClSpace.s6),
           child: Text(
@@ -1230,7 +1232,7 @@ class QueueSheet extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      l10n.qSummaryNoEta(done, items.length),
+                      l10n.qSummaryNoEta(done, items.length + incoming),
                       style: cl.text.bodyStrong,
                     ),
                   ),
@@ -1252,6 +1254,13 @@ class QueueSheet extends ConsumerWidget {
                   backgroundColor: cl.colors.surface,
                 ),
               ),
+              if (incoming > 0) ...[
+                const SizedBox(height: ClSpace.s2),
+                Text(
+                  l10n.upPreparing(incoming),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ],
               if (notify) ...[
                 const SizedBox(height: ClSpace.s2),
                 Text(

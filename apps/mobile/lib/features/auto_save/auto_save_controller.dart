@@ -857,6 +857,9 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       var batchId = newBatchId();
       var parts = 0;
       var buffer = <PickedMedia>[];
+      // The queue counts what is still to come, so the pill reads "x/69" from the first part;
+      // enqueue takes off each part as it joins, a missing item is taken off here.
+      queue.setPreparing(entry.key, entry.value.length);
       Future<void> send({required bool last}) async {
         parts++;
         final closes = last || parts == _maxBatchParts;
@@ -888,23 +891,28 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         }
       }
 
-      for (final c in entry.value) {
-        PickedMedia? p;
-        try {
-          p = await resolve(c.asset.id);
-        } on Object {
-          p = null;
+      try {
+        for (final c in entry.value) {
+          PickedMedia? p;
+          try {
+            p = await resolve(c.asset.id);
+          } on Object {
+            p = null;
+          }
+          if (p == null) {
+            missing.add(c.asset.id);
+            queue.addPreparing(entry.key, -1);
+            onPrepared?.call(++prepared, chosen.length);
+            continue;
+          }
+          // A full part goes once another item follows it, so the last one is always known.
+          if (buffer.length == perAdd) await send(last: false);
+          buffer.add(p);
         }
-        if (p == null) {
-          missing.add(c.asset.id);
-          onPrepared?.call(++prepared, chosen.length);
-          continue;
-        }
-        // A full part goes once another item follows it, so the last one is always known.
-        if (buffer.length == perAdd) await send(last: false);
-        buffer.add(p);
+        if (buffer.isNotEmpty) await send(last: true);
+      } finally {
+        queue.setPreparing(entry.key, 0);
       }
-      if (buffer.isNotEmpty) await send(last: true);
     }
     final chosenIds = {for (final c in chosen) c.asset.id};
     final reviewedIds = {for (final c in reviewed) c.asset.id};

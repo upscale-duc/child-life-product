@@ -83,8 +83,20 @@ object BackgroundUploads {
         }
     }
 
-    /** One "run": from the first file handed over until nothing is left running. */
-    data class Run(var total: Int = 0, var done: Int = 0, var failed: Int = 0, var babyId: String? = null)
+    /**
+     * One "run": from the first file handed over until nothing is left running. [expected] is
+     * what Dart says the whole lô is (files still being prepared included), so "2/69" reads right
+     * from the first file; [total] only counts files handed over so far.
+     */
+    data class Run(
+        var total: Int = 0,
+        var done: Int = 0,
+        var failed: Int = 0,
+        var babyId: String? = null,
+        var expected: Int = 0,
+    ) {
+        val shown get() = maxOf(total, expected)
+    }
 
     private val lock = Any()
     private var loaded = false
@@ -129,11 +141,9 @@ object BackgroundUploads {
                     cancelAll(app)
                     result.success(null)
                 }
-                "faststart" -> io.execute {
-                    val ok = runCatching {
-                        FastStart.run(File(args["src"] as? String ?: ""), File(args["dst"] as? String ?: ""))
-                    }.getOrDefault(false)
-                    main.post { result.success(ok) }
+                "expect" -> {
+                    expect(app, args["babyId"] as? String ?: "", (args["count"] as? Number)?.toInt() ?: 0)
+                    result.success(null)
                 }
                 else -> result.notImplemented()
             }
@@ -165,7 +175,10 @@ object BackgroundUploads {
                 if (j.state == "running" || j.updated > week) jobs[k] = j
             }
             val r = JSONObject(p.getString("uploads.run", "{}")!!)
-            run = Run(r.optInt("total"), r.optInt("done"), r.optInt("failed"), r.optString("babyId").ifEmpty { null })
+            run = Run(
+                r.optInt("total"), r.optInt("done"), r.optInt("failed"), r.optString("babyId").ifEmpty { null },
+                r.optInt("expected"),
+            )
         }
     }
 
@@ -173,7 +186,7 @@ object BackgroundUploads {
         val all = JSONObject()
         for ((k, j) in jobs) all.put(k, j.toJson())
         val r = JSONObject().put("total", run.total).put("done", run.done).put("failed", run.failed)
-            .put("babyId", run.babyId ?: "")
+            .put("babyId", run.babyId ?: "").put("expected", run.expected)
         prefs(context).edit().putString("uploads.jobs", all.toString()).putString("uploads.run", r.toString()).apply()
     }
 
@@ -288,6 +301,17 @@ object BackgroundUploads {
 
     fun workName(path: String) = "upload:$path"
 
+    /** The size of the lô about to be handed over (see [Run.expected]). */
+    fun expect(context: Context, babyId: String, count: Int) {
+        synchronized(lock) {
+            load(context)
+            if (jobs.values.none { it.state == "running" }) run = Run(babyId = babyId)
+            run.expected = count
+            save(context)
+        }
+        notifyProgress(context)
+    }
+
     fun cancel(context: Context, path: String) {
         synchronized(lock) {
             load(context)
@@ -396,10 +420,10 @@ object BackgroundUploads {
             load(context)
             run.copy() to jobs.values.filter { it.counts && it.state == "running" }.map { it.copy() }
         }
-        if (running.isEmpty() || r.total == 0) return null
+        if (running.isEmpty() || r.shown == 0) return null
         ensureChannel(context)
         val partial = running.sumOf { if (it.total > 0) it.sent.toDouble() / it.total else 0.0 }
-        val fraction = ((r.done + r.failed + partial) / r.total).coerceIn(0.0, 1.0)
+        val fraction = ((r.done + r.failed + partial) / r.shown).coerceIn(0.0, 1.0)
         // "1 video chờ Wi‑Fi" only while there is no Wi-Fi: on Wi-Fi the same video is uploading.
         val waiting = if (onWifi(context)) 0 else running.count { it.video && it.wifiOnly }
         val snap = Glance.snapshot(context)
@@ -407,7 +431,7 @@ object BackgroundUploads {
         val title = nickname?.let { Glance.text(context, "upload.title", "Kỷ niệm của {name}", mapOf("name" to it)) }
             ?: Glance.text(context, "upload.titlePlain", "Kỷ niệm")
         var body = Glance.text(context, "upload.progress", "Đang tải {done}/{total} mục",
-            mapOf("done" to "${r.done + r.failed}", "total" to "${r.total}"))
+            mapOf("done" to "${r.done + r.failed}", "total" to "${r.shown}"))
         if (waiting > 0) {
             body += " · " + Glance.text(context, "upload.waiting", "{n} video chờ Wi‑Fi", mapOf("n" to "$waiting"))
         }

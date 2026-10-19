@@ -382,13 +382,25 @@ void main() {
               match: const FaceMatch(babyId: teddyId, distance: 0.05, face: 0),
             ),
         ];
+        // At every step the queue knows the whole lô: queued items plus those still being
+        // prepared always make 65, so the pill never reads "x/30" (owner, 2026-10-19).
+        final seen = <int>{};
         final n = await ctl.approve(
           chosen: chosen,
           reviewed: chosen,
           audience: Audience.family,
           notifyFamily: true,
+          onPrepared: (_, _) {
+            final q = c.read(uploadQueueProvider);
+            seen.add(
+              q.batches.fold(0, (s, b) => s + b.items.length) +
+                  q.preparingFor(teddyId),
+            );
+          },
         );
         expect(n, 65);
+        expect(seen, {65});
+        expect(c.read(uploadQueueProvider).preparing, isEmpty);
         final batches = c.read(uploadQueueProvider).batches;
         expect([for (final b in batches) b.items.length], [30, 30, 5]);
         expect({for (final b in batches) b.batchId}, hasLength(1));

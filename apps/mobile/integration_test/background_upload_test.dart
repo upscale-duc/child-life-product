@@ -11,7 +11,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:child_life/features/memories/background_uploads.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
@@ -75,14 +74,6 @@ Future<Map<String, dynamic>> _object(String path, String token) async {
   } finally {
     client.close();
   }
-}
-
-Uint8List _box(String type, List<int> body) {
-  final b = BytesBuilder()
-    ..add((ByteData(4)..setUint32(0, 8 + body.length)).buffer.asUint8List())
-    ..add(ascii.encode(type))
-    ..add(body);
-  return b.toBytes();
 }
 
 void main() {
@@ -152,25 +143,4 @@ void main() {
     },
     skip: !android || !const bool.fromEnvironment('A3_HANDOFF'),
   );
-
-  testWidgets('a recording gets its index first', (tester) async {
-    final dir = await getTemporaryDirectory();
-    final ftyp = _box('ftyp', ascii.encode('isom\x00\x00\x02\x00isomiso2mp41'));
-    final mdat = _box('mdat', List.filled(1000, 7));
-    final stco = _box('stco', [
-      ...[0, 0, 0, 0, 0, 0, 0, 1],
-      ...(ByteData(4)..setUint32(0, ftyp.length + 8)).buffer.asUint8List(),
-    ]);
-    final moov = _box(
-      'moov',
-      _box('trak', _box('mdia', _box('minf', _box('stbl', stco)))),
-    );
-    final src = File('${dir.path}/rec.mp4')
-      ..writeAsBytesSync([...ftyp, ...mdat, ...moov]);
-    final dst = File('${dir.path}/rec-fast.mp4');
-    expect(await faststartVideo(src.path, dst.path), isTrue);
-    final out = dst.readAsBytesSync();
-    expect(ascii.decode(out.sublist(ftyp.length + 4, ftyp.length + 8)), 'moov');
-    expect(out.length, src.lengthSync());
-  }, skip: !android);
 }

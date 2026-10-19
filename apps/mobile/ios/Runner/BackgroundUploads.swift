@@ -1,4 +1,3 @@
-import AVFoundation
 import Flutter
 import Foundation
 import Network
@@ -46,6 +45,11 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
     var done = 0
     var failed = 0
     var babyId: String?
+    /// What Dart says the whole lô is (files still being prepared included), so "2/69" reads
+    /// right from the first file; `total` only counts files handed over so far.
+    var expected: Int?
+
+    var shown: Int { max(total, expected ?? 0) }
   }
 
   private static var identifier: String { (Bundle.main.bundleIdentifier ?? "app.childlife") + ".uploads" }
@@ -157,39 +161,13 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
       case "cancelAll":
         me.cancelAll()
         result(nil)
-      case "faststart":
-        let src = args["src"] as? String ?? ""
-        let dst = args["dst"] as? String ?? ""
-        Task {
-          let ok = await BackgroundUploads.faststart(src: src, dst: dst)
-          DispatchQueue.main.async { result(ok) }
-        }
+      case "expect":
+        me.expect(args["babyId"] as? String ?? "", count: args["count"] as? Int ?? 0)
+        result(nil)
       default:
         result(FlutterMethodNotImplemented)
       }
     }
-  }
-
-  /// A copy of a recording with its index ("moov") at the front and nothing re-encoded, so a
-  /// player can start after the first bytes instead of the whole file (owner, 2026-10-12).
-  /// iPhone recordings write the index at the end. False when it cannot be done; the caller then
-  /// uploads the file as it is.
-  static func faststart(src: String, dst: String) async -> Bool {
-    let asset = AVURLAsset(url: URL(fileURLWithPath: src))
-    guard
-      let export = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough)
-    else { return false }
-    let out = URL(fileURLWithPath: dst)
-    try? FileManager.default.removeItem(at: out)
-    export.outputURL = out
-    export.outputFileType = dst.lowercased().hasSuffix(".mp4") ? .mp4 : .mov
-    export.shouldOptimizeForNetworkUse = true
-    await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
-      export.exportAsynchronously { done.resume() }
-    }
-    if export.status == .completed { return true }
-    try? FileManager.default.removeItem(at: out)
-    return false
   }
 
   func status(_ path: String) -> [String: Any]? {
@@ -275,6 +253,16 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
     task.resume()
     await updateActivity(force: true)
     return job.json
+  }
+
+  /// The size of the lô about to be handed over (see `Run.expected`).
+  func expect(_ babyId: String, count: Int) {
+    lock.lock()
+    if !jobs.values.contains(where: { $0.state == "running" }) { run = Run(babyId: babyId) }
+    run.expected = count
+    save()
+    lock.unlock()
+    Task { await updateActivity(force: true) }
   }
 
   func cancel(_ path: String) {
@@ -456,13 +444,13 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
     let waiting = onWifi ? 0 : running.filter { $0.video && $0.wifiOnly }.count
     lock.unlock()
     let existing = Activity<UploadAttributes>.activities
-    guard !running.isEmpty, r.total > 0 else {
+    guard !running.isEmpty, r.shown > 0 else {
       for a in existing { await a.end(nil, dismissalPolicy: .immediate) }
       return
     }
-    let fraction = (Double(r.done + r.failed) + partial) / Double(r.total)
+    let fraction = (Double(r.done + r.failed) + partial) / Double(r.shown)
     let state = UploadAttributes.ContentState(
-      done: r.done + r.failed, total: r.total, fraction: min(1, max(0, fraction)), waitingWifi: waiting)
+      done: r.done + r.failed, total: r.shown, fraction: min(1, max(0, fraction)), waitingWifi: waiting)
     let content = ActivityContent(state: state, staleDate: nil)
     if let current = existing.first {
       await current.update(content)

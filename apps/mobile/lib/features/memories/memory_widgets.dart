@@ -289,7 +289,8 @@ class MediaTile extends StatelessWidget {
                         ClIcon(ClIcons.lock, size: 12, color: Colors.white),
                       if (item.isPrivate && item.generatedKind == 'card')
                         const SizedBox(width: 4),
-                      if (item.generatedKind == 'card' && box.maxWidth >= 72) ...[
+                      if (item.generatedKind == 'card' &&
+                          box.maxWidth >= 72) ...[
                         ClIcon(ClIcons.star, size: 11, color: Colors.white),
                         const SizedBox(width: 3),
                         Text(
@@ -628,8 +629,10 @@ class UploadPill extends ConsumerWidget {
     final quota = count(QueueState.waitingQuota);
     final preparing = count(QueueState.pendingSession);
     final paused = live.any((i) => i.state == QueueState.paused);
-    final finished = batches.every((b) => b.done);
-    final total = live.length;
+    // Items of the lô still being prepared count toward the total (Tự lưu parts, D-070).
+    final incoming = view.preparingFor(babyId);
+    final finished = incoming == 0 && batches.every((b) => b.done);
+    final total = live.length + incoming;
     final sent = live.fold<int>(0, (s, i) => s + math.min(i.sent, i.bytes));
     final bytes = live.fold<int>(0, (s, i) => s + i.bytes);
     final progress = bytes == 0 ? 0.0 : sent / bytes;
@@ -684,12 +687,14 @@ class UploadPill extends ConsumerWidget {
       subtitle = l10n.upWaitingWifiHint;
       still = ClIcons.clock;
       tone = cl.colors.sunshineSoft;
-    } else if (preparing == total) {
+    } else if (preparing + incoming == total) {
       title = l10n.upPreparing(total);
       subtitle = l10n.upUploadingHint;
     } else {
       title = l10n.upUploading(done, total);
-      subtitle = l10n.upUploadingHint;
+      subtitle = incoming > 0
+          ? l10n.upPreparing(incoming)
+          : l10n.upUploadingHint;
     }
     final thumb = live.firstWhere(
       (i) => !i.isVideo || i.posterPath != null,

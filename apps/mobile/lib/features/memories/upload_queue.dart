@@ -270,6 +270,11 @@ abstract class UploadTransport {
   /// locked or the app closed. A no-op where uploads only run in the app.
   Future<void> handOff(List<UploadJob> jobs);
 
+  /// How many items of [babyId] this run will carry in all — queued, held for Wi-Fi and still
+  /// being prepared — so the lock screen says "2/69" from the first file rather than counting
+  /// files as they are handed over ("2 of 8 · 33 %" while the app said "1 of 30").
+  Future<void> expect(String babyId, int count);
+
   void cancel(String storagePath);
 
   /// "Tạm dừng": stops everything handed over.
@@ -307,6 +312,9 @@ class StorageTransport implements UploadTransport {
 
   @override
   Future<void> handOff(List<UploadJob> jobs) async {}
+
+  @override
+  Future<void> expect(String babyId, int count) async {}
 
   @override
   void cancel(String storagePath) => _tasks[storagePath]?.cancel();
@@ -365,8 +373,11 @@ class PickedMedia {
   final String? assetId;
 }
 
-/// Copies into the queue folder; photos become JPEG without metadata (SP-3 fallback, P-033),
-/// videos keep their bytes and get a poster frame.
+/// Takes the picked files into the queue folder; photos become JPEG without metadata (SP-3
+/// fallback, P-033), videos keep their bytes and get a poster frame. Fast start and a streaming
+/// copy are the server's job (P-170), so a video is not rewritten here: on 2026-10-19 a lô of
+/// 69 items, mostly videos, sat at "Đang chuẩn bị" for minutes while every video was remuxed
+/// after PhotoKit had already copied it once.
 abstract class MediaPreparer {
   Future<QueueItem> prepare(PickedMedia picked, String mediaId);
 
@@ -378,10 +389,69 @@ abstract class MediaPreparer {
   Future<void> discard(QueueItem item);
 }
 
+/// Takes [src] as the queue's own file at [dst]. A file that already sits in one of the app's
+/// [owned] folders (photo_manager writes originals to the temp folder; the share extension to
+/// the App Group) is moved — a rename, instant — and anything else (a library file on older
+/// Android, a document from "Tệp") is copied, so nothing of the user's own is touched. Returns
+/// whether the source still exists afterwards (a copy left it in place).
+Future<bool> claimFile(
+  File src,
+  String dst, {
+  required List<String> owned,
+}) async {
+  String real(String path) {
+    try {
+      return FileSystemEntity.isLinkSync(path) || path.startsWith('/var/')
+          ? File(path).resolveSymbolicLinksSync()
+          : path;
+    } on FileSystemException {
+      return path;
+    }
+  }
+
+  final from = real(src.absolute.path);
+  final ours = owned.any((d) {
+    if (d.isEmpty) return false;
+    final root = real(Directory(d).absolute.path);
+    return from == root || from.startsWith('$root/');
+  });
+  if (ours) {
+    try {
+      await src.rename(dst);
+      return false;
+    } on FileSystemException {
+      // Another volume: fall through to a copy.
+    }
+  }
+  await src.copy(dst);
+  return true;
+}
+
 class DeviceMediaPreparer implements MediaPreparer {
   Future<Directory> _dir() async {
     final base = await getApplicationSupportDirectory();
     return Directory('${base.path}/uploads').create(recursive: true);
+  }
+
+  List<String>? _ownedDirs;
+
+  /// The folders whose files are the app's to move: temp (PhotoKit originals), cache, support.
+  Future<List<String>> _owned() async => _ownedDirs ??= [
+    (await getTemporaryDirectory()).path,
+    (await getApplicationCacheDirectory()).path,
+    (await getApplicationSupportDirectory()).path,
+  ];
+
+  /// A source in the app's own folders is of no use once the queue has its file.
+  Future<void> _dropSource(File src) async {
+    final path = src.absolute.path;
+    final owned = await _owned();
+    if (!owned.any((d) => path.startsWith('$d/'))) return;
+    try {
+      await src.delete();
+    } on FileSystemException {
+      // Already gone.
+    }
   }
 
   @override
@@ -399,6 +469,8 @@ class DeviceMediaPreparer implements MediaPreparer {
       );
       if (file == null) throw const FormatException('unreadable');
       final f = File(file.path);
+      // The HEIC PhotoKit wrote to temp is not needed once the JPEG exists.
+      await _dropSource(picked.file);
       return QueueItem(
         mediaId: mediaId,
         type: MediaKind.photo,
@@ -413,11 +485,9 @@ class DeviceMediaPreparer implements MediaPreparer {
     }
     final mov = picked.file.path.toLowerCase().endsWith('.mov');
     final out = '${dir.path}/$mediaId.${mov ? 'mov' : 'mp4'}';
-    // iOS: the index moved to the front, nothing re-encoded, so playback can start after the
-    // first bytes (owner, 2026-10-12); otherwise the file as it is.
-    if (!await faststartVideo(picked.file.path, out)) {
-      await picked.file.copy(out);
-    }
+    // The bytes as recorded, moved rather than copied when they are already ours (P-170: the
+    // server makes the fast-start copy the app plays).
+    await claimFile(picked.file, out, owned: await _owned());
     String? poster = '${dir.path}/$mediaId.poster.jpg';
     try {
       final ok = await FcNativeVideoThumbnail().saveThumbnailToFile(
@@ -586,11 +656,22 @@ class VideoWifiOnly extends Notifier<bool> {
 
 @immutable
 class QueueView {
-  const QueueView({this.batches = const [], this.paused = false});
+  const QueueView({
+    this.batches = const [],
+    this.paused = false,
+    this.preparing = const {},
+  });
   final List<QueueBatch> batches;
 
   /// "Tạm dừng" (10i).
   final bool paused;
+
+  /// Per baby: items of a lô still being prepared, not yet in a batch (Tự lưu sends 69 items
+  /// as parts of 30, D-070). Counted into "Đang tải x/69", so the first part never reads as
+  /// "x/30" with the rest nowhere to be seen (owner, 2026-10-19).
+  final Map<String, int> preparing;
+
+  int preparingFor(String babyId) => preparing[babyId] ?? 0;
 }
 
 final uploadQueueProvider = NotifierProvider<UploadQueue, QueueView>(
@@ -598,7 +679,11 @@ final uploadQueueProvider = NotifierProvider<UploadQueue, QueueView>(
 );
 
 class UploadQueue extends Notifier<QueueView> {
+  /// Files prepared at once; more does not help on phone flash.
+  static const _prepareWidth = 2;
+
   final _batches = <QueueBatch>[];
+  final _preparing = <String, int>{};
   var _paused = false;
   var _running = false;
 
@@ -654,7 +739,30 @@ class UploadQueue extends Notifier<QueueView> {
 
   void _publish() {
     if (!ref.mounted) return;
-    state = QueueView(batches: List.unmodifiable(_batches), paused: _paused);
+    state = QueueView(
+      batches: List.unmodifiable(_batches),
+      paused: _paused,
+      preparing: Map.unmodifiable(_preparing),
+    );
+  }
+
+  /// How many items of [babyId] are still to join a batch (0 clears it): the lô's size when a
+  /// review starts, less each item that turned out missing (`addPreparing`); `enqueue` takes
+  /// off what it adds, so the count and the batches never overlap. Not saved: a killed app
+  /// starts its lô again from the review.
+  void setPreparing(String babyId, int remaining) {
+    if (remaining <= 0) {
+      if (_preparing.remove(babyId) == null) return;
+    } else {
+      _preparing[babyId] = remaining;
+    }
+    _publish();
+  }
+
+  void addPreparing(String babyId, int delta) {
+    final n = _preparing[babyId];
+    if (n == null) return;
+    setPreparing(babyId, n + delta);
   }
 
   Future<void> _persist() async {
@@ -674,27 +782,39 @@ class UploadQueue extends Notifier<QueueView> {
   }) async {
     await _load();
     final preparer = ref.read(mediaPreparerProvider);
-    final items = <QueueItem>[];
-    for (final p in picked) {
+    Future<QueueItem> prepare(PickedMedia p) async {
       try {
-        items.add(await preparer.prepare(p, newMediaId()));
+        return await preparer.prepare(p, newMediaId());
       } on Object {
         // Unreadable on the device: shown once, never uploaded.
-        items.add(
-          QueueItem(
-            mediaId: newMediaId(),
-            type: p.type,
-            name: p.name,
-            localPath: p.file.path,
-            contentType: p.type == MediaKind.photo ? 'image/jpeg' : 'video/mp4',
-            bytes: 1,
-            captureAt: p.captureAt,
-            state: QueueState.unreadable,
-          ),
+        return QueueItem(
+          mediaId: newMediaId(),
+          type: p.type,
+          name: p.name,
+          localPath: p.file.path,
+          contentType: p.type == MediaKind.photo ? 'image/jpeg' : 'video/mp4',
+          bytes: 1,
+          captureAt: p.captureAt,
+          state: QueueState.unreadable,
         );
       }
-      onPrepared?.call(items.length, picked.length);
     }
+
+    // A few at a time (a photo decodes while a video moves), in the picked order.
+    final prepared = List<QueueItem?>.filled(picked.length, null);
+    var next = 0;
+    var done = 0;
+    Future<void> worker() async {
+      while (true) {
+        final i = next++;
+        if (i >= picked.length) return;
+        prepared[i] = await prepare(picked[i]);
+        onPrepared?.call(++done, picked.length);
+      }
+    }
+
+    await Future.wait([for (var w = 0; w < _prepareWidth; w++) worker()]);
+    final items = [for (final i in prepared) i!];
     final fromLibrary = [for (final p in picked) ?p.assetId];
     if (fromLibrary.isNotEmpty) {
       await ref
@@ -720,6 +840,8 @@ class UploadQueue extends Notifier<QueueView> {
         createdAt: DateTime.now(),
       ),
     );
+    // These are in a batch now, no longer "still to come".
+    addPreparing(babyId, -items.length);
     await _persist();
     // Not awaited: the loop below may already be busy with an earlier batch, and the caller
     // (compose, Tự lưu, the share inbox) only needs the batch to be safe on the phone. Awaiting
@@ -1038,8 +1160,18 @@ class UploadQueue extends Notifier<QueueView> {
             ..._jobs(b, i),
     ];
     if (jobs.isEmpty) return;
+    final transport = ref.read(uploadTransportProvider);
     try {
-      await ref.read(uploadTransportProvider).handOff(jobs);
+      // The whole lô per baby, so the lock screen's total matches the app's from the start.
+      for (final babyId in {for (final j in jobs) j.babyId}) {
+        final open = _batches
+            .where((b) => b.babyId == babyId)
+            .expand((b) => b.items)
+            .where((i) => !_terminal(i.state))
+            .length;
+        await transport.expect(babyId, open + (_preparing[babyId] ?? 0));
+      }
+      await transport.handOff(jobs);
     } on Object {
       // The loop sends them one by one instead.
     }
@@ -1081,6 +1213,8 @@ class UploadQueue extends Notifier<QueueView> {
       i.state = QueueState.uploaded;
       i.error = null;
       i.sent = i.bytes;
+      // Counted now, as the lock screen already does; the row's thumbnail follows.
+      _publish();
       i.thumbPath = await ref.read(mediaPreparerProvider).finish(i);
     } on UploadCancelled {
       if (i.state == QueueState.uploading) {

@@ -349,6 +349,63 @@ void main() {
     await pumpEventQueue();
   });
 
+  test('a file already in the app\'s own folders is moved, not copied', () async {
+    // PhotoKit writes originals to the temp folder; copying each video a second time (and
+    // remuxing it) is what made "Đang chuẩn bị" take minutes for a lô of videos.
+    final root = Directory.systemTemp.createTempSync('clq');
+    addTearDown(() => root.deleteSync(recursive: true));
+    final owned = Directory('${root.path}/tmp')..createSync();
+    final queueDir = Directory('${root.path}/uploads')..createSync();
+    final ours = File('${owned.path}/IMG_0001.MOV')
+      ..writeAsBytesSync([1, 2, 3]);
+    final theirs = File('${root.path}/library/IMG_0002.MOV')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync([4, 5]);
+
+    final kept = await claimFile(
+      ours,
+      '${queueDir.path}/med_a.mov',
+      owned: [owned.path],
+    );
+    expect(kept, isFalse);
+    expect(ours.existsSync(), isFalse);
+    expect(File('${queueDir.path}/med_a.mov').readAsBytesSync(), [1, 2, 3]);
+
+    // A library file on older Android, or a document: the user's own, left in place.
+    final left = await claimFile(
+      theirs,
+      '${queueDir.path}/med_b.mov',
+      owned: [owned.path],
+    );
+    expect(left, isTrue);
+    expect(theirs.existsSync(), isTrue);
+    expect(File('${queueDir.path}/med_b.mov').readAsBytesSync(), [4, 5]);
+  });
+
+  test(
+    'items still being prepared count toward the total (D-070 parts)',
+    () async {
+      // Tự lưu sends 69 items as parts of 30: the pill read "x/30" with the rest nowhere.
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      queue.setPreparing(teddyId, 69);
+      expect(container.read(uploadQueueProvider).preparingFor(teddyId), 69);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('a.HEIC'), pickedPhoto('b.HEIC')],
+      );
+      await pumpEventQueue();
+      final view = container.read(uploadQueueProvider);
+      // enqueue took its two off by itself; app and lock screen both see 69.
+      expect(view.preparingFor(teddyId), 67);
+      expect(view.batches.single.items.length + view.preparingFor(teddyId), 69);
+      expect(transport.expected.last, (teddyId, 69));
+      queue.setPreparing(teddyId, 0);
+      expect(container.read(uploadQueueProvider).preparing, isEmpty);
+    },
+  );
+
   test('"Tạm dừng" stops everything handed over', () async {
     container = await start();
     container.read(uploadQueueProvider.notifier).setPaused(true);
