@@ -337,6 +337,8 @@ describe('words', () => {
     )!;
     expect(view.text).toBeNull();
     expect(view.drafts[0]).toEqual({
+      // L9: an opaque id the model names in `target` (never a Firestore id).
+      id: 'i1',
       kind: 'bottle',
       saved: false,
       amountMl: 180,

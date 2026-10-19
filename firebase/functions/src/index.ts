@@ -1377,6 +1377,11 @@ export const reconcileStorageUsage = onSchedule(
 /** Set with `firebase functions:secrets:set OPENAI_API_KEY` (value "unset" = template drafts). */
 const openAiKey = defineSecret('OPENAI_API_KEY');
 const openAiModel = defineString('OPENAI_MODEL', { default: 'gpt-4.1-mini' });
+/**
+ * Lumi L9 #7 (P-169): the tier of the understanding call only (L9b measures a stronger one on
+ * the owner sentences); empty = the same as OPENAI_MODEL. Prod config is not changed by this.
+ */
+const openAiModelUnderstanding = defineString('OPENAI_MODEL_UNDERSTANDING', { default: '' });
 
 function aiProvider(): AiProvider {
   const key = openAiKey.value();
@@ -2471,7 +2476,14 @@ export const staffQaUpdate = staffCall('staffQaUpdate', (s, d) =>
 /** The model gateway behind the assistant: OpenAI when the secret is set, else none (blocked). */
 function assistantGateway(): ModelGateway | null {
   const key = openAiKey.value();
-  return !key || key === 'unset' ? null : openAiModelGateway(key, openAiModel.value());
+  return !key || key === 'unset'
+    ? null
+    : openAiModelGateway(
+        key,
+        openAiModel.value(),
+        fetch,
+        openAiModelUnderstanding.value() || openAiModel.value(),
+      );
 }
 
 /** Only functions bound to the secret read it; the others never need the model. */

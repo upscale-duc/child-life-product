@@ -852,8 +852,13 @@ export function dialogueForModel(
   };
   return {
     text: null,
+    // L9: each item carries the id the model names in `target` ("i1" = prev.drafts[0] …).
     drafts: drafts.map((x) => {
-      const out: Record<string, unknown> = { kind: x.payload.kind, saved: x.state === 'saved' };
+      const out: Record<string, unknown> = {
+        id: `i${(prev?.drafts ?? []).indexOf(x) + 1}`,
+        kind: x.payload.kind,
+        saved: x.state === 'saved',
+      };
       for (const [k, v] of Object.entries(x.payload as Record<string, unknown>)) {
         if (k === 'kind' || v === null || v === undefined || wordFields.has(k)) continue;
         out[k] =

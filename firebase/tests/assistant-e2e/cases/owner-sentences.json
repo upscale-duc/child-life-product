@@ -1,0 +1,982 @@
+{
+  "group": "owner",
+  "note": "Lumi L9 (P-169, lumi-plan §12.3 #7): every sentence an owner report contained (§2, §11, §12) with the act and the event expected of understanding v1. Fake mode scripts the v9 output (`u`); the same cases run LIVE on every prompt or model change (≤ 40 calls). A case is added the day a report arrives; nothing ships with a red owner sentence.",
+  "cases": [
+    {
+      "id": "os-02a-dang-ngu-vua-ngu-duoc-5p",
+      "title": "§2 11:26: \"Bé đang ngủ. Vừa ngủ được 5p rồi\" → the sleep timer from 11:21 (ongoing, started ago 5), never a finished 5-minute span",
+      "device": "2026-10-19 11:26",
+      "anchor": "11:26",
+      "turns": [
+        {
+          "say": "Bé đang ngủ. Vừa ngủ được 5p rồi",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 5",
+                  "ev": {
+                    "started": "Vừa ngủ được 5p rồi"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.timer": "sleep",
+          "0.at": "D0 11:21"
+        },
+        "credits": 1,
+        "calls": 1
+      }
+    },
+    {
+      "id": "os-02b-dang-ngu-cach-day-5p",
+      "title": "§2 11:26: \"Đang ngủ và ngủ cách đây 5p\" → the timer from 11:21, no morning / evening question",
+      "device": "2026-10-19 11:26",
+      "anchor": "11:26",
+      "turns": [
+        {
+          "say": "Đang ngủ và ngủ cách đây 5p",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 5",
+                  "ev": {
+                    "started": "cách đây 5p"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.at": "D0 11:21"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "os-02c-sang-answers-ampm",
+      "title": "§2: a written \"8h\" at 21:30 is the one open clock (asked once); \"Sáng. Hiện tại thì biết sáng hay tối chứ\" answers it in the same task",
+      "anchor": "21:30",
+      "rules": false,
+      "turns": [
+        {
+          "say": "bé bú bình 120ml lúc 8h",
+          "model": {
+            "u": {
+              "act": "ask",
+              "ask": {
+                "field": "time.ampm",
+                "why": "8h has no period word"
+              },
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "clock 08:00",
+                  "f": {
+                    "amountMl": 120
+                  },
+                  "ev": {
+                    "amountMl": "120ml",
+                    "started": "8h"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "awaiting"
+          }
+        },
+        {
+          "say": "Sáng. Hiện tại thì biết sáng hay tối chứ",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "same",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 120,
+              "0.occurredAt": "D0 08:00"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "asks": ["time.ampm"],
+        "saved": 1,
+        "credits": 1,
+        "calls": 1
+      }
+    },
+    {
+      "id": "os-11a-da-bu-binh-180ml-13-00-ghi-la-sao",
+      "title": "§11 13:54: \"Bé đã bú bình 180ml\" is a bottle at now (finished, no time → the server takes now, no question); \"13:00\" corrects its time; \"Ghi\" and \"…ko ghi gì là sao\" say what waits",
+      "device": "2026-10-19 13:54",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "unknown",
+                  "f": {
+                    "amountMl": 180
+                  },
+                  "ev": {
+                    "amountMl": "180ml"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 180,
+              "0.occurredAt": "D0 13:54"
+            }
+          }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 180,
+              "0.occurredAt": "D0 13:00"
+            },
+            "codes": ["CORRECTION_APPLIED"]
+          }
+        },
+        {
+          "say": "Ghi",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "outcome": "follow_up",
+            "codes": ["FOLLOW_UP"],
+            "notCodes": ["SMALL_TALK", "HELP"]
+          }
+        },
+        {
+          "say": "Hỏi mấy giờ xong ko ghi gì là sao",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "meta"
+            }
+          },
+          "check": {
+            "outcome": "follow_up",
+            "codes": ["FOLLOW_UP"],
+            "notCodes": ["SMALL_TALK", "HELP"]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "asks": [],
+        "saved": 1,
+        "credits": 1,
+        "calls": 1
+      },
+      "rules": false
+    },
+    {
+      "id": "os-11b-da-thay-ta-bay-gio",
+      "title": "§11 14:00: \"Em bé đã thay tã ướt\" is a diaper change at now; \"Bây giờ\" changes nothing and says what waits",
+      "device": "2026-10-19 14:00",
+      "anchor": "14:00",
+      "turns": [
+        {
+          "say": "Em bé đã thay tã ướt",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "diaper",
+                  "started": "unknown",
+                  "f": {
+                    "diaper": "wet"
+                  },
+                  "ev": {
+                    "started": "đã thay tã",
+                    "diaper": "ướt"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["diaper"],
+            "values": {
+              "0.occurredAt": "D0 14:00"
+            }
+          }
+        },
+        {
+          "say": "Bây giờ",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "answer"
+            }
+          },
+          "check": {
+            "outcome": "follow_up",
+            "codes": ["FOLLOW_UP"],
+            "notCodes": ["SMALL_TALK", "HELP"]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "asks": [],
+        "saved": 1,
+        "credits": 1
+      },
+      "rules": false
+    },
+    {
+      "id": "os-11c-correct-edit-undo-read",
+      "title": "§11 / dl-01: \"120 chứ\" replaces the waiting draft; \"lúc 13h30 mới đúng\" edits the saved record; \"xoá cái vừa ghi\" deletes it; \"hôm nay bé bú mấy cữ\" reads",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "unknown",
+                  "f": {
+                    "amountMl": 180
+                  },
+                  "ev": {
+                    "amountMl": "180ml"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "say": "120 chứ",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["create"],
+            "values": {
+              "0.amountMl": 120,
+              "0.occurredAt": "D0 13:54"
+            },
+            "codes": ["CORRECTION_APPLIED"]
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "lúc 13h30 mới đúng",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["update"],
+            "values": {
+              "0.amountMl": 120,
+              "0.occurredAt": "D0 13:30"
+            },
+            "codes": ["FOLLOW_UP"]
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "xoá cái vừa ghi",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["delete"],
+            "values": {
+              "0.occurredAt": "D0 13:30"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "hôm nay bé bú mấy cữ",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "care_summary",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "answer",
+            "notCodes": ["FOLLOW_UP", "QUESTION_SET_ASIDE"]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "asks": [],
+        "saved": 0,
+        "credits": 2,
+        "calls": 2
+      },
+      "rules": false
+    },
+    {
+      "id": "os-12a-da-ngu-duoc-10p-truoc-do-van-dang-ngu",
+      "title": "§12 16:57: a sleep draft 16:30–16:40 waits (unsaved); \"Bé đã ngủ được 10p trước đó và vẫn đang ngủ\" is a running sleep from 16:47 — never a correction of the draft (even when the model calls it one), nothing saved by itself; \"Ko ý tôi là …\" restates it",
+      "device": "2026-10-19 16:57",
+      "anchor": "16:55",
+      "rules": false,
+      "turns": [
+        {
+          "say": "bé ngủ từ 16h30 đến 16h40",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "clock 16:30",
+                  "ended": "clock 16:40",
+                  "ev": {
+                    "started": "16h30",
+                    "ended": "16h40"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["sleep"],
+            "values": {
+              "0.startedAt": "D0 16:30",
+              "0.endedAt": "D0 16:40"
+            }
+          }
+        },
+        {
+          "say": "Bé đã ngủ được 10p trước đó và vẫn đang ngủ",
+          "at": "16:57",
+          "model": {
+            "u": {
+              "act": "correct",
+              "target": "i1",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 10",
+                  "ev": {
+                    "started": "đã ngủ được 10p trước đó và vẫn đang ngủ"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["timer"],
+            "values": {
+              "0.action": "start",
+              "0.timer": "sleep",
+              "0.at": "D0 16:47"
+            },
+            "notCodes": ["CORRECTION_APPLIED"]
+          }
+        },
+        {
+          "say": "Ko ý tôi là đã ngủ trước đó 10p và vẫn đang ngủ",
+          "at": "16:58",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 10",
+                  "ev": {
+                    "started": "đã ngủ trước đó 10p và vẫn đang ngủ"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["timer"],
+            "values": {
+              "0.action": "start",
+              "0.at": "D0 16:48"
+            },
+            "notCodes": ["CORRECTION_APPLIED"]
+          }
+        }
+      ],
+      "expect": {
+        "asks": [],
+        "saved": 0,
+        "credits": 3,
+        "calls": 3
+      }
+    },
+    {
+      "id": "os-12b-ko-y-toi-la-after-a-saved-span",
+      "title": "§12 16:58: a finished sleep 16:30–16:40 was saved; \"Ko ý tôi là đã ngủ trước đó 10p và vẫn đang ngủ\" starts the timer from 16:48 and leaves the record alone (no edit draft)",
+      "device": "2026-10-19 16:58",
+      "anchor": "16:50",
+      "turns": [
+        {
+          "say": "bé ngủ từ 16h30 đến 16h40",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "clock 16:30",
+                  "ended": "clock 16:40",
+                  "ev": {
+                    "started": "16h30",
+                    "ended": "16h40"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "Ko ý tôi là đã ngủ trước đó 10p và vẫn đang ngủ",
+          "at": "16:58",
+          "model": {
+            "u": {
+              "act": "correct",
+              "target": "i1",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 10",
+                  "ev": {
+                    "started": "đã ngủ trước đó 10p và vẫn đang ngủ"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["timer"],
+            "values": {
+              "0.action": "start",
+              "0.at": "D0 16:48"
+            },
+            "notCodes": ["CORRECTION_APPLIED", "FOLLOW_UP"]
+          }
+        }
+      ],
+      "expect": {
+        "asks": [],
+        "saved": 1
+      }
+    },
+    {
+      "id": "os-13-ngu-tu-11h20",
+      "title": "§4.1: \"bé ngủ từ 11h20\" (no end) at 11:26 → the timer from 11:20 today, no question, 0 credits (rules)",
+      "anchor": "11:26",
+      "turns": [
+        {
+          "say": "bé ngủ từ 11h20",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "clock 11:20",
+                  "ev": {
+                    "started": "ngủ từ 11h20"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.at": "D0 11:20"
+        }
+      }
+    },
+    {
+      "id": "os-14-dang-bu-ben-trai-duoc-10-phut",
+      "title": "§4.5: \"đang bú bên trái được 10 phút\" → the breast timer from 10 minutes ago, left side",
+      "anchor": "09:40",
+      "turns": [
+        {
+          "say": "đang bú bên trái được 10 phút",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "breast",
+                  "st": "ongoing",
+                  "started": "ago 10",
+                  "f": {
+                    "side": "left"
+                  },
+                  "ev": {
+                    "side": "bên trái",
+                    "started": "được 10 phút"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.timer": "breast",
+          "0.side": "left",
+          "0.at": "D0 09:30"
+        }
+      }
+    },
+    {
+      "id": "os-15-day-roi-stops-the-timer",
+      "title": "\"bé dậy rồi\" with the sleep timer running since 12:30 → a stop at now (finished, ended ago 0)",
+      "anchor": "14:20",
+      "world": {
+        "seed": ["sleepTimer1230"]
+      },
+      "turns": [
+        {
+          "say": "bé dậy rồi",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "unknown",
+                  "ended": "ago 0",
+                  "ev": {
+                    "ended": "dậy rồi"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "values": {
+          "0.action": "stop",
+          "0.at": "D0 14:20"
+        }
+      }
+    },
+    {
+      "id": "os-16-vua-bu-me-20-phut",
+      "title": "\"vừa bú mẹ 20 phút\" → a finished breastfeed that started 20 minutes ago (ended ago 0 + length), no question",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "vừa bú mẹ 20 phút",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "breast",
+                  "started": "unknown",
+                  "ended": "ago 0",
+                  "dur": 20,
+                  "ev": {
+                    "ended": "vừa",
+                    "durationMin": "20 phút"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": [],
+        "values": {
+          "0.durationMin": 20,
+          "0.occurredAt": "D0 14:00"
+        }
+      },
+      "rules": false
+    },
+    {
+      "id": "os-17-ngu-tu-13h-den-14h",
+      "title": "\"bé ngủ từ 13h đến 14h\" → a finished span 13:00–14:00 (two clocks)",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "clock 13:00",
+                  "ended": "clock 14:00",
+                  "ev": {
+                    "started": "13h",
+                    "ended": "14h"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 13:00",
+          "0.endedAt": "D0 14:00"
+        }
+      },
+      "rules": false
+    },
+    {
+      "id": "os-18-roi-ngu-luc-10h-continues",
+      "title": "\"rồi ngủ lúc 10h\" after a 9:00 bottle saved → a running sleep from 10:00 (continue; L1: \"ngủ lúc Xh\" with no end is a timer), never a correction",
+      "anchor": "10:30",
+      "turns": [
+        {
+          "say": "bé bú bình 120ml lúc 9h sáng",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "clock 09:00",
+                  "f": {
+                    "amountMl": 120
+                  },
+                  "ev": {
+                    "amountMl": "120ml",
+                    "started": "9h sáng"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "rồi ngủ lúc 10h",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "continue",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "clock 10:00",
+                  "ev": {
+                    "started": "10h"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["timer"],
+            "values": {
+              "0.action": "start",
+              "0.at": "D0 10:00"
+            },
+            "notCodes": ["CORRECTION_APPLIED"]
+          }
+        }
+      ],
+      "expect": {
+        "asks": [],
+        "saved": 1
+      }
+    },
+    {
+      "id": "os-19-undo-by-the-model",
+      "title": "\"remove the last sleep log please\" (no delete regex) → the model's undo of the saved record: a delete draft, never a silent delete",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "clock 13:00",
+                  "ended": "clock 14:00",
+                  "ev": {
+                    "started": "13h",
+                    "ended": "14h"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "remove the last sleep log please",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "undo",
+              "target": "i1"
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["sleep"],
+            "ops": ["delete"],
+            "values": {
+              "0.startedAt": "D0 13:00"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "saved": 0
+      },
+      "rules": false
+    },
+    {
+      "id": "os-20-180-chu-khong-phai-120-by-the-model",
+      "title": "\"180 chứ không phải 120\" read by the model as correct(i1) → the waiting bottle is replaced (180, same time), set aside, nothing saved",
+      "anchor": "13:54",
+      "rules": false,
+      "turns": [
+        {
+          "say": "Bé đã bú bình 120ml",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "unknown",
+                  "f": {
+                    "amountMl": 120
+                  },
+                  "ev": {
+                    "amountMl": "120ml"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "say": "180 chứ không phải 120",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "correct",
+              "target": "i1",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "unknown",
+                  "f": {
+                    "amountMl": 180
+                  },
+                  "ev": {
+                    "amountMl": "180"
+                  }
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 180,
+              "0.occurredAt": "D0 13:54"
+            },
+            "codes": ["CORRECTION_APPLIED"]
+          }
+        }
+      ],
+      "expect": {
+        "saved": 0
+      }
+    },
+    {
+      "id": "os-21-la-sao-with-nothing-waiting",
+      "title": "\"là sao\" with nothing waiting → the help text, never a question",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "là sao",
+          "model": {
+            "u": {
+              "act": "meta"
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "help",
+        "asks": [],
+        "credits": 0
+      }
+    },
+    {
+      "id": "os-22-ngu-9-tieng-asks-the-start",
+      "title": "\"ngủ 9 tiếng\" (a length, no end point) → the start is asked with chips (the one question the clock cannot answer)",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "ngủ 9 tiếng",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "started": "unknown",
+                  "ended": "unknown",
+                  "dur": 540,
+                  "ev": {
+                    "durationMin": "9 tiếng"
+                  }
+                }
+              ]
+            }
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "values": {
+          "0.durationMin": 540
+        }
+      }
+    }
+  ]
+}

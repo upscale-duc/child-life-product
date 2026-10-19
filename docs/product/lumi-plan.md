@@ -537,3 +537,53 @@ limits, roles and writes stay deterministic and testable; the model only says wh
 | L9c   | Remove the superseded regex readers and `previousTurnOf`; tests follow                                                 | M    | contracts + functions text/dialogue files                               |
 
 Order: L9 before anything else in the plan (L6 and the reads build on the same understanding).
+
+**L9 done (2026-10-19, evening; dev).** What moved:
+
+- **Schema** (`packages/contracts/src/assistant-understanding.ts`): `act` / `target` / `confidence` /
+  `events[]` with `status`, `started`, `ended` (`ago` | `clock` | `unknown`), `durationMin`; `ask`
+  only `time.ampm` (and A5's `sleep.*` care facts, which `planCare` still owns). No `phase`, no
+  `correctsPrevious`. Version `assistant-understand-v1`.
+- **Prompt v9** (`assistant-model.ts`, `understandingSystemPrompt`): the semantics written out,
+  30 owner phrasings as few-shots (`understandingExamples`), the dialogue state with item ids
+  (`i1`, `i2`…) the model names in `target`. The v8 extraction request stays only for scripted
+  tests; `parseUnderstanding` accepts a v8-shaped reply through `fromLegacyExtraction`, so the
+  284 scripted cases run through the new path unchanged.
+- **One resolver** (`firebase/functions/src/assistant-understanding.ts`): instants and timers
+  from `status` / `started` / `ended` / `durationMin` (ongoing → a timer at `now − minutes` or the
+  clock; a sleep start read before its end within 18 h; finished with no time → now; a length
+  with "ended now" → started that long ago; a batch keeps a timeless log empty); precedence
+  (`correct` / `undo` need an existing target, `correct` needs a correcting word or a short bare
+  value, an ongoing state is never a correction; `answer` with nothing to log restates; short
+  replies never start a task). The planner takes `ModelIntent.resolved` as it is: `timerPlan`'s
+  phase guessing, `pointTime`, `clockOf`, `resolveStartBefore` no longer run for an understood
+  message. Guards kept: the written clock's hours (LUMI-04), `careBackstops` (pump / diaper /
+  growth words), `careStatesIn` only for a timer kind the model returned nothing for, the
+  validators (future, limits, overlap, 18 h, health).
+- **Worker**: the understanding call is the normal path (`gateway.understand`); `undo` and
+  `meta` go through L7's `processFollowUp` (delete / restate); the understanding is cached while
+  a server question is open and re-resolved with the answer.
+- **Eval**: `cases/owner-sentences.json` (18 cases, every sentence of §2, §11, §12), fake scripts
+  in the v9 shape (`u` on a turn's model). Live on gpt-4.1-mini: **17 / 18 + the fixed setup
+  case = 18 / 18** (18 calls, 122 k prompt tokens ≈ 6.8 k a call with the examples and the
+  schema, p50 1.7 s, p95 2.0 s). The three §12 sentences read `ongoing, started ago 10` every
+  time; "180 chứ không phải 120" → `correct i1`; "remove the last sleep log please" → `undo i1`.
+- **Model tier**: `OPENAI_MODEL_UNDERSTANDING` (functions param, empty = `OPENAI_MODEL`; the e2e
+  runner reads the same env) — not set on dev or prod; L9b measures it.
+- Fixtures re-scripted (their expectation encoded v7 readings): `on-10` (the made-up 11:21–11:26
+  span → the v9 reading), `rd-09` (the model's `intent` question → a bare bottle; the server
+  asks "xem hay ghi?"), integration "no time at all" (model path → now), "2 tiếng trước" (the
+  model's `ago`, not a server regex), "a question holds 1 credit" (`ngủ 9 tiếng` instead of a
+  timeless bottle), "giúp mình với" (help at once; v9 has no `intent` ask). `ga-11` still
+  FAILED_SILENT (known, D-081).
+
+What did not move (L9c):
+
+- The **rule fast path** still goes through the planner's own time reading: a routine log with
+  no time ("bé bú 120ml", "Bé đã bú bình 180ml") still asks "Việc này lúc mấy giờ?", while the
+  same words on the model path take now. Routing `ruleReadText` through the resolver was tried:
+  34 cases re-script (the time-question flows, expiry, cancel, consent mid-question) — L9c, with
+  the owner's word on "now vs ask" for the fast path.
+- The regex readers (`careStatesIn`, `phaseCue`, `correctionIn` as a reader, `previousTurnOf`)
+  are still in the tree, demoted to guards; L9c removes them and the ~60 % of rule lines.
+- Not checked on a phone; dev only (prod untouched).

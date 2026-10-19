@@ -137,6 +137,12 @@ export interface TextContext {
    * this instant (its day, a later time), never a morning / evening question.
    */
   after?: Date;
+  /**
+   * L9 (P-169): the intents come from the understanding resolver with their times resolved
+   * (`ModelIntent.resolved`): no state or phase is read from the words here, only the guards
+   * (`careBackstops`) run.
+   */
+  understood?: boolean;
 }
 
 /** A running app timer as the planner needs it. */
@@ -260,7 +266,12 @@ export async function planTextIntents(
   const zone = s.zone;
   // Lumi 2026-10-16: ongoing states ("con đang ngủ", "bé dậy rồi", "đang cho bú trái") from
   // the words, and the model's items checked against them (`checkIntents`).
-  const states = careStatesIn(ctx.text);
+  // L9: understood intents carry resolved times (the resolver read `status` / `started`); the
+  // state words are only a GUARD for a timer kind the model returned nothing for ("Con đang
+  // ngủ" read as an observation), never a second reading of an event it did return.
+  const states = ctx.understood
+    ? careStatesIn(ctx.text).filter((st) => !modelIntents.some((i) => i.kind === st.timer))
+    : careStatesIn(ctx.text);
   const intents = checkIntents(ctx, modelIntents, states);
   const today = localDateIn(zone, anchor);
   const all = [ctx.text, ...ctx.answerTexts].join(' \n ');
@@ -283,7 +294,10 @@ export async function planTextIntents(
         i.kind === 'sleep' ||
         i.kind === 'pump' ||
         i.kind === 'diaper') &&
-      (i.fields.time !== null || i.fields.endTime !== null),
+      (i.fields.time !== null ||
+        i.fields.endTime !== null ||
+        // L9: a resolved time counts as one the words gave.
+        Boolean(i.resolved && (i.resolved.at || i.resolved.endAt || i.resolved.timer))),
   ).length;
   const saysPastDay = pastDayWords.test(foldVi(ctx.text));
   // L1 (P-167 #3): the morning / evening answer, a chip or typed ("Sáng", "tối", "23:21").
@@ -642,7 +656,11 @@ export async function planTextIntents(
 
   // L7 (v8): the item the model says it corrects (`corrects`, maybe another kind), else the
   // latest one of the same kind; the dialogue state lists the latest first.
-  const previousOf = (kind: DraftKind, corrects?: DraftKind | null) =>
+  const previousOf = (kind: DraftKind, corrects?: DraftKind | null, correctsId?: string) =>
+    // L9: the item the understanding named by id, first.
+    (correctsId
+      ? ctx.previous?.drafts.find((d) => d.id === correctsId && d.state !== 'discarded')
+      : null) ??
     ctx.previous?.drafts.find(
       (d) => d.payload.kind === (corrects ?? kind) && d.state !== 'discarded',
     ) ??
@@ -680,12 +698,18 @@ export async function planTextIntents(
     base: DraftPayload | null,
   ): { payload: DraftPayload } | { finishedEnd: Date } | { legacy: true } | null => {
     const st = states.find((x) => x.timer === kind) ?? null;
+    // L9: an understood intent says itself whether a timer starts or stops (the resolver's
+    // reading of `status` / `started` / `ended`); no phase cue is read from the words.
+    const rt = i.resolved?.timer ?? null;
+    if (i.resolved && !rt) return null;
     // The model's phase only with words of something happening now / just over ("bú sữa"
     // alone is not a running feed, rd-09).
     const phase =
-      st?.action ?? (i.fields.phase && phaseCue.test(foldVi(ctx.text)) ? i.fields.phase : null);
+      rt?.action ??
+      st?.action ??
+      (i.fields.phase && phaseCue.test(foldVi(ctx.text)) ? i.fields.phase : null);
     if (!phase || base) return null;
-    const goingOn = phase === 'start' && st?.action === 'start';
+    const goingOn = phase === 'start' && (st?.action === 'start' || rt !== null);
     if (durMin !== null && !goingOn) return null;
     // LUMI-05: an app build that cannot show a timer draft gets a notice with the timer's link.
     const legacy = () => {
@@ -714,6 +738,8 @@ export async function planTextIntents(
     // L1: how long the state has run, from the words ("được 5p rồi", "cách đây 5p").
     const since = goingOn ? (st?.sinceMin ?? durMin) : null;
     const when = (c: Clock | null): Date => {
+      // L9: the resolver's instant, as it is.
+      if (rt) return new Date(rt.at);
       // A time the model computed ("cách đây 5p" → 11:21) gives way to the words' own length.
       if (c && (c.written || since === null)) {
         const r = resolveLog(c);
@@ -787,6 +813,14 @@ export async function planTextIntents(
     }
     misread = [];
     const f = intent.fields;
+    // L9: the resolver's times (a written clock it left open is the server's one question).
+    const r = intent.resolved ?? null;
+    for (const label of r?.ambiguous ?? []) {
+      openClocks.push(label);
+      needsAmpm.push(true);
+    }
+    // LUMI-04: a clock the model misread (the words won) is always flagged.
+    misread.push(...(r?.misread ?? []));
     const name = (field: string) => draftField[field]?.[kind] ?? null;
     const uncertain = new Set<string>();
     const missing = new Set<string>();
@@ -804,7 +838,7 @@ export async function planTextIntents(
     /** L7 (P-168 #2): a care record saved in the last 30 min is changed by an edit draft. */
     let edit: string | null = null;
     if (intent.correctsPrevious && ctx.previous) {
-      const prev = previousOf(kind, intent.corrects);
+      const prev = previousOf(kind, intent.corrects, intent.correctsId);
       if (prev && prev.state === 'saved') {
         if (prev.recordId && prev.payload.kind === kind && editableKinds.has(kind)) {
           edit = prev.recordId;
@@ -846,7 +880,7 @@ export async function planTextIntents(
         else if (f.milk === null) uncertain.delete('milk');
         const c = clockOf(intent, 'time');
         if (!c) uncertain.delete('occurredAt');
-        const at = pointTime(c, base);
+        const at = r?.at ? new Date(r.at) : pointTime(c, base);
         payload = {
           kind: 'bottle',
           amountMl:
@@ -887,6 +921,10 @@ export async function planTextIntents(
         if (!c && !(endC?.mismatch ?? false)) uncertain.delete('occurredAt');
         if (kept) {
           at = kept;
+        } else if (r?.at) {
+          // L9: the resolver's instant ("vừa bú mẹ 20 phút" → started 20 minutes ago).
+          at = new Date(r.at);
+          if (r.derived === 'start') link = { derived: 'occurredAt' };
         } else if (c) {
           const r = resolveLog(c);
           at = r.at;
@@ -915,10 +953,10 @@ export async function planTextIntents(
           needsAmpm.push(r.ambiguous);
           at = r.at ? new Date(r.at.getTime() - durMin * 60_000) : null;
           link = { derived: 'occurredAt' };
-        } else if (ago && ago.justNow) {
+        } else if (ago && ago.justNow && !r) {
           at = new Date(anchor.getTime() - (durMin ?? 0) * 60_000);
           if (durMin) link = { derived: 'occurredAt' };
-        } else if (ago) {
+        } else if (ago && !r) {
           at = new Date(anchor.getTime() - ago.minutes * 60_000);
         } else if (base && 'occurredAt' in base && base.occurredAt) {
           at = new Date(base.occurredAt);
@@ -969,16 +1007,22 @@ export async function planTextIntents(
         } else if (finishedEnd) {
           // "dậy rồi" with no timer running: it ended then; the start is asked below.
           end = finishedEnd;
+        } else if (r?.endAt) {
+          // L9: the resolver's end.
+          end = new Date(r.endAt);
         } else if (endC) {
           const r = resolveLog(endC);
           end = r.at;
           needsAmpm.push(r.ambiguous);
-        } else if (ago?.justNow && (durMin || startC)) {
+        } else if (ago?.justNow && (durMin || startC) && !r) {
           // "vừa ngủ dậy": it ended now.
           end = anchor;
         }
         if (keptStart) {
           start = keptStart;
+        } else if (r?.at) {
+          start = new Date(r.at);
+          if (r.derived === 'start') uncertain.delete('startedAt');
         } else if (startC) {
           const r = end ? resolveStartBefore(startC, end, durMin) : resolveLog(startC);
           start = r.at;
@@ -1029,7 +1073,10 @@ export async function planTextIntents(
             ? { derived: 'startedAt' }
             : span.derived === 'end'
               ? { derived: 'endedAt' }
-              : null;
+              : // L9: the resolver computed the start from the end and the length.
+                r?.derived === 'start'
+                ? { derived: 'startedAt' }
+                : null;
         payload = {
           kind: 'sleep',
           startedAt: span.start !== null ? new Date(span.start).toISOString() : null,
@@ -1213,6 +1260,10 @@ export async function planTextIntents(
           needsAmpm.push(r.ambiguous);
           at = r.at ? new Date(r.at.getTime() - durMin * 60_000) : null;
           link = { derived: 'occurredAt' };
+        } else if (r?.at) {
+          // L9: the resolver's instant.
+          at = new Date(r.at);
+          if (r.derived === 'start') link = { derived: 'occurredAt' };
         } else {
           at = pointTime(c, base);
           // "vừa hút 15 phút": it just ended, so it started 15 minutes ago (as a breastfeed).
@@ -1247,7 +1298,7 @@ export async function planTextIntents(
         if (f.diaper && said !== f.diaper) uncertain.delete('diaper');
         const c = clockOf(intent, 'time');
         if (!c) uncertain.delete('occurredAt');
-        const at = pointTime(c, base);
+        const at = r?.at ? new Date(r.at) : pointTime(c, base);
         payload = { kind: 'diaper', diaper: said ?? null, occurredAt: at?.toISOString() ?? null };
         break;
       }
@@ -2015,7 +2066,12 @@ export function previousForModel(p: PreviousTurn | null, zone: string, today: st
       .filter((d) => d.state !== 'discarded')
       .map((d) => {
         const q = d.payload as Record<string, unknown>;
-        const out: Record<string, unknown> = { kind: d.payload.kind, saved: d.state === 'saved' };
+        // L9: the id the model names in `target` (the index in [p.drafts], as the resolver maps it).
+        const out: Record<string, unknown> = {
+          id: `i${p.drafts.indexOf(d) + 1}`,
+          kind: d.payload.kind,
+          saved: d.state === 'saved',
+        };
         for (const [k, v] of Object.entries(q)) {
           if (k === 'kind' || v === null || k === 'babyId' || k === 'keepReceipt' || k === 'linked')
             continue;

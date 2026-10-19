@@ -113,7 +113,13 @@ let live = null;
 if (mode === 'live') {
   const key = process.env.OPENAI_API_KEY ?? '';
   if (!key) throw new Error('OPENAI_API_KEY is not set (read it from Secret Manager into the env)');
-  live = liveGateway(key, process.env.OPENAI_MODEL ?? 'gpt-4.1-mini', meter);
+  // L9 #7: OPENAI_MODEL_UNDERSTANDING measures a stronger tier on the understanding call only.
+  live = liveGateway(
+    key,
+    process.env.OPENAI_MODEL ?? 'gpt-4.1-mini',
+    meter,
+    process.env.OPENAI_MODEL_UNDERSTANDING || undefined,
+  );
 }
 
 initDb(process.env.GCLOUD_PROJECT ?? 'demo-child-life-e2e');

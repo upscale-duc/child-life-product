@@ -36,6 +36,8 @@ export * from './assistant.js';
 export * from './assistant-text.js';
 // Lumi L7 (P-168): the conversation state per author and the follow-up words.
 export * from './assistant-dialogue.js';
+// Lumi L9 (P-169): understanding v1 — the model's semantic output schema.
+export * from './assistant-understanding.js';
 export * from './premium-ops.js';
 export * from './assistant-staff.js';
 export * from './content.js';

@@ -738,20 +738,42 @@ describe('duration-aware sleep and feeds', () => {
     );
   });
 
-  it('no time at all asks "Vừa xong / 30 phút trước / 1 tiếng trước"; oz → ml; "vừa bú mẹ 20 phút" started 20 minutes ago', async () => {
-    const r = await run(
-      'bé bú 120ml',
-      [extraction([intent('bottle', { amountMl: 120 }, [{ field: 'amountMl', text: '120ml' }])])],
-      {
-        answers: { 'time.missing': { choiceId: 'ago_30' } },
-      },
-    );
-    expect(r.asked).toEqual(['time.missing']);
+  it('no time at all is now on the model path (L9: finished, started unknown → the server takes now, no question); oz → ml; "vừa bú mẹ 20 phút" started 20 minutes ago', async () => {
+    // Before L9 the model path asked "Vừa xong / 30 phút trước / 1 tiếng trước" here; the rule
+    // reader's path still does (lumi-plan §12.4, L9c unifies them).
+    const r = await run('bé bú 120ml', [
+      extraction([intent('bottle', { amountMl: 120 }, [{ field: 'amountMl', text: '120ml' }])]),
+    ]);
+    expect(r.asked).toEqual([]);
     expect(local((r.snap.drafts[0]!.payload as { occurredAt: string }).occurredAt)).toBe(
-      '2026-10-15 13:50',
+      '2026-10-15 14:20',
     );
+    // L9: "2 tiếng trước" is the model's `started: ago 120` (v9), no longer a regex of the server.
     const oz = await run('2 tiếng trước bé bú 4oz', [
-      extraction([intent('bottle', { amountMl: 4 }, [{ field: 'amountMl', text: '4oz' }])]),
+      {
+        act: 'log',
+        target: null,
+        confidence: 0.9,
+        events: [
+          {
+            kind: 'bottle',
+            status: 'finished',
+            started: { how: 'ago', minutes: 120, hhmm: null, dayOffset: null },
+            ended: null,
+            durationMin: null,
+            fields: { amountMl: 4, milk: null },
+            evidence: [
+              { field: 'amountMl', text: '4oz' },
+              { field: 'started', text: '2 tiếng trước' },
+            ],
+            uncertainFields: [],
+          },
+        ],
+        reads: [],
+        ask: null,
+        care: null,
+        healthSigns: [],
+      },
     ]);
     expect(oz.snap.drafts[0]!.payload).toMatchObject({ amountMl: 118 });
     expect(local((oz.snap.drafts[0]!.payload as { occurredAt: string }).occurredAt)).toBe(
@@ -888,17 +910,16 @@ describe('follow-ups, duplicates, small talk, help — credits per outcome', () 
     const help = await run('thời tiết hôm nay thế nào?', [extraction([], { outOfScope: true })]);
     expect(help.snap.task).toMatchObject({ state: 'ready', usage: 'released' });
     expect(codes(help.snap)).toEqual(['HELP']);
-    const unsure = await run(
-      'giúp mình với',
-      [extraction([], { clarification: { field: 'intent' } })],
-      {
-        answers: { intent: { choiceId: 'write' } },
-      },
-    );
-    expect(unsure.asked).toEqual(['intent']);
+    // L9: the model's "xem hay ghi?" question is gone (v9 has no `intent` ask); words with
+    // nothing to log get the help text at once, released.
+    const unsure = await run('giúp mình với', [
+      extraction([], { clarification: { field: 'intent' } }),
+    ]);
+    expect(unsure.asked).toEqual([]);
     expect(unsure.snap.task).toMatchObject({ state: 'ready', usage: 'released' });
     expect(codes(unsure.snap)).toEqual(['HELP']);
-    const held = await run('bé bú 120ml', [extraction([intent('bottle', { amountMl: 120 })])]);
+    // L9: a feed without a time is drafted at now; a length with no start still asks (held).
+    const held = await run('ngủ 9 tiếng', [extraction([intent('sleep', { durationMin: 540 })])]);
     expect(held.snap.task).toMatchObject({ state: 'awaiting_clarification', usage: 'reserved' });
     const meal = await run('con 7 tháng ăn gì được?', [
       extraction([], { clarification: { field: 'intent' } }),

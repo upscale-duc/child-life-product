@@ -251,6 +251,15 @@ const correctionCue =
   /(?<![\p{L}])(?:chu|moi dung|moi phai|moi chinh xac|moi chuan|khong phai|ko phai|k phai|nham|a khong|a ko|sua lai|sua thanh|doi lai|doi thanh|thoi|i mean|actually|not|should be|make it|change it to|change to|instead)(?![\p{L}])/u;
 
 /**
+ * L9 (P-169 #3): a correcting word is in the message ("chứ", "nhầm", "không phải", "sửa lại",
+ * "mới đúng", "actually"). A GUARD, not a reader: the model's `correct` act is taken only with one
+ * (a new fact or an ongoing state without it is a log, never a correction of what waits).
+ */
+export function correctionWordIn(text: string): boolean {
+  return correctionCue.test(clean(text));
+}
+
+/**
  * A correction or an addition of the last item ("180 chứ", "lúc 13h mới đúng", "thêm 10 phút",
  * "bên trái chứ", "bình chứ không phải mẹ"); [cue] when a correcting word was said (else only a
  * bare value, which counts while something waits and the message is short).

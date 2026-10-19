@@ -6,27 +6,24 @@
       "id": "on-10-dang-ngu-duoc-5p",
       "group": "care.ongoing",
       "anchor": "11:26",
-      "title": "L1 device case 2026-10-19: \"Bé đang ngủ. Vừa ngủ được 5p rồi\" → the sleep timer from 11:21, never a finished 5-minute span (the model's made-up end is ignored)",
+      "title": "L1 device case 2026-10-19: \"Bé đang ngủ. Vừa ngủ được 5p rồi\" → the sleep timer from 11:21, never a finished 5-minute span (L9: scripted as the v9 understanding — ongoing, started ago 5 — the v7 reply with a made-up end is no longer accepted as a reading)",
       "turns": [
         {
           "say": "Bé đang ngủ. Vừa ngủ được 5p rồi",
           "model": {
-            "i": [
-              {
-                "k": "sleep",
-                "f": {
-                  "time": "11:21",
-                  "dayOffset": 0,
-                  "endTime": "11:26",
-                  "endDayOffset": 0,
-                  "durationMin": 5
-                },
-                "ev": {
-                  "durationMin": "ngủ được 5p",
-                  "endTime": "Vừa"
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "ago 5",
+                  "ev": {
+                    "started": "Vừa ngủ được 5p rồi"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
         }
       ],
@@ -282,15 +279,15 @@
         }
       ],
       "expect": {
-         "outcome": "drafts",
-         "kinds": ["bottle"],
-         "asks": ["time.ampm"],
-         "values": {
-           "0.occurredAt": "D0 08:00"
-         },
-         "credits": 0,
-         "calls": 0
-       }
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.ampm"],
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 0,
+        "calls": 0
+      }
     },
     {
       "id": "on-17-dang-ngu-5p-timer-running",

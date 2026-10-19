@@ -231,7 +231,9 @@ describe('OpenAI extraction request', () => {
       expect(prompt).toContain(words);
     }
     // Lumi fixes 2026-10-16 (v5): pump / diaper / growth, "12h" is noon, each time its period.
-    expect(assistantPromptVersion).toBe('assistant-extract-v8');
+    // Lumi L9 (P-169): the worker runs the understanding call (v9, `assistant-understand-v1`);
+    // the v8 extraction request stays for scripted tests and the legacy parse.
+    expect(assistantPromptVersion).toBe('assistant-understand-v1');
     // Lumi L7 (v8): the conversation state, `corrects` (another kind too) and `replyTo`.
     for (const words of [
       '"corrects" = the kind of the item it corrects',

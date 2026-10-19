@@ -22,8 +22,38 @@ export interface FakeIntent {
   cr?: string;
 }
 
+/**
+ * Lumi L9 (P-169): one scripted event of understanding v1 — the meaning, with its time line
+ * written out. `started` / `ended`: "ago 5" (minutes before the message), "clock 11:20" (as
+ * written; "clock 22:00 -1" = yesterday), "unknown", or omitted (null).
+ */
+export interface FakeEvent {
+  k: string;
+  /** ongoing | finished | planned (default finished; reminders planned). */
+  st?: 'ongoing' | 'finished' | 'planned';
+  started?: string;
+  ended?: string;
+  dur?: number;
+  f?: Record<string, unknown>;
+  ev?: Record<string, string>;
+  unc?: string[];
+}
+
+/** Lumi L9: a scripted understanding (v9 shape) — `u` on a turn's model. */
+export interface FakeUnderstanding {
+  act: string;
+  /** "i1", "i2"… the item of the previous turn a correct / undo targets. */
+  target?: string;
+  conf?: number;
+  e?: FakeEvent[];
+  reads?: { tool: string; dayOffset: number }[];
+  ask?: { field: string; why: string } | null;
+}
+
 /** One scripted model reply (fake mode). */
 export interface FakeModel {
+  /** L9: the understanding (v9). When present, `i` / `clar` / `talk` / `oos` are not used. */
+  u?: FakeUnderstanding;
   i?: FakeIntent[];
   reads?: { tool: string; dayOffset: number }[];
   clar?: string | null;

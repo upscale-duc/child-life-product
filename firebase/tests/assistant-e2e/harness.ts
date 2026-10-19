@@ -46,7 +46,7 @@ import {
 } from '../../functions/src/assistant-model.js';
 import { localClock, localInstant } from '../../functions/src/assistant-tools.js';
 import { runAssistantTask } from '../../functions/src/assistant-worker.js';
-import type { Answer, Case, FakeModel, Turn, Who } from './types.js';
+import type { Answer, Case, FakeModel, FakeUnderstanding, Turn, Who } from './types.js';
 
 export const ROOT = resolve(import.meta.dirname, '../../..');
 export const ZONE = 'Asia/Ho_Chi_Minh';
@@ -162,9 +162,46 @@ const known = new Set<string>(intentFieldNames);
 export const pickKind = (k: string) =>
   k.split('|').find((x) => (draftKinds as readonly string[]).includes(x)) ?? k.split('|').at(-1)!;
 
+/** L9: "ago 5" / "clock 11:20" / "clock 22:00 -1" / "unknown" → a v9 time spec. */
+function timeSpecOf(s: string | undefined) {
+  if (s === undefined) return null;
+  const [how, a, b] = s.split(/\s+/);
+  if (how === 'ago') return { how, minutes: Number(a ?? 0), hhmm: null, dayOffset: null };
+  if (how === 'clock') return { how, minutes: null, hhmm: a ?? null, dayOffset: Number(b ?? 0) };
+  return { how: 'unknown', minutes: null, hhmm: null, dayOffset: null };
+}
+
+/** L9: a scripted understanding in the v9 output shape (the server's strict schema). */
+export function understandingOf(u: FakeUnderstanding): Record<string, unknown> {
+  return {
+    act: u.act,
+    target: u.target ?? null,
+    confidence: u.conf ?? 0.9,
+    events: (u.e ?? []).map((e) => {
+      const kind = pickKind(e.k);
+      const timed = (['bottle', 'breast', 'sleep', 'pump', 'diaper'] as string[]).includes(kind);
+      return {
+        kind,
+        status: e.st ?? (kind === 'reminder' ? 'planned' : 'finished'),
+        started: timed ? timeSpecOf(e.started) : null,
+        ended: timed ? timeSpecOf(e.ended) : null,
+        durationMin: timed ? (e.dur ?? null) : null,
+        fields: e.f ?? {},
+        evidence: Object.entries(e.ev ?? {}).map(([field, text]) => ({ field, text })),
+        uncertainFields: e.unc ?? [],
+      };
+    }),
+    reads: u.reads ?? [],
+    ask: u.ask ?? null,
+    care: null,
+    healthSigns: [],
+  };
+}
+
 export function extractionOf(m: FakeModel): FakeStep<unknown> {
   if (m.error) return new ModelUnavailable(m.error === 'timeout' ? 'timeout' : 'http', 500, null);
   if (m.raw !== undefined) return m.raw;
+  if (m.u) return understandingOf(m.u);
   return {
     intents: (m.i ?? []).map((x) => {
       const kind = pickKind(x.k);
@@ -213,7 +250,12 @@ export interface LiveMeter {
 }
 
 /** The real gateway with a hard call budget; wording is skipped (the engine's template). */
-export function liveGateway(apiKey: string, model: string, meter: LiveMeter): ModelGateway {
+export function liveGateway(
+  apiKey: string,
+  model: string,
+  meter: LiveMeter,
+  understandingModel?: string,
+): ModelGateway {
   const metered: typeof fetch = async (input, init) => {
     if (meter.calls >= meter.max) {
       meter.refused += 1;
@@ -232,7 +274,7 @@ export function liveGateway(apiKey: string, model: string, meter: LiveMeter): Mo
     }
     return res;
   };
-  const real = openAiModelGateway(apiKey, model, metered);
+  const real = openAiModelGateway(apiKey, model, metered, understandingModel ?? model);
   return {
     name: 'openai',
     model: real.model,
@@ -240,6 +282,12 @@ export function liveGateway(apiKey: string, model: string, meter: LiveMeter): Mo
     extract: async (i, s) => {
       const out = await real.extract(i, s);
       // Debugging a live run: the raw readings of the synthetic cases (never real data).
+      if (process.env.LUMI_E2E_DUMP) meter.raw = [...(meter.raw ?? []), out];
+      return out;
+    },
+    // L9: the understanding call (v9) — the worker's normal path.
+    understand: async (i, s) => {
+      const out = await real.understand!(i, s);
       if (process.env.LUMI_E2E_DUMP) meter.raw = [...(meter.raw ?? []), out];
       return out;
     },

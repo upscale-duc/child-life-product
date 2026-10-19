@@ -43,6 +43,7 @@ import {
   callWithTimeout,
   ModelUnavailable,
   parseExtraction,
+  parseUnderstanding,
   parseWording,
   readToolNames,
   type ClarificationField,
@@ -50,6 +51,9 @@ import {
   type ModelGateway,
   type ReadToolName,
 } from './assistant-model.js';
+// Lumi L9 (P-169): the understanding resolver — one owner of time and precedence.
+import { resolveUnderstanding } from './assistant-understanding.js';
+import type { Understanding, UnderstandingAct } from '@child-life/contracts';
 // Lumi rework 2026-10-15: text planning (expenses, reminders, durations, corrections, questions).
 import {
   calendarAround,
@@ -219,6 +223,8 @@ interface WorkResult {
   spending?: boolean;
   /** The text extraction kept while a server question is open (no second model call). */
   textReading?: ModelExtraction | null;
+  /** L9: the understanding kept instead (re-resolved with the answers; no second call). */
+  understanding?: Understanding | null;
   /** Lumi L2: an inline run out of time — back to `queued`, the trigger runs it (no failure). */
   handoff?: boolean;
   /** L1b: a bare "Ok!" to words that answered nothing (swapped for my open question, if any). */
@@ -518,24 +524,37 @@ async function process(
   // Rework 2026-10-15: while a server question is open, the first reading is reused (no second
   // model call, no second charge) when every answer is one the server applies itself.
   let ext: ModelExtraction | null = null;
+  // L9: the model's understanding (null on the rules path and for a cached v8 reading).
+  let understanding: Understanding | null = null;
   let modelCalls = 0;
   let path: 'rules' | 'model' | 'cached' = 'model';
   deps.timer?.mark('reads');
   if ((t.round ?? 0) > 0 && answers.every((a) => serverResolvedField(a.field))) {
     const cached = await textReadingRef(db, t.id).get();
     if (cached.exists) {
-      const p = parseExtraction(cached.get('ext'));
-      if (p.ok) {
-        ext = p.value;
-        path = 'cached';
+      const cu = cached.get('u');
+      if (cu !== undefined) {
+        const p = parseUnderstanding(cu);
+        if (p.ok) {
+          understanding = p.value;
+          path = 'cached';
+        }
+      } else {
+        const p = parseExtraction(cached.get('ext'));
+        if (p.ok) {
+          ext = p.value;
+          path = 'cached';
+        }
       }
     }
   }
-  if (!ext && ruled) {
+  if (!ext && !understanding && ruled) {
+    // L9: the fast path keeps its planner reading (the time question for a log without a time);
+    // the understanding path takes now — unifying both is L9c (lumi-plan §12.4).
     ext = ruled;
     path = 'rules';
   }
-  if (!ext) {
+  if (!ext && !understanding) {
     // Lumi L2: inline, a call that would outlast the request goes to the trigger instead.
     const budget = modelBudget(deps);
     if (budget === null || !gateway) {
@@ -545,9 +564,11 @@ async function process(
     }
     let raw: unknown;
     try {
+      // L9: the understanding call (v9); an older gateway still answers with `extract`.
+      const read = (gateway.understand ?? gateway.extract).bind(gateway);
       raw = await callWithTimeout(
         (signal) =>
-          gateway.extract(
+          read(
             {
               text,
               locale: t.locale,
@@ -596,13 +617,94 @@ async function process(
     }
     if (gateway.name === 'openai') await charge(db, now);
     modelCalls = 1;
-    const parsed = parseExtraction(raw);
+    const parsed = parseUnderstanding(raw);
     // Unknown tools, intents, fields or part shapes: rejected, never executed, 0 credits (E01).
     if (!parsed.ok) return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
-    ext = parsed.value;
+    understanding = parsed.value;
   }
   deps.timer?.mark(path);
   trace.path = path;
+  // ---- L9 (P-169): the resolver turns the understanding into instants, timers and an act ----
+  let act: UnderstandingAct | null;
+  let continueAfter: Date | null =
+    t.followUp?.kind === 'continue' ? new Date(t.followUp.after) : null;
+  if (understanding) {
+    const res = resolveUnderstanding({
+      u: understanding,
+      text,
+      anchor,
+      zone: s.zone,
+      answers: answerMap,
+      previous,
+      ...(continueAfter ? { after: continueAfter } : {}),
+      timers: (await timersEarly()) ?? undefined,
+    });
+    ext = res.ext;
+    act = res.act;
+    continueAfter = res.after ?? continueAfter;
+    const stateOf = (d: DialogueState | null | undefined) =>
+      d && (d.waiting.length > 0 || d.saved.length > 0 || d.question) ? d : null;
+    if (act === 'undo' && res.undo) {
+      // "xoá cái vừa ghi" the model read: the same path as L7's resolver (0 extra credits).
+      const u = res.undo;
+      const kind = u.payload.kind as DraftKind;
+      const keys = keysOf(u.payload);
+      const target =
+        u.state === 'saved' && u.recordId
+          ? {
+              saved: true as const,
+              item: {
+                taskId: u.taskId ?? previous!.taskId,
+                draftId: u.id,
+                kind,
+                keys,
+                recordId: u.recordId,
+                savedAt: now.toISOString(),
+              },
+            }
+          : {
+              saved: false as const,
+              item: {
+                taskId: u.taskId ?? previous!.taskId,
+                draftId: u.id,
+                kind,
+                keys,
+                revision: 1,
+                createdAt: now.toISOString(),
+              },
+            };
+      const w = await processFollowUp(
+        db,
+        { ...t, followUp: { kind: 'delete', target } },
+        s,
+        dialogue ?? null,
+        now,
+      );
+      return { ...w, dialogue, modelCalls };
+    }
+    if (act === 'meta' || act === 'answer') {
+      // "là sao" / an answer with nothing to log: what waits, said plainly; else the help text
+      // (an open question is asked again by `openQuestionInsteadOfHelp`).
+      if (stateOf(dialogue) && !dialogue?.question) {
+        const w = await processFollowUp(
+          db,
+          { ...t, followUp: { kind: 'restate' } },
+          s,
+          dialogue ?? null,
+          now,
+        );
+        return { ...w, dialogue, modelCalls };
+      }
+      return {
+        ...fallback(t.locale, act === 'answer' ? 'talk' : 'help', lead0(routing, t.locale)),
+        ackOnly: act === 'answer',
+        modelCalls,
+        dialogue,
+      };
+    }
+  }
+  const understood = understanding !== null;
+  if (!ext) return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
   // Safety net: "con 7 tháng ăn gì được?" with nothing extracted is the meal-ideas care topic
   // (approved recipes only), never a "read or log?" question.
   if (
@@ -748,7 +850,11 @@ async function process(
   if (intentAnswer === 'read') ext = { ...ext, intents: [] };
   // Lumi 2026-10-16: an ongoing state in the words ("con đang ngủ", "bú xong rồi") is something
   // to do even when the model returned nothing (the planner adds its timer item).
-  const states = careStatesIn(text);
+  // L9: for an understood message the state words are only a GUARD for a timer kind the model
+  // returned no event for (the resolver owns the states it did return).
+  const states = understood
+    ? careStatesIn(text).filter((st) => !ext!.intents.some((i) => i.kind === st.timer))
+    : careStatesIn(text);
   // LUMI-01: so is a pump / diaper / growth log in the words the model did not return.
   const nothing =
     ext.intents.length === 0 &&
@@ -784,6 +890,7 @@ async function process(
       modelCalls,
       care: careState,
       textReading: ext,
+      understanding,
       spending,
       dialogue,
       about: aboutOf(ext),
@@ -834,8 +941,10 @@ async function process(
       // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
       lastPumpSide: await pumpSideEarly(),
       clientKinds: clientDraftKindsOf(t.clientKinds),
-      // L7: "rồi ngủ lúc 10h" — after the item it follows.
-      ...(t.followUp?.kind === 'continue' ? { after: new Date(t.followUp.after) } : {}),
+      // L7: "rồi ngủ lúc 10h" — after the item it follows (L9: or as the model read it).
+      ...(continueAfter ? { after: continueAfter } : {}),
+      // L9: the intents' times are the resolver's; the words are not re-read.
+      understood,
     },
     ext.intents,
   );
@@ -850,6 +959,7 @@ async function process(
       modelCalls,
       care: careState,
       textReading: ext,
+      understanding,
       spending,
       dialogue,
       about: aboutOf(ext),
@@ -1352,6 +1462,10 @@ export async function openQuestionTaskOf(
   }
 }
 
+/** The private-thread notice first when the task was routed there (as `lead` below). */
+const lead0 = (routing: unknown, locale: 'vi' | 'en'): AssistantPart[] =>
+  routing ? [spendingPrivatePart(locale)] : [];
+
 /** Small talk / help: an answer without a draft, released (0 credits). */
 function fallback(
   locale: 'vi' | 'en',
@@ -1532,7 +1646,10 @@ async function finalize(
     // Rework 2026-10-15: the text reading too (a server question reuses it, no second call).
     if (t.modality === 'text') {
       const cache = textReadingRef(db, taskId);
-      if (pending && result.textReading) {
+      if (pending && result.understanding) {
+        // L9: the understanding is kept and re-resolved with the answer (no second call).
+        tx.set(cache, { u: result.understanding, savedAt: at });
+      } else if (pending && result.textReading) {
         tx.set(cache, { ext: result.textReading, savedAt: at });
       } else tx.delete(cache);
     }

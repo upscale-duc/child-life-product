@@ -92,6 +92,8 @@ describe('request context', () => {
       text: 'bé bú 120ml lúc 8h sáng',
       drafts: [
         {
+          // L9: the opaque id the model names in `target`.
+          id: 'i1',
           kind: 'bottle',
           saved: false,
           amountMl: 120,

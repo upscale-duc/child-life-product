@@ -207,7 +207,15 @@
         {
           "say": "bú sữa",
           "model": {
-            "clar": "intent"
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "unknown"
+                }
+              ]
+            }
           },
           "answers": [
             {
@@ -222,7 +230,8 @@
         "asks": ["intent"],
         "credits": 1
       },
-      "group": "read"
+      "group": "read",
+      "title": "\"bú sữa\" alone: a bare feed with nothing said (L9: the model logs a bottle with no values; the server asks \"xem hay ghi?\" once, never the model)"
     },
     {
       "id": "rd-10-english",

@@ -41,7 +41,8 @@ interface Said {
   id: string;
   text: string;
   at: Date;
-  model: { i?: { k: string; f?: Record<string, unknown> }[] } | null;
+  /** L9: `u` = a v9 understanding script (no v8 items to compare). */
+  model: { i?: { k: string; f?: Record<string, unknown> }[]; u?: unknown } | null;
 }
 
 function phrases(): Said[] {
@@ -93,7 +94,9 @@ describe('rule reader (routine logs) vs the scripted model', () => {
   it('reads the same as a correct model wherever it reads', () => {
     const diffs: string[] = [];
     for (const p of read) {
-      if (wrongScript.has(p.id.split('#')[0]!) || !p.model) continue;
+      // L9: a turn scripted as a v9 understanding (`u`) has no v8 items to compare; the fake
+      // e2e suite checks the rules' reading of those phrases by its outcome instead.
+      if (wrongScript.has(p.id.split('#')[0]!) || !p.model || p.model.u) continue;
       const got = ruleReadText({ text: p.text, zone, anchor: p.at })!;
       const want = scripted(p.model);
       if (want.length !== got.intents.length) {
