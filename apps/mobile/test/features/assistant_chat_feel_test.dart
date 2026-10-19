@@ -369,6 +369,49 @@ void main() {
       ],
     );
 
+    testWidgets(
+      'L1b: the listener\'s document never hides the question the start answered with',
+      (tester) async {
+        // The start answers with the view (the question in `clarification`); the task
+        // document then arrives at the same version with it in `pendingClarification` only.
+        final repo = FakeAssistantRepository()
+          ..startAnswer = (_) => envelope(asked());
+        await _pump(tester, repo: repo);
+        await _type(tester, 'Bé ngủ 9 tiếng');
+        await tester.tap(find.bySemanticsLabel('Gửi').last);
+        await tester.pumpAndSettle();
+        expect(_text('21:00 tối qua'), findsOneWidget);
+        final view = asked()['task']! as Map<String, Object?>;
+        repo.push(
+          taskA,
+          TaskDocLive(
+            AssistantTask.fromJson({
+              ...view,
+              'clarification': null,
+              'pendingClarification': view['clarification'],
+              'clarifications': [
+                {
+                  'id': 'c1',
+                  'field': 'sleep.start',
+                  'round': 0,
+                  'answer': null,
+                },
+              ],
+            })!,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(_text('21:00 tối qua'), findsOneWidget);
+        // Typed words still answer the question, never a new task.
+        await _type(tester, '21:30');
+        await tester.tap(find.bySemanticsLabel('Gửi').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(repo.named('startTask'), hasLength(1));
+        expect(repo.named('submitClarification').single.args['text'], '21:30');
+      },
+    );
+
     testWidgets('"Khác…" opens a time picker that previews the computed end', (
       tester,
     ) async {

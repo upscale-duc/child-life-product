@@ -180,15 +180,41 @@ void main() {
       expect(AssistantUsage.fromJson({'usage': usageJson()})!.limit, 20);
     });
 
-    test('the task document form (clarifications[]) reads like the view', () {
+    test('the task document form (pendingClarification) reads like the view', () {
+      // What the server stores: the open question in `pendingClarification`, the rounds in
+      // `clarifications[]` without their question (L1b, P-168 #4).
       final t = AssistantTask.fromJson({
         ...taskJson(state: 'awaiting_clarification'),
         'clarification': null,
+        'pendingClarification': clarificationJson(),
         'clarifications': [
-          {'clarification': clarificationJson(), 'answer': null},
+          {'id': 'c1', 'field': 'sleep.period', 'round': 0, 'answer': null},
         ],
       })!;
       expect(t.clarification?.id, 'c1');
+      expect(t.clarification?.choices, hasLength(2));
+    });
+
+    test('the same version without the question never replaces it', () {
+      final asked = AssistantTask.fromJson(
+        taskJson(
+          state: 'awaiting_clarification',
+          clarification: clarificationJson(),
+        ),
+      )!;
+      final bare = AssistantTask.fromJson({
+        ...taskJson(state: 'awaiting_clarification'),
+        'clarification': null,
+        'clarifications': [
+          {'id': 'c1', 'field': 'sleep.period', 'round': 0, 'answer': null},
+        ],
+      })!;
+      expect(mergeTask(asked, bare), same(asked));
+      // A newer version (the answer went) does replace it.
+      final answered = AssistantTask.fromJson(
+        taskJson(state: 'processing', version: 4),
+      )!;
+      expect(mergeTask(asked, answered), same(answered));
     });
 
     test('scope keys round-trip and reject junk', () {

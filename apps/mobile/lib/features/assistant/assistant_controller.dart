@@ -315,8 +315,8 @@ class ChatState {
   String? openQuestionFor(String? uid, DateTime now) {
     for (final t in threads.reversed) {
       final task = t.snapshot?.task;
-      // Not loaded yet, or just sent from this phone: nothing asked that we know of.
-      if (task == null) return null;
+      // Not loaded yet (an older task of a restored thread): the ones after it still count.
+      if (task == null) continue;
       if (!task.authoredBy(uid)) continue;
       final until = task.clarificationExpiresAt;
       final open =

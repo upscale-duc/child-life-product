@@ -2153,15 +2153,12 @@ class AssistantTask {
     final taskId = _str(m['id'], max: 80) ?? id;
     final state = wireOf(TaskState.values, m['state']);
     if (taskId == null || state == null) return null;
+    // The view carries `clarification`; the stored document keeps the open question in
+    // `pendingClarification` (its `clarifications[]` rounds have no question). L1b (P-168 #4):
+    // both forms read the same, so a listener's document never hides the question.
     var clarification = Clarification.fromJson(m['clarification']);
     if (clarification == null && state == TaskState.awaitingClarification) {
-      final list = _list(m['clarifications']);
-      if (list.isNotEmpty) {
-        final last = _map(list.last);
-        clarification = Clarification.fromJson(
-          last['clarification'] is Map ? last['clarification'] : last,
-        );
-      }
+      clarification = Clarification.fromJson(m['pendingClarification']);
     }
     return AssistantTask(
       id: taskId,

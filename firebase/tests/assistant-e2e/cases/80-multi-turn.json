@@ -530,6 +530,147 @@
         "credits": 1
       },
       "group": "flow"
+    },
+    {
+      "id": "fl-20-typed-time-as-new-message",
+      "title": "L1b (P-168 #2): a typed time sent as a new message (any app build) answers the open question",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 180
+                },
+                "ev": {
+                  "amountMl": "180ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "model": {
+            "clar": "intent"
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.missing"],
+        "values": {
+          "0.amountMl": 180,
+          "0.occurredAt": "D0 13:00"
+        },
+        "saved": 1,
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-21-bay-gio-as-new-message",
+      "title": "L1b: \"Bây giờ\" sent as a new message is the \"Vừa xong\" chip of the open question",
+      "anchor": "14:00",
+      "turns": [
+        {
+          "say": "Em bé đã thay tã ướt",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": {
+                  "diaper": "wet"
+                },
+                "ev": {
+                  "diaper": "ướt"
+                },
+                "miss": ["time"]
+              }
+            ]
+          }
+        },
+        {
+          "say": "Bây giờ",
+          "at": "+1",
+          "model": {
+            "clar": "intent"
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.diaper": "wet",
+          "0.occurredAt": "D0 14:00"
+        },
+        "saved": 1,
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-22-bay-gio-typed-answer",
+      "title": "L1b: \"bây giờ\" typed as the answer reads as just now",
+      "anchor": "14:00",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 180
+                },
+                "ev": {
+                  "amountMl": "180ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "bây giờ"
+            }
+          ]
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 180,
+          "0.occurredAt": "D0 14:00"
+        },
+        "saved": 1,
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "flow"
     }
   ]
 }

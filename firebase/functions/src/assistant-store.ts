@@ -62,6 +62,8 @@ export interface StoredTask {
     answer: { choiceId: string | null; text: string | null } | null;
   }[];
   pendingClarification: Clarification | null;
+  /** L1b (P-168 #4): the same question, so a raw document reads like the view. */
+  clarification?: Clarification | null;
   clarificationExpiresAt: Timestamp | null;
   lease: { holder: string; until: Timestamp } | null;
   attempt: number;

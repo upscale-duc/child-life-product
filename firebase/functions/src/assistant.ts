@@ -111,11 +111,11 @@ import { aiBudgetLeft } from './staff.js';
 // Lumi L2 (D-088 §4.4): rules before the model, the worker inside `startTask`, per-hop timings.
 import { ruleReadText } from './assistant-rules.js';
 import { HopTimer } from './assistant-timing.js';
-import { runClaimedAssistantTask } from './assistant-worker.js';
+import { openQuestionTaskOf, runClaimedAssistantTask } from './assistant-worker.js';
 import type { StoredTask } from './assistant-store.js';
 // L1 (P-167 #3): typed answers to the server's questions.
 import type { Clarification } from '@child-life/contracts';
-import { readTypedAnswer } from './assistant-text.js';
+import { answersOpenQuestion, readTypedAnswer } from './assistant-text.js';
 
 /**
  * Child Life Assistant callables, server core (slice A2; docs/assistant/api.md). Every request
@@ -445,6 +445,37 @@ export async function startTask(
     signs.length === 0 &&
     !talk &&
     ruleReadText({ text, zone: s.zone, anchor: now }) !== null;
+  // L1b (P-168 #2): words sent while my own question in this thread is still open answer it,
+  // whichever app build sent them; a message that reads as a log of its own is a new task.
+  if (text && modality === 'text' && req.conversationId && signs.length === 0 && !ruled) {
+    const open = await openQuestionTaskOf(db, req.conversationId, uid, now);
+    if (open && answersOpenQuestion(open.pc, text)) {
+      const r = await submitClarification(deps, uid, {
+        contractVersion: req.contractVersion,
+        clientRequestId: req.clientRequestId,
+        locale: req.locale,
+        taskId: open.id,
+        expectedVersion: open.version,
+        clarificationId: open.pc.id,
+        choiceId: null,
+        text,
+      });
+      const usage = await assistantUsage(db, s, now);
+      const { windowId: _w, ...usageView } = usage;
+      void _w;
+      timer.mark('answer');
+      deps.onTiming?.(
+        timer.payload({
+          op: 'startTask',
+          taskId: open.id,
+          path: 'answer',
+          state: r.data.task.state,
+          inline: true,
+        }),
+      );
+      return { ...r, data: { ...r.data, usage: usageView } };
+    }
+  }
   const consent = assistantConsentGranted(consentSnap);
   const [healthPart, live, pool] = await Promise.all([
     // Slice A5: the household's approved emergency number (none when the pack has no entry).
@@ -560,6 +591,7 @@ export async function startTask(
       round: 0,
       clarifications: [],
       pendingClarification: null,
+      clarification: null,
       clarificationExpiresAt: null,
       lease: null,
       attempt: 0,
@@ -977,6 +1009,7 @@ export async function submitClarification(
           errorCode: 'QUOTE_EXPIRED',
           usage: t.usage === 'reserved' ? 'released' : t.usage,
           pendingClarification: null,
+          clarification: null,
           version: t.version + 1,
           eventSeq: seq,
           updatedAt: at,
@@ -1023,6 +1056,7 @@ export async function submitClarification(
         );
         tx.update(ref, {
           pendingClarification: again,
+          clarification: again,
           clarifications: [
             ...t.clarifications,
             { id: again.id, field: again.field, round: t.round, answer: null },
@@ -1076,6 +1110,7 @@ export async function submitClarification(
           c.id === pc.id ? { ...c, answer, answeredAt: at } : c,
         ),
         pendingClarification: null,
+        clarification: null,
         clarificationExpiresAt: null,
         // Slice A5 fix: the attempt cap (3) is per run, not per task — without this reset the
         // 4th round of a 4-round clarification always failed AI_UNAVAILABLE.
@@ -1422,6 +1457,7 @@ async function stopTask(
       usage: release ? 'released' : t.usage,
       lease: null,
       pendingClarification: null,
+      clarification: null,
       clarificationExpiresAt: null,
       version: t.version + 1,
       eventSeq: seq,

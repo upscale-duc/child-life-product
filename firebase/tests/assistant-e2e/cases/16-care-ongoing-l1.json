@@ -252,7 +252,7 @@
       "id": "on-16-new-message-while-asked",
       "group": "care.ongoing",
       "anchor": "21:30",
-      "title": "L1: an older app sends \"Sáng\" as a new message while the question waits → the question again, never the help text",
+      "title": "L1b (P-168 #2): an older app sends \"Sáng\" as a new message while the question waits → the server routes it as the answer, never the help text",
       "turns": [
         {
           "say": "8 giờ bú 120ml",
@@ -282,9 +282,15 @@
         }
       ],
       "expect": {
-        "outcome": "fallback",
-        "credits": 0
-      }
+         "outcome": "drafts",
+         "kinds": ["bottle"],
+         "asks": ["time.ampm"],
+         "values": {
+           "0.occurredAt": "D0 08:00"
+         },
+         "credits": 0,
+         "calls": 0
+       }
     },
     {
       "id": "on-17-dang-ngu-5p-timer-running",

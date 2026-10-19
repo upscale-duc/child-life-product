@@ -590,6 +590,14 @@ class EventCursor {
 /// new task version, so a snapshot read just before can arrive after).
 AssistantTask mergeTask(AssistantTask current, AssistantTask incoming) {
   if (incoming.version < current.version) return current;
+  // L1b (P-168 #4): the same version seen twice (the start's answer, then the listener's
+  // document) never loses the open question to a copy that lacks it.
+  if (incoming.version == current.version &&
+      current.state == TaskState.awaitingClarification &&
+      current.clarification != null &&
+      incoming.clarification == null) {
+    return current;
+  }
   final kept = current.care;
   final next = incoming.care;
   if (kept == null) return incoming;

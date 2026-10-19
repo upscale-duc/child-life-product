@@ -391,3 +391,11 @@ first resolved against the state of the conversation for this author; only then 
 
 Order: L1b at once (it blocks every question on dev), then L6 as agreed, then L7 and L8 with
 Phase 2 reads (they share the resolver and the composer).
+
+**L1b done (2026-10-19):** the app reads `pendingClarification` and `mergeTask` keeps an open
+question at equal versions; the server writes `clarification` into the task document too;
+`startTask` answers the author's open question when the words read as an answer (short, a clock,
+an "ago", a half of the day — never a state of the baby), and the worker swaps the model's
+`intent` question or a bare "Ok!" for the open question; "bây giờ / vừa xong" as a typed answer is
+"Vừa xong". Cases fl-20…fl-22, on-16 (fake 283/284; `ga-11` failed before this slice); app replay
+fixtures exported; dev deployed. Not checked on a real phone.

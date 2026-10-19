@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cc45a05dbc974265c0b7c7e4dd5729d0",
+     "id": "tk_8f04f033d77c89d4dd025dfdc316c046",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "awaiting_clarification",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "reserved",
      "errorCode": null,
@@ -75,7 +75,7 @@
         "text": "8 giờ bú 120ml"
        }
       ],
-      "taskId": "tk_cc45a05dbc974265c0b7c7e4dd5729d0",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -121,7 +121,7 @@
         }
        }
       ],
-      "taskId": "tk_cc45a05dbc974265c0b7c7e4dd5729d0",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,26 +136,26 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_9bae3f1c219504f06f6409c3695dfedd",
+     "id": "tk_8f04f033d77c89d4dd025dfdc316c046",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 4,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
-     "usage": "released",
+     "usage": "committed",
      "errorCode": null,
-     "round": 0,
+     "round": 1,
      "clarification": null,
      "clarificationExpiresAt": null,
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:21:00.000Z",
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -165,8 +165,101 @@
      },
      "routing": null
     },
-    "drafts": [],
+    "drafts": [
+     {
+      "id": "dr_8f04f033d77c89d4dd025dfdc316c046_0",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-14T17:50:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:21:00.000Z",
+      "sourceRefs": [
+       "task:tk_8f04f033d77c89d4dd025dfdc316c046"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
     "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "8 giờ bú 120ml"
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.ampm",
+         "question": {
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
+         },
+         "choices": [
+          {
+           "id": "am",
+           "label": {
+            "vi": "Buổi sáng",
+            "en": "Morning"
+           }
+          },
+          {
+           "id": "pm",
+           "label": {
+            "vi": "Chiều / tối",
+            "en": "Afternoon / evening"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
      {
       "id": "00000003",
       "conversationId": "cv_b_00000000000000000001",
@@ -178,9 +271,9 @@
         "text": "Sáng"
        }
       ],
-      "taskId": "tk_9bae3f1c219504f06f6409c3695dfedd",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
       "sequence": 3,
-      "createdAt": "2026-10-15T07:20:00.000Z",
+      "createdAt": "2026-10-15T07:21:00.000Z",
       "attachmentIds": [],
       "author": {
        "uid": "u_mai",
@@ -195,16 +288,224 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "text": "Bạn trả lời giúp mình câu hỏi ở trên trước nhé: 8:00 là buổi sáng hay chiều tối?"
+        "draftId": "dr_8f04f033d77c89d4dd025dfdc316c046_0",
+        "revision": 1
        }
       ],
-      "taskId": "tk_9bae3f1c219504f06f6409c3695dfedd",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
       "sequence": 4,
+      "createdAt": "2026-10-15T07:21:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_8f04f033d77c89d4dd025dfdc316c046",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 4,
+     "modality": "text",
+     "credits": 0,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:21:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_8f04f033d77c89d4dd025dfdc316c046_0",
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-14T17:50:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:21:00.000Z",
+      "sourceRefs": [
+       "task:tk_8f04f033d77c89d4dd025dfdc316c046"
+      ],
+      "recordId": "r_bcb36b3ec2748d2178857e4f88664d0d",
+      "recordLink": "/care/records/b_00000000000000000001/r_bcb36b3ec2748d2178857e4f88664d0d",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "8 giờ bú 120ml"
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.ampm",
+         "question": {
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
+         },
+         "choices": [
+          {
+           "id": "am",
+           "label": {
+            "vi": "Buổi sáng",
+            "en": "Morning"
+           }
+          },
+          {
+           "id": "pm",
+           "label": {
+            "vi": "Chiều / tối",
+            "en": "Afternoon / evening"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Sáng"
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:21:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_8f04f033d77c89d4dd025dfdc316c046_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:21:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_8f04f033d77c89d4dd025dfdc316c046_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_bcb36b3ec2748d2178857e4f88664d0d",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_8f04f033d77c89d4dd025dfdc316c046",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:21:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
      }
     ],
     "events": []

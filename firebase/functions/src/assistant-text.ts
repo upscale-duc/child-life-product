@@ -1678,6 +1678,8 @@ export function readTypedAnswer(
     if (half === null) return 'unreadable';
     return { choiceId: half === 'am' || half === 'pm' ? half : null };
   }
+  // L1b: "bây giờ", "vừa xong" to "Việc này lúc mấy giờ?" is the "Vừa xong" chip.
+  if (c.field === 'time.missing' && nowAnswerIn(text)) return { choiceId: 'ago_0' };
   if (c.allowText) return { choiceId: null };
   const said = answerWords(text);
   if (said.length < 2) return 'unreadable';
@@ -1686,6 +1688,33 @@ export function readTypedAnswer(
     [ch.label.vi, ch.label.en].map(answerWords).some((l) => l && (has(l, said) || has(said, l))),
   );
   return hits.length === 1 ? { choiceId: hits[0]!.id } : 'unreadable';
+}
+
+/** "bây giờ" / "giờ" / "vừa xong" / "mới xong" / "now" as a whole answer. */
+export function nowAnswerIn(text: string): boolean {
+  const f = answerWords(text);
+  return /^(ngay )?(bay gio|gio|vua|vua xong|vua moi xong|moi xong|xong roi|now|right now|just now)$/u.test(
+    f,
+  );
+}
+
+/**
+ * L1b (P-168 #2): whether words sent as a new message answer the open question [c] rather than
+ * start something of their own: a readable answer, or a short reply (≤ 4 words, or a clock,
+ * an "ago" or a half of the day) — never words that carry a state of the baby ("đang ngủ").
+ */
+export function answersOpenQuestion(
+  c: Pick<Clarification, 'field' | 'choices' | 'allowText'>,
+  text: string,
+): boolean {
+  if (careStatesIn(text).length > 0) return false;
+  const words = answerWords(text).split(' ').filter(Boolean).length;
+  if (words === 0) return false;
+  if (words <= 4) return true;
+  if (clockTimeIn(text) !== null || agoIn(text) !== null || dayHalfAnswerIn(text) !== null) {
+    return true;
+  }
+  return readTypedAnswer(c, text) !== 'unreadable' && !c.allowText;
 }
 
 /** "Việc này lúc mấy giờ?": Vừa xong / 30 phút trước / 1 tiếng trước, or a typed time. */

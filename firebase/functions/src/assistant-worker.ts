@@ -192,6 +192,8 @@ interface WorkResult {
   textReading?: ModelExtraction | null;
   /** Lumi L2: an inline run out of time — back to `queued`, the trigger runs it (no failure). */
   handoff?: boolean;
+  /** L1b: a bare "Ok!" to words that answered nothing (swapped for my open question, if any). */
+  ackOnly?: boolean;
 }
 
 const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): WorkResult => ({
@@ -728,13 +730,16 @@ async function process(
   // 0 credits — never a question, never a dead end.
   if (nothing) {
     const talk = ext.smallTalk && !ext.outOfScope && !bought.shopping;
+    const kind = smallTalkIn(text);
     return {
       ...fallback(
         t.locale,
         talk ? 'talk' : bought.shopping ? 'shopping' : intentAnswer === 'write' ? 'write' : 'help',
         lead,
-        smallTalkIn(text) ?? 'ack',
+        kind ?? 'ack',
       ),
+      // Words the server knows no reply to (the model called them small talk).
+      ackOnly: Boolean(talk) && kind === null,
       modelCalls,
     };
   }
@@ -1009,20 +1014,53 @@ async function openQuestionInsteadOfHelp(
   now: Date,
 ): Promise<WorkResult> {
   const isHelp = (p: AssistantPart) => p.type === 'text' && p.code === 'HELP';
-  if (work.outcome.kind !== 'fallback' || !work.parts.some(isHelp)) return work;
-  let open: Clarification | null = null;
+  // L1b (P-168 #2): the model's "xem nhật ký hay ghi thêm?" and a bare "Ok!" to words that
+  // answered nothing are dead ends too while my question waits.
+  const deadEnd =
+    (work.outcome.kind === 'fallback' && (work.parts.some(isHelp) || work.ackOnly === true)) ||
+    (work.outcome.kind === 'clarification' && work.clarification === 'intent');
+  if (!deadEnd) return work;
+  const open = (await openQuestionTaskOf(db, t.conversationId, t.ownerUid, now, t.id))?.pc ?? null;
+  if (!open) return work;
+  const again = reaskPart(open, t.locale);
+  const parts =
+    work.outcome.kind === 'fallback'
+      ? work.parts.some(isHelp)
+        ? work.parts.map((p) => (isHelp(p) ? again : p))
+        : [...work.parts.filter((p) => !(p.type === 'text' && p.code === 'SMALL_TALK')), again]
+      : [...work.parts, again];
+  return {
+    ...work,
+    outcome: { kind: 'fallback', parts },
+    parts,
+    clarification: null,
+    ask: null,
+  };
+}
+
+/**
+ * L1b (P-168 #2): the author's own open question in [conversationId] (the latest one still
+ * within its TTL), with the task it belongs to; null when none or when the read fails.
+ */
+export async function openQuestionTaskOf(
+  db: Firestore,
+  conversationId: string,
+  ownerUid: string,
+  now: Date,
+  excludeId?: string,
+): Promise<{ id: string; version: number; pc: Clarification } | null> {
   try {
     const waiting = await db
       .collection('assistantTasks')
-      .where('conversationId', '==', t.conversationId)
-      .where('ownerUid', '==', t.ownerUid)
+      .where('conversationId', '==', conversationId)
+      .where('ownerUid', '==', ownerUid)
       .where('state', '==', 'awaiting_clarification')
       .limit(5)
       .get();
     const latest = waiting.docs
       .filter(
         (d) =>
-          d.id !== t.id &&
+          d.id !== excludeId &&
           (toDate(d.get('clarificationExpiresAt'))?.getTime() ?? 0) > now.getTime(),
       )
       .sort(
@@ -1030,14 +1068,13 @@ async function openQuestionInsteadOfHelp(
           (toDate(b.get('createdAt'))?.getTime() ?? 0) -
           (toDate(a.get('createdAt'))?.getTime() ?? 0),
       )[0];
-    open = (latest?.get('pendingClarification') as Clarification | null | undefined) ?? null;
+    const pc = (latest?.get('pendingClarification') as Clarification | null | undefined) ?? null;
+    if (!latest || !pc) return null;
+    return { id: latest.id, version: (latest.get('version') as number | undefined) ?? 1, pc };
   } catch {
-    // The help text stays (a read failure never fails the task).
+    // Nothing is routed on a read failure (the message is read on its own, as before).
+    return null;
   }
-  if (!open) return work;
-  const again = reaskPart(open, t.locale);
-  const parts = work.parts.map((p) => (isHelp(p) ? again : p));
-  return { ...work, outcome: { kind: 'fallback', parts }, parts };
 }
 
 /** Small talk / help: an answer without a draft, released (0 credits). */
@@ -1306,6 +1343,7 @@ async function finalize(
       version: t.version + 1,
       eventSeq,
       pendingClarification: pending,
+      clarification: pending,
       clarificationExpiresAt: pending
         ? Timestamp.fromMillis(now.getTime() + assistantTaskLimits.clarificationTtlMinutes * 60_000)
         : null,
@@ -1483,6 +1521,7 @@ export async function expireClarification(
       errorCode: 'QUOTE_EXPIRED',
       usage: t.usage === 'reserved' ? 'released' : t.usage,
       pendingClarification: null,
+      clarification: null,
       version: t.version + 1,
       eventSeq: seq,
       updatedAt: Timestamp.fromDate(now),
