@@ -425,3 +425,115 @@ thay đổi" / "Xoá khỏi nhật ký" / "Không xoá", and "Giữ lại". Case
 291/292 (`ga-11` failed before this slice), live 13/13 for the new and changed cases (4 model
 calls); bot-17, br-09, sl-13, fl-12 now cost 0 credits and bot-18 is an edit of the saved feed.
 Not checked on a real phone.
+
+## 12. Why the patches do not hold, and the better solution (2026-10-19, evening)
+
+**Owner, after the L1b + L7 build:** "Bé đã ngủ được 10p trước đó và vẫn đang ngủ" → Lumi: "Mình đã
+sửa theo ý bạn và bỏ bản nháp trước" and a **finished** sleep 16:30–16:40 (saved); "Ko ý tôi là đã
+ngủ trước đó 10p và vẫn đang ngủ" → an edit draft 16:20–16:30. "Vẫn không đúng … tôi muốn giải pháp
+tốt hơn."
+
+### 12.1 What happened (dev task structures, no message text)
+
+1. 16:55 an earlier test had left a sleep draft (a length with no start → "Bé bắt đầu ngủ lúc mấy
+   giờ?" → chip 16:30 → 16:30–16:40, waiting).
+2. 16:57 the sentence was not read by the rules (`ruleReadText` knows no "trước đó" / "vẫn"), so it
+   went to the model **with the waiting draft as `previous_turn`** and the prompt's instruction to
+   return a corrected item when the message corrects one. The model called it a correction
+   (`correctsPrevious: true`, duration 10). The worker then took the correction branch and never
+   consulted the ongoing-state reading — although the shared rules read the same sentence
+   correctly: `careStatesIn` → sleep **start, 10 minutes ago**, `followUpCueIn` → **not** a
+   correction (checked with the built contracts).
+3. 16:58 "Ko ý tôi là …" has a correcting word, so it became an edit of the (now saved) record with
+   the 10 minutes moved earlier. Still a span, still not a timer.
+
+### 12.2 Review of the understanding pipeline
+
+| Layer                               | Where                                                                                 | Size                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------- | --------------------- |
+| Shared text rules (times, states, durations, small talk, answers) | `packages/contracts/src/assistant-text.ts`                                   | 1 715 lines, ~140 regexes |
+| Follow-up cues (corrections, delete, meta, continuation)          | `packages/contracts/src/assistant-dialogue.ts`                               | 382 lines             |
+| Routine-log reader (fast path)                                    | `firebase/functions/src/assistant-rules.ts`                                  | 641 lines             |
+| Planner: times, phases, questions, review flags                   | `firebase/functions/src/assistant-text.ts`                                   | 2 029 lines           |
+| Resolver + dialogue state                                         | `firebase/functions/src/assistant-dialogue.ts`                               | 880 lines             |
+| Worker orchestration                                              | `firebase/functions/src/assistant-worker.ts`                                 | 1 869 lines           |
+| Model prompt + schema (v7)                                        | `firebase/functions/src/assistant-model.ts`                                  | 769 lines, ~9 KB prompt |
+
+Findings:
+
+1. **Four readers, no owner of meaning.** The rules, the fast reader, the model and the resolver
+   each read the text; whichever branch runs first wins (here: correction before state). Each
+   owner report has been fixed by adding a regex to one layer; the next phrasing lands in another.
+2. **The model is asked for facts, then second-guessed.** It returns a flat extraction (`time`,
+   `durationMin`, `phase`); the planner re-derives the meaning from the text with its own regexes
+   (`phaseCue`, "a length means finished", `clockOf`) and overrides the model. Where the model is
+   right (phase start) it is ignored; where it is wrong (a correction) it is trusted.
+3. **Time semantics are implicit.** "Ongoing since 10 minutes" is encoded as duration + phase +
+   ago, spread over three fields and two packages, and converted into a span by default. The
+   parent's meaning ("the baby fell asleep 10 minutes ago and is still asleep") has no field.
+4. **Corrections are over-eager.** With anything waiting, the prompt invites a correction; a new
+   fact about the same kind ("sleep") becomes an edit of the old item. The shared rules disagreed
+   and nobody arbitrated.
+5. **Tests chase phrasings.** 284 scripted cases pass while the three sentences of the day fail:
+   the fake model is scripted by the engineer, so it can only encode what we already expect; the
+   live set runs rarely and not on the owner's sentences.
+6. **Vietnamese colloquial reasoning on `gpt-4.1-mini`** is adequate for "bé bú 120ml lúc 8h" and
+   weak for state, aspect and reference ("đã … được … trước đó … vẫn đang", "ko ý tôi là").
+
+### 12.3 The better solution (P-169): one reader, explicit meaning, rules as guards
+
+**Principle: the model reads the meaning once, in a schema that says what the parent meant; the
+server computes, validates and asks — it never re-reads the words.**
+
+1. **A semantic schema (`understanding v1`).** One call returns a **dialogue act** and typed
+   **events**:
+   - `act`: `log` | `answer` | `correct` | `undo` | `continue` | `read` | `ask` | `meta` | `talk` |
+     `none`; `target` (the waiting draft or saved record it refers to, by id from the dialogue
+     state) only for `correct` / `undo`; `confidence` 0–1.
+   - each event: `kind`, the kind's fields, and **temporal semantics** written out:
+     `status: ongoing | finished | planned`, `started: {how: ago | clock | unknown, minutes?,
+     hhmm?, dayOffset?}`, `ended: {…} | null`, `durationMin?`. "Đã ngủ được 10p trước đó và vẫn
+     đang ngủ" → `{kind: sleep, status: ongoing, started: {how: ago, minutes: 10}}`. No `phase`,
+     no guessing from a length.
+   - questions the model needs answered: `ask: {field, why}` only when the words are ambiguous
+     (a bare "9 giờ" far from now); the server still phrases and owns the question.
+2. **One resolver of time.** A single function turns `started / ended / durationMin / status` into
+   instants against the anchor and the baby's zone (ongoing → a timer at `now − minutes`; a span
+   only with `finished`); it replaces `timerPlan`'s phase guessing, `pointTime`, `clockOf` and
+   `resolveStartBefore` for text. Rules keep only **validation**: no future, limits, overlap, the
+   18-hour sleep, health words.
+3. **Precedence, written once.** `status: ongoing` or a new fact is never a correction unless a
+   correcting word is present (`correctionCue` as a guard, not a reader); a correction needs an
+   explicit `target`; `answer` only to the open question; short replies never start a task. The
+   resolver orders acts, it does not read text.
+4. **The fast path stays, stricter.** `ruleReadText` for the closed grammar it already has
+   (number + unit + optional clock, one kind); everything else goes to the model. The model call
+   is the normal path for anything with a state, a reference or a correction — not the fallback.
+5. **A stronger model for the understanding call.** The fast path keeps the cheap model off ~60%
+   of messages; the rest moves to the strongest tier the budget allows (measured against the
+   owner sentences, cost per message ≤ 2× today). Prompt v8 carries 20 owner phrasings with their
+   expected acts as few-shot examples; the examples are the eval set.
+6. **Safety of writes.** A correction never saves by itself: the replaced draft is set aside and
+   the new one waits for a tap; "Hoàn tác" exists only after a tap. A misread can cost at most one
+   extra tap, never a wrong record.
+7. **Owner-sentence eval.** `firebase/tests/assistant-e2e/cases/owner-sentences.json`: every
+   sentence an owner report contained, with the expected act and event, run **live** on each
+   prompt or model change (≤ 40 calls) and in the fake suite with the expected model output. A
+   case is added the same day a report arrives; nothing ships with a red owner sentence.
+8. **Deleting, not adding.** Target after the migration: the text regexes drop to validators and
+   the fast path (−60% of the 4 400 rule lines); `careStatesIn`, `phaseCue`, `timerPlan`'s
+   guessing, `correctionIn` as a reader and `previousTurnOf` go.
+
+**Why not more rules:** every report has been one more phrasing; Vietnamese aspect ("đã … vẫn đang")
+and reference ("ý tôi là", "cái vừa ghi") do not enumerate. **Why not the model alone:** times,
+limits, roles and writes stay deterministic and testable; the model only says what was meant.
+
+### 12.4 Slices
+
+| Slice | Content                                                                                                                | Size | Touches                                                                 |
+| ----- | ---------------------------------------------------------------------------------------------------------------------- | ---- | ----------------------------------------------------------------------- |
+| L9    | Understanding v1: the schema, prompt v8 with owner few-shots, the time resolver, precedence; worker reads it; rules demoted to guards; owner-sentence eval (fake + live) | L | `assistant-model.ts`, worker, a new `assistant-understanding.ts`, contracts schema, e2e cases, prompt |
+| L9b   | Model tier for the understanding call, measured on the owner sentences; cost note in `usage.md`                        | S    | `index.ts` config, eval report                                          |
+| L9c   | Remove the superseded regex readers and `previousTurnOf`; tests follow                                                 | M    | contracts + functions text/dialogue files                               |
+
+Order: L9 before anything else in the plan (L6 and the reads build on the same understanding).
