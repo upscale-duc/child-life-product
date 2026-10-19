@@ -1976,7 +1976,21 @@ class _ThreadView {
       NoticeCode.help ||
       NoticeCode.correctionApplied ||
       NoticeCode.sameAsPending ||
+      // Lumi L7: "là sao", "xoá cái vừa ghi": what Lumi did or waits for, said plainly.
+      NoticeCode.followUp ||
       NoticeCode.duplicateSuspected => AsBubble(text: text),
+      // Lumi L7 (P-168 #6): a new topic closed my question; "Giữ lại" asks it again (the server
+      // reads the chip's own words, so any app build or voice says the same).
+      NoticeCode.questionSetAside => AsNoticeCard(
+        icon: ClIcons.retry,
+        text: text,
+        action: viewer
+            ? null
+            : AsLink(
+                label: l10n.asKeepQuestion,
+                onPressed: () => unawaited(ctl.send(l10n.asKeepQuestion)),
+              ),
+      ),
       // Lumi 2026-10-16: the timer already runs — its screen is one tap away (Back = chat).
       NoticeCode.timerRunning => AsNoticeCard(
         icon: ClIcons.clock,
@@ -2377,7 +2391,13 @@ class _ThreadView {
   }
 
   /// The concrete save of a draft that saves on its own card ("Lưu cữ bú").
-  String _saveLabel(AppLocalizations l10n, AssistantDraft d) =>
+  String _saveLabel(AppLocalizations l10n, AssistantDraft d) => switch (d.op) {
+    DraftOp.update => l10n.asSaveChange,
+    DraftOp.delete => l10n.asDeleteRecord,
+    DraftOp.create => _createLabel(l10n, d),
+  };
+
+  String _createLabel(AppLocalizations l10n, AssistantDraft d) =>
       switch (d.kind) {
         DraftKind.bottle => l10n.asSaveBottle,
         DraftKind.breast => l10n.asSaveBreast,
@@ -2519,9 +2539,11 @@ class _ThreadView {
         d.payload is DiaperPayload ||
         d.payload is GrowthPayload;
     final note = d.payload is ObservationPayload;
+    // Lumi L7 (P-168 #2): a change to a record saved minutes ago, or its delete.
+    final removes = d.op == DraftOp.delete;
     final actions = <AsCardAction>[
       if (active) ...[
-        if (editable)
+        if (editable && !removes)
           (
             label: l10n.asEdit,
             onPressed: () => showDraftEditor(
@@ -2533,11 +2555,15 @@ class _ThreadView {
             ),
           ),
         (
-          label: note ? l10n.asNoThanks : l10n.asRemove,
+          label: removes
+              ? l10n.asKeepRecord
+              : note
+              ? l10n.asNoThanks
+              : l10n.asRemove,
           onPressed: () async => onToast(await ctl.discard(d)),
         ),
       ],
-      if (d.state == DraftState.saved) ...[
+      if (d.state == DraftState.saved && !removes) ...[
         if (d.kind == DraftKind.expense) ...[
           if (recordLocation(d) case final record?)
             (
@@ -2642,9 +2668,18 @@ class _ThreadView {
                 ? DraftState.draft
                 : d.state),
       kind: d.kind,
-      title: note && d.state == DraftState.saved
-          ? kindLabel(l10n, d.kind)
-          : draftTitle(l10n, d),
+      title: switch (d.op) {
+        DraftOp.update => l10n.asDraftEditTitle(
+          kindLabel(l10n, d.kind).toLowerCase(),
+        ),
+        DraftOp.delete => l10n.asDraftDeleteTitle(
+          kindLabel(l10n, d.kind).toLowerCase(),
+        ),
+        DraftOp.create =>
+          note && d.state == DraftState.saved
+              ? kindLabel(l10n, d.kind)
+              : draftTitle(l10n, d),
+      },
       line: line,
       module: switch (d.kind) {
         DraftKind.reminder => l10n.asModuleRemindersOf(babyName),
@@ -2671,7 +2706,13 @@ class _ThreadView {
       primaryLoading: saving,
       primaryNote: review ? l10n.asPickAboveToSave : null,
       actions: actions,
-      stateLabelOverride: expired ? l10n.asStateExpired : null,
+      stateLabelOverride: expired
+          ? l10n.asStateExpired
+          : d.state == DraftState.saved && d.op == DraftOp.delete
+          ? l10n.asStateDeleted
+          : d.state == DraftState.saved && d.op == DraftOp.update
+          ? l10n.asStateUpdated
+          : null,
     );
   }
 

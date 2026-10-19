@@ -121,6 +121,10 @@ beforeEach(async () => {
       status: 'saved',
     });
     await setDoc(doc(db, 'assistantRequests/req_1'), { uid: 'mom', op: 'confirm' });
+    // Lumi L7 (P-168 #1): the author's dialogue state (synthetic ids and kinds only).
+    await setDoc(doc(db, `assistantConversations/${CV}/dialogue/mom`), {
+      state: { schemaVersion: 1, ownerUid: 'mom', conversationId: CV, waiting: [], saved: [] },
+    });
   });
 });
 
@@ -169,6 +173,16 @@ describe('assistant collections: owner read-only', () => {
         state: 'queued',
       }),
     );
+  });
+
+  it('L7: the dialogue state is server-only — no read or write, not even by its author', async () => {
+    const path = `assistantConversations/${CV}/dialogue/mom`;
+    for (const uid of ['mom', 'dad', 'stranger']) {
+      await assertFails(getDoc(doc(as(uid), path)));
+      await assertFails(setDoc(doc(as(uid), path), { state: null }));
+    }
+    await assertFails(deleteDoc(doc(as('mom'), path)));
+    await assertFails(getDocs(collection(as('mom'), `assistantConversations/${CV}/dialogue`)));
   });
 
   it('executions and the request ledger are never readable, not even by the owner', async () => {

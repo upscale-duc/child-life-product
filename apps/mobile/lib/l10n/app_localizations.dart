@@ -26646,6 +26646,54 @@ abstract class AppLocalizations {
   /// **'Lưu'**
   String get asSaveItem;
 
+  /// Lumi L7 (P-168 #6): chip under “Mình bỏ câu hỏi về …” (QUESTION_SET_ASIDE); tapping it sends these words, and the server asks that question again. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ lại'**
+  String get asKeepQuestion;
+
+  /// Lumi L7 (P-168 #2): title of a card that changes a record saved minutes ago (“180 chứ”). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa {kind}'**
+  String asDraftEditTitle(String kind);
+
+  /// Lumi L7 (P-168 #2): title of a card that deletes a record saved minutes ago (“xoá cái vừa ghi”). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {kind}'**
+  String asDraftDeleteTitle(String kind);
+
+  /// Lumi L7: the save of an edit card (updates the saved record). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thay đổi'**
+  String get asSaveChange;
+
+  /// Lumi L7: the save of a delete card (a soft delete, like “Xóa bản ghi” in Chăm sóc). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá khỏi nhật ký'**
+  String get asDeleteRecord;
+
+  /// Lumi L7: dismisses a delete card; the record stays. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không xoá'**
+  String get asKeepRecord;
+
+  /// Lumi L7: badge of a delete card once done. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá'**
+  String get asStateDeleted;
+
+  /// Lumi L7: badge of an edit card once saved. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã cập nhật'**
+  String get asStateUpdated;
+
   /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

@@ -19,7 +19,13 @@ import {
   reminderSchema,
   type AssistantTaskSnapshot,
 } from '@child-life/contracts';
-import { doc, serverTimestamp, setDoc, Timestamp as ClientTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  serverTimestamp,
+  setDoc,
+  Timestamp as ClientTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import { Timestamp } from 'firebase-admin/firestore';
 import {
   B,
@@ -403,6 +409,19 @@ export async function checkSaves(
   if (run.confirms.length === 0) return out;
   let mirrored = false;
   const seen = new Map<string, string>();
+  // L7: records a later "xoá cái vừa ghi" deleted (soft, like the app): checked as deleted.
+  const opOf = (cf: ConfirmLog, draftId: string) =>
+    run.steps
+      .filter((s) => s.taskId === cf.taskId)
+      .at(-1)
+      ?.snapshot.drafts.find((x) => x.id === draftId)?.op ?? 'create';
+  const deleted = new Set(
+    run.confirms.flatMap((cf) =>
+      cf.items
+        .filter((i) => i.status === 'saved' && i.recordId && opOf(cf, i.draftId) === 'delete')
+        .map((i) => i.recordId!),
+    ),
+  );
   for (const cf of run.confirms) {
     const at = `${cf.turn < 0 ? 'probe' : `turn ${cf.turn + 1}`} · save${cf.retried ? ' (retry)' : ''}`;
     if (cf.error) continue;
@@ -451,6 +470,15 @@ export async function checkSaves(
       const again = seen.has(item.draftId);
       seen.set(item.draftId, item.recordId);
       if (again) continue; // the same record: checked once (a retry must not write another)
+      if (deleted.has(item.recordId)) {
+        const rec = await db.doc(`babies/${B}/records/${item.recordId}`).get();
+        if (rec.get('deleted') !== true) {
+          out.push(
+            v('SAVE_FAILED', 'P0', at, `${kind} record should be deleted (soft) but is not`),
+          );
+        }
+        continue;
+      }
       const { path, col } = targetOf(
         kind,
         item.recordId,
@@ -493,7 +521,7 @@ export async function checkSaves(
           await mirrorWorld(env);
           mirrored = true;
         }
-        const r = await rulesShape(env, col, path, data, cf.uid);
+        const r = await rulesShape(env, col, path, data, cf.uid, opOf(cf, item.draftId));
         if (r) out.push(v('SAVE_RULES', 'P0', at, `${kind}: ${r}`));
       }
     }
@@ -574,8 +602,26 @@ async function rulesShape(
   path: string,
   data: Record<string, unknown>,
   uid: string,
+  op: string = 'create',
 ): Promise<string | null> {
   const body = toClient(data) as Record<string, unknown>;
+  // L7: an edit of a record saved earlier in the case is the app's "Sửa" (`validRecordUpdate`).
+  if (op === 'update' && col === 'records') {
+    try {
+      await assertSucceeds(
+        updateDoc(doc(env.authenticatedContext(uid).firestore(), path), {
+          occurredAt: body.occurredAt,
+          endedAt: body.endedAt,
+          data: body.data,
+          updatedAt: serverTimestamp(),
+          updatedBy: uid,
+        }),
+      );
+      return null;
+    } catch (e) {
+      return `the app's update Rules refuse the edit (${String((e as Error).message).slice(0, 120)})`;
+    }
+  }
   for (const k of ['createdAt', 'updatedAt']) if (k in body) body[k] = serverTimestamp();
   // Only the server writer may say where it came from; the app writes `app` / `manual`.
   if (col === 'records') body.source = 'app';

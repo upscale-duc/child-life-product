@@ -16935,6 +16935,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asSaveItem => 'Save';
 
   @override
+  String get asKeepQuestion => 'Keep it';
+
+  @override
+  String asDraftEditTitle(String kind) {
+    return 'Edit $kind';
+  }
+
+  @override
+  String asDraftDeleteTitle(String kind) {
+    return 'Delete $kind';
+  }
+
+  @override
+  String get asSaveChange => 'Save the change';
+
+  @override
+  String get asDeleteRecord => 'Delete from the log';
+
+  @override
+  String get asKeepRecord => 'Keep it';
+
+  @override
+  String get asStateDeleted => 'Deleted';
+
+  @override
+  String get asStateUpdated => 'Updated';
+
+  @override
   String asSaveItems(int count) {
     return 'Save $count items';
   }

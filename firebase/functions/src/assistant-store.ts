@@ -25,6 +25,7 @@ import { draftView } from './assistant-writers.js';
 import { attachmentViews } from './assistant-attachments.js';
 // Slice A5 (care): the task's care thread (plan, CH17 follow-up).
 import { careView } from './assistant-care.js';
+import type { Resolution } from './assistant-dialogue.js';
 
 /**
  * Assistant documents (docs/assistant/data.md): views for the app and the ordered, coalesced
@@ -89,6 +90,12 @@ export interface StoredTask {
    * reads it the same way, never calls the model, and the task costs 0 credits.
    */
   ruleRead?: boolean;
+  /**
+   * Lumi L7 (P-168 #2): what the resolver read the message as, against the author's dialogue
+   * state (a correction, a delete, a restate…): the worker applies it without rules or model,
+   * 0 credits. A continuation is read normally, after the item it follows.
+   */
+  followUp?: Resolution | null;
 }
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;

@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+     "id": "tk_579252ace2f347d45637b551f8498c3b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "id": "dr_579252ace2f347d45637b551f8498c3b_0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_464441bf2b2d1075f10b1ee7377d1de0"
+       "task:tk_579252ace2f347d45637b551f8498c3b"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú 90ml lúc 9h sáng"
        }
       ],
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
+        "draftId": "dr_579252ace2f347d45637b551f8498c3b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,16 +119,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+     "id": "tk_579252ace2f347d45637b551f8498c3b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "id": "dr_579252ace2f347d45637b551f8498c3b_0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_464441bf2b2d1075f10b1ee7377d1de0"
+       "task:tk_579252ace2f347d45637b551f8498c3b"
       ],
-      "recordId": "r_37596e853e6d4da8a5d8ff97020500a0",
-      "recordLink": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0",
+      "recordId": "r_a2037b784c5a223449f068676c846bac",
+      "recordLink": "/care/records/b_00000000000000000001/r_a2037b784c5a223449f068676c846bac",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "bé bú 90ml lúc 9h sáng"
        }
       ],
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
+        "draftId": "dr_579252ace2f347d45637b551f8498c3b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
+          "draftId": "dr_579252ace2f347d45637b551f8498c3b_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0",
+          "recordLink": "/care/records/b_00000000000000000001/r_a2037b784c5a223449f068676c846bac",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
+      "taskId": "tk_579252ace2f347d45637b551f8498c3b",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
@@ -263,18 +263,18 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_f40bc6806a0482dbfaa56df7452ddd21",
+     "id": "tk_0d2a37ced472270350e2e7feeca30341",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
-     "usage": "released",
+     "usage": "committed",
      "errorCode": null,
      "round": 0,
      "clarification": null,
@@ -292,7 +292,39 @@
      },
      "routing": null
     },
-    "drafts": [],
+    "drafts": [
+     {
+      "id": "dr_0d2a37ced472270350e2e7feeca30341_0",
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 100,
+       "occurredAt": "2026-10-15T01:58:40.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_0d2a37ced472270350e2e7feeca30341"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "op": "update",
+      "targetRecordId": "r_a2037b784c5a223449f068676c846bac",
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
     "messages": [
      {
       "id": "00000004",
@@ -305,7 +337,7 @@
         "text": "à 100ml chứ"
        }
       ],
-      "taskId": "tk_f40bc6806a0482dbfaa56df7452ddd21",
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -324,16 +356,173 @@
        {
         "type": "text",
         "schemaVersion": 1,
-        "text": "Mục trước đã được lưu nên mình không đổi nó. Bạn mở mục đó để sửa nhé.",
-        "code": "PREVIOUS_SAVED",
-        "link": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0"
+        "text": "Cữ bú bình 90ml lúc 09:00 đã được lưu. Mình chuẩn bị bản sửa ở dưới — bấm Lưu để cập nhật nhật ký.",
+        "code": "FOLLOW_UP"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0d2a37ced472270350e2e7feeca30341_0",
+        "revision": 1
        }
       ],
-      "taskId": "tk_f40bc6806a0482dbfaa56df7452ddd21",
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 4 · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0d2a37ced472270350e2e7feeca30341",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 2,
+     "modality": "text",
+     "credits": 0,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0d2a37ced472270350e2e7feeca30341_0",
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 100,
+       "occurredAt": "2026-10-15T01:58:40.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_0d2a37ced472270350e2e7feeca30341"
+      ],
+      "recordId": "r_a2037b784c5a223449f068676c846bac",
+      "recordLink": "/care/records/b_00000000000000000001/r_a2037b784c5a223449f068676c846bac",
+      "errorCode": null,
+      "warnings": [],
+      "op": "update",
+      "targetRecordId": "r_a2037b784c5a223449f068676c846bac",
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "à 100ml chứ"
+       }
+      ],
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Cữ bú bình 90ml lúc 09:00 đã được lưu. Mình chuẩn bị bản sửa ở dưới — bấm Lưu để cập nhật nhật ký.",
+        "code": "FOLLOW_UP"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0d2a37ced472270350e2e7feeca30341_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000006",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_0d2a37ced472270350e2e7feeca30341_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_a2037b784c5a223449f068676c846bac",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_0d2a37ced472270350e2e7feeca30341",
+      "sequence": 6,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
      }
     ],
     "events": []

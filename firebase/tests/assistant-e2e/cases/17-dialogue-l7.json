@@ -1,0 +1,357 @@
+{
+  "group": "dialogue",
+  "note": "Lumi L7 (P-168, lumi-plan §11.3 #1–#2, #6): the conversation, not the message, is the unit of understanding. Each message is resolved against the author's dialogue state before rules or the model; every turn is checked on its own reply.",
+  "cases": [
+    {
+      "id": "dl-01-log-answer-correct-delete-read",
+      "title": "The owner's script: log → question → typed answer → correction → saved-record edit → \"xoá cái vừa ghi\" → \"hôm nay bé bú mấy cữ\"",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 180 },
+                "ev": { "amountMl": "180ml" },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "check": { "outcome": "awaiting" }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "model": { "clar": "intent" },
+          "check": {
+            "task": "same",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": { "0.amountMl": 180, "0.occurredAt": "D0 13:00" }
+          }
+        },
+        {
+          "say": "120 chứ",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["create"],
+            "values": { "0.amountMl": 120, "0.occurredAt": "D0 13:00" },
+            "codes": ["CORRECTION_APPLIED"]
+          }
+        },
+        { "confirm": "all" },
+        {
+          "say": "lúc 13h30 mới đúng",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["update"],
+            "values": { "0.amountMl": 120, "0.occurredAt": "D0 13:30" },
+            "codes": ["FOLLOW_UP"]
+          }
+        },
+        { "confirm": "all" },
+        {
+          "say": "xoá cái vừa ghi",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "ops": ["delete"],
+            "values": { "0.occurredAt": "D0 13:30" }
+          }
+        },
+        { "confirm": "all" },
+        {
+          "say": "hôm nay bé bú mấy cữ",
+          "at": "+1",
+          "model": { "reads": [{ "tool": "care_summary", "dayOffset": 0 }] },
+          "check": { "outcome": "answer", "notCodes": ["FOLLOW_UP", "QUESTION_SET_ASIDE"] }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "asks": ["time.missing"],
+        "saved": 0,
+        "credits": 1,
+        "calls": 1
+      }
+    },
+    {
+      "id": "dl-02-device-13-54-ghi-la-sao",
+      "title": "Device 13:54: after the typed time, \"Ghi\" and \"…ko ghi gì là sao\" say what waits (never \"Ok!\" or \"xem hay ghi?\")",
+      "device": "2026-10-19 13:54",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 180 },
+                "ev": { "amountMl": "180ml" },
+                "miss": ["time"]
+              }
+            ]
+          }
+        },
+        { "say": "13:00", "at": "+1", "model": { "clar": "intent" } },
+        {
+          "say": "Ghi",
+          "at": "+1",
+          "model": { "talk": true },
+          "check": {
+            "outcome": "follow_up",
+            "codes": ["FOLLOW_UP"],
+            "notCodes": ["SMALL_TALK", "HELP"]
+          }
+        },
+        {
+          "say": "Hỏi mấy giờ xong ko ghi gì là sao",
+          "at": "+1",
+          "model": { "clar": "intent" },
+          "check": {
+            "outcome": "follow_up",
+            "codes": ["FOLLOW_UP"],
+            "notCodes": ["SMALL_TALK", "HELP"]
+          }
+        },
+        {
+          "say": "ok",
+          "at": "+1",
+          "check": { "outcome": "follow_up", "notCodes": ["SMALL_TALK"] }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "asks": ["time.missing"], "saved": 1, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "dl-03-la-sao-while-asked",
+      "title": "\"…là sao\" while the time question is open: the question again in its task, said plainly, with its chips",
+      "anchor": "14:00",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 180 },
+                "ev": { "amountMl": "180ml" },
+                "miss": ["time"]
+              }
+            ]
+          }
+        },
+        {
+          "say": "Hỏi mấy giờ xong ko ghi gì là sao",
+          "at": "+1",
+          "model": { "clar": "intent" },
+          "check": { "task": "same", "outcome": "awaiting", "codes": ["FOLLOW_UP"] }
+        },
+        {
+          "say": "ok",
+          "at": "+1",
+          "check": { "task": "same", "outcome": "awaiting", "codes": ["FOLLOW_UP"] }
+        },
+        {
+          "say": "Bây giờ",
+          "at": "+1",
+          "check": { "task": "same", "outcome": "drafts", "values": { "0.occurredAt": "D0 14:00" } }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "saved": 1, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "dl-04-new-topic-sets-question-aside",
+      "title": "A new topic while the time question is open closes it (\"Mình bỏ câu hỏi về cữ bú bình 180ml nhé\"); \"Giữ lại\" asks it again",
+      "anchor": "14:00",
+      "world": { "seed": ["day"] },
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 180 },
+                "ev": { "amountMl": "180ml" },
+                "miss": ["time"]
+              }
+            ]
+          }
+        },
+        {
+          "say": "hôm nay bé ngủ bao nhiêu rồi",
+          "at": "+1",
+          "model": { "reads": [{ "tool": "care_summary", "dayOffset": 0 }] },
+          "check": { "task": "new", "outcome": "answer", "codes": ["QUESTION_SET_ASIDE"] }
+        },
+        {
+          "say": "Giữ lại",
+          "at": "+1",
+          "check": { "outcome": "awaiting", "codes": ["FOLLOW_UP"] }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "check": {
+            "task": "same",
+            "outcome": "drafts",
+            "values": { "0.amountMl": 180, "0.occurredAt": "D0 13:00" }
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "saved": 1, "credits": 1, "calls": 1 }
+    },
+    {
+      "id": "dl-05-continuation-keeps-the-day",
+      "title": "\"rồi thay tã ướt lúc 9h30\" after a 9:00 feed: 09:30, no morning / evening question",
+      "anchor": "10:30",
+      "turns": [
+        {
+          "say": "bé bú bình 120ml lúc 9h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 120, "time": "09:00", "dayOffset": 0 },
+                "ev": { "amountMl": "120ml", "time": "9h sáng" }
+              }
+            ]
+          }
+        },
+        { "confirm": "all" },
+        {
+          "say": "rồi thay tã ướt lúc 9h30",
+          "at": "+1",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": { "diaper": "wet", "time": "09:30", "dayOffset": 0 },
+                "ev": { "diaper": "ướt", "time": "9h30" }
+              }
+            ]
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["diaper"],
+            "ops": ["create"],
+            "values": { "0.occurredAt": "D0 09:30" }
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "asks": [], "saved": 2 }
+    },
+    {
+      "id": "dl-06-add-minutes-to-saved-feed",
+      "title": "\"thêm 5 phút\" after a saved breastfeed: an edit of that record, never a second feed",
+      "anchor": "13:40",
+      "turns": [
+        {
+          "say": "bé bú mẹ 15 phút bên trái lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": { "durationMin": 15, "side": "left", "time": "13:00", "dayOffset": 0 },
+                "ev": { "durationMin": "15 phút", "side": "bên trái", "time": "13h" }
+              }
+            ]
+          }
+        },
+        { "confirm": "all" },
+        {
+          "say": "thêm 5 phút",
+          "at": "+1",
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["breast"],
+            "ops": ["update"],
+            "values": { "0.durationMin": 20, "0.side": "left" }
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "saved": 1, "credits": 0, "calls": 0, "recordData": { "breast.durationMin": 20 } }
+    },
+    {
+      "id": "dl-07-kind-swap-by-the-model",
+      "title": "\"bình chứ không phải mẹ\" for a waiting breastfeed: the model's bottle `corrects` it — one draft, the breast one set aside",
+      "anchor": "13:40",
+      "rules": false,
+      "turns": [
+        {
+          "say": "bé bú mẹ lúc 13h",
+          "model": {
+            "i": [
+              { "k": "breast", "f": { "time": "13:00", "dayOffset": 0 }, "ev": { "time": "13h" } }
+            ]
+          }
+        },
+        {
+          "say": "bình chứ không phải mẹ, 120ml",
+          "at": "+1",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": { "amountMl": 120, "time": "13:00", "dayOffset": 0 },
+                "ev": { "amountMl": "120ml", "time": "13h" },
+                "cp": true,
+                "cr": "breast"
+              }
+            ]
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": { "0.amountMl": 120, "0.occurredAt": "D0 13:00" },
+            "codes": ["CORRECTION_APPLIED"]
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": { "saved": 1, "credits": 2, "calls": 2 }
+    },
+    {
+      "id": "dl-08-delete-waiting-draft",
+      "title": "\"xoá cái vừa ghi\" while the draft still waits: it is dropped, nothing saved, 0 credits",
+      "anchor": "13:40",
+      "turns": [
+        {
+          "say": "thay tã bẩn lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": { "diaper": "dirty", "time": "13:00", "dayOffset": 0 },
+                "ev": { "diaper": "bẩn", "time": "13h" }
+              }
+            ]
+          }
+        },
+        {
+          "say": "xoá cái vừa ghi",
+          "at": "+1",
+          "check": { "outcome": "follow_up", "codes": ["FOLLOW_UP"] }
+        }
+      ],
+      "expect": { "saved": 0, "credits": 0, "calls": 0 }
+    }
+  ]
+}

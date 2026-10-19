@@ -117,6 +117,8 @@ describe('care outcome, plan, age', () => {
       // Lumi fixes 2026-10-16.
       'PART_NOT_SAVED',
       'APP_UPDATE_NEEDED',
+      'QUESTION_SET_ASIDE',
+      'FOLLOW_UP',
     ]);
   });
 });

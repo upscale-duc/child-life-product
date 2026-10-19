@@ -142,7 +142,10 @@ const results: Result[] = [];
 mkdirSync(outDir, { recursive: true });
 if (exportFixtures) {
   mkdirSync(FIXTURES, { recursive: true });
-  for (const f of readdirSync(FIXTURES)) if (f.endsWith('.json')) rmSync(resolve(FIXTURES, f));
+  // L7: with --only, only those cases' fixtures are rewritten (the others keep their ids).
+  if (!only) {
+    for (const f of readdirSync(FIXTURES)) if (f.endsWith('.json')) rmSync(resolve(FIXTURES, f));
+  }
 }
 
 for (const c of cases) {
@@ -214,6 +217,7 @@ for (const c of cases) {
     violations.push(
       ...checkExpect(c, run, credits, saved - savedByProbe(run), mode, describeLocal, dateSpec),
     );
+    violations.push(...checkTurns(c, run));
   } catch (e) {
     error = e instanceof Error ? `${e.message.slice(0, 200)}` : String(e);
     violations.push({ code: 'HARNESS_ERROR', severity: 'P1', at: 'run', detail: error });
@@ -249,6 +253,56 @@ for (const c of cases) {
 }
 process.stdout.write('\n');
 await closeRules();
+
+/** L7 (P-168 #7): each scripted message's own reply (`check`), as `Expect` reads the last one. */
+function checkTurns(c: Case, run: CaseRun): Violation[] {
+  const out: Violation[] = [];
+  let previousTask: string | null = null;
+  for (const [ti, turn] of c.turns.entries()) {
+    if (!('say' in turn)) continue;
+    const own = run.steps.filter(
+      (s) => s.turn === ti && !s.label.includes('save') && !s.label.includes('probe'),
+    );
+    const step = own.at(-1);
+    const check = turn.check;
+    if (check && !step) {
+      out.push({ code: 'EXPECT_TURN', severity: 'P1', at: `turn ${ti + 1}`, detail: 'no reply' });
+    }
+    if (check && step) {
+      const sub: Case = { ...c, expect: { ...check, allow: c.expect.allow ?? [] } };
+      const subRun: CaseRun = { ...run, steps: own, lastTaskId: step.taskId, refusals: [] };
+      for (const x of checkExpect(sub, subRun, 0, 0, 'live', describeLocal, dateSpec)) {
+        out.push({ ...x, at: `turn ${ti + 1}` });
+      }
+      if (check.ops) {
+        const got = step.snapshot.drafts
+          .filter((d) => d.state === 'draft' || d.state === 'needs_review')
+          .map((d) => d.op ?? 'create');
+        if (JSON.stringify(got) !== JSON.stringify(check.ops)) {
+          out.push({
+            code: 'EXPECT_OPS',
+            severity: 'P1',
+            at: `turn ${ti + 1}`,
+            detail: `draft ops [${got.join(',')}], expected [${check.ops.join(',')}]`,
+          });
+        }
+      }
+      if (check.task) {
+        const same = step.taskId === previousTask;
+        if ((check.task === 'same') !== same) {
+          out.push({
+            code: 'EXPECT_TASK',
+            severity: 'P1',
+            at: `turn ${ti + 1}`,
+            detail: `reply in ${same ? 'the previous' : 'a new'} task, expected ${check.task}`,
+          });
+        }
+      }
+    }
+    if (step) previousTask = step.taskId;
+  }
+  return out;
+}
 
 function lastOf(run: CaseRun, taskId: string) {
   return run.steps.filter((s) => s.taskId === taskId).at(-1);

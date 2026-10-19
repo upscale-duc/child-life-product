@@ -337,7 +337,14 @@ enum NoticeCode with WireEnum {
   partNotSaved('PART_NOT_SAVED'),
 
   /// Only sent to builds that cannot show a kind; `link` opens the module to add it directly.
-  appUpdateNeeded('APP_UPDATE_NEEDED');
+  appUpdateNeeded('APP_UPDATE_NEEDED'),
+  // ---- Lumi L7 (P-168 #6) ----
+
+  /// A new topic closed my open question; "Giữ lại" sends its words back (asked again).
+  questionSetAside('QUESTION_SET_ASIDE'),
+
+  /// A follow-up read against what waits ("là sao", "xoá cái vừa ghi"): said plainly.
+  followUp('FOLLOW_UP');
 
   const NoticeCode(this.wire);
   @override
@@ -1488,6 +1495,18 @@ class UnknownPayload extends DraftPayload {
 
 // ---------- Drafts ----------
 
+/// Lumi L7 (P-168 #2): what saving a draft does — a new record, or a change to (or the soft
+/// delete of) a record saved through Lumi in the last 30 minutes ("180 chứ", "xoá cái vừa ghi").
+enum DraftOp with WireEnum {
+  create('create'),
+  update('update'),
+  delete('delete');
+
+  const DraftOp(this.wire);
+  @override
+  final String wire;
+}
+
 /// `AssistantDraftView` (`assistantTasks/{t}/drafts/{d}`): server-written; edited through
 /// `patchDraft` (revision +1), saved through `confirmDrafts`.
 @immutable
@@ -1510,6 +1529,8 @@ class AssistantDraft {
     this.warnings = const [],
     this.problems = const [],
     this.confirmedBy,
+    this.op = DraftOp.create,
+    this.targetRecordId,
   });
 
   final String id;
@@ -1537,6 +1558,10 @@ class AssistantDraft {
 
   /// D-075 #2: who saved it (maybe not the task's author); null until saved.
   final AssistantAuthor? confirmedBy;
+
+  /// Lumi L7: create (absent on the wire), or an edit / delete of [targetRecordId].
+  final DraftOp op;
+  final String? targetRecordId;
 
   DraftKind? get kind => payload.kind;
   AssistantReason? get error => AssistantReason.fromWire(errorCode);
@@ -1573,6 +1598,8 @@ class AssistantDraft {
     warnings: warnings,
     problems: problems ?? this.problems,
     confirmedBy: confirmedBy,
+    op: op,
+    targetRecordId: targetRecordId,
   );
 
   static AssistantDraft? fromJson(Object? json, {String? id}) {
@@ -1602,6 +1629,8 @@ class AssistantDraft {
         for (final p in _list(m['problems'])) ?wireOf(DraftProblem.values, p),
       ],
       confirmedBy: AssistantAuthor.fromJson(m['confirmedBy']),
+      op: wireOf(DraftOp.values, m['op']) ?? DraftOp.create,
+      targetRecordId: _str(m['targetRecordId'], max: 120),
     );
   }
 }

@@ -974,10 +974,15 @@ class AssistantChat extends Notifier<ChatState> {
 
   /// Send what the person typed (an explicit tap). Suggestions only prefill; nothing here runs
   /// by itself. The input is kept on the phone until a task exists for it.
+  ///
+  /// Lumi L7 (P-168 #2): the server is the authority on what the words answer — my open
+  /// question, a draft waiting above, a record just saved — so typed words go to `startTask`
+  /// (whose resolver routes them, whichever app or voice sent them; [openQuestion] is only the
+  /// composer's hint). Only an explicit "Gõ câu trả lời" on a question answers it directly.
   Future<void> send(String raw, {IntentHint? hint}) async {
     final text = raw.trim();
     if (text.isEmpty || state.sending) return;
-    if (state.answering ?? openQuestion case final taskId?) {
+    if (state.answering case final taskId?) {
       await answerText(taskId, text);
       return;
     }

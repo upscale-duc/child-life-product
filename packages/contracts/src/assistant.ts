@@ -249,6 +249,14 @@ export const assistantNoticeCodes = [
    * module (`link`) to add it directly. Nothing was drafted for it, 0 credits for that part.
    */
   'APP_UPDATE_NEEDED',
+  // ---- Lumi L7 (P-168 #6) ----
+  /**
+   * A new topic closed my open question ("Mình bỏ câu hỏi về cữ bú bình 180ml nhé"); the app adds
+   * "Giữ lại", which sends its own words back (the server asks that question again).
+   */
+  'QUESTION_SET_ASIDE',
+  /** A follow-up was read against what waits ("180 chứ", "xoá cái vừa ghi", "là sao"). */
+  'FOLLOW_UP',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 
@@ -635,7 +643,17 @@ export interface ActionDraft {
   errorCode: string | null;
   /** Warning the person must acknowledge to save anyway (duplicate expense, near-duplicate feed). */
   warnings: ('duplicate_suspected' | 'overlap')[];
+  /**
+   * Lumi L7 (P-168 #2): what saving does — a new record (absent / `create`), or a change to a
+   * record saved through Lumi in the last 30 minutes ("180 chứ" → `update`, "xoá cái vừa ghi" →
+   * `delete`, a soft delete like the app's "Xóa bản ghi"). `targetRecordId` is that record.
+   */
+  op?: DraftOp;
+  targetRecordId?: string | null;
 }
+
+export const draftOps = ['create', 'update', 'delete'] as const;
+export type DraftOp = (typeof draftOps)[number];
 
 export type DraftProblem =
   | 'MISSING_AMOUNT'

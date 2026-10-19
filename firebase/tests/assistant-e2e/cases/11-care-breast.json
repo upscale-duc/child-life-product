@@ -357,7 +357,7 @@
           "0.occurredAt": "D0 13:00"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },

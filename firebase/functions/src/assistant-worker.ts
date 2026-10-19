@@ -113,6 +113,35 @@ import { aiBudgetLeft, chargeAi } from './staff.js';
 // Lumi L2 (D-088 §4.4): routine logs read by rules; per-hop timings; the inline run's deadline.
 import { ruleReadText } from './assistant-rules.js';
 import type { HopTimer } from './assistant-timing.js';
+// Lumi L7 (P-168 #1–#2, #6): the author's dialogue state, follow-ups applied by the server.
+import {
+  draftProblems,
+  type DialogueAnswerKind,
+  type DialogueQuestion,
+  type DialogueState,
+  type DraftKind,
+  type DraftPayload,
+} from '@child-life/contracts';
+import {
+  aboutLabel,
+  afterStop,
+  afterTurn,
+  applyChange,
+  dialogueForModel,
+  dialogueOf,
+  dialogueRef,
+  followUpPart,
+  itemLabel,
+  keysOf,
+  payloadFromRecord,
+  previousFromDialogue,
+  questionWaitPart,
+  restatePart,
+  setAsidePart,
+  writeDialogue,
+} from './assistant-dialogue.js';
+import { reviewFields } from './assistant-tools.js';
+import { zoneDraftProblems } from './assistant-writers-images.js';
 
 /**
  * The assistant worker (brief p.9, p.18; architecture §3 step 4). A Firestore trigger hands it a
@@ -194,6 +223,20 @@ interface WorkResult {
   handoff?: boolean;
   /** L1b: a bare "Ok!" to words that answered nothing (swapped for my open question, if any). */
   ackOnly?: boolean;
+  // ---- Lumi L7 (P-168) ----
+  /** The author's dialogue state read for this run (undefined = no state doc: before L7). */
+  dialogue?: DialogueState | null | undefined;
+  /** Drafts a follow-up dropped ("xoá cái vừa ghi" on a waiting draft): discarded at settle. */
+  dropped?: { taskId: string; draftId: string }[];
+  /** A new topic closed the open question (the notice is in `parts`). */
+  setAside?: boolean;
+  /** My question was asked again instead of a dead end (never set aside then). */
+  reasked?: boolean;
+  /** What the question is about, for "Mình đang chờ giờ của cữ bú bình 180ml". */
+  about?: DialogueQuestion['about'] | undefined;
+  /** The answer kind a follow-up gives (the dialogue's last turn). */
+  turnKind?: DialogueAnswerKind;
+  timers?: DialogueState['timers'] | undefined;
 }
 
 const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): WorkResult => ({
@@ -293,7 +336,10 @@ export async function runClaimedAssistantTask(
 ): Promise<{ ran: boolean; fenced: boolean; state: string | null; path?: string }> {
   const { db, now } = deps;
   const trace: { path: 'rules' | 'model' | 'cached' | 'none' } = { path: 'none' };
-  const work = await openQuestionInsteadOfHelp(db, t, await process(deps, t, trace), now);
+  const work = setAsideOpenQuestion(
+    t,
+    await openQuestionInsteadOfHelp(db, t, await process(deps, t, trace), now),
+  );
   deps.timer?.mark('work');
   if (work.handoff) {
     const r = await handBack(deps, t.id, holder);
@@ -402,6 +448,14 @@ async function process(
   }
   if (!consented) return failWith('CONSENT_REQUIRED', 'rejected');
   const anchor = t.anchorInstant.toDate();
+  // Lumi L7: the author's dialogue state in this thread (a failed read is "no state").
+  const dialogueSnap = await dialogueRef(db, t.conversationId, t.ownerUid)
+    .get()
+    .catch(() => null);
+  const dialogue = dialogueSnap?.exists ? dialogueOf(dialogueSnap, now) : undefined;
+  if (t.followUp && t.followUp.kind !== 'continue' && t.modality === 'text') {
+    return { ...(await processFollowUp(db, t, s, dialogue ?? null, now)), dialogue };
+  }
   // Lumi L2 (D-088 §4.4): a routine log `startTask` read with the rules is read the same way
   // here — no model, so no model gate (owner 2026-10-19: 0 credits).
   const ruled =
@@ -449,12 +503,16 @@ async function process(
   const [currency, categories, previous] = await Promise.all([
     householdCurrencyOf(db, s, currencyForCountry),
     spendingCategoriesOf(db, s.familyId, t.locale),
-    previousTurnOf(db, {
-      previousTaskId: t.previousTaskId,
-      ownerUid: t.ownerUid,
-      conversationId: t.conversationId,
-      anchor,
-    }),
+    // L7 (P-168 #1): what waits and what was just saved, from the dialogue state; a thread
+    // without one yet keeps the previous task (≤ 60 min).
+    dialogue !== undefined
+      ? previousFromDialogue(db, dialogue, s.babyId)
+      : previousTurnOf(db, {
+          previousTaskId: t.previousTaskId,
+          ownerUid: t.ownerUid,
+          conversationId: t.conversationId,
+          anchor,
+        }),
   ]);
 
   // Rework 2026-10-15: while a server question is open, the first reading is reused (no second
@@ -504,7 +562,10 @@ async function process(
               currency,
               categories,
               calendar: calendarAround(today, t.locale),
-              previous: previousForModel(previous, s.zone, today),
+              previous:
+                dialogue !== undefined
+                  ? dialogueForModel(dialogue, previous, s.zone, today, anchor)
+                  : previousForModel(previous, s.zone, today),
             },
             signal,
           ),
@@ -724,6 +785,8 @@ async function process(
       care: careState,
       textReading: ext,
       spending,
+      dialogue,
+      about: aboutOf(ext),
     };
   }
   // Rework 2026-10-15: small talk and messages Lumi cannot help with get a short answer for
@@ -741,6 +804,7 @@ async function process(
       // Words the server knows no reply to (the model called them small talk).
       ackOnly: Boolean(talk) && kind === null,
       modelCalls,
+      dialogue,
     };
   }
 
@@ -770,6 +834,8 @@ async function process(
       // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
       lastPumpSide: await pumpSideEarly(),
       clientKinds: clientDraftKindsOf(t.clientKinds),
+      // L7: "rồi ngủ lúc 10h" — after the item it follows.
+      ...(t.followUp?.kind === 'continue' ? { after: new Date(t.followUp.after) } : {}),
     },
     ext.intents,
   );
@@ -785,6 +851,8 @@ async function process(
       care: careState,
       textReading: ext,
       spending,
+      dialogue,
+      about: aboutOf(ext),
     };
   }
   const prepared = { drafts: plan.drafts };
@@ -854,7 +922,10 @@ async function process(
   for (const d of prepared.drafts) {
     if (d.payload.kind === 'sleep' && d.payload.startedAt && d.payload.endedAt) {
       const span = { start: new Date(d.payload.startedAt), end: new Date(d.payload.endedAt) };
-      if (span.end > span.start && (await overlappingSleeps(db, s.babyId, span, null)).length) {
+      if (
+        span.end > span.start &&
+        (await overlappingSleeps(db, s.babyId, span, d.targetRecordId ?? null)).length
+      ) {
         d.warnings.push('overlap');
       }
     }
@@ -916,6 +987,13 @@ async function process(
   const careResult = careOut?.care ?? careState;
   // ---- end slice A5 ----
 
+  const timers = await timersEarly().then(
+    (r): DialogueState['timers'] =>
+      (['sleep', 'breast'] as const).flatMap((type) =>
+        r?.[type] ? [{ type, since: r[type]!.startedAt.toISOString() }] : [],
+      ),
+    () => undefined,
+  );
   if (prepared.drafts.length > 0) {
     return {
       outcome: {
@@ -930,6 +1008,8 @@ async function process(
       modelCalls,
       care: careResult,
       spending,
+      dialogue,
+      timers,
     };
   }
   if (results.length > 0 || careOut?.useful) {
@@ -942,6 +1022,8 @@ async function process(
       modelCalls,
       care: careResult,
       spending,
+      dialogue,
+      timers,
     };
   }
   // Slice A5: a care question with no approved content fits → an honest answer, released.
@@ -963,7 +1045,7 @@ async function process(
   // Nothing useful (only unsupported modules / denied roles / a saved previous item): released,
   // explained.
   const first = notices[0]?.code ?? (readDenied.length ? 'READ_DENIED' : null);
-  if (!first) return { ...fallback(t.locale, 'help', lead), modelCalls, spending };
+  if (!first) return { ...fallback(t.locale, 'help', lead), modelCalls, spending, dialogue };
   const code: AssistantError =
     first === 'WRITE_DENIED' || first === 'MODULE_UNAVAILABLE' || first === 'READ_DENIED'
       ? first
@@ -986,9 +1068,194 @@ async function process(
       clarification: null,
       modelCalls,
       spending,
+      dialogue,
     };
   }
   return { ...failWith(code, 'rejected'), parts, modelCalls, spending };
+}
+
+/** What an asked-about item is (the first one read), for the dialogue state: no words. */
+function aboutOf(ext: ModelExtraction | null): DialogueQuestion['about'] {
+  const i = ext?.intents[0];
+  if (!i) return null;
+  const f = i.fields;
+  const keys = Object.fromEntries(
+    Object.entries({
+      amountMl: f.amountMl,
+      durationMin: f.durationMin,
+      side: f.side,
+      diaper: f.diaper ?? null,
+    }).filter(([, v]) => v !== null && v !== undefined),
+  );
+  return { kind: i.kind as DraftKind, keys };
+}
+
+/**
+ * Lumi L7 (P-168 #2): a follow-up the resolver read in `startTask` — a correction, a delete, a
+ * restate — applied to the waiting draft (a replacement draft) or the record saved in the last
+ * 30 min (an edit / delete draft through the same confirm path). No rules, no model, 0 credits.
+ */
+async function processFollowUp(
+  db: Firestore,
+  t: StoredTask,
+  s: TrustedScope,
+  d: DialogueState | null,
+  now: Date,
+): Promise<WorkResult> {
+  const f = t.followUp!;
+  const locale = t.locale;
+  const zone = s.zone;
+  const anchor = t.anchorInstant.toDate();
+  const label = (kind: DraftKind, p: DraftPayload | null, keys = p ? keysOf(p) : {}) =>
+    itemLabel(kind, keys, zone, locale, anchor);
+  const reply = (parts: AssistantPart[], more: Partial<WorkResult> = {}): WorkResult => ({
+    outcome: { kind: 'fallback', parts },
+    errorCode: null,
+    drafts: [],
+    parts,
+    clarification: null,
+    modelCalls: 0,
+    turnKind: 'restated',
+    ...more,
+  });
+  const drafted = (draft: PreparedDraft, part: AssistantPart): WorkResult => ({
+    outcome: { kind: 'drafts', items: [draft.payload], answer: null },
+    errorCode: null,
+    drafts: [draft],
+    parts: [part],
+    clarification: null,
+    modelCalls: 0,
+  });
+  /** A draft for [p], checked like the form; [unsure] fields stay to look at. */
+  const prepare = (p: DraftPayload, unsure: string[], more: Partial<PreparedDraft>) => {
+    const problems = [...new Set([...draftProblems(p, now), ...zoneDraftProblems(p, now, zone)])];
+    const review = reviewFields(p, problems, unsure);
+    return {
+      payload: p,
+      missingFields: review.missing,
+      uncertainFields: review.uncertain,
+      problems,
+      warnings: [],
+      ...more,
+    } satisfies PreparedDraft;
+  };
+  switch (f.kind) {
+    case 'restate': {
+      const part = d ? restatePart(d, zone, locale, anchor) : null;
+      return reply([part ?? helpPart(locale)]);
+    }
+    case 'cancel_question':
+      return reply(
+        [followUpPart('cancel_question', aboutLabel(f.question, zone, locale, anchor), locale)],
+        {
+          turnKind: 'canceled',
+        },
+      );
+    case 'keep':
+      // The question expired before "Giữ lại" (an open one is asked again in `startTask`).
+      return reply([
+        followUpPart('keep_expired', aboutLabel(f.question, zone, locale, anchor), locale),
+      ]);
+    case 'delete':
+    case 'correct': {
+      const target = f.target;
+      const draftSnap = await draftRef(db, target.item.taskId, target.item.draftId).get();
+      const state = draftSnap.get('state') as string | undefined;
+      const recordId = target.saved
+        ? target.item.recordId
+        : state === 'saved'
+          ? ((draftSnap.get('recordId') as string | null | undefined) ?? null)
+          : null;
+      if (recordId) {
+        // A saved record: its current values, then an edit or a delete draft.
+        const rec = await db.doc(`babies/${s.babyId}/records/${recordId}`).get();
+        const current = payloadFromRecord(rec);
+        if (!current) {
+          return reply([
+            followUpPart('record_gone', label(target.item.kind, null, target.item.keys), locale),
+          ]);
+        }
+        if (f.kind === 'delete') {
+          return drafted(
+            prepare(current, [], { op: 'delete', targetRecordId: recordId }),
+            followUpPart('delete_ready', label(current.kind, current), locale),
+          );
+        }
+        const next = applyChange(current, f.change, { zone, anchor });
+        if (!next)
+          return reply([restatePart(d ?? emptyState(t), zone, locale, anchor) ?? helpPart(locale)]);
+        const draft = prepare(next, [], { op: 'update', targetRecordId: recordId });
+        if (next.kind === 'sleep' && next.startedAt && next.endedAt) {
+          const span = { start: new Date(next.startedAt), end: new Date(next.endedAt) };
+          if ((await overlappingSleeps(db, s.babyId, span, recordId)).length) {
+            draft.warnings.push('overlap');
+          }
+        }
+        return drafted(draft, followUpPart('edit_ready', label(current.kind, current), locale));
+      }
+      const payload = draftSnap.get('payload') as DraftPayload | undefined;
+      if (!draftSnap.exists || !payload || state === 'discarded') {
+        return reply([
+          followUpPart('already_gone', label(target.item.kind, null, target.item.keys), locale),
+        ]);
+      }
+      if (f.kind === 'delete') {
+        return reply([followUpPart('discarded', label(payload.kind, payload), locale)], {
+          dropped: [{ taskId: target.item.taskId, draftId: target.item.draftId }],
+          turnKind: 'discarded',
+        });
+      }
+      const next = applyChange(payload, f.change, { zone, anchor });
+      if (!next)
+        return reply([restatePart(d ?? emptyState(t), zone, locale, anchor) ?? helpPart(locale)]);
+      const changed = new Set(
+        Object.keys(next).filter(
+          (k) =>
+            JSON.stringify((next as Record<string, unknown>)[k]) !==
+            JSON.stringify((payload as Record<string, unknown>)[k]),
+        ),
+      );
+      const unsure = ((draftSnap.get('uncertainFields') as string[] | undefined) ?? []).filter(
+        (k) => !changed.has(k),
+      );
+      return drafted(
+        prepare(next, unsure, {
+          replaces: { taskId: target.item.taskId, draftId: target.item.draftId },
+        }),
+        followUpPart('corrected', label(next.kind, next), locale),
+      );
+    }
+    default:
+      return reply([helpPart(locale)]);
+  }
+}
+
+const emptyState = (t: StoredTask): DialogueState => ({
+  schemaVersion: 1,
+  ownerUid: t.ownerUid,
+  conversationId: t.conversationId,
+  question: null,
+  setAside: null,
+  waiting: [],
+  saved: [],
+  timers: [],
+  lastAnswer: null,
+  turns: [],
+  updatedAt: new Date(0).toISOString(),
+  expiresAt: new Date(0).toISOString(),
+});
+
+/**
+ * L7 (P-168 #6): a new topic while my question waits closes it, said plainly ("Mình bỏ câu hỏi về
+ * cữ bú bình 180ml nhé", with "Giữ lại" in the app); a dead end asked it again instead.
+ */
+function setAsideOpenQuestion(t: StoredTask, work: WorkResult): WorkResult {
+  const q = work.dialogue?.question;
+  if (!q || q.taskId === t.id || work.reasked || t.followUp || work.handoff) return work;
+  const k = work.outcome.kind;
+  if (k !== 'drafts' && k !== 'answer' && k !== 'clarification' && k !== 'fallback') return work;
+  const part = setAsidePart(q, t.timezone, t.locale, t.anchorInstant.toDate());
+  return { ...work, parts: [part, ...work.parts], setAside: true };
 }
 
 /** Rework 2026-10-15: answers the server applies itself (the first reading is reused). */
@@ -1019,10 +1286,17 @@ async function openQuestionInsteadOfHelp(
   const deadEnd =
     (work.outcome.kind === 'fallback' && (work.parts.some(isHelp) || work.ackOnly === true)) ||
     (work.outcome.kind === 'clarification' && work.clarification === 'intent');
-  if (!deadEnd) return work;
-  const open = (await openQuestionTaskOf(db, t.conversationId, t.ownerUid, now, t.id))?.pc ?? null;
-  if (!open) return work;
-  const again = reaskPart(open, t.locale);
+  if (!deadEnd || t.followUp) return work;
+  // L7: the dialogue state knows my question (with what it is about); else L1b's query.
+  const q = work.dialogue !== undefined ? work.dialogue?.question : undefined;
+  if (q === null || q?.taskId === t.id) return work;
+  const open = q
+    ? null
+    : ((await openQuestionTaskOf(db, t.conversationId, t.ownerUid, now, t.id))?.pc ?? null);
+  if (!q && !open) return work;
+  const again = q
+    ? questionWaitPart(q, t.timezone, t.locale, t.anchorInstant.toDate(), 'meta')
+    : reaskPart(open!, t.locale);
   const parts =
     work.outcome.kind === 'fallback'
       ? work.parts.some(isHelp)
@@ -1035,6 +1309,7 @@ async function openQuestionInsteadOfHelp(
     parts,
     clarification: null,
     ask: null,
+    reasked: true,
   };
 }
 
@@ -1144,10 +1419,16 @@ async function finalize(
         null;
     }
     // A correction replaces the previous turn's draft (still unsaved: checked now).
-    const replacing = work.drafts.filter((d) => d.replaces);
+    const replacing = [
+      ...work.drafts.flatMap((d) => (d.replaces ? [d.replaces] : [])),
+      // L7: "xoá cái vừa ghi" on a waiting draft.
+      ...(work.dropped ?? []),
+    ];
     const replacedSnaps = await Promise.all(
-      replacing.map((d) => tx.get(draftRef(db, d.replaces!.taskId, d.replaces!.draftId))),
+      replacing.map((r) => tx.get(draftRef(db, r.taskId, r.draftId))),
     );
+    // L7 (P-168 #1): the author's dialogue state in the thread the reply lands in.
+    const dialogueSnap = await tx.get(dialogueRef(db, target.id, t.ownerUid));
     // ---- end rework reads ----
     let result = work;
     // M09: consent withdrawn while running → the output is dropped, credits released.
@@ -1216,6 +1497,8 @@ async function finalize(
         recordLink: null,
         errorCode: null,
         warnings: d.warnings,
+        // L7: a change to a record saved in the last 30 min (absent: a new record).
+        ...(d.op ? { op: d.op, targetRecordId: d.targetRecordId ?? null } : {}),
         createdAt: at,
         updatedAt: at,
       });
@@ -1254,12 +1537,62 @@ async function finalize(
       } else tx.delete(cache);
     }
     // Rework 2026-10-15: corrections set the previous unsaved draft aside (never a saved one).
+    const dropped: string[] = [];
     replacedSnaps.forEach((d) => {
       const st = d.get('state') as string | undefined;
       if (d.exists && (st === 'draft' || st === 'needs_review' || st === 'failed')) {
-        tx.update(d.ref, { state: 'discarded', errorCode: 'REPLACED', updatedAt: at });
+        const deleted = (work.dropped ?? []).some((x) => x.draftId === d.id);
+        tx.update(d.ref, {
+          state: 'discarded',
+          errorCode: deleted ? null : 'REPLACED',
+          updatedAt: at,
+        });
+        dropped.push(d.id);
       }
     });
+    // L7 (P-168 #1): what this turn leaves waiting (its drafts or its question), what it set
+    // aside, and the turn itself, compacted to kinds and times.
+    {
+      writeDialogue(
+        tx,
+        db,
+        afterTurn(dialogueOf(dialogueSnap, now), {
+          ownerUid: t.ownerUid,
+          conversationId: target.id,
+          taskId,
+          now,
+          kind:
+            state === 'awaiting_clarification'
+              ? 'question'
+              : state === 'failed'
+                ? 'failed'
+                : result.outcome.kind === 'health_route'
+                  ? 'health'
+                  : result.drafts.length > 0
+                    ? 'drafts'
+                    : result.outcome.kind === 'answer'
+                      ? 'answer'
+                      : (result.turnKind ?? 'fallback'),
+          drafts: result.drafts.map((d, i) => ({
+            draftId: draftIdFor(taskId, i),
+            payload: d.payload,
+          })),
+          dropped,
+          question: pending
+            ? {
+                pc: pending,
+                expiresAt: new Date(
+                  now.getTime() + assistantTaskLimits.clarificationTtlMinutes * 60_000,
+                ),
+                about: result.about ?? null,
+              }
+            : null,
+          setAside: result.setAside === true,
+          ...(result.timers ? { timers: result.timers } : {}),
+        }),
+        now,
+      );
+    }
     let lastSeq = (target.get('messageSeq') as number | undefined) ?? 0;
     if (move) {
       // D-075 #2: out of the shared thread (its messages deleted there), into the author's own.
@@ -1496,6 +1829,8 @@ export async function expireClarification(
     const snap = await tx.get(ref);
     const t = storedTask(snap);
     if (t.state !== 'awaiting_clarification') return false;
+    // L7: the author's state forgets the question with it.
+    const dialogue = dialogueOf(await tx.get(dialogueRef(db, t.conversationId, t.ownerUid)), now);
     if (t.reservationId && t.usage === 'reserved') {
       await releaseQuota(tx, db, {
         familyId: t.familyId,
@@ -1505,6 +1840,7 @@ export async function expireClarification(
         now,
       });
     }
+    if (dialogue) writeDialogue(tx, db, afterStop(dialogue, taskId, 'expired', now), now);
     const seq = appendEvents(
       tx,
       db,

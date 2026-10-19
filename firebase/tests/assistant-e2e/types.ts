@@ -18,6 +18,8 @@ export interface FakeIntent {
   unc?: string[];
   /** correctsPrevious */
   cp?: boolean;
+  /** L7 (v8) `corrects`: the kind of the waiting / saved item this one corrects. */
+  cr?: string;
 }
 
 /** One scripted model reply (fake mode). */
@@ -66,6 +68,8 @@ export type Turn =
       intentHint?: 'expense' | null;
       /** LUMI-05: sent by an app build from before 2026-10-16 (no `clientDraftKinds`). */
       client?: 'legacy';
+      /** Lumi L7: what this message's own reply must be (a conversation is checked turn by turn). */
+      check?: TurnCheck;
     }
   | {
       photo: 'receipt' | 'blurry' | 'note';
@@ -89,6 +93,21 @@ export type Turn =
     }
   | { cancel: true }
   | { withdrawConsent: Who };
+
+/**
+ * Lumi L7 (P-168 #7): the reply to one message of a scripted conversation — outcome, drafts and
+ * notices as in `Expect`; `ops` = what saving the live drafts does (create / update / delete);
+ * `task` = "same" when the reply lands in the previous message's task (an answer, a re-ask).
+ */
+export interface TurnCheck {
+  outcome?: string | string[];
+  kinds?: string[];
+  values?: Record<string, unknown>;
+  codes?: string[];
+  notCodes?: string[];
+  ops?: string[];
+  task?: 'same' | 'new';
+}
 
 export interface Expect {
   /** Allowed outcomes of the last message (one of). */

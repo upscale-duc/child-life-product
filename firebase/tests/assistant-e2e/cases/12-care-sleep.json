@@ -505,7 +505,7 @@
           "0.endedAt": "D0 06:30"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },

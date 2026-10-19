@@ -47,7 +47,10 @@ import {
 // Lumi 2026-10-19 (v7): compact output — each item writes only its kind's fields
 // (`intentKindFields`), `correctsPrevious` only with a previous turn; `parseExtraction` fills the
 // rest with null, so the planner reads the same extraction (fewer output tokens, a faster reply).
-export const assistantPromptVersion = 'assistant-extract-v7';
+// Lumi L7 (v8, P-168 #2): "previous_turn" is the conversation state (the open question, drafts
+// waiting, records saved in the last 30 min — kinds, values and times, no words); the reply says
+// what it answers (`replyTo`) and which waiting / saved item an item corrects (`corrects`).
+export const assistantPromptVersion = 'assistant-extract-v8';
 
 /** Read tools the model may request; the server runs them in the trusted scope. */
 export const readToolNames = ['care_summary', 'sleep_facts', 'usage_snapshot'] as const;
@@ -168,6 +171,11 @@ export const modelIntentSchema = z
       .strict(),
     /** Rework 2026-10-15: this item corrects the sender's previous turn ("à không, 150ml"). */
     correctsPrevious: z.boolean().optional(),
+    /**
+     * Lumi L7 (v8): the kind of the waiting / saved item this one corrects — also another kind
+     * ("bình chứ không phải mẹ" → a bottle that `corrects` the breast item); null when none.
+     */
+    corrects: z.enum(draftKinds).nullable().optional(),
     /** The exact words each filled field comes from (grounding; checked against the text). */
     evidence: z
       .array(z.object({ field: z.enum(intentFieldNames), text: clip(200) }).strict())
@@ -198,6 +206,8 @@ export const modelExtractionSchema = z
     // Rework 2026-10-15: thanks / hello / ok, and messages the app cannot help with.
     smallTalk: z.boolean().optional(),
     outOfScope: z.boolean().optional(),
+    /** Lumi L7 (v8): what the message answers — my open question, a waiting draft, a saved record. */
+    replyTo: z.enum(['question', 'draft', 'record']).nullable().optional(),
   })
   .strict();
 export type ModelExtraction = z.infer<typeof modelExtractionSchema>;
@@ -254,8 +264,17 @@ export interface ExtractInput {
   categories?: readonly { id: string; name: string }[];
   /** Dates around the anchor with weekday names, so "thứ 6", "mai", "20/10" map to a date. */
   calendar?: readonly { date: string; weekday: string; label: string | null }[];
-  /** The sender's previous turn in this chat (≤ 60 min): their words and the drafts it made. */
-  previous?: { text: string; drafts: readonly Record<string, unknown>[] } | null;
+  /**
+   * The sender's state in this chat (L7: the dialogue doc — the open question, drafts waiting,
+   * records saved in the last 30 min, kinds and times of the last turns; no words). `text` is
+   * the previous message only for a conversation without a dialogue state yet.
+   */
+  previous?: {
+    text?: string | null;
+    drafts: readonly Record<string, unknown>[];
+    question?: { field: string; about: string | null } | null;
+    turns?: readonly { kind: string; items: readonly string[]; minutesAgo: number }[];
+  } | null;
 }
 
 export interface WordInput {
@@ -393,7 +412,7 @@ export function extractionSystemPrompt(): string {
     'A plain state or log is NEVER an observation: "con đang ngủ", "bé ngủ rồi", "bé ngủ 2 tiếng", "bé vừa bú", "con dậy rồi" are sleep / breast / bottle items. Use observation only when the words say something is different or new.',
     'phase (sleep and breast only, else null): "start" when it is happening now or has just begun and no end or length is said ("con đang ngủ", "bé vừa ngủ", "bé ngủ rồi", "bắt đầu ngủ lúc 21h" → time 21:00, "đang cho bú bên trái" → side left); "stop" when an ongoing sleep or feed has just ended and neither its start nor its length is said ("con dậy rồi", "bé vừa dậy", "dậy lúc 6h" → endTime 06:00, "bú xong rồi"); null for a finished log with a length or both times ("ngủ 2 tiếng", "ngủ từ 9h đến 11h", "bú 15 phút"). A phase item needs no time: never put "time" in missingFields for it.',
     // Corrections.
-    '"previous_turn" (when present) is the sender\'s previous message in this chat and the drafts it made. If the new message corrects it ("à không, 150ml", "nhầm, 10h30 mới dậy", "bên phải chứ"), return the corrected item IN FULL (copy the unchanged values from previous_turn, change only what is corrected) with "correctsPrevious": true. Otherwise "correctsPrevious": false (the key exists only when previous_turn is present). Never repeat an item of previous_turn that is not corrected.',
+    '"previous_turn" (when present) is what this conversation holds for the sender: "drafts" = items waiting to be saved ("saved": false) and records saved in the last 30 minutes ("saved": true), with their values and local times; "question" = what the app is asking them now; "turns" = what the last replies were. If the new message corrects one of those items ("à không, 150ml", "180 chứ", "nhầm, 10h30 mới dậy", "bên phải chứ", "bình chứ không phải mẹ", "thêm 10 phút"), return the corrected item IN FULL (copy the unchanged values from previous_turn, change only what is corrected; times as "HH:mm" with their dayOffset) with "correctsPrevious": true and "corrects" = the kind of the item it corrects (it may differ from its own kind). Otherwise "correctsPrevious": false and "corrects": null (both keys exist only when previous_turn is present). Never repeat an item of previous_turn that is not corrected. "replyTo" (only with previous_turn): "question" when the message answers the question, "draft" when it corrects or adds to a waiting item, "record" when it corrects a saved one, else null. "rồi ngủ lúc 10h", "xong rồi bé ngủ" are NEW items after the last one (its day, a later time), never corrections.',
     // Clarification.
     'Set "clarification" to {"field":"intent"} only when you cannot tell whether the parent wants to read the log or add to it, and return no intents then. Never ask for small talk or out-of-scope messages. Otherwise "clarification" is null (the server asks for missing times, morning / evening and who does a reminder).',
     'Never diagnose, never give medical advice, never mention medicine doses.',
@@ -486,7 +505,7 @@ function intentItemSchemas(
         required: [
           'kind',
           'fields',
-          ...(previousTurn ? ['correctsPrevious'] : []),
+          ...(previousTurn ? ['correctsPrevious', 'corrects'] : []),
           'evidence',
           'uncertainFields',
           'missingFields',
@@ -499,7 +518,12 @@ function intentItemSchemas(
             required: [...names],
             properties: Object.fromEntries(names.map((f) => [f, schemas[f]])),
           },
-          ...(previousTurn ? { correctsPrevious: { type: 'boolean' } } : {}),
+          ...(previousTurn
+            ? {
+                correctsPrevious: { type: 'boolean' },
+                corrects: nullableEnum(allowedIntents.length ? allowedIntents : ['none']),
+              }
+            : {}),
           evidence: { $ref: '#/$defs/evidence' },
           uncertainFields: { $ref: '#/$defs/fieldNames' },
           missingFields: { $ref: '#/$defs/fieldNames' },
@@ -530,6 +554,7 @@ export function extractionJsonSchema(
       'healthSigns',
       'smallTalk',
       'outOfScope',
+      ...(previousTurn ? ['replyTo'] : []),
     ],
     properties: {
       intents: {
@@ -568,6 +593,8 @@ export function extractionJsonSchema(
       // Rework 2026-10-15.
       smallTalk: { type: 'boolean' },
       outOfScope: { type: 'boolean' },
+      // Lumi L7 (v8).
+      ...(previousTurn ? { replyTo: nullableEnum(['question', 'draft', 'record']) } : {}),
     },
     $defs: intentDefs,
   };

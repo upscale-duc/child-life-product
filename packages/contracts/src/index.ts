@@ -34,6 +34,8 @@ export * from './billing.js';
 export * from './assistant.js';
 // Lumi rework 2026-10-15: deterministic text rules (money, spending detector, durations, dates).
 export * from './assistant-text.js';
+// Lumi L7 (P-168): the conversation state per author and the follow-up words.
+export * from './assistant-dialogue.js';
 export * from './premium-ops.js';
 export * from './assistant-staff.js';
 export * from './content.js';

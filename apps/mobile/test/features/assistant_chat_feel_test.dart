@@ -402,13 +402,14 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(_text('21:00 tối qua'), findsOneWidget);
-        // Typed words still answer the question, never a new task.
+        // L7 (P-168 #2): typed words go to the server, whose resolver answers the question.
         await _type(tester, '21:30');
         await tester.tap(find.bySemanticsLabel('Gửi').last);
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 400));
-        expect(repo.named('startTask'), hasLength(1));
-        expect(repo.named('submitClarification').single.args['text'], '21:30');
+        expect(repo.named('startTask'), hasLength(2));
+        expect(repo.named('startTask').last.args['text'], '21:30');
+        expect(repo.named('submitClarification'), isEmpty);
       },
     );
 

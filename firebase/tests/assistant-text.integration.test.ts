@@ -785,9 +785,10 @@ describe('follow-ups, duplicates, small talk, help — credits per outcome', () 
     ]);
     const fix = await run('à không, 150ml', [
       (input: ExtractInput) => {
-        // The previous turn travels with the request (words and drafts, no ids).
+        // L7: the server resolves "à không, 150ml" itself; were the model asked, the dialogue
+        // state would travel (kinds, values and local times; no words, no ids).
         expect(input.previous).toMatchObject({
-          text: 'bé bú 120ml lúc 8h sáng',
+          text: null,
           drafts: [{ kind: 'bottle', amountMl: 120, occurredAt: { time: '08:00', dayOffset: 0 } }],
         });
         return extraction([
@@ -812,7 +813,8 @@ describe('follow-ups, duplicates, small talk, help — credits per outcome', () 
       state: 'discarded',
       errorCode: 'REPLACED',
     });
-    // Saved, then corrected: nothing changes, the person edits it in its module (0 credits).
+    // Lumi L7 (P-168 #2): saved, then corrected minutes later — an edit draft of that record
+    // (0 credits, no model); saving it changes the record, never a second feed.
     const again = await run('bé bú 90ml lúc 9h sáng', [
       extraction([
         intent('bottle', { amountMl: 90, time: '09:00', dayOffset: 0 }, [
@@ -820,16 +822,21 @@ describe('follow-ups, duplicates, small talk, help — credits per outcome', () 
         ]),
       ]),
     ]);
-    await confirm(again.taskId, [{ draftId: again.snap.drafts[0]!.id, revision: 1 }]);
-    const late = await run('à 100ml chứ', [
-      extraction([intent('bottle', { amountMl: 100, time: '09:00', dayOffset: 0 }, [], true)]),
-    ]);
-    expect(late.snap.drafts).toHaveLength(0);
-    expect(late.snap.task).toMatchObject({ state: 'ready', usage: 'released' });
-    const notice = late.snap.messages
-      .flatMap((m) => m.parts)
-      .find((p) => p.type === 'text' && p.code === 'PREVIOUS_SAVED');
-    expect(notice && notice.type === 'text' && notice.link).toMatch(/^\/care\/records\//);
+    const saved = await confirm(again.taskId, [{ draftId: again.snap.drafts[0]!.id, revision: 1 }]);
+    const recordId = saved.data.items[0]!.recordId!;
+    const late = await run('à 100ml chứ', []);
+    expect(late.snap.drafts).toHaveLength(1);
+    expect(late.snap.drafts[0]).toMatchObject({
+      op: 'update',
+      targetRecordId: recordId,
+      payload: { kind: 'bottle', amountMl: 100 },
+    });
+    expect(late.snap.task.credits).toBe(0);
+    const edited = await confirm(late.taskId, [{ draftId: late.snap.drafts[0]!.id, revision: 1 }]);
+    expect(edited.data.items[0]).toMatchObject({ status: 'saved', recordId });
+    const rec = await db.doc(`babies/${B}/records/${recordId}`).get();
+    expect(rec.get('data')).toMatchObject({ amountMl: 100 });
+    expect(rec.get('deleted')).toBe(false);
   });
 
   it('a feed like one just logged is a warning; confirm needs "Vẫn lưu"', async () => {

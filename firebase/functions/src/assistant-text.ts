@@ -85,7 +85,16 @@ import {
 export interface PreviousTurn {
   taskId: string;
   text: string;
-  drafts: { id: string; state: string; payload: DraftPayload; recordLink: string | null }[];
+  drafts: {
+    id: string;
+    state: string;
+    payload: DraftPayload;
+    recordLink: string | null;
+    /** L7: the draft's own task (the dialogue state spans tasks; else [PreviousTurn.taskId]). */
+    taskId?: string;
+    /** L7: the record a saved draft wrote (an edit draft changes it). */
+    recordId?: string | null;
+  }[];
 }
 
 export interface TextContext {
@@ -123,6 +132,11 @@ export interface TextContext {
    * outside it is never drafted (`APP_UPDATE_NEEDED` instead). Absent = every kind (tests).
    */
   clientKinds?: readonly DraftKind[];
+  /**
+   * L7 (P-168 #2): "rồi ngủ lúc 10h" continues the last item: an open clock is the reading after
+   * this instant (its day, a later time), never a morning / evening question.
+   */
+  after?: Date;
 }
 
 /** A running app timer as the planner needs it. */
@@ -420,6 +434,13 @@ export async function planTextIntents(
           anchor.getTime() - t.getTime() <= 36 * 3_600_000,
       );
       if (valid.length === 1) return { at: valid[0]!, ambiguous: false };
+      // L7: a continuation takes the first reading after the item it follows.
+      if (valid.length >= 2 && ctx.after && !ampm) {
+        const next = valid
+          .filter((t) => t.getTime() >= ctx.after!.getTime() - SKEW_MS)
+          .sort((a, b) => a.getTime() - b.getTime());
+        if (next.length > 0) return { at: next[0]!, ambiguous: false };
+      }
       if (valid.length >= 2) {
         // Only a time that is really open takes the morning / evening answer (LUMI-03).
         const kept = byAnswer(
@@ -619,8 +640,14 @@ export async function planTextIntents(
     return [c, endC];
   };
 
-  const previousOf = (kind: DraftKind) =>
-    ctx.previous?.drafts.find((d) => d.payload.kind === kind) ?? null;
+  // L7 (v8): the item the model says it corrects (`corrects`, maybe another kind), else the
+  // latest one of the same kind; the dialogue state lists the latest first.
+  const previousOf = (kind: DraftKind, corrects?: DraftKind | null) =>
+    ctx.previous?.drafts.find(
+      (d) => d.payload.kind === (corrects ?? kind) && d.state !== 'discarded',
+    ) ??
+    ctx.previous?.drafts.find((d) => d.payload.kind === kind) ??
+    null;
 
   let reminderIndex = 0;
   let assignable: ScopeMember[] | null = null;
@@ -774,21 +801,28 @@ export async function planTextIntents(
     // ---- Correction of the previous turn ----
     let replaces: PreparedDraft['replaces'] = undefined;
     let base: DraftPayload | null = null;
+    /** L7 (P-168 #2): a care record saved in the last 30 min is changed by an edit draft. */
+    let edit: string | null = null;
     if (intent.correctsPrevious && ctx.previous) {
-      const prev = previousOf(kind);
+      const prev = previousOf(kind, intent.corrects);
       if (prev && prev.state === 'saved') {
-        notices.push({
-          kind,
-          code: 'PREVIOUS_SAVED',
-          ...(prev.recordLink ? { link: prev.recordLink } : {}),
-        });
-        continue;
+        if (prev.recordId && prev.payload.kind === kind && editableKinds.has(kind)) {
+          edit = prev.recordId;
+          base = prev.payload;
+        } else {
+          notices.push({
+            kind,
+            code: 'PREVIOUS_SAVED',
+            ...(prev.recordLink ? { link: prev.recordLink } : {}),
+          });
+          continue;
+        }
       }
       if (
         prev &&
         (prev.state === 'draft' || prev.state === 'needs_review' || prev.state === 'failed')
       ) {
-        replaces = { taskId: ctx.previous.taskId, draftId: prev.id };
+        replaces = { taskId: prev.taskId ?? ctx.previous.taskId, draftId: prev.id };
         base = prev.payload;
       }
     }
@@ -1291,6 +1325,7 @@ export async function planTextIntents(
       problems,
       warnings: [],
       ...(replaces ? { replaces } : {}),
+      ...(edit ? { op: 'update' as const, targetRecordId: edit } : {}),
     });
     if (replaces) notices.push({ kind, code: 'CORRECTION_APPLIED' });
   }
@@ -1303,6 +1338,8 @@ export async function planTextIntents(
 
   // Possible duplicates (a warning to acknowledge, never a merge).
   for (const d of drafts) {
+    // L7: an edit of a saved record is never a duplicate of itself.
+    if (d.op === 'update' || d.op === 'delete') continue;
     if (await duplicateSuspected(ctx, d.payload)) {
       d.warnings.push('duplicate_suspected');
       notices.push({ kind: d.payload.kind, code: 'DUPLICATE_SUSPECTED' });
@@ -1310,6 +1347,15 @@ export async function planTextIntents(
   }
   return { kind: 'drafts', drafts, notices };
 }
+
+/** L7: the care records a follow-up may change or delete (`confirmDraftItem` writes them). */
+export const editableKinds: ReadonlySet<DraftKind> = new Set([
+  'bottle',
+  'breast',
+  'sleep',
+  'pump',
+  'diaper',
+]);
 
 const blankFields = {
   amountMl: null,

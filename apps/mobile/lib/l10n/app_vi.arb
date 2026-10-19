@@ -23539,6 +23539,50 @@
   "@asSaveItem": {
     "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
   },
+  "asKeepQuestion": "Giữ lại",
+  "@asKeepQuestion": {
+    "description": "Lumi L7 (P-168 #6): chip under “Mình bỏ câu hỏi về …” (QUESTION_SET_ASIDE); tapping it sends these words, and the server asks that question again. EN is an engineering draft for owner review."
+  },
+  "asDraftEditTitle": "Sửa {kind}",
+  "@asDraftEditTitle": {
+    "description": "Lumi L7 (P-168 #2): title of a card that changes a record saved minutes ago (“180 chứ”). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "kind": {
+        "type": "String",
+        "example": "cữ bú bình"
+      }
+    }
+  },
+  "asDraftDeleteTitle": "Xoá {kind}",
+  "@asDraftDeleteTitle": {
+    "description": "Lumi L7 (P-168 #2): title of a card that deletes a record saved minutes ago (“xoá cái vừa ghi”). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "kind": {
+        "type": "String",
+        "example": "cữ bú bình"
+      }
+    }
+  },
+  "asSaveChange": "Lưu thay đổi",
+  "@asSaveChange": {
+    "description": "Lumi L7: the save of an edit card (updates the saved record). EN is an engineering draft for owner review."
+  },
+  "asDeleteRecord": "Xoá khỏi nhật ký",
+  "@asDeleteRecord": {
+    "description": "Lumi L7: the save of a delete card (a soft delete, like “Xóa bản ghi” in Chăm sóc). EN is an engineering draft for owner review."
+  },
+  "asKeepRecord": "Không xoá",
+  "@asKeepRecord": {
+    "description": "Lumi L7: dismisses a delete card; the record stays. EN is an engineering draft for owner review."
+  },
+  "asStateDeleted": "Đã xoá",
+  "@asStateDeleted": {
+    "description": "Lumi L7: badge of a delete card once done. EN is an engineering draft for owner review."
+  },
+  "asStateUpdated": "Đã cập nhật",
+  "@asStateUpdated": {
+    "description": "Lumi L7: badge of an edit card once saved. EN is an engineering draft for owner review."
+  },
   "asSaveItems": "Lưu {count} mục",
   "@asSaveItems": {
     "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",

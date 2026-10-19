@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_74eeb60e60656312e78178b140678e79",
+     "id": "tk_443d5de409391897435a13c4375a0341",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_74eeb60e60656312e78178b140678e79_0",
-      "taskId": "tk_74eeb60e60656312e78178b140678e79",
+      "id": "dr_443d5de409391897435a13c4375a0341_0",
+      "taskId": "tk_443d5de409391897435a13c4375a0341",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_74eeb60e60656312e78178b140678e79"
+       "task:tk_443d5de409391897435a13c4375a0341"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "bé ngủ từ 13h đến 14h"
        }
       ],
-      "taskId": "tk_74eeb60e60656312e78178b140678e79",
+      "taskId": "tk_443d5de409391897435a13c4375a0341",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_74eeb60e60656312e78178b140678e79_0",
+        "draftId": "dr_443d5de409391897435a13c4375a0341_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_74eeb60e60656312e78178b140678e79",
+      "taskId": "tk_443d5de409391897435a13c4375a0341",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,16 +120,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+     "id": "tk_e802e6141bfe3a1f345dd615ff08095c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "id": "dr_e802e6141bfe3a1f345dd615ff08095c_0",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,7 +171,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cf1e2ae8f3d73e1b20f12eac847389eb"
+       "task:tk_e802e6141bfe3a1f345dd615ff08095c"
       ],
       "recordId": null,
       "recordLink": null,
@@ -193,7 +193,7 @@
         "text": "à không, ngủ từ 12h30"
        }
       ],
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -212,17 +212,17 @@
        {
         "type": "text",
         "schemaVersion": 1,
-        "text": "Mình đã sửa theo ý bạn và bỏ bản nháp trước.",
+        "text": "Mình đã sửa giấc ngủ từ 12:30 và bỏ bản nháp trước. Kiểm tra rồi bấm Lưu nhé.",
         "code": "CORRECTION_APPLIED"
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
+        "draftId": "dr_e802e6141bfe3a1f345dd615ff08095c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,16 +237,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+     "id": "tk_e802e6141bfe3a1f345dd615ff08095c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -268,8 +268,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "id": "dr_e802e6141bfe3a1f345dd615ff08095c_0",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -288,10 +288,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cf1e2ae8f3d73e1b20f12eac847389eb"
+       "task:tk_e802e6141bfe3a1f345dd615ff08095c"
       ],
-      "recordId": "r_3002d20f74220fd9efe360cfd23f397f",
-      "recordLink": "/care/records/b_00000000000000000001/r_3002d20f74220fd9efe360cfd23f397f",
+      "recordId": "r_98f36d82764e5973497867fddfe7529c",
+      "recordLink": "/care/records/b_00000000000000000001/r_98f36d82764e5973497867fddfe7529c",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -315,7 +315,7 @@
         "text": "à không, ngủ từ 12h30"
        }
       ],
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -334,17 +334,17 @@
        {
         "type": "text",
         "schemaVersion": 1,
-        "text": "Mình đã sửa theo ý bạn và bỏ bản nháp trước.",
+        "text": "Mình đã sửa giấc ngủ từ 12:30 và bỏ bản nháp trước. Kiểm tra rồi bấm Lưu nhé.",
         "code": "CORRECTION_APPLIED"
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
+        "draftId": "dr_e802e6141bfe3a1f345dd615ff08095c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -360,15 +360,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
+          "draftId": "dr_e802e6141bfe3a1f345dd615ff08095c_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_3002d20f74220fd9efe360cfd23f397f",
+          "recordLink": "/care/records/b_00000000000000000001/r_98f36d82764e5973497867fddfe7529c",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "taskId": "tk_e802e6141bfe3a1f345dd615ff08095c",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

@@ -626,7 +626,7 @@
           "0.occurredAt": "D0 08:00"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -673,15 +673,21 @@
               }
             ]
           },
-          "at": "+1"
+          "at": "+1",
+          "check": { "outcome": "drafts", "ops": ["update"], "values": { "0.amountMl": 100 } }
+        },
+        {
+          "confirm": "all"
         }
       ],
+      "title": "L7 (P-168 #2): a correction of a feed saved minutes ago is an edit of that record (was PREVIOUS_SAVED: \"sửa trong module\")",
       "expect": {
-        "outcome": "notice",
-        "kinds": [],
-        "codes": ["PREVIOUS_SAVED"],
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": { "0.amountMl": 100, "0.occurredAt": "D0 09:00" },
         "saved": 1,
-        "credits": 0
+        "credits": 0,
+        "recordData": { "bottle.amountMl": 100 }
       },
       "group": "care.bottle"
     },

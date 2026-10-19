@@ -186,6 +186,8 @@ export function extractionOf(m: FakeModel): FakeStep<unknown> {
         uncertainFields: (x.unc ?? []).filter(keep),
         missingFields: (x.miss ?? []).filter(keep),
         correctsPrevious: x.cp ?? false,
+        // L7 (v8): the waiting / saved item it corrects (maybe another kind).
+        ...(x.cr ? { corrects: pickKind(x.cr) } : {}),
       };
     }),
     reads: m.reads ?? [],
@@ -940,8 +942,22 @@ async function runConfirm(
   const uid = turn.as ? UID[turn.as] : run.lastUid;
   run.clock = new Date(run.clock.getTime() + 20_000);
   let snap: AssistantTaskSnapshot;
+  // L7: "Lưu" on the card that waits — the last message's, else (a follow-up answered without a
+  // card: "ok", "là sao") the latest card still waiting above, as the person taps it.
+  let taskId = run.lastTaskId;
   try {
-    snap = await snapshotOf(run.lastTaskId, uid, run.clock, locale);
+    snap = await snapshotOf(taskId, uid, run.clock, locale);
+    if (turn.confirm === 'all' && pendingOf(snap, 'all').length === 0) {
+      for (const s of [...run.steps].reverse()) {
+        if (s.taskId === taskId || s.uid !== uid) continue;
+        const other = await snapshotOf(s.taskId, uid, run.clock, locale);
+        if (pendingOf(other, 'all').length > 0) {
+          taskId = s.taskId;
+          snap = other;
+          break;
+        }
+      }
+    }
   } catch (e) {
     run.refusals.push({ turn: ti, op: 'confirmDrafts', reason: reasonOf(e) });
     return;
@@ -950,13 +966,13 @@ async function runConfirm(
     run,
     ti,
     uid,
-    run.lastTaskId,
+    taskId,
     pendingOf(snap, turn.confirm),
     turn.acknowledge ?? [],
     turn.retry ?? false,
     locale,
   );
-  await capture(run, ti, `turn ${ti + 1} · after save`, run.lastTaskId, uid, locale);
+  await capture(run, ti, `turn ${ti + 1} · after save`, taskId, uid, locale);
 }
 
 export async function confirmNow(
@@ -1019,7 +1035,9 @@ export async function countRecords() {
     n += s.docs.filter(
       (d) =>
         !(col === 'records' && d.get('source') === 'app') &&
-        !(col === 'expenses' && d.get('source') === 'manual'),
+        !(col === 'expenses' && d.get('source') === 'manual') &&
+        // L7: a record deleted through Lumi ("xoá cái vừa ghi") is no longer saved.
+        d.get('deleted') !== true,
     ).length;
   }
   return n;
@@ -1057,6 +1075,8 @@ export function outcomeOf(s: AssistantTaskSnapshot): string {
     codes.includes('APP_UPDATE_NEEDED')
   )
     return 'notice';
+  // L7: a follow-up the server answered from the dialogue state (a restate, a delete…).
+  if (codes.includes('FOLLOW_UP') && s.task.state === 'ready') return 'follow_up';
   if (
     s.task.state === 'ready' &&
     parts.some((p) => p.type === 'source_summary' || p.type === 'text')

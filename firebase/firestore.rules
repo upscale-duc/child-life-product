@@ -261,6 +261,11 @@ service cloud.firestore {
           get(/databases/$(database)/documents/assistantConversations/$(conversationId)).data);
         allow write: if false;
       }
+      // Lumi L7 (P-168 #1): each author's dialogue state (what Lumi waits for, what was just
+      // saved: ids, kinds and times). Server-only: the resolver reads it, no client ever does.
+      match /dialogue/{uid} {
+        allow read, write: if false;
+      }
     }
     match /assistantTasks/{taskId} {
       allow read: if assistantTaskReadable(resource.data);

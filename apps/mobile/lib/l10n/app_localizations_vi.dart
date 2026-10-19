@@ -15894,6 +15894,34 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asSaveItem => 'Lưu';
 
   @override
+  String get asKeepQuestion => 'Giữ lại';
+
+  @override
+  String asDraftEditTitle(String kind) {
+    return 'Sửa $kind';
+  }
+
+  @override
+  String asDraftDeleteTitle(String kind) {
+    return 'Xoá $kind';
+  }
+
+  @override
+  String get asSaveChange => 'Lưu thay đổi';
+
+  @override
+  String get asDeleteRecord => 'Xoá khỏi nhật ký';
+
+  @override
+  String get asKeepRecord => 'Không xoá';
+
+  @override
+  String get asStateDeleted => 'Đã xoá';
+
+  @override
+  String get asStateUpdated => 'Đã cập nhật';
+
+  @override
   String asSaveItems(int count) {
     return 'Lưu $count mục';
   }

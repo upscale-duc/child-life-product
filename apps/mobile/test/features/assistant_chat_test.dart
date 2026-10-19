@@ -562,7 +562,7 @@ void main() {
     });
 
     testWidgets(
-      'L1 (P-167 #3): typed in the composer while my question waits → its answer',
+      'L1 / L7 (P-168 #2): typed while my question waits → the server reads it against it',
       (tester) async {
         final repo = FakeAssistantRepository(
           tasks: {
@@ -579,11 +579,11 @@ void main() {
         expect(_text('Trả lời câu hỏi…'), findsOneWidget);
         await _type(tester, 'Sáng');
         await _send(tester);
-        final c = repo.named('submitClarification').single.args;
-        expect(c['taskId'], taskA);
-        expect(c['clarificationId'], 'c1');
+        // L7: the words go to the server, whose resolver answers my question with them (or
+        // reads a new topic) — the same for any app build, voice or a lost listener.
+        final c = repo.named('startTask').single.args;
         expect(c['text'], 'Sáng');
-        expect(repo.named('startTask'), isEmpty);
+        expect(repo.named('submitClarification'), isEmpty);
         expect(repo.named('quoteTask'), isEmpty);
       },
     );

@@ -507,6 +507,12 @@ export interface PreparedDraft {
   warnings: ('duplicate_suspected' | 'overlap')[];
   /** Rework 2026-10-15: the previous turn's unsaved draft this one corrects (discarded at settle). */
   replaces?: { taskId: string; draftId: string };
+  /**
+   * Lumi L7 (P-168 #2): a change to a care record saved in the last 30 min (`update`, "180 chứ")
+   * or its soft delete (`delete`, "xoá cái vừa ghi"); absent = a new record.
+   */
+  op?: 'update' | 'delete';
+  targetRecordId?: string;
 }
 
 export type PrepareNotice = {

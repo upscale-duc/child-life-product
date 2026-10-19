@@ -399,3 +399,29 @@ an "ago", a half of the day — never a state of the baby), and the worker swaps
 `intent` question or a bare "Ok!" for the open question; "bây giờ / vừa xong" as a typed answer is
 "Vừa xong". Cases fl-20…fl-22, on-16 (fake 283/284; `ga-11` failed before this slice); app replay
 fixtures exported; dev deployed. Not checked on a real phone.
+
+**L7 done (2026-10-19):** the dialogue state `assistantConversations/{cv}/dialogue/{uid}`
+(server-only; the Rules deny every client read and write) holds the open question (task, field,
+chips, what it is about), the drafts waiting, the care records saved through Lumi in the last
+30 min, running timers, the last answer and the last 3 turns as kinds and times — ids, numbers,
+enums and instants only. The worker's settle, `confirmDrafts`, `discardDraft`, `patchDraft`,
+`submitClarification`, cancel and expiry write it; it lapses 2 h after its last write. The
+resolver (`resolveFollowUp`, functions `assistant-dialogue.ts`; words in contracts
+`assistant-dialogue.ts`) runs in `startTask` before rules or the model: "huỷ" / "xoá cái vừa ghi"
+with a question open cancels that task; "là sao" / "ok" re-asks the question in its task with
+"Mình đang chờ giờ của cữ bú bình 180ml…" and the chips; an answer goes to it (L1b); "Giữ lại"
+asks a set-aside question again; "180 chứ", "lúc 13h30 mới đúng", "thêm 5 phút", "bên trái chứ"
+replace a waiting draft (`replaces`) or make an edit draft of the saved record (`op: update`);
+"xoá cái vừa ghi" drops a waiting draft or makes a delete draft (`op: delete`, a soft delete like
+"Xóa bản ghi"); "rồi thay tã lúc 9h30" is a new log after the last item (no morning / evening
+question); "là sao" or a short reply while a draft waits restates it; all of these cost 0 credits
+and no model call. Otherwise rules then the model, which gets the state as `previous_turn` (no
+words; prompt v8: `replyTo`, `corrects` for another kind, e.g. "bình chứ không phải mẹ"). A new
+topic while a question is open says "Mình bỏ câu hỏi về cữ bú bình 180ml nhé" with "Giữ lại";
+small talk while something waits adds what waits. The app sends typed words to `startTask`
+(only an explicit "Gõ câu trả lời" answers directly), shows "Sửa …" / "Xoá …" cards with "Lưu
+thay đổi" / "Xoá khỏi nhật ký" / "Không xoá", and "Giữ lại". Cases
+`firebase/tests/assistant-e2e/cases/17-dialogue-l7.json` dl-01…dl-08 (per-turn `check`), fake
+291/292 (`ga-11` failed before this slice), live 13/13 for the new and changed cases (4 model
+calls); bot-17, br-09, sl-13, fl-12 now cost 0 credits and bot-18 is an edit of the saved feed.
+Not checked on a real phone.

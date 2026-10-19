@@ -116,6 +116,22 @@ import type { StoredTask } from './assistant-store.js';
 // L1 (P-167 #3): typed answers to the server's questions.
 import type { Clarification } from '@child-life/contracts';
 import { answersOpenQuestion, readTypedAnswer } from './assistant-text.js';
+// Lumi L7 (P-168 #1–#2, #6): the author's dialogue state and the resolver before any reader.
+import { dialogueWaits, type DialogueQuestion, type DraftOp } from '@child-life/contracts';
+import {
+  afterAnswer,
+  afterAsk,
+  afterDraftChange,
+  afterSave,
+  afterStop,
+  dialogueOf,
+  dialogueRef,
+  questionWaitPart,
+  resolveFollowUp,
+  restatePart,
+  writeDialogue,
+  type Resolution,
+} from './assistant-dialogue.js';
 
 /**
  * Child Life Assistant callables, server core (slice A2; docs/assistant/api.md). Every request
@@ -393,11 +409,17 @@ export async function startTask(
     throw fail('VALIDATION_FAILED', { field: 'quoteId' });
   }
   // Lumi L2: the scope, the quote, the consent and the thread are read together.
-  const [s, quoteSnap, consentSnap, requested] = await Promise.all([
+  const [s, quoteSnap, consentSnap, requested, dialogueSnap] = await Promise.all([
     loadTrustedScope(db, uid, req.scope, now, deps.environment),
     quoteId ? quoteRef(db, quoteId).get() : Promise.resolve(null),
     consentRef(db, uid).get(),
     req.conversationId ? conversationRef(db, req.conversationId).get() : Promise.resolve(null),
+    // L7: the author's dialogue state in the thread the app shows (server-only).
+    req.conversationId && req.text?.trim()
+      ? dialogueRef(db, req.conversationId, uid)
+          .get()
+          .catch(() => null)
+      : Promise.resolve(null),
   ]);
   requireAssistant(s);
   timer.mark('scope');
@@ -445,21 +467,79 @@ export async function startTask(
     signs.length === 0 &&
     !talk &&
     ruleReadText({ text, zone: s.zone, anchor: now }) !== null;
-  // L1b (P-168 #2): words sent while my own question in this thread is still open answer it,
-  // whichever app build sent them; a message that reads as a log of its own is a new task.
-  if (text && modality === 'text' && req.conversationId && signs.length === 0 && !ruled) {
-    const open = await openQuestionTaskOf(db, req.conversationId, uid, now);
-    if (open && answersOpenQuestion(open.pc, text)) {
-      const r = await submitClarification(deps, uid, {
-        contractVersion: req.contractVersion,
-        clientRequestId: req.clientRequestId,
-        locale: req.locale,
-        taskId: open.id,
-        expectedVersion: open.version,
-        clarificationId: open.pc.id,
-        choiceId: null,
+  // L7 (P-168 #2; L1b before it): before rules or the model, the words are read against the
+  // author's dialogue state in this thread — an answer to my open question, a correction or a
+  // delete of what waits or was just saved, a continuation, "là sao" — whichever app sent them.
+  let resolution: Resolution = { kind: 'none' };
+  const dialogue = dialogueOf(dialogueSnap, now);
+  if (text && modality === 'text' && req.conversationId && signs.length === 0) {
+    if (dialogueSnap?.exists) {
+      const q = dialogue?.question ?? null;
+      resolution = resolveFollowUp({
         text,
+        dialogue,
+        ruled,
+        talk,
+        answersQuestion: q
+          ? answersOpenQuestion({ field: q.field, choices: q.chips, allowText: q.allowText }, text)
+          : false,
       });
+    } else if (!ruled) {
+      // A thread without a state yet (before L7): L1b's query of my open question.
+      const open = await openQuestionTaskOf(db, req.conversationId, uid, now);
+      if (open && answersOpenQuestion(open.pc, text)) {
+        resolution = {
+          kind: 'answer',
+          question: {
+            taskId: open.id,
+            clarificationId: open.pc.id,
+            field: open.pc.field,
+            chips: open.pc.choices,
+            allowText: open.pc.allowText,
+            askedAt: now.toISOString(),
+            expiresAt: now.toISOString(),
+            about: null,
+          },
+        };
+      }
+    }
+  }
+  if (resolution.kind === 'answer' || resolution.kind === 'reask' || resolution.kind === 'keep') {
+    const q: DialogueQuestion = resolution.question;
+    const task = await taskRef(db, q.taskId).get();
+    const pc = task.get('pendingClarification') as Clarification | null | undefined;
+    const open =
+      task.exists &&
+      task.get('ownerUid') === uid &&
+      task.get('state') === 'awaiting_clarification' &&
+      pc?.id === q.clarificationId &&
+      (toDate(task.get('clarificationExpiresAt'))?.getTime() ?? 0) > now.getTime();
+    if (open) {
+      const r = await submitClarification(
+        deps,
+        uid,
+        {
+          contractVersion: req.contractVersion,
+          clientRequestId: req.clientRequestId,
+          locale: req.locale,
+          taskId: q.taskId,
+          expectedVersion: task.get('version') as number,
+          clarificationId: q.clarificationId,
+          choiceId: null,
+          text,
+        },
+        resolution.kind === 'answer'
+          ? {}
+          : {
+              reask: questionWaitPart(
+                q,
+                s.zone,
+                req.locale,
+                now,
+                resolution.kind === 'keep' ? 'keep' : resolution.why,
+              ),
+            },
+      );
       const usage = await assistantUsage(db, s, now);
       const { windowId: _w, ...usageView } = usage;
       void _w;
@@ -467,25 +547,43 @@ export async function startTask(
       deps.onTiming?.(
         timer.payload({
           op: 'startTask',
-          taskId: open.id,
-          path: 'answer',
+          taskId: q.taskId,
+          path: resolution.kind === 'answer' ? 'answer' : `followup:${resolution.kind}`,
           state: r.data.task.state,
           inline: true,
         }),
       );
       return { ...r, data: { ...r.data, usage: usageView } };
     }
+    // The question is gone (answered elsewhere, expired): "Giữ lại" says so, the rest is read.
+    if (resolution.kind !== 'keep') resolution = { kind: 'none' };
   }
+  // "huỷ" / "xoá cái vừa ghi" while my question waits: that task stops (its credits released).
+  if (resolution.kind === 'cancel_question') {
+    await stopTask(db, resolution.question.taskId, now, 'canceled', null);
+  }
+  const followUp = resolution.kind === 'none' ? null : resolution;
+  /** A follow-up the server applies itself: no rules, no model, 0 credits. */
+  const resolved = followUp !== null && followUp.kind !== 'continue';
+  const free = ruled || resolved;
+  // Small talk keeps its reply ("cảm ơn"), plus what still waits (P-168 #6: never a bare "Ok!").
+  const talkReply = resolved ? null : talk;
+  const waitLine =
+    talkReply && dialogue && dialogueWaits(dialogue)
+      ? dialogue.question
+        ? questionWaitPart(dialogue.question, s.zone, req.locale, now, 'short')
+        : restatePart(dialogue, s.zone, req.locale, now)
+      : null;
   const consent = assistantConsentGranted(consentSnap);
   const [healthPart, live, pool] = await Promise.all([
     // Slice A5: the household's approved emergency number (none when the pack has no entry).
     signs.length > 0 ? healthSupportPart(db, s, signs) : Promise.resolve(null),
-    ruled ? Promise.resolve(true) : liveAvailable(deps, s),
+    free ? Promise.resolve(true) : liveAvailable(deps, s),
     assistantPool(db, s, now),
   ]);
   timer.mark('gates');
   const policy = creditPolicy(s.ctx.config);
-  const credits = signs.length > 0 || talk || ruled ? 0 : creditsFor(modality, policy);
+  const credits = signs.length > 0 || talkReply || free ? 0 : creditsFor(modality, policy);
   const ref = taskRef(db, taskId);
   const at = Timestamp.fromDate(now);
   // ---- D-075 #2: the baby's shared thread, spending excluded ----
@@ -629,7 +727,7 @@ export async function startTask(
     // thread's last task, ≤ 10 min) — answered at once, nothing new drafted, nothing replaced,
     // free (the dev report: a second "Con đang ngủ" set the first draft aside).
     const repeatOf =
-      !resume && text && !talk && signs.length === 0 && modality === 'text'
+      !resume && text && !talkReply && !followUp && signs.length === 0 && modality === 'text'
         ? await pendingRepeatOf(tx, db, conv.get('lastTaskId') as string | undefined, {
             uid,
             text,
@@ -682,7 +780,7 @@ export async function startTask(
     }
 
     // Rework 2026-10-15: small talk is answered at once (free, no quote, no model).
-    if (talk && !resume) {
+    if (talkReply && !resume) {
       lastMsg = appendMessages(
         tx,
         db,
@@ -690,7 +788,11 @@ export async function startTask(
         lastMsg,
         [
           { role: 'user', parts: userParts(text), taskId, author },
-          { role: 'assistant', parts: [smallTalkPart(talk, req.locale)], taskId },
+          {
+            role: 'assistant',
+            parts: [smallTalkPart(talkReply, req.locale), ...(waitLine ? [waitLine] : [])],
+            taskId,
+          },
         ],
         now,
       );
@@ -718,7 +820,7 @@ export async function startTask(
         version,
         errorCode: null,
         health: null,
-        smallTalk: talk,
+        smallTalk: talkReply,
         eventSeq: lastEvent,
         readyAt: at,
       });
@@ -791,8 +893,8 @@ export async function startTask(
       if (
         quote.get('plan') !== pool.plan ||
         (quote.get('grantId') ?? null) !== pool.grantId ||
-        // A rule-read log costs less than its quote said (0): never a mismatch.
-        (!ruled && quote.get('credits') !== credits)
+        // A rule-read log (or a follow-up) costs less than its quote said (0): never a mismatch.
+        (!free && quote.get('credits') !== credits)
       ) {
         throw fail('QUOTE_MISMATCH');
       }
@@ -814,12 +916,12 @@ export async function startTask(
         now,
       });
       if (r.outcome === 'denied') {
-        if (!ruled) blocked = 'USAGE_EXHAUSTED';
+        if (!free) blocked = 'USAGE_EXHAUSTED';
       } else {
         reserved = true;
         windowId = r.windows[0]!.windowId;
         // The window moved since the quote (month boundary, new grant): ask for a new quote.
-        if (quote && !ruled && windowId !== quote.get('windowId')) throw fail('QUOTE_MISMATCH');
+        if (quote && !free && windowId !== quote.get('windowId')) throw fail('QUOTE_MISMATCH');
       }
     }
     // Lumi L2: text runs here, under this request's lease (the trigger sees `processing`).
@@ -886,7 +988,9 @@ export async function startTask(
       health: null,
       eventSeq: lastEvent,
       policyVersion: policy.policyVersion,
-      ruleRead: ruled,
+      ruleRead: ruled && !resolved,
+      // L7: what the resolver read the words as (ids, kinds, keys; never words).
+      ...(followUp ? { followUp } : {}),
       ...(claim ? { lease: claim.lease, attempt } : {}),
     };
     tx.set(ref, doc);
@@ -901,13 +1005,15 @@ export async function startTask(
   timer.mark('start');
   let path = out.replay
     ? 'replay'
-    : ruled
-      ? 'rules'
-      : talk
-        ? 'talk'
-        : signs.length
-          ? 'health'
-          : 'model';
+    : resolved
+      ? `followup:${followUp!.kind}`
+      : ruled
+        ? 'rules'
+        : talkReply
+          ? 'talk'
+          : signs.length
+            ? 'health'
+            : 'model';
   if (out.inline) {
     const r = await runInline(deps, out.inline.doc, out.inline.holder, s, started, timer);
     path = r.path ?? path;
@@ -949,6 +1055,11 @@ export async function submitClarification(
   deps: AssistantDeps,
   uid: string,
   data: unknown,
+  /**
+   * L7 (P-168 #2, #6): `startTask` read the words as "là sao" / "ok" / "Giữ lại": the question is
+   * asked again in its task, with [reask] (what Lumi waits for) before its chips.
+   */
+  opts: { reask?: AssistantPart } = {},
 ): Promise<AssistantResponse<AssistantTaskSnapshot>> {
   const { db, now } = deps;
   const started = Date.now();
@@ -980,8 +1091,16 @@ export async function submitClarification(
       }
       // L1 (P-167 #3): typed words answer any question ("Sáng" → Buổi sáng, "giấc đêm" → its
       // chip); words that answer nothing ask the same question again.
-      const typed = req.choiceId ? null : readTypedAnswer(pc, answerText!);
-      const conv = await tx.get(conversationRef(db, t.conversationId));
+      const typed = opts.reask
+        ? ('unreadable' as const)
+        : req.choiceId
+          ? null
+          : readTypedAnswer(pc, answerText!);
+      const [conv, dialogueSnap] = await Promise.all([
+        tx.get(conversationRef(db, t.conversationId)),
+        tx.get(dialogueRef(db, t.conversationId, t.ownerUid)),
+      ]);
+      const dialogue = dialogueOf(dialogueSnap, now);
       const at = Timestamp.fromDate(now);
       if ((toDate(t.clarificationExpiresAt)?.getTime() ?? 0) <= now.getTime()) {
         if (t.reservationId && t.usage === 'reserved') {
@@ -1015,6 +1134,7 @@ export async function submitClarification(
           updatedAt: at,
         });
         tx.delete(ref.collection('textReading').doc('current'));
+        if (dialogue) writeDialogue(tx, db, afterStop(dialogue, t.id, 'expired', now), now);
         return { expired: true, inline: null };
       }
       if (typed === 'unreadable') {
@@ -1034,7 +1154,10 @@ export async function submitClarification(
             },
             {
               role: 'assistant',
-              parts: [{ type: 'clarification', schemaVersion: 1, clarification: again }],
+              parts: [
+                ...(opts.reask ? [opts.reask] : []),
+                { type: 'clarification', schemaVersion: 1, clarification: again },
+              ],
               taskId: t.id,
             },
           ],
@@ -1065,6 +1188,20 @@ export async function submitClarification(
           eventSeq: seq,
           updatedAt: at,
         });
+        // L7: my question is the open one again (also after "Giữ lại").
+        writeDialogue(
+          tx,
+          db,
+          afterAsk(dialogue, {
+            ownerUid: t.ownerUid,
+            conversationId: t.conversationId,
+            taskId: t.id,
+            pc: again,
+            expiresAt: toDate(t.clarificationExpiresAt) ?? now,
+            now,
+          }),
+          now,
+        );
         return { expired: false, inline: null };
       }
       const answer = {
@@ -1121,6 +1258,7 @@ export async function submitClarification(
         updatedAt: at,
       };
       tx.update(ref, update);
+      if (dialogue) writeDialogue(tx, db, afterAnswer(dialogue, t.id), now);
       return {
         expired: false,
         inline: claim
@@ -1218,7 +1356,12 @@ export async function patchDraft(
     const { ref, taskId, task } = await draftContext(deps, uid, req.draftId);
     const zone = (task.get('timezone') as string | undefined) ?? undefined;
     await db.runTransaction(async (tx) => {
-      const d = await tx.get(ref);
+      const [d, dialogueSnap] = await Promise.all([
+        tx.get(ref),
+        tx.get(
+          dialogueRef(db, task.get('conversationId') as string, task.get('ownerUid') as string),
+        ),
+      ]);
       if (!d.exists) throw fail('VALIDATION_FAILED', { field: 'draftId' });
       const cur = draftView(d, now, zone);
       if (cur.state === 'saved') throw fail('DRAFT_SAVED');
@@ -1283,6 +1426,16 @@ export async function patchDraft(
         errorCode: null,
         updatedAt: Timestamp.fromDate(now),
       });
+      // L7: the waiting item's keys follow the edit.
+      const dialogue = dialogueOf(dialogueSnap, now);
+      if (dialogue) {
+        writeDialogue(
+          tx,
+          db,
+          afterDraftChange(dialogue, req.draftId, { payload, revision: cur.revision + 1 }, now),
+          now,
+        );
+      }
     });
     const view = draftView(await ref.get(), now, zone);
     return respond(clientRequestId, now, { draft: view }, { taskId, dataVersion: view.revision });
@@ -1297,15 +1450,23 @@ export async function discardDraft(
 ): Promise<AssistantResponse<{ draft: AssistantDraftView }>> {
   const { db, now } = deps;
   const req = parseRequest(discardDraftRequestSchema, data);
-  const { ref, taskId } = await draftContext(deps, uid, req.draftId);
+  const { ref, taskId, task } = await draftContext(deps, uid, req.draftId);
   await db.runTransaction(async (tx) => {
-    const d = await tx.get(ref);
+    const [d, dialogueSnap] = await Promise.all([
+      tx.get(ref),
+      tx.get(dialogueRef(db, task.get('conversationId') as string, task.get('ownerUid') as string)),
+    ]);
     if (!d.exists) throw fail('VALIDATION_FAILED', { field: 'draftId' });
     const cur = draftView(d, now);
     if (cur.state === 'discarded') return;
     if (cur.state === 'saved') throw fail('DRAFT_SAVED');
     if (cur.revision !== req.expectedRevision) throw fail('DRAFT_STALE');
     tx.update(ref, { state: 'discarded', updatedAt: Timestamp.fromDate(now) });
+    // L7: nothing waits for it any more.
+    const dialogue = dialogueOf(dialogueSnap, now);
+    if (dialogue) {
+      writeDialogue(tx, db, afterDraftChange(dialogue, req.draftId, { discarded: true }, now), now);
+    }
   });
   const view = draftView(await ref.get(), now);
   return respond(req.clientRequestId, now, { draft: view }, { taskId, dataVersion: view.revision });
@@ -1362,7 +1523,10 @@ export async function confirmDrafts(
     // the confirmer; newly saved drafts remember who saved them (D-075 #2).
     const confirmer = authorOf(s.member);
     await db.runTransaction(async (tx) => {
-      const conv = await tx.get(conversationRef(db, t.conversationId));
+      const [conv, dialogueSnap] = await Promise.all([
+        tx.get(conversationRef(db, t.conversationId)),
+        tx.get(dialogueRef(db, t.conversationId, t.ownerUid)),
+      ]);
       const saved = await Promise.all(
         items
           .filter((i) => i.status === 'saved')
@@ -1370,6 +1534,28 @@ export async function confirmDrafts(
       );
       for (const d of saved) {
         if (d.exists && !d.get('confirmedBy')) tx.update(d.ref, { confirmedBy: confirmer });
+      }
+      // L7 (P-168 #1): saved items leave the waiting list; a record stays correctable 30 min.
+      const dialogue = dialogueOf(dialogueSnap, now);
+      if (dialogue && saved.length > 0) {
+        writeDialogue(
+          tx,
+          db,
+          afterSave(
+            dialogue,
+            saved
+              .filter((d) => d.exists && d.get('recordId'))
+              .map((d) => ({
+                taskId: req.taskId,
+                draftId: d.id,
+                payload: d.get('payload'),
+                recordId: d.get('recordId') as string,
+                op: (d.get('op') as DraftOp | undefined) ?? 'create',
+              })),
+            now,
+          ),
+          now,
+        );
       }
       if (!conv.exists) return;
       const seq = appendMessages(
@@ -1434,6 +1620,8 @@ async function stopTask(
     if (!snap.exists) return false;
     const t = storedTask(snap);
     if (terminal.has(t.state)) return false;
+    // L7: its question and drafts no longer wait in the author's state.
+    const dialogue = dialogueOf(await tx.get(dialogueRef(db, t.conversationId, t.ownerUid)), now);
     const release = t.reservationId !== null && t.usage === 'reserved';
     if (release) {
       await releaseQuota(tx, db, {
@@ -1463,6 +1651,7 @@ async function stopTask(
       eventSeq: seq,
       updatedAt: Timestamp.fromDate(now),
     });
+    if (dialogue) writeDialogue(tx, db, afterStop(dialogue, taskId, state, now), now);
     return true;
   });
 }

@@ -17,6 +17,7 @@ import {
   type AssistantDraftView,
   type AssistantError,
   type ConfirmItemResult,
+  type DraftOp,
   type DraftPayload,
   type DraftProblem,
 } from '@child-life/contracts';
@@ -334,6 +335,17 @@ export function buildRecFeedback<S>(
 const timerRefOf = (db: Firestore, babyId: string, type: 'sleep' | 'breast') =>
   db.doc(`babies/${babyId}/timers/${type}`);
 
+/** The care record type a draft kind writes (L7: an edit must keep the record's type). */
+const careTypeOf = (k: DraftPayload['kind']): CareRecordType | null =>
+  k === 'bottle' ||
+  k === 'breast' ||
+  k === 'sleep' ||
+  k === 'pump' ||
+  k === 'diaper' ||
+  k === 'growth'
+    ? k
+    : null;
+
 /** The app routes that open a saved item (built here, never by the model; A4 registers them). */
 export const recordLinkFor = (babyId: string, kind: DraftPayload['kind'], id: string) =>
   kind === 'expense' || kind === 'reminder' // Slice A3: the app's own routes.
@@ -364,6 +376,10 @@ export function draftView(snap: DocumentSnapshot, now: Date, zone?: string): Ass
     recordLink: (d.recordLink as string | null | undefined) ?? null,
     errorCode: (d.errorCode as string | null | undefined) ?? null,
     warnings: (d.warnings as ActionDraft['warnings'] | undefined) ?? [],
+    // Lumi L7: a change to a record saved in the last 30 min (absent on a new record).
+    ...(d.op
+      ? { op: d.op as DraftOp, targetRecordId: (d.targetRecordId as string | null) ?? null }
+      : {}),
   };
   // Slice A3: plus the module's own problems (VND only, a reminder needs a time).
   return {
@@ -476,13 +492,83 @@ export async function confirmDraftItem(
     let target: FirebaseFirestore.DocumentReference;
     let doc: Record<string, unknown>;
     let conflict: AssistantError | null = null;
+    /** Lumi L7: `update` / `delete` change a record saved in the last 30 min (no create). */
+    const op = (d.get('op') as 'update' | 'delete' | undefined) ?? 'create';
     /** Lumi timers: the ended timer, deleted with its record. */
     let remove: FirebaseFirestore.DocumentReference | null = null;
     let linkOverride: string | null = null;
     let recordOverride: string | null = null;
     const warnings = new Set(draft.warnings);
     // ---- Slice A3: Chi tiêu expense / one-off reminder (assistant-writers-images.ts) ----
-    if (p.kind === 'expense' || p.kind === 'reminder') {
+    if (op !== 'create') {
+      // ---- Lumi L7 (P-168 #2): "180 chứ" / "xoá cái vừa ghi" on a saved care record ----
+      const recordId = d.get('targetRecordId') as string | null | undefined;
+      if (!recordId) return result(x, 'failed', { errorCode: 'VALIDATION_FAILED' });
+      target = db.doc(`babies/${x.babyId}/records/${recordId}`);
+      const rec = await tx.get(target);
+      if (!rec.exists || rec.get('babyId') !== x.babyId || rec.get('type') !== careTypeOf(p.kind)) {
+        return result(x, 'failed', { errorCode: 'VALIDATION_FAILED' });
+      }
+      // The Rules' `canEditRecord`: a Cùng nuôi, or the one who logged it.
+      if (member.role !== 'coParent' && rec.get('createdBy') !== x.uid) {
+        return result(x, 'failed', { errorCode: 'WRITE_DENIED' });
+      }
+      const link = recordLinkFor(x.babyId, p.kind, recordId);
+      const settled = (status: 'saved') => {
+        tx.update(dRef, {
+          state: status,
+          recordId,
+          recordLink: link,
+          errorCode: null,
+          savedAt: Timestamp.fromDate(x.now),
+          savedBy: x.uid,
+          updatedAt: Timestamp.fromDate(x.now),
+        });
+        return result(x, status, { revision: draft.revision, recordId, recordLink: link });
+      };
+      if (rec.get('deleted') === true) {
+        // Already deleted (here or in the app): a delete is done, an edit has nothing to change.
+        if (op === 'delete') return settled('saved');
+        return result(x, 'failed', { errorCode: 'DOMAIN_CONFLICT', revision: draft.revision });
+      }
+      const server = FieldValue.serverTimestamp();
+      if (op === 'delete') {
+        doc = {
+          deleted: true,
+          deletedAt: server,
+          deletedBy: x.uid,
+          updatedAt: server,
+          updatedBy: x.uid,
+        };
+      } else {
+        const care = careRecordFromDraft(p, x.now, x.zone);
+        if (!care.ok) {
+          return result(x, 'failed', { errorCode: 'VALIDATION_FAILED', problems: care.problems });
+        }
+        if (care.type === 'sleep') {
+          const others = await overlappingSleeps(
+            db,
+            x.babyId,
+            { start: care.occurredAt, end: care.endedAt! },
+            recordId,
+            tx,
+          );
+          if (others.length > 0) {
+            warnings.add('overlap');
+            if (!x.acknowledge.includes('overlap')) conflict = 'DOMAIN_CONFLICT';
+          }
+        }
+        // The app's "Sửa": time and details only (`validRecordUpdate`).
+        doc = {
+          occurredAt: care.occurredAt,
+          endedAt: care.endedAt,
+          data: care.data,
+          updatedAt: server,
+          updatedBy: x.uid,
+        };
+      }
+      // ---- end L7 ----
+    } else if (p.kind === 'expense' || p.kind === 'reminder') {
       const plan = await planImageWrite(
         tx,
         db,
@@ -677,7 +763,8 @@ export async function confirmDraftItem(
       tx.update(tRef, { eventSeq: seq, updatedAt: at });
       return result(x, 'conflict', { revision: draft.revision, errorCode: conflict });
     }
-    tx.create(target, doc);
+    if (op === 'create') tx.create(target, doc);
+    else tx.update(target, doc);
     if (remove) tx.delete(remove);
     tx.update(dRef, {
       state: 'saved',
