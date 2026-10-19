@@ -1741,8 +1741,8 @@ export const seedNutritionRules: readonly NutritionSeed<NutritionRuleContent>[] 
       days: null,
       ageMonths: { from: 0, to: 12 },
       banner: t(
-        'Mỗi bé mỗi khác: lượng sữa thay đổi theo ngày và theo bữa ăn dặm. Hãy cho bú theo dấu hiệu đói, no, và trao đổi bác sĩ nếu kéo dài hoặc bé ít tã ướt, quấy nhiều.',
-        'Every baby is different: milk intake varies from day to day and with solids. Feed by hunger and fullness cues, and talk to the doctor if it goes on, or if there are few wet nappies or a lot of fussing.',
+        'Mỗi bé mỗi khác: lượng sữa mỗi ngày một khác. Hãy cho bú theo dấu hiệu đói, no, và trao đổi bác sĩ nếu kéo dài hoặc bé ít tã ướt, quấy nhiều.',
+        'Every baby is different: milk intake varies from day to day. Feed by hunger and fullness cues, and talk to the doctor if it goes on, or if there are few wet nappies or a lot of fussing.',
       ),
       tips: [
         tip(
