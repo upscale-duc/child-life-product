@@ -99,17 +99,32 @@ class BackgroundTransport implements UploadTransport {
   Future<Map<String, Object?>?> _status(String path) =>
       _channel.invokeMapMethod<String, Object?>('status', {'path': path});
 
+  /// Starts at a time: each "start" is a round trip to Storage, so 24 files one after another
+  /// kept the first byte waiting ~8 s; a few at once keep the order near enough.
+  static const _handOffWidth = 3;
+
   @override
   Future<void> handOff(List<UploadJob> jobs) async {
-    for (final job in jobs) {
+    Future<void> one(UploadJob job) async {
       final known = await _status(job.path);
-      if (known != null && known['state'] != 'failed') continue;
+      if (known != null && known['state'] != 'failed') return;
       await _start(job);
+    }
+
+    for (var i = 0; i < jobs.length; i += _handOffWidth) {
+      await Future.wait(jobs.skip(i).take(_handOffWidth).map(one));
     }
   }
 
-  /// A broken resumable session (closed, expired) or a dropped connection: worth one fresh start.
-  static const _restartable = {'network', 'http-400', 'http-404', 'http-410'};
+  /// A broken resumable session (closed, expired), a dropped connection, or a transfer the
+  /// platform lost while the app was gone (`lost`, see the native reconcile): one fresh start.
+  static const _restartable = {
+    'network',
+    'http-400',
+    'http-404',
+    'http-410',
+    'lost',
+  };
 
   @override
   Future<void> upload(UploadJob job, void Function(int sent) onProgress) async {

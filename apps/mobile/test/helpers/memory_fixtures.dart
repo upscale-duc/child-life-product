@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:child_life/features/baby/baby_models.dart';
@@ -416,6 +417,10 @@ class FakeTransport implements UploadTransport {
   @override
   void cancelAll() => cancelledAll++;
 
+  /// While set, every upload waits here (a slow file), so a test can see what the queue does
+  /// meanwhile; complete it to let them finish.
+  Completer<void>? gate;
+
   @override
   Future<void> upload(UploadJob job, void Function(int sent) onProgress) async {
     final storagePath = job.path;
@@ -424,6 +429,7 @@ class FakeTransport implements UploadTransport {
       if (failTimes > 0) failTimes--;
       throw const SocketException('offline');
     }
+    if (gate case final g?) await g.future;
     onProgress(1000);
     uploaded.add(storagePath);
   }

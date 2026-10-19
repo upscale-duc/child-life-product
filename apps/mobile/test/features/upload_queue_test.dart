@@ -201,6 +201,7 @@ void main() {
       request: next,
       picked: [pickedPhoto('IMG_3601.HEIC'), pickedPhoto('IMG_3602.HEIC')],
     );
+    await pumpEventQueue();
     final batches = container.read(uploadQueueProvider).batches;
     expect(batches.map((b) => b.batchId), [next['batchId']]);
     expect(batches.single.items, hasLength(2));
@@ -261,6 +262,92 @@ void main() {
       expect(items().last.state, QueueState.failed);
     },
   );
+
+  test(
+    'enqueue returns once the batch is saved; the files go on behind it',
+    () async {
+      // Tự lưu held "Đang chuẩn bị 19/19…" on screen until the last of 19 files had
+      // uploaded (owner, 2026-10-19): enqueue awaited the whole upload loop.
+      container = await start();
+      transport.gate = Completer<void>();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('IMG_2953.HEIC'), pickedPhoto('IMG_2954.HEIC')],
+      );
+      await pumpEventQueue();
+      expect(repo.sessions, hasLength(1));
+      expect(items().map((i) => i.state), [
+        QueueState.uploading,
+        QueueState.queued,
+      ]);
+      transport.gate!.complete();
+      transport.gate = null;
+      await pumpEventQueue();
+      expect(items().map((i) => i.state), everyElement(QueueState.uploaded));
+    },
+  );
+
+  test('a batch added while another uploads gets its session and goes too', () async {
+    // The second approval sat at "Đang chuẩn bị" (no session) until the next network change,
+    // while the lock screen counted the first batch only: "11/38" against "18/19".
+    container = await start();
+    transport.gate = Completer<void>();
+    final queue = container.read(uploadQueueProvider.notifier);
+    await queue.enqueue(
+      babyId: teddyId,
+      request: request(),
+      picked: [pickedPhoto('a.HEIC')],
+    );
+    await pumpEventQueue();
+    final second = {
+      ...request(),
+      'batchId': newBatchId(),
+      'memoryId': newMemoryId(),
+    };
+    await queue.enqueue(
+      babyId: teddyId,
+      request: second,
+      picked: [pickedPhoto('b.HEIC'), pickedVideo('c.MOV')],
+    );
+    await pumpEventQueue();
+    expect(items().map((i) => i.state), [
+      QueueState.uploading,
+      QueueState.pendingSession,
+      QueueState.pendingSession,
+    ]);
+    transport.gate!.complete();
+    transport.gate = null;
+    await pumpEventQueue();
+    expect(repo.sessions, hasLength(2));
+    expect(repo.sessions.last['batchId'], second['batchId']);
+    expect(items().map((i) => i.state), everyElement(QueueState.uploaded));
+    // Both batches are handed to the platform, so the lock screen counts all of them.
+    expect(
+      transport.handedOff.map((j) => j.path).toSet(),
+      transport.uploaded.toSet(),
+    );
+  });
+
+  test('"Đang chuẩn bị" counts each file as it is prepared', () async {
+    container = await start();
+    final seen = <(int, int)>[];
+    await container
+        .read(uploadQueueProvider.notifier)
+        .enqueue(
+          babyId: teddyId,
+          request: request(),
+          picked: [
+            pickedPhoto('a.HEIC'),
+            pickedPhoto('b.HEIC'),
+            pickedVideo('c.MOV'),
+          ],
+          onPrepared: (done, total) => seen.add((done, total)),
+        );
+    expect(seen, [(1, 3), (2, 3), (3, 3)]);
+    await pumpEventQueue();
+  });
 
   test('"Tạm dừng" stops everything handed over', () async {
     container = await start();

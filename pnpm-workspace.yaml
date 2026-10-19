@@ -7,6 +7,11 @@ packages:
   - firebase/tests
   - scripts
 allowBuilds:
+  # ffmpeg / ffprobe for video renditions (P-170): their install step only marks the binary executable.
+  '@ffmpeg-installer/darwin-arm64': true
+  '@ffmpeg-installer/linux-x64': true
+  '@ffprobe-installer/darwin-arm64': true
+  '@ffprobe-installer/linux-x64': true
   '@firebase/util': true
   esbuild: true
   protobufjs: true

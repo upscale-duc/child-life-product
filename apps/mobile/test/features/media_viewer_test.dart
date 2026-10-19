@@ -220,6 +220,43 @@ void main() {
       expect(pager.controller!.page, 1);
     });
 
+    test('a video plays its streaming rendition when there is one (P-170)', () {
+      MediaItem item(MediaPaths paths) => MediaItem(
+        id: 'med_1',
+        babyId: 'b_teddy',
+        memoryId: 'mem_1',
+        type: MediaKind.video,
+        status: MediaStatus.ready,
+        audience: Audience.family,
+        effectiveAudience: Audience.family,
+        captureAt: _at,
+        createdBy: 'mai',
+        paths: paths,
+      );
+      final full = item(
+        const MediaPaths(
+          original: 'o/original.mov',
+          display: 'o/display.mp4',
+          thumb: 'o/thumb.jpg',
+          poster: 'o/poster.jpg',
+        ),
+      );
+      expect(full.playablePath, 'o/display.mp4');
+      // The rendition is a video: never shown where a picture goes.
+      expect(full.thumbPath, 'o/thumb.jpg');
+      expect(full.displayPath, 'o/poster.jpg');
+      final early = item(
+        const MediaPaths(original: 'o/original.mov', display: 'o/display.mp4'),
+      );
+      expect(early.thumbPath, isNull);
+      expect(early.displayPath, isNull);
+      // Before the job has run, the original as recorded.
+      expect(
+        item(const MediaPaths(original: 'o/original.mov')).playablePath,
+        'o/original.mov',
+      );
+    });
+
     testWidgets('a video plays in place with play / pause and a scrubber', (
       tester,
     ) async {

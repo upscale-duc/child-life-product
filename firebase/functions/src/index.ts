@@ -101,6 +101,8 @@ import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict }
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { bucketOpen, bucketPurgeStore, bucketStore, sharpImages } from './images.js';
+import { ffmpegVideo } from './video-ffmpeg.js';
+import { requeueStaleVideoRenditions, runVideoRendition } from './video-renditions.js';
 import sharp from 'sharp';
 import {
   firstAidAct,
@@ -834,6 +836,34 @@ export const onMediaUploaded = onObjectFinalized(
   },
 );
 
+/**
+ * Streaming rendition for a video that became ready (P-170): H.264/AAC, short side ≤ 1080 px,
+ * ≤ 30 fps, SDR, index first, into `media/{id}/display.mp4`; the app plays it instead of the
+ * original. ffmpeg needs the room and the cores; one job per instance.
+ */
+export const buildVideoRendition = onDocumentCreated(
+  {
+    document: 'videoRenditionJobs/{jobId}',
+    memory: '4GiB',
+    cpu: 4,
+    timeoutSeconds: 540,
+    concurrency: 1,
+    maxInstances: 5,
+  },
+  async (event) => {
+    const bucket = getStorage().bucket();
+    const result = await runVideoRendition(
+      getFirestore(),
+      bucketStore(bucket),
+      sharpImages,
+      ffmpegVideo(bucket),
+      event.params.jobId,
+      new Date(),
+    );
+    logger.info('video rendition', { jobId: event.params.jobId, result });
+  },
+);
+
 /** Memory counts, publish state and the batch's single notification follow the items (P-030). */
 export const onMemoryMediaWrite = onDocumentWritten(
   'babies/{babyId}/media/{mediaId}',
@@ -885,6 +915,9 @@ export const releaseStaleMemoryUploads = onSchedule('every 60 minutes', async ()
   if (released > 0) logger.info('stale uploads released', { count: released });
   const closed = await closeWaitingBatches(getFirestore(), new Date());
   if (closed > 0) logger.info('waiting batches closed', { count: closed });
+  // A rendition job that stalled (instance gone, event lost) runs again (P-170).
+  const requeued = await requeueStaleVideoRenditions(getFirestore(), new Date());
+  if (requeued > 0) logger.info('video renditions re-queued', { count: requeued });
 });
 
 // ---------- Albums, loves, messages, notices (S10) ----------

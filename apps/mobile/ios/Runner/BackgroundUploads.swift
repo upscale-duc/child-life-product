@@ -93,8 +93,43 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
       self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
   }
 
-  /// Reconnects to the background session so outcomes from while the app was gone arrive.
-  func resume() { _ = session }
+  private var reconciled = false
+
+  /// Reconnects to the background session so outcomes from while the app was gone arrive, and
+  /// checks once that every job still "running" has a task behind it.
+  func resume() {
+    let s = session
+    guard !reconciled else { return }
+    reconciled = true
+    s.getAllTasks { [weak self] tasks in self?.reconcile(with: tasks) }
+  }
+
+  /// A job the session no longer knows (iOS dropped it after a force quit, a reboot, or a
+  /// purge) would otherwise stay "running" forever, and the Dart queue would wait on it just as
+  /// long — the item sat at "Đang tải" while the lock screen had moved on. Such jobs become
+  /// `failed` / `lost`, which the queue sends afresh. Jobs started in the last seconds are left
+  /// alone: their task may not be registered yet.
+  private func reconcile(with tasks: [URLSessionTask]) {
+    let live = Set(tasks.compactMap { $0.taskDescription })
+    let cutoff = Date().addingTimeInterval(-10)
+    var lost: [String] = []
+    lock.lock()
+    for (path, job) in jobs where job.state == "running" && !live.contains(path) && job.updated < cutoff {
+      var j = job
+      j.state = "failed"
+      j.code = "lost"
+      j.updated = Date()
+      jobs[path] = j
+      if j.counts { run.failed += 1 }
+      lost.append(path)
+    }
+    let idle = !lost.isEmpty && !jobs.values.contains(where: { $0.state == "running" })
+    if idle { run = Run() }
+    if !lost.isEmpty { save() }
+    lock.unlock()
+    for path in lost { send(["event": "failed", "path": path, "code": "lost"]) }
+    if !lost.isEmpty { Task { await updateActivity(force: true) } }
+  }
 
   // MARK: Dart channel
 
@@ -417,7 +452,8 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
     let r = run
     // Files done count whole; the ones still going by their own share of bytes.
     let partial = running.reduce(0.0) { $0 + ($1.total > 0 ? Double($1.sent) / Double($1.total) : 0) }
-    let waiting = running.filter { $0.video && $0.wifiOnly }.count
+    // "1 video chờ Wi‑Fi" only while there is no Wi-Fi: on Wi-Fi the same video is uploading.
+    let waiting = onWifi ? 0 : running.filter { $0.video && $0.wifiOnly }.count
     lock.unlock()
     let existing = Activity<UploadAttributes>.activities
     guard !running.isEmpty, r.total > 0 else {

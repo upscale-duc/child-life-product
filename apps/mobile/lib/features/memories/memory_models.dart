@@ -156,11 +156,21 @@ class MediaItem {
   bool get isReady => status == MediaStatus.ready;
   bool get isPrivate => effectiveAudience == Audience.parents;
 
-  /// Best small picture: the thumbnail, else the display copy, else the poster.
-  String? get thumbPath => paths?.thumb ?? paths?.display ?? paths?.poster;
+  /// Best small picture: the thumbnail, else the display copy (photos), else the poster. A
+  /// video's `display` is its streaming rendition (P-170), never a picture.
+  String? get thumbPath =>
+      paths?.thumb ??
+      (isVideo ? paths?.poster : paths?.display ?? paths?.poster);
 
   /// What the viewer shows for a photo, or the poster of a video.
-  String? get displayPath => paths?.display ?? paths?.poster ?? paths?.thumb;
+  String? get displayPath => isVideo
+      ? paths?.poster ?? paths?.thumb
+      : paths?.display ?? paths?.poster ?? paths?.thumb;
+
+  /// What the player opens: the streaming rendition once the server has made it (H.264,
+  /// ≤ 1080p, index first — P-170), else the original as recorded. Null for photos.
+  String? get playablePath =>
+      isVideo ? paths?.display ?? paths?.original : null;
 
   static MediaItem? fromSnapshot(DocumentSnapshot<Map<String, dynamic>> doc) {
     final j = doc.data();

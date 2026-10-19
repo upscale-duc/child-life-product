@@ -709,7 +709,9 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
           : await existing.play();
       return;
     }
-    final path = widget.item.paths?.original;
+    // The streaming rendition when there is one, else the original (P-170); "Tải về" and
+    // "Chia sẻ" keep using the original.
+    final path = widget.item.playablePath;
     if (path == null || _loading) return;
     setState(() {
       _loading = true;

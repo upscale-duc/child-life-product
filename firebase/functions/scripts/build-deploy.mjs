@@ -11,7 +11,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'deploy');
 const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 // sharp ships native binaries per platform: Cloud Build installs the Linux build (S9 photos).
-const external = ['firebase-functions', 'firebase-admin', 'sharp'];
+// The ffmpeg / ffprobe installers do the same for video renditions (P-170); the Linux x64
+// binaries come from npm, no download step at build time.
+const external = [
+  'firebase-functions',
+  'firebase-admin',
+  'sharp',
+  '@ffmpeg-installer/ffmpeg',
+  '@ffprobe-installer/ffprobe',
+];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });

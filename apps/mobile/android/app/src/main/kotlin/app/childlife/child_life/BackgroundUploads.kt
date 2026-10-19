@@ -107,6 +107,7 @@ object BackgroundUploads {
         val app = context.applicationContext
         val channel = MethodChannel(messenger, "childlife/uploads")
         emit = { event -> main.post { channel.invokeMethod("event", event) } }
+        io.execute { reconcile(app) }
         channel.setMethodCallHandler { call, result ->
             val args = call.arguments as? Map<*, *> ?: emptyMap<String, Any>()
             val path = args["path"] as? String ?: ""
@@ -185,6 +186,44 @@ object BackgroundUploads {
         load(context)
         if (jobs[path]?.state != "running") jobs.remove(path)
         save(context)
+    }
+
+    @Volatile private var reconciled = false
+
+    /**
+     * A job still "running" whose WorkManager work is gone or finished without reporting (the
+     * app's data was restored, work was cleared, a crash between the two) would stay "running"
+     * forever and the Dart queue would wait on it just as long. Once per process such jobs
+     * become `failed` / `lost`, which the queue sends afresh. Jobs started in the last seconds
+     * are left alone: their work may not be enqueued yet.
+     */
+    private fun reconcile(context: Context) {
+        if (reconciled) return
+        reconciled = true
+        val wm = WorkManager.getInstance(context)
+        val cutoff = System.currentTimeMillis() - 10_000L
+        val candidates = synchronized(lock) {
+            load(context)
+            jobs.values.filter { it.state == "running" && it.updated < cutoff }.map { it.path }
+        }
+        val lost = candidates.filter { path ->
+            val infos = runCatching { wm.getWorkInfosForUniqueWork(workName(path)).get() }.getOrNull()
+            infos == null || infos.isEmpty() || infos.all { it.state.isFinished }
+        }
+        if (lost.isEmpty()) return
+        synchronized(lock) {
+            for (path in lost) {
+                val j = jobs[path]?.takeIf { it.state == "running" } ?: continue
+                j.state = "failed"
+                j.code = "lost"
+                j.updated = System.currentTimeMillis()
+                if (j.counts) run.failed += 1
+            }
+            if (jobs.values.none { it.state == "running" }) run = Run()
+            save(context)
+        }
+        for (path in lost) send(mapOf("event" to "failed", "path" to path, "code" to "lost"))
+        notifyProgress(context)
     }
 
     // ---------- Start, cancel ----------
@@ -361,7 +400,8 @@ object BackgroundUploads {
         ensureChannel(context)
         val partial = running.sumOf { if (it.total > 0) it.sent.toDouble() / it.total else 0.0 }
         val fraction = ((r.done + r.failed + partial) / r.total).coerceIn(0.0, 1.0)
-        val waiting = running.count { it.video && it.wifiOnly }
+        // "1 video chờ Wi‑Fi" only while there is no Wi-Fi: on Wi-Fi the same video is uploading.
+        val waiting = if (onWifi(context)) 0 else running.count { it.video && it.wifiOnly }
         val snap = Glance.snapshot(context)
         val nickname = snap?.optString("nickname")?.takeIf { it.isNotEmpty() && snap.optString("babyId") == r.babyId }
         val title = nickname?.let { Glance.text(context, "upload.title", "Kỷ niệm của {name}", mapOf("name" to it)) }

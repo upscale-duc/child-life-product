@@ -861,6 +861,9 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         parts++;
         final closes = last || parts == _maxBatchParts;
         await queue.enqueue(
+          // The slow part is here (every photo re-encoded, every video remuxed and given a
+          // poster), so "Đang chuẩn bị 3/19" counts prepared files, not resolved ones.
+          onPrepared: (_, _) => onPrepared?.call(++prepared, chosen.length),
           babyId: entry.key,
           request: {
             'babyId': entry.key,
@@ -892,9 +895,9 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         } on Object {
           p = null;
         }
-        onPrepared?.call(++prepared, chosen.length);
         if (p == null) {
           missing.add(c.asset.id);
+          onPrepared?.call(++prepared, chosen.length);
           continue;
         }
         // A full part goes once another item follows it, so the last one is always known.

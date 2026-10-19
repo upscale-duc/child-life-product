@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@child-life/contracts": "workspace:*",
+    "@ffmpeg-installer/ffmpeg": "1.1.0",
+    "@ffprobe-installer/ffprobe": "2.1.2",
     "archiver": "8.0.0",
     "firebase-admin": "14.5.0",
     "firebase-functions": "7.4.0",

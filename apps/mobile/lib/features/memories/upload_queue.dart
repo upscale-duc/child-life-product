@@ -601,6 +601,10 @@ class UploadQueue extends Notifier<QueueView> {
   final _batches = <QueueBatch>[];
   var _paused = false;
   var _running = false;
+
+  /// Something changed while the loop was running (a new batch, a retry, the network): the
+  /// loop takes it up at its next step instead of dropping it.
+  var _again = false;
   var _loaded = false;
   DateTime? _lastQuotaTry;
   Timer? _sessionRetry;
@@ -658,11 +662,15 @@ class UploadQueue extends Notifier<QueueView> {
     await ref.read(queueStoreProvider).save(_batches);
   }
 
-  /// 10h "Tải lên N mục": prepare the files, save the batch, start.
+  /// 10h "Tải lên N mục": prepare the files, save the batch, start. Returns once the batch is
+  /// saved on the phone; the uploads themselves go on behind it (the pill and 10i show them).
+  /// [onPrepared] follows the slow part — each file copied, re-encoded or remuxed — so a screen
+  /// can count "Đang chuẩn bị 3/19" honestly.
   Future<void> enqueue({
     required String babyId,
     required Map<String, Object?> request,
     required List<PickedMedia> picked,
+    void Function(int done, int total)? onPrepared,
   }) async {
     await _load();
     final preparer = ref.read(mediaPreparerProvider);
@@ -685,6 +693,7 @@ class UploadQueue extends Notifier<QueueView> {
           ),
         );
       }
+      onPrepared?.call(items.length, picked.length);
     }
     final fromLibrary = [for (final p in picked) ?p.assetId];
     if (fromLibrary.isNotEmpty) {
@@ -712,7 +721,10 @@ class UploadQueue extends Notifier<QueueView> {
       ),
     );
     await _persist();
-    await _kick();
+    // Not awaited: the loop below may already be busy with an earlier batch, and the caller
+    // (compose, Tự lưu, the share inbox) only needs the batch to be safe on the phone. Awaiting
+    // it held "Đang chuẩn bị 19/19…" on screen until the last file was uploaded.
+    unawaited(_kick());
   }
 
   void setPaused(bool paused) {
@@ -815,15 +827,29 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   Future<void> _kick() async {
-    if (_running || !_loaded) return;
+    if (!_loaded) return;
+    if (_running) {
+      // One loop at a time. A batch added while it runs used to wait for the next network
+      // change for its session (its rows sat at "Đang chuẩn bị"); now the loop picks it up
+      // before its next file.
+      _again = true;
+      return;
+    }
     _running = true;
     try {
-      await _createSessions();
-      await _retryQuota();
-      await _handOff();
-      while (true) {
+      _again = true;
+      while (ref.mounted) {
+        if (_again) {
+          _again = false;
+          await _createSessions();
+          await _retryQuota();
+          await _handOff();
+        }
         final next = _next();
-        if (next == null) break;
+        if (next == null) {
+          if (_again) continue;
+          break;
+        }
         await _upload(next.$1, next.$2);
       }
     } finally {
@@ -833,7 +859,7 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   Future<void> _createSessions() async {
-    if (_network == NetworkKind.none) return;
+    if (!ref.mounted || _network == NetworkKind.none) return;
     for (final b in _batches.where((b) => !b.sessionCreated)) {
       final live = b.items
           .where(
@@ -891,6 +917,7 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   Future<void> _retryQuota() async {
+    if (!ref.mounted) return;
     final waiting = _batches
         .where((b) => b.items.any((i) => i.state == QueueState.waitingQuota))
         .toList();
@@ -921,7 +948,7 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   (QueueBatch, QueueItem)? _next() {
-    if (_paused) return null;
+    if (_paused || !ref.mounted) return null;
     final network = _network;
     if (network == NetworkKind.none) {
       for (final i in _items) {
@@ -1002,7 +1029,7 @@ class UploadQueue extends Notifier<QueueView> {
   /// 10j: everything that may go now is handed to the platform at once, videos held for Wi-Fi
   /// included, so it all continues with the phone locked; the loop below then joins each file.
   Future<void> _handOff() async {
-    if (_paused || _network == NetworkKind.none) return;
+    if (!ref.mounted || _paused || _network == NetworkKind.none) return;
     final jobs = [
       for (final b in _batches.where((b) => b.sessionCreated))
         for (final i in b.items)
@@ -1034,6 +1061,7 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   Future<void> _upload(QueueBatch b, QueueItem i) async {
+    if (!ref.mounted) return;
     final transport = ref.read(uploadTransportProvider);
     i.state = QueueState.uploading;
     i.sent = 0;

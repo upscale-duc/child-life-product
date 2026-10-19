@@ -33,12 +33,14 @@ import {
  * (quota reserved, P-031), uploads raw bytes to `babies/{b}/uploads/{mediaId}` (Storage Rules
  * check the reservation), and `processUpload` validates the real content, strips metadata
  * (P-033), writes renditions, commits the quota and lets the media trigger publish the memory and
- * send the batch's single notification (P-030). Captions, photos and names are never logged.
+ * send the batch's single notification (P-030). A video is ready as recorded; its streaming rendition follows from a job
+ * (video-renditions.ts, P-170). Captions, photos and names are never logged.
  */
 
 import { familyNotice, recomputeAlbum, recomputeEffective } from './albums.js';
 import { hasPremiumTemplates } from './entitlements.js';
 import { familyBucket } from './features.js';
+import { renditionJobDoc, renditionJobId } from './video-renditions.js';
 
 export class MemoryError extends Error {
   constructor(
@@ -724,7 +726,15 @@ export async function processUpload(
       clientState: null,
       readyAt: now,
       updatedAt: now,
+      // The original plays at once; display.mp4 (P-170) takes its place when the job is done.
+      ...(type === 'video' ? { rendition: { state: 'queued', updatedAt: now } } : {}),
     });
+    if (type === 'video') {
+      tx.set(
+        db.doc(`videoRenditionJobs/${renditionJobId(mediaId, 1)}`),
+        renditionJobDoc(babyId, mediaId, now),
+      );
+    }
     return 'ready' as const;
   });
   if (result === 'unreadable') {
