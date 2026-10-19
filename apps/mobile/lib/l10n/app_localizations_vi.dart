@@ -9552,6 +9552,26 @@ class AppLocalizationsVi extends AppLocalizations {
       'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.';
 
   @override
+  String autoSaveWeek(int n, int count) {
+    return 'Tuần $n · $count';
+  }
+
+  @override
+  String autoSaveWeekBefore(int count) {
+    return 'Trước sinh · $count';
+  }
+
+  @override
+  String autoSaveWeekDone(int n) {
+    return 'Tuần $n · xong';
+  }
+
+  @override
+  String autoSaveWeekHint(String name) {
+    return 'Duyệt theo tuần tuổi của $name: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.';
+  }
+
+  @override
   String autoSaveFilterAll(int count) {
     return 'Tất cả · $count';
   }

@@ -14319,6 +14319,45 @@
   "@autoSaveGroupedHint": {
     "description": "AS07 grouping note (P-146, G-102)"
   },
+  "autoSaveWeek": "Tuần {n} · {count}",
+  "@autoSaveWeek": {
+    "description": "AS07 week-of-age chip: pending tiles in that week (P-171)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveWeekBefore": "Trước sinh · {count}",
+  "@autoSaveWeekBefore": {
+    "description": "AS07 chip for items captured before the date of birth",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveWeekDone": "Tuần {n} · xong",
+  "@autoSaveWeekDone": {
+    "description": "AS07 chip for a week with nothing left to review",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveWeekHint": "Duyệt theo tuần tuổi của {name}: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.",
+  "@autoSaveWeekHint": {
+    "description": "AS07 line above the week chips",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "autoSaveFilterAll": "Tất cả · {count}",
   "@autoSaveFilterAll": {
     "description": "AS07 filter chip",

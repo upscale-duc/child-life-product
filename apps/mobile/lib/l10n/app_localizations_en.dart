@@ -10228,6 +10228,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Similar photos are grouped; the clearest one is already ticked.';
 
   @override
+  String autoSaveWeek(int n, int count) {
+    return 'Week $n · $count';
+  }
+
+  @override
+  String autoSaveWeekBefore(int count) {
+    return 'Before birth · $count';
+  }
+
+  @override
+  String autoSaveWeekDone(int n) {
+    return 'Week $n · done';
+  }
+
+  @override
+  String autoSaveWeekHint(String name) {
+    return 'Review by $name\'s week of age: upload a week at a time; finished weeks are marked.';
+  }
+
+  @override
   String autoSaveFilterAll(int count) {
     return 'All · $count';
   }

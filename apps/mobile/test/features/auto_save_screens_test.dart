@@ -297,6 +297,76 @@ void main() {
     expect(decision.reviewed, hasLength(200), reason: 'the rest stay pending');
   });
 
+  testWidgets(
+    'AS07 reviews a week of age at a time; a sent week reads "xong" (P-171)',
+    (tester) async {
+      // Teddy was born 17 Sep; t0 (12 Oct) is week 4, nine days earlier is week 3.
+      await store().save(
+        ready(
+          pending: [
+            candidate('w3a', const Duration(days: -9), v([1, 0]), 0.5),
+            candidate(
+              'w3b',
+              const Duration(days: -9, hours: 3),
+              v([0, 1]),
+              0.5,
+            ),
+            candidate('w4', Duration.zero, v([1, 1]), 0.5),
+          ],
+        ),
+      );
+      final (visits, _) = await pumpRouted(
+        tester,
+        const AutoSaveReviewScreen(),
+        overrides: overrides(),
+      );
+      await tester.pumpAndSettle();
+      // The earliest week opens first, with only its own items counted.
+      expect(find.text('Tuần 3 · 2'), findsOneWidget);
+      expect(find.text('Tuần 4 · 1'), findsOneWidget);
+      expect(find.text('Tiếp tục với 2 mục'), findsOneWidget);
+
+      await tester.tap(find.text('Tuần 4 · 1'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tiếp tục với 1 mục'), findsOneWidget);
+      await tester.tap(find.text('Tiếp tục với 1 mục'));
+      await tester.pumpAndSettle();
+      final decision = visits.last.extra! as AutoSaveDecision;
+      expect(decision.chosen.map((c) => c.asset.id), ['w4']);
+      // Only this week is decided; week 3 stays pending for its own upload.
+      expect(decision.reviewed.map((c) => c.asset.id), ['w4']);
+    },
+  );
+
+  testWidgets(
+    'AS07: a week sent earlier reads "xong"; the next week is up (P-171)',
+    (tester) async {
+      // Back on the review with week 4 gone from pending: it is marked done, week 3 is up.
+      await store().save(
+        ready(
+          pending: [
+            candidate('w3a', const Duration(days: -9), v([1, 0]), 0.5),
+            candidate(
+              'w3b',
+              const Duration(days: -9, hours: 3),
+              v([0, 1]),
+              0.5,
+            ),
+          ],
+        ),
+      );
+      final (_, container) = await pumpRouted(
+        tester,
+        const AutoSaveReviewScreen(),
+        overrides: overrides(),
+      );
+      container.read(reviewedWeeksProvider.notifier).add(teddyId, 4);
+      await tester.pumpAndSettle();
+      expect(find.text('Tuần 4 · xong'), findsOneWidget);
+      expect(find.text('Tiếp tục với 2 mục'), findsOneWidget);
+    },
+  );
+
   testWidgets('AS07 "Bỏ chọn tất cả" clears the picks to choose a few', (
     tester,
   ) async {
@@ -363,10 +433,17 @@ void main() {
         pending: [
           for (var i = 0; i < 199; i++)
             candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
-          candidate('pair-a', const Duration(days: 3), v([1, 0]), 0.9),
+          // A day of its own, newest, still in the same week of age (P-171 reviews per
+          // week), so its opened group sits right under a one-tile grid.
+          candidate(
+            'pair-a',
+            const Duration(days: 2, hours: 1),
+            v([1, 0]),
+            0.9,
+          ),
           candidate(
             'pair-b',
-            const Duration(days: 3, seconds: 5),
+            const Duration(days: 2, hours: 1, seconds: 5),
             v([1, 0.01]),
             0.5,
           ),

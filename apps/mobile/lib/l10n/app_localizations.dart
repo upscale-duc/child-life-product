@@ -15925,6 +15925,30 @@ abstract class AppLocalizations {
   /// **'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.'**
   String get autoSaveGroupedHint;
 
+  /// AS07 week-of-age chip: pending tiles in that week (P-171)
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n} · {count}'**
+  String autoSaveWeek(int n, int count);
+
+  /// AS07 chip for items captured before the date of birth
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước sinh · {count}'**
+  String autoSaveWeekBefore(int count);
+
+  /// AS07 chip for a week with nothing left to review
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n} · xong'**
+  String autoSaveWeekDone(int n);
+
+  /// AS07 line above the week chips
+  ///
+  /// In vi, this message translates to:
+  /// **'Duyệt theo tuần tuổi của {name}: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.'**
+  String autoSaveWeekHint(String name);
+
   /// AS07 filter chip
   ///
   /// In vi, this message translates to:

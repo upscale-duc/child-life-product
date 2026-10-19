@@ -37,6 +37,21 @@ class AutoSaveDecision {
   final List<Candidate> reviewed;
 }
 
+/// Weeks of age sent on from the review this app run, per baby (P-171): their chip reads
+/// "Tuần 3 · xong" once nothing of theirs waits. Not saved; a new run starts from what is pending.
+final reviewedWeeksProvider =
+    NotifierProvider<ReviewedWeeks, Map<String, Set<int>>>(ReviewedWeeks.new);
+
+class ReviewedWeeks extends Notifier<Map<String, Set<int>>> {
+  @override
+  Map<String, Set<int>> build() => const {};
+
+  void add(String babyId, int week) => state = {
+    ...state,
+    babyId: {...?state[babyId], week},
+  };
+}
+
 /// Library items that are already in the baby's Kỷ niệm, uploaded by anyone ("Đã có", P-150):
 /// same baby and the same capture second. Uploads are re-encoded, so bytes cannot be compared.
 final _alreadySavedProvider = Provider.autoDispose<Set<String>>((ref) {
@@ -87,6 +102,10 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   final _known = <String>{};
   final _expanded = <String>{};
   var _filter = _Filter.all;
+
+  /// The week of age being reviewed (P-171), when the person chose one; otherwise the earliest
+  /// week that still has suggestions.
+  int? _week;
 
   /// Items one "Tải lên" may hold (D-070), from `publicConfig/limits`.
   var _cap = 200;
@@ -169,7 +188,43 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     _cap =
         ref.watch(publicLimitsProvider).value?.autoSaveItemsPerApprove ?? _cap;
     final everything = view.groups();
-    final groups = _round(everything, already);
+    // P-171 (owner, 2026-10-19: "chọn scan hình tuần 1, tuần 2… tuần 1 xong thì đánh dấu
+    // xong"): with one baby and a known date of birth, suggestions are reviewed and uploaded a
+    // week of age at a time — a lô of 97 videos is too much for one upload — and a week with
+    // nothing left reads "xong".
+    final onlyBaby = {
+      for (final g in everything) g.best.match.babyId,
+    }.singleOrNull;
+    final dob = onlyBaby == null
+        ? null
+        : ref.watch(babyPrivateProfileProvider(onlyBaby)).value?.dateOfBirth;
+    final byWeek = <int, int>{};
+    if (dob != null) {
+      for (final g in everything) {
+        byWeek.update(
+          ageWeekOf(dob, g.captureAt),
+          (n) => n + 1,
+          ifAbsent: () => 1,
+        );
+      }
+    }
+    final pendingWeeks = byWeek.keys.toList()..sort();
+    final week = dob == null || pendingWeeks.isEmpty
+        ? null
+        : byWeek.containsKey(_week)
+        ? _week!
+        : pendingWeeks.first;
+    final scoped = week == null
+        ? everything
+        : [
+            for (final g in everything)
+              if (ageWeekOf(dob!, g.captureAt) == week) g,
+          ];
+    final doneWeeks = onlyBaby == null
+        ? const <int>{}
+        : ref.watch(reviewedWeeksProvider)[onlyBaby] ?? const <int>{};
+    final weekChips = {...pendingWeeks, ...doneWeeks}.toList()..sort();
+    final groups = _round(scoped, already);
     _live = {
       for (final g in groups)
         for (final c in g.items)
@@ -294,6 +349,36 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     }
 
     final children = <Widget>[
+      if (week != null) ...[
+        Text(
+          l10n.autoSaveWeekHint(name),
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            children: [
+              for (final w in weekChips) ...[
+                ClFilterChip(
+                  label: switch (byWeek[w]) {
+                    null => l10n.autoSaveWeekDone(w),
+                    final n when w == 0 => l10n.autoSaveWeekBefore(n),
+                    final n => l10n.autoSaveWeek(w, n),
+                  },
+                  selected: w == week,
+                  onTap: byWeek[w] == null
+                      ? () {}
+                      : () => setState(() => _week = w),
+                ),
+                const SizedBox(width: ClSpace.s2),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: ClSpace.s4),
+      ],
       Text(
         l10n.autoSaveGroupedHint,
         style: cl.text.label.copyWith(color: cl.colors.inkMuted),
@@ -507,13 +592,21 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
                   expand: true,
                   onPressed: chosen.isEmpty || chosen.length > _cap
                       ? null
-                      : () => context.push(
-                          Routes.autoSaveConfirm,
-                          extra: AutoSaveDecision(
-                            chosen: chosen,
-                            reviewed: [for (final c in all) c],
-                          ),
-                        ),
+                      : () {
+                          if (week != null && onlyBaby != null) {
+                            ref
+                                .read(reviewedWeeksProvider.notifier)
+                                .add(onlyBaby, week);
+                          }
+                          // Only this week's items are decided; other weeks stay pending.
+                          context.push(
+                            Routes.autoSaveConfirm,
+                            extra: AutoSaveDecision(
+                              chosen: chosen,
+                              reviewed: [for (final c in all) c],
+                            ),
+                          );
+                        },
                 ),
               ],
             ),
@@ -871,7 +964,15 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
           },
         );
     toaster.show(message: l10n.autoSaveQueued(n));
-    if (mounted) context.go(Routes.autoSave);
+    if (!mounted) return;
+    // Another week still waits (P-171): straight back to the review, not the home.
+    final decided = {for (final c in widget.decision.reviewed) c.asset.id};
+    final more = ref
+        .read(autoSaveProvider)
+        .state
+        .pending
+        .any((c) => !decided.contains(c.asset.id));
+    context.go(more ? Routes.autoSaveReview : Routes.autoSave);
   }
 
   @override
