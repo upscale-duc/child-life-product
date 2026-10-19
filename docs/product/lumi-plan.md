@@ -76,7 +76,7 @@ the past — never a question about what the clock already says.
 
 1. **Log when you are free.** Every "đang …" (sleep, breastfeeding, pumping) with "được X / cách đây
    X / từ Xh / lúc Xh" starts the app's timer at that moment; the end comes later from "bé dậy rồi",
-   the timer or a notification. A finished span is made only when the words say it ended ("dậy",
+   the timer or the "Bé dậy chưa?" notification (§7.1). A finished span is made only when the words say it ended ("dậy",
    "xong", "từ … đến …").
 2. **Never ask what the phone knows.** No morning/evening question for a relative time, a time
    within the last few hours, or a clock the length already fixes. Today's date, the baby's zone and
@@ -116,8 +116,14 @@ composer. The server never answers help while a question is open: it re-shows th
   diaper wet/dirty, sleep start/stop/span, pump ml, weight/length/head) feeding `planTextIntents`;
   the model is called only when rules leave something unread.
 - Text skips `quoteTask` (`startTask` quotes inline; it re-checks the gates already).
-- `minInstances: 1` for `startTask`, `runAssistantTask`, `getAssistantTask` (dev 0, prod 1; billing
-  needs owner approval). The worker trigger stops waking on its own writes.
+- **Warm, not always on** (owner, 2026-10-19: no `minInstances`, keep the functions warm, it is
+  cheaper). Text runs the worker inside `startTask` (the Firestore trigger stays for photos, retries
+  and the sweep), so one fewer hop and one fewer function to keep warm. A scheduled `warmAssistant`
+  sends an empty request to `startTask` and `getAssistantTask` every 5 minutes from 06:00 to 23:59
+  Asia/Ho_Chi_Minh (the hours most families log; families abroad, D-087, may meet a cold start at
+  night until usage says otherwise); the callables answer a warm-up before any auth or read.
+  About 13 000 invocations a month (2 functions × 12 an hour × 18 hours), inside the free tier; no fixed instance cost. The worker trigger
+  stops waking on its own writes.
 - The app draws from its listeners and calls `getAssistantTask` only on reconnect or a gap.
 - Parallel reads in `startTask` and the worker; `max_completion_tokens` 1600 → 400; the prompt sends
   the calendar and categories only when relevant.
@@ -166,11 +172,13 @@ Server read tools, each a typed answer card with a link (no model when the quest
 - **Next-step chips after a save** (one or two, by kind): sleep → "Xem nhịp hôm nay", "Nhắc khi bé
   ngủ quá 2 giờ"; feed → "Nhắc cữ tiếp lúc 11:00"; growth → "Xem biểu đồ"; meal → "Món thử tiếp";
   expense → "Xem tháng này".
-- **Entries from modules** through `IntentHint`: a Lumi field on the care history, the solids diary,
-  reminders, vaccines and the timer screen ("Nói với Lumi"); the "+" quick log gets "Nói nhanh với
-  Lumi" with the mic.
-- **From notifications**: a running sleep timer's notification asks "Bé dậy chưa?" with "Dậy rồi" /
-  "Vẫn ngủ"; a feed reminder opens Lumi with "Bé vừa bú…" prefilled.
+- **Entries from some modules** (owner, 2026-10-19: "một số thôi"), through `IntentHint`, where
+  people are already logging: the running timer screen ("Nói với Lumi": "bé dậy lúc 9h40", "thêm
+  10 phút"), Lịch sử chăm sóc (a field above the list: "sửa cữ vừa rồi", "hôm nay bé bú mấy cữ?"),
+  the Ăn dặm diary (a meal in words, D-085) and Chi tiêu (already there). No entry on vaccines,
+  library, milestones, Kỷ niệm or settings; the "+" quick log keeps its tiles.
+- **"Bé dậy chưa?"** for a running sleep timer, personal and well timed (§7.1); a feed reminder
+  opens Lumi with "Bé vừa bú…" prefilled.
 - **Home**: the Lumi button stays on Hôm nay; a one-line "Hỏi Lumi: …" suggestion appears on the
   module screens' empty states only (no Home card, D-076 #13).
 - **Proactive, gently**: after 2 logs in Lumi, a tip "Lần sau chỉ cần nói ‘bé ngủ rồi’"; no
@@ -178,29 +186,64 @@ Server read tools, each a typed answer card with a link (no model when the quest
 - **Links**: the allowlist opens every module the read cards name (library, first aid, vaccines,
   milestones, solids, nutrition, growth chart, stats); the wrong "Thư viện" and health links are fixed.
 
+### 7.1 "Bé dậy chưa?" (owner, 2026-10-19: "cần cá nhân hoá và thông báo đúng hợp lý")
+
+The timer was started when the baby fell asleep; it often keeps running after the baby woke because
+the parent's hands were full again. The notification exists to close the sleep with the right
+time, not to judge how long the baby sleeps.
+
+- **Only for the person who started the timer** (or who took it over), on that phone, as a local
+  notification scheduled when the timer starts or changes. Nothing goes through the server, so no
+  child data leaves the phone (the D-077 device sync keeps it across cold starts).
+- **When: from this baby's own sleeps.** The sleep is a nap or a night by its start in the baby's
+  zone and the family's night window (default 19:00–06:00). The expected length is the median of
+  the same kind over the last 14 days, needing at least 5 of them; it asks at
+  **max(median × 1.3, median + 20 min)**, so most babies are already awake and the parent has had
+  time to stop it themselves. With fewer than 5 similar sleeps: a nap asks after 2 h 30; a night
+  asks only in the morning (next point).
+- **Never at night or in quiet hours.** Nothing between the night window and the person's quiet
+  hours (EN02 `quietFrom`/`quietTo`); a night sleep still running at the end of the window asks
+  once, at the person's usual first log of the morning (median of the last 14 days, else 07:00).
+  No sound or vibration in Night care.
+- **Once, then at most one more.** Actions: **"Dậy rồi"** stops the timer now; **"Dậy lúc…"** opens
+  the timer's end-time picker (the chat's linked times); **"Vẫn ngủ"** asks again once after half
+  the expected length (at least 30 min). Stopping, editing or deleting the timer cancels it; a
+  second timer of the same kind is never started from it.
+- **Words, never a verdict.** "Bé ngủ được 1 giờ 45 phút rồi. Bé dậy chưa?" — no "quá lâu", no
+  health language, no credit line (D-081). A sleep longer than the app's 18-hour limit goes to the
+  timer's own review, not to this notification.
+- **A switch.** "Hỏi khi bộ đếm giấc ngủ còn chạy" in Cài đặt thông báo (EN07), on by default for
+  the person who starts a timer; the first notification says it can be turned off there.
+- **Later, same rules:** a breastfeeding timer ("Bé còn bú không?") at max(median × 1.5, median +
+  10 min), capped at 60 min; not in this slice.
+- **Measures:** share of sleep timers closed from the notification, time between the asked time and
+  the saved end, and the switch turned off (counts only).
+
 ## 8. Credits and measures
 
-- Rule-read logs, read cards and app actions (stop a timer, mark a dose, save a photo) cost **0**;
-  model calls keep the D-075 pool. This makes the fast path also the cheap path.
+- **Decided (owner, 2026-10-19):** rule-read logs, read cards and app actions (stop a timer, mark a
+  dose, save a photo) cost **0**; model calls keep the D-075 pool. The fast path is also the free
+  path. The usage page ("Chi tiết") lists them as "0 lượt · không tính" like small talk today.
 - Measures (counts only, never message content or child data): share of care logs made through Lumi;
   message → saved record rate; questions per log; dead ends (help after a question, unsupported);
   time to card p50/p95; weekly Lumi users; next-step chip taps.
 
-## 9. Open questions for the owner
+## 9. Owner answers (2026-10-19) and what is still open
 
-1. Proposed order: Phase 1 now (one slice), Phase 2 reads and Phase 4 next steps together, Phase 3
-   per module. Agree?
-2. Rule-read logs and read cards at 0 credits (§8)?
-3. `minInstances: 1` in prod for three functions (a small fixed monthly cost)?
-4. Notification actions on a running sleep timer ("Bé dậy chưa?") — wanted?
-5. Lumi entries inside module screens (history, solids, reminders, vaccines, timer) — all, or some?
+1. **Open:** proposed order — Phase 1 now (L1, L2), Phase 2 reads with Phase 4 next steps, Phase 3
+   per module, the notification (L6) after L1.
+2. Rule-read logs and read cards cost **0 lượt** (§8).
+3. **No `minInstances`**; keep the functions warm with a scheduled ping instead (§4.4).
+4. **"Bé dậy chưa?"** yes, personal and well timed (§7.1).
+5. Lumi entries from **some** screens: the timer, Lịch sử chăm sóc, the Ăn dặm diary, Chi tiêu (§7).
 
 ## 10. Slices
 
 | Slice | Content                                                         | Size | Touches                                                            |
 | ----- | --------------------------------------------------------------- | ---- | ------------------------------------------------------------------ |
 | L1    | §4.1–4.3 ongoing states, no needless questions, typed answers   | M    | contracts `assistant-text.ts`, functions `assistant-text.ts`, app controller; fixtures |
-| L2    | §4.4 speed: rule reader, no quote for text, fewer round trips   | L    | `assistant.ts`, worker, app controller/repository; `minInstances` needs approval |
+| L2    | §4.4 speed: rule reader, no quote for text, worker inside `startTask`, warm-up ping, fewer round trips | L    | `assistant.ts`, worker, a scheduled `warmAssistant`, app controller/repository |
 | L3    | §5 read cards + links                                           | L    | new read tools, answer cards, link allowlist                       |
 | L4    | §7 next-step chips and module entries                           | M    | app only (+ server chip hints)                                     |
 | L5…   | §6 writes per module (solids, vaccines, milestones, edit/undo)  | M each | server writers + drafts                                         |
+| L6    | §7.1 "Bé dậy chưa?" local notification and its switch           | M    | app only: timer, `reminder_notifications.dart` device sync, EN07 settings, ARB |
