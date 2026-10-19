@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "dev-01-con-dang-ngu",
+      "rules": false,
       "device": "DEV-1",
       "title": "\"Con đang ngủ\" → an ongoing sleep (timer), never an observation stuck in review",
       "turns": [
@@ -60,7 +61,7 @@
         "outcome": "drafts",
         "kinds": [["sleep"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "device"
     },
@@ -92,7 +93,7 @@
         "outcome": "drafts",
         "kinds": [["breast"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "device"
     },
@@ -134,12 +135,13 @@
           "0.occurredAt": "D0 00:48",
           "0.durationMin": 20
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "device"
     },
     {
       "id": "dev-03a-thay-ta-uot",
+      "rules": false,
       "device": "DEV-3",
       "turns": [
         {
@@ -181,6 +183,7 @@
     },
     {
       "id": "dev-03b-hut-sua-120",
+      "rules": false,
       "device": "DEV-3",
       "turns": [
         {
@@ -224,6 +227,7 @@
     },
     {
       "id": "dev-03c-be-nang-5-2kg",
+      "rules": false,
       "device": "DEV-3",
       "turns": [
         {
@@ -299,6 +303,7 @@
     },
     {
       "id": "dev-02c-dang-cho-bu-side-guess",
+      "rules": false,
       "device": "DEV-2",
       "title": "LUMI-07 live: the model guesses side \"both\" (uncertain) for \"đang cho bú\" → a timer start with the form's side, ready (never a flagged side with no row)",
       "turns": [

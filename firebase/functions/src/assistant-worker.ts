@@ -110,6 +110,9 @@ import type { Clarification } from '@child-life/contracts';
 import { settleTaskAttachments, type AttachmentStore } from './assistant-attachments.js';
 import { processImageTask, writeReadingTx, type StoredReading } from './assistant-images.js';
 import { aiBudgetLeft, chargeAi } from './staff.js';
+// Lumi L2 (D-088 §4.4): routine logs read by rules; per-hop timings; the inline run's deadline.
+import { ruleReadText } from './assistant-rules.js';
+import type { HopTimer } from './assistant-timing.js';
 
 /**
  * The assistant worker (brief p.9, p.18; architecture §3 step 4). A Firestore trigger hands it a
@@ -141,7 +144,22 @@ export interface WorkerDeps {
   careFixtures?: { reactionIngredientIds?: string[] };
   /** Slice A3: the photos' Storage (absent → photo tasks fail MODULE_UNAVAILABLE, released). */
   files?: AttachmentStore;
+  // ---- Lumi L2 (D-088 §4.4): the worker inside `startTask` ----
+  /**
+   * Wall-clock deadline (epoch ms) of an inline run: a model call that would not end before it is
+   * not made (or is cut), and the task goes back to `queued` for the trigger instead of failing.
+   */
+  deadline?: number;
+  /** What `startTask` already read in this request (no second read of the scope or consent). */
+  preloaded?: { s: TrustedScope; consent: boolean };
+  /** Per-hop timings (names and milliseconds only). */
+  timer?: HopTimer;
 }
+
+/** An inline run keeps this much time for the settle and the answer after a model call. */
+const inlineReserveMs = 2_500;
+/** Below this, a model call is not started inline (the trigger has a full minute). */
+const inlineMinModelMs = 4_000;
 
 export const assistantLeaseMs = 300_000;
 const maxAttempts = 3;
@@ -172,6 +190,8 @@ interface WorkResult {
   spending?: boolean;
   /** The text extraction kept while a server question is open (no second model call). */
   textReading?: ModelExtraction | null;
+  /** Lumi L2: an inline run out of time — back to `queued`, the trigger runs it (no failure). */
+  handoff?: boolean;
 }
 
 const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): WorkResult => ({
@@ -256,36 +276,112 @@ export async function runAssistantTask(
     return { t, holder };
   });
   if (!claim) return { ran: false, fenced: false, state: null };
+  return runClaimedAssistantTask(deps, claim.t, claim.holder);
+}
 
-  const work = await openQuestionInsteadOfHelp(db, claim.t, await process(deps, claim.t), now);
+/**
+ * Runs a task this caller holds the lease of ([holder]): the trigger after its claim, or Lumi L2's
+ * `startTask`, which creates a text task already `processing` under its own lease and runs it in
+ * the same request. An inline run out of time hands the task back to `queued` (the trigger runs it).
+ */
+export async function runClaimedAssistantTask(
+  deps: WorkerDeps,
+  t: StoredTask,
+  holder: string,
+): Promise<{ ran: boolean; fenced: boolean; state: string | null; path?: string }> {
+  const { db, now } = deps;
+  const trace: { path: 'rules' | 'model' | 'cached' | 'none' } = { path: 'none' };
+  const work = await openQuestionInsteadOfHelp(db, t, await process(deps, t, trace), now);
+  deps.timer?.mark('work');
+  if (work.handoff) {
+    const r = await handBack(deps, t.id, holder);
+    deps.timer?.mark('settle');
+    return { ...r, path: 'handoff' };
+  }
   // D-075 #2: spending never stays in the shared thread. A shared task whose words the detector
   // missed but where the model found an expense is moved, with its user messages, to the
   // author's private thread inside the settle transaction, before anything visible is written.
-  const done = await finalize(deps, claim.t, claim.holder, work);
+  const done = await finalize(deps, t, holder, work);
+  deps.timer?.mark('settle');
   // Slice A3: once settled (or fenced), photos go per their retention (G05); a failure here is
   // retried by the sweeper and never fails the task.
-  if (claim.t.modality === 'image') {
+  if (t.modality === 'image') {
     try {
-      await settleTaskAttachments(db, deps.files, taskId, now);
+      await settleTaskAttachments(db, deps.files, t.id, now);
     } catch {
       // `sweepAssistantFiles` retries.
     }
   }
-  return done;
+  return { ...done, path: trace.path };
 }
 
-async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
+/** Lumi L2: an inline run out of time puts its task back to `queued` (fenced like a settle). */
+async function handBack(
+  deps: WorkerDeps,
+  taskId: string,
+  holder: string,
+): Promise<{ ran: boolean; fenced: boolean; state: string | null }> {
+  const ref = taskRef(deps.db, taskId);
+  return deps.db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    const t = storedTask(snap);
+    if (t.state !== 'processing' || t.lease?.holder !== holder) {
+      return { ran: true, fenced: true, state: t.state };
+    }
+    tx.update(ref, {
+      state: 'queued',
+      lease: null,
+      version: t.version + 1,
+      updatedAt: Timestamp.fromDate(deps.now),
+    });
+    return { ran: true, fenced: false, state: 'queued' };
+  });
+}
+
+/** Lumi L2: how long a model call may take in this run (null: not inline-able now → hand off). */
+function modelBudget(deps: WorkerDeps): number | null {
+  const full = deps.timeoutMs ?? 60_000;
+  if (deps.deadline === undefined) return full;
+  const left = deps.deadline - Date.now() - inlineReserveMs;
+  return left < inlineMinModelMs ? null : Math.min(full, left);
+}
+
+/** A read started early and awaited later, never an unhandled rejection meanwhile. */
+function early<T>(p: Promise<T>): () => Promise<T> {
+  const settled = p.then(
+    (v) => ({ ok: true as const, v }),
+    (e: unknown) => ({ ok: false as const, e }),
+  );
+  return async () => {
+    const r = await settled;
+    if (!r.ok) throw r.e;
+    return r.v;
+  };
+}
+
+async function process(
+  deps: WorkerDeps,
+  t: StoredTask,
+  /** Lumi L2: which reader read the message (timing logs only). */
+  trace: { path: 'rules' | 'model' | 'cached' | 'none' } = { path: 'none' },
+): Promise<WorkResult> {
   const { db, now } = deps;
   const answers = (t.clarifications ?? []).filter((c) => c.answer !== null);
   const text = t.input?.text ?? '';
   const texts = [text, ...answers.map((a) => a.answer?.text ?? '').filter(Boolean)];
 
-  let s: TrustedScope;
-  try {
-    s = await loadTrustedScope(db, t.ownerUid, t.scope, now, deps.environment);
-  } catch {
-    return failWith('NOT_MEMBER', 'rejected');
-  }
+  // Lumi L2: the scope and the consent are read together (or come from `startTask`).
+  const [scoped, consented] = deps.preloaded
+    ? [deps.preloaded.s, deps.preloaded.consent]
+    : await Promise.all([
+        loadTrustedScope(db, t.ownerUid, t.scope, now, deps.environment).catch(() => null),
+        consentRef(db, t.ownerUid)
+          .get()
+          .then((c) => assistantConsentGranted(c)),
+      ]);
+  if (!scoped) return failWith('NOT_MEMBER', 'rejected');
+  const s: TrustedScope = scoped;
+  deps.timer?.mark('scope');
   if (s.familyId !== t.familyId) return failWith('SCOPE_CHANGED', 'rejected');
   if (!assistantFlagOn(s, 'assistant')) return failWith('FEATURE_DISABLED', 'rejected');
 
@@ -302,16 +398,24 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       modelCalls: 0,
     };
   }
-  if (!assistantConsentGranted(await consentRef(db, t.ownerUid).get())) {
-    return failWith('CONSENT_REQUIRED', 'rejected');
-  }
-  if (!assistantFlagOn(s, 'assistant_live') || !deps.gateway || !(await aiBudgetLeft(db, now))) {
+  if (!consented) return failWith('CONSENT_REQUIRED', 'rejected');
+  const anchor = t.anchorInstant.toDate();
+  // Lumi L2 (D-088 §4.4): a routine log `startTask` read with the rules is read the same way
+  // here — no model, so no model gate (owner 2026-10-19: 0 credits).
+  const ruled =
+    t.modality === 'text' && t.ruleRead === true
+      ? ruleReadText({ text, zone: s.zone, anchor })
+      : null;
+  if (
+    !ruled &&
+    (!assistantFlagOn(s, 'assistant_live') || !deps.gateway || !(await aiBudgetLeft(db, now)))
+  ) {
     return failWith('AI_UNAVAILABLE');
   }
   const gateway = deps.gateway;
-  const anchor = t.anchorInstant.toDate();
   // ---- Slice A3 (photos): validate, read once, prepare (assistant-images.ts) ----
   if (t.modality === 'image') {
+    if (!gateway) return failWith('AI_UNAVAILABLE');
     const w = await processImageTask(
       { db, now, gateway, files: deps.files, timeoutMs: deps.timeoutMs },
       t,
@@ -334,6 +438,12 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   const routing = t.routing ?? null;
   // Rework 2026-10-15: the household's currency and categories, the calendar and the sender's
   // previous turn (corrections) travel with the request; nothing identifies the family.
+  // Lumi L2: the planner's own reads start now and run while the model reads the message.
+  const babyId = s.babyId;
+  const lastMilkEarly = early(lastMilkOf(db, babyId, anchor));
+  const timersEarly = early(runningTimersOf(db, babyId));
+  const nextSideEarly = early(nextBreastSideOf(db, babyId, anchor));
+  const pumpSideEarly = early(lastPumpSideOf(db, babyId, anchor));
   const [currency, categories, previous] = await Promise.all([
     householdCurrencyOf(db, s, currencyForCountry),
     spendingCategoriesOf(db, s.familyId, t.locale),
@@ -349,14 +459,30 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   // model call, no second charge) when every answer is one the server applies itself.
   let ext: ModelExtraction | null = null;
   let modelCalls = 0;
+  let path: 'rules' | 'model' | 'cached' = 'model';
+  deps.timer?.mark('reads');
   if ((t.round ?? 0) > 0 && answers.every((a) => serverResolvedField(a.field))) {
     const cached = await textReadingRef(db, t.id).get();
     if (cached.exists) {
       const p = parseExtraction(cached.get('ext'));
-      if (p.ok) ext = p.value;
+      if (p.ok) {
+        ext = p.value;
+        path = 'cached';
+      }
     }
   }
+  if (!ext && ruled) {
+    ext = ruled;
+    path = 'rules';
+  }
   if (!ext) {
+    // Lumi L2: inline, a call that would outlast the request goes to the trigger instead.
+    const budget = modelBudget(deps);
+    if (budget === null || !gateway) {
+      return gateway
+        ? { ...failWith('AI_UNAVAILABLE'), handoff: true }
+        : failWith('AI_UNAVAILABLE');
+    }
     let raw: unknown;
     try {
       raw = await callWithTimeout(
@@ -380,10 +506,19 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
             },
             signal,
           ),
-        deps.timeoutMs ?? 60_000,
+        budget,
       );
     } catch (error) {
       if (gateway.name === 'openai') await charge(db, now);
+      // Lumi L2: an inline call cut by the request's deadline is retried by the trigger.
+      if (
+        deps.deadline !== undefined &&
+        error instanceof ModelUnavailable &&
+        error.kind === 'timeout' &&
+        budget < (deps.timeoutMs ?? 60_000)
+      ) {
+        return { ...failWith('AI_UNAVAILABLE'), handoff: true, modelCalls: 1 };
+      }
       return {
         ...failWith('AI_UNAVAILABLE'),
         outcome: {
@@ -403,6 +538,8 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
     if (!parsed.ok) return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
     ext = parsed.value;
   }
+  deps.timer?.mark(path);
+  trace.path = path;
   // Safety net: "con 7 tháng ăn gì được?" with nothing extracted is the meal-ideas care topic
   // (approved recipes only), never a "read or log?" question.
   if (
@@ -617,16 +754,16 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       asked,
       round: t.round ?? 0,
       lastMilk: ext.intents.some((i) => i.kind === 'bottle')
-        ? await lastMilkOf(db, s.babyId, anchor)
+        ? await lastMilkEarly()
         : 'breast_milk',
       currency,
       categories,
       previous,
       // Lumi 2026-10-16: "con đang ngủ" / "dậy rồi" / "đang cho bú" drive the app's timers.
-      timers: await runningTimersOf(db, s.babyId),
-      nextBreastSide: await nextBreastSideOf(db, s.babyId, anchor),
+      timers: await timersEarly(),
+      nextBreastSide: await nextSideEarly(),
       // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
-      lastPumpSide: await lastPumpSideOf(db, s.babyId, anchor),
+      lastPumpSide: await pumpSideEarly(),
       clientKinds: clientDraftKindsOf(t.clientKinds),
     },
     ext.intents,
@@ -689,19 +826,23 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   if (facts.length > 0) {
     // The model only words engine facts; any number not in the facts → the template.
     let wording = facts.map((f) => f.text).join(' ');
-    try {
-      const out = parseWording(
-        await callWithTimeout(
-          (signal) => gateway.word({ locale: t.locale, facts }, signal),
-          deps.timeoutMs ?? 60_000,
-        ),
-      );
-      modelCalls += 1;
-      if (out.ok && wordingGrounded(out.value, facts)) wording = out.value;
-    } catch {
-      modelCalls += 1;
+    // Lumi L2: inline without the time for a second call, the template is the answer.
+    const budget = modelBudget(deps);
+    if (gateway && budget !== null) {
+      try {
+        const out = parseWording(
+          await callWithTimeout(
+            (signal) => gateway.word({ locale: t.locale, facts }, signal),
+            budget,
+          ),
+        );
+        modelCalls += 1;
+        if (out.ok && wordingGrounded(out.value, facts)) wording = out.value;
+      } catch {
+        modelCalls += 1;
+      }
+      if (gateway.name === 'openai') await charge(db, now);
     }
-    if (gateway.name === 'openai') await charge(db, now);
     parts.push({ type: 'text', schemaVersion: 1, text: wording });
   }
 

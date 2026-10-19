@@ -167,6 +167,9 @@ const deps = (gateway: ModelGateway | null = placeholder(), at = now): Assistant
   now: at,
   environment: 'test',
   gateway,
+  // Lumi L2: these cases test the trigger path and the model's readings (inline / rules: assistant-speed).
+  inline: false,
+  ruleReads: false,
 });
 const reason = (p: Promise<unknown>) =>
   p.then(

@@ -1228,7 +1228,13 @@ export const startTaskRequestSchema = z.object({
   ...envelope,
   conversationId: z.string().min(1).max(80).nullable(),
   scope: assistantScopeSchema,
-  quoteId: z.string().min(1).max(80),
+  /**
+   * Lumi L2 (D-088 §4.4): text skips `quoteTask` — absent / null, `startTask` quotes inline with
+   * the same gates. Photos still need their quote (the upload is bound to it).
+   */
+  quoteId: z.string().min(1).max(80).nullable().optional(),
+  /** Lumi L2: the module entry's hint when there is no quote to carry it (`quoteTask` field). */
+  intentHint: z.enum(['care', 'expense', 'reminder', 'question', 'meal']).nullable().optional(),
   text: z.string().max(assistantTaskLimits.maxTextChars).nullable(),
   attachmentIds: z.array(z.string().min(1).max(80)).max(assistantTaskLimits.maxImagesPerTask),
 });

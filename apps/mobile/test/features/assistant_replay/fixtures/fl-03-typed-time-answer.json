@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+     "id": "tk_09e42dcdfa740aa41d987509c55a66e2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "awaiting_clarification",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "reserved",
      "errorCode": null,
@@ -82,7 +82,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,16 +150,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+     "id": "tk_09e42dcdfa740aa41d987509c55a66e2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 6,
+     "version": 4,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_3f2652a7fe6eb33083b9b9b828682d4f_0",
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "id": "dr_09e42dcdfa740aa41d987509c55a66e2_0",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -200,7 +200,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_3f2652a7fe6eb33083b9b9b828682d4f"
+       "task:tk_09e42dcdfa740aa41d987509c55a66e2"
       ],
       "recordId": null,
       "recordLink": null,
@@ -222,7 +222,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -275,7 +275,7 @@
         }
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -292,7 +292,7 @@
         "text": "lúc 1 giờ chiều"
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -311,11 +311,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_3f2652a7fe6eb33083b9b9b828682d4f_0",
+        "draftId": "dr_09e42dcdfa740aa41d987509c55a66e2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -330,16 +330,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+     "id": "tk_09e42dcdfa740aa41d987509c55a66e2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 6,
+     "version": 4,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -361,8 +361,8 @@
     },
     "drafts": [
      {
-      "id": "dr_3f2652a7fe6eb33083b9b9b828682d4f_0",
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "id": "dr_09e42dcdfa740aa41d987509c55a66e2_0",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -380,10 +380,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_3f2652a7fe6eb33083b9b9b828682d4f"
+       "task:tk_09e42dcdfa740aa41d987509c55a66e2"
       ],
-      "recordId": "r_79e805fc170b0e053a9cf818a70a7cdb",
-      "recordLink": "/care/records/b_00000000000000000001/r_79e805fc170b0e053a9cf818a70a7cdb",
+      "recordId": "r_c12453a4e297b6fe4c8d4b525133c42a",
+      "recordLink": "/care/records/b_00000000000000000001/r_c12453a4e297b6fe4c8d4b525133c42a",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -407,7 +407,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -460,7 +460,7 @@
         }
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -477,7 +477,7 @@
         "text": "lúc 1 giờ chiều"
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -496,11 +496,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_3f2652a7fe6eb33083b9b9b828682d4f_0",
+        "draftId": "dr_09e42dcdfa740aa41d987509c55a66e2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -516,15 +516,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_3f2652a7fe6eb33083b9b9b828682d4f_0",
+          "draftId": "dr_09e42dcdfa740aa41d987509c55a66e2_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_79e805fc170b0e053a9cf818a70a7cdb",
+          "recordLink": "/care/records/b_00000000000000000001/r_c12453a4e297b6fe4c8d4b525133c42a",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_3f2652a7fe6eb33083b9b9b828682d4f",
+      "taskId": "tk_09e42dcdfa740aa41d987509c55a66e2",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

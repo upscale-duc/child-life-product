@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+     "id": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_1e7d3fcf53e65c9ba905bfa8c99741a2_0",
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "id": "dr_082ef2293071529c3cbccfb3fa5b8d0e_0",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -58,7 +58,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_1e7d3fcf53e65c9ba905bfa8c99741a2"
+       "task:tk_082ef2293071529c3cbccfb3fa5b8d0e"
       ],
       "recordId": null,
       "recordLink": null,
@@ -80,7 +80,7 @@
         "text": "thay tã ướt lúc 13h"
        }
       ],
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -99,11 +99,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_1e7d3fcf53e65c9ba905bfa8c99741a2_0",
+        "draftId": "dr_082ef2293071529c3cbccfb3fa5b8d0e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -118,16 +118,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+     "id": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -149,8 +149,8 @@
     },
     "drafts": [
      {
-      "id": "dr_1e7d3fcf53e65c9ba905bfa8c99741a2_0",
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "id": "dr_082ef2293071529c3cbccfb3fa5b8d0e_0",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -167,10 +167,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_1e7d3fcf53e65c9ba905bfa8c99741a2"
+       "task:tk_082ef2293071529c3cbccfb3fa5b8d0e"
       ],
-      "recordId": "r_25cc898c57aa4b216e636f58767ad70c",
-      "recordLink": "/care/records/b_00000000000000000001/r_25cc898c57aa4b216e636f58767ad70c",
+      "recordId": "r_f6fb6079f86a685363b8523e5f351f2a",
+      "recordLink": "/care/records/b_00000000000000000001/r_f6fb6079f86a685363b8523e5f351f2a",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -194,7 +194,7 @@
         "text": "thay tã ướt lúc 13h"
        }
       ],
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -213,11 +213,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_1e7d3fcf53e65c9ba905bfa8c99741a2_0",
+        "draftId": "dr_082ef2293071529c3cbccfb3fa5b8d0e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -233,15 +233,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_1e7d3fcf53e65c9ba905bfa8c99741a2_0",
+          "draftId": "dr_082ef2293071529c3cbccfb3fa5b8d0e_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_25cc898c57aa4b216e636f58767ad70c",
+          "recordLink": "/care/records/b_00000000000000000001/r_f6fb6079f86a685363b8523e5f351f2a",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_1e7d3fcf53e65c9ba905bfa8c99741a2",
+      "taskId": "tk_082ef2293071529c3cbccfb3fa5b8d0e",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

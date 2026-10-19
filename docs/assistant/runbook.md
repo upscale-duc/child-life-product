@@ -98,10 +98,22 @@ AI"; spent → every model call stops, assistant and summaries).
 
   `<lowercase-name>` is the function name in lower case (`quotetask`, `confirmdrafts`, …). Never add
   it to event or schedule services (`runassistanttask`, `sweepassistant`, `sweepassistantfiles`,
-  `cleanupassistant`). Prod IAM changes need the owner.
-- **Worker trigger** exists on `assistantTasks/{taskId}` and the three schedules show in Cloud
+  `cleanupassistant`, `warmassistant`). Prod IAM changes need the owner.
+- **Warm-up (Lumi L2)**: `startTask` and `getAssistantTask` answer `{"data":{"warmup":true}}` with
+  `{"result":{"warm":true}}` (200) before any auth or read; `warmAssistant` sends it every 5 min from
+  06:00 to 23:59 Asia/Ho_Chi_Minh (no `minInstances`, owner 2026-10-19). A non-200 ping logs
+  `assistant warm-up` with the status and milliseconds.
+- **Worker trigger** exists on `assistantTasks/{taskId}` and the four schedules show in Cloud
   Scheduler (`sweepAssistant` every 10 min, `sweepAssistantFiles` every 15 min, `cleanupAssistant`
-  daily 03:20 Asia/Ho_Chi_Minh).
+  daily 03:20 Asia/Ho_Chi_Minh, `warmAssistant` `*/5 6-23 * * *` Asia/Ho_Chi_Minh). Since Lumi L2
+  text tasks run inside `startTask` / `submitClarification`; the trigger runs photos, hand-offs (an
+  inline run out of time) and requeued tasks.
+- **Time to card (Lumi L2)**: per-hop timings, ids and states only:
+
+  ```sh
+  gcloud logging read 'jsonPayload.message="assistant timing"' --project child-life-dev \
+    --freshness=1d --format='value(timestamp,jsonPayload.op,jsonPayload.path,jsonPayload.state,jsonPayload.totalMs)'
+  ```
 - **Smoke test** with a `test_` family on a device: consent → text batch → drafts → save one →
   history; with `assistant_live` off the task must be `blocked AI_UNAVAILABLE` and the pool unchanged.
 - **Logs** carry ids, states and reason codes only; any chat text, amount or path in a log line is an

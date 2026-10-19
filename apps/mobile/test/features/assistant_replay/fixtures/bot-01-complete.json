@@ -9,16 +9,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a39e035d4454577116e3de3e378028dd",
+     "id": "tk_f4aa848a7287b03d469b6a6329883331",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a39e035d4454577116e3de3e378028dd_0",
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "id": "dr_f4aa848a7287b03d469b6a6329883331_0",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a39e035d4454577116e3de3e378028dd"
+       "task:tk_f4aa848a7287b03d469b6a6329883331"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a39e035d4454577116e3de3e378028dd_0",
+        "draftId": "dr_f4aa848a7287b03d469b6a6329883331_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,16 +119,16 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a39e035d4454577116e3de3e378028dd",
+     "id": "tk_f4aa848a7287b03d469b6a6329883331",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 3,
+     "version": 2,
      "modality": "text",
-     "credits": 1,
+     "credits": 0,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a39e035d4454577116e3de3e378028dd_0",
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "id": "dr_f4aa848a7287b03d469b6a6329883331_0",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a39e035d4454577116e3de3e378028dd"
+       "task:tk_f4aa848a7287b03d469b6a6329883331"
       ],
-      "recordId": "r_39c8ea36f7d62209016c6a1b8062ae29",
-      "recordLink": "/care/records/b_00000000000000000001/r_39c8ea36f7d62209016c6a1b8062ae29",
+      "recordId": "r_31e701068d4632085ea86db2d111a8ff",
+      "recordLink": "/care/records/b_00000000000000000001/r_31e701068d4632085ea86db2d111a8ff",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a39e035d4454577116e3de3e378028dd_0",
+        "draftId": "dr_f4aa848a7287b03d469b6a6329883331_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a39e035d4454577116e3de3e378028dd_0",
+          "draftId": "dr_f4aa848a7287b03d469b6a6329883331_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_39c8ea36f7d62209016c6a1b8062ae29",
+          "recordLink": "/care/records/b_00000000000000000001/r_31e701068d4632085ea86db2d111a8ff",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a39e035d4454577116e3de3e378028dd",
+      "taskId": "tk_f4aa848a7287b03d469b6a6329883331",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

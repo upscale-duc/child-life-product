@@ -675,23 +675,29 @@ async function runMessage(
     );
   };
   let taskId: string;
+  // Lumi L2: the app sends text without a quote (startTask quotes inline); an older app and
+  // photos still quote first.
+  const quoted = isPhoto || legacy;
+  const startDeps = () => ({ ...deps(gw, run.clock, ctx.files), ruleReads: c.rules !== false });
   try {
-    const q = await quoteTask(
-      deps(gw, run.clock, ctx.files),
-      uid,
-      E(
-        locale,
-        {
-          conversationId,
-          scope,
-          modality: isPhoto ? 'image' : 'text',
-          attachmentCount: isPhoto ? 1 : 0,
-          intentHint: hint,
-        },
-        legacy,
-      ),
-    );
-    if (!q.data.allowed) {
+    const q = quoted
+      ? await quoteTask(
+          deps(gw, run.clock, ctx.files),
+          uid,
+          E(
+            locale,
+            {
+              conversationId,
+              scope,
+              modality: isPhoto ? 'image' : 'text',
+              attachmentCount: isPhoto ? 1 : 0,
+              intentHint: hint,
+            },
+            legacy,
+          ),
+        )
+      : null;
+    if (q && !q.data.allowed) {
       run.quoteBlocks.push(q.data.reason ?? 'blocked');
       // The app still starts on USAGE_EXHAUSTED / AI_UNAVAILABLE (health is free; the rest is kept
       // as a blocked task); anything else stops in the app.
@@ -708,7 +714,7 @@ async function runMessage(
         deps(null, run.clock, ctx.files),
         uid,
         E(locale, {
-          quoteId: q.data.quoteId,
+          quoteId: q!.data.quoteId,
           mime: 'image/png',
           bytes: bytes.length,
           sha256: createHash('sha256').update(bytes).digest('hex'),
@@ -725,13 +731,13 @@ async function runMessage(
         clientRequestId: requestId,
         conversationId,
         scope,
-        quoteId: q.data.quoteId,
+        ...(q ? { quoteId: q.data.quoteId } : { intentHint: hint }),
         text: isPhoto ? null : turn.say,
         attachmentIds,
       },
       legacy,
     );
-    const r = await startTask(deps(gw, run.clock, ctx.files), uid, body);
+    const r = await startTask(startDeps(), uid, body);
     if (!r.taskId) {
       run.refusals.push({ turn: ti, op: 'startTask', reason: r.reasonCode ?? r.status });
       return;
@@ -739,7 +745,7 @@ async function runMessage(
     taskId = r.taskId;
     if (!isPhoto && turn.replay) {
       // The same request again (a flaky network): the same task, no second charge.
-      const again = await startTask(deps(gw, run.clock, ctx.files), uid, body);
+      const again = await startTask(startDeps(), uid, body);
       if (again.taskId !== taskId) {
         run.refusals.push({ turn: ti, op: 'startTask.replay', reason: 'DIFFERENT_TASK' });
       }

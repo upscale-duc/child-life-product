@@ -82,6 +82,11 @@ export interface StoredTask {
    * from before the field (`legacyClientDraftKinds`).
    */
   clientKinds?: string[] | null;
+  /**
+   * Lumi L2 (D-088 §4.4): `startTask` read the message with the rules (a routine log): the worker
+   * reads it the same way, never calls the model, and the task costs 0 credits.
+   */
+  ruleRead?: boolean;
 }
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;

@@ -27,7 +27,7 @@
         "outcome": "drafts",
         "kinds": [["sleep"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.ongoing"
     },
@@ -87,7 +87,7 @@
         "outcome": "drafts",
         "kinds": [["sleep"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.ongoing"
     },
@@ -118,7 +118,7 @@
         "outcome": "drafts",
         "kinds": [["sleep"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.ongoing"
     },
@@ -148,7 +148,7 @@
         "outcome": "drafts",
         "kinds": [["breast"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.ongoing"
     },
@@ -179,7 +179,7 @@
         "outcome": "drafts",
         "kinds": [["breast"], ["timer"]],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.ongoing"
     },
@@ -269,7 +269,7 @@
         "values": {
           "0.side": "right"
         },
-        "credits": 1
+        "credits": 0
       }
     }
   ]

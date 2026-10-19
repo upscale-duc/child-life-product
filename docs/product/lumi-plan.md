@@ -130,6 +130,12 @@ composer. The server never answers help while a question is open: it re-shows th
 - The phone shows an optimistic draft card from the same rules (marked "Đang kiểm tra…") that the
   server version replaces in place.
 
+**L2 status (2026-10-19).** Built and on dev: the rule reader, text without a quote, the worker inside
+`startTask` / `submitClarification` with a hand-off to the trigger, `warmAssistant`, parallel reads,
+the trimmed prompt; rule-read logs cost 0. Engineering changes to the bullets above: the output cap is
+1 100 (400 would cut a 3-feed reply), and the optimistic card is left out (the server card comes back
+in well under a second warm). Measurements: `docs/assistant/latency-2026-10-19.md`.
+
 **4.5 Tests.** New fixtures: "đang ngủ … được 5p", "ngủ cách đây 5p", "bé ngủ từ 11h20", "đang bú bên
 trái được 10 phút", typed "Sáng" to an open question, a log with a timer already running; live cases
 only for these (the Lumi live-cost rule). A latency check in the eval report (p50/p95 per hop).

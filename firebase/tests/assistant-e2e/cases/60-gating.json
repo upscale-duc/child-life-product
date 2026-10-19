@@ -38,6 +38,7 @@
     },
     {
       "id": "ga-02-out-of-credits",
+      "rules": false,
       "world": {
         "quota": 0
       },
@@ -121,6 +122,7 @@
     },
     {
       "id": "ga-05-model-off",
+      "rules": false,
       "world": {
         "off": ["assistant_live"]
       },
@@ -182,7 +184,7 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["bottle"],
-        "credits": 1,
+        "credits": 0,
         "saved": 0
       },
       "group": "gating"
@@ -254,6 +256,7 @@
     },
     {
       "id": "ga-09-provider-failure",
+      "rules": false,
       "live": false,
       "turns": [
         {
@@ -271,6 +274,7 @@
     },
     {
       "id": "ga-10-provider-timeout",
+      "rules": false,
       "live": false,
       "turns": [
         {
@@ -288,6 +292,7 @@
     },
     {
       "id": "ga-11-rejected-output",
+      "rules": false,
       "live": false,
       "turns": [
         {
@@ -313,6 +318,7 @@
     },
     {
       "id": "ga-12-last-credit",
+      "rules": false,
       "world": {
         "quota": 1
       },

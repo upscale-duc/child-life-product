@@ -185,14 +185,17 @@ class AssistantRepository {
     );
   }
 
-  /// `startTask`: same [requestId] + same input → the same task (M01).
+  /// `startTask`: same [requestId] + same input → the same task (M01). Lumi L2 (D-088 §4.4):
+  /// text goes without a [quoteId] (the server quotes inline with the same gates) and the answer
+  /// is the whole snapshot (drafts, messages, events): the card draws without another call.
   Future<StartAnswer> start({
     required String requestId,
     required AssistantScope scope,
     required String? conversationId,
-    required String quoteId,
     required String? text,
     required String locale,
+    String? quoteId,
+    IntentHint? intentHint,
     List<String> attachmentIds = const [],
   }) async {
     final r = await _call(
@@ -200,7 +203,8 @@ class AssistantRepository {
       {
         'conversationId': conversationId,
         'scope': scope.toJson(),
-        'quoteId': quoteId,
+        'quoteId': ?quoteId,
+        if (quoteId == null) 'intentHint': intentHint?.wire,
         'text': text,
         'attachmentIds': attachmentIds,
       },

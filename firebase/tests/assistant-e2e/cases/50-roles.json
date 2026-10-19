@@ -31,7 +31,7 @@
         "kinds": ["bottle"],
         "ready": true,
         "visibility": "shared",
-        "credits": 1
+        "credits": 0
       },
       "group": "roles"
     },
@@ -70,7 +70,7 @@
         "kinds": ["sleep"],
         "visibility": "shared",
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "roles"
     },

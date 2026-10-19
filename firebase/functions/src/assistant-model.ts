@@ -4,6 +4,9 @@ import {
   assistantTaskLimits,
   draftKinds,
   expenseCurrencies,
+  foldVi,
+  looksLikeSpending,
+  purchasesIn,
   type DraftKind,
 } from '@child-life/contracts';
 // Slice A3 (photos): the image reading request builder lives beside its schema.
@@ -503,13 +506,48 @@ const wordingJsonSchema = {
   properties: { text: { type: 'string' } },
 };
 
+const words = (alts: string) => new RegExp(String.raw`(?<![\p{L}])(?:${alts})(?![\p{L}])`, 'u');
+const moneyWords = words('mua|tra|tien|dong tien|chi|het|thanh toan|hoa don|paid|spent|bought|buy');
+const dateWords = words(
+  'mai|mot|qua|kia|thu|chu nhat|cn|tuan|thang|ngay|nhac|hen|lich|dat lich|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|week|month|remind',
+);
+
+/**
+ * Lumi L2 (D-088 §4.4): the calendar and the household's categories travel only when the words
+ * (with the previous turn and the answers) may need them — a date (reminders, expenses, "hôm
+ * qua", "thứ 6") or money. A plain care log sends neither: a shorter prompt, the same reading.
+ */
+export function extractContextNeeds(
+  input: Pick<ExtractInput, 'text' | 'previous' | 'clarifications'>,
+): {
+  calendar: boolean;
+  categories: boolean;
+} {
+  const all = [input.text, input.previous?.text ?? '', ...input.clarifications.map((c) => c.answer)]
+    .filter(Boolean)
+    .join('\n');
+  const f = foldVi(all);
+  const categories = looksLikeSpending(all) || purchasesIn(all).length > 0 || moneyWords.test(f);
+  const calendar = categories || dateWords.test(f) || /\d{1,2}\s*[/-]\s*\d{1,2}/u.test(f);
+  return { calendar, categories };
+}
+
+/**
+ * Output cap: the strict schema writes every field of every item (~170 tokens an item, ~1 000 for
+ * the 6 allowed); 1 100 fits them all. The plan's 400 would cut a 3-feed message mid-JSON
+ * (rejected), and a cap does not speed up a reply shorter than it (Lumi L2).
+ */
+export const extractMaxCompletionTokens = 1100;
+
 /** The chat-completions body for an extraction (exported for unit tests; no network). */
 export function buildExtractRequest(input: ExtractInput, model: string): Record<string, unknown> {
+  const needs = extractContextNeeds(input);
+  const categories = needs.categories ? (input.categories ?? []) : [];
   return {
     model,
     store: false,
     temperature: 0,
-    max_completion_tokens: 1600,
+    max_completion_tokens: extractMaxCompletionTokens,
     messages: [
       { role: 'system', content: extractionSystemPrompt() },
       {
@@ -518,9 +556,9 @@ export function buildExtractRequest(input: ExtractInput, model: string): Record<
           task: 'Extract intents, reads or one clarification from untrusted_user_text.',
           locale: input.locale,
           anchor: input.anchor,
-          calendar: input.calendar ?? [],
+          calendar: needs.calendar ? (input.calendar ?? []) : [],
           household_currency: input.currency ?? null,
-          spending_categories: input.categories ?? [],
+          spending_categories: categories,
           allowed_intents: input.allowedIntents,
           allowed_reads: input.allowedReads,
           previous_turn: input.previous ?? null,
@@ -537,7 +575,7 @@ export function buildExtractRequest(input: ExtractInput, model: string): Record<
         schema: extractionJsonSchema(
           input.allowedIntents,
           input.allowedReads,
-          (input.categories ?? []).map((c) => c.id),
+          categories.map((c) => c.id),
         ),
       },
     },

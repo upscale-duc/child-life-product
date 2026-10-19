@@ -37,7 +37,7 @@
         "kinds": ["sleep"],
         "asks": ["time.start"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -76,7 +76,7 @@
         "kinds": ["breast"],
         "asks": ["time.missing"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -116,7 +116,7 @@
           "0.occurredAt": "D0 13:00"
         },
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -158,7 +158,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -203,7 +203,7 @@
           "0.amountMl": 150
         },
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -239,7 +239,7 @@
         "outcome": "drafts",
         "kinds": ["sleep"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -287,7 +287,7 @@
       "expect": {
         "outcome": "answer",
         "saved": 1,
-        "credits": 2
+        "credits": 1
       },
       "group": "flow"
     },
@@ -336,7 +336,7 @@
         "kinds": ["breast"],
         "asks": ["time.ampm"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },
@@ -527,7 +527,7 @@
           "0.startedAt": "D0 12:30"
         },
         "saved": 1,
-        "credits": 2
+        "credits": 1
       },
       "group": "flow"
     }

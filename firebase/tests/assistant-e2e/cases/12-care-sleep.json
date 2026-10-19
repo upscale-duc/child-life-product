@@ -34,7 +34,7 @@
           "0.startedAt": "D0 13:00",
           "0.endedAt": "D0 14:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -71,7 +71,7 @@
           "0.startedAt": "D-1 21:00",
           "0.endedAt": "D0 06:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -111,8 +111,8 @@
           "0.startedAt": "D-1 21:00",
           "0.endedAt": "D0 06:00"
         },
-        "credits": 1,
-        "calls": 1
+        "credits": 0,
+        "calls": 0
       },
       "group": "care.sleep"
     },
@@ -154,7 +154,7 @@
           "0.startedAt": "D-1 22:00",
           "0.endedAt": "D0 07:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -230,7 +230,7 @@
           "0.startedAt": "D-1 21:00",
           "0.endedAt": "D0 06:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -269,7 +269,7 @@
           "0.startedAt": "D0 12:30",
           "0.endedAt": "D0 14:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -304,7 +304,7 @@
           "0.startedAt": "D0 12:20",
           "0.endedAt": "D0 14:20"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -367,7 +367,7 @@
       ],
       "expect": {
         "outcome": ["drafts", "awaiting"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -411,7 +411,7 @@
           "0.startedAt": "D0 19:00",
           "0.endedAt": "D0 20:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -446,7 +446,7 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["sleep"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -505,7 +505,7 @@
           "0.endedAt": "D0 06:30"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 2
+        "credits": 1
       },
       "group": "care.sleep"
     },
@@ -541,7 +541,7 @@
           "0.startedAt": "D0 13:00",
           "0.endedAt": "D0 14:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -615,7 +615,7 @@
           "0.startedAt": "D-1 12:00",
           "0.endedAt": "D-1 14:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.sleep"
     },
@@ -693,6 +693,7 @@
     },
     {
       "id": "sl-19-model-misreads-hour",
+      "rules": false,
       "group": "care.sleep",
       "title": "LUMI-04 live: \"1h trua\" read as 12:00 by the model → the server re-reads 13:00 from the words and flags it (scripted misreading: fake only; the live model's reading of the same words is sl-14)",
       "turns": [
@@ -768,7 +769,7 @@
           "0.startedAt": "D0 12:30",
           "0.endedAt": "D0 14:00"
         },
-        "credits": 1
+        "credits": 0
       }
     }
   ]

@@ -155,6 +155,11 @@ export interface Case {
   noProbe?: boolean;
   /** Run in live mode too (default true for text cases). */
   live?: boolean;
+  /**
+   * Lumi L2: false = the model reads every message (the rule reader is off): cases about the
+   * model itself — a wrong reading the server's backstops catch, a provider failure, credits.
+   */
+  rules?: boolean;
 }
 
 export interface CaseFile {

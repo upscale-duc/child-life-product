@@ -341,6 +341,9 @@ import {
   sweepAssistantAttachments,
 } from './assistant-attachments.js';
 import { cleanupAssistant as runCleanupAssistant } from './assistant-lifecycle.js';
+// Lumi L2 (D-088 §4.4): warm, not always on.
+import { isAssistantWarmup, warmAssistant as pingAssistant } from './assistant-warm.js';
+import { HopTimer } from './assistant-timing.js';
 // ---- end Child Life Assistant imports ----
 
 initializeApp();
@@ -2438,6 +2441,8 @@ const assistantDeps = (withModel: boolean): AssistantDeps => ({
   gateway: withModel ? assistantGateway() : null,
   // Slice A3: the photos' Storage (default bucket; Rules: `assistant/{uid}/{at_*}`).
   files: bucketAttachmentStore(getStorage().bucket()),
+  // Lumi L2 (D-088 §4.4): per-hop timings — ids, states, paths and milliseconds only.
+  onTiming: (payload) => logger.info('assistant timing', payload),
 });
 
 function assistantHttpsError(operation: string, error: unknown): HttpsError {
@@ -2457,9 +2462,16 @@ function assistantHttpsError(operation: string, error: unknown): HttpsError {
 const assistantCall = <T>(
   name: string,
   run: (deps: AssistantDeps, uid: string, data: unknown) => Promise<T>,
-  options: { secrets?: ReturnType<typeof defineSecret>[]; timeoutSeconds?: number } = {},
-) =>
-  onCall(options, async (request) => {
+  options: {
+    secrets?: ReturnType<typeof defineSecret>[];
+    timeoutSeconds?: number;
+    /** Lumi L2: answers the scheduled `{ warmup: true }` ping before any auth or read. */
+    warmable?: boolean;
+  } = {},
+) => {
+  const { warmable, ...callOptions } = options;
+  return onCall(callOptions, async (request) => {
+    if (warmable && isAssistantWarmup(request.data)) return { warm: true };
     if (!request.auth) {
       throw new HttpsError('unauthenticated', 'AUTH_REQUIRED', {
         reason: 'AUTH_REQUIRED',
@@ -2477,15 +2489,22 @@ const assistantCall = <T>(
       throw assistantHttpsError(name, error);
     }
   });
+};
 
 /** CH26: the assistant consent (separate from summaries); withdrawing stops queued work. */
 export const setAssistantConsent = assistantCall('setAssistantConsent', runSetAssistantConsent);
 /** Exact credits, the household pool and the first failing gate; no model, no reservation. */
 export const quoteTask = assistantCall('quoteTask', runQuoteTask, { secrets: [openAiKey] });
 /** Quote → reserve → task `queued` in one transaction; health support free at once. */
-export const startTask = assistantCall('startTask', runStartTask, { secrets: [openAiKey] });
+export const startTask = assistantCall('startTask', runStartTask, {
+  secrets: [openAiKey],
+  warmable: true,
+});
 /** Same task, same reservation: the answer goes back to the worker. */
-export const submitClarification = assistantCall('submitClarification', runSubmitClarification);
+export const submitClarification = assistantCall('submitClarification', runSubmitClarification, {
+  // Lumi L2: the next round runs in this request (and may read the message again).
+  secrets: [openAiKey],
+});
 /** CH06 edit: revision + 1, validated, no model, no credits. */
 export const patchDraft = assistantCall('patchDraft', runPatchDraft);
 /** CH07: per-item save through the domain writers; partial success kept. */
@@ -2502,7 +2521,9 @@ export const getAssistantUsage = assistantCall('getAssistantUsage', runGetAssist
 /** CH03: own conversations or one conversation's messages, cursor paged. */
 export const listAssistantHistory = assistantCall('listAssistantHistory', runListAssistantHistory);
 /** Reconnect: the authoritative task snapshot (task, drafts, events, messages). */
-export const getAssistantTask = assistantCall('getAssistantTask', runGetAssistantTask);
+export const getAssistantTask = assistantCall('getAssistantTask', runGetAssistantTask, {
+  warmable: true,
+});
 /** CH03 "Xoá": chat, tasks and drafts; never saved domain records. */
 export const deleteAssistantConversation = assistantCall(
   'deleteAssistantConversation',
@@ -2525,6 +2546,9 @@ export const runAssistantTask = onDocumentWritten(
       return;
     }
     const { taskId } = event.params;
+    const timer = new HopTimer();
+    // How long the write took to reach this trigger (cold start included).
+    const lag = Date.now() - Date.parse(event.time);
     const r = await runAssistantWorker(
       {
         db: getFirestore(),
@@ -2533,11 +2557,34 @@ export const runAssistantTask = onDocumentWritten(
         gateway: assistantGateway(),
         // Slice A3: photos are read from (and deleted in) the default bucket.
         files: bucketAttachmentStore(getStorage().bucket()),
+        timer,
       },
       taskId,
     );
     // Ids and states only: never the text, drafts or records.
     if (r.ran) logger.info('assistant task settled', { taskId, state: r.state, fenced: r.fenced });
+    // Lumi L2: the trigger path's hops (photos, hand-offs, retries) beside the inline ones.
+    if (r.ran) {
+      logger.info(
+        'assistant timing',
+        timer.payload({ op: 'runAssistantTask', taskId, path: 'trigger', state: r.state, lag }),
+      );
+    }
+  },
+);
+
+/**
+ * Lumi L2 (D-088 §4.4, owner 2026-10-19): no `minInstances`; every 5 minutes from 06:00 to 23:59
+ * (the hours most families log) the callables a typed log uses get an empty warm-up request.
+ */
+export const warmAssistant = onSchedule(
+  { schedule: '*/5 6-23 * * *', timeZone: 'Asia/Ho_Chi_Minh', timeoutSeconds: 60 },
+  async () => {
+    const project = currentProjectId();
+    if (!project) return;
+    const r = await pingAssistant(project, functionsRegion);
+    // Status and milliseconds only (a cold ping shows as a slow one).
+    if (r.some((x) => x.status !== 200)) logger.warn('assistant warm-up', { r });
   },
 );
 

@@ -116,7 +116,7 @@
           "0.action": "start",
           "0.at": "D0 11:20"
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {
@@ -199,7 +199,7 @@
         "values": {
           "0.occurredAt": "D0 08:00"
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {
@@ -245,7 +245,7 @@
         "values": {
           "0.occurredAt": "D0 20:00"
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {

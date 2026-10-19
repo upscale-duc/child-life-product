@@ -188,14 +188,14 @@ describe('OpenAI extraction request', () => {
     for (const k of ['diaper', 'weightKg', 'lengthCm', 'headCm']) {
       expect(Object.keys(fields)).toContain(k);
     }
+    const context = {
+      currency: 'VND',
+      categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
+      calendar: [{ date: '2026-10-16', weekday: 'Thứ Sáu (Friday)', label: 'mai' }],
+      previous: { text: 'bé bú 120ml', drafts: [{ kind: 'bottle', amountMl: 120 }] },
+    };
     const body = buildExtractRequest(
-      {
-        ...input,
-        currency: 'VND',
-        categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
-        calendar: [{ date: '2026-10-16', weekday: 'Thứ Sáu (Friday)', label: 'mai' }],
-        previous: { text: 'bé bú 120ml', drafts: [{ kind: 'bottle', amountMl: 120 }] },
-      },
+      { ...input, ...context, text: 'mai mua sữa hết 500k' },
       'gpt-test',
     );
     const user = JSON.parse(dig(body, 'messages.1').content as string);
@@ -205,6 +205,27 @@ describe('OpenAI extraction request', () => {
       calendar: [{ date: '2026-10-16', label: 'mai' }],
       previous_turn: { text: 'bé bú 120ml' },
     });
+    // Lumi L2: a plain care log sends neither the calendar nor the categories (a shorter prompt).
+    const care = buildExtractRequest(
+      { ...input, ...context, text: 'bé bú 120ml lúc 8h, ngủ từ 9h đến 10h' },
+      'gpt-test',
+    );
+    expect(JSON.parse(dig(care, 'messages.1').content as string)).toMatchObject({
+      spending_categories: [],
+      calendar: [],
+    });
+    expect(
+      dig(
+        care,
+        'response_format.json_schema.schema.properties.intents.items.properties.fields.properties.categoryId',
+      ),
+    ).toEqual({ type: 'null' });
+    // A day word keeps the calendar ("hôm qua", "thứ 6", "20/10", reminders).
+    for (const text of ['hôm qua bé bú 120ml', 'nhắc thứ 6 đi tiêm', 'tiêm ngày 20/10']) {
+      const b = buildExtractRequest({ ...input, ...context, text }, 'gpt-test');
+      expect(JSON.parse(dig(b, 'messages.1').content as string).calendar, text).toHaveLength(1);
+    }
+    expect(dig(body, 'max_completion_tokens')).toBe(1100);
   });
 
   it('posts to chat completions with the bearer key and parses the JSON content', async () => {

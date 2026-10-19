@@ -34,7 +34,7 @@
           "0.occurredAt": "D0 10:00",
           "0.side": "both"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -72,7 +72,7 @@
           "0.occurredAt": "D0 14:20",
           "0.side": "both"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -107,7 +107,7 @@
           "0.amountMl": 150,
           "0.occurredAt": "D-1 21:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -142,7 +142,7 @@
           "0.amountMl": 100,
           "0.occurredAt": "D0 07:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -178,7 +178,7 @@
           "0.occurredAt": "D0 13:00"
         },
         "visibility": "shared",
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -213,7 +213,7 @@
           "0.diaper": "dirty",
           "0.occurredAt": "D0 14:20"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -253,7 +253,7 @@
           "0.diaper": "wet",
           "0.occurredAt": "D0 14:20"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -322,7 +322,7 @@
           "0.lengthCm": null,
           "0.measuredOn": "D0"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -357,7 +357,7 @@
           "0.lengthCm": 62,
           "0.measuredOn": "D0"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -431,6 +431,7 @@
     },
     {
       "id": "pd-13-growth-read-as-expense",
+      "rules": false,
       "title": "LUMI-01 live: \"đi khám… nặng 5kg8\" read as an expense with no amount → a growth record, no expense",
       "turns": [
         {
@@ -466,6 +467,7 @@
     },
     {
       "id": "pd-14-diaper-read-as-observation",
+      "rules": false,
       "title": "LUMI-01 live: \"thay tã ướt lúc 13h\" read as an observation (usual) → a diaper change",
       "turns": [
         {
@@ -500,6 +502,7 @@
     },
     {
       "id": "pd-15-pump-read-as-bottle",
+      "rules": false,
       "title": "LUMI-01 live: \"hút sữa 120ml lúc 10h\" read as a bottle feed → a pumping session, never a feed",
       "turns": [
         {
@@ -577,7 +580,7 @@
           "growth.headCm": 40,
           "growth.lengthCm": 61
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -610,7 +613,7 @@
         "values": {
           "0.occurredAt": "D0 13:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -651,7 +654,7 @@
           "0.side": "left"
         },
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
@@ -740,12 +743,13 @@
           "0.durationMin": 20
         },
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.types"
     },
     {
       "id": "pd-21-model-missed-weight",
+      "rules": false,
       "title": "LUMI-01 live: the model returns nothing for \"bé nặng 5,2kg\" → a growth draft from the words, never HELP",
       "turns": [
         {
@@ -844,7 +848,7 @@
           "growth.headCm": 39,
           "growth.weightKg": 5.2
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {
@@ -881,7 +885,7 @@
           "0.lengthCm": 58,
           "0.headCm": 39
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {
@@ -916,11 +920,12 @@
           "0.lengthCm": null
         },
         "notCodes": ["PART_NOT_SAVED"],
-        "credits": 1
+        "credits": 0
       }
     },
     {
       "id": "pd-26-growth-head-read-as-length",
+      "rules": false,
       "group": "care.types",
       "title": "The model puts the head's 39 cm in the length: the words win (length empty, head 39)",
       "turns": [
@@ -986,7 +991,7 @@
         "values": {
           "0.headCm": 75
         },
-        "credits": 1
+        "credits": 0
       }
     },
     {
@@ -1067,7 +1072,7 @@
         "recordData": {
           "growth.headCm": 41.2
         },
-        "credits": 1
+        "credits": 0
       }
     }
   ]

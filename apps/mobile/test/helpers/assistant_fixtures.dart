@@ -428,9 +428,10 @@ class FakeAssistantRepository implements AssistantRepository {
     required String requestId,
     required AssistantScope scope,
     required String? conversationId,
-    required String quoteId,
     required String? text,
     required String locale,
+    String? quoteId,
+    IntentHint? intentHint,
     List<String> attachmentIds = const [],
   }) async {
     final args = {
@@ -438,6 +439,7 @@ class FakeAssistantRepository implements AssistantRepository {
       'scope': scope.key,
       'conversationId': conversationId,
       'quoteId': quoteId,
+      'intentHint': intentHint?.wire,
       'text': text,
       'attachmentIds': attachmentIds,
     };

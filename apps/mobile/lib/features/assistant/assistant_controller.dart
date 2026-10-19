@@ -943,6 +943,18 @@ class AssistantChat extends Notifier<ChatState> {
         : state.copyWith(kept: input);
   }
 
+  /// Lumi L2: the refusals `quoteTask` used to report before a start (kept as blocked input).
+  static const _gates = {
+    AssistantReason.consentRequired,
+    AssistantReason.featureDisabled,
+    AssistantReason.regionUnsupported,
+    AssistantReason.writeDenied,
+    AssistantReason.readDenied,
+    AssistantReason.moduleUnavailable,
+    AssistantReason.notMember,
+    AssistantReason.authRequired,
+  };
+
   ChatBlock _blockFor(AssistantReason? r, {bool offline = false}) {
     if (offline) return const ChatBlock(ChatBlockKind.offline);
     return ChatBlock(switch (r) {
@@ -1032,31 +1044,18 @@ class AssistantChat extends Notifier<ChatState> {
               ? _privateConversation
               : state.conversationId);
     try {
-      final quote = await _repo.quote(
-        scope: state.scope,
-        conversationId: conversationId,
-        modality: TaskModality.text,
-        locale: _locale,
-        intentHint: hint,
-      );
-      _setUsage(quote.usage);
-      // Out of credits or the model off: the start still goes (nothing is reserved). The server
-      // answers health signs at once for free (CH28 never behind credits) and keeps any other
-      // question as a blocked task to resume after an upgrade or the reset (api.md "Start").
-      if (!quote.allowed &&
-          quote.reason != AssistantReason.usageExhausted &&
-          quote.reason != AssistantReason.aiUnavailable) {
-        _keep(kept.copyWith(reason: KeptReason.blocked));
-        state = state.copyWith(block: _blockFor(quote.reason));
-        return;
-      }
+      // Lumi L2 (D-088 §4.4): no quoteTask for text — startTask quotes inline with the same gates
+      // (a refused gate is its error below), reads a routine log by rules (0 credits) and answers
+      // with the whole snapshot. Out of credits or the model off still starts (nothing reserved):
+      // health signs are answered at once for free (CH28) and any other question is kept as a
+      // blocked task to resume after an upgrade or the reset (api.md "Start").
       final a = await _repo.start(
         requestId: kept.requestId,
         scope: state.scope,
         conversationId: conversationId,
-        quoteId: quote.quoteId,
         text: kept.text,
         locale: _locale,
+        intentHint: hint,
       );
       _setUsage(a.usage);
       final snapshot = a.snapshot;
@@ -1106,7 +1105,12 @@ class AssistantChat extends Notifier<ChatState> {
       }
       _keep(
         kept.copyWith(
-          reason: e.offline ? KeptReason.offline : KeptReason.failed,
+          reason: e.offline
+              ? KeptReason.offline
+              // A gate the quote used to report (consent, the switch, the region, the role).
+              : _gates.contains(e.reason)
+              ? KeptReason.blocked
+              : KeptReason.failed,
         ),
       );
       state = state.copyWith(block: _blockFor(e.reason, offline: e.offline));
@@ -1557,8 +1561,9 @@ class AssistantChat extends Notifier<ChatState> {
       if (s != null) _putSnapshot(s);
       state = state.copyWith(clearAnswering: true);
       ok = true;
-      // The answer's message and the next round come with the task's snapshot.
-      unawaited(_refresh(taskId));
+      // Lumi L2: the next round runs in the same request and its snapshot (messages, drafts,
+      // events) is the answer; only an older server's bare task view needs the read.
+      if (s == null || s.messages.isEmpty) unawaited(_refresh(taskId));
       return ActionOutcome.ok;
     } on AssistantException catch (e) {
       if (e.offline) return ActionOutcome.offline;

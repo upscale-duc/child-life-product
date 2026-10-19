@@ -108,6 +108,11 @@ import {
 import { purgeTaskAttachments, revokeAssistantPhotos } from './assistant-lifecycle.js';
 import { readRhythmContent } from './rhythm.js';
 import { aiBudgetLeft } from './staff.js';
+// Lumi L2 (D-088 §4.4): rules before the model, the worker inside `startTask`, per-hop timings.
+import { ruleReadText } from './assistant-rules.js';
+import { HopTimer } from './assistant-timing.js';
+import { runClaimedAssistantTask } from './assistant-worker.js';
+import type { StoredTask } from './assistant-store.js';
 // L1 (P-167 #3): typed answers to the server's questions.
 import type { Clarification } from '@child-life/contracts';
 import { readTypedAnswer } from './assistant-text.js';
@@ -127,6 +132,59 @@ export interface AssistantDeps {
   gateway: ModelGateway | null;
   /** Slice A3: the photos' Storage (absent → photo tasks are MODULE_UNAVAILABLE). */
   files?: AttachmentStore;
+  // ---- Lumi L2 (D-088 §4.4) ----
+  /** Routine logs read by rules before the model (default on; the e2e backstop cases turn it off). */
+  ruleReads?: boolean;
+  /** Text tasks run their worker inside `startTask` / `submitClarification` (default on). */
+  inline?: boolean;
+  /** Per-hop timings of a request (ids, states and milliseconds only); `index.ts` logs them. */
+  onTiming?: (payload: Record<string, unknown>) => void;
+  /** Tests: a shorter inline budget than the phone's 30 s wait allows. */
+  inlineBudgetMs?: number;
+}
+
+/**
+ * Lumi L2: the phone waits 30 s for a callable (`assistantCallTimeout`); an inline run stops
+ * starting model calls in time to answer within that, and hands the task to the trigger instead.
+ */
+const inlineBudgetMs = 24_000;
+/** The lease an inline run holds (the sweeper re-queues a task whose request died). */
+const inlineLeaseMs = 90_000;
+
+/** Lumi L2: a text task that runs here is created `processing` under this request's lease. */
+function inlineClaim(taskId: string, attempt: number, now: Date) {
+  return {
+    holder: `${taskId}#${attempt}`,
+    lease: {
+      holder: `${taskId}#${attempt}`,
+      until: Timestamp.fromMillis(now.getTime() + inlineLeaseMs),
+    },
+  };
+}
+
+/** Lumi L2: runs the claimed task now, under the request's deadline. */
+async function runInline(
+  deps: AssistantDeps,
+  doc: StoredTask,
+  holder: string,
+  s: TrustedScope,
+  started: number,
+  timer: HopTimer,
+) {
+  return runClaimedAssistantTask(
+    {
+      db: deps.db,
+      now: deps.now,
+      environment: deps.environment,
+      gateway: deps.gateway,
+      ...(deps.files ? { files: deps.files } : {}),
+      deadline: started + (deps.inlineBudgetMs ?? inlineBudgetMs),
+      preloaded: { s, consent: true },
+      timer,
+    },
+    doc,
+    holder,
+  );
 }
 
 const terminal = new Set(['ready', 'failed', 'canceled']);
@@ -322,15 +380,28 @@ export async function startTask(
   deps: AssistantDeps,
   uid: string,
   data: unknown,
-): Promise<AssistantResponse<{ task: AssistantTaskView; usage: AssistantUsage }>> {
+): Promise<AssistantResponse<AssistantTaskSnapshot & { usage: AssistantUsage }>> {
   const { db, now } = deps;
+  const started = Date.now();
+  const timer = new HopTimer();
   const req = parseRequest(startTaskRequestSchema, data);
   const text = req.text?.trim() ? req.text.trim() : null;
   if (!text && req.attachmentIds.length === 0) throw fail('VALIDATION_FAILED', { field: 'text' });
-  const s = await loadTrustedScope(db, uid, req.scope, now, deps.environment);
+  // Lumi L2: text may come without a quote (quoted inline below, same gates); photos keep theirs.
+  const quoteId = req.quoteId ?? null;
+  if (!quoteId && req.attachmentIds.length > 0) {
+    throw fail('VALIDATION_FAILED', { field: 'quoteId' });
+  }
+  // Lumi L2: the scope, the quote, the consent and the thread are read together.
+  const [s, quoteSnap, consentSnap, requested] = await Promise.all([
+    loadTrustedScope(db, uid, req.scope, now, deps.environment),
+    quoteId ? quoteRef(db, quoteId).get() : Promise.resolve(null),
+    consentRef(db, uid).get(),
+    req.conversationId ? conversationRef(db, req.conversationId).get() : Promise.resolve(null),
+  ]);
   requireAssistant(s);
-  const quoteSnap = await quoteRef(db, req.quoteId).get();
-  const modality = quoteSnap.exists ? (quoteSnap.get('modality') as 'text' | 'image') : 'text';
+  timer.mark('scope');
+  const modality = quoteSnap?.exists ? (quoteSnap.get('modality') as 'text' | 'image') : 'text';
   const taskId = taskIdFor(uid, req.clientRequestId);
   // ---- Slice A3 (photos): verified before any credit moves (M06) ----
   let verified: VerifiedAttachment[] = [];
@@ -362,23 +433,37 @@ export async function startTask(
     }),
   );
   const signs = text ? healthSignalsIn(text) : [];
-  // Slice A5: the household's approved emergency number (none when the pack has no entry).
-  const healthPart = signs.length > 0 ? await healthSupportPart(db, s, signs) : null;
   // Rework 2026-10-15: a message that is only small talk ("cảm ơn Lumi", "ok") gets the
   // server's short reply at once — no model, no quote, 0 credits.
   const talk = text && signs.length === 0 && modality === 'text' ? smallTalkIn(text) : null;
-  const consent = assistantConsentGranted(await consentRef(db, uid).get());
-  const live = await liveAvailable(deps, s);
-  const pool = await assistantPool(db, s, now);
+  // Lumi L2 (D-088 §4.4, owner 2026-10-19): a routine log the rules read costs 0 credits and
+  // needs no model; the worker reads it the same way (`ruleRead` on the task).
+  const ruled =
+    (deps.ruleReads ?? true) &&
+    modality === 'text' &&
+    text !== null &&
+    signs.length === 0 &&
+    !talk &&
+    ruleReadText({ text, zone: s.zone, anchor: now }) !== null;
+  const consent = assistantConsentGranted(consentSnap);
+  const [healthPart, live, pool] = await Promise.all([
+    // Slice A5: the household's approved emergency number (none when the pack has no entry).
+    signs.length > 0 ? healthSupportPart(db, s, signs) : Promise.resolve(null),
+    ruled ? Promise.resolve(true) : liveAvailable(deps, s),
+    assistantPool(db, s, now),
+  ]);
+  timer.mark('gates');
   const policy = creditPolicy(s.ctx.config);
-  const credits = signs.length > 0 || talk ? 0 : creditsFor(modality, policy);
+  const credits = signs.length > 0 || talk || ruled ? 0 : creditsFor(modality, policy);
   const ref = taskRef(db, taskId);
   const at = Timestamp.fromDate(now);
   // ---- D-075 #2: the baby's shared thread, spending excluded ----
   const visibilityInput = {
     scope: req.scope,
     modality,
-    intentHint: quoteSnap.exists ? ((quoteSnap.get('intentHint') as string | null) ?? null) : null,
+    intentHint: quoteSnap?.exists
+      ? ((quoteSnap.get('intentHint') as string | null) ?? null)
+      : (req.intentHint ?? null),
     role: s.member.role,
   };
   // Rework 2026-10-15: money in the words ("mua sữa hết 500k", mixed messages too) keeps the
@@ -389,7 +474,6 @@ export async function startTask(
   const author: AssistantAuthor = authorOf(s.member);
   const sharedId = sharedConversationId(req.scope.babyId);
   // The conversation the app is showing: the caller's own or the shared thread (validated).
-  const requested = req.conversationId ? await conversationRef(db, req.conversationId).get() : null;
   if (requested && req.conversationId) {
     if (requested.exists) {
       if (!(await canReadConversation(db, uid, requested, now))) throw fail('NOT_MEMBER');
@@ -420,12 +504,12 @@ export async function startTask(
     const existing = await tx.get(ref);
     if (existing.exists) {
       if (existing.get('inputKey') !== inputKey) throw fail('IDEMPOTENCY_CONFLICT');
-      if (existing.get('state') !== 'blocked') return { replay: true };
+      if (existing.get('state') !== 'blocked') return { replay: true, inline: null };
     }
     const resume = existing.exists;
     const convId = resume ? (existing.get('conversationId') as string) : targetConvId;
     const [quote, conv] = await Promise.all([
-      tx.get(quoteRef(db, req.quoteId)),
+      quoteId ? tx.get(quoteRef(db, quoteId)) : Promise.resolve(null),
       tx.get(conversationRef(db, convId)),
     ]);
     // Slice A3: the photos, re-read inside the transaction (reads before writes).
@@ -562,7 +646,7 @@ export async function startTask(
         eventSeq: lastEvent,
         readyAt: at,
       });
-      return { replay: false };
+      return { replay: false, inline: null };
     }
 
     // Rework 2026-10-15: small talk is answered at once (free, no quote, no model).
@@ -606,7 +690,7 @@ export async function startTask(
         eventSeq: lastEvent,
         readyAt: at,
       });
-      return { replay: false };
+      return { replay: false, inline: null };
     }
     // Health support first: free, no quote needed, no model (U10, J10).
     if (signs.length > 0 && !resume) {
@@ -652,34 +736,42 @@ export async function startTask(
         eventSeq: lastEvent,
         readyAt: at,
       });
-      return { replay: false };
+      return { replay: false, inline: null };
     }
 
     if (!consent) throw fail('CONSENT_REQUIRED');
-    if (!quote.exists || quote.get('ownerUid') !== uid) throw fail('QUOTE_MISMATCH');
-    if (!sameScope(quote.get('scope'), req.scope)) throw fail('QUOTE_MISMATCH');
-    if (
-      quote.get('modality') !== modality ||
-      quote.get('attachmentCount') !== req.attachmentIds.length
-    ) {
-      throw fail('QUOTE_MISMATCH');
-    }
-    if ((toDate(quote.get('expiresAt'))?.getTime() ?? 0) <= now.getTime()) {
-      throw fail('QUOTE_EXPIRED');
-    }
-    const usedBy = quote.get('usedBy') as string | null;
-    if (usedBy !== null && usedBy !== taskId) throw fail('QUOTE_MISMATCH');
-    if (
-      quote.get('plan') !== pool.plan ||
-      (quote.get('grantId') ?? null) !== pool.grantId ||
-      quote.get('credits') !== credits
-    ) {
-      throw fail('QUOTE_MISMATCH');
+    // Lumi L2: without a quote id this IS the quote (consent above, the model and the pool below,
+    // the region / role / flag gates in the scope); an older app's quote is still checked.
+    if (quoteId) {
+      if (!quote?.exists || quote.get('ownerUid') !== uid) throw fail('QUOTE_MISMATCH');
+      if (!sameScope(quote.get('scope'), req.scope)) throw fail('QUOTE_MISMATCH');
+      if (
+        quote.get('modality') !== modality ||
+        quote.get('attachmentCount') !== req.attachmentIds.length
+      ) {
+        throw fail('QUOTE_MISMATCH');
+      }
+      if ((toDate(quote.get('expiresAt'))?.getTime() ?? 0) <= now.getTime()) {
+        throw fail('QUOTE_EXPIRED');
+      }
+      const usedBy = quote.get('usedBy') as string | null;
+      if (usedBy !== null && usedBy !== taskId) throw fail('QUOTE_MISMATCH');
+      if (
+        quote.get('plan') !== pool.plan ||
+        (quote.get('grantId') ?? null) !== pool.grantId ||
+        // A rule-read log costs less than its quote said (0): never a mismatch.
+        (!ruled && quote.get('credits') !== credits)
+      ) {
+        throw fail('QUOTE_MISMATCH');
+      }
     }
 
     let blocked: AssistantError | null = live ? null : 'AI_UNAVAILABLE';
     let windowId: string | null = null;
+    let reserved = false;
     if (!blocked) {
+      // Lumi L2: a rule-read log reserves 0 units, so the usage page lists it as "0 lượt ·
+      // không tính" (a full window still lets it through, without a ledger line).
       const r = await reserveQuota(tx, db, {
         familyId: s.familyId,
         reservationId: reservationIdFor(taskId),
@@ -689,13 +781,19 @@ export async function startTask(
         units: credits,
         now,
       });
-      if (r.outcome === 'denied') blocked = 'USAGE_EXHAUSTED';
-      else {
+      if (r.outcome === 'denied') {
+        if (!ruled) blocked = 'USAGE_EXHAUSTED';
+      } else {
+        reserved = true;
         windowId = r.windows[0]!.windowId;
         // The window moved since the quote (month boundary, new grant): ask for a new quote.
-        if (windowId !== quote.get('windowId')) throw fail('QUOTE_MISMATCH');
+        if (quote && !ruled && windowId !== quote.get('windowId')) throw fail('QUOTE_MISMATCH');
       }
     }
+    // Lumi L2: text runs here, under this request's lease (the trigger sees `processing`).
+    const inline = (deps.inline ?? true) && modality === 'text' && !blocked;
+    const attempt = 1;
+    const claim = inline ? inlineClaim(taskId, attempt, now) : null;
     const newMessages: {
       role: 'user' | 'assistant';
       parts: AssistantPart[];
@@ -735,40 +833,69 @@ export async function startTask(
             ? { state: 'blocked', reason: blocked }
             : { state: 'queued', credits, plan: pool.plan },
         },
+        ...(claim
+          ? [{ type: 'progress' as const, payload: { state: 'processing', round: 0 } }]
+          : []),
       ],
       now,
     );
     convWrite(taskId);
-    tx.set(ref, {
+    const doc = {
       ...base,
-      quoteId: req.quoteId,
+      quoteId,
       credits,
       plan: pool.plan,
       windowId,
-      reservationId: blocked ? null : reservationIdFor(taskId),
-      usage: blocked ? 'none' : 'reserved',
-      state: blocked ? 'blocked' : 'queued',
+      reservationId: reserved ? reservationIdFor(taskId) : null,
+      usage: reserved ? 'reserved' : 'none',
+      state: blocked ? 'blocked' : claim ? 'processing' : 'queued',
       version,
       errorCode: blocked,
       health: null,
       eventSeq: lastEvent,
       policyVersion: policy.policyVersion,
-    });
-    if (!blocked) tx.update(quote.ref, { usedBy: taskId });
+      ruleRead: ruled,
+      ...(claim ? { lease: claim.lease, attempt } : {}),
+    };
+    tx.set(ref, doc);
+    if (!blocked && quote) tx.update(quote.ref, { usedBy: taskId });
     // Slice A3: the photos belong to this task from now on (also while blocked, for resume).
     if (verified.length > 0) bindAttachmentsTx(tx, attachmentSnaps, verified, taskId, now);
-    return { replay: false };
+    return {
+      replay: false,
+      inline: claim ? { doc: doc as unknown as StoredTask, holder: claim.holder } : null,
+    };
   });
-  void out;
-  const snap = await ref.get();
-  const usage = await assistantUsage(db, s, now);
+  timer.mark('start');
+  let path = out.replay
+    ? 'replay'
+    : ruled
+      ? 'rules'
+      : talk
+        ? 'talk'
+        : signs.length
+          ? 'health'
+          : 'model';
+  if (out.inline) {
+    const r = await runInline(deps, out.inline.doc, out.inline.holder, s, started, timer);
+    path = r.path ?? path;
+  }
+  // Lumi L2: the whole snapshot (drafts, messages, events) comes back: the card draws at once.
+  const [snapshot, usage] = await Promise.all([
+    taskSnapshot(db, taskId, now),
+    assistantUsage(db, s, now),
+  ]);
+  timer.mark('answer');
   const { windowId: _w, ...usageView } = usage;
   void _w;
-  const t = storedTask(snap);
+  const t = snapshot.task;
+  deps.onTiming?.(
+    timer.payload({ op: 'startTask', taskId, path, state: t.state, inline: out.inline !== null }),
+  );
   return respond(
     req.clientRequestId,
     now,
-    { task: taskView(snap), usage: usageView },
+    { ...snapshot, usage: usageView },
     {
       taskId,
       dataVersion: t.version,
@@ -790,13 +917,18 @@ export async function submitClarification(
   deps: AssistantDeps,
   uid: string,
   data: unknown,
-): Promise<AssistantResponse<{ task: AssistantTaskView }>> {
+): Promise<AssistantResponse<AssistantTaskSnapshot>> {
   const { db, now } = deps;
+  const started = Date.now();
+  const timer = new HopTimer();
   const req = parseRequest(submitClarificationRequestSchema, data);
   const { contractVersion: _c, clientRequestId, locale: _l, ...input } = req;
   void _c;
   void _l;
-  return withRequest(db, uid, 'clarify', clientRequestId, input, now, async () => {
+  // Lumi L2: the inline run of this answer (never stored in the request ledger: the ledger keeps
+  // only the task id, the snapshot is read fresh, also on a replay).
+  let inlineRun: { doc: StoredTask; holder: string; s: TrustedScope } | null = null;
+  await withRequest(db, uid, 'clarify', clientRequestId, input, now, async () => {
     const pre = await ownTask(db, uid, req.taskId);
     const s = await loadTrustedScope(db, uid, storedTask(pre).scope, now, deps.environment);
     requireAssistant(s);
@@ -850,7 +982,7 @@ export async function submitClarification(
           updatedAt: at,
         });
         tx.delete(ref.collection('textReading').doc('current'));
-        return { expired: true };
+        return { expired: true, inline: null };
       }
       if (typed === 'unreadable') {
         const asked = t.clarifications.filter((c) => c.field === pc.field).length;
@@ -899,7 +1031,7 @@ export async function submitClarification(
           eventSeq: seq,
           updatedAt: at,
         });
-        return { expired: false };
+        return { expired: false, inline: null };
       }
       const answer = {
         choiceId: req.choiceId ?? (typed ? typed.choiceId : null),
@@ -922,16 +1054,24 @@ export async function submitClarification(
         now,
       );
       tx.update(conv.ref, { messageSeq: msg, updatedAt: at });
+      // Lumi L2: a text task's next round runs in this request (the trigger keeps photos).
+      const claim =
+        (deps.inline ?? true) && t.modality === 'text' ? inlineClaim(t.id, 1, now) : null;
       const seq = appendEvents(
         tx,
         db,
         t.id,
         t.eventSeq ?? 0,
-        [{ type: 'accepted', payload: { state: 'queued', round: t.round } }],
+        [
+          { type: 'accepted', payload: { state: 'queued', round: t.round } },
+          ...(claim
+            ? [{ type: 'progress' as const, payload: { state: 'processing', round: t.round } }]
+            : []),
+        ],
         now,
       );
-      tx.update(ref, {
-        state: 'queued',
+      const update = {
+        state: claim ? 'processing' : 'queued',
         clarifications: t.clarifications.map((c) =>
           c.id === pc.id ? { ...c, answer, answeredAt: at } : c,
         ),
@@ -939,24 +1079,66 @@ export async function submitClarification(
         clarificationExpiresAt: null,
         // Slice A5 fix: the attempt cap (3) is per run, not per task — without this reset the
         // 4th round of a 4-round clarification always failed AI_UNAVAILABLE.
-        attempt: 0,
+        attempt: claim ? 1 : 0,
+        ...(claim ? { lease: claim.lease } : {}),
         version: t.version + 1,
         eventSeq: seq,
         updatedAt: at,
-      });
-      return { expired: false };
+      };
+      tx.update(ref, update);
+      return {
+        expired: false,
+        inline: claim
+          ? { doc: { ...t, ...update } as unknown as StoredTask, holder: claim.holder }
+          : null,
+      };
     });
     if (out.expired) throw fail('QUOTE_EXPIRED');
-    const snap = await ref.get();
-    return respond(
-      clientRequestId,
-      now,
-      { task: taskView(snap) },
-      {
-        taskId: req.taskId,
-        dataVersion: storedTask(snap).version,
-      },
-    );
+    if (out.inline) inlineRun = { ...out.inline, s };
+    return { taskId: req.taskId };
+  });
+  timer.mark('answer');
+  let path = 'trigger';
+  {
+    const inline = inlineRun as { doc: StoredTask; holder: string; s: TrustedScope } | null;
+    if (inline) {
+      const { s } = inline;
+      // The consent is re-read by the worker (it may have been withdrawn while the question waited).
+      const consent = assistantConsentGranted(await consentRef(db, uid).get());
+      const r = await runClaimedAssistantTask(
+        {
+          db,
+          now,
+          environment: deps.environment,
+          gateway: deps.gateway,
+          ...(deps.files ? { files: deps.files } : {}),
+          deadline: started + (deps.inlineBudgetMs ?? inlineBudgetMs),
+          preloaded: { s, consent },
+          timer,
+        },
+        inline.doc,
+        inline.holder,
+      );
+      path = r.path ?? path;
+    }
+  }
+  // A replay is read like a reconnect (the caller may read this task).
+  if (!inlineRun) await readableTask(db, uid, req.taskId, now);
+  // Lumi L2: the whole snapshot comes back (the next card or question draws at once).
+  const snapshot = await taskSnapshot(db, req.taskId, now);
+  timer.mark('snapshot');
+  deps.onTiming?.(
+    timer.payload({
+      op: 'submitClarification',
+      taskId: req.taskId,
+      path,
+      state: snapshot.task.state,
+      inline: inlineRun !== null,
+    }),
+  );
+  return respond(clientRequestId, now, snapshot, {
+    taskId: req.taskId,
+    dataVersion: snapshot.task.version,
   });
 }
 

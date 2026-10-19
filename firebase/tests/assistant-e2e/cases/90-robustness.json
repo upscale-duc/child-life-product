@@ -32,7 +32,7 @@
         "values": {
           "0.occurredAt": "D0 08:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "robust"
     },
@@ -63,7 +63,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "robust"
     },
@@ -198,7 +198,7 @@
         "values": {
           "0.occurredAt": "D0 09:15"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "robust"
     },
@@ -232,7 +232,7 @@
         "values": {
           "0.occurredAt": "D0 08:45"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "robust"
     },

@@ -382,8 +382,8 @@ fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_
 |---|---|---|---|
 | `setAssistantConsent` | `consent: { version } \| null` | `{ assistant: { version, grantedAt } \| null, stoppedTasks }` | Only `assistant-consent-v1`. Writes `assistant` on `users/{uid}/settings/ai` with `mergeFields` (the summaries `consent` is untouched; `setAiConsent` now also merges, so it keeps `assistant`). Withdrawing fails the caller's `queued` / `awaiting_clarification` / `blocked` tasks with `CONSENT_REQUIRED` and releases their credits; a running task drops its output at settle time. |
 | `quoteTask` | `conversationId \| null, scope, modality, attachmentCount, intentHint` | `AssistantQuote` | `status: blocked` + `reason` = first failing gate: `CONSENT_REQUIRED` → `AI_UNAVAILABLE` (`assistant_live` off, no provider key, AI budget spent) → `USAGE_EXHAUSTED`. Never calls a model, never reserves. TTL 5 min. `image` needs `assistant_images` (A3). Idempotent per `clientRequestId`. |
-| `startTask` | `conversationId \| null, scope, quoteId, text, attachmentIds` | `{ task: AssistantTaskView, usage: AssistantUsage }` | See "Start" below. |
-| `submitClarification` | `taskId, expectedVersion, clarificationId, choiceId \| null, text \| null` | `{ task }` | Same task, same reservation, 0 extra credits. Wrong state / version / id → `INVALID_STATE`; a choice not offered or empty free text → `VALIDATION_FAILED`; past the 30-min TTL → credits released, task `failed`, `QUOTE_EXPIRED`. Idempotent per `clientRequestId`. |
+| `startTask` | `conversationId \| null, scope, quoteId?, intentHint?, text, attachmentIds` | `AssistantTaskSnapshot & { usage: AssistantUsage }` (since Lumi L2; before: `{ task, usage }`) | See "Start" and "Lumi L2" below. Text needs no `quoteId` (quoted inline); photos keep theirs. `{ warmup: true }` alone is answered `{ warm: true }` before any auth or read. |
+| `submitClarification` | `taskId, expectedVersion, clarificationId, choiceId \| null, text \| null` | `AssistantTaskSnapshot` (since Lumi L2; before: `{ task }`) | Same task, same reservation, 0 extra credits. Wrong state / version / id → `INVALID_STATE`; a choice not offered or empty free text → `VALIDATION_FAILED`; past the 30-min TTL → credits released, task `failed`, `QUOTE_EXPIRED`. Idempotent per `clientRequestId`. |
 | `patchDraft` | `draftId, expectedRevision, payload, confirmedFields` | `{ draft: AssistantDraftView }` | Revision + 1, validated like the form (`draftProblems` against the server clock), no model, no credits, no domain write. `DRAFT_SAVED`, `DRAFT_EXPIRED`, `DRAFT_STALE`, `INVALID_STATE` (discarded), `VALIDATION_FAILED` (schema, kind change). Changed or confirmed fields leave `uncertainFields`; remaining problems put the draft in `needs_review`. |
 | `confirmDrafts` | `taskId, selected[{ draftId, revision, acknowledge[] }], scope?` | `ConfirmDraftsResult` | No model, no credits (works at 0 credits while the TTL holds). Needs `assistant` + `assistant_writes`. `scope` (optional) different from the task's → `SCOPE_CHANGED` before anything. Per item: `saved` / `failed` / `conflict` (see "Confirm"). `status: partial` when any item is not saved. Idempotent per `clientRequestId`; the same id with another selection → `IDEMPOTENCY_CONFLICT`. |
 | `discardDraft` | `draftId, expectedRevision` | `{ draft }` | State `discarded`; never a domain delete, never a refund. Saved → `DRAFT_SAVED`. |
@@ -391,7 +391,7 @@ fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_
 | `submitAssistantFeedback` | `taskId, contentId, contentVersion, outcome` | `{ feedbackId \| null, outcome }` | 0 credits, no model. Role `rhythm.feedback` (Cùng nuôi, Người chăm sóc) else `WRITE_DENIED`. `contentId`/`contentVersion` must be a published activity of `publicConfig/content_rhythm`. `helpful` / `unsure` / `not_suitable` → `babies/{b}/recFeedback/fb_<hash(uid,task,content,version)>`; the same again is idempotent, another outcome → `DOMAIN_CONFLICT`. `not_tried` ("Chưa thử") writes nothing to the module, only `feedback[]` on the task. |
 | `getAssistantUsage` | `babyId` | `AssistantUsage` | Household pool now (an unused window reads empty). |
 | `listAssistantHistory` | `babyId, conversationId \| null, cursor \| null, limit ≤ 50` | `AssistantHistoryPage<AssistantConversationView \| AssistantMessage>` | `conversationId: null` → the baby's shared thread first (Cùng nuôi / Người chăm sóc, first page only, D-075 #2), then the caller's own private conversations about `babyId`, newest `updatedAt` first, cursor = last conversation id (or `private`). Otherwise a readable conversation's messages (with `author`), newest first, cursor = last sequence. Other members' private chats are never listed (P-158). |
-| `getAssistantTask` | `taskId, afterSequence \| null` | `AssistantTaskSnapshot` | Task (with `visibility`, `author`), drafts (with `problems`, `confirmedBy`), events after `afterSequence` (ordered), the task's messages (with `author`). The authority on reconnect (M11). Owner — or, for a shared task, any active Cùng nuôi / Người chăm sóc — still a member. |
+| `getAssistantTask` | `taskId, afterSequence \| null` | `AssistantTaskSnapshot` | `{ warmup: true }` alone → `{ warm: true }` (Lumi L2). Task (with `visibility`, `author`), drafts (with `problems`, `confirmedBy`), events after `afterSequence` (ordered), the task's messages (with `author`). The authority on reconnect (M11). Owner — or, for a shared task, any active Cùng nuôi / Người chăm sóc — still a member. |
 | `deleteAssistantConversation` | `conversationId, confirm: true` | `{ deletedTasks, domainRecordsKept: true }` | Private: its owner. Shared thread: a Cùng nuôi only (`WRITE_DENIED` otherwise), for everyone (D-075 #2). Cancels unfinished tasks (credits released), deletes the conversation, its messages, its tasks with drafts and events. Never touches care records, check-ins, feedback, reminders, expenses, the credit ledger or execution rows. An already deleted conversation answers `deletedTasks: 0`. |
 
 ## Start (`startTask`)
@@ -413,6 +413,38 @@ fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_
 6. A `blocked` task resumes when the same `clientRequestId` and input come with a fresh quote (e.g.
    after a verified upgrade the quote is at the paid pool, CH23): it reserves once and goes `queued`;
    "today" stays the original send instant.
+
+## Lumi L2: fast routine logs (D-088 §4.4, P-167 #4, #8, #9)
+
+- **No quote for text.** `startTask` without `quoteId` is its own quote: the same gates in the same
+  order (scope, role, region and flags in the trusted scope; health first; consent; the model; the
+  pool), `intentHint` from the request. An older app's quote is still checked; a rule-read log is
+  never a `QUOTE_MISMATCH` for costing less than its quote.
+- **Rules before the model** (`firebase/functions/src/assistant-rules.ts`): a message that is ONE
+  plain log — bottle ml + time, breast minutes / side, wet / dirty diaper, sleep start / stop / span
+  / length, pump ml, weight / length / head — is read into the extraction the model returns, and
+  `ruleRead: true` is stored on the task. Every word must be one the reader knows and every number
+  must belong to what it read; anything else (two events, a question, a correction, money, medicine,
+  a concern, English, "lúc nãy", an ongoing state with a length, a clock later than now) goes to the
+  model. A rule-read task needs no model (`assistant_live` off or no credits left still works),
+  reserves **0 units** (listed as "0 lượt · không tính" in "Gần đây") and the worker never calls the
+  model for it.
+- **The worker runs inside the request.** A text task is created `processing` under the request's
+  own lease (`<task>#1`, 90 s) with `accepted` + `progress` events, run at once, and the answer is the
+  whole snapshot (drafts, messages, events) — the card draws without `getAssistantTask`.
+  `submitClarification` does the same for the next round. The trigger ignores such a task (not
+  `queued`); it keeps photos, retries and the sweep. An inline run stops starting model calls 24 s
+  after the request began (the phone waits 30 s): out of time — or a call cut by that deadline — the
+  task goes back to `queued` and the trigger runs it (never a failure). A request that dies leaves its
+  lease to expire; `sweepAssistant` requeues it.
+- **Warm, not always on.** `warmAssistant` (Cloud Scheduler `*/5 6-23 * * *` Asia/Ho_Chi_Minh) POSTs
+  `{ "data": { "warmup": true } }` to `startTask` and `getAssistantTask`; no `minInstances`.
+- **Timings.** `assistant timing` log lines: `op`, `taskId`, `path` (`rules` / `model` / `cached` /
+  `handoff` / `talk` / `health` / `trigger`), `state`, per-hop milliseconds, `totalMs` (and `lag` for
+  the trigger) — never text, drafts or child data.
+- The model request carries the calendar only when a date word, money or a reminder is in the words
+  (with the previous turn and the answers), the household categories only for money;
+  `max_completion_tokens` 1 100 (all 6 items fit; 400 would cut a 3-feed reply).
 
 ## Worker (`runAssistantTask` trigger on `assistantTasks/{taskId}`)
 

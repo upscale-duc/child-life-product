@@ -34,8 +34,8 @@
           "0.amountMl": 120,
           "0.occurredAt": "D0 08:00"
         },
-        "credits": 1,
-        "calls": 1
+        "credits": 0,
+        "calls": 0
       },
       "group": "care.bottle"
     },
@@ -70,7 +70,7 @@
           "0.amountMl": 150,
           "0.occurredAt": "D0 09:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -143,8 +143,8 @@
         "values": {
           "0.occurredAt": "D0 13:50"
         },
-        "credits": 1,
-        "calls": 1
+        "credits": 0,
+        "calls": 0
       },
       "group": "care.bottle"
     },
@@ -184,7 +184,7 @@
         "values": {
           "0.occurredAt": "D0 14:20"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -222,7 +222,7 @@
         "values": {
           "0.occurredAt": "D0 13:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -257,7 +257,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "review": ["occurredAt"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -288,7 +288,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "review": ["amountMl"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -330,7 +330,7 @@
         "values": {
           "0.occurredAt": "D0 20:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -365,7 +365,7 @@
         "values": {
           "0.occurredAt": "D0 08:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -435,7 +435,7 @@
           "0.amountMl": 118,
           "0.occurredAt": "D0 12:20"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -501,7 +501,7 @@
         "values": {
           "0.occurredAt": "D-1 21:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -535,7 +535,7 @@
         "values": {
           "0.occurredAt": "D-2 10:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -569,7 +569,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "codes": ["DUPLICATE_SUSPECTED"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -626,7 +626,7 @@
           "0.occurredAt": "D0 08:00"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 2
+        "credits": 1
       },
       "group": "care.bottle"
     },
@@ -681,7 +681,7 @@
         "kinds": [],
         "codes": ["PREVIOUS_SAVED"],
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -712,7 +712,7 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["bottle"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -743,7 +743,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "review": ["amountMl"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -813,8 +813,8 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "ready": true,
-        "credits": 1,
-        "calls": 1
+        "credits": 0,
+        "calls": 0
       },
       "group": "care.bottle"
     },
@@ -848,7 +848,7 @@
         "values": {
           "0.occurredAt": "D0 08:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -883,7 +883,7 @@
         "values": {
           "0.occurredAt": "D-1 20:30"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     },
@@ -918,7 +918,7 @@
         "values": {
           "0.occurredAt": "D0 00:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.bottle"
     }

@@ -221,7 +221,8 @@ void main() {
       await tester.tap(_text('Đồng ý và bắt đầu'));
       await tester.pumpAndSettle();
       expect(repo.named('setAssistantConsent').single.args['agree'], isTrue);
-      expect(repo.named('quoteTask'), hasLength(1));
+      // Lumi L2: text goes straight to startTask (it quotes inline).
+      expect(repo.named('quoteTask'), isEmpty);
       expect(
         repo.named('startTask').single.args['text'],
         'Hôm nay con bú thế nào?',
@@ -246,7 +247,7 @@ void main() {
       );
     });
 
-    testWidgets('a text task: quote, start with a request id, drafts', (
+    testWidgets('a text task: no quote, start with a request id, drafts', (
       tester,
     ) async {
       final repo = FakeAssistantRepository();
@@ -256,12 +257,12 @@ void main() {
         '8 giờ sáng con bú bình 120 ml, 9 giờ ngủ tới 10 giờ.',
       );
       await _send(tester);
-      final quote = repo.named('quoteTask').single.args;
-      expect(quote['scope'], teddyScope.key);
-      expect(quote['modality'], 'text');
+      // Lumi L2 (D-088 §4.4): one call — startTask quotes inline and answers with the snapshot.
+      expect(repo.named('quoteTask'), isEmpty);
       final start = repo.named('startTask').single.args;
+      expect(start['scope'], teddyScope.key);
       expect(start['requestId'], '00000000-0000-4000-8000-000000000001');
-      expect(start['quoteId'], 'qt_1');
+      expect(start['quoteId'], isNull);
       expect(_text('Cữ bú bình'), findsOneWidget);
       expect(_text('Giấc ngủ'), findsOneWidget);
       // Labels come from the state enum.
@@ -530,6 +531,8 @@ void main() {
       expect(repo.named('quoteTask'), isEmpty);
       expect(repo.named('startTask'), isEmpty);
       expect(_text('Lưu 2 mục'), findsOneWidget);
+      // Lumi L2: the answer's snapshot is the next round — no second read (one on open only).
+      expect(repo.named('getAssistantTask'), hasLength(1));
     });
 
     testWidgets('"Tự nhập": the typed answer goes to the same task', (
@@ -974,7 +977,7 @@ void main() {
       await tester.tap(_text('Nâng cấp & tiếp tục câu hỏi'));
       await tester.pumpAndSettle();
       expect(opened, 1);
-      expect(repo.named('quoteTask'), hasLength(1));
+      expect(repo.named('quoteTask'), isEmpty);
       // Still kept, still blocked: nothing was charged or shown as answered.
       expect(repo.named('startTask').single.args['requestId'], 'req-kept');
       expect(_text('Chưa gửi'), findsOneWidget);
@@ -1313,6 +1316,47 @@ void main() {
       await tester.pumpAndSettle();
       expect(_text('Đã lưu'), findsOneWidget);
     });
+
+    testWidgets(
+      'Lumi L2: a sent log draws from the start answer and its listeners, no getAssistantTask',
+      (tester) async {
+        final repo = FakeAssistantRepository(tasks: {taskA: batchSnapshot()});
+        await _pump(tester, repo: repo);
+        await _type(tester, 'bé bú 120ml lúc 8h');
+        await _send(tester);
+        expect(_text('Lưu 2 mục'), findsOneWidget);
+        // The listener's first batch holds the events the answer already had.
+        repo.push(
+          taskA,
+          TaskEventsLive([
+            for (final e in TaskSnapshot.fromJson(batchSnapshot())!.events) e,
+          ]),
+        );
+        repo.push(
+          taskA,
+          TaskDraftsLive([
+            for (final d in TaskSnapshot.fromJson(batchSnapshot())!.drafts) d,
+          ]),
+        );
+        await tester.pumpAndSettle();
+        expect(repo.named('getAssistantTask'), isEmpty);
+        expect(_text('Lưu 2 mục'), findsOneWidget);
+        // A result the answer did not cover (the trigger's, a gap) is read once.
+        repo.push(
+          taskA,
+          TaskEventsLive([
+            AssistantEvent(
+              taskId: taskA,
+              eventId: 'ev4',
+              sequence: 4,
+              typeWire: 'answer_ready',
+            ),
+          ]),
+        );
+        await tester.pumpAndSettle();
+        expect(repo.named('getAssistantTask'), hasLength(1));
+      },
+    );
 
     testWidgets('back online: open tasks are fetched again', (tester) async {
       final online = StreamController<bool>.broadcast();

@@ -36,7 +36,7 @@
           "0.side": "left",
           "0.occurredAt": "D0 13:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -73,7 +73,7 @@
           "0.occurredAt": "D0 14:00",
           "0.side": "both"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -105,7 +105,7 @@
         "outcome": "drafts",
         "kinds": ["breast"],
         "ready": true,
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -146,7 +146,7 @@
         "values": {
           "0.occurredAt": "D0 14:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -185,7 +185,7 @@
         "values": {
           "0.occurredAt": "D0 13:30"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -221,7 +221,7 @@
         "values": {
           "0.occurredAt": "D0 07:45"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -265,7 +265,7 @@
         "values": {
           "0.occurredAt": "D0 20:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -357,7 +357,7 @@
           "0.occurredAt": "D0 13:00"
         },
         "codes": ["CORRECTION_APPLIED"],
-        "credits": 2
+        "credits": 1
       },
       "group": "care.breast"
     },
@@ -393,7 +393,7 @@
         "outcome": "drafts",
         "kinds": ["breast"],
         "codes": ["DUPLICATE_SUSPECTED"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -429,7 +429,7 @@
         "values": {
           "0.occurredAt": "D0 11:00"
         },
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -500,7 +500,7 @@
         "outcome": "drafts",
         "kinds": ["breast"],
         "review": ["durationMin"],
-        "credits": 1
+        "credits": 0
       },
       "group": "care.breast"
     },
@@ -535,6 +535,7 @@
     },
     {
       "id": "br-15-side-guessed-by-model",
+      "rules": false,
       "group": "care.breast",
       "title": "LUMI-07 live: the model guesses side \"both\" (uncertain) when none is said → the form's default side, ready",
       "turns": [
@@ -573,6 +574,7 @@
     },
     {
       "id": "br-16-end-time-live",
+      "rules": false,
       "group": "care.breast",
       "title": "Live reply: \"xong lúc 8h sáng\" as the end, the length, time missing → start 07:45, nothing to review",
       "turns": [
@@ -615,6 +617,7 @@
     },
     {
       "id": "br-17-end-time-in-time-live",
+      "rules": false,
       "group": "care.breast",
       "title": "Live reply (P0 before the fix): the end \"xong lúc 8h sáng\" put in `time` with phase stop → still the end: start 07:45",
       "turns": [
