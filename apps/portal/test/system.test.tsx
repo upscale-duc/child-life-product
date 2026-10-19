@@ -19,6 +19,12 @@ const health: SystemHealth = {
   videoQueue: Array.from({ length: 24 }, (_, i) => (i === 23 ? 3 : 1)),
   videoThreshold: 20,
   nearQuota: [],
+  rendition: {
+    counts: { queued: 0, running: 0, ready: 12, failed: 0, skipped: 1, lost: 0 },
+    medianTookMs: 41_500,
+    failedThreshold: 3,
+    recent: [],
+  },
 };
 
 const ai: AiStats = {
@@ -119,6 +125,66 @@ describe('Hệ thống & AI › Lưu trữ', () => {
     );
     const en = text(html(<SystemView data={busy} now={now} />, ['ops'], 'en'));
     expect(en).toContain('2 families have used more than 80% of their storage');
+  });
+});
+
+describe('Hệ thống & AI › Chuyển mã video (P-170)', () => {
+  const failing: SystemHealth = {
+    ...health,
+    rendition: {
+      counts: { queued: 2, running: 1, ready: 12, failed: 3, skipped: 1, lost: 0 },
+      medianTookMs: 41_500,
+      failedThreshold: 3,
+      recent: [
+        {
+          jobId: 'med_0000000000000000000000000000000a~2',
+          mediaId: 'med_0000000000000000000000000000000a',
+          attempt: 2,
+          state: 'failed',
+          reason: 'ffmpeg exit 1',
+          at: '2026-10-15T04:30:00Z',
+        },
+        {
+          jobId: 'med_0000000000000000000000000000000b',
+          mediaId: 'med_0000000000000000000000000000000b',
+          attempt: 1,
+          state: 'skipped',
+          reason: 'too-long',
+          at: '2026-10-15T02:00:00Z',
+        },
+      ],
+    },
+  };
+
+  it('healthy: counts and the median, no warning, no rows', () => {
+    const raw = html(<SystemView data={health} now={now} />);
+    const t = text(raw);
+    expect(raw).not.toContain('role="alert"');
+    expect(t).toContain('Chuyển mã video');
+    expect(t).toContain('0 Chờ 0 Đang chạy 12 Xong 0 Lỗi 1 Bỏ qua 0 Mất dấu');
+    expect(t).toContain('Trung vị 42 giây mỗi video');
+    expect(t).toContain('Không có việc nào lỗi trong 24 giờ qua.');
+    // Ops see the figures only: the matrix gives them system › view.
+    expect(t).not.toContain('Thử xử lý lại video');
+  });
+
+  it('three failures warn first; codes are listed; eng may retry one video or queue older ones', () => {
+    const raw = html(<SystemView data={failing} now={now} />, ['eng']);
+    const t = text(raw);
+    expect(raw).toContain('role="alert"');
+    expect(t).toContain('3 video chuyển mã lỗi trong 24 giờ qua');
+    expect(t.indexOf('3 video chuyển mã lỗi')).toBeLessThan(t.indexOf('Ảnh, video đã lưu'));
+    expect(t).toContain('med_0000000000000000000000000000000a 2 Lỗi ffmpeg exit 1');
+    expect(t).toContain('med_0000000000000000000000000000000b 1 Bỏ qua too-long');
+    expect(t).toContain('Thử xử lý lại video');
+    expect(t).toContain('Chuyển mã video cũ');
+    expect((t.match(/Xử lý lại/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    // Nothing about the family: ids and codes only.
+    expect(t).not.toMatch(/\.mov|original|caption|Teddy/);
+    const en = text(html(<SystemView data={failing} now={now} />, ['eng'], 'en'));
+    expect(en).toContain('3 video renditions failed in the last 24 hours');
+    expect(en).toContain('Retry video processing');
+    expect(en).toContain('Median 42 s per video');
   });
 });
 

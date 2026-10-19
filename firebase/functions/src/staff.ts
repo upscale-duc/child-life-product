@@ -37,6 +37,7 @@ import {
   type Transaction,
 } from 'firebase-admin/firestore';
 import { queueMail } from './account.js';
+import { renditionFailedAlertAt, renditionStats } from './video-renditions.js';
 
 /**
  * The staff portal's server (S15, Figma A01–A12). Staff are Firebase accounts with the `staff`
@@ -348,7 +349,7 @@ export async function overview(
   };
 }
 
-/** "Cần xử lý" (A02): failed jobs, pending storage, slow videos, unclaimed tickets. */
+/** "Cần xử lý" (A02): failed jobs, pending storage, slow or failing videos, unclaimed tickets. */
 async function alerts(db: Firestore, now: Date) {
   const failed = (
     await db.collection('deletionJobs').where('state', '==', 'failed').count().get()
@@ -373,6 +374,7 @@ async function alerts(db: Firestore, now: Date) {
   const waiting = videos.docs.filter(
     (v) => now.getTime() - ms(v.get('createdAt')) > 2 * 60_000,
   ).length;
+  const renditionsFailed = (await renditionStats(db, now)).counts.failed;
   return [
     ...(failed
       ? [{ severity: 'error', module: 'jobs', kind: 'deletionFailed', count: failed }]
@@ -382,6 +384,10 @@ async function alerts(db: Firestore, now: Date) {
       : []),
     ...(waiting >= 15
       ? [{ severity: 'warn', module: 'system', kind: 'videoQueue', count: waiting }]
+      : []),
+    // P-170: renditions failing in a day point at ffmpeg or a bad deploy, not at one clip.
+    ...(renditionsFailed >= renditionFailedAlertAt
+      ? [{ severity: 'warn', module: 'system', kind: 'renditionFailed', count: renditionsFailed }]
       : []),
     ...(stale
       ? [{ severity: 'wait', module: 'support', kind: 'ticketsUnclaimed', count: stale }]
@@ -1042,6 +1048,8 @@ export async function systemHealth(db: Firestore, staff: Staff | null, now: Date
     videoQueue: hourly,
     videoThreshold: 15,
     nearQuota: near.slice(0, 20),
+    // Streaming renditions (P-170, R-188): job counts, a median and codes — never the video.
+    rendition: await renditionStats(db, now),
   };
 }
 

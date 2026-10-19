@@ -137,9 +137,13 @@ describe('message catalogs (D-012)', () => {
       ...[...babyDeletionSteps, ...accountDeletionSteps].map((s) => `step.${s}`),
       ...['exportCare', 'exportMedia', 'deleteBaby', 'deleteAccount'].map((t) => `jobType.${t}`),
       ...['error', 'high', 'warn', 'wait'].map((s) => `severity.${s}`),
-      ...['deletionFailed', 'storagePending', 'videoQueue', 'ticketsUnclaimed'].map(
-        (a) => `alert.${a}`,
-      ),
+      ...[
+        'deletionFailed',
+        'storagePending',
+        'videoQueue',
+        'renditionFailed',
+        'ticketsUnclaimed',
+      ].map((a) => `alert.${a}`),
       ...['firstOpen', 'account', 'verified', 'baby', 'firstLog', 'invite'].map(
         (s) => `funnel.${s}`,
       ),
@@ -255,6 +259,11 @@ describe('message catalogs (D-012)', () => {
               approver: 'x',
               max: 1,
               min: 1,
+              // Chuyển mã video (P-170)
+              attempt: 1,
+              job: 'x',
+              queued: 1,
+              remaining: 1,
               from: 1,
               rate: 1,
               compressions: 1,

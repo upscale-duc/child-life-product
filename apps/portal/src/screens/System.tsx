@@ -1,15 +1,36 @@
 import { staffCan } from '@child-life/contracts';
 import { Check, HardDrive } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { useLoad, type AiStats, type SystemHealth } from '../api';
-import { EmptyState, Notice, Section, StatTiles } from '../content-kit';
+import {
+  ApiError,
+  useApi,
+  useLoad,
+  type AiStats,
+  type RenditionState,
+  type SystemHealth,
+} from '../api';
+import { EmptyState, Field, Notice, Section, StatTiles } from '../content-kit';
 import { useNavigate, useStaff } from '../context';
-import { ZONE, bytes, gb, num, pct, shortDate, usageTone, vnd } from '../format';
-import { HBars, LineChart, Loaded, Page, Pill, TableScroll, UsageBar } from '../ui';
+import { ZONE, ago, bytes, gb, num, pct, shortDate, usageTone, vnd } from '../format';
+import {
+  Button as ClButton,
+  HBars,
+  LineChart,
+  Loaded,
+  Modal,
+  Page,
+  Pill,
+  ReasonField,
+  TableScroll,
+  UsageBar,
+  errorMessageId,
+  reasonOk,
+} from '../ui';
 
 /** A08 / A09 Hệ thống & AI: aggregate figures only; the tabs keep their routes. */
 export function SystemScreen({ tab }: { tab: 'storage' | 'ai' }) {
@@ -48,19 +69,45 @@ function StorageHealth() {
   const [load, reload] = useLoad<SystemHealth>('staffSystem', {}, 'system');
   return (
     <Loaded load={load} reload={reload}>
-      {(data) => <SystemView data={data} now={new Date()} />}
+      {(data) => <SystemView data={data} now={new Date()} onChanged={reload} />}
     </Loaded>
   );
 }
 
 const bucketIds = ['lt1', 'b1to3', 'b3to6', 'b6to8', 'b8to10', 'expanded'] as const;
+const renditionStates: RenditionState[] = [
+  'queued',
+  'running',
+  'ready',
+  'failed',
+  'skipped',
+  'lost',
+];
 
-/** Lưu trữ: what needs attention first (a long video queue, families near quota), then figures. */
-export function SystemView({ data, now }: { data: SystemHealth; now: Date }) {
+type RenditionDialog = { kind: 'requeue'; media: string } | { kind: 'backfill' } | null;
+
+/**
+ * Lưu trữ: what needs attention first (a long video queue, failing renditions, families near
+ * quota), then figures. `onChanged` reloads after a staff action.
+ */
+export function SystemView({
+  data,
+  now,
+  onChanged,
+}: {
+  data: SystemHealth;
+  now: Date;
+  onChanged?: () => void;
+}) {
   const intl = useIntl();
   const staff = useStaff();
   const navigate = useNavigate();
+  const [dialog, setDialog] = useState<RenditionDialog>(null);
   const k = data.kpis;
+  const r = data.rendition;
+  // P-170 / R-185: re-running a job needs system › edit (eng, admin, owner); ops see figures.
+  const canAct = staffCan(staff.levels, 'system.video');
+  const renditionsFailing = r.counts.failed >= r.failedThreshold;
   const total = Math.max(1, data.families);
   const hours = data.videoQueue.map((_, i) =>
     intl.formatTime(new Date(now.getTime() - (23 - i) * 3_600_000), {
@@ -82,6 +129,14 @@ export function SystemView({ data, now }: { data: SystemHealth; now: Date }) {
           }
         >
           <FormattedMessage id="system.warn.queueBody" />
+        </Notice>
+      )}
+      {renditionsFailing && (
+        <Notice
+          tone="warn"
+          title={<FormattedMessage id="system.warn.rendition" values={{ n: r.counts.failed }} />}
+        >
+          <FormattedMessage id="system.warn.renditionBody" />
         </Notice>
       )}
       {k.over80 > 0 && (
@@ -167,6 +222,139 @@ export function SystemView({ data, now }: { data: SystemHealth; now: Date }) {
         </Section>
       </div>
       <Section
+        title={<FormattedMessage id="system.rendition" />}
+        description={<FormattedMessage id="system.renditionNote" />}
+        hint={<FormattedMessage id="system.renditionHint" />}
+        actions={
+          canAct && (
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDialog({ kind: 'requeue', media: '' })}
+              >
+                <FormattedMessage id="system.requeue" />
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setDialog({ kind: 'backfill' })}>
+                <FormattedMessage id="system.backfill" />
+              </Button>
+            </div>
+          )
+        }
+        className="min-w-0"
+      >
+        <div className="grid min-w-0 gap-4">
+          <ul
+            className="flex flex-wrap gap-x-5 gap-y-2"
+            aria-label={intl.formatMessage({ id: 'system.renditionStates' })}
+          >
+            {renditionStates.map((state) => (
+              <li key={state} className="flex items-baseline gap-1.5">
+                <span
+                  className={cn(
+                    'text-xl font-bold tracking-tight tabular-nums',
+                    state === 'failed' && r.counts.failed > 0 && 'text-destructive',
+                    state === 'lost' && r.counts.lost > 0 && 'text-warning',
+                  )}
+                >
+                  {num(intl, r.counts[state])}
+                </span>
+                <span className="text-[13px] text-muted-foreground">
+                  <FormattedMessage id={`rendition.state.${state}`} />
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[13px] text-muted-foreground">
+            {r.medianTookMs === null ? (
+              <FormattedMessage id="system.renditionMedianNone" />
+            ) : (
+              <FormattedMessage
+                id="system.renditionMedian"
+                values={{ s: Math.round(r.medianTookMs / 1000) }}
+              />
+            )}
+          </p>
+          <h3 className="label">
+            <FormattedMessage id="system.renditionRecent" />
+          </h3>
+          {r.recent.length === 0 ? (
+            <p className="text-muted-foreground">
+              <FormattedMessage id="system.renditionRecentEmpty" />
+            </p>
+          ) : (
+            <TableScroll min={600}>
+              <table className="table [&_td]:py-2">
+                <thead>
+                  <tr>
+                    <th>
+                      <FormattedMessage id="col.media" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="col.attempt" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="col.state" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="col.code" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="col.time" />
+                    </th>
+                    {canAct && <th />}
+                  </tr>
+                </thead>
+                <tbody>
+                  {r.recent.map((j) => (
+                    <tr key={j.jobId}>
+                      <td className="mono">{j.mediaId}</td>
+                      <td className="tabular-nums">{num(intl, j.attempt)}</td>
+                      <td>
+                        <Pill tone={j.state === 'failed' ? 'error' : 'warn'}>
+                          <FormattedMessage id={`rendition.state.${j.state}`} />
+                        </Pill>
+                      </td>
+                      <td className="mono">{j.reason ?? '—'}</td>
+                      <td className="whitespace-nowrap">{ago(intl, j.at, now)}</td>
+                      {canAct && (
+                        <td className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDialog({ kind: 'requeue', media: j.mediaId })}
+                          >
+                            <FormattedMessage id="system.requeueRow" />
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScroll>
+          )}
+        </div>
+      </Section>
+      {dialog?.kind === 'requeue' && (
+        <RequeueDialog
+          media={dialog.media}
+          onClose={() => setDialog(null)}
+          onDone={() => {
+            setDialog(null);
+            onChanged?.();
+          }}
+        />
+      )}
+      {dialog?.kind === 'backfill' && (
+        <BackfillDialog
+          onClose={() => {
+            setDialog(null);
+            onChanged?.();
+          }}
+        />
+      )}
+      <Section
         title={<FormattedMessage id="system.near" />}
         description={<FormattedMessage id="system.nearNote" />}
         hint={<FormattedMessage id="system.nearHint" />}
@@ -229,6 +417,194 @@ export function SystemView({ data, now }: { data: SystemHealth; now: Date }) {
         )}
       </Section>
     </div>
+  );
+}
+
+/**
+ * R-185 "Thử xử lý lại video": one media id (or job id / item path), a reason, then
+ * `staffRequeueVideoRendition`; the answer names the new attempt. Audited on the server.
+ */
+function RequeueDialog({
+  media: initial,
+  onClose,
+  onDone,
+}: {
+  media: string;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const api = useApi();
+  const fieldId = useId();
+  const [media, setMedia] = useState(initial);
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const [result, setResult] = useState<{ jobId: string; attempt: number } | null>(null);
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      setResult(
+        await api.call<{ jobId: string; attempt: number }>('staffRequeueVideoRendition', {
+          media: media.trim(),
+          reason: reason.trim(),
+        }),
+      );
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError('unknown', null));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal
+      title={<FormattedMessage id="system.requeueTitle" />}
+      onClose={result ? onDone : onClose}
+    >
+      <p className="modal__sub">
+        <FormattedMessage id="system.requeueBody" />
+      </p>
+      {result ? (
+        <>
+          <Notice
+            tone="ok"
+            title={
+              <FormattedMessage
+                id="system.requeueDone"
+                values={{ attempt: result.attempt, job: result.jobId }}
+              />
+            }
+          />
+          <div className="modal__actions">
+            <ClButton kind="primary" onClick={onDone}>
+              <FormattedMessage id="action.close" />
+            </ClButton>
+          </div>
+        </>
+      ) : (
+        <>
+          <Field label={<FormattedMessage id="system.mediaId" />} htmlFor={fieldId}>
+            <Input
+              id={fieldId}
+              className="mono"
+              value={media}
+              onChange={(e) => setMedia(e.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </Field>
+          <ReasonField value={reason} onChange={setReason} required />
+          {error && (
+            <p className="error" role="alert">
+              <FormattedMessage id={errorMessageId(error)} />
+            </p>
+          )}
+          <div className="modal__actions">
+            <ClButton onClick={onClose}>
+              <FormattedMessage id="action.cancel" />
+            </ClButton>
+            <ClButton
+              kind="primary"
+              disabled={busy || media.trim().length < 3 || !reasonOk(reason)}
+              onClick={() => void submit()}
+            >
+              <FormattedMessage id="system.requeueConfirm" />
+            </ClButton>
+          </div>
+        </>
+      )}
+    </Modal>
+  );
+}
+
+const backfillMax = 500;
+
+/**
+ * Prod rollout (P-170): `staffBackfillVideoRenditions` in batches from the portal. Each run
+ * says how many were queued and how many are left; "Xếp tiếp" runs the next batch with the
+ * same reason until nothing is left.
+ */
+function BackfillDialog({ onClose }: { onClose: () => void }) {
+  const api = useApi();
+  const fieldId = useId();
+  const [limit, setLimit] = useState('50');
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const [runs, setRuns] = useState<Array<{ queued: number; skipped: number; remaining: number }>>(
+    [],
+  );
+  const n = Number(limit);
+  const valid = Number.isInteger(n) && n >= 1 && n <= backfillMax;
+  const last = runs.at(-1);
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await api.call<{ queued: number; skipped: number; remaining: number }>(
+        'staffBackfillVideoRenditions',
+        { limit: n, reason: reason.trim() },
+      );
+      setRuns((all) => [...all, res]);
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError('unknown', null));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal title={<FormattedMessage id="system.backfillTitle" />} onClose={onClose}>
+      <p className="modal__sub">
+        <FormattedMessage id="system.backfillBody" values={{ max: backfillMax }} />
+      </p>
+      <Field label={<FormattedMessage id="system.backfillLimit" />} htmlFor={fieldId}>
+        <Input
+          id={fieldId}
+          type="number"
+          min={1}
+          max={backfillMax}
+          className="max-w-32"
+          value={limit}
+          onChange={(e) => setLimit(e.target.value)}
+        />
+      </Field>
+      <ReasonField value={reason} onChange={setReason} required />
+      {last && (
+        <Notice
+          tone={last.remaining === 0 ? 'ok' : 'info'}
+          title={
+            <FormattedMessage
+              id="system.backfillDone"
+              values={{ queued: last.queued, remaining: last.remaining }}
+            />
+          }
+        >
+          {runs.length > 1 && (
+            <FormattedMessage
+              id="system.backfillRuns"
+              values={{ n: runs.length, total: runs.reduce((sum, x) => sum + x.queued, 0) }}
+            />
+          )}
+        </Notice>
+      )}
+      {error && (
+        <p className="error" role="alert">
+          <FormattedMessage id={errorMessageId(error)} />
+        </p>
+      )}
+      <div className="modal__actions">
+        <ClButton onClick={onClose}>
+          <FormattedMessage id="action.close" />
+        </ClButton>
+        <ClButton
+          kind="primary"
+          disabled={busy || !valid || !reasonOk(reason) || last?.remaining === 0}
+          onClick={() => void submit()}
+        >
+          <FormattedMessage id={last ? 'system.backfillAgain' : 'system.backfillConfirm'} />
+        </ClButton>
+      </div>
+    </Modal>
   );
 }
 

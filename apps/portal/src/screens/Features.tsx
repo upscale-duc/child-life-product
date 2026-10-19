@@ -671,6 +671,8 @@ export function AuditActionText({
       ),
     ),
     'features.rhythm.rules',
+    'system.videoRequeue',
+    'system.videoBackfill',
   ];
   return (
     <FormattedMessage

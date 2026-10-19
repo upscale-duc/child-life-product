@@ -245,6 +245,7 @@ import {
   type AccountLister,
   type Staff,
 } from './staff.js';
+import { backfillVideoRenditions, requeueVideoRendition } from './staff-video.js';
 import { referenceAct, referenceDraft, referenceView } from './reference-data.js';
 import {
   analytics,
@@ -1901,6 +1902,13 @@ export const staffSystem = staffCall('staffSystem', (s) =>
   systemHealth(getFirestore(), s, new Date()),
 );
 export const staffAi = staffCall('staffAi', (s) => aiStats(getFirestore(), s, new Date()));
+// P-170 / R-185 "Thử xử lý lại video": one rendition again, or the videos from before the feature.
+export const staffRequeueVideoRendition = staffCall('staffRequeueVideoRendition', (s, d) =>
+  requeueVideoRendition(getFirestore(), s, d, new Date()),
+);
+export const staffBackfillVideoRenditions = staffCall('staffBackfillVideoRenditions', (s, d) =>
+  backfillVideoRenditions(getFirestore(), s, d, new Date()),
+);
 export const staffFlags = staffCall('staffFlags', (s) => readFlags(getFirestore(), s));
 export const staffSetFlag = staffCall('staffSetFlag', (s, d) =>
   setFlag(getFirestore(), s, d, new Date()),

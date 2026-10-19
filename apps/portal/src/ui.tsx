@@ -556,6 +556,10 @@ export const reasonMessages = [
   'stage-overlap',
   // Ăn dặm (D-085, P-164 #10): an ingredient above the recipe's first month.
   'food-too-young',
+  // Video renditions (P-170, R-185 "Thử xử lý lại video").
+  'not-video',
+  'has-rendition',
+  'already-queued',
 ];
 
 export function errorMessageId(error: ApiError): string {

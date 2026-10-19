@@ -192,6 +192,8 @@ export const staffActions = [
   'content.edit',
   'content.approve',
   'system.view',
+  /** Video renditions (P-170): run one again, queue the videos from before the feature. */
+  'system.video',
   'release.view',
   'release.edit',
   'features.view',
@@ -241,6 +243,8 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   // D-058: publishing medical content is a second person's sign-off (an expert on prod).
   'content.approve': ['content', 'approve'],
   'system.view': ['system', 'view'],
+  // P-170 / R-185 "Thử xử lý lại video": a job is re-run or queued, never the video itself.
+  'system.video': ['system', 'edit'],
   // D-061: Cập nhật ứng dụng — raising a minimum version blocks older phones.
   'release.view': ['system', 'view'],
   'release.edit': ['system', 'edit'],
@@ -317,6 +321,20 @@ export const routineGrantGb = [5, 10, 20] as const;
 
 export const listJobsSchema = z.object({ kind: z.enum(['all', 'export', 'deletion']) });
 export const rerunJobSchema = z.object({ jobId: z.string().min(3).max(64), reason });
+
+/**
+ * Streaming renditions (P-170). `media` is the item's id (`med_…`), a job id (`med_…~2`) or
+ * the item's path `babies/{b}/media/{m}`, as the console or the job list shows it.
+ */
+export const requeueVideoRenditionSchema = z.object({
+  media: z.string().trim().min(3).max(160),
+  reason,
+});
+/** Queues the ready videos from before P-170 that have no rendition yet, `limit` per call. */
+export const backfillVideoRenditionsSchema = z.object({
+  limit: z.number().int().min(1).max(500).default(50),
+  reason,
+});
 
 export const setFlagSchema = z.object({
   key: z.enum(flagKeys),

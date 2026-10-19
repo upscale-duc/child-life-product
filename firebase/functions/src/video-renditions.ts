@@ -329,3 +329,78 @@ export async function requeueStaleVideoRenditions(db: Firestore, now: Date): Pro
   }
   return n;
 }
+
+// ---------- Portal figures (A08, R-188) ----------
+
+/** Failed jobs in the last 24 h at which the portal raises an alert ("Cần xử lý"). */
+export const renditionFailedAlertAt = 3;
+const renditionWindowMs = 24 * 3_600_000;
+
+export interface RenditionStats {
+  /** Jobs created in the last 24 h, by state. */
+  counts: Record<RenditionState, number>;
+  /** Transcode time of the jobs that finished `ready` in the window; null without one. */
+  medianTookMs: number | null;
+  failedThreshold: number;
+  /** Failed, lost and skipped (other than "gone") jobs, newest first: ids and codes only. */
+  recent: Array<{
+    jobId: string;
+    mediaId: string;
+    attempt: number;
+    state: RenditionState;
+    reason: string | null;
+    at: string;
+  }>;
+}
+
+const toMs = (v: unknown) =>
+  v instanceof Timestamp ? v.toMillis() : v instanceof Date ? v.getTime() : 0;
+
+/**
+ * What the portal shows about renditions: counts, a median and error codes — never the video,
+ * a caption or a name. One range query on `createdAt`; a day holds at most a few hundred jobs.
+ */
+export async function renditionStats(db: Firestore, now: Date): Promise<RenditionStats> {
+  const since = new Date(now.getTime() - renditionWindowMs);
+  const jobs = await db
+    .collection('videoRenditionJobs')
+    .where('createdAt', '>=', since)
+    .select('state', 'tookMs', 'attempt', 'error', 'mediaId', 'createdAt', 'finishedAt')
+    .get();
+  const counts: Record<RenditionState, number> = {
+    queued: 0,
+    running: 0,
+    ready: 0,
+    failed: 0,
+    skipped: 0,
+    lost: 0,
+  };
+  const took: number[] = [];
+  const recent: RenditionStats['recent'] = [];
+  for (const d of jobs.docs) {
+    const state = d.get('state') as RenditionState;
+    if (!(state in counts)) continue;
+    counts[state]++;
+    const tookMs = d.get('tookMs') as number | undefined;
+    if (state === 'ready' && typeof tookMs === 'number') took.push(tookMs);
+    const reason = (d.get('error') as string | null | undefined) ?? null;
+    if (state === 'failed' || state === 'lost' || (state === 'skipped' && reason !== 'gone')) {
+      recent.push({
+        jobId: d.id,
+        mediaId: d.get('mediaId') as string,
+        attempt: (d.get('attempt') as number | undefined) ?? 1,
+        state,
+        reason,
+        at: new Date(toMs(d.get('finishedAt')) || toMs(d.get('createdAt'))).toISOString(),
+      });
+    }
+  }
+  recent.sort((a, b) => b.at.localeCompare(a.at));
+  const sorted = took.sort((a, b) => a - b);
+  return {
+    counts,
+    medianTookMs: sorted.length ? sorted[Math.floor(sorted.length / 2)]! : null,
+    failedThreshold: renditionFailedAlertAt,
+    recent: recent.slice(0, 20),
+  };
+}

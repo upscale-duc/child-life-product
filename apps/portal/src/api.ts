@@ -42,6 +42,8 @@ export type Callable =
   | 'staffRerunJob'
   | 'staffSystem'
   | 'staffAi'
+  | 'staffRequeueVideoRendition'
+  | 'staffBackfillVideoRenditions'
   | 'staffFlags'
   | 'staffSetFlag'
   | 'staffAudit'
@@ -182,7 +184,8 @@ export interface Badges {
   jobs: number;
 }
 
-export type AlertKind = 'deletionFailed' | 'storagePending' | 'videoQueue' | 'ticketsUnclaimed';
+export type AlertKind =
+  'deletionFailed' | 'storagePending' | 'videoQueue' | 'renditionFailed' | 'ticketsUnclaimed';
 export interface OpsAlert {
   severity: 'error' | 'high' | 'warn' | 'wait';
   module: 'jobs' | 'storage' | 'system' | 'support';
@@ -321,6 +324,23 @@ export interface SystemHealth {
     usedBytes: number;
     quotaBytes: number;
     requested: boolean;
+  }>;
+  /** Streaming renditions (P-170, R-188): the day's jobs by state, a median and codes only. */
+  rendition: RenditionStats;
+}
+
+export type RenditionState = 'queued' | 'running' | 'ready' | 'failed' | 'skipped' | 'lost';
+export interface RenditionStats {
+  counts: Record<RenditionState, number>;
+  medianTookMs: number | null;
+  failedThreshold: number;
+  recent: Array<{
+    jobId: string;
+    mediaId: string;
+    attempt: number;
+    state: RenditionState;
+    reason: string | null;
+    at: string;
   }>;
 }
 
