@@ -67,6 +67,7 @@ import {
   helpPart,
   noticePart,
   privateConversationId,
+  reaskPart,
   smallTalkPart,
   spendingPrivatePart,
   timerRunningPart,
@@ -256,7 +257,7 @@ export async function runAssistantTask(
   });
   if (!claim) return { ran: false, fenced: false, state: null };
 
-  const work = await process(deps, claim.t);
+  const work = await openQuestionInsteadOfHelp(db, claim.t, await process(deps, claim.t), now);
   // D-075 #2: spending never stays in the shared thread. A shared task whose words the detector
   // missed but where the model found an expense is moved, with its user messages, to the
   // author's private thread inside the settle transaction, before anything visible is written.
@@ -855,6 +856,48 @@ const serverResolvedField = (field: string) =>
 /** The text reading kept while a server question is open (never client-readable). */
 export const textReadingRef = (db: Firestore, taskId: string) =>
   taskRef(db, taskId).collection('textReading').doc('current');
+
+/**
+ * L1 (P-167 #3): never the help text while a question of the same person waits in this
+ * conversation (an older app sent the answer as a new message): the question is shown again.
+ */
+async function openQuestionInsteadOfHelp(
+  db: Firestore,
+  t: StoredTask,
+  work: WorkResult,
+  now: Date,
+): Promise<WorkResult> {
+  const isHelp = (p: AssistantPart) => p.type === 'text' && p.code === 'HELP';
+  if (work.outcome.kind !== 'fallback' || !work.parts.some(isHelp)) return work;
+  let open: Clarification | null = null;
+  try {
+    const waiting = await db
+      .collection('assistantTasks')
+      .where('conversationId', '==', t.conversationId)
+      .where('ownerUid', '==', t.ownerUid)
+      .where('state', '==', 'awaiting_clarification')
+      .limit(5)
+      .get();
+    const latest = waiting.docs
+      .filter(
+        (d) =>
+          d.id !== t.id &&
+          (toDate(d.get('clarificationExpiresAt'))?.getTime() ?? 0) > now.getTime(),
+      )
+      .sort(
+        (a, b) =>
+          (toDate(b.get('createdAt'))?.getTime() ?? 0) -
+          (toDate(a.get('createdAt'))?.getTime() ?? 0),
+      )[0];
+    open = (latest?.get('pendingClarification') as Clarification | null | undefined) ?? null;
+  } catch {
+    // The help text stays (a read failure never fails the task).
+  }
+  if (!open) return work;
+  const again = reaskPart(open, t.locale);
+  const parts = work.parts.map((p) => (isHelp(p) ? again : p));
+  return { ...work, outcome: { kind: 'fallback', parts }, parts };
+}
 
 /** Small talk / help: an answer without a draft, released (0 credits). */
 function fallback(

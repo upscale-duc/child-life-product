@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+     "id": "tk_7ac99cb36c5b6c0775d55a882267349b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -46,7 +46,7 @@
         }
        }
       ],
-      "allowText": false
+      "allowText": true
      },
      "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
      "anchorInstant": "2026-10-15T07:20:00.000Z",
@@ -75,7 +75,7 @@
         "text": "8 giờ bú mẹ 10 phút bên trái"
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+     "id": "tk_7ac99cb36c5b6c0775d55a882267349b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -167,8 +167,8 @@
     },
     "drafts": [
      {
-      "id": "dr_73034e8f97a4c8fe2b7f701fdab28ea6_0",
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "id": "dr_7ac99cb36c5b6c0775d55a882267349b_0",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -186,7 +186,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_73034e8f97a4c8fe2b7f701fdab28ea6"
+       "task:tk_7ac99cb36c5b6c0775d55a882267349b"
       ],
       "recordId": null,
       "recordLink": null,
@@ -208,7 +208,7 @@
         "text": "8 giờ bú mẹ 10 phút bên trái"
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -250,11 +250,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -271,7 +271,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -290,11 +290,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_73034e8f97a4c8fe2b7f701fdab28ea6_0",
+        "draftId": "dr_7ac99cb36c5b6c0775d55a882267349b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -309,7 +309,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+     "id": "tk_7ac99cb36c5b6c0775d55a882267349b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -340,8 +340,8 @@
     },
     "drafts": [
      {
-      "id": "dr_73034e8f97a4c8fe2b7f701fdab28ea6_0",
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "id": "dr_7ac99cb36c5b6c0775d55a882267349b_0",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -359,10 +359,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_73034e8f97a4c8fe2b7f701fdab28ea6"
+       "task:tk_7ac99cb36c5b6c0775d55a882267349b"
       ],
-      "recordId": "r_76fc9e01092a8f6d03619e462139ada5",
-      "recordLink": "/care/records/b_00000000000000000001/r_76fc9e01092a8f6d03619e462139ada5",
+      "recordId": "r_61ed65ee9acad0684a6dd1fc0fe38931",
+      "recordLink": "/care/records/b_00000000000000000001/r_61ed65ee9acad0684a6dd1fc0fe38931",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -386,7 +386,7 @@
         "text": "8 giờ bú mẹ 10 phút bên trái"
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -428,11 +428,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -449,7 +449,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -468,11 +468,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_73034e8f97a4c8fe2b7f701fdab28ea6_0",
+        "draftId": "dr_7ac99cb36c5b6c0775d55a882267349b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -488,15 +488,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_73034e8f97a4c8fe2b7f701fdab28ea6_0",
+          "draftId": "dr_7ac99cb36c5b6c0775d55a882267349b_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_76fc9e01092a8f6d03619e462139ada5",
+          "recordLink": "/care/records/b_00000000000000000001/r_61ed65ee9acad0684a6dd1fc0fe38931",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_73034e8f97a4c8fe2b7f701fdab28ea6",
+      "taskId": "tk_7ac99cb36c5b6c0775d55a882267349b",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

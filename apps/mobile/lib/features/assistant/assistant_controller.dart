@@ -310,6 +310,24 @@ class ChatState {
   TaskThread? thread(String taskId) =>
       threads.where((t) => t.taskId == taskId).firstOrNull;
 
+  /// L1 (P-167 #3): my own latest task when it waits on a question (not expired): what I type
+  /// in the composer is its answer, never a new task.
+  String? openQuestionFor(String? uid, DateTime now) {
+    for (final t in threads.reversed) {
+      final task = t.snapshot?.task;
+      // Not loaded yet, or just sent from this phone: nothing asked that we know of.
+      if (task == null) return null;
+      if (!task.authoredBy(uid)) continue;
+      final until = task.clarificationExpiresAt;
+      final open =
+          task.state == TaskState.awaitingClarification &&
+          task.clarification != null &&
+          (until == null || now.isBefore(until));
+      return open ? task.id : null;
+    }
+    return null;
+  }
+
   ChatState copyWith({
     String? conversationId,
     bool clearConversation = false,
@@ -947,7 +965,7 @@ class AssistantChat extends Notifier<ChatState> {
   Future<void> send(String raw, {IntentHint? hint}) async {
     final text = raw.trim();
     if (text.isEmpty || state.sending) return;
-    if (state.answering case final taskId?) {
+    if (state.answering ?? openQuestion case final taskId?) {
       await answerText(taskId, text);
       return;
     }
@@ -1483,6 +1501,15 @@ class AssistantChat extends Notifier<ChatState> {
   }
 
   // ---------- Clarification (CH05) ----------
+
+  /// L1 (P-167 #3): the task whose question the composer answers (my own latest, waiting).
+  String? get openQuestion {
+    final session = ref.mounted ? ref.read(sessionProvider) : null;
+    return state.openQuestionFor(
+      session is SessionSignedIn ? session.user.uid : null,
+      _now(),
+    );
+  }
 
   void typeAnswer(String taskId) => state = state.copyWith(answering: taskId);
 

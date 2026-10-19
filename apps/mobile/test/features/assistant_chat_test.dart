@@ -558,6 +558,63 @@ void main() {
       expect(repo.named('startTask'), isEmpty);
     });
 
+    testWidgets(
+      'L1 (P-167 #3): typed in the composer while my question waits → its answer',
+      (tester) async {
+        final repo = FakeAssistantRepository(
+          tasks: {
+            taskA: snapshotWith(
+              task: taskJson(
+                state: 'awaiting_clarification',
+                clarification: clarificationJson(),
+              ),
+            ),
+          },
+        );
+        await _pump(tester, repo: repo, prefs: _thread([taskA]));
+        // No "Khác…" tap: the composer already says it answers the question above.
+        expect(_text('Trả lời câu hỏi…'), findsOneWidget);
+        await _type(tester, 'Sáng');
+        await _send(tester);
+        final c = repo.named('submitClarification').single.args;
+        expect(c['taskId'], taskA);
+        expect(c['clarificationId'], 'c1');
+        expect(c['text'], 'Sáng');
+        expect(repo.named('startTask'), isEmpty);
+        expect(repo.named('quoteTask'), isEmpty);
+      },
+    );
+
+    testWidgets(
+      "L1: another member's open question is not mine: typed words start a task",
+      (tester) async {
+        final repo = FakeAssistantRepository(
+          tasks: {
+            taskA: snapshotWith(
+              task: {
+                ...taskJson(
+                  state: 'awaiting_clarification',
+                  clarification: clarificationJson(),
+                ),
+                'visibility': 'shared',
+                'author': {
+                  'uid': 'u_minh',
+                  'name': 'Minh',
+                  'relation': 'father',
+                  'relationCustom': null,
+                },
+              },
+            ),
+          },
+        );
+        await _pump(tester, repo: repo, prefs: _thread([taskA]));
+        await _type(tester, 'bé bú 120ml lúc 8h');
+        await _send(tester);
+        expect(repo.named('submitClarification'), isEmpty);
+        expect(repo.named('startTask'), hasLength(1));
+      },
+    );
+
     testWidgets('CH06 edit: the form checks first, then patchDraft', (
       tester,
     ) async {

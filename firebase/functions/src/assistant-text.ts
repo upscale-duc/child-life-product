@@ -11,8 +11,10 @@ import {
   clockTimeIn,
   clockTokensIn,
   completeSpan,
+  dayHalfAnswerIn,
   diaperIn,
   growthIn,
+  hourInDayHalf,
   looksLikeSpending,
   pumpCueIn,
   purchasesIn,
@@ -33,6 +35,7 @@ import {
   sameMessage,
   toMinorUnits,
   type Clarification,
+  type DayHalf,
   type DraftKind,
   type DraftPayload,
   type ExpenseCurrency,
@@ -160,6 +163,8 @@ const SKEW_MS = 2 * 60_000;
 /** A completed log said for later today by at most this much stays on today (for review). */
 const NEAR_FUTURE_MS = 3 * 3_600_000;
 const MAX_SLEEP_MS = 18 * 3_600_000;
+/** L1 (P-167 #2): a start this close before its end takes that reading, never a question. */
+const RECENT_MS = 6 * 3_600_000;
 
 /** Draft field each model field fills, per kind (for uncertain / missing lists). */
 const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
@@ -223,6 +228,8 @@ interface Clock {
   mismatch: boolean;
   /** How the question names it ("8:00"). */
   label: string;
+  /** L1: the time is written in the message (else the model computed it, or an answer). */
+  written: boolean;
 }
 
 interface Resolved {
@@ -246,7 +253,13 @@ export async function planTextIntents(
   const haystack = foldVi([all, ctx.previous?.text ?? ''].join(' \n '));
   // A correction ("nhầm, 10h30 mới dậy") reads its morning / evening from the turn it corrects.
   const correcting = intents.some((i) => i.correctsPrevious === true) && ctx.previous !== null;
-  const periodSaid = hasDayPeriod(correcting ? `${all} \n ${ctx.previous!.text}` : all);
+  // L1: a typed morning / evening answer ("tối") is read as the answer below, never as a period
+  // word of the message (it would keep the model's reading of every open time).
+  const typedAmpm = ctx.answers.get('time.ampm')?.text ?? null;
+  const periodWords = [ctx.text, ...ctx.answerTexts.filter((t) => t !== typedAmpm)].join(' \n ');
+  const periodSaid = hasDayPeriod(
+    correcting ? `${periodWords} \n ${ctx.previous!.text}` : periodWords,
+  );
   // In a batch where another log has a time, a log without one is left for the person to fill
   // (no question: none of the quick choices would fit "rồi bú thêm 60ml").
   const timedLogs = intents.filter(
@@ -259,10 +272,24 @@ export async function planTextIntents(
       (i.fields.time !== null || i.fields.endTime !== null),
   ).length;
   const saysPastDay = pastDayWords.test(foldVi(ctx.text));
-  const ampmChoice = ctx.answers.get('time.ampm')?.choiceId;
-  const ampm = ampmChoice === 'am' || ampmChoice === 'pm' ? ampmChoice : null;
+  // L1 (P-167 #3): the morning / evening answer, a chip or typed ("Sáng", "tối", "23:21").
+  const ampmAnswer = ctx.answers.get('time.ampm');
+  const ampm: DayHalf | null =
+    ampmAnswer?.choiceId === 'am' || ampmAnswer?.choiceId === 'pm'
+      ? ampmAnswer.choiceId
+      : ampmAnswer?.text
+        ? dayHalfAnswerIn(ampmAnswer.text)
+        : null;
+  /** The hours of [hours] the answer keeps (all of them when it keeps none). */
+  const keptByAnswer = (hours: number[]) => {
+    if (!ampm) return hours;
+    const kept = hours.filter((h) => hourInDayHalf(h, ampm));
+    return kept.length > 0 ? kept : hours;
+  };
   const said = durationsIn(ctx.text).map((d) => d.minutes);
   const ago = agoIn(ctx.text);
+  // L1 (P-167 #2): "cách đây 5p", "5p rồi", "2 tiếng trước": the model's clock for it is computed.
+  const relativeSaid = ago !== null && !ago.justNow;
   const inst = (date: string, h: number, m: number) => localInstant(zone, date, hhmmOf(h, m));
   const grounded = (t: string) => {
     const f = foldVi(t).trim();
@@ -330,29 +357,44 @@ export async function planTextIntents(
     if (tok) {
       if (!allows(tok, h, m)) {
         // The model read another time than the words say (LUMI-04): the words win, flagged.
-        return { m: tok.m, offset, hours: tok.hours, mismatch: true, label: label(tok.h, tok.m) };
+        return {
+          m: tok.m,
+          offset,
+          hours: tok.hours,
+          mismatch: true,
+          label: label(tok.h, tok.m),
+          written: true,
+        };
       }
       // The words leave the half of the day open but the message (or the turn it corrects) has a
       // period word somewhere: the model's reading of it stands.
       if (tok.hours.length > 1 && (periodSaid || previousPeriod)) {
-        return { m, offset, hours: [h], mismatch: false, label: label(tok.h, m) };
+        return { m, offset, hours: [h], mismatch: false, label: label(tok.h, m), written: true };
       }
-      return { m, offset, hours: tok.hours, mismatch: false, label: label(tok.h, m) };
+      return {
+        m,
+        offset,
+        hours: tok.hours,
+        mismatch: false,
+        label: label(tok.h, m),
+        written: true,
+      };
     }
     // No words for this time (an answer, a previous turn): the model's hour; open when it is
-    // 1–11 and nothing anywhere says morning or evening.
-    const open = !periodSaid && !previousPeriod && !ampm && h >= 1 && h <= 11;
+    // 1–11 and nothing anywhere says morning or evening. L1 (P-167 #2): a clock the model
+    // computed from "cách đây 5p" / "5p rồi" is never open.
+    const open = !periodSaid && !previousPeriod && !ampm && !relativeSaid && h >= 1 && h <= 11;
     return {
       m,
       offset,
       hours: open ? [h % 12, (h % 12) + 12] : [h],
       mismatch: false,
       label: label(h % 12 === 0 ? 12 : h % 12, m),
+      written: false,
     };
   };
   /** The readings of [c] that the person's morning / evening answer keeps (all when none). */
-  const byAnswer = (c: Clock, hours: number[]) =>
-    !ampm || hours.length < 2 ? hours : hours.filter((h) => (ampm === 'pm' ? h >= 12 : h < 12));
+  const byAnswer = (c: Clock, hours: number[]) => (hours.length < 2 ? hours : keptByAnswer(hours));
   /** A correction that repeats the previous draft's clock keeps that draft's instant. */
   const fromBase = (c: Clock | null, iso: unknown): Date | null =>
     c &&
@@ -398,8 +440,12 @@ export async function planTextIntents(
     return { at: inst(addDaysIso(today, c.offset), c.hours[0]!, c.m), ambiguous: false };
   };
 
-  /** A sleep start given its end: before it, within 18 h. */
-  const resolveStartBefore = (c: Clock, end: Date): Resolved => {
+  /**
+   * A sleep start given its end: before it, within 18 h. L1 (P-167 #2): with a known length the
+   * reading that gives it (end − length, ± 10 min) is the start; a reading less than 6 h before
+   * the end is taken (the other one would be a sleep of over 12 h): no question either way.
+   */
+  const resolveStartBefore = (c: Clock, end: Date, lengthMin: number | null = null): Resolved => {
     const endDate = localDateIn(zone, end);
     const cands: Date[] = [];
     for (const d of [0, -1]) {
@@ -413,10 +459,20 @@ export async function planTextIntents(
       return { at: inst(addDaysIso(today, c.offset), c.hours[0]!, c.m), ambiguous: false };
     }
     const halves = new Set(valid.map((t) => Number(localClock(zone, t).slice(0, 2)) >= 12));
-    if (ampm && halves.size > 1) {
-      valid = valid.filter(
-        (t) => Number(localClock(zone, t).slice(0, 2)) >= 12 === (ampm === 'pm'),
+    if (lengthMin !== null && halves.size > 1) {
+      const fits = valid.filter(
+        (t) => Math.abs(end.getTime() - lengthMin * 60_000 - t.getTime()) <= 10 * 60_000,
       );
+      if (fits.length === 1) return { at: fits[0]!, ambiguous: false };
+    }
+    if (!ampm && halves.size > 1) {
+      const recent = valid.filter((t) => end.getTime() - t.getTime() < RECENT_MS);
+      if (recent.length === 1) return { at: recent[0]!, ambiguous: false };
+    }
+    if (ampm && halves.size > 1) {
+      const hourOf = (t: Date) => Number(localClock(zone, t).slice(0, 2));
+      const kept = valid.filter((t) => hourInDayHalf(hourOf(t), ampm));
+      if (kept.length > 0) valid = kept;
     }
     valid.sort((a, b) => b.getTime() - a.getTime());
     const open = !ampm && halves.size > 1;
@@ -586,7 +642,9 @@ export async function planTextIntents(
    * when that timer already runs, a TIMER_RUNNING notice and a stop draft (end it / keep it).
    * `stop` ("dậy rồi", "dậy lúc 6h", "bú xong rồi") → a stop draft for the running timer; with no
    * timer, `finishedEnd` (a finished sleep that ended then; its start is asked). A length, both
-   * times, or a correction make it a finished log instead.
+   * times, or a correction make it a finished log instead — except (L1, P-167 #1) a state the
+   * words say still goes on ("đang ngủ, được 5p rồi", "đang bú bên trái được 10 phút"): its timer
+   * starts that long ago (contracts `CareState.sinceMin`), or at the time written.
    */
   const timerPlan = (
     i: ModelIntent,
@@ -599,7 +657,9 @@ export async function planTextIntents(
     // alone is not a running feed, rd-09).
     const phase =
       st?.action ?? (i.fields.phase && phaseCue.test(foldVi(ctx.text)) ? i.fields.phase : null);
-    if (!phase || durMin !== null || base) return null;
+    if (!phase || base) return null;
+    const goingOn = phase === 'start' && st?.action === 'start';
+    if (durMin !== null && !goingOn) return null;
     // LUMI-05: an app build that cannot show a timer draft gets a notice with the timer's link.
     const legacy = () => {
       notices.push({
@@ -619,15 +679,22 @@ export async function planTextIntents(
         startC = null;
       }
     }
+    // L1: still going on ("Bé đang ngủ. Vừa ngủ được 5p rồi"): an end the model made up (now)
+    // is not an end the words gave.
+    if (goingOn && endC && !endC.written) endC = null;
     if (startC && endC) return null;
     const running = ctx.timers?.[kind] ?? null;
+    // L1: how long the state has run, from the words ("được 5p rồi", "cách đây 5p").
+    const since = goingOn ? (st?.sinceMin ?? durMin) : null;
     const when = (c: Clock | null): Date => {
-      if (c) {
+      // A time the model computed ("cách đây 5p" → 11:21) gives way to the words' own length.
+      if (c && (c.written || since === null)) {
         const r = resolveLog(c);
         needsAmpm.push(r.ambiguous);
         if (c.mismatch) misread.push('at');
         return r.at ?? anchor;
       }
+      if (since !== null) return new Date(anchor.getTime() - since * 60_000);
       if (ago && !ago.justNow) return new Date(anchor.getTime() - ago.minutes * 60_000);
       return anchor;
     };
@@ -879,7 +946,7 @@ export async function planTextIntents(
         if (keptStart) {
           start = keptStart;
         } else if (startC) {
-          const r = end ? resolveStartBefore(startC, end) : resolveLog(startC);
+          const r = end ? resolveStartBefore(startC, end, durMin) : resolveLog(startC);
           start = r.at;
           needsAmpm.push(r.ambiguous);
         }
@@ -1582,8 +1649,43 @@ export function ampmQuestion(clocks: readonly string[] = []): Clarification {
       { id: 'am', label: L('Buổi sáng', 'Morning') },
       { id: 'pm', label: L('Chiều / tối', 'Afternoon / evening') },
     ],
-    allowText: false,
+    // L1 (P-167 #3): "Sáng", "tối", "23:21" typed in the composer answer it too.
+    allowText: true,
   };
+}
+
+/** Folded words of a label or an answer ("Chiều / tối" → "chieu toi"). */
+const answerWords = (x: string) =>
+  foldVi(x)
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+
+/**
+ * L1 (P-167 #3): how a typed answer reads for an open question.
+ * - `time.ampm`: the half of the day it names (`choiceId` am / pm; trưa / đêm stay as text the
+ *   planner reads per hour), else unreadable.
+ * - A question with chips and no free answer: the one chip its words name ("khó vào giấc",
+ *   "Giấc đêm", "cả hai"), else unreadable.
+ * - Any other question takes the text as it is (`time.missing`, `time.start` read it later).
+ * Unreadable → the question is asked again, never a new task or the help text.
+ */
+export function readTypedAnswer(
+  c: Pick<Clarification, 'field' | 'choices' | 'allowText'>,
+  text: string,
+): { choiceId: string | null } | 'unreadable' {
+  if (c.field === 'time.ampm') {
+    const half = dayHalfAnswerIn(text);
+    if (half === null) return 'unreadable';
+    return { choiceId: half === 'am' || half === 'pm' ? half : null };
+  }
+  if (c.allowText) return { choiceId: null };
+  const said = answerWords(text);
+  if (said.length < 2) return 'unreadable';
+  const has = (hay: string, needle: string) => ` ${hay} `.includes(` ${needle} `);
+  const hits = c.choices.filter((ch) =>
+    [ch.label.vi, ch.label.en].map(answerWords).some((l) => l && (has(l, said) || has(said, l))),
+  );
+  return hits.length === 1 ? { choiceId: hits[0]!.id } : 'unreadable';
 }
 
 /** "Việc này lúc mấy giờ?": Vừa xong / 30 phút trước / 1 tiếng trước, or a typed time. */

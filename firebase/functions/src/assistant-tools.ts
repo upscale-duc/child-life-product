@@ -272,7 +272,8 @@ export function clarificationFor(field: ClarificationField, id: string): Clarifi
           { id: 'am', label: L('Buổi sáng', 'Morning') },
           { id: 'pm', label: L('Chiều / tối', 'Afternoon / evening') },
         ],
-        allowText: false,
+        // L1 (P-167 #3): typed "Sáng" / "tối" answers it (`readTypedAnswer`).
+        allowText: true,
       };
     case 'time.missing':
       return {

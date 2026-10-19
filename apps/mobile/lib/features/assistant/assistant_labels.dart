@@ -201,8 +201,11 @@ String draftLine(
       if (p.occurredAt != null) when(p.occurredAt),
     ].join(' · '),
     // Lumi 2026-10-16: "Từ 01:05 · bên trái trước" / "00:25 – 01:05 · 40 phút".
+    // L1 (P-167 #1): a start said in the past ("được 5p rồi") shows how long so far.
     TimerPayload(isStart: true) => [
       p.at == null ? l10n.asNoTime : l10n.asTimerFrom(hm(p.at!, zone)),
+      if (p.at != null && now.difference(p.at!).inMinutes >= 1)
+        durationLabel(l10n, now.difference(p.at!).inMinutes),
       if (p.side != null && side != null) l10n.asTimerSideFirst(side(p.side!)),
     ].join(' · '),
     TimerPayload() => [

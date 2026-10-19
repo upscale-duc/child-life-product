@@ -639,7 +639,16 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
         : out
         ? ComposerMode.out
         : ComposerMode.open;
-    final hint = chat.answering != null
+    final session = ref.watch(sessionProvider);
+    // L1 (P-167 #3): while my own latest task waits on a question, typing answers it.
+    final answeringAbove =
+        chat.answering != null ||
+        chat.openQuestionFor(
+              session is SessionSignedIn ? session.user.uid : null,
+              now,
+            ) !=
+            null;
+    final hint = answeringAbove
         ? l10n.asComposerAnswer
         : switch (mode) {
             ComposerMode.viewer => l10n.asComposerViewer,
@@ -649,7 +658,6 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
               images ? l10n.asComposerHint : l10n.asComposerHintText,
           };
     final babyName = baby?.nickname ?? '';
-    final session = ref.watch(sessionProvider);
     final onPhoto = images && !viewer
         ? () => _choosePhoto(key, chat.usage)
         : null;

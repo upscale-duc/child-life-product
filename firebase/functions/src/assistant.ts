@@ -108,6 +108,9 @@ import {
 import { purgeTaskAttachments, revokeAssistantPhotos } from './assistant-lifecycle.js';
 import { readRhythmContent } from './rhythm.js';
 import { aiBudgetLeft } from './staff.js';
+// L1 (P-167 #3): typed answers to the server's questions.
+import type { Clarification } from '@child-life/contracts';
+import { readTypedAnswer } from './assistant-text.js';
 
 /**
  * Child Life Assistant callables, server core (slice A2; docs/assistant/api.md). Every request
@@ -808,9 +811,12 @@ export async function submitClarification(
       if (!pc || pc.id !== req.clarificationId) throw fail('INVALID_STATE');
       const choice = req.choiceId ? pc.choices.find((c) => c.id === req.choiceId) : undefined;
       const answerText = req.text?.trim() || null;
-      if (req.choiceId ? !choice : !(pc.allowText && answerText)) {
+      if (req.choiceId ? !choice : !answerText) {
         throw fail('VALIDATION_FAILED', { field: 'answer' });
       }
+      // L1 (P-167 #3): typed words answer any question ("Sáng" → Buổi sáng, "giấc đêm" → its
+      // chip); words that answer nothing ask the same question again.
+      const typed = req.choiceId ? null : readTypedAnswer(pc, answerText!);
       const conv = await tx.get(conversationRef(db, t.conversationId));
       const at = Timestamp.fromDate(now);
       if ((toDate(t.clarificationExpiresAt)?.getTime() ?? 0) <= now.getTime()) {
@@ -846,7 +852,59 @@ export async function submitClarification(
         tx.delete(ref.collection('textReading').doc('current'));
         return { expired: true };
       }
-      const answer = { choiceId: req.choiceId, text: answerText };
+      if (typed === 'unreadable') {
+        const asked = t.clarifications.filter((c) => c.field === pc.field).length;
+        const again: Clarification = { ...pc, id: `${pc.id}_${asked}`.slice(0, 60) };
+        const msg = appendMessages(
+          tx,
+          db,
+          t.conversationId,
+          (conv.get('messageSeq') as number | undefined) ?? 0,
+          [
+            {
+              role: 'user',
+              parts: [{ type: 'text', schemaVersion: 1, text: answerText! }],
+              taskId: t.id,
+              author: authorOf(s.member),
+            },
+            {
+              role: 'assistant',
+              parts: [{ type: 'clarification', schemaVersion: 1, clarification: again }],
+              taskId: t.id,
+            },
+          ],
+          now,
+        );
+        tx.update(conv.ref, { messageSeq: msg, updatedAt: at });
+        const seq = appendEvents(
+          tx,
+          db,
+          t.id,
+          t.eventSeq ?? 0,
+          [
+            {
+              type: 'clarification_required',
+              payload: { state: 'awaiting_clarification', errorCode: null, draftIds: [] },
+            },
+          ],
+          now,
+        );
+        tx.update(ref, {
+          pendingClarification: again,
+          clarifications: [
+            ...t.clarifications,
+            { id: again.id, field: again.field, round: t.round, answer: null },
+          ],
+          version: t.version + 1,
+          eventSeq: seq,
+          updatedAt: at,
+        });
+        return { expired: false };
+      }
+      const answer = {
+        choiceId: req.choiceId ?? (typed ? typed.choiceId : null),
+        text: answerText,
+      };
       const shown = choice ? choice.label[t.locale] : answerText!;
       const msg = appendMessages(
         tx,

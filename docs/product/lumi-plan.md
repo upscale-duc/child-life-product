@@ -247,3 +247,13 @@ time, not to judge how long the baby sleeps.
 | L4    | §7 next-step chips and module entries                           | M    | app only (+ server chip hints)                                     |
 | L5…   | §6 writes per module (solids, vaccines, milestones, edit/undo)  | M each | server writers + drafts                                         |
 | L6    | §7.1 "Bé dậy chưa?" local notification and its switch           | M    | app only: timer, `reminder_notifications.dart` device sync, EN07 settings, ARB |
+
+**L1 done (2026-10-19, dev).** Contracts `careStatesIn` (`CareState.sinceMin`, `saysFinished`),
+`agoIn` ("cách đây X", "X rồi"), `dayHalfAnswerIn`; functions `timerPlan` (a state still going on
+starts its timer `sinceMin` ago, the model's made-up end ignored), `clockOf` (`written`; a
+computed clock with a relative phrase is never open), `resolveStartBefore` (length ± 10 min, < 6 h
+before the end), `readTypedAnswer` in `submitClarification` (unreadable → the same question again),
+`openQuestionInsteadOfHelp` in the worker; app `openQuestionFor` routes composer text to my open
+question. Cases `firebase/tests/assistant-e2e/cases/16-care-ongoing-l1.json` (on-10…on-18, live
+9/9). The timer card shows "Từ 11:21 · 5 phút" with the existing "Bắt đầu tính giờ ngủ · 11:21"
+button; "Lưu và bắt đầu đếm" and "huỷ" as an answer are not done.

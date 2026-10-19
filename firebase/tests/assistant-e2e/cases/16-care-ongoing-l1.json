@@ -1,0 +1,403 @@
+{
+  "group": "care.ongoing",
+  "note": "L1 (D-088, P-167 #1–#3): states still going on start a backdated timer; no question the clock answers; typed answers answer the open question.",
+  "cases": [
+    {
+      "id": "on-10-dang-ngu-duoc-5p",
+      "group": "care.ongoing",
+      "anchor": "11:26",
+      "title": "L1 device case 2026-10-19: \"Bé đang ngủ. Vừa ngủ được 5p rồi\" → the sleep timer from 11:21, never a finished 5-minute span (the model's made-up end is ignored)",
+      "turns": [
+        {
+          "say": "Bé đang ngủ. Vừa ngủ được 5p rồi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "11:21",
+                  "dayOffset": 0,
+                  "endTime": "11:26",
+                  "endDayOffset": 0,
+                  "durationMin": 5
+                },
+                "ev": {
+                  "durationMin": "ngủ được 5p",
+                  "endTime": "Vừa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.timer": "sleep",
+          "0.at": "D0 11:21"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-11-ngu-cach-day-5p",
+      "group": "care.ongoing",
+      "anchor": "11:26",
+      "title": "L1 device case 2026-10-19: \"Đang ngủ và ngủ cách đây 5p\" → the timer from 11:21, no morning / evening question",
+      "turns": [
+        {
+          "say": "Đang ngủ và ngủ cách đây 5p",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "start",
+                  "time": "11:21",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "phase": "Đang ngủ",
+                  "time": "cách đây 5p"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.at": "D0 11:21"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-12-ngu-tu-11h20",
+      "group": "care.ongoing",
+      "anchor": "11:26",
+      "title": "L1: \"bé ngủ từ 11h20\" (no end) at 11:26 → the timer from 11:20 today, no question",
+      "turns": [
+        {
+          "say": "bé ngủ từ 11h20",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "11:20",
+                  "dayOffset": 0,
+                  "phase": "start"
+                },
+                "ev": {
+                  "time": "11h20",
+                  "phase": "ngủ từ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.action": "start",
+          "0.at": "D0 11:20"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-13-dang-bu-trai-10p",
+      "group": "care.ongoing",
+      "title": "L1: \"đang bú bên trái được 10 phút\" → the breast timer on the left, started 10 minutes ago",
+      "turns": [
+        {
+          "say": "đang bú bên trái được 10 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "start",
+                  "side": "left",
+                  "durationMin": 10
+                },
+                "ev": {
+                  "phase": "đang bú",
+                  "side": "bên trái",
+                  "durationMin": "10 phút"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.timer": "breast",
+          "0.action": "start",
+          "0.side": "left",
+          "0.at": "D0 14:10"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-14-typed-sang",
+      "group": "care.ongoing",
+      "anchor": "21:30",
+      "title": "L1 device case 2026-10-19: the morning / evening question answered by typing \"Sáng. Hiện tại thì biết sáng hay tối chứ\" → morning, saved",
+      "turns": [
+        {
+          "say": "8 giờ bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "text": "Sáng. Hiện tại thì biết sáng hay tối chứ"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-15-typed-unreadable-then-toi",
+      "group": "care.ongoing",
+      "anchor": "21:30",
+      "title": "L1: words that answer nothing ask the same question again (never a new task); \"tối\" then answers it",
+      "turns": [
+        {
+          "say": "8 giờ bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "text": "hả?"
+            },
+            {
+              "field": "time.ampm",
+              "text": "tối"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 20:00"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "on-16-new-message-while-asked",
+      "group": "care.ongoing",
+      "anchor": "21:30",
+      "title": "L1: an older app sends \"Sáng\" as a new message while the question waits → the question again, never the help text",
+      "turns": [
+        {
+          "say": "8 giờ bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "Sáng",
+          "at": "+1",
+          "model": {
+            "i": []
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "fallback",
+        "credits": 0
+      }
+    },
+    {
+      "id": "on-17-dang-ngu-5p-timer-running",
+      "group": "care.ongoing",
+      "world": {
+        "seed": ["sleepTimer1230"]
+      },
+      "title": "L1: \"Bé đang ngủ. Vừa ngủ được 5p rồi\" while the sleep timer already runs → that timer is named, never a second one",
+      "turns": [
+        {
+          "say": "Bé đang ngủ. Vừa ngủ được 5p rồi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "start",
+                  "durationMin": 5
+                },
+                "ev": {
+                  "phase": "đang ngủ",
+                  "durationMin": "5p"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "codes": ["TIMER_RUNNING"],
+        "values": {
+          "0.action": "stop"
+        }
+      }
+    },
+    {
+      "id": "on-18-typed-choice-sleep-when",
+      "group": "care",
+      "title": "L1: a chip question answered by typing (\"giấc đêm\") is read as its chip",
+      "turns": [
+        {
+          "say": "dạo này bé khó ngủ",
+          "model": [
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": null,
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  }
+                ]
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": null,
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  }
+                ]
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": null,
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  }
+                ]
+              }
+            }
+          ],
+          "answers": [
+            {
+              "field": "sleep.when",
+              "text": "giấc đêm"
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"]
+      }
+    }
+  ]
+}

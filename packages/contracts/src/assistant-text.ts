@@ -394,7 +394,10 @@ export interface AgoMatch {
   text: string;
 }
 
-/** "2 tiếng trước", "30 phút trước", "nửa tiếng trước", "2 hours ago", "vừa xong", "just now". */
+/**
+ * "2 tiếng trước", "30 phút trước", "khoảng nửa tiếng trước", "2 hours ago", and (L1, P-167 #1)
+ * "cách đây 5p", "5p rồi", "được 5 phút rồi"; else "vừa xong", "just now" (about now).
+ */
 export function agoIn(text: string): AgoMatch | null {
   const f = foldVi(text);
   const m = new RegExp(String.raw`(.{0,30}?)\s*(truoc|ago)(?![\p{L}])(?!\s*khi)`, 'u').exec(f);
@@ -406,6 +409,18 @@ export function agoIn(text: string): AgoMatch | null {
         justNow: false,
         text: `${d[d.length - 1]!.text} ${m[2]}`,
       };
+  }
+  // "cách đây 5p": the length right after it.
+  const c = /(?<![\p{L}])cach day\s+/u.exec(f);
+  if (c) {
+    const d = durationsIn(f.slice(c.index + c[0].length))[0];
+    if (d && d.index <= 8)
+      return { minutes: d.minutes, justNow: false, text: `cach day ${d.text}` };
+  }
+  // "(được) 5p rồi": a length that has run until now.
+  for (const d of durationsIn(text)) {
+    const after = /^\s*(roi|rui)(?![\p{L}])/u.exec(f.slice(d.index + d.text.length));
+    if (after) return { minutes: d.minutes, justNow: false, text: `${d.text} ${after[1]}` };
   }
   const j =
     /(?<![\p{L}])(vua xong|vua moi|vua roi|just now|just)(?![\p{L}])/u.exec(f) ??
@@ -503,6 +518,47 @@ export function hasDayPeriod(text: string): boolean {
     /(?<![\p{L}])(?:sang|trua|chieu|toi|dem)\s+(?:nay|qua|mai)(?![\p{L}])/u.test(f) ||
     /(?<![\p{L}])(?:nua dem|rang sang)(?![\p{L}])/u.test(f)
   );
+}
+
+/** Which half of the day an answer names (L1, P-167 #3). */
+export type DayHalf = 'am' | 'pm' | 'noon' | 'night';
+
+const dayHalfWords: [RegExp, RegExp, DayHalf][] = [
+  [/sáng|morning/u, /sang|morning/u, 'am'],
+  [/trưa|noon|midday/u, /trua|noon|midday/u, 'noon'],
+  [/chiều|tối|afternoon|evening|tonight/u, /chieu|toi|afternoon|evening|tonight/u, 'pm'],
+  [/đêm|khuya|night/u, /dem|khuya|night/u, 'night'],
+];
+
+/**
+ * L1 (P-167 #3): a typed answer to "11:21 là buổi sáng hay chiều tối?": the FIRST period word
+ * ("Sáng. Hiện tại thì biết sáng hay tối chứ" → am), am / pm, or a clock that says its half
+ * ("23:21", "9h tối"). Null when it names none (the question is asked again).
+ */
+export function dayHalfAnswerIn(text: string): DayHalf | null {
+  const marked = hasVietnameseMarks(text);
+  const s = marked ? lowerVi(text) : foldVi(text);
+  let best: { at: number; half: DayHalf } | null = null;
+  const consider = (re: RegExp, half: DayHalf) => {
+    const m = new RegExp(String.raw`(?<![\p{L}])(?:${re.source})(?![\p{L}])`, 'u').exec(s);
+    if (m && (!best || m.index < best.at)) best = { at: m.index, half };
+  };
+  for (const [vi, folded, half] of dayHalfWords) consider(marked ? vi : folded, half);
+  consider(/am|a\.m/u, 'am');
+  consider(/pm|p\.m/u, 'pm');
+  const found = best as { at: number; half: DayHalf } | null;
+  if (found) return found.half;
+  const c = clockTimeIn(text);
+  if (c?.explicit) return Number(c.hhmm.slice(0, 2)) >= 12 ? 'pm' : 'am';
+  return null;
+}
+
+/** Whether a 24 h hour fits the half of the day an answer named. */
+export function hourInDayHalf(h: number, half: DayHalf): boolean {
+  if (half === 'am') return h < 12;
+  if (half === 'pm') return h >= 12;
+  if (half === 'noon') return h >= 10 && h <= 14;
+  return h >= 18 || h < 6;
 }
 
 // ---------- Relative dates ----------
@@ -895,6 +951,11 @@ export interface CareState {
   action: 'start' | 'stop';
   /** "đang cho bú bên trái": the side to run first (both → null: one side at a time). */
   side: 'left' | 'right' | null;
+  /**
+   * L1 (P-167 #1), a start only: how long it has already run when the words say so ("đang ngủ,
+   * được 5p rồi", "ngủ cách đây 5p", "đang bú được 10 phút"): the timer starts that long ago.
+   */
+  sinceMin: number | null;
   /** The matched words (folded), for evidence. */
   text: string;
 }
@@ -923,6 +984,50 @@ const breastStartEn =
 const breastStop = W('(?:cho (?:be |con )?)?(?:bu|ti)(?: me)? xong|xong cu bu|bu no roi|ti no roi');
 const breastStopEn =
   /\b(?:done nursing|finished nursing|done breastfeeding|finished breastfeeding|stopped nursing)\b/u;
+/** L1 (P-167 #1): a sleep still going on now, said with how long or since when. */
+const sleepGoingOn = W('dang ngu|van ngu|van chua day');
+/** "ngủ từ 11h20" with no length and no end: it still goes on. */
+const sleepSince = W('ngu tu');
+const sleepGoingOnLength = /(?<![\p{L}])ngu duoc\s+.{1,25}?\s(?:roi|rui)(?![\p{L}])/u;
+const sleepGoingOnEn =
+  /\b(?:is asleep|is sleeping|still sleeping|still asleep|has been sleeping)\b/u;
+const breastGoingOn = W(
+  'dang (?:cho (?:be |con )?)?(?:bu|ti)(?: me)?|van (?:dang )?(?:bu|ti)(?: me)?|dang cho (?:be |con )?an sua me',
+);
+const breastGoingOnEn =
+  /\b(?:is nursing|nursing now|is breastfeeding|still nursing|has been nursing)\b/u;
+
+/**
+ * L1: the words say the sleep / feed ENDED (dậy, thức, tỉnh, xong, đến / tới). "Ru (ngủ) xong"
+ * ends the rocking; "chưa dậy" and "đến / tới (bây) giờ" say it still goes on.
+ */
+function saysFinished(text: string): boolean {
+  const f = foldVi(text);
+  if (/\b(?:woke|awake|finished|done|until)\b/u.test(f)) return true;
+  if (hasVietnameseMarks(text)) {
+    const lower = lowerVi(text)
+      .replace(/(?<![\p{L}])ru(?: ngủ)? xong(?![\p{L}])/gu, ' ')
+      .replace(/(?<![\p{L}])chưa (?:ngủ )?dậy(?![\p{L}])/gu, ' ')
+      .replace(/(?<![\p{L}])(?:đến|tới)(?: bây)? giờ(?![\p{L}])/gu, ' ');
+    return /(?<![\p{L}])(?:dậy|thức|tỉnh|xong|đến|tới)(?![\p{L}])/u.test(lower);
+  }
+  const g = f
+    .replace(/(?<![\p{L}])ru(?: ngu)? xong(?![\p{L}])/gu, ' ')
+    .replace(/(?<![\p{L}])chua (?:ngu )?day(?![\p{L}])/gu, ' ')
+    .replace(/(?<![\p{L}])(?:den|toi)(?: bay)? gio(?![\p{L}])/gu, ' ');
+  return /(?<![\p{L}])(?:day|thuc|tinh|xong|den)(?![\p{L}])|(?<![\p{L}])toi\s*\d/u.test(g);
+}
+
+/** L1: how long a state has run, from "cách đây 5p", "5p rồi" or a length right after "được". */
+function sinceOf(text: string): number | null {
+  const ago = agoIn(text);
+  if (ago && !ago.justNow) return ago.minutes;
+  const f = foldVi(text);
+  const d = durationsIn(text).find(
+    (x) => /^duoc\s/u.test(x.text) || /(?<![\p{L}])duoc\s*$/u.test(f.slice(0, x.index)),
+  );
+  return d?.minutes ?? null;
+}
 
 /**
  * Ongoing care states in [text] that map to the app's running timers (sleep, breastfeeding):
@@ -931,6 +1036,9 @@ const breastStopEn =
  * breast stop. A concern ("khó ngủ", "chưa ngủ", "hay thức giấc"), a bottle, or a finished log
  * with its length ("ngủ 2 tiếng", "bú 15 phút xong") is not a state. At most one per timer.
  * "dậy" is matched with its diacritics when the text has any ("dạy", "đầy" are other words).
+ * L1 (P-167 #1): words of a state still going on ("đang / vẫn đang ngủ", "ngủ được X rồi", "ngủ
+ * từ 11h20", "đang bú") with no word that it ended are a start even with a length: the timer
+ * starts that long ago (`sinceMin`). "Vừa ngủ dậy, ngủ được 2 tiếng" stays a finished sleep.
  */
 export function careStatesIn(text: string): CareState[] {
   const f = foldVi(text);
@@ -939,26 +1047,43 @@ export function careStatesIn(text: string): CareState[] {
   const said = durationsIn(text).length > 0;
   const out: CareState[] = [];
   const hit = (re: RegExp) => re.exec(f)?.[0] ?? null;
+  const finished = saysFinished(text);
   // Sleep: a stop ("ngủ dậy") is read before a start ("ngủ").
   if (!sleepConcern.test(f)) {
     const wakeWord = !marks || /dậy|thức|tỉnh/u.test(lower);
     const stop = (wakeWord ? hit(sleepStop) : null) ?? hit(sleepStopEn);
-    const start = hit(sleepStart) ?? hit(sleepStartEn);
-    if (stop && !said) out.push({ timer: 'sleep', action: 'stop', side: null, text: stop });
-    else if (start && !stop && !(said && /ngu duoc|slept for/u.test(f))) {
-      out.push({ timer: 'sleep', action: 'start', side: null, text: start });
+    const going = finished
+      ? null
+      : (hit(sleepGoingOn) ??
+        hit(sleepGoingOnLength) ??
+        hit(sleepGoingOnEn) ??
+        (said ? null : hit(sleepSince)));
+    const start = hit(sleepStart) ?? hit(sleepStartEn) ?? going;
+    if (stop && !said) {
+      out.push({ timer: 'sleep', action: 'stop', side: null, sinceMin: null, text: stop });
+    } else if (start && !stop && (!(said && /ngu duoc|slept for/u.test(f)) || going)) {
+      out.push({
+        timer: 'sleep',
+        action: 'start',
+        side: null,
+        sinceMin: sinceOf(text),
+        text: start,
+      });
     }
   }
   if (!bottleWords.test(f)) {
     const stop = hit(breastStop) ?? hit(breastStopEn);
     const start = hit(breastStart) ?? hit(breastStartEn);
+    const going = finished ? null : (hit(breastGoingOn) ?? hit(breastGoingOnEn));
     const side = breastSideIn(text);
-    if (stop && !said) out.push({ timer: 'breast', action: 'stop', side: null, text: stop });
-    else if (start && !stop && !said) {
+    if (stop && !said) {
+      out.push({ timer: 'breast', action: 'stop', side: null, sinceMin: null, text: stop });
+    } else if (start && !stop && (!said || going)) {
       out.push({
         timer: 'breast',
         action: 'start',
         side: side === 'left' || side === 'right' ? side : null,
+        sinceMin: said ? sinceOf(text) : null,
         text: start,
       });
     }

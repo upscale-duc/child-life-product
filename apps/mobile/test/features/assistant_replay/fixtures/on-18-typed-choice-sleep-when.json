@@ -1,0 +1,325 @@
+{
+ "id": "on-18-typed-choice-sleep-when",
+ "group": "care",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_bb272ec18286dfcd34637ac41239984a",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "sleep.when",
+      "question": {
+       "vi": "Giấc ngày hay giấc đêm?",
+       "en": "Naps or night sleep?"
+      },
+      "choices": [
+       {
+        "id": "night",
+        "label": {
+         "vi": "Giấc đêm",
+         "en": "Night"
+        }
+       },
+       {
+        "id": "day",
+        "label": {
+         "vi": "Giấc ngày",
+         "en": "Naps"
+        }
+       },
+       {
+        "id": "unsure",
+        "label": {
+         "vi": "Chưa rõ",
+         "en": "Not sure"
+        }
+       }
+      ],
+      "allowText": false
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "care": {
+      "topic": "sleep_concern",
+      "sleep": {
+       "kind": "falling_asleep",
+       "when": null,
+       "since": null
+      },
+      "guidance": null,
+      "recipeIds": [],
+      "plan": null,
+      "followUp": null,
+      "feedback": null
+     },
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "dạo này bé khó ngủ"
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "sleep.when",
+         "question": {
+          "vi": "Giấc ngày hay giấc đêm?",
+          "en": "Naps or night sleep?"
+         },
+         "choices": [
+          {
+           "id": "night",
+           "label": {
+            "vi": "Giấc đêm",
+            "en": "Night"
+           }
+          },
+          {
+           "id": "day",
+           "label": {
+            "vi": "Giấc ngày",
+            "en": "Naps"
+           }
+          },
+          {
+           "id": "unsure",
+           "label": {
+            "vi": "Chưa rõ",
+            "en": "Not sure"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer sleep.when",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_bb272ec18286dfcd34637ac41239984a",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "care": {
+      "topic": "sleep_concern",
+      "sleep": {
+       "kind": "falling_asleep",
+       "when": "night",
+       "since": null
+      },
+      "guidance": null,
+      "recipeIds": [],
+      "plan": null,
+      "followUp": null,
+      "feedback": null
+     },
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "dạo này bé khó ngủ"
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "sleep.when",
+         "question": {
+          "vi": "Giấc ngày hay giấc đêm?",
+          "en": "Naps or night sleep?"
+         },
+         "choices": [
+          {
+           "id": "night",
+           "label": {
+            "vi": "Giấc đêm",
+            "en": "Night"
+           }
+          },
+          {
+           "id": "day",
+           "label": {
+            "vi": "Giấc ngày",
+            "en": "Naps"
+           }
+          },
+          {
+           "id": "unsure",
+           "label": {
+            "vi": "Chưa rõ",
+            "en": "Not sure"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "giấc đêm"
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Chưa có gợi ý đã duyệt phù hợp với con lúc này. Bạn có thể xem Thư viện chăm bé.",
+        "code": "CARE_NO_APPROVED_CONTENT"
+       }
+      ],
+      "taskId": "tk_bb272ec18286dfcd34637ac41239984a",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

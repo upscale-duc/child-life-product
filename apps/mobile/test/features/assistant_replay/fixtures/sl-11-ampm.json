@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+     "id": "tk_896a2ea4c81429b9aa590af3ab18dda8",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -27,8 +27,8 @@
       "id": "cl_1",
       "field": "time.ampm",
       "question": {
-       "vi": "8:00, 7:00 là buổi sáng hay chiều tối?",
-       "en": "Were 8:00, 7:00 in the morning or the evening?"
+       "vi": "8:00 là buổi sáng hay chiều tối?",
+       "en": "Was 8:00 in the morning or the evening?"
       },
       "choices": [
        {
@@ -46,7 +46,7 @@
         }
        }
       ],
-      "allowText": false
+      "allowText": true
      },
      "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
      "anchorInstant": "2026-10-15T07:20:00.000Z",
@@ -75,7 +75,7 @@
         "text": "bé ngủ từ 7 giờ đến 8 giờ"
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -98,8 +98,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "8:00, 7:00 là buổi sáng hay chiều tối?",
-          "en": "Were 8:00, 7:00 in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -117,11 +117,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+     "id": "tk_896a2ea4c81429b9aa590af3ab18dda8",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -167,8 +167,8 @@
     },
     "drafts": [
      {
-      "id": "dr_5ab9b2b7f249ae0e8a23b49b3fc41b6e_0",
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "id": "dr_896a2ea4c81429b9aa590af3ab18dda8_0",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -187,7 +187,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e"
+       "task:tk_896a2ea4c81429b9aa590af3ab18dda8"
       ],
       "recordId": null,
       "recordLink": null,
@@ -209,7 +209,7 @@
         "text": "bé ngủ từ 7 giờ đến 8 giờ"
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -232,8 +232,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "8:00, 7:00 là buổi sáng hay chiều tối?",
-          "en": "Were 8:00, 7:00 in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -251,11 +251,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -272,7 +272,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -291,11 +291,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_5ab9b2b7f249ae0e8a23b49b3fc41b6e_0",
+        "draftId": "dr_896a2ea4c81429b9aa590af3ab18dda8_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -310,7 +310,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+     "id": "tk_896a2ea4c81429b9aa590af3ab18dda8",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -341,8 +341,8 @@
     },
     "drafts": [
      {
-      "id": "dr_5ab9b2b7f249ae0e8a23b49b3fc41b6e_0",
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "id": "dr_896a2ea4c81429b9aa590af3ab18dda8_0",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -361,10 +361,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e"
+       "task:tk_896a2ea4c81429b9aa590af3ab18dda8"
       ],
-      "recordId": "r_1e3f1d7788381bacf1c8a765dcd51a0c",
-      "recordLink": "/care/records/b_00000000000000000001/r_1e3f1d7788381bacf1c8a765dcd51a0c",
+      "recordId": "r_1770a1295ea1aa5bf06ddc943bbcbe70",
+      "recordLink": "/care/records/b_00000000000000000001/r_1770a1295ea1aa5bf06ddc943bbcbe70",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -388,7 +388,7 @@
         "text": "bé ngủ từ 7 giờ đến 8 giờ"
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -411,8 +411,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "8:00, 7:00 là buổi sáng hay chiều tối?",
-          "en": "Were 8:00, 7:00 in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -430,11 +430,11 @@
            }
           }
          ],
-         "allowText": false
+         "allowText": true
         }
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -451,7 +451,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -470,11 +470,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_5ab9b2b7f249ae0e8a23b49b3fc41b6e_0",
+        "draftId": "dr_896a2ea4c81429b9aa590af3ab18dda8_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -490,15 +490,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_5ab9b2b7f249ae0e8a23b49b3fc41b6e_0",
+          "draftId": "dr_896a2ea4c81429b9aa590af3ab18dda8_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_1e3f1d7788381bacf1c8a765dcd51a0c",
+          "recordLink": "/care/records/b_00000000000000000001/r_1770a1295ea1aa5bf06ddc943bbcbe70",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_5ab9b2b7f249ae0e8a23b49b3fc41b6e",
+      "taskId": "tk_896a2ea4c81429b9aa590af3ab18dda8",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

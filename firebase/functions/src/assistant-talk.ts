@@ -221,6 +221,24 @@ export function timerRunningPart(
   return { type: 'text', schemaVersion: 1, text: text[locale], code: 'TIMER_RUNNING', link };
 }
 
+/**
+ * L1 (P-167 #3): a message that would get the help text while my question still waits above:
+ * that question again (the answer goes there; nothing else is drafted, 0 credits).
+ */
+export function reaskPart(
+  c: { question: { vi: string; en: string } },
+  locale: Locale,
+): AssistantPart {
+  return {
+    type: 'text',
+    schemaVersion: 1,
+    text: L(
+      `Bạn trả lời giúp mình câu hỏi ở trên trước nhé: ${c.question.vi}`,
+      `Could you answer the question above first: ${c.question.en}`,
+    )[locale],
+  };
+}
+
 /** The same message again while its draft still waits above: nothing new, 0 credits. */
 export function sameAsPendingPart(locale: Locale): AssistantPart {
   return {
