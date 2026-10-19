@@ -28,7 +28,7 @@ import type {
  * mắm, hạt nêm, bột ngọt, soy sauce or honey for the baby's portion ("không nêm"); family dishes
  * take the baby's portion out before seasoning. Recipes that introduce an allergen say so gently
  * (egg fully cooked, peanut and tree nuts only as thinned smooth paste, a small amount in the
- * morning, 115 for breathing trouble or swelling). Storage follows NHS (rice within 1 hour and 24
+ * morning, `{emergency}` for breathing trouble or swelling, D-087). Storage follows NHS (rice within 1 hour and 24
  * hours, other food within 1–2 hours and 2 days, reheat once). Plain text; vi is the source, en a
  * faithful rendering (D-012).
  */
@@ -2785,8 +2785,8 @@ const STORE_COOKED = t(
 
 /** Allergen introduction, said once and the same way in every recipe that needs it. */
 const firstTime = (vi: string, en: string): Pair => [
-  `Lần đầu ăn ${vi}: cho một lượng nhỏ vào buổi sáng, ở nhà, khi bé khoẻ; theo dõi nổi mẩn, nôn, sưng môi. Gọi 115 ngay nếu bé khó thở, sưng môi hoặc lưỡi, lả đi.`,
-  `The first time with ${en}: give a small amount in the morning, at home, when your baby is well; watch for a rash, vomiting or swollen lips. Call 115 now if your baby has trouble breathing, a swollen lip or tongue, or goes floppy.`,
+  `Lần đầu ăn ${vi}: cho một lượng nhỏ vào buổi sáng, ở nhà, khi bé khoẻ; theo dõi nổi mẩn, nôn, sưng môi. Gọi cấp cứu {emergency} ngay nếu bé khó thở, sưng môi hoặc lưỡi, lả đi.`,
+  `The first time with ${en}: give a small amount in the morning, at home, when your baby is well; watch for a rash, vomiting or swollen lips. Call {emergency} now if your baby has trouble breathing, a swollen lip or tongue, or goes floppy.`,
 ];
 
 function recipe(id: string, data: Omit<RecipeContent, 'cover'>): SolidsSeed<RecipeContent> {
@@ -2977,8 +2977,8 @@ export const seedRecipes: readonly SolidsSeed<RecipeContent>[] = [
         'Sit your baby upright in a high chair with straps and put 2–3 sticks on the tray to pick up. Stay with your baby for the whole meal.',
       ],
       [
-        'Bé oẹ khi tập ăn là bình thường; bình tĩnh, không thò tay vào miệng bé. Nếu bé không ho, không khóc, không thở được, gọi 115 và sơ cứu hóc dị vật.',
-        'Gagging while learning is normal; stay calm and keep your fingers out of their mouth. If your baby cannot cough, cry or breathe, call 115 and start choking first aid.',
+        'Bé oẹ khi tập ăn là bình thường; bình tĩnh, không thò tay vào miệng bé. Nếu bé không ho, không khóc, không thở được, gọi cấp cứu {emergency} và sơ cứu hóc dị vật.',
+        'Gagging while learning is normal; stay calm and keep your fingers out of their mouth. If your baby cannot cough, cry or breathe, call {emergency} and start choking first aid.',
       ],
     ),
     storage: STORE_COOKED,
@@ -3082,8 +3082,8 @@ export const seedRecipes: readonly SolidsSeed<RecipeContent>[] = [
         'The first time, offer a small amount on the tip of a teaspoon in the morning, at home; if your baby is fine after 10–15 minutes, offer the rest.',
       ],
       [
-        'Theo dõi bé khoảng 2 giờ: nổi mẩn, mề đay, nôn, sưng môi. Gọi 115 ngay nếu bé khó thở, ho, khò khè, sưng môi hoặc lưỡi, lả đi.',
-        'Watch your baby for about 2 hours for a rash, hives, vomiting or swollen lips. Call 115 now if your baby has trouble breathing, coughs or wheezes, has a swollen lip or tongue, or goes floppy.',
+        'Theo dõi bé khoảng 2 giờ: nổi mẩn, mề đay, nôn, sưng môi. Gọi cấp cứu {emergency} ngay nếu bé khó thở, ho, khò khè, sưng môi hoặc lưỡi, lả đi.',
+        'Watch your baby for about 2 hours for a rash, hives, vomiting or swollen lips. Call {emergency} now if your baby has trouble breathing, coughs or wheezes, has a swollen lip or tongue, or goes floppy.',
       ],
       [
         'Nếu bé ăn ổn, duy trì đậu phộng khoảng 2 lần mỗi tuần (ASCIA).',

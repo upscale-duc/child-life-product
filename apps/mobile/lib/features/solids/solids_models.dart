@@ -318,11 +318,19 @@ class SdRecipe {
       if (i.foodId != null) i.foodId!,
   }.toList();
 
-  /// A published recipe the app can show, else null.
-  static SdRecipe? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_recipeId.hasMatch(id) || j['status'] != 'published') {
+  /// A published recipe the app can show, else null; `{emergency}` becomes [emergency], the
+  /// family's number (D-087).
+  static SdRecipe? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null ||
+        !_recipeId.hasMatch(id) ||
+        doc['status'] != 'published') {
       return null;
     }
+    final j = lbFillDoc(doc, emergency)!;
     final title = LbText.parse(j['title']);
     final texture = _enum(SdTexture.values, j['texture']);
     final age = j['ageMonths'];

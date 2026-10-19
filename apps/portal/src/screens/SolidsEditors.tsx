@@ -39,6 +39,8 @@ import { Button, Empty, Loaded, Modal } from '../ui';
 import {
   ActDialog,
   ContentImagesProvider,
+  EmergencyHint,
+  EmergencyNotice,
   LangTabs,
   LinkPicker,
   PictureField,
@@ -81,6 +83,7 @@ import {
   fromMonthsText,
   solidsAgeOf,
   solidsMonthsText,
+  solidsPlace,
   type AgeProblem,
   type CatalogueFood,
   type SolidsKind,
@@ -305,6 +308,7 @@ function EditorFrame({
         foods={foods}
         from={from}
       />
+      <EmergencyNotice data={d.prepared} place={solidsPlace} />
       <EditorLayout aside={aside}>{children}</EditorLayout>
       {dialog}
       {d.act && d.row && (
@@ -1150,7 +1154,11 @@ export function RecipeEditor({
           </Notice>
         )}
       </Section>
-      <Section title={<FormattedMessage id="solids.recipe.stepsSection" />} actions={langTabs}>
+      <Section
+        title={<FormattedMessage id="solids.recipe.stepsSection" />}
+        description={<EmergencyHint />}
+        actions={langTabs}
+      >
         <div className="grid gap-5">
           <StepsEditor
             value={data.steps}

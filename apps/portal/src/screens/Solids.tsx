@@ -72,9 +72,18 @@ import {
  * its editor at `/solids/{tab}/{id}` (`/new` for a new one).
  */
 
-/** A new guide from Ăn dặm › Hướng dẫn: library "solids", topic "feeding", 6–12 months. */
+/**
+ * A new guide from Ăn dặm › Hướng dẫn: library "solids", topic "feeding", 6–12 months, no group
+ * yet (D-087).
+ */
 export function blankSolidsGuide(): ArticleDraft {
-  return { ...blankArticle(), library: 'solids', topic: 'feeding', ageWeeks: { from: 26, to: 52 } };
+  return {
+    ...blankArticle(),
+    library: 'solids',
+    topic: 'feeding',
+    subtopic: null,
+    ageWeeks: { from: 26, to: 52 },
+  };
 }
 
 export function SolidsScreen() {
@@ -919,7 +928,10 @@ export function RecipeCoverageCard({
 
 // ---------- Hướng dẫn ----------
 
-/** The Thư viện chăm bé articles with `library: 'solids'` (same list, same editor). */
+/**
+ * The Thư viện chăm bé articles with `library: 'solids'` (same list, same editor), by solids group
+ * (D-087) instead of topic.
+ */
 export function GuidesBody({
   view,
   onOpen,
@@ -930,7 +942,7 @@ export function GuidesBody({
   const rows = view.rows.filter((r) => r.library === 'solids');
   return (
     <div className="grid gap-4">
-      <ArticlesBody view={{ ...view, rows, counts: countsOfRows(rows) }} onOpen={onOpen} />
+      <ArticlesBody view={{ ...view, rows, counts: countsOfRows(rows) }} onOpen={onOpen} solids />
       <Notice tone="info">
         <FormattedMessage id="solids.note.guides" />
       </Notice>

@@ -14,8 +14,8 @@ import type { SeedArticle } from './content-seed.js';
  * (WHO: around 6 months, never before 4; an earlier start only on the baby's doctor's advice);
  * milk feeds continue; iron-rich foods and the common allergens early and kept up; no honey, salt,
  * sugar or cow's milk as the main drink before 12 months; no whole nuts, whole grapes or popcorn;
- * no doses ("theo chỉ định bác sĩ"); no stigmatising words (`nutritionForbiddenWords`); 115 named
- * wherever allergy symptoms are. Plain text; vi is the source, en a faithful rendering (D-012).
+ * no doses ("theo chỉ định bác sĩ"); no stigmatising words (`nutritionForbiddenWords`); the
+ * family's emergency number (`{emergency}`, D-087) named wherever allergy symptoms are. Plain text; vi is the source, en a faithful rendering (D-012).
  */
 
 /** Who is expected to review each item (B01 "Người duyệt" filter); not a claim of review. */
@@ -40,6 +40,13 @@ const note = (title: string, text: string): ContentBlock => ({
 const doctor = (title: string, text: string): ContentBlock => ({
   type: 'callout',
   tone: 'doctor',
+  title,
+  text,
+});
+/** "Gọi {emergency} ngay khi…" (D-087): red, with a button that dials the family's number. */
+const urgent = (title: string, text: string): ContentBlock => ({
+  type: 'callout',
+  tone: 'urgent',
   title,
   text,
 });
@@ -279,6 +286,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'start',
       format: 'step_guide',
       ageWeeks: { from: 22, to: 39 },
       readingMinutes: 6,
@@ -299,7 +307,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng trước khi bắt đầu'),
           p(
-            'WHO, Bộ Y tế (Hướng dẫn ăn bổ sung cho trẻ 6–23 tháng, 2026), UNICEF, NHS và AAP đều khuyên cho bé ăn dặm từ khoảng 6 tháng tuổi, khi sữa mẹ hoặc sữa công thức không còn đáp ứng đủ nhu cầu của bé, nhất là sắt. Child Life lấy mốc 6 tháng làm thời điểm bắt đầu. Không bao giờ cho ăn dặm trước 4 tháng. Nếu bác sĩ khuyên bé nhà mình bắt đầu sớm hơn vì lý do riêng, ví dụ bé sinh non hoặc có nguy cơ dị ứng cao, hãy làm theo bác sĩ của bé.',
+            'WHO, Bộ Y tế (Hướng dẫn ăn bổ sung cho trẻ 6–23 tháng, 2026), UNICEF, NHS và AAP đều khuyên cho bé ăn dặm từ khoảng 6 tháng tuổi, khi sữa mẹ hoặc sữa công thức không còn đáp ứng đủ nhu cầu của bé, nhất là sắt.',
+          ),
+          p(
+            'Child Life lấy mốc 6 tháng làm thời điểm bắt đầu. Không bao giờ cho ăn dặm trước 4 tháng. Nếu bác sĩ khuyên bé nhà mình bắt đầu sớm hơn vì lý do riêng, ví dụ bé sinh non hoặc có nguy cơ dị ứng cao, hãy làm theo bác sĩ của bé.',
           ),
           p(
             'Bé sẵn sàng khi có đủ ba dấu hiệu: ngồi được và giữ vững đầu cổ, tự cầm thức ăn đưa vào miệng, và nuốt được thay vì dùng lưỡi đẩy hết ra. Gặm tay, thức đêm nhiều hơn hay đòi bú thêm chưa phải là dấu hiệu sẵn sàng. Trong năm đầu, sữa vẫn là nguồn dinh dưỡng chính; WHO khuyên tiếp tục cho bú đến 2 tuổi hoặc lâu hơn.',
@@ -336,9 +347,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Nêm chút nước mắm cho bé chịu ăn → Thận của bé còn non và bé dễ quen vị mặn → Giữ vị tự nhiên; múc phần của bé ra trước khi nêm cho người lớn.',
             'Bé lè lưỡi đẩy ra là không hợp, bỏ hẳn món đó → Đó thường là phản xạ với vị mới → Mời lại món đó vào những ngày sau, lượng nhỏ, cạnh món bé đã quen.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Sau khi ăn, bé khó thở, thở rít, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi, mềm nhũn. Trong lúc chờ, xem mục Sơ cứu trẻ em trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sinh non, nhẹ cân hoặc có bệnh cần chế độ ăn riêng; bé bị chàm nặng hoặc đã từng dị ứng một món (hỏi trước khi cho trứng, đậu phộng); bé hay ho sặc, nôn hoặc khó nuốt khi ăn; bé nổi mẩn, sưng môi hay nôn sau món mới. Gọi 115 ngay nếu sau khi ăn bé khó thở, thở rít, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi, mềm nhũn; xem mục Sơ cứu trẻ em trong Child Life.',
+            'Bé sinh non, nhẹ cân hoặc có bệnh cần chế độ ăn riêng; bé bị chàm nặng hoặc đã từng dị ứng một món (hỏi trước khi cho trứng, đậu phộng); bé hay ho sặc, nôn hoặc khó nuốt khi ăn; bé nổi mẩn, sưng môi hay nôn sau món mới.',
           ),
         ],
         en: [
@@ -348,7 +363,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Understanding the start'),
           p(
-            "WHO, Việt Nam's Ministry of Health (complementary feeding guidance for children 6–23 months, 2026), UNICEF, the NHS and the AAP all advise starting solids at around 6 months of age, when breast milk or formula no longer meets all of a baby's needs, especially for iron. Child Life uses 6 months as the time to start. Never start solids before 4 months. If your baby's doctor advises an earlier start for a particular reason, for example because your baby was born preterm or has a high risk of allergy, follow your baby's doctor.",
+            "WHO, Việt Nam's Ministry of Health (complementary feeding guidance for children 6–23 months, 2026), UNICEF, the NHS and the AAP all advise starting solids at around 6 months of age, when breast milk or formula no longer meets all of a baby's needs, especially for iron.",
+          ),
+          p(
+            "Child Life uses 6 months as the time to start. Never start solids before 4 months. If your baby's doctor advises an earlier start for a particular reason, for example because your baby was born preterm or has a high risk of allergy, follow your baby's doctor.",
           ),
           p(
             'Your baby is ready when all three signs are there: they can sit and hold their head steady, pick up food and put it in their mouth, and swallow it instead of pushing it all back out with the tongue. Chewing fists, waking more at night or wanting extra feeds are not signs of readiness. Milk is still the main source of nutrition in the first year; WHO advises continuing breastfeeding to 2 years or beyond.',
@@ -385,9 +403,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             "A little fish sauce will make the baby eat → Your baby's kidneys are still immature and they get used to salty tastes easily → Keep natural flavors; take your baby's portion out before seasoning for the adults.",
             'If the baby pushes food out with the tongue it does not suit them, so drop it → This is usually a reflex to a new taste → Offer it again on later days, in small amounts, next to foods your baby already knows.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'After eating, your baby has trouble breathing, noisy breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale, limp or floppy. While you wait, see the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby was born preterm, has low weight or a condition that needs a special diet; has severe eczema or a previous food allergy (ask before giving egg or peanut); often coughs, chokes, vomits or struggles to swallow when eating; or gets a rash, swollen lips or vomiting after a new food. Call 115 (Vietnam emergency) now if after eating your baby has trouble breathing, noisy breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale, limp or floppy; see the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Your baby was born preterm, has low weight or a condition that needs a special diet; has severe eczema or a previous food allergy (ask before giving egg or peanut); often coughs, chokes, vomits or struggles to swallow when eating; or gets a rash, swollen lips or vomiting after a new food.',
           ),
         ],
       },
@@ -442,6 +464,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'methods',
       format: 'article',
       ageWeeks: { from: 22, to: 52 },
       readingMinutes: 6,
@@ -471,7 +494,10 @@ export const seedSolidsArticles: SeedArticle[] = [
             'BLW (baby-led weaning, ăn dặm bé chỉ huy): ngay từ đầu bé tự cầm những que thức ăn mềm, ăn cùng gia đình, người lớn không đút. Ưu điểm là bé chủ động, luyện tay, nhai và tự nhận biết khi no. Điểm cần chú ý là những tuần đầu bé ăn được ít và rơi vãi nhiều; nếu chỉ cho rau củ, trái cây, bé dễ thiếu món giàu sắt và giàu năng lượng.',
           ),
           p(
-            'Về an toàn, nghiên cứu BLISS ở New Zealand (Fangupo và cộng sự, 2016, 206 trẻ) theo dõi một kiểu BLW có điều chỉnh: thức ăn mềm, cỡ dễ cầm, mỗi bữa có món giàu sắt và món giàu năng lượng. Trẻ nhóm này không bị hóc nhiều hơn nhóm ăn theo cách thông thường. Tuy vậy, ở cả hai nhóm khoảng một phần ba trẻ từng bị hóc ít nhất một lần trong giai đoạn 6–8 tháng, và nhiều trẻ vẫn được cho món dễ gây hóc. Nghĩa là cách sơ chế và việc người lớn ngồi cạnh quan trọng hơn tên phương pháp. NHS cũng khẳng định không có cách đúng hay sai và có thể kết hợp.',
+            'Về an toàn, nghiên cứu BLISS ở New Zealand (Fangupo và cộng sự, 2016, 206 trẻ) theo dõi một kiểu BLW có điều chỉnh: thức ăn mềm, cỡ dễ cầm, mỗi bữa có món giàu sắt và món giàu năng lượng. Trẻ nhóm này không bị hóc nhiều hơn nhóm ăn theo cách thông thường.',
+          ),
+          p(
+            'Tuy vậy, ở cả hai nhóm khoảng một phần ba trẻ từng bị hóc ít nhất một lần trong giai đoạn 6–8 tháng, và nhiều trẻ vẫn được cho món dễ gây hóc. Nghĩa là cách sơ chế và việc người lớn ngồi cạnh quan trọng hơn tên phương pháp. NHS cũng khẳng định không có cách đúng hay sai và có thể kết hợp.',
           ),
           h('Chọn cách nào cho gia đình mình'),
           ul(
@@ -509,9 +535,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Ăn kiểu Nhật phải theo đúng tỉ lệ gạo nước từng giai đoạn → Đó chỉ là khung tham khảo; mỗi bé một nhịp → Chỉ cần cháo đặc không chảy khỏi thìa và tăng độ thô theo khả năng của bé.',
             'Bé chưa có răng thì chưa tự cầm ăn được → Bé nghiền thức ăn mềm bằng lợi rất tốt → Cho que mềm, bóp nát được bằng hai ngón tay.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé hóc mà không ho, không khóc được, khó thở, tím tái, sưng môi, mặt hoặc lưỡi, hoặc lả đi sau khi ăn. Trong lúc chờ, làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sinh non, có khó khăn về vận động hoặc nhai nuốt; bé đã 7 tháng mà vẫn chưa ngồi được dù có đỡ; bé tăng cân chưa tốt; bé hay ho sặc, nôn khi ăn; bé nổi mẩn, sưng môi sau món mới. Gọi 115 ngay nếu bé hóc mà không ho, không khóc được, khó thở, tím tái, sưng môi, mặt hoặc lưỡi, hoặc lả đi sau khi ăn; làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+            'Bé sinh non, có khó khăn về vận động hoặc nhai nuốt; bé đã 7 tháng mà vẫn chưa ngồi được dù có đỡ; bé tăng cân chưa tốt; bé hay ho sặc, nôn khi ăn; bé nổi mẩn, sưng môi sau món mới.',
           ),
         ],
         en: [
@@ -530,7 +560,10 @@ export const seedSolidsArticles: SeedArticle[] = [
             'BLW (baby-led weaning): from the start your baby holds soft sticks of food and eats with the family, without being spoon-fed. Its strengths are that babies take the lead, practice using their hands and chewing, and learn to recognize when they are full. The things to watch are that babies eat little and drop a lot in the first weeks, and that if they are offered only vegetables and fruit they can miss out on iron-rich and energy-rich foods.',
           ),
           p(
-            'On safety, the BLISS study in New Zealand (Fangupo and colleagues, 2016, 206 babies) followed a modified form of BLW: soft food, sized to hold, with an iron-rich and an energy-rich food at every meal. These babies did not choke more often than babies fed the usual way. Even so, in both groups about one in three babies choked at least once between 6 and 8 months, and many were still offered foods that pose a choking risk. In other words, how food is prepared and an adult sitting alongside matter more than the name of the method. The NHS also says there is no right or wrong way and the approaches can be combined.',
+            'On safety, the BLISS study in New Zealand (Fangupo and colleagues, 2016, 206 babies) followed a modified form of BLW: soft food, sized to hold, with an iron-rich and an energy-rich food at every meal. These babies did not choke more often than babies fed the usual way.',
+          ),
+          p(
+            'Even so, in both groups about one in three babies choked at least once between 6 and 8 months, and many were still offered foods that pose a choking risk. In other words, how food is prepared and an adult sitting alongside matter more than the name of the method. The NHS also says there is no right or wrong way and the approaches can be combined.',
           ),
           h('Choosing what suits your family'),
           ul(
@@ -568,9 +601,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             "Japanese-style weaning means following the exact rice-to-water ratio for each stage → That is only a rough guide; every baby has their own pace → All you need is porridge thick enough not to run off the spoon and textures that grow with your baby's skills.",
             'Babies without teeth cannot feed themselves → Babies mash soft food with their gums very well → Offer soft sticks that squash between two fingers.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby is choking and cannot cough or cry, has trouble breathing, turns blue, has swelling of the lips, face or tongue, or goes limp after eating. While you wait, follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby was born preterm or has difficulties with movement, chewing or swallowing; is 7 months old and still cannot sit even with support; is not gaining weight well; often coughs, chokes or vomits when eating; or gets a rash or swollen lips after a new food. Call 115 (Vietnam emergency) now if your baby is choking and cannot cough or cry, has trouble breathing, turns blue, has swelling of the lips, face or tongue, or goes limp after eating; follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Your baby was born preterm or has difficulties with movement, chewing or swallowing; is 7 months old and still cannot sit even with support; is not gaining weight well; often coughs, chokes or vomits when eating; or gets a rash or swollen lips after a new food.',
           ),
         ],
       },
@@ -625,6 +662,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'textures',
       format: 'article',
       ageWeeks: { from: 22, to: 78 },
       readingMinutes: 5,
@@ -645,7 +683,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng về bột và cháo'),
           p(
-            'Gạo cho năng lượng, nhưng một bát cháo trắng loãng chủ yếu là nước, ít năng lượng, ít đạm và gần như không có sắt. Dạ dày của bé 6–23 tháng còn nhỏ, nên UNICEF nhấn mạnh mỗi thìa ăn đều cần giàu dinh dưỡng: cháo quá loãng có ít chất bổ, hãy nấu đặc đến mức không chảy khỏi thìa. Bộ Y tế đã ban hành Hướng dẫn ăn bổ sung cho trẻ 6–23 tháng (2026), dựa trên khuyến nghị của WHO và UNICEF và phù hợp với bữa ăn của gia đình Việt.',
+            'Gạo cho năng lượng, nhưng một bát cháo trắng loãng chủ yếu là nước, ít năng lượng, ít đạm và gần như không có sắt. Dạ dày của bé 6–23 tháng còn nhỏ, nên UNICEF nhấn mạnh mỗi thìa ăn đều cần giàu dinh dưỡng: cháo quá loãng có ít chất bổ, hãy nấu đặc đến mức không chảy khỏi thìa.',
+          ),
+          p(
+            'Bộ Y tế đã ban hành Hướng dẫn ăn bổ sung cho trẻ 6–23 tháng (2026), dựa trên khuyến nghị của WHO và UNICEF và phù hợp với bữa ăn của gia đình Việt.',
           ),
           p(
             'Bột (bột gạo tự xay nấu chín, hoặc bột ngũ cốc ăn dặm) và cháo rây (cháo nấu nhừ rồi rây qua lưới) là hai cách làm mịn cho những tuần đầu. Bột ngũ cốc có tăng cường sắt là lựa chọn tiện; hãy đọc nhãn và chọn loại không thêm đường, muối. Dù là bột hay cháo, cách nghĩ quen thuộc “bát bột đủ bốn nhóm” vẫn đúng: tinh bột, chất đạm, chất béo, rau quả.',
@@ -687,9 +728,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Cháo ăn liền hay cháo nấu sẵn của người lớn tiện cho bé → Các loại này thường đã nêm muối, gia vị → Nấu riêng không nêm, hoặc chọn sản phẩm ăn dặm ghi rõ không thêm muối, đường.',
             'Nấu một nồi cháo buổi sáng, để trên bếp ăn cả ngày → Cơm, cháo để lâu ở nhiệt độ phòng có thể sinh độc tố mà đun lại cũng không hết → Làm nguội nhanh, cất tủ lạnh, mỗi lần chỉ hâm đủ một bữa.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Sau khi ăn, bé khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi, mềm nhũn.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé hay sặc, nôn khi tăng độ thô; bé đã quá 9 tháng mà vẫn chỉ ăn được đồ xay mịn; bé tăng cân chưa tốt; bé táo bón kéo dài; gia đình ăn chay hoặc bé phải kiêng nhiều món; bé nổi mẩn, sưng môi sau khi ăn một món mới. Gọi 115 ngay nếu sau khi ăn bé khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi, mềm nhũn.',
+            'Bé hay sặc, nôn khi tăng độ thô; bé đã quá 9 tháng mà vẫn chỉ ăn được đồ xay mịn; bé tăng cân chưa tốt; bé táo bón kéo dài; gia đình ăn chay hoặc bé phải kiêng nhiều món; bé nổi mẩn, sưng môi sau khi ăn một món mới.',
           ),
         ],
         en: [
@@ -699,7 +744,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Understanding cereal and porridge'),
           p(
-            "Rice gives energy, but a bowl of thin plain porridge is mostly water, with little energy, little protein and almost no iron. A baby's stomach at 6–23 months is small, so UNICEF stresses that every spoonful should be nutritious: porridge that is too watery has fewer nutrients, so cook it thick enough not to run off the spoon. Việt Nam's Ministry of Health issued its complementary feeding guidance for children 6–23 months (2026), based on WHO and UNICEF recommendations and suited to Vietnamese family meals.",
+            "Rice gives energy, but a bowl of thin plain porridge is mostly water, with little energy, little protein and almost no iron. A baby's stomach at 6–23 months is small, so UNICEF stresses that every spoonful should be nutritious: porridge that is too watery has fewer nutrients, so cook it thick enough not to run off the spoon.",
+          ),
+          p(
+            "Việt Nam's Ministry of Health issued its complementary feeding guidance for children 6–23 months (2026), based on WHO and UNICEF recommendations and suited to Vietnamese family meals.",
           ),
           p(
             'Cereal (home-ground rice flour cooked through, or baby cereal) and sieved porridge (porridge cooked very soft, then pushed through a sieve) are two ways to make food smooth for the first weeks. Iron-fortified baby cereal is a convenient choice; read the label and pick one without added sugar or salt. Whether cereal or porridge, the familiar idea of "a bowl with all four groups" still holds: starch, protein, fat, and vegetables and fruit.',
@@ -741,9 +789,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             "Instant porridge or ready-made adult porridge is convenient for babies → These are usually already seasoned with salt and flavorings → Cook your baby's portion without seasoning, or choose baby products clearly labeled with no added salt or sugar.",
             'Cooking a pot of porridge in the morning and leaving it on the stove all day → Rice and porridge left at room temperature can form toxins that reheating does not remove → Cool it quickly, refrigerate it and reheat only one meal at a time.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'After eating, your baby has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale, limp or floppy.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby often chokes or vomits as texture increases; is past 9 months and still manages only smooth food; is not gaining weight well; has ongoing constipation; your family is vegetarian or your baby has to avoid many foods; or your baby gets a rash or swollen lips after a new food. Call 115 (Vietnam emergency) now if after eating your baby has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale, limp or floppy.',
+            'Your baby often chokes or vomits as texture increases; is past 9 months and still manages only smooth food; is not gaining weight well; has ongoing constipation; your family is vegetarian or your baby has to avoid many foods; or your baby gets a rash or swollen lips after a new food.',
           ),
         ],
       },
@@ -801,6 +853,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'nutrition',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 5,
@@ -818,7 +871,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng về sắt'),
           p(
-            'Bé sinh đủ tháng có một lượng sắt dự trữ từ thời kỳ trong bụng mẹ. Sữa mẹ có ít sắt nhưng dễ hấp thu. Đến khoảng 6 tháng, kho dự trữ này giảm dần trong khi bé lớn nhanh, nên nhu cầu sắt vượt quá những gì sữa mang lại. Đây là một trong những lý do chính để bắt đầu ăn dặm lúc 6 tháng (WHO). Theo CDC, sắt cần cho tạo máu, phát triển não bộ và miễn dịch; không đủ sắt kéo dài có thể ảnh hưởng đến sự phát triển và khả năng học của trẻ.',
+            'Bé sinh đủ tháng có một lượng sắt dự trữ từ thời kỳ trong bụng mẹ. Sữa mẹ có ít sắt nhưng dễ hấp thu. Đến khoảng 6 tháng, kho dự trữ này giảm dần trong khi bé lớn nhanh, nên nhu cầu sắt vượt quá những gì sữa mang lại.',
+          ),
+          p(
+            'Đây là một trong những lý do chính để bắt đầu ăn dặm lúc 6 tháng (WHO). Theo CDC, sắt cần cho tạo máu, phát triển não bộ và miễn dịch; không đủ sắt kéo dài có thể ảnh hưởng đến sự phát triển và khả năng học của trẻ.',
           ),
           p(
             'Có hai loại sắt. Sắt trong thịt, cá, gan được cơ thể hấp thu tốt. Sắt trong thực vật như đậu, rau lá xanh, ngũ cốc tăng cường được hấp thu kém hơn, nhưng sẽ tốt hơn nhiều khi ăn cùng rau quả giàu vitamin C hoặc cùng một ít thịt, cá. Bé sinh non, nhẹ cân lúc sinh, gia đình ăn chay, hoặc bé uống nhiều sữa bò sau 1 tuổi cần được chú ý nhiều hơn.',
@@ -860,9 +916,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Thấy bé xanh xao thì mua thuốc sắt về cho uống → Uống thừa sắt có thể gây ngộ độc nặng ở trẻ nhỏ, và xanh xao có nhiều nguyên nhân → Đưa bé đi khám; chỉ dùng sắt theo chỉ định bác sĩ.',
             'Bé uống sữa nhiều là đủ chất, không cần thịt → Sữa bò có rất ít sắt, uống nhiều lại làm bé ăn ít đi → Từ 6 tháng, bé cần thức ăn giàu sắt mỗi ngày.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Nghi bé nuốt phải viên sắt hay thuốc bổ của người lớn, kể cả khi bé chưa có biểu hiện gì. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sinh non hoặc nhẹ cân lúc sinh; bé bú mẹ hoàn toàn và ba mẹ muốn hỏi về bổ sung sắt; gia đình ăn chay; bé da nhợt, mệt, kém ăn, ít chơi; bé đã 1 tuổi mà chưa từng được kiểm tra máu. Gọi 115 hoặc đến cấp cứu ngay nếu nghi bé nuốt phải viên sắt hay thuốc bổ của người lớn, kể cả khi bé chưa có biểu hiện gì.',
+            'Bé sinh non hoặc nhẹ cân lúc sinh; bé bú mẹ hoàn toàn và ba mẹ muốn hỏi về bổ sung sắt; gia đình ăn chay; bé da nhợt, mệt, kém ăn, ít chơi; bé đã 1 tuổi mà chưa từng được kiểm tra máu.',
           ),
         ],
         en: [
@@ -872,7 +932,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Understanding iron'),
           p(
-            "A baby born at term has a store of iron built up during pregnancy. Breast milk contains little iron, but it is easily absorbed. By around 6 months this store is running down while your baby grows fast, so their iron needs go beyond what milk provides. This is one of the main reasons to start solids at 6 months (WHO). According to the CDC, iron is needed for making blood, brain development and immunity; not getting enough iron over a long time can affect a child's development and learning.",
+            'A baby born at term has a store of iron built up during pregnancy. Breast milk contains little iron, but it is easily absorbed. By around 6 months this store is running down while your baby grows fast, so their iron needs go beyond what milk provides.',
+          ),
+          p(
+            "This is one of the main reasons to start solids at 6 months (WHO). According to the CDC, iron is needed for making blood, brain development and immunity; not getting enough iron over a long time can affect a child's development and learning.",
           ),
           p(
             "There are two kinds of iron. Iron in meat, fish and liver is absorbed well. Iron in plant foods such as beans, leafy greens and fortified cereals is absorbed less well, but much better when eaten with fruit or vegetables rich in vitamin C, or with a little meat or fish. Babies born preterm or with low birth weight, babies in vegetarian families, and children who drink a lot of cow's milk after 1 year need extra attention.",
@@ -914,9 +977,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'If the baby looks pale, buy iron drops → Too much iron can cause serious poisoning in young children, and paleness has many causes → Take your baby to the doctor; use iron only as prescribed.',
             "A baby who drinks lots of milk is well nourished and doesn't need meat → Cow's milk has very little iron, and drinking a lot makes babies eat less → From 6 months, your baby needs iron-rich foods every day.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            "You think your baby has swallowed an iron tablet or an adult's supplement, even if they seem fine. Don't wait: call {emergency} or go to the nearest emergency department.",
+          ),
           doctor(
             'When to ask a doctor',
-            "Your baby was born preterm or with low birth weight; is exclusively breastfed and you want to ask about iron supplements; your family is vegetarian; your baby is pale, tired, eats poorly or plays less; or your baby is 1 year old and has never had a blood check. Call 115 (Vietnam emergency) or go to the emergency department now if you think your baby has swallowed an iron tablet or an adult's supplement, even if they seem fine.",
+            'Your baby was born preterm or with low birth weight; is exclusively breastfed and you want to ask about iron supplements; your family is vegetarian; your baby is pale, tired, eats poorly or plays less; or your baby is 1 year old and has never had a blood check.',
           ),
         ],
       },
@@ -973,6 +1040,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'methods',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 4,
@@ -992,8 +1060,15 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Người lớn quyết định cho bé ăn gì, khi nào và ở đâu; bé quyết định ăn bao nhiêu. Bé đói: nhìn theo thức ăn, há miệng, nghiêng người tới, với tay. Bé no: ngậm chặt miệng, quay đầu, đẩy thìa, chơi với thức ăn. Dừng khi bé no, không ép, không dỗ bằng điện thoại hay tivi. Lượng ăn mỗi ngày mỗi khác là bình thường.',
           ),
           h('Hiểu đúng về cho ăn đáp ứng'),
+          p('WHO khuyên cho trẻ ăn theo cách đáp ứng:'),
+          ul(
+            'Nhận ra và đáp lại tín hiệu đói, no của bé.',
+            'Cho ăn chậm rãi, kiên nhẫn.',
+            'Khuyến khích nhưng không ép.',
+            'Nói chuyện và nhìn bé trong bữa ăn.',
+          ),
           p(
-            'WHO khuyên cho trẻ ăn theo cách đáp ứng: nhận ra và đáp lại tín hiệu đói, no của bé; cho ăn chậm rãi, kiên nhẫn; khuyến khích nhưng không ép; nói chuyện và nhìn bé trong bữa ăn. Trẻ nhỏ sinh ra đã có khả năng tự điều chỉnh lượng ăn. Khi bị ép, bé dần bỏ qua cảm giác no của chính mình, sợ bữa ăn, dễ sặc và có khi lại ăn ít hơn.',
+            'Trẻ nhỏ sinh ra đã có khả năng tự điều chỉnh lượng ăn. Khi bị ép, bé dần bỏ qua cảm giác no của chính mình, sợ bữa ăn, dễ sặc và có khi lại ăn ít hơn.',
           ),
           p(
             'Lượng ăn của bé thay đổi theo ngày: ngày ăn nhiều, ngày ăn ít, nhất là khi mọc răng, mệt hay ốm. Sau 1 tuổi bé lớn chậm lại nên nhìn có vẻ ăn ít hơn trước (AAP). Hãy đánh giá qua nhiều ngày và qua biểu đồ tăng trưởng ở các lần khám, đừng dựa vào một bữa.',
@@ -1034,9 +1109,10 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Bé ngậm cơm là hư, phải quát → Bé ngậm thường vì đã no, chán, mệt hoặc miếng quá khó nhai → Dừng bữa, kiểm tra độ thô và giờ ăn.',
             'Bé nhẹ cân hơn bạn cùng tuổi thì phải ép thêm → Ép ăn thường làm bé ăn ít đi và sợ bữa ăn → Đưa bé đi khám để đánh giá theo biểu đồ, và làm bữa ăn giàu dinh dưỡng hơn thay vì nhiều hơn.',
           ),
+          urgent('Gọi {emergency} ngay khi', 'Bé khó thở, tím tái hoặc lả đi khi đang ăn.'),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sụt cân hoặc không tăng cân qua các lần khám; bé thường xuyên từ chối mọi thức ăn, nôn khi ăn, khó nuốt hoặc ho sặc; bé đòi ăn liên tục không ngừng; bữa ăn luôn căng thẳng khiến ba mẹ kiệt sức. Gọi 115 ngay nếu bé khó thở, tím tái hoặc lả đi khi đang ăn.',
+            'Bé sụt cân hoặc không tăng cân qua các lần khám; bé thường xuyên từ chối mọi thức ăn, nôn khi ăn, khó nuốt hoặc ho sặc; bé đòi ăn liên tục không ngừng; bữa ăn luôn căng thẳng khiến ba mẹ kiệt sức.',
           ),
         ],
         en: [
@@ -1045,8 +1121,15 @@ export const seedSolidsArticles: SeedArticle[] = [
             "Adults decide what your baby eats, when and where; your baby decides how much. Hungry: watching food, opening the mouth, leaning forward, reaching. Full: mouth firmly closed, turning the head, pushing the spoon away, playing with food. Stop when your baby is full, never force, and don't coax with a phone or TV. Eating different amounts on different days is normal.",
           ),
           h('Understanding responsive feeding'),
+          p('WHO advises responsive feeding:'),
+          ul(
+            "Recognize and respond to your baby's hunger and fullness cues.",
+            'Feed slowly and patiently.',
+            'Encourage without forcing.',
+            'Talk to and look at your baby during meals.',
+          ),
           p(
-            "WHO advises responsive feeding: recognizing and responding to your baby's hunger and fullness cues; feeding slowly and patiently; encouraging without forcing; talking to and looking at your baby during meals. Young children are born able to regulate how much they eat. When forced, babies gradually ignore their own feeling of fullness, become afraid of meals, choke more easily and sometimes end up eating less.",
+            'Young children are born able to regulate how much they eat. When forced, babies gradually ignore their own feeling of fullness, become afraid of meals, choke more easily and sometimes end up eating less.',
           ),
           p(
             'How much your baby eats changes from day to day: some days a lot, some days little, especially when teething, tired or unwell. After 1 year children grow more slowly, so they may seem to eat less than before (AAP). Judge over several days and by the growth chart at checkups, not by a single meal.',
@@ -1087,9 +1170,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Holding rice in the mouth is naughty and deserves a scolding → Babies usually do this because they are full, bored, tired or the piece is too hard to chew → End the meal and check the texture and mealtime.',
             'A baby lighter than others the same age should be pushed to eat more → Forcing usually makes babies eat less and fear meals → Have your baby checked against the growth chart, and make meals more nourishing rather than bigger.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or goes limp while eating.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby loses weight or does not gain between checkups; often refuses all food, vomits when eating, struggles to swallow or chokes; constantly demands food without stopping; or mealtimes are always so tense that you are exhausted. Call 115 (Vietnam emergency) now if your baby has trouble breathing, turns blue or goes limp while eating.',
+            'Your baby loses weight or does not gain between checkups; often refuses all food, vomits when eating, struggles to swallow or chokes; constantly demands food without stopping; or mealtimes are always so tense that you are exhausted.',
           ),
         ],
       },
@@ -1145,6 +1232,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'safety',
       format: 'article',
       ageWeeks: { from: 22, to: 52 },
       readingMinutes: 5,
@@ -1204,9 +1292,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Cho bé nhấp trà, cà phê, nước ngọt cho biết vị → Caffeine và đường không phù hợp với trẻ nhỏ; CDC khuyên tránh đồ uống có caffeine dưới 2 tuổi → Chỉ cho nước đun sôi để nguội.',
             'Kiêng tôm cua, trứng đến 1 tuổi cho chắc → Trì hoãn không phòng được dị ứng, có khi còn làm tăng nguy cơ → Cho làm quen từ 6 tháng, dạng chín và an toàn.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé ho không ra tiếng, khó thở, tím tái, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi. Trong lúc chờ, xem mục Sơ cứu trẻ em trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé lỡ ăn mật ong rồi bị táo bón, bú yếu, khóc yếu hoặc mềm nhũn; bé ho, khò khè kéo dài sau khi nuốt hạt hay miếng to; bé nổi mẩn, sưng môi hoặc nôn sau món mới. Gọi 115 ngay nếu bé ho không ra tiếng, khó thở, tím tái, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi; xem mục Sơ cứu trẻ em trong Child Life.',
+            'Bé lỡ ăn mật ong rồi bị táo bón, bú yếu, khóc yếu hoặc mềm nhũn; bé ho, khò khè kéo dài sau khi nuốt hạt hay miếng to; bé nổi mẩn, sưng môi hoặc nôn sau món mới.',
           ),
         ],
         en: [
@@ -1255,9 +1347,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Letting babies sip tea, coffee or soft drinks to try the taste → Caffeine and sugar are not suitable for young children; the CDC advises avoiding caffeinated drinks under 2 → Offer only boiled and cooled water.',
             'Avoid shrimp, crab and egg until 1 to be safe → Delaying does not prevent allergy and may even raise the risk → Introduce them from 6 months, cooked and in a safe form.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby cannot cough out loud, has trouble breathing, turns blue, has swelling of the lips, face or tongue, vomits repeatedly, or turns pale or limp. While you wait, see the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby ate honey by mistake and then has constipation, weak feeding, a weak cry or floppiness; keeps coughing or wheezing after swallowing a nut or large piece; or gets a rash, swollen lips or vomiting after a new food. Call 115 (Vietnam emergency) now if your baby cannot cough out loud, has trouble breathing, turns blue, has swelling of the lips, face or tongue, vomits repeatedly, or turns pale or limp; see the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Your baby ate honey by mistake and then has constipation, weak feeding, a weak cry or floppiness; keeps coughing or wheezing after swallowing a nut or large piece; or gets a rash, swollen lips or vomiting after a new food.',
           ),
         ],
       },
@@ -1316,27 +1412,31 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'allergy',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 6,
       cover: null,
       title: t(
-        'Thử món mới: nhận biết phản ứng, khi nào đi khám, khi nào gọi 115',
-        'Trying new foods: spotting reactions, when to see a doctor and when to call 115',
+        'Thử món mới: nhận biết phản ứng, khi nào đi khám, khi nào gọi cấp cứu',
+        "Trying new foods: spotting reactions, when to see a doctor and when it's an emergency",
       ),
       summary: t(
-        'Phần lớn bé ăn món mới đều ổn. Cách phân biệt đỏ da quanh miệng, mẩn nhẹ, phản ứng muộn với phản ứng nặng, việc cần làm ngay và những dấu hiệu phải gọi 115.',
-        'Most babies are fine with new foods. How to tell redness around the mouth, a mild rash and delayed reactions from a severe reaction, what to do straight away and the signs that mean calling 115.',
+        'Phần lớn bé ăn món mới đều ổn. Cách phân biệt đỏ da quanh miệng, mẩn nhẹ, phản ứng muộn với phản ứng nặng, việc cần làm ngay và những dấu hiệu phải gọi cấp cứu {emergency}.',
+        'Most babies are fine with new foods. How to tell redness around the mouth, a mild rash and delayed reactions from a severe reaction, what to do straight away and the signs that mean calling {emergency}.',
       ),
       body: {
         vi: [
           note(
             'Tóm tắt nhanh',
-            'Đa số phản ứng sau món mới là nhẹ hoặc không phải dị ứng. Phản ứng dị ứng thường xuất hiện trong vài phút đến 2 giờ sau ăn. Gọi 115 ngay nếu bé khó thở, thở rít, ho liên tục, khàn tiếng, sưng lưỡi, môi hoặc mặt, nôn nhiều lần, hoặc da tái, lả, mềm nhũn. Nếu chỉ mẩn đỏ, mề đay nhẹ: ngừng món đó, chụp ảnh, theo dõi sát và hỏi bác sĩ trước khi cho ăn lại.',
+            'Đa số phản ứng sau món mới là nhẹ hoặc không phải dị ứng. Phản ứng dị ứng thường xuất hiện trong vài phút đến 2 giờ sau ăn. Gọi cấp cứu {emergency} ngay nếu bé khó thở, thở rít, ho liên tục, khàn tiếng, sưng lưỡi, môi hoặc mặt, nôn nhiều lần, hoặc da tái, lả, mềm nhũn. Nếu chỉ mẩn đỏ, mề đay nhẹ: ngừng món đó, chụp ảnh, theo dõi sát và hỏi bác sĩ trước khi cho ăn lại.',
           ),
           h('Hiểu đúng các kiểu phản ứng'),
           p(
-            'Phản ứng nhanh: thường trong vài phút, có thể đến 2 giờ sau ăn. Dấu hiệu nhẹ đến vừa gồm mề đay, mẩn ngứa, sưng mặt, môi hoặc quanh mắt, nôn, đau bụng (ASCIA, NHS). Phản ứng nặng nhất là sốc phản vệ: khó thở hoặc thở ồn, sưng lưỡi, sưng hoặc nghẹn họng, khò khè hay ho liên tục, khàn tiếng, lả hoặc ngất. ASCIA lưu ý trẻ nhỏ bị sốc phản vệ có thể chỉ trông tái và mềm nhũn.',
+            'Phản ứng nhanh: thường trong vài phút, có thể đến 2 giờ sau ăn. Dấu hiệu nhẹ đến vừa gồm mề đay, mẩn ngứa, sưng mặt, môi hoặc quanh mắt, nôn, đau bụng (ASCIA, NHS).',
+          ),
+          p(
+            'Phản ứng nặng nhất là sốc phản vệ: khó thở hoặc thở ồn, sưng lưỡi, sưng hoặc nghẹn họng, khò khè hay ho liên tục, khàn tiếng, lả hoặc ngất. ASCIA lưu ý trẻ nhỏ bị sốc phản vệ có thể chỉ trông tái và mềm nhũn.',
           ),
           p(
             'Phản ứng chậm: xuất hiện sau vài giờ đến vài ngày; với sữa bò, NHS cho biết có thể đến 3 ngày. Bé có thể chàm nặng lên, tiêu chảy, táo bón, nôn trớ nhiều hoặc quấy khóc kéo dài.',
@@ -1353,11 +1453,11 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Món dễ dị ứng như trứng, đậu phộng mịn, sữa bò, cá, tôm cua, lúa mì, đậu nành, vừng, các loại hạt: cho từng món một, bắt đầu lượng nhỏ rồi tăng dần; nếu bé ổn, duy trì ít nhất mỗi tuần một lần (ASCIA, BSACI).',
             'Với rau, củ, trái cây, cho từng món một giúp dễ nhận ra món gây phản ứng, nhưng không bắt buộc và không cần chờ nhiều ngày giữa các món.',
             'Ghi món, lượng, giờ ăn và mọi dấu hiệu bất thường vào sổ hoặc nhật ký ăn dặm.',
-            'Lưu sẵn số 115 và mở trước mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life. Nếu bác sĩ đã kê bút tiêm adrenaline và kế hoạch xử trí, luôn mang theo bên bé.',
+            'Lưu sẵn số cấp cứu {emergency} và mở trước mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life. Nếu bác sĩ đã kê bút tiêm adrenaline và kế hoạch xử trí, luôn mang theo bên bé.',
           ),
           h('Ba mẹ có thể làm gì khi bé có phản ứng'),
           ul(
-            'Có bất kỳ dấu hiệu nặng nào (khó thở, thở rít, ho liên tục, khàn tiếng, sưng lưỡi, nôn nhiều lần, tái, lả, mềm nhũn): gọi 115 ngay. Đặt bé nằm hoặc bế bé nằm ngang, không cho bé đứng hay đi; nếu bé khó thở thì cho ngồi. Dùng bút tiêm adrenaline nếu đã được kê, và làm theo mục Sơ cứu trẻ em › Sốc phản vệ.',
+            'Có bất kỳ dấu hiệu nặng nào (khó thở, thở rít, ho liên tục, khàn tiếng, sưng lưỡi, nôn nhiều lần, tái, lả, mềm nhũn): gọi cấp cứu {emergency} ngay. Đặt bé nằm hoặc bế bé nằm ngang, không cho bé đứng hay đi; nếu bé khó thở thì cho ngồi. Dùng bút tiêm adrenaline nếu đã được kê, và làm theo mục Sơ cứu trẻ em › Sốc phản vệ.',
             'Mề đay, sưng nhẹ môi hoặc quanh mắt, nôn một lần, nhưng bé tỉnh táo và thở bình thường: ngừng món đó, chụp ảnh, theo dõi sát vài giờ vì phản ứng có thể nặng lên, và hỏi bác sĩ trong ngày. Không tự cho thuốc khi chưa hỏi bác sĩ hoặc dược sĩ.',
             'Phản ứng chậm như chàm nặng lên, tiêu chảy, phân có máu hoặc nhầy, nôn trớ nhiều: ghi lại và đưa bé đi khám; không tự cắt bỏ cả một nhóm thực phẩm lớn như sữa (NHS).',
             'Đỏ quanh miệng nhưng không sưng, bé vẫn vui chơi bình thường: lau sạch, thoa một lớp kem dưỡng mỏng trước bữa sau; vẫn có thể tiếp tục món đó.',
@@ -1376,12 +1476,12 @@ export const seedSolidsArticles: SeedArticle[] = [
           ul(
             'Bôi thức ăn lên da bé để thử dị ứng → Cách này không giúp phát hiện dị ứng và có thể gây đỏ da khiến ba mẹ hiểu nhầm (BSACI) → Cho ăn lượng nhỏ và theo dõi như trên.',
             'Nổi mẩn một lần là kiêng món đó mãi mãi, kiêng luôn cả nhóm → Nhiều trường hợp không phải dị ứng, và kiêng rộng làm bữa ăn của bé kém đa dạng → Hỏi bác sĩ trước khi kiêng hoặc cho ăn lại.',
-            'Bé nổi mề đay thì tắm nước lá, uống nước lá cho mát → Không giúp phản ứng dị ứng và có thể làm chậm việc đi khám → Theo dõi dấu hiệu nặng và gọi 115 khi cần.',
-            'Đợi xem bé có đỡ không rồi mới gọi cấp cứu → Sốc phản vệ có thể nặng lên rất nhanh → Có dấu hiệu nặng là gọi 115 ngay.',
+            'Bé nổi mề đay thì tắm nước lá, uống nước lá cho mát → Không giúp phản ứng dị ứng và có thể làm chậm việc đi khám → Theo dõi dấu hiệu nặng và gọi cấp cứu {emergency} khi cần.',
+            'Đợi xem bé có đỡ không rồi mới gọi cấp cứu → Sốc phản vệ có thể nặng lên rất nhanh → Có dấu hiệu nặng là gọi cấp cứu {emergency} ngay.',
           ),
-          doctor(
-            'Gọi 115 ngay khi',
-            'Sau khi ăn, bé khó thở, thở rít hoặc khò khè, ho liên tục, khàn tiếng hoặc khóc khàn, sưng lưỡi, sưng môi hay mặt kèm khó chịu, nôn nhiều lần, da tái, lạnh, lả đi hoặc mềm nhũn. Gọi 115 trước, rồi làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life trong lúc chờ.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Sau khi ăn, bé khó thở, thở rít hoặc khò khè, ho liên tục, khàn tiếng hoặc khóc khàn, sưng lưỡi, sưng môi hay mặt kèm khó chịu, nôn nhiều lần, da tái, lạnh, lả đi hoặc mềm nhũn. Gọi {emergency} trước, rồi làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life trong lúc chờ.',
           ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
@@ -1391,11 +1491,14 @@ export const seedSolidsArticles: SeedArticle[] = [
         en: [
           note(
             'In short',
-            'Most reactions after a new food are mild or not allergic at all. Allergic reactions usually appear within a few minutes to 2 hours of eating. Call 115 now if your baby has trouble breathing, noisy breathing, a persistent cough, a hoarse voice, swelling of the tongue, lips or face, repeated vomiting, or turns pale, limp or floppy. If there is only a red rash or mild hives: stop that food, take a photo, watch closely and ask the doctor before offering it again.',
+            'Most reactions after a new food are mild or not allergic at all. Allergic reactions usually appear within a few minutes to 2 hours of eating. Call {emergency} now if your baby has trouble breathing, noisy breathing, a persistent cough, a hoarse voice, swelling of the tongue, lips or face, repeated vomiting, or turns pale, limp or floppy. If there is only a red rash or mild hives: stop that food, take a photo, watch closely and ask the doctor before offering it again.',
           ),
           h('Understanding the types of reaction'),
           p(
-            'Fast reactions: usually within minutes, up to 2 hours after eating. Mild to moderate signs include hives, an itchy rash, swelling of the face, lips or around the eyes, vomiting and tummy pain (ASCIA, NHS). The most severe reaction is anaphylaxis: difficult or noisy breathing, a swollen tongue, swelling or tightness in the throat, wheeze or a persistent cough, a hoarse voice, floppiness or collapse. ASCIA notes that young children with anaphylaxis may simply look pale and floppy.',
+            'Fast reactions: usually within minutes, up to 2 hours after eating. Mild to moderate signs include hives, an itchy rash, swelling of the face, lips or around the eyes, vomiting and tummy pain (ASCIA, NHS).',
+          ),
+          p(
+            'The most severe reaction is anaphylaxis: difficult or noisy breathing, a swollen tongue, swelling or tightness in the throat, wheeze or a persistent cough, a hoarse voice, floppiness or collapse. ASCIA notes that young children with anaphylaxis may simply look pale and floppy.',
           ),
           p(
             "Delayed reactions: these appear after a few hours to a few days; with cow's milk, the NHS says up to 3 days. Your baby may have worsening eczema, diarrhea, constipation, a lot of vomiting or long periods of crying.",
@@ -1412,11 +1515,11 @@ export const seedSolidsArticles: SeedArticle[] = [
             "Common allergens such as egg, smooth peanut, cow's milk, fish, shellfish, wheat, soy, sesame and tree nuts: one at a time, starting with a small amount and increasing; if your baby is fine, keep giving it at least once a week (ASCIA, BSACI).",
             'For vegetables and fruit, one new food at a time makes it easier to spot the cause of a reaction, but it is optional and there is no need to wait several days between foods.',
             'Log the food, amount, time and any unusual signs in a notebook or solids diary.',
-            'Save 115 in your phone and open the Sơ cứu trẻ em › Anaphylaxis guide in Child Life ahead of time. If the doctor has prescribed an adrenaline auto-injector and an action plan, always keep them with your baby.',
+            'Save {emergency} in your phone and open the Sơ cứu trẻ em › Anaphylaxis guide in Child Life ahead of time. If the doctor has prescribed an adrenaline auto-injector and an action plan, always keep them with your baby.',
           ),
           h('What you can do if your baby has a reaction'),
           ul(
-            'Any severe sign (trouble breathing, noisy breathing, persistent cough, hoarse voice, swollen tongue, repeated vomiting, pale, limp or floppy): call 115 now. Lay your baby down or hold them lying flat, and do not let them stand or walk; if they are struggling to breathe, let them sit. Use the adrenaline auto-injector if one was prescribed, and follow the Sơ cứu trẻ em › Anaphylaxis guide.',
+            'Any severe sign (trouble breathing, noisy breathing, persistent cough, hoarse voice, swollen tongue, repeated vomiting, pale, limp or floppy): call {emergency} now. Lay your baby down or hold them lying flat, and do not let them stand or walk; if they are struggling to breathe, let them sit. Use the adrenaline auto-injector if one was prescribed, and follow the Sơ cứu trẻ em › Anaphylaxis guide.',
             'Hives, mild swelling of the lips or around the eyes, or vomiting once, while your baby is alert and breathing normally: stop that food, take a photo, watch closely for a few hours because reactions can get worse, and ask the doctor the same day. Do not give any medicine without asking a doctor or pharmacist.',
             "Delayed reactions such as worsening eczema, diarrhea, blood or mucus in the stool, or a lot of vomiting: write them down and take your baby to the doctor; don't cut out a whole major food group such as milk on your own (NHS).",
             'Redness around the mouth with no swelling, while your baby plays as usual: wipe the skin, apply a thin layer of moisturizer before the next meal; the food can usually stay on the menu.',
@@ -1435,12 +1538,12 @@ export const seedSolidsArticles: SeedArticle[] = [
           ul(
             "Rubbing food on the baby's skin to test for allergy → This does not detect allergy and can redden the skin and mislead you (BSACI) → Offer a small amount to eat and watch as above.",
             "One rash means avoiding that food forever, and its whole group → Many cases are not allergy, and broad avoidance makes your baby's diet less varied → Ask the doctor before avoiding a food or offering it again.",
-            'Hives can be treated with herbal baths or herbal drinks → These do not help an allergic reaction and can delay getting care → Watch for severe signs and call 115 when needed.',
-            'Waiting to see if the baby gets better before calling an ambulance → Anaphylaxis can get worse very quickly → Any severe sign means calling 115 straight away.',
+            'Hives can be treated with herbal baths or herbal drinks → These do not help an allergic reaction and can delay getting care → Watch for severe signs and call {emergency} when needed.',
+            'Waiting to see if the baby gets better before calling an ambulance → Anaphylaxis can get worse very quickly → Any severe sign means calling {emergency} straight away.',
           ),
-          doctor(
-            'Call 115 now if',
-            'After eating, your baby has trouble breathing, noisy breathing or wheezing, a persistent cough, a hoarse voice or cry, a swollen tongue, swollen lips or face with distress, repeated vomiting, pale cold skin, or goes limp or floppy. Call 115 (Vietnam emergency) first, then follow the Sơ cứu trẻ em › Anaphylaxis guide in Child Life while you wait.',
+          urgent(
+            'Call {emergency} now if',
+            'After eating, your baby has trouble breathing, noisy breathing or wheezing, a persistent cough, a hoarse voice or cry, a swollen tongue, swollen lips or face with distress, repeated vomiting, pale cold skin, or goes limp or floppy. Call {emergency} first, then follow the Sơ cứu trẻ em › Anaphylaxis guide in Child Life while you wait.',
           ),
           doctor(
             'When to ask a doctor',
@@ -1459,7 +1562,7 @@ export const seedSolidsArticles: SeedArticle[] = [
           'nôn sau ăn',
           'đỏ quanh miệng',
           'phản ứng chậm',
-          'gọi 115',
+          'gọi cấp cứu',
           'món mới',
         ],
         [
@@ -1472,7 +1575,7 @@ export const seedSolidsArticles: SeedArticle[] = [
           'vomiting after food',
           'redness around the mouth',
           'delayed reaction',
-          'call 115',
+          'call emergency',
           'new foods',
         ],
       ),
@@ -1499,6 +1602,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'safety',
       format: 'step_guide',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 5,
@@ -1519,7 +1623,17 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng về an toàn thực phẩm cho bé'),
           p(
-            'Trẻ nhỏ dễ bị tiêu chảy và ngộ độc thực phẩm hơn người lớn. WHO tóm tắt an toàn thực phẩm trong năm điều: giữ sạch; tách riêng đồ sống và đồ chín; nấu chín kỹ; giữ thức ăn ở nhiệt độ an toàn; dùng nước và nguyên liệu an toàn. Khí hậu nóng ẩm khiến vi khuẩn phát triển nhanh, vì vậy đồ ăn của bé không nên để lâu ở nhiệt độ phòng.',
+            'Trẻ nhỏ dễ bị tiêu chảy và ngộ độc thực phẩm hơn người lớn. WHO tóm tắt an toàn thực phẩm trong năm điều:',
+          ),
+          ul(
+            'Giữ sạch.',
+            'Tách riêng đồ sống và đồ chín.',
+            'Nấu chín kỹ.',
+            'Giữ thức ăn ở nhiệt độ an toàn.',
+            'Dùng nước và nguyên liệu an toàn.',
+          ),
+          p(
+            'Khí hậu nóng ẩm khiến vi khuẩn phát triển nhanh, vì vậy đồ ăn của bé không nên để lâu ở nhiệt độ phòng.',
           ),
           p(
             'Cơm và cháo cần chú ý riêng: một số vi khuẩn có sẵn trong gạo có thể sinh độc tố khi cơm, cháo để nguội lâu ngoài tủ, và hâm lại cũng không phá được độc tố này. Vì thế NHS khuyên làm nguội cơm trong vòng 1 giờ, cất ngay vào tủ lạnh, dùng trong 24 giờ và chỉ hâm lại một lần.',
@@ -1555,9 +1669,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Thử độ nóng bằng cách ngậm thìa của bé → Có thể truyền vi khuẩn gây sâu răng sang bé → Thử trên cổ tay bằng một thìa khác.',
             'Đồ nấu từ hôm trước ngửi không có mùi là ăn được → Nhiều vi khuẩn gây bệnh không làm đổi mùi vị → Theo đúng mốc thời gian bảo quản.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé lả, khó đánh thức, không uống được, hoặc khó thở, sưng môi, mặt sau khi ăn. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé tiêu chảy hoặc nôn sau khi ăn, nhất là khi người khác cùng ăn cũng bị; bé có dấu hiệu mất nước như ít tã ướt, môi khô, khóc không có nước mắt, li bì; phân có máu; bé sốt cao. Gọi 115 hoặc đến cấp cứu ngay nếu bé lả, khó đánh thức, không uống được, hoặc khó thở, sưng môi, mặt sau khi ăn.',
+            'Bé tiêu chảy hoặc nôn sau khi ăn, nhất là khi người khác cùng ăn cũng bị; bé có dấu hiệu mất nước như ít tã ướt, môi khô, khóc không có nước mắt, li bì; phân có máu; bé sốt cao.',
           ),
         ],
         en: [
@@ -1567,7 +1685,17 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Understanding food safety for babies'),
           p(
-            "Young children get diarrhea and food poisoning more easily than adults. WHO sums up food safety in five keys: keep clean; separate raw and cooked; cook thoroughly; keep food at safe temperatures; use safe water and raw materials. A hot, humid climate lets bacteria grow fast, so your baby's food should not sit at room temperature for long.",
+            'Young children get diarrhea and food poisoning more easily than adults. WHO sums up food safety in five keys:',
+          ),
+          ul(
+            'Keep clean.',
+            'Separate raw and cooked.',
+            'Cook thoroughly.',
+            'Keep food at safe temperatures.',
+            'Use safe water and raw materials.',
+          ),
+          p(
+            "A hot, humid climate lets bacteria grow fast, so your baby's food should not sit at room temperature for long.",
           ),
           p(
             'Rice and porridge need special care: some bacteria naturally present in rice can produce toxins when cooked rice or porridge is left to cool slowly outside the fridge, and reheating does not destroy these toxins. That is why the NHS advises cooling rice within 1 hour, refrigerating it straight away, eating it within 24 hours and reheating it only once.',
@@ -1603,9 +1731,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             "Testing the temperature by putting the baby's spoon in your mouth → This can pass tooth-decay bacteria to your baby → Test on your wrist with a different spoon.",
             "If yesterday's food smells fine, it's safe → Many bacteria that cause illness don't change the smell or taste → Stick to the storage times.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            "Your baby is limp, hard to wake, cannot drink, or has trouble breathing or swelling of the lips or face after eating. Don't wait: call {emergency} or go to the nearest emergency department.",
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby has diarrhea or vomiting after eating, especially if others who ate the same food are ill too; shows signs of dehydration such as fewer wet nappies, dry lips, crying without tears or unusual drowsiness; has blood in the stool; or has a high fever. Call 115 (Vietnam emergency) or go to the emergency department now if your baby is limp, hard to wake, cannot drink, or has trouble breathing or swelling of the lips or face after eating.',
+            'Your baby has diarrhea or vomiting after eating, especially if others who ate the same food are ill too; shows signs of dehydration such as fewer wet nappies, dry lips, crying without tears or unusual drowsiness; has blood in the stool; or has a high fever.',
           ),
         ],
       },
@@ -1659,6 +1791,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'menus',
       format: 'article',
       ageWeeks: { from: 26, to: 39 },
       readingMinutes: 4,
@@ -1726,9 +1859,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Bé 6 tháng chỉ nên ăn rau củ, trái cây, thịt cá để sau → Bé cần sắt từ thịt, cá, trứng ngay từ đầu → Có món giàu sắt trong mỗi bữa.',
             'Bữa ăn dặm thay được cữ bú → Ở tuổi này sữa vẫn là nguồn chính, ăn dặm là bổ sung → Cho bú như trước, ăn dặm sau cữ bú hoặc giữa hai cữ.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Sau khi ăn, bé khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé tăng cân chưa tốt; bé hay nôn, sặc khi ăn hoặc chưa ăn được đồ lợn cợn lúc gần 9 tháng; bé táo bón kéo dài; bé nổi mẩn, sưng môi hoặc nôn sau món mới; bé bị chàm nặng hoặc đã dị ứng một món. Gọi 115 ngay nếu sau khi ăn bé khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi.',
+            'Bé tăng cân chưa tốt; bé hay nôn, sặc khi ăn hoặc chưa ăn được đồ lợn cợn lúc gần 9 tháng; bé táo bón kéo dài; bé nổi mẩn, sưng môi hoặc nôn sau món mới; bé bị chàm nặng hoặc đã dị ứng một món.',
           ),
         ],
         en: [
@@ -1785,9 +1922,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'At 6 months babies should have only vegetables and fruit, with meat and fish later → Babies need iron from meat, fish and egg from the start → Include an iron-rich food at every meal.',
             'Solid meals can replace milk feeds → At this age milk is still the main source and solids are an addition → Keep milk feeds as before and offer solids after or between feeds.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'After eating, your baby has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale or limp.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby is not gaining weight well; often vomits or chokes when eating, or still cannot manage lumpy food as 9 months approaches; has ongoing constipation; gets a rash, swollen lips or vomiting after a new food; or has severe eczema or a known food allergy. Call 115 (Vietnam emergency) now if after eating your baby has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale or limp.',
+            'Your baby is not gaining weight well; often vomits or chokes when eating, or still cannot manage lumpy food as 9 months approaches; has ongoing constipation; gets a rash, swollen lips or vomiting after a new food; or has severe eczema or a known food allergy.',
           ),
         ],
       },
@@ -1842,6 +1983,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'menus',
       format: 'article',
       ageWeeks: { from: 39, to: 52 },
       readingMinutes: 5,
@@ -1907,9 +2049,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Bé ăn ít bữa chính thì cho uống sữa thật nhiều cho đủ → Uống nhiều sữa làm bé càng ít đói khi đến bữa → Giữ lượng sữa vừa phải, bữa ăn đúng giờ.',
             'Bánh quy, bánh gạo, váng sữa là bữa phụ tốt cho bé → Nhiều loại có đường hoặc muối → Ưu tiên trái cây, sữa chua không đường, khoai củ hấp.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé hóc không ho được, khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi sau khi ăn.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé tăng cân chưa tốt; gần 1 tuổi mà bé vẫn chỉ ăn được đồ xay mịn, hay nôn hoặc sặc khi gặp miếng nhỏ; bé từ chối cả một nhóm thực phẩm lớn; bé nổi mẩn, sưng môi hoặc nôn sau món mới. Gọi 115 ngay nếu bé hóc không ho được, khó thở, sưng môi, mặt hoặc lưỡi, nôn nhiều lần, hoặc da tái, lả đi sau khi ăn.',
+            'Bé tăng cân chưa tốt; gần 1 tuổi mà bé vẫn chỉ ăn được đồ xay mịn, hay nôn hoặc sặc khi gặp miếng nhỏ; bé từ chối cả một nhóm thực phẩm lớn; bé nổi mẩn, sưng môi hoặc nôn sau món mới.',
           ),
         ],
         en: [
@@ -1967,9 +2113,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'If the baby eats little at meals, give lots of milk to make up → Lots of milk makes babies even less hungry at mealtimes → Keep milk moderate and meals at regular times.',
             'Biscuits, rice crackers and sweet dairy desserts are good snacks → Many contain sugar or salt → Choose fruit, plain yoghurt and steamed root vegetables.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby is choking and cannot cough, has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale or limp after eating.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby is not gaining weight well; is nearly 1 and still manages only smooth food, or often vomits or chokes on small pieces; refuses a whole major food group; or gets a rash, swollen lips or vomiting after a new food. Call 115 (Vietnam emergency) now if your baby is choking and cannot cough, has trouble breathing, swelling of the lips, face or tongue, repeated vomiting, or turns pale or limp after eating.',
+            'Your baby is not gaining weight well; is nearly 1 and still manages only smooth food, or often vomits or chokes on small pieces; refuses a whole major food group; or gets a rash, swollen lips or vomiting after a new food.',
           ),
         ],
       },
@@ -2025,6 +2175,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'skills',
       format: 'step_guide',
       ageWeeks: { from: 26, to: 78 },
       readingMinutes: 5,
@@ -2060,7 +2211,7 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Bước 6 · Món tròn, trơn: nho, cà chua bi, nhãn, vải, chôm chôm phải bỏ hạt và cắt dọc làm tư hoặc nhỏ hơn. Xúc xích nên hạn chế vì mặn; nếu cho thì cắt dọc rồi thái nhỏ, không cắt khoanh tròn.',
             'Bước 7 · Món cần tránh: hạt nguyên, bỏng ngô, rau sống cứng như cà rốt sống, táo sống cắt miếng (hấp mềm hoặc nạo nhỏ thay thế), kẹo, thạch cốc, xôi dẻo miếng to.',
             'Bước 8 · Bày cho bé: đặt 2–3 miếng lên khay để bé tự chọn và tự đưa vào miệng. Không nhét thức ăn vào miệng bé, không cho ăn khi bé đang khóc, nằm hoặc chơi.',
-            'Bước 9 · Khi bé oẹ: bình tĩnh, không thò tay vào miệng bé. Oẹ ồn ào, ho là bé đang tự xử lý. Nếu bé không ho được, không khóc, không thở được, gọi 115 và sơ cứu theo mục Sơ cứu trẻ em › Hóc dị vật.',
+            'Bước 9 · Khi bé oẹ: bình tĩnh, không thò tay vào miệng bé. Oẹ ồn ào, ho là bé đang tự xử lý. Nếu bé không ho được, không khóc, không thở được, gọi cấp cứu {emergency} và sơ cứu theo mục Sơ cứu trẻ em › Hóc dị vật.',
             'Bước 10 · Kết hợp với thìa: vừa cho bé cầm vừa đút cháo là cách nhiều gia đình chọn; ghi lại món và cách cắt bé đã làm quen.',
           ),
           tip(
@@ -2079,9 +2230,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Cắt thật nhỏ ngay từ đầu cho an toàn → Bé 6 tháng chưa nhặt được miếng nhỏ, que dài dễ cầm hơn; miếng nhỏ mà cứng vẫn nguy hiểm → Độ mềm là quan trọng nhất, hình dạng theo tuổi.',
             'Bánh quy ăn dặm là thức ăn cầm tay tốt nhất → Nhiều loại có đường; NHS khuyên tránh bánh quy, bánh ăn dặm nhiều đường → Ưu tiên rau củ, trái cây, trứng, cá mềm.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé ho không ra tiếng, không khóc, không thở được hoặc tím tái. Trong lúc chờ, làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé thường xuyên nôn, ho sặc khi ăn; gần 9–10 tháng mà bé vẫn chưa tự đưa thức ăn vào miệng hoặc chưa ăn được miếng mềm nào; sau một lần hóc, bé vẫn ho, khò khè hoặc thở nhanh. Gọi 115 ngay nếu bé ho không ra tiếng, không khóc, không thở được hoặc tím tái, và làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+            'Bé thường xuyên nôn, ho sặc khi ăn; gần 9–10 tháng mà bé vẫn chưa tự đưa thức ăn vào miệng hoặc chưa ăn được miếng mềm nào; sau một lần hóc, bé vẫn ho, khò khè hoặc thở nhanh.',
           ),
         ],
         en: [
@@ -2106,7 +2261,7 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Step 6 · Round, slippery foods: grapes, cherry tomatoes, longan, lychee and rambutan must have the seed removed and be cut lengthwise into quarters or smaller. Limit sausages because they are salty; if you give them, cut lengthwise and then into small pieces, never round slices.',
             'Step 7 · Foods to avoid: whole nuts, popcorn, hard raw vegetables such as raw carrot, raw apple pieces (steam them soft or grate them instead), sweets, jelly cups, large pieces of sticky rice.',
             "Step 8 · Serve: put 2–3 pieces on the tray and let your baby choose and bring them to their mouth. Never push food into your baby's mouth, and don't feed them while they are crying, lying down or playing.",
-            "Step 9 · When your baby gags: stay calm and don't put your fingers in their mouth. Noisy gagging and coughing mean your baby is dealing with it. If they cannot cough, cry or breathe, call 115 and give first aid following the Sơ cứu trẻ em › Choking guide.",
+            "Step 9 · When your baby gags: stay calm and don't put your fingers in their mouth. Noisy gagging and coughing mean your baby is dealing with it. If they cannot cough, cry or breathe, call {emergency} and give first aid following the Sơ cứu trẻ em › Choking guide.",
             'Step 10 · Combine with the spoon: offering finger foods while spoon-feeding porridge is what many families do; note the foods and cuts your baby has got used to.',
           ),
           tip(
@@ -2125,9 +2280,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Cut everything tiny from the start to be safe → At 6 months babies cannot pick up tiny pieces and long sticks are easier to hold; small pieces that are hard are still dangerous → Softness matters most, with the shape matched to age.',
             'Baby biscuits are the best finger food → Many contain sugar; the NHS advises avoiding sugary biscuits and rusks → Choose vegetables, fruit, egg and soft fish.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby cannot cough out loud, cannot cry or breathe, or turns blue. While you wait, follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby often vomits, coughs or chokes when eating; is nearly 9–10 months and still does not bring food to the mouth or manage any soft pieces; or keeps coughing, wheezing or breathing fast after a choking episode. Call 115 (Vietnam emergency) now if your baby cannot cough out loud, cannot cry or breathe, or turns blue, and follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Your baby often vomits, coughs or chokes when eating; is nearly 9–10 months and still does not bring food to the mouth or manage any soft pieces; or keeps coughing, wheezing or breathing fast after a choking episode.',
           ),
         ],
       },
@@ -2182,6 +2341,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'skills',
       format: 'article',
       ageWeeks: { from: 26, to: 104 },
       readingMinutes: 4,
@@ -2239,9 +2399,10 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Bế đi rong, bật điện thoại cho bé ăn được nhiều → Bé ăn mà không chú ý đến món ăn, không học thích món đó và dễ sặc → Ngồi ăn tại bàn, cả nhà ăn cùng.',
             'Thưởng bánh kẹo nếu bé chịu ăn rau → Bánh kẹo trở nên hấp dẫn hơn, rau kém hấp dẫn đi → Khen bằng lời, dùng phần thưởng không phải đồ ăn.',
           ),
+          urgent('Gọi {emergency} ngay khi', 'Bé khó thở, tím tái hoặc lả đi khi đang ăn.'),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sụt cân hoặc không tăng cân; bé chỉ chấp nhận rất ít món hoặc từ chối cả một nhóm thực phẩm lớn trong thời gian dài; bé đau, khóc khi ăn, hay nôn, ho sặc hoặc khó nuốt; bé gần 1 tuổi mà vẫn chỉ ăn được đồ xay mịn. Gọi 115 ngay nếu bé khó thở, tím tái hoặc lả đi khi đang ăn.',
+            'Bé sụt cân hoặc không tăng cân; bé chỉ chấp nhận rất ít món hoặc từ chối cả một nhóm thực phẩm lớn trong thời gian dài; bé đau, khóc khi ăn, hay nôn, ho sặc hoặc khó nuốt; bé gần 1 tuổi mà vẫn chỉ ăn được đồ xay mịn.',
           ),
         ],
         en: [
@@ -2288,9 +2449,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Carrying the baby around or putting on a phone gets more food in → Your baby eats without paying attention to the food, does not learn to like it and chokes more easily → Eat sitting at the table, together as a family.',
             'Rewarding vegetables with sweets → Sweets become more appealing and vegetables less → Praise with words and use non-food rewards.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or goes limp while eating.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby loses weight or does not gain; accepts only a very few foods or refuses a whole major food group for a long time; has pain or cries when eating, often vomits, chokes or struggles to swallow; or is nearly 1 and still manages only smooth food. Call 115 (Vietnam emergency) now if your baby has trouble breathing, turns blue or goes limp while eating.',
+            'Your baby loses weight or does not gain; accepts only a very few foods or refuses a whole major food group for a long time; has pain or cries when eating, often vomits, chokes or struggles to swallow; or is nearly 1 and still manages only smooth food.',
           ),
         ],
       },
@@ -2345,6 +2510,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'health',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 4,
@@ -2364,8 +2530,15 @@ export const seedSolidsArticles: SeedArticle[] = [
           p(
             'Bé bú mẹ hoàn toàn có thể vài ngày mới đi một lần mà phân vẫn mềm; đó là bình thường. Khi bắt đầu ăn dặm, ruột bé làm quen với thức ăn mới nên phân đặc hơn, có mùi hơn và đổi màu theo món ăn. NHS mô tả táo bón là khi bé đi ngoài ít hơn 3 lần một tuần, phân to và cứng hoặc vón thành viên nhỏ, bé phải rặn, đau hoặc có ít máu khi đi, kèm biếng ăn hay đau bụng đỡ hơn sau khi đi.',
           ),
+          p('Các nguyên nhân hay gặp khi mới ăn dặm:'),
+          ul(
+            'Ăn nhiều tinh bột như bột gạo, cháo trắng mà ít rau quả.',
+            'Uống ít nước.',
+            'Sữa công thức pha đặc hơn hướng dẫn (NHS).',
+            'Bé đang ốm, sốt.',
+          ),
           p(
-            'Các nguyên nhân hay gặp khi mới ăn dặm: ăn nhiều tinh bột như bột gạo, cháo trắng mà ít rau quả; uống ít nước; sữa công thức pha đặc hơn hướng dẫn (NHS); bé đang ốm, sốt. Khi đi ngoài đau, bé có thể nín lại, làm phân càng cứng hơn; vì vậy nên xử trí sớm (NICE).',
+            'Khi đi ngoài đau, bé có thể nín lại, làm phân càng cứng hơn; vì vậy nên xử trí sớm (NICE).',
           ),
           h('Ba mẹ có thể làm gì'),
           ul(
@@ -2396,9 +2569,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Đổi sữa liên tục để chữa táo bón → Đổi sữa thường không giải quyết được và có thể làm bé rối → Chỉ đổi sữa khi bác sĩ khuyên.',
             'Tự mua thuốc nhuận tràng hoặc thuốc thụt cho bé → Thuốc cần đúng loại và đúng liều theo cân nặng, tuổi → Dùng theo chỉ định bác sĩ (NICE).',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé nôn ra dịch xanh, bụng chướng căng, đau quặn từng cơn, sốt kèm lả, hoặc bé li bì. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Táo bón không đỡ sau 1–2 tuần thay đổi ăn uống; bé đau nhiều khi đi ngoài, phân có máu; táo bón đã có từ những tuần đầu sau sinh; bé biếng ăn, tăng cân chưa tốt hoặc sụt cân; phân bạc màu như phấn. Gọi 115 hoặc đến cấp cứu ngay nếu bé nôn ra dịch xanh, bụng chướng căng, đau quặn từng cơn, sốt kèm lả, hoặc bé li bì.',
+            'Táo bón không đỡ sau 1–2 tuần thay đổi ăn uống; bé đau nhiều khi đi ngoài, phân có máu; táo bón đã có từ những tuần đầu sau sinh; bé biếng ăn, tăng cân chưa tốt hoặc sụt cân; phân bạc màu như phấn.',
           ),
         ],
         en: [
@@ -2410,8 +2587,15 @@ export const seedSolidsArticles: SeedArticle[] = [
           p(
             "Exclusively breastfed babies may go several days between poos while the stool stays soft; that is normal. When solids start, your baby's gut is getting used to new food, so stools get firmer, smellier and change color with what they eat. The NHS describes constipation as fewer than 3 poos a week, large hard stools or small pellets, straining, pain or a little blood when pooing, along with poor appetite or tummy pain that eases after a poo.",
           ),
+          p('Common causes early in weaning:'),
+          ul(
+            'Lots of starch such as rice cereal or plain porridge, with few vegetables and fruit.',
+            'Too little to drink.',
+            'Formula made up stronger than the instructions (NHS).',
+            'Being unwell or feverish.',
+          ),
           p(
-            'Common causes early in weaning: lots of starch such as rice cereal or plain porridge with few vegetables and fruit; too little to drink; formula made up stronger than the instructions (NHS); being unwell or feverish. When pooing hurts, babies may hold it in, making stools even harder, which is why it is best dealt with early (NICE).',
+            'When pooing hurts, babies may hold it in, making stools even harder, which is why it is best dealt with early (NICE).',
           ),
           h('What you can do'),
           ul(
@@ -2442,9 +2626,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Switching formula again and again to fix constipation → Changing milk usually does not solve it and can unsettle your baby → Change formula only if the doctor advises.',
             'Buying laxatives or enemas for the baby yourself → Medicines need the right type and a dose based on weight and age → Use them only as the doctor prescribes (NICE).',
           ),
+          urgent(
+            'Call {emergency} now if',
+            "Your baby vomits green fluid, has a swollen tight tummy, has waves of severe pain, has a fever and is limp, or is unusually drowsy. Don't wait: call {emergency} or go to the nearest emergency department.",
+          ),
           doctor(
             'When to ask a doctor',
-            'Constipation does not improve after 1–2 weeks of changes to food and drink; your baby has a lot of pain pooing or blood in the stool; constipation started in the first weeks after birth; your baby eats poorly, is not gaining weight well or loses weight; or stools are pale and chalky. Call 115 (Vietnam emergency) or go to the emergency department now if your baby vomits green fluid, has a swollen tight tummy, has waves of severe pain, has a fever and is limp, or is unusually drowsy.',
+            'Constipation does not improve after 1–2 weeks of changes to food and drink; your baby has a lot of pain pooing or blood in the stool; constipation started in the first weeks after birth; your baby eats poorly, is not gaining weight well or loses weight; or stools are pale and chalky.',
           ),
         ],
       },
@@ -2497,6 +2685,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'health',
       format: 'quick_qa',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 2,
@@ -2525,15 +2714,22 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Mọc răng có làm bé bỏ ăn không?'),
           p(
-            'Có thể. Bé đau lợi, quấy, chảy dãi, hay gặm và ăn ít hơn vài ngày (NHS). Mời món mềm, mát như sữa chua, trái cây nghiền để trong ngăn mát; cho bé gặm vòng gặm làm mát trong ngăn mát, không để ngăn đá. Không dùng gel bôi lợi chứa benzocaine hay vòng hổ phách, vòng dâu tằm đeo cổ vì nguy cơ nghẹt thở và hóc (FDA). Mọc răng không gây sốt cao hay tiêu chảy nhiều; nếu có, đó là do bệnh khác.',
+            'Có thể. Bé đau lợi, quấy, chảy dãi, hay gặm và ăn ít hơn vài ngày (NHS). Mời món mềm, mát như sữa chua, trái cây nghiền để trong ngăn mát; cho bé gặm vòng gặm làm mát trong ngăn mát, không để ngăn đá.',
+          ),
+          p(
+            'Không dùng gel bôi lợi chứa benzocaine hay vòng hổ phách, vòng dâu tằm đeo cổ vì nguy cơ nghẹt thở và hóc (FDA). Mọc răng không gây sốt cao hay tiêu chảy nhiều; nếu có, đó là do bệnh khác.',
           ),
           h('Khi nào cần thuốc giảm đau?'),
           p(
             'Chỉ khi bé rất khó chịu, và theo liều bác sĩ hoặc dược sĩ hướng dẫn theo cân nặng của bé. Không tự dùng thuốc của người lớn cho bé.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, lơ mơ, khó đánh thức, co giật, hoặc da tái, lả đi.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé bỏ bú hoặc không uống được, ít tã ướt, môi khô, khóc không có nước mắt, li bì; nôn liên tục, phân có máu; sốt cao hoặc sốt kéo dài; bé biếng ăn hơn một tuần dù đã khỏe. Gọi 115 ngay nếu bé khó thở, lơ mơ, khó đánh thức, co giật, hoặc da tái, lả đi.',
+            'Bé bỏ bú hoặc không uống được, ít tã ướt, môi khô, khóc không có nước mắt, li bì; nôn liên tục, phân có máu; sốt cao hoặc sốt kéo dài; bé biếng ăn hơn một tuần dù đã khỏe.',
           ),
         ],
         en: [
@@ -2551,15 +2747,22 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Can teething put my baby off food?'),
           p(
-            "It can. Babies may have sore gums, be fussy, drool, chew on things and eat less for a few days (NHS). Offer soft, cool foods such as yoghurt and mashed fruit from the fridge; let your baby chew a teething ring chilled in the fridge, not the freezer. Don't use teething gels containing benzocaine or amber or other teething necklaces, because of the risk of strangling and choking (FDA). Teething does not cause a high fever or a lot of diarrhea; if these appear, something else is going on.",
+            'It can. Babies may have sore gums, be fussy, drool, chew on things and eat less for a few days (NHS). Offer soft, cool foods such as yoghurt and mashed fruit from the fridge; let your baby chew a teething ring chilled in the fridge, not the freezer.',
+          ),
+          p(
+            "Don't use teething gels containing benzocaine or amber or other teething necklaces, because of the risk of strangling and choking (FDA). Teething does not cause a high fever or a lot of diarrhea; if these appear, something else is going on.",
           ),
           h('When is pain relief needed?'),
           p(
             "Only when your baby is very uncomfortable, and at the dose a doctor or pharmacist gives for your baby's weight. Never give your baby adult medicines.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, is very drowsy or hard to wake, has a seizure, or turns pale or limp.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby refuses feeds or cannot drink, has fewer wet nappies, dry lips, cries without tears or is unusually drowsy; vomits repeatedly or has blood in the stool; has a high or lasting fever; or is still eating poorly more than a week after getting better. Call 115 (Vietnam emergency) now if your baby has trouble breathing, is very drowsy or hard to wake, has a seizure, or turns pale or limp.',
+            'Your baby refuses feeds or cannot drink, has fewer wet nappies, dry lips, cries without tears or is unusually drowsy; vomits repeatedly or has blood in the stool; has a high or lasting fever; or is still eating poorly more than a week after getting better.',
           ),
         ],
       },
@@ -2613,6 +2816,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'family',
       format: 'article',
       ageWeeks: { from: 52, to: 156 },
       readingMinutes: 4,
@@ -2669,9 +2873,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Đút cho nhanh, sạch, khỏi bừa → Bé mất cơ hội học tự ăn và tự nhận biết no đói → Để bé tự xúc, người lớn hỗ trợ.',
             'Uống thật nhiều sữa thay cho bữa ăn → Bé no sữa nên ăn ít, thiếu đa dạng → Giữ lượng sữa vừa phải, ưu tiên bữa ăn.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé hóc không ho được, khó thở, sưng môi, mặt hoặc lưỡi, hoặc lả đi sau khi ăn.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé tăng cân chưa tốt hoặc sụt cân; bé chỉ uống sữa, không chịu ăn; bé khó nhai, hay nôn hoặc sặc với thức ăn thô; gia đình ăn chay hoặc bé phải kiêng nhiều món; bé nổi mẩn, sưng môi hoặc nôn sau một món mới. Gọi 115 ngay nếu bé hóc không ho được, khó thở, sưng môi, mặt hoặc lưỡi, hoặc lả đi sau khi ăn.',
+            'Bé tăng cân chưa tốt hoặc sụt cân; bé chỉ uống sữa, không chịu ăn; bé khó nhai, hay nôn hoặc sặc với thức ăn thô; gia đình ăn chay hoặc bé phải kiêng nhiều món; bé nổi mẩn, sưng môi hoặc nôn sau một món mới.',
           ),
         ],
         en: [
@@ -2717,9 +2925,13 @@ export const seedSolidsArticles: SeedArticle[] = [
             'Spoon-feeding is quicker and cleaner → Your child misses the chance to learn to feed themselves and to sense hunger and fullness → Let them self-feed, with adults helping.',
             'Lots of milk instead of meals → Children full of milk eat less and miss out on variety → Keep milk moderate and put meals first.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your child is choking and cannot cough, has trouble breathing, swelling of the lips, face or tongue, or goes limp after eating.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your child is not gaining weight well or loses weight; drinks only milk and refuses food; has trouble chewing, often vomits or chokes on textured food; your family is vegetarian or your child must avoid many foods; or gets a rash, swollen lips or vomiting after a new food. Call 115 (Vietnam emergency) now if your child is choking and cannot cough, has trouble breathing, swelling of the lips, face or tongue, or goes limp after eating.',
+            'Your child is not gaining weight well or loses weight; drinks only milk and refuses food; has trouble chewing, often vomits or chokes on textured food; your family is vegetarian or your child must avoid many foods; or gets a rash, swollen lips or vomiting after a new food.',
           ),
         ],
       },
@@ -2774,6 +2986,7 @@ export const seedSolidsArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'gear',
       format: 'quick_qa',
       ageWeeks: { from: 17, to: 52 },
       readingMinutes: 2,
@@ -2794,7 +3007,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('Chọn và dùng ghế ăn thế nào?'),
           p(
-            'Chọn ghế chân đế rộng, khó lật; ghế gấp phải khoá chắc mỗi lần mở. Luôn cài đai, kể cả đai giữa hai chân, và không để bé đứng trên ghế. Đặt ghế xa bàn, kệ bếp để bé không đạp vào làm đổ ghế; không để bé ngồi một mình hay để anh chị leo trèo lên ghế (AAP). Bé ngồi thẳng, có chỗ để chân càng tốt. Không cho ăn trên xe đẩy ngả lưng, ghế rung hay trên xe máy.',
+            'Chọn ghế chân đế rộng, khó lật; ghế gấp phải khoá chắc mỗi lần mở. Luôn cài đai, kể cả đai giữa hai chân, và không để bé đứng trên ghế.',
+          ),
+          p(
+            'Đặt ghế xa bàn, kệ bếp để bé không đạp vào làm đổ ghế; không để bé ngồi một mình hay để anh chị leo trèo lên ghế (AAP). Bé ngồi thẳng, có chỗ để chân càng tốt. Không cho ăn trên xe đẩy ngả lưng, ghế rung hay trên xe máy.',
           ),
           h('Thìa, bát nào phù hợp?'),
           p(
@@ -2808,9 +3024,13 @@ export const seedSolidsArticles: SeedArticle[] = [
           p(
             'Không cần. Thức ăn mềm cắt đúng cỡ giúp bé học nhai tốt hơn túi nhai. Với đồ ăn đóng túi, đừng để bé mút trực tiếp từ túi; nặn ra thìa và chỉ dùng thỉnh thoảng (NHS). Khay đá có nắp rất tiện để trữ đông từng phần nhỏ.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé hóc không ho được, khó thở hoặc tím tái. Trong lúc chờ, làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé gần 6 tháng mà chưa giữ vững đầu hoặc chưa ngồi được dù có đỡ; bé có vấn đề về trương lực cơ cần ghế đặc biệt; bé hay sặc khi uống bằng cốc. Gọi 115 ngay nếu bé hóc không ho được, khó thở hoặc tím tái, và làm theo mục Sơ cứu trẻ em › Hóc dị vật trong Child Life.',
+            'Bé gần 6 tháng mà chưa giữ vững đầu hoặc chưa ngồi được dù có đỡ; bé có vấn đề về trương lực cơ cần ghế đặc biệt; bé hay sặc khi uống bằng cốc.',
           ),
         ],
         en: [
@@ -2820,7 +3040,10 @@ export const seedSolidsArticles: SeedArticle[] = [
           ),
           h('How do I choose and use a high chair?'),
           p(
-            "Choose a chair with a wide base that is hard to tip over; a folding chair must be locked every time you set it up. Always use the harness, including the strap between the legs, and never let your baby stand in the chair. Keep it away from tables and counters your baby could push against and tip it over; never leave your baby alone in it or let older children climb on it (AAP). Your baby sits upright, ideally with a footrest. Don't feed your baby in a reclined pushchair, a bouncer or on a motorbike.",
+            'Choose a chair with a wide base that is hard to tip over; a folding chair must be locked every time you set it up. Always use the harness, including the strap between the legs, and never let your baby stand in the chair.',
+          ),
+          p(
+            "Keep it away from tables and counters your baby could push against and tip it over; never leave your baby alone in it or let older children climb on it (AAP). Your baby sits upright, ideally with a footrest. Don't feed your baby in a reclined pushchair, a bouncer or on a motorbike.",
           ),
           h('Which spoons and bowls?'),
           p(
@@ -2834,9 +3057,13 @@ export const seedSolidsArticles: SeedArticle[] = [
           p(
             "No. Soft food cut to the right size helps your baby learn to chew better than a mesh feeder. With pouches, don't let your baby suck straight from the pouch; squeeze the food onto a spoon and use pouches only occasionally (NHS). Ice cube trays with lids are handy for freezing small portions.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby is choking and cannot cough, has trouble breathing or turns blue. While you wait, follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby is nearly 6 months and still cannot hold their head steady or sit even with support; has low or high muscle tone and needs a special seat; or often chokes when drinking from a cup. Call 115 (Vietnam emergency) now if your baby is choking and cannot cough, has trouble breathing or turns blue, and follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Your baby is nearly 6 months and still cannot hold their head steady or sit even with support; has low or high muscle tone and needs a special seat; or often chokes when drinking from a cup.',
           ),
         ],
       },

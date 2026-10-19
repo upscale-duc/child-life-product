@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/care_fixtures.dart';
 import '../helpers/first_aid_fixtures.dart';
 import '../helpers/library_fixtures.dart';
+import '../helpers/solids_fixtures.dart' show articlesWithSolids;
 
 /// Thư viện chăm bé (4a, 4b, 4c, 4d, 4f) and Giai đoạn của bé (2a, 2b, 2c) in Light / Night care
 /// × vi / en at 375 × 812, on the TEST-ONLY fixtures (pictures are the topic placeholders).
@@ -56,6 +57,11 @@ _Case _c(
   act: act,
 );
 
+List<Override> _guide() => [
+  ...careOverrides(firstAid: seedFirstAidPack()),
+  ...libraryOverrides(articles: [...articlesWithSolids(), readerGuide()]),
+];
+
 final _cases = <String, _Case>{
   'lb4a_library': _c(() => const LibraryHomeScreen()),
   'lb4b_search': _c(
@@ -76,6 +82,28 @@ final _cases = <String, _Case>{
     },
   ),
   'lb4d_article': _c(() => const ArticleScreen(articleId: 'art_newborn_sleep')),
+  // D-087 reading layouts (P-166 #2–#3) on an Ăn dặm step guide: takeaways, contents, steps;
+  // further down the myth cards and "Lên đầu", then the urgent callout with "Gọi 115".
+  'lb4d_guide': _c(
+    () => const ArticleScreen(articleId: 'art_solids_first_meal_guide'),
+    overrides: _guide,
+  ),
+  'lb4d_guide_end': _c(
+    () => const ArticleScreen(articleId: 'art_solids_first_meal_guide'),
+    overrides: _guide,
+    act: (t) async {
+      await t.drag(find.byType(ListView), const Offset(0, -700));
+      await t.pumpAndSettle();
+    },
+  ),
+  'lb4d_guide_urgent': _c(
+    () => const ArticleScreen(articleId: 'art_solids_first_meal_guide'),
+    overrides: _guide,
+    act: (t) async {
+      await t.drag(find.byType(ListView), const Offset(0, -1000));
+      await t.pumpAndSettle();
+    },
+  ),
   'lb4e_saved_toast': _c(
     () => const ArticleScreen(articleId: 'art_bath'),
     act: (t) async {

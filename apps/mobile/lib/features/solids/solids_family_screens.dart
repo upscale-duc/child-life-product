@@ -16,7 +16,6 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_format.dart' show authorLabel;
 import '../family/family_labels.dart' show relationLabel;
-import '../library/content_models.dart';
 import '../library/library_widgets.dart';
 import '../nutrition/nutrition_widgets.dart';
 import '../vaccines/vaccine_photos.dart'
@@ -149,28 +148,33 @@ class _SdDishesMadeListState extends ConsumerState<SdDishesMadeList> {
 
 // ---------- Rows, sections, chips ----------
 
-/// The family recipe's picture: its photo, else the feeding icon on the warm fill.
-class _FamilyThumb extends StatelessWidget {
+/// The family recipe's picture: its photo, else its main ingredient's icon and tint (D-087).
+class _FamilyThumb extends ConsumerWidget {
   const _FamilyThumb({required this.recipe});
   final SdFamilyRecipe recipe;
   static const double size = 56;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final photo = recipe.photoPath;
     if (photo != null) {
       return SdPhotoTile(path: photo, size: size, open: false);
     }
-    final bottle = context.cl.care.bottle;
+    final look = sdFamilyRecipeLook(
+      context,
+      recipe,
+      ref.watch(sdFoodsByIdProvider),
+    );
     return Container(
+      key: Key('sdFamilyThumb_${recipe.id}'),
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: bottle.soft,
+        color: look.soft,
         borderRadius: BorderRadius.circular(12),
       ),
       alignment: Alignment.center,
-      child: ClIcon(ClIcons.feed, size: size * 0.42, color: bottle.ink),
+      child: ClIcon(look.icon, size: size * 0.42, color: look.ink),
     );
   }
 }
@@ -773,12 +777,12 @@ class SdFamilyRecipeScreen extends ConsumerWidget {
             width: double.infinity,
           )
         else
-          const LbPicture(
+          LbPicture(
             image: null,
             width: double.infinity,
             height: 150,
             radius: 22,
-            topic: LbTopic.feeding,
+            look: sdFamilyRecipeLook(context, recipe, foods),
           ),
         const SizedBox(height: ClSpace.s4),
         Wrap(

@@ -601,8 +601,8 @@
         "en": "Whatever your baby can hold goes into their mouth to be chewed, sucked and turned over. This is how they learn about hard and soft, shapes and textures, not only a sign of teething. Offer clean toys too big to fit in the mouth, and keep small things like buttons, batteries and coins out of reach."
       },
       "talkToDoctor": {
-        "vi": "Nếu đến khoảng 7 tháng mà bé chưa đưa đồ vật lên miệng để khám phá và cũng ít với tay lấy đồ, hãy kể với bác sĩ của bé ở lần khám tới. Nếu bé bị hóc, ho sặc không dứt hay khó thở, hãy gọi cấp cứu 115 ngay.",
-        "en": "If at around 7 months your baby doesn't yet bring things to their mouth to explore them and seldom reaches for things, mention it to your baby's doctor at the next visit. If your baby chokes, keeps coughing or struggles to breathe, call emergency services (115 in Việt Nam) straight away."
+        "vi": "Nếu đến khoảng 7 tháng mà bé chưa đưa đồ vật lên miệng để khám phá và cũng ít với tay lấy đồ, hãy kể với bác sĩ của bé ở lần khám tới. Nếu bé bị hóc, ho sặc không dứt hay khó thở, hãy gọi cấp cứu {emergency} ngay.",
+        "en": "If at around 7 months your baby doesn't yet bring things to their mouth to explore them and seldom reaches for things, mention it to your baby's doctor at the next visit. If your baby chokes, keeps coughing or struggles to breathe, call {emergency} straight away."
       },
       "illustration": null,
       "sources": [

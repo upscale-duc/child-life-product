@@ -227,3 +227,77 @@ List<LbArticle> lbRecent(Iterable<LbArticle> articles) => [...articles]
       a.publishedAt ?? DateTime(2000),
     ),
   );
+
+/// 4d "Bài tiếp theo" (D-087, P-166 #3g): the guide after [a] in its library and age band, in
+/// reading order (the Ăn dặm group, then the topic, the age, the first publish). The band is the
+/// one of [bands] (`[from, to)` weeks) that holds the article's first week; the order wraps
+/// around, and guides in [skip] (the related list already shown) are passed over. Null when the
+/// band has no other guide.
+LbArticle? lbNextGuide(
+  Iterable<LbArticle> all,
+  LbArticle a, {
+  required List<(int, int)> bands,
+  Set<String> skip = const {},
+}) {
+  final band = bands
+      .where((b) => a.weeks.from >= b.$1 && a.weeks.from < b.$2)
+      .firstOrNull;
+  bool inBand(LbArticle x) => band == null
+      ? x.weeks.overlaps(a.weeks.from, a.weeks.to)
+      : x.weeks.from >= band.$1 && x.weeks.from < band.$2;
+  final order = [
+    for (final x in all)
+      if (x.library == a.library && (x.id == a.id || inBand(x))) x,
+  ]..sort(_readingOrder);
+  final at = order.indexWhere((x) => x.id == a.id);
+  if (at < 0) return null;
+  for (var i = 1; i < order.length; i++) {
+    final next = order[(at + i) % order.length];
+    if (!skip.contains(next.id)) return next;
+  }
+  return null;
+}
+
+int _readingOrder(LbArticle x, LbArticle y) {
+  final far = DateTime(9999);
+  for (final c in [
+    (x.subtopic?.index ?? 99).compareTo(y.subtopic?.index ?? 99),
+    x.topic.index.compareTo(y.topic.index),
+    x.weeks.from.compareTo(y.weeks.from),
+    (x.firstPublishedAt ?? far).compareTo(y.firstPublishedAt ?? far),
+  ]) {
+    if (c != 0) return c;
+  }
+  return x.id.compareTo(y.id);
+}
+
+// ---------- 4d reading layouts (D-087, P-166 #3) ----------
+
+/// A "Hiểu lầm thường gặp" bullet: "A → B → C" is the myth, why it is wrong and what to do
+/// instead; "A → B" the myth and what to do instead. Null for any other bullet.
+({String myth, String? why, String instead})? lbMyth(String item) {
+  final parts = [for (final p in item.split('→')) p.trim()];
+  if (parts.length < 2 || parts.length > 3 || parts.any((p) => p.isEmpty)) {
+    return null;
+  }
+  return parts.length == 3
+      ? (myth: parts[0], why: parts[1], instead: parts[2])
+      : (myth: parts[0], why: null, instead: parts[1]);
+}
+
+final _step = RegExp(r'^(?:Bước|Step)\s+(\d{1,2})\s*·\s*(\S.*)$', dotAll: true);
+
+/// A step-guide bullet "Bước 3 · …" (en "Step 3 · …"): its number and the rest.
+({int n, String text})? lbStep(String item) {
+  final m = _step.firstMatch(item);
+  return m == null ? null : (n: int.parse(m.group(1)!), text: m.group(2)!);
+}
+
+final _leadIn = RegExp(r'^([^:\n]{1,40}):\s+(\S.*)$', dotAll: true);
+
+/// The lead-in before the first ": " when it is at most 40 characters ("Chỗ ngồi: chọn ghế…"),
+/// shown in semibold; null otherwise ("8:00" has no space after the colon).
+({String lead, String rest})? lbLeadIn(String item) {
+  final m = _leadIn.firstMatch(item);
+  return m == null ? null : (lead: m.group(1)!.trim(), rest: m.group(2)!);
+}

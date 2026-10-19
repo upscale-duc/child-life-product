@@ -1,10 +1,13 @@
 import {
   articleTopics,
   calloutTones,
+  contentEmergencyToken,
   contentImageUploadSchema,
   contentLimits,
   editorialChecks,
+  literalEmergencyProblems,
   memberRoles,
+  solidsSubtopics,
   type ArticleTopic,
   type ContentBlock,
   type ContentKind,
@@ -14,15 +17,27 @@ import {
   type EditorialReview,
   type EditorialStatus,
   type MemberRole,
+  type SolidsSubtopic,
   type StageAge,
   type StageUnit,
 } from '@child-life/contracts';
-import { Check, ImageIcon, Plus, Search, Trash2, Upload, X } from 'lucide-react';
+import {
+  Check,
+  ImageIcon,
+  Phone,
+  Plus,
+  Search,
+  Trash2,
+  TriangleAlert,
+  Upload,
+  X,
+} from 'lucide-react';
 import {
   createContext,
   useContext,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -1439,9 +1454,94 @@ export function IssuesList({ issues }: { issues: ParseIssue[] }) {
   );
 }
 
+// ---------- The family's emergency number (D-078, D-087, P-166 #1) ----------
+
+/**
+ * What the previews show for `{emergency}`: the app writes the number of the family's country
+ * (115 in Việt Nam, 911 in the US…), and 115 when it knows none.
+ */
+export const previewEmergencyNumber = '115';
+
+export const withEmergency = (s: string) =>
+  s.split(contentEmergencyToken).join(previewEmergencyNumber);
+
+/** A draft with `{emergency}` written as the preview number in every text (previews only). */
+export function fillEmergency<T>(v: T): T {
+  if (typeof v === 'string') return withEmergency(v) as T;
+  if (Array.isArray(v)) return v.map((x: unknown) => fillEmergency(x)) as T;
+  if (v && typeof v === 'object') {
+    return Object.fromEntries(
+      Object.entries(v as Record<string, unknown>).map(([k, x]) => [k, fillEmergency(x)]),
+    ) as T;
+  }
+  return v;
+}
+
+/** "Dùng {emergency} thay cho số 115: …", under the fields that may name the number. */
+export function EmergencyHint() {
+  return (
+    <FormattedMessage
+      id="content.emergency.hint"
+      values={{ token: <code className="font-mono text-[0.95em]">{contentEmergencyToken}</code> }}
+    />
+  );
+}
+
+/** Splits a `literalEmergencyProblems` path ("body.vi.3.text") for the place labels. */
+const pathParts = (path: string): PropertyKey[] =>
+  path.split('.').map((p) => (/^\d+$/.test(p) ? Number(p) : p));
+
+/**
+ * The texts that write "115" instead of `{emergency}` (`literalEmergencyProblems`), naming each
+ * field. A warning only: saving and the workflow go on (the seed tests refuse it).
+ */
+export function EmergencyNotice({
+  data,
+  place = issuePlace,
+  className = 'mb-4',
+}: {
+  data: unknown;
+  /** The field names of the kind (solids, nutrition); the article ones by default. */
+  place?: (intl: IntlShape, path: ReadonlyArray<PropertyKey>) => string;
+  className?: string;
+}) {
+  const intl = useIntl();
+  const found = useMemo(() => literalEmergencyProblems(data), [data]);
+  if (!found.length) return null;
+  const places = [...new Set(found.map((p) => place(intl, pathParts(p.path))))];
+  return (
+    <Notice
+      tone="warn"
+      className={className}
+      title={<FormattedMessage id="content.emergency.title" values={{ n: found.length }} />}
+    >
+      <ul className="mt-1 flex flex-wrap gap-1.5">
+        {places.slice(0, 12).map((p) => (
+          <li key={p}>
+            <Badge variant="outline" className="font-normal">
+              {p}
+            </Badge>
+          </li>
+        ))}
+        {places.length > 12 && (
+          <li className="text-xs text-muted-foreground">+{places.length - 12}</li>
+        )}
+      </ul>
+      <p className="mt-2 text-xs">
+        <EmergencyHint />
+      </p>
+    </Notice>
+  );
+}
+
 // ---------- Phone previews (4d, 2b) ----------
 
-export function BlocksPreview({ blocks }: { blocks: ContentBlock[] }) {
+/**
+ * The 4d body. An `urgent` callout is red with the app's call button (D-087, P-166 #2); the
+ * button names the preview number.
+ */
+export function BlocksPreview({ blocks, lang = 'vi' }: { blocks: ContentBlock[]; lang?: Lang }) {
+  const intl = useIntl();
   return (
     <div className="cl-blocks">
       {blocks.map((b, i) => {
@@ -1459,7 +1559,22 @@ export function BlocksPreview({ blocks }: { blocks: ContentBlock[] }) {
               </ul>
             );
           case 'callout':
-            return (
+            return b.tone === 'urgent' ? (
+              <div key={i} className="cl-callout cl-callout--urgent">
+                <span className="cl-callout__head">
+                  <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
+                  <strong>{b.title}</strong>
+                </span>
+                <p>{b.text}</p>
+                <span className="cl-callout__call">
+                  <Phone className="size-4" aria-hidden="true" />
+                  {intl.formatMessage(
+                    { id: `content.preview.call.${lang}` },
+                    { number: previewEmergencyNumber },
+                  )}
+                </span>
+              </div>
+            ) : (
               <div key={i} className={`cl-callout cl-callout--${b.tone}`}>
                 <strong>{b.title}</strong>
                 <p>{b.text}</p>
@@ -1533,6 +1648,17 @@ export function ReviewLine({ review, lang }: { review: EditorialReview | null; l
 /** For filters: all topics in their 4a order. */
 export const topicOptions = (intl: IntlShape) =>
   articleTopics.map((t) => ({ value: t, label: intl.formatMessage({ id: `content.topic.${t}` }) }));
+
+/** A solids guide's group (D-087), read defensively from a row or a draft; null when unset. */
+export const subtopicOf = (v: unknown): SolidsSubtopic | null =>
+  (solidsSubtopics as readonly unknown[]).includes(v) ? (v as SolidsSubtopic) : null;
+
+/** The Thư viện ăn dặm groups in their app order: Bắt đầu … Ăn cùng gia đình. */
+export const subtopicOptions = (intl: IntlShape) =>
+  solidsSubtopics.map((s) => ({
+    value: s,
+    label: intl.formatMessage({ id: `content.subtopic.${s}` }),
+  }));
 
 export const calloutToneOptions = (intl: IntlShape) =>
   calloutTones.map((t) => ({

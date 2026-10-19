@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../baby/baby_models.dart';
 import '../care/care_models.dart';
+import '../library/content_repository.dart' show contentEmergencyNumberProvider;
 import '../memories/memory_models.dart';
 import '../memories/upload_queue.dart' show PickedMedia;
 import 'milestone_models.dart';
@@ -266,9 +267,16 @@ final milestoneRepositoryProvider = Provider<MilestoneRepository>(
   (ref) => FirestoreMilestoneRepository(ref.watch(firestoreProvider)),
 );
 
-final referenceMilestonesProvider = StreamProvider<List<ReferenceMilestone>>(
-  (ref) => ref.watch(milestoneRepositoryProvider).watchReference(),
-);
+/// Published reference milestones, with the family's emergency number in their texts (D-087).
+final referenceMilestonesProvider = StreamProvider<List<ReferenceMilestone>>((
+  ref,
+) {
+  final number = ref.watch(contentEmergencyNumberProvider);
+  return ref
+      .watch(milestoneRepositoryProvider)
+      .watchReference()
+      .map((all) => [for (final m in all) m.withEmergency(number)]);
+});
 
 final milestoneRecordsProvider =
     StreamProvider.family<List<MilestoneRecord>, String>(

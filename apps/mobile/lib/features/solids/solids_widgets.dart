@@ -15,6 +15,7 @@ import '../baby/baby_avatar_view.dart' show SavedBabyAvatar;
 import '../baby/baby_repository.dart';
 import '../care/history_screen.dart' show weekdayShort;
 import '../home/home_shell.dart';
+import '../library/library_widgets.dart' show LbLook;
 import 'solids_calc.dart';
 import 'solids_format.dart';
 import 'solids_models.dart';
@@ -348,6 +349,42 @@ class SdTag extends StatelessWidget {
     ),
   );
 }
+
+/// A recipe's placeholder picture (D-087, P-166 #5; a cover image or the family's photo wins):
+/// the main ingredient's icon and tint, existing tokens only, ink on the soft warm fills.
+LbLook sdRecipeLook(BuildContext context, SdRecipeArt art) {
+  final cl = context.cl;
+  final c = cl.colors;
+  LbLook care(ClCareColor t, ClIcons icon) =>
+      (soft: t.soft, ink: t.ink, icon: icon);
+  LbLook mint(ClIcons icon) => (soft: c.mintSoft, ink: c.mintText, icon: icon);
+  return switch (art) {
+    SdRecipeArt.vegetable => care(cl.care.diaper, ClIcons.carrot),
+    SdRecipeArt.fruit => care(cl.care.breast, ClIcons.apple),
+    SdRecipeArt.animalProtein => care(cl.care.bottle, ClIcons.fish),
+    SdRecipeArt.egg => (soft: c.sunshineSoft, ink: c.ink, icon: ClIcons.egg),
+    SdRecipeArt.legumeNut => care(cl.care.growth, ClIcons.bowl),
+    SdRecipeArt.dairy => care(cl.care.sleep, ClIcons.cup),
+    SdRecipeArt.grain => (soft: c.peachSoft, ink: c.ink, icon: ClIcons.bowl),
+    SdRecipeArt.puree => mint(ClIcons.spoon),
+    SdRecipeArt.pieces || SdRecipeArt.dish => mint(ClIcons.bowl),
+    SdRecipeArt.finger => mint(ClIcons.hand),
+  };
+}
+
+/// [sdRecipeLook] for a published recipe, from the catalogue.
+LbLook sdPublishedRecipeLook(
+  BuildContext context,
+  SdRecipe r,
+  Map<String, SdFood> foods,
+) => sdRecipeLook(context, sdRecipeArt(r.foodIds, foods, texture: r.texture));
+
+/// [sdRecipeLook] for a family recipe (D-086), from the catalogue.
+LbLook sdFamilyRecipeLook(
+  BuildContext context,
+  SdFamilyRecipe r,
+  Map<String, SdFood> foods,
+) => sdRecipeLook(context, sdRecipeArt(r.foodIds, foods));
 
 /// The meal's picture (5b cards, 5d rows): its photo (D-085 #2), else the ingredient icon. Inside
 /// a card or row that opens the meal, so the photo itself does not open full screen.

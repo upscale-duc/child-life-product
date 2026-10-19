@@ -24,6 +24,7 @@ import '../vaccines/vaccine_sheets.dart' show pickVxDate;
 import 'nutrition_calc.dart';
 import 'nutrition_format.dart';
 import 'nutrition_models.dart';
+import 'nutrition_nutrient_screen.dart' show NutrientScreen;
 import 'nutrition_reminders.dart';
 import 'nutrition_repository.dart';
 import 'nutrition_routes.dart';
@@ -42,6 +43,10 @@ class VitaminScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Việt Nam's campaign only (P-166 #6): elsewhere a link here shows the nutrient article.
+    if (ref.watch(nuCampaignAbroadProvider)) {
+      return NutrientScreen(nutrientId: nutrientId);
+    }
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = Localizations.localeOf(context);

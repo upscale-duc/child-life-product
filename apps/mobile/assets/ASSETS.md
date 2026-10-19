@@ -42,6 +42,24 @@ Notes:
 - **brand-mark.svg:** the Figma description says it is a placeholder for the Apple / Google marks. Use the official logos in production.
 - The Figma description says every icon is a "placeholder drawing; production uses SF Symbols".
 
+### Engineering icons in the Figma line style (not exported from Figma)
+
+Drawn by engineering for the Thư viện ăn dặm pictures (D-087, P-166 #5: guide groups and recipes' main ingredients), on the same grid as the Figma set: `viewBox="0 0 24 24"`, `stroke-width="1.8"`, round caps and joins, root `fill="none"`, `stroke="currentColor"`, no fills or masks. Registered in `ClIcons` (`lib/core/widgets/cl_icon.dart`) after the Figma icons.
+
+| File | Drawing | Used for |
+|---|---|---|
+| apple.svg | Apple with stem and leaf | Recipes: fruit |
+| bowl.svg | Steaming bowl on a foot | Groups Kết cấu, Ăn cùng gia đình; recipes: grain, legumes |
+| calendar.svg | Calendar with rings and day dots | Group Thực đơn |
+| carrot.svg | Carrot with leaves | Group Dinh dưỡng; recipes: vegetables |
+| cup.svg | Cup with handle and a milk line | Group Sức khoẻ; recipes: dairy |
+| egg.svg | Egg with a highlight | Group Dị ứng; recipes with egg |
+| fish.svg | Fish with tail, gill and eye | Recipes: meat, fish, poultry |
+| hand.svg | Open hand | Groups Cách cho ăn, Kỹ năng ăn |
+| high-chair.svg | High chair (side view) | Group Đồ dùng |
+| shield.svg | Shield with a check | Group An toàn |
+| spoon.svg | Spoon | Group Bắt đầu |
+
 ## 2. `logo/`: Logo page (official "Khoảnh khắc" mark)
 
 Brand colours are kept as hard-coded hex values. No `currentColor` is used here.

@@ -256,6 +256,128 @@ List<LbArticle> fixtureArticles() => [
   for (final d in articleDocs) LbArticle.fromDoc(d['id']! as String, d)!,
 ];
 
+/// An Ăn dặm step guide in the D-087 shape (P-166 #2–#3): the "Tóm tắt nhanh" note, three
+/// headings, "Bước N ·" steps with lead-ins, myth bullets ("A → B → C" and "A → B") and an
+/// `urgent` callout; `{emergency}` in the summary, a keyword and the callout. Not in
+/// [fixtureArticles] (the care lists keep their counts).
+final readerGuideDoc = {
+  ...articleDoc(
+    id: 'art_solids_first_meal_guide',
+    topic: 'feeding',
+    vi: 'Bữa ăn dặm đầu tiên, từng bước',
+    en: 'The first solid meal, step by step',
+    from: 22,
+    to: 39,
+    minutes: 5,
+    library: 'solids',
+    publishedAt: '2026-10-03T03:00:00.000Z',
+    keywordsVi: ['gọi {emergency}'],
+    bodyVi: [
+      {
+        'type': 'callout',
+        'tone': 'note',
+        'title': 'Tóm tắt nhanh',
+        'text':
+            'Bắt đầu khi bé tròn 6 tháng và có đủ dấu hiệu sẵn sàng. Bữa đầu chỉ cần vài thìa.',
+      },
+      {'type': 'heading', 'text': 'Chuẩn bị'},
+      {
+        'type': 'bullets',
+        'items': [
+          'Bước 1 · Chỗ ngồi: chọn ghế ăn chắc chắn, có đai an toàn.',
+          'Bước 2 · Dụng cụ: thìa nhỏ mềm, bát nhỏ và cốc tập uống.',
+          'Bước 3 · Món đầu tiên: cháo hoặc bột giàu sắt, đặc vừa phải.',
+        ],
+      },
+      {'type': 'heading', 'text': 'Hiểu lầm thường gặp'},
+      {
+        'type': 'bullets',
+        'items': [
+          'Bữa đầu phải ăn hết chén → Bé đang học một kỹ năng mới → Vài thìa là đủ.',
+          'Nêm chút nước mắm cho bé chịu ăn → Giữ vị tự nhiên của món.',
+        ],
+      },
+      {'type': 'heading', 'text': 'Theo dõi sau bữa ăn'},
+      {
+        'type': 'bullets',
+        'items': [
+          'Ho, ọe nhẹ: phản xạ bình thường khi bé học nuốt.',
+          'Nổi mẩn quanh miệng: ghi lại món và hỏi bác sĩ.',
+        ],
+      },
+      {
+        'type': 'paragraph',
+        'text':
+            'Mỗi bé một nhịp. Hãy để bé khám phá đồ ăn bằng tay, bằng miệng, và dừng khi bé quay đi.',
+      },
+      {
+        'type': 'callout',
+        'tone': 'urgent',
+        'title': 'Gọi {emergency} ngay khi',
+        'text': 'Bé khó thở, sưng môi hoặc lưỡi, hay lả đi sau khi ăn.',
+      },
+    ],
+    bodyEn: [
+      {
+        'type': 'callout',
+        'tone': 'note',
+        'text':
+            'Start at 6 months, once your baby shows the signs of readiness. A few spoonfuls are enough.',
+      },
+      {'type': 'heading', 'text': 'Getting ready'},
+      {
+        'type': 'bullets',
+        'items': [
+          'Step 1 · Seat: a sturdy high chair with a harness.',
+          'Step 2 · Tools: a small soft spoon, a bowl and an open cup.',
+          'Step 3 · First food: iron-rich porridge, fairly thick.',
+        ],
+      },
+      {'type': 'heading', 'text': 'Common myths'},
+      {
+        'type': 'bullets',
+        'items': [
+          'The first meal must be a full bowl → Your baby is learning a new skill → A few spoonfuls are enough.',
+          'A little fish sauce makes them eat → Keep the food’s natural taste.',
+        ],
+      },
+      {'type': 'heading', 'text': 'Watching after the meal'},
+      {
+        'type': 'bullets',
+        'items': [
+          'Coughing, gagging: a normal reflex while learning to swallow.',
+          'A rash around the mouth: note the food and ask a doctor.',
+        ],
+      },
+      {
+        'type': 'paragraph',
+        'text':
+            'Every baby has their own pace. Let them explore food with hands and mouth, and stop when they turn away.',
+      },
+      {
+        'type': 'callout',
+        'tone': 'urgent',
+        'title': 'Call {emergency} right away if',
+        'text':
+            'Your baby struggles to breathe, has swollen lips or tongue, or goes floppy after eating.',
+      },
+    ],
+  ),
+  'format': 'step_guide',
+  'subtopic': 'start',
+  'summary': {
+    'vi': 'Chuẩn bị, ba bước, những hiểu lầm và khi nào gọi {emergency}.',
+    'en': 'Getting ready, three steps, the myths and when to call {emergency}.',
+  },
+};
+
+/// [readerGuideDoc] parsed with the family's number [emergency].
+LbArticle readerGuide({String emergency = '115'}) => LbArticle.fromDoc(
+  readerGuideDoc['id']! as String,
+  readerGuideDoc,
+  emergency: emergency,
+)!;
+
 Map<String, Object?> stageDoc({
   required String id,
   required String unit,

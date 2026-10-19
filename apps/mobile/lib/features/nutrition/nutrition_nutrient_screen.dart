@@ -44,6 +44,8 @@ class NutrientScreen extends ConsumerWidget {
     final look = nuNutrientLook(context, n.key);
     final months = c.months;
     final campaign = n.campaign;
+    // Outside Việt Nam: a note instead of the campaign card (P-166 #6).
+    final abroad = campaign != null && ref.watch(nuCampaignAbroadProvider);
     final taken = ref.watch(nuVitaminTakenProvider(b.babyId)).value ?? const {};
     final next = campaign == null || b.dob == null
         ? null
@@ -162,7 +164,14 @@ class NutrientScreen extends ConsumerWidget {
             ],
           ),
         ],
-        if (campaign != null) ...[
+        if (abroad) ...[
+          const SizedBox(height: ClSpace.s4),
+          NuBanner(
+            key: const Key('nuVitaAbroad'),
+            warm: false,
+            text: l10n.nuVitaAbroad,
+          ),
+        ] else if (campaign != null) ...[
           const SizedBox(height: ClSpace.s4),
           ClPressable(
             key: const Key('nuCampaignCard'),

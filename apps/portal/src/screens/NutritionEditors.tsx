@@ -40,6 +40,8 @@ import { useStaff } from '../context';
 import { Loaded } from '../ui';
 import {
   ActDialog,
+  EmergencyHint,
+  EmergencyNotice,
   LangTabs,
   LinkPicker,
   PreviewCard,
@@ -80,6 +82,7 @@ import {
   listAction,
   locOf,
   monthsText,
+  nutritionPlace,
   roundText,
   type NutritionKind,
 } from './nutrition-common';
@@ -273,6 +276,7 @@ function EditorFrame({
         issues={d.issues}
         problems={d.problems}
       />
+      <EmergencyNotice data={d.data} place={nutritionPlace} />
       <EditorLayout aside={aside}>{children}</EditorLayout>
       {dialog}
       {d.act && d.row && (
@@ -1026,6 +1030,7 @@ export function NutrientEditor({
             multiline
             rows={2}
             placeholder={intl.formatMessage({ id: 'nutrition.nutrient.warningPlaceholder' })}
+            help={<EmergencyHint />}
             onChange={(v) => edit((x) => void (x.warning = setLoc(x.warning, lang, v)))}
           />
         </div>

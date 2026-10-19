@@ -11,6 +11,7 @@ import 'package:child_life/features/nutrition/nutrition_models.dart';
 import 'package:child_life/features/nutrition/nutrition_nutrient_screen.dart';
 import 'package:child_life/features/nutrition/nutrition_screens.dart';
 import 'package:child_life/features/nutrition/nutrition_vitamin_screen.dart';
+import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
@@ -784,6 +785,84 @@ void main() {
       );
       expect(visits, isEmpty);
       await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+  });
+  group('vitamin A outside Việt Nam (D-087, P-166 #6)', () {
+    List<Override> abroad(String? country) => [
+      ..._overrides(),
+      selectedFamilyCountryProvider.overrideWithValue(country),
+    ];
+
+    testWidgets('US: no round tag; the row opens the nutrient article', (
+      tester,
+    ) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const NutritionScreen(),
+        overrides: abroad('US'),
+      );
+      final row = find.byKey(const Key('nuNutrient_nut_vitamin_a'));
+      await _see(tester, row);
+      await tester.ensureVisible(row);
+      await tester.pumpAndSettle();
+      expect(find.text('1–2/12'), findsNothing);
+      await tester.tap(row);
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '/care/nutrition/n/nut_vitamin_a');
+    });
+
+    testWidgets('9d: the note instead of the campaign card; VN unchanged', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const NutrientScreen(nutrientId: 'nut_vitamin_a'),
+        overrides: abroad('US'),
+      );
+      await _see(tester, find.byKey(const Key('nuVitaAbroad')));
+      expect(
+        find.text(
+          'Lịch uống vitamin A theo chương trình của Việt Nam; ở nơi bạn sống, '
+          'hãy hỏi bác sĩ của bé.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('nuCampaignCard')), findsNothing);
+    });
+
+    testWidgets('Việt Nam or no country yet: the campaign card as before', (
+      tester,
+    ) async {
+      for (final country in ['VN', null]) {
+        await pumpRouted(
+          tester,
+          const NutrientScreen(nutrientId: 'nut_vitamin_a'),
+          overrides: abroad(country),
+        );
+        await _see(tester, find.byKey(const Key('nuCampaignCard')));
+        expect(find.byKey(const Key('nuVitaAbroad')), findsNothing);
+      }
+    });
+
+    testWidgets('9g opened from elsewhere shows the article (en, Night care)', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const VitaminScreen(nutrientId: 'nut_vitamin_a'),
+        locale: const Locale('en'),
+        palette: ClPalette.nightCare,
+        overrides: abroad('FR'),
+      );
+      expect(find.byKey(const Key('nuRound_2026-12')), findsNothing);
+      await _see(tester, find.byKey(const Key('nuVitaAbroad')));
+      expect(
+        find.text(
+          "This vitamin A schedule is Việt Nam's national programme; where you "
+          "live, ask your baby's doctor.",
+        ),
+        findsOneWidget,
+      );
     });
   });
 }

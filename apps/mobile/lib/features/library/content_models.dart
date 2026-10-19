@@ -12,6 +12,31 @@ import '../baby/baby_models.dart' show MemberRole;
 /// older app still reads the rest; an item missing its essentials is skipped. Nothing here is
 /// about a child.
 
+// ---------- The family's emergency number in content (D-078, D-087, P-166 #1) ----------
+
+/// `contentEmergencyToken`: content never writes a country's number, it writes this.
+const lbEmergencyToken = '{emergency}';
+
+/// The number shown when the family's country (or its number) is not known.
+const lbDefaultEmergency = '115';
+
+/// [j] with every [lbEmergencyToken] replaced by [number], in strings at any depth of maps and
+/// lists. The parsers run it on the raw document, so every text the app shows (titles, summaries,
+/// blocks, keywords, recipe steps, nutrition copy…) carries the family's number.
+Object? lbFillEmergency(Object? j, String number) => switch (j) {
+  String s =>
+    s.contains(lbEmergencyToken) ? s.replaceAll(lbEmergencyToken, number) : s,
+  Map m => {for (final e in m.entries) e.key: lbFillEmergency(e.value, number)},
+  List l => [for (final x in l) lbFillEmergency(x, number)],
+  _ => j,
+};
+
+/// A published document with [lbFillEmergency] applied (null stays null).
+Map<String, Object?>? lbFillDoc(Map<String, Object?>? j, String number) =>
+    j == null
+    ? null
+    : {for (final e in j.entries) e.key: lbFillEmergency(e.value, number)};
+
 /// A text in both app languages (D-012).
 @immutable
 class LbText {
@@ -81,6 +106,27 @@ enum LbTopic {
 
 /// `contentLibraries`: Chăm bé (4a–4f) and Ăn dặm (5f, `features/solids`, D-085).
 enum LbLibrary { care, solids }
+
+/// `solidsSubtopics` (D-087, P-166 #5): the Thư viện ăn dặm groups, each with its own picture so
+/// the list does not repeat one icon. Bắt đầu · Cách cho ăn · Kết cấu · Dinh dưỡng · Dị ứng · An
+/// toàn · Thực đơn · Kỹ năng ăn · Sức khoẻ · Đồ dùng · Ăn cùng gia đình. Absent on care articles
+/// and older drafts.
+enum LbSubtopic {
+  start,
+  methods,
+  textures,
+  nutrition,
+  allergy,
+  safety,
+  menus,
+  skills,
+  health,
+  gear,
+  family;
+
+  static LbSubtopic? parse(Object? j) =>
+      values.where((s) => s.name == j).firstOrNull;
+}
 
 /// `articleFormats`: Bài viết · Hướng dẫn từng bước · Hỏi nhanh (the 5f format filter).
 enum LbFormat {
@@ -156,8 +202,10 @@ class LbImage {
 
 // ---------- Body blocks (4d) ----------
 
-/// `calloutTones`: "Khi nào nên hỏi bác sĩ" (sunshine), a plain note, a tip.
-enum LbCalloutTone { doctor, note, tip }
+/// `calloutTones`: "Khi nào nên hỏi bác sĩ" (sunshine), a plain note, a tip, and `urgent`
+/// ("Gọi {emergency} ngay khi…", D-087 P-166 #2: red, with a call button). An unknown tone reads
+/// as a doctor callout, as older builds read `urgent`.
+enum LbCalloutTone { doctor, note, tip, urgent }
 
 @immutable
 sealed class LbBlock {
@@ -191,6 +239,7 @@ sealed class LbBlock {
         final tone = switch (j['tone']) {
           'note' => LbCalloutTone.note,
           'tip' => LbCalloutTone.tip,
+          'urgent' => LbCalloutTone.urgent,
           _ => LbCalloutTone.doctor,
         };
         return LbCallout(tone: tone, title: s('title'), text: t);
@@ -267,6 +316,7 @@ class LbArticle {
     required this.title,
     required this.body,
     this.format = LbFormat.article,
+    this.subtopic,
     this.summary,
     this.cover,
     this.keywords = LbTextList.empty,
@@ -283,6 +333,9 @@ class LbArticle {
   final String id;
   final LbLibrary library;
   final LbTopic topic;
+
+  /// The Thư viện ăn dặm group (its picture); null on care articles and older drafts.
+  final LbSubtopic? subtopic;
   final LbFormat format;
   final LbWeeks weeks;
   final int readingMinutes;
@@ -335,10 +388,16 @@ class LbArticle {
     }
   }
 
-  /// A published article the app can show, else null.
-  static LbArticle? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_articleId.hasMatch(id)) return null;
-    if (j['status'] != 'published') return null;
+  /// A published article the app can show, else null. Every `{emergency}` in its text becomes
+  /// [emergency], the family's number (D-087).
+  static LbArticle? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null || !_articleId.hasMatch(id)) return null;
+    if (doc['status'] != 'published') return null;
+    final j = lbFillDoc(doc, emergency)!;
     final title = LbText.parse(j['title']);
     final topic = LbTopic.parse(j['topic']);
     final age = j['ageWeeks'];
@@ -358,6 +417,7 @@ class LbArticle {
       id: id,
       library: j['library'] == 'solids' ? LbLibrary.solids : LbLibrary.care,
       topic: topic,
+      subtopic: LbSubtopic.parse(j['subtopic']),
       format: LbFormat.parse(j['format']) ?? LbFormat.article,
       weeks: LbWeeks(from.toInt(), to.toInt()),
       readingMinutes: minutes is num && minutes >= 1 ? minutes.toInt() : 1,
@@ -465,9 +525,15 @@ class LbStage {
   final int revision;
   final DateTime? publishedAt;
 
-  static LbStage? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_stageId.hasMatch(id)) return null;
-    if (j['status'] != 'published') return null;
+  /// Like [LbArticle.fromDoc], `{emergency}` becomes the family's number.
+  static LbStage? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null || !_stageId.hasMatch(id)) return null;
+    if (doc['status'] != 'published') return null;
+    final j = lbFillDoc(doc, emergency)!;
     final title = LbText.parse(j['title']);
     final age = j['age'];
     if (title == null || age is! Map) return null;

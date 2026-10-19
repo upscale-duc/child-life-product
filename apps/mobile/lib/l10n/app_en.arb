@@ -5013,5 +5013,14 @@
   "sdHistorySearch": "Search dishes, ingredients, recipes…",
   "sdHistorySearchCount": "{count, plural, =1{1 meal} other{{count} meals}} with “{query}”",
   "sdHistorySearchNone": "No meals with “{query}” yet.",
-  "sdFoodDays": "Every time baby had it · {count}"
+  "sdFoodDays": "Every time baby had it · {count}",
+  "lbContents": "In this article",
+  "lbBackToTop": "Back to top",
+  "lbTakeaways": "Key takeaways",
+  "lbMyth": "Myth",
+  "lbMythWhy": "Why",
+  "lbMythInstead": "Instead",
+  "lbUpNext": "Up next",
+  "lbUrgentFirstAid": "Open the first aid guide",
+  "nuVitaAbroad": "This vitamin A schedule is Việt Nam's national programme; where you live, ask your baby's doctor."
 }

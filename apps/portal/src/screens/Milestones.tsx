@@ -36,6 +36,8 @@ import {
   ActDialog,
   ContentImagesProvider,
   EditorNotices,
+  EmergencyHint,
+  EmergencyNotice,
   ImageThumb,
   LangTabs,
   NumberField,
@@ -51,6 +53,7 @@ import {
   asApiError,
   contentTiles,
   dateTime,
+  fillEmergency,
   reviewOf,
   splitActions,
   statusOptions,
@@ -543,6 +546,7 @@ export function MilestoneEditor({
         menu={workflowMenu(rest, setAct)}
       />
       <EditorNotices error={error} rejection={row?.rejection} issues={issues} />
+      <EmergencyNotice data={data} />
       <EditorLayout
         aside={
           <PreviewCard lang={lang}>
@@ -629,6 +633,7 @@ export function MilestoneEditor({
                   max={L.talkToDoctorMax}
                   counter
                   multiline
+                  help={<EmergencyHint />}
                   onChange={(v) => edit((d) => void (d.talkToDoctor![lang] = v))}
                 />
               )}
@@ -756,9 +761,9 @@ function UnitField({
   );
 }
 
-/** 3b "Chi tiết mốc", in the language being edited. */
+/** 3b "Chi tiết mốc", in the language being edited; `{emergency}` reads as 115 (D-087). */
 export function MilestonePreview({
-  data,
+  data: draft,
   lang,
   review,
 }: {
@@ -767,6 +772,7 @@ export function MilestonePreview({
   review: Parameters<typeof ReviewLine>[0]['review'];
 }) {
   const intl = useIntl();
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const p = (id: string, values?: Record<string, string | number>) =>
     intl.formatMessage({ id: `content.preview.${id}.${lang}` }, values);
   const r = data.ageRange;

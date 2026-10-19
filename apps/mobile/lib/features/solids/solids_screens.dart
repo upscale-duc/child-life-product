@@ -1357,12 +1357,13 @@ class _FeaturedGuide extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             LbPicture(
+              key: Key('lbThumb_${article.id}'),
               image: article.cover?.id,
               alt: article.cover?.alt?.of(context),
               width: double.infinity,
               height: 150,
               radius: 0,
-              topic: article.topic,
+              look: lbArticleLook(context, article),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),

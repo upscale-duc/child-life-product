@@ -27,12 +27,13 @@ import {
   Wheat,
   type LucideIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 import { cn } from '@/lib/utils';
 import {
   PhoneFrame,
   ReviewLine,
+  fillEmergency,
   useContentList,
   type ContentRow,
   type Lang,
@@ -51,7 +52,7 @@ import {
 /**
  * Phone previews of the Dinh dưỡng content (Figma app 9b, 9d, 9e) for the sample baby "Teddy", in
  * the language being edited. They show what the expert writes; the personal cards (the 7-day milk
- * average, growth) use sample numbers.
+ * average, growth) use sample numbers. `{emergency}` reads as 115 (D-087).
  */
 
 type Review = EditorialReview | null;
@@ -158,7 +159,7 @@ const sampleAverage = (r: NumberRange) => Math.round((r.min + (r.max - r.min) * 
 // ---------- 9b stage ----------
 
 export function NutritionStagePreview({
-  data,
+  data: draft,
   lang,
   nutrients,
   review,
@@ -173,6 +174,7 @@ export function NutritionStagePreview({
 }) {
   const intl = useIntl();
   const p = usePreviewText(lang);
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const age = ageRangeOk(data.ageMonths) ? data.ageMonths : null;
   const milk = data.milk;
   const perDay = milk?.perDayMl ?? null;
@@ -306,7 +308,7 @@ export function NutritionStagePreviewLoaded(
 // ---------- 9d micronutrient ----------
 
 export function NutrientPreview({
-  data,
+  data: draft,
   lang,
   review,
 }: {
@@ -316,6 +318,7 @@ export function NutrientPreview({
 }) {
   const intl = useIntl();
   const p = usePreviewText(lang);
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const focusAge = ageRangeOk(data.focus?.ageMonths ?? { from: 0, to: 0 })
     ? data.focus.ageMonths
     : null;
@@ -441,8 +444,15 @@ function GrowthSketch({ above }: { above: boolean }) {
   );
 }
 
-export function NutritionRulePreview({ data, lang }: { data: NutritionRuleDraft; lang: Lang }) {
+export function NutritionRulePreview({
+  data: draft,
+  lang,
+}: {
+  data: NutritionRuleDraft;
+  lang: Lang;
+}) {
   const p = usePreviewText(lang);
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const banner = withName(data.banner?.[lang] ?? '');
   const tips = data.tips ?? [];
   const growth = data.metric === 'weight' || data.metric === 'length';

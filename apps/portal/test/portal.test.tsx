@@ -350,6 +350,9 @@ describe('message catalogs (D-012)', () => {
               condition: 'x',
               first: 'x',
               second: 'x',
+              // Emergency number in content (D-087)
+              token: 'x',
+              number: 'x',
               b: (chunks: ReactNode[]) => chunks,
             },
           ),

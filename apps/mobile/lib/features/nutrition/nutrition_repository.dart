@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../app/session.dart';
-import '../library/content_repository.dart' show LbFeed;
+import '../library/content_models.dart' show lbDefaultEmergency;
+import '../library/content_repository.dart'
+    show LbFeed, contentEmergencyNumberProvider;
 import 'nutrition_models.dart';
 
 /// Reads the published nutrition content (D-083) and the per-baby vitamin A record. Firestore
@@ -35,12 +37,23 @@ class NutritionStore {
         ),
       );
 
-  Stream<LbFeed<NuStage>> watchStages() => _published(stages, NuStage.fromDoc);
+  /// The published content with [emergency] in place of every `{emergency}` (D-087).
+  Stream<LbFeed<NuStage>> watchStages({
+    String emergency = lbDefaultEmergency,
+  }) => _published(
+    stages,
+    (id, d) => NuStage.fromDoc(id, d, emergency: emergency),
+  );
 
-  Stream<LbFeed<NuNutrient>> watchNutrients() =>
-      _published(nutrients, NuNutrient.fromDoc);
+  Stream<LbFeed<NuNutrient>> watchNutrients({
+    String emergency = lbDefaultEmergency,
+  }) => _published(
+    nutrients,
+    (id, d) => NuNutrient.fromDoc(id, d, emergency: emergency),
+  );
 
-  Stream<LbFeed<NuRule>> watchRules() => _published(rules, NuRule.fromDoc);
+  Stream<LbFeed<NuRule>> watchRules({String emergency = lbDefaultEmergency}) =>
+      _published(rules, (id, d) => NuRule.fromDoc(id, d, emergency: emergency));
 
   DocumentReference<Map<String, dynamic>> _vitaminA(String babyId) =>
       _db().doc('babies/$babyId/nutrition/vitaminA');
@@ -83,17 +96,23 @@ LbFeed<T> _none<T>() => (items: <T>[], fromCache: false);
 
 final nuStagesProvider = StreamProvider<LbFeed<NuStage>>((ref) {
   if (!_canRead(ref)) return Stream.value(_none());
-  return ref.watch(nutritionStoreProvider).watchStages();
+  return ref
+      .watch(nutritionStoreProvider)
+      .watchStages(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 final nuNutrientsProvider = StreamProvider<LbFeed<NuNutrient>>((ref) {
   if (!_canRead(ref)) return Stream.value(_none());
-  return ref.watch(nutritionStoreProvider).watchNutrients();
+  return ref
+      .watch(nutritionStoreProvider)
+      .watchNutrients(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 final nuRulesProvider = StreamProvider<LbFeed<NuRule>>((ref) {
   if (!_canRead(ref)) return Stream.value(_none());
-  return ref.watch(nutritionStoreProvider).watchRules();
+  return ref
+      .watch(nutritionStoreProvider)
+      .watchRules(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 /// The vitamin A rounds a baby took (members of the baby read it).

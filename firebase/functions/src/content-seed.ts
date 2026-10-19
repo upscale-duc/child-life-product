@@ -16,9 +16,11 @@ import { seedSolidsArticles } from './solids-seed.js';
  * that already exists.
  *
  * Article shape (4d): "Tóm tắt nhanh" note → "Hiểu đúng" → "Ba mẹ có thể làm gì" → "Theo dõi" →
- * "Hiểu lầm thường gặp" (common Vietnamese practices, corrected without blame) → the doctor
- * callout(s) "Khi nào nên hỏi bác sĩ / gọi 115" last. Emergency procedures are not repeated: the
- * text points to the offline Sơ cứu trẻ em guide. Text is plain (no markup); vi is the source, en
+ * "Hiểu lầm thường gặp" (common Vietnamese practices, corrected without blame) → the urgent callout
+ * "Gọi {emergency} ngay khi" when there is one → the doctor callout "Khi nào nên hỏi bác sĩ" last.
+ * Content never writes a literal emergency number: `{emergency}` is the family's number, filled in
+ * by the app (D-087, `contentEmergencyToken`). Emergency procedures are not repeated: the text points to the offline
+ * Sơ cứu trẻ em guide. Text is plain (no markup); vi is the source, en
  * a faithful rendering (D-012). No brands; no medicine doses except a published standard
  * (vitamin D), otherwise "hỏi bác sĩ/dược sĩ liều theo cân nặng".
  */
@@ -60,6 +62,13 @@ const note = (title: string, text: string): ContentBlock => ({
 const doctor = (title: string, text: string): ContentBlock => ({
   type: 'callout',
   tone: 'doctor',
+  title,
+  text,
+});
+/** "Gọi {emergency} ngay khi…" (D-087): red, with a button that dials the family's number. */
+const urgent = (title: string, text: string): ContentBlock => ({
+  type: 'callout',
+  tone: 'urgent',
   title,
   text,
 });
@@ -1020,12 +1029,12 @@ export const seedArticles: SeedArticle[] = [
           ul(
             '“Bé ngủ càng nhiều càng tốt, cứ để ngủ cho ngoan”: nhiều nhà vì thương con nên không nỡ đánh thức. Nhưng bé sơ sinh ngủ li bì, bỏ nhiều cữ bú có thể là dấu hiệu bé mệt, vàng da nặng hoặc chưa đủ sữa. Nên: cho bú ít nhất 8–12 cữ một ngày và hỏi bác sĩ nếu bé khó đánh thức để bú.',
             '“Cho bé ăn bột, uống nước cháo cho no lâu, ngủ dài”: ông bà mong cháu no và ngủ ngon. Nhưng ăn sớm không giúp bé ngủ xuyên đêm, và bé dưới 6 tháng chỉ cần sữa mẹ hoặc sữa công thức. Nên: bú theo nhu cầu, đợi khoảng 6 tháng mới bắt đầu ăn dặm.',
-            '“Bé giật mình, vặn mình khi ngủ là do thiếu canxi”: phần lớn là phản xạ giật mình và cử động của giấc ngủ động, rất thường gặp ở bé khoẻ. Nên: không tự cho bé uống canxi hay thuốc; nếu bé co giật, mắt trợn, tím tái hoặc lả đi, gọi 115.',
+            '“Bé giật mình, vặn mình khi ngủ là do thiếu canxi”: phần lớn là phản xạ giật mình và cử động của giấc ngủ động, rất thường gặp ở bé khoẻ. Nên: không tự cho bé uống canxi hay thuốc; nếu bé co giật, mắt trợn, tím tái hoặc lả đi, gọi cấp cứu {emergency}.',
             '“Ủ bé thật ấm, đội mũ, đắp chăn dày cho bé ngủ ngon”: ông bà làm vì sợ cháu lạnh. Nhưng quá nóng làm tăng nguy cơ đột tử và chăn dày có thể trùm lên mặt bé. Nên: mặc cho bé nhiều hơn người lớn tối đa một lớp mỏng, không đội mũ khi ngủ trong nhà, sờ ngực hoặc gáy để kiểm tra.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, thở rút lõm ngực, thở rên; môi hoặc mặt tím tái, xám; bé lả mềm, không phản ứng hoặc rất khó đánh thức; bé co giật; thóp phồng.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, thở rút lõm ngực, thở rên; môi hoặc mặt tím tái, xám; bé lả mềm, không phản ứng hoặc rất khó đánh thức; bé co giật; thóp phồng. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -1090,12 +1099,12 @@ export const seedArticles: SeedArticle[] = [
           ul(
             '"The more a baby sleeps, the better, just let them sleep": many families can’t bear to wake a sleeping baby. But a newborn who is very drowsy and skips many feeds may be unwell, have significant jaundice or not be getting enough milk. Instead: feed at least 8–12 times a day and ask a doctor if your baby is hard to wake for feeds.',
             '"Give rice cereal or rice water so the baby stays full and sleeps longer": grandparents hope the baby will be full and sleep well. But early solids do not help babies sleep through the night, and under 6 months babies need only breast milk or formula. Instead: feed on demand and wait until around 6 months to start solids.',
-            '"Startling and squirming in sleep means a calcium deficiency": most of it is the startle reflex and the movements of active sleep, very common in healthy babies. Instead: do not give calcium or any medicine on your own; if your baby has a fit, eyes rolling, turns blue or goes limp, call 115.',
+            '"Startling and squirming in sleep means a calcium deficiency": most of it is the startle reflex and the movements of active sleep, very common in healthy babies. Instead: do not give calcium or any medicine on your own; if your baby has a fit, eyes rolling, turns blue or goes limp, call {emergency}.',
             '"Wrap the baby warmly, add a hat and a thick blanket for good sleep": grandparents do this for fear of the cold. But overheating raises the risk of sudden infant death and thick blankets can cover the face. Instead: dress your baby in at most one light layer more than an adult, no hat for sleep indoors, and feel the chest or back of the neck to check.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby has trouble breathing, the chest pulls in or they grunt with each breath; lips or face look blue or grey; they are limp, unresponsive or very hard to wake; they have a fit; the soft spot (fontanelle) bulges.',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has trouble breathing, the chest pulls in or they grunt with each breath; lips or face look blue or grey; they are limp, unresponsive or very hard to wake; they have a fit; the soft spot (fontanelle) bulges. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -1170,7 +1179,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng về đột tử và ngạt khi ngủ'),
           p(
-            'Hội chứng đột tử ở trẻ sơ sinh (SIDS) là khi một bé khoẻ mạnh tử vong đột ngột trong lúc ngủ mà không tìm ra nguyên nhân. Bên cạnh đó còn có các tai nạn khi ngủ như ngạt do chăn gối, bị người lớn đè, kẹt giữa nệm và tường. Chỉ riêng ở Mỹ, mỗi năm khoảng 3.500 trẻ tử vong liên quan đến giấc ngủ. Phần lớn các ca này có thể giảm nguy cơ bằng cách sắp xếp chỗ ngủ đúng, và các khuyến nghị dưới đây áp dụng cho mọi giấc ngủ đến khi bé tròn 1 tuổi.',
+            'Hội chứng đột tử ở trẻ sơ sinh (SIDS) là khi một bé khoẻ mạnh tử vong đột ngột trong lúc ngủ mà không tìm ra nguyên nhân. Bên cạnh đó còn có các tai nạn khi ngủ như ngạt do chăn gối, bị người lớn đè, kẹt giữa nệm và tường.',
+          ),
+          p(
+            'Chỉ riêng ở Mỹ, mỗi năm khoảng 3.500 trẻ tử vong liên quan đến giấc ngủ. Phần lớn các ca này có thể giảm nguy cơ bằng cách sắp xếp chỗ ngủ đúng, và các khuyến nghị dưới đây áp dụng cho mọi giấc ngủ đến khi bé tròn 1 tuổi.',
           ),
           p(
             'Bé nhỏ chưa đủ sức quay đầu hay đẩy vật mềm ra khỏi mặt. Khi nằm sấp, nằm nghiêng hoặc úp mặt vào gối, chăn, đường thở của bé dễ bị cản trở. Nằm nghiêng gần như nguy hiểm ngang nằm sấp vì bé rất dễ lật úp. Bé bị trào ngược cũng nên ngủ nằm ngửa trên mặt phẳng.',
@@ -1214,8 +1226,8 @@ export const seedArticles: SeedArticle[] = [
             '“Cho bé ngủ võng cho êm, dễ ru”: võng rất quen thuộc với nhiều nhà. Nhưng võng cong, mềm, không phẳng; bé dễ gập cằm vào ngực hoặc úp mặt vào vải. Nên: có thể đưa võng nhẹ để dỗ khi có người lớn ngồi cạnh, nhưng khi bé đã ngủ thì chuyển bé sang nằm ngửa trong nôi.',
             '“Bà ôm cháu ngủ chung cho ấm, cho cháu khỏi giật mình”: tình thương của ông bà rất quý. Nhưng giường người lớn có chăn gối mềm, người lớn ngủ say có thể đè lên bé. Nên: bà dỗ cháu ngủ rồi đặt cháu vào nôi sát giường; nếu vẫn ngủ chung, làm theo các điều ở phần trên.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
+          urgent(
+            'Gọi {emergency} ngay khi',
             'Bé ngừng thở, tím tái, da xám hoặc nhợt, mềm nhũn, không phản ứng. Trong lúc chờ, làm theo hướng dẫn Hồi sức tim phổi (CPR) trong mục Sơ cứu trẻ em của Child Life.',
           ),
           doctor(
@@ -1230,7 +1242,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Understanding sudden infant death and sleep accidents'),
           p(
-            'Sudden infant death syndrome (SIDS) is when a healthy baby dies suddenly during sleep and no cause is found. There are also sleep accidents such as suffocation in bedding, being rolled on by an adult, or getting trapped between mattress and wall. In the United States alone, about 3,500 babies die each year from sleep-related causes. Much of this risk can be lowered by setting up sleep correctly, and the advice below applies to every sleep until your baby turns one.',
+            'Sudden infant death syndrome (SIDS) is when a healthy baby dies suddenly during sleep and no cause is found. There are also sleep accidents such as suffocation in bedding, being rolled on by an adult, or getting trapped between mattress and wall.',
+          ),
+          p(
+            'In the United States alone, about 3,500 babies die each year from sleep-related causes. Much of this risk can be lowered by setting up sleep correctly, and the advice below applies to every sleep until your baby turns one.',
           ),
           p(
             "Young babies aren't strong enough to turn their head or push soft things away from their face. Lying on the tummy or side, or with the face pressed into a pillow or blanket, can block the airway. Side sleeping is nearly as dangerous as tummy sleeping because babies easily roll face down. Babies with reflux should also sleep on their back on a flat surface.",
@@ -1274,8 +1289,8 @@ export const seedArticles: SeedArticle[] = [
             '"Let the baby sleep in a hammock, it’s soft and easy to rock": hammocks are part of daily life in many homes. But a hammock is curved, soft and not flat; a baby can easily slump chin to chest or press their face into the fabric. Instead: you can gently swing the hammock to soothe while an adult sits right there, but once your baby is asleep, move them onto their back in a crib.',
             '"Grandma cuddles the baby in her bed to keep warm and stop the startles": grandparents’ love is precious. But adult beds have soft pillows and covers, and a deeply sleeping adult can roll onto a baby. Instead: grandma can settle the baby, then lay them in a crib next to the bed; if you still share a bed, follow the steps above.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
+          urgent(
+            'Call {emergency} now if',
             'Your baby stops breathing, turns blue, grey or very pale, goes floppy or does not respond. While you wait, follow the CPR guide in the Sơ cứu trẻ em (First aid) section of Child Life.',
           ),
           doctor(
@@ -1396,9 +1411,10 @@ export const seedArticles: SeedArticle[] = [
             '“Phải giữ phòng tối om, cấm mọi tiếng động cả ngày cho bé ngủ”: ý định rất tốt, nhưng bé cần ánh sáng và âm thanh ban ngày để phân biệt ngày đêm. Nên: ban ngày sinh hoạt bình thường, chỉ giữ tối và yên vào ban đêm.',
             '“Cho bé ăn bột sớm, pha sữa đặc hơn để bé no lâu, ngủ xuyên đêm”: ông bà mong cháu no bụng. Nhưng ăn dặm sớm không giúp bé ngủ xuyên đêm, còn cho thêm bột sữa quá hướng dẫn có thể làm bé táo bón hoặc mất nước. Nên: pha đúng tỷ lệ trên hộp, đợi khoảng 6 tháng mới ăn dặm.',
           ),
+          urgent('Gọi {emergency} ngay khi', 'Bé khó thở, tím tái, co giật hoặc lả mềm.'),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé ngủ li bì, khó đánh thức để bú; bú kém, ít tã ướt hoặc chậm tăng cân; khóc thét, khóc kéo dài rất khó dỗ; ngáy to kèm những lúc ngừng thở. Đưa bé đi khám trong ngày nếu bé dưới 3 tháng có nhiệt độ từ 38 °C trở lên. Gọi 115 nếu bé khó thở, tím tái, co giật hoặc lả mềm.',
+            'Bé ngủ li bì, khó đánh thức để bú; bú kém, ít tã ướt hoặc chậm tăng cân; khóc thét, khóc kéo dài rất khó dỗ; ngáy to kèm những lúc ngừng thở. Đưa bé đi khám trong ngày nếu bé dưới 3 tháng có nhiệt độ từ 38 °C trở lên.',
           ),
         ],
         en: [
@@ -1454,9 +1470,13 @@ export const seedArticles: SeedArticle[] = [
             '"Keep the room pitch dark and ban all noise all day so the baby sleeps": a kind intention, but babies need daytime light and sound to learn day from night. Instead: carry on normally by day, and keep things dark and quiet only at night.',
             '"Start cereal early or make formula thicker so the baby stays full and sleeps through": grandparents want the baby to be full. But early solids do not help babies sleep through the night, and adding extra formula powder can make a baby constipated or dehydrated. Instead: make formula exactly as the pack says, and wait until around 6 months for solids.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue, has a fit or goes limp.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby is very drowsy and hard to wake for feeds; feeds poorly, has few wet diapers or gains weight slowly; has a high-pitched cry or long, inconsolable crying; snores loudly with pauses in breathing. See a doctor the same day if your baby is under 3 months with a temperature of 38 °C or higher. Call 115 if your baby has trouble breathing, turns blue, has a fit or goes limp.',
+            'Your baby is very drowsy and hard to wake for feeds; feeds poorly, has few wet diapers or gains weight slowly; has a high-pitched cry or long, inconsolable crying; snores loudly with pauses in breathing. See a doctor the same day if your baby is under 3 months with a temperature of 38 °C or higher.',
           ),
         ],
       },
@@ -1559,7 +1579,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Về các phương pháp “luyện ngủ”'),
           p(
-            'Một số gia đình chọn luyện ngủ khi bé thức đêm nhiều và cả nhà kiệt sức. Các cách thường được nghiên cứu gồm: vào dỗ theo những khoảng thời gian dài dần, ngồi cạnh nôi rồi lùi ghế xa dần qua các đêm, hoặc lùi giờ đi ngủ đến lúc bé thật sự buồn ngủ rồi sớm dần lên. Các thử nghiệm ở bé từ 6 tháng trở lên cho thấy những cách này giúp bé ngủ nhanh hơn, ít thức đêm hơn, và không thấy hại về cảm xúc, hành vi hay sự gắn bó với cha mẹ khi theo dõi 1 năm và 5 năm sau. Đây là lựa chọn của mỗi gia đình, không bắt buộc; không luyện ngủ cũng không có gì sai. Nên hỏi bác sĩ trước khi bắt đầu, nhất là khi bé đang ốm hay chậm tăng cân.',
+            'Một số gia đình chọn luyện ngủ khi bé thức đêm nhiều và cả nhà kiệt sức. Các cách thường được nghiên cứu gồm: vào dỗ theo những khoảng thời gian dài dần, ngồi cạnh nôi rồi lùi ghế xa dần qua các đêm, hoặc lùi giờ đi ngủ đến lúc bé thật sự buồn ngủ rồi sớm dần lên.',
+          ),
+          p(
+            'Các thử nghiệm ở bé từ 6 tháng trở lên cho thấy những cách này giúp bé ngủ nhanh hơn, ít thức đêm hơn, và không thấy hại về cảm xúc, hành vi hay sự gắn bó với cha mẹ khi theo dõi 1 năm và 5 năm sau. Đây là lựa chọn của mỗi gia đình, không bắt buộc; không luyện ngủ cũng không có gì sai. Nên hỏi bác sĩ trước khi bắt đầu, nhất là khi bé đang ốm hay chậm tăng cân.',
           ),
           h('Theo dõi'),
           ul(
@@ -1575,9 +1598,13 @@ export const seedArticles: SeedArticle[] = [
             '“Phải bế đi rong, đưa võng thật lâu bé mới ngủ”: ông bà dỗ cháu bằng cả tấm lòng. Nhưng nếu lần nào cũng phải bế rong mới ngủ, bé sẽ cần đúng điều đó mỗi lần tỉnh giấc ban đêm. Nên: dỗ cho bé dịu lại rồi đặt vào nôi khi bé còn hơi thức.',
             '“Luyện ngủ là để bé khóc đến khi tự ngủ cho ngoan”: luyện ngủ không có nghĩa là bỏ mặc bé, và bé dưới 6 tháng cần được đáp ứng khi khóc. Nên: nếu chọn luyện ngủ, chỉ bắt đầu khi bé từ khoảng 6 tháng, khoẻ mạnh, và cả nhà có kế hoạch thống nhất.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, tím tái, co giật hoặc lả mềm khó đánh thức.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé ngáy to gần như mỗi đêm, thở khò khè hoặc có những lúc ngừng thở khi ngủ; bé thức đêm kèm sốt, đau tai hay quấy khóc bất thường; ban ngày bé lờ đờ hoặc quá cáu kỉnh; bé chậm tăng cân; giấc ngủ của bé khiến ba mẹ kiệt sức hay buồn chán kéo dài. Gọi 115 nếu bé khó thở, tím tái, co giật hoặc lả mềm khó đánh thức.',
+            'Bé ngáy to gần như mỗi đêm, thở khò khè hoặc có những lúc ngừng thở khi ngủ; bé thức đêm kèm sốt, đau tai hay quấy khóc bất thường; ban ngày bé lờ đờ hoặc quá cáu kỉnh; bé chậm tăng cân; giấc ngủ của bé khiến ba mẹ kiệt sức hay buồn chán kéo dài.',
           ),
         ],
         en: [
@@ -1619,7 +1646,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('About "sleep training"'),
           p(
-            "Some families choose sleep training when their baby wakes a lot at night and everyone is exhausted. Approaches that have been studied include: checking in at gradually longer intervals, sitting by the crib and moving the chair further away over several nights, or moving bedtime later to when the baby is truly sleepy and then gradually earlier. Trials in babies aged 6 months and older found these methods helped babies fall asleep faster and wake less, with no harm seen to emotions, behaviour or the parent–child bond at follow-ups 1 year and 5 years later. It's each family's choice, not a must; not sleep training is fine too. Talk to a doctor before starting, especially if your baby is unwell or gaining weight slowly.",
+            'Some families choose sleep training when their baby wakes a lot at night and everyone is exhausted. Approaches that have been studied include: checking in at gradually longer intervals, sitting by the crib and moving the chair further away over several nights, or moving bedtime later to when the baby is truly sleepy and then gradually earlier.',
+          ),
+          p(
+            "Trials in babies aged 6 months and older found these methods helped babies fall asleep faster and wake less, with no harm seen to emotions, behaviour or the parent–child bond at follow-ups 1 year and 5 years later. It's each family's choice, not a must; not sleep training is fine too. Talk to a doctor before starting, especially if your baby is unwell or gaining weight slowly.",
           ),
           h('What to watch'),
           ul(
@@ -1635,9 +1665,13 @@ export const seedArticles: SeedArticle[] = [
             '"Only long walks in arms or a long swing in the hammock will get the baby to sleep": grandparents soothe with all their heart. But if a baby always needs to be walked to sleep, they will need exactly that every time they wake at night. Instead: soothe until your baby is calm, then lay them in the crib while still a little awake.',
             '"Sleep training means leaving the baby to cry until they give up": sleep training does not mean ignoring your baby, and babies under 6 months need a response when they cry. Instead: if you choose sleep training, start only from around 6 months, when your baby is well, and with a plan the whole family agrees on.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your child has trouble breathing, turns blue, has a fit or is limp and hard to wake.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your child snores loudly almost every night, wheezes or seems to pause breathing in sleep; wakes at night with fever, ear pain or unusual crying; is drowsy or very irritable during the day; is gaining weight slowly; or your child’s sleep leaves you exhausted or low for a long time. Call 115 if your child has trouble breathing, turns blue, has a fit or is limp and hard to wake.',
+            'Your child snores loudly almost every night, wheezes or seems to pause breathing in sleep; wakes at night with fever, ear pain or unusual crying; is drowsy or very irritable during the day; is gaining weight slowly; or your child’s sleep leaves you exhausted or low for a long time.',
           ),
         ],
       },
@@ -1734,9 +1768,10 @@ export const seedArticles: SeedArticle[] = [
           p(
             'Không. AAP khuyên không dùng đồ quấn hay chăn có gắn vật nặng vì có thể đè lên ngực và phổi bé. Cũng không quấn bé khi ngủ chung giường với người lớn.',
           ),
+          urgent('Gọi {emergency} ngay khi', 'Bé khó thở, tím tái hoặc lả mềm.'),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Hai chân bé trông dài ngắn khác nhau, có tiếng lục cục khi cử động háng, một chân cử động khác chân kia; bé có nguy cơ loạn sản khớp háng như nằm ngôi mông khi mang thai hoặc người nhà từng bị. Gọi 115 nếu bé khó thở, tím tái hoặc lả mềm.',
+            'Hai chân bé trông dài ngắn khác nhau, có tiếng lục cục khi cử động háng, một chân cử động khác chân kia; bé có nguy cơ loạn sản khớp háng như nằm ngôi mông khi mang thai hoặc người nhà từng bị.',
           ),
         ],
         en: [
@@ -1768,9 +1803,13 @@ export const seedArticles: SeedArticle[] = [
           p(
             "No. The AAP advises against weighted swaddles or blankets because they can press on the baby's chest and lungs. Also, don't swaddle a baby who is sharing a bed with an adult.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or goes limp.',
+          ),
           doctor(
             'When to ask a doctor',
-            "Your baby's legs look different lengths, the hips click when moved, or one leg moves differently from the other; your baby has a higher chance of hip dysplasia, for example breech position in pregnancy or a family history. Call 115 if your baby has trouble breathing, turns blue or goes limp.",
+            "Your baby's legs look different lengths, the hips click when moved, or one leg moves differently from the other; your baby has a higher chance of hip dysplasia, for example breech position in pregnancy or a family history.",
           ),
         ],
       },
@@ -1819,7 +1858,14 @@ export const seedArticles: SeedArticle[] = [
             'Bé sơ sinh thường khóc 1–4 tiếng mỗi ngày. Lượng khóc tăng dần từ khoảng 2 tuần tuổi, cao nhất quanh 6–8 tuần, khi đó nhiều bé quấy khoảng 3 tiếng một ngày, rồi giảm còn 1–2 tiếng lúc 3–4 tháng. Đây là một giai đoạn phát triển bình thường, không có nghĩa là ba mẹ chăm sai.',
           ),
           p(
-            'Khóc dạ đề (colic) là khi bé khoẻ mạnh nhưng khóc rất nhiều, khó dỗ mà không rõ lý do. Có hai cách định nghĩa khác nhau: NHS (Anh) dùng “quy tắc số 3”, tức khóc hơn 3 tiếng một ngày, hơn 3 ngày một tuần, kéo dài ít nhất 1 tuần; còn tiêu chuẩn Rome IV mà bác sĩ dùng không đòi số giờ, chỉ cần bé dưới 5 tháng, khóc quấy kéo dài lặp lại không rõ nguyên nhân, người chăm không dỗ được, và bé không sốt, không ốm, vẫn tăng cân tốt. Cơn khóc thường vào chiều tối; bé có thể đỏ mặt, nắm chặt tay, co chân lên bụng, ưỡn lưng.',
+            'Khóc dạ đề (colic) là khi bé khoẻ mạnh nhưng khóc rất nhiều, khó dỗ mà không rõ lý do. Có hai cách định nghĩa khác nhau:',
+          ),
+          ul(
+            'NHS (Anh) dùng “quy tắc số 3”: khóc hơn 3 tiếng một ngày, hơn 3 ngày một tuần, kéo dài ít nhất 1 tuần.',
+            'Tiêu chuẩn Rome IV mà bác sĩ dùng không đòi số giờ: chỉ cần bé dưới 5 tháng, khóc quấy kéo dài, lặp lại không rõ nguyên nhân, người chăm không dỗ được, và bé không sốt, không ốm, vẫn tăng cân tốt.',
+          ),
+          p(
+            'Cơn khóc thường vào chiều tối; bé có thể đỏ mặt, nắm chặt tay, co chân lên bụng, ưỡn lưng.',
           ),
           p(
             'Nguyên nhân chưa rõ. Nhiều bé nhạy cảm với kích thích và khó tự dịu. Dưới 5% trường hợp liên quan đến nhạy cảm với thức ăn như đạm sữa bò; trào ngược hay táo bón cũng có thể khiến bé khóc. Khóc dạ đề thường hết khi bé 3–4 tháng, có bé kéo dài đến 6 tháng.',
@@ -1841,7 +1887,10 @@ export const seedArticles: SeedArticle[] = [
             'Thử một cách trong vài phút, đừng đổi liên tục; có lúc bé chỉ cần ít kích thích hơn và được đặt nằm yên.',
           ),
           p(
-            'Về chế độ ăn của mẹ, NHS cho rằng mẹ cho con bú không cần đổi chế độ ăn, còn AAP gợi ý có thể thử bỏ từng thứ như sữa bò hay cà phê trong khoảng 2 tuần. Cách an toàn là không tự kiêng nhiều thứ, chỉ thử khi đã hỏi bác sĩ. Với men vi sinh và thuốc nhỏ chống đầy hơi, NHS không khuyến nghị vì thiếu bằng chứng; một phân tích gộp thấy chủng lợi khuẩn L. reuteri DSM17938 giúp giảm khóc ở bé bú mẹ nhưng chưa đủ dữ liệu ở bé bú sữa công thức. Hãy hỏi bác sĩ trước khi cho bé dùng bất kỳ loại nào.',
+            'Về chế độ ăn của mẹ, NHS cho rằng mẹ cho con bú không cần đổi chế độ ăn, còn AAP gợi ý có thể thử bỏ từng thứ như sữa bò hay cà phê trong khoảng 2 tuần. Cách an toàn là không tự kiêng nhiều thứ, chỉ thử khi đã hỏi bác sĩ.',
+          ),
+          p(
+            'Với men vi sinh và thuốc nhỏ chống đầy hơi, NHS không khuyến nghị vì thiếu bằng chứng; một phân tích gộp thấy chủng lợi khuẩn L. reuteri DSM17938 giúp giảm khóc ở bé bú mẹ nhưng chưa đủ dữ liệu ở bé bú sữa công thức. Hãy hỏi bác sĩ trước khi cho bé dùng bất kỳ loại nào.',
           ),
           h('Khi ba mẹ thấy mình sắp không chịu nổi'),
           p(
@@ -1870,9 +1919,9 @@ export const seedArticles: SeedArticle[] = [
             '“Cho bé uống nước lá, nước sắc, thuốc nam, nước đường cho hết đau bụng”: ông bà mong cháu dễ chịu. Nhưng bé dưới 6 tháng chỉ cần sữa, và các loại thảo dược chưa có bằng chứng giúp giảm khóc dạ đề. Nên: không cho bé uống gì ngoài sữa nếu bác sĩ không chỉ định; hỏi bác sĩ trước khi dùng bất kỳ loại giọt, men hay thuốc nào.',
             '“Đưa võng thật mạnh, xóc mạnh, tung bé lên cho bé nín”: người dỗ thường không nghĩ là nguy hiểm. Nhưng rung lắc mạnh có thể làm tổn thương não của bé. Nên: chỉ đung đưa nhẹ nhàng, êm; khi thấy mình đang bực, đặt bé vào nôi và rời đi vài phút.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khóc thét the thé, khóc yếu hoặc rên khác hẳn mọi khi; lả mềm, khó đánh thức, không phản ứng; khó thở, tím tái hoặc da xám, nhợt, loang lổ; co giật; thóp phồng; phát ban không mất khi ấn; nôn ra dịch xanh; nghi bé bị ngã hay bị lắc.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khóc thét the thé, khóc yếu hoặc rên khác hẳn mọi khi; lả mềm, khó đánh thức, không phản ứng; khó thở, tím tái hoặc da xám, nhợt, loang lổ; co giật; thóp phồng; phát ban không mất khi ấn; nôn ra dịch xanh; nghi bé bị ngã hay bị lắc. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -1889,7 +1938,14 @@ export const seedArticles: SeedArticle[] = [
             "Newborns commonly cry 1–4 hours a day. Crying builds from about 2 weeks, peaks around 6–8 weeks, when many babies fuss for about 3 hours a day, and drops to 1–2 hours by 3–4 months. This is a normal stage of development and doesn't mean you are doing anything wrong.",
           ),
           p(
-            'Colic is when a healthy baby cries a great deal and is hard to settle for no clear reason. There are two different definitions: the UK\'s NHS uses the "rule of three", meaning crying more than 3 hours a day, more than 3 days a week, for at least 1 week; the Rome IV criteria used by doctors set no number of hours, only that the baby is under 5 months, has repeated, prolonged crying with no obvious cause that carers can\'t prevent or settle, and has no fever or illness and is growing well. Bouts are often in the evening; babies may go red, clench their fists, pull their knees up or arch their back.',
+            'Colic is when a healthy baby cries a great deal and is hard to settle for no clear reason. There are two different definitions:',
+          ),
+          ul(
+            'The UK\'s NHS uses the "rule of three": crying more than 3 hours a day, more than 3 days a week, for at least 1 week.',
+            "The Rome IV criteria used by doctors set no number of hours: the baby is under 5 months, has repeated, prolonged crying with no obvious cause that carers can't prevent or settle, and has no fever or illness and is growing well.",
+          ),
+          p(
+            'Bouts are often in the evening; babies may go red, clench their fists, pull their knees up or arch their back.',
           ),
           p(
             "The cause is not clear. Many babies are sensitive to stimulation and find it hard to calm themselves. Fewer than 5% of cases are linked to a food sensitivity such as cow's milk protein; reflux or constipation can also make a baby cry. Colic usually stops by 3–4 months, and in some babies lasts until 6 months.",
@@ -1911,7 +1967,10 @@ export const seedArticles: SeedArticle[] = [
             'Try one approach for a few minutes rather than switching constantly; sometimes a baby just needs less stimulation and to be laid down quietly.',
           ),
           p(
-            "On the breastfeeding mother's diet, the NHS says there is no need to change it, while the AAP suggests trying to remove one item at a time, such as dairy or caffeine, for about 2 weeks. The safest approach is not to cut out lots of foods on your own, and to try only after talking to a doctor. Probiotics and anti-colic drops are not recommended by the NHS because the evidence is lacking; a meta-analysis found that the probiotic strain L. reuteri DSM17938 reduced crying in breastfed babies, but there was not enough data for formula-fed babies. Ask a doctor before giving your baby any of these.",
+            "On the breastfeeding mother's diet, the NHS says there is no need to change it, while the AAP suggests trying to remove one item at a time, such as dairy or caffeine, for about 2 weeks. The safest approach is not to cut out lots of foods on your own, and to try only after talking to a doctor.",
+          ),
+          p(
+            'Probiotics and anti-colic drops are not recommended by the NHS because the evidence is lacking; a meta-analysis found that the probiotic strain L. reuteri DSM17938 reduced crying in breastfed babies, but there was not enough data for formula-fed babies. Ask a doctor before giving your baby any of these.',
           ),
           h('When you feel you can’t cope'),
           p(
@@ -1940,9 +1999,9 @@ export const seedArticles: SeedArticle[] = [
             '"Give herbal water, decoctions, traditional remedies or sugar water for tummy ache": grandparents want the baby to feel better. But babies under 6 months need only milk, and herbal remedies have no evidence of easing colic. Instead: give nothing but milk unless a doctor advises otherwise; ask a doctor before using any drops, probiotics or medicines.',
             '"Swing the hammock hard, jiggle or toss the baby to stop the crying": people soothing a baby often do not see the danger. But vigorous shaking can injure the brain. Instead: rock only gently and smoothly; when you feel angry, put your baby in the crib and step away for a few minutes.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby has a high-pitched, weak or moaning cry unlike their usual one; is floppy, hard to wake or unresponsive; has trouble breathing, turns blue or has grey, pale or blotchy skin; has a fit; a bulging soft spot; a rash that does not fade when pressed; green vomit; or may have been dropped or shaken.',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has a high-pitched, weak or moaning cry unlike their usual one; is floppy, hard to wake or unresponsive; has trouble breathing, turns blue or has grey, pale or blotchy skin; has a fit; a bulging soft spot; a rash that does not fade when pressed; green vomit; or may have been dropped or shaken. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -2074,9 +2133,9 @@ export const seedArticles: SeedArticle[] = [
             '“Phải ăn móng giò, kiêng đủ thứ mới có sữa” → Món ăn nấu vì thương mẹ là điều quý, nhưng mẹ không cần chế độ ăn đặc biệt, còn kiêng khem dễ làm mẹ thiếu chất. Lượng sữa phụ thuộc chủ yếu vào việc bé bú thường xuyên, ngậm đúng. → Ăn đa dạng, uống nước khi khát, cho bú theo nhu cầu.',
             '“Mẹ bị cảm cúm thì phải ngừng cho bú” → Cúm không lây qua sữa mẹ, và sữa mẹ có kháng thể giúp bảo vệ bé. → Rửa tay trước khi bế bé, có thể đeo khẩu trang, tiếp tục cho bú; hỏi bác sĩ nếu mẹ ốm nặng hoặc cần dùng thuốc.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, tím tái hoặc có lúc ngừng thở; bé li bì, rất khó đánh thức, không chịu bú; bé có dấu hiệu mất nước rõ như rất ít hoặc không có tã ướt, môi khô, thóp lõm. Cũng gọi 115 nếu mẹ thấy rất mệt, lả đi hoặc lơ mơ, nhất là khi đang sốt.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, tím tái hoặc có lúc ngừng thở; bé li bì, rất khó đánh thức, không chịu bú; bé có dấu hiệu mất nước rõ như rất ít hoặc không có tã ướt, môi khô, thóp lõm. Cũng gọi {emergency} nếu mẹ thấy rất mệt, lả đi hoặc lơ mơ, nhất là khi đang sốt.',
           ),
           doctor(
             'Đưa bé đi khám sớm (trong ngày) khi',
@@ -2143,8 +2202,8 @@ export const seedArticles: SeedArticle[] = [
             "“You must eat pig's trotter soup and avoid lots of foods to make milk” → Food cooked with love for a new mother is precious, but you don't need a special diet, and avoiding foods can leave you short of nutrients. Milk supply depends mainly on frequent feeding and a good latch. → Eat a varied diet, drink when thirsty and feed on demand.",
             '“A mother with a cold or flu must stop breastfeeding” → Flu is not passed on through breast milk, and breast milk contains antibodies that help protect your baby. → Wash your hands before holding your baby, wear a mask if you like and keep breastfeeding; ask a doctor if you are very unwell or need medicine.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
+          urgent(
+            'Call {emergency} now if',
             'Your baby has trouble breathing, turns blue or has pauses in breathing; is very drowsy, very hard to wake or will not feed; or shows clear signs of dehydration such as very few or no wet diapers, a dry mouth or a sunken soft spot. Call too if you, the mother, feel very unwell, faint or confused, especially with a fever.',
           ),
           doctor(
@@ -2272,9 +2331,13 @@ export const seedArticles: SeedArticle[] = [
             '“Sữa bé bú dở để dành cho cữ sau” → Sau khi bé bú, sữa đã lẫn nước bọt của bé. → Bỏ phần thừa trong vòng 2 giờ; chia phần nhỏ để đỡ phí.',
             '“Sữa rã đông dùng không hết thì cấp đông lại” → Sữa đã rã đông không được cấp đông lại. → Chỉ rã đông lượng đủ cho một hai cữ.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, tím tái hoặc li bì. Nếu bé sặc sữa, làm theo hướng dẫn trong mục Sơ cứu trẻ em của Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Mẹ nên đi khám khi một vùng vú sưng, đỏ, nóng, đau kèm sốt hoặc mệt như cúm; đầu vú nứt, chảy máu hoặc đau kéo dài khi vắt. Đưa bé đi khám nếu bé bú kém, ít tã ướt, nôn nhiều hoặc tiêu chảy. Gọi 115 nếu bé khó thở, tím tái hoặc li bì; nếu bé sặc sữa, xem hướng dẫn trong mục Sơ cứu trẻ em của Child Life.',
+            'Mẹ nên đi khám khi một vùng vú sưng, đỏ, nóng, đau kèm sốt hoặc mệt như cúm; đầu vú nứt, chảy máu hoặc đau kéo dài khi vắt. Đưa bé đi khám nếu bé bú kém, ít tã ướt, nôn nhiều hoặc tiêu chảy.',
           ),
         ],
         en: [
@@ -2328,9 +2391,13 @@ export const seedArticles: SeedArticle[] = [
             '“Save a half-finished bottle for the next feed” → Once your baby has fed, the milk contains their saliva. → Throw leftovers away within 2 hours; store small portions to cut waste.',
             "“Refreeze thawed milk if it isn't all used” → Thawed breast milk must never be refrozen. → Thaw only enough for one or two feeds.",
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or is very drowsy. If your baby chokes on milk, follow the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          ),
           doctor(
             'When to ask a doctor',
-            'See a doctor yourself if part of a breast is swollen, red, hot and painful with fever or flu-like feelings, or if your nipples are cracked, bleeding or keep hurting when you express. Take your baby to a doctor if they feed poorly, have fewer wet diapers, vomit a lot or have diarrhoea. Call 115 (Vietnam emergency) if your baby has trouble breathing, turns blue or is very drowsy; if your baby chokes on milk, see the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'See a doctor yourself if part of a breast is swollen, red, hot and painful with fever or flu-like feelings, or if your nipples are cracked, bleeding or keep hurting when you express. Take your baby to a doctor if they feed poorly, have fewer wet diapers, vomit a lot or have diarrhoea.',
           ),
         ],
       },
@@ -2444,9 +2511,9 @@ export const seedArticles: SeedArticle[] = [
             '“Sữa đặc có đường cũng là sữa” → Sữa đặc rất nhiều đường, không phải sữa công thức và không dùng cho bé dưới 1 tuổi. → Chỉ dùng sữa mẹ hoặc sữa công thức dành cho trẻ nhũ nhi.',
             '“Pha sẵn một bình rồi ủ ấm cả đêm cho tiện” → Sữa ấm để lâu là môi trường tốt cho vi khuẩn phát triển. → Pha cữ nào dùng cữ nấy; chuẩn bị sẵn bình sạch, hộp sữa và ấm đun nước để pha nhanh khi bé dậy.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, tím tái hoặc sặc sữa mà không hồi lại nhanh (xem hướng dẫn trong mục Sơ cứu trẻ em của Child Life); bé li bì, khó đánh thức; nôn ra dịch xanh hoặc có máu; môi, mặt sưng hoặc nổi mẩn kèm khó thở sau khi bú.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, tím tái hoặc sặc sữa mà không hồi lại nhanh (xem hướng dẫn trong mục Sơ cứu trẻ em của Child Life); bé li bì, khó đánh thức; nôn ra dịch xanh hoặc có máu; môi, mặt sưng hoặc nổi mẩn kèm khó thở sau khi bú. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám sớm (trong ngày) khi',
@@ -2515,9 +2582,9 @@ export const seedArticles: SeedArticle[] = [
             '“Sweetened condensed milk is milk too” → Condensed milk is very high in sugar, is not infant formula and should not be given to babies under 1. → Use only breast milk or infant formula.',
             '“Make up one bottle and keep it warm all night” → Warm milk left standing is ideal for germs to grow. → Make each feed fresh; keep a clean bottle, the tin and a kettle ready so you can make it quickly when your baby wakes.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby has trouble breathing, turns blue or chokes on milk and does not recover quickly (see the Sơ cứu trẻ em (First aid) guide in Child Life); is very drowsy or hard to wake; vomits green fluid or blood; or has swelling of the lips or face, or a rash with breathing difficulty, after a feed.',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has trouble breathing, turns blue or chokes on milk and does not recover quickly (see the Sơ cứu trẻ em (First aid) guide in Child Life); is very drowsy or hard to wake; vomits green fluid or blood; or has swelling of the lips or face, or a rash with breathing difficulty, after a feed. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -2596,7 +2663,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Hiểu đúng về ọc sữa và nấc cụt'),
           p(
-            'Ở bé nhỏ, cơ ở chỗ nối thực quản và dạ dày chưa khép chặt, dạ dày lại nhỏ, nên sữa dễ trào lên miệng, nhất là khi bé bú no, nuốt hơi hoặc bị xoay trở ngay sau bú. Theo AAP, trào ngược thường bắt đầu khi bé 2–3 tuần, nhiều nhất lúc 4–5 tháng và hết ở phần lớn bé đủ tháng vào 9–12 tháng. NHS cũng cho biết tình trạng này thường bắt đầu trước 8 tuần và cải thiện vào khoảng 1 tuổi, khi cơ khỏe dần.',
+            'Ở bé nhỏ, cơ ở chỗ nối thực quản và dạ dày chưa khép chặt, dạ dày lại nhỏ, nên sữa dễ trào lên miệng, nhất là khi bé bú no, nuốt hơi hoặc bị xoay trở ngay sau bú.',
+          ),
+          p(
+            'Theo AAP, trào ngược thường bắt đầu khi bé 2–3 tuần, nhiều nhất lúc 4–5 tháng và hết ở phần lớn bé đủ tháng vào 9–12 tháng. NHS cũng cho biết tình trạng này thường bắt đầu trước 8 tuần và cải thiện vào khoảng 1 tuổi, khi cơ khỏe dần.',
           ),
           p(
             'Ọc sữa thường nhẹ nhàng, lượng ít (dù trông có vẻ nhiều trên áo), bé không phải gắng sức và không khó chịu; nhiều bé “trớ mà vẫn vui”. Nôn thì khác: sữa bị tống ra mạnh, lượng nhiều, bé rướn người, có khi lặp lại sau mỗi cữ. Một số bé trào ngược mà không trớ ra ngoài, biểu hiện bằng ho, nấc khi bú, quấy khóc, ưỡn người.',
@@ -2620,7 +2690,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           tip(
             'Nếu bé bị sặc sữa',
-            'Bé ho sặc, tím tái sau khi trớ: làm theo hướng dẫn trong mục Sơ cứu trẻ em của Child Life (Sặc sữa) và gọi 115 nếu bé không thở lại bình thường.',
+            'Bé ho sặc, tím tái sau khi trớ: làm theo hướng dẫn trong mục Sơ cứu trẻ em của Child Life (Sặc sữa) và gọi cấp cứu {emergency} nếu bé không thở lại bình thường.',
           ),
           h('Theo dõi'),
           ul(
@@ -2637,9 +2707,9 @@ export const seedArticles: SeedArticle[] = [
             '“Bé trớ nhiều là do sữa mẹ không hợp, phải chuyển sang sữa ngoài” → Trớ gặp ở cả bé bú mẹ lẫn bú bình, chủ yếu do cơ ở dạ dày chưa trưởng thành. → Tiếp tục cho bú mẹ; nếu lo, hỏi bác sĩ trước khi đổi sữa.',
             '“Bé nấc là do lạnh bụng, phải ủ thật ấm hoặc cho uống nước” → Nấc ở bé nhỏ thường liên quan đến lúc bú như bú no, nuốt hơi; bé dưới 6 tháng không cần uống nước. → Vỗ ợ hơi, cho bú thêm một chút, giữ bé thoải mái.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé sặc, tím tái, khó thở hoặc có lúc ngừng thở; nôn ra dịch xanh lá hoặc có máu; bé li bì, khó đánh thức; bụng chướng căng, bé đau dữ dội; bé nôn liên tục không giữ được sữa và có dấu hiệu mất nước.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé sặc, tím tái, khó thở hoặc có lúc ngừng thở; nôn ra dịch xanh lá hoặc có máu; bé li bì, khó đánh thức; bụng chướng căng, bé đau dữ dội; bé nôn liên tục không giữ được sữa và có dấu hiệu mất nước. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám sớm khi',
@@ -2653,7 +2723,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Understanding spit-up and hiccups'),
           p(
-            "In young babies the muscle where the food pipe meets the stomach isn't fully tight yet, and the stomach is small, so milk easily comes back up, especially when your baby is full, has swallowed air or is moved around straight after a feed. According to the AAP, reflux usually starts at 2–3 weeks, peaks at 4–5 months and goes away in most full-term babies by 9–12 months. The NHS also says it usually starts before 8 weeks and improves by about 1 year as the muscle gets stronger.",
+            "In young babies the muscle where the food pipe meets the stomach isn't fully tight yet, and the stomach is small, so milk easily comes back up, especially when your baby is full, has swallowed air or is moved around straight after a feed.",
+          ),
+          p(
+            'According to the AAP, reflux usually starts at 2–3 weeks, peaks at 4–5 months and goes away in most full-term babies by 9–12 months. The NHS also says it usually starts before 8 weeks and improves by about 1 year as the muscle gets stronger.',
           ),
           p(
             "Spit-up is usually gentle and small in amount (even if it looks a lot on clothes); your baby doesn't strain and isn't bothered, and many are “happy spitters”. Vomiting is different: milk is forced out, in larger amounts, your baby heaves, and it may happen after every feed. Some babies have reflux without bringing milk up, showing it by coughing or hiccupping during feeds, fussing and arching their back.",
@@ -2677,7 +2750,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           tip(
             'If your baby chokes on milk',
-            "If your baby coughs, splutters or turns blue after spitting up: follow the Sơ cứu trẻ em (First aid) guide in Child Life (Milk choking) and call 115 (Vietnam emergency) if they don't start breathing normally again.",
+            "If your baby coughs, splutters or turns blue after spitting up: follow the Sơ cứu trẻ em (First aid) guide in Child Life (Milk choking) and call {emergency} if they don't start breathing normally again.",
           ),
           h('What to watch'),
           ul(
@@ -2694,9 +2767,9 @@ export const seedArticles: SeedArticle[] = [
             "“Lots of spit-up means breast milk doesn't suit the baby, so switch to formula” → Spit-up happens in breastfed and bottle-fed babies alike, mainly because the stomach muscle is still immature. → Keep breastfeeding; if you are worried, talk to a doctor before changing milk.",
             "“Hiccups mean a cold tummy, so wrap the baby up or give water” → Hiccups in young babies are usually linked to feeding, such as being full or swallowing air; babies under 6 months don't need water. → Burp, offer a little more feed and keep your baby comfortable.",
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            "Your baby chokes, turns blue, has trouble breathing or pauses in breathing; vomits green fluid or blood; is very drowsy or hard to wake; has a tight, swollen tummy and seems in severe pain; or keeps vomiting, can't keep milk down and shows signs of dehydration.",
+          urgent(
+            'Call {emergency} now if',
+            "Your baby chokes, turns blue, has trouble breathing or pauses in breathing; vomits green fluid or blood; is very drowsy or hard to wake; has a tight, swollen tummy and seems in severe pain; or keeps vomiting, can't keep milk down and shows signs of dehydration. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor soon if',
@@ -2775,7 +2848,10 @@ export const seedArticles: SeedArticle[] = [
             'Vitamin D giúp cơ thể hấp thu canxi để xương chắc khỏe; thiếu kéo dài có thể gây còi xương. Sữa mẹ chứa ít vitamin D, còn sữa công thức đã được bổ sung sẵn.',
           ),
           p(
-            'AAP khuyên bé bú mẹ hoàn toàn hoặc một phần uống 400 IU (10 microgam) vitamin D mỗi ngày, bắt đầu từ những ngày đầu sau sinh. NHS khuyên 8,5–10 microgam mỗi ngày cho bé bú mẹ, từ lúc sinh đến 1 tuổi. Với bé bú sữa công thức, các tổ chức dùng mốc khác nhau: NHS cho rằng không cần bổ sung nếu bé uống trên 500 ml sữa công thức mỗi ngày, còn AAP dùng mốc cao hơn: dưới khoảng 1 lít (32 oz) sữa công thức mỗi ngày thì cần bổ sung. Vì vậy bé bú kết hợp nên hỏi bác sĩ để quyết định.',
+            'AAP khuyên bé bú mẹ hoàn toàn hoặc một phần uống 400 IU (10 microgam) vitamin D mỗi ngày, bắt đầu từ những ngày đầu sau sinh. NHS khuyên 8,5–10 microgam mỗi ngày cho bé bú mẹ, từ lúc sinh đến 1 tuổi.',
+          ),
+          p(
+            'Với bé bú sữa công thức, các tổ chức dùng mốc khác nhau: NHS cho rằng không cần bổ sung nếu bé uống trên 500 ml sữa công thức mỗi ngày, còn AAP dùng mốc cao hơn: dưới khoảng 1 lít (32 oz) sữa công thức mỗi ngày thì cần bổ sung. Vì vậy bé bú kết hợp nên hỏi bác sĩ để quyết định.',
           ),
           p(
             'Ánh nắng giúp da tạo vitamin D, nhưng không phải nguồn đáng tin và an toàn cho bé nhỏ: AAP khuyên giữ bé dưới 6 tháng tránh nắng trực tiếp, và NHS lưu ý trẻ nhỏ vẫn cần uống vitamin D dù có thời gian ở ngoài trời.',
@@ -2824,9 +2900,9 @@ export const seedArticles: SeedArticle[] = [
             '“Cho bé uống sữa tươi, sữa bò thay sữa mẹ cho chắc xương” → Trước 12 tháng, sữa bò có thể gây mất máu ẩn qua phân và làm giảm hấp thu sắt. → Dưới 1 tuổi chỉ dùng sữa mẹ hoặc sữa công thức; sau 1 tuổi sữa bò là đồ uống, không thay bữa ăn.',
             '“Ăn nhiều rau dền, rau ngót là đủ sắt bổ máu” → Sắt từ rau được hấp thu kém hơn sắt từ thịt, cá. → Kết hợp thịt, cá, trứng với rau và trái cây giàu vitamin C.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé nuốt nhầm thuốc sắt, vitamin hoặc thuốc của người lớn, kể cả khi bé chưa có biểu hiện gì: mang theo vỏ hộp và xem hướng dẫn trong mục Sơ cứu trẻ em của Child Life. Gọi ngay nếu bé nôn nhiều, nôn ra máu, li bì hoặc khó thở.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé nuốt nhầm thuốc sắt, vitamin hoặc thuốc của người lớn, kể cả khi bé chưa có biểu hiện gì (mang theo vỏ hộp và xem hướng dẫn trong mục Sơ cứu trẻ em của Child Life); bé nôn nhiều, nôn ra máu, li bì hoặc khó thở. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
@@ -2843,7 +2919,10 @@ export const seedArticles: SeedArticle[] = [
             'Vitamin D helps the body absorb calcium for strong bones; a long-term shortage can cause rickets. Breast milk contains little vitamin D, while infant formula already has it added.',
           ),
           p(
-            'The AAP recommends 400 IU (10 micrograms) of vitamin D a day for fully or partly breastfed babies, starting in the first few days after birth. The NHS recommends 8.5–10 micrograms a day for breastfed babies from birth to 1 year. For formula-fed babies, guidelines use different thresholds: the NHS says no supplement is needed if your baby drinks more than 500 ml of formula a day, while the AAP uses a higher threshold: supplement if your baby drinks less than about 1 litre (32 oz) of formula a day. So if your baby is combination-fed, ask your doctor.',
+            'The AAP recommends 400 IU (10 micrograms) of vitamin D a day for fully or partly breastfed babies, starting in the first few days after birth. The NHS recommends 8.5–10 micrograms a day for breastfed babies from birth to 1 year.',
+          ),
+          p(
+            'For formula-fed babies, guidelines use different thresholds: the NHS says no supplement is needed if your baby drinks more than 500 ml of formula a day, while the AAP uses a higher threshold: supplement if your baby drinks less than about 1 litre (32 oz) of formula a day. So if your baby is combination-fed, ask your doctor.',
           ),
           p(
             'Sunlight helps skin make vitamin D, but it is not a reliable or safe source for young babies: the AAP advises keeping babies under 6 months out of direct sunlight, and the NHS notes that young children still need vitamin drops even if they spend time outdoors.',
@@ -2892,9 +2971,9 @@ export const seedArticles: SeedArticle[] = [
             "“Give fresh cow's milk instead of breast milk for strong bones” → Before 12 months, cow's milk can cause hidden blood loss in the stool and reduce iron absorption. → Under 1, use only breast milk or formula; after 1, cow's milk is a drink, not a replacement for meals.",
             '“Plenty of amaranth or sweet leaf greens gives enough iron for the blood” → Iron from vegetables is absorbed less well than iron from meat and fish. → Combine meat, fish and eggs with vegetables and fruit rich in vitamin C.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            "Your child swallows iron tablets, vitamins or an adult's medicine by accident, even if they seem fine: take the packaging with you and see the Sơ cứu trẻ em (First aid) guide in Child Life. Call 115 (Vietnam emergency) straight away if your child vomits a lot, vomits blood, is very drowsy or has trouble breathing.",
+          urgent(
+            'Call {emergency} now if',
+            "Your child swallows iron tablets, vitamins or an adult's medicine by accident, even if they seem fine (take the packaging with you and see the Sơ cứu trẻ em (First aid) guide in Child Life); or vomits a lot, vomits blood, is very drowsy or has trouble breathing. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'When to ask a doctor',
@@ -2955,6 +3034,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'start',
       format: 'article',
       ageWeeks: { from: 17, to: 39 },
       readingMinutes: 6,
@@ -3024,9 +3104,13 @@ export const seedArticles: SeedArticle[] = [
             'Bắt đầu bằng nước cháo loãng, nước rau hay nước hầm xương cho “dễ tiêu” → Nước loãng chủ yếu là nước, ít năng lượng, còn đạm và sắt phần lớn nằm trong miếng thịt, cá → Cho bé ăn cả cái: cháo đặc vừa phải, thịt cá nghiền hoặc băm nhuyễn.',
             'Phải theo đúng một trường phái: truyền thống, kiểu Nhật hay BLW → Theo NHS, không có cách đúng hay sai, và bé tự ăn không làm tăng nguy cơ hóc so với đút thìa nếu thức ăn mềm và có người lớn ngồi cạnh → Chọn cách hợp với gia đình, có thể kết hợp, và tăng dần độ thô theo khả năng của bé.',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, tím tái, lả đi khi hoặc sau khi ăn. Trong lúc chờ, xem mục Sơ cứu trẻ em › Hóc dị vật hoặc Sốc phản vệ trong Child Life.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé sinh non, nhẹ cân hoặc có bệnh cần chế độ ăn riêng; bé đã quá 6 tháng một thời gian mà vẫn chưa có các dấu hiệu sẵn sàng hoặc luôn từ chối thức ăn; bé hay ho sặc, nôn, khó nuốt khi ăn; bé chậm tăng cân; bé bị chàm nặng hoặc đã từng dị ứng thức ăn. Gọi 115 nếu bé khó thở, tím tái, lả đi khi hoặc sau khi ăn, và xem mục Sơ cứu trẻ em › Hóc dị vật hoặc Sốc phản vệ trong Child Life.',
+            'Bé sinh non, nhẹ cân hoặc có bệnh cần chế độ ăn riêng; bé đã quá 6 tháng một thời gian mà vẫn chưa có các dấu hiệu sẵn sàng hoặc luôn từ chối thức ăn; bé hay ho sặc, nôn, khó nuốt khi ăn; bé chậm tăng cân; bé bị chàm nặng hoặc đã từng dị ứng thức ăn.',
           ),
         ],
         en: [
@@ -3085,9 +3169,13 @@ export const seedArticles: SeedArticle[] = [
             'Starting with thin rice water, vegetable water or bone broth because it is "easier to digest" → Thin liquids are mostly water with little energy, while most of the protein and iron stay in the meat and fish → Give your baby the solids: reasonably thick porridge, with meat or fish mashed or finely minced.',
             'You must stick to one method: traditional, Japanese-style or BLW → According to the NHS there is no right or wrong way, and self-feeding does not raise the risk of choking compared with spoon-feeding when food is soft and an adult sits alongside → Choose what suits your family, combine methods if you like, and increase texture as your baby can manage.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or goes limp during or after eating. While you wait, see the Sơ cứu trẻ em (First aid) guide in Child Life for Choking or Anaphylaxis.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby was born preterm, has low weight or a condition that needs a special diet; your baby is well past 6 months and still shows no signs of readiness or always refuses food; your baby often coughs, chokes, vomits or struggles to swallow when eating; poor weight gain; severe eczema or a previous food allergy. Call 115 (Vietnam emergency) if your baby has trouble breathing, turns blue or goes limp during or after eating, and see the Sơ cứu trẻ em (First aid) guide in Child Life for Choking or Anaphylaxis.',
+            'Your baby was born preterm, has low weight or a condition that needs a special diet; your baby is well past 6 months and still shows no signs of readiness or always refuses food; your baby often coughs, chokes, vomits or struggles to swallow when eating; poor weight gain; severe eczema or a previous food allergy.',
           ),
         ],
       },
@@ -3141,6 +3229,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'safety',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 6,
@@ -3164,7 +3253,7 @@ export const seedArticles: SeedArticle[] = [
             'Khi mới tập ăn, phản xạ oẹ giúp bé đẩy miếng thức ăn quá to ra phía trước miệng. Theo NHS, lúc oẹ bé có thể chảy nước mắt, thè lưỡi, nôn khan hoặc nôn ra một ít. Trông có vẻ đáng sợ, nhưng đó là cách bé học điều chỉnh lượng thức ăn có thể nhai và nuốt. Ba mẹ hãy bình tĩnh, ngồi cạnh, không thò tay vào miệng bé và để bé tự xử lý.',
           ),
           p(
-            'Hóc xảy ra khi thức ăn hoặc dị vật chặn đường thở. Nếu bé còn ho to, khóc được thì hãy để bé tự ho và theo dõi sát. Nếu bé ho không ra tiếng, im lặng, không khóc được, không hít vào được hoặc môi tím tái, đó là cấp cứu: gọi 115 và làm ngay theo hướng dẫn trong mục Sơ cứu trẻ em › Hóc dị vật của Child Life.',
+            'Hóc xảy ra khi thức ăn hoặc dị vật chặn đường thở. Nếu bé còn ho to, khóc được thì hãy để bé tự ho và theo dõi sát. Nếu bé ho không ra tiếng, im lặng, không khóc được, không hít vào được hoặc môi tím tái, đó là cấp cứu: gọi {emergency} và làm ngay theo hướng dẫn trong mục Sơ cứu trẻ em › Hóc dị vật của Child Life.',
           ),
           p(
             'Trẻ nhỏ dễ hóc vì kỹ năng nhai nghiền chưa hoàn thiện và hay cho mọi thứ vào miệng. AAP khuyên tránh các thức ăn nguy cơ cao cho đến ít nhất 4 tuổi, còn NHS khuyên không cho các loại hạt nguyên hạt trước 5 tuổi; nên theo mốc 5 tuổi, an toàn hơn.',
@@ -3205,9 +3294,9 @@ export const seedArticles: SeedArticle[] = [
             'Thấy bé oẹ là quay lại cháo xay nhuyễn → Oẹ là một phần của việc học ăn, NHS khuyên tiếp tục cho bé tập thức ăn lợn cợn → Giữ độ thô phù hợp, ngồi cạnh bé và bình tĩnh.',
             'Khi bé hóc thì dốc ngược bé lên hoặc thò tay móc họng → Có thể đẩy dị vật vào sâu hơn → Làm theo các bước đúng độ tuổi trong mục Sơ cứu trẻ em › Hóc dị vật.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé ho không ra tiếng, không khóc, không thở được, tím tái hoặc lả đi; bé bất tỉnh sau khi hóc; nghi bé nuốt pin cúc áo hoặc nam châm, kể cả khi bé chưa có triệu chứng gì. Gọi 115 hoặc đến viện ngay; không gây nôn, và không cho bé ăn uống gì trừ khi nhân viên y tế hay trung tâm chống độc hướng dẫn. Ở Mỹ, trung tâm chống độc có thể hướng dẫn cho trẻ trên 1 tuổi uống mật ong trên đường đến viện khi nuốt pin cúc áo.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé ho không ra tiếng, không khóc, không thở được, tím tái hoặc lả đi; bé bất tỉnh sau khi hóc; nghi bé nuốt pin cúc áo hoặc nam châm, kể cả khi bé chưa có triệu chứng gì. Gọi {emergency} hoặc đến viện ngay; không gây nôn, và không cho bé ăn uống gì trừ khi nhân viên y tế hay trung tâm chống độc hướng dẫn. Ở Mỹ, trung tâm chống độc có thể hướng dẫn cho trẻ trên 1 tuổi uống mật ong trên đường đến viện khi nuốt pin cúc áo.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -3224,7 +3313,7 @@ export const seedArticles: SeedArticle[] = [
             "When babies start solids, the gag reflex helps them push a piece that is too big to the front of the mouth. According to the NHS, a gagging baby may have watery eyes, push the tongue out, retch or bring up a little food. It can look scary, but it is how babies learn to manage how much they can chew and swallow. Stay calm, sit beside them, don't put your fingers in their mouth and let them sort it out.",
           ),
           p(
-            'Choking happens when food or an object blocks the airway. If your baby is still coughing loudly or crying, let them keep coughing and watch closely. If the cough is silent, they cannot cry, cannot breathe in or their lips turn blue, it is an emergency: call 115 and follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life straight away.',
+            'Choking happens when food or an object blocks the airway. If your baby is still coughing loudly or crying, let them keep coughing and watch closely. If the cough is silent, they cannot cry, cannot breathe in or their lips turn blue, it is an emergency: call {emergency} and follow the Choking steps in the Sơ cứu trẻ em (First aid) guide in Child Life straight away.',
           ),
           p(
             'Young children choke easily because their chewing skills are still developing and they put everything in their mouths. The AAP advises keeping high-risk foods away until at least 4 years, while the NHS advises no whole nuts before 5 years; follow the safer age of 5.',
@@ -3265,9 +3354,9 @@ export const seedArticles: SeedArticle[] = [
             'Going back to smooth purée as soon as the baby gags → Gagging is part of learning to eat, and the NHS advises continuing to offer lumpy textures → Keep the texture suitable, sit with your baby and stay calm.',
             'Holding a choking baby upside down or hooking a finger into the throat → This can push the object further in → Follow the age-appropriate steps in the Sơ cứu trẻ em › Choking guide.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your child cannot cough out loud, cannot cry or breathe, turns blue or goes limp; becomes unconscious after choking; or you think they swallowed a button battery or magnet, even with no symptoms yet. Call emergency services (115 in Việt Nam) or go to hospital now; do not make them vomit, and give nothing to eat or drink unless a health worker or poison centre tells you to. In the US, poison centres may advise honey for children over 1 on the way to hospital after a button battery.',
+          urgent(
+            'Call {emergency} now if',
+            'Your child cannot cough out loud, cannot cry or breathe, turns blue or goes limp; becomes unconscious after choking; or you think they swallowed a button battery or magnet, even with no symptoms yet. Call {emergency} or go to hospital now; do not make them vomit, and give nothing to eat or drink unless a health worker or poison centre tells you to. In the US, poison centres may advise honey for children over 1 on the way to hospital after a button battery.',
           ),
           doctor(
             'See a doctor the same day if',
@@ -3334,6 +3423,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'allergy',
       format: 'article',
       ageWeeks: { from: 22, to: 60 },
       readingMinutes: 6,
@@ -3357,7 +3447,10 @@ export const seedArticles: SeedArticle[] = [
             'Dị ứng thức ăn là khi hệ miễn dịch phản ứng nhầm với một loại protein trong thức ăn. Các món hay gây dị ứng ở trẻ nhỏ gồm trứng, sữa bò, đậu phộng (lạc), các loại hạt như hạt điều, óc chó, vừng (mè), đậu nành, lúa mì, cá và hải sản có vỏ như tôm, cua.',
           ),
           p(
-            'Trước đây nhiều nơi khuyên kiêng các món này càng lâu càng tốt. Nghiên cứu LEAP cho thấy trẻ có nguy cơ cao được ăn đậu phộng đều đặn từ sớm giảm khoảng 80% nguy cơ dị ứng đậu phộng. Từ đó, AAP, NHS và các hội dị ứng Anh (BSACI), Úc (ASCIA), Canada (CSACI) đều khuyên không trì hoãn các món dễ dị ứng. NHS lưu ý trì hoãn trứng và đậu phộng quá 6–12 tháng tuổi có thể làm tăng nguy cơ dị ứng với chính các món này.',
+            'Trước đây nhiều nơi khuyên kiêng các món này càng lâu càng tốt. Nghiên cứu LEAP cho thấy trẻ có nguy cơ cao được ăn đậu phộng đều đặn từ sớm giảm khoảng 80% nguy cơ dị ứng đậu phộng.',
+          ),
+          p(
+            'Từ đó, AAP, NHS và các hội dị ứng Anh (BSACI), Úc (ASCIA), Canada (CSACI) đều khuyên không trì hoãn các món dễ dị ứng. NHS lưu ý trì hoãn trứng và đậu phộng quá 6–12 tháng tuổi có thể làm tăng nguy cơ dị ứng với chính các món này.',
           ),
           p(
             'Phần lớn bé ăn các món này lần đầu đều không sao, phản ứng nặng rất hiếm gặp. Chuẩn bị trước giúp ba mẹ bình tĩnh hơn. Mỗi bé một nhịp: chỉ bắt đầu khi bé đã ăn dặm được vài món thông thường.',
@@ -3389,7 +3482,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           ul(
             'Phản ứng nhẹ đến vừa: nổi mề đay, mẩn ngứa, sưng môi, mặt hoặc quanh mắt, nôn, đau bụng. Ngừng món đó, chụp ảnh vết mẩn và hỏi bác sĩ trước khi cho lại.',
-            'Phản ứng nặng (sốc phản vệ, hiếm gặp): khó thở, thở rít, khò khè, ho liên tục, khàn tiếng, sưng lưỡi, da tái, bé lả hoặc mềm nhũn. Gọi 115 ngay và làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
+            'Phản ứng nặng (sốc phản vệ, hiếm gặp): khó thở, thở rít, khò khè, ho liên tục, khàn tiếng, sưng lưỡi, da tái, bé lả hoặc mềm nhũn. Gọi cấp cứu {emergency} ngay và làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
             'Phản ứng chậm: chàm nặng lên, tiêu chảy hoặc táo bón, nôn trớ nhiều, bé từ chối ăn. Ghi lại món, lượng, giờ ăn và triệu chứng trong Child Life để đưa bác sĩ xem.',
           ),
           p(
@@ -3402,9 +3495,9 @@ export const seedArticles: SeedArticle[] = [
             'Bôi thức ăn lên da bé để “thử” trước → Không giúp phát hiện dị ứng, lại có thể gây đỏ da khiến ba mẹ hiểu nhầm → Thử bằng đường ăn với lượng nhỏ và theo dõi như trên.',
             'Bé ăn tôm một lần thấy ổn là xong, lâu lâu mới cho lại → Duy trì đều đặn mới giữ được tác dụng phòng ngừa → Đưa món đó vào thực đơn hằng tuần.',
           ),
-          doctor(
-            'Gọi 115 ngay khi',
-            'Sau khi ăn, bé khó thở, thở rít, khò khè, ho liên tục, khàn tiếng, sưng lưỡi hoặc họng, tím tái, da tái lạnh, lả đi hay mềm nhũn. Gọi 115 và trong lúc chờ, làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Sau khi ăn, bé khó thở, thở rít, khò khè, ho liên tục, khàn tiếng, sưng lưỡi hoặc họng, tím tái, da tái lạnh, lả đi hay mềm nhũn. Gọi {emergency} và trong lúc chờ, làm theo mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
           ),
           doctor(
             'Hỏi bác sĩ trước hoặc sớm khi',
@@ -3421,7 +3514,10 @@ export const seedArticles: SeedArticle[] = [
             "A food allergy happens when the immune system wrongly reacts to a protein in food. Common triggers in young children include egg, cow's milk, peanut, tree nuts such as cashew and walnut, sesame, soy, wheat, fish, and shellfish such as shrimp and crab.",
           ),
           p(
-            'In the past, families were often told to avoid these foods for as long as possible. The LEAP study showed that high-risk babies who ate peanut regularly from early on had about 80% lower risk of peanut allergy. Since then, the AAP, the NHS and the British (BSACI), Australian (ASCIA) and Canadian (CSACI) allergy societies all advise not delaying allergenic foods. The NHS notes that delaying egg and peanut beyond 6–12 months of age may increase the risk of allergy to those foods.',
+            'In the past, families were often told to avoid these foods for as long as possible. The LEAP study showed that high-risk babies who ate peanut regularly from early on had about 80% lower risk of peanut allergy.',
+          ),
+          p(
+            'Since then, the AAP, the NHS and the British (BSACI), Australian (ASCIA) and Canadian (CSACI) allergy societies all advise not delaying allergenic foods. The NHS notes that delaying egg and peanut beyond 6–12 months of age may increase the risk of allergy to those foods.',
           ),
           p(
             'Most babies have no problem the first time they eat these foods, and severe reactions are very rare. Being prepared helps you stay calm. Every baby has their own pace: start only once your baby is eating a few everyday foods.',
@@ -3453,7 +3549,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           ul(
             'Mild to moderate reactions: hives, itchy rash, swelling of the lips, face or around the eyes, vomiting, tummy pain. Stop that food, take a photo of the rash and ask the doctor before offering it again.',
-            'Severe reaction (anaphylaxis, rare): trouble breathing, noisy breathing, wheezing, persistent cough, hoarse voice, swollen tongue, pale skin, baby floppy or limp. Call 115 now and follow the Anaphylaxis steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+            'Severe reaction (anaphylaxis, rare): trouble breathing, noisy breathing, wheezing, persistent cough, hoarse voice, swollen tongue, pale skin, baby floppy or limp. Call {emergency} now and follow the Anaphylaxis steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
             'Delayed reactions: worsening eczema, diarrhea or constipation, frequent vomiting, refusing food. Log the food, amount, time and symptoms in Child Life to show the doctor.',
           ),
           p(
@@ -3466,9 +3562,9 @@ export const seedArticles: SeedArticle[] = [
             'Rubbing food on the baby\'s skin to "test" first → It does not detect allergy and can cause redness that is easily misread → Test by eating a small amount and watch as described above.',
             'Once the baby has eaten shrimp without trouble, it is fine to offer it only rarely → Regular eating is what keeps the protective effect → Make that food part of the weekly menu.',
           ),
-          doctor(
-            'Call 115 now if',
-            'After eating, your baby has trouble breathing, noisy breathing, wheezing, persistent coughing, a hoarse voice, a swollen tongue or throat, turns blue, has pale cold skin, or goes limp or floppy. Call 115 and, while you wait, follow the Anaphylaxis steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
+          urgent(
+            'Call {emergency} now if',
+            'After eating, your baby has trouble breathing, noisy breathing, wheezing, persistent coughing, a hoarse voice, a swollen tongue or throat, turns blue, has pale cold skin, or goes limp or floppy. Call {emergency} and, while you wait, follow the Anaphylaxis steps in the Sơ cứu trẻ em (First aid) guide in Child Life.',
           ),
           doctor(
             'Ask a doctor first, or soon, if',
@@ -3531,6 +3627,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'textures',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
       readingMinutes: 5,
@@ -3603,9 +3700,10 @@ export const seedArticles: SeedArticle[] = [
             'Nêm muối, nước mắm, hạt nêm cho bé “ăn ngon miệng” → Thận bé còn non; NHS khuyên không thêm muối, đường, và WHO khuyên trẻ nhỏ không ăn thức ăn nhiều đường, muối → Múc phần bé trước khi nêm; dùng vị tự nhiên của rau củ, thịt cá.',
             'Bé phải ăn hết bát mới đủ chất, nên dỗ dành, ép ăn → Ép ăn làm bé sợ bữa ăn, dễ sặc và khó tự nhận biết no đói → Cho ăn đáp ứng theo khuyến nghị của WHO: mời, khen, khuyến khích bé tự ăn và dừng khi bé no.',
           ),
+          urgent('Gọi {emergency} ngay khi', 'Bé khó thở, tím tái hoặc lả đi khi ăn.'),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé chậm tăng cân hoặc sụt cân; đã quá 9 tháng mà bé vẫn chỉ ăn được đồ xay nhuyễn, hay nôn hoặc sặc khi ăn đồ có hạt; bé từ chối cả một nhóm thực phẩm lớn trong thời gian dài; bé táo bón, tiêu chảy hoặc nổi mẩn sau ăn; gia đình ăn chay hoặc bé phải kiêng nhiều món. Gọi 115 nếu bé khó thở, tím tái hoặc lả đi khi ăn.',
+            'Bé chậm tăng cân hoặc sụt cân; đã quá 9 tháng mà bé vẫn chỉ ăn được đồ xay nhuyễn, hay nôn hoặc sặc khi ăn đồ có hạt; bé từ chối cả một nhóm thực phẩm lớn trong thời gian dài; bé táo bón, tiêu chảy hoặc nổi mẩn sau ăn; gia đình ăn chay hoặc bé phải kiêng nhiều món.',
           ),
         ],
         en: [
@@ -3667,9 +3765,13 @@ export const seedArticles: SeedArticle[] = [
             'Adding salt, fish sauce or stock powder so the baby "enjoys the food" → Babies\' kidneys are immature; the NHS advises no added salt or sugar, and WHO advises that young children not eat foods high in sugar or salt → Serve your baby\'s portion before seasoning, and rely on the natural flavors of vegetables, meat and fish.',
             'The baby must finish the bowl to get enough, so coax or force → Forcing makes babies fear mealtimes, raises the risk of choking and makes it harder for them to recognize hunger and fullness → Feed responsively as WHO recommends: offer, praise, encourage self-feeding and stop when your baby is full.',
           ),
+          urgent(
+            'Call {emergency} now if',
+            'Your baby has trouble breathing, turns blue or goes limp while eating.',
+          ),
           doctor(
             'When to ask a doctor',
-            'Your baby gains weight slowly or loses weight; is past 9 months and still only manages purées, or often vomits or chokes on textured food; refuses a whole major food group for a long time; has constipation, diarrhea or a rash after eating; or the family is vegetarian or your baby must avoid many foods. Call 115 (Vietnam emergency) if your baby has trouble breathing, turns blue or goes limp while eating.',
+            'Your baby gains weight slowly or loses weight; is past 9 months and still only manages purées, or often vomits or chokes on textured food; refuses a whole major food group for a long time; has constipation, diarrhea or a rash after eating; or the family is vegetarian or your baby must avoid many foods.',
           ),
         ],
       },
@@ -3726,6 +3828,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'nutrition',
       format: 'quick_qa',
       ageWeeks: { from: 0, to: 104 },
       readingMinutes: 2,
@@ -3768,9 +3871,13 @@ export const seedArticles: SeedArticle[] = [
           p(
             'Không nên. WHO khuyên trẻ 6–23 tháng không dùng đồ uống có đường và sữa đặc. Trà, cà phê, nước ngọt có ga không phù hợp với bé vì chứa caffeine, đường hoặc axit hại men răng (NHS, AAP).',
           ),
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé phù mặt, lơ mơ hay co giật sau khi uống nhiều nước hoặc bú sữa pha loãng. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
+          ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé ít tã ướt, môi khô, thóp lõm, li bì; bé tiêu chảy, nôn nhiều, sốt hoặc bú kém khi trời nóng. Gọi 115 hoặc đến cấp cứu ngay nếu bé phù mặt, lơ mơ hay co giật sau khi uống nhiều nước hoặc bú sữa pha loãng.',
+            'Bé ít tã ướt, môi khô, thóp lõm, li bì; bé tiêu chảy, nôn nhiều, sốt hoặc bú kém khi trời nóng.',
           ),
         ],
         en: [
@@ -3804,9 +3911,13 @@ export const seedArticles: SeedArticle[] = [
           p(
             'Avoid them. WHO advises that children 6–23 months have no sugar-sweetened drinks or condensed milk. Tea, coffee and fizzy drinks are not suitable for babies because they contain caffeine, sugar or acids that damage tooth enamel (NHS, AAP).',
           ),
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has a puffy face, becomes drowsy or has a seizure after drinking a lot of water or diluted formula. Don't wait: call {emergency} or go to the nearest emergency department.",
+          ),
           doctor(
             'When to ask a doctor',
-            'Fewer wet diapers, dry lips, a sunken soft spot, unusual drowsiness; diarrhea, frequent vomiting, fever or poor feeding in hot weather. Call 115 (Vietnam emergency) or go to the emergency department now if your baby has a puffy face, becomes drowsy or has a seizure after drinking a lot of water or diluted formula.',
+            'Fewer wet diapers, dry lips, a sunken soft spot, unusual drowsiness; diarrhea, frequent vomiting, fever or poor feeding in hot weather.',
           ),
         ],
       },
@@ -3915,10 +4026,16 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Sốt xuất huyết và tay chân miệng: dấu hiệu cần đi viện'),
           p(
-            'Sốt xuất huyết thường gây sốt cao 2–7 ngày. Ở vùng đang có dịch, Bệnh viện Nhi Trung ương khuyên đưa bé sốt cao từ ngày thứ 2 đi khám để được theo dõi. Đưa bé đến viện ngay khi bé mệt, lừ đừ, tay chân lạnh, đau bụng, nôn, chảy máu cam hoặc chảy máu chân răng, đi ngoài phân đen, tiểu ít, nhất là lúc vừa hạ sốt. Khi nghi sốt xuất huyết, chỉ dùng paracetamol, không dùng ibuprofen hay aspirin (WHO).',
+            'Sốt xuất huyết thường gây sốt cao 2–7 ngày. Ở vùng đang có dịch, Bệnh viện Nhi Trung ương khuyên đưa bé sốt cao từ ngày thứ 2 đi khám để được theo dõi.',
           ),
           p(
-            'Tay chân miệng hay gặp ở trẻ dưới 5 tuổi, với sốt, loét miệng và nốt phỏng ở bàn tay, bàn chân, mông. Theo Bệnh viện Nhi Trung ương, cần đưa bé đi khám lại ngay khi bé sốt cao từ 39 °C, giật mình, lừ đừ, run tay chân, quấy khóc, bứt rứt khó ngủ, nôn nhiều, đi loạng choạng, thở nhanh, khó thở, vã mồ hôi, tay chân lạnh hoặc da nổi vân tím.',
+            'Đưa bé đến viện ngay khi bé mệt, lừ đừ, tay chân lạnh, đau bụng, nôn, chảy máu cam hoặc chảy máu chân răng, đi ngoài phân đen, tiểu ít, nhất là lúc vừa hạ sốt. Khi nghi sốt xuất huyết, chỉ dùng paracetamol, không dùng ibuprofen hay aspirin (WHO).',
+          ),
+          p(
+            'Tay chân miệng hay gặp ở trẻ dưới 5 tuổi, với sốt, loét miệng và nốt phỏng ở bàn tay, bàn chân, mông.',
+          ),
+          p(
+            'Theo Bệnh viện Nhi Trung ương, cần đưa bé đi khám lại ngay khi bé sốt cao từ 39 °C, giật mình, lừ đừ, run tay chân, quấy khóc, bứt rứt khó ngủ, nôn nhiều, đi loạng choạng, thở nhanh, khó thở, vã mồ hôi, tay chân lạnh hoặc da nổi vân tím.',
           ),
           h('Hiểu lầm thường gặp'),
           ul(
@@ -3928,9 +4045,9 @@ export const seedArticles: SeedArticle[] = [
             '“Dán miếng hạ sốt là đủ.” Miếng dán có thể làm bé thấy mát ở trán, nhưng không thay được việc cho bú đủ, theo dõi bé và đi khám khi cần.',
             '“Sốt là phải có kháng sinh.” Phần lớn sốt ở trẻ nhỏ do virus, kháng sinh không có tác dụng. Chỉ dùng kháng sinh khi bác sĩ khám và kê đơn.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé dưới 3 tháng sốt từ 38 °C; co giật (xem mục Sơ cứu trẻ em › Co giật trong Child Life); khó thở, thở rên, rút lõm lồng ngực; môi, lưỡi tím tái hoặc da tái, nổi vân; li bì, khó đánh thức; khóc yếu, khóc thét hoặc khóc liên tục; ban không mất màu khi ấn cốc; cổ cứng; thóp phồng; dấu hiệu nặng của sốt xuất huyết hoặc tay chân miệng ở trên. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé dưới 3 tháng sốt từ 38 °C; co giật (xem mục Sơ cứu trẻ em › Co giật trong Child Life); khó thở, thở rên, rút lõm lồng ngực; môi, lưỡi tím tái hoặc da tái, nổi vân; li bì, khó đánh thức; khóc yếu, khóc thét hoặc khóc liên tục; ban không mất màu khi ấn cốc; cổ cứng; thóp phồng; dấu hiệu nặng của sốt xuất huyết hoặc tay chân miệng ở trên. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -3978,10 +4095,16 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Dengue and hand, foot and mouth disease: signs that need a hospital'),
           p(
-            "Dengue usually causes a high fever for 2–7 days. Where there is an outbreak, Vietnam National Children's Hospital advises taking a child with a high fever from day 2 to be checked and followed. Go to hospital straight away if your child is tired, listless, has cold hands and feet, tummy pain, vomiting, a nosebleed or bleeding gums, black poo or passes little urine, especially just as the fever falls. If dengue is possible, use only paracetamol, never ibuprofen or aspirin (WHO).",
+            "Dengue usually causes a high fever for 2–7 days. Where there is an outbreak, Vietnam National Children's Hospital advises taking a child with a high fever from day 2 to be checked and followed.",
           ),
           p(
-            "Hand, foot and mouth disease is common in children under 5, with fever, mouth ulcers and blisters on the hands, feet and bottom. Vietnam National Children's Hospital advises going back to the doctor straight away if your child has a fever of 39 °C or higher, startles or jerks, is listless, has trembling arms or legs, cries or is restless and can't sleep, vomits a lot, walks unsteadily, breathes fast or with difficulty, sweats heavily, or has cold hands and feet or blotchy purple skin.",
+            'Go to hospital straight away if your child is tired, listless, has cold hands and feet, tummy pain, vomiting, a nosebleed or bleeding gums, black poo or passes little urine, especially just as the fever falls. If dengue is possible, use only paracetamol, never ibuprofen or aspirin (WHO).',
+          ),
+          p(
+            'Hand, foot and mouth disease is common in children under 5, with fever, mouth ulcers and blisters on the hands, feet and bottom.',
+          ),
+          p(
+            "Vietnam National Children's Hospital advises going back to the doctor straight away if your child has a fever of 39 °C or higher, startles or jerks, is listless, has trembling arms or legs, cries or is restless and can't sleep, vomits a lot, walks unsteadily, breathes fast or with difficulty, sweats heavily, or has cold hands and feet or blotchy purple skin.",
           ),
           h('Common misconceptions'),
           ul(
@@ -3991,9 +4114,9 @@ export const seedArticles: SeedArticle[] = [
             '"A cooling patch is enough." A patch may make the forehead feel cooler, but it does not replace feeding well, watching your baby and seeing a doctor when needed.',
             '"A fever needs antibiotics." Most fevers in young children are caused by viruses, which antibiotics do not treat. Only use antibiotics when a doctor has examined your baby and prescribed them.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby is under 3 months with 38 °C or more; has a fit (see Sơ cứu trẻ em (First aid) › Seizure in Child Life); struggles to breathe, grunts or the chest pulls in; has blue lips or tongue, or pale, blotchy skin; is floppy or hard to wake; has a weak, high-pitched or continuous cry; a rash that does not fade under a glass; a stiff neck; a bulging soft spot; or the dengue or hand, foot and mouth warning signs above. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby is under 3 months with 38 °C or more; has a fit (see Sơ cứu trẻ em (First aid) › Seizure in Child Life); struggles to breathe, grunts or the chest pulls in; has blue lips or tongue, or pale, blotchy skin; is floppy or hard to wake; has a weak, high-pitched or continuous cry; a rash that does not fade under a glass; a stiff neck; a bulging soft spot; or the dengue or hand, foot and mouth warning signs above. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -4110,9 +4233,9 @@ export const seedArticles: SeedArticle[] = [
             '“Cạo gió, kiêng gió, đóng kín cửa.” Cảm lạnh do virus lây qua giọt bắn và tay, không phải do “trúng gió”. Phòng thoáng, sạch, đủ ấm và rửa tay bảo vệ bé tốt hơn.',
             '“Ra hiệu thuốc mua kháng sinh cho nhanh khỏi.” Kháng sinh không tác dụng với virus, lại có thể gây tiêu chảy, dị ứng và làm vi khuẩn kháng thuốc. Chỉ dùng khi bác sĩ kê đơn.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, rút lõm lồng ngực, thở rên hoặc thở rít khi nằm yên; môi, lưỡi tím tái; có lúc ngừng thở; không bú, không uống được; li bì, khó đánh thức; co giật. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, rút lõm lồng ngực, thở rên hoặc thở rít khi nằm yên; môi, lưỡi tím tái; có lúc ngừng thở; không bú, không uống được; li bì, khó đánh thức; co giật. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -4164,9 +4287,9 @@ export const seedArticles: SeedArticle[] = [
             '"Coin rubbing, avoiding drafts, keeping every window shut." Colds are viruses spread by droplets and hands, not by "catching the wind". A clean, airy, comfortably warm room and handwashing protect your baby better.',
             '"Buy antibiotics at the pharmacy to get better faster." Antibiotics don\'t work on viruses, and they can cause diarrhoea, allergies and resistant bacteria. Only use them when a doctor prescribes them.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby struggles to breathe, the chest pulls in, or they grunt or make a harsh noise breathing while resting; has blue lips or tongue; has pauses in breathing; cannot feed or drink; is floppy or hard to wake; or has a fit. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby struggles to breathe, the chest pulls in, or they grunt or make a harsh noise breathing while resting; has blue lips or tongue; has pauses in breathing; cannot feed or drink; is floppy or hard to wake; or has a fit. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -4275,9 +4398,9 @@ export const seedArticles: SeedArticle[] = [
             '“Tự nấu nước cháo muối, nước đường muối, pha ORS theo cảm tính.” Lượng muối, đường không chuẩn có thể làm bé mất nước nặng hơn. Ưu tiên ORS pha đúng hướng dẫn trên gói; nếu chưa có ORS, tiếp tục cho bú và đưa bé đến cơ sở y tế.',
             '“Uống thuốc cầm tiêu chảy cho nhanh khỏi.” Thuốc cầm tiêu chảy có thể gây biến chứng nguy hiểm ở trẻ nhỏ; chỉ dùng thuốc khi bác sĩ chỉ định.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé nôn ra dịch xanh lá hoặc vàng xanh, nôn ra máu hay chất như bã cà phê; li bì, khó đánh thức; da tái, nổi vân, tay chân lạnh; thở nhanh; co giật; bụng chướng căng hoặc đau dữ dội. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé nôn ra dịch xanh lá hoặc vàng xanh, nôn ra máu hay chất như bã cà phê; li bì, khó đánh thức; da tái, nổi vân, tay chân lạnh; thở nhanh; co giật; bụng chướng căng hoặc đau dữ dội. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -4324,9 +4447,9 @@ export const seedArticles: SeedArticle[] = [
             '"Home-made salty rice water or sugar-salt water, or ORS mixed by eye." The wrong amounts of salt and sugar can make dehydration worse. Use ORS mixed exactly as the packet says; if you have none, keep feeding and take your baby to a health facility.',
             '"Anti-diarrhoea medicine to stop it quickly." These medicines can cause dangerous complications in young children; only use medicine a doctor prescribes.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby vomits green or yellow-green fluid, blood or something like coffee grounds; is very drowsy or hard to wake; has pale or blotchy skin and cold hands and feet; breathes fast; has a fit; or has a tight, swollen or very painful tummy. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby vomits green or yellow-green fluid, blood or something like coffee grounds; is very drowsy or hard to wake; has pale or blotchy skin and cold hands and feet; breathes fast; has a fit; or has a tight, swollen or very painful tummy. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -4403,7 +4526,10 @@ export const seedArticles: SeedArticle[] = [
             'Bilirubin là sắc tố vàng sinh ra khi hồng cầu cũ bị phân huỷ. Gan của bé mới sinh còn non nên thải bilirubin chậm, bilirubin tích lại làm da và lòng trắng mắt vàng. Khoảng 60% trẻ đủ tháng và 80% trẻ sinh non bị vàng da trong tuần đầu (NICE). Vàng da thường rõ nhất vào khoảng ngày thứ 3 và hay hết sau khoảng 2 tuần (NHS).',
           ),
           p(
-            'Phần lớn vàng da là vô hại. Nhưng nếu bilirubin lên quá cao mà không được điều trị, hiếm khi có thể gây tổn thương não. Vì vậy, nhận ra sớm và đo bilirubin đúng lúc rất quan trọng. Khi cần, bé được điều trị bằng chiếu đèn, là cách điều trị chuẩn và hiệu quả. Khoảng 10% bé bú mẹ vẫn còn vàng da lúc 1 tháng tuổi; thường lành tính, nhưng vẫn cần bác sĩ kiểm tra để loại trừ bệnh gan, đường mật.',
+            'Phần lớn vàng da là vô hại. Nhưng nếu bilirubin lên quá cao mà không được điều trị, hiếm khi có thể gây tổn thương não. Vì vậy, nhận ra sớm và đo bilirubin đúng lúc rất quan trọng.',
+          ),
+          p(
+            'Khi cần, bé được điều trị bằng chiếu đèn, là cách điều trị chuẩn và hiệu quả. Khoảng 10% bé bú mẹ vẫn còn vàng da lúc 1 tháng tuổi; thường lành tính, nhưng vẫn cần bác sĩ kiểm tra để loại trừ bệnh gan, đường mật.',
           ),
           h('Ba mẹ có thể làm gì'),
           h('Kiểm tra vàng da tại nhà'),
@@ -4438,9 +4564,9 @@ export const seedArticles: SeedArticle[] = [
             '“Mẹ phải kiêng ăn để sữa không làm con vàng.” Kiêng khem chung chung chỉ làm mẹ mệt, ít sữa. Mẹ nên ăn uống đầy đủ, đa dạng. Nếu bé được chẩn đoán thiếu men G6PD, hãy hỏi bác sĩ về thực phẩm và thuốc mẹ, bé cần tránh, như đậu tằm, và không dùng băng phiến để cất quần áo, chăn màn của bé.',
             '“Vàng da do sữa mẹ thì phải ngừng cho bú.” NICE nhấn mạnh rằng thường vẫn tiếp tục cho bú được; bú nhiều còn giúp bé thải bilirubin. Chỉ thay đổi cách cho bú khi bác sĩ đã khám và hướng dẫn.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé vàng da trong 24 giờ đầu sau sinh; bé li bì, rất khó đánh thức hoặc bỏ bú; khóc thét the thé; co giật; bé dưới 3 tháng sốt từ 38 °C. Xem thêm mục Sơ cứu trẻ em › Vàng da sơ sinh trong Child Life. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé vàng da trong 24 giờ đầu sau sinh; bé li bì, rất khó đánh thức hoặc bỏ bú; khóc thét the thé; co giật; bé dưới 3 tháng sốt từ 38 °C. Xem thêm mục Sơ cứu trẻ em › Vàng da sơ sinh trong Child Life. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -4457,7 +4583,10 @@ export const seedArticles: SeedArticle[] = [
             "Bilirubin is a yellow pigment made when old red blood cells break down. A newborn's liver is still immature and clears bilirubin slowly, so it builds up and turns the skin and the whites of the eyes yellow. About 60% of term babies and 80% of preterm babies get jaundice in the first week (NICE). It is usually most noticeable around day 3 and often goes after about 2 weeks (NHS).",
           ),
           p(
-            'Most jaundice is harmless. But if bilirubin gets very high and is not treated, it can rarely cause brain damage. That is why spotting it early and measuring bilirubin at the right time matter. When treatment is needed, babies have phototherapy (light treatment), which is the standard, effective treatment. About 10% of breastfed babies are still jaundiced at 1 month; this is usually harmless, but a doctor still needs to check for liver or bile duct problems.',
+            'Most jaundice is harmless. But if bilirubin gets very high and is not treated, it can rarely cause brain damage. That is why spotting it early and measuring bilirubin at the right time matter.',
+          ),
+          p(
+            'When treatment is needed, babies have phototherapy (light treatment), which is the standard, effective treatment. About 10% of breastfed babies are still jaundiced at 1 month; this is usually harmless, but a doctor still needs to check for liver or bile duct problems.',
           ),
           h('What you can do'),
           h('Checking for jaundice at home'),
@@ -4492,9 +4621,9 @@ export const seedArticles: SeedArticle[] = [
             '"Mum must avoid certain foods so her milk doesn\'t make the baby yellow." General food restrictions only leave mums tired and with less milk. Eat a full, varied diet. If your baby is diagnosed with G6PD deficiency, ask the doctor which foods and medicines you and your baby should avoid, such as fava beans, and do not use naphthalene mothballs with your baby’s clothes or bedding.',
             '"Breast milk jaundice means you must stop breastfeeding." NICE stresses that breastfeeding can usually continue; feeding often even helps clear bilirubin. Only change how you feed after a doctor has examined your baby and advised you.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby has jaundice in the first 24 hours after birth; is very drowsy, very hard to wake or refuses feeds; has a high-pitched cry; has a fit; or is under 3 months with 38 °C or more. See also the Sơ cứu trẻ em (First aid) › Newborn jaundice guide in Child Life. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has jaundice in the first 24 hours after birth; is very drowsy, very hard to wake or refuses feeds; has a high-pitched cry; has a fit; or is under 3 months with 38 °C or more. See also the Sơ cứu trẻ em (First aid) › Newborn jaundice guide in Child Life. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -4578,7 +4707,7 @@ export const seedArticles: SeedArticle[] = [
           h('Bước 2 · Ở lại điểm tiêm ít nhất 30 phút'),
           ul(
             'Ở lại ít nhất 30 phút, kể cả khi bé đã ngủ ngon. Ở Việt Nam đây là quy định của Bộ Y tế; nhiều nước khác khuyên khoảng 15 phút.',
-            'Nhìn mặt, môi, nhịp thở và da bé. Nổi mẩn lan nhanh, sưng môi hoặc mặt, thở khò khè, khó thở, tím tái, lả đi: báo nhân viên y tế ngay. Nếu xảy ra khi đã về nhà, gọi 115 và mở mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
+            'Nhìn mặt, môi, nhịp thở và da bé. Nổi mẩn lan nhanh, sưng môi hoặc mặt, thở khò khè, khó thở, tím tái, lả đi: báo nhân viên y tế ngay. Nếu xảy ra khi đã về nhà, gọi cấp cứu {emergency} và mở mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
           ),
           h('Bước 3 · Chăm bé ở nhà 24–48 giờ đầu'),
           ul(
@@ -4607,9 +4736,9 @@ export const seedArticles: SeedArticle[] = [
             '“Kiêng tắm sau tiêm.” Bé vẫn được tắm như bình thường, chỉ cần lau khô nhẹ chỗ tiêm.',
             '“Cho uống hạ sốt trước cho chắc.” WHO không khuyến cáo cho thuốc giảm đau, hạ sốt trước hoặc lúc tiêm; paracetamol dùng phòng trước có thể làm giảm đáp ứng của một vài loại vắc xin. Chỉ dùng khi bé thật sự sốt, khó chịu.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, thở khò khè hoặc thở rít; sưng môi, mặt, lưỡi; nổi mẩn lan nhanh kèm tím tái, lả đi hoặc li bì; co giật; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé khó thở, thở khò khè hoặc thở rít; sưng môi, mặt, lưỡi; nổi mẩn lan nhanh kèm tím tái, lả đi hoặc li bì; co giật; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -4640,7 +4769,7 @@ export const seedArticles: SeedArticle[] = [
           h('Step 2 · Stay at the clinic for at least 30 minutes'),
           ul(
             'Stay at least 30 minutes, even if your baby has fallen asleep. In Việt Nam this is a Ministry of Health rule; many other countries advise about 15 minutes.',
-            "Watch your baby's face, lips, breathing and skin. A fast-spreading rash, swollen lips or face, wheezing, trouble breathing, turning blue or going limp: tell the health worker immediately. If it happens after you get home, call 115 and open Sơ cứu trẻ em (First aid) › Anaphylaxis in Child Life.",
+            "Watch your baby's face, lips, breathing and skin. A fast-spreading rash, swollen lips or face, wheezing, trouble breathing, turning blue or going limp: tell the health worker immediately. If it happens after you get home, call {emergency} and open Sơ cứu trẻ em (First aid) › Anaphylaxis in Child Life.",
           ),
           h('Step 3 · Care at home in the first 24–48 hours'),
           ul(
@@ -4669,9 +4798,9 @@ export const seedArticles: SeedArticle[] = [
             '"No bathing after vaccines." Your baby can be bathed as usual; just pat the injection site dry gently.',
             '"Give fever medicine beforehand, just in case." WHO does not recommend pain or fever medicine before or at the time of vaccination; paracetamol given in advance may weaken the response to some vaccines. Only use it if your baby actually has a fever or is uncomfortable.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby has trouble breathing, wheezing or noisy breathing; swelling of the lips, face or tongue; a fast-spreading rash with blue colour, going limp or very drowsy; a fit; or is under 3 months with 38 °C or more. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby has trouble breathing, wheezing or noisy breathing; swelling of the lips, face or tongue; a fast-spreading rash with blue colour, going limp or very drowsy; a fit; or is under 3 months with 38 °C or more. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -4787,9 +4916,9 @@ export const seedArticles: SeedArticle[] = [
             '“Cho uống nước rau ngót, nước cam từ khi bé vài tuần tuổi.” Bé dưới 6 tháng chỉ cần sữa mẹ hoặc sữa công thức; nước rau có thể làm bé bú ít đi. Hỏi bác sĩ nếu bé táo bón.',
             '“Vài ngày không đi là phải dùng thuốc.” Nếu bé bú mẹ, phân mềm, bé vui vẻ và lên cân, chưa cần làm gì.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé nôn ra dịch xanh lá; bụng chướng căng kèm nôn; đau bụng dữ dội; li bì, khó đánh thức; đi ngoài ra nhiều máu. Đừng chờ, gọi 115 ngay.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé nôn ra dịch xanh lá; bụng chướng căng kèm nôn; đau bụng dữ dội; li bì, khó đánh thức; đi ngoài ra nhiều máu. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám sớm khi',
@@ -4846,9 +4975,9 @@ export const seedArticles: SeedArticle[] = [
             '"Give leafy-green water or orange juice from a few weeks old." Babies under 6 months only need breast milk or formula; vegetable water can make them feed less. Ask a doctor if your baby is constipated.',
             '"A few days without a poo means medicine." If your baby is breastfed, the poo is soft, and they are happy and gaining weight, nothing needs to be done.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby vomits green fluid; has a tight, swollen tummy with vomiting; has severe tummy pain; is very drowsy or hard to wake; or passes a lot of blood. (115 is the emergency number in Vietnam.)',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby vomits green fluid; has a tight, swollen tummy with vomiting; has severe tummy pain; is very drowsy or hard to wake; or passes a lot of blood. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor soon if',
@@ -4929,7 +5058,10 @@ export const seedArticles: SeedArticle[] = [
             'Da bé mỏng và dễ mất nước. Tắm quá lâu, nước quá nóng hay dùng nhiều xà phòng dễ làm da khô, nứt và ngứa. Vì vậy mục tiêu của buổi tắm là sạch vừa đủ, giữ ấm và an toàn, không phải kỳ cọ thật kỹ.',
           ),
           p(
-            'Tổ chức Y tế Thế giới (WHO) khuyên chờ ít nhất 24 giờ sau sinh mới tắm lần đầu để bé giữ được thân nhiệt. Về số lần tắm, các hướng dẫn hơi khác nhau: Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cho rằng khoảng 3 lần mỗi tuần trong năm đầu có thể là đủ, trang thông tin sức khoẻ của Chính phủ Úc nói 2–3 lần, còn NHS (Anh) nói bé không cần tắm mỗi ngày. Ở Việt Nam trời nóng ẩm, bé đổ mồ hôi nhiều, ba mẹ có thể tắm nhanh cho bé hằng ngày, miễn là nước ấm vừa, thời gian ngắn và dưỡng ẩm nếu da khô. Ngày không tắm, chỉ cần lau mặt, cổ, nách, tay và vùng tã.',
+            'Tổ chức Y tế Thế giới (WHO) khuyên chờ ít nhất 24 giờ sau sinh mới tắm lần đầu để bé giữ được thân nhiệt. Về số lần tắm, các hướng dẫn hơi khác nhau: Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cho rằng khoảng 3 lần mỗi tuần trong năm đầu có thể là đủ, trang thông tin sức khoẻ của Chính phủ Úc nói 2–3 lần, còn NHS (Anh) nói bé không cần tắm mỗi ngày.',
+          ),
+          p(
+            'Ở Việt Nam trời nóng ẩm, bé đổ mồ hôi nhiều, ba mẹ có thể tắm nhanh cho bé hằng ngày, miễn là nước ấm vừa, thời gian ngắn và dưỡng ẩm nếu da khô. Ngày không tắm, chỉ cần lau mặt, cổ, nách, tay và vùng tã.',
           ),
           p(
             'Trước khi cuống rốn rụng (thường trong 1–2 tuần đầu), AAP khuyên chỉ lau người bằng khăn ấm thay vì ngâm bé trong chậu. Cách chăm rốn có trong bài Chăm rốn sơ sinh.',
@@ -4983,8 +5115,8 @@ export const seedArticles: SeedArticle[] = [
             '“Bôi phấn rôm cho khô da, đỡ rôm sảy.” AAP khuyên không dùng phấn rôm cho bé vì bột hít phải có thể gây tổn thương phổi nặng. Nên thấm khô kỹ các nếp da và cho bé mặc đồ cotton mỏng, thoáng.',
             '“Cạo lông mày, cắt lông mi cho bé để sau này mọc dày.” Cạo hay cắt không làm sợi lông mọc dày hơn, còn dao kéo sát mắt bé rất dễ gây tai nạn. Hãy để lông mày, lông mi phát triển tự nhiên.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
+          urgent(
+            'Gọi {emergency} ngay khi',
             'Bé bị sặc nước, ngừng thở, tím tái hay lả đi sau khi trượt xuống nước; bé bị bỏng nước nóng rộng, sâu, phồng rộp lớn hoặc ở mặt, tay, bộ phận sinh dục. Trong lúc chờ, làm theo mục Sơ cứu trẻ em của Child Life (Hồi sức tim phổi, Bỏng nước sôi).',
           ),
           doctor(
@@ -5002,7 +5134,10 @@ export const seedArticles: SeedArticle[] = [
             'Baby skin is thin and loses moisture easily. Long baths, hot water or lots of soap can leave it dry, cracked and itchy. So the aim of a bath is to be clean enough, warm and safe, not scrubbed spotless.',
           ),
           p(
-            "The World Health Organization (WHO) advises waiting at least 24 hours after birth before the first bath, so your baby can keep warm. Advice on how often differs a little: the American Academy of Pediatrics (AAP) says about 3 baths a week in the first year may be enough, Australian government advice says 2–3, and the NHS (UK) says babies don't need a bath every day. In Vietnam's hot, humid climate babies sweat a lot, so a quick daily bath is fine as long as the water is warm (not hot), the bath is short and you moisturise if the skin is dry. On other days, just wash the face, neck, armpits, hands and diaper area.",
+            "The World Health Organization (WHO) advises waiting at least 24 hours after birth before the first bath, so your baby can keep warm. Advice on how often differs a little: the American Academy of Pediatrics (AAP) says about 3 baths a week in the first year may be enough, Australian government advice says 2–3, and the NHS (UK) says babies don't need a bath every day.",
+          ),
+          p(
+            "In Vietnam's hot, humid climate babies sweat a lot, so a quick daily bath is fine as long as the water is warm (not hot), the bath is short and you moisturise if the skin is dry. On other days, just wash the face, neck, armpits, hands and diaper area.",
           ),
           p(
             'Until the umbilical cord stump falls off (usually within the first 1–2 weeks), the AAP advises sponge baths with a warm cloth instead of putting your baby in the tub. Cord care is covered in Umbilical cord care.',
@@ -5056,8 +5191,8 @@ export const seedArticles: SeedArticle[] = [
             '“Use baby powder to keep the skin dry and stop heat rash.” The AAP advises against baby or talcum powder because inhaled powder can seriously damage the lungs. Pat skin folds dry and dress your baby in thin, breathable cotton.',
             "“Shave the eyebrows or trim the eyelashes so they grow back thicker.” Shaving or cutting doesn't make hair grow back thicker, and blades near the eyes can easily cause injury. Let eyebrows and eyelashes grow naturally.",
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
+          urgent(
+            'Call {emergency} now if',
             'Your baby has inhaled water, stops breathing, turns blue or goes limp after slipping under; or has a scald that is large, deep, with big blisters, or on the face, hands or genitals. While you wait, follow the Sơ cứu trẻ em (First aid) guide in Child Life (CPR, Scald).',
           ),
           doctor(
@@ -5178,9 +5313,9 @@ export const seedArticles: SeedArticle[] = [
             '“Rốn lồi thì lấy đồng xu ép rồi băng lại.” AAP khuyên không dán đồng xu hay bất cứ vật gì lên rốn; phần lớn thoát vị rốn tự khỏi. Cứ để tự nhiên và hỏi bác sĩ khi đi khám.',
             '“Rốn chưa rụng thì không được lau rửa gì cho bé.” Bé vẫn cần được giữ sạch: lau người bằng khăn ấm, chỉ tránh ngâm rốn trong nước.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Rốn chảy máu liên tục, ấn nhẹ bằng gạc sạch vẫn không cầm; bé li bì, khó đánh thức, người mềm nhũn hoặc bỏ bú; bé khó thở, tím tái; khối phồng ở rốn cứng, đổi màu, kèm bé nôn hoặc khóc thét không dỗ được.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Rốn chảy máu liên tục, ấn nhẹ bằng gạc sạch vẫn không cầm; bé li bì, khó đánh thức, người mềm nhũn hoặc bỏ bú; bé khó thở, tím tái; khối phồng ở rốn cứng, đổi màu, kèm bé nôn hoặc khóc thét không dỗ được. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám sớm (trong ngày) khi',
@@ -5240,9 +5375,9 @@ export const seedArticles: SeedArticle[] = [
             '“Press a coin on a bulging belly button and tape it down.” The AAP advises against taping a coin or anything else over the belly button; most umbilical hernias close on their own. Leave it be and ask the doctor at a check-up.',
             "“Don't wash the baby at all until the cord falls off.” Your baby still needs to be kept clean: sponge with a warm cloth and just avoid soaking the cord.",
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            "The cord keeps bleeding even with gentle pressure from clean gauze; your baby is very drowsy, hard to wake, floppy or refusing feeds; has trouble breathing or turns blue; or a bulge at the belly button becomes hard or changes colour and your baby vomits or screams and can't be comforted.",
+          urgent(
+            'Call {emergency} now if',
+            "The cord keeps bleeding even with gentle pressure from clean gauze; your baby is very drowsy, hard to wake, floppy or refusing feeds; has trouble breathing or turns blue; or a bulge at the belly button becomes hard or changes colour and your baby vomits or screams and can't be comforted. Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -5319,7 +5454,10 @@ export const seedArticles: SeedArticle[] = [
             'Vùng da trong tã luôn ẩm, ấm và bị cọ xát. Nước tiểu và phân, nhất là khi bé tiêu chảy, làm lớp bảo vệ của da yếu đi; da đỏ, rát, có khi trợt. Tã quá chật hoặc kém thấm hút, khăn ướt có cồn hay hương liệu, xà phòng, bột giặt, và một số thuốc như kháng sinh cũng khiến bé dễ hăm hơn.',
           ),
           p(
-            'Hăm do kích ứng thường là những mảng hồng hoặc đỏ ở chỗ da chạm vào tã, còn các nếp bẹn thường bình thường. Hăm do nấm Candida thường đỏ tươi, bóng, bờ rõ, có những nốt đỏ nhỏ rải rác quanh rìa, nặng ở các nếp bẹn, hay gặp sau khi bé dùng kháng sinh. Nhiễm khuẩn hiếm hơn, có thể có mụn mủ, phỏng nước, vảy vàng hoặc rỉ dịch. Còn chàm (viêm da cơ địa) ở trẻ nhỏ thường ở mặt, da đầu và ít khi ở vùng tã.',
+            'Hăm do kích ứng thường là những mảng hồng hoặc đỏ ở chỗ da chạm vào tã, còn các nếp bẹn thường bình thường. Hăm do nấm Candida thường đỏ tươi, bóng, bờ rõ, có những nốt đỏ nhỏ rải rác quanh rìa, nặng ở các nếp bẹn, hay gặp sau khi bé dùng kháng sinh.',
+          ),
+          p(
+            'Nhiễm khuẩn hiếm hơn, có thể có mụn mủ, phỏng nước, vảy vàng hoặc rỉ dịch. Còn chàm (viêm da cơ địa) ở trẻ nhỏ thường ở mặt, da đầu và ít khi ở vùng tã.',
           ),
           h('Ba mẹ có thể làm gì'),
           h('Mỗi lần thay tã'),
@@ -5374,7 +5512,10 @@ export const seedArticles: SeedArticle[] = [
             "Skin inside a diaper is always damp, warm and rubbed. Urine and stool, especially with diarrhoea, weaken the skin's protective layer, so it becomes red, sore and sometimes raw. Tight or poorly absorbent diapers, wipes with alcohol or fragrance, soap, detergent and some medicines such as antibiotics also make rash more likely.",
           ),
           p(
-            'An irritant rash usually shows as pink or red patches where the diaper touches, while the groin creases look normal. A yeast (Candida) rash is usually bright red and shiny with sharp edges and small red spots scattered around the border, worst in the creases, and often follows antibiotics. Bacterial infection is less common and can cause pimples with pus, blisters, yellow crusts or weeping. Eczema (atopic dermatitis) in babies usually affects the face and scalp and rarely the diaper area.',
+            'An irritant rash usually shows as pink or red patches where the diaper touches, while the groin creases look normal. A yeast (Candida) rash is usually bright red and shiny with sharp edges and small red spots scattered around the border, worst in the creases, and often follows antibiotics.',
+          ),
+          p(
+            'Bacterial infection is less common and can cause pimples with pus, blisters, yellow crusts or weeping. Eczema (atopic dermatitis) in babies usually affects the face and scalp and rarely the diaper area.',
           ),
           h('What you can do'),
           h('At every change'),
@@ -5510,7 +5651,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Thuốc bôi bác sĩ kê'),
           p(
-            'Khi da đỏ, ngứa nhiều, bác sĩ có thể kê thuốc bôi có corticoid loại nhẹ phù hợp với trẻ nhỏ. Nhiều ba mẹ sợ “corticoid làm mỏng da”, nhưng khi dùng đúng loại, đúng chỗ và đúng số ngày bác sĩ dặn, nguy cơ tác dụng phụ thấp và lợi ích lớn hơn nhiều. Bôi quá ít hoặc ngưng quá sớm vì sợ lại khiến chàm dai dẳng. Về thứ tự, Hội Da liễu Hoa Kỳ (AAD) hướng dẫn bôi thuốc ngay sau tắm rồi mới thoa kem dưỡng, còn NHS gợi ý hai thứ cách nhau 20–30 phút; hãy làm theo cách bác sĩ của bé dặn.',
+            'Khi da đỏ, ngứa nhiều, bác sĩ có thể kê thuốc bôi có corticoid loại nhẹ phù hợp với trẻ nhỏ. Nhiều ba mẹ sợ “corticoid làm mỏng da”, nhưng khi dùng đúng loại, đúng chỗ và đúng số ngày bác sĩ dặn, nguy cơ tác dụng phụ thấp và lợi ích lớn hơn nhiều.',
+          ),
+          p(
+            'Bôi quá ít hoặc ngưng quá sớm vì sợ lại khiến chàm dai dẳng. Về thứ tự, Hội Da liễu Hoa Kỳ (AAD) hướng dẫn bôi thuốc ngay sau tắm rồi mới thoa kem dưỡng, còn NHS gợi ý hai thứ cách nhau 20–30 phút; hãy làm theo cách bác sĩ của bé dặn.',
           ),
           h('Giảm gãi, phòng nhiễm trùng'),
           ul(
@@ -5538,9 +5682,9 @@ export const seedArticles: SeedArticle[] = [
             '“Bôi sữa mẹ lên chàm là khỏi.” Mới có rất ít nghiên cứu nhỏ, bằng chứng chưa chắc chắn; sữa mẹ không thay được kem dưỡng hay thuốc bác sĩ kê. Nếu muốn thử, hãy hỏi bác sĩ và vẫn dưỡng ẩm đều.',
             '“Thuốc nam, kem gia truyền bôi là hết ngay.” Cơ quan quản lý dược của Anh từng phát hiện kem quảng cáo là thảo dược trị chàm lại chứa corticoid rất mạnh không ghi trên nhãn, có hại cho trẻ nhỏ khi bôi lâu, diện rộng. Chỉ dùng thuốc rõ nguồn gốc, theo hướng dẫn của bác sĩ hoặc dược sĩ.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Trên vùng chàm nổi nhiều mụn nước hoặc vết loét tròn nhỏ như bị đục lỗ, lan nhanh, kèm sốt hoặc bé mệt lả (có thể là chàm bội nhiễm virus herpes, một cấp cứu da liễu); bé khó thở, sưng môi, lưỡi, mặt sau khi ăn (xem Sốc phản vệ trong mục Sơ cứu trẻ em của Child Life).',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Trên vùng chàm nổi nhiều mụn nước hoặc vết loét tròn nhỏ như bị đục lỗ, lan nhanh, kèm sốt hoặc bé mệt lả (có thể là chàm bội nhiễm virus herpes, một cấp cứu da liễu); bé khó thở, sưng môi, lưỡi, mặt sau khi ăn (xem Sốc phản vệ trong mục Sơ cứu trẻ em của Child Life). Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám sớm (trong ngày) khi',
@@ -5579,7 +5723,10 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Prescribed creams'),
           p(
-            "When the skin is red and very itchy, a doctor may prescribe a mild steroid cream suitable for young children. Many parents fear that “steroids thin the skin”, but used as directed, in the right strength, place and number of days, the risk of side effects is low and the benefits are much greater. Using too little or stopping too soon out of fear keeps eczema going. On order, the American Academy of Dermatology (AAD) advises the medicine straight after the bath and then moisturiser, while the NHS suggests leaving 20–30 minutes between them; follow what your baby's doctor tells you.",
+            'When the skin is red and very itchy, a doctor may prescribe a mild steroid cream suitable for young children. Many parents fear that “steroids thin the skin”, but used as directed, in the right strength, place and number of days, the risk of side effects is low and the benefits are much greater.',
+          ),
+          p(
+            "Using too little or stopping too soon out of fear keeps eczema going. On order, the American Academy of Dermatology (AAD) advises the medicine straight after the bath and then moisturiser, while the NHS suggests leaving 20–30 minutes between them; follow what your baby's doctor tells you.",
           ),
           h('Less scratching, fewer infections'),
           ul(
@@ -5607,9 +5754,9 @@ export const seedArticles: SeedArticle[] = [
             "“Putting breast milk on eczema cures it.” There are only a few small studies and the evidence is uncertain; breast milk can't replace moisturiser or prescribed treatment. If you want to try it, ask your doctor and keep moisturising.",
             '“Herbal or family-recipe creams clear it straight away.” The UK medicines regulator has found creams sold as herbal eczema remedies that contained a very strong steroid not listed on the label, which can harm young children when used over large areas or for long. Only use products of known origin, as advised by a doctor or pharmacist.',
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Eczema suddenly develops many small blisters or round, punched-out sores that spread fast, with fever or a very unwell baby (this may be eczema herpeticum, a skin emergency); or your baby has trouble breathing or a swollen lip, tongue or face after eating (see Sốc phản vệ, Anaphylaxis, in the Sơ cứu trẻ em first aid guide in Child Life).',
+          urgent(
+            'Call {emergency} now if',
+            "Eczema suddenly develops many small blisters or round, punched-out sores that spread fast, with fever or a very unwell baby (this may be eczema herpeticum, a skin emergency); or your baby has trouble breathing or a swollen lip, tongue or face after eating (see Sốc phản vệ, Anaphylaxis, in the Sơ cứu trẻ em first aid guide in Child Life). Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'See a doctor the same day if',
@@ -5733,9 +5880,9 @@ export const seedArticles: SeedArticle[] = [
             '“Gel bôi lợi, viên vi lượng đồng căn trị mọc răng là an toàn.” FDA khuyên không dùng thuốc bôi chứa benzocaine hoặc lidocaine cho bé mọc răng và cảnh báo cả sản phẩm vi lượng đồng căn. NHS không cấm hẳn gel dành riêng cho trẻ nhỏ nhưng cho rằng chưa đủ bằng chứng hiệu quả. An toàn nhất là không dùng.',
             '“Răng sữa rồi cũng thay, sâu cũng không sao.” Răng sữa giúp bé nhai, tập nói và giữ chỗ cho răng vĩnh viễn; răng sâu gây đau và nhiễm trùng. Hãy chăm răng sữa thật kỹ, và không để bé ngậm bình sữa khi ngủ đêm.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé hóc hạt vòng, mảnh vòng ngậm hay vật nhỏ, khó thở, tím tái (xem Hóc dị vật trong mục Sơ cứu trẻ em của Child Life); bé co giật, li bì khó đánh thức; bé nuốt nhiều kem đánh răng hay thuốc bôi lợi rồi có biểu hiện bất thường (xem Uống nhầm thuốc, hoá chất).',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Bé hóc hạt vòng, mảnh vòng ngậm hay vật nhỏ, khó thở, tím tái (xem Hóc dị vật trong mục Sơ cứu trẻ em của Child Life); bé co giật, li bì khó đánh thức; bé nuốt nhiều kem đánh răng hay thuốc bôi lợi rồi có biểu hiện bất thường (xem Uống nhầm thuốc, hoá chất). Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Đưa bé đi khám khi',
@@ -5798,9 +5945,9 @@ export const seedArticles: SeedArticle[] = [
             "“Teething gels and homeopathic teething tablets are safe.” The FDA advises against benzocaine or lidocaine products for teething and also warns about homeopathic products. The NHS doesn't rule out gels made for young children but says there is little evidence they work. The safest choice is not to use them.",
             "“Baby teeth fall out anyway, so decay doesn't matter.” Baby teeth help children chew, learn to talk and hold space for adult teeth; decayed teeth cause pain and infection. Look after baby teeth carefully, and don't let your baby sleep with a bottle at night.",
           ),
-          doctor(
-            'Call 115 or go to the emergency department now if',
-            'Your baby chokes on a bead, a piece of a teether or a small object and struggles to breathe or turns blue (see Hóc dị vật, Choking, in the Sơ cứu trẻ em first aid guide in Child Life); has a seizure or is very drowsy and hard to wake; or has swallowed a lot of toothpaste or teething gel and seems unwell (see Uống nhầm thuốc, hoá chất, Poisoning).',
+          urgent(
+            'Call {emergency} now if',
+            "Your baby chokes on a bead, a piece of a teether or a small object and struggles to breathe or turns blue (see Hóc dị vật, Choking, in the Sơ cứu trẻ em first aid guide in Child Life); has a seizure or is very drowsy and hard to wake; or has swallowed a lot of toothpaste or teething gel and seems unwell (see Uống nhầm thuốc, hoá chất, Poisoning). Don't wait: call {emergency} or go to the nearest emergency department.",
           ),
           doctor(
             'When to see a doctor',
@@ -5884,7 +6031,10 @@ export const seedArticles: SeedArticle[] = [
             'Để phòng đột tử, bé luôn được đặt nằm ngửa khi ngủ. Vì vậy, những lúc bé thức, nằm sấp là cơ hội để bé tập ngóc đầu, chống khuỷu tay rồi chống thẳng tay, làm nền cho lật, ngồi và bò sau này. Hộp sọ của bé còn mềm, nên đổi tư thế khi thức cũng giúp phần sau đầu bớt bị đè, giảm nguy cơ bẹt đầu do tư thế.',
           ),
           p(
-            'Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) hướng dẫn có thể bắt đầu từ ngày bé về nhà, 2–3 lần mỗi ngày, mỗi lần 3–5 phút, tăng dần để đạt tổng cộng 15–30 phút mỗi ngày khi bé khoảng 7 tuần tuổi. Tổ chức Y tế Thế giới (WHO) khuyến nghị trẻ dưới 1 tuổi nằm sấp ít nhất 30 phút mỗi ngày, chia thành nhiều lần khi thức, và không bị giữ một chỗ (ghế rung, xe đẩy, địu, ghế ô tô) quá 1 giờ mỗi lần. Hai hướng dẫn bổ sung cho nhau: bắt đầu ngắn, tăng dần và hướng tới ít nhất 30 phút mỗi ngày.',
+            'Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) hướng dẫn có thể bắt đầu từ ngày bé về nhà, 2–3 lần mỗi ngày, mỗi lần 3–5 phút, tăng dần để đạt tổng cộng 15–30 phút mỗi ngày khi bé khoảng 7 tuần tuổi.',
+          ),
+          p(
+            'Tổ chức Y tế Thế giới (WHO) khuyến nghị trẻ dưới 1 tuổi nằm sấp ít nhất 30 phút mỗi ngày, chia thành nhiều lần khi thức, và không bị giữ một chỗ (ghế rung, xe đẩy, địu, ghế ô tô) quá 1 giờ mỗi lần. Hai hướng dẫn bổ sung cho nhau: bắt đầu ngắn, tăng dần và hướng tới ít nhất 30 phút mỗi ngày.',
           ),
           h('Ba mẹ có thể làm gì: từng bước'),
           ul(
@@ -5929,7 +6079,10 @@ export const seedArticles: SeedArticle[] = [
             "To prevent sudden infant death, babies are always put on their back to sleep. So when your baby is awake, tummy time is their chance to practise lifting their head, pushing up on their elbows and then on straight arms, laying the groundwork for rolling, sitting and crawling. A baby's skull is still soft, so changing position while awake also takes pressure off the back of the head and lowers the risk of a positional flat head.",
           ),
           p(
-            'The American Academy of Pediatrics (AAP) says you can start the day your baby comes home, 2–3 times a day for 3–5 minutes each time, building up to a total of 15–30 minutes a day by about 7 weeks of age. The World Health Organization (WHO) recommends that babies under 1 year spend at least 30 minutes a day on their tummy, spread across several awake periods, and are not kept in one place (bouncer, stroller, carrier, car seat) for more than 1 hour at a time. The two fit together: start short, build up, and aim for at least 30 minutes a day.',
+            'The American Academy of Pediatrics (AAP) says you can start the day your baby comes home, 2–3 times a day for 3–5 minutes each time, building up to a total of 15–30 minutes a day by about 7 weeks of age.',
+          ),
+          p(
+            'The World Health Organization (WHO) recommends that babies under 1 year spend at least 30 minutes a day on their tummy, spread across several awake periods, and are not kept in one place (bouncer, stroller, carrier, car seat) for more than 1 hour at a time. The two fit together: start short, build up, and aim for at least 30 minutes a day.',
           ),
           h('What you can do: step by step'),
           ul(
@@ -6207,9 +6360,12 @@ export const seedArticles: SeedArticle[] = [
           p(
             'Ti vi bật làm nền cũng ảnh hưởng: theo AAP, khi có trẻ nhỏ bên cạnh, cha mẹ thường nói khoảng 940 từ mỗi giờ, nhưng khi ti vi bật thì con số này giảm khoảng 770 từ. Điện thoại của người lớn cũng vậy: mỗi lần ba mẹ cúi vào màn hình, cuộc “chuyền bóng” với bé bị ngắt quãng.',
           ),
-          p(
-            'Các tổ chức có khác nhau một chút. WHO (2019): dưới 1 tuổi không xem màn hình; 1 tuổi không ngồi xem màn hình; 2 tuổi không quá 1 giờ mỗi ngày, càng ít càng tốt. AAP: tránh màn hình trước 18 tháng, trừ gọi video với người thân; sau đó nếu cho xem thì chọn nội dung dành cho trẻ, xem cùng bé và giới hạn khoảng 1 giờ mỗi ngày. Chính sách năm 2026 của AAP nhấn mạnh thêm chất lượng nội dung, bối cảnh và giữ những khoảng thời gian không màn hình như bữa ăn. Lựa chọn an toàn hơn là theo mốc chặt hơn của WHO.',
+          p('Các tổ chức có khác nhau một chút:'),
+          ul(
+            'WHO (2019): dưới 1 tuổi không xem màn hình; 1 tuổi không ngồi xem màn hình; 2 tuổi không quá 1 giờ mỗi ngày, càng ít càng tốt.',
+            'AAP: tránh màn hình trước 18 tháng, trừ gọi video với người thân; sau đó nếu cho xem thì chọn nội dung dành cho trẻ, xem cùng bé và giới hạn khoảng 1 giờ mỗi ngày. Chính sách năm 2026 của AAP nhấn mạnh thêm chất lượng nội dung, bối cảnh và giữ những khoảng thời gian không màn hình như bữa ăn.',
           ),
+          p('Lựa chọn an toàn hơn là theo mốc chặt hơn của WHO.'),
           h('Ba mẹ có thể làm gì'),
           ul(
             'Dưới 2 tuổi: tốt nhất chưa cho bé xem ti vi, điện thoại, máy tính bảng. Gọi video với ông bà, người thân ở xa thì được; người lớn ngồi cùng và chỉ cho bé ai đang nói chuyện.',
@@ -6255,9 +6411,12 @@ export const seedArticles: SeedArticle[] = [
           p(
             "Background TV matters too: according to the AAP, parents speak about 940 words an hour around a young child, but with the TV on this drops by about 770 words. Adults' phones are similar: every time you look down at a screen, the game of catch with your baby is interrupted.",
           ),
-          p(
-            "The guidelines differ slightly. WHO (2019): no screen time under 1; no sedentary screen time at age 1; no more than 1 hour a day at age 2, less is better. AAP: avoid screens before 18 months, except video calls with family; after that, if you allow screens, choose content made for young children, watch together and keep it to about 1 hour a day. The AAP's 2026 policy adds emphasis on content quality, context and keeping screen-free times such as meals. The safer choice is to follow WHO's stricter limits.",
+          p('The guidelines differ slightly:'),
+          ul(
+            'WHO (2019): no screen time under 1; no sedentary screen time at age 1; no more than 1 hour a day at age 2, less is better.',
+            "AAP: avoid screens before 18 months, except video calls with family; after that, if you allow screens, choose content made for young children, watch together and keep it to about 1 hour a day. The AAP's 2026 policy adds emphasis on content quality, context and keeping screen-free times such as meals.",
           ),
+          p("The safer choice is to follow WHO's stricter limits."),
           h('What you can do'),
           ul(
             'Under 2: ideally no TV, phone or tablet viewing yet. Video calls with grandparents and family far away are fine; an adult sits alongside and shows your child who is talking.',
@@ -6368,7 +6527,10 @@ export const seedArticles: SeedArticle[] = [
             'Khoảng giữa năm đầu, bé dần hiểu rằng người và đồ vật vẫn tồn tại khi khuất khỏi tầm mắt. Bé biết ba mẹ đi đến một nơi bé không theo được, nhưng chưa hiểu rằng ba mẹ sẽ quay lại. Vì vậy bé khóc, bám chặt, đòi theo. Đây là dấu hiệu bé đã gắn bó với người chăm sóc mình, không phải bé “hư”.',
           ),
           p(
-            'Theo NHS, lo âu xa cách rất thường gặp từ khoảng 6 tháng đến 3 tuổi và thường hết khi bé khoảng 2–3 tuổi. AAP cho biết phần lớn bé thể hiện rõ quanh 9 tháng, và nhiều bé có thêm một đợt quanh 15–18 tháng. Cùng giai đoạn này, bé hay ngại người lạ: theo CDC, khoảng 9 tháng nhiều bé rụt rè, bám ba mẹ hoặc sợ hãi khi gặp người lạ, và phản ứng (nhìn theo, với tay, khóc) khi ba mẹ rời đi. Bé đói, mệt hay ốm thì càng khó xa ba mẹ hơn.',
+            'Theo NHS, lo âu xa cách rất thường gặp từ khoảng 6 tháng đến 3 tuổi và thường hết khi bé khoảng 2–3 tuổi. AAP cho biết phần lớn bé thể hiện rõ quanh 9 tháng, và nhiều bé có thêm một đợt quanh 15–18 tháng.',
+          ),
+          p(
+            'Cùng giai đoạn này, bé hay ngại người lạ: theo CDC, khoảng 9 tháng nhiều bé rụt rè, bám ba mẹ hoặc sợ hãi khi gặp người lạ, và phản ứng (nhìn theo, với tay, khóc) khi ba mẹ rời đi. Bé đói, mệt hay ốm thì càng khó xa ba mẹ hơn.',
           ),
           h('Ba mẹ có thể làm gì'),
           ul(
@@ -6415,7 +6577,10 @@ export const seedArticles: SeedArticle[] = [
             "Around the middle of the first year, babies start to understand that people and things still exist when out of sight. Your baby knows you are going somewhere they can't follow, but doesn't yet understand that you will come back. So they cry, cling and want to follow. It is a sign that your baby has bonded with the people who care for them, not that they are being “naughty”.",
           ),
           p(
-            'According to the NHS, separation anxiety is very common from about 6 months to 3 years and usually stops at around age 2–3. The AAP says most babies show it clearly around 9 months, and many have another wave around 15–18 months. In the same period babies are often wary of strangers: according to the CDC, at about 9 months many babies are shy, clingy or fearful around strangers, and react (look, reach or cry) when a parent leaves. Hunger, tiredness or illness make separations harder.',
+            'According to the NHS, separation anxiety is very common from about 6 months to 3 years and usually stops at around age 2–3. The AAP says most babies show it clearly around 9 months, and many have another wave around 15–18 months.',
+          ),
+          p(
+            'In the same period babies are often wary of strangers: according to the CDC, at about 9 months many babies are shy, clingy or fearful around strangers, and react (look, reach or cry) when a parent leaves. Hunger, tiredness or illness make separations harder.',
           ),
           h('What you can do'),
           ul(
@@ -6506,8 +6671,8 @@ export const seedArticles: SeedArticle[] = [
         'Home safety: preventing falls, drowning, burns and poisoning',
       ),
       summary: t(
-        'Những việc cụ thể để phòng ngã, đuối nước, bỏng, ngộ độc và hóc cho bé dưới 2 tuổi, cách theo dõi sau khi bé ngã đập đầu và khi nào phải gọi 115.',
-        'Practical steps to prevent falls, drowning, burns, poisoning and choking for children under 2, how to watch your child after a bump to the head, and when to call 115.',
+        'Những việc cụ thể để phòng ngã, đuối nước, bỏng, ngộ độc và hóc cho bé dưới 2 tuổi, cách theo dõi sau khi bé ngã đập đầu và khi nào phải gọi cấp cứu {emergency}.',
+        'Practical steps to prevent falls, drowning, burns, poisoning and choking for children under 2, how to watch your child after a bump to the head, and when to call {emergency}.',
       ),
       body: {
         vi: [
@@ -6567,8 +6732,8 @@ export const seedArticles: SeedArticle[] = [
             '“Chum, lu, xô nước trong nhà thấp, bé không với tới đâu”: bé biết bò, vịn đứng có thể chúi đầu vào trong; chỉ 5 cm nước đã đủ gây đuối nước. Hãy đậy kín hoặc đổ bỏ.',
             '“Bé ngã đập đầu thì lăn trứng gà, xoa dầu là khỏi”: ông bà làm vì thương cháu, nhưng các cách này không giúp phát hiện chấn thương bên trong. Hãy chườm lạnh bằng túi đá bọc khăn từng đợt ngắn và quan sát kỹ các dấu hiệu nguy hiểm bên dưới. Đừng cho rằng bé nôn chỉ vì “sợ”: nôn sau va đập là lý do để đưa bé đi khám.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
+          urgent(
+            'Gọi {emergency} ngay khi',
             'Sau va đập đầu: bé bất tỉnh, li bì, khó đánh thức hoặc co giật; ngã từ độ cao trên 1 mét hay hơn 5 bậc cầu thang; bé dưới 1 tuổi có bầm, sưng hay vết rách lớn trên đầu; chảy dịch trong hoặc máu từ tai, mũi; đầu có chỗ lõm; bé thay đổi hành vi, yếu tay chân. Nghi bé nuốt pin cúc áo, nam châm, uống nhầm thuốc hay hóa chất; bé bị đuối nước, kể cả khi đã tỉnh lại. Trong lúc chờ, xem mục Sơ cứu trẻ em của Child Life (Hồi sức tim phổi, Uống nhầm thuốc, hoá chất, Bỏng nước sôi, Gãy xương).',
           ),
           doctor(
@@ -6633,8 +6798,8 @@ export const seedArticles: SeedArticle[] = [
             '“The water jar or bucket is low, the baby can’t reach it”: a baby who crawls or pulls to stand can tip head first into it; just 5 cm of water is enough to drown. Cover it tightly or empty it.',
             '“After a bump to the head, roll a boiled egg over it or rub on oil and it will be fine”: grandparents do this out of love, but these remedies don’t help detect an injury inside. Use a wrapped ice pack in short bursts and watch closely for the danger signs below. Don’t assume vomiting is just “fright”: vomiting after a head bump is a reason to see a doctor.',
           ),
-          doctor(
-            'Call 115 (Vietnam emergency) or go to the emergency department now if',
+          urgent(
+            'Call {emergency} now if',
             'After a head bump: your child is unconscious, very drowsy, hard to wake or has a seizure; fell from more than 1 metre or more than 5 stairs; is under 1 year old and has a bruise, swelling or large cut on the head; has clear fluid or blood from the ears or nose; has a dent in the head; behaves differently or has weakness in an arm or leg. Your child may have swallowed a button battery, magnet, medicine or chemical; any drowning incident, even if your child is now awake. Meanwhile, see the Sơ cứu trẻ em (First aid) guide in Child Life (CPR, Swallowed medicine or chemicals, Scalds, Broken bone).',
           ),
           doctor(
@@ -6726,7 +6891,10 @@ export const seedArticles: SeedArticle[] = [
             'Khi ô tô phanh gấp hay va chạm, cơ thể bé bị hất đi với lực rất lớn: vòng tay người lớn không thể giữ nổi bé, còn dây an toàn của người lớn không được thiết kế cho trẻ nhỏ. Theo WHO, dùng thiết bị an toàn cho trẻ trên ô tô có thể giảm 71% số ca tử vong ở trẻ nhũ nhi. Ghế quay mặt về phía sau đỡ cả đầu, cổ và lưng của bé, những phần còn rất non yếu.',
           ),
           p(
-            'Theo khoản 3 Điều 10 Luật Trật tự, an toàn giao thông đường bộ 2024 (được lùi hiệu lực, áp dụng từ 1/7/2026): khi chở trẻ em dưới 10 tuổi và chiều cao dưới 1,35 m trên ô tô, người lái không được cho trẻ ngồi cùng hàng ghế với mình (trừ xe chỉ có một hàng ghế) và phải sử dụng, hướng dẫn sử dụng thiết bị an toàn phù hợp cho trẻ. Xe kinh doanh vận tải hành khách được miễn nghĩa vụ thiết bị, nhưng nguy cơ với bé thì như nhau, nên mang theo ghế của bé khi đi taxi nếu có thể.',
+            'Theo khoản 3 Điều 10 Luật Trật tự, an toàn giao thông đường bộ 2024 (được lùi hiệu lực, áp dụng từ 1/7/2026): khi chở trẻ em dưới 10 tuổi và chiều cao dưới 1,35 m trên ô tô, người lái không được cho trẻ ngồi cùng hàng ghế với mình (trừ xe chỉ có một hàng ghế) và phải sử dụng, hướng dẫn sử dụng thiết bị an toàn phù hợp cho trẻ.',
+          ),
+          p(
+            'Xe kinh doanh vận tải hành khách được miễn nghĩa vụ thiết bị, nhưng nguy cơ với bé thì như nhau, nên mang theo ghế của bé khi đi taxi nếu có thể.',
           ),
           p(
             'Với xe máy, luật cho phép người lái chở tối đa hai người khi có trẻ em dưới 12 tuổi, và người được chở phải đội mũ bảo hiểm đạt quy chuẩn kỹ thuật quốc gia, cài quai đúng quy cách (Điều 33). Theo WHO, đội mũ bảo hiểm đúng cách giảm tới 74% nguy cơ chấn thương sọ não. Nhưng xe máy không có chỗ nào giữ và che chắn em bé như ghế ô tô.',
@@ -6767,8 +6935,8 @@ export const seedArticles: SeedArticle[] = [
             '“Địu bé trước ngực, hoặc cho bé đứng phía trước người lái cho dễ trông”: khi phanh gấp hay ngã, bé ở phía trước hứng va đập đầu tiên và có thể bị kẹp giữa người lái và tay lái. Không chở bé ở phía trước người lái.',
             '“Đội tạm mũ của người lớn cho bé”: mũ quá rộng không bảo vệ được đầu bé. Chỉ dùng mũ trẻ em đúng cỡ, đạt quy chuẩn, cài quai đúng.',
           ),
-          doctor(
-            'Gọi 115 ngay khi',
+          urgent(
+            'Gọi {emergency} ngay khi',
             'Sau tai nạn giao thông, bé bất tỉnh, không thở hoặc thở bất thường, co giật, chảy máu nhiều, bị va đập mạnh vào đầu, nghi chấn thương đầu, cổ, lưng hoặc gãy xương. Không bế xốc bé; làm theo hướng dẫn Tai nạn giao thông trong mục Sơ cứu trẻ em của Child Life.',
           ),
           doctor(
@@ -6786,7 +6954,10 @@ export const seedArticles: SeedArticle[] = [
             "When a car brakes hard or crashes, a baby's body is thrown with enormous force: an adult's arms cannot hold on, and adult seat belts are not designed for small children. According to WHO, child restraints can reduce deaths among infants by 71%. A rear-facing seat supports the whole head, neck and back, the parts of a baby's body that are still most fragile.",
           ),
           p(
-            "Under Article 10(3) of Vietnam's 2024 Law on Road Traffic Order and Safety (its start was postponed; it applies from 1 July 2026): when a car carries a child under 10 years old and shorter than 1.35 m, the driver must not let the child sit in the same row as the driver (except in cars with only one row) and must use, or instruct the use of, a suitable child safety device. Commercial passenger vehicles are exempt from the device requirement, but the risk to your baby is the same, so bring your baby's seat in a taxi if you can.",
+            "Under Article 10(3) of Vietnam's 2024 Law on Road Traffic Order and Safety (its start was postponed; it applies from 1 July 2026): when a car carries a child under 10 years old and shorter than 1.35 m, the driver must not let the child sit in the same row as the driver (except in cars with only one row) and must use, or instruct the use of, a suitable child safety device.",
+          ),
+          p(
+            "Commercial passenger vehicles are exempt from the device requirement, but the risk to your baby is the same, so bring your baby's seat in a taxi if you can.",
           ),
           p(
             'For motorbikes, the law allows a rider to carry at most two passengers when one is a child under 12, and passengers must wear a helmet meeting the national technical standard with the strap fastened correctly (Article 33). According to WHO, wearing a helmet correctly reduces the risk of brain injury by up to 74%. But a motorbike has nothing that holds and shields a baby the way a car seat does.',
@@ -6827,8 +6998,8 @@ export const seedArticles: SeedArticle[] = [
             '“Carry the baby on your chest, or let them stand in front of the rider, so you can keep an eye on them”: in a sudden stop or fall, a child in front takes the first impact and can be crushed between the rider and the handlebars. Never carry a child in front of the rider.',
             "“An adult's helmet will do for now”: a helmet that is too big cannot protect a child's head. Only use a correctly sized children's helmet that meets the standard, with the strap fastened properly.",
           ),
-          doctor(
-            'Call 115 (Vietnam emergency) now if',
+          urgent(
+            'Call {emergency} now if',
             "After a traffic accident, your child is unconscious, not breathing or breathing abnormally, has a seizure, is bleeding heavily, took a hard knock to the head, or may have a head, neck, back injury or broken bone. Don't pick them up abruptly; follow the Traffic accident steps in the Sơ cứu trẻ em (First aid) guide in Child Life.",
           ),
           doctor(
@@ -6891,24 +7062,37 @@ export const seedArticles: SeedArticle[] = [
         'Parents need care too: exhaustion, baby blues and postnatal depression',
       ),
       summary: t(
-        'Phân biệt buồn sau sinh với trầm cảm sau sinh ở cả mẹ và ba, cách nghỉ ngơi và nhận giúp đỡ, điều trị có hiệu quả, và nơi tìm hỗ trợ ở Việt Nam. Gọi 115 nếu có nguy hiểm tức thời.',
-        'How to tell baby blues from postnatal depression in mothers and fathers, ways to rest and accept help, treatments that work, and where to find support in Vietnam. Call 115 in immediate danger.',
+        'Phân biệt buồn sau sinh với trầm cảm sau sinh ở cả mẹ và ba, cách nghỉ ngơi và nhận giúp đỡ, điều trị có hiệu quả, và nơi tìm hỗ trợ ở Việt Nam. Gọi cấp cứu {emergency} nếu có nguy hiểm tức thời.',
+        'How to tell baby blues from postnatal depression in mothers and fathers, ways to rest and accept help, treatments that work, and where to find support in Vietnam. Call {emergency} in immediate danger.',
       ),
       body: {
         vi: [
           note(
             'Tóm tắt nhanh',
-            'Mệt mỏi và buồn thoáng qua trong vài ngày đầu sau sinh rất thường gặp và thường hết trong 2 tuần. Nếu buồn, lo âu kéo dài hơn 2 tuần hoặc nặng dần, đó có thể là trầm cảm sau sinh, một bệnh có thể chữa được, gặp ở cả mẹ và ba. Hãy nói ra và tìm hỗ trợ sớm; gọi 115 nếu có ý nghĩ làm hại bản thân hoặc bé.',
+            'Mệt mỏi và buồn thoáng qua trong vài ngày đầu sau sinh rất thường gặp và thường hết trong 2 tuần. Nếu buồn, lo âu kéo dài hơn 2 tuần hoặc nặng dần, đó có thể là trầm cảm sau sinh, một bệnh có thể chữa được, gặp ở cả mẹ và ba. Hãy nói ra và tìm hỗ trợ sớm; gọi cấp cứu {emergency} nếu có ý nghĩ làm hại bản thân hoặc bé.',
           ),
           h('Hiểu đúng: buồn sau sinh và trầm cảm sau sinh'),
           p(
             'Trong vài ngày đầu sau sinh, rất nhiều mẹ thấy buồn, dễ khóc, lo lắng hay cáu gắt. Tình trạng này thường được gọi là “buồn sau sinh” (baby blues) và thường tự hết trong vòng 2 tuần sau sinh. Nếu kéo dài hơn, nặng hơn hay mẹ thấy không xoay xở nổi, cần tìm hỗ trợ.',
           ),
           p(
-            'Trầm cảm sau sinh thì khác: kéo dài, nặng hơn và cần được điều trị. Theo WHO, khoảng 13% phụ nữ mới sinh trên thế giới gặp một rối loạn tâm thần, chủ yếu là trầm cảm, và ở các nước đang phát triển tỷ lệ này cao hơn, gần 20%, tức khoảng 1 trong 5 người. Trầm cảm có thể bắt đầu từ khi mang thai đến một năm sau sinh. Ba và người chăm sóc cũng có thể bị: một phân tích tổng hợp nhiều nghiên cứu ghi nhận khoảng 1 trong 10 người cha bị trầm cảm trong thai kỳ hoặc năm đầu sau sinh.',
+            'Trầm cảm sau sinh thì khác: kéo dài, nặng hơn và cần được điều trị. Theo WHO, khoảng 13% phụ nữ mới sinh trên thế giới gặp một rối loạn tâm thần, chủ yếu là trầm cảm, và ở các nước đang phát triển tỷ lệ này cao hơn, gần 20%, tức khoảng 1 trong 5 người.',
           ),
           p(
-            'Dấu hiệu thường gặp: buồn bã, mất hứng thú với hầu hết mọi việc; thấy vô vọng, không thể xoay xở; tự trách, thấy mình là cha mẹ tồi; lo âu, sợ hãi liên tục; cáu gắt, bồn chồn; khó ngủ ngay cả khi có thời gian nghỉ; khó tập trung; khó gắn bó với bé; có ý nghĩ tự làm hại bản thân hoặc làm hại bé. Nhiều người ngại nói ra vì sợ bị phán xét hay sợ bị tách khỏi con; theo NHS, điều đó rất hiếm khi xảy ra và nhân viên y tế sẽ hỗ trợ ba mẹ.',
+            'Trầm cảm có thể bắt đầu từ khi mang thai đến một năm sau sinh. Ba và người chăm sóc cũng có thể bị: một phân tích tổng hợp nhiều nghiên cứu ghi nhận khoảng 1 trong 10 người cha bị trầm cảm trong thai kỳ hoặc năm đầu sau sinh.',
+          ),
+          p('Dấu hiệu thường gặp:'),
+          ul(
+            'Buồn bã, mất hứng thú với hầu hết mọi việc.',
+            'Thấy vô vọng, không thể xoay xở.',
+            'Tự trách, thấy mình là cha mẹ tồi.',
+            'Lo âu, sợ hãi liên tục; cáu gắt, bồn chồn.',
+            'Khó ngủ ngay cả khi có thời gian nghỉ; khó tập trung.',
+            'Khó gắn bó với bé.',
+            'Có ý nghĩ tự làm hại bản thân hoặc làm hại bé.',
+          ),
+          p(
+            'Nhiều người ngại nói ra vì sợ bị phán xét hay sợ bị tách khỏi con; theo NHS, điều đó rất hiếm khi xảy ra và nhân viên y tế sẽ hỗ trợ ba mẹ.',
           ),
           p(
             'Loạn thần sau sinh hiếm gặp, khoảng 1 trong 1.000 bà mẹ, nhưng là tình trạng cấp cứu: thường khởi phát đột ngột trong vài ngày đến 2 tuần đầu, với ảo giác, niềm tin kỳ lạ, kích động, lú lẫn hoặc tâm trạng thay đổi rất nhanh. Người bệnh có thể không nhận ra mình đang bệnh, nên người thân cần hành động.',
@@ -6945,9 +7129,9 @@ export const seedArticles: SeedArticle[] = [
             '“Làm mẹ ai cũng thế, phải tự chịu đựng”: mệt thì ai cũng mệt, nhưng buồn kéo dài hơn 2 tuần, mất hứng thú, thấy vô vọng thì không phải chuyện “ai cũng thế”. Tìm giúp đỡ là việc làm vì cả mẹ và bé.',
             '“Đàn ông không bị trầm cảm sau sinh”: ba cũng có thể bị trầm cảm trong thai kỳ của vợ và năm đầu sau sinh. Ba cũng xứng đáng được hỏi han, chia sẻ và đi khám khi cần.',
           ),
-          doctor(
-            'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Ba mẹ có ý nghĩ hoặc kế hoạch tự làm hại bản thân hay làm hại bé; người mẹ sau sinh đột ngột nghe, thấy những điều không có thật, có niềm tin kỳ lạ, kích động, lú lẫn hoặc tâm trạng thay đổi rất nhanh. Đừng để người đó ở một mình với bé; người thân hãy gọi giúp.',
+          urgent(
+            'Gọi {emergency} ngay khi',
+            'Ba mẹ có ý nghĩ hoặc kế hoạch tự làm hại bản thân hay làm hại bé; người mẹ sau sinh đột ngột nghe, thấy những điều không có thật, có niềm tin kỳ lạ, kích động, lú lẫn hoặc tâm trạng thay đổi rất nhanh. Đừng để người đó ở một mình với bé; người thân hãy gọi giúp, hoặc đưa người đó đến khoa cấp cứu gần nhất.',
           ),
           doctor(
             'Tìm hỗ trợ sớm khi',
@@ -6957,17 +7141,30 @@ export const seedArticles: SeedArticle[] = [
         en: [
           note(
             'In short',
-            'Feeling tired and briefly low in the first days after birth is very common and usually passes within 2 weeks. If low mood or anxiety lasts more than 2 weeks or gets worse, it may be postnatal depression, a treatable illness that affects both mothers and fathers. Talk about it and get support early; call 115 if you have thoughts of harming yourself or your baby.',
+            'Feeling tired and briefly low in the first days after birth is very common and usually passes within 2 weeks. If low mood or anxiety lasts more than 2 weeks or gets worse, it may be postnatal depression, a treatable illness that affects both mothers and fathers. Talk about it and get support early; call {emergency} if you have thoughts of harming yourself or your baby.',
           ),
           h('Understanding baby blues and postnatal depression'),
           p(
             "In the first few days after birth, many mothers feel low, tearful, anxious or irritable. This is often called the “baby blues” and usually goes away on its own within 2 weeks of the birth. If it lasts longer, gets worse or you feel you can't cope, get support.",
           ),
           p(
-            'Postnatal depression is different: it lasts, it is more severe and it needs treatment. According to WHO, about 13% of women who have just given birth worldwide experience a mental disorder, mainly depression, and in developing countries the rate is higher, close to 20%, or about 1 in 5. Depression can begin in pregnancy or at any point up to a year after birth. Fathers and partners can be affected too: a meta-analysis of many studies found about 1 in 10 fathers had depression during pregnancy or the first year after birth.',
+            'Postnatal depression is different: it lasts, it is more severe and it needs treatment. According to WHO, about 13% of women who have just given birth worldwide experience a mental disorder, mainly depression, and in developing countries the rate is higher, close to 20%, or about 1 in 5.',
           ),
           p(
-            'Common signs: feeling low and losing interest in most things; feeling hopeless or unable to cope; blaming yourself or feeling like a bad parent; constant anxiety or fear; irritability or restlessness; trouble sleeping even when you have the chance; trouble concentrating; difficulty bonding with your baby; thoughts of harming yourself or your baby. Many parents hold back for fear of being judged or of their baby being taken away; according to the NHS, that is very rare and health workers will support you.',
+            'Depression can begin in pregnancy or at any point up to a year after birth. Fathers and partners can be affected too: a meta-analysis of many studies found about 1 in 10 fathers had depression during pregnancy or the first year after birth.',
+          ),
+          p('Common signs:'),
+          ul(
+            'Feeling low and losing interest in most things.',
+            'Feeling hopeless or unable to cope.',
+            'Blaming yourself or feeling like a bad parent.',
+            'Constant anxiety or fear; irritability or restlessness.',
+            'Trouble sleeping even when you have the chance; trouble concentrating.',
+            'Difficulty bonding with your baby.',
+            'Thoughts of harming yourself or your baby.',
+          ),
+          p(
+            'Many parents hold back for fear of being judged or of their baby being taken away; according to the NHS, that is very rare and health workers will support you.',
           ),
           p(
             'Postpartum psychosis is rare, affecting about 1 in 1,000 mothers, but it is an emergency: it usually starts suddenly within days to the first 2 weeks, with hallucinations, unusual beliefs, agitation, confusion or very fast mood changes. The person may not realise they are ill, so family members need to act.',
@@ -7004,9 +7201,9 @@ export const seedArticles: SeedArticle[] = [
             '“Every mother goes through it, you just have to endure it”: every parent gets tired, but low mood for more than 2 weeks, loss of interest and hopelessness are not just “what everyone goes through”. Seeking help is something you do for both you and your baby.',
             "“Men don't get postnatal depression”: fathers can also become depressed during their partner's pregnancy and the first year after birth. They deserve to be asked how they are, to share, and to see a doctor when needed.",
           ),
-          doctor(
-            'Call 115 (Vietnam emergency) or go to the emergency department now if',
-            "A parent has thoughts or plans of harming themselves or the baby; a new mother suddenly hears or sees things that aren't there, has strange beliefs, is agitated or confused, or has very rapid mood swings. Don't leave that person alone with the baby; family members should make the call.",
+          urgent(
+            'Call {emergency} now if',
+            "A parent has thoughts or plans of harming themselves or the baby; a new mother suddenly hears or sees things that aren't there, has strange beliefs, is agitated or confused, or has very rapid mood swings. Don't leave that person alone with the baby; family members should make the call, or take them to the nearest emergency department.",
           ),
           doctor(
             'Get support early if',
@@ -7145,15 +7342,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé có lúc ngừng thở, môi hoặc lưỡi tím tái; thở rất khó, rút lõm ngực nhiều, thở rên; thở từ 70 lần mỗi phút trở lên; li bì, khó đánh thức hoặc lả mềm; không bú, không uống được. Đừng chờ, gọi 115 ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé có lúc ngừng thở, môi hoặc lưỡi tím tái; thở rất khó, rút lõm ngực nhiều, thở rên; thở từ 70 lần mỗi phút trở lên; li bì, khó đánh thức hoặc lả mềm; không bú, không uống được. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'Đưa bé đi khám trong ngày khi',
-            text: 'Bé dưới 3 tháng có dấu hiệu ốm, nhất là sốt từ 38 °C; thở nhanh theo ngưỡng ở trên; bú dưới khoảng một nửa so với bình thường; ít tã ướt hơn hẳn hoặc không có tã ướt trong 12 giờ; bé sinh non hay có bệnh tim, phổi; sốt cao kéo dài hoặc nặng hơn sau ngày thứ 5; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi 115.',
+            text: 'Bé dưới 3 tháng có dấu hiệu ốm, nhất là sốt từ 38 °C; thở nhanh theo ngưỡng ở trên; bú dưới khoảng một nửa so với bình thường; ít tã ướt hơn hẳn hoặc không có tã ướt trong 12 giờ; bé sinh non hay có bệnh tim, phổi; sốt cao kéo dài hoặc nặng hơn sau ngày thứ 5; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi cấp cứu {emergency}.',
           },
         ],
         en: [
@@ -7223,15 +7420,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your baby has pauses in breathing or blue lips or tongue; struggles to breathe, with marked chest pulling in or grunting; breathes 70 or more times a minute; is floppy, very drowsy or hard to wake; or cannot feed or drink. Do not wait.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your baby has pauses in breathing or blue lips or tongue; struggles to breathe, with marked chest pulling in or grunting; breathes 70 or more times a minute; is floppy, very drowsy or hard to wake; or cannot feed or drink. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'See a doctor the same day if',
-            text: 'Your baby is under 3 months with any sign of illness, especially 38 °C or more; breathes fast by the counts above; takes less than about half their usual feeds; has far fewer wet diapers or none in 12 hours; was born early or has a heart or lung condition; has a high fever that lasts or is worse after day 5; or you are worried. If your baby gets worse quickly, call emergency services.',
+            text: 'Your baby is under 3 months with any sign of illness, especially 38 °C or more; breathes fast by the counts above; takes less than about half their usual feeds; has far fewer wet diapers or none in 12 hours; was born early or has a heart or lung condition; has a high fever that lasts or is worse after day 5; or you are worried. If your baby gets worse quickly, call {emergency}.',
           },
         ],
       },
@@ -7314,7 +7511,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Thường bé sốt nhẹ hoặc vừa, đau họng, chảy dãi, ăn kém vì loét miệng, rồi nổi nốt đỏ hoặc phỏng nước ở lòng bàn tay, lòng bàn chân, đầu gối, mông. Phần lớn bé đỡ sau 7–10 ngày. Theo WHO, EV71 có thể gây biến chứng như viêm màng não, viêm não, liệt; các đợt dịch nặng chủ yếu gặp ở châu Á – Thái Bình Dương, nên ở Việt Nam và các nước trong vùng, ba mẹ cần theo dõi bé sát hơn trong những ngày đầu.',
+            text: 'Thường bé sốt nhẹ hoặc vừa, đau họng, chảy dãi, ăn kém vì loét miệng, rồi nổi nốt đỏ hoặc phỏng nước ở lòng bàn tay, lòng bàn chân, đầu gối, mông. Phần lớn bé đỡ sau 7–10 ngày.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Theo WHO, EV71 có thể gây biến chứng như viêm màng não, viêm não, liệt; các đợt dịch nặng chủ yếu gặp ở châu Á – Thái Bình Dương, nên ở Việt Nam và các nước trong vùng, ba mẹ cần theo dõi bé sát hơn trong những ngày đầu.',
           },
           {
             type: 'paragraph',
@@ -7354,7 +7555,7 @@ export const seedArticles: SeedArticle[] = [
           {
             type: 'bullets',
             items: [
-              '“Hết sốt, nốt khô là khỏi, đi học được ngay”: virus còn theo phân ra ngoài nhiều tuần. Nên: theo hướng dẫn nghỉ học của trạm y tế, nhà trường, và tiếp tục rửa tay kỹ.',
+              '“Hết sốt, nốt khô là khỏi, đi học được ngay”: virus còn theo phân ra ngoài nhiều tuần. Nên: cho bé nghỉ học theo hướng dẫn của trạm y tế hoặc phòng khám gần nhà và của nhà trường, và tiếp tục rửa tay kỹ.',
               '“Kiêng tắm, kiêng nước để nốt không lan”: nước không làm bệnh lan. Nên: tắm nhanh bằng nước ấm, thấm khô nhẹ, không chà xát nốt phỏng.',
               '“Bị một lần rồi thì không bị lại”: nhiều chủng virus gây tay chân miệng nên bé có thể mắc lại. Nên: duy trì rửa tay, vệ sinh đồ chơi.',
               '“Giật mình là do sợ, do vía”: ở trẻ bị tay chân miệng, giật mình có thể là dấu hiệu virus ảnh hưởng thần kinh. Nên: đưa bé đi khám ngay.',
@@ -7362,15 +7563,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến viện ngay khi',
-            text: 'Bé giật mình, run chi, đi loạng choạng, yếu tay chân; co giật; li bì, khó đánh thức; thở nhanh, thở khó; vã mồ hôi, tay chân lạnh, da nổi vân tím; nôn nhiều; sốt từ 39 °C hoặc sốt kéo dài từ 48 giờ. Đừng chờ, gọi 115 hoặc đến bệnh viện ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé giật mình, run chi, đi loạng choạng, yếu tay chân; co giật; li bì, khó đánh thức; thở nhanh, thở khó; vã mồ hôi, tay chân lạnh, da nổi vân tím; nôn nhiều; sốt từ 39 °C hoặc sốt kéo dài từ 48 giờ. Đừng chờ: gọi {emergency} hoặc đưa bé đến bệnh viện ngay.',
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'Đưa bé đi khám trong ngày khi',
-            text: 'Bé dưới 6 tháng bị tay chân miệng; bé bỏ ăn uống, ít tã ướt hoặc có dấu hiệu mất nước; quấy khóc, bứt rứt, khó ngủ; nốt phỏng sưng đỏ, có mủ; bé có bệnh mạn tính; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi 115.',
+            text: 'Bé dưới 6 tháng bị tay chân miệng; bé bỏ ăn uống, ít tã ướt hoặc có dấu hiệu mất nước; quấy khóc, bứt rứt, khó ngủ; nốt phỏng sưng đỏ, có mủ; bé có bệnh mạn tính; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi cấp cứu {emergency}.',
           },
         ],
         en: [
@@ -7387,7 +7588,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Usually there is a mild or moderate fever, a sore throat, drooling and poor eating because of mouth ulcers, then red spots or blisters on the palms, soles, knees and bottom. Most children improve within 7–10 days. According to WHO, EV71 can cause complications such as meningitis, encephalitis and paralysis; severe outbreaks have mainly occurred in the Asia-Pacific region, so in Việt Nam and neighbouring countries watch your child more closely in the first days.',
+            text: 'Usually there is a mild or moderate fever, a sore throat, drooling and poor eating because of mouth ulcers, then red spots or blisters on the palms, soles, knees and bottom. Most children improve within 7–10 days.',
+          },
+          {
+            type: 'paragraph',
+            text: 'According to WHO, EV71 can cause complications such as meningitis, encephalitis and paralysis; severe outbreaks have mainly occurred in the Asia-Pacific region, so in Việt Nam and neighbouring countries watch your child more closely in the first days.',
           },
           {
             type: 'paragraph',
@@ -7427,7 +7632,7 @@ export const seedArticles: SeedArticle[] = [
           {
             type: 'bullets',
             items: [
-              '“Once the fever is gone and spots are dry, they can go straight back”: the virus stays in stools for weeks. Instead: follow your health station’s and childcare’s advice, and keep up careful handwashing.',
+              '“Once the fever is gone and spots are dry, they can go straight back”: the virus stays in stools for weeks. Instead: keep your child home for as long as a local clinic and your childcare provider advise, and keep up careful handwashing.',
               '“No baths, or the spots will spread”: water does not spread the illness. Instead: a quick warm bath, pat dry and do not rub the blisters.',
               '“Once is enough, they cannot get it again”: several viruses cause it, so children can catch it more than once. Instead: keep up handwashing and cleaning toys.',
               '“The jerks are just fright, or spirits”: in hand, foot and mouth disease, jerks can be a sign the virus is affecting the nervous system. Instead: get your child seen straight away.',
@@ -7435,15 +7640,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or go to hospital now if',
-            text: 'Your child has sudden jerks, trembling limbs, unsteady walking or weak arms or legs; has a fit; is very drowsy or hard to wake; breathes fast or with difficulty; is sweating with cold hands and feet or blotchy purple skin; vomits a lot; or has a fever of 39 °C or more or lasting 48 hours. Do not wait; call your local emergency number or go to hospital.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your child has sudden jerks, trembling limbs, unsteady walking or weak arms or legs; has a fit; is very drowsy or hard to wake; breathes fast or with difficulty; is sweating with cold hands and feet or blotchy purple skin; vomits a lot; or has a fever of 39 °C or more or lasting 48 hours. Don't wait: call {emergency} or go to hospital now.",
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'See a doctor the same day if',
-            text: 'Your baby is under 6 months; your child refuses food and drink, has fewer wet diapers or signs of dehydration; is crying, restless or cannot sleep; has red, swollen or pus-filled blisters; has a long-term condition; or you are worried. If your child gets worse quickly, call emergency services.',
+            text: 'Your baby is under 6 months; your child refuses food and drink, has fewer wet diapers or signs of dehydration; is crying, restless or cannot sleep; has red, swollen or pus-filled blisters; has a long-term condition; or you are worried. If your child gets worse quickly, call {emergency}.',
           },
         ],
       },
@@ -7528,7 +7733,7 @@ export const seedArticles: SeedArticle[] = [
           {
             type: 'bullets',
             items: [
-              'Cân, đo ở trạm y tế hoặc phòng khám, mỗi lần dùng cùng loại cân, bé cởi bớt quần áo và tháo tã. Cân ở nhà dễ lệch vài trăm gam.',
+              'Cân, đo ở trạm y tế hoặc phòng khám gần nhà, mỗi lần dùng cùng loại cân, bé cởi bớt quần áo và tháo tã. Cân ở nhà dễ lệch vài trăm gam.',
               'Dưới 2 tuổi, chiều dài được đo khi bé nằm thẳng trên thước đo, có hai người cùng giữ bé.',
               'Ghi lại các lần đo trong Child Life hoặc sổ theo dõi sức khoẻ của bé để nhìn được xu hướng qua nhiều tháng.',
               'Bé sinh non: chấm theo tuổi hiệu chỉnh đến khoảng 2 tuổi, theo hướng dẫn của bác sĩ (xem bài Bé sinh non và tuổi hiệu chỉnh).',
@@ -7593,7 +7798,7 @@ export const seedArticles: SeedArticle[] = [
           {
             type: 'bullets',
             items: [
-              'Have your baby weighed and measured at a clinic, on the same kind of scale each time, undressed and without a diaper. Home scales can be off by a few hundred grams.',
+              'Have your baby weighed and measured at a local clinic, on the same kind of scale each time, undressed and without a diaper. Home scales can be off by a few hundred grams.',
               'Under 2, length is measured with your baby lying straight on a measuring board, held by two people.',
               'Record each measurement in Child Life or your baby’s health record so you can see the trend over months.',
               'Babies born early: plot by corrected age until about age 2, as your doctor advises (see Babies born early and corrected age).',
@@ -7762,9 +7967,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé ngừng thở, tím tái, thở rên hay rút lõm ngực; li bì, khó đánh thức, lả mềm; co giật; bé dưới 3 tháng tuổi thật có nhiệt độ từ 38 °C trở lên, hoặc thân nhiệt thấp dưới 36 °C.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé ngừng thở, tím tái, thở rên hay rút lõm ngực; li bì, khó đánh thức, lả mềm; co giật; bé dưới 3 tháng tuổi thật có nhiệt độ từ 38 °C trở lên, hoặc thân nhiệt thấp dưới 36 °C. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -7835,9 +8040,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your baby stops breathing, turns blue, grunts or the chest pulls in; is floppy, very drowsy or hard to wake; has a fit; or is under 3 months of actual age with a temperature of 38 °C or more, or a low temperature under 36 °C.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your baby stops breathing, turns blue, grunts or the chest pulls in; is floppy, very drowsy or hard to wake; has a fit; or is under 3 months of actual age with a temperature of 38 °C or more, or a low temperature under 36 °C. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -7902,6 +8107,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'skills',
       format: 'article',
       ageWeeks: { from: 52, to: 104 },
       readingMinutes: 4,
@@ -7978,9 +8184,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé hóc, khó thở hoặc tím tái khi ăn.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên hỏi bác sĩ',
-            text: 'Bé sụt cân, đường cân nặng tụt qua hai vạch bách phân vị hoặc đi ngang nhiều tháng; bé chỉ ăn rất ít món và ngày càng ít đi; hay nôn, sặc, oẹ khi ăn, khó nhai nuốt; táo bón hay tiêu chảy kéo dài; bé xanh xao, mệt; bé chậm nói hay ít giao tiếp kèm theo; hoặc bữa ăn trở thành cuộc chiến khiến cả nhà căng thẳng. Gọi 115 nếu bé hóc, khó thở hoặc tím tái khi ăn.',
+            text: 'Bé sụt cân, đường cân nặng tụt qua hai vạch bách phân vị hoặc đi ngang nhiều tháng; bé chỉ ăn rất ít món và ngày càng ít đi; hay nôn, sặc, oẹ khi ăn, khó nhai nuốt; táo bón hay tiêu chảy kéo dài; bé xanh xao, mệt; bé chậm nói hay ít giao tiếp kèm theo; hoặc bữa ăn trở thành cuộc chiến khiến cả nhà căng thẳng.',
           },
         ],
         en: [
@@ -8046,9 +8258,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'Your child chokes, struggles to breathe or turns blue while eating.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to ask a doctor',
-            text: 'Your child loses weight, or the weight curve drops across two percentile lines or stays flat for months; eats very few foods and the list keeps shrinking; often vomits, chokes or gags, or struggles to chew and swallow; has ongoing constipation or diarrhoea; looks pale or tired; also has language or social concerns; or mealtimes have become a battle that stresses the whole family. Call emergency services (115 in Việt Nam) if your child chokes, struggles to breathe or turns blue while eating.',
+            text: 'Your child loses weight, or the weight curve drops across two percentile lines or stays flat for months; eats very few foods and the list keeps shrinking; often vomits, chokes or gags, or struggles to chew and swallow; has ongoing constipation or diarrhoea; looks pale or tired; also has language or social concerns; or mealtimes have become a battle that stresses the whole family.',
           },
         ],
       },
@@ -8100,6 +8318,7 @@ export const seedArticles: SeedArticle[] = [
     data: {
       library: 'solids',
       topic: 'feeding',
+      subtopic: 'nutrition',
       format: 'quick_qa',
       ageWeeks: { from: 48, to: 104 },
       readingMinutes: 2,
@@ -8307,9 +8526,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé ngất, tím tái kéo dài, co giật hoặc không tỉnh lại nhanh sau cơn nín thở; hoặc bé bị thương nặng trong lúc ăn vạ.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé ngất, tím tái kéo dài, co giật hoặc không tỉnh lại nhanh sau cơn nín thở; hoặc bé bị thương nặng trong lúc ăn vạ. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -8388,9 +8607,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your child faints and stays blue, has a fit or does not come round quickly after breath-holding; or is badly hurt during a tantrum.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your child faints and stays blue, has a fit or does not come round quickly after breath-holding; or is badly hurt during a tantrum. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -8520,9 +8739,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé có ban hoặc chấm đỏ, tím không mất màu khi ấn cốc, nhất là kèm sốt hay bé mệt; bé li bì, khó đánh thức hoặc khó thở; phỏng nước lan nhanh kèm sốt, hoặc da đỏ, bong tróc trên diện rộng.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé có ban hoặc chấm đỏ, tím không mất màu khi ấn cốc, nhất là kèm sốt hay bé mệt; bé li bì, khó đánh thức hoặc khó thở; phỏng nước lan nhanh kèm sốt, hoặc da đỏ, bong tróc trên diện rộng. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -8594,9 +8813,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your baby has red or purple spots that do not fade under a glass, especially with fever or if they seem unwell; is very drowsy, hard to wake or struggling to breathe; or has blisters spreading fast with fever, or widespread red, peeling skin.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your baby has red or purple spots that do not fade under a glass, especially with fever or if they seem unwell; is very drowsy, hard to wake or struggling to breathe; or has blisters spreading fast with fever, or widespread red, peeling skin. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -8730,9 +8949,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé li bì, khó đánh thức, co giật, thở nhanh hoặc khó thở sau khi bị nóng; da nóng đỏ, khô, bé lả đi; cả nhà nghi ngộ độc khí than: đưa mọi người ra chỗ thoáng ngay, tắt nguồn đốt nếu an toàn, rồi gọi 115; bé tím tái, người lạnh, mềm nhũn.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé li bì, khó đánh thức, co giật, thở nhanh hoặc khó thở sau khi bị nóng; da nóng đỏ, khô, bé lả đi; cả nhà nghi ngộ độc khí than: đưa mọi người ra chỗ thoáng ngay, tắt nguồn đốt nếu an toàn, rồi gọi {emergency}; bé tím tái, người lạnh, mềm nhũn.',
           },
           {
             type: 'callout',
@@ -8808,9 +9027,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your baby is very drowsy, hard to wake, has a fit, or breathes fast or with difficulty after getting hot; has hot, red, dry skin and is floppy; you suspect carbon monoxide poisoning: get everyone into fresh air at once, turn off the source if it is safe, then call; or your baby is blue, cold and floppy.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'Your baby is very drowsy, hard to wake, has a fit, or breathes fast or with difficulty after getting hot; has hot, red, dry skin and is floppy; you suspect carbon monoxide poisoning: get everyone into fresh air at once, turn off the source if it is safe, then call {emergency}; or your baby is blue, cold and floppy.',
           },
           {
             type: 'callout',
@@ -8954,15 +9173,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé uống nhầm thuốc, uống quá liều hay uống thuốc của người lớn, kể cả khi chưa có biểu hiện gì: mang theo vỏ thuốc và xem mục Sơ cứu trẻ em › Uống nhầm thuốc, hoá chất trong Child Life; bé khó thở, sưng môi, lưỡi, mặt hoặc nổi mẩn lan nhanh sau khi dùng thuốc; bé li bì hoặc co giật.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé uống nhầm thuốc, uống quá liều hay uống thuốc của người lớn, kể cả khi chưa có biểu hiện gì: mang theo vỏ thuốc và xem mục Sơ cứu trẻ em › Uống nhầm thuốc, hoá chất trong Child Life; bé khó thở, sưng môi, lưỡi, mặt hoặc nổi mẩn lan nhanh sau khi dùng thuốc; bé li bì hoặc co giật. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'Hỏi bác sĩ hoặc dược sĩ khi',
-            text: 'Ba mẹ chưa chắc liều theo cân nặng; bé nổi mẩn nhẹ, nôn hay tiêu chảy khi đang dùng thuốc; bé không đỡ sau thời gian bác sĩ dặn; hoặc bé đang dùng nhiều thuốc cùng lúc. Nếu bé nặng lên nhanh, gọi 115.',
+            text: 'Ba mẹ chưa chắc liều theo cân nặng; bé nổi mẩn nhẹ, nôn hay tiêu chảy khi đang dùng thuốc; bé không đỡ sau thời gian bác sĩ dặn; hoặc bé đang dùng nhiều thuốc cùng lúc. Nếu bé nặng lên nhanh, gọi cấp cứu {emergency}.',
           },
         ],
         en: [
@@ -9034,15 +9253,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: 'Your child swallows the wrong medicine, too much, or an adult’s medicine, even with no symptoms yet: take the packaging and see Sơ cứu trẻ em (First aid) › Swallowed medicine or chemicals in Child Life; your child has trouble breathing, swollen lips, tongue or face, or a fast-spreading rash after a medicine; or is very drowsy or has a fit.',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your child swallows the wrong medicine, too much, or an adult’s medicine, even with no symptoms yet: take the packaging and see Sơ cứu trẻ em (First aid) › Swallowed medicine or chemicals in Child Life; your child has trouble breathing, swollen lips, tongue or face, or a fast-spreading rash after a medicine; or is very drowsy or has a fit. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
             tone: 'doctor',
             title: 'Ask a doctor or pharmacist if',
-            text: 'You are unsure of the dose for your child’s weight; your child gets a mild rash, vomiting or diarrhoea while on a medicine; is not better after the time the doctor gave; or is taking several medicines at once. If your child gets worse quickly, call emergency services.',
+            text: 'You are unsure of the dose for your child’s weight; your child gets a mild rash, vomiting or diarrhoea while on a medicine; is not better after the time the doctor gave; or is taking several medicines at once. If your child gets worse quickly, call {emergency}.',
           },
         ],
       },
@@ -9143,7 +9362,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Giấc ngủ của bé gồm nhiều chu kỳ ngắn hơn người lớn. Cuối mỗi chu kỳ, bé hay trở mình, cựa quậy, có khi ê a hoặc khóc ngắn rồi ngủ tiếp. Theo AAP, bé 6 tháng thức dậy rồi tự ngủ lại sau vài phút là bình thường. NHS cho biết trong khoảng 6–12 tháng, một số bé không còn cần bú đêm, nhưng mọc răng, đói hay ốm vẫn có thể làm bé thức. Ở tuổi 1–2, lo xa ba mẹ, tập đi hay bắt đầu đi nhà trẻ cũng khiến bé thức nhiều hơn một thời gian. Số giờ ngủ theo từng tuổi có trong bài Giấc ngủ theo tháng tuổi.',
+            text: 'Giấc ngủ của bé gồm nhiều chu kỳ ngắn hơn người lớn. Cuối mỗi chu kỳ, bé hay trở mình, cựa quậy, có khi ê a hoặc khóc ngắn rồi ngủ tiếp. Theo AAP, bé 6 tháng thức dậy rồi tự ngủ lại sau vài phút là bình thường.',
+          },
+          {
+            type: 'paragraph',
+            text: 'NHS cho biết trong khoảng 6–12 tháng, một số bé không còn cần bú đêm, nhưng mọc răng, đói hay ốm vẫn có thể làm bé thức. Ở tuổi 1–2, lo xa ba mẹ, tập đi hay bắt đầu đi nhà trẻ cũng khiến bé thức nhiều hơn một thời gian. Số giờ ngủ theo từng tuổi có trong bài Giấc ngủ theo tháng tuổi.',
           },
           {
             type: 'paragraph',
@@ -9202,7 +9425,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Nhiều ba mẹ lo các cách có để bé khóc sẽ làm tổn thương sự gắn bó. Một thử nghiệm ở Úc năm 2016 với bé 6–16 tháng thấy cách vào dỗ cách quãng dài dần và cách lùi giờ đi ngủ đều giúp bé ngủ nhanh hơn, không làm tăng hormone căng thẳng và không ảnh hưởng đến sự gắn bó an toàn giữa bé và mẹ một năm sau. Một nghiên cứu lớn hơn ở Úc theo dõi trẻ đến 6 tuổi cũng không thấy khác biệt về cảm xúc, hành vi hay sự gần gũi với cha mẹ. Nếu ba mẹ không muốn để bé khóc, các cách nhẹ nhàng hơn vẫn dùng được, chỉ có thể lâu hơn. Dù chọn cách nào, đó không phải là bỏ mặc bé.',
+            text: 'Nhiều ba mẹ lo các cách có để bé khóc sẽ làm tổn thương sự gắn bó. Một thử nghiệm ở Úc năm 2016 với bé 6–16 tháng thấy cách vào dỗ cách quãng dài dần và cách lùi giờ đi ngủ đều giúp bé ngủ nhanh hơn, không làm tăng hormone căng thẳng và không ảnh hưởng đến sự gắn bó an toàn giữa bé và mẹ một năm sau.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Một nghiên cứu lớn hơn ở Úc theo dõi trẻ đến 6 tuổi cũng không thấy khác biệt về cảm xúc, hành vi hay sự gần gũi với cha mẹ. Nếu ba mẹ không muốn để bé khóc, các cách nhẹ nhàng hơn vẫn dùng được, chỉ có thể lâu hơn. Dù chọn cách nào, đó không phải là bỏ mặc bé.',
           },
           {
             type: 'heading',
@@ -9239,9 +9466,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé tím tái, khó thở hoặc khó đánh thức.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên đưa bé đi khám',
-            text: 'Bé ngáy to gần như mỗi đêm, có lúc ngừng thở, thở hắt hoặc thở gắng sức khi ngủ; thức đêm kèm sốt, đau tai, nôn hay khóc thét không dỗ được; ban ngày lờ đờ, xanh xao, chậm tăng cân; gãi ngứa nhiều về đêm; thức đêm kéo dài nhiều tuần dù đã giữ nếp ngủ đều; hoặc ba mẹ kiệt sức, buồn bã. Gọi 115 nếu bé tím tái, khó thở hoặc khó đánh thức.',
+            text: 'Bé ngáy to gần như mỗi đêm, có lúc ngừng thở, thở hắt hoặc thở gắng sức khi ngủ; thức đêm kèm sốt, đau tai, nôn hay khóc thét không dỗ được; ban ngày lờ đờ, xanh xao, chậm tăng cân; gãi ngứa nhiều về đêm; thức đêm kéo dài nhiều tuần dù đã giữ nếp ngủ đều; hoặc ba mẹ kiệt sức, buồn bã.',
           },
         ],
         en: [
@@ -9257,7 +9490,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "A baby's sleep is made up of cycles that are shorter than an adult's. At the end of each cycle, babies often turn, stir, babble or cry briefly and then go back to sleep. The AAP says it is normal for a 6-month-old to wake and fall back asleep after a few minutes. The NHS notes that between 6 and 12 months some babies no longer need night feeds, but teething, hunger or illness can still wake them. Between 1 and 2, separation anxiety, learning to walk or starting childcare can also bring more waking for a while. Sleep hours by age are covered in Sleep by age.",
+            text: "A baby's sleep is made up of cycles that are shorter than an adult's. At the end of each cycle, babies often turn, stir, babble or cry briefly and then go back to sleep. The AAP says it is normal for a 6-month-old to wake and fall back asleep after a few minutes.",
+          },
+          {
+            type: 'paragraph',
+            text: 'The NHS notes that between 6 and 12 months some babies no longer need night feeds, but teething, hunger or illness can still wake them. Between 1 and 2, separation anxiety, learning to walk or starting childcare can also bring more waking for a while. Sleep hours by age are covered in Sleep by age.',
           },
           {
             type: 'paragraph',
@@ -9316,7 +9553,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Many parents worry that methods involving some crying might harm attachment. A 2016 Australian trial in babies aged 6–16 months found that checking in at longer intervals and bedtime fading both helped babies fall asleep faster, did not raise stress hormone levels and did not affect secure attachment between baby and mother a year later. A larger Australian study following children to age 6 also found no differences in emotions, behaviour or closeness to parents. If you would rather not let your child cry, gentler methods can still work, though they may take longer. Whatever you choose, it is not leaving your child alone.',
+            text: 'Many parents worry that methods involving some crying might harm attachment. A 2016 Australian trial in babies aged 6–16 months found that checking in at longer intervals and bedtime fading both helped babies fall asleep faster, did not raise stress hormone levels and did not affect secure attachment between baby and mother a year later.',
+          },
+          {
+            type: 'paragraph',
+            text: 'A larger Australian study following children to age 6 also found no differences in emotions, behaviour or closeness to parents. If you would rather not let your child cry, gentler methods can still work, though they may take longer. Whatever you choose, it is not leaving your child alone.',
           },
           {
             type: 'heading',
@@ -9353,9 +9594,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'Your child turns blue, struggles to breathe or is hard to wake.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to see a doctor',
-            text: "Your child snores loudly most nights, pauses breathing, gasps or works hard to breathe in sleep; wakes with fever, ear pain, vomiting or a high-pitched cry you can't soothe; is drowsy, pale or gaining weight slowly; scratches a lot at night; keeps waking for weeks despite a steady routine; or you are exhausted or low. Call 115 (Việt Nam) or local emergency services if your child turns blue, struggles to breathe or is hard to wake.",
+            text: "Your child snores loudly most nights, pauses breathing, gasps or works hard to breathe in sleep; wakes with fever, ear pain, vomiting or a high-pitched cry you can't soothe; is drowsy, pale or gaining weight slowly; scratches a lot at night; keeps waking for weeks despite a steady routine; or you are exhausted or low.",
           },
         ],
       },
@@ -9530,9 +9777,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé lả, khó đánh thức hoặc có dấu hiệu mất nước nặng.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên đưa bé đi khám',
-            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé sụt cân hoặc chậm tăng cân sau khi bớt cữ; bé từ chối cả cốc lẫn bình và uống rất ít; bé thức đêm kèm sốt, đau tai hay khóc bất thường. Mẹ nên đi khám khi ngực sưng nóng đỏ đau kèm sốt không đỡ sau 12–24 giờ. Gọi 115 nếu bé lả, khó đánh thức hoặc có dấu hiệu mất nước nặng.',
+            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé sụt cân hoặc chậm tăng cân sau khi bớt cữ; bé từ chối cả cốc lẫn bình và uống rất ít; bé thức đêm kèm sốt, đau tai hay khóc bất thường. Mẹ nên đi khám khi ngực sưng nóng đỏ đau kèm sốt không đỡ sau 12–24 giờ.',
           },
         ],
         en: [
@@ -9626,9 +9879,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'Your child is floppy, hard to wake or severely dehydrated.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to see a doctor',
-            text: "Your child has far fewer wet nappies, dark urine, a dry mouth or is listless; loses weight or grows slowly after feeds are cut; refuses both cup and bottle and drinks very little; or wakes at night with fever, ear pain or unusual crying. See a doctor yourself if a red, hot, painful breast with fever isn't better after 12–24 hours. Call 115 (Việt Nam) or local emergency services if your child is floppy, hard to wake or severely dehydrated.",
+            text: "Your child has far fewer wet nappies, dark urine, a dry mouth or is listless; loses weight or grows slowly after feeds are cut; refuses both cup and bottle and drinks very little; or wakes at night with fever, ear pain or unusual crying. See a doctor yourself if a red, hot, painful breast with fever isn't better after 12–24 hours.",
           },
         ],
       },
@@ -9804,9 +10063,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé lả hoặc khó đánh thức.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên đưa bé đi khám',
-            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé từ chối cả bình lẫn cốc gần như cả ngày; bé chậm tăng cân. Mẹ nên đi khám khi ngực có vùng sưng, nóng, đỏ, đau kèm sốt, ớn lạnh mà không đỡ sau 12–24 giờ, hoặc khi mẹ buồn bã, lo âu kéo dài. Gọi 115 nếu bé lả, khó đánh thức.',
+            text: 'Bé ít tã ướt hơn hẳn, nước tiểu sẫm, môi khô, lừ đừ; bé từ chối cả bình lẫn cốc gần như cả ngày; bé chậm tăng cân. Mẹ nên đi khám khi ngực có vùng sưng, nóng, đỏ, đau kèm sốt, ớn lạnh mà không đỡ sau 12–24 giờ, hoặc khi mẹ buồn bã, lo âu kéo dài.',
           },
         ],
         en: [
@@ -9906,9 +10171,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'Your baby is floppy or hard to wake.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to see a doctor',
-            text: "Your baby has far fewer wet nappies, dark urine, a dry mouth or is listless; refuses both bottle and cup for most of the day; or is gaining weight slowly. See a doctor yourself if a swollen, hot, red, painful area of the breast with fever or chills isn't better after 12–24 hours, or if low mood or anxiety lasts. Call 115 (Việt Nam) or local emergency services if your baby is floppy or hard to wake.",
+            text: "Your baby has far fewer wet nappies, dark urine, a dry mouth or is listless; refuses both bottle and cup for most of the day; or is gaining weight slowly. See a doctor yourself if a swollen, hot, red, painful area of the breast with fever or chills isn't better after 12–24 hours, or if low mood or anxiety lasts.",
           },
         ],
       },
@@ -10297,7 +10568,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Các cơ quan y tế không hoàn toàn giống nhau. Theo CDC (Mỹ), thuốc chống muỗi chứa DEET, picaridin hoặc IR3535 dùng được cho trẻ không giới hạn tuổi; sản phẩm chứa dầu khuynh diệp chanh (OLE) hoặc PMD không dùng cho trẻ dưới 3 tuổi. WHO cũng khuyên dùng DEET, picaridin hoặc IR3535. Bang Victoria (Úc) thận trọng hơn: bé dưới 12 tháng nên ở trong nhà khi nhiều muỗi, mặc đồ dài, dùng màn. Child Life theo cách thận trọng: trong năm đầu, bé dựa chủ yếu vào màn và quần áo, chỉ bôi thuốc chống muỗi khi thật cần.',
+            text: 'Các cơ quan y tế không hoàn toàn giống nhau. Theo CDC (Mỹ), thuốc chống muỗi chứa DEET, picaridin hoặc IR3535 dùng được cho trẻ không giới hạn tuổi; sản phẩm chứa dầu khuynh diệp chanh (OLE) hoặc PMD không dùng cho trẻ dưới 3 tuổi. WHO cũng khuyên dùng DEET, picaridin hoặc IR3535.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bang Victoria (Úc) thận trọng hơn: bé dưới 12 tháng nên ở trong nhà khi nhiều muỗi, mặc đồ dài, dùng màn. Child Life theo cách thận trọng: trong năm đầu, bé dựa chủ yếu vào màn và quần áo, chỉ bôi thuốc chống muỗi khi thật cần.',
           },
           {
             type: 'bullets',
@@ -10317,9 +10592,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé li bì, khó đánh thức hoặc vật vã, bứt rứt; tay chân lạnh, da tái hoặc nổi vân; đau bụng nhiều; nôn liên tục, không bú, không uống được; chảy máu chân răng, chảy máu cam, nôn ra máu, đi ngoài phân đen; tiểu rất ít; thở nhanh, thở mệt; co giật. Những dấu hiệu này hay xuất hiện khi bé vừa hạ sốt. Đừng chờ, gọi 115 ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé li bì, khó đánh thức hoặc vật vã, bứt rứt; tay chân lạnh, da tái hoặc nổi vân; đau bụng nhiều; nôn liên tục, không bú, không uống được; chảy máu chân răng, chảy máu cam, nôn ra máu, đi ngoài phân đen; tiểu rất ít; thở nhanh, thở mệt; co giật. Những dấu hiệu này hay xuất hiện khi bé vừa hạ sốt. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -10432,7 +10707,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Health bodies do not fully agree. The CDC (US) says repellents containing DEET, picaridin or IR3535 can be used on children with no age restriction, while products with oil of lemon eucalyptus (OLE) or PMD should not be used under 3 years. WHO also recommends DEET, picaridin or IR3535. Victoria (Australia) is more cautious: babies under 12 months should stay indoors when mosquitoes are active, wear long clothing and use nets. Child Life follows the cautious approach: in the first year, babies rely mainly on nets and clothing, with repellent only when really needed.',
+            text: 'Health bodies do not fully agree. The CDC (US) says repellents containing DEET, picaridin or IR3535 can be used on children with no age restriction, while products with oil of lemon eucalyptus (OLE) or PMD should not be used under 3 years. WHO also recommends DEET, picaridin or IR3535.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Victoria (Australia) is more cautious: babies under 12 months should stay indoors when mosquitoes are active, wear long clothing and use nets. Child Life follows the cautious approach: in the first year, babies rely mainly on nets and clothing, with repellent only when really needed.',
           },
           {
             type: 'bullets',
@@ -10452,9 +10731,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: "Your child is listless, hard to wake, agitated or restless; has cold hands and feet, pale or blotchy skin; bad tummy pain; keeps vomiting or can't feed or drink; bleeding gums, a nosebleed, vomits blood or has black poo; passes very little urine; breathes fast or with effort; or has a fit. These signs often appear just as the fever falls. Don't wait: call emergency services.",
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your child is listless, hard to wake, agitated or restless; has cold hands and feet, pale or blotchy skin; bad tummy pain; keeps vomiting or can't feed or drink; bleeding gums, a nosebleed, vomits blood or has black poo; passes very little urine; breathes fast or with effort; or has a fit. These signs often appear just as the fever falls. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -10595,7 +10874,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Nấm có thể truyền qua lại giữa miệng bé và đầu ti mẹ. Nghĩ đến nấm khi mẹ đột nhiên đau cả hai đầu ti hoặc hai bên ngực sau cữ bú, dù trước đó cho bú không đau; cơn đau có thể kéo dài đến một giờ sau mỗi cữ. Đầu ti có thể đỏ, hồng, nhạy cảm, quầng vú bong vảy. Nếu chỉ đau một bên, mẹ sốt, hoặc có mảng đỏ nóng trên một bên vú, nhiều khả năng là nguyên nhân khác như tắc tia sữa hay viêm vú, mẹ cần đi khám.',
+            text: 'Nấm có thể truyền qua lại giữa miệng bé và đầu ti mẹ. Nghĩ đến nấm khi mẹ đột nhiên đau cả hai đầu ti hoặc hai bên ngực sau cữ bú, dù trước đó cho bú không đau; cơn đau có thể kéo dài đến một giờ sau mỗi cữ.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Đầu ti có thể đỏ, hồng, nhạy cảm, quầng vú bong vảy. Nếu chỉ đau một bên, mẹ sốt, hoặc có mảng đỏ nóng trên một bên vú, nhiều khả năng là nguyên nhân khác như tắc tia sữa hay viêm vú, mẹ cần đi khám.',
           },
           {
             type: 'bullets',
@@ -10621,7 +10904,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Ở Việt Nam: nhiều gia đình có thói quen rơ lưỡi cho bé hằng ngày bằng khăn hoặc gạc quấn ngón tay chấm nước muối, mật ong, hoặc giã lá cây rồi bôi lên lưỡi. Ông bà làm vì muốn miệng cháu sạch, nhưng miệng bé không cần rơ mới sạch. Chà xát dễ làm xước niêm mạc, khiến nấm dễ bám hơn; muối và lá cây không chữa được nấm; còn mật ong không dùng cho trẻ dưới 12 tháng vì nguy cơ ngộ độc botulinum.',
+            text: 'Ở Việt Nam: nhiều gia đình có thói quen rơ lưỡi cho bé hằng ngày bằng khăn hoặc gạc quấn ngón tay chấm nước muối, mật ong, hoặc giã lá cây rồi bôi lên lưỡi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ông bà làm vì muốn miệng cháu sạch, nhưng miệng bé không cần rơ mới sạch. Chà xát dễ làm xước niêm mạc, khiến nấm dễ bám hơn; muối và lá cây không chữa được nấm; còn mật ong không dùng cho trẻ dưới 12 tháng vì nguy cơ ngộ độc botulinum.',
           },
           {
             type: 'heading',
@@ -10658,9 +10945,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bé bỏ bú hoàn toàn, rất ít tã ướt, môi miệng khô; li bì, lả mềm hoặc khó đánh thức; khóc yếu hoặc khóc thét không dỗ được; khó thở; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé bỏ bú hoàn toàn, rất ít tã ướt, môi miệng khô; li bì, lả mềm hoặc khó đánh thức; khóc yếu hoặc khóc thét không dỗ được; khó thở; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -10720,7 +11007,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "Thrush can pass back and forth between your baby's mouth and your nipples. Think of thrush if you suddenly have pain in both nipples or both breasts after feeds when feeding did not hurt before; the pain can last up to an hour after each feed. Nipples may look red or pink, feel sensitive, or the areola may be flaky. If the pain is on one side only, you have a fever, or there is a hot red patch on one breast, another cause such as a blocked duct or mastitis is more likely, and you need to be seen.",
+            text: "Thrush can pass back and forth between your baby's mouth and your nipples. Think of thrush if you suddenly have pain in both nipples or both breasts after feeds when feeding did not hurt before; the pain can last up to an hour after each feed.",
+          },
+          {
+            type: 'paragraph',
+            text: 'Nipples may look red or pink, feel sensitive, or the areola may be flaky. If the pain is on one side only, you have a fever, or there is a hot red patch on one breast, another cause such as a blocked duct or mastitis is more likely, and you need to be seen.',
           },
           {
             type: 'bullets',
@@ -10746,7 +11037,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "In Việt Nam: many families clean the baby's tongue every day (rơ lưỡi) with a cloth or gauze wrapped round a finger and dipped in salt water or honey, or rub crushed herbal leaves on the tongue. Grandparents do this to keep the baby's mouth clean, but a baby's mouth does not need scrubbing. Rubbing can damage the lining and help yeast take hold; salt and leaves don't treat thrush; and honey must not be given to babies under 12 months because of the risk of botulism.",
+            text: "In Việt Nam: many families clean the baby's tongue every day (rơ lưỡi) with a cloth or gauze wrapped round a finger and dipped in salt water or honey, or rub crushed herbal leaves on the tongue.",
+          },
+          {
+            type: 'paragraph',
+            text: "Grandparents do this to keep the baby's mouth clean, but a baby's mouth does not need scrubbing. Rubbing can damage the lining and help yeast take hold; salt and leaves don't treat thrush; and honey must not be given to babies under 12 months because of the risk of botulism.",
           },
           {
             type: 'heading',
@@ -10783,9 +11078,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: "Your baby refuses all feeds, has very few wet diapers or a dry mouth; is listless, floppy or hard to wake; has a weak, high-pitched or inconsolable cry; struggles to breathe; or is under 3 months with a temperature of 38 °C or more. Don't wait: call emergency services.",
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your baby refuses all feeds, has very few wet diapers or a dry mouth; is listless, floppy or hard to wake; has a weak, high-pitched or inconsolable cry; struggles to breathe; or is under 3 months with a temperature of 38 °C or more. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -10966,7 +11261,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Sau một đợt viêm, dịch có thể đọng lại sau màng nhĩ vài tuần (ứ dịch tai giữa, còn gọi là “tai keo”). Bé thường không đau nhưng có thể nghe kém hơn một thời gian. AAP cho biết khoảng 90% trường hợp dịch tự hết trong 1–2 tháng, và tổn thương thính lực lâu dài rất hiếm. Nếu bé có vẻ nghe kém kéo dài, chậm nói, hoặc viêm tai nhiều lần, hãy cho bé khám lại để kiểm tra thính lực; một số bé cần đặt ống thông khí nhỏ qua màng nhĩ.',
+            text: 'Sau một đợt viêm, dịch có thể đọng lại sau màng nhĩ vài tuần (ứ dịch tai giữa, còn gọi là “tai keo”). Bé thường không đau nhưng có thể nghe kém hơn một thời gian. AAP cho biết khoảng 90% trường hợp dịch tự hết trong 1–2 tháng, và tổn thương thính lực lâu dài rất hiếm.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Nếu bé có vẻ nghe kém kéo dài, chậm nói, hoặc viêm tai nhiều lần, hãy cho bé khám lại để kiểm tra thính lực; một số bé cần đặt ống thông khí nhỏ qua màng nhĩ.',
           },
           {
             type: 'heading',
@@ -10992,9 +11291,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Vùng sau tai sưng, đỏ, đau, đẩy vành tai ra phía trước; bé cổ cứng, khó cúi đầu; li bì, khó đánh thức hoặc quấy khóc dữ dội không dỗ được; nôn nhiều lần; co giật; ban không mất màu khi ấn cốc; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Vùng sau tai sưng, đỏ, đau, đẩy vành tai ra phía trước; bé cổ cứng, khó cúi đầu; li bì, khó đánh thức hoặc quấy khóc dữ dội không dỗ được; nôn nhiều lần; co giật; ban không mất màu khi ấn cốc; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -11095,7 +11394,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "After an infection, fluid can stay behind the eardrum for a few weeks (otitis media with effusion, also called glue ear). It usually doesn't hurt but can make hearing duller for a while. The AAP says the fluid clears by itself within 1–2 months in about 90% of children, and lasting hearing damage is very rare. If your child seems to hear poorly for a long time, is slow to talk, or has many ear infections, go back to have their hearing checked; some children need small ventilation tubes placed in the eardrum.",
+            text: "After an infection, fluid can stay behind the eardrum for a few weeks (otitis media with effusion, also called glue ear). It usually doesn't hurt but can make hearing duller for a while. The AAP says the fluid clears by itself within 1–2 months in about 90% of children, and lasting hearing damage is very rare.",
+          },
+          {
+            type: 'paragraph',
+            text: 'If your child seems to hear poorly for a long time, is slow to talk, or has many ear infections, go back to have their hearing checked; some children need small ventilation tubes placed in the eardrum.',
           },
           {
             type: 'heading',
@@ -11121,9 +11424,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: "There is swelling, redness and pain behind the ear that pushes the ear forward; your child has a stiff neck and can't bend their head forward; is very drowsy, hard to wake or crying in a way you can't settle; vomits repeatedly; has a fit; has a rash that does not fade under a glass; or is under 3 months with 38 °C or more. Don't wait: call emergency services.",
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "There is swelling, redness and pain behind the ear that pushes the ear forward; your child has a stiff neck and can't bend their head forward; is very drowsy, hard to wake or crying in a way you can't settle; vomits repeatedly; has a fit; has a rash that does not fade under a glass; or is under 3 months with 38 °C or more. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -11226,7 +11529,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Nước mắt thường chảy qua một ống nhỏ ở góc trong mắt xuống mũi. Khoảng 1 trên 10 bé sơ sinh có ống này chưa thông (AAP), đôi khi cả hai bên. Bé chảy nước mắt liên tục kể cả khi không khóc, có ghèn trắng hoặc vàng ở góc mắt, mi dính khi ngủ dậy, nhưng lòng trắng mắt không đỏ và mi không sưng. Ba mẹ thường thấy rõ khi bé khoảng 1–2 tháng, lúc bé tiết nhiều nước mắt hơn. Hơn 9 trên 10 trường hợp tự thông trước 1 tuổi.',
+            text: 'Nước mắt thường chảy qua một ống nhỏ ở góc trong mắt xuống mũi. Khoảng 1 trên 10 bé sơ sinh có ống này chưa thông (AAP), đôi khi cả hai bên.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bé chảy nước mắt liên tục kể cả khi không khóc, có ghèn trắng hoặc vàng ở góc mắt, mi dính khi ngủ dậy, nhưng lòng trắng mắt không đỏ và mi không sưng. Ba mẹ thường thấy rõ khi bé khoảng 1–2 tháng, lúc bé tiết nhiều nước mắt hơn. Hơn 9 trên 10 trường hợp tự thông trước 1 tuổi.',
           },
           {
             type: 'heading',
@@ -11244,7 +11551,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Xoa túi lệ không bắt buộc, và các hướng dẫn chưa giống nhau. AAP cho biết có bác sĩ khuyên làm, có bác sĩ không; nếu làm, dùng đầu tăm bông ấn nhẹ ở góc trong mắt, đẩy nhẹ lên trên, không quá một lần mỗi ngày. Một bệnh viện thuộc NHS (Anh) hướng dẫn dùng ngón tay út đã rửa sạch, ấn nhẹ giữa góc trong mắt và sống mũi rồi vuốt xuống phía miệng, tối đa 10 lần, ngày 2 lần. Child Life khuyên ba mẹ chỉ xoa khi bác sĩ đã chỉ trực tiếp, và làm đúng như bác sĩ hướng dẫn.',
+            text: 'Xoa túi lệ không bắt buộc, và các hướng dẫn chưa giống nhau. AAP cho biết có bác sĩ khuyên làm, có bác sĩ không; nếu làm, dùng đầu tăm bông ấn nhẹ ở góc trong mắt, đẩy nhẹ lên trên, không quá một lần mỗi ngày.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Một bệnh viện thuộc NHS (Anh) hướng dẫn dùng ngón tay út đã rửa sạch, ấn nhẹ giữa góc trong mắt và sống mũi rồi vuốt xuống phía miệng, tối đa 10 lần, ngày 2 lần. Child Life khuyên ba mẹ chỉ xoa khi bác sĩ đã chỉ trực tiếp, và làm đúng như bác sĩ hướng dẫn.',
           },
           {
             type: 'heading',
@@ -11295,9 +11606,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Mắt dính hoá chất, vôi, chất tẩy rửa (xối rửa ngay theo mục Sơ cứu trẻ em › Tổn thương ở mắt); mắt bị vật sắc đâm, chảy máu hoặc biến dạng; mi mắt sưng đỏ kèm sốt cao, bé lừ đừ, li bì; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ, gọi 115 ngay.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Mắt dính hoá chất, vôi, chất tẩy rửa (xối rửa ngay theo mục Sơ cứu trẻ em › Tổn thương ở mắt); mắt bị vật sắc đâm, chảy máu hoặc biến dạng; mi mắt sưng đỏ kèm sốt cao, bé lừ đừ, li bì; bé dưới 3 tháng sốt từ 38 °C. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -11319,7 +11630,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "Tears normally drain through a small duct at the inner corner of the eye into the nose. In about 1 in 10 newborns this duct is not fully open (AAP), sometimes on both sides. The eye waters all the time, even when your baby isn't crying, there is white or yellow sticky discharge in the corner and the lids stick together after sleep, but the white of the eye is not red and the lids are not swollen. Parents often notice it at 1–2 months, when babies make more tears. More than 9 in 10 open by themselves before age 1.",
+            text: 'Tears normally drain through a small duct at the inner corner of the eye into the nose. In about 1 in 10 newborns this duct is not fully open (AAP), sometimes on both sides.',
+          },
+          {
+            type: 'paragraph',
+            text: "The eye waters all the time, even when your baby isn't crying, there is white or yellow sticky discharge in the corner and the lids stick together after sleep, but the white of the eye is not red and the lids are not swollen. Parents often notice it at 1–2 months, when babies make more tears. More than 9 in 10 open by themselves before age 1.",
           },
           {
             type: 'heading',
@@ -11337,7 +11652,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "Massaging the tear sac is optional, and guidance differs. The AAP says some doctors recommend it and others don't; if you do it, use a cotton bud to press gently at the inner corner of the eye, pushing slightly upwards, no more than once a day. One NHS hospital (UK) describes using a clean little finger to press gently between the inner corner of the eye and the bridge of the nose, then sliding it down towards the mouth, up to 10 strokes twice a day. Child Life suggests only massaging once a doctor has shown you how, and doing it exactly as they showed you.",
+            text: "Massaging the tear sac is optional, and guidance differs. The AAP says some doctors recommend it and others don't; if you do it, use a cotton bud to press gently at the inner corner of the eye, pushing slightly upwards, no more than once a day.",
+          },
+          {
+            type: 'paragraph',
+            text: 'One NHS hospital (UK) describes using a clean little finger to press gently between the inner corner of the eye and the bridge of the nose, then sliding it down towards the mouth, up to 10 strokes twice a day. Child Life suggests only massaging once a doctor has shown you how, and doing it exactly as they showed you.',
           },
           {
             type: 'heading',
@@ -11388,9 +11707,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call 115 (Việt Nam) or local emergency services now if',
-            text: "A chemical, lime or cleaning product gets in the eye (rinse straight away as in Sơ cứu trẻ em (First aid) › Eye injury); the eye is pierced by something sharp, is bleeding or looks misshapen; red swollen eyelids come with a high fever or your child is listless or very drowsy; or a baby under 3 months has 38 °C or more. Don't wait: call emergency services.",
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "A chemical, lime or cleaning product gets in the eye (rinse straight away as in Sơ cứu trẻ em (First aid) › Eye injury); the eye is pierced by something sharp, is bleeding or looks misshapen; red swollen eyelids come with a high fever or your child is listless or very drowsy; or a baby under 3 months has 38 °C or more. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',
@@ -11584,9 +11903,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bé khó thở, tím tái, li bì khó đánh thức, co giật, hoặc có ban không mất màu khi ấn cốc. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên đưa bé đi khám',
-            text: 'Gọi 115 hoặc đến cấp cứu ngay khi bé khó thở, tím tái, li bì khó đánh thức, co giật, hoặc có ban không mất màu khi ấn cốc. Đưa bé đi khám trong ngày khi bé sốt từ 5 ngày trở lên, ăn uống kém, ít tã ướt, nôn nhiều; khi bé ốm nối tiếp mà ngày càng mệt hơn; hoặc khi bé thay đổi rõ sau khi có người chăm mới, như sợ hãi một người cụ thể, thu mình, có vết bầm hay vết thương không rõ lý do.',
+            text: 'Đưa bé đi khám trong ngày khi bé sốt từ 5 ngày trở lên, ăn uống kém, ít tã ướt, nôn nhiều; khi bé ốm nối tiếp mà ngày càng mệt hơn; hoặc khi bé thay đổi rõ sau khi có người chăm mới, như sợ hãi một người cụ thể, thu mình, có vết bầm hay vết thương không rõ lý do.',
           },
         ],
         en: [
@@ -11694,9 +12019,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "Your child struggles to breathe, turns blue, is floppy or hard to wake, has a fit, or has a rash that does not fade under a glass. Don't wait: call {emergency} or go to the nearest emergency department.",
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to see a doctor',
-            text: 'Call emergency services or go to the emergency department straight away if your child struggles to breathe, turns blue, is floppy or hard to wake, has a fit, or has a rash that does not fade under a glass. See a doctor the same day for a fever lasting 5 days or more, poor eating or drinking, fewer wet nappies or a lot of vomiting; if one illness follows another and your child seems more and more unwell; or if your child changes clearly after starting with a new carer, such as fearing one person, withdrawing, or having unexplained bruises or injuries.',
+            text: 'See a doctor the same day for a fever lasting 5 days or more, poor eating or drinking, fewer wet nappies or a lot of vomiting; if one illness follows another and your child seems more and more unwell; or if your child changes clearly after starting with a new carer, such as fearing one person, withdrawing, or having unexplained bruises or injuries.',
           },
         ],
       },
@@ -11794,11 +12125,19 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Xương sọ của bé nhỏ còn mềm nên dễ phẳng đi ở chỗ bé hay tì lên. Có thể bẹp một bên phía sau, làm tai và trán bên đó hơi lệch ra trước, hoặc bẹp đều cả phía sau khiến đầu trông rộng. Theo AAP, phần lớn trường hợp xuất hiện trong khoảng 4–12 tuần đầu. Bé sinh non, sinh đôi, hay quay đầu về một phía, hoặc ít được nằm sấp dễ gặp hơn. Bẹp đầu do tư thế chỉ ảnh hưởng dáng đầu, không làm hại não hay trí tuệ của bé.',
+            text: 'Xương sọ của bé nhỏ còn mềm nên dễ phẳng đi ở chỗ bé hay tì lên. Có thể bẹp một bên phía sau, làm tai và trán bên đó hơi lệch ra trước, hoặc bẹp đều cả phía sau khiến đầu trông rộng.',
           },
           {
             type: 'paragraph',
-            text: 'Vẹo cổ là khi cơ ở một bên cổ bị căng, ngắn, khiến bé hay nghiêng đầu về một vai và khó quay sang phía còn lại. Vì bé luôn tì đầu một bên, đầu dễ bị bẹp bên đó. AAP cho biết vẹo cổ bẩm sinh thường được phát hiện trong 6–8 tuần đầu, đôi khi sờ thấy một cục nhỏ ở cơ cổ. Bác sĩ có thể hướng dẫn ba mẹ các động tác kéo giãn nhẹ nhàng hoặc giới thiệu bé đến chuyên viên vật lý trị liệu. Điều trị sớm cho kết quả tốt hơn.',
+            text: 'Theo AAP, phần lớn trường hợp xuất hiện trong khoảng 4–12 tuần đầu. Bé sinh non, sinh đôi, hay quay đầu về một phía, hoặc ít được nằm sấp dễ gặp hơn. Bẹp đầu do tư thế chỉ ảnh hưởng dáng đầu, không làm hại não hay trí tuệ của bé.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Vẹo cổ là khi cơ ở một bên cổ bị căng, ngắn, khiến bé hay nghiêng đầu về một vai và khó quay sang phía còn lại. Vì bé luôn tì đầu một bên, đầu dễ bị bẹp bên đó.',
+          },
+          {
+            type: 'paragraph',
+            text: 'AAP cho biết vẹo cổ bẩm sinh thường được phát hiện trong 6–8 tuần đầu, đôi khi sờ thấy một cục nhỏ ở cơ cổ. Bác sĩ có thể hướng dẫn ba mẹ các động tác kéo giãn nhẹ nhàng hoặc giới thiệu bé đến chuyên viên vật lý trị liệu. Điều trị sớm cho kết quả tốt hơn.',
           },
           {
             type: 'heading',
@@ -11840,7 +12179,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'Theo NHS, bẹp đầu thường đỡ dần trong 1–2 năm đầu khi bé ngồi, bò và ít nằm hơn. Với trường hợp bẹp vừa hoặc nặng không cải thiện khi đã đổi tư thế đến khoảng 5–6 tháng, AAP cho biết có thể cân nhắc mũ chỉnh hình do chuyên gia đo và làm riêng; mũ phải đội gần như cả ngày trong nhiều tháng. NHS thì không cung cấp mũ vì chưa đủ bằng chứng mũ có hiệu quả. Vì bằng chứng chưa thống nhất, đây là quyết định cần bác sĩ chuyên khoa khám và trao đổi kỹ với ba mẹ, không nên tự mua.',
+            text: 'Theo NHS, bẹp đầu thường đỡ dần trong 1–2 năm đầu khi bé ngồi, bò và ít nằm hơn. Với trường hợp bẹp vừa hoặc nặng không cải thiện khi đã đổi tư thế đến khoảng 5–6 tháng, AAP cho biết có thể cân nhắc mũ chỉnh hình do chuyên gia đo và làm riêng; mũ phải đội gần như cả ngày trong nhiều tháng.',
+          },
+          {
+            type: 'paragraph',
+            text: 'NHS thì không cung cấp mũ vì chưa đủ bằng chứng mũ có hiệu quả. Vì bằng chứng chưa thống nhất, đây là quyết định cần bác sĩ chuyên khoa khám và trao đổi kỹ với ba mẹ, không nên tự mua.',
           },
           {
             type: 'heading',
@@ -11879,11 +12222,19 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: "A young baby's skull is soft, so it flattens where it rests most. The flat spot may be on one side at the back, pushing the ear and forehead on that side slightly forward, or across the whole back, making the head look wide. According to the AAP, most cases appear between 4 and 12 weeks. Premature babies, twins, babies who prefer turning one way and babies who get little tummy time are more likely to have it. A positional flat head affects only the shape, not the brain or your baby's development.",
+            text: "A young baby's skull is soft, so it flattens where it rests most. The flat spot may be on one side at the back, pushing the ear and forehead on that side slightly forward, or across the whole back, making the head look wide.",
           },
           {
             type: 'paragraph',
-            text: 'Torticollis is when a muscle on one side of the neck is tight and short, so the baby tilts their head towards one shoulder and finds it hard to turn the other way. Because the head always rests on one side, that side tends to flatten. The AAP says congenital torticollis is usually noticed in the first 6–8 weeks, sometimes with a small lump in the neck muscle. A doctor may show you gentle stretches or refer your baby to a physiotherapist. Starting early gives better results.',
+            text: "According to the AAP, most cases appear between 4 and 12 weeks. Premature babies, twins, babies who prefer turning one way and babies who get little tummy time are more likely to have it. A positional flat head affects only the shape, not the brain or your baby's development.",
+          },
+          {
+            type: 'paragraph',
+            text: 'Torticollis is when a muscle on one side of the neck is tight and short, so the baby tilts their head towards one shoulder and finds it hard to turn the other way. Because the head always rests on one side, that side tends to flatten.',
+          },
+          {
+            type: 'paragraph',
+            text: 'The AAP says congenital torticollis is usually noticed in the first 6–8 weeks, sometimes with a small lump in the neck muscle. A doctor may show you gentle stretches or refer your baby to a physiotherapist. Starting early gives better results.',
           },
           {
             type: 'heading',
@@ -11925,7 +12276,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'According to the NHS, a flat head usually improves over 1–2 years as babies sit, crawl and spend less time lying down. For moderate or severe flattening that has not improved with repositioning by about 5–6 months, the AAP says a custom helmet fitted by a specialist may be considered; it is worn almost all day for several months. The NHS does not provide helmets because there is not enough evidence that they work. As the evidence is mixed, this is a decision for a specialist to make with you after an examination, not something to buy yourself.',
+            text: 'According to the NHS, a flat head usually improves over 1–2 years as babies sit, crawl and spend less time lying down. For moderate or severe flattening that has not improved with repositioning by about 5–6 months, the AAP says a custom helmet fitted by a specialist may be considered; it is worn almost all day for several months.',
+          },
+          {
+            type: 'paragraph',
+            text: 'The NHS does not provide helmets because there is not enough evidence that they work. As the evidence is mixed, this is a decision for a specialist to make with you after an examination, not something to buy yourself.',
           },
           {
             type: 'heading',
@@ -12088,7 +12443,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'AAP khuyên không dùng xe tập đi có bánh xe và kêu gọi cấm bán loại xe này. Ngồi trong xe tập đi, bé có thể lao đi gần 1 mét trong 1 giây, nhanh hơn phản xạ của người lớn đứng ngay cạnh. Mỗi năm có hàng nghìn trẻ phải vào viện vì xe tập đi, hay gặp nhất là lao xuống cầu thang gây gãy xương và chấn thương đầu; bé còn có thể với tới đồ nóng, thuốc, hoặc lao vào chỗ có nước. Xe tập đi cũng không giúp bé biết đi sớm hơn, thậm chí có thể làm chậm.',
+            text: 'AAP khuyên không dùng xe tập đi có bánh xe và kêu gọi cấm bán loại xe này. Ngồi trong xe tập đi, bé có thể lao đi gần 1 mét trong 1 giây, nhanh hơn phản xạ của người lớn đứng ngay cạnh.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Mỗi năm có hàng nghìn trẻ phải vào viện vì xe tập đi, hay gặp nhất là lao xuống cầu thang gây gãy xương và chấn thương đầu; bé còn có thể với tới đồ nóng, thuốc, hoặc lao vào chỗ có nước. Xe tập đi cũng không giúp bé biết đi sớm hơn, thậm chí có thể làm chậm.',
           },
           {
             type: 'paragraph',
@@ -12128,9 +12487,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Sau cú ngã, bé bất tỉnh, co giật, nôn nhiều lần hoặc lơ mơ.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'Khi nào nên đưa bé đi khám',
-            text: 'Bé 18 tháng chưa tự đi, hoặc 15 tháng chưa muốn vịn đứng, đi men; bé mất kỹ năng đã có; bé vẫn thường xuyên đi kiễng chân sau 2 tuổi, hoặc chỉ kiễng một chân; đi khập khiễng, nhất là kèm đau, sưng, sốt hoặc không chịu đứng; chỉ một chân bị cong, chân cong nặng hoặc cong hơn sau 2 tuổi; bé hay ngã bất thường, khó đứng dậy, phải chống tay lên đùi để đứng, hoặc đi lạch bạch. Sau cú ngã, gọi 115 nếu bé bất tỉnh, co giật, nôn nhiều lần hoặc lơ mơ.',
+            text: 'Bé 18 tháng chưa tự đi, hoặc 15 tháng chưa muốn vịn đứng, đi men; bé mất kỹ năng đã có; bé vẫn thường xuyên đi kiễng chân sau 2 tuổi, hoặc chỉ kiễng một chân; đi khập khiễng, nhất là kèm đau, sưng, sốt hoặc không chịu đứng; chỉ một chân bị cong, chân cong nặng hoặc cong hơn sau 2 tuổi; bé hay ngã bất thường, khó đứng dậy, phải chống tay lên đùi để đứng, hoặc đi lạch bạch.',
           },
         ],
         en: [
@@ -12188,7 +12553,11 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'paragraph',
-            text: 'The AAP advises against wheeled baby walkers and has called for a ban on their sale. In a walker a baby can move almost a metre in a second, faster than an adult standing right next to them can react. Walkers send thousands of children to hospital each year, most often from falling down stairs, causing broken bones and head injuries; children can also reach hot things or medicines, or roll into water. Walkers do not help children walk sooner and may even delay walking.',
+            text: 'The AAP advises against wheeled baby walkers and has called for a ban on their sale. In a walker a baby can move almost a metre in a second, faster than an adult standing right next to them can react.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Walkers send thousands of children to hospital each year, most often from falling down stairs, causing broken bones and head injuries; children can also reach hot things or medicines, or roll into water. Walkers do not help children walk sooner and may even delay walking.',
           },
           {
             type: 'paragraph',
@@ -12228,9 +12597,15 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: 'After a fall, your child is unconscious, has a fit, vomits repeatedly or is drowsy.',
+          },
+          {
+            type: 'callout',
             tone: 'doctor',
             title: 'When to see a doctor',
-            text: "Your child isn't walking alone at 18 months, or at 15 months shows no interest in pulling up or cruising; loses skills they had; still often walks on their toes after 2, or on one foot only; limps, especially with pain, swelling, fever or refusing to stand; has only one bowed leg, severe bowing, or bowing that gets worse after 2; falls unusually often, struggles to get up, pushes on their thighs to stand, or waddles. After a fall, call emergency services if your child is unconscious, has a fit, vomits repeatedly or is drowsy.",
+            text: "Your child isn't walking alone at 18 months, or at 15 months shows no interest in pulling up or cruising; loses skills they had; still often walks on their toes after 2, or on one foot only; limps, especially with pain, swelling, fever or refusing to stand; has only one bowed leg, severe bowing, or bowing that gets worse after 2; falls unusually often, struggles to get up, pushes on their thighs to stand, or waddles.",
           },
         ],
       },
@@ -12405,9 +12780,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
-            text: 'Bao quy đầu bị kéo lui mà không trở lại được, đầu dương vật sưng và đau; hoặc cục ở bẹn, bìu hay môi lớn trở nên cứng, đau, đỏ hoặc tím, không xẹp khi bé nằm yên, nhất là khi bé nôn, quấy khóc không dỗ được hoặc bụng chướng.',
+            tone: 'urgent',
+            title: 'Gọi {emergency} ngay khi',
+            text: 'Bao quy đầu bị kéo lui mà không trở lại được, đầu dương vật sưng và đau; hoặc cục ở bẹn, bìu hay môi lớn trở nên cứng, đau, đỏ hoặc tím, không xẹp khi bé nằm yên, nhất là khi bé nôn, quấy khóc không dỗ được hoặc bụng chướng. Đừng chờ: gọi {emergency} hoặc đưa bé đến khoa cấp cứu gần nhất.',
           },
           {
             type: 'callout',
@@ -12508,9 +12883,9 @@ export const seedArticles: SeedArticle[] = [
           },
           {
             type: 'callout',
-            tone: 'doctor',
-            title: 'Call emergency services or go to the emergency department now if',
-            text: "The foreskin has been pulled back and won't return, with a swollen, painful tip; or a lump in the groin, scrotum or labia becomes hard, painful, red or dark and doesn't go down when your baby is calm, especially with vomiting, crying that can't be soothed or a swollen tummy.",
+            tone: 'urgent',
+            title: 'Call {emergency} now if',
+            text: "The foreskin has been pulled back and won't return, with a swollen, painful tip; or a lump in the groin, scrotum or labia becomes hard, painful, red or dark and doesn't go down when your baby is calm, especially with vomiting, crying that can't be soothed or a swollen tummy. Don't wait: call {emergency} or go to the nearest emergency department.",
           },
           {
             type: 'callout',

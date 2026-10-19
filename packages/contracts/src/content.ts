@@ -174,12 +174,61 @@ export const articleTopics = [
 ] as const;
 export type ArticleTopic = (typeof articleTopics)[number];
 
+/**
+ * Thư viện ăn dặm groups (D-087): each has its own picture in the app, so the list does not repeat
+ * one icon. Bắt đầu · Cách cho ăn · Kết cấu · Dinh dưỡng · Dị ứng · An toàn · Thực đơn · Kỹ năng ăn
+ * · Sức khoẻ · Đồ dùng · Ăn cùng gia đình.
+ */
+export const solidsSubtopics = [
+  'start',
+  'methods',
+  'textures',
+  'nutrition',
+  'allergy',
+  'safety',
+  'menus',
+  'skills',
+  'health',
+  'gear',
+  'family',
+] as const;
+export type SolidsSubtopic = (typeof solidsSubtopics)[number];
+
+/**
+ * The family's emergency number in content text (D-078, D-087): the app writes the number of the
+ * family's country (115 in Việt Nam, 911 in the US…), so content never says "115" itself.
+ */
+export const contentEmergencyToken = '{emergency}';
+
+/**
+ * Places where a text says "115" instead of `{emergency}` (sources excluded): the portal warns,
+ * the seed tests refuse.
+ */
+export function literalEmergencyProblems(data: unknown): { path: string; match: string }[] {
+  const out: { path: string; match: string }[] = [];
+  const visit = (v: unknown, path: string[]) => {
+    if (typeof v === 'string') {
+      if (path.includes('sources')) return;
+      const m = v.match(/(?<![\d.,])115(?!\d|[.,]\d)/);
+      if (m) out.push({ path: path.join('.'), match: m[0] });
+    } else if (Array.isArray(v)) v.forEach((x, i) => visit(x, [...path, String(i)]));
+    else if (v && typeof v === 'object') {
+      for (const [k, x] of Object.entries(v)) visit(x, [...path, k]);
+    }
+  };
+  visit(data, []);
+  return out;
+}
+
 /** 4c "Dạng nội dung": Bài viết, Hướng dẫn từng bước, Hỏi nhanh (all use the same blocks). */
 export const articleFormats = ['article', 'step_guide', 'quick_qa'] as const;
 export type ArticleFormat = (typeof articleFormats)[number];
 
-/** Callout tints: "Khi nào nên hỏi bác sĩ" (4d, sunshine-soft), a plain note, a tip. */
-export const calloutTones = ['doctor', 'note', 'tip'] as const;
+/**
+ * Callout tints: "Khi nào nên hỏi bác sĩ" (4d, sunshine-soft), a plain note, a tip, and
+ * `urgent` ("Gọi {emergency} ngay khi…", D-087): red, with a call button to the family's number.
+ */
+export const calloutTones = ['doctor', 'note', 'tip', 'urgent'] as const;
 export type CalloutTone = (typeof calloutTones)[number];
 
 // ---------- Body blocks (4d) ----------
@@ -268,6 +317,8 @@ function articleContentSchema(strict: boolean) {
     .object({
       library: z.enum(contentLibraries),
       topic: z.enum(articleTopics),
+      /** Thư viện ăn dặm group (D-087); absent on care articles and older drafts. */
+      subtopic: z.enum(solidsSubtopics).nullable().optional(),
       format: z.enum(articleFormats),
       ageWeeks: ageWeeksSchema,
       readingMinutes: z.number().int().min(1).max(L.readingMinutes),

@@ -16,17 +16,25 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 import { cn } from '@/lib/utils';
-import { ImageThumb, PhoneFrame, ReviewLine, useContentList, type Lang } from './content-common';
+import {
+  ImageThumb,
+  PhoneFrame,
+  ReviewLine,
+  fillEmergency,
+  useContentList,
+  type Lang,
+} from './content-common';
 import { catalogueOf, solidsAgeOf, type CatalogueFood } from './solids-common';
 
 /**
  * Phone previews of the Ăn dặm content (Figma app 5e, 5g; plan §5, P-164 #14) for the sample baby
  * "Teddy", in the language being edited: a food as its 5e "Món đã thử" row and its food detail, a
  * recipe as 5g (ingredients with quantities, steps, the allergen line and the D-082 footnote). The
- * personal parts (first tried, times, reaction) use sample values.
+ * personal parts (first tried, times, reaction) use sample values; `{emergency}` reads as 115
+ * (D-087).
  */
 
 type Review = EditorialReview | null;
@@ -78,7 +86,7 @@ const sourcesLine = (sources: Array<{ label: string }> | undefined) =>
 // ---------- 5e row and food detail ----------
 
 export function FoodPreview({
-  data,
+  data: draft,
   lang,
   review,
 }: {
@@ -87,6 +95,7 @@ export function FoodPreview({
   review: Review;
 }) {
   const p = usePreviewText(lang);
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const name = data.name?.[lang] || '—';
   const group = data.group ? p(`group.${data.group}`) : null;
   const prep = (data.prep ?? []).filter((x) => x.text?.[lang]);
@@ -175,7 +184,7 @@ function qtyText(
 }
 
 export function RecipePreview({
-  data,
+  data: draft,
   lang,
   review,
   foods,
@@ -188,6 +197,7 @@ export function RecipePreview({
 }) {
   const intl = useIntl();
   const p = usePreviewText(lang);
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const age = solidsAgeOf(data.ageMonths);
   const ageLabel = age
     ? intl.formatMessage(

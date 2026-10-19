@@ -4,6 +4,7 @@ import {
   foodGroups,
   foodIdSchema,
   isPlainText,
+  literalEmergencyProblems,
   recipeAgeProblems,
   recipeContentSchema,
   recipeIdSchema,
@@ -154,6 +155,12 @@ describe('solids catalogue seed: recipes', () => {
     // Texture fits the age: smooth only for the first months, family food from 12 months.
     if (r.data.texture === 'smooth') expect(r.data.ageMonths.from, id).toBeLessThanOrEqual(8);
     if (r.data.texture === 'family') expect(r.data.ageMonths.from, id).toBeGreaterThanOrEqual(12);
+  });
+
+  it("name the family's emergency number as {emergency}, never 115 (D-087)", () => {
+    for (const x of [...seedFoods, ...seedRecipes]) {
+      expect(literalEmergencyProblems(x.data), x.id).toEqual([]);
+    }
   });
 
   it('at least 7 recipes start in each band 6–8, 9–11 and 12–23 months, and some at 24–36', () => {

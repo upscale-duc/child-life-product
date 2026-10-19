@@ -201,3 +201,26 @@
   margin: 4px 0 0;
   font-size: 14px;
 }
+/* "Gọi cấp cứu" (D-087, P-166 #2): red, an alert icon, the app's call button. */
+.cl-callout--urgent {
+  background: var(--danger-soft);
+}
+.cl-callout__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--error);
+}
+.cl-callout__call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--danger);
+  color: var(--on-danger);
+  font-size: 14px;
+  font-weight: 600;
+}

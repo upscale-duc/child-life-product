@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -18,13 +19,16 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../../app/session.dart';
+import '../first_aid/first_aid_modes.dart' show callEmergency;
 import '../first_aid/first_aid_repository.dart';
+import '../first_aid/first_aid_widgets.dart' show FaCallButton;
 import '../care/care_repository.dart' show onlineProvider;
 import 'content_calc.dart';
 import 'content_models.dart';
 import 'content_repository.dart';
 import 'library_routes.dart';
 import 'library_widgets.dart';
+import '../solids/solids_calc.dart' show SdBand;
 import '../solids/solids_family_screens.dart' show SdFamilySavedSection;
 import '../solids/solids_models.dart' show SdFamilyRecipe;
 import '../solids/solids_recipes.dart'
@@ -331,7 +335,7 @@ class _ArticleCard extends StatelessWidget {
                   width: 220,
                   height: 120,
                   radius: 0,
-                  topic: article.topic,
+                  look: lbArticleLook(context, article),
                 ),
               ],
             ),
@@ -856,6 +860,18 @@ class _FilterSheetState extends State<_FilterSheet> {
 const _textScaleKey = 'lbTextScale';
 const _textScales = [1.0, 1.15, 1.3];
 
+/// 4d line length (D-087, P-166 #3f): the body is at most this wide, centred on tablets.
+const _readerWidth = 640.0;
+
+/// "Bài tiếp theo" looks in the article's age band of its own library (D-087, P-166 #3g): 4c's
+/// bands for Chăm bé, 5f's for Ăn dặm.
+List<(int, int)> _bandsOf(LbLibrary library) => switch (library) {
+  LbLibrary.care => [
+    for (final b in LbAgeBand.values) (b.fromWeeks, b.toWeeks),
+  ],
+  LbLibrary.solids => [for (final b in SdBand.values) (b.fromWeeks, b.toWeeks)],
+};
+
 class ArticleScreen extends ConsumerStatefulWidget {
   const ArticleScreen({required this.articleId, super.key});
   final String articleId;
@@ -866,6 +882,15 @@ class ArticleScreen extends ConsumerStatefulWidget {
 
 class _ArticleScreenState extends ConsumerState<ArticleScreen> {
   bool _markedRead = false;
+
+  /// The body's scroll: reading progress, "Lên đầu" and "Trong bài này" (D-087).
+  final _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
 
   double _scale() {
     try {
@@ -927,13 +952,28 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
     final saved = savedList.any((s) => s.id == article.id);
     final scale = _scale();
     final look = lbTopicLook(context, article.topic);
+    final picture = lbArticleLook(context, article);
     final related = [
       for (final id in article.related)
         ?all.where((a) => a.id == id).firstOrNull,
     ];
+    final next = lbNextGuide(
+      all,
+      article,
+      bands: _bandsOf(article.library),
+      skip: {for (final r in related) r.id},
+    );
     final firstAid = ref.watch(firstAidPackProvider).value != null;
+    String rowMeta(LbArticle a) => [
+      lbTopicLabel(l10n, a.topic),
+      l10n.lbMinutesShort(a.readingMinutes),
+    ].join(' · ');
 
     return LbPage(
+      controller: _scroll,
+      maxContentWidth: _readerWidth,
+      header: _ReadingProgress(controller: _scroll),
+      overlay: _BackToTop(controller: _scroll),
       bottom: _ArticleBar(
         saved: saved,
         onSave: () => unawaited(lbToggleSaved(context, ref, article)),
@@ -947,7 +987,7 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
             width: double.infinity,
             height: 190,
             radius: 22,
-            topic: article.topic,
+            look: picture,
           ),
           const SizedBox(height: ClSpace.s4),
         ],
@@ -996,7 +1036,7 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
         LbBlocks(
           blocks: article.blocksFor(locale),
           scale: scale,
-          topic: article.topic,
+          look: picture,
           firstAid: firstAid,
         ),
         if (article.sources.isNotEmpty) ...[
@@ -1026,12 +1066,23 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
                   key: Key('lbRelated_${a.id}'),
                   article: a,
                   thumb: 52,
-                  meta: [
-                    lbTopicLabel(l10n, a.topic),
-                    l10n.lbMinutesShort(a.readingMinutes),
-                  ].join(' · '),
+                  meta: rowMeta(a),
                   onTap: () => context.push(LbRoutes.articleOf(a.id)),
                 ),
+            ],
+          ),
+        ],
+        if (next != null) ...[
+          LbSection(l10n.lbUpNext),
+          LbGroup(
+            children: [
+              LbArticleRow(
+                key: Key('lbNext_${next.id}'),
+                article: next,
+                thumb: 52,
+                meta: rowMeta(next),
+                onTap: () => context.push(LbRoutes.articleOf(next.id)),
+              ),
             ],
           ),
         ],
@@ -1047,6 +1098,119 @@ class _ArticleScreenState extends ConsumerState<ArticleScreen> {
       ],
     );
   }
+}
+
+/// The thin reading-progress bar under the top bar (D-087, P-166 #3b): mint over the separator,
+/// from the top of the article to its end. Decorative: screen readers skip it.
+class _ReadingProgress extends StatelessWidget {
+  const _ReadingProgress({required this.controller});
+  final ScrollController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ExcludeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.only(top: ClSpace.s2),
+        child: ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) {
+            var read = 0.0;
+            if (controller.hasClients) {
+              final p = controller.position;
+              if (p.hasContentDimensions && p.maxScrollExtent > 0) {
+                read = (p.pixels / p.maxScrollExtent).clamp(0.0, 1.0);
+              }
+            }
+            return Container(
+              key: const Key('lbProgress'),
+              height: 3,
+              color: cl.colors.separator,
+              alignment: Alignment.centerLeft,
+              child: FractionallySizedBox(
+                widthFactor: read,
+                heightFactor: 1,
+                child: ColoredBox(color: cl.colors.mint),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// "Lên đầu" (D-087, P-166 #3b): a floating pill once the reader is more than one screen down.
+class _BackToTop extends StatelessWidget {
+  const _BackToTop({required this.controller});
+  final ScrollController controller;
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: controller,
+    builder: (context, _) {
+      final p = controller.hasClients ? controller.position : null;
+      final down =
+          p != null &&
+          p.hasContentDimensions &&
+          p.hasViewportDimension &&
+          p.pixels > p.viewportDimension;
+      if (!down) return const SizedBox.shrink();
+      final cl = context.cl;
+      final l10n = AppLocalizations.of(context);
+      return ClPressable(
+        key: const Key('lbBackToTop'),
+        onPressed: () {
+          if (MediaQuery.disableAnimationsOf(context)) {
+            controller.jumpTo(0);
+          } else {
+            unawaited(
+              controller.animateTo(
+                0,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutCubic,
+              ),
+            );
+          }
+        },
+        semanticLabel: l10n.lbBackToTop,
+        child: Container(
+          key: const Key('lbBackToTopPill'),
+          constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: cl.colors.surface,
+            borderRadius: BorderRadius.circular(ClRadius.pill),
+            boxShadow: cl.shadows.card,
+          ),
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RotatedBox(
+                  quarterTurns: 2,
+                  child: ClIcon(
+                    ClIcons.chevronDown,
+                    size: 14,
+                    color: cl.colors.ink,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.lbBackToTop,
+                  style: cl.text.label.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: cl.colors.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
 
 /// 4d bottom bar: "Lưu" / "Đã lưu" (mint, filled bookmark) · spacer · "Aa".
@@ -1143,11 +1307,20 @@ class _ArticleBar extends StatelessWidget {
 /// Renders the safe block model as native text (never HTML): paragraph, heading, bullets,
 /// image with caption, callout. "Khi nào nên hỏi bác sĩ" callouts offer Sơ cứu when the guide is
 /// on the device.
-class LbBlocks extends StatelessWidget {
+///
+/// Reading layouts (D-087, P-166 #2–#3), from the same blocks, so older content reads as before:
+/// the first `note` callout, when it opens the article (before any heading), is the "Tóm tắt
+/// nhanh" card; with 3 headings or more, "Trong bài này" lists them before the first one (a tap
+/// scrolls there); headings get 24 pt above and a mint accent bar, other blocks 14 pt; bullets
+/// "A → B → C" are myth cards (Hiểu lầm / Vì sao / Nên làm) when every bullet of the list has
+/// that shape, "Bước N · …" numbered steps, and a lead-in before ": " (≤ 40 characters) is
+/// semibold; `urgent` callouts are red with "Gọi {number}" and Sơ cứu.
+class LbBlocks extends StatefulWidget {
   const LbBlocks({
     required this.blocks,
     this.scale = 1,
     this.topic,
+    this.look,
     this.firstAid = false,
     super.key,
   });
@@ -1155,55 +1328,198 @@ class LbBlocks extends StatelessWidget {
   final List<LbBlock> blocks;
   final double scale;
   final LbTopic? topic;
+
+  /// The pictures' placeholder look (the article's group or topic); else [topic]'s.
+  final LbLook? look;
   final bool firstAid;
+
+  @override
+  State<LbBlocks> createState() => _LbBlocksState();
+}
+
+class _LbBlocksState extends State<LbBlocks> {
+  /// One key per heading, for "Trong bài này".
+  var _keys = <GlobalKey>[];
+
+  List<GlobalKey> _headingKeys(int count) {
+    if (_keys.length != count) {
+      _keys = [
+        for (var i = 0; i < count; i++) GlobalKey(debugLabel: 'lbHeading$i'),
+      ];
+    }
+    return _keys;
+  }
+
+  void _jumpTo(GlobalKey key) {
+    final target = key.currentContext;
+    if (target == null) return;
+    unawaited(
+      Scrollable.ensureVisible(
+        target,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
+    final scale = widget.scale;
+    final blocks = widget.blocks;
     final body = cl.text.body.copyWith(
       fontSize: 16 * scale,
       fontWeight: FontWeight.w400,
       height: 1.6,
     );
-    Widget block(LbBlock b) => switch (b) {
-      LbParagraph(:final text) => Text(text, style: body),
-      LbHeading(:final text) => Semantics(
-        header: true,
-        child: Text(
-          text,
-          style: cl.text.headline.copyWith(
-            fontSize: 19 * scale,
-            fontWeight: FontWeight.w700,
-            height: 1.3,
+    final headings = [
+      for (final b in blocks)
+        if (b is LbHeading) b.text,
+    ];
+    final keys = _headingKeys(headings.length);
+    final firstHeading = blocks.indexWhere((b) => b is LbHeading);
+    // The first note is the "Tóm tắt nhanh" card when it opens the article (before any heading);
+    // a note further down stays a plain note.
+    final firstNote = blocks.indexWhere(
+      (b) => b is LbCallout && b.tone == LbCalloutTone.note,
+    );
+    final takeaways = firstHeading < 0 || firstNote < firstHeading
+        ? firstNote
+        : -1;
+
+    /// The bullet's text, its lead-in before ":" in semibold.
+    Widget leadIn(String t) {
+      final l = lbLeadIn(t);
+      if (l == null) return Text(t, style: body);
+      return Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '${l.lead}: ',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            TextSpan(text: l.rest),
+          ],
+        ),
+        style: body,
+      );
+    }
+
+    Widget bullet(String t) => Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10 * scale, left: 2, right: 10),
+          child: Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: cl.colors.mintText,
+              shape: BoxShape.circle,
+            ),
           ),
         ),
-      ),
-      LbBullets(:final items) => Column(
+        Expanded(child: leadIn(t)),
+      ],
+    );
+
+    Widget step(String original, ({int n, String text}) s) {
+      final d = 24 * scale + 2;
+      return Semantics(
+        // Read as written ("Bước 3 · …"): the badge is the same number.
+        label: original,
+        excludeSemantics: true,
+        child: Row(
+          // On the row, not the list's child: a repeated number stays a sibling-safe key.
+          key: Key('lbStep_${s.n}'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: d,
+              height: d,
+              decoration: BoxDecoration(
+                color: cl.colors.mintSoft,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${s.n}',
+                style: cl.text.label.copyWith(
+                  fontSize: 13 * scale,
+                  fontWeight: FontWeight.w700,
+                  color: cl.colors.mintText,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: leadIn(s.text)),
+          ],
+        ),
+      );
+    }
+
+    Widget bullets(List<String> items) {
+      final myths = [for (final t in items) lbMyth(t)];
+      if (myths.every((m) => m != null)) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final (i, m) in myths.indexed) ...[
+              if (i > 0) const SizedBox(height: 10),
+              _MythCard(myth: m!, scale: scale),
+            ],
+          ],
+        );
+      }
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final (i, t) in items.indexed) ...[
-            if (i > 0) const SizedBox(height: 6),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10 * scale, left: 2, right: 10),
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: cl.colors.mintText,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                Expanded(child: Text(t, style: body)),
-              ],
-            ),
+            if (i > 0) const SizedBox(height: 8),
+            if (lbStep(t) case final s?) step(t, s) else bullet(t),
           ],
         ],
+      );
+    }
+
+    Widget heading(String text) => IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            width: 4,
+            margin: const EdgeInsets.symmetric(vertical: 3),
+            decoration: BoxDecoration(
+              color: cl.colors.mint,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(
+                text,
+                style: cl.text.headline.copyWith(
+                  fontSize: 19 * scale,
+                  fontWeight: FontWeight.w700,
+                  height: 1.3,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+
+    Widget block(int i, LbBlock b) => switch (b) {
+      LbParagraph(:final text) => Text(text, style: body),
+      LbHeading(:final text) => heading(text),
+      LbBullets(:final items) => bullets(items),
       LbFigure(:final image, :final caption, :final alt) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1213,7 +1529,8 @@ class LbBlocks extends StatelessWidget {
             width: double.infinity,
             height: 160,
             radius: 16,
-            topic: topic,
+            topic: widget.topic,
+            look: widget.look,
           ),
           if (caption != null) ...[
             const SizedBox(height: 6),
@@ -1227,24 +1544,368 @@ class LbBlocks extends StatelessWidget {
           ],
         ],
       ),
+      LbCallout(:final title, :final text) when i == takeaways => _Takeaways(
+        title: title,
+        text: text,
+        scale: scale,
+      ),
+      LbCallout(tone: LbCalloutTone.urgent, :final title, :final text) =>
+        _UrgentCallout(
+          title: title,
+          text: text,
+          scale: scale,
+          firstAid: widget.firstAid,
+        ),
       LbCallout(:final tone, :final title, :final text) => _Callout(
         tone: tone,
         title: title,
         text: text,
         scale: scale,
-        firstAidLabel: tone == LbCalloutTone.doctor && firstAid
+        firstAidLabel: tone == LbCalloutTone.doctor && widget.firstAid
             ? l10n.lbOpenFirstAid
             : null,
       ),
     };
+
+    final children = <Widget>[];
+    var h = 0;
+    for (final (i, b) in blocks.indexed) {
+      if (i == firstHeading && headings.length >= 3) {
+        if (children.isNotEmpty) children.add(const SizedBox(height: 14));
+        children.add(
+          _Contents(
+            headings: headings,
+            scale: scale,
+            onTap: (n) => _jumpTo(keys[n]),
+          ),
+        );
+      }
+      if (b is LbHeading) {
+        final first = children.isEmpty;
+        if (!first) children.add(const SizedBox(height: 12));
+        // The key holds 12 pt of the 24 above, so a jump leaves that room under the top bar.
+        children.add(
+          Padding(
+            key: keys[h++],
+            padding: EdgeInsets.only(top: first ? 0 : 12),
+            child: block(i, b),
+          ),
+        );
+        continue;
+      }
+      if (children.isNotEmpty) children.add(const SizedBox(height: 14));
+      children.add(block(i, b));
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final (i, b) in blocks.indexed) ...[
-          if (i > 0) SizedBox(height: b is LbHeading ? 20 : 12),
-          block(b),
+      children: children,
+    );
+  }
+}
+
+/// "Trong bài này" (D-087, P-166 #3a): the article's headings, numbered; a tap scrolls there.
+class _Contents extends StatelessWidget {
+  const _Contents({
+    required this.headings,
+    required this.scale,
+    required this.onTap,
+  });
+  final List<String> headings;
+  final double scale;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      key: const Key('lbContents'),
+      padding: const EdgeInsets.fromLTRB(16, 14, 12, 6),
+      decoration: BoxDecoration(
+        color: cl.colors.surface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.lbContents,
+              style: cl.text.label.copyWith(
+                fontSize: 13 * scale,
+                fontWeight: FontWeight.w700,
+                color: cl.colors.inkMuted,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          for (final (i, h) in headings.indexed)
+            ClPressable(
+              key: Key('lbContents_$i'),
+              onPressed: () => onTap(i),
+              pressedOpacity: ClPressable.surfaceOpacity,
+              semanticLabel: h,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+                child: ExcludeSemantics(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24 * scale,
+                        child: Text(
+                          '${i + 1}',
+                          style: cl.text.label.copyWith(
+                            fontSize: 14 * scale,
+                            fontWeight: FontWeight.w700,
+                            color: cl.colors.mintText,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Text(
+                            h,
+                            style: cl.text.body.copyWith(
+                              fontSize: 15 * scale,
+                              fontWeight: FontWeight.w600,
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ClIcon(
+                        ClIcons.chevronRight,
+                        size: 14,
+                        color: cl.colors.inkMuted,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
-      ],
+      ),
+    );
+  }
+}
+
+/// The first `note` callout as the key-takeaways card ("Tóm tắt nhanh", D-087 P-166 #3c): mint
+/// soft, a check, its own title or "Tóm tắt nhanh".
+class _Takeaways extends StatelessWidget {
+  const _Takeaways({required this.text, required this.scale, this.title});
+  final String? title;
+  final String text;
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Container(
+      key: const Key('lbTakeaways'),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      decoration: BoxDecoration(
+        color: cl.colors.mintSoft,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              ClIcon(ClIcons.check, size: 18, color: cl.colors.mintText),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title ?? AppLocalizations.of(context).lbTakeaways,
+                  style: cl.text.bodyStrong.copyWith(
+                    fontSize: 15 * scale,
+                    fontWeight: FontWeight.w700,
+                    color: cl.colors.mintText,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            text,
+            style: cl.text.body.copyWith(
+              fontSize: 15 * scale,
+              fontWeight: FontWeight.w500,
+              height: 1.55,
+              color: cl.colors.ink,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A myth bullet as a small card (D-087, P-166 #3d): Hiểu lầm · Vì sao · Nên làm, read as one.
+class _MythCard extends StatelessWidget {
+  const _MythCard({required this.myth, required this.scale});
+  final ({String myth, String? why, String instead}) myth;
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final parts = [
+      (l10n.lbMyth, myth.myth, cl.colors.error),
+      if (myth.why != null) (l10n.lbMythWhy, myth.why!, cl.colors.inkMuted),
+      (l10n.lbMythInstead, myth.instead, cl.colors.mintText),
+    ];
+    return MergeSemantics(
+      child: Container(
+        key: const Key('lbMyth'),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final (i, (label, text, ink)) in parts.indexed) ...[
+              if (i > 0) const SizedBox(height: 10),
+              Text(
+                label,
+                style: cl.text.caption.copyWith(
+                  fontSize: 12.5 * scale,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                text,
+                style: cl.text.body.copyWith(
+                  fontSize: 15 * scale,
+                  fontWeight: i == 0 ? FontWeight.w600 : FontWeight.w400,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// `urgent` callout (D-087, P-166 #2): "Gọi {number} ngay khi…" in red (error soft fill, error
+/// ink, alert), a full-width "Gọi {number}" that dials the family's number (as Ăn dặm's urgent
+/// card), and Sơ cứu when the guide is on the device.
+class _UrgentCallout extends ConsumerWidget {
+  const _UrgentCallout({
+    required this.text,
+    required this.scale,
+    required this.firstAid,
+    this.title,
+  });
+  final String? title;
+  final String text;
+  final double scale;
+  final bool firstAid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final number = ref.watch(contentEmergencyNumberProvider);
+    final ink = cl.colors.error;
+    return Semantics(
+      container: true,
+      child: Container(
+        key: const Key('lbCallout_urgent'),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        decoration: BoxDecoration(
+          color: cl.colors.errorSoft,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: ClIcon(ClIcons.alert, size: 18, color: ink),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title ?? text,
+                    style: cl.text.bodyStrong.copyWith(
+                      fontSize: 15 * scale,
+                      fontWeight: FontWeight.w700,
+                      height: 1.4,
+                      color: ink,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (title != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                text,
+                style: cl.text.body.copyWith(
+                  fontSize: 14 * scale,
+                  fontWeight: FontWeight.w500,
+                  height: 1.55,
+                  color: ink,
+                ),
+              ),
+            ],
+            const SizedBox(height: 12),
+            FaCallButton(
+              key: const Key('lbUrgentCall'),
+              number: number,
+              expand: true,
+              onPressed: () {
+                unawaited(HapticFeedback.heavyImpact());
+                unawaited(callEmergency(context, ref));
+              },
+            ),
+            if (firstAid) ...[
+              const SizedBox(height: 4),
+              ClPressable(
+                key: const Key('lbUrgentFirstAid'),
+                onPressed: () => context.pushSafe(Routes.firstAid),
+                semanticLabel: l10n.lbUrgentFirstAid,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.lbUrgentFirstAid,
+                          style: cl.text.label.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        ClIcon(ClIcons.chevronRight, size: 14, color: ink),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1279,6 +1940,12 @@ class _Callout extends StatelessWidget {
         ClIcons.spark,
       ),
       LbCalloutTone.note => (cl.colors.surface2, cl.colors.ink, ClIcons.heart),
+      // Drawn by [_UrgentCallout]; kept for completeness.
+      LbCalloutTone.urgent => (
+        cl.colors.errorSoft,
+        cl.colors.error,
+        ClIcons.alert,
+      ),
     };
     return Container(
       key: Key('lbCallout_${tone.name}'),

@@ -262,3 +262,26 @@ describe('per baby', () => {
     ]);
   });
 });
+
+describe('library readability and families abroad (D-087)', () => {
+  it('"115" in content text is reported (sources excluded); 1150 or 0,115 are not', async () => {
+    const { literalEmergencyProblems, articleDraftSchema, calloutTones } =
+      await import('../src/index.js');
+    expect(
+      literalEmergencyProblems({
+        body: { vi: [{ text: 'Gọi 115 ngay' }, { text: '1150 ml' }, { text: '0,115' }] },
+        sources: [{ label: 'Cấp cứu 115', url: 'https://x.vn/' }],
+      }),
+    ).toEqual([{ path: 'body.vi.0.text', match: '115' }]);
+    expect(literalEmergencyProblems({ text: 'Gọi {emergency} ngay' })).toEqual([]);
+    // The usual forms: a full stop or a comma right after the number.
+    expect(
+      literalEmergencyProblems({ a: 'hãy gọi 115.', b: 'gọi 115, rồi', c: '1.150 ml' }),
+    ).toEqual([
+      { path: 'a', match: '115' },
+      { path: 'b', match: '115' },
+    ]);
+    expect(calloutTones).toContain('urgent');
+    expect(articleDraftSchema.shape.subtopic).toBeDefined();
+  });
+});

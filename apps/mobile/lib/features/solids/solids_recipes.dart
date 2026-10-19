@@ -28,7 +28,7 @@ import 'solids_repository.dart';
 import 'solids_routes.dart';
 import 'solids_sheet.dart';
 import 'solids_state.dart';
-import 'solids_widgets.dart' show SdTag;
+import 'solids_widgets.dart' show SdTag, sdPublishedRecipeLook;
 
 /// Recipes of Ăn dặm (phase C; Figma 5f `314:1987`, 5g `314:2095`; plan §3 #9, #11, §5): the
 /// rows of 5f, the recipe page 5g with "Lưu", "Ghi vào nhật ký" and "Nhà mình đã làm" (D-086), and
@@ -97,7 +97,7 @@ void sdToggleSavedRecipe(BuildContext context, WidgetRef ref, SdRecipe r) {
 
 /// 5f recipe row (Photo 56, the title, "Công thức · 15 phút", chevron) and 4f's saved row
 /// ([meta] and a bookmark).
-class SdRecipeRow extends StatelessWidget {
+class SdRecipeRow extends ConsumerWidget {
   const SdRecipeRow({
     required this.recipe,
     required this.onTap,
@@ -118,11 +118,12 @@ class SdRecipeRow extends StatelessWidget {
   final VoidCallback? onBookmark;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
     final title = recipe.title.of(context);
     final line = meta ?? l10n.sdRecipeMeta(recipe.totalMinutes);
+    final foods = ref.watch(sdFoodsByIdProvider);
     return ClPressable(
       onPressed: onTap,
       pressedOpacity: ClPressable.surfaceOpacity,
@@ -132,11 +133,12 @@ class SdRecipeRow extends StatelessWidget {
         child: Row(
           children: [
             LbPicture(
+              key: Key('sdRecipeThumb_${recipe.id}'),
               image: recipe.cover?.id,
               width: 56,
               height: 56,
               radius: 12,
-              topic: LbTopic.feeding,
+              look: sdPublishedRecipeLook(context, recipe, foods),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -306,7 +308,7 @@ class SdRecipeScreen extends ConsumerWidget {
           width: double.infinity,
           height: 190,
           radius: 22,
-          topic: LbTopic.feeding,
+          look: sdPublishedRecipeLook(context, recipe, foods),
         ),
         const SizedBox(height: ClSpace.s4),
         Wrap(

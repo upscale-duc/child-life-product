@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -100,7 +102,9 @@ String lbReviewLabel(AppLocalizations l10n, LbReview r) => l10n.lbReviewedBy(
 
 // ---------- Topic look (4a tiles, chips, placeholders) ----------
 
-typedef LbTopicLook = ({Color soft, Color ink, ClIcons icon});
+/// A picture's look: the tinted fill, the icon and its ink (existing colour tokens only).
+typedef LbLook = ({Color soft, Color ink, ClIcons icon});
+typedef LbTopicLook = LbLook;
 
 LbTopicLook lbTopicLook(BuildContext context, LbTopic t) {
   final cl = context.cl;
@@ -138,6 +142,41 @@ LbTopicLook lbTopicLook(BuildContext context, LbTopic t) {
     ),
   };
 }
+
+/// Thư viện ăn dặm groups (D-087, P-166 #5): each its own icon and tint, so the list no longer
+/// repeats the feeding bottle. Ink on the soft warm fills, also in Night care.
+LbLook lbSubtopicLook(BuildContext context, LbSubtopic s) {
+  final cl = context.cl;
+  final c = cl.colors;
+  LbLook care(ClCareColor t, ClIcons icon) =>
+      (soft: t.soft, ink: t.ink, icon: icon);
+  return switch (s) {
+    LbSubtopic.start => (soft: c.sunshineSoft, ink: c.ink, icon: ClIcons.spoon),
+    LbSubtopic.methods => (
+      soft: c.mintSoft,
+      ink: c.mintText,
+      icon: ClIcons.hand,
+    ),
+    LbSubtopic.textures => (soft: c.peachSoft, ink: c.ink, icon: ClIcons.bowl),
+    LbSubtopic.nutrition => care(cl.care.diaper, ClIcons.carrot),
+    LbSubtopic.allergy => (soft: c.sunshineSoft, ink: c.ink, icon: ClIcons.egg),
+    LbSubtopic.safety => care(cl.care.breast, ClIcons.shield),
+    LbSubtopic.menus => care(cl.care.sleep, ClIcons.calendar),
+    LbSubtopic.skills => care(cl.care.bottle, ClIcons.hand),
+    LbSubtopic.health => care(cl.care.growth, ClIcons.cup),
+    LbSubtopic.gear => care(cl.care.pump, ClIcons.highChair),
+    LbSubtopic.family => (
+      soft: c.mintSoft,
+      ink: c.mintText,
+      icon: ClIcons.bowl,
+    ),
+  };
+}
+
+/// An article's picture look: its Ăn dặm group when it has one, else its topic.
+LbLook lbArticleLook(BuildContext context, LbArticle a) => a.subtopic == null
+    ? lbTopicLook(context, a.topic)
+    : lbSubtopicLook(context, a.subtopic!);
 
 // ---------- Chrome ----------
 
@@ -223,13 +262,18 @@ class LbPillButton extends StatelessWidget {
 }
 
 /// A pushed content page (no dock): back, an optional trailing action, the scrolling body and an
-/// optional fixed bottom bar.
+/// optional fixed bottom bar. The 4d reader adds a [header] under the top bar (reading
+/// progress), an [overlay] at the bottom right of the body ("Lên đầu") and caps the body at
+/// [maxContentWidth], centred on tablets (D-087).
 class LbPage extends StatelessWidget {
   const LbPage({
     required this.children,
     this.trailing,
     this.bottom,
     this.controller,
+    this.header,
+    this.overlay,
+    this.maxContentWidth,
     super.key,
   });
 
@@ -237,12 +281,25 @@ class LbPage extends StatelessWidget {
   final Widget? trailing;
   final Widget? bottom;
   final ScrollController? controller;
+  final Widget? header;
+  final Widget? overlay;
+  final double? maxContentWidth;
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
     final media = MediaQuery.of(context);
+    Widget list(double side) => ListView(
+      controller: controller,
+      padding: EdgeInsets.fromLTRB(
+        side,
+        ClSpace.s4,
+        side,
+        (bottom == null ? media.padding.bottom : 0) + ClSpace.s8,
+      ),
+      children: children,
+    );
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -272,17 +329,29 @@ class LbPage extends StatelessWidget {
                 ),
               ),
             ),
+            ?header,
             Expanded(
-              child: ListView(
-                controller: controller,
-                padding: EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s4,
-                  ClSpace.s4,
-                  (bottom == null ? media.padding.bottom : 0) + ClSpace.s8,
-                ),
-                children: children,
-              ),
+              child: maxContentWidth == null && overlay == null
+                  ? list(ClSpace.s4)
+                  : LayoutBuilder(
+                      builder: (context, box) {
+                        final cap = maxContentWidth;
+                        final side = cap == null
+                            ? ClSpace.s4
+                            : math.max(ClSpace.s4, (box.maxWidth - cap) / 2);
+                        return Stack(
+                          children: [
+                            Positioned.fill(child: list(side)),
+                            if (overlay != null)
+                              Positioned(
+                                right: side,
+                                bottom: ClSpace.s4,
+                                child: overlay!,
+                              ),
+                          ],
+                        );
+                      },
+                    ),
             ),
             ?bottom,
           ],
@@ -501,7 +570,9 @@ class LbChip extends StatelessWidget {
   }
 }
 
-/// A content picture, or a topic-tinted placeholder with its icon (no picture, offline, tests).
+/// A content picture, or a tinted placeholder with its icon (no picture, offline, tests): the
+/// [look] when given (an Ăn dặm group, a recipe's main ingredient), else the [topic]'s. A cover
+/// image always wins.
 class LbPicture extends ConsumerWidget {
   const LbPicture({
     required this.image,
@@ -509,6 +580,7 @@ class LbPicture extends ConsumerWidget {
     required this.height,
     required this.radius,
     this.topic,
+    this.look,
     this.alt,
     super.key,
   });
@@ -518,12 +590,14 @@ class LbPicture extends ConsumerWidget {
   final double height;
   final double radius;
   final LbTopic? topic;
+  final LbLook? look;
   final String? alt;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cl = context.cl;
-    final look = topic == null ? null : lbTopicLook(context, topic!);
+    final look =
+        this.look ?? (topic == null ? null : lbTopicLook(context, topic!));
     final provider = image == null ? null : ref.watch(lbImageProvider)(image!);
     final placeholder = Container(
       color: look?.soft ?? cl.colors.surface2,
@@ -591,11 +665,12 @@ class LbArticleRow extends StatelessWidget {
         child: Row(
           children: [
             LbPicture(
+              key: Key('lbThumb_${article.id}'),
               image: article.cover?.id,
               width: thumb,
               height: thumb,
               radius: thumb >= 60 ? 14 : 12,
-              topic: article.topic,
+              look: lbArticleLook(context, article),
             ),
             const SizedBox(width: 12),
             Expanded(

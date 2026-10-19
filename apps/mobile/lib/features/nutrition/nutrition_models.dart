@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../library/content_models.dart' show LbReview, LbSource, LbText, lbDate;
+import '../library/content_models.dart'
+    show LbReview, LbSource, LbText, lbDate, lbDefaultEmergency, lbFillDoc;
 
 /// Dinh dưỡng theo giai đoạn (D-083, P-163; Figma 9a–9g; plan `docs/product/nutrition-plan.md`).
 /// Editorial content written in the portal and published one document per item to
@@ -241,9 +242,15 @@ class NuStage with NuPublished {
   final int revision;
   final DateTime? publishedAt;
 
-  static NuStage? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_stageId.hasMatch(id)) return null;
-    if (j['status'] != 'published') return null;
+  /// `{emergency}` in its text becomes [emergency], the family's number (D-087).
+  static NuStage? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null || !_stageId.hasMatch(id)) return null;
+    if (doc['status'] != 'published') return null;
+    final j = lbFillDoc(doc, emergency)!;
     final age = NuAge.parse(j['ageMonths']);
     final title = LbText.parse(j['title']);
     if (age == null || title == null) return null;
@@ -409,9 +416,15 @@ class NuNutrient with NuPublished {
   @override
   final bool illustrative;
 
-  static NuNutrient? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_nutrientId.hasMatch(id)) return null;
-    if (j['status'] != 'published') return null;
+  /// `{emergency}` in its text becomes [emergency], the family's number (D-087).
+  static NuNutrient? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null || !_nutrientId.hasMatch(id)) return null;
+    if (doc['status'] != 'published') return null;
+    final j = lbFillDoc(doc, emergency)!;
     final name = LbText.parse(j['name']);
     if (name == null) return null;
     final focus = j['focus'] is Map ? j['focus']! as Map : const {};
@@ -490,9 +503,15 @@ class NuRule {
 
   bool get isGrowth => metric == NuMetric.weight || metric == NuMetric.length;
 
-  static NuRule? fromDoc(String id, Map<String, Object?>? j) {
-    if (j == null || !_ruleId.hasMatch(id)) return null;
-    if (j['status'] != 'published') return null;
+  /// `{emergency}` in its text becomes [emergency], the family's number (D-087).
+  static NuRule? fromDoc(
+    String id,
+    Map<String, Object?>? doc, {
+    String emergency = lbDefaultEmergency,
+  }) {
+    if (doc == null || !_ruleId.hasMatch(id)) return null;
+    if (doc['status'] != 'published') return null;
+    final j = lbFillDoc(doc, emergency)!;
     final metric = NuMetric.values.asNameMap()[j['metric']];
     final condition = NuCondition.values.asNameMap()[j['condition']];
     final age = NuAge.parse(j['ageMonths']);

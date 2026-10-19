@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../app/providers.dart';
 import '../../app/session.dart';
+import '../family/emergency_numbers.dart';
+import '../premium/premium_repository.dart' show selectedFamilyCountryProvider;
 import 'content_models.dart';
 
 /// Published content as last seen: [fromCache] while the device has not heard from the server
@@ -48,10 +50,20 @@ class ContentStore {
         ),
       );
 
-  Stream<LbFeed<LbArticle>> watchArticles() =>
-      _published(articles, LbArticle.fromDoc);
+  /// Published articles with [emergency] in place of every `{emergency}` (D-087).
+  Stream<LbFeed<LbArticle>> watchArticles({
+    String emergency = lbDefaultEmergency,
+  }) => _published(
+    articles,
+    (id, d) => LbArticle.fromDoc(id, d, emergency: emergency),
+  );
 
-  Stream<LbFeed<LbStage>> watchStages() => _published(stages, LbStage.fromDoc);
+  Stream<LbFeed<LbStage>> watchStages({
+    String emergency = lbDefaultEmergency,
+  }) => _published(
+    stages,
+    (id, d) => LbStage.fromDoc(id, d, emergency: emergency),
+  );
 
   // ---------- Saved articles (per person) ----------
 
@@ -152,19 +164,34 @@ final contentStoreProvider = Provider<ContentStore>(
 bool _canRead(Ref ref) =>
     ref.watch(sessionProvider) is SessionSignedIn && Firebase.apps.isNotEmpty;
 
-/// Every published article (both libraries; screens pick theirs).
+/// The family's ambulance number (D-078), or 115 when the country or its number is unknown.
+String lbEmergencyNumber(String? country) =>
+    emergencyNumbers[country] ?? lbDefaultEmergency;
+
+/// The number every `{emergency}` in published content shows for the selected family (D-087,
+/// P-166 #1): articles, stages, recipes, milestones and nutrition are parsed with it, and the
+/// reader's urgent callout dials it.
+final contentEmergencyNumberProvider = Provider<String>(
+  (ref) => lbEmergencyNumber(ref.watch(selectedFamilyCountryProvider)),
+);
+
+/// Every published article (both libraries; screens pick theirs), with the family's number.
 final lbArticlesProvider = StreamProvider<LbFeed<LbArticle>>((ref) {
   if (!_canRead(ref)) {
     return Stream.value((items: const <LbArticle>[], fromCache: false));
   }
-  return ref.watch(contentStoreProvider).watchArticles();
+  return ref
+      .watch(contentStoreProvider)
+      .watchArticles(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 final lbStagesProvider = StreamProvider<LbFeed<LbStage>>((ref) {
   if (!_canRead(ref)) {
     return Stream.value((items: const <LbStage>[], fromCache: false));
   }
-  return ref.watch(contentStoreProvider).watchStages();
+  return ref
+      .watch(contentStoreProvider)
+      .watchStages(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 final lbSavedProvider = StreamProvider<List<LbSaved>>((ref) {

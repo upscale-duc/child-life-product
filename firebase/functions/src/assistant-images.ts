@@ -130,10 +130,7 @@ const t = {
     'Phần thuốc trong ảnh sẽ không được chuyển thành lịch hay liều.',
     'The medicine part of the photo is never turned into a schedule or a dose.',
   ),
-  nothing: L(
-    'Mình không ghi gì từ ảnh này.',
-    'Nothing was saved from this photo.',
-  ),
+  nothing: L('Mình không ghi gì từ ảnh này.', 'Nothing was saved from this photo.'),
   spendDenied: L(
     'Vai trò của bạn chưa được ghi Chi tiêu, nên mình không tạo khoản chi.',
     'Your role can’t record expenses, so no expense was prepared.',
@@ -162,14 +159,8 @@ const t = {
     'Có thể trùng với một khoản đã ghi trong gia đình. Kiểm tra trước khi lưu; mình không tự gộp.',
     'This may duplicate an expense your family already logged. Check before saving; nothing is merged automatically.',
   ),
-  noActions: L(
-    'Mình không thấy việc cần làm nào trong ảnh.',
-    'No to-dos were found in the photo.',
-  ),
-  noReminders: L(
-    'Không tạo nhắc việc nào.',
-    'No reminders were created.',
-  ),
+  noActions: L('Mình không thấy việc cần làm nào trong ảnh.', 'No to-dos were found in the photo.'),
+  noReminders: L('Không tạo nhắc việc nào.', 'No reminders were created.'),
   // ---- D-075 #5 (reminders): all day and assignee ----
   noAssignee: L(
     'Nhắc việc chưa có người phụ trách: tên ghi trong ảnh không được gán cho ai.',

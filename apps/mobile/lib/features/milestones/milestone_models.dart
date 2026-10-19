@@ -10,6 +10,9 @@ import '../memories/memory_models.dart';
 /// collection as Kỷ niệm's family milestones (R-105). A reference milestone's record is
 /// `p_<referenceId>`; a custom one is `ms_<hex>`.
 
+/// `contentEmergencyToken` (same as the library's `lbEmergencyToken`).
+const _emergencyToken = '{emergency}';
+
 /// "Vận động", "Giao tiếp", "Nhận thức", "Cảm xúc – xã hội".
 enum MilestoneGroup {
   motor('motor'),
@@ -91,6 +94,12 @@ class MtText {
 
   String of(String languageCode) => languageCode == 'en' ? en : vi;
 
+  /// Both languages with [number] in place of every `{emergency}` (D-087).
+  MtText withEmergency(String number) => MtText(
+    vi.replaceAll(_emergencyToken, number),
+    en.replaceAll(_emergencyToken, number),
+  );
+
   static MtText? fromJson(Object? j) {
     if (j is! Map) return null;
     final vi = j['vi'], en = j['en'];
@@ -138,6 +147,22 @@ class ReferenceMilestone {
 
   /// The baby's record id for this milestone.
   String get recordId => 'p_$id';
+
+  /// The family's emergency number in the texts (D-087, P-166 #1; `contentEmergencyToken`).
+  ReferenceMilestone withEmergency(String number) => ReferenceMilestone(
+    id: id,
+    group: group,
+    order: order,
+    ageRange: ageRange,
+    title: title.withEmergency(number),
+    howToRecognise: howToRecognise.withEmergency(number),
+    talkToDoctor: talkToDoctor?.withEmergency(number),
+    illustration: illustration,
+    illustrationAlt: illustrationAlt?.withEmergency(number),
+    sources: sources,
+    illustrative: illustrative,
+    reviewer: reviewer,
+  );
 
   static ReferenceMilestone? fromJson(String id, Map<String, Object?> j) {
     if (j['status'] != 'published') return null;

@@ -81,6 +81,8 @@ List<Widget> _stageBody(
   final signals = personal ? data?.signals : null;
   final growthRules = signals?.growth ?? const <NuRule>[];
   final taken = ref.watch(nuVitaminTakenProvider(b.babyId)).value ?? const {};
+  // Outside Việt Nam vitamin A is an ordinary nutrient: no round tag, no 9g (P-166 #6).
+  final abroad = ref.watch(nuCampaignAbroadProvider);
   final nutrients = [
     for (final id in stage.nutrientIds) ?content.nutrients[id],
   ];
@@ -138,9 +140,9 @@ List<Widget> _stageBody(
               key: Key('nuNutrient_${n.id}'),
               nutrient: n,
               name: name,
-              tag: _nextRoundTag(n, b, taken, tag),
+              tag: abroad ? null : _nextRoundTag(n, b, taken, tag),
               onTap: () => context.push(
-                n.campaign != null
+                n.campaign != null && !abroad
                     ? NuRoutes.vitamin(n.id)
                     : NuRoutes.nutrient(n.id),
               ),

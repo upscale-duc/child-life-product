@@ -153,6 +153,8 @@ const articleAdapter: ContentKindAdapter = {
   row: (d) => ({
     library: d.library,
     topic: d.topic,
+    // Thư viện ăn dặm group (D-087); null on care guides and older drafts.
+    subtopic: d.subtopic ?? null,
     format: d.format,
     ageWeeks: d.ageWeeks,
     readingMinutes: d.readingMinutes,

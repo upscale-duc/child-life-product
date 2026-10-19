@@ -188,7 +188,7 @@ export const solidsVi: Record<string, string> = {
   'solids.note.recipes':
     'Không nêm muối, đường, nước mắm, hạt nêm, không mật ong dưới 12 tháng và không ghi liều. Gửi duyệt bị từ chối khi có nguyên liệu chưa hợp tuổi của công thức hoặc gia vị nêm thêm.',
   'solids.note.guides':
-    'Hướng dẫn là bài viết thuộc thư viện “Ăn dặm”. Bài tạo ở đây đã chọn sẵn thư viện “Ăn dặm” và chủ đề “Bú & sữa”; trang soạn giống Thư viện chăm bé.',
+    'Hướng dẫn là bài viết thuộc thư viện “Ăn dặm”. Bài tạo ở đây đã chọn sẵn thư viện “Ăn dặm” và chủ đề “Bú & sữa”; trang soạn giống Thư viện chăm bé. Chọn “Nhóm ăn dặm” ở tab Cài đặt để bài có hình riêng trong app.',
 
   // Coverage (plan §6)
   'solids.coverage.foods': 'Độ phủ danh mục',
@@ -469,7 +469,7 @@ export const solidsEn: Record<string, string> = {
   'solids.note.recipes':
     'No added salt, sugar, fish sauce or stock, no honey under 12 months and no doses. Submitting is refused while an ingredient is too young for the recipe or a seasoning is added.',
   'solids.note.guides':
-    'Guides are articles in the “Solid foods” library. A guide created here starts in that library with the “Feeding & milk” topic; the editor is the care library one.',
+    'Guides are articles in the “Solid foods” library. A guide created here starts in that library with the “Feeding & milk” topic; the editor is the care library one. Pick a “Solids group” in Settings so the guide gets its own picture in the app.',
 
   'solids.coverage.foods': 'Catalogue coverage',
   'solids.coverage.foodsSummary':

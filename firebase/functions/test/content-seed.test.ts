@@ -3,8 +3,11 @@ import { resolve } from 'node:path';
 import {
   articleContentStrictSchema,
   type ContentBlock,
+  contentEmergencyToken,
   isPlainText,
+  literalEmergencyProblems,
   readingMinutesOf,
+  solidsSubtopics,
   stageBuckets,
   stageContentStrictSchema,
   stageCoverage,
@@ -16,14 +19,13 @@ import { seedArticles, seedStages } from '../src/content-seed.js';
 // only to ids that exist, one stage per fixed 0–24 month range, every article ending on the
 // "Khi nào nên hỏi bác sĩ" doctor callout and never claiming a review it has not had.
 const ids = seedArticles.map((a) => a.id);
-const milestoneIds: string[] = (
-  JSON.parse(
-    readFileSync(
-      resolve(import.meta.dirname, '../../../content/milestones/milestones.seed.json'),
-      'utf8',
-    ),
-  ) as { milestones: { id: string }[] }
-).milestones.map((m) => m.id);
+const milestonesSeed = JSON.parse(
+  readFileSync(
+    resolve(import.meta.dirname, '../../../content/milestones/milestones.seed.json'),
+    'utf8',
+  ),
+) as { milestones: { id: string }[] };
+const milestoneIds: string[] = milestonesSeed.milestones.map((m) => m.id);
 
 /** Every string anywhere in [value] (titles, blocks, keywords, stage points, source labels). */
 function strings(value: unknown): string[] {
@@ -119,13 +121,69 @@ describe('editorial seed', () => {
     },
   );
 
-  it('health articles name the Vietnamese emergency number', () => {
+  it('health articles carry {emergency}', () => {
     for (const a of seedArticles.filter((x) => x.data.topic === 'illness')) {
-      const doctorText = a.data.body.vi
-        .filter((b) => b.type === 'callout' && b.tone === 'doctor')
-        .map((b) => (b.type === 'callout' ? b.text : ''))
-        .join(' ');
-      expect(doctorText, a.id).toContain('115');
+      for (const body of [a.data.body.vi, a.data.body.en]) {
+        const text = body
+          .map((b) =>
+            b.type === 'callout' && (b.tone === 'doctor' || b.tone === 'urgent')
+              ? `${b.title} ${b.text}`
+              : '',
+          )
+          .join(' ');
+        expect(text, a.id).toContain(contentEmergencyToken);
+      }
+    }
+  });
+
+  // Families abroad (D-087, P-166 #1–#2): content names the family's number as `{emergency}`, never
+  // "115"; the app fills it in. Titles say "gọi cấp cứu" rather than a number.
+  it('no literal emergency number anywhere in the articles or the milestones seed', () => {
+    for (const a of seedArticles) expect(literalEmergencyProblems(a.data), a.id).toEqual([]);
+    expect(literalEmergencyProblems(milestonesSeed)).toEqual([]);
+  });
+
+  it('titles hold neither {emergency} nor 115', () => {
+    for (const a of seedArticles) {
+      for (const title of [a.data.title.vi, a.data.title.en]) {
+        expect(title, a.id).not.toContain(contentEmergencyToken);
+        expect(title, a.id).not.toMatch(/115/);
+      }
+    }
+  });
+
+  it('urgent callouts say "Gọi {emergency} ngay khi" and come before the final doctor callout', () => {
+    for (const a of seedArticles) {
+      for (const [body, title] of [
+        [a.data.body.vi, `Gọi ${contentEmergencyToken} ngay khi`],
+        [a.data.body.en, `Call ${contentEmergencyToken} now if`],
+      ] as const) {
+        body.forEach((b, i) => {
+          if (b.type !== 'callout' || b.tone !== 'urgent') return;
+          expect(b.title, a.id).toBe(title);
+          expect(i, a.id).toBeLessThan(body.length - 1);
+        });
+      }
+    }
+  });
+
+  // Thư viện ăn dặm readability (D-087, P-166 #4–#5): every guide has its group (and its picture);
+  // paragraphs are split at about 450 characters.
+  it('every solids guide has a subtopic; care guides have none', () => {
+    for (const a of seedArticles) {
+      if (a.data.library === 'solids') expect(solidsSubtopics, a.id).toContain(a.data.subtopic);
+      else expect(a.data.subtopic ?? null, a.id).toBeNull();
+    }
+  });
+
+  it('solids guides keep paragraphs to 480 characters', () => {
+    for (const a of seedArticles.filter((x) => x.data.library === 'solids')) {
+      for (const body of [a.data.body.vi, a.data.body.en]) {
+        for (const b of body) {
+          if (b.type === 'paragraph')
+            expect(b.text.length, `${a.id}: ${b.text}`).toBeLessThanOrEqual(480);
+        }
+      }
     }
   });
 

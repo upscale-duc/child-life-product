@@ -18127,4 +18127,32 @@ class AppLocalizationsVi extends AppLocalizations {
   String sdFoodDays(int count) {
     return 'Những lần bé đã ăn · $count';
   }
+
+  @override
+  String get lbContents => 'Trong bài này';
+
+  @override
+  String get lbBackToTop => 'Lên đầu';
+
+  @override
+  String get lbTakeaways => 'Tóm tắt nhanh';
+
+  @override
+  String get lbMyth => 'Hiểu lầm';
+
+  @override
+  String get lbMythWhy => 'Vì sao';
+
+  @override
+  String get lbMythInstead => 'Nên làm';
+
+  @override
+  String get lbUpNext => 'Bài tiếp theo';
+
+  @override
+  String get lbUrgentFirstAid => 'Xem hướng dẫn Sơ cứu';
+
+  @override
+  String get nuVitaAbroad =>
+      'Lịch uống vitamin A theo chương trình của Việt Nam; ở nơi bạn sống, hãy hỏi bác sĩ của bé.';
 }

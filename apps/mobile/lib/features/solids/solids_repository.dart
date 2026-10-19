@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../app/session.dart';
-import '../library/content_repository.dart' show LbFeed;
+import '../library/content_models.dart' show lbDefaultEmergency;
+import '../library/content_repository.dart'
+    show LbFeed, contentEmergencyNumberProvider;
 import 'solids_models.dart';
 
 /// Ăn dặm data (D-085): the published food catalogue, and per baby the settings, the meals and
@@ -38,13 +40,19 @@ class SolidsStore {
       );
 
   /// Published recipes (5f, 5g); Firestore keeps its offline copy once read (P-164 #18).
-  Stream<LbFeed<SdRecipe>> watchRecipes() => _db()
+  /// Published recipes with [emergency] in place of every `{emergency}` (D-087).
+  Stream<LbFeed<SdRecipe>> watchRecipes({
+    String emergency = lbDefaultEmergency,
+  }) => _db()
       .collection(recipes)
       .where('status', isEqualTo: 'published')
       .snapshots(includeMetadataChanges: true)
       .map(
         (q) => (
-          items: [for (final d in q.docs) ?SdRecipe.fromDoc(d.id, d.data())],
+          items: [
+            for (final d in q.docs)
+              ?SdRecipe.fromDoc(d.id, d.data(), emergency: emergency),
+          ],
           fromCache: q.metadata.isFromCache,
         ),
       );
@@ -233,12 +241,22 @@ final sdFoodsProvider = StreamProvider<LbFeed<SdFood>>((ref) {
   return ref.watch(solidsStoreProvider).watchFoods();
 });
 
+/// The catalogue by id (recipe pictures, D-087); empty until foods are published.
+final sdFoodsByIdProvider = Provider<Map<String, SdFood>>(
+  (ref) => {
+    for (final f in ref.watch(sdFoodsProvider).value?.items ?? const <SdFood>[])
+      f.id: f,
+  },
+);
+
 /// The published recipes (5f, 5g, "Dành cho {bé}"); empty until the portal publishes some.
 final sdRecipesProvider = StreamProvider<LbFeed<SdRecipe>>((ref) {
   if (!_canRead(ref)) {
     return Stream.value((items: const <SdRecipe>[], fromCache: false));
   }
-  return ref.watch(solidsStoreProvider).watchRecipes();
+  return ref
+      .watch(solidsStoreProvider)
+      .watchRecipes(emergency: ref.watch(contentEmergencyNumberProvider));
 });
 
 /// A baby's settings (null: never turned on). Members who read care read it.

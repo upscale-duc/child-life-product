@@ -51,6 +51,7 @@ import {
   actionsFor,
   asApiError,
   dateTime,
+  fillEmergency,
   reviewOf,
   splitActions,
   stageAgeText,
@@ -772,9 +773,12 @@ function UnitField({ value, onChange }: { value: StageUnit; onChange: (u: StageU
   );
 }
 
-/** 2b "Chi tiết giai đoạn", in the language being edited, with the sample baby "Teddy". */
+/**
+ * 2b "Chi tiết giai đoạn", in the language being edited, with the sample baby "Teddy";
+ * `{emergency}` reads as 115 (D-087).
+ */
 export function StagePreview({
-  data,
+  data: draft,
   lang,
   articles,
   milestones,
@@ -787,6 +791,7 @@ export function StagePreview({
   review: Parameters<typeof ReviewLine>[0]['review'];
 }) {
   const intl = useIntl();
+  const data = useMemo(() => fillEmergency(draft), [draft]);
   const p = (id: string, values?: Record<string, string | number>) =>
     intl.formatMessage({ id: `content.preview.${id}.${lang}` }, values);
   const range =

@@ -30191,6 +30191,60 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Những lần bé đã ăn · {count}'**
   String sdFoodDays(int count);
+
+  /// 4d: the contents card listing the article's headings (P-166 #3a). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong bài này'**
+  String get lbContents;
+
+  /// 4d: floating button after one screen of scrolling (P-166 #3b). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lên đầu'**
+  String get lbBackToTop;
+
+  /// 4d: title of the key-takeaways card when the first note callout has none (P-166 #3c). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt nhanh'**
+  String get lbTakeaways;
+
+  /// 4d: myth card label, the belief (P-166 #3d). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu lầm'**
+  String get lbMyth;
+
+  /// 4d: myth card label, why it is wrong (P-166 #3d). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao'**
+  String get lbMythWhy;
+
+  /// 4d: myth card label, what to do instead (P-166 #3d). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nên làm'**
+  String get lbMythInstead;
+
+  /// 4d: section with the next guide in the same library and age band (P-166 #3g). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài tiếp theo'**
+  String get lbUpNext;
+
+  /// 4d: link under the urgent callout's call button (P-166 #2). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem hướng dẫn Sơ cứu'**
+  String get lbUrgentFirstAid;
+
+  /// 9d: shown instead of the campaign rounds when the family lives outside Việt Nam (P-166 #6). Thư viện readability (D-087, P-166, docs/product/library-readability-intl-plan.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch uống vitamin A theo chương trình của Việt Nam; ở nơi bạn sống, hãy hỏi bác sĩ của bé.'**
+  String get nuVitaAbroad;
 }
 
 class _AppLocalizationsDelegate

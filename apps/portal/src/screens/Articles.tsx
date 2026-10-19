@@ -7,11 +7,13 @@ import {
   contentLibraries,
   contentLimits,
   readingMinutesOf,
+  solidsSubtopics,
   staffCan,
   type ArticleDraft,
   type ContentBlock,
   type ContentBlockType,
   type EditorialAction,
+  type SolidsSubtopic,
 } from '@child-life/contracts';
 import {
   ChevronDown,
@@ -61,6 +63,8 @@ import {
   ContentImagesProvider,
   CoverField,
   EditorNotices,
+  EmergencyHint,
+  EmergencyNotice,
   ImagePickerButton,
   ImageThumb,
   LangTabs,
@@ -79,9 +83,12 @@ import {
   calloutToneOptions,
   contentTiles,
   dateTime,
+  fillEmergency,
   reviewOf,
   splitActions,
   statusOptions,
+  subtopicOf,
+  subtopicOptions,
   textOf,
   tileMatch,
   topicOptions,
@@ -164,6 +171,8 @@ type Filters = {
   status: string;
   reviewer: string;
   lang: string;
+  /** Ăn dặm › Hướng dẫn: a group, "none" (not chosen yet) or "all" (D-087). */
+  subtopic?: string;
   /** The count tile the list is narrowed to. */
   tile?: Tile;
 };
@@ -175,10 +184,14 @@ const allFilters: Filters = {
   status: 'all',
   reviewer: 'all',
   lang: 'all',
+  subtopic: 'all',
   tile: 'all',
 };
 
-/** B01 filters: library, topic, age band (overlap), status, reviewer, missing language. */
+/**
+ * B01 filters: library, topic, age band (overlap), status, reviewer, missing language, and the
+ * solids group in Ăn dặm › Hướng dẫn.
+ */
 export function filterArticles(rows: ContentRow[], f: Filters): ContentRow[] {
   const q = f.q.trim().toLowerCase();
   const band = ageBands.find((b) => b.id === f.age);
@@ -191,6 +204,11 @@ export function filterArticles(rows: ContentRow[], f: Filters): ContentRow[] {
       (!band || (!!r.ageWeeks && r.ageWeeks.from < band.to && band.from < r.ageWeeks.to)) &&
       (f.status === 'all' || r.displayStatus === f.status) &&
       (f.reviewer === 'all' || (r.reviewerLabel ?? '') === f.reviewer) &&
+      (!f.subtopic ||
+        f.subtopic === 'all' ||
+        (f.subtopic === 'none'
+          ? !subtopicOf(r.subtopic)
+          : subtopicOf(r.subtopic) === f.subtopic)) &&
       (f.lang === 'all' ||
         (f.lang === 'missingEn' ? !r.title.en || !r.blocks?.en : !r.title.vi || !r.blocks?.vi)),
   );
@@ -200,10 +218,13 @@ export function ArticlesBody({
   view,
   onOpen,
   initialFilters,
+  solids = false,
 }: {
   view: ContentListView;
   onOpen: (id: string) => void;
   initialFilters?: Partial<Filters>;
+  /** Ăn dặm › Hướng dẫn: the solids group (D-087) instead of the topic, always "Bú & sữa". */
+  solids?: boolean;
 }) {
   const intl = useIntl();
   const [f, setF] = useState<Filters>({ ...allFilters, ...initialFilters });
@@ -212,6 +233,10 @@ export function ArticlesBody({
   const sorted = useSort(rows, {
     title: (r) => textOf(intl, r.title),
     topic: (r) => r.topic ?? '',
+    subtopic: (r) => {
+      const s = subtopicOf(r.subtopic);
+      return s ? solidsSubtopics.indexOf(s) : null;
+    },
     age: (r) => r.ageWeeks?.from ?? null,
     minutes: (r) => r.readingMinutes ?? null,
     status: (r) => r.displayStatus,
@@ -237,12 +262,25 @@ export function ArticlesBody({
             placeholder={intl.formatMessage({ id: 'articles.search' })}
             onChange={(q) => setF({ ...f, q })}
           />
-          <SelectMenu
-            label={intl.formatMessage({ id: 'content.filter.topic' })}
-            value={f.topic}
-            onChange={(topic) => setF({ ...f, topic })}
-            options={[opt('content.filter.allTopics', 'all'), ...topicOptions(intl)]}
-          />
+          {solids ? (
+            <SelectMenu
+              label={intl.formatMessage({ id: 'content.filter.subtopic' })}
+              value={f.subtopic ?? 'all'}
+              onChange={(subtopic) => setF({ ...f, subtopic })}
+              options={[
+                opt('content.filter.allSubtopics', 'all'),
+                ...subtopicOptions(intl),
+                opt('content.filter.noSubtopic', 'none'),
+              ]}
+            />
+          ) : (
+            <SelectMenu
+              label={intl.formatMessage({ id: 'content.filter.topic' })}
+              value={f.topic}
+              onChange={(topic) => setF({ ...f, topic })}
+              options={[opt('content.filter.allTopics', 'all'), ...topicOptions(intl)]}
+            />
+          )}
           <SelectMenu
             label={intl.formatMessage({ id: 'content.filter.age' })}
             value={f.age}
@@ -304,7 +342,9 @@ export function ArticlesBody({
               <thead>
                 <tr>
                   {sorted.th('title', <FormattedMessage id="content.col.title" />)}
-                  {sorted.th('topic', <FormattedMessage id="content.col.topic" />)}
+                  {solids
+                    ? sorted.th('subtopic', <FormattedMessage id="content.col.subtopic" />)
+                    : sorted.th('topic', <FormattedMessage id="content.col.topic" />)}
                   {sorted.th('age', <FormattedMessage id="content.col.age" />)}
                   {sorted.th('minutes', <FormattedMessage id="content.col.minutes" />)}
                   {sorted.th('status', <FormattedMessage id="content.col.status" />)}
@@ -341,7 +381,11 @@ export function ArticlesBody({
                       </div>
                     </td>
                     <td className="nowrap">
-                      {r.topic && <FormattedMessage id={`content.topic.${r.topic}`} />}
+                      {solids ? (
+                        <SubtopicCell value={r.subtopic} />
+                      ) : (
+                        r.topic && <FormattedMessage id={`content.topic.${r.topic}`} />
+                      )}
                     </td>
                     <td className="nowrap">{r.ageWeeks ? weeksLabel(intl, r.ageWeeks) : '—'}</td>
                     <td className="text-center tabular-nums">{r.readingMinutes ?? '—'}</td>
@@ -369,6 +413,18 @@ export function ArticlesBody({
         )}
       </div>
     </div>
+  );
+}
+
+/** A solids guide's group, or a muted "Chưa chọn" so the gaps show. */
+function SubtopicCell({ value }: { value: unknown }) {
+  const s = subtopicOf(value);
+  return s ? (
+    <FormattedMessage id={`content.subtopic.${s}`} />
+  ) : (
+    <span className="text-muted-foreground">
+      <FormattedMessage id="content.subtopic.none" />
+    </span>
   );
 }
 
@@ -517,6 +573,7 @@ export function ArticleEditor({
   onSaved,
   onChanged,
   initialLang = 'vi',
+  initialTab = 'content',
   blank = blankArticle,
   backLabel,
 }: {
@@ -531,6 +588,8 @@ export function ArticleEditor({
   onSaved: (id: string) => void;
   onChanged: () => void;
   initialLang?: Lang;
+  /** The tab the form opens on. */
+  initialTab?: EditorTab;
   /** A new article starts from this (Ăn dặm › Hướng dẫn: library "solids", topic "feeding"). */
   blank?: () => ArticleDraft;
   backLabel?: ReactNode;
@@ -545,7 +604,7 @@ export function ArticleEditor({
   const [notes, setNotes] = useState(item?.notes ?? '');
   const [dirty, setDirty] = useState(!item);
   const [lang, setLang] = useState<Lang>(initialLang);
-  const [tab, setTab] = useState<EditorTab>('content');
+  const [tab, setTab] = useState<EditorTab>(initialTab);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [act, setAct] = useState<EditorialAction | null>(null);
@@ -629,6 +688,7 @@ export function ArticleEditor({
         menu={workflowMenu(rest, setAct)}
       />
       <EditorNotices error={error} rejection={row?.rejection} issues={shownIssues} />
+      <EmergencyNotice data={data} />
       <EditorLayout
         aside={
           <PreviewCard lang={lang}>
@@ -694,7 +754,12 @@ export function ArticleEditor({
           </TabsContent>
           <TabsContent value="settings" className="grid gap-4">
             <Section title={<FormattedMessage id="articles.placement" />}>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div
+                className={cn(
+                  'grid gap-4',
+                  data.library === 'solids' ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
+                )}
+              >
                 <SettingSelect
                   label="content.field.library"
                   value={data.library}
@@ -702,8 +767,29 @@ export function ArticleEditor({
                     value: l,
                     label: intl.formatMessage({ id: `content.library.${l}` }),
                   }))}
-                  onChange={(v) => edit((d) => void (d.library = v))}
+                  onChange={(v) =>
+                    edit((d) => {
+                      d.library = v;
+                      // The groups belong to Thư viện ăn dặm; care articles carry none (D-087).
+                      if (v !== 'solids') delete d.subtopic;
+                    })
+                  }
                 />
+                {data.library === 'solids' && (
+                  <SettingSelect<SolidsSubtopic | 'none'>
+                    label="content.field.subtopic"
+                    value={subtopicOf(data.subtopic) ?? 'none'}
+                    options={[
+                      {
+                        value: 'none',
+                        label: intl.formatMessage({ id: 'content.subtopic.none' }),
+                      },
+                      ...subtopicOptions(intl),
+                    ]}
+                    help={<FormattedMessage id="articles.subtopicHelp" />}
+                    onChange={(v) => edit((d) => void (d.subtopic = v === 'none' ? null : v))}
+                  />
+                )}
                 <SettingSelect
                   label="content.field.topic"
                   value={data.topic}
@@ -877,15 +963,17 @@ function SettingSelect<T extends string>({
   value,
   options,
   onChange,
+  help,
 }: {
   label: string;
   value: T;
   options: Array<{ value: T; label: string }>;
   onChange: (v: T) => void;
+  help?: ReactNode;
 }) {
   const id = useId();
   return (
-    <Field label={<FormattedMessage id={label} />} htmlFor={id}>
+    <Field label={<FormattedMessage id={label} />} htmlFor={id} help={help}>
       <FieldSelect id={id} value={value} options={options} onChange={onChange} />
     </Field>
   );
@@ -968,6 +1056,7 @@ export function BlocksEditor({
           values={{ n: blocks.length, max: contentLimits.blocks }}
         />
       }
+      description={<EmergencyHint />}
       actions={
         blocks.length > 1 && (
           <UiButton
@@ -1213,6 +1302,13 @@ function BlockFields({
             max={L.calloutText}
             multiline
             counter
+            help={
+              block.tone === 'urgent' ? (
+                <>
+                  <FormattedMessage id="content.callout.urgentHelp" /> <EmergencyHint />
+                </>
+              ) : undefined
+            }
             onChange={(text) => onChange({ ...block, text })}
           />
         </div>
@@ -1275,21 +1371,23 @@ export function ArticlePreview({
   const intl = useIntl();
   const p = (id: string, values?: Record<string, string | number>) =>
     intl.formatMessage({ id: `content.preview.${id}.${lang}` }, values);
+  // `{emergency}` reads as the family's number in the app; the preview shows 115 (D-087).
+  const shown = useMemo(() => fillEmergency(data), [data]);
   return (
     <PhoneFrame>
-      {data.cover && (
+      {shown.cover && (
         <div className="cl-phone__hero">
-          <ImageThumb id={data.cover.image} size={340} />
+          <ImageThumb id={shown.cover.image} size={340} />
         </div>
       )}
       <div className="cl-phone__body">
         <div className="chips">
-          <span className="cl-tag cl-tag--sleep">{p(`topic.${data.topic}`)}</span>
-          <span className="cl-tag">{p('minutes', { n: data.readingMinutes })}</span>
+          <span className="cl-tag cl-tag--sleep">{p(`topic.${shown.topic}`)}</span>
+          <span className="cl-tag">{p('minutes', { n: shown.readingMinutes })}</span>
         </div>
-        <h3 className="cl-phone__title">{data.title[lang] || '—'}</h3>
+        <h3 className="cl-phone__title">{shown.title[lang] || '—'}</h3>
         <ReviewLine review={review} lang={lang} />
-        <BlocksPreview blocks={data.body[lang]} />
+        <BlocksPreview blocks={shown.body[lang]} lang={lang} />
       </div>
     </PhoneFrame>
   );

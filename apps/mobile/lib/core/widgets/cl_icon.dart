@@ -72,7 +72,21 @@ enum ClIcons {
   upload,
 
   /// "Quay video" on Android's add sheet (A4, engineering icon in the Figma line style).
-  video;
+  video,
+
+  // Thư viện ăn dặm pictures (D-087, P-166 #5): guide groups and recipes' main ingredients.
+  // Engineering icons in the Figma line style (24 × 24, stroke 1.8, round caps, currentColor).
+  apple,
+  bowl,
+  calendar,
+  carrot,
+  cup,
+  egg,
+  fish,
+  hand,
+  highChair('high-chair'),
+  shield,
+  spoon;
 
   const ClIcons([this._file]);
   final String? _file;

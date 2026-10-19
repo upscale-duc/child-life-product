@@ -7,6 +7,7 @@ import '../care/care_repository.dart';
 import '../care/growth_reference.dart';
 import '../care/who_growth.dart';
 import '../home/home_shell.dart';
+import '../premium/premium_repository.dart' show selectedFamilyCountryProvider;
 import '../vaccines/vaccine_repository.dart' show vaccinePlanProvider;
 import 'nutrition_calc.dart';
 import 'nutrition_models.dart';
@@ -65,6 +66,14 @@ final nuBabyProvider = Provider<NuBaby?>((ref) {
     zone: zone,
     role: me.role,
   );
+});
+
+/// Vitamin A rounds are Việt Nam's national campaign (D-087, P-166 #6): a family whose country
+/// is set and is not VN sees vitamin A as an ordinary nutrient article with a note, without the
+/// rounds, 9g, the "1–2/12" tag or the reminder. No country yet: as before.
+final nuCampaignAbroadProvider = Provider<bool>((ref) {
+  final country = ref.watch(selectedFamilyCountryProvider);
+  return country != null && country != 'VN';
 });
 
 /// Published content for the selected baby: stages in order, the current one, nutrients by id

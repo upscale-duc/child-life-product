@@ -19242,4 +19242,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String sdFoodDays(int count) {
     return 'Every time baby had it · $count';
   }
+
+  @override
+  String get lbContents => 'In this article';
+
+  @override
+  String get lbBackToTop => 'Back to top';
+
+  @override
+  String get lbTakeaways => 'Key takeaways';
+
+  @override
+  String get lbMyth => 'Myth';
+
+  @override
+  String get lbMythWhy => 'Why';
+
+  @override
+  String get lbMythInstead => 'Instead';
+
+  @override
+  String get lbUpNext => 'Up next';
+
+  @override
+  String get lbUrgentFirstAid => 'Open the first aid guide';
+
+  @override
+  String get nuVitaAbroad =>
+      'This vitamin A schedule is Việt Nam\'s national programme; where you live, ask your baby\'s doctor.';
 }

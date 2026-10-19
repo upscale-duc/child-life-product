@@ -342,6 +342,60 @@ List<SdFood> sdSearchFoods(
   return [for (final (f, _) in hits) f];
 }
 
+// ---------- Recipe pictures (D-087, P-166 #5) ----------
+
+/// What a recipe's placeholder picture shows: its main ingredient's group, else its texture.
+enum SdRecipeArt {
+  vegetable,
+  fruit,
+  animalProtein,
+  egg,
+  legumeNut,
+  dairy,
+  grain,
+
+  /// No catalogue food: by texture (purées, soft pieces, finger food), or a plain dish.
+  puree,
+  pieces,
+  finger,
+  dish,
+}
+
+/// The main ingredient is the first linked catalogue food that is not a grain (nor a fat, which
+/// is never the dish), else the first grain; egg (the allergen) gets its own picture. Without
+/// one, the [texture] decides (family recipes have none: a plain dish).
+SdRecipeArt sdRecipeArt(
+  Iterable<String> foodIds,
+  Map<String, SdFood> foods, {
+  SdTexture? texture,
+}) {
+  final linked = [for (final id in foodIds) ?foods[id]];
+  final main =
+      linked
+          .where((f) => f.group != SdGroup.grain && f.group != SdGroup.fat)
+          .firstOrNull ??
+      linked.where((f) => f.group == SdGroup.grain).firstOrNull;
+  if (main != null) {
+    return switch (main.group) {
+      SdGroup.vegetable => SdRecipeArt.vegetable,
+      SdGroup.fruit => SdRecipeArt.fruit,
+      SdGroup.animalProtein =>
+        main.allergen == SdAllergen.egg
+            ? SdRecipeArt.egg
+            : SdRecipeArt.animalProtein,
+      SdGroup.legumeNut => SdRecipeArt.legumeNut,
+      SdGroup.dairy => SdRecipeArt.dairy,
+      SdGroup.grain || SdGroup.fat => SdRecipeArt.grain,
+    };
+  }
+  return switch (texture) {
+    SdTexture.smooth || SdTexture.mashed => SdRecipeArt.puree,
+    SdTexture.softPieces || SdTexture.family => SdRecipeArt.pieces,
+    SdTexture.finger => SdRecipeArt.finger,
+    null => SdRecipeArt.dish,
+  };
+}
+
 // ---------- Library (5f, P-164 #11) ----------
 
 /// 5f age bands in completed months, `to` exclusive: 4–5 · 6–8 · 9–11 · 12–23 · 24–36 tháng.
