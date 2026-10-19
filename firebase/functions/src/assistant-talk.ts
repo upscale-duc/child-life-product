@@ -38,17 +38,17 @@ export function smallTalkPart(kind: SmallTalkKind, locale: Locale): AssistantPar
 
 const help = {
   help: L(
-    'Mình chưa giúp được việc này. Lumi có thể: ghi bú, ngủ và ghi nhận của bé (“bé bú 120ml lúc 8h”), ghi chi tiêu (“mua sữa hết 500k”), đặt nhắc việc (“nhắc mai 9h mua bỉm”) và trả lời về nhật ký (“hôm nay con bú thế nào?”). Không tính lượt.',
-    'I can’t help with that one. Lumi can log feeds, sleep and notes (“fed 120 ml at 8”), expenses (“$20 diapers”), set reminders (“remind me tomorrow at 9 to buy diapers”) and answer about the log (“how did feeds go today?”). No credit was used.',
+    'Mình chưa giúp được việc này. Lumi có thể: ghi bú, ngủ và ghi nhận của bé (“bé bú 120ml lúc 8h”), ghi chi tiêu (“mua sữa hết 500k”), đặt nhắc việc (“nhắc mai 9h mua bỉm”) và trả lời về nhật ký (“hôm nay con bú thế nào?”).',
+    'I can’t help with that one. Lumi can log feeds, sleep and notes (“fed 120 ml at 8”), expenses (“$20 diapers”), set reminders (“remind me tomorrow at 9 to buy diapers”) and answer about the log (“how did feeds go today?”).',
   ),
   write: L(
-    'Bạn nhắn giúp mình việc cần ghi nhé, ví dụ “bé bú 120ml lúc 8h” hoặc “mua sữa hết 500k”. Không tính lượt.',
-    'Tell me what to log, e.g. “fed 120 ml at 8” or “$20 diapers”. No credit was used.',
+    'Bạn nhắn giúp mình việc cần ghi nhé, ví dụ “bé bú 120ml lúc 8h” hoặc “mua sữa hết 500k”.',
+    'Tell me what to log, e.g. “fed 120 ml at 8” or “$20 diapers”.',
   ),
   // LUMI-16 (owner 2026-10-16): "mua sữa nào tốt?" is a question, never an expense.
   shopping: L(
-    'Mình chưa so sánh hay gợi ý sản phẩm được. Khi đã mua, bạn nhắn “mua sữa hết 500k” để ghi chi tiêu, hoặc “nhắc mai mua sữa” để đặt nhắc việc. Không tính lượt.',
-    'I can’t compare or recommend products yet. Once you’ve bought something, send “$20 formula” to log the expense, or “remind me tomorrow to buy formula” for a reminder. No credit was used.',
+    'Mình chưa so sánh hay gợi ý sản phẩm được. Khi đã mua, bạn nhắn “mua sữa hết 500k” để ghi chi tiêu, hoặc “nhắc mai mua sữa” để đặt nhắc việc.',
+    'I can’t compare or recommend products yet. Once you’ve bought something, send “$20 formula” to log the expense, or “remind me tomorrow to buy formula” for a reminder.',
   ),
 };
 
@@ -227,8 +227,8 @@ export function sameAsPendingPart(locale: Locale): AssistantPart {
     type: 'text',
     schemaVersion: 1,
     text: L(
-      'Mình đã chuẩn bị mục này ngay ở trên và nó đang chờ bạn lưu. Bạn kiểm tra rồi bấm Lưu ở đó nhé. Không tính lượt.',
-      'This is already prepared just above and waiting for you to save it. Check it and tap Save there. No credit was used.',
+      'Mình đã chuẩn bị mục này ngay ở trên và nó đang chờ bạn lưu. Bạn kiểm tra rồi bấm Lưu ở đó nhé.',
+      'This is already prepared just above and waiting for you to save it. Check it and tap Save there.',
     )[locale],
     code: 'SAME_AS_PENDING',
   };

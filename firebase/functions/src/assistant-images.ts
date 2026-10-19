@@ -111,16 +111,16 @@ const t = {
     'The photo is too blurry to read reliably. Retake it closer and in good light, or type it in.',
   ),
   refused: L(
-    'Tệp này không phải ảnh đọc được nên mình không gửi đi đọc. Không tính lượt.',
-    'This file isn’t a readable image, so it wasn’t sent for reading. No credit was used.',
+    'Tệp này không phải ảnh đọc được nên mình không gửi đi đọc.',
+    'This file isn’t a readable image, so it wasn’t sent for reading.',
   ),
   gone: L(
-    'Ảnh không còn dùng được (đã hết hạn hoặc không thuộc cuộc trò chuyện này). Không tính lượt.',
-    'The photo can’t be used any more (expired or not part of this chat). No credit was used.',
+    'Ảnh không còn dùng được (đã hết hạn hoặc không thuộc cuộc trò chuyện này).',
+    'The photo can’t be used any more (expired or not part of this chat).',
   ),
   prescription: L(
-    'Ảnh có thông tin thuốc: mình không tạo lịch hay liều dùng thuốc. Hãy hỏi bác sĩ hoặc dược sĩ. Không tính lượt.',
-    'The photo has medicine information: no medicine schedule or dose is created. Ask your doctor or pharmacist. No credit was used.',
+    'Ảnh có thông tin thuốc: mình không tạo lịch hay liều dùng thuốc. Hãy hỏi bác sĩ hoặc dược sĩ.',
+    'The photo has medicine information: no medicine schedule or dose is created. Ask your doctor or pharmacist.',
   ),
   mixed: L(
     'Ảnh có nhiều loại nội dung. Mình sẽ không tự xử lý tất cả.',
@@ -131,8 +131,8 @@ const t = {
     'The medicine part of the photo is never turned into a schedule or a dose.',
   ),
   nothing: L(
-    'Mình không ghi gì từ ảnh này. Không tính lượt.',
-    'Nothing was saved from this photo. No credit was used.',
+    'Mình không ghi gì từ ảnh này.',
+    'Nothing was saved from this photo.',
   ),
   spendDenied: L(
     'Vai trò của bạn chưa được ghi Chi tiêu, nên mình không tạo khoản chi.',
@@ -143,8 +143,8 @@ const t = {
     'Only co-parents can create reminders, so none were prepared from this photo.',
   ),
   noReceipt: L(
-    'Mình chưa đọc được phần hoá đơn trong ảnh. Không tính lượt.',
-    'The receipt part of the photo couldn’t be read. No credit was used.',
+    'Mình chưa đọc được phần hoá đơn trong ảnh.',
+    'The receipt part of the photo couldn’t be read.',
   ),
   currency: L(
     'Chi tiêu chưa hỗ trợ ngoại tệ: khoản này cần bạn kiểm tra, chưa lưu được với đơn vị tiền này.',
@@ -163,12 +163,12 @@ const t = {
     'This may duplicate an expense your family already logged. Check before saving; nothing is merged automatically.',
   ),
   noActions: L(
-    'Mình không thấy việc cần làm nào trong ảnh. Không tính lượt.',
-    'No to-dos were found in the photo. No credit was used.',
+    'Mình không thấy việc cần làm nào trong ảnh.',
+    'No to-dos were found in the photo.',
   ),
   noReminders: L(
-    'Không tạo nhắc việc nào. Không tính lượt.',
-    'No reminders were created. No credit was used.',
+    'Không tạo nhắc việc nào.',
+    'No reminders were created.',
   ),
   // ---- D-075 #5 (reminders): all day and assignee ----
   noAssignee: L(

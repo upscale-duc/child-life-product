@@ -347,9 +347,10 @@ void main() {
           },
         );
         await _pump(tester, repo, tasks: const [taskA, taskB]);
+        // Stored before D-081: it reads without "Không tính lượt.".
         expect(
           _text(
-            'Mình đã chuẩn bị mục này ngay ở trên và nó đang chờ bạn lưu. Bạn kiểm tra rồi bấm Lưu ở đó nhé. Không tính lượt.',
+            'Mình đã chuẩn bị mục này ngay ở trên và nó đang chờ bạn lưu. Bạn kiểm tra rồi bấm Lưu ở đó nhé.',
           ),
           findsOneWidget,
         );

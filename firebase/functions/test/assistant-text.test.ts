@@ -175,7 +175,7 @@ describe('server replies', () => {
     expect(smallTalkPart('thanks', 'vi')).toMatchObject({ type: 'text', code: 'SMALL_TALK' });
     expect(helpPart('en')).toMatchObject({ code: 'HELP' });
     const help = helpPart('vi');
-    expect(help.type === 'text' ? help.text : '').toContain('Không tính lượt');
+    expect(help.type === 'text' ? help.text : '').not.toContain('lượt');
     expect(spendingPrivatePart('vi')).toMatchObject({ code: 'SPENDING_PRIVATE' });
     expect(noticePart({ code: 'PREVIOUS_SAVED', link: '/care/records/b/r' }, 'vi')).toMatchObject({
       code: 'PREVIOUS_SAVED',
@@ -264,6 +264,6 @@ describe('LUMI-16: purchases checked against the words (owner 2026-10-16)', () =
     expect(checkPurchases('mua sữa nào tốt?', []).shopping).toBe(true);
     const help = helpPart('vi', 'shopping');
     expect(help).toMatchObject({ code: 'HELP' });
-    expect(help.type === 'text' ? help.text : '').toContain('Không tính lượt');
+    expect(help.type === 'text' ? help.text : '').not.toContain('lượt');
   });
 });

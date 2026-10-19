@@ -458,3 +458,21 @@ DateTime fromBabyWall(String zone, DateTime wall) {
     return wall.toUtc();
   }
 }
+
+/// D-081: no credit wording in the chat. Messages the server stored before it stopped writing
+/// them still end with "Không tính lượt." / "No credit was used."; they read without it.
+String withoutCreditNote(String text) {
+  for (final note in const [' Không tính lượt.', ' No credit was used.']) {
+    if (text.endsWith(note)) {
+      return text.substring(0, text.length - note.length);
+    }
+  }
+  return text;
+}
+
+/// The generic line the server once added to a failed task (it no longer does): the app's own
+/// failure card says the same with "Thử lại" and "Ghi trực tiếp", so it is not shown twice.
+bool isOldFailureLine(String text) => const {
+  'Chưa xử lý được yêu cầu này.',
+  'This request could not be completed.',
+}.contains(withoutCreditNote(text));

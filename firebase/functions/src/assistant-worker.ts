@@ -185,11 +185,6 @@ const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): W
   modelCalls: 0,
 });
 
-const failureText = {
-  vi: 'Chưa xử lý được yêu cầu này. Không tính lượt.',
-  en: 'This request could not be completed. No credit was used.',
-};
-
 /** Claims [taskId] if it is queued (or its lease expired) and runs it. */
 export async function runAssistantTask(
   deps: WorkerDeps,
@@ -1020,7 +1015,9 @@ async function finalize(
         { type: 'clarification', schemaVersion: 1, clarification: pending },
       ];
     } else if (state === 'failed') {
-      parts = [...result.parts, { type: 'text', schemaVersion: 1, text: failureText[t.locale] }];
+      // The app draws the failure itself (why, "Thử lại", "Ghi trực tiếp"); no second line
+      // here, and no credit wording in the chat (D-081).
+      parts = [...result.parts];
     } else {
       parts = [...result.parts, ...draftParts];
     }

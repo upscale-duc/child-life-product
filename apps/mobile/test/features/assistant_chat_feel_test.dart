@@ -641,6 +641,30 @@ void main() {
     });
   });
 
+  testWidgets(
+    'D-081: an old failed task shows the app\'s card only, no credits',
+    (tester) async {
+      final repo = FakeAssistantRepository(
+        tasks: {
+          taskA: snapshotWith(
+            task: taskJson(state: 'failed'),
+            messages: [
+              userMessage('Hôm nay con bú thế nào?'),
+              assistantMessage([
+                textPart('Chưa xử lý được yêu cầu này. Không tính lượt.'),
+              ]),
+            ],
+          ),
+        },
+      );
+      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      expect(_text('Hôm nay con bú thế nào?'), findsOneWidget);
+      expect(find.textContaining('Chưa xử lý được'), findsNothing);
+      expect(find.textContaining('lượt'), findsNothing);
+      expect(_text('Thử lại'), findsOneWidget);
+    },
+  );
+
   group('motion', () {
     testWidgets('a new entry fades and rises in; Reduce Motion only fades', (
       tester,

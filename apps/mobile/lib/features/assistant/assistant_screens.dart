@@ -1259,8 +1259,12 @@ class _ThreadView {
       for (final (pi, p) in m.parts.indexed) {
         final k = 't:$id:m${m.sequence}:$pi';
         switch (p) {
-          case TextPart(:final text, :final code, :final link):
+          case TextPart(text: final raw, :final code, :final link):
+            if (task.state == TaskState.failed && isOldFailureLine(raw)) {
+              break;
+            }
             hasText = true;
+            final text = withoutCreditNote(raw);
             final w = _notice(context, text, code, link: link);
             out.add(
               _Entry(
