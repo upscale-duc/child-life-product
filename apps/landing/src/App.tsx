@@ -1,7 +1,7 @@
 import type { Environment } from '@child-life/contracts';
 import { readSavedLocale, resolveLocale, saveLocale } from '@child-life/web-config';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Footer, Nav, Toast } from './components/Chrome';
+import { Footer, Nav, StickyBar, Toast } from './components/Chrome';
 import { Icon } from './components/primitives';
 import { contentFor } from './content';
 import { SiteContext, type Site } from './context';
@@ -14,6 +14,7 @@ import {
   startTicking,
 } from './effects';
 import { startReveal } from './motion';
+import { FirstYear } from './pages/FirstYear';
 import { Home } from './pages/Home';
 import { Legal } from './pages/Legal';
 import { LumiPage } from './pages/LumiPage';
@@ -70,6 +71,8 @@ export function App({ route, environment }: { route: Route; environment: Environ
       <main id="main">
         {route.page === 'home' ? (
           <Home />
+        ) : route.page === 'stage1' ? (
+          <FirstYear />
         ) : isStage(route.page) ? (
           <StagePage stage={route.page} />
         ) : route.page === 'lumi' ? (
@@ -79,6 +82,7 @@ export function App({ route, environment }: { route: Route; environment: Environ
         )}
       </main>
       <Footer environment={environment} />
+      {route.page !== 'privacy' && route.page !== 'terms' && <StickyBar />}
       <Toast message={toast} onClose={() => setToast(null)} closeLabel={c.stores.close} />
       {suggest && (
         <aside className="lang-suggest" lang={other.locale} aria-label={suggestion.text}>

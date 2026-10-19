@@ -100,7 +100,7 @@ describe('SEO head', () => {
     const head = buildHead(home, viContent, 'prod');
     const json = JSON.parse(/<script type="application\/ld\+json">(.*)<\/script>/.exec(head)![1]!);
     const faq = json['@graph'].find((node: { '@type': string }) => node['@type'] === 'FAQPage');
-    expect(faq.mainEntity).toHaveLength(viContent.home.faq.items.length);
+    expect(faq.mainEntity).toHaveLength(viContent.homePage.trust.faq.length);
   });
 });
 
@@ -119,7 +119,7 @@ describe('prerender', () => {
       const hrefs = [...page.html.matchAll(/<nav class="nav__links"[^>]*>(.*?)<\/nav>/g)].flatMap(
         (m) => [...m[1]!.matchAll(/href="([^"]+)"/g)].map((h) => h[1]!),
       );
-      expect(hrefs, route.path).toHaveLength(6);
+      expect(hrefs, route.path).toHaveLength(5);
       for (const href of hrefs) {
         const [path, id] = href.split('#');
         const target = path ? htmlOf(path) : page.html;
@@ -132,8 +132,10 @@ describe('prerender', () => {
     for (const stage of stageIds) {
       const html = render(pathOf(stage, 'vi'), 'dev').html;
       expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-      expect(html).toContain('aria-current="page"');
       expect(html).toContain('id="tai-app"');
+      // Chặng 1 is the Năm đầu đời page (nav "Năm đầu đời" is current); 2–4 link their neighbours.
+      if (stage === 'stage1') expect(html).toContain('aria-current="page"');
+      else expect(html).toContain('rel="next"');
     }
   });
 
@@ -155,8 +157,6 @@ describe('prerender', () => {
       'loi-ich',
       'mot-ngay',
       'mot-ngay-cho-con',
-      'viec-khac',
-      'suot-hanh-trinh',
       'cach-lam-viec',
       'goi',
       'hoi-dap',
@@ -171,15 +171,14 @@ describe('prerender', () => {
     );
     const faq = json['@graph'].find((node: { '@type': string }) => node['@type'] === 'FAQPage');
     expect(faq.mainEntity).toHaveLength(viContent.lumiPage.faq.items.length);
-    expect(render('/', 'dev').html).toContain(`href="${lumi}#mot-ngay-cho-con"`);
     expect(
       render('/', 'dev').html.match(new RegExp(`href="${lumi}"`, 'g'))!.length,
-    ).toBeGreaterThan(2);
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it('puts the FAQ answers in the HTML for search engines', () => {
     const page = render('/en/', 'prod');
-    for (const item of en.home.faq.items)
+    for (const item of en.homePage.trust.faq)
       expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));
   });
 });

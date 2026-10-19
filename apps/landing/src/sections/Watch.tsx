@@ -14,7 +14,7 @@ const tiles: { accent: string; icon: IconName }[] = [
 ];
 
 /** Apple Watch 46 mm (236 × 276 at scale 1, screen 208 × 248) drawn at `scale`. */
-function Watch({
+export function Watch({
   scale,
   children,
   style,
@@ -35,7 +35,7 @@ function Watch({
   );
 }
 
-function HomeFace() {
+export function HomeFace() {
   const { c } = useSite();
   const m = c.home.watch.mock;
   return (

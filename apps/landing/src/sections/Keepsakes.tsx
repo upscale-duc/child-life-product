@@ -1,17 +1,7 @@
 import type { ReactNode } from 'react';
-import { Eyebrow, Fit, Icon, Photo, at, type IconName } from '../components/primitives';
+import { Icon, Photo, at, type IconName } from '../components/primitives';
 import { scenes } from '../components/scenes';
 import { useSite } from '../context';
-import { staggerStyle } from '../motion';
-
-const looks: { tint: string; icon: IconName }[] = [
-  { tint: 'sleep', icon: 'camera' },
-  { tint: 'sun', icon: 'grid' },
-  { tint: 'peach', icon: 'journal' },
-  { tint: 'bottle', icon: 'memories' },
-  { tint: 'mint', icon: 'speaker' },
-  { tint: 'card-sun', icon: 'bookmark' },
-];
 
 // Waveform bar heights of the voice message (Figma 522:4263).
 const wave = [
@@ -28,7 +18,7 @@ function Pill({ icon, ink, children }: { icon: IconName; ink: string; children: 
 }
 
 /** The six illustrations (28-landing-v5b-home §5.2), each a 432 × 280 composition. */
-function Mock({ index }: { index: number }) {
+export function KeepMock({ index }: { index: number }) {
   const { c } = useSite();
   const m = c.home.keepsakes.mock;
   switch (index) {
@@ -217,39 +207,4 @@ function Mock({ index }: { index: number }) {
         </>
       );
   }
-}
-
-/** Kỷ niệm của con (28-landing-v5b-home §5.2): six ways to keep and retell memories. The
- *  illustrations are decorative app mock-ups; on narrow screens the cards scroll sideways. */
-export function Keepsakes() {
-  const { c } = useSite();
-  const k = c.home.keepsakes;
-  return (
-    <div id="ky-niem" className="keepsakes">
-      <header className="section-head section-head--center reveal">
-        <Eyebrow tone="mint">{k.eyebrow}</Eyebrow>
-        <h2 className="h2 h2--flat">{k.title}</h2>
-        <p className="lead">{k.lead}</p>
-      </header>
-      <ul className="keepsakes__grid">
-        {k.cards.map((card, i) => (
-          <li key={card.title} className="keep-tile reveal" style={staggerStyle(i % 3)}>
-            <div className={`keep-tile__art tint--${looks[i]!.tint}`} aria-hidden="true">
-              <Fit w={432} h={280} mobileScale={0.6944}>
-                <Mock index={i} />
-              </Fit>
-            </div>
-            <div className="keep-tile__body">
-              <span className="keep-tile__format">
-                <Icon name={looks[i]!.icon} size={13} />
-                {card.format}
-              </span>
-              <h3>{card.title}</h3>
-              <p>{card.body}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }

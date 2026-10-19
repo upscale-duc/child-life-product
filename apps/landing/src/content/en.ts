@@ -17,15 +17,16 @@ export const en: Content = {
     homeLabel: 'Child Life — home',
     sectionsLabel: 'Page sections',
     links: {
-      journey: 'Journey',
-      firstYear: 'First year',
-      lumi: 'Lumi',
-      stages: 'Stages',
+      care: 'Care',
       memories: 'Memories',
+      lumi: 'Lumi',
+      firstYear: 'First year',
       faq: 'FAQ',
     },
+    start: 'Get started',
     download: 'Get it free',
-    downloadShort: 'Get the app',
+    menuOpen: 'Open menu',
+    menuClose: 'Close menu',
     switchLabel: 'Xem trang này bằng tiếng Việt',
     switchShort: 'VI',
   },
@@ -37,8 +38,13 @@ export const en: Content = {
   stores: {
     appStore: { prefix: 'Download on the', name: 'App Store' },
     googlePlay: { prefix: 'Get it on', name: 'Google Play' },
-    comingSoon: 'Child Life is coming soon to {store}. See you there!',
+    caption: 'Free on iPhone and Android.',
+    captionSoon: 'Coming soon to iPhone and Android.',
     close: 'Close',
+  },
+  closing: {
+    title: "Start with your baby's first year.",
+    sub: 'Logs, reminders and memories — the whole family in one place.',
   },
   mock: {
     baby: 'Teddy',
@@ -58,55 +64,11 @@ export const en: Content = {
     push: { app: 'CHILD LIFE', now: 'now' },
   },
   hero: {
-    eyebrow: 'Free for the whole family',
-    title: ['Care for your baby together.', 'Keep every moment', 'as they grow.'],
-    lead: 'A private space for the whole family: log feeds and sleep in one tap, get reminders at the right time and tips for every week of age — and keep every moment of your baby growing up.',
-    caption: 'Free on iPhone and Android.',
     proofInitials: ['M', 'D', 'N', 'G'],
-    proof: "Parents, nannies and grandparents — everyone has a place by your baby's side",
-    chips: [
-      { title: 'Bottle · 120 ml', sub: 'Mum · 2 min ago' },
-      { title: "Grandma loved Teddy's photo", sub: 'just now' },
-    ],
-    today: {
-      title: 'Today',
-      tiles: {
-        bottle: { label: 'Bottle', value: '120 ml', meta: ['45 min ago', 'Logged by Mum'] },
-        breast: {
-          label: 'Breastfeed',
-          value: '15 min',
-          meta: ['Ended 3 h 35 min ago', 'Logged by Mum'],
-        },
-        sleep: { label: 'Sleep', value: 'Awake 2 h', meta: ['Woke at 13:05', 'Logged by Dad'] },
-        diaper: { label: 'Diaper', value: 'Wet', meta: ['1 h 25 min ago', 'Logged by Lan'] },
-        pump: { label: 'Pumping', value: '90 ml', meta: ['2 h ago', 'Logged by Mum'] },
-        growth: { label: 'Growth', value: '4.3 kg', meta: ['54.5 cm', '+0.4 kg · today'] },
-      },
-      reminder: {
-        label: 'Reminders · 3',
-        title: '6-in-1 vaccine',
-        when: 'Saturday 08:30 · in 2 days',
-      },
-      section: { title: 'Today', link: 'History' },
-    },
-    album: {
-      title: 'Albums',
-      count: '4 albums',
-      newAlbum: 'New album',
-      albums: [
-        { name: 'Favourites', meta: '18 photos · 2 videos', shared: false },
-        { name: 'Bath time', meta: '12 photos · 3 videos', shared: true },
-        { name: 'Sweet dreams', meta: '28 photos · 1 video', shared: false },
-        { name: 'Tiny hands', meta: '9 photos', shared: true },
-      ],
-      segments: ['Journal', 'Photos', 'Albums', 'Stories'],
-      navActive: 'Memories',
-      navInitial: 'M',
-    },
   },
   quick: {
     eyebrow: 'Hands full',
-    title: 'Baby in your arms, logged in one tap.',
+    title: 'Log fast from widgets and the lock screen.',
     lead: "No need to open the app or remember the time. One tap on your phone's screen and it's done — so you can stay with your baby a little longer.",
     labels: ["Right on your phone's screen", 'Even when your phone is locked'],
     large: {
@@ -146,9 +108,9 @@ export const en: Content = {
     },
     hero: {
       eyebrow: 'Lumi · The helper inside Child Life',
-      title: ['Say it once.', 'Lumi logs it and remembers it.'],
+      title: ['Send one message.', 'Lumi drafts the log.'],
       lead: "Lumi is the whole family's assistant in Child Life. Type as if you were texting, snap a photo or ask a question — Lumi drafts the logs, answers from your child's own records and suggests one small thing for today.",
-      tryNow: 'Try Lumi',
+      tryNow: 'Open Lumi in the app',
       plans: 'See plans',
       promises: [
         "You confirm before it's saved",
@@ -235,42 +197,9 @@ export const en: Content = {
         },
       ],
     },
-    more: {
-      eyebrow: 'And much more',
-      title: 'Lumi grows with your family.',
-      lead: "The more you log, the better Lumi knows your family's rhythm — to remind you at the right time and suggest things that fit.",
-      cards: [
-        {
-          title: 'Note photo → reminders',
-          body: 'Snap a handwritten note or a notice board, and Lumi splits it into reminders for you to pick and save.',
-        },
-        {
-          title: 'Weekly summary for the family',
-          body: 'A short note each week: how your child ate and slept, new milestones, what is coming — shared with grandparents by role.',
-        },
-        {
-          title: "Your child's own rhythm",
-          body: 'Puts the changes you logged next to a reference stage calendar — Stage N (Wonder Weeks) is only for comparison.',
-        },
-        {
-          title: 'Childcare Q&A',
-          body: 'Ask about sleep, solids or hygiene — Lumi answers from the content library and points to safety guidance when needed.',
-        },
-      ],
-      mock: {
-        reminders: ['Buy size M nappies · Saturday', '2-month check-up · 9 am Thu'],
-        note: ['Buy size M nappies', '2-month check-up 9 am Thu'],
-        week: {
-          title: "Teddy's week",
-          body: 'Slept longer on 2 nights · new milestone “laughs out loud” · vaccination next week.',
-        },
-        rhythm: {
-          title: 'Stage 2 (Wonder Weeks) · reference',
-          body: 'You logged: clingier for 3 days, one extra night feed.',
-        },
-        ask: 'How many naps does a 4-month-old take?',
-        reply: 'From the library: usually 3–4 naps… (sample content · awaiting review)',
-      },
+    quickNav: {
+      label: 'On this page:',
+      items: ['Examples', 'Ideas for your baby', 'How it works', 'Plans', 'FAQ'],
     },
     how: {
       eyebrow: 'How Lumi works',
@@ -289,13 +218,13 @@ export const en: Content = {
       trust: [
         'Only your family, with the access you give',
         'Photos sent to Lumi are only read for their content; you choose whether to keep the original',
-        "Lumi is not a doctor. When you're worried about health, Lumi points you to safety guidance and the emergency number",
+        "Lumi is not a doctor and does not diagnose. When you're worried about health, Lumi points you to safety guidance and the emergency number",
       ],
     },
     plans: {
       eyebrow: 'Plans',
-      title: 'Everything Lumi does, for every family.',
-      lead: "The three plans differ only in monthly help. Pick what fits your family's pace — switch any time.",
+      title: 'Start free. Add more help when your family needs it.',
+      lead: 'Every plan has the same features. They differ in Lumi help credits and memory videos each month.',
       monthly: 'Monthly',
       yearly: 'Yearly',
       perMonth: '/ month',
@@ -365,9 +294,10 @@ export const en: Content = {
       },
       creditsInfo: {
         title: 'What is a help credit?',
-        body: 'Each time Lumi does something for you uses one credit. Credits refresh at the start of each period.',
+        body: 'A credit is only used when Lumi has to think for you. Credits refresh at the start of each period.',
         rules: [
-          ['One log sentence or one question', '1 credit'],
+          ['Everyday feed, sleep and diaper logs, or a quick look at the journal', 'Free'],
+          ['A long message or a question Lumi has to think about', '1 credit'],
           ['Reading one receipt or note photo', '≈ 3 credits'],
           ['Follow-ups, edits or confirming drafts in the same task', 'Free'],
           ['System error, retry', 'Free'],
@@ -416,11 +346,299 @@ export const en: Content = {
       plans: 'See plans',
     },
   },
+  // V8 home (Figma 735:5377 / 736:65570): engineering drafts for owner review (D-012).
+  homePage: {
+    hero: {
+      eyebrow: 'Child Life · Starting with the first year',
+      title: 'Care for your baby together, and keep every moment as they grow.',
+      lead: "Log feeds, sleep and diapers so the whole family can follow along. Save photos, make videos and keep your baby's firsts.",
+      support: 'Start with the first year. Stay with your child as they grow.',
+      seeApp: 'See the app in action',
+      vision: 'A companion for your child — from their first days to growing up.',
+      now: 'In the app now',
+      soon: 'Coming up',
+      feed: { title: 'Bottle · 120 ml', sub: 'Dad logged it · 2 min ago' },
+      smile: { title: 'First smile', sub: 'Saved to Memories' },
+      video: { title: "Teddy's one-month video", meta: '0:45 · from photos you picked' },
+    },
+    values: {
+      eyebrow: 'What Child Life does',
+      title: 'Child Life helps your family with three things.',
+      lead: "Each one works from your baby's very first year.",
+      cards: [
+        {
+          title: 'Daily care',
+          body: 'Log feeds, sleep and diapers and set reminders. Everyone knows how the baby was just cared for.',
+        },
+        {
+          title: 'Understand each stage',
+          body: "Read the journal, track milestones and find content for your baby's age.",
+        },
+        {
+          title: 'Keep what matters',
+          body: "Save photos privately, and make cards and videos from your baby's moments.",
+        },
+      ],
+      mock: {
+        rows: [
+          ['Bottle 120 ml', '9:00'],
+          ['Slept 1 h 20 min', '10:40'],
+          ['Diaper change', '11:05'],
+        ],
+        week: {
+          title: "Baby's week · 4 months",
+          body: 'Babies often start reaching for things. Tip: keep a toy within reach.',
+        },
+        milestone: ['Milestone: Rolls over', 'logged'],
+      },
+    },
+    memories: {
+      eyebrow: 'Memories',
+      title: "Today's photos, kept as memories to look back on.",
+      lead: "Pick your baby's photos to make a one-month video or a milestone card, or save them to your family's private album.",
+      video: {
+        title: 'Memory videos',
+        body: 'Pick photos and a template and get a video for one month, 100 days or the first birthday to share with the family.',
+        button: 'Watch a sample',
+      },
+      card: {
+        title: 'Milestone cards',
+        body: 'One month, 100 days, first roll-over — pick a template and photos and send it to the grandparents.',
+        bodyShort: 'Pick a template and photos, send it to the grandparents.',
+      },
+      thenNow: {
+        title: 'Then & now',
+        body: 'Put two photos side by side to see how much your baby has grown.',
+        bodyShort: "Two photos, and you see how they've grown.",
+      },
+      album: {
+        title: 'Private family album',
+        body: 'Grandparents far away can still follow along.',
+        initial: 'G',
+        seen: 'Grandma loved 3 new photos',
+      },
+      alsoLabel: 'Also:',
+      also: ["Your baby's journal", 'Messages for your child', 'First-year book'],
+      soon: 'Coming soon',
+      button: 'See memory templates',
+    },
+    family: {
+      eyebrow: 'Caring together',
+      title: 'Dad logs it, Mom sees it. No one has to ask again.',
+      bullets: [
+        'Log and read one shared journal.',
+        'Reminders go to whoever is caring for the baby.',
+        "Parents, caregivers and relatives each see what's right for them.",
+      ],
+      trust: "You choose who sees your baby's photos and details.",
+      steps: [
+        {
+          initial: 'D',
+          meta: 'Dad · 09:00',
+          title: 'Dad logs a feed',
+          body: "Bottle, 120 ml — one tap and it's done.",
+        },
+        {
+          initial: 'M',
+          meta: 'Mom · 09:01',
+          title: 'Mom sees it right away',
+          body: '“Dad just logged: Bottle, 120 ml at 9:00.”',
+        },
+        {
+          initial: '✓',
+          meta: 'Family',
+          title: 'No need to ask',
+          body: 'The next feed already has a reminder for whoever is caring.',
+        },
+      ],
+    },
+    wrist: {
+      chip: 'On your wrist',
+      title: 'Holding your baby? Log it on your watch.',
+      lead: 'One tap to log a feed, sleep or diaper — the family sees it on their phones right away.',
+      apple: 'Apple Watch',
+      wear: 'Android watches (Wear OS) · Coming soon',
+      wearLabel: 'Wear OS',
+      round: { asleep: 'Asleep' },
+    },
+    assistant: {
+      eyebrow: 'Lumi · The assistant in Child Life',
+      title: 'Send one message, Lumi does the logging.',
+      lead: "Lumi drafts entries from your messages and answers from your baby's journal. When you open the app, you also see suggestions based on what you've logged.",
+      chat: {
+        title: 'You message, Lumi logs',
+        body: 'One sentence becomes several entries. Ask, and the answer comes from the journal.',
+      },
+      today: {
+        title: 'Open the app, and what you need is already there',
+        body: "Suggestions come with a reason — based on what you've logged.",
+      },
+      floats: [
+        '3 entries saved',
+        'You confirm before saving',
+        'A reason for every suggestion',
+        'Hide or change them any time',
+      ],
+      cta: 'Discover Lumi',
+      note: 'Illustrative example. Lumi takes text and photos; you check and tap save.',
+    },
+    tools: {
+      eyebrow: 'Tools',
+      title: 'And small tools for every day.',
+      cards: [
+        {
+          title: 'Feed & sleep reminders',
+          body: 'On-time reminders for whoever is caring.',
+          chip: 'Next feed · 11:30',
+        },
+        { title: 'Milestones', body: 'Mark and keep the firsts.', chip: 'Rolls over ✓' },
+        {
+          title: "Tips for your baby's age",
+          body: "Each week, what's common at your baby's age.",
+          chip: 'Week 16',
+        },
+        {
+          title: 'Baby care & solids library',
+          body: 'Short reads and recipes for each stage.',
+          chip: 'Pumpkin congee',
+        },
+        {
+          title: 'First aid for children',
+          body: "Step-by-step help when it's urgent.",
+          chip: 'Choking',
+        },
+        {
+          title: 'Baby expenses',
+          body: "Parents see together what's been spent on the baby.",
+          chip: '289,000 ₫',
+        },
+        {
+          title: 'Customise & night mode',
+          body: 'Show only what you need; easy on the eyes at night.',
+          chip: 'Night mode',
+        },
+        { title: 'Apple Watch', body: 'Quick logging right on your watch.', chip: 'One-tap log' },
+      ],
+      button: 'See everything in First year',
+    },
+    journey: {
+      eyebrow: 'Journey',
+      title: 'Your child grows, and the journey goes on.',
+      lead: 'Today Child Life is for the first year. The next stages are being built together with families.',
+      now: 'In the app now',
+      soon: 'In development',
+      bodies: [
+        "Care for and understand your baby, and keep the first year's memories.",
+        'Play, first words and first habits.',
+        "“Why?” questions, drawings and your child's own stories.",
+        "Hobbies, small projects and your child's own plans.",
+      ],
+    },
+    trust: {
+      eyebrow: 'Free & trusted',
+      title: 'Start for free. Your family stays in control.',
+      points: [
+        'Logging, reminders, milestones and basic memories are free.',
+        'Lumi comes with a limited number of free uses each month.',
+        'Need more? You can move to a bigger Lumi plan at any time.',
+        "Your family chooses who sees your baby's photos and details.",
+      ],
+      faq: [
+        {
+          q: 'What age is the app for right now?',
+          a: 'For now Child Life focuses on the first year, from birth to 12 months. The later stages are in development.',
+          open: true,
+        },
+        {
+          q: 'Does it cost anything?',
+          a: 'Logging, reminders, milestones and basic memories are free for the whole family. Lumi has free uses every month; upgrade if you need more.',
+          open: false,
+        },
+        {
+          q: 'How do grandparents and caregivers use it?',
+          a: 'Parents invite grandparents, relatives or a caregiver to the family. Caregivers log and see the daily care; grandparents and relatives see the photos and stories parents share.',
+          open: false,
+        },
+        {
+          q: "Who can see my baby's photos and details?",
+          a: 'Only the people you invite into your family. Parents decide who sees what: caregivers only see the daily care, relatives only see the photos and stories you share.',
+          open: false,
+        },
+        {
+          q: 'What happens when I run out of Lumi uses?',
+          a: 'You can still log directly and view your logs as usual; essential health guidance stays open. Credits refresh at the start of the next period.',
+          open: false,
+        },
+      ],
+    },
+  },
+  firstYearPage: {
+    meta: {
+      title: "Your baby's first year — Child Life",
+      description:
+        "Logs and reminders for the whole family, age-based tips, first aid, starting solids and a home for your baby's memories — ready to use today.",
+    },
+    hero: {
+      badge: 'In the app now',
+      title: "Your baby's first year, all in one app.",
+      lead: "Logs and reminders for the whole family, age-based tips, first aid, starting solids and a home for your baby's memories — ready to use today.",
+    },
+    jump: { label: 'Jump to:', navLabel: 'Jump to a section' },
+    groups: [
+      { title: 'Log & remind', sub: 'Log in a few taps, reminded right on time.' },
+      { title: 'Caring together', sub: 'Parents, grandparents and caregivers share one log.' },
+      {
+        title: 'Know your baby by age',
+        sub: "Milestones, vaccinations, reading and first aid for your baby's age.",
+      },
+      { title: 'Memories', sub: "Keep your baby's firsts." },
+      { title: 'Tools', sub: 'Night mode, a home screen your way and Apple Watch.' },
+    ],
+    vaccines: {
+      eyebrow: "Your baby's health",
+      title: 'Vaccinations and growth charts.',
+      lead: "Know which shots your baby has had, what's next and how they're growing — no digging through the health book.",
+      bullets: [
+        {
+          title: 'Vaccinations by age',
+          sub: 'Tick off each dose and get a reminder before the next one, for the whole family.',
+        },
+        {
+          title: 'Weight and length against WHO standards',
+          sub: 'Easy-to-read charts that never score or compare your baby.',
+        },
+        {
+          title: 'Nutrition by stage',
+          sub: 'Reference milk amounts and the nutrients to watch at each age.',
+        },
+      ],
+      note: "For reference, reviewed by experts. Follow your clinic for your baby's exact vaccination schedule.",
+      mock: {
+        title: 'Vaccinations · Teddy',
+        columns: ['Birth', '2 mo', '3 mo', '4 mo', '6 mo', '9 mo'],
+        rows: ['Hepatitis B', 'BCG', '6-in-1', 'Pneumococcal', 'Rotavirus', 'Measles'],
+        done: 'Given',
+        due: 'Coming up',
+        next: 'Next dose: 6-in-1 · dose 3 · 17 Nov',
+        growth: { label: 'Weight', value: '7.8 kg', chip: 'Within the WHO range' },
+      },
+    },
+  },
+  stagePage: {
+    band: "In development — this stage isn't in the app yet. Child Life is currently for the first year (0–12 months).",
+    status: 'In development',
+    available: 'In the app now',
+    lead: 'This is the direction for the {ages} stage; scope and timing will be updated.',
+    useFirstYear: 'Use Child Life for the first year',
+    eyebrow: "What we're preparing",
+    titles: [
+      'Three experiences for the toddler years.',
+      'Three experiences for ages 3–6.',
+      'Three experiences for ages 6–12.',
+    ],
+    note: 'The experiences above are directions in development and are not in the app yet.',
+  },
   lumiJourney: {
-    eyebrow: 'Lumi grows with your child',
-    title: 'As your child grows, Lumi grows too.',
-    lead: "Today Lumi helps you through the first year. At each later stage Lumi will gain new ways to help — right for your child's age and your family's rhythm.",
-    current: 'Available',
     planned: 'In the works',
     stages: [
       {
@@ -483,34 +701,10 @@ export const en: Content = {
         ],
       },
     ],
-    outroTitle: 'Start today. The next stages are on their way.',
-    outroBody:
-      'Everything above is a direction in development. Scope and timing will be updated stage by stage.',
-    explore: 'Explore Lumi today',
-    tryNow: 'Try Lumi today',
   },
   // "Made for your child" (Figma 699:5798, home) and "A day made for your child" (700:5832, Lumi
   // page): engineering drafts for owner review (D-012). Q-039: meal ideas await expert review.
   forBaby: {
-    eyebrow: 'Made for your child, from what you log',
-    title: ['Every baby has their own rhythm.', 'Every day, one idea that fits.'],
-    lead: 'From feeds, sleep and foods tried to new milestones, Child Life helps you look back at what is changing and pick one small thing for today.',
-    values: [
-      {
-        title: 'See recent days clearly',
-        body: 'Related logs sit side by side, so it is easy to look back when eating or sleeping patterns change.',
-      },
-      {
-        title: 'Less searching, more that fits',
-        body: "Meal, activity and reading ideas based on your child's age, what you've logged and what your family cares about.",
-      },
-      {
-        title: 'Never let a milestone slip by',
-        body: 'From a milestone you just logged, ideas to keep it as a story, card or video for the whole family.',
-      },
-    ],
-    cta: 'See a day made for your child',
-    control: 'You choose what fits, edit what you logged and tell us which ideas help.',
     mock: {
       initial: 'T',
       name: "Teddy's today",
@@ -586,182 +780,35 @@ export const en: Content = {
     label: 'Journey',
     number: 'Stage {n}',
     prevNextLabel: 'Stages',
-    highlightsTitle: 'At this stage, Child Life is with you',
-    prev: '← Previous stage',
-    next: 'Next stage →',
-    backLabel: 'Back to',
-    backTitle: 'The whole journey',
-    ctaTitle: ['Start the journey with your child', 'today.'],
     stages: [
       {
         name: 'The very first days',
         ages: '0–12 months',
         title: 'The very first days.',
         lead: "Getting to know each other one feed and one nap at a time — and keeping your child's firsts.",
-        chips: ['Everyday care', 'Week by week', 'Keep the moments'],
-        highlights: null,
-        quote: null,
       },
       {
         name: 'Exploring the world',
         ages: '1–3 years',
         title: 'Exploring the world.',
         lead: 'Toddling, first words and small new habits, together.',
-        chips: ['Daily rhythm', 'Play & movement', 'First words'],
-        highlights: [
-          {
-            title: 'First steps',
-            body: 'Capture the wobbly first steps, the first words and the first trips away from home.',
-          },
-          {
-            title: 'Small daily rhythms',
-            body: 'The whole family keeps track of meals and naps, and gently builds first habits.',
-          },
-          {
-            title: 'Play together',
-            body: 'Ideas for play, movement and conversation that suit their age.',
-          },
-        ],
-        quote: 'First steps, the moments the whole family cheers — all worth keeping.',
       },
       {
         name: 'Curious and growing',
         ages: '3–6 years',
         title: 'Curious and growing.',
         lead: 'Playing, reading, drawing and answering an endless stream of “why?”.',
-        chips: ['Learning through play', 'Feelings', 'Their creations'],
-        highlights: [
-          {
-            title: 'Learning through play',
-            body: 'Read stories, draw and make little things together.',
-          },
-          {
-            title: 'All the “why?” questions',
-            body: 'Keep what they wonder about and the funny things they say.',
-          },
-          {
-            title: 'Growing up bit by bit',
-            body: 'Practise doing things on their own and naming their feelings.',
-          },
-        ],
-        quote: 'Every “why?” is a small memory worth saving.',
       },
       {
         name: 'A world of their own',
         ages: '6–12 years',
         title: 'A world of their own.',
         lead: 'Gently by their side as they grow independent, with interests and dreams of their own.',
-        chips: ['Interests', 'Independence', 'Look back on the journey'],
-        highlights: [
-          {
-            title: 'What they love',
-            body: "Keep their hobbies, projects and the things they're proud of.",
-          },
-          {
-            title: 'Independent, their way',
-            body: 'Set small goals as a family; your child takes the lead.',
-          },
-          {
-            title: 'Their own space',
-            body: 'Stay close while respecting the world they are building.',
-          },
-        ],
-        quote: "They have a world of their own now. You're still here whenever they need you.",
       },
     ],
   },
   home: {
-    hero: {
-      eyebrow: 'Child Life · Growing up together',
-      title: ['Grow up together,', 'one step at a time.'],
-      lead: 'An ecosystem that helps parents care for, understand and walk alongside their child — from the very first days to adulthood.',
-      promises: [
-        'Everyday care, with the whole family in sync',
-        'Understand your child through every stage',
-        'Walk alongside them and keep their journey',
-      ],
-      explore: "See your child's journey",
-      art: {
-        feed: { title: 'Bottle · 120 ml', sub: 'Mum logged · 2 min ago' },
-        smile: { title: 'First smile', sub: 'Saved to Memories' },
-        love: "Grandma loved Teddy's photo",
-      },
-    },
-    chapters: {
-      eyebrow: 'Growing up',
-      title: 'With your child at every stage.',
-      lead: 'At every stage of growing up, Child Life helps you care for your child, understand them and keep what matters.',
-      available: 'In the app',
-      explore: 'Explore the first year',
-      view: 'See this stage',
-    },
-    firstYear: {
-      eyebrow: 'Stage 1 · The first year',
-      title: "Your baby's first year, gentler for the whole family.",
-      lead: 'Everyday care, understanding your baby week by week and keeping the firsts — all in one app.',
-      leadShort: 'Everyday care, understanding your baby week by week and keeping the firsts.',
-      more: 'See the first year in detail',
-      detail: {
-        eyebrow: 'Stage 1 · 0–12 months',
-        title: 'See the whole first year',
-        body: 'Every part in detail: quick logging, reminders, vaccine schedule, solids, first aid, night mode and who sees what.',
-      },
-    },
-    stages: {
-      eyebrow: 'Next stages',
-      title: 'As your child grows, Child Life grows too.',
-      lead: 'After the first year, each stage brings new ways to care, new things to watch for and new memories. These stages are on the way.',
-      firstName: 'First year',
-      current: 'available',
-      soon: 'Coming soon',
-      preview: 'Preview stage {n}',
-      lumiLabel: 'Lumi at this stage',
-      lumiTeasers: [
-        'What shall we play today?',
-        '“Why?” becomes playtime',
-        'Their ideas get a place to start',
-      ],
-    },
     lumi: {
-      eyebrow: 'New · Lumi · your companion assistant',
-      title: "Meet Lumi — a little assistant for your baby's first year.",
-      lead: 'Holding the baby and still logging the feed on time. Ask one question and see how your baby ate and slept today. Lumi handles the notes and the summing up; you just review and tap save.',
-      cta: 'Explore Lumi',
-      name: 'Lumi',
-      suggestions: [
-        '“Baby just had 120 ml at 9”',
-        '“How long did baby sleep today?”',
-        'Weaning ideas',
-        'Make a one-month video',
-        'Snap a diaper receipt',
-        '“Baby has been sleeping badly lately”',
-      ],
-      features: [
-        {
-          title: 'Say it once, logged in the right place',
-          body: 'Type one line as if texting family — Lumi splits it into feed, sleep and diaper entries for you to review.',
-        },
-        {
-          title: 'Ask in your own words',
-          body: "“How did baby feed today?” — Lumi answers from your baby's own log, with the source to open.",
-        },
-        {
-          title: 'Look back at the last few days',
-          body: 'When sleep or feeds get harder, Lumi lines up recent entries so you can see more clearly.',
-        },
-        {
-          title: 'What can baby eat today?',
-          body: "Age-based ideas from the library, avoiding foods you've noted a reaction to.",
-        },
-        {
-          title: 'Snap the receipt, expense done',
-          body: 'Snap a diaper or milk receipt — Lumi drafts the expense and checks anything unclear before saving.',
-        },
-        {
-          title: 'Turn photos into memories',
-          body: 'Pick photos and a template; Lumi helps turn them into a card or a short film for the first milestones.',
-        },
-      ],
       mock: {
         logAsk: 'Baby had 120 ml at 9, asleep from 9:30',
         drafts: [
@@ -789,41 +836,6 @@ export const en: Content = {
       },
     },
     keepsakes: {
-      eyebrow: "Your child's memories",
-      title: 'Not just kept, but told.',
-      lead: "Videos, cards, journals, messages and even a book — made from your family's own photos and words.",
-      cards: [
-        {
-          format: 'MP4 video',
-          title: 'Memory story',
-          body: "A memory video from ready-made templates, with photos, words, music and your child's milestones.",
-        },
-        {
-          format: 'PNG/JPG image',
-          title: 'Milestone magic',
-          body: 'Beautiful milestone cards: one month, 100 days, first roll-over… save the image or send it to the family.',
-        },
-        {
-          format: 'Journal',
-          title: 'Little moments',
-          body: "A short post with photos or videos, saved straight to your child's memory timeline.",
-        },
-        {
-          format: 'Photo / Video',
-          title: 'Then and now',
-          body: "Compare your child's photos from two moments, and make a transition video from then to now.",
-        },
-        {
-          format: 'Voice + text',
-          title: 'Love from the family',
-          body: 'Voice or written messages from parents and grandparents — kept for your child to hear when they grow up.',
-        },
-        {
-          format: 'PDF / Printed book',
-          title: 'First-year book',
-          body: "A book of your child's first 12 months — download the PDF or order a printed photo book.",
-        },
-      ],
       mock: {
         video: {
           template: 'Template · First year',
@@ -868,90 +880,6 @@ export const en: Content = {
           pdf: 'PDF · 48 pages',
           print: 'Order a photo book',
         },
-      },
-    },
-    growUp: {
-      eyebrow: 'One record that grows with them',
-      title: 'What you save today, they will look back on when they grow up.',
-      body: "From the first birthday to the first day of school and the dreams at twelve — your child's story stays in one place and never gets lost as they grow.",
-      bodyShort: 'From the first birthday to the dreams at twelve — all in one place.',
-      years: [
-        { year: 'Age 1', caption: '2027 · First birthday' },
-        { year: 'Age 6', caption: '2032 · First day of school' },
-        { year: 'Age 12', caption: '2038 · Dreams of their own' },
-      ],
-    },
-    faq: {
-      items: [
-        {
-          q: 'What is Child Life?',
-          a: 'An ecosystem that helps parents care for, understand and walk alongside their child through every stage of growing up. The app currently focuses on the first year.',
-          open: true,
-        },
-        {
-          q: 'What age is Child Life for?',
-          a: 'From the day your baby is born. In the first year the app helps the whole family with everyday care; the next stages will grow with your child into adulthood.',
-          open: true,
-        },
-        {
-          q: 'When my child grows up, will their photos and records still be there?',
-          a: 'Yes. Their photos, videos and stories stay in your family until you delete them yourself, and you can download them at any time.',
-          open: false,
-        },
-        {
-          q: 'Does it cost anything?',
-          a: "No. The whole family uses it for free, with room for thousands of your baby's photos. If you need more space, just message us.",
-          open: false,
-        },
-        {
-          q: "Who can see my baby's photos and information?",
-          a: 'Only the people you invite into your family. Parents decide who sees what: caregivers only see the daily care, relatives only see the photos and stories you share.',
-          open: false,
-        },
-        {
-          q: 'Who writes the tips in the app?',
-          a: "The Child Life expert team writes, reviews and updates the age cards, articles and guides in the app. They are for reference and don't replace a doctor's advice — if something seems wrong, ask your doctor.",
-          open: false,
-        },
-        {
-          q: 'Does the first aid guide replace a doctor?',
-          a: "No. The first aid guide in the app is for reference while you wait for medical help and doesn't replace a doctor's diagnosis. If your child is in danger, call emergency services right away.",
-          open: false,
-        },
-        {
-          q: "Who can see the family's spending?",
-          a: 'By default only the parents (Co-parent members) see spending. Parents can let others log what they paid, or see everything, from the Family section.',
-          open: false,
-        },
-        {
-          q: 'Can I use Child Life on Apple Watch?',
-          a: "Yes, if you use an iPhone. Connect your watch once from the iPhone app, then log feeds, sleep and diapers and run timers right on your Apple Watch, even when your phone isn't nearby. There is no app for Android watches yet.",
-          open: false,
-        },
-      ],
-    },
-    utilities: {
-      title: 'Tools for parents',
-      lead: 'Small things that make parenting lighter — ready in the Tools tab.',
-      cards: [
-        {
-          title: 'Child first aid',
-          body: '25 common situations, illustrated step by step, with instructions read aloud. Works even without a connection.',
-        },
-        {
-          title: 'A shared spending book',
-          body: 'Everything you spend on your child in one place. Both parents log and see the same book — what your child needs and what the family has covered.',
-        },
-      ],
-      spending: {
-        header: 'Spent on Teddy · this month',
-        total: '4,215,000 ₫',
-        split: [
-          { label: 'Mum logged', amount: '2,320,000 ₫' },
-          { label: 'Dad logged', amount: '1,895,000 ₫' },
-        ],
-        initials: ['M', 'D'],
-        together: 'Mum and Dad see the same book',
       },
     },
     watch: {
@@ -1044,66 +972,9 @@ export const en: Content = {
       },
     },
   },
-  everything: {
-    eyebrow: 'Everything in one app',
-    title: 'Everything about your baby, in one place.',
-    lead: 'From the midnight feed to the first smile — log it in a moment, understand your baby a little more each week and keep their whole childhood.',
-    leadShort:
-      'Log it in a moment, understand your baby more each week and keep their whole childhood.',
-    tiles: [
-      {
-        title: 'Log in one tap',
-        body: 'Feeds, sleep, diapers — right on your home screen, even with your baby in your arms.',
-        bodyShort: 'Feeds, sleep, diapers from the home screen',
-      },
-      {
-        title: 'Timely reminders',
-        body: 'Feed and sleep reminders at set times or after the last log.',
-        bodyShort: 'Set times or after the last log',
-      },
-      {
-        title: 'Care as a family',
-        body: 'Parents, caregivers, grandparents — everyone knows how your baby is doing.',
-        bodyShort: 'Everyone knows how baby is doing',
-      },
-      {
-        title: 'Week by week',
-        body: 'Age cards and the expected Wonder Weeks calendar for every stage.',
-        bodyShort: 'Age cards & Wonder Weeks',
-      },
-      {
-        title: 'Milestones',
-        body: 'Note the first smile, the first roll, sitting up — with photos and notes.',
-        bodyShort: 'First smile, rolling, sitting…',
-      },
-      {
-        title: 'Baby care library',
-        body: 'Short reads on feeding, sleep, teething, fever — reviewed by our experts.',
-        bodyShort: 'Reviewed by our experts',
-      },
-      {
-        title: 'Gentle weaning',
-        body: 'A meal diary, foods your baby has tried and recipes for every stage.',
-        bodyShort: 'Meal diary & recipes',
-      },
-      {
-        title: 'Keep their childhood',
-        body: "Your baby's photos, videos and stories — private to your family.",
-        bodyShort: 'Photos, videos, stories',
-      },
-    ],
-    logChips: ['Bottle · 120 ml', 'Asleep 1:27'],
-    notification: { title: 'Time for the feed you set', sub: 'Last feed 11:45' },
-    familyChip: 'Dad Tuấn just logged a diaper',
-    weekChips: ['3 weeks old', 'Wonder Week 1 · in 3 days'],
-    milestone: { title: 'Smiles back', sub: 'Observed · 08/10' },
-    topics: ['Sleep', 'Teething', 'Feeding & milk'],
-    foods: ['Pumpkin', 'Carrot', 'Avocado'],
-    moreFoods: '+11 foods',
-  },
   reminders: {
     eyebrow: 'Reminders',
-    title: 'Timely reminders the whole family sees.',
+    title: 'Feed and sleep reminders for the right people.',
     lead: 'Set feed and sleep reminders at fixed times or counted from the last log. Once someone logs, the reminder turns off for everyone.',
     leadShort:
       'Feed and sleep reminders at fixed times or counted from the last log. Once someone logs, it turns off for everyone.',
@@ -1140,13 +1011,13 @@ export const en: Content = {
   },
   understand: {
     eyebrow: 'Week by week',
-    title: 'Understand your baby a little more each week.',
+    title: 'Age-based tips: your baby this week.',
     lead: "Tips for your baby's exact age, the expected Wonder Weeks calendar and the moments worth remembering — so you worry less and enjoy more.",
     leadShort:
       "Tips for your baby's age, the expected Wonder Weeks and the moments worth remembering.",
     columns: [
       {
-        title: 'Age cards',
+        title: 'Age-based tips',
         body: 'One short card per stage: how your baby is doing, what you can try, with related articles and milestones.',
       },
       {
@@ -1190,7 +1061,7 @@ export const en: Content = {
   },
   library: {
     eyebrow: 'Library & weaning',
-    title: 'Whatever you wonder, there is a short, clear read.',
+    title: 'A library for baby care and starting solids.',
     lead: 'The baby care and weaning libraries are written, reviewed and kept up to date by our expert team. Search by topic or age — save articles for when you need them.',
     leadShort:
       'Written and reviewed by our expert team. Search by topic or age — save articles for when you need them.',
@@ -1235,7 +1106,7 @@ export const en: Content = {
   },
   firstAid: {
     eyebrow: 'First aid',
-    title: 'When something unexpected happens, the steps are ready.',
+    title: 'First aid for children, step by step.',
     lead: 'Common little emergencies — fever, falls, minor burns, insect bites — explained briefly and calmly so you can look after your baby with a clear head.',
     leadShort:
       'Fever, falls, minor burns, insect bites — explained briefly and calmly so you can stay calm.',
@@ -1265,7 +1136,7 @@ export const en: Content = {
   },
   care: {
     eyebrow: 'Everyday care',
-    title: "Understand your baby's day at a glance.",
+    title: "Your baby's day in one log, clear at a glance.",
     lead: 'How much they drank, how long they slept, when the last diaper was — all clear on one screen. Nothing to remember, no guessing, even at 3 a.m.',
     bullets: [
       {
@@ -1292,7 +1163,7 @@ export const en: Content = {
   },
   cocare: {
     eyebrow: 'Care together',
-    title: 'The whole family cares, nobody has to ask twice.',
+    title: 'The whole family keeps one log.',
     lead: 'Who fed the baby, who changed the diaper, who rocked them to sleep — everyone sees it. Hand over to each other smoothly, without texting “when did the baby last eat?”.',
     bullets: [
       'Know exactly where the care is up to',
@@ -1312,7 +1183,7 @@ export const en: Content = {
   },
   memories: {
     eyebrow: 'Memories',
-    title: "A home for your baby's whole childhood.",
+    title: "Your baby's photos, cards, videos and journal.",
     lead: "Photos, videos and little stories, arranged by your baby's age, month by month. No more getting lost in thousands of phone photos, no fear of losing them — open it and watch your baby grow.",
     timeline: [
       { age: 'Day one', title: 'Coming home' },
@@ -1357,7 +1228,7 @@ export const en: Content = {
   },
   night: {
     eyebrow: 'For wakeful nights',
-    title: 'Easy on the eyes for midnight feeds.',
+    title: 'Night mode for late-night feeds.',
     lead: 'In the evening the screen softens by itself: a warm dark background, large text, no glare. Your baby drifts back to sleep, and so can you.',
     checks: [
       'Turns on at the time you choose, nothing to remember',
@@ -1367,7 +1238,7 @@ export const en: Content = {
   },
   roles: {
     eyebrow: 'Privacy',
-    title: "Your baby's photos, for family only.",
+    title: "You choose who sees your baby's photos and details.",
     lead: "Everyone in the family sees just what they need to. You're always the one who decides.",
     allowed: 'Allowed',
     notAllowed: 'Not allowed',
@@ -1411,11 +1282,6 @@ export const en: Content = {
       'For every new photo you choose who sees it: the whole family or just parents. Change it any time.',
       "Your baby's photos never show on the lock screen, and links you send expire on their own.",
     ],
-  },
-  cta: {
-    title: ['Less to remember.', 'More time with your baby.'],
-    sub: 'Free on iPhone and Android. Invite the whole family in a minute.',
-    caption: 'Free for the whole family',
   },
   faq: {
     title: 'Frequently asked questions',

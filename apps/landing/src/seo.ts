@@ -46,7 +46,7 @@ export function buildHead(route: Route, content: Content, environment: Environme
 
   const faq =
     route.page === 'home'
-      ? content.home.faq.items
+      ? content.homePage.trust.faq
       : route.page === 'stage1'
         ? content.faq.items
         : route.page === 'lumi'
@@ -108,6 +108,7 @@ export function buildHead(route: Route, content: Content, environment: Environme
  *  designed for them). */
 export function metaOf(route: Route, content: Content): PageMeta {
   if (route.page === 'home') return content.meta;
+  if (route.page === 'stage1') return content.firstYearPage.meta;
   if (isStage(route.page)) {
     const stage = content.journey.stages[stageIds.indexOf(route.page)]!;
     return { title: `${stage.name} (${stage.ages}) — Child Life`, description: stage.lead };

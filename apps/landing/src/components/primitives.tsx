@@ -254,7 +254,8 @@ export function Eyebrow({
   className,
 }: {
   children: ReactNode;
-  tone: 'mint' | 'peach' | 'sun' | 'sun-ink' | 'sunshine' | 'sleep' | 'night' | 'coral';
+  tone:
+    'mint' | 'peach' | 'sun' | 'sun-ink' | 'sunshine' | 'sleep' | 'night' | 'coral' | 'peach-ink';
   className?: string;
 }) {
   return (

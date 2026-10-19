@@ -2,7 +2,6 @@ import { LumiMascot, type Tint } from '../components/kit';
 import { Icon, photos, type IconName } from '../components/primitives';
 import { useSite } from '../context';
 import { staggerStyle } from '../motion';
-import { pathOf } from '../routes';
 
 /* "Hôm nay của bé": personalised cards with the reason each appears (Figma 699:5798, 700:5832).
    The app's screen is apps/mobile/lib/features/today/today_for_baby.dart. */
@@ -54,72 +53,30 @@ function TodayCard({ index }: { index: number }) {
   );
 }
 
-const valueLook: { icon: IconName; tint: Tint }[] = [
-  { icon: 'journal', tint: 'sleep' },
-  { icon: 'bookmark', tint: 'sun' },
-  { icon: 'heart', tint: 'peach' },
-];
-
-/** Dành cho con (home, inside the Chặng 1 frame after Lumi). */
-export function ForBabyBlock() {
-  const { c, route } = useSite();
-  const f = c.forBaby;
-  const m = f.mock;
+/** "Mock · Hôm nay của bé" (699:5798), also on the V8 home (34 §6). */
+export function TodayMock() {
+  const { c } = useSite();
+  const m = c.forBaby.mock;
   return (
-    <div id="danh-cho-con" className="for-baby">
-      <div className="for-baby__copy reveal">
-        <span className="eyebrow eyebrow--peach-ink">{f.eyebrow}</span>
-        <h3 className="for-baby__title">
-          <span>{f.title[0]}</span> <span>{f.title[1]}</span>
-        </h3>
-        <p className="for-baby__lead">{f.lead}</p>
-        <ul className="for-baby__values">
-          {f.values.map((value, i) => (
-            <li key={value.title}>
-              <span className={`lp-icon tint--${valueLook[i]!.tint}`}>
-                <Icon name={valueLook[i]!.icon} size={16} className="ink--ink" />
-              </span>
-              <span>
-                <strong>{value.title}</strong>
-                <span>{value.body}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-        <a
-          className="lumi-button pressable"
-          href={`${pathOf('lumi', route.locale)}#mot-ngay-cho-con`}
-        >
-          {f.cta}
-          <Icon name="arrow-right" size={16} />
-        </a>
-        <p className="for-baby__control">
-          <Icon name="check" size={14} />
-          {f.control}
-        </p>
-      </div>
-      <div className="for-baby__visual reveal" aria-hidden="true">
-        <div className="today-mock">
-          <span className="today-mock__head">
-            <span className="today-mock__avatar">{m.initial}</span>
-            <span className="today-mock__title">
-              <strong>{m.name}</strong>
-              <span>{m.date}</span>
-            </span>
-            <span className="today-mock__sample">
-              <Icon name="eye" size={11} />
-              {m.sample}
-            </span>
-          </span>
-          {m.cards.map((card, i) => (
-            <TodayCard key={card.title} index={i} />
-          ))}
-          <span className="today-mock__foot">
-            <Icon name="sliders" size={12} />
-            {m.footnote}
-          </span>
-        </div>
-      </div>
+    <div className="today-mock">
+      <span className="today-mock__head">
+        <span className="today-mock__avatar">{m.initial}</span>
+        <span className="today-mock__title">
+          <strong>{m.name}</strong>
+          <span>{m.date}</span>
+        </span>
+        <span className="today-mock__sample">
+          <Icon name="eye" size={11} />
+          {m.sample}
+        </span>
+      </span>
+      {m.cards.map((card, i) => (
+        <TodayCard key={card.title} index={i} />
+      ))}
+      <span className="today-mock__foot">
+        <Icon name="sliders" size={12} />
+        {m.footnote}
+      </span>
     </div>
   );
 }

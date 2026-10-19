@@ -1,24 +1,24 @@
-import { useSite } from '../context';
-import { Chapters } from '../sections/Chapters';
-import { Cta } from '../sections/Cta';
-import { Faq } from '../sections/Faq';
-import { FirstYear } from '../sections/FirstYear';
-import { GrowUp } from '../sections/GrowUp';
-import { JourneyHero } from '../sections/JourneyHero';
-import { NextStages } from '../sections/NextStages';
+import { Closing } from '../sections/Closing';
+import { HomeAssistant } from '../sections/HomeAssistant';
+import { HomeFamily } from '../sections/HomeFamily';
+import { HomeHero, HomeValues } from '../sections/HomeIntro';
+import { HomeMemories } from '../sections/HomeMemories';
+import { HomeJourney, HomeTools, HomeTrust } from '../sections/HomeMore';
 
-/** Home page, section order per Figma v5b 475:3726 (2026-10-13) (v3 mobile 362:3398 for the shared sections). */
+/** Home page, V8 (Figma 735:5377 desktop, 736:65570 mobile; 34-landing-v8-home): what the app
+ *  does, memories, caring together, Lumi, tools, the journey, free & trust with the FAQ, Kết. */
 export function Home() {
-  const { c } = useSite();
   return (
     <>
-      <JourneyHero />
-      <Chapters />
-      <FirstYear />
-      <NextStages />
-      <GrowUp />
-      <Cta title={c.journey.ctaTitle} compact />
-      <Faq items={c.home.faq.items} />
+      <HomeHero />
+      <HomeValues />
+      <HomeMemories />
+      <HomeFamily />
+      <HomeAssistant />
+      <HomeTools />
+      <HomeJourney />
+      <HomeTrust />
+      <Closing />
     </>
   );
 }

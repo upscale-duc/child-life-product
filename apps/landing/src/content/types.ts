@@ -23,23 +23,12 @@ export interface CompactBullet {
   subShort: string;
 }
 
-export interface BentoTile {
-  title: string;
-  body: string;
-  /** Mobile tiles carry a shorter body. */
-  bodyShort: string;
-}
-
 export interface StageText {
   name: string;
   /** "0–12 tháng". */
   ages: string;
   title: string;
   lead: string;
-  chips: [string, string, string];
-  /** Chặng 2–4 only (Chặng 1 shows the feature sections instead). */
-  highlights: [TitledText, TitledText, TitledText] | null;
-  quote: string | null;
 }
 
 export interface WatchTile {
@@ -79,17 +68,6 @@ export interface LumiStage {
   items: { title: string; body?: string }[];
 }
 
-export interface KeepsakeText {
-  format: string;
-  title: string;
-  body: string;
-}
-
-export interface YearText {
-  year: string;
-  caption: string;
-}
-
 export interface ModeText {
   name: string;
   sub: string;
@@ -108,6 +86,24 @@ export interface TodayCardText {
   body: string;
   why: string;
   action: string;
+}
+
+export interface TitledSub {
+  title: string;
+  sub: string;
+}
+
+export interface FamilyStep {
+  initial: string;
+  meta: string;
+  title: string;
+  body: string;
+}
+
+export interface ToolCard {
+  title: string;
+  body: string;
+  chip: string;
 }
 
 export interface TitledText {
@@ -163,16 +159,20 @@ export interface Content {
   nav: {
     homeLabel: string;
     sectionsLabel: string;
+    /** V8 (Figma 735:5378): Chăm sóc · Kỷ niệm · Lumi · Năm đầu đời · Hỏi đáp. */
     links: {
-      journey: string;
-      firstYear: string;
-      lumi: string;
-      stages: string;
+      care: string;
       memories: string;
+      lumi: string;
+      firstYear: string;
       faq: string;
     };
+    /** The nav button ("Bắt đầu", to #tai-app). */
+    start: string;
+    /** The mobile sticky bar's button once the store listings exist. */
     download: string;
-    downloadShort: string;
+    menuOpen: string;
+    menuClose: string;
     /** Shown on this page, pointing to the other language. */
     switchLabel: string;
     switchShort: string;
@@ -182,10 +182,13 @@ export interface Content {
   stores: {
     appStore: { prefix: string; name: string };
     googlePlay: { prefix: string; name: string };
-    /** `{store}` is replaced by the store name. */
-    comingSoon: string;
+    /** Under the badges ("V8/CTA tải app"): after launch, and before it (badges not links). */
+    caption: string;
+    captionSoon: string;
     close: string;
   };
+  /** Kết (home, Năm đầu đời, Chặng 2–4; Figma 735:6497 / 737:8276 / 738:7445). */
+  closing: { title: string; sub: string };
   mock: {
     baby: string;
     babyAge: string;
@@ -205,28 +208,7 @@ export interface Content {
     push: { app: string; now: string };
   };
   hero: {
-    eyebrow: string;
-    title: [string, string, string];
-    lead: string;
-    caption: string;
     proofInitials: [string, string, string, string];
-    proof: string;
-    chips: [{ title: string; sub: string }, { title: string; sub: string }];
-    today: {
-      title: string;
-      tiles: Record<CareKind, CareTileText>;
-      reminder: { label: string; title: string; when: string };
-      section: { title: string; link: string };
-    };
-    album: {
-      title: string;
-      count: string;
-      newAlbum: string;
-      albums: [AlbumText, AlbumText, AlbumText, AlbumText];
-      segments: [string, string, string, string];
-      navActive: string;
-      navInitial: string;
-    };
   };
   quick: {
     eyebrow: string;
@@ -249,17 +231,8 @@ export interface Content {
   };
   /** "Lumi · suốt hành trình" (Figma 678:5614 / 691:5838): shared by the home and the Lumi page. */
   lumiJourney: {
-    eyebrow: string;
-    title: string;
-    lead: string;
-    current: string;
     planned: string;
     stages: [LumiStage, LumiStage, LumiStage, LumiStage];
-    outroTitle: string;
-    outroBody: string;
-    /** Outro button on the home ("Khám phá…", to the Lumi page) and on the Lumi page ("Dùng thử…"). */
-    explore: string;
-    tryNow: string;
   };
   /** The Lumi page (Figma 650:4798, 33-landing-lumi-page). Mock strings are illustrative chat UI. */
   lumiPage: {
@@ -298,20 +271,9 @@ export interface Content {
       lead: string;
       cards: [DayCard, DayCard, DayCard, DayCard, DayCard, DayCard];
     };
-    more: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      cards: [TitledText, TitledText, TitledText, TitledText];
-      mock: {
-        reminders: [string, string];
-        note: [string, string];
-        week: TitledText;
-        rhythm: TitledText;
-        ask: string;
-        reply: string;
-      };
-    };
+    /** "Trên trang này:" chips (Figma 737:67292): Ví dụ, Gợi ý dành cho bé, Cách hoạt động, Các gói,
+     *  Hỏi đáp. */
+    quickNav: { label: string; items: [string, string, string, string, string] };
     how: {
       eyebrow: string;
       title: string;
@@ -349,6 +311,7 @@ export interface Content {
           [string, string],
           [string, string],
           [string, string],
+          [string, string],
         ];
       };
     };
@@ -363,12 +326,6 @@ export interface Content {
   /** "Dành cho con" (home, Figma 699:5798) and "Một ngày dành riêng cho con" (Lumi page,
    *  700:5832): personalised "Hôm nay của bé" cards with the reason each appears. */
   forBaby: {
-    eyebrow: string;
-    title: [string, string];
-    lead: string;
-    values: [TitledText, TitledText, TitledText];
-    cta: string;
-    control: string;
     mock: {
       initial: string;
       name: string;
@@ -391,6 +348,129 @@ export interface Content {
       note: string;
     };
   };
+  /** V8 home (Figma 735:5377 desktop, 736:65570 mobile; 34-landing-v8-home). */
+  homePage: {
+    hero: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      support: string;
+      seeApp: string;
+      vision: string;
+      /** Stage chip status: stage 1, stages 2–4. */
+      now: string;
+      soon: string;
+      feed: { title: string; sub: string };
+      smile: { title: string; sub: string };
+      video: { title: string; meta: string };
+    };
+    values: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      cards: [TitledText, TitledText, TitledText];
+      mock: {
+        rows: [[string, string], [string, string], [string, string]];
+        week: TitledText;
+        milestone: [string, string];
+      };
+    };
+    memories: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      video: { title: string; body: string; button: string };
+      card: { title: string; body: string; bodyShort: string };
+      thenNow: { title: string; body: string; bodyShort: string };
+      album: { title: string; body: string; initial: string; seen: string };
+      alsoLabel: string;
+      also: [string, string, string];
+      soon: string;
+      button: string;
+    };
+    family: {
+      eyebrow: string;
+      title: string;
+      bullets: [string, string, string];
+      trust: string;
+      steps: [FamilyStep, FamilyStep, FamilyStep];
+    };
+    wrist: {
+      chip: string;
+      title: string;
+      lead: string;
+      apple: string;
+      wear: string;
+      wearLabel: string;
+      round: { asleep: string };
+    };
+    assistant: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      chat: TitledText;
+      today: TitledText;
+      floats: [string, string, string, string];
+      cta: string;
+      note: string;
+    };
+    tools: {
+      eyebrow: string;
+      title: string;
+      cards: [ToolCard, ToolCard, ToolCard, ToolCard, ToolCard, ToolCard, ToolCard, ToolCard];
+      button: string;
+    };
+    journey: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      now: string;
+      soon: string;
+      bodies: [string, string, string, string];
+    };
+    trust: {
+      eyebrow: string;
+      title: string;
+      points: [string, string, string, string];
+      faq: FaqItem[];
+    };
+  };
+  /** V8 "Năm đầu đời" page at the Chặng 1 path (Figma 737:6362; 35-landing-v8-first-year). */
+  firstYearPage: {
+    meta: PageMeta;
+    hero: { badge: string; title: string; lead: string };
+    jump: { label: string; navLabel: string };
+    groups: [TitledSub, TitledSub, TitledSub, TitledSub, TitledSub];
+    vaccines: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      bullets: [TitledSub, TitledSub, TitledSub];
+      note: string;
+      mock: {
+        title: string;
+        columns: [string, string, string, string, string, string];
+        rows: [string, string, string, string, string, string];
+        done: string;
+        due: string;
+        next: string;
+        growth: { label: string; value: string; chip: string };
+      };
+    };
+  };
+  /** V8 future-stage template, Chặng 2–4 (Figma 738:7309; 36-landing-v8-lumi-and-stages B). */
+  stagePage: {
+    band: string;
+    status: string;
+    available: string;
+    /** `{ages}` is the stage's age range. */
+    lead: string;
+    useFirstYear: string;
+    eyebrow: string;
+    /** Section title per stage 2, 3, 4. */
+    titles: [string, string, string];
+    note: string;
+  };
   /** v3 journey: shared by the home page and the four stage pages (14 / 15-landing-v3). */
   journey: {
     /** "Hành trình": switcher label and breadcrumb. */
@@ -398,69 +478,12 @@ export interface Content {
     /** "Chặng {n}". */
     number: string;
     prevNextLabel: string;
-    highlightsTitle: string;
-    prev: string;
-    next: string;
-    backLabel: string;
-    backTitle: string;
-    /** CTA title of the home and Chặng 2–4 pages. */
-    ctaTitle: [string, string];
     stages: [StageText, StageText, StageText, StageText];
   };
   home: {
-    hero: {
-      eyebrow: string;
-      title: [string, string];
-      lead: string;
-      promises: [string, string, string];
-      explore: string;
-      art: {
-        feed: { title: string; sub: string };
-        smile: { title: string; sub: string };
-        love: string;
-      };
-    };
-    chapters: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      available: string;
-      explore: string;
-      view: string;
-    };
-    firstYear: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      leadShort: string;
-      more: string;
-      /** "Xem đầy đủ năm đầu đời" card at the bottom of the Chặng 1 frame. */
-      detail: { eyebrow: string; title: string; body: string };
-    };
-    /** "Các chặng tiếp theo" (Figma 516:57063, 28-landing-v5b-home §4). */
-    stages: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      firstName: string;
-      current: string;
-      soon: string;
-      /** "{n}" is the stage number. */
-      preview: string;
-      lumiLabel: string;
-      /** One teaser per coming stage (Chặng 2–4), linking to the Lumi journey. */
-      lumiTeasers: [string, string, string];
-    };
     /** Lumi block in the Chặng 1 frame (Figma 649:7270, 32-landing-v6-home §4). Mock strings are
      *  illustrative chat UI. */
     lumi: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      cta: string;
-      name: string;
-      suggestions: [string, string, string, string, string, string];
-      features: [TitledText, TitledText, TitledText, TitledText, TitledText, TitledText];
       mock: {
         logAsk: string;
         drafts: [{ title: string; sub: string }, { title: string; sub: string }];
@@ -480,10 +503,6 @@ export interface Content {
     };
     /** "Kỷ niệm của con" (Figma 517:56217, §5.2). Mock strings are illustrative. */
     keepsakes: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      cards: [KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText];
       mock: {
         video: {
           template: string;
@@ -518,26 +537,6 @@ export interface Content {
           pdf: string;
           print: string;
         };
-      };
-    };
-    growUp: {
-      eyebrow: string;
-      title: string;
-      body: string;
-      bodyShort: string;
-      years: [YearText, YearText, YearText];
-    };
-    /** Chặng 1 frame blocks (v4 459:3538 → v5b 524:4030). Mock strings are illustrative app UI. */
-    utilities: {
-      title: string;
-      lead: string;
-      cards: [TitledText, TitledText];
-      spending: {
-        header: string;
-        total: string;
-        split: [{ label: string; amount: string }, { label: string; amount: string }];
-        initials: [string, string];
-        together: string;
       };
     };
     yourWay: {
@@ -576,22 +575,6 @@ export interface Content {
         notify: { app: string; title: string; sub: string; log: string; snooze: string };
       };
     };
-    faq: { items: FaqItem[] };
-  };
-  everything: {
-    eyebrow: string;
-    title: string;
-    lead: string;
-    leadShort: string;
-    tiles: [BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile];
-    logChips: [string, string];
-    notification: { title: string; sub: string };
-    familyChip: string;
-    weekChips: [string, string];
-    milestone: { title: string; sub: string };
-    topics: [string, string, string];
-    foods: [string, string, string];
-    moreFoods: string;
   };
   reminders: {
     eyebrow: string;
@@ -732,11 +715,6 @@ export interface Content {
     cards: [RoleCard, RoleCard, RoleCard];
     notes: [string, string];
   };
-  cta: {
-    title: [string, string];
-    sub: string;
-    caption: string;
-  };
   faq: {
     title: string;
     sub: [string, string, string];
@@ -756,12 +734,6 @@ export interface Content {
     terms: LegalPage;
     back: string;
   };
-}
-
-export interface AlbumText {
-  name: string;
-  meta: string;
-  shared: boolean;
 }
 
 export interface RecentRow {

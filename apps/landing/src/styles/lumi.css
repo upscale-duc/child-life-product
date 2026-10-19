@@ -731,16 +731,6 @@
   }
 }
 
-/* ---------- Nav: the Lumi link keeps a mint accent (32 §1) ---------- */
-@media (min-width: 1120px) {
-  .nav .nav__links a.nav__accent {
-    color: var(--mint-text);
-  }
-  .nav .nav__links a[aria-current='page'] {
-    font-weight: 700;
-  }
-}
-
 /* ======================= Lumi page (33-landing-lumi-page) ======================= */
 
 .h2.lp-h2 {

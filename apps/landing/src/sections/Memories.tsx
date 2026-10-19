@@ -22,7 +22,7 @@ export function Memories() {
   const late = (k: number) => k >= 5;
 
   return (
-    <section id="ky-niem" className="memories" aria-labelledby="memories-title">
+    <section className="memories" aria-labelledby="memories-title">
       <div className="section container">
         <header className="section-head section-head--center memories__head reveal">
           <Eyebrow tone="sun">{m.eyebrow}</Eyebrow>

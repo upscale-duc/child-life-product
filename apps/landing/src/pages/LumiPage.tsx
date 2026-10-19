@@ -1,6 +1,4 @@
-import { useSite } from '../context';
 import { ForBabyDetail } from '../sections/ForBaby';
-import { LumiJourney } from '../sections/Lumi';
 import {
   LumiBenefits,
   LumiCta,
@@ -8,27 +6,20 @@ import {
   LumiFaq,
   LumiHero,
   LumiHow,
-  LumiMore,
   LumiPlans,
+  LumiQuickNav,
 } from '../sections/LumiDetail';
 
-/** Lumi page, section order per Figma 650:4798 "Lumi · Trang chi tiết" (33-landing-lumi-page §0.1). */
+/** Lumi page, V8 order (Figma 737:67153; 36-landing-v8-lumi-and-stages A): value, examples, ideas
+ *  for your baby, how it works, plans, FAQ. "Còn nhiều việc" and the stage roadmap are gone. */
 export function LumiPage() {
-  const { c } = useSite();
   return (
     <>
       <LumiHero />
       <LumiBenefits />
+      <LumiQuickNav />
       <LumiDay />
       <ForBabyDetail />
-      <LumiMore />
-      <section
-        id="suot-hanh-trinh"
-        className="lp-section container"
-        aria-labelledby="lumi-journey-title"
-      >
-        <LumiJourney cta={{ label: c.lumiJourney.tryNow, href: '#tai-app' }} />
-      </section>
       <LumiHow />
       <LumiPlans />
       <LumiFaq />

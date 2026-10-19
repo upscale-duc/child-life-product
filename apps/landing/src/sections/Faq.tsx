@@ -20,25 +20,27 @@ export function Faq({ items }: { items?: FaqItem[] }) {
           {f.sub[2]}
         </p>
       </header>
-      <div className="faq__list">
-        {(items ?? f.items).map((item, i) => (
-          <details
-            key={item.q}
-            className="faq-item reveal"
-            open={item.open}
-            style={staggerStyle(i)}
-          >
-            <summary>
-              <h3>{item.q}</h3>
-              <span className="faq-item__icons" aria-hidden="true">
-                <Icon name="plus" size={20} className="faq-item__plus" />
-                <Icon name="chevron-down" size={20} className="faq-item__chevron" />
-              </span>
-            </summary>
-            <p className="faq-item__answer">{item.a}</p>
-          </details>
-        ))}
-      </div>
+      <FaqList items={items ?? f.items} />
     </section>
+  );
+}
+
+/** The questions alone (native <details>, answers in the HTML for search engines). */
+export function FaqList({ items }: { items: FaqItem[] }) {
+  return (
+    <div className="faq__list">
+      {items.map((item, i) => (
+        <details key={item.q} className="faq-item reveal" open={item.open} style={staggerStyle(i)}>
+          <summary>
+            <h3>{item.q}</h3>
+            <span className="faq-item__icons" aria-hidden="true">
+              <Icon name="plus" size={20} className="faq-item__plus" />
+              <Icon name="chevron-down" size={20} className="faq-item__chevron" />
+            </span>
+          </summary>
+          <p className="faq-item__answer">{item.a}</p>
+        </details>
+      ))}
+    </div>
   );
 }

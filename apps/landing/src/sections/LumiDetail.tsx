@@ -1,24 +1,59 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { LumiMascot, type Tint } from '../components/kit';
 import { Eyebrow, Fit, Icon, at, type IconName } from '../components/primitives';
-import { StoreBadges } from '../components/StoreBadges';
+import { AppCta } from '../components/StoreBadges';
 import { scenes } from '../components/scenes';
 import { useSite } from '../context';
 import { staggerStyle } from '../motion';
-import { Ask, Draft, FeatureMock, Reply, Source } from './Lumi';
+import { Ask, Draft, FeatureMock, Reply } from './Lumi';
 
 /* The Lumi page (Figma 650:4798, 33-landing-lumi-page). Every mock is HTML so its copy translates. */
+
+const draftLook: { icon: IconName; tint: Tint }[] = [
+  { icon: 'feed', tint: 'bottle' },
+  { icon: 'sleep', tint: 'sleep' },
+  { icon: 'diaper', tint: 'diaper' },
+];
+
+/** The chat mock-up "Mock · Chat với Lumi" (33 §2.2), also on the V8 home (34 §6). */
+export function LumiChatCard({ style }: { style?: CSSProperties }) {
+  const { c } = useSite();
+  const m = c.lumiPage.hero.mock;
+  return (
+    <div className="lp-chat" style={style}>
+      <span className="lp-chat__head">
+        <LumiMascot size={36} />
+        <span>
+          <strong>{m.name}</strong>
+          <span>{m.family}</span>
+        </span>
+      </span>
+      <Ask>{m.ask}</Ask>
+      <Reply>
+        {m.reply}
+        {m.drafts.map((d, i) => (
+          <Draft key={d.title} {...draftLook[i]!} {...d} label={m.draft} />
+        ))}
+        <span className="lp-chat__save">{m.saveAll}</span>
+      </Reply>
+      <Ask>{m.ask2}</Ask>
+      <Reply>{m.reply2}</Reply>
+      <span className="lp-chat__composer">
+        <Icon name="camera" size={16} />
+        <span>{m.composer}</span>
+        <span className="lp-chat__send">
+          <Icon name="arrow-right" size={14} />
+        </span>
+      </span>
+    </div>
+  );
+}
 
 /** Hero (§2): copy, promise chips and the chat mock with its two floating cards. */
 export function LumiHero() {
   const { c } = useSite();
   const h = c.lumiPage.hero;
   const m = h.mock;
-  const draftLook: { icon: IconName; tint: Tint }[] = [
-    { icon: 'feed', tint: 'bottle' },
-    { icon: 'sleep', tint: 'sleep' },
-    { icon: 'diaper', tint: 'diaper' },
-  ];
   return (
     <section id="gioi-thieu" className="lp-hero container" aria-labelledby="lumi-title">
       <div className="lp-hero__copy reveal">
@@ -52,32 +87,7 @@ export function LumiHero() {
         {/* 544 × 721 mock-up plus the 40 px the floats overhang on each side (§2.2). */}
         <Fit w={624} h={721} mobileScale={0.54}>
           <span className="lp-mock" style={at(40, 0)} />
-          <div className="lp-chat" style={at(112, 48)}>
-            <span className="lp-chat__head">
-              <LumiMascot size={36} />
-              <span>
-                <strong>{m.name}</strong>
-                <span>{m.family}</span>
-              </span>
-            </span>
-            <Ask>{m.ask}</Ask>
-            <Reply>
-              {m.reply}
-              {m.drafts.map((d, i) => (
-                <Draft key={d.title} {...draftLook[i]!} {...d} label={m.draft} />
-              ))}
-              <span className="lp-chat__save">{m.saveAll}</span>
-            </Reply>
-            <Ask>{m.ask2}</Ask>
-            <Reply>{m.reply2}</Reply>
-            <span className="lp-chat__composer">
-              <Icon name="camera" size={16} />
-              <span>{m.composer}</span>
-              <span className="lp-chat__send">
-                <Icon name="arrow-right" size={14} />
-              </span>
-            </span>
-          </div>
+          <LumiChatCard style={at(112, 48)} />
           <span className="lp-float lp-float--saved" style={at(0, 30)}>
             <span className="lp-float__check">
               <Icon name="check" size={12} />
@@ -189,82 +199,30 @@ export function LumiDay() {
   );
 }
 
-const moreTints: Tint[] = ['growth', 'mint', 'sleep', 'sun'];
+const quickIcons: IconName[] = ['feed', 'today', 'check', 'grid', 'journal'];
+const quickTargets = ['mot-ngay', 'mot-ngay-cho-con', 'cach-lam-viec', 'goi', 'hoi-dap'];
 
-function MoreMock({ index }: { index: number }) {
+/** "Trên trang này:" (V8, Figma 737:67292; 36 §A.4): anchor chips under Lợi ích; the chip of the
+ *  section in view is highlighted by the nav's scroll-spy (`data-spy`). */
+export function LumiQuickNav() {
   const { c } = useSite();
-  const m = c.lumiPage.more.mock;
-  switch (index) {
-    case 0:
-      return (
-        <span className="lp-note-row">
-          <span className="lp-note">
-            {m.note.map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </span>
-          <span className="lp-note-row__chips">
-            {m.reminders.map((r) => (
-              <Source key={r} icon="clock">
-                {r}
-              </Source>
-            ))}
-          </span>
-        </span>
-      );
-    case 1:
-    case 2: {
-      const box = index === 1 ? m.week : m.rhythm;
-      return (
-        <span className="lp-mini-card">
-          <strong>{box.title}</strong>
-          <span>{box.body}</span>
-        </span>
-      );
-    }
-    default:
-      return (
-        <>
-          <Ask>{m.ask}</Ask>
-          <Reply>{m.reply}</Reply>
-        </>
-      );
-  }
-}
-
-/** Còn nhiều việc (§5): four more things Lumi does. */
-export function LumiMore() {
-  const { c } = useSite();
-  const m = c.lumiPage.more;
+  const q = c.lumiPage.quickNav;
   return (
-    <section id="viec-khac" className="lp-band" aria-labelledby="more-title">
-      <div className="container">
-        <header className="section-head lp-head-left reveal">
-          <Eyebrow tone="mint">{m.eyebrow}</Eyebrow>
-          <h2 id="more-title" className="h2 h2--flat lp-h2">
-            {m.title}
-          </h2>
-          <p className="lead">{m.lead}</p>
-        </header>
-        <ul className="lp-more lp-rail">
-          {m.cards.map((card, i) => (
-            <li
-              key={card.title}
-              className="lumi-feature lp-more__card reveal"
-              style={staggerStyle(i)}
-            >
-              <div className={`lumi-feature__art tint--${moreTints[i]}`} aria-hidden="true">
-                <MoreMock index={i} />
-              </div>
-              <div className="lumi-feature__text">
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-              </div>
+    <nav className="jump jump--lumi" aria-label={q.label.replace(/:$/, '')}>
+      <div className="jump__inner container">
+        <span className="jump__label">{q.label}</span>
+        <ul>
+          {q.items.map((item, i) => (
+            <li key={item}>
+              <a href={`#${quickTargets[i]}`} data-spy={quickTargets[i]}>
+                <Icon name={quickIcons[i]!} size={14} />
+                {item}
+              </a>
             </li>
           ))}
         </ul>
       </div>
-    </section>
+    </nav>
   );
 }
 
@@ -429,6 +387,15 @@ export function LumiPlans() {
                 ))}
               </tr>
             </thead>
+            {/* V8 shows the price row (737:67789). Q-071: prices are not approved; dev only. */}
+            <tbody className="lp-table__price">
+              <tr>
+                <th scope="row">{p.table.price}</th>
+                {p.tiers.map((tier) => (
+                  <td key={tier.name}>{tier.price}</td>
+                ))}
+              </tr>
+            </tbody>
             <tbody>
               <tr>
                 <th scope="row">{p.table.credits}</th>
@@ -471,7 +438,7 @@ export function LumiPlans() {
             {p.creditsInfo.rules.map(([label, value], i) => (
               <div key={label}>
                 <dt>{label}</dt>
-                <dd className={i === 2 || i === 3 ? 'is-free' : undefined}>{value}</dd>
+                <dd className={i === 0 || i === 3 || i === 4 ? 'is-free' : undefined}>{value}</dd>
               </div>
             ))}
           </dl>
@@ -516,8 +483,8 @@ export function LumiFaq() {
   );
 }
 
-/** Kết (§10): the download target. Store badges replace the drawn "Dùng thử Lumi" pill so the
- *  nav's "Tải app" lands on something that installs the app. */
+/** Kết (§10; V8 737:67980): the download target. The download component replaces the drawn
+ *  "Mở Lumi trong app" pill — the web has no link into the app's Lumi (36 §A.10). */
 export function LumiCta() {
   const { c } = useSite();
   const k = c.lumiPage.cta;
@@ -530,7 +497,7 @@ export function LumiCta() {
             {k.title}
           </h2>
           <div className="lp-cta__actions">
-            <StoreBadges variant="light" />
+            <AppCta tone="dark" />
             <a className="lp-cta__plans" href="#goi">
               {k.plans}
             </a>
