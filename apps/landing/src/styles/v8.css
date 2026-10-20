@@ -2149,3 +2149,18 @@
 .fy-page .memories > .section {
   padding-block: var(--v8-space);
 }
+/* Heroes start right under the nav (owner, 2026-10-20): the copy aligns to the top of the
+   illustration instead of its middle, which left ~90–210 px above the eyebrow. */
+@media (min-width: 1120px) {
+  .home-hero__inner {
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+  .lp-hero {
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+  .lp-hero__copy {
+    padding-top: 24px;
+  }
+}
