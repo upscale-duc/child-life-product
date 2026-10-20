@@ -1,0 +1,2145 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_01",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "birthDate",
+            "label": {
+              "vi": "Ngày sinh (không rõ thì để trống)",
+              "en": "Birth date (leave blank if unknown)"
+            },
+            "type": "date",
+            "source": "birthDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "birthTime",
+            "label": {
+              "vi": "Giờ sinh (tùy chọn)",
+              "en": "Birth time (optional)"
+            },
+            "type": "time",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "placeName",
+            "label": {
+              "vi": "Nơi sinh (chỉ hiện khi bạn nhập)",
+              "en": "Birthplace (only shown if entered)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "NGÀY CON ĐẾN",
+              "en": "THE DAY YOU ARRIVED"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Lời chào",
+              "en": "Greeting"
+            },
+            "text": {
+              "vi": "Chào con, {babyName}.",
+              "en": "Welcome, {babyName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Một ngày bình thường đã trở thành ngày nhà mình luôn nhớ.",
+              "en": "An ordinary day became one we will always remember."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày",
+              "en": "Date"
+            },
+            "text": {
+              "vi": "{birthDate}",
+              "en": "{birthDate}"
+            },
+            "requires": ["birthDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Giờ",
+              "en": "Time"
+            },
+            "text": {
+              "vi": "{birthTime}",
+              "en": "{birthTime}"
+            },
+            "requires": ["birthTime"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail2",
+            "label": {
+              "vi": "Nơi",
+              "en": "Place"
+            },
+            "text": {
+              "vi": "{placeName}",
+              "en": "{placeName}"
+            },
+            "requires": ["placeName"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label0",
+            "label": {
+              "vi": "Nhãn ngày",
+              "en": "Date label"
+            },
+            "text": {
+              "vi": "NGÀY",
+              "en": "DATE"
+            },
+            "requires": ["birthDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn giờ",
+              "en": "Time label"
+            },
+            "text": {
+              "vi": "GIỜ",
+              "en": "TIME"
+            },
+            "requires": ["birthTime"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label2",
+            "label": {
+              "vi": "Nhãn nơi",
+              "en": "Place label"
+            },
+            "text": {
+              "vi": "NƠI SINH",
+              "en": "BIRTHPLACE"
+            },
+            "requires": ["placeName"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Ngày con đến",
+        "en": "The Day You Arrived"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 2,
+      "occasions": ["birth"],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.045
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.052,
+              "w": 0.68,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.067,
+              "y": 0.12,
+              "w": 0.866,
+              "h": 0.415
+            },
+            "shape": "rect",
+            "radius": 0.012
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-arrival-sun_3c968768.webp",
+            "rect": {
+              "x": 0.805,
+              "y": 0.018,
+              "w": 0.13,
+              "h": 0.104
+            },
+            "fit": "fill",
+            "opacity": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.565,
+              "w": 0.866,
+              "h": 0.13
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.073,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.72,
+              "w": 0.86,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.067,
+              "y": 0.82,
+              "w": 0.866,
+              "h": 0.001
+            },
+            "color": "#DCCABB",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.838,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.87,
+              "w": 0.265,
+              "h": 0.064
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.365,
+              "y": 0.838,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.365,
+              "y": 0.87,
+              "w": 0.265,
+              "h": 0.064
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label2",
+            "rect": {
+              "x": 0.663,
+              "y": 0.838,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.663,
+              "y": 0.87,
+              "w": 0.265,
+              "h": 0.064
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.945,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.045
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.105,
+              "w": 0.68,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.067,
+              "y": 0.16,
+              "w": 0.866,
+              "h": 0.365
+            },
+            "shape": "rect",
+            "radius": 0.012
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-arrival-sun_3c968768.webp",
+            "rect": {
+              "x": 0.805,
+              "y": 0.08,
+              "w": 0.13,
+              "h": 0.073
+            },
+            "fit": "fill",
+            "opacity": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.562,
+              "w": 0.866,
+              "h": 0.11
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.073,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.708,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.067,
+              "y": 0.794,
+              "w": 0.866,
+              "h": 0.001
+            },
+            "color": "#DCCABB",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.812,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.8440000000000001,
+              "w": 0.265,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.365,
+              "y": 0.812,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.365,
+              "y": 0.8440000000000001,
+              "w": 0.265,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label2",
+            "rect": {
+              "x": 0.663,
+              "y": 0.812,
+              "w": 0.267,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.663,
+              "y": 0.8440000000000001,
+              "w": 0.265,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "arrivalSun": "art-p48-arrival-sun_3c968768.webp",
+        "embracePaper": "art-p48-embrace-paper_8dcf0da0.webp",
+        "embraceLine": "art-p48-embrace-line_783a82ce.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFF8EF",
+        "ink": "#47372F",
+        "accent": "#B9654B"
+      },
+      "palettes": [
+        {
+          "background": "#FFF8EF",
+          "ink": "#47372F",
+          "accent": "#B9654B"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_02",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Tên hoặc cách gọi người kể",
+              "en": "Narrator’s name or role"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày khoảnh khắc (tùy chọn)",
+              "en": "Moment date (optional)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "firstConfirmed",
+            "label": {
+              "vi": "Đây là cái ôm đầu tiên, mình xác nhận",
+              "en": "I confirm this was our first embrace"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "MỘT CÁI ÔM MUỐN NHỚ",
+              "en": "AN EMBRACE TO REMEMBER"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Lần đầu ôm con.",
+              "en": "Our first embrace."
+            },
+            "requires": ["firstConfirmed"],
+            "fallback": {
+              "vi": "Một cái ôm muốn nhớ.",
+              "en": "An embrace to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Chưa biết hết mọi điều. Chỉ biết muốn ôm con thật lâu.",
+              "en": "So much still to learn. For now, just holding you close."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Người kể",
+              "en": "Narrator"
+            },
+            "text": {
+              "vi": "{narratorName} & {babyName}",
+              "en": "{narratorName} & {babyName}"
+            },
+            "requires": ["narratorName"],
+            "fallback": {
+              "vi": "Nhà mình & {babyName}",
+              "en": "Your family & {babyName}"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày",
+              "en": "Date"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": ["momentDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Lần đầu ôm con",
+        "en": "Our First Embrace"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 3,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.067,
+              "y": 0.065,
+              "w": 0.866,
+              "h": 0.54
+            },
+            "shape": "rect",
+            "radius": 0.012
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-embrace-paper_8dcf0da0.webp",
+            "rect": {
+              "x": 0,
+              "y": 0.535,
+              "w": 1,
+              "h": 0.465
+            },
+            "fit": "fill",
+            "opacity": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0.6,
+              "w": 1,
+              "h": 0.4
+            },
+            "fit": "fill",
+            "opacity": 0.04
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-embrace-line_783a82ce.webp",
+            "rect": {
+              "x": 0.84,
+              "y": 0.615,
+              "w": 0.095,
+              "h": 0.076
+            },
+            "fit": "fill",
+            "opacity": 0.7
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.65,
+              "w": 0.74,
+              "h": 0.115
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.068,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.073
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.067,
+              "y": 0.887,
+              "w": 0.866,
+              "h": 0.027
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.914,
+              "w": 0.866,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.945,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.067,
+              "y": 0.105,
+              "w": 0.866,
+              "h": 0.49
+            },
+            "shape": "rect",
+            "radius": 0.012
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-embrace-paper_8dcf0da0.webp",
+            "rect": {
+              "x": 0,
+              "y": 0.55,
+              "w": 1,
+              "h": 0.45
+            },
+            "fit": "fill",
+            "opacity": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0.6,
+              "w": 1,
+              "h": 0.4
+            },
+            "fit": "fill",
+            "opacity": 0.04
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-embrace-line_783a82ce.webp",
+            "rect": {
+              "x": 0.84,
+              "y": 0.62,
+              "w": 0.095,
+              "h": 0.053
+            },
+            "fit": "fill",
+            "opacity": 0.7
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.655,
+              "w": 0.74,
+              "h": 0.1
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.068,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.773,
+              "w": 0.86,
+              "h": 0.063
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.067,
+              "y": 0.862,
+              "w": 0.866,
+              "h": 0.027
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.028,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.89,
+              "w": 0.866,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "arrivalSun": "art-p48-arrival-sun_3c968768.webp",
+        "embracePaper": "art-p48-embrace-paper_8dcf0da0.webp",
+        "embraceLine": "art-p48-embrace-line_783a82ce.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#EEE4D7",
+        "ink": "#443B37",
+        "accent": "#AA7662"
+      },
+      "palettes": [
+        {
+          "background": "#EEE4D7",
+          "ink": "#443B37",
+          "accent": "#AA7662"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_01",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "birthDate",
+            "label": {
+              "vi": "Ngày sinh (không rõ thì để trống)",
+              "en": "Birth date (leave blank if unknown)"
+            },
+            "type": "date",
+            "source": "birthDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "birthTime",
+            "label": {
+              "vi": "Giờ sinh (tùy chọn)",
+              "en": "Birth time (optional)"
+            },
+            "type": "time",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "placeName",
+            "label": {
+              "vi": "Nơi sinh (chỉ hiện khi bạn nhập)",
+              "en": "Birthplace (only shown if entered)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Ngày con đến",
+              "en": "The Day You Arrived"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1 · Mở đầu",
+              "en": "Scene 1 · Opening"
+            },
+            "text": {
+              "vi": "Ngày {birthDate}…",
+              "en": "On {birthDate}…"
+            },
+            "requires": ["birthDate"],
+            "fallback": {
+              "vi": "Ngày con đến…",
+              "en": "The day you arrived…"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Nhà mình đón một người rất nhỏ.",
+              "en": "Someone very small joined our world."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Một bàn tay. Một cái ôm.",
+              "en": "A tiny hand. An embrace."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Và thật nhiều điều đang bắt đầu.",
+              "en": "And so much just beginning."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5 · Kết",
+              "en": "Scene 5 · Closing"
+            },
+            "text": {
+              "vi": "Chào con, {babyName}.",
+              "en": "Welcome, {babyName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày sinh",
+              "en": "Birth date"
+            },
+            "text": {
+              "vi": "{birthDate}",
+              "en": "{birthDate}"
+            },
+            "requires": ["birthDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Giờ sinh",
+              "en": "Birth time"
+            },
+            "text": {
+              "vi": "{birthTime}",
+              "en": "{birthTime}"
+            },
+            "requires": ["birthTime"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail2",
+            "label": {
+              "vi": "Nơi sinh",
+              "en": "Birthplace"
+            },
+            "text": {
+              "vi": "{placeName}",
+              "en": "{placeName}"
+            },
+            "requires": ["placeName"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Ngày con đến",
+        "en": "The Day You Arrived"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 2,
+      "occasions": ["birth"],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumArrival",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "arrivalSun": "art-p48-arrival-sun_3c968768.webp",
+        "embracePaper": "art-p48-embrace-paper_8dcf0da0.webp",
+        "embraceLine": "art-p48-embrace-line_783a82ce.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Chi tiết chăn hoặc bàn tay",
+            "en": "Blanket or hand detail"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chân dung đầu tiên",
+            "en": "An early portrait"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh ôm bé",
+            "en": "An embrace"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Gia đình hoặc người chăm",
+            "en": "Family or caregiver"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chân dung hiện tại",
+            "en": "A recent portrait"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFF8EF",
+        "ink": "#47372F",
+        "accent": "#B9654B"
+      },
+      "palettes": [
+        {
+          "background": "#FFF8EF",
+          "ink": "#47372F",
+          "accent": "#B9654B"
+        }
+      ],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_arrival",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_02",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Tên hoặc cách gọi người kể",
+              "en": "Narrator’s name or role"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày khoảnh khắc (tùy chọn)",
+              "en": "Moment date (optional)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "firstConfirmed",
+            "label": {
+              "vi": "Đây là cái ôm đầu tiên, mình xác nhận",
+              "en": "I confirm this was our first embrace"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Lần đầu ôm con",
+              "en": "Our First Embrace"
+            },
+            "requires": ["firstConfirmed"],
+            "fallback": {
+              "vi": "Một cái ôm muốn nhớ",
+              "en": "An Embrace to Remember"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1 · Mở đầu",
+              "en": "Scene 1 · Opening"
+            },
+            "text": {
+              "vi": "Có một khoảnh khắc…",
+              "en": "There was a moment…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Mọi thứ quanh mình chậm lại.",
+              "en": "When everything seemed to slow down."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Con nằm gọn trong vòng tay.",
+              "en": "You fit right into these arms."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Mình bắt đầu làm quen với nhau.",
+              "en": "We began getting to know each other."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5 · Kết",
+              "en": "Scene 5 · Closing"
+            },
+            "text": {
+              "vi": "Cái ôm đầu tiên. Nhớ mãi.",
+              "en": "Our first embrace. Always remembered."
+            },
+            "requires": ["firstConfirmed"],
+            "fallback": {
+              "vi": "Một cái ôm muốn nhớ.",
+              "en": "An embrace to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Người kể",
+              "en": "Narrator"
+            },
+            "text": {
+              "vi": "{narratorName} & {babyName}",
+              "en": "{narratorName} & {babyName}"
+            },
+            "requires": ["narratorName"],
+            "fallback": {
+              "vi": "Nhà mình & {babyName}",
+              "en": "Your family & {babyName}"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày",
+              "en": "Date"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": ["momentDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Lần đầu ôm con",
+        "en": "Our First Embrace"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 3,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumEmbrace",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "arrivalSun": "art-p48-arrival-sun_3c968768.webp",
+        "embracePaper": "art-p48-embrace-paper_8dcf0da0.webp",
+        "embraceLine": "art-p48-embrace-line_783a82ce.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Bàn tay người lớn",
+            "en": "An adult’s hand"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc gần bé",
+            "en": "Getting close to baby"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Cái ôm yêu thích (kết lại)",
+            "en": "Favourite embrace (reprise)"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Góc nghiêng cùng nhau",
+            "en": "Together, from another angle"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#EEE4D7",
+        "ink": "#443B37",
+        "accent": "#AA7662"
+      },
+      "palettes": [
+        {
+          "background": "#EEE4D7",
+          "ink": "#443B37",
+          "accent": "#AA7662"
+        }
+      ],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_embrace",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_01",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "headline": "NGÀY CON ĐẾN",
+        "title": "Chào con, Bảo An.",
+        "message": "Một ngày bình thường đã trở thành ngày nhà mình luôn nhớ.",
+        "detail0": "17 tháng 9, 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng",
+        "label0": "NGÀY",
+        "label1": "GIỜ",
+        "label2": "NƠI SINH"
+      }
+    },
+    {
+      "id": "card_premium48_01",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "headline": "NGÀY CON ĐẾN",
+        "title": "Chào con, Bảo An.",
+        "message": "Một ngày bình thường đã trở thành ngày nhà mình luôn nhớ.",
+        "detail0": "17 tháng 9, 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng",
+        "label0": "NGÀY",
+        "label1": "GIỜ",
+        "label2": "NƠI SINH"
+      }
+    },
+    {
+      "id": "card_premium48_01",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "headline": "THE DAY YOU ARRIVED",
+        "title": "Welcome, Bảo An.",
+        "message": "An ordinary day became one we will always remember.",
+        "detail0": "17 September 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng",
+        "label0": "DATE",
+        "label1": "TIME",
+        "label2": "BIRTHPLACE"
+      }
+    },
+    {
+      "id": "card_premium48_01",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "headline": "THE DAY YOU ARRIVED",
+        "title": "Welcome, Bảo An.",
+        "message": "An ordinary day became one we will always remember.",
+        "detail0": "17 September 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng",
+        "label0": "DATE",
+        "label1": "TIME",
+        "label2": "BIRTHPLACE"
+      }
+    },
+    {
+      "id": "card_premium48_02",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "headline": "MỘT CÁI ÔM MUỐN NHỚ",
+        "title": "Một cái ôm muốn nhớ.",
+        "message": "Chưa biết hết mọi điều. Chỉ biết muốn ôm con thật lâu.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_02",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "headline": "MỘT CÁI ÔM MUỐN NHỚ",
+        "title": "Lần đầu ôm con.",
+        "message": "Chưa biết hết mọi điều. Chỉ biết muốn ôm con thật lâu.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_02",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "headline": "AN EMBRACE TO REMEMBER",
+        "title": "An embrace to remember.",
+        "message": "So much still to learn. For now, just holding you close.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 September 2026"
+      }
+    },
+    {
+      "id": "card_premium48_02",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "headline": "AN EMBRACE TO REMEMBER",
+        "title": "Our first embrace.",
+        "message": "So much still to learn. For now, just holding you close.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 September 2026"
+      }
+    },
+    {
+      "id": "video_premium48_01",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "title": "Ngày con đến",
+        "scene1": "Ngày 17 tháng 9, 2026…",
+        "scene2": "Nhà mình đón một người rất nhỏ.",
+        "scene3": "Một bàn tay. Một cái ôm.",
+        "scene4": "Và thật nhiều điều đang bắt đầu.",
+        "scene5": "Chào con, Bảo An.",
+        "detail0": "17 tháng 9, 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng"
+      }
+    },
+    {
+      "id": "video_premium48_01",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "title": "Ngày con đến",
+        "scene1": "Ngày 17 tháng 9, 2026…",
+        "scene2": "Nhà mình đón một người rất nhỏ.",
+        "scene3": "Một bàn tay. Một cái ôm.",
+        "scene4": "Và thật nhiều điều đang bắt đầu.",
+        "scene5": "Chào con, Bảo An.",
+        "detail0": "17 tháng 9, 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng"
+      }
+    },
+    {
+      "id": "video_premium48_01",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "title": "The Day You Arrived",
+        "scene1": "On 17 September 2026…",
+        "scene2": "Someone very small joined our world.",
+        "scene3": "A tiny hand. An embrace.",
+        "scene4": "And so much just beginning.",
+        "scene5": "Welcome, Bảo An.",
+        "detail0": "17 September 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng"
+      }
+    },
+    {
+      "id": "video_premium48_01",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthDate": "2026-09-17",
+        "birthTime": "09:35",
+        "placeName": "Đà Nẵng"
+      },
+      "expected": {
+        "title": "The Day You Arrived",
+        "scene1": "On 17 September 2026…",
+        "scene2": "Someone very small joined our world.",
+        "scene3": "A tiny hand. An embrace.",
+        "scene4": "And so much just beginning.",
+        "scene5": "Welcome, Bảo An.",
+        "detail0": "17 September 2026",
+        "detail1": "09:35",
+        "detail2": "Đà Nẵng"
+      }
+    },
+    {
+      "id": "video_premium48_02",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "title": "Một cái ôm muốn nhớ",
+        "scene1": "Có một khoảnh khắc…",
+        "scene2": "Mọi thứ quanh mình chậm lại.",
+        "scene3": "Con nằm gọn trong vòng tay.",
+        "scene4": "Mình bắt đầu làm quen với nhau.",
+        "scene5": "Một cái ôm muốn nhớ.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "video_premium48_02",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "title": "Lần đầu ôm con",
+        "scene1": "Có một khoảnh khắc…",
+        "scene2": "Mọi thứ quanh mình chậm lại.",
+        "scene3": "Con nằm gọn trong vòng tay.",
+        "scene4": "Mình bắt đầu làm quen với nhau.",
+        "scene5": "Cái ôm đầu tiên. Nhớ mãi.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "video_premium48_02",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "title": "An Embrace to Remember",
+        "scene1": "There was a moment…",
+        "scene2": "When everything seemed to slow down.",
+        "scene3": "You fit right into these arms.",
+        "scene4": "We began getting to know each other.",
+        "scene5": "An embrace to remember.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 September 2026"
+      }
+    },
+    {
+      "id": "video_premium48_02",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh",
+        "momentDate": "2026-09-18",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "title": "Our First Embrace",
+        "scene1": "There was a moment…",
+        "scene2": "When everything seemed to slow down.",
+        "scene3": "You fit right into these arms.",
+        "scene4": "We began getting to know each other.",
+        "scene5": "Our first embrace. Always remembered.",
+        "signature": "Mẹ Linh & Bảo An",
+        "detail0": "18 September 2026"
+      }
+    }
+  ]
+}

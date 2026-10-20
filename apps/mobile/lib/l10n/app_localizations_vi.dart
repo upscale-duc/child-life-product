@@ -18175,4 +18175,391 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get nuVitaAbroad =>
       'Lịch uống vitamin A theo chương trình của Việt Nam; ở nơi bạn sống, hãy hỏi bác sĩ của bé.';
+
+  @override
+  String asReadSnapshot(String time) {
+    return 'Dữ liệu đến $time';
+  }
+
+  @override
+  String get asReadDetails => 'Xem chi tiết';
+
+  @override
+  String get asOpenSolids => 'Mở Ăn dặm';
+
+  @override
+  String get asOpenFirstAid => 'Mở Sơ cứu';
+
+  @override
+  String get pv2Title => 'Hôm nay của nhà mình';
+
+  @override
+  String get pv2Open => 'Xem việc hữu ích hôm nay';
+
+  @override
+  String get pv2Context => 'Hôm nay bạn có thể dành thời gian thế nào?';
+
+  @override
+  String get pv2Usual => 'Như mọi ngày';
+
+  @override
+  String get pv2FewMinutes => 'Chỉ vài phút';
+
+  @override
+  String get pv2Busy => 'Đang bận';
+
+  @override
+  String get pv2OtherCarer => 'Người khác chăm';
+
+  @override
+  String get pv2Temporary => 'Lựa chọn hôm nay tự hết hạn vào cuối ngày.';
+
+  @override
+  String get pv2Focus => 'Một điều muốn ưu tiên tuần này';
+
+  @override
+  String get pv2Play => 'Có một lúc chơi cùng con';
+
+  @override
+  String get pv2Handover => 'Bàn giao dễ hơn';
+
+  @override
+  String get pv2Routine => 'Hiểu nhịp sinh hoạt';
+
+  @override
+  String get pv2NoFocus => 'Chưa chọn';
+
+  @override
+  String get pv2Unusual => 'Sinh hoạt hôm nay khác thường';
+
+  @override
+  String get pv2UnusualHint =>
+      'Tạm dừng gợi ý theo nhịp; nhắc việc bạn đã đặt vẫn giữ nguyên.';
+
+  @override
+  String get pv2Next => 'Một việc vừa sức lúc này';
+
+  @override
+  String get pv2BecauseNeed => 'Theo điều gia đình vừa ghi nhận hôm nay';
+
+  @override
+  String get pv2BecauseFocus => 'Theo ưu tiên tuần này của bạn';
+
+  @override
+  String get pv2BecauseInterest => 'Theo tuổi của bé và điều bạn quan tâm';
+
+  @override
+  String get pv2Minutes => 'phút';
+
+  @override
+  String get pv2OpenActivity => 'Xem cách thực hiện';
+
+  @override
+  String get pv2Controls => 'Điều chỉnh gợi ý';
+
+  @override
+  String get pv2Save => 'Lưu lại';
+
+  @override
+  String get pv2Hide => 'Ẩn thẻ này';
+
+  @override
+  String get pv2Snooze => 'Hôm nay bận · để sau 3 ngày';
+
+  @override
+  String get pv2Dislike => 'Tôi không thích gợi ý này';
+
+  @override
+  String get pv2Known => 'Tôi đã biết rồi';
+
+  @override
+  String get pv2Exclude => 'Không phù hợp với bé · áp dụng cho cả nhà';
+
+  @override
+  String get pv2Restore => 'Khôi phục gợi ý';
+
+  @override
+  String get pv2Intend => 'Mình định thử';
+
+  @override
+  String get pv2Tried => 'Mình đã thử';
+
+  @override
+  String get pv2Helpful => 'Có ích với nhà mình';
+
+  @override
+  String get pv2Unsure => 'Chưa thấy rõ';
+
+  @override
+  String get pv2NoAnswer =>
+      'Bạn có thể trả lời sau. Một lần thử chưa nói lên tác dụng.';
+
+  @override
+  String get pv2Patterns => 'Nhịp riêng từ nhật ký';
+
+  @override
+  String get pv2FeedPattern => 'Khoảng cách giữa các lần ghi bú';
+
+  @override
+  String get pv2SleepPattern => 'Độ dài các giấc ngày đã ghi';
+
+  @override
+  String get pv2PatternHint =>
+      'Khoảng thường gặp trong nhật ký 14 ngày; không phải lịch phải theo.';
+
+  @override
+  String get pv2Insufficient =>
+      'Chưa có đủ dữ liệu ổn định để hiển thị nhịp. Bạn vẫn có thể dùng các gợi ý khác.';
+
+  @override
+  String get pv2Samples => 'mẫu ghi';
+
+  @override
+  String get pv2Days => 'ngày có mẫu';
+
+  @override
+  String get pv2Updated => 'Dữ liệu gần nhất';
+
+  @override
+  String get pv2Notes => 'Sổ tay nhà mình';
+
+  @override
+  String get pv2AddNote => 'Thêm điều muốn ứng dụng nhớ';
+
+  @override
+  String get pv2NoteText => 'Điều nhà mình muốn ghi nhớ';
+
+  @override
+  String get pv2Shared => 'Chia sẻ với người được xem chăm sóc bé';
+
+  @override
+  String get pv2Personal => 'Chỉ riêng bạn';
+
+  @override
+  String get pv2Category => 'Loại ghi chú';
+
+  @override
+  String get pv2Sleep => 'Ngủ';
+
+  @override
+  String get pv2Soothing => 'Dỗ bé';
+
+  @override
+  String get pv2Feeding => 'Ăn, bú';
+
+  @override
+  String get pv2Avoid => 'Điều cần tránh';
+
+  @override
+  String get pv2Carer => 'Người chăm';
+
+  @override
+  String get pv2Other => 'Khác';
+
+  @override
+  String get pv2Expiry => 'Giữ ghi chú trong';
+
+  @override
+  String get pv2OneDay => 'Hôm nay';
+
+  @override
+  String get pv2SevenDays => '7 ngày';
+
+  @override
+  String get pv2ThirtyDays => '30 ngày';
+
+  @override
+  String get pv2NoExpiry => 'Đến khi xoá';
+
+  @override
+  String get pv2ConfirmNote => 'Xác nhận lưu ghi chú';
+
+  @override
+  String get pv2Edit => 'Sửa';
+
+  @override
+  String get pv2Delete => 'Xoá';
+
+  @override
+  String get pv2Cancel => 'Để sau';
+
+  @override
+  String get pv2NoteHint =>
+      'Ứng dụng dùng ghi chú đã xác nhận để chọn gợi ý. Ghi chú tự do không phải chỉ định y tế.';
+
+  @override
+  String get pv2Work => 'Bàn giao trong 30 giây';
+
+  @override
+  String get pv2WorkHint =>
+      'Việc gia đình đã đặt. Hoàn tất nhắc việc không tự tạo bản ghi chăm sóc.';
+
+  @override
+  String get pv2NoWork => 'Chưa có nhắc việc đang chờ.';
+
+  @override
+  String get pv2Accept => 'Tôi nhận việc này';
+
+  @override
+  String get pv2Release => 'Trả lại việc';
+
+  @override
+  String get pv2Complete => 'Đánh dấu hoàn tất';
+
+  @override
+  String get pv2Unclaimed => 'Chưa có người nhận';
+
+  @override
+  String get pv2Accepted => 'Đã có người nhận';
+
+  @override
+  String get pv2Acknowledge => 'Tôi đã nhận bàn giao';
+
+  @override
+  String get pv2Acknowledged => 'Bạn đã nhận bàn giao lúc';
+
+  @override
+  String get pv2LastRecords => 'Các lần ghi gần nhất';
+
+  @override
+  String get pv2Weekly => 'Tuần này điều gì hữu ích?';
+
+  @override
+  String get pv2WeekTried => 'hoạt động đã xác nhận thử';
+
+  @override
+  String get pv2WeekHelpful => 'hoạt động thấy có ích';
+
+  @override
+  String get pv2WeekHint =>
+      'Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.';
+
+  @override
+  String get pv2History => 'Điều đang dùng để cá nhân hoá';
+
+  @override
+  String get pv2Saved => 'Đã lưu';
+
+  @override
+  String get pv2Digest => 'Gợi ý mỗi ngày trên thiết bị này';
+
+  @override
+  String get pv2DigestHint =>
+      'Tự chọn bật. Mỗi ngày tối đa một gợi ý mới, trong giờ cho phép. Chọn giờ trong cài đặt cá nhân hoá.';
+
+  @override
+  String get pv2DigestTitle => 'Một việc vừa sức cho hôm nay';
+
+  @override
+  String get pv2DigestBody => 'Mở để xem gợi ý mới và việc gia đình đã đặt.';
+
+  @override
+  String get pv2Loading => 'Đang chuẩn bị gợi ý…';
+
+  @override
+  String get pv2Unavailable =>
+      'Chưa tải được thông tin mới. Kết nối mạng rồi thử lại nhé.';
+
+  @override
+  String get pv2Retry => 'Thử lại';
+
+  @override
+  String get pv2Refresh => 'Cập nhật';
+
+  @override
+  String get pv2Conflict =>
+      'Thông tin đã thay đổi trên thiết bị khác. Đã tải lại để bạn xem.';
+
+  @override
+  String get pv2ChangeSaved => 'Đã cập nhật lựa chọn của bạn';
+
+  @override
+  String get pv2PatternReminder => 'Đặt nhắc theo khoảng này';
+
+  @override
+  String get pv2AvoidActivity =>
+      'Không gợi ý hoạt động này cho bé (không bắt buộc)';
+
+  @override
+  String get pv2HandoverChanged =>
+      'Có cập nhật sau lần bạn nhận bàn giao. Vui lòng xem lại các việc và ghi chú mới.';
+
+  @override
+  String get pv2SleepRecent => 'Giấc ngủ trên các ngày ghi đủ gần đây';
+
+  @override
+  String get pv2SleepBaseline => 'Giai đoạn tham chiếu trước đó';
+
+  @override
+  String get pv2ExpiredNote => 'Đã hết hạn · không dùng để cá nhân hoá';
+
+  @override
+  String get p48Language => 'Ngôn ngữ thành phẩm';
+
+  @override
+  String get p48Details => 'Thông tin khoảnh khắc';
+
+  @override
+  String get p48Copy => 'Nội dung thành phẩm';
+
+  @override
+  String get p48Format => 'Tỷ lệ thành phẩm';
+
+  @override
+  String get p48ReducedMotion => 'Chuyển động nhẹ';
+
+  @override
+  String get p48CropHint =>
+      'Chọn từng cảnh để căn ảnh. Cảnh kết có thể dùng lại ảnh bạn đã chọn.';
+
+  @override
+  String get p48Crop => 'Căn ảnh';
+
+  @override
+  String get p48Horizontal => 'Trái / phải';
+
+  @override
+  String get p48Vertical => 'Trên / dưới';
+
+  @override
+  String get p48Zoom => 'Thu phóng';
+
+  @override
+  String get p48TooLong =>
+      'Có nội dung chưa vừa khung. Hãy rút ngắn trước khi xuất.';
+
+  @override
+  String get p48Invalid =>
+      'Kiểm tra thông tin bắt buộc và nội dung trong ngoặc nhọn.';
+
+  @override
+  String get p48Reset => 'Dùng lại nội dung mẫu';
+
+  @override
+  String get p48MotionPreview => 'Xem chuyển động 4 giây';
+
+  @override
+  String get p48ChangePhotos => 'Đổi ảnh đã chọn';
+
+  @override
+  String get p48PreviewFailed =>
+      'Chưa tải được đủ ảnh để xem trước. Hãy thử lại.';
+
+  @override
+  String get p48WholePhoto => 'Giữ trọn ảnh';
+
+  @override
+  String get p48FillFrame => 'Lấp đầy khung';
+
+  @override
+  String p48PhotoSlot(int n) {
+    return 'Ảnh $n';
+  }
+
+  @override
+  String get p48UseSuggestions => 'Dùng ghi chú gợi ý';
+
+  @override
+  String get p48SuggestionsHint =>
+      'Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú.';
 }

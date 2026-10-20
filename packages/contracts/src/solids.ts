@@ -230,6 +230,11 @@ export function solidsRecipeSchema(strict: boolean) {
   return z
     .object({
       title: loc(S.recipeTitle, min),
+      /** Absent/empty = shared internationally; an optional published country restriction. */
+      countries: z
+        .array(z.string().regex(/^[A-Z]{2}$/))
+        .max(100)
+        .optional(),
       summary: loc(S.recipeSummary, 0),
       cover: z
         .object({ image: imageIdSchema, alt: loc(S.alt, min) })

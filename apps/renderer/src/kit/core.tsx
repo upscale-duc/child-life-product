@@ -2,6 +2,7 @@ import {
   keepsakeBrandSize,
   keepsakeBrandSvg,
   type KeepsakeVideoBrand,
+  type KeepsakePresentation,
 } from '@child-life/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import {
@@ -32,6 +33,8 @@ export const sec = (s: number) => Math.round(s * FPS);
 
 /** What a Chapter 01 composition receives (a superset of the V1 props). */
 export interface StoryProps {
+  presentation?: KeepsakePresentation;
+  artAssets?: Record<string, string>;
   photos: string[];
   title: string;
   message: string;

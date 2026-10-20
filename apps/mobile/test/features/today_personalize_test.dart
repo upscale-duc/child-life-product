@@ -565,7 +565,7 @@ void main() {
       await tester.ensureVisible(milestone);
       await tester.pumpAndSettle();
       await tester.tap(milestone);
-      await tester.tap(find.bySemanticsLabel('Tuỳ chọn cho thẻ này'));
+      await tester.tap(find.bySemanticsLabel('Tuỳ chọn cho thẻ này').first);
       expect(opened, ['milestone', 'dismiss']);
     });
 
@@ -707,7 +707,7 @@ void main() {
       );
     });
 
-    test('ranking: interests first, turned-down topics out, at most 3', () {
+    test('ranking: interests first, fewer topics last, at most two supporting cards', () {
       ForBabyCard card(String id, Interest? i) => ForBabyCard(
         id: id,
         kicker: id,
@@ -731,7 +731,7 @@ void main() {
         card('d', null),
         card('e', Interest.milestones),
       ], prefs);
-      expect(ranked.map((c) => c.id), ['c', 'e', 'a']);
+      expect(ranked.map((c) => c.id), ['c', 'e']);
     });
 
     test('soothing days count the last three days', () {

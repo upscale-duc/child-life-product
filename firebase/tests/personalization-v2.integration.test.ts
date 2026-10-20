@@ -1,0 +1,269 @@
+import { randomUUID } from 'node:crypto';
+import { deleteApp, initializeApp } from 'firebase-admin/app';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { defaultFlags } from '@child-life/contracts';
+import {
+  personalizedDay,
+  updatePersonalization,
+  reservePersonalizedDigest,
+} from '../functions/src/personalization-v2.js';
+import { aggregatePersonalizationContent } from '../functions/src/personalization-stats.js';
+import contentSeed from '../../content/rhythm/content.seed.json' with { type: 'json' };
+
+const app = initializeApp(
+  { projectId: 'demo-child-life-personalization-v2' },
+  `pv2-${randomUUID()}`,
+);
+const db = getFirestore(app);
+const now = new Date('2026-10-20T12:00:00Z');
+const reminderId = `rm_${'1'.repeat(32)}`;
+const call = (uid: string, action: Record<string, unknown>, date = now) =>
+  updatePersonalization(db, uid, { babyId: 'baby', action }, date, 'test');
+const read = (uid: string, date = now) =>
+  personalizedDay(db, uid, { babyId: 'baby', locale: 'vi' }, date, 'test');
+const reason = (p: Promise<unknown>) =>
+  p.then(
+    () => 'ok',
+    (e: { reason?: string }) => e.reason,
+  );
+beforeAll(() => {
+  expect(process.env.FIRESTORE_EMULATOR_HOST).toBeTruthy();
+});
+afterAll(() => deleteApp(app));
+beforeEach(async () => {
+  for (const collection of await db.listCollections()) await db.recursiveDelete(collection);
+  const flag = { ...defaultFlags.rhythm, enabled: true, scope: 'all' };
+  await db.doc('config/flags').set({ rhythm: flag, personalization: flag });
+  await db.doc('publicConfig/content_rhythm').set(contentSeed);
+  await db.doc('families/f').set({ ownerUid: 'parent', country: 'VN' });
+  await db
+    .doc('babies/baby')
+    .set({ familyId: 'f', state: 'active', timeZone: { zone: 'Asia/Ho_Chi_Minh' } });
+  await db.doc('babies/baby/restricted/profile').set({ dateOfBirth: '2026-08-15' });
+  for (const [uid, role] of [
+    ['parent', 'coParent'],
+    ['carer', 'caregiver'],
+    ['carer2', 'caregiver'],
+    ['relative', 'relative'],
+  ]) {
+    await db.doc(`babies/baby/members/${uid}`).set({
+      uid,
+      role,
+      status: 'active',
+      displayName: uid,
+      relation: 'other',
+      relationCustom: null,
+      permissions: { dailyCare: true },
+    });
+  }
+  await db.doc(`babies/baby/reminders/${reminderId}`).set({
+    title: 'Việc gia đình đã đặt',
+    dueAt: Timestamp.fromDate(now),
+    done: false,
+    assigneeUid: 'carer',
+  });
+});
+describe('P-172 scoped, expiring personalization', () => {
+  it('does not let a client choose another author or write across family boundaries', async () => {
+    expect(
+      await reason(
+        updatePersonalization(
+          db,
+          'outsider',
+          { babyId: 'baby', action: { kind: 'context', value: 'busy' } },
+          now,
+          'test',
+        ),
+      ),
+    ).toBe('NOT_MEMBER');
+    expect(
+      await reason(call('parent', { kind: 'context', value: 'busy', authorUid: 'carer' })),
+    ).toBe('bad-request');
+    expect(await reason(call('relative', { kind: 'context', value: 'busy' }))).toBe('ROLE_DENIED');
+  });
+  it('expires capacity and goals and isolates two caregivers', async () => {
+    await call('carer', { kind: 'context', value: 'busy' });
+    await call('carer', { kind: 'focus', value: 'play' });
+    expect((await read('carer')).context).toBe('busy');
+    expect((await read('parent')).context).toBe('usual');
+    expect((await read('carer', new Date('2026-10-20T17:00:00Z'))).context).toBe('usual');
+    expect((await read('carer', new Date('2026-10-25T17:00:00Z'))).focus).toBeNull();
+  });
+  it('separates save, try and helpful; restores visibility without losing the outcome', async () => {
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' });
+    expect(
+      await reason(call('carer', { kind: 'respond', contentId: 'act_a', value: 'helpful' })),
+    ).toBe('try-first');
+    expect(
+      await reason(call('carer', { kind: 'respond', contentId: 'act_a', value: 'unsure' })),
+    ).toBe('try-first');
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'tried' });
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'helpful' });
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' });
+    const snapshot = await read('carer');
+    expect(snapshot.weekly).toEqual({ tried: 1, helpful: 1 });
+    expect((await read('parent')).responses).toEqual({});
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'restore' });
+    expect((await read('carer')).responses.act_a?.value).toBe('restore');
+    expect((await read('carer')).weekly).toEqual({ tried: 1, helpful: 1 });
+    expect(
+      await reason(call('carer', { kind: 'respond', contentId: 'act_a', value: 'exclude' })),
+    ).toBe('ROLE_DENIED');
+  });
+  it('a personal restore cannot undo a family exclusion; another co-parent can restore it', async () => {
+    const id = contentSeed.activities[0]!.id;
+    await call('parent', { kind: 'respond', contentId: id, value: 'exclude' });
+    await call('carer', { kind: 'respond', contentId: id, value: 'dislike' });
+    await call('carer', { kind: 'respond', contentId: id, value: 'restore' });
+    expect((await db.doc(`babies/baby/personalizationExclusions/${id}`).get()).exists).toBe(true);
+    await db
+      .doc('babies/baby/members/parent2')
+      .set({ uid: 'parent2', role: 'coParent', status: 'active' });
+    expect((await read('parent2')).sharedExclusions.map((r) => r.id)).toContain(id);
+    await call('parent2', { kind: 'respond', contentId: id, value: 'restore' });
+    expect((await db.doc(`babies/baby/personalizationExclusions/${id}`).get()).exists).toBe(true);
+    expect(
+      await reason(
+        call('carer', { kind: 'respond', contentId: id, value: 'restore', scope: 'baby' }),
+      ),
+    ).toBe('ROLE_DENIED');
+    await call('parent2', { kind: 'respond', contentId: id, value: 'restore', scope: 'baby' });
+    expect((await db.doc(`babies/baby/personalizationExclusions/${id}`).get()).exists).toBe(false);
+  });
+  it('makes private notes private, preserves author authority and detects revision conflicts', async () => {
+    const note = {
+      kind: 'note',
+      id: 'nb_private',
+      revision: 0,
+      text: 'Riêng tôi',
+      category: 'other',
+      scope: 'person',
+      days: 1,
+      avoidActivityId: null,
+    };
+    await call('carer', note);
+    expect((await read('carer')).notes).toHaveLength(1);
+    expect((await read('parent')).notes).toHaveLength(0);
+    expect(await reason(call('parent', { ...note, revision: 1, text: 'Sửa của người khác' }))).toBe(
+      'ROLE_DENIED',
+    );
+    expect(await reason(call('carer', note))).toBe('note-conflict');
+    expect((await read('carer', new Date('2026-10-20T17:00:00Z'))).notes).toHaveLength(0);
+    expect((await read('carer', new Date('2026-10-20T17:00:00Z'))).expiredNotes).toHaveLength(1);
+    expect((await read('parent', new Date('2026-10-20T17:00:00Z'))).expiredNotes).toHaveLength(0);
+    await call('carer', { kind: 'delete_note', id: 'nb_private', revision: 1 });
+    expect((await read('carer', new Date('2026-10-20T17:00:00Z'))).expiredNotes).toHaveLength(0);
+  });
+  it('suppresses pattern ranges for a health day or explicitly changed routine', async () => {
+    await call('parent', { kind: 'routine', unusual: true });
+    expect((await read('carer')).unusual).toBe(true);
+    expect((await read('carer')).patterns).toEqual([]);
+    await db.doc('babies/baby/checkins/health').set({ date: '2026-10-20', observation: 'health' });
+    expect((await read('carer')).health).toBe(true);
+  });
+  it('does not expose restricted growth facts through handover', async () => {
+    await db
+      .doc('babies/baby/records/growth')
+      .set({ type: 'growth', occurredAt: Timestamp.fromDate(now), data: { weightKg: 4 } });
+    expect((await read('carer')).lastRecords).toEqual([]);
+  });
+  it('rejects revoked members and deleting babies on mutation and read', async () => {
+    await db.doc('babies/baby/members/carer').update({ status: 'left' });
+    expect(await reason(call('carer', { kind: 'context', value: 'busy' }))).toBe('NOT_MEMBER');
+    expect(await reason(read('carer'))).toBe('NOT_MEMBER');
+    await db.doc('babies/baby').update({ state: 'deleting' });
+    expect(await reason(call('parent', { kind: 'context', value: 'busy' }))).not.toBe('ok');
+  });
+});
+describe('P-172 transactional care handover', () => {
+  it('permits only the assigned caregiver; concurrent claims have exactly one winner', async () => {
+    expect(
+      await reason(call('carer2', { kind: 'work', reminderId, transition: 'accept', revision: 0 })),
+    ).toBe('ROLE_DENIED');
+    const results = await Promise.all([
+      reason(call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 })),
+      reason(call('parent', { kind: 'work', reminderId, transition: 'accept', revision: 0 })),
+    ]);
+    expect(results.filter((r) => r === 'ok')).toHaveLength(1);
+    expect(results.filter((r) => r === 'work-conflict')).toHaveLength(1);
+  });
+  it('completes an existing reminder once without inventing a care record', async () => {
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 });
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 });
+    await call('carer', { kind: 'work', reminderId, transition: 'complete', revision: 1 });
+    await call('carer', { kind: 'work', reminderId, transition: 'complete', revision: 1 });
+    expect((await db.doc(`babies/baby/reminders/${reminderId}`).get()).get('doneBy')).toBe('carer');
+    expect((await db.collection('babies/baby/records').get()).empty).toBe(true);
+    expect((await read('carer')).work).toEqual([]);
+  });
+  it('marks a changed handover without invalidating acknowledgement on a personal context change', async () => {
+    const first = await read('carer');
+    await call('carer', { kind: 'acknowledge', version: first.handoverVersion });
+    await call('carer', { kind: 'context', value: 'few_minutes' });
+    expect((await read('carer')).handoverChanged).toBe(false);
+    await db.doc(`babies/baby/reminders/${reminderId}`).update({ title: 'Việc đã thay đổi' });
+    expect((await read('carer')).handoverChanged).toBe(true);
+  });
+});
+
+describe('P-172 daily suggestions and truthful aggregates', () => {
+  const device = `d_${'a'.repeat(32)}`;
+  const secondDevice = `d_${'b'.repeat(32)}`;
+  const reserve = (deviceId = device) =>
+    reservePersonalizedDigest(db, 'parent', { babyId: 'baby', deviceId }, now, 'test');
+  it('does not schedule from an old clock choice without explicit enabling', async () => {
+    await db.doc('users/parent/settings/personalization').set({ digestTime: '20:30' });
+    expect((await reserve()).fireAt).toBeNull();
+  });
+  it('reserves at most one install/day and retains the original lease after a transfer', async () => {
+    await call('parent', { kind: 'digest', enabled: true, deviceId: device });
+    expect((await reserve()).fireAt).toBe('2026-10-20T13:30:00.000Z');
+    expect((await reserve()).fireAt).toBe('2026-10-20T13:30:00.000Z');
+    await call('parent', { kind: 'digest', enabled: true, deviceId: secondDevice });
+    expect((await reserve(secondDevice)).fireAt).toBeNull();
+    expect((await reserve()).fireAt).toBeNull();
+  });
+  it('respects quiet hours, busy context, notification switches and revoked access', async () => {
+    await call('parent', { kind: 'digest', enabled: true, deviceId: device });
+    await db
+      .doc('users/parent/settings/personalization')
+      .update({ quietHours: { from: '20:00', to: '06:00' } });
+    expect((await reserve()).fireAt).toBeNull();
+    await db.doc('users/parent/settings/personalization').update({ quietHours: null });
+    await call('parent', { kind: 'context', value: 'busy' });
+    expect((await reserve()).fireAt).toBeNull();
+    await call('parent', { kind: 'context', value: 'usual' });
+    await db.doc('users/parent/settings/notifications').set({ rhythm: false });
+    expect((await reserve()).fireAt).toBeNull();
+    await db.doc('babies/baby/members/parent').update({ status: 'removed' });
+    expect(await reason(reserve())).toBe('NOT_MEMBER');
+  });
+  it('moves a still-pending slot when its designated install changes the digest time', async () => {
+    await call('parent', { kind: 'digest', enabled: true, deviceId: device });
+    await reserve();
+    await db.doc('users/parent/settings/personalization').update({ digestTime: '21:00' });
+    expect((await reserve()).fireAt).toBe('2026-10-20T14:00:00.000Z');
+    expect(
+      (await db.doc('users/parent/settings/personalizationDigestLease').get()).get('fireAt'),
+    ).toBe('2026-10-20T14:00:00.000Z');
+  });
+  it('aggregates generation separately and is idempotent without overwriting answer counters', async () => {
+    const act = contentSeed.activities[0]!;
+    await call('parent', { kind: 'respond', contentId: act.id, value: 'save' });
+    await call('parent', { kind: 'respond', contentId: act.id, value: 'save' });
+    const stat = await db.doc('contentStatsDaily/2026-10-20').get();
+    expect(stat.get(`answers.${act.id}__v1.save`)).toBe(1);
+    expect(JSON.stringify(stat.data())).not.toContain('parent');
+    await db
+      .doc('babies/baby/recommendations/r1')
+      .set({ contentId: act.id, contentVersion: 1, generatedAt: '2026-10-20T12:00:00.000Z' });
+    const next = new Date('2026-10-20T20:00:00Z');
+    await aggregatePersonalizationContent(db, next);
+    await aggregatePersonalizationContent(db, next);
+    const result = (await db.doc('contentStatsDaily/2026-10-20').get()).data()!;
+    expect(result.generated[`${act.id}__v1`].count).toBe(1);
+    expect(result.answers[`${act.id}__v1`].save).toBe(1);
+    expect(JSON.stringify(result)).not.toContain('baby');
+  });
+});

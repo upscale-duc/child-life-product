@@ -1,5 +1,6 @@
 import {
   defaultRhythmRules,
+  activitySchema,
   needs,
   rankingWeights,
   staffCan,
@@ -74,6 +75,8 @@ import {
   reasonOk,
   type PillTone,
 } from '../ui';
+import toddlerDraftData from '../../../../content/rhythm/toddler-v2.draft.json';
+import { PersonalizationMetrics } from './PersonalizationMetrics';
 import {
   ActivityEditor,
   AgeCardEditor,
@@ -130,8 +133,8 @@ import {
  * main action; the model details, history, kill switches and explanations are folded away.
  */
 
-export type Tab = 'reference' | 'content' | 'rules';
-const tabs: Tab[] = ['reference', 'content', 'rules'];
+export type Tab = 'reference' | 'content' | 'rules' | 'metrics';
+const tabs: Tab[] = ['reference', 'content', 'rules', 'metrics'];
 type ContentTab = 'activities' | 'ageCards' | 'health';
 const contentTabs: ContentTab[] = ['activities', 'ageCards', 'health'];
 
@@ -364,6 +367,30 @@ export function RhythmBody({
       </TabsContent>
 
       <TabsContent value="content" className="grid grid-cols-1 gap-4">
+        {canEdit && content.editing && (
+          <div className="grid gap-2">
+            <Button
+              variant="outline"
+              onClick={() =>
+                content.edit((draft) => {
+                  const ids = new Set(draft.activities.map((a) => a.id));
+                  for (const value of toddlerDraftData) {
+                    const activity = activitySchema.parse(value);
+                    if (!ids.has(activity.id)) {
+                      draft.activities.push(activity);
+                      ids.add(activity.id);
+                    }
+                  }
+                })
+              }
+            >
+              <FormattedMessage id="rhythm.importToddler" />
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage id="rhythm.importToddlerHint" />
+            </p>
+          </div>
+        )}
         <IssuesContext.Provider
           value={{ issues: contentCheck?.issues ?? new Map(), show: content.showIssues }}
         >
@@ -409,6 +436,10 @@ export function RhythmBody({
           rules={rules}
           content={view.content.current}
         />
+      </TabsContent>
+
+      <TabsContent value="metrics">
+        <PersonalizationMetrics metrics={view.metrics} />
       </TabsContent>
 
       {dialog?.kind === 'save' && (

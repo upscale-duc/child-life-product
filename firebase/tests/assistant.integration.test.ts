@@ -779,6 +779,7 @@ describe('U: credits — quote, reserve, commit, release, upgrade', () => {
     const s = await snapshot(r.taskId!);
     expect(s.messages.at(-1)!.parts).toEqual([
       { type: 'health_support', schemaVersion: 1, signs: ['breathing'] },
+      expect.objectContaining({ type: 'read_card', tool: 'first_aid' }),
     ]);
     expect(gw.calls.extract).toHaveLength(0);
     expect(await opsDocs()).toHaveLength(0);
@@ -1000,7 +1001,7 @@ describe('E: schema, grounding, model failure', () => {
 
 // =====================================================================================
 describe('R: read summaries', () => {
-  it('R01: 3 bottles = 390 ml and nursing 35 min stay apart; 5 sources; wording grounded', async () => {
+  it('R01: 3 bottles = 390 ml and nursing 35 min stay apart; 5 sources; deterministic wording', async () => {
     await seedPackLogs();
     const gw = fakeModelGateway({
       extract: [summaryAsk(), summaryAsk()],
@@ -1022,10 +1023,11 @@ describe('R: read summaries', () => {
     expect([...summary.sourceIds].sort()).toEqual(
       [...(outputs.summary!.sources as string[])].sort(),
     );
-    expect(parts.find((p) => p.type === 'text')).toMatchObject({
-      text: 'Đã ghi 3 cữ bú bình, 390 ml; bú mẹ 2 lần, 35 phút.',
-    });
-    // A wording with a number that is not in the facts falls back to the engine's template.
+    const wording = parts.find((p) => p.type === 'text') as { text: string };
+    expect(wording.text).toContain('390 ml');
+    expect(wording.text).toContain('35 phút');
+    expect(gw.calls.word).toHaveLength(0);
+    // Read answers always use the engine template, without a wording-model call.
     const r2 = await start('Hôm nay con bú thế nào?', { gw });
     await work(r2.taskId!, gw);
     const text = (await snapshot(r2.taskId!)).messages

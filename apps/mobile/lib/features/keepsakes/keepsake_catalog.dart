@@ -260,6 +260,22 @@ class KeepsakeTextLayer extends KeepsakeLayer {
     this.caps = false,
   });
 
+  KeepsakeTextLayer withRect(KeepsakeRect rect) => KeepsakeTextLayer(
+    field: field,
+    rect: rect,
+    font: font,
+    weight: weight,
+    size: size,
+    color: color,
+    opacity: opacity,
+    align: align,
+    italic: italic,
+    maxLines: maxLines,
+    rotate: rotate,
+    letterSpacing: letterSpacing,
+    caps: caps,
+  );
+
   /// Degrees (E-3).
   final double rotate;
 
@@ -395,6 +411,116 @@ class KeepsakeText {
 }
 
 @immutable
+class KeepsakePersonalField {
+  const KeepsakePersonalField(
+    this.key,
+    this.label,
+    this.type,
+    this.max,
+    this.required,
+    this.source, [
+    this.suggestion,
+  ]);
+  final Localized? suggestion;
+  final String key, type;
+  final Localized label;
+  final int max;
+  final bool required;
+  final String? source;
+}
+
+@immutable
+class KeepsakePersonalCopy {
+  const KeepsakePersonalCopy(
+    this.key,
+    this.label,
+    this.text,
+    this.fallback,
+    this.requires,
+    this.editable,
+    this.max,
+  );
+  final String key;
+  final Localized label, text, fallback;
+  final List<String> requires;
+  final bool editable;
+  final int max;
+}
+
+@immutable
+class KeepsakePersonalization {
+  const KeepsakePersonalization({
+    required this.group,
+    required this.fields,
+    required this.copy,
+    required this.beats,
+    this.dateRange,
+  });
+  final ({String start, String end})? dateRange;
+  final Localized group;
+  final List<KeepsakePersonalField> fields;
+  final List<KeepsakePersonalCopy> copy;
+  final List<({List<int> slots, String textKey})> beats;
+
+  static KeepsakePersonalization? fromJson(Object? j) {
+    if (j is! Map) return null;
+    final group = Localized.fromJson(j['group']);
+    if (group == null || j['fields'] is! List || j['copy'] is! List) {
+      return null;
+    }
+    return KeepsakePersonalization(
+      group: group,
+      dateRange:
+          j['dateRange'] is Map &&
+              (j['dateRange'] as Map)['start'] is String &&
+              (j['dateRange'] as Map)['end'] is String
+          ? (
+              start: (j['dateRange'] as Map)['start'] as String,
+              end: (j['dateRange'] as Map)['end'] as String,
+            )
+          : null,
+      fields: [
+        for (final f in j['fields'] as List)
+          if (f is Map && Localized.fromJson(f['label']) != null)
+            KeepsakePersonalField(
+              f['key'] as String,
+              Localized.fromJson(f['label'])!,
+              f['type'] as String,
+              (f['max'] as num).toInt(),
+              f['required'] == true,
+              f['source'] as String?,
+              Localized.fromJson(f['suggestion']),
+            ),
+      ],
+      copy: [
+        for (final c in j['copy'] as List)
+          if (c is Map && Localized.fromJson(c['text']) != null)
+            KeepsakePersonalCopy(
+              c['key'] as String,
+              Localized.fromJson(c['label'])!,
+              Localized.fromJson(c['text'])!,
+              Localized.fromJson(c['fallback']) ?? const Localized('', ''),
+              (c['requires'] as List? ?? []).cast<String>(),
+              c['editable'] == true,
+              (c['max'] as num?)?.toInt() ?? 160,
+            ),
+      ],
+      beats: [
+        for (final b in j['beats'] as List? ?? [])
+          if (b is Map)
+            (
+              slots: (b['slots'] as List)
+                  .cast<num>()
+                  .map((n) => n.toInt())
+                  .toList(),
+              textKey: b['textKey'] as String,
+            ),
+      ],
+    );
+  }
+}
+
+@immutable
 class KeepsakeTemplate {
   const KeepsakeTemplate({
     required this.id,
@@ -419,8 +545,18 @@ class KeepsakeTemplate {
     this.defaultMusic,
     this.preview,
     this.brand,
+    this.personalization,
+    this.videoAssets = const {},
+    this.previews = const {},
+    this.thumbs = const {},
   });
 
+  final Map<String, String> previews, thumbs;
+  String? previewFor(Locale locale) =>
+      previews.isEmpty ? preview : previews[locale.languageCode];
+  String? thumbFor(Locale locale) => thumbs[locale.languageCode] ?? thumb;
+  final Map<String, String> videoAssets;
+  final KeepsakePersonalization? personalization;
   final String id;
   final int version;
   final KeepsakeKind kind;
@@ -508,6 +644,21 @@ class KeepsakeTemplate {
     final photos = json['photos'] is Map ? json['photos'] as Map : const {};
     final age = json['ageDays'];
     return KeepsakeTemplate(
+      previews: json['previews'] is Map
+          ? (json['previews'] as Map).cast<String, String>()
+          : const {},
+      thumbs: json['thumbs'] is Map
+          ? (json['thumbs'] as Map).cast<String, String>()
+          : const {},
+      videoAssets: {
+        if (json['assets'] is Map)
+          for (final e in (json['assets'] as Map).entries)
+            if (e.key is String && e.value is String && e.key != 'music')
+              e.key as String: e.value as String,
+      },
+      personalization: KeepsakePersonalization.fromJson(
+        json['personalization'],
+      ),
       id: id,
       version: version.toInt(),
       kind: kind,

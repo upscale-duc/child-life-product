@@ -1,0 +1,154 @@
+{
+  "fileKey": "8xApPL1XnwD4n1bpr0dPhq",
+  "fileUrl": "https://www.figma.com/design/8xApPL1XnwD4n1bpr0dPhq?node-id=2-2",
+  "account": "Personal Duckie",
+  "team": "Duc N.'s team",
+  "pageId": "0:1",
+  "boardId": "2:2",
+  "date": "2026-10-20",
+  "assetCount": 20,
+  "totalVectors": 118,
+  "rasterImageCount": 0,
+  "assets": [
+    {
+      "name": "p48-home-house",
+      "id": "2:30",
+      "vectorCount": 11,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-house.svg"
+    },
+    {
+      "name": "p48-home-key",
+      "id": "2:47",
+      "vectorCount": 6,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-key.svg"
+    },
+    {
+      "name": "p48-home-route",
+      "id": "2:60",
+      "vectorCount": 4,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-route.svg"
+    },
+    {
+      "name": "p48-home-door-left",
+      "id": "2:70",
+      "vectorCount": 5,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-door-left.svg"
+    },
+    {
+      "name": "p48-home-door-right",
+      "id": "2:81",
+      "vectorCount": 5,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-door-right.svg"
+    },
+    {
+      "name": "p48-home-window",
+      "id": "2:93",
+      "vectorCount": 4,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-window.svg"
+    },
+    {
+      "name": "p48-home-tag",
+      "id": "2:103",
+      "vectorCount": 5,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-tag.svg"
+    },
+    {
+      "name": "p48-home-envelope",
+      "id": "2:114",
+      "vectorCount": 7,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-envelope.svg"
+    },
+    {
+      "name": "p48-home-plant",
+      "id": "2:127",
+      "vectorCount": 5,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-plant.svg"
+    },
+    {
+      "name": "p48-home-roof-frame",
+      "id": "2:138",
+      "vectorCount": 4,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-home-roof-frame.svg"
+    },
+    {
+      "name": "p48-scrap-washi-ripped",
+      "id": "2:167",
+      "vectorCount": 2,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-washi-ripped.svg"
+    },
+    {
+      "name": "p48-scrap-washi-grid",
+      "id": "2:175",
+      "vectorCount": 15,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-washi-grid.svg"
+    },
+    {
+      "name": "p48-scrap-corner-fold",
+      "id": "2:196",
+      "vectorCount": 4,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-corner-fold.svg"
+    },
+    {
+      "name": "p48-scrap-tab",
+      "id": "2:206",
+      "vectorCount": 4,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-tab.svg"
+    },
+    {
+      "name": "p48-scrap-month-one",
+      "id": "2:216",
+      "vectorCount": 5,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-month-one.svg"
+    },
+    {
+      "name": "p48-scrap-pencil-loop",
+      "id": "2:230",
+      "vectorCount": 2,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-pencil-loop.svg"
+    },
+    {
+      "name": "p48-scrap-photo-corners",
+      "id": "2:238",
+      "vectorCount": 3,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-photo-corners.svg"
+    },
+    {
+      "name": "p48-scrap-envelope",
+      "id": "2:247",
+      "vectorCount": 6,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-envelope.svg"
+    },
+    {
+      "name": "p48-scrap-paper-strip",
+      "id": "2:259",
+      "vectorCount": 3,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-paper-strip.svg"
+    },
+    {
+      "name": "p48-scrap-stitches",
+      "id": "2:268",
+      "vectorCount": 18,
+      "imagePaintCount": 0,
+      "source": "design/keepsake-art/p48-scrap-stitches.svg"
+    }
+  ]
+}

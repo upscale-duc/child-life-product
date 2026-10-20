@@ -81,6 +81,71 @@ const live: KeepsakeView = {
 };
 
 describe('Mẫu kỷ niệm', () => {
+  it('shows newly added templates first within each group, regardless of display order or version', () => {
+    const card = keepsakeSeedV1.templates.find((t) => t.kind === 'card')!;
+    const video = keepsakeSeedV1.templates.find((t) => t.kind === 'video')!;
+    const added = [card, video].map((t) => ({
+      ...t,
+      id: `${t.id}_new`,
+      name: { vi: `Mới thêm ${t.kind}`, en: `Newly added ${t.kind}` },
+      order: 999,
+      version: 1,
+    }));
+    const view: KeepsakeView = {
+      ...live,
+      current: {
+        ...live.current!,
+        catalog: {
+          ...keepsakeSeedV1,
+          templates: [...keepsakeSeedV1.templates.map((t) => ({ ...t, version: 20 })), ...added],
+        },
+      },
+    };
+    for (const locale of ['vi', 'en'] as const) {
+      const html = render(
+        <KeepsakesBody view={view} canEdit canApprove onChanged={() => {}} />,
+        ['admin'],
+        locale,
+      );
+      expect(html).toContain(locale === 'vi' ? 'Sắp xếp mẫu' : 'Sort templates');
+      for (const original of [card, video]) {
+        const newest = added.find((t) => t.kind === original.kind)!;
+        expect(html.indexOf(newest.name[locale])).toBeGreaterThan(-1);
+        expect(html.indexOf(newest.name[locale])).toBeLessThan(html.indexOf(original.name[locale]));
+      }
+    }
+  });
+
+  it('uses the matching MP4 and poster when the portal language changes', () => {
+    const video = keepsakeSeedV1.templates.find((t) => t.kind === 'video')!;
+    const localized = {
+      ...video,
+      preview: 'legacy-vi_12345678.mp4',
+      previews: { vi: 'demo-vi_12345678.mp4', en: 'demo-en_12345678.mp4' },
+      thumbs: { vi: 'poster-vi_12345678.webp', en: 'poster-en_12345678.webp' },
+    };
+    const view: KeepsakeView = {
+      ...live,
+      current: { ...live.current!, catalog: { ...keepsakeSeedV1, templates: [localized] } },
+      assets: [
+        ...Object.values(localized.previews),
+        ...Object.values(localized.thumbs),
+        localized.preview,
+      ].map((asset) => ({ asset, url: `https://img.test/${asset}` })),
+    };
+    for (const language of ['vi', 'en'] as const) {
+      const html = render(
+        <KeepsakesBody view={view} canEdit canApprove onChanged={() => {}} />,
+        ['admin'],
+        language,
+      );
+      expect(html).toContain(`src="https://img.test/${localized.previews[language]}#t=4"`);
+      expect(html).toContain(`src="https://img.test/${localized.thumbs[language]}"`);
+      expect(html).not.toContain('legacy-vi_12345678.mp4');
+      expect(html).not.toContain(localized.previews[language === 'en' ? 'vi' : 'en']);
+    }
+  });
+
   it('tabs: the gallery, the Cao cấp setting, the files and history', () => {
     const tab = (initialTab: KeepsakeTab) =>
       text(

@@ -1,3 +1,5 @@
+import { assistantReadsIn, privateReadTool } from '@child-life/contracts';
+import { assistantRead, firstAidRead, allowsAssistantRead } from './assistant-reads.js';
 import { Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
   assistantPartTypes,
@@ -44,7 +46,6 @@ import {
   ModelUnavailable,
   parseExtraction,
   parseUnderstanding,
-  parseWording,
   readToolNames,
   type ClarificationField,
   type ModelExtraction,
@@ -92,9 +93,7 @@ import {
   lastMilkOf,
   localClock,
   overlappingSleeps,
-  sleepFactsTool,
   usageSnapshotTool,
-  wordingGrounded,
   type PreparedDraft,
   type ReadResult,
 } from './assistant-tools.js';
@@ -221,6 +220,8 @@ interface WorkResult {
   // ---- Lumi rework 2026-10-15 ----
   /** The model found money (an expense): a shared task moves to the author's private thread. */
   spending?: boolean;
+  /** A module result whose audience is narrower than the shared conversation. */
+  privateRead?: boolean;
   /** The text extraction kept while a server question is open (no second model call). */
   textReading?: ModelExtraction | null;
   /** L9: the understanding kept instead (re-resolved with the answers; no second call). */
@@ -447,7 +448,16 @@ async function process(
       errorCode: null,
       drafts: [],
       // Slice A5: with the household's approved emergency number, when the pack has one.
-      parts: [await healthSupportPart(db, s, signs)],
+      parts: [
+        await healthSupportPart(db, s, signs),
+        ...(await firstAidRead({
+          db,
+          s,
+          anchor: t.anchorInstant.toDate(),
+          locale: t.locale,
+          text,
+        })),
+      ],
       clarification: null,
       modelCalls: 0,
     };
@@ -461,6 +471,26 @@ async function process(
   const dialogue = dialogueSnap?.exists ? dialogueOf(dialogueSnap, now) : undefined;
   if (t.followUp && t.followUp.kind !== 'continue' && t.modality === 'text') {
     return { ...(await processFollowUp(db, t, s, dialogue ?? null, now)), dialogue };
+  }
+  // Phase 2: known read questions never need a model, AI availability or credits.
+  const directReads = t.modality === 'text' && t.ruleRead === true ? assistantReadsIn(text) : [];
+  if (directReads.length > 0) {
+    const parts = (
+      await Promise.all(
+        directReads.map((r) => assistantRead({ db, s, anchor, locale: t.locale, text }, r)),
+      )
+    ).flat();
+    return {
+      outcome: { kind: 'answer', parts },
+      errorCode: null,
+      drafts: [],
+      parts,
+      clarification: null,
+      modelCalls: 0,
+      releaseReady: true,
+      dialogue,
+      privateRead: directReads.some((r) => privateReadTool(r.tool)),
+    };
   }
   // Lumi L2 (D-088 §4.4): a routine log `startTask` read with the rules is read the same way
   // here — no model, so no model gate (owner 2026-10-19: 0 credits).
@@ -811,7 +841,10 @@ async function process(
   ) {
     bareLog = true;
   }
-  const spending = ext.intents.some((i) => i.kind === 'expense');
+  const privateRead = ext.reads.some((r) => privateReadTool(r.tool));
+  const spending =
+    ext.intents.some((i) => i.kind === 'expense') ||
+    ext.reads.some((r) => r.tool === 'spending_month');
   const lead: AssistantPart[] = routing ? [spendingPrivatePart(t.locale)] : [];
 
   // One question at a time, each field asked once, within the round cap (brief p.9).
@@ -831,7 +864,10 @@ async function process(
       outcome: { kind: 'health_route', signs: care.signs },
       errorCode: null,
       drafts: [],
-      parts: [await healthSupportPart(db, s, care.signs)],
+      parts: [
+        await healthSupportPart(db, s, care.signs),
+        ...(await firstAidRead({ db, s, anchor, locale: t.locale, text })),
+      ],
       clarification: null,
       modelCalls,
     };
@@ -892,6 +928,7 @@ async function process(
       textReading: ext,
       understanding,
       spending,
+      privateRead,
       dialogue,
       about: aboutOf(ext),
     };
@@ -961,6 +998,7 @@ async function process(
       textReading: ext,
       understanding,
       spending,
+      privateRead,
       dialogue,
       about: aboutOf(ext),
     };
@@ -980,7 +1018,7 @@ async function process(
     // LUMI-14: the credit balance is never the answer to a question about the baby.
     const careQuestion =
       r.tool === 'usage_snapshot' && !asksAboutCredits(text) && asksAboutCare(text);
-    if ((r.tool !== 'usage_snapshot' || careQuestion) && !canRead) {
+    if (!allowsAssistantRead(r.tool, s.member) || (careQuestion && !canRead)) {
       if (readDenied.length === 0) readDenied.push(noticePart({ code: 'READ_DENIED' }, t.locale));
       continue;
     }
@@ -992,12 +1030,16 @@ async function process(
       }
       continue;
     }
+    if (!['care_summary', 'sleep_facts', 'usage_snapshot'].includes(r.tool)) {
+      parts.push(...(await assistantRead({ db, s, anchor, locale: t.locale, text }, r)));
+      continue;
+    }
     switch (r.tool) {
       case 'care_summary':
         results.push(await careSummaryTool(db, s, anchor, r.dayOffset, t.locale));
         break;
       case 'sleep_facts':
-        results.push(await sleepFactsTool(db, s, anchor, t.locale));
+        parts.push(...(await assistantRead({ db, s, anchor, locale: t.locale, text }, r)));
         break;
       case 'usage_snapshot':
         results.push(await usageSnapshotTool(db, s, now, t.locale));
@@ -1007,25 +1049,7 @@ async function process(
   for (const r of results) parts.push(...r.parts);
   const facts = results.flatMap((r) => r.facts);
   if (facts.length > 0) {
-    // The model only words engine facts; any number not in the facts → the template.
-    let wording = facts.map((f) => f.text).join(' ');
-    // Lumi L2: inline without the time for a second call, the template is the answer.
-    const budget = modelBudget(deps);
-    if (gateway && budget !== null) {
-      try {
-        const out = parseWording(
-          await callWithTimeout(
-            (signal) => gateway.word({ locale: t.locale, facts }, signal),
-            budget,
-          ),
-        );
-        modelCalls += 1;
-        if (out.ok && wordingGrounded(out.value, facts)) wording = out.value;
-      } catch {
-        modelCalls += 1;
-      }
-      if (gateway.name === 'openai') await charge(db, now);
-    }
+    const wording = facts.map((f) => f.text).join(' ');
     parts.push({ type: 'text', schemaVersion: 1, text: wording });
   }
 
@@ -1118,11 +1142,12 @@ async function process(
       modelCalls,
       care: careResult,
       spending,
+      privateRead,
       dialogue,
       timers,
     };
   }
-  if (results.length > 0 || careOut?.useful) {
+  if (results.length > 0 || parts.some((p) => p.type === 'read_card') || careOut?.useful) {
     return {
       outcome: { kind: 'answer', parts },
       errorCode: null,
@@ -1132,6 +1157,7 @@ async function process(
       modelCalls,
       care: careResult,
       spending,
+      privateRead,
       dialogue,
       timers,
     };
@@ -1147,6 +1173,7 @@ async function process(
       modelCalls,
       care: careResult,
       spending,
+      privateRead,
     };
   }
   if (care.kind === 'blocked') {
@@ -1178,6 +1205,7 @@ async function process(
       clarification: null,
       modelCalls,
       spending,
+      privateRead,
       dialogue,
     };
   }
@@ -1516,7 +1544,10 @@ async function finalize(
     // ---- Lumi rework 2026-10-15 (every read before the first write) ----
     // D-075 #2: the model found money in a shared task → the task and its user messages move to
     // the author's private thread before anything visible (drafts, reply) is written.
-    const move = t.visibility === 'shared' && work.spending === true && t.modality === 'text';
+    const move =
+      t.visibility === 'shared' &&
+      (work.spending === true || work.privateRead === true) &&
+      t.modality === 'text';
     let target = conversation;
     let moved: FirebaseFirestore.QueryDocumentSnapshot[] = [];
     let sharedLast: string | null = null;
@@ -1740,7 +1771,7 @@ async function finalize(
         tx.delete(m.ref);
       }
       tx.update(conversation.ref, { lastTaskId: sharedLast });
-      if (!parts.some((p) => p.type === 'text' && p.code === 'SPENDING_PRIVATE')) {
+      if (work.spending && !parts.some((p) => p.type === 'text' && p.code === 'SPENDING_PRIVATE')) {
         parts = [spendingPrivatePart(t.locale), ...parts];
       }
     }
@@ -1821,7 +1852,9 @@ async function finalize(
         ? {
             conversationId: target.id,
             visibility: 'private',
-            routing: { reason: 'spending', from: 'shared_thread', at: 'worker' },
+            routing: work.spending
+              ? { reason: 'spending', from: 'shared_thread', at: 'worker' }
+              : null,
           }
         : {}),
     });

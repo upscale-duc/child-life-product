@@ -1,3 +1,4 @@
+import { freezeKeepsakePresentation } from '@child-life/contracts';
 import { createHash } from 'node:crypto';
 import {
   fillName,
@@ -207,6 +208,17 @@ export async function requestMemoryStory(
     if ((value ?? '').length > max) throw new KeepsakeJobError('invalid-argument', 'text-too-long');
   }
   const locale = req.locale ?? 'vi';
+  let presentation: KeepsakeJobInput['presentation'];
+  if (!!template.personalization !== !!req.presentation) {
+    throw new KeepsakeJobError('invalid-argument', 'personalization-required');
+  }
+  if (template.personalization && req.presentation) {
+    try {
+      presentation = freezeKeepsakePresentation(template.personalization, req.presentation, locale);
+    } catch {
+      throw new KeepsakeJobError('invalid-argument', 'personalization-invalid');
+    }
+  }
 
   // Every photo is this baby's, ready, not deleted (the Rules gate the app, this the server).
   const items = await db.getAll(
@@ -319,10 +331,11 @@ export async function requestMemoryStory(
     if (first) birthStats = keepsakeBirthStats(first.w, first.l, locale);
   }
   const input: KeepsakeJobInput = {
+    ...(presentation ? { presentation } : {}),
     template,
     photos,
     texts: {
-      title: req.texts.title || defaultText('title'),
+      title: presentation?.copy.title ?? (req.texts.title || defaultText('title')),
       message: req.texts.message || defaultText('message'),
       ...extra,
     },
@@ -662,7 +675,7 @@ export async function completeKeepsakeJob(
       templateId: template.id,
       templateVersion: template.version,
       occasion,
-      format: 'story',
+      format: (fresh.get('input') as KeepsakeJobInput).presentation?.format ?? 'story',
     };
     tx.set(db.doc(`babies/${babyId}/media/${ids.mediaId}`), {
       id: ids.mediaId,

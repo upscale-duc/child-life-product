@@ -10,6 +10,8 @@ import '../../core/widgets/cl_inputs.dart' show ClToggle;
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import 'assistant_models.dart';
+import 'assistant_read_links.dart';
+import '../care/care_repository.dart' show inBabyZone;
 import 'assistant_widgets.dart';
 
 /// Slice A5 chat components (Figma page 568:18): Chat/Tệp đính kèm (photo bubble, CH09–CH14),
@@ -888,14 +890,14 @@ class AsGuidanceCard extends StatelessWidget {
 // ---------- CH18 recipes ----------
 
 /// The approved recipes (≤ 3) with why, the count left out for a recorded reaction (a family
-/// note, not an allergy diagnosis), the unknown-tolerance caveat and "Ghi bữa ăn" (no meal log
-/// yet → unavailable).
+/// note, not an allergy diagnosis), with links to the actual Solids module.
 class AsRecipeCard extends StatelessWidget {
   const AsRecipeCard({
     required this.items,
     required this.excludedCount,
     required this.caveat,
     required this.mealLogAvailable,
+    this.onOpen,
     super.key,
   });
 
@@ -903,6 +905,7 @@ class AsRecipeCard extends StatelessWidget {
   final int excludedCount;
   final String? caveat;
   final bool mealLogAvailable;
+  final ValueChanged<String>? onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -944,6 +947,15 @@ class AsRecipeCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(r.title, style: _semi(context, 14, c.ink)),
+                        if (RegExp(
+                          r'^rcp_[a-z0-9_]{2,40}$',
+                        ).hasMatch(r.recipeId))
+                          AsLink(
+                            label: l10n.asReadDetails,
+                            onPressed: () => onOpen?.call(
+                              '/care/solids/recipe/${r.recipeId}',
+                            ),
+                          ),
                         Text(
                           [
                             if (r.durationMin > 0)
@@ -1007,21 +1019,10 @@ class AsRecipeCard extends StatelessWidget {
               : (caveat ?? l10n.asRecipesCaveat),
           style: cl.text.caption.copyWith(height: 1.4, color: c.inkMuted),
         ),
-        if (!mealLogAvailable) ...[
-          const SizedBox(height: ClSpace.s3),
-          AsButton(
-            label: l10n.asLogMeal,
-            style: AsButtonStyle.outline,
-            expand: true,
-            onPressed: null,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.asLogMealUnavailable,
-            textAlign: TextAlign.center,
-            style: cl.text.caption.copyWith(color: c.inkMuted),
-          ),
-        ],
+        AsLink(
+          label: l10n.asOpenSolids,
+          onPressed: () => onOpen?.call('/care/solids'),
+        ),
       ],
     );
   }
@@ -1079,4 +1080,69 @@ class AsNoticeCard extends StatelessWidget {
       ?action,
     ],
   );
+}
+
+/// The same semantic card for all Phase 2 reads, using the current Light/Night care tokens.
+class AsReadCard extends StatelessWidget {
+  const AsReadCard({
+    required this.part,
+    required this.zone,
+    required this.onOpen,
+    super.key,
+  });
+  final ReadCardPart part;
+  final String zone;
+  final ValueChanged<String> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final at = inBabyZone(zone, part.asOf);
+    final l10n = AppLocalizations.of(context);
+    final stamp =
+        '${at.day}/${at.month}/${at.year} · ${at.hour.toString().padLeft(2, '0')}:${at.minute.toString().padLeft(2, '0')}';
+    return AsCard(
+      title: part.title,
+      children: [
+        Text(
+          l10n.asReadSnapshot(stamp),
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+        for (final row in part.rows)
+          Padding(
+            padding: const EdgeInsets.only(top: ClSpace.s3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (row.label.isNotEmpty)
+                  Text(
+                    row.label,
+                    style: cl.text.label.copyWith(color: cl.colors.ink),
+                  ),
+                Text(
+                  row.value,
+                  style: cl.text.body.copyWith(color: cl.colors.ink),
+                ),
+                if (assistantReadRoute(row.link) case final route?)
+                  AsLink(
+                    label: l10n.asReadDetails,
+                    onPressed: () => onOpen(route),
+                  ),
+              ],
+            ),
+          ),
+        if (part.caveat case final note?) ...[
+          const SizedBox(height: ClSpace.s3),
+          Text(
+            note,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
+        if (assistantReadRoute(part.actionLink) case final route?) ...[
+          const SizedBox(height: ClSpace.s3),
+          AsLink(label: part.actionLabel, onPressed: () => onOpen(route)),
+        ],
+      ],
+    );
+  }
 }

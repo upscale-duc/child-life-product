@@ -162,10 +162,22 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       }
     }
 
+    const artAssets: Record<string, string> = {};
+    for (const [role, asset] of Object.entries(
+      input.template.personalization ? input.template.assets : {},
+    )) {
+      if (!asset.endsWith('.webp')) continue;
+      const file = `art-${role}.webp`;
+      await deps.store.download(`content/keepsakes/${asset}`, join(dir, file));
+      artAssets[role] = served.url(file);
+    }
+
     // 2. "Thêm chữ, lời nhắn và nhạc" + 3. "Xuất video 9:16".
     await progress('compose', 12);
     const props: MemoryStoryProps = {
       photos,
+      presentation: input.presentation,
+      artAssets,
       title: input.texts.title,
       message: input.texts.message,
       name: input.name,

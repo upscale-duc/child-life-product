@@ -19290,4 +19290,392 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nuVitaAbroad =>
       'This vitamin A schedule is Việt Nam\'s national programme; where you live, ask your baby\'s doctor.';
+
+  @override
+  String asReadSnapshot(String time) {
+    return 'Data as of $time';
+  }
+
+  @override
+  String get asReadDetails => 'View details';
+
+  @override
+  String get asOpenSolids => 'Open Solids';
+
+  @override
+  String get asOpenFirstAid => 'Open First aid';
+
+  @override
+  String get pv2Title => 'Your family today';
+
+  @override
+  String get pv2Open => 'See today’s useful actions';
+
+  @override
+  String get pv2Context => 'What fits your day?';
+
+  @override
+  String get pv2Usual => 'As usual';
+
+  @override
+  String get pv2FewMinutes => 'Just a few minutes';
+
+  @override
+  String get pv2Busy => 'Busy today';
+
+  @override
+  String get pv2OtherCarer => 'Another caregiver';
+
+  @override
+  String get pv2Temporary => 'Today’s choice expires at the end of the day.';
+
+  @override
+  String get pv2Focus => 'One focus for this week';
+
+  @override
+  String get pv2Play => 'A little time to play';
+
+  @override
+  String get pv2Handover => 'Easier handovers';
+
+  @override
+  String get pv2Routine => 'Understand your routine';
+
+  @override
+  String get pv2NoFocus => 'No focus';
+
+  @override
+  String get pv2Unusual => 'Today’s routine is unusual';
+
+  @override
+  String get pv2UnusualHint =>
+      'Pause routine patterns; your own reminders stay in place.';
+
+  @override
+  String get pv2Next => 'One manageable action now';
+
+  @override
+  String get pv2BecauseNeed => 'Based on what your family reported today';
+
+  @override
+  String get pv2BecauseFocus => 'Based on your focus this week';
+
+  @override
+  String get pv2BecauseInterest =>
+      'Based on your baby’s age and your interests';
+
+  @override
+  String get pv2Minutes => 'minutes';
+
+  @override
+  String get pv2OpenActivity => 'See the steps';
+
+  @override
+  String get pv2Controls => 'Adjust suggestions';
+
+  @override
+  String get pv2Save => 'Save';
+
+  @override
+  String get pv2Hide => 'Hide this card';
+
+  @override
+  String get pv2Snooze => 'Busy today · snooze for 3 days';
+
+  @override
+  String get pv2Dislike => 'This suggestion isn’t for me';
+
+  @override
+  String get pv2Known => 'I already know this';
+
+  @override
+  String get pv2Exclude => 'Unsuitable for baby · applies to the family';
+
+  @override
+  String get pv2Restore => 'Restore suggestion';
+
+  @override
+  String get pv2Intend => 'I plan to try';
+
+  @override
+  String get pv2Tried => 'I tried it';
+
+  @override
+  String get pv2Helpful => 'Helpful for our family';
+
+  @override
+  String get pv2Unsure => 'Not sure yet';
+
+  @override
+  String get pv2NoAnswer =>
+      'You can answer later. One attempt does not establish an effect.';
+
+  @override
+  String get pv2Patterns => 'Patterns in your diary';
+
+  @override
+  String get pv2FeedPattern => 'Intervals between recorded feeds';
+
+  @override
+  String get pv2SleepPattern => 'Lengths of recorded daytime sleeps';
+
+  @override
+  String get pv2PatternHint =>
+      'Typical ranges in your 14-day diary; not a schedule to follow.';
+
+  @override
+  String get pv2Insufficient =>
+      'There isn’t enough recent, consistent data for a pattern yet. Other suggestions remain available.';
+
+  @override
+  String get pv2Samples => 'recorded samples';
+
+  @override
+  String get pv2Days => 'days with samples';
+
+  @override
+  String get pv2Updated => 'Latest data';
+
+  @override
+  String get pv2Notes => 'Family notebook';
+
+  @override
+  String get pv2AddNote => 'Add something to remember';
+
+  @override
+  String get pv2NoteText => 'What your family wants to remember';
+
+  @override
+  String get pv2Shared => 'Share with members allowed to view baby care';
+
+  @override
+  String get pv2Personal => 'Only you';
+
+  @override
+  String get pv2Category => 'Note category';
+
+  @override
+  String get pv2Sleep => 'Sleep';
+
+  @override
+  String get pv2Soothing => 'Soothing';
+
+  @override
+  String get pv2Feeding => 'Feeding';
+
+  @override
+  String get pv2Avoid => 'Things to avoid';
+
+  @override
+  String get pv2Carer => 'Caregiver';
+
+  @override
+  String get pv2Other => 'Other';
+
+  @override
+  String get pv2Expiry => 'Keep this note for';
+
+  @override
+  String get pv2OneDay => 'Today';
+
+  @override
+  String get pv2SevenDays => '7 days';
+
+  @override
+  String get pv2ThirtyDays => '30 days';
+
+  @override
+  String get pv2NoExpiry => 'Until deleted';
+
+  @override
+  String get pv2ConfirmNote => 'Confirm and save note';
+
+  @override
+  String get pv2Edit => 'Edit';
+
+  @override
+  String get pv2Delete => 'Delete';
+
+  @override
+  String get pv2Cancel => 'Later';
+
+  @override
+  String get pv2NoteHint =>
+      'Confirmed notes help select suggestions. A free-text note is not medical guidance.';
+
+  @override
+  String get pv2Work => 'A 30-second handover';
+
+  @override
+  String get pv2WorkHint =>
+      'Tasks your family set. Completing a reminder does not create a care record.';
+
+  @override
+  String get pv2NoWork => 'No pending reminders.';
+
+  @override
+  String get pv2Accept => 'I’ll take this';
+
+  @override
+  String get pv2Release => 'Release task';
+
+  @override
+  String get pv2Complete => 'Mark complete';
+
+  @override
+  String get pv2Unclaimed => 'Unclaimed';
+
+  @override
+  String get pv2Accepted => 'Accepted';
+
+  @override
+  String get pv2Acknowledge => 'I’ve read the handover';
+
+  @override
+  String get pv2Acknowledged => 'You acknowledged the handover at';
+
+  @override
+  String get pv2LastRecords => 'Latest recorded care';
+
+  @override
+  String get pv2Weekly => 'What helped this week?';
+
+  @override
+  String get pv2WeekTried => 'activities confirmed tried';
+
+  @override
+  String get pv2WeekHelpful => 'activities found helpful';
+
+  @override
+  String get pv2WeekHint =>
+      'From your feedback over the last 7 days; before-and-after numbers do not establish an effect.';
+
+  @override
+  String get pv2History => 'What shapes your suggestions';
+
+  @override
+  String get pv2Saved => 'Saved';
+
+  @override
+  String get pv2Digest => 'Daily suggestion on this device';
+
+  @override
+  String get pv2DigestHint =>
+      'Opt in to at most one fresh suggestion a day, outside quiet hours. Choose the time in personalization settings.';
+
+  @override
+  String get pv2DigestTitle => 'One manageable action for today';
+
+  @override
+  String get pv2DigestBody =>
+      'Open for a fresh suggestion and your family’s reminders.';
+
+  @override
+  String get pv2Loading => 'Preparing suggestions…';
+
+  @override
+  String get pv2Unavailable =>
+      'Fresh information is unavailable. Reconnect and try again.';
+
+  @override
+  String get pv2Retry => 'Retry';
+
+  @override
+  String get pv2Refresh => 'Refresh';
+
+  @override
+  String get pv2Conflict =>
+      'This changed on another device. The latest version has been loaded.';
+
+  @override
+  String get pv2ChangeSaved => 'Your choice was updated';
+
+  @override
+  String get pv2PatternReminder => 'Set a reminder from this range';
+
+  @override
+  String get pv2AvoidActivity => 'Exclude this activity for baby (optional)';
+
+  @override
+  String get pv2HandoverChanged =>
+      'There are changes since you acknowledged the handover. Review the latest work and notes.';
+
+  @override
+  String get pv2SleepRecent => 'Sleep on recent sufficiently logged days';
+
+  @override
+  String get pv2SleepBaseline => 'Earlier reference period';
+
+  @override
+  String get pv2ExpiredNote => 'Expired · no longer used for personalization';
+
+  @override
+  String get p48Language => 'Keepsake language';
+
+  @override
+  String get p48Details => 'Moment details';
+
+  @override
+  String get p48Copy => 'Keepsake copy';
+
+  @override
+  String get p48Format => 'Output format';
+
+  @override
+  String get p48ReducedMotion => 'Reduced motion';
+
+  @override
+  String get p48CropHint =>
+      'Adjust the crop for each scene. The closing scene may reprise a photo you selected.';
+
+  @override
+  String get p48Crop => 'Adjust crop';
+
+  @override
+  String get p48Horizontal => 'Left / right';
+
+  @override
+  String get p48Vertical => 'Up / down';
+
+  @override
+  String get p48Zoom => 'Zoom';
+
+  @override
+  String get p48TooLong =>
+      'Some text does not fit. Please shorten it before exporting.';
+
+  @override
+  String get p48Invalid =>
+      'Check required details and remove any text in braces.';
+
+  @override
+  String get p48Reset => 'Restore default copy';
+
+  @override
+  String get p48MotionPreview => 'Watch 4-second preview';
+
+  @override
+  String get p48ChangePhotos => 'Change selected photos';
+
+  @override
+  String get p48PreviewFailed =>
+      'Could not load every preview photo. Please try again.';
+
+  @override
+  String get p48WholePhoto => 'Show whole photo';
+
+  @override
+  String get p48FillFrame => 'Fill the frame';
+
+  @override
+  String p48PhotoSlot(int n) {
+    return 'Photo $n';
+  }
+
+  @override
+  String get p48UseSuggestions => 'Use suggested notes';
+
+  @override
+  String get p48SuggestionsHint =>
+      'Use these suggestions only if they fit your baby; you can edit each note.';
 }

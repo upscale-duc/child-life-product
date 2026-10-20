@@ -160,6 +160,16 @@ Server read tools, each a typed answer card with a link (no model when the quest
 
 `meal_ideas` reads the solids diary (tried foods, reactions, allergens) instead of an empty list.
 
+**Phase 2 / L3 implementation (2026-10-20, workspace):** all rows above now have server read
+adapters, typed cards and module links. Recognised read questions run without a model or credits;
+module permissions and private spending / milestone results are enforced on the server. Meal
+suggestions read the real solids diary. Mobile links preserve filters and select the task's baby
+before opening a module. Optional country metadata for articles / recipes defaults to global
+content for existing documents. On the owner’s follow-up request of 2026-10-20, the three chat
+processing functions were deployed to dev and the release dev app was installed and opened on
+Duckie’s iPhone 14 Pro Max. Full manual device flows and prod remain unverified / not deployed.
+The review hand-off, tests and deploy evidence are in [Phase 2 review](../assistant/phase2-review-2026-10-20.md).
+
 ## 6. Phase 3 — Lumi does what the app does (writes)
 
 - **Ăn dặm meals** from chat ("trưa bé ăn cháo bí 3 thìa, lần đầu ăn bí") → a meal draft with first

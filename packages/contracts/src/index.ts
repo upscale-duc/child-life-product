@@ -46,3 +46,16 @@ export * from './solids.js';
 export * from './milestones.js';
 // Notification centre (D-076 #2): inbox, EN07 settings, quiet hours.
 export * from './notifications.js';
+
+export * from './assistant-reads.js';
+export * from './personalization-v2.js';
+
+export * from './keepsake-personalization.js';
+export * from './keepsakes-premium48.js';
+export * from './keepsakes-premium48-phase2.js';
+
+export * from './keepsakes-premium48-phase3.js';
+
+export * from './keepsakes-premium48-phase4.js';
+
+export * from './keepsakes-premium48-phase5.js';

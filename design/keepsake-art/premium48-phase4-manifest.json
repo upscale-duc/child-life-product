@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "createdOn": "2026-10-20",
+  "licence": "Original Child Life vector artwork",
+  "assets": [
+    {
+      "name": "p48-chapter-month-tab",
+      "family": "chapter",
+      "title": "Tab tháng",
+      "usage": "Nhãn trống cho tháng 01–12 ở layer text riêng.",
+      "file": "p48-chapter-month-tab.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-index-rail",
+      "family": "chapter",
+      "title": "Dải chỉ mục",
+      "usage": "Mười hai vạch, nhãn tháng được render động; không chữ đóng trong SVG.",
+      "file": "p48-chapter-index-rail.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-hero-frame",
+      "family": "chapter",
+      "title": "Khung ảnh chủ đạo",
+      "usage": "Viền trong suốt bất đối xứng nhẹ, ảnh lớn là trung tâm.",
+      "file": "p48-chapter-hero-frame.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-small-frame",
+      "family": "chapter",
+      "title": "Khung ảnh phụ",
+      "usage": "Viền gọn để hai ảnh nhỏ giữ cùng tỷ lệ.",
+      "file": "p48-chapter-small-frame.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-spine",
+      "family": "chapter",
+      "title": "Gáy album",
+      "usage": "Khép 8px ở lề, không chuyển động qua mặt.",
+      "file": "p48-chapter-spine.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-divider",
+      "family": "chapter",
+      "title": "Đường phân cách biên tập",
+      "usage": "Nối các dòng ghi nhớ, không dùng điểm thành tích.",
+      "file": "p48-chapter-divider.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-caption-strip",
+      "family": "chapter",
+      "title": "Dải giấy ghi nhớ",
+      "usage": "Nền nhãn biên tập; giữ chữ VI/EN bên ngoài.",
+      "file": "p48-chapter-caption-strip.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-crop-marks",
+      "family": "chapter",
+      "title": "Góc canh trang",
+      "usage": "Bốn góc mảnh ở ngoài ảnh.",
+      "file": "p48-chapter-crop-marks.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-folio",
+      "family": "chapter",
+      "title": "Nét gấp trang",
+      "usage": "Dấu trang hình học; không giả logo hoặc huy hiệu.",
+      "file": "p48-chapter-folio.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-chapter-masthead-rule",
+      "family": "chapter",
+      "title": "Nét đầu trang",
+      "usage": "Cặp gạch tạo nhịp như bìa tạp chí.",
+      "file": "p48-chapter-masthead-rule.svg",
+      "templates": ["C07", "V07"]
+    },
+    {
+      "name": "p48-compare-timeline",
+      "family": "compare",
+      "title": "Thanh thời gian",
+      "usage": "Reveal 1.5 giây ở khoảng giấy; không mô tả thay đổi khuôn mặt.",
+      "file": "p48-compare-timeline.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-anchor-before",
+      "family": "compare",
+      "title": "Mốc ngày ấy",
+      "usage": "Mốc tròn tĩnh, không kèm huy hiệu hoặc đánh giá ngoại hình.",
+      "file": "p48-compare-anchor-before.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-anchor-after",
+      "family": "compare",
+      "title": "Mốc bây giờ",
+      "usage": "Mốc tròn tĩnh, không kèm huy hiệu hoặc đánh giá ngoại hình.",
+      "file": "p48-compare-anchor-after.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-photo-corners",
+      "family": "compare",
+      "title": "Góc giữ ảnh giấy",
+      "usage": "Bốn góc mảnh, giữ hai ảnh cùng vai trò.",
+      "file": "p48-compare-photo-corners.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-paper-wipe",
+      "family": "compare",
+      "title": "Tờ giấy chuyển khung",
+      "usage": "Graphic wipe chỉ trong vùng khung ảnh; không morph.",
+      "file": "p48-compare-paper-wipe.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-matched-frame",
+      "family": "compare",
+      "title": "Viền ảnh ngang hàng",
+      "usage": "Hai ảnh dùng cùng hình và kích thước.",
+      "file": "p48-compare-matched-frame.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-date-tag",
+      "family": "compare",
+      "title": "Nhãn thời điểm",
+      "usage": "Nền nhãn ngày; khi ngày chưa rõ chỉ hiện Then / Now.",
+      "file": "p48-compare-date-tag.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-join-line",
+      "family": "compare",
+      "title": "Nét nối hai mốc",
+      "usage": "Nét nối trung tính, không có mũi tên tiến bộ.",
+      "file": "p48-compare-join-line.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-paired-bracket",
+      "family": "compare",
+      "title": "Ngoặc đôi",
+      "usage": "Hai nét đối xứng, nhấn kết nối thay vì đánh giá.",
+      "file": "p48-compare-paired-bracket.svg",
+      "templates": ["C08", "V08"]
+    },
+    {
+      "name": "p48-compare-paper-edge",
+      "family": "compare",
+      "title": "Mép giấy cặp ảnh",
+      "usage": "Chi tiết mỏng ở rìa, giữ vùng ảnh trong suốt.",
+      "file": "p48-compare-paper-edge.svg",
+      "templates": ["C08", "V08"]
+    }
+  ]
+}

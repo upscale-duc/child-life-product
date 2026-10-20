@@ -363,6 +363,9 @@ export interface Recommendation {
   changes: ('prefers_helpful' | 'excluded_not_suitable' | 'cooling_down')[];
   cooldownUntil: string | null;
   generatedAt: string;
+  /** P-172 I1: absent on legacy records; clients still enforce baby-local generation day. */
+  expiresAt?: string;
+  sourceRevision?: number;
 }
 
 export interface RecommendInput {

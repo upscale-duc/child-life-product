@@ -65,7 +65,7 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   expense: { available: true, action: null, can: canRecordSpending },
   reminder: { available: true, action: null, can: canCreateReminders },
   // ---- end slice A3 ----
-  // P-157: there is no meal log module at all.
+  // Phase 2 reads the Solids diary; meal writes through chat remain Phase 3.
   meal: { available: false, action: null },
   // Lumi timers 2026-10-16: the app's running timers (Rules `canLog`, like care records).
   timer: { available: true, action: 'rhythm.checkin' },

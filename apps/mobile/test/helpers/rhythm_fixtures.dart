@@ -10,6 +10,9 @@ import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_calc.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
+import 'package:child_life/features/rhythm/personalization_v2_repository.dart';
+import 'package:child_life/features/rhythm/personalization_digest.dart';
+import 'package:child_life/features/rhythm/personalization_events.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'care_fixtures.dart';
@@ -348,7 +351,7 @@ Map<String, Object?> recommendationJson({
   'contentId': contentId,
   'contentVersion': 1,
   'reasonCode': reason,
-  'supportingIds': supporting ?? [sleepCheckIn().id],
+  'supportingIds': supporting ?? [sleepCheckIn(date: rhythmToday).id],
   'requiredCapability': 'personalization.cross_module',
   'state': state,
   'changes': changes,
@@ -402,7 +405,10 @@ Map<String, Object?> ps02Json() => {
     contentId: 'act_evening_repeat',
     reason: 'PREVIOUS_HELPFUL',
     changes: ['prefers_helpful'],
-    supporting: [sleepCheckIn().id, helpfulFeedback().id],
+    supporting: [
+      sleepCheckIn(date: rhythmToday).id,
+      helpfulFeedback().id,
+    ],
   ),
   'secondary': <Object>[],
   'ageCardId': 'age_week_3',
@@ -574,13 +580,21 @@ class FakeRhythmRepository implements RhythmRepository {
   }
 
   @override
-  Future<HomeComposition?> composeHome(String babyId, String locale) async {
+  Future<HomeComposition?> composeHome(
+    String babyId,
+    String locale, {
+    String viewerUid = '',
+  }) async {
     composeCalls++;
     return home;
   }
 
   @override
-  HomeComposition? cachedHome(String babyId, String locale) => home;
+  HomeComposition? cachedHome(
+    String babyId,
+    String locale, {
+    String viewerUid = '',
+  }) => home;
 
   @override
   Future<void> setDueDate(String babyId, DueDate? dueDate) async {
@@ -658,6 +672,8 @@ List<Override> rhythmOverrides({
   MemoryRepository? memories,
   List<CareRecord> growth = const [],
   List<Reminder> reminders = const [],
+  PersonalDay? personalDay,
+  PersonalizationRepository? personalization,
   DateTime? now,
 
   /// Running care timers (Lumi 2026-10-16: the chat's timer cards read them).
@@ -673,6 +689,10 @@ List<Override> rhythmOverrides({
     timers: timers,
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
+  ...personalizationTestOverrides(
+    day: personalDay,
+    repository: personalization,
+  ),
   rhythmSleepRecordsProvider.overrideWith(
     (ref, key) => Stream.value(sleepRecords),
   ),
@@ -750,3 +770,21 @@ List<CareRecord> sleepLog({
   }
   return out;
 }
+
+List<Override> personalizationTestOverrides({
+  PersonalDay? day,
+  PersonalizationRepository? repository,
+}) => [
+  personalDayProvider.overrideWith(
+    (ref, key) async =>
+        day ??
+        PersonalDay({
+          'asOf': '1970-01-01T00:00:00Z',
+          'expiresAt': '1970-01-02T00:00:00Z',
+        }),
+  ),
+  personalDigestPlanProvider.overrideWith((ref) async => null),
+  personalizationEventSinkProvider.overrideWithValue((event, dim) async {}),
+  if (repository != null)
+    personalizationRepositoryProvider.overrideWithValue(repository),
+];

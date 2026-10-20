@@ -1,4 +1,4 @@
-import { keepsakeSeedV1, type KeepsakeJobInput } from '@child-life/contracts';
+import { keepsakeSeedV1, premium48Phase2, type KeepsakeJobInput } from '@child-life/contracts';
 import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { randomUUID } from 'node:crypto';
@@ -35,8 +35,10 @@ const input: KeepsakeJobInput = {
 
 class Store implements RenderStore {
   uploaded: string[] = [];
+  downloaded: string[] = [];
   missing = new Set<string>();
   async download(path: string, dest: string) {
+    this.downloaded.push(path);
     if (this.missing.has(path)) throw new Error('404');
     await writeFile(dest, 'x');
   }
@@ -150,6 +152,26 @@ describe('runJob', () => {
 });
 
 describe('fencing (Q2)', () => {
+  it('downloads phase-2 artwork from the frozen immutable asset names', async () => {
+    const template = premium48Phase2({
+      'p48-home-door-left': 'art-door-left_12345678.webp',
+      'p48-home-house': 'art-house_12345678.webp',
+    })[2]!;
+    const store = new Store();
+    await ref().update({ input: { ...input, template } });
+    const renderer: Renderer = {
+      async render(o) {
+        expect(Object.keys(o.props.artAssets ?? {})).toEqual(['homeDoorLeft', 'homeHouse']);
+        expect((o.props.artAssets as Record<string, string>).homeHouse).toMatch(
+          /art-homeHouse\.webp$/,
+        );
+        return { durationMs: 35000, width: 1080, height: 1920 };
+      },
+    };
+    expect(await runJob(deps({ store, renderer }), babyId, jobId)).toBe('done');
+    expect(store.downloaded).toContain('content/keepsakes/art-door-left_12345678.webp');
+    expect(store.downloaded).toContain('content/keepsakes/art-house_12345678.webp');
+  });
   it('each claim takes a new lease; the completion carries it', async () => {
     await ref().set({ status: 'queued', attempts: 0, input, uid: 'mom', lease: 4 });
     expect(await runJob(deps(), babyId, jobId)).toBe('done');

@@ -147,6 +147,11 @@ service cloud.firestore {
           request.resource.data.updatedAt == request.time) || (docId == 'personalization' &&
           validPersonalization(request.resource.data)));
       }
+      // P-172: server-authored state, bound to its owner AND current baby membership.
+      match /personalization/{babyId} {
+        allow read: if signedIn() && request.auth.uid == uid && canReadCare(babyId);
+        allow write: if false;
+      }
     }
 
     // "Thông báo" EN07 (D-076 #2; G-056 keys first): mirrors `notificationSettingsDocSchema`, every

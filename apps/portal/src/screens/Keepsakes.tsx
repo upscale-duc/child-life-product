@@ -1,5 +1,7 @@
 import {
   keepsakeBrandSvg,
+  resolveKeepsakeCopy,
+  keepsakePersonalizationSchema,
   keepsakeCatalogSchema,
   keepsakeCompositions,
   defaultKeepsakeVideoBrand,
@@ -88,6 +90,7 @@ export interface KeepsakeView {
 
 const tabs = ['templates', 'music', 'files', 'settings', 'history'] as const;
 export type KeepsakeTab = (typeof tabs)[number];
+type TemplateSort = 'newest' | 'display';
 
 type Act = 'submit' | 'approve' | 'reject' | 'discard' | 'rollback';
 type Edit = (fn: (c: KeepsakeCatalog) => void) => void;
@@ -177,6 +180,7 @@ export function KeepsakesBody({
   const addAssets = (added: KeepsakeAsset[]) =>
     setAssets((list) => [...added.filter((a) => !list.some((x) => x.asset === a.asset)), ...list]);
   const [tab, setTab] = useState<KeepsakeTab>(initialTab);
+  const [templateSort, setTemplateSort] = useState<TemplateSort>('newest');
 
   const shown: KeepsakeCatalog | null =
     editing ?? (showDraft && d ? d.catalog : (view.current?.catalog ?? null));
@@ -446,6 +450,8 @@ export function KeepsakesBody({
             ) : (
               <TemplateGallery
                 catalog={shown}
+                sort={templateSort}
+                onSort={setTemplateSort}
                 editing={editable}
                 onAdd={(kind) => setDialog({ add: kind })}
                 onImport={() => setDialog('import')}
@@ -621,6 +627,8 @@ const mmss = (sec: number | null | undefined) =>
 /** The catalog as a gallery: Thiệp cột mốc and Video kỷ niệm, each template with its picture. */
 function TemplateGallery({
   catalog,
+  sort,
+  onSort,
   editing,
   onAdd,
   onImport,
@@ -629,6 +637,8 @@ function TemplateGallery({
   onOpen,
 }: {
   catalog: KeepsakeCatalog;
+  sort: TemplateSort;
+  onSort: (sort: TemplateSort) => void;
   editing: boolean;
   onAdd: (kind: 'card' | 'video') => void;
   onImport: () => void;
@@ -654,6 +664,16 @@ function TemplateGallery({
               label: <FormattedMessage id={`ks.filter.${v}`} />,
             }))}
           />
+          <FieldSelect
+            ariaLabel={intl.formatMessage({ id: 'ks.sort.label' })}
+            className="w-[190px]"
+            value={sort}
+            onChange={onSort}
+            options={(['newest', 'display'] as const).map((value) => ({
+              value,
+              label: intl.formatMessage({ id: `ks.sort.${value}` }),
+            }))}
+          />
           {editing && (
             <Button onClick={onImport}>
               <FormattedMessage id="ks.import" />
@@ -675,7 +695,13 @@ function TemplateGallery({
                 {catalog.templates
                   .map((t, i) => ({ t, i }))
                   .filter(({ t }) => t.kind === k)
-                  .sort((a, b) => a.t.order - b.t.order || a.t.id.localeCompare(b.t.id))
+                  // New/imported templates are appended to the catalog. There is no per-template
+                  // creation timestamp; display order and template version do not indicate age.
+                  .sort((a, b) =>
+                    sort === 'newest'
+                      ? b.i - a.i
+                      : a.t.order - b.t.order || a.t.id.localeCompare(b.t.id),
+                  )
                   .map(({ t, i }) => (
                     <TemplateTile
                       key={t.id}
@@ -718,8 +744,12 @@ function TemplateTile({
   const changed =
     live && JSON.stringify({ ...live, version: 0 }) !== JSON.stringify({ ...t, version: 0 });
   const name = textOf(intl, t.name);
-  const cover = t.thumb ? urls.get(t.thumb) : undefined;
-  const preview = t.preview ? urls.get(t.preview) : undefined;
+  const language = intl.locale.startsWith('vi') ? 'vi' : 'en';
+  const coverAsset = t.thumbs && Object.keys(t.thumbs).length ? t.thumbs[language] : t.thumb;
+  const previewAsset =
+    t.previews && Object.keys(t.previews).length ? t.previews[language] : t.preview;
+  const cover = coverAsset ? urls.get(coverAsset) : undefined;
+  const preview = previewAsset ? urls.get(previewAsset) : undefined;
   const formats = keepsakeFormats.filter((f) => t.layouts?.[f]);
   const track = music.find((m) => m.id === t.defaultMusic);
   const meta =
@@ -750,7 +780,14 @@ function TemplateTile({
       }}
     >
       <span className="ks-tile__media" style={{ height: mediaHeight }}>
-        {t.kind === 'card' && formats[0] ? (
+        {t.kind === 'card' && cover ? (
+          <img
+            src={cover}
+            alt=""
+            loading="lazy"
+            style={{ height: '100%', maxWidth: '100%', objectFit: 'contain' }}
+          />
+        ) : t.kind === 'card' && formats[0] ? (
           <CardPreview
             template={t}
             format={formats[0]}
@@ -768,6 +805,7 @@ function TemplateTile({
             {cover && <img src={cover} alt="" loading="lazy" />}
             {preview && (
               <video
+                key={preview}
                 ref={video}
                 src={`${preview}#t=4`}
                 muted
@@ -898,8 +936,17 @@ function TemplateEditor({
       const [video, cover] = await uploadVideoWithCover(api, file, base, at);
       onUploaded(cover ? [video, cover] : [video]);
       set((x) => {
-        x.preview = video.asset;
-        if (cover) x.thumb = cover.asset;
+        const lang = intl.locale.startsWith('vi') ? 'vi' : 'en';
+        x.previews = {
+          ...(x.previews ?? (x.preview ? { vi: x.preview } : {})),
+          [lang]: video.asset,
+        };
+        if (cover)
+          x.thumbs = { ...(x.thumbs ?? (x.thumb ? { vi: x.thumb } : {})), [lang]: cover.asset };
+        if (lang === 'vi') {
+          x.preview = video.asset;
+          if (cover) x.thumb = cover.asset;
+        }
       });
     } catch (e) {
       setError(asApiError(e));
@@ -908,8 +955,12 @@ function TemplateEditor({
     }
   };
 
-  const cover = t.thumb ? urls.get(t.thumb) : undefined;
-  const preview = t.preview ? urls.get(t.preview) : undefined;
+  const language = intl.locale.startsWith('vi') ? 'vi' : 'en';
+  const coverAsset = t.thumbs && Object.keys(t.thumbs).length ? t.thumbs[language] : t.thumb;
+  const previewAsset =
+    t.previews && Object.keys(t.previews).length ? t.previews[language] : t.preview;
+  const cover = coverAsset ? urls.get(coverAsset) : undefined;
+  const preview = previewAsset ? urls.get(previewAsset) : undefined;
 
   return (
     <div className="stack">
@@ -1087,6 +1138,23 @@ function TemplateEditor({
                   ))}
                 </span>
               </fieldset>
+              {t.personalization && (
+                <details className="ks-details">
+                  <summary>{textOf(intl, t.personalization.group)}</summary>
+                  <JsonField
+                    id={`${id}-personalization`}
+                    label={textOf(intl, t.personalization.group)}
+                    value={t.personalization}
+                    disabled={!editing}
+                    onChange={(v) => {
+                      const parsed = keepsakePersonalizationSchema.parse(v);
+                      set((x) => {
+                        x.personalization = parsed;
+                      });
+                    }}
+                  />
+                </details>
+              )}
               {t.texts.map((tx) => (
                 <div key={tx.key} className="ks-grid ks-grid--2">
                   {text(
@@ -1317,6 +1385,7 @@ function TemplateEditor({
                   <div className="ks-stage">
                     {preview ? (
                       <video
+                        key={preview}
                         className="ks-preview-video"
                         src={preview}
                         poster={cover}
@@ -1332,12 +1401,18 @@ function TemplateEditor({
                   </div>
                   {select(
                     intl.formatMessage({ id: 'ks.f.previewVideo' }),
-                    t.preview ?? '',
+                    previewAsset ?? '',
                     [
                       { value: '', label: intl.formatMessage({ id: 'ks.f.none' }) },
                       ...videos.map((a) => ({ value: a.asset, label: a.asset })),
                     ],
-                    (v) => set((x) => void (x.preview = v || null)),
+                    (v) =>
+                      set((x) => {
+                        x.previews ??= x.preview ? { vi: x.preview } : {};
+                        if (v) x.previews[language] = v;
+                        else delete x.previews[language];
+                        if (language === 'vi') x.preview = v || null;
+                      }),
                   )}
                   {editing && (
                     <FilePicker
@@ -1547,6 +1622,26 @@ export function CardPreview({
     birthStats: '3,2 kg · 50 cm',
     photoLabel0: intl.formatMessage({ id: 'ks.sample.label0' }),
     photoLabel1: intl.formatMessage({ id: 'ks.sample.label1' }),
+    ...(t.personalization
+      ? resolveKeepsakeCopy(
+          t.personalization,
+          Object.fromEntries(
+            t.personalization.fields.map((f) => [
+              f.key,
+              f.type === 'month'
+                ? '01'
+                : f.source === 'babyName'
+                  ? 'Teddy'
+                  : f.source === 'birthDate'
+                    ? '2026-09-17'
+                    : f.type === 'confirmation'
+                      ? 'false'
+                      : '',
+            ]),
+          ),
+          intl.locale.startsWith('vi') ? 'vi' : 'en',
+        )
+      : {}),
   };
   /** E-3: tilt about the centre. */
   const tilt = (deg: number | undefined): CSSProperties =>

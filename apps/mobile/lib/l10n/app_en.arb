@@ -5026,5 +5026,461 @@
   "lbMythInstead": "Instead",
   "lbUpNext": "Up next",
   "lbUrgentFirstAid": "Open the first aid guide",
-  "nuVitaAbroad": "This vitamin A schedule is Việt Nam's national programme; where you live, ask your baby's doctor."
+  "nuVitaAbroad": "This vitamin A schedule is Việt Nam's national programme; where you live, ask your baby's doctor.",
+  "asReadSnapshot": "Data as of {time}",
+  "asReadDetails": "View details",
+  "asOpenSolids": "Open Solids",
+  "@asReadSnapshot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@asReadDetails": {
+    "description": "Open a Phase 2 answer row in its module"
+  },
+  "@asOpenSolids": {
+    "description": "Open the solids diary from Lumi"
+  },
+  "asOpenFirstAid": "Open First aid",
+  "@asOpenFirstAid": {
+    "description": "Open the first aid module from Lumi health support"
+  },
+  "pv2Title": "Your family today",
+  "pv2Open": "See today’s useful actions",
+  "pv2Context": "What fits your day?",
+  "pv2Usual": "As usual",
+  "pv2FewMinutes": "Just a few minutes",
+  "pv2Busy": "Busy today",
+  "pv2OtherCarer": "Another caregiver",
+  "pv2Temporary": "Today’s choice expires at the end of the day.",
+  "pv2Focus": "One focus for this week",
+  "pv2Play": "A little time to play",
+  "pv2Handover": "Easier handovers",
+  "pv2Routine": "Understand your routine",
+  "pv2NoFocus": "No focus",
+  "pv2Unusual": "Today’s routine is unusual",
+  "pv2UnusualHint": "Pause routine patterns; your own reminders stay in place.",
+  "pv2Next": "One manageable action now",
+  "pv2BecauseNeed": "Based on what your family reported today",
+  "pv2BecauseFocus": "Based on your focus this week",
+  "pv2BecauseInterest": "Based on your baby’s age and your interests",
+  "pv2Minutes": "minutes",
+  "pv2OpenActivity": "See the steps",
+  "pv2Controls": "Adjust suggestions",
+  "pv2Save": "Save",
+  "pv2Hide": "Hide this card",
+  "pv2Snooze": "Busy today · snooze for 3 days",
+  "pv2Dislike": "This suggestion isn’t for me",
+  "pv2Known": "I already know this",
+  "pv2Exclude": "Unsuitable for baby · applies to the family",
+  "pv2Restore": "Restore suggestion",
+  "pv2Intend": "I plan to try",
+  "pv2Tried": "I tried it",
+  "pv2Helpful": "Helpful for our family",
+  "pv2Unsure": "Not sure yet",
+  "pv2NoAnswer": "You can answer later. One attempt does not establish an effect.",
+  "pv2Patterns": "Patterns in your diary",
+  "pv2FeedPattern": "Intervals between recorded feeds",
+  "pv2SleepPattern": "Lengths of recorded daytime sleeps",
+  "pv2PatternHint": "Typical ranges in your 14-day diary; not a schedule to follow.",
+  "pv2Insufficient": "There isn’t enough recent, consistent data for a pattern yet. Other suggestions remain available.",
+  "pv2Samples": "recorded samples",
+  "pv2Days": "days with samples",
+  "pv2Updated": "Latest data",
+  "pv2Notes": "Family notebook",
+  "pv2AddNote": "Add something to remember",
+  "pv2NoteText": "What your family wants to remember",
+  "pv2Shared": "Share with members allowed to view baby care",
+  "pv2Personal": "Only you",
+  "pv2Category": "Note category",
+  "pv2Sleep": "Sleep",
+  "pv2Soothing": "Soothing",
+  "pv2Feeding": "Feeding",
+  "pv2Avoid": "Things to avoid",
+  "pv2Carer": "Caregiver",
+  "pv2Other": "Other",
+  "pv2Expiry": "Keep this note for",
+  "pv2OneDay": "Today",
+  "pv2SevenDays": "7 days",
+  "pv2ThirtyDays": "30 days",
+  "pv2NoExpiry": "Until deleted",
+  "pv2ConfirmNote": "Confirm and save note",
+  "pv2Edit": "Edit",
+  "pv2Delete": "Delete",
+  "pv2Cancel": "Later",
+  "pv2NoteHint": "Confirmed notes help select suggestions. A free-text note is not medical guidance.",
+  "pv2Work": "A 30-second handover",
+  "pv2WorkHint": "Tasks your family set. Completing a reminder does not create a care record.",
+  "pv2NoWork": "No pending reminders.",
+  "pv2Accept": "I’ll take this",
+  "pv2Release": "Release task",
+  "pv2Complete": "Mark complete",
+  "pv2Unclaimed": "Unclaimed",
+  "pv2Accepted": "Accepted",
+  "pv2Acknowledge": "I’ve read the handover",
+  "pv2Acknowledged": "You acknowledged the handover at",
+  "pv2LastRecords": "Latest recorded care",
+  "pv2Weekly": "What helped this week?",
+  "pv2WeekTried": "activities confirmed tried",
+  "pv2WeekHelpful": "activities found helpful",
+  "pv2WeekHint": "From your feedback over the last 7 days; before-and-after numbers do not establish an effect.",
+  "pv2History": "What shapes your suggestions",
+  "pv2Saved": "Saved",
+  "pv2Digest": "Daily suggestion on this device",
+  "pv2DigestHint": "Opt in to at most one fresh suggestion a day, outside quiet hours. Choose the time in personalization settings.",
+  "pv2DigestTitle": "One manageable action for today",
+  "pv2DigestBody": "Open for a fresh suggestion and your family’s reminders.",
+  "pv2Loading": "Preparing suggestions…",
+  "pv2Unavailable": "Fresh information is unavailable. Reconnect and try again.",
+  "pv2Retry": "Retry",
+  "pv2Refresh": "Refresh",
+  "pv2Conflict": "This changed on another device. The latest version has been loaded.",
+  "pv2ChangeSaved": "Your choice was updated",
+  "pv2PatternReminder": "Set a reminder from this range",
+  "@pv2Title": {
+    "description": "Personalization v2: Title"
+  },
+  "@pv2Open": {
+    "description": "Personalization v2: Open"
+  },
+  "@pv2Context": {
+    "description": "Personalization v2: Context"
+  },
+  "@pv2Usual": {
+    "description": "Personalization v2: Usual"
+  },
+  "@pv2FewMinutes": {
+    "description": "Personalization v2: FewMinutes"
+  },
+  "@pv2Busy": {
+    "description": "Personalization v2: Busy"
+  },
+  "@pv2OtherCarer": {
+    "description": "Personalization v2: OtherCarer"
+  },
+  "@pv2Temporary": {
+    "description": "Personalization v2: Temporary"
+  },
+  "@pv2Focus": {
+    "description": "Personalization v2: Focus"
+  },
+  "@pv2Play": {
+    "description": "Personalization v2: Play"
+  },
+  "@pv2Handover": {
+    "description": "Personalization v2: Handover"
+  },
+  "@pv2Routine": {
+    "description": "Personalization v2: Routine"
+  },
+  "@pv2NoFocus": {
+    "description": "Personalization v2: NoFocus"
+  },
+  "@pv2Unusual": {
+    "description": "Personalization v2: Unusual"
+  },
+  "@pv2UnusualHint": {
+    "description": "Personalization v2: UnusualHint"
+  },
+  "@pv2Next": {
+    "description": "Personalization v2: Next"
+  },
+  "@pv2BecauseNeed": {
+    "description": "Personalization v2: BecauseNeed"
+  },
+  "@pv2BecauseFocus": {
+    "description": "Personalization v2: BecauseFocus"
+  },
+  "@pv2BecauseInterest": {
+    "description": "Personalization v2: BecauseInterest"
+  },
+  "@pv2Minutes": {
+    "description": "Personalization v2: Minutes"
+  },
+  "@pv2OpenActivity": {
+    "description": "Personalization v2: OpenActivity"
+  },
+  "@pv2Controls": {
+    "description": "Personalization v2: Controls"
+  },
+  "@pv2Save": {
+    "description": "Personalization v2: Save"
+  },
+  "@pv2Hide": {
+    "description": "Personalization v2: Hide"
+  },
+  "@pv2Snooze": {
+    "description": "Personalization v2: Snooze"
+  },
+  "@pv2Dislike": {
+    "description": "Personalization v2: Dislike"
+  },
+  "@pv2Known": {
+    "description": "Personalization v2: Known"
+  },
+  "@pv2Exclude": {
+    "description": "Personalization v2: Exclude"
+  },
+  "@pv2Restore": {
+    "description": "Personalization v2: Restore"
+  },
+  "@pv2Intend": {
+    "description": "Personalization v2: Intend"
+  },
+  "@pv2Tried": {
+    "description": "Personalization v2: Tried"
+  },
+  "@pv2Helpful": {
+    "description": "Personalization v2: Helpful"
+  },
+  "@pv2Unsure": {
+    "description": "Personalization v2: Unsure"
+  },
+  "@pv2NoAnswer": {
+    "description": "Personalization v2: NoAnswer"
+  },
+  "@pv2Patterns": {
+    "description": "Personalization v2: Patterns"
+  },
+  "@pv2FeedPattern": {
+    "description": "Personalization v2: FeedPattern"
+  },
+  "@pv2SleepPattern": {
+    "description": "Personalization v2: SleepPattern"
+  },
+  "@pv2PatternHint": {
+    "description": "Personalization v2: PatternHint"
+  },
+  "@pv2Insufficient": {
+    "description": "Personalization v2: Insufficient"
+  },
+  "@pv2Samples": {
+    "description": "Personalization v2: Samples"
+  },
+  "@pv2Days": {
+    "description": "Personalization v2: Days"
+  },
+  "@pv2Updated": {
+    "description": "Personalization v2: Updated"
+  },
+  "@pv2Notes": {
+    "description": "Personalization v2: Notes"
+  },
+  "@pv2AddNote": {
+    "description": "Personalization v2: AddNote"
+  },
+  "@pv2NoteText": {
+    "description": "Personalization v2: NoteText"
+  },
+  "@pv2Shared": {
+    "description": "Personalization v2: Shared"
+  },
+  "@pv2Personal": {
+    "description": "Personalization v2: Personal"
+  },
+  "@pv2Category": {
+    "description": "Personalization v2: Category"
+  },
+  "@pv2Sleep": {
+    "description": "Personalization v2: Sleep"
+  },
+  "@pv2Soothing": {
+    "description": "Personalization v2: Soothing"
+  },
+  "@pv2Feeding": {
+    "description": "Personalization v2: Feeding"
+  },
+  "@pv2Avoid": {
+    "description": "Personalization v2: Avoid"
+  },
+  "@pv2Carer": {
+    "description": "Personalization v2: Carer"
+  },
+  "@pv2Other": {
+    "description": "Personalization v2: Other"
+  },
+  "@pv2Expiry": {
+    "description": "Personalization v2: Expiry"
+  },
+  "@pv2OneDay": {
+    "description": "Personalization v2: OneDay"
+  },
+  "@pv2SevenDays": {
+    "description": "Personalization v2: SevenDays"
+  },
+  "@pv2ThirtyDays": {
+    "description": "Personalization v2: ThirtyDays"
+  },
+  "@pv2NoExpiry": {
+    "description": "Personalization v2: NoExpiry"
+  },
+  "@pv2ConfirmNote": {
+    "description": "Personalization v2: ConfirmNote"
+  },
+  "@pv2Edit": {
+    "description": "Personalization v2: Edit"
+  },
+  "@pv2Delete": {
+    "description": "Personalization v2: Delete"
+  },
+  "@pv2Cancel": {
+    "description": "Personalization v2: Cancel"
+  },
+  "@pv2NoteHint": {
+    "description": "Personalization v2: NoteHint"
+  },
+  "@pv2Work": {
+    "description": "Personalization v2: Work"
+  },
+  "@pv2WorkHint": {
+    "description": "Personalization v2: WorkHint"
+  },
+  "@pv2NoWork": {
+    "description": "Personalization v2: NoWork"
+  },
+  "@pv2Accept": {
+    "description": "Personalization v2: Accept"
+  },
+  "@pv2Release": {
+    "description": "Personalization v2: Release"
+  },
+  "@pv2Complete": {
+    "description": "Personalization v2: Complete"
+  },
+  "@pv2Unclaimed": {
+    "description": "Personalization v2: Unclaimed"
+  },
+  "@pv2Accepted": {
+    "description": "Personalization v2: Accepted"
+  },
+  "@pv2Acknowledge": {
+    "description": "Personalization v2: Acknowledge"
+  },
+  "@pv2Acknowledged": {
+    "description": "Personalization v2: Acknowledged"
+  },
+  "@pv2LastRecords": {
+    "description": "Personalization v2: LastRecords"
+  },
+  "@pv2Weekly": {
+    "description": "Personalization v2: Weekly"
+  },
+  "@pv2WeekTried": {
+    "description": "Personalization v2: WeekTried"
+  },
+  "@pv2WeekHelpful": {
+    "description": "Personalization v2: WeekHelpful"
+  },
+  "@pv2WeekHint": {
+    "description": "Personalization v2: WeekHint"
+  },
+  "@pv2History": {
+    "description": "Personalization v2: History"
+  },
+  "@pv2Saved": {
+    "description": "Personalization v2: Saved"
+  },
+  "@pv2Digest": {
+    "description": "Personalization v2: Digest"
+  },
+  "@pv2DigestHint": {
+    "description": "Personalization v2: DigestHint"
+  },
+  "@pv2DigestTitle": {
+    "description": "Personalization v2: DigestTitle"
+  },
+  "@pv2DigestBody": {
+    "description": "Personalization v2: DigestBody"
+  },
+  "@pv2Loading": {
+    "description": "Personalization v2: Loading"
+  },
+  "@pv2Unavailable": {
+    "description": "Personalization v2: Unavailable"
+  },
+  "@pv2Retry": {
+    "description": "Personalization v2: Retry"
+  },
+  "@pv2Refresh": {
+    "description": "Personalization v2: Refresh"
+  },
+  "@pv2Conflict": {
+    "description": "Personalization v2: Conflict"
+  },
+  "@pv2ChangeSaved": {
+    "description": "Personalization v2: ChangeSaved"
+  },
+  "@pv2PatternReminder": {
+    "description": "Personalization v2: PatternReminder"
+  },
+  "pv2AvoidActivity": "Exclude this activity for baby (optional)",
+  "@pv2AvoidActivity": {
+    "description": "Confirmed notebook activity exclusion"
+  },
+  "pv2HandoverChanged": "There are changes since you acknowledged the handover. Review the latest work and notes.",
+  "@pv2HandoverChanged": {
+    "description": "Handover source changed since acknowledgement"
+  },
+  "pv2SleepRecent": "Sleep on recent sufficiently logged days",
+  "@pv2SleepRecent": {
+    "description": "Personal sleep diary comparison"
+  },
+  "pv2SleepBaseline": "Earlier reference period",
+  "@pv2SleepBaseline": {
+    "description": "Personal sleep diary comparison"
+  },
+  "pv2ExpiredNote": "Expired · no longer used for personalization",
+  "@pv2ExpiredNote": { "description": "Expired notebook note remains editable but is excluded from personalization" },
+  "p48Language": "Keepsake language",
+  "p48Details": "Moment details",
+  "p48Copy": "Keepsake copy",
+  "p48Format": "Output format",
+  "p48ReducedMotion": "Reduced motion",
+  "p48CropHint": "Adjust the crop for each scene. The closing scene may reprise a photo you selected.",
+  "p48Crop": "Adjust crop",
+  "p48Horizontal": "Left / right",
+  "p48Vertical": "Up / down",
+  "p48Zoom": "Zoom",
+  "p48TooLong": "Some text does not fit. Please shorten it before exporting.",
+  "p48Invalid": "Check required details and remove any text in braces.",
+  "p48Reset": "Restore default copy",
+  "p48MotionPreview": "Watch 4-second preview",
+  "p48ChangePhotos": "Change selected photos",
+  "p48PreviewFailed": "Could not load every preview photo. Please try again.",
+  "@p48Language": {"description": "Premium template phase 1: p48Language"},
+  "@p48Details": {"description": "Premium template phase 1: p48Details"},
+  "@p48Copy": {"description": "Premium template phase 1: p48Copy"},
+  "@p48Format": {"description": "Premium template phase 1: p48Format"},
+  "@p48ReducedMotion": {"description": "Premium template phase 1: p48ReducedMotion"},
+  "@p48CropHint": {"description": "Premium template phase 1: p48CropHint"},
+  "@p48Crop": {"description": "Premium template phase 1: p48Crop"},
+  "@p48Horizontal": {"description": "Premium template phase 1: p48Horizontal"},
+  "@p48Vertical": {"description": "Premium template phase 1: p48Vertical"},
+  "@p48Zoom": {"description": "Premium template phase 1: p48Zoom"},
+  "@p48TooLong": {"description": "Premium template phase 1: p48TooLong"},
+  "@p48Invalid": {"description": "Premium template phase 1: p48Invalid"},
+  "@p48Reset": {"description": "Premium template phase 1: p48Reset"},
+  "@p48MotionPreview": {"description": "Premium template phase 1: p48MotionPreview"},
+  "@p48ChangePhotos": {"description": "Premium template phase 1: p48ChangePhotos"},
+  "@p48PreviewFailed": {"description": "Premium template phase 1: p48PreviewFailed"},
+  "p48WholePhoto": "Show whole photo",
+  "@p48WholePhoto": {"description": "Premium scene crop mode"},
+  "p48FillFrame": "Fill the frame",
+  "@p48FillFrame": {"description": "Premium scene crop mode"},
+
+  "p48PhotoSlot": "Photo {n}",
+  "@p48PhotoSlot": {
+    "description": "Select a photo slot in a premium card with multiple pictures",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@p48UseSuggestions": {"description":"Explicit action adopting proposed personal notes; never auto-filled."},
+  "@p48SuggestionsHint": {"description":"Parent reviews proposed notes before using them."},
+  "p48UseSuggestions": "Use suggested notes",
+  "p48SuggestionsHint": "Use these suggestions only if they fit your baby; you can edit each note."
 }

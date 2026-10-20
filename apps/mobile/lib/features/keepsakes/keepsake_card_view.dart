@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../memories/media_bytes.dart';
 import 'keepsake_catalog.dart';
+import 'keepsake_personalization.dart' show premiumTextFit, premiumCardLayers;
 
 /// The one-colour Child Life lockup card `brand` layers tint (D-068 #10); written from
 /// contracts by `packages/contracts/scripts/keepsake-fixture.mjs`.
@@ -62,7 +63,9 @@ class CardContent {
     this.headline = '',
     this.message = '',
     this.photoLabels = const [],
+    this.personalized = const {},
   });
+  final Map<String, String> personalized;
   final String occasion;
   final String name;
   final String date;
@@ -83,23 +86,25 @@ class CardContent {
   /// Per photo slot ("Ngày đầu", "Tháng 6"; C10).
   final List<String> photoLabels;
 
-  String field(String key) => switch (key) {
-    'occasion' => occasion,
-    'name' => name,
-    'date' => date,
-    'nameDate' => [name, date].where((s) => s.isNotEmpty).join(' · '),
-    'quote' => quote.isEmpty ? '' : '“$quote”',
-    'title' => title,
-    'age' => age,
-    'ageNumber' => ageNumber,
-    'ageUnit' => ageUnit,
-    'birthStats' => birthStats,
-    'headline' => headline,
-    'message' => message,
-    'photoLabel0' => photoLabels.isNotEmpty ? photoLabels[0] : '',
-    'photoLabel1' => photoLabels.length > 1 ? photoLabels[1] : '',
-    _ => '',
-  };
+  String field(String key) =>
+      personalized[key] ??
+      switch (key) {
+        'occasion' => occasion,
+        'name' => name,
+        'date' => date,
+        'nameDate' => [name, date].where((s) => s.isNotEmpty).join(' · '),
+        'quote' => quote.isEmpty ? '' : '“$quote”',
+        'title' => title,
+        'age' => age,
+        'ageNumber' => ageNumber,
+        'ageUnit' => ageUnit,
+        'birthStats' => birthStats,
+        'headline' => headline,
+        'message' => message,
+        'photoLabel0' => photoLabels.isNotEmpty ? photoLabels[0] : '',
+        'photoLabel1' => photoLabels.length > 1 ? photoLabels[1] : '',
+        _ => '',
+      };
 }
 
 /// How a template asset is loaded (`content/keepsakes/{asset}`, public and cached like media);
@@ -134,6 +139,8 @@ class KeepsakeCardView extends ConsumerWidget {
     this.onPhotoChanged,
     this.photoPlaceholder,
     this.activeSlot,
+    this.previewProgress,
+    this.reducedMotion = false,
     super.key,
   });
 
@@ -157,22 +164,77 @@ class KeepsakeCardView extends ConsumerWidget {
   /// Templates with several photos: the slot the editor fills next, outlined. Never set while
   /// exporting.
   final int? activeSlot;
+  final double? previewProgress;
+  final bool reducedMotion;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = Size(width, width / format.aspect);
     final p = palette ?? template.palette;
     final asset = ref.watch(keepsakeAssetImageProvider);
-    final layers =
-        template.layouts[format] ??
-        template.layouts.values.firstOrNull ??
-        const [];
+    final layers = template.personalization != null
+        ? premiumCardLayers(template, format, content)
+        : template.layouts[format] ??
+              template.layouts.values.firstOrNull ??
+              const [];
     return SizedBox.fromSize(
       size: size,
       child: ClipRect(
         child: Stack(
           clipBehavior: Clip.none,
-          children: [for (final l in layers) _layer(l, size, p, asset)],
+          children: [
+            for (final l in layers)
+              if (previewProgress == null)
+                _layer(l, size, p, asset)
+              else
+                _animatedLayer(l, size, p, asset),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _animatedLayer(
+    KeepsakeLayer l,
+    Size size,
+    KeepsakePalette p,
+    ImageProvider Function(String) asset,
+  ) {
+    final start = reducedMotion
+        ? 0.0
+        : switch (l) {
+            KeepsakePhotoSlot(:final slot) =>
+              0.15 +
+                  (template.photosMax > 1
+                      ? 0.08 * slot / (template.photosMax - 1)
+                      : 0),
+            KeepsakeTextLayer() || KeepsakeBrand() => 0.35,
+            _ => 0.0,
+          };
+    final end = reducedMotion
+        ? 0.15
+        : switch (l) {
+            KeepsakePhotoSlot(:final slot) =>
+              template.photosMax > 1
+                  ? 0.27 + 0.08 * slot / (template.photosMax - 1)
+                  : 0.35,
+            KeepsakeTextLayer() || KeepsakeBrand() => 0.55,
+            _ => 0.15,
+          };
+    final progress = Curves.easeOut.transform(
+      ((previewProgress! - start) / (end - start)).clamp(0.0, 1.0),
+    );
+    return Positioned.fill(
+      child: Opacity(
+        opacity: progress,
+        child: Transform.translate(
+          offset: Offset(
+            0,
+            reducedMotion || l is KeepsakeBackground
+                ? 0
+                : (1 - progress) * 12 * size.width / 1080,
+          ),
+          child: Stack(children: [_layer(l, size, p, asset)]),
         ),
       ),
     );
@@ -236,11 +298,15 @@ class KeepsakeCardView extends ConsumerWidget {
             l.caps && l.font != 'dancingScript' && l.font != 'patrickHand'
             ? raw.toUpperCase()
             : raw;
-        final fontSize = l.size * size.width;
+        final fontSize = template.personalization == null
+            ? l.size * size.width
+            : premiumTextFit(value, l, size).size;
         final text = Text(
           value,
           maxLines: l.maxLines,
-          overflow: TextOverflow.ellipsis,
+          overflow: template.personalization == null
+              ? TextOverflow.ellipsis
+              : TextOverflow.clip,
           textAlign: l.align,
           softWrap: l.maxLines > 1,
           style: TextStyle(
@@ -264,7 +330,7 @@ class KeepsakeCardView extends ConsumerWidget {
           Align(
             alignment: Alignment(x, -1),
             // One line never wraps or clips: a long name shrinks to fit instead.
-            child: l.maxLines == 1
+            child: template.personalization == null && l.maxLines == 1
                 ? FittedBox(fit: BoxFit.scaleDown, child: text)
                 : text,
           ),

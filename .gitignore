@@ -38,3 +38,6 @@ service-account*.json
 
 # Sơ cứu: Figma exports (≈ 50 MB); the committed WebP copies are in content/first-aid/images/.
 content/first-aid/source/
+
+# Local review renders and QA exports (sources, manifests and tests are committed).
+/artifacts/

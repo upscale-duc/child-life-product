@@ -43,6 +43,7 @@ import 'rhythm_own.dart' show SleepFactsBlock;
 import 'rhythm_repository.dart';
 import 'rhythm_week.dart';
 import 'rhythm_widgets.dart';
+import 'personalization_v2_screen.dart' show PersonalWeekBlock;
 
 /// EN09 "Tóm tắt tuần" (561:3102), reached from NL01, Hôm nay and the Sunday 20:30 notification
 /// (EN07 / EN08). Two parts that never mix: "Đã ghi trong tuần" (free, the family's log, with
@@ -169,6 +170,8 @@ class WeekSummaryScreen extends ConsumerWidget {
         const SizedBox(height: ClSpace.s3),
         _LookBack(me: me, caps: caps, week: week, zone: zone, today: today),
         WeekVideoButton(me: me, week: week, zone: zone, weekOfLife: n),
+        const SizedBox(height: ClSpace.s3),
+        const PersonalWeekBlock(),
         const SizedBox(height: ClSpace.s6),
         RhNote(l10n.rhWeekNoScore, icon: ClIcons.heart),
       ],

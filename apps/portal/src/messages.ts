@@ -8,6 +8,28 @@ import { solidsEn, solidsVi } from './messages-solids';
  * English is drafted by engineering for owner review. Both catalogs carry the same ids.
  */
 const vi: Record<string, string> = {
+  'rhythm.importToddler': 'Thêm 24 hoạt động nháp · 12–36 tháng',
+  'rhythm.importToddlerHint':
+    'Chỉ thêm vào bản đang sửa, bỏ qua mã đã có. Nội dung giữ trạng thái nháp, chờ biên tập và duyệt chuyên môn trước khi được gợi ý.',
+  'rhythm.tab.metrics': 'Hiệu quả cá nhân hoá',
+  'rhythm.metrics.hint':
+    'Số lượt trong 14 ngày có dữ liệu gần nhất. Gợi ý được tạo không đồng nghĩa đã hiển thị; lưu và định thử không phải đã thử. Số lượt đặt lịch thông báo không xác nhận thiết bị đã hiển thị. Phản hồi có thể thay đổi; không tự kết luận hiệu quả hoặc số gia đình từ các bộ đếm này.',
+  'rhythm.metrics.day': 'Ngày',
+  'rhythm.metrics.content': 'Nội dung · phiên bản',
+  'rhythm.metrics.generated': 'Đã tạo',
+  'rhythm.metrics.save': 'Lưu',
+  'rhythm.metrics.intend': 'Định thử',
+  'rhythm.metrics.tried': 'Xác nhận thử',
+  'rhythm.metrics.helpful': 'Có ích',
+  'rhythm.metrics.unsure': 'Chưa rõ',
+  'rhythm.metrics.exclude': 'Không hợp với bé',
+  'rhythm.metrics.checkinSaved': 'Lưu ghi nhận',
+  'rhythm.metrics.nextActionShown': 'Hiển thị gợi ý',
+  'rhythm.metrics.suggestionStarted': 'Định thử (luồng cũ)',
+  'rhythm.metrics.feedbackSaved': 'Phản hồi (luồng cũ)',
+  'rhythm.metrics.digestScheduled': 'Đặt lịch gợi ý',
+  'rhythm.metrics.digestOpened': 'Mở từ thông báo',
+  'rhythm.metrics.empty': 'Chưa có dữ liệu đo lường.',
   // Formatting
   'fmt.justNow': 'vừa xong',
   'fmt.minutesAgo': '{n} phút trước',
@@ -1776,6 +1798,9 @@ const vi: Record<string, string> = {
   'ks.filter.all': 'Tất cả',
   'ks.filter.card': 'Thiệp',
   'ks.filter.video': 'Video',
+  'ks.sort.label': 'Sắp xếp mẫu',
+  'ks.sort.newest': 'Mới thêm trước',
+  'ks.sort.display': 'Thứ tự hiển thị',
   'ks.group.card': 'Thiệp cột mốc',
   'ks.group.video': 'Video kỷ niệm',
   'ks.tile.photos': '{min}–{max} ảnh',
@@ -3139,6 +3164,28 @@ const vi: Record<string, string> = {
 };
 
 const en: Record<string, string> = {
+  'rhythm.importToddler': 'Add 24 draft activities · 12–36 months',
+  'rhythm.importToddlerHint':
+    'Adds to the working copy only and skips existing IDs. Activities remain drafts pending editorial and qualified review before recommendation.',
+  'rhythm.tab.metrics': 'Personalization usefulness',
+  'rhythm.metrics.hint':
+    'Counts from the latest 14 days with data. Generated suggestions are not impressions; saves and intentions are not confirmed attempts. Scheduled notices do not establish delivery. Responses may change; these counters do not establish efficacy or unique-family counts.',
+  'rhythm.metrics.day': 'Date',
+  'rhythm.metrics.content': 'Content · version',
+  'rhythm.metrics.generated': 'Generated',
+  'rhythm.metrics.save': 'Saved',
+  'rhythm.metrics.intend': 'Intended',
+  'rhythm.metrics.tried': 'Confirmed tried',
+  'rhythm.metrics.helpful': 'Helpful',
+  'rhythm.metrics.unsure': 'Unsure',
+  'rhythm.metrics.exclude': 'Baby exclusion',
+  'rhythm.metrics.checkinSaved': 'Check-ins saved',
+  'rhythm.metrics.nextActionShown': 'Visible suggestions',
+  'rhythm.metrics.suggestionStarted': 'Intentions (legacy flow)',
+  'rhythm.metrics.feedbackSaved': 'Responses (legacy flow)',
+  'rhythm.metrics.digestScheduled': 'Digests scheduled',
+  'rhythm.metrics.digestOpened': 'Opened from notice',
+  'rhythm.metrics.empty': 'No measurement data yet.',
   'fmt.justNow': 'just now',
   'fmt.minutesAgo': '{n} min ago',
   'fmt.hoursAgo': '{n} h ago',
@@ -4913,6 +4960,9 @@ const en: Record<string, string> = {
   'ks.filter.all': 'All',
   'ks.filter.card': 'Cards',
   'ks.filter.video': 'Videos',
+  'ks.sort.label': 'Sort templates',
+  'ks.sort.newest': 'Newest added first',
+  'ks.sort.display': 'Display order',
   'ks.group.card': 'Milestone cards',
   'ks.group.video': 'Memory videos',
   'ks.tile.photos': '{min}–{max} photos',

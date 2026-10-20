@@ -395,6 +395,22 @@ describe('roles (D-072 #2)', () => {
 });
 
 describe('composeHome · feedback changes the next Home (M18, PS02)', () => {
+  it('P-172 I1: never offers yesterday’s invitation or a changed/deleted source', async () => {
+    const checkIn = await saveCheckIn('test_mom');
+    await ask('test_mom', checkIn);
+    expect((await home('test_mom', later(24 * 60))).recommendation).toBeNull();
+    await db.doc(`babies/${B}/checkins/${checkIn}`).update({ revision: 2, observation: 'usual' });
+    expect((await home('test_mom', later(1))).recommendation).toBeNull();
+    await db.doc(`babies/${B}/checkins/${checkIn}`).delete();
+    expect((await home('test_mom', later(2))).recommendation).toBeNull();
+  });
+  it('P-172 I1: a health sign from another caregiver supersedes a cached suggestion', async () => {
+    const checkIn = await saveCheckIn('test_mom');
+    await ask('test_mom', checkIn);
+    await saveCheckIn('test_nanny', { observation: 'health', healthSigns: ['fever_young'] });
+    expect((await ask('test_mom', checkIn, later(1))).state).toBe('health');
+    expect((await home('test_mom', later(1))).state).toBe('health');
+  });
   beforeEach(async () => {
     await ask('test_mom', await saveCheckIn('test_mom'));
   });

@@ -13,10 +13,12 @@ import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_segmented.dart';
 import '../../l10n/app_localizations.dart';
 import '../memories/media_bytes.dart';
 import '../memories/viewer_video.dart' show streamingPlayer;
 import 'keepsake_catalog.dart';
+import 'keepsake_personalization.dart';
 import 'milestone_card_screens.dart' show KeepsakeRoundIcon;
 
 /// Video kỷ niệm previews (D-068): the renderer's own compositions played on the phone in a
@@ -36,7 +38,11 @@ class KeepsakePreviewRequest {
     this.title,
     this.info,
     this.onUse,
+    this.variants = const {},
+    this.selectedLocale,
   });
+  final Map<String, KeepsakePreviewRequest> variants;
+  final String? selectedLocale;
   final String composition;
 
   /// Picking a template (owner, 2026-10-14: "ấn vào là sang màn hình play luôn"): its name in
@@ -57,6 +63,23 @@ class KeepsakePreviewRequest {
     title: title,
     info: info,
     onUse: onUse,
+    variants: variants,
+    selectedLocale: selectedLocale,
+  );
+
+  KeepsakePreviewRequest withLocales(
+    Map<String, KeepsakePreviewRequest> choices,
+    String selected,
+  ) => KeepsakePreviewRequest(
+    composition: composition,
+    props: props,
+    startFrame: startFrame,
+    videoUrl: videoUrl,
+    title: title,
+    info: info,
+    onUse: onUse,
+    variants: choices,
+    selectedLocale: selected,
   );
 
   /// "Xem mẫu" of a template with a portal-made `.mp4`: played as is, no WebView.
@@ -99,7 +122,12 @@ Map<String, Object?> _baseProps(
   Map<String, String> extra = const {},
   String locale = 'vi',
   List<String?> labels = const [],
+  Map<String, Object?>? presentation,
 }) => {
+  'presentation': ?presentation,
+  'artAssets': {
+    for (final e in t.videoAssets.entries) e.key: keepsakeAssetUrl(e.value),
+  },
   'photos': photos,
   'title': title,
   'message': message,
@@ -137,7 +165,9 @@ KeepsakePreviewRequest demoPreview(
   String? mark,
   KeepsakeMusic? track,
 }) => KeepsakePreviewRequest(
-  videoUrl: t.preview == null ? null : keepsakeAssetUrl(t.preview!),
+  videoUrl: t.previewFor(locale) == null
+      ? null
+      : keepsakeAssetUrl(t.previewFor(locale)!),
   composition: t.composition ?? 'LittleMoments',
   props: _baseProps(
     t,
@@ -160,6 +190,28 @@ KeepsakePreviewRequest demoPreview(
           key: own.defaultText.of(locale).replaceAll('{name}', name),
     },
     locale: locale.languageCode,
+    presentation: t.personalization == null
+        ? null
+        : {
+            'copy': resolveKeepsakeCopy(t.personalization!, {
+              for (final f in t.personalization!.fields)
+                f.key: f.source == 'babyName'
+                    ? name
+                    : f.type == 'confirmation'
+                    ? 'false'
+                    : '',
+            }, locale),
+            'beats': [
+              for (final b in t.personalization!.beats)
+                {'slots': b.slots, 'textKey': b.textKey},
+            ],
+            'crops': [
+              for (final _ in t.personalization!.beats)
+                {'x': 0, 'y': 0, 'zoom': 1},
+            ],
+            'format': 'story',
+            'reducedMotion': false,
+          },
   ),
 );
 
@@ -235,16 +287,23 @@ class KeepsakePreviewScreen extends StatefulWidget {
 }
 
 class _PreviewState extends State<KeepsakePreviewScreen> {
+  late KeepsakePreviewRequest _request = widget.request;
+  late String? _previewLocale = widget.request.selectedLocale;
   WebViewController? _web;
   Player? _player;
   VideoController? _video;
   var _loading = true;
   var _failed = false;
+  var _webReady = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.request.videoUrl case final url?) {
+    _openRequest();
+  }
+
+  void _openRequest() {
+    if (_request.videoUrl case final url?) {
       final player = _player = streamingPlayer();
       _video = VideoController(player);
       player.stream.error.listen((_) {
@@ -269,8 +328,9 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
         'ChildLifePreview',
         onMessageReceived: (m) async {
           if (m.message != 'ready') return;
+          _webReady = true;
           await web.runJavaScript(
-            'window.childLifePreview(${widget.request.toJson()})',
+            'window.childLifePreview(${_request.toJson()})',
           );
           if (mounted) setState(() => _loading = false);
         },
@@ -289,6 +349,34 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
         ),
       )
       ..loadRequest(Uri.parse('${widget.origin}/'));
+  }
+
+  Future<void> _changeLanguage(String language) async {
+    final next = widget.request.variants[language];
+    if (next == null) return;
+    setState(() {
+      _request = next;
+      _previewLocale = language;
+      _failed = false;
+      _loading = true;
+    });
+    if (_player != null && next.videoUrl != null) {
+      await _player!.open(Media(next.videoUrl!));
+    } else if (_web != null && next.videoUrl == null) {
+      // The ready callback will use the latest request if the page is still loading.
+      if (_webReady) {
+        await _web!.runJavaScript('window.childLifePreview(${next.toJson()})');
+        if (mounted) setState(() => _loading = false);
+      }
+    } else {
+      await _player?.dispose();
+      _player = null;
+      _video = null;
+      _web = null;
+      _webReady = false;
+      _openRequest();
+      if (mounted) setState(() {});
+    }
   }
 
   @override
@@ -318,7 +406,7 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
                   const SizedBox(width: ClSpace.s3),
                   Expanded(
                     child: Text(
-                      widget.request.title ?? l10n.ksPreview,
+                      _request.title ?? l10n.ksPreview,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: cl.text.headline.copyWith(color: Colors.white),
@@ -327,10 +415,30 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
                 ],
               ),
             ),
+            if (widget.request.variants.length > 1 && _previewLocale != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  ClSpace.s3,
+                ),
+                child: ClSegmented<String>(
+                  options: const ['vi', 'en'],
+                  selected: _previewLocale!,
+                  labelOf: (s) => s == 'vi' ? 'Tiếng Việt' : 'English',
+                  onChanged: (s) => unawaited(_changeLanguage(s)),
+                ),
+              ),
             Expanded(
               child: Center(
                 child: AspectRatio(
-                  aspectRatio: 9 / 16,
+                  aspectRatio:
+                      (_request.props['presentation'] is Map &&
+                          (_request.props['presentation'] as Map)['format'] ==
+                              'portrait')
+                      ? 4 / 5
+                      : 9 / 16,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Stack(
@@ -373,7 +481,7 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (widget.request.info case final info?) ...[
+                  if (_request.info case final info?) ...[
                     Text(
                       info,
                       textAlign: TextAlign.center,
@@ -382,13 +490,13 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
                     const SizedBox(height: ClSpace.s1),
                   ],
                   Text(
-                    widget.request.videoUrl != null
+                    _request.videoUrl != null
                         ? l10n.ksPreviewVideoNote
                         : l10n.ksPreviewNote,
                     textAlign: TextAlign.center,
                     style: cl.text.caption.copyWith(color: Colors.white60),
                   ),
-                  if (widget.request.onUse case final use?) ...[
+                  if (_request.onUse case final use?) ...[
                     const SizedBox(height: ClSpace.s3),
                     ClButton(
                       label: l10n.ksUseTemplate,

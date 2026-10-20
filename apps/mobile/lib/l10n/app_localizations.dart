@@ -30269,6 +30269,738 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lịch uống vitamin A theo chương trình của Việt Nam; ở nơi bạn sống, hãy hỏi bác sĩ của bé.'**
   String get nuVitaAbroad;
+
+  /// No description provided for @asReadSnapshot.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu đến {time}'**
+  String asReadSnapshot(String time);
+
+  /// Open a Phase 2 answer row in its module
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chi tiết'**
+  String get asReadDetails;
+
+  /// Open the solids diary from Lumi
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Ăn dặm'**
+  String get asOpenSolids;
+
+  /// Open the first aid module from Lumi health support
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Sơ cứu'**
+  String get asOpenFirstAid;
+
+  /// Personalization v2: Title
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay của nhà mình'**
+  String get pv2Title;
+
+  /// Personalization v2: Open
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem việc hữu ích hôm nay'**
+  String get pv2Open;
+
+  /// Personalization v2: Context
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay bạn có thể dành thời gian thế nào?'**
+  String get pv2Context;
+
+  /// Personalization v2: Usual
+  ///
+  /// In vi, this message translates to:
+  /// **'Như mọi ngày'**
+  String get pv2Usual;
+
+  /// Personalization v2: FewMinutes
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ vài phút'**
+  String get pv2FewMinutes;
+
+  /// Personalization v2: Busy
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bận'**
+  String get pv2Busy;
+
+  /// Personalization v2: OtherCarer
+  ///
+  /// In vi, this message translates to:
+  /// **'Người khác chăm'**
+  String get pv2OtherCarer;
+
+  /// Personalization v2: Temporary
+  ///
+  /// In vi, this message translates to:
+  /// **'Lựa chọn hôm nay tự hết hạn vào cuối ngày.'**
+  String get pv2Temporary;
+
+  /// Personalization v2: Focus
+  ///
+  /// In vi, this message translates to:
+  /// **'Một điều muốn ưu tiên tuần này'**
+  String get pv2Focus;
+
+  /// Personalization v2: Play
+  ///
+  /// In vi, this message translates to:
+  /// **'Có một lúc chơi cùng con'**
+  String get pv2Play;
+
+  /// Personalization v2: Handover
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao dễ hơn'**
+  String get pv2Handover;
+
+  /// Personalization v2: Routine
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu nhịp sinh hoạt'**
+  String get pv2Routine;
+
+  /// Personalization v2: NoFocus
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn'**
+  String get pv2NoFocus;
+
+  /// Personalization v2: Unusual
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh hoạt hôm nay khác thường'**
+  String get pv2Unusual;
+
+  /// Personalization v2: UnusualHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng gợi ý theo nhịp; nhắc việc bạn đã đặt vẫn giữ nguyên.'**
+  String get pv2UnusualHint;
+
+  /// Personalization v2: Next
+  ///
+  /// In vi, this message translates to:
+  /// **'Một việc vừa sức lúc này'**
+  String get pv2Next;
+
+  /// Personalization v2: BecauseNeed
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo điều gia đình vừa ghi nhận hôm nay'**
+  String get pv2BecauseNeed;
+
+  /// Personalization v2: BecauseFocus
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo ưu tiên tuần này của bạn'**
+  String get pv2BecauseFocus;
+
+  /// Personalization v2: BecauseInterest
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuổi của bé và điều bạn quan tâm'**
+  String get pv2BecauseInterest;
+
+  /// Personalization v2: Minutes
+  ///
+  /// In vi, this message translates to:
+  /// **'phút'**
+  String get pv2Minutes;
+
+  /// Personalization v2: OpenActivity
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem cách thực hiện'**
+  String get pv2OpenActivity;
+
+  /// Personalization v2: Controls
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều chỉnh gợi ý'**
+  String get pv2Controls;
+
+  /// Personalization v2: Save
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu lại'**
+  String get pv2Save;
+
+  /// Personalization v2: Hide
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn thẻ này'**
+  String get pv2Hide;
+
+  /// Personalization v2: Snooze
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay bận · để sau 3 ngày'**
+  String get pv2Snooze;
+
+  /// Personalization v2: Dislike
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi không thích gợi ý này'**
+  String get pv2Dislike;
+
+  /// Personalization v2: Known
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đã biết rồi'**
+  String get pv2Known;
+
+  /// Personalization v2: Exclude
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phù hợp với bé · áp dụng cho cả nhà'**
+  String get pv2Exclude;
+
+  /// Personalization v2: Restore
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục gợi ý'**
+  String get pv2Restore;
+
+  /// Personalization v2: Intend
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình định thử'**
+  String get pv2Intend;
+
+  /// Personalization v2: Tried
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình đã thử'**
+  String get pv2Tried;
+
+  /// Personalization v2: Helpful
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ích với nhà mình'**
+  String get pv2Helpful;
+
+  /// Personalization v2: Unsure
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thấy rõ'**
+  String get pv2Unsure;
+
+  /// Personalization v2: NoAnswer
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể trả lời sau. Một lần thử chưa nói lên tác dụng.'**
+  String get pv2NoAnswer;
+
+  /// Personalization v2: Patterns
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp riêng từ nhật ký'**
+  String get pv2Patterns;
+
+  /// Personalization v2: FeedPattern
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng cách giữa các lần ghi bú'**
+  String get pv2FeedPattern;
+
+  /// Personalization v2: SleepPattern
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ dài các giấc ngày đã ghi'**
+  String get pv2SleepPattern;
+
+  /// Personalization v2: PatternHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng thường gặp trong nhật ký 14 ngày; không phải lịch phải theo.'**
+  String get pv2PatternHint;
+
+  /// Personalization v2: Insufficient
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đủ dữ liệu ổn định để hiển thị nhịp. Bạn vẫn có thể dùng các gợi ý khác.'**
+  String get pv2Insufficient;
+
+  /// Personalization v2: Samples
+  ///
+  /// In vi, this message translates to:
+  /// **'mẫu ghi'**
+  String get pv2Samples;
+
+  /// Personalization v2: Days
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày có mẫu'**
+  String get pv2Days;
+
+  /// Personalization v2: Updated
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu gần nhất'**
+  String get pv2Updated;
+
+  /// Personalization v2: Notes
+  ///
+  /// In vi, this message translates to:
+  /// **'Sổ tay nhà mình'**
+  String get pv2Notes;
+
+  /// Personalization v2: AddNote
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm điều muốn ứng dụng nhớ'**
+  String get pv2AddNote;
+
+  /// Personalization v2: NoteText
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều nhà mình muốn ghi nhớ'**
+  String get pv2NoteText;
+
+  /// Personalization v2: Shared
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ với người được xem chăm sóc bé'**
+  String get pv2Shared;
+
+  /// Personalization v2: Personal
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ riêng bạn'**
+  String get pv2Personal;
+
+  /// Personalization v2: Category
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại ghi chú'**
+  String get pv2Category;
+
+  /// Personalization v2: Sleep
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get pv2Sleep;
+
+  /// Personalization v2: Soothing
+  ///
+  /// In vi, this message translates to:
+  /// **'Dỗ bé'**
+  String get pv2Soothing;
+
+  /// Personalization v2: Feeding
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn, bú'**
+  String get pv2Feeding;
+
+  /// Personalization v2: Avoid
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều cần tránh'**
+  String get pv2Avoid;
+
+  /// Personalization v2: Carer
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chăm'**
+  String get pv2Carer;
+
+  /// Personalization v2: Other
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get pv2Other;
+
+  /// Personalization v2: Expiry
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ ghi chú trong'**
+  String get pv2Expiry;
+
+  /// Personalization v2: OneDay
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get pv2OneDay;
+
+  /// Personalization v2: SevenDays
+  ///
+  /// In vi, this message translates to:
+  /// **'7 ngày'**
+  String get pv2SevenDays;
+
+  /// Personalization v2: ThirtyDays
+  ///
+  /// In vi, this message translates to:
+  /// **'30 ngày'**
+  String get pv2ThirtyDays;
+
+  /// Personalization v2: NoExpiry
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến khi xoá'**
+  String get pv2NoExpiry;
+
+  /// Personalization v2: ConfirmNote
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận lưu ghi chú'**
+  String get pv2ConfirmNote;
+
+  /// Personalization v2: Edit
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get pv2Edit;
+
+  /// Personalization v2: Delete
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get pv2Delete;
+
+  /// Personalization v2: Cancel
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get pv2Cancel;
+
+  /// Personalization v2: NoteHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Ứng dụng dùng ghi chú đã xác nhận để chọn gợi ý. Ghi chú tự do không phải chỉ định y tế.'**
+  String get pv2NoteHint;
+
+  /// Personalization v2: Work
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao trong 30 giây'**
+  String get pv2Work;
+
+  /// Personalization v2: WorkHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc gia đình đã đặt. Hoàn tất nhắc việc không tự tạo bản ghi chăm sóc.'**
+  String get pv2WorkHint;
+
+  /// Personalization v2: NoWork
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhắc việc đang chờ.'**
+  String get pv2NoWork;
+
+  /// Personalization v2: Accept
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi nhận việc này'**
+  String get pv2Accept;
+
+  /// Personalization v2: Release
+  ///
+  /// In vi, this message translates to:
+  /// **'Trả lại việc'**
+  String get pv2Release;
+
+  /// Personalization v2: Complete
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu hoàn tất'**
+  String get pv2Complete;
+
+  /// Personalization v2: Unclaimed
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có người nhận'**
+  String get pv2Unclaimed;
+
+  /// Personalization v2: Accepted
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có người nhận'**
+  String get pv2Accepted;
+
+  /// Personalization v2: Acknowledge
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đã nhận bàn giao'**
+  String get pv2Acknowledge;
+
+  /// Personalization v2: Acknowledged
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã nhận bàn giao lúc'**
+  String get pv2Acknowledged;
+
+  /// Personalization v2: LastRecords
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần ghi gần nhất'**
+  String get pv2LastRecords;
+
+  /// Personalization v2: Weekly
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này điều gì hữu ích?'**
+  String get pv2Weekly;
+
+  /// Personalization v2: WeekTried
+  ///
+  /// In vi, this message translates to:
+  /// **'hoạt động đã xác nhận thử'**
+  String get pv2WeekTried;
+
+  /// Personalization v2: WeekHelpful
+  ///
+  /// In vi, this message translates to:
+  /// **'hoạt động thấy có ích'**
+  String get pv2WeekHelpful;
+
+  /// Personalization v2: WeekHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.'**
+  String get pv2WeekHint;
+
+  /// Personalization v2: History
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đang dùng để cá nhân hoá'**
+  String get pv2History;
+
+  /// Personalization v2: Saved
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get pv2Saved;
+
+  /// Personalization v2: Digest
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý mỗi ngày trên thiết bị này'**
+  String get pv2Digest;
+
+  /// Personalization v2: DigestHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự chọn bật. Mỗi ngày tối đa một gợi ý mới, trong giờ cho phép. Chọn giờ trong cài đặt cá nhân hoá.'**
+  String get pv2DigestHint;
+
+  /// Personalization v2: DigestTitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Một việc vừa sức cho hôm nay'**
+  String get pv2DigestTitle;
+
+  /// Personalization v2: DigestBody
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở để xem gợi ý mới và việc gia đình đã đặt.'**
+  String get pv2DigestBody;
+
+  /// Personalization v2: Loading
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị gợi ý…'**
+  String get pv2Loading;
+
+  /// Personalization v2: Unavailable
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được thông tin mới. Kết nối mạng rồi thử lại nhé.'**
+  String get pv2Unavailable;
+
+  /// Personalization v2: Retry
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get pv2Retry;
+
+  /// Personalization v2: Refresh
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật'**
+  String get pv2Refresh;
+
+  /// Personalization v2: Conflict
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin đã thay đổi trên thiết bị khác. Đã tải lại để bạn xem.'**
+  String get pv2Conflict;
+
+  /// Personalization v2: ChangeSaved
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã cập nhật lựa chọn của bạn'**
+  String get pv2ChangeSaved;
+
+  /// Personalization v2: PatternReminder
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt nhắc theo khoảng này'**
+  String get pv2PatternReminder;
+
+  /// Confirmed notebook activity exclusion
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gợi ý hoạt động này cho bé (không bắt buộc)'**
+  String get pv2AvoidActivity;
+
+  /// Handover source changed since acknowledgement
+  ///
+  /// In vi, this message translates to:
+  /// **'Có cập nhật sau lần bạn nhận bàn giao. Vui lòng xem lại các việc và ghi chú mới.'**
+  String get pv2HandoverChanged;
+
+  /// Personal sleep diary comparison
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ trên các ngày ghi đủ gần đây'**
+  String get pv2SleepRecent;
+
+  /// Personal sleep diary comparison
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn tham chiếu trước đó'**
+  String get pv2SleepBaseline;
+
+  /// Expired notebook note remains editable but is excluded from personalization
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết hạn · không dùng để cá nhân hoá'**
+  String get pv2ExpiredNote;
+
+  /// Premium template phase 1: p48Language
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngôn ngữ thành phẩm'**
+  String get p48Language;
+
+  /// Premium template phase 1: p48Details
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin khoảnh khắc'**
+  String get p48Details;
+
+  /// Premium template phase 1: p48Copy
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung thành phẩm'**
+  String get p48Copy;
+
+  /// Premium template phase 1: p48Format
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỷ lệ thành phẩm'**
+  String get p48Format;
+
+  /// Premium template phase 1: p48ReducedMotion
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển động nhẹ'**
+  String get p48ReducedMotion;
+
+  /// Premium template phase 1: p48CropHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từng cảnh để căn ảnh. Cảnh kết có thể dùng lại ảnh bạn đã chọn.'**
+  String get p48CropHint;
+
+  /// Premium template phase 1: p48Crop
+  ///
+  /// In vi, this message translates to:
+  /// **'Căn ảnh'**
+  String get p48Crop;
+
+  /// Premium template phase 1: p48Horizontal
+  ///
+  /// In vi, this message translates to:
+  /// **'Trái / phải'**
+  String get p48Horizontal;
+
+  /// Premium template phase 1: p48Vertical
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên / dưới'**
+  String get p48Vertical;
+
+  /// Premium template phase 1: p48Zoom
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu phóng'**
+  String get p48Zoom;
+
+  /// Premium template phase 1: p48TooLong
+  ///
+  /// In vi, this message translates to:
+  /// **'Có nội dung chưa vừa khung. Hãy rút ngắn trước khi xuất.'**
+  String get p48TooLong;
+
+  /// Premium template phase 1: p48Invalid
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra thông tin bắt buộc và nội dung trong ngoặc nhọn.'**
+  String get p48Invalid;
+
+  /// Premium template phase 1: p48Reset
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng lại nội dung mẫu'**
+  String get p48Reset;
+
+  /// Premium template phase 1: p48MotionPreview
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chuyển động 4 giây'**
+  String get p48MotionPreview;
+
+  /// Premium template phase 1: p48ChangePhotos
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh đã chọn'**
+  String get p48ChangePhotos;
+
+  /// Premium template phase 1: p48PreviewFailed
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được đủ ảnh để xem trước. Hãy thử lại.'**
+  String get p48PreviewFailed;
+
+  /// Premium scene crop mode
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ trọn ảnh'**
+  String get p48WholePhoto;
+
+  /// Premium scene crop mode
+  ///
+  /// In vi, this message translates to:
+  /// **'Lấp đầy khung'**
+  String get p48FillFrame;
+
+  /// Select a photo slot in a premium card with multiple pictures
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh {n}'**
+  String p48PhotoSlot(int n);
+
+  /// Explicit action adopting proposed personal notes; never auto-filled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng ghi chú gợi ý'**
+  String get p48UseSuggestions;
+
+  /// Parent reviews proposed notes before using them.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú.'**
+  String get p48SuggestionsHint;
 }
 
 class _AppLocalizationsDelegate

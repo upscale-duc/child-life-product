@@ -40,6 +40,7 @@ import 'keepsake_access.dart';
 import 'keepsake_card_content.dart';
 import 'keepsake_card_view.dart';
 import 'keepsake_catalog.dart';
+import 'premium_keepsake_editor.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_resume.dart' show keepCardDraft;
 import 'memory_story_screens.dart' show MemoryStoryTemplatesScreen;
@@ -92,6 +93,11 @@ class CardDraft {
 
   /// The slot "Ảnh" fills next: the one last tapped on the card.
   final int slot;
+
+  double get exportWidth =>
+      template.personalization != null && format == KeepsakeFormat.portrait
+      ? 2400
+      : KeepsakeFormat.exportWidth;
 
   CardPhoto? photoAt(int i) => i < photos.length ? photos[i] : null;
 
@@ -1053,9 +1059,8 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
               type: MediaKind.photo,
               name: r.jpg.uri.pathSegments.last,
               captureAt: DateTime(day.year, day.month, day.day, 12),
-              width: KeepsakeFormat.exportWidth.round(),
-              height: (KeepsakeFormat.exportWidth / r.draft.format.aspect)
-                  .round(),
+              width: r.draft.exportWidth.round(),
+              height: (r.draft.exportWidth / r.draft.format.aspect).round(),
             ),
           ],
         );
@@ -1102,6 +1107,13 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.draft.template.personalization != null) {
+      return PremiumKeepsakeEditor(
+        template: widget.draft.template,
+        babyId: widget.draft.babyId,
+        cardDraft: widget.draft,
+      );
+    }
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final c = memoryCtx(context, ref);
@@ -1390,9 +1402,7 @@ Map<String, Object?> cardMemoryRequest({
 Future<CardResult> exportCard(GlobalKey boundary, CardDraft d) async {
   final box =
       boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-  final image = await box.toImage(
-    pixelRatio: KeepsakeFormat.exportWidth / box.size.width,
-  );
+  final image = await box.toImage(pixelRatio: d.exportWidth / box.size.width);
   final png = (await image.toByteData(
     format: ui.ImageByteFormat.png,
   ))!.buffer.asUint8List();

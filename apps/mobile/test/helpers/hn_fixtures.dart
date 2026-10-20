@@ -81,6 +81,7 @@ List<Override> hnOverrides({
     notifications: notifications ?? FakeReminderNotifications(),
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
+  ...personalizationTestOverrides(),
   rhythmSleepRecordsProvider.overrideWith((ref, key) => Stream.value(const [])),
   memoryRepositoryProvider.overrideWithValue(FakeMemoryRepository()),
   capabilitiesProvider.overrideWith(

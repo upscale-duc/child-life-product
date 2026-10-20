@@ -11,6 +11,7 @@ import 'checkin_screens.dart';
 import 'health_screen.dart';
 import 'milestone_screen.dart';
 import 'preferences_screens.dart';
+import 'personalization_v2_screen.dart';
 import 'result_screen.dart';
 import 'rhythm_calendar.dart';
 import 'rhythm_models.dart';
@@ -45,6 +46,7 @@ List<RouteBase> rhythmRoutes() => [
     (_, s) => StageDetailScreen(stageId: s.pathParameters['id'] ?? ''),
   ),
   _page(Routes.rhythmPersonalize, (_, _) => const PersonalizeScreen()),
+  _page(Routes.personalDay, (_, _) => const PersonalizationDayScreen()),
   _page(Routes.rhythmInterests, (_, _) => const InterestsScreen()),
   _page(Routes.rhythmDigest, (_, _) => const DigestScreen()),
   _page(Routes.rhythmFeedbackHistory, (_, _) => const FeedbackHistoryScreen()),

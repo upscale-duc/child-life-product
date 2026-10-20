@@ -577,6 +577,7 @@ describe('devices, exports and help', () => {
     // Ăn dặm meals (D-085 #3) and family recipes (D-086) ride along as their own sheets.
     expect(store.zips.get(job.path)).toEqual([
       'care.json',
+      'personalization.json',
       'care.csv',
       'meals.csv',
       'family-recipes.csv',

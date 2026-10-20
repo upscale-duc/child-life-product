@@ -1,0 +1,1916 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_09",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "itemName",
+            "label": {
+              "vi": "Tên món đồ (tùy chọn)",
+              "en": "Keepsake name (optional)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          },
+          {
+            "key": "outgrownConfirmed",
+            "label": {
+              "vi": "Tôi xác nhận món đồ đã không còn vừa bé",
+              "en": "I confirm this item no longer fits"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "storedDate",
+            "label": {
+              "vi": "Ngày cất lại (nếu biết)",
+              "en": "Date put away (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "NHỮNG MÓN ĐỒ ĐÃ CHẬT",
+              "en": "THE THINGS YOU OUTGREW"
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "MÓN ĐỒ MUỐN GIỮ",
+              "en": "A KEEPSAKE TO KEEP"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Chiếc {itemName} bé xíu ấy.",
+              "en": "That tiny {itemName}."
+            },
+            "requires": [
+              "itemName"
+            ],
+            "fallback": {
+              "vi": "Một món đồ bé xíu.",
+              "en": "A tiny keepsake."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Đã từng vừa con đến thế.",
+              "en": "Once, it fit you just right."
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một món đồ, bao điều muốn nhớ.",
+              "en": "One little thing, so much to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Cất món đồ lại, giữ những ngày này bên mình.",
+              "en": "Putting it away. Keeping the memories."
+            },
+            "requires": [
+              "storedDate"
+            ],
+            "fallback": {
+              "vi": "Giữ món đồ nhỏ, giữ những ngày bên con.",
+              "en": "A little keepsake. Days to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label0",
+            "label": {
+              "vi": "Nhãn món đồ",
+              "en": "Keepsake label"
+            },
+            "text": {
+              "vi": "{itemName}",
+              "en": "{itemName}"
+            },
+            "requires": [
+              "itemName"
+            ],
+            "fallback": {
+              "vi": "Món đồ bé xíu",
+              "en": "A tiny keepsake"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Ngày cất",
+              "en": "Date put away"
+            },
+            "text": {
+              "vi": "Cất lại · {storedDate}",
+              "en": "Put away · {storedDate}"
+            },
+            "requires": [
+              "storedDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Những món đồ đã chật",
+        "en": "The Things You Outgrew"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 10,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-hanger_714c0409.webp",
+            "rect": {
+              "x": 0.78,
+              "y": 0.035,
+              "w": 0.15,
+              "h": 0.09
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.052,
+              "w": 0.69,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.115,
+              "w": 0.87,
+              "h": 0.12
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.063,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.29,
+              "w": 0.55,
+              "h": 0.39
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-stitch-frame_a22daa94.webp",
+            "rect": {
+              "x": 0.053,
+              "y": 0.28,
+              "w": 0.574,
+              "h": 0.41
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.66,
+              "y": 0.29,
+              "w": 0.275,
+              "h": 0.185
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.66,
+              "y": 0.495,
+              "w": 0.275,
+              "h": 0.185
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-thread-route_7ecbca18.webp",
+            "rect": {
+              "x": 0.63,
+              "y": 0.29,
+              "w": 0.018,
+              "h": 0.39
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-fabric-label_b0a11cc7.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.7,
+              "w": 0.87,
+              "h": 0.065
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.09,
+              "y": 0.718,
+              "w": 0.81,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.029,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.795,
+              "w": 0.87,
+              "h": 0.065
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.038,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.865,
+              "w": 0.87,
+              "h": 0.055
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.03,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.45,
+              "y": 0.907,
+              "w": 0.485,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.023,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.065,
+              "y": 0.907,
+              "w": 0.35,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-hanger_714c0409.webp",
+            "rect": {
+              "x": 0.78,
+              "y": 0.065,
+              "w": 0.15,
+              "h": 0.065
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.09,
+              "w": 0.69,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.15,
+              "w": 0.87,
+              "h": 0.09
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.063,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.3,
+              "w": 0.55,
+              "h": 0.34
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-stitch-frame_a22daa94.webp",
+            "rect": {
+              "x": 0.053,
+              "y": 0.291,
+              "w": 0.574,
+              "h": 0.358
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.66,
+              "y": 0.3,
+              "w": 0.275,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.66,
+              "y": 0.48,
+              "w": 0.275,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-thread-route_7ecbca18.webp",
+            "rect": {
+              "x": 0.63,
+              "y": 0.3,
+              "w": 0.018,
+              "h": 0.34
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-wardrobe-fabric-label_b0a11cc7.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.66,
+              "w": 0.87,
+              "h": 0.065
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.09,
+              "y": 0.678,
+              "w": 0.81,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.029,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.755,
+              "w": 0.87,
+              "h": 0.065
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.038,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.835,
+              "w": 0.87,
+              "h": 0.055
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.03,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.45,
+              "y": 0.907,
+              "w": 0.485,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.023,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.065,
+              "y": 0.907,
+              "w": 0.35,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "wardrobeBoxLid": "art-p48-wardrobe-box-lid_48fcdb1e.webp",
+        "wardrobeButtonPair": "art-p48-wardrobe-button-pair_ac9d0570.webp",
+        "wardrobeDateTab": "art-p48-wardrobe-date-tab_631193fc.webp",
+        "wardrobeFabricLabel": "art-p48-wardrobe-fabric-label_b0a11cc7.webp",
+        "wardrobeFoldedCloth": "art-p48-wardrobe-folded-cloth_1c84a05c.webp",
+        "wardrobeHanger": "art-p48-wardrobe-hanger_714c0409.webp",
+        "wardrobeMemoryBox": "art-p48-wardrobe-memory-box_94d4f155.webp",
+        "wardrobeSeamDivider": "art-p48-wardrobe-seam-divider_ceba37b6.webp",
+        "wardrobeStitchFrame": "art-p48-wardrobe-stitch-frame_a22daa94.webp",
+        "wardrobeThreadRoute": "art-p48-wardrobe-thread-route_7ecbca18.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#F7F1E6",
+        "ink": "#3F5059",
+        "accent": "#BA9652"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_10",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lần đầu",
+          "en": "Little Firsts"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "NỤ CƯỜI MUỐN GIỮ",
+              "en": "A SMILE TO KEEP"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Một nụ cười, cả nhà nhớ mãi.",
+              "en": "A smile we will remember."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Điều bé xíu làm sáng cả ngày.",
+              "en": "Something tiny that lit up the day."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Ngày ghi nhận",
+              "en": "Date captured"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Nụ cười muốn giữ",
+        "en": "A Smile to Keep"
+      },
+      "description": {
+        "vi": "Lần đầu",
+        "en": "Little Firsts"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 11,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.025,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.045,
+              "w": 0.87,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.105,
+              "w": 0.87,
+              "h": 0.13
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-sun-arc_f9b71799.webp",
+            "rect": {
+              "x": 0.04,
+              "y": 0.27,
+              "w": 0.92,
+              "h": 0.22
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.105,
+              "y": 0.35,
+              "w": 0.79,
+              "h": 0.35
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-sun-frame_629df4cc.webp",
+            "rect": {
+              "x": 0.092,
+              "y": 0.34,
+              "w": 0.816,
+              "h": 0.37
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-smile-curve_cf10bc0b.webp",
+            "rect": {
+              "x": 0.3,
+              "y": 0.724,
+              "w": 0.4,
+              "h": 0.045
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.105,
+              "y": 0.805,
+              "w": 0.79,
+              "h": 0.07
+            },
+            "font": "lora",
+            "weight": 400,
+            "size": 0.037,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.105,
+              "y": 0.898,
+              "w": 0.79,
+              "h": 0.03
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.105,
+              "y": 0.923,
+              "w": 0.79,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.105,
+              "y": 0.967,
+              "w": 0.22,
+              "h": 0.021
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.025,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.08,
+              "w": 0.87,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.14,
+              "w": 0.87,
+              "h": 0.095
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-sun-arc_f9b71799.webp",
+            "rect": {
+              "x": 0.04,
+              "y": 0.275,
+              "w": 0.92,
+              "h": 0.16
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.105,
+              "y": 0.345,
+              "w": 0.79,
+              "h": 0.325
+            },
+            "shape": "rect",
+            "radius": 0.004,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-sun-frame_629df4cc.webp",
+            "rect": {
+              "x": 0.092,
+              "y": 0.336,
+              "w": 0.816,
+              "h": 0.343
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-smile-smile-curve_cf10bc0b.webp",
+            "rect": {
+              "x": 0.3,
+              "y": 0.697,
+              "w": 0.4,
+              "h": 0.035
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.105,
+              "y": 0.77,
+              "w": 0.79,
+              "h": 0.07
+            },
+            "font": "lora",
+            "weight": 400,
+            "size": 0.037,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.105,
+              "y": 0.874,
+              "w": 0.79,
+              "h": 0.03
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.105,
+              "y": 0.914,
+              "w": 0.79,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.105,
+              "y": 0.967,
+              "w": 0.22,
+              "h": 0.016
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "smileCaptionPaper": "art-p48-smile-caption-paper_b999d0e2.webp",
+        "smileClosingRays": "art-p48-smile-closing-rays_95298c1d.webp",
+        "smileDayTab": "art-p48-smile-day-tab_1c2faa8b.webp",
+        "smileQuietRing": "art-p48-smile-quiet-ring_7d34e854.webp",
+        "smileRayFan": "art-p48-smile-ray-fan_bb9a19d1.webp",
+        "smileReactionBracket": "art-p48-smile-reaction-bracket_a0d483fc.webp",
+        "smileSmileCurve": "art-p48-smile-smile-curve_cf10bc0b.webp",
+        "smileSoftSpeckles": "art-p48-smile-soft-speckles_1c39366d.webp",
+        "smileSunArc": "art-p48-smile-sun-arc_f9b71799.webp",
+        "smileSunFrame": "art-p48-smile-sun-frame_629df4cc.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFF2CD",
+        "ink": "#684D60",
+        "accent": "#D5826D"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_09",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "itemName",
+            "label": {
+              "vi": "Tên món đồ (tùy chọn)",
+              "en": "Keepsake name (optional)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          },
+          {
+            "key": "outgrownConfirmed",
+            "label": {
+              "vi": "Tôi xác nhận món đồ đã không còn vừa bé",
+              "en": "I confirm this item no longer fits"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "storedDate",
+            "label": {
+              "vi": "Ngày cất lại (nếu biết)",
+              "en": "Date put away (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Những món đồ đã chật",
+              "en": "The Things You Outgrew"
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "Món đồ muốn giữ",
+              "en": "A Keepsake to Keep"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Có một món đồ bé xíu…",
+              "en": "There was something so tiny…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Đã cùng con đi qua những ngày đầu.",
+              "en": "That stayed with you through the early days."
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một khoảnh khắc bên con.",
+              "en": "A moment with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Rồi một hôm, không còn vừa nữa.",
+              "en": "Then one day, it no longer fit."
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "Có những chi tiết mình muốn nhớ mãi.",
+              "en": "Some little details are worth keeping."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Con lớn lên. Món đồ ở lại.",
+              "en": "You grew. It stayed small."
+            },
+            "requires": [
+              "outgrownConfirmed"
+            ],
+            "fallback": {
+              "vi": "Con và món đồ nhỏ thân quen.",
+              "en": "You, and a familiar little keepsake."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Và câu chuyện của nó vẫn ở đây.",
+              "en": "Its story stays with us."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label0",
+            "label": {
+              "vi": "Nhãn món đồ",
+              "en": "Keepsake label"
+            },
+            "text": {
+              "vi": "{itemName}",
+              "en": "{itemName}"
+            },
+            "requires": [
+              "itemName"
+            ],
+            "fallback": {
+              "vi": "Món đồ bé xíu",
+              "en": "A tiny keepsake"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Ngày cất",
+              "en": "Date put away"
+            },
+            "text": {
+              "vi": "Cất lại · {storedDate}",
+              "en": "Put away · {storedDate}"
+            },
+            "requires": [
+              "storedDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3,
+              0
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Những món đồ đã chật",
+        "en": "The Things You Outgrew"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 10,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumOutgrownKeepsake",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "wardrobeBoxLid": "art-p48-wardrobe-box-lid_48fcdb1e.webp",
+        "wardrobeButtonPair": "art-p48-wardrobe-button-pair_ac9d0570.webp",
+        "wardrobeDateTab": "art-p48-wardrobe-date-tab_631193fc.webp",
+        "wardrobeFabricLabel": "art-p48-wardrobe-fabric-label_b0a11cc7.webp",
+        "wardrobeFoldedCloth": "art-p48-wardrobe-folded-cloth_1c84a05c.webp",
+        "wardrobeHanger": "art-p48-wardrobe-hanger_714c0409.webp",
+        "wardrobeMemoryBox": "art-p48-wardrobe-memory-box_94d4f155.webp",
+        "wardrobeSeamDivider": "art-p48-wardrobe-seam-divider_ceba37b6.webp",
+        "wardrobeStitchFrame": "art-p48-wardrobe-stitch-frame_a22daa94.webp",
+        "wardrobeThreadRoute": "art-p48-wardrobe-thread-route_7ecbca18.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh món đồ muốn giữ",
+            "en": "The little keepsake"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Bé bên món đồ",
+            "en": "Baby with the keepsake"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chi tiết tay/chân hoặc món đồ",
+            "en": "A tiny detail of baby or the item"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chân dung bé; cạnh ảnh món đồ đã chọn",
+            "en": "Baby portrait beside the keepsake"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Món đồ gấp/cất hoặc ảnh thay thế",
+            "en": "Folded keepsake or another photo"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#F7F1E6",
+        "ink": "#3F5059",
+        "accent": "#BA9652"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_wardrobe",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_10",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lần đầu",
+          "en": "Little Firsts"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "reactionConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba có người thân nhìn bé cười",
+              "en": "Photo three shows a loved one reacting to the smile"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Nụ cười muốn giữ",
+              "en": "A Smile to Keep"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Đang là một ngày rất bình thường…",
+              "en": "It was an ordinary sort of day…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Rồi con cười.",
+              "en": "Then you smiled."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Mọi ánh nhìn đều quay về phía con.",
+              "en": "And all eyes turned to you."
+            },
+            "requires": [
+              "reactionConfirmed"
+            ],
+            "fallback": {
+              "vi": "Chỉ muốn ngắm con thêm một chút.",
+              "en": "We could watch you smile a little longer."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Muốn giữ lại thêm một chút nữa.",
+              "en": "A moment worth holding a little longer."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Nụ cười này, ngày {momentDate}.",
+              "en": "This smile, on {momentDate}."
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "Một nụ cười muốn giữ mãi.",
+              "en": "A smile to keep, always."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Ngày ghi nhận",
+              "en": "Date captured"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2,
+              1
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Nụ cười muốn giữ",
+        "en": "A Smile to Keep"
+      },
+      "description": {
+        "vi": "Lần đầu",
+        "en": "Little Firsts"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 11,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumSmileToKeep",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "smileCaptionPaper": "art-p48-smile-caption-paper_b999d0e2.webp",
+        "smileClosingRays": "art-p48-smile-closing-rays_95298c1d.webp",
+        "smileDayTab": "art-p48-smile-day-tab_1c2faa8b.webp",
+        "smileQuietRing": "art-p48-smile-quiet-ring_7d34e854.webp",
+        "smileRayFan": "art-p48-smile-ray-fan_bb9a19d1.webp",
+        "smileReactionBracket": "art-p48-smile-reaction-bracket_a0d483fc.webp",
+        "smileSmileCurve": "art-p48-smile-smile-curve_cf10bc0b.webp",
+        "smileSoftSpeckles": "art-p48-smile-soft-speckles_1c39366d.webp",
+        "smileSunArc": "art-p48-smile-sun-arc_f9b71799.webp",
+        "smileSunFrame": "art-p48-smile-sun-frame_629df4cc.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Khoảnh khắc trước nụ cười",
+            "en": "An ordinary moment before the smile"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh cười; trở lại ở cảnh 4 và 5",
+            "en": "The smile; returns in scenes 4 and 5"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Phản ứng người thân hoặc ảnh cận an toàn",
+            "en": "Loved one’s reaction or a safe detail"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFF2CD",
+        "ink": "#684D60",
+        "accent": "#D5826D"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_smile",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ]
+}

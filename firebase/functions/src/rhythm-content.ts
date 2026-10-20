@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import {
   defaultRhythmRules,
+  appEvents,
   localDateIn,
   referenceModelSchema,
   rhythmActSchema,
@@ -93,7 +94,26 @@ export async function rhythmView(db: Firestore, deps: RhythmContentDeps, staff: 
       history: history.docs.map((d) => versionView(doc, d)),
     };
   }
-  return { ...out, requireReview: reviewRequired(deps.requireReview, await readContentPolicy(db)) };
+  const [stats, events] = await Promise.all([
+    db.collection('contentStatsDaily').orderBy('day', 'desc').limit(14).get(),
+    db.collection('appEventsDaily').orderBy('day', 'desc').limit(14).get(),
+  ]);
+  const metrics = {
+    content: stats.docs.map((d) => ({
+      day: d.get('day'),
+      generated: d.get('generated') ?? {},
+      answers: d.get('answers') ?? {},
+    })),
+    funnel: events.docs.map((d) => ({
+      day: d.get('day'),
+      counts: Object.fromEntries(appEvents.map((event) => [event, Number(d.get(event) ?? 0)])),
+    })),
+  };
+  return {
+    ...out,
+    metrics,
+    requireReview: reviewRequired(deps.requireReview, await readContentPolicy(db)),
+  };
 }
 
 /** Save the open draft of one document (editing a version under review withdraws it). */

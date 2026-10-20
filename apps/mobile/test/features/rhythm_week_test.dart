@@ -577,7 +577,7 @@ void main() {
         await _tap(tester, find.text(l10n.rhHow));
         expect(
           visits.last.location,
-          '${Routes.rhythmActivity}/act_evening_repeat?ci=${sleepCheckIn().id}',
+          '${Routes.rhythmActivity}/act_evening_repeat?ci=${sleepCheckIn(date: rhythmToday).id}',
         );
       },
     );

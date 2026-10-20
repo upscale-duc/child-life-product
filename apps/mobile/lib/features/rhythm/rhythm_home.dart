@@ -60,6 +60,7 @@ class ForYouSection extends ConsumerWidget {
     this.header,
     this.more = const [],
     this.weekTeaser,
+    this.enablePrimary = true,
     super.key,
   });
 
@@ -72,6 +73,7 @@ class ForYouSection extends ConsumerWidget {
 
   /// Replaces the age card's teaser in "Tuần này của {bé}" (the current stage).
   final WeekTeaser? weekTeaser;
+  final bool enablePrimary;
   // ---- end D-076 #4 ----
 
   @override
@@ -132,10 +134,23 @@ class ForYouSection extends ConsumerWidget {
         (last.kind == FeedbackKind.notSuitable ||
             (last.kind == FeedbackKind.notToday && last.date == today));
     final showPrimary =
+        enablePrimary &&
         health == null &&
         rec != null &&
         rec.active &&
         activity != null &&
+        activity.status == ContentStatus.published &&
+        activity.version == rec.contentVersion &&
+        rec.generatedAt != null &&
+        isoOf(inBabyZone(zone, rec.generatedAt!)) == today &&
+        (rec.expiresAt == null || rec.expiresAt!.isAfter(now)) &&
+        checkIns.any(
+          (c) =>
+              c.id == rec.checkInId &&
+              c.date == today &&
+              c.observation != Observation.usual &&
+              c.revision == (rec.sourceRevision ?? 1),
+        ) &&
         !putOff;
 
     final ageCard = content == null

@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "collection": "premium48-phase2",
+  "source": "Original editable SVG authored for Child Life, 2026-10-20. No third-party imagery or font outlines.",
+  "licence": "Original artwork for Child Life",
+  "assets": [
+    {
+      "name": "p48-home-house",
+      "family": "home",
+      "title": "Nhà giấy",
+      "usage": "Hero kết; khung nhận diện C03/V03.",
+      "file": "p48-home-house.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-key",
+      "family": "home",
+      "title": "Chìa khóa đồng",
+      "usage": "Điểm chốt ở lề; hạ xuống ở cảnh kết.",
+      "file": "p48-home-key.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-route",
+      "family": "home",
+      "title": "Đường về nhà",
+      "usage": "Nối ảnh ở lề; reveal theo nhịp cảnh 1/2.",
+      "file": "p48-home-route.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-door-left",
+      "family": "home",
+      "title": "Cánh cửa trái",
+      "usage": "Hai layer riêng để mở cửa tại lề, không quét qua mặt.",
+      "file": "p48-home-door-left.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-door-right",
+      "family": "home",
+      "title": "Cánh cửa phải",
+      "usage": "Hai layer riêng để mở cửa tại lề, không quét qua mặt.",
+      "file": "p48-home-door-right.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-window",
+      "family": "home",
+      "title": "Khung cửa vòm",
+      "usage": "Viền quanh ảnh; vùng giữa trong suốt.",
+      "file": "p48-home-window.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-tag",
+      "family": "home",
+      "title": "Thẻ hành trình",
+      "usage": "Chứa ngày tùy chọn bằng text VI/EN ở ngoài SVG.",
+      "file": "p48-home-tag.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-envelope",
+      "family": "home",
+      "title": "Phong bì lời chào",
+      "usage": "Nền cho dòng nhắn C03; kết thư V03.",
+      "file": "p48-home-envelope.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-plant",
+      "family": "home",
+      "title": "Chậu cây góc nhà",
+      "usage": "Chi tiết nhỏ ở góc khung nhà, không thay chủ thể ảnh.",
+      "file": "p48-home-plant.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-home-roof-frame",
+      "family": "home",
+      "title": "Mái nhà ôm ảnh",
+      "usage": "Chỉ viền, giữ ảnh lớn ở cảnh kết; không che gương mặt.",
+      "file": "p48-home-roof-frame.svg",
+      "templates": [
+        "C03",
+        "V03"
+      ]
+    },
+    {
+      "name": "p48-scrap-washi-ripped",
+      "family": "scrap",
+      "title": "Washi xé màu mơ",
+      "usage": "Giữ ảnh trên giấy; layer ngắn, không phủ mặt.",
+      "file": "p48-scrap-washi-ripped.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-washi-grid",
+      "family": "scrap",
+      "title": "Washi ô kẻ",
+      "usage": "Biến thể chức năng cho ảnh thứ hai, không đổi màu giả mẫu mới.",
+      "file": "p48-scrap-washi-grid.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-corner-fold",
+      "family": "scrap",
+      "title": "Góc giấy gập",
+      "usage": "Góc trang có chiều sâu, không đặt đè ảnh.",
+      "file": "p48-scrap-corner-fold.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-tab",
+      "family": "scrap",
+      "title": "Tab tuần trống",
+      "usage": "Nhãn tuần là text VI/EN riêng, không tự gán ngày chụp.",
+      "file": "p48-scrap-tab.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-month-one",
+      "family": "scrap",
+      "title": "Số 01 dập nổi",
+      "usage": "Kết V04; chi tiết góc C04, không lặp ở mọi cảnh.",
+      "file": "p48-scrap-month-one.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-pencil-loop",
+      "family": "scrap",
+      "title": "Nét bút chì vòng",
+      "usage": "Draw-on ở lề, nối ảnh thứ ba hoặc nhấn câu kết.",
+      "file": "p48-scrap-pencil-loop.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-photo-corners",
+      "family": "scrap",
+      "title": "Góc giữ ảnh",
+      "usage": "4 góc trong suốt ở giữa, co giãn theo khung ảnh.",
+      "file": "p48-scrap-photo-corners.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-envelope",
+      "family": "scrap",
+      "title": "Túi lưu kỷ niệm",
+      "usage": "Đựng dải lời nhắn; hình riêng với phong bì của bộ nhà.",
+      "file": "p48-scrap-envelope.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-paper-strip",
+      "family": "scrap",
+      "title": "Dải giấy lời nhắn",
+      "usage": "Nền câu kết C04; text thật luôn là layer riêng.",
+      "file": "p48-scrap-paper-strip.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    },
+    {
+      "name": "p48-scrap-stitches",
+      "family": "scrap",
+      "title": "Đường khâu trang",
+      "usage": "Nhịp dọc lề trang, thay motif đường đi của bộ nhà.",
+      "file": "p48-scrap-stitches.svg",
+      "templates": [
+        "C04",
+        "V04"
+      ]
+    }
+  ]
+}

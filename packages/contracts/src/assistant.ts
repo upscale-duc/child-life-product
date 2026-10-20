@@ -1,3 +1,4 @@
+import { assistantReadsIn, privateReadTool, type AssistantReadCard } from './assistant-reads.js';
 import { z } from 'zod';
 // Chi tiêu currencies (D-075 #4).
 import { amountMaxFor, expenseCurrencies, isExpenseCurrency, legacyCurrency } from './spending.js';
@@ -90,6 +91,7 @@ export const assistantPartTypes = [
   'clarification',
   'draft_reference',
   'source_summary',
+  'read_card',
   'approved_content',
   'recipe_list',
   'usage_notice',
@@ -117,6 +119,7 @@ export const clarificationSchema = z.object({
 export type Clarification = z.infer<typeof clarificationSchema>;
 
 export type AssistantPart =
+  | AssistantReadCard
   | {
       type: 'text';
       schemaVersion: 1;
@@ -165,7 +168,7 @@ export type AssistantPart =
       items?: RecipeListItem[];
       /** Approved, age- and region-eligible recipes left out for a recorded reaction. */
       excludedCount?: number;
-      /** "Ghi bữa ăn" needs a meal-log module (none yet, P-157). */
+      /** Whether the in-app Solids diary is available (chat meal writes remain Phase 3). */
       mealLogAvailable?: boolean;
     }
   | {
@@ -1753,7 +1756,10 @@ export function taskVisibilityFor(x: {
   return x.scope.type === 'child' &&
     x.modality === 'text' &&
     x.intentHint !== 'expense' &&
-    !(x.text && looksLikeSpending(x.text)) &&
+    !(
+      x.text &&
+      (looksLikeSpending(x.text) || assistantReadsIn(x.text).some((r) => privateReadTool(r.tool)))
+    ) &&
     inSharedThread(x.role)
     ? 'shared'
     : 'private';

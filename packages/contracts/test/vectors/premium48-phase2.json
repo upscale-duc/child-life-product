@@ -1,0 +1,2324 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_03",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày về nhà (tùy chọn)",
+              "en": "Homecoming date (optional)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "journeyConfirmed",
+            "label": {
+              "vi": "Mình có ảnh của chuyến về nhà",
+              "en": "My selection includes the journey home"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "ĐƯA CON VỀ NHÀ",
+              "en": "WELCOME HOME"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Nhà mình có con rồi.",
+              "en": "Home, with you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Từ hôm nay, góc nhỏ này có thêm một người để thương.",
+              "en": "A little place, with someone new to love."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày về nhà",
+              "en": "Homecoming date"
+            },
+            "text": {
+              "vi": "Ngày về nhà: {momentDate}",
+              "en": "Homecoming: {momentDate}"
+            },
+            "requires": ["momentDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "photoLabel0",
+            "label": {
+              "vi": "Ảnh thứ nhất",
+              "en": "First photo"
+            },
+            "text": {
+              "vi": "Chuyến về nhà",
+              "en": "The journey home"
+            },
+            "requires": ["journeyConfirmed"],
+            "fallback": {
+              "vi": "Một ngày đáng nhớ",
+              "en": "A day to remember"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "photoLabel1",
+            "label": {
+              "vi": "Ảnh thứ hai",
+              "en": "Second photo"
+            },
+            "text": {
+              "vi": "Góc nhỏ có con",
+              "en": "A little place for you"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Đưa con về nhà",
+        "en": "Welcome Home"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 4,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.04,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-house_a2d55906.webp",
+            "rect": {
+              "x": 0.78,
+              "y": 0.027,
+              "w": 0.15,
+              "h": 0.12
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.055,
+              "w": 0.68,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.105,
+              "w": 0.77,
+              "h": 0.12
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-key_45f0e3e6.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.235,
+              "w": 0.19,
+              "h": 0.06
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -7
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.061,
+              "y": 0.334,
+              "w": 0.422,
+              "h": 0.36
+            },
+            "color": "#F6E7B8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -1
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.515,
+              "y": 0.334,
+              "w": 0.422,
+              "h": 0.36
+            },
+            "color": "#F6E7B8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.073,
+              "y": 0.344,
+              "w": 0.397,
+              "h": 0.332
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -1
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.528,
+              "y": 0.344,
+              "w": 0.397,
+              "h": 0.332
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-window_1f0be605.webp",
+            "rect": {
+              "x": 0.061,
+              "y": 0.334,
+              "w": 0.422,
+              "h": 0.36
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-window_1f0be605.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.334,
+              "w": 0.422,
+              "h": 0.36
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 1
+          },
+          {
+            "type": "text",
+            "field": "photoLabel0",
+            "rect": {
+              "x": 0.073,
+              "y": 0.713,
+              "w": 0.4,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "photoLabel1",
+            "rect": {
+              "x": 0.528,
+              "y": 0.713,
+              "w": 0.4,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-route_4c3dec47.webp",
+            "rect": {
+              "x": 0.1,
+              "y": 0.755,
+              "w": 0.75,
+              "h": 0.055
+            },
+            "fit": "fill",
+            "opacity": 0.65,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.827,
+              "w": 0.75,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.91,
+              "w": 0.8,
+              "h": 0.03
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-plant_726f3631.webp",
+            "rect": {
+              "x": 0.842,
+              "y": 0.827,
+              "w": 0.09,
+              "h": 0.095
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.04,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-house_a2d55906.webp",
+            "rect": {
+              "x": 0.78,
+              "y": 0.07,
+              "w": 0.15,
+              "h": 0.09
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.09,
+              "w": 0.68,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.135,
+              "w": 0.77,
+              "h": 0.09
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-key_45f0e3e6.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.226,
+              "w": 0.19,
+              "h": 0.043
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -7
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.061,
+              "y": 0.31,
+              "w": 0.422,
+              "h": 0.318
+            },
+            "color": "#F6E7B8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -1
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.515,
+              "y": 0.31,
+              "w": 0.422,
+              "h": 0.318
+            },
+            "color": "#F6E7B8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.073,
+              "y": 0.318,
+              "w": 0.397,
+              "h": 0.296
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -1
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.528,
+              "y": 0.318,
+              "w": 0.397,
+              "h": 0.296
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-window_1f0be605.webp",
+            "rect": {
+              "x": 0.061,
+              "y": 0.31,
+              "w": 0.422,
+              "h": 0.318
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-window_1f0be605.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.31,
+              "w": 0.422,
+              "h": 0.318
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 1
+          },
+          {
+            "type": "text",
+            "field": "photoLabel0",
+            "rect": {
+              "x": 0.073,
+              "y": 0.648,
+              "w": 0.4,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "photoLabel1",
+            "rect": {
+              "x": 0.528,
+              "y": 0.648,
+              "w": 0.4,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-route_4c3dec47.webp",
+            "rect": {
+              "x": 0.1,
+              "y": 0.69,
+              "w": 0.75,
+              "h": 0.055
+            },
+            "fit": "fill",
+            "opacity": 0.65,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.067,
+              "y": 0.767,
+              "w": 0.75,
+              "h": 0.075
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.067,
+              "y": 0.863,
+              "w": 0.8,
+              "h": 0.03
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-home-plant_726f3631.webp",
+            "rect": {
+              "x": 0.842,
+              "y": 0.787,
+              "w": 0.09,
+              "h": 0.085
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "homeDoorLeft": "art-p48-home-door-left_71692765.webp",
+        "homeDoorRight": "art-p48-home-door-right_35beb95d.webp",
+        "homeEnvelope": "art-p48-home-envelope_e9786a91.webp",
+        "homeHouse": "art-p48-home-house_a2d55906.webp",
+        "homeKey": "art-p48-home-key_45f0e3e6.webp",
+        "homePlant": "art-p48-home-plant_726f3631.webp",
+        "homeRoofFrame": "art-p48-home-roof-frame_5cd7b9e7.webp",
+        "homeRoute": "art-p48-home-route_4c3dec47.webp",
+        "homeTag": "art-p48-home-tag_e9869bda.webp",
+        "homeWindow": "art-p48-home-window_1f0be605.webp"
+      },
+      "photos": {
+        "min": 2,
+        "max": 2
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFFDF7",
+        "ink": "#414B34",
+        "accent": "#79815C"
+      },
+      "palettes": [
+        {
+          "background": "#FFFDF7",
+          "ink": "#414B34",
+          "accent": "#79815C"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_04",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "MỘT THÁNG BÊN NHAU",
+              "en": "OUR FIRST MONTH"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Một tháng làm quen với con.",
+              "en": "One month of getting to know you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Thêm hiểu con một chút, mỗi ngày.",
+              "en": "Learning a little more about you, every day."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Dòng kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "{babyName} · Một tháng bên nhau",
+              "en": "{babyName} · Our first month together"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Một tháng làm quen",
+        "en": "A Month of Getting to Know You"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 5,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-stitches_dcffdf5e.webp",
+            "rect": {
+              "x": 0.014,
+              "y": 0.07,
+              "w": 0.026,
+              "h": 0.8
+            },
+            "fit": "fill",
+            "opacity": 0.5,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-corner-fold_dc50ef98.webp",
+            "rect": {
+              "x": 0.86,
+              "y": 0.018,
+              "w": 0.12,
+              "h": 0.096
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.073,
+              "y": 0.045,
+              "w": 0.72,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.073,
+              "y": 0.1,
+              "w": 0.74,
+              "h": 0.125
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.062,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.09,
+              "y": 0.265,
+              "w": 0.39,
+              "h": 0.278
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.104,
+              "y": 0.278,
+              "w": 0.362,
+              "h": 0.228
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -3
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.515,
+              "y": 0.304,
+              "w": 0.39,
+              "h": 0.278
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": 3
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.529,
+              "y": 0.317,
+              "w": 0.362,
+              "h": 0.228
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-washi-ripped_d655f056.webp",
+            "rect": {
+              "x": 0.17,
+              "y": 0.257,
+              "w": 0.22,
+              "h": 0.047
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -8
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-washi-grid_54ea73c2.webp",
+            "rect": {
+              "x": 0.59,
+              "y": 0.298,
+              "w": 0.22,
+              "h": 0.047
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 9
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.245,
+              "y": 0.586,
+              "w": 0.51,
+              "h": 0.21
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -1
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.26,
+              "y": 0.597,
+              "w": 0.48,
+              "h": 0.164
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-photo-corners_7b55ea0e.webp",
+            "rect": {
+              "x": 0.245,
+              "y": 0.586,
+              "w": 0.51,
+              "h": 0.21
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-month-one_91b5692f.webp",
+            "rect": {
+              "x": 0.73,
+              "y": 0.63,
+              "w": 0.18,
+              "h": 0.14
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-pencil-loop_ee222377.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.78,
+              "w": 0.28,
+              "h": 0.04
+            },
+            "fit": "fill",
+            "opacity": 0.6,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-paper-strip_a49ebc45.webp",
+            "rect": {
+              "x": 0.05,
+              "y": 0.83,
+              "w": 0.9,
+              "h": 0.075
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.08,
+              "y": 0.841,
+              "w": 0.84,
+              "h": 0.056
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.073,
+              "y": 0.918,
+              "w": 0.85,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-stitches_dcffdf5e.webp",
+            "rect": {
+              "x": 0.014,
+              "y": 0.07,
+              "w": 0.026,
+              "h": 0.81
+            },
+            "fit": "fill",
+            "opacity": 0.5,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-corner-fold_dc50ef98.webp",
+            "rect": {
+              "x": 0.86,
+              "y": 0.018,
+              "w": 0.12,
+              "h": 0.068
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.073,
+              "y": 0.08,
+              "w": 0.72,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.073,
+              "y": 0.126,
+              "w": 0.74,
+              "h": 0.1
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.062,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.09,
+              "y": 0.283,
+              "w": 0.39,
+              "h": 0.246
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.104,
+              "y": 0.292,
+              "w": 0.362,
+              "h": 0.208
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -3
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.515,
+              "y": 0.315,
+              "w": 0.39,
+              "h": 0.246
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": 3
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.529,
+              "y": 0.324,
+              "w": 0.362,
+              "h": 0.208
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-washi-ripped_d655f056.webp",
+            "rect": {
+              "x": 0.17,
+              "y": 0.274,
+              "w": 0.22,
+              "h": 0.033
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -8
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-washi-grid_54ea73c2.webp",
+            "rect": {
+              "x": 0.59,
+              "y": 0.307,
+              "w": 0.22,
+              "h": 0.033
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 9
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0.245,
+              "y": 0.571,
+              "w": 0.51,
+              "h": 0.223
+            },
+            "color": "#FFFDF8",
+            "gradientTo": null,
+            "radius": 0.008,
+            "stroke": 0,
+            "rotate": -1
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.26,
+              "y": 0.58,
+              "w": 0.48,
+              "h": 0.184
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-photo-corners_7b55ea0e.webp",
+            "rect": {
+              "x": 0.245,
+              "y": 0.571,
+              "w": 0.51,
+              "h": 0.223
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": -1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-month-one_91b5692f.webp",
+            "rect": {
+              "x": 0.73,
+              "y": 0.618,
+              "w": 0.18,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-pencil-loop_ee222377.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.785,
+              "w": 0.28,
+              "h": 0.04
+            },
+            "fit": "fill",
+            "opacity": 0.6,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-scrap-paper-strip_a49ebc45.webp",
+            "rect": {
+              "x": 0.05,
+              "y": 0.843,
+              "w": 0.9,
+              "h": 0.07
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.08,
+              "y": 0.853,
+              "w": 0.84,
+              "h": 0.052
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.073,
+              "y": 0.916,
+              "w": 0.85,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "scrapCornerFold": "art-p48-scrap-corner-fold_dc50ef98.webp",
+        "scrapEnvelope": "art-p48-scrap-envelope_d45e7be5.webp",
+        "scrapMonthOne": "art-p48-scrap-month-one_91b5692f.webp",
+        "scrapPaperStrip": "art-p48-scrap-paper-strip_a49ebc45.webp",
+        "scrapPencilLoop": "art-p48-scrap-pencil-loop_ee222377.webp",
+        "scrapPhotoCorners": "art-p48-scrap-photo-corners_7b55ea0e.webp",
+        "scrapStitches": "art-p48-scrap-stitches_dcffdf5e.webp",
+        "scrapTab": "art-p48-scrap-tab_b5ff9e7a.webp",
+        "scrapWashiGrid": "art-p48-scrap-washi-grid_54ea73c2.webp",
+        "scrapWashiRipped": "art-p48-scrap-washi-ripped_d655f056.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFF4E7",
+        "ink": "#5B4034",
+        "accent": "#D99A74"
+      },
+      "palettes": [
+        {
+          "background": "#FFF4E7",
+          "ink": "#5B4034",
+          "accent": "#D99A74"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_03",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Chào con",
+          "en": "Hello, Little One"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày về nhà (tùy chọn)",
+              "en": "Homecoming date (optional)"
+            },
+            "type": "date",
+            "source": "momentDate",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "journeyConfirmed",
+            "label": {
+              "vi": "Mình có ảnh của chuyến về nhà",
+              "en": "My selection includes the journey home"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Đưa con về nhà",
+              "en": "Welcome Home"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Hôm nay, mình về nhà.",
+              "en": "Today, we went home."
+            },
+            "requires": ["journeyConfirmed"],
+            "fallback": {
+              "vi": "Một góc nhà, một khởi đầu.",
+              "en": "A little place. A new beginning."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Một chuyến đi thật khác.",
+              "en": "A journey unlike any other."
+            },
+            "requires": ["journeyConfirmed"],
+            "fallback": {
+              "vi": "Một ngày đáng nhớ.",
+              "en": "A day to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Căn phòng vẫn thế…",
+              "en": "The room looked the same…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Nhưng nhà mình đã có thêm con.",
+              "en": "But home had someone new."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Chào mừng về nhà, {babyName}.",
+              "en": "Welcome home, {babyName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ngày về nhà",
+              "en": "Homecoming date"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": ["momentDate"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Đưa con về nhà",
+        "en": "Welcome Home"
+      },
+      "description": {
+        "vi": "Chào con",
+        "en": "Hello, Little One"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 4,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumHomecoming",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "homeDoorLeft": "art-p48-home-door-left_71692765.webp",
+        "homeDoorRight": "art-p48-home-door-right_35beb95d.webp",
+        "homeEnvelope": "art-p48-home-envelope_e9786a91.webp",
+        "homeHouse": "art-p48-home-house_a2d55906.webp",
+        "homeKey": "art-p48-home-key_45f0e3e6.webp",
+        "homePlant": "art-p48-home-plant_726f3631.webp",
+        "homeRoofFrame": "art-p48-home-roof-frame_5cd7b9e7.webp",
+        "homeRoute": "art-p48-home-route_4c3dec47.webp",
+        "homeTag": "art-p48-home-tag_e9869bda.webp",
+        "homeWindow": "art-p48-home-window_1f0be605.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Chuẩn bị về hoặc góc nhà",
+            "en": "Getting ready or a corner at home"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chuyến về hoặc bé ở nhà",
+            "en": "Journey home or baby at home"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Cửa nhà hoặc góc phòng",
+            "en": "Doorway or a corner of the room"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Bé trong không gian ở nhà",
+            "en": "Baby in the space at home"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Người thân đón bé",
+            "en": "Loved ones welcoming baby"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFFDF7",
+        "ink": "#414B34",
+        "accent": "#79815C"
+      },
+      "palettes": [
+        {
+          "background": "#FFFDF7",
+          "ink": "#414B34",
+          "accent": "#79815C"
+        }
+      ],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_home",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_04",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "birthPhotoConfirmed",
+            "label": {
+              "vi": "Ảnh đầu tiên được chụp vào ngày sinh",
+              "en": "The first photo was taken on the day of birth"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Một tháng làm quen",
+              "en": "A Month of Getting to Know You"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Một tháng trước, nhà mình đón con.",
+              "en": "A month ago, we welcomed you."
+            },
+            "requires": ["birthPhotoConfirmed"],
+            "fallback": {
+              "vi": "Những ngày đầu bên con.",
+              "en": "Our first days with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Những ngày đầu còn nhiều bỡ ngỡ.",
+              "en": "Those first days held so much to learn."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Rồi từng chút một…",
+              "en": "Then, little by little…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Nhà mình tìm được nhịp riêng.",
+              "en": "We began finding our own rhythm."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Tròn một tháng bên {babyName}.",
+              "en": "One month with {babyName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1, 0],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2, 1],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3, 2, 1],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Một tháng làm quen",
+        "en": "A Month of Getting to Know You"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 5,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": null,
+      "composition": "PremiumFirstMonth",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "scrapCornerFold": "art-p48-scrap-corner-fold_dc50ef98.webp",
+        "scrapEnvelope": "art-p48-scrap-envelope_d45e7be5.webp",
+        "scrapMonthOne": "art-p48-scrap-month-one_91b5692f.webp",
+        "scrapPaperStrip": "art-p48-scrap-paper-strip_a49ebc45.webp",
+        "scrapPencilLoop": "art-p48-scrap-pencil-loop_ee222377.webp",
+        "scrapPhotoCorners": "art-p48-scrap-photo-corners_7b55ea0e.webp",
+        "scrapStitches": "art-p48-scrap-stitches_dcffdf5e.webp",
+        "scrapTab": "art-p48-scrap-tab_b5ff9e7a.webp",
+        "scrapWashiGrid": "art-p48-scrap-washi-grid_54ea73c2.webp",
+        "scrapWashiRipped": "art-p48-scrap-washi-ripped_d655f056.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh sớm nhất bạn chọn",
+            "en": "Earliest photo you selected"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh chăm bé những ngày đầu",
+            "en": "Care in the early days"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc giữa tháng",
+            "en": "An everyday moment mid-month"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Gần đây, cùng người chăm",
+            "en": "Recently, with a caregiver"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chân dung đầy tháng",
+            "en": "A one-month portrait"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFF4E7",
+        "ink": "#5B4034",
+        "accent": "#D99A74"
+      },
+      "palettes": [
+        {
+          "background": "#FFF4E7",
+          "ink": "#5B4034",
+          "accent": "#D99A74"
+        }
+      ],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_month",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_03",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "false"
+      },
+      "expected": {
+        "headline": "ĐƯA CON VỀ NHÀ",
+        "title": "Nhà mình có con rồi.",
+        "message": "Từ hôm nay, góc nhỏ này có thêm một người để thương.",
+        "detail0": "Ngày về nhà: 18 tháng 9, 2026",
+        "photoLabel0": "Một ngày đáng nhớ",
+        "photoLabel1": "Góc nhỏ có con",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_03",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "true"
+      },
+      "expected": {
+        "headline": "ĐƯA CON VỀ NHÀ",
+        "title": "Nhà mình có con rồi.",
+        "message": "Từ hôm nay, góc nhỏ này có thêm một người để thương.",
+        "detail0": "Ngày về nhà: 18 tháng 9, 2026",
+        "photoLabel0": "Chuyến về nhà",
+        "photoLabel1": "Góc nhỏ có con",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_03",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "false"
+      },
+      "expected": {
+        "headline": "WELCOME HOME",
+        "title": "Home, with you.",
+        "message": "A little place, with someone new to love.",
+        "detail0": "Homecoming: 18 September 2026",
+        "photoLabel0": "A day to remember",
+        "photoLabel1": "A little place for you",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_03",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "true"
+      },
+      "expected": {
+        "headline": "WELCOME HOME",
+        "title": "Home, with you.",
+        "message": "A little place, with someone new to love.",
+        "detail0": "Homecoming: 18 September 2026",
+        "photoLabel0": "The journey home",
+        "photoLabel1": "A little place for you",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_04",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An"
+      },
+      "expected": {
+        "headline": "MỘT THÁNG BÊN NHAU",
+        "title": "Một tháng làm quen với con.",
+        "message": "Thêm hiểu con một chút, mỗi ngày.",
+        "signature": "Bảo An · Một tháng bên nhau"
+      }
+    },
+    {
+      "id": "card_premium48_04",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An"
+      },
+      "expected": {
+        "headline": "MỘT THÁNG BÊN NHAU",
+        "title": "Một tháng làm quen với con.",
+        "message": "Thêm hiểu con một chút, mỗi ngày.",
+        "signature": "Bảo An · Một tháng bên nhau"
+      }
+    },
+    {
+      "id": "card_premium48_04",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An"
+      },
+      "expected": {
+        "headline": "OUR FIRST MONTH",
+        "title": "One month of getting to know you.",
+        "message": "Learning a little more about you, every day.",
+        "signature": "Bảo An · Our first month together"
+      }
+    },
+    {
+      "id": "card_premium48_04",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An"
+      },
+      "expected": {
+        "headline": "OUR FIRST MONTH",
+        "title": "One month of getting to know you.",
+        "message": "Learning a little more about you, every day.",
+        "signature": "Bảo An · Our first month together"
+      }
+    },
+    {
+      "id": "video_premium48_03",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "false"
+      },
+      "expected": {
+        "title": "Đưa con về nhà",
+        "scene1": "Một góc nhà, một khởi đầu.",
+        "scene2": "Một ngày đáng nhớ.",
+        "scene3": "Căn phòng vẫn thế…",
+        "scene4": "Nhưng nhà mình đã có thêm con.",
+        "scene5": "Chào mừng về nhà, Bảo An.",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "video_premium48_03",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "true"
+      },
+      "expected": {
+        "title": "Đưa con về nhà",
+        "scene1": "Hôm nay, mình về nhà.",
+        "scene2": "Một chuyến đi thật khác.",
+        "scene3": "Căn phòng vẫn thế…",
+        "scene4": "Nhưng nhà mình đã có thêm con.",
+        "scene5": "Chào mừng về nhà, Bảo An.",
+        "detail0": "18 tháng 9, 2026"
+      }
+    },
+    {
+      "id": "video_premium48_03",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "false"
+      },
+      "expected": {
+        "title": "Welcome Home",
+        "scene1": "A little place. A new beginning.",
+        "scene2": "A day to remember.",
+        "scene3": "The room looked the same…",
+        "scene4": "But home had someone new.",
+        "scene5": "Welcome home, Bảo An.",
+        "detail0": "18 September 2026"
+      }
+    },
+    {
+      "id": "video_premium48_03",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "momentDate": "2026-09-18",
+        "journeyConfirmed": "true"
+      },
+      "expected": {
+        "title": "Welcome Home",
+        "scene1": "Today, we went home.",
+        "scene2": "A journey unlike any other.",
+        "scene3": "The room looked the same…",
+        "scene4": "But home had someone new.",
+        "scene5": "Welcome home, Bảo An.",
+        "detail0": "18 September 2026"
+      }
+    },
+    {
+      "id": "video_premium48_04",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthPhotoConfirmed": "false"
+      },
+      "expected": {
+        "title": "Một tháng làm quen",
+        "scene1": "Những ngày đầu bên con.",
+        "scene2": "Những ngày đầu còn nhiều bỡ ngỡ.",
+        "scene3": "Rồi từng chút một…",
+        "scene4": "Nhà mình tìm được nhịp riêng.",
+        "scene5": "Tròn một tháng bên Bảo An."
+      }
+    },
+    {
+      "id": "video_premium48_04",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "birthPhotoConfirmed": "true"
+      },
+      "expected": {
+        "title": "Một tháng làm quen",
+        "scene1": "Một tháng trước, nhà mình đón con.",
+        "scene2": "Những ngày đầu còn nhiều bỡ ngỡ.",
+        "scene3": "Rồi từng chút một…",
+        "scene4": "Nhà mình tìm được nhịp riêng.",
+        "scene5": "Tròn một tháng bên Bảo An."
+      }
+    },
+    {
+      "id": "video_premium48_04",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthPhotoConfirmed": "false"
+      },
+      "expected": {
+        "title": "A Month of Getting to Know You",
+        "scene1": "Our first days with you.",
+        "scene2": "Those first days held so much to learn.",
+        "scene3": "Then, little by little…",
+        "scene4": "We began finding our own rhythm.",
+        "scene5": "One month with Bảo An."
+      }
+    },
+    {
+      "id": "video_premium48_04",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "birthPhotoConfirmed": "true"
+      },
+      "expected": {
+        "title": "A Month of Getting to Know You",
+        "scene1": "A month ago, we welcomed you.",
+        "scene2": "Those first days held so much to learn.",
+        "scene3": "Then, little by little…",
+        "scene4": "We began finding our own rhythm.",
+        "scene5": "One month with Bảo An."
+      }
+    }
+  ]
+}

@@ -1,0 +1,914 @@
+[
+  {
+    "id": "act_v2_choose_book",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Cùng chọn sách",
+      "en": "Choose a book"
+    },
+    "summary": {
+      "vi": "Một bước nhỏ trước giờ ngủ.",
+      "en": "A small bedtime step."
+    },
+    "steps": {
+      "vi": ["Đưa hai sách tranh quen.", "Để con chọn, rồi đọc cùng."],
+      "en": ["Offer two familiar picture books.", "Let your child choose; read together."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Sleep and young children",
+        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_finish_play",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Khép lại trò chơi",
+      "en": "Finish playing calmly"
+    },
+    "summary": {
+      "vi": "Báo trước một chuyển tiếp.",
+      "en": "Preview a transition."
+    },
+    "steps": {
+      "vi": ["Nói trò chơi sắp kết thúc.", "Cùng cất một món đồ."],
+      "en": ["Say playtime is ending.", "Put one toy away together."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Sleep and young children",
+        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_goodnight_words",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Lời chúc ngủ quen",
+      "en": "Familiar goodnight words"
+    },
+    "summary": {
+      "vi": "Một lời chào dịu dàng.",
+      "en": "A gentle closing moment."
+    },
+    "steps": {
+      "vi": ["Nói một câu chúc ngủ quen.", "Cho con thời gian đáp lại."],
+      "en": ["Say a familiar goodnight phrase.", "Allow time for a response."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Sleep and young children",
+        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_familiar_song",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Một bài hát quen",
+      "en": "A familiar song"
+    },
+    "summary": {
+      "vi": "Một lúc gần con.",
+      "en": "A moment together."
+    },
+    "steps": {
+      "vi": ["Hát nhỏ một bài quen.", "Dừng nếu con không thích."],
+      "en": ["Sing a familiar song quietly.", "Stop if your child dislikes it."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_quiet_book",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Xem tranh yên tĩnh",
+      "en": "Quiet picture time"
+    },
+    "summary": {
+      "vi": "Chọn hoạt động nhẹ nhàng.",
+      "en": "Choose a quiet activity."
+    },
+    "steps": {
+      "vi": ["Cùng ngồi xem sách tranh.", "Để con chỉ trang thích."],
+      "en": ["Look at a picture book together.", "Let your child choose a page."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_next_bedtime_step",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Bước tiếp theo quen thuộc",
+      "en": "A familiar next step"
+    },
+    "summary": {
+      "vi": "Giúp chuyển hoạt động từ tốn.",
+      "en": "Take transitions gently."
+    },
+    "steps": {
+      "vi": ["Nói bước tiếp theo của nhà mình.", "Chờ con rồi cùng thực hiện."],
+      "en": ["Name your family’s next routine step.", "Pause, then do it together."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["sleep"],
+    "interests": ["sleep"],
+    "timeOfDay": "evening",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_eat_together",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Một bữa cùng nhau",
+      "en": "Eat together"
+    },
+    "summary": {
+      "vi": "Cùng hiện diện bên bàn ăn.",
+      "en": "Be present at mealtime."
+    },
+    "steps": {
+      "vi": ["Ngồi bên con trong bữa.", "Trò chuyện, không ép con ăn."],
+      "en": ["Sit with your child at mealtime.", "Talk without pressuring them to eat."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Fussy eaters",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_food_no_pressure",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Nhìn món không áp lực",
+      "en": "Food without pressure"
+    },
+    "summary": {
+      "vi": "Tôn trọng phản hồi của con.",
+      "en": "Respect your child’s response."
+    },
+    "steps": {
+      "vi": ["Nói tên món quen trên bàn.", "Cho phép con từ chối."],
+      "en": ["Name familiar food on the table.", "Allow your child to decline."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Fussy eaters",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_notice_mealtime",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Để ý điều con thích",
+      "en": "Notice mealtime preferences"
+    },
+    "summary": {
+      "vi": "Ghi một quan sát cụ thể.",
+      "en": "Record one observation."
+    },
+    "steps": {
+      "vi": ["Quan sát bữa ăn của con.", "Ghi điều con thích, không phán xét."],
+      "en": ["Observe your child’s meal.", "Note preferences without judging."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Fussy eaters",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_choose_bowl",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Cùng chọn bát",
+      "en": "Choose a bowl together"
+    },
+    "summary": {
+      "vi": "Một việc chuẩn bị nhỏ.",
+      "en": "A small preparation task."
+    },
+    "steps": {
+      "vi": ["Cho con chọn bát phù hợp.", "Người lớn chuẩn bị bữa."],
+      "en": ["Offer suitable bowls to choose from.", "An adult prepares the meal."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Your baby’s first solid foods",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_stay_at_meal",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Ngồi bên con",
+      "en": "Stay beside your child"
+    },
+    "summary": {
+      "vi": "Dành sự chú ý cho bữa.",
+      "en": "Give mealtime your attention."
+    },
+    "steps": {
+      "vi": ["Cất điện thoại khi chăm bữa.", "Ở bên, quan sát con ăn."],
+      "en": ["Put your phone away during care.", "Stay close and watch your child eat."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Your baby’s first solid foods",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_prepare_table",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Cùng chuẩn bị bàn",
+      "en": "Prepare the table"
+    },
+    "summary": {
+      "vi": "Tham gia một bước an toàn.",
+      "en": "Join one safe step."
+    },
+    "steps": {
+      "vi": ["Đưa con khăn sạch.", "Cùng đặt khăn trên bàn."],
+      "en": ["Offer a clean cloth.", "Place it on the table together."]
+    },
+    "safety": {
+      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
+      "en": "Supervise eating; use only food suitable for your child."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "NHS: Your baby’s first solid foods",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_near_upset",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Ở gần khi con buồn",
+      "en": "Stay nearby when upset"
+    },
+    "summary": {
+      "vi": "Đồng hành với cảm xúc.",
+      "en": "Accompany their feelings."
+    },
+    "steps": {
+      "vi": ["Giữ giọng nói bình tĩnh.", "Ở gần nếu con muốn."],
+      "en": ["Keep your voice calm.", "Stay nearby if your child wants."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Handling temper tantrums",
+        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_name_feeling",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Gọi tên cảm xúc",
+      "en": "Name the feeling"
+    },
+    "summary": {
+      "vi": "Một lời ngắn để lắng nghe.",
+      "en": "A short listening moment."
+    },
+    "steps": {
+      "vi": ["Nói điều bạn quan sát được.", "Chờ phản hồi, không ép nói."],
+      "en": ["Describe what you observe.", "Wait without demanding words."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Handling temper tantrums",
+        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_pause_together",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Một lúc yên tĩnh",
+      "en": "A quiet pause together"
+    },
+    "summary": {
+      "vi": "Tạm giảm sự náo nhiệt.",
+      "en": "Take a quieter moment."
+    },
+    "steps": {
+      "vi": ["Giảm tiếng ồn nếu được.", "Mời con ngồi gần bạn."],
+      "en": ["Reduce noise if possible.", "Invite your child to sit nearby."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Handling temper tantrums",
+        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_small_choices",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Hai lựa chọn nhỏ",
+      "en": "Two small choices"
+    },
+    "summary": {
+      "vi": "Cho con tham gia quyết định.",
+      "en": "Include your child in choices."
+    },
+    "steps": {
+      "vi": ["Đưa hai lựa chọn phù hợp.", "Tôn trọng lựa chọn của con."],
+      "en": ["Offer two suitable choices.", "Respect your child’s choice."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Positive parenting ages 0–5",
+        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_wait_for_reply",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Chờ con trả lời",
+      "en": "Wait for a response"
+    },
+    "summary": {
+      "vi": "Cho một cuộc trò chuyện thời gian.",
+      "en": "Give conversation time."
+    },
+    "steps": {
+      "vi": ["Nói một câu ngắn.", "Chờ con đáp bằng lời hoặc cử chỉ."],
+      "en": ["Say one short sentence.", "Wait for words or a gesture."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Positive parenting ages 0–5",
+        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_preview_change",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Báo trước việc sắp làm",
+      "en": "Preview what comes next"
+    },
+    "summary": {
+      "vi": "Chuyển tiếp bằng lời quen.",
+      "en": "Use familiar transition words."
+    },
+    "steps": {
+      "vi": ["Nói việc tiếp theo bằng câu ngắn.", "Cho con thời gian chuyển hoạt động."],
+      "en": ["Briefly name the next activity.", "Allow time to transition."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["soothing"],
+    "interests": ["moments"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Positive parenting ages 0–5",
+        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_point_name",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Chỉ và gọi tên",
+      "en": "Point and name"
+    },
+    "summary": {
+      "vi": "Cùng chú ý đồ vật quen.",
+      "en": "Notice familiar objects together."
+    },
+    "steps": {
+      "vi": ["Chỉ một đồ vật quen.", "Nói tên, chờ con đáp."],
+      "en": ["Point to a familiar object.", "Name it and pause."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "CDC: Milestones by 2 years",
+        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_picture_chat",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Trò chuyện cùng tranh",
+      "en": "Talk about pictures"
+    },
+    "summary": {
+      "vi": "Theo sự chú ý của con.",
+      "en": "Follow your child’s attention."
+    },
+    "steps": {
+      "vi": ["Để con chọn một hình.", "Nói về hình con đang nhìn."],
+      "en": ["Let your child choose a picture.", "Talk about what they notice."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "CDC: Milestones by 2 years",
+        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_taking_turns",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Tới lượt con",
+      "en": "Your turn"
+    },
+    "summary": {
+      "vi": "Một trò chơi thay phiên.",
+      "en": "A turn-taking moment."
+    },
+    "steps": {
+      "vi": ["Làm một cử chỉ vui.", "Mời con làm rồi đổi lượt."],
+      "en": ["Make a playful gesture.", "Invite a response; take turns."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "CDC: Milestones by 2 years",
+        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_song_actions",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Hát cùng động tác",
+      "en": "Sing with gestures"
+    },
+    "summary": {
+      "vi": "Chơi theo hứng thú của con.",
+      "en": "Play with your child’s interests."
+    },
+    "steps": {
+      "vi": ["Hát bài con thích.", "Thêm một động tác đơn giản."],
+      "en": ["Sing a song your child likes.", "Add one simple gesture."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Parenting tips for the first two years",
+        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_short_story",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Kể một chuyện ngắn",
+      "en": "Tell a short story"
+    },
+    "summary": {
+      "vi": "Nói về trải nghiệm quen.",
+      "en": "Talk about familiar experiences."
+    },
+    "steps": {
+      "vi": ["Kể lại một việc vừa làm.", "Chờ con bổ sung bằng cử chỉ."],
+      "en": ["Retell something you did together.", "Wait for your child’s contribution."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Parenting tips for the first two years",
+        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_listen_sounds",
+    "version": 1,
+    "status": "draft",
+    "title": {
+      "vi": "Cùng nghe quanh nhà",
+      "en": "Listen around the home"
+    },
+    "summary": {
+      "vi": "Chú ý âm thanh quen thuộc.",
+      "en": "Notice familiar sounds."
+    },
+    "steps": {
+      "vi": ["Lắng nghe một âm thanh bình thường.", "Nói tên điều hai người nghe."],
+      "en": ["Listen to an everyday sound.", "Name what you both hear."]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
+      "en": "Stay nearby; stop if your child is uncomfortable."
+    },
+    "durationMin": 3,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play"],
+    "interests": ["milestones"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "UNICEF: Parenting tips for the first two years",
+        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+      }
+    ],
+    "review": null
+  }
+]

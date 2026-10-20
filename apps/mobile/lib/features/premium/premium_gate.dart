@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../keepsakes/keepsake_catalog.dart';
+import '../rhythm/personalization_events.dart';
 import 'billing_models.dart';
 import 'paywall_screen.dart';
 import 'premium_models.dart';
@@ -23,6 +25,11 @@ Future<void> showGateSheet(
   GateReason reason, {
   PaywallEntry entry = PaywallEntry.rhythm,
 }) {
+  final sink = ProviderScope.containerOf(
+    context,
+    listen: false,
+  ).read(personalizationEventSinkProvider);
+  unawaited(sink('capabilityGateSeen', reason.wire).catchError((Object _) {}));
   final l10n = AppLocalizations.of(context);
   final (title, body, action) = switch (reason) {
     GateReason.roleDenied => (l10n.pmGateRoleTitle, l10n.pmGateRoleBody, null),

@@ -41,6 +41,7 @@ import 'keepsake_card_content.dart' show keepsakeVideoLabel;
 import 'keepsake_card_view.dart' show keepsakeAssetImageProvider;
 import 'keepsake_entries.dart' show markKeepsakeVideoSeen;
 import 'keepsake_catalog.dart';
+import 'premium_keepsake_editor.dart';
 import 'keepsake_jobs.dart';
 import 'keepsake_live.dart';
 import 'keepsake_occasions.dart';
@@ -74,6 +75,7 @@ class VideoDraft {
     this.message,
     this.audience = Audience.parents,
     this.requestId,
+    this.outputLocale,
   });
 
   final String babyId;
@@ -88,6 +90,7 @@ class VideoDraft {
 
   /// Kept across retries of the same "Tạo video" press.
   final String? requestId;
+  final String? outputLocale;
 
   VideoDraft copyWith({
     KeepsakeTemplate? template,
@@ -96,6 +99,7 @@ class VideoDraft {
     String? message,
     Audience? audience,
     String? requestId,
+    String? outputLocale,
   }) => VideoDraft(
     babyId: babyId,
     template: template ?? this.template,
@@ -105,6 +109,7 @@ class VideoDraft {
     message: message ?? this.message,
     audience: audience ?? this.audience,
     requestId: requestId ?? this.requestId,
+    outputLocale: outputLocale ?? this.outputLocale,
   );
 }
 
@@ -399,8 +404,10 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
                       name: c.nickname,
                       // The template's own cover (made in the portal); the baby's photo for a
                       // template published without one.
-                      cover: t.thumb == null ? null : assetOf(t.thumb!),
-                      photo: t.thumb != null
+                      cover: t.thumbFor(locale) == null
+                          ? null
+                          : assetOf(t.thumbFor(locale)!),
+                      photo: t.thumbFor(locale) != null
                           ? null
                           : suitedPhotos(
                               media,
@@ -458,19 +465,18 @@ Future<void> playVideoTemplate(
   final mark = t.occasions.length == 1
       ? Occasion.fromWire(t.occasions.first)?.title(l10n).split(' ').first
       : null;
-  final request = demoPreview(
-    t,
-    name: name,
-    locale: locale,
-    track: ref.read(keepsakeCatalogProvider).value?.track(t.defaultMusic),
-    mark: mark != null && int.tryParse(mark) != null ? mark : null,
-  );
-  return ref.read(keepsakePreviewLauncherProvider)(
-    context,
-    use == null
+  KeepsakePreviewRequest make(Locale outputLocale) {
+    final request = demoPreview(
+      t,
+      name: name,
+      locale: outputLocale,
+      track: ref.read(keepsakeCatalogProvider).value?.track(t.defaultMusic),
+      mark: mark != null && int.tryParse(mark) != null ? mark : null,
+    );
+    return use == null
         ? request
         : request.withUse(
-            title: t.name.of(locale),
+            title: t.name.of(outputLocale),
             info: [
               l10n.ksVideoNeeds(t.photosMin, t.photosMax),
               if (t.durationSec != null) _mmss(t.durationSec! * 1000),
@@ -487,11 +493,23 @@ Future<void> playVideoTemplate(
                 keep: () => keepVideoDraft(ref, use),
               );
               if (ok && context.mounted) {
-                await context.push(Routes.memoryStoryPhotos, extra: use);
+                await context.push(
+                  Routes.memoryStoryPhotos,
+                  extra: use.copyWith(outputLocale: outputLocale.languageCode),
+                );
               }
             },
-          ),
-  );
+          );
+  }
+
+  final request = make(locale);
+  final localized = t.personalization == null
+      ? request
+      : request.withLocales({
+          'vi': make(const Locale('vi')),
+          'en': make(const Locale('en')),
+        }, locale.languageCode == 'en' ? 'en' : 'vi');
+  return ref.read(keepsakePreviewLauncherProvider)(context, localized);
 }
 
 class _VideoTemplateTile extends StatelessWidget {
@@ -1738,6 +1756,14 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.draft.template.personalization != null) {
+      return PremiumKeepsakeEditor(
+        template: widget.draft.template,
+        babyId: widget.draft.babyId,
+        mediaIds: widget.draft.mediaIds,
+        initialLocale: widget.draft.outputLocale,
+      );
+    }
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final c = memoryCtx(context, ref);

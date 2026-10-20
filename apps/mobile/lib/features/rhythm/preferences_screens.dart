@@ -104,6 +104,12 @@ class PersonalizeScreen extends ConsumerWidget {
         ClCardGroup(
           children: [
             MeRow(
+              icon: ClIcons.journal,
+              title: l10n.pv2Title,
+              subtitle: l10n.pv2Open,
+              onTap: () => context.push(Routes.personalDay),
+            ),
+            MeRow(
               icon: ClIcons.sliders,
               title: l10n.rhInterestsRow,
               subtitle: prefs.interests.isEmpty

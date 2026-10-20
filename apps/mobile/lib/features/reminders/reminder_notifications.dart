@@ -20,6 +20,8 @@ import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
 import '../rhythm/rhythm_access.dart';
+import '../rhythm/personalization_digest.dart';
+import '../rhythm/personalization_events.dart';
 import '../rhythm/rhythm_local.dart'
     show
         rhythmCheckInOfPayload,
@@ -320,7 +322,8 @@ final notificationSourcesReadyProvider = Provider.autoDispose<bool>(
   (ref) =>
       ref.watch(deviceRemindersReadyProvider) &&
       ref.watch(nudgePlanReadyProvider) &&
-      ref.watch(rhythmPlansReadyProvider),
+      ref.watch(rhythmPlansReadyProvider) &&
+      loadSettled(ref.watch(personalDigestPlanProvider)),
 );
 
 /// Keeps this device's reminder notifications in step with Firestore — on start, on every
@@ -383,6 +386,22 @@ class _ReminderNotificationSyncState
       ref.read(selectedBabyIdProvider.notifier).select(weekBaby);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) ref.read(routerProvider).push(Routes.rhythmWeek);
+      });
+      return;
+    }
+    final personalBaby = personalDayFromPayload(payload);
+    if (personalBaby != null && mounted) {
+      final session = ref.read(sessionProvider);
+      final member = session is SessionSignedIn
+          ? session.membershipFor(personalBaby)
+          : null;
+      if (member == null || !familyCan(member, FamilyAction.historyRead)) {
+        return;
+      }
+      ref.read(selectedBabyIdProvider.notifier).select(personalBaby);
+      personalEvent(ref, 'digestOpened');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(routerProvider).push(Routes.personalDay);
       });
       return;
     }
@@ -504,6 +523,22 @@ class _ReminderNotificationSyncState
     for (final p in ref.read(rhythmWeeklyPlanProvider)) {
       out.add(rhythmWeeklyNotification(l10n, p));
     }
+    final digest = ref.read(personalDigestPlanProvider).value;
+    if (digest != null) {
+      out.add(
+        LocalReminder(
+          id: personalDigestNotificationId,
+          fireAt: digest.fireAt,
+          title: l10n.pv2DigestTitle,
+          body: l10n.pv2DigestBody,
+          payload: jsonEncode({
+            'k': 'personal_day',
+            'b': digest.babyId,
+            'at': digest.fireAt.toIso8601String(),
+          }),
+        ),
+      );
+    }
     return out;
   }
 
@@ -526,6 +561,9 @@ class _ReminderNotificationSyncState
         final signature = [for (final d in desired) d.payload].join('\n');
         if (signature == _lastSignature) continue;
         await ref.read(reminderNotificationsProvider).sync(desired, l10n);
+        if (desired.any((d) => d.id == personalDigestNotificationId)) {
+          personalEvent(ref, 'digestScheduled');
+        }
         _lastSignature = signature;
       } while (_again);
     } on Object {
@@ -548,6 +586,7 @@ class _ReminderNotificationSyncState
     ref.watch(rhythmStageReminderPlanProvider);
     ref.watch(rhythmEveningPlanProvider);
     ref.watch(rhythmWeeklyPlanProvider);
+    ref.watch(personalDigestPlanProvider);
     final ready = ref.watch(notificationSourcesReadyProvider);
     if (enabled == true && ready) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));

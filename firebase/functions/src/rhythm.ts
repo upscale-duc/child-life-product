@@ -26,6 +26,8 @@ import {
   observationState,
   recFeedbackSchema,
   recommend,
+  recommendationCurrent,
+  nextLocalDay,
   recommendationIdFor,
   rhythmConfigSchema,
   rhythmContentSchema,
@@ -56,6 +58,7 @@ import {
   loadEntitlementContext,
   type EntitlementContext,
 } from './entitlements.js';
+import { personalFilters } from './personalization-state.js';
 
 /**
  * Nhịp lớn lên, Slice 2 (plan §5.4, §7.1, D-073): the due date, the next action after a
@@ -273,6 +276,7 @@ export async function setDueDate(
 
 /** Fields kept next to the `Recommendation` contract so a retry returns the same answer. */
 interface StoredRecommendation extends Recommendation {
+  expiresAt?: string;
   babyId: string;
   checkInId: string;
   checkInRevision: number;
@@ -302,6 +306,8 @@ function publicRecommendation(r: StoredRecommendation): Recommendation {
     changes: r.changes,
     cooldownUntil: r.cooldownUntil,
     generatedAt: r.generatedAt,
+    sourceRevision: r.checkInRevision,
+    ...(r.expiresAt ? { expiresAt: r.expiresAt } : {}),
   };
 }
 
@@ -338,6 +344,7 @@ function supportingFeedback(
 }
 
 interface RankContext {
+  now: Date;
   uid: string;
   babyId: string;
   locale: 'vi' | 'en';
@@ -349,7 +356,10 @@ interface RankContext {
 
 /** One run of the contract ranking for a need; `null` when nothing is eligible. */
 async function rank(db: Firestore, x: RankContext) {
-  const prefs = await readPreferences(db, x.uid);
+  const [prefs, filters] = await Promise.all([
+    readPreferences(db, x.uid),
+    personalFilters(db, x.babyId, x.uid, x.now, false),
+  ]);
   const memory = feedbackMemory(x.feedback, x.inputs.rules.cooldownDays);
   const out = recommend({
     locale: x.locale,
@@ -361,7 +371,11 @@ async function rank(db: Firestore, x: RankContext) {
     country: x.country,
     healthFlag: false,
     memory,
-    activities: x.inputs.content.activities,
+    activities: x.inputs.content.activities.filter(
+      (a) =>
+        !filters.hidden.has(a.id) &&
+        (filters.maxMinutes === null || a.durationMin <= filters.maxMinutes),
+    ),
   });
   if (out.kind !== 'suggestion') return null;
   return {
@@ -440,6 +454,17 @@ export async function nextAction(
 
   const inputs = await rhythmInputs(db, req.babyId, now);
   if (inputs.babyState === 'deleting') throw new RhythmError('failed-precondition', 'deleting');
+  const dayChecks = await db
+    .collection(`babies/${req.babyId}/checkins`)
+    .where('date', '==', inputs.today)
+    .get();
+  if (
+    dayChecks.docs.some((d) => {
+      const value = checkInSchema.safeParse(d.data());
+      return value.success && needsHealthSupport(value.data);
+    })
+  )
+    return { state: 'health', ...none };
   const ageCard =
     inputs.content && inputs.ageDays !== null
       ? ageCardFor(inputs.content.ageCards, inputs.ageDays)
@@ -457,7 +482,22 @@ export async function nextAction(
 
   const recId = recommendationIdFor(checkIn.id);
   const stored = await db.doc(`babies/${req.babyId}/recommendations/${recId}`).get();
-  if (stored.exists && stored.get('checkInRevision') === checkIn.revision) {
+  if (checkIn.date !== inputs.today) return { state: 'no_suggestion', ...plain };
+  if (
+    stored.exists &&
+    stored.get('checkInRevision') === checkIn.revision &&
+    recommendationCurrent(
+      recommendationOf(stored),
+      inputs.content?.activities.find((a) => a.id === stored.get('contentId')),
+      {
+        now,
+        zone: inputs.zone,
+        ageDays: inputs.ageDays,
+        locale: req.locale,
+        country: ctx.family.country,
+      },
+    )
+  ) {
     return answerOf(recommendationOf(stored));
   }
 
@@ -466,6 +506,7 @@ export async function nextAction(
     return { state: 'no_suggestion', ...plain };
   }
   const ranked = await rank(db, {
+    now,
     uid,
     babyId: req.babyId,
     locale: req.locale,
@@ -495,6 +536,7 @@ export async function nextAction(
     changes: out.changes,
     cooldownUntil: null,
     generatedAt: now.toISOString(),
+    expiresAt: nextLocalDay(inputs.zone, now),
     babyId: req.babyId,
     checkInId: checkIn.id,
     checkInRevision: checkIn.revision,
@@ -567,16 +609,45 @@ export async function composeHome(
   if (!groupA.allowed) return empty('free_content', groupA.reason);
   const advanced = checkCapability(ctx, 'rhythm.advanced', now, 'history.read').allowed;
 
+  const todayCheckins = await db
+    .collection(`babies/${req.babyId}/checkins`)
+    .where('date', '==', inputs.today)
+    .get();
+  if (
+    todayCheckins.docs.some((d) => {
+      const parsed = checkInSchema.safeParse(d.data());
+      return parsed.success && needsHealthSupport(parsed.data);
+    })
+  )
+    return empty('health', null);
   const latest = await db
     .collection(`babies/${req.babyId}/recommendations`)
     .orderBy('generatedAt', 'desc')
     .limit(20)
     .get();
   const doc = latest.docs.find((d) =>
-    (activeStates as readonly string[]).includes(d.get('state') as string),
+    recommendationCurrent(
+      recommendationOf(d),
+      inputs.content?.activities.find((a) => a.id === d.get('contentId')),
+      {
+        now,
+        zone: inputs.zone,
+        ageDays: inputs.ageDays,
+        locale: req.locale,
+        country: ctx.family.country,
+      },
+    ),
   );
   if (!doc) return empty('no_suggestion', null);
   let current = recommendationOf(doc);
+  const source = todayCheckins.docs.find((d) => d.id === current.checkInId);
+  const sourceCheckIn = checkInSchema.safeParse(source?.data());
+  if (
+    !sourceCheckIn.success ||
+    sourceCheckIn.data.revision !== current.checkInRevision ||
+    needOf(sourceCheckIn.data.observation) !== current.need
+  )
+    return empty('no_suggestion', null);
   const feedback = advanced ? await readFeedback(db, req.babyId) : [];
   const generated = Date.parse(current.generatedAt);
   const since = feedback.filter((r) => r.createdAtMs > generated);
@@ -592,6 +663,7 @@ export async function composeHome(
       current = recommendationOf(existing);
     } else {
       const ranked = await rank(db, {
+        now,
         uid,
         babyId: req.babyId,
         locale: req.locale,
@@ -615,6 +687,7 @@ export async function composeHome(
         state: 'suggested',
         changes: out.changes,
         generatedAt: now.toISOString(),
+        expiresAt: nextLocalDay(inputs.zone, now),
         locale: req.locale,
         secondary: out.secondary.map((a) => ({ contentId: a.id, contentVersion: a.version })),
         ageCardId,
@@ -631,6 +704,30 @@ export async function composeHome(
     await doc.ref.update({ state: 'started' });
   }
 
+  const filters = await personalFilters(db, req.babyId, uid, now);
+  const candidate = inputs.content?.activities.find((a) => a.id === current.contentId);
+  if (
+    filters.hidden.has(current.contentId) ||
+    (filters.maxMinutes !== null && (candidate?.durationMin ?? Infinity) > filters.maxMinutes)
+  )
+    return empty('no_suggestion', null);
+  current = {
+    ...current,
+    secondary: current.secondary.filter((s) => {
+      const a = inputs.content?.activities.find((a) => a.id === s.contentId);
+      return (
+        !filters.hidden.has(s.contentId) &&
+        recommendationCurrent({ ...current, contentVersion: s.contentVersion }, a, {
+          now,
+          zone: inputs.zone,
+          ageDays: inputs.ageDays,
+          locale: req.locale,
+          country: ctx.family.country,
+        }) &&
+        (filters.maxMinutes === null || a!.durationMin <= filters.maxMinutes)
+      );
+    }),
+  };
   const byId = new Map(feedback.map((r) => [r.id, r]));
   const behind = current.supportingIds
     .map((i) => byId.get(i))

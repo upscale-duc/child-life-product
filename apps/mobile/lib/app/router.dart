@@ -488,7 +488,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                       // v1.0 rule reminders (1b–1h), before the one-time ':id'.
                       _route(
                         path: 'rules/new',
-                        builder: (_, _) => const RuleEditorScreen(),
+                        builder: (_, s) => RuleEditorScreen(
+                          initialIntervalMinutes: int.tryParse(
+                            s.uri.queryParameters['interval'] ?? '',
+                          ),
+                        ),
                       ),
                       _route(
                         path: 'rules/:ruleId',

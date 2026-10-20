@@ -1,0 +1,2111 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_07",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "monthNumber",
+            "label": {
+              "vi": "Tháng tuổi (01–12)",
+              "en": "Month (01–12)"
+            },
+            "type": "month",
+            "max": 2,
+            "required": true
+          },
+          {
+            "key": "discovery",
+            "label": {
+              "vi": "Điều con khám phá (tùy chọn)",
+              "en": "A new discovery (optional)"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "memoryLine",
+            "label": {
+              "vi": "Điều muốn nhớ (tùy chọn)",
+              "en": "A memory to keep (optional)"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "TRANG THÁNG CỦA CON",
+              "en": "YOUR MONTHLY CHAPTER"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Tháng {monthNumber} của {babyName}.",
+              "en": "{babyName}, month {monthNumber}."
+            },
+            "requires": ["monthNumber"],
+            "fallback": {
+              "vi": "Một trang tháng của {babyName}.",
+              "en": "A monthly page for {babyName}."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "ageNumber",
+            "label": {
+              "vi": "Số tháng",
+              "en": "Month number"
+            },
+            "text": {
+              "vi": "{monthNumber}",
+              "en": "{monthNumber}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "ageUnit",
+            "label": {
+              "vi": "Nhãn tháng",
+              "en": "Month label"
+            },
+            "text": {
+              "vi": "THÁNG",
+              "en": "MONTH"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Khám phá",
+              "en": "Discovery"
+            },
+            "text": {
+              "vi": "Tháng này, con khám phá {discovery}.",
+              "en": "This month, you discovered {discovery}."
+            },
+            "requires": ["discovery"],
+            "fallback": {
+              "vi": "Thêm những điều mới mỗi ngày.",
+              "en": "Something new, every day."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Điều muốn nhớ",
+              "en": "Memory"
+            },
+            "text": {
+              "vi": "Nhà mình muốn giữ lại: {memoryLine}.",
+              "en": "A memory we are keeping: {memoryLine}."
+            },
+            "requires": ["memoryLine"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Trang tháng của con",
+        "en": "Your Monthly Chapter"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 8,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-masthead-rule_609cd481.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.04,
+              "w": 0.72,
+              "h": 0.018
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.078,
+              "w": 0.7,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.13,
+              "w": 0.7,
+              "h": 0.13
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.065,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-month-tab_64fb7394.webp",
+            "rect": {
+              "x": 0.805,
+              "y": 0.045,
+              "w": 0.135,
+              "h": 0.142
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "ageNumber",
+            "rect": {
+              "x": 0.822,
+              "y": 0.062,
+              "w": 0.108,
+              "h": 0.07
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.085,
+            "color": "#FFFCF6",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "ageUnit",
+            "rect": {
+              "x": 0.82,
+              "y": 0.137,
+              "w": 0.11,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "#FFFCF6",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.3,
+              "w": 0.56,
+              "h": 0.415
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-hero-frame_ae69cdbc.webp",
+            "rect": {
+              "x": 0.053,
+              "y": 0.29,
+              "w": 0.584,
+              "h": 0.435
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.665,
+              "y": 0.3,
+              "w": 0.27,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+            "rect": {
+              "x": 0.655,
+              "y": 0.292,
+              "w": 0.29,
+              "h": 0.211
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.665,
+              "y": 0.52,
+              "w": 0.27,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+            "rect": {
+              "x": 0.655,
+              "y": 0.512,
+              "w": 0.29,
+              "h": 0.211
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-divider_bb46aabd.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.745,
+              "w": 0.87,
+              "h": 0.018
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.78,
+              "w": 0.87,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.86,
+              "w": 0.87,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-masthead-rule_609cd481.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.07,
+              "w": 0.72,
+              "h": 0.018
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.106,
+              "w": 0.7,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.16,
+              "w": 0.7,
+              "h": 0.095
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.065,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-month-tab_64fb7394.webp",
+            "rect": {
+              "x": 0.805,
+              "y": 0.074,
+              "w": 0.135,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "ageNumber",
+            "rect": {
+              "x": 0.822,
+              "y": 0.085,
+              "w": 0.108,
+              "h": 0.052
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.085,
+            "color": "#FFFCF6",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "ageUnit",
+            "rect": {
+              "x": 0.82,
+              "y": 0.14,
+              "w": 0.11,
+              "h": 0.029
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "#FFFCF6",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.3,
+              "w": 0.56,
+              "h": 0.355
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-hero-frame_ae69cdbc.webp",
+            "rect": {
+              "x": 0.053,
+              "y": 0.29,
+              "w": 0.584,
+              "h": 0.375
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.665,
+              "y": 0.3,
+              "w": 0.27,
+              "h": 0.165
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+            "rect": {
+              "x": 0.655,
+              "y": 0.292,
+              "w": 0.29,
+              "h": 0.181
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.665,
+              "y": 0.49,
+              "w": 0.27,
+              "h": 0.165
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+            "rect": {
+              "x": 0.655,
+              "y": 0.482,
+              "w": 0.29,
+              "h": 0.181
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-chapter-divider_bb46aabd.webp",
+            "rect": {
+              "x": 0.065,
+              "y": 0.695,
+              "w": 0.87,
+              "h": 0.018
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.735,
+              "w": 0.87,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.835,
+              "w": 0.87,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "chapterCaptionStrip": "art-p48-chapter-caption-strip_6141119e.webp",
+        "chapterCropMarks": "art-p48-chapter-crop-marks_45abce94.webp",
+        "chapterDivider": "art-p48-chapter-divider_bb46aabd.webp",
+        "chapterFolio": "art-p48-chapter-folio_0142dc41.webp",
+        "chapterHeroFrame": "art-p48-chapter-hero-frame_ae69cdbc.webp",
+        "chapterIndexRail": "art-p48-chapter-index-rail_1673289f.webp",
+        "chapterMastheadRule": "art-p48-chapter-masthead-rule_609cd481.webp",
+        "chapterMonthTab": "art-p48-chapter-month-tab_64fb7394.webp",
+        "chapterSmallFrame": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+        "chapterSpine": "art-p48-chapter-spine_b90509c8.webp",
+        "paperGrain": "art-p48-grain_ec2d6054.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#EDE0C9",
+        "ink": "#35434D",
+        "accent": "#B66C45"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_08",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "dateRange": {
+          "start": "thenDate",
+          "end": "nowDate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "thenDate",
+            "label": {
+              "vi": "Ngày ảnh trước (nếu biết)",
+              "en": "Earlier photo date (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "nowDate",
+            "label": {
+              "vi": "Ngày ảnh sau (nếu biết)",
+              "en": "Later photo date (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "NGÀY ẤY, BÂY GIỜ",
+              "en": "THEN & NOW"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Ngày ấy. Bây giờ. Vẫn là con.",
+              "en": "Then. Now. Always you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Nhìn hai tấm ảnh mới thấy con đã lớn thêm biết bao.",
+              "en": "Two photos, and so much growing in between."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "photoLabel0",
+            "label": {
+              "vi": "Ảnh trước",
+              "en": "Earlier photo"
+            },
+            "text": {
+              "vi": "Ngày ấy · {thenDate}",
+              "en": "Then · {thenDate}"
+            },
+            "requires": ["thenDate", "nowDate"],
+            "fallback": {
+              "vi": "Ngày ấy",
+              "en": "Then"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "photoLabel1",
+            "label": {
+              "vi": "Ảnh sau",
+              "en": "Later photo"
+            },
+            "text": {
+              "vi": "Bây giờ · {nowDate}",
+              "en": "Now · {nowDate}"
+            },
+            "requires": ["thenDate", "nowDate"],
+            "fallback": {
+              "vi": "Bây giờ",
+              "en": "Now"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Số ngày",
+              "en": "Days apart"
+            },
+            "text": {
+              "vi": "{elapsedDays}",
+              "en": "{elapsedDays}"
+            },
+            "requires": ["elapsedDays"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail2",
+            "label": {
+              "vi": "Đơn vị ngày",
+              "en": "Days unit"
+            },
+            "text": {
+              "vi": "{elapsedUnit}",
+              "en": "{elapsedUnit}"
+            },
+            "requires": ["elapsedDays"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Ngày ấy, bây giờ",
+        "en": "Then & Now"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 9,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.03,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.05,
+              "w": 0.87,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.105,
+              "w": 0.87,
+              "h": 0.13
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.062,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "photoLabel0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.25,
+              "w": 0.375,
+              "h": 0.058
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "photoLabel1",
+            "rect": {
+              "x": 0.56,
+              "y": 0.25,
+              "w": 0.375,
+              "h": 0.058
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.34,
+              "w": 0.375,
+              "h": 0.35
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.56,
+              "y": 0.34,
+              "w": 0.375,
+              "h": 0.35
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-matched-frame_7f3993d3.webp",
+            "rect": {
+              "x": 0.055,
+              "y": 0.333,
+              "w": 0.395,
+              "h": 0.364
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-matched-frame_7f3993d3.webp",
+            "rect": {
+              "x": 0.55,
+              "y": 0.333,
+              "w": 0.395,
+              "h": 0.364
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.449,
+              "y": 0.46,
+              "w": 0.102,
+              "h": 0.043
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.032,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.449,
+              "y": 0.51,
+              "w": 0.102,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-timeline_fe9f4768.webp",
+            "rect": {
+              "x": 0.085,
+              "y": 0.726,
+              "w": 0.83,
+              "h": 0.045
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.805,
+              "w": 0.87,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.065,
+              "y": 0.907,
+              "w": 0.87,
+              "h": 0.032
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.03,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.065,
+              "y": 0.085,
+              "w": 0.87,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.065,
+              "y": 0.14,
+              "w": 0.87,
+              "h": 0.095
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.062,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "photoLabel0",
+            "rect": {
+              "x": 0.065,
+              "y": 0.275,
+              "w": 0.375,
+              "h": 0.05
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "photoLabel1",
+            "rect": {
+              "x": 0.56,
+              "y": 0.275,
+              "w": 0.375,
+              "h": 0.05
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.35,
+              "w": 0.375,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.56,
+              "y": 0.35,
+              "w": 0.375,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.003,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-matched-frame_7f3993d3.webp",
+            "rect": {
+              "x": 0.055,
+              "y": 0.343,
+              "w": 0.395,
+              "h": 0.304
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-matched-frame_7f3993d3.webp",
+            "rect": {
+              "x": 0.55,
+              "y": 0.343,
+              "w": 0.395,
+              "h": 0.304
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.449,
+              "y": 0.45,
+              "w": 0.102,
+              "h": 0.043
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.032,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.449,
+              "y": 0.49,
+              "w": 0.102,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-compare-timeline_fe9f4768.webp",
+            "rect": {
+              "x": 0.085,
+              "y": 0.676,
+              "w": 0.83,
+              "h": 0.035
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.065,
+              "y": 0.765,
+              "w": 0.87,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.065,
+              "y": 0.883,
+              "w": 0.87,
+              "h": 0.032
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.065,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "compareAnchorAfter": "art-p48-compare-anchor-after_bfe586c9.webp",
+        "compareAnchorBefore": "art-p48-compare-anchor-before_6f72e9ae.webp",
+        "compareDateTag": "art-p48-compare-date-tag_86f37471.webp",
+        "compareJoinLine": "art-p48-compare-join-line_a5d5d544.webp",
+        "compareMatchedFrame": "art-p48-compare-matched-frame_7f3993d3.webp",
+        "comparePairedBracket": "art-p48-compare-paired-bracket_d57600d4.webp",
+        "comparePaperEdge": "art-p48-compare-paper-edge_47d88f15.webp",
+        "comparePaperWipe": "art-p48-compare-paper-wipe_cbcb54e0.webp",
+        "comparePhotoCorners": "art-p48-compare-photo-corners_506d3f9f.webp",
+        "compareTimeline": "art-p48-compare-timeline_fe9f4768.webp",
+        "paperGrain": "art-p48-grain_ec2d6054.webp"
+      },
+      "photos": {
+        "min": 2,
+        "max": 2
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#F8F4EC",
+        "ink": "#48434A",
+        "accent": "#B5A2B4"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_07",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "monthNumber",
+            "label": {
+              "vi": "Tháng tuổi (01–12)",
+              "en": "Month (01–12)"
+            },
+            "type": "month",
+            "max": 2,
+            "required": true
+          },
+          {
+            "key": "discovery",
+            "label": {
+              "vi": "Điều con khám phá (tùy chọn)",
+              "en": "A new discovery (optional)"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "memoryLine",
+            "label": {
+              "vi": "Điều muốn nhớ (tùy chọn)",
+              "en": "A memory to keep (optional)"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Trang tháng của con",
+              "en": "Your Monthly Chapter"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Chương tháng {monthNumber}.",
+              "en": "Chapter: month {monthNumber}."
+            },
+            "requires": ["monthNumber"],
+            "fallback": {
+              "vi": "Một chương tháng của con.",
+              "en": "A monthly chapter of you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Có điều quen thuộc…",
+              "en": "Some things felt familiar…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Có một khám phá mới: {discovery}.",
+              "en": "One new discovery: {discovery}."
+            },
+            "requires": ["discovery"],
+            "fallback": {
+              "vi": "Thêm những điều mới mỗi ngày.",
+              "en": "Something new, every day."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Và những ngày chỉ đơn giản là ở bên nhau.",
+              "en": "And days spent simply being together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Một tháng nữa được giữ lại.",
+              "en": "Another month, kept close."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "month",
+            "label": {
+              "vi": "Số tháng",
+              "en": "Month number"
+            },
+            "text": {
+              "vi": "{monthNumber}",
+              "en": "{monthNumber}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Ghi nhớ cuối",
+              "en": "Closing memory"
+            },
+            "text": {
+              "vi": "Giữ lại: {memoryLine}.",
+              "en": "Keeping: {memoryLine}."
+            },
+            "requires": ["memoryLine"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1, 0],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3, 1],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4, 0, 1, 2, 3],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Trang tháng của con",
+        "en": "Your Monthly Chapter"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 8,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumMonthlyChapter",
+      "assets": {
+        "chapterCaptionStrip": "art-p48-chapter-caption-strip_6141119e.webp",
+        "chapterCropMarks": "art-p48-chapter-crop-marks_45abce94.webp",
+        "chapterDivider": "art-p48-chapter-divider_bb46aabd.webp",
+        "chapterFolio": "art-p48-chapter-folio_0142dc41.webp",
+        "chapterHeroFrame": "art-p48-chapter-hero-frame_ae69cdbc.webp",
+        "chapterIndexRail": "art-p48-chapter-index-rail_1673289f.webp",
+        "chapterMastheadRule": "art-p48-chapter-masthead-rule_609cd481.webp",
+        "chapterMonthTab": "art-p48-chapter-month-tab_64fb7394.webp",
+        "chapterSmallFrame": "art-p48-chapter-small-frame_d7fc5b9d.webp",
+        "chapterSpine": "art-p48-chapter-spine_b90509c8.webp",
+        "paperGrain": "art-p48-grain_ec2d6054.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh tiêu biểu tháng",
+            "en": "A portrait from this month"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc quen thuộc",
+            "en": "A familiar everyday moment"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh khám phá mới (nếu có)",
+            "en": "A discovery, if applicable"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh gia đình đời thường",
+            "en": "An everyday family moment"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chân dung cuối tháng",
+            "en": "An end-of-month portrait"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#EDE0C9",
+        "ink": "#35434D",
+        "accent": "#B66C45"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_chapter",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_08",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Lớn từng ngày",
+          "en": "Growing Every Day"
+        },
+        "dateRange": {
+          "start": "thenDate",
+          "end": "nowDate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "thenDate",
+            "label": {
+              "vi": "Ngày ảnh trước (nếu biết)",
+              "en": "Earlier photo date (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "nowDate",
+            "label": {
+              "vi": "Ngày ảnh sau (nếu biết)",
+              "en": "Later photo date (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Ngày ấy, bây giờ",
+              "en": "Then & Now"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Đây là con, ngày ấy.",
+              "en": "This was you, then."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Một khoảnh khắc tưởng như vừa mới hôm qua.",
+              "en": "A moment that still feels like yesterday."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Giữa hai tấm ảnh là bao ngày bên nhau.",
+              "en": "So many days together between these pictures."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Và đây là con, bây giờ.",
+              "en": "And this is you, now."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Lớn thêm rồi, {babyName} ơi.",
+              "en": "Look how you have grown, {babyName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "photoLabel0",
+            "label": {
+              "vi": "Ảnh trước",
+              "en": "Earlier photo"
+            },
+            "text": {
+              "vi": "Ngày ấy · {thenDate}",
+              "en": "Then · {thenDate}"
+            },
+            "requires": ["thenDate", "nowDate"],
+            "fallback": {
+              "vi": "Ngày ấy",
+              "en": "Then"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "photoLabel1",
+            "label": {
+              "vi": "Ảnh sau",
+              "en": "Later photo"
+            },
+            "text": {
+              "vi": "Bây giờ · {nowDate}",
+              "en": "Now · {nowDate}"
+            },
+            "requires": ["thenDate", "nowDate"],
+            "fallback": {
+              "vi": "Bây giờ",
+              "en": "Now"
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Số ngày",
+              "en": "Days apart"
+            },
+            "text": {
+              "vi": "{elapsedDays}",
+              "en": "{elapsedDays}"
+            },
+            "requires": ["elapsedDays"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail2",
+            "label": {
+              "vi": "Đơn vị ngày",
+              "en": "Days unit"
+            },
+            "text": {
+              "vi": "{elapsedUnit}",
+              "en": "{elapsedUnit}"
+            },
+            "requires": ["elapsedDays"],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [0],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [0, 1],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [0, 1],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Ngày ấy, bây giờ",
+        "en": "Then & Now"
+      },
+      "description": {
+        "vi": "Lớn từng ngày",
+        "en": "Growing Every Day"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 9,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumThenNow",
+      "assets": {
+        "compareAnchorAfter": "art-p48-compare-anchor-after_bfe586c9.webp",
+        "compareAnchorBefore": "art-p48-compare-anchor-before_6f72e9ae.webp",
+        "compareDateTag": "art-p48-compare-date-tag_86f37471.webp",
+        "compareJoinLine": "art-p48-compare-join-line_a5d5d544.webp",
+        "compareMatchedFrame": "art-p48-compare-matched-frame_7f3993d3.webp",
+        "comparePairedBracket": "art-p48-compare-paired-bracket_d57600d4.webp",
+        "comparePaperEdge": "art-p48-compare-paper-edge_47d88f15.webp",
+        "comparePaperWipe": "art-p48-compare-paper-wipe_cbcb54e0.webp",
+        "comparePhotoCorners": "art-p48-compare-photo-corners_506d3f9f.webp",
+        "compareTimeline": "art-p48-compare-timeline_fe9f4768.webp",
+        "paperGrain": "art-p48-grain_ec2d6054.webp"
+      },
+      "photos": {
+        "min": 2,
+        "max": 2
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh trước; không cần biết ngày",
+            "en": "Earlier photo; date optional"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh sau; không cần biết ngày",
+            "en": "Later photo; date optional"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#F8F4EC",
+        "ink": "#48434A",
+        "accent": "#B5A2B4"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_compare",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ]
+}

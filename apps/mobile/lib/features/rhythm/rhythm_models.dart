@@ -1020,6 +1020,8 @@ class Recommendation {
     this.changes = const [],
     this.cooldownUntil,
     this.generatedAt,
+    this.expiresAt,
+    this.sourceRevision,
   });
 
   final String id;
@@ -1035,6 +1037,8 @@ class Recommendation {
   final List<RecChange> changes;
   final String? cooldownUntil;
   final DateTime? generatedAt;
+  final DateTime? expiresAt;
+  final int? sourceRevision;
 
   bool get active => state == RecState.suggested || state == RecState.started;
 
@@ -1063,6 +1067,8 @@ class Recommendation {
       changes: wireList(RecChange.values, m['changes']),
       cooldownUntil: _date(m['cooldownUntil']),
       generatedAt: DateTime.tryParse('${m['generatedAt']}'),
+      expiresAt: DateTime.tryParse('${m['expiresAt']}'),
+      sourceRevision: _int(m['sourceRevision']),
     );
   }
 
@@ -1076,6 +1082,8 @@ class Recommendation {
     'changes': [for (final c in changes) c.wire],
     'cooldownUntil': cooldownUntil,
     'generatedAt': generatedAt?.toUtc().toIso8601String(),
+    'expiresAt': expiresAt?.toUtc().toIso8601String(),
+    'sourceRevision': sourceRevision,
   };
 }
 

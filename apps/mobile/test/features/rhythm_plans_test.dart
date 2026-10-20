@@ -56,7 +56,7 @@ Future<(List<Visit>, FakeRhythmRepository)> _pumpHome(
       ...h02Json(),
       'recommendation': recommendationJson(state: 'started'),
     }),
-    checkIns: [sleepCheckIn()],
+    checkIns: [sleepCheckIn(date: rhythmToday)],
     feedback: feedback,
   );
   final (visits, _) = await pumpRouted(

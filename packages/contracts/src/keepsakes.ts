@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { keepsakePersonalizationSchema } from './keepsake-personalization.js';
 
 /**
  * Kỷ niệm 2.0 (D-068; Figma MM01–MM17, `docs/discovery/figma-extract/29-remember-2.md`; plan
@@ -107,6 +108,16 @@ export const keepsakeCompositions = [
   'LetterToBaby',
   'ThenAndNow',
   'FirstBirthday',
+  'PremiumArrival',
+  'PremiumEmbrace',
+  'PremiumHomecoming',
+  'PremiumFirstMonth',
+  'PremiumLittleThings',
+  'PremiumMonthLetter',
+  'PremiumMonthlyChapter',
+  'PremiumThenNow',
+  'PremiumOutgrownKeepsake',
+  'PremiumSmileToKeep',
 ] as const;
 export type KeepsakeComposition = (typeof keepsakeCompositions)[number];
 
@@ -205,6 +216,13 @@ export const keepsakeTextFields = [
   'message',
   'photoLabel0',
   'photoLabel1',
+  'detail0',
+  'detail1',
+  'detail2',
+  'label0',
+  'label1',
+  'label2',
+  'signature',
 ] as const;
 export const keepsakeFonts = [
   'beVietnamPro',
@@ -328,6 +346,7 @@ export const keepsakeTemplateSchema = z
   .object({
     id: keepsakeTemplateIdSchema,
     version: z.number().int().min(1),
+    personalization: keepsakePersonalizationSchema.optional(),
     kind: z.enum(keepsakeKinds),
     name: localized(40),
     description: localized(120).nullable(),
@@ -383,11 +402,19 @@ export const keepsakeTemplateSchema = z
     /** Videos: a real video of the template (`.mp4`, made from licensed sample photos) for "Xem
      * mẫu"; without it the app plays the composition with sample pictures. */
     preview: keepsakeAssetSchema.nullable().default(null),
+    previews: z.partialRecord(z.enum(['vi', 'en']), keepsakeAssetSchema).optional(),
+    thumbs: z.partialRecord(z.enum(['vi', 'en']), keepsakeAssetSchema).optional(),
     /** Videos: the Child Life logo (D-068 #10) — a small corner mark through the video and the
      * lockup on the closing scene. Null: no branding (templates published before it). Cards
      * carry theirs as a `brand` layer. */
     brand: keepsakeVideoBrandSchema.nullable().default(null),
   })
+  .refine(
+    (t) =>
+      !t.personalization ||
+      t.personalization.beats.every((b) => b.slots.every((i) => i < t.photos.max)),
+    { message: 'beat references unknown slot' },
+  )
   .refine((t) => t.photos.min <= t.photos.max, { message: 'photos min > max' })
   .refine(
     (t) =>
@@ -411,6 +438,12 @@ export const keepsakeTemplateSchema = z
   .refine((t) => t.preview === null || (t.kind === 'video' && t.preview.endsWith('.mp4')), {
     message: 'a preview is an .mp4 of a video template',
   })
+  .refine(
+    (t) =>
+      Object.values(t.previews ?? {}).every((a) => t.kind === 'video' && a?.endsWith('.mp4')) &&
+      Object.values(t.thumbs ?? {}).every((a) => a?.endsWith('.webp')),
+    { message: 'localized previews are MP4 videos and thumbs are WebP pictures' },
+  )
   .refine((t) => t.kind === 'video' || t.brand === null, {
     message: 'cards carry their logo as a brand layer',
   })
@@ -430,12 +463,16 @@ export type KeepsakeTemplate = z.infer<typeof keepsakeTemplateSchema>;
 export function keepsakeTemplateAssets(t: {
   thumb: string | null;
   preview?: string | null;
+  previews?: Partial<Record<'vi' | 'en', string>> | undefined;
+  thumbs?: Partial<Record<'vi' | 'en', string>> | undefined;
   assets: Record<string, string>;
   layouts: Partial<Record<KeepsakeFormat, readonly KeepsakeLayer[]>> | null;
 }): string[] {
   const out = new Set<string>(Object.values(t.assets));
   if (t.thumb) out.add(t.thumb);
   if (t.preview) out.add(t.preview);
+  for (const a of [...Object.values(t.previews ?? {}), ...Object.values(t.thumbs ?? {})])
+    if (a) out.add(a);
   for (const layers of Object.values(t.layouts ?? {})) {
     for (const l of layers ?? []) if ('asset' in l && l.asset) out.add(l.asset);
   }

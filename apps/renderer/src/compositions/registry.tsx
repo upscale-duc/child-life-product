@@ -1,3 +1,8 @@
+import { Premium48Phase5Story } from './premium48-phase5';
+import { Premium48Story, PREMIUM48_FRAMES, PREMIUM48_POSTER } from './premium48';
+import { Premium48Phase4Story } from './premium48-phase4';
+import { Premium48Phase3Story } from './premium48-phase3';
+import { Premium48Phase2Story } from './premium48-phase2';
 import type { KeepsakeComposition } from '@child-life/contracts';
 import type { ComponentType } from 'react';
 import type { StoryProps } from '../kit/core';
@@ -34,12 +39,78 @@ const ch1 = (id: string): StoryEntry => ({
 });
 
 export const stories: Record<KeepsakeComposition, StoryEntry> = {
+  PremiumOutgrownKeepsake: {
+    Component: (p) => <Premium48Phase5Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumSmileToKeep: {
+    Component: (p) => <Premium48Phase5Story {...p} smile />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumMonthlyChapter: {
+    Component: (p) => <Premium48Phase4Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumThenNow: {
+    Component: (p) => <Premium48Phase4Story {...p} compare />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumLittleThings: {
+    Component: (p) => <Premium48Phase3Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumMonthLetter: {
+    Component: (p) => <Premium48Phase3Story {...p} monthLetter />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumHomecoming: {
+    Component: (p) => <Premium48Phase2Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumFirstMonth: {
+    Component: (p) => <Premium48Phase2Story {...p} month />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumArrival: {
+    Component: (p) => <Premium48Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumEmbrace: {
+    Component: (p) => <Premium48Story {...p} embrace />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
   FirstMonth: v1('polaroid'),
   FirstWeek: v1('fullBleed'),
   HundredDays: v1('polaroid'),
   LittleMoments: v1('fullBleed'),
   ...(Object.fromEntries(Object.keys(chapter1).map((id) => [id, ch1(id)])) as Record<
-    Exclude<KeepsakeComposition, 'FirstMonth' | 'FirstWeek' | 'HundredDays' | 'LittleMoments'>,
+    Exclude<
+      KeepsakeComposition,
+      | 'FirstMonth'
+      | 'FirstWeek'
+      | 'HundredDays'
+      | 'LittleMoments'
+      | 'PremiumArrival'
+      | 'PremiumEmbrace'
+      | 'PremiumHomecoming'
+      | 'PremiumFirstMonth'
+      | 'PremiumLittleThings'
+      | 'PremiumMonthLetter'
+      | 'PremiumMonthlyChapter'
+      | 'PremiumThenNow'
+      | 'PremiumOutgrownKeepsake'
+      | 'PremiumSmileToKeep'
+    >,
     StoryEntry
   >),
 };

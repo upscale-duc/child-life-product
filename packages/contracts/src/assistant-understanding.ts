@@ -1,3 +1,4 @@
+import { assistantReadTools } from './assistant-reads.js';
 import { z } from 'zod';
 import { draftKinds, type DraftKind } from './assistant.js';
 
@@ -59,7 +60,7 @@ export const timeSpecSchema = z
   .strict();
 export type TimeSpec = z.infer<typeof timeSpecSchema>;
 
-/** The kinds an understanding event may have (timers are the server's; a meal has no log yet — the server says so). */
+/** The kinds an understanding event may have (timers are the server's; meal writes through chat remain Phase 3). */
 export const eventKinds = draftKinds.filter((k) => k !== 'timer') as Exclude<DraftKind, 'timer'>[];
 export type EventKind = (typeof eventKinds)[number];
 
@@ -166,7 +167,7 @@ export const understandingEventSchema = z
   .strict();
 export type UnderstandingEvent = z.infer<typeof understandingEventSchema>;
 
-export const understandingReadTools = ['care_summary', 'sleep_facts', 'usage_snapshot'] as const;
+export const understandingReadTools = assistantReadTools;
 
 /**
  * The only questions the model may raise: an ambiguous written clock (the server phrases and
@@ -224,7 +225,7 @@ export const understandingSchema = z
 export type Understanding = z.infer<typeof understandingSchema>;
 
 /** The prompt / schema version of understanding v1 (bump on any change to either). */
-export const understandingVersion = 'assistant-understand-v1';
+export const understandingVersion = 'assistant-understand-v2';
 
 /** A time spec that says nothing (the server takes now for a finished log). */
 export const unknownTime: TimeSpec = { how: 'unknown', minutes: null, hhmm: null, dayOffset: null };

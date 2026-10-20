@@ -22,6 +22,7 @@ import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_models.dart' show GateReason;
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'rhythm_access.dart';
+import 'personalization_events.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_labels.dart';
@@ -103,7 +104,18 @@ class RhythmResultScreen extends ConsumerWidget {
       content: [
         RhSavedBanner(title: l10n.rhSavedTitle, subtitle: subtitle),
         const SizedBox(height: ClSpace.s6),
-        body,
+        if (answer?.value case final a?)
+          PersonalImpression(
+            identity: '${checkIn.id}:${checkIn.revision}:${a.state.wire}',
+            reason:
+                a.recommendation?.reasonCode.wire ??
+                (a.state == AnswerState.freeContent
+                    ? 'AGE_CONTENT'
+                    : a.state.wire),
+            child: body,
+          )
+        else
+          body,
         if (done || answer?.value == null) ...[
           const SizedBox(height: ClSpace.s6),
           ClButton(

@@ -21,6 +21,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../home/home_shell.dart' show selectedBabyIdProvider;
 import '../baby/baby_repository.dart';
 import '../care/care_models.dart' show CareType;
 import '../care/care_repository.dart' show inBabyZone;
@@ -34,7 +35,6 @@ import '../premium/premium_repository.dart'
     show capabilitiesProvider, selectedCapabilitiesProvider;
 import '../rhythm/rhythm_access.dart' show FamilyAction, familyCan;
 import '../rhythm/rhythm_actions.dart' show activityLocation, healthLocation;
-import '../rhythm/rhythm_models.dart' show HealthSign, wireList;
 import '../rhythm/rhythm_repository.dart'
     show rhythmContentProvider, rhythmDialerProvider;
 import '../rhythm/rhythm_labels.dart' show memberLabel;
@@ -48,6 +48,7 @@ import 'assistant_entry.dart';
 import 'assistant_fix.dart';
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
+import 'assistant_read_links.dart';
 import 'assistant_photos.dart';
 import 'assistant_repository.dart';
 import 'assistant_rules.dart';
@@ -55,6 +56,7 @@ import 'assistant_time.dart';
 import 'assistant_timer_card.dart';
 import 'assistant_voice.dart';
 import 'assistant_widgets.dart';
+import '../rhythm/personalization_v2_screen.dart' show showNotebookEditor;
 
 /// What a Home chip or a module entry hands the chat: text that only PREFILLS the composer
 /// (never sent by itself) and the module's intent hint.
@@ -587,6 +589,32 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     ] else ...[
       if (!viewer) ...[
         (
+          label: l10n.pv2Notes,
+          icon: ClIcons.journal,
+          onPressed: () {
+            final me = _membership(ref, scope.babyId);
+            if (me == null) return;
+            final text = _text.text.trim();
+            showNotebookEditor(
+              context,
+              ref,
+              (
+                babyId: scope.babyId,
+                uid: me.uid,
+                locale: Localizations.localeOf(context).languageCode,
+              ),
+              me.role == MemberRole.coParent,
+              note: text.isEmpty
+                  ? null
+                  : {
+                      'text': text.length > 200 ? text.substring(0, 200) : text,
+                      'scope': 'baby',
+                      'source': 'lumi',
+                    },
+            );
+          },
+        ),
+        (
           label: l10n.asChipLogFeed,
           icon: ClIcons.feed,
           onPressed: () => _prefill(l10n.asPrefillFeed),
@@ -963,6 +991,19 @@ class _ThreadView {
     required this.onTypeIn,
   });
 
+  /// A chat can be scoped to a different baby from the Home tab (CH03).
+  void _openRead(BuildContext context, String babyId, String link) {
+    final route = assistantReadRoute(link);
+    if (route == null) return;
+    final container = ProviderScope.containerOf(context, listen: false);
+    final session = container.read(sessionProvider);
+    if (session is! SessionSignedIn || session.membershipFor(babyId) == null) {
+      return;
+    }
+    container.read(selectedBabyIdProvider.notifier).select(babyId);
+    GoRouter.of(context).pushSafe(route);
+  }
+
   final ChatState chat;
   final AssistantChat ctl;
   final Membership? me;
@@ -1309,6 +1350,24 @@ class _ThreadView {
             if (d != null && shown.add(d.id)) {
               out.add(_Entry('d:${d.id}', _Side.lumi, _draft(context, t, d)));
             }
+          case ReadCardPart():
+            out.add(
+              _Entry(
+                k,
+                _Side.lumi,
+                AsReadCard(
+                  part: p,
+                  zone: task.timezone ?? zone,
+                  onOpen: (link) {
+                    _openRead(
+                      context,
+                      task.scope?.babyId ?? chat.scope.babyId,
+                      link,
+                    );
+                  },
+                ),
+              ),
+            );
           case SourceSummaryPart():
             out.add(
               _Entry(
@@ -1341,6 +1400,11 @@ class _ThreadView {
                     excludedCount: p.excludedCount,
                     caveat: p.caveat,
                     mealLogAvailable: p.mealLogAvailable,
+                    onOpen: (link) => _openRead(
+                      context,
+                      task.scope?.babyId ?? chat.scope.babyId,
+                      link,
+                    ),
                   ),
                 ),
               );
@@ -2032,12 +2096,17 @@ class _ThreadView {
         text: text,
         action: AsLink(
           label: l10n.asOpenCareLibrary,
-          onPressed: () => GoRouter.of(context).push(Routes.rhythm),
+          onPressed: () => _openRead(context, chat.scope.babyId, '/library'),
         ),
       ),
       NoticeCode.recipesNoneApproved => AsNoticeCard(
         icon: ClIcons.feed,
         text: text,
+        action: AsLink(
+          label: l10n.asOpenSolids,
+          onPressed: () =>
+              _openRead(context, chat.scope.babyId, '/care/solids'),
+        ),
       ),
       // LUMI-13 / LUMI-05: what was not drafted (or what this build cannot show), with the
       // module where it can be added directly (Back = chat).
@@ -2305,9 +2374,8 @@ class _ThreadView {
           return AsHealthCard(
             number: number,
             onCall: () => onDial(number),
-            onOpenHealth: () => GoRouter.of(
-              context,
-            ).push(healthLocation(wireList(HealthSign.values, signs))),
+            onOpenHealth: () =>
+                _openRead(context, chat.scope.babyId, Routes.firstAid),
           );
         },
       );
@@ -4441,6 +4509,8 @@ String sideWord(AppLocalizations l10n, String side) => switch (side) {
 /// LUMI-13: the in-app module a notice links to (`/care/growth`, `/care`); null for anything
 /// that is not a plain in-app path (never an outside link).
 String? moduleRoute(String? link) {
+  final readRoute = assistantReadRoute(link);
+  if (readRoute != null) return readRoute;
   final uri = link == null ? null : Uri.tryParse(link);
   if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
   final path = uri.path;

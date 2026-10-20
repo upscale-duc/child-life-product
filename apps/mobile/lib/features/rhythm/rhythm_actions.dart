@@ -9,6 +9,7 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show careClockProvider;
 import 'rhythm_access.dart';
+import 'personalization_events.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
 import 'rhythm_repository.dart';
@@ -78,6 +79,13 @@ CheckIn saveCheckIn(BuildContext context, WidgetRef ref, CheckIn draft) {
     previous: previous,
     onError: (_) => toaster.show(message: l10n.rhSaveFailed, error: true),
   );
+  final sink = ref.read(personalizationEventSinkProvider);
+  repo
+      .committed(saved.id)
+      ?.then(
+        (_) => sink('checkinSaved', null).ignore(),
+        onError: (Object _) {},
+      );
   _refreshHomeAfter(context, repo, saved.id);
   return saved;
 }
@@ -114,6 +122,11 @@ RecFeedback giveFeedback(
     ),
     onError: (_) => toaster.show(message: l10n.rhSaveFailed, error: true),
   );
+  final sink = ref.read(personalizationEventSinkProvider);
+  repo.committed(feedback.id)?.then((_) {
+    sink('feedbackSaved', kind.wire).ignore();
+    if (kind == FeedbackKind.started) sink('suggestionStarted', null).ignore();
+  }, onError: (Object _) {});
   _refreshHomeAfter(context, repo, feedback.id);
   return feedback;
 }

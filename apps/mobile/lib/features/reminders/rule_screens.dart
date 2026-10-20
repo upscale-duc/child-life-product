@@ -818,7 +818,8 @@ class _RulePage extends ConsumerWidget {
 /// times), then recipients and a summary (1d) → "Lưu nhắc" → 1a with a toast and the
 /// notification ask (1e, via the 8c pre-prompt since iOS cannot change the alert's body).
 class RuleEditorScreen extends ConsumerStatefulWidget {
-  const RuleEditorScreen({this.ruleId, super.key});
+  const RuleEditorScreen({this.ruleId, this.initialIntervalMinutes, super.key});
+  final int? initialIntervalMinutes;
 
   /// Null for a new rule.
   final String? ruleId;
@@ -845,9 +846,18 @@ class _RuleEditorScreenState extends ConsumerState<RuleEditorScreen> {
     if (members == null) return null;
     return RuleDraft(
       id: newRuleId(),
+      intervalMinutes:
+          widget.initialIntervalMinutes != null &&
+              widget.initialIntervalMinutes! >= RuleLimits.intervalMin &&
+              widget.initialIntervalMinutes! <= RuleLimits.intervalMax &&
+              widget.initialIntervalMinutes! % RuleLimits.intervalStep == 0
+          ? widget.initialIntervalMinutes!
+          : 180,
       recipients: [
         for (final m in members)
-          if (_canReceive(m)) m.uid,
+          if (_canReceive(m) &&
+              (widget.initialIntervalMinutes == null || m.uid == c.me.uid))
+            m.uid,
       ],
     );
   }

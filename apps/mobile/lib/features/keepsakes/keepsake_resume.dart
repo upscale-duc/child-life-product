@@ -138,6 +138,7 @@ Map<String, Object?> videoDraftToJson(VideoDraft d) => {
   'templateId': d.template.id,
   'occasion': d.occasion?.wire,
   'mediaIds': d.mediaIds,
+  'outputLocale': ?d.outputLocale,
   'title': d.title,
   'message': d.message,
   'audience': d.audience.name,
@@ -159,6 +160,7 @@ VideoDraft? videoDraftFromJson(
       for (final m in (j['mediaIds'] as List? ?? const []))
         if (m is String) m,
     ],
+    outputLocale: j['outputLocale'] as String?,
     title: j['title'] as String?,
     message: j['message'] as String?,
     audience: Audience.values.asNameMap()[j['audience']] ?? Audience.parents,

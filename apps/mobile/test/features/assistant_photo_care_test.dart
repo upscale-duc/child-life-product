@@ -1144,7 +1144,7 @@ void main() {
     );
 
     testWidgets('CH18: approved recipes, exclusions are recorded reactions, '
-        '"Ghi bữa ăn" unavailable', (tester) async {
+        'opens the Solids diary', (tester) async {
       final repo = FakeAssistantRepository(
         tasks: {
           taskA: snapshotWith(
@@ -1156,7 +1156,11 @@ void main() {
           ),
         },
       );
-      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      final (visits, _) = await _pump(
+        tester,
+        repo: repo,
+        prefs: _thread([taskA]),
+      );
       expect(_text('Cháo bí đỏ yến mạch'), findsOneWidget);
       expect(
         _text('15 phút · Từ 6 tháng · đã được chuyên môn duyệt'),
@@ -1173,12 +1177,13 @@ void main() {
         find.textContaining('không có nghĩa là con đã dung nạp tốt'),
         findsOneWidget,
       );
-      expect(_text('Ghi bữa ăn'), findsOneWidget);
+      expect(_text('Mở Ăn dặm'), findsOneWidget);
       expect(
         _text('Chưa có nhật ký bữa ăn trong app nên chưa ghi được từ đây.'),
-        findsOneWidget,
+        findsNothing,
       );
-      await _tap(tester, _text('Ghi bữa ăn'));
+      await _tap(tester, _text('Mở Ăn dặm'));
+      expect(visits.last.location, '/care/solids');
       expect(repo.named('confirmDrafts'), isEmpty);
     });
 
@@ -1237,7 +1242,7 @@ void main() {
         prefs: _thread([taskA]),
       );
       await _tap(tester, _text('Mở Thư viện chăm bé'));
-      expect(visits.last.location, '/rhythm');
+      expect(visits.last.location, '/library');
     });
 
     testWidgets(

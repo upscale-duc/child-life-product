@@ -40,6 +40,7 @@ import {
   type Caller,
 } from './family.js';
 import { FeatureError, featureAccess } from './features.js';
+import { aggregatePersonalizationContent } from './personalization-stats.js';
 import {
   EntitlementError,
   getCapabilities as capabilitiesOf,
@@ -54,6 +55,11 @@ import {
   RhythmError,
   setDueDate as saveDueDate,
 } from './rhythm.js';
+import {
+  personalizedDay,
+  updatePersonalization,
+  reservePersonalizedDigest,
+} from './personalization-v2.js';
 import {
   rhythmAct,
   rhythmDraft,
@@ -539,6 +545,28 @@ export const nextAction = familyCall('nextAction', (r) =>
 /** H01 / H02 / PS02: the current suggestion and the feedback behind it; never fails free Home. */
 export const composeHome = familyCall('composeHome', (r) =>
   composeRhythmHome(
+    getFirestore(),
+    requireAccount(r),
+    r.data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+
+export const reservePersonalizationDigest = familyCall('reservePersonalizationDigest', (r) =>
+  reservePersonalizedDigest(
+    getFirestore(),
+    requireAccount(r),
+    r.data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+export const getPersonalizedDay = familyCall('getPersonalizedDay', (r) =>
+  personalizedDay(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+export const updatePersonalizedDay = familyCall('updatePersonalizedDay', (r) =>
+  updatePersonalization(
     getFirestore(),
     requireAccount(r),
     r.data,
@@ -2683,3 +2711,19 @@ export const cleanupAssistant = onSchedule(
 );
 // ---- end slice A3 photos ----
 // ---- end Child Life Assistant --------------------------------------------------------------
+
+// P-172 D2: aggregate generation separately from visible app impressions.
+export const aggregatePersonalizationDaily = onSchedule(
+  { schedule: '20 2 * * *', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    await aggregatePersonalizationContent(getFirestore(), new Date());
+  },
+);
+
+// P-172 I1: DOB/due-date edits invalidate age-dependent views for every authorized caregiver.
+export const onPersonalizationProfileWrite = onDocumentWritten(
+  'babies/{babyId}/restricted/profile',
+  async (event) => {
+    if (event.data) await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
+  },
+);

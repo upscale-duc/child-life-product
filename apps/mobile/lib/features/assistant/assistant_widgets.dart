@@ -1873,7 +1873,7 @@ class AsHealthCard extends StatelessWidget {
         ),
         const SizedBox(height: ClSpace.s2),
         block(
-          l10n.asOpenHealth,
+          l10n.asOpenFirstAid,
           cl.colors.surface,
           cl.colors.ink,
           onOpenHealth,

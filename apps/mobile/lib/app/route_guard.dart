@@ -103,6 +103,7 @@ abstract final class Routes {
   static const rhythmReminders = '/rhythm/reminders';
   static const rhythmCalendar = '/rhythm/calendar';
   static const rhythmPersonalize = '/rhythm/personalize';
+  static const personalDay = '/rhythm/day';
   static const rhythmInterests = '/rhythm/interests';
   static const rhythmDigest = '/rhythm/digest';
   static const rhythmFeedbackHistory = '/rhythm/feedback-history';

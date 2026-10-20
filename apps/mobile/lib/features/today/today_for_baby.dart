@@ -19,6 +19,9 @@ import '../library/library_today.dart'
     show lbForBabyCardsProvider, lbWeekTeaserProvider;
 import '../milestones/milestone_today.dart' show mtForBabyCardsProvider;
 import '../rhythm/rhythm_access.dart';
+import '../rhythm/personalization_v2_repository.dart';
+import '../rhythm/personalization_v2_screen.dart';
+import '../rhythm/personalization_sources.dart';
 import '../rhythm/rhythm_calc.dart';
 import '../rhythm/rhythm_home.dart' show ForYouSection;
 import '../rhythm/rhythm_models.dart';
@@ -60,13 +63,37 @@ class TodayForBabySection extends ConsumerWidget {
     final interests =
         ref.watch(userPreferencesProvider(me.uid)).value?.interests ??
         const <Interest>[];
+    final day = ref
+        .watch(
+          personalDayProvider((
+            babyId: me.babyId,
+            uid: me.uid,
+            locale: language,
+          )),
+        )
+        .value;
+    final v2Ready =
+        day?.current(ref.watch(careClockProvider).value ?? DateTime.now()) ??
+        false;
     return Padding(
       // With ForYouSection's own 16: the 24 between Hôm nay's sections.
       padding: const EdgeInsets.only(top: ClSpace.s2),
-      child: ForYouSection(
-        header: ForBabyHeader(hasInterests: interests.isNotEmpty),
-        weekTeaser: teaser,
-        more: [if (cards.isNotEmpty) ForBabyCarousel(cards: cards)],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (v2Ready) PersonalDayHome(primary: cards.firstOrNull),
+          ForYouSection(
+            enablePrimary: !v2Ready,
+            header: ForBabyHeader(hasInterests: interests.isNotEmpty),
+            weekTeaser: teaser,
+            more: [
+              if (cards.length > (v2Ready ? 1 : 0))
+                ForBabyCarousel(
+                  cards: v2Ready ? cards.skip(1).take(2).toList() : cards,
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -198,10 +225,14 @@ class ForBabyCard {
     this.tone = ForBabyTone.mint,
     this.interest,
     this.onDismiss,
+    this.priority = 6,
+    this.essential = false,
   });
 
   /// Stable and unique across modules, e.g. `milestone:ms_head_up`, `article:art_startle`.
   final String id;
+  final int priority;
+  final bool essential;
 
   /// The small line by the icon ("Mốc có thể thấy · tuần 3–6", "Đọc 2 phút").
   final String kicker;
@@ -243,7 +274,7 @@ final articleForBabyCardsProvider =
     );
 
 /// At most this many small cards (559:57583 draws three page dots).
-const forBabyCardLimit = 3;
+const forBabyCardLimit = 2;
 
 /// The carousel: every source, ranked by [rankForBabyCards].
 final forBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>((
@@ -253,10 +284,33 @@ final forBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>((
   final prefs =
       ref.watch(userPreferencesProvider(q.uid)).value ??
       UserPreferences.defaults;
-  return rankForBabyCards([
-    ...ref.watch(milestoneForBabyCardsProvider(q)),
-    ...ref.watch(articleForBabyCardsProvider(q)),
-  ], prefs);
+  final day = ref
+      .watch(
+        personalDayProvider((
+          babyId: q.babyId,
+          uid: q.uid,
+          locale: q.languageCode,
+        )),
+      )
+      .value;
+  final now = ref.watch(careClockProvider).value ?? DateTime.now();
+  final candidates = [
+    if (day?.current(now) ?? false)
+      ...ref.watch(personalizedSourceCardsProvider(q)),
+    if (!(day?.current(now) == true && day?.health == true))
+      ...ref.watch(milestoneForBabyCardsProvider(q)),
+    if (!(day?.current(now) == true && day?.health == true))
+      ...ref.watch(articleForBabyCardsProvider(q)),
+  ];
+  final healthPriority = candidates.any((c) => c.priority == 0);
+  return rankForBabyCards(
+    candidates
+        .where((c) => !healthPriority || c.priority == 0)
+        .where((c) => c.essential || !(day?.suppressed(c.id, now) ?? false))
+        .toList(),
+    prefs,
+    limit: day?.current(now) == true ? 3 : forBabyCardLimit,
+  );
 });
 
 /// Cards on the person's interests first (each source's order kept), turned-down topics left
@@ -269,16 +323,20 @@ List<ForBabyCard> rankForBabyCards(
   final seen = <String>{};
   final kept = [
     for (final c in cards)
-      if (!(c.interest != null && prefs.fewer.contains(c.interest)) &&
-          seen.add(c.id))
-        c,
+      if (seen.add(c.id)) c,
   ];
   bool liked(ForBabyCard c) =>
       c.interest != null && prefs.interests.contains(c.interest);
-  return [
-    ...kept.where(liked),
-    ...kept.where((c) => !liked(c)),
-  ].take(limit).toList();
+  int score(ForBabyCard c) =>
+      c.priority * 10 +
+      (liked(c) && !prefs.fewer.contains(c.interest) ? -2 : 0) +
+      (!c.essential && prefs.fewer.contains(c.interest) ? 1 : 0);
+  final ordered = [...kept]
+    ..sort((a, b) {
+      final d = score(a).compareTo(score(b));
+      return d == 0 ? kept.indexOf(a).compareTo(kept.indexOf(b)) : d;
+    });
+  return ordered.take(limit).toList();
 }
 
 /// The small cards side by side (one fills the width), with page dots.
@@ -396,12 +454,12 @@ class _ForBabyCarouselState extends State<ForBabyCarousel> {
   }
 }
 
-class _SmallCard extends StatelessWidget {
+class _SmallCard extends ConsumerWidget {
   const _SmallCard({required this.card});
   final ForBabyCard card;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final tint = switch (card.tone) {
@@ -411,7 +469,29 @@ class _SmallCard extends StatelessWidget {
       ForBabyTone.peach => cl.colors.peachSoft,
       ForBabyTone.sunshine => cl.colors.sunshineSoft,
     };
-    final dismiss = card.onDismiss;
+    final me = ref.watch(selectedMembershipProvider);
+    final canRespond =
+        me != null &&
+        familyCan(me, FamilyAction.rhythmFeedback) &&
+        !card.essential;
+    final responseKey = me == null
+        ? null
+        : (
+            babyId: me.babyId,
+            uid: me.uid,
+            locale: Localizations.localeOf(context).languageCode,
+          );
+    final dismiss =
+        card.onDismiss ??
+        (canRespond
+            ? (BuildContext c) => dayCardControls(
+                c,
+                ref,
+                responseKey!,
+                card.id,
+                parent: me.role.name == 'coParent',
+              )
+            : null);
     return ClPressable(
       onPressed: () => card.onOpen(context),
       pressedOpacity: ClPressable.surfaceOpacity,
@@ -452,6 +532,16 @@ class _SmallCard extends StatelessWidget {
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),
                 ),
+                if (canRespond)
+                  IconButton(
+                    tooltip: l10n.pv2Save,
+                    onPressed: () => mutateDay(context, ref, responseKey!, {
+                      'kind': 'respond',
+                      'contentId': card.id,
+                      'value': 'save',
+                    }),
+                    icon: const Icon(Icons.favorite_border, size: 18),
+                  ),
                 if (dismiss != null)
                   ClPressable(
                     onPressed: () => dismiss(context),

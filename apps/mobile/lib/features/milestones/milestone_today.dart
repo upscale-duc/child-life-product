@@ -55,6 +55,7 @@ final mtForBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>(
     for (final m in board.forToday.take(2))
       ForBabyCard(
         id: 'milestone:${m.id}',
+        priority: 4,
         kicker: l10n.mtTodayKicker(rangeLabel(l10n, m.ageRange)),
         title: m.title.of(q.languageCode),
         action: parent ? l10n.mtTodayAction : l10n.mtTodayActionViewer,

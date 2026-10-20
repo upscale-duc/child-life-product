@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../care/care_models.dart';
 import 'keepsake_card_view.dart';
 import 'keepsake_catalog.dart';
+import 'keepsake_personalization.dart';
 import 'keepsake_occasions.dart';
 
 /// What a card's text fields say (E-2, `docs/product/remember-2-templates.md` §1.4), worked out on
@@ -142,6 +143,25 @@ CardContent keepsakeCardContent({
   /// counted from the date of birth).
   String? occasionTitle,
 }) {
+  if (template.personalization case final spec?) {
+    final values = {
+      for (final f in spec.fields)
+        f.key: switch (f.source) {
+          'babyName' => name,
+          'birthDate' =>
+            dob == null ? '' : DateFormat('yyyy-MM-dd').format(dob),
+          _ => f.type == 'confirmation' ? 'false' : '',
+        },
+    };
+    return CardContent(
+      occasion: '',
+      name: name,
+      date: '',
+      quote: '',
+      photos: photos,
+      personalized: resolveKeepsakeCopy(spec, values, locale),
+    );
+  }
   final age = keepsakeAge(
     l10n,
     occasionTitle == null ? occasion : null,

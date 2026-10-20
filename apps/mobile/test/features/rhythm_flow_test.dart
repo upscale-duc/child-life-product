@@ -138,12 +138,34 @@ void main() {
       expect(find.text(l10n.rhCheckInEntry), findsOneWidget);
     });
 
+    for (final scenario in ['deleted', 'edited', 'previous day']) {
+      testWidgets('P-172: cached invitation disappears: $scenario source', (
+        tester,
+      ) async {
+        final checkIns = switch (scenario) {
+          'deleted' => <CheckIn>[],
+          'edited' => [sleepCheckIn(date: rhythmToday).copyWith(revision: 2)],
+          _ => [sleepCheckIn()],
+        };
+        await pumpRouted(
+          tester,
+          _home(),
+          overrides: rhythmOverrides(
+            repo: FakeRhythmRepository(home: h02Home(), checkIns: checkIns),
+            caps: rhythmCaps(plan: 'beta', groupA: true),
+            online: false,
+          ),
+        );
+        expect(find.text(l10n.rhKickerTonight), findsNothing);
+      });
+    }
+
     testWidgets('H02: "Thử tối nay" starts it and opens the activity', (
       tester,
     ) async {
       final repo = FakeRhythmRepository(
         home: h02Home(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
       );
       final (visits, _) = await pumpRouted(
         tester,
@@ -156,7 +178,7 @@ void main() {
       );
       expect(find.text(l10n.rhKickerTonight), findsOneWidget);
       expect(
-        find.text('Vì tối qua Mẹ ghi nhận con khó vào giấc.'),
+        find.text('Vì hôm nay Mẹ ghi nhận con khó vào giấc.'),
         findsOneWidget,
       );
       expect(find.text(l10n.rhReviewPending), findsOneWidget);
@@ -175,7 +197,7 @@ void main() {
       expect(repo.savedFeedback.single.date, rhythmToday);
       expect(
         visits.last.location,
-        '${Routes.rhythmActivity}/act_wind_down?ci=${sleepCheckIn().id}',
+        '${Routes.rhythmActivity}/act_wind_down?ci=${sleepCheckIn(date: rhythmToday).id}',
       );
     });
 
@@ -184,7 +206,7 @@ void main() {
     ) async {
       final repo = FakeRhythmRepository(
         home: h02Home(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
       );
       await pumpRouted(
         tester,
@@ -211,7 +233,7 @@ void main() {
           me: minh,
           repo: FakeRhythmRepository(
             home: ps02Home(),
-            checkIns: [sleepCheckIn()],
+            checkIns: [sleepCheckIn(date: rhythmToday)],
             feedback: [helpfulFeedback()],
           ),
           caps: rhythmCaps(plan: 'beta', groupA: true),
@@ -263,7 +285,10 @@ void main() {
         overrides: rhythmOverrides(
           repo: FakeRhythmRepository(
             home: h02Home(),
-            checkIns: [health, sleepCheckIn()],
+            checkIns: [
+              health,
+              sleepCheckIn(date: rhythmToday),
+            ],
           ),
           caps: rhythmCaps(plan: 'beta', groupA: true),
         ),

@@ -1,5 +1,10 @@
+import { noticePart } from './assistant-talk.js';
+import { personalFilters } from './personalization-state.js';
+import { solidsContext, legacyReactionIngredientIds } from './assistant-solids.js';
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
+  foldVi,
+  contentFitsCountry,
   addDaysIso,
   ageInFullMonths,
   assistantTaskLimits,
@@ -72,8 +77,8 @@ import type { AssistantDeps } from './assistant.js';
  *   CH17's question opens only after the chance to try and always offers "Chưa thử".
  * - "Hôm nay con ăn gì?" (CH18): `findRecipes` — approved (published + reviewed) recipes for the
  *   household's country and the baby's age in full months, excluding any recipe with an ingredient
- *   the family recorded a reaction to (there is no meal / reaction module yet, P-157: the source is
- *   empty, so the caveat always says unknown tolerance is not "safe").
+ *   the family recorded a reaction to (Phase 2 reads the actual solids diary; the caveat always distinguishes recorded symptoms
+ *   from a diagnosis or established tolerance).
  * - Health (CH28): `health_support` with the emergency number approved for the household's
  *   country in the published health pack (none when the country has no entry; never a default).
  * - Kill switch `assistant_care` off, or a country outside the care regions → no guidance or
@@ -393,18 +398,13 @@ export function findRecipes(x: RecipesInput): RecipesResult {
   };
 }
 
-/**
- * Ingredients the family recorded a reaction to. There is no meal log or reaction module yet
- * (P-157), so the source is empty today; the answer then always carries the caveat.
- */
+/** Ingredients excluded by the actual solids diary, including related allergens. */
 export async function recordedReactionIngredientIds(
   db: Firestore,
   babyId: string,
-): Promise<{ ids: string[]; source: 'none' }> {
-  // When a solids / reaction module ships, read `babies/{babyId}/…` here through [db].
-  void db;
-  void babyId;
-  return { ids: [], source: 'none' };
+): Promise<{ ids: string[]; source: 'diary' }> {
+  const context = await solidsContext(db, babyId, new Date());
+  return { ids: legacyReactionIngredientIds(context), source: 'diary' };
 }
 
 // ---------- The care answer of a task ----------
@@ -534,6 +534,70 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
   const country = s.ctx.family.country!;
 
   if (x.care.topic === 'meal_ideas') {
+    if (!x.canRead)
+      return {
+        parts: [noticePart({ code: 'READ_DENIED' }, locale)],
+        drafts: [],
+        useful: false,
+        care: x.care,
+      };
+    const diary = await solidsContext(db, s.babyId, x.anchor);
+    if (age && diary.recipes.size > 0) {
+      const excluded = new Set([...diary.excluded, ...(x.reactionIngredientIds ?? [])]);
+      const eligible = [...diary.recipes.values()].filter(
+        (r) =>
+          r.review !== null &&
+          contentFitsCountry(r, country) &&
+          age.months >= r.ageMonths.from &&
+          age.months < r.ageMonths.to &&
+          ((diary.method !== 'spoon' && diary.method !== 'blw') ||
+            r.methods.includes(diary.method)) &&
+          r.ingredients.every(
+            (i) =>
+              !i.foodId ||
+              (diary.foods.has(i.foodId) && diary.foods.get(i.foodId)!.minAgeMonths <= age.months),
+          ),
+      );
+      const ranked = eligible
+        .filter((r) =>
+          r.ingredients.every((i) =>
+            i.foodId
+              ? !excluded.has(i.foodId)
+              : !excluded.has(`free:${foldVi(i.name[locale].trim())}`),
+          ),
+        )
+        .map((r) => ({
+          r,
+          familiar: r.ingredients.filter((i) => i.foodId && diary.tried.has(i.foodId)).length,
+        }))
+        .sort((a, b) => b.familiar - a.familiar || a.r.id.localeCompare(b.r.id))
+        .slice(0, 3);
+      if (!ranked.length) return fallback(x.care, 'RECIPES_NONE_APPROVED', locale);
+      const vi = locale === 'vi';
+      const part: AssistantPart = {
+        type: 'read_card',
+        schemaVersion: 1,
+        tool: 'solids_history',
+        title: vi ? 'Gợi ý món từ nhật ký ăn dặm' : 'Meal ideas from your solids diary',
+        asOf: x.anchor.toISOString(),
+        rows: ranked.map(({ r, familiar }) => ({
+          label: r.title[locale],
+          value: `${r.summary[locale]} · ${vi ? 'Nguyên liệu đã thử' : 'Previously tried ingredients'}: ${familiar}`,
+          link: `/care/solids/recipe/${r.id}`,
+        })),
+        action: { label: vi ? 'Mở Ăn dặm' : 'Open Solids', link: '/care/solids' },
+        sourceIds: [...diary.sourceIds, ...ranked.map(({ r }) => r.id)].slice(0, 200),
+        caveat: vi
+          ? 'Đã đối chiếu thực phẩm đã thử, dấu hiệu sau ăn, nhóm dị nguyên và món gia đình đã ẩn. Ghi nhận sau một bữa ăn không xác định nguyên liệu gây dị ứng; chưa ghi phản ứng không có nghĩa đã dung nạp tốt.'
+          : 'Uses tried foods, recorded symptoms, allergen groups and hidden foods. Symptoms after a meal do not identify an allergen; no recorded reaction does not establish tolerance.',
+      };
+      return {
+        parts: [part],
+        drafts: [],
+        useful: true,
+        care: { ...x.care, recipeIds: ranked.map(({ r }) => r.id) },
+      };
+    }
     const recipes = recipesOf(content);
     const empty = (): AssistantPart => ({
       type: 'recipe_list',
@@ -542,13 +606,13 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
       caveat: null,
       items: [],
       excludedCount: 0,
-      mealLogAvailable: moduleRegistry.meal.available,
+      mealLogAvailable: true,
     });
     if (!age) return fallback(x.care, 'CARE_AGE_UNKNOWN', locale);
     if (!recipes.length) return fallback(x.care, 'RECIPES_NONE_APPROVED', locale, [empty()]);
     const reactions = x.reactionIngredientIds
       ? { ids: [...x.reactionIngredientIds], source: 'fixture' as const }
-      : await recordedReactionIngredientIds(db, s.babyId);
+      : { ids: legacyReactionIngredientIds(diary), source: 'diary' as const };
     const r = findRecipes({
       recipes,
       ageMonths: age.months,
@@ -564,8 +628,8 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
           ? 'Đã loại món có nguyên liệu con từng có phản ứng (theo ghi nhận của gia đình, không phải chẩn đoán dị ứng).'
           : 'Dishes with an ingredient your baby had a recorded reaction to are left out (a family note, not an allergy diagnosis).'
         : vi
-          ? 'Child Life chưa có nhật ký ăn dặm nên chưa biết con từng phản ứng với món nào.'
-          : 'Child Life has no solids log yet, so recorded reactions are unknown.',
+          ? 'Nhật ký ăn dặm chưa có ghi nhận dấu hiệu sau ăn; điều này không xác định khả năng dung nạp.'
+          : 'The solids diary has no recorded symptoms after eating; this does not establish tolerance.',
       vi
         ? 'Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.'
         : 'No recorded reaction doesn’t mean a food is well tolerated.',
@@ -579,7 +643,7 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
           caveat,
           items: r.items,
           excludedCount: r.excludedCount,
-          mealLogAvailable: moduleRegistry.meal.available,
+          mealLogAvailable: true,
         },
       ],
       drafts: [],
@@ -594,13 +658,18 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
     return fallback(x.care, 'CARE_NO_APPROVED_CONTENT', locale);
   }
   if (!age) return fallback(x.care, 'CARE_AGE_UNKNOWN', locale);
-  const [rules, rows, prefs] = await Promise.all([
+  const [rules, rows, prefs, filters] = await Promise.all([
     readRhythmRules(db),
     readFeedback(db, s.babyId),
     readPreferences(db, s.uid),
+    personalFilters(db, s.babyId, s.uid, x.now),
   ]);
   const found = findApprovedGuidance({
-    activities: content.activities,
+    activities: content.activities.filter(
+      (a) =>
+        !filters.hidden.has(a.id) &&
+        (filters.maxMinutes === null || a.durationMin <= filters.maxMinutes),
+    ),
     need: 'sleep',
     when: sleep.when,
     locale,
@@ -643,6 +712,20 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
       alternatives: found.alternatives.map((b) => ({ contentId: b.id, contentVersion: b.version })),
     },
   ];
+
+  // P-172 E3: confirmed shared notes are quoted data, never model instructions. Private
+  // notebook text must not be echoed into the shared baby conversation.
+  const sharedNotes = filters.notes
+    .filter((n) => n.scope === 'baby' && ['sleep', 'soothing', 'routine'].includes(n.category))
+    .slice(0, 2);
+  if (sharedNotes.length > 0)
+    parts.unshift({
+      type: 'text',
+      schemaVersion: 1,
+      text:
+        (locale === 'vi' ? 'Nhà mình đã ghi: ' : 'Your family recorded: ') +
+        sharedNotes.map((n) => `“${n.text}”`).join(' · '),
+    });
 
   // The optional observation (a check-in for Nhịp lớn lên), only when this person can save it
   // and has not already written that observation today.

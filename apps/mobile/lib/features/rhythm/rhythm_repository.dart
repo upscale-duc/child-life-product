@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app/providers.dart';
+import '../../app/session.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
@@ -293,11 +294,15 @@ class RhythmRepository {
     }),
   );
 
-  static String _homeKey(String babyId, String locale) =>
-      'rhythm.home.$babyId.$locale';
+  static String _homeKey(String babyId, String locale, String viewerUid) =>
+      'rhythm.home.v2.$viewerUid.$babyId.$locale';
 
-  HomeComposition? cachedHome(String babyId, String locale) {
-    final raw = _prefs.getString(_homeKey(babyId, locale));
+  HomeComposition? cachedHome(
+    String babyId,
+    String locale, {
+    String viewerUid = '',
+  }) {
+    final raw = _prefs.getString(_homeKey(babyId, locale, viewerUid));
     if (raw == null) return null;
     try {
       return HomeComposition.fromJson(jsonDecode(raw));
@@ -308,24 +313,32 @@ class RhythmRepository {
 
   /// H02 / PS02 (`composeHome`). Offline or failing: the last answer this phone got. A member
   /// who may not read it any more forgets it.
-  Future<HomeComposition?> composeHome(String babyId, String locale) async {
+  Future<HomeComposition?> composeHome(
+    String babyId,
+    String locale, {
+    String viewerUid = '',
+  }) async {
+    if (viewerUid.isEmpty) return null;
     final lang = locale == 'en' ? 'en' : 'vi';
     try {
       final home = HomeComposition.fromJson(
         await _call('composeHome', {'babyId': babyId, 'locale': lang}),
       );
       unawaited(
-        _prefs.setString(_homeKey(babyId, lang), jsonEncode(home.toJson())),
+        _prefs.setString(
+          _homeKey(babyId, lang, viewerUid),
+          jsonEncode(home.toJson()),
+        ),
       );
       return home;
     } on RhythmException catch (e) {
-      if (e.gate == GateReason.roleDenied || e.gate == GateReason.notMember) {
-        unawaited(_prefs.remove(_homeKey(babyId, lang)));
+      if (!e.offline) {
+        unawaited(_prefs.remove(_homeKey(babyId, lang, viewerUid)));
         return null;
       }
-      return cachedHome(babyId, lang);
+      return cachedHome(babyId, lang, viewerUid: viewerUid);
     } on Object {
-      return cachedHome(babyId, lang);
+      return null;
     }
   }
 
@@ -410,11 +423,16 @@ final userPreferencesProvider = StreamProvider.family<UserPreferences, String>(
 
 /// `composeHome` for (babyId, language); refreshed after a check-in or feedback.
 final homeCompositionProvider = FutureProvider.autoDispose
-    .family<HomeComposition?, (String, String)>(
-      (ref, key) =>
-          ref.watch(rhythmRepositoryProvider).composeHome(key.$1, key.$2),
-      retry: (_, _) => null,
-    );
+    .family<HomeComposition?, (String, String)>((ref, key) {
+      final session = ref.watch(sessionProvider);
+      if (session is! SessionSignedIn ||
+          session.membershipFor(key.$1) == null) {
+        return Future.value(null);
+      }
+      return ref
+          .watch(rhythmRepositoryProvider)
+          .composeHome(key.$1, key.$2, viewerUid: session.user.uid);
+    }, retry: (_, _) => null);
 
 typedef NextActionKey = ({
   String babyId,

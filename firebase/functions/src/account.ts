@@ -503,6 +503,9 @@ async function babyStep(
         db,
         db.collection(`families/${familyId}/reservations`).where('babyId', '==', babyId),
       );
+      // P-172: private per-viewer state and delivery/lease docs linked to this baby.
+      await deleteQuery(db, db.collectionGroup('personalization').where('babyId', '==', babyId));
+      await deleteQuery(db, db.collectionGroup('settings').where('babyId', '==', babyId));
       // Assistant chats, tasks, drafts and photos about this baby (every member's).
       await purgeAssistantForBaby(db, deps.store, babyId, now);
       return;
@@ -632,6 +635,8 @@ async function accountStep(
           last = snap.docs[snap.docs.length - 1];
         }
       }
+      // P-172 notebook notes are removed on author account deletion, including private text.
+      await deleteQuery(db, db.collectionGroup('notebook').where('authorUid', '==', uid));
       // Personal marks go: loves and private favourites.
       await deleteQuery(db, db.collectionGroup('reactions').where('uid', '==', uid));
       await deleteQuery(db, db.collectionGroup('favorites').where('uid', '==', uid));
@@ -1143,7 +1148,12 @@ async function familyRecipesCsv(db: Firestore, babyId: string, locale: Locale): 
   );
 }
 
-async function* careEntries(db: Firestore, babyId: string, locale: Locale = 'vi') {
+async function* careEntries(
+  db: Firestore,
+  babyId: string,
+  locale: Locale = 'vi',
+  viewerUid?: string,
+) {
   const records = await db
     .collection(`babies/${babyId}/records`)
     .where('deleted', '==', false)
@@ -1173,6 +1183,30 @@ async function* careEntries(db: Firestore, babyId: string, locale: Locale = 'vi'
     ...rows.map((r) => header.map((h) => csvCell((r as Record<string, unknown>)[h])).join(',')),
   ].join('\n');
   yield { name: 'care.json', open: async () => Readable.from([Buffer.from(json)]) };
+  const [notebook, work, exclusions, personal] = await Promise.all([
+    db.collection(`babies/${babyId}/notebook`).get(),
+    db.collection(`babies/${babyId}/careWork`).get(),
+    db.collection(`babies/${babyId}/personalizationExclusions`).get(),
+    viewerUid
+      ? db.doc(`users/${viewerUid}/personalization/${babyId}`).get()
+      : Promise.resolve(null),
+  ]);
+  const personalization = JSON.stringify(
+    {
+      notes: notebook.docs
+        .map((d) => d.data())
+        .filter((n) => n.scope === 'baby' || n.authorUid === viewerUid),
+      careWork: work.docs.map((d) => d.data()),
+      exclusions: exclusions.docs.map((d) => ({ id: d.id, ...d.data() })),
+      personal: personal?.data() ?? null,
+    },
+    null,
+    2,
+  );
+  yield {
+    name: 'personalization.json',
+    open: async () => Readable.from([Buffer.from(personalization)]),
+  };
   yield { name: 'care.csv', open: async () => Readable.from([Buffer.from(`${BOM}${csv}`)]) };
   // Ăn dặm meals (D-085 #3) read their own collection; the care record types stay as they are.
   const meals = await mealsCsv(db, babyId, locale);
@@ -1224,7 +1258,7 @@ export async function runExport(
     const path = exportPath(uid, jobId, kind);
     const entries =
       kind === 'care'
-        ? careEntries(db, babyId, (job.get('locale') as Locale | undefined) ?? 'vi')
+        ? careEntries(db, babyId, (job.get('locale') as Locale | undefined) ?? 'vi', uid)
         : mediaEntries(db, babyId, openObject);
     const bytes = await store.zip(path, entries);
     // "Tải về" straight from the email: a 24 h token whose hash stays on the job; the page re-checks

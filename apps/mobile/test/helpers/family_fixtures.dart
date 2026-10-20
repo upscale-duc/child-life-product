@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:child_life/features/rhythm/personalization_digest.dart';
+
 import 'package:child_life/app/session.dart';
 import 'package:child_life/features/keepsakes/keepsake_nudges.dart';
 import 'package:child_life/features/milestones/milestone_repository.dart';
@@ -246,6 +248,9 @@ List<Override> familyOverrides({
 }) {
   final self = me ?? mai;
   return [
+    personalDeliveryProvider.overrideWith(
+      (ref, uid) => Stream.value(<String, dynamic>{}),
+    ),
     milestoneRepositoryProvider.overrideWithValue(
       milestones ?? FakeMilestoneRepository(),
     ),

@@ -1,7 +1,9 @@
 # Cloud Build context: only the built image contents and the Dockerfile.
-node_modules/
-src/
-test/
-scripts/
-out/
-public/
+/node_modules/
+/src/
+/test/
+/scripts/
+/out/
+/public/
+
+/dist-player/

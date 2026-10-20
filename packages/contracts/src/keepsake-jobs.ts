@@ -1,3 +1,7 @@
+import {
+  keepsakePresentationRequestSchema,
+  type KeepsakePresentation,
+} from './keepsake-personalization.js';
 import { z } from 'zod';
 import { keepsakeTemplateIdSchema, occasionIds, type KeepsakeTemplate } from './keepsakes.js';
 import { audiences, mediaIdSchema } from './memories.js';
@@ -75,6 +79,7 @@ export const memoryStoryRequestSchema = z
       .strict(),
     /** The app's language: the template's default texts and the photo labels follow it. */
     locale: z.enum(['vi', 'en']).optional(),
+    presentation: keepsakePresentationRequestSchema.optional(),
     /** MM07 "Ai xem được" (default Chỉ ba mẹ). */
     audience: z.enum(audiences),
     occasion: z.enum(occasionIds).nullable(),
@@ -150,6 +155,7 @@ export const renderTaskSchema = z
 
 /** What the renderer needs, frozen in the job (never re-read from the catalog). */
 export interface KeepsakeJobInput {
+  presentation?: KeepsakePresentation;
   template: KeepsakeTemplate;
   /** Display renditions in scene order (`babies/{b}/media/{m}/display.jpg`). */
   photos: string[];

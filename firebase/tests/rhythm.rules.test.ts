@@ -215,6 +215,33 @@ describe('check-ins: who writes (D-072 #2)', () => {
 });
 
 describe('feedback (AC01, AC02)', () => {
+  it('P-172 private state is owner/member-readable and all new authority stays callable-only', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'users/mom/personalization/b1'), {
+        babyId: 'b1',
+        context: 'busy',
+      });
+    });
+    const mine = doc(env.authenticatedContext('mom').firestore(), 'users/mom/personalization/b1');
+    await assertSucceeds(getDoc(mine));
+    await assertFails(
+      getDoc(doc(env.authenticatedContext('dad').firestore(), 'users/mom/personalization/b1')),
+    );
+    await assertFails(setDoc(mine, { context: 'forged' }));
+    for (const path of [
+      'babies/b1/notebook/n1',
+      'babies/b1/careWork/w1',
+      'babies/b1/personalizationExclusions/a1',
+    ]) {
+      await assertFails(
+        setDoc(doc(env.authenticatedContext('mom').firestore(), path), { authorUid: 'mom' }),
+      );
+    }
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await updateDoc(doc(ctx.firestore(), 'babies/b1/members/mom'), { status: 'removed' });
+    });
+    await assertFails(getDoc(mine));
+  });
   it('Cùng nuôi and Người chăm sóc give feedback as themselves', async () => {
     for (const uid of ['mom', 'nanny']) {
       const id = fbId();

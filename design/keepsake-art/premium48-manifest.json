@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "collection": "premium48",
+  "source": "Original SVG authored for Child Life, 2026-10-20",
+  "licence": "Original artwork owned by Child Life; no external images, fonts or sampled artwork.",
+  "assets": [
+    {
+      "file": "p48-arrival-sun.svg",
+      "templates": [
+        "C01",
+        "V01"
+      ]
+    },
+    {
+      "file": "p48-embrace-paper.svg",
+      "templates": [
+        "C02",
+        "V02"
+      ]
+    },
+    {
+      "file": "p48-embrace-line.svg",
+      "templates": [
+        "C02",
+        "V02"
+      ]
+    },
+    {
+      "file": "p48-grain.svg",
+      "templates": [
+        "C01",
+        "C02",
+        "V01",
+        "V02"
+      ]
+    }
+  ]
+}

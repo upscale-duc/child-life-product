@@ -1195,47 +1195,45 @@ void main() {
       expect(_text('Lưu thành nhắc việc'), findsNothing);
     });
 
-    testWidgets('CH28 at 0 credits: the region number, HL01, never a paywall', (
-      tester,
-    ) async {
-      final dialled = <String>[];
-      final (visits, _) = await _pump(
-        tester,
-        dialled: dialled,
-        repo: FakeAssistantRepository(
-          usage: usageJson(used: 20),
-          tasks: {
-            taskA: snapshotWith(
-              task: taskJson(),
-              messages: [
-                userMessage('Con sốt 38,5 độ, thở nhanh'),
-                assistantMessage([
-                  {
-                    'type': 'health_support',
-                    'schemaVersion': 1,
-                    'signs': ['fever_young', 'breathing'],
-                  },
-                ]),
-              ],
-            ),
-          },
-        ),
-        prefs: _thread([taskA]),
-      );
-      expect(_text('Hãy liên hệ hỗ trợ y tế ngay'), findsOneWidget);
-      // D-081: no "costs no credit" note on the health card.
-      expect(_text('Không trừ lượt'), findsNothing);
-      expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
-      await tester.tap(_text('Gọi 115'));
-      await tester.pumpAndSettle();
-      expect(dialled, ['115']);
-      await tester.tap(_text('Mở Hướng dẫn sức khoẻ'));
-      await tester.pumpAndSettle();
-      expect(
-        visits.last.location,
-        '/rhythm/health?signs=fever_young,breathing',
-      );
-    });
+    testWidgets(
+      'CH28 at 0 credits: the region number and First aid, never a paywall',
+      (tester) async {
+        final dialled = <String>[];
+        final (visits, _) = await _pump(
+          tester,
+          dialled: dialled,
+          repo: FakeAssistantRepository(
+            usage: usageJson(used: 20),
+            tasks: {
+              taskA: snapshotWith(
+                task: taskJson(),
+                messages: [
+                  userMessage('Con sốt 38,5 độ, thở nhanh'),
+                  assistantMessage([
+                    {
+                      'type': 'health_support',
+                      'schemaVersion': 1,
+                      'signs': ['fever_young', 'breathing'],
+                    },
+                  ]),
+                ],
+              ),
+            },
+          ),
+          prefs: _thread([taskA]),
+        );
+        expect(_text('Hãy liên hệ hỗ trợ y tế ngay'), findsOneWidget);
+        // D-081: no "costs no credit" note on the health card.
+        expect(_text('Không trừ lượt'), findsNothing);
+        expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
+        await tester.tap(_text('Gọi 115'));
+        await tester.pumpAndSettle();
+        expect(dialled, ['115']);
+        await tester.tap(_text('Mở Sơ cứu'));
+        await tester.pumpAndSettle();
+        expect(visits.last.location, '/utilities/first-aid');
+      },
+    );
 
     testWidgets(
       'CH28 without a number for the country: the doctor, no hotline',

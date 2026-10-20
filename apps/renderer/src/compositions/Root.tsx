@@ -23,7 +23,11 @@ export const sampleProps: MemoryStoryProps = {
 
 const metadata =
   (id: string): CalculateMetadataFunction<MemoryStoryProps> =>
-  ({ props }) => ({ durationInFrames: storyOf(id).frames(props as StoryProps) });
+  ({ props }) => ({
+    durationInFrames: storyOf(id).frames(props as StoryProps),
+    width: 1080,
+    height: (props as StoryProps).presentation?.format === 'portrait' ? 1350 : 1920,
+  });
 
 export function Root() {
   return (

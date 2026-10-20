@@ -653,6 +653,7 @@ sealed class AssistantPart {
         final id? => DraftRefPart(id, _int(m['revision']) ?? 1),
         null => null,
       },
+      'read_card' => ReadCardPart.fromJson(m),
       'source_summary' => switch (CareSummary.fromJson(m['summary'])) {
         final s? => SourceSummaryPart(
           s,
@@ -746,6 +747,75 @@ class DraftRefPart extends AssistantPart {
   const DraftRefPart(this.draftId, this.revision);
   final String draftId;
   final int revision;
+}
+
+/// Phase 2: the server's deterministic module answer, with its snapshot time and sources.
+class ReadCardPart extends AssistantPart {
+  const ReadCardPart({
+    required this.tool,
+    required this.title,
+    required this.asOf,
+    required this.rows,
+    required this.actionLabel,
+    required this.actionLink,
+    this.caveat,
+    this.sourceIds = const [],
+  });
+  final String tool;
+  final String title;
+  final DateTime asOf;
+  final List<ReadCardRow> rows;
+  final String actionLabel;
+  final String actionLink;
+  final String? caveat;
+  final List<String> sourceIds;
+
+  static ReadCardPart? fromJson(Object? json) {
+    final m = _map(json), action = _map(_map(json)['action']);
+    final title = _str(m['title'], max: 160), asOf = _instant(m['asOf']);
+    final label = _str(action['label'], max: 100),
+        link = _str(action['link'], max: 300);
+    final tool = _str(m['tool'], max: 60);
+    if (title == null ||
+        asOf == null ||
+        label == null ||
+        link == null ||
+        tool == null) {
+      return null;
+    }
+    final rawRows = _list(m['rows']);
+    if (rawRows.length > 24) return null;
+    final rows = <ReadCardRow>[];
+    for (final raw in rawRows) {
+      final row = _map(raw);
+      final value = _str(row['value'], max: 1600);
+      if (value == null || row['label'] is! String) return null;
+      rows.add(
+        ReadCardRow(
+          label: row['label']! as String,
+          value: value,
+          link: _str(row['link'], max: 300),
+        ),
+      );
+    }
+    return ReadCardPart(
+      tool: tool,
+      title: title,
+      asOf: asOf,
+      rows: rows,
+      actionLabel: label,
+      actionLink: link,
+      caveat: _str(m['caveat'], max: 1200),
+      sourceIds: _strings(m['sourceIds']).take(200).toList(),
+    );
+  }
+}
+
+class ReadCardRow {
+  const ReadCardRow({required this.label, required this.value, this.link});
+  final String label;
+  final String value;
+  final String? link;
 }
 
 class SourceSummaryPart extends AssistantPart {

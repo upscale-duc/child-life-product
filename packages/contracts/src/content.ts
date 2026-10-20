@@ -316,6 +316,11 @@ function articleContentSchema(strict: boolean) {
   return z
     .object({
       library: z.enum(contentLibraries),
+      /** Phase 2: absent/empty means global; otherwise match the family's country (D-087). */
+      countries: z
+        .array(z.string().regex(/^[A-Z]{2}$/))
+        .max(100)
+        .optional(),
       topic: z.enum(articleTopics),
       /** Thư viện ăn dặm group (D-087); absent on care articles and older drafts. */
       subtopic: z.enum(solidsSubtopics).nullable().optional(),
@@ -346,6 +351,14 @@ export type ArticleDraft = z.infer<typeof articleDraftSchema>;
 /** What can be submitted and published: complete in vi and en. */
 export const articleContentStrictSchema = articleContentSchema(true);
 export type ArticleContent = z.infer<typeof articleContentStrictSchema>;
+
+/** Published content without a country restriction is shared internationally. */
+export function contentFitsCountry(
+  content: { countries?: readonly string[] | undefined },
+  country: string | null | undefined,
+): boolean {
+  return !content.countries?.length || (!!country && content.countries.includes(country));
+}
 
 // ---------- Stage content: "Giai đoạn của bé" (2a/2b, B05/B06) ----------
 

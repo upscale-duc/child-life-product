@@ -96,6 +96,7 @@ class FakeKeepsakeJobs implements KeepsakeJobRepository {
     required String message,
     Map<String, String> extra = const {},
     String locale = 'vi',
+    Map<String, Object?>? presentation,
     required Audience audience,
     required Occasion? occasion,
     ({String? id})? music,
@@ -109,6 +110,7 @@ class FakeKeepsakeJobs implements KeepsakeJobRepository {
       'message': message,
       if (extra.isNotEmpty) 'extra': extra,
       'locale': locale,
+      'presentation': ?presentation,
       'audience': audience.name,
       'occasion': occasion?.wire,
     });

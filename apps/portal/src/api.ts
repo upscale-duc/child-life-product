@@ -746,6 +746,17 @@ export interface RhythmDocView<Current, Data> {
 }
 
 export interface RhythmView {
+  metrics?: {
+    content: {
+      day: string;
+      generated: Record<string, { contentId: string; version: number; count: number }>;
+      answers: Record<
+        string,
+        { contentId: string; version: number; [key: string]: string | number }
+      >;
+    }[];
+    funnel: { day: string; counts: Record<string, number> }[];
+  };
   reference: RhythmDocView<ReferenceModel, ReferenceDraftData>;
   content: RhythmDocView<RhythmContent, ContentDraftData>;
   /** Prod: approving records the qualified review (reviewer, credential, date). */

@@ -157,6 +157,7 @@ class KeepsakeJobRepository {
     required String message,
     Map<String, String> extra = const {},
     String locale = 'vi',
+    Map<String, Object?>? presentation,
     required Audience audience,
     required Occasion? occasion,
     ({String? id})? music,
@@ -169,6 +170,7 @@ class KeepsakeJobRepository {
       'mediaIds': mediaIds,
       'texts': {'title': title, 'message': message, ...extra},
       'locale': locale == 'en' ? 'en' : 'vi',
+      'presentation': ?presentation,
       'audience': audience.name,
       'occasion': occasion?.wire,
       // Left out: the template's default track; null: "Không dùng nhạc".

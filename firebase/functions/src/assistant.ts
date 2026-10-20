@@ -1,3 +1,5 @@
+import { firstAidRead } from './assistant-reads.js';
+import { assistantReadsIn, looksLikeSpending, privateReadTool } from '@child-life/contracts';
 import { randomUUID } from 'node:crypto';
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
@@ -466,7 +468,8 @@ export async function startTask(
     text !== null &&
     signs.length === 0 &&
     !talk &&
-    ruleReadText({ text, zone: s.zone, anchor: now }) !== null;
+    (ruleReadText({ text, zone: s.zone, anchor: now }) !== null ||
+      assistantReadsIn(text).length > 0);
   // L7 (P-168 #2; L1b before it): before rules or the model, the words are read against the
   // author's dialogue state in this thread — an answer to my open question, a correction or a
   // delete of what waits or was just saved, a continuation, "là sao" — whichever app sent them.
@@ -582,6 +585,10 @@ export async function startTask(
     assistantPool(db, s, now),
   ]);
   timer.mark('gates');
+  const healthGuides =
+    signs.length > 0
+      ? await firstAidRead({ db, s, anchor: now, locale: req.locale, text: text ?? '' })
+      : [];
   const policy = creditPolicy(s.ctx.config);
   const credits = signs.length > 0 || talkReply || free ? 0 : creditsFor(modality, policy);
   const ref = taskRef(db, taskId);
@@ -598,8 +605,12 @@ export async function startTask(
   // Rework 2026-10-15: money in the words ("mua sữa hết 500k", mixed messages too) keeps the
   // task private from the start: it never reaches the shared thread.
   const visibility = taskVisibilityFor({ ...visibilityInput, text });
+  const textReads = assistantReadsIn(text ?? '');
+  const routedForPrivateRead = textReads.some((r) => privateReadTool(r.tool));
   const routedForMoney =
-    visibility === 'private' && taskVisibilityFor(visibilityInput) === 'shared';
+    visibility === 'private' &&
+    taskVisibilityFor(visibilityInput) === 'shared' &&
+    (looksLikeSpending(text ?? '') || textReads.some((r) => r.tool === 'spending_month'));
   const author: AssistantAuthor = authorOf(s.member);
   const sharedId = sharedConversationId(req.scope.babyId);
   // The conversation the app is showing: the caller's own or the shared thread (validated).
@@ -623,7 +634,7 @@ export async function startTask(
       ? sharedId
       : ownPrivate
         ? req.conversationId!
-        : routedForMoney
+        : routedForMoney || routedForPrivateRead
           ? // Rework 2026-10-15: the author's own private thread about this baby.
             privateConversationId(uid, req.scope.babyId)
           : conversationIdFor(taskId);
@@ -837,7 +848,7 @@ export async function startTask(
           { role: 'user', parts: userParts(text), taskId, author },
           {
             role: 'assistant',
-            parts: [healthPart!],
+            parts: [healthPart!, ...healthGuides],
             taskId,
           },
         ],

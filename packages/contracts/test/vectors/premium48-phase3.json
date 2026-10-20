@@ -1,0 +1,2352 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_05",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "favoriteThing",
+            "label": {
+              "vi": "Điều con thích",
+              "en": "Something you love"
+            },
+            "suggestion": {
+              "vi": "những cái ôm",
+              "en": "cuddles"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "littleDetail",
+            "label": {
+              "vi": "Nét rất riêng",
+              "en": "Your little signature"
+            },
+            "suggestion": {
+              "vi": "một biểu cảm rất riêng",
+              "en": "your little expressions"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "memoryLine",
+            "label": {
+              "vi": "Điều muốn nhớ",
+              "en": "A detail to remember"
+            },
+            "suggestion": {
+              "vi": "khoảnh khắc này",
+              "en": "this little moment"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "NHỮNG ĐIỀU NHỎ VỀ CON",
+              "en": "LITTLE THINGS ABOUT YOU"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Con của tháng này.",
+              "en": "You, this month."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label0",
+            "label": {
+              "vi": "Nhãn điều con thích",
+              "en": "Favourite label"
+            },
+            "text": {
+              "vi": "Con thích",
+              "en": "You love"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Điều con thích",
+              "en": "Something you love"
+            },
+            "text": {
+              "vi": "{favoriteThing}",
+              "en": "{favoriteThing}"
+            },
+            "requires": ["favoriteThing"],
+            "fallback": {
+              "vi": "Nhà mình đang khám phá.",
+              "en": "We are still discovering."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn nét riêng",
+              "en": "Signature label"
+            },
+            "text": {
+              "vi": "Nét rất riêng",
+              "en": "Your little signature"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Nét rất riêng",
+              "en": "Your little signature"
+            },
+            "text": {
+              "vi": "{littleDetail}",
+              "en": "{littleDetail}"
+            },
+            "requires": ["littleDetail"],
+            "fallback": {
+              "vi": "Từng chút, mình hiểu con.",
+              "en": "Getting to know you, little by little."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "label2",
+            "label": {
+              "vi": "Nhãn điều muốn nhớ",
+              "en": "Memory label"
+            },
+            "text": {
+              "vi": "Điều muốn nhớ",
+              "en": "A detail to remember"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "detail2",
+            "label": {
+              "vi": "Điều muốn nhớ",
+              "en": "A detail to remember"
+            },
+            "text": {
+              "vi": "{memoryLine}",
+              "en": "{memoryLine}"
+            },
+            "requires": ["memoryLine"],
+            "fallback": {
+              "vi": "Một trang để mình lưu lại.",
+              "en": "A page for us to keep."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Những điều nhỏ về con",
+        "en": "Little Things About You"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 6,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.06,
+              "w": 0.83,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.12,
+              "w": 0.85,
+              "h": 0.12
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.3,
+              "w": 0.41,
+              "h": 0.43
+            },
+            "shape": "circle",
+            "radius": 0.008,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-oval-frame_2d4207a1.webp",
+            "rect": {
+              "x": 0.055,
+              "y": 0.29,
+              "w": 0.43,
+              "h": 0.45
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-favorite-label_e51fcf91.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.285,
+              "w": 0.43,
+              "h": 0.162
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.545,
+              "y": 0.303,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.545,
+              "y": 0.34099999999999997,
+              "w": 0.36,
+              "h": 0.1
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-detail-label_48bf3e73.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.45999999999999996,
+              "w": 0.43,
+              "h": 0.162
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.545,
+              "y": 0.478,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.545,
+              "y": 0.516,
+              "w": 0.36,
+              "h": 0.1
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-memory-label_1b63d602.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.635,
+              "w": 0.43,
+              "h": 0.162
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label2",
+            "rect": {
+              "x": 0.545,
+              "y": 0.653,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.545,
+              "y": 0.6910000000000001,
+              "w": 0.36,
+              "h": 0.1
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-hand_8eabe39d.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.76,
+              "w": 0.085,
+              "h": 0.08
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-star_23d70862.webp",
+            "rect": {
+              "x": 0.39,
+              "y": 0.755,
+              "w": 0.065,
+              "h": 0.052
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-pencil-rule_7a4e0934.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.868,
+              "w": 0.6,
+              "h": 0.025
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.067,
+              "y": 0.834,
+              "w": 0.8,
+              "h": 0.043
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.035,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.067,
+              "y": 0.085,
+              "w": 0.83,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.067,
+              "y": 0.14,
+              "w": 0.85,
+              "h": 0.09
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.066,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.065,
+              "y": 0.3,
+              "w": 0.41,
+              "h": 0.32
+            },
+            "shape": "circle",
+            "radius": 0.008,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-oval-frame_2d4207a1.webp",
+            "rect": {
+              "x": 0.055,
+              "y": 0.29,
+              "w": 0.43,
+              "h": 0.34
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-favorite-label_e51fcf91.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.295,
+              "w": 0.43,
+              "h": 0.14
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label0",
+            "rect": {
+              "x": 0.545,
+              "y": 0.313,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.545,
+              "y": 0.351,
+              "w": 0.36,
+              "h": 0.075
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-detail-label_48bf3e73.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.46499999999999997,
+              "w": 0.43,
+              "h": 0.14
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.545,
+              "y": 0.483,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.545,
+              "y": 0.521,
+              "w": 0.36,
+              "h": 0.075
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-memory-label_1b63d602.webp",
+            "rect": {
+              "x": 0.515,
+              "y": 0.635,
+              "w": 0.43,
+              "h": 0.14
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "label2",
+            "rect": {
+              "x": 0.545,
+              "y": 0.653,
+              "w": 0.36,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "detail2",
+            "rect": {
+              "x": 0.545,
+              "y": 0.6910000000000001,
+              "w": 0.36,
+              "h": 0.075
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.034,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-hand_8eabe39d.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.67,
+              "w": 0.085,
+              "h": 0.06
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-star_23d70862.webp",
+            "rect": {
+              "x": 0.39,
+              "y": 0.66,
+              "w": 0.065,
+              "h": 0.037
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-observe-pencil-rule_7a4e0934.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.868,
+              "w": 0.6,
+              "h": 0.025
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.067,
+              "y": 0.834,
+              "w": 0.8,
+              "h": 0.043
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.035,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "observeDetailLabel": "art-p48-observe-detail-label_48bf3e73.webp",
+        "observeFavoriteLabel": "art-p48-observe-favorite-label_e51fcf91.webp",
+        "observeFoot": "art-p48-observe-foot_94304d3a.webp",
+        "observeHand": "art-p48-observe-hand_8eabe39d.webp",
+        "observeInkDots": "art-p48-observe-ink-dots_d0a00fd2.webp",
+        "observeMarginBracket": "art-p48-observe-margin-bracket_c82c2554.webp",
+        "observeMemoryLabel": "art-p48-observe-memory-label_1b63d602.webp",
+        "observeOvalFrame": "art-p48-observe-oval-frame_2d4207a1.webp",
+        "observePencilRule": "art-p48-observe-pencil-rule_7a4e0934.webp",
+        "observeStar": "art-p48-observe-star_23d70862.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FCF7ED",
+        "ink": "#4B5142",
+        "accent": "#A2AA85"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_06",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Người viết thư (tùy chọn)",
+              "en": "Letter writer (optional)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "headline",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "LÁ THƯ ĐẦY THÁNG",
+              "en": "A LETTER AT ONE MONTH"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Lời chào",
+              "en": "Salutation"
+            },
+            "text": {
+              "vi": "Gửi {babyName}, tròn một tháng tuổi.",
+              "en": "Dear {babyName}, at one month old."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Nội dung thư",
+              "en": "Letter"
+            },
+            "text": {
+              "vi": "Cảm ơn con đã đến. Nhà mình còn nhiều điều phải học, và sẽ cùng con học từng ngày.",
+              "en": "Thank you for being here. We have so much to learn, and we will keep learning with you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Chữ ký",
+              "en": "Signature"
+            },
+            "text": {
+              "vi": "Thương con, {narratorName}.",
+              "en": "With love, {narratorName}."
+            },
+            "requires": ["narratorName"],
+            "fallback": {
+              "vi": "Thương con, Nhà mình.",
+              "en": "With love, Your family."
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Lá thư đầy tháng",
+        "en": "A Letter at One Month"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 7,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-ruled-paper_2c212536.webp",
+            "rect": {
+              "x": 0.045,
+              "y": 0.035,
+              "w": 0.91,
+              "h": 0.88
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.09,
+              "y": 0.065,
+              "w": 0.79,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.11,
+              "y": 0.145,
+              "w": 0.34,
+              "h": 0.272
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-ribbon_e9d337a3.webp",
+            "rect": {
+              "x": 0.085,
+              "y": 0.13,
+              "w": 0.17,
+              "h": 0.035
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-postage-frame_b0e0af45.webp",
+            "rect": {
+              "x": 0.7,
+              "y": 0.16,
+              "w": 0.15,
+              "h": 0.15
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.09,
+              "y": 0.455,
+              "w": 0.82,
+              "h": 0.14
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.06,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.09,
+              "y": 0.625,
+              "w": 0.8,
+              "h": 0.185
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.038,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 5
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.09,
+              "y": 0.845,
+              "w": 0.72,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.034,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-wax-seal_67489054.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.84,
+              "w": 0.09,
+              "h": 0.067
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-closing-rule_889a4b29.webp",
+            "rect": {
+              "x": 0.09,
+              "y": 0.91,
+              "w": 0.79,
+              "h": 0.026
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-grain_ec2d6054.webp",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "fit": "fill",
+            "opacity": 0.035,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-ruled-paper_2c212536.webp",
+            "rect": {
+              "x": 0.045,
+              "y": 0.07,
+              "w": 0.91,
+              "h": 0.88
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "headline",
+            "rect": {
+              "x": 0.09,
+              "y": 0.095,
+              "w": 0.79,
+              "h": 0.035
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.026,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.11,
+              "y": 0.17,
+              "w": 0.34,
+              "h": 0.23
+            },
+            "shape": "rect",
+            "radius": 0.008,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-ribbon_e9d337a3.webp",
+            "rect": {
+              "x": 0.085,
+              "y": 0.152,
+              "w": 0.17,
+              "h": 0.027
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-postage-frame_b0e0af45.webp",
+            "rect": {
+              "x": 0.7,
+              "y": 0.18,
+              "w": 0.15,
+              "h": 0.105
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.09,
+              "y": 0.46,
+              "w": 0.82,
+              "h": 0.115
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.06,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.09,
+              "y": 0.61,
+              "w": 0.8,
+              "h": 0.155
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.038,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 5
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.09,
+              "y": 0.84,
+              "w": 0.72,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.034,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-wax-seal_67489054.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.835,
+              "w": 0.09,
+              "h": 0.05
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-letter-closing-rule_889a4b29.webp",
+            "rect": {
+              "x": 0.09,
+              "y": 0.91,
+              "w": 0.79,
+              "h": 0.026
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.067,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "letterClosingRule": "art-p48-letter-closing-rule_889a4b29.webp",
+        "letterEnvelopeBack": "art-p48-letter-envelope-back_a8607041.webp",
+        "letterEnvelopeFlap": "art-p48-letter-envelope-flap_2b03737b.webp",
+        "letterEnvelopeFront": "art-p48-letter-envelope-front_4a107acb.webp",
+        "letterFold": "art-p48-letter-fold_4ac3a681.webp",
+        "letterMonogramFrame": "art-p48-letter-monogram-frame_160c002b.webp",
+        "letterPostageFrame": "art-p48-letter-postage-frame_b0e0af45.webp",
+        "letterRibbon": "art-p48-letter-ribbon_e9d337a3.webp",
+        "letterRuledPaper": "art-p48-letter-ruled-paper_2c212536.webp",
+        "letterWaxSeal": "art-p48-letter-wax-seal_67489054.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#F5EEE2",
+        "ink": "#4B3A36",
+        "accent": "#87494F"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_05",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "favoriteThing",
+            "label": {
+              "vi": "Điều con thích",
+              "en": "Something you love"
+            },
+            "suggestion": {
+              "vi": "những cái ôm",
+              "en": "cuddles"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "littleDetail",
+            "label": {
+              "vi": "Nét rất riêng",
+              "en": "Your little signature"
+            },
+            "suggestion": {
+              "vi": "một biểu cảm rất riêng",
+              "en": "your little expressions"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          },
+          {
+            "key": "memoryLine",
+            "label": {
+              "vi": "Điều muốn nhớ",
+              "en": "A detail to remember"
+            },
+            "suggestion": {
+              "vi": "khoảnh khắc này",
+              "en": "this little moment"
+            },
+            "type": "text",
+            "max": 60,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Những điều nhỏ về con",
+              "en": "Little Things About You"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Nếu kể về con lúc này…",
+              "en": "If we could capture you right now…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Sẽ bắt đầu bằng {favoriteThing}.",
+              "en": "We would start with {favoriteThing}."
+            },
+            "requires": ["favoriteThing"],
+            "fallback": {
+              "vi": "Mình vẫn đang khám phá điều con thích.",
+              "en": "We are still discovering what you love."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Rồi đến {littleDetail}.",
+              "en": "Then there is {littleDetail}."
+            },
+            "requires": ["littleDetail"],
+            "fallback": {
+              "vi": "Rồi đến những nét rất riêng.",
+              "en": "Then, your own little ways."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Và khoảnh khắc này nữa.",
+              "en": "And this little moment, too."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Những điều nhỏ làm nên một con rất riêng.",
+              "en": "The little things that make you, you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "favorite",
+            "label": {
+              "vi": "Nhãn điều con thích",
+              "en": "Favourite note"
+            },
+            "text": {
+              "vi": "{favoriteThing}",
+              "en": "{favoriteThing}"
+            },
+            "requires": ["favoriteThing"],
+            "fallback": {
+              "vi": "Điều con thích",
+              "en": "What you love"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail",
+            "label": {
+              "vi": "Nhãn nét riêng",
+              "en": "Signature note"
+            },
+            "text": {
+              "vi": "{littleDetail}",
+              "en": "{littleDetail}"
+            },
+            "requires": ["littleDetail"],
+            "fallback": {
+              "vi": "Nét rất riêng",
+              "en": "Your little ways"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "memory",
+            "label": {
+              "vi": "Nhãn muốn nhớ",
+              "en": "Memory note"
+            },
+            "text": {
+              "vi": "{memoryLine}",
+              "en": "{memoryLine}"
+            },
+            "requires": ["memoryLine"],
+            "fallback": {
+              "vi": "Điều muốn nhớ",
+              "en": "A moment to keep"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Những điều nhỏ về con",
+        "en": "Little Things About You"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 6,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": null,
+      "composition": "PremiumLittleThings",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "observeDetailLabel": "art-p48-observe-detail-label_48bf3e73.webp",
+        "observeFavoriteLabel": "art-p48-observe-favorite-label_e51fcf91.webp",
+        "observeFoot": "art-p48-observe-foot_94304d3a.webp",
+        "observeHand": "art-p48-observe-hand_8eabe39d.webp",
+        "observeInkDots": "art-p48-observe-ink-dots_d0a00fd2.webp",
+        "observeMarginBracket": "art-p48-observe-margin-bracket_c82c2554.webp",
+        "observeMemoryLabel": "art-p48-observe-memory-label_1b63d602.webp",
+        "observeOvalFrame": "art-p48-observe-oval-frame_2d4207a1.webp",
+        "observePencilRule": "art-p48-observe-pencil-rule_7a4e0934.webp",
+        "observeStar": "art-p48-observe-star_23d70862.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Chân dung tháng hiện tại",
+            "en": "A portrait from this month"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Bé với điều con thích (nếu phù hợp)",
+            "en": "Baby with something they love"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Chi tiết biểu cảm hoặc cử chỉ bạn chọn",
+            "en": "An expression or gesture"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc đời thường muốn nhớ",
+            "en": "An everyday moment to keep"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh cận gương mặt",
+            "en": "A close portrait"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FCF7ED",
+        "ink": "#4B5142",
+        "accent": "#A2AA85"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_observe",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_06",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Tháng đầu",
+          "en": "Our First Month"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Người viết thư (tùy chọn)",
+              "en": "Letter writer (optional)"
+            },
+            "type": "text",
+            "max": 40,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tên video",
+              "en": "Video title"
+            },
+            "text": {
+              "vi": "Lá thư đầy tháng",
+              "en": "A Letter at One Month"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Gửi con của một tháng tuổi…",
+              "en": "Dear little one, at one month old…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Có những ngày thật dài.",
+              "en": "Some days have felt very long."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Có những cái ôm chẳng muốn rời.",
+              "en": "Some cuddles never long enough."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Mình không cần làm mọi thứ thật hoàn hảo.",
+              "en": "We do not need every day to be perfect."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Chỉ muốn có mặt, cùng con lớn lên.",
+              "en": "We just want to be here, growing with you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Chữ ký",
+              "en": "Signature"
+            },
+            "text": {
+              "vi": "Thương con, {narratorName}.",
+              "en": "With love, {narratorName}."
+            },
+            "requires": ["narratorName"],
+            "fallback": {
+              "vi": "Thương con, Nhà mình.",
+              "en": "With love, Your family."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "baby",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [0],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [1],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [2],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [3],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [4],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Lá thư đầy tháng",
+        "en": "A Letter at One Month"
+      },
+      "description": {
+        "vi": "Tháng đầu",
+        "en": "Our First Month"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 7,
+      "occasions": ["m1"],
+      "ageDays": {
+        "min": 15,
+        "max": 60
+      },
+      "layouts": null,
+      "composition": "PremiumMonthLetter",
+      "assets": {
+        "paperGrain": "art-p48-grain_ec2d6054.webp",
+        "letterClosingRule": "art-p48-letter-closing-rule_889a4b29.webp",
+        "letterEnvelopeBack": "art-p48-letter-envelope-back_a8607041.webp",
+        "letterEnvelopeFlap": "art-p48-letter-envelope-flap_2b03737b.webp",
+        "letterEnvelopeFront": "art-p48-letter-envelope-front_4a107acb.webp",
+        "letterFold": "art-p48-letter-fold_4ac3a681.webp",
+        "letterMonogramFrame": "art-p48-letter-monogram-frame_160c002b.webp",
+        "letterPostageFrame": "art-p48-letter-postage-frame_b0e0af45.webp",
+        "letterRibbon": "art-p48-letter-ribbon_e9d337a3.webp",
+        "letterRuledPaper": "art-p48-letter-ruled-paper_2c212536.webp",
+        "letterWaxSeal": "art-p48-letter-wax-seal_67489054.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Chân dung đầy tháng",
+            "en": "A one-month portrait"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Một khoảnh khắc chăm bé",
+            "en": "A moment of caring for baby"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh ôm sát phù hợp lời thư",
+            "en": "A close embrace matching your words"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh đời thường không dàn dựng",
+            "en": "An everyday, unposed moment"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh cùng người viết thư",
+            "en": "Baby with the letter writer"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#F5EEE2",
+        "ink": "#4B3A36",
+        "accent": "#87494F"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_letter",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_05",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "",
+        "littleDetail": "",
+        "memoryLine": ""
+      },
+      "expected": {
+        "headline": "NHỮNG ĐIỀU NHỎ VỀ CON",
+        "title": "Con của tháng này.",
+        "label0": "Con thích",
+        "detail0": "Nhà mình đang khám phá.",
+        "label1": "Nét rất riêng",
+        "detail1": "Từng chút, mình hiểu con.",
+        "label2": "Điều muốn nhớ",
+        "detail2": "Một trang để mình lưu lại.",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_05",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "những cái ôm",
+        "littleDetail": "một biểu cảm rất riêng",
+        "memoryLine": "khoảnh khắc này"
+      },
+      "expected": {
+        "headline": "NHỮNG ĐIỀU NHỎ VỀ CON",
+        "title": "Con của tháng này.",
+        "label0": "Con thích",
+        "detail0": "những cái ôm",
+        "label1": "Nét rất riêng",
+        "detail1": "một biểu cảm rất riêng",
+        "label2": "Điều muốn nhớ",
+        "detail2": "khoảnh khắc này",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_05",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "",
+        "littleDetail": "",
+        "memoryLine": ""
+      },
+      "expected": {
+        "headline": "LITTLE THINGS ABOUT YOU",
+        "title": "You, this month.",
+        "label0": "You love",
+        "detail0": "We are still discovering.",
+        "label1": "Your little signature",
+        "detail1": "Getting to know you, little by little.",
+        "label2": "A detail to remember",
+        "detail2": "A page for us to keep.",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_05",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "cuddles",
+        "littleDetail": "your little expressions",
+        "memoryLine": "this little moment"
+      },
+      "expected": {
+        "headline": "LITTLE THINGS ABOUT YOU",
+        "title": "You, this month.",
+        "label0": "You love",
+        "detail0": "cuddles",
+        "label1": "Your little signature",
+        "detail1": "your little expressions",
+        "label2": "A detail to remember",
+        "detail2": "this little moment",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "card_premium48_06",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "headline": "LÁ THƯ ĐẦY THÁNG",
+        "title": "Gửi Bảo An, tròn một tháng tuổi.",
+        "message": "Cảm ơn con đã đến. Nhà mình còn nhiều điều phải học, và sẽ cùng con học từng ngày.",
+        "signature": "Thương con, Mẹ Linh."
+      }
+    },
+    {
+      "id": "card_premium48_06",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "headline": "LÁ THƯ ĐẦY THÁNG",
+        "title": "Gửi Bảo An, tròn một tháng tuổi.",
+        "message": "Cảm ơn con đã đến. Nhà mình còn nhiều điều phải học, và sẽ cùng con học từng ngày.",
+        "signature": "Thương con, Mẹ Linh."
+      }
+    },
+    {
+      "id": "card_premium48_06",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "headline": "A LETTER AT ONE MONTH",
+        "title": "Dear Bảo An, at one month old.",
+        "message": "Thank you for being here. We have so much to learn, and we will keep learning with you.",
+        "signature": "With love, Mẹ Linh."
+      }
+    },
+    {
+      "id": "card_premium48_06",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "headline": "A LETTER AT ONE MONTH",
+        "title": "Dear Bảo An, at one month old.",
+        "message": "Thank you for being here. We have so much to learn, and we will keep learning with you.",
+        "signature": "With love, Mẹ Linh."
+      }
+    },
+    {
+      "id": "video_premium48_05",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "",
+        "littleDetail": "",
+        "memoryLine": ""
+      },
+      "expected": {
+        "title": "Những điều nhỏ về con",
+        "scene1": "Nếu kể về con lúc này…",
+        "scene2": "Mình vẫn đang khám phá điều con thích.",
+        "scene3": "Rồi đến những nét rất riêng.",
+        "scene4": "Và khoảnh khắc này nữa.",
+        "scene5": "Những điều nhỏ làm nên một con rất riêng.",
+        "favorite": "Điều con thích",
+        "detail": "Nét rất riêng",
+        "memory": "Điều muốn nhớ",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_05",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "những cái ôm",
+        "littleDetail": "một biểu cảm rất riêng",
+        "memoryLine": "khoảnh khắc này"
+      },
+      "expected": {
+        "title": "Những điều nhỏ về con",
+        "scene1": "Nếu kể về con lúc này…",
+        "scene2": "Sẽ bắt đầu bằng những cái ôm.",
+        "scene3": "Rồi đến một biểu cảm rất riêng.",
+        "scene4": "Và khoảnh khắc này nữa.",
+        "scene5": "Những điều nhỏ làm nên một con rất riêng.",
+        "favorite": "những cái ôm",
+        "detail": "một biểu cảm rất riêng",
+        "memory": "khoảnh khắc này",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_05",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "",
+        "littleDetail": "",
+        "memoryLine": ""
+      },
+      "expected": {
+        "title": "Little Things About You",
+        "scene1": "If we could capture you right now…",
+        "scene2": "We are still discovering what you love.",
+        "scene3": "Then, your own little ways.",
+        "scene4": "And this little moment, too.",
+        "scene5": "The little things that make you, you.",
+        "favorite": "What you love",
+        "detail": "Your little ways",
+        "memory": "A moment to keep",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_05",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "favoriteThing": "cuddles",
+        "littleDetail": "your little expressions",
+        "memoryLine": "this little moment"
+      },
+      "expected": {
+        "title": "Little Things About You",
+        "scene1": "If we could capture you right now…",
+        "scene2": "We would start with cuddles.",
+        "scene3": "Then there is your little expressions.",
+        "scene4": "And this little moment, too.",
+        "scene5": "The little things that make you, you.",
+        "favorite": "cuddles",
+        "detail": "your little expressions",
+        "memory": "this little moment",
+        "signature": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_06",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "title": "Lá thư đầy tháng",
+        "scene1": "Gửi con của một tháng tuổi…",
+        "scene2": "Có những ngày thật dài.",
+        "scene3": "Có những cái ôm chẳng muốn rời.",
+        "scene4": "Mình không cần làm mọi thứ thật hoàn hảo.",
+        "scene5": "Chỉ muốn có mặt, cùng con lớn lên.",
+        "signature": "Thương con, Mẹ Linh.",
+        "baby": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_06",
+      "locale": "vi",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "title": "Lá thư đầy tháng",
+        "scene1": "Gửi con của một tháng tuổi…",
+        "scene2": "Có những ngày thật dài.",
+        "scene3": "Có những cái ôm chẳng muốn rời.",
+        "scene4": "Mình không cần làm mọi thứ thật hoàn hảo.",
+        "scene5": "Chỉ muốn có mặt, cùng con lớn lên.",
+        "signature": "Thương con, Mẹ Linh.",
+        "baby": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_06",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "title": "A Letter at One Month",
+        "scene1": "Dear little one, at one month old…",
+        "scene2": "Some days have felt very long.",
+        "scene3": "Some cuddles never long enough.",
+        "scene4": "We do not need every day to be perfect.",
+        "scene5": "We just want to be here, growing with you.",
+        "signature": "With love, Mẹ Linh.",
+        "baby": "Bảo An"
+      }
+    },
+    {
+      "id": "video_premium48_06",
+      "locale": "en",
+      "values": {
+        "babyName": "Bảo An",
+        "narratorName": "Mẹ Linh"
+      },
+      "expected": {
+        "title": "A Letter at One Month",
+        "scene1": "Dear little one, at one month old…",
+        "scene2": "Some days have felt very long.",
+        "scene3": "Some cuddles never long enough.",
+        "scene4": "We do not need every day to be perfect.",
+        "scene5": "We just want to be here, growing with you.",
+        "signature": "With love, Mẹ Linh.",
+        "baby": "Bảo An"
+      }
+    }
+  ]
+}

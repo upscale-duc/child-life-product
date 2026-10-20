@@ -829,7 +829,7 @@ describe('J07 meals: approved recipes, recorded-reaction exclusion, unknown tole
     const list = partOf(lastParts(snap), 'recipe_list')!;
     expect(list.recipeIds).toEqual(['rcp_test_recipe_1']);
     expect(list.excludedCount).toBe(1);
-    expect(list.mealLogAvailable).toBe(false);
+    expect(list.mealLogAvailable).toBe(true);
     expect(list.items![0]).toMatchObject({
       recipeId: 'rcp_test_recipe_1',
       recipeVersion: 1,
@@ -845,12 +845,12 @@ describe('J07 meals: approved recipes, recorded-reaction exclusion, unknown tole
     expect((await db.collection(`babies/${NA}/records`).get()).size).toBe(0);
   });
 
-  it('today no module records reactions: the egg recipe stays and the caveat says tolerance is unknown', async () => {
+  it('an empty solids diary keeps the egg recipe and does not claim established tolerance', async () => {
     const { snap } = await run('Hôm nay con ăn gì?', [mealIdeas()], { scope: NA_SCOPE });
     const list = partOf(lastParts(snap), 'recipe_list')!;
     expect(list.recipeIds).toEqual(['rcp_test_recipe_1', 'rcp_test_recipe_2']);
     expect(list.excludedCount).toBe(0);
-    expect(list.caveat).toContain('chưa có nhật ký ăn dặm');
+    expect(list.caveat).toContain('chưa có ghi nhận dấu hiệu sau ăn');
     expect(list.caveat).toContain('không có nghĩa là con đã dung nạp tốt');
   });
 
@@ -899,7 +899,7 @@ describe('J07 meals: approved recipes, recorded-reaction exclusion, unknown tole
         caveat: null,
         items: [],
         excludedCount: 0,
-        mealLogAvailable: false,
+        mealLogAvailable: true,
       },
       {
         type: 'text',
@@ -934,6 +934,7 @@ describe('health: free, regional number only, independent of care and credits', 
         signs: ['breathing', 'fever_young'],
         emergency: { country: 'VN', number: '115' },
       },
+      expect.objectContaining({ type: 'read_card', tool: 'first_aid' }),
     ]);
     expect(gw.calls.extract).toHaveLength(0);
     expect(await opsDocs()).toHaveLength(0);
@@ -962,6 +963,7 @@ describe('health: free, regional number only, independent of care and credits', 
         signs: ['lethargic'],
         emergency: { country: 'VN', number: '115' },
       },
+      expect.objectContaining({ type: 'read_card', tool: 'first_aid' }),
     ]);
     expect(gw.calls.word).toHaveLength(0);
     expect(await win()).toMatchObject({ used: 0, reserved: 0 });

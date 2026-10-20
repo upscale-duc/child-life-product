@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "createdOn": "2026-10-20",
+  "licence": "Original Child Life vector artwork",
+  "assets": [
+    {
+      "name": "p48-observe-hand",
+      "family": "observe",
+      "title": "Bàn tay bé",
+      "usage": "Icon nét tay bên nhãn; không đặt lên mặt.",
+      "file": "p48-observe-hand.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-foot",
+      "family": "observe",
+      "title": "Dấu chân nhỏ",
+      "usage": "Nhãn nét riêng; không dùng như dấu vân chân thật.",
+      "file": "p48-observe-foot.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-star",
+      "family": "observe",
+      "title": "Ngôi sao mực",
+      "usage": "Điểm nhấn nhãn điều muốn nhớ.",
+      "file": "p48-observe-star.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-favorite-label",
+      "family": "observe",
+      "title": "Nhãn điều con thích",
+      "usage": "Nền nhãn trống; nội dung VI/EN nằm ở layer riêng.",
+      "file": "p48-observe-favorite-label.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-detail-label",
+      "family": "observe",
+      "title": "Nhãn nét riêng",
+      "usage": "Nền nhãn trống; nội dung VI/EN nằm ở layer riêng.",
+      "file": "p48-observe-detail-label.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-memory-label",
+      "family": "observe",
+      "title": "Nhãn muốn nhớ",
+      "usage": "Nền nhãn trống; nội dung VI/EN nằm ở layer riêng.",
+      "file": "p48-observe-memory-label.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-oval-frame",
+      "family": "observe",
+      "title": "Viền oval sổ quan sát",
+      "usage": "Khung trong suốt quanh ảnh; crop do người dùng đặt.",
+      "file": "p48-observe-oval-frame.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-ink-dots",
+      "family": "observe",
+      "title": "Chấm mực",
+      "usage": "Nhịp nhỏ ở lề trang.",
+      "file": "p48-observe-ink-dots.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-pencil-rule",
+      "family": "observe",
+      "title": "Nét gạch sổ tay",
+      "usage": "Đường gạch dưới chữ, không phải chữ viết tay giả.",
+      "file": "p48-observe-pencil-rule.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-observe-margin-bracket",
+      "family": "observe",
+      "title": "Ngoặc ghi chú",
+      "usage": "Nối nhãn với ảnh ở lề; không tự đoán vị trí chi tiết.",
+      "file": "p48-observe-margin-bracket.svg",
+      "templates": ["C05", "V05"]
+    },
+    {
+      "name": "p48-letter-envelope-back",
+      "family": "letter",
+      "title": "Lưng phong bì",
+      "usage": "Lớp sau ảnh; hình phong bì mới riêng C06/V06.",
+      "file": "p48-letter-envelope-back.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-envelope-front",
+      "family": "letter",
+      "title": "Mặt phong bì",
+      "usage": "Lớp trước khi ảnh trượt ra; chỉ che mép dưới ảnh.",
+      "file": "p48-letter-envelope-front.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-envelope-flap",
+      "family": "letter",
+      "title": "Nắp phong bì",
+      "usage": "Layer riêng; mở như đồ họa, không quét mặt.",
+      "file": "p48-letter-envelope-flap.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-wax-seal",
+      "family": "letter",
+      "title": "Dấu sáp trơn",
+      "usage": "Không huy hiệu, không giả chữ ký hay con dấu thật.",
+      "file": "p48-letter-wax-seal.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-ruled-paper",
+      "family": "letter",
+      "title": "Giấy thư kẻ mờ",
+      "usage": "Nền thư với đường kẻ thưa; chữ được render riêng.",
+      "file": "p48-letter-ruled-paper.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-postage-frame",
+      "family": "letter",
+      "title": "Khung tem trống",
+      "usage": "Nhãn tháng, để trống thay vì huy hiệu.",
+      "file": "p48-letter-postage-frame.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-ribbon",
+      "family": "letter",
+      "title": "Dải ruy băng vải",
+      "usage": "Điểm neo ngoài góc ảnh.",
+      "file": "p48-letter-ribbon.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-fold",
+      "family": "letter",
+      "title": "Nếp giấy thư",
+      "usage": "Chi tiết cạnh giấy giữ trống vùng đọc.",
+      "file": "p48-letter-fold.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-monogram-frame",
+      "family": "letter",
+      "title": "Khung chữ cái",
+      "usage": "Khung trống cho tên/chữ cái người dùng; không chữ giả.",
+      "file": "p48-letter-monogram-frame.svg",
+      "templates": ["C06", "V06"]
+    },
+    {
+      "name": "p48-letter-closing-rule",
+      "family": "letter",
+      "title": "Dòng kết thư",
+      "usage": "Nét kẻ và chấm mực, không mô phỏng chữ ký.",
+      "file": "p48-letter-closing-rule.svg",
+      "templates": ["C06", "V06"]
+    }
+  ]
+}

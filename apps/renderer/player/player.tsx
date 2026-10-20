@@ -40,7 +40,9 @@ function App() {
       durationInFrames={storyOf(message.composition).frames(message.props as StoryProps)}
       fps={FPS}
       compositionWidth={1080}
-      compositionHeight={1920}
+      compositionHeight={
+        (message.props as StoryProps).presentation?.format === 'portrait' ? 1350 : 1920
+      }
       style={{ width: '100%', height: '100%' }}
       controls
       autoPlay

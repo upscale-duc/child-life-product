@@ -5,6 +5,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   defaultEntitlementsConfig,
   keepsakeChapter1Videos,
+  premium48Phase1,
+  premium48Phase2,
   keepsakeSeedV1,
   type KeepsakeJobInput,
 } from '@child-life/contracts';
@@ -142,6 +144,109 @@ beforeEach(async () => {
 });
 
 describe('requestMemoryStory', () => {
+  for (const t of premium48Phase2().filter((t) => t.kind === 'video'))
+    it(`phase 2 freezes ${t.id} fallback copy and collage slots in English`, async () => {
+      await db
+        .doc('publicConfig/keepsakes')
+        .set({
+          version: 'ks_p48_phase2',
+          templates: [...keepsakeSeedV1.templates, t],
+          premium: keepsakeSeedV1.premium,
+        });
+      const tasks = new FakeDispatcher();
+      const req = request({
+        templateId: t.id,
+        mediaIds: [1, 2, 3, 4, 5].map(photo),
+        occasion: null,
+        locale: 'en',
+        presentation: {
+          values: { babyName: 'An' },
+          overrides: {},
+          crops: Array.from({ length: 5 }, () => ({ x: 0, y: 0, zoom: 1, fit: 'contain' })),
+          format: 'portrait',
+          reducedMotion: true,
+        },
+      });
+      const r = await requestMemoryStory(db, tasks, 'mom', req, now);
+      const input = (await db.doc(`babies/${babyId}/keepsakeJobs/${r.jobId}`).get()).get(
+        'input',
+      ) as KeepsakeJobInput;
+      expect(input.template.composition).toBe(t.composition);
+      expect(input.presentation?.beats).toEqual(t.personalization!.beats);
+      expect(input.presentation?.copy.scene1).toBe(
+        t.id.endsWith('_03') ? 'A little place. A new beginning.' : 'Our first days with you.',
+      );
+      expect(input.presentation?.format).toBe('portrait');
+      expect(tasks.sent).toHaveLength(1);
+    });
+  it('Premium phase 1 freezes authored locale copy, 4 slots/5 beats, crops and format without changing branding', async () => {
+    const template = premium48Phase1()[3]!;
+    await db.doc('publicConfig/keepsakes').set({
+      version: 'ks_p48',
+      templates: [...keepsakeSeedV1.templates, template],
+      premium: keepsakeSeedV1.premium,
+    });
+    const presentation = {
+      values: { babyName: 'An', firstConfirmed: 'false' },
+      overrides: { scene2: 'A quiet moment together.' },
+      crops: Array.from({ length: 5 }, () => ({ x: 0.3, y: -0.2, zoom: 1.1 })),
+      format: 'portrait',
+      reducedMotion: true,
+    };
+    const tasks = new FakeDispatcher();
+    const req = request({
+      templateId: template.id,
+      mediaIds: [1, 2, 3, 4].map(photo),
+      locale: 'en',
+      occasion: null,
+      presentation,
+    });
+    const r = await requestMemoryStory(db, tasks, 'mom', req, now);
+    const input = (await db.doc(`babies/${babyId}/keepsakeJobs/${r.jobId}`).get()).get(
+      'input',
+    ) as KeepsakeJobInput;
+    expect(input.presentation?.copy.scene5).toBe('An embrace to remember.');
+    expect(input.presentation?.copy.scene2).toBe('A quiet moment together.');
+    expect(input.presentation?.beats.map((b) => b.slots[0])).toEqual([0, 1, 2, 3, 2]);
+    expect(input.presentation?.format).toBe('portrait');
+    expect(input.template.brand).toEqual({ corner: true, endCard: true, opacity: 0.75 });
+    expect(input.texts.title).toBe('An Embrace to Remember');
+    expect(tasks.sent).toHaveLength(1);
+    expect(await requestMemoryStory(db, tasks, 'mom', req, now)).toEqual(r);
+    template.personalization!.copy.find((c) => c.key === 'scene5')!.fallback.en = 'Changed later';
+    await db
+      .doc('publicConfig/keepsakes')
+      .update({ templates: [...keepsakeSeedV1.templates, template] });
+    expect(
+      (await db.doc(`babies/${babyId}/keepsakeJobs/${r.jobId}`).get()).get(
+        'input.presentation.copy.scene5',
+      ),
+    ).toBe('An embrace to remember.');
+  });
+  it('refuses invalid Premium personalization before dispatch or quota reservation', async () => {
+    const template = premium48Phase1()[2]!;
+    await db
+      .doc('publicConfig/keepsakes')
+      .set({ version: 'ks_p48', templates: [template], premium: keepsakeSeedV1.premium });
+    const tasks = new FakeDispatcher();
+    const req = request({ templateId: template.id, mediaIds: [1, 2, 3, 4, 5].map(photo) });
+    expect(await reason(requestMemoryStory(db, tasks, 'mom', req, now))).toBe(
+      'personalization-required',
+    );
+    const presentation = {
+      values: { babyName: 'An', birthDate: '2026-02-30' },
+      overrides: {},
+      crops: Array.from({ length: 5 }, () => ({ x: 0, y: 0, zoom: 1 })),
+      format: 'story',
+      reducedMotion: false,
+    };
+    expect(await reason(requestMemoryStory(db, tasks, 'mom', { ...req, presentation }, now))).toBe(
+      'personalization-invalid',
+    );
+    expect(tasks.sent).toHaveLength(0);
+    expect((await db.collection(`babies/${babyId}/keepsakeJobs`).get()).empty).toBe(true);
+  });
+
   it('Chapter 01: extra texts, the language, photo ages and birth stats are frozen (E-8, E-9)', async () => {
     await db.doc('publicConfig/keepsakes').set({
       version: 'ks_test',

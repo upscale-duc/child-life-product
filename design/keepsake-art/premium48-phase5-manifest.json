@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "createdOn": "2026-10-20",
+  "licence": "Original Child Life vector artwork",
+  "assets": [
+    {
+      "name": "p48-wardrobe-hanger",
+      "family": "wardrobe",
+      "title": "Móc áo gỗ",
+      "usage": "Nét móc áo ở lề; giữ ngoài khuôn mặt.",
+      "file": "p48-wardrobe-hanger.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-fabric-label",
+      "family": "wardrobe",
+      "title": "Nhãn vải",
+      "usage": "Nền nhãn trống; tên món đồ và ngày là text riêng.",
+      "file": "p48-wardrobe-fabric-label.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-thread-route",
+      "family": "wardrobe",
+      "title": "Sợi chỉ nối ký ức",
+      "usage": "Nét cong không số đo; nối mép các khung ảnh.",
+      "file": "p48-wardrobe-thread-route.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-stitch-frame",
+      "family": "wardrobe",
+      "title": "Viền chỉ may",
+      "usage": "Giữa khung trong suốt; không thước phát triển.",
+      "file": "p48-wardrobe-stitch-frame.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-memory-box",
+      "family": "wardrobe",
+      "title": "Ô hộp ký ức",
+      "usage": "Hộp giấy chỉ mở ở viền, không phủ lên ảnh.",
+      "file": "p48-wardrobe-memory-box.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-box-lid",
+      "family": "wardrobe",
+      "title": "Nắp hộp giấy",
+      "usage": "Mở nhẹ theo cạnh; không xoay ảnh.",
+      "file": "p48-wardrobe-box-lid.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-folded-cloth",
+      "family": "wardrobe",
+      "title": "Nếp vải gấp",
+      "usage": "Vải gấp hình học ở vùng giấy trống.",
+      "file": "p48-wardrobe-folded-cloth.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-button-pair",
+      "family": "wardrobe",
+      "title": "Hai nút áo",
+      "usage": "Chi tiết may mặc, không huy hiệu.",
+      "file": "p48-wardrobe-button-pair.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-date-tab",
+      "family": "wardrobe",
+      "title": "Tab ngày cất",
+      "usage": "Nhãn nhỏ trống cho ngày tùy chọn.",
+      "file": "p48-wardrobe-date-tab.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-wardrobe-seam-divider",
+      "family": "wardrobe",
+      "title": "Đường may cuối trang",
+      "usage": "Đường chỉ gọn chia ảnh và lời nhắn.",
+      "file": "p48-wardrobe-seam-divider.svg",
+      "templates": ["C09", "V09"]
+    },
+    {
+      "name": "p48-smile-sun-arc",
+      "family": "smile",
+      "title": "Cung mặt trời",
+      "usage": "Cung và tia nằm sau viền ảnh, không che mặt.",
+      "file": "p48-smile-sun-arc.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-sun-frame",
+      "family": "smile",
+      "title": "Khung nắng",
+      "usage": "Viền ảnh sáng; vùng ảnh luôn trong suốt.",
+      "file": "p48-smile-sun-frame.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-smile-curve",
+      "family": "smile",
+      "title": "Nét cong nụ cười",
+      "usage": "Một nét ở dưới ảnh, không đặt trên mặt.",
+      "file": "p48-smile-smile-curve.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-ray-fan",
+      "family": "smile",
+      "title": "Quạt tia nắng",
+      "usage": "Mở 18 frame khi ảnh cười hiện, không nhấp nháy.",
+      "file": "p48-smile-ray-fan.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-quiet-ring",
+      "family": "smile",
+      "title": "Vòng nắng yên",
+      "usage": "Khung cảnh mở tĩnh; không animate trước nụ cười.",
+      "file": "p48-smile-quiet-ring.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-caption-paper",
+      "family": "smile",
+      "title": "Giấy ghi nụ cười",
+      "usage": "Dải giấy ngắn cho câu kết và ngày.",
+      "file": "p48-smile-caption-paper.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-reaction-bracket",
+      "family": "smile",
+      "title": "Ngoặc ghép phản ứng",
+      "usage": "Kết nối ảnh phản ứng và ảnh cười.",
+      "file": "p48-smile-reaction-bracket.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-day-tab",
+      "family": "smile",
+      "title": "Tab ngày",
+      "usage": "Nhãn ngày nhỏ; bỏ khi không biết ngày.",
+      "file": "p48-smile-day-tab.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-soft-speckles",
+      "family": "smile",
+      "title": "Hạt giấy nắng",
+      "usage": "Chấm tĩnh thưa ở ngoài vùng ảnh.",
+      "file": "p48-smile-soft-speckles.svg",
+      "templates": ["C10", "V10"]
+    },
+    {
+      "name": "p48-smile-closing-rays",
+      "family": "smile",
+      "title": "Nắng cuối trang",
+      "usage": "Ba tia tĩnh ở cạnh logo/câu kết.",
+      "file": "p48-smile-closing-rays.svg",
+      "templates": ["C10", "V10"]
+    }
+  ]
+}

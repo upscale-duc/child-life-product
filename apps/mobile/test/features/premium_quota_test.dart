@@ -43,6 +43,7 @@ class _QuotaFull extends FakeKeepsakeJobs {
     required Audience audience,
     required Occasion? occasion,
     ({String? id})? music,
+    Map<String, Object?>? presentation,
   }) async => throw const KeepsakeJobException('QUOTA_EXCEEDED');
 }
 

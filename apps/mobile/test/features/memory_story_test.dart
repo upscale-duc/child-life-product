@@ -793,6 +793,54 @@ void main() {
   );
 
   group('previews (renderer compositions on the phone)', () {
+    test(
+      'localized demos use English copy and never fall back to a Vietnamese MP4',
+      () {
+        final raw =
+            jsonDecode(
+                  File('test/helpers/keepsake_seed.json').readAsStringSync(),
+                )
+                as Map<String, Object?>;
+        final video = (raw['templates']! as List)
+            .cast<Map<String, Object?>>()
+            .firstWhere((t) => t['kind'] == 'video');
+        final localized = KeepsakeTemplate.fromJson({
+          ...video,
+          'preview': 'legacy-vi_12345678.mp4',
+          'previews': {
+            'vi': 'demo-vi_12345678.mp4',
+            'en': 'demo-en_12345678.mp4',
+          },
+        })!;
+        expect(
+          localized.previewFor(const Locale('en')),
+          'demo-en_12345678.mp4',
+        );
+        expect(
+          localized.previewFor(const Locale('vi')),
+          'demo-vi_12345678.mp4',
+        );
+        final en = demoPreview(
+          localized,
+          name: 'An',
+          locale: const Locale('en'),
+        );
+        expect(en.props['locale'], 'en');
+        expect(en.props['title'], "An's first month");
+        final choices = en
+            .withLocales({'en': en}, 'en')
+            .withUse(title: 'English demo', info: '8 photos', onUse: () {});
+        expect(choices.selectedLocale, 'en');
+        expect(choices.variants['en']!.props['locale'], 'en');
+        final pending = KeepsakeTemplate.fromJson({
+          ...video,
+          'preview': 'legacy-vi_12345678.mp4',
+          'previews': {'vi': 'demo-vi_12345678.mp4'},
+        })!;
+        expect(pending.previewFor(const Locale('en')), isNull);
+      },
+    );
+
     testWidgets(
       'Xem mẫu plays the template with sample pictures and the baby’s name',
       (tester) async {
