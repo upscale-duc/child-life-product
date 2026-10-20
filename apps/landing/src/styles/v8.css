@@ -2078,3 +2078,74 @@
 .fy-card .customize-card * {
   white-space: normal;
 }
+
+/* ---------- Section rhythm (owner, 2026-10-20: the drawn 96 + 96 px between sections reads as
+   too much). One step for every V8 page: 40 px per side on mobile, 64 px on desktop. ---------- */
+:root {
+  --v8-space: 40px;
+}
+@media (min-width: 1120px) {
+  :root {
+    --v8-space: 64px;
+  }
+}
+.home-section,
+.future-directions,
+.lp-plans,
+.for-baby-detail,
+.faq.lp-faq {
+  padding-block: var(--v8-space);
+}
+.lp-section,
+.lp-band {
+  padding-block: var(--v8-space);
+}
+.lp-band + .lp-section,
+.jump--lumi + .lp-section {
+  padding-top: var(--v8-space);
+}
+.lp-section + .lp-section,
+.faq + .lp-section {
+  padding-top: 0;
+}
+.future-links {
+  padding-block: 32px;
+}
+/* Năm đầu đời: the feature sections keep their layout, only the vertical padding changes. */
+.fy-page .fy-group > section,
+.fy-page > .faq {
+  padding-block: var(--v8-space);
+}
+.fy-page .fy-group__head {
+  padding-block: var(--v8-space) 0;
+}
+.fy-page .fy-group__head + section {
+  padding-top: 32px;
+}
+.fy-page .fy-card {
+  padding-block: 8px;
+}
+@media (min-width: 1120px) {
+  .lp-hero {
+    padding-block: 64px;
+  }
+  .future-hero__inner {
+    padding-block: 48px 56px;
+  }
+  .future-links {
+    padding-block: 40px;
+  }
+  .fy-page .fy-group__head + section {
+    padding-top: 40px;
+  }
+  .fy-page .fy-card {
+    padding-block: 12px;
+  }
+}
+/* Tuổi thơ pads an inner `.section`; move the rhythm there. */
+.fy-page .fy-group > section.memories {
+  padding-block: 0;
+}
+.fy-page .memories > .section {
+  padding-block: var(--v8-space);
+}
