@@ -19324,9 +19324,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Busy => 'Busy today';
 
   @override
-  String get pv2OtherCarer => 'Another caregiver';
-
-  @override
   String get pv2Temporary => 'Today’s choice expires at the end of the day.';
 
   @override
@@ -19334,9 +19331,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2Play => 'A little time to play';
-
-  @override
-  String get pv2Handover => 'Easier handovers';
 
   @override
   String get pv2Routine => 'Understand your routine';
@@ -19365,6 +19359,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Based on your baby’s age and your interests';
 
   @override
+  String get pv2BecauseAge => 'Based on your baby’s age';
+
+  @override
+  String get pv2BecauseHelpful => 'Your family found this helpful before';
+
+  @override
   String get pv2Minutes => 'minutes';
 
   @override
@@ -19381,6 +19381,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2Snooze => 'Busy today · snooze for 3 days';
+
+  @override
+  String get pv2WorkSnooze => 'Not now · hide until tonight';
 
   @override
   String get pv2Dislike => 'This suggestion isn’t for me';

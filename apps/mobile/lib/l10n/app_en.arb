@@ -5053,11 +5053,9 @@
   "pv2Usual": "As usual",
   "pv2FewMinutes": "Just a few minutes",
   "pv2Busy": "Busy today",
-  "pv2OtherCarer": "Another caregiver",
   "pv2Temporary": "Today’s choice expires at the end of the day.",
   "pv2Focus": "One focus for this week",
   "pv2Play": "A little time to play",
-  "pv2Handover": "Easier handovers",
   "pv2Routine": "Understand your routine",
   "pv2NoFocus": "No focus",
   "pv2Unusual": "Today’s routine is unusual",
@@ -5066,12 +5064,15 @@
   "pv2BecauseNeed": "Based on what your family reported today",
   "pv2BecauseFocus": "Based on your focus this week",
   "pv2BecauseInterest": "Based on your baby’s age and your interests",
+  "pv2BecauseAge": "Based on your baby’s age",
+  "pv2BecauseHelpful": "Your family found this helpful before",
   "pv2Minutes": "minutes",
   "pv2OpenActivity": "See the steps",
   "pv2Controls": "Adjust suggestions",
   "pv2Save": "Save",
   "pv2Hide": "Hide this card",
   "pv2Snooze": "Busy today · snooze for 3 days",
+  "pv2WorkSnooze": "Not now · hide until tonight",
   "pv2Dislike": "This suggestion isn’t for me",
   "pv2Known": "I already know this",
   "pv2Exclude": "Unsuitable for baby · applies to the family",
@@ -5157,9 +5158,6 @@
   "@pv2Busy": {
     "description": "Personalization v2: Busy"
   },
-  "@pv2OtherCarer": {
-    "description": "Personalization v2: OtherCarer"
-  },
   "@pv2Temporary": {
     "description": "Personalization v2: Temporary"
   },
@@ -5168,9 +5166,6 @@
   },
   "@pv2Play": {
     "description": "Personalization v2: Play"
-  },
-  "@pv2Handover": {
-    "description": "Personalization v2: Handover"
   },
   "@pv2Routine": {
     "description": "Personalization v2: Routine"
@@ -5196,6 +5191,12 @@
   "@pv2BecauseInterest": {
     "description": "Personalization v2: BecauseInterest"
   },
+  "@pv2BecauseAge": {
+    "description": "Personalization v2: why today’s pick, when it is there for the baby’s age only (P-172 audit P2 #7)"
+  },
+  "@pv2BecauseHelpful": {
+    "description": "Personalization v2: why today’s pick, when the family rated it helpful before (P-172 audit P2 #7)"
+  },
   "@pv2Minutes": {
     "description": "Personalization v2: Minutes"
   },
@@ -5213,6 +5214,9 @@
   },
   "@pv2Snooze": {
     "description": "Personalization v2: Snooze"
+  },
+  "@pv2WorkSnooze": {
+    "description": "Personalization v2: the only choice under × on a Home work card; hides it for this person until the end of the day (P-172 audit P2 #4)"
   },
   "@pv2Dislike": {
     "description": "Personalization v2: Dislike"

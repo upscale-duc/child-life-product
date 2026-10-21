@@ -30330,12 +30330,6 @@ abstract class AppLocalizations {
   /// **'Đang bận'**
   String get pv2Busy;
 
-  /// Personalization v2: OtherCarer
-  ///
-  /// In vi, this message translates to:
-  /// **'Người khác chăm'**
-  String get pv2OtherCarer;
-
   /// Personalization v2: Temporary
   ///
   /// In vi, this message translates to:
@@ -30353,12 +30347,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Có một lúc chơi cùng con'**
   String get pv2Play;
-
-  /// Personalization v2: Handover
-  ///
-  /// In vi, this message translates to:
-  /// **'Bàn giao dễ hơn'**
-  String get pv2Handover;
 
   /// Personalization v2: Routine
   ///
@@ -30408,6 +30396,18 @@ abstract class AppLocalizations {
   /// **'Theo tuổi của bé và điều bạn quan tâm'**
   String get pv2BecauseInterest;
 
+  /// Personalization v2: why today’s pick, when it is there for the baby’s age only (P-172 audit P2 #7)
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuổi của bé'**
+  String get pv2BecauseAge;
+
+  /// Personalization v2: why today’s pick, when the family rated it helpful before (P-172 audit P2 #7)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình từng thấy cách này có ích'**
+  String get pv2BecauseHelpful;
+
   /// Personalization v2: Minutes
   ///
   /// In vi, this message translates to:
@@ -30443,6 +30443,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hôm nay bận · để sau 3 ngày'**
   String get pv2Snooze;
+
+  /// Personalization v2: the only choice under × on a Home work card; hides it for this person until the end of the day (P-172 audit P2 #4)
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau · ẩn đến hết hôm nay'**
+  String get pv2WorkSnooze;
 
   /// Personalization v2: Dislike
   ///

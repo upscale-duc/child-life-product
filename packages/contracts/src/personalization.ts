@@ -432,11 +432,15 @@ export function recommend(x: RecommendInput): RecommendOutcome {
     kind: 'suggestion',
     primary: top.a,
     secondary: relevant.slice(1, 3).map((f) => f.a),
+    // P-172 (audit 2026-10-21 P2 #7): INTEREST only when the pick matches an interest the person
+    // chose; otherwise it is there for the baby's age.
     reasonCode: top.previousHelpful
       ? 'PREVIOUS_HELPFUL'
       : x.need
         ? 'SELF_REPORTED_NEED'
-        : 'INTEREST',
+        : top.interestMatch
+          ? 'INTEREST'
+          : 'AGE_CONTENT',
     changes,
   };
 }

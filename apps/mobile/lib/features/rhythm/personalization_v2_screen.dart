@@ -37,12 +37,40 @@ PersonalDayKey? personalKey(BuildContext context, WidgetRef ref) {
         );
 }
 
+/// P-172 (audit 2026-10-21 P2 #7): only choices that change what is shown ("Người khác chăm"
+/// and the handover / routine focuses changed nothing and were dropped).
+const dayContexts = ['usual', 'few_minutes', 'busy'];
+
 String contextLabel(AppLocalizations l, String value) => switch (value) {
   'few_minutes' => l.pv2FewMinutes,
   'busy' => l.pv2Busy,
-  'other_carer' => l.pv2OtherCarer,
   _ => l.pv2Usual,
 };
+
+/// P-172 (audit 2026-10-21 P2 #7): the server's own reason for today's pick (`reasonCodes`, or
+/// WEEKLY_FOCUS when the play focus picked it). Every pick fits the baby's age, so that is the
+/// fallback.
+String reasonLabel(AppLocalizations l, Object? reason) => switch (reason) {
+  'SELF_REPORTED_NEED' => l.pv2BecauseNeed,
+  'WEEKLY_FOCUS' => l.pv2BecauseFocus,
+  'PREVIOUS_HELPFUL' => l.pv2BecauseHelpful,
+  'INTEREST' => l.pv2BecauseInterest,
+  _ => l.pv2BecauseAge,
+};
+
+/// The same reason as an impression dimension (`appEventDims.nextActionShown`).
+String reasonDim(Object? reason) => switch (reason) {
+  final String r
+      when const [
+        'SELF_REPORTED_NEED',
+        'WEEKLY_FOCUS',
+        'PREVIOUS_HELPFUL',
+        'INTEREST',
+      ].contains(r) =>
+    r,
+  _ => 'AGE_CONTENT',
+};
+
 String responseLabel(AppLocalizations l, String value) => switch (value) {
   'save' => l.pv2Save,
   'hide' => l.pv2Hide,
@@ -125,6 +153,34 @@ Future<void> dayCardControls(
   }
 }
 
+/// P-172 (audit 2026-10-21 P2 #4): the × on a Home work card puts it off for this person until
+/// tonight; the reminder itself stays in Nhắc việc and on the handover screen.
+Future<void> snoozeWorkCard(
+  BuildContext context,
+  WidgetRef ref,
+  PersonalDayKey key,
+  String cardId,
+) async {
+  final l = AppLocalizations.of(context);
+  final snooze = await showModalBottomSheet<bool>(
+    context: context,
+    builder: (context) => SafeArea(
+      child: ListTile(
+        title: Text(l.pv2WorkSnooze),
+        onTap: () => Navigator.of(context).pop(true),
+      ),
+    ),
+  );
+  if (snooze == true && context.mounted) {
+    final ok = await mutateDay(context, ref, key, {
+      'kind': 'respond',
+      'contentId': cardId,
+      'value': 'snooze',
+    });
+    if (ok) personalEvent(ref, 'feedCardAnswered', 'snooze');
+  }
+}
+
 class PersonalDayHome extends ConsumerWidget {
   const PersonalDayHome({this.primary, super.key});
   final ForBabyCard? primary;
@@ -160,12 +216,7 @@ class PersonalDayHome extends ConsumerWidget {
               Wrap(
                 spacing: 6,
                 children: [
-                  for (final value in [
-                    'usual',
-                    'few_minutes',
-                    'busy',
-                    'other_carer',
-                  ])
+                  for (final value in dayContexts)
                     ChoiceChip(
                       label: Text(contextLabel(l, value)),
                       selected: day.context == value,
@@ -182,7 +233,7 @@ class PersonalDayHome extends ConsumerWidget {
                 identity:
                     '${key.uid}:${key.babyId}:${day.data['today']}:${primary!.id}',
                 reason: primary!.id.startsWith('act_')
-                    ? 'INTEREST'
+                    ? reasonDim(day.data['reason'])
                     : switch (primary!.priority) {
                         0 => 'health',
                         1 => 'reminder',
@@ -199,29 +250,36 @@ class PersonalDayHome extends ConsumerWidget {
                 expand: true,
                 onPressed: () => primary!.onOpen(context),
               ),
-              if (day.writable && !primary!.essential)
+              // P-172 (audit 2026-10-21 P2 #4): an essential card with its own × (a work
+              // card) can still be put off; it has no ♥.
+              if (day.writable &&
+                  (!primary!.essential || primary!.onDismiss != null))
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                      tooltip: l.pv2Save,
-                      icon: const Icon(Icons.favorite_border),
-                      onPressed: () => mutateDay(context, ref, key, {
-                        'kind': 'respond',
-                        'contentId': primary!.id,
-                        'value': 'save',
-                      }),
-                    ),
+                    if (!primary!.essential)
+                      IconButton(
+                        tooltip: l.pv2Save,
+                        icon: const Icon(Icons.favorite_border),
+                        onPressed: () => mutateDay(context, ref, key, {
+                          'kind': 'respond',
+                          'contentId': primary!.id,
+                          'value': 'save',
+                        }),
+                      ),
                     IconButton(
                       tooltip: l.pv2Controls,
                       icon: const Icon(Icons.close),
-                      onPressed: () => dayCardControls(
-                        context,
-                        ref,
-                        key,
-                        primary!.id,
-                        parent: day.parent,
-                      ),
+                      onPressed: () => switch (primary!.onDismiss) {
+                        final dismiss? => dismiss(context, ref),
+                        null => dayCardControls(
+                          context,
+                          ref,
+                          key,
+                          primary!.id,
+                          parent: day.parent,
+                        ),
+                      },
                     ),
                   ],
                 ),
@@ -373,12 +431,7 @@ class _PersonalizationDayScreenState
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final value in [
-                'usual',
-                'few_minutes',
-                'busy',
-                'other_carer',
-              ])
+              for (final value in dayContexts)
                 ChoiceChip(
                   label: Text(contextLabel(l, value)),
                   selected: day.context == value,
@@ -393,12 +446,7 @@ class _PersonalizationDayScreenState
           Wrap(
             spacing: 6,
             children: [
-              for (final pair in [
-                (null, l.pv2NoFocus),
-                ('play', l.pv2Play),
-                ('handover', l.pv2Handover),
-                ('routine', l.pv2Routine),
-              ])
+              for (final pair in [(null, l.pv2NoFocus), ('play', l.pv2Play)])
                 ChoiceChip(
                   label: Text(pair.$2),
                   selected: day.data['focus'] == pair.$1,
@@ -431,9 +479,7 @@ class _PersonalizationDayScreenState
                 when activity.status == ContentStatus.published)
               PersonalImpression(
                 identity: '${key.uid}:${key.babyId}:${day.data['today']}:$id',
-                reason: day.data['reason'] == 'SELF_REPORTED_NEED'
-                    ? 'SELF_REPORTED_NEED'
-                    : 'INTEREST',
+                reason: reasonDim(day.data['reason']),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: RhCard(
@@ -445,11 +491,7 @@ class _PersonalizationDayScreenState
                           style: context.cl.text.bodyStrong,
                         ),
                         Text('${activity.durationMin} ${l.pv2Minutes}'),
-                        Text(switch (day.data['reason']) {
-                          'SELF_REPORTED_NEED' => l.pv2BecauseNeed,
-                          'WEEKLY_FOCUS' => l.pv2BecauseFocus,
-                          _ => l.pv2BecauseInterest,
-                        }),
+                        Text(reasonLabel(l, day.data['reason'])),
                         button(
                           l.pv2OpenActivity,
                           () => context.push('${Routes.rhythmActivity}/$id'),

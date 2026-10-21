@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../l10n/app_localizations.dart';
+import '../care/care_repository.dart' show careClockProvider;
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
 import '../nutrition/nutrition_routes.dart';
@@ -14,6 +15,7 @@ import '../solids/solids_suggest.dart';
 import '../today/today_for_baby.dart';
 import '../vaccines/vaccine_format.dart';
 import 'personalization_v2_repository.dart';
+import 'personalization_v2_screen.dart' show snoozeWorkCard;
 import 'rhythm_models.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_access.dart';
@@ -55,19 +57,27 @@ final personalizedSourceCardsProvider =
             ),
           ];
         }
+        // P-172 (audit 2026-10-21 P2 #4): only the viewer's own or unassigned work, due today
+        // or overdue by less than 24 h (also while this snapshot is cached through the day),
+        // and not put off until tonight by this person.
+        final now = ref.watch(careClockProvider).value ?? DateTime.now();
+        final tonight = DateTime.parse('${day.data['expiresAt']}');
         for (final work
             in day.work
-                .where(
-                  (w) =>
-                      DateTime.tryParse(
-                        '${w['dueAt']}',
-                      )?.isBefore(DateTime.parse('${day.data['expiresAt']}')) ??
-                      false,
-                )
+                .where((w) {
+                  final due = DateTime.tryParse('${w['dueAt']}');
+                  final assignee = w['assigneeUid'];
+                  return due != null &&
+                      due.isBefore(tonight) &&
+                      due.isAfter(now.subtract(const Duration(hours: 24))) &&
+                      (assignee == null || assignee == query.uid) &&
+                      !day.suppressed('work:${w['id']}', now);
+                })
                 .take(1)) {
+          final id = 'work:${work['id']}';
           cards.add(
             ForBabyCard(
-              id: 'work:${work['id']}',
+              id: id,
               kicker: l.pv2Work,
               title: '${work['title']}',
               action: l.pv2Open,
@@ -75,6 +85,11 @@ final personalizedSourceCardsProvider =
               essential: true,
               icon: ClIcons.clock,
               onOpen: (c) => c.push(Routes.personalDay),
+              onDismiss: (c, widgetRef) => snoozeWorkCard(c, widgetRef, (
+                babyId: query.babyId,
+                uid: query.uid,
+                locale: query.languageCode,
+              ), id),
             ),
           );
         }

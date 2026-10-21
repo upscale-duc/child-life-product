@@ -140,6 +140,25 @@ next Functions deploy.
     Home gains a four-chip row for every parent. *Fix:* a design pass (log the gaps as G-109…), then
     rebuild on `Cl*` components and add goldens.
 
+**P2 #4–#7 fixed (2026-10-21).** #4: `personalizedDay` lists only reminders due today or overdue by
+less than 24 h (a `dueAt` range on the existing `done` + `dueAt` index), and only the viewer's own or
+unassigned ones; the Home card applies the same window to its cached snapshot, and its × puts the card
+off until tonight for that person (`respond` snooze on `work:<id>`; nothing else is accepted for those
+ids, and spent snoozes are pruned). `ForBabyCard.onDismiss` now receives a `WidgetRef`. #5: a
+`completed` claim on a reopened reminder reads as unclaimed with the same revision, in the list and
+in `accept`. #6: intend / helpful / unsure on this screen also write the household `recFeedback` row
+(`started` / `helpful` / `unsure`) that the activity screen writes, so `feedbackMemory` sees them;
+`responses` only decide visibility. The weekly "đã thử / có ích" counts this person's answers from
+both screens once per activity, and the latest outcome wins. These rows move `dataVersion` through
+`onRecFeedbackWrite`, as AC02 always did; `updatePersonalization` itself still bumps only for shared
+facts. #7: `reason` is `recommend()`'s own code: INTEREST only when the pick matches a chosen
+interest, otherwise AGE_CONTENT; WEEKLY_FOCUS only when the play focus picked it; null with no
+suggestion. The `handover` / `routine` focuses and the `other_carer` context are dropped (schema,
+chips, ARB), and stored values read as none. Home's impression event now reports the same reason
+(the matching P3 item). Each new case fails on `fc290a0`: four in
+`personalization-v2.integration.test.ts`, two contracts cases and three in
+`personalization_v2_test.dart`. Nothing is deployed.
+
 ### P3
 
 - `digestScheduled` is counted on every sync whose signature changed while the digest is pending, so

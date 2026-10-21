@@ -4,6 +4,7 @@ import {
   activeAt,
   addDaysIso,
   ageCardFor,
+  dailyContexts,
   dayBoundsIn,
   daysBetweenIso,
   familyCan,
@@ -19,7 +20,10 @@ import {
   responseSuppresses,
   routinePatterns,
   reminderInstantIn,
+  recFeedbackSchema,
   defaultUserPreferences,
+  weeklyFocuses,
+  type FeedbackKind,
   type GrantEnvironment,
   type NotebookNote,
   type PersonalizationState,
@@ -33,6 +37,7 @@ import {
   readRhythmRules,
   sleepFacts,
   RhythmError,
+  type FeedbackRow,
 } from './rhythm.js';
 
 /** P-172 G/H/I: callable-only writes, current membership on every read and transactional write. */
@@ -53,6 +58,33 @@ const iso = (v: unknown) =>
       : null;
 const stateRef = (db: Firestore, uid: string, baby: string) =>
   db.doc(`users/${uid}/personalization/${baby}`);
+
+/**
+ * P-172 (audit 2026-10-21 P2 #6): the module feedback ("Mình sẽ thử", AC02 "Có ích" / "Chưa thấy
+ * rõ") an answer on this screen also writes, so `feedbackMemory` ranks from both screens.
+ */
+const householdFeedback: Partial<Record<PersonalResponse['value'], FeedbackKind>> = {
+  intend: 'started',
+  helpful: 'helpful',
+  unsure: 'unsure',
+};
+
+interface WorkClaim {
+  state: string;
+  actorUid: string | null;
+  revision: number;
+}
+/**
+ * P-172 (audit 2026-10-21 P2 #5): the reminder is the truth. A claim left `completed` after
+ * "Hoàn tác" in Nhắc việc reopened the reminder reads as unclaimed (same revision), so the work
+ * comes back and can be accepted again.
+ */
+function liveClaim(claim: Partial<WorkClaim> | undefined, reminderDone: boolean): WorkClaim {
+  const revision = claim?.revision ?? 0;
+  return !claim?.state || (claim.state === 'completed' && !reminderDone)
+    ? { state: 'unclaimed', actorUid: null, revision }
+    : { state: claim.state, actorUid: claim.actorUid ?? null, revision };
+}
 
 export async function updatePersonalization(
   db: Firestore,
@@ -121,6 +153,11 @@ export async function updatePersonalization(
         break;
       case 'respond': {
         const previous = state.responses?.[action.contentId];
+        // P-172 (audit 2026-10-21 P2 #4): a work card on Home can only be put off until tonight
+        // (or restored), and only for this person.
+        const work = action.contentId.startsWith('work:');
+        if (work && (action.scope === 'baby' || !['snooze', 'restore'].includes(action.value)))
+          throw new RhythmError('invalid-argument', 'bad-request');
         if (['helpful', 'unsure'].includes(action.value) && !previous?.triedAt)
           throw new RhythmError('failed-precondition', 'try-first');
         if (action.scope === 'baby' && (action.value !== 'restore' || !isParent))
@@ -146,7 +183,7 @@ export async function updatePersonalization(
             until: ['snooze', 'tried', 'helpful'].includes(action.value)
               ? dayBoundsIn(
                   zone,
-                  addDaysIso(localDateIn(zone, now), action.value === 'snooze' ? 2 : 0),
+                  addDaysIso(localDateIn(zone, now), action.value === 'snooze' && !work ? 2 : 0),
                 ).end.toISOString()
               : null,
             saved: action.value === 'save' ? true : (previous?.saved ?? false),
@@ -173,9 +210,36 @@ export async function updatePersonalization(
             shared = true;
           }
         }
+        // A work card's snooze ends tonight; spent ones are dropped so they never fill the limit.
+        for (const [id, r] of Object.entries(responses))
+          if (id.startsWith('work:') && !responseSuppresses(r, now)) delete responses[id];
         if (Object.keys(responses).length > 200)
           throw new RhythmError('failed-precondition', 'response-limit');
         tx.set(personal.ref, { ...state, responses });
+        // P-172 (audit 2026-10-21 P2 #6): the household row the ranking and the AI summary read,
+        // the same document the activity screen writes (Rules `validNewFeedback`). `responses`
+        // above only decides what this person sees. The id is fixed per answer, so a retried
+        // transaction writes it once; `onRecFeedbackWrite` moves the facts version, as for the app.
+        const kind = householdFeedback[action.value];
+        if (activity && kind && previous?.value !== action.value) {
+          const id = `fb_${createHash('sha256')
+            .update(`personal|${uid}|${activity.id}|${action.value}|${at}`)
+            .digest('hex')
+            .slice(0, 32)}`;
+          tx.set(db.doc(`babies/${babyId}/recFeedback/${id}`), {
+            ...recFeedbackSchema.parse({
+              id,
+              babyId,
+              authorUid: uid,
+              contentId: activity.id,
+              contentVersion: activity.version,
+              kind,
+              date: localDateIn(zone, now),
+              note: null,
+            }),
+            createdAt: FieldValue.serverTimestamp(),
+          });
+        }
         if (
           activity &&
           (action.value === 'save' ? previous?.saved !== true : previous?.value !== action.value)
@@ -252,9 +316,10 @@ export async function updatePersonalization(
         const [reminder, claim] = await Promise.all([tx.get(reminderRef), tx.get(claimRef)]);
         if (!reminder.exists) throw new RhythmError('not-found', 'reminder-not-found');
         if (!isParent && reminder.get('assigneeUid') !== uid) throw gateError('ROLE_DENIED');
-        const current = claim.exists
-          ? (claim.data() as { state: string; actorUid: string | null; revision: number })
-          : { state: 'unclaimed', actorUid: null, revision: 0 };
+        const current = liveClaim(
+          claim.exists ? (claim.data() as WorkClaim) : undefined,
+          reminder.get('done') === true,
+        );
         let next;
         try {
           next = nextWorkState(current, action.transition, uid, isParent);
@@ -456,10 +521,14 @@ export async function personalizedDay(
       .get(),
     db.collection(`babies/${babyId}/conflicts`).where('status', '==', 'open').limit(1).get(),
     db.doc(`babies/${babyId}/timers/sleep`).get(),
+    // P-172 (audit 2026-10-21 P2 #4): work due today or overdue by less than 24 h, never a
+    // reminder forgotten weeks ago (same `done` + `dueAt` index as before).
     writable
       ? db
           .collection(`babies/${babyId}/reminders`)
           .where('done', '==', false)
+          .where('dueAt', '>', new Date(now.getTime() - 86_400_000))
+          .where('dueAt', '<', dayBoundsIn(zone, today).end)
           .orderBy('dueAt')
           .limit(100)
           .get()
@@ -470,9 +539,17 @@ export async function personalizedDay(
     acknowledgedAt?: string;
     acknowledgedVersion?: string;
   };
+  // P-172 (audit 2026-10-21 P2 #7): a choice dropped after it was stored reads as none.
   const context =
-    state.context && activeAt(state.context.expiresAt, now) ? state.context.value : 'usual';
-  const focus = state.focus && activeAt(state.focus.expiresAt, now) ? state.focus.value : null;
+    state.context &&
+    activeAt(state.context.expiresAt, now) &&
+    dailyContexts.includes(state.context.value)
+      ? state.context.value
+      : 'usual';
+  const focus =
+    state.focus && activeAt(state.focus.expiresAt, now) && weeklyFocuses.includes(state.focus.value)
+      ? state.focus.value
+      : null;
   const unusual =
     routine.get('unusual') === true && activeAt(routine.get('expiresAt') as string, now);
   const health = checkins.docs.some(
@@ -494,9 +571,8 @@ export async function personalizedDay(
   const dob = (profile.get('dateOfBirth') as string | undefined)?.slice(0, 10);
   const ageDays = dob && dob <= today ? daysBetweenIso(dob, today) : null;
   const rules = await readRhythmRules(db);
-  const feedback = checkCapability(ctx, 'rhythm.advanced', now).allowed
-    ? await readFeedback(db, babyId)
-    : [];
+  const advanced = checkCapability(ctx, 'rhythm.advanced', now).allowed;
+  const feedback = advanced ? await readFeedback(db, babyId) : [];
   const needDoc = checkins.docs
     .filter((d) =>
       ['sleep', 'feeding', 'soothing', 'new_skill'].includes(d.get('observation') as string),
@@ -552,27 +628,27 @@ export async function personalizedDay(
     !health && !unusual && conflicts.empty && !timer.exists && records.size < 1500
       ? routinePatterns(liveRecords, now, zone)
       : [];
+  // P-172 (audit 2026-10-21 P2 #4): the viewer's own work and unassigned work only.
+  const reminders = (reminderSnap?.docs ?? []).filter((r) =>
+    [null, uid].includes((r.get('assigneeUid') as string | null | undefined) ?? null),
+  );
   const claimRows =
-    reminderSnap && !reminderSnap.empty
-      ? await db.getAll(
-          ...reminderSnap.docs.map((r) => db.doc(`babies/${babyId}/careWork/${r.id}`)),
-        )
+    reminders.length > 0
+      ? await db.getAll(...reminders.map((r) => db.doc(`babies/${babyId}/careWork/${r.id}`)))
       : [];
-  const work = (reminderSnap?.docs ?? [])
+  const work = reminders
     .map((r) => {
-      const claim = claimRows.find((c) => c.id === r.id)?.data();
+      // Every listed reminder is open, so a `completed` claim is one "Hoàn tác" reopened (P2 #5).
+      const claim = liveClaim(claimRows.find((c) => c.id === r.id)?.data(), false);
       return {
         id: r.id,
         title: String(r.get('title') ?? ''),
         dueAt: iso(r.get('dueAt')),
         assigneeUid: r.get('assigneeUid') ?? null,
-        state: claim?.state ?? 'unclaimed',
-        actorUid: claim?.actorUid ?? null,
-        revision: claim?.revision ?? 0,
+        ...claim,
         canAct: parent || r.get('assigneeUid') === uid,
       };
     })
-    .filter((r) => r.state !== 'completed')
     .sort((a, b) => (a.dueAt ?? '').localeCompare(b.dueAt ?? ''));
   const weekStart = addDaysIso(today, -6);
   const lastRecords = [
@@ -588,10 +664,46 @@ export async function personalizedDay(
     )
     .digest('hex');
   const responses = state.responses ?? {};
-  const sleep =
-    !health && checkCapability(ctx, 'rhythm.advanced', now).allowed
-      ? await sleepFacts(db, babyId, zone, today, now, rules)
-      : null;
+  // P-172 (audit 2026-10-21 P2 #6): "đã thử / có ích" counts this person's answers from both
+  // screens once per activity: `responses` here and their own household feedback (AC02 on the
+  // activity screen; this screen writes both). The latest outcome per activity wins.
+  const weekFeedback: Pick<FeedbackRow, 'authorUid' | 'contentId' | 'kind' | 'createdAtMs'>[] = (
+    advanced
+      ? feedback.filter((f) => f.date >= weekStart)
+      : (
+          await db
+            .collection(`babies/${babyId}/recFeedback`)
+            .where('date', '>=', weekStart)
+            .limit(300)
+            .get()
+        ).docs.flatMap((d) => {
+          const row = recFeedbackSchema.safeParse(d.data());
+          const created = d.get('createdAt') as unknown;
+          return row.success
+            ? [{ ...row.data, createdAtMs: created instanceof Timestamp ? created.toMillis() : 0 }]
+            : [];
+        })
+  ).filter((f) => f.authorUid === uid);
+  const inWeek = (at: string | undefined) =>
+    !!at && Number.isFinite(Date.parse(at)) && localDateIn(zone, new Date(at)) >= weekStart;
+  const outcomes = new Map<string, { kind: string; at: number }>();
+  const outcome = (id: string, kind: string, at: number) => {
+    if (at >= (outcomes.get(id)?.at ?? -Infinity)) outcomes.set(id, { kind, at });
+  };
+  for (const [id, r] of Object.entries(responses)) {
+    const kind = r.outcome ?? (r.value === 'helpful' ? 'helpful' : null);
+    const at = r.outcomeAt ?? r.at;
+    if (kind && inWeek(at)) outcome(id, kind, Date.parse(at));
+  }
+  for (const f of weekFeedback)
+    if (f.kind === 'helpful' || f.kind === 'unsure') outcome(f.contentId, f.kind, f.createdAtMs);
+  const tried = new Set([
+    ...Object.entries(responses)
+      .filter(([, r]) => inWeek(r.triedAt))
+      .map(([id]) => id),
+    ...outcomes.keys(),
+  ]);
+  const sleep = !health && advanced ? await sleepFacts(db, babyId, zone, today, now, rules) : null;
   return {
     asOf: now.toISOString(),
     contentVersion: content?.version ?? null,
@@ -620,7 +732,14 @@ export async function personalizedDay(
             .slice(0, context === 'busy' ? 1 : 3)
             .map((a) => a.id)
         : [],
-    reason: need ? 'SELF_REPORTED_NEED' : focus ? 'WEEKLY_FOCUS' : 'INTEREST',
+    // P-172 (audit 2026-10-21 P2 #7): the reason recommend() gave for this pick. WEEKLY_FOCUS only
+    // when the "play" focus stood in for a need nobody reported; none without a suggestion.
+    reason:
+      ranked?.kind === 'suggestion'
+        ? ranked.reasonCode === 'SELF_REPORTED_NEED' && !need
+          ? 'WEEKLY_FOCUS'
+          : ranked.reasonCode
+        : null,
     ageCardId:
       content && ageDays !== null ? (ageCardFor(content.ageCards, ageDays)?.id ?? null) : null,
     work,
@@ -630,14 +749,8 @@ export async function personalizedDay(
     handoverChanged:
       state.acknowledgedVersion != null && state.acknowledgedVersion !== handoverVersion,
     weekly: {
-      tried: Object.values(responses).filter(
-        (r) => r.triedAt && localDateIn(zone, new Date(r.triedAt)) >= weekStart,
-      ).length,
-      helpful: Object.values(responses).filter(
-        (r) =>
-          (r.outcome === 'helpful' || r.value === 'helpful') &&
-          localDateIn(zone, new Date(r.outcomeAt ?? r.at)) >= weekStart,
-      ).length,
+      tried: tried.size,
+      helpful: [...outcomes.values()].filter((o) => o.kind === 'helpful').length,
     },
     delivery: delivery.exists ? delivery.data() : null,
   };

@@ -18209,9 +18209,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Busy => 'Đang bận';
 
   @override
-  String get pv2OtherCarer => 'Người khác chăm';
-
-  @override
   String get pv2Temporary => 'Lựa chọn hôm nay tự hết hạn vào cuối ngày.';
 
   @override
@@ -18219,9 +18216,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2Play => 'Có một lúc chơi cùng con';
-
-  @override
-  String get pv2Handover => 'Bàn giao dễ hơn';
 
   @override
   String get pv2Routine => 'Hiểu nhịp sinh hoạt';
@@ -18249,6 +18243,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2BecauseInterest => 'Theo tuổi của bé và điều bạn quan tâm';
 
   @override
+  String get pv2BecauseAge => 'Theo tuổi của bé';
+
+  @override
+  String get pv2BecauseHelpful => 'Nhà mình từng thấy cách này có ích';
+
+  @override
   String get pv2Minutes => 'phút';
 
   @override
@@ -18265,6 +18265,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2Snooze => 'Hôm nay bận · để sau 3 ngày';
+
+  @override
+  String get pv2WorkSnooze => 'Để sau · ẩn đến hết hôm nay';
 
   @override
   String get pv2Dislike => 'Tôi không thích gợi ý này';

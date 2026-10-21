@@ -2,12 +2,19 @@ import { randomUUID } from 'node:crypto';
 import { deleteApp, initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { defaultFlags } from '@child-life/contracts';
+import {
+  defaultEntitlementsConfig,
+  defaultFlags,
+  defaultUserPreferences,
+  feedbackMemory,
+  recFeedbackSchema,
+} from '@child-life/contracts';
 import {
   personalizedDay,
   updatePersonalization,
   reservePersonalizedDigest,
 } from '../functions/src/personalization-v2.js';
+import { readFeedback } from '../functions/src/rhythm.js';
 import { aggregatePersonalizationContent } from '../functions/src/personalization-stats.js';
 import contentSeed from '../../content/rhythm/content.seed.json' with { type: 'json' };
 
@@ -27,6 +34,24 @@ const reason = (p: Promise<unknown>) =>
     () => 'ok',
     (e: { reason?: string }) => e.reason,
   );
+/** Group A (cross-module ranking, feedback memory) for family `f` through a beta campaign. */
+const grantGroupA = () =>
+  db.doc('config/entitlements').set({
+    ...defaultEntitlementsConfig,
+    regions: { advanced: ['VN'] },
+    betaCampaigns: [
+      {
+        id: 'beta-pv2',
+        capabilities: ['personalization.cross_module', 'rhythm.advanced', 'ai.assistance'],
+        validFrom: '2026-10-01T00:00:00Z',
+        validUntil: '2026-11-01T00:00:00Z',
+        countries: [],
+        scope: 'internal',
+        percent: 0,
+        families: ['f'],
+      },
+    ],
+  });
 beforeAll(() => {
   expect(process.env.FIRESTORE_EMULATOR_HOST).toBeTruthy();
 });
@@ -197,6 +222,60 @@ describe('P-172 transactional care handover', () => {
     expect((await db.collection('babies/baby/records').get()).empty).toBe(true);
     expect((await read('carer')).work).toEqual([]);
   });
+  it('lists only my or unassigned work due today or overdue < 24 h; its card snoozes until tonight (audit P2 #4)', async () => {
+    const rm = (n: string) => `rm_${n.repeat(32)}`;
+    const add = (n: string, dueAt: string, assigneeUid: string | null) =>
+      db.doc(`babies/baby/reminders/${rm(n)}`).set({
+        title: `Việc ${n}`,
+        dueAt: Timestamp.fromDate(new Date(dueAt)),
+        done: false,
+        assigneeUid,
+      });
+    await add('3', '2026-09-01T02:00:00Z', 'carer'); // overdue for weeks
+    await add('4', '2026-10-19T13:00:00Z', null); // overdue by 23 h
+    await add('5', '2026-10-19T11:00:00Z', null); // overdue by 25 h
+    await add('6', '2026-10-20T14:00:00Z', 'carer2'); // someone else's
+    await add('7', '2026-10-21T03:00:00Z', null); // tomorrow morning
+    expect((await read('carer')).work.map((w) => w.id)).toEqual([rm('4'), reminderId]);
+    // A co-parent may act on anyone's work in Nhắc việc, but the card is about their own.
+    expect((await read('parent')).work.map((w) => w.id)).toEqual([rm('4')]);
+    const card = `work:${reminderId}`;
+    await call('carer', { kind: 'respond', contentId: card, value: 'snooze' });
+    expect((await read('carer')).responses[card]).toMatchObject({
+      value: 'snooze',
+      until: '2026-10-20T17:00:00.000Z',
+    });
+    expect(await reason(call('carer', { kind: 'respond', contentId: card, value: 'hide' }))).toBe(
+      'bad-request',
+    );
+    expect(
+      await reason(
+        call('parent', { kind: 'respond', contentId: card, value: 'restore', scope: 'baby' }),
+      ),
+    ).toBe('bad-request');
+    // A spent snooze is dropped on the next answer, so it never fills the 200-answer limit.
+    const tomorrow = new Date('2026-10-21T02:00:00Z');
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' }, tomorrow);
+    expect(Object.keys((await read('carer', tomorrow)).responses)).toEqual(['act_a']);
+  });
+  it('a reminder reopened in Nhắc việc after the work card completed it comes back (audit P2 #5)', async () => {
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 });
+    await call('carer', { kind: 'work', reminderId, transition: 'complete', revision: 1 });
+    expect((await read('carer')).work).toEqual([]);
+    // "Hoàn tác" in Nhắc việc writes the reminder directly (D-030); the claim stays `completed`.
+    await db
+      .doc(`babies/baby/reminders/${reminderId}`)
+      .update({ done: false, doneAt: null, doneBy: null });
+    expect((await read('carer')).work).toMatchObject([
+      { id: reminderId, state: 'unclaimed', actorUid: null, revision: 2 },
+    ]);
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 2 });
+    expect((await read('carer')).work).toMatchObject([
+      { id: reminderId, state: 'accepted', actorUid: 'carer', revision: 3 },
+    ]);
+    await call('carer', { kind: 'work', reminderId, transition: 'complete', revision: 3 });
+    expect((await db.doc(`babies/baby/reminders/${reminderId}`).get()).get('done')).toBe(true);
+  });
   it('marks a changed handover without invalidating acknowledgement on a personal context change', async () => {
     const first = await read('carer');
     await call('carer', { kind: 'acknowledge', version: first.handoverVersion });
@@ -316,6 +395,95 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
     expect(
       (await db.doc('users/parent/settings/personalizationDigestLease').get()).get('fireAt'),
     ).toBe('2026-10-20T14:00:00.000Z');
+  });
+  it('answers here write the household feedback; the weekly count reads both screens (audit P2 #6)', async () => {
+    const [a, b, c] = contentSeed.activities as { id: string; version: number }[];
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'intend' });
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'intend' });
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'tried' });
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'helpful' });
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'save' });
+    const rows = (await db.collection('babies/baby/recFeedback').get()).docs.map((d) => d.data());
+    expect(rows.map((r) => r.kind).sort()).toEqual(['helpful', 'started']);
+    for (const { createdAt, ...row } of rows) {
+      // The same keys the Rules let the app write (`validNewFeedback`).
+      expect(recFeedbackSchema.strict().safeParse(row).success).toBe(true);
+      expect(createdAt).toBeInstanceOf(Timestamp);
+      expect(row).toMatchObject({
+        babyId: 'baby',
+        authorUid: 'carer',
+        contentId: a!.id,
+        contentVersion: a!.version,
+        date: '2026-10-20',
+        note: null,
+      });
+    }
+    // What the ranking reads ("feedback visibly changes the next visit").
+    expect(feedbackMemory(await readFeedback(db, 'baby'), 3).helpful.has(a!.id)).toBe(true);
+    // AC02 on the activity screen writes only the household row; another person's is theirs.
+    const ac02 = (id: string, authorUid: string, contentId: string) =>
+      db.doc(`babies/baby/recFeedback/${id}`).set({
+        id,
+        babyId: 'baby',
+        authorUid,
+        contentId,
+        contentVersion: 1,
+        kind: 'helpful',
+        date: '2026-10-19',
+        note: null,
+        createdAt: Timestamp.fromDate(new Date('2026-10-19T13:00:00Z')),
+      });
+    await ac02(`fb_${'d'.repeat(32)}`, 'carer', b!.id);
+    await ac02(`fb_${'e'.repeat(32)}`, 'parent', c!.id);
+    expect((await read('carer')).weekly).toEqual({ tried: 2, helpful: 2 });
+    await grantGroupA();
+    expect((await read('carer')).weekly).toEqual({ tried: 2, helpful: 2 });
+    // The latest outcome per activity counts, from either source.
+    await call('carer', { kind: 'respond', contentId: a!.id, value: 'unsure' });
+    expect((await read('carer')).weekly).toEqual({ tried: 2, helpful: 1 });
+    expect((await read('parent')).weekly).toEqual({ tried: 1, helpful: 1 });
+  });
+  it('gives the pick its own reason and refuses choices that changed nothing (audit P2 #7)', async () => {
+    await grantGroupA();
+    // No need, no focus, no interest: the pick is there for the baby's age.
+    const plain = await read('carer');
+    expect(plain.activityIds[0]).toBe('act_bed_sharing_safer');
+    expect(plain.reason).toBe('AGE_CONTENT');
+    expect(await reason(call('carer', { kind: 'focus', value: 'handover' }))).toBe('bad-request');
+    expect(await reason(call('carer', { kind: 'focus', value: 'routine' }))).toBe('bad-request');
+    expect(await reason(call('carer', { kind: 'context', value: 'other_carer' }))).toBe(
+      'bad-request',
+    );
+    // Stored before they were dropped: read as none, and nothing claims a focus.
+    await db.doc('users/carer/personalization/baby').set({
+      context: { value: 'other_carer', expiresAt: '2026-10-20T17:00:00.000Z' },
+      focus: { value: 'handover', expiresAt: '2026-10-25T17:00:00.000Z' },
+    });
+    expect(await read('carer')).toMatchObject({
+      context: 'usual',
+      focus: null,
+      reason: 'AGE_CONTENT',
+      activityIds: plain.activityIds,
+    });
+    // The play focus picks play activities, and says so.
+    await call('carer', { kind: 'focus', value: 'play' });
+    const play = await read('carer');
+    expect(play.activityIds[0]).toBe('act_face_to_face');
+    expect(play.reason).toBe('WEEKLY_FOCUS');
+    // A chosen interest the pick matches is a true INTEREST.
+    await call('carer', { kind: 'focus', value: null });
+    await db
+      .doc('users/carer/settings/personalization')
+      .set({ ...defaultUserPreferences, interests: ['milestones'] });
+    const interest = await read('carer');
+    expect(interest.activityIds[0]).toBe('act_face_to_face');
+    expect(interest.reason).toBe('INTEREST');
+    // What the family reported today wins over the focus.
+    await call('carer', { kind: 'focus', value: 'play' });
+    await db
+      .doc('babies/baby/checkins/ci_sleep')
+      .set({ date: '2026-10-20', observation: 'sleep', updatedAt: now.toISOString() });
+    expect((await read('carer')).reason).toBe('SELF_REPORTED_NEED');
   });
   it('aggregates generation separately and is idempotent without overwriting answer counters', async () => {
     const act = contentSeed.activities[0]!;

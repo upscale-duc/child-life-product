@@ -259,6 +259,16 @@ describe('recommend (H02, PS01, AC02 → PS02)', () => {
     expect(r).toMatchObject({ reasonCode: 'PREVIOUS_HELPFUL', changes: ['prefers_helpful'] });
   });
 
+  it('without a need, INTEREST only when the pick matches a chosen interest (P-172 audit P2 #7)', () => {
+    const activities = [act('act_a'), act('act_b', { interests: ['milestones'] })];
+    expect(recommend({ ...base, need: null, activities })).toMatchObject({
+      reasonCode: 'AGE_CONTENT',
+    });
+    const r = recommend({ ...base, need: null, activities, interests: ['milestones'] });
+    expect(r.kind === 'suggestion' && r.primary.id).toBe('act_b');
+    expect(r).toMatchObject({ reasonCode: 'INTEREST' });
+  });
+
   it('drafts, the wrong locale, age or region are never offered', () => {
     expect(recommend({ ...base, activities: [act('act_a', { status: 'draft' })] }).kind).toBe(
       'none',
