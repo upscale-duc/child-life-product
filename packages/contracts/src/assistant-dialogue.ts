@@ -67,7 +67,11 @@ export interface DialogueQuestion {
   taskId: string;
   clarificationId: string;
   field: string;
-  chips: Clarification['choices'];
+  /**
+   * The chips' ids (L10 A6: never their labels — a `reminder.assignee` chip is a member's name;
+   * the labels stay on the task's `pendingClarification`).
+   */
+  choiceIds: string[];
   /** A typed answer is allowed (a time, a length). */
   allowText: boolean;
   askedAt: string;
@@ -136,15 +140,23 @@ export function liveDialogue(d: DialogueState | null, now: Date): DialogueState 
   if (!d || d.schemaVersion !== 1) return null;
   if (Date.parse(d.expiresAt) <= now.getTime()) return null;
   const t = now.getTime();
-  const open = (q: DialogueQuestion | null) => (q && Date.parse(q.expiresAt) > t ? q : null);
+  const open = (q: DialogueQuestion | null) =>
+    q && Date.parse(q.expiresAt) > t ? questionIdsOnly(q) : null;
   return {
     ...d,
     question: open(d.question),
-    setAside: d.setAside && Date.parse(d.setAside.expiresAt) > t ? d.setAside : null,
+    setAside:
+      d.setAside && Date.parse(d.setAside.expiresAt) > t ? questionIdsOnly(d.setAside) : null,
     saved: d.saved.filter(
       (s) => t - Date.parse(s.savedAt) <= dialogueLimits.savedWindowMin * 60_000,
     ),
   };
+}
+
+/** L10 A6: a question stored before L10 kept its chips' labels; only their ids are kept. */
+function questionIdsOnly<Q extends DialogueQuestion>(q: Q): Q {
+  const { chips, ...rest } = q as Q & { chips?: Clarification['choices'] };
+  return { ...rest, choiceIds: q.choiceIds ?? chips?.map((c) => c.id) ?? [] } as Q;
 }
 
 /** Whether anything waits on the person: an open question or a draft not yet saved. */

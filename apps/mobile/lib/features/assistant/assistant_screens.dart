@@ -2651,7 +2651,7 @@ class _ThreadView {
             ),
           if (recordLocation(d) case final record?)
             (
-              label: l10n.asUndo,
+              label: l10n.asOpenRecord,
               onPressed: () => GoRouter.of(context).pushSafe(record),
             ),
         ],

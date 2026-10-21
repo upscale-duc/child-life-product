@@ -82,8 +82,8 @@
         "outcome": "answer",
         "asks": ["time.missing"],
         "saved": 0,
-        "credits": 1,
-        "calls": 1
+        "credits": 0,
+        "calls": 0
       }
     },
     {
@@ -214,7 +214,7 @@
         },
         { "confirm": "all" }
       ],
-      "expect": { "saved": 1, "credits": 1, "calls": 1 }
+      "expect": { "saved": 1, "credits": 0, "calls": 0 }
     },
     {
       "id": "dl-05-continuation-keeps-the-day",

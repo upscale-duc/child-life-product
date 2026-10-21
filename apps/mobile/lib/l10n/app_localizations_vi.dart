@@ -13594,7 +13594,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asOpenLog => 'Mở nhật ký';
 
   @override
-  String get asUndo => 'Hoàn tác';
+  String get asOpenRecord => 'Mở bản ghi';
 
   @override
   String get asOpenSpending => 'Mở Chi tiêu';

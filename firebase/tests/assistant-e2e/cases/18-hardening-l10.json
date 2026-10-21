@@ -1,0 +1,263 @@
+{
+  "group": "hardening",
+  "note": "Lumi L10 (lumi-plan §13.2 A1–A8, P2): the audit's P1 findings at 0663bb8, each a case that failed before the fix.",
+  "cases": [
+    {
+      "id": "l10-01-routed-answer-replayed",
+      "title": "A1: \"13:00\" answers the open time question; the app's retry of the same request (timeout, offline) is that answer again, never a new task",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 180
+                },
+                "ev": {
+                  "amountMl": "180ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "check": {
+            "outcome": "awaiting"
+          }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "replay": true,
+          "model": null,
+          "check": {
+            "task": "same",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 180,
+              "0.occurredAt": "D0 13:00"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "asks": ["time.missing"],
+        "saved": 1,
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "l10-02-toi-qua-9h-model-today",
+      "title": "A3: \"tối qua 9h bé bú bình 120ml\" at 15:00 with the model's day 0 → 21:00 yesterday, never a log at 21:00 today",
+      "anchor": "15:00",
+      "rules": false,
+      "turns": [
+        {
+          "say": "tối qua 9h bé bú bình 120ml",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "bottle",
+                  "started": "clock 21:00",
+                  "f": {
+                    "amountMl": 120
+                  },
+                  "ev": {
+                    "amountMl": "120ml",
+                    "started": "tối qua 9h"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": [],
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D-1 21:00"
+        },
+        "credits": 1,
+        "calls": 1
+      }
+    },
+    {
+      "id": "l10-03-thanks-while-asked",
+      "title": "A4: \"cảm ơn Lumi\" while the time question waits keeps its reply plus the wait line; \"13:00\" still answers the question",
+      "anchor": "13:54",
+      "turns": [
+        {
+          "say": "Bé đã bú bình 180ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 180
+                },
+                "ev": {
+                  "amountMl": "180ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "check": {
+            "outcome": "awaiting"
+          }
+        },
+        {
+          "say": "cảm ơn Lumi",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "outcome": "small_talk",
+            "codes": ["SMALL_TALK", "FOLLOW_UP"]
+          }
+        },
+        {
+          "say": "13:00",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["bottle"],
+            "values": {
+              "0.amountMl": 180,
+              "0.occurredAt": "D0 13:00"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "asks": ["time.missing"],
+        "saved": 1,
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "l10-04-shared-same-words-other-member",
+      "title": "A7: in the shared thread, my own same words again get \"đã chuẩn bị ở trên\"; another member's same words get their own draft",
+      "anchor": "14:00",
+      "turns": [
+        {
+          "say": "Bé đang ngủ",
+          "as": "MOM",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing"
+                }
+              ]
+            }
+          },
+          "check": {
+            "outcome": "drafts",
+            "kinds": ["timer"]
+          }
+        },
+        {
+          "say": "Bé đang ngủ",
+          "as": "MOM",
+          "at": "+1",
+          "model": null,
+          "check": {
+            "task": "new",
+            "codes": ["SAME_AS_PENDING"]
+          }
+        },
+        {
+          "say": "Bé đang ngủ",
+          "as": "DAD",
+          "at": "+1",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing"
+                }
+              ]
+            }
+          },
+          "check": {
+            "task": "new",
+            "outcome": "drafts",
+            "kinds": ["timer"],
+            "notCodes": ["SAME_AS_PENDING"]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "visibility": "shared"
+      }
+    },
+    {
+      "id": "l10-05-ongoing-start-out-of-bounds",
+      "title": "P2: \"bé đang ngủ từ 16h\" at 15:30 (16:00 today is ahead, yesterday's 23.5 h back) asks when the sleep began; the answer starts the timer",
+      "anchor": "15:30",
+      "rules": false,
+      "turns": [
+        {
+          "say": "bé đang ngủ từ 16h",
+          "model": {
+            "u": {
+              "act": "log",
+              "e": [
+                {
+                  "k": "sleep",
+                  "st": "ongoing",
+                  "started": "clock 16:00",
+                  "ev": {
+                    "started": "từ 16h"
+                  }
+                }
+              ]
+            }
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "text": "14h"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "asks": ["time.start"],
+        "values": {
+          "0.action": "start",
+          "0.at": "D0 14:00"
+        },
+        "credits": 1,
+        "calls": 1
+      }
+    }
+  ]
+}

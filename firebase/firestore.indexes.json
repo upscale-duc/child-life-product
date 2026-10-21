@@ -919,6 +919,12 @@
       ]
     },
     {
+      "collectionGroup": "dialogue",
+      "fieldPath": "ttlAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
       "collectionGroup": "records",
       "fieldPath": "createdBy",
       "indexes": [

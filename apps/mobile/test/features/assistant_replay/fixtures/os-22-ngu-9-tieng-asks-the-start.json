@@ -1,0 +1,521 @@
+{
+ "id": "os-22-ngu-9-tieng-asks-the-start",
+ "group": "owner",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 2,
+     "modality": "text",
+     "credits": 0,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "time.start",
+      "question": {
+       "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+       "en": "When did the sleep start?"
+      },
+      "choices": [
+       {
+        "id": "at_2026-10-15_04:00",
+        "label": {
+         "vi": "04:00 hôm nay",
+         "en": "04:00 today"
+        }
+       },
+       {
+        "id": "at_2026-10-15_05:00",
+        "label": {
+         "vi": "05:00 hôm nay",
+         "en": "05:00 today"
+        }
+       }
+      ],
+      "allowText": true
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "ngủ 9 tiếng"
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.start",
+         "question": {
+          "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+          "en": "When did the sleep start?"
+         },
+         "choices": [
+          {
+           "id": "at_2026-10-15_04:00",
+           "label": {
+            "vi": "04:00 hôm nay",
+            "en": "04:00 today"
+           }
+          },
+          {
+           "id": "at_2026-10-15_05:00",
+           "label": {
+            "vi": "05:00 hôm nay",
+            "en": "05:00 today"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer time.start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 4,
+     "modality": "text",
+     "credits": 0,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0f4a9391dccc7f54d776b25e3be6102d_0",
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-14T21:00:00.000Z",
+       "endedAt": "2026-10-15T06:00:00.000Z",
+       "durationMin": 540,
+       "linked": {
+        "derived": "endedAt"
+       }
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_0f4a9391dccc7f54d776b25e3be6102d"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "ngủ 9 tiếng"
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.start",
+         "question": {
+          "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+          "en": "When did the sleep start?"
+         },
+         "choices": [
+          {
+           "id": "at_2026-10-15_04:00",
+           "label": {
+            "vi": "04:00 hôm nay",
+            "en": "04:00 today"
+           }
+          },
+          {
+           "id": "at_2026-10-15_05:00",
+           "label": {
+            "vi": "05:00 hôm nay",
+            "en": "05:00 today"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "04:00 hôm nay"
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0f4a9391dccc7f54d776b25e3be6102d_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 4,
+     "modality": "text",
+     "credits": 0,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:35.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0f4a9391dccc7f54d776b25e3be6102d_0",
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-14T21:00:00.000Z",
+       "endedAt": "2026-10-15T06:00:00.000Z",
+       "durationMin": 540,
+       "linked": {
+        "derived": "endedAt"
+       }
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_0f4a9391dccc7f54d776b25e3be6102d"
+      ],
+      "recordId": "r_1c2b67ef4313e02f94296a5c46a9767b",
+      "recordLink": "/care/records/b_00000000000000000001/r_1c2b67ef4313e02f94296a5c46a9767b",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "ngủ 9 tiếng"
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.start",
+         "question": {
+          "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+          "en": "When did the sleep start?"
+         },
+         "choices": [
+          {
+           "id": "at_2026-10-15_04:00",
+           "label": {
+            "vi": "04:00 hôm nay",
+            "en": "04:00 today"
+           }
+          },
+          {
+           "id": "at_2026-10-15_05:00",
+           "label": {
+            "vi": "05:00 hôm nay",
+            "en": "05:00 today"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "04:00 hôm nay"
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0f4a9391dccc7f54d776b25e3be6102d_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_0f4a9391dccc7f54d776b25e3be6102d_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_1c2b67ef4313e02f94296a5c46a9767b",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_0f4a9391dccc7f54d776b25e3be6102d",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:35.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

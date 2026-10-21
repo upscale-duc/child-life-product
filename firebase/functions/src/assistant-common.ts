@@ -267,6 +267,17 @@ export function canonical(v: unknown): string {
 const requestRef = (db: Firestore, uid: string, op: string, clientRequestId: string) =>
   db.doc(`assistantRequests/${sha(`${uid}|${op}|${clientRequestId}`).slice(0, 40)}`);
 
+/** The stored answer of a request [withRequest] ran (null when it never succeeded). */
+export async function storedRequestAnswer<T>(
+  db: Firestore,
+  uid: string,
+  op: string,
+  clientRequestId: string,
+): Promise<T | null> {
+  const prev = await requestRef(db, uid, op, clientRequestId).get();
+  return prev.exists ? (JSON.parse(prev.get('response') as string) as T) : null;
+}
+
 /**
  * Runs [run] once per (caller, operation, clientRequestId): a replay with the same input returns
  * the stored answer; the same request id with a different input is IDEMPOTENCY_CONFLICT (brief

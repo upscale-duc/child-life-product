@@ -287,7 +287,7 @@
       "expect": {
         "outcome": "answer",
         "saved": 1,
-        "credits": 1
+        "credits": 0
       },
       "group": "flow"
     },

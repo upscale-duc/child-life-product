@@ -74,6 +74,11 @@ export function assistantReadsIn(text: string): AssistantReadRequest[] {
   )
     return [];
   if (/[;\n]/u.test(t) || /\b(vua|roi)\b.*\b(va|and)\b/u.test(t)) return [];
+  // L10 (e2e tk-07, ex-44): "viết bài thơ", "bài hát" and buying advice ("nên mua bỉm loại
+  // nào") are not questions about what was logged.
+  if (/\bbai (tho|hat|ca|van)\b|\b(poem|song)\b/u.test(t)) return [];
+  if (/\b(nen mua|mua loai nao|mua hang nao|loai nao tot|hang nao tot|which brand|should i buy)\b/u.test(t))
+    return [];
   const tool = (name: AssistantReadTool): AssistantReadRequest[] => [
     {
       tool: name,
@@ -113,16 +118,21 @@ export function assistantReadsIn(text: string): AssistantReadRequest[] {
     )
   )
     found.push(...tool('growth_snapshot'));
-  if (/\b(bao lau roi|duoc bao lau|timer|running|how long.*sleep|how long.*nurs)\b/u.test(t))
+  // L10 (e2e rd-07): "hôm nay bé ngủ được bao lâu" is the day's total, not a running timer.
+  if (
+    /\b(bao lau roi|duoc bao lau|timer|running|how long.*sleep|how long.*nurs)\b/u.test(t) &&
+    !/\b(hom nay|hom qua|today|yesterday)\b/u.test(t)
+  )
     found.push(...tool('running_timer'));
   if (/\b(ta|bim|diaper|diapers|nappy|nappies)\b/u.test(t)) found.push(...tool('diaper_summary'));
   if (/\b(hut|vat sua|pump|pumped|pumping)\b/u.test(t)) found.push(...tool('pump_summary'));
   if (/\b(ngu|sleep)\b/u.test(t) && /\b(tuan|gan day|trend|week|less|it hon)\b/u.test(t))
     found.push(...tool('sleep_facts'));
-  if (/\b(bu|cu|feeds|feed|fed|bottle|nursing|ngu|sleep)\b/u.test(t))
+  if (/\b(bu|cu|feeds|feed|fed|bottle|nursing|drink|drank|ngu|sleep)\b/u.test(t))
     found.push(...tool('care_summary'));
   if (
-    /\b(hom nay be the nao|hom nay con the nao|tong ket hom nay|how is.*today|how.*baby.*today|day summary|daily summary)\b/u.test(
+    // L10 (e2e rd-10): "how much did baby drink today?" is the feeds, not the day overview.
+    /\b(hom nay be the nao|hom nay con the nao|tong ket hom nay|how is.*today|how is.*baby.*today|day summary|daily summary)\b/u.test(
       t,
     )
   )

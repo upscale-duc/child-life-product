@@ -1,0 +1,534 @@
+{
+ "id": "os-19-undo-by-the-model",
+ "group": "owner",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 2,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_b89bd7b1d7e0062fc1c28021e6598a10_0",
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T06:00:00.000Z",
+       "endedAt": "2026-10-15T07:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_b89bd7b1d7e0062fc1c28021e6598a10"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé ngủ từ 13h đến 14h"
+       }
+      ],
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_b89bd7b1d7e0062fc1c28021e6598a10_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 2 · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 2,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_b89bd7b1d7e0062fc1c28021e6598a10_0",
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T06:00:00.000Z",
+       "endedAt": "2026-10-15T07:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_b89bd7b1d7e0062fc1c28021e6598a10"
+      ],
+      "recordId": "r_dc7fc004436a2ff257a68e2017b8270d",
+      "recordLink": "/care/records/b_00000000000000000001/r_dc7fc004436a2ff257a68e2017b8270d",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé ngủ từ 13h đến 14h"
+       }
+      ],
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_b89bd7b1d7e0062fc1c28021e6598a10_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_b89bd7b1d7e0062fc1c28021e6598a10_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_dc7fc004436a2ff257a68e2017b8270d",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_b89bd7b1d7e0062fc1c28021e6598a10",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 3 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 2,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_cb8848b5e4dc11513001ad0ccfcc0274_0",
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T05:58:40.000Z",
+       "endedAt": "2026-10-15T06:58:40.000Z",
+       "durationMin": 60
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_cb8848b5e4dc11513001ad0ccfcc0274"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "op": "delete",
+      "targetRecordId": "r_dc7fc004436a2ff257a68e2017b8270d",
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "remove the last sleep log please"
+       }
+      ],
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Xoá giấc ngủ từ 13:00 đã lưu? Bấm Xoá ở thẻ dưới để xoá khỏi nhật ký.",
+        "code": "FOLLOW_UP"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_cb8848b5e4dc11513001ad0ccfcc0274_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 4 · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 2,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_cb8848b5e4dc11513001ad0ccfcc0274_0",
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T05:58:40.000Z",
+       "endedAt": "2026-10-15T06:58:40.000Z",
+       "durationMin": 60
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_cb8848b5e4dc11513001ad0ccfcc0274"
+      ],
+      "recordId": "r_dc7fc004436a2ff257a68e2017b8270d",
+      "recordLink": "/care/records/b_00000000000000000001/r_dc7fc004436a2ff257a68e2017b8270d",
+      "errorCode": null,
+      "warnings": [],
+      "op": "delete",
+      "targetRecordId": "r_dc7fc004436a2ff257a68e2017b8270d",
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "remove the last sleep log please"
+       }
+      ],
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Xoá giấc ngủ từ 13:00 đã lưu? Bấm Xoá ở thẻ dưới để xoá khỏi nhật ký.",
+        "code": "FOLLOW_UP"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_cb8848b5e4dc11513001ad0ccfcc0274_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000006",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_cb8848b5e4dc11513001ad0ccfcc0274_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_dc7fc004436a2ff257a68e2017b8270d",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_cb8848b5e4dc11513001ad0ccfcc0274",
+      "sequence": 6,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

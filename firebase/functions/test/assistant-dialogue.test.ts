@@ -158,6 +158,21 @@ describe('the resolver', () => {
     expect(resolve('hôm nay bé bú mấy cữ', q).kind).toBe('none');
   });
 
+  it('L10 A4: "cảm ơn Lumi" while my question waits keeps its reply; "ok" still may answer', () => {
+    const q = asked();
+    for (const talk of ['thanks', 'greeting', 'bye'] as const) {
+      expect(resolve('cảm ơn Lumi', q, { answersQuestion: true, talk }).kind).toBe('none');
+    }
+    const ampm = { ...q, question: { ...q.question!, field: 'sleep.period' } };
+    expect(resolve('ừ', ampm, { answersQuestion: true, talk: 'ack' }).kind).toBe('answer');
+  });
+
+  it('L10 A6: the question keeps its chip ids, never their labels (a member name on assignee)', () => {
+    const q = asked();
+    expect(q.question!.choiceIds).toEqual(['ago_0']);
+    expect(JSON.stringify(q)).not.toMatch(/Vừa xong|Just now|Việc này/u);
+  });
+
   it('a waiting draft: corrections, additions, a delete, a short reply never a new task', () => {
     const w = waiting();
     expect(resolve('180 chứ', w)).toMatchObject({

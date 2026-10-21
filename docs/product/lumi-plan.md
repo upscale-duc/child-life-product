@@ -664,3 +664,32 @@ prompt and are recorded only in §12's note; no replay fixtures for them.
    **L6**, **L4**, **L9b** with the cost note for the owner, **L9c**, **L5** per module.
 3. Before prod: a device round on the owner's iPhone (Light and Night care) with the cases of §2,
    §11, §12 and the Phase 2 reads, then the prod deploy with owner approval.
+
+### 13.4 L10 done (2026-10-21)
+
+- **A1** a `clarify` ledger entry for the request id replays that answer (`startTask`, no new
+  task). **A2** the routed answer runs under `startTask`'s start and timer (one timing line, 24 s
+  from the request). **A5** only ≤ 200 characters are routed (`assistantTaskLimits.answerChars`); an
+  `INVALID_STATE` from the routed answer reads the words as a new message. **A7** the repeat
+  short-circuit only for the same author.
+- **A3** a past-day word places the START (or the point) on its day: "tối qua 9h" with the model's
+  day 0 → yesterday 21:00; "đêm qua 2h" stays early today; a span's end is the first reading after
+  its start within 18 h. **A4** small talk other than "ok" keeps its reply plus the wait line.
+- **A6** the dialogue doc keeps `choiceIds` only (labels from the task's `pendingClarification`;
+  older docs are trimmed on read); TTL override on `dialogue.ttlAt`; the conversation delete already
+  removed `dialogue/*` (recursive) — now tested.
+- **A8** app: the answer route keeps the thread's first words and request id; "Hoàn tác" →
+  "Mở bản ghi" (`asOpenRecord`); a newer message typed here hides "Trả lời câu hỏi…".
+- **P2** an ongoing start outside the last 18 h asks `time.start`; a finished sleep from start +
+  length over 18 h or ending in the future is flagged; two overlapping sleeps of one message are
+  flagged; "huỷ" cancels the open question after the start transaction; an inline call that hands
+  off no longer charges the AI budget twice.
+- Also (found by the e2e): 0663bb8's reads — e2e cases updated to free rule reads with read cards
+  (`expect.reads`), 26 Phase 2 cases added to `40-reads.json`; read rules no longer swallow "bài
+  thơ", buying advice, "hôm nay ngủ được bao lâu", "how much did baby drink"; an understood read
+  with no event skips the planner (no diaper / pump backstop question).
+- Tests: fake e2e 340/341 (`ga-11` baselined with its reason), assistant integration 214/214,
+  functions 493, contracts 763, app assistant tests and replay (18 owner fixtures added). Live:
+  `docs/assistant/eval-2026-10-21-l10.md` (owner 18/18, reads 10/13 on the model path; LUM-02 closed).
+- Not done here: a phone round; the stale assistant goldens (last regenerated at L1b) are
+  regenerated from a clean tree at this commit.

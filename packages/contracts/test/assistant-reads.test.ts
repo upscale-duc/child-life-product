@@ -26,6 +26,9 @@ describe('Lumi Phase 2 questions', () => {
     ['Bé bú mấy cữ hôm nay?', 'care_summary'],
     ['Tuần này ngủ ít hơn không?', 'sleep_facts'],
     ['Show my reminders', 'reminders_today'],
+    // L10: the day's figures, not a running timer or the overview.
+    ['hôm nay bé ngủ được bao lâu?', 'care_summary'],
+    ['how much did baby drink today?', 'care_summary'],
   ])('%s → %s', (text, tool) => expect(assistantReadsIn(text).map((r) => r.tool)).toEqual([tool]));
 
   it.each([
@@ -34,6 +37,11 @@ describe('Lumi Phase 2 questions', () => {
     'bé đang ngủ',
     'bé biết lẫy rồi',
     'mua sữa nào tốt?',
+    // L10: a poem or a song, buying advice (e2e tk-07, ex-44).
+    'viết cho mình bài thơ về mùa thu',
+    'hát cho bé bài hát ru nào',
+    'nên mua bỉm loại nào cho bé',
+    'which brand of diapers should I buy?',
   ])('does not swallow logs or unrelated questions: %s', (text) =>
     expect(assistantReadsIn(text)).toEqual([]),
   );

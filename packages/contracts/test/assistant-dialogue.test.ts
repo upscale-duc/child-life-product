@@ -11,6 +11,7 @@ import {
   metaCueIn,
   shortReplyIn,
   yesNoIn,
+  type DialogueQuestion,
 } from '../src/index.js';
 
 // Lumi L7 (P-168 #2): the words a follow-up is read by, before rules or the model.
@@ -137,7 +138,7 @@ describe('dialogue state', () => {
         taskId: 'tk_1',
         clarificationId: 'cl_1',
         field: 'time.missing',
-        chips: [],
+        choiceIds: [],
         allowText: true,
         askedAt: now.toISOString(),
         expiresAt: new Date(now.getTime() + 10 * 60_000).toISOString(),
@@ -158,5 +159,25 @@ describe('dialogue state', () => {
     expect(later.question).toBeNull();
     expect(later.saved).toEqual([]);
     expect(liveDialogue(withItems, new Date(now.getTime() + 5 * 60_000))!.saved).toHaveLength(1);
+  });
+
+  it('L10 A6: a question stored with its chip labels (before L10) keeps only their ids', () => {
+    const d = emptyDialogue('u1', 'cv1', now);
+    const q = {
+      taskId: 'tk_1',
+      clarificationId: 'cl_1',
+      field: 'reminder.assignee',
+      chips: [{ id: 'm_1', label: { vi: 'Mẹ Lan', en: 'Mẹ Lan' } }],
+      allowText: false,
+      askedAt: now.toISOString(),
+      expiresAt: new Date(now.getTime() + 10 * 60_000).toISOString(),
+      about: null,
+    } as unknown as DialogueQuestion;
+    const live = liveDialogue(
+      { ...d, question: q, setAside: { ...q, at: now.toISOString() } },
+      now,
+    )!;
+    expect(live.question?.choiceIds).toEqual(['m_1']);
+    expect(JSON.stringify(live)).not.toContain('Mẹ Lan');
   });
 });

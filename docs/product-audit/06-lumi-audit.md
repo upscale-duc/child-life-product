@@ -49,6 +49,8 @@ Thiết kế: emit per-call metadata không content: provider/model actual, oper
 
 Chuẩn bị locked fixtures expected intent/time/role/sources/credits/privacy, chạy scripted provider để regression; live eval bằng synthetic/approved data ở model/prompt revision cụ thể trong lượt triển khai có budget được duyệt. So sánh adversarial/mixed VI-EN/negation/medical ambiguity; lưu aggregate + redacted failures, không raw child chats trong analytics.
 
+**Đã đóng 2026-10-21 (L10):** live eval `assistant-understand-v2` trên gpt-4.1-mini, 31 lượt gọi: 18/18 câu của owner, 10/13 câu đọc Phase 2 qua model (3 lệch ghi ở `docs/assistant/eval-2026-10-21-l10.md`, đều đã được luật đọc đúng ở đường mặc định); 18 câu owner thành replay fixtures; fake e2e 340/341 (ga-11 baseline có lý do).
+
 ## Tránh backlog trùng
 
 Không xây lại chatbot, tool permissions, health route, confirmation cards, credits, usage screen hay conversation deletion. Ưu tiên cost fidelity, live quality evidence, local session boundary (FAM-01), data ngày/tuổi, deep-link đúng bé và chỉ mở thêm memory/recap tool sau khi nguồn và quyền đã rõ.

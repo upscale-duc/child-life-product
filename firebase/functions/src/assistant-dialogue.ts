@@ -135,7 +135,7 @@ export function afterTurn(
       taskId: x.taskId,
       clarificationId: x.question.pc.id,
       field: x.question.pc.field,
-      chips: x.question.pc.choices,
+      choiceIds: x.question.pc.choices.map((c) => c.id),
       allowText: x.question.pc.allowText,
       askedAt: at,
       expiresAt: x.question.expiresAt.toISOString(),
@@ -273,7 +273,7 @@ export function afterAsk(
       taskId: x.taskId,
       clarificationId: x.pc.id,
       field: x.pc.field,
-      chips: x.pc.choices,
+      choiceIds: x.pc.choices.map((c) => c.id),
       allowText: x.pc.allowText,
       askedAt: x.now.toISOString(),
       expiresAt: x.expiresAt.toISOString(),
@@ -579,7 +579,10 @@ export function resolveFollowUp(x: {
     if (yesNoIn(x.text) !== null && q.field.startsWith('time.')) {
       return { kind: 'reask', question: q, why: 'short' };
     }
-    if (x.answersQuestion && !x.ruled) return { kind: 'answer', question: q };
+    // L10 A4: "cảm ơn Lumi" keeps its reply (plus the wait line); only "ok" may answer.
+    if (x.answersQuestion && !x.ruled && (x.talk === null || x.talk === 'ack')) {
+      return { kind: 'answer', question: q };
+    }
   }
   if (cue?.kind === 'keep' && d.setAside && !q) return { kind: 'keep', question: d.setAside };
   const items = recentTargets(d).filter((t) => t.item.kind !== 'timer');

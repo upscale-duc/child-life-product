@@ -315,8 +315,12 @@ class ChatState {
   String? openQuestionFor(String? uid, DateTime now) {
     for (final t in threads.reversed) {
       final task = t.snapshot?.task;
-      // Not loaded yet (an older task of a restored thread): the ones after it still count.
-      if (task == null) continue;
+      // Not loaded yet (an older task of a restored thread): the ones after it still count —
+      // L10 A8: unless typed here (mine, newer than the question: the server set it aside).
+      if (task == null) {
+        if (t.text != null) return null;
+        continue;
+      }
       if (!task.authoredBy(uid)) continue;
       final until = task.clarificationExpiresAt;
       final open =
@@ -821,6 +825,9 @@ class AssistantChat extends Notifier<ChatState> {
     String? requestId,
   }) {
     final conversation = s.task.conversationId ?? state.conversationId;
+    // L10 A8: words routed as the answer to a task already here ("sáng") land in that task: it
+    // keeps its first words and request id, so "Thử lại" resends the original message.
+    final prior = state.thread(s.task.id);
     state = state.copyWith(
       conversationId: conversation,
       threads: [
@@ -828,9 +835,9 @@ class AssistantChat extends Notifier<ChatState> {
         TaskThread(
           taskId: s.task.id,
           snapshot: s,
-          text: text,
-          photoIds: photoIds,
-          requestId: requestId,
+          text: prior == null ? text : prior.text,
+          photoIds: prior == null ? photoIds : prior.photoIds,
+          requestId: prior == null ? requestId : prior.requestId,
         ),
       ],
     );

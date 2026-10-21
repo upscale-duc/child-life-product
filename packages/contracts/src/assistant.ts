@@ -372,6 +372,8 @@ export const assistantTaskLimits = {
   maxImagesPerTask: 3,
   maxImageBytes: 8 * 1024 * 1024,
   maxTextChars: 2000,
+  /** A typed answer to a question (`submitClarification`); L10 A5: longer is a new message. */
+  answerChars: 200,
 } as const;
 
 // ---------- Credits (brief p.17–18; QA values, not commercial) ----------
@@ -1266,7 +1268,7 @@ export const submitClarificationRequestSchema = z.object({
   expectedVersion: z.number().int().min(1),
   clarificationId: z.string().min(1).max(60),
   choiceId: z.string().max(40).nullable(),
-  text: z.string().max(200).nullable(),
+  text: z.string().max(assistantTaskLimits.answerChars).nullable(),
 });
 
 export const patchDraftRequestSchema = z.object({

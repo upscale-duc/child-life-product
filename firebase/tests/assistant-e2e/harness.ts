@@ -1109,6 +1109,8 @@ export function outcomeOf(s: AssistantTaskSnapshot): string {
   if (parts.some((p) => p.type === 'health_support')) return 'health';
   if (codes.includes('SMALL_TALK')) return 'small_talk';
   if (codes.includes('HELP')) return 'help';
+  // L10: a read answered with its card (0663bb8: a question the rules read is free).
+  if (s.task.state === 'ready' && parts.some((p) => p.type === 'read_card')) return 'answer';
   if (s.task.state === 'awaiting_clarification') return 'awaiting';
   if (s.task.state === 'blocked') return `blocked:${s.task.errorCode ?? '-'}`;
   if (s.drafts.length > 0) return 'drafts';

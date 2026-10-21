@@ -1,4 +1,10 @@
 {
-  "note": "Known failing cases of the fake-model run (bug id → invariant codes; docs/assistant/test-report-lumi-2026-10-16.md). A code not listed fails the run (a regression); a listed code no longer seen is reported so the entry can be removed when the bug is fixed. Empty since the Lumi fixes of 2026-10-16 (LUMI-01…17).",
-  "cases": {}
+  "note": "Known failing cases of the fake-model run (bug id → invariant codes; docs/assistant/test-report-lumi-2026-10-16.md). A code not listed fails the run (a regression); a listed code no longer seen is reported so the entry can be removed when the bug is fixed. Empty since the Lumi fixes of 2026-10-16 (LUMI-01…17) until L10 baselined ga-11.",
+  "cases": {
+    "ga-11-rejected-output": {
+      "bug": "L10-ga11",
+      "codes": ["FAILED_SILENT"],
+      "reason": "A model output the schema rejects fails VALIDATION_FAILED with no server part: since D-081 removed the credit line (the only part such a failure had), the app draws the failure card from the task's errorCode (assistant_screens `_taskFailure`, CH25), so the person is never left without a reply. The invariant predates that; kept as a baseline, not a bug (lumi-plan §13 L10)."
+    }
+  }
 }

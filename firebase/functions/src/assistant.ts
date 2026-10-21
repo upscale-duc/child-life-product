@@ -48,6 +48,7 @@ import {
   assistantFlagOn,
   authorOf,
   canReadConversation,
+  AssistantFailure,
   canonical,
   consentRef,
   conversationIdFor,
@@ -66,6 +67,7 @@ import {
   sha,
   sharedConversationId,
   sharesThread,
+  storedRequestAnswer,
   taskIdFor,
   taskIdOfDraft,
   taskRef,
@@ -411,7 +413,8 @@ export async function startTask(
     throw fail('VALIDATION_FAILED', { field: 'quoteId' });
   }
   // Lumi L2: the scope, the quote, the consent and the thread are read together.
-  const [s, quoteSnap, consentSnap, requested, dialogueSnap] = await Promise.all([
+  const routable = Boolean(req.conversationId && text);
+  const [s, quoteSnap, consentSnap, requested, dialogueSnap, routedBefore] = await Promise.all([
     loadTrustedScope(db, uid, req.scope, now, deps.environment),
     quoteId ? quoteRef(db, quoteId).get() : Promise.resolve(null),
     consentRef(db, uid).get(),
@@ -422,9 +425,38 @@ export async function startTask(
           .get()
           .catch(() => null)
       : Promise.resolve(null),
+    // L10 A1: this request id already answered my open question (an answer routed below never
+    // records a task of its own): the app's retry of the same words is that answer, replayed.
+    routable
+      ? storedRequestAnswer<{ taskId: string }>(db, uid, 'clarify', req.clientRequestId)
+      : Promise.resolve(null),
   ]);
   requireAssistant(s);
   timer.mark('scope');
+  if (routedBefore) {
+    await readableTask(db, uid, routedBefore.taskId, now);
+    const [snapshot, usage] = await Promise.all([
+      taskSnapshot(db, routedBefore.taskId, now),
+      assistantUsage(db, s, now),
+    ]);
+    const { windowId: _w, ...usageView } = usage;
+    void _w;
+    deps.onTiming?.(
+      timer.payload({
+        op: 'startTask',
+        taskId: routedBefore.taskId,
+        path: 'answer:replay',
+        state: snapshot.task.state,
+        inline: false,
+      }),
+    );
+    return respond(
+      req.clientRequestId,
+      now,
+      { ...snapshot, usage: usageView },
+      { taskId: routedBefore.taskId, dataVersion: snapshot.task.version },
+    );
+  }
   const modality = quoteSnap?.exists ? (quoteSnap.get('modality') as 'text' | 'image') : 'text';
   const taskId = taskIdFor(uid, req.clientRequestId);
   // ---- Slice A3 (photos): verified before any credit moves (M06) ----
@@ -475,20 +507,38 @@ export async function startTask(
   // delete of what waits or was just saved, a continuation, "là sao" — whichever app sent them.
   let resolution: Resolution = { kind: 'none' };
   const dialogue = dialogueOf(dialogueSnap, now);
+  /** L10 A6: the question's task (its chips' labels live there, never in the dialogue doc). */
+  const questionTasks = new Map<string, Promise<FirebaseFirestore.DocumentSnapshot>>();
+  const questionTask = (id: string) => {
+    if (!questionTasks.has(id)) questionTasks.set(id, taskRef(db, id).get());
+    return questionTasks.get(id)!;
+  };
   if (text && modality === 'text' && req.conversationId && signs.length === 0) {
     if (dialogueSnap?.exists) {
       const q = dialogue?.question ?? null;
+      const pc = q
+        ? ((await questionTask(q.taskId)).get('pendingClarification') as
+            Clarification | null | undefined)
+        : null;
       resolution = resolveFollowUp({
         text,
         dialogue,
         ruled,
         talk,
         answersQuestion: q
-          ? answersOpenQuestion({ field: q.field, choices: q.chips, allowText: q.allowText }, text)
+          ? answersOpenQuestion(
+              {
+                field: q.field,
+                choices: pc?.id === q.clarificationId ? pc.choices : [],
+                allowText: q.allowText,
+              },
+              text,
+            )
           : false,
       });
-    } else if (!ruled) {
-      // A thread without a state yet (before L7): L1b's query of my open question.
+    } else if (!ruled && (talk === null || talk === 'ack')) {
+      // A thread without a state yet (before L7): L1b's query of my open question ("cảm ơn"
+      // keeps its reply, L10 A4).
       const open = await openQuestionTaskOf(db, req.conversationId, uid, now);
       if (open && answersOpenQuestion(open.pc, text)) {
         resolution = {
@@ -497,7 +547,7 @@ export async function startTask(
             taskId: open.id,
             clarificationId: open.pc.id,
             field: open.pc.field,
-            chips: open.pc.choices,
+            choiceIds: open.pc.choices.map((c) => c.id),
             allowText: open.pc.allowText,
             askedAt: now.toISOString(),
             expiresAt: now.toISOString(),
@@ -509,40 +559,56 @@ export async function startTask(
   }
   if (resolution.kind === 'answer' || resolution.kind === 'reask' || resolution.kind === 'keep') {
     const q: DialogueQuestion = resolution.question;
-    const task = await taskRef(db, q.taskId).get();
+    const task = await questionTask(q.taskId);
     const pc = task.get('pendingClarification') as Clarification | null | undefined;
     const open =
+      // L10 A5: an answer is at most what `submitClarification` takes (longer words are read
+      // as a message of their own).
+      (text?.length ?? 0) <= assistantTaskLimits.answerChars &&
       task.exists &&
       task.get('ownerUid') === uid &&
       task.get('state') === 'awaiting_clarification' &&
       pc?.id === q.clarificationId &&
       (toDate(task.get('clarificationExpiresAt'))?.getTime() ?? 0) > now.getTime();
+    let r: AssistantResponse<AssistantTaskSnapshot> | null = null;
     if (open) {
-      const r = await submitClarification(
-        deps,
-        uid,
-        {
-          contractVersion: req.contractVersion,
-          clientRequestId: req.clientRequestId,
-          locale: req.locale,
-          taskId: q.taskId,
-          expectedVersion: task.get('version') as number,
-          clarificationId: q.clarificationId,
-          choiceId: null,
-          text,
-        },
-        resolution.kind === 'answer'
-          ? {}
-          : {
-              reask: questionWaitPart(
-                q,
-                s.zone,
-                req.locale,
-                now,
-                resolution.kind === 'keep' ? 'keep' : resolution.why,
-              ),
-            },
-      );
+      try {
+        r = await submitClarification(
+          deps,
+          uid,
+          {
+            contractVersion: req.contractVersion,
+            clientRequestId: req.clientRequestId,
+            locale: req.locale,
+            taskId: q.taskId,
+            expectedVersion: task.get('version') as number,
+            clarificationId: q.clarificationId,
+            choiceId: null,
+            text,
+          },
+          {
+            // L10 A2: the inline budget counts from this request, not from the routed answer.
+            started,
+            timer,
+            ...(resolution.kind === 'answer'
+              ? {}
+              : {
+                  reask: questionWaitPart(
+                    q,
+                    s.zone,
+                    req.locale,
+                    now,
+                    resolution.kind === 'keep' ? 'keep' : resolution.why,
+                  ),
+                }),
+          },
+        );
+      } catch (e) {
+        // L10 A5: a chip tap (or another device) answered it first: read as a new message.
+        if (!(e instanceof AssistantFailure && e.reason === 'INVALID_STATE')) throw e;
+      }
+    }
+    if (r) {
       const usage = await assistantUsage(db, s, now);
       const { windowId: _w, ...usageView } = usage;
       void _w;
@@ -560,10 +626,6 @@ export async function startTask(
     }
     // The question is gone (answered elsewhere, expired): "Giữ lại" says so, the rest is read.
     if (resolution.kind !== 'keep') resolution = { kind: 'none' };
-  }
-  // "huỷ" / "xoá cái vừa ghi" while my question waits: that task stops (its credits released).
-  if (resolution.kind === 'cancel_question') {
-    await stopTask(db, resolution.question.taskId, now, 'canceled', null);
   }
   const followUp = resolution.kind === 'none' ? null : resolution;
   /** A follow-up the server applies itself: no rules, no model, 0 credits. */
@@ -743,7 +805,6 @@ export async function startTask(
             uid,
             text,
             now,
-            visibility,
           })
         : null;
     if (repeatOf) {
@@ -1014,6 +1075,11 @@ export async function startTask(
     };
   });
   timer.mark('start');
+  // "huỷ" / "xoá cái vừa ghi" while my question waits: that task stops (its credits released) —
+  // L10: once this message's task is recorded, so a start that fails leaves the question open.
+  if (followUp?.kind === 'cancel_question') {
+    await stopTask(db, followUp.question.taskId, now, 'canceled', null);
+  }
   let path = out.replay
     ? 'replay'
     : resolved
@@ -1070,11 +1136,16 @@ export async function submitClarification(
    * L7 (P-168 #2, #6): `startTask` read the words as "là sao" / "ok" / "Giữ lại": the question is
    * asked again in its task, with [reask] (what Lumi waits for) before its chips.
    */
-  opts: { reask?: AssistantPart } = {},
+  opts: {
+    reask?: AssistantPart;
+    /** L10 A2: routed from `startTask`: its start (the inline budget) and its timer. */
+    started?: number;
+    timer?: HopTimer;
+  } = {},
 ): Promise<AssistantResponse<AssistantTaskSnapshot>> {
   const { db, now } = deps;
-  const started = Date.now();
-  const timer = new HopTimer();
+  const started = opts.started ?? Date.now();
+  const timer = opts.timer ?? new HopTimer();
   const req = parseRequest(submitClarificationRequestSchema, data);
   const { contractVersion: _c, clientRequestId, locale: _l, ...input } = req;
   void _c;
@@ -1311,15 +1382,17 @@ export async function submitClarification(
   // Lumi L2: the whole snapshot comes back (the next card or question draws at once).
   const snapshot = await taskSnapshot(db, req.taskId, now);
   timer.mark('snapshot');
-  deps.onTiming?.(
-    timer.payload({
-      op: 'submitClarification',
-      taskId: req.taskId,
-      path,
-      state: snapshot.task.state,
-      inline: inlineRun !== null,
-    }),
-  );
+  // Routed from `startTask`: that request logs the whole timing once.
+  if (!opts.timer)
+    deps.onTiming?.(
+      timer.payload({
+        op: 'submitClarification',
+        taskId: req.taskId,
+        path,
+        state: snapshot.task.state,
+        inline: inlineRun !== null,
+      }),
+    );
   return respond(clientRequestId, now, snapshot, {
     taskId: req.taskId,
     dataVersion: snapshot.task.version,
@@ -1984,21 +2057,21 @@ export async function deleteAssistantConversation(
 
 /**
  * Lumi 2026-10-16: the thread's last task when it was the same words ([x.text], contracts
- * `sameMessage`) within `assistantRepeatWindowMin`, by this person (or a shared task in the
- * shared thread), and one of its drafts still waits to be saved — else null. Read inside the
+ * `sameMessage`) within `assistantRepeatWindowMin`, by this person (L10 A7: also in the shared
+ * thread), and one of its drafts still waits to be saved — else null. Read inside the
  * start transaction.
  */
 async function pendingRepeatOf(
   tx: FirebaseFirestore.Transaction,
   db: FirebaseFirestore.Firestore,
   lastTaskId: string | undefined,
-  x: { uid: string; text: string; now: Date; visibility: string },
+  x: { uid: string; text: string; now: Date },
 ): Promise<string | null> {
   if (!lastTaskId) return null;
   const prev = await tx.get(taskRef(db, lastTaskId));
   if (!prev.exists || prev.get('state') !== 'ready') return null;
-  const shared = prev.get('visibility') === 'shared' && x.visibility === 'shared';
-  if (!shared && prev.get('ownerUid') !== x.uid) return null;
+  // L10 A7: only my own words again; another member's same words get their own draft.
+  if (prev.get('ownerUid') !== x.uid) return null;
   const sentAt = toDate(prev.get('anchorInstant'));
   if (!sentAt || x.now.getTime() - sentAt.getTime() > assistantRepeatWindowMin * 60_000) {
     return null;

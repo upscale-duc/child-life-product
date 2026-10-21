@@ -55,6 +55,10 @@ export interface ResolvedTime {
   derived: 'start' | 'end' | null;
   /** LUMI-04 guard: the model's clock is not what its own words say (the words win, flagged). */
   misread: ('startedAt' | 'endedAt' | 'occurredAt')[];
+  /** L10: times out of bounds (a sleep over 18 h, two sleeps overlapping): flagged for review. */
+  check?: ('startedAt' | 'endedAt')[];
+  /** L10: an ongoing state whose start is not within the last 18 h: its start is asked. */
+  askStart?: boolean;
 }
 
 export interface ResolveInput {
@@ -217,8 +221,32 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
     const kept = hours.filter((h) => hourInDayHalf(h, ampm));
     return kept.length > 0 ? kept : hours;
   };
+  /**
+   * L10 A3: the day a past-day word names for an hour the model placed today or later: "tối qua
+   * 9h" / "hôm qua" → yesterday, "hôm kia" → the day before; "đêm qua 2h" / "last night 2am" is
+   * early TODAY (only its evening hours are yesterday).
+   */
+  const nightOnly =
+    /(?<![\p{L}])(?:dem qua|last night)(?![\p{L}])/u.test(folded) &&
+    !/(?<![\p{L}])(?:hom qua|bua qua|toi qua|sang qua|trua qua|chieu qua|hom kia|yesterday)(?![\p{L}])/u.test(
+      folded,
+    );
+  const pastOffsetFor = (h: number) =>
+    /(?<![\p{L}])hom kia(?![\p{L}])/u.test(folded) ? -2 : nightOnly && h < 12 ? 0 : -1;
   /** A log's instant: never silently in the future, last night when said so; open → asked. */
-  const resolveLog = (c: Clock, open: string[]): Date => {
+  const resolveLog = (c: Clock, open: string[], role: 'point' | 'end' = 'point'): Date => {
+    if (saysPastDay && c.offset >= 0 && role === 'point') {
+      const cands = c.hours
+        .map((h) => inst(addDaysIso(today, pastOffsetFor(h)), h, c.m))
+        .filter((t) => t.getTime() <= anchor.getTime() + SKEW_MS);
+      const hourOf = (t: Date) => Number(localClock(zone, t).slice(0, 2));
+      const kept = keptByAnswer(cands.map(hourOf));
+      const picked = cands
+        .filter((t) => kept.includes(hourOf(t)))
+        .sort((a, b) => b.getTime() - a.getTime());
+      if (picked.length > 1 && !ampm) open.push(c.label);
+      if (picked.length > 0) return picked[0]!;
+    }
     const days = saysPastDay || c.offset === -2 ? [c.offset] : c.offset === 1 ? [1] : [0, -1];
     for (const d of days) {
       const date = addDaysIso(today, d);
@@ -278,12 +306,13 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
     open: string[],
     evidence: string | null = null,
     misread: (() => void) | null = null,
+    role: 'point' | 'end' = 'point',
   ): Date | null => {
     if (!spec) return null;
     if (spec.how === 'ago') return new Date(anchor.getTime() - (spec.minutes ?? 0) * 60_000);
     const c = clockOf(spec, evidence);
     if (c?.mismatch) misread?.();
-    return c ? resolveLog(c, open) : null;
+    return c ? resolveLog(c, open, role) : null;
   };
   /** Another event of the message has a time: a log without one is left to fill, not now. */
   const timedElsewhere = (e: UnderstandingEvent) =>
@@ -354,20 +383,30 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
     const point = kind === 'sleep' ? 'startedAt' : 'occurredAt';
     const startOf = () => instantOf(startSaid, open, evOf('started'), () => misread.push(point));
     const endOf = () =>
-      instantOf(endSaid, open, evOf('ended'), () =>
-        misread.push(kind === 'sleep' ? 'endedAt' : 'occurredAt'),
+      instantOf(
+        endSaid,
+        open,
+        evOf('ended'),
+        () => misread.push(kind === 'sleep' ? 'endedAt' : 'occurredAt'),
+        // A sleep's end is read against its start below, never moved by "tối qua" itself.
+        kind === 'sleep' ? 'end' : 'point',
       );
     const running = kind === 'sleep' || kind === 'breast' ? (x.timers?.[kind] ?? null) : null;
     if (e.status === 'ongoing' && (kind === 'sleep' || kind === 'breast')) {
       // §12.3 #2: still going on → a timer from when it began (a length = how long so far).
       const at = startOf() ?? (dur !== null ? minus(anchor, dur) : anchor);
+      // L10: a state that began in the future or more than 18 h ago is not a reading to keep
+      // ("đang ngủ từ 16h" at 15:30): its start is asked.
+      const askStart =
+        at.getTime() > anchor.getTime() + SKEW_MS || anchor.getTime() - at.getTime() > MAX_SLEEP_MS;
       return {
         at: null,
         endAt: null,
         timer: { action: 'start', at: iso(at)! },
-        ambiguous: open,
+        ambiguous: askStart ? [] : open,
         derived: null,
         misread,
+        ...(askStart ? { askStart } : {}),
       };
     }
     const none: ResolvedTime = {
@@ -379,6 +418,37 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
       misread,
     };
     if (kind === 'sleep') {
+      if (saysPastDay && startSaid?.how === 'clock' && endSaid?.how === 'clock') {
+        // L10 A3: "tối qua ngủ 21h đến 6h sáng", "hôm qua ngủ 13h đến 14h": the past-day word
+        // places the START; the end is the first reading after it within 18 h.
+        const o: string[] = [];
+        const m: ResolvedTime['misread'] = [];
+        const s0 = instantOf(startSaid, o, evOf('started'), () => m.push('startedAt'));
+        const c = clockOf(endSaid, evOf('ended'));
+        if (s0 && c) {
+          if (c.mismatch) m.push('endedAt');
+          const startDate = localDateIn(zone, s0);
+          const ends = [0, 1]
+            .flatMap((d) => c.hours.map((h) => inst(addDaysIso(startDate, d), h, c.m)))
+            .filter(
+              (t) =>
+                t.getTime() > s0.getTime() &&
+                t.getTime() - s0.getTime() <= MAX_SLEEP_MS &&
+                t.getTime() <= anchor.getTime() + SKEW_MS,
+            )
+            .sort((a, b) => a.getTime() - b.getTime());
+          const fit =
+            dur !== null
+              ? ends.find((t) => Math.abs(t.getTime() - s0.getTime() - dur * 60_000) <= 10 * 60_000)
+              : undefined;
+          const e0 = fit ?? ends[0];
+          if (e0) {
+            open.push(...o);
+            misread.push(...m);
+            return { ...none, at: iso(s0), endAt: iso(e0) };
+          }
+        }
+      }
       const end = endOf();
       // A start given with its end is read BEFORE the end, within 18 h ("đêm qua 9h tối đến
       // 6h sáng" keeps its days; "ngủ 9h, dậy 10h" at 15:00 is the morning): never a span that
@@ -408,6 +478,14 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
       if (!start && end && dur !== null) {
         start = minus(end, dur);
         return { ...none, at: iso(start), endAt: iso(end), derived: 'start' };
+      }
+      if (start && !end && dur !== null && e.status !== 'ongoing') {
+        // L10: a finished sleep from its start and length ends at start + length — at most 18 h
+        // and never in the future, else the end is flagged for review (the planner computes it).
+        const ends = start.getTime() + dur * 60_000;
+        if (dur * 60_000 > MAX_SLEEP_MS || ends > anchor.getTime() + SKEW_MS) {
+          return { ...none, at: iso(start), check: ['endedAt'] };
+        }
       }
       return { ...none, at: iso(start), endAt: iso(end) };
     }
@@ -448,6 +526,7 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
   // ---------- The planner's intents ----------
   const known = new Set<string>(intentFieldNames);
   const back = (f: string) => (f === 'started' ? 'time' : f === 'ended' ? 'endTime' : f);
+  const sleeps: { r: ResolvedTime; dur: number | null }[] = [];
   const intents: ModelIntent[] = events.map((e) => {
     const f = e.fields;
     const fields: ModelIntent['fields'] = {
@@ -475,6 +554,7 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
       phase: null,
     };
     const resolved = isTimedEventKind(e.kind) ? resolveTimed(e) : undefined;
+    if (resolved && e.kind === 'sleep') sleeps.push({ r: resolved, dur: e.durationMin ?? null });
     return {
       kind: e.kind as DraftKind,
       fields,
@@ -491,6 +571,18 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
       ...(resolved ? { resolved } : {}),
     };
   });
+  // L10: two sleeps of one message never overlap ("ngủ 9h-11h, rồi ngủ 10h-12h"): both flagged.
+  const spans = sleeps.flatMap(({ r, dur }) => {
+    if (!r.at) return [];
+    const start = Date.parse(r.at);
+    const end = r.endAt ? Date.parse(r.endAt) : dur ? start + dur * 60_000 : null;
+    return end !== null && end > start ? [{ r, start, end }] : [];
+  });
+  for (const a of spans) {
+    if (spans.some((b) => b !== a && a.start < b.end && b.start < a.end)) {
+      a.r.check = [...new Set([...(a.r.check ?? []), 'startedAt' as const, 'endedAt' as const])];
+    }
+  }
   const ext: ModelExtraction = {
     intents:
       act === 'undo' || act === 'meta' || act === 'talk' || act === 'none' || act === 'answer'

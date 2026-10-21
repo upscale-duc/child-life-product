@@ -1,6 +1,6 @@
 {
   "group": "read",
-  "note": "Questions about what was logged: figures from the engine, never the model.",
+  "note": "Questions about what was logged: figures from the engine, never the model. 0663bb8 (Phase 2): a question the rules read is answered with its read card at 0 credits, no model; `rules: false` cases (rd-20…) let the model choose the tool (live eval on assistant-understand-v2).",
   "cases": [
     {
       "id": "rd-01-today-feeds",
@@ -22,7 +22,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -46,7 +48,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -70,7 +74,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["sleep_facts"]
       },
       "group": "read"
     },
@@ -90,8 +96,9 @@
         }
       ],
       "expect": {
-        "outcome": "answer",
-        "credits": 1
+        "outcome": ["answer", "fallback"],
+        "credits": 0,
+        "calls": 0
       },
       "group": "read"
     },
@@ -119,7 +126,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -143,7 +152,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -169,7 +180,9 @@
       "expect": {
         "outcome": "answer",
         "visibility": "private",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -193,10 +206,12 @@
         }
       ],
       "expect": {
-        "outcome": "read_denied",
-        "credits": 0
+        "outcome": ["read_denied", "fallback"],
+        "credits": 0,
+        "calls": 0
       },
-      "group": "read"
+      "group": "read",
+      "title": "A relative without daily care: told plainly the role cannot read the care log (0663bb8: a text answer, free), never figures"
     },
     {
       "id": "rd-09-ambiguous-read",
@@ -254,7 +269,9 @@
       ],
       "expect": {
         "outcome": "answer",
-        "credits": 1
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -275,7 +292,10 @@
         }
       ],
       "expect": {
-        "outcome": ["answer", "fallback"]
+        "outcome": ["answer", "fallback"],
+        "credits": 0,
+        "calls": 0,
+        "reads": ["care_summary"]
       },
       "group": "read"
     },
@@ -301,8 +321,9 @@
         }
       ],
       "expect": {
-        "outcome": "read_denied",
-        "credits": 0
+        "outcome": ["read_denied", "fallback"],
+        "credits": 0,
+        "calls": 0
       }
     },
     {
@@ -340,6 +361,673 @@
         "outcome": "answer",
         "asks": ["intent"],
         "credits": 1
+      }
+    },
+    {
+      "id": "rd-20-day-overview",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Hôm nay bé thế nào?\" → the day_overview card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hôm nay bé thế nào?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "day_overview",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["day_overview"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-21-diapers-today",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Bé thay mấy tã hôm nay?\" → the diaper_summary card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé thay mấy tã hôm nay?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "diaper_summary",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["diaper_summary"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-22-pump-week",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Hút được bao nhiêu trong 7 ngày?\" → the pump_summary card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hút được bao nhiêu trong 7 ngày?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "pump_summary",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["pump_summary"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-23-growth",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Bé nặng bao nhiêu, có chuẩn không?\" → the growth_snapshot card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé nặng bao nhiêu, có chuẩn không?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "growth_snapshot",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["growth_snapshot"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-24-running-timer",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Bé ngủ được bao lâu rồi?\" → the running_timer card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé ngủ được bao lâu rồi?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "running_timer",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["running_timer"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-25-vaccine-next",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Sắp tới bé tiêm gì?\" → the vaccine_next card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Sắp tới bé tiêm gì?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "vaccine_next",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["vaccine_next"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-26-reminders-today",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Hôm nay có nhắc gì?\" → the reminders_today card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hôm nay có nhắc gì?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "reminders_today",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["reminders_today"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-27-spending-month",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Tháng này tiêu bao nhiêu?\" → the spending_month card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Tháng này tiêu bao nhiêu?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "spending_month",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["spending_month"],
+        "calls": 1,
+        "visibility": "private"
+      }
+    },
+    {
+      "id": "rd-28-solids-history",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Bé đã ăn thử những gì?\" → the solids_history card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé đã ăn thử những gì?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "solids_history",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["solids_history"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-29-milestones",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Bé biết làm gì rồi?\" → the milestones card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé biết làm gì rồi?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "milestones",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["milestones"],
+        "calls": 1,
+        "visibility": "private"
+      }
+    },
+    {
+      "id": "rd-30-stage",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Tháng này bé nên làm gì?\" → the stage card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Tháng này bé nên làm gì?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "stage",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["stage"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-31-library",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Có bài nào về giấc ngủ không?\" → the library_search card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Có bài nào về giấc ngủ không?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "library_search",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["library_search"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-32-first-aid",
+      "group": "read",
+      "title": "Phase 2 (0663bb8): \"Hướng dẫn sơ cứu cho bé ở đâu?\" → the first_aid card, the model choosing the tool (rules off)",
+      "rules": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hướng dẫn sơ cứu cho bé ở đâu?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "first_aid",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["first_aid"],
+        "calls": 1
+      }
+    },
+    {
+      "id": "rd-r20-day-overview",
+      "group": "read",
+      "title": "Phase 2 rules: \"Hôm nay bé thế nào?\" → the day_overview card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hôm nay bé thế nào?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["day_overview"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r21-diapers-today",
+      "group": "read",
+      "title": "Phase 2 rules: \"Bé thay mấy tã hôm nay?\" → the diaper_summary card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé thay mấy tã hôm nay?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["diaper_summary"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r22-pump-week",
+      "group": "read",
+      "title": "Phase 2 rules: \"Hút được bao nhiêu trong 7 ngày?\" → the pump_summary card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hút được bao nhiêu trong 7 ngày?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["pump_summary"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r23-growth",
+      "group": "read",
+      "title": "Phase 2 rules: \"Bé nặng bao nhiêu, có chuẩn không?\" → the growth_snapshot card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé nặng bao nhiêu, có chuẩn không?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["growth_snapshot"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r24-running-timer",
+      "group": "read",
+      "title": "Phase 2 rules: \"Bé ngủ được bao lâu rồi?\" → the running_timer card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé ngủ được bao lâu rồi?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["running_timer"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r25-vaccine-next",
+      "group": "read",
+      "title": "Phase 2 rules: \"Sắp tới bé tiêm gì?\" → the vaccine_next card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Sắp tới bé tiêm gì?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["vaccine_next"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r26-reminders-today",
+      "group": "read",
+      "title": "Phase 2 rules: \"Hôm nay có nhắc gì?\" → the reminders_today card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hôm nay có nhắc gì?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["reminders_today"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r27-spending-month",
+      "group": "read",
+      "title": "Phase 2 rules: \"Tháng này tiêu bao nhiêu?\" → the spending_month card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Tháng này tiêu bao nhiêu?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["spending_month"],
+        "credits": 0,
+        "calls": 0,
+        "visibility": "private"
+      }
+    },
+    {
+      "id": "rd-r28-solids-history",
+      "group": "read",
+      "title": "Phase 2 rules: \"Bé đã ăn thử những gì?\" → the solids_history card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé đã ăn thử những gì?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["solids_history"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r29-milestones",
+      "group": "read",
+      "title": "Phase 2 rules: \"Bé biết làm gì rồi?\" → the milestones card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Bé biết làm gì rồi?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["milestones"],
+        "credits": 0,
+        "calls": 0,
+        "visibility": "private"
+      }
+    },
+    {
+      "id": "rd-r30-stage",
+      "group": "read",
+      "title": "Phase 2 rules: \"Tháng này bé nên làm gì?\" → the stage card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Tháng này bé nên làm gì?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["stage"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r31-library",
+      "group": "read",
+      "title": "Phase 2 rules: \"Có bài nào về giấc ngủ không?\" → the library_search card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Có bài nào về giấc ngủ không?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["library_search"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "rd-r32-first-aid",
+      "group": "read",
+      "title": "Phase 2 rules: \"Hướng dẫn sơ cứu cho bé ở đâu?\" → the first_aid card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "Hướng dẫn sơ cứu cho bé ở đâu?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["first_aid"],
+        "credits": 0,
+        "calls": 0
       }
     }
   ]

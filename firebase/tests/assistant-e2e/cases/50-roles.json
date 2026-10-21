@@ -255,7 +255,7 @@
       "expect": {
         "outcome": "answer",
         "visibility": "shared",
-        "credits": 1
+        "credits": 0
       },
       "group": "roles"
     },

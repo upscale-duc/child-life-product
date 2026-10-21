@@ -170,6 +170,8 @@ export interface Expect {
   recordData?: Record<string, unknown>;
   /** Fake mode: model calls for the whole case. */
   calls?: number;
+  /** L10: read cards (by tool) the last message must answer with. */
+  reads?: string[];
   /** Invariants this case is allowed to break by design (rare; documented). */
   allow?: string[];
 }

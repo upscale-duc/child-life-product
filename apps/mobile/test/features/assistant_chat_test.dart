@@ -5,6 +5,7 @@ import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/features/assistant/assistant_controller.dart';
 import 'package:child_life/features/assistant/assistant_entry.dart';
 import 'package:child_life/features/assistant/assistant_models.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
@@ -295,7 +296,7 @@ void main() {
       return repo;
     }
 
-    testWidgets('save both: per-item results, "Mở nhật ký" / "Hoàn tác"', (
+    testWidgets('save both: per-item results, "Mở nhật ký" / "Mở bản ghi"', (
       tester,
     ) async {
       final repo = await drafts(tester);
@@ -310,10 +311,10 @@ void main() {
       expect(_text('Đã lưu'), findsNWidgets(2));
       expect(_text('Lưu 2 mục'), findsNothing);
       expect(_text('Mở nhật ký'), findsNWidgets(2));
-      expect(_text('Hoàn tác'), findsNWidgets(2));
+      expect(_text('Mở bản ghi'), findsNWidgets(2));
     });
 
-    testWidgets('"Hoàn tác" opens the record in its module (G02)', (
+    testWidgets('"Mở bản ghi" opens the record in its module (G02, L10 A8)', (
       tester,
     ) async {
       final repo = FakeAssistantRepository(tasks: {taskA: batchSnapshot()});
@@ -324,7 +325,7 @@ void main() {
       );
       await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
-      await tester.tap(_text('Hoàn tác').first);
+      await tester.tap(_text('Mở bản ghi').first);
       await tester.pumpAndSettle();
       expect(visits.last.location, '/care/record/r_${'c' * 32}');
       // Nothing was deleted.
@@ -585,6 +586,63 @@ void main() {
         expect(c['text'], 'Sáng');
         expect(repo.named('submitClarification'), isEmpty);
         expect(repo.named('quoteTask'), isEmpty);
+      },
+    );
+
+    testWidgets(
+      'L10 A8: the answer routed into my task keeps its first words and request id',
+      (tester) async {
+        final asked = snapshotWith(
+          task: taskJson(
+            state: 'awaiting_clarification',
+            clarification: clarificationJson(),
+          ),
+        );
+        final repo = FakeAssistantRepository(
+          startAnswer: (args) => envelope(
+            args['text'] == 'Sáng' ? batchSnapshot() : asked,
+            taskId: taskA,
+          ),
+        );
+        final (_, container) = await _pump(tester, repo: repo);
+        await _type(tester, 'bé bú 120ml lúc 8h');
+        await _send(tester);
+        final first = repo.named('startTask').single.args['requestId'];
+        expect(_text('Trả lời câu hỏi…'), findsOneWidget);
+        await _type(tester, 'Sáng');
+        await _send(tester);
+        final calls = repo.named('startTask');
+        expect(calls, hasLength(2));
+        expect(calls.last.args['requestId'], isNot(first));
+        final chat = container.read(assistantChatProvider(teddyScope.key));
+        final thread = chat.thread(taskA)!;
+        expect(thread.text, 'bé bú 120ml lúc 8h');
+        expect(thread.requestId, first);
+      },
+    );
+
+    testWidgets(
+      'L10 A8: a newer message of mine after the question hides "Trả lời câu hỏi…"',
+      (tester) async {
+        final repo = FakeAssistantRepository(
+          tasks: {
+            taskA: snapshotWith(
+              task: taskJson(
+                state: 'awaiting_clarification',
+                clarification: clarificationJson(),
+              ),
+            ),
+          },
+          startAnswer: (args) => envelope(
+            snapshotWith(task: taskJson(id: taskB)),
+            taskId: taskB,
+          ),
+        );
+        await _pump(tester, repo: repo, prefs: _thread([taskA]));
+        expect(_text('Trả lời câu hỏi…'), findsOneWidget);
+        await _type(tester, 'hôm nay bé ngủ bao nhiêu rồi');
+        await _send(tester);
+        expect(_text('Trả lời câu hỏi…'), findsNothing);
       },
     );
 

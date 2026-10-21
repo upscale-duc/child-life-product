@@ -14493,7 +14493,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asOpenLog => 'Open log';
 
   @override
-  String get asUndo => 'Undo';
+  String get asOpenRecord => 'Open record';
 
   @override
   String get asOpenSpending => 'Open Expenses';

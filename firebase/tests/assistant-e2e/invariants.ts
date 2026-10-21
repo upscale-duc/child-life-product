@@ -246,7 +246,10 @@ export function checkSnapshot(
       : t.state === 'blocked'
         ? ['none', 'released']
         : outcome === 'drafts' || outcome === 'answer' || outcome === 'care'
-          ? ['committed']
+          ? // L10: a question the rules read is free (0663bb8): nothing is committed.
+            outcome === 'answer' && t.credits === 0
+            ? ['committed', 'released', 'none']
+            : ['committed']
           : t.state === 'ready' || t.state === 'failed' || t.state === 'canceled'
             ? ['none', 'released']
             : null;
@@ -834,6 +837,21 @@ export function checkExpect(
     );
     for (const code of e.notCodes)
       if (codes.has(code)) out.push(v('EXPECT_CODE', 'P1', at, `notice ${code} should not show`));
+  }
+  if (e.reads && last) {
+    // L10: the read cards the last message answered with (Phase 2 tools, 0663bb8).
+    const tools = new Set(
+      last.messages
+        .filter((m) => m.role === 'assistant' && m.taskId === run.lastTaskId)
+        .flatMap((m) => m.parts)
+        .flatMap((p) => (p.type === 'read_card' ? [p.tool as string] : [])),
+    );
+    for (const tool of e.reads)
+      if (!tools.has(tool)) {
+        out.push(
+          v('EXPECT_READ', 'P1', at, `read card ${tool} missing (got ${[...tools].join(',') || 'none'})`),
+        );
+      }
   }
   if (mode === 'fake' && e.calls !== undefined && run.modelCalls !== e.calls) {
     out.push(v('EXPECT_CALLS', 'P2', at, `${run.modelCalls} model call(s), expected ${e.calls}`));

@@ -255,6 +255,136 @@ describe('understanding v1: time semantics (§12.3 #2)', () => {
   });
 });
 
+describe('L10: time bounds (lumi-plan §13.2 A3, P2)', () => {
+  /** 15:00 in Vietnam on 2026-10-19. */
+  const AT3 = new Date('2026-10-19T08:00:00Z');
+  const dayOf = (iso: string | null | undefined) =>
+    iso ? new Intl.DateTimeFormat('en-CA', { timeZone: ZONE }).format(new Date(iso)) : null;
+
+  it('A3: "tối qua 9h" with a model dayOffset 0 at 15:00 → 21:00 yesterday, never today', () => {
+    const r = resolve(
+      u('log', [
+        ev('bottle', 'finished', { started: clock('21:00', 0), fields: { amountMl: 120 } }),
+      ]),
+      'tối qua 9h bé bú bình 120ml',
+      { anchor: AT3 },
+    );
+    const at = r.ext.intents[0]!.resolved!.at;
+    expect(local(at)).toBe('21:00');
+    expect(dayOf(at)).toBe('2026-10-18');
+    // A day the model already placed in the past is kept.
+    const r2 = resolve(
+      u('log', [
+        ev('bottle', 'finished', { started: clock('21:00', -1), fields: { amountMl: 120 } }),
+      ]),
+      'tối qua 9h bé bú bình 120ml',
+      { anchor: AT3 },
+    );
+    expect(dayOf(r2.ext.intents[0]!.resolved!.at)).toBe('2026-10-18');
+  });
+
+  it('A3: "đêm qua 2h" stays early today; a span is placed by its start, its end read after it', () => {
+    const early = resolve(
+      u('log', [
+        ev('bottle', 'finished', { started: clock('02:00', 0), fields: { amountMl: 120 } }),
+      ]),
+      'đêm qua 2h bé bú bình 120ml',
+      { anchor: AT3 },
+    );
+    expect(dayOf(early.ext.intents[0]!.resolved!.at)).toBe('2026-10-19');
+    expect(local(early.ext.intents[0]!.resolved!.at)).toBe('02:00');
+    const night = resolve(
+      u('log', [ev('sleep', 'finished', { started: clock('21:00', 0), ended: clock('06:00', 0) })]),
+      'tối qua bé ngủ từ 21h đến 6h sáng',
+      { anchor: AT3 },
+    );
+    const n = night.ext.intents[0]!.resolved!;
+    expect([dayOf(n.at), local(n.at), dayOf(n.endAt), local(n.endAt)]).toEqual([
+      '2026-10-18',
+      '21:00',
+      '2026-10-19',
+      '06:00',
+    ]);
+    const day = resolve(
+      u('log', [ev('sleep', 'finished', { started: clock('13:00', 0), ended: clock('14:00', 0) })]),
+      'hôm qua bé ngủ từ 13h đến 14h',
+      { anchor: AT3 },
+    );
+    const d = day.ext.intents[0]!.resolved!;
+    expect([dayOf(d.at), local(d.at), dayOf(d.endAt), local(d.endAt)]).toEqual([
+      '2026-10-18',
+      '13:00',
+      '2026-10-18',
+      '14:00',
+    ]);
+  });
+
+  it('an ongoing start more than 18 h back (or ahead) is asked, never picked', () => {
+    // "đang ngủ từ 16h" at 15:30: today 16:00 is ahead, yesterday 16:00 is 23.5 h back.
+    const r = resolve(
+      u('log', [ev('sleep', 'ongoing', { started: clock('16:00') })]),
+      'bé đang ngủ từ 16h',
+      { anchor: new Date('2026-10-19T08:30:00Z') },
+    );
+    expect(r.ext.intents[0]!.resolved).toMatchObject({
+      timer: { action: 'start' },
+      askStart: true,
+    });
+    // Within the bound: kept as read.
+    const ok = resolve(
+      u('log', [ev('sleep', 'ongoing', { started: clock('14:00') })]),
+      'bé đang ngủ từ 14h',
+      { anchor: new Date('2026-10-19T08:30:00Z') },
+    );
+    expect(ok.ext.intents[0]!.resolved!.askStart).toBeUndefined();
+    expect(local(ok.ext.intents[0]!.resolved!.timer!.at)).toBe('14:00');
+  });
+
+  it('a finished sleep from start + length: over 18 h or ending in the future → the end is flagged', () => {
+    const long = resolve(
+      u('log', [ev('sleep', 'finished', { started: clock('21:00', -1), durationMin: 20 * 60 })]),
+      'tối qua bé ngủ từ 21h được 20 tiếng',
+      { anchor: AT3 },
+    );
+    expect(long.ext.intents[0]!.resolved!.check).toEqual(['endedAt']);
+    const ahead = resolve(
+      u('log', [ev('sleep', 'finished', { started: clock('14:00'), durationMin: 120 })]),
+      'bé ngủ từ 14h được 2 tiếng',
+      { anchor: AT3 },
+    );
+    expect(ahead.ext.intents[0]!.resolved!.check).toEqual(['endedAt']);
+    const fine = resolve(
+      u('log', [ev('sleep', 'finished', { started: clock('12:00'), durationMin: 90 })]),
+      'bé ngủ từ 12h được 90 phút',
+      { anchor: AT3 },
+    );
+    expect(fine.ext.intents[0]!.resolved!.check).toBeUndefined();
+  });
+
+  it('two sleeps of one message that overlap are both flagged; one after the other are not', () => {
+    const overlap = resolve(
+      u('log', [
+        ev('sleep', 'finished', { started: clock('09:00'), ended: clock('11:00') }),
+        ev('sleep', 'finished', { started: clock('10:00'), ended: clock('12:00') }),
+      ]),
+      'bé ngủ 9h đến 11h sáng, rồi ngủ 10h đến 12h trưa',
+      { anchor: AT3 },
+    );
+    for (const i of overlap.ext.intents) {
+      expect(i.resolved!.check).toEqual(['startedAt', 'endedAt']);
+    }
+    const apart = resolve(
+      u('log', [
+        ev('sleep', 'finished', { started: clock('09:00'), ended: clock('10:00') }),
+        ev('sleep', 'finished', { started: clock('12:00'), ended: clock('13:00') }),
+      ]),
+      'bé ngủ 9h đến 10h sáng, rồi ngủ 12h đến 13h trưa',
+      { anchor: AT3 },
+    );
+    for (const i of apart.ext.intents) expect(i.resolved!.check).toBeUndefined();
+  });
+});
+
 describe('understanding v1: precedence (§12.3 #3)', () => {
   it('an ongoing state is never a correction, even when the model calls it one', () => {
     const r = resolve(

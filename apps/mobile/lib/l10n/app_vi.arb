@@ -20254,9 +20254,9 @@
   "@asOpenLog": {
     "description": "Saved card action (care)."
   },
-  "asUndo": "Hoàn tác",
-  "@asUndo": {
-    "description": "Saved card action: opens the record in its module, never deletes by itself (G02)."
+  "asOpenRecord": "Mở bản ghi",
+  "@asOpenRecord": {
+    "description": "Saved card action: opens the saved record in its module (L10 A8; it never undoes or deletes by itself, G02)."
   },
   "asOpenSpending": "Mở Chi tiêu",
   "@asOpenSpending": {

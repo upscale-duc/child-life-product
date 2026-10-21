@@ -66,6 +66,7 @@ import {
   previousTurnOf,
   spendingCategoriesOf,
   type TextNotice,
+  type TextPlan,
 } from './assistant-text.js';
 import {
   appUpdatePart,
@@ -623,8 +624,8 @@ async function process(
         budget,
       );
     } catch (error) {
-      if (gateway.name === 'openai') await charge(db, now);
-      // Lumi L2: an inline call cut by the request's deadline is retried by the trigger.
+      // Lumi L2: an inline call cut by the request's deadline is retried by the trigger — L10:
+      // which charges the internal AI budget for that call (never twice for one reading).
       if (
         deps.deadline !== undefined &&
         error instanceof ModelUnavailable &&
@@ -633,6 +634,7 @@ async function process(
       ) {
         return { ...failWith('AI_UNAVAILABLE'), handoff: true, modelCalls: 1 };
       }
+      if (gateway.name === 'openai') await charge(db, now);
       return {
         ...failWith('AI_UNAVAILABLE'),
         outcome: {
@@ -953,8 +955,12 @@ async function process(
   }
 
   // Prepare: typed drafts or ONE server question (morning / evening, a missing time, a start
-  // for a duration, who does a reminder). Never a write.
-  const plan = await planTextIntents(
+  // for a duration, who does a reminder). Never a write. L10: a question the model read as a
+  // read only ("Bé thay mấy tã hôm nay?") is no log for the backstops to add.
+  const readOnly = understood && ext.intents.length === 0 && reads.length > 0 && states.length === 0;
+  const plan: TextPlan = readOnly
+    ? { kind: 'drafts', drafts: [], notices: [] }
+    : await planTextIntents(
     {
       db,
       s,

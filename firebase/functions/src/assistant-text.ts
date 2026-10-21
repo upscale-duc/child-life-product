@@ -738,6 +738,12 @@ export async function planTextIntents(
     // L1: how long the state has run, from the words ("được 5p rồi", "cách đây 5p").
     const since = goingOn ? (st?.sinceMin ?? durMin) : null;
     const when = (c: Clock | null): Date => {
+      if (i.resolved?.askStart && phase === 'start') {
+        // L10: a start the resolver could not place within the last 18 h is asked.
+        const answered = startAt(anchor);
+        if (answered) return answered;
+        askOnce(timeStartQuestion(ctx, anchor, kind));
+      }
       // L9: the resolver's instant, as it is.
       if (rt) return new Date(rt.at);
       // A time the model computed ("cách đây 5p" → 11:21) gives way to the words' own length.
@@ -819,8 +825,9 @@ export async function planTextIntents(
       openClocks.push(label);
       needsAmpm.push(true);
     }
-    // LUMI-04: a clock the model misread (the words won) is always flagged.
-    misread.push(...(r?.misread ?? []));
+    // LUMI-04: a clock the model misread (the words won) is always flagged; L10: so is a time
+    // out of bounds (a sleep over 18 h or in the future, two sleeps overlapping).
+    misread.push(...(r?.misread ?? []), ...(r?.check ?? []));
     const name = (field: string) => draftField[field]?.[kind] ?? null;
     const uncertain = new Set<string>();
     const missing = new Set<string>();
@@ -1842,6 +1849,8 @@ export function timeMissingQuestion(
 export function timeStartQuestion(
   ctx: Pick<TextContext, 's' | 'anchor'>,
   latest: Date,
+  /** L10: a feed still going on asks when it began. */
+  what: 'sleep' | 'breast' = 'sleep',
 ): Clarification {
   const zone = ctx.s.zone;
   const today = localDateIn(zone, ctx.anchor);
@@ -1865,7 +1874,10 @@ export function timeStartQuestion(
   return {
     id: 'pending',
     field: 'time.start',
-    question: L('Bé bắt đầu ngủ lúc mấy giờ?', 'When did the sleep start?'),
+    question:
+      what === 'breast'
+        ? L('Bé bắt đầu bú lúc mấy giờ?', 'When did the feed start?')
+        : L('Bé bắt đầu ngủ lúc mấy giờ?', 'When did the sleep start?'),
     choices: chips.map((t) => ({
       id: `at_${localDateIn(zone, t)}_${localClock(zone, t)}`,
       label: label(t),
