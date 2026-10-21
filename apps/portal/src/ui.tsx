@@ -1,13 +1,15 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, Loader2, Lock, MoreHorizontal } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Info, Loader2, Lock, MoreHorizontal } from 'lucide-react';
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Area,
@@ -29,6 +31,7 @@ import {
   type ChartConfig,
 } from '@/components/ui/chart';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -45,46 +48,96 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import type { ApiError, Load } from './api';
+import { Hint } from './content-kit';
 
 /**
  * Building blocks of the staff portal (Figma Admin portal `253:18`), drawn with shadcn/ui and the
  * Child Life palette (D-063). Screens keep these props; the look lives here and in index.css.
  */
 
+/**
+ * A screen. The portal header already names the page (owner, 2026-10-21), so the title is for
+ * screen readers only and there is no description on the page: what is worth knowing goes behind
+ * the "i" (`info`). The row on top holds the actions (right) and, on a detail page, `lead` (left:
+ * back, the item's code); without either the content starts at the top.
+ */
 export function Page({
   title,
-  subtitle,
+  info,
+  lead,
   actions,
   children,
 }: {
   title: ReactNode;
-  subtitle: ReactNode;
+  /** A rule or note about the whole page, in a popover next to its name in the header. */
+  info?: ReactNode;
+  lead?: ReactNode;
   actions?: ReactNode;
   children: ReactNode;
 }) {
+  // The Shell's header has a slot for the "i"; without it (tests, previews) it joins the actions.
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  useLayoutEffect(() => setSlot(document.getElementById(pageInfoSlot)), []);
+  const note = info ? <PageInfo>{info}</PageInfo> : null;
+  const inline = slot ? null : note;
   return (
     <section className="page">
-      <header className="page__head">
-        <div>
-          <h1 className="page__title">{title}</h1>
-          <p className="page__sub">{subtitle}</p>
-        </div>
-        {actions && <div className="page__actions">{actions}</div>}
-      </header>
+      <h1 className="sr-only">{title}</h1>
+      {slot && note && createPortal(note, slot)}
+      {(lead || actions || inline) && (
+        <header className={cn('page__bar', lead && 'page__bar--lead')}>
+          {lead && <div className="page__lead">{lead}</div>}
+          <div className="page__actions">
+            {inline}
+            {actions}
+          </div>
+        </header>
+      )}
       {children}
     </section>
+  );
+}
+
+/** The element in the Shell's header that holds the page's "i". */
+export const pageInfoSlot = 'page-info';
+
+/** The page's note behind an "i" button (no paragraphs on the page). */
+export function PageInfo({ children }: { children: ReactNode }) {
+  const intl = useIntl();
+  const label = intl.formatMessage({ id: 'page.info' });
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <UiButton
+          variant="ghost"
+          size="icon"
+          className="size-7 text-muted-foreground"
+          aria-label={label}
+          title={label}
+        >
+          <Info />
+        </UiButton>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="grid w-80 gap-2 text-sm text-muted-foreground">
+        {children}
+      </PopoverContent>
+    </Popover>
   );
 }
 
 export function Panel({
   title,
   note,
+  hint,
   aside,
   children,
   className,
 }: {
   title?: ReactNode;
+  /** A short line under the title. */
   note?: ReactNode;
+  /** A longer definition behind a "?" next to the title (no paragraphs on the page). */
+  hint?: ReactNode;
   aside?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -94,7 +147,12 @@ export function Panel({
       {(title || aside) && (
         <div className="panel__head">
           <div>
-            {title && <h2 className="panel__title">{title}</h2>}
+            {title && (
+              <h2 className={cn('panel__title', hint && 'flex items-center gap-1.5')}>
+                {title}
+                {hint && <Hint>{hint}</Hint>}
+              </h2>
+            )}
             {note && <p className="panel__note">{note}</p>}
           </div>
           {aside}
@@ -461,21 +519,75 @@ export function Modal({
   );
 }
 
-/** "Lý do (ghi vào nhật ký thao tác)": 3–500 characters, as the server requires. */
-export function ReasonField({
+/**
+ * A yes/no question for an action (D-090, owner 2026-10-21: one operator, no reason fields). The
+ * server writes the audit line (who, what, before / after) by itself; destructive actions say
+ * what they do and ask once, others are usually done without a dialog.
+ */
+export function ConfirmModal({
+  title,
+  children,
+  confirm,
+  danger,
+  busy,
+  error,
+  onCancel,
+  onConfirm,
+}: {
+  title: ReactNode;
+  children?: ReactNode;
+  confirm: ReactNode;
+  danger?: boolean;
+  busy?: boolean;
+  error?: ApiError | null;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Modal
+      title={title}
+      onClose={onCancel}
+      icon={
+        danger ? (
+          <span className="modal__alert" aria-hidden="true">
+            !
+          </span>
+        ) : undefined
+      }
+    >
+      {children && <div className="modal__sub">{children}</div>}
+      {error && (
+        <p className="error" role="alert">
+          <FormattedMessage id={errorMessageId(error)} />
+        </p>
+      )}
+      <div className="modal__actions">
+        <Button onClick={onCancel}>
+          <FormattedMessage id="action.cancel" />
+        </Button>
+        <Button kind={danger ? 'danger' : 'primary'} disabled={busy} onClick={onConfirm}>
+          {confirm}
+        </Button>
+      </div>
+    </Modal>
+  );
+}
+
+/** Optional notes kept with a draft version (what changed); not a reason (D-090). */
+export function NotesField({
   value,
   onChange,
-  required,
+  label,
 }: {
   value: string;
   onChange: (v: string) => void;
-  required?: boolean;
+  label?: ReactNode;
 }) {
   const id = useId();
   return (
     <div className="field">
       <label htmlFor={id} className="field__label">
-        <FormattedMessage id={required ? 'reason.labelRequired' : 'reason.label'} />
+        {label ?? <FormattedMessage id="kit.notes" />}
       </label>
       <textarea
         id={id}
@@ -489,7 +601,14 @@ export function ReasonField({
   );
 }
 
-export const reasonOk = (s: string) => s.trim().length >= 3;
+/** "{name} trả lại": with the note they left, when there is one (none asked since D-090). */
+export function RejectedBy({ id, by, reason }: { id: string; by: string; reason: string }) {
+  return reason.trim() ? (
+    <FormattedMessage id={id} values={{ name: by, by, reason }} />
+  ) : (
+    <FormattedMessage id="kit.rejectedBy" values={{ name: by }} />
+  );
+}
 
 export function Loading() {
   return (
@@ -619,7 +738,7 @@ export function LineChart({
   area = true,
   title,
 }: {
-  points: number[];
+  points: Array<number | null>;
   labels: string[];
   threshold?: number;
   thresholdLabel?: string;
@@ -676,6 +795,7 @@ export function LineChart({
         )}
         <Area
           dataKey="value"
+          connectNulls={false}
           type="monotone"
           stroke="var(--color-value)"
           strokeWidth={2}

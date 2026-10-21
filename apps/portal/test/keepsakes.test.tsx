@@ -1,4 +1,4 @@
-import { keepsakeSeedV1, type KeepsakeCatalog } from '@child-life/contracts';
+import { premium48Phase6, keepsakeSeedV1, type KeepsakeCatalog } from '@child-life/contracts';
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider } from 'react-intl';
@@ -7,11 +7,16 @@ import { ApiContext, type Api } from '../src/api';
 import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
 import { Sidebar } from '../src/Shell';
+import { routeOf } from '../src/context';
 import {
   CardPreview,
   KeepsakesBody,
   catalogIssues,
+  filterTemplates,
+  keepsakeTemplateUrl,
+  sortTemplates,
   templateIdFor,
+  templateUsageOf,
   type KeepsakeTab,
   type KeepsakeView,
 } from '../src/screens/Keepsakes';
@@ -81,6 +86,18 @@ const live: KeepsakeView = {
 };
 
 describe('Mẫu kỷ niệm', () => {
+  it('renders phase 6 milestone cards with a required parent-entered field in either locale', () => {
+    const t = premium48Phase6()[0]!;
+    for (const locale of ['vi', 'en'] as const) {
+      const html = render(
+        <CardPreview template={t} format="portrait" urls={new Map()} width={480} />,
+        ['admin'],
+        locale,
+      );
+      expect(html).not.toContain('{milestoneName}');
+      expect(text(html)).toContain(locale === 'vi' ? 'những bước nhỏ' : 'little steps');
+    }
+  });
   it('shows newly added templates first within each group, regardless of display order or version', () => {
     const card = keepsakeSeedV1.templates.find((t) => t.kind === 'card')!;
     const video = keepsakeSeedV1.templates.find((t) => t.kind === 'video')!;
@@ -160,7 +177,9 @@ describe('Mẫu kỷ niệm', () => {
         ),
       );
     const gallery = tab('templates');
-    expect(gallery).toContain('Bản đang dùng · ks_20261013_01');
+    // The version in use is a compact badge (details in its popover), not a banner.
+    expect(gallery).not.toContain('Bản đang dùng · ks_20261013_01');
+    expect(gallery).toContain('Đang dùng');
     for (const label of ['Mẫu 8', 'Nhạc nền 0', 'Tệp 1', 'Cài đặt', 'Lịch sử 1']) {
       expect(gallery).toContain(label);
     }
@@ -375,5 +394,76 @@ describe('Mẫu mới', () => {
     expect(templateIdFor('card', 'Sinh nhật đầu tiên', [])).toBe('card_sinh_nhat_dau_tien');
     expect(templateIdFor('video', 'Bé đi', ['video_be_di'])).toBe('video_be_di_2');
     expect(templateIdFor('card', '', [])).toBe('card_moi');
+  });
+});
+
+describe('Mẫu kỷ niệm list (portal UX 2026-10-21)', () => {
+  const templates = keepsakeSeedV1.templates;
+  const name = (t: (typeof templates)[number]) => t.name.vi;
+
+  it('an open template has its own address, so the browser back returns to the list', () => {
+    expect(keepsakeTemplateUrl('card_tron tria')).toBe('/keepsakes/templates/card_tron%20tria');
+    expect(routeOf('/keepsakes/templates/card_tron')).toBe('keepsakes');
+    expect(routeOf('/keepsakes')).toBe('keepsakes');
+  });
+
+  it('filters by Miễn phí / Cao cấp, kind and a name or id search', () => {
+    const premium = filterTemplates(templates, { kind: 'all', tier: 'premium', q: '' }, name);
+    expect(premium.length).toBeGreaterThan(0);
+    expect(premium.every((t) => t.tier === 'premium')).toBe(true);
+    const free = filterTemplates(templates, { kind: 'all', tier: 'free', q: '' }, name);
+    expect(free.length + premium.length).toBe(templates.length);
+    const one = templates.find((t) => t.kind === 'video')!;
+    expect(
+      filterTemplates(templates, { kind: 'video', tier: 'all', q: name(one).toUpperCase() }, name),
+    ).toEqual([one]);
+    expect(filterTemplates(templates, { kind: 'card', tier: 'all', q: one.id }, name)).toEqual([]);
+    const html = text(
+      render(<KeepsakesBody view={live} canEdit canApprove onChanged={() => {}} />),
+    );
+    expect(html).toContain('Tất cả Thiệp Video Mọi gói Miễn phí Cao cấp');
+  });
+
+  it('reads per-template exports defensively and sorts most → least', () => {
+    expect(templateUsageOf(live)).toBeNull();
+    expect(templateUsageOf({ usage: { a: { exports: 'x' } } })).toBeNull();
+    const [a, b, c] = templates.filter((t) => t.kind === 'video');
+    const usage = templateUsageOf({
+      usage: {
+        [a!.id]: { exports: 3, exports30d: 1 },
+        [b!.id]: { exports: 12, exports30d: 4 },
+        [c!.id]: { exports: 12, exports30d: 9 },
+      },
+    })!;
+    expect(usage.get(b!.id)).toEqual({ exports: 12, exports30d: 4 });
+    expect(
+      templateUsageOf({ templateUsage: [{ templateId: a!.id, exports: 2 }] })?.get(a!.id),
+    ).toEqual({ exports: 2, exports30d: null });
+    const rows = [a!, b!, c!].map((t, i) => ({ t, i }));
+    expect(sortTemplates(rows, 'exports', usage).map((r) => r.t.id)).toEqual([c!.id, b!.id, a!.id]);
+    // Without the server's counts the sort falls back to the display order.
+    expect(sortTemplates(rows, 'exports', null).map((r) => r.t.id)).toEqual(
+      sortTemplates(rows, 'display', null).map((r) => r.t.id),
+    );
+    // The tiles show the counts only when the server sends them.
+    const withUsage = text(
+      render(
+        <KeepsakesBody
+          view={{ ...live, usage: { [b!.id]: { exports: 12, exports30d: 4 } } }}
+          canEdit
+          canApprove
+          onChanged={() => {}}
+        />,
+      ),
+    );
+    expect(withUsage).toContain('12 lượt xuất · 4 trong 30 ngày');
+    expect(withUsage).toContain('0 lượt xuất');
+    // Cards are not counted by the server: no "0 lượt xuất" on them.
+    expect(withUsage.match(/lượt xuất/g)).toHaveLength(
+      templates.filter((t) => t.kind === 'video').length,
+    );
+    expect(
+      text(render(<KeepsakesBody view={live} canEdit canApprove onChanged={() => {}} />)),
+    ).not.toContain('lượt xuất');
   });
 });

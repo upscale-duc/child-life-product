@@ -35,8 +35,6 @@ import {
   Page,
   Panel,
   Pill,
-  ReasonField,
-  reasonOk,
   RowActions,
   Segmented,
   SelectMenu,
@@ -48,8 +46,8 @@ import {
 /**
  * Nhân sự & phân quyền (Figma A18–A21; P-134, P-135): members, roles as levels per function, and
  * invitations. Any email domain, no 2FA (owner, 2026-10-11; D-043). Owner, Admin and Kiểm thử are
- * locked roles; only "Nhân sự: Toàn quyền" (Owner) hands out Owner and Admin. Every change needs a
- * reason and is in the audit log (P-139).
+ * locked roles; only "Nhân sự: Toàn quyền" (Owner) hands out Owner and Admin. Every change is in
+ * the audit log (P-139); no reason is asked (D-090).
  */
 
 type Tab = 'members' | 'roles' | 'invites';
@@ -135,7 +133,7 @@ export function StaffScreen() {
   return (
     <Page
       title={<FormattedMessage id="staff.title" />}
-      subtitle={<FormattedMessage id="staff.sub" />}
+      info={<FormattedMessage id="staff.sub" />}
       actions={
         canManage && (
           <>
@@ -715,14 +713,12 @@ export function InviteDialog({
   const [name, setName] = useState('');
   const [roles, setRoles] = useState<string[]>(['support']);
   const [access, setAccess] = useState<StaffAccess>({ kind: 'unlimited' });
-  const [reason, setReason] = useState('');
   const { busy, error, run } = useSubmit(onDone, onClose);
   const valid =
     /^\S+@\S+\.\S+$/.test(email.trim()) &&
     name.trim().length > 0 &&
     roles.length > 0 &&
-    accessOk(access) &&
-    reasonOk(reason);
+    accessOk(access);
   return (
     <Modal wide title={<FormattedMessage id="staff.inviteTitle" />} onClose={onClose}>
       <p className="modal__sub">
@@ -738,7 +734,6 @@ export function InviteDialog({
               name: name.trim(),
               roles,
               access,
-              reason: reason.trim(),
             }),
           );
         }}
@@ -777,7 +772,6 @@ export function InviteDialog({
           <RolePicker team={team} value={roles} onChange={setRoles} multiple={false} />
         </div>
         <AccessField value={access} onChange={setAccess} />
-        <ReasonField value={reason} onChange={setReason} required />
         <LockNote>
           <FormattedMessage id="staff.inviteNote" />
         </LockNote>
@@ -795,7 +789,7 @@ export function InviteDialog({
   );
 }
 
-/** A18 row actions and revoking an invitation: each one asks for a reason. */
+/** A18 row actions and revoking an invitation (confirmed here; no reason: D-090). */
 export function MemberDialog({
   team,
   member,
@@ -814,13 +808,9 @@ export function MemberDialog({
   const api = useApi();
   const [roles, setRoles] = useState<string[]>(member?.roles ?? []);
   const [access, setAccess] = useState<StaffAccess>({ kind: 'unlimited' });
-  const [reason, setReason] = useState('');
   const { busy, error, run } = useSubmit(onDone, onClose);
   const who = member?.name ?? invite?.email ?? '';
-  const valid =
-    reasonOk(reason) &&
-    (op !== 'roles' || roles.length > 0) &&
-    (op !== 'access' || accessOk(access));
+  const valid = (op !== 'roles' || roles.length > 0) && (op !== 'access' || accessOk(access));
   return (
     <Modal
       title={<FormattedMessage id={`staff.dialog.${op}`} values={{ name: who }} />}
@@ -831,7 +821,7 @@ export function MemberDialog({
         className="stack"
         onSubmit={(e) => {
           e.preventDefault();
-          const base = { op, reason: reason.trim() };
+          const base = { op };
           void run(() =>
             api.call(
               'staffUpdateMember',
@@ -853,7 +843,6 @@ export function MemberDialog({
             <FormattedMessage id={`staff.dialog.${op}.note`} />
           </p>
         )}
-        <ReasonField value={reason} onChange={setReason} required />
         <ErrorLine error={error} />
         <div className="modal__actions">
           <Button onClick={onClose}>
@@ -885,7 +874,6 @@ function NewRoleDialog({
   const nameId = useId();
   const [name, setName] = useState('');
   const [from, setFrom] = useState('support');
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const intl = useIntl();
@@ -903,7 +891,6 @@ function NewRoleDialog({
               roleId: null,
               name: name.trim(),
               levels: template,
-              reason: reason.trim(),
             })
             .then((r) => {
               onClose();
@@ -939,17 +926,12 @@ function NewRoleDialog({
               ))}
           </select>
         </label>
-        <ReasonField value={reason} onChange={setReason} required />
         <ErrorLine error={error} />
         <div className="modal__actions">
           <Button onClick={onClose}>
             <FormattedMessage id="action.cancel" />
           </Button>
-          <Button
-            kind="primary"
-            type="submit"
-            disabled={busy || name.trim().length < 2 || !reasonOk(reason)}
-          >
+          <Button kind="primary" type="submit" disabled={busy || name.trim().length < 2}>
             <FormattedMessage id="staff.createRole" />
           </Button>
         </div>
@@ -970,7 +952,7 @@ export function maxLevel(role: string, f: StaffFunction, mine: StaffLevels): Sta
   return f === 'staff' && levelAtLeast(capped, 'edit') ? 'view' : capped;
 }
 
-/** A21 "Vai trò · Hỗ trợ": levels per function, saved with a reason for everyone in the role. */
+/** A21 "Vai trò · Hỗ trợ": levels per function, saved for everyone in the role. */
 export function RoleEditor({
   team,
   roleId,
@@ -993,7 +975,6 @@ export function RoleEditor({
   const [levels, setLevels] = useState<StaffLevels | null>(role?.levels ?? null);
   const [name, setName] = useState(role?.name ?? '');
   const [confirm, setConfirm] = useState(false);
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   useEffect(() => {
@@ -1151,24 +1132,21 @@ export function RoleEditor({
                   roleId: role.id,
                   name: role.builtin ? role.name : name.trim(),
                   levels,
-                  reason: reason.trim(),
                 })
                 .then(() => {
                   setConfirm(false);
-                  setReason('');
                   onSaved();
                 })
                 .catch((err: unknown) => setError(asApiError(err)))
                 .finally(() => setBusy(false));
             }}
           >
-            <ReasonField value={reason} onChange={setReason} required />
             <ErrorLine error={error} />
             <div className="modal__actions">
               <Button onClick={() => setConfirm(false)}>
                 <FormattedMessage id="action.cancel" />
               </Button>
-              <Button kind="primary" type="submit" disabled={busy || !reasonOk(reason)}>
+              <Button kind="primary" type="submit" disabled={busy}>
                 <FormattedMessage id="staff.saveRole" />
               </Button>
             </div>

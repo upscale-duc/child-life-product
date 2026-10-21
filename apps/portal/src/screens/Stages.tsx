@@ -127,7 +127,6 @@ function StagesListScreen({ go }: { go: (p: Path) => void }) {
   return (
     <Page
       title={<FormattedMessage id="stages.title" />}
-      subtitle={<FormattedMessage id="stages.sub" />}
       actions={
         canEdit && (
           <>

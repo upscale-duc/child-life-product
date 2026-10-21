@@ -3,9 +3,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 import { ApiContext, type AiStats, type Api, type SystemHealth } from '../src/api';
-import { StaffContext } from '../src/context';
+import { StaffContext, canonicalPath, routeOf, routePaths, subPath } from '../src/context';
 import { messages } from '../src/messages';
-import { AiView, SystemScreen, SystemView } from '../src/screens/System';
+import { allowedRoute } from '../src/Shell';
+import { AiView, SystemScreen, SystemView, systemTabOf, systemTabs } from '../src/screens/System';
 import { levelsForRoles, type StaffRole } from './fixtures';
 
 // Hệ thống & AI (A08 / A09): aggregates only, warnings first, healthy state quiet.
@@ -74,14 +75,52 @@ const text = (raw: string) =>
     .replace(/&#x27;/g, "'")
     .replace(/\s+/g, ' ');
 
-describe('Hệ thống & AI › screen', () => {
-  it('Lưu trữ and AI are tabs; the open one follows the route', () => {
-    const raw = html(<SystemScreen tab="ai" />);
-    const tabs = [...raw.matchAll(/<button[^>]*role="tab"[^>]*>(.*?)<\/button>/g)].map((m) =>
-      text(m[1]!).trim(),
-    );
-    expect(tabs).toEqual(['Dung lượng & media', 'AI gợi ý câu chuyện']);
+const tabs = (raw: string) =>
+  [...raw.matchAll(/<button[^>]*role="tab"[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]!).trim());
+
+describe('Hệ thống & AI › one page with Trợ lý AI (owner 2026-10-21)', () => {
+  it('Lưu trữ, AI and the assistant are tabs; the open one has its own address', () => {
+    const raw = html(<SystemScreen initialTab="ai" />);
+    expect(tabs(raw)).toEqual([
+      'Lưu trữ',
+      'AI gợi ý câu chuyện',
+      'Trợ lý: mức dùng',
+      'Trợ lý: tra cứu tác vụ',
+    ]);
     expect(raw).toMatch(/aria-selected="true"[^>]*>AI gợi ý câu chuyện/);
+    // The assistant's switches moved to Tính năng & Premium: no "Công tắc" tab, no switch here.
+    expect(text(raw)).not.toContain('Công tắc');
+    expect(raw).not.toContain('role="switch"');
+    // Only the open tab is mounted: the task lookup's form when it is open.
+    expect(text(html(<SystemScreen initialTab="tasks" />))).toContain('Tra cứu một tác vụ');
+    expect(systemTabs.map((t) => messages.en[`system.tab.${t}`])).toEqual([
+      'Storage',
+      'AI story drafts',
+      'Assistant: usage',
+      'Assistant: task lookup',
+    ]);
+  });
+
+  it('/system/ai and the old /assistant open their tab; /assistant redirects', () => {
+    expect(routeOf('/system')).toBe('system');
+    expect(routeOf('/system/ai')).toBe('system');
+    expect(routeOf('/assistant')).toBe('system');
+    expect(canonicalPath('/assistant')).toBe('/system/assistant');
+    expect(canonicalPath('/system/ai')).toBe('/system/ai');
+    expect(subPath('system', '/assistant')).toEqual(['assistant']);
+    expect(systemTabOf('/system')).toBe('storage');
+    expect(systemTabOf('/system/ai')).toBe('ai');
+    expect(systemTabOf('/assistant')).toBe('usage');
+    expect(systemTabOf('/system/tasks')).toBe('tasks');
+    expect(systemTabOf('/system/nope')).toBe('storage');
+    expect(Object.keys(routePaths)).not.toContain('assistant');
+    expect(Object.keys(routePaths)).not.toContain('systemAi');
+    for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
+      expect(allowedRoute(levelsForRoles([role]), 'system')).toBe('system');
+    }
+    for (const role of ['support', 'analyst', 'expert', 'qa'] as StaffRole[]) {
+      expect(allowedRoute(levelsForRoles([role]), 'system')).not.toBe('system');
+    }
   });
 });
 

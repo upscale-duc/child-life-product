@@ -46,7 +46,7 @@ export function OverviewScreen() {
   return (
     <Page
       title={<FormattedMessage id="overview.title" />}
-      subtitle={<FormattedMessage id="overview.sub" />}
+      info={<FormattedMessage id="overview.sub" />}
       actions={
         <>
           <Segmented

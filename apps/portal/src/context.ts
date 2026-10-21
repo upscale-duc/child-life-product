@@ -29,12 +29,11 @@ export type Route =
   // Ăn dặm (D-085): Thực phẩm, Công thức, Hướng dẫn.
   | 'solids'
   | 'contentReview'
+  // Hệ thống & AI (owner 2026-10-21): Lưu trữ, AI, the assistant's usage and task lookup.
   | 'system'
-  | 'systemAi'
   | 'appUpdate'
+  // Tính năng & Premium (D-089): one hub for features, families, the plan and system switches.
   | 'features'
-  | 'premium'
-  | 'assistant'
   | 'staff'
   | 'audit'
   | 'qa';
@@ -57,11 +56,8 @@ export const routePaths: Record<Route, string> = {
   solids: '/solids',
   contentReview: '/content-review',
   system: '/system',
-  systemAi: '/system/ai',
   appUpdate: '/app-update',
   features: '/features',
-  premium: '/premium',
-  assistant: '/assistant',
   staff: '/staff',
   audit: '/audit',
   qa: '/qa',
@@ -74,6 +70,8 @@ const nestedRoutes: Route[] = [
   'reference',
   'firstAid',
   'rhythm',
+  // "/keepsakes/templates/<id>": a template open, so the browser's back returns to the list.
+  'keepsakes',
   'staff',
   'articles',
   'stages',
@@ -81,10 +79,29 @@ const nestedRoutes: Route[] = [
   'nutrition',
   'solids',
   'contentReview',
+  // "/features/families", "/system/ai": a tab of the page.
+  'features',
+  'system',
 ];
 
-export function routeOf(pathname: string): Route {
+/**
+ * Addresses of pages that were merged (owner, 2026-10-21): old links and bookmarks open the tab
+ * that holds their content now.
+ */
+export const legacyPaths: Readonly<Record<string, string>> = {
+  '/premium': '/features/plan',
+  '/assistant': '/system/assistant',
+};
+
+/** The address to show for [pathname]: a merged page's old address becomes its tab's. */
+export function canonicalPath(pathname: string): string {
   const clean = pathname.replace(/\/+$/, '') || '/';
+  const hit = Object.keys(legacyPaths).find((p) => clean === p || clean.startsWith(`${p}/`));
+  return hit ? legacyPaths[hit]! : pathname;
+}
+
+export function routeOf(pathname: string): Route {
+  const clean = canonicalPath(pathname).replace(/\/+$/, '') || '/';
   const hit = (Object.entries(routePaths) as Array<[Route, string]>).find(([, p]) => p === clean);
   if (hit) return hit[0];
   const nested = nestedRoutes.find((r) => clean.startsWith(`${routePaths[r]}/`));
@@ -94,15 +111,17 @@ export function routeOf(pathname: string): Route {
 /** The path segments after a nested route's base ("/staff/roles/ops" → ["roles", "ops"]). */
 export function subPath(route: Route, pathname: string): string[] {
   const base = routePaths[route];
-  if (!pathname.startsWith(`${base}/`)) return [];
-  return pathname
+  const path = canonicalPath(pathname);
+  if (!path.startsWith(`${base}/`)) return [];
+  return path
     .slice(base.length + 1)
     .split('/')
     .filter(Boolean)
     .map(decodeURIComponent);
 }
 
-export const NavigateContext = createContext<(route: Route) => void>(() => undefined);
+/** Opens a page; `sub` opens one of its tabs or items ("plan" → "/features/plan"). */
+export const NavigateContext = createContext<(route: Route, sub?: string) => void>(() => undefined);
 export const useNavigate = () => useContext(NavigateContext);
 
 /** Re-fetches the sidebar counts after a decision. */

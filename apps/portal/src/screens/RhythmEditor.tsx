@@ -28,7 +28,6 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import type { Api, ContentDraftData, ReferenceDraftData, RhythmReview } from '../api';
 import { Field, Hint, SearchInput, Section } from '../content-kit';
-import { reasonOk } from '../ui';
 import { CheckRow, FieldSelect, IconButton } from './form-controls';
 
 /**
@@ -259,16 +258,17 @@ export function rhythmReviewFrom(
   return { ok: true, review: res.data };
 }
 
-/** The `staffRhythmAct` request, or null when the reason or review is not acceptable yet. */
+/**
+ * The `staffRhythmAct` request, or null when the review is not acceptable yet. No reason is sent
+ * (D-090): the server writes the audit line itself.
+ */
 export function rhythmActRequest(
   doc: RhythmDoc,
   versionId: string,
   action: Act,
-  reason: string,
   review: ReviewInput | null,
   requireReview: boolean,
 ) {
-  if (!reasonOk(reason)) return null;
   let rv: RhythmReview = null;
   if (action === 'approve' && review) {
     const checked = rhythmReviewFrom(review, requireReview);
@@ -277,14 +277,10 @@ export function rhythmActRequest(
   } else if (action === 'approve' && requireReview) {
     return null;
   }
-  const res = rhythmActSchema.safeParse({
-    doc,
-    versionId,
-    action,
-    reason: reason.trim(),
-    review: rv,
-  });
-  return res.success ? res.data : null;
+  const res = rhythmActSchema.safeParse({ doc, versionId, action, review: rv });
+  return res.success
+    ? { doc: res.data.doc, versionId: res.data.versionId, action: res.data.action, review: rv }
+    : null;
 }
 
 /** Sends one step of the workflow; nothing is sent when the request is not acceptable. */
@@ -293,11 +289,10 @@ export async function sendRhythmAct(
   doc: RhythmDoc,
   versionId: string,
   action: Act,
-  reason: string,
   review: ReviewInput | null,
   requireReview: boolean,
 ): Promise<{ ok: true; status: string } | { ok: false }> {
-  const req = rhythmActRequest(doc, versionId, action, reason, review, requireReview);
+  const req = rhythmActRequest(doc, versionId, action, review, requireReview);
   if (!req) return { ok: false };
   const res = await api.call<{ status: string }>('staffRhythmAct', req);
   return { ok: true, status: res?.status ?? '' };
@@ -305,7 +300,7 @@ export async function sendRhythmAct(
 
 /** PN04 "Lưu quy tắc": the server's schema (with the window checks) before it is sent. */
 export function rulesIssues(rules: RhythmRules): Map<string, Issue> {
-  const res = setRhythmRulesSchema.safeParse({ rules, reason: 'check' });
+  const res = setRhythmRulesSchema.safeParse({ rules });
   const out = new Map<string, Issue>();
   if (res.success) return out;
   for (const i of res.error.issues) {
@@ -316,14 +311,16 @@ export function rulesIssues(rules: RhythmRules): Map<string, Issue> {
   return out;
 }
 
+/** PN04 "Lưu quy tắc": checked like the server, then sent without a reason (D-090). */
 export async function saveRhythmRules(
   api: Api,
   rules: RhythmRules,
-  reason: string,
 ): Promise<{ ok: true; rules: RhythmRules } | { ok: false }> {
-  const req = setRhythmRulesSchema.safeParse({ rules, reason: reason.trim() });
+  const req = setRhythmRulesSchema.safeParse({ rules });
   if (!req.success) return { ok: false };
-  const res = await api.call<{ rules: RhythmRules }>('staffSetRhythmRules', req.data);
+  const res = await api.call<{ rules: RhythmRules }>('staffSetRhythmRules', {
+    rules: req.data.rules,
+  });
   return { ok: true, rules: res.rules };
 }
 

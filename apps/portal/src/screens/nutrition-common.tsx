@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import type { ApiError } from '../api';
 import { Field, Hint, Notice } from '../content-kit';
 import { routePaths } from '../context';
-import { errorMessageId } from '../ui';
+import { RejectedBy, errorMessageId } from '../ui';
 import { TextField, type ContentRow, type Lang, type Loc, type ParseIssue } from './content-common';
 import { FieldSelect, IconButton } from './form-controls';
 
@@ -334,7 +334,7 @@ export function NutritionNotices({
       )}
       {rejection && (
         <Notice tone="warn" title={<FormattedMessage id="content.rejectedTitle" />}>
-          <FormattedMessage id="content.rejected" values={rejection} />
+          <RejectedBy id="content.rejected" by={rejection.by} reason={rejection.reason} />
         </Notice>
       )}
       {problems.length > 0 && (

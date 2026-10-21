@@ -28,7 +28,8 @@ import { Music, Pause, Play, Plus } from 'lucide-react';
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { ApiError, useApi, useLoad, type Api } from '../api';
-import { useStaff } from '../context';
+import { SearchInput, VersionBadge } from '../content-kit';
+import { routePaths, subPath, useStaff } from '../context';
 import { ZONE } from '../format';
 import {
   Button,
@@ -37,12 +38,12 @@ import {
   Modal,
   Page,
   Panel,
+  NotesField,
   Pill,
-  ReasonField,
+  RejectedBy,
   Segmented,
   TableScroll,
   errorMessageId,
-  reasonOk,
   type PillTone,
 } from '../ui';
 import { fileToBase64 } from './FirstAidEditor';
@@ -86,11 +87,60 @@ export interface KeepsakeView {
   draft: (KeepsakeVersion & { status: 'draft' | 'pending'; catalog: KeepsakeCatalog }) | null;
   history: KeepsakeVersion[];
   assets: KeepsakeAsset[];
+  /** Videos exported per video template id (absent: none yet; cards are not counted). */
+  usage?: Record<string, { exports: number; exports30d: number }>;
+  /** More jobs than the server scans: the all-time counts are a floor. */
+  usageCapped?: boolean;
 }
 
 const tabs = ['templates', 'music', 'files', 'settings', 'history'] as const;
 export type KeepsakeTab = (typeof tabs)[number];
-type TemplateSort = 'newest' | 'display';
+type TemplateSort = 'newest' | 'display' | 'exports';
+
+/** How often a template was used, from the server view when it sends it (backend, 2026-10-21). */
+export interface TemplateUsage {
+  /** Videos (cards) exported with the template, all time. */
+  exports: number;
+  /** The same over the last 30 days; null when the server does not count it. */
+  exports30d: number | null;
+}
+
+/**
+ * Per-template exports from `staffKeepsakes`, read defensively: `usage` (or `templateUsage`) as
+ * `{ [templateId]: { exports, exports30d } }` or as a list of `{ templateId | id, exports,
+ * exports30d }`. Null when the server sends none, and the "Video xuất nhiều nhất" sort is hidden.
+ */
+export function templateUsageOf(view: unknown): Map<string, TemplateUsage> | null {
+  const v = view as { usage?: unknown; templateUsage?: unknown } | null;
+  const raw = v?.usage ?? v?.templateUsage;
+  if (!raw || typeof raw !== 'object') return null;
+  const entries: Array<[unknown, unknown]> = Array.isArray(raw)
+    ? raw.map((r) => [
+        (r as { templateId?: unknown; id?: unknown })?.templateId ?? (r as { id?: unknown })?.id,
+        r,
+      ])
+    : Object.entries(raw);
+  const count = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) && x >= 0 ? x : null);
+  const out = new Map<string, TemplateUsage>();
+  for (const [id, r] of entries) {
+    const u = r as { exports?: unknown; exports30d?: unknown } | null;
+    const exports = count(u?.exports);
+    if (typeof id === 'string' && exports !== null) {
+      out.set(id, { exports, exports30d: count(u?.exports30d) });
+    }
+  }
+  return out.size ? out : null;
+}
+
+/** "/keepsakes/templates/<id>": one template open (the browser's back returns to the list). */
+export const keepsakeTemplateUrl = (id: string) =>
+  `${routePaths.keepsakes}/templates/${encodeURIComponent(id)}`;
+
+function templateIdInUrl(): string | null {
+  if (typeof window === 'undefined') return null;
+  const [part, id] = subPath('keepsakes', window.location.pathname);
+  return part === 'templates' && id ? id : null;
+}
 
 type Act = 'submit' | 'approve' | 'reject' | 'discard' | 'rollback';
 type Edit = (fn: (c: KeepsakeCatalog) => void) => void;
@@ -136,7 +186,7 @@ export function KeepsakesScreen() {
   const staff = useStaff();
   const [load, reload] = useLoad<KeepsakeView>('staffKeepsakes', {}, 'keepsakes');
   return (
-    <Page title={<FormattedMessage id="ks.title" />} subtitle={<FormattedMessage id="ks.sub" />}>
+    <Page title={<FormattedMessage id="ks.title" />}>
       <Loaded load={load} reload={reload}>
         {(view) => (
           <KeepsakesBody
@@ -170,7 +220,13 @@ export function KeepsakesBody({
   useEffect(() => setShowDraft(!!d), [d]);
   const [editing, setEditing] = useState<KeepsakeCatalog | null>(null);
   const [dirty, setDirty] = useState(false);
-  const [selected, setSelected] = useState<number | null>(null);
+  // A template opened from its address ("/keepsakes/templates/<id>", a reload or a link).
+  const [selected, setSelected] = useState<number | null>(() => {
+    const id = templateIdInUrl();
+    const list = (d?.catalog ?? view.current?.catalog)?.templates ?? [];
+    const at = id ? list.findIndex((t) => t.id === id) : -1;
+    return at >= 0 ? at : null;
+  });
   const [dialog, setDialog] = useState<
     { act: Act; versionId: string } | 'save' | 'import' | { add: 'card' | 'video' } | null
   >(null);
@@ -181,6 +237,7 @@ export function KeepsakesBody({
     setAssets((list) => [...added.filter((a) => !list.some((x) => x.asset === a.asset)), ...list]);
   const [tab, setTab] = useState<KeepsakeTab>(initialTab);
   const [templateSort, setTemplateSort] = useState<TemplateSort>('newest');
+  const usage = useMemo(() => templateUsageOf(view), [view]);
 
   const shown: KeepsakeCatalog | null =
     editing ?? (showDraft && d ? d.catalog : (view.current?.catalog ?? null));
@@ -240,13 +297,41 @@ export function KeepsakesBody({
     });
     setDirty(true);
   };
+  // The open template is in the address bar like the other editors: the browser's back returns to
+  // the list instead of leaving Mẫu kỷ niệm (owner, 2026-10-21).
+  const templates = useRef<KeepsakeTemplate[]>([]);
+  templates.current = shown?.templates ?? [];
+  useEffect(() => {
+    const onPop = () => {
+      const id = templateIdInUrl();
+      const at = id ? templates.current.findIndex((t) => t.id === id) : -1;
+      setSelected(at >= 0 ? at : null);
+      if (at >= 0) setTab('templates');
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+  const openTemplate = (index: number, id: string) => {
+    setSelected(index);
+    const url = keepsakeTemplateUrl(id);
+    if (window.location.pathname !== url) window.history.pushState({ ksTemplate: true }, '', url);
+    window.scrollTo(0, 0);
+  };
+  /** Back to the list: one step back when the list opened it, else the list's address. */
+  const closeTemplate = () => {
+    setSelected(null);
+    if (!templateIdInUrl()) return;
+    const fromList = (window.history.state as { ksTemplate?: boolean } | null)?.ksTemplate;
+    if (fromList) window.history.back();
+    else window.history.replaceState({}, '', routePaths.keepsakes);
+  };
   const addTemplate = (t: KeepsakeTemplate) => {
     const index = (editing ?? base)?.templates.length ?? 0;
     edit((c) => {
       c.templates.push(t);
     });
     setTab('templates');
-    setSelected(index);
+    openTemplate(index, t.id);
   };
   const start = (from: KeepsakeCatalog) => {
     setEditing(structuredClone(from));
@@ -269,26 +354,23 @@ export function KeepsakesBody({
     <div className="stack">
       <div className="toolbar">
         <span className="chips">
-          {view.current ? (
-            <>
-              <Pill tone="ok">
-                <FormattedMessage id="ks.inUse" values={{ v: view.current.version }} />
-              </Pill>
-              <span className="muted">
-                <FormattedMessage
-                  id="ks.publishedAt"
-                  values={{
-                    when: dateTime(intl, view.current.publishedAt),
-                    n: view.current.catalog.templates.length,
-                  }}
-                />
-              </span>
-            </>
-          ) : (
-            <Pill tone="muted">
-              <FormattedMessage id="ks.notPublished" />
-            </Pill>
-          )}
+          {/* The catalog in use as a badge; when and how many templates are in its popover. */}
+          <VersionBadge
+            version={view.current?.version ?? null}
+            details={
+              view.current
+                ? [
+                    intl.formatMessage(
+                      { id: 'ks.publishedAt' },
+                      {
+                        when: dateTime(intl, view.current.publishedAt),
+                        n: view.current.catalog.templates.length,
+                      },
+                    ),
+                  ]
+                : []
+            }
+          />
           {d && (
             <>
               <Pill tone={statusTone[d.status] ?? 'muted'}>
@@ -365,10 +447,7 @@ export function KeepsakesBody({
       )}
       {d?.rejection && (
         <p className="error">
-          <FormattedMessage
-            id="ks.rejected"
-            values={{ name: d.rejection.by, reason: d.rejection.reason }}
-          />
+          <RejectedBy id="ks.rejected" by={d.rejection.by} reason={d.rejection.reason} />
         </p>
       )}
 
@@ -421,6 +500,7 @@ export function KeepsakesBody({
             onChange={(v) => {
               setTab(v);
               setSelected(null);
+              if (templateIdInUrl()) window.history.replaceState({}, '', routePaths.keepsakes);
             }}
             options={tabs.map((v) => ({
               value: v,
@@ -445,7 +525,7 @@ export function KeepsakesBody({
                 assets={assets}
                 musicOptions={shown.music}
                 onUploaded={addAssets}
-                onBack={() => setSelected(null)}
+                onBack={closeTemplate}
               />
             ) : (
               <TemplateGallery
@@ -457,7 +537,8 @@ export function KeepsakesBody({
                 onImport={() => setDialog('import')}
                 published={published}
                 urls={urls}
-                onOpen={setSelected}
+                usage={usage}
+                onOpen={(index) => openTemplate(index, shown.templates[index]!.id)}
               />
             ))}
           {tab === 'music' && (
@@ -624,6 +705,44 @@ function assetUses(intl: IntlShape, c: KeepsakeCatalog): Map<string, string[]> {
 const mmss = (sec: number | null | undefined) =>
   sec ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}` : '';
 
+type TierFilter = 'all' | 'free' | 'premium';
+
+/** The gallery's filters: kind, Miễn phí / Cao cấp and a name or id search. */
+export function filterTemplates(
+  templates: readonly KeepsakeTemplate[],
+  f: { kind: 'all' | 'card' | 'video'; tier: TierFilter; q: string },
+  nameOf: (t: KeepsakeTemplate) => string,
+): KeepsakeTemplate[] {
+  const q = f.q.trim().toLowerCase();
+  return templates.filter(
+    (t) =>
+      (f.kind === 'all' || t.kind === f.kind) &&
+      (f.tier === 'all' || t.tier === f.tier) &&
+      (!q || nameOf(t).toLowerCase().includes(q) || t.id.toLowerCase().includes(q)),
+  );
+}
+
+/**
+ * The gallery's order: "Mới thêm trước" (new and imported templates are appended to the catalog;
+ * there is no per-template creation time), "Thứ tự hiển thị", or "Video xuất nhiều nhất" (most →
+ * least, from the server's per-template exports; cards count 0).
+ */
+export function sortTemplates(
+  rows: Array<{ t: KeepsakeTemplate; i: number }>,
+  sort: TemplateSort,
+  usage: Map<string, TemplateUsage> | null,
+) {
+  const exportsOf = (t: KeepsakeTemplate) => usage?.get(t.id)?.exports ?? 0;
+  const recentOf = (t: KeepsakeTemplate) => usage?.get(t.id)?.exports30d ?? 0;
+  return [...rows].sort((a, b) =>
+    sort === 'newest'
+      ? b.i - a.i
+      : sort === 'exports' && usage
+        ? exportsOf(b.t) - exportsOf(a.t) || recentOf(b.t) - recentOf(a.t) || b.i - a.i
+        : a.t.order - b.t.order || a.t.id.localeCompare(b.t.id),
+  );
+}
+
 /** The catalog as a gallery: Thiệp cột mốc and Video kỷ niệm, each template with its picture. */
 function TemplateGallery({
   catalog,
@@ -634,6 +753,7 @@ function TemplateGallery({
   onImport,
   published,
   urls,
+  usage,
   onOpen,
 }: {
   catalog: KeepsakeCatalog;
@@ -644,75 +764,115 @@ function TemplateGallery({
   onImport: () => void;
   published: Map<string, KeepsakeTemplate>;
   urls: Map<string, string>;
+  usage: Map<string, TemplateUsage> | null;
   onOpen: (index: number) => void;
 }) {
   const intl = useIntl();
   const [kind, setKind] = useState<'all' | 'card' | 'video'>('all');
-  const count = (k: 'card' | 'video') => catalog.templates.filter((t) => t.kind === k).length;
+  const [tier, setTier] = useState<TierFilter>('all');
+  const [q, setQ] = useState('');
+  const sorts: TemplateSort[] = usage ? ['newest', 'display', 'exports'] : ['newest', 'display'];
+  // Without the server's counts there is nothing to sort by: back to the default.
+  const order = sorts.includes(sort) ? sort : 'newest';
+  const shown = filterTemplates(catalog.templates, { kind, tier, q }, (t) => textOf(intl, t.name));
+  const filtered = tier !== 'all' || q.trim() !== '';
+  const groups = (['card', 'video'] as const).filter((k) => kind === 'all' || kind === k);
   return (
     <Panel
+      className="panel--flush"
       title={<FormattedMessage id="ks.list.title" values={{ n: catalog.templates.length }} />}
-      note={<FormattedMessage id="ks.list.note" />}
+      hint={<FormattedMessage id="ks.list.note" />}
       aside={
-        <span className="chips">
-          <Segmented
-            label={intl.formatMessage({ id: 'ks.col.kind' })}
-            value={kind}
-            onChange={setKind}
-            options={(['all', 'card', 'video'] as const).map((v) => ({
-              value: v,
-              label: <FormattedMessage id={`ks.filter.${v}`} />,
-            }))}
-          />
-          <FieldSelect
-            ariaLabel={intl.formatMessage({ id: 'ks.sort.label' })}
-            className="w-[190px]"
-            value={sort}
-            onChange={onSort}
-            options={(['newest', 'display'] as const).map((value) => ({
-              value,
-              label: intl.formatMessage({ id: `ks.sort.${value}` }),
-            }))}
-          />
-          {editing && (
-            <Button onClick={onImport}>
-              <FormattedMessage id="ks.import" />
-            </Button>
-          )}
-        </span>
+        editing && (
+          <Button onClick={onImport}>
+            <FormattedMessage id="ks.import" />
+          </Button>
+        )
       }
     >
-      <div className="stack">
-        {(['card', 'video'] as const)
-          .filter((k) => kind === 'all' || kind === k)
-          .map((k) => (
+      <div className="flex flex-wrap items-center gap-2 border-y px-4 py-3">
+        <Segmented
+          label={intl.formatMessage({ id: 'ks.col.kind' })}
+          value={kind}
+          onChange={setKind}
+          options={(['all', 'card', 'video'] as const).map((v) => ({
+            value: v,
+            label: <FormattedMessage id={`ks.filter.${v}`} />,
+          }))}
+        />
+        <Segmented
+          label={intl.formatMessage({ id: 'ks.col.tier' })}
+          value={tier}
+          onChange={setTier}
+          options={(['all', 'free', 'premium'] as const).map((v) => ({
+            value: v,
+            label: <FormattedMessage id={v === 'all' ? 'ks.tierFilter.all' : `ks.tier.${v}`} />,
+          }))}
+        />
+        <SearchInput
+          value={q}
+          onChange={setQ}
+          placeholder={intl.formatMessage({ id: 'ks.search' })}
+          className="sm:w-56"
+        />
+        <FieldSelect
+          ariaLabel={intl.formatMessage({ id: 'ks.sort.label' })}
+          className="w-[190px] sm:ml-auto"
+          value={order}
+          onChange={onSort}
+          options={sorts.map((value) => ({
+            value,
+            label: intl.formatMessage({ id: `ks.sort.${value}` }),
+          }))}
+        />
+        {filtered && (
+          <span className="text-sm text-muted-foreground" role="status">
+            <FormattedMessage
+              id="kit.results"
+              values={{ n: shown.length, total: catalog.templates.length }}
+            />
+          </span>
+        )}
+      </div>
+      <div className="stack panel__pad">
+        {filtered && shown.length === 0 && (
+          <Empty>
+            <FormattedMessage id="ks.list.none" />
+          </Empty>
+        )}
+        {groups.map((k) => {
+          const rows = sortTemplates(
+            catalog.templates
+              .map((t, i) => ({ t, i }))
+              .filter(({ t }) => t.kind === k && shown.includes(t)),
+            order,
+            usage,
+          );
+          if (!rows.length && (filtered || !editing)) return null;
+          return (
             <section key={k} className="ks-group">
               <h3 className="ks-group__title">
                 <FormattedMessage id={`ks.group.${k}`} />
-                <span className="count">{count(k)}</span>
+                <span className="count">{rows.length}</span>
               </h3>
               <div className="ks-tiles">
-                {catalog.templates
-                  .map((t, i) => ({ t, i }))
-                  .filter(({ t }) => t.kind === k)
-                  // New/imported templates are appended to the catalog. There is no per-template
-                  // creation timestamp; display order and template version do not indicate age.
-                  .sort((a, b) =>
-                    sort === 'newest'
-                      ? b.i - a.i
-                      : a.t.order - b.t.order || a.t.id.localeCompare(b.t.id),
-                  )
-                  .map(({ t, i }) => (
-                    <TemplateTile
-                      key={t.id}
-                      template={t}
-                      live={published.get(t.id) ?? null}
-                      urls={urls}
-                      music={catalog.music}
-                      onOpen={() => onOpen(i)}
-                    />
-                  ))}
-                {editing && (
+                {rows.map(({ t, i }) => (
+                  <TemplateTile
+                    key={t.id}
+                    template={t}
+                    live={published.get(t.id) ?? null}
+                    urls={urls}
+                    music={catalog.music}
+                    // Exports are counted for videos only (the server leaves cards out).
+                    usage={
+                      usage && t.kind === 'video'
+                        ? (usage.get(t.id) ?? { exports: 0, exports30d: null })
+                        : null
+                    }
+                    onOpen={() => onOpen(i)}
+                  />
+                ))}
+                {editing && !filtered && (
                   <button type="button" className="ks-tile ks-tile--add" onClick={() => onAdd(k)}>
                     <Plus size={22} aria-hidden />
                     <FormattedMessage id={k === 'card' ? 'ks.addCard' : 'ks.addVideo'} />
@@ -720,7 +880,8 @@ function TemplateGallery({
                 )}
               </div>
             </section>
-          ))}
+          );
+        })}
       </div>
     </Panel>
   );
@@ -731,12 +892,15 @@ function TemplateTile({
   live,
   urls,
   music,
+  usage,
   onOpen,
 }: {
   template: KeepsakeTemplate;
   live: KeepsakeTemplate | null;
   urls: Map<string, string>;
   music: KeepsakeMusic[];
+  /** Exports from the server (null: it sends none). */
+  usage: TemplateUsage | null;
   onOpen: () => void;
 }) {
   const intl = useIntl();
@@ -840,6 +1004,17 @@ function TemplateTile({
           {live ? `v${live.version}` : <FormattedMessage id="ks.neverPublished" />}
           {meta && ` · ${meta}`}
         </span>
+        {usage && (
+          <span className="ks-tile__meta tabular-nums">
+            <FormattedMessage id="ks.exports" values={{ n: usage.exports }} />
+            {usage.exports30d !== null && (
+              <>
+                {' · '}
+                <FormattedMessage id="ks.exports30d" values={{ n: usage.exports30d }} />
+              </>
+            )}
+          </span>
+        )}
         {changed && (
           <span className="ks-tile__changed">
             <FormattedMessage id="ks.willBump" />
@@ -1352,7 +1527,7 @@ function TemplateEditor({
           )}
         </div>
 
-        <aside className="ks-editor__side">
+        <aside className="ks-editor__side no-scrollbar">
           <Panel title={<FormattedMessage id="ks.sec.preview" />}>
             <div className="stack">
               {t.kind === 'card' ? (
@@ -1636,7 +1811,9 @@ export function CardPreview({
                     ? '2026-09-17'
                     : f.type === 'confirmation'
                       ? 'false'
-                      : '',
+                      : f.required && f.suggestion
+                        ? textOf(intl, f.suggestion)
+                        : '',
             ]),
           ),
           intl.locale.startsWith('vi') ? 'vi' : 'en',
@@ -2355,7 +2532,7 @@ function SaveDialog({
       <p className="modal__sub">
         <FormattedMessage id={pending ? 'ks.saveNotePending' : 'ks.saveNote'} />
       </p>
-      <ReasonField value={notes} onChange={setNotes} />
+      <NotesField value={notes} onChange={setNotes} />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
@@ -2404,7 +2581,6 @@ export function ActDialog({
   onDone: () => void;
 }) {
   const api = useApi();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   return (
@@ -2412,7 +2588,6 @@ export function ActDialog({
       <p className="modal__sub">
         <FormattedMessage id={`ks.confirm.${act}.note`} />
       </p>
-      <ReasonField value={reason} onChange={setReason} required />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
@@ -2424,12 +2599,12 @@ export function ActDialog({
         </Button>
         <Button
           kind={act === 'discard' ? 'danger' : 'primary'}
-          disabled={busy || !reasonOk(reason)}
+          disabled={busy}
           onClick={() => {
             setBusy(true);
             setError(null);
             api
-              .call('staffKeepsakesAct', { versionId, action: act, reason: reason.trim() })
+              .call('staffKeepsakesAct', { versionId, action: act })
               .then(() => {
                 onClose();
                 onDone();

@@ -147,6 +147,11 @@ export const nutritionVi: Record<string, string> = {
     'Trùng tháng: {first} và {second}. Duyệt hoặc xuất bản giai đoạn trùng sẽ bị từ chối.',
   'nutrition.coverage.add': 'Thêm giai đoạn {label}',
   'nutrition.coverage.months': 'Tháng tuổi',
+  'nutrition.coverage.byMonth': 'Theo tháng',
+  'nutrition.coverage.byStage': 'Giai đoạn',
+  'nutrition.coverage.monthStage': 'Tháng {month} · {title} · {status}',
+  'nutrition.coverage.monthGap': 'Tháng {month} · chưa có giai đoạn',
+  'nutrition.coverage.legend': '{label} · {n} tháng',
 
   // Labels
   'nutrition.metric.weight': 'Cân nặng',
@@ -433,6 +438,11 @@ export const nutritionEn: Record<string, string> = {
     'Overlap: {first} and {second}. Approving or publishing an overlapping stage is refused.',
   'nutrition.coverage.add': 'Add a stage for {label}',
   'nutrition.coverage.months': 'Months of age',
+  'nutrition.coverage.byMonth': 'By month',
+  'nutrition.coverage.byStage': 'Stages',
+  'nutrition.coverage.monthStage': 'Month {month} · {title} · {status}',
+  'nutrition.coverage.monthGap': 'Month {month} · no stage',
+  'nutrition.coverage.legend': '{label} · {n, plural, one {# month} other {# months}}',
 
   'nutrition.metric.weight': 'Weight',
   'nutrition.metric.length': 'Length',

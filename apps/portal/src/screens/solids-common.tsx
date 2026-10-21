@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import type { ApiError } from '../api';
 import { Notice } from '../content-kit';
 import { routePaths } from '../context';
-import { errorMessageId } from '../ui';
+import { RejectedBy, errorMessageId } from '../ui';
 import {
   textOf,
   type ContentCounts,
@@ -500,7 +500,7 @@ export function SolidsNotices({
       )}
       {rejection && (
         <Notice tone="warn" title={<FormattedMessage id="content.rejectedTitle" />}>
-          <FormattedMessage id="content.rejected" values={rejection} />
+          <RejectedBy id="content.rejected" by={rejection.by} reason={rejection.reason} />
         </Notice>
       )}
       <AgeProblemsNotice problems={ageProblems} foods={foods ?? new Map()} from={from} />

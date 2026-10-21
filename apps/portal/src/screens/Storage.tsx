@@ -14,8 +14,6 @@ import {
   Modal,
   Page,
   Panel,
-  ReasonField,
-  reasonOk,
   Segmented,
   TableScroll,
   UsageBar,
@@ -33,7 +31,7 @@ export function StorageScreen() {
   return (
     <Page
       title={<FormattedMessage id="storage.title" />}
-      subtitle={<FormattedMessage id="storage.sub" />}
+      info={<FormattedMessage id="storage.sub" />}
       actions={
         <Segmented
           label={intl.formatMessage({ id: 'storage.filter' })}
@@ -327,7 +325,6 @@ export function DecideDialog({
   const [custom, setCustom] = useState(String(row.requestedGb));
   const grantGb = choice === 'custom' ? Number(custom) : choice;
   const validGb = Number.isInteger(grantGb) && grantGb >= 1 && grantGb <= 500;
-  const [reason, setReason] = useState('');
   const [message, setMessage] = useState(() =>
     intl.formatMessage(
       { id: kind === 'grant' ? 'storage.grantMessage' : 'storage.declineMessage' },
@@ -349,13 +346,11 @@ export function DecideDialog({
               decision: 'grant',
               requestId: row.id,
               grantGb,
-              reason: reason.trim(),
               message: message.trim(),
             }
           : {
               decision: 'decline',
               requestId: row.id,
-              reason: reason.trim(),
               message: message.trim(),
             },
       );
@@ -436,7 +431,6 @@ export function DecideDialog({
           <FormattedMessage id="storage.leadNeeded" />
         </p>
       )}
-      <ReasonField value={reason} onChange={setReason} required />
       <div className="field">
         <label className="field__label" htmlFor="family-message">
           <FormattedMessage id="storage.familyMessage" />
@@ -474,7 +468,7 @@ export function DecideDialog({
         </Button>
         <Button
           kind={kind === 'grant' ? 'primary' : 'danger'}
-          disabled={busy || blocked || !reasonOk(reason) || (kind === 'grant' && !validGb)}
+          disabled={busy || blocked || (kind === 'grant' && !validGb)}
           onClick={() => void submit()}
         >
           <FormattedMessage

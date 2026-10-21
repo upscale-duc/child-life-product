@@ -1,0 +1,13 @@
+<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Mark">
+<mask id="mask0_0_40" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="55" height="55">
+<rect id="Shape (mask)" width="54.4" height="54.4" rx="19.04" fill="black"/>
+</mask>
+<g mask="url(#mask0_0_40)">
+<path id="Frame" d="M23.375 0H10.625C4.75697 0 0 4.75697 0 10.625V23.375C0 29.243 4.75697 34 10.625 34H23.375C29.243 34 34 29.243 34 23.375V10.625C34 4.75697 29.243 0 23.375 0Z" fill="#2CBFB3"/>
+<path id="Sun" d="M23.5875 15.3C25.8174 15.3 27.625 13.4924 27.625 11.2625C27.625 9.03265 25.8174 7.225 23.5875 7.225C21.3577 7.225 19.55 9.03265 19.55 11.2625C19.55 13.4924 21.3577 15.3 23.5875 15.3Z" fill="#FFD166"/>
+<path id="Band" d="M0 20.825C8.925 18.275 18.275 24.65 34 19.55V34H0V20.825Z" fill="white"/>
+<path id="Ground" d="M0 26.9875C11.05 24.8625 22.1 27.4125 34 26.1375V34H0V26.9875Z" fill="#087F7B"/>
+</g>
+</g>
+</svg>

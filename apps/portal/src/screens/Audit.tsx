@@ -36,7 +36,10 @@ const categoryTone: Record<AuditRow['category'], PillTone> = {
   premium: 'high',
 };
 
-/** A12 Nhật ký thao tác: append-only; only codes, actions and reasons, never family content. */
+/**
+ * A12 Nhật ký thao tác: append-only; codes, actions and before / after, never family content.
+ * No reason is asked any more (D-090); older lines show the note they had.
+ */
 export function AuditScreen() {
   const intl = useIntl();
   const api = useApi();
@@ -75,7 +78,7 @@ export function AuditScreen() {
   return (
     <Page
       title={<FormattedMessage id="audit.title" />}
-      subtitle={<FormattedMessage id="audit.sub" />}
+      info={<FormattedMessage id="audit.sub" />}
       actions={
         <Button onClick={() => void exportCsv()}>
           <FormattedMessage id="action.exportCsv" />
@@ -154,9 +157,6 @@ export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
             <th>
               <FormattedMessage id="col.target" />
             </th>
-            <th>
-              <FormattedMessage id="col.reason" />
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -173,9 +173,12 @@ export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
                 <Pill tone={categoryTone[r.category]}>
                   <FormattedMessage id={`auditCategory.${r.category}`} />
                 </Pill>
+                {/* Lines from before D-090 may carry the note that was asked then. */}
+                {r.reason && (
+                  <span className="block text-xs text-muted-foreground">“{r.reason}”</span>
+                )}
               </td>
               <td className="mono">{r.target}</td>
-              <td>{r.reason ?? '—'}</td>
             </tr>
           ))}
         </tbody>

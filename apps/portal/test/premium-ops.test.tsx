@@ -10,7 +10,6 @@ import {
   keepsakeJobSteps,
   quotaFeatures,
   type StaffAiPolicy,
-  type StaffFamilyPremium,
   type StaffFamilyQuota,
   type StaffRenderOps,
 } from '@child-life/contracts';
@@ -23,7 +22,7 @@ import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
 import { allowedRoute } from '../src/Shell';
 import { JobKinds, JobsScreen } from '../src/screens/Jobs';
-import { PremiumBody, PremiumScreen, PremiumTabs, lookupFamily } from '../src/screens/Premium';
+import { PremiumPlanView } from '../src/screens/Premium';
 import {
   AiPolicyView,
   FamilyQuotaView,
@@ -32,8 +31,9 @@ import {
 } from '../src/screens/PremiumOps';
 import { levelsForRoles, type StaffRole } from './fixtures';
 
-// Premium operations on the portal (plan §5.6, brief "Portal cần thêm"): Premium › AI, the family
-// lookup's Quota & thanh toán, and Yêu cầu dữ liệu › Video kỷ niệm. Server-rendered, no network:
+// Premium operations on the portal (plan §5.6, brief "Portal cần thêm"): Tính năng & Premium ›
+// Gói Premium › Chính sách AI, a family's Lượt dùng & thanh toán, and Yêu cầu dữ liệu › Video
+// kỷ niệm. Server-rendered, no network:
 // callables go to a fake api that records them.
 const now = new Date('2026-10-15T05:00:00Z');
 
@@ -194,15 +194,6 @@ const view: StaffPremiumView = {
   recent: [],
 };
 
-const family: StaffFamilyPremium = {
-  code: 'F-7Q2K',
-  country: 'VN',
-  plan: 'free',
-  validUntil: null,
-  entitlementVersion: 1,
-  grants: [],
-};
-
 type Call = { name: string; data: unknown };
 function fakeApi(answers: Record<string, unknown> = {}) {
   const calls: Call[] = [];
@@ -333,55 +324,30 @@ describe('Premium › AI', () => {
     expect(aiSwitchNote({ enabled: true, scope: 'all', percent: 0, families: 0 }).tone).toBe('ok');
   });
 
-  it('the Premium screen has four tabs; the sidebar keeps it to premium.view', () => {
-    const raw = html(<PremiumTabs label="Mục Premium" value="ai" onChange={() => {}} />);
-    expect(buttons(raw)).toEqual(['Chiến dịch', 'Gia đình', 'Cấu hình', 'Chính sách AI']);
-    // The screen itself only shows loading until the callable answers (no network in tests).
-    expect(text(html(<PremiumScreen />))).toContain('Premium & Cá nhân hoá');
+  it('Gói Premium holds Cấu hình, Chính sách AI and the old campaigns; the hub needs features.view', () => {
+    const raw = html(
+      <PremiumPlanView
+        data={view}
+        flags={null}
+        onChanged={() => {}}
+        now={now}
+        initialSection="ai"
+      />,
+    );
+    expect(buttons(raw).slice(0, 3)).toEqual(['Cấu hình', 'Chính sách AI', 'Chiến dịch beta (cũ)']);
+    expect(raw).toMatch(/aria-selected="true"[^>]*>Chính sách AI/);
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
-      expect(allowedRoute(levelsForRoles([role]), 'premium')).toBe('premium');
+      expect(allowedRoute(levelsForRoles([role]), 'features')).toBe('features');
     }
     for (const role of ['support', 'analyst', 'expert', 'qa'] as StaffRole[]) {
-      expect(allowedRoute(levelsForRoles([role]), 'premium')).not.toBe('premium');
+      expect(allowedRoute(levelsForRoles([role]), 'features')).not.toBe('features');
     }
   });
 });
 
-describe('Premium › Tra cứu gia đình › Quota & thanh toán', () => {
-  it('looks up grants and quota in two calls; a quota failure never hides the grants', async () => {
-    const both = fakeApi({ staffFamilyPremium: family, staffFamilyQuota: quota });
-    expect(await lookupFamily(both.api, 'F-7Q2K')).toEqual({
-      ok: true,
-      premium: family,
-      quota,
-    });
-    expect(both.calls).toEqual([
-      { name: 'staffFamilyPremium', data: { code: 'F-7Q2K' } },
-      { name: 'staffFamilyQuota', data: { code: 'F-7Q2K' } },
-    ]);
-    const half = fakeApi({ staffFamilyPremium: family });
-    expect(await lookupFamily(half.api, 'F-7Q2K')).toEqual({
-      ok: true,
-      premium: family,
-      quota: 'failed',
-    });
-    expect(await lookupFamily(fakeApi().api, 'F-7Q2K')).toEqual({
-      ok: false,
-      problem: 'error.role',
-    });
-  });
-
+describe('Tính năng & Premium › Gia đình › Lượt dùng & thanh toán', () => {
   it('shows windows, held units, hashed store accounts, events and the not-connected note', () => {
-    const raw = html(
-      <PremiumBody
-        data={view}
-        onChanged={() => {}}
-        now={now}
-        initialFamily={family}
-        initialQuota={quota}
-      />,
-      ['ops'],
-    );
+    const raw = html(<FamilyQuotaView data={quota} now={now} />, ['ops']);
     const t = text(raw);
     expect(t).toContain('Quota & thanh toán');
     expect(t).toContain('Google Play chưa kết nối: chưa có giao dịch');
@@ -493,7 +459,7 @@ describe('Premium operations: messages', () => {
       ...keepsakeJobErrors.flatMap((e) => [`render.error.${e}`, `render.errorShort.${e}`]),
       ...['reserved', 'committed', 'released', 'none'].map((s) => `render.state.${s}`),
       ...['not-released', 'not-committed', 'not-held', 'missing'].map((i) => `render.issue.${i}`),
-      ...['config', 'ai'].map((t) => `premium.tab.${t}`),
+      ...['config', 'ai', 'campaigns'].map((t) => `hub.plan.${t}`),
     ];
     for (const locale of ['vi', 'en'] as const) {
       for (const id of ids) expect(messages[locale][id], `${locale} ${id}`).toBeTruthy();

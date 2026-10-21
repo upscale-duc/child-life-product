@@ -143,7 +143,6 @@ function ArticlesListScreen({ onOpen }: { onOpen: (id: string | null) => void })
   return (
     <Page
       title={<FormattedMessage id="articles.title" />}
-      subtitle={<FormattedMessage id="articles.sub" />}
       actions={
         canEdit && (
           <>

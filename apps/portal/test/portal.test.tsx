@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import type { FlagKey } from '@child-life/contracts';
+import { featureOfFlag, systemFlagKeys, type FlagKey } from '@child-life/contracts';
 import {
   accountDeletionSteps,
   auditCategories,
@@ -36,20 +36,18 @@ import {
 import { StaffContext, routeOf, routePaths } from '../src/context';
 import { ago, csvCell, gb, pct, usageTone, when } from '../src/format';
 import { messages } from '../src/messages';
-import { reasonMessages } from '../src/ui';
+import { Page, reasonMessages } from '../src/ui';
+import { VersionBadge } from '../src/content-kit';
+import { PhoneFrame } from '../src/screens/content-common';
 import { AuditTable } from '../src/screens/Audit';
 import {
   AuditActionText,
-  FeaturesView,
   LimitsList,
-  bulkPlan,
-  bulkSkip,
-  checkAreas,
-  flagGroups,
   RecentList,
-  RolloutLadder,
+  SystemSwitchesView,
+  billingFlag,
   defaultNotice,
-  nextStep,
+  systemFlagGroups,
 } from '../src/screens/Features';
 import { jobState } from '../src/screens/Jobs';
 import { OverviewView } from '../src/screens/Overview';
@@ -353,6 +351,15 @@ describe('message catalogs (D-012)', () => {
               // Emergency number in content (D-087)
               token: 'x',
               number: 'x',
+              // Product analytics snapshot metadata (v2).
+              zone: 'Asia/Ho_Chi_Minh',
+              // Tính năng & Premium (D-089).
+              feature: 'x',
+              tier: 'premium',
+              state: 'on',
+              paid: 1,
+              admin: 1,
+              off: 1,
               b: (chunks: ReactNode[]) => chunks,
             },
           ),
@@ -468,7 +475,9 @@ describe('formatting', () => {
   });
   it('routes map to screens', () => {
     expect(routeOf('/support/')).toBe('support');
-    expect(routeOf('/system/ai')).toBe('systemAi');
+    expect(routeOf('/system/ai')).toBe('system');
+    expect(routeOf('/premium')).toBe('features');
+    expect(routeOf('/assistant')).toBe('system');
     expect(routeOf('/nope')).toBe('overview');
   });
 });
@@ -590,6 +599,54 @@ describe('A03 support', () => {
     expect(eng).not.toContain('Gửi hướng dẫn');
     expect(eng).not.toContain('Trả lời người dùng…');
   });
+  it('the queue is a shadcn table: status tabs, type filter, columns and status badges', () => {
+    const html = render(
+      <TicketListView
+        data={{
+          ...list,
+          rows: [...list.rows, { ...list.rows[0]!, id: 't_3', status: 'claimed', claimedBy: 'Hà' }],
+        }}
+        filter="open"
+        onFilter={() => undefined}
+        selected="t_3"
+        onSelect={() => undefined}
+        now={now}
+      />,
+    );
+    expect(html).toContain('role="tablist"');
+    expect(html).toContain('data-slot="table"');
+    expect(text(html)).toContain('Yêu cầu Trạng thái Người xử lý Gửi lúc');
+    expect(html.match(/data-slot="badge"/g)).toHaveLength(2);
+    expect(text(html)).toContain('Đang xử lý Hà 12 phút trước');
+    expect(html).toContain('data-state="selected"');
+    // Nothing in the queue: an empty state, not an empty table.
+    const empty = render(
+      <TicketListView
+        data={{ ...list, rows: [] }}
+        filter="new"
+        onFilter={() => undefined}
+        selected={null}
+        onSelect={() => undefined}
+        now={now}
+      />,
+    );
+    expect(empty).not.toContain('data-slot="table"');
+    expect(text(empty)).toContain('Không có yêu cầu nào ở đây.');
+  });
+
+  it('a ticket: actions on top, account facts, diagnostics, then the reply box', () => {
+    const html = text(
+      render(<TicketDetailView ticket={detail} now={now} onChanged={() => undefined} />, [
+        'support',
+      ]),
+    );
+    expect(html).toContain(
+      'Không tải được video lên album Nhận xử lý ✉ Gửi hướng dẫn tải qua Wi-Fi Đóng yêu cầu',
+    );
+    expect(html).toContain('Tài khoản Vai trò Chủ tài khoản Gia đình 2 bé · 5 người');
+    expect(html.indexOf('Chẩn đoán')).toBeLessThan(html.indexOf('Gửi qua email của người dùng'));
+  });
+
   it('Góp ý (P-145): type, "không liên hệ lại" and the screenshot on request', () => {
     const fb = {
       ...detail,
@@ -627,6 +684,48 @@ describe('A03 support', () => {
     expect(shown).not.toContain('Trả lời người dùng…');
     expect(shown).not.toContain('Gửi hướng dẫn tải qua Wi-Fi');
     expect(shown).toContain('Đóng yêu cầu');
+  });
+});
+
+describe('portal UX round 1 (owner, 2026-10-21)', () => {
+  it('a page shows no title or description: the name for screen readers, the note behind an "i"', () => {
+    const html = render(
+      <Page title="Hỗ trợ" info="Ghi chú của trang" actions={<button type="button">Xuất</button>}>
+        <p>Nội dung</p>
+      </Page>,
+    );
+    expect(html).toContain('<h1 class="sr-only">Hỗ trợ</h1>');
+    expect(html).not.toContain('page__title');
+    expect(html).not.toContain('page__sub');
+    // Outside the Shell (no header slot) the "i" joins the actions row.
+    expect(html).toContain('aria-label="Về trang này"');
+    expect(html).not.toContain('Ghi chú của trang');
+    expect(text(html)).toContain('Xuất Nội dung');
+    // Nothing to put on top: the content starts right away.
+    expect(render(<Page title="Tổng quan">x</Page>)).not.toContain('page__bar');
+  });
+
+  it('the version in use is a compact badge with its details in the tooltip', () => {
+    const live = render(
+      <VersionBadge version="fa_20261018_01" details={['Xuất bản 19:31 18/10/2026', '']} />,
+    );
+    expect(text(live).trim()).toBe('Đang dùng');
+    expect(live).toContain('title="Bản đang dùng fa_20261018_01 · Xuất bản 19:31 18/10/2026"');
+    expect(text(render(<VersionBadge version={null} />)).trim()).toBe('Chưa xuất bản');
+  });
+
+  it('phone previews scroll without a visible scrollbar', () => {
+    expect(render(<PhoneFrame>x</PhoneFrame>)).toContain('class="cl-phone no-scrollbar"');
+    const css = readFileSync(join(__dirname, '../src/index.css'), 'utf8');
+    expect(css).toMatch(/@utility no-scrollbar \{\s*scrollbar-width: none;/);
+    expect(css).toContain('&::-webkit-scrollbar');
+  });
+
+  it('Bảng tham chiếu is named for what it holds (vi and en)', () => {
+    expect(messages.vi['nav.reference']).toBe('Bảng tham chiếu');
+    expect(messages.en['nav.reference']).toBe('Reference tables');
+    expect(messages.vi['reference.tab.length']).toBe('Chiều dài theo tuổi (WHO)');
+    expect(messages.en['reference.tab.weight']).toBe('Weight-for-age (WHO)');
   });
 });
 
@@ -718,7 +817,7 @@ describe('A04/A05 storage', () => {
   });
 });
 
-describe('A06 jobs, A10 features, A12 audit', () => {
+describe('A06 jobs, Công tắc hệ thống, A12 audit', () => {
   it('job states map to the A06 pills', () => {
     const base = {
       id: 'j',
@@ -740,6 +839,7 @@ describe('A06 jobs, A10 features, A12 audit', () => {
     flags: {
       ...launchedFlagDefaults,
       ai_story_drafts: { enabled: true, scope: 'percent', percent: 50, notice: null },
+      engagementEnabled: { enabled: true, scope: 'percent', percent: 25, notice: null },
     },
     limits: {
       familyQuotaBytes: 10 * 1024 ** 3,
@@ -751,7 +851,7 @@ describe('A06 jobs, A10 features, A12 audit', () => {
       storageRequestAmountsGb: [10, 20],
       autoSaveItemsPerApprove: 200,
     },
-    lastEdit: { ai_story_drafts: { by: 'Linh Trần', at: '2026-10-02T07:05:00Z' } },
+    lastEdit: { video_upload: { by: 'Linh Trần', at: '2026-10-02T07:05:00Z' } },
     recent: [
       {
         action: 'flags.rollout',
@@ -768,103 +868,69 @@ describe('A06 jobs, A10 features, A12 audit', () => {
       '“Tải video” đang tạm dừng một chút, chúng mình sẽ mở lại sớm.',
     );
   });
-  it('the rollout ladder moves 10 → 25 → 50 → 100', () => {
-    expect(nextStep({ enabled: false, scope: 'internal', percent: 0, notice: null })).toBe(10);
-    expect(nextStep({ enabled: true, scope: 'percent', percent: 25, notice: null })).toBe(50);
-    expect(nextStep({ enabled: true, scope: 'percent', percent: 50, notice: null })).toBe(100);
-    expect(nextStep({ enabled: true, scope: 'all', percent: 0, notice: null })).toBeNull();
-  });
-  it('every flag sits in one group; families are added only where the list counts', () => {
-    expect(flagGroups.flatMap((g) => g.keys).sort()).toEqual([...flagKeys].sort());
-    const f = {
-      ...flags.flags,
-      assistant: {
-        enabled: true,
-        scope: 'internal' as const,
-        percent: 0,
-        notice: null,
-        families: ['F-6TEA'],
-      },
-      rhythm: { enabled: false, scope: 'internal' as const, percent: 0, notice: null },
-    };
-    expect(bulkSkip(f.video_upload)).toBe('everyone');
-    expect(bulkSkip(f.ai_story_drafts)).toBe('percent');
-    expect(bulkPlan(f, ['assistant', 'rhythm', 'video_upload'], ['F-NJAT'])).toEqual([
-      { key: 'assistant', families: ['F-6TEA', 'F-NJAT'], added: 1 },
-      { key: 'rhythm', families: ['F-NJAT'], added: 1 },
+  it('Công tắc hệ thống holds every flag outside the feature catalogue, in one group each', () => {
+    const shown = systemFlagGroups.flatMap((g) => g.keys);
+    expect(new Set(shown).size).toBe(shown.length);
+    // Mua gói trong app is on Gói Premium; catalogue features are on the Tính năng tab.
+    expect([...shown, billingFlag].sort()).toEqual([...systemFlagKeys].sort());
+    for (const k of ['assistant', 'auto_save', 'rhythm', 'memory_story'] as FlagKey[]) {
+      expect(shown).not.toContain(k);
+    }
+    // The other tool's engagement switches and the assistant's engineering switches are here.
+    expect(systemFlagGroups.find((g) => g.id === 'engagement')?.keys).toContain(
+      'engagementEnabled',
+    );
+    expect(systemFlagGroups.find((g) => g.id === 'assistant')?.keys).toEqual([
+      'assistant_live',
+      'assistant_writes',
     ]);
-  });
-  it('a family check says what shows and why the rest does not', () => {
-    const on = Object.fromEntries(flagKeys.map((k) => [k, false])) as Record<FlagKey, boolean>;
-    const state = (allowed: boolean, reason: string | null) => ({ allowed, reason, via: null });
-    const areas = checkAreas({
-      internal: false,
-      regionSupported: false,
-      flags: {
-        ...on,
-        assistant: true,
-        assistant_live: true,
-        assistant_writes: true,
-        ai_assist: true,
-      },
-      capabilities: {
-        'ai.assistance': state(false, 'REGION_UNAVAILABLE'),
-        'personalization.cross_module': state(false, 'FEATURE_DISABLED'),
-        'rhythm.advanced': state(false, 'FEATURE_DISABLED'),
-        'templates.premium': state(false, 'REGION_UNAVAILABLE'),
-      } as never,
-    });
-    const by = Object.fromEntries(areas.map((a) => [a.id, a]));
-    expect(by.assistant).toMatchObject({
-      open: true,
-      missingExtras: ['assistant_images', 'assistant_care', 'assistant_upsell'],
-    });
-    expect(by.rhythm).toMatchObject({
-      open: false,
-      reason: 'FEATURE_DISABLED',
-      missingFlags: ['rhythm'],
-    });
-    expect(by.aiAssist).toMatchObject({ open: false, reason: 'REGION_UNAVAILABLE' });
-  });
-  it('kill switches are for engineering; rollout steps for operations', () => {
-    const ops = render(<FeaturesView data={flags} ai={null} onChanged={() => undefined} />, [
-      'ops',
-    ]);
-    expect(text(ops)).toContain('Mở dần · 50%');
-    expect(text(ops)).toContain('Linh · 2/10');
-    // The ladder, the limits and the recent changes are folded; each renders on its own.
     expect(
-      text(
-        render(
-          <RolloutLadder
-            flag={flags.flags.ai_story_drafts}
-            ai={null}
-            canToggle={false}
-            canRollout
-            onStep={() => undefined}
-          />,
-          ['ops'],
-        ),
-      ),
-    ).toContain('Mở cho 100% gia đình');
+      flagKeys
+        .filter((k) => !shown.includes(k))
+        .every((k) => k === billingFlag || featureOfFlag(k)),
+    ).toBe(true);
+  });
+  it('kill switches are for engineering; operations see them read-only', () => {
+    const ops = render(<SystemSwitchesView data={flags} onChanged={() => undefined} />, ['ops']);
+    expect(text(ops)).toContain('Mở dần · 25%');
+    expect(text(ops)).toContain('Linh · 2/10');
+    expect(text(ops)).toContain(messages.vi['flag.engagementEnabled']!);
+    expect(text(ops)).not.toContain(messages.vi['flag.auto_save']!);
+    expect(ops.match(/role="switch"[^>]*disabled=""/g)?.length).toBe(
+      systemFlagGroups.flatMap((g) => g.keys).length,
+    );
     expect(text(render(<RecentList recent={flags.recent} />))).toContain(
       'Mở “AI gợi ý câu chuyện” lên 50%',
     );
+    // No reason on the hub's own lines: who and when only.
+    expect(
+      text(
+        render(
+          <RecentList
+            recent={[
+              {
+                action: 'flags.off',
+                target: 'invites',
+                by: 'Minh Kỹ sư',
+                at: '2026-10-02T07:05:00Z',
+              },
+            ]}
+          />,
+        ),
+      ),
+    ).toMatch(/Minh · 2\/10\s*$/);
     expect(text(render(<LimitsList limits={flags.limits} />))).toContain(
       'Tự lưu kỷ niệm · mỗi lần tải lên Tối đa 200 mục',
     );
-    expect(ops.match(/role="switch"[^>]*disabled=""/g)?.length).toBe(flagKeys.length);
-    const eng = render(<FeaturesView data={flags} ai={null} onChanged={() => undefined} />, [
-      'eng',
-    ]);
+    const eng = render(<SystemSwitchesView data={flags} onChanged={() => undefined} />, ['eng']);
     expect(eng).not.toMatch(/role="switch"[^>]*disabled=""/);
   });
-  it('a flag can be for a few chosen families, shown by count; the scope opens for rollout', () => {
+  it('a switch can be for a few chosen families, shown by count; the scope opens for rollout', () => {
     const chosen: FlagsView = {
       ...flags,
       flags: {
         ...flags.flags,
-        auto_save: {
+        night_auto: {
           enabled: true,
           scope: 'internal',
           percent: 0,
@@ -873,24 +939,23 @@ describe('A06 jobs, A10 features, A12 audit', () => {
         },
       },
     };
-    const raw = render(<FeaturesView data={chosen} ai={null} onChanged={() => undefined} />, [
-      'eng',
-    ]);
-    const ops = text(raw);
-    expect(ops).toContain('2 gia đình được chọn');
-    expect(raw).toContain('aria-label="Ai được dùng “Tự lưu kỷ niệm (beta iOS)”"');
+    const raw = render(<SystemSwitchesView data={chosen} onChanged={() => undefined} />, ['eng']);
+    expect(text(raw)).toContain('2 gia đình được chọn');
+    expect(raw).toContain(
+      `aria-label="Ai được dùng “${messages.vi['flag.night_auto']!.replace(/"/g, '&quot;')}”"`,
+    );
     const html = text(
       render(
         <AuditActionText
           action="flags.families"
           target="auto_save"
-          detail={{ after: chosen.flags.auto_save }}
+          detail={{ after: chosen.flags.night_auto }}
         />,
       ),
     );
     expect(html).toContain('Đổi gia đình được dùng “Tự lưu kỷ niệm (beta iOS)”');
   });
-  it('audit rows read as actions with the reason, no family content', () => {
+  it('audit rows read as actions (older ones with their note), no family content', () => {
     const rows: AuditRow[] = [
       {
         id: 'a1',
@@ -919,7 +984,10 @@ describe('A06 jobs, A10 features, A12 audit', () => {
     expect(html).toContain('10:52 hôm nay');
     expect(html).toContain('Duyệt mở rộng +10 GB');
     expect(html).toContain('Nhận xử lý yêu cầu hỗ trợ');
-    expect(html).toContain('CL-1042 —');
+    expect(html).toContain('“Gia đình 2 bé, tốc độ tăng 0,8 GB/tháng.”');
+    expect(html).toContain('CL-1042');
+    // No reason column (D-090).
+    expect(html).not.toContain('Lý do');
   });
 });
 
@@ -928,7 +996,7 @@ describe('shell', () => {
     const html = text(
       render(
         <Sidebar
-          route="systemAi"
+          route="system"
           badges={{ tickets: 12, storage: 4, jobs: 0 }}
           environment="dev"
           locale="vi"

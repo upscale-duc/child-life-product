@@ -242,7 +242,7 @@ export const contentVi: Record<string, string> = {
   'content.act.approve.body':
     'Đánh dấu từng mục kiểm tra. Bạn không thể duyệt nội dung do chính mình sửa lần cuối.',
   'content.act.reject.title': 'Trả lại cho người soạn',
-  'content.act.reject.body': 'Nội dung về Nháp kèm lý do của bạn.',
+  'content.act.reject.body': 'Nội dung về Nháp để người soạn sửa tiếp.',
   'content.act.publish.title': 'Xuất bản lên app',
   'content.act.publish.body':
     'Bản đã duyệt sẽ hiện trên app. Nếu chưa có người có chuyên môn ký duyệt, app ghi chú nhỏ ở cuối: “Biên soạn theo hướng dẫn WHO, AAP, NHS · Tham khảo, không thay thế bác sĩ” (D-082).',
@@ -616,7 +616,7 @@ export const contentEn: Record<string, string> = {
   'content.act.approve.title': 'Approve content',
   'content.act.approve.body': 'Tick every check. You cannot approve content you edited last.',
   'content.act.reject.title': 'Return to the author',
-  'content.act.reject.body': 'The content goes back to Draft with your reason.',
+  'content.act.reject.body': 'The content goes back to Draft for the author to keep editing.',
   'content.act.publish.title': 'Publish to the app',
   'content.act.publish.body':
     'The approved version appears in the app. Without a qualified reviewer’s sign-off the app adds a small note at the end: “Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor” (D-082).',

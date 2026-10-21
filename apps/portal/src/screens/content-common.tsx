@@ -53,16 +53,7 @@ import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad, type Api } from '../api';
 import { Field, Notice, type MenuItem, type StatItem } from '../content-kit';
 import { ZONE } from '../format';
-import {
-  Button,
-  Empty,
-  Modal,
-  Pill,
-  ReasonField,
-  errorMessageId,
-  reasonOk,
-  type PillTone,
-} from '../ui';
+import { Button, Empty, Modal, Pill, RejectedBy, errorMessageId, type PillTone } from '../ui';
 import { CheckRow, FilePicker, IconButton } from './form-controls';
 import { fileToBase64, kebabName, imageNameOk } from './FirstAidEditor';
 
@@ -407,7 +398,6 @@ export function splitActions(actions: EditorialAction[]) {
 }
 
 export interface ActInput {
-  reason: string;
   checks: EditorialCheck[];
   review: { reviewer: string; credential: string; reviewedOn: string };
   withReview: boolean;
@@ -415,14 +405,13 @@ export interface ActInput {
 
 export function blankActInput(today: string): ActInput {
   return {
-    reason: '',
     checks: [],
     review: { reviewer: '', credential: '', reviewedOn: today },
     withReview: false,
   };
 }
 
-/** The `staffContentAct` request, or null while the dialog is not complete. */
+/** The `staffContentAct` request, or null while the dialog is not complete (no reason: D-090). */
 export function contentActRequest(
   kind: ContentKind,
   id: string,
@@ -430,8 +419,6 @@ export function contentActRequest(
   input: ActInput,
   requireReview: boolean,
 ): Record<string, unknown> | null {
-  const needsReason = action === 'reject' || action === 'unpublish';
-  if (needsReason && !reasonOk(input.reason)) return null;
   if (action === 'approve' && !editorialChecks.every((c) => input.checks.includes(c))) return null;
   const takesReview = action === 'approve' || action === 'reconfirm';
   const wantsReview = takesReview && (input.withReview || requireReview);
@@ -441,7 +428,6 @@ export function contentActRequest(
     kind,
     id,
     action,
-    reason: input.reason.trim(),
     ...(action === 'approve' ? { checks: input.checks } : {}),
     ...(wantsReview
       ? {
@@ -592,11 +578,6 @@ export function ActDialog({
           )}
         </fieldset>
       )}
-      <ReasonField
-        value={input.reason}
-        onChange={(reason) => set({ reason })}
-        required={action === 'reject' || action === 'unpublish'}
-      />
       {error && (
         <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
@@ -718,7 +699,7 @@ export function EditorNotices({
       )}
       {rejection && (
         <Notice tone="warn" title={<FormattedMessage id="content.rejectedTitle" />}>
-          <FormattedMessage id="content.rejected" values={rejection} />
+          <RejectedBy id="content.rejected" by={rejection.by} reason={rejection.reason} />
         </Notice>
       )}
       <IssuesList issues={issues} />
@@ -1595,7 +1576,7 @@ export function BlocksPreview({ blocks, lang = 'vi' }: { blocks: ContentBlock[];
 
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="cl-phone" aria-label="preview">
+    <div className="cl-phone no-scrollbar" aria-label="preview">
       {children}
     </div>
   );

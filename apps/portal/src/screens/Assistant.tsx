@@ -1,10 +1,8 @@
-import {
-  assistantSwitchKeys,
-  staffCan,
-  type AssistantPoolPlan,
-  type StaffAssistantSwitches,
-  type StaffAssistantTask,
-  type StaffAssistantUsage,
+import type {
+  AiBudget,
+  AssistantPoolPlan,
+  StaffAssistantTask,
+  StaffAssistantUsage,
 } from '@child-life/contracts';
 import { Copy, Search } from 'lucide-react';
 import { useId, useState, type ReactNode } from 'react';
@@ -13,69 +11,32 @@ import { toast } from 'sonner';
 import { Button as UiButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad, type Api } from '../api';
-import { Hint, Notice, Section, StatTiles } from '../content-kit';
-import { useNavigate, useStaff } from '../context';
-import { duration, num, pct, shortDate, vnd, when } from '../format';
+import { Notice, Section, StatTiles } from '../content-kit';
+import { useNavigate } from '../context';
+import { ZONE, duration, num, pct, shortDate, vnd, when } from '../format';
 import {
   Button,
   HBars,
   Loaded,
   LockNote,
-  Page,
   Pill,
   StackedBars,
   TableScroll,
   errorMessageId,
   type PillTone,
 } from '../ui';
-import { AuditActionText, FlagDialog, ScopePill, type FlagChange } from './Features';
 import { reservationTone } from './PremiumOps';
-import { BudgetMeter, budgetMonth, budgetUsed } from './System';
 
 /**
- * Trợ lý AI (docs/assistant/architecture.md §5, slice A6): Usage (the household credit pool by
- * budget, tasks, errors, model counters), Tasks (one task by id, for support) and Switches (the
- * assistant kill switches, P-161). Aggregates, codes and states only — never a message, a draft's
- * content, a clarification answer, a health sign or a photo; families and babies as codes.
- * Credit settings stay in Premium › Cấu hình (D-075 #1); switching uses the Features dialog
- * (`staffSetFlag`: role `flags.toggle`, reason, audit).
+ * Trợ lý AI on Hệ thống & AI (docs/assistant/architecture.md §5, slice A6; merged page, owner
+ * 2026-10-21): Usage (the household credit pool by budget, tasks, errors, model counters) and the
+ * task lookup (one task by id, for support). Aggregates, codes and states only — never a message,
+ * a draft's content, a clarification answer, a health sign or a photo; families and babies as
+ * codes. Credit settings stay in Tính năng & Premium › Gói Premium (D-075 #1); the assistant's
+ * switches are in the hub (its features and Công tắc hệ thống).
  */
-export function AssistantScreen({ initialTab = 'usage' }: { initialTab?: AssistantTab }) {
-  const intl = useIntl();
-  const [tab, setTab] = useState<AssistantTab>(initialTab);
-  return (
-    <Page
-      title={<FormattedMessage id="assistant.title" />}
-      subtitle={<FormattedMessage id="assistant.sub" />}
-    >
-      <Tabs value={tab} onValueChange={(t) => setTab(t as AssistantTab)} className="min-w-0 gap-4">
-        <TabsList aria-label={intl.formatMessage({ id: 'assistant.tabs' })}>
-          {assistantTabs.map((t) => (
-            <TabsTrigger key={t} value={t} className="px-3">
-              <FormattedMessage id={`assistant.tab.${t}`} />
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent value="usage" className="min-w-0">
-          <UsageLoader />
-        </TabsContent>
-        <TabsContent value="tasks" className="min-w-0">
-          <TaskLookup />
-        </TabsContent>
-        <TabsContent value="switches" className="min-w-0">
-          <SwitchesLoader />
-        </TabsContent>
-      </Tabs>
-    </Page>
-  );
-}
-
-export const assistantTabs = ['usage', 'tasks', 'switches'] as const;
-export type AssistantTab = (typeof assistantTabs)[number];
 
 function Th({ id }: { id: string }) {
   return (
@@ -133,7 +94,7 @@ function SubHead({ id }: { id: string }) {
 
 // ---------- Usage ----------
 
-function UsageLoader() {
+export function UsageLoader() {
   const [load, reload] = useLoad<StaffAssistantUsage>('staffAssistantUsage', {}, 'assistantUsage');
   return (
     <Loaded load={load} reload={reload}>
@@ -309,7 +270,7 @@ export function UsageView({ data, now = new Date() }: { data: StaffAssistantUsag
         title={<FormattedMessage id="assistant.pool" />}
         hint={<FormattedMessage id="assistant.pool.note" />}
         actions={
-          <Button kind="ghost" onClick={() => navigate('premium')}>
+          <Button kind="ghost" onClick={() => navigate('features', 'plan')}>
             <FormattedMessage id="assistant.credits.open" />
           </Button>
         }
@@ -476,6 +437,35 @@ export function ModelDetails({ model: m }: { model: StaffAssistantUsage['model']
             values={{ calls: m.calls, tasks: m.tasksWithCalls }}
           />
         </Row>
+        {m.tokenUsage && (
+          <>
+            <Row label="assistant.model.tokens">
+              {intl.formatNumber(m.tokenUsage.inputTokens)} /{' '}
+              {intl.formatNumber(m.tokenUsage.outputTokens)}
+            </Row>
+            <Row label="assistant.model.usageCoverage">
+              {m.tokenUsage.knownUsage} / {m.tokenUsage.calls} ·{' '}
+              <FormattedMessage
+                id="assistant.model.unknownUsage"
+                values={{ n: m.tokenUsage.unknownUsage }}
+              />
+            </Row>
+            <Row label="assistant.model.observedCost">
+              {m.tokenUsage.ratedCalls > 0
+                ? intl.formatNumber(m.tokenUsage.estimatedCostUsdMicros / 1_000_000, {
+                    style: 'currency',
+                    currency: 'USD',
+                    maximumFractionDigits: 4,
+                  })
+                : '—'}{' '}
+              ·{' '}
+              <FormattedMessage
+                id="assistant.model.unratedCalls"
+                values={{ n: m.tokenUsage.unratedCalls }}
+              />
+            </Row>
+          </>
+        )}
         <Row label="assistant.model.cost">{vnd(intl, m.estimatedCostVnd)}</Row>
         <Row label="assistant.model.timeToReady">
           {m.timeToReady.samples === 0 ? (
@@ -494,6 +484,53 @@ export function ModelDetails({ model: m }: { model: StaffAssistantUsage['model']
           )}
         </Row>
       </dl>
+      {m.tokenUsage && m.tokenUsage.byModel.length > 0 && (
+        <div className="overflow-hidden rounded-lg border">
+          <TableScroll min={460}>
+            <table className="table [&_td]:py-2">
+              <thead>
+                <tr>
+                  <Th id="assistant.model.col.model" />
+                  <Th id="assistant.model.operation" />
+                  <Th id="assistant.model.col.calls" />
+                  <Th id="assistant.model.tokens" />
+                  <Th id="assistant.model.usageCoverage" />
+                  <Th id="assistant.model.observedCost" />
+                </tr>
+              </thead>
+              <tbody>
+                {m.tokenUsage.byModel.map((row) => (
+                  <tr key={`${row.model}|${row.operation}`}>
+                    <td className="mono">{row.model}</td>
+                    <td>{row.operation}</td>
+                    <td>{num(intl, row.calls)}</td>
+                    <td>
+                      {num(intl, row.inputTokens)} / {num(intl, row.outputTokens)}
+                    </td>
+                    <td>
+                      {num(intl, row.knownUsage)} / {num(intl, row.calls)}
+                    </td>
+                    <td>
+                      {row.ratedCalls > 0
+                        ? intl.formatNumber(row.estimatedCostUsdMicros / 1_000_000, {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 4,
+                          })
+                        : '—'}{' '}
+                      ·{' '}
+                      <FormattedMessage
+                        id="assistant.model.unratedCalls"
+                        values={{ n: row.unratedCalls }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableScroll>
+        </div>
+      )}
       {m.byModel.length > 0 && (
         <div className="overflow-hidden rounded-lg border">
           <TableScroll min={460}>
@@ -955,154 +992,69 @@ export function TaskTechnical({ task, now }: { task: StaffAssistantTask; now: Da
   );
 }
 
-// ---------- Switches ----------
+// ---------- The shared AI budget (also on Hệ thống & AI › AI) ----------
 
-function SwitchesLoader() {
-  const [load, reload] = useLoad<StaffAssistantSwitches>(
-    'staffAssistantSwitches',
-    {},
-    'assistantSwitches',
-  );
-  return (
-    <Loaded load={load} reload={reload}>
-      {(data) => <SwitchesView data={data} onChanged={reload} />}
-    </Loaded>
-  );
-}
+type Budget = Pick<AiBudget, 'monthlyBudgetVnd' | 'month' | 'spentVnd'>;
 
-/** Công tắc: one row per switch (what it does, what turning it off does, scope, last edit). */
-export function SwitchesView({
-  data,
-  onChanged,
-}: {
-  data: StaffAssistantSwitches;
-  onChanged: () => void;
-}) {
+/** Share of the monthly AI budget spent (0 when no budget is set). */
+export const budgetUsed = (b: Budget) => (b.monthlyBudgetVnd ? b.spentVnd / b.monthlyBudgetVnd : 0);
+
+/** "tháng 10" / "October" for a `YYYY-MM` budget month. */
+export const budgetMonth = (intl: IntlShape, b: Budget) =>
+  intl.formatDate(`${b.month}-15`, { month: 'long', timeZone: ZONE });
+
+const meterTone = (used: number) => (used >= 1 ? 'error' : used >= 0.8 ? 'warn' : 'ok');
+const meterText = { ok: 'text-foreground', warn: 'text-warning', error: 'text-destructive' };
+const meterFill = { ok: 'bg-primary', warn: 'bg-warning', error: 'bg-destructive' };
+
+/**
+ * Spent / budget this month as a bar with the 80% alert mark (A09), the day of the month, and
+ * what the marks mean (`foot`). Shared by Mức dùng and AI gợi ý câu chuyện.
+ */
+export function BudgetMeter({ budget, now, foot }: { budget: Budget; now: Date; foot: ReactNode }) {
   const intl = useIntl();
-  const staff = useStaff();
-  const navigate = useNavigate();
-  const canToggle = staffCan(staff.levels, 'flags.toggle');
-  const [change, setChange] = useState<FlagChange | null>(null);
-  return (
-    <div className="grid min-w-0 grid-cols-1 gap-4">
-      <Section
-        title={<FormattedMessage id="assistant.switches" />}
-        description={<FormattedMessage id="assistant.switches.lock" />}
-        actions={
-          <Button kind="ghost" onClick={() => navigate('features')}>
-            <FormattedMessage id="assistant.switches.open" />
-          </Button>
-        }
-        flush
-      >
-        <ul className="m-0 list-none divide-y p-0">
-          {assistantSwitchKeys.map((key) => {
-            const f = data.flags[key];
-            const last = data.lastEdit[key];
-            const name = intl.formatMessage({ id: `flag.${key}` });
-            const offEffect = intl.formatMessage({ id: `flag.${key}.offEffect` });
-            const whenOff = intl.formatMessage({ id: 'assistant.switches.whenOff' });
-            return (
-              <li key={key} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3">
-                <div className="min-w-0 flex-1 basis-64">
-                  <p className="flex items-center gap-1 font-medium">
-                    {name}
-                    <Hint label={`${whenOff} ${offEffect}`}>
-                      <span className="font-medium">{whenOff}</span> {offEffect}
-                    </Hint>
-                  </p>
-                  <p className="text-[13px] text-muted-foreground">
-                    <FormattedMessage id={`flag.${key}.desc`} />
-                  </p>
-                </div>
-                <div className="flex min-w-36 shrink-0 flex-col items-end gap-1 text-right">
-                  {f.enabled ? (
-                    <ScopePill flag={f} />
-                  ) : (
-                    <span className="text-[13px] text-muted-foreground">
-                      <FormattedMessage id="assistant.switches.off" />
-                    </span>
-                  )}
-                  {last && (
-                    <span
-                      className="text-xs text-muted-foreground tabular-nums"
-                      title={intl.formatMessage({ id: 'col.lastEdit' })}
-                    >
-                      {last.by.split(' ')[0]} · {shortDate(intl, last.at)}
-                    </span>
-                  )}
-                </div>
-                <Switch
-                  checked={f.enabled}
-                  aria-label={name}
-                  disabled={!canToggle}
-                  title={canToggle ? undefined : intl.formatMessage({ id: 'features.toggleRole' })}
-                  onCheckedChange={() =>
-                    setChange({
-                      key,
-                      kind: f.enabled ? 'off' : 'on',
-                      next: { ...f, enabled: !f.enabled, notice: null },
-                    })
-                  }
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </Section>
-      <Section
-        title={<FormattedMessage id="assistant.switches.recent" />}
-        summary={
-          data.recent.length ? (
-            <FormattedMessage
-              id="assistant.switches.recentSummary"
-              values={{ n: data.recent.length }}
-            />
-          ) : (
-            <FormattedMessage id="assistant.switches.noRecent" />
-          )
-        }
-        collapsible
-        defaultOpen={false}
-      >
-        <SwitchRecent recent={data.recent} />
-      </Section>
-      {change && (
-        <FlagDialog
-          change={change}
-          onClose={() => setChange(null)}
-          onDone={() => {
-            setChange(null);
-            onChanged();
-          }}
-        />
-      )}
-    </div>
+  const used = budgetUsed(budget);
+  const tone = meterTone(used);
+  const day = Number(
+    new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone: ZONE }).format(now),
   );
-}
-
-/** The recent switch changes: what, who, when and why (folded in Công tắc). */
-export function SwitchRecent({ recent }: { recent: StaffAssistantSwitches['recent'] }) {
-  const intl = useIntl();
-  if (recent.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        <FormattedMessage id="assistant.switches.noRecent" />
+  const [y, m] = budget.month.split('-').map(Number) as [number, number];
+  const days = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const width = Math.max(0, Math.min(1, used)) * 100;
+  return (
+    <div className="grid gap-2">
+      <p className="flex flex-wrap items-baseline gap-x-2 tabular-nums">
+        <span className="text-2xl leading-8 font-bold tracking-tight">
+          {vnd(intl, budget.spentVnd)}
+        </span>
+        <span className="text-muted-foreground">/ {vnd(intl, budget.monthlyBudgetVnd)}</span>
+        <span className={cn('ml-auto text-lg font-semibold', meterText[tone])}>
+          {pct(intl, used)}
+        </span>
       </p>
-    );
-  }
-  return (
-    <ul className="m-0 grid list-none gap-3 p-0">
-      {recent.map((r, i) => (
-        <li key={i} className="grid gap-0.5">
-          <p className="text-sm">
-            <AuditActionText action={r.action} target={r.target} detail={r.detail} />
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {r.by.split(' ')[0]} · {shortDate(intl, r.at)} · {r.reason}
-          </p>
-        </li>
-      ))}
-    </ul>
+      <div
+        role="progressbar"
+        aria-label={intl.formatMessage({ id: 'ai.budgetBar' })}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(width)}
+        className="relative h-2.5 rounded-full bg-muted"
+      >
+        <div
+          className={cn('h-full rounded-full', meterFill[tone])}
+          style={{ width: `${width}%` }}
+        />
+        <span
+          aria-hidden="true"
+          className="absolute -inset-y-1 left-[80%] w-0.5 rounded-full bg-foreground/50"
+        />
+      </div>
+      <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        <span className="tabular-nums">
+          <FormattedMessage id="ai.budgetDay" values={{ day, days }} />
+        </span>
+        <span>{foot}</span>
+      </div>
+    </div>
   );
 }

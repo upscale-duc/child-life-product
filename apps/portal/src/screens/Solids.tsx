@@ -157,7 +157,7 @@ function SolidsLists({ tab, go }: { tab: SolidsTab; go: (p: SolidsPath) => void 
   return (
     <Page
       title={<FormattedMessage id="solids.title" />}
-      subtitle={<FormattedMessage id={`solids.sub.${tab}`} />}
+      info={<FormattedMessage id={`solids.sub.${tab}`} />}
       actions={
         canEdit && (
           <>

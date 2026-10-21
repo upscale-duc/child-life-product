@@ -9,13 +9,11 @@ import type { SupportedLocale } from '@child-life/web-config';
 import {
   BookOpen,
   BadgeCheck,
-  Bot,
   CalendarHeart,
   CalendarRange,
   ChartColumn,
   ChevronsUpDown,
   ClipboardCheck,
-  Crown,
   DatabaseBackup,
   HardDrive,
   HeartPulse,
@@ -90,27 +88,27 @@ import { useApi, type Badges } from './api';
 import {
   BadgesContext,
   NavigateContext,
+  canonicalPath,
   routePaths,
   routeOf,
   useStaff,
   type Route,
 } from './context';
 import { sortedRoles } from './session';
+import { pageInfoSlot } from './ui';
 import { AnalyticsScreen } from './screens/Analytics';
 import { AppUpdateScreen } from './screens/AppUpdate';
-import { AssistantScreen } from './screens/Assistant';
 import { ArticlesScreen } from './screens/Articles';
 import { AuditScreen } from './screens/Audit';
 import { ContentReviewScreen } from './screens/ContentReview';
 import { FamiliesScreen } from './screens/Families';
-import { FeaturesScreen } from './screens/Features';
+import { FeatureHubScreen } from './screens/FeatureHub';
 import { FirstAidScreen } from './screens/FirstAid';
 import { KeepsakesScreen } from './screens/Keepsakes';
 import { MilestonesScreen } from './screens/Milestones';
 import { NutritionScreen } from './screens/Nutrition';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
-import { PremiumScreen } from './screens/Premium';
 import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
 import { RhythmScreen } from './screens/Rhythm';
@@ -122,9 +120,8 @@ import { SupportScreen } from './screens/Support';
 import { SystemScreen } from './screens/System';
 
 type Group = 'main' | 'ops' | 'content' | 'system' | 'develop';
-type NavRoute = Exclude<Route, 'systemAi'>;
 type NavItem = {
-  route: NavRoute;
+  route: Route;
   icon: LucideIcon;
   badge?: keyof Badges;
   group: Group;
@@ -139,7 +136,6 @@ const nav: NavItem[] = [
   { route: 'support', icon: LifeBuoy, badge: 'tickets', group: 'ops', can: 'support.view' },
   { route: 'storage', icon: HardDrive, badge: 'storage', group: 'ops', can: 'storage.view' },
   { route: 'jobs', icon: DatabaseBackup, badge: 'jobs', group: 'ops', can: 'jobs.view' },
-  { route: 'reference', icon: BookOpen, group: 'ops', can: 'reference.view' },
   { route: 'firstAid', icon: HeartPulse, group: 'content', can: 'content.view' },
   { route: 'rhythm', icon: CalendarHeart, group: 'content', can: 'content.view' },
   { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
@@ -152,11 +148,12 @@ const nav: NavItem[] = [
   // Ăn dặm (D-085, plan §6): food catalogue, recipes, solids guides.
   { route: 'solids', icon: Soup, group: 'content', can: 'content.view' },
   { route: 'contentReview', icon: BadgeCheck, group: 'content', can: 'content.view' },
+  // Bảng tham chiếu (P-138; owner 2026-10-21): WHO growth tables, bottle amounts, vaccine schedule.
+  { route: 'reference', icon: BookOpen, group: 'content', can: 'reference.view' },
+  // Hệ thống & AI (owner 2026-10-21): storage, AI drafts and the assistant's usage and tasks.
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
+  // Tính năng & Premium (D-089): features, families, the plan, system switches, history.
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
-  { route: 'premium', icon: Crown, group: 'system', can: 'premium.view' },
-  // Child Life Assistant ops (slice A6): usage, task lookup, kill switches.
-  { route: 'assistant', icon: Bot, group: 'system', can: 'premium.view' },
   { route: 'appUpdate', icon: Smartphone, group: 'system', can: 'release.view' },
   { route: 'staff', icon: ShieldCheck, group: 'system', can: 'staff.view' },
   { route: 'audit', icon: ScrollText, group: 'system', can: 'audit.view' },
@@ -165,7 +162,7 @@ const nav: NavItem[] = [
 const groups: Group[] = ['main', 'ops', 'content', 'system', 'develop'];
 
 const canOpen = (levels: StaffLevels, route: Route) => {
-  const item = nav.find((n) => n.route === (route === 'systemAi' ? 'system' : route));
+  const item = nav.find((n) => n.route === route);
   return !!item && staffCan(levels, item.can);
 };
 
@@ -225,6 +222,11 @@ export function Shell({
     return () => clearInterval(t);
   }, [refreshBadges]);
 
+  // An old address of a merged page (/premium, /assistant) shows its tab's address.
+  useEffect(() => {
+    const path = canonicalPath(window.location.pathname);
+    if (path !== window.location.pathname) window.history.replaceState({}, '', path);
+  }, []);
   useEffect(() => {
     const onPop = () => setRoute(allowedRoute(staff.levels, routeOf(window.location.pathname)));
     window.addEventListener('popstate', onPop);
@@ -236,8 +238,14 @@ export function Shell({
       window.history.replaceState({}, '', routePaths[route]);
     }
   }, [route]);
-  const navigate = useCallback((r: Route) => {
-    if (window.location.pathname !== routePaths[r]) window.history.pushState({}, '', routePaths[r]);
+  // A sidebar link opens the page as new (its first tab), even from one of its tabs.
+  const [visit, setVisit] = useState(0);
+  const navigate = useCallback((r: Route, sub?: string) => {
+    const path = sub ? `${routePaths[r]}/${sub}` : routePaths[r];
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+      setVisit((v) => v + 1);
+    }
     setRoute(r);
     window.scrollTo(0, 0);
   }, []);
@@ -270,7 +278,7 @@ export function Shell({
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const active: NavRoute = route === 'systemAi' ? 'system' : route;
+  const active = route;
   const group = nav.find((n) => n.route === active)?.group ?? 'main';
 
   return (
@@ -308,6 +316,8 @@ export function Shell({
                     <FormattedMessage id={`nav.${active}`} />
                   </span>
                 </nav>
+                {/* The page's "i" (Page `info`) sits next to its name, not on the page. */}
+                <span id={pageInfoSlot} className="-ml-1 flex shrink-0 items-center" />
                 <div className="ml-auto flex items-center gap-2">
                   <SearchButton onClick={() => setSearch(true)} />
                   <ThemeMenu />
@@ -316,7 +326,7 @@ export function Shell({
               </header>
               {/* SidebarInset is the page's <main>. */}
               <div className="main flex-1">
-                <Screen route={route} />
+                <Screen key={`${route}:${visit}`} route={route} />
               </div>
             </SidebarInset>
             <CommandMenu
@@ -372,15 +382,9 @@ function Screen({ route }: { route: Route }) {
     case 'jobs':
       return <JobsScreen />;
     case 'system':
-      return <SystemScreen tab="storage" />;
-    case 'systemAi':
-      return <SystemScreen tab="ai" />;
+      return <SystemScreen />;
     case 'features':
-      return <FeaturesScreen />;
-    case 'premium':
-      return <PremiumScreen />;
-    case 'assistant':
-      return <AssistantScreen />;
+      return <FeatureHubScreen />;
     case 'appUpdate':
       return <AppUpdateScreen />;
     case 'audit':
@@ -522,7 +526,7 @@ function AppSidebar({
   const intl = useIntl();
   const staff = useStaff();
   const { isMobile, setOpenMobile, open } = useSidebar();
-  const active = route === 'systemAi' ? 'system' : route;
+  const active = route;
   return (
     <SidebarRoot
       collapsible="icon"

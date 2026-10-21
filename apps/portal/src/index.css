@@ -227,3 +227,11 @@
     scrollbar-color: color-mix(in oklab, var(--foreground) 18%, transparent) transparent;
   }
 }
+
+/* Phone previews and their preview column scroll without a visible bar (owner, 2026-10-21). */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

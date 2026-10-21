@@ -542,7 +542,7 @@ describe('Phân tích (A13 / A14)', () => {
   });
 });
 
-describe('Dữ liệu tham chiếu (C01–C04)', () => {
+describe('Bảng tham chiếu (C01–C04)', () => {
   it('WHO table with P3 / median / P97; bottle bands; the vaccine schedule by dose', () => {
     const growthHtml = text(
       render(
@@ -598,7 +598,7 @@ describe('Dữ liệu tham chiếu (C01–C04)', () => {
       history: [],
     };
     const props = { canEdit: true, canApprove: false, selfUid: 's1', onChanged: () => {} };
-    // Length → Lượng sữa gợi ý: the answer on screen is still the length table's.
+    // Length → Lượng sữa chọn nhanh: the answer on screen is still the length table's.
     const switching = render(
       <ReferenceFor view={lengthView} dataset="bottle.quickPicks" {...props} />,
     );
@@ -658,13 +658,15 @@ describe('two-person re-run (P-139) and the v1.0 sidebar', () => {
         ),
       );
     expect(sidebar(['admin'])).toContain(
-      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung HỆ THỐNG Hệ thống & AI Tính năng & phát hành Premium & Cá nhân hoá Trợ lý AI Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
+      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung Bảng tham chiếu HỆ THỐNG Hệ thống & AI Tính năng & Premium Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
     );
     expect(sidebar(['analyst'])).toContain('Tổng quan Phân tích PHÁT TRIỂN Sổ tay kiểm thử');
     expect(sidebar(['analyst'])).not.toContain('Gia đình');
     expect(sidebar(['expert'])).toContain(
-      'VẬN HÀNH Dữ liệu tham chiếu NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung PHÁT TRIỂN',
+      'NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung Bảng tham chiếu PHÁT TRIỂN',
     );
+    // Bảng tham chiếu sits at the end of NỘI DUNG: an expert opens nothing under VẬN HÀNH.
+    expect(sidebar(['expert'])).not.toContain('VẬN HÀNH');
     expect(sidebar(['admin'])).toContain('Admin');
   });
 });

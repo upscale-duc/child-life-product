@@ -58,6 +58,7 @@ import {
   Section,
   useConfirm,
   useLeaveGuard,
+  VersionBadge,
   type MenuItem,
 } from '../content-kit';
 import { routePaths, subPath, useNavigate, useStaff } from '../context';
@@ -68,15 +69,14 @@ import {
   Modal,
   Page,
   Pill,
+  RejectedBy,
   RowActions,
   SelectMenu,
   TableScroll,
   errorMessageId,
-  reasonOk,
   type PillTone,
 } from '../ui';
 import toddlerDraftData from '../../../../content/rhythm/toddler-v2.draft.json';
-import { PersonalizationMetrics } from './PersonalizationMetrics';
 import {
   ActivityEditor,
   AgeCardEditor,
@@ -126,15 +126,16 @@ import {
  * (`publicConfig/content_rhythm`: activities, age cards, health routing). "Tạo phiên bản mới"
  * opens a working copy, "Lưu nháp" keeps one open version per document, "Gửi duyệt" hands it to
  * another person with "Nội dung · Duyệt", whose approval publishes it (on prod with the qualified
- * review). Rules (`config/rhythm`, PN04) are versioned thresholds saved with a reason
- * (Tính năng · Sửa). Every step is in the audit log.
+ * review). Rules (`config/rhythm`, PN04) are versioned thresholds (Tính năng · Sửa). Every step
+ * is in the audit log; no reason is asked (D-090).
  *
  * Layout (D-063 content kit): each tab opens on its list with the live status in one line and one
  * main action; the model details, history, kill switches and explanations are folded away.
  */
 
-export type Tab = 'reference' | 'content' | 'rules' | 'metrics';
-const tabs: Tab[] = ['reference', 'content', 'rules', 'metrics'];
+// Hiệu quả cá nhân hoá moved to Phân tích › Cá nhân hoá (owner 2026-10-21).
+export type Tab = 'reference' | 'content' | 'rules';
+const tabs: Tab[] = ['reference', 'content', 'rules'];
 type ContentTab = 'activities' | 'ageCards' | 'health';
 const contentTabs: ContentTab[] = ['activities', 'ageCards', 'health'];
 
@@ -176,10 +177,7 @@ export function RhythmScreen() {
   const staff = useStaff();
   const [load, reload] = useLoad<RhythmView>('staffRhythm', {}, 'rhythm');
   return (
-    <Page
-      title={<FormattedMessage id="rhythm.title" />}
-      subtitle={<FormattedMessage id="rhythm.sub" />}
-    >
+    <Page title={<FormattedMessage id="rhythm.title" />}>
       <Loaded load={load} reload={reload}>
         {(view) => (
           <RhythmBody
@@ -438,10 +436,6 @@ export function RhythmBody({
         />
       </TabsContent>
 
-      <TabsContent value="metrics">
-        <PersonalizationMetrics metrics={view.metrics} />
-      </TabsContent>
-
       {dialog?.kind === 'save' && (
         <SaveDialog
           doc={dialog.doc}
@@ -478,6 +472,16 @@ export function RhythmBody({
 type Working<T> = ReturnType<typeof useWorking<T>>;
 
 // ---------- Status line, editor bar, issues, history (shared by both documents) ----------
+
+/** The review in words, for the version badge's popover. */
+function reviewLine(intl: IntlShape, review: RhythmReview): string {
+  return review
+    ? intl.formatMessage(
+        { id: 'rhythm.reviewedBy' },
+        { name: review.reviewer, credential: review.credential, date: dmy(review.reviewedOn) },
+      )
+    : intl.formatMessage({ id: 'rhythm.notReviewed' });
+}
 
 function ReviewText({ review }: { review: RhythmReview }) {
   return review ? (
@@ -524,8 +528,8 @@ function DocStatus({
   doc: RhythmDoc;
   docView: RhythmDocView<{ version: string; publishedAt: string | null }, unknown>;
   size: (v: RhythmVersion) => ReactNode;
-  /** The live version's review, in a few words. */
-  stat: ReactNode;
+  /** The live version's review, in a few words (in the version badge's popover). */
+  stat: string;
   canEdit: boolean;
   canApprove: boolean;
   showDraft: boolean;
@@ -554,24 +558,22 @@ function DocStatus({
   return (
     <div className="grid gap-3 rounded-xl border bg-card px-4 py-3 text-card-foreground">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        {c ? (
-          <>
-            <Pill tone="ok">
-              <FormattedMessage id="rhythm.inUse" values={{ v: c.version }} />
-            </Pill>
-            <span className="text-sm text-muted-foreground tabular-nums">
-              <FormattedMessage
-                id="rhythm.publishedAt"
-                values={{ when: dateTime(intl, c.publishedAt) }}
-              />
-            </span>
-            {stat && <span className="text-sm text-muted-foreground">{stat}</span>}
-          </>
-        ) : (
-          <Pill tone="muted">
-            <FormattedMessage id="rhythm.notPublished" />
-          </Pill>
-        )}
+        {/* The live version as a badge; when and who reviewed it are in its popover. */}
+        <VersionBadge
+          version={c?.version ?? null}
+          label={<FormattedMessage id="rhythm.live" />}
+          details={
+            c
+              ? [
+                  intl.formatMessage(
+                    { id: 'rhythm.publishedAt' },
+                    { when: dateTime(intl, c.publishedAt) },
+                  ),
+                  stat,
+                ]
+              : []
+          }
+        />
         {canEdit && (
           <Button
             className="ml-auto"
@@ -639,10 +641,7 @@ function DocStatus({
           </div>
           {d.rejection && (
             <Notice tone="warn" className="basis-full">
-              <FormattedMessage
-                id="rhythm.rejected"
-                values={{ name: d.rejection.by, reason: d.rejection.reason }}
-              />
+              <RejectedBy id="rhythm.rejected" by={d.rejection.by} reason={d.rejection.reason} />
             </Notice>
           )}
         </div>
@@ -711,10 +710,7 @@ function EditingBar({
       )}
       {d?.rejection && (
         <Notice tone="warn">
-          <FormattedMessage
-            id="rhythm.rejected"
-            values={{ name: d.rejection.by, reason: d.rejection.reason }}
-          />
+          <RejectedBy id="rhythm.rejected" by={d.rejection.by} reason={d.rejection.reason} />
         </Notice>
       )}
     </>
@@ -1012,7 +1008,7 @@ export function HistoryTable({
 
 // ---------- Dialogs ----------
 
-/** A reason or a note: 500 characters at most, with the count. */
+/** A note: 500 characters at most, with the count. */
 function NoteField({
   label,
   value,
@@ -1058,7 +1054,6 @@ export function ActDialog({
   const api = useApi();
   const intl = useIntl();
   const ids = { reviewer: useId(), credential: useId(), reviewedOn: useId() };
-  const [reason, setReason] = useState('');
   const [review, setReview] = useState<ReviewInput>({
     reviewer: '',
     credential: '',
@@ -1067,16 +1062,9 @@ export function ActDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const withReview = act === 'approve';
-  const req = rhythmActRequest(
-    doc,
-    versionId,
-    act,
-    reason,
-    withReview ? review : null,
-    requireReview,
-  );
+  const req = rhythmActRequest(doc, versionId, act, withReview ? review : null, requireReview);
   const reviewOk = !withReview || rhythmReviewFrom(review, requireReview).ok;
-  const touched = !!(review.reviewer || review.credential || reasonOk(reason));
+  const touched = !!(review.reviewer || review.credential);
   return (
     <Modal
       wide={withReview}
@@ -1140,11 +1128,6 @@ export function ActDialog({
           )}
         </fieldset>
       )}
-      <NoteField
-        label={<FormattedMessage id="reason.labelRequired" />}
-        value={reason}
-        onChange={setReason}
-      />
       {error && (
         <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
@@ -1161,15 +1144,7 @@ export function ActDialog({
             if (!req) return;
             setBusy(true);
             setError(null);
-            sendRhythmAct(
-              api,
-              doc,
-              versionId,
-              act,
-              reason,
-              withReview ? review : null,
-              requireReview,
-            )
+            sendRhythmAct(api, doc, versionId, act, withReview ? review : null, requireReview)
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
                 toast.success(intl.formatMessage({ id: `rhythm.toast.${act}` }));
@@ -1404,7 +1379,7 @@ function ReferenceTab({
           doc="reference"
           docView={doc}
           size={size}
-          stat={doc.current && <ReviewText review={doc.current.review} />}
+          stat={doc.current ? reviewLine(intl, doc.current.review) : ''}
           canEdit={canEdit}
           canApprove={canApprove}
           showDraft={showDraft}
@@ -1983,7 +1958,7 @@ function StageSummary({
 
 const killSwitches = ['rhythm', 'personalization', 'ai_assist'] as const;
 
-/** PN01 "Công tắc khẩn cấp": the flags' state (folded); they are switched with a reason in A10. */
+/** PN01 "Công tắc khẩn cấp": the flags' state (folded); they are switched in the hub. */
 export function KillSwitchPanel({ flags }: { flags: Flags | null | undefined }) {
   const staff = useStaff();
   if (!staffCan(staff.levels, 'features.view')) {
@@ -2249,7 +2224,7 @@ function ContentTabView({
           doc="content"
           docView={doc}
           size={size}
-          stat={r && <FormattedMessage id="rhythm.reviewedCount" values={r} />}
+          stat={r ? intl.formatMessage({ id: 'rhythm.reviewedCount' }, r) : ''}
           canEdit={canEdit}
           canApprove={canApprove}
           showDraft={showDraft}
@@ -3365,7 +3340,6 @@ function RulesDialog({
 }) {
   const intl = useIntl();
   const api = useApi();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const changed = (Object.keys(rules) as Array<keyof RhythmRules>).filter(
@@ -3392,11 +3366,6 @@ function RulesDialog({
           </div>
         ))}
       </dl>
-      <NoteField
-        label={<FormattedMessage id="reason.labelRequired" />}
-        value={reason}
-        onChange={setReason}
-      />
       {error && (
         <Notice tone="error">
           <FormattedMessage id={errorMessageId(error)} />
@@ -3407,11 +3376,11 @@ function RulesDialog({
           <FormattedMessage id="action.cancel" />
         </Button>
         <Button
-          disabled={busy || !reasonOk(reason)}
+          disabled={busy}
           onClick={() => {
             setBusy(true);
             setError(null);
-            saveRhythmRules(api, rules, reason)
+            saveRhythmRules(api, rules)
               .then((res) => {
                 if (!res.ok) throw new ApiError('invalid-argument', 'malformed');
                 toast.success(intl.formatMessage({ id: 'rhythm.toast.rules' }));

@@ -589,25 +589,27 @@ describe('workflow requests', () => {
     expect(actionsFor({ status: 'published', live }, can)).toEqual(['reconfirm', 'unpublish']);
   });
 
-  it('builds the act request only when complete', () => {
+  it('builds the act request only when complete; no reason is asked or sent (D-090)', () => {
     const input = blankActInput('2026-10-15');
     expect(contentActRequest('article', 'art_a1', 'submit', input, false)).toEqual({
       kind: 'article',
       id: 'art_a1',
       action: 'submit',
-      reason: '',
     });
-    expect(contentActRequest('article', 'art_a1', 'reject', input, false)).toBeNull();
-    expect(
-      contentActRequest('article', 'art_a1', 'reject', { ...input, reason: 'Thiếu nguồn' }, false),
-    ).toMatchObject({ reason: 'Thiếu nguồn' });
+    // Reject and unpublish go through as they are.
+    for (const action of ['reject', 'unpublish'] as const) {
+      expect(contentActRequest('article', 'art_a1', action, input, false)).toEqual({
+        kind: 'article',
+        id: 'art_a1',
+        action,
+      });
+    }
     expect(contentActRequest('article', 'art_a1', 'approve', input, false)).toBeNull();
     const checked = { ...input, checks: [...editorialChecks] };
     expect(contentActRequest('article', 'art_a1', 'approve', checked, false)).toEqual({
       kind: 'article',
       id: 'art_a1',
       action: 'approve',
-      reason: '',
       checks: [...editorialChecks],
     });
     // Prod: the qualified review is required.

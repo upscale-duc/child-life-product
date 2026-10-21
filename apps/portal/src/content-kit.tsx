@@ -325,6 +325,66 @@ export function HelpPopover({
   );
 }
 
+// ---------- Version in use ----------
+
+/**
+ * The published version as a small badge (owner, 2026-10-21: no "● Bản đang dùng · … · Xuất bản …"
+ * banner on the page). The version id, when it was published and the rest are in its popover, and
+ * in its tooltip for a quick look.
+ */
+export function VersionBadge({
+  version,
+  details = [],
+  label,
+}: {
+  /** The version id; null: nothing published yet. */
+  version: string | null;
+  /** Lines under the id: "Xuất bản 19:31 18/10/2026", "35 tình huống", the reviewer. */
+  details?: string[];
+  /** The badge's words; "Đang dùng" by default. */
+  label?: ReactNode;
+}) {
+  const intl = useIntl();
+  if (!version) {
+    return (
+      <span className="inline-flex h-7 items-center rounded-full border px-2.5 text-xs font-medium text-muted-foreground">
+        <FormattedMessage id="kit.version.none" />
+      </span>
+    );
+  }
+  const title = [
+    intl.formatMessage({ id: 'kit.version.title' }, { v: version }),
+    ...details.filter(Boolean),
+  ].join(' · ');
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          title={title}
+          aria-label={title}
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 text-xs font-medium text-success outline-none hover:bg-success/15 focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
+          {label ?? <FormattedMessage id="kit.version.inUse" />}
+          <Info className="size-3.5 opacity-70" aria-hidden="true" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="grid w-72 gap-1.5 text-sm">
+        <p className="font-semibold">
+          <FormattedMessage id="kit.version.heading" />
+        </p>
+        <p className="font-mono text-[13px] break-all">{version}</p>
+        {details.filter(Boolean).map((d) => (
+          <p key={d} className="text-muted-foreground">
+            {d}
+          </p>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 // ---------- Notices ----------
 
 export type NoticeTone = 'info' | 'ok' | 'warn' | 'error';
@@ -614,7 +674,7 @@ export function EditorLayout({ children, aside }: { children: ReactNode; aside?:
     >
       <div className="grid min-w-0 gap-4">{children}</div>
       {aside && (
-        <aside className="grid min-w-0 gap-4 xl:sticky xl:top-[8.5rem] xl:max-h-[calc(100svh-9.5rem)] xl:overflow-y-auto xl:overscroll-contain">
+        <aside className="no-scrollbar grid min-w-0 gap-4 xl:sticky xl:top-[8.5rem] xl:max-h-[calc(100svh-9.5rem)] xl:overflow-y-auto xl:overscroll-contain">
           {aside}
         </aside>
       )}

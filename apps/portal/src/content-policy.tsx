@@ -5,7 +5,7 @@ import { useApi, useLoad } from './api';
 import { useStaff } from './context';
 import { CheckRow } from './screens/form-controls';
 import { asApiError } from './screens/content-common';
-import { Button, Modal, Panel, Pill, ReasonField, errorMessageId, reasonOk } from './ui';
+import { Button, Modal, Panel, Pill, errorMessageId } from './ui';
 
 /** `staffContentPolicy` (D-079): who approves content and reference data. */
 export interface ContentPolicyView {
@@ -29,7 +29,7 @@ export function useOwnWorkBlocked(selfUid: string) {
   return (uid: string | null | undefined) => uid === selfUid && !ownerMay;
 }
 
-/** "Chính sách duyệt": both switches; the Owner changes them with a reason (audited). */
+/** "Chính sách duyệt": both switches; the Owner changes them (audited, no reason: D-090). */
 export function ContentPolicyPanel() {
   const intl = useIntl();
   const api = useApi();
@@ -37,7 +37,6 @@ export function ContentPolicyPanel() {
   const [editing, setEditing] = useState(false);
   const [selfApprove, setSelfApprove] = useState(false);
   const [review, setReview] = useState(true);
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   if (policy.status !== 'ok') return null;
   const p = policy.data;
@@ -52,7 +51,6 @@ export function ContentPolicyPanel() {
       await api.call('staffSetContentPolicy', {
         ownerSelfApprove: selfApprove,
         reviewRequiredOnProd: review,
-        reason,
       });
       toast.success(intl.formatMessage({ id: 'policy.saved' }));
       setEditing(false);
@@ -83,7 +81,6 @@ export function ContentPolicyPanel() {
           onClick={() => {
             setSelfApprove(p.ownerSelfApprove);
             setReview(p.reviewRequiredOnProd);
-            setReason('');
             setEditing(true);
           }}
         >
@@ -102,12 +99,11 @@ export function ContentPolicyPanel() {
             checked={review}
             onChange={setReview}
           />
-          <ReasonField value={reason} onChange={setReason} required />
           <div className="modal__actions">
             <Button onClick={() => setEditing(false)}>
               <FormattedMessage id="action.cancel" />
             </Button>
-            <Button kind="primary" disabled={busy || !reasonOk(reason)} onClick={save}>
+            <Button kind="primary" disabled={busy} onClick={save}>
               <FormattedMessage id="policy.save" />
             </Button>
           </div>

@@ -1,7 +1,7 @@
 import { staffCan } from '@child-life/contracts';
 import { Check, HardDrive } from 'lucide-react';
-import { useId, useState, type ReactNode } from 'react';
-import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { useEffect, useId, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,7 +15,7 @@ import {
   type SystemHealth,
 } from '../api';
 import { EmptyState, Field, Notice, Section, StatTiles } from '../content-kit';
-import { useNavigate, useStaff } from '../context';
+import { routePaths, subPath, useNavigate, useStaff } from '../context';
 import { ZONE, ago, bytes, gb, num, pct, shortDate, usageTone, vnd } from '../format';
 import {
   Button as ClButton,
@@ -25,40 +25,75 @@ import {
   Modal,
   Page,
   Pill,
-  ReasonField,
   TableScroll,
   UsageBar,
   errorMessageId,
-  reasonOk,
 } from '../ui';
+import { BudgetMeter, TaskLookup, UsageLoader, budgetMonth, budgetUsed } from './Assistant';
 
-/** A08 / A09 Hệ thống & AI: aggregate figures only; the tabs keep their routes. */
-export function SystemScreen({ tab }: { tab: 'storage' | 'ai' }) {
+/** The tabs of Hệ thống & AI, with their addresses ("/system/ai"). */
+export const systemTabs = ['storage', 'ai', 'usage', 'tasks'] as const;
+export type SystemTab = (typeof systemTabs)[number];
+const systemTabPath: Record<SystemTab, string> = {
+  storage: '',
+  ai: 'ai',
+  usage: 'assistant',
+  tasks: 'tasks',
+};
+
+/** The tab an address opens ("/assistant" was the assistant page: its usage). */
+export function systemTabOf(pathname: string): SystemTab {
+  const [first] = subPath('system', pathname);
+  return systemTabs.find((t) => first !== undefined && systemTabPath[t] === first) ?? 'storage';
+}
+
+/**
+ * A08 / A09 Hệ thống & AI, merged with Trợ lý AI (owner 2026-10-21): Lưu trữ · AI gợi ý câu
+ * chuyện · Trợ lý: mức dùng · Trợ lý: tra cứu tác vụ. Aggregate figures only; each tab has its own
+ * address. The assistant's switches are in Tính năng & Premium (its features and Công tắc hệ
+ * thống), so this page only reads.
+ */
+export function SystemScreen({ initialTab }: { initialTab?: SystemTab }) {
   const intl = useIntl();
-  const navigate = useNavigate();
+  const staff = useStaff();
+  // The assistant's tabs need what Trợ lý AI needed (premium.view).
+  const tabs = systemTabs.filter(
+    (t) => (t !== 'usage' && t !== 'tasks') || staffCan(staff.levels, 'premium.view'),
+  );
+  const [tab, setTab] = useState<SystemTab>(() => {
+    const t = initialTab ?? systemTabOf(window.location.pathname);
+    return tabs.includes(t) ? t : 'storage';
+  });
+  useEffect(() => {
+    const path = systemTabPath[tab]
+      ? `${routePaths.system}/${systemTabPath[tab]}`
+      : routePaths.system;
+    if (window.location.pathname !== path) window.history.replaceState({}, '', path);
+  }, [tab]);
   return (
     <Page
       title={<FormattedMessage id="system.title" />}
-      subtitle={<FormattedMessage id="system.sub" />}
+      info={<FormattedMessage id="system.sub" />}
     >
-      <Tabs
-        value={tab}
-        onValueChange={(t) => navigate(t === 'ai' ? 'systemAi' : 'system')}
-        className="min-w-0 gap-4"
-      >
-        <TabsList aria-label={intl.formatMessage({ id: 'system.tabs' })}>
-          <TabsTrigger value="storage" className="px-3">
-            <FormattedMessage id="system.tabStorage" />
-          </TabsTrigger>
-          <TabsTrigger value="ai" className="px-3">
-            <FormattedMessage id="system.tabAi" />
-          </TabsTrigger>
+      <Tabs value={tab} onValueChange={(t) => setTab(t as SystemTab)} className="min-w-0 gap-4">
+        <TabsList aria-label={intl.formatMessage({ id: 'system.tabs' })} className="max-w-full">
+          {tabs.map((t) => (
+            <TabsTrigger key={t} value={t} className="px-3">
+              <FormattedMessage id={`system.tab.${t}`} />
+            </TabsTrigger>
+          ))}
         </TabsList>
         <TabsContent value="storage" className="min-w-0">
           <StorageHealth />
         </TabsContent>
         <TabsContent value="ai" className="min-w-0">
           <AiHealth />
+        </TabsContent>
+        <TabsContent value="usage" className="min-w-0">
+          <UsageLoader />
+        </TabsContent>
+        <TabsContent value="tasks" className="min-w-0">
+          <TaskLookup />
         </TabsContent>
       </Tabs>
     </Page>
@@ -421,7 +456,7 @@ export function SystemView({
 }
 
 /**
- * R-185 "Thử xử lý lại video": one media id (or job id / item path), a reason, then
+ * R-185 "Thử xử lý lại video": one media id (or job id / item path), then
  * `staffRequeueVideoRendition`; the answer names the new attempt. Audited on the server.
  */
 function RequeueDialog({
@@ -436,7 +471,6 @@ function RequeueDialog({
   const api = useApi();
   const fieldId = useId();
   const [media, setMedia] = useState(initial);
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [result, setResult] = useState<{ jobId: string; attempt: number } | null>(null);
@@ -447,7 +481,6 @@ function RequeueDialog({
       setResult(
         await api.call<{ jobId: string; attempt: number }>('staffRequeueVideoRendition', {
           media: media.trim(),
-          reason: reason.trim(),
         }),
       );
     } catch (e) {
@@ -493,7 +526,6 @@ function RequeueDialog({
               spellCheck={false}
             />
           </Field>
-          <ReasonField value={reason} onChange={setReason} required />
           {error && (
             <p className="error" role="alert">
               <FormattedMessage id={errorMessageId(error)} />
@@ -505,7 +537,7 @@ function RequeueDialog({
             </ClButton>
             <ClButton
               kind="primary"
-              disabled={busy || media.trim().length < 3 || !reasonOk(reason)}
+              disabled={busy || media.trim().length < 3}
               onClick={() => void submit()}
             >
               <FormattedMessage id="system.requeueConfirm" />
@@ -521,14 +553,13 @@ const backfillMax = 500;
 
 /**
  * Prod rollout (P-170): `staffBackfillVideoRenditions` in batches from the portal. Each run
- * says how many were queued and how many are left; "Xếp tiếp" runs the next batch with the
- * same reason until nothing is left.
+ * says how many were queued and how many are left; "Xếp tiếp" runs the next batch until
+ * nothing is left.
  */
 function BackfillDialog({ onClose }: { onClose: () => void }) {
   const api = useApi();
   const fieldId = useId();
   const [limit, setLimit] = useState('50');
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [runs, setRuns] = useState<Array<{ queued: number; skipped: number; remaining: number }>>(
@@ -543,7 +574,7 @@ function BackfillDialog({ onClose }: { onClose: () => void }) {
     try {
       const res = await api.call<{ queued: number; skipped: number; remaining: number }>(
         'staffBackfillVideoRenditions',
-        { limit: n, reason: reason.trim() },
+        { limit: n },
       );
       setRuns((all) => [...all, res]);
     } catch (e) {
@@ -568,7 +599,6 @@ function BackfillDialog({ onClose }: { onClose: () => void }) {
           onChange={(e) => setLimit(e.target.value)}
         />
       </Field>
-      <ReasonField value={reason} onChange={setReason} required />
       {last && (
         <Notice
           tone={last.remaining === 0 ? 'ok' : 'info'}
@@ -598,7 +628,7 @@ function BackfillDialog({ onClose }: { onClose: () => void }) {
         </ClButton>
         <ClButton
           kind="primary"
-          disabled={busy || !valid || !reasonOk(reason) || last?.remaining === 0}
+          disabled={busy || !valid || last?.remaining === 0}
           onClick={() => void submit()}
         >
           <FormattedMessage id={last ? 'system.backfillAgain' : 'system.backfillConfirm'} />
@@ -614,71 +644,6 @@ function AiHealth() {
     <Loaded load={load} reload={reload}>
       {(data) => <AiView data={data} now={new Date()} />}
     </Loaded>
-  );
-}
-
-type Budget = AiStats['budget'];
-
-/** Share of the monthly AI budget spent (0 when no budget is set). */
-export const budgetUsed = (b: Budget) => (b.monthlyBudgetVnd ? b.spentVnd / b.monthlyBudgetVnd : 0);
-
-/** "tháng 10" / "October" for a `YYYY-MM` budget month. */
-export const budgetMonth = (intl: IntlShape, b: Budget) =>
-  intl.formatDate(`${b.month}-15`, { month: 'long', timeZone: ZONE });
-
-const meterTone = (used: number) => (used >= 1 ? 'error' : used >= 0.8 ? 'warn' : 'ok');
-const meterText = { ok: 'text-foreground', warn: 'text-warning', error: 'text-destructive' };
-const meterFill = { ok: 'bg-primary', warn: 'bg-warning', error: 'bg-destructive' };
-
-/**
- * Spent / budget this month as a bar with the 80% alert mark (A09), the day of the month, and
- * what the marks mean (`foot`). Shared with Trợ lý AI › Mức dùng.
- */
-export function BudgetMeter({ budget, now, foot }: { budget: Budget; now: Date; foot: ReactNode }) {
-  const intl = useIntl();
-  const used = budgetUsed(budget);
-  const tone = meterTone(used);
-  const day = Number(
-    new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone: ZONE }).format(now),
-  );
-  const [y, m] = budget.month.split('-').map(Number) as [number, number];
-  const days = new Date(Date.UTC(y, m, 0)).getUTCDate();
-  const width = Math.max(0, Math.min(1, used)) * 100;
-  return (
-    <div className="grid gap-2">
-      <p className="flex flex-wrap items-baseline gap-x-2 tabular-nums">
-        <span className="text-2xl leading-8 font-bold tracking-tight">
-          {vnd(intl, budget.spentVnd)}
-        </span>
-        <span className="text-muted-foreground">/ {vnd(intl, budget.monthlyBudgetVnd)}</span>
-        <span className={cn('ml-auto text-lg font-semibold', meterText[tone])}>
-          {pct(intl, used)}
-        </span>
-      </p>
-      <div
-        role="progressbar"
-        aria-label={intl.formatMessage({ id: 'ai.budgetBar' })}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(width)}
-        className="relative h-2.5 rounded-full bg-muted"
-      >
-        <div
-          className={cn('h-full rounded-full', meterFill[tone])}
-          style={{ width: `${width}%` }}
-        />
-        <span
-          aria-hidden="true"
-          className="absolute -inset-y-1 left-[80%] w-0.5 rounded-full bg-foreground/50"
-        />
-      </div>
-      <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        <span className="tabular-nums">
-          <FormattedMessage id="ai.budgetDay" values={{ day, days }} />
-        </span>
-        <span>{foot}</span>
-      </div>
-    </div>
   );
 }
 

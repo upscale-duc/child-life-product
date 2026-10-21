@@ -170,23 +170,23 @@ p {
 }
 
 /* ---------- Page (shadcn look, D-063) ---------- */
-.page__head {
+/* No title or description on the page (the header names it): one compact row of actions. */
+.page__bar {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
-  margin-bottom: 24px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
-.page__title {
-  font: 700 24px/32px var(--font-family);
-  letter-spacing: -0.025em;
-  margin: 0;
+.page__bar--lead {
+  justify-content: space-between;
 }
-.page__sub {
-  color: var(--muted-foreground);
-  max-width: 760px;
-  margin-top: 4px;
+.page__lead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 .page__actions {
   display: flex;
@@ -1387,9 +1387,6 @@ td .lock {
 }
 
 /* ---------- v1.0 shared (S15b) ---------- */
-.page__title .mono {
-  font-size: inherit;
-}
 .kpis--3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1556,9 +1553,6 @@ td.down {
 .cell-actions--wrap [data-slot='button'] {
   margin: 2px 0 2px 4px;
 }
-.page__head > div:first-child {
-  min-width: 0;
-}
 
 /* The console is built for desktop; narrower windows stack the columns. */
 @media (max-width: 1180px) {
@@ -1591,10 +1585,6 @@ td.down {
   }
   .signin__headline {
     margin: 32px 0 24px;
-  }
-  .page__head {
-    flex-direction: column;
-    align-items: stretch;
   }
   .page__actions {
     justify-content: flex-start;
@@ -1897,7 +1887,6 @@ td.down {
     max-height: calc(100dvh - 72px - 80px);
     overflow-y: auto;
     overscroll-behavior: contain;
-    scrollbar-width: thin;
   }
   .au-aside .panel {
     padding: 16px;

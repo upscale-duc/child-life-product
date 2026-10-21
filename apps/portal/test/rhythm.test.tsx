@@ -477,11 +477,15 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     const { api, calls } = fakeApi({ staffRhythm: view });
     const data = await api.call<RhythmView>('staffRhythm', {});
     expect(calls[0]!.name).toBe('staffRhythm');
-    const html = text(render(body(data, { edit: true, approve: true })));
+    const raw = render(body(data, { edit: true, approve: true }));
+    const html = text(raw);
     expect(html).toContain('Mô hình tham khảo Hoạt động & thẻ theo tuổi Quy tắc');
     // The live status in one line: version, date, review.
-    expect(html).toContain(
-      '● Đang phát hành · ref_20261010_01 Xuất bản 09:00 10/10/2026 Chưa duyệt chuyên môn',
+    // The live version is a badge; its id, date and review are in the popover and tooltip.
+    expect(html).not.toContain('● Đang phát hành');
+    expect(html).toContain('Đang phát hành Tiếp tục sửa bản nháp');
+    expect(raw).toContain(
+      'title="Bản đang dùng ref_20261010_01 · Xuất bản 09:00 10/10/2026 · Chưa duyệt chuyên môn"',
     );
     // Nobody qualified signed the live model off yet (D-073 #2): said plainly, no dev badge.
     expect(html).not.toContain('kỹ thuật');
@@ -551,9 +555,10 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
   });
 
   it('the content tab lists activities and age cards with status, review and languages', () => {
-    const html = text(render(body(view, { edit: true, approve: true }, 'content')));
-    expect(html).toContain('● Đang phát hành · rc_20261010_01');
-    expect(html).toContain('2/4 mục đã duyệt chuyên môn');
+    const raw = render(body(view, { edit: true, approve: true }, 'content'));
+    const html = text(raw);
+    expect(raw).toContain('Bản đang dùng rc_20261010_01');
+    expect(raw).toContain('2/4 mục đã duyệt chuyên môn');
     expect(html).toContain('Hoạt động gợi ý Thẻ theo tuổi Sức khoẻ');
     expect(html).toContain('Thư viện hoạt động · 2');
     expect(html).toContain(
@@ -588,7 +593,7 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     const viewer = text(
       render(body(view, { edit: false, approve: false, rules: false }), ['support']),
     );
-    expect(viewer).toContain('● Đang phát hành · ref_20261010_01');
+    expect(viewer).toContain('Đang phát hành');
     for (const label of [
       'Tạo phiên bản mới',
       'Tiếp tục sửa bản nháp',
@@ -844,18 +849,13 @@ describe('Nhịp lớn lên: approve, reject, roll back', () => {
   const filled = { reviewer: ' BS. Hà ', credential: 'nhi khoa', reviewedOn: '2026-10-12' };
   const empty = { reviewer: '', credential: '', reviewedOn: '2026-10-12' };
 
-  it('approve sends the review with the reason; prod refuses it without one', async () => {
+  it('approve sends the review and no reason; prod refuses it without one', async () => {
     const { api, calls } = fakeApi({ staffRhythmAct: { status: 'published', version: 'ref_x' } });
-    expect(await sendRhythmAct(api, 'reference', id, 'approve', 'Đã rà soát', empty, true)).toEqual(
-      {
-        ok: false,
-      },
-    );
-    expect(await sendRhythmAct(api, 'reference', id, 'approve', 'ok', filled, true)).toEqual({
+    expect(await sendRhythmAct(api, 'reference', id, 'approve', empty, true)).toEqual({
       ok: false,
     });
     expect(calls).toHaveLength(0);
-    const res = await sendRhythmAct(api, 'reference', id, 'approve', ' Đã rà soát ', filled, true);
+    const res = await sendRhythmAct(api, 'reference', id, 'approve', filled, true);
     expect(res).toEqual({ ok: true, status: 'published' });
     expect(calls[0]).toEqual({
       name: 'staffRhythmAct',
@@ -863,51 +863,33 @@ describe('Nhịp lớn lên: approve, reject, roll back', () => {
         doc: 'reference',
         versionId: id,
         action: 'approve',
-        reason: 'Đã rà soát',
         review: { reviewer: 'BS. Hà', credential: 'nhi khoa', reviewedOn: '2026-10-12' },
       },
     });
     expect(rhythmActSchema.safeParse(calls[0]!.data).success).toBe(true);
     // Dev: approving without a reviewer is allowed (review null), a half-filled one is not.
-    expect(rhythmActRequest('content', id, 'approve', 'Thử trên dev', empty, false)?.review).toBe(
-      null,
-    );
+    expect(rhythmActRequest('content', id, 'approve', empty, false)?.review).toBe(null);
     expect(
-      rhythmActRequest('content', id, 'approve', 'Thử', { ...empty, reviewer: 'BS. Hà' }, false),
+      rhythmActRequest('content', id, 'approve', { ...empty, reviewer: 'BS. Hà' }, false),
     ).toBeNull();
     expect(rhythmReviewFrom({ ...filled, reviewedOn: '' }, true).ok).toBe(false);
   });
 
-  it('reject, discard, submit and rollback send the act with the reason and no review', async () => {
+  it('reject, discard, submit and rollback send the act with no reason and no review', async () => {
     const { api, calls } = fakeApi({ staffRhythmAct: { status: 'draft' } });
-    await sendRhythmAct(api, 'content', id, 'reject', 'Thiếu nguồn', filled, true);
-    await sendRhythmAct(
-      api,
-      'reference',
-      'rv_aabbccddeeff0022',
-      'rollback',
-      'Quay lại',
-      null,
-      true,
-    );
-    await sendRhythmAct(api, 'reference', id, 'submit', 'Xin duyệt', null, true);
-    await sendRhythmAct(api, 'reference', id, 'discard', 'Không cần', null, false);
+    await sendRhythmAct(api, 'content', id, 'reject', filled, true);
+    await sendRhythmAct(api, 'reference', 'rv_aabbccddeeff0022', 'rollback', null, true);
+    await sendRhythmAct(api, 'reference', id, 'submit', null, true);
+    await sendRhythmAct(api, 'reference', id, 'discard', null, false);
     expect(calls.map((c) => c.data)).toEqual([
-      { doc: 'content', versionId: id, action: 'reject', reason: 'Thiếu nguồn', review: null },
-      {
-        doc: 'reference',
-        versionId: 'rv_aabbccddeeff0022',
-        action: 'rollback',
-        reason: 'Quay lại',
-        review: null,
-      },
-      { doc: 'reference', versionId: id, action: 'submit', reason: 'Xin duyệt', review: null },
-      { doc: 'reference', versionId: id, action: 'discard', reason: 'Không cần', review: null },
+      { doc: 'content', versionId: id, action: 'reject', review: null },
+      { doc: 'reference', versionId: 'rv_aabbccddeeff0022', action: 'rollback', review: null },
+      { doc: 'reference', versionId: id, action: 'submit', review: null },
+      { doc: 'reference', versionId: id, action: 'discard', review: null },
     ]);
     for (const c of calls) expect(rhythmActSchema.safeParse(c.data).success).toBe(true);
-    // A bad version id or a short reason never leaves the browser.
-    expect(rhythmActRequest('reference', 'fv_123', 'reject', 'Thiếu nguồn', null, true)).toBeNull();
-    expect(rhythmActRequest('reference', id, 'reject', 'no', null, true)).toBeNull();
+    // A bad version id never leaves the browser.
+    expect(rhythmActRequest('reference', 'fv_123', 'reject', null, true)).toBeNull();
   });
 
   it('the approve dialog asks for reviewer, credential and date on prod', () => {
@@ -930,7 +912,7 @@ describe('Nhịp lớn lên: approve, reject, roll back', () => {
 });
 
 describe('Nhịp lớn lên: rules (PN04)', () => {
-  it('saving sends the values and the reason', async () => {
+  it('saving sends the values and no reason', async () => {
     const { api, calls } = fakeApi({ staffSetRhythmRules: { rules: rulesView.rules } });
     const next = {
       ...rulesView.rules,
@@ -938,26 +920,15 @@ describe('Nhịp lớn lên: rules (PN04)', () => {
       maxGapMinutes: 300,
       minDeltaShare: 0.2,
     };
-    const res = await saveRhythmRules(api, next, '  Ít ngày bị loại hơn  ');
+    const res = await saveRhythmRules(api, next);
     expect(res.ok).toBe(true);
-    expect(calls).toEqual([
-      { name: 'staffSetRhythmRules', data: { rules: next, reason: 'Ít ngày bị loại hơn' } },
-    ]);
+    expect(calls).toEqual([{ name: 'staffSetRhythmRules', data: { rules: next } }]);
     expect(setRhythmRulesSchema.safeParse(calls[0]!.data).success).toBe(true);
-    // A short reason or inconsistent windows are not sent.
-    expect((await saveRhythmRules(api, next, 'ok')).ok).toBe(false);
+    // Inconsistent windows are not sent.
     expect(
-      (
-        await saveRhythmRules(
-          api,
-          { ...next, baselineMinDays: 9, baselineMaxDays: 7 },
-          'Thử ngưỡng',
-        )
-      ).ok,
+      (await saveRhythmRules(api, { ...next, baselineMinDays: 9, baselineMaxDays: 7 })).ok,
     ).toBe(false);
-    expect((await saveRhythmRules(api, { ...next, maxGapMinutes: 30 }, 'Thử ngưỡng')).ok).toBe(
-      false,
-    );
+    expect((await saveRhythmRules(api, { ...next, maxGapMinutes: 30 })).ok).toBe(false);
     expect(calls).toHaveLength(1);
   });
 

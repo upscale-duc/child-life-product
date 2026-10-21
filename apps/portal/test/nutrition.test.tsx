@@ -12,7 +12,13 @@ import { StaffContext, routeOf } from '../src/context';
 import { messages } from '../src/messages';
 import { Sidebar } from '../src/Shell';
 import { ReviewBody, ReviewDetail, editorUrlOf } from '../src/screens/ContentReview';
-import { NutrientsBody, NutritionRulesBody, NutritionStagesBody } from '../src/screens/Nutrition';
+import {
+  NutrientsBody,
+  NutritionCoverageStrip,
+  NutritionRulesBody,
+  NutritionStagesBody,
+  coverageMonths,
+} from '../src/screens/Nutrition';
 import {
   NutrientEditor,
   NutritionRuleEditor,
@@ -399,6 +405,36 @@ describe('D01 Giai đoạn', () => {
     expect(html).toContain(
       'Trùng tháng: 0–8 tháng · Những ngày đầu và 6–36 tháng · Bắt đầu ăn dặm',
     );
+  });
+
+  it('draws the coverage as a month ruler 0…36: a state per month, gaps, a legend (UX 2026-10-21)', () => {
+    const c = nutritionCoverageOf(view('nutritionStage', stageRows));
+    const months = coverageMonths(c);
+    expect(months).toHaveLength(37);
+    expect(months[0]!.item?.state).toBe('draft');
+    expect(months[7]!.item?.id).toBe('nst_6_8');
+    expect(months[13]!.item?.state).toBe('pending');
+    expect(months[10]!.item).toBeNull();
+    expect(months[10]!.gap).toEqual({ from: 9, to: 12 });
+    const raw = render(
+      <NutritionCoverageStrip
+        coverage={c}
+        rows={stageRows}
+        canEdit
+        onOpen={() => undefined}
+        onCreate={() => undefined}
+      />,
+    );
+    // One cell per month with its tooltip text, the stages lane and the ruler.
+    expect(raw).toContain('aria-label="Tháng 7 · Bắt đầu ăn dặm · Đã xuất bản"');
+    expect(raw).toContain('aria-label="Tháng 10 · chưa có giai đoạn"');
+    expect(raw).toContain('aria-label="Thêm giai đoạn 9–11 tháng"');
+    const html = text(raw);
+    expect(html).toContain('Theo tháng');
+    expect(html).toContain('Giai đoạn 0–1 · Những ngày đầu');
+    expect(html).toContain('0 3 6 9 12 15 18 21 24 27 30 33 36');
+    expect(html).toContain('Đã xuất bản · 3 tháng Chờ duyệt · 12 tháng Nháp · 1 tháng');
+    expect(html).toContain('Chưa có · 1–5 tháng, 9–11 tháng, 24–36 tháng');
   });
 
   it('reads milk cells defensively', () => {

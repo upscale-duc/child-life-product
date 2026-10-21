@@ -16,8 +16,6 @@ import {
   Page,
   Panel,
   Pill,
-  ReasonField,
-  reasonOk,
   Segmented,
   TableScroll,
   UsageBar,
@@ -35,10 +33,7 @@ export function JobsScreen() {
   const [kind, setKind] = useState<Kind>('all');
   const filterLabel = intl.formatMessage({ id: 'jobs.filter' });
   return (
-    <Page
-      title={<FormattedMessage id="jobs.title" />}
-      subtitle={<FormattedMessage id="jobs.sub" />}
-    >
+    <Page title={<FormattedMessage id="jobs.title" />} info={<FormattedMessage id="jobs.sub" />}>
       {kind === 'render' ? (
         <RenderOpsLoader
           toolbar={<JobKinds label={filterLabel} value={kind} onChange={setKind} />}
@@ -386,7 +381,6 @@ export function RerunDialog({
   const intl = useIntl();
   const api = useApi();
   const refreshBadges = useRefreshBadges();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const submit = async () => {
@@ -395,7 +389,6 @@ export function RerunDialog({
     try {
       await api.call(mode === 'approve' ? 'staffApproveRerun' : 'staffRerunJob', {
         jobId: row.id,
-        reason: reason.trim(),
       });
       refreshBadges();
       onDone();
@@ -426,17 +419,20 @@ export function RerunDialog({
       <Steps row={row} />
       {mode === 'approve' && row.rerunRequest ? (
         <p className="quote">
-          <FormattedMessage
-            id="jobs.rerunAskedBy"
-            values={{ name: row.rerunRequest.by, reason: row.rerunRequest.reason }}
-          />
+          {row.rerunRequest.reason ? (
+            <FormattedMessage
+              id="jobs.rerunAskedBy"
+              values={{ name: row.rerunRequest.by, reason: row.rerunRequest.reason }}
+            />
+          ) : (
+            <FormattedMessage id="jobs.rerunAskedByName" values={{ name: row.rerunRequest.by }} />
+          )}
         </p>
       ) : (
         <p className="note">
           <FormattedMessage id="jobs.rerunTwoPerson" />
         </p>
       )}
-      <ReasonField value={reason} onChange={setReason} required />
       <p className="field__help">
         <FormattedMessage id="jobs.emailOnDone" />
       </p>
@@ -449,7 +445,7 @@ export function RerunDialog({
         <Button onClick={onClose}>
           <FormattedMessage id="action.cancel" />
         </Button>
-        <Button kind="primary" disabled={busy || !reasonOk(reason)} onClick={() => void submit()}>
+        <Button kind="primary" disabled={busy} onClick={() => void submit()}>
           <FormattedMessage id={mode === 'approve' ? 'jobs.rerunConfirm' : 'jobs.rerunRequest'} />
         </Button>
       </div>

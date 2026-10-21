@@ -328,10 +328,16 @@ describe('Sơ cứu: messages (D-012)', () => {
 });
 
 describe('Sơ cứu: status, history and actions', () => {
-  it('shows the version in use in one line, the open draft as a notice, then the list', () => {
-    const html = text(render(body(view, true, true)));
-    expect(html).toContain('● Bản đang dùng · fa_20261010_01');
-    expect(html).toContain('Xuất bản 09:00 10/10/2026 · 2 tình huống');
+  it('shows the version in use as a badge, the open draft as a notice, then the list', () => {
+    const raw = render(body(view, true, true));
+    const html = text(raw);
+    // Owner 2026-10-21: no "● Bản đang dùng · … Xuất bản …" banner; a badge with the details in
+    // its popover and tooltip.
+    expect(html).not.toContain('● Bản đang dùng');
+    expect(html).toContain('Đang dùng');
+    expect(raw).toContain(
+      'title="Bản đang dùng fa_20261010_01 · Xuất bản 09:00 10/10/2026 · 2 tình huống',
+    );
     expect(html).toContain('Chờ duyệt Bản đang soạn');
     expect(html).toContain('Soạn: Minh Phạm');
     expect(html).toContain('BS. Hà trả lại: “Thiếu nguồn”');
@@ -434,13 +440,15 @@ describe('Sơ cứu: approving needs the medical review on prod', () => {
     expect(html).toContain('Ngày rà soát');
     expect(html).toContain('Nguồn tham khảo');
     expect(html).toContain('Ghi đủ người rà soát');
-    // The approve button stays off until the review and the reason are there.
+    // The approve button stays off until the review is there.
     expect(render(<ActDialog act="approve" requireReview {...props} />)).toMatch(
       /<button data-slot="button" data-variant="default"[^>]* disabled="">Duyệt &amp; xuất bản/,
     );
     const reject = text(render(<ActDialog act="reject" requireReview {...props} />));
     expect(reject).not.toContain('Người rà soát');
-    expect(reject).toContain('Lý do (bắt buộc, ghi vào nhật ký)');
+    // No reason (D-090): the dialog says what happens and confirms.
+    expect(reject).not.toContain('Lý do');
+    expect(reject).toContain('Bản quay về nháp để người soạn sửa tiếp.');
     // Where the server does not require it, the review is optional, said plainly.
     const optional = text(render(<ActDialog act="approve" requireReview={false} {...props} />));
     expect(optional).toContain('Rà soát chuyên môn (không bắt buộc)');

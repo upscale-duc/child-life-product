@@ -56,6 +56,7 @@ import {
   Section,
   useConfirm,
   useLeaveGuard,
+  VersionBadge,
   type MenuItem,
 } from '../content-kit';
 import { routePaths, subPath, useStaff } from '../context';
@@ -66,11 +67,11 @@ import {
   Modal,
   Page,
   Pill,
+  RejectedBy,
   RowActions,
   SelectMenu,
   TableScroll,
   errorMessageId,
-  reasonOk,
   type PillTone,
 } from '../ui';
 import {
@@ -99,8 +100,8 @@ import {
  * Sơ cứu (D-058, P-141; app v1.1 7a–7i, TH01–TH24). The guide the app shows, edited here as one
  * pack: "Sửa" opens a working copy, "Lưu nháp" saves it as the one open version, "Gửi duyệt" hands
  * it to a different person with "Nội dung · Duyệt" (on prod an expert, who records the review),
- * and approval publishes it to `publicConfig/content_firstAid`. Every step asks for a reason and
- * is in the audit log. "/first-aid/<situationId>" opens one situation with a phone preview.
+ * and approval publishes it to `publicConfig/content_firstAid`. Every step is in the audit log
+ * (no reason asked: D-090). "/first-aid/<situationId>" opens one situation with a phone preview.
  * Laid out with the content kit (D-063): the list first, the open draft as a notice with its next
  * step, history folded away; while editing, a sticky editor bar replaces the page header.
  */
@@ -139,10 +140,7 @@ export function FirstAidScreen() {
   const [load, reload] = useLoad<FirstAidView>('staffFirstAid', {}, 'firstAid');
   if (load.status !== 'ok') {
     return (
-      <Page
-        title={<FormattedMessage id="firstAid.title" />}
-        subtitle={<FormattedMessage id="firstAid.sub" />}
-      >
+      <Page title={<FormattedMessage id="firstAid.title" />}>
         <Loaded load={load} reload={reload}>
           {() => null}
         </Loaded>
@@ -539,10 +537,7 @@ export function FirstAidBody({
           )}
           {d?.rejection && (
             <Notice tone="warn">
-              <FormattedMessage
-                id="firstAid.rejected"
-                values={{ name: d.rejection.by, reason: d.rejection.reason }}
-              />
+              <RejectedBy id="firstAid.rejected" by={d.rejection.by} reason={d.rejection.reason} />
             </Notice>
           )}
           {content}
@@ -552,9 +547,9 @@ export function FirstAidBody({
     ) : (
       <Page
         title={<FormattedMessage id="firstAid.title" />}
-        subtitle={<FormattedMessage id="firstAid.sub" />}
         actions={
           <>
+            <StatusLine view={view} />
             <HelpPopover title={<FormattedMessage id="firstAid.howTitle" />} wide>
               <ol className="grid list-decimal gap-1.5 pl-5 text-muted-foreground">
                 {(['edit', 'save', 'submit', 'approve'] as const).map((k) => (
@@ -569,7 +564,6 @@ export function FirstAidBody({
         }
       >
         <div className="grid gap-4">
-          <StatusLine view={view} />
           {d && (
             <DraftNotice
               draft={d}
@@ -629,50 +623,34 @@ export function FirstAidBody({
 
 // ---------- Status, the open draft, history ----------
 
-function Dot() {
-  return (
-    <span className="text-muted-foreground/60" aria-hidden="true">
-      ·
-    </span>
-  );
-}
-
-/** One line: the version in use, when it was published, who reviewed it. */
+/**
+ * The version in use as a compact badge; when it was published, how many situations and who
+ * reviewed it are in its popover (owner, 2026-10-21: no banner).
+ */
 function StatusLine({ view }: { view: FirstAidView }) {
   const intl = useIntl();
   const c = view.current;
   const review = c?.pack.review;
   return (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground">
-      {c ? (
-        <>
-          <Pill tone="ok">
-            <FormattedMessage id="firstAid.inUse" values={{ v: c.version }} />
-          </Pill>
-          <span className="tabular-nums">
-            <FormattedMessage
-              id="firstAid.publishedAt"
-              values={{ when: dateTime(intl, c.publishedAt), n: c.pack.situations.length }}
-            />
-          </span>
-          {review && (
-            <>
-              <Dot />
-              <span>
-                <FormattedMessage
-                  id="firstAid.reviewedBy"
-                  values={{ name: review.reviewer, date: review.reviewedOn }}
-                />
-              </span>
-            </>
-          )}
-        </>
-      ) : (
-        <Pill tone="muted">
-          <FormattedMessage id="firstAid.notPublished" />
-        </Pill>
-      )}
-    </div>
+    <VersionBadge
+      version={c?.version ?? null}
+      details={
+        c
+          ? [
+              intl.formatMessage(
+                { id: 'firstAid.publishedAt' },
+                { when: dateTime(intl, c.publishedAt), n: c.pack.situations.length },
+              ),
+              review
+                ? intl.formatMessage(
+                    { id: 'firstAid.reviewedBy' },
+                    { name: review.reviewer, date: review.reviewedOn },
+                  )
+                : '',
+            ]
+          : []
+      }
+    />
   );
 }
 
@@ -780,10 +758,7 @@ function DraftNotice({
         )}
         {d.rejection && (
           <p className="font-medium text-foreground">
-            <FormattedMessage
-              id="firstAid.rejected"
-              values={{ name: d.rejection.by, reason: d.rejection.reason }}
-            />
+            <RejectedBy id="firstAid.rejected" by={d.rejection.by} reason={d.rejection.reason} />
           </p>
         )}
         {d.status === 'pending' && (
@@ -947,24 +922,19 @@ export function reviewFrom(
 
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: ZONE });
 
-/** "Lý do (ghi vào nhật ký thao tác)": 3–500 characters when required, as the server asks. */
-function ReasonInput({
+/** Optional notes for a draft (what changed); not a reason. */
+function NotesInput({
   value,
   onChange,
-  required,
   label,
 }: {
   value: string;
   onChange: (v: string) => void;
-  required?: boolean;
-  label?: ReactNode;
+  label: ReactNode;
 }) {
   const id = useId();
   return (
-    <Field
-      label={label ?? <FormattedMessage id={required ? 'reason.labelRequired' : 'reason.label'} />}
-      htmlFor={id}
-    >
+    <Field label={label} htmlFor={id}>
       <Textarea
         id={id}
         rows={3}
@@ -1002,7 +972,6 @@ export function ActDialog({
   const api = useApi();
   const intl = useIntl();
   const id = useId();
-  const [reason, setReason] = useState('');
   const [review, setReview] = useState<ReviewInput>({
     reviewer: initialReview?.reviewer ?? '',
     reviewedOn: initialReview?.reviewedOn ?? today(),
@@ -1011,7 +980,7 @@ export function ActDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const withReview = act === 'approve';
-  const touched = !!(review.reviewer || review.sources || reasonOk(reason));
+  const touched = !!(review.reviewer || review.sources);
   const checked = withReview
     ? reviewFrom(review, requireReview)
     : { ok: true as const, review: null };
@@ -1071,7 +1040,6 @@ export function ActDialog({
           )}
         </fieldset>
       )}
-      <ReasonInput value={reason} onChange={setReason} required />
       <DialogError error={error} />
       <div className="flex flex-wrap justify-end gap-2">
         <Button variant="outline" onClick={onClose}>
@@ -1079,7 +1047,7 @@ export function ActDialog({
         </Button>
         <Button
           variant={act === 'discard' || act === 'reject' ? 'destructive' : 'default'}
-          disabled={busy || !reasonOk(reason) || !checked.ok}
+          disabled={busy || !checked.ok}
           onClick={() => {
             if (!checked.ok) return;
             setBusy(true);
@@ -1088,7 +1056,6 @@ export function ActDialog({
               .call('staffFirstAidAct', {
                 versionId,
                 action: act,
-                reason: reason.trim(),
                 review: checked.review,
               })
               .then(() => {
@@ -1283,7 +1250,7 @@ function SaveDialog({
       <p className="text-sm text-muted-foreground">
         <FormattedMessage id={pending ? 'firstAid.saveNotePending' : 'firstAid.saveNote'} />
       </p>
-      <ReasonInput
+      <NotesInput
         value={notes}
         onChange={setNotes}
         label={<FormattedMessage id="firstAid.saveNotes" />}
@@ -1861,7 +1828,7 @@ export function PhonePreview({
           ))}
         </ToggleGroup>
       </div>
-      <div className="fa-phone" lang={lang}>
+      <div className="fa-phone no-scrollbar" lang={lang}>
         <div className="fa-phone__hero">
           <ImageThumb id={hero || null} size={343} />
         </div>

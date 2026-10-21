@@ -242,7 +242,7 @@ export function QaScreen() {
   return (
     <Page
       title={<FormattedMessage id="qa.title" />}
-      subtitle={<FormattedMessage id="qa.sub" />}
+      info={<FormattedMessage id="qa.sub" />}
       actions={
         canManage && (
           <Button

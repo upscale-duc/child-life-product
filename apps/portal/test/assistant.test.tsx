@@ -1,14 +1,12 @@
 import {
   assistantOutcomeKinds,
   assistantPoolPlans,
-  assistantSwitchKeys,
   attachmentRetentions,
   attachmentStates,
   draftKinds,
   draftStates,
   taskModalities,
   taskStates,
-  type StaffAssistantSwitches,
   type StaffAssistantTask,
   type StaffAssistantUsage,
 } from '@child-life/contracts';
@@ -17,14 +15,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 import { ApiContext, ApiError, type Api } from '../src/api';
-import { StaffContext, routeOf, routePaths } from '../src/context';
+import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
-import { allowedRoute } from '../src/Shell';
 import {
-  AssistantScreen,
   ModelDetails,
-  SwitchRecent,
-  SwitchesView,
   TaskBreakdown,
   TaskLookup,
   TaskTechnical,
@@ -32,10 +26,10 @@ import {
   UsageView,
   lookupTask,
 } from '../src/screens/Assistant';
-import { launchedFlagDefaults, levelsForRoles, type StaffRole } from './fixtures';
+import { levelsForRoles, type StaffRole } from './fixtures';
 
-// Trợ lý AI (slice A6): Usage, Tasks lookup, Switches. Server-rendered, no network: callables go
-// to a fake api that records them.
+// Trợ lý AI (slice A6) on Hệ thống & AI: Usage and the task lookup (the switches are in Tính năng
+// & Premium). Server-rendered, no network: callables go to a fake api that records them.
 const now = new Date('2026-10-15T05:00:00Z');
 const taskId = `tk_${'a'.repeat(32)}`;
 
@@ -183,28 +177,6 @@ const task: StaffAssistantTask = {
   ],
 };
 
-const switches: StaffAssistantSwitches = {
-  flags: {
-    assistant: { enabled: true, scope: 'internal', percent: 0, notice: null, families: ['F-7Q2K'] },
-    assistant_live: { enabled: false, scope: 'all', percent: 0, notice: 'Tạm dừng' },
-    assistant_images: launchedFlagDefaults.assistant_images,
-    assistant_care: launchedFlagDefaults.assistant_care,
-    assistant_writes: { enabled: true, scope: 'all', percent: 100, notice: null },
-    assistant_upsell: launchedFlagDefaults.assistant_upsell,
-  },
-  lastEdit: { assistant_live: { by: 'Minh Kỹ sư', at: '2026-10-15T03:00:00.000Z' } },
-  recent: [
-    {
-      action: 'flags.off',
-      target: 'assistant_live',
-      by: 'Minh Kỹ sư',
-      at: '2026-10-15T03:00:00.000Z',
-      reason: 'nhà cung cấp lỗi',
-      detail: null,
-    },
-  ],
-};
-
 type Call = { name: string; data: unknown };
 function fakeApi(answers: Record<string, unknown> = {}) {
   const calls: Call[] = [];
@@ -259,33 +231,9 @@ const text = (raw: string) =>
     .replace(/\s+/g, ' ');
 const buttons = (raw: string) =>
   [...raw.matchAll(/<button[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]!).trim());
-const tabs = (raw: string) =>
-  [...raw.matchAll(/<button[^>]*role="tab"[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]!).trim());
-const attr = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
 // Nothing on a read-only view sends anything: no field, no switch, no submit.
 const noControls = (raw: string) =>
   expect(raw).not.toMatch(/<input|<textarea|role="switch"|type="submit"/);
-
-describe('Trợ lý AI › screen', () => {
-  it('has Mức dùng, Tra cứu tác vụ and Công tắc tabs; the sidebar keeps it to premium.view', () => {
-    const raw = html(<AssistantScreen />);
-    expect(tabs(raw)).toEqual(['Mức dùng', 'Tra cứu tác vụ', 'Công tắc']);
-    expect(raw).toContain('aria-selected="true"');
-    expect(text(raw)).toContain('Trợ lý AI');
-    // Another tab can open first; only its content is mounted.
-    const lookup = html(<AssistantScreen initialTab="tasks" />);
-    expect(text(lookup)).toContain('Tra cứu một tác vụ');
-    expect(routePaths.assistant).toBe('/assistant');
-    expect(routeOf('/assistant')).toBe('assistant');
-    for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
-      expect(allowedRoute(levelsForRoles([role]), 'assistant')).toBe('assistant');
-    }
-    for (const role of ['support', 'analyst', 'expert', 'qa'] as StaffRole[]) {
-      expect(allowedRoute(levelsForRoles([role]), 'assistant')).not.toBe('assistant');
-    }
-  });
-});
 
 describe('Trợ lý AI › Mức dùng', () => {
   it('leads with spend against the AI budget, failures and households out of credits', async () => {
@@ -318,8 +266,8 @@ describe('Trợ lý AI › Mức dùng', () => {
     // Breakdowns and model counters fold away, with what is inside said on the fold.
     expect(t).toContain('34 chữ · 6 ảnh · 2 hỗ trợ sức khoẻ');
     expect(t).toContain('38 lần gọi · p95 12,5 giây');
-    // Credits are edited in Premium (D-075 #1): a link, no editing here.
-    expect(buttons(raw)).toContain('Sửa ở Premium');
+    // Credits are edited in Gói Premium (D-075 #1): a link, no editing here.
+    expect(buttons(raw)).toContain('Sửa ở Gói Premium');
     noControls(raw);
     expect(t).not.toContain('Có quá nhiều bản ghi');
     const en = text(html(<UsageView data={data} now={now} />, ['ops'], 'en'));
@@ -365,6 +313,40 @@ describe('Trợ lý AI › Mức dùng', () => {
     expect(m).toContain('openai:gpt-4.1-mini');
     expect(m).toContain('assistant-v3');
     expect(m).toContain('4,2 giây trung vị · 12,5 giây p95 · 30 mẫu');
+  });
+
+  it('shows observed model/operation tokens and unknown cost coverage separately from credits', () => {
+    const tokenUsage = {
+      calls: 2,
+      knownUsage: 1,
+      unknownUsage: 1,
+      inputTokens: 100,
+      outputTokens: 20,
+      cachedInputTokens: 0,
+      ratedCalls: 0,
+      unratedCalls: 2,
+      estimatedCostUsdMicros: 0,
+      byModel: [
+        {
+          model: 'actual-understanding-snapshot',
+          operation: 'understand',
+          calls: 2,
+          knownUsage: 1,
+          inputTokens: 100,
+          outputTokens: 20,
+          ratedCalls: 0,
+          unratedCalls: 2,
+          estimatedCostUsdMicros: 0,
+        },
+      ],
+    };
+    const m = text(html(<ModelDetails model={{ ...usage.model, tokenUsage }} />));
+    expect(m).toContain('actual-understanding-snapshot');
+    expect(m).toContain('understand');
+    expect(m).toContain('100 / 20');
+    expect(m).toContain('1 call chưa biết usage');
+    expect(m).toContain('2 call chưa đủ usage/đơn giá');
+    expect(m).toContain('15.000 đ');
   });
 
   it('says when the bounded reads were cut, and an empty month reads as such', () => {
@@ -491,50 +473,10 @@ describe('Trợ lý AI › Tra cứu tác vụ', () => {
   });
 });
 
-describe('Trợ lý AI › Công tắc', () => {
-  const switchCount = (raw: string) => (raw.match(/role="switch"/g) ?? []).length;
-  const disabledCount = (raw: string) =>
-    (raw.match(/<button[^>]*role="switch"[^>]*disabled=""/g) ?? []).length;
-
-  it('lists the six switches with what turning off does and the recent changes', () => {
-    const raw = html(<SwitchesView data={switches} onChanged={() => {}} />, ['eng']);
-    const t = text(raw);
-    for (const key of assistantSwitchKeys) {
-      expect(t).toContain(messages.vi[`flag.${key}`]!);
-      expect(t).toContain(messages.vi[`flag.${key}.desc`]!);
-      // What turning off does sits behind the "?" next to the name.
-      expect(raw).toContain(`aria-label="Khi tắt: ${attr(messages.vi[`flag.${key}.offEffect`]!)}"`);
-    }
-    expect(t).toContain('chỉ Kỹ sư, Admin hoặc Owner; luôn cần lý do');
-    expect(t).toContain('1 gia đình được chọn');
-    expect(t).toContain('Đang tắt');
-    expect(t).toContain('Minh · ');
-    // Recent changes fold away; the fold counts them.
-    expect(t).toContain('Thay đổi gần đây 1 thay đổi');
-    const recent = text(html(<SwitchRecent recent={switches.recent} />));
-    expect(recent).toContain('Minh · ');
-    expect(recent).toContain('nhà cung cấp lỗi');
-    expect(text(html(<SwitchRecent recent={[]} />))).toContain('Chưa có thay đổi nào.');
-    expect(switchCount(raw)).toBe(6);
-    // Kỹ sư may switch (flags.toggle) …
-    expect(disabledCount(raw)).toBe(0);
-    expect(buttons(raw)).toContain('Mở Tính năng');
-  });
-
-  it('… Vận hành sees them but cannot flip them (same rule as Tính năng)', () => {
-    const raw = html(<SwitchesView data={switches} onChanged={() => {}} />, ['ops']);
-    expect(switchCount(raw)).toBe(6);
-    expect(disabledCount(raw)).toBe(6);
-    const en = text(html(<SwitchesView data={switches} onChanged={() => {}} />, ['ops'], 'en'));
-    expect(en).toContain('a reason is always required');
-  });
-});
-
 describe('Trợ lý AI › messages', () => {
   it('every dynamic id exists in both catalogs', () => {
     const ids = [
-      'nav.assistant',
-      ...(['usage', 'tasks', 'switches'] as const).map((t) => `assistant.tab.${t}`),
+      ...(['usage', 'tasks'] as const).map((t) => `system.tab.${t}`),
       ...assistantPoolPlans.map((p) => `assistant.plan.${p}`),
       ...taskStates.map((s) => `assistant.state.${s}`),
       ...[...assistantOutcomeKinds, 'none'].map((k) => `assistant.outcome.${k}`),
@@ -547,7 +489,6 @@ describe('Trợ lý AI › messages', () => {
       ...(['free', 'premium', 'text', 'image', 'summary'] as const).map(
         (k) => `assistant.credits.${k}`,
       ),
-      ...assistantSwitchKeys.flatMap((k) => [`flag.${k}`, `flag.${k}.desc`, `flag.${k}.offEffect`]),
     ];
     for (const locale of ['vi', 'en'] as const) {
       for (const id of ids) expect(messages[locale][id], `${locale} ${id}`).toBeTruthy();

@@ -12,6 +12,7 @@ import { Milk, Plus, Sparkles, Waypoints } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import {
   EmptyState,
@@ -149,7 +150,7 @@ function NutritionLists({ tab, go }: { tab: NutritionTab; go: (p: NutritionPath)
   return (
     <Page
       title={<FormattedMessage id="nutrition.title" />}
-      subtitle={<FormattedMessage id={`nutrition.sub.${tab}`} />}
+      info={<FormattedMessage id={`nutrition.sub.${tab}`} />}
       actions={
         canEdit && (
           <>
@@ -487,9 +488,17 @@ const segTone: Record<CoverageItemState | 'gap', string> = {
 const dotTone: Record<CoverageItemState | 'gap', string> = {
   published: 'bg-primary',
   pending: 'bg-[var(--sunshine)]',
-  draft: 'bg-chart-5',
-  gap: 'border border-dashed border-destructive bg-transparent',
+  draft: 'bg-chart-5/60',
+  gap: 'border border-dashed border-destructive bg-destructive/10',
 };
+/** The month ruler's cells: the best state of the stages covering the month, gaps hatched. */
+const monthTone: Record<CoverageItemState | 'gap', string> = {
+  published: 'bg-primary',
+  pending: 'bg-[var(--sunshine)]',
+  draft: 'bg-chart-5/60',
+  gap: 'border border-destructive/50 bg-[image:repeating-linear-gradient(135deg,color-mix(in_oklab,var(--destructive)_30%,transparent)_0_3px,transparent_3px_6px)]',
+};
+const stateRank: Record<CoverageItemState, number> = { published: 0, pending: 1, draft: 2 };
 
 type Segment = {
   key: string;
@@ -512,9 +521,25 @@ function segmentsOf(c: NutritionCoverage): Segment[] {
 }
 
 /**
- * D01 "Độ phủ 0–36 tháng" (P-163 #17): every stage over the months it covers (opens it), the gaps
- * (start a stage there), the months not on the app yet (the tile is a teaser there) and any
- * overlap (Duyệt / Xuất bản refuse it). Folded while nothing is missing.
+ * Month by month (0…36): the stage the app shows for that month (the best state among the stages
+ * covering it: on the app, then waiting, then draft), or none (a gap).
+ */
+export function coverageMonths(c: NutritionCoverage, months = nutritionLimits.maxAgeMonths + 1) {
+  return Array.from({ length: months }, (_, m) => {
+    const hits = c.items
+      .filter((i) => m >= i.ageMonths.from && m < i.ageMonths.to)
+      .sort((a, b) => stateRank[a.state] - stateRank[b.state]);
+    const gap = c.gaps.find((g) => m >= g.from && m < g.to) ?? null;
+    return { month: m, item: hits[0] ?? null, gap };
+  });
+}
+
+/**
+ * D01 "Độ phủ 0–36 tháng" (P-163 #17; owner 2026-10-21: a clearer view): a month ruler 0…36
+ * coloured by state with a tooltip per month, the stages over the months they cover (opens one),
+ * the gaps hatched (start a stage there), a legend with month counts, the months not on the app
+ * yet (the tile is a teaser there) and any overlap (Duyệt / Xuất bản refuse it). Folded while
+ * nothing is missing.
  */
 export function NutritionCoverageStrip({
   coverage,
@@ -531,7 +556,8 @@ export function NutritionCoverageStrip({
 }) {
   const intl = useIntl();
   const months = nutritionLimits.maxAgeMonths + 1;
-  const cols = { gridTemplateColumns: `repeat(${months}, minmax(0, 1fr))` };
+  // A label column, then one column per month.
+  const cols = { gridTemplateColumns: `5.5rem repeat(${months}, minmax(0, 1fr))` };
   const short = (a: NutritionAge) => {
     const l = nutritionAgeLabel(a);
     return `${l.from}–${l.to}`;
@@ -545,6 +571,13 @@ export function NutritionCoverageStrip({
   const list = (xs: NutritionAge[]) => xs.map((a) => monthsText(intl, a)).join(', ');
   const ageById = new Map(coverage.items.map((i) => [i.id, i.ageMonths]));
   const sameGaps = JSON.stringify(coverage.gaps) === JSON.stringify(coverage.liveGaps);
+  const byMonth = coverageMonths(coverage, months);
+  const monthsIn = (state: CoverageItemState | 'gap') =>
+    byMonth.filter((m) => (m.item ? m.item.state : 'gap') === state).length;
+  const stateText = (state: CoverageItemState) =>
+    intl.formatMessage({ id: `stages.state.${state}` });
+  const lanes = Math.max(1, ...segmentsOf(coverage).map((s) => s.lane + 1));
+  const rowLabel = 'self-center pr-2 text-xs font-medium text-muted-foreground';
   const count = (
     <FormattedMessage
       id="nutrition.coverage.covered"
@@ -559,82 +592,174 @@ export function NutritionCoverageStrip({
       summary={count}
       actions={<span className="text-sm font-medium tabular-nums">{count}</span>}
     >
-      <div className="grid gap-y-1" style={cols}>
-        {segmentsOf(coverage).map((s) => {
-          const place = {
-            gridColumn: `${s.age.from + 1} / ${Math.min(s.age.to, months) + 1}`,
-            gridRow: s.lane + 1,
-          };
-          const base =
-            'h-8 min-w-0 truncate rounded-md border px-1 text-center text-[11px] font-medium tabular-nums';
-          if (s.item) {
-            const state = intl.formatMessage({ id: `stages.state.${s.item.state}` });
-            const name = `${named(s.item.id, s.age)} · ${state}`;
-            const id = s.item.id;
-            return (
-              <button
-                key={s.key}
-                type="button"
-                style={place}
-                title={name}
-                aria-label={name}
-                className={cn(base, segTone[s.item.state], 'transition-opacity hover:opacity-85')}
-                onClick={() => onOpen(id)}
-              >
-                {short(s.age)}
-              </button>
-            );
-          }
-          const name = canEdit
-            ? intl.formatMessage(
-                { id: 'nutrition.coverage.add' },
-                { label: monthsText(intl, s.age) },
-              )
-            : `${monthsText(intl, s.age)} · ${intl.formatMessage({ id: 'stages.state.missing' })}`;
-          return canEdit ? (
-            <button
-              key={s.key}
-              type="button"
-              style={place}
-              title={name}
-              aria-label={name}
-              className={cn(base, segTone.gap, 'hover:bg-destructive/5')}
-              onClick={() => onCreate(s.age)}
-            >
-              + {short(s.age)}
-            </button>
-          ) : (
-            <span
-              key={s.key}
-              style={place}
-              title={name}
-              className={cn(base, segTone.gap, 'leading-8')}
-            >
-              {short(s.age)}
+      <TooltipProvider delayDuration={100}>
+        <div className="overflow-x-auto pb-1">
+          <div className="grid min-w-[640px] gap-y-1.5" style={cols}>
+            {/* Month by month: the state the app is in for a baby that age. */}
+            <span className={rowLabel} style={{ gridColumn: 1, gridRow: 1 }}>
+              <FormattedMessage id="nutrition.coverage.byMonth" />
             </span>
-          );
-        })}
-      </div>
-      <div
-        className="mt-1 grid text-[11px] text-muted-foreground tabular-nums"
-        style={cols}
-        aria-hidden="true"
-      >
-        {[0, 6, 12, 18, 24, 30, 36].map((m) => (
-          <span key={m} style={{ gridColumn: `${m + 1}` }}>
-            {m}
-          </span>
-        ))}
-      </div>
+            {byMonth.map(({ month, item, gap }) => {
+              const label = item
+                ? intl.formatMessage(
+                    { id: 'nutrition.coverage.monthStage' },
+                    {
+                      month,
+                      title: titleOf(item.id) || monthsText(intl, item.ageMonths),
+                      status: stateText(item.state),
+                    },
+                  )
+                : intl.formatMessage({ id: 'nutrition.coverage.monthGap' }, { month });
+              const tone = monthTone[item ? item.state : 'gap'];
+              const place = { gridColumn: month + 2, gridRow: 1 };
+              const act = item
+                ? () => onOpen(item.id)
+                : canEdit && gap
+                  ? () => onCreate(gap)
+                  : undefined;
+              return (
+                <Tooltip key={month}>
+                  <TooltipTrigger asChild>
+                    {act ? (
+                      <button
+                        type="button"
+                        style={place}
+                        aria-label={label}
+                        className={cn(
+                          'mx-px h-6 rounded-[3px] outline-none hover:opacity-80 focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                          tone,
+                        )}
+                        onClick={act}
+                      />
+                    ) : (
+                      <span
+                        style={place}
+                        role="img"
+                        aria-label={label}
+                        className={cn('mx-px h-6 rounded-[3px]', tone)}
+                      />
+                    )}
+                  </TooltipTrigger>
+                  <TooltipContent>{label}</TooltipContent>
+                </Tooltip>
+              );
+            })}
+
+            {/* The stages over the months they cover; overlapping ones on a lane below. */}
+            <span
+              className={cn(rowLabel, 'self-start pt-2')}
+              style={{ gridColumn: 1, gridRow: `2 / span ${lanes}` }}
+            >
+              <FormattedMessage id="nutrition.coverage.byStage" />
+            </span>
+            {segmentsOf(coverage).map((s) => {
+              const place = {
+                gridColumn: `${s.age.from + 2} / ${Math.min(s.age.to, months) + 2}`,
+                gridRow: s.lane + 2,
+              };
+              const base =
+                'h-8 min-w-0 truncate rounded-md border px-1.5 text-left text-[11px] font-medium tabular-nums';
+              if (s.item) {
+                const state = stateText(s.item.state);
+                const name = `${named(s.item.id, s.age)} · ${state}`;
+                const id = s.item.id;
+                const title = titleOf(id);
+                return (
+                  <button
+                    key={s.key}
+                    type="button"
+                    style={place}
+                    title={name}
+                    aria-label={name}
+                    className={cn(
+                      base,
+                      segTone[s.item.state],
+                      'transition-opacity hover:opacity-85',
+                    )}
+                    onClick={() => onOpen(id)}
+                  >
+                    {short(s.age)}
+                    {title && <span className="font-normal opacity-80"> · {title}</span>}
+                  </button>
+                );
+              }
+              const name = canEdit
+                ? intl.formatMessage(
+                    { id: 'nutrition.coverage.add' },
+                    { label: monthsText(intl, s.age) },
+                  )
+                : `${monthsText(intl, s.age)} · ${intl.formatMessage({ id: 'stages.state.missing' })}`;
+              return canEdit ? (
+                <button
+                  key={s.key}
+                  type="button"
+                  style={place}
+                  title={name}
+                  aria-label={name}
+                  className={cn(base, segTone.gap, 'text-center hover:bg-destructive/5')}
+                  onClick={() => onCreate(s.age)}
+                >
+                  + {short(s.age)}
+                </button>
+              ) : (
+                <span
+                  key={s.key}
+                  style={place}
+                  title={name}
+                  className={cn(base, segTone.gap, 'text-center leading-8')}
+                >
+                  {short(s.age)}
+                </span>
+              );
+            })}
+
+            {/* The ruler: a tick per month, a number every 3 months, the years in bold. */}
+            <span
+              className={cn(rowLabel, 'self-start')}
+              style={{ gridColumn: 1, gridRow: lanes + 2 }}
+            >
+              <FormattedMessage id="nutrition.coverage.months" />
+            </span>
+            {byMonth.map(({ month }) => (
+              <span
+                key={month}
+                aria-hidden="true"
+                className="relative grid justify-items-center"
+                style={{ gridColumn: month + 2, gridRow: lanes + 2 }}
+              >
+                <span
+                  className={cn(
+                    'w-px bg-border',
+                    month % 12 === 0 ? 'h-3 bg-foreground/50' : month % 3 === 0 ? 'h-2' : 'h-1',
+                  )}
+                />
+                {month % 3 === 0 && (
+                  <span
+                    className={cn(
+                      'text-[11px] leading-4 tabular-nums',
+                      month % 12 === 0 ? 'font-semibold text-foreground' : 'text-muted-foreground',
+                    )}
+                  >
+                    {month}
+                  </span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      </TooltipProvider>
       <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         {(['published', 'pending', 'draft'] as const).map((s) => (
           <li key={s} className="flex items-center gap-1.5">
-            <span className={cn('size-2.5 rounded-full', dotTone[s])} aria-hidden="true" />
-            <FormattedMessage id={`stages.state.${s}`} />
+            <span className={cn('size-2.5 rounded-sm', dotTone[s])} aria-hidden="true" />
+            <FormattedMessage
+              id="nutrition.coverage.legend"
+              values={{ label: stateText(s), n: monthsIn(s) }}
+            />
           </li>
         ))}
         <li className={cn('flex items-center gap-1.5', coverage.gaps.length && 'text-destructive')}>
-          <span className={cn('size-2.5 rounded-full', dotTone.gap)} aria-hidden="true" />
+          <span className={cn('size-2.5 rounded-sm', dotTone.gap)} aria-hidden="true" />
           {coverage.gaps.length ? (
             <FormattedMessage id="nutrition.coverage.gaps" values={{ list: list(coverage.gaps) }} />
           ) : (

@@ -1,6 +1,21 @@
 import { staffCan } from '@child-life/contracts';
+import { ChevronLeft, ChevronRight, ImageIcon, Inbox, Mail, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Badge } from '@/components/ui/badge';
+import { Button as UiButton } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import {
   ApiError,
   useApi,
@@ -10,39 +25,43 @@ import {
   type TicketRow,
   type TicketStatus,
 } from '../api';
+import { EmptyState, Notice, SearchInput } from '../content-kit';
 import { useRefreshBadges, useStaff } from '../context';
 import { ago, gb, num } from '../format';
 import {
   Button,
-  Empty,
   Loaded,
   LockNote,
-  Modal,
+  ConfirmModal,
   Page,
-  Panel,
-  Pill,
-  ReasonField,
-  Segmented,
   SelectMenu,
   UsageBar,
   errorMessageId,
-  reasonOk,
-  type PillTone,
 } from '../ui';
 
 type Filter = 'open' | TicketStatus;
+type Kind = 'all' | 'help' | 'feedback';
 
-const statusTone: Record<TicketStatus, PillTone> = {
-  new: 'high',
-  claimed: 'info',
-  waiting: 'wait',
-  closed: 'muted',
+/** Status badges (shadcn Badge): unclaimed stands out, closed fades. */
+const statusClass: Record<TicketStatus, string> = {
+  new: 'border-destructive/30 bg-destructive/10 text-destructive',
+  claimed: 'border-primary/30 bg-primary/10 text-primary',
+  waiting: 'border-warning/40 bg-warning/10 text-warning',
+  closed: 'border-transparent bg-muted text-muted-foreground',
 };
 
-/** A03 Hỗ trợ: the inbox, account metadata and the diagnostics the user agreed to send. */
+export const kindOf = (t: TicketRow): Exclude<Kind, 'all'> =>
+  t.category === 'feedback' ? 'feedback' : 'help';
+
+/**
+ * A03 Hỗ trợ (portal UX 2026-10-21, shadcn): the queue as a table with status tabs, a type filter
+ * and search; a ticket opens in a sheet (account metadata, the diagnostics the user agreed to send,
+ * the thread and the allowed actions), with previous / next through the list.
+ */
 export function SupportScreen() {
   const intl = useIntl();
   const [filter, setFilter] = useState<Filter>('open');
+  const [kind, setKind] = useState<Kind>('all');
   const [q, setQ] = useState('');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
@@ -55,65 +74,66 @@ export function SupportScreen() {
     { status: filter, ...(query ? { q: query } : {}) },
     `${filter}|${query}`,
   );
-  const rows = load.status === 'ok' ? load.data.rows : [];
-  const current = selected ?? rows[0]?.id ?? null;
+  const rows =
+    load.status === 'ok' ? load.data.rows.filter((t) => kind === 'all' || kindOf(t) === kind) : [];
+  const at = selected ? rows.findIndex((t) => t.id === selected) : -1;
+  const step = (d: -1 | 1) => {
+    const next = rows[at + d];
+    return at >= 0 && next ? () => setSelected(next.id) : undefined;
+  };
   return (
     <Page
       title={<FormattedMessage id="support.title" />}
-      subtitle={<FormattedMessage id="support.sub" />}
       actions={
-        <input
-          className="search"
-          type="search"
+        <SearchInput
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={setQ}
           placeholder={intl.formatMessage({ id: 'support.search' })}
-          aria-label={intl.formatMessage({ id: 'support.search' })}
         />
       }
     >
-      <div className="cols cols--list">
-        <Panel className="panel--flush">
-          <Loaded load={load} reload={reload}>
-            {(data) => (
-              <TicketListView
-                data={data}
-                filter={filter}
-                onFilter={(f) => {
-                  setFilter(f);
-                  setSelected(null);
-                }}
-                selected={current}
-                onSelect={setSelected}
-                now={new Date()}
-              />
-            )}
-          </Loaded>
-        </Panel>
-        {current ? (
-          <TicketPanel key={current} ticketId={current} onChanged={reload} />
-        ) : (
-          load.status === 'ok' && (
-            <Panel>
-              <Empty>
-                <FormattedMessage id="support.pick" />
-              </Empty>
-            </Panel>
-          )
-        )}
-      </div>
+      <Card className="gap-0 overflow-hidden py-0">
+        <Loaded load={load} reload={reload}>
+          {(data) => (
+            <TicketListView
+              data={data}
+              filter={filter}
+              onFilter={(f) => {
+                setFilter(f);
+                setSelected(null);
+              }}
+              kind={kind}
+              onKind={setKind}
+              selected={selected}
+              onSelect={setSelected}
+              now={new Date()}
+            />
+          )}
+        </Loaded>
+      </Card>
+      {selected && (
+        <TicketSheet
+          title={rows[at]?.ticket ?? intl.formatMessage({ id: 'support.title' })}
+          onClose={() => setSelected(null)}
+          onPrev={step(-1)}
+          onNext={step(1)}
+        >
+          <TicketPanel key={selected} ticketId={selected} onChanged={reload} />
+        </TicketSheet>
+      )}
     </Page>
   );
 }
 
-type Kind = 'all' | 'help' | 'feedback';
-const kindOf = (t: TicketRow): Exclude<Kind, 'all'> =>
-  t.category === 'feedback' ? 'feedback' : 'help';
+const filters: Filter[] = ['open', 'new', 'claimed', 'waiting', 'closed'];
 
+/** The status tabs, the type filter and the queue as a table. */
 export function TicketListView({
   data,
   filter,
   onFilter,
+  kind: kindProp,
+  onKind,
   selected,
   onSelect,
   now,
@@ -121,41 +141,42 @@ export function TicketListView({
   data: TicketList;
   filter: Filter;
   onFilter: (f: Filter) => void;
+  /** Hỗ trợ and Góp ý (P-145) share the queue; the type narrows it on screen. */
+  kind?: Kind;
+  onKind?: (k: Kind) => void;
   selected: string | null;
   onSelect: (id: string) => void;
   now: Date;
 }) {
   const intl = useIntl();
-  // Hỗ trợ and Góp ý (P-145) share the queue; the type narrows the list on screen.
-  const [kind, setKind] = useState<Kind>('all');
+  const [ownKind, setOwnKind] = useState<Kind>('all');
+  const kind = kindProp ?? ownKind;
+  const setKind = onKind ?? setOwnKind;
   const rows = kind === 'all' ? data.rows : data.rows.filter((t) => kindOf(t) === kind);
+  const label = (f: Filter) =>
+    f === 'closed' ? (
+      <FormattedMessage id="support.closedTab" />
+    ) : (
+      <FormattedMessage
+        id={f === 'open' ? 'support.all' : `support.${f}`}
+        values={{ n: data.counts[f] }}
+      />
+    );
   return (
     <div>
-      <div className="panel__pad stack">
-        <Segmented
-          label={intl.formatMessage({ id: 'support.filter' })}
-          value={filter}
-          onChange={onFilter}
-          options={[
-            {
-              value: 'open',
-              label: <FormattedMessage id="support.all" values={{ n: data.counts.open }} />,
-            },
-            {
-              value: 'new',
-              label: <FormattedMessage id="support.new" values={{ n: data.counts.new }} />,
-            },
-            {
-              value: 'claimed',
-              label: <FormattedMessage id="support.claimed" values={{ n: data.counts.claimed }} />,
-            },
-            {
-              value: 'waiting',
-              label: <FormattedMessage id="support.waiting" values={{ n: data.counts.waiting }} />,
-            },
-            { value: 'closed', label: <FormattedMessage id="support.closedTab" /> },
-          ]}
-        />
+      <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3">
+        <Tabs value={filter} onValueChange={(v) => onFilter(v as Filter)}>
+          <TabsList
+            aria-label={intl.formatMessage({ id: 'support.filter' })}
+            className="h-auto flex-wrap"
+          >
+            {filters.map((f) => (
+              <TabsTrigger key={f} value={f} className="px-3">
+                {label(f)}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
         <SelectMenu
           value={kind}
           onChange={setKind}
@@ -164,36 +185,65 @@ export function TicketListView({
             value: k,
             label: intl.formatMessage({ id: `support.kind.${k}` }),
           }))}
-          className="justify-self-start"
+          className="ml-auto"
         />
       </div>
       {rows.length === 0 ? (
-        <Empty>
-          <FormattedMessage id="support.empty" />
-        </Empty>
+        <EmptyState icon={Inbox} title={<FormattedMessage id="support.empty" />} />
       ) : (
-        <ul className="tickets">
-          {rows.map((t) => (
-            <li key={t.id}>
-              <button
-                type="button"
-                className={`tickets__row ${t.id === selected ? 'tickets__row--on' : ''}`}
+        <Table className="min-w-[640px]">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="pl-4">
+                <FormattedMessage id="support.col.request" />
+              </TableHead>
+              <TableHead>
+                <FormattedMessage id="support.col.status" />
+              </TableHead>
+              <TableHead>
+                <FormattedMessage id="support.col.handler" />
+              </TableHead>
+              <TableHead className="pr-4 text-right">
+                <FormattedMessage id="support.col.sent" />
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((t) => (
+              <TableRow
+                key={t.id}
+                data-state={t.id === selected ? 'selected' : undefined}
+                className="cursor-pointer"
                 onClick={() => onSelect(t.id)}
-                aria-current={t.id === selected}
               >
-                <span className="tickets__top">
-                  <span className="tickets__title">{t.title}</span>
-                  <StatusPill status={t.status} />
-                </span>
-                <span className="tickets__meta">
-                  {t.ticket} · <TicketKind ticket={t} /> ·{' '}
-                  {t.contactable ? t.email : <FormattedMessage id="support.noContactShort" />}
-                </span>
-                <span className="tickets__age">{ago(intl, t.createdAt, now)}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+                <TableCell className="max-w-0 min-w-72 pl-4 whitespace-normal">
+                  <button
+                    type="button"
+                    className="block max-w-full truncate text-left font-medium hover:underline focus-visible:underline focus-visible:outline-none"
+                    aria-current={t.id === selected}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect(t.id);
+                    }}
+                  >
+                    {t.title}
+                  </button>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {t.ticket} · <TicketKind ticket={t} /> ·{' '}
+                    {t.contactable ? t.email : <FormattedMessage id="support.noContactShort" />}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={t.status} />
+                </TableCell>
+                <TableCell className="text-muted-foreground">{t.claimedBy ?? '—'}</TableCell>
+                <TableCell className="pr-4 text-right text-muted-foreground tabular-nums">
+                  {ago(intl, t.createdAt, now)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
     </div>
   );
@@ -214,18 +264,84 @@ function TicketKind({ ticket }: { ticket: TicketRow }) {
   );
 }
 
-function StatusPill({ status }: { status: TicketStatus }) {
+export function StatusBadge({ status }: { status: TicketStatus }) {
   return (
-    <Pill tone={statusTone[status]}>
+    <Badge variant="outline" className={statusClass[status]}>
       <FormattedMessage id={`ticket.${status}`} />
-    </Pill>
+    </Badge>
+  );
+}
+
+/** The ticket in a sheet from the right, with previous / next through the list. */
+function TicketSheet({
+  title,
+  onClose,
+  onPrev,
+  onNext,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  children: ReactNode;
+}) {
+  const intl = useIntl();
+  const t = (id: string) => intl.formatMessage({ id });
+  return (
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="right"
+        showCloseButton={false}
+        aria-describedby={undefined}
+        className="w-full gap-0 overflow-y-auto overscroll-contain p-0 sm:max-w-xl"
+      >
+        <SheetTitle className="sr-only">{title}</SheetTitle>
+        <div className="sticky top-0 z-10 flex items-center gap-1 border-b bg-background/95 px-3 py-2 backdrop-blur">
+          <UiButton
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            onClick={onPrev}
+            disabled={!onPrev}
+            aria-label={t('support.prev')}
+            title={t('support.prev')}
+          >
+            <ChevronLeft />
+          </UiButton>
+          <UiButton
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            onClick={onNext}
+            disabled={!onNext}
+            aria-label={t('support.next')}
+            title={t('support.next')}
+          >
+            <ChevronRight />
+          </UiButton>
+          <span className="ml-1 font-mono text-sm text-muted-foreground">{title}</span>
+          <UiButton
+            variant="ghost"
+            size="icon"
+            className="ml-auto size-8"
+            onClick={onClose}
+            aria-label={t('action.close')}
+            title={t('action.close')}
+          >
+            <X />
+          </UiButton>
+        </div>
+        {children}
+      </SheetContent>
+    </Sheet>
   );
 }
 
 function TicketPanel({ ticketId, onChanged }: { ticketId: string; onChanged: () => void }) {
   const [load, reload] = useLoad<TicketDetail>('staffTicket', { ticketId }, ticketId);
   return (
-    <Panel>
+    <div className="p-5">
       <Loaded load={load} reload={reload}>
         {(t) => (
           <TicketDetailView
@@ -238,12 +354,30 @@ function TicketPanel({ ticketId, onChanged }: { ticketId: string; onChanged: () 
           />
         )}
       </Loaded>
-    </Panel>
+    </div>
   );
 }
 
 type Dialog = { kind: 'wifi' } | { kind: 'close' } | null;
 
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+      {children}
+    </h3>
+  );
+}
+
+function Fact({ label, children }: { label: ReactNode; children: ReactNode }) {
+  return (
+    <div className="grid min-w-0 gap-1 rounded-lg border bg-muted/40 px-3 py-2.5">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="grid gap-1.5 text-sm font-medium">{children}</span>
+    </div>
+  );
+}
+
+/** One ticket: who wrote what, their account in numbers, diagnostics, the thread and actions. */
 export function TicketDetailView({
   ticket,
   now,
@@ -258,7 +392,6 @@ export function TicketDetailView({
   const staff = useStaff();
   const refreshBadges = useRefreshBadges();
   const [text, setText] = useState('');
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -268,6 +401,7 @@ export function TicketDetailView({
   const closed = ticket.status === 'closed';
   // P-145: without "Cho phép liên hệ lại" there is nobody to write to.
   const canAnswer = canReply && ticket.contactable;
+  const claim = ticket.status === 'new' && canClaim;
 
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
@@ -276,7 +410,6 @@ export function TicketDetailView({
       await fn();
       setDialog(null);
       setText('');
-      setReason('');
       refreshBadges();
       onChanged();
     } catch (e) {
@@ -286,156 +419,60 @@ export function TicketDetailView({
     }
   };
   const d = ticket.diagnostics;
+  const diag: Array<[string, ReactNode]> = d
+    ? [
+        [
+          'diag.app',
+          [
+            d.platform === 'ios' ? 'iOS' : d.platform === 'android' ? 'Android' : null,
+            d.appVersion,
+            d.deviceModel,
+          ]
+            .filter(Boolean)
+            .join(' · ') || '—',
+        ],
+        ['diag.os', d.osVersion ?? '—'],
+        ['diag.pending', num(intl, d.pendingUploads ?? 0)],
+        [
+          'diag.sync',
+          d.lastSyncAt ? (
+            <FormattedMessage id="diag.lastSync" values={{ ago: ago(intl, d.lastSyncAt, now) }} />
+          ) : (
+            '—'
+          ),
+        ],
+      ]
+    : [];
   return (
-    <div className="ticket">
-      <div className="ticket__head">
-        <div>
-          <p className="muted">
+    <div className="grid gap-5">
+      <header className="grid gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          <span>
             {ticket.ticket} · <TicketKind ticket={ticket} /> ·{' '}
             <FormattedMessage
               id="support.sent"
               values={{ ago: ago(intl, ticket.createdAt, now) }}
             />
-          </p>
-          <h2 className="ticket__title">{ticket.title}</h2>
-          {ticket.claimedBy && (
-            <p className="muted">
-              <FormattedMessage id="support.claimedBy" values={{ name: ticket.claimedBy }} />
-            </p>
-          )}
+          </span>
+          <StatusBadge status={ticket.status} />
         </div>
-        {ticket.status === 'new' && canClaim && (
-          <Button
-            kind="primary"
-            disabled={busy}
-            onClick={() => run(() => api.call('staffClaimTicket', { ticketId: ticket.id }))}
-          >
-            <FormattedMessage id="support.claim" />
-          </Button>
+        <h2 className="text-lg leading-7 font-semibold tracking-tight">{ticket.title}</h2>
+        {ticket.claimedBy && (
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage id="support.claimedBy" values={{ name: ticket.claimedBy }} />
+          </p>
         )}
-      </div>
-
-      {!ticket.contactable && (
-        <p className="note note--warn" role="status">
-          <FormattedMessage id="support.noContact" />
-        </p>
-      )}
-
-      <h3 className="label">
-        <FormattedMessage id="support.userWrote" />
-      </h3>
-      <blockquote className="quote">{ticket.message}</blockquote>
-
-      {ticket.hasScreenshot && <Screenshot ticketId={ticket.id} ticket={ticket.ticket} />}
-
-      <div className="tiles">
-        <div className="tile">
-          <p className="tile__label">
-            <FormattedMessage id="support.role" />
-          </p>
-          <p className="tile__value">
-            {ticket.role ? <FormattedMessage id={`memberRole.${ticket.role}`} /> : '—'}
-          </p>
-        </div>
-        <div className="tile">
-          <p className="tile__label">
-            <FormattedMessage id="support.family" />
-          </p>
-          <p className="tile__value">
-            {ticket.family ? (
-              <FormattedMessage
-                id="family.shape"
-                values={{ babies: ticket.family.babies, people: ticket.family.people }}
-              />
-            ) : (
-              '—'
+        {!closed && (claim || canAnswer || canClose) && (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {claim && (
+              <Button
+                kind="primary"
+                disabled={busy}
+                onClick={() => run(() => api.call('staffClaimTicket', { ticketId: ticket.id }))}
+              >
+                <FormattedMessage id="support.claim" />
+              </Button>
             )}
-          </p>
-        </div>
-        <div className="tile">
-          <p className="tile__label">
-            <FormattedMessage id="support.storage" />
-          </p>
-          <p className="tile__value">
-            {ticket.family
-              ? `${gb(intl, ticket.family.usedBytes)} / ${gb(intl, ticket.family.quotaBytes, 0)}`
-              : '—'}
-          </p>
-          {ticket.family && (
-            <UsageBar
-              ratio={ticket.family.usedBytes / Math.max(1, ticket.family.quotaBytes)}
-              tone="ok"
-            />
-          )}
-        </div>
-      </div>
-
-      <h3 className="label">
-        <FormattedMessage id="support.diagnostics" />
-      </h3>
-      {d ? (
-        <dl className="kv">
-          <dt>
-            <FormattedMessage id="diag.app" />
-          </dt>
-          <dd>
-            {[
-              d.platform === 'ios' ? 'iOS' : d.platform === 'android' ? 'Android' : null,
-              d.appVersion,
-              d.deviceModel,
-            ]
-              .filter(Boolean)
-              .join(' · ')}
-          </dd>
-          <dt>
-            <FormattedMessage id="diag.os" />
-          </dt>
-          <dd>{d.osVersion ?? '—'}</dd>
-          <dt>
-            <FormattedMessage id="diag.pending" />
-          </dt>
-          <dd>{num(intl, d.pendingUploads ?? 0)}</dd>
-          <dt>
-            <FormattedMessage id="diag.sync" />
-          </dt>
-          <dd>
-            {d.lastSyncAt ? (
-              <FormattedMessage id="diag.lastSync" values={{ ago: ago(intl, d.lastSyncAt, now) }} />
-            ) : (
-              '—'
-            )}
-          </dd>
-        </dl>
-      ) : (
-        <p className="muted">
-          <FormattedMessage id="support.noDiagnostics" />
-        </p>
-      )}
-
-      {ticket.thread.length > 0 && (
-        <>
-          <h3 className="label">
-            <FormattedMessage id="support.thread" />
-          </h3>
-          <ul className="thread">
-            {ticket.thread.map((m, i) => (
-              <li key={i}>
-                <p className="muted">
-                  {m.by} · {ago(intl, m.at, now)}
-                </p>
-                <p className="thread__text">{m.text}</p>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {!closed && (canAnswer || canClose) && (
-        <>
-          <h3 className="label">
-            <FormattedMessage id="support.allowed" />
-          </h3>
-          <div className="actions">
             {canAnswer && (
               <Button onClick={() => setDialog({ kind: 'wifi' })} disabled={busy}>
                 <FormattedMessage id="support.wifiGuide" />
@@ -447,22 +484,110 @@ export function TicketDetailView({
               </Button>
             )}
           </div>
-        </>
+        )}
+      </header>
+
+      {!ticket.contactable && (
+        <Notice tone="warn">
+          <FormattedMessage id="support.noContact" />
+        </Notice>
       )}
-
-      <LockNote>
-        <FormattedMessage id="support.lock" />
-      </LockNote>
-
       {error && (
-        <p className="error" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
         </p>
       )}
 
+      <section className="grid gap-2">
+        <SectionLabel>
+          <FormattedMessage id="support.userWrote" />
+        </SectionLabel>
+        <Card className="gap-0 bg-muted/40 py-0 shadow-none">
+          <CardContent className="px-4 py-3 text-sm whitespace-pre-wrap">
+            {ticket.message}
+          </CardContent>
+        </Card>
+      </section>
+
+      {ticket.hasScreenshot && <Screenshot ticketId={ticket.id} ticket={ticket.ticket} />}
+
+      <section className="grid gap-2">
+        <SectionLabel>
+          <FormattedMessage id="support.account" />
+        </SectionLabel>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <Fact label={<FormattedMessage id="support.role" />}>
+            {ticket.role ? <FormattedMessage id={`memberRole.${ticket.role}`} /> : '—'}
+          </Fact>
+          <Fact label={<FormattedMessage id="support.family" />}>
+            {ticket.family ? (
+              <FormattedMessage
+                id="family.shape"
+                values={{ babies: ticket.family.babies, people: ticket.family.people }}
+              />
+            ) : (
+              '—'
+            )}
+          </Fact>
+          <Fact label={<FormattedMessage id="support.storage" />}>
+            <span>
+              {ticket.family
+                ? `${gb(intl, ticket.family.usedBytes)} / ${gb(intl, ticket.family.quotaBytes, 0)}`
+                : '—'}
+            </span>
+            {ticket.family && (
+              <UsageBar
+                ratio={ticket.family.usedBytes / Math.max(1, ticket.family.quotaBytes)}
+                tone="ok"
+              />
+            )}
+          </Fact>
+        </div>
+      </section>
+
+      <section className="grid gap-2">
+        <SectionLabel>
+          <FormattedMessage id="support.diagnostics" />
+        </SectionLabel>
+        {d ? (
+          <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-1.5 text-sm">
+            {diag.map(([id, value]) => (
+              <div key={id} className="contents">
+                <dt className="text-muted-foreground">
+                  <FormattedMessage id={id} />
+                </dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage id="support.noDiagnostics" />
+          </p>
+        )}
+      </section>
+
+      {ticket.thread.length > 0 && (
+        <section className="grid gap-2">
+          <SectionLabel>
+            <FormattedMessage id="support.thread" />
+          </SectionLabel>
+          <ul className="grid gap-2">
+            {ticket.thread.map((m, i) => (
+              <li key={i} className="rounded-lg border px-3 py-2">
+                <p className="text-xs text-muted-foreground">
+                  {m.by} · {ago(intl, m.at, now)}
+                </p>
+                <p className="text-sm whitespace-pre-wrap">{m.text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {!closed && canAnswer && (
         <form
-          className="composer"
+          className="grid gap-2 rounded-lg border p-3"
           onSubmit={(e) => {
             e.preventDefault();
             void run(() =>
@@ -470,13 +595,11 @@ export function TicketDetailView({
                 ticketId: ticket.id,
                 text: text.trim(),
                 macro: null,
-                reason: reason.trim(),
               }),
             );
           }}
         >
-          <textarea
-            className="field__input"
+          <Textarea
             rows={3}
             maxLength={4000}
             value={text}
@@ -484,40 +607,29 @@ export function TicketDetailView({
             placeholder={intl.formatMessage({ id: 'support.replyPlaceholder' })}
             aria-label={intl.formatMessage({ id: 'support.replyPlaceholder' })}
           />
-          <input
-            className="field__input"
-            value={reason}
-            maxLength={500}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder={intl.formatMessage({ id: 'reason.label' })}
-            aria-label={intl.formatMessage({ id: 'reason.label' })}
-          />
-          <div className="composer__foot">
-            <span className="muted">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Mail className="size-3.5" aria-hidden="true" />
               <FormattedMessage id="support.replyChannel" />
             </span>
-            <Button
-              kind="primary"
-              type="submit"
-              disabled={busy || !text.trim() || !reasonOk(reason)}
-            >
+            <Button kind="primary" type="submit" disabled={busy || !text.trim()}>
               <FormattedMessage id="support.send" />
             </Button>
           </div>
         </form>
       )}
 
+      <LockNote>
+        <FormattedMessage id="support.lock" />
+      </LockNote>
+
       {dialog && (
-        <ReasonDialog
+        // No reason (D-090): the server writes the audit line itself.
+        <ConfirmModal
           title={
             <FormattedMessage
               id={dialog.kind === 'wifi' ? 'support.wifiTitle' : 'support.closeTitle'}
               values={{ id: ticket.ticket }}
-            />
-          }
-          body={
-            <FormattedMessage
-              id={dialog.kind === 'wifi' ? 'support.wifiBody' : 'support.closeBody'}
             />
           }
           confirm={
@@ -526,19 +638,22 @@ export function TicketDetailView({
           busy={busy}
           error={error}
           onCancel={() => setDialog(null)}
-          onConfirm={(r) =>
-            run(() =>
+          onConfirm={() =>
+            void run(() =>
               dialog.kind === 'wifi'
                 ? api.call('staffReplyTicket', {
                     ticketId: ticket.id,
                     text: 'wifiGuide',
                     macro: 'wifiGuide',
-                    reason: r,
                   })
-                : api.call('staffCloseTicket', { ticketId: ticket.id, reason: r }),
+                : api.call('staffCloseTicket', { ticketId: ticket.id }),
             )
           }
-        />
+        >
+          <FormattedMessage
+            id={dialog.kind === 'wifi' ? 'support.wifiBody' : 'support.closeBody'}
+          />
+        </ConfirmModal>
       )}
     </div>
   );
@@ -564,77 +679,32 @@ function Screenshot({ ticketId, ticket }: { ticketId: string; ticket: string }) 
     }
   };
   return (
-    <div className="stack">
-      <h3 className="label">
+    <section className="grid gap-2">
+      <SectionLabel>
         <FormattedMessage id="support.screenshot" />
-      </h3>
+      </SectionLabel>
       {src ? (
         <img
-          className="ticket__shot"
+          className="max-h-[28rem] w-auto max-w-full justify-self-start rounded-lg border"
           src={src}
           alt={intl.formatMessage({ id: 'support.screenshotAlt' }, { id: ticket })}
         />
       ) : (
-        <div className="actions">
+        <div>
           <Button onClick={() => void show()} disabled={busy}>
+            <ImageIcon />
             <FormattedMessage id="support.showScreenshot" />
           </Button>
         </div>
       )}
       {error && (
-        <p className="error" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
         </p>
       )}
       <LockNote>
         <FormattedMessage id="support.screenshotLogged" />
       </LockNote>
-    </div>
-  );
-}
-
-/** A reason-only confirmation (support macro, close). */
-export function ReasonDialog({
-  title,
-  body,
-  confirm,
-  busy,
-  error,
-  danger,
-  onCancel,
-  onConfirm,
-}: {
-  title: ReactNode;
-  body: ReactNode;
-  confirm: ReactNode;
-  busy: boolean;
-  error: ApiError | null;
-  danger?: boolean;
-  onCancel: () => void;
-  onConfirm: (reason: string) => void;
-}) {
-  const [reason, setReason] = useState('');
-  return (
-    <Modal title={title} onClose={onCancel}>
-      <p className="modal__sub">{body}</p>
-      <ReasonField value={reason} onChange={setReason} required />
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      <div className="modal__actions">
-        <Button onClick={onCancel}>
-          <FormattedMessage id="action.cancel" />
-        </Button>
-        <Button
-          kind={danger ? 'danger' : 'primary'}
-          disabled={busy || !reasonOk(reason)}
-          onClick={() => onConfirm(reason.trim())}
-        >
-          {confirm}
-        </Button>
-      </div>
-    </Modal>
+    </section>
   );
 }

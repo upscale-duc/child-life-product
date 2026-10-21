@@ -11,6 +11,7 @@ import {
 import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { ApiError, useApi, useLoad, type ReferenceView } from '../api';
+import { VersionBadge } from '../content-kit';
 import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
 import { ZONE } from '../format';
@@ -23,9 +24,9 @@ import {
   Modal,
   Page,
   Panel,
+  NotesField,
   Pill,
-  ReasonField,
-  reasonOk,
+  RejectedBy,
   Segmented,
   SelectMenu,
   TableScroll,
@@ -33,10 +34,11 @@ import {
 } from '../ui';
 
 /**
- * Dữ liệu tham chiếu (Figma C01–C04; P-138). One open version per table (Nháp / Chờ duyệt); a
- * different person with "Duyệt" publishes it to the apps, which keep their own copy as fallback.
+ * Bảng tham chiếu (Figma C01–C04; P-138), under NỘI DUNG. One open version per table (Nháp /
+ * Chờ duyệt); a different person with "Duyệt" publishes it to the apps, which keep their own copy
+ * as fallback.
  * WHO rows are replaced only by importing a new WHO release (Q-045 default); bottle quick picks
- * and the vaccine schedule are edited here. Every step needs a reason and is logged.
+ * and the vaccine schedule are edited here. Every step is logged (no reason asked: D-090).
  */
 
 const datasets: ReferenceDataset[] = [
@@ -109,7 +111,7 @@ export function ReferenceScreen() {
   return (
     <Page
       title={<FormattedMessage id="reference.title" />}
-      subtitle={
+      info={
         <FormattedMessage
           id={dataset === 'vaccines.schedule' ? 'reference.subVaccines' : 'reference.sub'}
         />
@@ -189,27 +191,21 @@ export function ReferenceBody({
   return (
     <>
       <div className="toolbar">
-        <span className="chips">
-          <Pill tone="ok">
-            <FormattedMessage id="reference.inUse" values={{ v: view.current.label }} />
-          </Pill>
-          {view.current.approver && (
-            <span className="muted">
-              <FormattedMessage
-                id="reference.approvedBy"
-                values={{
-                  name: view.current.approver,
-                  when: dateTime(intl, view.current.publishedAt),
-                }}
-              />
-            </span>
-          )}
-          {view.current.versionId === 'builtin' && (
-            <span className="muted">
-              <FormattedMessage id="reference.builtin" />
-            </span>
-          )}
-        </span>
+        {/* The table in use as a badge; who approved it and when are in its popover. */}
+        <VersionBadge
+          version={view.current.label}
+          details={[
+            view.current.approver
+              ? intl.formatMessage(
+                  { id: 'reference.approvedBy' },
+                  { name: view.current.approver, when: dateTime(intl, view.current.publishedAt) },
+                )
+              : '',
+            view.current.versionId === 'builtin'
+              ? intl.formatMessage({ id: 'reference.builtin' })
+              : '',
+          ]}
+        />
         {canEdit && (
           <div className="actions">
             {dataset !== 'vaccines.schedule' && (
@@ -287,10 +283,7 @@ export function ReferenceBody({
           {d.notes && <p className="quote">{d.notes}</p>}
           {d.rejection && (
             <p className="note note--warn">
-              <FormattedMessage
-                id="reference.rejected"
-                values={{ name: d.rejection.by, reason: d.rejection.reason }}
-              />
+              <RejectedBy id="reference.rejected" by={d.rejection.by} reason={d.rejection.reason} />
             </p>
           )}
           {d.status === 'pending' && ownWorkBlocked(d.authorUid) && (
@@ -677,7 +670,6 @@ function ActDialog({
   onDone: () => void;
 }) {
   const api = useApi();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   return (
@@ -685,7 +677,6 @@ function ActDialog({
       <p className="modal__sub">
         <FormattedMessage id={`reference.confirm.${act}.note`} />
       </p>
-      <ReasonField value={reason} onChange={setReason} required />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
@@ -697,12 +688,12 @@ function ActDialog({
         </Button>
         <Button
           kind={act === 'discard' || act === 'reject' ? 'danger' : 'primary'}
-          disabled={busy || !reasonOk(reason)}
+          disabled={busy}
           onClick={() => {
             setBusy(true);
             setError(null);
             api
-              .call('staffReferenceAct', { versionId, action: act, reason: reason.trim() })
+              .call('staffReferenceAct', { versionId, action: act })
               .then(() => {
                 onClose();
                 onDone();
@@ -841,7 +832,7 @@ export function CsvDialog({
           )}
         </ul>
       )}
-      <ReasonField value={notes} onChange={setNotes} />
+      <NotesField value={notes} onChange={setNotes} />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
@@ -1099,7 +1090,7 @@ function EditDialog({
           </p>
         </div>
       )}
-      <ReasonField value={notes} onChange={setNotes} />
+      <NotesField value={notes} onChange={setNotes} />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />

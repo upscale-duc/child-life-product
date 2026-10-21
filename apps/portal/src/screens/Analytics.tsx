@@ -1,4 +1,5 @@
 import { staffCan } from '@child-life/contracts';
+import { ProductAnalyticsScreen } from './ProductAnalytics';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import {
@@ -22,7 +23,6 @@ import {
   Kpi,
   LineChart,
   Loaded,
-  LockNote,
   Page,
   Panel,
   Segmented,
@@ -71,6 +71,10 @@ function DeltaKpi({ label, value, d }: { label: string; value: string; d: Delta 
 }
 
 export function AnalyticsScreen() {
+  return <ProductAnalyticsScreen />;
+}
+
+export function LegacyAnalyticsScreen() {
   const intl = useIntl();
   const api = useApi();
   const staff = useStaff();
@@ -102,7 +106,16 @@ export function AnalyticsScreen() {
   return (
     <Page
       title={<FormattedMessage id="analytics.title" />}
-      subtitle={<FormattedMessage id="analytics.sub" />}
+      info={
+        <>
+          <p>
+            <FormattedMessage id="analytics.sub" />
+          </p>
+          <p>
+            <FormattedMessage id="analytics.definition" />
+          </p>
+        </>
+      }
       actions={
         staffCan(staff.levels, 'analytics.export') && (
           <Button onClick={() => void exportCsv()}>
@@ -159,13 +172,55 @@ export function AnalyticsScreen() {
             ) : 'channels' in r ? (
               <GrowthView data={r} />
             ) : (
-              <FeaturesView data={r} />
+              <>
+                <FeaturesView data={r} />
+                {r.outcomes && (
+                  <Panel
+                    className="panel--flush"
+                    title={<FormattedMessage id="analytics.outcomes.title" />}
+                    hint={<FormattedMessage id="analytics.outcomes.definition" />}
+                  >
+                    <TableScroll min={640}>
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            {[
+                              'day',
+                              'eligible',
+                              'careConfirmed',
+                              'memoryReady',
+                              'storySaved',
+                              'keepsakeFiled',
+                            ].map((k) => (
+                              <th key={k}>
+                                <FormattedMessage id={`analytics.outcomes.${k}`} />
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {r.outcomes.days.map((d) => (
+                            <tr key={d.day}>
+                              <td>{d.day}</td>
+                              <td>{d.qualifiedFamilies}</td>
+                              {['careConfirmed', 'memoryReady', 'storySaved', 'keepsakeFiled'].map(
+                                (k) => (
+                                  <td key={k}>
+                                    {d.households[k] ?? 0} / {d.qualifiedFamilies}
+                                  </td>
+                                ),
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </TableScroll>
+                  </Panel>
+                )}
+              </>
             )
           }
         </Loaded>
-        <LockNote>
-          <FormattedMessage id="analytics.definition" />
-        </LockNote>
       </div>
     </Page>
   );
@@ -216,6 +271,7 @@ export function GrowthView({ data }: { data: AnalyticsGrowth }) {
         <Panel
           title={<FormattedMessage id="analytics.sources" />}
           note={<FormattedMessage id="analytics.newFamilies" values={{ n: data.newFamilies }} />}
+          hint={<FormattedMessage id="analytics.channelNote" />}
         >
           <div className="sources">
             <section>
@@ -243,9 +299,6 @@ export function GrowthView({ data }: { data: AnalyticsGrowth }) {
                 }))}
               />
             </section>
-            <p className="field__help">
-              <FormattedMessage id="analytics.channelNote" />
-            </p>
           </div>
         </Panel>
       </div>

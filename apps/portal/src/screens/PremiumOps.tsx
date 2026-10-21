@@ -28,8 +28,8 @@ import {
 
 /**
  * Premium operations (plan §5.6, brief "Portal cần thêm"), read-only: the AI policy in force
- * (Premium › AI), one family's quota windows and store records (Premium › Tra cứu gia đình) and
- * keepsake video render jobs with their quota reservations (Yêu cầu dữ liệu › Video kỷ niệm).
+ * (Tính năng & Premium › Gói Premium › Chính sách AI), one family's quota windows and store
+ * records (Tính năng & Premium › Gia đình › Lượt dùng & thanh toán) and keepsake video render jobs with their quota reservations (Yêu cầu dữ liệu › Video kỷ niệm).
  * Nothing here retries a job, takes or gives back a unit, or changes a grant: a retry is the
  * family's own "Thử lại" and takes a new reservation (brief "không cho retry tạo charge/job mới").
  * Answers carry family codes and short hashes only.
@@ -38,7 +38,7 @@ import {
 const fullDay = (intl: IntlShape, iso: string) =>
   intl.formatDate(iso, { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: ZONE });
 
-// ---------- Premium › AI ----------
+// ---------- Gói Premium › Chính sách AI ----------
 
 export function AiPolicyLoader({ onOpenLimits }: { onOpenLimits: () => void }) {
   const [load, reload] = useLoad<StaffAiPolicy>('staffAiPolicy', {}, 'aiPolicy');
@@ -332,7 +332,7 @@ export function AiPolicyView({
   );
 }
 
-// ---------- Premium › Tra cứu gia đình › Quota & thanh toán ----------
+// ---------- Gia đình › Lượt dùng & thanh toán ----------
 
 const accountTone: Record<string, PillTone> = {
   pending: 'wait',

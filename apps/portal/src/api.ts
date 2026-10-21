@@ -64,6 +64,8 @@ export type Callable =
   | 'staffCancelTransfer'
   | 'staffAnalytics'
   | 'staffExportAnalytics'
+  | 'staffProductAnalytics'
+  | 'staffExportProductAnalytics'
   | 'staffReference'
   | 'staffReferenceDraft'
   | 'staffReferenceAct'
@@ -89,6 +91,14 @@ export type Callable =
   | 'staffAssistantUsage'
   | 'staffAssistantTask'
   | 'staffAssistantSwitches'
+  // "Tính năng & Premium" hub (D-089, mirrors features-hub.ts; no reason fields: D-090)
+  | 'staffFeatureHub'
+  | 'staffFeatureSetTier'
+  | 'staffFeatureSetRollout'
+  | 'staffFeatureFamily'
+  | 'staffFeatureSetOverride'
+  | 'staffFeatureFullPremium'
+  | 'staffFeatureSetBeta'
   | 'staffRhythm'
   | 'staffRhythmDraft'
   | 'staffRhythmAct'
@@ -555,6 +565,18 @@ export interface FamilyDetail {
 
 export type Delta = { value: number | null; change?: number | null; points?: number | null };
 
+export interface OutcomeSeries {
+  version: number;
+  unit: 'daily-households';
+  denominator: string;
+  days: Array<{
+    day: string;
+    qualifiedFamilies: number;
+    actions: Record<string, number>;
+    households: Record<string, number>;
+  }>;
+}
+
 export interface AnalyticsGrowth {
   empty: false;
   range: { from: string; to: string };
@@ -569,6 +591,7 @@ export interface AnalyticsGrowth {
 }
 
 export interface AnalyticsFeatures {
+  outcomes?: OutcomeSeries;
   empty: false;
   range: { from: string; to: string };
   days: number;
@@ -707,6 +730,37 @@ export interface StaffPremiumView {
   /** Which grants count on this server (store sandbox and dev = `test`). */
   environment: GrantEnvironment;
   recent: Array<{ action: string; target: string; by: string; at: string; reason: string }>;
+}
+
+// ---------- Tính năng & Premium (D-089, mirrors functions/src/features-hub.ts) ----------
+
+export type {
+  FeatureExplanation,
+  FeatureGroup,
+  FeatureKey,
+  FeatureTier,
+  StaffFeatureHub,
+  StaffHubFamily,
+  StaffHubFamilyAnswer,
+  StaffHubFamilyFeature,
+  StaffHubFamilyMatch,
+  StaffHubFlagState,
+  StaffHubRow,
+  StaffHubTierAnswer,
+} from '@child-life/contracts';
+
+/** `staffFeatureSetRollout`: omitted fields stay; `flag` picks a sub-switch of the feature. */
+export interface HubRolloutRequest {
+  feature: string;
+  flag?: FlagKey;
+  enabled?: boolean;
+  scope?: 'internal' | 'percent' | 'all';
+  percent?: 0 | 10 | 25 | 50 | 100;
+  notice?: string | null;
+  /** Scope `internal`: the flag's picked families (codes). */
+  families?: string[];
+  /** The feature's whole beta list (codes). */
+  betaFamilies?: string[];
 }
 
 // ---------- Nhịp lớn lên (PN01–PN04, mirrors rhythm-content.ts) ----------

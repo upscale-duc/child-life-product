@@ -23,18 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad, type AppUpdateView, type FirstAidImage } from '../api';
 import { useStaff } from '../context';
-import {
-  Button,
-  Loaded,
-  Modal,
-  Page,
-  Panel,
-  Pill,
-  ReasonField,
-  TableScroll,
-  errorMessageId,
-  reasonOk,
-} from '../ui';
+import { Button, Loaded, Modal, Page, Panel, Pill, TableScroll, errorMessageId } from '../ui';
 import { AppIcon, AppUpdatePreview } from './AppUpdatePreview';
 import { FieldSelect, FilePicker, IconButton } from './form-controls';
 import { fileToBase64 } from './FirstAidEditor';
@@ -53,10 +42,7 @@ export function AppUpdateScreen() {
   const [state, reload] = useLoad<AppUpdateView>('staffAppUpdate', {}, 'appUpdate');
   const staff = useStaff();
   return (
-    <Page
-      title={<FormattedMessage id="au.title" />}
-      subtitle={<FormattedMessage id="au.subtitle" />}
-    >
+    <Page title={<FormattedMessage id="au.title" />} info={<FormattedMessage id="au.subtitle" />}>
       <Loaded load={state} reload={reload}>
         {(view) => (
           <AppUpdateBody
@@ -236,7 +222,7 @@ export function AppUpdateBody({
           </TabsContent>
         </Tabs>
 
-        <aside className="au-aside">
+        <aside className="au-aside no-scrollbar">
           <Panel
             title={<FormattedMessage id="au.pv.title" />}
             aside={
@@ -300,7 +286,7 @@ export function AppUpdateBody({
           side="right"
           aria-describedby={undefined}
           closeLabel={intl.formatMessage({ id: 'action.close' })}
-          className="w-full gap-0 overflow-y-auto sm:max-w-sm"
+          className="no-scrollbar w-full gap-0 overflow-y-auto sm:max-w-sm"
         >
           <div className="border-b px-6 py-5">
             <SheetTitle className="text-base">
@@ -414,7 +400,7 @@ function HistoryTable({ history }: { history: AppUpdateView['history'] }) {
               <td className="mono">{h.config.release?.version ?? '—'}</td>
               <td>
                 {h.byName}
-                <div className="muted">{h.reason}</div>
+                {h.reason && <div className="muted">{h.reason}</div>}
               </td>
             </tr>
           ))}
@@ -1089,7 +1075,7 @@ function ImageUpload({ onUploaded }: { onUploaded: (img: FirstAidImage) => void 
   );
 }
 
-/** What changes, side by side, before anyone types the reason. */
+/** What changes, side by side, before it is published (no reason: D-090). */
 function PublishModal({
   before,
   after,
@@ -1102,7 +1088,6 @@ function PublishModal({
   onDone: () => void;
 }) {
   const api = useApi();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const blocks = platforms.filter((p) => raisedMinimum(before?.[p] ?? null, after[p]));
@@ -1158,7 +1143,6 @@ function PublishModal({
           />
         </p>
       ))}
-      <ReasonField value={reason} onChange={setReason} required />
       {error && (
         <p className="error" role="alert">
           <FormattedMessage id={errorMessageId(error)} />
@@ -1170,11 +1154,11 @@ function PublishModal({
         </Button>
         <Button
           kind={blocks.length ? 'danger' : 'primary'}
-          disabled={busy || !reasonOk(reason)}
+          disabled={busy}
           onClick={() => {
             setBusy(true);
             api
-              .call('staffAppUpdateSave', { config: after, reason })
+              .call('staffAppUpdateSave', { config: after })
               .then(onDone)
               .catch((e: unknown) =>
                 setError(e instanceof ApiError ? e : new ApiError('unknown', null)),

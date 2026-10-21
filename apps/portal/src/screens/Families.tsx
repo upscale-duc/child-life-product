@@ -22,8 +22,7 @@ import {
   Page,
   Panel,
   Pill,
-  ReasonField,
-  reasonOk,
+  ConfirmModal,
   Segmented,
   SelectMenu,
   TableScroll,
@@ -107,7 +106,7 @@ function FamilyListScreen({ onOpen }: { onOpen: (code: string) => void }) {
   return (
     <Page
       title={<FormattedMessage id="families.title" />}
-      subtitle={<FormattedMessage id="families.sub" />}
+      info={<FormattedMessage id="families.sub" />}
     >
       <Loaded load={load} reload={reload}>
         {(data) => (
@@ -368,11 +367,17 @@ function FamilyScreen({ code, onBack }: { code: string; onBack: () => void }) {
   const canTransfer = staffCan(staff.levels, 'families.transfer');
   return (
     <Page
-      title={<span className="mono">{code}</span>}
-      subtitle={
-        <button type="button" className="linkbtn" onClick={onBack}>
-          <FormattedMessage id="families.back" />
-        </button>
+      title={code}
+      // A detail page: back to the list and the family's code on the row on top.
+      lead={
+        <>
+          <button type="button" className="linkbtn" onClick={onBack}>
+            <FormattedMessage id="families.back" />
+          </button>
+          <span className="mono font-semibold" aria-hidden="true">
+            {code}
+          </span>
+        </>
       }
       actions={
         canTransfer &&
@@ -716,7 +721,6 @@ export function TransferDialog({
   const candidates = d.members.filter((m) => !m.isOwner);
   const [to, setTo] = useState<string | null>(candidates.find((m) => m.eligible)?.uid ?? null);
   const [ticket, setTicket] = useState('');
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const ticketOk = !ticket.trim() || /^CL-\d{3,6}$/i.test(ticket.trim());
@@ -737,7 +741,6 @@ export function TransferDialog({
               code: d.code,
               toUid: to,
               ticket: ticket.trim() ? ticket.trim().toUpperCase() : null,
-              reason: reason.trim(),
             })
             .then(() => {
               onClose();
@@ -798,7 +801,6 @@ export function TransferDialog({
             onChange={(e) => setTicket(e.target.value)}
           />
         </div>
-        <ReasonField value={reason} onChange={setReason} required />
         <ol className="steps">
           {[1, 2, 3].map((n) => (
             <li key={n} className="steps__item">
@@ -816,11 +818,7 @@ export function TransferDialog({
           <Button onClick={onClose}>
             <FormattedMessage id="action.cancel" />
           </Button>
-          <Button
-            kind="primary"
-            type="submit"
-            disabled={busy || !to || !ticketOk || !reasonOk(reason)}
-          >
+          <Button kind="primary" type="submit" disabled={busy || !to || !ticketOk}>
             <FormattedMessage id="families.transferSend" />
           </Button>
         </div>
@@ -839,39 +837,27 @@ function CancelTransferDialog({
   onDone: () => void;
 }) {
   const api = useApi();
-  const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   return (
-    <Modal title={<FormattedMessage id="families.transferCancel" />} onClose={onClose}>
-      <ReasonField value={reason} onChange={setReason} required />
-      {error && (
-        <p className="error" role="alert">
-          <FormattedMessage id={errorMessageId(error)} />
-        </p>
-      )}
-      <div className="modal__actions">
-        <Button onClick={onClose}>
-          <FormattedMessage id="action.cancel" />
-        </Button>
-        <Button
-          kind="danger"
-          disabled={busy || !reasonOk(reason)}
-          onClick={() => {
-            setBusy(true);
-            api
-              .call('staffCancelTransfer', { transferId, reason: reason.trim() })
-              .then(() => {
-                onClose();
-                onDone();
-              })
-              .catch((err: unknown) => setError(asApiError(err)))
-              .finally(() => setBusy(false));
-          }}
-        >
-          <FormattedMessage id="families.transferCancel" />
-        </Button>
-      </div>
-    </Modal>
+    <ConfirmModal
+      title={<FormattedMessage id="families.transferCancel" />}
+      confirm={<FormattedMessage id="families.transferCancel" />}
+      danger
+      busy={busy}
+      error={error}
+      onCancel={onClose}
+      onConfirm={() => {
+        setBusy(true);
+        api
+          .call('staffCancelTransfer', { transferId })
+          .then(() => {
+            onClose();
+            onDone();
+          })
+          .catch((err: unknown) => setError(asApiError(err)))
+          .finally(() => setBusy(false));
+      }}
+    />
   );
 }

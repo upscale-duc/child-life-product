@@ -113,7 +113,6 @@ export function ContentReviewScreen() {
   return (
     <Page
       title={<FormattedMessage id="review.title" />}
-      subtitle={<FormattedMessage id="review.sub" />}
       actions={
         <HelpPopover title={<FormattedMessage id="review.howTitle" />}>
           <ReviewSteps />

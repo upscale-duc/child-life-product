@@ -117,7 +117,6 @@ function MilestonesListScreen({ go }: { go: (p: Path) => void }) {
   return (
     <Page
       title={<FormattedMessage id="milestones.title" />}
-      subtitle={<FormattedMessage id="milestones.sub" />}
       actions={
         canEdit && (
           <>
