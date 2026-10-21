@@ -2541,6 +2541,7 @@ const liveSender = (): LiveSender | null => {
     },
   };
 };
+const keepsakeRetryWindowMs = 60 * 60_000;
 /**
  * A job changed: its Live Activity follows, a failure tells the person who asked, and a job the
  * renderer marked completed is filed in Kỷ niệm (and tells them it is ready).
@@ -2548,6 +2549,13 @@ const liveSender = (): LiveSender | null => {
 export const onKeepsakeJobWritten = onDocumentWritten(
   { document: 'babies/{babyId}/keepsakeJobs/{jobId}', retry: true, timeoutSeconds: 300 },
   async (event) => {
+    // Retries cover transient failures (a busy filing lease lasts 6 min, Storage or Firestore
+    // hiccups). A deterministic one, such as a corrupt frame, would otherwise re-run sharp and
+    // re-send the Live Activity push for the platform's 7-day retry window.
+    if (Date.now() - Date.parse(event.time) > keepsakeRetryWindowMs) {
+      logger.warn('keepsake job retry window over', { jobId: event.params.jobId });
+      return;
+    }
     const before = event.data?.before;
     const after = event.data?.after;
     await keepsakeJobChanged(
