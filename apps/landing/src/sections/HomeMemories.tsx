@@ -1,9 +1,53 @@
-import { Eyebrow, Fit, Icon, Photo, type IconName } from '../components/primitives';
+import { Avatars } from '../components/rows';
+import { Eyebrow, Fit, Icon, Photo, type PhotoTone } from '../components/primitives';
 import { useSite } from '../context';
+import { staggerStyle } from '../motion';
 import { pathOf } from '../routes';
 import { KeepMock } from './Keepsakes';
 
-const alsoIcons: IconName[] = ['journal', 'heart', 'bookmark'];
+/** Picture of each memory step (37 §5.1), 170 × 72, decorative. */
+function StepArt({ index }: { index: number }) {
+  const { c } = useSite();
+  const m = c.homePage.memories;
+  const photos = (tones: PhotoTone[]) =>
+    tones.map((tone, i) => <Photo key={i} tone={tone} className="mem-step__photo" />);
+  switch (index) {
+    case 0:
+      return photos(['peach', 'sun', 'peach']);
+    case 1:
+      return (
+        <>
+          {photos(['peach', 'sun'])}
+          <span className="mem-step__check">
+            <Icon name="check" size={12} />
+          </span>
+        </>
+      );
+    case 2:
+      return (
+        <>
+          <span className="mem-step__tile tint--sleep">
+            <Icon name="arrow-right" size={18} />
+          </span>
+          <span className="mem-step__tile tint--sun">
+            <Icon name="cake" size={18} />
+          </span>
+        </>
+      );
+    case 3:
+      return <Avatars people={['mom', 'dad', 'grandma', 'grandpa']} size={28} />;
+    case 4:
+      return <span className="mem-step__quote">{m.quote}</span>;
+    default:
+      return (
+        <span className="mem-step__firsts">
+          {m.firsts.map((first) => (
+            <span key={first}>{first}</span>
+          ))}
+        </span>
+      );
+  }
+}
 
 /** A keepsake mock-up (432 × 280, Keepsakes) shown as a crop: `shift` moves it up by a share of
  *  its width so the drawn band shows (34-landing-v8-home §4.1). */
@@ -19,9 +63,9 @@ function Crop({ index, tint, shift }: { index: number; tint: string; shift: numb
   );
 }
 
-/** Kỷ niệm (Figma 735:5598 / 736:65740; §4): the memory video large, milestone cards, then &
- *  now and the family album beside it, then "Còn có" and the link to the Năm đầu đời page. The
- *  drawn "Xem video mẫu" button has no sample video to open, so it is not built. */
+/** Kỷ niệm (V9, Figma 785:7166 / 785:7996; 37 §5): six steps from finding photos to milestones,
+ *  then the memory video, milestone cards, then & now and the family album, and the link to the
+ *  Năm đầu đời page. The drawn "Xem video mẫu" has no sample video to open, so it is not built. */
 export function HomeMemories() {
   const { c, route } = useSite();
   const m = c.homePage.memories;
@@ -37,8 +81,28 @@ export function HomeMemories() {
           <h2 id="memories-title" className="home-head__title">
             {m.title}
           </h2>
-          <p className="home-head__lead">{m.lead}</p>
+          <p className="home-head__lead only-mobile">{m.lead}</p>
         </header>
+        <ol className="mem-steps">
+          {m.steps.map((step, i) => (
+            <li key={step.title} className="mem-step reveal" style={staggerStyle(i % 3)}>
+              <span className="mem-step__head" aria-hidden="true">
+                <span className="mem-step__n">{i + 1}</span>
+                {i < m.steps.length - 1 && <Icon name="arrow-right" size={14} />}
+              </span>
+              <span className="mem-step__art" aria-hidden="true">
+                <StepArt index={i} />
+              </span>
+              <strong className="mem-step__title">{step.title}</strong>
+              <span className="mem-step__sub">{step.sub}</span>
+              <span className="mem-step__tags">
+                {step.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </span>
+            </li>
+          ))}
+        </ol>
         <div className="mem-grid">
           <article className="mem-card mem-card--video reveal">
             <span className="mem-card__art mem-card__art--video tint--sleep" aria-hidden="true">
@@ -98,20 +162,6 @@ export function HomeMemories() {
               </article>
             </div>
           </div>
-        </div>
-        <div className="mem-also reveal">
-          <strong>{m.alsoLabel}</strong>
-          <ul>
-            {m.also.map((item, i) => (
-              <li key={item}>
-                <span className="lp-icon tint--peach">
-                  <Icon name={alsoIcons[i]!} size={14} className="ink--ink" />
-                </span>
-                {item}
-                {i === 2 && <span className="mem-also__soon">{m.soon}</span>}
-              </li>
-            ))}
-          </ul>
         </div>
         <a
           className="home-button pressable reveal"

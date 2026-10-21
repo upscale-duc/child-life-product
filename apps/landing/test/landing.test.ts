@@ -149,21 +149,19 @@ describe('prerender', () => {
     }
   });
 
-  it('the Lumi page has its sections, plans and FAQ, and the home links to it', () => {
+  it('the Lumi page has its sections and FAQ, and the home links to it', () => {
     const lumi = pathOf('lumi', 'vi');
     const page = render(lumi, 'prod');
     for (const id of [
       'gioi-thieu',
       'loi-ich',
-      'mot-ngay',
-      'mot-ngay-cho-con',
+      'hieu-ca-app',
       'cach-lam-viec',
-      'goi',
       'hoi-dap',
       'tai-app',
     ])
       expect(page.html, id).toContain(`id="${id}"`);
-    expect(page.html).toContain('<table');
+    expect(page.html).not.toContain('<table');
     expect(page.head).toContain('og:image" content="https://childlife.app/og/vi-lumi.png?v=4"');
     expect(page.head).toContain(`<title>${viContent.lumiPage.meta.title}</title>`);
     const json = JSON.parse(

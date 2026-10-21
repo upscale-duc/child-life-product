@@ -114,6 +114,10 @@ export function HomeJourney() {
                   </span>
                   <strong className="stage-v8__title">{stage.name}</strong>
                   <span className="stage-v8__desc">{h.bodies[i]}</span>
+                  <span className="stage-v8__more">
+                    {h.more}
+                    <Icon name="arrow-right" size={16} />
+                  </span>
                 </span>
               </a>
             </li>

@@ -27,13 +27,14 @@ export function Nav() {
   const local = (id: string) => ({ href: `#${id}`, spy: id });
   const home = (id: string) => ({ href: `${homePath}#${id}` });
   const links: NavLink[] = [
+    // V9 (785:7032): "Năm đầu đời" first.
+    { label: l.firstYear, href: pathOf('stage1', route.locale), current: onFirstYear },
     {
       label: l.care,
       ...(onHome ? local('cham-soc') : onFirstYear ? local('ghi-va-nhac') : home('cham-soc')),
     },
     { label: l.memories, ...(onHome || onFirstYear ? local('ky-niem') : home('ky-niem')) },
     { label: l.lumi, href: pathOf('lumi', route.locale), current: page === 'lumi' },
-    { label: l.firstYear, href: pathOf('stage1', route.locale), current: onFirstYear },
     // Home, Năm đầu đời and Lumi have their own FAQ; stage pages and legal pages use the home's.
     {
       label: l.faq,

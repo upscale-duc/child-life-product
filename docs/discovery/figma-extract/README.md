@@ -32,6 +32,9 @@ These files are the evidence behind the R-/Q-/G- items in [`../../product/busine
 | `34-landing-v8-home.md` | Landing **V8** home `735:5377` (desktop) and `736:65570` (mobile), component `734:5426` "V8/CTA tải app" (2026-10-19): nav, 9 sections, footer, mobile menu and sticky bar, every string verbatim, reuse map, English drafts, claims vs the map, design bugs. |
 | `35-landing-v8-first-year.md` | V8 "Năm đầu đời" page `737:6362` (replaces the Chặng 1 page): new hero, quick links, 5 group headers, Lịch tiêm & tăng trưởng; changed titles of the existing sections (old → new), order and ids, English drafts, claims. |
 | `36-landing-v8-lumi-and-stages.md` | V8 Lumi page `737:67153` as a diff against what is built, and the future-stage template `738:7309` (Chặng 2, generalised to 3–4), claims (pricing, D-088 credits, email capture). |
+| `37-landing-v9-home.md` | Landing **V9** home (section `785:7030`, 2026-10-21) as changes from V8: official store badges, new 2b "Bắt đầu lúc nào cũng kịp", Ba giá trị rows, 6 Kỷ niệm steps, family illustration, quick-log ways, "Thử hỏi Lumi", 5b reminders and lock screen, centred Kết; strings verbatim, English drafts, claims. |
+| `38-landing-v9-first-year.md` | V9 "Năm đầu đời" page: the Tuổi thơ section as a 5-step flow (step strip, 5 illustrated cards), hero badges, smaller changes; strings, English drafts, claims. |
+| `39-landing-v9-lumi-and-stages.md` | V9 Lumi page (new hero copy, "Lumi hiểu cả app" 6 modules, Một ngày / Gói removed, 5 FAQ, centred Kết) and the future-stage page; claims. |
 
 Coverage: all 154 Light screens were read in full; Night care twins were checked structurally and by spot-check screenshots (copy and behaviour identical, colours differ). The MCP page listing shows only Cover and Logo; Foundations `17:467`, Components `7:4`, Screens `26:2` and Website `210:759` were reached by node id (Q-032 asks the owner to confirm there are no other pages).
 

@@ -37,9 +37,10 @@ export const vi: Content = {
     dismiss: 'Đóng',
   },
   stores: {
-    appStore: { prefix: 'Tải trên', name: 'App Store' },
+    // Alt text of the official badges (their own Vietnamese lockups).
+    appStore: { prefix: 'Tải về trên', name: 'App Store' },
     googlePlay: { prefix: 'Tải trên', name: 'Google Play' },
-    caption: 'Tải miễn phí trên iPhone và Android.',
+    caption: 'Miễn phí trên iPhone và Android.',
     // Owner, 2026-10-19: before the listings exist the badges are pictures with this line.
     captionSoon: 'Sắp có trên iPhone và Android.',
     close: 'Đóng',
@@ -112,14 +113,14 @@ export const vi: Content = {
     meta: {
       title: 'Lumi — trợ lý của cả nhà trong Child Life',
       description:
-        'Kể một câu, Lumi soạn sẵn bản ghi bú, ngủ, thay tã; chụp hoá đơn thành khoản chi; hỏi gì cũng trả lời từ nhật ký của con. Bạn xem lại rồi mới lưu.',
+        'Lumi đọc nhật ký, mốc phát triển, bữa ăn và lịch nhắc của con trong Child Life — ghi hộ từ một câu nhắn, trả lời đúng với con bạn. Bạn xem lại rồi mới lưu.',
     },
     hero: {
       eyebrow: 'Lumi · Trợ lý đồng hành trong Child Life',
-      title: ['Nhắn một câu.', 'Lumi soạn sẵn bản ghi.'],
-      lead: 'Lumi là trợ lý của cả nhà trong Child Life. Gõ như đang nhắn tin, chụp một tấm ảnh hay hỏi một câu — Lumi soạn sẵn bản ghi, trả lời từ chính nhật ký của con và gợi ý một việc nhỏ cho hôm nay.',
+      title: ['Lumi hiểu cả hành trình', 'của con.'],
+      // Q-039: Lumi has no Kỷ niệm read yet (P-167); "Miễn phí" is free with a monthly pool (P-159).
+      lead: 'Lumi đọc được nhật ký, mốc phát triển, bữa ăn, kỷ niệm và lịch nhắc trong Child Life — để ghi hộ, trả lời và gợi ý đúng với con bạn. Miễn phí cho mọi gia đình.',
       tryNow: 'Mở Lumi trong app',
-      plans: 'Xem các gói',
       promises: [
         'Bạn xác nhận trước khi lưu',
         'Trả lời từ nhật ký của con',
@@ -168,46 +169,59 @@ export const vi: Content = {
         },
       ],
     },
-    day: {
-      eyebrow: 'Một ngày cùng Lumi',
-      title: 'Từ cữ bú sáng sớm đến video cuối tháng.',
-      lead: 'Sáu khoảnh khắc quen thuộc, mỗi lúc chỉ cần một câu hoặc một tấm ảnh.',
-      cards: [
+    // "Lumi hiểu cả app" (Figma 791:68734). Q-039: Lumi cannot find photos or count who logged
+    // (P-167); "Tóm tắt tuần" and "Tìm ảnh" are not built.
+    modules: {
+      eyebrow: 'Một trợ lý, hiểu mọi phần của app',
+      title: 'Hỏi về bất cứ điều gì của con.',
+      lead: 'Lumi kết nối dữ liệu từ mọi thứ về con nên trả lời đúng với con bạn, không chung chung.',
+      sub: 'Đọc dữ liệu từ 6 phần của Child Life',
+      items: [
         {
-          time: '06:30',
-          title: 'Đang bế con, vẫn ghi kịp',
-          body: 'Kể một câu, Lumi soạn sẵn bản ghi.',
+          title: 'Chăm sóc',
+          sub: 'Ghi bú, ngủ, tã',
+          q: 'Hôm nay con bú bao nhiêu?',
+          a: '6 cữ · 720 ml',
         },
         {
-          time: '10:15',
-          title: 'Hoá đơn thành khoản chi',
-          body: 'Chụp hoá đơn, Lumi điền sẵn số tiền.',
+          title: 'Phát triển',
+          sub: 'Mốc & gợi ý theo tuổi',
+          q: 'Con 8 tháng thường làm được gì?',
+          a: 'Bò, ngồi vững · 3 mốc',
         },
         {
-          time: '13:00',
-          title: 'Hỏi nhanh, biết ngay',
-          body: 'Trả lời từ nhật ký, kèm nguồn để mở lại.',
+          title: 'Dinh dưỡng',
+          sub: 'Ăn dặm & món ăn',
+          q: 'Con 6 tháng có thể ăn gì?',
+          a: 'Cháo rây, bí đỏ, chuối',
         },
         {
-          time: '17:30',
-          title: 'Hôm nay con ăn gì?',
-          body: 'Món hợp tuổi, tránh món con từng phản ứng.',
+          title: 'Kỷ niệm',
+          sub: 'Ảnh, thiệp, video',
+          q: 'Tìm ảnh lần đầu con cười',
+          a: 'Tìm thấy 3 ảnh · 5 tuần',
         },
         {
-          time: '21:30',
-          title: 'Mấy hôm nay con khó ngủ',
-          body: 'Đặt các ghi nhận gần đây cạnh nhau.',
+          title: 'Cả nhà',
+          sub: 'Người chăm & bàn giao',
+          q: 'Hôm nay ai đã chăm con?',
+          a: 'Bố ghi 4 lần · Bà 2 lần',
         },
         {
-          time: 'Cuối tháng',
-          title: 'Tròn tháng, thành phim nhỏ',
-          body: 'Chọn ảnh và mẫu, có ngay video đầy tháng.',
+          title: 'Nhắc lịch',
+          sub: 'Lịch tiêm & nhắc nhở',
+          q: 'Mũi tiêm tiếp theo khi nào?',
+          a: '6 trong 1 · thứ Hai tới',
         },
       ],
-    },
-    quickNav: {
-      label: 'Trên trang này:',
-      items: ['Ví dụ', 'Gợi ý dành cho bé', 'Cách hoạt động', 'Các gói', 'Hỏi đáp'],
+      canLabel: 'Lumi có thể:',
+      can: [
+        'Ghi hộ từ một câu nhắn',
+        'Trả lời từ nhật ký',
+        'Tóm tắt tuần',
+        'Tìm ảnh',
+        'Gợi ý theo tuổi',
+      ],
     },
     how: {
       eyebrow: 'Lumi làm việc thế nào',
@@ -223,94 +237,10 @@ export const vi: Content = {
         'Lumi không thay bác sĩ và không chẩn đoán. Khi lo lắng về sức khoẻ, Lumi chỉ tới hướng dẫn an toàn và số khẩn cấp',
       ],
     },
-    plans: {
-      eyebrow: 'Xem các gói',
-      title: 'Bắt đầu miễn phí. Thêm lượt khi nhà bạn cần.',
-      lead: 'Các gói có cùng tính năng. Khác nhau ở lượt hỗ trợ Lumi và số video kỷ niệm mỗi tháng.',
-      monthly: 'Theo tháng',
-      yearly: 'Theo năm',
-      perMonth: '/ tháng',
-      perYear: '/ năm',
-      credits: 'lượt hỗ trợ / tháng',
-      tiers: [
-        {
-          name: 'Free',
-          tagline: 'Để bắt đầu',
-          credits: '30',
-          photos: '≈ 10 ảnh hoá đơn, giấy dặn',
-          videos: '1 video kỷ niệm / tháng',
-          price: '0đ',
-          yearPrice: '0đ',
-          sub: 'Không cần thẻ thanh toán',
-          yearSub: 'Không cần thẻ thanh toán',
-          button: 'Bắt đầu miễn phí',
-        },
-        {
-          name: 'Plus',
-          tagline: 'Cho ngày nhiều việc',
-          credits: '300',
-          photos: '≈ 100 ảnh hoá đơn, giấy dặn',
-          videos: '5 video kỷ niệm / tháng',
-          price: '79.000đ',
-          yearPrice: '790.000đ',
-          sub: 'hoặc 790.000đ/năm · tiết kiệm 2 tháng',
-          yearSub: '≈ 65.800đ/tháng · tiết kiệm 2 tháng',
-          button: 'Nâng cấp lên Plus',
-        },
-        {
-          name: 'Pro',
-          tagline: 'Cho cả nhà dùng nhiều',
-          credits: '1.000',
-          photos: '≈ 330 ảnh hoá đơn, giấy dặn',
-          videos: '15 video kỷ niệm / tháng',
-          price: '179.000đ',
-          yearPrice: '1.790.000đ',
-          sub: 'hoặc 1.790.000đ/năm · tiết kiệm 2 tháng',
-          yearSub: '≈ 149.200đ/tháng · tiết kiệm 2 tháng',
-          button: 'Nâng cấp lên Pro',
-        },
-      ],
-      features: {
-        all: 'Tất cả việc Lumi làm được',
-        templates: 'Mọi mẫu thiệp & video',
-        drafts: 'Sửa, xác nhận nháp không tính thêm lượt',
-      },
-      note: 'Giá đã gồm VAT, thanh toán qua App Store / Google Play. Gói năm tiết kiệm 2 tháng. Huỷ gia hạn bất cứ lúc nào trong cài đặt cửa hàng.',
-      table: {
-        caption: 'So sánh các gói',
-        feature: 'Tính năng',
-        price: 'Giá mỗi tháng',
-        credits: 'Lượt hỗ trợ mỗi tháng',
-        rows: [
-          'Ghi nhật ký bằng một câu',
-          'Hỏi đáp từ nhật ký của con',
-          'Đọc ảnh hoá đơn, giấy dặn (≈3 lượt/ảnh)',
-          'Nhìn lại mấy ngày & gợi ý cho hôm nay',
-          'Tóm tắt tuần cho cả nhà',
-          'Nhịp lớn lên của riêng con',
-          'Mọi mẫu thiệp & video',
-        ],
-        videos: 'Xuất video kỷ niệm mỗi tháng',
-        fallback: 'Ghi trực tiếp & hướng dẫn an toàn khi hết lượt',
-        yes: 'Có',
-      },
-      creditsInfo: {
-        title: 'Lượt hỗ trợ là gì?',
-        // D-088: routine logs and quick reads cost 0 (owner, 2026-10-19). PROPOSED wording.
-        body: 'Lượt chỉ tính khi Lumi cần suy nghĩ thêm cho bạn. Lượt làm mới đầu mỗi kỳ.',
-        rules: [
-          ['Ghi bú, ngủ, tã thường ngày hoặc xem nhanh nhật ký', 'Không tính'],
-          ['Một câu dài hoặc câu hỏi Lumi cần suy nghĩ', '1 lượt'],
-          ['Đọc một ảnh hoá đơn, giấy dặn', '≈ 3 lượt'],
-          ['Hỏi lại, sửa hay xác nhận nháp trong cùng việc', 'Không tính'],
-          ['Lỗi hệ thống, thử lại', 'Không tính'],
-          ['Hết lượt', 'Vẫn ghi trực tiếp, xem nhật ký bình thường'],
-        ],
-      },
-    },
     faq: {
       eyebrow: 'Hỏi đáp',
       title: 'Những điều ba mẹ hay hỏi về Lumi.',
+      // V9 (785:10690): answers 2–4 are PROPOSED; 5 keeps its PROPOSED answer (Q-070 / P-160).
       items: [
         {
           q: 'Lumi có tự ghi vào nhật ký không?',
@@ -318,23 +248,18 @@ export const vi: Content = {
           open: true,
         },
         {
-          q: 'Hết lượt hỗ trợ thì sao?',
-          a: 'Bạn vẫn ghi trực tiếp và xem nhật ký như bình thường; hướng dẫn sức khoẻ thiết yếu vẫn mở. Lượt được làm mới đầu kỳ tiếp theo.',
+          q: 'Lumi trả lời dựa trên những gì?',
+          a: 'Từ những gì nhà bạn đã ghi trong Child Life — bú, ngủ, tã, tăng trưởng, mốc, ăn dặm, lịch tiêm và nhắc việc — cùng nội dung tham khảo theo tuổi của con. Câu trả lời có liên kết để mở lại đúng phần đó trong app.',
           open: false,
         },
         {
-          q: 'Gói Free có bị thiếu tính năng không?',
-          a: 'Không. Mọi việc Lumi làm đều có trong gói Free; các gói chỉ khác nhau ở số lượt mỗi tháng.',
+          q: 'Lumi có thay thế bác sĩ không?',
+          a: 'Không. Lumi không chẩn đoán. Khi bạn lo lắng về sức khoẻ của con, Lumi chỉ tới hướng dẫn an toàn và số khẩn cấp; hãy liên hệ bác sĩ hoặc cơ sở y tế khi cần.',
           open: false,
         },
         {
-          q: 'Có thể đổi gói giữa chừng không?',
-          a: 'Có. Bạn đổi gói trong ứng dụng; gia hạn và huỷ do App Store / Google Play quản lý.',
-          open: false,
-        },
-        {
-          q: 'Ai trong nhà dùng chung lượt?',
-          a: 'Cả nhà dùng chung một quỹ lượt của hộ. Chỉ chủ hộ mua và quản lý gói.',
+          q: 'Lumi có mất phí không?',
+          a: 'Mọi gia đình đều dùng được Lumi miễn phí. Ghi chép thường ngày và xem nhanh nhật ký không tính lượt; những việc Lumi cần suy nghĩ thêm, như đọc ảnh hoá đơn, có giới hạn mỗi tháng.',
           open: false,
         },
         {
@@ -346,60 +271,122 @@ export const vi: Content = {
     },
     cta: {
       title: 'Để Lumi lo phần ghi chép. Bạn dành thời gian cho con.',
-      plans: 'Xem các gói',
     },
   },
   // V8 home (Figma 735:5377 / 736:65570, 34-landing-v8-home). Q-039: claims in §K of that spec
   // (Apple Watch, Wear OS "Sắp có", seen receipts, reminder recipients, Lumi plans).
   homePage: {
     hero: {
-      eyebrow: 'Child Life · Bắt đầu từ năm đầu đời',
-      title: 'Cùng chăm con, giữ từng khoảnh khắc con lớn lên.',
-      lead: 'Ghi bú, ngủ, tã để cả nhà cùng theo dõi. Lưu ảnh, tạo video và giữ lại những lần đầu tiên của con.',
-      support: 'Bắt đầu với năm đầu đời. Tiếp tục đồng hành khi con lớn.',
-      seeApp: 'Xem app hoạt động',
-      vision: 'Hệ sinh thái đồng hành cùng con — từ ngày đầu đời đến khi trưởng thành.',
+      eyebrow: ['Child Life · ', 'Đồng hành cùng con khôn lớn'],
+      title: 'Cùng con lớn lên, qua từng khoảnh khắc.',
+      lead: 'Từ chăm sóc hằng ngày, theo dõi phát triển đến lưu giữ kỷ niệm — Child Life kết nối cả gia đình trong hành trình khôn lớn của con.',
+      firstYear: 'Bắt đầu cùng con trong năm đầu đời',
       now: 'Đang có trong app',
-      soon: 'Sắp tới',
+      next: 'Chặng tiếp theo',
+      later: 'Trong tương lai',
       feed: { title: 'Bú bình · 120 ml', sub: 'Ba vừa ghi · 2 phút trước' },
-      smile: { title: 'Lần đầu con cười', sub: 'Đã lưu vào Kỷ niệm' },
+      learn: { title: 'Học tập', sub: 'Hôm nay con học thế nào?' },
       video: { title: 'Video đầy tháng của Teddy', meta: '0:45 · từ ảnh bạn chọn' },
     },
     values: {
-      eyebrow: 'Child Life giúp gì',
+      eyebrow: 'Child Life giúp gì trong năm đầu đời của con',
       title: 'Child Life giúp gia đình bạn ba việc.',
-      lead: 'Mỗi phần đều dùng được ngay trong năm đầu đời của con.',
+      pillars: ['Chăm sóc', 'Phát triển', 'Kỷ niệm'],
       cards: [
         {
           title: 'Chăm con mỗi ngày',
-          body: 'Ghi bú, ngủ, tã và đặt nhắc nhở. Cả nhà cùng biết con vừa được chăm thế nào.',
+          body: 'Ghi bú, ngủ, tã; nhắc lịch chăm bé, dinh dưỡng và ăn dặm. Cả nhà cùng biết con vừa được chăm thế nào.',
         },
         {
           title: 'Hiểu con từng giai đoạn',
-          body: 'Xem nhật ký, theo dõi mốc phát triển và tìm nội dung theo tuổi của bé.',
+          body: 'Theo dõi mốc phát triển, nhận gợi ý hợp tuổi và lưu nhật ký lớn khôn của con.',
         },
         {
           title: 'Giữ những điều đáng nhớ',
-          body: 'Lưu ảnh riêng tư, tạo thiệp và video từ những khoảnh khắc của con.',
+          body: 'Tự tìm ảnh của bé, tạo thiệp và video, cất vào album gia đình riêng tư.',
         },
       ],
-      mock: {
-        rows: [
-          ['Bú bình 120 ml', '9:00'],
-          ['Ngủ 1 giờ 20 phút', '10:40'],
-          ['Thay tã', '11:05'],
+      rows: [
+        [
+          { title: 'Bú · ngủ · tã', sub: 'Ghi nhanh 1 chạm' },
+          { title: 'Nhắc lịch chăm bé', sub: 'Ăn dặm bữa trưa · 11:30', chip: 'Dinh dưỡng' },
+          { title: 'Cả nhà cùng chăm', sub: 'Bố vừa ghi cữ bú · 2 phút' },
         ],
-        week: {
-          title: 'Tuần này của bé · 4 tháng',
-          body: 'Bé thường bắt đầu với lấy đồ vật. Gợi ý: đặt đồ chơi trong tầm tay.',
+        [
+          { title: 'Mốc phát triển', sub: 'Biết lẫy · 4 tháng', chip: '✓ Đã ghi' },
+          { title: 'Gợi ý theo độ tuổi', sub: 'Chơi úp bụng 10 phút', chip: '4 tháng' },
+          { title: 'Nhật ký lớn khôn', sub: 'Tuần 18 · 6 ghi chép' },
+        ],
+        [
+          { title: 'Tự tìm ảnh của bé', sub: '8 ảnh mới đang chờ lưu' },
+          { title: 'Thiệp & video kỷ niệm', sub: 'Tròn 6 tháng', chip: 'Tạo ngay' },
+          { title: 'Album gia đình riêng tư', sub: 'Chỉ người được mời' },
+        ],
+      ],
+      button: 'Xem tất cả tính năng cho năm đầu đời',
+    },
+    // Avatar initials in the mock-ups (Mẹ, Bố, Bà, Ông, Cô trông bé).
+    people: { mom: 'M', dad: 'B', grandma: 'Bà', grandpa: 'Ô', nanny: 'Cô' },
+    // 2b (Figma 786:8714 / 791:69042). Q-039: photo finding is the iOS Tự lưu beta (D-066).
+    restart: {
+      eyebrow: 'Con 2 tháng hay 6 tháng cũng vậy',
+      title: 'Bắt đầu lúc nào cũng kịp.',
+      lead: 'Dù con đã vài tháng tuổi, Child Life vẫn đồng hành chăm sóc, giúp bạn hiểu con và lưu trọn những khoảnh khắc — cả những ngày đã qua.',
+      head: 'Teddy bắt đầu dùng Child Life lúc…',
+      ages: ['Mới sinh', '2 tháng', '6 tháng', '9 tháng'],
+      timeline: ['Ngày sinh', 'Hôm nay · 6 tháng', '1 tuổi'],
+      sortLabel: 'Child Life tự sắp xếp lại cho bạn',
+      rows: [
+        {
+          title: 'Tìm lại 214 ảnh từ ngày con chào đời',
+          sub: 'Xếp theo từng tháng · chờ bạn chọn',
         },
-        milestone: ['Mốc: Biết lẫy', 'đã ghi'],
-      },
+        {
+          title: 'Mốc đã qua: lẫy, cười thành tiếng',
+          sub: 'Đánh dấu nhanh nếu con đã làm được',
+          chip: '3 mốc',
+        },
+        {
+          title: 'Gợi ý & nhắc lịch đúng tuổi 6 tháng',
+          sub: 'Ăn dặm, giấc ngủ, lịch tiêm tiếp theo',
+          chip: 'Từ hôm nay',
+        },
+      ],
+      points: [
+        {
+          title: 'Đồng hành chăm sóc từ hôm nay',
+          body: 'Nhập tuổi con, mọi nhắc nhở, gợi ý ăn dặm và lịch chăm bé tự khớp với giai đoạn hiện tại.',
+        },
+        {
+          title: 'Hiểu con ở đúng giai đoạn',
+          body: 'Xem con đang ở đâu trong hành trình phát triển và những mốc sắp tới.',
+        },
+        {
+          title: 'Lưu trọn cả những ngày đã qua',
+          body: 'Ảnh cũ trong máy được tìm lại và xếp theo tháng, để album của con không thiếu trang nào.',
+        },
+      ],
+      button: 'Bắt đầu với tuổi của con',
     },
     memories: {
       eyebrow: 'Kỷ niệm',
       title: 'Những tấm ảnh hôm nay, thành kỷ niệm để mai này xem lại.',
-      lead: 'Chọn ảnh của con để tạo video đầy tháng, thiệp cột mốc hoặc lưu vào album riêng của gia đình.',
+      // Mobile only (785:7996); desktop V9 has no lead.
+      lead: 'Child Life tự tìm ảnh của con, giúp bạn chọn và lưu, tạo thiệp, video, rồi cất vào album riêng để cả nhà cùng xem.',
+      steps: [
+        { title: 'Tự động tìm ảnh', sub: 'Ảnh mới của bé', tags: ['Tự động'] },
+        { title: 'Chọn & lưu', sub: 'Giữ ảnh đẹp, bỏ ảnh trùng', tags: ['1 chạm'] },
+        { title: 'Tạo thiệp, video', sub: 'Từ mẫu có sẵn', tags: ['Thiệp', 'Video'] },
+        {
+          title: 'Album & chia sẻ',
+          sub: 'Riêng cho gia đình, hoặc gửi ra ngoài',
+          tags: ['Gia đình', 'Link'],
+        },
+        { title: 'Câu chuyện, nhật ký', sub: 'Ghi lại lời kể cho con', tags: ['Nhật ký'] },
+        { title: 'Các mốc', sub: 'Lần đầu của con', tags: ['Cột mốc'] },
+      ],
+      quote: '“Hôm nay con cười thành tiếng lần đầu…”',
+      firsts: ['★ Biết lẫy', '★ Mọc răng đầu'],
       video: {
         title: 'Video kỷ niệm',
         body: 'Chọn ảnh và mẫu, có ngay video đầy tháng, 100 ngày hay thôi nôi để gửi cả nhà.',
@@ -415,57 +402,69 @@ export const vi: Content = {
         body: 'Đặt hai tấm ảnh cạnh nhau để thấy con lớn thế nào.',
         bodyShort: 'Hai tấm ảnh, thấy con lớn thế nào.',
       },
-      // Q-009: seen receipts are not built; PROPOSED "thương" instead of Figma's "đã xem".
+      // Q-009: seen receipts are not built; PROPOSED "thương" instead of Figma's "đã xem". Comments
+      // ("bình luận") are not built either (only reactions and Nhắn ba mẹ, D-034) — Q-039.
       album: {
         title: 'Album gia đình riêng tư',
-        body: 'Ông bà ở xa vẫn theo dõi cháu.',
+        body: 'Cả nhà cùng xem, bình luận. Chia sẻ ra ngoài bằng link khi bạn muốn.',
         initial: 'B',
         seen: 'Bà nội thương 3 ảnh mới',
       },
-      alsoLabel: 'Còn có:',
-      also: ['Nhật ký của con', 'Lời nhắn cho con', 'Sách năm đầu đời'],
-      soon: 'Sắp có',
       button: 'Xem các mẫu kỷ niệm',
     },
     family: {
       eyebrow: 'Cả nhà cùng chăm',
       title: 'Ba vừa ghi, mẹ đã thấy. Không ai phải hỏi lại.',
       bullets: [
-        'Ghi và xem chung một nhật ký.',
-        'Nhắc nhở đúng người đang chăm bé.',
-        'Ba mẹ, người chăm và người thân có quyền xem khác nhau.',
+        'Bố mẹ, ông bà và người chăm bé cùng một hành trình.',
+        'Bàn giao ca chăm: ai cũng biết con vừa ăn, ngủ, cần gì tiếp.',
+        'Mỗi người một quyền: người ghi chăm sóc, người chỉ xem ảnh.',
       ],
       trust: 'Bạn chọn ai được xem ảnh và thông tin của con.',
-      steps: [
-        {
-          initial: 'B',
-          meta: 'Ba · 09:00',
-          title: 'Ba ghi cữ bú',
-          body: 'Bú bình 120 ml — một chạm là xong.',
-        },
-        {
-          initial: 'M',
-          meta: 'Mẹ · 09:01',
-          title: 'Mẹ thấy ngay',
-          body: '“Ba vừa ghi: Bú bình 120 ml lúc 9:00.”',
-        },
-        {
-          initial: '✓',
-          meta: 'Cả nhà',
-          title: 'Không cần hỏi lại',
-          body: 'Cữ tiếp theo đã có nhắc cho người đang chăm.',
-        },
+      lock: 'Chỉ những người được mời mới xem được',
+      // Q-039: "Quản lý gia đình" vs "Ghi & xem tất cả" and "bình luận" go beyond the app's roles.
+      members: [
+        { name: 'Bố', role: 'Ghi & xem tất cả' },
+        { name: 'Mẹ', role: 'Quản lý gia đình' },
+        { name: 'Ông bà', role: 'Xem ảnh, bình luận' },
+        { name: 'Cô trông bé', role: 'Ghi bú, ngủ, tã' },
       ],
+      handover: {
+        title: 'Bàn giao ca · Mẹ → Cô trông bé',
+        time: '13:55',
+        items: [
+          { title: 'Bú 120 ml', sub: 'lúc 13:00' },
+          { title: 'Đang ngủ', sub: 'từ 13:30' },
+          { title: 'Nhắc tiếp', sub: 'Vitamin D 15:00' },
+        ],
+        note: '“Bé hơi quấy chiều nay, nhớ vỗ ợ hơi sau bú.” — Mẹ',
+        done: 'Cô trông bé đã nhận bàn giao',
+      },
     },
-    // Q-047 / Q-048: the watch app is not released; Wear OS is not in V1.
+    // Q-047 / Q-048: the watch app is not released and Wear OS is not in V1 (shown "Sắp có", as on
+    // the mobile frame); Siri and iOS Controls have no D/R entry.
     wrist: {
       chip: 'Trên cổ tay',
-      title: 'Đang bế con? Ghi ngay trên đồng hồ.',
-      lead: 'Một chạm để ghi bú, ngủ, tã — cả nhà thấy ngay trên điện thoại.',
+      title: 'Đang bế con? Ghi nhanh không cần mở app.',
+      lead: 'Một chạm trên đồng hồ, widget màn hình chính, nút điều khiển iOS — hoặc chỉ cần nói với Siri. Cả nhà thấy ngay trên điện thoại.',
+      leadShort: 'Một chạm trên đồng hồ, widget, nút điều khiển iOS — hoặc nói với Siri.',
+      platforms: ['Apple Watch', 'Wear OS · Sắp có', 'Widget', 'Điều khiển iOS', 'Siri'],
       apple: 'Apple Watch',
-      wear: 'Đồng hồ Android (Wear OS) · Sắp có',
       wearLabel: 'Wear OS',
       round: { asleep: 'Đang ngủ' },
+      widget: { label: 'WIDGET', baby: 'Teddy · bú cuối', value: '2 giờ 15 trước' },
+      controls: { label: 'ĐIỀU KHIỂN iOS', items: ['Bú', 'Ngủ', 'Tã'] },
+      siri: {
+        head: 'Hey Siri…',
+        lines: [
+          { say: '“Lumi ghi cữ bú 120 ml.”', reply: 'Đã ghi bú bình 120 ml lúc 9:00.' },
+          {
+            say: '“Lần bú cuối của Teddy lúc mấy giờ?”',
+            reply: '2 giờ 15 phút trước, bú bình 120 ml.',
+          },
+          { say: '“Bắt đầu giấc ngủ cho Teddy.”', reply: 'Đang tính giờ ngủ từ 9:30.' },
+        ],
+      },
     },
     assistant: {
       eyebrow: 'Lumi · Trợ lý trong Child Life',
@@ -487,6 +486,74 @@ export const vi: Content = {
       ],
       cta: 'Khám phá Lumi',
       note: 'Ví dụ minh hoạ. Lumi hỗ trợ nhập chữ và ảnh; bạn kiểm tra và bấm lưu.',
+      ask: {
+        title: 'Thử hỏi Lumi',
+        sub: '· Lumi hiểu nhật ký, mốc và kỷ niệm của con',
+        questions: [
+          'Con 6 tháng có thể ăn gì?',
+          'Gợi ý hoạt động phù hợp cho hôm nay',
+          'Tóm tắt nhật ký tuần này',
+          'Lần bú cuối lúc mấy giờ?',
+        ],
+        foods: ['Cháo rây', 'Bí đỏ nghiền', 'Chuối', 'Khoai lang'],
+        foodsNote: 'Thử 1 món mới mỗi 3 ngày.',
+        activities: [
+          { title: 'Chơi úp bụng', time: '10 phút' },
+          { title: 'Đọc sách tranh', time: '5 phút' },
+        ],
+        days: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+        week: ['Ngủ TB 13 giờ', '42 cữ bú'],
+        last: {
+          value: '2 giờ 15',
+          meta: 'trước · bú bình 120 ml · Bố ghi',
+          next: 'Cữ tiếp khoảng 11:30',
+        },
+      },
+    },
+    // 5b (Figma 789:8811 / 793:8899). Q-039: categories differ from the app's settings; occasion
+    // nudges cannot be turned off (D-068 #9); reminders fire on the creating device (R-091).
+    alerts: {
+      eyebrow: 'Nhắc nhở & cá nhân hoá',
+      title: 'Không bỏ lỡ những khoảnh khắc quan trọng.',
+      lead: 'Child Life nhắc đúng lúc, theo tuổi và thói quen của con — từ cữ bú, mốc phát triển, món ăn mới đến những tấm ảnh chưa kịp lưu.',
+      leadShort:
+        'Nhắc đúng lúc, theo tuổi và thói quen của con — từ cữ bú, mốc phát triển, món ăn mới đến ảnh chưa kịp lưu.',
+      modules: [
+        { title: 'Chăm sóc', body: 'Cữ bú, giấc ngủ, lịch tiêm' },
+        { title: 'Phát triển', body: 'Mốc sắp tới, gợi ý chơi hợp tuổi' },
+        { title: 'Dinh dưỡng', body: 'Món mới, lịch ăn dặm' },
+        { title: 'Kỷ niệm', body: 'Ảnh chờ lưu, ngày tròn tháng, sinh nhật' },
+      ],
+      note: 'Bạn chọn nhận gì và lúc nào. Không gửi vào giờ ngủ của con.',
+      date: 'Thứ Bảy, 18 tháng 1',
+      time: '9:41',
+      notices: [
+        {
+          title: 'Bạn có 8 ảnh mới của bé',
+          when: 'bây giờ',
+          body: 'Đang chờ lưu — cùng giữ lại những khoảnh khắc này nhé.',
+          bodyShort: 'Cùng giữ lại những khoảnh khắc này nhé.',
+        },
+        {
+          title: 'Teddy đã tròn 1 tuổi!',
+          when: '8:00',
+          body: 'Tạo thiệp sinh nhật từ ảnh cả năm nào.',
+          bodyShort: 'Tạo thiệp sinh nhật từ ảnh cả năm nào.',
+        },
+        {
+          title: 'Sắp đến mốc: tự đứng vững',
+          when: 'hôm qua',
+          body: 'Con 11 tháng — xem 3 trò chơi giúp con tập đứng.',
+          bodyShort: 'Xem 3 trò chơi giúp con tập đứng.',
+        },
+        {
+          title: 'Gợi ý món cho bữa trưa',
+          when: 'hôm qua',
+          body: 'Cháo bí đỏ thịt gà hợp với con lúc này.',
+          bodyShort: 'Cháo bí đỏ thịt gà hợp với con lúc này.',
+        },
+      ],
+      more: '+2 nhắc nhở chăm sóc',
     },
     tools: {
       eyebrow: 'Tiện ích',
@@ -525,6 +592,7 @@ export const vi: Content = {
       lead: 'Hôm nay Child Life dành cho năm đầu đời. Những chặng sau đang được phát triển cùng các gia đình.',
       now: 'Đang có trong app',
       soon: 'Đang phát triển',
+      more: 'Tìm hiểu thêm',
       bodies: [
         'Chăm con, hiểu con và giữ kỷ niệm năm đầu.',
         'Chơi, tập nói và những thói quen đầu tiên.',
@@ -733,49 +801,6 @@ export const vi: Content = {
         },
       ],
       footnote: 'Bạn chọn chủ đề hiện ở đây, ẩn hoặc sửa bất cứ lúc nào.',
-    },
-    detail: {
-      eyebrow: 'Một ngày dành riêng cho con',
-      title: ['Không cần nghĩ ra câu hỏi.', 'Điều đáng chú ý đã chờ sẵn.'],
-      lead: 'Mỗi khi mở app, “Hôm nay của bé” đặt lên trước những thông tin và gợi ý đáng chú ý cho chính con — kèm lý do vì sao chúng xuất hiện.',
-      modes: [
-        {
-          name: 'Lumi',
-          sub: 'Bạn kể hoặc hỏi — Lumi xử lý giúp.',
-          example: '“Con bú 120 ml lúc 9h” → Lumi soạn sẵn bản ghi để bạn lưu.',
-        },
-        {
-          name: 'Hôm nay của bé',
-          sub: 'Bạn mở app — điều đáng chú ý đã có sẵn.',
-          example:
-            'Không cần hỏi: thẻ “Nhìn lại giấc ngủ” xuất hiện vì bạn đã ghi khó vào giấc 2 tối.',
-        },
-      ],
-      modesNote:
-        'Hai trải nghiệm dùng chung những gì gia đình đã ghi, nhưng phục vụ hai lúc khác nhau.',
-      steps: ['Ba mẹ đã ghi', 'Hôm nay ba mẹ thấy', 'Bạn quyết định'],
-      scenarios: [
-        {
-          logged: ['Khó vào giấc · T3', 'Khó vào giấc · T4', '6 giấc ngủ'],
-          decide: ['Xem các ghi nhận liên quan', 'Ẩn chủ đề giấc ngủ tuần này'],
-        },
-        {
-          logged: ['7 tháng', 'Đã thử: bí đỏ, khoai lang', 'Đã ghi phản ứng: trứng'],
-          decide: ['Xem món và nguyên liệu', 'Lưu món để thử', 'Không phù hợp'],
-        },
-        {
-          logged: ['Mốc: mỉm cười đáp lại', '3 ảnh đã chọn'],
-          decide: ['Tạo thiệp từ ảnh đã chọn', 'Để sau'],
-        },
-      ],
-      controlTitle: 'Bạn luôn kiểm soát:',
-      controls: [
-        'Chọn chủ đề quan tâm',
-        'Ẩn gợi ý không hợp',
-        'Sửa thông tin đã ghi',
-        'Cho biết điều hữu ích',
-      ],
-      note: 'Ví dụ minh hoạ. Gợi ý món ăn, hoạt động lấy từ thư viện nội dung đang chờ chuyên môn duyệt; chỉ giới thiệu như tính năng có sẵn khi đã triển khai.',
     },
   },
   // Q-039: stages 2–4 describe features beyond the V1 scope.
@@ -1188,8 +1213,8 @@ export const vi: Content = {
   },
   memories: {
     eyebrow: 'Kỷ niệm',
-    title: 'Ảnh, thiệp, video và nhật ký của con.',
-    lead: 'Ảnh, video và những câu chuyện nhỏ được xếp theo từng tháng tuổi của con. Không lạc giữa hàng nghìn ảnh trong điện thoại, không sợ mất — mở ra là thấy con lớn lên.',
+    title: 'Từ tấm ảnh trong máy đến kỷ niệm cả nhà cùng giữ.',
+    lead: 'Child Life tự tìm ảnh của con, xếp theo mốc, tháng, tuần; giúp bạn tạo video, thiệp, chia sẻ với gia đình và kể lại thành câu chuyện.',
     timeline: [
       { age: 'Ngày đầu', title: 'Về nhà' },
       { age: '5 tuần', title: 'Lần đầu cười' },
@@ -1200,15 +1225,56 @@ export const vi: Content = {
       { age: '3 tuổi', title: 'Ngày đầu đi học' },
     ],
     timelineEnd: '…và mọi năm sau nữa',
+    // V9 5-step flow (Figma 785:9495). Q-039: Tự lưu is an iOS beta (D-066); comments are not built
+    // (reactions + Nhắn ba mẹ, D-034); story suggestions are written from text only (D-041).
+    stepChip: 'Bước {n}',
+    steps: [
+      {
+        label: 'Tự tìm & chọn ảnh',
+        title: 'Tự động tìm, bạn chỉ chọn và lưu',
+        body: 'Ảnh mới của con được nhận ra và gom lại. Lưu tất cả, hoặc chọn những tấm đẹp nhất — ảnh trùng, ảnh mờ được lọc bớt.',
+        tags: ['Tự động', 'Chọn nhanh', 'Riêng tư'],
+      },
+      {
+        label: 'Xem theo mốc, tháng, tuần',
+        title: 'Xem lại theo mốc, tháng hoặc tuần',
+        body: 'Một chạm để đổi cách xem: theo những lần đầu tiên của con, theo từng tháng tuổi, hay từng tuần gần đây.',
+        tags: ['Mốc', 'Tháng', 'Tuần'],
+      },
+      {
+        label: 'Tạo video, thiệp',
+        title: 'Tạo video, thiệp trong vài chạm',
+        body: 'Chọn mẫu tròn tháng, 100 ngày, sinh nhật — app ghép ảnh, nhạc và chữ cho bạn.',
+        tags: ['Video', 'Thiệp'],
+      },
+      {
+        label: 'Album cả nhà',
+        title: 'Album riêng, cả nhà cùng tương tác',
+        body: 'Mời ông bà, người thân vào album. Mọi người xem, thả tim và bình luận dưới từng ảnh.',
+        tags: ['Chia sẻ', 'Bình luận', 'Thả tim'],
+      },
+      {
+        label: 'Câu chuyện & chia sẻ',
+        title: 'Gợi ý câu chuyện, chia sẻ ra ngoài',
+        body: 'App gợi ý câu chuyện từ ảnh và nhật ký. Bạn sửa vài chữ rồi đăng lên mạng xã hội khi muốn.',
+        tags: ['Câu chuyện', 'Mạng xã hội'],
+      },
+    ],
+    found: {
+      title: 'Tìm thấy 8 ảnh mới của Teddy',
+      sub: 'Chụp hôm nay · 2 ảnh trùng đã ẩn',
+      saveAll: 'Lưu tất cả',
+      pick: 'Chọn ảnh',
+    },
+    views: ['Mốc', 'Tháng', 'Tuần'],
+    clip: '0:45 · Tròn 6 tháng',
+    card: { title: '100 ngày', meta: 'Teddy · 18.01' },
+    share: { label: 'Chia sẻ:', targets: ['Facebook', 'Instagram', 'Zalo', 'Lưu ảnh'] },
     tiles: {
       photos: {
-        title: 'Ảnh của con, gọn gàng một chỗ',
-        body: 'Không còn lẫn với ảnh chụp màn hình hay hoá đơn. Đánh dấu những tấm bạn thương nhất để tìm lại trong vài giây.',
         chip: 'Yêu thích · 48',
       },
       story: {
-        title: 'Câu chuyện của con',
-        body: 'Từ những gì bạn đã ghi, app gợi ý thành một câu chuyện nhỏ. Bạn sửa vài chữ cho đúng giọng mình, rồi gửi tặng người thân.',
         letter: {
           greeting: 'Gửi Teddy,',
           body: 'Sáng thứ Hai, mẹ vừa hát xong câu ru quen thuộc thì con bỗng nhoẻn miệng cười. Cả nhà đứng yên mấy giây, sợ chỉ cần thở mạnh là nụ cười sẽ biến mất.',
@@ -1221,8 +1287,6 @@ export const vi: Content = {
         },
       },
       family: {
-        title: 'Ông bà ở xa vẫn thấy cháu lớn',
-        body: 'Có ảnh mới là ông bà được báo và thả tim ngay. Không cần gửi lẻ từng tấm qua tin nhắn.',
         notifications: [
           { initial: 'Bà', text: 'Bà nội thương ảnh của Teddy', when: 'vừa xong' },
           // PROPOSED (Q-009): Figma "Ông ngoại đã xem 12 ảnh mới" implies seen receipts, which the app does not have.

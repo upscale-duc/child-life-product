@@ -93,11 +93,50 @@ export interface TitledSub {
   sub: string;
 }
 
-export interface FamilyStep {
-  initial: string;
-  meta: string;
+/** One illustration row: title, sub and an optional chip (V9 home). */
+export interface MockRow {
+  title: string;
+  sub: string;
+  chip?: string;
+}
+export type MockRows = [MockRow, MockRow, MockRow];
+
+export interface MemoryStep {
+  title: string;
+  sub: string;
+  tags: string[];
+}
+
+export interface Member {
+  name: string;
+  role: string;
+}
+
+export interface SiriLine {
+  say: string;
+  reply: string;
+}
+
+export interface LockNotice {
+  title: string;
+  when: string;
+  body: string;
+  bodyShort: string;
+}
+
+export interface LumiModule {
+  title: string;
+  sub: string;
+  /** Shown in curly quotes. */
+  q: string;
+  a: string;
+}
+
+export interface FlowStep {
+  label: string;
   title: string;
   body: string;
+  tags: string[];
 }
 
 export interface ToolCard {
@@ -242,7 +281,6 @@ export interface Content {
       title: [string, string];
       lead: string;
       tryNow: string;
-      plans: string;
       promises: [string, string, string];
       mock: {
         name: string;
@@ -265,63 +303,26 @@ export interface Content {
       title: string;
       cards: [TitledText, TitledText, TitledText, TitledText];
     };
-    day: {
+    /** "Lumi hiểu cả app" (Figma 791:68734): six modules, a sample question and answer each. */
+    modules: {
       eyebrow: string;
       title: string;
       lead: string;
-      cards: [DayCard, DayCard, DayCard, DayCard, DayCard, DayCard];
+      sub: string;
+      items: [LumiModule, LumiModule, LumiModule, LumiModule, LumiModule, LumiModule];
+      canLabel: string;
+      can: [string, string, string, string, string];
     };
-    /** "Trên trang này:" chips (Figma 737:67292): Ví dụ, Gợi ý dành cho bé, Cách hoạt động, Các gói,
-     *  Hỏi đáp. */
-    quickNav: { label: string; items: [string, string, string, string, string] };
     how: {
       eyebrow: string;
       title: string;
       steps: [TitledText, TitledText, TitledText];
       trust: [string, string, string];
     };
-    plans: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      monthly: string;
-      yearly: string;
-      perMonth: string;
-      perYear: string;
-      credits: string;
-      tiers: [PlanTier, PlanTier, PlanTier];
-      features: { all: string; templates: string; drafts: string };
-      note: string;
-      table: {
-        caption: string;
-        feature: string;
-        price: string;
-        credits: string;
-        rows: [string, string, string, string, string, string, string];
-        videos: string;
-        fallback: string;
-        yes: string;
-      };
-      creditsInfo: {
-        title: string;
-        body: string;
-        rules: [
-          [string, string],
-          [string, string],
-          [string, string],
-          [string, string],
-          [string, string],
-          [string, string],
-        ];
-      };
-    };
-    faq: {
-      eyebrow: string;
-      title: string;
-      items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem, FaqItem];
-    };
-    /** Kết: the download target (#tai-app); store badges stand in for "Dùng thử Lumi". */
-    cta: { title: string; plans: string };
+    faq: { eyebrow: string; title: string; items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem] };
+    /** Kết: the download target (#tai-app). The download component stands in for the drawn
+     *  "Mở Lumi trong app" pill, which has no web target. */
+    cta: { title: string };
   };
   /** "Dành cho con" (home, Figma 699:5798) and "Một ngày dành riêng cho con" (Lumi page,
    *  700:5832): personalised "Hôm nay của bé" cards with the reason each appears. */
@@ -335,57 +336,59 @@ export interface Content {
       cards: [TodayCardText, TodayCardText, TodayCardText];
       footnote: string;
     };
-    detail: {
-      eyebrow: string;
-      title: [string, string];
-      lead: string;
-      modes: [ModeText, ModeText];
-      modesNote: string;
-      steps: [string, string, string];
-      scenarios: [ScenarioText, ScenarioText, ScenarioText];
-      controlTitle: string;
-      controls: [string, string, string, string];
-      note: string;
-    };
   };
   /** V8 home (Figma 735:5377 desktop, 736:65570 mobile; 34-landing-v8-home). */
   homePage: {
     hero: {
-      eyebrow: string;
+      /** Plain head + bold tail in one pill (V9). */
+      eyebrow: [string, string];
       title: string;
       lead: string;
-      support: string;
-      seeApp: string;
-      vision: string;
-      /** Stage chip status: stage 1, stages 2–4. */
+      firstYear: string;
+      /** Stage chip status: stage 1, stage 2, stages 3–4. */
       now: string;
-      soon: string;
+      next: string;
+      later: string;
       feed: { title: string; sub: string };
-      smile: { title: string; sub: string };
+      learn: { title: string; sub: string };
       video: { title: string; meta: string };
     };
     values: {
       eyebrow: string;
       title: string;
-      lead: string;
+      pillars: [string, string, string];
       cards: [TitledText, TitledText, TitledText];
-      mock: {
-        rows: [[string, string], [string, string], [string, string]];
-        week: TitledText;
-        milestone: [string, string];
-      };
+      /** Three illustration rows per card (V9). */
+      rows: [MockRows, MockRows, MockRows];
+      button: string;
+    };
+    people: { mom: string; dad: string; grandma: string; grandpa: string; nanny: string };
+    /** 2b "Bắt đầu lúc nào cũng kịp" (Figma 786:8714). */
+    restart: {
+      eyebrow: string;
+      title: string;
+      /** Mobile only, as drawn. */
+      lead: string;
+      head: string;
+      ages: [string, string, string, string];
+      timeline: [string, string, string];
+      sortLabel: string;
+      rows: MockRows;
+      points: [TitledText, TitledText, TitledText];
+      button: string;
     };
     memories: {
       eyebrow: string;
       title: string;
+      /** Mobile only (V9). */
       lead: string;
+      steps: [MemoryStep, MemoryStep, MemoryStep, MemoryStep, MemoryStep, MemoryStep];
+      quote: string;
+      firsts: [string, string];
       video: { title: string; body: string; button: string };
       card: { title: string; body: string; bodyShort: string };
       thenNow: { title: string; body: string; bodyShort: string };
       album: { title: string; body: string; initial: string; seen: string };
-      alsoLabel: string;
-      also: [string, string, string];
-      soon: string;
       button: string;
     };
     family: {
@@ -393,16 +396,29 @@ export interface Content {
       title: string;
       bullets: [string, string, string];
       trust: string;
-      steps: [FamilyStep, FamilyStep, FamilyStep];
+      lock: string;
+      members: [Member, Member, Member, Member];
+      handover: {
+        title: string;
+        time: string;
+        items: [TitledSub, TitledSub, TitledSub];
+        note: string;
+        done: string;
+      };
     };
     wrist: {
       chip: string;
       title: string;
       lead: string;
+      leadShort: string;
+      /** Apple Watch, Wear OS, Widget, iOS Controls, Siri. */
+      platforms: [string, string, string, string, string];
       apple: string;
-      wear: string;
       wearLabel: string;
       round: { asleep: string };
+      widget: { label: string; baby: string; value: string };
+      controls: { label: string; items: [string, string, string] };
+      siri: { head: string; lines: [SiriLine, SiriLine, SiriLine] };
     };
     assistant: {
       eyebrow: string;
@@ -413,6 +429,31 @@ export interface Content {
       floats: [string, string, string, string];
       cta: string;
       note: string;
+      /** "Thử hỏi Lumi" (Figma 788:8801). */
+      ask: {
+        title: string;
+        sub: string;
+        questions: [string, string, string, string];
+        foods: [string, string, string, string];
+        foodsNote: string;
+        activities: [{ title: string; time: string }, { title: string; time: string }];
+        days: [string, string, string, string, string, string, string];
+        week: [string, string];
+        last: { value: string; meta: string; next: string };
+      };
+    };
+    /** 5b "Không bỏ lỡ những khoảnh khắc quan trọng" (Figma 789:8811). */
+    alerts: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      leadShort: string;
+      modules: [TitledText, TitledText, TitledText, TitledText];
+      note: string;
+      date: string;
+      time: string;
+      notices: [LockNotice, LockNotice, LockNotice, LockNotice];
+      more: string;
     };
     tools: {
       eyebrow: string;
@@ -426,6 +467,7 @@ export interface Content {
       lead: string;
       now: string;
       soon: string;
+      more: string;
       bodies: [string, string, string, string];
     };
     trust: {
@@ -684,17 +726,21 @@ export interface Content {
     lead: string;
     timeline: [Milestone, Milestone, Milestone, Milestone, Milestone, Milestone, Milestone];
     timelineEnd: string;
+    /** V9 5-step flow (Figma 785:9495). `{n}` is the step number. */
+    stepChip: string;
+    steps: [FlowStep, FlowStep, FlowStep, FlowStep, FlowStep];
+    found: { title: string; sub: string; saveAll: string; pick: string };
+    views: [string, string, string];
+    clip: string;
+    card: { title: string; meta: string };
+    share: { label: string; targets: [string, string, string, string] };
     tiles: {
-      photos: { title: string; body: string; chip: string };
+      photos: { chip: string };
       story: {
-        title: string;
-        body: string;
         letter: { greeting: string; body: string; signature: string };
         moment: { caption: string; quote: string; tag: string };
       };
       family: {
-        title: string;
-        body: string;
         notifications: [Notification, Notification, Notification];
       };
     };

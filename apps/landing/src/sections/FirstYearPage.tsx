@@ -30,7 +30,7 @@ export function FirstYearHero() {
           </h1>
           <p className="fy-hero__lead">{h.lead}</p>
           <div className="enter" style={{ ['--i' as string]: 1 }}>
-            <AppCta />
+            <AppCta caption={false} />
           </div>
         </div>
         <span className="fy-hero__art enter" style={{ ['--i' as string]: 1 }} aria-hidden="true">

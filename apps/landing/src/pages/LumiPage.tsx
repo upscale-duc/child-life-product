@@ -1,27 +1,21 @@
-import { ForBabyDetail } from '../sections/ForBaby';
 import {
   LumiBenefits,
   LumiCta,
-  LumiDay,
   LumiFaq,
   LumiHero,
   LumiHow,
-  LumiPlans,
-  LumiQuickNav,
+  LumiModules,
 } from '../sections/LumiDetail';
 
-/** Lumi page, V8 order (Figma 737:67153; 36-landing-v8-lumi-and-stages A): value, examples, ideas
- *  for your baby, how it works, plans, FAQ. "Còn nhiều việc" and the stage roadmap are gone. */
+/** Lumi page, V9 order (Figma 785:9913; 39-landing-v9-lumi-and-stages A): hero, value, what Lumi
+ *  understands, how it works, FAQ, Kết. The examples, ideas for your baby and the plans are gone. */
 export function LumiPage() {
   return (
     <>
       <LumiHero />
       <LumiBenefits />
-      <LumiQuickNav />
-      <LumiDay />
-      <ForBabyDetail />
+      <LumiModules />
       <LumiHow />
-      <LumiPlans />
       <LumiFaq />
       <LumiCta />
     </>

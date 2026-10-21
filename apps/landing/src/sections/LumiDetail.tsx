@@ -1,13 +1,13 @@
-import { useState, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { LumiMascot, type Tint } from '../components/kit';
 import { Eyebrow, Fit, Icon, at, type IconName } from '../components/primitives';
 import { AppCta } from '../components/StoreBadges';
-import { scenes } from '../components/scenes';
 import { useSite } from '../context';
 import { staggerStyle } from '../motion';
-import { Ask, Draft, FeatureMock, Reply } from './Lumi';
+import { Ask, Draft, Reply } from './Lumi';
 
-/* The Lumi page (Figma 650:4798, 33-landing-lumi-page). Every mock is HTML so its copy translates. */
+/* The Lumi page (V9 Figma 785:9913, 39-landing-v9-lumi-and-stages; first built from 650:4798, 33).
+   Every mock is HTML so its copy translates. */
 
 const draftLook: { icon: IconName; tint: Tint }[] = [
   { icon: 'feed', tint: 'bottle' },
@@ -68,10 +68,6 @@ export function LumiHero() {
         <div className="lp-hero__actions">
           <a className="lumi-button lumi-button--lg pressable" href="#tai-app">
             {h.tryNow}
-          </a>
-          <a className="lp-outline pressable" href="#goi">
-            {h.plans}
-            <Icon name="chevron-down" size={16} />
           </a>
         </div>
         <ul className="lp-hero__promises">
@@ -146,83 +142,69 @@ export function LumiBenefits() {
   );
 }
 
-// Một ngày (§4): illustration tint per card and the matching home feature mock (log, receipt,
-// data, meal, sleep, video).
-const dayLook: { tint: Tint; mock: number }[] = [
-  { tint: 'bottle', mock: 0 },
-  { tint: 'peach', mock: 4 },
-  { tint: 'mint', mock: 1 },
-  { tint: 'sun', mock: 3 },
-  { tint: 'sleep', mock: 2 },
-  { tint: 'coral', mock: 5 },
+// Lumi hiểu cả app (39 §A.4): icon and tint per module, in Figma order.
+const moduleLooks: { icon: IconName; tint: Tint }[] = [
+  { icon: 'today', tint: 'bottle' },
+  { icon: 'star', tint: 'sleep' },
+  { icon: 'drop', tint: 'sun' },
+  { icon: 'memories', tint: 'diaper' },
+  { icon: 'family', tint: 'mint' },
+  { icon: 'clock', tint: 'plain' },
 ];
 
-/** Một ngày cùng Lumi (§4): six moments, each with a chat mock. */
-export function LumiDay() {
+/** Lumi hiểu cả app (V9, Figma 791:68734): one assistant over six parts of the app, each with a
+ *  sample question and answer, then what Lumi can do. Q-039: finding photos, counting who logged
+ *  and the weekly summary are not built (P-167). */
+export function LumiModules() {
   const { c } = useSite();
-  const d = c.lumiPage.day;
+  const m = c.lumiPage.modules;
   return (
-    <section id="mot-ngay" className="lp-section container" aria-labelledby="day-title">
-      <header className="lp-split-head reveal">
-        <div>
-          <Eyebrow tone="sleep">{d.eyebrow}</Eyebrow>
-          <h2 id="day-title" className="h2 h2--flat lp-h2 lp-h2--40">
-            {d.title}
+    <section id="hieu-ca-app" className="lp-modules" aria-labelledby="modules-title">
+      <div className="container lp-modules__inner">
+        <header className="section-head section-head--center reveal">
+          <Eyebrow tone="mint">{m.eyebrow}</Eyebrow>
+          <h2 id="modules-title" className="h2 h2--flat lp-h2 lp-h2--42">
+            {m.title}
           </h2>
-        </div>
-        <p>{d.lead}</p>
-      </header>
-      <ul className="lp-day lp-rail">
-        {d.cards.map((card, i) => {
-          const look = dayLook[i]!;
-          return (
-            <li key={card.title} className="lumi-feature reveal" style={staggerStyle(i % 3)}>
-              <div
-                className={`lumi-feature__art tint--${look.tint}${look.mock === 5 ? ' lumi-feature__art--flush' : ''}`}
-                aria-hidden="true"
-              >
-                <FeatureMock index={look.mock} />
-              </div>
-              <div className="lumi-feature__text">
-                <span className="lp-time">
-                  <Icon name="clock" size={12} />
-                  {card.time}
+          <p className="lead">{m.lead}</p>
+        </header>
+        <p className="lp-modules__pill reveal">
+          <LumiMascot size={52} />
+          <span>
+            <strong>{c.lumiPage.hero.mock.name}</strong>
+            <span>{m.sub}</span>
+          </span>
+        </p>
+        <ul className="lp-modules__grid">
+          {m.items.map((item, i) => (
+            <li key={item.title} className="lp-module reveal" style={staggerStyle(i % 3)}>
+              <span className="lp-module__head">
+                <span className={`lp-icon tint--${moduleLooks[i]!.tint}`}>
+                  <Icon name={moduleLooks[i]!.icon} size={16} />
                 </span>
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
-const quickIcons: IconName[] = ['feed', 'today', 'check', 'grid', 'journal'];
-const quickTargets = ['mot-ngay', 'mot-ngay-cho-con', 'cach-lam-viec', 'goi', 'hoi-dap'];
-
-/** "Trên trang này:" (V8, Figma 737:67292; 36 §A.4): anchor chips under Lợi ích; the chip of the
- *  section in view is highlighted by the nav's scroll-spy (`data-spy`). */
-export function LumiQuickNav() {
-  const { c } = useSite();
-  const q = c.lumiPage.quickNav;
-  return (
-    <nav className="jump jump--lumi" aria-label={q.label.replace(/:$/, '')}>
-      <div className="jump__inner container">
-        <span className="jump__label">{q.label}</span>
-        <ul>
-          {q.items.map((item, i) => (
-            <li key={item}>
-              <a href={`#${quickTargets[i]}`} data-spy={quickTargets[i]}>
-                <Icon name={quickIcons[i]!} size={14} />
-                {item}
-              </a>
+                <span>
+                  <h3>{item.title}</h3>
+                  <span>{item.sub}</span>
+                </span>
+              </span>
+              <p className="lp-module__q">“{item.q}”</p>
+              <p className="lp-module__a">
+                <Icon name="spark" size={14} className="ink--mint" />
+                {item.a}
+              </p>
             </li>
           ))}
         </ul>
+        <div className="lp-modules__can reveal">
+          <span>{m.canLabel}</span>
+          <ul>
+            {m.can.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </nav>
+    </section>
   );
 }
 
@@ -265,189 +247,6 @@ export function LumiHow() {
   );
 }
 
-/** Gói (§8): period toggle, three plans, price note, comparison table and the credit rules.
- *  Q-039 / 33 §16: the plans and prices are not approved; the page is dev-only (noindex). The
- *  monthly state is prerendered; "Theo năm" swaps the prices once the page is interactive. */
-export function LumiPlans() {
-  const { c } = useSite();
-  const p = c.lumiPage.plans;
-  const [yearly, setYearly] = useState(false);
-  const periods = [
-    { yearly: false, label: p.monthly },
-    { yearly: true, label: p.yearly },
-  ];
-  const features: { icon: IconName; text: (i: number) => string }[] = [
-    { icon: 'check', text: () => p.features.all },
-    { icon: 'camera', text: (i) => p.tiers[i]!.photos },
-    { icon: 'heart', text: (i) => p.tiers[i]!.videos },
-    { icon: 'grid', text: () => p.features.templates },
-    { icon: 'check', text: () => p.features.drafts },
-  ];
-  const yes = (
-    <span className="lp-yes" role="img" aria-label={p.table.yes}>
-      <Icon name="check" size={13} />
-    </span>
-  );
-  return (
-    <section id="goi" className="lp-plans" aria-labelledby="plans-title">
-      <div className="container lp-plans__inner">
-        <header className="section-head section-head--center reveal">
-          <Eyebrow tone="mint">{p.eyebrow}</Eyebrow>
-          <h2 id="plans-title" className="h2 h2--flat lp-h2">
-            {p.title}
-          </h2>
-          <p className="lead">{p.lead}</p>
-        </header>
-        <div
-          className="lp-period reveal"
-          role="radiogroup"
-          aria-label={`${p.monthly} / ${p.yearly}`}
-        >
-          {periods.map((period) => (
-            <button
-              key={period.label}
-              type="button"
-              role="radio"
-              aria-checked={yearly === period.yearly}
-              className={yearly === period.yearly ? 'is-selected' : undefined}
-              onClick={() => setYearly(period.yearly)}
-              onKeyDown={(e) => {
-                if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-                  e.preventDefault();
-                  setYearly(!yearly);
-                  const other = e.currentTarget.parentElement?.querySelector<HTMLButtonElement>(
-                    `button:not(:nth-child(${period.yearly ? 2 : 1}))`,
-                  );
-                  other?.focus();
-                }
-              }}
-              tabIndex={yearly === period.yearly ? 0 : -1}
-            >
-              {period.label}
-            </button>
-          ))}
-        </div>
-        <ul className="lp-tiers">
-          {p.tiers.map((tier, i) => (
-            <li
-              key={tier.name}
-              className={`lp-tier lp-tier--${tier.name.toLowerCase()} reveal`}
-              style={staggerStyle(i)}
-            >
-              <span className="lp-tier__head">
-                {i > 0 && (
-                  <span className="lp-tier__badge" aria-hidden="true">
-                    <Icon name="spark" size={14} />
-                  </span>
-                )}
-                <h3>{tier.name}</h3>
-                <span className="lp-tier__tagline">{tier.tagline}</span>
-              </span>
-              <span className="lp-tier__credits">
-                <strong>{tier.credits}</strong>
-                <span>{p.credits}</span>
-              </span>
-              <ul className="lp-tier__features">
-                {features.map((f, k) => (
-                  <li key={k}>
-                    <Icon name={f.icon} size={16} />
-                    {f.text(i)}
-                  </li>
-                ))}
-              </ul>
-              <span className="lp-tier__price">
-                <strong>{yearly ? tier.yearPrice : tier.price}</strong>
-                <span>{yearly ? p.perYear : p.perMonth}</span>
-              </span>
-              <span className={i === 0 ? 'lp-tier__sub' : 'lp-tier__sub lp-tier__sub--mint'}>
-                {yearly ? tier.yearSub : tier.sub}
-              </span>
-              <a className="lp-tier__button pressable" href="#tai-app">
-                {tier.button}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <p className="lp-plans__note reveal">
-          <Icon name="alert" size={14} />
-          {p.note}
-        </p>
-        <div className="lp-table-wrap reveal">
-          <table className="lp-table">
-            <caption className="sr-only">{p.table.caption}</caption>
-            <thead>
-              <tr>
-                <th scope="col">
-                  <span className="sr-only">{p.table.feature}</span>
-                </th>
-                {p.tiers.map((tier) => (
-                  <th key={tier.name} scope="col">
-                    {tier.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            {/* V8 shows the price row (737:67789). Q-071: prices are not approved; dev only. */}
-            <tbody className="lp-table__price">
-              <tr>
-                <th scope="row">{p.table.price}</th>
-                {p.tiers.map((tier) => (
-                  <td key={tier.name}>{tier.price}</td>
-                ))}
-              </tr>
-            </tbody>
-            <tbody>
-              <tr>
-                <th scope="row">{p.table.credits}</th>
-                {p.tiers.map((tier) => (
-                  <td key={tier.name}>{tier.credits}</td>
-                ))}
-              </tr>
-              {p.table.rows.map((row) => (
-                <tr key={row}>
-                  <th scope="row">{row}</th>
-                  {p.tiers.map((tier) => (
-                    <td key={tier.name}>{yes}</td>
-                  ))}
-                </tr>
-              ))}
-              <tr>
-                <th scope="row">{p.table.videos}</th>
-                {p.tiers.map((tier) => (
-                  <td key={tier.name}>{tier.videos.replace(/\D.*$/, '')}</td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">{p.table.fallback}</th>
-                {p.tiers.map((tier) => (
-                  <td key={tier.name}>{yes}</td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="lp-credits reveal">
-          <div className="lp-credits__intro">
-            <span className="lp-icon tint--sleep">
-              <Icon name="spark" size={18} />
-            </span>
-            <h3>{p.creditsInfo.title}</h3>
-            <p>{p.creditsInfo.body}</p>
-          </div>
-          <dl className="lp-credits__rules">
-            {p.creditsInfo.rules.map(([label, value], i) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd className={i === 0 || i === 3 || i === 4 ? 'is-free' : undefined}>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /** Hỏi đáp (§9): the Lumi questions, first one open; native <details> as on the home. */
 export function LumiFaq() {
   const { c } = useSite();
@@ -483,29 +282,19 @@ export function LumiFaq() {
   );
 }
 
-/** Kết (§10; V8 737:67980): the download target. The download component replaces the drawn
- *  "Mở Lumi trong app" pill — the web has no link into the app's Lumi (36 §A.10). */
+/** Kết (V9, Figma 785:10721): a centred gradient card. The store badges stand in for the drawn
+ *  "Mở Lumi trong app" pill — the web has no link into the app's Lumi (39 §A.7), and the nav's
+ *  "Bắt đầu" and the hero button land here. */
 export function LumiCta() {
   const { c } = useSite();
-  const k = c.lumiPage.cta;
   return (
     <section id="tai-app" className="lp-section container" aria-labelledby="cta-title">
       <div className="lp-cta reveal">
-        <div className="lp-cta__copy">
-          <LumiMascot size={56} />
-          <h2 id="cta-title" className="lp-cta__title">
-            {k.title}
-          </h2>
-          <div className="lp-cta__actions">
-            <AppCta tone="dark" />
-            <a className="lp-cta__plans" href="#goi">
-              {k.plans}
-            </a>
-          </div>
-        </div>
-        <span className="lp-cta__photo">
-          <img src={scenes.nowBaby} alt="" loading="lazy" decoding="async" />
-        </span>
+        <LumiMascot size={56} />
+        <h2 id="cta-title" className="lp-cta__title">
+          {c.lumiPage.cta.title}
+        </h2>
+        <AppCta tone="dark" />
       </div>
     </section>
   );
