@@ -316,6 +316,8 @@ export const appEventDims: Partial<Record<AppEvent, readonly string[]>> = {
     'PREVIOUS_HELPFUL',
     'AGE_CONTENT',
     'INTEREST',
+    // P-172: the person's weekly focus ("Có một lúc chơi cùng con") picked it.
+    'WEEKLY_FOCUS',
     'normal',
     'health',
     'no_suggestion',

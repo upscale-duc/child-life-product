@@ -115,7 +115,7 @@ List<ForBabyCard> sampleForBabyCards({List<String>? opened}) => [
     tone: ForBabyTone.growth,
     interest: Interest.milestones,
     onOpen: (_) => opened?.add('milestone'),
-    onDismiss: (_) => opened?.add('dismiss'),
+    onDismiss: (_, _) => opened?.add('dismiss'),
   ),
 ];
 

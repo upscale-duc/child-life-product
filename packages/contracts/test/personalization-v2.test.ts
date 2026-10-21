@@ -55,6 +55,16 @@ describe('P-172 expiring explicit inputs', () => {
         .success,
     ).toBe(false);
   });
+  it('offers only choices that change what is shown (audit 2026-10-21 P2 #7)', () => {
+    const ok = (action: unknown) =>
+      personalizationMutationSchema.safeParse({ babyId: 'b', action }).success;
+    expect(ok({ kind: 'focus', value: 'play' })).toBe(true);
+    expect(ok({ kind: 'focus', value: null })).toBe(true);
+    expect(ok({ kind: 'focus', value: 'handover' })).toBe(false);
+    expect(ok({ kind: 'focus', value: 'routine' })).toBe(false);
+    expect(ok({ kind: 'context', value: 'few_minutes' })).toBe(true);
+    expect(ok({ kind: 'context', value: 'other_carer' })).toBe(false);
+  });
 });
 describe('P-172 stored invitation eligibility', () => {
   const activity = {

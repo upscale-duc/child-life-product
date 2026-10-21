@@ -11,8 +11,13 @@ const babyId = z
   .max(128)
   .regex(/^[^/]+$/);
 const id = z.string().regex(/^[a-zA-Z0-9_:-]{1,100}$/);
-export const dailyContexts = ['usual', 'few_minutes', 'busy', 'other_carer'] as const;
-export const weeklyFocuses = ['play', 'handover', 'routine'] as const;
+/**
+ * P-172 (audit 2026-10-21 P2 #7): only choices that change what is shown. "Người khác chăm"
+ * (`other_carer`) and the `handover` / `routine` focuses changed nothing and were dropped; a value
+ * stored before that reads as "usual" / no focus (`personalizedDay`).
+ */
+export const dailyContexts = ['usual', 'few_minutes', 'busy'] as const;
+export const weeklyFocuses = ['play'] as const;
 export const notebookKinds = [
   'sleep',
   'soothing',

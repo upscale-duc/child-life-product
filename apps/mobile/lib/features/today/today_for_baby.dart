@@ -252,8 +252,9 @@ class ForBabyCard {
 
   /// The × (EN05 "Bé đã làm được / Nhắc lại sau 3 ngày / Ẩn thẻ này / Ít gợi ý kiểu này hơn");
   /// no × when null. The module keeps its own done / snoozed / hidden state and stops
-  /// returning the card.
-  final void Function(BuildContext context)? onDismiss;
+  /// returning the card. Also shown on an [essential] card (P-172 audit P2 #4: a work card can
+  /// be put off until tonight).
+  final void Function(BuildContext context, WidgetRef ref)? onDismiss;
 }
 
 /// Who and what the cards are for. Sources check the viewer's role themselves (`familyCan`).
@@ -481,17 +482,18 @@ class _SmallCard extends ConsumerWidget {
             uid: me.uid,
             locale: Localizations.localeOf(context).languageCode,
           );
-    final dismiss =
-        card.onDismiss ??
-        (canRespond
-            ? (BuildContext c) => dayCardControls(
-                c,
-                ref,
-                responseKey!,
-                card.id,
-                parent: me.role.name == 'coParent',
-              )
-            : null);
+    final onDismiss = card.onDismiss;
+    final dismiss = onDismiss != null
+        ? (BuildContext c) => onDismiss(c, ref)
+        : (canRespond
+              ? (BuildContext c) => dayCardControls(
+                  c,
+                  ref,
+                  responseKey!,
+                  card.id,
+                  parent: me.role.name == 'coParent',
+                )
+              : null);
     return ClPressable(
       onPressed: () => card.onOpen(context),
       pressedOpacity: ClPressable.surfaceOpacity,
