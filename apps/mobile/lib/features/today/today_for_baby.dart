@@ -304,8 +304,12 @@ final forBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>((
       ...ref.watch(articleForBabyCardsProvider(q)),
   ];
   final healthPriority = candidates.any((c) => c.priority == 0);
+  // The stage shown as the week teaser leaves the carousel before the limit, or it would
+  // take one of the slots and leave a single card.
+  final teaser = ref.watch(lbWeekTeaserProvider(q))?.id;
   return rankForBabyCards(
     candidates
+        .where((c) => c.id != teaser)
         .where((c) => !healthPriority || c.priority == 0)
         .where((c) => c.essential || !(day?.suppressed(c.id, now) ?? false))
         .toList(),
@@ -542,7 +546,7 @@ class _SmallCard extends ConsumerWidget {
                       'contentId': card.id,
                       'value': 'save',
                     }),
-                    icon: const Icon(Icons.favorite_border, size: 18),
+                    icon: const ClIcon(ClIcons.heart, size: 18),
                   ),
                 if (dismiss != null)
                   ClPressable(
