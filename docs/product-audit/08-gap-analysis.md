@@ -1,5 +1,7 @@
 # Gap analysis
 
+Cập nhật 21/10/2026: bảng finding bên dưới giữ snapshot audit ban đầu; các bản sửa 1–10 xem [implementation report](11-implementation-report.md). Bổ sung một workstream riêng về [Smart Reminder & Engagement](12-smart-reminder-engagement-engine.md), theo đề xuất chủ sản phẩm; chưa coi engine hoặc delivery thực tế là đã hoàn tất.
+
 16 khoảng hở/validation gap còn mở và 1 quan sát QA đã được sửa song song (QA-01), ưu tiên bảo toàn code đã có. P0 = chặn rollout rộng vì quyền riêng tư/tính toàn vẹn/xóa dữ liệu; không đồng nghĩa đã quan sát sự cố production. P1 = correctness/release gate/measurement; P2 = cơ hội cần kiểm nhu cầu sau Chapter 01.
 
 Complexity S/M/L là tương đối, chưa phải cam kết lịch. Trạng thái nói về khả năng, còn evidence severity phân biệt static/probe/unverified. LUM-02 là **validation gap**; không kết luận model đã sai. CON-04/MEM-04/CH-02 là phần chưa có/partial theo scope mong muốn, không phải bug đang xảy ra.
@@ -44,3 +46,23 @@ Complexity S/M/L là tương đối, chưa phải cam kết lịch. Trạng thá
 - External links khi creator bị revoke và source/text privacy: có projection/filter/revoke, cần policy + end-to-end browser tests; không khẳng định bypass.
 - Live template assets, font rendering/audio, paid purchase/refund, true background OS guarantees, notification delivery, model VI/EN safety/usefulness: Unable to verify.
 - Corrected age và clinical interpretation: domain decision còn mở trong tài liệu hiện hành; không tự đổi theo đề xuất engineering.
+
+## Smart Reminder & Engagement — khoảng bổ sung riêng
+
+Audit ban đầu đã ghi validation gap của notification delivery nhưng chưa gom thành một workstream engagement có trigger, cadence, suppression và kết quả cần đạt. **Có các chức năng nhắc rời rạc không đồng nghĩa đã có engine chung.** Bổ sung dưới đây là phạm vi sản phẩm sau P0 an toàn dữ liệu, không thay số thứ tự hay mức nghiêm trọng của bảng finding gốc.
+
+| ID     | Hạng mục                    | Khoảng bổ sung so với hiện tại                                                                                                                                                          | Ưu tiên             |
+| ------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| ENG-00 | Điều phối chung và delivery | Dùng lại notification centre/scheduler; thống nhất eligibility, chống trùng, cap, quiet hours, hủy, deep link và bằng chứng thiết bị thật.                                              | Nền bắt buộc cho V1 |
+| ENG-01 | Pending Photos Reminder     | Đã nhắc khi phát hiện ảnh mới; bổ sung ảnh còn chờ review đủ 24 giờ, snooze/dismiss và kiểm tra lại queued/ready. Tự nhận diện hiện có trên iOS; không mặc định Android đã tương đương. | **P0 sản phẩm**     |
+| ENG-02 | Memory Milestone            | Đã có nudges theo dịp/thiệp; bổ sung gợi ý tạo video trước mốc, đủ ảnh, không nhắc trùng job hoặc thành phẩm đã có.                                                                     | **P0 sản phẩm**     |
+| ENG-03 | Weekly Memory Digest        | Có story tuần và daily personalization digest; chưa xác nhận weekly memory digest như một luồng thông báo riêng.                                                                        | P1                  |
+| ENG-04 | Care Reminder               | Cải thiện lịch đã cấu hình và kiểm chứng đúng người/thời gian, sửa lịch, snooze, dừng khi đã hoàn tất.                                                                                  | P1 cải thiện        |
+| ENG-05 | Family Engagement           | Có push/inbox chia sẻ và lời nhắn; bổ sung gom nhóm và điều phối, đúng role/quyền. Không coi ông bà luôn được upload hoặc đã có seen receipt.                                           | P1                  |
+| ENG-06 | Lumi Insight                | Tận dụng personalization digest và nguồn có kiểm tra; chỉ nhắc khi đủ mới/hữu ích, không thêm một kênh gây trùng.                                                                       | P1                  |
+
+P0 sản phẩm ở đây triển khai **sau** gate P0 về privacy/render/deletion; bản sửa code không thay thế kiểm chứng thiết bị. Notification delivery tiếp tục là **Unable to verify** cho tới khi có bằng chứng theo từng platform/trạng thái. `sent` hoặc `pushed` không chứng minh đã hiện thông báo.
+
+Bằng chứng code, acceptance, hạn chế “24 giờ”, policy còn cần chốt và checklist delivery nằm trong [spec ENG](12-smart-reminder-engagement-engine.md). Thứ tự triển khai ở [roadmap ENG](09-implementation-roadmap.md#smart-reminder--engagement-workstream); mẫu số và attribution ở [measurement ENG](10-analytics-and-success-metrics.md#smart-reminder--engagement-measurement).
+
+Cập nhật quyết định V1: **ENG-00–06 phải hoàn tất và release cùng app sau validation/approval**, không limited-user pilot riêng. Late Onboarding & Memory Backfill là khoảng bổ sung cốt lõi: không giả bé được dùng app từ lúc sinh, hỗ trợ ảnh lịch sử và mốc đã qua trong app, không gửi overdue milestone push. Event specification và Portal measurement là prerequisite trước notification engine; xem [refinement audit](12-smart-reminder-audit.md) và [implementation/acceptance V1](14-notification-implementation-plan.md).

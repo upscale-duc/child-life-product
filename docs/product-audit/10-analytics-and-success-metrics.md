@@ -1,5 +1,7 @@
 # Analytics & success metrics
 
+Cập nhật 21/10/2026: các mô tả baseline/proxy gốc giữ snapshot audit; instrumentation đã sửa xem [implementation report](11-implementation-report.md). Phần ENG bổ sung cuối file là thiết kế mới, chưa triển khai hoặc có số liệu delivery.
+
 Đây là measurement design cho bước triển khai, **không phải kết quả kinh doanh**. Không truy cập analytics production hoặc user research; không đặt baseline, % uplift hoặc revenue forecast giả.
 
 ## Những gì đã có
@@ -86,9 +88,59 @@ Raw source ids có trong read cards hoặc operational docs để giải thích 
 
 1. **A — invariant baseline:** giữ current raw operational counters, xác định metric version; test synthetic flows và repeated trigger; security/privacy invariant pass trước mở rộng.
 2. **B — instrumentation validation:** reconcile ready/filed/quota/deletion counters với synthetic operational snapshots; dashboard tách pending/failed/fallback và unknown usage. Chỉ bắt đầu baseline sau reconciliation.
-3. **C — Chapter 01 pilot:** cohort có eligibility/locale/platform/role xác định; đọc dữ liệu đủ một cửa sổ D7/D30 mới kết luận tương ứng. Đo usefulness tự nguyện; report response rate, sample size và missingness.
+3. **C — Production Launch with Measurement:** sau implementation/release approval, phát hành V1 cùng app, không limited-user pilot riêng; cohort có eligibility/locale/platform/role xác định; đọc dữ liệu đủ một cửa sổ D7/D30 mới kết luận tương ứng. Đo usefulness tự nguyện; report response rate, sample size và missingness.
 4. **D — value experiment:** thử một cải tiến rõ, ví dụ recovery hoặc story locale, giữ concurrent changes được ghi lại. Không gán causal retention/revenue chỉ từ before/after không kiểm confounding.
 
 Release gate kỹ thuật đề xuất: không P0 mở; server terminal outcomes idempotent; no PII schema violations trong test; logging không raw child content; all code/device gates ở roadmap. Product success thresholds chỉ chốt sau baseline + mục tiêu owner; không lấy pass rate unit test hay vanity engagement thay user value.
 
 Không có số liệu thực nào trong file này về DAU/retention/revenue/cost per family hoặc research. Các lợi ích trong bảng ưu tiên là giả thuyết cần xác minh.
+
+## Smart Reminder & Engagement measurement
+
+Workstream [ENG-00–06](12-smart-reminder-engagement-engine.md) cùng thuộc V1, phải đo riêng từng bước theo **Production Launch with Measurement**, không limited-user pilot riêng. Mục tiêu là giúp gia đình hoàn tất việc hữu ích; chưa có baseline hoặc số liệu chứng minh reminder làm tăng retention.
+
+### Phân biệt các trạng thái
+
+| Trạng thái                             | Authority và ý nghĩa                                                                                      | Không được suy ra                                                                 |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Eligible opportunity                   | Nguồn còn hợp lệ + quyền/setting/độ mới đã kiểm tra; dedup theo cơ hội logic, không đếm lại mỗi lần scan. | Mọi gia đình đều đủ điều kiện; chưa chắc được gửi vì cap/quiet hours.             |
+| Deferred / suppressed                  | Hoãn vì thời gian/cap hoặc bỏ vì đã xử lý, hết quyền, opt-out, thiếu nguồn; reason enum cố định.          | Delivery failure hoặc người dùng không quan tâm.                                  |
+| Scheduled                              | OS/local scheduler chấp nhận kế hoạch; hoặc đã giữ slot hợp lệ.                                           | Điện thoại đã hiển thị.                                                           |
+| Dispatch attempted / provider accepted | Đã thử gửi và push service chấp nhận token, tách retry/attempt với intent logic.                          | `sent`/`pushed` là delivered hoặc unique người nhận.                              |
+| Delivery observed / unknown            | Chỉ observed khi có receipt/phép quan sát phù hợp; báo độ phủ chứng cứ theo platform/trạng thái.          | Không có receipt là thất bại, hoặc test trên một máy là delivery rate production. |
+| Opened                                 | Callback/deep link hợp lệ; tách notification open khỏi mở thẻ trong app.                                  | Người dùng đã lưu ảnh, tạo video, đọc hết hoặc thấy hữu ích.                      |
+| Value completed                        | Server xác nhận ready/filed/care completed; lượt xem hay usefulness là metric riêng có authority riêng.   | Draft/enqueue/render completed là saved; mở app là hoàn tất.                      |
+
+Không báo CTR theo delivered nếu không có mẫu số delivered đáng tin cậy. Có thể báo opened / scheduled hoặc opened / provider accepted với tên **tỷ lệ phản hồi proxy**, tách channel, platform, cửa sổ và mức missingness. Không gộp hai mẫu số thành một tỷ lệ.
+
+### Metrics bổ sung
+
+W là cửa sổ attribution theo từng use case, phải chốt trước implementation/release V1. Chỉ tính cohort đã có đủ thời gian quan sát W; so sánh exposed, in-app và không gửi riêng. Một thao tác xảy ra sau thông báo chỉ là attribution theo định nghĩa, chưa chứng minh nhân quả.
+
+| ID  | Use case             | Kết quả và mẫu số đề xuất                                                                                                                    | Guardrail                                                                                                                         |
+| --- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| M21 | Pending Photos       | Episode đủ 24 giờ có ít nhất một ảnh được chọn lưu rồi server ready trong W / eligible pending-review episodes. Số ảnh được xử lý báo riêng. | Không lấy approved/queued làm ready; không coi ảnh đang upload là pending review; dismiss/snooze/cancel riêng.                    |
+| M22 | Memory Milestone     | Dịp đủ điều kiện có video filed trong W / eligible occasion episodes; open, chọn ảnh và render start báo riêng.                              | Tách artifact đã có trước lời nhắc, job lỗi và retry; không nhân dịp vì nhiều thiết bị hoặc đổi locale.                           |
+| M23 | Weekly Memory Digest | Tuần đủ điều kiện được mở xem nội dung / eligible family-week episodes; story saved hoặc video filed từ luồng đó là kết quả riêng.           | Chỉ nội dung được phép xem và còn mới; không coi story draft tự sinh là user value đã nhận.                                       |
+| M24 | Care Reminder        | Lịch đến hạn được ghi/hoàn tất/ack theo semantics đã chốt trong W / due authorized reminder occurrences.                                     | Hoàn tất trước hạn, snooze, bỏ qua và quá hạn riêng; không yêu cầu relative thực hiện hành động ngoài quyền.                      |
+| M25 | Family Engagement    | Nội dung chia sẻ/lời nhắn thực sự được mở xem / eligible recipient-event groups; có thể đo phản hồi hợp lệ riêng.                            | Không coi provider accepted là đã đọc; không tự phát hành seen receipt cho người gửi; tôn trọng mute và gom nhóm.                 |
+| M26 | Lumi Insight         | Insight được mở xem nguồn; useful / phản hồi đã trả lời, kèm response rate / eligible insight episodes.                                      | Không đánh đồng open với usefulness hoặc chất lượng y khoa; tách thiếu dữ liệu, stale và model fallback.                          |
+| M27 | Chất lượng điều phối | Suppressed/deferred/expired/retried/duplicate, opt-out và số nhắc chủ động theo recipient-day; delivery coverage theo platform/channel.      | Lịch care và thông báo giao dịch tách proactive engagement; unknown giữ unknown; không claim global cap nếu chỉ có local counter. |
+
+### Instrumentation và quyền riêng tư
+
+- Tái sử dụng các terminal outcomes đã có nếu đúng nghĩa. Chúng chưa tự cung cấp attribution cho ENG; không gọi kết quả `productOutcomesDaily` hiện tại là conversion sau reminder.
+- Các tên ví dụ ban đầu như `engagementEligible`, `engagementScheduled`, `engagementProviderAccepted`, `engagementOpened`, `engagementSuppressed`, `engagementValueCompleted` là **proposed**, chưa phải events đang phát. Dimensions chỉ fixed kind/channel/platform/locale/policy version/reason/outcome enums.
+- Intent/receipt và liên kết attribution thuộc operational store được kiểm soát quyền/retention. Nếu cần nối intent → upload batch → ready, phải thiết kế tham chiếu opaque do server kiểm tra; không gửi PhotoKit ID, face print, source text hoặc child facts lên analytics. Local pending chỉ cho biết trạng thái cục bộ, không tự là server truth.
+- Dedup theo cơ hội/cửa sổ/recipient, giữ attempts riêng. Một family có nhiều người/thiết bị không tự thành nhiều household; unique family/cohort chỉ báo khi có aggregate operational đúng và policy phù hợp.
+- Đo guardrails từ đầu: opt-out, dismiss, snooze, lời nhắc trùng, nội dung hết hạn, mở sai quyền và scheduled notice không hủy khi revoke. Thử nghiệm chỉ đánh giá uplift khi có thiết kế đối chứng và cửa sổ đủ dài; chưa đặt target giả.
+
+**Gate trước baseline:** dùng fixture tổng hợp đối soát các trạng thái và terminal outcomes, rồi chạy [ma trận delivery trên thiết bị thật](12-smart-reminder-engagement-engine.md#delivery-gate-kiểm-chứng-riêng). Chưa có bằng chứng này thì delivery vẫn chưa kiểm chứng; không lấp bằng số test emulator đã pass.
+
+### V1 event/Portal gate và late-onboarding cohorts
+
+[Event dictionary, bốn funnel definitions, Portal contract và tickets ENG-T01/T02](14-notification-implementation-plan.md) là refinement canonical; snake_case event names trong đó thay các ví dụ naming chưa chốt bên trên. Hoàn tất specification, privacy review, aggregate API/UI contracts và known-count fixtures **trước notification engine implementation**. Tái sử dụng `productOutcomesDaily` nhưng không coi total counts hiện tại là attributed conversion.
+
+Late onboarding cần current/retrospective và age-at-join bands 1/3/6/9/12 tháng; history/media/keepsakes xác minh đủ. Không giả không có memory ở ngày sinh là activation failure; backfill filed đo riêng, overdue milestone không dispatch. Ready→Story→rendered funnel là Memory Story video; share sheet opened không phải share completed.
+
+Portal bắt buộc hiển thị eligible denominators, immature windows, observed/unknown delivery, opt-out/fatigue/cap/duplicate/expiry, và no-data/insufficient-data states. Không tạo demo baseline trên production, không hứa growth target hoặc significance từ N nhỏ. Randomized concurrent control sau launch chỉ là thiết kế tùy chọn cần approval riêng; không mandatory holdout/pilot để release. So sánh observational opt-in/opt-out không chứng minh causal lift.
