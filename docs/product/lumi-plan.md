@@ -597,3 +597,70 @@ What did not move (L9c):
 - The regex readers (`careStatesIn`, `phaseCue`, `correctionIn` as a reader, `previousTurnOf`)
   are still in the tree, demoted to guards; L9c removes them and the ~60 % of rule lines.
 - Not checked on a phone; dev only (prod untouched).
+
+## 13. Audit (2026-10-21, at 0663bb8)
+
+Two read-only passes: the plan against the commits, and the code (precedence, time, writes,
+credits, privacy, health). No write happens without a tap and no child data was found in logs;
+what is left is listed by priority. `docs/product-audit/06-lumi-audit.md` (LUM-01 token usage,
+LUM-02 live eval on v2) is not repeated here.
+
+### 13.1 Where the plan stands
+
+| Slice                         | Status                                           | Left                                                                                     |
+| ----------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| L1 ongoing states             | done, then superseded by L9                      | "Lưu và bắt đầu đếm" on the timer card                                                    |
+| L2 speed                      | done (`3725ffe`, `ef92d3a`, `4e6b3bb`)            | the optimistic card; output cap is 1 100, not 400                                         |
+| L1b / L7 / L9                 | done on dev                                      | not checked on a phone; prod not deployed                                                 |
+| Phase 2 reads (L3)            | done in `0663bb8` (13 read tools, cards, links)  | e2e `40-reads.json` not extended; no live eval on `assistant-understand-v2`               |
+| L8 composer + now-by-default  | **not started**                                  | "Đang trả lời: …" / "Đang chờ bạn lưu …"; the fast path still asks the time for "bé bú 120ml" |
+| L6 "Bé dậy chưa?"             | **not started**                                  | all of §7.1                                                                               |
+| L4 next steps + module entries | **not started**                                 | chips after a save; entries on timer, Lịch sử, Ăn dặm                                     |
+| L5 writes per module          | **not started** (edit/undo partly via L7)        | meals (`meal` still `available: false`), vaccine doses, Mốc, album, recurring reminders  |
+| L9b model tier                | **not started**                                  | `OPENAI_MODEL_UNDERSTANDING` exists, unset, unmeasured                                    |
+| L9c remove old readers        | **not started**                                  | `careStatesIn`, `phaseCue`, `timerPlan` guessing, `previousTurnOf`, v7/v8 shims still called |
+
+Tests: 310 e2e cases; `ga-11-rejected-output` fails at every slice and is **not** in
+`known-failures.json` (so the run exits 1); the 18 owner sentences passed live only on the L9
+prompt and are recorded only in §12's note; no replay fixtures for them.
+
+### 13.2 Findings
+
+**P1 — fix before the next device round**
+
+| #  | Finding                                                                                                                                         | Where                                     | Fix                                                                                          |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------- |
+| A1 | An answer routed from `startTask` reuses the request id for `submitClarification` but never records a task: the app's retry of the same words (timeout, offline) becomes a **new task** ("sáng" read alone) | `assistant.ts:510-559`                    | at the top of `startTask`, replay the `clarify` ledger entry for that request id              |
+| A2 | The routed answer restarts the 24 s inline budget after startTask's own reads; worst case passes the phone's 30 s wait                          | `assistant.ts:521`, `:1077`, `:1299`      | pass startTask's start time into `submitClarification`                                       |
+| A3 | "tối qua 9h" with a model `dayOffset` 0 resolves to **today 21:00** (a future log): `saysPastDay` keeps the model's day                           | `assistant-understanding.ts:222`          | a past-day word forces `offset < 0 ? offset : -1`                                             |
+| A4 | "cảm ơn Lumi" while a question waits is routed as an answer (≤ 4 words) and loses its reply                                                      | `assistant-dialogue.ts:582`, `assistant-text.ts:1803` | small talk other than "ok" skips answer routing (the wait line is appended already)          |
+| A5 | A routed answer longer than 200 characters, or one that races a chip tap, fails (`VALIDATION_FAILED` / `INVALID_STATE`) instead of replying      | contracts `assistant.ts:1269`, `assistant.ts:512-519` | route only ≤ 200 characters; on `INVALID_STATE` fall through to the normal path              |
+| A6 | The dialogue doc stores chip labels; for `reminder.assignee.*` those are **member names**; it has no TTL index and "Xoá" cuộc trò chuyện does not delete it | contracts `assistant-dialogue.ts:70`; `firestore.indexes.json`; `assistant.ts:1947` | store choice ids only; TTL on `ttlAt`; delete `dialogue/*` with the conversation             |
+| A7 | Shared thread: member B's identical words while member A's draft waits get "đã chuẩn bị ở trên" and nothing is drafted for B                   | `assistant.ts:1991-2014` (`pendingRepeatOf`) | the repeat short-circuit only for the same author                                            |
+| A8 | App: on the answer route the thread's first text becomes the answer, so a later "Thử lại" may resend "sáng"; "Hoàn tác" only opens the record    | `assistant_controller.dart:817-840`, `assistant_screens.dart:2654` | keep the first user text; rename to "Mở bản ghi" (or wire a delete draft)                     |
+
+**P2 — robustness and cleanup**
+
+- Time: an ongoing start with a clock may pick a reading 11 h back ("đang ngủ từ 16h" at 15:30);
+  bound ongoing starts to 18 h and ask otherwise. A finished sleep with start + length and no end
+  is not bounded. Two sleeps in one message are not checked against each other. `dayOffset: 1`
+  care logs rely on the later future-time check.
+- Order: "huỷ" cancels the open question before the start transaction can still fail; move it in.
+- Credits: 0-credit paths still write a `units: 0` reservation line (usage page shows "0"); the
+  internal AI budget is charged twice when an inline call hands off to the trigger.
+- The composer hint "Trả lời câu hỏi…" can show after the server set the question aside.
+- `warmAssistant` only warns on a non-200 (a lost `run.invoker` leaves the functions cold
+  silently); alert on repeated failures.
+- Code: `clarification` duplicated on the task doc can go once old builds are gone; model comments
+  still describe v7/v8; ~18 tests script the v8 shape through the translation shim; the largest
+  files are 2 000+ lines (server) and 4 500 lines (`assistant_screens.dart`).
+
+### 13.3 Next
+
+1. **L10 hardening** (A1–A8, the P2 time bounds, `ga-11` fixed or baselined, owner sentences as
+   replay fixtures, `40-reads.json` extended, a live run of the owner sentences and the reads on
+   `assistant-understand-v2`). Server + app, M.
+2. Then the agreed order resumes: **L8** (it closes §11.3 #3/#5 and the fast-path time question),
+   **L6**, **L4**, **L9b** with the cost note for the owner, **L9c**, **L5** per module.
+3. Before prod: a device round on the owner's iPhone (Light and Night care) with the cases of §2,
+   §11, §12 and the Phase 2 reads, then the prod deploy with owner approval.
