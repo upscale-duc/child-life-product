@@ -1297,28 +1297,40 @@ async function notifyImporter(
       createdAt: now,
     });
   }
-  await pushUsers(db, notify.sender, [importer], (language) => {
-    const lang: Locale = language.startsWith('en') ? 'en' : 'vi';
-    const copy = result.ok
-      ? {
-          title: lang === 'vi' ? 'Đã nhập xong chi tiêu' : 'Your spending import is done',
-          body: importSummary(
-            lang,
-            result.imported,
-            result.counts.duplicates,
-            result.counts.errors,
-          ),
-        }
-      : {
-          title: lang === 'vi' ? 'Chưa nhập được chi tiêu' : 'Your spending import didn’t finish',
-          body: lang === 'vi' ? 'Mở app để thử lại.' : 'Open the app to try again.',
-        };
-    return {
-      ...copy,
-      data: { kind: 'spending', reason: 'import', babyId, importId, route: importRoute(importId) },
-      apns: { collapseId: `sp-im-${importId}`, threadId: `sp-${babyId}` },
-    };
-  });
+  await pushUsers(
+    db,
+    notify.sender,
+    [importer],
+    (language) => {
+      const lang: Locale = language.startsWith('en') ? 'en' : 'vi';
+      const copy = result.ok
+        ? {
+            title: lang === 'vi' ? 'Đã nhập xong chi tiêu' : 'Your spending import is done',
+            body: importSummary(
+              lang,
+              result.imported,
+              result.counts.duplicates,
+              result.counts.errors,
+            ),
+          }
+        : {
+            title: lang === 'vi' ? 'Chưa nhập được chi tiêu' : 'Your spending import didn’t finish',
+            body: lang === 'vi' ? 'Mở app để thử lại.' : 'Open the app to try again.',
+          };
+      return {
+        ...copy,
+        data: {
+          kind: 'spending',
+          reason: 'import',
+          babyId,
+          importId,
+          route: importRoute(importId),
+        },
+        apns: { collapseId: `sp-im-${importId}`, threadId: `sp-${babyId}` },
+      };
+    },
+    now,
+  );
 }
 
 /**
