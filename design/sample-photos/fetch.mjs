@@ -15,7 +15,7 @@ const list = JSON.parse(
   await readFile(
     join(
       here,
-      process.argv.includes('--phase5')
+      process.argv.includes('--phase6') ? 'premium48-phase6-licence.json' : process.argv.includes('--phase5')
         ? 'premium48-phase5-licence.json'
         : process.argv.includes('--phase4')
           ? 'premium48-phase4-licence.json'

@@ -88,9 +88,19 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
   const ref = db.doc(`babies/${babyId}/keepsakeJobs/${jobId}`);
   const claimed = await db.runTransaction(async (tx) => {
     const job = await tx.get(ref);
-    if (!job.exists) return null;
+    const baby = await tx.get(db.doc(`babies/${babyId}`));
+    if (!job.exists || !baby.exists || baby.get('state') === 'deleting') return null;
     const status = job.get('status') as string;
     if (status !== 'queued' && status !== 'rendering') return null;
+    // Duplicate task delivery must not take over a live render (MEM-01).
+    const startedAt = job.get('startedAt')?.toDate?.() as Date | undefined;
+    if (
+      status === 'rendering' &&
+      startedAt &&
+      deps.now().getTime() < startedAt.getTime() + keepsakeJobLimits.renderMinutes * 60_000
+    ) {
+      return 'busy' as const;
+    }
     const attempts = ((job.get('attempts') as number | undefined) ?? 0) + 1;
     if (attempts > keepsakeJobLimits.attempts) {
       tx.update(ref, {
@@ -109,18 +119,27 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       attempts,
       lease,
       startedAt: deps.now(),
+      leaseUntilAt: new Date(deps.now().getTime() + (keepsakeJobLimits.renderMinutes + 1) * 60_000),
       updatedAt: deps.now(),
     });
     return { input: job.get('input') as KeepsakeJobInput, attempts, lease };
   });
   if (claimed === null) return 'skipped';
+  if (claimed === 'busy') return 'retry';
   if (claimed === 'exhausted') return 'failed';
   const { input, attempts, lease } = claimed;
   /** Writes [update] only while this worker still holds the job (fencing). */
   const finish = (update: Record<string, unknown>) =>
     db.runTransaction(async (tx) => {
       const job = await tx.get(ref);
-      if (!job.exists || job.get('status') !== 'rendering' || job.get('lease') !== lease) {
+      const baby = await tx.get(db.doc(`babies/${babyId}`));
+      if (
+        !baby.exists ||
+        baby.get('state') === 'deleting' ||
+        !job.exists ||
+        job.get('status') !== 'rendering' ||
+        job.get('lease') !== lease
+      ) {
         return false;
       }
       tx.update(ref, update);
@@ -130,14 +149,23 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
   console.info('render started', { jobId, template: input.template.id, attempts });
 
   let lastProgress = 0;
+  let progressWrites: Promise<unknown> = Promise.resolve();
   const progress = async (step: KeepsakeJobStep, value: number) => {
     if (value - lastProgress < 5 && value < 100) return;
     lastProgress = value;
-    await ref.update({ step, progress: Math.round(value), updatedAt: deps.now() });
+    progressWrites = progressWrites
+      .catch(() => undefined)
+      .then(() => finish({ step, progress: Math.round(value), updatedAt: deps.now() }));
+    await progressWrites;
   };
 
   const dir = await mkdtemp(join(tmpdir(), 'ks-'));
   const served = await deps.serve(dir);
+  // Each lease owns its bytes. A stale writer can never overwrite a published winner.
+  const mediaDir = `babies/${babyId}/media/${outputMediaIdOf(jobId)}`;
+  const videoPath = `${mediaDir}/original-${lease}.mp4`;
+  const framePath = `${mediaDir}/frame-${lease}.jpg`;
+  let published = false;
   try {
     // 1. "Sắp xếp ảnh theo mẫu": the photos (display renditions) and the music, in order.
     const photos: string[] = [];
@@ -213,11 +241,12 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       throw new StepError('render-failed');
     }
 
-    const mediaDir = `babies/${babyId}/media/${outputMediaIdOf(jobId)}`;
+    await progressWrites;
+    if (!(await finish({ updatedAt: deps.now() }))) return 'stale';
     let bytes: number;
     try {
-      bytes = await deps.store.upload(video, `${mediaDir}/original.mp4`, 'video/mp4');
-      await deps.store.upload(poster, `${mediaDir}/frame.jpg`, 'image/jpeg');
+      bytes = await deps.store.upload(video, videoPath, 'video/mp4');
+      await deps.store.upload(poster, framePath, 'image/jpeg');
     } catch {
       throw new StepError('upload-failed');
     }
@@ -225,7 +254,8 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       status: 'completed',
       step: 'export',
       progress: 100,
-      output: { ...rendered, bytes, lease },
+      output: { ...rendered, bytes, lease, videoPath, framePath },
+      leaseUntilAt: null,
       error: null,
       updatedAt: deps.now(),
       finishedAt: deps.now(),
@@ -234,6 +264,7 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       console.warn('render stale', { jobId, lease });
       return 'stale';
     }
+    published = true;
     console.info('render done', { jobId, ms: Date.now() - started, bytes });
     return 'done';
   } catch (e) {
@@ -242,6 +273,7 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
     const final = code === 'photo-missing' || attempts >= keepsakeJobLimits.attempts;
     const won = await finish({
       status: final ? 'failed' : 'queued',
+      leaseUntilAt: null,
       error: final ? code : null,
       step: null,
       updatedAt: deps.now(),
@@ -254,6 +286,10 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
     console.warn('render stopped', { jobId, code, final });
     return final ? 'failed' : 'retry';
   } finally {
+    await progressWrites.catch(() => undefined);
+    if (!published) {
+      await Promise.allSettled([deps.store.delete(videoPath), deps.store.delete(framePath)]);
+    }
     await served.close();
     await rm(dir, { recursive: true, force: true });
   }

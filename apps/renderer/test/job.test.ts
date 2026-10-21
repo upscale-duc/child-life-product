@@ -72,6 +72,7 @@ beforeAll(() => {
 });
 afterAll(async () => deleteApp(app));
 beforeEach(async () => {
+  await db.doc(`babies/${babyId}`).set({ state: 'active' });
   await ref().set({ status: 'queued', attempts: 0, input, uid: 'mom' });
 });
 
@@ -89,7 +90,7 @@ describe('runJob', () => {
     const store = new Store();
     expect(await runJob(deps({ store }), babyId, jobId)).toBe('done');
     const media = `babies/${babyId}/media/${outputMediaIdOf(jobId)}`;
-    expect(store.uploaded).toEqual([`${media}/original.mp4`, `${media}/frame.jpg`]);
+    expect(store.uploaded).toEqual([`${media}/original-1.mp4`, `${media}/frame-1.jpg`]);
     const job = await ref().get();
     expect(job.get('status')).toBe('completed');
     expect(job.get('progress')).toBe(100);
@@ -99,6 +100,8 @@ describe('runJob', () => {
       height: 1920,
       bytes: 1234,
       lease: 1,
+      videoPath: `${media}/original-1.mp4`,
+      framePath: `${media}/frame-1.jpg`,
     });
     expect(await runJob(deps({ store }), babyId, jobId)).toBe('skipped');
   });
@@ -220,5 +223,38 @@ describe('fencing (Q2)', () => {
     const job = await ref().get();
     expect(job.get('status')).toBe('failed');
     expect(job.get('error')).toBe('timeout');
+  });
+});
+
+describe('product audit storage/deletion fences', () => {
+  it('does not claim a missing or deleting baby, even with a surviving queued task', async () => {
+    await db.doc(`babies/${babyId}`).update({ state: 'deleting' });
+    expect(await runJob(deps(), babyId, jobId)).toBe('skipped');
+    await db.doc(`babies/${babyId}`).delete();
+    expect(await runJob(deps(), babyId, jobId)).toBe('skipped');
+    expect((await ref().get()).get('attempts')).toBe(0);
+  });
+  it('a duplicate delivery retries without stealing a live lease', async () => {
+    await ref().update({ status: 'rendering', lease: 1, startedAt: deps().now() });
+    expect(await runJob(deps(), babyId, jobId)).toBe('retry');
+    expect((await ref().get()).get('lease')).toBe(1);
+  });
+  it('a stale upload cannot overwrite the winning lease bytes or progress', async () => {
+    const winner = `babies/${babyId}/media/${outputMediaIdOf(jobId)}/original-2.mp4`;
+    const files = new Map([[winner, 'winner']]);
+    const store = new Store();
+    store.upload = async (_src, path) => {
+      await ref().update({ status: 'completed', lease: 2, progress: 100, output: { lease: 2 } });
+      files.set(path, 'stale');
+      return 123;
+    };
+    store.delete = async (path?: string) => {
+      if (path) files.delete(path);
+    };
+    expect(await runJob(deps({ store }), babyId, jobId)).toBe('stale');
+    expect(files.get(winner)).toBe('winner');
+    expect([...files.keys()]).toEqual([winner]);
+    expect((await ref().get()).get('output.lease')).toBe(2);
+    expect((await ref().get()).get('progress')).toBe(100);
   });
 });

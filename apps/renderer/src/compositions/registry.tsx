@@ -1,3 +1,4 @@
+import { Premium48Phase6Story } from './premium48-phase6';
 import { Premium48Phase5Story } from './premium48-phase5';
 import { Premium48Story, PREMIUM48_FRAMES, PREMIUM48_POSTER } from './premium48';
 import { Premium48Phase4Story } from './premium48-phase4';
@@ -39,6 +40,16 @@ const ch1 = (id: string): StoryEntry => ({
 });
 
 export const stories: Record<KeepsakeComposition, StoryEntry> = {
+  PremiumYouDidIt: {
+    Component: (p) => <Premium48Phase6Story {...p} />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
+  PremiumWorldToDiscover: {
+    Component: (p) => <Premium48Phase6Story {...p} discover />,
+    frames: () => PREMIUM48_FRAMES,
+    poster: () => PREMIUM48_POSTER,
+  },
   PremiumOutgrownKeepsake: {
     Component: (p) => <Premium48Phase5Story {...p} />,
     frames: () => PREMIUM48_FRAMES,
@@ -110,6 +121,8 @@ export const stories: Record<KeepsakeComposition, StoryEntry> = {
       | 'PremiumThenNow'
       | 'PremiumOutgrownKeepsake'
       | 'PremiumSmileToKeep'
+      | 'PremiumYouDidIt'
+      | 'PremiumWorldToDiscover'
     >,
     StoryEntry
   >),

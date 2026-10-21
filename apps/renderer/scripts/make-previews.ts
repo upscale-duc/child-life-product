@@ -99,6 +99,8 @@ export const previewMusic: Record<KeepsakeComposition, (typeof tracks)[number]> 
   PremiumThenNow: 'binh-minh',
   PremiumOutgrownKeepsake: 'binh-minh',
   PremiumSmileToKeep: 'binh-minh',
+  PremiumYouDidIt: 'binh-minh',
+  PremiumWorldToDiscover: 'binh-minh',
   FirstWeek: 'ru-em',
   FirstMonth: 'binh-minh',
   HundredDays: 'tiec-vui',

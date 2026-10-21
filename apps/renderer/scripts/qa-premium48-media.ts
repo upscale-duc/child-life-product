@@ -1,4 +1,4 @@
-/** Verify an already-rendered phase 5 review; writes evidence, never changes source media. */
+/** Verify an already-rendered Premium review; writes evidence, never changes source media. */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -75,7 +75,10 @@ for (const file of files) {
   if (!noBlack || integrated < -18 || integrated > -14 || truePeak > -1)
     throw new Error('Audio/black QA failed: ' + file);
   const props = JSON.parse(readFileSync(path.replace(/\.mp4$/, '.json'), 'utf8'));
-  if (!['Noah', 'Lily'].includes(props.name) || props.presentation.copy.signature !== props.name)
+  if (
+    !(out.endsWith('phase6') ? ['Oliver', 'Emma'] : ['Noah', 'Lily']).includes(props.name) ||
+    props.presentation.copy.signature !== props.name
+  )
     throw new Error('English demo name lost: ' + file);
   report.push({
     file,

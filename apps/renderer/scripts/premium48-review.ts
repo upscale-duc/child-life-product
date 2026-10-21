@@ -15,15 +15,18 @@ import { dirname, join, resolve } from 'node:path';
 import { serveFolder } from '../src/serve';
 import { syncArt } from './sync-art.mjs';
 import type { StoryProps } from '../src/kit/core';
-const phase = process.argv.includes('--phase5')
-  ? 5
-  : process.argv.includes('--phase4')
-    ? 4
-    : process.argv.includes('--phase3')
-      ? 3
-      : process.argv.includes('--phase2')
-        ? 2
-        : 1;
+const phase = process.argv.includes('--phase6')
+  ? 6
+  : process.argv.includes('--phase5')
+    ? 5
+    : process.argv.includes('--phase4')
+      ? 4
+      : process.argv.includes('--phase3')
+        ? 3
+        : process.argv.includes('--phase2')
+          ? 2
+          : 1;
+const phase6 = phase === 6;
 const phase5 = phase === 5;
 const phase4 = phase === 4;
 const phase3 = phase === 3;
@@ -46,26 +49,30 @@ const bin = dirname(
 const ffmpeg = resolve('../../firebase/functions/node_modules/@ffmpeg-installer/ffmpeg');
 const ffmpegPath = (require(ffmpeg) as { path: string }).path;
 execFileSync(process.execPath, [
-  phase5
-    ? 'scripts/premium48-phase5-music.mjs'
-    : phase4
-      ? 'scripts/premium48-phase4-music.mjs'
-      : phase3
-        ? 'scripts/premium48-phase3-music.mjs'
-        : phase2
-          ? 'scripts/premium48-phase2-music.mjs'
-          : 'scripts/premium48-music.mjs',
+  phase6
+    ? 'scripts/premium48-phase6-music.mjs'
+    : phase5
+      ? 'scripts/premium48-phase5-music.mjs'
+      : phase4
+        ? 'scripts/premium48-phase4-music.mjs'
+        : phase3
+          ? 'scripts/premium48-phase3-music.mjs'
+          : phase2
+            ? 'scripts/premium48-phase2-music.mjs'
+            : 'scripts/premium48-music.mjs',
   out,
 ]);
-for (const name of phase5
-  ? ['p48-wardrobe', 'p48-smile']
-  : phase4
-    ? ['p48-chapter', 'p48-compare']
-    : phase3
-      ? ['p48-observe', 'p48-letter']
-      : phase2
-        ? ['p48-home', 'p48-month']
-        : ['p48-arrival', 'p48-embrace'])
+for (const name of phase6
+  ? ['p48-milestone', 'p48-discover']
+  : phase5
+    ? ['p48-wardrobe', 'p48-smile']
+    : phase4
+      ? ['p48-chapter', 'p48-compare']
+      : phase3
+        ? ['p48-observe', 'p48-letter']
+        : phase2
+          ? ['p48-home', 'p48-month']
+          : ['p48-arrival', 'p48-embrace'])
   if (!existsSync(join(out, `${name}.m4a`))) {
     execFileSync(ffmpegPath, [
       '-y',
@@ -118,18 +125,24 @@ if (phase2) {
         readFileSync(resolve('../../design/sample-photos/premium48-phase3-licence.json'), 'utf8'),
       ),
     );
-  if (phase5)
+  if (phase >= 5)
     old.push(
       ...JSON.parse(
         readFileSync(resolve('../../design/sample-photos/premium48-phase4-licence.json'), 'utf8'),
+      ),
+    );
+  if (phase6)
+    old.push(
+      ...JSON.parse(
+        readFileSync(resolve('../../design/sample-photos/premium48-phase5-licence.json'), 'utf8'),
       ),
     );
   const fresh = JSON.parse(readFileSync(join(photos, 'licence.json'), 'utf8')) as {
     download: string;
   }[];
   if (
-    fresh.length !== (phase5 ? 8 : phase4 ? 7 : 10) ||
-    new Set(fresh.map((p) => p.download)).size !== (phase5 ? 8 : phase4 ? 7 : 10) ||
+    fresh.length !== (phase6 ? 10 : phase5 ? 8 : phase4 ? 7 : 10) ||
+    new Set(fresh.map((p) => p.download)).size !== (phase6 ? 10 : phase5 ? 8 : phase4 ? 7 : 10) ||
     fresh.some((p) => old.some((o) => o.download === p.download))
   )
     throw new Error('Phase 2 requires ten distinct new sample photos');
@@ -142,7 +155,12 @@ try {
     entryPoint: resolve('src/remotion-entry.ts'),
     publicDir: resolve('public'),
   });
-  const report = [];
+  const report: {
+    id: string;
+    locale: 'vi' | 'en';
+    format: 'story' | 'portrait';
+    probe: unknown;
+  }[] = [];
   const templates: KeepsakeTemplate[] = phase2
     ? JSON.parse(readFileSync(join(out, 'templates.json'), 'utf8')).templates
     : premium48Phase1();
@@ -150,99 +168,145 @@ try {
     for (const locale of ['vi', 'en'] as const)
       for (const format of ['story', 'portrait'] as const) {
         const stem = `V${t.id.slice(-2)}-${locale}-${format}`;
-        if (only && only !== stem) continue;
+        if (only && only !== stem && only !== t.id) continue;
         const embrace = t.id.endsWith('_02');
-        const month = t.id.endsWith(phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04');
+        const month = t.id.endsWith(
+          phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04',
+        );
         const presentation: KeepsakePresentationRequest = {
-          values: phase5
+          values: phase6
             ? month
-              ? { babyName: 'Lily', momentDate: '', reactionConfirmed: 'false' }
-              : {
-                  babyName: 'Noah',
-                  itemName: locale === 'vi' ? 'áo cotton' : 'cotton outfit',
-                  outgrownConfirmed: 'false',
-                  storedDate: '',
+              ? {
+                  babyName: 'Emma',
+                  discovery: '',
+                  momentDate: '',
+                  objectPhotoConfirmed: 'false',
+                  companionConfirmed: 'false',
                 }
-            : phase4
+              : {
+                  babyName: 'Oliver',
+                  milestoneName: locale === 'vi' ? 'những bước nhỏ' : 'little steps',
+                  momentDate: '',
+                  momentPhotoConfirmed: 'false',
+                }
+            : phase5
               ? month
-                ? { babyName: 'Bảo An', thenDate: '', nowDate: '' }
+                ? { babyName: 'Lily', momentDate: '', reactionConfirmed: 'false' }
                 : {
-                    babyName: 'Bảo An',
-                    monthNumber: '01',
-                    discovery: locale === 'vi' ? 'bàn tay bé xíu' : 'tiny hands',
-                    memoryLine: '',
+                    babyName: 'Noah',
+                    itemName: locale === 'vi' ? 'áo cotton' : 'cotton outfit',
+                    outgrownConfirmed: 'false',
+                    storedDate: '',
                   }
-              : phase3
+              : phase4
                 ? month
-                  ? { babyName: 'Bảo An', narratorName: '' }
+                  ? { babyName: 'Bảo An', thenDate: '', nowDate: '' }
                   : {
                       babyName: 'Bảo An',
-                      favoriteThing: locale === 'vi' ? 'những cái ôm' : 'cuddles',
-                      littleDetail: locale === 'vi' ? 'bàn tay bé xíu' : 'tiny fingers',
-                      memoryLine: locale === 'vi' ? 'chơi cùng mẹ' : 'playing together',
+                      monthNumber: '01',
+                      discovery: locale === 'vi' ? 'bàn tay bé xíu' : 'tiny hands',
+                      memoryLine: '',
                     }
-                : phase2
+                : phase3
                   ? month
-                    ? { babyName: 'Bảo An', birthPhotoConfirmed: 'false' }
-                    : { babyName: 'Bảo An', momentDate: '2026-09-20', journeyConfirmed: 'false' }
-                  : embrace
-                    ? {
-                        babyName: 'Bảo An',
-                        narratorName: locale === 'vi' ? 'Mẹ Linh' : 'Linh',
-                        momentDate: '2026-09-18',
-                        firstConfirmed: 'false',
-                      }
+                    ? { babyName: 'Bảo An', narratorName: '' }
                     : {
                         babyName: 'Bảo An',
-                        birthDate: '2026-09-17',
-                        birthTime: '09:35',
-                        placeName: 'Đà Nẵng',
-                      },
+                        favoriteThing: locale === 'vi' ? 'những cái ôm' : 'cuddles',
+                        littleDetail: locale === 'vi' ? 'bàn tay bé xíu' : 'tiny fingers',
+                        memoryLine: locale === 'vi' ? 'chơi cùng mẹ' : 'playing together',
+                      }
+                  : phase2
+                    ? month
+                      ? { babyName: 'Bảo An', birthPhotoConfirmed: 'false' }
+                      : { babyName: 'Bảo An', momentDate: '2026-09-20', journeyConfirmed: 'false' }
+                    : embrace
+                      ? {
+                          babyName: 'Bảo An',
+                          narratorName: locale === 'vi' ? 'Mẹ Linh' : 'Linh',
+                          momentDate: '2026-09-18',
+                          firstConfirmed: 'false',
+                        }
+                      : {
+                          babyName: 'Bảo An',
+                          birthDate: '2026-09-17',
+                          birthTime: '09:35',
+                          placeName: 'Đà Nẵng',
+                        },
           overrides: {},
           format,
           reducedMotion: false,
           crops: Array.from({ length: 5 }, (_, beat) => ({
-            x:
-              phase4 && month
+            x: phase6
+              ? month && beat === 4
+                ? 1
+                : 0
+              : phase4 && month
                 ? beat === 3
                   ? 0.8
                   : -0.6
                 : !phase4 && phase2 && month && beat === 0
                   ? -0.3
                   : 0,
-            y: phase4 && month ? (beat === 3 ? 0 : 1) : phase3 && month && beat === 4 ? -1 : 0,
+            y: phase6
+              ? month && beat === 0
+                ? -1
+                : !month && beat === 4
+                  ? 1
+                  : 0
+              : phase4 && month
+                ? beat === 3
+                  ? 0
+                  : 1
+                : phase3 && month && beat === 4
+                  ? -1
+                  : 0,
             zoom: phase4 && month && beat !== 3 ? 1.15 : 1,
-            fit: phase5
-              ? 'contain'
-              : phase4
-                ? month
-                  ? 'cover'
-                  : 'contain'
-                : phase2 && (month || beat !== 2)
-                  ? 'cover'
-                  : 'contain',
+            fit: phase6
+              ? 'cover'
+              : phase5
+                ? 'contain'
+                : phase4
+                  ? month
+                    ? 'cover'
+                    : 'contain'
+                  : phase2 && (month || beat !== 2)
+                    ? 'cover'
+                    : 'contain',
           })),
         };
-        const indices = phase5
+        const indices = phase6
           ? month
-            ? [5, 6, 7]
+            ? [5, 6, 7, 8, 9]
             : [0, 1, 2, 3, 4]
-          : phase4
+          : phase5
             ? month
-              ? [5, 6]
+              ? [5, 6, 7]
               : [0, 1, 2, 3, 4]
-            : phase2
+            : phase4
               ? month
-                ? [5, 6, 7, 8, 9]
+                ? [5, 6]
                 : [0, 1, 2, 3, 4]
-              : embrace
-                ? [3, 5, 17, 15]
-                : [3, 1, 6, 5, 0];
+              : phase2
+                ? month
+                  ? [5, 6, 7, 8, 9]
+                  : [0, 1, 2, 3, 4]
+                : embrace
+                  ? [3, 5, 17, 15]
+                  : [3, 1, 6, 5, 0];
         const props: StoryProps = {
           photos: indices.map((i) => ps.url(licence[i]!.file)),
           title: t.name[locale],
           message: '',
-          name: phase5 ? (month ? 'Lily' : 'Noah') : 'Bảo An',
+          name: phase6
+            ? month
+              ? 'Emma'
+              : 'Oliver'
+            : phase5
+              ? month
+                ? 'Lily'
+                : 'Noah'
+              : 'Bảo An',
           dateLine: '',
           mark: null,
           palette: t.palette,
@@ -254,25 +318,29 @@ try {
               }
             : {}),
           music: ms.url(
-            phase5
+            phase6
               ? month
-                ? 'p48-smile.m4a'
-                : 'p48-wardrobe.m4a'
-              : phase4
+                ? 'p48-discover.m4a'
+                : 'p48-milestone.m4a'
+              : phase5
                 ? month
-                  ? 'p48-compare.m4a'
-                  : 'p48-chapter.m4a'
-                : phase3
+                  ? 'p48-smile.m4a'
+                  : 'p48-wardrobe.m4a'
+                : phase4
                   ? month
-                    ? 'p48-letter.m4a'
-                    : 'p48-observe.m4a'
-                  : phase2
+                    ? 'p48-compare.m4a'
+                    : 'p48-chapter.m4a'
+                  : phase3
                     ? month
-                      ? 'p48-month.m4a'
-                      : 'p48-home.m4a'
-                    : embrace
-                      ? 'p48-embrace.m4a'
-                      : 'p48-arrival.m4a',
+                      ? 'p48-letter.m4a'
+                      : 'p48-observe.m4a'
+                    : phase2
+                      ? month
+                        ? 'p48-month.m4a'
+                        : 'p48-home.m4a'
+                      : embrace
+                        ? 'p48-embrace.m4a'
+                        : 'p48-arrival.m4a',
           ),
           durationSec: 35,
           brand: t.brand,
@@ -333,6 +401,14 @@ try {
         }
         console.log(stem, composition.width, composition.height, composition.durationInFrames);
       }
+  if (only && !stillsOnly && existsSync(join(out, 'video-qa.json'))) {
+    const previous = JSON.parse(readFileSync(join(out, 'video-qa.json'), 'utf8')) as typeof report;
+    report.unshift(
+      ...previous.filter(
+        (p) => !report.some((q) => q.id === p.id && q.locale === p.locale && q.format === p.format),
+      ),
+    );
+  }
   writeFileSync(join(out, 'video-qa.json'), JSON.stringify(report, null, 2));
 } finally {
   await ps.close();

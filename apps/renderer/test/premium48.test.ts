@@ -1,3 +1,4 @@
+import { premium48Phase6Slots } from '../src/compositions/premium48-phase6';
 import { premium48Phase5Slots } from '../src/compositions/premium48-phase5';
 import { describe, expect, it } from 'vitest';
 import { premium48Frame, PREMIUM48_FRAMES, PREMIUM48_POSTER } from '../src/compositions/premium48';
@@ -27,10 +28,23 @@ describe('Premium phase 1 timeline', () => {
       'PremiumThenNow',
       'PremiumOutgrownKeepsake',
       'PremiumSmileToKeep',
+      'PremiumYouDidIt',
+      'PremiumWorldToDiscover',
     ] as const) {
       expect(stories[id].frames({} as StoryProps)).toBe(1050);
       expect(stories[id].poster({} as StoryProps)).toBe(990);
     }
+  });
+  it('keeps phase 6 inputs independent with no cycle fallback', () => {
+    for (const discover of [false, true])
+      expect(Array.from({ length: 5 }, (_, i) => premium48Phase6Slots(discover, i))).toEqual([
+        [0],
+        [1],
+        [2],
+        [3],
+        [4],
+      ]);
+    expect(premium48Phase6Slots(false, 5)).toEqual([]);
   });
   it('keeps the three-photo smile reprise explicit', () => {
     expect(Array.from({ length: 5 }, (_, i) => premium48Phase5Slots(true, i))).toEqual([

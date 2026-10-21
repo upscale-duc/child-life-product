@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "createdOn": "2026-10-21",
+  "licence": "Original Child Life vector artwork",
+  "assets": [
+    {
+      "name": "p48-milestone-dot-route",
+      "family": "milestone",
+      "title": "Đường đi chấm",
+      "usage": "Nét đi ngang có ba điểm dừng, không điểm số.",
+      "file": "p48-milestone-dot-route.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-paper-star",
+      "family": "milestone",
+      "title": "Ngôi sao giấy",
+      "usage": "Một ngôi sao mở nhẹ ở lề; không huy chương.",
+      "file": "p48-milestone-paper-star.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-photo-corners",
+      "family": "milestone",
+      "title": "Góc ảnh hành trình",
+      "usage": "Góc giấy thoáng cho ba ảnh theo trình tự.",
+      "file": "p48-milestone-photo-corners.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-label",
+      "family": "milestone",
+      "title": "Nhãn tên mốc",
+      "usage": "Tên mốc là text xác nhận riêng, không nhãn thành tích.",
+      "file": "p48-milestone-label.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-step-one",
+      "family": "milestone",
+      "title": "Dấu bước đầu",
+      "usage": "Một dấu chấm, không con số.",
+      "file": "p48-milestone-step-one.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-step-next",
+      "family": "milestone",
+      "title": "Dấu bước tiếp",
+      "usage": "Hai nét nhịp nhỏ, không so sánh trẻ.",
+      "file": "p48-milestone-step-next.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-step-pause",
+      "family": "milestone",
+      "title": "Dừng tại khoảnh khắc",
+      "usage": "Điểm dừng có vòng giấy, không cấp bậc.",
+      "file": "p48-milestone-step-pause.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-date-tag",
+      "family": "milestone",
+      "title": "Nhãn ngày mốc",
+      "usage": "Nhãn ngày tùy chọn; để trống khi chưa rõ.",
+      "file": "p48-milestone-date-tag.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-folded-edge",
+      "family": "milestone",
+      "title": "Nếp giấy mốc",
+      "usage": "Nếp gấp ở lề trang, không ảnh huy chương.",
+      "file": "p48-milestone-folded-edge.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-milestone-closing-rule",
+      "family": "milestone",
+      "title": "Nét kết hành trình",
+      "usage": "Đường chấm khép lại bằng một dấu giấy.",
+      "file": "p48-milestone-closing-rule.svg",
+      "templates": ["C11", "V11"]
+    },
+    {
+      "name": "p48-discover-round-window",
+      "family": "discover",
+      "title": "Cửa sổ tròn",
+      "usage": "Viền tròn giữ vùng giữa trong suốt.",
+      "file": "p48-discover-round-window.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-leaf-pair",
+      "family": "discover",
+      "title": "Hai lá giấy",
+      "usage": "Lá phẳng ở biên ảnh, không thêm vật vào ảnh thật.",
+      "file": "p48-discover-leaf-pair.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-leaf-sprig",
+      "family": "discover",
+      "title": "Nhánh lá trừu tượng",
+      "usage": "Lá gấp nhẹ tối đa 8px tại lề.",
+      "file": "p48-discover-leaf-sprig.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-viewfinder",
+      "family": "discover",
+      "title": "Kính ngắm tròn",
+      "usage": "Kính ngắm trung tính; không nhắm khuôn mặt.",
+      "file": "p48-discover-viewfinder.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-three-dots",
+      "family": "discover",
+      "title": "Ba chấm khám phá",
+      "usage": "Ba chấm nối hai góc nhìn, không điểm thưởng.",
+      "file": "p48-discover-three-dots.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-journal-tab",
+      "family": "discover",
+      "title": "Tab sổ khám phá",
+      "usage": "Nhãn giấy màu đất; chữ đặt ngoài SVG.",
+      "file": "p48-discover-journal-tab.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-wide-frame",
+      "family": "discover",
+      "title": "Khung nhìn rộng",
+      "usage": "Viền trong suốt, dùng khi cửa sổ mở ra.",
+      "file": "p48-discover-wide-frame.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-eye-path",
+      "family": "discover",
+      "title": "Nét theo hướng nhìn",
+      "usage": "Dissolve hướng sang ảnh kế, không tạo chuyển động mắt.",
+      "file": "p48-discover-eye-path.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-paper-seeds",
+      "family": "discover",
+      "title": "Hạt giấy",
+      "usage": "Hạt giấy tĩnh bên ngoài ảnh và chữ.",
+      "file": "p48-discover-paper-seeds.svg",
+      "templates": ["C12", "V12"]
+    },
+    {
+      "name": "p48-discover-closing-loop",
+      "family": "discover",
+      "title": "Nét khép sổ",
+      "usage": "Nét tròn chưa khép giữ mở câu chuyện khám phá.",
+      "file": "p48-discover-closing-loop.svg",
+      "templates": ["C12", "V12"]
+    }
+  ]
+}
