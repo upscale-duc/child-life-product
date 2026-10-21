@@ -27,16 +27,19 @@ int bindLocalPrivacy(Ref ref) {
     final authUid = ref.watch(authUserProvider).value?.uid;
     if (authUid != localPrivacy.owner) {
       final prefs = ref.read(sharedPreferencesProvider);
+      // The in-memory owner is null on every cold launch; the persisted owner says
+      // whether the account really changed. Same account: keep native uploads,
+      // the auto-save schedule and purchase-resume drafts (MO03/M17).
       final previous = localPrivacy.owner ?? prefs.getString('privacy.owner');
       localPrivacy.bind(authUid, {});
-      unawaited(prefs.remove('privacy.backgroundUntil'));
-      unawaited(BackgroundTransport.cancelDeviceWork());
-      unawaited(AutoSaveNative().unschedule());
-      if (previous != null) {
+      if (previous != null && previous != authUid) {
+        unawaited(prefs.remove('privacy.backgroundUntil'));
+        unawaited(BackgroundTransport.cancelDeviceWork());
+        unawaited(AutoSaveNative().unschedule());
         unawaited(ResumeDrafts(prefs, owner: previous).clearAll());
+        PaintingBinding.instance.imageCache.clear();
+        PaintingBinding.instance.imageCache.clearLiveImages();
       }
-      PaintingBinding.instance.imageCache.clear();
-      PaintingBinding.instance.imageCache.clearLiveImages();
     }
     return localPrivacy.generation;
   }
@@ -45,7 +48,9 @@ int bindLocalPrivacy(Ref ref) {
       ? {for (final m in session.active) m.babyId}
       : <String>{};
   final prefs = ref.read(sharedPreferencesProvider);
-  final previous = localPrivacy.owner ?? prefs.getString('privacy.owner');
+  // The persisted owner is the last fully bound account: the loading branch above
+  // already binds the new auth uid in memory, so it cannot tell an account change.
+  final previous = prefs.getString('privacy.owner') ?? localPrivacy.owner;
   final removed = localPrivacy.babies.difference(allowed);
   final parents = session is SessionSignedIn
       ? {

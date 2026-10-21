@@ -95,4 +95,68 @@ void main() {
       dir.deleteSync(recursive: true);
     },
   );
+
+  test(
+    'a cold launch of the same account keeps native uploads, the auto-save schedule and its drafts',
+    () async {
+      final dir = Directory.systemTemp.createTempSync('privacy-guard-cold');
+      SharedPreferences.setMockInitialValues({
+        'privacy.migratedV2': true,
+        'privacy.owner': 'a',
+        'premium.draft.a.tpl': '{}',
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      const paths = MethodChannel('plugins.flutter.io/path_provider');
+      const uploads = MethodChannel('childlife/uploads');
+      const autosave = MethodChannel('childlife/autosave');
+      final native = <String>[];
+      messenger.setMockMethodCallHandler(paths, (_) async => dir.path);
+      messenger.setMockMethodCallHandler(uploads, (call) async {
+        native.add(call.method);
+        return null;
+      });
+      messenger.setMockMethodCallHandler(autosave, (call) async {
+        native.add(call.method);
+        return null;
+      });
+      // Process start: nothing bound in memory yet.
+      localPrivacy.bind(null, {});
+      final c = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+          authUserProvider.overrideWith(
+            (ref) => Stream.value(FakeUser(uid: 'a')),
+          ),
+          sessionProvider.overrideWith((ref) => ref.watch(_session)),
+          careClockProvider.overrideWith((ref) => const Stream.empty()),
+        ],
+      );
+      c.read(_session.notifier).update(const SessionLoading());
+      final listener = c.listen(localPrivacyGuardProvider, (_, _) {});
+      await pumpEventQueue();
+      expect(localPrivacy.owner, 'a');
+      c
+          .read(_session.notifier)
+          .update(
+            SessionSignedIn(
+              user: FakeUser(uid: 'a'),
+              memberships: [mai],
+            ),
+          );
+      await pumpEventQueue();
+      expect(native, isNot(contains('cancelAll')));
+      expect(native, isNot(contains('unschedule')));
+      expect(prefs.getString('premium.draft.a.tpl'), '{}');
+      expect(prefs.getString('privacy.owner'), 'a');
+      listener.close();
+      c.dispose();
+      localPrivacy.cleanup = null;
+      messenger.setMockMethodCallHandler(paths, null);
+      messenger.setMockMethodCallHandler(uploads, null);
+      messenger.setMockMethodCallHandler(autosave, null);
+      dir.deleteSync(recursive: true);
+    },
+  );
 }
