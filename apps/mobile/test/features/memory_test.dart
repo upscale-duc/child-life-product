@@ -338,6 +338,10 @@ void main() {
           const Offset(0, -300),
         );
         expect(find.text(note), findsNothing);
+        // Unmount here so Riverpod's zero-delay dispose timer runs inside the test.
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 1));
+        await tester.pump(const Duration(milliseconds: 1));
       },
     );
 
