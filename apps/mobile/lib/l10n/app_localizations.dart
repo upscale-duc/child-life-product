@@ -22644,7 +22644,7 @@ abstract class AppLocalizations {
   /// **'Mở nhật ký'**
   String get asOpenLog;
 
-  /// Saved card action: opens the record in its module, never deletes by itself (G02).
+  /// Saved card action: opens the saved record in its module (L10 A8; it never undoes or deletes by itself, G02).
   ///
   /// In vi, this message translates to:
   /// **'Mở bản ghi'**

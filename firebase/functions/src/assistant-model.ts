@@ -212,11 +212,11 @@ export const modelIntentSchema = z
         ambiguous: z.array(z.string().max(12)).max(6),
         derived: z.enum(['start', 'end']).nullable(),
         misread: z.array(z.enum(['startedAt', 'endedAt', 'occurredAt'])).max(3),
-      })
         /** L10: times out of bounds, flagged for review. */
         check: z.array(z.enum(['startedAt', 'endedAt'])).max(2).optional(),
         /** L10: an ongoing state's start not within the last 18 h: asked. */
         askStart: z.boolean().optional(),
+      })
       .strict()
       .optional(),
     /** The exact words each filled field comes from (grounding; checked against the text). */
