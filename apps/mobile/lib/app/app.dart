@@ -1,6 +1,9 @@
+import '../features/engagement/engagement_repository.dart';
+import '../features/engagement/engagement_launch.dart';
 import 'dart:async';
 
 import '../features/app_update/app_update_screens.dart';
+import '../features/analytics/product_analytics.dart';
 import '../features/assistant/assistant_device.dart';
 import '../features/feedback/feedback_host.dart';
 import '../features/me/baby_profile_screens.dart';
@@ -24,6 +27,9 @@ import '../features/vaccines/vaccine_reference.dart';
 import '../l10n/app_localizations.dart';
 import 'locale.dart';
 import 'router.dart';
+import 'local_privacy_guard.dart';
+import 'account_local_scope.dart';
+import 'session.dart';
 
 const _localizationsDelegates = [
   AppLocalizations.delegate,
@@ -32,14 +38,31 @@ const _localizationsDelegates = [
   GlobalCupertinoLocalizations.delegate,
 ];
 
-class ChildLifeApp extends ConsumerStatefulWidget {
+class ChildLifeApp extends ConsumerWidget {
   const ChildLifeApp({super.key});
-
   @override
-  ConsumerState<ChildLifeApp> createState() => _ChildLifeAppState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Pin the opaque launch queue above AccountLocalScope, whose UID changes on login.
+    ref.watch(engagementLaunchQueueProvider);
+    final session = ref.watch(sessionProvider);
+    final auth = ref.watch(authUserProvider);
+    final uid = session is SessionSignedIn
+        ? session.user.uid
+        : session is SessionLoading
+        ? auth.value?.uid
+        : null;
+    return AccountLocalScope(uid: uid, child: const _SessionApp());
+  }
 }
 
-class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
+class _SessionApp extends ConsumerStatefulWidget {
+  const _SessionApp();
+
+  @override
+  ConsumerState<_SessionApp> createState() => _SessionAppState();
+}
+
+class _SessionAppState extends ConsumerState<_SessionApp>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -68,9 +91,11 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
   @override
   Widget build(BuildContext context) {
     final palette = ref.watch(paletteProvider);
+    final privacyEpoch = ref.watch(localPrivacyGuardProvider);
     // Sign-out / family switch: the assistant's phone-side state goes (no child data left).
     ref.watch(assistantDeviceGuardProvider);
     return MaterialApp.router(
+      key: ValueKey(privacyEpoch),
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       theme: buildClTheme(palette),
@@ -94,14 +119,18 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
           child: AppUpdateGate(
             child: AppUpdatePrompt(
               child: ReminderNotificationSync(
-                child: PushRegistration(
-                  child: ShareInbox(
-                    child: GlanceSync(
-                      child: DeletionWatcher(
-                        // FB4 screenshot toast, FB5 active days (D-065).
-                        child: FeedbackHost(
-                          // A tap outside a field closes the keyboard everywhere.
-                          child: ClKeyboardDismiss(child: child!),
+                child: EngagementScope(
+                  child: ProductAnalyticsScope(
+                    child: PushRegistration(
+                      child: ShareInbox(
+                        child: GlanceSync(
+                          child: DeletionWatcher(
+                            // FB4 screenshot toast, FB5 active days (D-065).
+                            child: FeedbackHost(
+                              // A tap outside a field closes the keyboard everywhere.
+                              child: ClKeyboardDismiss(child: child!),
+                            ),
+                          ),
                         ),
                       ),
                     ),

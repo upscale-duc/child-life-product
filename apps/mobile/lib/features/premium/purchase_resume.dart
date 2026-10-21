@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import '../../app/local_owner.dart';
 
 /// MO03 / M17: the draft a purchase started from, kept under an opaque `draftRef` so the parent
 /// lands back on the exact template with the same photos after a verified purchase.
@@ -12,11 +13,21 @@ import '../../core/appearance/appearance_providers.dart';
 /// a JSON copy goes to SharedPreferences so the draft can be rebuilt after the app was closed
 /// mid-purchase. Only this phone ever has it: the server gets the ref, never the photos.
 class ResumeDrafts {
-  ResumeDrafts(this._prefs);
+  ResumeDrafts(this._prefs, {required String? owner})
+    : _owner = owner,
+      _prefix = 'premium.draft.${Uri.encodeComponent(owner ?? "signed-out")}.';
   final SharedPreferences _prefs;
+  final String? _owner;
   final _memory = <String, Object>{};
 
-  static const _prefix = 'premium.draft.';
+  final String _prefix;
+
+  Future<void> clearAll() async {
+    _memory.clear();
+    for (final key in _prefs.getKeys().where((k) => k.startsWith(_prefix))) {
+      await _prefs.remove(key);
+    }
+  }
 
   /// Drafts older than this are dropped the next time one is kept.
   static const keepFor = Duration(days: 7);
@@ -24,6 +35,7 @@ class ResumeDrafts {
   /// Keeps [draft] (and its [json] copy) and returns its ref (≤ 80 characters, contracts
   /// `purchaseResumeSchema`).
   String keep(Object draft, Map<String, Object?> json, {DateTime? now}) {
+    if (_owner == null) throw StateError('signed-out');
     final at = now ?? DateTime.now();
     _prune(at);
     final ref = 'd${at.microsecondsSinceEpoch.toRadixString(36)}';
@@ -36,10 +48,11 @@ class ResumeDrafts {
   }
 
   /// The draft as it was, while this run lasts.
-  Object? live(String ref) => _memory[ref];
+  Object? live(String ref) => _owner == null ? null : _memory[ref];
 
   /// The saved copy, to rebuild the draft after a restart.
   Map<String, Object?>? saved(String ref) {
+    if (_owner == null) return null;
     final raw = _prefs.getString('$_prefix$ref');
     if (raw == null) return null;
     try {
@@ -77,7 +90,10 @@ class ResumeDrafts {
 }
 
 final resumeDraftsProvider = Provider<ResumeDrafts>(
-  (ref) => ResumeDrafts(ref.watch(sharedPreferencesProvider)),
+  (ref) => ResumeDrafts(
+    ref.watch(sharedPreferencesProvider),
+    owner: ref.watch(localOwnerProvider),
+  ),
 );
 
 /// The template the parent was just brought back to after a purchase: the editor shows MO03's

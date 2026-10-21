@@ -22,6 +22,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../assistant/assistant_entry.dart' show AssistantFloatingEntry;
+import '../analytics/product_analytics.dart';
 import '../auto_save/auto_save_today.dart';
 import '../auto_save/auto_save_widgets.dart';
 import '../auth/auth_repository.dart';
@@ -113,6 +114,25 @@ class HomeShell extends ConsumerWidget {
     final tabs = tabsFor(membership);
     final active = shellTabs[shell.currentIndex];
     final babyId = membership.babyId;
+    final analytics = ref.watch(productAnalyticsReporterProvider);
+    if (analytics != null) {
+      final locale = Localizations.localeOf(context).languageCode == 'en'
+          ? 'en'
+          : 'vi';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          unawaited(
+            analytics.observe(
+              'family_context_viewed',
+              babyId: babyId,
+              platform: productAnalyticsPlatform,
+              locale: locale,
+              oncePerDay: true,
+            ),
+          );
+        }
+      });
+    }
 
     // R-071 / 13: Night care turns on while your sleep timer runs, outside the schedule too.
     final sleepTimer = ref

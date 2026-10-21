@@ -354,7 +354,9 @@ final weekFactsProvider = Provider.autoDispose.family<WeekFacts?, WeekKey>((
   final records = ref.watch(rangeRecordsProvider(weekRangeKey(k))).value;
   if (records == null) return null;
   final growth = ref.watch(growthRecordsProvider(k.babyId)).value;
-  final memories = ref.watch(memoriesProvider((k.babyId, k.parent))).value;
+  final memories = ref
+      .watch(completeMemoriesProvider((k.babyId, k.parent)))
+      .value;
   final timer = ref.watch(careTimerProvider((k.babyId, TimerType.sleep))).value;
   final conflicts =
       ref.watch(openConflictsProvider(k.babyId)).value ??

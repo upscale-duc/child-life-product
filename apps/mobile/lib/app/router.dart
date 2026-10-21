@@ -1,3 +1,4 @@
+import '../features/engagement/engagement_week.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -282,7 +283,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               _route(
                 path: Routes.memories,
-                builder: (_, _) => const MemoriesScreen(),
+                builder: (_, s) =>
+                    RegExp(
+                      r'^[a-f0-9]{64}$',
+                    ).hasMatch(s.uri.queryParameters['engagement'] ?? '')
+                    ? EngagementWeekScreen(
+                        id: s.uri.queryParameters['engagement']!,
+                      )
+                    : const MemoriesScreen(),
                 // S10: album, favourites and milestone pages (10e, 11f); like every screen opened
                 // from a tab, they hide the dock (owner, 2026-10-11).
                 routes: [

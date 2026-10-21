@@ -137,9 +137,9 @@ object BackgroundUploads {
                     cancel(app, path)
                     result.success(null)
                 }
-                "cancelAll" -> {
-                    cancelAll(app)
-                    result.success(null)
+                "cancelAll" -> io.execute {
+                    cancelAll(app, args["forget"] == true)
+                    main.post { result.success(null) }
                 }
                 "expect" -> {
                     expect(app, args["babyId"] as? String ?: "", (args["count"] as? Number)?.toInt() ?: 0)
@@ -326,14 +326,14 @@ object BackgroundUploads {
     }
 
     /** "Tạm dừng": everything handed over stops; Dart hands it over again on resume. */
-    fun cancelAll(context: Context) {
+    fun cancelAll(context: Context, forget: Boolean = false) {
         synchronized(lock) {
             load(context)
-            jobs.entries.removeAll { it.value.state == "running" }
+            if (forget) jobs.clear() else jobs.entries.removeAll { it.value.state == "running" }
             run = Run()
             save(context)
         }
-        WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
+        WorkManager.getInstance(context).cancelAllWorkByTag(TAG).result.get()
         notifyProgress(context)
     }
 

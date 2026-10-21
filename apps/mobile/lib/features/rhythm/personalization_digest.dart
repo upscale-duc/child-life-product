@@ -1,3 +1,5 @@
+import '../engagement/engagement_local.dart';
+import '../../core/appearance/appearance_providers.dart';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -37,6 +39,13 @@ final personalDigestPlanProvider =
       }
       final babyId = delivery['babyId'];
       if (babyId is! String || session.membershipFor(babyId) == null) {
+        return null;
+      }
+      ref.watch(engagementRevisionProvider);
+      if (EngagementLocal(
+        ref.read(sharedPreferencesProvider),
+        session.user.uid,
+      ).ownsLegacy('lumi', babyId)) {
         return null;
       }
       ref.watch(userPreferencesProvider(session.user.uid));

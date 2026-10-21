@@ -18562,4 +18562,78 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get p48SuggestionsHint =>
       'Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú.';
+
+  @override
+  String get historyLoadEarlier => 'Tải kỷ niệm cũ hơn';
+
+  @override
+  String get historyLoadFailed => 'Chưa tải được lịch sử. Thử lại';
+
+  @override
+  String get historyEnd => 'Đã xem hết lịch sử';
+
+  @override
+  String get engTitle => 'Gợi ý thông minh';
+
+  @override
+  String get engPending => 'Ảnh đang chờ chọn lưu';
+
+  @override
+  String get engMilestone => 'Làm video kỷ niệm';
+
+  @override
+  String get engWeekly => 'Nhìn lại tuần qua';
+
+  @override
+  String get engFamily => 'Cập nhật gia đình';
+
+  @override
+  String get engLumi => 'Gợi ý Lumi';
+
+  @override
+  String get engOffline =>
+      'Chưa kiểm tra được gợi ý. Bạn vẫn có thể tiếp tục dùng ứng dụng.';
+
+  @override
+  String get engRetry => 'Thử lại';
+
+  @override
+  String get engBackfill => 'Nhìn lại những khoảnh khắc đã có';
+
+  @override
+  String get engBackfillBody =>
+      'Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.';
+
+  @override
+  String get engBody =>
+      'Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.';
+
+  @override
+  String get engChooseTemplate => 'Chọn mẫu video';
+
+  @override
+  String get engOpen => 'Xem gợi ý';
+
+  @override
+  String get engLater => 'Để sau';
+
+  @override
+  String get engDismiss => 'Bỏ qua gợi ý';
+
+  @override
+  String get engExpired => 'Gợi ý này đã hết hạn hoặc không còn khả dụng.';
+
+  @override
+  String get engSettingsHint =>
+      'Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.';
+
+  @override
+  String get engConsent => 'Cho phép lời mời chủ động';
+
+  @override
+  String get engResume => 'Tiếp tục nhận gợi ý sau thời gian nghỉ';
+
+  @override
+  String get engPaused =>
+      'Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.';
 }

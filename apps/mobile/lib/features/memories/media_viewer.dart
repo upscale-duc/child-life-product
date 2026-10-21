@@ -1,3 +1,4 @@
+import '../engagement/engagement_repository.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../auto_save/library_save.dart';
+import '../analytics/product_analytics.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
 import 'media_bytes.dart';
@@ -109,6 +111,46 @@ class MediaViewer extends ConsumerStatefulWidget {
 }
 
 class _MediaViewerState extends ConsumerState<MediaViewer> {
+  final _measuredViews = <String>{};
+  final _engagementMeasured = <String>{};
+
+  void _recordView(MediaItem item, int index) {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    if (mounted &&
+        index == _index &&
+        ModalRoute.of(context)?.isCurrent == true &&
+        lifecycle == AppLifecycleState.resumed &&
+        _engagementMeasured.add(item.id)) {
+      unawaited(engagementContentViewed(ref, item.babyId, 'media', item.id));
+    }
+    if (lifecycle != null && lifecycle != AppLifecycleState.resumed) return;
+    if (!mounted ||
+        index != _index ||
+        ModalRoute.of(context)?.isCurrent != true ||
+        item.createdBy == ref.read(selectedMembershipProvider)?.uid ||
+        !_measuredViews.add(item.id)) {
+      return;
+    }
+    try {
+      final locale = Localizations.localeOf(context).languageCode == 'en'
+          ? 'en'
+          : 'vi';
+      unawaited(
+        ref
+            .read(productAnalyticsReporterProvider)
+            ?.observe(
+              'family_content_viewed',
+              babyId: item.babyId,
+              sourceId: item.id,
+              locale: locale,
+              platform: productAnalyticsPlatform,
+            ),
+      );
+    } on Object {
+      /* Optional measurement never interrupts displaying permitted media. */
+    }
+  }
+
   late final _pages = PageController(initialPage: widget.start);
   late int _index = widget.start;
 
@@ -171,7 +213,7 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
     final me = ref.watch(selectedMembershipProvider);
     final memories = c == null
         ? null
-        : ref.watch(memoriesProvider((c.babyId, c.isParent))).value;
+        : ref.watch(completeMemoriesProvider((c.babyId, c.isParent))).value;
     final memory =
         widget.memory ??
         memories?.where((m) => m.id == item.memoryId).firstOrNull;
@@ -430,6 +472,7 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
                         key: ValueKey(it.id),
                         item: it,
                         active: i == _index,
+                        onShown: () => _recordView(it, i),
                         onTap: _toggleChrome,
                         onPlayer: (v) {
                           if (!mounted) return;
@@ -443,6 +486,7 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
                     : _PhotoPage(
                         key: ValueKey(it.id),
                         item: it,
+                        onShown: () => _recordView(it, i),
                         onTap: _toggleChrome,
                         onZoomed: (z) {
                           if (mounted && z != _zoomed && i == _index) {
@@ -571,11 +615,13 @@ class _PhotoPage extends StatefulWidget {
     required this.item,
     required this.onTap,
     required this.onZoomed,
+    this.onShown,
     super.key,
   });
   final MediaItem item;
   final VoidCallback onTap;
   final ValueChanged<bool> onZoomed;
+  final VoidCallback? onShown;
 
   @override
   State<_PhotoPage> createState() => _PhotoPageState();
@@ -657,7 +703,11 @@ class _PhotoPageState extends State<_PhotoPage>
           child: SizedBox.expand(
             child: path == null
                 ? const SizedBox.shrink()
-                : _FullImage(path: path, standIn: widget.item.paths?.thumb),
+                : _FullImage(
+                    path: path,
+                    standIn: widget.item.paths?.thumb,
+                    onShown: widget.onShown,
+                  ),
           ),
         ),
       ),
@@ -672,12 +722,14 @@ class _VideoPage extends ConsumerStatefulWidget {
     required this.active,
     required this.onTap,
     required this.onPlayer,
+    this.onShown,
     super.key,
   });
   final MediaItem item;
   final bool active;
   final VoidCallback onTap;
   final ValueChanged<ViewerVideo?> onPlayer;
+  final VoidCallback? onShown;
 
   @override
   ConsumerState<_VideoPage> createState() => _VideoPageState();
@@ -769,6 +821,7 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
                     ? _FullImage(
                         path: poster,
                         standIn: widget.item.paths?.thumb,
+                        onShown: widget.onShown,
                       )
                     // Faded out once a frame is really drawn: no black between.
                     : ValueListenableBuilder(
@@ -783,6 +836,7 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
                         child: _FullImage(
                           path: poster,
                           standIn: widget.item.paths?.thumb,
+                          onShown: widget.onShown,
                         ),
                       ),
               ),
@@ -818,9 +872,10 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
 /// A photo or poster on black. Until it has loaded, the small thumbnail (already cached by the
 /// grid and the strip) stands in, so a page never opens black.
 class _FullImage extends StatelessWidget {
-  const _FullImage({required this.path, this.standIn});
+  const _FullImage({required this.path, this.standIn, this.onShown});
   final String path;
   final String? standIn;
+  final VoidCallback? onShown;
 
   @override
   Widget build(BuildContext context) {
@@ -829,14 +884,18 @@ class _FullImage extends StatelessWidget {
       image: StorageImage(path),
       fit: BoxFit.contain,
       gaplessPlayback: true,
-      frameBuilder: (_, child, frame, sync) =>
-          frame != null || sync || standIn == null || standIn == path
-          ? child
-          : Image(
-              image: StorageImage(standIn),
-              fit: BoxFit.contain,
-              gaplessPlayback: true,
-            ),
+      frameBuilder: (_, child, frame, sync) {
+        if ((frame != null || sync) && onShown != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => onShown?.call());
+        }
+        return frame != null || sync || standIn == null || standIn == path
+            ? child
+            : Image(
+                image: StorageImage(standIn),
+                fit: BoxFit.contain,
+                gaplessPlayback: true,
+              );
+      },
     );
   }
 }

@@ -239,7 +239,7 @@ final _mediaSignatureProvider = Provider.autoDispose.family<int?, String>((
       session is SessionSignedIn &&
       session.membershipFor(babyId)?.role == MemberRole.coParent;
   if (!parent) return null;
-  final items = ref.watch(mediaProvider((babyId, true))).value;
+  final items = ref.watch(completeMediaProvider((babyId, true))).value;
   return items == null
       ? null
       : Object.hashAll(items.map((m) => (m.id, m.status)));

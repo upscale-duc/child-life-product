@@ -1,3 +1,5 @@
+import 'dart:async';
+import '../engagement/engagement_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -41,6 +43,11 @@ class StoryReaderScreen extends ConsumerWidget {
     if (c == null || s == null) {
       return Scaffold(backgroundColor: cl.colors.cloud);
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted && ModalRoute.of(context)?.isCurrent == true) {
+        unawaited(engagementContentViewed(ref, c.babyId, 'story', storyId));
+      }
+    });
     final parent = c.me.role == MemberRole.coParent;
     final media = storyMedia(ref, c.babyId, parent);
     final locale = c.locale;

@@ -1,3 +1,4 @@
+import '../engagement/engagement_widgets.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -306,8 +307,8 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
       (_, t) => unawaited(_slideTo(t)),
     );
     final key = (c.babyId, c.isParent);
-    final memories = ref.watch(memoriesProvider(key)).value;
-    final media = ref.watch(mediaProvider(key)).value;
+    final memories = ref.watch(completeMemoriesProvider(key)).value;
+    final media = ref.watch(completeMediaProvider(key)).value;
     final bottom = MediaQuery.paddingOf(context).bottom;
     // The dock sits in a SafeArea and floats 24 above it (ClTabDock), and is 68 tall: the
     // tabs / selection pill float 12 above the dock, and above its "+" (parents' add).
@@ -872,6 +873,7 @@ class JournalView extends ConsumerWidget {
                 ),
               ),
             ),
+          SliverToBoxAdapter(child: MemoryHistoryMore(ctx: c)),
           SliverToBoxAdapter(child: SizedBox(height: bottom)),
         ],
       ),
@@ -1276,6 +1278,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                         name: c.nickname,
                         padding: const EdgeInsets.only(top: ClSpace.s3),
                       ),
+                    const EngagementShelf(),
                     // MM01 "Tạo từ kỷ niệm" (D-068); shows only in the beta, for parents.
                     KeepsakeCreateSection(ctx: c),
                     if (landing.isNotEmpty) _LandingLine(count: landing.length),
@@ -1430,6 +1433,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                         ),
                 ),
               ],
+              SliverToBoxAdapter(child: MemoryHistoryMore(ctx: c)),
               SliverToBoxAdapter(
                 child: SizedBox(height: ClTabDock.contentBottomPadding + 88),
               ),
@@ -2084,6 +2088,41 @@ class _GlobalUploadPillState extends ConsumerState<GlobalUploadPill> {
         babyId: c.babyId,
         hidden: _hidden,
         onOpen: () => openUploads(context, ref, c),
+      ),
+    );
+  }
+}
+
+/// The end of the loaded window is not the end of a child's history (MEM-02).
+class MemoryHistoryMore extends ConsumerWidget {
+  const MemoryHistoryMore({required this.ctx, super.key});
+  final MemoryCtx ctx;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final key = (ctx.babyId, ctx.isParent);
+    final tail = ref.watch(historyTailProvider.select((s) => s[key]));
+    final media = ref.watch(mediaProvider(key)).value;
+    final memories = ref.watch(memoriesProvider(key)).value;
+    if (media == null || memories == null) return const SizedBox.shrink();
+    final initialHasMore =
+        media.length >= MemoryRepository.historyPageSize ||
+        memories.length >= MemoryRepository.historyPageSize;
+    if (!initialHasMore && tail == null) return const SizedBox.shrink();
+    final l = AppLocalizations.of(context);
+    if (tail?.mediaEnd == true && tail?.memoryEnd == true) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(l.historyEnd, textAlign: TextAlign.center),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ClButton(
+        label: tail?.error == true ? l.historyLoadFailed : l.historyLoadEarlier,
+        loading: tail?.loading ?? false,
+        onPressed: tail?.loading == true
+            ? null
+            : () => ref.read(historyTailProvider.notifier).loadMore(key),
       ),
     );
   }

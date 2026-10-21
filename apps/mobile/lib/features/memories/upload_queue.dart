@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import '../../app/local_owner.dart';
 import '../auto_save/auto_save_controller.dart';
 import 'background_uploads.dart';
 import 'memory_models.dart';
@@ -69,9 +70,13 @@ class QueueItem {
     this.sent = 0,
     this.error,
     this.thumbPath,
+    this.assetId,
+    this.cloudReady = false,
   });
 
   final String mediaId;
+  String? assetId;
+  bool cloudReady;
   final MediaKind type;
 
   /// "IMG_2041.HEIC" — the name the user knows (10i rows).
@@ -101,6 +106,8 @@ class QueueItem {
 
   Map<String, Object?> toJson() => {
     'mediaId': mediaId,
+    'assetId': assetId,
+    'cloudReady': cloudReady,
     'type': type.name,
     'name': name,
     'localPath': localPath,
@@ -125,6 +132,8 @@ class QueueItem {
     }
     return QueueItem(
       mediaId: j['mediaId']! as String,
+      assetId: j['assetId'] as String?,
+      cloudReady: j['cloudReady'] == true,
       type: MediaKind.values.byName(j['type']! as String),
       name: j['name'] as String? ?? '',
       localPath: j['localPath']! as String,
@@ -194,7 +203,10 @@ class QueueBatch {
 
   bool get notifyFamily =>
       request['notifyFamily'] == true && request['audience'] == 'family';
-  bool get done => items.every((i) => _terminal(i.state));
+  bool get done => items.every(
+    (i) =>
+        _terminal(i.state) && (i.state != QueueState.uploaded || i.cloudReady),
+  );
 
   Map<String, Object?> toJson() => {
     'batchId': batchId,
@@ -428,9 +440,14 @@ Future<bool> claimFile(
 }
 
 class DeviceMediaPreparer implements MediaPreparer {
+  DeviceMediaPreparer({this.owner});
+  final String? owner;
   Future<Directory> _dir() async {
     final base = await getApplicationSupportDirectory();
-    return Directory('${base.path}/uploads').create(recursive: true);
+    if (owner == null) throw StateError('signed-out');
+    return Directory(
+      '${base.path}/accounts/${Uri.encodeComponent(owner!)}/uploads',
+    ).create(recursive: true);
   }
 
   List<String>? _ownedDirs;
@@ -567,7 +584,7 @@ final uploadTransportProvider = Provider<UploadTransport>(
   },
 );
 final mediaPreparerProvider = Provider<MediaPreparer>(
-  (ref) => DeviceMediaPreparer(),
+  (ref) => DeviceMediaPreparer(owner: ref.watch(localOwnerProvider)),
 );
 
 /// Where the queue is saved (a JSON file); tests keep it in memory.
@@ -602,16 +619,20 @@ Map<String, Object?> rebaseQueuePaths(
 };
 
 class FileQueueStore implements QueueStore {
+  FileQueueStore({this.owner});
+  final String? owner;
   Future<File> _file() async => File(
-    '${(await getApplicationSupportDirectory()).path}/upload_queue.json',
+    '${(await getApplicationSupportDirectory()).path}/accounts/${Uri.encodeComponent(owner ?? "signed-out")}/upload_queue.json',
   );
 
   @override
   Future<List<QueueBatch>> load() async {
+    if (owner == null) return [];
     try {
       final f = await _file();
       if (!await f.exists()) return [];
-      final support = (await getApplicationSupportDirectory()).path;
+      final support =
+          '${(await getApplicationSupportDirectory()).path}/accounts/${Uri.encodeComponent(owner!)}';
       final json = jsonDecode(await f.readAsString()) as List;
       return [
         for (final b in json)
@@ -626,14 +647,18 @@ class FileQueueStore implements QueueStore {
 
   @override
   Future<void> save(List<QueueBatch> batches) async {
+    if (owner == null) throw StateError('signed-out');
     final f = await _file();
+    await f.parent.create(recursive: true);
     final tmp = File('${f.path}.tmp');
     await tmp.writeAsString(jsonEncode([for (final b in batches) b.toJson()]));
     await tmp.rename(f.path);
   }
 }
 
-final queueStoreProvider = Provider<QueueStore>((ref) => FileQueueStore());
+final queueStoreProvider = Provider<QueueStore>(
+  (ref) => FileQueueStore(owner: ref.watch(localOwnerProvider)),
+);
 
 /// "Video chỉ tải qua Wi-Fi" (10i), on by default (R-115, `config/limits`).
 final videoWifiOnlyProvider = NotifierProvider<VideoWifiOnly, bool>(
@@ -691,11 +716,31 @@ class UploadQueue extends Notifier<QueueView> {
   /// loop takes it up at its next step instead of dropping it.
   var _again = false;
   var _loaded = false;
+  Future<void>? _loading;
+  QueueStore? _ownedStore;
+  UploadTransport? _ownedTransport;
+  UploadTransport get _transport {
+    final existing = _ownedTransport;
+    if (existing != null) return existing;
+    final transport = ref.read(uploadTransportProvider);
+    _ownedTransport = transport;
+    return transport;
+  }
+
   DateTime? _lastQuotaTry;
   Timer? _sessionRetry;
+  final _readySubscriptions = <String, StreamSubscription<String?>>{};
 
   @override
   QueueView build() {
+    // Rebuild/dispose the queue when its captured owner changes.
+    _ownedStore ??= ref.read(queueStoreProvider);
+    ref.onDispose(() => _ownedTransport?.cancelAll());
+    ref.onDispose(() {
+      for (final subscription in _readySubscriptions.values) {
+        unawaited(subscription.cancel());
+      }
+    });
     ref.listen(networkKindProvider, (_, next) {
       if (next.value != null && next.value != NetworkKind.none) {
         // Back online: "tự thử lại khi có mạng" (10i).
@@ -709,7 +754,7 @@ class UploadQueue extends Notifier<QueueView> {
     });
     // Files handed over keep the Wi-Fi rule they were given: hand the videos over again.
     ref.listen(videoWifiOnlyProvider, (_, _) {
-      final transport = ref.read(uploadTransportProvider);
+      final transport = _transport;
       for (final b in _batches) {
         for (final i in b.items.where(
           (i) => i.isVideo && !_terminal(i.state),
@@ -729,13 +774,30 @@ class UploadQueue extends Notifier<QueueView> {
   NetworkKind get _network =>
       ref.read(networkKindProvider).value ?? NetworkKind.wifi;
 
-  Future<void> _load() async {
-    if (_loaded) return;
+  Future<void> ready() => _load();
+
+  Future<void> _load() => _loading ??= () async {
+    _batches.addAll(await _ownedStore!.load());
+    if (!ref.mounted) return;
+    // Recover a crash between persisting the queue and recording its PhotoKit ledger.
+    for (final batch in _batches) {
+      for (final item in batch.items) {
+        final asset = item.assetId;
+        if (asset == null) continue;
+        final ledger = ref.read(autoSaveProvider.notifier);
+        if (item.cloudReady) {
+          await ledger.recordUploaded([asset], batch.babyId);
+        } else if (item.state != QueueState.cancelled &&
+            item.state != QueueState.unreadable) {
+          await ledger.recordQueued([asset], batch.babyId);
+        }
+        if (!ref.mounted) return;
+      }
+    }
     _loaded = true;
-    _batches.addAll(await ref.read(queueStoreProvider).load());
     _publish();
     await _kick();
-  }
+  }();
 
   void _publish() {
     if (!ref.mounted) return;
@@ -767,7 +829,7 @@ class UploadQueue extends Notifier<QueueView> {
 
   Future<void> _persist() async {
     _publish();
-    await ref.read(queueStoreProvider).save(_batches);
+    await _ownedStore!.save(_batches);
   }
 
   /// 10h "Tải lên N mục": prepare the files, save the batch, start. Returns once the batch is
@@ -784,7 +846,9 @@ class UploadQueue extends Notifier<QueueView> {
     final preparer = ref.read(mediaPreparerProvider);
     Future<QueueItem> prepare(PickedMedia p) async {
       try {
-        return await preparer.prepare(p, newMediaId());
+        final item = await preparer.prepare(p, newMediaId());
+        item.assetId = p.assetId;
+        return item;
       } on Object {
         // Unreadable on the device: shown once, never uploaded.
         return QueueItem(
@@ -815,12 +879,6 @@ class UploadQueue extends Notifier<QueueView> {
 
     await Future.wait([for (var w = 0; w < _prepareWidth; w++) worker()]);
     final items = [for (final i in prepared) i!];
-    final fromLibrary = [for (final p in picked) ?p.assetId];
-    if (fromLibrary.isNotEmpty) {
-      await ref
-          .read(autoSaveProvider.notifier)
-          .recordUploaded(fromLibrary, babyId);
-    }
     // A new batch takes the place of this baby's finished ones in "Đang tải lên": their result
     // was shown; kept, "2 / 5" counted them with the new one (owner, 2026-10-15). Parts of
     // the same batch stay together; a batch with failures is not finished (it retries).
@@ -843,6 +901,15 @@ class UploadQueue extends Notifier<QueueView> {
     // These are in a batch now, no longer "still to come".
     addPreparing(babyId, -items.length);
     await _persist();
+    final fromLibrary = [
+      for (final i in items)
+        if (i.state != QueueState.unreadable) ?i.assetId,
+    ];
+    if (fromLibrary.isNotEmpty) {
+      await ref
+          .read(autoSaveProvider.notifier)
+          .recordQueued(fromLibrary, babyId);
+    }
     // Not awaited: the loop below may already be busy with an earlier batch, and the caller
     // (compose, Tự lưu, the share inbox) only needs the batch to be safe on the phone. Awaiting
     // it held "Đang chuẩn bị 19/19…" on screen until the last file was uploaded.
@@ -851,7 +918,7 @@ class UploadQueue extends Notifier<QueueView> {
 
   void setPaused(bool paused) {
     _paused = paused;
-    if (paused) ref.read(uploadTransportProvider).cancelAll();
+    if (paused) _transport.cancelAll();
     if (!paused) {
       for (final i in _items) {
         if (i.state == QueueState.paused) i.state = QueueState.queued;
@@ -904,11 +971,14 @@ class UploadQueue extends Notifier<QueueView> {
       for (final i in b.items) {
         if (i.mediaId != mediaId || _terminal(i.state)) continue;
         if (i.state == QueueState.uploading) {
-          ref
-              .read(uploadTransportProvider)
-              .cancel('babies/${b.babyId}/uploads/${i.mediaId}');
+          _transport.cancel('babies/${b.babyId}/uploads/${i.mediaId}');
         }
         final hadSession = b.sessionCreated;
+        if (i.assetId != null) {
+          await ref
+              .read(autoSaveProvider.notifier)
+              .recordUnqueued(i.assetId!, b.babyId);
+        }
         i.state = QueueState.cancelled;
         await ref.read(mediaPreparerProvider).discard(i);
         if (hadSession) {
@@ -922,6 +992,21 @@ class UploadQueue extends Notifier<QueueView> {
         }
       }
     }
+    await _persist();
+  }
+
+  Future<void> forgetBaby(String babyId) async {
+    await _load();
+    final gone = _batches.where((b) => b.babyId == babyId).toList();
+    for (final b in gone) {
+      for (final i in b.items) {
+        i.state = QueueState.cancelled;
+        await _readySubscriptions.remove(i.mediaId)?.cancel();
+        _transport.cancel(_path(b, i));
+        await ref.read(mediaPreparerProvider).discard(i);
+      }
+    }
+    _batches.removeWhere((b) => b.babyId == babyId);
     await _persist();
   }
 
@@ -949,7 +1034,7 @@ class UploadQueue extends Notifier<QueueView> {
   }
 
   Future<void> _kick() async {
-    if (!_loaded) return;
+    if (!_loaded || _batches.isEmpty) return;
     if (_running) {
       // One loop at a time. A batch added while it runs used to wait for the next network
       // change for its session (its rows sat at "Đang chuẩn bị"); now the loop picks it up
@@ -976,7 +1061,63 @@ class UploadQueue extends Notifier<QueueView> {
       }
     } finally {
       _running = false;
-      if (ref.mounted) _publish();
+      if (ref.mounted) {
+        _publish();
+        await _reconcileReady();
+      }
+    }
+  }
+
+  Future<void> _reconcileReady() async {
+    if (!ref.mounted) return;
+    for (final b in _batches) {
+      for (final i in b.items.where(
+        (i) => i.state == QueueState.uploaded && !i.cloudReady,
+      )) {
+        if (_readySubscriptions.containsKey(i.mediaId)) continue;
+        try {
+          _readySubscriptions[i.mediaId] = ref
+              .read(memoryRepositoryProvider)
+              .watchMediaStatus(b.babyId, i.mediaId)
+              .listen(
+                (status) async {
+                  if (!ref.mounted ||
+                      i.cloudReady ||
+                      i.state != QueueState.uploaded ||
+                      !_batches.contains(b)) {
+                    return;
+                  }
+                  if (status == 'ready') {
+                    if (i.assetId != null) {
+                      await ref.read(autoSaveProvider.notifier).recordUploaded([
+                        i.assetId!,
+                      ], b.babyId);
+                    }
+                    i.cloudReady = true;
+                  } else if (status == 'unreadable' || status == 'cancelled') {
+                    i.state = QueueState.unreadable;
+                    if (i.assetId != null) {
+                      await ref
+                          .read(autoSaveProvider.notifier)
+                          .recordUnqueued(i.assetId!, b.babyId);
+                    }
+                  } else {
+                    return;
+                  }
+                  if (!ref.mounted) return;
+                  await _persist();
+                  await _readySubscriptions.remove(i.mediaId)?.cancel();
+                },
+                onError: (Object _) {
+                  // A permissions/network error is not a successful save. The next
+                  // launch/reconnect can subscribe again; the ledger remains queued.
+                  unawaited(_readySubscriptions.remove(i.mediaId)?.cancel());
+                },
+              );
+        } on Object {
+          // A missing status reader never turns uploaded bytes into ready media.
+        }
+      }
     }
   }
 
@@ -1115,7 +1256,7 @@ class UploadQueue extends Notifier<QueueView> {
       return false;
     }
     if (status != 'ready' && status != 'unreadable') return false;
-    i.state = QueueState.uploaded;
+    i.state = status == 'ready' ? QueueState.uploaded : QueueState.unreadable;
     i.error = null;
     i.sent = i.bytes;
     i.thumbPath = await ref.read(mediaPreparerProvider).finish(i);
@@ -1160,7 +1301,7 @@ class UploadQueue extends Notifier<QueueView> {
             ..._jobs(b, i),
     ];
     if (jobs.isEmpty) return;
-    final transport = ref.read(uploadTransportProvider);
+    final transport = _transport;
     try {
       // The whole lô per baby, so the lock screen's total matches the app's from the start.
       for (final babyId in {for (final j in jobs) j.babyId}) {
@@ -1194,7 +1335,7 @@ class UploadQueue extends Notifier<QueueView> {
 
   Future<void> _upload(QueueBatch b, QueueItem i) async {
     if (!ref.mounted) return;
-    final transport = ref.read(uploadTransportProvider);
+    final transport = _transport;
     i.state = QueueState.uploading;
     i.sent = 0;
     _publish();

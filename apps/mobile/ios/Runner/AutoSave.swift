@@ -62,8 +62,18 @@ enum AutoSave {
         AutoSaveBackground.schedule()
         result(nil)
       case "unschedule":
-        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: AutoSaveBackground.taskId)
+        AutoSaveBackground.cancel()
         result(nil)
+      case "cancelProactiveAlerts":
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+          UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: requests.filter { $0.identifier.hasPrefix("autosave.") }.map { $0.identifier })
+          DispatchQueue.main.async { result(true) }
+        }
+      case "notificationCapability":
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+          let allowed = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional || settings.authorizationStatus == .ephemeral
+          DispatchQueue.main.async { result(allowed) }
+        }
       case "excludeFromBackup":
         var url = URL(fileURLWithPath: args["path"] as? String ?? "")
         var values = URLResourceValues()
@@ -474,6 +484,23 @@ enum AutoSaveBackground {
     try? BGTaskScheduler.shared.submit(request)
   }
 
+  /// Privacy boundary: stop the active engine too, not only the next scheduled check.
+  static func cancel() {
+    BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: taskId)
+    if let task = waiting { finish(task, ok: false) }
+    if let current = running {
+      current.channel.invokeMethod("stopBackground", arguments: nil)
+      finish(current.task, ok: false)
+    }
+    let center = UNUserNotificationCenter.current()
+    center.getPendingNotificationRequests { requests in
+      center.removePendingNotificationRequests(withIdentifiers: requests.filter { $0.identifier.hasPrefix("autosave.") }.map { $0.identifier })
+    }
+    center.getDeliveredNotifications { notices in
+      center.removeDeliveredNotifications(withIdentifiers: notices.map { $0.request.identifier }.filter { $0.hasPrefix("autosave.") })
+    }
+  }
+
   static func dartReady(_ channel: FlutterMethodChannel, headless isHeadless: Bool) {
     if !isHeadless { appChannel = channel }
     if let task = waiting { run(task, on: channel) }
@@ -512,6 +539,7 @@ enum AutoSaveBackground {
     if waiting === task { waiting = nil }
     running = (task, channel)
     channel.invokeMethod("backgroundCheck", arguments: nil) { reply in
+      guard !finished.contains(ObjectIdentifier(task)) else { return }
       if let r = reply as? [String: Any], let title = r["title"] as? String, let body = r["body"] as? String {
         notify(title: title, body: body, at: (r["at"] as? NSNumber).map { Date(timeIntervalSince1970: $0.doubleValue / 1000) })
       }

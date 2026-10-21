@@ -1,3 +1,4 @@
+import 'package:child_life/app/local_owner.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -81,6 +82,7 @@ class _Env {
   FakeStore get fake => store as FakeStore;
 
   List<Override> get overrides => [
+    localOwnerProvider.overrideWithValue('test'),
     selectedMembershipProvider.overrideWithValue(me),
     ...premiumOverrides(household: household, store: store, billing: billing),
     keepsakeCatalogProvider.overrideWith((ref) => Stream.value(seedCatalog())),
@@ -457,14 +459,14 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final card = _cardDraft();
       final video = _videoDraft();
-      final drafts = ResumeDrafts(prefs);
+      final drafts = ResumeDrafts(prefs, owner: 'test');
       final cardRef = drafts.keep(card, cardDraftToJson(card));
       final videoRef = drafts.keep(video, videoDraftToJson(video));
       expect(identical(drafts.live(cardRef), card), isTrue);
       expect(cardRef.length, lessThanOrEqualTo(80));
 
       // A new run: only the saved copies are left.
-      final again = ResumeDrafts(prefs);
+      final again = ResumeDrafts(prefs, owner: 'test');
       expect(again.live(cardRef), isNull);
       final c = cardDraftFromJson(again.saved(cardRef)!, seedCatalog())!;
       expect(c.template.id, 'card_blush');
@@ -492,7 +494,7 @@ void main() {
     test('old drafts are pruned', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
-      final drafts = ResumeDrafts(prefs);
+      final drafts = ResumeDrafts(prefs, owner: 'test');
       final old = drafts.keep(
         _videoDraft(),
         videoDraftToJson(_videoDraft()),
@@ -505,6 +507,22 @@ void main() {
       );
       expect(drafts.saved(old), isNull);
     });
+
+    test(
+      'a different account or signed-out reader cannot resume a private draft',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final owner = ResumeDrafts(prefs, owner: 'a');
+        final key = owner.keep(_cardDraft(), cardDraftToJson(_cardDraft()));
+        expect(ResumeDrafts(prefs, owner: 'b').saved(key), isNull);
+        final signedOut = ResumeDrafts(prefs, owner: null);
+        expect(signedOut.saved(key), isNull);
+        expect(() => signedOut.keep(_cardDraft(), {}), throwsStateError);
+        await owner.clearAll();
+        expect(ResumeDrafts(prefs, owner: 'a').saved(key), isNull);
+      },
+    );
 
     test('a withdrawn template is not rebuilt', () {
       final json = cardDraftToJson(_cardDraft())..['templateId'] = 'gone';
@@ -602,7 +620,10 @@ void main() {
         overrides: [
           ...env.overrides,
           resumeDraftsProvider.overrideWithValue(
-            ResumeDrafts(container.read(sharedPreferencesProvider)),
+            ResumeDrafts(
+              container.read(sharedPreferencesProvider),
+              owner: 'test',
+            ),
           ),
         ],
       );

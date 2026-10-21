@@ -159,8 +159,7 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
         me.cancel(args["path"] as? String ?? "")
         result(nil)
       case "cancelAll":
-        me.cancelAll()
-        result(nil)
+        me.cancelAll(forget: args["forget"] as? Bool ?? false) { DispatchQueue.main.async { result(nil) } }
       case "expect":
         me.expect(args["babyId"] as? String ?? "", count: args["count"] as? Int ?? 0)
         result(nil)
@@ -278,13 +277,16 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
   }
 
   /// "Tạm dừng": everything handed over stops; Dart hands it over again on resume.
-  func cancelAll() {
+  func cancelAll(forget: Bool = false, completion: (() -> Void)? = nil) {
     lock.lock()
-    jobs = jobs.filter { $0.value.state != "running" }
+    jobs = forget ? [:] : jobs.filter { $0.value.state != "running" }
     run = Run()
     save()
     lock.unlock()
-    session.getAllTasks { tasks in tasks.forEach { $0.cancel() } }
+    session.getAllTasks { tasks in
+      tasks.forEach { $0.cancel() }
+      completion?()
+    }
     Task { await updateActivity(force: true) }
   }
 

@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../app/providers.dart';
+import '../../core/privacy/local_privacy.dart';
 import 'auth_config.dart';
 
 /// Failures the auth screens turn into copy (G-001: no error states are drawn in Figma).
@@ -385,8 +386,13 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    if (_googleReady) await GoogleSignIn.instance.signOut();
-    await _auth.signOut();
+    try {
+      await localPrivacy.signOut();
+      if (_googleReady) await GoogleSignIn.instance.signOut();
+    } finally {
+      // Local authority was revoked synchronously, even if cleanup must retry.
+      await _auth.signOut();
+    }
   }
 
   static String _nonce([int length = 32]) {

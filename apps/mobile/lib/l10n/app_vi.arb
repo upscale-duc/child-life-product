@@ -27415,7 +27415,9 @@
     "description": "Personal sleep diary comparison"
   },
   "pv2ExpiredNote": "Đã hết hạn · không dùng để cá nhân hoá",
-  "@pv2ExpiredNote": { "description": "Expired notebook note remains editable but is excluded from personalization" },
+  "@pv2ExpiredNote": {
+    "description": "Expired notebook note remains editable but is excluded from personalization"
+  },
   "p48Language": "Ngôn ngữ thành phẩm",
   "p48Details": "Thông tin khoảnh khắc",
   "p48Copy": "Nội dung thành phẩm",
@@ -27432,27 +27434,62 @@
   "p48MotionPreview": "Xem chuyển động 4 giây",
   "p48ChangePhotos": "Đổi ảnh đã chọn",
   "p48PreviewFailed": "Chưa tải được đủ ảnh để xem trước. Hãy thử lại.",
-  "@p48Language": {"description": "Premium template phase 1: p48Language"},
-  "@p48Details": {"description": "Premium template phase 1: p48Details"},
-  "@p48Copy": {"description": "Premium template phase 1: p48Copy"},
-  "@p48Format": {"description": "Premium template phase 1: p48Format"},
-  "@p48ReducedMotion": {"description": "Premium template phase 1: p48ReducedMotion"},
-  "@p48CropHint": {"description": "Premium template phase 1: p48CropHint"},
-  "@p48Crop": {"description": "Premium template phase 1: p48Crop"},
-  "@p48Horizontal": {"description": "Premium template phase 1: p48Horizontal"},
-  "@p48Vertical": {"description": "Premium template phase 1: p48Vertical"},
-  "@p48Zoom": {"description": "Premium template phase 1: p48Zoom"},
-  "@p48TooLong": {"description": "Premium template phase 1: p48TooLong"},
-  "@p48Invalid": {"description": "Premium template phase 1: p48Invalid"},
-  "@p48Reset": {"description": "Premium template phase 1: p48Reset"},
-  "@p48MotionPreview": {"description": "Premium template phase 1: p48MotionPreview"},
-  "@p48ChangePhotos": {"description": "Premium template phase 1: p48ChangePhotos"},
-  "@p48PreviewFailed": {"description": "Premium template phase 1: p48PreviewFailed"},
+  "@p48Language": {
+    "description": "Premium template phase 1: p48Language"
+  },
+  "@p48Details": {
+    "description": "Premium template phase 1: p48Details"
+  },
+  "@p48Copy": {
+    "description": "Premium template phase 1: p48Copy"
+  },
+  "@p48Format": {
+    "description": "Premium template phase 1: p48Format"
+  },
+  "@p48ReducedMotion": {
+    "description": "Premium template phase 1: p48ReducedMotion"
+  },
+  "@p48CropHint": {
+    "description": "Premium template phase 1: p48CropHint"
+  },
+  "@p48Crop": {
+    "description": "Premium template phase 1: p48Crop"
+  },
+  "@p48Horizontal": {
+    "description": "Premium template phase 1: p48Horizontal"
+  },
+  "@p48Vertical": {
+    "description": "Premium template phase 1: p48Vertical"
+  },
+  "@p48Zoom": {
+    "description": "Premium template phase 1: p48Zoom"
+  },
+  "@p48TooLong": {
+    "description": "Premium template phase 1: p48TooLong"
+  },
+  "@p48Invalid": {
+    "description": "Premium template phase 1: p48Invalid"
+  },
+  "@p48Reset": {
+    "description": "Premium template phase 1: p48Reset"
+  },
+  "@p48MotionPreview": {
+    "description": "Premium template phase 1: p48MotionPreview"
+  },
+  "@p48ChangePhotos": {
+    "description": "Premium template phase 1: p48ChangePhotos"
+  },
+  "@p48PreviewFailed": {
+    "description": "Premium template phase 1: p48PreviewFailed"
+  },
   "p48WholePhoto": "Giữ trọn ảnh",
-  "@p48WholePhoto": {"description": "Premium scene crop mode"},
+  "@p48WholePhoto": {
+    "description": "Premium scene crop mode"
+  },
   "p48FillFrame": "Lấp đầy khung",
-  "@p48FillFrame": {"description": "Premium scene crop mode"},
-
+  "@p48FillFrame": {
+    "description": "Premium scene crop mode"
+  },
   "p48PhotoSlot": "Ảnh {n}",
   "@p48PhotoSlot": {
     "description": "Select a photo slot in a premium card with multiple pictures",
@@ -27462,8 +27499,104 @@
       }
     }
   },
-  "@p48UseSuggestions": {"description":"Explicit action adopting proposed personal notes; never auto-filled."},
-  "@p48SuggestionsHint": {"description":"Parent reviews proposed notes before using them."},
+  "@p48UseSuggestions": {
+    "description": "Explicit action adopting proposed personal notes; never auto-filled."
+  },
+  "@p48SuggestionsHint": {
+    "description": "Parent reviews proposed notes before using them."
+  },
   "p48UseSuggestions": "Dùng ghi chú gợi ý",
-  "p48SuggestionsHint": "Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú."
+  "p48SuggestionsHint": "Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú.",
+  "historyLoadEarlier": "Tải kỷ niệm cũ hơn",
+  "@historyLoadEarlier": {
+    "description": "Memory history pagination state"
+  },
+  "historyLoadFailed": "Chưa tải được lịch sử. Thử lại",
+  "@historyLoadFailed": {
+    "description": "Memory history pagination state"
+  },
+  "historyEnd": "Đã xem hết lịch sử",
+  "@historyEnd": {
+    "description": "Memory history pagination state"
+  },
+  "engTitle": "Gợi ý thông minh",
+  "engPending": "Ảnh đang chờ chọn lưu",
+  "engMilestone": "Làm video kỷ niệm",
+  "engWeekly": "Nhìn lại tuần qua",
+  "engFamily": "Cập nhật gia đình",
+  "engLumi": "Gợi ý Lumi",
+  "engOffline": "Chưa kiểm tra được gợi ý. Bạn vẫn có thể tiếp tục dùng ứng dụng.",
+  "engRetry": "Thử lại",
+  "engBackfill": "Nhìn lại những khoảnh khắc đã có",
+  "engBackfillBody": "Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.",
+  "engBody": "Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.",
+  "engChooseTemplate": "Chọn mẫu video",
+  "engOpen": "Xem gợi ý",
+  "engLater": "Để sau",
+  "engDismiss": "Bỏ qua gợi ý",
+  "engExpired": "Gợi ý này đã hết hạn hoặc không còn khả dụng.",
+  "engSettingsHint": "Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.",
+  "engConsent": "Cho phép lời mời chủ động",
+  "engResume": "Tiếp tục nhận gợi ý sau thời gian nghỉ",
+  "@engTitle": {
+    "description": "Smart Engagement V1: engTitle"
+  },
+  "@engPending": {
+    "description": "Smart Engagement V1: engPending"
+  },
+  "@engMilestone": {
+    "description": "Smart Engagement V1: engMilestone"
+  },
+  "@engWeekly": {
+    "description": "Smart Engagement V1: engWeekly"
+  },
+  "@engFamily": {
+    "description": "Smart Engagement V1: engFamily"
+  },
+  "@engLumi": {
+    "description": "Smart Engagement V1: engLumi"
+  },
+  "@engOffline": {
+    "description": "Smart Engagement V1: engOffline"
+  },
+  "@engRetry": {
+    "description": "Smart Engagement V1: engRetry"
+  },
+  "@engBackfill": {
+    "description": "Smart Engagement V1: engBackfill"
+  },
+  "@engBackfillBody": {
+    "description": "Smart Engagement V1: engBackfillBody"
+  },
+  "@engBody": {
+    "description": "Smart Engagement V1: engBody"
+  },
+  "@engChooseTemplate": {
+    "description": "Smart Engagement V1: engChooseTemplate"
+  },
+  "@engOpen": {
+    "description": "Smart Engagement V1: engOpen"
+  },
+  "@engLater": {
+    "description": "Smart Engagement V1: engLater"
+  },
+  "@engDismiss": {
+    "description": "Smart Engagement V1: engDismiss"
+  },
+  "@engExpired": {
+    "description": "Smart Engagement V1: engExpired"
+  },
+  "@engSettingsHint": {
+    "description": "Smart Engagement V1: engSettingsHint"
+  },
+  "@engConsent": {
+    "description": "Smart Engagement V1: engConsent"
+  },
+  "@engResume": {
+    "description": "Smart Engagement V1: engResume"
+  },
+  "engPaused": "Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.",
+  "@engPaused": {
+    "description": "Explicit fatigue pause explanation"
+  }
 }

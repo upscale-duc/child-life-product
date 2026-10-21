@@ -22,7 +22,7 @@ import '../family/family_labels.dart' show relationLabel;
 import '../family/family_repository.dart';
 import '../keepsakes/keepsake_access.dart' show selectedKeepsakeAccessProvider;
 import '../memories/memory_models.dart' show MediaItem;
-import '../memories/memory_repository.dart' show mediaProvider;
+import '../memories/memory_repository.dart' show completeMediaProvider;
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../premium/billing_models.dart' show PaywallEntry;
@@ -1026,7 +1026,7 @@ class WeekVideoButton extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     final media =
-        ref.watch(mediaProvider((me.babyId, true))).value ??
+        ref.watch(completeMediaProvider((me.babyId, true))).value ??
         const <MediaItem>[];
     final photos = weekPhotos(media, week, zone);
     if (photos.isEmpty) return const SizedBox.shrink();

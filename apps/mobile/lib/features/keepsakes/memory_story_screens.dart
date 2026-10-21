@@ -23,6 +23,7 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../auto_save/library_save.dart';
+import '../analytics/product_analytics.dart';
 import '../memories/media_bytes.dart';
 import '../memories/media_picker.dart';
 import '../memories/media_viewer.dart';
@@ -326,7 +327,8 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
       );
     }
     final catalog = ref.watch(keepsakeCatalogProvider);
-    final media = ref.watch(mediaProvider((c.babyId, true))).value ?? const [];
+    final media =
+        ref.watch(completeMediaProvider((c.babyId, true))).value ?? const [];
     final milestones = [for (final m in media) ?m.milestone];
     // "Gợi ý": the chosen dịp, else the one the baby's age is near (the same rule as Thiệp cột
     // mốc), else templates whose age window holds the baby's age today.
@@ -493,6 +495,16 @@ Future<void> playVideoTemplate(
                 keep: () => keepVideoDraft(ref, use),
               );
               if (ok && context.mounted) {
+                unawaited(
+                  ref
+                      .read(productAnalyticsReporterProvider)
+                      ?.observe(
+                        'memory_story_started',
+                        babyId: use.babyId,
+                        platform: productAnalyticsPlatform,
+                        locale: outputLocale.languageCode == 'en' ? 'en' : 'vi',
+                      ),
+                );
                 await context.push(
                   Routes.memoryStoryPhotos,
                   extra: use.copyWith(outputLocale: outputLocale.languageCode),
@@ -785,7 +797,8 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
     if (c == null) return const SizedBox.shrink();
     final t = _d.template;
     final locale = Localizations.localeOf(context);
-    final media = ref.watch(mediaProvider((c.babyId, true))).value ?? const [];
+    final media =
+        ref.watch(completeMediaProvider((c.babyId, true))).value ?? const [];
     final byId = {for (final m in media) m.id: m};
     // Photos sent from the phone fill the empty scenes once processed, from the chosen one on.
     for (final m in media) {
@@ -1794,7 +1807,8 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
       );
       if (!_extraEdited.contains(key) && ctrl.text != value) ctrl.text = value;
     }
-    final media = ref.watch(mediaProvider((c.babyId, true))).value ?? const [];
+    final media =
+        ref.watch(completeMediaProvider((c.babyId, true))).value ?? const [];
     final byId = {for (final m in media) m.id: m};
     final day = videoDay(c, _d.occasion, media);
     final dob = c.dob;
@@ -2222,8 +2236,36 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
 
   Future<void> _share(MediaItem video) async {
     final file = await mediaBytes.file(video.paths!.original!);
-    await SharePlus.instance.share(
+    if (!mounted) return;
+    final reporter = ref.read(productAnalyticsReporterProvider);
+    final locale = Localizations.localeOf(context).languageCode == 'en'
+        ? 'en'
+        : 'vi';
+    unawaited(
+      reporter?.observe(
+        'memory_story_share_sheet_opened',
+        babyId: widget.babyId,
+        sourceId: widget.jobId,
+        platform: productAnalyticsPlatform,
+        locale: locale,
+      ),
+    );
+    final result = await SharePlus.instance.share(
       ShareParams(files: [XFile(file.path, mimeType: 'video/mp4')]),
+    );
+    unawaited(
+      reporter?.observe(
+        'memory_story_share_result',
+        babyId: widget.babyId,
+        sourceId: widget.jobId,
+        platform: productAnalyticsPlatform,
+        locale: locale,
+        result: result.status == ShareResultStatus.success
+            ? 'platform_confirmed'
+            : result.status == ShareResultStatus.dismissed
+            ? 'cancelled'
+            : 'unknown',
+      ),
     );
   }
 
@@ -2253,7 +2295,8 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
       );
     }
     final media =
-        ref.watch(mediaProvider((widget.babyId, true))).value ?? const [];
+        ref.watch(completeMediaProvider((widget.babyId, true))).value ??
+        const [];
     final byId = {for (final m in media) m.id: m};
     final cover = job.mediaIds.isEmpty
         ? null

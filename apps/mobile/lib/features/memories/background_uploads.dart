@@ -18,6 +18,16 @@ const _useEmulators = bool.fromEnvironment('CL_EMULATORS');
 /// it: a file that finished while the app was gone is not sent again (Storage would refuse it —
 /// the slot is no longer "uploading" — and the item would wrongly show as failed).
 class BackgroundTransport implements UploadTransport {
+  static Future<void> cancelDeviceWork() async {
+    try {
+      await const MethodChannel(
+        'childlife/uploads',
+      ).invokeMethod<void>('cancelAll', {'forget': true});
+    } on MissingPluginException {
+      // No native transport on this platform/test host.
+    }
+  }
+
   BackgroundTransport({
     required this.token,
     required this.bucket,

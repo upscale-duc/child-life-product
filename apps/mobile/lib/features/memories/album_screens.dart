@@ -43,7 +43,7 @@ String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
 /// Ready items I can see, newest first (the album pages' source).
 List<MediaItem> _visible(WidgetRef ref, MemoryCtx c) => visibleMedia(
-  ref.watch(mediaProvider((c.babyId, c.isParent))).value ?? const [],
+  ref.watch(completeMediaProvider((c.babyId, c.isParent))).value ?? const [],
   const MemoryView(),
   c.parentView,
 );
@@ -585,6 +585,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                   },
                 ),
               ),
+              SliverToBoxAdapter(child: MemoryHistoryMore(ctx: c)),
               const SliverToBoxAdapter(child: SizedBox(height: 140)),
             ],
           ),

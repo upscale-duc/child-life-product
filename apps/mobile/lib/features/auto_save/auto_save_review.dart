@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../app/route_guard.dart';
+import '../analytics/product_analytics.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
@@ -61,7 +62,7 @@ final _alreadySavedProvider = Provider.autoDispose<Set<String>>((ref) {
   for (final c in view.state.pending) {
     final seconds = byBaby[c.match.babyId] ??= {
       for (final m
-          in ref.watch(mediaProvider((c.match.babyId, true))).value ??
+          in ref.watch(completeMediaProvider((c.match.babyId, true))).value ??
               const <MediaItem>[])
         if (!m.deleted) m.captureAt.millisecondsSinceEpoch ~/ 1000,
     };
@@ -98,6 +99,7 @@ class AutoSaveReviewScreen extends ConsumerStatefulWidget {
 }
 
 class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
+  final _measuredBabies = <String>{};
   final _selected = <String>{};
   final _known = <String>{};
   final _expanded = <String>{};
@@ -198,6 +200,24 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     final dob = onlyBaby == null
         ? null
         : ref.watch(babyPrivateProfileProvider(onlyBaby)).value?.dateOfBirth;
+    if (view.loaded && onlyBaby != null && _measuredBabies.add(onlyBaby)) {
+      final reporter = ref.read(productAnalyticsReporterProvider);
+      final locale = Localizations.localeOf(context).languageCode == 'en'
+          ? 'en'
+          : 'vi';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          unawaited(
+            reporter?.observe(
+              'photo_review_opened',
+              babyId: onlyBaby,
+              platform: productAnalyticsPlatform,
+              locale: locale,
+            ),
+          );
+        }
+      });
+    }
     final byWeek = <int, int>{};
     if (dob != null) {
       for (final g in everything) {

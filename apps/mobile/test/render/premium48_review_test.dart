@@ -26,6 +26,7 @@ void main() {
         'premium48-phase3.json',
         'premium48-phase4.json',
         'premium48-phase5.json',
+        'premium48-phase6.json',
       ])
         jsonDecode(
               File(
@@ -125,7 +126,9 @@ void main() {
                     'babyName' =>
                       long
                           ? 'Nguyễn Hoàng Bảo An Minh Khôi'
-                          : (phase == 5
+                          : (phase == 6
+                                ? (number == 12 ? 'Emma' : 'Oliver')
+                                : phase == 5
                                 ? (number == 10 ? 'Lily' : 'Noah')
                                 : 'Bảo An'),
                     'birthDate' => '2026-09-17',
@@ -133,7 +136,7 @@ void main() {
                     'placeName' => 'Đà Nẵng',
                     'narratorName' => 'Linh',
                     'momentDate' =>
-                      phase == 5
+                      phase >= 5
                           ? ''
                           : phase == 2
                           ? '2026-09-20'
@@ -144,9 +147,18 @@ void main() {
                       locale.languageCode == 'vi'
                           ? 'bàn tay bé xíu'
                           : 'tiny fingers',
+                    'milestoneName' =>
+                      locale.languageCode == 'vi'
+                          ? 'những bước nhỏ'
+                          : 'little steps',
+                    'momentPhotoConfirmed' => 'false',
+                    'objectPhotoConfirmed' => 'false',
+                    'companionConfirmed' => 'false',
                     'monthNumber' => '01',
                     'discovery' =>
-                      locale.languageCode == 'vi'
+                      phase == 6
+                          ? ''
+                          : locale.languageCode == 'vi'
                           ? 'bàn tay bé xíu'
                           : 'tiny hands',
                     'thenDate' => '',
@@ -189,7 +201,9 @@ void main() {
                           )
                           as List)
                       .cast<Map<String, dynamic>>();
-              final selected = phase == 5
+              final selected = phase == 6
+                  ? (number == 11 ? [0, 1, 3] : [7, 6])
+                  : phase == 5
                   ? (number == 9 ? [3, 0, 2] : [6])
                   : phase == 4
                   ? (number == 7 ? [0, 2, 4] : [5, 6])
@@ -219,7 +233,9 @@ void main() {
                   for (final photo in photos)
                     CardPhoto(
                       photo,
-                      align: phase == 4 && number == 8
+                      align: phase == 6 && number == 12
+                          ? Alignment.center
+                          : phase == 4 && number == 8
                           ? (photos.indexOf(photo) == 0
                                 ? Alignment.bottomCenter
                                 : Alignment.centerRight)
@@ -230,6 +246,10 @@ void main() {
               if (phase >= 3 && !long) {
                 final neutral = resolveKeepsakeCopy(t.personalization!, {
                   'babyName': 'Bảo An',
+                  if (phase == 6 && number == 11)
+                    'milestoneName': locale.languageCode == 'vi'
+                        ? 'những bước nhỏ'
+                        : 'little steps',
                 }, locale);
                 expect(
                   premiumCardFits(

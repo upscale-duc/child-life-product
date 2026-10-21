@@ -338,7 +338,8 @@ class LargestVideosScreen extends ConsumerWidget {
     for (final b in {for (final v in videos) v.babyId}) {
       byBaby[b] = {
         for (final m
-            in ref.watch(mediaProvider((b, true))).value ?? const <MediaItem>[])
+            in ref.watch(completeMediaProvider((b, true))).value ??
+                const <MediaItem>[])
           m.id: m,
       };
     }

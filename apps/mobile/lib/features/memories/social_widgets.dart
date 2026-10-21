@@ -1,3 +1,4 @@
+import '../engagement/engagement_repository.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -424,6 +425,21 @@ class MessageTile extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final me = ref.watch(selectedMembershipProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted &&
+          me != null &&
+          ModalRoute.of(context)?.isCurrent == true) {
+        final box = context.findRenderObject();
+        if (box is RenderBox &&
+            box.localToGlobal(Offset.zero).dy >= 0 &&
+            box.localToGlobal(Offset.zero).dy <
+                MediaQuery.sizeOf(context).height) {
+          unawaited(
+            engagementContentViewed(ref, me.babyId, 'message', message.id),
+          );
+        }
+      }
+    });
     final locale = Localizations.localeOf(context).toLanguageTag();
     final unread = me != null && !message.readByUid(me.uid);
     final when = DateFormat(

@@ -19,6 +19,26 @@ import 'environment.dart';
 import 'providers.dart';
 import 'firebase_options.dart';
 
+/// ENG-01's optional background metadata sync uses the same flavor/project guards, without
+/// enabling crash/performance collection or starting any user-facing initialization.
+Future<void> bootstrapBackgroundFirebase() async {
+  final info = await PackageInfo.fromPlatform();
+  final resolved = resolveEnvironment(
+    flavor: appFlavor,
+    packageName: info.packageName,
+    platform: defaultTargetPlatform,
+    optionsFor: firebaseOptionsFor,
+  );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(options: resolved.firebaseOptions);
+  }
+  if (Firebase.app().options.projectId !=
+      resolved.environment.firebaseProjectId) {
+    throw EnvironmentConfigError('Background Firebase environment mismatch');
+  }
+  await _useEmulatorsIfRequested(resolved.environment);
+}
+
 /// Resolves the environment and starts Firebase + error reporting.
 /// Never attaches user, family or child data to telemetry (engineering brief §05).
 Future<ResolvedEnvironment> bootstrap() async {

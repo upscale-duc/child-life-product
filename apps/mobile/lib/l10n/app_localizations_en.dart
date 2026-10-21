@@ -19678,4 +19678,79 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get p48SuggestionsHint =>
       'Use these suggestions only if they fit your baby; you can edit each note.';
+
+  @override
+  String get historyLoadEarlier => 'Load earlier memories';
+
+  @override
+  String get historyLoadFailed => 'Could not load history. Try again';
+
+  @override
+  String get historyEnd => 'You have reached the end';
+
+  @override
+  String get engTitle => 'Smart suggestions';
+
+  @override
+  String get engPending => 'Photos awaiting review';
+
+  @override
+  String get engMilestone => 'Make a memory video';
+
+  @override
+  String get engWeekly => 'Look back on your week';
+
+  @override
+  String get engFamily => 'Family updates';
+
+  @override
+  String get engLumi => 'Lumi suggestions';
+
+  @override
+  String get engOffline =>
+      'Suggestions could not be checked. You can continue using the app.';
+
+  @override
+  String get engRetry => 'Try again';
+
+  @override
+  String get engBackfill => 'Look back on moments you already have';
+
+  @override
+  String get engBackfillBody =>
+      'Make a video for a past milestone using your saved photos.';
+
+  @override
+  String get engBody =>
+      'Take a look when convenient. You always decide what to save or create.';
+
+  @override
+  String get engChooseTemplate => 'Choose a video template';
+
+  @override
+  String get engOpen => 'View suggestion';
+
+  @override
+  String get engLater => 'Later';
+
+  @override
+  String get engDismiss => 'Dismiss suggestion';
+
+  @override
+  String get engExpired =>
+      'This suggestion has expired or is no longer available.';
+
+  @override
+  String get engSettingsHint =>
+      'Applies to new proactive invitations. Your scheduled Care routines and transactional updates keep their own settings.';
+
+  @override
+  String get engConsent => 'Allow proactive invitations';
+
+  @override
+  String get engResume => 'Resume suggestions after the break';
+
+  @override
+  String get engPaused =>
+      'Proactive suggestions are paused. You can choose to resume after at least 14 days.';
 }

@@ -1,3 +1,5 @@
+import '../engagement/engagement_local.dart';
+import '../../core/appearance/appearance_providers.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -8,6 +10,7 @@ import '../../app/environment.dart';
 import '../../app/locale.dart';
 import '../../app/providers.dart';
 import '../../app/session.dart';
+import '../../app/local_owner.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
 import '../baby/baby_models.dart';
@@ -29,7 +32,10 @@ final autoSaveNativeProvider = Provider<AutoSaveNative>(
 
 final autoSaveStoreProvider = Provider<AutoSaveStore>((ref) {
   final native = ref.watch(autoSaveNativeProvider);
-  return AutoSaveStore(onCreated: native.excludeFromBackup);
+  return AutoSaveStore(
+    owner: ref.watch(localOwnerProvider),
+    onCreated: native.excludeFromBackup,
+  );
 });
 
 /// Reads a library original for upload (it may come down from iCloud first); replaced in tests.
@@ -148,6 +154,10 @@ class AutoSaveUndo {
 /// True in the engine iOS starts only for a background check (auto_save_background.dart).
 final autoSaveHeadlessProvider = Provider<bool>((ref) => false);
 
+/// Optional operational metadata observer. The scan/biometrics themselves remain local.
+final autoSaveEngagementSyncProvider =
+    Provider<Future<void> Function(AutoSaveView)>((ref) => (_) async {});
+
 /// The "Có 8 ảnh mới có thể có Teddy" notification (AR03).
 @immutable
 class AutoSaveNote {
@@ -243,10 +253,19 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     }
   }
 
-  AutoSaveStore get _store => ref.read(autoSaveStoreProvider);
+  AutoSaveStore? _ownedStore;
+  AutoSaveStore get _store {
+    final existing = _ownedStore;
+    if (existing != null) return existing;
+    final store = ref.read(autoSaveStoreProvider);
+    _ownedStore = store;
+    return store;
+  }
 
   @override
   AutoSaveView build() {
+    _ownedStore ??= ref.read(autoSaveStoreProvider);
+    ref.onDispose(stop);
     final headless = ref.read(autoSaveHeadlessProvider);
     if (_native.supported) {
       if (!headless) {
@@ -301,6 +320,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   }
 
   Future<void> _save() async {
+    if (!ref.mounted) return;
     _publish();
     try {
       await _store.save(_s);
@@ -438,9 +458,15 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   }
 
   Future<void> removeBaby(String babyId) async {
+    stop();
     await _load();
     _s = _s.copyWith(
       babies: {..._s.babies}..remove(babyId),
+      names: {..._s.names}..remove(babyId),
+      allowed: {..._s.allowed}..remove(babyId),
+      ledger: {
+        for (final e in _s.ledger.entries) e.key: {...e.value}..remove(babyId),
+      },
       pending: [
         for (final c in _s.pending)
           if (c.match.babyId != babyId) c,
@@ -522,11 +548,27 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     final before = {for (final c in _s.pending) c.asset.id};
     _count('autoSaveBackgroundCheck');
     await scan();
+    try {
+      await ref.read(autoSaveEngagementSyncProvider)(state);
+    } catch (_) {
+      /* No metadata sync must fail a local review. */
+    }
     final fresh = [
       for (final c in _s.pending)
         if (!before.contains(c.asset.id)) c,
     ];
     final now = DateTime.now();
+    final owner = ref.read(localOwnerProvider);
+    if (owner != null &&
+        _s.pending.any(
+          (c) => EngagementLocal(
+            ref.read(sharedPreferencesProvider),
+            owner,
+          ).ownsLegacy('pending', c.match.babyId),
+        )) {
+      await _save();
+      return null;
+    }
     final note = autoSaveNote(
       state: _s,
       fresh: fresh,
@@ -589,6 +631,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       _running ??= _scanOnce().whenComplete(() => _running = null);
 
   Future<void> _scanOnce() async {
+    if (!ref.mounted) return;
     _stop = false;
     try {
       await _load();
@@ -631,6 +674,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         photos: _s.photos,
         videos: _s.videos,
       );
+      if (_stop || !ref.mounted) return;
       // Checked with an older pass: everything listed is looked at once more.
       final recheck = _s.videoPass < autoSaveVideoPass
           ? changes.ids.toSet()
@@ -659,6 +703,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         if (_stop || !ref.mounted) break;
         final ids = todo.sublist(i, math.min(i + _batch, todo.length));
         final infos = await _native.analyze(ids);
+        if (_stop || !ref.mounted) return;
         final seen = {..._s.seen};
         final pending = [..._s.pending];
         for (final a in infos) {
@@ -694,7 +739,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         _scan = ScanProgress(checked, todo.length);
         await _save();
       }
-      if (_devTrace) {
+      if (_devTrace && !_stop && ref.mounted) {
         unawaited(
           _store.saveTrace({
             'at': now.toIso8601String(),
@@ -726,7 +771,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           }),
         );
       }
-      if (!_stop) {
+      if (!_stop && ref.mounted) {
         _s = _s.copyWith(
           token: changes.token,
           lastScanAt: now,
@@ -883,6 +928,18 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           },
           picked: buffer,
         );
+        try {
+          final owner = ref.read(localOwnerProvider);
+          if (owner != null) {
+            await EngagementLocal(
+              ref.read(sharedPreferencesProvider),
+              owner,
+            ).approved(entry.key, batchId);
+            ref.read(engagementRevisionProvider.notifier).refresh();
+          }
+        } catch (_) {
+          /* Measurement never blocks upload. */
+        }
         queued += buffer.length;
         buffer = [];
         if (closes) {
@@ -946,7 +1003,6 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         samples: [...baby.picked, ...approved.take(_maxApprovedSamples)],
       );
     }
-    final month = _month(DateTime.now());
     _s = _s.copyWith(
       ledger: ledger,
       babies: babies,
@@ -955,10 +1011,6 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           if (!reviewedIds.contains(c.asset.id) || missing.contains(c.asset.id))
             c,
       ],
-      savedByMonth: {
-        ..._s.savedByMonth,
-        month: (_s.savedByMonth[month] ?? 0) + queued,
-      },
     );
     _count('autoSaveApproved', queued);
     _count('autoSaveUnticked', reviewed.length - chosen.length);
@@ -1046,8 +1098,27 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   // ---------- Ledger (P-150) ----------
 
   /// Items queued for upload, by Tự lưu or by hand.
+  Future<void> recordQueued(List<String> assetIds, String babyId) =>
+      _record(assetIds, babyId, LedgerState.queued);
+
+  /// Authoritative server-ready acknowledgement; counts once, including restart/replay.
   Future<void> recordUploaded(List<String> assetIds, String babyId) =>
       _record(assetIds, babyId, LedgerState.uploaded);
+
+  Future<void> recordUnqueued(String assetId, String babyId) async {
+    await _load();
+    if (_s.ledger[assetId]?[babyId] != LedgerState.queued) return;
+    final ledger = _copyLedger();
+    ledger[assetId]?.remove(babyId);
+    if (ledger[assetId]?.isEmpty ?? false) ledger.remove(assetId);
+    _s = _s.copyWith(
+      ledger: ledger,
+      seen: {..._s.seen}..remove(assetId),
+      clearToken: true,
+      scanFrom: DateTime.now().subtract(_window),
+    );
+    await _save();
+  }
 
   /// Items saved to the library from Child Life.
   Future<void> recordFromApp(String assetId) =>
@@ -1058,7 +1129,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       // The ledger only serves Tự lưu, which exists on iOS (D-066 #3).
       if (!_native.supported) return;
       await _load();
-      if (st == LedgerState.uploaded && _s.enabled) {
+      if (st == LedgerState.queued && _s.enabled) {
         // A photo a check had looked at, never suggested, then added by hand: a miss (P-148).
         final waiting = {for (final c in _s.pending) c.asset.id};
         _count(
@@ -1073,12 +1144,29 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         );
       }
       final ledger = _copyLedger();
+      final newlyReady = st == LedgerState.uploaded
+          ? ids
+                .where((id) => ledger[id]?[babyId] != LedgerState.uploaded)
+                .length
+          : 0;
       for (final id in ids) {
+        // Replaying a persisted queue must never downgrade an acknowledged item.
+        if (st == LedgerState.queued &&
+            ledger[id]?[babyId] == LedgerState.uploaded) {
+          continue;
+        }
         (ledger[id] ??= {})[babyId] = st;
       }
       final done = ids.toSet();
       _s = _s.copyWith(
         ledger: ledger,
+        savedByMonth: newlyReady == 0
+            ? _s.savedByMonth
+            : {
+                ..._s.savedByMonth,
+                _month(DateTime.now()):
+                    (_s.savedByMonth[_month(DateTime.now())] ?? 0) + newlyReady,
+              },
         pending: [
           for (final c in _s.pending)
             if (!done.contains(c.asset.id) ||
@@ -1113,7 +1201,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   /// Sends waiting counters; whatever fails waits for the next time. Not from a background
   /// check, which has no Firebase.
   Future<void> _flush() async {
-    if (ref.read(autoSaveHeadlessProvider) || !ref.mounted) return;
+    if (!ref.mounted || ref.read(autoSaveHeadlessProvider)) return;
     final send = ref.read(autoSaveEventSinkProvider);
     for (final e in {..._s.unsent}.entries) {
       try {

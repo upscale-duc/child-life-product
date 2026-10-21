@@ -786,8 +786,10 @@ class _SavedView extends ConsumerWidget {
     final group = reference?.group;
     final style = groupStyle(context, group);
     final key = (ctx.babyId, true);
-    final media = ref.watch(mediaProvider(key)).value ?? const <MediaItem>[];
-    final memories = ref.watch(memoriesProvider(key)).value ?? const <Memory>[];
+    final media =
+        ref.watch(completeMediaProvider(key)).value ?? const <MediaItem>[];
+    final memories =
+        ref.watch(completeMemoriesProvider(key)).value ?? const <Memory>[];
     final recent = ref.watch(recentMilestoneMemoriesProvider);
     final pending =
         ref.watch(pendingMilestonePhotosProvider)[r.id] ??

@@ -6,14 +6,19 @@ import '../../l10n/app_localizations.dart';
 enum AgeUnit { newborn, days, weeks, months, years }
 
 ({AgeUnit unit, int count}) babyAge(DateTime dateOfBirth, DateTime today) {
-  final dob = DateTime(dateOfBirth.year, dateOfBirth.month, dateOfBirth.day);
-  final day = DateTime(today.year, today.month, today.day);
+  final dob = DateTime.utc(
+    dateOfBirth.year,
+    dateOfBirth.month,
+    dateOfBirth.day,
+  );
+  final day = DateTime.utc(today.year, today.month, today.day);
   final days = day.difference(dob).inDays;
   if (days <= 0) return (unit: AgeUnit.newborn, count: 0);
   if (days < 14) return (unit: AgeUnit.days, count: days);
   if (days < 91) return (unit: AgeUnit.weeks, count: days ~/ 7);
   var months = (day.year - dob.year) * 12 + day.month - dob.month;
-  if (day.day < dob.day) months -= 1;
+  final lastDay = DateTime.utc(day.year, day.month + 1, 0).day;
+  if (day.day < (dob.day < lastDay ? dob.day : lastDay)) months -= 1;
   if (months < 24) {
     return (unit: AgeUnit.months, count: months < 3 ? 3 : months);
   }

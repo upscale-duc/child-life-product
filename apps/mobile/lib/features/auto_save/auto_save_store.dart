@@ -23,7 +23,10 @@ const autoSaveVideoPass = 3;
 
 /// What happened to a library item for one baby (P-150).
 enum LedgerState {
-  /// Queued for upload to Kỷ niệm (by Tự lưu or by hand).
+  /// Suppresses duplicate suggestions while waiting; not a cloud save.
+  queued('queue'),
+
+  /// Confirmed ready by the server (legacy "up" entries remain handled, unverified).
   uploaded('up'),
 
   /// Left unticked or "Bỏ qua lần này": not suggested again.
@@ -213,7 +216,7 @@ class AutoSaveState {
   /// Whether this item is done for this baby (or for every baby).
   bool handled(String assetId, [String? babyId]) {
     final row = ledger[assetId];
-    if (row == null) return false;
+    if (row == null || row.isEmpty) return false;
     return babyId == null || row.containsKey('*') || row.containsKey(babyId);
   }
 
@@ -279,11 +282,15 @@ class AutoSaveState {
     ledger: {
       for (final e in ledger.entries)
         if (e.value.values.any(
-          (s) => s == LedgerState.uploaded || s == LedgerState.fromApp,
+          (s) =>
+              s == LedgerState.queued ||
+              s == LedgerState.uploaded ||
+              s == LedgerState.fromApp,
         ))
           e.key: {
             for (final s in e.value.entries)
-              if (s.value == LedgerState.uploaded ||
+              if (s.value == LedgerState.queued ||
+                  s.value == LedgerState.uploaded ||
                   s.value == LedgerState.fromApp)
                 s.key: s.value,
           },
@@ -313,6 +320,7 @@ class AutoSaveState {
       for (final e in seen.entries) e.key: e.value.millisecondsSinceEpoch,
     },
     'pending': [for (final c in pending) _candidateJson(c)],
+    'readyCountVersion': 2,
     'savedByMonth': savedByMonth,
     'offAt': offAt?.millisecondsSinceEpoch,
     'scanFrom': scanFrom?.millisecondsSinceEpoch,
@@ -357,7 +365,11 @@ class AutoSaveState {
           ?_candidateFromJson(map(c)),
       ],
       savedByMonth: {
-        for (final e in map(j['savedByMonth']).entries)
+        for (final e
+            in (j['readyCountVersion'] == 2
+                    ? map(j['savedByMonth'])
+                    : <String, Object?>{})
+                .entries)
           e.key: (e.value! as num).toInt(),
       },
       offAt: time(j['offAt']),
@@ -444,17 +456,24 @@ Float32List _floats(String s) {
 
 /// Reads and writes the state file. Writes are serialised and atomic (temp file + rename).
 class AutoSaveStore {
-  AutoSaveStore({Future<Directory> Function()? dir, this.onCreated})
-    : _dir = dir ?? _defaultDir;
+  AutoSaveStore({
+    Future<Directory> Function()? dir,
+    this.onCreated,
+    String? owner,
+  }) : _dir =
+           dir ??
+           (() async {
+             if (owner == null) throw StateError('signed-out');
+             return Directory(
+               '${(await getApplicationSupportDirectory()).path}/accounts/${Uri.encodeComponent(owner)}/auto_save',
+             );
+           });
 
   final Future<Directory> Function() _dir;
 
   /// Called once with the folder when it is first created (to exclude it from backup).
   final Future<void> Function(String path)? onCreated;
   Future<void> _last = Future.value();
-
-  static Future<Directory> _defaultDir() async =>
-      Directory('${(await getApplicationSupportDirectory()).path}/auto_save');
 
   Future<File> _file() async {
     final dir = await _dir();

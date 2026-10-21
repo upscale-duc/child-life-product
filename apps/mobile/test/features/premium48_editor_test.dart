@@ -77,6 +77,59 @@ void main() {
     },
   );
 
+  testWidgets(
+    'phase 6 milestone is entered by a parent and photo confirmation changes the preview',
+    (tester) async {
+      final raw =
+          jsonDecode(
+                File(
+                  '../../packages/contracts/test/vectors/premium48-phase6.json',
+                ).readAsStringSync(),
+              )
+              as Map;
+      final ts = (raw['templates'] as List)
+          .map(KeepsakeTemplate.fromJson)
+          .nonNulls
+          .toList();
+      await pumpScreen(
+        tester,
+        PremiumKeepsakeEditor(template: ts.first, babyId: teddyId),
+        catalog: KeepsakeCatalog(ts),
+      );
+      final input = find.byWidgetPredicate(
+        (w) => w is TextField && w.decoration?.hintText == 'những bước nhỏ',
+      );
+      await tester.scrollUntilVisible(
+        input,
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(tester.widget<TextField>(input).controller!.text, isEmpty);
+      await tester.enterText(input, 'tự lật');
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      final confirmation = find.text('Ảnh ghi lại đúng khoảnh khắc đạt mốc');
+      await tester.scrollUntilVisible(
+        confirmation,
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(confirmation);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byType(KeepsakeCardView),
+        -250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      final copy = tester
+          .widget<KeepsakeCardView>(find.byType(KeepsakeCardView))
+          .content;
+      expect(copy.field('headline'), 'CON LÀM ĐƯỢC RỒI');
+      expect(copy.field('label0'), 'tự lật');
+      expect(copy.field('title'), contains('tự lật'));
+    },
+  );
+
   testWidgets('phase 4 month picker updates the authored chapter number', (
     tester,
   ) async {

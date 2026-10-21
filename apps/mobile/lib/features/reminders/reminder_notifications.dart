@@ -1,3 +1,4 @@
+import '../engagement/engagement_local.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -111,6 +112,27 @@ abstract class ReminderNotifications {
 class PluginReminderNotifications implements ReminderNotifications {
   final _plugin = FlutterLocalNotificationsPlugin();
   var _ready = false;
+
+  /// ENG-00 adapter handoff: cancel only this baby's optional legacy producers.
+  /// User-configured Care notifications retain their ids and schedules.
+  Future<bool> cancelEngagementLegacy(String babyId, String lane) async {
+    if (!_ready) return false;
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final row in pending) {
+      try {
+        final data = jsonDecode(row.payload ?? 'null');
+        if (data is Map &&
+            data['b'] == babyId &&
+            ((lane == 'milestone' && data['k'] == 'keepsake') ||
+                (lane == 'lumi' && data['k'] == 'personal_day'))) {
+          await _plugin.cancel(id: row.id);
+        }
+      } catch (_) {
+        /* Unrelated or legacy malformed payload: do not touch Care. */
+      }
+    }
+    return true;
+  }
 
   @override
   Future<void> init(void Function(String? payload) onTap) async {
@@ -504,7 +526,15 @@ class _ReminderNotificationSyncState
       if (plan.newSlots.isNotEmpty) {
         unawaited(ref.read(nudgeStoreProvider).addSlots(plan.newSlots));
       }
+      final currentSession = ref.read(sessionProvider);
       for (final n in plan.nudges) {
+        if (currentSession is SessionSignedIn &&
+            EngagementLocal(
+              ref.read(sharedPreferencesProvider),
+              currentSession.user.uid,
+            ).ownsLegacy('milestone', n.babyId)) {
+          continue;
+        }
         out.add(nudgeNotification(l10n, n));
       }
     } on Object {
@@ -576,6 +606,7 @@ class _ReminderNotificationSyncState
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(engagementRevisionProvider);
     final enabled = ref.watch(notificationsEnabledProvider);
     ref.watch(deviceRemindersProvider);
     for (final r in ref.watch(deviceRemindersProvider)) {

@@ -1,3 +1,5 @@
+import '../engagement/engagement_widgets.dart';
+import '../engagement/engagement_launch.dart';
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -127,6 +129,30 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     if (!mounted) return;
     // D-076 #2: the push's row in Hộp thông báo is read once the push is opened.
     markPushRead(ref, message.data);
+    final engagementId = message.data['engagementId'];
+    if (engagementId is String) {
+      final session = ref.read(sessionProvider);
+      if (session is! SessionSignedIn || session.isAnonymous) {
+        ref.read(engagementLaunchQueueProvider).put(engagementId);
+        return;
+      }
+      try {
+        final opened = await openEngagement(
+          ref,
+          engagementId,
+          surface: 'notification',
+        );
+        if (!opened && mounted) {
+          ref.read(routerProvider).go(Routes.notifications);
+          ClToaster.of(
+            context,
+          ).show(message: AppLocalizations.of(context).engExpired);
+        }
+      } catch (_) {
+        if (mounted) ref.read(routerProvider).go(Routes.notifications);
+      }
+      return;
+    }
     // v1.0 1f / 1g: rule reminders open their sheet (or the log, from "Ghi …").
     final push = rulePushOf(message.data);
     if (push != null) {
@@ -332,6 +358,16 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(sessionProvider);
+    final pending = session is SessionSignedIn && !session.isAnonymous
+        ? ref.read(engagementLaunchQueueProvider).take()
+        : null;
+    if (pending != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          unawaited(_open(RemoteMessage(data: {'engagementId': pending})));
+        }
+      });
+    }
     final language = Localizations.localeOf(context).languageCode == 'en'
         ? 'en'
         : 'vi';

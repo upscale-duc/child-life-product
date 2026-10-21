@@ -300,10 +300,14 @@ void main() {
     });
 
     test('callable answers: tolerant, never an unlock', () {
-      final a = NextActionAnswer.fromJson(nextActionJson());
+      final input = nextActionJson();
+      final a = NextActionAnswer.fromJson(input);
       expect(a.state, AnswerState.suggestion);
       expect(a.recommendation?.contentId, 'act_wind_down');
-      expect(a.recommendation?.checkInId, sleepCheckIn().id);
+      expect(
+        a.recommendation?.checkInId,
+        ((input['recommendation'] as Map)['supportingIds'] as List).first,
+      );
       expect(a.sleep?.status, SleepStatus.changeDetected);
       // A suggestion without a recommendation is no suggestion.
       expect(

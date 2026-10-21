@@ -478,7 +478,8 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     final l10n = AppLocalizations.of(context), cl = context.cl;
     final uiLocale = Localizations.localeOf(context);
     final media =
-        ref.watch(mediaProvider((c.babyId, true))).value ?? <MediaItem>[];
+        ref.watch(completeMediaProvider((c.babyId, true))).value ??
+        <MediaItem>[];
     final byId = {for (final m in media) m.id: m};
     final catalog = ref.watch(keepsakeCatalogProvider).value;
     final copy = _copy;

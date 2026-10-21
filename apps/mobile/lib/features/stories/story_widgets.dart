@@ -18,7 +18,7 @@ import 'story_models.dart';
 Map<String, MediaItem> storyMedia(WidgetRef ref, String babyId, bool parent) =>
     {
       for (final m
-          in ref.watch(mediaProvider((babyId, parent))).value ??
+          in ref.watch(completeMediaProvider((babyId, parent))).value ??
               const <MediaItem>[])
         if (m.isReady && !m.deleted) m.id: m,
     };

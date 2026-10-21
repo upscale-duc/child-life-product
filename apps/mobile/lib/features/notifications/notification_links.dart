@@ -1,3 +1,4 @@
+import '../engagement/engagement_widgets.dart';
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
@@ -22,6 +23,10 @@ Future<bool> openInboxItem(WidgetRef ref, InboxItem item) async {
   if (session is! SessionSignedIn) return false;
   if (item.unread) {
     unawaited(_markRead(ref, session.user.uid, [item.id]));
+  }
+  final engagementId = item.data['engagementId'];
+  if (engagementId is String) {
+    return openEngagement(ref, engagementId, surface: 'notification');
   }
   final babyId = item.babyId;
   if (babyId != null && !session.active.any((m) => m.babyId == babyId)) {

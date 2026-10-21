@@ -5432,7 +5432,9 @@
     "description": "Personal sleep diary comparison"
   },
   "pv2ExpiredNote": "Expired · no longer used for personalization",
-  "@pv2ExpiredNote": { "description": "Expired notebook note remains editable but is excluded from personalization" },
+  "@pv2ExpiredNote": {
+    "description": "Expired notebook note remains editable but is excluded from personalization"
+  },
   "p48Language": "Keepsake language",
   "p48Details": "Moment details",
   "p48Copy": "Keepsake copy",
@@ -5449,27 +5451,62 @@
   "p48MotionPreview": "Watch 4-second preview",
   "p48ChangePhotos": "Change selected photos",
   "p48PreviewFailed": "Could not load every preview photo. Please try again.",
-  "@p48Language": {"description": "Premium template phase 1: p48Language"},
-  "@p48Details": {"description": "Premium template phase 1: p48Details"},
-  "@p48Copy": {"description": "Premium template phase 1: p48Copy"},
-  "@p48Format": {"description": "Premium template phase 1: p48Format"},
-  "@p48ReducedMotion": {"description": "Premium template phase 1: p48ReducedMotion"},
-  "@p48CropHint": {"description": "Premium template phase 1: p48CropHint"},
-  "@p48Crop": {"description": "Premium template phase 1: p48Crop"},
-  "@p48Horizontal": {"description": "Premium template phase 1: p48Horizontal"},
-  "@p48Vertical": {"description": "Premium template phase 1: p48Vertical"},
-  "@p48Zoom": {"description": "Premium template phase 1: p48Zoom"},
-  "@p48TooLong": {"description": "Premium template phase 1: p48TooLong"},
-  "@p48Invalid": {"description": "Premium template phase 1: p48Invalid"},
-  "@p48Reset": {"description": "Premium template phase 1: p48Reset"},
-  "@p48MotionPreview": {"description": "Premium template phase 1: p48MotionPreview"},
-  "@p48ChangePhotos": {"description": "Premium template phase 1: p48ChangePhotos"},
-  "@p48PreviewFailed": {"description": "Premium template phase 1: p48PreviewFailed"},
+  "@p48Language": {
+    "description": "Premium template phase 1: p48Language"
+  },
+  "@p48Details": {
+    "description": "Premium template phase 1: p48Details"
+  },
+  "@p48Copy": {
+    "description": "Premium template phase 1: p48Copy"
+  },
+  "@p48Format": {
+    "description": "Premium template phase 1: p48Format"
+  },
+  "@p48ReducedMotion": {
+    "description": "Premium template phase 1: p48ReducedMotion"
+  },
+  "@p48CropHint": {
+    "description": "Premium template phase 1: p48CropHint"
+  },
+  "@p48Crop": {
+    "description": "Premium template phase 1: p48Crop"
+  },
+  "@p48Horizontal": {
+    "description": "Premium template phase 1: p48Horizontal"
+  },
+  "@p48Vertical": {
+    "description": "Premium template phase 1: p48Vertical"
+  },
+  "@p48Zoom": {
+    "description": "Premium template phase 1: p48Zoom"
+  },
+  "@p48TooLong": {
+    "description": "Premium template phase 1: p48TooLong"
+  },
+  "@p48Invalid": {
+    "description": "Premium template phase 1: p48Invalid"
+  },
+  "@p48Reset": {
+    "description": "Premium template phase 1: p48Reset"
+  },
+  "@p48MotionPreview": {
+    "description": "Premium template phase 1: p48MotionPreview"
+  },
+  "@p48ChangePhotos": {
+    "description": "Premium template phase 1: p48ChangePhotos"
+  },
+  "@p48PreviewFailed": {
+    "description": "Premium template phase 1: p48PreviewFailed"
+  },
   "p48WholePhoto": "Show whole photo",
-  "@p48WholePhoto": {"description": "Premium scene crop mode"},
+  "@p48WholePhoto": {
+    "description": "Premium scene crop mode"
+  },
   "p48FillFrame": "Fill the frame",
-  "@p48FillFrame": {"description": "Premium scene crop mode"},
-
+  "@p48FillFrame": {
+    "description": "Premium scene crop mode"
+  },
   "p48PhotoSlot": "Photo {n}",
   "@p48PhotoSlot": {
     "description": "Select a photo slot in a premium card with multiple pictures",
@@ -5479,8 +5516,104 @@
       }
     }
   },
-  "@p48UseSuggestions": {"description":"Explicit action adopting proposed personal notes; never auto-filled."},
-  "@p48SuggestionsHint": {"description":"Parent reviews proposed notes before using them."},
+  "@p48UseSuggestions": {
+    "description": "Explicit action adopting proposed personal notes; never auto-filled."
+  },
+  "@p48SuggestionsHint": {
+    "description": "Parent reviews proposed notes before using them."
+  },
   "p48UseSuggestions": "Use suggested notes",
-  "p48SuggestionsHint": "Use these suggestions only if they fit your baby; you can edit each note."
+  "p48SuggestionsHint": "Use these suggestions only if they fit your baby; you can edit each note.",
+  "historyLoadEarlier": "Load earlier memories",
+  "@historyLoadEarlier": {
+    "description": "Memory history pagination state"
+  },
+  "historyLoadFailed": "Could not load history. Try again",
+  "@historyLoadFailed": {
+    "description": "Memory history pagination state"
+  },
+  "historyEnd": "You have reached the end",
+  "@historyEnd": {
+    "description": "Memory history pagination state"
+  },
+  "engTitle": "Smart suggestions",
+  "engPending": "Photos awaiting review",
+  "engMilestone": "Make a memory video",
+  "engWeekly": "Look back on your week",
+  "engFamily": "Family updates",
+  "engLumi": "Lumi suggestions",
+  "engOffline": "Suggestions could not be checked. You can continue using the app.",
+  "engRetry": "Try again",
+  "engBackfill": "Look back on moments you already have",
+  "engBackfillBody": "Make a video for a past milestone using your saved photos.",
+  "engBody": "Take a look when convenient. You always decide what to save or create.",
+  "engChooseTemplate": "Choose a video template",
+  "engOpen": "View suggestion",
+  "engLater": "Later",
+  "engDismiss": "Dismiss suggestion",
+  "engExpired": "This suggestion has expired or is no longer available.",
+  "engSettingsHint": "Applies to new proactive invitations. Your scheduled Care routines and transactional updates keep their own settings.",
+  "engConsent": "Allow proactive invitations",
+  "engResume": "Resume suggestions after the break",
+  "@engTitle": {
+    "description": "Smart Engagement V1: engTitle"
+  },
+  "@engPending": {
+    "description": "Smart Engagement V1: engPending"
+  },
+  "@engMilestone": {
+    "description": "Smart Engagement V1: engMilestone"
+  },
+  "@engWeekly": {
+    "description": "Smart Engagement V1: engWeekly"
+  },
+  "@engFamily": {
+    "description": "Smart Engagement V1: engFamily"
+  },
+  "@engLumi": {
+    "description": "Smart Engagement V1: engLumi"
+  },
+  "@engOffline": {
+    "description": "Smart Engagement V1: engOffline"
+  },
+  "@engRetry": {
+    "description": "Smart Engagement V1: engRetry"
+  },
+  "@engBackfill": {
+    "description": "Smart Engagement V1: engBackfill"
+  },
+  "@engBackfillBody": {
+    "description": "Smart Engagement V1: engBackfillBody"
+  },
+  "@engBody": {
+    "description": "Smart Engagement V1: engBody"
+  },
+  "@engChooseTemplate": {
+    "description": "Smart Engagement V1: engChooseTemplate"
+  },
+  "@engOpen": {
+    "description": "Smart Engagement V1: engOpen"
+  },
+  "@engLater": {
+    "description": "Smart Engagement V1: engLater"
+  },
+  "@engDismiss": {
+    "description": "Smart Engagement V1: engDismiss"
+  },
+  "@engExpired": {
+    "description": "Smart Engagement V1: engExpired"
+  },
+  "@engSettingsHint": {
+    "description": "Smart Engagement V1: engSettingsHint"
+  },
+  "@engConsent": {
+    "description": "Smart Engagement V1: engConsent"
+  },
+  "@engResume": {
+    "description": "Smart Engagement V1: engResume"
+  },
+  "engPaused": "Proactive suggestions are paused. You can choose to resume after at least 14 days.",
+  "@engPaused": {
+    "description": "Explicit fatigue pause explanation"
+  }
 }

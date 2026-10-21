@@ -1,3 +1,4 @@
+import '../engagement/engagement_widgets.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -114,6 +115,7 @@ class _NotificationSettingsScreenState
     return MePage(
       title: l10n.meNotifications,
       children: [
+        const EngagementPreferencesPanel(),
         ClCardGroup(
           children: [
             MeRow(

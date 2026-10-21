@@ -1,3 +1,5 @@
+import 'dart:async';
+import '../engagement/engagement_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -305,6 +307,7 @@ class PersonalizationDayScreen extends ConsumerStatefulWidget {
 class _PersonalizationDayScreenState
     extends ConsumerState<PersonalizationDayScreen> {
   bool _busy = false;
+  final _engagementViewed = <String>{};
   Future<bool> _write(PersonalDayKey key, Map<String, Object?> action) async {
     if (_busy) return false;
     setState(() => _busy = true);
@@ -332,6 +335,20 @@ class _PersonalizationDayScreenState
           ),
         ],
       );
+    }
+    if (_engagementViewed.add('${key.babyId}/${day.data['handoverVersion']}')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+          unawaited(
+            engagementContentViewed(
+              ref,
+              key.babyId,
+              'personal_day',
+              key.babyId,
+            ),
+          );
+        }
+      });
     }
     final content = ref.watch(rhythmContentProvider).value;
     final locale = Localizations.localeOf(context);

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
@@ -26,12 +27,16 @@ class MemoryRepository {
           .where('audience', isEqualTo: Audience.family.name)
           .where('state', isEqualTo: 'published');
     }
-    return q
+    q = q
         .where('deleted', isEqualTo: false)
         .orderBy('occurredAt', descending: true)
-        .limit(1000)
-        .snapshots()
-        .map((s) => [for (final d in s.docs) ?Memory.fromSnapshot(d)]);
+        .orderBy(FieldPath.documentId, descending: true);
+    return _historyPages(
+      q,
+      'occurredAt',
+      Memory.fromSnapshot,
+      pageSize: 1000,
+    ).map((p) => p.items);
   }
 
   /// Items, newest capture first; parents also see uploads in progress.
@@ -42,12 +47,84 @@ class MemoryRepository {
           .where('effectiveAudience', isEqualTo: Audience.family.name)
           .where('status', isEqualTo: MediaStatus.ready.name);
     }
-    return q
+    q = q
         .where('deleted', isEqualTo: false)
         .orderBy('captureAt', descending: true)
-        .limit(5000)
-        .snapshots()
-        .map((s) => [for (final d in s.docs) ?MediaItem.fromSnapshot(d)]);
+        .orderBy(FieldPath.documentId, descending: true);
+    return _historyPages(
+      q,
+      'captureAt',
+      MediaItem.fromSnapshot,
+      pageSize: 5000,
+    ).map((p) => p.items);
+  }
+
+  // Keep the former initial coverage for existing pickers/weekly compositions. These
+  // are now first windows, not history caps; every continuation uses a 200-item cursor.
+  static const historyPageSize = 200;
+
+  /// A live page has a frozen inclusive end cursor, so inserts never push an
+  /// unseen boundary item between pages. Deletions/visibility changes remain live.
+  Stream<HistorySlice<T>> _historyPages<T>(
+    Query<Map<String, dynamic>> query,
+    String field,
+    T? Function(DocumentSnapshot<Map<String, dynamic>>) decode, {
+    int pageSize = historyPageSize,
+  }) async* {
+    final first = await query.limit(pageSize).get();
+    final last = first.docs.lastOrNull;
+    final cursor = last == null ? null : (dateOf(last.data()[field])!, last.id);
+    HistorySlice<T> slice(QuerySnapshot<Map<String, dynamic>> snap) =>
+        HistorySlice(
+          [for (final d in snap.docs) ?decode(d)],
+          cursor,
+          first.docs.length == pageSize,
+        );
+    yield slice(first);
+    if (first.docs.length < pageSize) {
+      // Includes an initially empty journal and later backdated inserts.
+      yield* query.snapshots().map(slice);
+    } else if (last != null) {
+      yield* query.endAt([last.data()[field], last.id]).snapshots().map(slice);
+    }
+  }
+
+  Stream<HistorySlice<MediaItem>> olderMedia(
+    MemoryKey key,
+    (DateTime, String) cursor,
+  ) {
+    Query<Map<String, dynamic>> q = _db
+        .collection('babies/${key.$1}/media')
+        .where('deleted', isEqualTo: false);
+    if (!key.$2) {
+      q = q
+          .where('effectiveAudience', isEqualTo: 'family')
+          .where('status', isEqualTo: 'ready');
+    }
+    q = q
+        .orderBy('captureAt', descending: true)
+        .orderBy(FieldPath.documentId, descending: true)
+        .startAfter([Timestamp.fromDate(cursor.$1), cursor.$2]);
+    return _historyPages(q, 'captureAt', MediaItem.fromSnapshot);
+  }
+
+  Stream<HistorySlice<Memory>> olderMemories(
+    MemoryKey key,
+    (DateTime, String) cursor,
+  ) {
+    Query<Map<String, dynamic>> q = _db
+        .collection('babies/${key.$1}/memories')
+        .where('deleted', isEqualTo: false);
+    if (!key.$2) {
+      q = q
+          .where('audience', isEqualTo: 'family')
+          .where('state', isEqualTo: 'published');
+    }
+    q = q
+        .orderBy('occurredAt', descending: true)
+        .orderBy(FieldPath.documentId, descending: true)
+        .startAfter([Timestamp.fromDate(cursor.$1), cursor.$2]);
+    return _historyPages(q, 'occurredAt', Memory.fromSnapshot);
   }
 
   Stream<List<FamilyMilestone>> watchMilestones(String babyId) => _db
@@ -126,6 +203,11 @@ class MemoryRepository {
     final d = await _db.doc('babies/$babyId/media/$mediaId').get();
     return d.data()?['status'] as String?;
   }
+
+  Stream<String?> watchMediaStatus(String babyId, String mediaId) => _db
+      .doc('babies/$babyId/media/$mediaId')
+      .snapshots()
+      .map((d) => d.data()?['status'] as String?);
 
   Future<void> cancel(String babyId, List<String> mediaIds) =>
       _call('cancelMemoryUploads', {'babyId': babyId, 'mediaIds': mediaIds});
@@ -344,6 +426,200 @@ final mediaProvider = StreamProvider.family<List<MediaItem>, MemoryKey>(
   (ref, key) =>
       ref.watch(memoryRepositoryProvider).watchMedia(key.$1, parent: key.$2),
 );
+
+class HistorySlice<T> {
+  const HistorySlice(this.items, this.cursor, this.hasMore);
+  final List<T> items;
+  final (DateTime, String)? cursor;
+  final bool hasMore;
+}
+
+class HistoryTail {
+  const HistoryTail({
+    this.media = const [],
+    this.memories = const [],
+    this.loading = false,
+    this.mediaEnd = false,
+    this.memoryEnd = false,
+    this.error = false,
+  });
+  final List<MediaItem> media;
+  final List<Memory> memories;
+  final bool loading, mediaEnd, memoryEnd, error;
+}
+
+final historyTailProvider =
+    NotifierProvider<HistoryTailController, Map<MemoryKey, HistoryTail>>(
+      HistoryTailController.new,
+    );
+
+class HistoryTailController extends Notifier<Map<MemoryKey, HistoryTail>> {
+  final _subscriptions = <StreamSubscription<Object?>>[];
+  final _busy = <MemoryKey>{};
+  final _mediaPages = <MemoryKey, List<HistorySlice<MediaItem>>>{};
+  final _memoryPages = <MemoryKey, List<HistorySlice<Memory>>>{};
+  @override
+  Map<MemoryKey, HistoryTail> build() {
+    for (final subscription in _subscriptions) {
+      unawaited(subscription.cancel());
+    }
+    _subscriptions.clear();
+    _mediaPages.clear();
+    _memoryPages.clear();
+    _busy.clear();
+    ref.onDispose(() {
+      for (final s in _subscriptions) {
+        unawaited(s.cancel());
+      }
+    });
+    return {};
+  }
+
+  void _publish(MemoryKey key, {bool loading = false, bool error = false}) {
+    if (!ref.mounted) return;
+    final media = _mediaPages[key] ?? [];
+    final memories = _memoryPages[key] ?? [];
+    state = {
+      ...state,
+      key: HistoryTail(
+        media: [for (final p in media) ...p.items],
+        memories: [for (final p in memories) ...p.items],
+        mediaEnd: media.isNotEmpty
+            ? !media.last.hasMore
+            : (ref.read(mediaProvider(key)).value?.length ?? 0) <
+                  MemoryRepository.historyPageSize,
+        memoryEnd: memories.isNotEmpty
+            ? !memories.last.hasMore
+            : (ref.read(memoriesProvider(key)).value?.length ?? 0) <
+                  MemoryRepository.historyPageSize,
+        loading: _busy.contains(key),
+        error: error,
+      ),
+    };
+  }
+
+  Future<void> loadMore(MemoryKey key) async {
+    if (_busy.contains(key)) return;
+    _busy.add(key);
+    final repo = ref.read(memoryRepositoryProvider);
+    final currentMedia = ref.read(mediaProvider(key)).value ?? [];
+    final currentMemories = ref.read(memoriesProvider(key)).value ?? [];
+    _publish(key, loading: true);
+    try {
+      final work = <Future<void>>[];
+      if (!(state[key]?.mediaEnd ?? false) && currentMedia.isNotEmpty) {
+        final pages = _mediaPages.putIfAbsent(key, () => []);
+        final cursor = pages.isEmpty
+            ? (currentMedia.last.captureAt, currentMedia.last.id)
+            : pages.last.cursor;
+        if (cursor != null) {
+          final done = Completer<void>();
+          final index = pages.length;
+          pages.add(const HistorySlice([], null, true));
+          _subscriptions.add(
+            repo
+                .olderMedia(key, cursor)
+                .listen(
+                  (page) {
+                    pages[index] = page;
+                    _publish(key, loading: !done.isCompleted);
+                    if (!done.isCompleted) done.complete();
+                  },
+                  cancelOnError: true,
+                  onError: (Object e) {
+                    if (!done.isCompleted) {
+                      done.completeError(e);
+                    } else {
+                      _publish(key, error: true);
+                    }
+                  },
+                ),
+          );
+          work.add(done.future);
+        }
+      }
+      if (!(state[key]?.memoryEnd ?? false) && currentMemories.isNotEmpty) {
+        final pages = _memoryPages.putIfAbsent(key, () => []);
+        final cursor = pages.isEmpty
+            ? (currentMemories.last.occurredAt, currentMemories.last.id)
+            : pages.last.cursor;
+        if (cursor != null) {
+          final done = Completer<void>();
+          final index = pages.length;
+          pages.add(const HistorySlice([], null, true));
+          _subscriptions.add(
+            repo
+                .olderMemories(key, cursor)
+                .listen(
+                  (page) {
+                    pages[index] = page;
+                    _publish(key, loading: !done.isCompleted);
+                    if (!done.isCompleted) done.complete();
+                  },
+                  cancelOnError: true,
+                  onError: (Object e) {
+                    if (!done.isCompleted) {
+                      done.completeError(e);
+                    } else {
+                      _publish(key, error: true);
+                    }
+                  },
+                ),
+          );
+          work.add(done.future);
+        }
+      }
+      await Future.wait(work);
+      _busy.remove(key);
+      _publish(key);
+    } catch (_) {
+      _busy.remove(key);
+      if (_mediaPages[key]?.lastOrNull?.cursor == null) {
+        _mediaPages[key]?.removeLast();
+      }
+      if (_memoryPages[key]?.lastOrNull?.cursor == null) {
+        _memoryPages[key]?.removeLast();
+      }
+      _publish(key, error: true);
+    }
+  }
+}
+
+final completeMediaProvider =
+    Provider.family<AsyncValue<List<MediaItem>>, MemoryKey>(buildCompleteMedia);
+
+AsyncValue<List<MediaItem>> buildCompleteMedia(Ref ref, MemoryKey key) {
+  final tail = ref.watch(historyTailProvider.select((s) => s[key]));
+  return ref.watch(mediaProvider(key)).whenData((recent) {
+    final items = {
+      for (final i in tail?.media ?? <MediaItem>[]) i.id: i,
+      for (final i in recent) i.id: i,
+    }.values.toList();
+    items.sort((a, b) {
+      final byTime = b.captureAt.compareTo(a.captureAt);
+      return byTime != 0 ? byTime : b.id.compareTo(a.id);
+    });
+    return items;
+  });
+}
+
+final completeMemoriesProvider =
+    Provider.family<AsyncValue<List<Memory>>, MemoryKey>(buildCompleteMemories);
+
+AsyncValue<List<Memory>> buildCompleteMemories(Ref ref, MemoryKey key) {
+  final tail = ref.watch(historyTailProvider.select((s) => s[key]));
+  return ref.watch(memoriesProvider(key)).whenData((recent) {
+    final items = {
+      for (final i in tail?.memories ?? <Memory>[]) i.id: i,
+      for (final i in recent) i.id: i,
+    }.values.toList();
+    items.sort((a, b) {
+      final byTime = b.occurredAt.compareTo(a.occurredAt);
+      return byTime != 0 ? byTime : b.id.compareTo(a.id);
+    });
+    return items;
+  });
+}
 
 final familyMilestonesProvider =
     StreamProvider.family<List<FamilyMilestone>, String>(

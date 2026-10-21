@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../core/privacy/local_privacy.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,7 +79,7 @@ class BabyRepository {
             'avatar': {'kind': 'photo', 'jpegBase64': base64Encode(jpeg)},
           });
       final version = result.data['version'];
-      if (version is int) _avatarCache['$babyId:$version'] = jpeg;
+      if (version is int) forgetBaby(babyId);
     } on FirebaseFunctionsException catch (e) {
       throw BabyException(_failureOf(e));
     }
@@ -98,15 +100,22 @@ class BabyRepository {
 
   /// Lost access (R-025, P-006): drop this session's copy of the baby's photo.
   void forgetBaby(String babyId) =>
-      _avatarCache.removeWhere((key, _) => key.startsWith('$babyId:'));
+      _avatarCache.removeWhere((key, _) => key.contains('|$babyId:'));
 
   Future<Uint8List?> avatarPhoto(String babyId, int version) async {
-    final key = '$babyId:$version';
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) throw StateError('signed-out');
+    final epoch = localPrivacy.authorize(uid, 'babies/$babyId/avatar');
+    final key = '$uid|$babyId:$version';
     final cached = _avatarCache[key];
     if (cached != null) return cached;
     final result = await _functions
         .httpsCallable('getBabyAvatarImage')
         .call<Map<String, dynamic>?>({'babyId': babyId});
+    localPrivacy.check(epoch);
+    if (FirebaseAuth.instance.currentUser?.uid != uid) {
+      throw StateError('local-session-changed');
+    }
     final data = result.data;
     if (data == null || data['version'] != version) return null;
     final bytes = base64Decode(data['jpegBase64'] as String);

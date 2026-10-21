@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:child_life/app/session.dart';
@@ -18,6 +19,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/family_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
+
+class _StatusRepo extends FakeMemoryRepository {
+  final status = <String, StreamController<String?>>{};
+  @override
+  Stream<String?> watchMediaStatus(String babyId, String mediaId) =>
+      (status[mediaId] ??= StreamController<String?>.broadcast()).stream;
+}
 
 /// Tự lưu kỷ niệm (D-066): the on-device store (P-147, P-150) and the controller that checks
 /// the library, keeps suggestions and queues what the parent approves. The PhotoKit side is a
@@ -95,12 +103,20 @@ void main() {
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
-  Future<ProviderContainer> container() async {
+  final closed = <ProviderContainer>{};
+  void close(ProviderContainer c) {
+    if (closed.add(c)) c.dispose();
+  }
+
+  Future<ProviderContainer> container({
+    _StatusRepo? repo,
+    MemoryQueueStore? queueStore,
+  }) async {
     SharedPreferences.setMockInitialValues({'app.locale': 'vi'});
     final prefs = await SharedPreferences.getInstance();
     final c = ProviderContainer(
       overrides: [
-        ...memoryOverrides(),
+        ...memoryOverrides(repo: repo, store: queueStore),
         sharedPreferencesProvider.overrideWithValue(prefs),
         sessionProvider.overrideWithValue(
           SessionSignedIn(
@@ -130,7 +146,7 @@ void main() {
         ),
       ],
     );
-    addTearDown(c.dispose);
+    addTearDown(() => close(c));
     return c;
   }
 
@@ -324,7 +340,13 @@ void main() {
             print: v([1, 0.01]),
           ),
         };
-        final c = await container();
+        final repo = _StatusRepo();
+        final c = await container(repo: repo);
+        addTearDown(() async {
+          for (final stream in repo.status.values) {
+            await stream.close();
+          }
+        });
         final ctl = await setUpTeddy(c);
         final pending = c.read(autoSaveProvider).state.pending;
         expect(pending, hasLength(2));
@@ -348,16 +370,89 @@ void main() {
         expect(batch.request['dateMode'], 'capture');
         final s = c.read(autoSaveProvider).state;
         expect(s.pending, isEmpty);
-        expect(
-          s.ledger[pending.first.asset.id]?[teddyId],
-          LedgerState.uploaded,
-        );
+        expect(s.ledger[pending.first.asset.id]?[teddyId], LedgerState.queued);
         expect(s.ledger[pending.last.asset.id]?[teddyId], LedgerState.skipped);
         expect(
           s.babies[teddyId]!.samples.where((x) => x.approved),
           hasLength(1),
         );
-        expect(s.savedByMonth.values.single, 1);
+        expect(
+          s.savedByMonth,
+          isEmpty,
+          reason: 'enqueue is not a cloud-ready save',
+        );
+        await pumpEventQueue();
+        expect(batch.done, false);
+        repo.status[batch.items.first.mediaId]!.add('processing');
+        await pumpEventQueue();
+        expect(c.read(autoSaveProvider).state.savedByMonth, isEmpty);
+        repo.status[batch.items.first.mediaId]!.add('ready');
+        repo.status[batch.items.first.mediaId]!.add('ready');
+        await pumpEventQueue();
+        expect(batch.done, true);
+        await ctl.recordQueued([pending.first.asset.id], teddyId);
+        await ctl.recordUploaded([pending.first.asset.id], teddyId);
+        expect(
+          c.read(autoSaveProvider).state.savedByMonth.values.single,
+          1,
+          reason: 'server-ready replay counts once',
+        );
+      },
+    );
+
+    test(
+      'a persisted queue repairs a missing ledger and unreadable releases the asset for review',
+      () async {
+        library = ['a'];
+        described = {'a': photo('a', face: teddyFace)};
+        final repo = _StatusRepo();
+        final queueStore = MemoryQueueStore();
+        var c = await container(repo: repo, queueStore: queueStore);
+        addTearDown(() async {
+          for (final stream in repo.status.values) {
+            await stream.close();
+          }
+        });
+        final ctl = await setUpTeddy(c);
+        final chosen = c.read(autoSaveProvider).state.pending;
+        await ctl.approve(
+          chosen: chosen,
+          reviewed: chosen,
+          audience: Audience.parents,
+          notifyFamily: false,
+        );
+        await pumpEventQueue();
+        final id = queueStore.saved.single.items.single.mediaId;
+        expect(queueStore.saved.single.items.single.cloudReady, false);
+        // Simulate the persistence boundary: the queue survived, its ledger did not.
+        await c
+            .read(autoSaveStoreProvider)
+            .save(
+              c
+                  .read(autoSaveProvider)
+                  .state
+                  .copyWith(ledger: {}, savedByMonth: {}),
+            );
+        close(c);
+        c = await container(repo: repo, queueStore: queueStore);
+        c.listen(uploadQueueProvider, (_, _) {});
+        await c.read(uploadQueueProvider.notifier).ready();
+        await c.read(autoSaveProvider.notifier).ready();
+        await pumpEventQueue();
+        expect(
+          c.read(autoSaveProvider).state.ledger['a']?[teddyId],
+          LedgerState.queued,
+        );
+        expect(c.read(autoSaveProvider).state.savedByMonth, isEmpty);
+        repo.status[id]!.add('unreadable');
+        await pumpEventQueue();
+        expect(c.read(autoSaveProvider).state.ledger['a']?[teddyId], isNull);
+        expect(c.read(autoSaveProvider).state.savedByMonth, isEmpty);
+        await c.read(autoSaveProvider.notifier).scan();
+        expect(
+          c.read(autoSaveProvider).state.pending.map((p) => p.asset.id),
+          contains('a'),
+        );
       },
     );
 
@@ -683,7 +778,7 @@ void main() {
         final c = await container();
         await setUpTeddy(c);
         sinkFails = true;
-        await c.read(autoSaveProvider.notifier).recordUploaded(['z'], teddyId);
+        await c.read(autoSaveProvider.notifier).recordQueued(['z'], teddyId);
         expect(c.read(autoSaveProvider).state.unsent['autoSaveMissed'], 1);
       },
     );

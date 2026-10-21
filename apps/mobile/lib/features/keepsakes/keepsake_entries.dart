@@ -1,3 +1,4 @@
+import '../engagement/engagement_repository.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -49,7 +50,17 @@ class KeepsakeCreateSection extends ConsumerWidget {
     ref.watch(nudgeRevisionProvider);
     final store = ref.watch(nudgeStoreProvider);
     final dob = ctx.dob;
-    final nudge = dob == null
+    ref.watch(engagementRevisionProvider);
+    final newCampaign = ref.watch(engagementProvider).value?['suggestions'];
+    final handed =
+        newCampaign is List &&
+        newCampaign.any(
+          (s) => s is Map && s['kind'] == 'ENG-02' && s['context'] == 'current',
+        );
+    final nudge =
+        dob == null ||
+            handed ||
+            !ref.watch(completeMediaProvider((ctx.babyId, true))).hasValue
         ? null
         : inAppNudge(
             NudgeBaby(
@@ -57,7 +68,7 @@ class KeepsakeCreateSection extends ConsumerWidget {
               name: ctx.nickname,
               dob: dob,
               media:
-                  ref.watch(mediaProvider((ctx.babyId, true))).value ??
+                  ref.watch(completeMediaProvider((ctx.babyId, true))).value ??
                   const [],
             ),
             ctx.now,
@@ -273,7 +284,8 @@ class KeepsakeStorySections extends ConsumerWidget {
     final access = ref.watch(selectedKeepsakeAccessProvider);
     final canCreate = ctx.parentView && (access.cards || access.videos);
     final media =
-        ref.watch(mediaProvider((ctx.babyId, ctx.isParent))).value ?? const [];
+        ref.watch(completeMediaProvider((ctx.babyId, ctx.isParent))).value ??
+        const [];
     final cards = [
       for (final m in media)
         if (m.generatedKind == 'card' &&
@@ -701,7 +713,7 @@ class _VideoFan extends ConsumerWidget {
     final cl = context.cl;
     final photos = [
       for (final m
-          in ref.watch(mediaProvider((ctx.babyId, true))).value ??
+          in ref.watch(completeMediaProvider((ctx.babyId, true))).value ??
               const <MediaItem>[])
         if (m.isReady &&
             !m.isVideo &&
@@ -874,7 +886,7 @@ class KeepsakeReadyBanner extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final media =
-        ref.watch(mediaProvider((ctx.babyId, true))).value ??
+        ref.watch(completeMediaProvider((ctx.babyId, true))).value ??
         const <MediaItem>[];
     final thumb = media
         .where((m) => m.id == job.outputMediaId)

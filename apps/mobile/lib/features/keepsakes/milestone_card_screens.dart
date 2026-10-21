@@ -271,7 +271,8 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
       );
     }
     final dob = c.dob!;
-    final media = ref.watch(mediaProvider((c.babyId, true))).value ?? const [];
+    final media =
+        ref.watch(completeMediaProvider((c.babyId, true))).value ?? const [];
     // Photos chosen in Kỷ niệm come first, in the order chosen; the dịp is the one near them.
     final chosen = [
       for (final id in widget.photoIds ?? const <String>[])
@@ -1598,7 +1599,8 @@ class _PhotoStrip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final media = ref.watch(mediaProvider((babyId, true))).value ?? const [];
+    final media =
+        ref.watch(completeMediaProvider((babyId, true))).value ?? const [];
     final photos = [
       for (final m in media)
         if (m.isReady &&

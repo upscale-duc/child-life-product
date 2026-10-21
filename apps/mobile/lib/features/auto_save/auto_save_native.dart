@@ -171,6 +171,24 @@ class AutoSaveNative {
   /// Asks iOS for the next background check (AR03), or cancels it.
   Future<void> schedule() => _quiet('schedule');
   Future<void> unschedule() => _quiet('unschedule');
+  Future<bool> cancelProactiveAlerts() async {
+    if (!supported) return true;
+    try {
+      return await _channel.invokeMethod<bool>('cancelProactiveAlerts') == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> notificationCapability() async {
+    if (!supported) return false;
+    try {
+      return await _channel.invokeMethod<bool>('notificationCapability') ==
+          true;
+    } catch (_) {
+      return false;
+    }
+  }
 
   Future<void> _quiet(String method, [Object? args]) async {
     if (!supported) return;

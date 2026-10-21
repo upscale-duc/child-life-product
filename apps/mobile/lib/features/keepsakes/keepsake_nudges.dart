@@ -297,7 +297,9 @@ final nudgeBabiesProvider = Provider.autoDispose<List<NudgeBaby>>((ref) {
             babyId: m.babyId,
             name: ref.watch(babyProvider(m.babyId)).value?.nickname ?? '',
             dob: dob,
-            media: ref.watch(mediaProvider((m.babyId, true))).value ?? const [],
+            media:
+                ref.watch(completeMediaProvider((m.babyId, true))).value ??
+                const [],
           ),
   ];
 });
@@ -318,7 +320,7 @@ final nudgePlanReadyProvider = Provider.autoDispose<bool>((ref) {
       if (!loadSettled(profile)) return false;
       if (profile.value?.dateOfBirth == null) continue;
       if (!loadSettled(ref.watch(babyProvider(m.babyId))) ||
-          !loadSettled(ref.watch(mediaProvider((m.babyId, true))))) {
+          !loadSettled(ref.watch(completeMediaProvider((m.babyId, true))))) {
         return false;
       }
     }

@@ -31001,6 +31001,144 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chỉ dùng gợi ý nếu phù hợp với bé; bạn có thể sửa từng ghi chú.'**
   String get p48SuggestionsHint;
+
+  /// Memory history pagination state
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải kỷ niệm cũ hơn'**
+  String get historyLoadEarlier;
+
+  /// Memory history pagination state
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được lịch sử. Thử lại'**
+  String get historyLoadFailed;
+
+  /// Memory history pagination state
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xem hết lịch sử'**
+  String get historyEnd;
+
+  /// Smart Engagement V1: engTitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý thông minh'**
+  String get engTitle;
+
+  /// Smart Engagement V1: engPending
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đang chờ chọn lưu'**
+  String get engPending;
+
+  /// Smart Engagement V1: engMilestone
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm video kỷ niệm'**
+  String get engMilestone;
+
+  /// Smart Engagement V1: engWeekly
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn lại tuần qua'**
+  String get engWeekly;
+
+  /// Smart Engagement V1: engFamily
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật gia đình'**
+  String get engFamily;
+
+  /// Smart Engagement V1: engLumi
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý Lumi'**
+  String get engLumi;
+
+  /// Smart Engagement V1: engOffline
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kiểm tra được gợi ý. Bạn vẫn có thể tiếp tục dùng ứng dụng.'**
+  String get engOffline;
+
+  /// Smart Engagement V1: engRetry
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get engRetry;
+
+  /// Smart Engagement V1: engBackfill
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn lại những khoảnh khắc đã có'**
+  String get engBackfill;
+
+  /// Smart Engagement V1: engBackfillBody
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.'**
+  String get engBackfillBody;
+
+  /// Smart Engagement V1: engBody
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.'**
+  String get engBody;
+
+  /// Smart Engagement V1: engChooseTemplate
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn mẫu video'**
+  String get engChooseTemplate;
+
+  /// Smart Engagement V1: engOpen
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem gợi ý'**
+  String get engOpen;
+
+  /// Smart Engagement V1: engLater
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get engLater;
+
+  /// Smart Engagement V1: engDismiss
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua gợi ý'**
+  String get engDismiss;
+
+  /// Smart Engagement V1: engExpired
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý này đã hết hạn hoặc không còn khả dụng.'**
+  String get engExpired;
+
+  /// Smart Engagement V1: engSettingsHint
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.'**
+  String get engSettingsHint;
+
+  /// Smart Engagement V1: engConsent
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép lời mời chủ động'**
+  String get engConsent;
+
+  /// Smart Engagement V1: engResume
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục nhận gợi ý sau thời gian nghỉ'**
+  String get engResume;
+
+  /// Explicit fatigue pause explanation
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.'**
+  String get engPaused;
 }
 
 class _AppLocalizationsDelegate

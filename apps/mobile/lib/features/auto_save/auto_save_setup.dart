@@ -708,7 +708,8 @@ class _SamplePickerState extends ConsumerState<SamplePicker> {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final media =
-        ref.watch(mediaProvider((widget.babyId, true))).value ?? const [];
+        ref.watch(completeMediaProvider((widget.babyId, true))).value ??
+        const [];
     final photos = [
       for (final m in media)
         if (!m.isVideo && m.isReady && !m.deleted && m.thumbPath != null) m,

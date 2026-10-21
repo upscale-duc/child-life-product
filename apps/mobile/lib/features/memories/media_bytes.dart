@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../core/privacy/local_privacy.dart';
 
 /// Media bytes are read through Storage Rules (ADR-004) and cached on the device: a media file
 /// never changes once written, so a cached copy is valid until the item is purged.
@@ -31,59 +32,100 @@ class MediaSource {
 }
 
 class StorageMediaBytes implements MediaBytes {
-  StorageMediaBytes([FirebaseStorage? storage])
-    : _storage = storage ?? FirebaseStorage.instance;
+  StorageMediaBytes({
+    this._storage,
+    String? Function()? owner,
+    Future<Directory> Function()? cacheDirectory,
+    LocalPrivacy? access,
+  }) : _owner = owner ?? (() => FirebaseAuth.instance.currentUser?.uid),
+       _cacheDirectory = cacheDirectory ?? getApplicationCacheDirectory,
+       _privacy = access ?? localPrivacy;
 
-  final FirebaseStorage _storage;
+  final FirebaseStorage? _storage;
+  FirebaseStorage get _firebase => _storage ?? FirebaseStorage.instance;
+  final String? Function() _owner;
+  final Future<Directory> Function() _cacheDirectory;
+  final LocalPrivacy _privacy;
   final _inFlight = <String, Future<Uint8List>>{};
-  Directory? _dir;
+  String _uid() => _owner() ?? (throw StateError('signed-out'));
 
-  Future<Directory> _cacheDir() async {
-    if (_dir != null) return _dir!;
-    final base = await getApplicationCacheDirectory();
-    return _dir = await Directory('${base.path}/media').create(recursive: true);
+  (String, int) _access(String path) {
+    final uid = _uid();
+    return (uid, _privacy.authorize(uid, path));
   }
 
-  Future<File> _local(String path) async =>
-      File('${(await _cacheDir()).path}/${path.replaceAll('/', '_')}');
+  void _check(String uid, int epoch) {
+    if (_uid() != uid) throw StateError('local-session-changed');
+    _privacy.check(epoch);
+  }
+
+  Future<Directory> _cacheDir(String uid) async {
+    final base = await _cacheDirectory();
+    return Directory(
+      '${base.path}/media-v2/${Uri.encodeComponent(uid)}',
+    ).create(recursive: true);
+  }
+
+  Future<File> _local(String uid, String path) async =>
+      File('${(await _cacheDir(uid)).path}/${path.replaceAll('/', '_')}');
 
   @override
-  Future<Uint8List> read(String path) => _inFlight[path] ??= () async {
-    try {
-      final local = await _local(path);
-      if (await local.exists()) return local.readAsBytes();
-      final bytes = await _storage.ref(path).getData(60 * 1024 * 1024);
-      if (bytes == null) throw StateError('empty');
-      await local.writeAsBytes(bytes, flush: true);
-      return bytes;
-    } finally {
-      unawaited(Future<void>(() => _inFlight.remove(path)));
-    }
-  }();
+  Future<Uint8List> read(String path) {
+    final (uid, epoch) = _access(path);
+    final key = '$uid|$epoch|$path';
+    return _inFlight[key] ??= () async {
+      try {
+        final local = await _local(uid, path);
+        final bytes =
+            _privacy.parents.contains(path.split('/')[1]) &&
+                await local.exists()
+            ? await local.readAsBytes()
+            : await _firebase.ref(path).getData(60 * 1024 * 1024);
+        _check(uid, epoch);
+        if (bytes == null) throw StateError('empty');
+        await local.writeAsBytes(bytes, flush: true);
+        _check(uid, epoch);
+        _access(path);
+        return bytes;
+      } finally {
+        _inFlight.remove(key);
+      }
+    }();
+  }
 
   @override
   Future<MediaSource> playable(String path) async {
-    final local = await _local(path);
-    if (await local.exists()) {
-      return MediaSource(Uri.file(local.path).toString());
-    }
-    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
-    if (token == null) throw StateError('signed out');
-    final object = Uri.encodeComponent(path);
+    final (uid, epoch) = _access(path);
+    final local = await _local(uid, path);
+    final cached =
+        _privacy.parents.contains(path.split('/')[1]) && await local.exists();
+    final token = cached
+        ? null
+        : await FirebaseAuth.instance.currentUser?.getIdToken();
+    _check(uid, epoch);
+    _access(path);
+    if (cached) return MediaSource(Uri.file(local.path).toString());
+    if (token == null) throw StateError('signed-out');
     return MediaSource(
-      'https://firebasestorage.googleapis.com/v0/b/${_storage.bucket}/o/$object?alt=media',
-      // Never logged (a token and a child's media path).
+      'https://firebasestorage.googleapis.com/v0/b/${_firebase.bucket}/o/${Uri.encodeComponent(path)}?alt=media',
       headers: {'Authorization': 'Firebase $token'},
     );
   }
 
   @override
   Future<File> file(String path) async {
-    final local = await _local(path);
-    if (await local.exists()) return local;
-    final part = File('${local.path}.part');
-    await _storage.ref(path).writeToFile(part);
-    return part.rename(local.path);
+    final (uid, epoch) = _access(path);
+    final local = await _local(uid, path);
+    if (!_privacy.parents.contains(path.split('/')[1]) ||
+        !await local.exists()) {
+      final part = File('${local.path}.$epoch.part');
+      await _firebase.ref(path).writeToFile(part);
+      _check(uid, epoch);
+      await part.rename(local.path);
+    }
+    _check(uid, epoch);
+    _access(path);
+    return local;
   }
 }
 
@@ -93,12 +135,19 @@ MediaBytes mediaBytes = StorageMediaBytes();
 /// An image from a Rules-gated Storage path (thumb / display / poster).
 @immutable
 class StorageImage extends ImageProvider<StorageImage> {
-  const StorageImage(this.path);
+  const StorageImage(this.path) : scope = null;
+  const StorageImage._scoped(this.path, this.scope);
+  final String? scope;
   final String path;
 
   @override
   Future<StorageImage> obtainKey(ImageConfiguration configuration) =>
-      SynchronousFuture(this);
+      SynchronousFuture(
+        StorageImage._scoped(
+          path,
+          '${localPrivacy.owner}|${localPrivacy.generation}',
+        ),
+      );
 
   @override
   ImageStreamCompleter loadImage(
@@ -114,8 +163,9 @@ class StorageImage extends ImageProvider<StorageImage> {
   );
 
   @override
-  bool operator ==(Object other) => other is StorageImage && other.path == path;
+  bool operator ==(Object other) =>
+      other is StorageImage && other.path == path && other.scope == scope;
 
   @override
-  int get hashCode => path.hashCode;
+  int get hashCode => Object.hash(path, scope);
 }

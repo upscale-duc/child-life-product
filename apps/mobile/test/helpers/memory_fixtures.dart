@@ -227,6 +227,10 @@ MediaItem mediaItem(
 
 /// What the screens asked the server to do.
 class FakeMemoryRepository extends Fake implements MemoryRepository {
+  @override
+  Stream<String?> watchMediaStatus(String babyId, String mediaId) =>
+      Stream.value('ready');
+
   /// What the server says of each item (`ready` once processed); unknown by default.
   final statuses = <String, String>{};
 
