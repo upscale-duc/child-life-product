@@ -4,11 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import '../core/appearance/appearance_providers.dart';
 import '../features/auto_save/auto_save_controller.dart';
+import '../features/auto_save/auto_save_review.dart';
 import '../features/auto_save/auto_save_store.dart';
+import '../features/auto_save/auto_save_today.dart';
+import '../features/auto_save/auto_save_widgets.dart';
 import '../features/engagement/engagement_repository.dart';
+import '../features/keepsakes/keepsake_nudges.dart';
+import '../features/me/me_repository.dart';
 import '../features/memories/memory_repository.dart';
 import '../features/memories/upload_queue.dart';
 import '../features/premium/purchase_resume.dart';
+import '../features/reminders/reminder_notifications.dart';
 import 'local_owner.dart';
 import 'local_privacy_guard.dart';
 
@@ -63,6 +69,20 @@ class _AccountLocalScopeState extends State<AccountLocalScope> {
         completeMemoriesProvider.overrideWith(buildCompleteMemories),
         engagementProvider.overrideWith(buildEngagement),
         localPrivacyGuardProvider.overrideWith(bindLocalPrivacy),
+        // Providers that read the account-scoped ones above. Without `dependencies`
+        // Riverpod mounts them in the root container, where they would build a second,
+        // unscoped AutoSaveController and media streams that outlive the account.
+        autoSaveFlagProvider,
+        autoSaveAvailableProvider,
+        autoSaveBannerProvider,
+        autoSaveTabDotProvider,
+        alreadySavedProvider,
+        mediaSignatureProvider,
+        familyStorageProvider,
+        nudgeBabiesProvider,
+        nudgePlanReadyProvider,
+        nudgePlanProvider,
+        notificationSourcesReadyProvider,
       ];
     }
     return ProviderScope(

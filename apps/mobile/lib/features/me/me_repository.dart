@@ -222,7 +222,7 @@ final meRepositoryProvider = Provider<MeRepository>(
 /// the Me tab stays alive in the shell, so it would otherwise keep its first answer.
 final familyStorageProvider = FutureProvider.autoDispose
     .family<FamilyStorage, String>((ref, babyId) {
-      ref.listen(_mediaSignatureProvider(babyId), (previous, next) {
+      ref.listen(mediaSignatureProvider(babyId), (previous, next) {
         if (previous != null && next != previous) ref.invalidateSelf();
       });
       return ref.watch(meRepositoryProvider).familyStorage(babyId);
@@ -230,7 +230,7 @@ final familyStorageProvider = FutureProvider.autoDispose
 
 /// Changes when the baby's media set or any item's state changes; null until known, and for
 /// members who cannot read the parents' media (they do not see storage).
-final _mediaSignatureProvider = Provider.autoDispose.family<int?, String>((
+final mediaSignatureProvider = Provider.autoDispose.family<int?, String>((
   ref,
   babyId,
 ) {

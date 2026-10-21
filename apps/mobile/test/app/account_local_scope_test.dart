@@ -3,6 +3,8 @@ import 'package:child_life/app/account_local_scope.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/features/auto_save/auto_save_controller.dart';
 import 'package:child_life/features/auto_save/auto_save_native.dart';
+import 'package:child_life/features/auto_save/auto_save_review.dart';
+import 'package:child_life/features/auto_save/auto_save_today.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +28,7 @@ void main() {
       AutoSaveController? auto;
       String? storeOwner;
       BuildContext? currentContext;
+      BuildContext? rootContext;
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -39,21 +42,29 @@ void main() {
           ],
           child: ValueListenableBuilder<String>(
             valueListenable: owner,
-            builder: (_, uid, _) => AccountLocalScope(
-              uid: uid,
-              child: Consumer(
-                builder: (context, ref, _) {
-                  ref.watch(uploadQueueProvider);
-                  ref.watch(autoSaveProvider);
-                  currentContext = context;
-                  queue = ref.read(uploadQueueProvider.notifier);
-                  auto = ref.read(autoSaveProvider.notifier);
-                  storeOwner =
-                      (ref.read(queueStoreProvider) as FileQueueStore).owner;
-                  return const SizedBox();
-                },
-              ),
-            ),
+            builder: (context, uid, _) {
+              rootContext = context;
+              return AccountLocalScope(
+                uid: uid,
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    ref.watch(uploadQueueProvider);
+                    ref.watch(autoSaveProvider);
+                    // Root-declared readers of the scoped controller (Hôm nay banner,
+                    // Kỷ niệm tab dot, review "Đã có").
+                    ref.watch(autoSaveBannerProvider);
+                    ref.watch(autoSaveTabDotProvider);
+                    ref.watch(alreadySavedProvider);
+                    currentContext = context;
+                    queue = ref.read(uploadQueueProvider.notifier);
+                    auto = ref.read(autoSaveProvider.notifier);
+                    storeOwner =
+                        (ref.read(queueStoreProvider) as FileQueueStore).owner;
+                    return const SizedBox();
+                  },
+                ),
+              );
+            },
           ),
         ),
       );
@@ -65,6 +76,11 @@ void main() {
       final firstQueue = queue;
       final firstAuto = auto;
       expect(storeOwner, 'a');
+      expect(
+        ProviderScope.containerOf(rootContext!).exists(autoSaveProvider),
+        false,
+        reason: 'no second, unscoped AutoSaveController in the root container',
+      );
       owner.value = 'b';
       await tester.pump();
       await tester.runAsync(

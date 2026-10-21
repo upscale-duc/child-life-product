@@ -55,7 +55,7 @@ class ReviewedWeeks extends Notifier<Map<String, Set<int>>> {
 
 /// Library items that are already in the baby's Kỷ niệm, uploaded by anyone ("Đã có", P-150):
 /// same baby and the same capture second. Uploads are re-encoded, so bytes cannot be compared.
-final _alreadySavedProvider = Provider.autoDispose<Set<String>>((ref) {
+final alreadySavedProvider = Provider.autoDispose<Set<String>>((ref) {
   final view = ref.watch(autoSaveProvider);
   final out = <String>{};
   final byBaby = <String, Set<int>>{};
@@ -186,7 +186,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final view = ref.watch(autoSaveProvider);
-    final already = ref.watch(_alreadySavedProvider);
+    final already = ref.watch(alreadySavedProvider);
     _cap =
         ref.watch(publicLimitsProvider).value?.autoSaveItemsPerApprove ?? _cap;
     final everything = view.groups();
