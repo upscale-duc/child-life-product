@@ -87,6 +87,10 @@ export async function updatePersonalization(
       throw gateError('ROLE_DENIED');
     const isParent = parent && member.get('role') === 'coParent';
     const state = (personal.data() ?? {}) as PersonalizationState;
+    // P-172 (audit 2026-10-21 P1 #3): only writes that change what the family shares move
+    // the facts version (shared notes, work transitions, family exclusions). Per-person state
+    // and the routine switch never mark the AI handover stale or refetch every device.
+    let shared = false;
     switch (action.kind) {
       case 'context':
         tx.set(
@@ -127,6 +131,7 @@ export async function updatePersonalization(
         const exclusion = db.doc(`babies/${babyId}/personalizationExclusions/${action.contentId}`);
         if (action.value === 'restore' && action.scope === 'baby') {
           tx.delete(exclusion);
+          shared = true;
           break;
         }
         const responses = { ...state.responses };
@@ -163,7 +168,10 @@ export async function updatePersonalization(
             response.outcomeAt = at;
           }
           responses[action.contentId] = response;
-          if (action.value === 'exclude') tx.set(exclusion, { authorUid: uid, at, active: true });
+          if (action.value === 'exclude') {
+            tx.set(exclusion, { authorUid: uid, at, active: true });
+            shared = true;
+          }
         }
         if (Object.keys(responses).length > 200)
           throw new RhythmError('failed-precondition', 'response-limit');
@@ -202,6 +210,7 @@ export async function updatePersonalization(
           (!isParent || old.get('scope') === 'person')
         )
           throw gateError('ROLE_DENIED');
+        shared = old.get('scope') === 'baby' || (action.kind === 'note' && action.scope === 'baby');
         if (action.kind === 'delete_note') {
           tx.delete(noteRef);
           break;
@@ -257,6 +266,7 @@ export async function updatePersonalization(
         if (current.revision !== action.revision || reminder.get('done') === true)
           throw new RhythmError('failed-precondition', 'work-conflict');
         tx.set(claimRef, { ...next, reminderId: action.reminderId, updatedAt: at });
+        shared = true;
         if (action.transition === 'complete')
           tx.update(reminderRef, {
             done: true,
@@ -302,11 +312,12 @@ export async function updatePersonalization(
         break;
     }
     tx.set(personal.ref, { babyId }, { merge: true });
-    tx.set(
-      db.doc(`babies/${babyId}/facts/state`),
-      { dataVersion: FieldValue.increment(1), updatedAt: now },
-      { merge: true },
-    );
+    if (shared)
+      tx.set(
+        db.doc(`babies/${babyId}/facts/state`),
+        { dataVersion: FieldValue.increment(1), updatedAt: now },
+        { merge: true },
+      );
   });
   return { ok: true };
 }
@@ -373,13 +384,18 @@ export async function reservePersonalizedDigest(
     const fireAt = reminderInstantIn(zone, date, time);
     if (fireAt <= now) return none;
     if (lease.get('date') === date) {
-      if (lease.get('deviceId') !== input.deviceId || lease.get('fingerprint') !== fingerprint)
-        return none;
+      if (lease.get('deviceId') !== input.deviceId) return none;
       const previousFire = Date.parse(String(lease.get('fireAt')));
       if (!Number.isFinite(previousFire) || previousFire <= now.getTime()) return none;
-      // A pending slot on this same install can move when the person changes their clock.
-      // The app replaces the same OS notification id rather than creating another one.
-      if (previousFire !== fireAt.getTime()) tx.update(lease.ref, { fireAt: fireAt.toISOString() });
+      // P-172 B1 (audit 2026-10-21 P1 #2): new content later the same day keeps the pending
+      // slot, because the app cancels any notice this call does not return and the copy is
+      // generic. The stored fingerprint follows the content, so tomorrow compares against what
+      // tonight's notice announced. The slot moves only when the person changes their clock;
+      // the app replaces the same OS notification id rather than creating another one.
+      const changed: Record<string, string> = {};
+      if (lease.get('fingerprint') !== fingerprint) changed.fingerprint = fingerprint;
+      if (previousFire !== fireAt.getTime()) changed.fireAt = fireAt.toISOString();
+      if (Object.keys(changed).length > 0) tx.update(lease.ref, changed);
       return { fireAt: fireAt.toISOString() };
     }
     if (lease.get('fingerprint') === fingerprint) return none;

@@ -205,13 +205,57 @@ describe('P-172 transactional care handover', () => {
     await db.doc(`babies/baby/reminders/${reminderId}`).update({ title: 'Việc đã thay đổi' });
     expect((await read('carer')).handoverChanged).toBe(true);
   });
+  it('moves the facts version only for shared facts, never for per-person state (audit P1 #3)', async () => {
+    const version = async () =>
+      ((await db.doc('babies/baby/facts/state').get()).get('dataVersion') as number | undefined) ??
+      0;
+    const note = {
+      kind: 'note',
+      id: 'nb_shared',
+      revision: 0,
+      text: 'Ghi chú chung',
+      category: 'other',
+      scope: 'person',
+      days: 1,
+      avoidActivityId: null,
+    };
+    const first = await read('carer');
+    await call('carer', { kind: 'acknowledge', version: first.handoverVersion });
+    await call('carer', { kind: 'context', value: 'few_minutes' });
+    await call('carer', { kind: 'focus', value: 'play' });
+    await call('parent', { kind: 'digest', enabled: true, deviceId: `d_${'a'.repeat(32)}` });
+    await call('parent', { kind: 'routine', unusual: true });
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' });
+    await call('carer', note);
+    expect(await version()).toBe(0);
+    await call('carer', { ...note, revision: 1, scope: 'baby' });
+    expect(await version()).toBe(1);
+    // Turning a shared note back into a private one removes a shared fact too.
+    await call('carer', { ...note, revision: 2 });
+    expect(await version()).toBe(2);
+    await call('carer', { ...note, revision: 3, scope: 'baby' });
+    await call('carer', { kind: 'delete_note', id: 'nb_shared', revision: 4 });
+    expect(await version()).toBe(4);
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 });
+    expect(await version()).toBe(5);
+    // A replayed transition changes nothing and does not bump either.
+    await call('carer', { kind: 'work', reminderId, transition: 'accept', revision: 0 });
+    expect(await version()).toBe(5);
+    const id = contentSeed.activities[0]!.id;
+    await call('parent', { kind: 'respond', contentId: id, value: 'exclude' });
+    expect(await version()).toBe(6);
+    await call('parent', { kind: 'respond', contentId: id, value: 'restore' });
+    expect(await version()).toBe(6);
+    await call('parent', { kind: 'respond', contentId: id, value: 'restore', scope: 'baby' });
+    expect(await version()).toBe(7);
+  });
 });
 
 describe('P-172 daily suggestions and truthful aggregates', () => {
   const device = `d_${'a'.repeat(32)}`;
   const secondDevice = `d_${'b'.repeat(32)}`;
-  const reserve = (deviceId = device) =>
-    reservePersonalizedDigest(db, 'parent', { babyId: 'baby', deviceId }, now, 'test');
+  const reserve = (deviceId = device, date = now) =>
+    reservePersonalizedDigest(db, 'parent', { babyId: 'baby', deviceId }, date, 'test');
   it('does not schedule from an old clock choice without explicit enabling', async () => {
     await db.doc('users/parent/settings/personalization').set({ digestTime: '20:30' });
     expect((await reserve()).fireAt).toBeNull();
@@ -238,6 +282,31 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
     expect((await reserve()).fireAt).toBeNull();
     await db.doc('babies/baby/members/parent').update({ status: 'removed' });
     expect(await reason(reserve())).toBe('NOT_MEMBER');
+  });
+  it('keeps the 20:30 slot when the day changes after it was reserved (audit P1 #2)', async () => {
+    const lease = db.doc('users/parent/settings/personalizationDigestLease');
+    await call('parent', { kind: 'digest', enabled: true, deviceId: device });
+    expect((await reserve()).fireAt).toBe('2026-10-20T13:30:00.000Z');
+    const before = (await lease.get()).get('fingerprint') as string;
+    // A reminder due earlier becomes the first work item, so the fingerprint changes.
+    await db.doc(`babies/baby/reminders/rm_${'2'.repeat(32)}`).set({
+      title: 'Việc mới trong ngày',
+      dueAt: Timestamp.fromDate(new Date('2026-10-20T11:00:00Z')),
+      done: false,
+      assigneeUid: 'parent',
+    });
+    const later = new Date('2026-10-20T13:00:00Z');
+    expect((await reserve(device, later)).fireAt).toBe('2026-10-20T13:30:00.000Z');
+    const after = (await lease.get()).data()!;
+    expect(after.fingerprint).not.toBe(before);
+    expect(after.fireAt).toBe('2026-10-20T13:30:00.000Z');
+    expect(after.reservedAt).toBe(now.toISOString());
+    // The day still belongs to one install, and a delivered slot is not offered again.
+    await call('parent', { kind: 'digest', enabled: true, deviceId: secondDevice });
+    expect((await reserve(secondDevice, later)).fireAt).toBeNull();
+    await call('parent', { kind: 'digest', enabled: true, deviceId: device });
+    await db.doc('users/parent/settings/personalization').update({ digestTime: '20:45' });
+    expect((await reserve(device, new Date('2026-10-20T13:35:00Z'))).fireAt).toBeNull();
   });
   it('moves a still-pending slot when its designated install changes the digest time', async () => {
     await call('parent', { kind: 'digest', enabled: true, deviceId: device });
