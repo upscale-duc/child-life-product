@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import { vaccineProgrammes, vaccineRoutes, vaccineSchedule, type VaccineDef } from './vaccines.js';
 import { whoReferenceRows } from './who-reference.g.js';
 
@@ -123,7 +124,7 @@ export const referencePublicSchema = z.object({
 });
 export type ReferencePublic = z.infer<typeof referencePublicSchema>;
 
-const reason = z.string().trim().min(3).max(500);
+const reason = staffReasonSchema;
 const versionId = z.string().regex(/^rv_[a-f0-9]{16}$/);
 
 export const referenceViewSchema = z.object({ dataset: z.enum(referenceDatasets) });

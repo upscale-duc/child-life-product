@@ -222,11 +222,14 @@ describe('content · workflow', () => {
     expect(addMonthsIso('2026-01-31', 1)).toBe('2026-02-28');
   });
 
-  it('needs a reason to reject or unpublish and every check to approve', () => {
+  it('never needs a reason (D-090) but needs every check to approve', () => {
     const base = { kind: 'article', id: 'art_newborn_sleep', reason: '' } as const;
     expect(contentActRequestSchema.safeParse({ ...base, action: 'submit' }).success).toBe(true);
-    expect(contentActRequestSchema.safeParse({ ...base, action: 'reject' }).success).toBe(false);
-    expect(contentActRequestSchema.safeParse({ ...base, action: 'unpublish' }).success).toBe(false);
+    expect(contentActRequestSchema.safeParse({ ...base, action: 'reject' }).success).toBe(true);
+    expect(contentActRequestSchema.safeParse({ ...base, action: 'unpublish' }).success).toBe(true);
+    const { reason: _r, ...noReason } = base;
+    void _r;
+    expect(contentActRequestSchema.parse({ ...noReason, action: 'reject' }).reason).toBe('');
     expect(contentActRequestSchema.safeParse({ ...base, action: 'approve' }).success).toBe(false);
     expect(
       contentActRequestSchema.safeParse({

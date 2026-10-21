@@ -171,7 +171,7 @@ describe('the matrix (P-121)', () => {
     expect(await reason(listAudit(db, ha, { category: 'all', days: 7 }, now))).toBe('role');
   });
 
-  it('a reason is required for every mutation', async () => {
+  it('no mutation needs a reason (D-090): a missing one is audited as ""', async () => {
     expect(
       await reason(
         setFlag(
@@ -183,12 +183,13 @@ describe('the matrix (P-121)', () => {
             scope: 'all',
             percent: 0,
             notice: null,
-            reason: '',
           },
           now,
         ),
       ),
-    ).toBe('malformed');
+    ).toBe('ok');
+    const audit = await db.collection('staffAudit').where('target', '==', 'video_upload').get();
+    expect(audit.docs.map((d) => [d.get('action'), d.get('reason')])).toEqual([['flags.off', '']]);
   });
 });
 

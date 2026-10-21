@@ -111,7 +111,7 @@ export async function assistantUsageOverview(
     dayOf(new Date(now.getTime() - (assistantUsageDays - 1 - i) * DAY_MS)),
   );
   const since = new Date(`${dayIds[0]}T00:00:00+07:00`);
-  const [taskSnap, opSnap, budget, entDoc] = await Promise.all([
+  const [taskSnap, opSnap, budget, entDoc, usageDocs] = await Promise.all([
     db
       .collection('assistantTasks')
       .where('createdAt', '>=', since)
@@ -140,6 +140,7 @@ export async function assistantUsageOverview(
       .get(),
     readAiBudget(db, now),
     db.doc('config/entitlements').get(),
+    db.getAll(...dayIds.map((d) => db.doc(`aiUsageDaily/${d}`))),
   ]);
 
   // Credits from the ledger (chat tasks and AI summaries share it, D-075 #1).
@@ -254,6 +255,49 @@ export async function assistantUsageOverview(
 
   const ent = entitlementsConfigSchema.safeParse(entDoc.data());
   const credits = (ent.success ? ent.data : defaultEntitlementsConfig).quotas.assistant;
+  const observedModels = new Map<
+    string,
+    {
+      model: string;
+      operation: string;
+      calls: number;
+      knownUsage: number;
+      inputTokens: number;
+      outputTokens: number;
+      ratedCalls: number;
+      unratedCalls: number;
+      estimatedCostUsdMicros: number;
+    }
+  >();
+  for (const doc of usageDocs) {
+    const rows = doc.get('byModel') as Record<string, Record<string, unknown>> | undefined;
+    for (const row of Object.values(rows ?? {})) {
+      if (typeof row.model !== 'string' || typeof row.operation !== 'string') continue;
+      const key = `${row.model}|${row.operation}`;
+      const total = observedModels.get(key) ?? {
+        model: row.model,
+        operation: row.operation,
+        calls: 0,
+        knownUsage: 0,
+        inputTokens: 0,
+        outputTokens: 0,
+        ratedCalls: 0,
+        unratedCalls: 0,
+        estimatedCostUsdMicros: 0,
+      };
+      for (const field of [
+        'calls',
+        'knownUsage',
+        'inputTokens',
+        'outputTokens',
+        'ratedCalls',
+        'unratedCalls',
+        'estimatedCostUsdMicros',
+      ] as const)
+        total[field] += num(row[field]);
+      observedModels.set(key, total);
+    }
+  }
   return {
     since: since.toISOString(),
     truncated: { tasks: taskSnap.size >= taskCap, ops: opSnap.size >= opCap },
@@ -274,6 +318,29 @@ export async function assistantUsageOverview(
         .sort((a, b) => b.count - a.count || a.code.localeCompare(b.code)),
     },
     model: {
+      tokenUsage: {
+        byModel: [...observedModels.values()].sort(
+          (a, b) => b.calls - a.calls || a.model.localeCompare(b.model),
+        ),
+        ...usageDocs.reduce(
+          (sum, doc) => {
+            for (const key of Object.keys(sum) as Array<keyof typeof sum>)
+              sum[key] += num(doc.get(key));
+            return sum;
+          },
+          {
+            calls: 0,
+            knownUsage: 0,
+            unknownUsage: 0,
+            inputTokens: 0,
+            outputTokens: 0,
+            cachedInputTokens: 0,
+            ratedCalls: 0,
+            unratedCalls: 0,
+            estimatedCostUsdMicros: 0,
+          },
+        ),
+      },
       calls,
       tasksWithCalls,
       estimatedCostVnd: costVnd,

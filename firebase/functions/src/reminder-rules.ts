@@ -18,6 +18,7 @@ import {
   type RuleSchedule,
 } from '@child-life/contracts';
 import { notifyUsers } from './notifications.js';
+import { careInboxEngagement, careAdapterResult } from './engagement-observers.js';
 import type { PushSender } from './social.js';
 
 /**
@@ -552,6 +553,22 @@ async function pushRule(
     ...rang.recipients.map((uid) => db.doc(`babies/${babyId}/members/${uid}`)),
   );
   const eligible = members.filter((m) => canReceive(memberOf(m, now))).map((m) => m.id);
+  // ENG-04 cohort precedes category/channel filtering. Measurement never changes the schedule.
+  await Promise.allSettled(
+    eligible.map((uid) =>
+      careInboxEngagement(
+        db,
+        uid,
+        {
+          kind: 'reminderRule',
+          babyId,
+          data: { ruleId, dueAt: String(rang.dueAt.getTime()) },
+          eligibilityOnly: true,
+        },
+        now,
+      ),
+    ),
+  );
   // D-076 #2: pushed, recorded in the inbox and switched by EN07 "Bú, ngủ, thay tã" in one place.
   const { sent } = await notifyUsers(
     db,
@@ -559,6 +576,8 @@ async function pushRule(
     eligible,
     {
       kind: 'reminderRule',
+      onResult: (uid, result) =>
+        careAdapterResult(db, uid, babyId, ruleId, rang.dueAt.getTime(), result, now),
       id: `rr-${ruleId}-${rang.dueAt.getTime()}`,
       babyId,
       data: {

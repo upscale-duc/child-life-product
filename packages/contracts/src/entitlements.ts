@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import type { FamilyAction } from './family-actions.js';
 import type { FlagKey } from './config.js';
 
@@ -427,7 +428,8 @@ export type FamilySettingsRequest = z.infer<typeof familySettingsRequestSchema>;
 
 // ---------- Portal "Premium" (plan §5.6, staff only) ----------
 
-const staffReason = z.string().trim().min(3).max(500);
+/** D-090: optional, "" when missing (never refused); the audit line is written either way. */
+const staffReason = staffReasonSchema;
 /** "F-7Q2K": families are shown and picked by code, never by id (A04). */
 const familyCodeSchema = z.string().regex(/^F-[A-Z2-9]{4}$/);
 

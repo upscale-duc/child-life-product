@@ -1,3 +1,37 @@
+import { authorizeEngagementBackground } from './engagement.js';
+import { observeEngagementContent } from './engagement-observers.js';
+import {
+  refreshEngagement,
+  engagementAction,
+  saveEngagementSettings,
+  runEngagement,
+  purgeEngagement,
+} from './engagement.js';
+import { familyEngagementFromInbox } from './engagement-sources.js';
+import {
+  reconcileBabyEngagement,
+  careInboxEngagement,
+  careOccurrenceEngagement,
+  cleanupEngagement,
+  revokeEngagementDevice,
+  settleEngagementFatigue,
+} from './engagement-observers.js';
+import { recordProductOutcome } from './product-outcomes.js';
+import { region as legacyRegion } from 'firebase-functions/v1';
+import {
+  recordAnalyticsRegistration,
+  recordAnalyticsHeartbeat,
+  recordAnalyticsObservation as ingestProductObservation,
+  recordAnalyticsDomain,
+  purgeProductAnalytics,
+  cleanupProductAnalytics,
+} from './product-analytics-store.js';
+import {
+  productAnalytics,
+  exportProductAnalytics,
+  buildProductAnalyticsQuery,
+} from './product-analytics.js';
+import { recordAiCall, cleanupAiUsage } from './ai-telemetry.js';
 import { randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
@@ -75,6 +109,15 @@ import {
   revokeGrant,
   setEntitlementsConfig,
 } from './premium-staff.js';
+import {
+  featuresHub,
+  hubFamily,
+  setBetaFamily,
+  setFeatureOverride,
+  setFeatureRollout,
+  setFeatureTier,
+  setFullPremium,
+} from './features-hub.js';
 import { aiPolicy, familyQuota, renderOps } from './premium-ops.js';
 // Child Life Assistant portal ops (slice A6).
 import {
@@ -1340,6 +1383,48 @@ export const recordAppEvent = accountCall('recordAppEvent', (_c, d) =>
   recordEvent(getFirestore(), d, new Date()),
 );
 
+/** MET-01: never accept a client-provided registration date or server completion event. */
+export const recordAnalyticsObservation = accountCall(
+  'recordAnalyticsObservation',
+  async (c, d) => {
+    try {
+      if (!c.anonymous) {
+        const user = await getAuth().getUser(c.uid);
+        await recordAnalyticsRegistration(
+          getFirestore(),
+          c.uid,
+          new Date(user.metadata.creationTime),
+          new Date(),
+          'auth_metadata',
+        );
+      }
+      return await ingestProductObservation(getFirestore(), c, d, new Date());
+    } catch (error) {
+      if (error instanceof AccountError) throw error;
+      // Do not let generic callable logging serialize an operational document path or payload.
+      throw new AccountError('failed-precondition', 'analytics-unavailable');
+    }
+  },
+);
+
+export const analyticsOnRegistration = legacyRegion(functionsRegion)
+  .auth.user()
+  .onCreate(async (user) => {
+    if (user.providerData.length === 0) return;
+    await recordAnalyticsRegistration(
+      getFirestore(),
+      user.uid,
+      new Date(user.metadata.creationTime),
+      new Date(),
+    );
+  });
+export const analyticsOnAccountDeleted = legacyRegion(functionsRegion)
+  .auth.user()
+  .onDelete(async (user) => {
+    await purgeEngagement(getFirestore(), 'uid', user.uid, new Date());
+    await purgeProductAnalytics(getFirestore(), 'uid', user.uid, new Date());
+  });
+
 /** Deletion jobs start at once and resume from their failed step (P-110). */
 export const runDeletion = onDocumentCreated(
   { document: 'deletionJobs/{jobId}', timeoutSeconds: 540, memory: '512MiB' },
@@ -1413,7 +1498,11 @@ const openAiModelUnderstanding = defineString('OPENAI_MODEL_UNDERSTANDING', { de
 
 function aiProvider(): AiProvider {
   const key = openAiKey.value();
-  return !key || key === 'unset' ? templateProvider : openAiProvider(key, openAiModel.value());
+  return !key || key === 'unset'
+    ? templateProvider
+    : openAiProvider(key, openAiModel.value(), fetch, (usage) =>
+        recordAiCall(getFirestore(), usage),
+      );
 }
 
 const storyCall = <T>(
@@ -1531,7 +1620,11 @@ export const reportSummary = aiCall('reportSummary', (r) =>
 
 function expenseExtractor(): ExpenseExtractor | null {
   const key = openAiKey.value();
-  return !key || key === 'unset' ? null : openAiExpenseExtractor(key, openAiModel.value());
+  return !key || key === 'unset'
+    ? null
+    : openAiExpenseExtractor(key, openAiModel.value(), fetch, 5000, (usage) =>
+        recordAiCall(getFirestore(), usage),
+      );
 }
 
 /** Grids and photos under `imports/` (written by the app, read and deleted here). */
@@ -1962,6 +2055,30 @@ export const staffRevokeGrant = staffCall('staffRevokeGrant', (s, d) =>
   revokeGrant(getFirestore(), s, d, new Date()),
 );
 
+// "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".
+// The callables above stay for the current /features and /premium pages.
+export const staffFeatureHub = staffCall('staffFeatureHub', (s) =>
+  featuresHub(getFirestore(), s, new Date()),
+);
+export const staffFeatureSetTier = staffCall('staffFeatureSetTier', (s, d) =>
+  setFeatureTier(getFirestore(), s, d, new Date()),
+);
+export const staffFeatureSetRollout = staffCall('staffFeatureSetRollout', (s, d) =>
+  setFeatureRollout(getFirestore(), s, d, new Date()),
+);
+export const staffFeatureFamily = staffCall('staffFeatureFamily', (s, d) =>
+  hubFamily(getFirestore(), s, d, new Date(), familyDeps),
+);
+export const staffFeatureSetOverride = staffCall('staffFeatureSetOverride', (s, d) =>
+  setFeatureOverride(getFirestore(), s, d, new Date()),
+);
+export const staffFeatureFullPremium = staffCall('staffFeatureFullPremium', (s, d) =>
+  setFullPremium(getFirestore(), s, d, new Date()),
+);
+export const staffFeatureSetBeta = staffCall('staffFeatureSetBeta', (s, d) =>
+  setBetaFamily(getFirestore(), s, d, new Date()),
+);
+
 // Premium operations (plan §5.6, brief "Portal cần thêm"): read-only views; no retry, no charge.
 export const staffAiPolicy = staffCall(
   'staffAiPolicy',
@@ -2074,6 +2191,30 @@ export const staffAnalytics = staffCall('staffAnalytics', (s, d) =>
 export const staffExportAnalytics = staffCall('staffExportAnalytics', (s, d) =>
   exportAnalytics(getFirestore(), s, d, new Date()),
 );
+export const staffProductAnalytics = staffCall('staffProductAnalytics', (s, d) =>
+  productAnalytics(getFirestore(), s, d, new Date()),
+);
+export const staffExportProductAnalytics = staffCall('staffExportProductAnalytics', (s, d) =>
+  exportProductAnalytics(getFirestore(), s, d, new Date()),
+);
+export const buildProductAnalytics = onDocumentCreated(
+  {
+    document: 'productAnalyticsQueries/{queryId}',
+    timeoutSeconds: 540,
+    memory: '1GiB',
+    concurrency: 1,
+    maxInstances: 2,
+  },
+  async (event) => {
+    await buildProductAnalyticsQuery(getFirestore(), event.params.queryId, new Date());
+  },
+);
+export const cleanupProductAnalyticsJob = onSchedule(
+  { schedule: 'every day 04:30', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    await cleanupProductAnalytics(getFirestore(), new Date());
+  },
+);
 /** A new heartbeat day marks the person's families active (P-137). */
 export const activityOnDevice = onDocumentWritten(
   'users/{uid}/devices/{deviceId}',
@@ -2084,6 +2225,25 @@ export const activityOnDevice = onDocumentWritten(
       event.data?.before.data(),
       event.data?.after.data(),
     );
+    const user = await getAuth()
+      .getUser(event.params.uid)
+      .catch(() => null);
+    if (user && user.providerData.length > 0) {
+      await recordAnalyticsRegistration(
+        getFirestore(),
+        user.uid,
+        new Date(user.metadata.creationTime),
+        new Date(),
+        'auth_metadata',
+      );
+      await recordAnalyticsHeartbeat(
+        getFirestore(),
+        user.uid,
+        event.data?.before.data(),
+        event.data?.after.data(),
+        new Date(),
+      );
+    }
   },
 );
 /**
@@ -2386,7 +2546,7 @@ const liveSender = (): LiveSender | null => {
  * renderer marked completed is filed in Kỷ niệm (and tells them it is ready).
  */
 export const onKeepsakeJobWritten = onDocumentWritten(
-  'babies/{babyId}/keepsakeJobs/{jobId}',
+  { document: 'babies/{babyId}/keepsakeJobs/{jobId}', retry: true, timeoutSeconds: 300 },
   async (event) => {
     const before = event.data?.before;
     const after = event.data?.after;
@@ -2399,7 +2559,13 @@ export const onKeepsakeJobWritten = onDocumentWritten(
       after,
       new Date(),
     );
-    if (!after?.exists || after.get('status') !== 'completed' || after.get('memoryId')) return;
+    if (
+      !after?.exists ||
+      after.get('status') !== 'completed' ||
+      after.get('memoryId') ||
+      before?.get('status') === 'completed'
+    )
+      return;
     await completeKeepsakeJob(
       getFirestore(),
       bucketStore(getStorage().bucket()),
@@ -2511,6 +2677,7 @@ function assistantGateway(): ModelGateway | null {
         openAiModel.value(),
         fetch,
         openAiModelUnderstanding.value() || openAiModel.value(),
+        (usage) => recordAiCall(getFirestore(), usage),
       );
 }
 
@@ -2706,6 +2873,7 @@ export const cleanupAssistant = onSchedule(
   { schedule: 'every day 03:20', timeZone: 'Asia/Ho_Chi_Minh' },
   async () => {
     const r = await runCleanupAssistant(getFirestore(), new Date());
+    await cleanupAiUsage(getFirestore(), new Date());
     logger.info('assistant cleanup', r);
   },
 );
@@ -2726,4 +2894,283 @@ export const onPersonalizationProfileWrite = onDocumentWritten(
   async (event) => {
     if (event.data) await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
   },
+);
+
+// Product outcomes are terminal domain states, not client clicks or draft creation.
+export const recordReadyMemoryOutcome = onDocumentWritten(
+  'babies/{babyId}/media/{mediaId}',
+  async (event) => {
+    const doc = event.data?.after;
+    if (
+      doc?.exists &&
+      doc.get('status') === 'ready' &&
+      doc.get('deleted') !== true &&
+      event.data?.before.get('status') !== 'ready'
+    ) {
+      await recordProductOutcome(
+        getFirestore(),
+        event.params.babyId,
+        event.params.mediaId,
+        'memoryReady',
+        doc.get('readyAt')?.toDate?.() ?? new Date(),
+      );
+      await recordAnalyticsDomain(
+        getFirestore(),
+        event.params.babyId,
+        event.params.mediaId,
+        'memory_ready',
+        doc.data()!,
+        new Date(),
+        { meaningful: true },
+      );
+      if (doc.get('generated.kind') === 'card') {
+        await recordAnalyticsDomain(
+          getFirestore(),
+          event.params.babyId,
+          event.params.mediaId,
+          'card_filed',
+          doc.data()!,
+          new Date(),
+          { meaningful: true },
+        );
+      }
+    }
+  },
+);
+export const recordSavedStoryOutcome = onDocumentWritten(
+  'babies/{babyId}/stories/{storyId}',
+  async (event) => {
+    const doc = event.data?.after;
+    if (
+      doc?.exists &&
+      doc.get('status') === 'saved' &&
+      event.data?.before.get('status') !== 'saved'
+    ) {
+      await recordProductOutcome(
+        getFirestore(),
+        event.params.babyId,
+        event.params.storyId,
+        'storySaved',
+        doc.get('savedAt')?.toDate?.() ?? new Date(),
+      );
+      await recordAnalyticsDomain(
+        getFirestore(),
+        event.params.babyId,
+        event.params.storyId,
+        'story_saved',
+        doc.data()!,
+        new Date(),
+        { meaningful: true },
+      );
+    }
+  },
+);
+export const recordConfirmedCareOutcome = onDocumentWritten(
+  'babies/{babyId}/records/{recordId}',
+  async (event) => {
+    const doc = event.data?.after;
+    if (doc?.exists && !event.data?.before.exists && doc.get('deleted') !== true) {
+      await recordProductOutcome(
+        getFirestore(),
+        event.params.babyId,
+        event.params.recordId,
+        'careConfirmed',
+        doc.get('createdAt')?.toDate?.() ?? new Date(),
+      );
+      await recordAnalyticsDomain(
+        getFirestore(),
+        event.params.babyId,
+        event.params.recordId,
+        'care_confirmed',
+        doc.data()!,
+        new Date(),
+        { meaningful: true, module: doc.get('type') === 'growth' ? 'grow' : 'care' },
+      );
+    }
+  },
+);
+export const recordFiledKeepsakeOutcome = onDocumentWritten(
+  'babies/{babyId}/keepsakeJobs/{jobId}',
+  async (event) => {
+    const doc = event.data?.after;
+    if (
+      doc?.exists &&
+      doc.get('status') === 'completed' &&
+      doc.get('memoryId') &&
+      !event.data?.before.get('memoryId')
+    ) {
+      await recordProductOutcome(
+        getFirestore(),
+        event.params.babyId,
+        event.params.jobId,
+        'keepsakeFiled',
+        doc.get('finishedAt')?.toDate?.() ?? new Date(),
+      );
+      await recordAnalyticsDomain(
+        getFirestore(),
+        event.params.babyId,
+        event.params.jobId,
+        doc.get('kind') === 'card' ? 'card_filed' : 'video_filed',
+        { ...doc.data(), readyAt: doc.get('updatedAt') },
+        new Date(),
+        { meaningful: true },
+      );
+    }
+  },
+);
+
+/** MET-01: upload request / render state are intermediate stages, never saved outcomes. */
+export const recordUploadAnalytics = onDocumentCreated(
+  'babies/{babyId}/media/{mediaId}',
+  async (event) => {
+    const data = event.data?.data();
+    if (!data || data.generated || !['uploading', 'waitingQuota'].includes(String(data.status)))
+      return;
+    await recordAnalyticsDomain(
+      getFirestore(),
+      event.params.babyId,
+      event.params.mediaId,
+      'memory_upload_requested',
+      data,
+      new Date(),
+    );
+  },
+);
+export const recordKeepsakeAnalytics = onDocumentWritten(
+  'babies/{babyId}/keepsakeJobs/{jobId}',
+  async (event) => {
+    const data = event.data?.after.data();
+    if (!data) return;
+    const before = event.data?.before.data();
+    const state =
+      data.status === 'queued' && !before
+        ? 'video_requested'
+        : data.status === 'completed' && before?.status !== 'completed'
+          ? 'video_rendered'
+          : data.status === 'failed' && before?.status !== 'failed'
+            ? 'video_failed'
+            : null;
+    if (!state) return;
+    await recordAnalyticsDomain(
+      getFirestore(),
+      event.params.babyId,
+      event.params.jobId,
+      state,
+      data,
+      new Date(),
+    );
+  },
+);
+
+// ENG-00–06: all changes ship dark. Existing notification adapters retain ownership.
+const safeEngagementCall = <T>(name: string, run: (uid: string, data: unknown) => Promise<T>) =>
+  accountCall(name, async (c, d) => {
+    if (c.anonymous) throw new AccountError('permission-denied', 'not-allowed');
+    try {
+      return await run(c.uid, d);
+    } catch (e) {
+      if (e instanceof AccountError) throw e;
+      throw new AccountError('failed-precondition', 'engagement-unavailable');
+    }
+  });
+export const getEngagement = safeEngagementCall('getEngagement', async (uid, d) => {
+  const result = await refreshEngagement(getFirestore(), uid, d, new Date());
+  await settleEngagementFatigue(getFirestore(), uid, new Date());
+  return result;
+});
+export const actOnEngagement = safeEngagementCall('actOnEngagement', (uid, d) =>
+  engagementAction(getFirestore(), uid, d, new Date()),
+);
+export const setEngagementPreferences = safeEngagementCall('setEngagementPreferences', (uid, d) =>
+  saveEngagementSettings(getFirestore(), uid, d, new Date()),
+);
+export const engagementTick = onSchedule(
+  {
+    schedule: 'every 5 minutes',
+    timeZone: 'Asia/Ho_Chi_Minh',
+    timeoutSeconds: 540,
+    maxInstances: 1,
+  },
+  async () => {
+    await runEngagement(getFirestore(), pushSender(), new Date());
+  },
+);
+export const engagementCleanup = onSchedule(
+  { schedule: 'every day 04:45', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    await cleanupEngagement(getFirestore(), new Date());
+  },
+);
+export const engagementOnInbox = onDocumentCreated(
+  'users/{uid}/notifications/{noticeId}',
+  async (e) => {
+    const data = e.data?.data();
+    if (!data) return;
+    try {
+      await careInboxEngagement(getFirestore(), e.params.uid, data, new Date());
+      await familyEngagementFromInbox(
+        getFirestore(),
+        e.params.uid,
+        e.params.noticeId,
+        data,
+        new Date(),
+      );
+    } catch {
+      /* Lost membership/source fails closed; never log child paths. */
+    }
+  },
+);
+export const engagementOnReady = onDocumentWritten('babies/{babyId}/media/{mediaId}', async (e) => {
+  // Only transitions that can change a source: becoming ready, deletion, or a removed doc.
+  // Album, caption, story and rendition writes on a ready item must not re-check the baby.
+  const before = e.data?.before,
+    after = e.data?.after;
+  const wasLive = before?.exists && before.get('status') === 'ready' && !before.get('deleted');
+  const isLive = after?.exists && after.get('status') === 'ready' && !after.get('deleted');
+  if (wasLive !== isLive)
+    await reconcileBabyEngagement(getFirestore(), e.params.babyId, new Date());
+});
+export const engagementOnJob = onDocumentWritten(
+  'babies/{babyId}/keepsakeJobs/{jobId}',
+  async (e) => {
+    if (e.data?.after.get('memoryId'))
+      await reconcileBabyEngagement(getFirestore(), e.params.babyId, new Date());
+  },
+);
+export const engagementOnCareOccurrence = onDocumentCreated(
+  'babies/{babyId}/reminderRules/{ruleId}/occurrences/{occurrenceId}',
+  async (e) => {
+    if (e.data)
+      await careOccurrenceEngagement(
+        getFirestore(),
+        e.params.babyId,
+        e.params.ruleId,
+        e.data.data(),
+        new Date(),
+      );
+  },
+);
+export const engagementOnMember = onDocumentWritten('babies/{babyId}/members/{uid}', async (e) => {
+  if (
+    e.data?.after.get('status') !== 'active' ||
+    e.data?.after.get('role') !== e.data?.before.get('role')
+  )
+    await reconcileBabyEngagement(getFirestore(), e.params.babyId, new Date());
+});
+export const engagementOnDevice = onDocumentWritten('users/{uid}/devices/{deviceId}', async (e) => {
+  await revokeEngagementDevice(
+    getFirestore(),
+    e.params.uid,
+    e.params.deviceId,
+    e.data?.after.data(),
+  );
+});
+
+export const engagementContentViewed = safeEngagementCall('engagementContentViewed', (uid, d) =>
+  observeEngagementContent(getFirestore(), uid, d, new Date()),
+);
+
+export const getEngagementBackgroundAccess = safeEngagementCall(
+  'getEngagementBackgroundAccess',
+  (uid, d) => authorizeEngagementBackground(getFirestore(), uid, d, new Date()),
 );

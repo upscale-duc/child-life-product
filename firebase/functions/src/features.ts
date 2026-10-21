@@ -1,11 +1,8 @@
-import { createHash } from 'node:crypto';
 import type { Firestore, Timestamp } from 'firebase-admin/firestore';
-import {
-  featureAccessRequestSchema,
-  flagsSchema,
-  isFlagOnForFamily,
-  type FeatureAccess,
-} from '@child-life/contracts';
+import { featureAccessRequestSchema, type FeatureAccess } from '@child-life/contracts';
+import { familyFeatureOn, loadFamilyEntitlements, serverGrantEnvironment } from './entitlements.js';
+
+export { familyBucket } from './bucket.js';
 
 export class FeatureError extends Error {
   constructor(
@@ -16,15 +13,12 @@ export class FeatureError extends Error {
   }
 }
 
-/** Stable 0–99 bucket of a family for percent rollouts (the same as AI story drafts). */
-export function familyBucket(familyId: string): number {
-  return parseInt(createHash('sha256').update(familyId).digest('hex').slice(0, 8), 16) % 100;
-}
-
 /**
  * P-148: per-family features for one of the caller's babies. Tự lưu (D-066) and Kỷ niệm 2.0
- * (D-068) are for Cùng nuôi and follow their flags (`auto_save`, `milestone_cards`, `memory_story`):
- * off, the families picked in A10 (and families marked `internal`), a share of families, or all.
+ * (D-068) are for Cùng nuôi and follow the hub's rule (D-089, `familyFeatureDecision`): their
+ * kill switch and rollout (`auto_save`, `milestone_cards`, `memory_story`), the admin override,
+ * the tier (Beta: picked families and the rollout; Premium: every family with Premium) and the
+ * 30-day grace of a move to Premium.
  */
 export async function featureAccess(
   db: Firestore,
@@ -46,22 +40,14 @@ export async function featureAccess(
   }
   const familyId = (await db.doc(`babies/${babyId}`).get()).get('familyId') as string | undefined;
   if (!familyId) throw new FeatureError('not-found', 'no-family');
-  // A missing or older document reads as every flag off (or its default), never as an error.
-  const flags = flagsSchema.safeParse((await db.doc('config/flags').get()).data() ?? {});
-  if (!flags.success || member.get('role') !== 'coParent') {
+  if (member.get('role') !== 'coParent') {
     return { autoSave: false, milestoneCards: false, memoryStory: false };
   }
-  let internal: boolean | undefined;
-  const on = async (key: 'auto_save' | 'milestone_cards' | 'memory_story') => {
-    const flag = flags.data[key];
-    if (flag.enabled && flag.scope === 'internal' && internal === undefined) {
-      internal = (await db.doc(`families/${familyId}`).get()).get('internal') === true;
-    }
-    return isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal ?? false);
-  };
+  // A missing or older document reads as every flag off (or its default), never as an error.
+  const state = await loadFamilyEntitlements(db, familyId, now, serverGrantEnvironment());
   return {
-    autoSave: await on('auto_save'),
-    milestoneCards: await on('milestone_cards'),
-    memoryStory: await on('memory_story'),
+    autoSave: familyFeatureOn(state, 'auto_save'),
+    milestoneCards: familyFeatureOn(state, 'milestone_cards'),
+    memoryStory: familyFeatureOn(state, 'memory_story'),
   };
 }

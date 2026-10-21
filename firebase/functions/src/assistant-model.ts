@@ -1,3 +1,4 @@
+import { aiCallId, providerUsage, type AiCallUsage } from './ai-telemetry.js';
 import { assistantReadTools } from '@child-life/contracts';
 import { logger } from 'firebase-functions';
 import { z } from 'zod';
@@ -774,56 +775,107 @@ export function openAiModelGateway(
   fetchImpl: typeof fetch = fetch,
   /** L9 #7: the tier of the understanding call (`OPENAI_MODEL_UNDERSTANDING`); default [model]. */
   understandingModel: string = model,
+  observe?: (usage: AiCallUsage) => Promise<void>,
 ): ModelGateway {
-  async function post(body: Record<string, unknown>, signal: AbortSignal): Promise<unknown> {
-    let res: Response;
+  async function post(
+    body: Record<string, unknown>,
+    signal: AbortSignal,
+    operation: AiCallUsage['operation'],
+  ): Promise<unknown> {
+    const started = Date.now();
+    let status: AiCallUsage['status'] = 'invalid';
+    let usage = providerUsage(null);
+    let actualModel = String(body.model);
     try {
-      res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        signal,
-        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-    } catch {
-      throw new ModelUnavailable(signal.aborted ? 'timeout' : 'network');
-    }
-    if (!res.ok) {
-      // Only the status and the provider's error code are kept (no prompt, no content), so an
-      // outage, a bad key or an empty balance is visible in the logs (e.g. 429 insufficient_quota).
-      let code: string | null = null;
+      let res: Response;
       try {
-        const err = ((await res.json()) as { error?: { code?: unknown; type?: unknown } }).error;
-        const c = err?.code ?? err?.type;
-        code = typeof c === 'string' ? c.slice(0, 60) : null;
+        res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          signal,
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
       } catch {
-        // No JSON body: the status alone.
+        status = signal.aborted ? 'timeout' : 'network';
+        throw new ModelUnavailable(status);
       }
-      logger.warn('assistant model unavailable', { status: res.status, providerCode: code, model });
-      throw new ModelUnavailable('http', res.status, code);
-    }
-    let content: string | undefined;
-    try {
-      const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-      content = json.choices?.[0]?.message?.content;
-    } catch {
-      throw new ModelUnavailable('json');
-    }
-    if (!content) throw new ModelUnavailable('empty');
-    try {
-      return JSON.parse(content) as unknown;
-    } catch {
-      throw new ModelUnavailable('json');
+      if (!res.ok) {
+        status = 'http';
+        // Only the status and the provider's error code are kept (no prompt, no content), so an
+        // outage, a bad key or an empty balance is visible in the logs (e.g. 429 insufficient_quota).
+        let code: string | null = null;
+        try {
+          const body = (await res.json()) as {
+            error?: { code?: unknown; type?: unknown };
+            usage?: unknown;
+            model?: unknown;
+          };
+          usage = providerUsage(body.usage);
+          if (typeof body.model === 'string' && /^[A-Za-z0-9_.:-]{1,100}$/.test(body.model))
+            actualModel = body.model;
+          const err = body.error;
+          const c = err?.code ?? err?.type;
+          code = typeof c === 'string' ? c.slice(0, 60) : null;
+        } catch {
+          // No JSON body: the status alone.
+        }
+        logger.warn('assistant model unavailable', {
+          status: res.status,
+          providerCode: code,
+          model,
+        });
+        throw new ModelUnavailable('http', res.status, code);
+      }
+      let content: string | undefined;
+      try {
+        const json = (await res.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+          usage?: unknown;
+          model?: unknown;
+        };
+        usage = providerUsage(json.usage);
+        if (typeof json.model === 'string' && /^[A-Za-z0-9_.:-]{1,100}$/.test(json.model))
+          actualModel = json.model;
+        content = json.choices?.[0]?.message?.content;
+      } catch {
+        throw new ModelUnavailable('json');
+      }
+      if (!content) throw new ModelUnavailable('empty');
+      try {
+        const parsed = JSON.parse(content) as unknown;
+        status = 'ok';
+        return parsed;
+      } catch {
+        throw new ModelUnavailable('json');
+      }
+    } finally {
+      const call: AiCallUsage = {
+        callId: aiCallId(),
+        operation,
+        model: actualModel,
+        promptVersion: assistantPromptVersion,
+        status,
+        durationMs: Math.max(0, Date.now() - started),
+        ...usage,
+      };
+      // Telemetry is deliberately metadata-only and must not break a valid answer.
+      logger.info('assistant model usage', call);
+      try {
+        await observe?.(call);
+      } catch {
+        logger.warn('assistant usage aggregation unavailable');
+      }
     }
   }
   return {
     name: 'openai',
     model,
     promptVersion: assistantPromptVersion,
-    extract: (input, signal) => post(buildExtractRequest(input, model), signal),
+    extract: (input, signal) => post(buildExtractRequest(input, model), signal, 'extract'),
     understand: (input, signal) =>
-      post(buildUnderstandRequest(input, understandingModel || model), signal),
-    word: (input, signal) => post(buildWordRequest(input, model), signal),
-    readImages: (input, signal) => post(buildImageReadRequest(input, model), signal),
+      post(buildUnderstandRequest(input, understandingModel || model), signal, 'understand'),
+    word: (input, signal) => post(buildWordRequest(input, model), signal, 'word'),
+    readImages: (input, signal) => post(buildImageReadRequest(input, model), signal, 'images'),
   };
 }
 

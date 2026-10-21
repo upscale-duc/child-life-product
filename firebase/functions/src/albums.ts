@@ -162,6 +162,7 @@ async function familyNotice(
   uid: string,
   actor: unknown,
   now: Date,
+  source?: { collection: string; id: string },
 ): Promise<string> {
   const members = await db
     .collection(`babies/${babyId}/members`)
@@ -176,6 +177,8 @@ async function familyNotice(
     babyId,
     count,
     actor,
+    actorUid: uid,
+    ...(source ? { sourceCollection: source.collection, sourceId: source.id } : {}),
     recipients,
     createdAt: now,
     delivered: false,
@@ -347,7 +350,10 @@ export async function updateAlbum(
       const widened = await recomputeEffective(db, babyId, ids, now);
       const notificationId =
         change.audience === 'family' && change.notifyFamily && widened.length > 0
-          ? await familyNotice(db, babyId, 'album', widened.length, uid, author, now)
+          ? await familyNotice(db, babyId, 'album', widened.length, uid, author, now, {
+              collection: 'albums',
+              id: albumId,
+            })
           : null;
       return { stayingShared: staying, notificationId };
     }

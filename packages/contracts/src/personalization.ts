@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import {
   addDaysIso,
   contentReviewSchema,
@@ -524,7 +525,7 @@ export const rhythmActSchema = z
     doc: z.enum(rhythmDocs),
     versionId: rhythmVersionIdSchema,
     action: z.enum(['submit', 'approve', 'reject', 'discard', 'rollback']),
-    reason: z.string().trim().min(3).max(500),
+    reason: staffReasonSchema,
     review: contentReviewSchema,
   })
   .strict();
@@ -561,6 +562,6 @@ export const setRhythmRulesSchema = z
       .refine((r) => r.baselineMinDays <= r.baselineMaxDays, 'baselineMinDays > baselineMaxDays')
       .refine((r) => r.recentMinDays <= r.recentDays, 'recentMinDays > recentDays')
       .refine((r) => r.baselineMaxDays <= r.baselineLookbackDays, 'baseline window too long'),
-    reason: z.string().trim().min(3).max(500),
+    reason: staffReasonSchema,
   })
   .strict();

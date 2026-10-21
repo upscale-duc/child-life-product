@@ -14,6 +14,10 @@ export default tseslint.config(
       'docs/**',
     ],
   },
+  {
+    files: ['artifacts/**/figma-import.js'],
+    languageOptions: { globals: { figma: 'readonly' } },
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

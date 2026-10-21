@@ -89,14 +89,20 @@ export async function recordAcquisition(
 }
 
 /** The families a person belongs to (active memberships). */
-async function familiesOf(db: Firestore, uid: string): Promise<string[]> {
+async function familiesOf(db: Firestore, uid: string, at: Date): Promise<string[]> {
   const ms_ = await db
     .collectionGroup('members')
     .where('uid', '==', uid)
     .where('status', '==', 'active')
-    .select('babyId')
+    .select('babyId', 'accessUntilAt')
     .get();
-  const babyIds = [...new Set(ms_.docs.map((m) => m.get('babyId') as string))];
+  const babyIds = [
+    ...new Set(
+      ms_.docs
+        .filter((m) => !ms(m.get('accessUntilAt')) || ms(m.get('accessUntilAt')) > at.getTime())
+        .map((m) => m.get('babyId') as string),
+    ),
+  ];
   if (!babyIds.length) return [];
   const babies = await db.getAll(...babyIds.map((b) => db.doc(`babies/${b}`)));
   return [...new Set(babies.map((b) => b.get('familyId') as string).filter(Boolean))];
@@ -113,7 +119,7 @@ export async function markDeviceActivity(
   if (!at || at === ms(before?.lastActiveAt)) return 0;
   const day = dayOf(new Date(at));
   const platform = after?.platform as string | undefined;
-  const families = await familiesOf(db, uid);
+  const families = await familiesOf(db, uid, new Date(at));
   for (const f of families) {
     await db.doc(`familyActivity/${f}`).set(
       {
@@ -438,7 +444,29 @@ export async function analytics(db: Firestore, staff: Staff | null, data: unknow
   const latest = cur[cur.length - 1] ?? null;
   const prevLatest = prev[prev.length - 1] ?? null;
   const p = req.platform;
+  const outcomeDocs =
+    req.tab === 'features'
+      ? await db
+          .collection('productOutcomesDaily')
+          .where('day', '>=', split0)
+          .where('day', '<=', last)
+          .orderBy('day')
+          .get()
+      : null;
+  const outcomes =
+    outcomeDocs?.docs.map((d) => ({
+      day: d.id,
+      qualifiedFamilies: Number(d.get('qualifiedFamilies') ?? 0),
+      actions: d.get('actions') ?? {},
+      households: d.get('households') ?? {},
+    })) ?? [];
   const base = {
+    outcomes: {
+      version: 1,
+      unit: 'daily-households',
+      denominator: 'families-with-a-confirmed-outcome',
+      days: outcomes,
+    },
     range: { from: split0, to: last },
     days: cur.length,
     computedAt: latest ? latest.computedAt : null,

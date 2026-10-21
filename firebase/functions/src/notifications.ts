@@ -46,6 +46,19 @@ export interface Notice {
   message: (language: Language) => Omit<PushMessage, 'data'>;
   /** The zone quiet hours are read in (the baby's); Hồ Chí Minh when unknown. */
   zone?: string | undefined;
+  /** ENG-00 lease-selected install; existing callers retain their multi-device behavior. */
+  deviceId?: string;
+  /** Optional adapter observation; never means device presentation and never blocks delivery. */
+  onResult?: (
+    uid: string,
+    result: {
+      attempted: boolean;
+      accepted: number;
+      inbox: boolean;
+      held: boolean;
+      ambiguous?: boolean;
+    },
+  ) => Promise<void>;
 }
 
 export interface NotifyResult {
@@ -88,8 +101,30 @@ export async function notifyUsers(
   const data = { ...notice.data, kind: notice.kind, inboxId };
 
   for (const [i, uid] of people.entries()) {
+    const acceptedBefore = result.sent;
+    const observe = async (
+      attempted: boolean,
+      inbox: boolean,
+      held: boolean,
+      ambiguous = false,
+    ) => {
+      try {
+        await notice.onResult?.(uid, {
+          attempted,
+          accepted: result.sent - acceptedBefore,
+          inbox,
+          held,
+          ambiguous,
+        });
+      } catch {
+        /* Optional measurement cannot fail a notification. */
+      }
+    };
     const chosen = notificationSettingsOf(settings[i]!.data());
-    if (settingKey && !chosen[settingKey]) continue;
+    if (settingKey && !chosen[settingKey]) {
+      await observe(false, false, false);
+      continue;
+    }
     // EN07 shows the same quiet hours (EN02's default until the person changes them).
     const quiet =
       quietApplies && inQuietHours(quietHoursOf(prefs[i]), notice.zone ?? defaultZone, now);
@@ -97,6 +132,7 @@ export async function notifyUsers(
     const devices = await db.collection(`users/${uid}/devices`).get();
     const byLanguage = new Map<Language, DocumentSnapshot[]>();
     for (const d of devices.docs) {
+      if (notice.deviceId && d.id !== notice.deviceId) continue;
       const token = d.get('token') as string | undefined;
       if (!token || d.get('signedOutAt')) continue;
       const language: Language = d.get('language') === 'en' ? 'en' : 'vi';
@@ -123,12 +159,22 @@ export async function notifyUsers(
     await pruneInbox(db, uid, now);
     if (quiet) {
       result.held += 1;
+      await observe(false, true, true);
       continue;
     }
-    if (!pushing || !sender) continue;
+    if (!pushing || !sender) {
+      await observe(false, true, false);
+      continue;
+    }
     for (const [language, docs] of byLanguage) {
       const tokens = docs.map((d) => d.get('token') as string);
-      const rejected = await sender.send(tokens, { ...copy[language], data });
+      let rejected: string[];
+      try {
+        rejected = await sender.send(tokens, { ...copy[language], data });
+      } catch (error) {
+        await observe(true, true, false, true);
+        throw error;
+      }
       result.sent += tokens.length - rejected.length;
       // The token goes, the install stays in "Thiết bị đang đăng nhập" (13n) until it signs out;
       // the app writes a fresh token on its next launch.
@@ -136,6 +182,7 @@ export async function notifyUsers(
         await docs.find((d) => d.get('token') === t)?.ref.update({ token: FieldValue.delete() });
       }
     }
+    await observe(true, true, false);
   }
   return result;
 }

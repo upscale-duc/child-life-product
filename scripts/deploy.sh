@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 # Deploys Firebase resources to an explicitly named environment. There is no default project.
-# Usage: scripts/deploy.sh dev|prod [firebase --only targets, e.g. "firestore:rules,storage,functions"]
+# Usage: scripts/deploy.sh dev|prod [firebase --only targets] [--force]
 set -euo pipefail
 
 env="${1:-}"
 only="${2:-firestore,storage,functions,hosting}"
+force=false
+if [[ "${3:-}" == "--force" && "$#" -eq 3 ]]; then
+  # Firebase requires an explicit acknowledgement when enabling a function retry policy.
+  # Review the remote/local resource diff before using this option: it also accepts deletions.
+  force=true
+elif [[ "$#" -gt 2 ]]; then
+  echo "Usage: $0 dev|prod [only] [--force]" >&2
+  exit 1
+fi
 case "$env" in
   dev) project="child-life-dev" ;;
   prod)
@@ -30,9 +39,11 @@ if $all_hosting || [[ "$only" == *hosting:player* ]]; then
   pnpm --dir "$root" --filter child-life-renderer run build:player
 fi
 cd "$root"
+deploy_args=(--project "$project" --only "$only")
+if $force; then deploy_args+=(--force); fi
 # Function updates sometimes fail on transient network errors; a re-run only redeploys what changed.
 for attempt in 1 2 3; do
-  if firebase deploy --project "$project" --only "$only"; then exit 0; fi
+  if firebase deploy "${deploy_args[@]}"; then exit 0; fi
   echo ">>> Deploy attempt $attempt failed; retrying" >&2
 done
 exit 1

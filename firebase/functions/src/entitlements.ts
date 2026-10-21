@@ -8,20 +8,33 @@ import {
   defaultEntitlementsConfig,
   entitlementsConfigSchema,
   familyCan,
+  familyFeatureDecision,
   familySettingsRequestSchema,
+  featurePremium,
+  featureOfCapability,
+  featureOfFlag,
+  featureOverrideSchema,
+  featureVisible,
+  featuresConfigSchema,
   firebaseProjectIds,
   flagsSchema,
   grantSchema,
   householdPlan,
   isFlagOnForFamily,
   isIanaTimeZone,
-  resolveCapability,
+  isOpenEndedUntil,
+  resolveFeatureCapability,
   type CapabilitiesAnswer,
   type Capability,
   type CapabilityResult,
   type CapabilityState,
   type EntitlementsConfig,
   type FamilyAction,
+  type FamilyFeatureFacts,
+  type FeatureDecision,
+  type FeatureKey,
+  type FeatureOverride,
+  type FeaturesConfig,
   type FlagKey,
   type Flags,
   type GateReason,
@@ -31,7 +44,7 @@ import {
   type MemberGrant,
 } from '@child-life/contracts';
 import { currentProjectId } from './env.js';
-import { familyBucket } from './features.js';
+import { familyBucket } from './bucket.js';
 
 /**
  * Child Life Premium & Cá nhân hoá: the server capability resolver (brief p.8, plan §5.1). Every
@@ -70,18 +83,17 @@ export function serverGrantEnvironment(): GrantEnvironment {
   return currentProjectId() === firebaseProjectIds.prod ? 'production' : 'test';
 }
 
-export interface EntitlementContext {
-  uid: string;
-  babyId: string;
+/** What decides a family's features and capabilities, without a caller (D-089 hub rule). */
+export interface FamilyEntitlements {
   familyId: string;
-  /** Null when the caller is not an active member (left, expired, never invited). */
-  member: (MemberGrant & { uid: string }) | null;
   family: {
     ownerUid: string | null;
     country: string | null;
     timeZone: string | null;
     internal: boolean;
     entitlementVersion: number;
+    /** Families created after a move to Premium are outside its grace. */
+    createdAt: Date | null;
   };
   flags: Flags;
   config: EntitlementsConfig;
@@ -90,6 +102,19 @@ export interface EntitlementContext {
    * (`id` = `campaign:<campaignId>`). */
   grants: (GrantView &
     Partial<Pick<Grant, 'autoRenew' | 'billingOwnerUid' | 'provider'>> & { id: string })[];
+  /** `config/features`: tiers, beta lists, graces (defaults when missing). */
+  hub: FeaturesConfig;
+  /** `families/{f}/featureOverrides`: the admin overrides, ended ones included. */
+  overrides: Partial<Record<FeatureKey, FeatureOverride>>;
+  /** The instant the state was read for: overrides, graces and grants are judged at it. */
+  now: Date;
+}
+
+export interface EntitlementContext extends FamilyEntitlements {
+  uid: string;
+  babyId: string;
+  /** Null when the caller is not an active member (left, expired, never invited). */
+  member: (MemberGrant & { uid: string }) | null;
 }
 
 const toDate = (v: unknown): Date | null =>
@@ -103,29 +128,28 @@ export async function readEntitlementsConfig(db: Firestore): Promise<Entitlement
   return parsed.success ? parsed.data : defaultEntitlementsConfig;
 }
 
-export async function loadEntitlementContext(
+/** `config/features` (D-089); a missing or invalid document reads as the catalogue defaults. */
+export async function readFeaturesConfig(db: Firestore): Promise<FeaturesConfig> {
+  const parsed = featuresConfigSchema.safeParse(
+    (await db.doc('config/features').get()).data() ?? {},
+  );
+  return parsed.success ? parsed.data : featuresConfigSchema.parse({});
+}
+
+/** A family's flags, config, grants (with open campaigns), hub tiers and overrides at [now]. */
+export async function loadFamilyEntitlements(
   db: Firestore,
-  uid: string,
-  babyId: string,
+  familyId: string,
   now: Date,
   environment: GrantEnvironment,
-): Promise<EntitlementContext> {
-  const [memberSnap, babySnap] = await Promise.all([
-    db.doc(`babies/${babyId}/members/${uid}`).get(),
-    db.doc(`babies/${babyId}`).get(),
-  ]);
-  const familyId = babySnap.get('familyId') as string | undefined;
-  if (!familyId) throw new EntitlementError('not-found', 'no-family');
-  const until = toDate(memberSnap.get('accessUntilAt'));
-  const active =
-    memberSnap.exists &&
-    memberSnap.get('status') === 'active' &&
-    (!until || until.getTime() > now.getTime());
-  const [familySnap, flagsSnap, config, grantDocs] = await Promise.all([
+): Promise<FamilyEntitlements> {
+  const [familySnap, flagsSnap, config, grantDocs, hub, overrideDocs] = await Promise.all([
     db.doc(`families/${familyId}`).get(),
     db.doc('config/flags').get(),
     readEntitlementsConfig(db),
     db.collection(`families/${familyId}/grants`).get(),
+    readFeaturesConfig(db),
+    db.collection(`families/${familyId}/featureOverrides`).get(),
   ]);
   const flags = flagsSchema.safeParse(flagsSnap.data() ?? {});
   const family = {
@@ -134,7 +158,20 @@ export async function loadEntitlementContext(
     timeZone: (familySnap.get('timeZone') as string | undefined) ?? null,
     internal: familySnap.get('internal') === true,
     entitlementVersion: (familySnap.get('entitlementVersion') as number | undefined) ?? 0,
+    createdAt: toDate(familySnap.get('createdAt')),
   };
+  const overrides: FamilyEntitlements['overrides'] = {};
+  for (const doc of overrideDocs.docs) {
+    const d = doc.data();
+    const parsed = featureOverrideSchema.safeParse({
+      ...d,
+      until: toDate(d.until),
+      at: toDate(d.at),
+    });
+    // A malformed override is no override: the rule applies.
+    if (parsed.success && parsed.data.feature === doc.id)
+      overrides[parsed.data.feature] = parsed.data;
+  }
   const grants: EntitlementContext['grants'] = [];
   for (const doc of grantDocs.docs) {
     const d = doc.data();
@@ -168,9 +205,41 @@ export async function loadEntitlementContext(
     }
   }
   return {
+    familyId,
+    family,
+    flags: flags.success ? flags.data : flagsSchema.parse({}),
+    config,
+    environment,
+    grants,
+    hub,
+    overrides,
+    now,
+  };
+}
+
+export async function loadEntitlementContext(
+  db: Firestore,
+  uid: string,
+  babyId: string,
+  now: Date,
+  environment: GrantEnvironment,
+): Promise<EntitlementContext> {
+  const [memberSnap, babySnap] = await Promise.all([
+    db.doc(`babies/${babyId}/members/${uid}`).get(),
+    db.doc(`babies/${babyId}`).get(),
+  ]);
+  const familyId = babySnap.get('familyId') as string | undefined;
+  if (!familyId) throw new EntitlementError('not-found', 'no-family');
+  const until = toDate(memberSnap.get('accessUntilAt'));
+  const active =
+    memberSnap.exists &&
+    memberSnap.get('status') === 'active' &&
+    (!until || until.getTime() > now.getTime());
+  const state = await loadFamilyEntitlements(db, familyId, now, environment);
+  return {
+    ...state,
     uid,
     babyId,
-    familyId,
     member: active
       ? {
           uid,
@@ -179,16 +248,65 @@ export async function loadEntitlementContext(
           extraRights: memberSnap.get('extraRights') ?? null,
         }
       : null,
-    family,
-    flags: flags.success ? flags.data : flagsSchema.parse({}),
-    config,
-    environment,
-    grants,
   };
 }
 
-/** Whether flag [key] is on for the context's family (rollout bucket, internal families). */
-export function flagOn(ctx: EntitlementContext, key: FlagKey): boolean {
+/** The facts the hub's rule reads for this family (`familyFeatureDecision`). */
+export function featureFacts(state: FamilyEntitlements, now: Date = state.now): FamilyFeatureFacts {
+  return {
+    familyId: state.familyId,
+    bucket: familyBucket(state.familyId),
+    internal: state.family.internal,
+    createdAt: state.family.createdAt,
+    country: state.family.country,
+    advancedRegions: state.config.regions.advanced,
+    flags: state.flags,
+    hub: state.hub,
+    overrides: state.overrides,
+    grants: state.grants,
+    environment: state.environment,
+    now,
+  };
+}
+
+/**
+ * D-089 (plan §2.2): kill switch → admin override → Premium (skips the rollout; an admin grant
+ * skips the region) → Beta → Miễn phí, for one catalogue feature of this family.
+ */
+export function featureDecision(
+  state: FamilyEntitlements,
+  key: FeatureKey,
+  at: { flag?: FlagKey; capability?: Capability } = {},
+  now: Date = state.now,
+): FeatureDecision {
+  return familyFeatureDecision(featureFacts(state, now), key, at);
+}
+
+/** Whether the family has the feature (server gates for Tự lưu, Kỷ niệm 2.0 and AI drafts). */
+export function familyFeatureOn(state: FamilyEntitlements, key: FeatureKey): boolean {
+  return featureDecision(state, key).on;
+}
+
+/** `familyFeatureOn` for a family id: loads the state first (callers without a context). */
+export async function familyFeatureEnabled(
+  db: Firestore,
+  familyId: string,
+  key: FeatureKey,
+  now: Date,
+  environment: GrantEnvironment = serverGrantEnvironment(),
+): Promise<boolean> {
+  return familyFeatureOn(await loadFamilyEntitlements(db, familyId, now, environment), key);
+}
+
+/**
+ * Whether flag [key] is on for the context's family. An engineering switch: its rollout bucket
+ * and internal families. A catalogue feature's switch (D-089): shown when the hub's rule opens
+ * the feature, or closes it only for the paywall / region (Premium skips the rollout, overrides
+ * win), so the app's entry points and the server's gates agree.
+ */
+export function flagOn(ctx: FamilyEntitlements, key: FlagKey): boolean {
+  const feature = featureOfFlag(key);
+  if (feature) return featureVisible(featureDecision(ctx, feature.key, { flag: key }));
   return isFlagOnForFamily(
     ctx.flags[key],
     ctx.familyId,
@@ -197,26 +315,66 @@ export function flagOn(ctx: EntitlementContext, key: FlagKey): boolean {
   );
 }
 
-/** Membership → role → kill switch → free → region → grants, for one capability. */
+function capabilityResult(
+  ctx: FamilyEntitlements,
+  capability: Capability,
+  now: Date,
+  member: boolean,
+  roleAllows: boolean,
+): CapabilityResult {
+  const flagKey = capabilityFlag[capability];
+  const feature = featureOfCapability(capability);
+  // Outside the catalogue (the Premium credit budget): an admin grant skips the country check
+  // too (D-089); a paid grant keeps it.
+  const staffGrant =
+    !feature && featurePremium(ctx.grants, [capability], ctx.environment, now).staff;
+  return resolveFeatureCapability(
+    {
+      capability,
+      now,
+      member,
+      roleAllows,
+      featureEnabled: flagKey === null || flagOn(ctx, flagKey),
+      regionSupported:
+        staffGrant ||
+        (ctx.family.country !== null && ctx.config.regions.advanced.includes(ctx.family.country)),
+      environment: ctx.environment,
+      grants: ctx.grants,
+    },
+    feature ? featureDecision(ctx, feature.key, { capability }, now) : null,
+  );
+}
+
+/**
+ * Membership → role, then for a catalogue capability the hub's rule (D-089: kill switch →
+ * override → Premium → Beta → Miễn phí, with region and credits), else kill switch → free →
+ * region → grants.
+ */
 export function checkCapability(
   ctx: EntitlementContext,
   capability: Capability,
   now: Date,
   action: FamilyAction = capabilityAction[capability],
 ): CapabilityResult {
-  const flagKey = capabilityFlag[capability];
-  const featureEnabled = flagKey === null || flagOn(ctx, flagKey);
-  return resolveCapability({
+  return capabilityResult(
+    ctx,
     capability,
     now,
-    member: ctx.member !== null,
-    roleAllows: ctx.member !== null && familyCan(ctx.member, action),
-    featureEnabled,
-    regionSupported:
-      ctx.family.country !== null && ctx.config.regions.advanced.includes(ctx.family.country),
-    environment: ctx.environment,
-    grants: ctx.grants,
-  });
+    ctx.member !== null,
+    ctx.member !== null && familyCan(ctx.member, action),
+  );
+}
+
+/** What the app is told about [capability], seen as the family owner (portal views). */
+export function capabilityStateAsOwner(
+  state: FamilyEntitlements,
+  capability: Capability,
+  now: Date = state.now,
+): CapabilityState {
+  const r = capabilityResult(state, capability, now, true, true);
+  return r.allowed
+    ? { allowed: true, reason: null, via: r.via }
+    : { allowed: false, reason: r.reason, via: null };
 }
 
 /** Loads the context and throws the gate reason unless [capability] is allowed for [action]. */
@@ -264,7 +422,9 @@ export async function getCapabilities(
     policyVersion: ctx.config.policyVersion,
     entitlementVersion: ctx.family.entitlementVersion,
     plan: plan.plan,
-    validUntil: plan.validUntil?.toISOString() ?? null,
+    // "Bật toàn bộ Premium" with no end date: no date to show.
+    validUntil:
+      plan.validUntil && !isOpenEndedUntil(plan.validUntil) ? plan.validUntil.toISOString() : null,
     autoRenew: plan.autoRenew,
     isBillingOwner: plan.billingOwnerUid !== null && plan.billingOwnerUid === uid,
     provider:

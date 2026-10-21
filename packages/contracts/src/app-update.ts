@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 
 /**
  * App updates (v1.0 improvement UP1–UP6, owner 2026-10-12, D-061): written on the portal
@@ -162,8 +163,8 @@ export interface AppUpdatePublic {
 export const appUpdateSaveSchema = z
   .object({
     config: appUpdateConfigSchema,
-    /** Shown in the audit log; raising a minimum blocks phones, so say why. */
-    reason: z.string().trim().min(3).max(500),
+    /** Optional (D-090): "" when missing; the audit log records the change either way. */
+    reason: staffReasonSchema,
   })
   .strict();
 

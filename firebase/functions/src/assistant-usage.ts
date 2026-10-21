@@ -4,6 +4,7 @@ import {
   dayBoundsIn,
   defaultAssistantCreditPolicy,
   grantGives,
+  isOpenEndedUntil,
   type AssistantCreditPolicy,
   type AssistantUsage,
   type AssistantUsageEntry,
@@ -82,8 +83,9 @@ export async function assistantPool(
 ): Promise<AssistantPool> {
   const policy = creditPolicy(s.ctx.config);
   const premium = premiumBudgetGrant(s.ctx, now);
-  if (premium && premium.source === 'beta') {
-    // A beta: monthly, in the household zone, inside the campaign's validity.
+  if (premium && (premium.source === 'beta' || isOpenEndedUntil(premium.validUntil))) {
+    // A beta, or "Bật toàn bộ Premium" with no end date (D-089): monthly, in the household
+    // zone, inside the grant's validity (one window per month, not one for ever).
     const m = calendarMonthWindow(s.householdZone, now);
     const monthStart = dayBoundsIn(s.householdZone, m.startDate).start;
     const monthEnd = dayBoundsIn(s.householdZone, m.endDate).start;

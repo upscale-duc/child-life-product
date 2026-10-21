@@ -1,14 +1,12 @@
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
   capabilities,
-  capabilityFlag,
   defaultEntitlementsConfig,
   entitlementsConfigSchema,
   familyPremiumSchema,
   flagKeys,
   grantPromoSchema,
   householdPlan,
-  resolveCapability,
   revokeGrantSchema,
   setEntitlementsConfigSchema,
   type Capability,
@@ -18,7 +16,12 @@ import {
   type GrantEnvironment,
   type StaffFamilyPremium,
 } from '@child-life/contracts';
-import { flagOn, loadEntitlementContext, serverGrantEnvironment } from './entitlements.js';
+import {
+  capabilityStateAsOwner,
+  flagOn,
+  loadEntitlementContext,
+  serverGrantEnvironment,
+} from './entitlements.js';
 import {
   familyCode,
   familyIdsOf,
@@ -139,7 +142,8 @@ export async function familyPremium(
   // The staff member is not a member: the context is used for grants and family fields only.
   const ctx = await loadEntitlementContext(db, 'portal-staff', babyId, now, environment);
   const plan = householdPlan(ctx.grants, environment, now);
-  // What the app is told (getCapabilities), seen as the owner: flags, region, then grants.
+  // What the app is told (getCapabilities), seen as the owner: the hub's rule (D-089) for
+  // catalogue features, flags → region → grants for the rest.
   const regionSupported =
     ctx.family.country !== null && ctx.config.regions.advanced.includes(ctx.family.country);
   const flags = Object.fromEntries(flagKeys.map((k) => [k, flagOn(ctx, k)])) as Record<
@@ -147,25 +151,10 @@ export async function familyPremium(
     boolean
   >;
   const caps = Object.fromEntries(
-    capabilities.map((capability): [Capability, CapabilityState] => {
-      const flag = capabilityFlag[capability];
-      const r = resolveCapability({
-        capability,
-        now,
-        member: true,
-        roleAllows: true,
-        featureEnabled: flag === null || flags[flag],
-        regionSupported,
-        environment,
-        grants: ctx.grants,
-      });
-      return [
-        capability,
-        r.allowed
-          ? { allowed: true, reason: null, via: r.via }
-          : { allowed: false, reason: r.reason, via: null },
-      ];
-    }),
+    capabilities.map((capability): [Capability, CapabilityState] => [
+      capability,
+      capabilityStateAsOwner(ctx, capability, now),
+    ]),
   ) as Record<Capability, CapabilityState>;
   return {
     code,

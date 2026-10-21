@@ -49,6 +49,9 @@ export async function onMessageCreated(
     .get();
   await db.doc(`babies/${babyId}/notifications/message_${message.id}`).set({
     kind: 'message',
+    sourceCollection: 'messages',
+    sourceId: message.id,
+    actorUid: from,
     babyId,
     count: 1,
     actor: message.get('author') ?? null,
@@ -74,6 +77,8 @@ export interface PushSender {
        * system-drawn FCM notification cannot carry buttons.
        */
       androidDraws?: boolean;
+      /** ENG expiry bounds offline provider delivery; no change for existing notices. */
+      expiresAt?: number;
     },
   ): Promise<string[]>;
 }
@@ -85,9 +90,22 @@ export interface PushSender {
  * FCM notification cannot carry buttons.
  */
 export function pushPayload(message: Parameters<PushSender['send']>[1]) {
+  const expiryHeaders =
+    message.expiresAt === undefined
+      ? {}
+      : { 'apns-expiration': String(Math.floor(message.expiresAt / 1000)) };
+  const ttl =
+    message.expiresAt === undefined
+      ? {}
+      : { ttl: Math.max(0, Math.min(28 * 86400_000, message.expiresAt - Date.now())) };
   const apns = {
-    ...(message.apns?.collapseId
-      ? { headers: { 'apns-collapse-id': message.apns.collapseId } }
+    ...(message.apns?.collapseId || message.expiresAt !== undefined
+      ? {
+          headers: {
+            ...expiryHeaders,
+            ...(message.apns?.collapseId ? { 'apns-collapse-id': message.apns.collapseId } : {}),
+          },
+        }
       : {}),
     payload: {
       aps: {
@@ -108,14 +126,14 @@ export function pushPayload(message: Parameters<PushSender['send']>[1]) {
         tag: message.apns?.collapseId ?? '',
       },
       apns,
-      android: { priority: 'high' as const },
+      android: { priority: 'high' as const, ...ttl },
     };
   }
   return {
     notification: { title: message.title, body: message.body },
     data: message.data,
     apns,
-    android: { priority: 'high' as const, notification: androidNotification(message) },
+    android: { priority: 'high' as const, ...ttl, notification: androidNotification(message) },
   };
 }
 
@@ -259,6 +277,9 @@ export async function deliverNotice(
         babyId,
         kind,
         noticeId,
+        ...(typeof claimed.get('sourceId') === 'string'
+          ? { sourceId: claimed.get('sourceId'), sourceCollection: claimed.get('sourceCollection') }
+          : {}),
         ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
       },
       message: (language) => noticeCopy(kind, count, actor, language),

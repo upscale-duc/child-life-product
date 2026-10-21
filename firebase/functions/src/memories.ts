@@ -13,7 +13,6 @@ import {
   defaultLimits,
   effectiveAudience,
   flagsSchema,
-  isFlagOnForFamily,
   keepsakePublicCatalogSchema,
   keepsakeNeedsPremiumCheck,
   keepsakeTemplateAccess,
@@ -38,8 +37,7 @@ import {
  */
 
 import { familyNotice, recomputeAlbum, recomputeEffective } from './albums.js';
-import { hasPremiumTemplates } from './entitlements.js';
-import { familyBucket } from './features.js';
+import { familyFeatureEnabled, hasPremiumTemplates } from './entitlements.js';
 import { renditionJobDoc, renditionJobId } from './video-renditions.js';
 
 export class MemoryError extends Error {
@@ -181,21 +179,13 @@ export async function createMemory(
         throw new MemoryError('failed-precondition', 'uploads-paused');
       }
     }
-    // D-068 #3: a milestone card is saved only while its beta flag is on for the family.
+    // D-068 #3: a milestone card is saved only while the family has Thiệp cột mốc: its flag,
+    // the admin override and the tier (D-089 hub rule, the same answer as `featureAccess`).
     const generated = req.generated;
     if (generated) {
       const familyId = (await db.doc(`babies/${req.babyId}`).get()).get('familyId') as
         string | undefined;
-      const flag = flags.success ? flags.data.milestone_cards : null;
-      const internal =
-        flag?.enabled && flag.scope === 'internal' && familyId
-          ? (await db.doc(`families/${familyId}`).get()).get('internal') === true
-          : false;
-      if (
-        !flag ||
-        !familyId ||
-        !isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal)
-      ) {
+      if (!familyId || !(await familyFeatureEnabled(db, familyId, 'milestone_cards', now))) {
         throw new MemoryError('failed-precondition', 'not-enabled');
       }
       // The template must be a published card, at a version that was published (a phone may
@@ -903,6 +893,9 @@ export async function maybeNotifyBatch(
     if (fresh.get('notifiedAt') || fresh.get('closed') === true) return 'done' as const;
     tx.set(db.doc(`babies/${babyId}/notifications/${batchId}`), {
       kind: 'memories',
+      sourceCollection: 'uploadBatches',
+      sourceId: batchId,
+      actorUid: batch.get('createdBy'),
       babyId,
       batchId,
       count,

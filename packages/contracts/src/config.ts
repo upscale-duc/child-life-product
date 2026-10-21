@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 
 /**
  * Feature flags (Figma Admin portal A10, R-189; business map P-122).
@@ -6,6 +7,20 @@ import { z } from 'zod';
  * so signed-out clients can read kill switches. Rollout is bucketed by family.
  */
 export const flagKeys = [
+  'engagementEnabled',
+  'engagementPushEnabled',
+  'engagementPendingEnabled',
+  'engagementMilestoneEnabled',
+  'engagementSixMonthEnabled',
+  'engagementWeeklyEnabled',
+  'engagementFamilyEnabled',
+  'engagementLumiEnabled',
+  'engagementFatigueEnabled',
+  'engagementDigestGroupingEnabled',
+  'engagementExperimentEnabled',
+
+  /** MET-01: private product observations; off never blocks a domain action or existing stats. */
+  'product_analytics',
   'media_upload',
   'video_upload',
   'ai_story_drafts',
@@ -71,6 +86,19 @@ const off = (scope: Flag['scope'] = 'all'): Flag => ({
 
 /** Safe defaults used when the config document is missing: features ship dark until enabled. */
 export const defaultFlags: Flags = {
+  engagementEnabled: off(),
+  engagementPushEnabled: off(),
+  engagementPendingEnabled: off(),
+  engagementMilestoneEnabled: off(),
+  engagementSixMonthEnabled: off(),
+  engagementWeeklyEnabled: off(),
+  engagementFamilyEnabled: off(),
+  engagementLumiEnabled: off(),
+  engagementFatigueEnabled: off(),
+  engagementDigestGroupingEnabled: off(),
+  engagementExperimentEnabled: off(),
+
+  product_analytics: off(),
   media_upload: off(),
   video_upload: off(),
   ai_story_drafts: off('internal'),
@@ -142,11 +170,11 @@ export const defaultContentPolicy: ContentPolicy = {
   reviewRequiredOnProd: true,
 };
 
-/** `staffSetContentPolicy`: the Owner changes one or both switches, with a reason (P-139). */
+/** `staffSetContentPolicy`: the Owner changes one or both switches (P-139); reason optional (D-090). */
 export const setContentPolicyRequestSchema = z.object({
   ownerSelfApprove: z.boolean().optional(),
   reviewRequiredOnProd: z.boolean().optional(),
-  reason: z.string().trim().min(3).max(500),
+  reason: staffReasonSchema,
 });
 export type SetContentPolicyRequest = z.infer<typeof setContentPolicyRequestSchema>;
 

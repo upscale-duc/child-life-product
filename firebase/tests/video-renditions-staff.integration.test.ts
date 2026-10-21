@@ -265,8 +265,9 @@ describe('"Thử xử lý lại video" (R-185)', () => {
     expect(await ask(uploading)).toBe('not-video');
     expect(await ask(`babies/${babyId}/media/${id()}`)).toBe('not-found');
     expect(await ask('abc')).toBe('malformed');
+    // No reason needed (D-090): the same answer as with one.
     expect(await reason(requeueVideoRendition(db, eng, { media: withDisplay }, now))).toBe(
-      'malformed',
+      'has-rendition',
     );
     expect(await audit('system.videoRequeue')).toHaveLength(0);
   });
@@ -348,14 +349,13 @@ describe('backfillVideoRenditions (prod rollout, P-170)', () => {
     expect(JSON.stringify(log)).not.toContain('Teddy');
   });
 
-  it('needs the system edit level and a reason; a job that already exists is passed over', async () => {
+  it('needs the system edit level (no reason, D-090); a job that already exists is passed over', async () => {
     const m = id();
     await video(m);
     expect(await reason(backfillVideoRenditions(db, ops, { reason: 'rollout' }, now))).toBe('role');
     expect(await reason(backfillVideoRenditions(db, null, { reason: 'rollout' }, now))).toBe(
       'not-staff',
     );
-    expect(await reason(backfillVideoRenditions(db, eng, {}, now))).toBe('malformed');
     expect(
       await reason(backfillVideoRenditions(db, eng, { limit: 0, reason: 'rollout' }, now)),
     ).toBe('malformed');

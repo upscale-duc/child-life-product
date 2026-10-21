@@ -309,7 +309,13 @@ describe('the care export (D-085 #3)', () => {
     );
     const job = (await db.doc('dataJobs/job_solids').get()).data()!;
     const files = store.files.get(job.path as string)!;
-    expect([...files.keys()]).toEqual(['care.json', 'care.csv', 'meals.csv', 'family-recipes.csv']);
+    expect([...files.keys()]).toEqual([
+      'care.json',
+      'personalization.json',
+      'care.csv',
+      'meals.csv',
+      'family-recipes.csv',
+    ]);
     expect(files.get('meals.csv')).toContain('Cháo bí đỏ');
     expect(files.get('family-recipes.csv')).toContain('Cháo cá hồi bí đỏ');
   });

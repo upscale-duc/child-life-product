@@ -1,3 +1,4 @@
+import { purgeEngagement } from './engagement.js';
 import { createHash, randomBytes } from 'node:crypto';
 import {
   answerOwnershipSchema,
@@ -11,6 +12,7 @@ import {
   foodIdSchema,
   localDateIn,
   maxBabyAgeYears,
+  keepsakeJobLimits,
   noteBytesEstimate,
   offerOwnershipSchema,
   requestExportSchema,
@@ -32,9 +34,11 @@ import {
 import type { Readable } from 'node:stream';
 import type { AccountMailData, AccountTemplate, Locale } from './mail.js';
 import { reconcileFamilyUsage } from './memories.js';
+import { readForSettle, settleInTx } from './video-quota.js';
 
 // Child Life Assistant, slice A3: assistant data goes with the account / the baby.
 import { purgeAssistantForBaby, purgeAssistantForUser } from './assistant-lifecycle.js';
+import { purgeProductAnalytics } from './product-analytics-store.js';
 /**
  * Me, storage, baby profiles and the account (S11, Figma 13a–13n). Sensitive changes are callables
  * with zod validation; deletions run as resumable jobs (P-110) that only report "done" after a
@@ -465,6 +469,12 @@ export interface JobDeps {
 /** Top-level collections that point at a baby and go with it. */
 const babyLinked = ['invites', 'dataJobs'] as const;
 
+class DeletionWaiting extends Error {
+  constructor(readonly until: Date) {
+    super('waiting-for-render-writers');
+  }
+}
+
 async function deleteQuery(db: Firestore, q: FirebaseFirestore.Query): Promise<number> {
   let total = 0;
   for (;;) {
@@ -492,9 +502,39 @@ async function babyStep(
       if ((await babyRef.get()).exists) await babyRef.update({ state: 'deleting' });
       return;
     case 'storage':
+      // CON-01: after the baby lock, no new writer may claim. Allow already claimed
+      // requests to finish/expire before Storage purge and verified deletion.
+      {
+        const jobs = await babyRef.collection('keepsakeJobs').get();
+        let until = now.getTime();
+        for (const render of jobs.docs) {
+          for (const field of ['leaseUntilAt', 'filingUntilAt']) {
+            until = Math.max(until, (render.get(field) as Timestamp | undefined)?.toMillis() ?? 0);
+          }
+          // Compatibility with workers started before leaseUntilAt was introduced.
+          if (render.get('status') === 'rendering' && !render.get('leaseUntilAt')) {
+            const started = (render.get('startedAt') as Timestamp | undefined)?.toMillis();
+            if (started)
+              until = Math.max(until, started + (keepsakeJobLimits.renderMinutes + 1) * 60_000);
+          }
+        }
+        if (until > now.getTime()) throw new DeletionWaiting(new Date(until));
+        for (const render of jobs.docs) {
+          await db.runTransaction(async (tx) => {
+            const current = await tx.get(render.ref);
+            const reservation = current.get('quota.reservationId') as string | undefined;
+            if (!current.exists || !reservation || current.get('memoryId')) return;
+            const reads = await readForSettle(tx, db, familyId, reservation);
+            settleInTx(tx, db, familyId, reads, 'release', now);
+            tx.update(current.ref, { status: 'failed', error: 'unavailable', finishedAt: now });
+          });
+        }
+      }
       await deps.store.deletePrefix(`babies/${babyId}/`);
       return;
     case 'documents': {
+      await purgeEngagement(db, 'babyId', babyId, now);
+      await purgeProductAnalytics(db, 'babyId', babyId, now);
       for (const c of await babyRef.listCollections()) await db.recursiveDelete(c);
       for (const name of babyLinked) {
         await deleteQuery(db, db.collection(name).where('babyId', '==', babyId));
@@ -643,6 +683,8 @@ async function accountStep(
       return;
     }
     case 'personal': {
+      await purgeEngagement(db, 'uid', uid, now);
+      await purgeProductAnalytics(db, 'uid', uid, now);
       const user = db.doc(`users/${uid}`);
       const snap = await user.get();
       const familyId = snap.get('ownedFamilyId') as string | undefined;
@@ -685,6 +727,8 @@ export async function runDeletionJob(
   const claimed = await db.runTransaction(async (tx) => {
     const job = await tx.get(ref);
     if (!job.exists || job.get('state') === 'done') return false;
+    if (((job.get('retryAfter') as Timestamp | undefined)?.toMillis() ?? 0) > now().getTime())
+      return false;
     const updated = job.get('updatedAt') as Timestamp | undefined;
     const running = job.get('state') === 'running';
     if (running && updated && now().getTime() - updated.toMillis() < 15 * 60_000) return false;
@@ -701,6 +745,16 @@ export async function runDeletionJob(
       await ref.update({ step: i + 1, updatedAt: now(), error: null });
       job = await ref.get();
     } catch (error) {
+      if (error instanceof DeletionWaiting) {
+        await ref.update({
+          state: 'queued',
+          retryAfter: error.until,
+          updatedAt: now(),
+          attempts: FieldValue.increment(-1),
+          error: null,
+        });
+        return 'skipped';
+      }
       await ref.update({
         state: 'failed',
         failedStep: steps[i],

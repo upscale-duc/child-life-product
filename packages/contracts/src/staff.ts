@@ -1,11 +1,12 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import { flagKeys, rolloutScopes } from './config.js';
 
 /**
  * Staff portal "Child Life · Vận hành" (Slice S15; Figma A01–A12; business map §5.1, §7.15,
  * R-180…R-190, D-007, D-043, P-120…P-125). Staff never see photos, videos, captions or care
- * records; they see masked emails, anonymous family codes, counts and bytes. Every mutation needs
- * a reason and lands in the append-only staff audit log (A12).
+ * records; they see masked emails, anonymous family codes, counts and bytes. Every mutation lands
+ * in the append-only staff audit log (A12); its reason is optional since D-090 ("" when missing).
  */
 
 /**
@@ -278,7 +279,8 @@ export function maskEmail(email: string | null | undefined): string {
   return `${user.slice(0, 1)}***@${domain}`;
 }
 
-const reason = z.string().trim().min(3).max(500);
+/** D-090: optional, "" when missing (never refused); the audit line is written either way. */
+const reason = staffReasonSchema;
 
 export const overviewRequestSchema = z.object({
   days: z.union([z.literal(7), z.literal(30), z.literal(90)]),

@@ -2,7 +2,6 @@ import { createHash } from 'node:crypto';
 import {
   dayBoundsIn,
   deleteStorySchema,
-  flagsSchema,
   guardAiText,
   localDateIn,
   saveStorySchema,
@@ -20,6 +19,7 @@ import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore'
 import { z } from 'zod';
 import { AiUnavailable, templateProvider, type AiProvider } from './ai.js';
 import { familyNotice, recomputeEffective } from './albums.js';
+import { familyFeatureEnabled } from './entitlements.js';
 import { aiBudgetLeft, chargeAi } from './staff.js';
 
 /**
@@ -154,6 +154,7 @@ export async function saveStory(
         relationCustom: me.get('relationCustom') ?? null,
       },
       now,
+      { collection: 'stories', id: req.storyId },
     );
   }
   return { madeVisible, notificationId };
@@ -320,19 +321,9 @@ export function draftBlocks(
   return blocks;
 }
 
-async function aiEnabled(db: Firestore, familyId: string): Promise<boolean> {
-  const flags = flagsSchema.safeParse((await db.doc('config/flags').get()).data());
-  if (!flags.success) return false;
-  const f = flags.data.ai_story_drafts;
-  if (!f.enabled) return false;
-  if (f.scope === 'all') return true;
-  if (f.scope === 'internal') {
-    if ((f.families ?? []).includes(familyId)) return true;
-    return (await db.doc(`families/${familyId}`).get()).get('internal') === true;
-  }
-  const bucket =
-    parseInt(createHash('sha256').update(familyId).digest('hex').slice(0, 8), 16) % 100;
-  return bucket < f.percent;
+/** Nháp câu chuyện AI for this family: its flag, the admin override and the tier (D-089). */
+async function aiEnabled(db: Firestore, familyId: string, now: Date): Promise<boolean> {
+  return familyFeatureEnabled(db, familyId, 'ai_story_drafts', now);
 }
 
 /**
@@ -350,7 +341,7 @@ export async function suggestStory(
 ): Promise<{ storyId: string | null; reason: string; provider?: string }> {
   const baby = await db.doc(`babies/${babyId}`).get();
   if (!baby.exists || baby.get('state') === 'deleting') return { storyId: null, reason: 'no-baby' };
-  if (!options.ignoreFlag && !(await aiEnabled(db, baby.get('familyId') as string))) {
+  if (!options.ignoreFlag && !(await aiEnabled(db, baby.get('familyId') as string, now))) {
     return { storyId: null, reason: 'flag-off' };
   }
   // A09: at 100 % of the month's budget, new suggestions pause; saved stories are unaffected.
@@ -387,29 +378,37 @@ export async function suggestStory(
     await chargeAi(db, now, storyLimits.costPerDraftVnd);
   }
   const storyId = `sto_${createHash('sha256').update(`${weekKey}:${recent.size}`).digest('hex').slice(0, 32)}`;
-  await db.doc(`babies/${babyId}/stories/${storyId}`).set({
-    id: storyId,
-    babyId,
-    kind: 'story',
-    origin: 'ai',
-    suggestion: true,
-    status: 'draft',
-    title: draft.title,
-    coverMediaId: photoIds[0] ?? null,
-    blocks: draftBlocks(draft, photoIds, sources.milestone),
-    audience: 'family' satisfies Audience,
-    rangeStart: sources.rangeStart,
-    rangeEnd: sources.rangeEnd,
-    sourcePhotos: sources.photos,
-    milestone: sources.milestone,
-    provider: used,
-    createdBy: 'ai',
-    author: null,
-    loveCount: 0,
-    createdAt: now,
-    updatedAt: now,
+  const filed = await db.runTransaction(async (tx) => {
+    const current = await tx.get(baby.ref);
+    if (!current.exists || current.get('state') === 'deleting') return false;
+    tx.set(db.doc(`babies/${babyId}/stories/${storyId}`), {
+      id: storyId,
+      babyId,
+      kind: 'story',
+      origin: 'ai',
+      suggestion: true,
+      status: 'draft',
+      title: draft.title,
+      coverMediaId: photoIds[0] ?? null,
+      blocks: draftBlocks(draft, photoIds, sources.milestone),
+      audience: 'family' satisfies Audience,
+      rangeStart: sources.rangeStart,
+      rangeEnd: sources.rangeEnd,
+      sourcePhotos: sources.photos,
+      milestone: sources.milestone,
+      provider: used,
+      locale,
+      createdBy: 'ai',
+      author: null,
+      loveCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    });
+    return true;
   });
-  return { storyId, reason: 'created', provider: used };
+  return filed
+    ? { storyId, reason: 'created', provider: used }
+    : { storyId: null, reason: 'no-baby' };
 }
 
 /** Weekly run over every active baby (Sunday evening, P-090). */
@@ -422,13 +421,29 @@ export async function suggestForAll(
   let made = 0;
   for (const b of babies.docs) {
     try {
-      const r = await suggestStory(db, provider, b.id, 'vi', now);
+      const r = await suggestStory(db, provider, b.id, await storyLocale(db, b.id), now);
       if (r.storyId) made++;
     } catch {
       // One baby's failure never stops the others; retried next week.
     }
   }
   return made;
+}
+
+/** An explicit story request wins; otherwise follow the owner's registered app language.
+ * Never translate saved stories or pick a locale from another family member's private data. */
+export async function storyLocale(db: Firestore, babyId: string): Promise<'vi' | 'en'> {
+  const preferred = await db.doc(`babies/${babyId}/storyPreferences/locale`).get();
+  if (preferred.get('locale') === 'en' || preferred.get('locale') === 'vi')
+    return preferred.get('locale');
+  const baby = await db.doc(`babies/${babyId}`).get();
+  const owner = baby.get('ownerUid') as string | undefined;
+  if (!owner) return 'vi';
+  const devices = await db.collection(`users/${owner}/devices`).orderBy('updatedAt', 'desc').get();
+  const device = devices.docs.find(
+    (d) => !d.get('signedOutAt') && ['vi', 'en'].includes(d.get('language')),
+  );
+  return device?.get('language') === 'en' ? 'en' : 'vi';
 }
 
 /**
@@ -509,6 +524,25 @@ export async function requestSuggestion(
 ): Promise<{ storyId: string | null; reason: string }> {
   const req = parse(suggestStorySchema, data);
   await requireParent(db, req.babyId, uid, now);
+  await db.runTransaction(async (tx) => {
+    const [baby, member] = await Promise.all([
+      tx.get(db.doc(`babies/${req.babyId}`)),
+      tx.get(db.doc(`babies/${req.babyId}/members/${uid}`)),
+    ]);
+    const until = member.get('accessUntilAt') as Timestamp | undefined;
+    if (!baby.exists || baby.get('state') === 'deleting')
+      throw new StoryError('failed-precondition', 'deleting');
+    if (
+      member.get('status') !== 'active' ||
+      member.get('role') !== 'coParent' ||
+      (until && until.toMillis() <= now.getTime())
+    )
+      throw new StoryError('permission-denied', 'parents-only');
+    tx.set(db.doc(`babies/${req.babyId}/storyPreferences/locale`), {
+      locale: req.locale,
+      updatedAt: now,
+    });
+  });
   const r = await suggestStory(db, provider, req.babyId, req.locale, now);
   return { storyId: r.storyId, reason: r.reason };
 }

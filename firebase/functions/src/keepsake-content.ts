@@ -66,22 +66,66 @@ function versionView(d: DocumentSnapshot) {
   };
 }
 
+/** The newest render jobs the usage counts read (one scan on the existing createdAt index). */
+export const TEMPLATE_USAGE_SCAN = 5000;
+
+/**
+ * Videos exported per template (/keepsakes sort "most → least"): completed render jobs all time
+ * and in the last 30 days, from ONE scan of the newest [TEMPLATE_USAGE_SCAN] jobs across families
+ * (`keepsakeJobs` collection group, the `createdAt` index `staffRenderOps` already uses; only
+ * `templateId`, `status` and `finishedAt` are read). `capped`: more jobs exist, so all-time counts
+ * are a floor; the 30-day counts stay exact unless that many jobs started in 30 days.
+ */
+export async function templateUsage(db: Firestore, now: Date) {
+  const snap = await db
+    .collectionGroup('keepsakeJobs')
+    .orderBy('createdAt', 'desc')
+    .limit(TEMPLATE_USAGE_SCAN)
+    .select('templateId', 'status', 'finishedAt')
+    .get();
+  const since = now.getTime() - 30 * 86_400_000;
+  const usage: Record<string, { exports: number; exports30d: number }> = {};
+  for (const d of snap.docs) {
+    if (d.get('status') !== 'completed') continue;
+    const id = d.get('templateId') as string | undefined;
+    if (!id) continue;
+    const row = (usage[id] ??= { exports: 0, exports30d: 0 });
+    row.exports += 1;
+    const finished = d.get('finishedAt') as Timestamp | Date | null | undefined;
+    const at = finished instanceof Timestamp ? finished.toMillis() : (finished?.getTime?.() ?? 0);
+    if (at >= since) row.exports30d += 1;
+  }
+  return { usage, capped: snap.size >= TEMPLATE_USAGE_SCAN };
+}
+
 async function openVersion(db: Firestore) {
   const snap = await versions(db).where('status', 'in', ['draft', 'pending']).limit(1).get();
   return snap.docs[0] ?? null;
 }
 
-/** What the portal's Mẫu kỷ niệm screen shows: in use, the open version, history, assets. */
-export async function keepsakeView(db: Firestore, deps: KeepsakeContentDeps, staff: Staff | null) {
+/**
+ * What the portal's Mẫu kỷ niệm screen shows: in use, the open version, history, assets, and per
+ * video template id the videos exported (`usage[templateId]`: all time and last 30 days; a
+ * template with none, and every card, is absent).
+ */
+export async function keepsakeView(
+  db: Firestore,
+  deps: KeepsakeContentDeps,
+  staff: Staff | null,
+  now: Date = new Date(),
+) {
   requireStaff(staff, 'content.view');
-  const [pub, meta, open, history, assets] = await Promise.all([
+  const [pub, meta, open, history, assets, usage] = await Promise.all([
     publicDoc(db).get(),
     root(db).get(),
     openVersion(db),
     versions(db).orderBy('createdAt', 'desc').limit(20).get(),
     deps.assets.list(),
+    templateUsage(db, now),
   ]);
   return {
+    usage: usage.usage,
+    usageCapped: usage.capped,
     current: pub.exists
       ? {
           version: pub.get('version') as string,

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import { keepsakePersonalizationSchema } from './keepsake-personalization.js';
 
 /**
@@ -118,6 +119,8 @@ export const keepsakeCompositions = [
   'PremiumThenNow',
   'PremiumOutgrownKeepsake',
   'PremiumSmileToKeep',
+  'PremiumYouDidIt',
+  'PremiumWorldToDiscover',
 ] as const;
 export type KeepsakeComposition = (typeof keepsakeCompositions)[number];
 
@@ -591,12 +594,10 @@ export const keepsakeActSchema = z
   .object({
     versionId: z.string().regex(/^kv_[a-f0-9]{16}$/),
     action: z.enum(['submit', 'approve', 'reject', 'discard', 'rollback']),
-    reason: z.string().trim().max(500).nullable(),
+    /** Optional (D-090), "" when missing; a rejection no longer needs one. */
+    reason: staffReasonSchema,
   })
-  .strict()
-  .refine((r) => r.action !== 'reject' || (r.reason ?? '').length > 0, {
-    message: 'a rejection needs a reason',
-  });
+  .strict();
 
 /** One asset, base64: PNG / JPEG / WebP pictures (re-encoded to WebP) or MP3 / M4A music. */
 export const keepsakeUploadAssetSchema = z

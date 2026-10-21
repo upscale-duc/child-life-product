@@ -191,14 +191,19 @@ describe('two-person workflow', () => {
     expect(await reason(act(expert, id, 'publish', {}, 'article', deps(true)))).toBe('ok');
   });
 
-  it('returns with a reason, and incomplete or broken content cannot be submitted', async () => {
+  it('returns with or without a reason (D-090), and incomplete or broken content cannot be submitted', async () => {
     const id = await newArticle();
     await act(ops, id, 'submit');
-    expect(await reason(act(expert, id, 'reject'))).toBe('malformed');
     await act(expert, id, 'reject', { reason: 'Thiếu nguồn cho phần sốt' });
     const draft = await db.doc(`contentDrafts/${id}`).get();
     expect(draft.get('status')).toBe('draft');
     expect(draft.get('rejection')).toEqual({ by: 'BS. Lan', reason: 'Thiếu nguồn cho phần sốt' });
+    await act(ops, id, 'submit');
+    expect(await reason(act(expert, id, 'reject'))).toBe('ok');
+    expect((await db.doc(`contentDrafts/${id}`).get()).get('rejection')).toEqual({
+      by: 'BS. Lan',
+      reason: '',
+    });
 
     const half = article();
     half.title.en = '';
@@ -261,12 +266,11 @@ describe('two-person workflow', () => {
     expect(pub.publishedAt).toBe(later.toISOString());
   });
 
-  it('unpublishing removes it from the app with a reason; never-published drafts are archived', async () => {
+  it('unpublishing removes it from the app, no reason needed (D-090); never-published drafts are archived', async () => {
     const id = await newArticle();
     await publishArticle(id);
-    expect(await reason(act(expert, id, 'unpublish'))).toBe('malformed');
     expect(await reason(act(ops, id, 'unpublish', { reason: 'Đang sửa lớn' }))).toBe('role');
-    await act(expert, id, 'unpublish', { reason: 'Đang sửa lớn' });
+    await act(expert, id, 'unpublish');
     expect((await db.doc(`contentArticles/${id}`).get()).exists).toBe(false);
     expect((await db.doc(`contentDrafts/${id}`).get()).get('status')).toBe('archived');
     expect(await reason(act(expert, id, 'unpublish', { reason: 'Lần nữa' }))).toBe('not-live');
@@ -324,13 +328,10 @@ describe('content policy (D-079)', () => {
     const mine = await newArticle(owner);
     await act(owner, mine, 'submit');
     expect(await reason(act(owner, mine, 'approve', { checks }))).toBe('same-person');
-    // Only the Owner changes the policy, with a reason.
-    const on = { ownerSelfApprove: true, reason: 'Một mình vận hành nội dung' };
+    // Only the Owner changes the policy; no reason needed (D-090).
+    const on = { ownerSelfApprove: true };
     expect(await reason(setContentPolicy(db, admin, on, now))).toBe('owner-only');
     expect(await reason(setContentPolicy(db, ops, on, now))).toBe('role');
-    expect(await reason(setContentPolicy(db, owner, { ownerSelfApprove: true }, now))).toBe(
-      'malformed',
-    );
     expect(await setContentPolicy(db, owner, on, now)).toEqual({
       ownerSelfApprove: true,
       reviewRequiredOnProd: true,

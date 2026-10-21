@@ -337,6 +337,13 @@ export async function reservePersonalizedDigest(
   if (!parsed.success) throw new RhythmError('invalid-argument', 'bad-request');
   const input = parsed.data;
   const snapshot = await personalizedDay(db, uid, { babyId: input.babyId, locale: 'vi' }, now, env);
+  const { engagementScope, engagementConfig } = await import('./engagement.js');
+  const engagementFamily = await engagementScope(db, uid, input.babyId, now);
+  const engagement = await engagementConfig(db, engagementFamily.familyId);
+  const previousHandoff =
+    (await db.doc(`users/${uid}/settings/engagementState`).get()).get('lumiHandedOff') === true;
+  if (previousHandoff || (engagement.enabled && engagement.on('engagementLumiEnabled')))
+    return { fireAt: null as string | null };
   const none = { fireAt: null as string | null };
   if (!snapshot.writable || snapshot.health || snapshot.context === 'busy') return none;
   const meaningful = {

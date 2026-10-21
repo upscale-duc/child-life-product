@@ -438,9 +438,8 @@ describe('staffAssistantSwitches', () => {
       notice: null,
       reason: 'mở cho QA',
     };
-    // Vận hành sees the switches but may not flip them; a reason is required.
+    // Vận hành sees the switches but may not flip them (no reason is needed since D-090).
     expect(await reason(setFlag(db, ops, on, now))).toBe('role');
-    expect(await reason(setFlag(db, eng, { ...on, reason: '' }, now))).toBe('malformed');
     await setFlag(db, eng, on, now);
     await setFlag(
       db,

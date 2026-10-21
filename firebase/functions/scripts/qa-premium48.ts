@@ -6,6 +6,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { setDefaultResultOrder } from 'node:dns';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requestMemoryStory } from '../src/keepsake-jobs.js';
@@ -13,16 +14,20 @@ import type { KeepsakePublicCatalog } from '@child-life/contracts';
 const arg = process.argv.indexOf('--project');
 if (arg < 0 || process.argv[arg + 1] !== 'child-life-dev') throw new Error('Dev only');
 const project = 'child-life-dev';
-const phase = process.argv.includes('--phase5')
-  ? 5
-  : process.argv.includes('--phase4')
-    ? 4
-    : process.argv.includes('--phase3')
-      ? 3
-      : process.argv.includes('--phase2')
-        ? 2
-        : 1;
+setDefaultResultOrder('ipv4first');
+const phase = process.argv.includes('--phase6')
+  ? 6
+  : process.argv.includes('--phase5')
+    ? 5
+    : process.argv.includes('--phase4')
+      ? 4
+      : process.argv.includes('--phase3')
+        ? 3
+        : process.argv.includes('--phase2')
+          ? 2
+          : 1;
 const phase2 = phase >= 2;
+const phase6 = phase === 6;
 const phase5 = phase === 5;
 const phase4 = phase === 4;
 const phase3 = phase === 3;
@@ -120,25 +125,29 @@ try {
   for (const [id, locale, format, mute] of phase2
     ? ([
         [
-          phase5
-            ? 'video_premium48_09'
-            : phase4
-              ? 'video_premium48_07'
-              : phase3
-                ? 'video_premium48_05'
-                : 'video_premium48_03',
+          phase6
+            ? 'video_premium48_11'
+            : phase5
+              ? 'video_premium48_09'
+              : phase4
+                ? 'video_premium48_07'
+                : phase3
+                  ? 'video_premium48_05'
+                  : 'video_premium48_03',
           'vi',
           'story',
           false,
         ],
         [
-          phase5
-            ? 'video_premium48_10'
-            : phase4
-              ? 'video_premium48_08'
-              : phase3
-                ? 'video_premium48_06'
-                : 'video_premium48_04',
+          phase6
+            ? 'video_premium48_12'
+            : phase5
+              ? 'video_premium48_10'
+              : phase4
+                ? 'video_premium48_08'
+                : phase3
+                  ? 'video_premium48_06'
+                  : 'video_premium48_04',
           'en',
           'portrait',
           true,
@@ -172,13 +181,19 @@ try {
         templateId: id,
         templateVersion: template.version,
         mediaIds: photoIds.slice(
-          phase2 && id.endsWith(phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04') ? 5 : 0,
-          phase2 && id.endsWith(phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04')
-            ? phase5
-              ? 8
-              : phase4
-                ? 7
-                : 10
+          phase2 &&
+            id.endsWith(phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04')
+            ? 5
+            : 0,
+          phase2 &&
+            id.endsWith(phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04')
+            ? phase6
+              ? 10
+              : phase5
+                ? 8
+                : phase4
+                  ? 7
+                  : 10
             : template.photos.max,
         ),
         texts: { title: '', message: '' },
@@ -190,29 +205,39 @@ try {
           values: Object.fromEntries(
             template.personalization!.fields.map((f) => [
               f.key,
-              phase5 && f.key === 'itemName'
+              phase6 && f.key === 'milestoneName'
                 ? locale === 'vi'
-                  ? 'áo cotton'
-                  : 'cotton outfit'
-                : phase5 && f.key === 'outgrownConfirmed'
+                  ? 'những bước nhỏ'
+                  : 'little steps'
+                : phase6 && f.key === 'momentPhotoConfirmed'
                   ? 'true'
-                  : f.key === 'thenDate'
-                    ? '2026-07-01'
-                    : f.key === 'nowDate'
-                      ? '2026-10-01'
-                      : f.type === 'month'
-                        ? '01'
-                        : f.key === 'babyName'
-                          ? phase5
-                            ? id.endsWith('_10')
-                              ? 'Lily'
-                              : 'Noah'
-                            : 'QA sample'
-                          : f.type === 'date'
-                            ? '2026-09-20'
-                            : f.type === 'confirmation'
-                              ? 'false'
-                              : '',
+                  : phase5 && f.key === 'itemName'
+                    ? locale === 'vi'
+                      ? 'áo cotton'
+                      : 'cotton outfit'
+                    : phase5 && f.key === 'outgrownConfirmed'
+                      ? 'true'
+                      : f.key === 'thenDate'
+                        ? '2026-07-01'
+                        : f.key === 'nowDate'
+                          ? '2026-10-01'
+                          : f.type === 'month'
+                            ? '01'
+                            : f.key === 'babyName'
+                              ? phase6
+                                ? id.endsWith('_12')
+                                  ? 'Emma'
+                                  : 'Oliver'
+                                : phase5
+                                  ? id.endsWith('_10')
+                                    ? 'Lily'
+                                    : 'Noah'
+                                  : 'QA sample'
+                              : f.type === 'date'
+                                ? '2026-09-20'
+                                : f.type === 'confirmation'
+                                  ? 'false'
+                                  : '',
             ]),
           ),
           overrides: {},

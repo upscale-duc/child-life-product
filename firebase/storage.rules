@@ -31,8 +31,9 @@ service firebase.storage {
     // a baby being deleted is refused by createMemorySession and processUpload instead.
     function uploadAllowed(babyId, mediaId, isPoster) {
       let m = media(babyId, mediaId);
+      let me = member(babyId);
       return m.createdBy == request.auth.uid && m.status == 'uploading' && m.deleted == false &&
-        active(member(babyId)) &&
+        active(me) && me.role == 'coParent' &&
         ((isPoster && m.type == 'video' && m.hasPoster == true &&
             request.resource.contentType == 'image/jpeg' &&
             request.resource.size <= 4 * 1024 * 1024) ||

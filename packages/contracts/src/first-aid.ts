@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 
 /**
  * Sơ cứu trẻ em (Figma v1.1 7a–7i, TH01–TH24; D-058, P-141). Editorial content written in the
@@ -210,7 +211,7 @@ export const firstAidPublicDocId = 'content_firstAid';
 // ---------- Portal (staff) ----------
 
 export const firstAidVersionIdSchema = z.string().regex(/^fv_[a-f0-9]{16}$/);
-const reason = z.string().trim().min(3).max(500);
+const reason = staffReasonSchema;
 
 /** Save the open draft (or start one); editing a version under review withdraws it. */
 export const firstAidDraftSchema = z

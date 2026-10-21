@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { staffReasonSchema } from './staff-reason.js';
 import { memberRoles } from './baby.js';
 import {
   nutrientDraftSchema,
@@ -691,7 +692,8 @@ export function stageCoverage(items: readonly CoverageItem[]) {
 
 // ---------- Staff callables ----------
 
-const reasonText = z.string().trim().max(500);
+/** D-090: optional everywhere, "" when missing (a rejection no longer needs one). */
+const reasonText = staffReasonSchema;
 
 export const contentListRequestSchema = z
   .object({ view: z.enum([...contentKinds, 'queue']) })
@@ -808,9 +810,6 @@ export const contentActRequestSchema = z
   })
   .strict()
   .superRefine((r, ctx) => {
-    if (['reject', 'unpublish'].includes(r.action) && r.reason.length < 3) {
-      ctx.addIssue({ code: 'custom', message: 'A reason is required', path: ['reason'] });
-    }
     if (r.action === 'approve' && !editorialChecks.every((c) => r.checks?.includes(c))) {
       ctx.addIssue({ code: 'custom', message: 'Every check is required', path: ['checks'] });
     }

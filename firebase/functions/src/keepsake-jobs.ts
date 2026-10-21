@@ -2,11 +2,12 @@ import { freezeKeepsakePresentation } from '@child-life/contracts';
 import { createHash } from 'node:crypto';
 import {
   fillName,
+  dayBoundsIn,
+  localDateIn,
   keepsakeAgeLabel,
   keepsakeBirthStats,
   type KeepsakeTextKey,
   flagsSchema,
-  isFlagOnForFamily,
   keepsakePublicCatalogSchema,
   keepsakeJobLimits,
   keepsakeJobLiveSchema,
@@ -30,11 +31,11 @@ import {
 } from '@child-life/contracts';
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
+  familyFeatureEnabled,
   hasPremiumTemplates,
   readEntitlementsConfig,
   serverGrantEnvironment,
 } from './entitlements.js';
-import { familyBucket } from './features.js';
 import { mediaPaths, type ImageOps, type MediaStore } from './memories.js';
 import {
   countersAfter,
@@ -155,14 +156,10 @@ export async function requestMemoryStory(
     throw new KeepsakeJobError('failed-precondition', 'deleting');
   const familyId = baby.get('familyId') as string;
 
-  // D-068 #3: the memory_story beta, per family.
+  // D-068 #3: Video kỷ niệm, per family: its flag, the admin override and the tier (D-089 hub
+  // rule, the same answer as `featureAccess`).
   const flags = flagsSchema.safeParse(flagsDoc.data() ?? {});
-  const flag = flags.success ? flags.data.memory_story : null;
-  const internal =
-    flag?.enabled && flag.scope === 'internal'
-      ? (await db.doc(`families/${familyId}`).get()).get('internal') === true
-      : false;
-  if (!flag || !isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal)) {
+  if (!(await familyFeatureEnabled(db, familyId, 'memory_story', now, environment))) {
     throw new KeepsakeJobError('failed-precondition', 'not-enabled');
   }
   if (flags.success && !flags.data.media_upload.enabled) {
@@ -304,7 +301,7 @@ export async function requestMemoryStory(
   }
   // Ages of the photos ("Tháng 3") for timeline videos, in the baby's zone.
   const dayOf = (d: Date) =>
-    new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(d);
+    localDateIn((baby.get('timeZone.zone') as string | undefined) ?? 'Asia/Ho_Chi_Minh', d);
   const photoInfo = takenAt.map((at) => ({
     takenAt: at ? at.toISOString() : null,
     label: at ? keepsakeAgeLabel(dob, dayOf(at), locale) : null,
@@ -365,6 +362,18 @@ export async function requestMemoryStory(
   const reservationId = reservationIdOf(jobId, 0);
   const created = await db.runTransaction(async (tx) => {
     const again = await tx.get(ref);
+    const currentBaby = await tx.get(db.doc(`babies/${req.babyId}`));
+    if (!currentBaby.exists || currentBaby.get('state') === 'deleting') {
+      throw new KeepsakeJobError('failed-precondition', 'deleting');
+    }
+    const currentMember = await tx.get(db.doc(`babies/${req.babyId}/members/${uid}`));
+    const memberUntil = currentMember.get('accessUntilAt') as Timestamp | null | undefined;
+    if (
+      currentMember.get('status') !== 'active' ||
+      currentMember.get('role') !== 'coParent' ||
+      (memberUntil && memberUntil.toMillis() <= now.getTime())
+    )
+      throw new KeepsakeJobError('permission-denied', 'not-allowed');
     if (again.exists) return null;
     const windowSnap = await tx.get(windowRef(db, familyId, window.id));
     const held = reserveInTx(
@@ -552,6 +561,17 @@ export async function retryMemoryStory(
   const retried = await db.runTransaction(async (tx) => {
     const job = await tx.get(ref);
     if (!job.exists || job.get('uid') !== uid) throw new KeepsakeJobError('not-found', 'not-found');
+    const baby = await tx.get(db.doc(`babies/${babyId}`));
+    const member = await tx.get(db.doc(`babies/${babyId}/members/${uid}`));
+    if (!baby.exists || baby.get('state') === 'deleting')
+      throw new KeepsakeJobError('failed-precondition', 'deleting');
+    const until = member.get('accessUntilAt') as Timestamp | null | undefined;
+    if (
+      member.get('status') !== 'active' ||
+      member.get('role') !== 'coParent' ||
+      (until && until.toMillis() <= now.getTime())
+    )
+      throw new KeepsakeJobError('permission-denied', 'not-allowed');
     if (job.get('status') !== 'failed') return null;
     const old = job.get('quota') as JobQuota | undefined;
     const oldReads = old ? await readForSettle(tx, db, familyId, old.reservationId) : null;
@@ -618,6 +638,8 @@ export async function completeKeepsakeJob(
     height: number;
     bytes: number;
     lease?: number;
+    videoPath?: string;
+    framePath?: string;
   } | null;
   if (!output) return 'ignored';
   // Fencing: only the renderer holding the current lease completes a job (a stale worker's
@@ -629,23 +651,60 @@ export async function completeKeepsakeJob(
   }
   const ids = outputIdsOf(jobId);
   const dir = mediaPaths(babyId, ids.mediaId).dir;
+  // Only accept our deterministic lease paths, never arbitrary job-supplied objects.
+  const videoPath = output.videoPath ?? `${dir}/original.mp4`;
+  const framePath = output.framePath ?? `${dir}/frame.jpg`;
+  if (output.videoPath && videoPath !== `${dir}/original-${lease}.mp4`) return 'ignored';
+  if (output.framePath && framePath !== `${dir}/frame-${lease}.jpg`) return 'ignored';
+  const babyBefore = await db.doc(`babies/${babyId}`).get();
+  if (!babyBefore.exists || babyBefore.get('state') === 'deleting') return 'ignored';
+  // Register every Storage writer before touching bytes. Deletion drains these bounded
+  // leases before purging, including a process killed between its upload and commit.
+  const canFile = await db.runTransaction(async (tx) => {
+    const current = await tx.get(ref);
+    const baby = await tx.get(db.doc(`babies/${babyId}`));
+    if (
+      !baby.exists ||
+      baby.get('state') === 'deleting' ||
+      !current.exists ||
+      current.get('status') !== 'completed' ||
+      current.get('lease') !== lease ||
+      current.get('memoryId')
+    )
+      return false;
+    if (((current.get('filingUntilAt') as Timestamp | undefined)?.toMillis() ?? 0) > now.getTime())
+      return 'busy' as const;
+    tx.update(ref, { filingUntilAt: new Date(now.getTime() + 6 * 60_000) });
+    return true;
+  });
+  if (canFile === 'busy') throw new KeepsakeJobError('failed-precondition', 'busy');
+  if (!canFile) return 'ignored';
+  const suffix = output.framePath ? `-${lease}` : '';
 
   // Poster and thumbnail from the frame the renderer wrote (as for uploaded videos).
   let posterBytes = 0;
-  const frame = await store.read(`${dir}/frame.jpg`);
+  const frame = await store.read(framePath);
   if (frame) {
     const big = await images.jpeg(frame, 1280, 80);
     const thumb = await images.jpeg(frame, 480, 72);
-    await store.save(`${dir}/poster.jpg`, big.bytes, 'image/jpeg');
-    await store.save(`${dir}/thumb.jpg`, thumb.bytes, 'image/jpeg');
-    await store.delete(`${dir}/frame.jpg`);
+    await store.save(`${dir}/poster${suffix}.jpg`, big.bytes, 'image/jpeg');
+    await store.save(`${dir}/thumb${suffix}.jpg`, thumb.bytes, 'image/jpeg');
     posterBytes = big.bytes.length + thumb.bytes.length;
   }
   const stored = output.bytes + posterBytes;
 
   const filed = await db.runTransaction(async (tx) => {
     const fresh = await tx.get(ref);
-    if (fresh.get('memoryId')) return false;
+    const baby = await tx.get(db.doc(`babies/${babyId}`));
+    if (
+      !baby.exists ||
+      baby.get('state') === 'deleting' ||
+      !fresh.exists ||
+      fresh.get('status') !== 'completed' ||
+      fresh.get('lease') !== lease ||
+      fresh.get('memoryId')
+    )
+      return false;
     const uid = fresh.get('uid') as string;
     const member = await tx.get(db.doc(`babies/${babyId}/members/${uid}`));
     const familyId = fresh.get('familyId') as string;
@@ -662,13 +721,15 @@ export async function completeKeepsakeJob(
       relationCustom: (member.get('relationCustom') as string | null | undefined) ?? null,
     };
     // Filed on the occasion's day when it has passed, else now (MM09 "Tuần 4").
+    const zone = (baby.get('timeZone.zone') as string | undefined) ?? 'Asia/Ho_Chi_Minh';
     const occurredAt =
-      occasionDate && new Date(`${occasionDate}T05:00:00Z`) <= now
-        ? new Date(`${occasionDate}T05:00:00Z`)
+      occasionDate && occasionDate <= localDateIn(zone, now)
+        ? dayBoundsIn(zone, occasionDate).start
         : now;
+    const locale = (fresh.get('input') as KeepsakeJobInput).locale ?? 'vi';
     const milestone =
       occasion && occasionDate
-        ? { id: occasions[occasion].milestoneId, name: template.name.vi, date: occasionDate }
+        ? { id: occasions[occasion].milestoneId, name: template.name[locale], date: occasionDate }
         : null;
     const generated = {
       kind: 'video',
@@ -702,10 +763,10 @@ export async function completeKeepsakeJob(
       status: 'ready',
       clientState: null,
       paths: {
-        original: `${dir}/original.mp4`,
+        original: videoPath,
         display: null,
-        thumb: posterBytes > 0 ? `${dir}/thumb.jpg` : null,
-        poster: posterBytes > 0 ? `${dir}/poster.jpg` : null,
+        thumb: posterBytes > 0 ? `${dir}/thumb${suffix}.jpg` : null,
+        poster: posterBytes > 0 ? `${dir}/poster${suffix}.jpg` : null,
       },
       createdBy: uid,
       author,
@@ -757,6 +818,13 @@ export async function completeKeepsakeJob(
     });
     return true;
   });
+  // Keep the frame until filing commits: a retried trigger can regenerate derivatives.
+  if (filed) await store.delete(framePath);
+  // All Storage writes above have finished; do not recreate a job purged in the meantime.
+  await db.runTransaction(async (tx) => {
+    const current = await tx.get(ref);
+    if (current.exists && current.get('lease') === lease) tx.update(ref, { filingUntilAt: null });
+  });
   console.info('keepsake job filed', { jobId, filed });
   return filed ? 'filed' : 'ignored';
 }
@@ -782,6 +850,9 @@ export async function deleteMemoryStory(
     if (job.get('status') !== 'failed') {
       throw new KeepsakeJobError('failed-precondition', 'not-failed');
     }
+    if (((job.get('leaseUntilAt') as Timestamp | null)?.toMillis() ?? 0) > Date.now()) {
+      throw new KeepsakeJobError('failed-precondition', 'busy');
+    }
     // A failed job's unit is normally back already; make sure before the job goes.
     const quota = job.get('quota') as JobQuota | undefined;
     const familyId = job.get('familyId') as string | undefined;
@@ -789,11 +860,20 @@ export async function deleteMemoryStory(
       quota && familyId ? await readForSettle(tx, db, familyId, quota.reservationId) : null;
     if (reads && familyId) settleInTx(tx, db, familyId, reads, 'release', new Date());
     tx.delete(ref);
-    return true;
+    return { lease: Number(job.get('lease') ?? 0) };
   });
   if (deleted) {
     const dir = mediaPaths(babyId, outputIdsOf(jobId).mediaId).dir;
     for (const f of ['original.mp4', 'frame.jpg']) await store.delete(`${dir}/${f}`);
+    for (let lease = 1; lease <= deleted.lease; lease++) {
+      for (const f of [
+        `original-${lease}.mp4`,
+        `frame-${lease}.jpg`,
+        `poster-${lease}.jpg`,
+        `thumb-${lease}.jpg`,
+      ])
+        await store.delete(`${dir}/${f}`);
+    }
   }
   return { jobId, status: deleted ? 'deleted' : 'unchanged' };
 }
@@ -867,9 +947,22 @@ export async function keepsakeJobChanged(
   if (is.status === 'failed' && was?.status !== 'failed') {
     const retries = (after.get('retries') as number | undefined) ?? 0;
     // A retry that fails again tells again: one notice per attempt.
-    await db
-      .doc(`babies/${babyId}/notifications/keepsake_${jobId}_failed_${retries}`)
-      .create({
+    await db.runTransaction(async (tx) => {
+      const [baby, current] = await Promise.all([
+        tx.get(db.doc(`babies/${babyId}`)),
+        tx.get(jobRef(db, babyId, jobId)),
+      ]);
+      if (
+        !baby.exists ||
+        baby.get('state') === 'deleting' ||
+        !current.exists ||
+        current.get('status') !== 'failed' ||
+        Number(current.get('retries') ?? 0) !== retries
+      )
+        return;
+      const notice = db.doc(`babies/${babyId}/notifications/keepsake_${jobId}_failed_${retries}`);
+      if ((await tx.get(notice)).exists) return;
+      tx.create(notice, {
         kind: 'keepsakeVideoFailed',
         babyId,
         count: 1,
@@ -878,8 +971,8 @@ export async function keepsakeJobChanged(
         context: { jobId },
         createdAt: now,
         delivered: false,
-      })
-      .catch(() => undefined);
+      });
+    });
     // Q2: a job that failed for good gives its unit back, once (M11).
     const quota = after.get('quota') as JobQuota | undefined;
     const familyId = after.get('familyId') as string | undefined;
@@ -937,6 +1030,15 @@ export async function sweepKeepsakeJobs(
     const { mediaId } = outputIdsOf(doc.id);
     const dir = mediaPaths(doc.get('babyId') as string, mediaId).dir;
     for (const f of ['original.mp4', 'frame.jpg']) await store.delete(`${dir}/${f}`);
+    for (let lease = 1; lease <= Number(doc.get('lease') ?? 0); lease++) {
+      for (const f of [
+        `original-${lease}.mp4`,
+        `frame-${lease}.jpg`,
+        `poster-${lease}.jpg`,
+        `thumb-${lease}.jpg`,
+      ])
+        await store.delete(`${dir}/${f}`);
+    }
     return true;
   };
   let n = 0;

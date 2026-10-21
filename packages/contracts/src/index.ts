@@ -59,3 +59,13 @@ export * from './keepsakes-premium48-phase3.js';
 export * from './keepsakes-premium48-phase4.js';
 
 export * from './keepsakes-premium48-phase5.js';
+export * from './product-analytics.js';
+
+export * from './engagement.js';
+
+// D-090: staff reasons are optional everywhere.
+export * from './staff-reason.js';
+// "Tính năng & Premium" hub (plan features-premium-hub-plan.md §2): catalogue, tiers, overrides.
+export * from './features-hub.js';
+
+export * from './keepsakes-premium48-phase6.js';

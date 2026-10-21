@@ -139,7 +139,9 @@ service cloud.firestore {
       // account saved in Sơ cứu (D-058), ids only. "ai" (AI consent, NL10, P-151): readable by its
       // owner, written only by the `setAiConsent` callable (no client branch below).
       match /settings/{docId} {
-        allow read: if signedIn() && request.auth.uid == uid;
+        // ENG-00: private leases, budget/fatigue and consent are served by scoped callables.
+        allow read: if signedIn() && request.auth.uid == uid &&
+          !(docId in ['engagement', 'engagementState', 'engagementDevice']);
         allow write: if signedIn() && request.auth.uid == uid && ((docId == 'notifications' &&
           validNotificationSettings(request.resource.data)) || (docId == 'firstAid' &&
           request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
@@ -316,6 +318,11 @@ service cloud.firestore {
         allow read, write: if false;
       }
       match /quotaOps/{opKey} {
+        allow read, write: if false;
+      }
+      // "Tính năng & Premium" hub (D-089): admin overrides per feature, written by staff
+      // callables only; the app learns the result from getCapabilities / getFeatureAccess.
+      match /featureOverrides/{featureKey} {
         allow read, write: if false;
       }
 

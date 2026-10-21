@@ -1,4 +1,6 @@
+import { observedAiFetch, type AiCallUsage } from './ai-telemetry.js';
 import {
+  aiSummaryPromptVersion,
   aiDraftSchema,
   storyLimits,
   summarySectionKinds,
@@ -208,35 +210,47 @@ export function openAiProvider(
   apiKey: string,
   model: string,
   fetchImpl: typeof fetch = fetch,
+  observe?: (call: AiCallUsage) => Promise<void>,
 ): AiProvider {
   async function call(
     system: string[],
     user: string,
     schema: Record<string, unknown>,
     temperature = 0.6,
+    operation: AiCallUsage['operation'] = 'story',
   ): Promise<unknown> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 30_000);
     try {
-      const res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        signal: controller.signal,
-        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const res = await observedAiFetch(
+        fetchImpl,
+        'https://api.openai.com/v1/chat/completions',
+        {
+          method: 'POST',
+          signal: controller.signal,
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            store: false,
+            temperature,
+            max_completion_tokens: 900,
+            messages: [
+              { role: 'system', content: system.join('\n') },
+              { role: 'user', content: user },
+            ],
+            response_format: {
+              type: 'json_schema',
+              json_schema: { name: 'out', strict: true, schema },
+            },
+          }),
+        },
+        {
           model,
-          store: false,
-          temperature,
-          max_completion_tokens: 900,
-          messages: [
-            { role: 'system', content: system.join('\n') },
-            { role: 'user', content: user },
-          ],
-          response_format: {
-            type: 'json_schema',
-            json_schema: { name: 'out', strict: true, schema },
-          },
-        }),
-      });
+          operation,
+          promptVersion: operation === 'summary' ? aiSummaryPromptVersion : 'story-prompt-v1',
+        },
+        observe,
+      );
       if (!res.ok) throw new AiUnavailable(`openai ${res.status}`);
       const body = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
       const content = body.choices?.[0]?.message?.content;
@@ -266,6 +280,7 @@ export function openAiProvider(
             input.candidates.map((c) => c.id),
           ),
           0.3,
+          'summary',
         );
       } catch (error) {
         if (error instanceof AiUnavailable) throw error;
@@ -311,6 +326,8 @@ export function openAiProvider(
           required: ['options'],
           properties: { options: { type: 'array', items: { type: 'string' } } },
         },
+        0.6,
+        'storyAssist',
       )) as { options?: unknown };
       return Array.isArray(out.options)
         ? out.options.filter((o): o is string => typeof o === 'string').slice(0, 3)
@@ -411,6 +428,7 @@ export function openAiExpenseExtractor(
   model: string,
   fetchImpl: typeof fetch = fetch,
   maxRows = 5000,
+  observe?: (call: AiCallUsage) => Promise<void>,
 ): ExpenseExtractor {
   return {
     name: 'openai',
@@ -427,28 +445,34 @@ export function openAiExpenseExtractor(
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 150_000);
       try {
-        const res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          signal: controller.signal,
-          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model,
-            store: false,
-            temperature: 0,
-            max_completion_tokens: 16_000,
-            messages: [
-              {
-                role: 'system',
-                content: expenseRules(input.today, input.locale, input.currency).join('\n'),
+        const res = await observedAiFetch(
+          fetchImpl,
+          'https://api.openai.com/v1/chat/completions',
+          {
+            method: 'POST',
+            signal: controller.signal,
+            headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model,
+              store: false,
+              temperature: 0,
+              max_completion_tokens: 16_000,
+              messages: [
+                {
+                  role: 'system',
+                  content: expenseRules(input.today, input.locale, input.currency).join('\n'),
+                },
+                { role: 'user', content },
+              ],
+              response_format: {
+                type: 'json_schema',
+                json_schema: { name: 'expenses', strict: true, schema: expenseRowsSchema },
               },
-              { role: 'user', content },
-            ],
-            response_format: {
-              type: 'json_schema',
-              json_schema: { name: 'expenses', strict: true, schema: expenseRowsSchema },
-            },
-          }),
-        });
+            }),
+          },
+          { model, operation: 'expenses', promptVersion: 'expense-prompt-v1' },
+          observe,
+        );
         if (!res.ok) throw new AiUnavailable(`openai ${res.status}`);
         const body = (await res.json()) as {
           choices?: Array<{ message?: { content?: string } }>;

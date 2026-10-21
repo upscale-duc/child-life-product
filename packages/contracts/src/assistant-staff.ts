@@ -112,6 +112,29 @@ export interface StaffAssistantUsage {
     tasksWithCalls: number;
     /** Calls × the per-call charge of the AI budget (text 300 đ, photo reading 900 đ). */
     estimatedCostVnd: number;
+    /** Observed provider metadata; absent from old servers. No invoice/pricing inference. */
+    tokenUsage?: {
+      calls: number;
+      knownUsage: number;
+      unknownUsage: number;
+      inputTokens: number;
+      outputTokens: number;
+      cachedInputTokens: number;
+      ratedCalls: number;
+      unratedCalls: number;
+      estimatedCostUsdMicros: number;
+      byModel: Array<{
+        model: string;
+        operation: string;
+        calls: number;
+        knownUsage: number;
+        inputTokens: number;
+        outputTokens: number;
+        ratedCalls: number;
+        unratedCalls: number;
+        estimatedCostUsdMicros: number;
+      }>;
+    };
     /** By `model` / `promptVersion` as stored on the task (no key, no prompt text). */
     byModel: Array<{ model: string; promptVersion: string | null; tasks: number; calls: number }>;
     /**
