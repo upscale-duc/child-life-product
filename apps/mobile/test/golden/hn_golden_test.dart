@@ -305,7 +305,7 @@ final _homeCases = <String, _HomeCase>{
       repo: StampingRhythmRepository(
         preferences: personalized(),
         home: h02Home(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
       ),
       caps: aiCaps(),
       cards: [sampleStageCard(), ...sampleForBabyCards()],
@@ -331,7 +331,10 @@ final _homeCases = <String, _HomeCase>{
   'home_caregiver': (
     overrides: () => _homeOverrides(
       me: lan,
-      repo: StampingRhythmRepository(home: h02Home()),
+      repo: StampingRhythmRepository(
+        home: h02Home(),
+        checkIns: [sleepCheckIn(date: rhythmToday)],
+      ),
       caps: aiCaps(),
       cards: sampleForBabyCards().take(1).toList(),
       ai: FakeAiRepository(stored: [handover()]),

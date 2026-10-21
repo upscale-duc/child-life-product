@@ -128,7 +128,7 @@ final _cases = <String, _Case>{
     overrides: () => rhythmOverrides(
       me: minh,
       caps: rhythmCaps(plan: 'beta', groupA: true),
-      repo: FakeRhythmRepository(home: h02Home(), checkIns: [sleepCheckIn()]),
+      repo: FakeRhythmRepository(home: h02Home(), checkIns: [sleepCheckIn(date: rhythmToday)]),
     ),
     act: null,
   ),
@@ -140,7 +140,7 @@ final _cases = <String, _Case>{
       caps: rhythmCaps(plan: 'beta', groupA: true),
       repo: FakeRhythmRepository(
         home: ps02Home(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
         feedback: [helpfulFeedback()],
       ),
     ),
@@ -269,7 +269,7 @@ final _cases = <String, _Case>{
       caps: rhythmCaps(plan: 'beta', groupA: true),
       repo: FakeRhythmRepository(
         home: _startedHome(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
         feedback: [_plan('u_minh', rhythmToday, DateTime.utc(2026, 10, 8, 2))],
       ),
     ),
@@ -283,7 +283,7 @@ final _cases = <String, _Case>{
       caps: rhythmCaps(plan: 'beta', groupA: true),
       repo: FakeRhythmRepository(
         home: _startedHome(),
-        checkIns: [sleepCheckIn()],
+        checkIns: [sleepCheckIn(date: rhythmToday)],
         feedback: [_plan('u_mai', '2026-10-07', DateTime.utc(2026, 10, 7, 13))],
       ),
     ),
