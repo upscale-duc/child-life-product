@@ -1,14 +1,25 @@
 import {
   INBOX_RETENTION_DAYS,
+  NOTIFICATION_MAX_ATTEMPTS,
   defaultUserPreferences,
+  destinationFor,
   inQuietHours,
   notificationCategoryOf,
   notificationRouteOf,
   notificationSettingOf,
   notificationSettingsOf,
+  notificationTypes,
+  recordNotificationOpenSchema,
+  renderTemplate,
+  retryDelayMs,
   ringsInQuietHours,
   type InboxItem,
+  type NotificationDeliveryReason,
+  type NotificationDestinationId,
   type NotificationKind,
+  type NotificationStatMetric,
+  type NotificationTemplateId,
+  type PlaceholderValue,
 } from '@child-life/contracts';
 import {
   FieldValue,
@@ -17,19 +28,35 @@ import {
   type Firestore,
 } from 'firebase-admin/firestore';
 import type { PushSender } from './social.js';
+import {
+  LEDGER,
+  applyTransition,
+  countStats,
+  ledgerDeleteAfter,
+  ledgerId,
+  ledgerRef,
+  transitionEntry,
+} from './notification-ledger.js';
+import { liveTemplate, notificationOps } from './notification-runtime.js';
 
 /**
- * Notification centre (D-076 #2, EN06 / EN07): the one way a server push reaches people. For
- * each recipient it
+ * Notification centre (D-076 #2, EN06 / EN07) and unified platform (P-174): the one way a server
+ * notification reaches people. For each recipient it
  * 1. honours `users/{uid}/settings/notifications` (a switched-off kind is neither pushed nor
- *    kept),
- * 2. records the push in `users/{uid}/notifications/n_{id}-{time}` — the copy it showed (generic,
- *    R-120) in both languages and ids for the deep link (each sender already claims a push once),
+ *    kept; the ledger records it as muted),
+ * 2. persists FIRST, in one transaction: the inbox row `users/{uid}/notifications/n_{id}` and the
+ *    server-only ledger entry `notificationDeliveries/d_{hash(uid, id)}`. Both ids are derived from
+ *    the notice id, so a producer retry finds them and writes nothing twice,
  * 3. holds the push back in the person's quiet hours (`settings/personalization`, EN02 / EN07)
- *    except for reminders they set; the row still waits in the inbox,
- * 4. pushes to their signed-in devices in each device's language with `inboxId`, and drops
- *    tokens the push service rejects for good (the device row stays).
- * Nothing about the child is logged here.
+ *    except for reminders they set, and when the group's push kill switch is on; the row stays,
+ * 4. pushes to their signed-in devices in each device's language with `inboxId` and the semantic
+ *    `destination`, drops tokens the push service rejects for good, and records the outcome:
+ *    `accepted` = the provider took at least one token (never proof of display). A transient
+ *    provider error becomes `retry_pending` (bounded retries by `retryNotificationDeliveries`),
+ *    except for callers that opt out (`retry: false`, Smart Engagement: an ambiguous send is
+ *    `unknown` and never resent).
+ * Copy is the producer's (template version 0) unless a published Portal template exists for the
+ * notice's template id. Nothing about the child is logged here.
  */
 
 export type PushMessage = Parameters<PushSender['send']>[1];
@@ -37,17 +64,25 @@ export type Language = 'vi' | 'en';
 
 export interface Notice {
   kind: NotificationKind;
-  /** Names the push (per baby / rule / date …); the inbox row is `n_{id}-{time}` per person. */
+  /** Names the event once (per baby / rule / date …): the dedup key of the row and the ledger. */
   id: string;
   babyId: string | null;
-  /** Ids only; `kind` is added. */
+  /** Ids only; `kind`, `inboxId` and `destination` are added. */
   data: Record<string, string>;
-  /** Title, body and platform options in [language]. */
+  /** Title, body and platform options in [language] (the built-in copy, template version 0). */
   message: (language: Language) => Omit<PushMessage, 'data'>;
   /** The zone quiet hours are read in (the baby's); Hồ Chí Minh when unknown. */
   zone?: string | undefined;
   /** ENG-00 lease-selected install; existing callers retain their multi-device behavior. */
   deviceId?: string;
+  /** Portal template that may override the copy, with the producer's placeholder values. */
+  template?: { id: NotificationTemplateId; values?: Record<string, PlaceholderValue> } | undefined;
+  /** Narrower destination than the kind's default (derived from `data` when absent). */
+  destination?: NotificationDestinationId | undefined;
+  /** Smart Engagement link (the ledger's action dimension follows the intent). */
+  engagement?: { id: string; kind: string };
+  /** False: a provider error is ambiguous and never retried (ENG-00). Default true. */
+  retry?: boolean;
   /** Optional adapter observation; never means device presentation and never blocks delivery. */
   onResult?: (
     uid: string,
@@ -68,13 +103,15 @@ export interface NotifyResult {
   recorded: number;
   /** People whose push quiet hours held back. */
   held: number;
+  /** People who already had this notice (a producer retry): nothing was written or sent. */
+  duplicate: number;
 }
 
 const DAY_MS = 86_400_000;
 const defaultZone = 'Asia/Ho_Chi_Minh';
 
-function safeId(id: string): string {
-  return `n_${id.replace(/[^A-Za-z0-9_-]/g, '-')}`;
+export function inboxIdOf(noticeId: string): string {
+  return `n_${noticeId.replace(/[^A-Za-z0-9_-]/g, '-').slice(0, 118)}`;
 }
 
 /** Sends [notice] to [uids] (see the file comment). */
@@ -85,20 +122,87 @@ export async function notifyUsers(
   notice: Notice,
   now: Date,
 ): Promise<NotifyResult> {
-  const result: NotifyResult = { sent: 0, recorded: 0, held: 0 };
+  const result: NotifyResult = { sent: 0, recorded: 0, held: 0, duplicate: 0 };
   const people = [...new Set(uids)].filter((u) => u.length > 0);
   if (people.length === 0) return result;
+  const type = notificationTypes[notice.kind];
   const settingKey = notificationSettingOf[notice.kind];
-  const settings = await db.getAll(
-    ...people.map((u) => db.doc(`users/${u}/settings/notifications`)),
-  );
+  const [settings, ops, familyId] = await Promise.all([
+    db.getAll(...people.map((u) => db.doc(`users/${u}/settings/notifications`))),
+    notificationOps(db, now.getTime()),
+    familyOf(db, notice.babyId),
+  ]);
   const quietApplies = !ringsInQuietHours(notice.kind);
   const prefs = quietApplies
     ? await db.getAll(...people.map((u) => db.doc(`users/${u}/settings/personalization`)))
     : [];
-  const copy = { vi: notice.message('vi'), en: notice.message('en') };
-  const inboxId = safeId(`${notice.id.slice(0, 100)}-${now.getTime().toString(36)}`);
-  const data = { ...notice.data, kind: notice.kind, inboxId };
+
+  // Copy: the producer's built-in copy, or the published template rendered with its values.
+  const builtin = { vi: notice.message('vi'), en: notice.message('en') };
+  const copy = { vi: { ...builtin.vi }, en: { ...builtin.en } };
+  let templateVersion = 0;
+  let renderError = false;
+  if (notice.template && ops.templatesEnabled) {
+    const live = await liveTemplate(db, notice.template.id, now.getTime()).catch(() => null);
+    if (live) {
+      const vi = renderTemplate(live.copy, 'vi', notice.template.values ?? {});
+      const en = renderTemplate(live.copy, 'en', notice.template.values ?? {});
+      if (vi.missing.length || en.missing.length) {
+        renderError = true;
+      } else {
+        copy.vi = { ...copy.vi, title: vi.title, body: vi.body };
+        copy.en = { ...copy.en, title: en.title, body: en.body };
+        templateVersion = live.version;
+      }
+    }
+  }
+  const destination = notice.destination ?? destinationFor(notice.kind, notice.data);
+  const inboxId = inboxIdOf(notice.id);
+  const data = { ...notice.data, kind: notice.kind, inboxId, destination };
+  // Platform options (category, collapse id, expiry) a retry needs; never the copy itself.
+  const pushOptions: Record<string, unknown> = { ...builtin.vi };
+  delete pushOptions.title;
+  delete pushOptions.body;
+  const templateId = notice.template?.id ?? type.templates[0] ?? null;
+  const entryBase = {
+    v: 1,
+    familyId,
+    babyId: notice.babyId,
+    kind: notice.kind,
+    group: type.group,
+    producer: type.producer,
+    templateId,
+    templateVersion,
+    destination,
+    dedupKey: notice.id.slice(0, 200),
+    correlationId: notice.engagement?.id ?? notice.id.slice(0, 200),
+    engagementId: notice.engagement?.id ?? null,
+    engagementKind: notice.engagement?.kind ?? null,
+    read: 'unread',
+    action: type.action === 'engagement' ? 'not_started' : 'none',
+    attempts: 0,
+    nextAttemptAt: null,
+    acceptedTokens: 0,
+    rejectedTokens: 0,
+    createdAt: now,
+    persistedAt: null as Date | null,
+    attemptedAt: null,
+    acceptedAt: null,
+    failedAt: null,
+    readAt: null,
+    openedAt: null,
+    openSurface: null,
+    navigation: null,
+    navigatedAt: null,
+    actionAt: null,
+    pushExpiresAt: typeof builtin.vi.expiresAt === 'number' ? new Date(builtin.vi.expiresAt) : null,
+    push: pushOptions,
+    retryable: notice.retry !== false,
+    errorCode: null,
+    deleteAfter: ledgerDeleteAfter(now),
+    updatedAt: now,
+  };
+  const statKeys = { kind: notice.kind, group: type.group, templateId, templateVersion };
 
   for (const [i, uid] of people.entries()) {
     const acceptedBefore = result.sent;
@@ -120,8 +224,27 @@ export async function notifyUsers(
         /* Optional measurement cannot fail a notification. */
       }
     };
+    const entryId = ledgerId(uid, `${notice.kind}:${notice.id}`);
     const chosen = notificationSettingsOf(settings[i]!.data());
     if (settingKey && !chosen[settingKey]) {
+      // Muted: no row, no push; the ledger keeps the fact (no copy) for the family timeline.
+      await db
+        .runTransaction(async (tx) => {
+          const ref = ledgerRef(db, entryId);
+          if ((await tx.get(ref)).exists) return;
+          tx.create(ref, {
+            ...entryBase,
+            uid,
+            inboxId: null,
+            lifecycle: 'cancelled',
+            delivery: 'cancelled',
+            deliveryReason: 'setting_off',
+            devices: 0,
+            history: [{ at: now, d: 'lifecycle', to: 'cancelled', r: 'setting_off' }],
+          });
+          countStats(tx, db, entryId, now, statKeys, ['created', 'muted']);
+        })
+        .catch(() => undefined);
       await observe(false, false, false);
       continue;
     }
@@ -138,7 +261,17 @@ export async function notifyUsers(
       const language: Language = d.get('language') === 'en' ? 'en' : 'vi';
       byLanguage.set(language, [...(byLanguage.get(language) ?? []), d]);
     }
-    const pushing = !quiet && sender !== null && byLanguage.size > 0;
+    const deviceCount = [...byLanguage.values()].reduce((n, l) => n + l.length, 0);
+    const stop: NotificationDeliveryReason | null = quiet
+      ? 'quiet_hours'
+      : ops.pushPaused[type.group]
+        ? 'kill_switch'
+        : sender === null
+          ? 'no_sender'
+          : deviceCount === 0
+            ? 'no_device'
+            : null;
+    const pushing = stop === null;
 
     const item: InboxItem = {
       kind: notice.kind,
@@ -153,8 +286,42 @@ export async function notifyUsers(
       readAt: null,
       archivedAt: null,
       expireAt: new Date(now.getTime() + INBOX_RETENTION_DAYS * DAY_MS),
+      destination,
+      group: type.group,
+      templateId,
+      templateVersion,
+      ledgerId: entryId,
     };
-    await db.doc(`users/${uid}/notifications/${inboxId}`).set(item);
+    const created = await db.runTransaction(async (tx) => {
+      const ref = ledgerRef(db, entryId);
+      if ((await tx.get(ref)).exists) return false;
+      tx.set(db.doc(`users/${uid}/notifications/${inboxId}`), item);
+      tx.create(ref, {
+        ...entryBase,
+        uid,
+        inboxId,
+        lifecycle: 'persisted',
+        persistedAt: now,
+        delivery: pushing ? 'pending' : 'cancelled',
+        deliveryReason: stop ?? 'none',
+        devices: deviceCount,
+        history: [
+          { at: now, d: 'lifecycle', to: 'persisted' },
+          ...(pushing ? [] : [{ at: now, d: 'delivery', to: 'cancelled', r: stop }]),
+        ],
+      });
+      const metrics: NotificationStatMetric[] = ['created', 'inbox'];
+      if (stop === 'quiet_hours') metrics.push('held');
+      else if (stop === 'no_device') metrics.push('no_device');
+      else if (stop) metrics.push('cancelled');
+      if (renderError) metrics.push('render_error');
+      countStats(tx, db, entryId, now, statKeys, metrics);
+      return true;
+    });
+    if (!created) {
+      result.duplicate += 1;
+      continue;
+    }
     result.recorded += 1;
     await pruneInbox(db, uid, now);
     if (quiet) {
@@ -166,25 +333,125 @@ export async function notifyUsers(
       await observe(false, true, false);
       continue;
     }
-    for (const [language, docs] of byLanguage) {
-      const tokens = docs.map((d) => d.get('token') as string);
-      let rejected: string[];
-      try {
-        rejected = await sender.send(tokens, { ...copy[language], data });
-      } catch (error) {
+    await transitionEntry(
+      db,
+      entryId,
+      { delivery: 'attempted', patch: { attempts: 1, attemptedAt: now } },
+      now,
+    );
+    const outcome = await pushTo(db, sender, byLanguage, copy, data);
+    result.sent += outcome.accepted;
+    if (outcome.error) {
+      if (notice.retry === false) {
+        // ENG-00: a send whose outcome is unknown consumes its slot and is never resent.
+        await settle(db, entryId, outcome, 'unknown', now);
         await observe(true, true, false, true);
-        throw error;
+        throw outcome.error;
       }
-      result.sent += tokens.length - rejected.length;
-      // The token goes, the install stays in "Thiết bị đang đăng nhập" (13n) until it signs out;
-      // the app writes a fresh token on its next launch.
-      for (const t of rejected) {
-        await docs.find((d) => d.get('token') === t)?.ref.update({ token: FieldValue.delete() });
-      }
+      await settle(
+        db,
+        entryId,
+        outcome,
+        outcome.accepted > 0 ? 'accepted' : ops.retryEnabled ? 'retry_pending' : 'failed',
+        now,
+        1,
+      );
+      await observe(true, true, false, outcome.accepted === 0);
+      continue;
     }
+    await settle(db, entryId, outcome, outcome.accepted > 0 ? 'accepted' : 'rejected', now);
     await observe(true, true, false);
   }
   return result;
+}
+
+interface PushOutcome {
+  accepted: number;
+  rejected: number;
+  error: unknown;
+}
+
+/** One push per device language; tokens rejected for good leave the device row. */
+async function pushTo(
+  db: Firestore,
+  sender: PushSender,
+  byLanguage: Map<Language, DocumentSnapshot[]>,
+  copy: Record<Language, Omit<PushMessage, 'data'>>,
+  data: Record<string, string>,
+): Promise<PushOutcome> {
+  const out: PushOutcome = { accepted: 0, rejected: 0, error: null };
+  for (const [language, docs] of byLanguage) {
+    const tokens = docs.map((d) => d.get('token') as string);
+    let rejected: string[];
+    try {
+      rejected = await sender.send(tokens, { ...copy[language], data });
+    } catch (error) {
+      out.error = error;
+      continue;
+    }
+    out.accepted += tokens.length - rejected.length;
+    out.rejected += rejected.length;
+    // The token goes, the install stays in "Thiết bị đang đăng nhập" (13n) until it signs out;
+    // the app writes a fresh token on its next launch.
+    for (const t of rejected) {
+      await docs.find((d) => d.get('token') === t)?.ref.update({ token: FieldValue.delete() });
+    }
+  }
+  return out;
+}
+
+async function settle(
+  db: Firestore,
+  entryId: string,
+  outcome: PushOutcome,
+  to: 'accepted' | 'rejected' | 'retry_pending' | 'failed' | 'unknown',
+  now: Date,
+  attempt = 1,
+) {
+  const reason: NotificationDeliveryReason =
+    to === 'rejected'
+      ? 'provider_rejected'
+      : to === 'retry_pending' || to === 'failed'
+        ? attempt >= NOTIFICATION_MAX_ATTEMPTS
+          ? 'retry_exhausted'
+          : 'provider_error'
+        : to === 'unknown'
+          ? 'ambiguous'
+          : 'none';
+  await transitionEntry(
+    db,
+    entryId,
+    {
+      delivery: to,
+      deliveryReason: reason,
+      patch: {
+        acceptedTokens: FieldValue.increment(outcome.accepted),
+        rejectedTokens: FieldValue.increment(outcome.rejected),
+        ...(to === 'accepted' ? { acceptedAt: now } : {}),
+        ...(to === 'failed' ? { failedAt: now } : {}),
+        nextAttemptAt:
+          to === 'retry_pending' ? new Date(now.getTime() + retryDelayMs(attempt)) : null,
+        errorCode: outcome.error ? errorCodeOf(outcome.error) : null,
+      },
+    },
+    now,
+  ).catch(() => undefined);
+}
+
+/** A provider error code without message text (no tokens or payloads in the ledger). */
+function errorCodeOf(error: unknown): string {
+  const code = (error as { code?: unknown } | null)?.code;
+  return typeof code === 'string' ? code.slice(0, 80) : 'error';
+}
+
+async function familyOf(db: Firestore, babyId: string | null): Promise<string | null> {
+  if (!babyId) return null;
+  try {
+    const baby = await db.doc(`babies/${babyId}`).get();
+    return (baby.get('familyId') as string | undefined) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 /** The saved quiet hours; the EN02 default (22:00–06:00) until the person saves their own. */
@@ -209,7 +476,8 @@ async function pruneInbox(db: Firestore, uid: string, now: Date): Promise<void> 
 /**
  * Daily: inbox rows past `expireAt` for people who got nothing new since (the collection-group
  * index on `notifications.expireAt` is in firestore.indexes.json). Family notices under
- * `babies/{id}/notifications` have no `expireAt` and are never matched.
+ * `babies/{id}/notifications` have no `expireAt` and are never matched. Their ledger entries move
+ * to lifecycle `expired`.
  */
 export async function sweepExpiredInbox(db: Firestore, now: Date): Promise<number> {
   let removed = 0;
@@ -224,8 +492,203 @@ export async function sweepExpiredInbox(db: Firestore, now: Date): Promise<numbe
     const batch = db.batch();
     for (const d of rows) batch.delete(d.ref);
     await batch.commit();
+    for (const d of rows) {
+      const id = d.get('ledgerId') as string | undefined;
+      if (id) await transitionEntry(db, id, { lifecycle: 'expired' }, now).catch(() => undefined);
+    }
     removed += rows.length;
     if (due.size < 300) break;
   }
   return removed;
+}
+
+// ---------- Retries ----------
+
+/**
+ * Every 5 minutes: deliveries in `retry_pending` whose time came. Each is claimed (→ attempted) in
+ * a transaction first, so two workers never send the same row. The copy is the inbox row's (what
+ * the person already sees); an expired push or a row the person no longer has is cancelled.
+ */
+export async function retryNotificationDeliveries(
+  db: Firestore,
+  sender: PushSender | null,
+  now: Date,
+): Promise<{ retried: number; accepted: number; failed: number }> {
+  const out = { retried: 0, accepted: 0, failed: 0 };
+  if (!sender) return out;
+  const due = await db
+    .collection(LEDGER)
+    .where('delivery', '==', 'retry_pending')
+    .where('nextAttemptAt', '<=', Timestamp.fromDate(now))
+    .limit(100)
+    .get();
+  for (const doc of due.docs) {
+    const claim = await db.runTransaction(async (tx) => {
+      const live = await tx.get(doc.ref);
+      if (live.get('delivery') !== 'retry_pending') return null;
+      const expires = live.get('pushExpiresAt') as Timestamp | null;
+      const attempts = Number(live.get('attempts') ?? 0);
+      if (expires && expires.toMillis() <= now.getTime()) {
+        applyTransition(tx, db, live, { delivery: 'cancelled', deliveryReason: 'expired' }, now);
+        return null;
+      }
+      if (attempts >= NOTIFICATION_MAX_ATTEMPTS || live.get('retryable') === false) {
+        applyTransition(
+          tx,
+          db,
+          live,
+          { delivery: 'failed', deliveryReason: 'retry_exhausted', patch: { failedAt: now } },
+          now,
+        );
+        return null;
+      }
+      applyTransition(
+        tx,
+        db,
+        live,
+        { delivery: 'attempted', patch: { attempts: attempts + 1, attemptedAt: now } },
+        now,
+      );
+      return { attempt: attempts + 1, live };
+    });
+    if (!claim) continue;
+    out.retried += 1;
+    const { live, attempt } = claim;
+    const uid = String(live.get('uid'));
+    const row = await db.doc(`users/${uid}/notifications/${String(live.get('inboxId'))}`).get();
+    if (!row.exists || row.get('archivedAt')) {
+      await transitionEntry(db, doc.id, { delivery: 'cancelled', deliveryReason: 'aborted' }, now);
+      continue;
+    }
+    const devices = await db.collection(`users/${uid}/devices`).get();
+    const byLanguage = new Map<Language, DocumentSnapshot[]>();
+    for (const d of devices.docs) {
+      const token = d.get('token') as string | undefined;
+      if (!token || d.get('signedOutAt')) continue;
+      const language: Language = d.get('language') === 'en' ? 'en' : 'vi';
+      byLanguage.set(language, [...(byLanguage.get(language) ?? []), d]);
+    }
+    if (byLanguage.size === 0) {
+      await transitionEntry(
+        db,
+        doc.id,
+        { delivery: 'failed', deliveryReason: 'no_device', patch: { failedAt: now } },
+        now,
+      );
+      out.failed += 1;
+      continue;
+    }
+    const options = (live.get('push') as Omit<PushMessage, 'data' | 'title' | 'body'>) ?? {};
+    const title = row.get('title') as { vi: string; en: string };
+    const body = row.get('body') as { vi: string; en: string };
+    const copy = {
+      vi: { ...options, title: title.vi, body: body.vi },
+      en: { ...options, title: title.en, body: body.en },
+    };
+    const outcome = await pushTo(
+      db,
+      sender,
+      byLanguage,
+      copy,
+      row.get('data') as Record<string, string>,
+    );
+    if (outcome.error && outcome.accepted === 0) {
+      await settle(
+        db,
+        doc.id,
+        outcome,
+        attempt >= NOTIFICATION_MAX_ATTEMPTS ? 'failed' : 'retry_pending',
+        now,
+        attempt,
+      );
+      if (attempt >= NOTIFICATION_MAX_ATTEMPTS) out.failed += 1;
+      continue;
+    }
+    await settle(db, doc.id, outcome, outcome.accepted > 0 ? 'accepted' : 'rejected', now, attempt);
+    if (outcome.accepted > 0) out.accepted += 1;
+  }
+  return out;
+}
+
+/** Staff "Thử gửi lại" on a failed delivery (never an accepted, ENG or expired one). */
+export async function staffRequeueDelivery(
+  db: Firestore,
+  entryId: string,
+  now: Date,
+): Promise<boolean> {
+  const moved = await transitionEntry(
+    db,
+    entryId,
+    (entry) => {
+      if (entry.get('delivery') !== 'failed' || entry.get('retryable') === false) return null;
+      if (entry.get('engagementId')) return null;
+      const expires = entry.get('pushExpiresAt') as Timestamp | null;
+      if (expires && expires.toMillis() <= now.getTime()) return null;
+      return {
+        delivery: 'retry_pending',
+        deliveryReason: 'staff_retry',
+        // One more attempt than the budget already used.
+        patch: { nextAttemptAt: now, attempts: NOTIFICATION_MAX_ATTEMPTS - 1 },
+      };
+    },
+    now,
+  );
+  return moved.includes('delivery');
+}
+
+// ---------- Read and open receipts ----------
+
+/** Trigger: the person (any of their devices) marked the row read → ledger read state. */
+export async function onInboxRowUpdated(
+  db: Firestore,
+  before: DocumentSnapshot | null,
+  after: DocumentSnapshot | null,
+  now: Date,
+): Promise<void> {
+  if (!after?.exists) return;
+  const id = after.get('ledgerId') as string | undefined;
+  if (!id) return;
+  if (!before?.get('readAt') && after.get('readAt')) {
+    const readAt = after.get('readAt') as Timestamp;
+    await transitionEntry(db, id, { read: 'read', patch: { readAt: readAt.toDate() } }, now);
+  }
+}
+
+/**
+ * The app opened a row (from the push or the inbox) and tells where it got: the destination,
+ * its fallback, or nowhere. Only the caller's own rows (the path is theirs); the first open of an
+ * entry counts. Opening is not completing: the action dimension moves only from its producer.
+ */
+export async function recordNotificationOpen(
+  db: Firestore,
+  uid: string,
+  data: unknown,
+  now: Date,
+): Promise<{ ok: boolean }> {
+  const parsed = recordNotificationOpenSchema.safeParse(data);
+  if (!parsed.success) return { ok: false };
+  const { inboxId, surface, outcome } = parsed.data;
+  const row = await db.doc(`users/${uid}/notifications/${inboxId}`).get();
+  const id = row.get('ledgerId') as string | undefined;
+  if (!row.exists || !id) return { ok: false };
+  await transitionEntry(
+    db,
+    id,
+    (entry) => {
+      if (entry.get('uid') !== uid || entry.get('openedAt')) return null;
+      return {
+        read: 'read',
+        patch: {
+          openedAt: now,
+          openSurface: surface,
+          navigation: outcome,
+          navigatedAt: outcome === 'unavailable' ? null : now,
+          ...(entry.get('readAt') ? {} : { readAt: now }),
+        },
+        metrics: ['opened', surface === 'push' ? 'opened_push' : 'opened_inbox', outcome],
+      };
+    },
+    now,
+  );
+  return { ok: true };
 }

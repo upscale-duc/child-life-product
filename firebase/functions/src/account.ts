@@ -39,6 +39,7 @@ import { readForSettle, settleInTx } from './video-quota.js';
 // Child Life Assistant, slice A3: assistant data goes with the account / the baby.
 import { purgeAssistantForBaby, purgeAssistantForUser } from './assistant-lifecycle.js';
 import { purgeProductAnalytics } from './product-analytics-store.js';
+import { purgeNotificationLedger } from './notification-ledger.js';
 /**
  * Me, storage, baby profiles and the account (S11, Figma 13a–13n). Sensitive changes are callables
  * with zod validation; deletions run as resumable jobs (P-110) that only report "done" after a
@@ -535,6 +536,7 @@ async function babyStep(
     case 'documents': {
       await purgeEngagement(db, 'babyId', babyId, now);
       await purgeProductAnalytics(db, 'babyId', babyId, now);
+      await purgeNotificationLedger(db, 'babyId', babyId);
       for (const c of await babyRef.listCollections()) await db.recursiveDelete(c);
       for (const name of babyLinked) {
         await deleteQuery(db, db.collection(name).where('babyId', '==', babyId));
@@ -685,6 +687,7 @@ async function accountStep(
     case 'personal': {
       await purgeEngagement(db, 'uid', uid, now);
       await purgeProductAnalytics(db, 'uid', uid, now);
+      await purgeNotificationLedger(db, 'uid', uid);
       const user = db.doc(`users/${uid}`);
       const snap = await user.get();
       const familyId = snap.get('ownedFamilyId') as string | undefined;

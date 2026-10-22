@@ -151,3 +151,35 @@ describe('settings (EN07)', () => {
     );
   });
 });
+
+describe('unified platform collections (P-174) are server-only', () => {
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const f = ctx.firestore();
+      await setDoc(doc(f, 'notificationDeliveries/d_1'), { uid: 'mom', kind: 'memories' });
+      await setDoc(doc(f, 'notificationStats/2026-10-20_0'), { day: '2026-10-20' });
+      await setDoc(doc(f, 'notificationTemplates/memories.new_moments'), { status: 'published' });
+      await setDoc(doc(f, 'config/notifications'), { templatesEnabled: true });
+    });
+  });
+
+  it('even the recipient cannot read or write the ledger, stats, templates or ops switches', async () => {
+    for (const path of [
+      'notificationDeliveries/d_1',
+      'notificationStats/2026-10-20_0',
+      'notificationTemplates/memories.new_moments',
+      'config/notifications',
+    ]) {
+      await assertFails(getDoc(doc(db('mom'), path)));
+      await assertFails(setDoc(doc(db('mom'), path), { x: 1 }));
+    }
+    await assertFails(getDocs(collection(db('mom'), 'notificationDeliveries')));
+  });
+
+  it('the owner cannot rewrite the platform fields of an inbox row', async () => {
+    const ref = doc(db('mom'), `users/mom/notifications/${ROW}`);
+    await assertFails(updateDoc(ref, { destination: 'INBOX' }));
+    await assertFails(updateDoc(ref, { ledgerId: `d_${'0'.repeat(40)}` }));
+    await assertFails(updateDoc(ref, { readAt: serverTimestamp(), templateVersion: 9 }));
+  });
+});

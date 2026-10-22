@@ -7,7 +7,9 @@ import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_choices.dart';
+import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -15,15 +17,18 @@ import '../../l10n/app_localizations.dart';
 import '../care/care_repository.dart' show timerClockProvider;
 import '../care/history_screen.dart' show weekdayShort;
 import '../me/me_widgets.dart';
+import 'notification_destinations.dart';
 import 'notification_links.dart';
 import 'notification_models.dart';
 import 'notification_repository.dart';
 
 /// EN06 Hộp thông báo (560:2884, D-076 #2): every push the server sent this person in the last
-/// 90 days, newest first, under Hôm nay · Tuần này · Trước đó; chips filter by Nhắc việc · Cho
-/// bé · Gia đình. Unread rows are white cards with a dot; a tap reads the row and opens what the
-/// push opens; "Đánh dấu đã đọc" reads them all; a swipe hides one (archived). The sliders
-/// button opens EN07 (engineering addition: the design has no way there from here).
+/// 90 days, newest first, under Hôm nay · Tuần này · Trước đó; chips filter by the P-174 inbox
+/// groups Kỷ niệm · Gia đình · Chăm sóc · Khác. Unread rows are white cards with a dot; a tap
+/// reads the row and opens what the push opens (one resolver, P-174); "Đánh dấu đã đọc" reads
+/// the loaded ones; a swipe hides one (archived). 30 rows load first, 30 more at the end; pull
+/// to refresh re-subscribes. The sliders button opens EN07 (engineering addition: the design
+/// has no way there from here).
 class InboxScreen extends ConsumerStatefulWidget {
   const InboxScreen({super.key});
 
@@ -32,7 +37,23 @@ class InboxScreen extends ConsumerStatefulWidget {
 }
 
 class _InboxScreenState extends ConsumerState<InboxScreen> {
-  NotificationCategory? _filter;
+  InboxGroup? _filter;
+  int _limit = inboxPageSize;
+
+  /// The last page shown, kept on screen while a bigger one loads.
+  InboxPage? _last;
+  String? _lastUid;
+
+  Future<void> _refresh(({String uid, int limit}) key) async {
+    ref.invalidate(inboxProvider(key));
+    try {
+      await ref
+          .read(inboxProvider(key).future)
+          .timeout(const Duration(seconds: 10));
+    } on Object {
+      // The error state (or the old rows) stays on screen.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +62,26 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
     final session = ref.watch(sessionProvider);
     if (session is! SessionSignedIn) return ColoredBox(color: cl.colors.cloud);
     final uid = session.user.uid;
-    final async = ref.watch(inboxProvider(uid));
-    final all = async.value ?? const <InboxItem>[];
+    if (_lastUid != uid) {
+      _last = null;
+      _lastUid = uid;
+    }
+    final key = (uid: uid, limit: _limit);
+    final async = ref.watch(inboxProvider(key));
+    if (async.hasValue) _last = async.value;
+    final page = async.hasValue ? async.value : _last;
+    final all = page?.items ?? const <InboxItem>[];
     final unread = [
       for (final i in all)
         if (i.unread) i.id,
     ];
     final shown = [
       for (final i in all)
-        if (_filter == null || i.category == _filter) i,
+        if (_filter == null || i.inboxGroup == _filter) i,
     ];
 
-    Widget chip(String label, NotificationCategory? value) => ClFilterChip(
+    Widget chip(String label, InboxGroup? value) => ClFilterChip(
+      key: Key('ntChip-${value?.name ?? 'all'}'),
       label: label,
       selected: _filter == value,
       onTap: () => setState(() => _filter = value),
@@ -60,6 +89,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
 
     return MePage(
       title: l10n.ntInboxTitle,
+      onRefresh: () => _refresh(key),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -104,19 +134,31 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
             children: [
               chip(l10n.ntFilterAll, null),
               const SizedBox(width: ClSpace.s2),
-              chip(l10n.ntFilterReminders, NotificationCategory.reminders),
+              chip(l10n.ntFilterMemories, InboxGroup.memories),
               const SizedBox(width: ClSpace.s2),
-              chip(l10n.ntFilterBaby, NotificationCategory.baby),
+              chip(l10n.ntFilterFamily, InboxGroup.family),
               const SizedBox(width: ClSpace.s2),
-              chip(l10n.ntFilterFamily, NotificationCategory.family),
+              chip(l10n.ntFilterCare, InboxGroup.care),
+              const SizedBox(width: ClSpace.s2),
+              chip(l10n.ntFilterOther, InboxGroup.other),
             ],
           ),
         ),
         const SizedBox(height: ClSpace.s3),
-        if (async.hasError && all.isEmpty)
-          _Note(l10n.ntLoadFailed)
-        else if (async.isLoading && all.isEmpty)
-          const SizedBox.shrink()
+        if (async.hasError && page == null)
+          Padding(
+            key: const Key('ntError'),
+            padding: const EdgeInsets.only(top: ClSpace.s6),
+            child: ClEmptyState(
+              icon: ClIcons.bell,
+              title: l10n.ntLoadFailedTitle,
+              message: l10n.ntLoadFailed,
+              actionLabel: l10n.actionRetry,
+              onAction: () => _refresh(key),
+            ),
+          )
+        else if (page == null)
+          const _Loading()
         else if (all.isEmpty)
           Padding(
             padding: const EdgeInsets.only(top: ClSpace.s6),
@@ -126,10 +168,32 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
               message: l10n.ntEmptyBody,
             ),
           )
-        else if (shown.isEmpty)
-          _Note(l10n.ntEmptyFiltered)
         else ...[
-          ..._sections(context, shown),
+          if (shown.isEmpty)
+            _Note(l10n.ntEmptyFiltered)
+          else
+            ..._sections(context, shown),
+          if (page.more) ...[
+            const SizedBox(height: ClSpace.s2),
+            async.isLoading
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(ClSpace.s3),
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  )
+                : ClButton(
+                    key: const Key('ntLoadMore'),
+                    label: l10n.ntLoadMore,
+                    style: ClButtonStyle.tinted,
+                    expand: true,
+                    onPressed: () => setState(() => _limit += inboxPageSize),
+                  ),
+          ],
           const SizedBox(height: ClSpace.s4),
           _Note(l10n.ntKept),
         ],
@@ -185,6 +249,48 @@ class _SectionTitle extends StatelessWidget {
             fontWeight: FontWeight.w600,
             letterSpacing: 0.4,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Content-shaped placeholders while the first page loads (Motion spec 271:393).
+class _Loading extends StatelessWidget {
+  const _Loading();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      key: const Key('ntLoading'),
+      label: l10n.ntLoading,
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < 4; i++)
+              const Padding(
+                padding: EdgeInsets.only(bottom: ClSpace.s3),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClSkeleton(width: 32, height: 32, radius: ClRadius.control),
+                    SizedBox(width: ClSpace.s3),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClSkeleton(height: 16),
+                          SizedBox(height: ClSpace.s2),
+                          ClSkeleton(width: 180, height: 12),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );

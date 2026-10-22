@@ -22917,17 +22917,21 @@
   "@ntFilterAll": {
     "description": "EN06 chip."
   },
-  "ntFilterReminders": "Nhắc việc",
-  "@ntFilterReminders": {
-    "description": "EN06 chip."
-  },
-  "ntFilterBaby": "Cho bé",
-  "@ntFilterBaby": {
-    "description": "EN06 chip."
+  "ntFilterMemories": "Kỷ niệm",
+  "@ntFilterMemories": {
+    "description": "EN06 chip (P-174 inbox group memories)."
   },
   "ntFilterFamily": "Gia đình",
   "@ntFilterFamily": {
     "description": "EN06 chip."
+  },
+  "ntFilterCare": "Chăm sóc",
+  "@ntFilterCare": {
+    "description": "EN06 chip (P-174 inbox group care: reminders, vaccines, spending)."
+  },
+  "ntFilterOther": "Khác",
+  "@ntFilterOther": {
+    "description": "EN06 chip (P-174 inbox group other, and kinds this version does not know)."
   },
   "ntSectionToday": "HÔM NAY",
   "@ntSectionToday": {
@@ -22957,9 +22961,21 @@
   "@ntEmptyFiltered": {
     "description": "EN06 empty state for a chip."
   },
-  "ntLoadFailed": "Chưa tải được thông báo. Thử lại sau nhé.",
+  "ntLoadFailed": "Kiểm tra kết nối mạng rồi thử lại nhé.",
   "@ntLoadFailed": {
-    "description": "EN06 load error."
+    "description": "EN06 load error (message under ntLoadFailedTitle, with a Retry button)."
+  },
+  "ntLoadFailedTitle": "Chưa tải được thông báo",
+  "@ntLoadFailedTitle": {
+    "description": "EN06 load error title."
+  },
+  "ntLoading": "Đang tải thông báo",
+  "@ntLoading": {
+    "description": "EN06 a11y label of the loading skeleton."
+  },
+  "ntLoadMore": "Xem thông báo cũ hơn",
+  "@ntLoadMore": {
+    "description": "EN06 button at the end of the list: loads the next 30 rows."
   },
   "ntKept": "Thông báo được giữ 90 ngày. Vuốt sang trái để ẩn.",
   "@ntKept": {
@@ -22972,6 +22988,10 @@
   "ntGone": "Mục này không còn mở được.",
   "@ntGone": {
     "description": "Toast: the notification points to a baby you no longer follow."
+  },
+  "ntOpenedNearest": "Không mở được đúng mục này, đã mở trang gần nhất.",
+  "@ntOpenedNearest": {
+    "description": "Toast (P-174): the notification's own screen could not open (gone, no permission, bad link), so a broader one opened instead."
   },
   "ntMaster": "Thông báo của Child Life",
   "@ntMaster": {

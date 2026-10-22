@@ -1,5 +1,10 @@
 import { FieldValue, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
-import { notificationKinds, type NotificationKind } from '@child-life/contracts';
+import {
+  notificationKinds,
+  type NotificationKind,
+  type NotificationTemplateId,
+  type PlaceholderValue,
+} from '@child-life/contracts';
 import { notifyUsers } from './notifications.js';
 
 /**
@@ -47,7 +52,8 @@ export async function onMessageCreated(
     .where('role', '==', 'coParent')
     .where('status', '==', 'active')
     .get();
-  await db.doc(`babies/${babyId}/notifications/message_${message.id}`).set({
+  // `create`: a redelivered trigger finds the notice and stops (P-174 dedup).
+  await createOnce(db.doc(`babies/${babyId}/notifications/message_${message.id}`), {
     kind: 'message',
     sourceCollection: 'messages',
     sourceId: message.id,
@@ -60,6 +66,20 @@ export async function onMessageCreated(
     createdAt: now,
     delivered: false,
   });
+}
+
+/** Creates [ref] unless it exists (ALREADY_EXISTS = a retry; nothing to do). */
+export async function createOnce(
+  ref: FirebaseFirestore.DocumentReference,
+  data: Record<string, unknown>,
+): Promise<boolean> {
+  try {
+    await ref.create(data);
+    return true;
+  } catch (error) {
+    if ((error as { code?: number }).code === 6) return false;
+    throw error;
+  }
 }
 
 export interface PushSender {
@@ -158,6 +178,36 @@ export function androidNotification(message: Parameters<PushSender['send']>[1]) 
 }
 
 type Copy = { title: string; body: string };
+
+/** The Portal template and values of a family notice (P-174); [noticeCopy] is its version 0. */
+export function noticeTemplate(
+  kind: string,
+  count: number,
+  actorName: string,
+): { id: NotificationTemplateId; values: Record<string, PlaceholderValue> } | undefined {
+  switch (kind) {
+    case 'memories':
+    case 'shared':
+    case 'album':
+      return { id: 'memories.new_moments', values: { count, actor_name: actorName } };
+    case 'keepsakeVideo':
+      return { id: 'memories.video_ready', values: {} };
+    case 'keepsakeVideoFailed':
+      return { id: 'memories.video_failed', values: {} };
+    case 'story':
+      return { id: 'memories.new_story', values: {} };
+    case 'storage':
+      return count >= 100
+        ? { id: 'family.storage_full', values: {} }
+        : { id: 'family.storage_almost_full', values: { percent: count } };
+    case 'storageGranted':
+      return { id: 'family.storage_granted', values: { gb: count } };
+    case 'message':
+      return { id: 'family.message', values: { actor_name: actorName } };
+    default:
+      return undefined;
+  }
+}
 
 /** Generic lock-screen copy (11b, R-120) in the recipient's language. */
 export function noticeCopy(kind: string, count: number, actorName: string, language: string): Copy {
@@ -280,9 +330,19 @@ export async function deliverNotice(
         ...(typeof claimed.get('sourceId') === 'string'
           ? { sourceId: claimed.get('sourceId'), sourceCollection: claimed.get('sourceCollection') }
           : {}),
+        // P-174 destination params (MEMORIES_ALBUM / MEMORIES_STORY).
+        ...(claimed.get('sourceCollection') === 'albums' &&
+        typeof claimed.get('sourceId') === 'string'
+          ? { albumId: claimed.get('sourceId') }
+          : {}),
+        ...(claimed.get('sourceCollection') === 'stories' &&
+        typeof claimed.get('sourceId') === 'string'
+          ? { storyId: claimed.get('sourceId') }
+          : {}),
         ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
       },
       message: (language) => noticeCopy(kind, count, actor, language),
+      template: noticeTemplate(kind, count, actor),
       zone: await babyZone(db, babyId),
     },
     now,

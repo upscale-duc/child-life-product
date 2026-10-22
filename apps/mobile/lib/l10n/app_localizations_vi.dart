@@ -15449,13 +15449,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntFilterAll => 'Tất cả';
 
   @override
-  String get ntFilterReminders => 'Nhắc việc';
-
-  @override
-  String get ntFilterBaby => 'Cho bé';
+  String get ntFilterMemories => 'Kỷ niệm';
 
   @override
   String get ntFilterFamily => 'Gia đình';
+
+  @override
+  String get ntFilterCare => 'Chăm sóc';
+
+  @override
+  String get ntFilterOther => 'Khác';
 
   @override
   String get ntSectionToday => 'HÔM NAY';
@@ -15480,7 +15483,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntEmptyFiltered => 'Chưa có thông báo nào trong mục này.';
 
   @override
-  String get ntLoadFailed => 'Chưa tải được thông báo. Thử lại sau nhé.';
+  String get ntLoadFailed => 'Kiểm tra kết nối mạng rồi thử lại nhé.';
+
+  @override
+  String get ntLoadFailedTitle => 'Chưa tải được thông báo';
+
+  @override
+  String get ntLoading => 'Đang tải thông báo';
+
+  @override
+  String get ntLoadMore => 'Xem thông báo cũ hơn';
 
   @override
   String get ntKept => 'Thông báo được giữ 90 ngày. Vuốt sang trái để ẩn.';
@@ -15490,6 +15502,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ntGone => 'Mục này không còn mở được.';
+
+  @override
+  String get ntOpenedNearest =>
+      'Không mở được đúng mục này, đã mở trang gần nhất.';
 
   @override
   String get ntMaster => 'Thông báo của Child Life';

@@ -214,6 +214,16 @@ export const staffActions = [
   'premium.config',
   /** Promo grants and revoking staff-written grants; never a paid grant (brief p.17). */
   'premium.grant',
+  /** Notifications & Engagement (P-174): catalog, templates, delivery aggregates. */
+  'notifications.view',
+  /** Edit template drafts and submit them for review. */
+  'notifications.edit',
+  /** Publish, pause, roll back templates (a second person's sign-off, like content). */
+  'notifications.publish',
+  /** One family's notification & engagement timeline (restricted, audited on every view). */
+  'notifications.timeline',
+  /** Kill switches, retry of failed deliveries. */
+  'notifications.ops',
 ] as const;
 export type StaffAction = (typeof staffActions)[number];
 
@@ -265,6 +275,13 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   'premium.config': ['features', 'edit'],
   // A grant gives paid capabilities for free: owners and admins only, reason + audit (brief p.17).
   'premium.grant': ['features', 'full'],
+  // Aggregates only (catalog, delivery counts): the same reach as product analytics.
+  'notifications.view': ['overview', 'view'],
+  'notifications.edit': ['content', 'edit'],
+  'notifications.publish': ['content', 'approve'],
+  // A family's timeline shows unmasked activity metadata: "view", not "viewMasked".
+  'notifications.timeline': ['families', 'view'],
+  'notifications.ops': ['system', 'edit'],
 };
 
 export function staffCan(levels: StaffLevels, action: StaffAction): boolean {
@@ -365,6 +382,7 @@ export const auditCategories = [
   'content',
   'analytics',
   'premium',
+  'notifications',
 ] as const;
 export type AuditCategory = (typeof auditCategories)[number];
 export const listAuditSchema = z.object({

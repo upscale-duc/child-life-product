@@ -12,6 +12,8 @@ import {
   recurringExpenseSchema,
   spendingLimits,
   type ExpenseCurrency,
+  type NotificationTemplateId,
+  type PlaceholderValue,
 } from '@child-life/contracts';
 import {
   FieldPath,
@@ -285,11 +287,18 @@ export async function addRecurringExpenses(
     if (addedHere > 0) {
       added += addedHere;
       babies += 1;
-      sent += await pushParents(db, sender, babyId, now, (language) => ({
-        ...recurringCopy(addedHere, language),
-        data: { kind: 'spending', reason: 'recurring', babyId, route: spendingRoute },
-        apns: { collapseId: `sp-rx-${babyId}-${today}`, threadId: `sp-${babyId}` },
-      }));
+      sent += await pushParents(
+        db,
+        sender,
+        babyId,
+        now,
+        (language) => ({
+          ...recurringCopy(addedHere, language),
+          data: { kind: 'spending', reason: 'recurring', babyId, route: spendingRoute },
+          apns: { collapseId: `sp-rx-${babyId}-${today}`, threadId: `sp-${babyId}` },
+        }),
+        { template: { id: 'spending.recurring', values: { count: addedHere } } },
+      );
     }
   }
   return { added, babies, sent };
@@ -463,11 +472,18 @@ export async function spendingBudgetAlert(
     return true;
   });
   if (!claimed) return none;
-  const sent = await pushParents(db, sender, babyId, now, (language) => ({
-    ...budgetCopy(language),
-    data: { kind: 'spending', reason: 'budget', babyId, month, route: spendingRoute },
-    apns: { collapseId: `sp-budget-${babyId}-${month}`, threadId: `sp-${babyId}` },
-  }));
+  const sent = await pushParents(
+    db,
+    sender,
+    babyId,
+    now,
+    (language) => ({
+      ...budgetCopy(language),
+      data: { kind: 'spending', reason: 'budget', babyId, month, route: spendingRoute },
+      apns: { collapseId: `sp-budget-${babyId}-${month}`, threadId: `sp-${babyId}` },
+    }),
+    { template: { id: 'spending.budget80', values: {} } },
+  );
   return { alerted: true, sent };
 }
 
@@ -497,18 +513,26 @@ async function pushParents(
   babyId: string,
   now: Date,
   message: (language: string) => PushMessage,
+  extra: PushExtra = {},
 ): Promise<number> {
   const members = await db.collection(`babies/${babyId}/members`).get();
   const parents = members.docs
     .filter((m) => isActiveMember(m, now) && m.get('role') === 'coParent')
     .map((m) => m.id);
-  return pushUsers(db, sender, parents, message, now);
+  return pushUsers(db, sender, parents, message, now, extra);
+}
+
+/** P-174: the Portal template of a spending push and, when the collapse id is not unique, its id. */
+export interface PushExtra {
+  template?: { id: NotificationTemplateId; values: Record<string, PlaceholderValue> };
+  id?: string;
 }
 
 /**
  * Sends to [uids]' signed-in devices in each device's language through the notification centre
  * (D-076 #2): EN07 "Chi tiêu" (until set, the old "Nhắc việc" switch, G-056), quiet hours and the
- * inbox row. The push's collapse id names it, so a retried run does not push twice.
+ * inbox row. The notice id (the collapse id unless [extra.id]) is the dedup key: a retried run
+ * finds the row and pushes nothing twice (P-174).
  */
 export async function pushUsers(
   db: Firestore,
@@ -516,6 +540,7 @@ export async function pushUsers(
   uids: string[],
   message: (language: string) => PushMessage,
   now: Date = new Date(),
+  extra: PushExtra = {},
 ): Promise<number> {
   const sample = message('vi');
   const babyId = sample.data.babyId ?? null;
@@ -528,7 +553,8 @@ export async function pushUsers(
     uids,
     {
       kind: 'spending',
-      id: sample.apns?.collapseId ?? `sp-${babyId ?? 'x'}-${now.getTime()}`,
+      id: extra.id ?? sample.apns?.collapseId ?? `sp-${babyId ?? 'x'}-${now.getTime()}`,
+      template: extra.template,
       babyId,
       data: sample.data,
       message: (language) => {

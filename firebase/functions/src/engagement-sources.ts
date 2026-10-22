@@ -57,9 +57,12 @@ export function matchesEngagementTemplate(
   photos: DocumentData[],
   dob: string,
   occasion: string,
+  zone = 'Asia/Ho_Chi_Minh',
 ) {
+  // Doc 18 #22: age counts from midnight of the birth date in the baby's zone, not UTC.
+  const born = reminderInstantIn(zone, dob, '00:00').getTime();
   const eligible = photos.filter((p) => {
-    const age = (analyticsTime(p.captureAt) - Date.parse(`${dob}T00:00:00Z`)) / ENG_DAY;
+    const age = (analyticsTime(p.captureAt) - born) / ENG_DAY;
     return (
       p.type === 'photo' &&
       !p.generated &&
@@ -77,7 +80,7 @@ export function matchesEngagementTemplate(
       if (seen.has(n)) continue;
       const p = eligible[n]!,
         capture = analyticsTime(p.captureAt),
-        age = (capture - Date.parse(`${dob}T00:00:00Z`)) / ENG_DAY;
+        age = (capture - born) / ENG_DAY;
       if (
         !capture ||
         (s.ageDays && (age < s.ageDays.min || age > s.ageDays.max + 1)) ||
@@ -237,7 +240,7 @@ async function campaignSource(
     if (keepsakeNeedsPremiumCheck(t, catalog.data.premium) && premium === undefined)
       premium = await hasPremiumTemplates(db, uid, babyId, now);
     if (keepsakeTemplateAccess(t, catalog.data.premium, premium ?? false) !== 'ok') continue;
-    if (matchesEngagementTemplate(t, photos, dob, occasion)) {
+    if (matchesEngagementTemplate(t, photos, dob, occasion, scope.zone)) {
       template = t;
       break;
     }
@@ -379,7 +382,13 @@ export async function discoverEngagementSources(
         {
           ...base(uid, r.babyId, scope, now),
           kind: 'ENG-02',
-          source: `campaign:${occasion}`,
+          // Doc 18 #21: a retrospective suggestion is its own opportunity, so it can follow a
+          // current campaign that closed without a keepsake (doc 13 §44). Completion, dismissal
+          // and an existing keepsake still suppress it (checked above).
+          source:
+            c.window.context === 'retrospective'
+              ? `campaign:${occasion}:retro`
+              : `campaign:${occasion}`,
           context: c.window.context,
           dueAt: c.window.dueAt,
           expiresAt: c.window.pushExpiresAt,

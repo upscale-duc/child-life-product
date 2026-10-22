@@ -46,6 +46,8 @@ export * from './solids.js';
 export * from './milestones.js';
 // Notification centre (D-076 #2): inbox, EN07 settings, quiet hours.
 export * from './notifications.js';
+// Unified notification platform (P-174): catalog, destinations, lifecycle, templates, ledger.
+export * from './notification-platform.js';
 
 export * from './assistant-reads.js';
 export * from './personalization-v2.js';

@@ -27,6 +27,7 @@ import { AccountError } from './account.js';
 import { familyBucket } from './features.js';
 import { recordEngagementAnalytics, analyticsTime } from './product-analytics-store.js';
 import { notifyUsers } from './notifications.js';
+import { noteEngagementAction } from './notification-ledger.js';
 import type { PushSender } from './social.js';
 import {
   discoverEngagementSources,
@@ -152,6 +153,9 @@ export async function engStage(
   now: Date,
   reason: EngagementReasonCode = 'none',
 ) {
+  // P-174: the notification ledger's action dimension follows the intent's outcome.
+  if (['opened', 'completed', 'expired', 'cancelled', 'dismissed'].includes(stage))
+    await noteEngagementAction(db, i.id, stage, now).catch(() => undefined);
   await recordEngagementAnalytics(
     db,
     {
@@ -576,6 +580,32 @@ export async function saveEngagementSettings(db: Firestore, uid: string, data: u
         { merge: true },
       );
   });
+  if (p.data.resume) {
+    // Doc 18 #22: intents the pause suppressed come back while their window is still open.
+    const rows = await db
+      .collection('engagementIntents')
+      .where('uid', '==', uid)
+      .where('proactive', '==', true)
+      .limit(500)
+      .get();
+    for (const doc of rows.docs) {
+      const i = doc.data() as EngagementIntent;
+      if (
+        i.reason !== 'fatigue_paused' ||
+        i.sentAt ||
+        i.dismissed ||
+        i.completedAt ||
+        i.expiresAt <= now.getTime() ||
+        !['suppressed', 'cancelled', 'in_app_only'].includes(i.status)
+      )
+        continue;
+      await doc.ref.update({
+        nextAt: Math.max(now.getTime(), i.dueAt, i.snoozedUntil),
+        status: 'eligible',
+        reason: 'none',
+      });
+    }
+  }
   if (p.data.preferences) {
     const rows = await db
       .collection('engagementIntents')
@@ -640,6 +670,15 @@ export const engagementCopy = {
     vi: { title: 'Gợi ý dành cho bạn', body: 'Có một gợi ý mới để bạn xem khi thuận tiện.' },
     en: { title: 'An idea for you', body: 'A fresh suggestion is ready when you are.' },
   },
+} as const;
+/** P-174 Portal templates; [engagementCopy] is their version 0. */
+const engagementTemplate = {
+  'ENG-01': 'eng.pending_photos',
+  'ENG-02': 'eng.keepsake_suggestion',
+  'ENG-03': 'eng.weekly_recap',
+  'ENG-04': 'care.rule_due',
+  'ENG-05': 'eng.family_recap',
+  'ENG-06': 'eng.lumi_insight',
 } as const;
 const noticeKind = {
   'ENG-01': 'photoSuggestion',
@@ -958,6 +997,10 @@ export async function dispatchEngagement(
         babyId: i.babyId,
         data: { engagementId: i.id, babyId: i.babyId },
         deviceId,
+        // P-174: the unified platform's ledger follows the intent; ambiguous sends never retry.
+        retry: false,
+        engagement: { id: i.id, kind: i.kind },
+        template: { id: engagementTemplate[i.kind], values: {} },
         onResult: async (_uid, result) => {
           adapter = result;
         },

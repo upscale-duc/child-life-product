@@ -254,6 +254,15 @@ export const inboxItemSchema = z
     readAt: z.date().nullable(),
     archivedAt: z.date().nullable(),
     expireAt: z.date(),
+    // P-174 (optional: rows written before the unified platform lack them).
+    /** Semantic destination id (`notificationDestinations`); the app's resolver opens it. */
+    destination: z.string().regex(/^[A-Z_]{4,40}$/).optional(),
+    /** Inbox chip (`inboxGroups`). */
+    group: z.enum(['memories', 'family', 'care', 'other']).optional(),
+    templateId: z.string().max(40).nullable().optional(),
+    templateVersion: z.number().int().min(0).optional(),
+    /** The server-only ledger entry (`notificationDeliveries/{id}`); an opaque hash. */
+    ledgerId: z.string().regex(/^d_[a-f0-9]{40}$/).optional(),
   })
   .strict();
 export type InboxItem = z.infer<typeof inboxItemSchema>;

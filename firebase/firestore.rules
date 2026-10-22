@@ -107,7 +107,10 @@ service cloud.firestore {
       }
 
       // Hộp thông báo (EN06, D-076 #2): written only by Functions (one row per push). The owner
-      // reads and may only mark a row read or archived, once, at the request time.
+      // reads and may only mark a row read or archived, once, at the request time. The platform
+      // ledger, stats, templates and ops switches (`notificationDeliveries`, `notificationStats`,
+      // `notificationTemplates`, `config/notifications`, P-174) have no client access at all: they
+      // fall to the deny-all at the end of this file.
       match /notifications/{id} {
         allow read: if signedIn() && request.auth.uid == uid;
         allow create, delete: if false;

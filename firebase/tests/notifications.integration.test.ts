@@ -71,16 +71,20 @@ beforeEach(async () => {
       .set({ token: `t-${uid}`, language: uid === 'nt-dad' ? 'en' : 'vi' });
   }
   await db.recursiveDelete(db.doc(`babies/${babyId}`)).catch(() => undefined);
+  // P-174: the ledger dedups by recipient + notice id, so each case starts without entries.
+  const ledger = await db.collection('notificationDeliveries').where('uid', 'in', people).get();
+  await Promise.all(ledger.docs.map((d) => d.ref.delete()));
 });
 
 describe('notifyUsers', () => {
   it('pushes in each device language and records the row with both languages', async () => {
     const at = vn('2026-10-15', 15);
     const r = await notifyUsers(db, sender, ['nt-mom', 'nt-dad'], notice(), at);
-    expect(r).toEqual({ sent: 2, recorded: 2, held: 0 });
+    expect(r).toEqual({ sent: 2, recorded: 2, held: 0, duplicate: 0 });
     expect(sent.find((s) => s.tokens[0] === 't-nt-dad')!.title).toBe('2 new moments');
     const [row] = await inbox('nt-mom');
-    expect(row!.id).toMatch(/^n_test-b_nt0000000000000000001-[a-z0-9]+$/);
+    // P-174: the id is the notice id (no time), so a producer retry finds the row.
+    expect(row!.id).toBe('n_test-b_nt0000000000000000001');
     // The push carries the row's id, so opening it marks the row read.
     expect(sent[0]!.data).toMatchObject({ kind: 'memories', babyId, inboxId: row!.id });
     const stored: Record<string, unknown> = { ...row };
@@ -174,7 +178,7 @@ describe('notifyUsers', () => {
     await notifyUsers(db, sender, ['nt-mom', 'nt-dad'], notice({ id: 'old' }), old);
     const later = vn('2026-10-15', 10);
     await notifyUsers(db, sender, ['nt-mom'], notice({ id: 'new' }), later);
-    expect((await inbox('nt-mom')).map((r) => r.id)).toEqual([expect.stringMatching(/^n_new-/)]);
+    expect((await inbox('nt-mom')).map((r) => r.id)).toEqual(['n_new']);
     // A family notice under babies/ has no expireAt and stays.
     await db.doc(`babies/${babyId}/notifications/keep`).set({ kind: 'memories' });
     expect(await sweepExpiredInbox(db, later)).toBeGreaterThanOrEqual(1);

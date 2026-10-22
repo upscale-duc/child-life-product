@@ -4,6 +4,7 @@ import { nutritionEn, nutritionVi } from './messages-nutrition';
 import { solidsEn, solidsVi } from './messages-solids';
 import { productAnalyticsEn, productAnalyticsVi } from './messages-product-analytics';
 import { hubEn, hubVi } from './messages-hub';
+import { notificationsEn, notificationsVi } from './messages-notifications';
 
 /**
  * ICU messages (D-012). Vietnamese is the source (Figma Admin portal copy, `08-admin-portal.md`);
@@ -6082,6 +6083,22 @@ const en: Record<string, string> = {
 // in messages-nutrition.ts, Ăn dặm (D-085) in messages-solids.ts, Tính năng & Premium (D-089) and
 // Hệ thống & AI in messages-hub.ts.
 export const messages: Record<SupportedLocale, Record<string, string>> = {
-  vi: { ...vi, ...contentVi, ...nutritionVi, ...solidsVi, ...productAnalyticsVi, ...hubVi },
-  en: { ...en, ...contentEn, ...nutritionEn, ...solidsEn, ...productAnalyticsEn, ...hubEn },
+  vi: {
+    ...vi,
+    ...contentVi,
+    ...nutritionVi,
+    ...solidsVi,
+    ...productAnalyticsVi,
+    ...hubVi,
+    ...notificationsVi,
+  },
+  en: {
+    ...en,
+    ...contentEn,
+    ...nutritionEn,
+    ...solidsEn,
+    ...productAnalyticsEn,
+    ...hubEn,
+    ...notificationsEn,
+  },
 };

@@ -1330,6 +1330,31 @@ async function notifyImporter(
       };
     },
     now,
+    // P-174: one push per outcome of the import (a later run's other outcome still arrives).
+    result.ok
+      ? {
+          id: `sp-im-${importId}-done`,
+          template: {
+            id: 'spending.import_done',
+            values: {
+              import_summary: {
+                vi: importSummary(
+                  'vi',
+                  result.imported,
+                  result.counts.duplicates,
+                  result.counts.errors,
+                ),
+                en: importSummary(
+                  'en',
+                  result.imported,
+                  result.counts.duplicates,
+                  result.counts.errors,
+                ),
+              },
+            },
+          },
+        }
+      : { id: `sp-im-${importId}-failed`, template: { id: 'spending.import_failed', values: {} } },
   );
 }
 

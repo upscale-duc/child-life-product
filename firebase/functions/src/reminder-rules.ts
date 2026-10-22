@@ -18,7 +18,11 @@ import {
   type RuleSchedule,
 } from '@child-life/contracts';
 import { notifyUsers } from './notifications.js';
-import { careInboxEngagement, careAdapterResult } from './engagement-observers.js';
+import {
+  careEngagementOn,
+  careInboxEngagement,
+  careAdapterResult,
+} from './engagement-observers.js';
 import type { PushSender } from './social.js';
 
 /**
@@ -436,7 +440,7 @@ export async function onRecordForRules(
 
 // ---------- Delivery ----------
 
-const ruleName: Record<ReminderRuleType, { vi: string; en: string }> = {
+export const ruleName: Record<ReminderRuleType, { vi: string; en: string }> = {
   feed: { vi: 'nhắc bú', en: 'feeding reminder' },
   sleep: { vi: 'nhắc chuẩn bị ngủ', en: 'sleep reminder' },
   diaper: { vi: 'nhắc thay tã', en: 'diaper reminder' },
@@ -554,8 +558,10 @@ async function pushRule(
   );
   const eligible = members.filter((m) => canReceive(memberOf(m, now))).map((m) => m.id);
   // ENG-04 cohort precedes category/channel filtering. Measurement never changes the schedule.
+  // Doc 18 #19: one config read per baby; with engagement off nothing waits on its reads.
+  const observe = await careEngagementOn(db, babyId).catch(() => false);
   await Promise.allSettled(
-    eligible.map((uid) =>
+    (observe ? eligible : []).map((uid) =>
       careInboxEngagement(
         db,
         uid,
@@ -576,8 +582,12 @@ async function pushRule(
     eligible,
     {
       kind: 'reminderRule',
-      onResult: (uid, result) =>
-        careAdapterResult(db, uid, babyId, ruleId, rang.dueAt.getTime(), result, now),
+      ...(observe
+        ? {
+            onResult: (uid: string, result: Parameters<typeof careAdapterResult>[5]) =>
+              careAdapterResult(db, uid, babyId, ruleId, rang.dueAt.getTime(), result, now),
+          }
+        : {}),
       id: `rr-${ruleId}-${rang.dueAt.getTime()}`,
       babyId,
       data: {
@@ -598,6 +608,17 @@ async function pushRule(
           threadId: ruleId,
         },
       }),
+      // P-174: Portal copy for "Đến giờ … bạn đã đặt"; [ruleCopy] stays version 0.
+      template: {
+        id: 'care.rule_due',
+        values: {
+          activity_name: ruleName[rang.type],
+          last_logged_line: {
+            vi: ruleCopy(rang.type, 'vi', zone, rang.anchorAt, now).body,
+            en: ruleCopy(rang.type, 'en', zone, rang.anchorAt, now).body,
+          },
+        },
+      },
       zone,
     },
     now,

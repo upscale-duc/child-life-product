@@ -147,6 +147,16 @@ const bring = {
  */
 export function vaccineCopy(kind: Kind, doses: OpenDose[], language: string) {
   const en = language.startsWith('en');
+  const { list, milestone } = vaccineParts(doses, en);
+  const body = `${list} · ${milestone}`;
+  return {
+    title: titles[kind][en ? 'en' : 'vi'],
+    body: kind === '3d' ? body : `${body}. ${bring[en ? 'en' : 'vi']}`,
+  };
+}
+
+/** The two placeholders of the `care.vaccine_*` templates (P-174): dose list and age label. */
+export function vaccineParts(doses: OpenDose[], en: boolean) {
   const name = (d: OpenDose) => (en ? d.def.short.en : d.def.short.vi);
   const sameDose = new Set(doses.map((d) => d.dose)).size === 1;
   const list = sameDose
@@ -160,11 +170,7 @@ export function vaccineCopy(kind: Kind, doses: OpenDose[], language: string) {
     : months === 0
       ? 'Mốc sơ sinh'
       : `Mốc ${months} tháng tuổi`;
-  const body = `${list} · ${milestone}`;
-  return {
-    title: titles[kind][en ? 'en' : 'vi'],
-    body: kind === '3d' ? body : `${body}. ${bring[en ? 'en' : 'vi']}`,
-  };
+  return { list, milestone };
 }
 
 /**
@@ -292,6 +298,19 @@ async function pushTo(
           threadId: `vx-${babyId}`,
         },
       }),
+      template: {
+        id: `care.vaccine_${r.kind}`,
+        values: {
+          dose_list: {
+            vi: vaccineParts(r.doses, false).list,
+            en: vaccineParts(r.doses, true).list,
+          },
+          age_label: {
+            vi: vaccineParts(r.doses, false).milestone,
+            en: vaccineParts(r.doses, true).milestone,
+          },
+        },
+      },
     },
     now,
   );

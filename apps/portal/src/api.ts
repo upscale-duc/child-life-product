@@ -115,6 +115,16 @@ export type Callable =
   // Approval policy (D-079; mirrors content-policy.ts)
   | 'staffContentPolicy'
   | 'staffSetContentPolicy'
+  // Thông báo & Gắn kết (P-174; mirrors the notification platform's staff callables)
+  | 'staffNotificationTemplates'
+  | 'staffNotificationTemplate'
+  | 'staffSaveNotificationTemplate'
+  | 'staffNotificationTemplateAction'
+  | 'staffNotificationStats'
+  | 'staffNotificationTimeline'
+  | 'staffNotificationDetail'
+  | 'staffRetryNotification'
+  | 'staffSetNotificationOps'
   | 'sendAuthEmail';
 
 export interface Api {

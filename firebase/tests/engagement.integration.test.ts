@@ -255,7 +255,8 @@ it('supports retrospective campaigns for a late joiner and suppresses completed 
     });
   const result = await refreshEngagement(db, 'parent', r, now);
   const rows = await db.collection('engagementIntents').get(),
-    campaign = rows.docs.find((d) => d.get('source') === 'campaign:m1');
+    // Doc 18 #21: the retrospective suggestion has its own key, apart from a current campaign.
+    campaign = rows.docs.find((d) => d.get('source') === 'campaign:m1:retro');
   expect(result.suggestions.some((s) => s.context === 'retrospective')).toBe(true);
   expect(campaign).toBeDefined();
   let calls = 0;
@@ -346,6 +347,31 @@ it('keeps fatigue paused until explicit resume after the minimum break', async (
     new Date(now.getTime() + 14 * ENG_DAY + 1),
   );
   expect((await state.ref.get()).get('paused')).toBe(false);
+});
+it('resume re-arms what the pause suppressed while its window is open (doc 18 #22)', async () => {
+  const p = await pending();
+  const later = new Date(now.getTime() + 14 * ENG_DAY + 1);
+  await p.ref.update({
+    status: 'suppressed',
+    reason: 'fatigue_paused',
+    expiresAt: later.getTime() + ENG_DAY,
+  });
+  const other = db.doc(`engagementIntents/${'f'.repeat(64)}`);
+  await other.set({
+    ...(await p.ref.get()).data(),
+    id: 'f'.repeat(64),
+    reason: 'fatigue_paused',
+    status: 'suppressed',
+    expiresAt: now.getTime(),
+  });
+  await db
+    .doc('users/parent/settings/engagementState')
+    .set({ paused: true, pausedUntil: now.getTime() }, { merge: true });
+  await saveEngagementSettings(db, 'parent', { resume: true }, later);
+  expect((await p.ref.get()).data()).toMatchObject({ status: 'eligible', reason: 'none' });
+  expect((await p.ref.get()).get('nextAt')).toBeGreaterThanOrEqual(later.getTime());
+  // A window that already closed stays closed: no catch-up.
+  expect((await other.get()).get('status')).toBe('suppressed');
 });
 it('does not resurrect an episode after its payload is expired and cleaned', async () => {
   const p = await pending();
@@ -579,7 +605,10 @@ it('a failed render does not block the milestone campaign; one in flight does', 
   await db.doc('babies/baby/keepsakeJobs/rendering').set({ occasion: 'm1', status: 'rendering' });
   await refreshEngagement(db, 'parent', r, now);
   const campaign = () =>
-    db.collection('engagementIntents').where('source', '==', 'campaign:m1').get();
+    db
+      .collection('engagementIntents')
+      .where('source', 'in', ['campaign:m1', 'campaign:m1:retro'])
+      .get();
   expect((await campaign()).empty).toBe(true);
   await db.doc('babies/baby/keepsakeJobs/rendering').update({ status: 'failed' });
   await refreshEngagement(db, 'parent', r, now);

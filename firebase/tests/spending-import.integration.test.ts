@@ -538,6 +538,7 @@ describe('confirm → import → undo', () => {
           route: `/utilities/spending/import/${im(1)}`,
           // D-076 #2: the inbox row the push opens.
           inboxId: expect.stringMatching(/^n_sp-im-/),
+          destination: 'SPENDING_IMPORT',
         },
       },
     ]);

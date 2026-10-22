@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-/// EN06 chips (`notificationCategories` in packages/contracts/src/notifications.ts); `general`
-/// rows show under "Tất cả" only.
+import 'notification_destinations.dart';
+
+/// The legacy `category` of a row (`notificationCategories` in contracts). EN06 chips now use
+/// [InboxGroup] (P-174); kept so older rows and the server's field still parse.
 enum NotificationCategory { reminders, baby, family, general }
 
 /// `users/{uid}/notifications/{id}` (D-076 #2): one row per server push, written by Functions
@@ -22,6 +24,11 @@ class InboxItem {
     required this.createdAt,
     this.readAt,
     this.archivedAt,
+    this.expireAt,
+    this.destination,
+    this.group,
+    this.templateId,
+    this.templateVersion,
   });
 
   final String id;
@@ -38,7 +45,33 @@ class InboxItem {
   final DateTime? readAt;
   final DateTime? archivedAt;
 
+  /// The 90-day end of the row (the daily job removes it; until then it is hidden).
+  final DateTime? expireAt;
+
+  /// P-174: the semantic destination id, the chip, and the template that wrote the copy. Absent
+  /// on rows written before it (derived from the kind and `data`).
+  final String? destination;
+  final String? group;
+  final String? templateId;
+  final int? templateVersion;
+
   bool get unread => readAt == null;
+
+  /// The EN06 chip this row shows under.
+  InboxGroup get inboxGroup => inboxGroupFor(kind, group);
+
+  /// Hidden from EN06: archived, or past its end.
+  bool hiddenAt(DateTime now) =>
+      archivedAt != null || (expireAt != null && !expireAt!.isAfter(now));
+
+  /// What the resolver opens for this row.
+  NotificationTarget get target => NotificationTarget(
+    kind: kind,
+    babyId: babyId,
+    data: data,
+    destination: destination,
+    inboxId: id,
+  );
 
   String titleIn(String language) => title[language] ?? title['vi'] ?? '';
   String bodyIn(String language) => body[language] ?? body['vi'] ?? '';
@@ -60,6 +93,7 @@ class InboxItem {
     final title = _strings(m['title']);
     if (created == null || title.isEmpty) return null;
     final babyId = m['babyId'];
+    String? text(String key) => m[key] is String ? m[key] as String : null;
     return InboxItem(
       id: id,
       kind: m['kind'] as String? ?? '',
@@ -74,6 +108,14 @@ class InboxItem {
       createdAt: created,
       readAt: _date(m['readAt']),
       archivedAt: _date(m['archivedAt']),
+      expireAt: _date(m['expireAt']),
+      destination: text('destination'),
+      group: text('group'),
+      templateId: text('templateId'),
+      templateVersion: switch (m['templateVersion']) {
+        final num v => v.toInt(),
+        _ => null,
+      },
     );
   }
 }

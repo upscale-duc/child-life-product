@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:child_life/features/notifications/notification_destinations.dart';
 import 'package:child_life/features/notifications/notification_models.dart';
 import 'package:child_life/features/notifications/notification_repository.dart';
 
@@ -22,11 +23,34 @@ class FakeNotificationRepository implements NotificationRepository {
       if (i.archivedAt == null) i,
   ];
 
+  /// When set, [watchInbox] fails with it (EN06 error state) until cleared.
+  Object? failWith;
+
+  /// How many times [watchInbox] was subscribed, and with which limits.
+  final limits = <int>[];
+
+  InboxPage _page(int limit) => InboxPage(
+    items: visible.take(limit).toList(),
+    more: visible.length > limit,
+  );
+
   @override
-  Stream<List<InboxItem>> watchInbox(String uid, {int limit = 100}) async* {
-    yield visible;
+  Stream<InboxPage> watchInbox(String uid, {int limit = inboxPageSize}) async* {
+    limits.add(limit);
+    final error = failWith;
+    if (error != null) throw error;
+    yield _page(limit);
     await for (final _ in _changes.stream) {
-      yield visible;
+      yield _page(limit);
+    }
+  }
+
+  @override
+  Stream<int> watchUnreadCount(String uid) async* {
+    int count() => visible.where((i) => i.unread).length;
+    yield count();
+    await for (final _ in _changes.stream) {
+      yield count();
     }
   }
 
@@ -80,6 +104,11 @@ class FakeNotificationRepository implements NotificationRepository {
     createdAt: i.createdAt,
     readAt: read ? DateTime(2026, 10, 8, 10) : i.readAt,
     archivedAt: archived ? DateTime(2026, 10, 8, 10) : i.archivedAt,
+    expireAt: i.expireAt,
+    destination: i.destination,
+    group: i.group,
+    templateId: i.templateId,
+    templateVersion: i.templateVersion,
   );
 }
 
@@ -94,6 +123,9 @@ InboxItem inboxItem(
   String? babyId = 'b_00000000000000000001',
   Map<String, String> data = const {},
   bool read = false,
+  String? destination,
+  String? group,
+  DateTime? expireAt,
 }) => InboxItem(
   id: id,
   kind: kind,
@@ -105,7 +137,48 @@ InboxItem inboxItem(
   data: {'kind': kind, 'inboxId': id, ...data},
   createdAt: at,
   readAt: read ? at : null,
+  destination: destination,
+  group: group,
+  expireAt: expireAt,
 );
+
+/// `recordNotificationOpen` without Firebase: what the app reported.
+class FakeNotificationOpenReporter implements NotificationOpenReporter {
+  final records =
+      <
+        ({
+          String inboxId,
+          NotificationSurface surface,
+          NotificationOpenOutcome outcome,
+          String? destination,
+        })
+      >[];
+
+  @override
+  Future<void> record({
+    required String inboxId,
+    required NotificationSurface surface,
+    required NotificationOpenOutcome outcome,
+    String? destination,
+  }) async => records.add((
+    inboxId: inboxId,
+    surface: surface,
+    outcome: outcome,
+    destination: destination,
+  ));
+}
+
+/// `actOnEngagement` "open" without Firebase: the ids asked, and the answer.
+class FakeEngagementOpener {
+  FakeEngagementOpener({this.opens = true});
+  bool opens;
+  final ids = <String>[];
+
+  Future<bool> call(Object ref, String id) async {
+    ids.add(id);
+    return opens;
+  }
+}
 
 /// EN06 as drawn, with the server's generic copy (no baby name, R-120); "now" is Thu 8 Oct
 /// 2026, 21:00.

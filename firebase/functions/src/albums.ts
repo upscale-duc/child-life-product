@@ -8,6 +8,7 @@ import {
   type Audience,
 } from '@child-life/contracts';
 import { MemoryError } from './memories.js';
+import { createOnce } from './social.js';
 
 /**
  * Albums (S10, 10d–10e10). Functions own albums, their membership (`albums/{a}/items/{m}` and
@@ -171,8 +172,9 @@ async function familyNotice(
   const recipients = members.docs
     .filter((m) => m.id !== uid && ['coParent', 'relative'].includes(m.get('role') as string))
     .map((m) => m.id);
-  const id = `${kind}_${now.getTime().toString(36)}_${uid.slice(0, 8)}`;
-  await db.doc(`babies/${babyId}/notifications/${id}`).set({
+  // P-174: one notice per source (or person) per minute; a concurrent double call finds it.
+  const id = `${kind}_${(source?.id ?? uid).slice(0, 40)}_${Math.floor(now.getTime() / 60_000).toString(36)}`;
+  await createOnce(db.doc(`babies/${babyId}/notifications/${id}`), {
     kind,
     babyId,
     count,

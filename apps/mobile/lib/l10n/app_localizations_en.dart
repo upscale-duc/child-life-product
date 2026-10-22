@@ -16478,13 +16478,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntFilterAll => 'All';
 
   @override
-  String get ntFilterReminders => 'Reminders';
-
-  @override
-  String get ntFilterBaby => 'For baby';
+  String get ntFilterMemories => 'Memories';
 
   @override
   String get ntFilterFamily => 'Family';
+
+  @override
+  String get ntFilterCare => 'Care';
+
+  @override
+  String get ntFilterOther => 'Other';
 
   @override
   String get ntSectionToday => 'TODAY';
@@ -16509,7 +16512,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntEmptyFiltered => 'Nothing in this category yet.';
 
   @override
-  String get ntLoadFailed => 'Couldn’t load notifications. Try again later.';
+  String get ntLoadFailed => 'Check your connection and try again.';
+
+  @override
+  String get ntLoadFailedTitle => 'Couldn’t load notifications';
+
+  @override
+  String get ntLoading => 'Loading notifications';
+
+  @override
+  String get ntLoadMore => 'Show older notifications';
 
   @override
   String get ntKept =>
@@ -16520,6 +16532,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ntGone => 'This can’t be opened any more.';
+
+  @override
+  String get ntOpenedNearest =>
+      'That item couldn’t be opened, so the closest page opened instead.';
 
   @override
   String get ntMaster => 'Child Life notifications';

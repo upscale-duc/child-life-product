@@ -36,7 +36,11 @@ import { randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { setGlobalOptions } from 'firebase-functions/v2';
-import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
+import {
+  onDocumentCreated,
+  onDocumentUpdated,
+  onDocumentWritten,
+} from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall, onRequest, type CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onObjectFinalized } from 'firebase-functions/v2/storage';
@@ -234,7 +238,26 @@ import {
   type PushSender,
 } from './social.js';
 // D-076 #2 notification centre: inbox retention.
-import { sweepExpiredInbox } from './notifications.js';
+import {
+  onInboxRowUpdated,
+  recordNotificationOpen,
+  retryNotificationDeliveries,
+  sweepExpiredInbox,
+} from './notifications.js';
+import { purgeNotificationLedger, sweepNotificationLedger } from './notification-ledger.js';
+import {
+  actOnNotificationTemplate,
+  getNotificationTemplate,
+  listNotificationTemplates,
+  saveNotificationTemplate,
+  setNotificationOps,
+} from './notification-templates.js';
+import {
+  notificationDetail,
+  notificationStats,
+  notificationTimeline,
+  retryNotification,
+} from './notification-staff.js';
 import {
   ReminderRuleError,
   answerReminderRule,
@@ -1087,6 +1110,35 @@ export const sweepNotificationInbox = onSchedule(
   async () => {
     const removed = await sweepExpiredInbox(getFirestore(), new Date());
     if (removed > 0) logger.info('inbox rows expired', { removed });
+    // P-174: ledger entries past their 120-day retention.
+    const ledger = await sweepNotificationLedger(getFirestore(), new Date());
+    if (ledger > 0) logger.info('notification ledger expired', { removed: ledger });
+  },
+);
+
+// P-174: bounded retries of transient provider errors (3 attempts, 1 / 5 / 30 min).
+export const retryNotificationPush = onSchedule(
+  { schedule: 'every 5 minutes', timeZone: 'Asia/Ho_Chi_Minh', maxInstances: 1 },
+  async () => {
+    const r = await retryNotificationDeliveries(getFirestore(), pushSender(), new Date());
+    if (r.retried > 0) logger.info('notification retries', r);
+  },
+);
+
+// P-174: a row marked read on any device → the ledger's read state (one write per row, once).
+export const notificationOnInboxRead = onDocumentUpdated(
+  'users/{uid}/notifications/{noticeId}',
+  async (e) => {
+    try {
+      await onInboxRowUpdated(
+        getFirestore(),
+        e.data?.before ?? null,
+        e.data?.after ?? null,
+        new Date(),
+      );
+    } catch (error) {
+      logger.warn('notification read sync failed', { error: String(error) });
+    }
   },
 );
 
@@ -1407,6 +1459,11 @@ export const recordAnalyticsObservation = accountCall(
   },
 );
 
+/** P-174: the app opened a notification (push or inbox) and says where it got. */
+export const recordNotificationOpened = accountCall('recordNotificationOpen', (c, d) =>
+  recordNotificationOpen(getFirestore(), c.uid, d, new Date()),
+);
+
 export const analyticsOnRegistration = legacyRegion(functionsRegion)
   .auth.user()
   .onCreate(async (user) => {
@@ -1423,6 +1480,7 @@ export const analyticsOnAccountDeleted = legacyRegion(functionsRegion)
   .onDelete(async (user) => {
     await purgeEngagement(getFirestore(), 'uid', user.uid, new Date());
     await purgeProductAnalytics(getFirestore(), 'uid', user.uid, new Date());
+    await purgeNotificationLedger(getFirestore(), 'uid', user.uid);
   });
 
 /** Deletion jobs start at once and resume from their failed step (P-110). */
@@ -1960,7 +2018,12 @@ const staffCall = <T>(
       return await run(await staffOf(request), request.data);
     } catch (error) {
       if (error instanceof StaffError) {
-        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+        // P-174: a template the validator refused carries its issues (codes and placeholders).
+        const issues = (error as { issues?: unknown }).issues;
+        throw new HttpsError(error.code, error.reason, {
+          reason: error.reason,
+          ...(issues ? { issues } : {}),
+        });
       }
       logger.error(`${name} failed`, { error: String(error) });
       throw new HttpsError('internal', `${name} failed`);
@@ -1968,6 +2031,37 @@ const staffCall = <T>(
   });
 
 export const staffBadges = staffCall('staffBadges', (s) => badges(getFirestore(), s));
+
+// ---------- Notifications & Engagement (P-174) ----------
+
+export const staffNotificationTemplates = staffCall('staffNotificationTemplates', (s) =>
+  listNotificationTemplates(getFirestore(), s, new Date()),
+);
+export const staffNotificationTemplate = staffCall('staffNotificationTemplate', (s, d) =>
+  getNotificationTemplate(getFirestore(), s, d),
+);
+export const staffSaveNotificationTemplate = staffCall('staffSaveNotificationTemplate', (s, d) =>
+  saveNotificationTemplate(getFirestore(), s, d, new Date()),
+);
+export const staffNotificationTemplateAction = staffCall(
+  'staffNotificationTemplateAction',
+  (s, d) => actOnNotificationTemplate(getFirestore(), s, d, new Date()),
+);
+export const staffNotificationStats = staffCall('staffNotificationStats', (s, d) =>
+  notificationStats(getFirestore(), s, d, new Date()),
+);
+export const staffNotificationTimeline = staffCall('staffNotificationTimeline', (s, d) =>
+  notificationTimeline(getFirestore(), s, d, new Date()),
+);
+export const staffNotificationDetail = staffCall('staffNotificationDetail', (s, d) =>
+  notificationDetail(getFirestore(), s, d, new Date()),
+);
+export const staffRetryNotification = staffCall('staffRetryNotification', (s, d) =>
+  retryNotification(getFirestore(), s, d, new Date()),
+);
+export const staffSetNotificationOps = staffCall('staffSetNotificationOps', (s, d) =>
+  setNotificationOps(getFirestore(), s, d, new Date()),
+);
 export const staffOverview = staffCall('staffOverview', (s, d) =>
   overview(getFirestore(), s, d, new Date(), authAccounts),
 );

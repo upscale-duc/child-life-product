@@ -36,6 +36,9 @@ afterAll(async () => {
 beforeEach(async () => {
   sent.length = 0;
   await db.recursiveDelete(db.doc(`babies/${babyId}`)).catch(() => undefined);
+  // P-174: the ledger dedups by recipient + notice id; each case starts as a fresh baby.
+  const ledger = await db.collection('notificationDeliveries').where('babyId', '==', babyId).get();
+  await Promise.all(ledger.docs.map((d) => d.ref.delete()));
   await db.doc(`babies/${babyId}`).set({ timeZone: { mode: 'auto', zone: 'Asia/Ho_Chi_Minh' } });
   await db.doc(`babies/${babyId}/members/mom`).set(member('mom', 'coParent'));
   await db.doc(`babies/${babyId}/members/dad`).set(member('dad', 'coParent'));

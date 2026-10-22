@@ -1,4 +1,3 @@
-import '../engagement/engagement_widgets.dart';
 import '../engagement/engagement_launch.dart';
 import 'dart:async';
 
@@ -22,11 +21,10 @@ import '../../l10n/app_localizations.dart';
 import '../auth/auth_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_live.dart';
-import '../notifications/notification_links.dart'
-    show markPushRead, pushOpensInbox;
+import '../notifications/notification_destinations.dart';
+import '../notifications/notification_links.dart' show markPushRead;
 import '../reminders/device_identity.dart';
 import '../reminders/rule_notifications.dart';
-import '../vaccines/vaccine_notifications.dart';
 
 /// Registers this install under `users/{uid}/devices/{deviceId}` (13n device list) with its
 /// push token for generic family notices (S10, R-120) when there is one, and the app language
@@ -131,73 +129,26 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     markPushRead(ref, message.data);
     final engagementId = message.data['engagementId'];
     if (engagementId is String) {
+      // Signed out (or a temporary identity): opened once someone signs in (ENG launch queue).
       final session = ref.read(sessionProvider);
       if (session is! SessionSignedIn || session.isAnonymous) {
         ref.read(engagementLaunchQueueProvider).put(engagementId);
         return;
       }
-      try {
-        final opened = await openEngagement(
-          ref,
-          engagementId,
-          surface: 'notification',
-        );
-        if (!opened && mounted) {
-          ref.read(routerProvider).go(Routes.notifications);
-          ClToaster.of(
-            context,
-          ).show(message: AppLocalizations.of(context).engExpired);
-        }
-      } catch (_) {
-        if (mounted) ref.read(routerProvider).go(Routes.notifications);
-      }
-      return;
     }
-    // v1.0 1f / 1g: rule reminders open their sheet (or the log, from "Ghi …").
-    final push = rulePushOf(message.data);
-    if (push != null) {
-      final action = await const RuleNotificationChannel().takeLaunchAction();
-      if (mounted) await openRulePush(ref, push, action: action);
-      return;
+    // P-174: one resolver for pushes and inbox rows (membership, permission, params, fallback
+    // chain to Hộp thông báo). v1.0 1f / 1g and VX 8: care pushes hand over the lock-screen
+    // action they were opened with.
+    try {
+      await openNotification(
+        ref,
+        NotificationTarget.fromPush(message.data),
+        surface: NotificationSurface.push,
+        launchAction: const RuleNotificationChannel().takeLaunchAction,
+      );
+    } on Object {
+      if (mounted) ref.read(routerProvider).go(Routes.notifications);
     }
-    // Sổ tiêm chủng (VX 8).
-    final vaccine = vaccinePushOf(message.data);
-    if (vaccine != null) {
-      final action = await const RuleNotificationChannel().takeLaunchAction();
-      if (mounted) openVaccinePush(ref, vaccine, action: action);
-      return;
-    }
-    // Chi tiêu: a recurring item added or 80 % of the budget (D-057).
-    if (message.data['kind'] == 'spending' &&
-        message.data['babyId'] is String) {
-      final babyId = message.data['babyId'] as String;
-      if (ref.read(selectedBabyIdProvider) != babyId) {
-        ref.read(selectedBabyIdProvider.notifier).select(babyId);
-      }
-      // Chi tiêu lives in Tiện ích (450:6597).
-      final router = ref.read(routerProvider)
-        ..go(Routes.utilities)
-        ..push(Routes.spending);
-      // Nhập chi tiêu (D-060): the import's result.
-      final importId = message.data['importId'];
-      if (importId is String &&
-          RegExp(r'^im_[a-f0-9]{32}$').hasMatch(importId)) {
-        router.push('${Routes.spendingImport}/$importId');
-      }
-      return;
-    }
-    // Video kỷ niệm ready or not made (D-068 #4): MM09 / MM14 for that job.
-    final job = keepsakeJobPushOf(message.data);
-    if (job != null) {
-      _openJob(job);
-      return;
-    }
-    // D-076 #2: a push with nothing else to open (the delivery check) opens Hộp thông báo.
-    if (pushOpensInbox(message.data)) {
-      ref.read(routerProvider).push(Routes.notifications);
-      return;
-    }
-    ref.read(routerProvider).go(Routes.memories);
   }
 
   void _openJob(KeepsakeJobPush job) {
@@ -237,6 +188,9 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     final key = '$uid/$language';
     if (_registeredFor == key) return;
     _registeredFor = key;
+    // Another account (or language): the old listener would write to the old row.
+    await _refresh?.cancel();
+    _refresh = null;
     try {
       final device = await ref.read(deviceIdentityProvider.future);
       final info = await PackageInfo.fromPlatform();
@@ -344,6 +298,8 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   Future<void> _leave(DocumentReference<Map<String, dynamic>> doc) async {
     await _signedOut?.cancel();
     _signedOut = null;
+    await _refresh?.cancel();
+    _refresh = null;
     _registeredFor = null;
     _save = null;
     _heartbeat = null;
@@ -372,9 +328,15 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
         ? 'en'
         : 'vi';
     if (session is! SessionSignedIn &&
-        (_signedOut != null || _save != null || _installFor != null)) {
+        (_signedOut != null ||
+            _save != null ||
+            _installFor != null ||
+            _refresh != null)) {
       unawaited(_signedOut?.cancel());
       _signedOut = null;
+      // A refreshed token must not be written to the previous account's device row.
+      unawaited(_refresh?.cancel());
+      _refresh = null;
       _registeredFor = null;
       _save = null;
       _heartbeat = null;
@@ -413,6 +375,16 @@ Future<void> signOutThisDevice(WidgetRef ref) async {
           .timeout(const Duration(seconds: 3));
     } on Object {
       // Offline: the row is removed when the delete syncs.
+    }
+    // A shared phone must not keep receiving the previous account's pushes: the old token is
+    // dropped (the server also drops tokens the push service rejects). The next account's
+    // registration asks for a fresh one.
+    try {
+      await FirebaseMessaging.instance.deleteToken().timeout(
+        const Duration(seconds: 3),
+      );
+    } on Object {
+      // No messaging (simulator without APNs, tests) or offline.
     }
   }
   await ref.read(authRepositoryProvider).signOut();

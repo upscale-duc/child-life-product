@@ -408,6 +408,8 @@ describe('recurring items (8i, D-057)', () => {
       route: '/care/spending',
       // D-076 #2: the inbox row the push opens.
       inboxId: expect.stringMatching(/^n_sp-rx-/),
+      // P-174: the semantic destination the app's resolver opens.
+      destination: 'SPENDING',
     });
     expect(sent.find((s) => s.tokens[0] === 't-dad')!.title).toBe('5 recurring expenses added');
 

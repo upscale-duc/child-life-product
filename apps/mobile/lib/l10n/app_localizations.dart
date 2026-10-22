@@ -25842,23 +25842,29 @@ abstract class AppLocalizations {
   /// **'Tất cả'**
   String get ntFilterAll;
 
-  /// EN06 chip.
+  /// EN06 chip (P-174 inbox group memories).
   ///
   /// In vi, this message translates to:
-  /// **'Nhắc việc'**
-  String get ntFilterReminders;
-
-  /// EN06 chip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cho bé'**
-  String get ntFilterBaby;
+  /// **'Kỷ niệm'**
+  String get ntFilterMemories;
 
   /// EN06 chip.
   ///
   /// In vi, this message translates to:
   /// **'Gia đình'**
   String get ntFilterFamily;
+
+  /// EN06 chip (P-174 inbox group care: reminders, vaccines, spending).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm sóc'**
+  String get ntFilterCare;
+
+  /// EN06 chip (P-174 inbox group other, and kinds this version does not know).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get ntFilterOther;
 
   /// EN06 section header.
   ///
@@ -25902,11 +25908,29 @@ abstract class AppLocalizations {
   /// **'Chưa có thông báo nào trong mục này.'**
   String get ntEmptyFiltered;
 
-  /// EN06 load error.
+  /// EN06 load error (message under ntLoadFailedTitle, with a Retry button).
   ///
   /// In vi, this message translates to:
-  /// **'Chưa tải được thông báo. Thử lại sau nhé.'**
+  /// **'Kiểm tra kết nối mạng rồi thử lại nhé.'**
   String get ntLoadFailed;
+
+  /// EN06 load error title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được thông báo'**
+  String get ntLoadFailedTitle;
+
+  /// EN06 a11y label of the loading skeleton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải thông báo'**
+  String get ntLoading;
+
+  /// EN06 button at the end of the list: loads the next 30 rows.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thông báo cũ hơn'**
+  String get ntLoadMore;
 
   /// EN06 footnote.
   ///
@@ -25925,6 +25949,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mục này không còn mở được.'**
   String get ntGone;
+
+  /// Toast (P-174): the notification's own screen could not open (gone, no permission, bad link), so a broader one opened instead.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không mở được đúng mục này, đã mở trang gần nhất.'**
+  String get ntOpenedNearest;
 
   /// EN07 master card title.
   ///

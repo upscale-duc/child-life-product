@@ -9,8 +9,11 @@ import 'notification_models.dart';
 /// Notification centre (D-076 #2): the person's inbox (EN06) and switches (EN07). The inbox is
 /// written by Functions only; the app may set `readAt` / `archivedAt` once (Rules).
 abstract class NotificationRepository {
-  /// The newest rows first (at most [limit]); archived ones left out.
-  Stream<List<InboxItem>> watchInbox(String uid, {int limit});
+  /// The newest rows first (at most [limit] read); archived and expired ones left out.
+  Stream<InboxPage> watchInbox(String uid, {int limit});
+
+  /// Unread rows (at most [unreadCap]) for the bell, whatever page the inbox has loaded.
+  Stream<int> watchUnreadCount(String uid);
   Future<void> markRead(String uid, Iterable<String> ids);
   Future<void> archive(String uid, String id);
   Stream<NotificationSettings> watchSettings(String uid);
@@ -25,19 +28,38 @@ class FirestoreNotificationRepository implements NotificationRepository {
       _db.collection('users/$uid/notifications');
 
   @override
-  Stream<List<InboxItem>> watchInbox(String uid, {int limit = 100}) =>
+  Stream<InboxPage> watchInbox(String uid, {int limit = inboxPageSize}) =>
       _inbox(uid)
           .orderBy('createdAt', descending: true)
           .limit(limit)
           .snapshots()
-          .map(
-            (q) => [
-              for (final d in q.docs)
-                if (InboxItem.fromDoc(d.id, d.data()) case final item?
-                    when item.archivedAt == null)
-                  item,
-            ],
-          );
+          .map((q) {
+            final now = DateTime.now();
+            return InboxPage(
+              items: [
+                for (final d in q.docs)
+                  if (InboxItem.fromDoc(d.id, d.data()) case final item?
+                      when !item.hiddenAt(now))
+                    item,
+              ],
+              more: q.docs.length >= limit,
+            );
+          });
+
+  /// Equality on `readAt` alone uses the automatic single-field index (no composite index);
+  /// archived and expired rows are dropped here.
+  @override
+  Stream<int> watchUnreadCount(String uid) => _inbox(uid)
+      .where('readAt', isNull: true)
+      .limit(unreadCap)
+      .snapshots()
+      .map((q) {
+        final now = DateTime.now();
+        return q.docs.where((d) {
+          final item = InboxItem.fromDoc(d.id, d.data());
+          return item != null && !item.hiddenAt(now);
+        }).length;
+      });
 
   @override
   Future<void> markRead(String uid, Iterable<String> ids) async {
@@ -75,8 +97,28 @@ final notificationRepositoryProvider = Provider<NotificationRepository>(
   (ref) => FirestoreNotificationRepository(ref.watch(firestoreProvider)),
 );
 
-final inboxProvider = StreamProvider.family<List<InboxItem>, String>(
-  (ref, uid) => ref.watch(notificationRepositoryProvider).watchInbox(uid),
+/// EN06 loads [inboxPageSize] rows, then [inboxPageSize] more each time the end is reached.
+const inboxPageSize = 30;
+
+/// The bell counts at most this many unread rows.
+const unreadCap = 99;
+
+/// One loaded window of the inbox; [more] while the query filled its limit.
+class InboxPage {
+  const InboxPage({required this.items, required this.more});
+  final List<InboxItem> items;
+  final bool more;
+}
+
+final inboxProvider =
+    StreamProvider.family<InboxPage, ({String uid, int limit})>(
+      (ref, key) => ref
+          .watch(notificationRepositoryProvider)
+          .watchInbox(key.uid, limit: key.limit),
+    );
+
+final unreadCountProvider = StreamProvider.family<int, String>(
+  (ref, uid) => ref.watch(notificationRepositoryProvider).watchUnreadCount(uid),
 );
 
 final notificationSettingsProvider =
@@ -89,8 +131,7 @@ final notificationSettingsProvider =
 final unreadNotificationsProvider = Provider<int>((ref) {
   final session = ref.watch(sessionProvider);
   if (session is! SessionSignedIn) return 0;
-  final items = ref.watch(inboxProvider(session.user.uid)).value ?? const [];
-  return items.where((i) => i.unread).length;
+  return ref.watch(unreadCountProvider(session.user.uid)).value ?? 0;
 });
 
 /// Whether the OS lets this app show notifications (EN07 master card). Re-read after a request

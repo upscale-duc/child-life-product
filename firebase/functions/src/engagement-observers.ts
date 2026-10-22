@@ -140,6 +140,14 @@ export async function reconcileBabyEngagement(db: Firestore, babyId: string, now
     cursor = rows.docs.at(-1);
   }
 }
+/** Doc 18 #19: whether ENG-04 observes this baby's Care at all (one read set per baby). */
+export async function careEngagementOn(db: Firestore, babyId: string): Promise<boolean> {
+  const baby = await db.doc(`babies/${babyId}`).get();
+  const familyId = baby.get('familyId') as string | undefined;
+  if (!familyId) return false;
+  return (await engagementConfig(db, familyId)).enabled;
+}
+
 /** Observe existing Care. It remains outside proactive budgets and retains its original sender. */
 export async function careInboxEngagement(
   db: Firestore,

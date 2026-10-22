@@ -9,6 +9,7 @@ import type { SupportedLocale } from '@child-life/web-config';
 import {
   BookOpen,
   BadgeCheck,
+  BellRing,
   CalendarHeart,
   CalendarRange,
   ChartColumn,
@@ -108,6 +109,7 @@ import { KeepsakesScreen } from './screens/Keepsakes';
 import { MilestonesScreen } from './screens/Milestones';
 import { NutritionScreen } from './screens/Nutrition';
 import { JobsScreen } from './screens/Jobs';
+import { NotificationsScreen } from './screens/notifications';
 import { OverviewScreen } from './screens/Overview';
 import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
@@ -127,6 +129,8 @@ type NavItem = {
   group: Group;
   /** What a member needs to see the item (P-134); Kiểm thử only reaches the QA handbook. */
   can: StaffAction;
+  /** Another action that also opens it (Thông báo: content experts edit templates only). */
+  orCan?: StaffAction;
 };
 /** The v1.0 sidebar (`253:467`), NỘI DUNG › Sơ cứu (D-058), Nhịp lớn lên (PN01–PN04) and Mẫu kỷ niệm (D-068, not drawn: G-107), PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
 const nav: NavItem[] = [
@@ -136,6 +140,14 @@ const nav: NavItem[] = [
   { route: 'support', icon: LifeBuoy, badge: 'tickets', group: 'ops', can: 'support.view' },
   { route: 'storage', icon: HardDrive, badge: 'storage', group: 'ops', can: 'storage.view' },
   { route: 'jobs', icon: DatabaseBackup, badge: 'jobs', group: 'ops', can: 'jobs.view' },
+  // Thông báo & Gắn kết (P-174); content experts reach its Templates with notifications.edit.
+  {
+    route: 'notifications',
+    icon: BellRing,
+    group: 'ops',
+    can: 'notifications.view',
+    orCan: 'notifications.edit',
+  },
   { route: 'firstAid', icon: HeartPulse, group: 'content', can: 'content.view' },
   { route: 'rhythm', icon: CalendarHeart, group: 'content', can: 'content.view' },
   { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
@@ -163,7 +175,7 @@ const groups: Group[] = ['main', 'ops', 'content', 'system', 'develop'];
 
 const canOpen = (levels: StaffLevels, route: Route) => {
   const item = nav.find((n) => n.route === route);
-  return !!item && staffCan(levels, item.can);
+  return !!item && (staffCan(levels, item.can) || (!!item.orCan && staffCan(levels, item.orCan)));
 };
 
 /** The page a staff member lands on: the requested one, or the first their levels may open. */
@@ -385,6 +397,8 @@ function Screen({ route }: { route: Route }) {
       return <SystemScreen />;
     case 'features':
       return <FeatureHubScreen />;
+    case 'notifications':
+      return <NotificationsScreen />;
     case 'appUpdate':
       return <AppUpdateScreen />;
     case 'audit':

@@ -34,6 +34,8 @@ export type Route =
   | 'appUpdate'
   // Tính năng & Premium (D-089): one hub for features, families, the plan and system switches.
   | 'features'
+  // Thông báo & Gắn kết (P-174): catalog, templates, delivery, journeys, family timeline.
+  | 'notifications'
   | 'staff'
   | 'audit'
   | 'qa';
@@ -58,6 +60,7 @@ export const routePaths: Record<Route, string> = {
   system: '/system',
   appUpdate: '/app-update',
   features: '/features',
+  notifications: '/notifications',
   staff: '/staff',
   audit: '/audit',
   qa: '/qa',
@@ -82,6 +85,8 @@ const nestedRoutes: Route[] = [
   // "/features/families", "/system/ai": a tab of the page.
   'features',
   'system',
+  // "/notifications/templates/<id>", "/notifications/timeline/F-7Q2K": a tab or an item.
+  'notifications',
 ];
 
 /**
