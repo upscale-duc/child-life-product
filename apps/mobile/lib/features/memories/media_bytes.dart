@@ -76,14 +76,25 @@ class StorageMediaBytes implements MediaBytes {
     return _inFlight[key] ??= () async {
       try {
         final local = await _local(uid, path);
-        final bytes =
-            _privacy.parents.contains(path.split('/')[1]) &&
-                await local.exists()
-            ? await local.readAsBytes()
-            : await _firebase.ref(path).getData(60 * 1024 * 1024);
+        // Only Cùng nuôi reads come from (and go to) the device cache; other roles never
+        // read it back, so writing their bytes would be disk work for nothing.
+        final cacheable = _privacy.parents.contains(path.split('/')[1]);
+        if (cacheable && await local.exists()) {
+          final cached = await local.readAsBytes();
+          _check(uid, epoch);
+          _access(path);
+          return cached;
+        }
+        final bytes = await _firebase.ref(path).getData(60 * 1024 * 1024);
         _check(uid, epoch);
         if (bytes == null) throw StateError('empty');
-        await local.writeAsBytes(bytes, flush: true);
+        if (cacheable) {
+          // Write beside, then rename: a reader never sees a half-written file.
+          final part = File('${local.path}.$epoch.part');
+          await part.writeAsBytes(bytes);
+          _check(uid, epoch);
+          await part.rename(local.path);
+        }
         _check(uid, epoch);
         _access(path);
         return bytes;

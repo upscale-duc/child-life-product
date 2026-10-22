@@ -85,7 +85,10 @@ int bindLocalPrivacy(Ref ref) {
     unawaited(prefs.remove('privacy.owner'));
     unawaited(prefs.remove('privacy.backgroundUntil'));
   } else {
-    unawaited(prefs.setString('privacy.owner', uid));
+    // This rebuilds every minute (the lease below): write only what changed.
+    if (prefs.getString('privacy.owner') != uid) {
+      unawaited(prefs.setString('privacy.owner', uid));
+    }
     // Headless checks cannot refresh authorization. Expire their local lease, also
     // bounded by each membership's access expiry below.
     var until = DateTime.now().add(const Duration(hours: 24));
@@ -96,9 +99,14 @@ int bindLocalPrivacy(Ref ref) {
         }
       }
     }
-    unawaited(
-      prefs.setInt('privacy.backgroundUntil', until.millisecondsSinceEpoch),
-    );
+    // Extend the lease at most every 15 minutes; shorten it (a nearer expiry) at once.
+    final current = prefs.getInt('privacy.backgroundUntil');
+    final next = until.millisecondsSinceEpoch;
+    if (current == null ||
+        next < current ||
+        next - current >= const Duration(minutes: 15).inMilliseconds) {
+      unawaited(prefs.setInt('privacy.backgroundUntil', next));
+    }
   }
   Future<void> cleanup() async {
     if (localPrivacy.owner == null) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -57,10 +58,20 @@ final membershipsProvider = StreamProvider.family<List<Membership>?, String>((
       .collectionGroup('members')
       .where('uid', isEqualTo: uid)
       .snapshots(includeMetadataChanges: true)
-      .map((QuerySnapshot<Map<String, dynamic>> s) {
-        if (s.docs.isEmpty && s.metadata.isFromCache) return null;
-        return [for (final d in s.docs) Membership.fromJson(d.data())];
-      });
+      .map(
+        (QuerySnapshot<Map<String, dynamic>> s) =>
+            s.docs.isEmpty && s.metadata.isFromCache
+            ? null
+            : [for (final d in s.docs) d.data()],
+      )
+      // Metadata-only snapshots (fromCache, pending writes) repeat the same data. Session and
+      // Membership have no value equality, so passing them on rebuilds every session watcher.
+      .distinct(sameFirestoreData)
+      .map(
+        (docs) => docs == null
+            ? null
+            : [for (final d in docs) Membership.fromJson(d)],
+      );
 });
 
 final sessionProvider = Provider<Session>((ref) {
@@ -228,4 +239,23 @@ Future<void> waitForMembership(
     }
     await Future<void>.delayed(const Duration(milliseconds: 150));
   }
+}
+
+/// Deep equality for Firestore document data (maps, lists, Timestamps).
+@visibleForTesting
+bool sameFirestoreData(Object? a, Object? b) {
+  if (a is Map && b is Map) {
+    return a.length == b.length &&
+        a.entries.every(
+          (e) => b.containsKey(e.key) && sameFirestoreData(e.value, b[e.key]),
+        );
+  }
+  if (a is List && b is List) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (!sameFirestoreData(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  return a == b;
 }

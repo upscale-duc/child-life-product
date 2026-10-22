@@ -25,7 +25,11 @@ void main() {
         cacheDirectory: () async => dir,
         access: privacy,
       );
+      final written = DateTime(2020);
+      await cache.setLastModified(written);
       expect(await reader.read(path), [1, 2, 3]);
+      // A cache hit is read only: no rewrite of the file on every thumbnail.
+      expect(await cache.lastModified(), written);
       expect((await reader.file(path)).path, cache.path);
       expect((await reader.playable(path)).uri, startsWith('file:'));
       privacy.bind(null, {});

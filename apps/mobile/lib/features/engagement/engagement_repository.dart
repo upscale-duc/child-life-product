@@ -31,9 +31,25 @@ Future<Map<String, dynamic>> buildEngagement(Ref ref) async {
   // Optional engagement is inert until the app's normal Firebase bootstrap succeeds.
   if (Firebase.apps.isEmpty) return {};
   ref.watch(engagementRevisionProvider);
-  final session = ref.watch(sessionProvider),
-      baby = ref.watch(selectedMembershipProvider);
-  if (session is! SessionSignedIn || session.isAnonymous || baby == null) {
+  // Session and Membership have no value equality: every members snapshot (metadata changes
+  // too) is a new object. Watch only what this reads, or each snapshot re-calls getEngagement.
+  final uid = ref.watch(
+    sessionProvider.select(
+      (s) => s is SessionSignedIn && !s.isAnonymous ? s.user.uid : null,
+    ),
+  );
+  final selected = ref.watch(
+    selectedMembershipProvider.select(
+      (m) => m == null ? null : (babyId: m.babyId, role: m.role),
+    ),
+  );
+  final session = ref.read(sessionProvider);
+  final baby = ref.read(selectedMembershipProvider);
+  if (uid == null ||
+      selected == null ||
+      session is! SessionSignedIn ||
+      session.user.uid != uid ||
+      baby == null) {
     return {};
   }
   if (baby.role.name == 'coParent' || baby.role.name == 'relative') {

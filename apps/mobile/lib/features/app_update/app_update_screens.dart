@@ -512,19 +512,21 @@ class AppUpdatePrompt extends ConsumerStatefulWidget {
 class _AppUpdatePromptState extends ConsumerState<AppUpdatePrompt> {
   Timer? _wait;
   var _showing = false;
+  // Kept for dispose: ref is unsafe once the element is unmounted.
+  late final GoRouterDelegate _delegate;
 
   @override
   void initState() {
     super.initState();
-    final delegate = ref.read(routerProvider).routerDelegate;
-    delegate.addListener(_check);
+    _delegate = ref.read(routerProvider).routerDelegate;
+    _delegate.addListener(_check);
     WidgetsBinding.instance.addPostFrameCallback((_) => _check());
   }
 
   @override
   void dispose() {
     _wait?.cancel();
-    ref.read(routerProvider).routerDelegate.removeListener(_check);
+    _delegate.removeListener(_check);
     super.dispose();
   }
 
