@@ -112,6 +112,8 @@ export function Sparkline({
   const w = 120;
   const h = 32;
   const values = points.filter((p): p is number => p !== null);
+  // One day is a dot, not a trend: draw nothing until there are two.
+  if (values.length < 2) return null;
   const max = Math.max(1, ...values);
   const step = points.length > 1 ? w / (points.length - 1) : w;
   const segments: string[][] = [];

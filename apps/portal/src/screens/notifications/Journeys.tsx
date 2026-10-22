@@ -10,6 +10,7 @@ import {
   type ProductAnalyticsRequest,
   type ProductAnalyticsResult,
 } from '@child-life/contracts';
+import { useEffect, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLoad } from '../../api';
 import { Notice, Section } from '../../content-kit';
@@ -94,6 +95,14 @@ function JourneysLoader() {
     request,
     `ntf-journeys:${request.from}:${request.to}`,
   );
+  // Like Product analytics: a snapshot being computed is fetched again (1.5 s, at most 20 times).
+  const attempts = useRef(0);
+  useEffect(() => {
+    if (load.status !== 'ok' || load.data.status !== 'preparing' || attempts.current >= 20) return;
+    attempts.current++;
+    const timer = window.setTimeout(reload, 1500);
+    return () => window.clearTimeout(timer);
+  }, [load, reload]);
   return (
     <LoadedSkeleton load={load} reload={reload} skeleton={<TilesSkeleton n={6} />}>
       {(data) => <JourneysView data={data} />}

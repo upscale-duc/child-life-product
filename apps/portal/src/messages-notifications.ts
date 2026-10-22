@@ -1263,7 +1263,13 @@ const rows: Row[] = [
   ['ntf.policy.unit.minutes', 'phút', 'minutes'],
   ['ntf.policy.unit.days', 'ngày', 'days'],
   ['ntf.policy.range', 'Từ {min} đến {max} {unit}.', '{min}–{max} {unit}.'],
-  ['ntf.policy.fixed', 'Cố định {min} {unit} trong V1.', 'Fixed at {min} {unit} in V1.'],
+  ['ntf.version.builtin', 'v0 · trong mã', 'v0 · in code'],
+  ['ntf.version.n', 'v{n}', 'v{n}'],
+  [
+    'ntf.policy.fixed',
+    'Luôn là {min} trong V1 (không đổi được).',
+    'Always {min} in V1 (not editable).',
+  ],
   [
     'ntf.policy.outOfRange',
     'Nhập số nguyên từ {min} đến {max}.',

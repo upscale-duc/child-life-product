@@ -97,7 +97,11 @@ export function NotificationsScreen({ initial }: { initial?: NtfLocation }) {
     setLoc(next);
     if (push) window.scrollTo(0, 0);
   };
-  const setTab = (tab: NotificationTab) => go({ tab });
+  const setTab = (tab: NotificationTab) => {
+    go({ tab });
+    // A new tab starts at its top, not at the previous tab's scroll position.
+    window.scrollTo({ top: 0 });
+  };
   const openTimeline = tabs.includes('timeline')
     ? (code: string) => go({ tab: 'timeline', code }, true)
     : undefined;
@@ -158,7 +162,8 @@ export function NotificationsScreen({ initial }: { initial?: NtfLocation }) {
       <Tabs
         value={loc.tab}
         onValueChange={(t) => setTab(t as NotificationTab)}
-        className="min-w-0 gap-5"
+        // Grid tracks may not grow past the page: wide tables scroll inside DataTable instead.
+        className="min-w-0 gap-5 [&_.stack]:grid-cols-[minmax(0,1fr)]"
       >
         <div className="sticky top-14 z-10 -mx-4 border-b bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:-mx-8 md:px-8">
           <div className="no-scrollbar max-w-full overflow-x-auto">

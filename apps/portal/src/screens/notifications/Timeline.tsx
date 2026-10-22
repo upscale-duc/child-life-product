@@ -81,7 +81,8 @@ export function timelineRequest(
 
 /** A server reason (delivery or engagement) as words; an unknown code is shown as it is. */
 export function reasonLabel(intl: IntlShape, reason: string | null): string {
-  if (!reason) return '—';
+  // "none" is the absence of a reason, not a reason to show.
+  if (!reason || reason === 'none') return '—';
   if ((notificationDeliveryReasons as readonly string[]).includes(reason))
     return intl.formatMessage({ id: `ntf.reason.${reason}` });
   if ((engagementReasonCodes as readonly string[]).includes(reason))
@@ -586,7 +587,14 @@ export function TimelineView({
                             })}
                           </td>
                           <td>
-                            {e.kind ? <FormattedMessage id={`ntf.kind.${e.kind}`} /> : '—'}
+                            {e.kind ? (
+                              <FormattedMessage id={`ntf.kind.${e.kind}`} />
+                            ) : e.scenario ? (
+                              // An in-app suggestion has no notification kind: its scenario names it.
+                              labelOr(intl, `ntf.eng.${e.scenario}`, e.scenario)
+                            ) : (
+                              '—'
+                            )}
                             <span className="block text-[12px] text-muted-foreground">
                               {e.scenario && (
                                 <>
@@ -596,7 +604,8 @@ export function TimelineView({
                               {e.templateId && (
                                 <>
                                   {e.scenario ? ' · ' : ''}
-                                  {templateName(intl, e.templateId)}@{e.templateVersion ?? 0}
+                                  {templateName(intl, e.templateId)} ·{' '}
+                                  {versionLabel(intl, e.templateVersion ?? 0)}
                                 </>
                               )}
                             </span>
@@ -770,6 +779,13 @@ export function UpcomingPanel({
   );
 }
 
+/** "v0 · trong mã" for the built-in copy, "v3" for a published version. */
+function versionLabel(intl: IntlShape, version: number): string {
+  return version === 0
+    ? intl.formatMessage({ id: 'ntf.version.builtin' })
+    : intl.formatMessage({ id: 'ntf.version.n' }, { n: version });
+}
+
 function DetailSheet({
   code,
   entry,
@@ -892,7 +908,9 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
         <dl className={dl}>
           {row(
             'ntf.col.template',
-            d.templateId ? `${templateName(intl, d.templateId)} @${d.templateVersion ?? 0}` : '—',
+            d.templateId
+              ? `${templateName(intl, d.templateId)} · ${versionLabel(intl, d.templateVersion ?? 0)}`
+              : '—',
           )}
           {row('ntf.col.destination', destinationName(intl, d.destination))}
           {row(

@@ -10,6 +10,7 @@ import {
 import { useId, useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ApiError, useApi, type Load } from '../../api';
@@ -298,7 +299,7 @@ function PolicyPanel({
                     id={id}
                     type="number"
                     inputMode="numeric"
-                    className="w-28 tabular-nums"
+                    className={cn('w-28 tabular-nums', fixed && 'bg-muted text-muted-foreground')}
                     min={f.min}
                     max={f.max}
                     step={1}
