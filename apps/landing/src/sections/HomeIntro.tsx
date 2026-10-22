@@ -184,7 +184,7 @@ export function HomeValues() {
           <p className="home-head__lead home-pillars">
             {v.pillars.map((pillar, i) => (
               <span key={pillar}>
-                {i > 0 && <span aria-hidden="true"> | </span>}
+                {i > 0 && <span aria-hidden="true"> · </span>}
                 {pillar}
               </span>
             ))}

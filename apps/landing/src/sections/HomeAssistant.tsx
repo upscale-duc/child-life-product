@@ -96,7 +96,6 @@ export function HomeAssistant() {
             {a.cta}
             <Icon name="arrow-right" size={16} />
           </a>
-          <p>{a.note}</p>
         </div>
       </div>
     </section>

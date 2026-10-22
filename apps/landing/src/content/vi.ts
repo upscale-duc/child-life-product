@@ -295,15 +295,15 @@ export const vi: Content = {
       cards: [
         {
           title: 'Chăm con mỗi ngày',
-          body: 'Ghi bú, ngủ, tã; nhắc lịch chăm bé, dinh dưỡng và ăn dặm. Cả nhà cùng biết con vừa được chăm thế nào.',
+          body: 'Ghi bú, ngủ, tã và chia sẻ với cả nhà.',
         },
         {
           title: 'Hiểu con từng giai đoạn',
-          body: 'Theo dõi mốc phát triển, nhận gợi ý hợp tuổi và lưu nhật ký lớn khôn của con.',
+          body: 'Theo dõi cột mốc và khám phá theo tuổi.',
         },
         {
           title: 'Giữ những điều đáng nhớ',
-          body: 'Tự tìm ảnh của bé, tạo thiệp và video, cất vào album gia đình riêng tư.',
+          body: 'Tự tìm ảnh, tạo thiệp và video kỷ niệm.',
         },
       ],
       rows: [
@@ -355,15 +355,15 @@ export const vi: Content = {
       points: [
         {
           title: 'Đồng hành chăm sóc từ hôm nay',
-          body: 'Nhập tuổi con, mọi nhắc nhở, gợi ý ăn dặm và lịch chăm bé tự khớp với giai đoạn hiện tại.',
+          body: 'Gợi ý và nhắc nhở đúng tuổi con.',
         },
         {
           title: 'Hiểu con ở đúng giai đoạn',
-          body: 'Xem con đang ở đâu trong hành trình phát triển và những mốc sắp tới.',
+          body: 'Theo dõi các cột mốc của con.',
         },
         {
           title: 'Lưu trọn cả những ngày đã qua',
-          body: 'Ảnh cũ trong máy được tìm lại và xếp theo tháng, để album của con không thiếu trang nào.',
+          body: 'Tìm lại ảnh cũ, xếp theo từng tháng.',
         },
       ],
       button: 'Bắt đầu với tuổi của con',
@@ -389,24 +389,24 @@ export const vi: Content = {
       firsts: ['★ Biết lẫy', '★ Mọc răng đầu'],
       video: {
         title: 'Video kỷ niệm',
-        body: 'Chọn ảnh và mẫu, có ngay video đầy tháng, 100 ngày hay thôi nôi để gửi cả nhà.',
+        body: 'Chọn ảnh, tạo video và gửi cả nhà.',
         button: 'Xem video mẫu',
       },
       card: {
         title: 'Thiệp cột mốc',
-        body: 'Tròn tháng, 100 ngày, lần đầu biết lẫy — chọn mẫu và ảnh, gửi cho ông bà.',
+        body: 'Lưu những lần đầu bằng thiệp xinh.',
         bodyShort: 'Chọn mẫu và ảnh, gửi cho ông bà.',
       },
       thenNow: {
         title: 'Ngày ấy & bây giờ',
-        body: 'Đặt hai tấm ảnh cạnh nhau để thấy con lớn thế nào.',
+        body: 'Hai tấm ảnh, một hành trình lớn lên.',
         bodyShort: 'Hai tấm ảnh, thấy con lớn thế nào.',
       },
       // Q-009: seen receipts are not built; PROPOSED "thương" instead of Figma's "đã xem". Comments
       // ("bình luận") are not built either (only reactions and Nhắn ba mẹ, D-034) — Q-039.
       album: {
         title: 'Album gia đình riêng tư',
-        body: 'Cả nhà cùng xem, bình luận. Chia sẻ ra ngoài bằng link khi bạn muốn.',
+        body: 'Album riêng tư, chia sẻ khi bạn muốn.',
         initial: 'B',
         seen: 'Bà nội thương 3 ảnh mới',
       },
@@ -469,7 +469,7 @@ export const vi: Content = {
     assistant: {
       eyebrow: 'Lumi · Trợ lý trong Child Life',
       title: 'Nhắn một câu, Lumi lo phần ghi chép.',
-      lead: 'Lumi soạn nháp từ lời bạn nhắn và trả lời từ nhật ký của con. Khi mở app, bạn cũng thấy gợi ý liên quan đến những gì đã ghi.',
+      lead: 'Nhắn để ghi nhanh, hỏi về con và nhận gợi ý riêng.',
       chat: {
         title: 'Bạn nhắn, Lumi lo phần ghi',
         body: 'Một câu thành nhiều bản ghi. Hỏi là có câu trả lời từ nhật ký.',
@@ -485,7 +485,6 @@ export const vi: Content = {
         'Ẩn hoặc sửa bất cứ lúc nào',
       ],
       cta: 'Khám phá Lumi',
-      note: 'Ví dụ minh hoạ. Lumi hỗ trợ nhập chữ và ảnh; bạn kiểm tra và bấm lưu.',
       ask: {
         title: 'Thử hỏi Lumi',
         sub: '· Lumi hiểu nhật ký, mốc và kỷ niệm của con',
@@ -515,7 +514,7 @@ export const vi: Content = {
     alerts: {
       eyebrow: 'Nhắc nhở & cá nhân hoá',
       title: 'Không bỏ lỡ những khoảnh khắc quan trọng.',
-      lead: 'Child Life nhắc đúng lúc, theo tuổi và thói quen của con — từ cữ bú, mốc phát triển, món ăn mới đến những tấm ảnh chưa kịp lưu.',
+      lead: 'Nhắc đúng lúc, theo tuổi và thói quen của con.',
       leadShort:
         'Nhắc đúng lúc, theo tuổi và thói quen của con — từ cữ bú, mốc phát triển, món ăn mới đến ảnh chưa kịp lưu.',
       modules: [

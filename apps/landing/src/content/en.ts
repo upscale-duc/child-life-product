@@ -287,15 +287,15 @@ export const en: Content = {
       cards: [
         {
           title: 'Daily care',
-          body: 'Log feeds, sleep and diapers; get reminders for care, nutrition and solids. Everyone knows how the baby was just cared for.',
+          body: 'Log feeds, sleep and diapers and share them with the family.',
         },
         {
           title: 'Understand each stage',
-          body: "Track milestones, get tips for your baby's age and keep a journal of them growing up.",
+          body: "Track milestones and explore what fits your baby's age.",
         },
         {
           title: 'Keep what matters',
-          body: "Finds your baby's photos for you, makes cards and videos, and keeps them in a private family album.",
+          body: "Finds your baby's photos and makes keepsake cards and videos.",
         },
       ],
       rows: [
@@ -345,15 +345,15 @@ export const en: Content = {
       points: [
         {
           title: 'Care support from today',
-          body: "Enter your baby's age and reminders, solids tips and the care schedule match their current stage.",
+          body: "Tips and reminders that fit your baby's age.",
         },
         {
           title: "Understand the stage they're in",
-          body: 'See where your baby is in their development and which milestones come next.',
+          body: "Follow your baby's milestones.",
         },
         {
           title: 'Keep the days already gone',
-          body: 'Older photos on your phone are found and sorted by month, so no page of the album is missing.',
+          body: 'Find older photos, sorted month by month.',
         },
       ],
       button: "Start with your baby's age",
@@ -378,22 +378,22 @@ export const en: Content = {
       firsts: ['★ Rolls over', '★ First tooth'],
       video: {
         title: 'Memory videos',
-        body: 'Pick photos and a template and get a video for one month, 100 days or the first birthday to share with the family.',
+        body: 'Pick photos, make a video and send it to the family.',
         button: 'Watch a sample',
       },
       card: {
         title: 'Milestone cards',
-        body: 'One month, 100 days, first roll-over — pick a template and photos and send it to the grandparents.',
+        body: 'Keep the firsts in a pretty card.',
         bodyShort: 'Pick a template and photos, send it to the grandparents.',
       },
       thenNow: {
         title: 'Then & now',
-        body: 'Put two photos side by side to see how much your baby has grown.',
+        body: 'Two photos, one journey of growing up.',
         bodyShort: "Two photos, and you see how they've grown.",
       },
       album: {
         title: 'Private family album',
-        body: 'The whole family can view and comment. Share outside with a link when you want.',
+        body: 'A private album, shared when you want.',
         initial: 'G',
         seen: 'Grandma loved 3 new photos',
       },
@@ -450,7 +450,7 @@ export const en: Content = {
     assistant: {
       eyebrow: 'Lumi · The assistant in Child Life',
       title: 'Send one message, Lumi does the logging.',
-      lead: "Lumi drafts entries from your messages and answers from your baby's journal. When you open the app, you also see suggestions based on what you've logged.",
+      lead: 'Message to log quickly, ask about your baby and get tips made for them.',
       chat: {
         title: 'You message, Lumi logs',
         body: 'One sentence becomes several entries. Ask, and the answer comes from the journal.',
@@ -466,7 +466,6 @@ export const en: Content = {
         'Hide or change them any time',
       ],
       cta: 'Discover Lumi',
-      note: 'Illustrative example. Lumi takes text and photos; you check and tap save.',
       ask: {
         title: 'Try asking Lumi',
         sub: "· Lumi knows your baby's journal, milestones and memories",
@@ -494,7 +493,7 @@ export const en: Content = {
     alerts: {
       eyebrow: 'Reminders & personalisation',
       title: 'Never miss the moments that matter.',
-      lead: "Child Life reminds you at the right time, based on your baby's age and routine — from feeds and milestones to new foods and photos you haven't saved yet.",
+      lead: "Reminders at the right time, based on your baby's age and routine.",
       leadShort:
         "Timely reminders based on your baby's age and routine — feeds, milestones, new foods and unsaved photos.",
       modules: [

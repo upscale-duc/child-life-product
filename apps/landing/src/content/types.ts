@@ -428,7 +428,6 @@ export interface Content {
       today: TitledText;
       floats: [string, string, string, string];
       cta: string;
-      note: string;
       /** "Thử hỏi Lumi" (Figma 788:8801). */
       ask: {
         title: string;

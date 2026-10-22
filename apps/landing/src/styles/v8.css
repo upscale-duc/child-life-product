@@ -862,11 +862,6 @@
   align-items: flex-start;
   gap: 10px;
 }
-.assist__cta p {
-  margin: 0;
-  font: 500 13px/1.45 var(--font-family);
-  color: var(--ink-muted);
-}
 @media (min-width: 1120px) {
   .assist {
     flex-direction: row;
