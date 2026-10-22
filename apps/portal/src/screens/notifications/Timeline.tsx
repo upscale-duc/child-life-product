@@ -502,7 +502,7 @@ export function TimelineView({
           },
         ]}
       />
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
         <Section
           flush
           title={<FormattedMessage id="ntf.timeline.entries" />}

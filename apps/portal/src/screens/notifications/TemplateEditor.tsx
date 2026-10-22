@@ -50,7 +50,7 @@ export function TemplateEditor({ templateId, onBack }: { templateId: string; onB
       load={load}
       reload={reload}
       skeleton={
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]">
           <TableSkeleton rows={8} />
           <TableSkeleton rows={4} />
         </div>

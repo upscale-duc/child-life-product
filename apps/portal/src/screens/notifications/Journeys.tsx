@@ -139,7 +139,7 @@ export function JourneysView({ data }: { data: ProductAnalyticsResult | null }) 
           />
         </p>
       )}
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-2">
         {engagementKinds.map((eng) => {
           const kinds = kindsOfScenario(eng);
           const row = ready ? data.engagement.find((e) => e.kind === eng) : undefined;

@@ -230,7 +230,7 @@ function KindRow({ def }: { def: NotificationTypeDef }) {
         </span>
       }
     >
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
         <dl className="grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[minmax(0,9rem)_minmax(0,1fr)]">
           {line('ntf.col.kind', <code className="text-[12px]">{def.kind}</code>)}
           {line('ntf.col.recipients', pick(intl, def.recipients))}
