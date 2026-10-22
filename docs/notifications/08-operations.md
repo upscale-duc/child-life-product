@@ -63,7 +63,7 @@ There is no unbounded listener: the app inbox is limited to 30 rows per page plu
 - [ ] Owner approves P-174 (and G-109 gaps), retention (ledger 120 d; stats kept), and the permission mapping.
 - [ ] Apply the indexes and TTL to **dev** (`firestore:indexes`), deploy the Functions listed below and the Portal to dev, verify, then prod with separate approval.
   - Functions: `notificationOnInboxRead`, `retryNotificationPush`, `recordNotificationOpened`, the `staffNotification*` callables, plus every changed producer function.
-- [ ] Check the new callables keep `run.invoker` public (curl). On dev, `staffNotificationTemplateAction` lost it on its first deploy and was fixed by hand. A permanent fix (`invoker: 'public'` on every `onCall`) was proposed and needs the owner's OK, since it changes Cloud Run access settings.
+- [ ] Read the last line of `scripts/deploy.sh <env> …`: after every deploy that includes functions it runs `scripts/verify-deploy.mjs` (D-092, one-person operations). The script redeploys functions whose new revision failed to start (CPU quota) after the quota recovers, re-adds the public invoker to callables that lost it (callables only), and prints `✔ verify …` or what is still wrong. `invoker: 'public'` in code does not help: firebase-functions 7.4 ignores it for callables. Never probe callables by calling them in bulk, because ~200 calls exhaust the Cloud Run CPU quota for real users for ~15 min.
 - [ ] Approve Smart Engagement on the target environment from Portal → Cài đặt (no REST command needed).
 - [ ] Release the app (resolver, chips, open receipts, `deleteToken`); it is backward compatible with the old server.
 - [ ] Execute the device checklist below on iOS and Android, recording app and backend revisions.

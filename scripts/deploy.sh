@@ -42,8 +42,15 @@ cd "$root"
 deploy_args=(--project "$project" --only "$only")
 if $force; then deploy_args+=(--force); fi
 # Function updates sometimes fail on transient network errors; a re-run only redeploys what changed.
+deployed=false
 for attempt in 1 2 3; do
-  if firebase deploy "${deploy_args[@]}"; then exit 0; fi
+  if firebase deploy "${deploy_args[@]}"; then deployed=true; break; fi
   echo ">>> Deploy attempt $attempt failed; retrying" >&2
 done
-exit 1
+$deployed || exit 1
+# "Deploy complete!" is not proof: a new revision can fail its healthcheck (old code keeps
+# serving) and a callable can lose its public invoker (HTML 403). The check repairs both and ends
+# with one line. VERIFY=0 skips it (e.g. a quick single-function iteration).
+if [[ ",$only," == *",functions"* && "${VERIFY:-1}" != "0" ]]; then
+  node "$root/scripts/verify-deploy.mjs" "$env"
+fi
