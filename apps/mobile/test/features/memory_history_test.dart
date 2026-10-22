@@ -76,4 +76,33 @@ void main() {
       }
     },
   );
+  test('complete media: newest first however the pages arrive', () async {
+    final day = DateTime.utc(2026, 10, 21);
+    final recent = List.generate(
+      200,
+      (i) => mediaItem('m', day.subtract(Duration(days: i))),
+    );
+    final old = mediaItem('old', DateTime.utc(2020));
+    final repo = HistoryRepo();
+    final c = ProviderContainer(
+      overrides: [
+        memoryRepositoryProvider.overrideWithValue(repo),
+        // Oldest first, as a fake might hand them over.
+        mediaProvider.overrideWith(
+          (ref, key) => Stream.value(recent.reversed.toList()),
+        ),
+        memoriesProvider.overrideWith((ref, key) => Stream.value([])),
+      ],
+    );
+    addTearDown(c.dispose);
+    const key = (teddyId, true);
+    c.listen(completeMediaProvider(key), (_, _) {});
+    await pumpEventQueue();
+    expect(c.read(completeMediaProvider(key)).value, recent);
+    final load = c.read(historyTailProvider.notifier).loadMore(key);
+    repo.pages.single.add(HistorySlice([old, recent.last], null, false));
+    await load;
+    expect(c.read(completeMediaProvider(key)).value, [...recent, old]);
+    await repo.pages.single.close();
+  });
 }

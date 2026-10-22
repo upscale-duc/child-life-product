@@ -582,7 +582,7 @@ void main() {
           ],
         );
         // Compose for two picked photos, as after 10g.
-        final element = tester.element(find.byType(MemoriesScreen));
+        final element = tester.element(find.byType(PhotosView));
         final ref = element as WidgetRef;
         unawaited(
           showComposeSheet(element, ref, memoryCtx(element, ref)!, [

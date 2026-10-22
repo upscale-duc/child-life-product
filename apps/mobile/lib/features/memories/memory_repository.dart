@@ -585,21 +585,31 @@ class HistoryTailController extends Notifier<Map<MemoryKey, HistoryTail>> {
   }
 }
 
+/// Sorts [items] by [compare] unless they already are: the live window comes newest first from
+/// its query and older pages follow it, so most snapshots skip the sort.
+List<T> _sortIfNeeded<T>(List<T> items, Comparator<T> compare) {
+  for (var i = 1; i < items.length; i++) {
+    if (compare(items[i - 1], items[i]) > 0) return items..sort(compare);
+  }
+  return items;
+}
+
 final completeMediaProvider =
     Provider.family<AsyncValue<List<MediaItem>>, MemoryKey>(buildCompleteMedia);
 
 AsyncValue<List<MediaItem>> buildCompleteMedia(Ref ref, MemoryKey key) {
   final tail = ref.watch(historyTailProvider.select((s) => s[key]));
   return ref.watch(mediaProvider(key)).whenData((recent) {
-    final items = {
-      for (final i in tail?.media ?? <MediaItem>[]) i.id: i,
-      for (final i in recent) i.id: i,
-    }.values.toList();
-    items.sort((a, b) {
+    // The live window wins over the same id in older pages.
+    final byId = {for (final i in recent) i.id: i};
+    final older = {for (final i in tail?.media ?? <MediaItem>[]) i.id: i};
+    for (final i in older.values) {
+      byId.putIfAbsent(i.id, () => i);
+    }
+    return _sortIfNeeded(byId.values.toList(), (a, b) {
       final byTime = b.captureAt.compareTo(a.captureAt);
       return byTime != 0 ? byTime : b.id.compareTo(a.id);
     });
-    return items;
   });
 }
 
@@ -609,15 +619,16 @@ final completeMemoriesProvider =
 AsyncValue<List<Memory>> buildCompleteMemories(Ref ref, MemoryKey key) {
   final tail = ref.watch(historyTailProvider.select((s) => s[key]));
   return ref.watch(memoriesProvider(key)).whenData((recent) {
-    final items = {
-      for (final i in tail?.memories ?? <Memory>[]) i.id: i,
-      for (final i in recent) i.id: i,
-    }.values.toList();
-    items.sort((a, b) {
+    // The live window wins over the same id in older pages.
+    final byId = {for (final i in recent) i.id: i};
+    final older = {for (final i in tail?.memories ?? <Memory>[]) i.id: i};
+    for (final i in older.values) {
+      byId.putIfAbsent(i.id, () => i);
+    }
+    return _sortIfNeeded(byId.values.toList(), (a, b) {
       final byTime = b.occurredAt.compareTo(a.occurredAt);
       return byTime != 0 ? byTime : b.id.compareTo(a.id);
     });
-    return items;
   });
 }
 
