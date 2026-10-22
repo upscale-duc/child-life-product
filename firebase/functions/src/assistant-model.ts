@@ -271,7 +271,7 @@ const isRecord = (v: unknown): v is Record<string, unknown> =>
  * v7: a compact item (only its kind's fields) gets every other field as null, so the planner
  * reads the same extraction as from a full v6 reply (which parses unchanged).
  */
-function expandIntents(raw: unknown): unknown {
+export function expandIntents(raw: unknown): unknown {
   if (!isRecord(raw) || !Array.isArray(raw.intents)) return raw;
   return {
     ...raw,
@@ -487,6 +487,15 @@ const nullable = (type: string, extra: Record<string, unknown> = {}) => ({
 const nullableEnum = (values: readonly string[]) => ({
   anyOf: [{ type: 'string', enum: [...values] }, { type: 'null' }],
 });
+/**
+ * A read's day, as the zod side accepts it (-6…0): unbounded, "tuần trước" (-7) or a future day
+ * rejected the whole reply (VALIDATION_FAILED).
+ */
+const readDayOffsetJson = {
+  type: 'integer',
+  enum: [0, -1, -2, -3, -4, -5, -6],
+  description: '0 = anchor day, -1 = the day before',
+};
 const dayOffsetSchema = { anyOf: [{ type: 'integer', enum: [0, -1, -2] }, { type: 'null' }] };
 
 /**
@@ -631,7 +640,7 @@ export function extractionJsonSchema(
             tool: allowedReads.length
               ? { type: 'string', enum: [...allowedReads] }
               : { type: 'string', enum: ['none'] },
-            dayOffset: { type: 'integer', description: '0 = anchor day, -1 = the day before' },
+            dayOffset: readDayOffsetJson,
           },
         },
       },
@@ -1234,7 +1243,7 @@ export function understandingJsonSchema(
             tool: allowedReads.length
               ? { type: 'string', enum: [...allowedReads] }
               : { type: 'string', enum: ['none'] },
-            dayOffset: { type: 'integer' },
+            dayOffset: readDayOffsetJson,
           },
         },
       },
