@@ -15600,6 +15600,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntFamilyActivityHint => 'Thích, xem kỷ niệm';
 
   @override
+  String get ntFamilyMembers => 'Thành viên gia đình';
+
+  @override
+  String get ntFamilyMembersHint =>
+      'Khi có người tham gia hoặc từ chối lời mời';
+
+  @override
   String get ntGroupTiming => 'THỜI GIAN';
 
   @override

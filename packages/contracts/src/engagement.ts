@@ -17,6 +17,12 @@ export const engagementPolicySchema = z
     ignoredThreshold: z.number().int().min(3).max(20).default(3),
     completionQuietHours: z.number().int().min(48).max(168).default(48),
     spacingMinutes: z.number().int().min(60).max(240).default(60),
+    /**
+     * Owner, 2026-10-22 (D-092, doc 18 #10): how long the device a person last opened the app on
+     * may receive proactive pushes. The send still needs a live token, no sign-out and current
+     * membership; sign-out or revocation ends it at once.
+     */
+    deviceLeaseDays: z.number().int().min(1).max(60).default(30),
     quietDefault: z
       .object({
         from: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),

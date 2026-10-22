@@ -31,7 +31,8 @@ import {
   type MenuItem,
 } from '../../content-kit';
 import { useStaff } from '../../context';
-import { Button, ConfirmModal, Loaded, Pill, Segmented, TableScroll } from '../../ui';
+import { Button, ConfirmModal, Pill, Segmented } from '../../ui';
+import { DataTable, LoadedSkeleton, StatusDot, TableSkeleton } from './kit';
 import { DestinationDetails, ErrorLine, TemplateStatusPill, at, pick, type Lang } from './shared';
 
 const langs = ['vi', 'en'] as const;
@@ -45,9 +46,18 @@ export function TemplateEditor({ templateId, onBack }: { templateId: string; onB
     `ntf-template:${templateId}`,
   );
   return (
-    <Loaded load={load} reload={reload}>
+    <LoadedSkeleton
+      load={load}
+      reload={reload}
+      skeleton={
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]">
+          <TableSkeleton rows={8} />
+          <TableSkeleton rows={4} />
+        </div>
+      }
+    >
       {(detail) => <TemplateEditorView initial={detail} onBack={onBack} />}
-    </Loaded>
+    </LoadedSkeleton>
   );
 }
 
@@ -117,7 +127,8 @@ export function TemplateEditorView({
   const dirty = !sameCopy(copy, base);
   const issues = useMemo(() => validateTemplateCopy(def, copy), [def, copy]);
   const [sample, setSample] = useState<SampleText>(() => initialSample(def));
-  const [lang, setLang] = useState<Lang>('vi');
+  const [lang, setLang] = useState<Lang | 'both'>('vi');
+  const [platform, setPlatform] = useState<'both' | 'ios' | 'android'>('both');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [publishing, setPublishing] = useState(false);
@@ -198,10 +209,12 @@ export function TemplateEditorView({
         }),
     });
 
+  const step = nextStep(detail, dirty, issues.length, canEdit, canPublish);
   const actions = (
     <>
       {canEdit && detail.draftState === 'draft' && (
         <Button
+          kind={step === 'submit' ? 'primary' : 'secondary'}
           disabled={busy || dirty || issues.length > 0}
           title={
             dirty
@@ -217,7 +230,7 @@ export function TemplateEditorView({
       )}
       {canPublish && detail.draftState === 'ready_for_review' && (
         <Button
-          kind="primary"
+          kind={step === 'publish' ? 'primary' : 'secondary'}
           disabled={busy || dirty || issues.length > 0}
           onClick={() => setPublishing(true)}
         >
@@ -250,8 +263,13 @@ export function TemplateEditorView({
     </>
   );
 
-  const values = sampleValues(def, sample, lang);
-  const rendered = renderTemplate(copy, lang, values);
+  const shownLangs: Lang[] = lang === 'both' ? ['vi', 'en'] : [lang];
+  const shownPlatforms = platform === 'both' ? (['ios', 'android'] as const) : [platform];
+  const renders = shownLangs.map((l) => ({
+    lang: l,
+    ...renderTemplate(copy, l, sampleValues(def, sample, l)),
+  }));
+  const missing = [...new Set(renders.flatMap((r) => r.missing))];
   const kindDef = notificationTypes[def.kind];
 
   return (
@@ -265,9 +283,16 @@ export function TemplateEditorView({
           <>
             <TemplateStatusPill status={detail.status} />
             {detail.draftState !== 'none' && (
-              <Pill tone={detail.draftState === 'ready_for_review' ? 'purple' : 'wait'}>
-                <FormattedMessage id={`ntf.draftState.${detail.draftState}`} />
-              </Pill>
+              <StatusDot tone={detail.draftState === 'ready_for_review' ? 'warn' : 'wait'}>
+                <span className="text-[13px]">
+                  <FormattedMessage id={`ntf.draftState.${detail.draftState}`} />
+                </span>
+              </StatusDot>
+            )}
+            {step && step !== 'save' && (
+              <span className="hidden text-[13px] text-muted-foreground lg:inline">
+                <FormattedMessage id={`ntf.tpl.next.${step}`} />
+              </span>
             )}
           </>
         }
@@ -284,36 +309,60 @@ export function TemplateEditorView({
           <>
             <Section
               title={<FormattedMessage id="ntf.tpl.preview" />}
-              actions={
-                <Segmented
-                  label={intl.formatMessage({ id: 'ntf.tpl.previewLang' })}
-                  value={lang}
-                  options={langs.map((l) => ({
-                    value: l,
-                    label: <FormattedMessage id={`ntf.lang.${l}`} />,
-                  }))}
-                  onChange={setLang}
-                />
-              }
+              description={<FormattedMessage id="ntf.tpl.previewNote" />}
             >
-              <div className="grid gap-4">
-                <LockScreenPreview
-                  platform="ios"
-                  lang={lang}
-                  title={rendered.title}
-                  body={rendered.body}
-                />
-                <LockScreenPreview
-                  platform="android"
-                  lang={lang}
-                  title={rendered.title}
-                  body={rendered.body}
-                />
-                {rendered.missing.length > 0 && (
+              <div className="grid gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <Segmented
+                    label={intl.formatMessage({ id: 'ntf.tpl.previewLang' })}
+                    value={lang}
+                    options={(['vi', 'en', 'both'] as const).map((l) => ({
+                      value: l,
+                      label: <FormattedMessage id={`ntf.preview.lang.${l}`} />,
+                    }))}
+                    onChange={setLang}
+                  />
+                  <Segmented
+                    label={intl.formatMessage({ id: 'ntf.tpl.previewPlatform' })}
+                    value={platform}
+                    options={(['both', 'ios', 'android'] as const).map((p) => ({
+                      value: p,
+                      label: <FormattedMessage id={`ntf.preview.platform.${p}`} />,
+                    }))}
+                    onChange={setPlatform}
+                  />
+                </div>
+                <div
+                  className={
+                    shownLangs.length > 1
+                      ? 'grid gap-3 sm:grid-cols-2 xl:grid-cols-1'
+                      : 'grid gap-3'
+                  }
+                >
+                  {renders.map((r) => (
+                    <div key={r.lang} className="grid content-start gap-3">
+                      {shownLangs.length > 1 && (
+                        <p className="text-[12px] font-semibold text-muted-foreground uppercase">
+                          {r.lang}
+                        </p>
+                      )}
+                      {shownPlatforms.map((p) => (
+                        <LockScreenPreview
+                          key={p}
+                          platform={p}
+                          lang={r.lang}
+                          title={r.title}
+                          body={r.body}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                {missing.length > 0 && (
                   <Notice tone="warn">
                     <FormattedMessage
                       id="ntf.tpl.missingValues"
-                      values={{ list: rendered.missing.join(', ') }}
+                      values={{ list: missing.join(', ') }}
                     />
                   </Notice>
                 )}
@@ -473,7 +522,7 @@ export function TemplateEditorView({
                     {canEdit ? (
                       <button
                         type="button"
-                        className="rounded-md border px-2 py-0.5 font-mono text-[12px] hover:border-primary hover:text-primary"
+                        className="rounded-full border bg-background px-2.5 py-0.5 font-mono text-[12px] outline-none hover:border-primary hover:text-primary focus-visible:ring-[3px] focus-visible:ring-ring/50"
                         onClick={() => insert(p)}
                         aria-label={intl.formatMessage({ id: 'ntf.tpl.insert' }, { name: p })}
                       >
@@ -612,6 +661,21 @@ export function TemplateEditorView({
   );
 }
 
+/** The one obvious next step of the workflow: Save → Submit → Publish. */
+export function nextStep(
+  detail: Pick<NotificationTemplateDetail, 'draftState'>,
+  dirty: boolean,
+  issues: number,
+  canEdit: boolean,
+  canPublish: boolean,
+): 'save' | 'submit' | 'publish' | null {
+  if (canEdit && dirty) return 'save';
+  if (issues > 0) return null;
+  if (canEdit && detail.draftState === 'draft') return 'submit';
+  if (canPublish && detail.draftState === 'ready_for_review') return 'publish';
+  return null;
+}
+
 export function IssueText({ issue, withPlace }: { issue: TemplateIssue; withPlace?: boolean }) {
   const intl = useIntl();
   const text = intl.formatMessage(
@@ -724,7 +788,7 @@ function VersionHistory({
       collapsible
       summary={intl.formatNumber(versions.length + 1)}
     >
-      <TableScroll min={640}>
+      <DataTable min={640} tall>
         <table className="table">
           <thead>
             <tr>
@@ -775,7 +839,7 @@ function VersionHistory({
             </tr>
           </tbody>
         </table>
-      </TableScroll>
+      </DataTable>
       <p className="px-5 py-3 text-[13px] text-muted-foreground">
         <FormattedMessage id="ntf.tpl.pausedFallback" />
       </p>

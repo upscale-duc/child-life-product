@@ -45,6 +45,10 @@ describe('built-in templates equal the producer copy', () => {
       ['storage', 100],
       ['storageGranted', 50],
       ['message', 1],
+      ['memberJoined', 1],
+      ['inviteDeclined', 1],
+      ['roleChanged', 1],
+      ['memberRemoved', 1],
     ] as const) {
       const t = noticeTemplate(kind, count, 'Mai')!;
       same(notificationTemplates[t.id].builtin, t.values, (l) => noticeCopy(kind, count, 'Mai', l));

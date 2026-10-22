@@ -26136,6 +26136,18 @@ abstract class AppLocalizations {
   /// **'Thích, xem kỷ niệm'**
   String get ntFamilyActivityHint;
 
+  /// EN07 switch (D-092, key familyMembers): someone joined or declined an invitation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên gia đình'**
+  String get ntFamilyMembers;
+
+  /// EN07 subtitle of ntFamilyMembers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi có người tham gia hoặc từ chối lời mời'**
+  String get ntFamilyMembersHint;
+
   /// EN07 group header.
   ///
   /// In vi, this message translates to:

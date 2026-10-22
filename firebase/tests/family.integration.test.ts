@@ -21,6 +21,7 @@ import {
   updateMember,
   type Caller,
 } from '../functions/src/family.js';
+import { deliverNotice, type PushSender } from '../functions/src/social.js';
 import {
   deliverMail,
   renderInviteEmail,
@@ -543,5 +544,101 @@ describe('end of day in a zone', () => {
     expect(endOfDayIn('America/New_York', '2026-01-04').toISOString()).toBe(
       '2026-01-05T05:00:00.000Z',
     );
+  });
+});
+
+describe('membership notifications (G-109, D-092)', () => {
+  const pushed: { tokens: string[]; title: string; body: string; data: Record<string, string> }[] =
+    [];
+  const sender: PushSender = {
+    async send(tokens, message) {
+      pushed.push({ tokens, title: message.title, body: message.body, data: message.data });
+      return [];
+    },
+  };
+  const notices = async () =>
+    (await db.collection(`babies/${babyId}/notifications`).get()).docs.map((d) => ({
+      id: d.id,
+      kind: d.get('kind') as string,
+      recipients: d.get('recipients') as string[],
+    }));
+  const inbox = async (uid: string) =>
+    (await db.collection(`users/${uid}/notifications`).get()).docs.map((d) => d.data());
+
+  beforeEach(async () => {
+    pushed.length = 0;
+    for (const uid of ['mom', 'nanny', 'quynh'])
+      await db.doc(`users/${uid}/devices/d_${uid}`).set({ token: `t-${uid}`, language: 'vi' });
+  });
+
+  it('a join tells the co-parents (not the newcomer) and opens the family members screen', async () => {
+    const ticket = await invite(mom);
+    await join(nanny, ticket.code);
+    const [joined] = (await notices()).filter((n) => n.kind === 'memberJoined');
+    expect(joined).toEqual({
+      id: `member_joined_${ticket.inviteId}`,
+      kind: 'memberJoined',
+      recipients: ['mom'],
+    });
+    await deliverNotice(db, sender, babyId, joined!.id, now);
+    expect(pushed).toHaveLength(1);
+    expect(pushed[0]).toMatchObject({
+      tokens: ['t-mom'],
+      title: 'Thành viên mới trong gia đình',
+      body: 'nanny đã tham gia gia đình. Mở để xem.',
+    });
+    expect(pushed[0]!.data).toMatchObject({ kind: 'memberJoined', destination: 'FAMILY_MEMBERS' });
+    expect((await inbox('mom'))[0]).toMatchObject({ kind: 'memberJoined', group: 'family' });
+    // No baby name anywhere in the copy (R-120).
+    expect(JSON.stringify(pushed)).not.toContain('Teddy');
+  });
+
+  it('the "Thành viên gia đình" switch mutes joins and declines', async () => {
+    await db.doc('users/mom/settings/notifications').set({ familyMembers: false });
+    const ticket = await invite(mom);
+    await join(nanny, ticket.code);
+    await deliverNotice(db, sender, babyId, `member_joined_${ticket.inviteId}`, now);
+    expect(pushed).toHaveLength(0);
+    expect(await inbox('mom')).toHaveLength(0);
+  });
+
+  it('a decline tells the inviter', async () => {
+    const quynh: Caller = {
+      uid: 'quynh',
+      anonymous: false,
+      emailTrusted: true,
+      email: 'quynh@example.com',
+    };
+    const ticket = await invite(mom, 'coParent');
+    await sendInviteEmail(
+      db,
+      mom,
+      { inviteId: ticket.inviteId, email: 'quynh@example.com', locale: 'vi' },
+      now,
+    );
+    await declineInvite(db, quynh, { inviteId: ticket.inviteId }, now);
+    expect((await notices()).filter((n) => n.kind === 'inviteDeclined')).toEqual([
+      { id: `invite_declined_${ticket.inviteId}`, kind: 'inviteDeclined', recipients: ['mom'] },
+    ]);
+  });
+
+  it('a role change tells the member, a relation-only edit does not; removal opens only the inbox', async () => {
+    const ticket = await invite(mom);
+    await join(nanny, ticket.code);
+    await updateMember(db, mom, { babyId, uid: 'nanny', relation: 'nanny' }, later(1));
+    expect((await notices()).filter((n) => n.kind === 'roleChanged')).toEqual([]);
+    await updateMember(db, mom, { babyId, uid: 'nanny', role: 'relative' }, later(2));
+    const role = (await notices()).filter((n) => n.kind === 'roleChanged');
+    expect(role).toEqual([expect.objectContaining({ recipients: ['nanny'] })]);
+
+    await removeMember(db, mom, { babyId, uid: 'nanny' }, later(3));
+    const [removed] = (await notices()).filter((n) => n.kind === 'memberRemoved');
+    expect(removed!.recipients).toEqual(['nanny']);
+    await deliverNotice(db, sender, babyId, removed!.id, later(3));
+    expect(pushed.at(-1)).toMatchObject({
+      tokens: ['t-nanny'],
+      title: 'Bạn không còn trong một gia đình',
+    });
+    expect(pushed.at(-1)!.data.destination).toBe('INBOX');
   });
 });

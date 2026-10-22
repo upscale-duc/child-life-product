@@ -1,4 +1,8 @@
 import {
+  engagementPolicySchema,
+  staffSetEngagementPolicySchema,
+  type EngagementPolicy,
+  type NotificationOpsResponse,
   localizedTemplateCopySchema,
   notificationOpsConfigSchema,
   notificationTemplateIds,
@@ -383,4 +387,66 @@ export async function setNotificationOps(
   });
   clearNotificationCaches();
   return { ops: parsed.data };
+}
+
+// ---------- Ops read + Smart Engagement policy (D-092) ----------
+
+/** The switches and the Smart Engagement policy the Portal's Settings tab shows. */
+export async function readNotificationOps(
+  db: Firestore,
+  staff: Staff | null,
+): Promise<NotificationOpsResponse> {
+  requireStaff(staff, 'notifications.view');
+  const [ops, policy] = await Promise.all([
+    db.doc('config/notifications').get(),
+    db.doc('config/engagement').get(),
+  ]);
+  const parsedOps = notificationOpsConfigSchema.safeParse({
+    ...(ops.get('templatesEnabled') !== undefined
+      ? { templatesEnabled: ops.get('templatesEnabled') }
+      : {}),
+    ...(ops.get('retryEnabled') !== undefined ? { retryEnabled: ops.get('retryEnabled') } : {}),
+    ...(ops.get('pushPaused') !== undefined ? { pushPaused: ops.get('pushPaused') } : {}),
+  });
+  const parsedPolicy = engagementPolicySchema.safeParse(policy.data() ?? {});
+  return {
+    ops: parsedOps.success ? parsedOps.data : notificationOpsConfigSchema.parse({}),
+    engagementPolicy: parsedPolicy.success ? parsedPolicy.data : engagementPolicySchema.parse({}),
+    engagementPolicyStored: policy.exists && parsedPolicy.success,
+  };
+}
+
+/**
+ * Approves / tunes Smart Engagement (`config/engagement`). The engine parses this document with a
+ * strict schema and fails closed, so only the schema's fields are written; who changed what goes
+ * to `staffAudit` (before / after), never into the document.
+ */
+export async function setEngagementPolicy(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+): Promise<NotificationOpsResponse> {
+  const s = requireStaff(staff, 'notifications.ops');
+  const { policy } = parse(staffSetEngagementPolicySchema, data) as { policy: EngagementPolicy };
+  const clean = engagementPolicySchema.parse(policy);
+  await db.runTransaction(async (tx) => {
+    const ref = db.doc('config/engagement');
+    const before = await tx.get(ref);
+    tx.set(ref, clean);
+    staffAudit(
+      tx,
+      db,
+      s,
+      {
+        action: 'notifications.engagement.policy',
+        category: 'notifications',
+        target: 'config/engagement',
+        reason: null,
+        detail: { before: before.exists ? before.data() : null, after: clean },
+      },
+      now,
+    );
+  });
+  return readNotificationOps(db, s);
 }

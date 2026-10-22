@@ -9,7 +9,7 @@
 - [17 implementation](../product-audit/17-engagement-implementation.md)
 - [18 code audit](../product-audit/18-smart-reminder-code-audit.md)
 
-This page says how the engine sits on the platform and what changed in P-174. Nothing here changes a policy value. All flags still default off and `config/engagement.approved` is still false.
+This page says how the engine sits on the platform and what changed in P-174. The owner approved assumptions A-01–A-14 (D-092 #3). The policy (`config/engagement`: approval, caps, quiet hours, device lease) is edited in Portal → Thông báo & Gắn kết → Cài đặt, audited; flags still default off in code and are turned on per environment.
 
 ## 1. One pipeline
 
@@ -57,7 +57,7 @@ These rules hold since doc 17 and are covered by `engagement.integration.test.ts
 
 | # | Item | P-174 outcome |
 | --- | --- | --- |
-| 10 | Push only reaches people with a device lease from the last 2 h (proactive kinds other than ENG-01) | **Open — owner decision.** Lengthening the lease or renewing it in the background check changes the privacy surface (A-13). No code change. |
+| 10 | Push only reaches people with a device lease from the last 2 h (proactive kinds other than ENG-01) | **Fixed (D-092 #6).** The lease lasts `deviceLeaseDays` (policy, default 30, 1–60). A send still needs a live token, no sign-out and current membership; sign-out or revocation ends the lease at once. Test in `engagement.integration.test.ts`. |
 | 19 | Care pushes waited on ~5 engagement reads per recipient | **Fixed.** One config read per baby (`careEngagementOn`). With engagement off, the per-recipient observation and adapter callback are skipped. |
 | 20 | Client refresh can hit the 100/h limit | **Open.** The fix belongs in `engagement_repository.dart`, which another session was editing during this work. A debounce of ~60 s on resume/media-count refresh is recommended. |
 | 21 | Retrospective cannot follow a current campaign | **Fixed** (see §3). The test is updated in `engagement.integration.test.ts`. |

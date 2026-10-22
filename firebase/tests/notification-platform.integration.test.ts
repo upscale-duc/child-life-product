@@ -18,8 +18,11 @@ import {
   actOnNotificationTemplate,
   listNotificationTemplates,
   saveNotificationTemplate,
+  readNotificationOps,
+  setEngagementPolicy,
   setNotificationOps,
 } from '../functions/src/notification-templates.js';
+import { engagementConfig } from '../functions/src/engagement.js';
 import { clearNotificationCaches } from '../functions/src/notification-runtime.js';
 import {
   notificationDetail,
@@ -592,5 +595,48 @@ describe('family timeline and stats', () => {
     expect(await purgeNotificationLedger(db, 'uid', 'np-mom')).toBe(1);
     expect((await entry('np-mom')).exists).toBe(false);
     expect((await entry('np-dad')).exists).toBe(true);
+  });
+});
+
+describe('Smart Engagement policy from the Portal (D-092)', () => {
+  it('ops staff approve it; the stored document stays parseable by the engine; audited', async () => {
+    await db
+      .doc('config/engagement')
+      .delete()
+      .catch(() => undefined);
+    expect((await readNotificationOps(db, support)).engagementPolicyStored).toBe(false);
+    const policy = {
+      version: 1,
+      approved: true,
+      dailyCap: 1,
+      weeklyCap: 2,
+      reducedDismissals: 2,
+      pausedDismissals: 3,
+      ignoredThreshold: 3,
+      completionQuietHours: 72,
+      spacingMinutes: 90,
+      quietDefault: { from: '21:30', to: '07:00' },
+      deviceLeaseDays: 21,
+    };
+    await expect(setEngagementPolicy(db, ops, { policy }, at)).rejects.toMatchObject({
+      reason: 'role',
+    });
+    await expect(
+      setEngagementPolicy(db, eng, { policy: { ...policy, weeklyCap: 9 } }, at),
+    ).rejects.toMatchObject({ reason: 'malformed' });
+    const saved = await setEngagementPolicy(db, eng, { policy }, at);
+    expect(saved).toMatchObject({ engagementPolicyStored: true, engagementPolicy: policy });
+    // Exactly the schema: the engine's strict parse accepts it (no updatedAt / updatedBy).
+    expect(Object.keys((await db.doc('config/engagement').get()).data()!).sort()).toEqual(
+      Object.keys(policy).sort(),
+    );
+    const config = await engagementConfig(db, familyId);
+    expect(config.policy).toMatchObject({ approved: true, weeklyCap: 2, deviceLeaseDays: 21 });
+    const audit = await db
+      .collection('staffAudit')
+      .where('action', '==', 'notifications.engagement.policy')
+      .get();
+    expect(audit.size).toBe(1);
+    await db.doc('config/engagement').delete();
   });
 });

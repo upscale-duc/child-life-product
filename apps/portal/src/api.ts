@@ -125,6 +125,9 @@ export type Callable =
   | 'staffNotificationDetail'
   | 'staffRetryNotification'
   | 'staffSetNotificationOps'
+  // Ops switches + Smart Engagement policy (D-092)
+  | 'staffNotificationOps'
+  | 'staffSetEngagementPolicy'
   | 'sendAuthEmail';
 
 export interface Api {

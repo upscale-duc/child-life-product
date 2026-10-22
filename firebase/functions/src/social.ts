@@ -204,6 +204,14 @@ export function noticeTemplate(
       return { id: 'family.storage_granted', values: { gb: count } };
     case 'message':
       return { id: 'family.message', values: { actor_name: actorName } };
+    case 'memberJoined':
+      return { id: 'family.member_joined', values: { actor_name: actorName } };
+    case 'inviteDeclined':
+      return { id: 'family.invite_declined', values: {} };
+    case 'roleChanged':
+      return { id: 'family.role_changed', values: {} };
+    case 'memberRemoved':
+      return { id: 'family.member_removed', values: {} };
     default:
       return undefined;
   }
@@ -270,6 +278,41 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
       return vi
         ? { title: 'Có lời nhắn mới', body: `${actorName} vừa nhắn cho ba mẹ. Mở để đọc.` }
         : { title: 'New message', body: `${actorName} sent the parents a message. Open to read.` };
+    // G-109 (D-092): membership events, no baby name (R-120).
+    case 'memberJoined':
+      return vi
+        ? {
+            title: 'Thành viên mới trong gia đình',
+            body: `${actorName} đã tham gia gia đình. Mở để xem.`,
+          }
+        : { title: 'A new family member', body: `${actorName} joined the family. Open to see.` };
+    case 'inviteDeclined':
+      return vi
+        ? { title: 'Lời mời chưa được nhận', body: 'Một lời mời tham gia gia đình đã bị từ chối.' }
+        : {
+            title: 'Invitation not accepted',
+            body: 'An invitation to join the family was declined.',
+          };
+    case 'roleChanged':
+      return vi
+        ? {
+            title: 'Quyền của bạn đã thay đổi',
+            body: 'Vai trò của bạn trong gia đình vừa được cập nhật. Mở để xem.',
+          }
+        : {
+            title: 'Your access changed',
+            body: 'Your role in the family was just updated. Open to see.',
+          };
+    case 'memberRemoved':
+      return vi
+        ? {
+            title: 'Bạn không còn trong một gia đình',
+            body: 'Bạn không còn quyền xem hồ sơ của bé trong gia đình này.',
+          }
+        : {
+            title: 'You’re no longer in a family',
+            body: 'You no longer have access to a child’s profile in that family.',
+          };
     default:
       return vi
         ? { title: 'Child Life', body: 'Có cập nhật mới từ gia đình.' }

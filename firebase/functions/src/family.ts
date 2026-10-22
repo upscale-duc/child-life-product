@@ -440,6 +440,12 @@ export async function declineInvite(
     const invite = found.invite;
     const babyId = invite.get('babyId') as string;
     tx.update(invite.ref, { status: 'declined', declinedAt: now, declinedBy: caller.uid });
+    const inviter = invite.get('inviterUid') as string | undefined;
+    if (inviter && inviter !== caller.uid)
+      membershipNotice(tx, db, babyId, `invite_declined_${inviteId}`, 'inviteDeclined', now, {
+        actorUid: caller.uid,
+        recipients: [inviter],
+      });
     tx.delete(db.doc(`inviteCodes/${invite.get('code') as string}`));
     tx.delete(db.doc(`inviteTokens/${invite.get('tokenHash') as string}`));
     tx.delete(db.doc(pendingPath(babyId, inviteId)));
@@ -567,6 +573,9 @@ export async function acceptInvite(
     if (isActiveMember(existing, now))
       throw new FamilyError('failed-precondition', 'already-member');
     const user = await tx.get(db.doc(`users/${caller.uid}`));
+    const parents = await tx.get(
+      db.collection(`babies/${babyId}/members`).where('role', '==', 'coParent'),
+    );
 
     tx.set(memberRef, {
       uid: caller.uid,
@@ -585,6 +594,14 @@ export async function acceptInvite(
       accessUntilAt: null,
     });
     tx.update(invite.ref, { status: 'accepted', acceptedBy: caller.uid, acceptedAt: now });
+    // G-109 (D-092): the co-parents hear that someone joined (delivered by deliverFamilyNotice).
+    membershipNotice(tx, db, babyId, `member_joined_${invite.id}`, 'memberJoined', now, {
+      actorUid: caller.uid,
+      actor: { name: req.displayName },
+      recipients: parents.docs
+        .filter((p) => isActiveMember(p, now) && p.id !== caller.uid)
+        .map((p) => p.id),
+    });
     tx.delete(db.doc(`inviteCodes/${invite.get('code') as string}`));
     tx.delete(db.doc(`inviteTokens/${invite.get('tokenHash') as string}`));
     tx.delete(db.doc(pendingPath(babyId, invite.id)));
@@ -720,6 +737,16 @@ export async function updateMember(
       }
     }
     tx.update(target.ref, update);
+    if (toRole !== fromRole)
+      membershipNotice(
+        tx,
+        db,
+        req.babyId,
+        `role_${req.uid}_${now.getTime().toString(36)}`,
+        'roleChanged',
+        now,
+        { actorUid: caller.uid, recipients: [req.uid] },
+      );
     audit(
       tx,
       db,
@@ -745,6 +772,33 @@ export async function updateMember(
   });
 }
 
+/**
+ * G-109 (D-092): a membership event becomes a family notice that `deliverFamilyNotice` sends
+ * through the notification platform. The id names the event, so a retried transaction writes
+ * the same notice; generic copy, no baby name (R-120).
+ */
+function membershipNotice(
+  tx: Transaction,
+  db: Firestore,
+  babyId: string,
+  id: string,
+  kind: 'memberJoined' | 'inviteDeclined' | 'roleChanged' | 'memberRemoved',
+  now: Date,
+  extra: { actorUid: string; actor?: { name: string }; recipients: string[] },
+) {
+  if (extra.recipients.length === 0) return;
+  tx.set(db.doc(`babies/${babyId}/notifications/${id}`), {
+    kind,
+    babyId,
+    count: 1,
+    actor: extra.actor ?? null,
+    actorUid: extra.actorUid,
+    recipients: extra.recipients,
+    createdAt: now,
+    delivered: false,
+  });
+}
+
 /** "Xoá Cô Lan khỏi gia đình" — records are kept (R-023); access ends at once (R-025). */
 export async function removeMember(
   db: Firestore,
@@ -760,6 +814,16 @@ export async function removeMember(
     if (target.get('role') === 'coParent' && !actorIsOwner)
       throw new FamilyError('permission-denied', 'owner-only');
     tx.update(target.ref, { status: 'removed', removedAt: now, removedBy: caller.uid });
+    if (uid !== caller.uid)
+      membershipNotice(
+        tx,
+        db,
+        babyId,
+        `removed_${uid}_${now.getTime().toString(36)}`,
+        'memberRemoved',
+        now,
+        { actorUid: caller.uid, recipients: [uid] },
+      );
     audit(
       tx,
       db,

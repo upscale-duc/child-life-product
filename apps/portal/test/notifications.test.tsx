@@ -17,7 +17,9 @@ import {
   notificationDestinationIds,
   notificationKinds,
   notificationTemplates,
+  defaultEngagementPolicy,
   type NotificationEntryDetail,
+  type NotificationOpsResponse,
   type NotificationStatsResponse,
   type NotificationTemplateDetail,
   type NotificationTemplateRow,
@@ -36,23 +38,28 @@ import {
   notificationsVi,
 } from '../src/messages-notifications';
 import { allowedRoute } from '../src/Shell';
-import { NotificationsScreen } from '../src/screens/notifications';
+import { NotificationsScreen, tabBadges } from '../src/screens/notifications';
 import {
   NotificationAnalyticsView,
   notificationStatsCsv,
 } from '../src/screens/notifications/Analytics';
 import { CatalogView } from '../src/screens/notifications/Catalog';
-import { DeliveryView } from '../src/screens/notifications/Delivery';
-import { JourneyCards, kindsOfScenario } from '../src/screens/notifications/Journeys';
-import { OverviewView } from '../src/screens/notifications/Overview';
-import { SettingsView } from '../src/screens/notifications/Settings';
+import { DeliveryView, deliveryOutcomes } from '../src/screens/notifications/Delivery';
+import { JourneysView, funnelOf, kindsOfScenario } from '../src/screens/notifications/Journeys';
+import { OverviewView, overviewHealth } from '../src/screens/notifications/Overview';
+import {
+  SettingsView,
+  policyDiff,
+  policyErrors,
+  policyFields,
+} from '../src/screens/notifications/Settings';
 import {
   TemplateEditorView,
   initialSample,
   insertAt,
   sampleValues,
 } from '../src/screens/notifications/TemplateEditor';
-import { TemplatesView } from '../src/screens/notifications/Templates';
+import { TemplatesView, templateCounts } from '../src/screens/notifications/Templates';
 import {
   EntryDetailView,
   TimelineView,
@@ -72,6 +79,8 @@ import {
   visibleTabs,
 } from '../src/screens/notifications/shared';
 import { createIntl } from 'react-intl';
+import { nextStep } from '../src/screens/notifications/TemplateEditor';
+import { activeFilterCount, groupByDay } from '../src/screens/notifications/Timeline';
 import { levelsForRoles, type StaffRole } from './fixtures';
 
 // Thông báo & Gắn kết (P-174). Server-rendered, no network: callables go to a fake api.
@@ -244,6 +253,13 @@ const stats = (over: Partial<NotificationStatsResponse> = {}): NotificationStats
   ...over,
 });
 
+const opsResponse = (over: Partial<NotificationOpsResponse> = {}): NotificationOpsResponse => ({
+  ops: defaultNotificationOpsConfig,
+  engagementPolicy: defaultEngagementPolicy,
+  engagementPolicyStored: false,
+  ...over,
+});
+
 const timeline: NotificationTimelineResponse = {
   family: { code: 'F-7Q2K', babies: 1, members: 3 },
   summary: {
@@ -401,7 +417,7 @@ describe('Catalog and destinations', () => {
 
   it('journeys cover ENG-01…06 with their kinds', () => {
     expect(kindsOfScenario('ENG-04').map((d) => d.kind)).toEqual(['reminderRule']);
-    const html = render(<JourneyCards />);
+    const html = render(<JourneysView data={null} />);
     for (const e of engagementKinds) expect(html).toContain(`data-scenario="${e}"`);
   });
 });
@@ -502,7 +518,7 @@ describe('Delivery, overview, analytics and settings', () => {
 
   it('overview counts only days with data and says accepted ≠ delivered', () => {
     const t = text(render(<OverviewView data={stats()} />));
-    expect(t).toContain('Đã nhận ≠ đã đến máy');
+    expect(t).toContain('không chứng minh thông báo đã hiện trên máy');
     expect(t).toMatch(/Đã tạo .*15/);
   });
 
@@ -544,16 +560,18 @@ describe('Delivery, overview, analytics and settings', () => {
   });
 
   it('settings: read-only without notifications.ops, care pause warns', () => {
-    const ro = text(render(<SettingsView ops={defaultNotificationOpsConfig} />, ['support']));
+    const ro = text(render(<SettingsView data={opsResponse()} />, ['support']));
     expect(ro).toContain('Bạn chỉ xem được các công tắc');
     expect(ro).not.toContain('Lưu công tắc');
     const paused = text(
       render(
         <SettingsView
-          ops={{
-            ...defaultNotificationOpsConfig,
-            pushPaused: { ...defaultNotificationOpsConfig.pushPaused, care: true },
-          }}
+          data={opsResponse({
+            ops: {
+              ...defaultNotificationOpsConfig,
+              pushPaused: { ...defaultNotificationOpsConfig.pushPaused, care: true },
+            },
+          })}
         />,
       ),
     );
@@ -790,5 +808,176 @@ describe('message catalog (D-012)', () => {
         expect(notificationsEn[`${prefix}.${v}`], `${prefix}.${v}`).toBeTruthy();
     expect(notificationsVi['nav.notifications']).toBe('Thông báo & Gắn kết');
     expect(notificationsVi['auditCategory.notifications']).toBe('Thông báo');
+  });
+});
+
+// D-092: engagement policy panel, G-109 membership kinds and the UI review's pure helpers.
+describe('D-092 additions', () => {
+  it('G-109 membership kinds are in the catalog with labels', () => {
+    for (const k of ['memberJoined', 'inviteDeclined', 'roleChanged', 'memberRemoved']) {
+      expect(notificationsVi[`ntf.kind.${k}`], k).toBeTruthy();
+      expect(notificationsEn[`ntf.kind.${k}`], k).toBeTruthy();
+    }
+    expect(notificationsVi['ntf.producer.family.members']).toBeTruthy();
+    expect(notificationsVi['ntf.setting.familyMembers']).toBeTruthy();
+    const html = render(<CatalogView />);
+    expect(html).toContain('data-kind="memberJoined"');
+    expect(html).toContain('data-destination="FAMILY_MEMBERS"');
+    expect(text(html)).toContain('Thành viên gia đình');
+    expect(html).not.toContain('data-gap="family.role_changed"');
+  });
+
+  it('overview health: no data, ok, attention signals', () => {
+    expect(overviewHealth(stats({ sourceStartDay: null, days: [], problems: [] })).level).toBe(
+      'no_data',
+    );
+    const ok = overviewHealth(
+      stats({
+        problems: [],
+        days: [{ day: '2026-10-18', totals: { attempted: 100, accepted: 99, failed: 1 } }],
+      }),
+    );
+    expect(ok.level).toBe('ok');
+    expect(ok.failureRate).toBe(0.01);
+    const bad = overviewHealth(
+      stats({
+        days: [{ day: '2026-10-18', totals: { attempted: 50, failed: 2, render_error: 1 } }],
+        problems: [{ ...stats().problems[0]!, delivery: 'retry_pending' }],
+        ops: {
+          ...defaultNotificationOpsConfig,
+          pushPaused: { ...defaultNotificationOpsConfig.pushPaused, care: true },
+        },
+      }),
+    );
+    expect(bad.level).toBe('attention');
+    expect(bad.signals.map((s) => s.id)).toEqual(['failure', 'backlog', 'render', 'paused']);
+    const t = text(render(<OverviewView data={stats()} reviewCount={2} />));
+    expect(t).toContain('Cần chú ý');
+    expect(t).toContain('Bản nháp chờ duyệt');
+  });
+
+  it('settings show the policy panel, its safe-default notice and read-only state', () => {
+    const t = text(render(<SettingsView data={opsResponse()} />));
+    expect(t).toContain('Chính sách Gợi ý thông minh');
+    expect(t).toContain('Hệ thống đang chạy với mặc định an toàn (tắt)');
+    expect(t).toContain('Thời hạn thiết bị nhận gợi ý');
+    expect(t).toContain('Lưu chính sách');
+    const stored = text(
+      render(
+        <SettingsView
+          data={opsResponse({
+            engagementPolicyStored: true,
+            engagementPolicy: { ...defaultEngagementPolicy, approved: true },
+          })}
+        />,
+      ),
+    );
+    expect(stored).not.toContain('mặc định an toàn');
+    expect(stored).toContain('Chính sách đã duyệt');
+    const ro = render(<SettingsView data={opsResponse()} />, ['support']);
+    expect(ro).not.toContain('>Lưu chính sách<');
+    expect(render(<SettingsView data={opsResponse()} />)).toContain('>Lưu chính sách<');
+  });
+
+  it('policy bounds, diff and validation follow the contract', () => {
+    const keys = policyFields.map((f) => f.key);
+    expect(keys).toContain('deviceLeaseDays');
+    const d = policyFields.find((f) => f.key === 'deviceLeaseDays')!;
+    expect([d.min, d.max]).toEqual([1, 60]);
+    const after = {
+      ...defaultEngagementPolicy,
+      approved: true,
+      weeklyCap: 2,
+      quietDefault: { from: '21:30', to: '07:00' },
+    };
+    expect(policyDiff(defaultEngagementPolicy, after)).toEqual([
+      { field: 'approved', before: 'false', after: 'true' },
+      { field: 'weeklyCap', before: '3', after: '2' },
+      { field: 'quiet.from', before: '22:00', after: '21:30' },
+    ]);
+    expect(policyErrors(after).size).toBe(0);
+    const bad = policyErrors({
+      ...after,
+      weeklyCap: 4,
+      deviceLeaseDays: Number.NaN,
+      quietDefault: { from: '25:00', to: '07:00' },
+    });
+    expect([...bad].sort()).toEqual(['deviceLeaseDays', 'quiet.from', 'weeklyCap']);
+    for (const f of policyFields) {
+      expect(notificationsVi[`ntf.policy.${f.key}`], f.key).toBeTruthy();
+      expect(notificationsEn[`ntf.policy.${f.key}.note`], f.key).toBeTruthy();
+    }
+  });
+
+  it('pure helpers: badges, counts, workflow step, outcomes, funnel, day groups, filters', () => {
+    const row = (draftState: NotificationTemplateRow['draftState']): NotificationTemplateRow => ({
+      ...tplDetail(),
+      draftState,
+    });
+    expect(tabBadges(stats(), [row('ready_for_review'), row('none')])).toEqual({
+      delivery: { n: 1, tone: 'error' },
+      templates: { n: 1, tone: 'warn' },
+    });
+    expect(tabBadges(stats({ problems: [] }), [])).toEqual({});
+    expect(templateCounts([row('draft'), row('ready_for_review')])).toMatchObject({
+      drafts: 1,
+      review: 1,
+      published: 2,
+    });
+    expect(nextStep({ draftState: 'draft' }, true, 0, true, false)).toBe('save');
+    expect(nextStep({ draftState: 'draft' }, false, 0, true, false)).toBe('submit');
+    expect(nextStep({ draftState: 'draft' }, false, 2, true, false)).toBeNull();
+    expect(nextStep({ draftState: 'ready_for_review' }, false, 0, false, true)).toBe('publish');
+    expect(
+      deliveryOutcomes({ accepted: 5, muted: 1, held: 2, no_device: 1, failed: 1, rejected: 2 }),
+    ).toEqual({ accepted: 5, notPushed: 4, failed: 3, unknown: 0 });
+    expect(funnelOf(undefined)).toBeNull();
+    expect(funnelOf({ eligible: 0 })).toBeNull();
+    const f = funnelOf({ eligible: 10, scheduled: 8, accepted: 6, opened: 3, completed: null })!;
+    expect(f.map((x) => x.ratio)).toEqual([1, 0.8, 0.6, 0.3, 0]);
+    expect(f[4]!.n).toBeNull();
+    expect(groupByDay(timeline.entries).map((g) => g.day)).toEqual(['2026-10-21', '2026-10-20']);
+    expect(
+      activeFilterCount({
+        view: 'engagement',
+        group: 'all',
+        kind: 'all',
+        scenario: 'ENG-01',
+        delivery: 'all',
+        recipient: 'm1',
+      }),
+    ).toBe(3);
+  });
+
+  it('journeys show an honest state when analytics is disabled', () => {
+    const t = text(
+      render(
+        <JourneysView
+          data={{
+            schemaVersion: 2,
+            definitionVersion: 1,
+            section: 'engagement',
+            range: { from: '2026-09-22', to: '2026-10-21' },
+            reportingZone: 'Asia/Ho_Chi_Minh',
+            status: 'disabled',
+            computedAt: null,
+            observedThrough: null,
+            sourceStartAt: null,
+            collectionEnabled: false,
+            stale: false,
+            privacyThreshold: 5,
+            unsupportedFilters: [],
+            metrics: [],
+            series: [],
+            retention: [],
+            breakdowns: [],
+            engagement: [],
+            quality: { unknownActor: null, lateObservations: null, sourceCoverage: 'none' },
+          }}
+        />,
+      ),
+    );
+    expect(t).toContain('Đo lường Gợi ý thông minh đang tắt');
+    expect(t).toContain('không có phễu');
   });
 });

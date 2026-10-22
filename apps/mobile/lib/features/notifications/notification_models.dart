@@ -142,6 +142,8 @@ class NotificationSettings {
     'photoSuggestions',
     'keepsakePrompts',
     'familyActivity',
+    // D-092 (G-109): someone joined, an invitation was declined.
+    'familyMembers',
   ];
 
   /// EN07 draws "Bài viết gợi ý" and "Hoạt động của gia đình" off.

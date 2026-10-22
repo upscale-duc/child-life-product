@@ -168,3 +168,14 @@ Watch, per [08 §2](08-operations.md#2-monitoring):
 - open and read rates per template version (descriptive only, no causal claims)
 - the ENG eligible-cohort funnel in Product Analytics
 - Cloud Scheduler run history
+
+## 15. Follow-up round (22/10/2026, owner decisions D-092)
+
+| Decision | Done |
+| --- | --- |
+| Ledger 120 days | Kept as built. |
+| G-109 family pushes | `memberJoined`, `inviteDeclined` (switch "Thành viên gia đình", default on), `roleChanged`, `memberRemoved` (always delivered), written in the membership transactions, delivered by the family-notice pipeline. Destination FAMILY_MEMBERS. Tests in `firebase/tests/family.integration.test.ts`. |
+| A-01–A-14 approved | Recorded in D-092; the engine still reads the approval from `config/engagement`. |
+| Config in the Portal | `staffNotificationOps` (read) and `staffSetEngagementPolicy` (audited, strict schema only); Settings tab panel. The callable invoker fix needs the owner's OK (see 08 §5). |
+| Local push not stored | Confirmed; G-109b closed. |
+| No 2-hour limit | `deviceLeaseDays` policy (default 30). |

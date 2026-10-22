@@ -10,7 +10,8 @@
 | `config/notifications.retryEnabled` | Portal → Cài đặt | on | Off: a transient provider error is `failed` at once | Rows are still persisted |
 | `config/notifications.pushPaused.<group>` | Portal → Cài đặt | all off | On: rows are written, push cancelled (`kill_switch`) for memories / family / care / other | Pausing **care** stops reminders the user set; confirm with the owner first |
 | Template pause / rollback | Portal → Mẫu nội dung | — | Back to version 0 or an older version | Sending continues |
-| ENG flags (`engagement*Enabled`, `engagementPushEnabled`, `config/engagement.approved`) | Feature hub (existing audited workflow) | off / false | See doc 17 | Disabling never revives legacy optional producers |
+| ENG flags (`engagement*Enabled`, `engagementPushEnabled`) | Feature hub (existing audited workflow) | off | See doc 17 | Disabling never revives legacy optional producers |
+| Smart Engagement policy `config/engagement` (approved, caps, quiet default, `deviceLeaseDays`) | Portal → Cài đặt (D-092), `staffSetEngagementPolicy`, `notifications.ops` | missing = off | Approval gate + limits; only the strict schema is written | Turn `approved` off: every proactive suggestion stops at the next tick |
 
 Every switch change writes `staffAudit`. The runtime caches `config/notifications` and templates for 60 s per instance, so a change takes effect within a minute.
 
@@ -62,7 +63,8 @@ There is no unbounded listener: the app inbox is limited to 30 rows per page plu
 - [ ] Owner approves P-174 (and G-109 gaps), retention (ledger 120 d; stats kept), and the permission mapping.
 - [ ] Apply the indexes and TTL to **dev** (`firestore:indexes`), deploy the Functions listed below and the Portal to dev, verify, then prod with separate approval.
   - Functions: `notificationOnInboxRead`, `retryNotificationPush`, `recordNotificationOpened`, the `staffNotification*` callables, plus every changed producer function.
-- [ ] Check the new callables keep `run.invoker` public on dev (curl, see the memory note "Dev callable invoker").
+- [ ] Check the new callables keep `run.invoker` public (curl). On dev, `staffNotificationTemplateAction` lost it on its first deploy and was fixed by hand. A permanent fix (`invoker: 'public'` on every `onCall`) was proposed and needs the owner's OK, since it changes Cloud Run access settings.
+- [ ] Approve Smart Engagement on the target environment from Portal → Cài đặt (no REST command needed).
 - [ ] Release the app (resolver, chips, open receipts, `deleteToken`); it is backward compatible with the old server.
 - [ ] Execute the device checklist below on iOS and Android, recording app and backend revisions.
 - [ ] Reconcile one day of dev: inbox rows = ledger `inbox`; push counts against FCM console.

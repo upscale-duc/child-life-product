@@ -329,6 +329,11 @@ it('waits for OS handoff acknowledgement and keeps one intent after acknowledgem
   expect(calls).toBe(1);
   expect((await db.collection('engagementIntents').get()).size).toBe(1);
 });
+it('the device lease lasts the policy days (30 by default), not 2 hours (D-092)', async () => {
+  await pending();
+  const lease = await db.doc('users/parent/settings/engagementDevice').get();
+  expect(lease.get('validUntil')).toBe(now.getTime() + 30 * ENG_DAY);
+});
 it('keeps fatigue paused until explicit resume after the minimum break', async () => {
   for (let n = 0; n < 3; n++) {
     const p = await pending();

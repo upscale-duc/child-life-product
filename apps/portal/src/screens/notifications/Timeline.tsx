@@ -11,24 +11,37 @@ import {
   type TimelineEntry,
   type TimelineRecipient,
 } from '@child-life/contracts';
-import { History, Search } from 'lucide-react';
+import { History, Search, ShieldAlert, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { ApiError, useApi, useLoad } from '../../api';
 import { EmptyState, Notice, Section, StatTiles } from '../../content-kit';
-import { Button, Loaded, Loading, Pill, Segmented, SelectMenu, TableScroll } from '../../ui';
+import { ZONE } from '../../format';
+import { Button, Segmented, SelectMenu } from '../../ui';
 import {
-  DeliveryPill,
+  CodeText,
+  DataTable,
+  ErrorPanel,
+  LoadedSkeleton,
+  PageSkeleton,
+  StatusDot,
+  TabHeader,
+  TableSkeleton,
+  type DotTone,
+} from './kit';
+import {
   ErrorLine,
   RangePicker,
   at,
+  dayLabel,
   defaultRange,
   destinationName,
   labelOr,
   normalizeFamilyCode,
   templateName,
+  vnToday,
   type RangeChoice,
 } from './shared';
 
@@ -128,6 +141,41 @@ export function whyLabel(intl: IntlShape, why: string | null): string {
   return labelOr(intl, `ntf.producer.${why}`, why);
 }
 
+/** Filters that differ from the defaults ("Bộ lọc (n)"). */
+export function activeFilterCount(f: Filters): number {
+  return (
+    (f.view !== 'all' ? 1 : 0) +
+    (f.group !== 'all' ? 1 : 0) +
+    (f.kind !== 'all' ? 1 : 0) +
+    (f.scenario !== 'all' ? 1 : 0) +
+    (f.delivery !== 'all' ? 1 : 0) +
+    (f.recipient ? 1 : 0)
+  );
+}
+
+/** Entries by Vietnam day, newest day first, in the server's order inside a day. */
+export function groupByDay(entries: readonly TimelineEntry[]) {
+  const out: Array<{ day: string; entries: TimelineEntry[] }> = [];
+  for (const e of entries) {
+    const day = vnToday(new Date(e.at));
+    const last = out[out.length - 1];
+    if (last && last.day === day) last.entries.push(e);
+    else out.push({ day, entries: [e] });
+  }
+  return out;
+}
+
+/** The dot of an entry's status: delivery when it was pushed, else the engagement status. */
+export function entryTone(e: TimelineEntry): DotTone {
+  const s = e.delivery ?? e.engagementStatus;
+  if (!s) return 'muted';
+  if (['accepted', 'completed'].includes(s)) return 'ok';
+  if (['failed', 'rejected'].includes(s)) return 'error';
+  if (['retry_pending', 'unknown', 'deferred'].includes(s)) return 'warn';
+  if (['pending', 'scheduled', 'attempted', 'eligible'].includes(s)) return 'wait';
+  return 'muted';
+}
+
 type State =
   | { status: 'idle' }
   | { status: 'loading' }
@@ -152,6 +200,7 @@ export function TimelineTab({
   const [invalid, setInvalid] = useState(false);
   const [range, setRange] = useState<RangeChoice>(() => defaultRange(30));
   const [filters, setFilters] = useState<Filters>(noFilters);
+  const [showFilters, setShowFilters] = useState(false);
   const [state, setState] = useState<State>({ status: 'idle' });
   const [recipients, setRecipients] = useState<TimelineRecipient[]>([]);
   const [more, setMore] = useState<{ busy: boolean; error: ApiError | null }>({
@@ -159,6 +208,7 @@ export function TimelineTab({
     error: null,
   });
   const [open, setOpen] = useState<string | null>(null);
+  const [tick, setTick] = useState(0);
   const seq = useRef(0);
 
   useEffect(() => {
@@ -182,7 +232,7 @@ export function TimelineTab({
           error: e instanceof ApiError ? e : new ApiError('unknown', null),
         });
       });
-  }, [api, code, range, filters]);
+  }, [api, code, range, filters, tick]);
 
   const loadMore = async () => {
     if (state.status !== 'ok' || !state.data.nextCursor || !code) return;
@@ -216,35 +266,67 @@ export function TimelineTab({
   const set = (next: Partial<Filters>) => setFilters((f) => ({ ...f, ...next }));
   const label = (id: string) => intl.formatMessage({ id });
   const all = label('ntf.filter.all');
+  const nFilters = activeFilterCount(filters);
 
   return (
     <div className="stack">
-      <Notice tone="warn">
+      <TabHeader
+        title={<FormattedMessage id="ntf.tab.timeline" />}
+        purpose={<FormattedMessage id="ntf.purpose.timeline" />}
+      />
+      <div className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/5 px-3 py-2 text-[13px]">
+        <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
         <FormattedMessage id="ntf.timeline.audited" />
-      </Notice>
-      <form className="flex flex-wrap items-end gap-2" onSubmit={submit}>
-        <label className="grid gap-1 text-[13px] font-medium">
+      </div>
+      <form className="grid gap-1.5" onSubmit={submit} role="search">
+        <label className="text-[13px] font-medium" htmlFor="ntf-timeline-code">
           <FormattedMessage id="ntf.timeline.code" />
-          <Input
-            className="w-36 font-mono uppercase"
-            value={input}
-            placeholder="F-7Q2K"
-            aria-invalid={invalid || undefined}
-            onChange={(e) => setInput(e.target.value)}
-          />
         </label>
-        <Button type="submit" kind="primary">
-          <Search className="size-4" aria-hidden="true" />
-          <FormattedMessage id="ntf.timeline.open" />
-        </Button>
-      </form>
-      {invalid && (
-        <p className="error" role="alert">
+        <div className="flex flex-wrap gap-2">
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="ntf-timeline-code"
+              className="w-44 pl-8 font-mono uppercase"
+              value={input}
+              placeholder="F-XXXX"
+              autoComplete="off"
+              spellCheck={false}
+              aria-invalid={invalid || undefined}
+              aria-describedby="ntf-timeline-code-hint"
+              onChange={(e) => setInput(e.target.value)}
+            />
+          </div>
+          <Button type="submit" kind="primary">
+            <FormattedMessage id="ntf.timeline.open" />
+          </Button>
+          {code && (
+            <Button
+              onClick={() => setShowFilters((v) => !v)}
+              title={label('ntf.timeline.filters.toggle')}
+            >
+              <SlidersHorizontal className="size-4" aria-hidden="true" />
+              <FormattedMessage id="ntf.timeline.filters" values={{ n: nFilters }} />
+            </Button>
+          )}
+        </div>
+        <p
+          id="ntf-timeline-code-hint"
+          className={invalid ? 'text-xs text-destructive' : 'text-xs text-muted-foreground'}
+          role={invalid ? 'alert' : undefined}
+        >
           <FormattedMessage id="ntf.timeline.badCode" />
         </p>
-      )}
-      {code && (
-        <div className="grid gap-2">
+      </form>
+      {code && showFilters && (
+        <div
+          className="grid gap-3 rounded-xl border bg-card p-4"
+          aria-label={label('ntf.timeline.filters.toggle')}
+          role="group"
+        >
           <RangePicker value={range} onChange={setRange} />
           <div className="flex flex-wrap items-center gap-2">
             <Segmented
@@ -261,7 +343,7 @@ export function TimelineTab({
               value={filters.group}
               options={(['all', ...inboxGroups] as const).map((g) => ({
                 value: g,
-                label: g === 'all' ? all : label(`ntf.group.${g}`),
+                label: g === 'all' ? `${label('ntf.col.group')}: ${all}` : label(`ntf.group.${g}`),
               }))}
               onChange={(group) => set({ group })}
             />
@@ -270,7 +352,7 @@ export function TimelineTab({
               value={filters.kind}
               options={(['all', ...notificationKinds] as const).map((k) => ({
                 value: k,
-                label: k === 'all' ? all : label(`ntf.kind.${k}`),
+                label: k === 'all' ? `${label('ntf.col.kind')}: ${all}` : label(`ntf.kind.${k}`),
               }))}
               onChange={(kind) => set({ kind })}
             />
@@ -279,7 +361,10 @@ export function TimelineTab({
               value={filters.scenario}
               options={(['all', ...engagementKinds] as const).map((s) => ({
                 value: s,
-                label: s === 'all' ? all : `${s} · ${label(`ntf.eng.${s}`)}`,
+                label:
+                  s === 'all'
+                    ? `${label('ntf.col.scenario')}: ${all}`
+                    : `${s} · ${label(`ntf.eng.${s}`)}`,
               }))}
               onChange={(scenario) => set({ scenario })}
             />
@@ -288,7 +373,8 @@ export function TimelineTab({
               value={filters.delivery}
               options={(['all', ...notificationDeliveryStates] as const).map((s) => ({
                 value: s,
-                label: s === 'all' ? all : label(`ntf.delivery.${s}`),
+                label:
+                  s === 'all' ? `${label('ntf.col.delivery')}: ${all}` : label(`ntf.delivery.${s}`),
               }))}
               onChange={(delivery) => set({ delivery })}
             />
@@ -297,7 +383,7 @@ export function TimelineTab({
                 label={label('ntf.col.recipient')}
                 value={filters.recipient ?? 'all'}
                 options={[
-                  { value: 'all', label: all },
+                  { value: 'all', label: `${label('ntf.col.recipient')}: ${all}` },
                   ...recipients.map((r) => ({
                     value: r.ref,
                     label: recipientLabel(intl, recipients, r.ref),
@@ -305,6 +391,11 @@ export function TimelineTab({
                 ]}
                 onChange={(r) => set({ recipient: r === 'all' ? undefined : r })}
               />
+            )}
+            {nFilters > 0 && (
+              <Button kind="ghost" onClick={() => setFilters(noFilters)}>
+                <FormattedMessage id="kit.clearFilters" />
+              </Button>
             )}
           </div>
         </div>
@@ -314,9 +405,9 @@ export function TimelineTab({
           <FormattedMessage id="ntf.timeline.startNote" />
         </EmptyState>
       ) : state.status === 'loading' || state.status === 'idle' ? (
-        <Loading />
+        <PageSkeleton />
       ) : state.status === 'error' ? (
-        <ErrorLine error={state.error} />
+        <ErrorPanel error={state.error} onRetry={() => setTick((t) => t + 1)} />
       ) : (
         <>
           <TimelineView
@@ -335,7 +426,15 @@ export function TimelineTab({
   );
 }
 
-/** The loaded timeline: summary, entries, upcoming (confirmed vs predicted) and preferences. */
+const legend: Array<[DotTone, string]> = [
+  ['ok', 'ntf.legend.ok'],
+  ['wait', 'ntf.legend.wait'],
+  ['warn', 'ntf.legend.warn'],
+  ['error', 'ntf.legend.error'],
+  ['muted', 'ntf.legend.muted'],
+];
+
+/** The loaded timeline: summary, entries by day, upcoming (confirmed vs predicted), preferences. */
 export function TimelineView({
   data,
   entries,
@@ -353,7 +452,8 @@ export function TimelineView({
 }) {
   const intl = useIntl();
   const s = data.summary;
-  const label = (id: string, raw: string | null) => (raw ? labelOr(intl, id, raw) : '—');
+  const label = (id: string, raw: string | null) => (raw ? labelOr(intl, id, raw) : null);
+  const days = groupByDay(entries);
   return (
     <div className="stack">
       <p className="text-[13px] text-muted-foreground">
@@ -361,6 +461,8 @@ export function TimelineView({
           id="ntf.timeline.family"
           values={{ code: data.family.code, a: data.family.babies, c: data.family.members }}
         />
+        {' · '}
+        <FormattedMessage id="ntf.sum.lastActivity" />: {at(intl, s.lastActivityAt)}
       </p>
       {data.truncated && (
         <Notice tone="warn">
@@ -378,17 +480,12 @@ export function TimelineView({
             key: 'e',
             label: <FormattedMessage id="ntf.sum.engagements" />,
             value: intl.formatNumber(s.engagements),
-          },
-          {
-            key: 'c',
-            label: <FormattedMessage id="ntf.sum.completed" />,
-            value: intl.formatNumber(s.completed),
-            tone: 'ok',
-          },
-          {
-            key: 'p',
-            label: <FormattedMessage id="ntf.sum.pending" />,
-            value: intl.formatNumber(s.pending),
+            foot: (
+              <FormattedMessage
+                id="ntf.sum.engagementsFoot"
+                values={{ a: s.completed, c: s.pending }}
+              />
+            ),
           },
           {
             key: 's',
@@ -402,209 +499,170 @@ export function TimelineView({
             value: intl.formatNumber(s.failed),
             tone: s.failed > 0 ? 'error' : 'default',
           },
-          {
-            key: 'l',
-            label: <FormattedMessage id="ntf.sum.lastActivity" />,
-            value: <span className="text-base">{at(intl, s.lastActivityAt)}</span>,
-          },
         ]}
       />
-      <Section title={<FormattedMessage id="ntf.timeline.entries" />} flush>
-        {entries.length === 0 ? (
-          <EmptyState title={<FormattedMessage id="ntf.timeline.noEntries" />} />
-        ) : (
-          <TableScroll min={1300}>
-            <table className="table">
-              <thead>
-                <tr>
-                  {[
-                    'time',
-                    'kind',
-                    'scenario',
-                    'recipient',
-                    'template',
-                    'channel',
-                    'lifecycle',
-                    'delivery',
-                    'read',
-                    'action',
-                    'reason',
-                  ].map((c) => (
-                    <th key={c}>
-                      <FormattedMessage id={`ntf.col.${c}`} />
+      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
+        <Section
+          flush
+          title={<FormattedMessage id="ntf.timeline.entries" />}
+          description={
+            <span
+              className="flex flex-wrap gap-x-3 gap-y-1"
+              aria-label={intl.formatMessage({ id: 'ntf.legend' })}
+            >
+              {legend.map(([tone, id]) => (
+                <StatusDot key={tone} tone={tone}>
+                  <FormattedMessage id={id} />
+                </StatusDot>
+              ))}
+            </span>
+          }
+        >
+          {entries.length === 0 ? (
+            <EmptyState title={<FormattedMessage id="ntf.timeline.noEntries" />} />
+          ) : (
+            <DataTable min={860} label={intl.formatMessage({ id: 'ntf.timeline.entries' })}>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>
+                      <FormattedMessage id="ntf.col.time" />
                     </th>
-                  ))}
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {entries.map((e) => (
-                  <tr key={e.entry} data-entry={e.entry}>
-                    <td className="nowrap">{at(intl, e.at)}</td>
-                    <td>{e.kind ? <FormattedMessage id={`ntf.kind.${e.kind}`} /> : '—'}</td>
-                    <td className="nowrap">
-                      {e.scenario ? (
-                        <>
-                          <Pill tone="purple">{e.scenario}</Pill>{' '}
-                          {labelOr(intl, `ntf.eng.${e.scenario}`, '')}
-                        </>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
-                    <td data-recipient={e.recipient}>
-                      {recipientLabel(intl, recipients, e.recipient)}
-                    </td>
-                    <td className="text-[13px]">
-                      {e.templateId ? (
-                        <>
-                          {templateName(intl, e.templateId)}
-                          <span className="text-muted-foreground">@{e.templateVersion ?? 0}</span>
-                        </>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
-                    <td>{label(`ntf.channel.${e.channel}`, e.channel)}</td>
-                    <td>{label(`ntf.lifecycle.${e.lifecycle}`, e.lifecycle)}</td>
-                    <td>
-                      <DeliveryPill state={e.delivery} />
-                    </td>
-                    <td>{label(`ntf.read.${e.read}`, e.read)}</td>
-                    <td>
-                      {e.action
-                        ? label(`ntf.action.${e.action}`, e.action)
-                        : e.engagementStatus
-                          ? intentLabel(intl, e.engagementStatus)
-                          : '—'}
-                    </td>
-                    <td>{reasonLabel(intl, e.reason)}</td>
-                    <td className="text-right">
-                      <Button kind="ghost" onClick={() => onOpen(e.entry)}>
+                    <th>
+                      <FormattedMessage id="ntf.col.kind" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="ntf.col.recipient" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="ntf.col.status" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="ntf.col.reason" />
+                    </th>
+                    <th>
+                      <span className="sr-only">
                         <FormattedMessage id="ntf.timeline.details" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableScroll>
-        )}
-        {onMore && (
-          <div className="flex justify-center border-t p-3">
-            <Button disabled={loadingMore} onClick={onMore}>
-              <FormattedMessage id="ntf.timeline.more" />
-            </Button>
-          </div>
-        )}
-      </Section>
-      <Section
-        title={<FormattedMessage id="ntf.timeline.upcoming" />}
-        description={
-          <span className="flex flex-wrap items-center gap-2">
-            <Pill tone="ok">
-              <FormattedMessage id="ntf.certainty.confirmed" />
-            </Pill>
-            <FormattedMessage id="ntf.certainty.confirmed.def" />
-            <Pill tone="wait">
-              <FormattedMessage id="ntf.certainty.predicted" />
-            </Pill>
-            <FormattedMessage id="ntf.certainty.predicted.def" />
-          </span>
-        }
-        flush
-      >
-        {data.upcoming.length === 0 ? (
-          <EmptyState title={<FormattedMessage id="ntf.timeline.noUpcoming" />} />
-        ) : (
-          <TableScroll min={900}>
-            <table className="table">
-              <thead>
-                <tr>
-                  {[
-                    'scenario',
-                    'certainty',
-                    'state',
-                    'at',
-                    'expires',
-                    'recipient',
-                    'conditions',
-                  ].map((c) => (
-                    <th key={c}>
-                      <FormattedMessage id={`ntf.col.${c}`} />
+                      </span>
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.upcoming.map((u, i) => (
-                  <tr key={`${u.scenario}-${i}`} data-certainty={u.certainty}>
-                    <td className="nowrap">
-                      <Pill tone="purple">{u.scenario}</Pill>{' '}
-                      {labelOr(intl, `ntf.eng.${u.scenario}`, '')}
-                    </td>
-                    <td>
-                      <Pill tone={u.certainty === 'confirmed' ? 'ok' : 'wait'}>
-                        <FormattedMessage id={`ntf.certainty.${u.certainty}`} />
-                      </Pill>
-                    </td>
-                    <td>
-                      <FormattedMessage id={`ntf.upState.${u.state}`} />
-                    </td>
-                    <td className="nowrap">{at(intl, u.at)}</td>
-                    <td className="nowrap">{at(intl, u.expiresAt)}</td>
-                    <td>{recipientLabel(intl, recipients, u.recipient)}</td>
-                    <td>
-                      {u.conditions.length ? (
-                        <ul className="list-disc pl-4 text-[13px]">
-                          {u.conditions.map((c) => (
-                            <li key={c}>{labelOr(intl, `ntf.condition.${c}`, c)}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
                   </tr>
+                </thead>
+                {days.map((d) => (
+                  <tbody key={d.day}>
+                    <tr className="hover:bg-transparent">
+                      <th
+                        colSpan={6}
+                        scope="rowgroup"
+                        className="bg-background text-[12px] font-semibold text-foreground"
+                      >
+                        {dayLabel(intl, d.day)}
+                        <span className="ml-2 font-normal text-muted-foreground">
+                          <FormattedMessage
+                            id="ntf.timeline.dayCount"
+                            values={{ n: d.entries.length }}
+                          />
+                        </span>
+                      </th>
+                    </tr>
+                    {d.entries.map((e) => {
+                      const status = e.delivery
+                        ? labelOr(intl, `ntf.delivery.${e.delivery}`, e.delivery)
+                        : intentLabel(intl, e.engagementStatus);
+                      const extra = [
+                        label(`ntf.channel.${e.channel}`, e.channel),
+                        label(`ntf.lifecycle.${e.lifecycle}`, e.lifecycle),
+                        label(`ntf.read.${e.read}`, e.read),
+                        e.action && e.action !== 'none'
+                          ? label(`ntf.action.${e.action}`, e.action)
+                          : null,
+                      ].filter(Boolean);
+                      return (
+                        <tr key={e.entry} data-entry={e.entry}>
+                          <td className="nowrap text-[13px] tabular-nums">
+                            {intl.formatTime(e.at, {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              timeZone: ZONE,
+                            })}
+                          </td>
+                          <td>
+                            {e.kind ? <FormattedMessage id={`ntf.kind.${e.kind}`} /> : '—'}
+                            <span className="block text-[12px] text-muted-foreground">
+                              {e.scenario && (
+                                <>
+                                  {e.scenario} {labelOr(intl, `ntf.eng.${e.scenario}`, '')}
+                                </>
+                              )}
+                              {e.templateId && (
+                                <>
+                                  {e.scenario ? ' · ' : ''}
+                                  {templateName(intl, e.templateId)}@{e.templateVersion ?? 0}
+                                </>
+                              )}
+                            </span>
+                          </td>
+                          <td className="text-[13px]" data-recipient={e.recipient}>
+                            {recipientLabel(intl, recipients, e.recipient)}
+                          </td>
+                          <td>
+                            <StatusDot tone={entryTone(e)}>{status}</StatusDot>
+                            {extra.length > 0 && (
+                              <span className="block text-[12px] text-muted-foreground">
+                                {extra.join(' · ')}
+                              </span>
+                            )}
+                          </td>
+                          <td className="text-[13px]">{reasonLabel(intl, e.reason)}</td>
+                          <td className="text-right">
+                            <Button kind="ghost" onClick={() => onOpen(e.entry)}>
+                              <FormattedMessage id="ntf.timeline.details" />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
                 ))}
-              </tbody>
-            </table>
-          </TableScroll>
-        )}
-      </Section>
-      <Section title={<FormattedMessage id="ntf.timeline.preferences" />} flush collapsible>
-        {data.preferences.length === 0 ? (
-          <EmptyState title={<FormattedMessage id="ntf.timeline.noPreferences" />} />
-        ) : (
-          <TableScroll min={600}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    <FormattedMessage id="ntf.col.recipient" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="ntf.col.muted" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="ntf.col.consent" />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+              </table>
+            </DataTable>
+          )}
+          {onMore && (
+            <div className="flex justify-center border-t p-3">
+              <Button disabled={loadingMore} onClick={onMore}>
+                <FormattedMessage id="ntf.timeline.more" />
+              </Button>
+            </div>
+          )}
+        </Section>
+        <div className="grid gap-4">
+          <UpcomingPanel upcoming={data.upcoming} recipients={recipients} />
+          <Section title={<FormattedMessage id="ntf.timeline.preferences" />} flush collapsible>
+            {data.preferences.length === 0 ? (
+              <EmptyState title={<FormattedMessage id="ntf.timeline.noPreferences" />} />
+            ) : (
+              <ul>
                 {data.preferences.map((p) => (
-                  <tr key={p.recipient}>
-                    <td>{recipientLabel(intl, recipients, p.recipient)}</td>
-                    <td>
+                  <li
+                    key={p.recipient}
+                    className="grid gap-0.5 border-b px-5 py-3 text-[13px] last:border-b-0"
+                  >
+                    <span className="font-medium">
+                      {recipientLabel(intl, recipients, p.recipient)}
+                    </span>
+                    <span>
+                      <span className="text-muted-foreground">
+                        <FormattedMessage id="ntf.col.muted" />:{' '}
+                      </span>
                       {p.muted.length ? (
                         p.muted.map((m) => labelOr(intl, `ntf.setting.${m}`, m)).join(', ')
                       ) : (
-                        <span className="muted">
-                          <FormattedMessage id="ntf.timeline.noneMuted" />
-                        </span>
+                        <FormattedMessage id="ntf.timeline.noneMuted" />
                       )}
-                    </td>
-                    <td>
+                    </span>
+                    <span>
+                      <span className="text-muted-foreground">
+                        <FormattedMessage id="ntf.col.consent" />:{' '}
+                      </span>
                       <FormattedMessage
                         id={
                           p.engagementConsent === null
@@ -614,15 +672,101 @@ export function TimelineView({
                               : 'ntf.consent.no'
                         }
                       />
-                    </td>
-                  </tr>
+                    </span>
+                  </li>
                 ))}
-              </tbody>
-            </table>
-          </TableScroll>
-        )}
-      </Section>
+              </ul>
+            )}
+          </Section>
+        </div>
+      </div>
     </div>
+  );
+}
+
+/** Sắp tới: confirmed sends are solid cards, predicted ones dashed (and labelled, not colour only). */
+export function UpcomingPanel({
+  upcoming,
+  recipients,
+}: {
+  upcoming: NotificationTimelineResponse['upcoming'];
+  recipients: TimelineRecipient[];
+}) {
+  const intl = useIntl();
+  return (
+    <Section
+      title={<FormattedMessage id="ntf.timeline.upcoming" />}
+      description={
+        <span className="grid gap-1">
+          <span className="flex items-center gap-2">
+            <span
+              className="h-3 w-5 rounded-sm border-2 border-solid border-success"
+              aria-hidden="true"
+            />
+            <FormattedMessage id="ntf.certainty.confirmed" />
+            <span className="text-muted-foreground">
+              <FormattedMessage id="ntf.certainty.confirmed.def" />
+            </span>
+          </span>
+          <span className="flex items-center gap-2">
+            <span
+              className="h-3 w-5 rounded-sm border-2 border-dashed border-muted-foreground"
+              aria-hidden="true"
+            />
+            <FormattedMessage id="ntf.certainty.predicted" />
+            <span className="text-muted-foreground">
+              <FormattedMessage id="ntf.certainty.predicted.def" />
+            </span>
+          </span>
+        </span>
+      }
+    >
+      {upcoming.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage id="ntf.timeline.noUpcoming" />
+        </p>
+      ) : (
+        <ul className="grid gap-2">
+          {upcoming.map((u, i) => (
+            <li
+              key={`${u.scenario}-${i}`}
+              data-certainty={u.certainty}
+              className={
+                u.certainty === 'confirmed'
+                  ? 'grid gap-1 rounded-lg border-2 border-solid border-success/50 bg-success/5 p-3 text-[13px]'
+                  : 'grid gap-1 rounded-lg border-2 border-dashed border-muted-foreground/40 p-3 text-[13px]'
+              }
+            >
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="font-semibold">
+                  {u.scenario} {labelOr(intl, `ntf.eng.${u.scenario}`, '')}
+                </span>
+                <span className="ml-auto text-[12px] font-medium uppercase">
+                  <FormattedMessage id={`ntf.certainty.${u.certainty}`} />
+                </span>
+              </span>
+              <span className="text-muted-foreground">
+                <FormattedMessage id={`ntf.upState.${u.state}`} /> · {at(intl, u.at)}
+                {u.expiresAt && (
+                  <>
+                    {' · '}
+                    <FormattedMessage id="ntf.col.expires" /> {at(intl, u.expiresAt)}
+                  </>
+                )}
+              </span>
+              {u.recipient && <span>{recipientLabel(intl, recipients, u.recipient)}</span>}
+              {u.conditions.length > 0 && (
+                <ul className="list-disc pl-4 text-[12px] text-muted-foreground">
+                  {u.conditions.map((c) => (
+                    <li key={c}>{labelOr(intl, `ntf.condition.${c}`, c)}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }
 
@@ -647,18 +791,18 @@ function DetailSheet({
         side="right"
         aria-describedby={undefined}
         closeLabel={intl.formatMessage({ id: 'action.close' })}
-        className="w-full gap-0 overflow-y-auto sm:max-w-2xl"
+        className="w-full gap-0 overflow-y-auto sm:max-w-xl"
       >
         <div className="border-b px-6 py-5">
           <SheetTitle className="text-base">
             <FormattedMessage id="ntf.detail.title" />
           </SheetTitle>
-          <p className="font-mono text-[12px] text-muted-foreground">{entry}</p>
+          <CodeText value={entry} max="max-w-full" />
         </div>
         <div className="p-6">
-          <Loaded load={load} reload={reload}>
+          <LoadedSkeleton load={load} reload={reload} skeleton={<TableSkeleton rows={8} />}>
             {(d) => <EntryDetailView detail={d} />}
-          </Loaded>
+          </LoadedSkeleton>
         </div>
       </SheetContent>
     </Sheet>
@@ -667,8 +811,20 @@ function DetailSheet({
 
 const yesNo = (v: boolean | null) =>
   v === null ? 'ntf.detail.unknown' : v ? 'ntf.detail.yes' : 'ntf.detail.no';
+const yesNoTone = (v: boolean | null): DotTone => (v === null ? 'muted' : v ? 'ok' : 'warn');
 
-/** Why a notification was created, the checks it passed, and what happened to it. */
+function DetailSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="grid gap-2">
+      <h3 className="text-[13px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <FormattedMessage id={title} />
+      </h3>
+      {children}
+    </section>
+  );
+}
+
+/** Why · Checks · Delivery · Outcome, with the state transitions as a vertical timeline. */
 export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail }) {
   const intl = useIntl();
   const stateOf = (dimension: string, to: string) => {
@@ -677,7 +833,7 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
       delivery: 'ntf.delivery',
       read: 'ntf.read',
       action: 'ntf.action',
-      engagement: 'ntf.stage',
+      engagement: 'ntf.intent',
     };
     return prefix[dimension] ? labelOr(intl, `${prefix[dimension]}.${to}`, to) : to;
   };
@@ -689,93 +845,83 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
       <dd className="min-w-0">{value}</dd>
     </>
   );
+  const dl = 'grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm';
   return (
-    <div className="grid gap-5">
-      <dl className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
-        {row('ntf.col.kind', d.kind ? <FormattedMessage id={`ntf.kind.${d.kind}`} /> : '—')}
-        {row(
-          'ntf.col.scenario',
-          d.scenario ? `${d.scenario} · ${labelOr(intl, `ntf.eng.${d.scenario}`, '')}` : '—',
-        )}
-        {row('ntf.detail.why', whyLabel(intl, d.why))}
-        {row('ntf.detail.decision', intentLabel(intl, d.decision))}
-        {row('ntf.col.reason', reasonLabel(intl, d.reason))}
-        {row(
-          'ntf.col.template',
-          d.templateId ? `${templateName(intl, d.templateId)} @${d.templateVersion ?? 0}` : '—',
-        )}
-        {row('ntf.col.destination', destinationName(intl, d.destination))}
-      </dl>
-      <div>
-        <h3 className="mb-2 text-sm font-semibold">
-          <FormattedMessage id="ntf.detail.outcome" />
-        </h3>
-        <dl className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
-          {row('ntf.detail.pushAttempted', <FormattedMessage id={yesNo(d.pushAttempted)} />)}
-          {row('ntf.detail.providerAccepted', <FormattedMessage id={yesNo(d.providerAccepted)} />)}
-          {row('ntf.detail.opened', <FormattedMessage id={yesNo(d.opened)} />)}
+    <div className="grid gap-6">
+      <DetailSection title="ntf.detail.section.why">
+        <dl className={dl}>
+          {row('ntf.detail.why', whyLabel(intl, d.why))}
+          {row('ntf.col.kind', d.kind ? <FormattedMessage id={`ntf.kind.${d.kind}`} /> : '—')}
           {row(
-            'ntf.detail.navigation',
-            d.navigated ? <FormattedMessage id={`ntf.nav.${d.navigated}`} /> : '—',
+            'ntf.col.scenario',
+            d.scenario ? `${d.scenario} · ${labelOr(intl, `ntf.eng.${d.scenario}`, '')}` : '—',
           )}
-          {row('ntf.detail.completed', <FormattedMessage id={yesNo(d.completed)} />)}
-          {d.cancelledOrExpired &&
-            row('ntf.detail.cancelled', reasonLabel(intl, d.cancelledOrExpired))}
+          {row('ntf.detail.decision', intentLabel(intl, d.decision))}
+          {row('ntf.col.reason', reasonLabel(intl, d.reason))}
         </dl>
-        <p className="mt-2 text-[12px] text-muted-foreground">
-          <FormattedMessage id="ntf.acceptedNotDelivered" />
-        </p>
-      </div>
-      <div>
-        <h3 className="mb-2 text-sm font-semibold">
-          <FormattedMessage id="ntf.detail.checks" />
-        </h3>
+      </DetailSection>
+      <DetailSection title="ntf.detail.checks">
         {d.checks.length === 0 ? (
           <p className="text-sm text-muted-foreground">—</p>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>
-                  <FormattedMessage id="ntf.col.rule" />
-                </th>
-                <th>
-                  <FormattedMessage id="ntf.col.result" />
-                </th>
-                <th>
-                  <FormattedMessage id="ntf.col.note" />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {d.checks.map((c, i) => (
-                <tr key={`${c.rule}-${i}`}>
-                  <td>{labelOr(intl, `ntf.rule.${c.rule}`, c.rule)}</td>
-                  <td>
-                    <Pill
-                      tone={c.result === 'pass' ? 'ok' : c.result === 'fail' ? 'error' : 'muted'}
-                    >
-                      <FormattedMessage id={`ntf.check.${c.result}`} />
-                    </Pill>
-                  </td>
-                  <td>{c.detail ? reasonLabel(intl, c.detail) : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ul className="grid gap-1.5 text-sm">
+            {d.checks.map((c, i) => (
+              <li key={`${c.rule}-${i}`} className="flex flex-wrap items-baseline gap-x-2">
+                <StatusDot
+                  tone={c.result === 'pass' ? 'ok' : c.result === 'fail' ? 'error' : 'muted'}
+                >
+                  <span className="sr-only">
+                    <FormattedMessage id={`ntf.check.${c.result}`} />:{' '}
+                  </span>
+                  {labelOr(intl, `ntf.rule.${c.rule}`, c.rule)}
+                </StatusDot>
+                <span className="text-[12px] text-muted-foreground" aria-hidden="true">
+                  <FormattedMessage id={`ntf.check.${c.result}`} />
+                </span>
+                {c.detail && (
+                  <span className="w-full pl-3.5 text-[12px] text-muted-foreground">
+                    {reasonLabel(intl, c.detail)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
-      <div>
-        <h3 className="mb-2 text-sm font-semibold">
-          <FormattedMessage id="ntf.detail.transitions" />
-        </h3>
-        {d.timeline.length === 0 ? (
-          <p className="text-sm text-muted-foreground">—</p>
-        ) : (
-          <ol className="grid gap-2 border-l pl-4">
+      </DetailSection>
+      <DetailSection title="ntf.detail.section.delivery">
+        <dl className={dl}>
+          {row(
+            'ntf.col.template',
+            d.templateId ? `${templateName(intl, d.templateId)} @${d.templateVersion ?? 0}` : '—',
+          )}
+          {row('ntf.col.destination', destinationName(intl, d.destination))}
+          {row(
+            'ntf.detail.pushAttempted',
+            <StatusDot tone={yesNoTone(d.pushAttempted)}>
+              <FormattedMessage id={yesNo(d.pushAttempted)} />
+            </StatusDot>,
+          )}
+          {row(
+            'ntf.detail.providerAccepted',
+            <StatusDot tone={yesNoTone(d.providerAccepted)}>
+              <FormattedMessage id={yesNo(d.providerAccepted)} />
+            </StatusDot>,
+          )}
+        </dl>
+        <p className="text-[12px] text-muted-foreground">
+          <FormattedMessage id="ntf.acceptedNotDelivered" />
+        </p>
+        {d.timeline.length > 0 && (
+          <ol className="relative ml-1.5 grid gap-3 border-l pl-5">
             {d.timeline.map((t, i) => (
-              <li key={i} className="text-sm">
-                <span className="text-muted-foreground tabular-nums">{at(intl, t.at)}</span>{' '}
+              <li key={i} className="relative text-sm">
+                <span
+                  className="absolute top-1.5 -left-[25px] size-2.5 rounded-full border-2 border-background bg-primary"
+                  aria-hidden="true"
+                />
+                <span className="block text-[12px] text-muted-foreground tabular-nums">
+                  {at(intl, t.at)}
+                </span>
                 <span className="font-medium">
                   {labelOr(intl, `ntf.dimension.${t.dimension}`, t.dimension)}
                 </span>
@@ -788,7 +934,29 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
             ))}
           </ol>
         )}
-      </div>
+      </DetailSection>
+      <DetailSection title="ntf.detail.outcome">
+        <dl className={dl}>
+          {row(
+            'ntf.detail.opened',
+            <StatusDot tone={yesNoTone(d.opened)}>
+              <FormattedMessage id={yesNo(d.opened)} />
+            </StatusDot>,
+          )}
+          {row(
+            'ntf.detail.navigation',
+            d.navigated ? <FormattedMessage id={`ntf.nav.${d.navigated}`} /> : '—',
+          )}
+          {row(
+            'ntf.detail.completed',
+            <StatusDot tone={yesNoTone(d.completed)}>
+              <FormattedMessage id={yesNo(d.completed)} />
+            </StatusDot>,
+          )}
+          {d.cancelledOrExpired &&
+            row('ntf.detail.cancelled', reasonLabel(intl, d.cancelledOrExpired))}
+        </dl>
+      </DetailSection>
       {d.errors.length > 0 && (
         <Notice tone="error" title={<FormattedMessage id="ntf.detail.errors" />}>
           <ul className="list-disc pl-4 text-[12px]">
@@ -798,7 +966,7 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
                   <FormattedMessage id={`ntf.deliveryError.${e}`} />
                 </li>
               ) : (
-                <li key={e} className="font-mono">
+                <li key={e} className="font-mono break-all">
                   {e}
                 </li>
               ),

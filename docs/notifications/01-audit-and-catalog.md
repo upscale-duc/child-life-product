@@ -43,20 +43,22 @@ Groups (the app's chips): **Kỷ niệm** (memories), **Gia đình** (family), *
 | `weeklySummary` | memories | ENG-03 | opted-in member | `eng.weekly_recap` | MEMORIES_WEEKLY_RECAP | weeklySummary | held | ENG id per week | engagement |
 | `familyActivity` | family | ENG-05 | opted-in member | `eng.family_recap` | FAMILY_SHARED_CONTENT | familyActivity | held | ENG id per 30-min group | engagement |
 | `rhythm` | other | ENG-06 | opted-in member | `eng.lumi_insight` | LUMI_INSIGHT | rhythm | held | ENG id | engagement |
+| `memberJoined` | family | `acceptInvite` (in its transaction) | coParents except the newcomer | `family.member_joined` | FAMILY_MEMBERS | familyMembers | held | invite id | none |
+| `inviteDeclined` | family | `declineInvite` | the inviter | `family.invite_declined` | FAMILY_MEMBERS | familyMembers | held | invite id | none |
+| `roleChanged` | family | `updateMember` when the role changes (not relation / date edits) | that member | `family.role_changed` | FAMILY_MEMBERS | always | held | member + time | none |
+| `memberRemoved` | family | `removeMember` | the removed person | `family.member_removed` | INBOX (no access left) | always | held | member + time | none |
 | `stage`, `milestone`, `article` | other | **reserved**: no V1 sender; the EN07 switch is kept | — | — | INBOX | stages / milestones / articles | held | — | none |
 | `test` | other | **reserved**: engineering delivery check | — | — | INBOX | always | held | — | none |
 
 ENG-04 does not have a kind of its own. It measures the Care reminder (`reminderRule`) without changing it, so promotional caps never block a reminder the person set.
 
-### Recorded gaps (G-109)
+### Gaps (G-109, resolved by D-092)
 
-The brief lists family and account events that V1 does not push. They are shown in the catalog as gaps rather than invented:
+Invitation accepted / declined, role changed and member removed became notifications (rows above, owner D-092). Two events stay outside push and are shown in the catalog as such:
 
-| Event | V1 channel | Note |
+| Event | Channel | Note |
 | --- | --- | --- |
 | Invitation received | Email / link | The invitee has no account yet. |
-| Invitation accepted / declined | None | Owner decision needed. |
-| Role changed / member removed | None | Access ends at once; the app blocks old rows of a revoked baby. |
 | Security / account changes | Email | Verification, password reset, deletion, ownership transfer. |
 
 ## 3. Shared contract per type

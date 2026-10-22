@@ -4338,6 +4338,8 @@
   "ntKeepsakesHint": "On month birthdays and at 100 days",
   "ntFamilyActivity": "Family activity",
   "ntFamilyActivityHint": "Likes, memory views",
+  "ntFamilyMembers": "Family members",
+  "ntFamilyMembersHint": "When someone joins or declines an invitation",
   "ntGroupTiming": "TIMING",
   "ntDigest": "Suggestion time",
   "ntDigestDaily": "{time} daily",

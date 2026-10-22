@@ -17,7 +17,7 @@ The inbox is `users/{uid}/notifications/{n_…}`. Functions write each row **bef
 
 Rows are kept 90 days. The daily sweep deletes rows past `expireAt`, and the app hides expired rows even if they are still cached.
 
-Local notifications are not mirrored in V1. These are device-scheduled one-off reminders, rhythm and milestone nudges, and the personal-day digest. The OS gives no reliable "shown" signal, so writing a row on schedule would claim a display that may never have happened (several devices, notifications disabled, the app killed before the schedule). The server-side counterparts are already rows: rule reminders, vaccines and ENG-02/06 pushes. Mirroring local reminders needs a reconciliation design (G-109b) and is documented, not built.
+Local notifications are not mirrored — owner decision D-092 #5 (G-109b closed). These are device-scheduled one-off reminders, rhythm and milestone nudges, and the personal-day digest. The OS gives no reliable "shown" signal, so writing a row on schedule would claim a display that may never have happened (several devices, notifications disabled, the app killed before the schedule). The server-side counterparts are already rows: rule reminders, vaccines and ENG-02/06 pushes. The server-side counterparts are the record of what matters.
 
 ## 2. App behaviour
 
@@ -45,7 +45,7 @@ Local notifications are not mirrored in V1. These are device-scheduled one-off r
 
 ## 3. Destination registry
 
-The 17 semantic ids are listed below. The Portal's "Điểm đến" table shows the same data from the contract. The app mirror is `notification_destinations.dart`; a contract test fails if any id is missing there.
+The 18 semantic ids are listed below. The Portal's "Điểm đến" table shows the same data from the contract. The app mirror is `notification_destinations.dart`; a contract test fails if any id is missing there.
 
 | Id | Screen | Params | Permission | Fallback | Completion |
 | --- | --- | --- | --- | --- | --- |
@@ -64,6 +64,7 @@ The 17 semantic ids are listed below. The Portal's "Điểm đến" table shows 
 | FAMILY_MESSAGES | Lời nhắn | babyId | co_parent | INBOX | — |
 | FAMILY_SHARED_CONTENT | family recap (ENG-05) | babyId, engagementId | server re-auth | MEMORIES | view shared content |
 | FAMILY_STORAGE | Dung lượng | — | signed_in | INBOX | — |
+| FAMILY_MEMBERS | Thành viên gia đình | babyId | member | INBOX | — |
 | LUMI_INSIGHT | personal day (ENG-06) | babyId, engagementId | server re-auth | INBOX | view the source suggestion |
 | INBOX | Hộp thông báo | — | signed_in | — | — |
 

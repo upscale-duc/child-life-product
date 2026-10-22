@@ -37,6 +37,8 @@ export const notificationSettingKeys = [
   'photoSuggestions',
   'keepsakePrompts',
   'familyActivity',
+  // G-109 (D-092): someone joined, an invitation was declined.
+  'familyMembers',
 ] as const;
 export type NotificationSettingKey = (typeof notificationSettingKeys)[number];
 export type NotificationSettings = Record<NotificationSettingKey, boolean>;
@@ -57,6 +59,7 @@ export const defaultNotificationSettings: NotificationSettings = {
   photoSuggestions: true,
   keepsakePrompts: true,
   familyActivity: false,
+  familyMembers: true,
 };
 
 /** The stored document (Rules mirror it): any subset of the keys, plus `updatedAt`. */
@@ -76,6 +79,7 @@ export const notificationSettingsDocSchema = z
     photoSuggestions: z.boolean().optional(),
     keepsakePrompts: z.boolean().optional(),
     familyActivity: z.boolean().optional(),
+    familyMembers: z.boolean().optional(),
     updatedAt: z.unknown().optional(),
   })
   .strict();
@@ -119,6 +123,11 @@ export const notificationKinds = [
   'familyActivity',
   // A push sent by engineering to check delivery (D-076 #2).
   'test',
+  // G-109 (D-092): family membership events.
+  'memberJoined',
+  'inviteDeclined',
+  'roleChanged',
+  'memberRemoved',
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 
@@ -148,6 +157,10 @@ export const notificationCategoryOf: Record<NotificationKind, NotificationCatego
   keepsakePrompt: 'family',
   familyActivity: 'family',
   test: 'general',
+  memberJoined: 'family',
+  inviteDeclined: 'family',
+  roleChanged: 'family',
+  memberRemoved: 'family',
 };
 
 /**
@@ -176,6 +189,11 @@ export const notificationSettingOf: Record<NotificationKind, NotificationSetting
   keepsakePrompt: 'keepsakePrompts',
   familyActivity: 'familyActivity',
   test: null,
+  memberJoined: 'familyMembers',
+  inviteDeclined: 'familyMembers',
+  // About the person's own access: always delivered.
+  roleChanged: null,
+  memberRemoved: null,
 };
 
 /** Reminders the person set ring on time even in quiet hours (EN07 "Luôn đến đúng giờ"). */
@@ -256,13 +274,19 @@ export const inboxItemSchema = z
     expireAt: z.date(),
     // P-174 (optional: rows written before the unified platform lack them).
     /** Semantic destination id (`notificationDestinations`); the app's resolver opens it. */
-    destination: z.string().regex(/^[A-Z_]{4,40}$/).optional(),
+    destination: z
+      .string()
+      .regex(/^[A-Z_]{4,40}$/)
+      .optional(),
     /** Inbox chip (`inboxGroups`). */
     group: z.enum(['memories', 'family', 'care', 'other']).optional(),
     templateId: z.string().max(40).nullable().optional(),
     templateVersion: z.number().int().min(0).optional(),
     /** The server-only ledger entry (`notificationDeliveries/{id}`); an opaque hash. */
-    ledgerId: z.string().regex(/^d_[a-f0-9]{40}$/).optional(),
+    ledgerId: z
+      .string()
+      .regex(/^d_[a-f0-9]{40}$/)
+      .optional(),
   })
   .strict();
 export type InboxItem = z.infer<typeof inboxItemSchema>;

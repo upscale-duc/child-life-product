@@ -23113,6 +23113,14 @@
   "@ntFamilyActivityHint": {
     "description": "EN07 row helper."
   },
+  "ntFamilyMembers": "Thành viên gia đình",
+  "@ntFamilyMembers": {
+    "description": "EN07 switch (D-092, key familyMembers): someone joined or declined an invitation."
+  },
+  "ntFamilyMembersHint": "Khi có người tham gia hoặc từ chối lời mời",
+  "@ntFamilyMembersHint": {
+    "description": "EN07 subtitle of ntFamilyMembers."
+  },
   "ntGroupTiming": "THỜI GIAN",
   "@ntGroupTiming": {
     "description": "EN07 group header."

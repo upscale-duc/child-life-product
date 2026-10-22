@@ -23,7 +23,7 @@ describe('notification settings (EN07)', () => {
     expect(notificationSettingsOf(null)).toEqual(defaultNotificationSettings);
     expect(defaultNotificationSettings.articles).toBe(false);
     expect(defaultNotificationSettings.familyActivity).toBe(false);
-    expect(notificationSettingKeys.filter((k) => defaultNotificationSettings[k])).toHaveLength(12);
+    expect(notificationSettingKeys.filter((k) => defaultNotificationSettings[k])).toHaveLength(13); // + familyMembers (G-109, D-092)
   });
 
   it('vaccines and spending follow the old "Nhắc việc" switch until set (G-056)', () => {

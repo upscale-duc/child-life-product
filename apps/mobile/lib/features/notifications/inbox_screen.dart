@@ -480,6 +480,11 @@ String _time(String locale, DateTime at, DateTime now) {
     'photoSuggestion' ||
     'keepsakePrompt' => (ClIcons.memories, c.sunshineSoft, c.ink),
     'message' || 'familyActivity' => (ClIcons.family, c.peachSoft, c.ink),
+    // D-092 membership events (ink on the soft warm fill, Night care too).
+    'memberJoined' => (ClIcons.family, c.peachSoft, c.ink),
+    'inviteDeclined' => (ClIcons.mail, c.peachSoft, c.ink),
+    'roleChanged' => (ClIcons.shield, c.peachSoft, c.ink),
+    'memberRemoved' => (ClIcons.lock, c.peachSoft, c.ink),
     'storage' || 'storageGranted' => (ClIcons.upload, c.surface2, c.ink),
     _ => (ClIcons.bell, c.mintSoft, c.mintText),
   };

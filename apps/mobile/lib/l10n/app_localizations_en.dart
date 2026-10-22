@@ -16629,6 +16629,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntFamilyActivityHint => 'Likes, memory views';
 
   @override
+  String get ntFamilyMembers => 'Family members';
+
+  @override
+  String get ntFamilyMembersHint =>
+      'When someone joins or declines an invitation';
+
+  @override
   String get ntGroupTiming => 'TIMING';
 
   @override

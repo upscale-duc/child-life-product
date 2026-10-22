@@ -251,6 +251,29 @@ void main() {
       expect(toggleOf('articles').value, isTrue);
     });
 
+    testWidgets('Thành viên gia đình (D-092) is on by default and saves', (
+      tester,
+    ) async {
+      final repo = FakeNotificationRepository();
+      await _pump(
+        tester,
+        const NotificationSettingsScreen(),
+        _overrides(repo, relative: true),
+      );
+      final row = find.byKey(const Key('nt-familyMembers'));
+      await tester.scrollUntilVisible(row, 200);
+      expect(find.text('Thành viên gia đình'), findsOneWidget);
+      final toggle = find.descendant(of: row, matching: find.byType(ClToggle));
+      expect(tester.widget<ClToggle>(toggle).value, isTrue);
+      // Clear of the pinned header and the screen edge.
+      await tester.scrollUntilVisible(find.byKey(const Key('nt-quiet')), 200);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      final saved = repo.calls.single.$2! as Map;
+      expect(saved['familyMembers'], isFalse);
+      expect(saved.length, NotificationSettings.keys.length);
+    });
+
     testWidgets('relatives see no reminder or parent-only rows', (
       tester,
     ) async {
@@ -400,6 +423,18 @@ void main() {
       expect(inboxGroupOf('rhythm'), InboxGroup.other);
       expect(inboxGroupOf('test'), InboxGroup.other);
       expect(inboxGroupOf('fromTheFuture'), InboxGroup.other);
+      // D-092 membership events.
+      for (final kind in [
+        'memberJoined',
+        'inviteDeclined',
+        'roleChanged',
+        'memberRemoved',
+      ]) {
+        expect(inboxGroupOf(kind), InboxGroup.family, reason: kind);
+      }
+      expect(destinationFor('memberJoined', const {}), 'FAMILY_MEMBERS');
+      expect(destinationFor('roleChanged', const {}), 'FAMILY_MEMBERS');
+      expect(destinationFor('memberRemoved', const {}), 'INBOX');
       expect(inboxGroupFor('memories', 'care'), InboxGroup.care);
       expect(inboxGroupFor('memories', 'nonsense'), InboxGroup.memories);
     });
@@ -447,7 +482,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 17);
+      expect(notificationDestinations.length, 18);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {
@@ -784,6 +819,95 @@ void main() {
       expect(outcome, NotificationOpenOutcome.navigated);
       expect(visits, isEmpty);
       expect(find.text('Mục này không còn mở được.'), findsNothing);
+    });
+
+    testWidgets('membership events (D-092): Gia đình chip, Thành viên screen', (
+      tester,
+    ) async {
+      final reporter = FakeNotificationOpenReporter();
+      final repo = FakeNotificationRepository(
+        inbox: [
+          inboxItem(
+            'n_joined0001',
+            kind: 'memberJoined',
+            category: NotificationCategory.family,
+            route: 'inbox',
+            at: DateTime(2026, 10, 8, 9),
+            vi: ('Có người vừa tham gia gia đình', 'Mở để xem.'),
+            en: ('Someone joined the family', 'Open to see.'),
+            data: {'babyId': teddyId},
+          ),
+          inboxItem(
+            'n_removed001',
+            kind: 'memberRemoved',
+            category: NotificationCategory.family,
+            route: 'inbox',
+            at: DateTime(2026, 10, 8, 8),
+            vi: ('Bạn không còn trong gia đình của bé', 'Mở để xem.'),
+            en: ('You are no longer in the family', 'Open to see.'),
+            // The removed person no longer follows this baby.
+            babyId: 'b_removed_from',
+            destination: 'INBOX',
+          ),
+        ],
+      );
+      final visits = await _pump(
+        tester,
+        const InboxScreen(),
+        _overrides(repo, relative: true, reporter: reporter),
+      );
+      await tester.ensureVisible(find.byKey(const Key('ntChip-family')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('ntChip-family')));
+      await tester.pumpAndSettle();
+      expect(find.text('Có người vừa tham gia gia đình'), findsOneWidget);
+      expect(find.text('Bạn không còn trong gia đình của bé'), findsOneWidget);
+
+      // Removed: the inbox is where it opens; no "gone" toast, nowhere else.
+      await tester.tap(find.text('Bạn không còn trong gia đình của bé'));
+      await tester.pumpAndSettle();
+      expect(visits, isEmpty);
+      expect(find.text('Mục này không còn mở được.'), findsNothing);
+      expect(reporter.records.last.outcome, NotificationOpenOutcome.navigated);
+      expect(reporter.records.last.destination, 'INBOX');
+
+      // Joined: any member (here a relative) opens Gia đình.
+      await tester.tap(find.text('Có người vừa tham gia gia đình'));
+      await tester.pumpAndSettle();
+      expect(visits, ['/utilities/family']);
+      expect(reporter.records.last.destination, 'FAMILY_MEMBERS');
+    });
+
+    testWidgets('a memberRemoved push opens the inbox at once', (tester) async {
+      final visits = await _pump(
+        tester,
+        probe,
+        _overrides(FakeNotificationRepository()),
+      );
+      final outcome = await open(
+        tester,
+        push({'kind': 'memberRemoved', 'babyId': 'b_removed_from'}),
+        surface: NotificationSurface.push,
+      );
+      expect(outcome, NotificationOpenOutcome.navigated);
+      expect(visits, ['/notifications']);
+      expect(find.text('Mục này không còn mở được.'), findsNothing);
+    });
+
+    testWidgets('FAMILY_MEMBERS for a baby not in the session: inbox only', (
+      tester,
+    ) async {
+      final visits = await _pump(
+        tester,
+        probe,
+        _overrides(FakeNotificationRepository()),
+      );
+      final outcome = await open(
+        tester,
+        NotificationTarget(kind: 'roleChanged', babyId: 'b_other_account'),
+      );
+      expect(outcome, NotificationOpenOutcome.unavailable);
+      expect(visits, isEmpty);
     });
   });
 }

@@ -329,7 +329,8 @@ export async function refreshEngagement(db: Firestore, uid: string, data: unknow
               : r.handoffKinds,
         },
         babyId: r.babyId,
-        validUntil: now.getTime() + 2 * 3600_000,
+        // D-092: no longer 2 h — proactive pushes reach people who stopped opening the app.
+        validUntil: now.getTime() + config.policy.deviceLeaseDays * ENG_DAY,
       });
   });
   await discoverEngagementSources(db, uid, r, scope, config, now);

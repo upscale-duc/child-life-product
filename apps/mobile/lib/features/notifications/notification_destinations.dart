@@ -174,6 +174,12 @@ const _registry = <NotificationDestination>[
     fallback: 'INBOX',
   ),
   NotificationDestination(
+    id: 'FAMILY_MEMBERS',
+    params: [_babyId],
+    permission: DestinationPermission.member,
+    fallback: 'INBOX',
+  ),
+  NotificationDestination(
     id: 'LUMI_INSIGHT',
     params: [_babyId, _engagementId],
     permission: DestinationPermission.engagementServer,
@@ -255,6 +261,11 @@ const notificationKindGroups = <String, InboxGroup>{
   'photoSuggestion': InboxGroup.memories,
   'keepsakePrompt': InboxGroup.memories,
   'familyActivity': InboxGroup.family,
+  // D-092: membership events.
+  'memberJoined': InboxGroup.family,
+  'inviteDeclined': InboxGroup.family,
+  'roleChanged': InboxGroup.family,
+  'memberRemoved': InboxGroup.family,
   'test': InboxGroup.other,
 };
 
@@ -280,6 +291,11 @@ const notificationKindDestinations = <String, String>{
   'photoSuggestion': 'MEMORIES_PENDING_REVIEW',
   'keepsakePrompt': 'MEMORIES_KEEPSAKE_SUGGESTION',
   'familyActivity': 'FAMILY_SHARED_CONTENT',
+  'memberJoined': 'FAMILY_MEMBERS',
+  'inviteDeclined': 'FAMILY_MEMBERS',
+  'roleChanged': 'FAMILY_MEMBERS',
+  // The removed person no longer follows the baby: the row (and its push) opens the inbox.
+  'memberRemoved': 'INBOX',
   'test': 'INBOX',
 };
 
@@ -458,7 +474,13 @@ Future<NotificationOpenOutcome> openNotification(
   ClToaster? toaster,
   AppLocalizations? l10n,
 }) async {
-  if (surface == NotificationSurface.push) await _settle(ref, target.babyId);
+  // INBOX needs no baby (a removed member's row names one they no longer follow, D-092).
+  if (surface == NotificationSurface.push) {
+    await _settle(
+      ref,
+      target.destination == inboxDestination ? null : target.babyId,
+    );
+  }
   final session = ref.read(sessionProvider);
   if (session is! SessionSignedIn) {
     return NotificationOpenOutcome.unavailable;
@@ -731,6 +753,10 @@ Future<_Opened> _tryOpen(
           ..go(Routes.today)
           ..push(Routes.messages);
       }
+    case 'FAMILY_MEMBERS':
+      // Gia đình lives in Tiện ích.
+      select();
+      router.go(Routes.family);
     case 'FAMILY_STORAGE':
       if (surface == NotificationSurface.inbox) {
         router.push(Routes.meStorage);

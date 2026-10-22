@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { engagementPolicySchema, type EngagementPolicy } from './engagement.js';
 import {
   notificationCategoryOf,
   notificationKinds,
@@ -42,6 +43,7 @@ export const notificationDestinationIds = [
   'FAMILY_MESSAGES',
   'FAMILY_SHARED_CONTENT',
   'FAMILY_STORAGE',
+  'FAMILY_MEMBERS',
   'LUMI_INSIGHT',
   'INBOX',
 ] as const;
@@ -240,6 +242,15 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       fallback: 'INBOX',
       completion: null,
     },
+    FAMILY_MEMBERS: {
+      id: 'FAMILY_MEMBERS',
+      screen: t('Thành viên gia đình', 'Family members'),
+      path: '/utilities/family',
+      params: [babyId],
+      permission: 'member',
+      fallback: 'INBOX',
+      completion: null,
+    },
     LUMI_INSIGHT: {
       id: 'LUMI_INSIGHT',
       screen: t('Gợi ý cá nhân hoá trong ngày', 'Personal day suggestion'),
@@ -302,6 +313,7 @@ export const notificationProducers = [
   'family.messages',
   'family.storage',
   'staff.storage',
+  'family.members',
   'engagement',
   'engineering',
 ] as const;
@@ -691,6 +703,79 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
     engagement: ['ENG-05'],
     status: 'live',
   },
+  memberJoined: {
+    kind: 'memberJoined',
+    group: 'family',
+    producer: 'family.members',
+    trigger: both(
+      'Có người nhận lời mời và tham gia gia đình',
+      'Someone accepts an invitation and joins',
+    ),
+    recipients: both(
+      'Các Cùng nuôi của bé, trừ người vừa tham gia',
+      'The baby’s co-parents, except the newcomer',
+    ),
+    priority: 'transactional',
+    templates: ['family.member_joined'],
+    destination: 'FAMILY_MEMBERS',
+    setting: 'familyMembers',
+    quietHours: 'held',
+    dedup: both('Một thông báo mỗi sự kiện thành viên', 'One notice per membership event'),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
+  inviteDeclined: {
+    kind: 'inviteDeclined',
+    group: 'family',
+    producer: 'family.members',
+    trigger: both('Người được mời từ chối lời mời', 'An invitee declines the invitation'),
+    recipients: both('Người đã gửi lời mời', 'The person who sent the invitation'),
+    priority: 'transactional',
+    templates: ['family.invite_declined'],
+    destination: 'FAMILY_MEMBERS',
+    setting: 'familyMembers',
+    quietHours: 'held',
+    dedup: both('Một thông báo mỗi sự kiện thành viên', 'One notice per membership event'),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
+  roleChanged: {
+    kind: 'roleChanged',
+    group: 'family',
+    producer: 'family.members',
+    trigger: both('Vai trò của một thành viên thay đổi', 'A member’s role changes'),
+    recipients: both('Thành viên được đổi vai trò', 'The member whose role changed'),
+    priority: 'transactional',
+    templates: ['family.role_changed'],
+    destination: 'FAMILY_MEMBERS',
+    setting: null,
+    quietHours: 'held',
+    dedup: both('Một thông báo mỗi sự kiện thành viên', 'One notice per membership event'),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
+  memberRemoved: {
+    kind: 'memberRemoved',
+    group: 'family',
+    producer: 'family.members',
+    trigger: both('Một thành viên bị xoá khỏi gia đình', 'A member is removed from the family'),
+    recipients: both(
+      'Người bị xoá (không còn mở được nội dung của bé)',
+      'The removed person (no longer able to open the baby’s content)',
+    ),
+    priority: 'transactional',
+    templates: ['family.member_removed'],
+    destination: 'INBOX',
+    setting: null,
+    quietHours: 'held',
+    dedup: both('Một thông báo mỗi sự kiện thành viên', 'One notice per membership event'),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
   test: {
     kind: 'test',
     group: 'other',
@@ -740,7 +825,7 @@ export function inboxGroupOf(kind: string): InboxGroup {
 
 /**
  * Family & account events that the brief lists but V1 does not push (they are email-only or not
- * sent). Shown in the Portal catalog so the owner sees the gap instead of a silent omission (G-109).
+ * sent; D-092 made invitation accepted / declined, role change and removal real notifications). Shown in the Portal catalog so the owner sees the gap instead of a silent omission.
  */
 export const notificationCatalogGaps = [
   {
@@ -750,36 +835,6 @@ export const notificationCatalogGaps = [
     note: both(
       'Lời mời gửi qua email / liên kết; người nhận chưa có tài khoản nên không có push',
       'Invites go by email / link; the invitee has no account yet, so no push',
-    ),
-  },
-  {
-    id: 'family.invite_accepted',
-    group: 'family' as const,
-    channel: 'none' as const,
-    note: both(
-      'Chưa gửi trong V1 — cần quyết định của chủ sản phẩm (G-109)',
-      'Not sent in V1 — needs an owner decision (G-109)',
-    ),
-  },
-  {
-    id: 'family.invite_declined',
-    group: 'family' as const,
-    channel: 'none' as const,
-    note: both('Chưa gửi trong V1 (G-109)', 'Not sent in V1 (G-109)'),
-  },
-  {
-    id: 'family.role_changed',
-    group: 'family' as const,
-    channel: 'none' as const,
-    note: both('Chưa gửi trong V1 (G-109)', 'Not sent in V1 (G-109)'),
-  },
-  {
-    id: 'family.member_removed',
-    group: 'family' as const,
-    channel: 'none' as const,
-    note: both(
-      'Chưa gửi trong V1; quyền truy cập mất ngay, thông báo cũ bị chặn khi mở',
-      'Not sent in V1; access ends at once and old rows are blocked when opened',
     ),
   },
   {
@@ -1011,6 +1066,10 @@ export const notificationTemplateIds = [
   'eng.weekly_recap',
   'eng.family_recap',
   'eng.lumi_insight',
+  'family.member_joined',
+  'family.invite_declined',
+  'family.role_changed',
+  'family.member_removed',
 ] as const;
 export type NotificationTemplateId = (typeof notificationTemplateIds)[number];
 
@@ -1423,6 +1482,65 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: { title: 'Gợi ý dành cho bạn', body: 'Có một gợi ý mới để bạn xem khi thuận tiện.' },
       en: { title: 'An idea for you', body: 'A fresh suggestion is ready when you are.' },
+    },
+  ),
+  'family.member_joined': tpl(
+    'family.member_joined',
+    'memberJoined',
+    ['Thành viên mới', 'New family member'],
+    ['actor_name'],
+    {
+      vi: {
+        title: 'Thành viên mới trong gia đình',
+        body: '{{actor_name}} đã tham gia gia đình. Mở để xem.',
+      },
+      en: { title: 'A new family member', body: '{{actor_name}} joined the family. Open to see.' },
+    },
+    { actor_name: 'Bà Lan' },
+  ),
+  'family.invite_declined': tpl(
+    'family.invite_declined',
+    'inviteDeclined',
+    ['Lời mời bị từ chối', 'Invitation declined'],
+    [],
+    {
+      vi: { title: 'Lời mời chưa được nhận', body: 'Một lời mời tham gia gia đình đã bị từ chối.' },
+      en: {
+        title: 'Invitation not accepted',
+        body: 'An invitation to join the family was declined.',
+      },
+    },
+  ),
+  'family.role_changed': tpl(
+    'family.role_changed',
+    'roleChanged',
+    ['Vai trò thay đổi', 'Role changed'],
+    [],
+    {
+      vi: {
+        title: 'Quyền của bạn đã thay đổi',
+        body: 'Vai trò của bạn trong gia đình vừa được cập nhật. Mở để xem.',
+      },
+      en: {
+        title: 'Your access changed',
+        body: 'Your role in the family was just updated. Open to see.',
+      },
+    },
+  ),
+  'family.member_removed': tpl(
+    'family.member_removed',
+    'memberRemoved',
+    ['Bị xoá khỏi gia đình', 'Removed from a family'],
+    [],
+    {
+      vi: {
+        title: 'Bạn không còn trong một gia đình',
+        body: 'Bạn không còn quyền xem hồ sơ của bé trong gia đình này.',
+      },
+      en: {
+        title: 'You’re no longer in a family',
+        body: 'You no longer have access to a child’s profile in that family.',
+      },
     },
   ),
 };
@@ -1874,4 +1992,16 @@ export interface NotificationEntryDetail {
   completed: boolean | null;
   cancelledOrExpired: string | null;
   errors: string[];
+}
+
+// ---------- Engagement policy in the Portal (D-092) ----------
+
+/** `config/engagement` from the Portal: exactly the policy schema (extra keys would fail closed). */
+export const staffSetEngagementPolicySchema = z.object({ policy: engagementPolicySchema }).strict();
+
+export interface NotificationOpsResponse {
+  ops: NotificationOpsConfig;
+  engagementPolicy: EngagementPolicy;
+  /** False: the stored document is missing or malformed, so the engine runs on safe defaults (off). */
+  engagementPolicyStored: boolean;
 }

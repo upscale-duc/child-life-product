@@ -169,6 +169,12 @@ class _NotificationSettingsScreenState
               l10n.ntFamilyActivity,
               l10n.ntFamilyActivityHint,
             ),
+            // D-092: everyone who sees family content, like familyActivity.
+            toggle(
+              'familyMembers',
+              l10n.ntFamilyMembers,
+              l10n.ntFamilyMembersHint,
+            ),
             if (parent) toggle('storage', l10n.ntStorage, l10n.ntStorageHint),
           ],
         ),

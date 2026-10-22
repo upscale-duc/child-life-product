@@ -117,6 +117,7 @@ describe('settings (EN07)', () => {
         photoSuggestions: true,
         keepsakePrompts: false,
         familyActivity: true,
+        familyMembers: false,
         updatedAt: serverTimestamp(),
       }),
     );

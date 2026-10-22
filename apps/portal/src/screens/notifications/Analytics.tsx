@@ -10,7 +10,8 @@ import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { EmptyState, Hint, Notice } from '../../content-kit';
 import { useNavigate, useStaff } from '../../context';
 import { downloadCsv, toCsv } from '../../format';
-import { Button, Kpi, LineChart, Panel, Segmented, TableScroll } from '../../ui';
+import { Button, Kpi, LineChart, Panel, Segmented } from '../../ui';
+import { DataTable, PageSkeleton, TabHeader } from './kit';
 import { Freshness, StatsLoader } from './Overview';
 import {
   RangePicker,
@@ -31,8 +32,12 @@ export function AnalyticsTab() {
   const [range, setRange] = useState<RangeChoice>(() => defaultRange(30));
   return (
     <div className="stack">
-      <RangePicker value={range} onChange={setRange} />
-      <StatsLoader from={range.from} to={range.to}>
+      <TabHeader
+        title={<FormattedMessage id="ntf.tab.analytics" />}
+        purpose={<FormattedMessage id="ntf.purpose.analytics" />}
+        actions={<RangePicker value={range} onChange={setRange} />}
+      />
+      <StatsLoader from={range.from} to={range.to} skeleton={<PageSkeleton />}>
         {(data) => <NotificationAnalyticsView data={data} />}
       </StatsLoader>
     </div>
@@ -118,12 +123,13 @@ function RateCells({ intl, counts }: { intl: IntlShape; counts: NotificationStat
       {notificationRates(counts).map((r) => (
         <td
           key={r.id}
-          className="text-right tabular-nums"
+          className={`text-right tabular-nums ${r.value === null ? 'text-muted-foreground' : ''}`}
           title={`${intl.formatNumber(r.numerator)} / ${intl.formatNumber(r.denominator)}`}
         >
           {rateText(intl, r.value)}
-          <span className="block text-[11px] text-muted-foreground">
-            {intl.formatNumber(r.numerator)}/{intl.formatNumber(r.denominator)}
+          <span className="sr-only">
+            {' '}
+            ({intl.formatNumber(r.numerator)} / {intl.formatNumber(r.denominator)})
           </span>
         </td>
       ))}
@@ -185,9 +191,9 @@ export function NotificationAnalyticsView({ data }: { data: NotificationStatsRes
           )}
         </div>
       </div>
-      <Notice>
+      <p className="text-[12px] text-muted-foreground">
         <FormattedMessage id="ntf.acceptedNotDelivered" />
-      </Notice>
+      </p>
       {!data.sourceStartDay ? (
         <EmptyState title={<FormattedMessage id="ntf.noStats" />}>
           <FormattedMessage id="ntf.noStatsNote" />
@@ -243,7 +249,7 @@ export function NotificationAnalyticsView({ data }: { data: NotificationStatsRes
             />
           </Panel>
           <Panel className="panel--flush" title={<FormattedMessage id="ntf.analytics.byGroup" />}>
-            <TableScroll min={820}>
+            <DataTable min={820} tall>
               <table className="table">
                 <thead>
                   <tr>
@@ -270,13 +276,13 @@ export function NotificationAnalyticsView({ data }: { data: NotificationStatsRes
                   ))}
                 </tbody>
               </table>
-            </TableScroll>
+            </DataTable>
           </Panel>
           <Panel
             className="panel--flush"
             title={<FormattedMessage id="ntf.analytics.byTemplate" />}
           >
-            <TableScroll min={960}>
+            <DataTable min={960}>
               <table className="table">
                 <thead>
                   <tr>
@@ -311,7 +317,7 @@ export function NotificationAnalyticsView({ data }: { data: NotificationStatsRes
                   ))}
                 </tbody>
               </table>
-            </TableScroll>
+            </DataTable>
           </Panel>
         </>
       )}

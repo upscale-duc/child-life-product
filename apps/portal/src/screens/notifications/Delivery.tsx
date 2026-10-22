@@ -5,12 +5,13 @@ import {
   type NotificationStatsResponse,
 } from '@child-life/contracts';
 import { CircleCheck } from 'lucide-react';
-import { useState } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ApiError, useApi } from '../../api';
 import { EmptyState, Hint, Notice, Section, useConfirm } from '../../content-kit';
 import { useStaff } from '../../context';
-import { Button, Panel, TableScroll } from '../../ui';
+import { Button, Panel, StackedBars, useSort } from '../../ui';
+import { CodeText, DataTable, PageSkeleton, StatusDot, TabHeader } from './kit';
 import { Freshness, StatsLoader } from './Overview';
 import {
   DeliveryPill,
@@ -37,12 +38,26 @@ export const deliveryColumns: NotificationStatMetric[] = [
   'unknown',
 ];
 
+/** Outcomes of one kind's rows for the stacked bar: accepted, not pushed, failed, unknown. */
+export function deliveryOutcomes(counts: NotificationStatCounts) {
+  return {
+    accepted: counts.accepted ?? 0,
+    notPushed: (counts.muted ?? 0) + (counts.held ?? 0) + (counts.no_device ?? 0),
+    failed: (counts.failed ?? 0) + (counts.rejected ?? 0),
+    unknown: counts.unknown ?? 0,
+  };
+}
+
 export function DeliveryTab({ onTimeline }: { onTimeline?: (code: string) => void }) {
   const [range, setRange] = useState<RangeChoice>(() => defaultRange(7));
   return (
     <div className="stack">
-      <RangePicker value={range} onChange={setRange} />
-      <StatsLoader from={range.from} to={range.to}>
+      <TabHeader
+        title={<FormattedMessage id="ntf.tab.delivery" />}
+        purpose={<FormattedMessage id="ntf.purpose.delivery" />}
+        actions={<RangePicker value={range} onChange={setRange} />}
+      />
+      <StatsLoader from={range.from} to={range.to} skeleton={<PageSkeleton />}>
         {(data, reload) => <DeliveryView data={data} onChanged={reload} onTimeline={onTimeline} />}
       </StatsLoader>
     </div>
@@ -53,33 +68,35 @@ function CountCells({ counts }: { counts: NotificationStatCounts }) {
   const intl = useIntl();
   return (
     <>
-      {deliveryColumns.map((m) => (
-        <td key={m} className="text-right tabular-nums">
-          {intl.formatNumber(counts[m] ?? 0)}
-        </td>
-      ))}
+      {deliveryColumns.map((m) => {
+        const v = counts[m] ?? 0;
+        return (
+          <td
+            key={m}
+            className={`text-right tabular-nums ${v === 0 ? 'text-muted-foreground' : ''} ${
+              (m === 'failed' || m === 'rejected') && v > 0 ? 'font-medium text-destructive' : ''
+            }`}
+          >
+            {intl.formatNumber(v)}
+          </td>
+        );
+      })}
     </>
   );
 }
 
-function CountHeads() {
+function MetricHead({ m, children }: { m: NotificationStatMetric; children?: ReactNode }) {
   return (
-    <>
-      {deliveryColumns.map((m) => (
-        <th key={m} className="text-right">
-          <span className="inline-flex items-center gap-1">
-            <FormattedMessage id={`ntf.metric.${m}`} />
-            <Hint>
-              <FormattedMessage id={`ntf.metric.${m}.def`} />
-            </Hint>
-          </span>
-        </th>
-      ))}
-    </>
+    <span className="inline-flex items-center gap-1">
+      {children ?? <FormattedMessage id={`ntf.metric.${m}`} />}
+      <Hint>
+        <FormattedMessage id={`ntf.metric.${m}.def`} />
+      </Hint>
+    </span>
   );
 }
 
-/** Gửi & lỗi: per kind, per template version, and the deliveries that failed or wait to retry. */
+/** Gửi & lỗi: what needs action first (failed deliveries), then outcomes per kind and version. */
 export function DeliveryView({
   data,
   onChanged,
@@ -98,6 +115,12 @@ export function DeliveryView({
   const [error, setError] = useState<ApiError | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const hasData = !!data.sourceStartDay;
+  type KindRow = NotificationStatsResponse['byKind'][number];
+  const sortBy: Record<string, (r: KindRow) => string | number> = {
+    kind: (r) => intl.formatMessage({ id: `ntf.kind.${r.kind}` }),
+  };
+  for (const m of deliveryColumns) sortBy[m] = (r) => r.counts[m] ?? 0;
+  const byKind = useSort(data.byKind, sortBy);
   const retry = async (entry: string) => {
     setError(null);
     setDone(null);
@@ -111,12 +134,15 @@ export function DeliveryView({
       setError(e instanceof ApiError ? e : new ApiError('unknown', null));
     }
   };
+  const outcomeKeys = (['accepted', 'notPushed', 'failed', 'unknown'] as const).map((k) => ({
+    key: k,
+    label: intl.formatMessage({ id: `ntf.outcome.${k}` }),
+    className: '',
+  }));
+  const kindsWithRows = data.byKind.filter((r) => (r.counts.created ?? 0) > 0);
   return (
     <div className="stack">
       <Freshness data={data} />
-      <Notice>
-        <FormattedMessage id="ntf.acceptedNotDelivered" />
-      </Notice>
       {!data.ops.retryEnabled && (
         <Notice tone="warn">
           <FormattedMessage id="ntf.delivery.retryOff" />
@@ -129,7 +155,20 @@ export function DeliveryView({
         </Notice>
       )}
       <Section
-        title={<FormattedMessage id="ntf.delivery.problems" />}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <FormattedMessage id="ntf.delivery.problems" />
+            <span
+              className={`rounded-full px-2 text-[12px] font-medium tabular-nums ${
+                data.problems.length
+                  ? 'bg-destructive/15 text-destructive'
+                  : 'bg-muted text-muted-foreground'
+              }`}
+            >
+              {intl.formatNumber(data.problems.length)}
+            </span>
+          </span>
+        }
         description={<FormattedMessage id="ntf.delivery.problemsNote" />}
         flush
       >
@@ -139,7 +178,7 @@ export function DeliveryView({
             title={<FormattedMessage id="ntf.delivery.noProblems" />}
           />
         ) : (
-          <TableScroll min={900}>
+          <DataTable min={860} label={intl.formatMessage({ id: 'ntf.delivery.problems' })}>
             <table className="table">
               <thead>
                 <tr>
@@ -152,9 +191,6 @@ export function DeliveryView({
                   <th>
                     <FormattedMessage id="ntf.col.delivery" />
                   </th>
-                  <th>
-                    <FormattedMessage id="ntf.col.reason" />
-                  </th>
                   <th className="text-right">
                     <FormattedMessage id="ntf.col.attempts" />
                   </th>
@@ -164,28 +200,40 @@ export function DeliveryView({
                   <th>
                     <FormattedMessage id="ntf.col.family" />
                   </th>
-                  <th />
+                  <th>
+                    <span className="sr-only">
+                      <FormattedMessage id="ntf.col.actions" />
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.problems.map((p) => (
                   <tr key={p.entry} data-entry={p.entry}>
-                    <td className="nowrap">{at(intl, p.createdAt)}</td>
+                    <td className="nowrap text-[13px]">{at(intl, p.createdAt)}</td>
                     <td>
                       <FormattedMessage id={`ntf.kind.${p.kind}`} />
                     </td>
                     <td>
                       <DeliveryPill state={p.delivery} />
+                      <span className="block text-[12px] text-muted-foreground">
+                        {labelOr(intl, `ntf.reason.${p.reason}`, p.reason)}
+                      </span>
                     </td>
-                    <td>{labelOr(intl, `ntf.reason.${p.reason}`, p.reason)}</td>
-                    <td className="text-right tabular-nums">{p.attempts}</td>
-                    <td className="font-mono text-[12px]">{p.errorCode ?? '—'}</td>
+                    <td className="text-right tabular-nums">{intl.formatNumber(p.attempts)}</td>
+                    <td>
+                      {p.errorCode ? (
+                        <CodeText value={p.errorCode} />
+                      ) : (
+                        <span className="muted">—</span>
+                      )}
+                    </td>
                     <td>
                       {p.familyCode ? (
                         canTimeline && onTimeline ? (
                           <button
                             type="button"
-                            className="font-mono text-primary hover:underline"
+                            className="font-mono text-[13px] text-primary hover:underline"
                             onClick={() => onTimeline(p.familyCode!)}
                             aria-label={intl.formatMessage(
                               { id: 'ntf.delivery.openTimeline' },
@@ -195,7 +243,7 @@ export function DeliveryView({
                             {p.familyCode}
                           </button>
                         ) : (
-                          <span className="font-mono">{p.familyCode}</span>
+                          <span className="font-mono text-[13px]">{p.familyCode}</span>
                         )
                       ) : (
                         <span className="muted">—</span>
@@ -222,25 +270,52 @@ export function DeliveryView({
                 ))}
               </tbody>
             </table>
-          </TableScroll>
+          </DataTable>
         )}
       </Section>
-      <Panel className="panel--flush" title={<FormattedMessage id="ntf.delivery.byKind" />}>
+      {hasData && kindsWithRows.length > 0 && (
+        <Panel
+          title={<FormattedMessage id="ntf.delivery.outcomes" />}
+          hint={<FormattedMessage id="ntf.acceptedNotDelivered" />}
+        >
+          <StackedBars
+            title={intl.formatMessage({ id: 'ntf.delivery.outcomes' })}
+            labels={kindsWithRows.map((r) => intl.formatMessage({ id: `ntf.kind.${r.kind}` }))}
+            series={kindsWithRows.map((r) => deliveryOutcomes(r.counts))}
+            keys={outcomeKeys}
+          />
+          <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-muted-foreground">
+            {(['accepted', 'notPushed', 'failed', 'unknown'] as const).map((k) => (
+              <span key={k}>
+                <FormattedMessage id={`ntf.outcome.${k}.def`} />
+              </span>
+            ))}
+          </p>
+        </Panel>
+      )}
+      <Section
+        flush
+        collapsible
+        title={<FormattedMessage id="ntf.delivery.byKind" />}
+        summary={intl.formatNumber(data.byKind.length)}
+      >
         {!hasData || data.byKind.length === 0 ? (
           <EmptyState title={<FormattedMessage id="ntf.noStats" />} />
         ) : (
-          <TableScroll min={1100}>
+          <DataTable min={1100} label={intl.formatMessage({ id: 'ntf.delivery.byKind' })}>
             <table className="table">
               <thead>
                 <tr>
-                  <th>
-                    <FormattedMessage id="ntf.col.kind" />
-                  </th>
-                  <CountHeads />
+                  {byKind.th('kind', <FormattedMessage id="ntf.col.kind" />)}
+                  {deliveryColumns.map((m) => (
+                    <Fragment key={m}>
+                      {byKind.th(m, <FormattedMessage id={`ntf.metric.${m}`} />)}
+                    </Fragment>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {data.byKind.map((r) => (
+                {byKind.rows.map((r) => (
                   <tr key={r.kind}>
                     <td className="nowrap">
                       <FormattedMessage id={`ntf.kind.${r.kind}`} />
@@ -250,14 +325,20 @@ export function DeliveryView({
                 ))}
               </tbody>
             </table>
-          </TableScroll>
+          </DataTable>
         )}
-      </Panel>
-      <Panel className="panel--flush" title={<FormattedMessage id="ntf.delivery.byTemplate" />}>
+      </Section>
+      <Section
+        flush
+        collapsible
+        defaultOpen={false}
+        title={<FormattedMessage id="ntf.delivery.byTemplate" />}
+        summary={intl.formatNumber(data.byTemplate.length)}
+      >
         {!hasData || data.byTemplate.length === 0 ? (
           <EmptyState title={<FormattedMessage id="ntf.noStats" />} />
         ) : (
-          <TableScroll min={1200}>
+          <DataTable min={1200} label={intl.formatMessage({ id: 'ntf.delivery.byTemplate' })}>
             <table className="table">
               <thead>
                 <tr>
@@ -267,7 +348,11 @@ export function DeliveryView({
                   <th>
                     <FormattedMessage id="ntf.col.version" />
                   </th>
-                  <CountHeads />
+                  {deliveryColumns.map((m) => (
+                    <th key={m} className="text-right">
+                      <MetricHead m={m} />
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -286,9 +371,14 @@ export function DeliveryView({
                 ))}
               </tbody>
             </table>
-          </TableScroll>
+          </DataTable>
         )}
-      </Panel>
+      </Section>
+      <p className="text-[12px] text-muted-foreground">
+        <StatusDot tone="muted">
+          <FormattedMessage id="ntf.zeroVsNoData" />
+        </StatusDot>
+      </p>
       {dialog}
     </div>
   );

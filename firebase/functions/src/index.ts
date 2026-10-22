@@ -249,7 +249,9 @@ import {
   actOnNotificationTemplate,
   getNotificationTemplate,
   listNotificationTemplates,
+  readNotificationOps,
   saveNotificationTemplate,
+  setEngagementPolicy,
   setNotificationOps,
 } from './notification-templates.js';
 import {
@@ -2061,6 +2063,13 @@ export const staffRetryNotification = staffCall('staffRetryNotification', (s, d)
 );
 export const staffSetNotificationOps = staffCall('staffSetNotificationOps', (s, d) =>
   setNotificationOps(getFirestore(), s, d, new Date()),
+);
+// D-092: the Settings tab reads the switches and the Smart Engagement policy, and approves it.
+export const staffNotificationOps = staffCall('staffNotificationOps', (s) =>
+  readNotificationOps(getFirestore(), s),
+);
+export const staffSetEngagementPolicy = staffCall('staffSetEngagementPolicy', (s, d) =>
+  setEngagementPolicy(getFirestore(), s, d, new Date()),
 );
 export const staffOverview = staffCall('staffOverview', (s, d) =>
   overview(getFirestore(), s, d, new Date(), authAccounts),
