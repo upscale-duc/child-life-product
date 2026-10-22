@@ -148,15 +148,18 @@ export const understandingEventSchema = z
     kind: z.enum(eventKinds as [EventKind, ...EventKind[]]),
     /** Timed kinds: still going on, over, or a plan (never logged). Others: finished. */
     status: z.enum(eventStatuses),
-    started: timeSpecSchema.nullable(),
-    ended: timeSpecSchema.nullable(),
+    // The model's JSON schema leaves the time line out for untimed kinds (an expense, a
+    // reminder): absent reads as null, or every such message was rejected (VALIDATION_FAILED).
+    started: timeSpecSchema.nullable().default(null),
+    ended: timeSpecSchema.nullable().default(null),
     /** Minutes, only when a time unit is written. */
     durationMin: z
       .number()
       .int()
       .min(0)
       .max(72 * 60)
-      .nullable(),
+      .nullable()
+      .default(null),
     fields: eventFieldsSchema,
     /** The exact words each filled field (or time) comes from (grounding, checked by the server). */
     evidence: z

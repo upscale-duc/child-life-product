@@ -214,7 +214,10 @@ export const modelIntentSchema = z
         derived: z.enum(['start', 'end']).nullable(),
         misread: z.array(z.enum(['startedAt', 'endedAt', 'occurredAt'])).max(3),
         /** L10: times out of bounds, flagged for review. */
-        check: z.array(z.enum(['startedAt', 'endedAt'])).max(2).optional(),
+        check: z
+          .array(z.enum(['startedAt', 'endedAt']))
+          .max(2)
+          .optional(),
         /** L10: an ongoing state's start not within the last 18 h: asked. */
         askStart: z.boolean().optional(),
       })
@@ -1446,5 +1449,14 @@ export function parseUnderstanding(raw: unknown): ParseResult<Understanding> {
   if (u.success) return { ok: true, value: u.data };
   const legacy = parseExtraction(raw);
   if (legacy.ok) return { ok: true, value: fromLegacyExtraction(legacy.value) };
+  // Field paths and zod codes only: never the values, which carry the person's words.
+  logger.warn('assistant understanding rejected', {
+    issues: u.error.issues
+      .slice(0, 8)
+      .map(
+        (i) =>
+          `${i.path.map((p) => (typeof p === 'number' ? '#' : String(p))).join('.')}:${i.code}`,
+      ),
+  });
   return { ok: false, detail: 'schema' };
 }

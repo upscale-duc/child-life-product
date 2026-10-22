@@ -676,6 +676,17 @@ describe('understanding v1: the request, the schema, the legacy translation', ()
       false,
     );
     expect(parseUnderstanding({ nope: true }).ok).toBe(false);
+    // "mua bỉm hết 150k": the JSON schema gives untimed kinds no time line; absent reads as null.
+    const expense = {
+      ...v9,
+      events: [
+        { kind: 'expense', status: 'finished', fields: {}, evidence: [], uncertainFields: [] },
+      ],
+    };
+    expect(parseUnderstanding(expense)).toMatchObject({
+      ok: true,
+      value: { events: [{ kind: 'expense', started: null, ended: null, durationMin: null }] },
+    });
     const v8 = parseUnderstanding({
       intents: [
         {
