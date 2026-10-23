@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/navigation.dart' show OverlayTwin;
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/appearance/appearance.dart';
@@ -256,6 +257,16 @@ class HomeShell extends ConsumerWidget {
   }
 }
 
+/// True when this tab page is an overlay twin pushed above other screens (D-076 nav).
+bool _openedOnTop(BuildContext context) {
+  try {
+    return OverlayTwin.isTwin(GoRouterState.of(context).matchedLocation) &&
+        context.canPop();
+  } on Object {
+    return false; // No router above (tests, previews).
+  }
+}
+
 /// Header shared by the tabs: baby switcher (45:321) + Night care toggle, and the 16c banner
 /// "Chưa lưu tài khoản · Lưu" while the identity is temporary (R-030).
 class BabyHeader extends ConsumerWidget {
@@ -280,8 +291,17 @@ class BabyHeader extends ConsumerWidget {
       children: [
         Row(
           children: [
-            // v1.0 improvement 370:1248: who you are, at the far left; opens Tôi.
-            UserAvatar(membership: membership),
+            // v1.0 improvement 370:1248: who you are, at the far left; opens Tôi. A tab page
+            // opened on top of another screen (a notification's Kỷ niệm, its overlay twin, no
+            // dock) has Back there instead, to the screen it was opened from.
+            if (_openedOnTop(context))
+              ClBackButton(
+                key: const Key('babyHeaderBack'),
+                semanticLabel: l10n.a11yBack,
+                onPressed: () => context.pop(),
+              )
+            else
+              UserAvatar(membership: membership),
             const SizedBox(width: ClSpace.s2),
             Expanded(
               child: Align(

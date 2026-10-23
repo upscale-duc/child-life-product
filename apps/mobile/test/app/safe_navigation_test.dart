@@ -26,6 +26,7 @@ import 'package:child_life/features/library/library_screens.dart';
 import 'package:child_life/features/library/stage_screens.dart';
 import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
+import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/milestones/milestone_screens.dart';
 import 'package:child_life/features/notifications/inbox_screen.dart';
@@ -643,6 +644,43 @@ void main() {
       await _end(tester, container);
     });
 
+    testWidgets(
+      '"Có 7 khoảnh khắc mới" opens Kỷ niệm over the inbox, with Back',
+      (tester) async {
+        final (router, container) = await _app(
+          tester,
+          _base(
+            notificationRepo: FakeNotificationRepository(
+              inbox: [
+                inboxItem(
+                  'n_inbox000003',
+                  kind: 'shared',
+                  category: NotificationCategory.family,
+                  route: 'memories',
+                  at: DateTime(2026, 10, 8, 9),
+                  vi: ('Có 7 khoảnh khắc mới', 'Mai vừa chia sẻ với gia đình.'),
+                  en: ('7 new moments', 'Mai just shared with the family.'),
+                ),
+              ],
+            ),
+          ),
+        );
+        await _open(tester, router, Routes.notifications);
+        final inbox = tester.element(find.byType(InboxScreen));
+        await _tap(tester, find.text('Có 7 khoảnh khắc mới'));
+        expect(tester.takeException(), isNull);
+        // On top of the inbox, without the dock: not the Kỷ niệm tab.
+        expect(router.state.uri.toString(), OverlayTwin.of(Routes.memories));
+        expect(find.byType(MemoriesScreen), findsOneWidget);
+        expect(find.byType(InboxScreen, skipOffstage: false), findsOneWidget);
+        expect(_shells(router), 1);
+        await _tap(tester, find.byKey(const Key('babyHeaderBack')));
+        expect(find.byType(MemoriesScreen), findsNothing);
+        expect(tester.element(find.byType(InboxScreen)), same(inbox));
+        await _end(tester, container);
+      },
+    );
+
     testWidgets('a second tap while a nudge asks the server is ignored', (
       tester,
     ) async {
@@ -695,8 +733,11 @@ void main() {
       final twin = router.notificationLocation(week);
       expect(twin, OverlayTwin.of(week));
       expect(router.configuration.findMatch(Uri.parse(twin)).isError, isFalse);
-      // A bare tab root still opens in the tabs; other pages are pushed as they are.
-      expect(router.notificationLocation(Routes.memories), Routes.memories);
+      // A bare tab root too (owner, 2026-10-23); other pages are pushed as they are.
+      expect(
+        router.notificationLocation(Routes.memories),
+        OverlayTwin.of(Routes.memories),
+      );
       expect(router.notificationLocation(Routes.reminders), Routes.reminders);
       await _end(tester, container);
     });
