@@ -83,6 +83,11 @@ export interface Notice {
   engagement?: { id: string; kind: string };
   /** False: a provider error is ambiguous and never retried (ENG-00). Default true. */
   retry?: boolean;
+  /**
+   * Portal "Gửi thử" (D-092): delivered regardless of switches, quiet hours and kill switches,
+   * marked `test` in the ledger, never counted in stats.
+   */
+  test?: { templateId: NotificationTemplateId; templateVersion: number } | undefined;
   /** Optional adapter observation; never means device presentation and never blocks delivery. */
   onResult?: (
     uid: string,
@@ -126,13 +131,13 @@ export async function notifyUsers(
   const people = [...new Set(uids)].filter((u) => u.length > 0);
   if (people.length === 0) return result;
   const type = notificationTypes[notice.kind];
-  const settingKey = notificationSettingOf[notice.kind];
+  const settingKey = notice.test ? null : notificationSettingOf[notice.kind];
   const [settings, ops, familyId] = await Promise.all([
     db.getAll(...people.map((u) => db.doc(`users/${u}/settings/notifications`))),
     notificationOps(db, now.getTime()),
     familyOf(db, notice.babyId),
   ]);
-  const quietApplies = !ringsInQuietHours(notice.kind);
+  const quietApplies = !notice.test && !ringsInQuietHours(notice.kind);
   const prefs = quietApplies
     ? await db.getAll(...people.map((u) => db.doc(`users/${u}/settings/personalization`)))
     : [];
@@ -163,7 +168,8 @@ export async function notifyUsers(
   const pushOptions: Record<string, unknown> = { ...builtin.vi };
   delete pushOptions.title;
   delete pushOptions.body;
-  const templateId = notice.template?.id ?? type.templates[0] ?? null;
+  const templateId = notice.test?.templateId ?? notice.template?.id ?? type.templates[0] ?? null;
+  if (notice.test) templateVersion = notice.test.templateVersion;
   const entryBase = {
     v: 1,
     familyId,
@@ -198,6 +204,7 @@ export async function notifyUsers(
     pushExpiresAt: typeof builtin.vi.expiresAt === 'number' ? new Date(builtin.vi.expiresAt) : null,
     push: pushOptions,
     retryable: notice.retry !== false,
+    ...(notice.test ? { test: true } : {}),
     errorCode: null,
     deleteAfter: ledgerDeleteAfter(now),
     updatedAt: now,
@@ -264,7 +271,7 @@ export async function notifyUsers(
     const deviceCount = [...byLanguage.values()].reduce((n, l) => n + l.length, 0);
     const stop: NotificationDeliveryReason | null = quiet
       ? 'quiet_hours'
-      : ops.pushPaused[type.group]
+      : ops.pushPaused[type.group] && !notice.test
         ? 'kill_switch'
         : sender === null
           ? 'no_sender'
@@ -315,7 +322,7 @@ export async function notifyUsers(
       else if (stop === 'no_device') metrics.push('no_device');
       else if (stop) metrics.push('cancelled');
       if (renderError) metrics.push('render_error');
-      countStats(tx, db, entryId, now, statKeys, metrics);
+      countStats(tx, db, entryId, now, statKeys, metrics, Boolean(notice.test));
       return true;
     });
     if (!created) {

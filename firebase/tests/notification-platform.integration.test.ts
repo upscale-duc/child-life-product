@@ -22,7 +22,11 @@ import {
   setEngagementPolicy,
   setNotificationOps,
 } from '../functions/src/notification-templates.js';
-import { engagementConfig } from '../functions/src/engagement.js';
+import { engagementAction, engagementConfig } from '../functions/src/engagement.js';
+import {
+  notificationTestTargets,
+  sendTestNotification,
+} from '../functions/src/notification-test.js';
 import { clearNotificationCaches } from '../functions/src/notification-runtime.js';
 import {
   notificationDetail,
@@ -100,6 +104,7 @@ async function wipe() {
     'notificationTemplates',
     'staffAudit',
     'engagementIntents',
+    'notificationTestQuota',
   ]) {
     await db.recursiveDelete(db.collection(name)).catch(() => undefined);
   }
@@ -152,7 +157,7 @@ beforeEach(async () => {
     ['np-dad', 'coParent'],
     ['np-gran', 'relative'],
   ] as const) {
-    await db.doc(`babies/${babyId}/members/${uid}`).set({ role, status: 'active' });
+    await db.doc(`babies/${babyId}/members/${uid}`).set({ uid, role, status: 'active' });
     await db
       .doc(`users/${uid}/devices/d_${uid}`)
       .set({ token: `t-${uid}`, language: uid === 'np-dad' ? 'en' : 'vi' });
@@ -638,5 +643,176 @@ describe('Smart Engagement policy from the Portal (D-092)', () => {
       .get();
     expect(audit.size).toBe(1);
     await db.doc('config/engagement').delete();
+  });
+});
+
+describe('Portal "Gửi thử" (D-092)', () => {
+  const self: Staff = { uid: 'np-mom', name: 'Mai', roles: ['ops'] };
+  beforeEach(() => {
+    process.env.GCLOUD_PROJECT = projectId;
+  });
+
+  it('sends a real push to my own account, marked test and kept out of the numbers', async () => {
+    const targets = await notificationTestTargets(db, self, at);
+    expect(targets.enabled).toBe(true);
+    const fam = targets.families.find((f) => f.code === code)!;
+    expect(fam).toMatchObject({ mine: true, internal: false });
+    // Not internal: only my own account is offered.
+    expect(fam.members.map((m) => m.me)).toEqual([true]);
+    const me = fam.members[0]!.ref;
+
+    const r = await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'memories.new_moments', code, recipient: me },
+      at,
+    );
+    expect(r).toMatchObject({
+      kind: 'memories',
+      destination: 'MEMORIES',
+      accepted: 1,
+      templateVersion: 0,
+    });
+    expect(sent.at(-1)!.title).toBe('Có 7 khoảnh khắc mới');
+    expect(sent.at(-1)!.data).toMatchObject({ test: '1', destination: 'MEMORIES', babyId });
+    expect((await db.doc(`notificationDeliveries/${r.entry}`).get()).get('test')).toBe(true);
+    expect((await db.collection('notificationStats').get()).size).toBe(0);
+    const audit = await db
+      .collection('staffAudit')
+      .where('action', '==', 'notifications.test.send')
+      .get();
+    expect(audit.size).toBe(1);
+  });
+
+  it('other people only in an internal family; never outside dev', async () => {
+    const dad = (await notificationTestTargets(db, owner, at)).families;
+    expect(dad).toEqual([]);
+    const ctxRefs = (await notificationTimeline(db, ops, { code, from: day, to: day }, at))
+      .recipients;
+    const myRef = (await notificationTestTargets(db, self, at)).families[0]!.members[0]!.ref;
+    const dadRef = ctxRefs.find((r) => r.ref !== myRef)!.ref;
+    await expect(
+      sendTestNotification(
+        db,
+        sender,
+        self,
+        { templateId: 'family.message', code, recipient: dadRef },
+        at,
+      ),
+    ).rejects.toMatchObject({ reason: 'test-recipient' });
+    await db.doc(`families/${familyId}`).set({ internal: true }, { merge: true });
+    await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'family.message', code, recipient: dadRef },
+      at,
+    );
+    process.env.GCLOUD_PROJECT = 'child-life-prod';
+    await expect(
+      sendTestNotification(
+        db,
+        sender,
+        self,
+        { templateId: 'family.message', code, recipient: 'm1' },
+        at,
+      ),
+    ).rejects.toMatchObject({ reason: 'dev-only' });
+    expect((await notificationTestTargets(db, self, at)).enabled).toBe(false);
+  });
+
+  it('an ENG test opens the scenario screen through actOnEngagement; missing targets fall back', async () => {
+    const me = (await notificationTestTargets(db, self, at)).families[0]!.members[0]!.ref;
+    const r = await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'eng.weekly_recap', code, recipient: me },
+      at,
+    );
+    expect(r).toMatchObject({
+      kind: 'weeklySummary',
+      destination: 'MEMORIES_WEEKLY_RECAP',
+      testSuggestion: true,
+    });
+    const opened = await engagementAction(
+      db,
+      'np-mom',
+      { id: r.params.engagementId, action: 'open', surface: 'notification' },
+      at,
+    );
+    expect(opened).toMatchObject({ route: '/memories', state: 'ready' });
+
+    await db.doc(`babies/${babyId}/albums/al_real`).set({ createdAt: at, title: 'x' });
+    const album = await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'memories.new_moments', code, recipient: me },
+      at,
+    );
+    expect(album.params).not.toHaveProperty('albumId'); // memories → MEMORIES (no album param)
+    const gone = await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'eng.family_recap', code, recipient: me, variant: 'missing_target' },
+      at,
+    );
+    await expect(
+      engagementAction(db, 'np-mom', { id: gone.params.engagementId, action: 'open' }, at),
+    ).rejects.toMatchObject({ reason: 'not-allowed' });
+  });
+
+  it('a draft can be sent before it is published; at most 20 sends an hour', async () => {
+    const me = (await notificationTestTargets(db, self, at)).families[0]!.members[0]!.ref;
+    await expect(
+      sendTestNotification(
+        db,
+        sender,
+        self,
+        { templateId: 'family.message', copy: 'draft', code, recipient: me },
+        at,
+      ),
+    ).rejects.toMatchObject({ reason: 'no-draft' });
+    await saveNotificationTemplate(
+      db,
+      ops,
+      {
+        templateId: 'family.message',
+        copy: {
+          vi: { title: 'Lời nhắn mới cho ba mẹ', body: '{{actor_name}} vừa nhắn. Mở để đọc.' },
+          en: { title: 'A new note for the parents', body: '{{actor_name}} wrote. Open to read.' },
+        },
+      },
+      at,
+    );
+    const r = await sendTestNotification(
+      db,
+      sender,
+      self,
+      { templateId: 'family.message', copy: 'draft', code, recipient: me },
+      at,
+    );
+    expect(r.templateVersion).toBe('draft');
+    expect(sent.at(-1)!.title).toBe('Lời nhắn mới cho ba mẹ');
+    for (let i = 0; i < 18; i++)
+      await sendTestNotification(
+        db,
+        sender,
+        self,
+        { templateId: 'family.message', code, recipient: me },
+        at,
+      );
+    await expect(
+      sendTestNotification(
+        db,
+        sender,
+        self,
+        { templateId: 'family.message', code, recipient: me },
+        at,
+      ),
+    ).rejects.toMatchObject({ reason: 'rate-limited' });
   });
 });

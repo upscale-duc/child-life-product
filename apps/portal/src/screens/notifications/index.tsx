@@ -19,6 +19,7 @@ import { OverviewTab } from './Overview';
 import { SettingsTab } from './Settings';
 import { TemplateEditor } from './TemplateEditor';
 import { TemplatesTab } from './Templates';
+import { TestSendTab } from './TestSend';
 import { TimelineTab } from './Timeline';
 import {
   locationOf,
@@ -140,6 +141,7 @@ export function NotificationsScreen({ initial }: { initial?: NtfLocation }) {
         onOpen={(id) => go({ tab: 'templates', template: id }, true)}
       />
     ),
+    test: <TestSendTab templates={templates} />,
     catalog: <CatalogView />,
     delivery: <DeliveryTab onTimeline={openTimeline} />,
     journeys: <JourneysTab />,

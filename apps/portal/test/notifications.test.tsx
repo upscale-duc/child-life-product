@@ -20,6 +20,8 @@ import {
   defaultEngagementPolicy,
   type NotificationEntryDetail,
   type NotificationOpsResponse,
+  type NotificationTestResult,
+  type NotificationTestTargets,
   type NotificationStatsResponse,
   type NotificationTemplateDetail,
   type NotificationTemplateRow,
@@ -79,6 +81,15 @@ import {
   visibleTabs,
 } from '../src/screens/notifications/shared';
 import { createIntl } from 'react-intl';
+import {
+  TestResultPanel,
+  TestSendView,
+  defaultTarget,
+  hasDraft,
+  memberLabel,
+  pollDone,
+} from '../src/screens/notifications/TestSend';
+import { versionLabel } from '../src/screens/notifications/Timeline';
 import { nextStep } from '../src/screens/notifications/TemplateEditor';
 import { activeFilterCount, groupByDay } from '../src/screens/notifications/Timeline';
 import { levelsForRoles, type StaffRole } from './fixtures';
@@ -352,10 +363,11 @@ describe('Thông báo & Gắn kết: route and permissions', () => {
     expect(allowedRoute(levelsForRoles(['support']), 'notifications')).toBe('notifications');
     expect(allowedRoute(levelsForRoles(['expert']), 'notifications')).toBe('notifications');
     expect(allowedRoute(levelsForRoles(['qa']), 'notifications')).not.toBe('notifications');
-    expect(visibleTabs(levelsForRoles(['expert']))).toEqual(['templates']);
+    expect(visibleTabs(levelsForRoles(['expert']))).toEqual(['templates', 'test']);
+    expect(visibleTabs(levelsForRoles(['support']))).not.toContain('test');
     expect(visibleTabs(levelsForRoles(['support']))).not.toContain('timeline');
     expect(visibleTabs(levelsForRoles(['ops']))).toContain('timeline');
-    expect(visibleTabs(levelsForRoles(['admin']))).toHaveLength(8);
+    expect(visibleTabs(levelsForRoles(['admin']))).toHaveLength(9);
   });
 
   it('maps addresses to tabs, the editor and a family code', () => {
@@ -979,5 +991,133 @@ describe('D-092 additions', () => {
     );
     expect(t).toContain('Đo lường Gợi ý thông minh đang tắt');
     expect(t).toContain('không có phễu');
+  });
+});
+
+// D-092: Gửi thử — a real push to the staff member's own phone, dev only.
+describe('Gửi thử (D-092)', () => {
+  const targets = (over: Partial<NotificationTestTargets> = {}): NotificationTestTargets => ({
+    enabled: true,
+    families: [
+      {
+        code: 'F-7Q2K',
+        mine: true,
+        internal: false,
+        babies: 2,
+        members: [
+          { ref: 'm1', role: 'coParent', me: true, devices: 1 },
+          { ref: 'm2', role: 'relative', me: false, devices: 0 },
+        ],
+      },
+      {
+        code: 'F-TEST',
+        mine: false,
+        internal: true,
+        babies: 1,
+        members: [{ ref: 'm1', role: 'caregiver', me: false, devices: 2 }],
+      },
+    ],
+    usedThisHour: 3,
+    ...over,
+  });
+
+  it('outside dev it only explains why', () => {
+    const t = text(render(<TestSendView targets={targets({ enabled: false })} rows={null} />));
+    expect(t).toContain('Chỉ có trên môi trường dev');
+    expect(t).not.toContain('Gửi thử Đã gửi');
+    expect(
+      render(<TestSendView targets={targets({ enabled: false })} rows={null} />),
+    ).not.toContain('data-family');
+  });
+
+  it('the form lists families with mine / internal badges and members with "Bạn"', () => {
+    const html = render(<TestSendView targets={targets()} rows={[]} />);
+    const t = text(html);
+    expect(html).toContain('data-family="F-7Q2K"');
+    expect(html).toContain('data-family="F-TEST"');
+    expect(t).toContain('Gia đình của bạn');
+    expect(t).toContain('Nội bộ');
+    expect(t).toContain('Cùng nuôi 1');
+    expect(t).toContain('Bạn');
+    expect(t).toContain('Người thân 2');
+    expect(t).toContain('Đã gửi 3/20 trong giờ này');
+    expect(t).toContain('Bé 1');
+    // The first template has no draft: the draft option is disabled.
+    expect(html).toMatch(/<input(?=[^>]*value="draft")(?=[^>]*disabled="")[^>]*>/);
+    expect(t).toContain('Mẫu này chưa có bản nháp.');
+  });
+
+  it('helpers: draft detection, default target, member label, polling end', () => {
+    const row = { ...tplDetail(), draftState: 'draft' as const };
+    expect(hasDraft([row], 'memories.new_moments')).toBe(true);
+    expect(hasDraft([row], 'care.rule_due')).toBe(false);
+    expect(hasDraft(null, 'memories.new_moments')).toBe(false);
+    expect(defaultTarget(targets())).toEqual({ code: 'F-7Q2K', recipient: 'm1' });
+    expect(defaultTarget(targets({ families: [targets().families[1]!] }))).toEqual({
+      code: 'F-TEST',
+      recipient: 'm1',
+    });
+    expect(memberLabel(intlVi, { ref: 'm2', role: 'relative' })).toBe('Người thân 2');
+    expect(pollDone(null, 0)).toBe(false);
+    expect(pollDone(null, 40)).toBe(true);
+    expect(pollDone({ navigated: 'fallback' } as NotificationEntryDetail, 3)).toBe(true);
+  });
+
+  it('the result panel shows destination, ids, missing params and acceptance', () => {
+    const result: NotificationTestResult = {
+      code: 'F-7Q2K',
+      entry: 'd_0123456789abcdef01234567',
+      inboxId: 'n_test_123456',
+      kind: 'album',
+      destination: 'MEMORIES_ALBUM',
+      params: { babyId: 'baby_1', albumId: 'alb_42' },
+      missing: ['albumId'],
+      templateVersion: 'draft',
+      devices: 1,
+      accepted: 1,
+      testSuggestion: false,
+    };
+    const html = render(<TestResultPanel result={result} />);
+    const t = text(html);
+    expect(t).toContain('Album');
+    expect(t).toContain('alb_42');
+    expect(t).toContain('Không có albumId cho bé này');
+    expect(t).toContain('Nhà cung cấp đã nhận 1/1 thiết bị');
+    expect(t).toContain('Bản nháp');
+    expect(t).toContain('Theo dõi trực tiếp');
+  });
+
+  it('the timeline marks test sends and draft versions', () => {
+    expect(versionLabel(intlVi, -1)).toBe('Bản nháp');
+    expect(versionLabel(intlVi, 'draft')).toBe('Bản nháp');
+    expect(versionLabel(intlVi, 0)).toBe('v0 · trong mã');
+    const entries = [{ ...timeline.entries[0]!, test: true, templateVersion: -1 }];
+    const t = text(
+      render(
+        <TimelineView
+          data={{ ...timeline, entries }}
+          entries={entries}
+          recipients={timeline.recipients}
+          onOpen={() => undefined}
+        />,
+      ),
+    );
+    expect(t).toContain('Thử');
+    expect(t).toContain('Bản nháp');
+  });
+
+  it('every Gửi thử error reason has a label in both languages', () => {
+    for (const r of [
+      'dev-only',
+      'test-recipient',
+      'no-draft',
+      'rate-limited',
+      'not-a-member',
+      'not-found',
+    ]) {
+      expect(notificationsVi[`ntf.error.${r}`], r).toBeTruthy();
+      expect(notificationsEn[`ntf.error.${r}`], r).toBeTruthy();
+    }
+    expect(Object.keys(notificationsEn).sort()).toEqual(Object.keys(notificationsVi).sort());
   });
 });

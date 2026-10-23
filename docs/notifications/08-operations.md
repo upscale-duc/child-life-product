@@ -93,3 +93,23 @@ For each of iOS and Android, in Light and Night care:
 | 12 | Engagement push after sign-out | Queued; opens after sign-in within 10 min, else expires |
 | 13 | Quiet hours | Row arrives, no push; reminder the user set still rings |
 | 14 | Portal template published | Next push uses the new copy in vi and en; ledger version n |
+
+## 7. Gửi thử (test push from the Portal, D-092)
+
+Portal → Thông báo & Gắn kết → **Gửi thử** sends one real push to a real phone. Use it to check how a notification looks and where a tap leads, without waiting for the real event.
+
+- **Where:** dev only. The project id decides; on prod the tab only explains that it is off.
+- **Who can receive:** your own app account (the Portal and the app share Firebase Auth), or any member of a family marked internal (`families/{id}.internal`). Needs `notifications.edit`.
+- **What is sent:** the chosen template, either the live copy (or the built-in one) or the unpublished draft, rendered with the template's sample values. Destination params come from the chosen baby's real data: latest album, story, video job, rule, import.
+- **Variant "Điểm đến không còn":** sends ids that do not exist, to check the app's fallback and its toast.
+- **ENG kinds:** a test suggestion is created (`engagementIntents`, `test: true`). It is never dispatched or shown on the shelf, and is deleted after about 2 h. Tapping the push opens the scenario's real screen through `actOnEngagement`.
+- **Delivery:** the push ignores EN07 switches, quiet hours and kill switches. The ledger entry is marked `test` and is never counted in stats. The inbox row is a normal row, so the inbox path is tested too.
+- **Limits:** at most 20 sends an hour per staff member, and every send is audited (`notifications.test.send`).
+- **Live result:** the result panel follows the ledger entry: provider accepted, opened from push or inbox, where navigation landed.
+
+Suggested pass per notification type (iOS and Android, vi and en device language):
+
+1. App in the foreground, in the background, then killed. Send, check the banner or lock screen, tap.
+2. Swipe the push away, open the app → the row is still in Hộp thông báo; tap it.
+3. Send with "Điểm đến không còn" → the app opens the nearest page with "Đã mở mục gần nhất".
+4. Reminder and vaccine: long-press the lock-screen notification to see the actions.

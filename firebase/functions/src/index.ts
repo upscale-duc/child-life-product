@@ -245,6 +245,7 @@ import {
   sweepExpiredInbox,
 } from './notifications.js';
 import { purgeNotificationLedger, sweepNotificationLedger } from './notification-ledger.js';
+import { notificationTestTargets, sendTestNotification } from './notification-test.js';
 import {
   actOnNotificationTemplate,
   getNotificationTemplate,
@@ -2070,6 +2071,13 @@ export const staffNotificationOps = staffCall('staffNotificationOps', (s) =>
 );
 export const staffSetEngagementPolicy = staffCall('staffSetEngagementPolicy', (s, d) =>
   setEngagementPolicy(getFirestore(), s, d, new Date()),
+);
+// D-092: Portal "Gửi thử" — one real test push to the staff member's own or a test family (dev only).
+export const staffNotificationTestTargets = staffCall('staffNotificationTestTargets', (s) =>
+  notificationTestTargets(getFirestore(), s, new Date()),
+);
+export const staffSendTestNotification = staffCall('staffSendTestNotification', (s, d) =>
+  sendTestNotification(getFirestore(), pushSender(), s, d, new Date()),
 );
 export const staffOverview = staffCall('staffOverview', (s, d) =>
   overview(getFirestore(), s, d, new Date(), authAccounts),

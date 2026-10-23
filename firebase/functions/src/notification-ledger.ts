@@ -81,8 +81,10 @@ export function countStats(
   createdAt: Date,
   keys: StatKeys,
   metrics: NotificationStatMetric[],
+  test = false,
 ) {
-  if (metrics.length === 0) return;
+  // Portal test pushes (D-092) never reach the numbers.
+  if (metrics.length === 0 || test) return;
   const ref = statsRef(db, entryId, createdAt);
   tx.set(
     ref,
@@ -192,7 +194,15 @@ export function applyTransition(
   Object.assign(update, t.patch ?? {});
   update.updatedAt = now;
   tx.update(entry.ref, update);
-  countStats(tx, db, entry.id, createdAtOf(entry), keysOf(entry), metrics);
+  countStats(
+    tx,
+    db,
+    entry.id,
+    createdAtOf(entry),
+    keysOf(entry),
+    metrics,
+    entry.get('test') === true,
+  );
   return moved;
 }
 

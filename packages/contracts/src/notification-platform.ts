@@ -1934,6 +1934,8 @@ export interface TimelineEntry {
   engagementStatus: string | null;
   reason: string | null;
   destination: NotificationDestinationId | null;
+  /** A Portal "Gửi thử" send (D-092): not a real event. */
+  test?: boolean;
 }
 
 export interface TimelineUpcoming {
@@ -1988,6 +1990,8 @@ export interface NotificationEntryDetail {
   pushAttempted: boolean | null;
   providerAccepted: boolean | null;
   opened: boolean | null;
+  /** Where the first open came from (push or the in-app inbox). */
+  openSurface?: 'push' | 'inbox' | null;
   navigated: 'navigated' | 'fallback' | 'unavailable' | null;
   completed: boolean | null;
   cancelledOrExpired: string | null;
@@ -2004,4 +2008,59 @@ export interface NotificationOpsResponse {
   engagementPolicy: EngagementPolicy;
   /** False: the stored document is missing or malformed, so the engine runs on safe defaults (off). */
   engagementPolicyStored: boolean;
+}
+
+// ---------- Portal "Gửi thử" (D-092) ----------
+
+/**
+ * A real push to a real device, sent from the Portal to check how a notification looks and
+ * where a tap leads. Dev only; recipients are the staff member's own account or members of an
+ * internal (test) family. Delivered regardless of switches and quiet hours, marked `test`, never
+ * counted in stats; ENG kinds get a short-lived test suggestion that opens the scenario's screen.
+ */
+export const staffSendTestNotificationSchema = z
+  .object({
+    templateId: templateIdSchema,
+    copy: z.enum(['live', 'draft']).default('live'),
+    code: z.string().regex(/^F-[A-Z2-9]{4}$/),
+    recipient: z.string().regex(/^m\d{1,2}$/),
+    baby: z.number().int().min(1).max(10).default(1),
+    /** `missing_target`: ids that no longer exist, to check the app's fallback. */
+    variant: z.enum(['normal', 'missing_target']).default('normal'),
+  })
+  .strict();
+export type StaffSendTestNotification = z.infer<typeof staffSendTestNotificationSchema>;
+
+export const NOTIFICATION_TEST_HOURLY_LIMIT = 20;
+
+export interface NotificationTestTargets {
+  /** False outside dev: the tab explains why instead of offering a send. */
+  enabled: boolean;
+  families: Array<{
+    code: string;
+    /** The staff member is a member of this family (their own app account). */
+    mine: boolean;
+    /** Marked internal (test family). */
+    internal: boolean;
+    babies: number;
+    members: Array<{ ref: string; role: string; me: boolean; devices: number }>;
+  }>;
+  usedThisHour: number;
+}
+
+export interface NotificationTestResult {
+  code: string;
+  entry: string;
+  inboxId: string;
+  kind: NotificationKind;
+  destination: NotificationDestinationId;
+  /** The destination params actually put in the push (ids only). */
+  params: Record<string, string>;
+  /** Params the server could not fill (nothing of that kind exists for the baby yet). */
+  missing: string[];
+  templateVersion: number | 'draft';
+  devices: number;
+  accepted: number;
+  /** An ENG test suggestion was created (expires within an hour). */
+  testSuggestion: boolean;
 }

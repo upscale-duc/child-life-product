@@ -59,7 +59,19 @@ export interface EngagementIntent {
   dismissed: boolean;
   completedAt: number | null;
   deviceId?: string;
+  /** Portal "Gửi thử" (D-092): never dispatched, never measured, expires within an hour. */
+  test?: boolean;
 }
+
+/** Where a test intent opens: the same screen each scenario's real source opens. */
+export const engagementTestRoute: Record<EngagementKind, string> = {
+  'ENG-01': '/memories/auto-save/review',
+  'ENG-02': '/memories/video?occasion=m1',
+  'ENG-03': '/memories',
+  'ENG-04': '/care/reminders',
+  'ENG-05': '/memories',
+  'ENG-06': '/rhythm/day',
+};
 export const kindFlag = {
   'ENG-01': 'engagementPendingEnabled',
   'ENG-02': 'engagementMilestoneEnabled',
@@ -450,6 +462,13 @@ export async function engagementAction(db: Firestore, uid: string, data: unknown
     i = doc.data() as EngagementIntent | undefined;
   if (!i || i.uid !== uid) throw new AccountError('permission-denied', 'not-allowed');
   await engagementScope(db, uid, i.babyId, now);
+  // A Portal test push (D-092): opens the scenario's real screen; no source check, no stage,
+  // no budget or fatigue effect. Membership was still checked just above.
+  if (i.test === true) {
+    if (r.action === 'open' || r.action === 'view')
+      return { route: engagementTestRoute[i.kind], babyId: i.babyId, state: 'ready' };
+    return { state: 'saved', route: null };
+  }
   const choicePolicy = (await engagementConfig(db, i.familyId)).policy;
   if (r.action === 'open' && i.kind === 'ENG-01' && r.deviceId !== i.sourceData.deviceId)
     return { route: null, state: 'source_device_required' };

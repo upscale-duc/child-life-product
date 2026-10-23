@@ -189,7 +189,7 @@ export async function retryNotification(
 
 // ---------- Family timeline ----------
 
-interface FamilyContext {
+export interface FamilyContext {
   familyId: string;
   code: string;
   babyIds: string[];
@@ -199,7 +199,7 @@ interface FamilyContext {
 
 const roleOrder = ['coParent', 'caregiver', 'relative'];
 
-async function familyContext(db: Firestore, code: string): Promise<FamilyContext> {
+export async function familyContext(db: Firestore, code: string): Promise<FamilyContext> {
   const hit = await db.collection('familyDirectory').where('code', '==', code).limit(1).get();
   if (hit.empty) throw new StaffError('not-found', 'not-found');
   const familyId = hit.docs[0]!.id;
@@ -264,6 +264,7 @@ function ledgerEntry(d: DocumentSnapshot, ctx: FamilyContext): TimelineEntry {
     engagementStatus: null,
     reason: reason && reason !== 'none' ? reason : null,
     destination: d.get('destination'),
+    ...(d.get('test') === true ? { test: true } : {}),
   };
 }
 
@@ -293,6 +294,7 @@ function intentEntry(d: DocumentSnapshot, ctx: FamilyContext): TimelineEntry {
     engagementStatus: status,
     reason: (d.get('reason') as string | null) ?? null,
     destination: null,
+    ...(d.get('test') === true ? { test: true } : {}),
   };
 }
 
@@ -663,6 +665,7 @@ export async function notificationDetail(
     pushAttempted: ledger ? Number(ledger.get('attempts') ?? 0) > 0 : null,
     providerAccepted: ledger ? Number(ledger.get('acceptedTokens') ?? 0) > 0 : null,
     opened: ledger ? Boolean(ledger.get('openedAt')) : null,
+    openSurface: (ledger?.get('openSurface') as 'push' | 'inbox' | null | undefined) ?? null,
     navigated: (ledger?.get('navigation') as NotificationEntryDetail['navigated']) ?? null,
     completed: intent?.exists
       ? Boolean(intent.get('completedAt')) || status === 'completed'

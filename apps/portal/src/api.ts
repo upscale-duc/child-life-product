@@ -128,6 +128,9 @@ export type Callable =
   // Ops switches + Smart Engagement policy (D-092)
   | 'staffNotificationOps'
   | 'staffSetEngagementPolicy'
+  // Gửi thử: a real push to the staff member's own phone, dev only (D-092)
+  | 'staffNotificationTestTargets'
+  | 'staffSendTestNotification'
   | 'sendAuthEmail';
 
 export interface Api {

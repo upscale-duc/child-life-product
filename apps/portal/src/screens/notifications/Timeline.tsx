@@ -595,6 +595,7 @@ export function TimelineView({
                             ) : (
                               '—'
                             )}
+                            {e.test && <TestBadge />}
                             <span className="block text-[12px] text-muted-foreground">
                               {e.scenario && (
                                 <>
@@ -779,8 +780,10 @@ export function UpcomingPanel({
   );
 }
 
-/** "v0 · trong mã" for the built-in copy, "v3" for a published version. */
-function versionLabel(intl: IntlShape, version: number): string {
+/** "v0 · trong mã" for the built-in copy, "v3" for a published version, "Bản nháp" for a test
+ * send of a draft (ledger version -1, D-092). */
+export function versionLabel(intl: IntlShape, version: number | 'draft'): string {
+  if (version === 'draft' || version === -1) return intl.formatMessage({ id: 'ntf.version.draft' });
   return version === 0
     ? intl.formatMessage({ id: 'ntf.version.builtin' })
     : intl.formatMessage({ id: 'ntf.version.n' }, { n: version });
@@ -840,19 +843,61 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
   );
 }
 
+/** "Thử": a Portal test send (D-092), not a real event. */
+export function TestBadge() {
+  const intl = useIntl();
+  return (
+    <span
+      className="ml-1.5 rounded border border-dashed border-primary/60 px-1 text-[11px] font-medium text-primary"
+      title={intl.formatMessage({ id: 'ntf.test.badge.title' })}
+    >
+      <FormattedMessage id="ntf.test.badge" />
+    </span>
+  );
+}
+
+const transitionPrefix: Record<string, string> = {
+  lifecycle: 'ntf.lifecycle',
+  delivery: 'ntf.delivery',
+  read: 'ntf.read',
+  action: 'ntf.action',
+  engagement: 'ntf.intent',
+};
+
+/** The state transitions of one notification as a vertical timeline (drawer and Gửi thử). */
+export function TransitionList({ timeline }: { timeline: NotificationEntryDetail['timeline'] }) {
+  const intl = useIntl();
+  if (!timeline.length) return null;
+  return (
+    <ol className="relative ml-1.5 grid gap-3 border-l pl-5">
+      {timeline.map((t, i) => (
+        <li key={i} className="relative text-sm">
+          <span
+            className="absolute top-1.5 -left-[25px] size-2.5 rounded-full border-2 border-background bg-primary"
+            aria-hidden="true"
+          />
+          <span className="block text-[12px] text-muted-foreground tabular-nums">
+            {at(intl, t.at)}
+          </span>
+          <span className="font-medium">
+            {labelOr(intl, `ntf.dimension.${t.dimension}`, t.dimension)}
+          </span>
+          {' → '}
+          {transitionPrefix[t.dimension]
+            ? labelOr(intl, `${transitionPrefix[t.dimension]}.${t.to}`, t.to)
+            : t.to}
+          {t.reason && (
+            <span className="text-muted-foreground"> · {reasonLabel(intl, t.reason)}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /** Why · Checks · Delivery · Outcome, with the state transitions as a vertical timeline. */
 export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail }) {
   const intl = useIntl();
-  const stateOf = (dimension: string, to: string) => {
-    const prefix: Record<string, string> = {
-      lifecycle: 'ntf.lifecycle',
-      delivery: 'ntf.delivery',
-      read: 'ntf.read',
-      action: 'ntf.action',
-      engagement: 'ntf.intent',
-    };
-    return prefix[dimension] ? labelOr(intl, `${prefix[dimension]}.${to}`, to) : to;
-  };
   const row = (id: string, value: ReactNode) => (
     <>
       <dt className="text-muted-foreground">
@@ -929,29 +974,7 @@ export function EntryDetailView({ detail: d }: { detail: NotificationEntryDetail
         <p className="text-[12px] text-muted-foreground">
           <FormattedMessage id="ntf.acceptedNotDelivered" />
         </p>
-        {d.timeline.length > 0 && (
-          <ol className="relative ml-1.5 grid gap-3 border-l pl-5">
-            {d.timeline.map((t, i) => (
-              <li key={i} className="relative text-sm">
-                <span
-                  className="absolute top-1.5 -left-[25px] size-2.5 rounded-full border-2 border-background bg-primary"
-                  aria-hidden="true"
-                />
-                <span className="block text-[12px] text-muted-foreground tabular-nums">
-                  {at(intl, t.at)}
-                </span>
-                <span className="font-medium">
-                  {labelOr(intl, `ntf.dimension.${t.dimension}`, t.dimension)}
-                </span>
-                {' → '}
-                {stateOf(t.dimension, t.to)}
-                {t.reason && (
-                  <span className="text-muted-foreground"> · {reasonLabel(intl, t.reason)}</span>
-                )}
-              </li>
-            ))}
-          </ol>
-        )}
+        <TransitionList timeline={d.timeline} />
       </DetailSection>
       <DetailSection title="ntf.detail.outcome">
         <dl className={dl}>

@@ -29,6 +29,8 @@ import { Button, Pill, SelectMenu, errorMessageId, type PillTone } from '../../u
 export const notificationTabs = [
   'overview',
   'templates',
+  // "Gửi thử" (D-092): a real push to the staff member's own phone, dev only.
+  'test',
   'catalog',
   'delivery',
   'journeys',
@@ -52,9 +54,11 @@ export function visibleTabs(levels: StaffLevels): NotificationTab[] {
   return notificationTabs.filter((t) =>
     t === 'templates'
       ? view || staffCan(levels, 'notifications.edit')
-      : t === 'timeline'
-        ? staffCan(levels, 'notifications.timeline')
-        : view,
+      : t === 'test'
+        ? staffCan(levels, 'notifications.edit')
+        : t === 'timeline'
+          ? staffCan(levels, 'notifications.timeline')
+          : view,
   );
 }
 
@@ -456,7 +460,19 @@ export function ParamList({ id }: { id: NotificationDestinationId }) {
 
 // ---------- Errors ----------
 
-const ntfReasons = ['stale', 'template-invalid', 'not-retryable', 'invalid', 'not-found'];
+const ntfReasons = [
+  'stale',
+  'template-invalid',
+  'not-retryable',
+  'invalid',
+  'not-found',
+  // Gửi thử (D-092)
+  'dev-only',
+  'test-recipient',
+  'no-draft',
+  'rate-limited',
+  'not-a-member',
+];
 
 /** The callables' own reasons first, then the portal-wide mapping. */
 export function ntfErrorId(error: ApiError): string {
