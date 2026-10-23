@@ -666,13 +666,16 @@ export function EditorBar({
 /** The form, and a preview that stays in view on wide screens. */
 export function EditorLayout({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   return (
+    // Both tracks are minmax(0, …): a wide child (a table, a long unbroken line) scrolls or wraps
+    // inside its own card instead of widening the column under the preview (notifications editor,
+    // 2026-10-23).
     <div
       className={cn(
-        'grid items-start gap-6',
+        'grid grid-cols-[minmax(0,1fr)] items-start gap-6',
         aside && 'xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]',
       )}
     >
-      <div className="grid min-w-0 gap-4">{children}</div>
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">{children}</div>
       {aside && (
         <aside className="no-scrollbar grid min-w-0 gap-4 xl:sticky xl:top-[8.5rem] xl:max-h-[calc(100svh-9.5rem)] xl:overflow-y-auto xl:overscroll-contain">
           {aside}
