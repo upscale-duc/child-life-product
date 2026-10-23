@@ -47,10 +47,16 @@ for attempt in 1 2 3; do
   if firebase deploy "${deploy_args[@]}"; then deployed=true; break; fi
   echo ">>> Deploy attempt $attempt failed; retrying" >&2
 done
-$deployed || exit 1
 # "Deploy complete!" is not proof: a new revision can fail its healthcheck (old code keeps
 # serving) and a callable can lose its public invoker (HTML 403). The check repairs both and ends
-# with one line. VERIFY=0 skips it (e.g. a quick single-function iteration).
+# with one line. It also runs after a failed deploy: the usual failure (Cloud Run CPU quota on a
+# big deploy) is exactly what it repairs, after waiting for the quota. VERIFY=0 skips it.
 if [[ ",$only," == *",functions"* && "${VERIFY:-1}" != "0" ]]; then
-  node "$root/scripts/verify-deploy.mjs" "$env"
+  node "$root/scripts/verify-deploy.mjs" "$env" || exit 1
+fi
+if ! $deployed; then
+  # The check only repairs revisions that failed to start; a deploy that never created one (build
+  # error, bad config) still needs a look at the lines above.
+  echo ">>> firebase deploy reported errors after 3 attempts. If they were 'Quota exceeded for total allowable CPU' and the line above is ✔ verify, the deploy is complete; otherwise read the errors above." >&2
+  exit 1
 fi
