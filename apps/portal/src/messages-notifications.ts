@@ -1020,6 +1020,7 @@ const rows: Row[] = [
   ['ntf.kind.memberRemoved', 'Thành viên bị gỡ', 'Member removed'],
   ['ntf.producer.family.members', 'Thành viên gia đình', 'Family members'],
   ['ntf.setting.familyMembers', 'Thành viên gia đình', 'Family members'],
+  ['ntf.setting.babyName', 'Hiện tên bé trong thông báo', 'Show your baby’s name'],
 
   // D-092: UI review — tab purposes, badges, health, quick links
   [
