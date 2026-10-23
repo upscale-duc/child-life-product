@@ -523,7 +523,10 @@ export function TestResultPanel({ result }: { result: NotificationTestResult }) 
 function Step({ done, children }: { done: boolean | null; children: ReactNode }) {
   return (
     <li>
-      <StatusDot tone={done === null ? 'muted' : done ? 'ok' : 'wait'}>{children}</StatusDot>
+      {/* Not reached yet reads as waiting (muted), not as a second kind of success. */}
+      <StatusDot tone={done ? 'ok' : 'muted'}>
+        <span className={done ? undefined : 'text-muted-foreground'}>{children}</span>
+      </StatusDot>
     </li>
   );
 }

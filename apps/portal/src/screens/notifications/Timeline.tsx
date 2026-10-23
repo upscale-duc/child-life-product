@@ -886,7 +886,7 @@ export function TransitionList({ timeline }: { timeline: NotificationEntryDetail
           {transitionPrefix[t.dimension]
             ? labelOr(intl, `${transitionPrefix[t.dimension]}.${t.to}`, t.to)
             : t.to}
-          {t.reason && (
+          {t.reason && t.reason !== 'none' && (
             <span className="text-muted-foreground"> · {reasonLabel(intl, t.reason)}</span>
           )}
         </li>
