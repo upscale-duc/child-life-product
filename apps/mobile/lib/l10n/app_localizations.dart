@@ -6116,6 +6116,12 @@ abstract class AppLocalizations {
   /// **'Album mới'**
   String get albNew;
 
+  /// Title of the page a "Có 7 khoảnh khắc mới" notification opens: exactly the moments one share made visible to the family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảnh khắc vừa chia sẻ'**
+  String get albJustShared;
+
   /// Automatic album (10e2).
   ///
   /// In vi, this message translates to:

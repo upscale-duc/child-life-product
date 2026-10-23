@@ -115,6 +115,7 @@ class MediaItem {
     this.waitingWifi = false,
     this.sizeBytes = 0,
     this.albumIds = const [],
+    this.sharedIn = const [],
     this.loveCount = 0,
     this.generatedKind,
   });
@@ -145,6 +146,10 @@ class MediaItem {
   final bool waitingWifi;
   final int sizeBytes;
   final List<String> albumIds;
+
+  /// The family shares ("Báo cho gia đình") that made it visible: what "Có 7 khoảnh khắc mới"
+  /// opens (MEMORIES_SHARED).
+  final List<String> sharedIn;
 
   /// "♥ 4": the whole family's loves (counts for everyone, names for parents).
   final int loveCount;
@@ -206,6 +211,10 @@ class MediaItem {
       sizeBytes: (j['sizeBytes'] as num?)?.toInt() ?? 0,
       albumIds: [
         for (final a in (j['albumIds'] as List? ?? const []))
+          if (a is String) a,
+      ],
+      sharedIn: [
+        for (final a in (j['sharedIn'] as List? ?? const []))
           if (a is String) a,
       ],
       loveCount: (j['loveCount'] as num?)?.toInt() ?? 0,

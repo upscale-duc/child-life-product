@@ -36,6 +36,7 @@ export const notificationDestinationIds = [
   'MEMORIES',
   'MEMORIES_ALBUM',
   'MEMORIES_STORY',
+  'MEMORIES_SHARED',
   'MEMORIES_VIDEO_JOB',
   'MEMORIES_PENDING_REVIEW',
   'MEMORIES_KEEPSAKE_SUGGESTION',
@@ -172,6 +173,16 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       screen: t('Câu chuyện', 'Story'),
       path: '/story/:storyId',
       params: [babyId, { key: 'storyId', pattern: /^[A-Za-z0-9_-]{1,128}$/, required: true }],
+      permission: 'memories_read',
+      fallback: 'MEMORIES',
+      completion: null,
+    },
+    // "Có 7 khoảnh khắc mới": exactly the moments one share made visible (owner, 2026-10-23).
+    MEMORIES_SHARED: {
+      id: 'MEMORIES_SHARED',
+      screen: t('Khoảnh khắc vừa chia sẻ', 'Just-shared moments'),
+      path: '/memories/album/share::shareId',
+      params: [babyId, { key: 'shareId', pattern: /^sh_[a-f0-9]{32}$/, required: true }],
       permission: 'memories_read',
       fallback: 'MEMORIES',
       completion: null,
@@ -1930,6 +1941,8 @@ export function destinationFor(
     return 'MEMORIES_ALBUM';
   if (kind === 'story' && data.sourceCollection === 'stories' && data.sourceId)
     return 'MEMORIES_STORY';
+  if (kind === 'shared' && data.sourceCollection === 'shares' && data.sourceId)
+    return 'MEMORIES_SHARED';
   if ((kind === 'keepsakeVideo' || kind === 'keepsakeVideoFailed') && !data.jobId)
     return 'MEMORIES';
   return notificationTypes[kind].destination;

@@ -211,6 +211,46 @@ void main() {
     });
   });
 
+  // "Có 7 khoảnh khắc mới" (MEMORIES_SHARED, owner 2026-10-23): exactly that share.
+  group('a family share', () {
+    final share = 'sh_${'a' * 32}';
+    final memory = _journal.memories.first.id;
+    final journal = (
+      memories: _journal.memories,
+      media: [
+        ..._journal.media,
+        mediaItem(memory, DateTime(2026, 10, 8, 9), sharedIn: [share]),
+        mediaItem(memory, DateTime(2026, 10, 8, 10), sharedIn: [share]),
+        mediaItem(
+          memory,
+          DateTime(2026, 10, 8, 11),
+          private: true,
+          sharedIn: [share],
+        ),
+      ],
+    );
+
+    Future<void> pumpShare(WidgetTester tester, Membership me) => pumpRouted(
+      tester,
+      AlbumDetailScreen(albumKey: sharedAlbumKey(share)),
+      overrides: [
+        ...careOverrides(me: me),
+        ...memoryOverrides(journal: journal),
+      ],
+    );
+
+    testWidgets('a parent sees the moments of that share only', (tester) async {
+      await pumpShare(tester, mai);
+      expect(find.text('Khoảnh khắc vừa chia sẻ'), findsWidgets);
+      expect(find.textContaining('3 ảnh'), findsWidgets);
+    });
+
+    testWidgets('a relative sees the ones the family may see', (tester) async {
+      await pumpShare(tester, hoa);
+      expect(find.textContaining('2 ảnh'), findsWidgets);
+    });
+  });
+
   group('11c loves and messages', () {
     testWidgets('a relative loves an entry and messages the parents', (
       tester,

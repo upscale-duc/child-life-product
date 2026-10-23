@@ -466,6 +466,10 @@ describe('batch actions (10b3, 10b4, 10o)', () => {
     ).data()!;
     expect(notice.kind).toBe('shared');
     expect(notice.recipients.sort()).toEqual(['grandma', 'mom']);
+    // MEMORIES_SHARED: the notice names its share, and the shared items carry it (ids only).
+    expect(notice.sourceCollection).toBe('shares');
+    expect(notice.sourceId).toMatch(/^sh_[a-f0-9]{32}$/);
+    expect(item.sharedIn).toEqual([notice.sourceId]);
   });
 
   it('"Đổi ngày" keeps the time of day in the baby’s zone; "Gắn mốc" tags items', async () => {

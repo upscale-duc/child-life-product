@@ -57,6 +57,7 @@ The 18 semantic ids are listed below. The Portal's "Điểm đến" table shows 
 | MEMORIES | Kỷ niệm | babyId | member | INBOX | — |
 | MEMORIES_ALBUM | album | babyId, albumId | memories_read | MEMORIES | — |
 | MEMORIES_STORY | story | babyId, storyId | memories_read | MEMORIES | — |
+| MEMORIES_SHARED | album/share:{shareId} — the moments one "Báo cho gia đình" share made visible (owner, 2026-10-23); items carry `sharedIn` | babyId, shareId | memories_read | MEMORIES | — |
 | MEMORIES_VIDEO_JOB | video result | babyId, jobId `ksj_…` | member | MEMORIES | watch / save / share |
 | MEMORIES_PENDING_REVIEW | Tự lưu review (ENG-01) | babyId, engagementId | server re-auth | MEMORIES | approved photos cloud-ready |
 | MEMORIES_KEEPSAKE_SUGGESTION | video templates (ENG-02) | babyId, engagementId | server re-auth | MEMORIES | keepsake video completed |

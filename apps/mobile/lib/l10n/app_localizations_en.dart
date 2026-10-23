@@ -3886,6 +3886,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albNew => 'New album';
 
   @override
+  String get albJustShared => 'Just shared';
+
+  @override
   String get albFavorites => 'Favourites';
 
   @override

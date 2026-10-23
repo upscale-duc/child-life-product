@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import {
   FieldValue,
   Timestamp,
@@ -1099,9 +1100,23 @@ export async function updateMedia(
     widened.push(...(await recomputeEffective(db, babyId, updated, now)));
   }
 
-  // "Chia sẻ với gia đình?" + "Báo cho gia đình": one generic notice, no photos (R-118).
+  // "Chia sẻ với gia đình?" + "Báo cho gia đình": one generic notice, no photos (R-118). The
+  // items it is about carry the share's id (`sharedIn`), so the notice opens exactly them
+  // (MEMORIES_SHARED, owner 2026-10-23); ids only travel in the push.
   let notificationId: string | null = null;
   if (change.kind === 'audience' && change.notifyFamily && widened.length > 0) {
+    // Same person, baby and minute → the same share (and notice): a retried call adds to it.
+    const minute = Math.floor(now.getTime() / 60_000);
+    const shareId = `sh_${createHash('sha256').update(`${babyId}/${uid}/${minute}`).digest('hex').slice(0, 32)}`;
+    for (let i = 0; i < widened.length; i += 400) {
+      const batch = db.batch();
+      for (const id of widened.slice(i, i + 400)) {
+        batch.update(db.doc(`babies/${babyId}/media/${id}`), {
+          sharedIn: FieldValue.arrayUnion(shareId),
+        });
+      }
+      await batch.commit();
+    }
     notificationId = await familyNotice(
       db,
       babyId,
@@ -1110,6 +1125,7 @@ export async function updateMedia(
       uid,
       { name: me.displayName, relation: me.relation, relationCustom: me.relationCustom },
       now,
+      { collection: 'shares', id: shareId },
     );
   }
   return { updated, notificationId };

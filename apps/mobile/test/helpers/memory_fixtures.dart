@@ -66,6 +66,7 @@ MediaItem mediaItem(
   int position = 0,
   MediaStatus status = MediaStatus.ready,
   String? generated,
+  List<String> sharedIn = const [],
 }) {
   final author = by ?? mai;
   final audience = private ? Audience.parents : Audience.family;
@@ -86,6 +87,7 @@ MediaItem mediaItem(
     height: 900,
     milestone: milestone,
     generatedKind: generated,
+    sharedIn: sharedIn,
     paths: MediaPaths(
       original: 'mock/$colour',
       display: 'mock/$colour',

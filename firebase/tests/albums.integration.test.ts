@@ -395,6 +395,32 @@ describe('loves, messages and notices', () => {
     expect(await deliverNotice(db, sender, babyId, 'n1', now)).toEqual({ sent: 0 });
   });
 
+  it('"Có N khoảnh khắc mới" opens its share: the push carries shareId (MEMORIES_SHARED)', async () => {
+    await db.recursiveDelete(db.collection('users/grandma/devices'));
+    await db
+      .doc(`users/grandma/devices/d_${'4'.repeat(32)}`)
+      .set({ token: 't-share', language: 'vi', platform: 'ios' });
+    const shareId = `sh_${'b'.repeat(32)}`;
+    await db.doc(`babies/${babyId}/notifications/n_share`).set({
+      kind: 'shared',
+      count: 2,
+      actor: { name: 'Mai' },
+      sourceCollection: 'shares',
+      sourceId: shareId,
+      recipients: ['grandma'],
+      delivered: false,
+    });
+    const data: Record<string, string>[] = [];
+    const sender: PushSender = {
+      async send(_tokens, m) {
+        data.push(m.data);
+        return [];
+      },
+    };
+    expect(await deliverNotice(db, sender, babyId, 'n_share', now)).toEqual({ sent: 1 });
+    expect(data[0]).toMatchObject({ kind: 'shared', shareId, destination: 'MEMORIES_SHARED' });
+  });
+
   it('notice copy never names the baby or quotes anything (R-120)', () => {
     const c = noticeCopy('message', 1, 'Bà nội Hoa', 'vi');
     expect(c.title).toBe('Có lời nhắn mới');

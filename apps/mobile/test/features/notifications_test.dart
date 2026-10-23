@@ -457,6 +457,15 @@ void main() {
         }),
         'MEMORIES_STORY',
       );
+      // "Có 7 khoảnh khắc mới" names its share; older rows (no share) open Kỷ niệm.
+      expect(
+        destinationFor('shared', {
+          'sourceCollection': 'shares',
+          'sourceId': 'sh_${'a' * 32}',
+        }),
+        'MEMORIES_SHARED',
+      );
+      expect(destinationFor('shared', {'babyId': 'b'}), 'MEMORIES');
       expect(destinationFor('keepsakeVideo', {'babyId': 'b'}), 'MEMORIES');
       expect(destinationFor('memories', {'destination': 'INBOX'}), 'INBOX');
       expect(
@@ -487,7 +496,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 18);
+      expect(notificationDestinations.length, 19);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {
@@ -604,6 +613,15 @@ void main() {
         (
           {'kind': 'keepsakeVideo', 'babyId': teddyId, 'jobId': jobId},
           ['/memories/video/job/$jobId?baby=$teddyId'],
+        ),
+        (
+          {
+            'kind': 'shared',
+            'babyId': teddyId,
+            'sourceCollection': 'shares',
+            'sourceId': 'sh_${'d' * 32}',
+          },
+          ['/memories/album/share:sh_${'d' * 32}'],
         ),
         ({'kind': 'message', 'babyId': teddyId}, ['/messages']),
         ({'kind': 'storage', 'babyId': teddyId}, ['/me/storage']),

@@ -30,7 +30,7 @@ Groups (the app's chips): **Kỷ niệm** (memories), **Gia đình** (family), *
 | `vaccine` | care | `ringVaccineReminderPush` every 5 min: D−3, eve 19:00, morning | coParent + caregiver (or chosen) | `care.vaccine_3d`, `_eve`, `_morning` | CARE_VACCINES | vaccines | rings | `vaccineReminders/{date}_{kind}` marker | none |
 | `spending` | care | recurring 00:30, budget 80 %, import done/failed | coParents; importer | `spending.recurring`, `.budget80`, `.import_done`, `.import_failed` | SPENDING / SPENDING_IMPORT | spending | held | day / month / import outcome | none |
 | `memories` | memories | upload batch closed | coParent + relative except uploader | `memories.new_moments` | MEMORIES | memories | held | batch id | none |
-| `shared` | memories | media shared with family | same, except sharer | `memories.new_moments` | MEMORIES | memories | held | source + minute | none |
+| `shared` | memories | media shared with family | same, except sharer | `memories.new_moments` | MEMORIES_SHARED (MEMORIES for rows before it) | memories | held | source + minute | none |
 | `album` | memories | album shared/updated | same, except editor | `memories.new_moments` | MEMORIES_ALBUM | memories | held | album + minute | none |
 | `story` | memories | story saved to family | same, except author | `memories.new_story` | MEMORIES_STORY | memories | held | story + minute | none |
 | `message` | family | "Nhắn ba mẹ" | coParents except sender | `family.message` | FAMILY_MESSAGES | messages | held | message id | none |

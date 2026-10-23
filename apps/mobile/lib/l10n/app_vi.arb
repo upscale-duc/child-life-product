@@ -5443,6 +5443,10 @@
   "@albNew": {
     "description": "10d button / new-album sheet."
   },
+  "albJustShared": "Khoảnh khắc vừa chia sẻ",
+  "@albJustShared": {
+    "description": "Title of the page a \"Có 7 khoảnh khắc mới\" notification opens: exactly the moments one share made visible to the family."
+  },
   "albFavorites": "Yêu thích",
   "@albFavorites": {
     "description": "Automatic album (10e2)."

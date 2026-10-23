@@ -39,6 +39,9 @@ import 'upload_queue.dart';
 const favoritesKey = 'favorites';
 String milestoneKey(String id) => 'ms:$id';
 
+/// The moments one family share made visible ("Có 7 khoảnh khắc mới", MEMORIES_SHARED).
+String sharedAlbumKey(String shareId) => 'share:$shareId';
+
 String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
 /// Ready items I can see, newest first (the album pages' source).
@@ -336,7 +339,7 @@ class AlbumsView extends ConsumerWidget {
 class AlbumDetailScreen extends ConsumerStatefulWidget {
   const AlbumDetailScreen({required this.albumKey, super.key});
 
-  /// An album id, [favoritesKey] or [milestoneKey].
+  /// An album id, [favoritesKey], [milestoneKey] or [sharedAlbumKey].
   final String albumKey;
 
   @override
@@ -356,6 +359,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     final media = _visible(ref, c);
     final favorites = key == favoritesKey;
     final milestone = key.startsWith('ms:') ? key.substring(3) : null;
+    final share = key.startsWith('share:') ? key.substring(6) : null;
     Album? album;
     List<MediaItem> items;
     String title;
@@ -366,6 +370,13 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
           if (favs.contains(m.id)) m,
       ];
       title = l10n.albFavorites;
+    } else if (share != null) {
+      // Newest first, like Ảnh; only what this person may see (relatives: Gia đình items).
+      items = [
+        for (final m in media)
+          if (m.sharedIn.contains(share)) m,
+      ]..sort((a, b) => b.captureAt.compareTo(a.captureAt));
+      title = l10n.albJustShared;
     } else if (milestone != null) {
       items = [
         for (final m in media)

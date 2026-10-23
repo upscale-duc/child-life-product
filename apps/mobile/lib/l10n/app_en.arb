@@ -1003,6 +1003,7 @@
   "a11yShutter": "Take",
   "albCount": "{count, plural, =1{1 album} other{{count} albums}}",
   "albNew": "New album",
+  "albJustShared": "Just shared",
   "albFavorites": "Favourites",
   "albFavoritesMine": "yours only",
   "albOnlyYou": "Only you",

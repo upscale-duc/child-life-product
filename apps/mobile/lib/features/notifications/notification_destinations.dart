@@ -14,6 +14,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../engagement/engagement_widgets.dart';
 import '../home/home_shell.dart';
+import '../memories/album_screens.dart' show sharedAlbumKey;
 import '../reminders/rule_notifications.dart';
 import '../spending/spending_models.dart' show SpendingAccess;
 import '../vaccines/vaccine_notifications.dart';
@@ -129,6 +130,13 @@ const _registry = <NotificationDestination>[
   NotificationDestination(
     id: 'MEMORIES_STORY',
     params: [_babyId, DestinationParam('storyId', _anyId)],
+    permission: DestinationPermission.memoriesRead,
+    fallback: 'MEMORIES',
+  ),
+  // "Có 7 khoảnh khắc mới": exactly the moments one share made visible (owner, 2026-10-23).
+  NotificationDestination(
+    id: 'MEMORIES_SHARED',
+    params: [_babyId, DestinationParam('shareId', r'^sh_[a-f0-9]{32}$')],
     permission: DestinationPermission.memoriesRead,
     fallback: 'MEMORIES',
   ),
@@ -327,6 +335,11 @@ String destinationFor(String kind, Map<String, String> data) {
       (data['sourceId'] ?? '').isNotEmpty) {
     return 'MEMORIES_STORY';
   }
+  if (kind == 'shared' &&
+      data['sourceCollection'] == 'shares' &&
+      (data['sourceId'] ?? '').isNotEmpty) {
+    return 'MEMORIES_SHARED';
+  }
   if ((kind == 'keepsakeVideo' || kind == 'keepsakeVideoFailed') &&
       (data['jobId'] ?? '').isEmpty &&
       _legacyJobId(data) == null) {
@@ -373,6 +386,7 @@ class NotificationTarget {
     if (source != null) {
       if (out['sourceCollection'] == 'albums') out['albumId'] ??= source;
       if (out['sourceCollection'] == 'stories') out['storyId'] ??= source;
+      if (out['sourceCollection'] == 'shares') out['shareId'] ??= source;
     }
     if (kind == 'keepsakeVideo' || kind == 'keepsakeVideoFailed') {
       final legacy = _legacyJobId(out);
@@ -736,6 +750,9 @@ Future<_Opened> _tryOpen(
     case 'MEMORIES_STORY':
       select();
       open('${Routes.story}/${params['storyId']}');
+    case 'MEMORIES_SHARED':
+      select();
+      open('${Routes.memories}/album/${sharedAlbumKey(params['shareId']!)}');
     case 'MEMORIES_VIDEO_JOB':
       // Video kỷ niệm ready or not made (D-068 #4): MM09 / MM14 for that job.
       select();

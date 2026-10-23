@@ -3586,6 +3586,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get albNew => 'Album mới';
 
   @override
+  String get albJustShared => 'Khoảnh khắc vừa chia sẻ';
+
+  @override
   String get albFavorites => 'Yêu thích';
 
   @override

@@ -382,6 +382,11 @@ export async function deliverNotice(
         typeof claimed.get('sourceId') === 'string'
           ? { storyId: claimed.get('sourceId') }
           : {}),
+        // MEMORIES_SHARED: the moments one share made visible to the family.
+        ...(claimed.get('sourceCollection') === 'shares' &&
+        typeof claimed.get('sourceId') === 'string'
+          ? { shareId: claimed.get('sourceId') }
+          : {}),
         ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
       },
       message: (language) => noticeCopy(kind, count, actor, language),
