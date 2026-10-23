@@ -174,7 +174,7 @@ describe('"Thử xử lý lại video" (R-185)', () => {
     expect(parseMediaRef(`babies/${babyId}/media/${m}`)).toEqual({ mediaId: m, babyId });
     expect(
       parseMediaRef(
-        `projects/child-life-prod/databases/(default)/documents/babies/${babyId}/media/${m}`,
+        `projects/child-life-ecosystem/databases/(default)/documents/babies/${babyId}/media/${m}`,
       ),
     ).toEqual({ mediaId: m, babyId });
     expect(parseMediaRef('med_123')).toBeNull();

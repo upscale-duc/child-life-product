@@ -5,7 +5,7 @@ export type Environment = (typeof environments)[number];
 /** Firebase project that each environment must talk to. A mismatch is a fatal configuration error. */
 export const firebaseProjectIds: Record<Environment, string> = {
   dev: 'child-life-dev',
-  prod: 'child-life-prod',
+  prod: 'child-life-ecosystem',
 };
 
 /** Public hosts per environment (implementation plan §3.7). */

@@ -31,7 +31,7 @@ describe('invite page', () => {
     expect(inviteOpenUrl('child-life-dev', 'child-life-dev-landing.web.app', token)).toBe(
       `https://dev.childlife.app/i/${token}`,
     );
-    expect(inviteOpenUrl('child-life-prod', 'childlife.app', token)).toBe(
+    expect(inviteOpenUrl('child-life-ecosystem', 'childlife.app', token)).toBe(
       `https://childlife.app/i/${token}`,
     );
   });

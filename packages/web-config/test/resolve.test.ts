@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { EnvironmentConfigError, resolveWebEnvironment } from '../src/index.js';
+import {
+  EnvironmentConfigError,
+  resolveSiteEnvironment,
+  resolveWebEnvironment,
+} from '../src/index.js';
 
 describe('resolveWebEnvironment', () => {
   it('accepts dev builds on dev hosts, previews and localhost', () => {
@@ -20,7 +24,7 @@ describe('resolveWebEnvironment', () => {
     expect(() => resolveWebEnvironment('dev', 'admin', 'dev.childlife.app')).toThrow(
       /must not run/,
     );
-    expect(() => resolveWebEnvironment('dev', 'landing', 'child-life-prod.web.app')).toThrow();
+    expect(() => resolveWebEnvironment('dev', 'landing', 'child-life-ecosystem.web.app')).toThrow();
   });
 
   it('refuses prod until it is configured, and unknown modes', () => {
@@ -30,5 +34,21 @@ describe('resolveWebEnvironment', () => {
     expect(() => resolveWebEnvironment('staging', 'landing', 'localhost')).toThrow(
       /Unknown build mode/,
     );
+  });
+});
+
+describe('resolveSiteEnvironment', () => {
+  it('runs the landing on its own hosts without Firebase config', () => {
+    for (const host of ['childlife.app', 'www.childlife.app', 'child-life-ecosystem.web.app'])
+      expect(resolveSiteEnvironment('prod', host)).toBe('prod');
+    expect(resolveSiteEnvironment('dev', 'dev.childlife.app')).toBe('dev');
+  });
+
+  it('refuses the other environment hosts and unknown modes', () => {
+    expect(() => resolveSiteEnvironment('prod', 'dev.childlife.app')).toThrow(/must not run/);
+    expect(() => resolveSiteEnvironment('prod', 'child-life-dev-landing.web.app')).toThrow();
+    expect(() => resolveSiteEnvironment('prod', 'localhost')).toThrow();
+    expect(() => resolveSiteEnvironment('dev', 'childlife.app')).toThrow();
+    expect(() => resolveSiteEnvironment('staging', 'localhost')).toThrow(/Unknown build mode/);
   });
 });

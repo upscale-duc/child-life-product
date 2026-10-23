@@ -23,7 +23,7 @@ describe('handlePing', () => {
     expect(() => handlePing({ clientEnvironment: 'prod', opId }, 'child-life-dev', now)).toThrow(
       PingError,
     );
-    expect(() => handlePing({ clientEnvironment: 'dev', opId }, 'child-life-prod', now)).toThrow(
+    expect(() => handlePing({ clientEnvironment: 'dev', opId }, 'child-life-ecosystem', now)).toThrow(
       /does not match/,
     );
   });

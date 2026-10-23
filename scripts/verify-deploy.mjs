@@ -21,7 +21,7 @@ import { dirname, join } from 'node:path';
 
 const env = process.argv[2];
 const noWait = process.argv.includes('--no-wait');
-const projects = { dev: 'child-life-dev', prod: 'child-life-prod' };
+const projects = { dev: 'child-life-dev', prod: 'child-life-ecosystem' };
 const project = projects[env];
 if (!project) {
   console.error('Usage: node scripts/verify-deploy.mjs dev|prod [--no-wait]');

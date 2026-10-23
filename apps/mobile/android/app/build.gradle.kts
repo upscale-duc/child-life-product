@@ -45,7 +45,7 @@ android {
 
     // dev and prod are separate Firebase projects with separate app ids (implementation plan §3.7).
     // Each flavor reads its own google-services.json from src/<flavor>/; prod has none until
-    // child-life-prod exists, so prod builds fail fast instead of silently using dev.
+    // child-life-ecosystem exists, so prod builds fail fast instead of silently using dev.
     flavorDimensions += "environment"
     productFlavors {
         create("dev") {

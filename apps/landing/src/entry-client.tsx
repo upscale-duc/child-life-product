@@ -1,16 +1,13 @@
-import { resolveWebEnvironment } from '@child-life/web-config';
+import { resolveSiteEnvironment } from '@child-life/web-config';
 import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { App } from './App';
 import { routeFor } from './routes';
 import './styles/index.css';
 
-// Refuse to run with mixed or missing configuration (brief §03).
-const { environment } = resolveWebEnvironment(
-  import.meta.env.MODE,
-  'landing',
-  window.location.hostname,
-);
+// Refuse to run with mixed configuration (brief §03). The landing loads no Firebase SDK, so only
+// the build mode and the host are checked.
+const environment = resolveSiteEnvironment(import.meta.env.MODE, window.location.hostname);
 const route = routeFor(window.location.pathname);
 
 hydrateRoot(

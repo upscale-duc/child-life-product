@@ -17,7 +17,7 @@ fi
 case "$env" in
   dev) project="child-life-dev" ;;
   prod)
-    project="child-life-prod"
+    project="child-life-ecosystem"
     if [[ "${CHILD_LIFE_PROD_APPROVED:-}" != "yes" ]]; then
       echo "Production deploys need owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run." >&2
       exit 1

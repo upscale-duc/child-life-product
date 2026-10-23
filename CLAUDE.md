@@ -15,7 +15,7 @@
 
 ## Conventions
 
-- Environments: `dev` → `child-life-dev`, `prod` → `child-life-prod`; region `asia-southeast1`. Builds refuse mixed or missing config (Dart `resolveEnvironment`, web `resolveWebEnvironment`).
+- Environments: `dev` → `child-life-dev`, `prod` → `child-life-ecosystem`; region `asia-southeast1`. Builds refuse mixed or missing config (Dart `resolveEnvironment`, web `resolveWebEnvironment`).
 - i18n (D-012): every user-facing string goes through ARB (`apps/mobile/lib/l10n`, Vietnamese template) or the web `messages.ts` catalogs; vi and en must have the same ids. Figma copy is the Vietnamese source; English is drafted by engineering for owner review.
 - Security: deny-by-default Rules; sensitive operations via callable Functions with zod validation; no child data (names, DOB, photos, captions, care payloads) in logs, analytics or crash keys.
 - Functions deploy from `firebase/functions/deploy` (esbuild bundle); workspace packages are bundled, only `firebase-functions` / `firebase-admin` are installed by Cloud Build.

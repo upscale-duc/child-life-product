@@ -77,10 +77,7 @@ export function resolveWebEnvironment(
   surface: WebSurface,
   host: string,
 ): { environment: Environment; firebase: WebFirebaseConfig } {
-  if (!(environments as readonly string[]).includes(mode)) {
-    throw new EnvironmentConfigError(`Unknown build mode "${mode}" (expected dev or prod)`);
-  }
-  const environment = mode as Environment;
+  const environment = environmentOf(mode);
   const configs = webFirebaseConfigs[environment];
   if (!configs) throw new EnvironmentConfigError(`Firebase is not configured for ${environment}`);
   const firebase = configs[surface];
@@ -93,4 +90,23 @@ export function resolveWebEnvironment(
     throw new EnvironmentConfigError(`${environment} ${surface} build must not run on ${host}`);
   }
   return { environment, firebase };
+}
+
+/**
+ * The landing site's check: it loads no Firebase SDK, so it needs no Firebase web config, only a
+ * known build mode served from one of that environment's site hosts.
+ */
+export function resolveSiteEnvironment(mode: string, host: string): Environment {
+  const environment = environmentOf(mode);
+  if (!allowedHosts(environment, 'landing')(host)) {
+    throw new EnvironmentConfigError(`${environment} landing build must not run on ${host}`);
+  }
+  return environment;
+}
+
+function environmentOf(mode: string): Environment {
+  if (!(environments as readonly string[]).includes(mode)) {
+    throw new EnvironmentConfigError(`Unknown build mode "${mode}" (expected dev or prod)`);
+  }
+  return mode as Environment;
 }

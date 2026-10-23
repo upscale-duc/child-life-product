@@ -32,7 +32,7 @@
 //     --self-approve on --review-on-prod off --reason "…" [--apply]
 //   pnpm exec tsx scripts/content-release.ts publish --project child-life-dev --as you@childlife.app \
 //     --reason "…" [--only …] [--apply]
-//   pnpm exec tsx scripts/content-release.ts import --project child-life-prod \
+//   pnpm exec tsx scripts/content-release.ts import --project child-life-ecosystem \
 //     --bundle ~/cl-bundles/2026-10-16 --as you@childlife.app [--only firstAid,articles] [--apply]
 //
 // Shared packages must be built first: pnpm --filter @child-life/contracts run build.
@@ -434,7 +434,7 @@ function seedsBundle(out: string) {
 async function importBundle(project: string, dir: string, as: string, apply: boolean) {
   const b = JSON.parse(readFileSync(join(dir, 'bundle.json'), 'utf8')) as Bundle;
   validate(b);
-  if (apply && project === 'child-life-prod' && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
+  if (apply && project === 'child-life-ecosystem' && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
     fail('Importing to prod needs owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run.');
   }
   const { db, bucket } = connect(project);
@@ -593,7 +593,7 @@ const onOff = (name: string) => {
 async function setPolicy(project: string, as: string, apply: boolean) {
   const reason = arg('reason');
   if (!reason) fail('policy needs --reason "…" (written to the audit log)');
-  if (apply && project === 'child-life-prod' && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
+  if (apply && project === 'child-life-ecosystem' && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
     fail('Changing prod needs owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run.');
   }
   const { db } = connect(project);
@@ -613,7 +613,7 @@ async function publishAll(project: string, as: string, apply: boolean) {
   const reason = arg('reason');
   if (!reason || reason.trim().length < 3)
     fail('publish needs --reason "…" (written to the audit log)');
-  const prod = project === 'child-life-prod';
+  const prod = project === 'child-life-ecosystem';
   if (apply && prod && process.env.CHILD_LIFE_PROD_APPROVED !== 'yes') {
     fail('Publishing to prod needs owner approval: set CHILD_LIFE_PROD_APPROVED=yes for this run.');
   }

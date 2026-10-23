@@ -709,7 +709,7 @@ describe('Portal "Gửi thử" (D-092)', () => {
       { templateId: 'family.message', code, recipient: dadRef },
       at,
     );
-    process.env.GCLOUD_PROJECT = 'child-life-prod';
+    process.env.GCLOUD_PROJECT = 'child-life-ecosystem';
     await expect(
       sendTestNotification(
         db,

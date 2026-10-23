@@ -5,7 +5,7 @@ import 'environment.dart';
 
 /// Firebase client options per environment and platform. These are public identifiers, not
 /// secrets; API keys are restricted per app in Google Cloud. Prod is `null` until
-/// `child-life-prod` exists, so prod builds stop at startup instead of using dev.
+/// `child-life-ecosystem` exists, so prod builds stop at startup instead of using dev.
 FirebaseOptions? firebaseOptionsFor(
   AppEnvironment environment, {
   TargetPlatform? platform,

@@ -93,7 +93,7 @@ void main() {
     );
   });
 
-  test('prod is refused until child-life-prod is configured', () {
+  test('prod is refused until child-life-ecosystem is configured', () {
     expect(
       () => resolveEnvironment(
         flavor: 'prod',

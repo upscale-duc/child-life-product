@@ -17,10 +17,10 @@ enum AppEnvironment {
   prod(
     androidAppId: 'app.childlife',
     iosAppId: 'app.childlife',
-    firebaseProjectId: 'child-life-prod',
+    firebaseProjectId: 'child-life-ecosystem',
     siteHost: 'childlife.app',
     webOrigin: 'https://childlife.app',
-    keepsakePlayerOrigin: 'https://child-life-prod-keepsake.web.app',
+    keepsakePlayerOrigin: 'https://child-life-ecosystem-keepsake.web.app',
   );
 
   const AppEnvironment({

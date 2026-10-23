@@ -1,7 +1,7 @@
 {
   "projects": {
     "dev": "child-life-dev",
-    "prod": "child-life-prod"
+    "prod": "child-life-ecosystem"
   },
   "targets": {
     "child-life-dev": {
@@ -9,6 +9,11 @@
         "landing": ["child-life-dev-landing"],
         "admin": ["child-life-dev-admin"],
         "player": ["child-life-dev-keepsake"]
+      }
+    },
+    "child-life-ecosystem": {
+      "hosting": {
+        "landing": ["child-life-ecosystem"]
       }
     }
   }
