@@ -100,7 +100,7 @@ export function OverviewView({ data, days }: { data: Overview; days: number }) {
   const accounts = ratioFoot(kpis.newAccounts, kpis.newAccountsPrev);
   const first = data.funnel.find((f) => f.count !== null)?.count ?? 0;
   return (
-    <div className="grid">
+    <div className="grid gap-4">
       <div className="kpis">
         <Kpi
           label={<FormattedMessage id="overview.active" />}

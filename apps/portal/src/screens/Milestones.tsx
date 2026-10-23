@@ -31,7 +31,16 @@ import {
 } from '../content-kit';
 import { useOwnWorkBlocked } from '../content-policy';
 import { routePaths, subPath, useStaff } from '../context';
-import { Button, Loaded, Modal, Page, SelectMenu, TableScroll, errorMessageId } from '../ui';
+import {
+  Button,
+  Loaded,
+  Loading,
+  Modal,
+  Page,
+  SelectMenu,
+  TableScroll,
+  errorMessageId,
+} from '../ui';
 import {
   ActDialog,
   ContentImagesProvider,
@@ -371,11 +380,7 @@ function MilestoneSeedDialog({ onClose, onDone }: { onClose: () => void; onDone:
             .finally(() => setBusy(false));
         }}
       />
-      {busy && (
-        <p className="text-sm text-muted-foreground" role="status">
-          <FormattedMessage id="state.loading" />
-        </p>
-      )}
+      {busy && <Loading variant="lines" rows={2} />}
       {problem && (
         <Notice tone="error">
           <FormattedMessage id={problem} />

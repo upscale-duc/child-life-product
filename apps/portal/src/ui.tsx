@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, Info, Loader2, Lock, MoreHorizontal } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Info, Lock, MoreHorizontal } from 'lucide-react';
 import {
   useEffect,
   useId,
@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/chart';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
@@ -610,11 +611,68 @@ export function RejectedBy({ id, by, reason }: { id: string; by: string; reason:
   );
 }
 
-export function Loading() {
+// ---------- Loading skeletons (one look across the portal, owner 2026-10-23) ----------
+
+/** KPI tiles while a page loads. */
+export function TilesSkeleton({ n = 4 }: { n?: number }) {
   return (
-    <div className="state" role="status">
-      <Loader2 className="size-4 animate-spin text-primary" aria-hidden="true" />
-      <FormattedMessage id="state.loading" />
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => (
+        <Skeleton key={i} className="h-[84px] rounded-xl" />
+      ))}
+    </div>
+  );
+}
+
+/** A card with a title bar and [rows] lines (a list, a table, a form section). */
+export function TableSkeleton({ rows = 6 }: { rows?: number }) {
+  return (
+    <div className="grid gap-2 rounded-xl border p-4" aria-hidden="true">
+      <Skeleton className="h-6 w-1/3" />
+      {Array.from({ length: rows }, (_, i) => (
+        <Skeleton key={i} className="h-9" />
+      ))}
+    </div>
+  );
+}
+
+/** Tiles over a table: the usual shape of a portal page. */
+export function PageSkeleton() {
+  return (
+    <div className="grid gap-4" role="status">
+      <span className="sr-only">
+        <FormattedMessage id="state.loading" />
+      </span>
+      <TilesSkeleton />
+      <TableSkeleton />
+    </div>
+  );
+}
+
+/**
+ * The loading state everywhere: a skeleton, never a "Đang tải…" line. [variant] picks the shape:
+ * a whole page, a card of rows (a section or a tab), or a few lines inside a card.
+ */
+export function Loading({
+  variant = 'block',
+  rows,
+}: {
+  variant?: 'page' | 'block' | 'lines';
+  rows?: number;
+}) {
+  if (variant === 'page') return <PageSkeleton />;
+  return (
+    <div role="status" className={variant === 'lines' ? 'grid gap-2' : undefined}>
+      <span className="sr-only">
+        <FormattedMessage id="state.loading" />
+      </span>
+      {variant === 'lines' ? (
+        Array.from({ length: rows ?? 3 }, (_, i) => (
+          <Skeleton key={i} className={cn('h-5', i === (rows ?? 3) - 1 && 'w-2/3')} />
+        ))
+      ) : (
+        <TableSkeleton rows={rows ?? 4} />
+      )}
     </div>
   );
 }
@@ -709,13 +767,16 @@ export function ErrorState({ error, onRetry }: { error: ApiError; onRetry: () =>
 export function Loaded<T>({
   load,
   reload,
+  skeleton,
   children,
 }: {
   load: Load<T>;
   reload: () => void;
+  /** The shape while loading (default: a card of rows). */
+  skeleton?: ReactNode;
   children: (data: T) => ReactNode;
 }) {
-  if (load.status === 'loading') return <Loading />;
+  if (load.status === 'loading') return <>{skeleton ?? <Loading />}</>;
   if (load.status === 'error') return <ErrorState error={load.error} onRetry={reload} />;
   return <>{children(load.data)}</>;
 }

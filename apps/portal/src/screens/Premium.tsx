@@ -25,6 +25,7 @@ import { ZONE } from '../format';
 import {
   Button,
   Loaded,
+  Loading,
   Modal,
   Pill,
   Segmented,
@@ -248,9 +249,9 @@ function BillingSwitch({ flags, onChanged }: { flags: FlagsView | null; onChange
           </table>
         </TableScroll>
       ) : (
-        <p className="px-5 py-4 text-sm text-muted-foreground">
-          <FormattedMessage id="state.loading" />
-        </p>
+        <div className="px-5 py-4">
+          <Loading variant="lines" rows={4} />
+        </div>
       )}
       {change && (
         <FlagDialog

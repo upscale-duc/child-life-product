@@ -81,7 +81,7 @@ export function AiPolicyView({
   );
   const problems = Object.entries(data.reports.byProblem) as Array<[string, number]>;
   return (
-    <div className="grid">
+    <div className="grid gap-4">
       <Notice tone="info">
         <FormattedMessage id="premium.ai.audit" />
       </Notice>
@@ -559,7 +559,7 @@ export function RenderOpsView({
   const k = data.kpis;
   const failures = Object.entries(data.failures) as Array<[KeepsakeJobErrorCode, number]>;
   return (
-    <div className="grid">
+    <div className="grid gap-4">
       <div className="kpis">
         <Kpi
           label={<FormattedMessage id="render.active" />}

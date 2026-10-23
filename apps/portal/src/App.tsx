@@ -226,7 +226,9 @@ export function App({
     <IntlProvider locale={locale} defaultLocale="vi" messages={messages[locale]}>
       <ApiContext.Provider value={api}>
         {session.kind === 'checking' ? (
-          <Loading />
+          <div className="mx-auto max-w-6xl p-6 md:p-10">
+            <Loading variant="page" />
+          </div>
         ) : session.kind === 'staff' ? (
           <StaffContext.Provider value={session.staff}>
             <Shell

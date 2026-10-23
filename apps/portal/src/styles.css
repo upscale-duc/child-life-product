@@ -195,10 +195,6 @@ p {
   flex-wrap: wrap;
   justify-content: flex-end;
 }
-.grid {
-  display: grid;
-  gap: 16px;
-}
 .stack {
   display: grid;
   gap: 16px;

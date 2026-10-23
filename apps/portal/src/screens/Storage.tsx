@@ -86,7 +86,7 @@ export function StorageView({
   });
   const k = data.kpis;
   return (
-    <div className="grid">
+    <div className="grid gap-4">
       <div className="kpis">
         <Kpi
           label={<FormattedMessage id="storage.kpiPending" />}

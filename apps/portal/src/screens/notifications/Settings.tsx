@@ -269,7 +269,7 @@ function PolicyPanel({
                 htmlFor={id}
                 label={<FormattedMessage id={`ntf.policy.${f.key}`} />}
                 help={
-                  <span className="grid">
+                  <span className="grid gap-1">
                     <span>
                       <FormattedMessage id={`ntf.policy.${f.key}.note`} />
                     </span>

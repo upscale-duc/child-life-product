@@ -470,7 +470,7 @@ export function TemplateEditorView({
                     }
                     error={
                       fieldIssues.length ? (
-                        <span className="grid">
+                        <span className="grid gap-1">
                           {fieldIssues.map((i, n) => (
                             <span key={n}>
                               <IssueText issue={i} />

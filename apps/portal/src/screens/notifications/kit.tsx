@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { ApiError, useApi, type Callable, type Load } from '../../api';
 import { Button } from '../../ui';
@@ -159,38 +158,9 @@ export function Sparkline({
   );
 }
 
-export function TilesSkeleton({ n = 4 }: { n?: number }) {
-  return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-hidden="true">
-      {Array.from({ length: n }, (_, i) => (
-        <Skeleton key={i} className="h-[84px] rounded-xl" />
-      ))}
-    </div>
-  );
-}
-
-export function TableSkeleton({ rows = 6 }: { rows?: number }) {
-  return (
-    <div className="grid gap-2 rounded-xl border p-4" aria-hidden="true">
-      <Skeleton className="h-6 w-1/3" />
-      {Array.from({ length: rows }, (_, i) => (
-        <Skeleton key={i} className="h-9" />
-      ))}
-    </div>
-  );
-}
-
-export function PageSkeleton() {
-  return (
-    <div className="stack" role="status">
-      <span className="sr-only">
-        <FormattedMessage id="state.loading" />
-      </span>
-      <TilesSkeleton />
-      <TableSkeleton />
-    </div>
-  );
-}
+// The skeletons are the portal's own (ui.tsx), so every screen loads with the same look.
+export { PageSkeleton, TableSkeleton, TilesSkeleton } from '../../ui';
+import { PageSkeleton } from '../../ui';
 
 export function ErrorPanel({ error, onRetry }: { error: ApiError; onRetry: () => void }) {
   return (
