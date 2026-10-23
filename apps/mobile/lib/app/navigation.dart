@@ -60,6 +60,20 @@ extension SafePush on GoRouter {
     return !match.isError && match.matches.length > 1 ? twin : null;
   }
 
+  /// Where a notification's destination opens (push or Hộp thông báo): on top of what shows,
+  /// like any push. A tab root that carries a query (a recap week from Smart Engagement) opens
+  /// as its overlay twin, a page with its own Back, so Back returns to the screen or the inbox
+  /// underneath instead of the tab root being replaced; a bare tab root opens in the tabs.
+  String notificationLocation(String location) {
+    final uri = Uri.parse(location);
+    return uri.hasQuery &&
+            isTabLocation(location) &&
+            overlayTwinOf(location) == null &&
+            !OverlayTwin.isTwin(location)
+        ? OverlayTwin.of(location)
+        : location;
+  }
+
   /// Closes the full-screen pages above the shell (the tab pages under them stay).
   void _leaveAboveShell() {
     // Each pop updates the configuration synchronously (as `closeFlow` relies on); the bound

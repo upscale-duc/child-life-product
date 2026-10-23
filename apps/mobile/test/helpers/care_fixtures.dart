@@ -1,4 +1,5 @@
 import 'package:child_life/core/design/tabular_text.dart';
+import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
@@ -324,9 +325,11 @@ List<Override> careOverrides({
   List<String> firstAidSaved = const [],
   FirstAidDevice? firstAidDevice,
   FirstAidStore? firstAidStore,
+  NotificationRepository? notificationRepo,
 }) => [
   ...familyOverrides(
     me: me,
+    notificationRepo: notificationRepo,
     records: records ?? mockDay(),
     growth: growth ?? const [],
     online: online,

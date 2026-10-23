@@ -28,7 +28,10 @@ import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/milestones/milestone_screens.dart';
+import 'package:child_life/features/notifications/inbox_screen.dart';
 import 'package:child_life/features/notifications/notification_destinations.dart';
+import 'package:child_life/features/notifications/notification_models.dart';
+import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/purchase_resume.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
@@ -72,11 +75,13 @@ final l10n = lookupAppLocalizations(const Locale('vi'));
 List<Override> _base({
   List<LbStage>? stages,
   ReminderNotifications? notifications,
+  NotificationRepository? notificationRepo,
 }) => [
   ...careOverrides(
     firstAid: seedFirstAidPack(),
     growth: mockGrowth(),
     notifications: notifications,
+    notificationRepo: notificationRepo,
   ),
   ...memoryOverrides(
     keepsakes: (cards: true, videos: true),
@@ -573,27 +578,126 @@ void main() {
       await _end(tester, container);
     });
 
-    testWidgets('a cold start: lands on it over the tabs once the splash is done', (
+    testWidgets(
+      'a cold start: lands on it over the tabs once the splash is done',
+      (tester) async {
+        final (router, container) = await _app(
+          tester,
+          pushOverrides(),
+          tab: null,
+          wrap: capture,
+        );
+        // The tap is handed over while the app is still starting.
+        unawaited(
+          openNotification(ref, reminders, surface: NotificationSurface.push),
+        );
+        await tester.pump(const Duration(seconds: 3));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        expect(find.byType(RemindersScreen), findsOneWidget);
+        expect(_shells(router), 1);
+        await _back(tester, router, _Back.system);
+        _landedInTabs(tester, router);
+        expect(find.byType(RemindersScreen), findsNothing);
+        await _end(tester, container);
+      },
+    );
+  });
+
+  // Hộp thông báo (EN06): a row opens on top of the inbox, Back returns to it.
+  group('inbox taps (P-174 resolver)', () {
+    InboxItem row(String id, String title) => inboxItem(
+      id,
+      kind: 'memories',
+      category: NotificationCategory.reminders,
+      route: 'inbox',
+      at: DateTime(2026, 10, 8, 9),
+      vi: (title, 'Mở để xem.'),
+      en: (title, 'Open to see.'),
+      destination: 'CARE_REMINDERS',
+    );
+    List<Override> inboxOverrides() => [
+      ..._base(
+        notificationRepo: FakeNotificationRepository(
+          inbox: [row('n_inbox000001', 'Nhắc việc')],
+        ),
+      ),
+      notificationOpenReporterProvider.overrideWithValue(
+        FakeNotificationOpenReporter(),
+      ),
+    ];
+
+    testWidgets('a row opens on top of the inbox; Back returns to it', (
       tester,
     ) async {
-      final (router, container) = await _app(
-        tester,
-        pushOverrides(),
-        tab: null,
-        wrap: capture,
-      );
-      // The tap is handed over while the app is still starting.
-      unawaited(
-        openNotification(ref, reminders, surface: NotificationSurface.push),
-      );
-      await tester.pump(const Duration(seconds: 3));
-      await tester.pumpAndSettle();
+      final (router, container) = await _app(tester, inboxOverrides());
+      await _open(tester, router, Routes.notifications);
+      final inbox = tester.element(find.byType(InboxScreen));
+      await _tap(tester, find.text('Nhắc việc'));
       expect(tester.takeException(), isNull);
       expect(find.byType(RemindersScreen), findsOneWidget);
       expect(_shells(router), 1);
       await _back(tester, router, _Back.system);
-      _landedInTabs(tester, router);
       expect(find.byType(RemindersScreen), findsNothing);
+      expect(tester.element(find.byType(InboxScreen)), same(inbox));
+      await _end(tester, container);
+    });
+
+    testWidgets('a second tap while a nudge asks the server is ignored', (
+      tester,
+    ) async {
+      // A Smart Engagement row: the server says where it goes; the inbox stays tappable.
+      final answer = Completer<bool>();
+      var asked = 0;
+      final (router, container) = await _app(tester, [
+        ..._base(
+          notificationRepo: FakeNotificationRepository(
+            inbox: [
+              inboxItem(
+                'n_inbox000002',
+                kind: 'weeklySummary',
+                category: NotificationCategory.baby,
+                route: 'inbox',
+                at: DateTime(2026, 10, 8, 9),
+                vi: ('Tuần qua của Teddy', 'Mở để xem.'),
+                en: ('Teddy’s week', 'Open to see.'),
+                destination: 'MEMORIES_WEEKLY_RECAP',
+                data: {'engagementId': 'e' * 64},
+              ),
+            ],
+          ),
+        ),
+        notificationOpenReporterProvider.overrideWithValue(
+          FakeNotificationOpenReporter(),
+        ),
+        notificationEngagementOpenerProvider.overrideWithValue((ref, id) {
+          asked++;
+          return answer.future;
+        }),
+      ]);
+      await _open(tester, router, Routes.notifications);
+      await tester.tap(find.text('Tuần qua của Teddy'));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('Tuần qua của Teddy'));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(asked, 1);
+      answer.complete(true);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await _end(tester, container);
+    });
+
+    testWidgets('a recap week (a tab root with a query) opens on top', (
+      tester,
+    ) async {
+      final (router, container) = await _app(tester, _base());
+      final week = '${Routes.memories}?week=2026-10-12&engagement=${'e' * 64}';
+      final twin = router.notificationLocation(week);
+      expect(twin, OverlayTwin.of(week));
+      expect(router.configuration.findMatch(Uri.parse(twin)).isError, isFalse);
+      // A bare tab root still opens in the tabs; other pages are pushed as they are.
+      expect(router.notificationLocation(Routes.memories), Routes.memories);
+      expect(router.notificationLocation(Routes.reminders), Routes.reminders);
       await _end(tester, container);
     });
   });

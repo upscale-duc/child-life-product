@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../app/navigation.dart' show SafePush;
 import '../../app/providers.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
@@ -63,7 +64,7 @@ Future<bool> openEngagement(
     router.go(route);
   } else {
     // From a push or the inbox: on top of what is showing, so Back returns there.
-    unawaited(router.push<Object?>(route));
+    unawaited(router.push<Object?>(router.notificationLocation(route)));
   }
   return true;
 }

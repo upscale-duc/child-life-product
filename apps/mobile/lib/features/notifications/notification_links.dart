@@ -32,15 +32,28 @@ Future<NotificationOpenOutcome> openInboxItem(
   );
 }
 
+/// An inbox open in flight: a second tap (a double tap, or a tap while a Smart Engagement row
+/// asks the server where it goes) is ignored instead of opening the screen twice.
+var _opening = false;
+
 /// [openInboxItem] from a row of the screen at [context].
 Future<void> openInboxRow(
   BuildContext context,
   WidgetRef ref,
   InboxItem item,
 ) async {
+  // Already opened something: the inbox is under it (its page may still be sliding in).
+  if (_opening || ModalRoute.of(context)?.isCurrent == false) return;
+  _opening = true;
   final l10n = AppLocalizations.of(context);
   final toaster = ClToaster.of(context);
-  await openInboxItem(ref, item, toaster: toaster, l10n: l10n);
+  try {
+    await openInboxItem(ref, item, toaster: toaster, l10n: l10n);
+  } on Object {
+    // The row went away mid-open (the inbox closed): nothing to open on.
+  } finally {
+    _opening = false;
+  }
 }
 
 Future<void> _markRead(WidgetRef ref, String uid, List<String> ids) async {

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/navigation.dart' show SafePush;
 import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
@@ -697,7 +698,8 @@ Future<_Opened> _tryOpen(
   // person was on, Back returns to it): the router's push stacks a tab page as its overlay twin
   // above a full-screen page (D-076 nav), and a tab root opens in the tabs, whose other stacks
   // stay as they were.
-  void open(String location) => unawaited(router.push<Object?>(location));
+  void open(String location) =>
+      unawaited(router.push<Object?>(router.notificationLocation(location)));
   switch (id) {
     case 'CARE_RULE_REMINDER':
       final action = await launchAction?.call();
