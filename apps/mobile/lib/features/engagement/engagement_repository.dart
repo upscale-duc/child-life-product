@@ -27,6 +27,27 @@ final engagementProvider = FutureProvider.autoDispose<Map<String, dynamic>>(
   retry: (_, _) => null,
 );
 
+/// Background changes settle this long before `getEngagement` is called again (doc 18 #20).
+const engagementSettle = Duration(seconds: 30);
+
+/// Two background calls are at least this far apart.
+const engagementMinGap = Duration(seconds: 60);
+
+/// After this long without a call, the next change calls at once.
+const engagementQuietSpell = Duration(minutes: 2);
+
+/// How long a reload waits before calling `getEngagement` (zero = at once).
+Duration engagementWait({
+  required bool immediate,
+  required Duration? sinceLast,
+}) {
+  if (immediate || sinceLast == null || sinceLast >= engagementQuietSpell) {
+    return Duration.zero;
+  }
+  final gapLeft = engagementMinGap - sinceLast;
+  return gapLeft > engagementSettle ? gapLeft : engagementSettle;
+}
+
 Future<Map<String, dynamic>> buildEngagement(Ref ref) async {
   // Optional engagement is inert until the app's normal Firebase bootstrap succeeds.
   if (Firebase.apps.isEmpty) return {};
@@ -103,6 +124,21 @@ Future<Map<String, dynamic>> buildEngagement(Ref ref) async {
   } catch (_) {
     /* Unknown zone: in-app only. */
   }
+  // Doc 18 #20: a burst of background changes (each uploaded photo changes the ready count, Auto
+  // Save state, resumes) settles into one call. The person's own action, the first load and a
+  // change after a quiet spell still call at once. A newer change during the wait rebuilds this
+  // provider; the older build then stops here without calling.
+  final revision = ref.read(engagementRevisionProvider.notifier);
+  final last = revision.calledAt;
+  final wait = engagementWait(
+    immediate: revision.takeImmediate(),
+    sinceLast: last == null ? null : EngagementRevision.now().difference(last),
+  );
+  if (wait > Duration.zero) {
+    await Future<void>.delayed(wait);
+    if (!ref.mounted) return {};
+  }
+  revision.calledAt = EngagementRevision.now();
   final response = await ref
       .read(functionsProvider)
       .httpsCallable('getEngagement')
@@ -216,13 +252,15 @@ class _EngagementScopeState extends ConsumerState<EngagementScope> {
     listener = AppLifecycleListener(
       onResume: () {
         ref.invalidate(osNotificationsEnabledProvider);
-        ref.read(engagementRevisionProvider.notifier).refresh();
+        // Switching apps back and forth reloads at most every 2 minutes (doc 18 #20).
+        ref.read(engagementRevisionProvider.notifier).soon();
       },
     );
-    timer = Timer.periodic(const Duration(minutes: 5), (_) {
+    // Suggestions do not need to be fresher than this while the app stays open.
+    timer = Timer.periodic(const Duration(minutes: 15), (_) {
       if (mounted &&
           WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-        ref.read(engagementRevisionProvider.notifier).refresh();
+        ref.read(engagementRevisionProvider.notifier).soon();
       }
     });
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -92,8 +93,61 @@ final engagementRevisionProvider = NotifierProvider<EngagementRevision, int>(
   EngagementRevision.new,
 );
 
+/// When engagement (and what watches it: keepsake entries, the personal-day digest, local
+/// reminders) reloads. Doc 18 #20: every uploaded photo, every resume and a 5-minute timer used to
+/// call `getEngagement`, so one evening of saving photos passed the server's 100 calls an hour.
+/// What the person does reloads at once ([refresh]); background reasons are coalesced ([soon]).
 class EngagementRevision extends Notifier<int> {
+  Timer? _trailing;
+  DateTime? _bumpedAt;
+  bool _immediate = false;
+
+  /// Last time `getEngagement` actually reached the server (set by [buildEngagement]).
+  DateTime? calledAt;
+
+  /// Tests replace the clock.
+  static DateTime Function() now = DateTime.now;
+
   @override
-  int build() => 0;
-  void refresh() => state++;
+  int build() {
+    ref.onDispose(() => _trailing?.cancel());
+    return 0;
+  }
+
+  /// The person acted (open, dismiss, snooze, an approved batch, a handoff): reload now.
+  void refresh() {
+    _trailing?.cancel();
+    _trailing = null;
+    _immediate = true;
+    _bumpedAt = now();
+    state++;
+  }
+
+  /// A background reason (resume, timer): at most once per [gap]; inside the gap one trailing
+  /// reload is scheduled for its end, never more.
+  void soon({Duration gap = const Duration(minutes: 2)}) {
+    final at = now();
+    final since = _bumpedAt == null ? null : at.difference(_bumpedAt!);
+    if (since == null || since >= gap) {
+      _bump(at);
+      return;
+    }
+    _trailing ??= Timer(gap - since, () {
+      _trailing = null;
+      _bump(now());
+    });
+  }
+
+  void _bump(DateTime at) {
+    _immediate = false;
+    _bumpedAt = at;
+    state++;
+  }
+
+  /// Whether the latest reload was the person's own action (read once by [buildEngagement]).
+  bool takeImmediate() {
+    final value = _immediate;
+    _immediate = false;
+    return value;
+  }
 }

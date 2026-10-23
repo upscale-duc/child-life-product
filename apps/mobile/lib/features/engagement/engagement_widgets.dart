@@ -87,7 +87,9 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
                 children: [
                   Expanded(child: Text(l.engOffline)),
                   TextButton(
-                    onPressed: () => ref.invalidate(engagementProvider),
+                    // The person asked: reload now, past the background settling.
+                    onPressed: () =>
+                        ref.read(engagementRevisionProvider.notifier).refresh(),
                     child: Text(l.engRetry),
                   ),
                 ],
