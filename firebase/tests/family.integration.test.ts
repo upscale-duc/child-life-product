@@ -585,7 +585,7 @@ describe('membership notifications (G-109, D-092)', () => {
     expect(pushed[0]).toMatchObject({
       tokens: ['t-mom'],
       title: 'Thành viên mới trong gia đình',
-      body: 'nanny đã tham gia gia đình. Mở để xem.',
+      body: 'Nanny đã tham gia gia đình. Mở để xem.', // a line starts with a capital
     });
     expect(pushed[0]!.data).toMatchObject({ kind: 'memberJoined', destination: 'FAMILY_MEMBERS' });
     expect((await inbox('mom'))[0]).toMatchObject({ kind: 'memberJoined', group: 'family' });

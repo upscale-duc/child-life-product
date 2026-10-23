@@ -26148,6 +26148,18 @@ abstract class AppLocalizations {
   /// **'Khi có người tham gia hoặc từ chối lời mời'**
   String get ntFamilyMembersHint;
 
+  /// EN07 switch (D-094, key babyName): pushes show the baby’s nickname, else “bé”.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện tên bé trong thông báo'**
+  String get ntBabyName;
+
+  /// EN07 subtitle of ntBabyName.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.'**
+  String get ntBabyNameHint;
+
   /// EN07 group header.
   ///
   /// In vi, this message translates to:

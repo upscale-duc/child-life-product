@@ -118,6 +118,7 @@ describe('settings (EN07)', () => {
         keepsakePrompts: false,
         familyActivity: true,
         familyMembers: false,
+        babyName: false,
         updatedAt: serverTimestamp(),
       }),
     );

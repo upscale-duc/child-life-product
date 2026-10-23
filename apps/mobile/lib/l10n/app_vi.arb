@@ -23121,6 +23121,14 @@
   "@ntFamilyMembersHint": {
     "description": "EN07 subtitle of ntFamilyMembers."
   },
+  "ntBabyName": "Hiện tên bé trong thông báo",
+  "@ntBabyName": {
+    "description": "EN07 switch (D-094, key babyName): pushes show the baby’s nickname, else “bé”."
+  },
+  "ntBabyNameHint": "Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.",
+  "@ntBabyNameHint": {
+    "description": "EN07 subtitle of ntBabyName."
+  },
   "ntGroupTiming": "THỜI GIAN",
   "@ntGroupTiming": {
     "description": "EN07 group header."

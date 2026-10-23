@@ -205,7 +205,7 @@ describe('senders record the inbox', () => {
     const [row] = await inbox('nt-mom');
     expect(row).toMatchObject({
       kind: 'memories',
-      title: { vi: 'Có 3 khoảnh khắc mới', en: '3 new moments' },
+      title: { vi: 'Có 3 khoảnh khắc mới của bé', en: '3 new moments of your baby' },
       data: { babyId, kind: 'memories', noticeId: 'memories_1', inboxId: row!.id },
     });
   });

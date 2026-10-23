@@ -39,6 +39,8 @@ export const notificationSettingKeys = [
   'familyActivity',
   // G-109 (D-092): someone joined, an invitation was declined.
   'familyMembers',
+  // D-094: show the baby's name in pushes (else "bé"). Not a kind switch.
+  'babyName',
 ] as const;
 export type NotificationSettingKey = (typeof notificationSettingKeys)[number];
 export type NotificationSettings = Record<NotificationSettingKey, boolean>;
@@ -60,6 +62,7 @@ export const defaultNotificationSettings: NotificationSettings = {
   keepsakePrompts: true,
   familyActivity: false,
   familyMembers: true,
+  babyName: true,
 };
 
 /** The stored document (Rules mirror it): any subset of the keys, plus `updatedAt`. */
@@ -80,6 +83,7 @@ export const notificationSettingsDocSchema = z
     keepsakePrompts: z.boolean().optional(),
     familyActivity: z.boolean().optional(),
     familyMembers: z.boolean().optional(),
+    babyName: z.boolean().optional(),
     updatedAt: z.unknown().optional(),
   })
   .strict();

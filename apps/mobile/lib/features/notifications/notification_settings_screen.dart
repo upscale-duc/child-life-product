@@ -131,6 +131,8 @@ class _NotificationSettingsScreenState
                     : (_) => unawaited(_system(system)),
               ),
             ),
+            // D-094: a parent of two tells the babies apart; off says "bé" on the lock screen.
+            toggle('babyName', l10n.ntBabyName, l10n.ntBabyNameHint),
           ],
         ),
         if (cares) ...[

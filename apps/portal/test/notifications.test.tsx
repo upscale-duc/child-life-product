@@ -448,10 +448,10 @@ describe('Template editor', () => {
     const def = notificationTemplates['memories.new_moments'];
     const bad = tplDetail({
       draftState: 'draft',
-      draft: { vi: { title: 'Có {{baby_name}}', body: '' }, en: def.builtin.en },
+      draft: { vi: { title: 'Có {{baby_dob}}', body: '' }, en: def.builtin.en },
     });
     const t = text(render(<TemplateEditorView initial={bad} onBack={() => undefined} />));
-    expect(t).toContain('Biến “baby_name” không tồn tại.');
+    expect(t).toContain('Biến “baby_dob” không tồn tại.');
     expect(t).toContain('Không được để trống.');
   });
 
@@ -493,8 +493,11 @@ describe('Template editor', () => {
     expect(insertAt('abc', '{{x}}', null, null).text).toBe('abc{{x}}');
     const def = notificationTemplates['memories.new_moments'];
     const s = initialSample(def);
-    expect(sampleValues(def, s, 'vi')).toEqual({ count: 7, actor_name: 'Mai' });
-    expect(sampleValues(def, { ...s, actor_name: { vi: '', en: '' } }, 'vi')).toEqual({ count: 7 });
+    expect(sampleValues(def, s, 'vi')).toEqual({ count: 7, actor_name: 'Mai', baby_name: 'Bin' });
+    expect(sampleValues(def, { ...s, actor_name: { vi: '', en: '' } }, 'vi')).toEqual({
+      count: 7,
+      baby_name: 'Bin',
+    });
   });
 
   it('the list shows status, draft and live version', () => {

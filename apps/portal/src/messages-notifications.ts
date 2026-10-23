@@ -362,6 +362,11 @@ const rows: Row[] = [
   ['ntf.phType.number', 'Số', 'Number'],
   ['ntf.phType.text', 'Chữ', 'Text'],
   ['ntf.sensitivity.member_name', 'Tên thành viên gia đình', 'Family member’s name'],
+  [
+    'ntf.sensitivity.child_name',
+    'Tên bé (người nhận có thể tắt)',
+    'Baby’s name (recipients can turn it off)',
+  ],
   ['ntf.tpl.sample', 'Dữ liệu mẫu cho xem trước', 'Sample data for the preview'],
   [
     'ntf.tpl.sampleNote',

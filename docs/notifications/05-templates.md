@@ -48,9 +48,10 @@ Staff can place approved placeholders but never define them. Values are computed
 | --- | --- | --- | --- | --- |
 | count, pending_count, percent, gb | number | safe | 1 / — / 80 / — | 3–6 |
 | actor_name | text | member name (the family member's own display name, as R-120's drawn copy) | "Người thân" / "A family member" | 40 |
-| activity_name, last_logged_line, dose_list, age_label, import_summary, milestone_label | per-language text | safe | per registry | 30–120 |
+| baby_name | text | child name (D-094: the baby's nickname, so a parent of several babies can tell pushes apart; filled per recipient, and a recipient with "Hiện tên bé trong thông báo" off gets the fallback; never written to the ledger, logs or analytics) | "bé" / "your baby" | 30 |
+| activity_name, last_logged_line, dose_list, age_label, import_summary, milestone_label, activity_title | per-language text | safe | per registry | 30–120 |
 
-Syntax: `{{name}}`, plus `{{plural:count|one|other}}` (the other branch may contain `{{count}}`).
+Syntax: `{{name}}`, plus `{{plural:count|one|other}}` (the other branch may contain `{{count}}`). The rendered title and body start with a capital letter (so "bé sắp tròn…" reads "Bé sắp tròn…").
 
 The validator rejects:
 

@@ -164,7 +164,7 @@ service cloud.firestore {
     function validNotificationSettings(d) {
       let keys = ['memories', 'messages', 'reminders', 'storage', 'vaccines', 'spending', 'rhythm',
         'stages', 'milestones', 'articles', 'weeklySummary', 'photoSuggestions', 'keepsakePrompts',
-        'familyActivity', 'familyMembers'];
+        'familyActivity', 'familyMembers', 'babyName'];
       return d.keys().hasOnly(keys.concat(['updatedAt'])) && d.updatedAt == request.time &&
         (!('memories' in d) || d.memories is bool) && (!('messages' in d) || d.messages is bool) &&
         (!('reminders' in d) || d.reminders is bool) && (!('storage' in d) || d.storage is bool) &&
@@ -175,7 +175,8 @@ service cloud.firestore {
         (!('photoSuggestions' in d) || d.photoSuggestions is bool) &&
         (!('keepsakePrompts' in d) || d.keepsakePrompts is bool) &&
         (!('familyActivity' in d) || d.familyActivity is bool) &&
-        (!('familyMembers' in d) || d.familyMembers is bool);
+        (!('familyMembers' in d) || d.familyMembers is bool) &&
+        (!('babyName' in d) || d.babyName is bool);
     }
 
     // Nhịp lớn lên EN01 / EN02 / EN05 (per person, free): mirrors `userPreferencesSchema`.

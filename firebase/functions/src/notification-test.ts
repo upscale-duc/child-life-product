@@ -4,6 +4,7 @@ import {
   engagementPriority,
   localizedTemplateCopySchema,
   notificationDestinations,
+  notificationSettingsOf,
   notificationTemplates,
   notificationTypes,
   renderTemplate,
@@ -13,6 +14,7 @@ import {
   type NotificationDestinationId,
   type NotificationTestResult,
   type NotificationTestTargets,
+  type PlaceholderValue,
   type StaffSendTestNotification,
 } from '@child-life/contracts';
 import type { Firestore } from 'firebase-admin/firestore';
@@ -198,9 +200,24 @@ export async function sendTestNotification(
       templateVersion = live.version;
     }
   }
+  // Sample values, but the chosen baby's real name unless the recipient turned names off (D-094).
+  const [babyDoc, recipientSettings] = await Promise.all([
+    db.doc(`babies/${babyId}`).get(),
+    db.doc(`users/${uid}/settings/notifications`).get(),
+  ]);
+  const values: Record<string, PlaceholderValue> = { ...def.sample };
+  const nickname = babyDoc.get('nickname');
+  // Never the sample "Bin": the real nickname, or "bé" when there is none or names are off.
+  if (
+    notificationSettingsOf(recipientSettings.data()).babyName !== false &&
+    typeof nickname === 'string' &&
+    nickname.trim()
+  )
+    values.baby_name = nickname.trim();
+  else delete values.baby_name;
   const rendered = {
-    vi: renderTemplate(copy, 'vi', def.sample),
-    en: renderTemplate(copy, 'en', def.sample),
+    vi: renderTemplate(copy, 'vi', values),
+    en: renderTemplate(copy, 'en', values),
   };
 
   // Destination params from the baby's real data (or ids that do not exist, on purpose).

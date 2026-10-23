@@ -16636,6 +16636,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'When someone joins or declines an invitation';
 
   @override
+  String get ntBabyName => 'Show your baby’s name';
+
+  @override
+  String get ntBabyNameHint =>
+      'For example “Bin is almost 100 days”. Turn off to say “your baby” instead.';
+
+  @override
   String get ntGroupTiming => 'TIMING';
 
   @override

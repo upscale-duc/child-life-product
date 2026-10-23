@@ -10,10 +10,12 @@ import {
   notificationSettingsOf,
   notificationTypes,
   recordNotificationOpenSchema,
+  notificationTemplates,
   renderTemplate,
   retryDelayMs,
   ringsInQuietHours,
   type InboxItem,
+  type LocalizedTemplateCopy,
   type NotificationDeliveryReason,
   type NotificationDestinationId,
   type NotificationKind,
@@ -132,35 +134,51 @@ export async function notifyUsers(
   if (people.length === 0) return result;
   const type = notificationTypes[notice.kind];
   const settingKey = notice.test ? null : notificationSettingOf[notice.kind];
-  const [settings, ops, familyId] = await Promise.all([
+  const [settings, ops, baby] = await Promise.all([
     db.getAll(...people.map((u) => db.doc(`users/${u}/settings/notifications`))),
     notificationOps(db, now.getTime()),
-    familyOf(db, notice.babyId),
+    babyOf(db, notice.babyId),
   ]);
+  const familyId = baby.familyId;
   const quietApplies = !notice.test && !ringsInQuietHours(notice.kind);
   const prefs = quietApplies
     ? await db.getAll(...people.map((u) => db.doc(`users/${u}/settings/personalization`)))
     : [];
 
-  // Copy: the producer's built-in copy, or the published template rendered with its values.
+  // Copy: the template (published version, else its built-in version 0) rendered with the
+  // producer's values plus the baby's name (D-094); the producer's own copy if a value is missing.
   const builtin = { vi: notice.message('vi'), en: notice.message('en') };
-  const copy = { vi: { ...builtin.vi }, en: { ...builtin.en } };
   let templateVersion = 0;
   let renderError = false;
-  if (notice.template && ops.templatesEnabled) {
-    const live = await liveTemplate(db, notice.template.id, now.getTime()).catch(() => null);
-    if (live) {
-      const vi = renderTemplate(live.copy, 'vi', notice.template.values ?? {});
-      const en = renderTemplate(live.copy, 'en', notice.template.values ?? {});
-      if (vi.missing.length || en.missing.length) {
-        renderError = true;
-      } else {
-        copy.vi = { ...copy.vi, title: vi.title, body: vi.body };
-        copy.en = { ...copy.en, title: en.title, body: en.body };
-        templateVersion = live.version;
-      }
-    }
+  let source: LocalizedTemplateCopy | null = null;
+  if (notice.template) {
+    const live =
+      ops.templatesEnabled && !notice.test
+        ? await liveTemplate(db, notice.template.id, now.getTime()).catch(() => null)
+        : null;
+    source = live?.copy ?? notificationTemplates[notice.template.id].builtin;
+    templateVersion = live?.version ?? 0;
   }
+  const values = { ...(notice.template?.values ?? {}) };
+  if (baby.nickname && values.baby_name === undefined) values.baby_name = baby.nickname;
+  /** The copy for one recipient: with the baby's name, or "bé" when they turned it off. */
+  const copyFor = (withName: boolean) => {
+    const copy = { vi: { ...builtin.vi }, en: { ...builtin.en } };
+    if (!source) return copy;
+    const own = { ...values };
+    if (!withName) delete own.baby_name;
+    const vi = renderTemplate(source, 'vi', own);
+    const en = renderTemplate(source, 'en', own);
+    if (vi.missing.length || en.missing.length) {
+      renderError = templateVersion > 0;
+      return copy;
+    }
+    copy.vi = { ...copy.vi, title: vi.title, body: vi.body };
+    copy.en = { ...copy.en, title: en.title, body: en.body };
+    return copy;
+  };
+  const named = copyFor(true);
+  const unnamed = copyFor(false);
   const destination = notice.destination ?? destinationFor(notice.kind, notice.data);
   const inboxId = inboxIdOf(notice.id);
   const data = { ...notice.data, kind: notice.kind, inboxId, destination };
@@ -233,6 +251,7 @@ export async function notifyUsers(
     };
     const entryId = ledgerId(uid, `${notice.kind}:${notice.id}`);
     const chosen = notificationSettingsOf(settings[i]!.data());
+    const copy = chosen.babyName ? named : unnamed;
     if (settingKey && !chosen[settingKey]) {
       // Muted: no row, no push; the ledger keeps the fact (no copy) for the family timeline.
       await db
@@ -451,13 +470,21 @@ function errorCodeOf(error: unknown): string {
   return typeof code === 'string' ? code.slice(0, 80) : 'error';
 }
 
-async function familyOf(db: Firestore, babyId: string | null): Promise<string | null> {
-  if (!babyId) return null;
+/** The baby's family and nickname (D-094: the name pushes may show). */
+async function babyOf(
+  db: Firestore,
+  babyId: string | null,
+): Promise<{ familyId: string | null; nickname: string | null }> {
+  if (!babyId) return { familyId: null, nickname: null };
   try {
     const baby = await db.doc(`babies/${babyId}`).get();
-    return (baby.get('familyId') as string | undefined) ?? null;
+    const nickname = baby.get('nickname');
+    return {
+      familyId: (baby.get('familyId') as string | undefined) ?? null,
+      nickname: typeof nickname === 'string' && nickname.trim() ? nickname.trim() : null,
+    };
   } catch {
-    return null;
+    return { familyId: null, nickname: null };
   }
 }
 

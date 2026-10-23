@@ -1156,6 +1156,16 @@ export const notificationPlaceholders = {
     maxLength: 120,
     description: both('Tóm tắt kết quả nhập (số dòng)', 'Import result summary (row counts)'),
   },
+  baby_name: {
+    type: 'text',
+    sensitivity: 'child_name',
+    fallback: both('bé', 'your baby'),
+    maxLength: 30,
+    description: both(
+      'Tên gọi ở nhà của bé (D-094); người nhận đã tắt "Hiện tên bé" sẽ thấy "bé"',
+      'The baby’s nickname (D-094); recipients who turned off "Show baby’s name" see "your baby"',
+    ),
+  },
   week_count: {
     type: 'number',
     sensitivity: 'safe',
@@ -1235,14 +1245,15 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'care.rule_due',
     'reminderRule',
     ['Nhắc việc đến giờ', 'Rule reminder due'],
-    ['activity_name', 'last_logged_line'],
+    ['activity_name', 'last_logged_line', 'baby_name'],
     {
-      vi: { title: 'Đến giờ {{activity_name}} bạn đã đặt', body: '{{last_logged_line}}' },
-      en: { title: 'Time for the {{activity_name}} you set', body: '{{last_logged_line}}' },
+      vi: { title: 'Đến giờ {{activity_name}} cho {{baby_name}}', body: '{{last_logged_line}}' },
+      en: { title: 'Time for {{baby_name}}’s {{activity_name}}', body: '{{last_logged_line}}' },
     },
     {
       activity_name: both('nhắc bú', 'feeding reminder'),
       last_logged_line: both('Lần bú gần nhất 11:45 · 3 giờ trước', 'Last feed 11:45 · 3 h ago'),
+      baby_name: both('Bin', 'Bin'),
     },
     ['activity_name'],
   ),
@@ -1250,14 +1261,21 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'care.vaccine_3d',
     'vaccine',
     ['Lịch tiêm sau 3 ngày', 'Vaccination in 3 days'],
-    ['dose_list', 'age_label'],
+    ['dose_list', 'age_label', 'baby_name'],
     {
-      vi: { title: 'Còn 3 ngày đến lịch tiêm của bé', body: '{{dose_list}} · {{age_label}}' },
-      en: { title: 'A vaccination is due in 3 days', body: '{{dose_list}} · {{age_label}}' },
+      vi: {
+        title: 'Còn 3 ngày đến lịch tiêm của {{baby_name}}',
+        body: '{{dose_list}} · {{age_label}}',
+      },
+      en: {
+        title: '{{baby_name}}’s vaccination is in 3 days',
+        body: '{{dose_list}} · {{age_label}}',
+      },
     },
     {
       dose_list: both('6in1 · Rota (mũi 1)', '6in1 · Rota (dose 1)'),
       age_label: both('Mốc 2 tháng tuổi', '2-month milestone'),
+      baby_name: both('Bin', 'Bin'),
     },
     ['dose_list'],
   ),
@@ -1265,20 +1283,21 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'care.vaccine_eve',
     'vaccine',
     ['Lịch tiêm ngày mai', 'Vaccination tomorrow'],
-    ['dose_list', 'age_label'],
+    ['dose_list', 'age_label', 'baby_name'],
     {
       vi: {
-        title: 'Ngày mai có lịch tiêm của bé',
+        title: 'Ngày mai có lịch tiêm của {{baby_name}}',
         body: '{{dose_list}} · {{age_label}}. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
       },
       en: {
-        title: 'A vaccination is due tomorrow',
+        title: '{{baby_name}}’s vaccination is tomorrow',
         body: '{{dose_list}} · {{age_label}}. Remember the vaccination book and a thin towel.',
       },
     },
     {
       dose_list: both('6in1 · Rota (mũi 1)', '6in1 · Rota (dose 1)'),
       age_label: both('Mốc 2 tháng tuổi', '2-month milestone'),
+      baby_name: both('Bin', 'Bin'),
     },
     ['dose_list'],
   ),
@@ -1286,20 +1305,21 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'care.vaccine_morning',
     'vaccine',
     ['Lịch tiêm hôm nay', 'Vaccination today'],
-    ['dose_list', 'age_label'],
+    ['dose_list', 'age_label', 'baby_name'],
     {
       vi: {
-        title: 'Hôm nay có lịch tiêm của bé',
+        title: 'Hôm nay có lịch tiêm của {{baby_name}}',
         body: '{{dose_list}} · {{age_label}}. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
       },
       en: {
-        title: 'A vaccination is due today',
+        title: '{{baby_name}}’s vaccination is today',
         body: '{{dose_list}} · {{age_label}}. Remember the vaccination book and a thin towel.',
       },
     },
     {
       dose_list: both('6in1 · Rota (mũi 1)', '6in1 · Rota (dose 1)'),
       age_label: both('Mốc 2 tháng tuổi', '2-month milestone'),
+      baby_name: both('Bin', 'Bin'),
     },
     ['dose_list'],
   ),
@@ -1358,45 +1378,67 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'memories.new_moments',
     'memories',
     ['Khoảnh khắc mới', 'New moments'],
-    ['count', 'actor_name'],
+    ['count', 'actor_name', 'baby_name'],
     {
       vi: {
-        title: 'Có {{count}} khoảnh khắc mới',
+        title: 'Có {{count}} khoảnh khắc mới của {{baby_name}}',
         body: '{{actor_name}} vừa chia sẻ với gia đình. Mở để xem.',
       },
       en: {
-        title: '{{plural:count|1 new moment|{{count}} new moments}}',
+        title: '{{plural:count|1 new moment|{{count}} new moments}} of {{baby_name}}',
         body: '{{actor_name}} just shared with the family. Open to see.',
       },
     },
-    { count: 7, actor_name: 'Mai' },
+    { count: 7, actor_name: 'Mai', baby_name: both('Bin', 'Bin') },
+    [],
   ),
-  'memories.new_story': tpl('memories.new_story', 'story', ['Câu chuyện mới', 'New story'], [], {
-    vi: { title: 'Có 1 câu chuyện mới', body: 'Từ Kỷ niệm của gia đình' },
-    en: { title: '1 new story', body: 'From the family’s Memories' },
-  }),
+  'memories.new_story': tpl(
+    'memories.new_story',
+    'story',
+    ['Câu chuyện mới', 'New story'],
+    ['baby_name'],
+    {
+      vi: { title: 'Có 1 câu chuyện mới về {{baby_name}}', body: 'Từ Kỷ niệm của gia đình' },
+      en: { title: '1 new story about {{baby_name}}', body: 'From the family’s Memories' },
+    },
+    { baby_name: both('Bin', 'Bin') },
+    [],
+  ),
   'memories.video_ready': tpl(
     'memories.video_ready',
     'keepsakeVideo',
     ['Video kỷ niệm sẵn sàng', 'Memory video ready'],
-    [],
+    ['baby_name'],
     {
-      vi: { title: 'Video kỷ niệm đã sẵn sàng', body: 'Mở Child Life để xem, lưu và chia sẻ.' },
+      vi: {
+        title: 'Video kỷ niệm của {{baby_name}} đã sẵn sàng',
+        body: 'Mở Child Life để xem, lưu và chia sẻ.',
+      },
       en: {
-        title: 'Your memory video is ready',
+        title: '{{baby_name}}’s memory video is ready',
         body: 'Open Child Life to watch, save and share.',
       },
     },
+    { baby_name: both('Bin', 'Bin') },
+    [],
   ),
   'memories.video_failed': tpl(
     'memories.video_failed',
     'keepsakeVideoFailed',
     ['Video kỷ niệm lỗi', 'Memory video failed'],
-    [],
+    ['baby_name'],
     {
-      vi: { title: 'Chưa tạo được video kỷ niệm', body: 'Mở Child Life để thử lại.' },
-      en: { title: 'Your memory video couldn’t be made', body: 'Open Child Life to try again.' },
+      vi: {
+        title: 'Chưa tạo được video kỷ niệm của {{baby_name}}',
+        body: 'Mở Child Life để thử lại.',
+      },
+      en: {
+        title: '{{baby_name}}’s memory video couldn’t be made',
+        body: 'Open Child Life to try again.',
+      },
     },
+    { baby_name: both('Bin', 'Bin') },
+    [],
   ),
   'family.message': tpl(
     'family.message',
@@ -1462,88 +1504,96 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'eng.pending_photos',
     'photoSuggestion',
     ['ENG-01 Ảnh chờ chọn', 'ENG-01 Pending photos'],
-    [],
+    ['baby_name'],
     {
       vi: {
-        title: 'Ảnh mới của bé đang chờ bạn 📸',
+        title: 'Ảnh mới của {{baby_name}} đang chờ bạn 📸',
         body: 'Chọn những tấm đẹp nhất để lưu vào Kỷ niệm trước khi chúng lẫn vào thư viện ảnh.',
       },
       en: {
-        title: 'New photos of your baby are waiting 📸',
+        title: 'New photos of {{baby_name}} are waiting 📸',
         body: 'Pick the best ones to keep in Memories before they get lost in your camera roll.',
       },
     },
+    { baby_name: both('Bin', 'Bin') },
+    [],
   ),
   'eng.keepsake_suggestion': tpl(
     'eng.keepsake_suggestion',
     'keepsakePrompt',
     ['ENG-02 Gợi ý video theo mốc', 'ENG-02 Milestone keepsake'],
-    ['milestone_label'],
+    ['milestone_label', 'baby_name'],
     {
       vi: {
-        title: 'Bé sắp tròn {{milestone_label}} rồi 🎉',
+        title: '{{baby_name}} sắp tròn {{milestone_label}} rồi 🎉',
         body: 'Làm video kỷ niệm {{milestone_label}} từ những bức ảnh bạn đã lưu, chỉ mất vài phút.',
       },
       en: {
-        title: 'Almost {{milestone_label}} 🎉',
+        title: '{{baby_name}} is almost {{milestone_label}} 🎉',
         body: 'Turn the photos you’ve saved into a {{milestone_label}} memory video in a few minutes.',
       },
     },
-    { milestone_label: both('100 ngày', '100 days') },
+    { milestone_label: both('100 ngày', '100 days'), baby_name: both('Bin', 'Bin') },
     ['milestone_label'],
   ),
   'eng.weekly_recap': tpl(
     'eng.weekly_recap',
     'weeklySummary',
     ['ENG-03 Nhìn lại tuần', 'ENG-03 Weekly recap'],
-    ['week_count'],
+    ['week_count', 'baby_name'],
     {
       vi: {
-        title: 'Tuần qua có {{week_count}} khoảnh khắc đáng nhớ',
-        body: 'Cùng xem lại tuần của bé trước khi tuần mới bắt đầu.',
+        title: 'Tuần qua của {{baby_name}} có {{week_count}} khoảnh khắc đáng nhớ',
+        body: 'Cùng xem lại trước khi tuần mới bắt đầu.',
       },
       en: {
-        title: '{{plural:week_count|1 moment|{{week_count}} moments}} to remember from last week',
-        body: 'Look back on your baby’s week before the new one begins.',
+        title:
+          '{{plural:week_count|1 moment|{{week_count}} moments}} to remember from {{baby_name}}’s week',
+        body: 'Look back before the new week begins.',
       },
     },
-    { week_count: 18 },
+    { week_count: 18, baby_name: both('Bin', 'Bin') },
     ['week_count'],
   ),
   'eng.family_recap': tpl(
     'eng.family_recap',
     'familyActivity',
     ['ENG-05 Cập nhật gia đình', 'ENG-05 Family updates'],
-    ['update_count'],
+    ['update_count', 'baby_name'],
     {
       vi: {
-        title: 'Gia đình vừa chia sẻ {{update_count}} cập nhật mới',
-        body: 'Mở để xem ông bà, người thân vừa gửi gì về bé.',
+        title: 'Gia đình vừa chia sẻ {{update_count}} cập nhật mới về {{baby_name}}',
+        body: 'Mở để xem ông bà, người thân vừa gửi gì.',
       },
       en: {
-        title: '{{plural:update_count|1 new family update|{{update_count}} new family updates}}',
-        body: 'See what the family just shared about your baby.',
+        title:
+          '{{plural:update_count|1 new family update|{{update_count}} new family updates}} about {{baby_name}}',
+        body: 'See what the family just shared.',
       },
     },
-    { update_count: 3 },
+    { update_count: 3, baby_name: both('Bin', 'Bin') },
     ['update_count'],
   ),
   'eng.lumi_insight': tpl(
     'eng.lumi_insight',
     'rhythm',
     ['ENG-06 Gợi ý trong ngày', 'ENG-06 Personal day idea'],
-    ['activity_title'],
+    ['activity_title', 'baby_name'],
     {
       vi: {
-        title: 'Gợi ý hôm nay: {{activity_title}}',
+        title: 'Gợi ý hôm nay cho {{baby_name}}: {{activity_title}}',
         body: 'Một hoạt động nhỏ hợp với độ tuổi của bé, chỉ vài phút.',
       },
       en: {
-        title: 'Today’s idea: {{activity_title}}',
+        title: 'Today’s idea for {{baby_name}}: {{activity_title}}',
         body: 'A small activity that fits your baby’s age, just a few minutes.',
       },
     },
-    { activity_title: both('Đọc sách tranh cùng bé', 'Picture-book time') },
+    {
+      activity_title: both('Đọc sách tranh cùng bé', 'Picture-book time'),
+      baby_name: both('Bin', 'Bin'),
+    },
+    [],
   ),
   'family.member_joined': tpl(
     'family.member_joined',
@@ -1727,7 +1777,13 @@ export function renderTemplate(
 ): { title: string; body: string; missing: string[] } {
   const title = renderTemplateText(copy[language].title, language, values);
   const body = renderTemplateText(copy[language].body, language, values);
-  return { title: title.text, body: body.text, missing: [...title.missing, ...body.missing] };
+  // A placeholder can open the line ("bé sắp tròn…" when the name is off): capitalise it.
+  const cap = (t: string) => (t ? t.charAt(0).toLocaleUpperCase(language) + t.slice(1) : t);
+  return {
+    title: cap(title.text),
+    body: cap(body.text),
+    missing: [...title.missing, ...body.missing],
+  };
 }
 
 // ---------- Template documents and staff API ----------

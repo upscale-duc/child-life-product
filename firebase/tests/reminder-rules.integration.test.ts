@@ -139,11 +139,11 @@ describe('ringing and answering (1f–1h)', () => {
     expect(fired).toBe(1);
     expect(sent.map((s) => s.tokens[0]).sort()).toEqual(['t-dad', 't-mom', 't-nanny']);
     const vi = sent.find((s) => s.tokens[0] === 't-mom')!;
-    expect(vi.title).toBe('Đến giờ nhắc bú bạn đã đặt');
+    expect(vi.title).toBe('Đến giờ nhắc bú cho bé'); // D-094: the nickname when the baby has one
     expect(vi.body).toBe('Lần bú gần nhất 11:45 · 3 giờ trước');
     expect(vi.category).toBe('CL_RULE_FEED');
     expect(sent.find((s) => s.tokens[0] === 't-dad')!.title).toBe(
-      'Time for the feeding reminder you set',
+      'Time for your baby’s feeding reminder',
     );
     const r = await rule();
     expect(r.pendingDueAt.toDate()).toEqual(vn(14, 45));

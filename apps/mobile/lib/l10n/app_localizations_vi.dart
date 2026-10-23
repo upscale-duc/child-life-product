@@ -15607,6 +15607,13 @@ class AppLocalizationsVi extends AppLocalizations {
       'Khi có người tham gia hoặc từ chối lời mời';
 
   @override
+  String get ntBabyName => 'Hiện tên bé trong thông báo';
+
+  @override
+  String get ntBabyNameHint =>
+      'Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.';
+
+  @override
   String get ntGroupTiming => 'THỜI GIAN';
 
   @override

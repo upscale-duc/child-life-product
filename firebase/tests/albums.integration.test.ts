@@ -383,10 +383,11 @@ describe('loves, messages and notices', () => {
     expect(await deliverNotice(db, sender, babyId, 'n1', now)).toEqual({ sent: 2 });
     expect(sent).toContainEqual({
       tokens: ['t-vi'],
-      title: 'Có 7 khoảnh khắc mới',
+      // D-094: the baby's nickname tells a parent of two which baby it is.
+      title: 'Có 7 khoảnh khắc mới của Teddy',
       body: 'Mai vừa chia sẻ với gia đình. Mở để xem.',
     });
-    expect(sent.find((s) => s.tokens.includes('t-en'))?.title).toBe('7 new moments');
+    expect(sent.find((s) => s.tokens.includes('t-en'))?.title).toBe('7 new moments of Teddy');
     // D-076 #2: the dead token goes; the install stays in "Thiết bị đang đăng nhập" (13n).
     const dead = await db.doc(`users/dad/devices/d_${'3'.repeat(32)}`).get();
     expect(dead.exists).toBe(true);

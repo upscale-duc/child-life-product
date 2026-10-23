@@ -420,7 +420,7 @@ describe('templates', () => {
     );
     sent.length = 0;
     await notifyUsers(db, sender, ['np-mom'], notice({ id: 'bn-2' }), at);
-    expect(sent[0]!.title).toBe('Có 2 khoảnh khắc mới');
+    expect(sent[0]!.title).toBe('Có 2 khoảnh khắc mới của bé');
 
     await actOnNotificationTemplate(
       db,
@@ -436,7 +436,7 @@ describe('templates', () => {
     );
     sent.length = 0;
     await notifyUsers(db, sender, ['np-mom'], notice({ id: 'bn-3' }), at);
-    expect(sent[0]!.title).toBe('Có 2 khoảnh khắc mới');
+    expect(sent[0]!.title).toBe('Có 2 khoảnh khắc mới của bé');
     // Version 1 is still there, immutable, and can be pointed at again.
     expect(
       (await db.doc('notificationTemplates/memories.new_moments/versions/1').get()).get('copy'),
@@ -674,7 +674,7 @@ describe('Portal "Gửi thử" (D-092)', () => {
       accepted: 1,
       templateVersion: 0,
     });
-    expect(sent.at(-1)!.title).toBe('Có 7 khoảnh khắc mới');
+    expect(sent.at(-1)!.title).toBe('Có 7 khoảnh khắc mới của bé'); // no nickname: never the sample name
     expect(sent.at(-1)!.data).toMatchObject({ test: '1', destination: 'MEMORIES', babyId });
     expect((await db.doc(`notificationDeliveries/${r.entry}`).get()).get('test')).toBe(true);
     expect((await db.collection('notificationStats').get()).size).toBe(0);
@@ -814,5 +814,27 @@ describe('Portal "Gửi thử" (D-092)', () => {
         at,
       ),
     ).rejects.toMatchObject({ reason: 'rate-limited' });
+  });
+});
+
+describe('the baby name in pushes (D-094)', () => {
+  it('names the baby for whoever keeps names on, "bé" for whoever turned them off', async () => {
+    await db.doc(`babies/${babyId}`).set({ nickname: 'Bin' }, { merge: true });
+    await db.doc('users/np-mom/settings/notifications').set({ babyName: false });
+    await notifyUsers(db, sender, ['np-mom', 'np-dad'], notice(), at);
+    const titles = Object.fromEntries(sent.map((s) => [s.tokens[0], s.title]));
+    expect(titles).toEqual({
+      't-np-mom': 'Có 2 khoảnh khắc mới của bé',
+      't-np-dad': '2 new moments of Bin',
+    });
+    const momRow = await db
+      .doc(`users/np-mom/notifications/${inboxIdOf(`bn-${babyId}-batch1`)}`)
+      .get();
+    expect(momRow.get('title')).toEqual({
+      vi: 'Có 2 khoảnh khắc mới của bé',
+      en: '2 new moments of your baby',
+    });
+    // The ledger keeps no copy and no name.
+    expect(JSON.stringify((await entry('np-dad')).data())).not.toContain('Bin');
   });
 });

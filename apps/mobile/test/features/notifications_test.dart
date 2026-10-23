@@ -232,11 +232,16 @@ void main() {
         ),
       );
       expect(toggleOf('reminders').value, isTrue);
+      // D-094: the baby's name shows by default.
+      expect(toggleOf('babyName').value, isTrue);
       await tester.scrollUntilVisible(
         find.byKey(const Key('nt-articles')),
         200,
       );
       expect(toggleOf('articles').value, isFalse);
+      // The row may stop at the edge after the scroll (D-094 added a row above): bring it in.
+      await tester.ensureVisible(find.byKey(const Key('nt-articles')));
+      await tester.pumpAndSettle();
       await tester.tap(
         find.descendant(
           of: find.byKey(const Key('nt-articles')),
@@ -482,7 +487,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 18);
+      expect(notificationDestinations.length, 19);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {

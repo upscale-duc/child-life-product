@@ -157,25 +157,35 @@ describe('templates', () => {
     }
   });
 
-  it('renders numbers, plurals and per-language values', () => {
+  it('renders numbers, plurals, per-language values and the baby name (D-094)', () => {
     const def = notificationTemplates['memories.new_moments'];
-    expect(renderTemplate(def.builtin, 'en', { count: 1, actor_name: 'Mai' })).toMatchObject({
-      title: '1 new moment',
+    expect(
+      renderTemplate(def.builtin, 'en', { count: 1, actor_name: 'Mai', baby_name: 'Bin' }),
+    ).toMatchObject({
+      title: '1 new moment of Bin',
       body: 'Mai just shared with the family. Open to see.',
       missing: [],
     });
     expect(renderTemplate(def.builtin, 'en', { count: 3, actor_name: 'Mai' }).title).toBe(
-      '3 new moments',
+      '3 new moments of your baby',
     );
-    expect(renderTemplate(def.builtin, 'vi', { count: 3, actor_name: 'Mai' }).title).toBe(
-      'Có 3 khoảnh khắc mới',
-    );
+    expect(
+      renderTemplate(def.builtin, 'vi', { count: 3, actor_name: 'Mai', baby_name: 'Bin' }).title,
+    ).toBe('Có 3 khoảnh khắc mới của Bin');
     const rule = notificationTemplates['care.rule_due'];
     expect(
       renderTemplate(rule.builtin, 'vi', {
         activity_name: { vi: 'nhắc bú', en: 'feeding reminder' },
       }),
-    ).toMatchObject({ title: 'Đến giờ nhắc bú bạn đã đặt', body: 'Chưa có lần ghi nào gần đây' });
+    ).toMatchObject({ title: 'Đến giờ nhắc bú cho bé', body: 'Chưa có lần ghi nào gần đây' });
+    // Without a name the line still starts with a capital ("Bé sắp tròn…", "Your baby is…").
+    const eng = notificationTemplates['eng.keepsake_suggestion'];
+    const label = { milestone_label: { vi: '100 ngày', en: '100 days' } };
+    expect(renderTemplate(eng.builtin, 'vi', label).title).toBe('Bé sắp tròn 100 ngày rồi 🎉');
+    expect(renderTemplate(eng.builtin, 'en', label).title).toBe('Your baby is almost 100 days 🎉');
+    expect(renderTemplate(eng.builtin, 'vi', { ...label, baby_name: 'Bin' }).title).toBe(
+      'Bin sắp tròn 100 ngày rồi 🎉',
+    );
   });
 
   it('a missing value with no fallback is reported, and long values are cut', () => {
@@ -184,7 +194,8 @@ describe('templates', () => {
     const r = renderTemplate(notificationTemplates['family.message'].builtin, 'en', {
       actor_name: 'x'.repeat(100),
     });
-    expect(r.body.startsWith(`${'x'.repeat(39)}…`)).toBe(true);
+    // Capitalised like any line start.
+    expect(r.body.startsWith(`X${'x'.repeat(38)}…`)).toBe(true);
   });
 
   it('rejects unknown and disallowed placeholders, URLs, markup and dropped required ones', () => {
@@ -195,7 +206,8 @@ describe('templates', () => {
     });
     const codes = (vi: string, en?: string) =>
       validateTemplateCopy(def, copy(vi, en)).map((i) => `${i.language}:${i.code}`);
-    expect(codes('{{baby_name}} {{gb}}')).toContain('vi:unknown_placeholder');
+    expect(codes('{{baby_dob}} {{gb}}')).toContain('vi:unknown_placeholder');
+    expect(codes('{{baby_name}} {{gb}}')).toContain('vi:not_allowed');
     expect(codes('{{actor_name}} {{gb}}')).toContain('vi:not_allowed');
     expect(codes('Xem https://x.y {{gb}}')).toContain('vi:forbidden_content');
     expect(codes('<b>{{gb}}</b>')).toContain('vi:forbidden_content');
