@@ -1156,6 +1156,30 @@ export const notificationPlaceholders = {
     maxLength: 120,
     description: both('Tóm tắt kết quả nhập (số dòng)', 'Import result summary (row counts)'),
   },
+  week_count: {
+    type: 'number',
+    sensitivity: 'safe',
+    fallback: '',
+    maxLength: 4,
+    description: both('Số khoảnh khắc đã lưu trong tuần', 'Moments saved in the week'),
+  },
+  update_count: {
+    type: 'number',
+    sensitivity: 'safe',
+    fallback: '',
+    maxLength: 3,
+    description: both('Số cập nhật gia đình được gom lại', 'Family updates grouped together'),
+  },
+  activity_title: {
+    type: 'text',
+    sensitivity: 'safe',
+    fallback: both('một hoạt động mới', 'a new activity'),
+    maxLength: 60,
+    description: both(
+      'Tên hoạt động gợi ý (nội dung thư viện, không phải dữ liệu của bé)',
+      'Suggested activity title (library content, not the baby’s data)',
+    ),
+  },
   milestone_label: {
     type: 'text',
     sensitivity: 'safe',
@@ -1440,49 +1464,86 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['ENG-01 Ảnh chờ chọn', 'ENG-01 Pending photos'],
     [],
     {
-      vi: { title: 'Kỷ niệm của bạn', body: 'Bạn có ảnh đang chờ chọn lưu.' },
-      en: { title: 'Your memories', body: 'Some photos are ready for your review.' },
+      vi: {
+        title: 'Ảnh mới của bé đang chờ bạn 📸',
+        body: 'Chọn những tấm đẹp nhất để lưu vào Kỷ niệm trước khi chúng lẫn vào thư viện ảnh.',
+      },
+      en: {
+        title: 'New photos of your baby are waiting 📸',
+        body: 'Pick the best ones to keep in Memories before they get lost in your camera roll.',
+      },
     },
   ),
   'eng.keepsake_suggestion': tpl(
     'eng.keepsake_suggestion',
     'keepsakePrompt',
     ['ENG-02 Gợi ý video theo mốc', 'ENG-02 Milestone keepsake'],
-    [],
+    ['milestone_label'],
     {
-      vi: { title: 'Kỷ niệm của bạn', body: 'Có một gợi ý làm video kỷ niệm dành cho bạn.' },
-      en: { title: 'Your memories', body: 'A memory video idea is ready for you.' },
+      vi: {
+        title: 'Bé sắp tròn {{milestone_label}} rồi 🎉',
+        body: 'Làm video kỷ niệm {{milestone_label}} từ những bức ảnh bạn đã lưu, chỉ mất vài phút.',
+      },
+      en: {
+        title: 'Almost {{milestone_label}} 🎉',
+        body: 'Turn the photos you’ve saved into a {{milestone_label}} memory video in a few minutes.',
+      },
     },
+    { milestone_label: both('100 ngày', '100 days') },
+    ['milestone_label'],
   ),
   'eng.weekly_recap': tpl(
     'eng.weekly_recap',
     'weeklySummary',
     ['ENG-03 Nhìn lại tuần', 'ENG-03 Weekly recap'],
-    [],
+    ['week_count'],
     {
-      vi: { title: 'Nhìn lại tuần qua', body: 'Bạn có những kỷ niệm đã lưu để xem lại.' },
-      en: { title: 'Look back on your week', body: 'Your saved memories are ready to revisit.' },
+      vi: {
+        title: 'Tuần qua có {{week_count}} khoảnh khắc đáng nhớ',
+        body: 'Cùng xem lại tuần của bé trước khi tuần mới bắt đầu.',
+      },
+      en: {
+        title: '{{plural:week_count|1 moment|{{week_count}} moments}} to remember from last week',
+        body: 'Look back on your baby’s week before the new one begins.',
+      },
     },
+    { week_count: 18 },
+    ['week_count'],
   ),
   'eng.family_recap': tpl(
     'eng.family_recap',
     'familyActivity',
     ['ENG-05 Cập nhật gia đình', 'ENG-05 Family updates'],
-    [],
+    ['update_count'],
     {
-      vi: { title: 'Gia đình của bạn', body: 'Có cập nhật được chia sẻ trong gia đình.' },
-      en: { title: 'Your family', body: 'There are shared family updates.' },
+      vi: {
+        title: 'Gia đình vừa chia sẻ {{update_count}} cập nhật mới',
+        body: 'Mở để xem ông bà, người thân vừa gửi gì về bé.',
+      },
+      en: {
+        title: '{{plural:update_count|1 new family update|{{update_count}} new family updates}}',
+        body: 'See what the family just shared about your baby.',
+      },
     },
+    { update_count: 3 },
+    ['update_count'],
   ),
   'eng.lumi_insight': tpl(
     'eng.lumi_insight',
     'rhythm',
     ['ENG-06 Gợi ý trong ngày', 'ENG-06 Personal day idea'],
-    [],
+    ['activity_title'],
     {
-      vi: { title: 'Gợi ý dành cho bạn', body: 'Có một gợi ý mới để bạn xem khi thuận tiện.' },
-      en: { title: 'An idea for you', body: 'A fresh suggestion is ready when you are.' },
+      vi: {
+        title: 'Gợi ý hôm nay: {{activity_title}}',
+        body: 'Một hoạt động nhỏ hợp với độ tuổi của bé, chỉ vài phút.',
+      },
+      en: {
+        title: 'Today’s idea: {{activity_title}}',
+        body: 'A small activity that fits your baby’s age, just a few minutes.',
+      },
     },
+    { activity_title: both('Đọc sách tranh cùng bé', 'Picture-book time') },
   ),
   'family.member_joined': tpl(
     'family.member_joined',

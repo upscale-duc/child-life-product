@@ -22,7 +22,11 @@ import {
   type AnalyticsContext,
   type EngagementStage,
   type EngagementReasonCode,
+  notificationTemplates,
+  renderTemplate,
+  type PlaceholderValue,
 } from '@child-life/contracts';
+import { readRhythmContent } from './rhythm.js';
 import { AccountError } from './account.js';
 import { familyBucket } from './features.js';
 import { recordEngagementAnalytics, analyticsTime } from './product-analytics-store.js';
@@ -665,7 +669,8 @@ export async function saveEngagementSettings(db: Firestore, uid: string, data: u
   }
   return { saved: true };
 }
-export const engagementCopy = {
+/** The generic lines used before D-092; now only a last resort when a value cannot be computed. */
+export const engagementGenericCopy = {
   'ENG-01': {
     vi: { title: 'Kỷ niệm của bạn', body: 'Bạn có ảnh đang chờ chọn lưu.' },
     en: { title: 'Your memories', body: 'Some photos are ready for your review.' },
@@ -691,8 +696,8 @@ export const engagementCopy = {
     en: { title: 'An idea for you', body: 'A fresh suggestion is ready when you are.' },
   },
 } as const;
-/** P-174 Portal templates; [engagementCopy] is their version 0. */
-const engagementTemplate = {
+/** P-174 Portal templates; their built-in copy (version 0) is what [engagementCopy] renders. */
+export const engagementTemplate = {
   'ENG-01': 'eng.pending_photos',
   'ENG-02': 'eng.keepsake_suggestion',
   'ENG-03': 'eng.weekly_recap',
@@ -700,6 +705,76 @@ const engagementTemplate = {
   'ENG-05': 'eng.family_recap',
   'ENG-06': 'eng.lumi_insight',
 } as const;
+const milestoneLabels: Record<string, { vi: string; en: string }> = {
+  m1: { vi: '1 tháng', en: '1 month' },
+  d100: { vi: '100 ngày', en: '100 days' },
+  m6: { vi: '6 tháng', en: '6 months' },
+  y1: { vi: '1 tuổi', en: '1 year' },
+};
+
+/**
+ * D-092: concrete copy for each scenario from what the server already knows — the milestone, the
+ * week's count of saved moments, the number of grouped family updates, the suggested activity's
+ * title (library content). Never the child's name, a caption or a photo (R-120).
+ */
+export async function engagementValues(
+  db: Firestore,
+  i: EngagementIntent,
+  now: Date,
+): Promise<Record<string, PlaceholderValue>> {
+  try {
+    switch (i.kind) {
+      case 'ENG-02': {
+        const label = milestoneLabels[String(i.sourceData.occasion)];
+        return label ? { milestone_label: label } : {};
+      }
+      case 'ENG-03': {
+        const scope = await engagementScope(db, i.uid, i.babyId, now);
+        const c = await weeklySource(
+          db,
+          i.babyId,
+          scope,
+          String(i.sourceData.start),
+          String(i.sourceData.end),
+        );
+        const n = c.media.length + c.stories.length;
+        return n > 0 ? { week_count: n } : {};
+      }
+      case 'ENG-05': {
+        const n = ((i.sourceData.inboxIds ?? []) as unknown[]).length;
+        return n > 0 ? { update_count: n } : {};
+      }
+      case 'ENG-06': {
+        const content = await readRhythmContent(db);
+        const activity = content?.activities.find((a) => a.id === i.sourceData.activity);
+        return activity ? { activity_title: activity.title } : {};
+      }
+      default:
+        return {};
+    }
+  } catch {
+    // A failed lookup never blocks the send: the copy falls back below.
+    return {};
+  }
+}
+
+/** The built-in template rendered with [values]; the generic line when a value is missing. */
+export function engagementCopy(
+  kind: EngagementKind,
+  values: Record<string, PlaceholderValue>,
+  language: 'vi' | 'en',
+): { title: string; body: string } {
+  if (kind === 'ENG-04') return engagementGenericCopy[kind][language];
+  const r = renderTemplate(
+    notificationTemplates[engagementTemplate[kind]].builtin,
+    language,
+    values,
+  );
+  return r.missing.length
+    ? engagementGenericCopy[kind][language]
+    : { title: r.title, body: r.body };
+}
+
 const noticeKind = {
   'ENG-01': 'photoSuggestion',
   'ENG-02': 'keepsakePrompt',
@@ -1005,6 +1080,7 @@ export async function dispatchEngagement(
     await releaseReservation(db, doc, i, now);
     return;
   }
+  const values = await engagementValues(db, i, now);
   let adapter: { attempted: boolean; accepted: number; inbox: boolean; held: boolean } | undefined;
   try {
     const result = await notifyUsers(
@@ -1020,13 +1096,13 @@ export async function dispatchEngagement(
         // P-174: the unified platform's ledger follows the intent; ambiguous sends never retry.
         retry: false,
         engagement: { id: i.id, kind: i.kind },
-        template: { id: engagementTemplate[i.kind], values: {} },
+        template: { id: engagementTemplate[i.kind], values },
         onResult: async (_uid, result) => {
           adapter = result;
         },
         zone: recipientZone,
         message: (language) => ({
-          ...engagementCopy[i.kind][language],
+          ...engagementCopy(i.kind, values, language),
           expiresAt: i.expiresAt,
           apns: { collapseId: i.id.slice(0, 64) },
         }),

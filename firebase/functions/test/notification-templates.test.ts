@@ -11,7 +11,7 @@ import { ruleCopy, ruleName } from '../src/reminder-rules.js';
 import { vaccineCopy, vaccineParts } from '../src/vaccine-reminders.js';
 import { budgetCopy, recurringCopy } from '../src/spending.js';
 import { importSummary } from '../src/mail-templates.js';
-import { engagementCopy } from '../src/engagement.js';
+import { engagementCopy, engagementGenericCopy, engagementTemplate } from '../src/engagement.js';
 
 // P-174: template version 0 must be exactly what each producer sent before the Portal existed,
 // so publishing nothing changes nothing, and the Portal shows the copy users really receive.
@@ -115,15 +115,32 @@ describe('built-in templates equal the producer copy', () => {
     );
   });
 
-  it('Smart Engagement ENG-01/02/03/05/06', () => {
-    const ids = {
-      'ENG-01': 'eng.pending_photos',
-      'ENG-02': 'eng.keepsake_suggestion',
-      'ENG-03': 'eng.weekly_recap',
-      'ENG-05': 'eng.family_recap',
-      'ENG-06': 'eng.lumi_insight',
+  it('Smart Engagement ENG-01/02/03/05/06: concrete copy from real values (D-092)', () => {
+    const cases = {
+      'ENG-01': {},
+      'ENG-02': { milestone_label: { vi: '100 ngày', en: '100 days' } },
+      'ENG-03': { week_count: 18 },
+      'ENG-05': { update_count: 1 },
+      'ENG-06': { activity_title: { vi: 'Đọc sách tranh cùng bé', en: 'Picture-book time' } },
     } as const;
-    for (const [kind, id] of Object.entries(ids))
-      same(notificationTemplates[id].builtin, {}, (l) => engagementCopy[kind as 'ENG-01'][l]);
+    for (const [kind, values] of Object.entries(cases)) {
+      const id = engagementTemplate[kind as 'ENG-01'];
+      same(notificationTemplates[id].builtin, values, (l) =>
+        engagementCopy(kind as 'ENG-01', values, l),
+      );
+    }
+    expect(engagementCopy('ENG-02', cases['ENG-02'], 'vi')).toEqual({
+      title: 'Bé sắp tròn 100 ngày rồi 🎉',
+      body: 'Làm video kỷ niệm 100 ngày từ những bức ảnh bạn đã lưu, chỉ mất vài phút.',
+    });
+    expect(engagementCopy('ENG-03', { week_count: 1 }, 'en').title).toBe(
+      '1 moment to remember from last week',
+    );
+    expect(engagementCopy('ENG-06', cases['ENG-06'], 'vi').title).toBe(
+      'Gợi ý hôm nay: Đọc sách tranh cùng bé',
+    );
+    // A value that could not be computed: the old generic line, never a half-filled one.
+    expect(engagementCopy('ENG-03', {}, 'vi')).toEqual(engagementGenericCopy['ENG-03'].vi);
+    expect(engagementCopy('ENG-06', {}, 'vi').title).toBe('Gợi ý hôm nay: một hoạt động mới');
   });
 });
