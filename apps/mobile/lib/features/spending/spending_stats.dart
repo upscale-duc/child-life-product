@@ -442,6 +442,7 @@ class _Kpis extends StatelessWidget {
               padding: const EdgeInsets.all(ClSpace.s3),
               decoration: BoxDecoration(
                 color: cl.colors.surface,
+                boxShadow: cl.shadows.card,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(

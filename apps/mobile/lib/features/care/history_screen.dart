@@ -1037,6 +1037,7 @@ class _Timeline extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: cl.colors.surface,
+              boxShadow: cl.shadows.card,
               borderRadius: BorderRadius.circular(ClRadius.card),
             ),
             child: Column(
@@ -2643,6 +2644,7 @@ class _CareDaysTimelineState extends ConsumerState<CareDaysTimeline> {
           ),
           decoration: BoxDecoration(
             color: cl.colors.surface,
+            boxShadow: cl.shadows.card,
             borderRadius: BorderRadius.circular(ClRadius.card),
           ),
           child: Column(

@@ -160,6 +160,55 @@ class ReferenceCalendarCard extends ConsumerWidget {
     final stages = currentStages(due.date, today, model.stages);
     final focus = stages.current.firstOrNull ?? stages.next;
     final lines = <Widget>[];
+    // Owner, 2026-10-22: where the baby is in the window, as a bar with its two dates and the
+    // days left, instead of sentences.
+    Widget window(StageWindow w) {
+      final total = daysBetweenIso(w.start, w.end) + 1;
+      final day = (daysBetweenIso(w.start, today) + 1).clamp(1, total);
+      final left = total - day;
+      return ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: day / total,
+                minHeight: 8,
+                color: sleep.ink,
+                backgroundColor: cl.colors.surface,
+              ),
+            ),
+            const SizedBox(height: ClSpace.s1),
+            Row(
+              children: [
+                Text(
+                  shortDay(locale, w.start),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+                Expanded(
+                  child: Text(
+                    left == 0
+                        ? l10n.rhStageLastDay
+                        : l10n.rhStageDaysLeft(left),
+                    textAlign: TextAlign.center,
+                    style: cl.text.caption.copyWith(
+                      color: sleep.ink,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Text(
+                  shortDay(locale, w.end),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     if (stages.current.isNotEmpty) {
       for (final s in stages.current) {
         lines.addAll([
@@ -167,9 +216,9 @@ class ReferenceCalendarCard extends ConsumerWidget {
             l10n.rhStageInN(s.number),
             style: cl.text.headline.copyWith(color: cl.colors.ink),
           ),
-          const SizedBox(height: 2),
-          body(l10n.rhStageNowLine(stageRange(l10n, locale, due.date, s))),
-          const SizedBox(height: ClSpace.s2),
+          const SizedBox(height: ClSpace.s3),
+          window(windowOf(due.date, s)),
+          const SizedBox(height: ClSpace.s3),
         ]);
       }
     } else if (stages.next case final s?) {
@@ -209,38 +258,38 @@ class ReferenceCalendarCard extends ConsumerWidget {
                 : l10n.rhStageComingN(focus.number)),
       children: [
         ...lines,
-        // One bar per stage; the one NL01 talks about is filled.
-        ExcludeSemantics(
-          child: Row(
-            children: [
-              for (final (i, s) in sorted.take(10).indexed) ...[
-                if (i > 0) const SizedBox(width: 4),
-                Expanded(
-                  child: Container(
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: s.id == focus?.id ? sleep.ink : cl.colors.surface,
-                      borderRadius: BorderRadius.circular(3),
+        if (stages.current.isEmpty) ...[
+          // One bar per stage; the one coming next is filled.
+          ExcludeSemantics(
+            child: Row(
+              children: [
+                for (final (i, s) in sorted.take(10).indexed) ...[
+                  if (i > 0) const SizedBox(width: 4),
+                  Expanded(
+                    child: Container(
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: s.id == focus?.id
+                            ? sleep.ink
+                            : cl.colors.surface,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-        const SizedBox(height: ClSpace.s3),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        // The basis and the reminder that it is a reference, in one quiet line.
         Text(
-          due.estimated
-              ? l10n.rhByDueDateEstimated(longDay(locale, due.date))
-              : l10n.rhByDueDate(longDay(locale, due.date)),
-          style: cl.text.caption.copyWith(
-            color: cl.colors.ink,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          l10n.rhCalendarDisclaimer,
+          [
+            due.estimated
+                ? l10n.rhByDueDateEstimated(shortDay(locale, due.date))
+                : l10n.rhByDueDate(shortDay(locale, due.date)),
+            l10n.rhCalendarDisclaimerShort,
+          ].join(' · '),
           style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
         ),
       ],

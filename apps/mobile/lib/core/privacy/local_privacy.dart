@@ -37,8 +37,24 @@ class LocalPrivacy {
   bool _same<T>(Map<String, T> a, Map<String, T> b) =>
       a.length == b.length && a.entries.every((e) => b[e.key] == e.value);
 
+  /// Editorial content Storage serves to anyone (storage.rules `content/*`): template artwork,
+  /// library and first-aid pictures. Never child media, so no baby has to be bound for it.
+  static const publicContent = {
+    'keepsakes',
+    'library',
+    'first-aid',
+    'app-update',
+  };
+
   int authorize(String uid, String path) {
     final parts = path.split('/');
+    // Template covers and artwork went blank when only baby paths were allowed (2026-10-23).
+    if (owner == uid &&
+        parts.length == 3 &&
+        parts.first == 'content' &&
+        publicContent.contains(parts[1])) {
+      return generation;
+    }
     if (owner != uid ||
         parts.length < 3 ||
         parts.first != 'babies' ||

@@ -168,6 +168,7 @@ class KeepsakeCreateTile extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
         decoration: BoxDecoration(
           color: cl.colors.surface,
+          boxShadow: cl.shadows.card,
           borderRadius: BorderRadius.circular(ClRadius.card - 6),
         ),
         child: Column(
@@ -452,6 +453,7 @@ class _QuickCreate extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
         decoration: BoxDecoration(
           color: cl.colors.surface,
+          boxShadow: cl.shadows.card,
           borderRadius: BorderRadius.circular(ClRadius.control + 4),
         ),
         child: Row(

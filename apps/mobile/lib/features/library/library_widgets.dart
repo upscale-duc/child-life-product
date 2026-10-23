@@ -427,6 +427,7 @@ class LbGroup extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       color: context.cl.colors.surface,
+      boxShadow: context.cl.shadows.card,
       borderRadius: BorderRadius.circular(16),
     ),
     clipBehavior: Clip.antiAlias,

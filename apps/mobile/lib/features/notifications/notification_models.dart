@@ -144,6 +144,8 @@ class NotificationSettings {
     'familyActivity',
     // D-092 (G-109): someone joined, an invitation was declined.
     'familyMembers',
+    // D-093: a family member sent this person a handover.
+    'handovers',
     // D-094: pushes show the baby's nickname (else "bé"); on by default.
     'babyName',
   ];

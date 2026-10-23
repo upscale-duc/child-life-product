@@ -314,6 +314,77 @@ class FakeAiRepository implements AiRepository {
   @override
   Future<List<SummaryAnswer>> handovers(String babyId) async => stored;
 
+  // ---------- D-093 "Gửi cho Jun" ----------
+
+  /// Every send, as the server keeps them; [pushable] is what `sendHandover` answers.
+  final sends = <HandoverSend>[];
+  var pushable = true;
+  String sender = 'u_mai';
+  final _sendsLive = StreamController<void>.broadcast();
+
+  @override
+  Future<HandoverSendResult> sendHandover({
+    required String babyId,
+    required String summaryId,
+    required String recipientUid,
+  }) async {
+    final id = 'hs_${summaryId.hashCode}_$recipientUid';
+    if (!sends.any((s) => s.id == id)) {
+      sends.add(
+        HandoverSend(
+          id: id,
+          summaryId: summaryId,
+          senderUid: sender,
+          recipientUid: recipientUid,
+          sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+        ),
+      );
+      _sendsLive.add(null);
+    }
+    return (sendId: id, sentAt: DateTime.utc(2026, 10, 8, 13, 30), pushable: pushable);
+  }
+
+  final marks = <(String, bool)>[];
+
+  @override
+  Future<void> markHandover({
+    required String babyId,
+    required String sendId,
+    required bool received,
+  }) async {
+    marks.add((sendId, received));
+    final i = sends.indexWhere((s) => s.id == sendId);
+    if (i < 0) return;
+    final s = sends[i];
+    final at = DateTime.utc(2026, 10, 8, 13, 42);
+    sends[i] = HandoverSend(
+      id: s.id,
+      summaryId: s.summaryId,
+      senderUid: s.senderUid,
+      recipientUid: s.recipientUid,
+      sentAt: s.sentAt,
+      seenAt: s.seenAt ?? at,
+      receivedAt: s.receivedAt ?? (received ? at : null),
+    );
+    _sendsLive.add(null);
+  }
+
+  @override
+  Stream<List<HandoverSend>> watchHandoverSends(
+    String babyId,
+    String uid, {
+    required bool sent,
+  }) async* {
+    List<HandoverSend> mine() => [
+      for (final s in sends)
+        if ((sent ? s.senderUid : s.recipientUid) == uid) s,
+    ];
+    yield mine();
+    await for (final _ in _sendsLive.stream) {
+      yield mine();
+    }
+  }
+
   @override
   List<SummaryAnswer>? cachedHandovers(String babyId) => stored;
 

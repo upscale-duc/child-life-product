@@ -177,6 +177,7 @@ class NuGroup extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: cl.colors.surface,
+        boxShadow: cl.shadows.card,
         borderRadius: BorderRadius.circular(16),
       ),
       clipBehavior: Clip.antiAlias,

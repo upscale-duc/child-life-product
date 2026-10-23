@@ -69,4 +69,34 @@ void main() {
       }
     },
   );
+
+  test(
+    'public template artwork reads without a baby; child paths still need one',
+    () {
+      final privacy = LocalPrivacy()..bind('a', {'child'});
+      expect(
+        privacy.authorize(
+          'a',
+          'content/keepsakes/p48-v04-vi-thumb_40ab7bea.webp',
+        ),
+        privacy.generation,
+      );
+      expect(
+        privacy.authorize('a', 'content/library/x.webp'),
+        privacy.generation,
+      );
+      expect(
+        () => privacy.authorize('a', 'content/keepsakes-incoming/a/x.webp'),
+        throwsStateError,
+      );
+      expect(
+        () => privacy.authorize('b', 'content/keepsakes/x.webp'),
+        throwsStateError,
+      );
+      expect(
+        () => privacy.authorize('a', 'babies/other/media/m.jpg'),
+        throwsStateError,
+      );
+    },
+  );
 }

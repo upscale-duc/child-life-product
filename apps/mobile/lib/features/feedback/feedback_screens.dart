@@ -213,6 +213,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
         DecoratedBox(
           decoration: BoxDecoration(
             color: cl.colors.surface,
+            boxShadow: cl.shadows.card,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(

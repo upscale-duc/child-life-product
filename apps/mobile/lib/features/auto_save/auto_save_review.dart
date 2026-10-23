@@ -105,8 +105,8 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   final _expanded = <String>{};
   var _filter = _Filter.all;
 
-  /// The week of age being reviewed (P-171), when the person chose one; otherwise the earliest
-  /// week that still has suggestions.
+  /// The week of age being reviewed (P-171), when the person chose one; otherwise the newest
+  /// week that still has suggestions (owner, 2026-10-23: newest week first).
   int? _week;
 
   /// Items one "Tải lên" may hold (D-070), from `publicConfig/limits`.
@@ -228,7 +228,8 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         );
       }
     }
-    final pendingWeeks = byWeek.keys.toList()..sort();
+    // Newest week of age first; "Trước sinh" (week 0) last (owner, 2026-10-23).
+    final pendingWeeks = byWeek.keys.toList()..sort((a, b) => b.compareTo(a));
     final week = dob == null || pendingWeeks.isEmpty
         ? null
         : byWeek.containsKey(_week)
@@ -243,7 +244,8 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     final doneWeeks = onlyBaby == null
         ? const <int>{}
         : ref.watch(reviewedWeeksProvider)[onlyBaby] ?? const <int>{};
-    final weekChips = {...pendingWeeks, ...doneWeeks}.toList()..sort();
+    final weekChips = {...pendingWeeks, ...doneWeeks}.toList()
+      ..sort((a, b) => b.compareTo(a));
     final groups = _round(scoped, already);
     _live = {
       for (final g in groups)
@@ -466,6 +468,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
               padding: const EdgeInsets.all(ClSpace.s2),
               decoration: BoxDecoration(
                 color: cl.colors.surface,
+                boxShadow: cl.shadows.card,
                 borderRadius: BorderRadius.circular(ClRadius.card - 8),
               ),
               child: Column(
@@ -510,6 +513,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
                         LibraryTile(
                           assetId: x.asset.id,
                           video: x.asset.video,
+                          durationMs: x.asset.durationMs,
                           radius: 6,
                           selected: _selected.contains(x.asset.id),
                           onTap: () => _toggle(x.asset.id),
@@ -1110,6 +1114,7 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
                     child: LibraryTile(
                       assetId: c.asset.id,
                       video: c.asset.video,
+                      durationMs: c.asset.durationMs,
                       radius: 6,
                     ),
                   ),

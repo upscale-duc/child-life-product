@@ -119,6 +119,7 @@ describe('settings (EN07)', () => {
         familyActivity: true,
         familyMembers: false,
         babyName: false,
+        handovers: false,
         updatedAt: serverTimestamp(),
       }),
     );

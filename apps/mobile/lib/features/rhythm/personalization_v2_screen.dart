@@ -7,6 +7,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:uuid/uuid.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
+import '../../core/design/tabular_text.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../l10n/app_localizations.dart';
@@ -103,7 +104,8 @@ Future<bool> mutateDay(
   final l = AppLocalizations.of(context);
   final before = ref.read(personalDayProvider(key)).value;
   try {
-    await updatePersonalDay(ref, key, action);
+    // Owner, 2026-10-22: every action that calls the server shows that it is working.
+    await withClProgress(context, () => updatePersonalDay(ref, key, action));
     if (context.mounted) {
       final undo = undoOf(action, before);
       showClToast(
@@ -548,6 +550,8 @@ List<Widget> pillOrder(bool stepFirst, List<Widget> pills) =>
     stepFirst && pills.length > 1 ? [...pills.skip(1), pills.first] : pills;
 
 /// B2 extends the existing Sunday summary; it never introduces another weekly notification.
+/// Owner, 2026-10-22: read at a glance — the week's two numbers large, the age note short, the
+/// next idea as a row, the signs to see a doctor folded behind one row.
 class PersonalWeekBlock extends ConsumerWidget {
   const PersonalWeekBlock({super.key});
   @override
@@ -558,27 +562,137 @@ class PersonalWeekBlock extends ConsumerWidget {
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     if (day == null || !day.current(now)) return const SizedBox.shrink();
     final l = AppLocalizations.of(context);
+    final cl = context.cl;
     final locale = Localizations.localeOf(context);
     final content = ref.watch(rhythmContentProvider).value;
     final age = content?.ageCards
         .where((a) => a.id == day.data['ageCardId'])
         .firstOrNull;
     final weekly = dayMap(day.data['weekly']);
+    final next = day.health
+        ? null
+        : day.activityIds.firstOrNull == null
+        ? null
+        : content?.activity(day.activityIds.first);
+    final watchFor = age == null ? const <String>[] : age.watchFor.of(locale);
+    Widget stat(int n, String label, Color fill, Color ink) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(ClSpace.s3),
+        decoration: BoxDecoration(
+          color: fill,
+          borderRadius: BorderRadius.circular(ClRadius.control),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClTabularText(
+              '$n',
+              style: cl.text.title2.copyWith(
+                color: ink,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(label, style: cl.text.caption.copyWith(color: ink)),
+          ],
+        ),
+      ),
+    );
     return RhCard(
+      key: const Key('personalWeek'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l.pv2Weekly, style: context.cl.text.bodyStrong),
-          if (age != null) Text(age.body.of(locale)),
-          Text(
-            '${weekly['tried'] ?? 0} ${l.pv2WeekTried} · ${weekly['helpful'] ?? 0} ${l.pv2WeekHelpful}',
+          Semantics(
+            header: true,
+            child: Text(l.pv2Weekly, style: cl.text.headline),
           ),
-          Text(l.pv2WeekHint),
-          if (!day.health)
-            if (day.activityIds.firstOrNull case final id?)
-              if (content?.activity(id) case final a?) Text(a.title.of(locale)),
-          if (age != null)
-            for (final line in age.watchFor.of(locale)) Text(line),
+          const SizedBox(height: ClSpace.s3),
+          Row(
+            children: [
+              stat(
+                (weekly['tried'] as num? ?? 0).toInt(),
+                l.pv2WeekTriedShort,
+                cl.colors.mintSoft,
+                cl.colors.mintText,
+              ),
+              const SizedBox(width: ClSpace.s2),
+              stat(
+                (weekly['helpful'] as num? ?? 0).toInt(),
+                l.pv2WeekHelpfulShort,
+                cl.colors.mintDeep,
+                cl.colors.onMintDeep,
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s1),
+          Text(
+            l.pv2WeekHint,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+          if (age != null) ...[
+            const SizedBox(height: ClSpace.s3),
+            Container(
+              padding: const EdgeInsets.all(ClSpace.s3),
+              decoration: BoxDecoration(
+                color: cl.colors.surface2,
+                borderRadius: BorderRadius.circular(ClRadius.control),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l.pv2AgeNow,
+                    style: cl.text.caption.copyWith(
+                      color: cl.colors.mintText,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    firstSentenceOf(age.body.of(locale)),
+                    style: cl.text.label.copyWith(color: cl.colors.ink),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (next != null) ...[
+            const SizedBox(height: ClSpace.s2),
+            MeRow(
+              icon: ClIcons.spark,
+              title: next.title.of(locale),
+              subtitle: l.pv2NextIdea,
+              onTap: () => context.push('${Routes.rhythmActivity}/${next.id}'),
+            ),
+          ],
+          if (watchFor.isNotEmpty)
+            MeRow(
+              key: const Key('personalWeekWatch'),
+              icon: ClIcons.alert,
+              iconTint: cl.colors.peachSoft,
+              title: l.pv2WatchFor,
+              subtitle: l.pv2WatchForCount(watchFor.length),
+              onTap: () => showClSheet<void>(
+                context: context,
+                builder: (sheet) => Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    ClSpace.s4,
+                    ClSpace.s3,
+                    ClSpace.s4,
+                    ClSpace.s6,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ClSheetHeader(title: l.pv2WatchFor),
+                      RhBullets(watchFor),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          const SizedBox(height: ClSpace.s2),
           ClButton(
             label: l.pv2Open,
             expand: true,
@@ -589,6 +703,13 @@ class PersonalWeekBlock extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// The first sentence of an age card's text.
+String firstSentenceOf(String text) {
+  final t = text.trim();
+  final end = RegExp(r'[.!?…](?=\s)').firstMatch(t);
+  return end == null ? t : t.substring(0, end.end);
 }
 
 /// "Hôm nay của nhà mình": today's ideas first, then what the person did today, then the

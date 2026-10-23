@@ -1021,6 +1021,10 @@ const rows: Row[] = [
   ['ntf.producer.family.members', 'Thành viên gia đình', 'Family members'],
   ['ntf.setting.familyMembers', 'Thành viên gia đình', 'Family members'],
   ['ntf.setting.babyName', 'Hiện tên bé trong thông báo', 'Show your baby’s name'],
+  // D-093: "Gửi cho Jun" — a handover sent to one member
+  ['ntf.kind.handoverSent', 'Bàn giao được gửi', 'Handover sent'],
+  ['ntf.producer.ai.handover', 'Bàn giao (AI)', 'Handover (AI)'],
+  ['ntf.setting.handovers', 'Bàn giao', 'Handovers'],
 
   // D-092: UI review — tab purposes, badges, health, quick links
   [

@@ -212,6 +212,8 @@ export function noticeTemplate(
       return { id: 'family.role_changed', values: {} };
     case 'memberRemoved':
       return { id: 'family.member_removed', values: {} };
+    case 'handoverSent':
+      return { id: 'ai.handover_sent', values: { actor_name: actorName } };
     default:
       return undefined;
   }
@@ -313,6 +315,17 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
             title: 'You’re no longer in a family',
             body: 'You no longer have access to a child’s profile in that family.',
           };
+    // D-093: who sent it; never anything about the child.
+    case 'handoverSent':
+      return vi
+        ? {
+            title: 'Bàn giao cho bạn',
+            body: `${actorName || 'Người thân'} vừa gửi bàn giao cho bạn. Mở để xem.`,
+          }
+        : {
+            title: 'A handover for you',
+            body: `${actorName || 'A family member'} sent you a handover. Open to read it.`,
+          };
     default:
       return vi
         ? { title: 'Child Life', body: 'Có cập nhật mới từ gia đình.' }
@@ -388,6 +401,11 @@ export async function deliverNotice(
           ? { shareId: claimed.get('sourceId') }
           : {}),
         ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
+        // D-093 CARE_HANDOVER: the summary that was sent.
+        ...(claimed.get('sourceCollection') === 'summaries' &&
+        typeof claimed.get('sourceId') === 'string'
+          ? { summaryId: claimed.get('sourceId') }
+          : {}),
       },
       message: (language) => noticeCopy(kind, count, actor, language),
       template: noticeTemplate(kind, count, actor),

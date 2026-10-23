@@ -3629,7 +3629,7 @@
   "rhWeekTitle": "Weekly summary",
   "rhWeekOf": "{baby}’s week {n}",
   "rhWeekInProgress": "Week in progress · figures so far",
-  "rhWeekShare": "Send to…",
+  "rhWeekShare": "Share",
   "rhWeekRecordedTitle": "Logged this week",
   "rhWeekRecordedSub": "From the family’s log",
   "rhWeekFeeds": "Feeds",
@@ -5876,23 +5876,23 @@
   "@pv2ToastUnsaved": {
     "description": "Toast after unsaving."
   },
-  "hnCheckInDone": "Today: {what}",
+  "hnCheckInDone": "{who} noted today",
   "@hnCheckInDone": {
-    "description": "Home row after today's check-in; what is the observation label.",
-    "placeholders": {
-      "what": {
-        "type": "String",
-        "example": "Như mọi ngày"
-      }
-    }
-  },
-  "hnCheckInDoneSub": "Noted by {who} · Tap to change or add",
-  "@hnCheckInDoneSub": {
-    "description": "Subtitle of the check-in row once answered.",
+    "description": "Home row after today's check-in; who is \"Bạn\", \"Bạn và Mẹ\".",
     "placeholders": {
       "who": {
         "type": "String",
         "example": "Bạn"
+      }
+    }
+  },
+  "hnCheckInDoneSub": "Baby: {what} · Tap to change",
+  "@hnCheckInDoneSub": {
+    "description": "Second line: what was noted (lower case).",
+    "placeholders": {
+      "what": {
+        "type": "String",
+        "example": "như mọi ngày"
       }
     }
   },
@@ -6028,5 +6028,227 @@
         "example": "45 phút"
       }
     }
+  },
+  "rhStageDaysLeft": "{n, plural, =1{1 day left} other{{n} days left}}",
+  "@rhStageDaysLeft": {
+    "description": "Reference window bar: days left in the window.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageLastDay": "last day",
+  "@rhStageLastDay": {
+    "description": "Reference window bar on its last day."
+  },
+  "rhCalendarDisclaimerShort": "a reference only — every baby differs",
+  "@rhCalendarDisclaimerShort": {
+    "description": "One-line reminder under the reference calendar card."
+  },
+  "rhDayNotNoted": "not noted",
+  "@rhDayNotNoted": {
+    "description": "A day of the 7-day strip nobody noted."
+  },
+  "rhTodayShort": "Today",
+  "@rhTodayShort": {
+    "description": "Short label for today in the 7-day strip."
+  },
+  "rhLegendChanged": "Something different",
+  "@rhLegendChanged": {
+    "description": "Key of the 7-day strip: a day with a change."
+  },
+  "rhSleepSparseShort": "Sleep logged in full on {have}/{need} days · log more to compare",
+  "@rhSleepSparseShort": {
+    "description": "Not enough sleep data: the days the bars count.",
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "need": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekObsChip": "{what} ×{days}",
+  "@rhWeekObsChip": {
+    "description": "Week summary chip: a change and how many days it was noted.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2AgeNow": "At this age",
+  "@pv2AgeNow": {
+    "description": "Week block: the age card's first sentence."
+  },
+  "pv2NextIdea": "Next idea",
+  "@pv2NextIdea": {
+    "description": "Week block: subtitle of the next activity row."
+  },
+  "pv2WatchFor": "When to see a doctor",
+  "@pv2WatchFor": {
+    "description": "Week block row and sheet: the age card's warning signs."
+  },
+  "pv2WatchForCount": "{count, plural, =1{1 sign to watch} other{{count} signs to watch}}",
+  "@pv2WatchForCount": {
+    "description": "Week block: how many warning signs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2WeekTriedShort": "tried",
+  "@pv2WeekTriedShort": {
+    "description": "Week block stat label."
+  },
+  "pv2WeekHelpfulShort": "helpful",
+  "@pv2WeekHelpfulShort": {
+    "description": "Week block stat label."
+  },
+  "ntHandovers": "Handovers",
+  "@ntHandovers": {
+    "description": "Notification setting: a family member sent you a handover (D-093)."
+  },
+  "ntHandoversHint": "When someone sends you a handover",
+  "@ntHandoversHint": {
+    "description": "Hint of the handovers notification switch."
+  },
+  "aiSendToFamily": "Send the handover",
+  "@aiSendToFamily": {
+    "description": "Handover: main button / sheet title when several members could receive it."
+  },
+  "aiSendToOther": "Send to someone else",
+  "@aiSendToOther": {
+    "description": "Handover: main button after it was sent to one member."
+  },
+  "aiShareOther": "Share through another app…",
+  "@aiShareOther": {
+    "description": "Handover: the system share sheet (Zalo, Messenger…)."
+  },
+  "aiShareShort": "Share",
+  "@aiShareShort": {
+    "description": "Toast action: open the system share sheet."
+  },
+  "aiSentTo": "Sent to {name} · {time}",
+  "@aiSentTo": {
+    "description": "Handover: a send's first line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendNotSeen": "Not opened yet",
+  "@aiSendNotSeen": {
+    "description": "Handover send state: not opened."
+  },
+  "aiSendSeen": "{name} opened it · {time}",
+  "@aiSendSeen": {
+    "description": "Handover send state: opened.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendReceived": "{name} acknowledged it · {time}",
+  "@aiSendReceived": {
+    "description": "Handover send state: acknowledged.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentToast": "Sent to {name}. They'll get a notification.",
+  "@aiSentToast": {
+    "description": "Toast after sending a handover.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentNoPush": "Sent to {name} in the app, but they haven't turned notifications on. Also share through Zalo?",
+  "@aiSentNoPush": {
+    "description": "Toast when the recipient cannot get a push.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendFailed": "Couldn't send it. Check the connection and try again.",
+  "@aiSendFailed": {
+    "description": "Toast when sending a handover failed."
+  },
+  "aiSentToYou": "{name} sent you this handover · {time}",
+  "@aiSentToYou": {
+    "description": "Recipient banner on the handover.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiYouReceived": "You acknowledged it at {time}",
+  "@aiYouReceived": {
+    "description": "Recipient banner after acknowledging.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentToYouShort": "{name} sent you a handover",
+  "@aiSentToYouShort": {
+    "description": "Home handover row while a sent handover is unopened.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiNewBadge": "New",
+  "@aiNewBadge": {
+    "description": "Badge on the Home handover row."
+  },
+  "sryAddTitle": "Add to the story",
+  "@sryAddTitle": {
+    "description": "Story editor: heading over the add buttons."
+  },
+  "sryKindParagraph": "Text",
+  "@sryKindParagraph": {
+    "description": "Story editor add button."
+  },
+  "sryKindPhotos": "Photos",
+  "@sryKindPhotos": {
+    "description": "Story editor add button."
+  },
+  "sryKindMilestone": "Milestone",
+  "@sryKindMilestone": {
+    "description": "Story editor add button."
+  },
+  "sryKindQuote": "Quote",
+  "@sryKindQuote": {
+    "description": "Story editor add button."
   }
 }

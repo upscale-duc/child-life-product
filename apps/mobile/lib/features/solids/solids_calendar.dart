@@ -198,6 +198,7 @@ class _SdCalendarViewState extends ConsumerState<SdCalendarView> {
             padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
             decoration: BoxDecoration(
               color: cl.colors.surface,
+              boxShadow: cl.shadows.card,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(

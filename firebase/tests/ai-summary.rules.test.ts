@@ -94,6 +94,14 @@ beforeEach(async () => {
       kind: 'moment',
       status: 'ready',
     });
+    await setDoc(doc(db, 'babies/b1/handoverSends/hs_1'), {
+      id: 'hs_1',
+      summaryId: 'su_handover',
+      senderUid: 'mom',
+      recipientUid: 'nanny',
+      seenAt: null,
+      receivedAt: null,
+    });
     await setDoc(doc(db, 'babies/b1/episodes/ep_open'), {
       ...episode('nanny', 'ep_open'),
       createdAt: new Date(),
@@ -118,6 +126,33 @@ describe('users/{uid}/settings/ai (consent)', () => {
     await assertFails(setDoc(doc(as('nanny'), 'users/nanny/settings/ai'), body));
     await assertFails(updateDoc(doc(as('mom'), 'users/mom/settings/ai'), { consent: null }));
     await assertFails(deleteDoc(doc(as('mom'), 'users/mom/settings/ai')));
+  });
+});
+
+describe('babies/{b}/handoverSends (D-093)', () => {
+  it('its sender and its recipient read it; nobody else in the family does', async () => {
+    await assertSucceeds(getDoc(doc(as('mom'), 'babies/b1/handoverSends/hs_1')));
+    await assertSucceeds(getDoc(doc(as('nanny'), 'babies/b1/handoverSends/hs_1')));
+    await assertFails(getDoc(doc(as('aunt'), 'babies/b1/handoverSends/hs_1')));
+    await assertFails(getDoc(doc(as('other'), 'babies/b1/handoverSends/hs_1')));
+    await assertSucceeds(
+      getDocs(
+        query(
+          collection(as('nanny'), 'babies/b1/handoverSends'),
+          where('recipientUid', '==', 'nanny'),
+        ),
+      ),
+    );
+    await assertFails(getDocs(collection(as('nanny'), 'babies/b1/handoverSends')));
+  });
+
+  it('only the server writes it (no "seen" from a client)', async () => {
+    await assertFails(
+      updateDoc(doc(as('nanny'), 'babies/b1/handoverSends/hs_1'), { seenAt: new Date() }),
+    );
+    await assertFails(
+      setDoc(doc(as('mom'), 'babies/b1/handoverSends/hs_2'), { senderUid: 'mom' }),
+    );
   });
 });
 

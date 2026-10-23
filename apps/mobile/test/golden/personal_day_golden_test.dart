@@ -38,6 +38,7 @@ PersonalDay _day() => PersonalDay({
   'expiresAt': '2026-10-08T17:00:00Z',
   'today': '2026-10-08',
   'zone': 'Asia/Ho_Chi_Minh',
+  'ageCardId': 'age_week_3',
   'writable': true,
   'parent': true,
   'contentVersion': rhythmContent().version,
@@ -111,6 +112,21 @@ final _cases =
       'home_card': (() => const _HomeCard(), 620, null),
       'day': (() => const PersonalizationDayScreen(), 2300, null),
       'handover': (() => const PersonalHandoverScreen(), 900, null),
+      'week_block': (
+        () => Builder(
+          builder: (context) => Scaffold(
+            backgroundColor: context.cl.colors.cloud,
+            body: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.all(ClSpace.s4),
+                children: const [PersonalWeekBlock()],
+              ),
+            ),
+          ),
+        ),
+        700,
+        null,
+      ),
       'history': (() => const PersonalHistoryScreen(), 900, null),
       // The notebook editor: one caption per group, the same gap between groups.
       'notes_editor': (

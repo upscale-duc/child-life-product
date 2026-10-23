@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -212,7 +213,9 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
             ParagraphEditorScreen(story: _story!, block: b, initialOp: op),
       ),
     );
-    if (next != null) _replaceBlock(next);
+    if (next == null) return;
+    // D-095: emptied in the editor, the paragraph goes, rather than staying as a blank prompt.
+    next.text.isEmpty ? _removeBlock(next.id) : _replaceBlock(next);
   }
 
   List<MediaItem> _media() {
@@ -354,41 +357,55 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
     );
   }
 
-  Future<void> _addBlock() async {
+  /// Adds a block of [kind]; without one, asks which (the sheet).
+  Future<void> _addBlock([String? asked]) async {
     final l10n = AppLocalizations.of(context);
-    final kind = await showClSheet<String>(
-      context: context,
-      builder: (sheet) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.sryAddBlock),
-          ClCardGroup(
+    final kind =
+        asked ??
+        await showClSheet<String>(
+          context: context,
+          builder: (sheet) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final (k, label, icon) in [
-                ('paragraph', l10n.sryAddParagraph, ClIcons.edit),
-                ('photos', l10n.sryAddPhotos, ClIcons.memories),
-                ('milestone', l10n.sryAddMilestone, ClIcons.star),
-                ('quote', l10n.sryAddQuote, ClIcons.journal),
-              ])
-                ClDetailRow(
-                  icon: icon,
-                  label: label,
-                  onTap: () => Navigator.of(sheet).pop(k),
-                ),
+              ClSheetHeader(title: l10n.sryAddBlock),
+              ClCardGroup(
+                children: [
+                  for (final (k, label, icon) in [
+                    ('paragraph', l10n.sryAddParagraph, ClIcons.edit),
+                    ('photos', l10n.sryAddPhotos, ClIcons.memories),
+                    ('milestone', l10n.sryAddMilestone, ClIcons.star),
+                    ('quote', l10n.sryAddQuote, ClIcons.journal),
+                  ])
+                    ClDetailRow(
+                      icon: icon,
+                      label: label,
+                      onTap: () => Navigator.of(sheet).pop(k),
+                    ),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
-    );
+        );
     if (!mounted || kind == null) return;
     final s = _story!;
     if (s.blocks.length >= StoryLimits.blocksMax) return;
     switch (kind) {
       case 'paragraph':
-        final b = ParagraphBlock(newBlockId(), '');
-        _set(s.copyWith(blocks: [...s.blocks, b]));
-        await _editParagraph(b);
+        // D-095: straight to writing; the block joins the story only once it has
+        // words, so a cancelled "Đoạn văn" leaves no empty "Viết vài dòng…" behind.
+        final next = await Navigator.of(context).push<ParagraphBlock>(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => ParagraphEditorScreen(
+              story: s,
+              block: ParagraphBlock(newBlockId(), ''),
+            ),
+          ),
+        );
+        if (next != null && next.text.isNotEmpty && mounted) {
+          _set(_story!.copyWith(blocks: [..._story!.blocks, next]));
+        }
       case 'photos':
         final ids = await _pick();
         if (ids != null && ids.isNotEmpty) {
@@ -498,6 +515,8 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
       return ClPressable(
         onPressed: onTap ?? () => setState(() => _selected = on ? null : id),
         child: AnimatedContainer(
+          // Full width, the text from the left (it sat centred in its own width).
+          width: double.infinity,
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.all(ClSpace.s2),
           decoration: BoxDecoration(
@@ -567,6 +586,9 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
         children: [
           selectable(
             b.id,
+            // D-095: an empty paragraph has nothing to rewrite: a tap opens the writing screen,
+            // not the Sửa / Viết lại / Ấm hơn bar.
+            onTap: b.text.isEmpty ? () => _editParagraph(b) : null,
             Text(
               b.text.isEmpty ? l10n.sryParagraphHint : b.text,
               style: cl.text.body.copyWith(
@@ -698,40 +720,86 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
                       ClSpace.s6,
                     ),
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(ClSpace.s3),
-                        decoration: BoxDecoration(
-                          color: cl.colors.mintSoft,
-                          borderRadius: BorderRadius.circular(
-                            ClRadius.control + 4,
-                          ),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClIcon(
-                              ClIcons.spark,
-                              size: 18,
-                              color: cl.colors.mintText,
+                      // Owner, 2026-10-23: the "tap to edit" tip only once there is something
+                      // to tap; an empty draft goes straight to its cover, title and blocks.
+                      if (s.blocks.isNotEmpty || s.origin == 'ai')
+                        Container(
+                          padding: const EdgeInsets.all(ClSpace.s3),
+                          decoration: BoxDecoration(
+                            color: cl.colors.mintSoft,
+                            borderRadius: BorderRadius.circular(
+                              ClRadius.control + 4,
                             ),
-                            const SizedBox(width: ClSpace.s2),
-                            Expanded(
-                              child: Text(
-                                s.origin == 'ai'
-                                    ? l10n.sryAiTip(s.sourcePhotos)
-                                    : l10n.sryTip,
-                                style: cl.text.label.copyWith(
-                                  color: cl.colors.mintText,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClIcon(
+                                ClIcons.spark,
+                                size: 18,
+                                color: cl.colors.mintText,
+                              ),
+                              const SizedBox(width: ClSpace.s2),
+                              Expanded(
+                                child: Text(
+                                  s.origin == 'ai'
+                                      ? l10n.sryAiTip(s.sourcePhotos)
+                                      : l10n.sryTip,
+                                  style: cl.text.label.copyWith(
+                                    color: cl.colors.mintText,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(height: ClSpace.s3),
-                      if (s.kind == StoryKind.story)
+                      if (s.kind == StoryKind.story && cover == null)
+                        ClPressable(
+                          key: const Key('storyAddCover'),
+                          semanticLabel: l10n.sryAddCover,
+                          onPressed: () async {
+                            final ids = await _pick(max: 1);
+                            if (ids != null && ids.isNotEmpty) {
+                              _set(s.copyWith(coverMediaId: ids.first));
+                            }
+                          },
+                          child: Container(
+                            // ClPressable centres its child; the tile spans the page.
+                            width: double.infinity,
+                            height: 132,
+                            decoration: BoxDecoration(
+                              color: cl.colors.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: cl.colors.separator,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ClIcon(
+                                  ClIcons.camera,
+                                  size: 28,
+                                  color: cl.colors.mintText,
+                                ),
+                                const SizedBox(height: ClSpace.s2),
+                                Text(
+                                  l10n.sryAddCover,
+                                  style: cl.text.label.copyWith(
+                                    color: cl.colors.mintText,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else if (s.kind == StoryKind.story)
                         AspectRatio(
-                          aspectRatio: storyCoverRatio(cover),
+                          // Never taller than 4:3, so the title and the first blocks show.
+                          aspectRatio: math.max(storyCoverRatio(cover), 4 / 3),
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
@@ -786,48 +854,85 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
                         block(b),
                         const SizedBox(height: ClSpace.s2),
                       ],
-                      ClPressable(
-                        onPressed: _addBlock,
-                        semanticLabel: l10n.sryAddBlock,
-                        child: Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              ClRadius.control + 4,
-                            ),
-                            border: Border.all(
-                              color: cl.colors.separator,
-                              width: 1.5,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ClIcon(
-                                ClIcons.plus,
-                                size: 18,
-                                color: cl.colors.mintText,
-                              ),
-                              const SizedBox(width: ClSpace.s2),
-                              Text(
-                                l10n.sryAddBlock,
-                                style: cl.text.label.copyWith(
-                                  color: cl.colors.mintText,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                      // What can be added, one tap each (owner, 2026-10-23).
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: ClSpace.s2,
+                          bottom: ClSpace.s2,
+                        ),
+                        child: Text(
+                          l10n.sryAddTitle,
+                          style: cl.text.label.copyWith(
+                            color: cl.colors.inkMuted,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
+                      Row(
+                        children: [
+                          for (final (i, (k, label, icon)) in [
+                            ('paragraph', l10n.sryKindParagraph, ClIcons.edit),
+                            ('photos', l10n.sryKindPhotos, ClIcons.memories),
+                            ('milestone', l10n.sryKindMilestone, ClIcons.star),
+                            ('quote', l10n.sryKindQuote, ClIcons.journal),
+                          ].indexed) ...[
+                            if (i > 0) const SizedBox(width: ClSpace.s2),
+                            Expanded(
+                              child: ClPressable(
+                                key: Key('storyAdd:$k'),
+                                onPressed: () => _addBlock(k),
+                                semanticLabel: label,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 72,
+                                  decoration: BoxDecoration(
+                                    color: cl.colors.surface,
+                                    boxShadow: cl.shadows.card,
+                                    borderRadius: BorderRadius.circular(
+                                      ClRadius.control + 4,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ClIcon(
+                                        icon,
+                                        size: 20,
+                                        color: cl.colors.mintText,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        label,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: cl.text.caption.copyWith(
+                                          color: cl.colors.ink,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                       if (!s.saved) ...[
-                        const SizedBox(height: ClSpace.s6),
+                        const SizedBox(height: ClSpace.s8),
                         Center(
-                          child: ClButton(
-                            label: l10n.sryDiscardDraft,
-                            style: ClButtonStyle.plain,
+                          child: ClPressable(
+                            semanticLabel: l10n.sryDiscardDraft,
                             onPressed: _discardDraft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(ClSpace.s2),
+                              child: Text(
+                                l10n.sryDiscardDraft,
+                                style: cl.text.label.copyWith(
+                                  color: cl.colors.error,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -1210,7 +1315,10 @@ class _ParagraphEditorState extends ConsumerState<ParagraphEditorScreen> {
                     _BarAction(
                       label: label,
                       icon: icon,
-                      onTap: _working ? null : () => _assist(op),
+                      // D-095: nothing to rewrite until there are words.
+                      onTap: _working || _text.text.trim().isEmpty
+                          ? null
+                          : () => _assist(op),
                     ),
                   _BarAction(
                     label: l10n.sryUndo,
@@ -1361,6 +1469,7 @@ class _ArrangeScreenState extends State<ArrangeScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: cl.colors.surface,
+                          boxShadow: cl.shadows.card,
                           borderRadius: BorderRadius.circular(
                             ClRadius.control + 4,
                           ),

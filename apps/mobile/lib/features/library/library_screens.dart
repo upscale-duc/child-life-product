@@ -1623,6 +1623,7 @@ class _Contents extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 14, 12, 6),
       decoration: BoxDecoration(
         color: cl.colors.surface,
+        boxShadow: cl.shadows.card,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -1767,6 +1768,7 @@ class _MythCard extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
         decoration: BoxDecoration(
           color: cl.colors.surface,
+          boxShadow: cl.shadows.card,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(

@@ -11,13 +11,17 @@ import 'cl_status.dart';
 class ClCardGroup extends StatelessWidget {
   const ClCardGroup({
     required this.children,
-    this.shadow = false,
+    this.shadow,
     this.color,
     super.key,
   });
 
   final List<Widget> children;
-  final bool shadow;
+
+  /// D-096: every card on the page wears `shadow-card` like the Care cards, so it
+  /// stands off the Light background (Night care has no card shadow). Default: on, unless a
+  /// [color] is given (a tinted group inside a sheet).
+  final bool? shadow;
 
   /// Inside sheets the group sits on surface-2 (14f), elsewhere on surface.
   final Color? color;
@@ -47,7 +51,7 @@ class ClCardGroup extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? cl.colors.surface,
         borderRadius: BorderRadius.circular(ClRadius.card),
-        boxShadow: shadow ? cl.shadows.card : null,
+        boxShadow: (shadow ?? color == null) ? cl.shadows.card : null,
       ),
       child: inputs ? ClInputGroup(child: column) : column,
     );

@@ -19559,7 +19559,7 @@
   "@rhWeekInProgress": {
     "description": "EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet."
   },
-  "rhWeekShare": "Gửi cho…",
+  "rhWeekShare": "Chia sẻ",
   "@rhWeekShare": {
     "description": "EN09 top pill: shares the logged figures as plain text."
   },
@@ -27889,23 +27889,23 @@
   "@pv2ToastUnsaved": {
     "description": "Toast after unsaving."
   },
-  "hnCheckInDone": "Hôm nay: {what}",
+  "hnCheckInDone": "{who} đã ghi hôm nay",
   "@hnCheckInDone": {
-    "description": "Home row after today's check-in; what is the observation label.",
-    "placeholders": {
-      "what": {
-        "type": "String",
-        "example": "Như mọi ngày"
-      }
-    }
-  },
-  "hnCheckInDoneSub": "{who} đã ghi · Chạm để sửa hoặc thêm",
-  "@hnCheckInDoneSub": {
-    "description": "Subtitle of the check-in row once answered.",
+    "description": "Home row after today's check-in; who is \"Bạn\", \"Bạn và Mẹ\".",
     "placeholders": {
       "who": {
         "type": "String",
         "example": "Bạn"
+      }
+    }
+  },
+  "hnCheckInDoneSub": "Bé {what} · Chạm để sửa",
+  "@hnCheckInDoneSub": {
+    "description": "Second line: what was noted (lower case).",
+    "placeholders": {
+      "what": {
+        "type": "String",
+        "example": "như mọi ngày"
       }
     }
   },
@@ -28041,5 +28041,227 @@
         "example": "45 phút"
       }
     }
+  },
+  "rhStageDaysLeft": "còn {n} ngày",
+  "@rhStageDaysLeft": {
+    "description": "Reference window bar: days left in the window.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageLastDay": "ngày cuối",
+  "@rhStageLastDay": {
+    "description": "Reference window bar on its last day."
+  },
+  "rhCalendarDisclaimerShort": "chỉ để tham khảo, mỗi bé một khác",
+  "@rhCalendarDisclaimerShort": {
+    "description": "One-line reminder under the reference calendar card."
+  },
+  "rhDayNotNoted": "chưa ghi",
+  "@rhDayNotNoted": {
+    "description": "A day of the 7-day strip nobody noted."
+  },
+  "rhTodayShort": "Nay",
+  "@rhTodayShort": {
+    "description": "Short label for today in the 7-day strip."
+  },
+  "rhLegendChanged": "Có điều khác",
+  "@rhLegendChanged": {
+    "description": "Key of the 7-day strip: a day with a change."
+  },
+  "rhSleepSparseShort": "Đã ghi đủ giấc ngủ {have}/{need} ngày · ghi thêm để so sánh",
+  "@rhSleepSparseShort": {
+    "description": "Not enough sleep data: the days the bars count.",
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "need": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekObsChip": "{what} ×{days}",
+  "@rhWeekObsChip": {
+    "description": "Week summary chip: a change and how many days it was noted.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2AgeNow": "Ở tuổi này",
+  "@pv2AgeNow": {
+    "description": "Week block: the age card's first sentence."
+  },
+  "pv2NextIdea": "Gợi ý tiếp theo",
+  "@pv2NextIdea": {
+    "description": "Week block: subtitle of the next activity row."
+  },
+  "pv2WatchFor": "Khi nào cần đưa bé đi khám",
+  "@pv2WatchFor": {
+    "description": "Week block row and sheet: the age card's warning signs."
+  },
+  "pv2WatchForCount": "{count} dấu hiệu cần lưu ý",
+  "@pv2WatchForCount": {
+    "description": "Week block: how many warning signs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2WeekTriedShort": "đã thử",
+  "@pv2WeekTriedShort": {
+    "description": "Week block stat label."
+  },
+  "pv2WeekHelpfulShort": "thấy có ích",
+  "@pv2WeekHelpfulShort": {
+    "description": "Week block stat label."
+  },
+  "ntHandovers": "Bàn giao",
+  "@ntHandovers": {
+    "description": "Notification setting: a family member sent you a handover (D-093)."
+  },
+  "ntHandoversHint": "Khi có người gửi bàn giao cho bạn",
+  "@ntHandoversHint": {
+    "description": "Hint of the handovers notification switch."
+  },
+  "aiSendToFamily": "Gửi bàn giao",
+  "@aiSendToFamily": {
+    "description": "Handover: main button / sheet title when several members could receive it."
+  },
+  "aiSendToOther": "Gửi cho người khác",
+  "@aiSendToOther": {
+    "description": "Handover: main button after it was sent to one member."
+  },
+  "aiShareOther": "Chia sẻ qua ứng dụng khác…",
+  "@aiShareOther": {
+    "description": "Handover: the system share sheet (Zalo, Messenger…)."
+  },
+  "aiShareShort": "Chia sẻ",
+  "@aiShareShort": {
+    "description": "Toast action: open the system share sheet."
+  },
+  "aiSentTo": "Đã gửi cho {name} · {time}",
+  "@aiSentTo": {
+    "description": "Handover: a send's first line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendNotSeen": "Chưa mở",
+  "@aiSendNotSeen": {
+    "description": "Handover send state: not opened."
+  },
+  "aiSendSeen": "{name} đã xem · {time}",
+  "@aiSendSeen": {
+    "description": "Handover send state: opened.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendReceived": "{name} đã nhận bàn giao · {time}",
+  "@aiSendReceived": {
+    "description": "Handover send state: acknowledged.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentToast": "Đã gửi cho {name}. {name} sẽ nhận được thông báo.",
+  "@aiSentToast": {
+    "description": "Toast after sending a handover.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentNoPush": "Đã gửi cho {name} trong app, nhưng {name} chưa bật thông báo. Gửi thêm qua Zalo?",
+  "@aiSentNoPush": {
+    "description": "Toast when the recipient cannot get a push.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSendFailed": "Chưa gửi được. Kiểm tra mạng rồi thử lại.",
+  "@aiSendFailed": {
+    "description": "Toast when sending a handover failed."
+  },
+  "aiSentToYou": "{name} gửi bàn giao cho bạn · {time}",
+  "@aiSentToYou": {
+    "description": "Recipient banner on the handover.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiYouReceived": "Bạn đã nhận bàn giao lúc {time}",
+  "@aiYouReceived": {
+    "description": "Recipient banner after acknowledging.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSentToYouShort": "{name} gửi bàn giao cho bạn",
+  "@aiSentToYouShort": {
+    "description": "Home handover row while a sent handover is unopened.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiNewBadge": "Mới",
+  "@aiNewBadge": {
+    "description": "Badge on the Home handover row."
+  },
+  "sryAddTitle": "Thêm vào câu chuyện",
+  "@sryAddTitle": {
+    "description": "Story editor: heading over the add buttons."
+  },
+  "sryKindParagraph": "Đoạn văn",
+  "@sryKindParagraph": {
+    "description": "Story editor add button."
+  },
+  "sryKindPhotos": "Ảnh",
+  "@sryKindPhotos": {
+    "description": "Story editor add button."
+  },
+  "sryKindMilestone": "Mốc",
+  "@sryKindMilestone": {
+    "description": "Story editor add button."
+  },
+  "sryKindQuote": "Trích dẫn",
+  "@sryKindQuote": {
+    "description": "Story editor add button."
   }
 }

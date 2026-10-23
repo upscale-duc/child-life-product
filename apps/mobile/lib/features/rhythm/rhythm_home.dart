@@ -251,14 +251,23 @@ class ForYouSection extends ConsumerWidget {
                   .where((c) => c.date == today && c.authorUid == me.uid)
                   .firstOrNull ??
               checkIns.where((c) => c.date == today).firstOrNull,
-          who: (uid) => memberLabel(
-            l10n,
-            (ref.watch(familyMembersProvider(babyId)).value ?? const [])
-                .where((m) => m.uid == uid)
-                .firstOrNull,
-            myUid: me.uid,
-            uid: uid,
-          ),
+          // Everyone who noted today, me first ("Bạn và Mẹ").
+          authors: [
+            for (final uid in {
+              for (final c in checkIns)
+                if (c.date == today && c.authorUid == me.uid) c.authorUid,
+              for (final c in checkIns)
+                if (c.date == today) c.authorUid,
+            })
+              memberLabel(
+                l10n,
+                (ref.watch(familyMembersProvider(babyId)).value ?? const [])
+                    .where((m) => m.uid == uid)
+                    .firstOrNull,
+                myUid: me.uid,
+                uid: uid,
+              ),
+          ],
         ),
       if (showSupport) const _SupportCard(),
     ];
@@ -779,11 +788,11 @@ class _WhySheet extends StatelessWidget {
 
 /// "Hôm nay con có gì khác?" → C01 (Cùng nuôi, Người chăm sóc): a slim row.
 class _CheckInEntry extends StatelessWidget {
-  const _CheckInEntry({required this.done, required this.who});
+  const _CheckInEntry({required this.done, required this.authors});
 
   /// Today's check-in (this person's first), null before anyone answered.
   final CheckIn? done;
-  final String Function(String uid) who;
+  final List<String> authors;
 
   @override
   Widget build(BuildContext context) {
@@ -795,10 +804,22 @@ class _CheckInEntry extends StatelessWidget {
       child: _RowContent(
         icon: d == null ? ClIcons.edit : ClIcons.check,
         tone: WeekRowTone.mint,
+        // Owner, 2026-10-22: say what was noted ("Khó vào giấc · giấc đêm · 2–3 ngày"), who
+        // noted it, and that it can be changed.
+        // Owner, 2026-10-22: "Hôm nay: Như mọi ngày" read like nothing had been noted; the
+        // line now says that it was noted, the answer comes under it.
         title: d == null
             ? l10n.rhCheckInEntry
-            : l10n.hnCheckInDone(observationLabel(l10n, d.observation)),
-        sub: d == null ? null : l10n.hnCheckInDoneSub(who(d.authorUid)),
+            : l10n.hnCheckInDone(capitalized(joinNames(l10n, authors))),
+        sub: d == null
+            ? null
+            : [
+                l10n.hnCheckInDoneSub(
+                  checkInParts(l10n, d).join(' · ').toLowerCase(),
+                ),
+                if (d.note case final n? when n.trim().isNotEmpty)
+                  l10n.rhQuoted(n.trim()),
+              ].join('\n'),
         onTap: () => context.push(Routes.rhythmCheckIn),
       ),
     );

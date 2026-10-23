@@ -45,6 +45,7 @@ export const notificationDestinationIds = [
   'FAMILY_SHARED_CONTENT',
   'FAMILY_STORAGE',
   'FAMILY_MEMBERS',
+  'CARE_HANDOVER',
   'LUMI_INSIGHT',
   'INBOX',
 ] as const;
@@ -226,6 +227,16 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       fallback: 'MEMORIES',
       completion: t('Xem nội dung của tuần', 'View the week’s content'),
     },
+    // D-093: the handover a family member sent (that summary, else the latest).
+    CARE_HANDOVER: {
+      id: 'CARE_HANDOVER',
+      screen: t('Bàn giao cho người chăm tiếp', 'Handover for the next carer'),
+      path: '/rhythm/handover',
+      params: [babyId, { key: 'summaryId', pattern: /^su_[a-f0-9]{32}$/, required: false }],
+      permission: 'care_read',
+      fallback: 'INBOX',
+      completion: t('Xem và nhận bàn giao', 'Read and acknowledge the handover'),
+    },
     FAMILY_MESSAGES: {
       id: 'FAMILY_MESSAGES',
       screen: t('Lời nhắn gia đình', 'Family messages'),
@@ -325,6 +336,7 @@ export const notificationProducers = [
   'family.storage',
   'staff.storage',
   'family.members',
+  'ai.handover',
   'engagement',
   'engineering',
 ] as const;
@@ -787,6 +799,31 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
     engagement: [],
     status: 'live',
   },
+  handoverSent: {
+    kind: 'handoverSent',
+    group: 'care',
+    producer: 'ai.handover',
+    trigger: both(
+      'Một thành viên bấm “Gửi cho …” trên bản bàn giao',
+      'A member taps “Send to …” on a handover',
+    ),
+    recipients: both(
+      'Đúng người được chọn (thành viên được xem chăm sóc của bé)',
+      'The one member chosen (who may read the baby’s care)',
+    ),
+    priority: 'transactional',
+    templates: ['ai.handover_sent'],
+    destination: 'CARE_HANDOVER',
+    setting: 'handovers',
+    quietHours: 'held',
+    dedup: both(
+      'Một thông báo mỗi bản bàn giao cho mỗi người nhận',
+      'One notice per handover per recipient',
+    ),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
   test: {
     kind: 'test',
     group: 'other',
@@ -1081,6 +1118,7 @@ export const notificationTemplateIds = [
   'family.invite_declined',
   'family.role_changed',
   'family.member_removed',
+  'ai.handover_sent',
 ] as const;
 export type NotificationTemplateId = (typeof notificationTemplateIds)[number];
 
@@ -1664,6 +1702,24 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
         body: 'You no longer have access to a child’s profile in that family.',
       },
     },
+  ),
+  // D-093: no child data — who sent it, and that it is waiting.
+  'ai.handover_sent': tpl(
+    'ai.handover_sent',
+    'handoverSent',
+    ['Bàn giao được gửi', 'Handover sent'],
+    ['actor_name'],
+    {
+      vi: {
+        title: 'Bàn giao cho bạn',
+        body: '{{actor_name}} vừa gửi bàn giao cho bạn. Mở để xem.',
+      },
+      en: {
+        title: 'A handover for you',
+        body: '{{actor_name}} sent you a handover. Open to read it.',
+      },
+    },
+    { actor_name: 'Mẹ' },
   ),
 };
 

@@ -193,7 +193,7 @@ class _Section extends StatelessWidget {
   );
 }
 
-/// The design's white group card: radius 16, no shadow, no dividers.
+/// The white group card: radius 16, the card shadow (like every page card), no dividers.
 class _Group extends StatelessWidget {
   const _Group({required this.children});
   final List<Widget> children;
@@ -202,6 +202,7 @@ class _Group extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       color: context.cl.colors.surface,
+      boxShadow: context.cl.shadows.card,
       borderRadius: BorderRadius.circular(16),
     ),
     clipBehavior: Clip.antiAlias,

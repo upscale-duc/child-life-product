@@ -134,6 +134,54 @@ class AiRepository {
     'problem': problem.wire,
   });
 
+  /// D-093 "Gửi cho Jun": sends [summaryId] to [recipientUid] in the app (a push and an inbox
+  /// row with no child data). Idempotent per summary and recipient.
+  Future<HandoverSendResult> sendHandover({
+    required String babyId,
+    required String summaryId,
+    required String recipientUid,
+  }) async {
+    final data = await _call('sendHandover', {
+      'babyId': babyId,
+      'summaryId': summaryId,
+      'recipientUid': recipientUid,
+    });
+    return (
+      sendId: data['sendId'] as String? ?? '',
+      sentAt: DateTime.tryParse('${data['sentAt']}') ?? DateTime.now(),
+      pushable: data['pushable'] == true,
+    );
+  }
+
+  /// D-093: the recipient opened (`seen`) or acknowledged (`received`) a sent handover.
+  Future<void> markHandover({
+    required String babyId,
+    required String sendId,
+    required bool received,
+  }) => _call('markHandover', {
+    'babyId': babyId,
+    'sendId': sendId,
+    'action': received ? 'received' : 'seen',
+  });
+
+  /// The handovers I sent ([sent]) or was sent, newest first (Rules: sender and recipient only).
+  Stream<List<HandoverSend>> watchHandoverSends(
+    String babyId,
+    String uid, {
+    required bool sent,
+  }) => _db
+      .collection('babies/$babyId/handoverSends')
+      .where(sent ? 'senderUid' : 'recipientUid', isEqualTo: uid)
+      .snapshots()
+      .map(
+        (q) => [
+          for (final d in q.docs)
+            HandoverSend.fromJson(
+              Map<String, dynamic>.from(_plain(d.data())! as Map),
+            ),
+        ]..sort((a, b) => b.sentAt.compareTo(a.sentAt)),
+      );
+
   static String _listKey(String babyId) => 'ai.handovers.$babyId';
 
   /// The handovers this phone last read for [babyId] (offline: "the last stored version").
@@ -234,6 +282,24 @@ final handoversProvider = FutureProvider.autoDispose
     .family<List<SummaryAnswer>, String>(
       (ref, babyId) => ref.watch(aiRepositoryProvider).handovers(babyId),
       retry: (_, _) => null,
+    );
+
+typedef HandoverSendKey = ({String babyId, String uid});
+
+/// D-093: handovers this person sent (the button's "Đã gửi cho Jun · Jun đã xem").
+final sentHandoversProvider = StreamProvider.autoDispose
+    .family<List<HandoverSend>, HandoverSendKey>(
+      (ref, k) => ref
+          .watch(aiRepositoryProvider)
+          .watchHandoverSends(k.babyId, k.uid, sent: true),
+    );
+
+/// D-093: handovers sent to this person (the "Mới" dot, "Tôi đã nhận bàn giao").
+final receivedHandoversProvider = StreamProvider.autoDispose
+    .family<List<HandoverSend>, HandoverSendKey>(
+      (ref, k) => ref
+          .watch(aiRepositoryProvider)
+          .watchHandoverSends(k.babyId, k.uid, sent: false),
     );
 
 /// The baby's current data version; null when unknown (never "stale" then).

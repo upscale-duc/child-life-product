@@ -21885,7 +21885,7 @@ abstract class AppLocalizations {
   /// EN09 top pill: shares the logged figures as plain text.
   ///
   /// In vi, this message translates to:
-  /// **'Gửi cho…'**
+  /// **'Chia sẻ'**
   String get rhWeekShare;
 
   /// EN09 free section heading.
@@ -31512,17 +31512,17 @@ abstract class AppLocalizations {
   /// **'Đã bỏ lưu.'**
   String get pv2ToastUnsaved;
 
-  /// Home row after today's check-in; what is the observation label.
+  /// Home row after today's check-in; who is "Bạn", "Bạn và Mẹ".
   ///
   /// In vi, this message translates to:
-  /// **'Hôm nay: {what}'**
-  String hnCheckInDone(String what);
+  /// **'{who} đã ghi hôm nay'**
+  String hnCheckInDone(String who);
 
-  /// Subtitle of the check-in row once answered.
+  /// Second line: what was noted (lower case).
   ///
   /// In vi, this message translates to:
-  /// **'{who} đã ghi · Chạm để sửa hoặc thêm'**
-  String hnCheckInDoneSub(String who);
+  /// **'Bé {what} · Chạm để sửa'**
+  String hnCheckInDoneSub(String what);
 
   /// Age under 13 weeks with the extra days (owner 2026-10-22: "5 tuần 3 ngày").
   ///
@@ -31631,6 +31631,222 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đang thức · {duration}'**
   String careAwakeNow(String duration);
+
+  /// Reference window bar: days left in the window.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {n} ngày'**
+  String rhStageDaysLeft(int n);
+
+  /// Reference window bar on its last day.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày cuối'**
+  String get rhStageLastDay;
+
+  /// One-line reminder under the reference calendar card.
+  ///
+  /// In vi, this message translates to:
+  /// **'chỉ để tham khảo, mỗi bé một khác'**
+  String get rhCalendarDisclaimerShort;
+
+  /// A day of the 7-day strip nobody noted.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa ghi'**
+  String get rhDayNotNoted;
+
+  /// Short label for today in the 7-day strip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nay'**
+  String get rhTodayShort;
+
+  /// Key of the 7-day strip: a day with a change.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có điều khác'**
+  String get rhLegendChanged;
+
+  /// Not enough sleep data: the days the bars count.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi đủ giấc ngủ {have}/{need} ngày · ghi thêm để so sánh'**
+  String rhSleepSparseShort(int have, int need);
+
+  /// Week summary chip: a change and how many days it was noted.
+  ///
+  /// In vi, this message translates to:
+  /// **'{what} ×{days}'**
+  String rhWeekObsChip(String what, int days);
+
+  /// Week block: the age card's first sentence.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ở tuổi này'**
+  String get pv2AgeNow;
+
+  /// Week block: subtitle of the next activity row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý tiếp theo'**
+  String get pv2NextIdea;
+
+  /// Week block row and sheet: the age card's warning signs.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nào cần đưa bé đi khám'**
+  String get pv2WatchFor;
+
+  /// Week block: how many warning signs.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} dấu hiệu cần lưu ý'**
+  String pv2WatchForCount(int count);
+
+  /// Week block stat label.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã thử'**
+  String get pv2WeekTriedShort;
+
+  /// Week block stat label.
+  ///
+  /// In vi, this message translates to:
+  /// **'thấy có ích'**
+  String get pv2WeekHelpfulShort;
+
+  /// Notification setting: a family member sent you a handover (D-093).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao'**
+  String get ntHandovers;
+
+  /// Hint of the handovers notification switch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi có người gửi bàn giao cho bạn'**
+  String get ntHandoversHint;
+
+  /// Handover: main button / sheet title when several members could receive it.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi bàn giao'**
+  String get aiSendToFamily;
+
+  /// Handover: main button after it was sent to one member.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho người khác'**
+  String get aiSendToOther;
+
+  /// Handover: the system share sheet (Zalo, Messenger…).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ qua ứng dụng khác…'**
+  String get aiShareOther;
+
+  /// Toast action: open the system share sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ'**
+  String get aiShareShort;
+
+  /// Handover: a send's first line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi cho {name} · {time}'**
+  String aiSentTo(String name, String time);
+
+  /// Handover send state: not opened.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở'**
+  String get aiSendNotSeen;
+
+  /// Handover send state: opened.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã xem · {time}'**
+  String aiSendSeen(String name, String time);
+
+  /// Handover send state: acknowledged.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã nhận bàn giao · {time}'**
+  String aiSendReceived(String name, String time);
+
+  /// Toast after sending a handover.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi cho {name}. {name} sẽ nhận được thông báo.'**
+  String aiSentToast(String name);
+
+  /// Toast when the recipient cannot get a push.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi cho {name} trong app, nhưng {name} chưa bật thông báo. Gửi thêm qua Zalo?'**
+  String aiSentNoPush(String name);
+
+  /// Toast when sending a handover failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được. Kiểm tra mạng rồi thử lại.'**
+  String get aiSendFailed;
+
+  /// Recipient banner on the handover.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} gửi bàn giao cho bạn · {time}'**
+  String aiSentToYou(String name, String time);
+
+  /// Recipient banner after acknowledging.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã nhận bàn giao lúc {time}'**
+  String aiYouReceived(String time);
+
+  /// Home handover row while a sent handover is unopened.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} gửi bàn giao cho bạn'**
+  String aiSentToYouShort(String name);
+
+  /// Badge on the Home handover row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới'**
+  String get aiNewBadge;
+
+  /// Story editor: heading over the add buttons.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào câu chuyện'**
+  String get sryAddTitle;
+
+  /// Story editor add button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đoạn văn'**
+  String get sryKindParagraph;
+
+  /// Story editor add button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get sryKindPhotos;
+
+  /// Story editor add button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc'**
+  String get sryKindMilestone;
+
+  /// Story editor add button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trích dẫn'**
+  String get sryKindQuote;
 }
 
 class _AppLocalizationsDelegate

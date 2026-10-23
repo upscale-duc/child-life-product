@@ -176,6 +176,40 @@ export const reportSummaryRequestSchema = z.object({
   problem: z.enum(['wrong_fact', 'wrong_person', 'unsafe_advice', 'language', 'other']),
 });
 
+/**
+ * D-093 "Gửi cho Jun": send one stored handover to one family member, in the app (a push and an
+ * inbox row with no child data). Idempotent per summary and recipient.
+ */
+export const sendHandoverRequestSchema = z
+  .object({
+    babyId: z.string().min(1).max(128),
+    summaryId: z.string().regex(/^su_[a-f0-9]{32}$/),
+    recipientUid: z.string().min(1).max(128),
+  })
+  .strict();
+
+/** The recipient opened the handover (`seen`) or tapped "Tôi đã nhận bàn giao" (`received`). */
+export const markHandoverRequestSchema = z
+  .object({
+    babyId: z.string().min(1).max(128),
+    sendId: z.string().regex(/^hs_[a-f0-9]{32}$/),
+    action: z.enum(['seen', 'received']),
+  })
+  .strict();
+
+/** `babies/{b}/handoverSends/{id}`: read by its sender and its recipient only. */
+export interface HandoverSend {
+  id: string;
+  babyId: string;
+  summaryId: string;
+  senderUid: string;
+  recipientUid: string;
+  /** ISO instants. */
+  sentAt: string;
+  seenAt: string | null;
+  receivedAt: string | null;
+}
+
 export interface SummaryAnswer {
   id: string;
   kind: AiSummaryKind;

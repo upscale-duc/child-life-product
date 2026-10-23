@@ -134,15 +134,21 @@ class TodayScreen extends ConsumerWidget {
               onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
             ),
           ],
-          if (pendingCount > 0) ...[
-            const SizedBox(height: ClSpace.s3),
-            _SyncBanner(
-              label: online
-                  ? l10n.syncingBanner(pendingCount)
-                  : l10n.offlineBanner(pendingCount),
-              onTap: () => showPendingSheet(context),
+          // Owner, 2026-10-22: a save that syncs in a moment no longer flashes this banner in
+          // and out (the whole screen jumped); online it shows only if sending takes a while.
+          _AfterDelay(
+            show: pendingCount > 0,
+            immediately: !online,
+            child: Padding(
+              padding: const EdgeInsets.only(top: ClSpace.s3),
+              child: _SyncBanner(
+                label: online
+                    ? l10n.syncingBanner(pendingCount)
+                    : l10n.offlineBanner(pendingCount),
+                onTap: () => showPendingSheet(context),
+              ),
             ),
-          ],
+          ),
           const SizedBox(height: ClSpace.s4),
           Text(
             toBeginningOfSentenceCase(
@@ -326,6 +332,64 @@ class _CustomizePill extends StatelessWidget {
 }
 
 /// 9a banner: sunshine-soft, cloud-off, chevron → 9b.
+/// Shows [child] once [show] has stayed true for [delay] (or at once when [immediately]);
+/// hides it as soon as [show] turns false.
+class _AfterDelay extends StatefulWidget {
+  const _AfterDelay({
+    required this.show,
+    required this.immediately,
+    required this.child,
+  });
+  final bool show;
+  final bool immediately;
+  final Widget child;
+  static const delay = Duration(seconds: 5);
+
+  @override
+  State<_AfterDelay> createState() => _AfterDelayState();
+}
+
+class _AfterDelayState extends State<_AfterDelay> {
+  Timer? _timer;
+  bool _due = false;
+
+  void _sync() {
+    if (!widget.show) {
+      _timer?.cancel();
+      _timer = null;
+      _due = false;
+    } else if (!_due && _timer == null) {
+      _timer = Timer(_AfterDelay.delay, () {
+        if (mounted) setState(() => _due = true);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(_AfterDelay old) {
+    super.didUpdateWidget(old);
+    _sync();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      widget.show && (widget.immediately || _due)
+      ? widget.child
+      : const SizedBox.shrink();
+}
+
 class _SyncBanner extends StatelessWidget {
   const _SyncBanner({required this.label, required this.onTap});
   final String label;

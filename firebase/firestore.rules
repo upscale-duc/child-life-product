@@ -164,7 +164,7 @@ service cloud.firestore {
     function validNotificationSettings(d) {
       let keys = ['memories', 'messages', 'reminders', 'storage', 'vaccines', 'spending', 'rhythm',
         'stages', 'milestones', 'articles', 'weeklySummary', 'photoSuggestions', 'keepsakePrompts',
-        'familyActivity', 'familyMembers', 'babyName'];
+        'familyActivity', 'familyMembers', 'handovers', 'babyName'];
       return d.keys().hasOnly(keys.concat(['updatedAt'])) && d.updatedAt == request.time &&
         (!('memories' in d) || d.memories is bool) && (!('messages' in d) || d.messages is bool) &&
         (!('reminders' in d) || d.reminders is bool) && (!('storage' in d) || d.storage is bool) &&
@@ -176,6 +176,7 @@ service cloud.firestore {
         (!('keepsakePrompts' in d) || d.keepsakePrompts is bool) &&
         (!('familyActivity' in d) || d.familyActivity is bool) &&
         (!('familyMembers' in d) || d.familyMembers is bool) &&
+        (!('handovers' in d) || d.handovers is bool) &&
         (!('babyName' in d) || d.babyName is bool);
     }
 
@@ -549,6 +550,15 @@ service cloud.firestore {
       match /summaries/{summaryId} {
         allow read: if canReadCare(babyId) &&
           (resource.data.kind != 'moment' || isParent(babyId));
+        allow write: if false;
+      }
+
+      // D-093 "Gửi cho Jun": a sent handover is read by its sender and its recipient only (sent,
+      // seen, received); written by `sendHandover` / `markHandover`.
+      match /handoverSends/{sendId} {
+        allow read: if canReadCare(babyId) &&
+          (resource.data.senderUid == request.auth.uid ||
+            resource.data.recipientUid == request.auth.uid);
         allow write: if false;
       }
 

@@ -192,29 +192,45 @@ final _thumbs = <String, Future<Uint8List?>>{};
 
 Future<Uint8List?> _loadThumb(String id) {
   if (_thumbs.length > 300) _thumbs.clear();
-  return _thumbs[id] ??= () async {
-    try {
-      final a = await AssetEntity.fromId(id);
-      // The finished picture, cropped to the square, not iOS's quick blurry first pass
-      // (owner, 2026-10-14: "đừng làm thumbnail mờ").
-      return a?.thumbnailDataWithOption(
-        defaultTargetPlatform == TargetPlatform.iOS
-            ? ThumbnailOption.ios(
-                size: const ThumbnailSize.square(400),
-                quality: 90,
-                deliveryMode: DeliveryMode.highQualityFormat,
-                resizeMode: ResizeMode.exact,
-                resizeContentMode: ResizeContentMode.fill,
-              )
-            : const ThumbnailOption(
-                size: ThumbnailSize.square(400),
-                quality: 90,
-              ),
-      );
-    } on Object {
-      return null;
-    }
-  }();
+  return _thumbs[id] ??= _fetchThumb(id).then((bytes) {
+    // A miss (an iCloud-only video still downloading, Photos busy) is not remembered: the next
+    // build asks again instead of keeping a blank tile for the whole run.
+    if (bytes == null) _thumbs.remove(id);
+    return bytes;
+  });
+}
+
+Future<Uint8List?> _fetchThumb(String id) async {
+  final AssetEntity? a;
+  try {
+    a = await AssetEntity.fromId(id);
+  } on Object {
+    return null;
+  }
+  if (a == null) return null;
+  final exact = await _thumbOf(a, DeliveryMode.highQualityFormat);
+  // The exact square can fail for some videos; the quick frame beats an empty tile.
+  return exact ?? _thumbOf(a, DeliveryMode.opportunistic);
+}
+
+Future<Uint8List?> _thumbOf(AssetEntity a, DeliveryMode mode) async {
+  try {
+    // The finished picture, cropped to the square, not iOS's quick blurry first pass
+    // (owner, 2026-10-14: "đừng làm thumbnail mờ").
+    return await a.thumbnailDataWithOption(
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? ThumbnailOption.ios(
+              size: const ThumbnailSize.square(400),
+              quality: 90,
+              deliveryMode: mode,
+              resizeMode: ResizeMode.exact,
+              resizeContentMode: ResizeContentMode.fill,
+            )
+          : const ThumbnailOption(size: ThumbnailSize.square(400), quality: 90),
+    );
+  } on Object {
+    return null;
+  }
 }
 
 /// "Beta miễn phí" (D-066): travels with the feature name.
@@ -301,17 +317,20 @@ class LibraryTile extends ConsumerWidget {
               child: Row(
                 children: [
                   const PlayGlyph(size: 9),
-                  const SizedBox(width: 3),
-                  Text(
-                    _duration(durationMs),
-                    style: cl.text.caption.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      shadows: const [
-                        Shadow(blurRadius: 3, color: Colors.black54),
-                      ],
+                  // An unknown length shows the play mark alone, never "0:00".
+                  if (durationMs > 0) ...[
+                    const SizedBox(width: 3),
+                    Text(
+                      _duration(durationMs),
+                      style: cl.text.caption.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        shadows: const [
+                          Shadow(blurRadius: 3, color: Colors.black54),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -464,6 +483,7 @@ class AutoSaveEntryCard extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(ClSpace.s3, 10, ClSpace.s2, 10),
           decoration: BoxDecoration(
             color: cl.colors.surface,
+            boxShadow: cl.shadows.card,
             borderRadius: BorderRadius.circular(ClRadius.card - 6),
           ),
           child: Row(

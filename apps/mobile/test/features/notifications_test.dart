@@ -496,7 +496,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 19);
+      expect(notificationDestinations.length, 20);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {

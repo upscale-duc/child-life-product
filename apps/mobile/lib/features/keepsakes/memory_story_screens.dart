@@ -1159,6 +1159,7 @@ class _SceneStripState extends State<_SceneStrip> {
       padding: const EdgeInsets.fromLTRB(ClSpace.s3, ClSpace.s3, 0, ClSpace.s3),
       decoration: BoxDecoration(
         color: cl.colors.surface,
+        boxShadow: cl.shadows.card,
         borderRadius: BorderRadius.circular(ClRadius.card - 8),
       ),
       child: Column(

@@ -99,7 +99,10 @@ List<RouteBase> rhythmRoutes() => [
     (_, s) => AgeCardScreen(cardId: s.pathParameters['id'] ?? ''),
   ),
   _page(Routes.rhythmWeek, modal: true, (_, _) => const WeekSummaryScreen()),
-  _page(Routes.rhythmHandover, (_, _) => const HandoverScreen()),
+  _page(
+    Routes.rhythmHandover,
+    (_, s) => HandoverScreen(summaryId: s.uri.queryParameters['summary']),
+  ),
   _page(Routes.rhythmAiConsent, (_, _) => const AiConsentScreen()),
   _page(
     Routes.rhythmMilestone,

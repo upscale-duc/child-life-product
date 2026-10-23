@@ -1,0 +1,150 @@
+import { randomUUID } from 'node:crypto';
+import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
+import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { AiSummaryError } from '../functions/src/ai-summary.js';
+import { handoverSendId, markHandover, sendHandover } from '../functions/src/handover-send.js';
+import { deliverNotice, type PushSender } from '../functions/src/social.js';
+
+// D-093 "Gửi cho Jun": a handover sent to one member, through the family notice pipeline.
+const projectId = 'demo-child-life';
+const now = new Date('2026-10-08T03:00:00Z');
+const babyId = 'b_teddy';
+const summaryId = `su_${'a'.repeat(32)}`;
+let app: App;
+let db: Firestore;
+
+const pushed: { tokens: string[]; title: string; body: string; data: Record<string, string> }[] =
+  [];
+const sender: PushSender = {
+  async send(tokens, message) {
+    pushed.push({ tokens, title: message.title, body: message.body, data: message.data });
+    return [];
+  },
+};
+
+async function reasonOf(promise: Promise<unknown>): Promise<string> {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AiSummaryError) return error.reason;
+    throw error;
+  }
+  throw new Error('expected an AiSummaryError');
+}
+
+beforeAll(() => {
+  app = initializeApp({ projectId }, `handover-${randomUUID()}`);
+  db = getFirestore(app);
+});
+
+afterAll(async () => {
+  await deleteApp(app);
+});
+
+beforeEach(async () => {
+  const host = process.env.FIRESTORE_EMULATOR_HOST;
+  if (!host) throw new Error('Run with the Firestore emulator');
+  await fetch(`http://${host}/emulator/v1/projects/${projectId}/databases/(default)/documents`, {
+    method: 'DELETE',
+  });
+  pushed.length = 0;
+  await db.doc(`babies/${babyId}`).set({ nickname: 'Teddy', timeZone: { zone: 'Asia/Ho_Chi_Minh' } });
+  const member = (uid: string, role: string, extra: Record<string, unknown> = {}) =>
+    db.doc(`babies/${babyId}/members/${uid}`).set({
+      uid,
+      babyId,
+      role,
+      status: 'active',
+      displayName: uid === 'mom' ? 'Duckie' : uid,
+      ...extra,
+    });
+  await member('mom', 'coParent');
+  await member('jun', 'caregiver');
+  await member('grandma', 'relative');
+  await db.doc(`babies/${babyId}/summaries/${summaryId}`).set({
+    id: summaryId,
+    kind: 'handover',
+    status: 'ready',
+  });
+  await db.doc('users/jun/devices/d_jun').set({ token: 't-jun', language: 'vi' });
+});
+
+describe('sendHandover (D-093)', () => {
+  it('records the send, pushes who sent it (no child data) and opens that handover', async () => {
+    const result = await sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now);
+    expect(result).toEqual({
+      sendId: handoverSendId(summaryId, 'jun'),
+      sentAt: now.toISOString(),
+      pushable: true,
+    });
+    const send = await db.doc(`babies/${babyId}/handoverSends/${result.sendId}`).get();
+    expect(send.data()).toMatchObject({ senderUid: 'mom', recipientUid: 'jun', seenAt: null });
+    await deliverNotice(db, sender, babyId, `handover_${result.sendId}`, now);
+    expect(pushed).toHaveLength(1);
+    expect(pushed[0]).toMatchObject({
+      tokens: ['t-jun'],
+      title: 'Bàn giao cho bạn',
+      body: 'Duckie vừa gửi bàn giao cho bạn. Mở để xem.',
+    });
+    expect(pushed[0]!.data).toMatchObject({
+      kind: 'handoverSent',
+      destination: 'CARE_HANDOVER',
+      summaryId,
+    });
+    expect(JSON.stringify(pushed)).not.toContain('Teddy');
+  });
+
+  it('a second tap returns the first send and pushes nothing more', async () => {
+    const first = await sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now);
+    const again = await sendHandover(
+      db,
+      'mom',
+      { babyId, summaryId, recipientUid: 'jun' },
+      new Date(now.getTime() + 60_000),
+    );
+    expect(again.sentAt).toBe(first.sentAt);
+    expect((await db.collection(`babies/${babyId}/notifications`).get()).size).toBe(1);
+  });
+
+  it('works both ways; never to oneself, nor to someone who cannot read care', async () => {
+    expect(
+      (await sendHandover(db, 'jun', { babyId, summaryId, recipientUid: 'mom' }, now)).pushable,
+    ).toBe(false);
+    expect(await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'mom' }, now))).toBe(
+      'self',
+    );
+    expect(
+      await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'grandma' }, now)),
+    ).toBe('recipient-cannot-read');
+    expect(
+      await reasonOf(sendHandover(db, 'grandma', { babyId, summaryId, recipientUid: 'jun' }, now)),
+    ).toBe('ROLE_DENIED');
+  });
+
+  it('says when the push cannot reach them (switch off or no device)', async () => {
+    await db.doc('users/jun/settings/notifications').set({ handovers: false });
+    expect(
+      (await sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now)).pushable,
+    ).toBe(false);
+  });
+
+  it('the recipient marks it seen, then received; nobody else can', async () => {
+    const { sendId } = await sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now);
+    expect(await reasonOf(markHandover(db, 'mom', { babyId, sendId, action: 'seen' }, now))).toBe(
+      'send-not-found',
+    );
+    const seen = await markHandover(db, 'jun', { babyId, sendId, action: 'seen' }, now);
+    expect(seen).toEqual({ seenAt: now.toISOString(), receivedAt: null });
+    const later = new Date(now.getTime() + 5 * 60_000);
+    const received = await markHandover(db, 'jun', { babyId, sendId, action: 'received' }, later);
+    expect(received).toEqual({ seenAt: now.toISOString(), receivedAt: later.toISOString() });
+  });
+
+  it('only a ready handover can be sent', async () => {
+    await db.doc(`babies/${babyId}/summaries/${summaryId}`).update({ status: 'pending' });
+    expect(
+      await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now)),
+    ).toBe('summary-not-found');
+  });
+});

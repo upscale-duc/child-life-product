@@ -389,6 +389,10 @@ import {
   reportSummary as runReportSummary,
   setAiConsent as runSetAiConsent,
 } from './ai-summary.js';
+import {
+  markHandover as runMarkHandover,
+  sendHandover as runSendHandover,
+} from './handover-send.js';
 import { sweepAiReservations } from './quota-sweeper.js';
 // ---- Child Life Assistant, slice A2 server core (docs/assistant/) ----
 import {
@@ -1675,6 +1679,16 @@ export const listSummaries = aiCall('listSummaries', (r) =>
 /** "Chưa đúng? Báo lại": a closed problem code for staff, no child text. */
 export const reportSummary = aiCall('reportSummary', (r) =>
   runReportSummary(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+
+/** D-093 "Gửi cho Jun": one handover to one member, as a push and an inbox row. */
+export const sendHandover = aiCall('sendHandover', (r) =>
+  runSendHandover(getFirestore(), requireAccount(r), r.data, new Date()),
+);
+
+/** D-093: the recipient opened (`seen`) or acknowledged (`received`) a sent handover. */
+export const markHandover = aiCall('markHandover', (r) =>
+  runMarkHandover(getFirestore(), requireAccount(r), r.data, new Date()),
 );
 
 // ---------- Nhập chi tiêu (D-060, P-144) ----------

@@ -241,6 +241,7 @@ class SdNutritionRow extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: cl.colors.surface,
+            boxShadow: cl.shadows.card,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(

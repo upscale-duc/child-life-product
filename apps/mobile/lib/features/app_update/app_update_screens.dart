@@ -196,6 +196,7 @@ class UpdateRequiredScreen extends ConsumerWidget {
                             ),
                             decoration: BoxDecoration(
                               color: cl.colors.surface,
+                              boxShadow: cl.shadows.card,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Column(
@@ -992,6 +993,7 @@ class _WhatsNewPage extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: cl.colors.surface,
+                      boxShadow: cl.shadows.card,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Row(

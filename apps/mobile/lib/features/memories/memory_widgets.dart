@@ -238,6 +238,23 @@ class MediaTile extends StatelessWidget {
                   ),
                 ),
               ),
+            // A large video tile (the journal's) shows that it plays.
+            if (item.isVideo && box.maxWidth >= 160 && box.maxHeight >= 120)
+              Center(
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.45),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.play_arrow_rounded,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             if (item.isVideo)
               Positioned(
                 left: 6,
@@ -508,6 +525,10 @@ class _AuthorChip extends StatelessWidget {
   }
 }
 
+/// The journal entry's pictures, laid out by how many there are (owner, 2026-10-23: "1 hình
+/// rất là không tốt"): one at its own shape (4:5 to 16:9), two side by side, three as one large
+/// and two stacked, four as a 2×2 grid, five or more as two over three with "+N" on the last.
+/// Videos mix in as tiles; a large one carries a play button.
 class _EntryMedia extends StatelessWidget {
   const _EntryMedia({
     required this.items,
@@ -518,79 +539,120 @@ class _EntryMedia extends StatelessWidget {
   final List<MediaItem> items;
   final void Function(MediaItem item) onOpen;
 
-  static const _gap = 6.0;
+  static const _gap = 4.0;
+  static const _radius = 12.0;
 
-  Widget _tile(MediaItem i, {double radius = 12}) => MediaTile(
-    item: i,
-    favorite: favorites.contains(i.id),
-    radius: radius,
-    onTap: () => onOpen(i),
+  /// Width / height of [i], kept between portrait 4:5 and landscape 16:9.
+  static double _shape(MediaItem i) {
+    final w = i.width, h = i.height;
+    if (w == null || h == null || w <= 0 || h <= 0) return 4 / 3;
+    return (w / h).clamp(0.8, 16 / 9);
+  }
+
+  Widget _tile(MediaItem i, {int more = 0}) => Stack(
+    fit: StackFit.expand,
+    children: [
+      MediaTile(
+        item: i,
+        favorite: favorites.contains(i.id),
+        radius: _radius,
+        onTap: () => onOpen(i),
+      ),
+      if (more > 0)
+        IgnorePointer(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(_radius),
+            child: ColoredBox(
+              color: const Color(0x8C0F262B),
+              child: Builder(
+                builder: (context) => Center(
+                  child: Text(
+                    '+$more',
+                    style: context.cl.text.title2.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+    ],
+  );
+
+  Widget _row(List<MediaItem> row, double height, {int more = 0}) => SizedBox(
+    height: height,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (n, i) in row.indexed) ...[
+          if (n > 0) const SizedBox(width: _gap),
+          Expanded(child: _tile(i, more: n == row.length - 1 ? more : 0)),
+        ],
+      ],
+    ),
   );
 
   @override
-  Widget build(BuildContext context) {
-    if (items.length == 1) {
-      return SizedBox(
-        height: 128,
-        width: double.infinity,
-        child: _tile(items.single),
-      );
-    }
-    if (items.length == 2) {
-      return SizedBox(
-        height: 96,
-        child: Row(
-          children: [
-            for (final (n, i) in items.indexed) ...[
-              if (n > 0) const SizedBox(width: _gap),
-              Expanded(child: _tile(i)),
-            ],
-          ],
-        ),
-      );
-    }
-    // Three or more: one row of four squares, "+N" on the last when there are more.
-    final shown = items.take(4).toList();
-    final extra = items.length - shown.length;
-    return Row(
-      children: [
-        for (var n = 0; n < 4; n++) ...[
-          if (n > 0) const SizedBox(width: _gap),
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: n >= shown.length
-                  ? const SizedBox.shrink()
-                  : Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        _tile(shown[n]),
-                        if (extra > 0 && n == 3)
-                          IgnorePointer(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: ColoredBox(
-                                color: const Color(0x8C0F262B),
-                                child: Center(
-                                  child: Text(
-                                    '+$extra',
-                                    style: context.cl.text.headline.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      final w = box.maxWidth;
+      switch (items.length) {
+        case 1:
+          return SizedBox(
+            height: w / _shape(items.single),
+            child: _tile(items.single),
+          );
+        case 2:
+          // Two landscapes sit square, anything else a little tall.
+          final wide = items.every((i) => _shape(i) > 1.1);
+          final cell = (w - _gap) / 2;
+          return _row(items, wide ? cell : cell * 5 / 4);
+        case 3:
+          final height = w * 2 / 3;
+          return SizedBox(
+            height: height,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(flex: 2, child: _tile(items[0])),
+                const SizedBox(width: _gap),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: _tile(items[1])),
+                      const SizedBox(height: _gap),
+                      Expanded(child: _tile(items[2])),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ],
-    );
-  }
+          );
+        case 4:
+          final cell = (w - _gap) / 2;
+          return Column(
+            children: [
+              _row(items.sublist(0, 2), cell),
+              const SizedBox(height: _gap),
+              _row(items.sublist(2, 4), cell),
+            ],
+          );
+        default:
+          final top = (w - _gap) / 2;
+          final bottom = (w - 2 * _gap) / 3;
+          return Column(
+            children: [
+              _row(items.sublist(0, 2), top),
+              const SizedBox(height: _gap),
+              _row(items.sublist(2, 5), bottom, more: items.length - 5),
+            ],
+          );
+      }
+    },
+  );
 }
 
 /// UploadPill (132:898): Uploading · Paused · Failed · Done (+ Wi-Fi and quota waits).

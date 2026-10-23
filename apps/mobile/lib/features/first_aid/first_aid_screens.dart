@@ -205,6 +205,7 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
                     height: 48,
                     decoration: BoxDecoration(
                       color: cl.colors.surface,
+                      boxShadow: cl.shadows.card,
                       borderRadius: BorderRadius.circular(ClRadius.pill),
                     ),
                     alignment: Alignment.center,

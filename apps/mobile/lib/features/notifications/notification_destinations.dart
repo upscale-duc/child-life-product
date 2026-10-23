@@ -188,6 +188,16 @@ const _registry = <NotificationDestination>[
     permission: DestinationPermission.member,
     fallback: 'INBOX',
   ),
+  // D-093: the handover a family member sent (that summary, else the latest).
+  NotificationDestination(
+    id: 'CARE_HANDOVER',
+    params: [
+      _babyId,
+      DestinationParam('summaryId', r'^su_[a-f0-9]{32}$', required: false),
+    ],
+    permission: DestinationPermission.careRead,
+    fallback: 'INBOX',
+  ),
   NotificationDestination(
     id: 'LUMI_INSIGHT',
     params: [_babyId, _engagementId],
@@ -275,6 +285,8 @@ const notificationKindGroups = <String, InboxGroup>{
   'inviteDeclined': InboxGroup.family,
   'roleChanged': InboxGroup.family,
   'memberRemoved': InboxGroup.family,
+  // D-093.
+  'handoverSent': InboxGroup.care,
   'test': InboxGroup.other,
 };
 
@@ -305,6 +317,7 @@ const notificationKindDestinations = <String, String>{
   'roleChanged': 'FAMILY_MEMBERS',
   // The removed person no longer follows the baby: the row (and its push) opens the inbox.
   'memberRemoved': 'INBOX',
+  'handoverSent': 'CARE_HANDOVER',
   'test': 'INBOX',
 };
 
@@ -767,6 +780,14 @@ Future<_Opened> _tryOpen(
     case 'FAMILY_MESSAGES':
       select();
       open(Routes.messages);
+    case 'CARE_HANDOVER':
+      // D-093: that handover.
+      select();
+      open(
+        params['summaryId'] == null
+            ? Routes.rhythmHandover
+            : '${Routes.rhythmHandover}?summary=${params['summaryId']}',
+      );
     case 'FAMILY_MEMBERS':
       // Gia đình lives in Tiện ích.
       select();

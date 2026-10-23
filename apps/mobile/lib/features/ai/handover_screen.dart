@@ -13,6 +13,7 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -32,6 +33,7 @@ import '../rhythm/rhythm_actions.dart';
 import '../rhythm/rhythm_calc.dart' show isoOf;
 import '../rhythm/rhythm_home.dart' show RhHealthCard;
 import '../rhythm/rhythm_labels.dart';
+import '../rhythm/rhythm_models.dart' show FeedbackKind;
 import '../rhythm/rhythm_repository.dart';
 import '../rhythm/rhythm_widgets.dart';
 import 'ai_models.dart';
@@ -45,7 +47,10 @@ import 'ai_widgets.dart';
 /// Every gate keeps the free template; only PREMIUM_REQUIRED links to the plan. A health sign
 /// today shows the free health route and never AI text. Offline: the last stored version.
 class HandoverScreen extends ConsumerStatefulWidget {
-  const HandoverScreen({super.key});
+  const HandoverScreen({this.summaryId, super.key});
+
+  /// D-093: the handover a family member sent (from its notification); else the latest.
+  final String? summaryId;
 
   @override
   ConsumerState<HandoverScreen> createState() => _HandoverScreenState();
@@ -57,6 +62,10 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
   AiException? _error;
   var _busy = false;
   var _autoAsked = false;
+  var _sending = false;
+
+  /// Sends marked "seen" from this screen (once each).
+  final _seenMarked = <String>{};
 
   Future<void> _generate(Membership me, {bool fresh = false}) async {
     if (_busy) return;
@@ -158,6 +167,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     // unchanged household answers from the cache, free).
     if (canGenerate &&
         online &&
+        widget.summaryId == null &&
         !_autoAsked &&
         !storedAsync.isLoading &&
         (stored == null || stored.language != locale.languageCode)) {
@@ -167,7 +177,12 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       });
     }
 
-    final shown = _answer ?? stored;
+    final picked = widget.summaryId == null
+        ? null
+        : (storedAsync.value ?? const <SummaryAnswer>[])
+              .where((a) => a.id == widget.summaryId)
+              .firstOrNull;
+    final shown = _answer ?? picked ?? stored;
     final health = healthToday != null || (shown?.health ?? false);
     final content = <Widget>[title];
 
@@ -179,8 +194,10 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           const SizedBox(height: ClSpace.s3),
         ]);
       }
-      if (_busy || (canGenerate && online && _error == null)) {
-        content.add(const _Loading());
+      if (_busy ||
+          storedAsync.isLoading ||
+          (canGenerate && online && _error == null)) {
+        content.add(const _Skeleton());
       } else if (!online) {
         content.add(
           AiStateCard(
@@ -250,6 +267,50 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         ),
       const SizedBox(height: ClSpace.s4),
     ]);
+
+    // D-093: sent to me — a banner with who sent it and "Tôi đã nhận bàn giao"; opening it marks
+    // it seen for the sender.
+    final toMe = [
+      for (final s
+          in ref
+                  .watch(
+                    receivedHandoversProvider((babyId: me.babyId, uid: me.uid)),
+                  )
+                  .value ??
+              const <HandoverSend>[])
+        if (s.summaryId == shown.id) s,
+    ].firstOrNull;
+    if (toMe != null && toMe.seenAt == null && _seenMarked.add(toMe.id)) {
+      unawaited(
+        ref
+            .read(aiRepositoryProvider)
+            .markHandover(babyId: me.babyId, sendId: toMe.id, received: false)
+            .catchError((Object _) {}),
+      );
+    }
+    if (toMe != null) {
+      final from = capitalized(who(toMe.senderUid));
+      final at = DateFormat('HH:mm').format(inBabyZone(zone, toMe.sentAt));
+      content.addAll([
+        _ReceivedBanner(
+          title: l10n.aiSentToYou(from, at),
+          receivedAt: toMe.receivedAt == null
+              ? null
+              : DateFormat('HH:mm').format(inBabyZone(zone, toMe.receivedAt!)),
+          onReceived: () => withClProgress(
+            context,
+            () => ref
+                .read(aiRepositoryProvider)
+                .markHandover(
+                  babyId: me.babyId,
+                  sendId: toMe.id,
+                  received: true,
+                ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s4),
+      ]);
+    }
 
     // States above the summary.
     final states = <Widget>[];
@@ -333,32 +394,90 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
             ? AiLabel(l10n.aiWordedByAi)
             : RhNote(l10n.aiTemplateLine, icon: ClIcons.journal),
       );
-      final caregiver = members
-          .where(
-            (m) =>
-                m.uid != me.uid && m.isActive && m.role == MemberRole.caregiver,
-          )
-          .firstOrNull;
+      // D-093 "Gửi cho Jun": everyone else in the family who reads care can be sent it, in
+      // either direction; the caregiver comes first ("Gửi cho Jun").
+      final candidates =
+          members
+              .where(
+                (m) =>
+                    m.uid != me.uid &&
+                    m.isActive &&
+                    familyCan(m, FamilyAction.historyRead),
+              )
+              .toList()
+            ..sort(
+              (a, b) =>
+                  (a.role == MemberRole.caregiver ? 0 : 1) -
+                  (b.role == MemberRole.caregiver ? 0 : 1),
+            );
+      final sends = [
+        for (final s
+            in ref
+                    .watch(
+                      sentHandoversProvider((babyId: me.babyId, uid: me.uid)),
+                    )
+                    .value ??
+                const <HandoverSend>[])
+          if (s.summaryId == shown.id) s,
+      ];
+      final unsent = [
+        for (final m in candidates)
+          if (!sends.any((s) => s.recipientUid == m.uid)) m,
+      ];
+      String name(String uid) => capitalized(
+        memberLabel(
+          l10n,
+          members.where((m) => m.uid == uid).firstOrNull,
+          myUid: '',
+          uid: uid,
+        ),
+      );
+      String hm(DateTime at) =>
+          DateFormat('HH:mm').format(inBabyZone(zone, at));
+      // Owner, 2026-10-22: sending is the screen's main action — a full-width button; the
+      // report stays a quiet link under it.
       content.addAll([
         const SizedBox(height: ClSpace.s4),
-        Wrap(
-          spacing: ClSpace.s2,
-          runSpacing: ClSpace.s2,
-          children: [
-            _OutlinePill(
-              label: l10n.aiReport,
-              onTap: () => _report(context, me, shown),
+        for (final s in sends) ...[
+          _SendStatus(
+            line: l10n.aiSentTo(name(s.recipientUid), hm(s.sentAt)),
+            state: s.receivedAt != null
+                ? l10n.aiSendReceived(name(s.recipientUid), hm(s.receivedAt!))
+                : s.seenAt != null
+                ? l10n.aiSendSeen(name(s.recipientUid), hm(s.seenAt!))
+                : l10n.aiSendNotSeen,
+            done: s.receivedAt != null,
+          ),
+          const SizedBox(height: ClSpace.s2),
+        ],
+        if (unsent.isNotEmpty && shown.id.isNotEmpty)
+          ClButton(
+            key: const Key('handoverSend'),
+            label: unsent.length == 1
+                ? l10n.aiSendTo(memberLabel(l10n, unsent.single, myUid: ''))
+                : sends.isEmpty
+                ? l10n.aiSendToFamily
+                : l10n.aiSendToOther,
+            expand: true,
+            loading: _sending,
+            onPressed: _sending
+                ? null
+                : () => _send(context, me, shown, unsent, range),
+          ),
+        Builder(
+          builder: (box) => Center(
+            child: RhLink(
+              label: candidates.isEmpty ? l10n.aiShare : l10n.aiShareOther,
+              onTap: () => _share(box, shown, range),
             ),
-            if (canGenerate)
-              Builder(
-                builder: (box) => _OutlinePill(
-                  label: caregiver == null
-                      ? l10n.aiShare
-                      : l10n.aiSendTo(memberLabel(l10n, caregiver, myUid: '')),
-                  onTap: () => _share(box, shown, range),
-                ),
-              ),
-          ],
+          ),
+        ),
+        Center(
+          child: RhLink(
+            label: l10n.aiReport,
+            muted: true,
+            onTap: () => _report(context, me, shown),
+          ),
         ),
       ]);
     }
@@ -461,6 +580,80 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     }
   }
 
+  /// D-093: sends [a] to one member (asked first when there are several). When the push cannot
+  /// reach them (no device, switch off) it says so and offers the share sheet.
+  Future<void> _send(
+    BuildContext context,
+    Membership me,
+    SummaryAnswer a,
+    List<Membership> unsent,
+    String range,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    final to = unsent.length == 1
+        ? unsent.single
+        : await showClSheet<Membership>(
+            context: context,
+            builder: (sheet) => Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s3,
+                ClSpace.s4,
+                ClSpace.s6,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClSheetHeader(title: l10n.aiSendToFamily),
+                  ClCardGroup(
+                    color: sheet.cl.colors.surface2,
+                    children: [
+                      for (final m in unsent)
+                        ClListRow(
+                          leading: RhInitial(memberLabel(l10n, m, myUid: '')),
+                          title: capitalized(memberLabel(l10n, m, myUid: '')),
+                          onTap: () => Navigator.of(sheet).pop(m),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+    if (to == null || !mounted) return;
+    setState(() => _sending = true);
+    try {
+      final result = await ref
+          .read(aiRepositoryProvider)
+          .sendHandover(
+            babyId: me.babyId,
+            summaryId: a.id,
+            recipientUid: to.uid,
+          );
+      final name = capitalized(memberLabel(l10n, to, myUid: ''));
+      if (result.pushable) {
+        toaster.show(message: l10n.aiSentToast(name));
+      } else if (context.mounted) {
+        // Not reachable by push: the handover still waits in the app; offer Zalo & co.
+        final box = context.findRenderObject() as RenderBox?;
+        toaster.show(
+          message: l10n.aiSentNoPush(name),
+          actionLabel: l10n.aiShareShort,
+          visibleFor: const Duration(seconds: 8),
+          onAction: () {
+            if (box != null && context.mounted) _share(context, a, range);
+          },
+        );
+      }
+    } on AiException {
+      toaster.show(message: l10n.aiSendFailed, error: true);
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
+  }
+
   /// "Gửi cho …": the OS share sheet with plain text (no photos).
   Future<void> _share(BuildContext box, SummaryAnswer a, String range) async {
     final l10n = AppLocalizations.of(context);
@@ -507,6 +700,60 @@ String sectionTitle(AppLocalizations l10n, SummarySectionKind k) => switch (k) {
   SummarySectionKind.note => l10n.aiSectionNote,
 };
 
+/// The summary as it will look, while it is made (owner, 2026-10-22: skeletons, not a
+/// spinner line): three section cards of grey lines.
+class _Skeleton extends StatelessWidget {
+  const _Skeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Semantics(
+      liveRegion: true,
+      label: AppLocalizations.of(context).aiLoading,
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const ClSkeleton(width: 220, height: 14, radius: 7),
+            const SizedBox(height: ClSpace.s4),
+            for (var i = 0; i < 3; i++) ...[
+              RhCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        ClSkeleton(width: 26, height: 26, radius: 8),
+                        SizedBox(width: ClSpace.s2),
+                        ClSkeleton(width: 140, height: 16, radius: 8),
+                      ],
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    const ClSkeleton(height: 12, radius: 6),
+                    const SizedBox(height: ClSpace.s2),
+                    const ClSkeleton(height: 12, radius: 6),
+                    const SizedBox(height: ClSpace.s2),
+                    const ClSkeleton(width: 180, height: 12, radius: 6),
+                    const SizedBox(height: ClSpace.s3),
+                    ClSkeleton(height: 44, radius: ClRadius.control),
+                  ],
+                ),
+              ),
+              const SizedBox(height: ClSpace.s3),
+            ],
+            Text(
+              AppLocalizations.of(context).aiLoading,
+              textAlign: TextAlign.center,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _Loading extends StatelessWidget {
   const _Loading();
 
@@ -531,42 +778,6 @@ class _Loading extends StatelessWidget {
   }
 }
 
-/// SU01's white outline pill ("Chưa đúng? Báo lại", "Gửi cho Cô Lan").
-class _OutlinePill extends StatelessWidget {
-  const _OutlinePill({required this.label, required this.onTap});
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cl = context.cl;
-    return ClPressable(
-      onPressed: onTap,
-      semanticLabel: label,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
-        padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(ClRadius.pill),
-          border: Border.all(color: cl.colors.controlBorder),
-        ),
-        child: Center(
-          widthFactor: 1,
-          child: Text(
-            label,
-            style: cl.text.label.copyWith(
-              color: cl.colors.ink,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// One of the three parts: a tinted icon tile, the heading, the sentence and the notes behind it.
 class _SectionCard extends ConsumerWidget {
   const _SectionCard({
     required this.me,
@@ -605,6 +816,16 @@ class _SectionCard extends ConsumerWidget {
       ),
     };
     final facts = [for (final id in section.factIds) ?answer.fact(id)];
+    // Owner, 2026-10-22: one line per activity (its answers as tags), not one per answer.
+    final feedback =
+        ref.watch(recFeedbackProvider(me.babyId)).value ?? const [];
+    final groups = <String, List<SummaryFact>>{};
+    for (final f in facts) {
+      final row = f.kind == FactKind.feedback
+          ? feedback.where((x) => x.id == f.id).firstOrNull
+          : null;
+      (groups[row == null ? f.id : 'activity:${row.contentId}'] ??= []).add(f);
+    }
     return RhCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,12 +856,28 @@ class _SectionCard extends ConsumerWidget {
           ),
           const SizedBox(height: ClSpace.s2),
           Text(section.text, style: cl.text.body.copyWith(height: 1.45)),
+          // Owner, 2026-10-22: what each source says ("Nằm sấp có người lớn bên cạnh · Có
+          // ích · 21/10"), one per line, not four identical "Phản hồi của bạn" chips.
           if (facts.isNotEmpty) ...[
             const SizedBox(height: ClSpace.s3),
-            Wrap(
-              spacing: ClSpace.s2,
-              runSpacing: ClSpace.s2,
-              children: [for (final f in facts) RecordChip(me: me, fact: f)],
+            Container(
+              decoration: BoxDecoration(
+                color: cl.colors.surface2,
+                borderRadius: BorderRadius.circular(ClRadius.control),
+              ),
+              child: Column(
+                children: [
+                  for (final (i, g) in groups.values.indexed) ...[
+                    if (i > 0)
+                      Container(
+                        height: 1,
+                        margin: const EdgeInsets.only(left: ClSpace.s3),
+                        color: cl.colors.separator,
+                      ),
+                    RecordChip(me: me, facts: g),
+                  ],
+                ],
+              ),
             ),
           ],
         ],
@@ -649,11 +886,14 @@ class _SectionCard extends ConsumerWidget {
   }
 }
 
-/// A readable link to the note behind a sentence ("Ghi nhận của Ba · 07/10"), never "[F1]".
+/// The notes behind a sentence, one line per activity or check-in: what it is, its answers as
+/// coloured tags ("Có ích", "Mình sẽ thử"), who and when; opens the latest note.
 class RecordChip extends ConsumerWidget {
-  const RecordChip({required this.me, required this.fact, super.key});
+  const RecordChip({required this.me, required this.facts, super.key});
   final Membership me;
-  final SummaryFact fact;
+
+  /// Notes about the same thing (one activity's answers), any order.
+  final List<SummaryFact> facts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -663,68 +903,167 @@ class RecordChip extends ConsumerWidget {
     final members =
         ref.watch(familyMembersProvider(me.babyId)).value ??
         const <Membership>[];
-    final author = members.where((m) => m.uid == fact.authorUid).firstOrNull;
-    final mine = fact.authorUid == me.uid;
-    final date = shortDay(locale, fact.date);
-    final family = memberLabel(l10n, author, myUid: '', uid: fact.authorUid);
-    final label = switch (fact.kind) {
-      FactKind.checkIn =>
-        mine ? l10n.aiChipCheckInMine(date) : l10n.aiChipCheckIn(family, date),
-      FactKind.feedback =>
-        mine
-            ? l10n.aiChipFeedbackMine(date)
-            : l10n.aiChipFeedback(family, date),
-      FactKind.milestone => l10n.aiChipMilestone(date),
-      FactKind.sleep => l10n.aiChipSleep,
-    };
+    final sorted = [...facts]..sort((a, b) => b.date.compareTo(a.date));
+    final latest = sorted.first;
+    String person(String uid) => uid == me.uid
+        ? l10n.careYou
+        : capitalized(
+            memberLabel(
+              l10n,
+              members.where((m) => m.uid == uid).firstOrNull,
+              myUid: '',
+              uid: uid,
+            ),
+          );
+    final dates = {for (final f in sorted) shortDay(locale, f.date)}.toList();
+    final when = dates.length == 1
+        ? dates.single
+        : l10n.rhDateRange(dates.last, dates.first);
+    final who = joinNames(
+      l10n,
+      {for (final f in sorted) person(f.authorUid ?? '')}.toList(),
+    );
+    String? title;
+    final tags = <(String, Color, Color)>[];
+    switch (latest.kind) {
+      case FactKind.checkIn:
+        final c = (ref.watch(checkInsProvider(me.babyId)).value ?? [])
+            .where((x) => x.id == latest.id)
+            .firstOrNull;
+        if (c != null) title = checkInParts(l10n, c).join(' · ');
+      case FactKind.feedback:
+        final rows = ref.watch(recFeedbackProvider(me.babyId)).value ?? [];
+        final kinds = <FeedbackKind>{};
+        for (final f in sorted) {
+          final row = rows.where((x) => x.id == f.id).firstOrNull;
+          if (row == null) continue;
+          title ??= ref
+              .watch(rhythmContentProvider)
+              .value
+              ?.activity(row.contentId)
+              ?.title
+              .of(locale);
+          kinds.add(row.kind);
+        }
+        // Always the same order, the outcome first: "Có ích", then "Mình sẽ thử"…
+        for (final k in [
+          ...kinds,
+        ]..sort((a, b) => _tagOrder(a) - _tagOrder(b))) {
+          tags.add(switch (k) {
+            FeedbackKind.helpful => (
+              feedbackKindLabel(l10n, k),
+              cl.colors.mintDeep,
+              cl.colors.onMintDeep,
+            ),
+            // Ink on the soft warm fill, also in Night care.
+            FeedbackKind.started => (
+              feedbackKindLabel(l10n, k),
+              cl.colors.sunshineSoft,
+              cl.colors.ink,
+            ),
+            _ => (
+              feedbackKindLabel(l10n, k),
+              cl.colors.surface,
+              cl.colors.inkMuted,
+            ),
+          });
+        }
+        title ??= l10n.rhUnknownActivity;
+      case FactKind.milestone || FactKind.sleep:
+        break;
+    }
+    title ??= latest.text.isNotEmpty
+        ? latest.text
+        : switch (latest.kind) {
+            FactKind.milestone => l10n.aiChipMilestone(when),
+            _ => l10n.aiChipSleep,
+          };
+    final sub = latest.kind == FactKind.sleep ? null : '$who · $when';
     return ClPressable(
-      onPressed: () => fact.kind == FactKind.sleep
+      onPressed: () => latest.kind == FactKind.sleep
           ? context.push(Routes.rhythm)
-          : showRecord(context, me, fact),
+          : showRecord(context, me, latest),
       pressedOpacity: ClPressable.surfaceOpacity,
-      semanticLabel: label,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 36),
-        padding: const EdgeInsets.fromLTRB(4, 4, ClSpace.s2, 4),
-        decoration: BoxDecoration(
-          color: cl.colors.surface2,
-          borderRadius: BorderRadius.circular(ClRadius.pill),
+      semanticLabel: [title, for (final t in tags) t.$1, ?sub].join(', '),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s3,
+          vertical: 10,
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            if (fact.kind == FactKind.sleep)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: ClIcon(ClIcons.sleep, size: 14, color: cl.colors.ink),
-              )
-            else
-              RhInitial(
-                fact.kind == FactKind.milestone && author == null
-                    ? '★'
-                    : family,
-                size: 24,
-              ),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: cl.text.caption.copyWith(
-                  color: cl.colors.mintText,
-                  fontWeight: FontWeight.w600,
-                ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: cl.text.label.copyWith(
+                      color: cl.colors.ink,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (tags.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final (text, fill, ink) in tags)
+                          Container(
+                            height: 24,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: fill,
+                              borderRadius: BorderRadius.circular(
+                                ClRadius.pill,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  text,
+                                  style: cl.text.caption.copyWith(
+                                    color: ink,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                  if (sub != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      sub,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            const SizedBox(width: 2),
-            ClIcon(ClIcons.chevronRight, size: 14, color: cl.colors.mintText),
+            ClIcon(ClIcons.chevronRight, size: 14, color: cl.colors.inkMuted),
           ],
         ),
       ),
     );
   }
 }
+
+int _tagOrder(FeedbackKind k) => switch (k) {
+  FeedbackKind.helpful => 0,
+  FeedbackKind.unsure => 1,
+  FeedbackKind.started => 2,
+  FeedbackKind.notToday => 3,
+  FeedbackKind.notSuitable => 4,
+};
 
 /// The note a link points to, as this phone has it (the check-in with its answers, the feedback
 /// with its activity), else the engine's line; feedback opens its activity.
@@ -939,9 +1278,39 @@ class HandoverEntry extends ConsumerWidget {
             ),
           )
         : l10n.aiHandoverEntrySub;
+    // D-093: one sent to me and not opened yet — "Mới", and the row opens that one.
+    final waiting =
+        (ref
+                    .watch(
+                      receivedHandoversProvider((
+                        babyId: me.babyId,
+                        uid: me.uid,
+                      )),
+                    )
+                    .value ??
+                const <HandoverSend>[])
+            .where((h) => h.seenAt == null)
+            .firstOrNull;
+    final from = waiting == null
+        ? null
+        : capitalized(
+            memberLabel(
+              l10n,
+              (ref.watch(familyMembersProvider(me.babyId)).value ?? const [])
+                  .where((m) => m.uid == waiting.senderUid)
+                  .firstOrNull,
+              myUid: me.uid,
+              uid: waiting.senderUid,
+            ),
+          );
+    final line = from == null ? sub : l10n.aiSentToYouShort(from);
     return RhCard(
-      onTap: () => context.push(Routes.rhythmHandover),
-      semanticLabel: '${l10n.aiHandoverTitle}. $sub',
+      onTap: () => context.push(
+        waiting == null
+            ? Routes.rhythmHandover
+            : '${Routes.rhythmHandover}?summary=${waiting.summaryId}',
+      ),
+      semanticLabel: '${l10n.aiHandoverTitle}. $line',
       child: Row(
         children: [
           Container(
@@ -959,16 +1328,167 @@ class HandoverEntry extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.aiHandoverTitle, style: cl.text.bodyStrong),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.aiHandoverTitle,
+                        style: cl.text.bodyStrong,
+                      ),
+                    ),
+                    if (waiting != null) ...[
+                      const SizedBox(width: ClSpace.s2),
+                      Container(
+                        key: const Key('handoverNew'),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: cl.colors.mintDeep,
+                          borderRadius: BorderRadius.circular(ClRadius.pill),
+                        ),
+                        child: Text(
+                          l10n.aiNewBadge,
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.onMintDeep,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
                 const SizedBox(height: 2),
                 Text(
-                  sub,
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  line,
+                  style: cl.text.caption.copyWith(
+                    color: waiting == null
+                        ? cl.colors.inkMuted
+                        : cl.colors.mintText,
+                    fontWeight: waiting == null ? null : FontWeight.w600,
+                  ),
                 ),
               ],
             ),
           ),
           ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
+        ],
+      ),
+    );
+  }
+}
+
+/// D-093: "Đã gửi cho Jun · 12:30" and where it is: not opened, seen, acknowledged.
+class _SendStatus extends StatelessWidget {
+  const _SendStatus({
+    required this.line,
+    required this.state,
+    required this.done,
+  });
+  final String line;
+  final String state;
+  final bool done;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Container(
+      key: const Key('handoverSendStatus'),
+      padding: const EdgeInsets.all(ClSpace.s3),
+      decoration: BoxDecoration(
+        color: done ? cl.colors.mintSoft : cl.colors.surface,
+        borderRadius: BorderRadius.circular(ClRadius.control),
+      ),
+      child: Row(
+        children: [
+          ClIcon(
+            done ? ClIcons.check : ClIcons.clock,
+            size: 18,
+            color: done ? cl.colors.mintText : cl.colors.inkMuted,
+          ),
+          const SizedBox(width: ClSpace.s3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  line,
+                  style: cl.text.label.copyWith(
+                    color: cl.colors.ink,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  state,
+                  style: cl.text.caption.copyWith(
+                    color: done ? cl.colors.mintText : cl.colors.inkMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// D-093: on the recipient's screen — who sent it, and "Tôi đã nhận bàn giao".
+class _ReceivedBanner extends StatelessWidget {
+  const _ReceivedBanner({
+    required this.title,
+    required this.receivedAt,
+    required this.onReceived,
+  });
+  final String title;
+  final String? receivedAt;
+  final Future<void> Function() onReceived;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return RhCard(
+      key: const Key('handoverReceived'),
+      outline: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              ClIcon(ClIcons.mail, size: 18, color: cl.colors.mintText),
+              const SizedBox(width: ClSpace.s2),
+              Expanded(
+                child: Text(
+                  title,
+                  style: cl.text.label.copyWith(
+                    color: cl.colors.ink,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          if (receivedAt case final at?)
+            Row(
+              children: [
+                ClIcon(ClIcons.check, size: 16, color: cl.colors.mintText),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.aiYouReceived(at),
+                  style: cl.text.label.copyWith(color: cl.colors.mintText),
+                ),
+              ],
+            )
+          else
+            ClButton(
+              key: const Key('handoverAcknowledge'),
+              label: l10n.pv2Acknowledge,
+              expand: true,
+              onPressed: onReceived,
+            ),
         ],
       ),
     );

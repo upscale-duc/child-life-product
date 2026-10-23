@@ -187,29 +187,31 @@ void main() {
       expect(find.text(l10n.aiSectionHelped), findsOneWidget);
       expect(find.text(l10n.aiSectionNext), findsOneWidget);
       expect(find.textContaining('[F1]'), findsNothing);
-      expect(find.text(l10n.aiChipCheckIn('Ba', '07/10')), findsOneWidget);
-      expect(find.text(l10n.aiChipCheckInMine('06/10')), findsOneWidget);
-      expect(find.text(l10n.aiChipFeedbackMine('07/10')), findsOneWidget);
+      // Each source says what it is (owner 2026-10-22), with who and when under it.
+      expect(find.text('Ba · 07/10'), findsOneWidget);
+      expect(find.text('Bạn · 06/10'), findsOneWidget);
+      expect(find.text('Bạn · 07/10'), findsOneWidget);
+      expect(
+        find.text(checkInParts(l10n, sleepCheckIn(uid: 'u_minh')).join(' · ')),
+        findsWidgets,
+      );
       expect(find.text(l10n.aiWordedByAi), findsOneWidget);
       expect(find.text(l10n.aiTemplateLine), findsNothing);
 
       // A link opens the note it came from.
-      await _tap(tester, find.text(l10n.aiChipCheckIn('Ba', '07/10')));
+      await _tap(tester, find.text('Ba · 07/10'));
       expect(find.text(l10n.aiRecordCheckIn), findsOneWidget);
-      expect(
-        find.text(checkInParts(l10n, sleepCheckIn(uid: 'u_minh')).join(' · ')),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.aiRecordWho('Ba', '07/10')), findsWidgets);
       await _tap(tester, find.text(l10n.rhDone));
       // Feedback opens its activity.
-      await _tap(tester, find.text(l10n.aiChipFeedbackMine('07/10')));
+      await _tap(tester, find.text('Bạn · 07/10'));
       await _tap(tester, find.text(l10n.aiRecordOpenActivity));
       expect(visits.last.location, '${Routes.rhythmActivity}/act_wind_down');
       Navigator.of(tester.element(find.text('stub'))).pop();
       await tester.pumpAndSettle();
 
-      // "Gửi cho Cô Lan": plain text, the three parts, the AI line, no citations.
-      await _tap(tester, find.text(l10n.aiSendTo('Cô Lan')));
+      // "Chia sẻ qua ứng dụng khác…": plain text, the three parts, the AI line, no citations.
+      await _tap(tester, find.text(l10n.aiShareOther));
       expect(shared, hasLength(1));
       expect(shared.single.text, contains(l10n.aiSectionHelped));
       expect(shared.single.text, contains('tắm ấm'));
@@ -436,16 +438,81 @@ void main() {
     });
 
     testWidgets('English: the EN frame copy', (tester) async {
-      final en = lookupAppLocalizations(const Locale('en'));
       await _handover(
         tester,
         FakeAiRepository(answer: handover(language: 'en')),
         locale: const Locale('en'),
       );
       expect(find.text('Handover for the next carer'), findsOneWidget);
-      expect(find.text(en.aiChipCheckIn('Dad', '7 Oct')), findsOneWidget);
-      expect(find.text('Send to Cô Lan'), findsOneWidget);
+      expect(find.text('Dad · 7 Oct'), findsOneWidget);
+      expect(find.text('Send the handover'), findsOneWidget);
     });
+  });
+
+  group('D-093 · "Gửi cho Jun" in the app', () {
+    testWidgets(
+      'the sender picks who, then sees sent → opened → acknowledged',
+      (tester) async {
+        final ai = FakeAiRepository(answer: handover());
+        await _handover(tester, ai);
+        // Ba and Cô Lan both read care: "Gửi bàn giao" asks who.
+        await _tap(tester, find.byKey(const Key('handoverSend')));
+        await _tap(tester, find.text('Cô Lan'));
+        expect(ai.sends.single.recipientUid, 'u_lan');
+        expect(find.text(l10n.aiSentToast('Cô Lan')), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('handoverSendStatus')), findsOneWidget);
+        expect(find.text(l10n.aiSendNotSeen), findsOneWidget);
+        // One left: the button names them.
+        expect(find.text(l10n.aiSendTo('Ba')), findsOneWidget);
+        // Cô Lan opens it, then acknowledges it.
+        await ai.markHandover(
+          babyId: teddyId,
+          sendId: ai.sends.single.id,
+          received: true,
+        );
+        await tester.pumpAndSettle();
+        expect(find.textContaining('Cô Lan đã nhận bàn giao'), findsOneWidget);
+      },
+    );
+
+    testWidgets('no push reaches them: it says so and offers the share sheet', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(answer: handover())..pushable = false;
+      await _handover(tester, ai);
+      await _tap(tester, find.byKey(const Key('handoverSend')));
+      await _tap(tester, find.text('Ba'));
+      expect(find.text(l10n.aiSentNoPush('Ba')), findsOneWidget);
+      expect(find.text(l10n.aiShareShort), findsOneWidget);
+    });
+
+    testWidgets(
+      'the recipient opens it from the push: seen at once, then "Tôi đã nhận bàn giao"',
+      (tester) async {
+        final ai = FakeAiRepository(stored: [handover()])
+          ..sends.add(
+            HandoverSend(
+              id: 'hs_1',
+              summaryId: 'sum_handover_1',
+              senderUid: 'u_mai',
+              recipientUid: 'u_lan',
+              sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+            ),
+          );
+        await pumpRouted(
+          tester,
+          const HandoverScreen(summaryId: 'sum_handover_1'),
+          overrides: aiOverrides(ai: ai, member: lan),
+        );
+        expect(find.byKey(const Key('handoverReceived')), findsOneWidget);
+        expect(ai.marks.first, ('hs_1', false));
+        await _tap(tester, find.byKey(const Key('handoverAcknowledge')));
+        expect(ai.marks.last, ('hs_1', true));
+        expect(find.byKey(const Key('handoverAcknowledge')), findsNothing);
+        expect(find.textContaining(l10n.aiYouReceived('').trim()), findsOneWidget);
+      },
+    );
   });
 
   group('entries', () {

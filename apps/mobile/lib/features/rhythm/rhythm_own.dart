@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/route_guard.dart';
+import '../../core/widgets/cl_sheet.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
@@ -14,6 +16,7 @@ import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../care/care_format.dart' show durationLabel;
+import '../care/history_screen.dart' show weekdayShort;
 import '../family/family_repository.dart';
 import '../premium/billing_models.dart' show PaywallEntry;
 import '../premium/paywall_screen.dart' show openPaywall;
@@ -131,20 +134,31 @@ class OwnRhythmCard extends ConsumerWidget {
   }
 }
 
-/// The last week's check-ins, newest day first, with who noted them; a mixed day says so.
+/// The last seven days of check-ins at a glance (owner, 2026-10-22: "xem 1 cách trực quan"):
+/// one circle per day — mint ✓ for "Như mọi ngày", sunshine with the kind's icon for a change,
+/// an empty ring for a day nobody noted; a day opens what was noted, by whom.
 class RecentCheckIns extends ConsumerWidget {
   const RecentCheckIns({
     required this.me,
     required this.today,
-    this.days = 3,
+    this.end,
     super.key,
   });
 
   final Membership me;
   final String today;
 
-  /// How many days with notes to show.
-  final int days;
+  /// The last of the seven days (a summary week's Sunday); today by default.
+  final String? end;
+
+  static ClIcons iconOf(Observation o) => switch (o) {
+    Observation.sleep => ClIcons.sleep,
+    Observation.feeding => ClIcons.feed,
+    Observation.soothing => ClIcons.heart,
+    Observation.newSkill => ClIcons.star,
+    Observation.health => ClIcons.alert,
+    Observation.usual => ClIcons.check,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -153,110 +167,210 @@ class RecentCheckIns extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final checkIns =
         ref.watch(checkInsProvider(me.babyId)).value ?? const <CheckIn>[];
+    final last = end ?? today;
+    final days = [for (var i = 6; i >= 0; i--) addDaysIso(last, -i)];
+    final byDay = <String, List<CheckIn>>{
+      for (final d in days)
+        d: [
+          for (final c in checkIns)
+            if (c.date == d && c.observation != Observation.health) c,
+        ],
+    };
+    String weekday(String iso) =>
+        weekdayShort(locale.toLanguageTag(), DateTime.parse(iso));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (final d in days)
+              Builder(
+                builder: (context) {
+                  final list = byDay[d]!;
+                  final changed = list.where((c) => c.changed).toList();
+                  final isToday = d == today;
+                  final (fill, ink, icon) = list.isEmpty
+                      ? (null, cl.colors.inkMuted, null)
+                      : changed.isEmpty
+                      ? (cl.colors.mintSoft, cl.colors.mintText, ClIcons.check)
+                      // Ink on the soft warm fill, also in Night care.
+                      : (
+                          cl.colors.sunshineSoft,
+                          cl.colors.ink,
+                          iconOf(changed.first.observation),
+                        );
+                  final label = list.isEmpty
+                      ? l10n.rhDayNotNoted
+                      : {
+                          for (final c in list)
+                            observationShort(l10n, c.observation),
+                        }.join(', ');
+                  return ClPressable(
+                    key: Key('checkInDay:$d'),
+                    onPressed: list.isEmpty
+                        ? null
+                        : () => _showDay(context, ref, d, list),
+                    semanticLabel: '${shortDay(locale, d)}: $label',
+                    child: Column(
+                      children: [
+                        Text(
+                          isToday ? l10n.rhTodayShort : weekday(d),
+                          style: cl.text.caption.copyWith(
+                            color: isToday ? cl.colors.ink : cl.colors.inkMuted,
+                            fontWeight: isToday ? FontWeight.w700 : null,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: fill,
+                            shape: BoxShape.circle,
+                            border: fill == null
+                                ? Border.all(
+                                    color: cl.colors.separator,
+                                    width: 1.5,
+                                  )
+                                : isToday
+                                ? Border.all(
+                                    color: cl.colors.mintDeep,
+                                    width: 2,
+                                  )
+                                : null,
+                          ),
+                          alignment: Alignment.center,
+                          child: icon == null
+                              ? null
+                              : ClIcon(icon, size: 16, color: ink),
+                        ),
+                        // Two people noted different things: a small dot under the day.
+                        if (observationStateOf(list) == ObservationState.mixed)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Container(
+                              width: 5,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: cl.colors.inkMuted,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          )
+                        else
+                          const SizedBox(height: 9),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s2),
+        // The key, in one quiet line.
+        Wrap(
+          spacing: ClSpace.s3,
+          children: [
+            for (final (fill, text) in [
+              (cl.colors.mintSoft, l10n.rhObsUsual),
+              (cl.colors.sunshineSoft, l10n.rhLegendChanged),
+            ])
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: fill,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    text,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// What was noted that day, by whom.
+  Future<void> _showDay(
+    BuildContext context,
+    WidgetRef ref,
+    String day,
+    List<CheckIn> list,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
     final members =
-        ref.watch(familyMembersProvider(me.babyId)).value ??
+        ref.read(familyMembersProvider(me.babyId)).value ??
         const <Membership>[];
-    final since = addDaysIso(today, -6);
-    final byDay = <String, List<CheckIn>>{};
-    for (final c in checkIns) {
-      // Health worries are routed to HL01, not summed up here.
-      if (c.date.compareTo(since) < 0 || c.observation == Observation.health) {
-        continue;
-      }
-      (byDay[c.date] ??= []).add(c);
-    }
-    final dates = (byDay.keys.toList()..sort((a, b) => b.compareTo(a)))
-        .take(days)
-        .toList();
-    if (dates.isEmpty) {
-      return Text(
-        l10n.rhOwnEmpty,
-        style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-      );
-    }
-    var anyMixed = false;
-    // Owner, 2026-10-22: the same note by the same person on several days is one line with
-    // its days ("Như mọi ngày · Hôm nay, 21/10, 16/10"), not three identical rows.
-    final groups =
-        <(String, String), ({CheckIn first, List<String> dates, bool mixed})>{};
-    for (final date in dates) {
-      final day = byDay[date]!;
-      final mixed = observationStateOf(day) == ObservationState.mixed;
-      anyMixed |= mixed;
-      for (final c in day) {
-        final key = (checkInParts(l10n, c).join(' · '), c.authorUid);
-        final g = groups[key];
-        groups[key] = g == null
-            ? (first: c, dates: [date], mixed: mixed)
-            : (
-                first: g.first,
-                dates: [...g.dates, date],
-                mixed: g.mixed || mixed,
-              );
-      }
-    }
-    final rows = <Widget>[];
-    // "Ghi khác nhau" once per mixed day, on the first line that has that day.
-    final labelled = <String>{};
-    for (final MapEntry(key: (text, uid), value: g) in groups.entries) {
-      final mixedHere =
-          g.mixed &&
-          g.dates.any(
-            (d) =>
-                observationStateOf(byDay[d]!) == ObservationState.mixed &&
-                labelled.add(d),
-          );
-      final m = members.where((x) => x.uid == uid).firstOrNull;
-      final who = capitalized(memberLabel(l10n, m, myUid: me.uid, uid: uid));
-      // The avatar shows the family label (Mẹ, Ba, Cô Lan), also for me.
-      final initial = memberLabel(l10n, m, myUid: '', uid: uid);
-      final when = [
-        for (final d in g.dates)
-          d == today ? l10n.rhSinceToday : shortDay(locale, d),
-      ].join(', ');
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: ClSpace.s2),
-          child: Row(
-            children: [
-              RhInitial(initial),
-              const SizedBox(width: ClSpace.s3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      text,
-                      style: cl.text.label.copyWith(
-                        color: cl.colors.ink,
-                        fontWeight: FontWeight.w600,
+    return showClSheet<void>(
+      context: context,
+      builder: (sheet) => Padding(
+        padding: const EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          ClSpace.s3,
+          ClSpace.s4,
+          ClSpace.s6,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(
+              title: day == today ? l10n.todayLabel : longDay(locale, day),
+            ),
+            ClCardGroup(
+              color: sheet.cl.colors.surface2,
+              children: [
+                for (final c in list)
+                  ClListRow(
+                    leading: RhInitial(
+                      memberLabel(
+                        l10n,
+                        members.where((m) => m.uid == c.authorUid).firstOrNull,
+                        myUid: '',
+                        uid: c.authorUid,
                       ),
                     ),
-                    Text(
-                      l10n.rhWhoDay(who, when),
-                      style: cl.text.caption.copyWith(
-                        color: cl.colors.inkMuted,
+                    title: checkInParts(l10n, c).join(' · '),
+                    subtitle: [
+                      capitalized(
+                        memberLabel(
+                          l10n,
+                          members
+                              .where((m) => m.uid == c.authorUid)
+                              .firstOrNull,
+                          myUid: me.uid,
+                          uid: c.authorUid,
+                        ),
                       ),
-                    ),
-                  ],
+                      if (c.note case final n? when n.trim().isNotEmpty)
+                        l10n.rhQuoted(n.trim()),
+                    ].join(' · '),
+                  ),
+              ],
+            ),
+            if (observationStateOf(list) == ObservationState.mixed) ...[
+              const SizedBox(height: ClSpace.s2),
+              Text(
+                l10n.rhMixedNote,
+                style: sheet.cl.text.caption.copyWith(
+                  color: sheet.cl.colors.inkMuted,
                 ),
               ),
-              if (mixedHere) RhPill(label: l10n.rhMixedDay),
             ],
-          ),
+          ],
         ),
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ...rows,
-        if (anyMixed)
-          Text(
-            l10n.rhMixedNote,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-          ),
-      ],
+      ),
     );
   }
 }
@@ -333,17 +447,9 @@ class SleepFactsBlock extends StatelessWidget {
               ),
             ),
             const SizedBox(height: ClSpace.s2),
+            // Owner, 2026-10-22: the count the bars show, in a few words.
             Text(
-              baselineShort
-                  ? l10n.rhSleepSparseBody(
-                      r.validBaselineDays,
-                      rules.baselineMinDays,
-                      rules.baselineMinDays - r.validBaselineDays,
-                    )
-                  : l10n.rhSleepSparseRecent(
-                      rules.recentMinDays,
-                      rules.recentDays,
-                    ),
+              l10n.rhSleepSparseShort(filled, need),
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
           ],

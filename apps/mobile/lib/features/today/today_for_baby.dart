@@ -20,7 +20,14 @@ import '../library/library_today.dart'
 import '../milestones/milestone_today.dart' show mtForBabyCardsProvider;
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/personalization_v2_repository.dart';
-import '../rhythm/personal_day_widgets.dart' show PersonalSaveButton;
+import '../rhythm/personal_day_widgets.dart'
+    show
+        PersonalSaveButton,
+        PersonalStatus,
+        PersonalStatusChips,
+        PersonalStatusKind,
+        responseStatus;
+import '../rhythm/rhythm_actions.dart' show latestFeedback;
 import '../rhythm/personalization_v2_screen.dart';
 import '../rhythm/personalization_sources.dart';
 import '../rhythm/rhythm_calc.dart';
@@ -493,6 +500,44 @@ class _SmallCard extends ConsumerWidget {
             uid: me.uid,
             locale: Localizations.localeOf(context).languageCode,
           );
+    // Owner, 2026-10-22: a planned, tried or helpful idea says so on its small card too (the
+    // family's plan from the activity screen counts, as Home's main card shows it).
+    final now = ref.watch(careClockProvider).value ?? DateTime.now();
+    final day = responseKey == null
+        ? null
+        : ref.watch(personalDayHomeProvider(responseKey));
+    var status = <PersonalStatus>[
+      if (day != null)
+        for (final st in responseStatus(
+          l10n,
+          day,
+          card.id,
+          Localizations.localeOf(context),
+          now,
+        ))
+          if (st.kind != PersonalStatusKind.saved) st,
+    ];
+    if (status.isEmpty && me != null && card.id.startsWith('act_')) {
+      final fb = latestFeedback(
+        ref.watch(recFeedbackProvider(me.babyId)).value ?? const [],
+        card.id,
+      );
+      final when = fb == null
+          ? ''
+          : '${fb.date.substring(8, 10)}/${fb.date.substring(5, 7)}';
+      status = switch (fb?.kind) {
+        FeedbackKind.started => [
+          (kind: PersonalStatusKind.intend, label: l10n.pv2StatusIntend(when)),
+        ],
+        FeedbackKind.helpful => [
+          (kind: PersonalStatusKind.helpful, label: l10n.pv2ChipHelpful),
+        ],
+        FeedbackKind.unsure => [
+          (kind: PersonalStatusKind.unsure, label: l10n.pv2ChipUnsure),
+        ],
+        _ => const [],
+      };
+    }
     final onDismiss = card.onDismiss;
     final dismiss = onDismiss != null
         ? (BuildContext c) => onDismiss(c, ref)
@@ -590,6 +635,10 @@ class _SmallCard extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
               style: cl.text.bodyStrong,
             ),
+            if (status.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s2),
+              PersonalStatusChips(status),
+            ],
             const Spacer(),
             const SizedBox(height: ClSpace.s2),
             Row(

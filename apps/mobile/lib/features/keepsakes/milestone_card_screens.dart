@@ -251,6 +251,10 @@ class MilestoneCardScreen extends ConsumerStatefulWidget {
 
 class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
   Occasion? _occasion;
+
+  /// "Tất cả" (owner, 2026-10-23): every template, worded for the suggested dịp; a dịp chosen
+  /// keeps only its own templates and those made for any day. Opened for a dịp, that one.
+  late bool _all = widget.occasion == null && widget.milestone == null;
   var _format = KeepsakeFormat.portrait;
 
   @override
@@ -317,7 +321,11 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
     final catalog = ref.watch(keepsakeCatalogProvider);
     final cards = [
       for (final t in catalog.value?.cards ?? const <KeepsakeTemplate>[])
-        if (t.layouts.containsKey(_format)) t,
+        if (t.layouts.containsKey(_format) &&
+            (_all ||
+                t.occasions.isEmpty ||
+                t.occasions.contains(occasion.wire)))
+          t,
     ];
     final previews = [
       for (final m in best)
@@ -338,9 +346,13 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
             milestones,
             current: occasion,
           ),
-          selected: occasion,
+          selected: _all ? null : occasion,
           suggested: suggested,
-          onSelect: (o) => setState(() => _occasion = o),
+          allLabel: l10n.filterAll,
+          onSelect: (o) => setState(() {
+            _all = o == null;
+            if (o != null) _occasion = o;
+          }),
         ),
         const SizedBox(height: ClSpace.s4),
         ClSegmented<KeepsakeFormat>(
@@ -436,8 +448,7 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
 
 /// "Chọn dịp" and its chips in one sideways row, the same on Thiệp and Video (owner,
 /// 2026-10-14: "đồng nhất filter"); the chosen chip is brought into view once it is there. With
-/// [allLabel] (Video, where the dịp filters the templates) "Tất cả" comes first and stands for
-/// null; Thiệp has none, its dịp only changes the words on every card.
+/// [allLabel] "Tất cả" comes first and stands for null (both screens since 2026-10-23).
 class OccasionFilter extends StatefulWidget {
   const OccasionFilter({
     required this.occasions,
@@ -1959,6 +1970,7 @@ class KeepsakeActionTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
           color: cl.colors.surface,
+          boxShadow: cl.shadows.card,
           borderRadius: BorderRadius.circular(ClRadius.control + 4),
         ),
         child: Column(

@@ -298,6 +298,7 @@ class SpGroup extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         color: cl.colors.surface,
+        boxShadow: cl.shadows.card,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: children),

@@ -16,6 +16,7 @@ import 'package:child_life/features/rhythm/rhythm_repository.dart'
     show checkInIdFor, newestFirst;
 import 'package:child_life/features/rhythm/rhythm_setup.dart';
 import 'package:child_life/features/rhythm/rhythm_week.dart';
+import 'package:child_life/features/rhythm/rhythm_own.dart' show RecentCheckIns;
 import 'package:child_life/features/rhythm/week_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -558,8 +559,9 @@ void main() {
           find.text(l10n.rhSleepBasis(3, '08/10 – 10/10', 7)),
           findsOneWidget,
         );
-        expect(find.text(l10n.rhWeekChangedDays(3)), findsOneWidget);
-        expect(find.text(l10n.rhWeekMixedDays(1)), findsOneWidget);
+        // The week's days as a strip (owner 2026-10-22), the changes as chips with counts.
+        expect(find.byType(RecentCheckIns), findsOneWidget);
+        expect(find.textContaining('×'), findsWidgets);
         expect(find.text(l10n.rhEpOpenTitle('06/10')), findsOneWidget);
         expect(
           find.text('Giảm kích thích 30 phút trước giấc đêm'),

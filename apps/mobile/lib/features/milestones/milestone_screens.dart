@@ -1054,6 +1054,7 @@ class _LinkRow extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: cl.colors.surface,
+        boxShadow: cl.shadows.card,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -1291,6 +1292,7 @@ class _OwnState extends ConsumerState<OwnMilestoneScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: cl.colors.surface,
+            boxShadow: cl.shadows.card,
             borderRadius: BorderRadius.circular(16),
           ),
           child: MergeSemantics(

@@ -321,13 +321,13 @@ void main() {
         overrides: overrides(),
       );
       await tester.pumpAndSettle();
-      // The earliest week opens first, with only its own items counted.
+      // The newest week opens first (owner, 2026-10-23), with only its own items counted.
       expect(find.text('Tuần 3 · 2'), findsOneWidget);
       expect(find.text('Tuần 4 · 1'), findsOneWidget);
-      expect(find.text('Tiếp tục với 2 mục'), findsOneWidget);
-
-      await tester.tap(find.text('Tuần 4 · 1'));
-      await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('Tuần 4 · 1')).dx,
+        lessThan(tester.getTopLeft(find.text('Tuần 3 · 2')).dx),
+      );
       expect(find.text('Tiếp tục với 1 mục'), findsOneWidget);
       await tester.tap(find.text('Tiếp tục với 1 mục'));
       await tester.pumpAndSettle();

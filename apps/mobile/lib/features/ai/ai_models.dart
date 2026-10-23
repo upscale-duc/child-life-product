@@ -457,3 +457,40 @@ List<SummaryAnswer> newestSummariesFirst(Iterable<SummaryAnswer> rows) =>
       if (bt == null) return -1;
       return bt.compareTo(at);
     });
+
+/// D-093: what `sendHandover` answers; [pushable] false = no device or the switch is off.
+typedef HandoverSendResult = ({String sendId, DateTime sentAt, bool pushable});
+
+/// `babies/{b}/handoverSends/{id}` (D-093): one handover sent to one member.
+@immutable
+class HandoverSend {
+  const HandoverSend({
+    required this.id,
+    required this.summaryId,
+    required this.senderUid,
+    required this.recipientUid,
+    required this.sentAt,
+    this.seenAt,
+    this.receivedAt,
+  });
+
+  final String id;
+  final String summaryId;
+  final String senderUid;
+  final String recipientUid;
+  final DateTime sentAt;
+  final DateTime? seenAt;
+  final DateTime? receivedAt;
+
+  static DateTime? _at(Object? v) => v is String ? DateTime.tryParse(v) : null;
+
+  factory HandoverSend.fromJson(Map<String, dynamic> j) => HandoverSend(
+    id: '${j['id']}',
+    summaryId: '${j['summaryId']}',
+    senderUid: '${j['senderUid']}',
+    recipientUid: '${j['recipientUid']}',
+    sentAt: _at(j['sentAt']) ?? DateTime.fromMillisecondsSinceEpoch(0),
+    seenAt: _at(j['seenAt']),
+    receivedAt: _at(j['receivedAt']),
+  );
+}

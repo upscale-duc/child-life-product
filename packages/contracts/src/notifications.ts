@@ -39,6 +39,8 @@ export const notificationSettingKeys = [
   'familyActivity',
   // G-109 (D-092): someone joined, an invitation was declined.
   'familyMembers',
+  // D-093: a family member sent this person a handover.
+  'handovers',
   // D-094: show the baby's name in pushes (else "bé"). Not a kind switch.
   'babyName',
 ] as const;
@@ -62,6 +64,7 @@ export const defaultNotificationSettings: NotificationSettings = {
   keepsakePrompts: true,
   familyActivity: false,
   familyMembers: true,
+  handovers: true,
   babyName: true,
 };
 
@@ -83,6 +86,7 @@ export const notificationSettingsDocSchema = z
     keepsakePrompts: z.boolean().optional(),
     familyActivity: z.boolean().optional(),
     familyMembers: z.boolean().optional(),
+    handovers: z.boolean().optional(),
     babyName: z.boolean().optional(),
     updatedAt: z.unknown().optional(),
   })
@@ -132,6 +136,8 @@ export const notificationKinds = [
   'inviteDeclined',
   'roleChanged',
   'memberRemoved',
+  // D-093: "Gửi cho Jun" — a handover sent to one member.
+  'handoverSent',
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 
@@ -165,6 +171,7 @@ export const notificationCategoryOf: Record<NotificationKind, NotificationCatego
   inviteDeclined: 'family',
   roleChanged: 'family',
   memberRemoved: 'family',
+  handoverSent: 'family',
 };
 
 /**
@@ -198,6 +205,7 @@ export const notificationSettingOf: Record<NotificationKind, NotificationSetting
   // About the person's own access: always delivered.
   roleChanged: null,
   memberRemoved: null,
+  handoverSent: 'handovers',
 };
 
 /** Reminders the person set ring on time even in quiet hours (EN07 "Luôn đến đúng giờ"). */

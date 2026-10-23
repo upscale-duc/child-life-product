@@ -47,7 +47,7 @@ import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
-import 'rhythm_own.dart' show SleepFactsBlock;
+import 'rhythm_own.dart' show RecentCheckIns, SleepFactsBlock;
 import 'rhythm_repository.dart';
 import 'rhythm_week.dart';
 import 'rhythm_widgets.dart';
@@ -259,7 +259,7 @@ class _TopBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ClIcon(ClIcons.link, size: 16, color: cl.colors.ink),
+                    ClIcon(ClIcons.upload, size: 16, color: cl.colors.ink),
                     const SizedBox(width: ClSpace.s2),
                     Text(
                       l10n.rhWeekShare,
@@ -887,24 +887,52 @@ class _LookBack extends ConsumerWidget {
           if (notes.isEmpty && episode == null)
             muted(l10n.rhWeekNoNotes)
           else ...[
-            if (notes.changedDays > 0) ...[
-              Text(
-                l10n.rhWeekChangedDays(notes.changedDays),
-                style: cl.text.label.copyWith(color: cl.colors.ink),
+            // Owner, 2026-10-22: the week's days at a glance (the same strip as Nhịp lớn
+            // lên), then what changed as chips with their counts.
+            RecentCheckIns(
+              me: me,
+              today: today,
+              end: week.inProgress ? today : week.end,
+            ),
+            if (notes.observations.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s3),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final o in notes.observations)
+                    Container(
+                      height: 28,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: cl.colors.sunshineSoft,
+                        borderRadius: BorderRadius.circular(ClRadius.pill),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Ink on the soft warm fill, also in Night care.
+                          ClIcon(
+                            RecentCheckIns.iconOf(o.observation),
+                            size: 14,
+                            color: cl.colors.ink,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.rhWeekObsChip(
+                              observationShort(l10n, o.observation),
+                              o.days,
+                            ),
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.ink,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               ),
-              RhBullets([
-                for (final o in notes.observations)
-                  l10n.rhWeekObsDays(
-                    observationShort(l10n, o.observation),
-                    o.days,
-                  ),
-              ], color: cl.colors.inkMuted),
-            ],
-            if (notes.usualDays > 0)
-              muted(l10n.rhWeekUsualDays(notes.usualDays)),
-            if (notes.mixedDays > 0) ...[
-              const SizedBox(height: ClSpace.s1),
-              muted(l10n.rhWeekMixedDays(notes.mixedDays)),
             ],
             if (episode != null) ...[
               const SizedBox(height: ClSpace.s2),
@@ -1002,7 +1030,31 @@ class _TriedLine extends StatelessWidget {
               ),
             ),
             const SizedBox(width: ClSpace.s2),
-            RhPill(label: kind, mint: feedback.kind == FeedbackKind.helpful),
+            // The same tag colours as the handover: helpful solid mint, a plan sunshine.
+            Container(
+              height: 26,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: switch (feedback.kind) {
+                  FeedbackKind.helpful => cl.colors.mintDeep,
+                  FeedbackKind.started => cl.colors.sunshineSoft,
+                  _ => cl.colors.surface2,
+                },
+                borderRadius: BorderRadius.circular(ClRadius.pill),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                kind,
+                style: cl.text.caption.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: switch (feedback.kind) {
+                    FeedbackKind.helpful => cl.colors.onMintDeep,
+                    FeedbackKind.started => cl.colors.ink,
+                    _ => cl.colors.inkMuted,
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -1153,6 +1205,7 @@ class _WeekShareCard extends StatelessWidget {
                   padding: const EdgeInsets.all(ClSpace.s3),
                   decoration: BoxDecoration(
                     color: cl.colors.surface,
+                    boxShadow: cl.shadows.card,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
@@ -1328,19 +1381,13 @@ class WeekSummaryEntry extends ConsumerWidget {
     final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final week = summaryWeekFor(babyTodayIso(zone, now));
-    final dob = me.canViewBabyInfo
-        ? ref.watch(rhythmProfileProvider(me.babyId)).value?.dateOfBirth
-        : null;
-    final n = dob == null ? null : weekOfLife(dob, week);
     // Short dates here ("28/09 – 04/10"), so the row stays on one line.
     final range = l10n.rhDateRange(
       shortDay(locale, week.start),
       shortDay(locale, week.end),
     );
-    final sub = n == null
-        ? range
-        // "Tuần thứ 3 · 28/09 – 04/10": the week of life without the name keeps one line.
-        : '${l10n.hnWeekKickerOnly(n)} · $range';
+    // Owner, 2026-10-22: the dates alone (a week number read as the age).
+    final sub = range;
     return RhCard(
       onTap: () => context.push(Routes.rhythmWeek),
       semanticLabel: '${l10n.rhWeekTitle}. $sub',

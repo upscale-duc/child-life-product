@@ -822,48 +822,53 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
             Expanded(
               child: Stack(
                 children: [
-                  NotificationListener<ScrollNotification>(
-                    onNotification: (n) {
-                      if (n is ScrollStartNotification) {
-                        _dragging = n.dragDetails != null;
-                        // Dragging the thread puts the keyboard away (also when the thread
-                        // is too short to scroll).
-                        if (_dragging) FocusScope.of(context).unfocus();
-                      } else if (n is ScrollEndNotification) {
-                        _dragging = false;
-                      }
-                      return false;
-                    },
-                    child: GestureDetector(
-                      // A tap on the thread (outside a control) puts the keyboard away.
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      // Reversed (the newest at offset 0) and shrink-wrapped to the top, so a
-                      // short thread still reads from the top of the screen.
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ListView.builder(
-                          key: const ValueKey('as.thread'),
-                          controller: _scroll,
-                          reverse: true,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
-                          padding: const EdgeInsets.fromLTRB(
-                            ClSpace.s4,
-                            ClSpace.s2,
-                            ClSpace.s4,
-                            ClSpace.s4,
+                  // Owner, 2026-10-22: a thread being restored is Lumi breathing in the middle,
+                  // then the whole conversation at once (no header first, then a jump).
+                  if (chat.restoring)
+                    const Positioned.fill(child: Center(child: _LumiLoading()))
+                  else
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (n) {
+                        if (n is ScrollStartNotification) {
+                          _dragging = n.dragDetails != null;
+                          // Dragging the thread puts the keyboard away (also when the thread
+                          // is too short to scroll).
+                          if (_dragging) FocusScope.of(context).unfocus();
+                        } else if (n is ScrollEndNotification) {
+                          _dragging = false;
+                        }
+                        return false;
+                      },
+                      child: GestureDetector(
+                        // A tap on the thread (outside a control) puts the keyboard away.
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        // Reversed (the newest at offset 0) and shrink-wrapped to the top, so a
+                        // short thread still reads from the top of the screen.
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: ListView.builder(
+                            key: const ValueKey('as.thread'),
+                            controller: _scroll,
+                            reverse: true,
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            padding: const EdgeInsets.fromLTRB(
+                              ClSpace.s4,
+                              ClSpace.s2,
+                              ClSpace.s4,
+                              ClSpace.s4,
+                            ),
+                            itemCount: items.length,
+                            findChildIndexCallback: (k) =>
+                                k is ValueKey<String> ? index[k.value] : null,
+                            itemBuilder: (_, i) => items[i].widget,
                           ),
-                          itemCount: items.length,
-                          findChildIndexCallback: (k) =>
-                              k is ValueKey<String> ? index[k.value] : null,
-                          itemBuilder: (_, i) => items[i].widget,
                         ),
                       ),
                     ),
-                  ),
                   Positioned(
                     left: 0,
                     right: 0,
@@ -956,6 +961,52 @@ enum _Side { me, lumi, other, note, typing }
 
 /// One keyed entry of the thread: the key stays the same while the entry is on screen, so an
 /// update re-renders it in place and only a new key animates in.
+/// Lumi gently breathing while a conversation opens.
+class _LumiLoading extends StatefulWidget {
+  const _LumiLoading();
+
+  @override
+  State<_LumiLoading> createState() => _LumiLoadingState();
+}
+
+class _LumiLoadingState extends State<_LumiLoading>
+    with SingleTickerProviderStateMixin {
+  late final _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1100),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Still in Reduce Motion.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _pulse.stop();
+    } else if (!_pulse.isAnimating) {
+      _pulse.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: AppLocalizations.of(context).aiLoading,
+    liveRegion: true,
+    child: ScaleTransition(
+      scale: Tween(
+        begin: 0.92,
+        end: 1.06,
+      ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut)),
+      child: const LumiMascot(size: 72),
+    ),
+  );
+}
+
 class _Entry {
   const _Entry(this.key, this.side, this.child);
   final String key;
@@ -3331,6 +3382,7 @@ class _EmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: cl.colors.surface,
+              boxShadow: cl.shadows.card,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -3819,6 +3871,7 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: cl.colors.surface,
+                    boxShadow: cl.shadows.card,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: _HistoryRow(
@@ -3855,6 +3908,7 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: cl.colors.surface,
+                    boxShadow: cl.shadows.card,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
@@ -4135,6 +4189,7 @@ class AssistantUsageScreen extends ConsumerWidget {
     );
     BoxDecoration card([double r = 16]) => BoxDecoration(
       color: cl.colors.surface,
+      boxShadow: cl.shadows.card,
       borderRadius: BorderRadius.circular(r),
     );
 

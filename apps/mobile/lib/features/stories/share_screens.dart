@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -492,6 +493,7 @@ class _CardScreenState extends ConsumerState<CardScreen> {
   final _boundary = GlobalKey();
   final _pages = PageController(viewportFraction: 0.86);
   var _template = CardTemplate.moment;
+  List<CardTemplate> _templates = CardTemplate.values;
   late String _quote = _quotes.first;
   String? _photoId;
   var _showAge = true;
@@ -517,6 +519,12 @@ class _CardScreenState extends ConsumerState<CardScreen> {
     _pages.dispose();
     super.dispose();
   }
+
+  static int _photosNeeded(CardTemplate t) => switch (t) {
+    CardTemplate.three => 3,
+    CardTemplate.four => 4,
+    _ => 0,
+  };
 
   CardData _data(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -624,6 +632,17 @@ class _CardScreenState extends ConsumerState<CardScreen> {
       CardTemplate.letter: l10n.cdLetter,
       CardTemplate.night: l10n.cdNight,
     };
+    // D-095: a 1-photo story was offered "3 ảnh" / "4 ảnh" with empty frames;
+    // a multi-photo template shows only once the story has that many family photos.
+    final fit = [
+      for (final t in CardTemplate.values)
+        if (data.photos.length >= _photosNeeded(t)) t,
+    ];
+    // The same list while it fits (a new one each build re-lays the pages mid-swipe), and no
+    // shrinking while the photos are still loading: the pager would keep the shorter extent.
+    final loading = data.photos.isEmpty && widget.story.mediaIds.isNotEmpty;
+    if (!loading && !listEquals(fit, _templates)) _templates = fit;
+    final templates = _templates;
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -638,10 +657,9 @@ class _CardScreenState extends ConsumerState<CardScreen> {
               height: 380,
               child: PageView(
                 controller: _pages,
-                onPageChanged: (i) =>
-                    setState(() => _template = CardTemplate.values[i]),
+                onPageChanged: (i) => setState(() => _template = templates[i]),
                 children: [
-                  for (final t in CardTemplate.values)
+                  for (final t in templates)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: Center(
@@ -662,7 +680,7 @@ class _CardScreenState extends ConsumerState<CardScreen> {
               padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
               child: Row(
                 children: [
-                  for (final (i, t) in CardTemplate.values.indexed) ...[
+                  for (final (i, t) in templates.indexed) ...[
                     if (i > 0) const SizedBox(width: ClSpace.s2),
                     ClPressable(
                       onPressed: () => _pages.animateToPage(
@@ -975,6 +993,7 @@ class _LinkScreenState extends ConsumerState<LinkScreen> {
                     padding: const EdgeInsets.all(ClSpace.s3),
                     decoration: BoxDecoration(
                       color: cl.colors.surface,
+                      boxShadow: cl.shadows.card,
                       borderRadius: BorderRadius.circular(ClRadius.control + 4),
                     ),
                     child: Row(

@@ -178,6 +178,9 @@ class _NotificationSettingsScreenState
               l10n.ntFamilyMembersHint,
             ),
             if (parent) toggle('storage', l10n.ntStorage, l10n.ntStorageHint),
+            // D-093: whoever reads care can be sent a handover.
+            if (cares)
+              toggle('handovers', l10n.ntHandovers, l10n.ntHandoversHint),
           ],
         ),
         _Group(l10n.ntGroupTiming),

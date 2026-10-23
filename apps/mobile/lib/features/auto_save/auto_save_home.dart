@@ -400,6 +400,7 @@ class _Thumbs extends StatelessWidget {
                 child: LibraryTile(
                   assetId: g.best.asset.id,
                   video: g.best.asset.video,
+                  durationMs: g.best.asset.durationMs,
                 ),
               ),
             ),

@@ -69,13 +69,16 @@ void main() {
       );
       // The estimate keeps its label (brief p.13).
       expect(
-        find.text(l10n.rhByDueDateEstimated('21/09/2026')),
+        find.textContaining(l10n.rhByDueDateEstimated('21/09')),
         findsOneWidget,
       );
-      // 7/10: Ba "Khó vào giấc", Mẹ "Như mọi ngày" — both kept, the day says so (X03).
-      expect(find.text(l10n.rhMixedDay), findsOneWidget);
-      expect(find.text(l10n.rhWhoDay('Ba', '07/10')), findsOneWidget);
-      expect(find.text(l10n.rhWhoDay('Bạn', '07/10')), findsWidgets);
+      // 7/10: Ba "Khó vào giấc", Mẹ "Như mọi ngày" — both kept, the day says so (X03); the
+      // 7-day strip opens the day (owner 2026-10-22).
+      await _tap(tester, find.byKey(const Key('checkInDay:2026-10-07')));
+      expect(find.text(l10n.rhMixedNote), findsOneWidget);
+      expect(find.text('Ba'), findsWidgets);
+      Navigator.of(tester.element(find.text(l10n.rhMixedNote))).pop();
+      await tester.pumpAndSettle();
       // No blurred insight without rhythm.advanced: an explanation and the plan.
       expect(find.text(l10n.rhSleepGateTitle), findsOneWidget);
       expect(find.text(l10n.rhSleepLower('2 giờ')), findsNothing);
@@ -165,7 +168,7 @@ void main() {
         );
         expect(find.text(l10n.rhCalendarUnsetPill), findsOneWidget);
         expect(find.text(l10n.rhOwnSparsePill), findsOneWidget);
-        expect(find.text(l10n.rhSleepSparseBody(2, 5, 3)), findsOneWidget);
+        expect(find.text(l10n.rhSleepSparseShort(2, 5)), findsOneWidget);
         expect(find.text(l10n.rhOfflineNote), findsOneWidget);
         // D-073 #1: valid days are automatic; nothing asks the parent to mark one.
         for (final b in tester.widgetList<ClButton>(find.byType(ClButton))) {
@@ -192,7 +195,10 @@ void main() {
           ),
         );
         expect(find.text(l10n.rhCalendarNoAccess), findsOneWidget);
-        expect(find.text(l10n.rhMixedDay), findsOneWidget);
+        await _tap(tester, find.byKey(const Key('checkInDay:2026-10-07')));
+        expect(find.text(l10n.rhMixedNote), findsOneWidget);
+        Navigator.of(tester.element(find.text(l10n.rhMixedNote))).pop();
+        await tester.pumpAndSettle();
         expect(visits, isEmpty);
       },
     );

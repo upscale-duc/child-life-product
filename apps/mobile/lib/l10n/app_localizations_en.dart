@@ -13972,7 +13972,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhWeekInProgress => 'Week in progress · figures so far';
 
   @override
-  String get rhWeekShare => 'Send to…';
+  String get rhWeekShare => 'Share';
 
   @override
   String get rhWeekRecordedTitle => 'Logged this week';
@@ -19978,13 +19978,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2ToastUnsaved => 'Removed from saved.';
 
   @override
-  String hnCheckInDone(String what) {
-    return 'Today: $what';
+  String hnCheckInDone(String who) {
+    return '$who noted today';
   }
 
   @override
-  String hnCheckInDoneSub(String who) {
-    return 'Noted by $who · Tap to change or add';
+  String hnCheckInDoneSub(String what) {
+    return 'Baby: $what · Tap to change';
   }
 
   @override
@@ -20102,4 +20102,150 @@ class AppLocalizationsEn extends AppLocalizations {
   String careAwakeNow(String duration) {
     return 'Awake now · $duration';
   }
+
+  @override
+  String rhStageDaysLeft(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days left',
+      one: '1 day left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rhStageLastDay => 'last day';
+
+  @override
+  String get rhCalendarDisclaimerShort =>
+      'a reference only — every baby differs';
+
+  @override
+  String get rhDayNotNoted => 'not noted';
+
+  @override
+  String get rhTodayShort => 'Today';
+
+  @override
+  String get rhLegendChanged => 'Something different';
+
+  @override
+  String rhSleepSparseShort(int have, int need) {
+    return 'Sleep logged in full on $have/$need days · log more to compare';
+  }
+
+  @override
+  String rhWeekObsChip(String what, int days) {
+    return '$what ×$days';
+  }
+
+  @override
+  String get pv2AgeNow => 'At this age';
+
+  @override
+  String get pv2NextIdea => 'Next idea';
+
+  @override
+  String get pv2WatchFor => 'When to see a doctor';
+
+  @override
+  String pv2WatchForCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count signs to watch',
+      one: '1 sign to watch',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pv2WeekTriedShort => 'tried';
+
+  @override
+  String get pv2WeekHelpfulShort => 'helpful';
+
+  @override
+  String get ntHandovers => 'Handovers';
+
+  @override
+  String get ntHandoversHint => 'When someone sends you a handover';
+
+  @override
+  String get aiSendToFamily => 'Send the handover';
+
+  @override
+  String get aiSendToOther => 'Send to someone else';
+
+  @override
+  String get aiShareOther => 'Share through another app…';
+
+  @override
+  String get aiShareShort => 'Share';
+
+  @override
+  String aiSentTo(String name, String time) {
+    return 'Sent to $name · $time';
+  }
+
+  @override
+  String get aiSendNotSeen => 'Not opened yet';
+
+  @override
+  String aiSendSeen(String name, String time) {
+    return '$name opened it · $time';
+  }
+
+  @override
+  String aiSendReceived(String name, String time) {
+    return '$name acknowledged it · $time';
+  }
+
+  @override
+  String aiSentToast(String name) {
+    return 'Sent to $name. They\'ll get a notification.';
+  }
+
+  @override
+  String aiSentNoPush(String name) {
+    return 'Sent to $name in the app, but they haven\'t turned notifications on. Also share through Zalo?';
+  }
+
+  @override
+  String get aiSendFailed =>
+      'Couldn\'t send it. Check the connection and try again.';
+
+  @override
+  String aiSentToYou(String name, String time) {
+    return '$name sent you this handover · $time';
+  }
+
+  @override
+  String aiYouReceived(String time) {
+    return 'You acknowledged it at $time';
+  }
+
+  @override
+  String aiSentToYouShort(String name) {
+    return '$name sent you a handover';
+  }
+
+  @override
+  String get aiNewBadge => 'New';
+
+  @override
+  String get sryAddTitle => 'Add to the story';
+
+  @override
+  String get sryKindParagraph => 'Text';
+
+  @override
+  String get sryKindPhotos => 'Photos';
+
+  @override
+  String get sryKindMilestone => 'Milestone';
+
+  @override
+  String get sryKindQuote => 'Quote';
 }

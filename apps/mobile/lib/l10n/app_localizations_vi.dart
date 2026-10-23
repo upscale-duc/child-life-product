@@ -13137,7 +13137,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhWeekInProgress => 'Tuần đang diễn ra · số liệu đến lúc này';
 
   @override
-  String get rhWeekShare => 'Gửi cho…';
+  String get rhWeekShare => 'Chia sẻ';
 
   @override
   String get rhWeekRecordedTitle => 'Đã ghi trong tuần';
@@ -18858,13 +18858,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2ToastUnsaved => 'Đã bỏ lưu.';
 
   @override
-  String hnCheckInDone(String what) {
-    return 'Hôm nay: $what';
+  String hnCheckInDone(String who) {
+    return '$who đã ghi hôm nay';
   }
 
   @override
-  String hnCheckInDoneSub(String who) {
-    return '$who đã ghi · Chạm để sửa hoặc thêm';
+  String hnCheckInDoneSub(String what) {
+    return 'Bé $what · Chạm để sửa';
   }
 
   @override
@@ -18940,4 +18940,136 @@ class AppLocalizationsVi extends AppLocalizations {
   String careAwakeNow(String duration) {
     return 'Đang thức · $duration';
   }
+
+  @override
+  String rhStageDaysLeft(int n) {
+    return 'còn $n ngày';
+  }
+
+  @override
+  String get rhStageLastDay => 'ngày cuối';
+
+  @override
+  String get rhCalendarDisclaimerShort => 'chỉ để tham khảo, mỗi bé một khác';
+
+  @override
+  String get rhDayNotNoted => 'chưa ghi';
+
+  @override
+  String get rhTodayShort => 'Nay';
+
+  @override
+  String get rhLegendChanged => 'Có điều khác';
+
+  @override
+  String rhSleepSparseShort(int have, int need) {
+    return 'Đã ghi đủ giấc ngủ $have/$need ngày · ghi thêm để so sánh';
+  }
+
+  @override
+  String rhWeekObsChip(String what, int days) {
+    return '$what ×$days';
+  }
+
+  @override
+  String get pv2AgeNow => 'Ở tuổi này';
+
+  @override
+  String get pv2NextIdea => 'Gợi ý tiếp theo';
+
+  @override
+  String get pv2WatchFor => 'Khi nào cần đưa bé đi khám';
+
+  @override
+  String pv2WatchForCount(int count) {
+    return '$count dấu hiệu cần lưu ý';
+  }
+
+  @override
+  String get pv2WeekTriedShort => 'đã thử';
+
+  @override
+  String get pv2WeekHelpfulShort => 'thấy có ích';
+
+  @override
+  String get ntHandovers => 'Bàn giao';
+
+  @override
+  String get ntHandoversHint => 'Khi có người gửi bàn giao cho bạn';
+
+  @override
+  String get aiSendToFamily => 'Gửi bàn giao';
+
+  @override
+  String get aiSendToOther => 'Gửi cho người khác';
+
+  @override
+  String get aiShareOther => 'Chia sẻ qua ứng dụng khác…';
+
+  @override
+  String get aiShareShort => 'Chia sẻ';
+
+  @override
+  String aiSentTo(String name, String time) {
+    return 'Đã gửi cho $name · $time';
+  }
+
+  @override
+  String get aiSendNotSeen => 'Chưa mở';
+
+  @override
+  String aiSendSeen(String name, String time) {
+    return '$name đã xem · $time';
+  }
+
+  @override
+  String aiSendReceived(String name, String time) {
+    return '$name đã nhận bàn giao · $time';
+  }
+
+  @override
+  String aiSentToast(String name) {
+    return 'Đã gửi cho $name. $name sẽ nhận được thông báo.';
+  }
+
+  @override
+  String aiSentNoPush(String name) {
+    return 'Đã gửi cho $name trong app, nhưng $name chưa bật thông báo. Gửi thêm qua Zalo?';
+  }
+
+  @override
+  String get aiSendFailed => 'Chưa gửi được. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String aiSentToYou(String name, String time) {
+    return '$name gửi bàn giao cho bạn · $time';
+  }
+
+  @override
+  String aiYouReceived(String time) {
+    return 'Bạn đã nhận bàn giao lúc $time';
+  }
+
+  @override
+  String aiSentToYouShort(String name) {
+    return '$name gửi bàn giao cho bạn';
+  }
+
+  @override
+  String get aiNewBadge => 'Mới';
+
+  @override
+  String get sryAddTitle => 'Thêm vào câu chuyện';
+
+  @override
+  String get sryKindParagraph => 'Đoạn văn';
+
+  @override
+  String get sryKindPhotos => 'Ảnh';
+
+  @override
+  String get sryKindMilestone => 'Mốc';
+
+  @override
+  String get sryKindQuote => 'Trích dẫn';
 }
