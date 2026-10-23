@@ -1,0 +1,145 @@
+{
+  "phase": 7,
+  "assets": [
+    {
+      "name": "p48-held-frame",
+      "file": "p48-held-frame.svg",
+      "title": "Held With Love · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-oval",
+      "file": "p48-held-oval.svg",
+      "title": "Held With Love · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-margin",
+      "file": "p48-held-margin.svg",
+      "title": "Held With Love · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-label",
+      "file": "p48-held-label.svg",
+      "title": "Held With Love · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-closing",
+      "file": "p48-held-closing.svg",
+      "title": "Held With Love · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-embrace",
+      "file": "p48-held-embrace.svg",
+      "title": "Held With Love · embrace",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-ribbon",
+      "file": "p48-held-ribbon.svg",
+      "title": "Held With Love · ribbon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-nested",
+      "file": "p48-held-nested.svg",
+      "title": "Held With Love · nested",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-nameplate",
+      "file": "p48-held-nameplate.svg",
+      "title": "Held With Love · nameplate",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-held-fold",
+      "file": "p48-held-fold.svg",
+      "title": "Held With Love · fold",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-frame",
+      "file": "p48-generations-frame.svg",
+      "title": "Across Generations · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-oval",
+      "file": "p48-generations-oval.svg",
+      "title": "Across Generations · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-margin",
+      "file": "p48-generations-margin.svg",
+      "title": "Across Generations · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-label",
+      "file": "p48-generations-label.svg",
+      "title": "Across Generations · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-closing",
+      "file": "p48-generations-closing.svg",
+      "title": "Across Generations · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-branch",
+      "file": "p48-generations-branch.svg",
+      "title": "Across Generations · branch",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-connection",
+      "file": "p48-generations-connection.svg",
+      "title": "Across Generations · connection",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-doubleframe",
+      "file": "p48-generations-doubleframe.svg",
+      "title": "Across Generations · doubleframe",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-archive",
+      "file": "p48-generations-archive.svg",
+      "title": "Across Generations · archive",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-generations-seal",
+      "file": "p48-generations-seal.svg",
+      "title": "Across Generations · seal",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

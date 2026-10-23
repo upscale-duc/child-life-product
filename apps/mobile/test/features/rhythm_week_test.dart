@@ -444,7 +444,7 @@ void main() {
             reminders: mockReminders(),
           ),
         );
-        expect(find.text('Tuần thứ 3 của Teddy'), findsOneWidget);
+        expect(find.text('Tuần vừa qua của Teddy'), findsOneWidget);
         expect(find.text('28 tháng 9 – 4 tháng 10'), findsOneWidget);
         expect(find.text(l10n.rhWeekInProgress), findsNothing);
         expect(find.text(l10n.rhWeekFeedCount(20)), findsOneWidget);
@@ -547,7 +547,7 @@ void main() {
             ),
           ),
         );
-        expect(find.text('Tuần thứ 4 của Teddy'), findsOneWidget);
+        expect(find.text('Tuần này của Teddy'), findsOneWidget);
         expect(find.text('5 – 11 tháng 10'), findsOneWidget);
         expect(find.text(l10n.rhWeekInProgress), findsOneWidget);
         // Sunday is still running: 6/7.
@@ -597,7 +597,8 @@ void main() {
       );
       expect(find.text('5 – 11 tháng 10'), findsOneWidget);
       expect(find.textContaining('Tuần 4'), findsNothing);
-      expect(find.text(l10n.rhWeekTitle), findsOneWidget);
+      // The caregiver's title names the baby, the dates say which week.
+      expect(find.textContaining('của Teddy'), findsOneWidget);
       expect(find.text(l10n.rhStageName(1)), findsNothing);
       // Bạn = Cô Lan herself; Mẹ and Ba by their family labels.
       expect(find.textContaining('Bạn 10 lần'), findsOneWidget);
@@ -630,7 +631,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.rhWeekNoAccess), findsNothing);
-      expect(find.text('Tuần thứ 3 của Teddy'), findsOneWidget);
+      expect(find.text('Tuần vừa qua của Teddy'), findsOneWidget);
       expect(find.text(l10n.rhWeekFeedCount(20)), findsOneWidget);
     });
 
@@ -656,10 +657,13 @@ void main() {
         ],
       );
       await _tap(tester, find.text(l10n.rhWeekShare));
+      // The sheet offers the picture first; the plain text is its second button.
+      expect(find.byKey(const Key('weekShareImage')), findsOneWidget);
+      await _tap(tester, find.byKey(const Key('weekShareText')));
       final text = shared.single;
       expect(
         text,
-        startsWith('Tuần thứ 3 của Teddy · 28 tháng 9 – 4 tháng 10'),
+        startsWith('Tuần vừa qua của Teddy · 28 tháng 9 – 4 tháng 10'),
       );
       expect(text, contains(l10n.rhWeekCoverage(5, 7)));
       expect(text, contains(l10n.rhWeekShareSleep(durationLabel(l10n, 792))));

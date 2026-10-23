@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app/providers.dart';
+import '../../app/session.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../home/home_shell.dart';
 import 'premium_models.dart';
@@ -28,6 +29,11 @@ class PremiumRepository {
   final SharedPreferences _prefs;
 
   static String _key(String babyId) => 'premium.capabilities.$babyId';
+
+  /// Who the kept answer was for: billing fields are per person, so another account on this
+  /// phone never draws from it.
+  static String _ownerKey(String babyId) =>
+      'premium.capabilities.owner.$babyId';
 
   Future<Map<String, dynamic>> _call(
     String name,
@@ -57,19 +63,25 @@ class PremiumRepository {
     }
   }
 
-  Future<Capabilities?> fetch(String babyId) async {
+  /// The kept answer, only when it was kept for [uid].
+  Capabilities? cachedFor(String babyId, String uid) =>
+      _prefs.getString(_ownerKey(babyId)) == uid ? cached(babyId) : null;
+
+  Future<Capabilities?> fetch(String babyId, {String? uid}) async {
     try {
       final caps = Capabilities.fromJson(
         await _call('getCapabilities', {'babyId': babyId}),
       );
       if (caps != null) {
         unawaited(_prefs.setString(_key(babyId), jsonEncode(caps.toJson())));
+        if (uid != null) unawaited(_prefs.setString(_ownerKey(babyId), uid));
       }
       return caps;
     } on PremiumException catch (e) {
       // Left the family: forget what this phone knew (brief p.8 "Offline").
       if (e.reason == 'not-a-member') {
         unawaited(_prefs.remove(_key(babyId)));
+        unawaited(_prefs.remove(_ownerKey(babyId)));
         return null;
       }
       return cached(babyId);
@@ -99,8 +111,14 @@ final capabilitiesProvider = FutureProvider.autoDispose
       // No Firebase (widget tests, a broken install): nothing to show. Touching
       // functionsProvider then would fail and leave Riverpod retry timers behind.
       if (Firebase.apps.isEmpty) return null;
+      final session = ref.watch(sessionProvider);
       try {
-        return await ref.watch(premiumRepositoryProvider).fetch(babyId);
+        return await ref
+            .watch(premiumRepositoryProvider)
+            .fetch(
+              babyId,
+              uid: session is SessionSignedIn ? session.user.uid : null,
+            );
       } on Object {
         // Anything else failing: nothing to show; the server decides every action anyway.
         return null;
@@ -120,11 +138,31 @@ Future<Capabilities?> readCapabilities(WidgetRef ref, String babyId) async {
   }
 }
 
-/// The selected baby's household.
+/// What the household may do for drawing the UI right away: the latest answer, or while it
+/// loads the one this phone kept for this person (owner, 2026-10-22: Lumi, "Dành cho bé hôm
+/// nay" and "Tuần này" no longer wait for `getCapabilities` on every launch). Only shapes the
+/// UI; the server decides every action, and the fresh answer replaces it when it arrives.
+final capabilitiesNowProvider = Provider.autoDispose
+    .family<Capabilities?, String>((ref, babyId) {
+      final fresh = ref.watch(capabilitiesProvider(babyId));
+      if (fresh.hasValue || fresh.hasError) return fresh.value;
+      if (Firebase.apps.isEmpty) return null;
+      final session = ref.watch(sessionProvider);
+      if (session is! SessionSignedIn) return null;
+      try {
+        return ref
+            .watch(premiumRepositoryProvider)
+            .cachedFor(babyId, session.user.uid);
+      } on Object {
+        return null;
+      }
+    });
+
+/// The selected baby's household (see [capabilitiesNowProvider]).
 final selectedCapabilitiesProvider = Provider<Capabilities?>((ref) {
   final me = ref.watch(selectedMembershipProvider);
   if (me == null) return null;
-  return ref.watch(capabilitiesProvider(me.babyId)).value;
+  return ref.watch(capabilitiesNowProvider(me.babyId));
 });
 
 /// Where the selected baby's family lives (D-078): the latest answer, else the one kept on this

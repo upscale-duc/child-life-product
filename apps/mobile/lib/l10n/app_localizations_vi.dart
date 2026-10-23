@@ -18217,10 +18217,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Title => 'Hôm nay của nhà mình';
 
   @override
-  String get pv2Open => 'Xem việc hữu ích hôm nay';
+  String get pv2Open => 'Xem chi tiết';
 
   @override
-  String get pv2Context => 'Hôm nay bạn có thể dành thời gian thế nào?';
+  String get pv2Context => 'Hôm nay bạn rảnh cỡ nào?';
 
   @override
   String get pv2Usual => 'Như mọi ngày';
@@ -18232,7 +18232,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Busy => 'Đang bận';
 
   @override
-  String get pv2Temporary => 'Lựa chọn hôm nay tự hết hạn vào cuối ngày.';
+  String get pv2Temporary => 'Ngày mai tự trở về \"Như mọi ngày\".';
 
   @override
   String get pv2Focus => 'Một điều muốn ưu tiên tuần này';
@@ -18247,14 +18247,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2NoFocus => 'Chưa chọn';
 
   @override
-  String get pv2Unusual => 'Sinh hoạt hôm nay khác thường';
+  String get pv2Unusual => 'Hôm nay bé không như mọi ngày';
 
   @override
   String get pv2UnusualHint =>
-      'Tạm dừng gợi ý theo nhịp; nhắc việc bạn đã đặt vẫn giữ nguyên.';
+      'Ví dụ bé ốm, đi xa hay nhà có khách. Hôm nay tạm ẩn nhịp bú, ngủ thường gặp cho cả nhà; nhắc việc vẫn giữ nguyên.';
 
   @override
-  String get pv2Next => 'Một việc vừa sức lúc này';
+  String get pv2Next => 'Gợi ý cho hôm nay';
 
   @override
   String get pv2BecauseNeed => 'Theo điều gia đình vừa ghi nhận hôm nay';
@@ -18275,25 +18275,25 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Minutes => 'phút';
 
   @override
-  String get pv2OpenActivity => 'Xem cách thực hiện';
+  String get pv2OpenActivity => 'Xem cách làm';
 
   @override
-  String get pv2Controls => 'Điều chỉnh gợi ý';
+  String get pv2Controls => 'Tuỳ chọn khác';
 
   @override
   String get pv2Save => 'Lưu lại';
 
   @override
-  String get pv2Hide => 'Ẩn thẻ này';
+  String get pv2Hide => 'Ẩn gợi ý này';
 
   @override
-  String get pv2Snooze => 'Hôm nay bận · để sau 3 ngày';
+  String get pv2Snooze => 'Để sau 3 ngày';
 
   @override
   String get pv2WorkSnooze => 'Để sau · ẩn đến hết hôm nay';
 
   @override
-  String get pv2Dislike => 'Tôi không thích gợi ý này';
+  String get pv2Dislike => 'Không hợp với nhà mình';
 
   @override
   String get pv2Known => 'Tôi đã biết rồi';
@@ -18414,7 +18414,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Ứng dụng dùng ghi chú đã xác nhận để chọn gợi ý. Ghi chú tự do không phải chỉ định y tế.';
 
   @override
-  String get pv2Work => 'Bàn giao trong 30 giây';
+  String get pv2Work => 'Bàn giao cho người chăm';
 
   @override
   String get pv2WorkHint =>
@@ -18461,7 +18461,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.';
 
   @override
-  String get pv2History => 'Điều đang dùng để cá nhân hoá';
+  String get pv2History => 'Đã lưu, đã thử và đã ẩn';
 
   @override
   String get pv2Saved => 'Đã lưu';
@@ -18662,4 +18662,272 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get engPaused =>
       'Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.';
+
+  @override
+  String get pv2HomeKicker => 'GỢI Ý HÔM NAY CHO BÉ';
+
+  @override
+  String get pv2More => 'Xem thêm';
+
+  @override
+  String get pv2TimeToday => 'Thời gian hôm nay';
+
+  @override
+  String get pv2UsualHint => 'Tối đa 3 gợi ý, dài ngắn tuỳ việc.';
+
+  @override
+  String get pv2FewMinutesHint => 'Chỉ gợi ý việc từ 5 phút trở xuống.';
+
+  @override
+  String get pv2BusyHint => 'Một việc ngắn duy nhất, hôm nay không nhắc gợi ý.';
+
+  @override
+  String get pv2Adjust => 'Điều chỉnh gợi ý';
+
+  @override
+  String get pv2FocusToggle => 'Tuần này ưu tiên chơi cùng con';
+
+  @override
+  String get pv2FocusHint => 'Gợi ý chơi được ưu tiên đến hết tuần này.';
+
+  @override
+  String get pv2DoneToday => 'Hôm nay bạn đã';
+
+  @override
+  String get pv2DoneTodayEmpty =>
+      'Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.';
+
+  @override
+  String get pv2NoIdeas =>
+      'Hôm nay chưa có gợi ý mới phù hợp. Bạn có thể xem lại những việc đã lưu.';
+
+  @override
+  String get pv2HowWasIt => 'Thấy sao?';
+
+  @override
+  String get pv2HowWasItTitle => 'Lần thử này thế nào?';
+
+  @override
+  String get pv2AlreadySaved => 'Gợi ý này đã nằm trong mục Đã lưu.';
+
+  @override
+  String get pv2Undo => 'Hoàn tác';
+
+  @override
+  String get pv2StatusSaved => 'Đã lưu';
+
+  @override
+  String get pv2StatusHidden => 'Đã ẩn';
+
+  @override
+  String get pv2StatusExcluded => 'Đã loại cho cả nhà';
+
+  @override
+  String pv2StatusIntend(String when) {
+    return 'Định thử · $when';
+  }
+
+  @override
+  String pv2StatusTried(String when) {
+    return 'Đã thử · $when';
+  }
+
+  @override
+  String pv2StatusSnoozed(String when) {
+    return 'Để sau đến $when';
+  }
+
+  @override
+  String get pv2ToastSaved =>
+      'Đã lưu. Xem lại trong \"Đã lưu, đã thử và đã ẩn\".';
+
+  @override
+  String get pv2ToastIntend =>
+      'Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".';
+
+  @override
+  String get pv2ToastTried =>
+      'Đã ghi bạn đã thử. Gợi ý này chuyển xuống \"Hôm nay bạn đã\".';
+
+  @override
+  String get pv2ToastOutcome => 'Cảm ơn bạn, đã ghi lại.';
+
+  @override
+  String get pv2ToastHidden => 'Đã ẩn gợi ý này.';
+
+  @override
+  String get pv2ToastSnoozed => 'Sẽ gợi ý lại sau 3 ngày.';
+
+  @override
+  String get pv2ToastWorkSnoozed =>
+      'Đã ẩn đến hết hôm nay. Việc vẫn còn trong Nhắc việc.';
+
+  @override
+  String get pv2ToastExcluded => 'Đã loại gợi ý này cho cả nhà.';
+
+  @override
+  String get pv2ToastRestored => 'Đã khôi phục gợi ý.';
+
+  @override
+  String pv2ToastContext(String choice) {
+    return 'Đã chọn \"$choice\". Gợi ý đã cập nhật.';
+  }
+
+  @override
+  String get pv2ToastFocusOn => 'Tuần này sẽ ưu tiên gợi ý chơi cùng con.';
+
+  @override
+  String get pv2ToastFocusOff => 'Đã bỏ ưu tiên tuần này.';
+
+  @override
+  String get pv2ToastUnusualOn => 'Đã ghi hôm nay bé không như mọi ngày.';
+
+  @override
+  String get pv2ToastUnusualOff => 'Đã bật lại nhịp thường gặp.';
+
+  @override
+  String get pv2ToastAcknowledged => 'Đã ghi bạn nhận bàn giao.';
+
+  @override
+  String pv2WorkCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc đang chờ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pv2NotesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ghi chú',
+      zero: 'Chưa có ghi chú',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pv2PatternsPaused => 'Đã tạm ẩn hôm nay';
+
+  @override
+  String get pv2PatternsNone => 'Chưa đủ dữ liệu';
+
+  @override
+  String pv2WeekLine(int tried, int helpful) {
+    return 'Tuần này: $tried đã thử · $helpful có ích';
+  }
+
+  @override
+  String get pv2AcknowledgedShort => 'Đã nhận bàn giao';
+
+  @override
+  String get pv2HiddenNow => 'Đang ẩn';
+
+  @override
+  String get pv2SavedNow => 'Đã lưu';
+
+  @override
+  String get pv2TriedBefore => 'Đã thử';
+
+  @override
+  String get pv2Reminders => 'Nhắc việc đang chờ';
+
+  @override
+  String get pv2ChipHelpful => 'Có ích';
+
+  @override
+  String get pv2ChipUnsure => 'Chưa rõ';
+
+  @override
+  String get pv2Unsave => 'Bỏ lưu';
+
+  @override
+  String get pv2ToastUnsaved => 'Đã bỏ lưu.';
+
+  @override
+  String hnCheckInDone(String what) {
+    return 'Hôm nay: $what';
+  }
+
+  @override
+  String hnCheckInDoneSub(String who) {
+    return '$who đã ghi · Chạm để sửa hoặc thêm';
+  }
+
+  @override
+  String ageWeeksDays(int weeks, int days) {
+    return '$weeks tuần $days ngày tuổi';
+  }
+
+  @override
+  String ageShortWeeksDays(int weeks, int days) {
+    return '$weeks tuần $days ngày';
+  }
+
+  @override
+  String rhWeekOfPast(String baby) {
+    return 'Tuần vừa qua của $baby';
+  }
+
+  @override
+  String rhWeekOfNow(String baby) {
+    return 'Tuần này của $baby';
+  }
+
+  @override
+  String get rhWeekShareSheet => 'Gửi tổng kết tuần';
+
+  @override
+  String get rhWeekShareImage => 'Gửi ảnh';
+
+  @override
+  String get rhWeekShareTextOnly => 'Gửi dạng chữ';
+
+  @override
+  String get rhWeekShareFooter => 'Từ nhật ký của cả nhà · Child Life';
+
+  @override
+  String get rhEditToday => 'Sửa ghi nhận hôm nay';
+
+  @override
+  String periodDiapers(int count) {
+    return '$count tã';
+  }
+
+  @override
+  String get dayStripsTitle => 'Từng ngày';
+
+  @override
+  String get dayNothingLogged => 'Chưa ghi';
+
+  @override
+  String dayFeedsLine(int count) {
+    return '$count cữ bú';
+  }
+
+  @override
+  String dayBreastLine(int minutes) {
+    return '$minutes phút bú mẹ';
+  }
+
+  @override
+  String daySleepLine(int count, String duration) {
+    return '$count giấc $duration';
+  }
+
+  @override
+  String get careWokeUp => 'Thức dậy';
+
+  @override
+  String careAwakeFor(String duration) {
+    return 'Thức $duration đến giấc sau';
+  }
+
+  @override
+  String careAwakeNow(String duration) {
+    return 'Đang thức · $duration';
+  }
 }

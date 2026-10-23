@@ -5,9 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:uuid/uuid.dart';
-import 'package:intl/intl.dart';
-import '../care/care_format.dart';
-import '../care/care_models.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/widgets/cl_button.dart';
@@ -15,8 +12,6 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
-import '../family/family_repository.dart' show familyMembersProvider;
-import 'rhythm_labels.dart' show memberLabel;
 import 'rhythm_access.dart';
 import '../me/me_widgets.dart';
 import '../reminders/device_identity.dart';
@@ -26,6 +21,15 @@ import 'personalization_v2_repository.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_models.dart';
 import 'rhythm_widgets.dart';
+import 'personal_day_pages.dart';
+import 'personal_day_widgets.dart';
+import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_choices.dart';
+import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_inputs.dart';
+import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../today/today_for_baby.dart' show ForBabyCard;
 
 PersonalDayKey? personalKey(BuildContext context, WidgetRef ref) {
@@ -75,6 +79,7 @@ String reasonDim(Object? reason) => switch (reason) {
 
 String responseLabel(AppLocalizations l, String value) => switch (value) {
   'save' => l.pv2Save,
+  'unsave' => l.pv2Unsave,
   'hide' => l.pv2Hide,
   'snooze' => l.pv2Snooze,
   'dislike' => l.pv2Dislike,
@@ -87,6 +92,8 @@ String responseLabel(AppLocalizations l, String value) => switch (value) {
   _ => l.pv2Unsure,
 };
 
+/// Saves [action] and says what changed in a toast, with "Hoàn tác" when the change can be taken
+/// back (P-172, owner 2026-10-22: every action is acknowledged where the person is looking).
 Future<bool> mutateDay(
   BuildContext context,
   WidgetRef ref,
@@ -94,9 +101,22 @@ Future<bool> mutateDay(
   Map<String, Object?> action,
 ) async {
   final l = AppLocalizations.of(context);
+  final before = ref.read(personalDayProvider(key)).value;
   try {
     await updatePersonalDay(ref, key, action);
-    if (context.mounted) showClToast(context, message: l.pv2ChangeSaved);
+    if (context.mounted) {
+      final undo = undoOf(action, before);
+      showClToast(
+        context,
+        message: actionToast(l, action),
+        actionLabel: undo == null ? null : l.pv2Undo,
+        onAction: undo == null
+            ? null
+            : () {
+                if (context.mounted) mutateDay(context, ref, key, undo);
+              },
+      );
+    }
     return true;
   } catch (error) {
     if (ref.context.mounted) ref.invalidate(personalDayProvider(key));
@@ -107,13 +127,49 @@ Future<bool> mutateDay(
       showClToast(
         context,
         message: conflict ? l.pv2Conflict : l.pv2Unavailable,
+        error: true,
       );
     }
     return false;
   }
 }
 
+/// A sheet of options, each a plain row; returns the chosen value.
+Future<String?> _optionSheet(
+  BuildContext context,
+  String title,
+  List<(String, String)> options,
+) => showClSheet<String>(
+  context: context,
+  builder: (sheet) => Padding(
+    padding: const EdgeInsets.fromLTRB(
+      ClSpace.s4,
+      ClSpace.s3,
+      ClSpace.s4,
+      ClSpace.s6,
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: title),
+        ClCardGroup(
+          color: sheet.cl.colors.surface2,
+          children: [
+            for (final (value, label) in options)
+              ClListRow(
+                title: label,
+                onTap: () => Navigator.of(sheet).pop(value),
+              ),
+          ],
+        ),
+      ],
+    ),
+  ),
+);
+
 /// Common per-viewer controls for cards from any module. Baby exclusions require a co-parent.
+/// Saving is the ♥ on the card; "Khôi phục" only shows while the card is put away.
 Future<void> dayCardControls(
   BuildContext context,
   WidgetRef ref,
@@ -122,29 +178,18 @@ Future<void> dayCardControls(
   bool parent = false,
 }) async {
   final l = AppLocalizations.of(context);
-  final choice = await showModalBottomSheet<String>(
-    context: context,
-    builder: (context) => SafeArea(
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          for (final value in [
-            'save',
-            'snooze',
-            'hide',
-            'dislike',
-            'known',
-            if (parent && contentId.startsWith('act_')) 'exclude',
-            'restore',
-          ])
-            ListTile(
-              title: Text(responseLabel(l, value)),
-              onTap: () => Navigator.of(context).pop(value),
-            ),
-        ],
-      ),
-    ),
-  );
+  final now = ref.read(careClockProvider).value ?? DateTime.now();
+  final away =
+      ref.read(personalDayProvider(key)).value?.suppressed(contentId, now) ??
+      false;
+  final choice = await _optionSheet(context, l.pv2Controls, [
+    for (final value in [
+      if (!away) ...['snooze', 'hide', 'dislike', 'known'],
+      if (!away && parent && contentId.startsWith('act_')) 'exclude',
+      if (away) 'restore',
+    ])
+      (value, responseLabel(l, value)),
+  ]);
   if (choice != null && context.mounted) {
     final ok = await mutateDay(context, ref, key, {
       'kind': 'respond',
@@ -164,16 +209,10 @@ Future<void> snoozeWorkCard(
   String cardId,
 ) async {
   final l = AppLocalizations.of(context);
-  final snooze = await showModalBottomSheet<bool>(
-    context: context,
-    builder: (context) => SafeArea(
-      child: ListTile(
-        title: Text(l.pv2WorkSnooze),
-        onTap: () => Navigator.of(context).pop(true),
-      ),
-    ),
-  );
-  if (snooze == true && context.mounted) {
+  final choice = await _optionSheet(context, l.pv2Controls, [
+    ('snooze', l.pv2WorkSnooze),
+  ]);
+  if (choice != null && context.mounted) {
     final ok = await mutateDay(context, ref, key, {
       'kind': 'respond',
       'contentId': cardId,
@@ -183,6 +222,8 @@ Future<void> snoozeWorkCard(
   }
 }
 
+/// "Gợi ý hôm nay cho bé" on Home, first in "Dành cho bé hôm nay": the one idea, its next step
+/// and what the person already did with it, then what they tried today and today's time.
 class PersonalDayHome extends ConsumerWidget {
   const PersonalDayHome({this.primary, super.key});
   final ForBabyCard? primary;
@@ -190,126 +231,321 @@ class PersonalDayHome extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final key = personalKey(context, ref);
     if (key == null) return const SizedBox.shrink();
-    final day = ref.watch(personalDayProvider(key)).value;
+    final day = ref.watch(personalDayHomeProvider(key));
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    final l = AppLocalizations.of(context);
     if (day == null || !day.current(now)) return const SizedBox.shrink();
-    final candidate =
-        day.health || day.work.isNotEmpty || day.activityIds.isEmpty
-        ? null
-        : ref
-              .watch(rhythmContentProvider)
-              .value
-              ?.activity(day.activityIds.first);
-    final activity =
-        candidate?.status == ContentStatus.published &&
-            day.data['contentVersion'] ==
-                ref.watch(rhythmContentProvider).value?.version
-        ? candidate
+    final l = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    final content = ref.watch(rhythmContentProvider).value;
+    final card = primary;
+    final activity = card != null && card.id.startsWith('act_')
+        ? content?.activity(card.id)
         : null;
-    return Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: RhCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(l.pv2Title, style: context.cl.text.bodyStrong),
-            if (day.writable)
-              Wrap(
-                spacing: 6,
-                children: [
-                  for (final value in dayContexts)
-                    ChoiceChip(
-                      label: Text(contextLabel(l, value)),
-                      selected: day.context == value,
-                      onSelected: (_) => mutateDay(context, ref, key, {
-                        'kind': 'context',
-                        'value': value,
-                      }),
-                    ),
-                ],
+    final status = card == null
+        ? const <PersonalStatus>[]
+        : responseStatus(l, day, card.id, locale, now);
+    final canRespond = day.writable && card != null && !card.essential;
+    final steps = activity != null && day.writable
+        ? nextSteps(day, activity.id)
+        : const <String>[];
+    final stepFirst = steps.isNotEmpty && !steps.contains('intend');
+    final tried = [
+      for (final id in actedToday(day))
+        if (id != card?.id && onDay(day, dayMap(day.responses[id])['triedAt']))
+          id,
+    ].take(2);
+    final kicker = activity != null || card == null
+        ? l.pv2HomeKicker
+        : card.kicker.toUpperCase();
+
+    return RhCard(
+      key: const Key('personalDayHome'),
+      outline: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              ClIcon(ClIcons.heart, size: 14, color: cl.colors.mintText),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  kicker,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: cl.text.caption.copyWith(
+                    color: cl.colors.mintText,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.4,
+                  ),
+                ),
               ),
-            if (primary != null) ...[
-              const SizedBox(height: 8),
-              PersonalImpression(
-                identity:
-                    '${key.uid}:${key.babyId}:${day.data['today']}:${primary!.id}',
-                reason: primary!.id.startsWith('act_')
-                    ? reasonDim(day.data['reason'])
-                    : switch (primary!.priority) {
-                        0 => 'health',
-                        1 => 'reminder',
-                        2 => 'module',
-                        3 => 'rhythm',
-                        4 => 'milestone',
-                        5 => 'moments',
-                        _ => 'AGE_CONTENT',
-                      },
-                child: Text(primary!.title, style: context.cl.text.bodyStrong),
+              PersonalTextAction(
+                key: const Key('personalDayMore'),
+                label: l.pv2More,
+                chevron: true,
+                onTap: () => context.push(Routes.personalDay),
               ),
-              ClButton(
-                label: primary!.action,
-                expand: true,
-                onPressed: () => primary!.onOpen(context),
-              ),
-              // P-172 (audit 2026-10-21 P2 #4): an essential card with its own × (a work
-              // card) can still be put off; it has no ♥.
-              if (day.writable &&
-                  (!primary!.essential || primary!.onDismiss != null))
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (!primary!.essential)
-                      IconButton(
-                        tooltip: l.pv2Save,
-                        icon: const Icon(Icons.favorite_border),
-                        onPressed: () => mutateDay(context, ref, key, {
-                          'kind': 'respond',
-                          'contentId': primary!.id,
-                          'value': 'save',
-                        }),
-                      ),
-                    IconButton(
-                      tooltip: l.pv2Controls,
-                      icon: const Icon(Icons.close),
-                      onPressed: () => switch (primary!.onDismiss) {
-                        final dismiss? => dismiss(context, ref),
-                        null => dayCardControls(
-                          context,
-                          ref,
-                          key,
-                          primary!.id,
-                          parent: day.parent,
+            ],
+          ),
+          if (card != null) ...[
+            const SizedBox(height: ClSpace.s1),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: PersonalImpression(
+                    identity:
+                        '${key.uid}:${key.babyId}:${day.data['today']}:${card.id}',
+                    reason: card.id.startsWith('act_')
+                        ? reasonDim(day.data['reason'])
+                        : switch (card.priority) {
+                            0 => 'health',
+                            1 => 'reminder',
+                            2 => 'module',
+                            3 => 'rhythm',
+                            4 => 'milestone',
+                            5 => 'moments',
+                            _ => 'AGE_CONTENT',
+                          },
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        card.title,
+                        style: cl.text.headline.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
-                      },
+                      ),
+                    ),
+                  ),
+                ),
+                if (canRespond)
+                  PersonalSaveButton(dayKey: key, day: day, contentId: card.id),
+                // P-172 (audit 2026-10-21 P2 #4): an essential card with its own × (a work
+                // card) can still be put off; it has no save.
+                if (day.writable && (canRespond || card.onDismiss != null))
+                  PersonalMoreButton(
+                    onPressed: () => switch (card.onDismiss) {
+                      final dismiss? => dismiss(context, ref),
+                      null => dayCardControls(
+                        context,
+                        ref,
+                        key,
+                        card.id,
+                        parent: day.parent,
+                      ),
+                    },
+                  ),
+              ],
+            ),
+            if (activity != null) ...[
+              const SizedBox(height: ClSpace.s1),
+              Text(
+                '${activity.durationMin} ${l.pv2Minutes} · ${activity.id == day.activityIds.firstOrNull ? reasonLabel(l, day.data['reason']) : l.pv2BecauseAge}',
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              ),
+            ],
+            if (status.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s2),
+              PersonalStatusChips(status),
+            ],
+            const SizedBox(height: ClSpace.s3),
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              children: pillOrder(stepFirst, [
+                // Owner, 2026-10-22: once the person has planned (or tried), their next step
+                // takes the primary style, so the change shows without reading the status.
+                RhPillButton(
+                  label: card.action,
+                  primary: !stepFirst,
+                  onTap: () => card.onOpen(context),
+                ),
+                if (steps.firstOrNull case final step?)
+                  RhPillButton(
+                    key: Key('personalDayStep:$step'),
+                    label: step == 'helpful'
+                        ? l.pv2HowWasIt
+                        : responseLabel(l, step),
+                    primary: stepFirst,
+                    onTap: () async {
+                      if (step == 'helpful') {
+                        await askOutcome(context, ref, key, activity!.id);
+                        return;
+                      }
+                      final ok = await mutateDay(context, ref, key, {
+                        'kind': 'respond',
+                        'contentId': activity!.id,
+                        'value': step,
+                      });
+                      if (ok) {
+                        personalEvent(ref, 'personalizationOutcome', step);
+                      }
+                    },
+                  ),
+              ]),
+            ),
+          ] else ...[
+            const SizedBox(height: ClSpace.s2),
+            Text(
+              l.pv2NoIdeas,
+              style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+          // What was tried today stays on the card, each with its chips and, until answered,
+          // "Thấy sao?" as its own button (owner, 2026-10-22: no text squeezed beside it).
+          if (tried.isNotEmpty) ...[
+            const SizedBox(height: ClSpace.s4),
+            Container(height: 1, color: cl.colors.separator),
+            const SizedBox(height: ClSpace.s3),
+            Text(
+              l.pv2DoneToday,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+            for (final id in tried)
+              Padding(
+                padding: const EdgeInsets.only(top: ClSpace.s2),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            content?.activity(id)?.title.of(locale) ??
+                                l.pv2Saved,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.label.copyWith(
+                              color: cl.colors.ink,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          PersonalStatusChips(
+                            responseStatus(l, day, id, locale, now),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (day.writable &&
+                        nextSteps(day, id).firstOrNull == 'helpful') ...[
+                      const SizedBox(width: ClSpace.s2),
+                      RhPillButton(
+                        label: l.pv2HowWasIt,
+                        primary: false,
+                        onTap: () => askOutcome(context, ref, key, id),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+          if (day.writable) ...[
+            const SizedBox(height: ClSpace.s3),
+            Container(height: 1, color: cl.colors.separator),
+            ClPressable(
+              key: const Key('personalDayContext'),
+              onPressed: () => chooseDayContext(context, ref, key, day),
+              semanticLabel:
+                  '${l.pv2TimeToday}: ${contextLabel(l, day.context)}',
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+                child: Row(
+                  children: [
+                    ClIcon(ClIcons.clock, size: 16, color: cl.colors.inkMuted),
+                    const SizedBox(width: ClSpace.s2),
+                    Expanded(
+                      child: Text(
+                        l.pv2TimeToday,
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      contextLabel(l, day.context),
+                      style: cl.text.label.copyWith(
+                        color: cl.colors.ink,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    ClIcon(
+                      ClIcons.chevronRight,
+                      size: 14,
+                      color: cl.colors.inkMuted,
                     ),
                   ],
                 ),
-            ] else if (activity != null) ...[
-              const SizedBox(height: 8),
-              PersonalImpression(
-                identity:
-                    '${key.uid}:${key.babyId}:${day.data['today']}:${activity.id}',
-                child: Text(
-                  activity.title.of(Localizations.localeOf(context)),
-                  style: context.cl.text.bodyStrong,
-                ),
               ),
-              Text('${activity.durationMin} ${l.pv2Minutes}'),
-            ],
-            const SizedBox(height: 8),
-            ClButton(
-              label: l.pv2Open,
-              expand: true,
-              style: ClButtonStyle.secondary,
-              onPressed: () => context.push(Routes.personalDay),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// The Home card's place while today's snapshot loads: its kicker and grey lines of the same
+/// height, so nothing jumps when it arrives.
+class PersonalDayHomePlaceholder extends StatelessWidget {
+  const PersonalDayHomePlaceholder({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final cl = context.cl;
+    Widget bar(double width, double height) => Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: cl.colors.surface2,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+      ),
+    );
+    return Semantics(
+      label: l.pv2Loading,
+      child: RhCard(
+        key: const Key('personalDayHomePlaceholder'),
+        outline: true,
+        child: ExcludeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  ClIcon(ClIcons.heart, size: 14, color: cl.colors.mintText),
+                  const SizedBox(width: 6),
+                  Text(
+                    l.pv2HomeKicker,
+                    style: cl.text.caption.copyWith(
+                      color: cl.colors.mintText,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: ClSpace.s3),
+              bar(220, 18),
+              const SizedBox(height: ClSpace.s2),
+              bar(160, 14),
+              const SizedBox(height: ClSpace.s4),
+              bar(120, ClSpace.tapMin),
+              const SizedBox(height: ClSpace.s3),
+              bar(double.infinity, 14),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+/// The open button first, unless the person's next step leads (then it moves to the end).
+List<Widget> pillOrder(bool stepFirst, List<Widget> pills) =>
+    stepFirst && pills.length > 1 ? [...pills.skip(1), pills.first] : pills;
 
 /// B2 extends the existing Sunday summary; it never introduces another weekly notification.
 class PersonalWeekBlock extends ConsumerWidget {
@@ -355,466 +591,358 @@ class PersonalWeekBlock extends ConsumerWidget {
   }
 }
 
-class PersonalizationDayScreen extends ConsumerStatefulWidget {
+/// "Hôm nay của nhà mình": today's ideas first, then what the person did today, then the
+/// settings for today; handover, rhythm, notebook and history are pages of their own.
+class PersonalizationDayScreen extends StatelessWidget {
   const PersonalizationDayScreen({super.key});
   @override
-  ConsumerState<PersonalizationDayScreen> createState() =>
-      _PersonalizationDayScreenState();
+  Widget build(BuildContext context) => PersonalDayPage(
+    title: (l) => l.pv2Title,
+    onShown: (ref, key, day) =>
+        engagementContentViewed(ref, key.babyId, 'personal_day', key.babyId),
+    builder: _dayChildren,
+  );
 }
 
-class _PersonalizationDayScreenState
-    extends ConsumerState<PersonalizationDayScreen> {
-  bool _busy = false;
-  final _engagementViewed = <String>{};
-  Future<bool> _write(PersonalDayKey key, Map<String, Object?> action) async {
-    if (_busy) return false;
-    setState(() => _busy = true);
-    final ok = await mutateDay(context, ref, key, action);
-    if (mounted) setState(() => _busy = false);
-    return ok;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final key = personalKey(context, ref);
-    if (key == null) return MePage(title: l.pv2Title, children: const []);
-    final state = ref.watch(personalDayProvider(key));
-    final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    final day = state.value;
-    if (day == null || !day.current(now)) {
-      return MePage(
-        title: l.pv2Title,
-        children: [
-          Text(state.isLoading ? l.pv2Loading : l.pv2Unavailable),
-          ClButton(
-            label: l.pv2Retry,
-            onPressed: () => ref.invalidate(personalDayProvider(key)),
-          ),
-        ],
-      );
-    }
-    if (_engagementViewed.add('${key.babyId}/${day.data['handoverVersion']}')) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-          unawaited(
-            engagementContentViewed(
-              ref,
-              key.babyId,
-              'personal_day',
-              key.babyId,
-            ),
-          );
-        }
-      });
-    }
-    final content = ref.watch(rhythmContentProvider).value;
-    final locale = Localizations.localeOf(context);
-    final responses = day.responses;
-    final members =
-        ref.watch(familyMembersProvider(key.babyId)).value ?? const [];
-    String when(Object? value) {
-      final at = DateTime.tryParse('$value');
-      return at == null
-          ? ''
-          : DateFormat('dd/MM HH:mm', locale.languageCode).format(
-              inBabyZone(day.data['zone'] as String? ?? 'Asia/Ho_Chi_Minh', at),
-            );
-    }
-
-    final device = ref.watch(deviceIdentityProvider).value;
-    final delivery = dayMap(day.data['delivery']);
-    Widget heading(String label) => Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 8),
-      child: Text(label, style: context.cl.text.headline),
-    );
-    Widget button(String label, VoidCallback action) => Padding(
-      padding: const EdgeInsets.only(top: 6),
-      child: ClButton(
-        label: label,
+List<Widget> _dayChildren(
+  BuildContext context,
+  WidgetRef ref,
+  PersonalDayKey key,
+  PersonalDay day,
+  PersonalDayWrite write,
+  bool busy,
+) {
+  final l = AppLocalizations.of(context);
+  final cl = context.cl;
+  final locale = Localizations.localeOf(context);
+  final content = ref.watch(rhythmContentProvider).value;
+  final ideas = [
+    if (!day.health && day.data['contentVersion'] == content?.version)
+      for (final id in day.activityIds)
+        if (content?.activity(id) case final a?
+            when a.status == ContentStatus.published)
+          a,
+  ];
+  final shown = {for (final a in ideas) a.id};
+  final done = actedToday(day).where((id) => !shown.contains(id)).toList();
+  final device = ref.watch(deviceIdentityProvider).value;
+  final delivery = dayMap(day.data['delivery']);
+  final weekly = dayMap(day.data['weekly']);
+  final firstPattern = day.patterns.firstOrNull;
+  final caption = cl.text.caption.copyWith(color: cl.colors.inkMuted);
+  return [
+    if (day.health)
+      ClButton(
+        label: l.rhHealthCardAction,
         expand: true,
-        style: ClButtonStyle.secondary,
-        onPressed: _busy ? null : action,
+        onPressed: () => context.push(Routes.rhythmHealth),
+      )
+    else ...[
+      PersonalHeading(
+        l.pv2Next,
+        sub: day.context == 'usual'
+            ? null
+            : '${contextLabel(l, day.context)}: ${contextHint(l, day.context)}',
       ),
-    );
-    return MePage(
-      title: l.pv2Title,
-      children: [
-        if (_busy) const LinearProgressIndicator(),
-        button(l.pv2Refresh, () => ref.invalidate(personalDayProvider(key))),
-        if (day.writable) ...[
-          heading(l.pv2Context),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final value in dayContexts)
-                ChoiceChip(
-                  label: Text(contextLabel(l, value)),
-                  selected: day.context == value,
-                  onSelected: _busy
-                      ? null
-                      : (_) => _write(key, {'kind': 'context', 'value': value}),
-                ),
-            ],
-          ),
-          Text(l.pv2Temporary, style: context.cl.text.caption),
-          heading(l.pv2Focus),
-          Wrap(
-            spacing: 6,
-            children: [
-              for (final pair in [(null, l.pv2NoFocus), ('play', l.pv2Play)])
-                ChoiceChip(
-                  label: Text(pair.$2),
-                  selected: day.data['focus'] == pair.$1,
-                  onSelected: _busy
-                      ? null
-                      : (_) => _write(key, {'kind': 'focus', 'value': pair.$1}),
-                ),
-            ],
-          ),
-          if (day.parent)
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l.pv2Unusual),
-              subtitle: Text(l.pv2UnusualHint),
-              value: day.data['unusual'] == true,
-              onChanged: _busy
-                  ? null
-                  : (value) =>
-                        _write(key, {'kind': 'routine', 'unusual': value}),
-            ),
-        ],
-        if (day.health)
-          button(l.rhHealthCardAction, () => context.push(Routes.rhythmHealth)),
-        if (!day.health) ...[
-          heading(l.pv2Next),
-          for (final id in day.activityIds.where(
-            (_) => day.data['contentVersion'] == content?.version,
-          ))
-            if (content?.activity(id) case final activity?
-                when activity.status == ContentStatus.published)
-              PersonalImpression(
-                identity: '${key.uid}:${key.babyId}:${day.data['today']}:$id',
-                reason: reasonDim(day.data['reason']),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: RhCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          activity.title.of(locale),
-                          style: context.cl.text.bodyStrong,
-                        ),
-                        Text('${activity.durationMin} ${l.pv2Minutes}'),
-                        Text(reasonLabel(l, day.data['reason'])),
-                        button(
-                          l.pv2OpenActivity,
-                          () => context.push('${Routes.rhythmActivity}/$id'),
-                        ),
-                        if (day.writable) ...[
-                          button(
-                            l.pv2Controls,
-                            () => dayCardControls(
-                              context,
-                              ref,
-                              key,
-                              id,
-                              parent: day.parent,
-                            ),
-                          ),
-                          for (final value in [
-                            if (dayMap(responses[id])['value'] != 'intend')
-                              'intend',
-                            if (dayMap(responses[id])['triedAt'] == null)
-                              'tried',
-                            if (dayMap(responses[id])['triedAt'] != null) ...[
-                              'helpful',
-                              'unsure',
-                            ],
-                          ])
-                            button(responseLabel(l, value), () async {
-                              final ok = await _write(key, {
-                                'kind': 'respond',
-                                'contentId': id,
-                                'value': value,
-                              });
-                              if (mounted && ok) {
-                                personalEvent(
-                                  ref,
-                                  'personalizationOutcome',
-                                  value,
-                                );
-                              }
-                            }),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-          if (day.activityIds.isEmpty && day.data['ageCardId'] != null)
-            button(
-              l.rhWeekTitle,
-              () =>
-                  context.push('${Routes.rhythmAge}/${day.data['ageCardId']}'),
-            ),
-          Text(l.pv2NoAnswer, style: context.cl.text.caption),
-        ],
-        heading(l.pv2Patterns),
-        if (dayMap(day.data['sleep']) case final sleep
-            when sleep['baseline'] is num && sleep['recent'] is num)
-          Text(
-            '${l.pv2SleepRecent}: ${(sleep['recent'] as num).round()} ${l.pv2Minutes} · ${l.pv2SleepBaseline}: ${(sleep['baseline'] as num).round()} ${l.pv2Minutes}',
-          ),
-        Text(l.pv2PatternHint),
-        if (day.patterns.isEmpty) Text(l.pv2Insufficient),
-        for (final pattern in day.patterns)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              pattern['kind'] == 'feed_interval'
-                  ? l.pv2FeedPattern
-                  : l.pv2SleepPattern,
-            ),
-            subtitle: Text(
-              '${pattern['lowMinutes']}–${pattern['highMinutes']} ${l.pv2Minutes} · ${pattern['samples']} ${l.pv2Samples} · ${pattern['days']} ${l.pv2Days}\n${l.pv2Updated}: ${when(pattern['asOf'])}',
-            ),
-            trailing: day.parent && pattern['kind'] == 'feed_interval'
-                ? IconButton(
-                    tooltip: l.pv2PatternReminder,
-                    icon: const Icon(Icons.notifications_outlined),
-                    onPressed: () {
-                      final midpoint =
-                          ((pattern['lowMinutes'] as num) +
-                              (pattern['highMinutes'] as num)) /
-                          2;
-                      final interval = ((midpoint / 15).round() * 15).clamp(
-                        30,
-                        720,
-                      );
-                      context.push('${Routes.ruleNew}?interval=$interval');
-                    },
-                  )
-                : null,
-          ),
-        heading(l.pv2Work),
-        Text(l.pv2WorkHint),
-        for (final record in dayRows(day.data['lastRecords']))
-          Text(
-            '${careTypeLabel(l, CareType.values.where((t) => t.name == record['type']).firstOrNull ?? CareType.bottle)} · ${when(record['at'])}${record['amountMl'] is num ? ' · ${l.amountMl((record['amountMl'] as num).round())}' : ''}',
-          ),
-        if (day.work.isEmpty) Text(l.pv2NoWork),
-        for (final work in day.work)
-          RhCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('${work['title']}', style: context.cl.text.bodyStrong),
-                Text(
-                  '${when(work['dueAt'])} · ${work['state'] == 'accepted' ? l.pv2Accepted : l.pv2Unclaimed}',
-                ),
-                if (work['actorUid'] case final String uid)
-                  Text(
-                    memberLabel(
-                      l,
-                      members.where((m) => m.uid == uid).firstOrNull,
-                      myUid: key.uid,
-                      uid: uid,
-                    ),
-                  ),
-                if (work['canAct'] == true) ...[
-                  if (work['state'] == 'unclaimed')
-                    button(
-                      l.pv2Accept,
-                      () => _write(key, {
-                        'kind': 'work',
-                        'reminderId': work['id'],
-                        'transition': 'accept',
-                        'revision': work['revision'],
-                      }),
-                    ),
-                  if (work['state'] == 'accepted' &&
-                      (work['actorUid'] == key.uid || day.parent)) ...[
-                    button(
-                      l.pv2Complete,
-                      () => _write(key, {
-                        'kind': 'work',
-                        'reminderId': work['id'],
-                        'transition': 'complete',
-                        'revision': work['revision'],
-                      }),
-                    ),
-                    button(
-                      l.pv2Release,
-                      () => _write(key, {
-                        'kind': 'work',
-                        'reminderId': work['id'],
-                        'transition': 'release',
-                        'revision': work['revision'],
-                      }),
-                    ),
-                  ],
-                ],
-              ],
+      for (final (i, activity) in ideas.indexed)
+        Padding(
+          padding: const EdgeInsets.only(bottom: ClSpace.s3),
+          child: PersonalImpression(
+            identity:
+                '${key.uid}:${key.babyId}:${day.data['today']}:${activity.id}',
+            reason: reasonDim(day.data['reason']),
+            child: _IdeaCard(
+              dayKey: key,
+              day: day,
+              activity: activity,
+              first: i == 0,
+              write: write,
             ),
           ),
-        if (day.writable)
-          button(
-            l.pv2Acknowledge,
-            () => _write(key, {
-              'kind': 'acknowledge',
-              'version': day.data['handoverVersion'],
-            }),
-          ),
-        if (day.data['acknowledgedAt'] != null)
-          Text('${l.pv2Acknowledged} ${when(day.data['acknowledgedAt'])}'),
-        if (day.data['handoverChanged'] == true)
-          Text(l.pv2HandoverChanged, style: context.cl.text.bodyStrong),
-        heading(l.pv2Notes),
-        Text(l.pv2NoteHint),
-        for (final note in [...day.notes, ...dayRows(day.data['expiredNotes'])])
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text('${note['text']}'),
-            subtitle: Text(
-              '${note['scope'] == 'person' ? l.pv2Personal : l.pv2Shared}\n${l.pv2Updated}: ${when(note['confirmedAt'])}${dayRows(day.data['expiredNotes']).any((n) => n['id'] == note['id']) ? '\n${l.pv2ExpiredNote}' : ''}',
-            ),
-            trailing:
-                day.writable &&
-                    (note['authorUid'] == key.uid ||
-                        day.parent && note['scope'] == 'baby')
-                ? PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        showNotebookEditor(
-                          context,
-                          ref,
-                          key,
-                          day.parent,
-                          note: note,
-                        );
-                      } else {
-                        _write(key, {
-                          'kind': 'delete_note',
-                          'id': note['id'],
-                          'revision': note['revision'],
-                        });
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(value: 'edit', child: Text(l.pv2Edit)),
-                      PopupMenuItem(value: 'delete', child: Text(l.pv2Delete)),
-                    ],
-                  )
-                : null,
-          ),
-        if (day.writable)
-          button(
-            l.pv2AddNote,
-            () => showNotebookEditor(context, ref, key, day.parent),
-          ),
-        heading(l.pv2Weekly),
-        Text(
-          '${dayMap(day.data['weekly'])['tried'] ?? 0} ${l.pv2WeekTried} · ${dayMap(day.data['weekly'])['helpful'] ?? 0} ${l.pv2WeekHelpful}',
         ),
-        Text(l.pv2WeekHint),
-        heading(l.pv2History),
-        if (day.parent)
-          for (final exclusion in dayRows(day.data['sharedExclusions']))
-            ListTile(
-              title: Text(
-                content?.activity('${exclusion['id']}')?.title.of(locale) ??
-                    l.rhUnknownActivity,
-              ),
-              subtitle: Text(l.pv2Exclude),
-              trailing: TextButton(
-                onPressed: _busy
-                    ? null
-                    : () => _write(key, {
-                        'kind': 'respond',
-                        'contentId': exclusion['id'],
-                        'value': 'restore',
-                        'scope': 'baby',
-                      }),
-                child: Text(l.pv2Restore),
-              ),
-            ),
-        for (final entry in responses.entries)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              content?.activity(entry.key)?.title.of(locale) ?? l.pv2Saved,
-            ),
-            subtitle: Text(responseLabel(l, '${dayMap(entry.value)['value']}')),
-            trailing: day.writable
-                ? PopupMenuButton<String>(
-                    tooltip: l.pv2Controls,
-                    onSelected: (value) async {
-                      final ok = await _write(key, {
-                        'kind': 'respond',
-                        'contentId': entry.key,
-                        'value': value,
-                      });
-                      if (mounted &&
-                          ok &&
-                          [
-                            'intend',
-                            'tried',
-                            'helpful',
-                            'unsure',
-                          ].contains(value)) {
-                        personalEvent(ref, 'personalizationOutcome', value);
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      for (final value in [
-                        if (dayMap(entry.value)['intendedAt'] != null &&
-                            dayMap(entry.value)['triedAt'] == null)
-                          'tried',
-                        if (dayMap(entry.value)['triedAt'] != null) ...[
-                          'helpful',
-                          'unsure',
-                        ],
-                        'restore',
-                      ])
-                        PopupMenuItem(
-                          value: value,
-                          child: Text(responseLabel(l, value)),
-                        ),
-                    ],
-                  )
-                : null,
+      if (ideas.isEmpty) ...[
+        Text(
+          l.pv2NoIdeas,
+          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+        ),
+        if (day.data['ageCardId'] != null)
+          RhLink(
+            label: l.rhWeekTitle,
+            start: true,
+            onTap: () =>
+                context.push('${Routes.rhythmAge}/${day.data['ageCardId']}'),
           ),
-        if (day.writable)
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l.pv2Digest),
-            subtitle: Text(l.pv2DigestHint),
-            value:
-                delivery['enabled'] == true &&
-                delivery['deviceId'] == device?.id,
-            onChanged: _busy || device == null
-                ? null
-                : (enabled) async {
-                    if (enabled &&
-                        !await ref
-                            .read(reminderNotificationsProvider)
-                            .request()) {
-                      return;
-                    }
-                    if (mounted) {
-                      await _write(key, {
+      ],
+      Text(l.pv2NoAnswer, style: caption),
+    ],
+    PersonalHeading(l.pv2DoneToday),
+    if (done.isEmpty)
+      Text(l.pv2DoneTodayEmpty, style: caption)
+    else
+      ClCardGroup(
+        children: [
+          for (final id in done.take(8))
+            _DoneRow(dayKey: key, day: day, id: id, write: write),
+        ],
+      ),
+    if (day.writable) ...[
+      PersonalHeading(l.pv2Adjust),
+      Text(l.pv2Context, style: cl.text.bodyStrong),
+      const SizedBox(height: ClSpace.s2),
+      DayContextOptions(
+        selected: day.context,
+        onSelect: busy
+            ? null
+            : (value) => write({'kind': 'context', 'value': value}),
+      ),
+      const SizedBox(height: ClSpace.s1),
+      Text(l.pv2Temporary, style: caption),
+      const SizedBox(height: ClSpace.s3),
+      ClCardGroup(
+        children: [
+          MeRow(
+            title: l.pv2FocusToggle,
+            subtitle: l.pv2FocusHint,
+            trailing: ClToggle(
+              key: const Key('personalDayFocus'),
+              semanticLabel: l.pv2FocusToggle,
+              value: day.data['focus'] == 'play',
+              onChanged: busy
+                  ? null
+                  : (on) =>
+                        write({'kind': 'focus', 'value': on ? 'play' : null}),
+            ),
+          ),
+          MeRow(
+            title: l.pv2Digest,
+            subtitle: l.pv2DigestHint,
+            trailing: ClToggle(
+              semanticLabel: l.pv2Digest,
+              value:
+                  delivery['enabled'] == true &&
+                  delivery['deviceId'] == device?.id,
+              onChanged: busy || device == null
+                  ? null
+                  : (enabled) async {
+                      if (enabled &&
+                          !await ref
+                              .read(reminderNotificationsProvider)
+                              .request()) {
+                        return;
+                      }
+                      await write({
                         'kind': 'digest',
                         'enabled': enabled,
                         'deviceId': device.id,
                       });
+                    },
+            ),
+          ),
+        ],
+      ),
+    ],
+    const SizedBox(height: ClSpace.s6),
+    ClCardGroup(
+      children: [
+        MeRow(
+          key: const Key('personalDayHandover'),
+          icon: ClIcons.family,
+          title: l.pv2Work,
+          subtitle: day.work.isNotEmpty
+              ? l.pv2WorkCount(day.work.length)
+              : day.data['acknowledgedAt'] != null &&
+                    day.data['handoverChanged'] != true
+              ? '${l.pv2AcknowledgedShort} · ${dayStamp(day, day.data['acknowledgedAt'], locale)}'
+              : l.pv2NoWork,
+          onTap: () => context.push(Routes.personalDayHandover),
+        ),
+        MeRow(
+          key: const Key('personalDayPatterns'),
+          icon: ClIcons.clock,
+          title: l.pv2Patterns,
+          subtitle: day.data['unusual'] == true
+              ? l.pv2PatternsPaused
+              : firstPattern == null
+              ? l.pv2PatternsNone
+              : '${patternLabel(l, firstPattern)}: ${firstPattern['lowMinutes']}–${firstPattern['highMinutes']} ${l.pv2Minutes}',
+          onTap: () => context.push(Routes.personalDayPatterns),
+        ),
+        MeRow(
+          key: const Key('personalDayNotes'),
+          icon: ClIcons.journal,
+          title: l.pv2Notes,
+          subtitle: l.pv2NotesCount(day.notes.length),
+          onTap: () => context.push(Routes.personalDayNotes),
+        ),
+        MeRow(
+          key: const Key('personalDayHistory'),
+          icon: ClIcons.heart,
+          title: l.pv2History,
+          subtitle: l.pv2WeekLine(
+            (weekly['tried'] as num? ?? 0).toInt(),
+            (weekly['helpful'] as num? ?? 0).toInt(),
+          ),
+          onTap: () => context.push(Routes.personalDayHistory),
+        ),
+      ],
+    ),
+  ];
+}
+
+String patternLabel(AppLocalizations l, Map<String, dynamic> pattern) =>
+    pattern['kind'] == 'feed_interval' ? l.pv2FeedPattern : l.pv2SleepPattern;
+
+/// One idea on the screen: what it is, why, what the person already did, the next step.
+class _IdeaCard extends ConsumerWidget {
+  const _IdeaCard({
+    required this.dayKey,
+    required this.day,
+    required this.activity,
+    required this.first,
+    required this.write,
+  });
+  final PersonalDayKey dayKey;
+  final PersonalDay day;
+  final Activity activity;
+  final bool first;
+  final PersonalDayWrite write;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    final now = ref.watch(careClockProvider).value ?? DateTime.now();
+    final id = activity.id;
+    final status = responseStatus(l, day, id, locale, now);
+    final steps = day.writable ? nextSteps(day, id) : const <String>[];
+    // A plan made (or an attempt): the next step is the primary button (owner, 2026-10-22).
+    final stepFirst = steps.isNotEmpty && !steps.contains('intend');
+    return RhCard(
+      key: Key('personalIdea:$id'),
+      outline: first,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${activity.durationMin} ${l.pv2Minutes}',
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ),
+              if (day.writable) ...[
+                PersonalSaveButton(dayKey: dayKey, day: day, contentId: id),
+                PersonalMoreButton(
+                  onPressed: () => dayCardControls(
+                    context,
+                    ref,
+                    dayKey,
+                    id,
+                    parent: day.parent,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          Semantics(
+            header: true,
+            child: Text(
+              activity.title.of(locale),
+              style: cl.text.headline.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (first) ...[
+            const SizedBox(height: ClSpace.s1),
+            Text(
+              reasonLabel(l, day.data['reason']),
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+          if (status.isNotEmpty) ...[
+            const SizedBox(height: ClSpace.s2),
+            PersonalStatusChips(status),
+          ],
+          const SizedBox(height: ClSpace.s3),
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
+            children: pillOrder(stepFirst, [
+              RhPillButton(
+                label: l.pv2OpenActivity,
+                primary: !stepFirst,
+                onTap: () => context.push('${Routes.rhythmActivity}/$id'),
+              ),
+              for (final step in steps)
+                RhPillButton(
+                  key: Key('personalStep:$id:$step'),
+                  label: responseLabel(l, step),
+                  primary: stepFirst && step == steps.first,
+                  onTap: () async {
+                    final ok = await write({
+                      'kind': 'respond',
+                      'contentId': id,
+                      'value': step,
+                    });
+                    if (ok) {
+                      personalEvent(ref, 'personalizationOutcome', step);
                     }
                   },
+                ),
+            ]),
           ),
-        const SizedBox(height: 24),
-      ].map((child) => Material(type: MaterialType.transparency, child: child)).toList(),
+        ],
+      ),
+    );
+  }
+}
+
+/// A row of "Hôm nay bạn đã": the idea, what was done, and the one follow-up it still needs.
+class _DoneRow extends ConsumerWidget {
+  const _DoneRow({
+    required this.dayKey,
+    required this.day,
+    required this.id,
+    required this.write,
+  });
+  final PersonalDayKey dayKey;
+  final PersonalDay day;
+  final String id;
+  final PersonalDayWrite write;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final now = ref.watch(careClockProvider).value ?? DateTime.now();
+    final activity = ref.watch(rhythmContentProvider).value?.activity(id);
+    final value = dayMap(day.responses[id])['value'];
+    final away = day.suppressed(id, now);
+    return PersonalIdeaRow(
+      key: Key('personalDone:$id'),
+      title: activity?.title.of(locale) ?? l.pv2Saved,
+      status: responseStatus(l, day, id, locale, now),
+      onTap: activity == null
+          ? null
+          : () => context.push('${Routes.rhythmActivity}/$id'),
+      trailing: !day.writable
+          ? null
+          : nextSteps(day, id).firstOrNull == 'helpful'
+          ? PersonalTextAction(
+              label: l.pv2HowWasIt,
+              onTap: () => askOutcome(context, ref, dayKey, id),
+            )
+          : away && !['tried', 'helpful', 'exclude'].contains(value)
+          ? PersonalTextAction(
+              label: l.pv2Restore,
+              onTap: () => write({
+                'kind': 'respond',
+                'contentId': id,
+                'value': 'restore',
+              }),
+            )
+          : null,
     );
   }
 }
@@ -870,33 +998,70 @@ class _NotebookEditorState extends State<_NotebookEditor> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final cl = context.cl;
+    // One rhythm for the whole sheet (owner, 2026-10-22): a caption over every group and the
+    // same gap between groups; choices are the app's pill chips.
+    Widget group(String label, Widget child) => Padding(
+      padding: const EdgeInsets.only(top: ClSpace.s6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            label,
+            style: cl.text.label.copyWith(
+              color: cl.colors.inkMuted,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          child,
+        ],
+      ),
+    );
+    Widget chips<T>(
+      List<(T, String)> options,
+      T selected,
+      ValueChanged<T> on,
+    ) => Wrap(
+      spacing: ClSpace.s2,
+      runSpacing: ClSpace.s2,
+      children: [
+        for (final (value, label) in options)
+          ClFilterChip(
+            label: label,
+            selected: selected == value,
+            onTap: () => on(value),
+          ),
+      ],
+    );
+    final avoidLocked = !widget.parent && _category == 'avoid';
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          20,
-          20,
-          20,
-          MediaQuery.viewInsetsOf(context).bottom + 20,
+          ClSpace.s4,
+          ClSpace.s3,
+          ClSpace.s4,
+          MediaQuery.viewInsetsOf(context).bottom + ClSpace.s4,
         ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(l.pv2Notes, style: context.cl.text.headline),
-              TextField(
+              ClSheetHeader(title: l.pv2Notes),
+              ClTextField(
+                label: l.pv2NoteText,
                 controller: _text,
                 maxLength: 200,
-                minLines: 2,
                 maxLines: 4,
-                decoration: InputDecoration(labelText: l.pv2NoteText),
+                standalone: true,
+                textCapitalization: TextCapitalization.sentences,
                 onChanged: (_) => setState(() {}),
               ),
-              DropdownButtonFormField<String>(
-                initialValue: _category,
-                decoration: InputDecoration(labelText: l.pv2Category),
-                items: [
-                  for (final pair in [
+              group(
+                l.pv2Category,
+                chips(
+                  [
                     ('sleep', l.pv2Sleep),
                     ('soothing', l.pv2Soothing),
                     ('feeding', l.pv2Feeding),
@@ -904,66 +1069,73 @@ class _NotebookEditorState extends State<_NotebookEditor> {
                     ('routine', l.pv2Routine),
                     ('carer', l.pv2Carer),
                     ('other', l.pv2Other),
-                  ])
-                    DropdownMenuItem(value: pair.$1, child: Text(pair.$2)),
-                ],
-                onChanged: (value) => setState(() {
-                  _category = value ?? 'other';
-                  if (!widget.parent && _category == 'avoid') _shared = false;
-                }),
-              ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l.pv2Shared),
-                value: _shared,
-                onChanged: !widget.parent && _category == 'avoid'
-                    ? null
-                    : (value) => setState(() => _shared = value),
+                  ],
+                  _category,
+                  (value) => setState(() {
+                    _category = value;
+                    if (!widget.parent && _category == 'avoid') _shared = false;
+                  }),
+                ),
               ),
               if (_category == 'avoid' && _shared && widget.parent)
-                DropdownButtonFormField<String>(
-                  initialValue:
-                      widget.activities.any((a) => a.id == _avoidActivityId)
-                      ? _avoidActivityId
-                      : null,
-                  isExpanded: true,
-                  decoration: InputDecoration(labelText: l.pv2AvoidActivity),
-                  items: [
-                    DropdownMenuItem<String>(
-                      value: null,
-                      child: Text(l.pv2NoFocus),
-                    ),
-                    for (final a in widget.activities.where(
-                      (a) => a.status == ContentStatus.published,
-                    ))
-                      DropdownMenuItem(
-                        value: a.id,
-                        child: Text(
-                          a.title.of(Localizations.localeOf(context)),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                group(
+                  l.pv2AvoidActivity,
+                  DropdownButtonFormField<String>(
+                    initialValue:
+                        widget.activities.any((a) => a.id == _avoidActivityId)
+                        ? _avoidActivityId
+                        : null,
+                    isExpanded: true,
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: null,
+                        child: Text(l.pv2NoFocus),
                       ),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => _avoidActivityId = value),
+                      for (final a in widget.activities.where(
+                        (a) => a.status == ContentStatus.published,
+                      ))
+                        DropdownMenuItem(
+                          value: a.id,
+                          child: Text(
+                            a.title.of(Localizations.localeOf(context)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    onChanged: (value) =>
+                        setState(() => _avoidActivityId = value),
+                  ),
                 ),
-              Text(l.pv2Expiry),
-              Wrap(
-                spacing: 6,
-                children: [
-                  for (final pair in [
+              group(
+                l.pv2Expiry,
+                chips<int?>(
+                  [
                     (1, l.pv2OneDay),
                     (7, l.pv2SevenDays),
                     (30, l.pv2ThirtyDays),
                     (null, l.pv2NoExpiry),
-                  ])
-                    ChoiceChip(
-                      label: Text(pair.$2),
-                      selected: _days == pair.$1,
-                      onSelected: (_) => setState(() => _days = pair.$1),
+                  ],
+                  _days,
+                  (value) => setState(() => _days = value),
+                ),
+              ),
+              const SizedBox(height: ClSpace.s6),
+              ClCardGroup(
+                color: cl.colors.surface2,
+                children: [
+                  MeRow(
+                    title: l.pv2Shared,
+                    trailing: ClToggle(
+                      semanticLabel: l.pv2Shared,
+                      value: _shared,
+                      onChanged: avoidLocked
+                          ? null
+                          : (value) => setState(() => _shared = value),
                     ),
+                  ),
                 ],
               ),
+              const SizedBox(height: ClSpace.s6),
               ClButton(
                 label: l.pv2ConfirmNote,
                 expand: true,

@@ -1,0 +1,152 @@
+{
+  "phase": 10,
+  "assets": [
+    {
+      "name": "p48-hundred-frame",
+      "file": "p48-hundred-frame.svg",
+      "title": "One Hundred Days With You · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-oval",
+      "file": "p48-hundred-oval.svg",
+      "title": "One Hundred Days With You · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-margin",
+      "file": "p48-hundred-margin.svg",
+      "title": "One Hundred Days With You · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-label",
+      "file": "p48-hundred-label.svg",
+      "title": "One Hundred Days With You · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-closing",
+      "file": "p48-hundred-closing.svg",
+      "title": "One Hundred Days With You · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-numeral",
+      "file": "p48-hundred-numeral.svg",
+      "title": "One Hundred Days With You · numeral",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-ring",
+      "file": "p48-hundred-ring.svg",
+      "title": "One Hundred Days With You · ring",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-gold",
+      "file": "p48-hundred-gold.svg",
+      "title": "One Hundred Days With You · gold",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-chapter",
+      "file": "p48-hundred-chapter.svg",
+      "title": "One Hundred Days With You · chapter",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-hundred-fold",
+      "file": "p48-hundred-fold.svg",
+      "title": "One Hundred Days With You · fold",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-frame",
+      "file": "p48-celebrate-frame.svg",
+      "title": "Your First Celebration · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-oval",
+      "file": "p48-celebrate-oval.svg",
+      "title": "Your First Celebration · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-margin",
+      "file": "p48-celebrate-margin.svg",
+      "title": "Your First Celebration · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-label",
+      "file": "p48-celebrate-label.svg",
+      "title": "Your First Celebration · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-closing",
+      "file": "p48-celebrate-closing.svg",
+      "title": "Your First Celebration · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-neutral-corner",
+      "file": "p48-celebrate-neutral-corner.svg",
+      "title": "Your First Celebration · neutral-corner",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-neutral-ribbon",
+      "file": "p48-celebrate-neutral-ribbon.svg",
+      "title": "Your First Celebration · neutral-ribbon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-tet-corner",
+      "file": "p48-celebrate-tet-corner.svg",
+      "title": "Your First Celebration · tet-corner",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-tet-ribbon",
+      "file": "p48-celebrate-tet-ribbon.svg",
+      "title": "Your First Celebration · tet-ribbon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-christmas-corner",
+      "file": "p48-celebrate-christmas-corner.svg",
+      "title": "Your First Celebration · christmas-corner",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-celebrate-christmas-ribbon",
+      "file": "p48-celebrate-christmas-ribbon.svg",
+      "title": "Your First Celebration · christmas-ribbon",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

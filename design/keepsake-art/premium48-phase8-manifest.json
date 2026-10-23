@@ -1,0 +1,145 @@
+{
+  "phase": 8,
+  "assets": [
+    {
+      "name": "p48-circle-frame",
+      "file": "p48-circle-frame.svg",
+      "title": "Your Circle of Love · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-oval",
+      "file": "p48-circle-oval.svg",
+      "title": "Your Circle of Love · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-margin",
+      "file": "p48-circle-margin.svg",
+      "title": "Your Circle of Love · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-label",
+      "file": "p48-circle-label.svg",
+      "title": "Your Circle of Love · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-closing",
+      "file": "p48-circle-closing.svg",
+      "title": "Your Circle of Love · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-orbit",
+      "file": "p48-circle-orbit.svg",
+      "title": "Your Circle of Love · orbit",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-connection",
+      "file": "p48-circle-connection.svg",
+      "title": "Your Circle of Love · connection",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-dots",
+      "file": "p48-circle-dots.svg",
+      "title": "Your Circle of Love · dots",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-petal",
+      "file": "p48-circle-petal.svg",
+      "title": "Your Circle of Love · petal",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-circle-centre",
+      "file": "p48-circle-centre.svg",
+      "title": "Your Circle of Love · centre",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-frame",
+      "file": "p48-day-frame.svg",
+      "title": "A Day With You · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-oval",
+      "file": "p48-day-oval.svg",
+      "title": "A Day With You · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-margin",
+      "file": "p48-day-margin.svg",
+      "title": "A Day With You · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-label",
+      "file": "p48-day-label.svg",
+      "title": "A Day With You · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-closing",
+      "file": "p48-day-closing.svg",
+      "title": "A Day With You · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-sun",
+      "file": "p48-day-sun.svg",
+      "title": "A Day With You · sun",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-cloud",
+      "file": "p48-day-cloud.svg",
+      "title": "A Day With You · cloud",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-moon",
+      "file": "p48-day-moon.svg",
+      "title": "A Day With You · moon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-timeline",
+      "file": "p48-day-timeline.svg",
+      "title": "A Day With You · timeline",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-day-contact",
+      "file": "p48-day-contact.svg",
+      "title": "A Day With You · contact",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

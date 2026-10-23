@@ -1,4 +1,9 @@
-import { premium48Phase6, keepsakeSeedV1, type KeepsakeCatalog } from '@child-life/contracts';
+import {
+  premium48Phase6,
+  premium48FinalPhase,
+  keepsakeSeedV1,
+  type KeepsakeCatalog,
+} from '@child-life/contracts';
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider } from 'react-intl';
@@ -86,6 +91,42 @@ const live: KeepsakeView = {
 };
 
 describe('Mẫu kỷ niệm', () => {
+  it('renders all final cards in both languages, including the required occasion and theme', () => {
+    for (let phase = 7; phase <= 12; phase++)
+      for (const t of premium48FinalPhase(phase).filter((t) => t.kind === 'card'))
+        for (const locale of ['vi', 'en'] as const) {
+          const html = render(
+            <CardPreview template={t} format="portrait" urls={new Map()} width={480} />,
+            ['admin'],
+            locale,
+          );
+          expect(html).not.toMatch(/\{(?:occasionName|relativeName|babyName)\}/);
+          expect(text(html)).toContain('Teddy');
+        }
+  });
+  it('shows only the explicitly selected decoration set, independent of preview locale', () => {
+    const assets = {
+      'p48-celebrate-neutral-corner': 'neutral_abcdef12.webp',
+      'p48-celebrate-tet-corner': 'tet_abcdef12.webp',
+      'p48-celebrate-christmas-corner': 'christmas_abcdef12.webp',
+    };
+    const t = premium48FinalPhase(10, assets).find((t) => t.id === 'card_premium48_20')!;
+    for (const locale of ['vi', 'en'] as const) {
+      const html = render(
+        <CardPreview
+          template={t}
+          format="portrait"
+          urls={new Map(Object.values(assets).map((v) => [v, 'https://img.test/' + v]))}
+          width={480}
+        />,
+        ['admin'],
+        locale,
+      );
+      expect(html).toContain('https://img.test/neutral_abcdef12.webp');
+      expect(html).not.toContain('https://img.test/tet_abcdef12.webp');
+      expect(html).not.toContain('https://img.test/christmas_abcdef12.webp');
+    }
+  });
   it('renders phase 6 milestone cards with a required parent-entered field in either locale', () => {
     const t = premium48Phase6()[0]!;
     for (const locale of ['vi', 'en'] as const) {

@@ -124,13 +124,20 @@ List<KeepsakeLayer> premiumCardLayers(
   KeepsakeFormat format,
   CardContent content,
 ) {
-  final layers = template.layouts[format] ?? const <KeepsakeLayer>[];
+  final layers = (template.layouts[format] ?? const <KeepsakeLayer>[])
+      .where(
+        (l) =>
+            l is! KeepsakeImage ||
+            l.when == null ||
+            content.field(l.when!.field) == l.when!.equals,
+      )
+      .toList();
   if (template.personalization == null) return layers;
   final labels = layers
       .whereType<KeepsakeTextLayer>()
       .where((l) => RegExp(r'^label[0-2]$').hasMatch(l.field))
       .toList();
-  if (labels.isEmpty ||
+  if (labels.length < 2 ||
       labels.any((l) => (l.rect.y - labels.first.rect.y).abs() > 0.001)) {
     return layers;
   }

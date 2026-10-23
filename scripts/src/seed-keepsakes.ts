@@ -225,6 +225,18 @@ if (mediaAt >= 0) {
   }
   // The default track per composition (make-previews.ts renders the previews with the same).
   const musicOf: Record<KeepsakeComposition, string> = {
+    PremiumHeldWithLove: 'music_binh_minh',
+    PremiumAcrossGenerations: 'music_binh_minh',
+    PremiumCircleOfLove: 'music_binh_minh',
+    PremiumDayWithYou: 'music_binh_minh',
+    PremiumTiniestDetails: 'music_binh_minh',
+    PremiumSleepSoftly: 'music_binh_minh',
+    PremiumHundredDays: 'music_binh_minh',
+    PremiumFirstCelebration: 'music_binh_minh',
+    PremiumLittleAdventure: 'music_binh_minh',
+    PremiumTwelveMonths: 'music_binh_minh',
+    PremiumBirthdayLetter: 'music_binh_minh',
+    PremiumFamilyYear: 'music_binh_minh',
     PremiumArrival: 'music_binh_minh',
     PremiumEmbrace: 'music_ru_em',
     PremiumHomecoming: 'music_binh_minh',

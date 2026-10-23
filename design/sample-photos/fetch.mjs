@@ -15,15 +15,10 @@ const list = JSON.parse(
   await readFile(
     join(
       here,
-      process.argv.includes('--phase6') ? 'premium48-phase6-licence.json' : process.argv.includes('--phase5')
-        ? 'premium48-phase5-licence.json'
-        : process.argv.includes('--phase4')
-          ? 'premium48-phase4-licence.json'
-          : process.argv.includes('--phase3')
-            ? 'premium48-phase3-licence.json'
-            : process.argv.includes('--phase2')
-              ? 'premium48-phase2-licence.json'
-              : 'licence.json',
+      process.argv
+        .find((v) => /^--phase(?:[2-9]|1[0-2])$/.test(v))
+        ?.replace('--phase', 'premium48-phase')
+        ?.concat('-licence.json') ?? 'licence.json',
     ),
     'utf8',
   ),

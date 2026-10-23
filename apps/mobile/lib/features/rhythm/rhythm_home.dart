@@ -243,7 +243,23 @@ class ForYouSection extends ConsumerWidget {
           secondary: secondaryActivities(content, home!),
         ),
       ...more, // D-076 #4
-      if (canCheckIn) const _CheckInEntry(),
+      if (canCheckIn)
+        _CheckInEntry(
+          // Owner, 2026-10-22: after answering, the row says what was noted today.
+          done:
+              checkIns
+                  .where((c) => c.date == today && c.authorUid == me.uid)
+                  .firstOrNull ??
+              checkIns.where((c) => c.date == today).firstOrNull,
+          who: (uid) => memberLabel(
+            l10n,
+            (ref.watch(familyMembersProvider(babyId)).value ?? const [])
+                .where((m) => m.uid == uid)
+                .firstOrNull,
+            myUid: me.uid,
+            uid: uid,
+          ),
+        ),
       if (showSupport) const _SupportCard(),
     ];
     final weekCard = teaser == null && rows.isEmpty
@@ -321,11 +337,9 @@ String? weekKicker(
   if (dob != null) {
     final days = ageInDays(dob, today);
     if (days < 0) return null;
-    final age = ageLong(l10n, dob, today);
-    if (days < 91) return l10n.hnWeekKicker(days ~/ 7 + 1, age);
-    // ageLong never says fewer than 3 months; the month of life follows it.
-    final months = completedMonths(dob, today);
-    return l10n.hnMonthKicker((months < 3 ? 3 : months) + 1, age);
+    // Owner, 2026-10-22: the age alone ("5 tuần 3 ngày tuổi"); "Tuần thứ 6 · 5 tuần tuổi"
+    // read as two different numbers for the same thing.
+    return ageLong(l10n, dob, today);
   }
   if (card == null) return null;
   final r = card.ageDays;
@@ -765,18 +779,26 @@ class _WhySheet extends StatelessWidget {
 
 /// "Hôm nay con có gì khác?" → C01 (Cùng nuôi, Người chăm sóc): a slim row.
 class _CheckInEntry extends StatelessWidget {
-  const _CheckInEntry();
+  const _CheckInEntry({required this.done, required this.who});
+
+  /// Today's check-in (this person's first), null before anyone answered.
+  final CheckIn? done;
+  final String Function(String uid) who;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final d = done;
     return RhCard(
       key: const Key('forBabyCheckIn'),
       padding: EdgeInsets.zero,
       child: _RowContent(
-        icon: ClIcons.edit,
+        icon: d == null ? ClIcons.edit : ClIcons.check,
         tone: WeekRowTone.mint,
-        title: l10n.rhCheckInEntry,
+        title: d == null
+            ? l10n.rhCheckInEntry
+            : l10n.hnCheckInDone(observationLabel(l10n, d.observation)),
+        sub: d == null ? null : l10n.hnCheckInDoneSub(who(d.authorUid)),
         onTap: () => context.push(Routes.rhythmCheckIn),
       ),
     );

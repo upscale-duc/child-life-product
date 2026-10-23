@@ -10,6 +10,7 @@ import 'age_screens.dart';
 import 'checkin_screens.dart';
 import 'health_screen.dart';
 import 'milestone_screen.dart';
+import 'personal_day_pages.dart';
 import 'preferences_screens.dart';
 import 'personalization_v2_screen.dart';
 import 'result_screen.dart';
@@ -47,6 +48,10 @@ List<RouteBase> rhythmRoutes() => [
   ),
   _page(Routes.rhythmPersonalize, (_, _) => const PersonalizeScreen()),
   _page(Routes.personalDay, (_, _) => const PersonalizationDayScreen()),
+  _page(Routes.personalDayHandover, (_, _) => const PersonalHandoverScreen()),
+  _page(Routes.personalDayPatterns, (_, _) => const PersonalPatternsScreen()),
+  _page(Routes.personalDayNotes, (_, _) => const PersonalNotesScreen()),
+  _page(Routes.personalDayHistory, (_, _) => const PersonalHistoryScreen()),
   _page(Routes.rhythmInterests, (_, _) => const InterestsScreen()),
   _page(Routes.rhythmDigest, (_, _) => const DigestScreen()),
   _page(Routes.rhythmFeedbackHistory, (_, _) => const FeedbackHistoryScreen()),

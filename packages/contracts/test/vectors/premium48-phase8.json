@@ -1,0 +1,2358 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_15",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "familyLabel",
+            "label": {
+              "vi": "Tên gia đình (tùy chọn)",
+              "en": "Family label (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "holdingConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai ghi lại người ôm bé",
+              "en": "Photo two shows someone holding baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "playingConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba ghi lại chơi cùng bé",
+              "en": "Photo three shows someone playing with baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Quanh con là những người thương.",
+              "en": "Your circle of love."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Mỗi người một cách, cùng có mặt bên con.",
+              "en": "Different people. Their own ways of showing up."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "{familyLabel}",
+              "en": "{familyLabel}"
+            },
+            "requires": [
+              "familyLabel"
+            ],
+            "fallback": {
+              "vi": "Nhà mình",
+              "en": "Our family"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Những người thương con",
+        "en": "Your Circle of Love"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 16,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-margin_455d6590.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.32,
+              "y": 0.29,
+              "w": 0.36,
+              "h": 0.288
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.312,
+              "y": 0.284,
+              "w": 0.376,
+              "h": 0.3
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.25,
+              "w": 0.21,
+              "h": 0.168
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.244,
+              "w": 0.22599999999999998,
+              "h": 0.18000000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.72,
+              "y": 0.39,
+              "w": 0.21,
+              "h": 0.168
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.712,
+              "y": 0.384,
+              "w": 0.22599999999999998,
+              "h": 0.18000000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 3,
+            "rect": {
+              "x": 0.09,
+              "y": 0.52,
+              "w": 0.25,
+              "h": 0.2
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.08199999999999999,
+              "y": 0.514,
+              "w": 0.266,
+              "h": 0.21200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-orbit_536a2803.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.23,
+              "w": 0.88,
+              "h": 0.51
+            },
+            "fit": "fill",
+            "opacity": 0.5,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-margin_455d6590.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.32,
+              "y": 0.29,
+              "w": 0.36,
+              "h": 0.203
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.312,
+              "y": 0.284,
+              "w": 0.376,
+              "h": 0.21500000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.25,
+              "w": 0.21,
+              "h": 0.118
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.244,
+              "w": 0.22599999999999998,
+              "h": 0.13
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.72,
+              "y": 0.39,
+              "w": 0.21,
+              "h": 0.118
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.712,
+              "y": 0.384,
+              "w": 0.22599999999999998,
+              "h": 0.13
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 3,
+            "rect": {
+              "x": 0.09,
+              "y": 0.52,
+              "w": 0.25,
+              "h": 0.14
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-oval_75a83afe.webp",
+            "rect": {
+              "x": 0.08199999999999999,
+              "y": 0.514,
+              "w": 0.266,
+              "h": 0.15200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-circle-orbit_536a2803.webp",
+            "rect": {
+              "x": 0.06,
+              "y": 0.23,
+              "w": 0.88,
+              "h": 0.46
+            },
+            "fit": "fill",
+            "opacity": 0.5,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "circleFrame": "art-p48-circle-frame_70d41b23.webp",
+        "circleOval": "art-p48-circle-oval_75a83afe.webp",
+        "circleMargin": "art-p48-circle-margin_455d6590.webp",
+        "circleLabel": "art-p48-circle-label_afe72627.webp",
+        "circleClosing": "art-p48-circle-closing_82f3bab8.webp",
+        "circleOrbit": "art-p48-circle-orbit_536a2803.webp",
+        "circleConnection": "art-p48-circle-connection_bb7473ab.webp",
+        "circleDots": "art-p48-circle-dots_8dcebc4b.webp",
+        "circlePetal": "art-p48-circle-petal_366e8fbe.webp",
+        "circleCentre": "art-p48-circle-centre_46ef9eb2.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FBF3E4",
+        "ink": "#596348",
+        "accent": "#D8A38C"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_16",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "sameDayConfirmed",
+            "label": {
+              "vi": "Ảnh cùng một ngày và đúng thứ tự sáng–tối",
+              "en": "Photos are from one day, in morning-to-evening order"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "routineConfirmed",
+            "label": {
+              "vi": "Ảnh có cảnh ăn, chơi và nghỉ",
+              "en": "Photos show feeding, playing and rest"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Một ngày rất thường, có con.",
+              "en": "An ordinary day, with you."
+            },
+            "requires": [
+              "sameDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những ngày bên con.",
+              "en": "Days with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Ăn một chút. Ngủ một chút. Ôm thêm một chút.",
+              "en": "A little feeding. A little sleeping. One more cuddle."
+            },
+            "requires": [
+              "routineConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những việc nhỏ. Những phút gần nhau.",
+              "en": "Small moments. A little time together."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Những ngày này cũng đáng giữ.",
+              "en": "These days are worth keeping, too."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Một ngày bên con",
+        "en": "A Day With You"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 17,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-margin_cd91445f.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.275,
+              "w": 0.415,
+              "h": 0.21
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.269,
+              "w": 0.431,
+              "h": 0.222
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.515,
+              "y": 0.275,
+              "w": 0.415,
+              "h": 0.21
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.507,
+              "y": 0.269,
+              "w": 0.431,
+              "h": 0.222
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.07,
+              "y": 0.51,
+              "w": 0.415,
+              "h": 0.21
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.504,
+              "w": 0.431,
+              "h": 0.222
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 3,
+            "rect": {
+              "x": 0.515,
+              "y": 0.51,
+              "w": 0.415,
+              "h": 0.21
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.507,
+              "y": 0.504,
+              "w": 0.431,
+              "h": 0.222
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-margin_cd91445f.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.275,
+              "w": 0.415,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.269,
+              "w": 0.431,
+              "h": 0.20700000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.515,
+              "y": 0.275,
+              "w": 0.415,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.507,
+              "y": 0.269,
+              "w": 0.431,
+              "h": 0.20700000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.07,
+              "y": 0.495,
+              "w": 0.415,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.489,
+              "w": 0.431,
+              "h": 0.20700000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 3,
+            "rect": {
+              "x": 0.515,
+              "y": 0.495,
+              "w": 0.415,
+              "h": 0.195
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-day-frame_b78a5c0f.webp",
+            "rect": {
+              "x": 0.507,
+              "y": 0.489,
+              "w": 0.431,
+              "h": 0.20700000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "dayFrame": "art-p48-day-frame_b78a5c0f.webp",
+        "dayOval": "art-p48-day-oval_0f84fbf5.webp",
+        "dayMargin": "art-p48-day-margin_cd91445f.webp",
+        "dayLabel": "art-p48-day-label_ccb87298.webp",
+        "dayClosing": "art-p48-day-closing_fd4d9101.webp",
+        "daySun": "art-p48-day-sun_6e9b0652.webp",
+        "dayCloud": "art-p48-day-cloud_71f26118.webp",
+        "dayMoon": "art-p48-day-moon_a225c677.webp",
+        "dayTimeline": "art-p48-day-timeline_3b09a9aa.webp",
+        "dayContact": "art-p48-day-contact_5eb5925b.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FCF6E8",
+        "ink": "#4D5D63",
+        "accent": "#C5A05C"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_15",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "familyLabel",
+            "label": {
+              "vi": "Tên gia đình (tùy chọn)",
+              "en": "Family label (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "holdingConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai ghi lại người ôm bé",
+              "en": "Photo two shows someone holding baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "playingConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba ghi lại chơi cùng bé",
+              "en": "Photo three shows someone playing with baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Thế giới của con bắt đầu từ những gương mặt này.",
+              "en": "Your world began with these faces."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Người ôm con.",
+              "en": "Someone to hold you."
+            },
+            "requires": [
+              "holdingConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một người thương con.",
+              "en": "Someone who loves you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Người chơi cùng con.",
+              "en": "Someone to play with you."
+            },
+            "requires": [
+              "playingConfirmed"
+            ],
+            "fallback": {
+              "vi": "Thêm một khoảnh khắc gần nhau.",
+              "en": "Another moment together."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Người ở bên trong những ngày thường.",
+              "en": "Someone there for the everyday moments."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Bao nhiêu cách để thương một người bé xíu.",
+              "en": "So many ways to love someone so small."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Những người thương con",
+              "en": "Your Circle of Love"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Những người thương con",
+        "en": "Your Circle of Love"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 16,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumCircleOfLove",
+      "assets": {
+        "circleFrame": "art-p48-circle-frame_70d41b23.webp",
+        "circleOval": "art-p48-circle-oval_75a83afe.webp",
+        "circleMargin": "art-p48-circle-margin_455d6590.webp",
+        "circleLabel": "art-p48-circle-label_afe72627.webp",
+        "circleClosing": "art-p48-circle-closing_82f3bab8.webp",
+        "circleOrbit": "art-p48-circle-orbit_536a2803.webp",
+        "circleConnection": "art-p48-circle-connection_bb7473ab.webp",
+        "circleDots": "art-p48-circle-dots_8dcebc4b.webp",
+        "circlePetal": "art-p48-circle-petal_366e8fbe.webp",
+        "circleCentre": "art-p48-circle-centre_46ef9eb2.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Những người thương con",
+            "en": "Photo 1 · circle"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Những người thương con",
+            "en": "Photo 2 · circle"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Những người thương con",
+            "en": "Photo 3 · circle"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Những người thương con",
+            "en": "Photo 4 · circle"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FBF3E4",
+        "ink": "#596348",
+        "accent": "#D8A38C"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_circle",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_16",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "sameDayConfirmed",
+            "label": {
+              "vi": "Ảnh cùng một ngày và đúng thứ tự sáng–tối",
+              "en": "Photos are from one day, in morning-to-evening order"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "routineConfirmed",
+            "label": {
+              "vi": "Ảnh có cảnh ăn, chơi và nghỉ",
+              "en": "Photos show feeding, playing and rest"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Buổi sáng, mình gặp nhau bằng một cái nhìn.",
+              "en": "Morning began with a little look."
+            },
+            "requires": [
+              "sameDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Mình gặp nhau bằng một cái nhìn.",
+              "en": "A little look, together."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Ngày trôi qua trong những việc nhỏ.",
+              "en": "The day unfolded in small moments."
+            },
+            "requires": [
+              "sameDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những ngày trôi qua trong việc nhỏ.",
+              "en": "Our days, unfolding in small moments."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Ăn. Chơi. Rồi nghỉ một chút.",
+              "en": "Feeding. Playing. A little rest."
+            },
+            "requires": [
+              "routineConfirmed"
+            ],
+            "fallback": {
+              "vi": "Thêm một khoảnh khắc rất thường.",
+              "en": "Another ordinary little moment."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Đến tối, lại gần nhau hơn.",
+              "en": "By evening, close together again."
+            },
+            "requires": [
+              "sameDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Lại thêm những phút gần nhau.",
+              "en": "More little moments together."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Một ngày bình thường mình muốn nhớ.",
+              "en": "An ordinary day worth remembering."
+            },
+            "requires": [
+              "sameDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những ngày bên con, mình muốn nhớ.",
+              "en": "Days with you, worth remembering."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Một ngày bên con",
+              "en": "A Day With You"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Một ngày bên con",
+        "en": "A Day With You"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 17,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumDayWithYou",
+      "assets": {
+        "dayFrame": "art-p48-day-frame_b78a5c0f.webp",
+        "dayOval": "art-p48-day-oval_0f84fbf5.webp",
+        "dayMargin": "art-p48-day-margin_cd91445f.webp",
+        "dayLabel": "art-p48-day-label_ccb87298.webp",
+        "dayClosing": "art-p48-day-closing_fd4d9101.webp",
+        "daySun": "art-p48-day-sun_6e9b0652.webp",
+        "dayCloud": "art-p48-day-cloud_71f26118.webp",
+        "dayMoon": "art-p48-day-moon_a225c677.webp",
+        "dayTimeline": "art-p48-day-timeline_3b09a9aa.webp",
+        "dayContact": "art-p48-day-contact_5eb5925b.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Một ngày bên con",
+            "en": "Photo 1 · day"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Một ngày bên con",
+            "en": "Photo 2 · day"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Một ngày bên con",
+            "en": "Photo 3 · day"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Một ngày bên con",
+            "en": "Photo 4 · day"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FCF6E8",
+        "ink": "#4D5D63",
+        "accent": "#C5A05C"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_day",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_15",
+      "locale": "vi",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "expected": {
+        "title": "Quanh con là những người thương.",
+        "message": "Mỗi người một cách, cùng có mặt bên con.",
+        "detail0": "Nhà mình",
+        "signature": "Jack",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_15",
+      "locale": "vi",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "2026-10-22",
+        "familyLabel": "Our family",
+        "holdingConfirmed": "true",
+        "playingConfirmed": "true"
+      },
+      "expected": {
+        "title": "Quanh con là những người thương.",
+        "message": "Mỗi người một cách, cùng có mặt bên con.",
+        "detail0": "Our family",
+        "signature": "Jack",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_15",
+      "locale": "en",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "expected": {
+        "title": "Your circle of love.",
+        "message": "Different people. Their own ways of showing up.",
+        "detail0": "Our family",
+        "signature": "Jack",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_15",
+      "locale": "en",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "2026-10-22",
+        "familyLabel": "Our family",
+        "holdingConfirmed": "true",
+        "playingConfirmed": "true"
+      },
+      "expected": {
+        "title": "Your circle of love.",
+        "message": "Different people. Their own ways of showing up.",
+        "detail0": "Our family",
+        "signature": "Jack",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "card_premium48_16",
+      "locale": "vi",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "expected": {
+        "title": "Những ngày bên con.",
+        "message": "Những việc nhỏ. Những phút gần nhau.",
+        "detail0": "Những ngày này cũng đáng giữ.",
+        "signature": "Isla",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_16",
+      "locale": "vi",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "2026-10-22",
+        "sameDayConfirmed": "true",
+        "routineConfirmed": "true"
+      },
+      "expected": {
+        "title": "Một ngày rất thường, có con.",
+        "message": "Ăn một chút. Ngủ một chút. Ôm thêm một chút.",
+        "detail0": "Những ngày này cũng đáng giữ.",
+        "signature": "Isla",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_16",
+      "locale": "en",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "expected": {
+        "title": "Days with you.",
+        "message": "Small moments. A little time together.",
+        "detail0": "These days are worth keeping, too.",
+        "signature": "Isla",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_16",
+      "locale": "en",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "2026-10-22",
+        "sameDayConfirmed": "true",
+        "routineConfirmed": "true"
+      },
+      "expected": {
+        "title": "An ordinary day, with you.",
+        "message": "A little feeding. A little sleeping. One more cuddle.",
+        "detail0": "These days are worth keeping, too.",
+        "signature": "Isla",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "video_premium48_15",
+      "locale": "vi",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Thế giới của con bắt đầu từ những gương mặt này.",
+        "scene2": "Một người thương con.",
+        "scene3": "Thêm một khoảnh khắc gần nhau.",
+        "scene4": "Người ở bên trong những ngày thường.",
+        "scene5": "Bao nhiêu cách để thương một người bé xíu.",
+        "signature": "Jack",
+        "label1": "",
+        "title": "Những người thương con"
+      }
+    },
+    {
+      "id": "video_premium48_15",
+      "locale": "vi",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "2026-10-22",
+        "familyLabel": "Our family",
+        "holdingConfirmed": "true",
+        "playingConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Thế giới của con bắt đầu từ những gương mặt này.",
+        "scene2": "Người ôm con.",
+        "scene3": "Người chơi cùng con.",
+        "scene4": "Người ở bên trong những ngày thường.",
+        "scene5": "Bao nhiêu cách để thương một người bé xíu.",
+        "signature": "Jack",
+        "label1": "22 tháng 10, 2026",
+        "title": "Những người thương con"
+      }
+    },
+    {
+      "id": "video_premium48_15",
+      "locale": "en",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Your world began with these faces.",
+        "scene2": "Someone who loves you.",
+        "scene3": "Another moment together.",
+        "scene4": "Someone there for the everyday moments.",
+        "scene5": "So many ways to love someone so small.",
+        "signature": "Jack",
+        "label1": "",
+        "title": "Your Circle of Love"
+      }
+    },
+    {
+      "id": "video_premium48_15",
+      "locale": "en",
+      "values": {
+        "babyName": "Jack",
+        "momentDate": "2026-10-22",
+        "familyLabel": "Our family",
+        "holdingConfirmed": "true",
+        "playingConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Your world began with these faces.",
+        "scene2": "Someone to hold you.",
+        "scene3": "Someone to play with you.",
+        "scene4": "Someone there for the everyday moments.",
+        "scene5": "So many ways to love someone so small.",
+        "signature": "Jack",
+        "label1": "22 October 2026",
+        "title": "Your Circle of Love"
+      }
+    },
+    {
+      "id": "video_premium48_16",
+      "locale": "vi",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Mình gặp nhau bằng một cái nhìn.",
+        "scene2": "Những ngày trôi qua trong việc nhỏ.",
+        "scene3": "Thêm một khoảnh khắc rất thường.",
+        "scene4": "Lại thêm những phút gần nhau.",
+        "scene5": "Những ngày bên con, mình muốn nhớ.",
+        "signature": "Isla",
+        "label1": "",
+        "title": "Một ngày bên con"
+      }
+    },
+    {
+      "id": "video_premium48_16",
+      "locale": "vi",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "2026-10-22",
+        "sameDayConfirmed": "true",
+        "routineConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Buổi sáng, mình gặp nhau bằng một cái nhìn.",
+        "scene2": "Ngày trôi qua trong những việc nhỏ.",
+        "scene3": "Ăn. Chơi. Rồi nghỉ một chút.",
+        "scene4": "Đến tối, lại gần nhau hơn.",
+        "scene5": "Một ngày bình thường mình muốn nhớ.",
+        "signature": "Isla",
+        "label1": "22 tháng 10, 2026",
+        "title": "Một ngày bên con"
+      }
+    },
+    {
+      "id": "video_premium48_16",
+      "locale": "en",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "A little look, together.",
+        "scene2": "Our days, unfolding in small moments.",
+        "scene3": "Another ordinary little moment.",
+        "scene4": "More little moments together.",
+        "scene5": "Days with you, worth remembering.",
+        "signature": "Isla",
+        "label1": "",
+        "title": "A Day With You"
+      }
+    },
+    {
+      "id": "video_premium48_16",
+      "locale": "en",
+      "values": {
+        "babyName": "Isla",
+        "momentDate": "2026-10-22",
+        "sameDayConfirmed": "true",
+        "routineConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Morning began with a little look.",
+        "scene2": "The day unfolded in small moments.",
+        "scene3": "Feeding. Playing. A little rest.",
+        "scene4": "By evening, close together again.",
+        "scene5": "An ordinary day worth remembering.",
+        "signature": "Isla",
+        "label1": "22 October 2026",
+        "title": "A Day With You"
+      }
+    }
+  ],
+  "demos": {
+    "card_premium48_15": {
+      "vi": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      }
+    },
+    "card_premium48_16": {
+      "vi": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      }
+    },
+    "video_premium48_15": {
+      "vi": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Jack",
+        "momentDate": "",
+        "familyLabel": "",
+        "holdingConfirmed": "false",
+        "playingConfirmed": "false"
+      }
+    },
+    "video_premium48_16": {
+      "vi": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Isla",
+        "momentDate": "",
+        "sameDayConfirmed": "false",
+        "routineConfirmed": "false"
+      }
+    }
+  }
+}

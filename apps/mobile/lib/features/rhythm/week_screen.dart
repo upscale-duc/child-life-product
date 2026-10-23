@@ -1,4 +1,10 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +18,8 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_sheet.dart';
+import '../../core/format/age.dart';
 import '../../l10n/app_localizations.dart';
 import '../ai/ai_repository.dart' show aiShareProvider;
 import '../baby/baby_models.dart';
@@ -99,7 +107,12 @@ class WeekSummaryScreen extends ConsumerWidget {
         : null;
     final n = dob == null ? null : weekOfLife(dob, week);
     final range = weekRangeLabel(l10n, locale, week.start, week.end);
-    final title = n == null ? range : l10n.rhWeekOf(n, name);
+    // Owner, 2026-10-22: no "Tuần thứ N" (it read as the age); the dates say which week.
+    final title = name.isEmpty
+        ? l10n.rhWeekTitle
+        : week.inProgress
+        ? l10n.rhWeekOfNow(name)
+        : l10n.rhWeekOfPast(name);
     final facts = ref.watch(
       weekFactsProvider((
         babyId: me.babyId,
@@ -115,27 +128,42 @@ class WeekSummaryScreen extends ConsumerWidget {
     return OnboardingScaffold(
       topBar: _TopBar(
         close: close,
+        // Owner, 2026-10-22: "Gửi cho…" offers the week as a picture first (any app in the
+        // share sheet), the plain text second.
         onShare: facts == null
             ? null
-            : (origin) => ref.read(aiShareProvider)(
-                weekShareText(
-                  l10n,
-                  locale,
-                  title: n == null ? l10n.rhWeekTitle : title,
-                  range: range,
-                  facts: facts,
-                  zone: zone,
-                  members: members,
+            : (origin) => showClSheet<void>(
+                context: context,
+                builder: (_) => _WeekShareSheet(
+                  card: _WeekShareCard(
+                    title: title,
+                    range: range,
+                    age: dob == null
+                        ? null
+                        : ageLong(l10n, dob, DateTime.parse(week.end)),
+                    facts: facts,
+                    zone: zone,
+                    members: members,
+                  ),
+                  fileName: 'child-life-week-${week.start}.png',
+                  onText: () => ref.read(aiShareProvider)(
+                    weekShareText(
+                      l10n,
+                      locale,
+                      title: title,
+                      range: range,
+                      facts: facts,
+                      zone: zone,
+                      members: members,
+                    ),
+                    l10n.rhWeekTitle,
+                    origin,
+                  ),
                 ),
-                l10n.rhWeekTitle,
-                origin,
               ),
       ),
       content: [
-        Text(
-          n == null ? l10n.rhWeekTitle : range,
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
+        Text(range, style: cl.text.label.copyWith(color: cl.colors.inkMuted)),
         const SizedBox(height: 2),
         Semantics(header: true, child: Text(title, style: cl.text.title)),
         if (week.inProgress) ...[
@@ -475,12 +503,11 @@ class _Tiles extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(child: tiles[i]),
-                const SizedBox(width: ClSpace.s2),
-                Expanded(
-                  child: i + 1 < tiles.length
-                      ? tiles[i + 1]
-                      : const SizedBox.shrink(),
-                ),
+                // An odd last tile takes the whole row instead of leaving a hole.
+                if (i + 1 < tiles.length) ...[
+                  const SizedBox(width: ClSpace.s2),
+                  Expanded(child: tiles[i + 1]),
+                ],
               ],
             ),
           ),
@@ -1064,6 +1091,196 @@ class WeekVideoButton extends ConsumerWidget {
 }
 
 // ---------- Share ----------
+
+/// The week as a picture for "Gửi cho…": always drawn in Light (it is read by someone else, on
+/// any screen), the free figures and who logged, never the look-back or notes.
+class _WeekShareCard extends StatelessWidget {
+  const _WeekShareCard({
+    required this.title,
+    required this.range,
+    required this.age,
+    required this.facts,
+    required this.zone,
+    required this.members,
+  });
+  final String title;
+  final String range;
+  final String? age;
+  final WeekFacts facts;
+  final String zone;
+  final List<Membership> members;
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: buildClTheme(ClPalette.light),
+    child: Builder(
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        final cl = context.cl;
+        return Container(
+          width: 360,
+          padding: const EdgeInsets.all(ClSpace.s6),
+          color: cl.colors.cloud,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                range,
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                title,
+                style: cl.text.title2.copyWith(fontWeight: FontWeight.w700),
+              ),
+              if (age case final a?) ...[
+                const SizedBox(height: ClSpace.s1),
+                Text(
+                  a,
+                  style: cl.text.label.copyWith(
+                    color: cl.colors.mintText,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+              const SizedBox(height: ClSpace.s4),
+              _Tiles(facts: facts, zone: zone),
+              if (facts.authors.isNotEmpty) ...[
+                const SizedBox(height: ClSpace.s3),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(ClSpace.s3),
+                  decoration: BoxDecoration(
+                    color: cl.colors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '${l10n.rhWeekFamilyTitle}: ${[for (final a in facts.authors) authorCountLabel(l10n, a, members, myUid: '')].join(' · ')}',
+                    style: cl.text.label.copyWith(color: cl.colors.ink),
+                  ),
+                ),
+              ],
+              const SizedBox(height: ClSpace.s4),
+              Row(
+                children: [
+                  ClIcon(ClIcons.heart, size: 14, color: cl.colors.mintText),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.rhWeekShareFooter,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  );
+}
+
+/// "Gửi tổng kết tuần": the picture as it will be sent, "Gửi ảnh" through the system share
+/// sheet and "Gửi dạng chữ".
+class _WeekShareSheet extends StatefulWidget {
+  const _WeekShareSheet({
+    required this.card,
+    required this.fileName,
+    required this.onText,
+  });
+  final Widget card;
+  final String fileName;
+  final Future<void> Function() onText;
+
+  @override
+  State<_WeekShareSheet> createState() => _WeekShareSheetState();
+}
+
+class _WeekShareSheetState extends State<_WeekShareSheet> {
+  final _boundary = GlobalKey();
+  bool _busy = false;
+
+  Future<void> _sendImage() async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    final box = context.findRenderObject() as RenderBox?;
+    setState(() => _busy = true);
+    try {
+      final boundary =
+          _boundary.currentContext!.findRenderObject()!
+              as RenderRepaintBoundary;
+      final image = await boundary.toImage(
+        pixelRatio: 1080 / boundary.size.width,
+      );
+      final png = await image.toByteData(format: ui.ImageByteFormat.png);
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/${widget.fileName}');
+      await file.writeAsBytes(png!.buffer.asUint8List());
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path, mimeType: 'image/png')],
+          subject: l10n.rhWeekTitle,
+          sharePositionOrigin: box == null
+              ? null
+              : box.localToGlobal(Offset.zero) & box.size,
+        ),
+      );
+    } on Object {
+      toaster.show(message: l10n.toastActionFailed, error: true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        ClSpace.s4,
+        ClSpace.s3,
+        ClSpace.s4,
+        ClSpace.s6,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.rhWeekShareSheet),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: RepaintBoundary(key: _boundary, child: widget.card),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            key: const Key('weekShareImage'),
+            label: l10n.rhWeekShareImage,
+            expand: true,
+            onPressed: _busy ? null : _sendImage,
+          ),
+          const SizedBox(height: ClSpace.s2),
+          ClButton(
+            key: const Key('weekShareText'),
+            label: l10n.rhWeekShareTextOnly,
+            expand: true,
+            style: ClButtonStyle.secondary,
+            onPressed: _busy ? null : widget.onText,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// "Gửi cho…": the free figures of the week as plain text, with their coverage; never the
 /// look-back. Family labels, never "Bạn" (the reader is someone else).

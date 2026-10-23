@@ -1,0 +1,145 @@
+{
+  "phase": 12,
+  "assets": [
+    {
+      "name": "p48-birthday-frame",
+      "file": "p48-birthday-frame.svg",
+      "title": "A Letter on Your First Birthday · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-oval",
+      "file": "p48-birthday-oval.svg",
+      "title": "A Letter on Your First Birthday · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-margin",
+      "file": "p48-birthday-margin.svg",
+      "title": "A Letter on Your First Birthday · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-label",
+      "file": "p48-birthday-label.svg",
+      "title": "A Letter on Your First Birthday · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-closing",
+      "file": "p48-birthday-closing.svg",
+      "title": "A Letter on Your First Birthday · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-one",
+      "file": "p48-birthday-one.svg",
+      "title": "A Letter on Your First Birthday · one",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-bow",
+      "file": "p48-birthday-bow.svg",
+      "title": "A Letter on Your First Birthday · bow",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-envelope",
+      "file": "p48-birthday-envelope.svg",
+      "title": "A Letter on Your First Birthday · envelope",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-underline",
+      "file": "p48-birthday-underline.svg",
+      "title": "A Letter on Your First Birthday · underline",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-birthday-ribbon",
+      "file": "p48-birthday-ribbon.svg",
+      "title": "A Letter on Your First Birthday · ribbon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-frame",
+      "file": "p48-familyyear-frame.svg",
+      "title": "Our Family, One Year Later · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-oval",
+      "file": "p48-familyyear-oval.svg",
+      "title": "Our Family, One Year Later · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-margin",
+      "file": "p48-familyyear-margin.svg",
+      "title": "Our Family, One Year Later · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-label",
+      "file": "p48-familyyear-label.svg",
+      "title": "Our Family, One Year Later · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-closing",
+      "file": "p48-familyyear-closing.svg",
+      "title": "Our Family, One Year Later · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-spine",
+      "file": "p48-familyyear-spine.svg",
+      "title": "Our Family, One Year Later · spine",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-stitch",
+      "file": "p48-familyyear-stitch.svg",
+      "title": "Our Family, One Year Later · stitch",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-album",
+      "file": "p48-familyyear-album.svg",
+      "title": "Our Family, One Year Later · album",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-year",
+      "file": "p48-familyyear-year.svg",
+      "title": "Our Family, One Year Later · year",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-familyyear-sunset",
+      "file": "p48-familyyear-sunset.svg",
+      "title": "Our Family, One Year Later · sunset",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

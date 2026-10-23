@@ -1,0 +1,2616 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_19",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Dịp đặc biệt",
+          "en": "Days to Celebrate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "hundredConfirmed",
+            "label": {
+              "vi": "Tôi chọn kỷ niệm mốc 100 ngày",
+              "en": "I choose to mark one hundred days"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "firstDayConfirmed",
+            "label": {
+              "vi": "Ảnh đầu là ngày chào đời đã xác nhận",
+              "en": "Photo one is the confirmed first day"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "hundredMark",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "100",
+              "en": "100"
+            },
+            "requires": [
+              "hundredConfirmed"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "100 ngày bên {babyName}.",
+              "en": "100 days with {babyName}."
+            },
+            "requires": [
+              "hundredConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những ngày bên con.",
+              "en": "These days with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Từ cái ôm đầu tiên đến hôm nay.",
+              "en": "From that first embrace to today."
+            },
+            "requires": [
+              "firstDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Từ những phút gần nhau đến hôm nay.",
+              "en": "From little moments together to today."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Một trăm ngày, biết bao điều để nhớ.",
+              "en": "One hundred days. So much to remember."
+            },
+            "requires": [
+              "hundredConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những ngày bên nhau, bao điều để nhớ.",
+              "en": "Days together. So much to remember."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Một trăm ngày bên con",
+        "en": "One Hundred Days With You"
+      },
+      "description": {
+        "vi": "Dịp đặc biệt",
+        "en": "Days to Celebrate"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 20,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-margin_b3a49758.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.86,
+              "h": 0.34
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.876,
+              "h": 0.35200000000000004
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.64,
+              "w": 0.405,
+              "h": 0.17
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.634,
+              "w": 0.42100000000000004,
+              "h": 0.18200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.525,
+              "y": 0.64,
+              "w": 0.405,
+              "h": 0.17
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.517,
+              "y": 0.634,
+              "w": 0.42100000000000004,
+              "h": 0.18200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "hundredMark",
+              "equals": "100"
+            },
+            "asset": "art-p48-hundred-numeral_5720eed2.webp",
+            "rect": {
+              "x": 0.75,
+              "y": 0.17,
+              "w": 0.18,
+              "h": 0.08
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-margin_b3a49758.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.86,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.876,
+              "h": 0.302
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.59,
+              "w": 0.405,
+              "h": 0.155
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.584,
+              "w": 0.42100000000000004,
+              "h": 0.167
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.525,
+              "y": 0.59,
+              "w": 0.405,
+              "h": 0.155
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-hundred-frame_0d5a1547.webp",
+            "rect": {
+              "x": 0.517,
+              "y": 0.584,
+              "w": 0.42100000000000004,
+              "h": 0.167
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "hundredMark",
+              "equals": "100"
+            },
+            "asset": "art-p48-hundred-numeral_5720eed2.webp",
+            "rect": {
+              "x": 0.75,
+              "y": 0.17,
+              "w": 0.18,
+              "h": 0.062
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "hundredFrame": "art-p48-hundred-frame_0d5a1547.webp",
+        "hundredOval": "art-p48-hundred-oval_630398b1.webp",
+        "hundredMargin": "art-p48-hundred-margin_b3a49758.webp",
+        "hundredLabel": "art-p48-hundred-label_8230b711.webp",
+        "hundredClosing": "art-p48-hundred-closing_cbb69169.webp",
+        "hundredNumeral": "art-p48-hundred-numeral_5720eed2.webp",
+        "hundredRing": "art-p48-hundred-ring_c00c0531.webp",
+        "hundredGold": "art-p48-hundred-gold_38bdf32f.webp",
+        "hundredChapter": "art-p48-hundred-chapter_4c3f60e3.webp",
+        "hundredFold": "art-p48-hundred-fold_ae0a1210.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFF5E8",
+        "ink": "#903E30",
+        "accent": "#BEA06C"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_20",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Dịp đặc biệt",
+          "en": "Days to Celebrate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "occasionName",
+            "label": {
+              "vi": "Tên dịp lễ",
+              "en": "Celebration name"
+            },
+            "suggestion": {
+              "vi": "ngày vui của nhà mình",
+              "en": "our family celebration"
+            },
+            "type": "text",
+            "max": 32,
+            "required": true
+          },
+          {
+            "key": "celebrationTheme",
+            "label": {
+              "vi": "Bộ trang trí",
+              "en": "Decoration theme"
+            },
+            "options": [
+              {
+                "value": "neutral",
+                "label": {
+                  "vi": "Trung tính · cờ vải",
+                  "en": "Neutral · fabric bunting"
+                }
+              },
+              {
+                "value": "tet",
+                "label": {
+                  "vi": "Tết · hoa và phong bao",
+                  "en": "Lunar New Year · blossom & envelope"
+                }
+              },
+              {
+                "value": "christmas",
+                "label": {
+                  "vi": "Christmas · thông và sao",
+                  "en": "Christmas · pine & paper star"
+                }
+              }
+            ],
+            "type": "text",
+            "max": 12,
+            "required": true
+          },
+          {
+            "key": "firstConfirmed",
+            "label": {
+              "vi": "Đây là lần đầu bé đón dịp này",
+              "en": "This is baby’s first time celebrating this occasion"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "theme",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{celebrationTheme}",
+              "en": "{celebrationTheme}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "{occasionName} đầu tiên của {babyName}.",
+              "en": "{babyName}’s first {occasionName}."
+            },
+            "requires": [
+              "firstConfirmed"
+            ],
+            "fallback": {
+              "vi": "{occasionName}, có con cùng đón.",
+              "en": "{occasionName}, with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Năm nay, ngày quen có thêm một gương mặt mới.",
+              "en": "A familiar celebration, with someone new."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Kỷ niệm của nhà mình.",
+              "en": "A family memory."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Dịp lễ đầu tiên của con",
+        "en": "Your First Celebration"
+      },
+      "description": {
+        "vi": "Dịp đặc biệt",
+        "en": "Days to Celebrate"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 21,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-margin_caa29fd0.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.86,
+              "h": 0.34
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.876,
+              "h": 0.35200000000000004
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.64,
+              "w": 0.405,
+              "h": 0.17
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.634,
+              "w": 0.42100000000000004,
+              "h": 0.18200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.525,
+              "y": 0.64,
+              "w": 0.405,
+              "h": 0.17
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.517,
+              "y": 0.634,
+              "w": 0.42100000000000004,
+              "h": 0.18200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "neutral"
+            },
+            "asset": "art-p48-celebrate-neutral-corner_3eab980f.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "neutral"
+            },
+            "asset": "art-p48-celebrate-neutral-ribbon_29db9029.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "tet"
+            },
+            "asset": "art-p48-celebrate-tet-corner_21fb3d9e.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "tet"
+            },
+            "asset": "art-p48-celebrate-tet-ribbon_3652d89f.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "christmas"
+            },
+            "asset": "art-p48-celebrate-christmas-corner_d7d14ea3.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "christmas"
+            },
+            "asset": "art-p48-celebrate-christmas-ribbon_1e42e8a5.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-margin_caa29fd0.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.86,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.876,
+              "h": 0.302
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.07,
+              "y": 0.59,
+              "w": 0.405,
+              "h": 0.155
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.584,
+              "w": 0.42100000000000004,
+              "h": 0.167
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.525,
+              "y": 0.59,
+              "w": 0.405,
+              "h": 0.155
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-celebrate-frame_06103a75.webp",
+            "rect": {
+              "x": 0.517,
+              "y": 0.584,
+              "w": 0.42100000000000004,
+              "h": 0.167
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "neutral"
+            },
+            "asset": "art-p48-celebrate-neutral-corner_3eab980f.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.08
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "neutral"
+            },
+            "asset": "art-p48-celebrate-neutral-ribbon_29db9029.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "tet"
+            },
+            "asset": "art-p48-celebrate-tet-corner_21fb3d9e.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.08
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "tet"
+            },
+            "asset": "art-p48-celebrate-tet-ribbon_3652d89f.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "christmas"
+            },
+            "asset": "art-p48-celebrate-christmas-corner_d7d14ea3.webp",
+            "rect": {
+              "x": 0.8,
+              "y": 0.17,
+              "w": 0.14,
+              "h": 0.08
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "when": {
+              "field": "theme",
+              "equals": "christmas"
+            },
+            "asset": "art-p48-celebrate-christmas-ribbon_1e42e8a5.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.235,
+              "w": 0.86,
+              "h": 0.02
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "celebrateFrame": "art-p48-celebrate-frame_06103a75.webp",
+        "celebrateOval": "art-p48-celebrate-oval_2fb1e027.webp",
+        "celebrateMargin": "art-p48-celebrate-margin_caa29fd0.webp",
+        "celebrateLabel": "art-p48-celebrate-label_c04ad2ba.webp",
+        "celebrateClosing": "art-p48-celebrate-closing_6b4b1ad2.webp",
+        "celebrateNeutralCorner": "art-p48-celebrate-neutral-corner_3eab980f.webp",
+        "celebrateNeutralRibbon": "art-p48-celebrate-neutral-ribbon_29db9029.webp",
+        "celebrateTetCorner": "art-p48-celebrate-tet-corner_21fb3d9e.webp",
+        "celebrateTetRibbon": "art-p48-celebrate-tet-ribbon_3652d89f.webp",
+        "celebrateChristmasCorner": "art-p48-celebrate-christmas-corner_d7d14ea3.webp",
+        "celebrateChristmasRibbon": "art-p48-celebrate-christmas-ribbon_1e42e8a5.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FFF6E8",
+        "ink": "#75522E",
+        "accent": "#BE9657"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_19",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Dịp đặc biệt",
+          "en": "Days to Celebrate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "hundredConfirmed",
+            "label": {
+              "vi": "Tôi chọn kỷ niệm mốc 100 ngày",
+              "en": "I choose to mark one hundred days"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "firstDayConfirmed",
+            "label": {
+              "vi": "Ảnh đầu là ngày chào đời đã xác nhận",
+              "en": "Photo one is the confirmed first day"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "hundredMark",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "100",
+              "en": "100"
+            },
+            "requires": [
+              "hundredConfirmed"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Ngày đầu tiên…",
+              "en": "The very first day…"
+            },
+            "requires": [
+              "firstDayConfirmed"
+            ],
+            "fallback": {
+              "vi": "Từ một kỷ niệm nhỏ…",
+              "en": "From one little memory…"
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Rồi từng ngày, mình hiểu nhau hơn.",
+              "en": "Then, day by day, we got to know you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Những thay đổi nhỏ cứ nối tiếp.",
+              "en": "Little changes kept unfolding."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Hôm nay, tròn một trăm ngày.",
+              "en": "Today marks one hundred days."
+            },
+            "requires": [
+              "hundredConfirmed"
+            ],
+            "fallback": {
+              "vi": "Giữ lại những ngày bên con.",
+              "en": "Keeping these days with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Cảm ơn con vì những ngày bên nhau.",
+              "en": "Thank you for these days together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Một trăm ngày bên con",
+              "en": "One Hundred Days With You"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Một trăm ngày bên con",
+        "en": "One Hundred Days With You"
+      },
+      "description": {
+        "vi": "Dịp đặc biệt",
+        "en": "Days to Celebrate"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 20,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumHundredDays",
+      "assets": {
+        "hundredFrame": "art-p48-hundred-frame_0d5a1547.webp",
+        "hundredOval": "art-p48-hundred-oval_630398b1.webp",
+        "hundredMargin": "art-p48-hundred-margin_b3a49758.webp",
+        "hundredLabel": "art-p48-hundred-label_8230b711.webp",
+        "hundredClosing": "art-p48-hundred-closing_cbb69169.webp",
+        "hundredNumeral": "art-p48-hundred-numeral_5720eed2.webp",
+        "hundredRing": "art-p48-hundred-ring_c00c0531.webp",
+        "hundredGold": "art-p48-hundred-gold_38bdf32f.webp",
+        "hundredChapter": "art-p48-hundred-chapter_4c3f60e3.webp",
+        "hundredFold": "art-p48-hundred-fold_ae0a1210.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Một trăm ngày bên con",
+            "en": "Photo 1 · hundred"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Một trăm ngày bên con",
+            "en": "Photo 2 · hundred"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Một trăm ngày bên con",
+            "en": "Photo 3 · hundred"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Một trăm ngày bên con",
+            "en": "Photo 4 · hundred"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Một trăm ngày bên con",
+            "en": "Photo 5 · hundred"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFF5E8",
+        "ink": "#903E30",
+        "accent": "#BEA06C"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_hundred",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_20",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Dịp đặc biệt",
+          "en": "Days to Celebrate"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "occasionName",
+            "label": {
+              "vi": "Tên dịp lễ",
+              "en": "Celebration name"
+            },
+            "suggestion": {
+              "vi": "ngày vui của nhà mình",
+              "en": "our family celebration"
+            },
+            "type": "text",
+            "max": 32,
+            "required": true
+          },
+          {
+            "key": "celebrationTheme",
+            "label": {
+              "vi": "Bộ trang trí",
+              "en": "Decoration theme"
+            },
+            "options": [
+              {
+                "value": "neutral",
+                "label": {
+                  "vi": "Trung tính · cờ vải",
+                  "en": "Neutral · fabric bunting"
+                }
+              },
+              {
+                "value": "tet",
+                "label": {
+                  "vi": "Tết · hoa và phong bao",
+                  "en": "Lunar New Year · blossom & envelope"
+                }
+              },
+              {
+                "value": "christmas",
+                "label": {
+                  "vi": "Christmas · thông và sao",
+                  "en": "Christmas · pine & paper star"
+                }
+              }
+            ],
+            "type": "text",
+            "max": 12,
+            "required": true
+          },
+          {
+            "key": "firstConfirmed",
+            "label": {
+              "vi": "Đây là lần đầu bé đón dịp này",
+              "en": "This is baby’s first time celebrating this occasion"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "theme",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{celebrationTheme}",
+              "en": "{celebrationTheme}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Lại đến {occasionName}.",
+              "en": "It is time for {occasionName}."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Những điều thân quen vẫn ở đây.",
+              "en": "The familiar little traditions are here."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Chỉ có một điều thật mới…",
+              "en": "With one wonderful difference…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Năm nay, mình có con cùng đón.",
+              "en": "This time, you are here with us."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Dịp lễ đầu tiên của {babyName}.",
+              "en": "{babyName}’s first celebration."
+            },
+            "requires": [
+              "firstConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một dịp vui có con cùng đón.",
+              "en": "A celebration, with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Dịp lễ đầu tiên của con",
+              "en": "Your First Celebration"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Dịp lễ đầu tiên của con",
+        "en": "Your First Celebration"
+      },
+      "description": {
+        "vi": "Dịp đặc biệt",
+        "en": "Days to Celebrate"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 21,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumFirstCelebration",
+      "assets": {
+        "celebrateFrame": "art-p48-celebrate-frame_06103a75.webp",
+        "celebrateOval": "art-p48-celebrate-oval_2fb1e027.webp",
+        "celebrateMargin": "art-p48-celebrate-margin_caa29fd0.webp",
+        "celebrateLabel": "art-p48-celebrate-label_c04ad2ba.webp",
+        "celebrateClosing": "art-p48-celebrate-closing_6b4b1ad2.webp",
+        "celebrateNeutralCorner": "art-p48-celebrate-neutral-corner_3eab980f.webp",
+        "celebrateNeutralRibbon": "art-p48-celebrate-neutral-ribbon_29db9029.webp",
+        "celebrateTetCorner": "art-p48-celebrate-tet-corner_21fb3d9e.webp",
+        "celebrateTetRibbon": "art-p48-celebrate-tet-ribbon_3652d89f.webp",
+        "celebrateChristmasCorner": "art-p48-celebrate-christmas-corner_d7d14ea3.webp",
+        "celebrateChristmasRibbon": "art-p48-celebrate-christmas-ribbon_1e42e8a5.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Dịp lễ đầu tiên của con",
+            "en": "Photo 1 · celebrate"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Dịp lễ đầu tiên của con",
+            "en": "Photo 2 · celebrate"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Dịp lễ đầu tiên của con",
+            "en": "Photo 3 · celebrate"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Dịp lễ đầu tiên của con",
+            "en": "Photo 4 · celebrate"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Dịp lễ đầu tiên của con",
+            "en": "Photo 5 · celebrate"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FFF6E8",
+        "ink": "#75522E",
+        "accent": "#BE9657"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_celebrate_neutral",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_19",
+      "locale": "vi",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "expected": {
+        "hundredMark": "",
+        "title": "Những ngày bên con.",
+        "message": "Từ những phút gần nhau đến hôm nay.",
+        "detail0": "Những ngày bên nhau, bao điều để nhớ.",
+        "signature": "Lucas",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_19",
+      "locale": "vi",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "2026-10-22",
+        "hundredConfirmed": "true",
+        "firstDayConfirmed": "true"
+      },
+      "expected": {
+        "hundredMark": "100",
+        "title": "100 ngày bên Lucas.",
+        "message": "Từ cái ôm đầu tiên đến hôm nay.",
+        "detail0": "Một trăm ngày, biết bao điều để nhớ.",
+        "signature": "Lucas",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_19",
+      "locale": "en",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "expected": {
+        "hundredMark": "",
+        "title": "These days with you.",
+        "message": "From little moments together to today.",
+        "detail0": "Days together. So much to remember.",
+        "signature": "Lucas",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_19",
+      "locale": "en",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "2026-10-22",
+        "hundredConfirmed": "true",
+        "firstDayConfirmed": "true"
+      },
+      "expected": {
+        "hundredMark": "100",
+        "title": "100 days with Lucas.",
+        "message": "From that first embrace to today.",
+        "detail0": "One hundred days. So much to remember.",
+        "signature": "Lucas",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "card_premium48_20",
+      "locale": "vi",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "theme": "christmas",
+        "title": "Giáng sinh, có con cùng đón.",
+        "message": "Năm nay, ngày quen có thêm một gương mặt mới.",
+        "detail0": "Kỷ niệm của nhà mình.",
+        "signature": "Chloe",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_20",
+      "locale": "vi",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "2026-10-22",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "theme": "christmas",
+        "title": "Giáng sinh đầu tiên của Chloe.",
+        "message": "Năm nay, ngày quen có thêm một gương mặt mới.",
+        "detail0": "Kỷ niệm của nhà mình.",
+        "signature": "Chloe",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_20",
+      "locale": "en",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "theme": "christmas",
+        "title": "Christmas, with you.",
+        "message": "A familiar celebration, with someone new.",
+        "detail0": "A family memory.",
+        "signature": "Chloe",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_20",
+      "locale": "en",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "2026-10-22",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "theme": "christmas",
+        "title": "Chloe’s first Christmas.",
+        "message": "A familiar celebration, with someone new.",
+        "detail0": "A family memory.",
+        "signature": "Chloe",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "video_premium48_19",
+      "locale": "vi",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "expected": {
+        "hundredMark": "",
+        "scene1": "Từ một kỷ niệm nhỏ…",
+        "scene2": "Rồi từng ngày, mình hiểu nhau hơn.",
+        "scene3": "Những thay đổi nhỏ cứ nối tiếp.",
+        "scene4": "Giữ lại những ngày bên con.",
+        "scene5": "Cảm ơn con vì những ngày bên nhau.",
+        "signature": "Lucas",
+        "label1": "",
+        "title": "Một trăm ngày bên con"
+      }
+    },
+    {
+      "id": "video_premium48_19",
+      "locale": "vi",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "2026-10-22",
+        "hundredConfirmed": "true",
+        "firstDayConfirmed": "true"
+      },
+      "expected": {
+        "hundredMark": "100",
+        "scene1": "Ngày đầu tiên…",
+        "scene2": "Rồi từng ngày, mình hiểu nhau hơn.",
+        "scene3": "Những thay đổi nhỏ cứ nối tiếp.",
+        "scene4": "Hôm nay, tròn một trăm ngày.",
+        "scene5": "Cảm ơn con vì những ngày bên nhau.",
+        "signature": "Lucas",
+        "label1": "22 tháng 10, 2026",
+        "title": "Một trăm ngày bên con"
+      }
+    },
+    {
+      "id": "video_premium48_19",
+      "locale": "en",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "expected": {
+        "hundredMark": "",
+        "scene1": "From one little memory…",
+        "scene2": "Then, day by day, we got to know you.",
+        "scene3": "Little changes kept unfolding.",
+        "scene4": "Keeping these days with you.",
+        "scene5": "Thank you for these days together.",
+        "signature": "Lucas",
+        "label1": "",
+        "title": "One Hundred Days With You"
+      }
+    },
+    {
+      "id": "video_premium48_19",
+      "locale": "en",
+      "values": {
+        "babyName": "Lucas",
+        "momentDate": "2026-10-22",
+        "hundredConfirmed": "true",
+        "firstDayConfirmed": "true"
+      },
+      "expected": {
+        "hundredMark": "100",
+        "scene1": "The very first day…",
+        "scene2": "Then, day by day, we got to know you.",
+        "scene3": "Little changes kept unfolding.",
+        "scene4": "Today marks one hundred days.",
+        "scene5": "Thank you for these days together.",
+        "signature": "Lucas",
+        "label1": "22 October 2026",
+        "title": "One Hundred Days With You"
+      }
+    },
+    {
+      "id": "video_premium48_20",
+      "locale": "vi",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "theme": "christmas",
+        "scene1": "Lại đến Giáng sinh.",
+        "scene2": "Những điều thân quen vẫn ở đây.",
+        "scene3": "Chỉ có một điều thật mới…",
+        "scene4": "Năm nay, mình có con cùng đón.",
+        "scene5": "Một dịp vui có con cùng đón.",
+        "signature": "Chloe",
+        "label1": "",
+        "title": "Dịp lễ đầu tiên của con"
+      }
+    },
+    {
+      "id": "video_premium48_20",
+      "locale": "vi",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "2026-10-22",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "theme": "christmas",
+        "scene1": "Lại đến Giáng sinh.",
+        "scene2": "Những điều thân quen vẫn ở đây.",
+        "scene3": "Chỉ có một điều thật mới…",
+        "scene4": "Năm nay, mình có con cùng đón.",
+        "scene5": "Dịp lễ đầu tiên của Chloe.",
+        "signature": "Chloe",
+        "label1": "22 tháng 10, 2026",
+        "title": "Dịp lễ đầu tiên của con"
+      }
+    },
+    {
+      "id": "video_premium48_20",
+      "locale": "en",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "expected": {
+        "theme": "christmas",
+        "scene1": "It is time for Christmas.",
+        "scene2": "The familiar little traditions are here.",
+        "scene3": "With one wonderful difference…",
+        "scene4": "This time, you are here with us.",
+        "scene5": "A celebration, with you.",
+        "signature": "Chloe",
+        "label1": "",
+        "title": "Your First Celebration"
+      }
+    },
+    {
+      "id": "video_premium48_20",
+      "locale": "en",
+      "values": {
+        "babyName": "Chloe",
+        "momentDate": "2026-10-22",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "true"
+      },
+      "expected": {
+        "theme": "christmas",
+        "scene1": "It is time for Christmas.",
+        "scene2": "The familiar little traditions are here.",
+        "scene3": "With one wonderful difference…",
+        "scene4": "This time, you are here with us.",
+        "scene5": "Chloe’s first celebration.",
+        "signature": "Chloe",
+        "label1": "22 October 2026",
+        "title": "Your First Celebration"
+      }
+    }
+  ],
+  "demos": {
+    "card_premium48_19": {
+      "vi": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      }
+    },
+    "card_premium48_20": {
+      "vi": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      }
+    },
+    "video_premium48_19": {
+      "vi": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Lucas",
+        "momentDate": "",
+        "hundredConfirmed": "false",
+        "firstDayConfirmed": "false"
+      }
+    },
+    "video_premium48_20": {
+      "vi": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Giáng sinh",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Chloe",
+        "momentDate": "",
+        "occasionName": "Christmas",
+        "celebrationTheme": "christmas",
+        "firstConfirmed": "false"
+      }
+    }
+  }
+}

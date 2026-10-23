@@ -30345,13 +30345,13 @@ abstract class AppLocalizations {
   /// Personalization v2: Open
   ///
   /// In vi, this message translates to:
-  /// **'Xem việc hữu ích hôm nay'**
+  /// **'Xem chi tiết'**
   String get pv2Open;
 
   /// Personalization v2: Context
   ///
   /// In vi, this message translates to:
-  /// **'Hôm nay bạn có thể dành thời gian thế nào?'**
+  /// **'Hôm nay bạn rảnh cỡ nào?'**
   String get pv2Context;
 
   /// Personalization v2: Usual
@@ -30375,7 +30375,7 @@ abstract class AppLocalizations {
   /// Personalization v2: Temporary
   ///
   /// In vi, this message translates to:
-  /// **'Lựa chọn hôm nay tự hết hạn vào cuối ngày.'**
+  /// **'Ngày mai tự trở về \"Như mọi ngày\".'**
   String get pv2Temporary;
 
   /// Personalization v2: Focus
@@ -30405,19 +30405,19 @@ abstract class AppLocalizations {
   /// Personalization v2: Unusual
   ///
   /// In vi, this message translates to:
-  /// **'Sinh hoạt hôm nay khác thường'**
+  /// **'Hôm nay bé không như mọi ngày'**
   String get pv2Unusual;
 
   /// Personalization v2: UnusualHint
   ///
   /// In vi, this message translates to:
-  /// **'Tạm dừng gợi ý theo nhịp; nhắc việc bạn đã đặt vẫn giữ nguyên.'**
+  /// **'Ví dụ bé ốm, đi xa hay nhà có khách. Hôm nay tạm ẩn nhịp bú, ngủ thường gặp cho cả nhà; nhắc việc vẫn giữ nguyên.'**
   String get pv2UnusualHint;
 
   /// Personalization v2: Next
   ///
   /// In vi, this message translates to:
-  /// **'Một việc vừa sức lúc này'**
+  /// **'Gợi ý cho hôm nay'**
   String get pv2Next;
 
   /// Personalization v2: BecauseNeed
@@ -30459,13 +30459,13 @@ abstract class AppLocalizations {
   /// Personalization v2: OpenActivity
   ///
   /// In vi, this message translates to:
-  /// **'Xem cách thực hiện'**
+  /// **'Xem cách làm'**
   String get pv2OpenActivity;
 
   /// Personalization v2: Controls
   ///
   /// In vi, this message translates to:
-  /// **'Điều chỉnh gợi ý'**
+  /// **'Tuỳ chọn khác'**
   String get pv2Controls;
 
   /// Personalization v2: Save
@@ -30477,13 +30477,13 @@ abstract class AppLocalizations {
   /// Personalization v2: Hide
   ///
   /// In vi, this message translates to:
-  /// **'Ẩn thẻ này'**
+  /// **'Ẩn gợi ý này'**
   String get pv2Hide;
 
   /// Personalization v2: Snooze
   ///
   /// In vi, this message translates to:
-  /// **'Hôm nay bận · để sau 3 ngày'**
+  /// **'Để sau 3 ngày'**
   String get pv2Snooze;
 
   /// Personalization v2: the only choice under × on a Home work card; hides it for this person until the end of the day (P-172 audit P2 #4)
@@ -30495,7 +30495,7 @@ abstract class AppLocalizations {
   /// Personalization v2: Dislike
   ///
   /// In vi, this message translates to:
-  /// **'Tôi không thích gợi ý này'**
+  /// **'Không hợp với nhà mình'**
   String get pv2Dislike;
 
   /// Personalization v2: Known
@@ -30729,7 +30729,7 @@ abstract class AppLocalizations {
   /// Personalization v2: Work
   ///
   /// In vi, this message translates to:
-  /// **'Bàn giao trong 30 giây'**
+  /// **'Bàn giao cho người chăm'**
   String get pv2Work;
 
   /// Personalization v2: WorkHint
@@ -30819,7 +30819,7 @@ abstract class AppLocalizations {
   /// Personalization v2: History
   ///
   /// In vi, this message translates to:
-  /// **'Điều đang dùng để cá nhân hoá'**
+  /// **'Đã lưu, đã thử và đã ẩn'**
   String get pv2History;
 
   /// Personalization v2: Saved
@@ -31187,6 +31187,432 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.'**
   String get engPaused;
+
+  /// Kicker of the personal-day card on Home (caps like rhKickerToday).
+  ///
+  /// In vi, this message translates to:
+  /// **'GỢI Ý HÔM NAY CHO BÉ'**
+  String get pv2HomeKicker;
+
+  /// Link on the Home card to the full personal-day screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get pv2More;
+
+  /// Home card row label; its value is the chosen context (pv2Usual / pv2FewMinutes / pv2Busy).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian hôm nay'**
+  String get pv2TimeToday;
+
+  /// What "Như mọi ngày" does to the suggestions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 3 gợi ý, dài ngắn tuỳ việc.'**
+  String get pv2UsualHint;
+
+  /// What "Chỉ vài phút" does to the suggestions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ gợi ý việc từ 5 phút trở xuống.'**
+  String get pv2FewMinutesHint;
+
+  /// What "Đang bận" does (one activity, no digest).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một việc ngắn duy nhất, hôm nay không nhắc gợi ý.'**
+  String get pv2BusyHint;
+
+  /// Section heading on the personal-day screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều chỉnh gợi ý'**
+  String get pv2Adjust;
+
+  /// Switch for the weekly play focus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này ưu tiên chơi cùng con'**
+  String get pv2FocusToggle;
+
+  /// Subtitle of the weekly focus switch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý chơi được ưu tiên đến hết tuần này.'**
+  String get pv2FocusHint;
+
+  /// Section listing this person's own actions on suggestions today.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay bạn đã'**
+  String get pv2DoneToday;
+
+  /// Empty state of pv2DoneToday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.'**
+  String get pv2DoneTodayEmpty;
+
+  /// When the day has no activity suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay chưa có gợi ý mới phù hợp. Bạn có thể xem lại những việc đã lưu.'**
+  String get pv2NoIdeas;
+
+  /// Row action asking for the outcome after an attempt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thấy sao?'**
+  String get pv2HowWasIt;
+
+  /// Sheet title for the outcome question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần thử này thế nào?'**
+  String get pv2HowWasItTitle;
+
+  /// Toast when the saved heart is tapped again.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý này đã nằm trong mục Đã lưu.'**
+  String get pv2AlreadySaved;
+
+  /// Toast action that reverses the last change.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get pv2Undo;
+
+  /// Status line on a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get pv2StatusSaved;
+
+  /// Status line on a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn'**
+  String get pv2StatusHidden;
+
+  /// Status line on a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã loại cho cả nhà'**
+  String get pv2StatusExcluded;
+
+  /// Status line; when is HH:mm today or dd/MM.
+  ///
+  /// In vi, this message translates to:
+  /// **'Định thử · {when}'**
+  String pv2StatusIntend(String when);
+
+  /// Status line; when is HH:mm today or dd/MM.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử · {when}'**
+  String pv2StatusTried(String when);
+
+  /// Status line; when is dd/MM.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau đến {when}'**
+  String pv2StatusSnoozed(String when);
+
+  /// Toast after saving a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu. Xem lại trong \"Đã lưu, đã thử và đã ẩn\".'**
+  String get pv2ToastSaved;
+
+  /// Toast after "Mình định thử".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".'**
+  String get pv2ToastIntend;
+
+  /// Toast after "Mình đã thử" (the card leaves the list until tomorrow).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi bạn đã thử. Gợi ý này chuyển xuống \"Hôm nay bạn đã\".'**
+  String get pv2ToastTried;
+
+  /// Toast after an outcome answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn, đã ghi lại.'**
+  String get pv2ToastOutcome;
+
+  /// Toast after hiding a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn gợi ý này.'**
+  String get pv2ToastHidden;
+
+  /// Toast after snoozing a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ gợi ý lại sau 3 ngày.'**
+  String get pv2ToastSnoozed;
+
+  /// Toast after putting off a work card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn đến hết hôm nay. Việc vẫn còn trong Nhắc việc.'**
+  String get pv2ToastWorkSnoozed;
+
+  /// Toast after excluding an activity for the baby.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã loại gợi ý này cho cả nhà.'**
+  String get pv2ToastExcluded;
+
+  /// Toast after restoring a suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã khôi phục gợi ý.'**
+  String get pv2ToastRestored;
+
+  /// Toast after choosing today's time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn \"{choice}\". Gợi ý đã cập nhật.'**
+  String pv2ToastContext(String choice);
+
+  /// Toast after turning on the weekly focus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này sẽ ưu tiên gợi ý chơi cùng con.'**
+  String get pv2ToastFocusOn;
+
+  /// Toast after turning off the weekly focus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ ưu tiên tuần này.'**
+  String get pv2ToastFocusOff;
+
+  /// Toast after turning on the unusual-day switch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi hôm nay bé không như mọi ngày.'**
+  String get pv2ToastUnusualOn;
+
+  /// Toast after turning off the unusual-day switch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bật lại nhịp thường gặp.'**
+  String get pv2ToastUnusualOff;
+
+  /// Toast after acknowledging the handover.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi bạn nhận bàn giao.'**
+  String get pv2ToastAcknowledged;
+
+  /// Subtitle of the handover row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} việc đang chờ}}'**
+  String pv2WorkCount(int count);
+
+  /// Subtitle of the notebook row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Chưa có ghi chú} other{{count} ghi chú}}'**
+  String pv2NotesCount(int count);
+
+  /// Subtitle of the rhythm row on an unusual day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạm ẩn hôm nay'**
+  String get pv2PatternsPaused;
+
+  /// Subtitle of the rhythm row without patterns.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ dữ liệu'**
+  String get pv2PatternsNone;
+
+  /// Subtitle of the history row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này: {tried} đã thử · {helpful} có ích'**
+  String pv2WeekLine(int tried, int helpful);
+
+  /// Status chip after acknowledging.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận bàn giao'**
+  String get pv2AcknowledgedShort;
+
+  /// Group heading in the history screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ẩn'**
+  String get pv2HiddenNow;
+
+  /// Group heading in the history screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get pv2SavedNow;
+
+  /// Group heading in the history screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử'**
+  String get pv2TriedBefore;
+
+  /// Heading of the open reminders on the handover screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc đang chờ'**
+  String get pv2Reminders;
+
+  /// Status chip: the person found the idea helpful.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ích'**
+  String get pv2ChipHelpful;
+
+  /// Status chip: not clear yet after trying.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ'**
+  String get pv2ChipUnsure;
+
+  /// Action/tooltip that takes an idea out of saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lưu'**
+  String get pv2Unsave;
+
+  /// Toast after unsaving.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ lưu.'**
+  String get pv2ToastUnsaved;
+
+  /// Home row after today's check-in; what is the observation label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay: {what}'**
+  String hnCheckInDone(String what);
+
+  /// Subtitle of the check-in row once answered.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đã ghi · Chạm để sửa hoặc thêm'**
+  String hnCheckInDoneSub(String who);
+
+  /// Age under 13 weeks with the extra days (owner 2026-10-22: "5 tuần 3 ngày").
+  ///
+  /// In vi, this message translates to:
+  /// **'{weeks} tuần {days} ngày tuổi'**
+  String ageWeeksDays(int weeks, int days);
+
+  /// Short age under 13 weeks with the extra days (header chip).
+  ///
+  /// In vi, this message translates to:
+  /// **'{weeks} tuần {days} ngày'**
+  String ageShortWeeksDays(int weeks, int days);
+
+  /// Week summary title (replaces "Tuần thứ N", owner 2026-10-22).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần vừa qua của {baby}'**
+  String rhWeekOfPast(String baby);
+
+  /// Week summary title while the week is in progress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này của {baby}'**
+  String rhWeekOfNow(String baby);
+
+  /// Title of the week share sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi tổng kết tuần'**
+  String get rhWeekShareSheet;
+
+  /// Share the week summary picture through the system share sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi ảnh'**
+  String get rhWeekShareImage;
+
+  /// Share the week summary as plain text.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi dạng chữ'**
+  String get rhWeekShareTextOnly;
+
+  /// Footer of the shared week picture.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký của cả nhà · Child Life'**
+  String get rhWeekShareFooter;
+
+  /// Button on Nhịp riêng của con once this person noted today.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa ghi nhận hôm nay'**
+  String get rhEditToday;
+
+  /// Timeline period chip: diapers in the period.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tã'**
+  String periodDiapers(int count);
+
+  /// Stats card: each day of the range as a 0–24 h strip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từng ngày'**
+  String get dayStripsTitle;
+
+  /// Day row with nothing of the chosen kind.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get dayNothingLogged;
+
+  /// Day summary: feeds.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ bú'**
+  String dayFeedsLine(int count);
+
+  /// Day summary: breastfeeding minutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes} phút bú mẹ'**
+  String dayBreastLine(int minutes);
+
+  /// Day summary: sleeps and total.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} giấc {duration}'**
+  String daySleepLine(int count, String duration);
+
+  /// Timeline: when a sleep ended.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thức dậy'**
+  String get careWokeUp;
+
+  /// Timeline: time awake until the next sleep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thức {duration} đến giấc sau'**
+  String careAwakeFor(String duration);
+
+  /// Timeline: the latest wake-up today, still awake.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thức · {duration}'**
+  String careAwakeNow(String duration);
 }
 
 class _AppLocalizationsDelegate

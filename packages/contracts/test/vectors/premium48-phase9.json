@@ -1,0 +1,2079 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_17",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "handsConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai là bàn tay bé",
+              "en": "Photo two shows baby’s hands"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "feetConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba là bàn chân bé trong tay",
+              "en": "Photo three shows baby’s feet held in a hand"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Những điều bé xíu của con.",
+              "en": "The tiniest details of you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Bàn tay này. Bàn chân này. Ngày hôm nay.",
+              "en": "These hands. These feet. This very day."
+            },
+            "requires": [
+              "handsConfirmed",
+              "feetConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những chi tiết nhỏ, ngay lúc này.",
+              "en": "Little details, just as they are now."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Muốn nhớ thật rõ, trước khi con lớn thêm.",
+              "en": "Remembering them, just as they are now."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Bé xíu trong bàn tay",
+        "en": "The Tiniest Details"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 18,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-margin_72aad58c.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.55,
+              "h": 0.43
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.5660000000000001,
+              "h": 0.442
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.66,
+              "y": 0.27,
+              "w": 0.27,
+              "h": 0.2
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.652,
+              "y": 0.264,
+              "w": 0.28600000000000003,
+              "h": 0.21200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.66,
+              "y": 0.5,
+              "w": 0.27,
+              "h": 0.2
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.652,
+              "y": 0.494,
+              "w": 0.28600000000000003,
+              "h": 0.21200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-margin_72aad58c.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.27,
+              "w": 0.55,
+              "h": 0.35
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.264,
+              "w": 0.5660000000000001,
+              "h": 0.362
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.66,
+              "y": 0.27,
+              "w": 0.27,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.652,
+              "y": 0.264,
+              "w": 0.28600000000000003,
+              "h": 0.17200000000000001
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.66,
+              "y": 0.46,
+              "w": 0.27,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-details-frame_a62fc5d4.webp",
+            "rect": {
+              "x": 0.652,
+              "y": 0.454,
+              "w": 0.28600000000000003,
+              "h": 0.17200000000000001
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "detailsFrame": "art-p48-details-frame_a62fc5d4.webp",
+        "detailsOval": "art-p48-details-oval_ed2a8671.webp",
+        "detailsMargin": "art-p48-details-margin_72aad58c.webp",
+        "detailsLabel": "art-p48-details-label_964adeaf.webp",
+        "detailsClosing": "art-p48-details-closing_33b2ed3a.webp",
+        "detailsFilm": "art-p48-details-film_1de49c6c.webp",
+        "detailsRule": "art-p48-details-rule_0b55a35b.webp",
+        "detailsCaption": "art-p48-details-caption_9bc62385.webp",
+        "detailsCotton": "art-p48-details-cotton_54a8ad90.webp",
+        "detailsViewfinder": "art-p48-details-viewfinder_5e15cbdd.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FAF6F0",
+        "ink": "#66554B",
+        "accent": "#B4AAA0"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_18",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "sleepConfirmed",
+            "label": {
+              "vi": "Ảnh có bé đang ngủ",
+              "en": "The selected photos show baby sleeping"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Ngủ ngoan nhé, {babyName}.",
+              "en": "Sleep softly, {babyName}."
+            },
+            "requires": [
+              "sleepConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một tối bình yên.",
+              "en": "A quiet evening."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Ngày hôm nay, mình để dành ở đây.",
+              "en": "Keeping a little of today, right here."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Mai lại cùng nhau khám phá tiếp.",
+              "en": "More to discover together tomorrow."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Ngủ ngoan nhé, con",
+        "en": "Sleep Softly, Little One"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 19,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-margin_38be6c22.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.2,
+              "y": 0.28,
+              "w": 0.6,
+              "h": 0.48
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-oval_a3054856.webp",
+            "rect": {
+              "x": 0.192,
+              "y": 0.274,
+              "w": 0.616,
+              "h": 0.492
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-moon_472dffce.webp",
+            "rect": {
+              "x": 0.77,
+              "y": 0.19,
+              "w": 0.13,
+              "h": 0.1
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-margin_38be6c22.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.2,
+              "y": 0.28,
+              "w": 0.6,
+              "h": 0.338
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-oval_a3054856.webp",
+            "rect": {
+              "x": 0.192,
+              "y": 0.274,
+              "w": 0.616,
+              "h": 0.35000000000000003
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-sleep-moon_472dffce.webp",
+            "rect": {
+              "x": 0.77,
+              "y": 0.19,
+              "w": 0.13,
+              "h": 0.075
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "sleepFrame": "art-p48-sleep-frame_ec739d0e.webp",
+        "sleepOval": "art-p48-sleep-oval_a3054856.webp",
+        "sleepMargin": "art-p48-sleep-margin_38be6c22.webp",
+        "sleepLabel": "art-p48-sleep-label_a1e615a7.webp",
+        "sleepClosing": "art-p48-sleep-closing_e9ce9890.webp",
+        "sleepMoon": "art-p48-sleep-moon_472dffce.webp",
+        "sleepStars": "art-p48-sleep-stars_43ff2bd8.webp",
+        "sleepArch": "art-p48-sleep-arch_15364229.webp",
+        "sleepConstellation": "art-p48-sleep-constellation_dc78d9fc.webp",
+        "sleepHorizon": "art-p48-sleep-horizon_d2f1f45f.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#343C52",
+        "ink": "#EEE4C9",
+        "accent": "#9E91A0"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_17",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "handsConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai là bàn tay bé",
+              "en": "Photo two shows baby’s hands"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "feetConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba là bàn chân bé trong tay",
+              "en": "Photo three shows baby’s feet held in a hand"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Nhìn gần thêm một chút…",
+              "en": "A little closer…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Những ngón tay bé xíu.",
+              "en": "The tiniest fingers."
+            },
+            "requires": [
+              "handsConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một chi tiết thật bé.",
+              "en": "One tiny detail."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Bàn chân nằm gọn trong tay.",
+              "en": "Little feet, held in a hand."
+            },
+            "requires": [
+              "feetConfirmed"
+            ],
+            "fallback": {
+              "vi": "Thêm một góc nhìn thật gần.",
+              "en": "Another close little look."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Có những điều thay đổi thật khẽ.",
+              "en": "Some things change so quietly."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Hôm nay, mình giữ lại từng chi tiết.",
+              "en": "Today, we are keeping every detail."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Bé xíu trong bàn tay",
+              "en": "The Tiniest Details"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Bé xíu trong bàn tay",
+        "en": "The Tiniest Details"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 18,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumTiniestDetails",
+      "assets": {
+        "detailsFrame": "art-p48-details-frame_a62fc5d4.webp",
+        "detailsOval": "art-p48-details-oval_ed2a8671.webp",
+        "detailsMargin": "art-p48-details-margin_72aad58c.webp",
+        "detailsLabel": "art-p48-details-label_964adeaf.webp",
+        "detailsClosing": "art-p48-details-closing_33b2ed3a.webp",
+        "detailsFilm": "art-p48-details-film_1de49c6c.webp",
+        "detailsRule": "art-p48-details-rule_0b55a35b.webp",
+        "detailsCaption": "art-p48-details-caption_9bc62385.webp",
+        "detailsCotton": "art-p48-details-cotton_54a8ad90.webp",
+        "detailsViewfinder": "art-p48-details-viewfinder_5e15cbdd.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Bé xíu trong bàn tay",
+            "en": "Photo 1 · details"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Bé xíu trong bàn tay",
+            "en": "Photo 2 · details"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Bé xíu trong bàn tay",
+            "en": "Photo 3 · details"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Bé xíu trong bàn tay",
+            "en": "Photo 4 · details"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FAF6F0",
+        "ink": "#66554B",
+        "accent": "#B4AAA0"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_details",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_18",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Ngày thường",
+          "en": "Everyday Magic"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "sleepConfirmed",
+            "label": {
+              "vi": "Ảnh có bé đang ngủ",
+              "en": "The selected photos show baby sleeping"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Ngày dài đang khép lại.",
+              "en": "The day is coming to a close."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Những tiếng động cũng dịu hơn.",
+              "en": "The sounds around us soften."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Con nghỉ ngơi, nhà mình chậm lại.",
+              "en": "You rest, and we slow down."
+            },
+            "requires": [
+              "sleepConfirmed"
+            ],
+            "fallback": {
+              "vi": "Ở bên con, mình chậm lại.",
+              "en": "With you, we slow down."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Giữ một chút bình yên của tối nay.",
+              "en": "Keeping a little of tonight’s quiet."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Ngủ ngoan nhé, con.",
+              "en": "Sleep softly, little one."
+            },
+            "requires": [
+              "sleepConfirmed"
+            ],
+            "fallback": {
+              "vi": "Chúc nhà mình một đêm yên.",
+              "en": "Wishing us a peaceful night."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Ngủ ngoan nhé, con",
+              "en": "Sleep Softly, Little One"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Ngủ ngoan nhé, con",
+        "en": "Sleep Softly, Little One"
+      },
+      "description": {
+        "vi": "Ngày thường",
+        "en": "Everyday Magic"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 19,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumSleepSoftly",
+      "assets": {
+        "sleepFrame": "art-p48-sleep-frame_ec739d0e.webp",
+        "sleepOval": "art-p48-sleep-oval_a3054856.webp",
+        "sleepMargin": "art-p48-sleep-margin_38be6c22.webp",
+        "sleepLabel": "art-p48-sleep-label_a1e615a7.webp",
+        "sleepClosing": "art-p48-sleep-closing_e9ce9890.webp",
+        "sleepMoon": "art-p48-sleep-moon_472dffce.webp",
+        "sleepStars": "art-p48-sleep-stars_43ff2bd8.webp",
+        "sleepArch": "art-p48-sleep-arch_15364229.webp",
+        "sleepConstellation": "art-p48-sleep-constellation_dc78d9fc.webp",
+        "sleepHorizon": "art-p48-sleep-horizon_d2f1f45f.webp"
+      },
+      "photos": {
+        "min": 4,
+        "max": 4
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Ngủ ngoan nhé, con",
+            "en": "Photo 1 · sleep"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Ngủ ngoan nhé, con",
+            "en": "Photo 2 · sleep"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Ngủ ngoan nhé, con",
+            "en": "Photo 3 · sleep"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Ngủ ngoan nhé, con",
+            "en": "Photo 4 · sleep"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#343C52",
+        "ink": "#EEE4C9",
+        "accent": "#9E91A0"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_sleep",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_17",
+      "locale": "vi",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "expected": {
+        "title": "Những điều bé xíu của con.",
+        "message": "Những chi tiết nhỏ, ngay lúc này.",
+        "detail0": "Muốn nhớ thật rõ, trước khi con lớn thêm.",
+        "signature": "Leo",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_17",
+      "locale": "vi",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "2026-10-22",
+        "handsConfirmed": "true",
+        "feetConfirmed": "true"
+      },
+      "expected": {
+        "title": "Những điều bé xíu của con.",
+        "message": "Bàn tay này. Bàn chân này. Ngày hôm nay.",
+        "detail0": "Muốn nhớ thật rõ, trước khi con lớn thêm.",
+        "signature": "Leo",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_17",
+      "locale": "en",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "expected": {
+        "title": "The tiniest details of you.",
+        "message": "Little details, just as they are now.",
+        "detail0": "Remembering them, just as they are now.",
+        "signature": "Leo",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_17",
+      "locale": "en",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "2026-10-22",
+        "handsConfirmed": "true",
+        "feetConfirmed": "true"
+      },
+      "expected": {
+        "title": "The tiniest details of you.",
+        "message": "These hands. These feet. This very day.",
+        "detail0": "Remembering them, just as they are now.",
+        "signature": "Leo",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "card_premium48_18",
+      "locale": "vi",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "title": "Một tối bình yên.",
+        "message": "Ngày hôm nay, mình để dành ở đây.",
+        "detail0": "Mai lại cùng nhau khám phá tiếp.",
+        "signature": "Sophie",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_18",
+      "locale": "vi",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "2026-10-22",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "title": "Ngủ ngoan nhé, Sophie.",
+        "message": "Ngày hôm nay, mình để dành ở đây.",
+        "detail0": "Mai lại cùng nhau khám phá tiếp.",
+        "signature": "Sophie",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_18",
+      "locale": "en",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "title": "A quiet evening.",
+        "message": "Keeping a little of today, right here.",
+        "detail0": "More to discover together tomorrow.",
+        "signature": "Sophie",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_18",
+      "locale": "en",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "2026-10-22",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "title": "Sleep softly, Sophie.",
+        "message": "Keeping a little of today, right here.",
+        "detail0": "More to discover together tomorrow.",
+        "signature": "Sophie",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "video_premium48_17",
+      "locale": "vi",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Nhìn gần thêm một chút…",
+        "scene2": "Một chi tiết thật bé.",
+        "scene3": "Thêm một góc nhìn thật gần.",
+        "scene4": "Có những điều thay đổi thật khẽ.",
+        "scene5": "Hôm nay, mình giữ lại từng chi tiết.",
+        "signature": "Leo",
+        "label1": "",
+        "title": "Bé xíu trong bàn tay"
+      }
+    },
+    {
+      "id": "video_premium48_17",
+      "locale": "vi",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "2026-10-22",
+        "handsConfirmed": "true",
+        "feetConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Nhìn gần thêm một chút…",
+        "scene2": "Những ngón tay bé xíu.",
+        "scene3": "Bàn chân nằm gọn trong tay.",
+        "scene4": "Có những điều thay đổi thật khẽ.",
+        "scene5": "Hôm nay, mình giữ lại từng chi tiết.",
+        "signature": "Leo",
+        "label1": "22 tháng 10, 2026",
+        "title": "Bé xíu trong bàn tay"
+      }
+    },
+    {
+      "id": "video_premium48_17",
+      "locale": "en",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "A little closer…",
+        "scene2": "One tiny detail.",
+        "scene3": "Another close little look.",
+        "scene4": "Some things change so quietly.",
+        "scene5": "Today, we are keeping every detail.",
+        "signature": "Leo",
+        "label1": "",
+        "title": "The Tiniest Details"
+      }
+    },
+    {
+      "id": "video_premium48_17",
+      "locale": "en",
+      "values": {
+        "babyName": "Leo",
+        "momentDate": "2026-10-22",
+        "handsConfirmed": "true",
+        "feetConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "A little closer…",
+        "scene2": "The tiniest fingers.",
+        "scene3": "Little feet, held in a hand.",
+        "scene4": "Some things change so quietly.",
+        "scene5": "Today, we are keeping every detail.",
+        "signature": "Leo",
+        "label1": "22 October 2026",
+        "title": "The Tiniest Details"
+      }
+    },
+    {
+      "id": "video_premium48_18",
+      "locale": "vi",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Ngày dài đang khép lại.",
+        "scene2": "Những tiếng động cũng dịu hơn.",
+        "scene3": "Ở bên con, mình chậm lại.",
+        "scene4": "Giữ một chút bình yên của tối nay.",
+        "scene5": "Chúc nhà mình một đêm yên.",
+        "signature": "Sophie",
+        "label1": "",
+        "title": "Ngủ ngoan nhé, con"
+      }
+    },
+    {
+      "id": "video_premium48_18",
+      "locale": "vi",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "2026-10-22",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Ngày dài đang khép lại.",
+        "scene2": "Những tiếng động cũng dịu hơn.",
+        "scene3": "Con nghỉ ngơi, nhà mình chậm lại.",
+        "scene4": "Giữ một chút bình yên của tối nay.",
+        "scene5": "Ngủ ngoan nhé, con.",
+        "signature": "Sophie",
+        "label1": "22 tháng 10, 2026",
+        "title": "Ngủ ngoan nhé, con"
+      }
+    },
+    {
+      "id": "video_premium48_18",
+      "locale": "en",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "The day is coming to a close.",
+        "scene2": "The sounds around us soften.",
+        "scene3": "With you, we slow down.",
+        "scene4": "Keeping a little of tonight’s quiet.",
+        "scene5": "Wishing us a peaceful night.",
+        "signature": "Sophie",
+        "label1": "",
+        "title": "Sleep Softly, Little One"
+      }
+    },
+    {
+      "id": "video_premium48_18",
+      "locale": "en",
+      "values": {
+        "babyName": "Sophie",
+        "momentDate": "2026-10-22",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "The day is coming to a close.",
+        "scene2": "The sounds around us soften.",
+        "scene3": "You rest, and we slow down.",
+        "scene4": "Keeping a little of tonight’s quiet.",
+        "scene5": "Sleep softly, little one.",
+        "signature": "Sophie",
+        "label1": "22 October 2026",
+        "title": "Sleep Softly, Little One"
+      }
+    }
+  ],
+  "demos": {
+    "card_premium48_17": {
+      "vi": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      }
+    },
+    "card_premium48_18": {
+      "vi": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      }
+    },
+    "video_premium48_17": {
+      "vi": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Leo",
+        "momentDate": "",
+        "handsConfirmed": "false",
+        "feetConfirmed": "false"
+      }
+    },
+    "video_premium48_18": {
+      "vi": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Sophie",
+        "momentDate": "",
+        "sleepConfirmed": "false"
+      }
+    }
+  }
+}

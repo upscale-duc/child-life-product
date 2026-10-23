@@ -27,6 +27,7 @@ void main() {
         'premium48-phase4.json',
         'premium48-phase5.json',
         'premium48-phase6.json',
+        for (var p = 7; p <= 12; p++) 'premium48-phase$p.json',
       ])
         jsonDecode(
               File(
@@ -100,6 +101,63 @@ void main() {
     expect(missing['photoLabel1'], 'Now');
   });
 
+  test(
+    'birthday letter paragraphs stay inside their authored bounds with a signature',
+    () {
+      final t = templates.singleWhere((t) => t.id == 'card_premium48_23');
+      final copy = resolveKeepsakeCopy(t.personalization!, {
+        'babyName': 'Oscar',
+      }, const Locale('en'));
+      final content = CardContent(
+        occasion: '',
+        name: 'Oscar',
+        date: '',
+        quote: '',
+        personalized: copy,
+      );
+      for (final format in [KeepsakeFormat.portrait, KeepsakeFormat.story]) {
+        final before = t.layouts[format]!
+            .whereType<KeepsakeTextLayer>()
+            .singleWhere((l) => l.field == 'detail0');
+        final after = premiumCardLayers(t, format, content)
+            .whereType<KeepsakeTextLayer>()
+            .singleWhere((l) => l.field == 'detail0');
+        expect(after.rect.x, before.rect.x);
+        expect(after.rect.w, before.rect.w);
+      }
+    },
+  );
+
+  test('each occasion shows exactly its two ornaments in either language', () {
+    final t = templates.singleWhere((t) => t.id == 'card_premium48_20');
+    for (final theme in ['neutral', 'tet', 'christmas']) {
+      for (final locale in [const Locale('vi'), const Locale('en')]) {
+        final copy = resolveKeepsakeCopy(t.personalization!, {
+          'babyName': 'Chloe',
+          'occasionName': 'Tết',
+          'celebrationTheme': theme,
+        }, locale);
+        final layers = premiumCardLayers(
+          t,
+          KeepsakeFormat.portrait,
+          CardContent(
+            occasion: '',
+            name: 'Chloe',
+            date: '',
+            quote: '',
+            personalized: copy,
+          ),
+        );
+        final ornaments = layers
+            .whereType<KeepsakeImage>()
+            .where((l) => l.when != null)
+            .toList();
+        expect(ornaments.length, 2);
+        expect(ornaments.every((l) => l.when!.equals == theme), isTrue);
+      }
+    }
+  });
+
   testWidgets(
     'all premium cards fit VI/EN in both ratios; long names never silently clip',
     (tester) async {
@@ -120,6 +178,15 @@ void main() {
             KeepsakeFormat.story,
           ]) {
             for (final long in [false, true]) {
+              final finalDemos = phase >= 7
+                  ? (jsonDecode(
+                              File(
+                                '../../design/keepsake-templates/premium48-phase$phase.json',
+                              ).readAsStringSync(),
+                            )
+                            as Map)['demos']
+                        as Map
+                  : null;
               final values = {
                 for (final f in t.personalization!.fields)
                   f.key: switch (f.key) {
@@ -181,6 +248,10 @@ void main() {
                     'firstConfirmed' => 'false',
                     _ => '',
                   },
+                if (finalDemos != null)
+                  ...(finalDemos[t.id][locale.languageCode] as Map)
+                      .cast<String, String>(),
+                if (long) 'babyName': 'Nguyễn Hoàng Bảo An Minh Khôi',
               };
               final copy = resolveKeepsakeCopy(
                 t.personalization!,
@@ -201,7 +272,17 @@ void main() {
                           )
                           as List)
                       .cast<Map<String, dynamic>>();
-              final selected = phase == 6
+              final selected = number == 19
+                  ? [1, 2, 0]
+                  : phase >= 7
+                  ? [
+                      for (var i = 0; i < phase2Samples.length; i++)
+                        if ((phase2Samples[i]['templates'] as List).contains(
+                          'C$number',
+                        ))
+                          i,
+                    ].take(t.photosMax).toList()
+                  : phase == 6
                   ? (number == 11 ? [0, 1, 3] : [7, 6])
                   : phase == 5
                   ? (number == 9 ? [3, 0, 2] : [6])
@@ -233,7 +314,12 @@ void main() {
                   for (final photo in photos)
                     CardPhoto(
                       photo,
-                      align: phase == 6 && number == 12
+                      align: number == 19 && photos.indexOf(photo) == 2
+                          ? const Alignment(0, -0.6)
+                          : number == 22 &&
+                                [0, 9].contains(photos.indexOf(photo))
+                          ? Alignment.topCenter
+                          : phase >= 7 || phase == 6 && number == 12
                           ? Alignment.center
                           : phase == 4 && number == 8
                           ? (photos.indexOf(photo) == 0
@@ -246,6 +332,10 @@ void main() {
               if (phase >= 3 && !long) {
                 final neutral = resolveKeepsakeCopy(t.personalization!, {
                   'babyName': 'Bảo An',
+                  if (phase >= 7 && number == 20) ...{
+                    'occasionName': 'Christmas',
+                    'celebrationTheme': 'christmas',
+                  },
                   if (phase == 6 && number == 11)
                     'milestoneName': locale.languageCode == 'vi'
                         ? 'những bước nhỏ'

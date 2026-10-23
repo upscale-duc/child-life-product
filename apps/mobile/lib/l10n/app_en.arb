@@ -5055,32 +5055,32 @@
     "description": "Open the first aid module from Lumi health support"
   },
   "pv2Title": "Your family today",
-  "pv2Open": "See today’s useful actions",
-  "pv2Context": "What fits your day?",
-  "pv2Usual": "As usual",
-  "pv2FewMinutes": "Just a few minutes",
+  "pv2Open": "See details",
+  "pv2Context": "How much time do you have today?",
+  "pv2Usual": "A usual day",
+  "pv2FewMinutes": "A few minutes",
   "pv2Busy": "Busy today",
-  "pv2Temporary": "Today’s choice expires at the end of the day.",
+  "pv2Temporary": "Goes back to \"A usual day\" tomorrow.",
   "pv2Focus": "One focus for this week",
   "pv2Play": "A little time to play",
   "pv2Routine": "Understand your routine",
   "pv2NoFocus": "No focus",
-  "pv2Unusual": "Today’s routine is unusual",
-  "pv2UnusualHint": "Pause routine patterns; your own reminders stay in place.",
-  "pv2Next": "One manageable action now",
+  "pv2Unusual": "Today isn't a usual day for the baby",
+  "pv2UnusualHint": "For example the baby is ill, travelling or you have guests. Typical feed and sleep ranges are hidden for the whole family today; reminders stay as they are.",
+  "pv2Next": "Ideas for today",
   "pv2BecauseNeed": "Based on what your family reported today",
   "pv2BecauseFocus": "Based on your focus this week",
   "pv2BecauseInterest": "Based on your baby’s age and your interests",
   "pv2BecauseAge": "Based on your baby’s age",
   "pv2BecauseHelpful": "Your family found this helpful before",
   "pv2Minutes": "minutes",
-  "pv2OpenActivity": "See the steps",
-  "pv2Controls": "Adjust suggestions",
+  "pv2OpenActivity": "See how",
+  "pv2Controls": "More options",
   "pv2Save": "Save",
-  "pv2Hide": "Hide this card",
-  "pv2Snooze": "Busy today · snooze for 3 days",
+  "pv2Hide": "Hide this suggestion",
+  "pv2Snooze": "Snooze for 3 days",
   "pv2WorkSnooze": "Not now · hide until tonight",
-  "pv2Dislike": "This suggestion isn’t for me",
+  "pv2Dislike": "Not right for our family",
   "pv2Known": "I already know this",
   "pv2Exclude": "Unsuitable for baby · applies to the family",
   "pv2Restore": "Restore suggestion",
@@ -5119,7 +5119,7 @@
   "pv2Delete": "Delete",
   "pv2Cancel": "Later",
   "pv2NoteHint": "Confirmed notes help select suggestions. A free-text note is not medical guidance.",
-  "pv2Work": "A 30-second handover",
+  "pv2Work": "Handover for the next carer",
   "pv2WorkHint": "Tasks your family set. Completing a reminder does not create a care record.",
   "pv2NoWork": "No pending reminders.",
   "pv2Accept": "I’ll take this",
@@ -5134,7 +5134,7 @@
   "pv2WeekTried": "activities confirmed tried",
   "pv2WeekHelpful": "activities found helpful",
   "pv2WeekHint": "From your feedback over the last 7 days; before-and-after numbers do not establish an effect.",
-  "pv2History": "What shapes your suggestions",
+  "pv2History": "Saved, tried and hidden",
   "pv2Saved": "Saved",
   "pv2Digest": "Daily suggestion on this device",
   "pv2DigestHint": "Opt in to at most one fresh suggestion a day, outside quiet hours. Choose the time in personalization settings.",
@@ -5626,5 +5626,404 @@
   "engPaused": "Proactive suggestions are paused. You can choose to resume after at least 14 days.",
   "@engPaused": {
     "description": "Explicit fatigue pause explanation"
+  },
+  "pv2HomeKicker": "TODAY'S IDEA FOR YOUR BABY",
+  "@pv2HomeKicker": {
+    "description": "Kicker of the personal-day card on Home (caps like rhKickerToday)."
+  },
+  "pv2More": "See more",
+  "@pv2More": {
+    "description": "Link on the Home card to the full personal-day screen."
+  },
+  "pv2TimeToday": "Time today",
+  "@pv2TimeToday": {
+    "description": "Home card row label; its value is the chosen context (pv2Usual / pv2FewMinutes / pv2Busy)."
+  },
+  "pv2UsualHint": "Up to 3 ideas of any length.",
+  "@pv2UsualHint": {
+    "description": "What \"Như mọi ngày\" does to the suggestions."
+  },
+  "pv2FewMinutesHint": "Only ideas of 5 minutes or less.",
+  "@pv2FewMinutesHint": {
+    "description": "What \"Chỉ vài phút\" does to the suggestions."
+  },
+  "pv2BusyHint": "One short idea only, and no suggestion reminder today.",
+  "@pv2BusyHint": {
+    "description": "What \"Đang bận\" does (one activity, no digest)."
+  },
+  "pv2Adjust": "Adjust suggestions",
+  "@pv2Adjust": {
+    "description": "Section heading on the personal-day screen."
+  },
+  "pv2FocusToggle": "Make time to play this week",
+  "@pv2FocusToggle": {
+    "description": "Switch for the weekly play focus."
+  },
+  "pv2FocusHint": "Play ideas come first until the end of this week.",
+  "@pv2FocusHint": {
+    "description": "Subtitle of the weekly focus switch."
+  },
+  "pv2DoneToday": "What you did today",
+  "@pv2DoneToday": {
+    "description": "Section listing this person's own actions on suggestions today."
+  },
+  "pv2DoneTodayEmpty": "Ideas you save, plan or try show up here.",
+  "@pv2DoneTodayEmpty": {
+    "description": "Empty state of pv2DoneToday."
+  },
+  "pv2NoIdeas": "No new ideas fit today. You can look back at the ones you saved.",
+  "@pv2NoIdeas": {
+    "description": "When the day has no activity suggestion."
+  },
+  "pv2HowWasIt": "How was it?",
+  "@pv2HowWasIt": {
+    "description": "Row action asking for the outcome after an attempt."
+  },
+  "pv2HowWasItTitle": "How did it go?",
+  "@pv2HowWasItTitle": {
+    "description": "Sheet title for the outcome question."
+  },
+  "pv2AlreadySaved": "This idea is already saved.",
+  "@pv2AlreadySaved": {
+    "description": "Toast when the saved heart is tapped again."
+  },
+  "pv2Undo": "Undo",
+  "@pv2Undo": {
+    "description": "Toast action that reverses the last change."
+  },
+  "pv2StatusSaved": "Saved",
+  "@pv2StatusSaved": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusHidden": "Hidden",
+  "@pv2StatusHidden": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusExcluded": "Ruled out for the family",
+  "@pv2StatusExcluded": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusIntend": "Planned · {when}",
+  "@pv2StatusIntend": {
+    "description": "Status line; when is HH:mm today or dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "10:20"
+      }
+    }
+  },
+  "pv2StatusTried": "Tried · {when}",
+  "@pv2StatusTried": {
+    "description": "Status line; when is HH:mm today or dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "10:20"
+      }
+    }
+  },
+  "pv2StatusSnoozed": "Snoozed until {when}",
+  "@pv2StatusSnoozed": {
+    "description": "Status line; when is dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "25/10"
+      }
+    }
+  },
+  "pv2ToastSaved": "Saved. Find it under \"Saved, tried and hidden\".",
+  "@pv2ToastSaved": {
+    "description": "Toast after saving a suggestion."
+  },
+  "pv2ToastIntend": "Noted that you plan to try it. Tap \"I tried it\" afterwards.",
+  "@pv2ToastIntend": {
+    "description": "Toast after \"Mình định thử\"."
+  },
+  "pv2ToastTried": "Noted that you tried it. It moved to \"What you did today\".",
+  "@pv2ToastTried": {
+    "description": "Toast after \"Mình đã thử\" (the card leaves the list until tomorrow)."
+  },
+  "pv2ToastOutcome": "Thanks, noted.",
+  "@pv2ToastOutcome": {
+    "description": "Toast after an outcome answer."
+  },
+  "pv2ToastHidden": "Suggestion hidden.",
+  "@pv2ToastHidden": {
+    "description": "Toast after hiding a suggestion."
+  },
+  "pv2ToastSnoozed": "It'll come back in 3 days.",
+  "@pv2ToastSnoozed": {
+    "description": "Toast after snoozing a suggestion."
+  },
+  "pv2ToastWorkSnoozed": "Hidden until tonight. The task stays in Reminders.",
+  "@pv2ToastWorkSnoozed": {
+    "description": "Toast after putting off a work card."
+  },
+  "pv2ToastExcluded": "Ruled out for the whole family.",
+  "@pv2ToastExcluded": {
+    "description": "Toast after excluding an activity for the baby."
+  },
+  "pv2ToastRestored": "Suggestion restored.",
+  "@pv2ToastRestored": {
+    "description": "Toast after restoring a suggestion."
+  },
+  "pv2ToastContext": "Set to \"{choice}\". Ideas updated.",
+  "@pv2ToastContext": {
+    "description": "Toast after choosing today's time.",
+    "placeholders": {
+      "choice": {
+        "type": "String",
+        "example": "Chỉ vài phút"
+      }
+    }
+  },
+  "pv2ToastFocusOn": "Play ideas come first this week.",
+  "@pv2ToastFocusOn": {
+    "description": "Toast after turning on the weekly focus."
+  },
+  "pv2ToastFocusOff": "Weekly focus turned off.",
+  "@pv2ToastFocusOff": {
+    "description": "Toast after turning off the weekly focus."
+  },
+  "pv2ToastUnusualOn": "Noted that today isn't a usual day.",
+  "@pv2ToastUnusualOn": {
+    "description": "Toast after turning on the unusual-day switch."
+  },
+  "pv2ToastUnusualOff": "Typical ranges are back.",
+  "@pv2ToastUnusualOff": {
+    "description": "Toast after turning off the unusual-day switch."
+  },
+  "pv2ToastAcknowledged": "Handover acknowledged.",
+  "@pv2ToastAcknowledged": {
+    "description": "Toast after acknowledging the handover."
+  },
+  "pv2WorkCount": "{count, plural, =1{1 task waiting} other{{count} tasks waiting}}",
+  "@pv2WorkCount": {
+    "description": "Subtitle of the handover row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2NotesCount": "{count, plural, =0{No notes yet} =1{1 note} other{{count} notes}}",
+  "@pv2NotesCount": {
+    "description": "Subtitle of the notebook row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2PatternsPaused": "Paused for today",
+  "@pv2PatternsPaused": {
+    "description": "Subtitle of the rhythm row on an unusual day."
+  },
+  "pv2PatternsNone": "Not enough data yet",
+  "@pv2PatternsNone": {
+    "description": "Subtitle of the rhythm row without patterns."
+  },
+  "pv2WeekLine": "This week: {tried} tried · {helpful} helpful",
+  "@pv2WeekLine": {
+    "description": "Subtitle of the history row.",
+    "placeholders": {
+      "tried": {
+        "type": "int"
+      },
+      "helpful": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2AcknowledgedShort": "Handover acknowledged",
+  "@pv2AcknowledgedShort": {
+    "description": "Status chip after acknowledging."
+  },
+  "pv2HiddenNow": "Hidden now",
+  "@pv2HiddenNow": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2SavedNow": "Saved",
+  "@pv2SavedNow": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2TriedBefore": "Tried",
+  "@pv2TriedBefore": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2Reminders": "Open tasks",
+  "@pv2Reminders": {
+    "description": "Heading of the open reminders on the handover screen."
+  },
+  "pv2ChipHelpful": "Helpful",
+  "@pv2ChipHelpful": {
+    "description": "Status chip: the person found the idea helpful."
+  },
+  "pv2ChipUnsure": "Not sure yet",
+  "@pv2ChipUnsure": {
+    "description": "Status chip: not clear yet after trying."
+  },
+  "pv2Unsave": "Remove from saved",
+  "@pv2Unsave": {
+    "description": "Action/tooltip that takes an idea out of saved."
+  },
+  "pv2ToastUnsaved": "Removed from saved.",
+  "@pv2ToastUnsaved": {
+    "description": "Toast after unsaving."
+  },
+  "hnCheckInDone": "Today: {what}",
+  "@hnCheckInDone": {
+    "description": "Home row after today's check-in; what is the observation label.",
+    "placeholders": {
+      "what": {
+        "type": "String",
+        "example": "Như mọi ngày"
+      }
+    }
+  },
+  "hnCheckInDoneSub": "Noted by {who} · Tap to change or add",
+  "@hnCheckInDoneSub": {
+    "description": "Subtitle of the check-in row once answered.",
+    "placeholders": {
+      "who": {
+        "type": "String",
+        "example": "Bạn"
+      }
+    }
+  },
+  "ageWeeksDays": "{weeks, plural, =1{1 week} other{{weeks} weeks}} {days, plural, =1{1 day} other{{days} days}} old",
+  "@ageWeeksDays": {
+    "description": "Age under 13 weeks with the extra days (owner 2026-10-22: \"5 tuần 3 ngày\").",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortWeeksDays": "{weeks, plural, =1{1 wk} other{{weeks} wks}} {days, plural, =1{1 day} other{{days} days}}",
+  "@ageShortWeeksDays": {
+    "description": "Short age under 13 weeks with the extra days (header chip).",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekOfPast": "{baby}'s past week",
+  "@rhWeekOfPast": {
+    "description": "Week summary title (replaces \"Tuần thứ N\", owner 2026-10-22).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekOfNow": "{baby}'s week so far",
+  "@rhWeekOfNow": {
+    "description": "Week summary title while the week is in progress.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekShareSheet": "Send the week",
+  "@rhWeekShareSheet": {
+    "description": "Title of the week share sheet."
+  },
+  "rhWeekShareImage": "Send as picture",
+  "@rhWeekShareImage": {
+    "description": "Share the week summary picture through the system share sheet."
+  },
+  "rhWeekShareTextOnly": "Send as text",
+  "@rhWeekShareTextOnly": {
+    "description": "Share the week summary as plain text."
+  },
+  "rhWeekShareFooter": "From the family diary · Child Life",
+  "@rhWeekShareFooter": {
+    "description": "Footer of the shared week picture."
+  },
+  "rhEditToday": "Change today's note",
+  "@rhEditToday": {
+    "description": "Button on Nhịp riêng của con once this person noted today."
+  },
+  "periodDiapers": "{count, plural, =1{1 diaper} other{{count} diapers}}",
+  "@periodDiapers": {
+    "description": "Timeline period chip: diapers in the period.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayStripsTitle": "Day by day",
+  "@dayStripsTitle": {
+    "description": "Stats card: each day of the range as a 0–24 h strip."
+  },
+  "dayNothingLogged": "Nothing logged",
+  "@dayNothingLogged": {
+    "description": "Day row with nothing of the chosen kind."
+  },
+  "dayFeedsLine": "{count, plural, =1{1 feed} other{{count} feeds}}",
+  "@dayFeedsLine": {
+    "description": "Day summary: feeds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayBreastLine": "{minutes} min at the breast",
+  "@dayBreastLine": {
+    "description": "Day summary: breastfeeding minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "daySleepLine": "{count, plural, =1{1 sleep} other{{count} sleeps}} {duration}",
+  "@daySleepLine": {
+    "description": "Day summary: sleeps and total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "careWokeUp": "Woke up",
+  "@careWokeUp": {
+    "description": "Timeline: when a sleep ended."
+  },
+  "careAwakeFor": "Awake {duration} until the next sleep",
+  "@careAwakeFor": {
+    "description": "Timeline: time awake until the next sleep.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "1 giờ 9 phút"
+      }
+    }
+  },
+  "careAwakeNow": "Awake now · {duration}",
+  "@careAwakeNow": {
+    "description": "Timeline: the latest wake-up today, still awake.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "45 phút"
+      }
+    }
   }
 }

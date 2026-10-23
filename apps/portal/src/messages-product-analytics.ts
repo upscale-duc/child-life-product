@@ -1,6 +1,5 @@
 /** D-012: canonical metric semantics, same ids in both Portal languages. Billing remains backlog. */
 export const productAnalyticsVi: Record<string, string> = {
-  'features.group.analytics': 'Đo lường sản phẩm',
   'flag.product_analytics': 'Đo lường sản phẩm',
   'flag.product_analytics.desc':
     'Ghi nhận metadata hoạt động và kết quả đã xác nhận; Portal chỉ nhận số tổng hợp',
@@ -165,7 +164,6 @@ export const productAnalyticsVi: Record<string, string> = {
 };
 
 export const productAnalyticsEn: Record<string, string> = {
-  'features.group.analytics': 'Product measurement',
   'flag.product_analytics': 'Product measurement',
   'flag.product_analytics.desc':
     'Collects operational metadata and confirmed outcomes; Portal receives aggregates only',
@@ -627,8 +625,6 @@ const engFlags = [
   ['engagementDigestGroupingEnabled', 'Gom gợi ý', 'Suggestion grouping'],
   ['engagementExperimentEnabled', 'Thử nghiệm engagement', 'Engagement experiments'],
 ];
-productAnalyticsVi['features.group.engagement'] = 'Gợi ý thông minh';
-productAnalyticsEn['features.group.engagement'] = 'Smart Engagement';
 for (const [key, vi, en] of engFlags) {
   productAnalyticsVi[`flag.${key}`] = vi!;
   productAnalyticsEn[`flag.${key}`] = en!;

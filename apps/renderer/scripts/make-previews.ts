@@ -89,6 +89,18 @@ for (const track of tracks) {
 
 /** The default track per composition (as `seed-keepsakes.ts` sets `defaultMusic`). */
 export const previewMusic: Record<KeepsakeComposition, (typeof tracks)[number]> = {
+  PremiumHeldWithLove: 'binh-minh',
+  PremiumAcrossGenerations: 'binh-minh',
+  PremiumCircleOfLove: 'binh-minh',
+  PremiumDayWithYou: 'binh-minh',
+  PremiumTiniestDetails: 'binh-minh',
+  PremiumSleepSoftly: 'binh-minh',
+  PremiumHundredDays: 'binh-minh',
+  PremiumFirstCelebration: 'binh-minh',
+  PremiumLittleAdventure: 'binh-minh',
+  PremiumTwelveMonths: 'binh-minh',
+  PremiumBirthdayLetter: 'binh-minh',
+  PremiumFamilyYear: 'binh-minh',
   PremiumArrival: 'binh-minh',
   PremiumEmbrace: 'ru-em',
   PremiumHomecoming: 'binh-minh',

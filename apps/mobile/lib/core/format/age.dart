@@ -31,7 +31,10 @@ String ageLong(AppLocalizations l10n, DateTime dateOfBirth, DateTime today) {
   return switch (age.unit) {
     AgeUnit.newborn => l10n.ageNewborn,
     AgeUnit.days => l10n.ageDays(age.count),
-    AgeUnit.weeks => l10n.ageWeeks(age.count),
+    AgeUnit.weeks =>
+      _extraDays(dateOfBirth, today) > 0
+          ? l10n.ageWeeksDays(age.count, _extraDays(dateOfBirth, today))
+          : l10n.ageWeeks(age.count),
     AgeUnit.months => l10n.ageMonths(age.count),
     AgeUnit.years => l10n.ageYears(age.count),
   };
@@ -43,8 +46,21 @@ String ageShort(AppLocalizations l10n, DateTime dateOfBirth, DateTime today) {
   return switch (age.unit) {
     AgeUnit.newborn => l10n.ageShortNewborn,
     AgeUnit.days => l10n.ageShortDays(age.count),
-    AgeUnit.weeks => l10n.ageShortWeeks(age.count),
+    AgeUnit.weeks =>
+      _extraDays(dateOfBirth, today) > 0
+          ? l10n.ageShortWeeksDays(age.count, _extraDays(dateOfBirth, today))
+          : l10n.ageShortWeeks(age.count),
     AgeUnit.months => l10n.ageShortMonths(age.count),
     AgeUnit.years => l10n.ageShortYears(age.count),
   };
 }
+
+/// Days past the whole weeks (owner, 2026-10-22: "5 tuần 3 ngày" reads better than a week
+/// number).
+int _extraDays(DateTime dateOfBirth, DateTime today) =>
+    DateTime.utc(today.year, today.month, today.day)
+        .difference(
+          DateTime.utc(dateOfBirth.year, dateOfBirth.month, dateOfBirth.day),
+        )
+        .inDays %
+    7;

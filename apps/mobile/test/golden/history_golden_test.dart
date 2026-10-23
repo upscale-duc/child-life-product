@@ -100,6 +100,37 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: null,
   ),
+  // "Từng ngày" (owner 2026-10-22): the range day by day, 0–24 h, with the day's totals.
+  '20g_feed_stats_days': (
+    build: () => const FeedStatsScreen(),
+    overrides: careOverrides,
+    prefs: const {},
+    act: (t) async {
+      await t.scrollUntilVisible(
+        find.byType(CareDaysTimeline),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      // Its title at the top of the screen.
+      await t.ensureVisible(find.byType(CareDaysTimeline));
+      await t.pumpAndSettle();
+    },
+  ),
+  '20h_sleep_stats_days': (
+    build: () => const SleepStatsScreen(),
+    overrides: careOverrides,
+    prefs: const {},
+    act: (t) async {
+      await t.scrollUntilVisible(
+        find.byType(CareDaysTimeline),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      // Its title at the top of the screen.
+      await t.ensureVisible(find.byType(CareDaysTimeline));
+      await t.pumpAndSettle();
+    },
+  ),
   '20h_sleep_stats_today': (
     build: () => const SleepStatsScreen(),
     overrides: careOverrides,

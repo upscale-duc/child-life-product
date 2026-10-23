@@ -1,12 +1,5 @@
-import {
-  featureKeys,
-  flagKeys,
-  staffCan,
-  systemFlagKeys,
-  type Flag,
-  type FlagKey,
-} from '@child-life/contracts';
-import { Search, X } from 'lucide-react';
+import { featureKeys, flagKeys, type Flag, type FlagKey } from '@child-life/contracts';
+import { X } from 'lucide-react';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'sonner';
@@ -16,208 +9,24 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ApiError, useApi, useLoad, type Api, type FamilyList, type FlagsView } from '../api';
-import {
-  EmptyState,
-  FilterBar,
-  Hint,
-  Notice,
-  SearchInput,
-  Section,
-  StatTiles,
-  type StatItem,
-} from '../content-kit';
-import { useNavigate, useStaff } from '../context';
+import { ApiError, useApi, type Api, type FamilyList, type FlagsView } from '../api';
+import { Hint, Notice } from '../content-kit';
 import { shortDate } from '../format';
 import { messages } from '../messages';
-import { Button, Loaded, Modal, Pill, errorMessageId, TableScroll } from '../ui';
+import { Button, Modal, Pill, errorMessageId } from '../ui';
 
 /**
- * Flags as staff switch them (A10 / A11), shared by the "Tính năng & Premium" hub (D-089): the
- * "Công tắc hệ thống" tab (engineering switches outside the feature catalogue, the limits), the
- * dialog that turns a flag on or off (with the in-app notice) or picks who uses it, the family
- * picker, and how audit lines read. No reason is asked anywhere (D-090): the server writes the
+ * Flags as staff switch them (A10 / A11), shared by the "Tính năng & Premium" hub (D-089): one
+ * switch's row and dialog (Mua gói trong app on Gói Premium), the in-app notice, the limits, the
+ * family picker, and how audit lines read. No reason is asked anywhere (D-090): the server writes the
  * audit line (who, what, before / after) itself. Switches never change who can see what (R-189).
  */
 
 /** A switch / scope change confirmed in {@link FlagDialog}. */
 export type FlagChange = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'scope' };
 
-type State = 'everyone' | 'some' | 'percent' | 'off';
-
-export function flagState(f: Flag): State {
-  if (!f.enabled) return 'off';
-  return f.scope === 'all' ? 'everyone' : f.scope === 'internal' ? 'some' : 'percent';
-}
-
-/**
- * "Công tắc hệ thống" by the area of the app they belong to. Built from `systemFlagKeys`, so a
- * switch added later shows under "Khác" until it gets a group; Mua gói trong app
- * (`premium_billing`) lives on the Gói Premium tab.
- */
-const systemGroupOf: Partial<Record<FlagKey, string>> = {
-  assistant_live: 'assistant',
-  assistant_writes: 'assistant',
-  media_upload: 'uploads',
-  video_upload: 'uploads',
-  story_share_link: 'memories',
-  invites: 'family',
-  lock_widgets: 'family',
-  night_auto: 'family',
-  product_analytics: 'analytics',
-  premium_billing: 'billing',
-};
-const systemGroupOrder = ['assistant', 'uploads', 'memories', 'family', 'analytics', 'engagement'];
-
+/** Mua gói trong app: a switch outside the catalogue that lives on the Gói Premium tab. */
 export const billingFlag: FlagKey = 'premium_billing';
-
-export const systemFlagGroups: ReadonlyArray<{ id: string; keys: FlagKey[] }> = (() => {
-  const keys = systemFlagKeys.filter((k) => k !== billingFlag);
-  const group = (k: FlagKey) =>
-    systemGroupOf[k] ?? (k.startsWith('engagement') ? 'engagement' : 'other');
-  return [...systemGroupOrder, 'other']
-    .map((id) => ({ id, keys: keys.filter((k) => group(k) === id) }))
-    .filter((g) => g.keys.length > 0);
-})();
-
-// ---------- Công tắc hệ thống ----------
-
-export function SystemSwitchesLoader() {
-  const [load, reload] = useLoad<FlagsView>('staffFlags', {}, 'flags');
-  return (
-    <Loaded load={load} reload={reload}>
-      {(data) => <SystemSwitchesView data={data} onChanged={reload} />}
-    </Loaded>
-  );
-}
-
-/**
- * The engineering switches (uploads, invites, live model calls, engagement…): on/off levers with
- * who uses them, not products, so no tier. Turning one off can show families a short notice.
- */
-export function SystemSwitchesView({
-  data,
-  onChanged,
-}: {
-  data: FlagsView;
-  onChanged: () => void;
-}) {
-  const intl = useIntl();
-  const staff = useStaff();
-  const navigate = useNavigate();
-  const canToggle = staffCan(staff.levels, 'flags.toggle');
-  const canRollout = staffCan(staff.levels, 'flags.rollout');
-  const [change, setChange] = useState<FlagChange | null>(null);
-  const [q, setQ] = useState('');
-  const [state, setState] = useState<State | 'all'>('all');
-  const all = systemFlagGroups.flatMap((g) => g.keys);
-  const name = (k: FlagKey) => intl.formatMessage({ id: `flag.${k}` });
-  const desc = (k: FlagKey) => intl.formatMessage({ id: `flag.${k}.desc` });
-  const match = (k: FlagKey) =>
-    (state === 'all' || flagState(data.flags[k]) === state) &&
-    (!q.trim() || `${name(k)} ${desc(k)} ${k}`.toLowerCase().includes(q.trim().toLowerCase()));
-  const shown = all.filter(match);
-  const count = (s: State) => all.filter((k) => flagState(data.flags[k]) === s).length;
-  const pick = (s: State) => () => setState(state === s ? 'all' : s);
-  const tiles: StatItem[] = (['everyone', 'some', 'percent', 'off'] as const).map((s) => ({
-    key: s,
-    label: <FormattedMessage id={`features.tile.${s}`} />,
-    value: count(s),
-    tone: s === 'off' && count(s) ? 'error' : s === 'percent' && count(s) ? 'warn' : 'default',
-    active: state === s,
-    onClick: pick(s),
-  }));
-  return (
-    <div className="grid min-w-0 gap-4">
-      <StatTiles items={tiles} />
-      <div className="overflow-hidden rounded-xl border bg-card">
-        <FilterBar
-          active={!!q || state !== 'all'}
-          onClear={() => {
-            setQ('');
-            setState('all');
-          }}
-          shown={shown.length}
-          total={all.length}
-        >
-          <SearchInput
-            value={q}
-            onChange={setQ}
-            placeholder={intl.formatMessage({ id: 'features.search' })}
-          />
-          <span className="ml-auto flex items-center gap-1 text-[13px] text-muted-foreground">
-            <FormattedMessage id="hub.switches.billingElsewhere" />
-            <Button kind="ghost" onClick={() => navigate('features', 'plan')}>
-              <FormattedMessage id="hub.tab.plan" />
-            </Button>
-          </span>
-        </FilterBar>
-        {shown.length === 0 ? (
-          <EmptyState icon={Search} title={<FormattedMessage id="features.noMatch" />} />
-        ) : (
-          <TableScroll min={680}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    <FormattedMessage id="col.feature" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.scope" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.lastEdit" />
-                  </th>
-                  <th className="w-20">
-                    <FormattedMessage id="col.on" />
-                  </th>
-                </tr>
-              </thead>
-              {systemFlagGroups.map((g) => {
-                const keys = g.keys.filter(match);
-                if (!keys.length) return null;
-                return (
-                  <tbody key={g.id}>
-                    <tr className="cl-group-row">
-                      <th colSpan={4} scope="rowgroup">
-                        <FormattedMessage id={`features.group.${g.id}`} />
-                        <span className="font-normal text-muted-foreground"> · {keys.length}</span>
-                      </th>
-                    </tr>
-                    {keys.map((key) => (
-                      <FlagRow
-                        key={key}
-                        flag={key}
-                        value={data.flags[key]}
-                        last={data.lastEdit[key] ?? null}
-                        canToggle={canToggle}
-                        canRollout={canRollout}
-                        onChange={setChange}
-                      />
-                    ))}
-                  </tbody>
-                );
-              })}
-            </table>
-          </TableScroll>
-        )}
-      </div>
-      <Section collapsible defaultOpen={false} title={<FormattedMessage id="features.limits" />}>
-        <LimitsList limits={data.limits} />
-      </Section>
-      {change && (
-        <FlagDialog
-          change={change}
-          onClose={() => setChange(null)}
-          onDone={() => {
-            setChange(null);
-            onChanged();
-          }}
-        />
-      )}
-    </div>
-  );
-}
 
 /** One switch: what it does (and what turning it off does, behind "?"), who uses it, the switch. */
 export function FlagRow({

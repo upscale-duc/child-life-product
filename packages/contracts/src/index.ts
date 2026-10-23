@@ -71,3 +71,4 @@ export * from './staff-reason.js';
 export * from './features-hub.js';
 
 export * from './keepsakes-premium48-phase6.js';
+export * from './keepsakes-premium48-final.js';

@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import {
   featureCatalogue,
   featureExplanations,
+  featureOfFlag,
+  flagKeys,
   featureGroups,
   featureTiers,
   staffRoleTemplates,
@@ -32,24 +34,32 @@ import { StaffContext, canonicalPath, routeOf, routePaths } from '../src/context
 import { messages } from '../src/messages';
 import { Sidebar, allowedRoute } from '../src/Shell';
 import { ActDialog as ContentActDialog } from '../src/screens/content-common';
-import { FlagDialog, SystemSwitchesView } from '../src/screens/Features';
+import { FlagDialog } from '../src/screens/Features';
 import {
   FeatureDetail,
   FeatureHubScreen,
   HubFeaturesView,
   HubHistory,
-  KillDialog,
-  RolloutDialog,
+  ScopeDialog,
+  SwitchDetail,
   TierDialog,
+  ToggleDialog,
   applyTierChange,
   hubTabOf,
   hubTabs,
+  listFilters,
+  listGroups,
+  listRows,
+  listSwitchKeys,
   previewTierChange,
-  rolloutFields,
-  rolloutLevel,
-  rolloutLevels,
-  setFeatureRollout,
+  scopeChoice,
+  scopeChoices,
+  scopeFields,
+  setEnabled,
+  setScope,
+  switchGroupOf,
   tierNoteId,
+  type SwitchTarget,
 } from '../src/screens/FeatureHub';
 import { ActDialog as FirstAidActDialog } from '../src/screens/FirstAid';
 import {
@@ -165,6 +175,34 @@ const hub: StaffFeatureHub = {
       detail: { grantId: 'promo_full', until: null },
     },
   ],
+};
+
+/** `staffFlags` for the engineering switches in the list (and the limits). */
+const listFlags: FlagsView = {
+  flags: {
+    ...launchedFlagDefaults,
+    engagementEnabled: { enabled: true, scope: 'percent', percent: 25, notice: null },
+    invites: { enabled: false, scope: 'all', percent: 0, notice: 'Tạm dừng mời' },
+    night_auto: {
+      enabled: true,
+      scope: 'internal',
+      percent: 0,
+      notice: null,
+      families: ['F-7Q2K', 'F-ABCD'],
+    },
+  },
+  limits: {
+    familyQuotaBytes: 10 * 1024 ** 3,
+    videoMaxDurationSec: null,
+    videoMaxBytes: 4 * 1024 ** 3,
+    videoWifiOnlyDefault: true,
+    mediaItemsPerAdd: 30,
+    exportLinkTtlHours: 24,
+    storageRequestAmountsGb: [10, 20],
+    autoSaveItemsPerApprove: 200,
+  },
+  lastEdit: { night_auto: { by: 'Minh Kỹ sư', at: '2026-10-20T03:00:00Z' } },
+  recent: [],
 };
 
 const family: StaffHubFamily = {
@@ -322,16 +360,15 @@ const disabledSwitches = (raw: string) =>
   raw.match(/<button[^>]*role="switch"[^>]*disabled=""/g)?.length ?? 0;
 const noop = () => undefined;
 
+const rowGroups = (raw: string) =>
+  [...raw.matchAll(/<th colSpan="5" scope="rowgroup">(.*?)<\/th>/gi)].map((m) =>
+    text(m[1]!).trim(),
+  );
+
 describe('Tính năng & Premium › the page', () => {
-  it('one page with five tabs; /premium and /features/<tab> open their tab', () => {
+  it('four tabs; /premium, /features/<tab> and the old /features/switches open their tab', () => {
     const raw = render(<FeatureHubScreen initialTab="families" />);
-    expect(tabs(raw)).toEqual([
-      'Tính năng',
-      'Gia đình',
-      'Gói Premium',
-      'Công tắc hệ thống',
-      'Lịch sử',
-    ]);
+    expect(tabs(raw)).toEqual(['Tính năng', 'Gia đình', 'Gói Premium', 'Lịch sử']);
     expect(raw).toMatch(/aria-selected="true"[^>]*>Gia đình/);
     // The page's name is for screen readers; the rule behind the "i".
     expect(raw).toContain('<h1 class="sr-only">Tính năng &amp; Premium</h1>');
@@ -339,7 +376,6 @@ describe('Tính năng & Premium › the page', () => {
       'Features',
       'Families',
       'Premium plan',
-      'System switches',
       'History',
     ]);
     expect(routePaths.features).toBe('/features');
@@ -347,9 +383,11 @@ describe('Tính năng & Premium › the page', () => {
     expect(routeOf('/features/plan')).toBe('features');
     expect(routeOf('/premium')).toBe('features');
     expect(canonicalPath('/premium')).toBe('/features/plan');
+    // Công tắc hệ thống joined the Tính năng list.
+    expect(canonicalPath('/features/switches')).toBe('/features');
+    expect(hubTabOf('/features/switches')).toBe('features');
     expect(hubTabOf('/premium')).toBe('plan');
     expect(hubTabOf('/features')).toBe('features');
-    expect(hubTabOf('/features/switches')).toBe('switches');
     expect(hubTabOf('/features/history')).toBe('history');
     expect(hubTabOf('/features/nope')).toBe('features');
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
@@ -378,55 +416,116 @@ describe('Tính năng & Premium › the page', () => {
   });
 });
 
-describe('Tính năng & Premium › Tính năng', () => {
-  it('rows by group: name and help, Gói, Phát hành, who has it, the kill switch', () => {
-    const raw = render(<HubFeaturesView hub={hub} onChanged={noop} />, ['admin']);
+describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', () => {
+  it('every catalogue feature and every engineering switch, each in one group', () => {
+    const rows = listRows(hub, listFlags);
+    const keys = rows.map((r) => r.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    // Every flag is in the list once (as a feature's main flag, a part, or a switch) except Mua
+    // gói trong app, which is on Gói Premium.
+    for (const k of flagKeys) {
+      const asFeature = featureOfFlag(k);
+      if (k === 'premium_billing') expect(keys).not.toContain(k);
+      else if (!asFeature) expect(keys).toContain(k);
+    }
+    expect(listSwitchKeys).not.toContain('premium_billing');
+    for (const k of listSwitchKeys) expect(listGroups).toContain(switchGroupOf(k));
+    // The assistant's engineering switches sit with the assistant; engagement has its own group.
+    expect(switchGroupOf('assistant_live')).toBe('assistant');
+    expect(switchGroupOf('assistant_writes')).toBe('assistant');
+    expect(switchGroupOf('engagementLumiEnabled')).toBe('engagement');
+    expect(switchGroupOf('story_share_link')).toBe('keepsakes');
+    expect(listSwitchKeys.map(switchGroupOf)).not.toContain('other');
+    // Before `staffFlags` answers, the catalogue alone.
+    expect(listRows(hub, null).every((r) => r.kind === 'feature')).toBe(true);
+  });
+
+  it('the same columns on every row: Tính năng, Gói, Ai được dùng, Bật, the detail', () => {
+    const raw = render(<HubFeaturesView hub={hub} flags={listFlags} onChanged={noop} />, ['admin']);
     const t = text(raw);
-    // Premium families first, then the tiers as filters.
+    // One KPI row, then the tier chips and the search.
     expect(t).toContain('Gia đình có Premium 12 9 trả phí · 3 được cấp');
-    expect(t).toContain('Tính năng miễn phí 1');
-    expect(t).toContain('Tính năng Premium 4');
-    expect(t).toContain('Tính năng Beta 1');
-    // Groups in the catalogue's order; a group with no feature is left out.
-    expect(t.indexOf('Kỷ niệm')).toBeLessThan(t.indexOf('Cá nhân hoá'));
-    expect(t.indexOf('Cá nhân hoá')).toBeLessThan(t.indexOf('Trợ lý AI'));
-    expect(t).not.toContain('Ghi chép');
+    const listed = listRows(hub, listFlags);
+    const offRows = listed.filter((r) =>
+      r.kind === 'feature' ? r.row.flag?.enabled === false : !r.flag.enabled,
+    ).length;
+    expect(offRows).toBe(16);
+    expect(t).toContain(`Đang bật ${listed.length - offRows} Đang tắt ${offRows} Beta 1`);
+    expect(t).toContain('Tất cả 26 Miễn phí 1 Premium 4 Beta 1 Kỹ thuật 20');
+    expect(t).toContain('Tính năng Gói Ai được dùng Bật');
+    for (const old of ['Công tắc khẩn', 'Phát hành', 'Công tắc hệ thống']) {
+      expect(t).not.toContain(old);
+    }
+    // Groups: the catalogue's areas and the switches' together, each once.
+    expect(rowGroups(raw)).toEqual([
+      'Kỷ niệm · 4',
+      'Cá nhân hoá · 2',
+      'Trợ lý AI · 3',
+      'Tải lên · 2',
+      'Nhắc nhở & gợi ý · 11',
+      'Gia đình & tiện ích · 3',
+      'Đo lường sản phẩm · 1',
+    ]);
     for (const r of hub.features) expect(t).toContain(messages.vi[r.labelId]!);
-    // Help behind "?" (its words in the tooltip trigger's label).
+    for (const k of ['assistant_live', 'media_upload', 'engagementEnabled', 'invites']) {
+      expect(t).toContain(messages.vi[`flag.${k}`]!);
+    }
+    // Help behind "?" for features and switches alike.
     expect(raw).toContain(`aria-label="${messages.vi['hub.feature.rhythm.help']}"`);
-    // Phát hành reads as one choice; the tier as a select for whoever may change it.
-    expect(t).toContain('Mọi gia đình');
-    expect(t).toContain('25% gia đình');
-    expect(t).toContain('Nội bộ + 1 gia đình');
-    expect(t).toContain('Theo gói, không có công tắc');
+    expect(raw).toContain(`aria-label="${messages.vi['flag.invites.desc']}"`);
+    // Gói: a select on catalogue rows, "Kỹ thuật" (not editable) on switches.
     expect(raw).toContain('aria-label="Gói của “Nhịp lớn lên”"');
-    expect(raw).toContain('aria-label="Phát hành “Nhịp lớn lên”"');
-    // Who has it beyond the rollout.
+    expect(raw).not.toContain(`aria-label="Gói của “${messages.vi['flag.invites']}”"`);
+    expect(t.match(/Kỹ thuật/g)?.length).toBe(21);
+    // Ai được dùng: one control; Premium rows say who has it first.
+    expect(raw).toContain('aria-label="Ai được dùng “Nhịp lớn lên”"');
+    expect(raw).toContain(
+      'aria-label="Người khác được dùng “Gợi ý cá nhân hoá &amp; Nhịp nâng cao”"',
+    );
+    expect(raw).toContain(`aria-label="Ai được dùng “${messages.vi['flag.night_auto']}”"`);
+    expect(t).toContain('Người có Premium');
+    expect(t).toContain('Mọi gia đình');
+    expect(t).toContain('Theo % · 25%');
+    expect(t).toContain('Một số gia đình · 1');
+    expect(t).toContain('Một số gia đình · 2');
+    expect(t).toContain('Thử nội bộ');
+    // Who has it beyond that: Premium families, the beta list, per-family choices.
     expect(t).toContain('12 gia đình Premium');
     expect(t).toContain('Bật riêng 1 · tắt riêng 0');
     expect(t).toContain('2 gia đình trong beta');
-    expect(t).toContain('+ dùng thử bằng credit');
-    // The 30-day grace of a move to Premium, and the assistant's part switches.
-    expect(t).toContain('Giữ quyền đến hết 20/11/2026');
-    expect(t).toContain('+ 3 công tắc thành phần');
-    // Kill switches: one per feature with a flag (Mẫu kỷ niệm Premium has none); one is off.
-    expect(switches(raw)).toBe(5);
-    expect(t).toContain('Đã tắt');
+    // Bật: one switch per row with a flag (Mẫu kỷ niệm Premium has none); off ones say so.
+    expect(switches(raw)).toBe(25);
+    expect(raw).toContain('aria-label="Bật “Nhịp lớn lên”"');
+    expect(t.match(/Đang tắt/g)?.length).toBe(offRows + 1);
     expect(disabledSwitches(raw)).toBe(0);
+    // The limits fold under the list; Mua gói trong app is on Gói Premium.
+    expect(t).toContain('Giới hạn hiện tại');
+    expect(t).toContain('Mua gói trong app ở Gói Premium');
+    expect(listFilters.map((f) => messages.en[`hub.filter.${f}`])).toEqual([
+      'All',
+      'Free',
+      'Premium',
+      'Beta',
+      'Technical',
+    ]);
   });
 
-  it('Vận hành sees it all read-only: tiers as labels, no select, switches locked', () => {
-    const raw = render(<HubFeaturesView hub={hub} onChanged={noop} />, ['ops']);
-    expect(raw).not.toContain('aria-label="Gói của');
-    expect(raw).not.toContain('aria-label="Phát hành “');
-    expect(disabledSwitches(raw)).toBe(switches(raw));
-    // An engineer (Tính năng · Sửa) may change tiers, rollouts and switches.
-    const eng = render(<HubFeaturesView hub={hub} onChanged={noop} />, ['eng']);
+  it('Vận hành reads it all; Kỹ sư may change tiers, who uses what and the switches', () => {
+    const ops = render(<HubFeaturesView hub={hub} flags={listFlags} onChanged={noop} />, ['ops']);
+    expect(ops).not.toContain('aria-label="Gói của');
+    expect(ops).not.toContain('aria-label="Ai được dùng “');
+    expect(disabledSwitches(ops)).toBe(switches(ops));
+    const eng = render(<HubFeaturesView hub={hub} flags={listFlags} onChanged={noop} />, ['eng']);
     expect(eng).toContain('aria-label="Gói của “Nhịp lớn lên”"');
+    expect(eng).toContain('aria-label="Ai được dùng “Nhịp lớn lên”"');
     expect(disabledSwitches(eng)).toBe(0);
+    // Without `staffFlags` yet: the catalogue rows, no limits.
+    const early = text(render(<HubFeaturesView hub={hub} flags={null} onChanged={noop} />));
+    expect(early).not.toContain(messages.vi['flag.invites']!);
+    expect(early).not.toContain('Giới hạn hiện tại');
   });
 
-  it("a row's detail shows its parts (the assistant's photos, care, upsell) and the beta list", () => {
+  it("a feature's detail shows its parts and beta list; a switch's what turning it off does", () => {
     const can = { tier: true, toggle: true, rollout: true };
     const assistant = text(
       render(
@@ -434,8 +533,8 @@ describe('Tính năng & Premium › Tính năng', () => {
           row={hub.features[2]!}
           premiumFamilies={12}
           can={can}
-          onRollout={noop}
-          onKill={noop}
+          onScope={noop}
+          onToggle={noop}
           onChanged={noop}
         />,
       ),
@@ -444,38 +543,48 @@ describe('Tính năng & Premium › Tính năng', () => {
       expect(assistant).toContain(messages.vi[`flag.${k}`]!);
     }
     expect(assistant).toContain('Chính');
-    // Live model calls and writes are engineering switches: named, and found in Công tắc hệ thống.
     expect(assistant).toContain(
-      `ở Công tắc hệ thống: ${messages.vi['flag.assistant_live']}, ${messages.vi['flag.assistant_writes']}.`,
+      `Công tắc kỹ thuật cùng nhóm, cũng trong danh sách: ${messages.vi['flag.assistant_live']}, ${messages.vi['flag.assistant_writes']}.`,
     );
     expect(assistant).toContain('F-7Q2K');
-    expect(assistant).toContain('Chưa phát hành');
-    const beta = render(
-      <FeatureDetail
-        row={hub.features[5]!}
-        premiumFamilies={12}
-        can={can}
-        onRollout={noop}
-        onKill={noop}
-        onChanged={noop}
-      />,
+    expect(assistant).toContain('Chưa mở cho người khác');
+    const beta = text(
+      render(
+        <FeatureDetail
+          row={hub.features[5]!}
+          premiumFamilies={12}
+          can={can}
+          onScope={noop}
+          onToggle={noop}
+          onChanged={noop}
+        />,
+      ),
     );
-    expect(text(beta)).toContain('Danh sách beta · 2 gia đình');
-    expect(text(beta)).toContain('F-ABCD');
+    expect(beta).toContain('Danh sách beta · 2 gia đình');
+    expect(beta).toContain('F-ABCD');
     const graced = text(
       render(
         <FeatureDetail
           row={hub.features[4]!}
           premiumFamilies={12}
           can={can}
-          onRollout={noop}
-          onKill={noop}
+          onScope={noop}
+          onToggle={noop}
           onChanged={noop}
         />,
       ),
     );
     expect(graced).toContain('Chuyển từ Beta sang Premium: gia đình đã dùng trước đó giữ quyền');
     expect(graced).toContain('mặc định: Beta');
+    const night = listRows(hub, listFlags).find((r) => r.key === 'night_auto')!;
+    if (night.kind !== 'system') throw new Error('night_auto is a switch');
+    const sw = text(render(<SwitchDetail r={night} can={can} onScope={noop} onToggle={noop} />));
+    expect(sw).toContain(messages.vi['flag.night_auto.desc']!);
+    expect(sw).toContain(`Khi tắt: ${messages.vi['flag.night_auto.offEffect']}`);
+    expect(sw).toContain('Gói Kỹ thuật');
+    expect(sw).toContain('Một số gia đình · 2');
+    expect(sw).toContain('F-ABCD');
+    expect(sw).toContain('Minh Kỹ sư · 20/10');
   });
 
   it('a tier change asks the server how many families it touches first (dry run), then applies', async () => {
@@ -517,81 +626,127 @@ describe('Tính năng & Premium › Tính năng', () => {
       }
   });
 
-  it('Phát hành is one choice; "Chưa phát hành" is a 0% rollout, not the kill switch', async () => {
-    expect(rolloutLevel({ scope: 'all', percent: 0 })).toBe('all');
-    expect(rolloutLevel({ scope: 'internal', percent: 0 })).toBe('internal');
-    expect(rolloutLevel({ scope: 'percent', percent: 0 })).toBe('off');
-    expect(rolloutLevel({ scope: 'percent', percent: 25 })).toBe('p25');
-    expect(rolloutLevel({ scope: 'percent', percent: 100 })).toBe('all');
-    expect(rolloutLevels.map(rolloutFields)).toEqual([
-      { scope: 'percent', percent: 0 },
-      { scope: 'internal' },
-      { scope: 'percent', percent: 10 },
-      { scope: 'percent', percent: 25 },
-      { scope: 'percent', percent: 50 },
+  it('Ai được dùng is one choice, for features and switches alike; "none" is not "Bật" off', async () => {
+    expect(scopeChoice({ scope: 'all', percent: 0 })).toBe('all');
+    expect(scopeChoice({ scope: 'internal', percent: 0 })).toBe('internal');
+    expect(scopeChoice({ scope: 'internal', percent: 0, families: ['F-7Q2K'] })).toBe('some');
+    expect(scopeChoice({ scope: 'percent', percent: 25 })).toBe('percent');
+    expect(scopeChoice({ scope: 'percent', percent: 0 })).toBe('none');
+    expect(scopeChoice({ scope: 'percent', percent: 100 })).toBe('all');
+    expect(scopeChoices.map((c) => scopeFields(c, 25, ['F-7Q2K']))).toEqual([
       { scope: 'all' },
+      { scope: 'internal', families: ['F-7Q2K'] },
+      { scope: 'percent', percent: 25 },
+      { scope: 'internal', families: [] },
+      { scope: 'percent', percent: 0 },
     ]);
-    const { api, calls } = fakeApi({ staffFeatureSetRollout: { feature: 'auto_save' } });
-    await setFeatureRollout(api, {
-      feature: 'auto_save',
-      ...rolloutFields('internal'),
-      families: ['F-7Q2K'],
-    });
-    expect(calls[0]!.data).toEqual({
-      feature: 'auto_save',
-      scope: 'internal',
-      families: ['F-7Q2K'],
-    });
-    // Nội bộ picks families; a Beta feature also edits its beta list here.
+    const { api, calls } = fakeApi({ staffFeatureSetRollout: {}, staffSetFlag: {} });
+    const assistant = hub.features[2]!;
+    const main: SwitchTarget = { kind: 'feature', row: assistant, flag: assistant.flag! };
+    const part: SwitchTarget = { kind: 'feature', row: assistant, flag: assistant.subFlags[1]! };
+    const night = listRows(hub, listFlags).find((r) => r.key === 'night_auto')!;
+    const sw: SwitchTarget = { kind: 'system', flag: night.kind === 'system' ? night.flag : null! };
+    await setScope(api, main, scopeFields('some', 10, ['F-ABCD']));
+    await setScope(api, part, scopeFields('percent', 50));
+    await setScope(api, sw, scopeFields('all'));
+    await setEnabled(api, main, false, 'Tạm dừng');
+    await setEnabled(api, sw, false, null);
+    expect(calls).toEqual([
+      {
+        name: 'staffFeatureSetRollout',
+        data: { feature: 'assistant', scope: 'internal', families: ['F-ABCD'] },
+      },
+      {
+        name: 'staffFeatureSetRollout',
+        data: { feature: 'assistant', flag: 'assistant_care', scope: 'percent', percent: 50 },
+      },
+      {
+        name: 'staffSetFlag',
+        data: { key: 'night_auto', enabled: true, scope: 'all', percent: 100, notice: null },
+      },
+      {
+        name: 'staffFeatureSetRollout',
+        data: { feature: 'assistant', enabled: false, notice: 'Tạm dừng' },
+      },
+      {
+        name: 'staffSetFlag',
+        data: { key: 'night_auto', enabled: false, scope: 'internal', percent: 0, notice: null },
+      },
+    ]);
+    for (const c of calls) expect(c.data).not.toHaveProperty('reason');
+    // "Một số gia đình" picks families; a Beta feature also edits its beta list; off says so.
     const beta = hub.features[5]!;
-    const dialog = text(
+    const some = text(
       render(
-        <RolloutDialog
-          row={beta}
-          flag={beta.flag!}
-          level="internal"
+        <ScopeDialog
+          target={{ kind: 'feature', row: beta, flag: beta.flag! }}
+          choice="some"
           onClose={noop}
           onDone={noop}
         />,
       ),
     );
-    expect(dialog).toContain('Phát hành “Tự lưu kỷ niệm”');
-    expect(dialog).toContain('Gia đình được chọn (ngoài nhóm nội bộ)');
-    expect(dialog).toContain('Danh sách beta · 2 gia đình');
-    expect(dialog).toContain('Công tắc khẩn đang tắt');
+    expect(some).toContain('Ai được dùng “Tự lưu kỷ niệm”');
+    expect(some).toContain('Gia đình được chọn (cùng nhóm thử nội bộ)');
+    expect(some).toContain('Danh sách beta · 2 gia đình');
+    expect(some).toContain('Đang tắt: lựa chọn chỉ có hiệu lực khi bật lại.');
+    const share = render(<ScopeDialog target={sw} choice="percent" onClose={noop} onDone={noop} />);
+    expect(text(share)).toContain('10% 25% 50%');
+    expect(text(share)).not.toContain('Danh sách beta');
     const premium = text(
       render(
-        <RolloutDialog
-          row={hub.features[1]!}
-          flag={hub.features[1]!.flag!}
-          level="all"
+        <ScopeDialog
+          target={{ kind: 'feature', row: hub.features[1]!, flag: hub.features[1]!.flag! }}
+          choice="all"
           onClose={noop}
           onDone={noop}
         />,
       ),
     );
-    expect(premium).toContain('gia đình có Premium luôn dùng được');
-    expect(premium).not.toContain('Danh sách beta');
+    expect(premium).toContain('người có Premium luôn dùng được');
   });
 
-  it('the kill switch turns a feature (or one part) off for everyone, with the in-app notice', () => {
+  it('Bật off turns a feature, one part or a switch off for everyone, with the in-app notice', () => {
     const assistant = hub.features[2]!;
     const off = text(
-      render(<KillDialog row={assistant} flag={assistant.flag!} onClose={noop} onDone={noop} />),
+      render(
+        <ToggleDialog
+          target={{ kind: 'feature', row: assistant, flag: assistant.flag! }}
+          onClose={noop}
+          onDone={noop}
+        />,
+      ),
     );
-    expect(off).toContain('Tắt khẩn “Trợ lý (chat, ảnh, hướng dẫn chăm sóc)” cho mọi gia đình?');
-    expect(off).toContain('kể cả gia đình có Premium');
+    expect(off).toContain('Tắt “Trợ lý (chat, ảnh, hướng dẫn chăm sóc)” cho mọi gia đình?');
+    expect(off).toContain('kể cả người có Premium');
     expect(off).toContain('Báo cho gia đình trong app');
     expect(off).toContain(
       '“Trợ lý (chat, ảnh, hướng dẫn chăm sóc)” đang tạm dừng một chút, chúng mình sẽ mở lại sớm.',
     );
+    expect(off).not.toContain('khẩn');
     const part = text(
       render(
-        <KillDialog row={assistant} flag={assistant.subFlags[0]!} onClose={noop} onDone={noop} />,
+        <ToggleDialog
+          target={{ kind: 'feature', row: assistant, flag: assistant.subFlags[0]! }}
+          onClose={noop}
+          onDone={noop}
+        />,
       ),
     );
     expect(part).toContain(`Bật lại “${messages.vi['flag.assistant_images']}”?`);
     expect(part).not.toContain('Báo cho gia đình');
+    const media = listRows(hub, listFlags).find((r) => r.key === 'media_upload')!;
+    const sw = text(
+      render(
+        <ToggleDialog
+          target={{ kind: 'system', flag: media.kind === 'system' ? media.flag : null! }}
+          onClose={noop}
+          onDone={noop}
+        />,
+      ),
+    );
+    expect(sw).toContain(`Tắt “${messages.vi['flag.media_upload']}” cho mọi gia đình?`);
+    expect(sw).toContain(messages.vi['flag.media_upload.offEffect']!);
   });
 });
 
@@ -745,10 +900,15 @@ describe('Tính năng & Premium › messages', () => {
     const ids = [
       ...featureCatalogue.flatMap((f) => [f.labelId, f.helpId]),
       ...featureGroups.map((g) => `hub.group.${g}`),
-      ...featureTiers.flatMap((t) => [`hub.tier.${t}`, `hub.kpi.tier.${t}`]),
+      ...featureTiers.map((t) => `hub.tier.${t}`),
+      'hub.tier.system',
+      ...listGroups.map((g) => `hub.group.${g}`),
+      ...listFilters.map((f) => `hub.filter.${f}`),
+      ...scopeChoices.flatMap((c) => [`hub.scopeNote.${c}`]),
+      ...['all', 'some', 'percent', 'internal'].map((c) => `hub.scope.${c}`),
+      ...['premium', 'beta', 'other'].map((t) => `hub.scope.none.${t}`),
       ...featureExplanations.map((w) => `hub.why.${w}`),
       ...hubTabs.map((t) => `hub.tab.${t}`),
-      ...rolloutLevels.flatMap((l) => [`hub.rollout.${l}`, `hub.rolloutNote.${l}`]),
       ...['on', 'off', 'rule'].map((c) => `hub.override.${c}`),
       ...['code', 'email', 'nickname'].map((m) => `hub.family.matchedBy.${m}`),
       ...['config', 'ai', 'campaigns'].map((s) => `hub.plan.${s}`),
@@ -994,18 +1154,26 @@ describe('No reason fields anywhere (D-090)', () => {
       />,
       ['eng'],
     ],
-    ['system switches', <SystemSwitchesView data={flagsView} onChanged={noop} />, ['eng']],
-    ['hub features', <HubFeaturesView hub={hub} onChanged={noop} />, ['admin']],
+    ['hub features', <HubFeaturesView hub={hub} flags={listFlags} onChanged={noop} />, ['admin']],
     [
       'hub tier',
       <TierDialog row={hub.features[0]!} tier="premium" onClose={noop} onDone={noop} />,
       ['admin'],
     ],
     [
-      'hub kill',
-      <KillDialog
-        row={hub.features[0]!}
-        flag={hub.features[0]!.flag!}
+      'hub off',
+      <ToggleDialog
+        target={{ kind: 'feature', row: hub.features[0]!, flag: hub.features[0]!.flag! }}
+        onClose={noop}
+        onDone={noop}
+      />,
+      ['admin'],
+    ],
+    [
+      'hub who',
+      <ScopeDialog
+        target={{ kind: 'feature', row: hub.features[5]!, flag: hub.features[5]!.flag! }}
+        choice="some"
         onClose={noop}
         onDone={noop}
       />,

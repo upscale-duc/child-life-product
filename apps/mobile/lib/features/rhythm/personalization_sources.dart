@@ -32,15 +32,13 @@ final personalizedSourceCardsProvider =
       }
       final locale = Locale(query.languageCode);
       final l = lookupAppLocalizations(locale);
-      final day = ref
-          .watch(
-            personalDayProvider((
-              babyId: query.babyId,
-              uid: query.uid,
-              locale: query.languageCode,
-            )),
-          )
-          .value;
+      final day = ref.watch(
+        personalDayHomeProvider((
+          babyId: query.babyId,
+          uid: query.uid,
+          locale: query.languageCode,
+        )),
+      );
       final cards = <ForBabyCard>[];
       if (day != null) {
         if (day.health) {
@@ -84,7 +82,7 @@ final personalizedSourceCardsProvider =
               priority: 1,
               essential: true,
               icon: ClIcons.clock,
-              onOpen: (c) => c.push(Routes.personalDay),
+              onOpen: (c) => c.push(Routes.personalDayHandover),
               onDismiss: (c, widgetRef) => snoozeWorkCard(c, widgetRef, (
                 babyId: query.babyId,
                 uid: query.uid,
@@ -123,7 +121,7 @@ final personalizedSourceCardsProvider =
               action: l.pv2Open,
               priority: 3,
               icon: ClIcons.clock,
-              onOpen: (c) => c.push(Routes.personalDay),
+              onOpen: (c) => c.push(Routes.personalDayPatterns),
             ),
           );
         }

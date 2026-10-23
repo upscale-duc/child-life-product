@@ -20,6 +20,7 @@ import '../library/library_today.dart'
 import '../milestones/milestone_today.dart' show mtForBabyCardsProvider;
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/personalization_v2_repository.dart';
+import '../rhythm/personal_day_widgets.dart' show PersonalSaveButton;
 import '../rhythm/personalization_v2_screen.dart';
 import '../rhythm/personalization_sources.dart';
 import '../rhythm/rhythm_calc.dart';
@@ -63,31 +64,39 @@ class TodayForBabySection extends ConsumerWidget {
     final interests =
         ref.watch(userPreferencesProvider(me.uid)).value?.interests ??
         const <Interest>[];
-    final day = ref
-        .watch(
-          personalDayProvider((
-            babyId: me.babyId,
-            uid: me.uid,
-            locale: language,
-          )),
-        )
-        .value;
+    final dayKey = (babyId: me.babyId, uid: me.uid, locale: language);
+    final dayState = ref.watch(personalDayProvider(dayKey));
+    // D-091: the kept copy draws the card at once; the fresh snapshot replaces it.
     final v2Ready =
-        day?.current(ref.watch(careClockProvider).value ?? DateTime.now()) ??
+        ref
+            .watch(personalDayHomeProvider(dayKey))
+            ?.current(ref.watch(careClockProvider).value ?? DateTime.now()) ??
         false;
+    // Owner, 2026-10-22: while the personal day loads, a placeholder holds its place instead
+    // of the older suggestion and carousel drawing first and then being swapped out.
+    // Offline it would wait for the callable's timeout: the older section draws instead.
+    final v2Pending =
+        !v2Ready &&
+        !dayState.hasValue &&
+        !dayState.hasError &&
+        ref.watch(onlineProvider).value != false;
     return Padding(
       // With ForYouSection's own 16: the 24 between Hôm nay's sections.
       padding: const EdgeInsets.only(top: ClSpace.s2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (v2Ready) PersonalDayHome(primary: cards.firstOrNull),
           ForYouSection(
-            enablePrimary: !v2Ready,
+            enablePrimary: !v2Ready && !v2Pending,
             header: ForBabyHeader(hasInterests: interests.isNotEmpty),
             weekTeaser: teaser,
             more: [
-              if (cards.length > (v2Ready ? 1 : 0))
+              // P-172 (owner, 2026-10-22): the personal idea leads "Dành cho bé hôm nay".
+              if (v2Ready)
+                PersonalDayHome(primary: cards.firstOrNull)
+              else if (v2Pending)
+                const PersonalDayHomePlaceholder(),
+              if (!v2Pending && cards.length > (v2Ready ? 1 : 0))
                 ForBabyCarousel(
                   cards: v2Ready ? cards.skip(1).take(2).toList() : cards,
                 ),
@@ -285,15 +294,13 @@ final forBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>((
   final prefs =
       ref.watch(userPreferencesProvider(q.uid)).value ??
       UserPreferences.defaults;
-  final day = ref
-      .watch(
-        personalDayProvider((
-          babyId: q.babyId,
-          uid: q.uid,
-          locale: q.languageCode,
-        )),
-      )
-      .value;
+  final day = ref.watch(
+    personalDayHomeProvider((
+      babyId: q.babyId,
+      uid: q.uid,
+      locale: q.languageCode,
+    )),
+  );
   final now = ref.watch(careClockProvider).value ?? DateTime.now();
   final candidates = [
     if (day?.current(now) ?? false)
@@ -538,16 +545,26 @@ class _SmallCard extends ConsumerWidget {
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),
                 ),
+                // Owner, 2026-10-22: the same save button as the main card — filled once
+                // saved, tapped again to unsave.
                 if (canRespond)
-                  IconButton(
-                    tooltip: l10n.pv2Save,
-                    onPressed: () => mutateDay(context, ref, responseKey!, {
-                      'kind': 'respond',
-                      'contentId': card.id,
-                      'value': 'save',
-                    }),
-                    icon: const ClIcon(ClIcons.heart, size: 18),
-                  ),
+                  if (ref.watch(personalDayHomeProvider(responseKey!))
+                      case final day?)
+                    PersonalSaveButton(
+                      dayKey: responseKey,
+                      day: day,
+                      contentId: card.id,
+                    )
+                  else
+                    IconButton(
+                      tooltip: l10n.pv2Save,
+                      onPressed: () => mutateDay(context, ref, responseKey, {
+                        'kind': 'respond',
+                        'contentId': card.id,
+                        'value': 'save',
+                      }),
+                      icon: const ClIcon(ClIcons.bookmark, size: 18),
+                    ),
                 if (dismiss != null)
                   ClPressable(
                     onPressed: () => dismiss(context),

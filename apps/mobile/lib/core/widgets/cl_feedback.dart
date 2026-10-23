@@ -65,9 +65,9 @@ class ClToaster {
         onAction: onAction,
         visibleFor: visibleFor,
         error: error,
+        // Already gone when a newer toast replaced it (e.g. one shown by "Hoàn tác").
         onDone: () {
-          _visible.remove(entry);
-          if (entry.mounted) entry.remove();
+          if (_visible.remove(entry) && entry.mounted) entry.remove();
         },
         theme: _theme,
       ),

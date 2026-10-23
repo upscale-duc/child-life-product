@@ -19332,22 +19332,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Title => 'Your family today';
 
   @override
-  String get pv2Open => 'See today’s useful actions';
+  String get pv2Open => 'See details';
 
   @override
-  String get pv2Context => 'What fits your day?';
+  String get pv2Context => 'How much time do you have today?';
 
   @override
-  String get pv2Usual => 'As usual';
+  String get pv2Usual => 'A usual day';
 
   @override
-  String get pv2FewMinutes => 'Just a few minutes';
+  String get pv2FewMinutes => 'A few minutes';
 
   @override
   String get pv2Busy => 'Busy today';
 
   @override
-  String get pv2Temporary => 'Today’s choice expires at the end of the day.';
+  String get pv2Temporary => 'Goes back to \"A usual day\" tomorrow.';
 
   @override
   String get pv2Focus => 'One focus for this week';
@@ -19362,14 +19362,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2NoFocus => 'No focus';
 
   @override
-  String get pv2Unusual => 'Today’s routine is unusual';
+  String get pv2Unusual => 'Today isn\'t a usual day for the baby';
 
   @override
   String get pv2UnusualHint =>
-      'Pause routine patterns; your own reminders stay in place.';
+      'For example the baby is ill, travelling or you have guests. Typical feed and sleep ranges are hidden for the whole family today; reminders stay as they are.';
 
   @override
-  String get pv2Next => 'One manageable action now';
+  String get pv2Next => 'Ideas for today';
 
   @override
   String get pv2BecauseNeed => 'Based on what your family reported today';
@@ -19391,25 +19391,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Minutes => 'minutes';
 
   @override
-  String get pv2OpenActivity => 'See the steps';
+  String get pv2OpenActivity => 'See how';
 
   @override
-  String get pv2Controls => 'Adjust suggestions';
+  String get pv2Controls => 'More options';
 
   @override
   String get pv2Save => 'Save';
 
   @override
-  String get pv2Hide => 'Hide this card';
+  String get pv2Hide => 'Hide this suggestion';
 
   @override
-  String get pv2Snooze => 'Busy today · snooze for 3 days';
+  String get pv2Snooze => 'Snooze for 3 days';
 
   @override
   String get pv2WorkSnooze => 'Not now · hide until tonight';
 
   @override
-  String get pv2Dislike => 'This suggestion isn’t for me';
+  String get pv2Dislike => 'Not right for our family';
 
   @override
   String get pv2Known => 'I already know this';
@@ -19530,7 +19530,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Confirmed notes help select suggestions. A free-text note is not medical guidance.';
 
   @override
-  String get pv2Work => 'A 30-second handover';
+  String get pv2Work => 'Handover for the next carer';
 
   @override
   String get pv2WorkHint =>
@@ -19577,7 +19577,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'From your feedback over the last 7 days; before-and-after numbers do not establish an effect.';
 
   @override
-  String get pv2History => 'What shapes your suggestions';
+  String get pv2History => 'Saved, tried and hidden';
 
   @override
   String get pv2Saved => 'Saved';
@@ -19779,4 +19779,317 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get engPaused =>
       'Proactive suggestions are paused. You can choose to resume after at least 14 days.';
+
+  @override
+  String get pv2HomeKicker => 'TODAY\'S IDEA FOR YOUR BABY';
+
+  @override
+  String get pv2More => 'See more';
+
+  @override
+  String get pv2TimeToday => 'Time today';
+
+  @override
+  String get pv2UsualHint => 'Up to 3 ideas of any length.';
+
+  @override
+  String get pv2FewMinutesHint => 'Only ideas of 5 minutes or less.';
+
+  @override
+  String get pv2BusyHint =>
+      'One short idea only, and no suggestion reminder today.';
+
+  @override
+  String get pv2Adjust => 'Adjust suggestions';
+
+  @override
+  String get pv2FocusToggle => 'Make time to play this week';
+
+  @override
+  String get pv2FocusHint =>
+      'Play ideas come first until the end of this week.';
+
+  @override
+  String get pv2DoneToday => 'What you did today';
+
+  @override
+  String get pv2DoneTodayEmpty => 'Ideas you save, plan or try show up here.';
+
+  @override
+  String get pv2NoIdeas =>
+      'No new ideas fit today. You can look back at the ones you saved.';
+
+  @override
+  String get pv2HowWasIt => 'How was it?';
+
+  @override
+  String get pv2HowWasItTitle => 'How did it go?';
+
+  @override
+  String get pv2AlreadySaved => 'This idea is already saved.';
+
+  @override
+  String get pv2Undo => 'Undo';
+
+  @override
+  String get pv2StatusSaved => 'Saved';
+
+  @override
+  String get pv2StatusHidden => 'Hidden';
+
+  @override
+  String get pv2StatusExcluded => 'Ruled out for the family';
+
+  @override
+  String pv2StatusIntend(String when) {
+    return 'Planned · $when';
+  }
+
+  @override
+  String pv2StatusTried(String when) {
+    return 'Tried · $when';
+  }
+
+  @override
+  String pv2StatusSnoozed(String when) {
+    return 'Snoozed until $when';
+  }
+
+  @override
+  String get pv2ToastSaved =>
+      'Saved. Find it under \"Saved, tried and hidden\".';
+
+  @override
+  String get pv2ToastIntend =>
+      'Noted that you plan to try it. Tap \"I tried it\" afterwards.';
+
+  @override
+  String get pv2ToastTried =>
+      'Noted that you tried it. It moved to \"What you did today\".';
+
+  @override
+  String get pv2ToastOutcome => 'Thanks, noted.';
+
+  @override
+  String get pv2ToastHidden => 'Suggestion hidden.';
+
+  @override
+  String get pv2ToastSnoozed => 'It\'ll come back in 3 days.';
+
+  @override
+  String get pv2ToastWorkSnoozed =>
+      'Hidden until tonight. The task stays in Reminders.';
+
+  @override
+  String get pv2ToastExcluded => 'Ruled out for the whole family.';
+
+  @override
+  String get pv2ToastRestored => 'Suggestion restored.';
+
+  @override
+  String pv2ToastContext(String choice) {
+    return 'Set to \"$choice\". Ideas updated.';
+  }
+
+  @override
+  String get pv2ToastFocusOn => 'Play ideas come first this week.';
+
+  @override
+  String get pv2ToastFocusOff => 'Weekly focus turned off.';
+
+  @override
+  String get pv2ToastUnusualOn => 'Noted that today isn\'t a usual day.';
+
+  @override
+  String get pv2ToastUnusualOff => 'Typical ranges are back.';
+
+  @override
+  String get pv2ToastAcknowledged => 'Handover acknowledged.';
+
+  @override
+  String pv2WorkCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks waiting',
+      one: '1 task waiting',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pv2NotesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+      zero: 'No notes yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pv2PatternsPaused => 'Paused for today';
+
+  @override
+  String get pv2PatternsNone => 'Not enough data yet';
+
+  @override
+  String pv2WeekLine(int tried, int helpful) {
+    return 'This week: $tried tried · $helpful helpful';
+  }
+
+  @override
+  String get pv2AcknowledgedShort => 'Handover acknowledged';
+
+  @override
+  String get pv2HiddenNow => 'Hidden now';
+
+  @override
+  String get pv2SavedNow => 'Saved';
+
+  @override
+  String get pv2TriedBefore => 'Tried';
+
+  @override
+  String get pv2Reminders => 'Open tasks';
+
+  @override
+  String get pv2ChipHelpful => 'Helpful';
+
+  @override
+  String get pv2ChipUnsure => 'Not sure yet';
+
+  @override
+  String get pv2Unsave => 'Remove from saved';
+
+  @override
+  String get pv2ToastUnsaved => 'Removed from saved.';
+
+  @override
+  String hnCheckInDone(String what) {
+    return 'Today: $what';
+  }
+
+  @override
+  String hnCheckInDoneSub(String who) {
+    return 'Noted by $who · Tap to change or add';
+  }
+
+  @override
+  String ageWeeksDays(int weeks, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      weeks,
+      locale: localeName,
+      other: '$weeks weeks',
+      one: '1 week',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0 $_temp1 old';
+  }
+
+  @override
+  String ageShortWeeksDays(int weeks, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      weeks,
+      locale: localeName,
+      other: '$weeks wks',
+      one: '1 wk',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0 $_temp1';
+  }
+
+  @override
+  String rhWeekOfPast(String baby) {
+    return '$baby\'s past week';
+  }
+
+  @override
+  String rhWeekOfNow(String baby) {
+    return '$baby\'s week so far';
+  }
+
+  @override
+  String get rhWeekShareSheet => 'Send the week';
+
+  @override
+  String get rhWeekShareImage => 'Send as picture';
+
+  @override
+  String get rhWeekShareTextOnly => 'Send as text';
+
+  @override
+  String get rhWeekShareFooter => 'From the family diary · Child Life';
+
+  @override
+  String get rhEditToday => 'Change today\'s note';
+
+  @override
+  String periodDiapers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count diapers',
+      one: '1 diaper',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dayStripsTitle => 'Day by day';
+
+  @override
+  String get dayNothingLogged => 'Nothing logged';
+
+  @override
+  String dayFeedsLine(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dayBreastLine(int minutes) {
+    return '$minutes min at the breast';
+  }
+
+  @override
+  String daySleepLine(int count, String duration) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sleeps',
+      one: '1 sleep',
+    );
+    return '$_temp0 $duration';
+  }
+
+  @override
+  String get careWokeUp => 'Woke up';
+
+  @override
+  String careAwakeFor(String duration) {
+    return 'Awake $duration until the next sleep';
+  }
+
+  @override
+  String careAwakeNow(String duration) {
+    return 'Awake now · $duration';
+  }
 }

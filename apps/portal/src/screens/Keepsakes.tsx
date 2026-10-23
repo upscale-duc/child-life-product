@@ -1803,17 +1803,19 @@ export function CardPreview({
           Object.fromEntries(
             t.personalization.fields.map((f) => [
               f.key,
-              f.type === 'month'
-                ? '01'
-                : f.source === 'babyName'
-                  ? 'Teddy'
-                  : f.source === 'birthDate'
-                    ? '2026-09-17'
-                    : f.type === 'confirmation'
-                      ? 'false'
-                      : f.required && f.suggestion
-                        ? textOf(intl, f.suggestion)
-                        : '',
+              f.options?.length
+                ? f.options[0]!.value
+                : f.type === 'month'
+                  ? '01'
+                  : f.source === 'babyName'
+                    ? 'Teddy'
+                    : f.source === 'birthDate'
+                      ? '2026-09-17'
+                      : f.type === 'confirmation'
+                        ? 'false'
+                        : f.required && f.suggestion
+                          ? textOf(intl, f.suggestion)
+                          : '',
             ]),
           ),
           intl.locale.startsWith('vi') ? 'vi' : 'en',
@@ -1844,6 +1846,7 @@ export function CardPreview({
       }}
     >
       {(t.layouts?.[format] ?? []).map((l, i) => {
+        if (l.type === 'image' && l.when && sample[l.when.field] !== l.when.equals) return null;
         switch (l.type) {
           case 'background':
             return (

@@ -5,6 +5,7 @@ import {
   type Capability,
   type FeatureKey,
   type FeatureTier,
+  type Flag,
   type FlagKey,
   type StaffFeatureHub,
   type StaffHubFlagState,
@@ -20,8 +21,17 @@ import { Button as UiButton } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
-import { ApiError, useApi, useLoad, type Api, type AuditRow, type HubRolloutRequest } from '../api';
+import {
+  ApiError,
+  useApi,
+  useLoad,
+  type Api,
+  type AuditRow,
+  type FlagsView,
+  type HubRolloutRequest,
+} from '../api';
 import {
   EmptyState,
   FilterBar,
@@ -32,7 +42,7 @@ import {
   StatTiles,
   type StatItem,
 } from '../content-kit';
-import { routePaths, subPath, useStaff } from '../context';
+import { routePaths, subPath, useNavigate, useStaff } from '../context';
 import { ZONE, num, shortDate } from '../format';
 import {
   Button,
@@ -48,9 +58,10 @@ import {
 import { AuditTable } from './Audit';
 import {
   FamilyPicker,
+  LimitsList,
   NoticeField,
   RecentList,
-  SystemSwitchesLoader,
+  billingFlag,
   defaultNotice,
 } from './Features';
 import { HubFamilies, TierPill } from './HubFamily';
@@ -58,20 +69,19 @@ import { PremiumPlanLoader } from './Premium';
 
 /**
  * "Tính năng & Premium" (D-089, `docs/product/features-premium-hub-plan.md`): one hub instead of
- * Tính năng & phát hành, Premium and the personalization switches. Tabs: Tính năng (the catalogue:
- * tier, Phát hành, Công tắc khẩn), Gia đình (one family's features and why, overrides, beta, "Bật
- * toàn bộ Premium"), Gói Premium (billing, regions, quotas, the AI policy), Công tắc hệ thống
- * (engineering switches, limits) and Lịch sử. The rule of plan §2.2 runs on the server
+ * Tính năng & phát hành, Premium and the personalization switches. Tabs: Tính năng (ONE list of
+ * the catalogue features and the engineering switches, owner 2026-10-21: Gói, Ai được dùng, Bật),
+ * Gia đình (one family's features and why, overrides, beta, "Bật toàn bộ Premium"), Gói Premium
+ * (billing, regions, quotas, the AI policy) and Lịch sử. The rule of plan §2.2 runs on the server
  * (`decideFeature`); the portal shows its answer. No reason is asked anywhere (D-090).
  */
 
-export const hubTabs = ['features', 'families', 'plan', 'switches', 'history'] as const;
+export const hubTabs = ['features', 'families', 'plan', 'history'] as const;
 export type HubTab = (typeof hubTabs)[number];
 const hubTabPath: Record<HubTab, string> = {
   features: '',
   families: 'families',
   plan: 'plan',
-  switches: 'switches',
   history: 'history',
 };
 
@@ -108,9 +118,6 @@ export function FeatureHubScreen({ initialTab }: { initialTab?: HubTab }) {
         </TabsContent>
         <TabsContent value="plan" className="min-w-0">
           <PremiumPlanLoader />
-        </TabsContent>
-        <TabsContent value="switches" className="min-w-0">
-          <SystemSwitchesLoader />
         </TabsContent>
         <TabsContent value="history" className="min-w-0">
           <HubHistoryLoader />
@@ -154,91 +161,262 @@ export function setFeatureRollout(api: Api, req: HubRolloutRequest) {
   return api.call<{ feature: FeatureKey; flag: FlagKey | null }>('staffFeatureSetRollout', req);
 }
 
-// ---------- Phát hành ----------
+/**
+ * What "Ai được dùng" and "Bật" change: the flag of a catalogue feature (its main one or one of
+ * its parts, through `staffFeatureSetRollout`) or an engineering switch (`staffSetFlag`).
+ */
+export type SwitchTarget =
+  | { kind: 'feature'; row: StaffHubRow; flag: StaffHubFlagState }
+  | { kind: 'system'; flag: StaffHubFlagState };
 
-/** Phát hành as one choice: not released, internal (+ picked families), a share, everyone. */
-export const rolloutLevels = ['off', 'internal', 'p10', 'p25', 'p50', 'all'] as const;
-export type RolloutLevel = (typeof rolloutLevels)[number];
+const isMain = (t: SwitchTarget) => t.kind === 'feature' && t.flag.key === t.row.flag?.key;
 
-export function rolloutLevel(f: Pick<StaffHubFlagState, 'scope' | 'percent'>): RolloutLevel {
+/** Its name: the feature for a main flag, the flag otherwise. */
+export const targetLabelId = (t: SwitchTarget) =>
+  t.kind === 'feature' && isMain(t) ? t.row.labelId : `flag.${t.flag.key}`;
+
+const allowedPercent = (p: number) => ([0, 10, 25, 50, 100].includes(p) ? p : 0);
+
+/** Who uses it: everyone, picked families (and the internal group), a share, internal, nobody. */
+export function setScope(
+  api: Api,
+  t: SwitchTarget,
+  fields: Pick<HubRolloutRequest, 'scope' | 'percent' | 'families' | 'betaFamilies'>,
+) {
+  if (t.kind === 'feature') {
+    return setFeatureRollout(api, {
+      feature: t.row.key,
+      ...(isMain(t) ? {} : { flag: t.flag.key }),
+      ...fields,
+    });
+  }
+  const scope = fields.scope ?? t.flag.scope;
+  return api.call('staffSetFlag', {
+    key: t.flag.key,
+    enabled: t.flag.enabled,
+    scope,
+    percent: scope === 'all' ? 100 : scope === 'percent' ? allowedPercent(fields.percent ?? 0) : 0,
+    notice: t.flag.enabled ? null : t.flag.notice,
+    ...(fields.families ? { families: fields.families } : {}),
+  });
+}
+
+/** Bật: on, or off for every family at once (with the sentence families see while it is off). */
+export function setEnabled(api: Api, t: SwitchTarget, enabled: boolean, notice: string | null) {
+  if (t.kind === 'feature') {
+    return setFeatureRollout(api, {
+      feature: t.row.key,
+      ...(isMain(t) ? {} : { flag: t.flag.key }),
+      enabled,
+      notice,
+    });
+  }
+  return api.call('staffSetFlag', {
+    key: t.flag.key,
+    enabled,
+    scope: t.flag.scope,
+    percent: t.flag.scope === 'all' ? 100 : allowedPercent(t.flag.percent),
+    notice,
+  });
+}
+
+// ---------- Ai được dùng ----------
+
+/** One choice instead of "Phát hành" and "Phạm vi" (owner 2026-10-21). */
+export const scopeChoices = ['all', 'some', 'percent', 'internal', 'none'] as const;
+export type ScopeChoice = (typeof scopeChoices)[number];
+
+export function scopeChoice(
+  f: Pick<StaffHubFlagState, 'scope' | 'percent'> & { families?: string[] },
+): ScopeChoice {
   if (f.scope === 'all' || f.percent >= 100) return 'all';
-  if (f.scope === 'internal') return 'internal';
-  if (f.percent >= 50) return 'p50';
-  if (f.percent >= 25) return 'p25';
-  if (f.percent > 0) return 'p10';
-  return 'off';
+  if (f.scope === 'internal') return f.families?.length ? 'some' : 'internal';
+  return f.percent > 0 ? 'percent' : 'none';
 }
 
 /**
- * "Chưa phát hành" is a 0 % rollout, not the kill switch: Premium families, the beta list and
- * per-family overrides still reach it, while the kill switch turns it off for everyone.
+ * The request for a choice. "none" is a 0 % rollout, not "Bật" off: Premium families, the beta
+ * list and per-family overrides still reach it; "Thử nội bộ" clears the picked families.
  */
-export function rolloutFields(level: RolloutLevel): Pick<HubRolloutRequest, 'scope' | 'percent'> {
-  switch (level) {
-    case 'off':
-      return { scope: 'percent', percent: 0 };
-    case 'internal':
-      return { scope: 'internal' };
+export function scopeFields(
+  choice: ScopeChoice,
+  percent: 10 | 25 | 50 = 10,
+  families: string[] = [],
+): Pick<HubRolloutRequest, 'scope' | 'percent' | 'families'> {
+  switch (choice) {
     case 'all':
       return { scope: 'all' };
-    default:
-      return { scope: 'percent', percent: Number(level.slice(1)) as 10 | 25 | 50 };
+    case 'some':
+      return { scope: 'internal', families };
+    case 'internal':
+      return { scope: 'internal', families: [] };
+    case 'percent':
+      return { scope: 'percent', percent };
+    case 'none':
+      return { scope: 'percent', percent: 0 };
   }
 }
+
+/** "none" reads by tier: not launched (Premium), only the beta list (Beta), nobody (others). */
+const noneId = (tier: FeatureTier | null) =>
+  tier === 'premium'
+    ? 'hub.scope.none.premium'
+    : tier === 'beta'
+      ? 'hub.scope.none.beta'
+      : 'hub.scope.none.other';
 
 /** What a tier change does, as a message id (`hub.tierNote.<from>.<to>`). */
 export const tierNoteId = (from: FeatureTier, to: FeatureTier) => `hub.tierNote.${from}.${to}`;
 
-// ---------- Tính năng ----------
+// ---------- Tính năng: one list ----------
+
+/** The list's groups, in order; the catalogue's groups and the switches' areas together. */
+export const listGroups = [
+  'keepsakes',
+  'personalization',
+  'assistant',
+  'records',
+  'content',
+  'uploads',
+  'engagement',
+  'family',
+  'analytics',
+  'other',
+] as const;
+
+const switchGroups: Partial<Record<FlagKey, (typeof listGroups)[number]>> = {
+  assistant_live: 'assistant',
+  assistant_writes: 'assistant',
+  story_share_link: 'keepsakes',
+  media_upload: 'uploads',
+  video_upload: 'uploads',
+  invites: 'family',
+  lock_widgets: 'family',
+  night_auto: 'family',
+  product_analytics: 'analytics',
+};
+
+/** Where an engineering switch sits; one added later shows under "Khác" until it gets a group. */
+export function switchGroupOf(key: FlagKey): (typeof listGroups)[number] {
+  return switchGroups[key] ?? (key.startsWith('engagement') ? 'engagement' : 'other');
+}
+
+/** Engineering switches in the list: every flag outside the catalogue but Mua gói trong app. */
+export const listSwitchKeys = systemFlagKeys.filter((k) => k !== billingFlag);
+
+export type ListRow =
+  | { kind: 'feature'; key: string; group: string; row: StaffHubRow }
+  | {
+      kind: 'system';
+      key: FlagKey;
+      group: string;
+      flag: StaffHubFlagState;
+      last: { by: string; at: string } | null;
+    };
+
+const asState = (key: FlagKey, f: Flag): StaffHubFlagState => ({
+  key,
+  enabled: f.enabled,
+  scope: f.scope,
+  percent: f.percent,
+  notice: f.notice,
+  families: f.families ?? [],
+});
+
+/** Catalogue features and engineering switches as one list (switches once `staffFlags` answered). */
+export function listRows(hub: StaffFeatureHub, flags: FlagsView | null): ListRow[] {
+  return [
+    ...hub.features.map((row): ListRow => ({
+      kind: 'feature',
+      key: row.key,
+      group: row.group,
+      row,
+    })),
+    ...(flags
+      ? listSwitchKeys.map((key): ListRow => ({
+          kind: 'system',
+          key,
+          group: switchGroupOf(key),
+          flag: asState(key, flags.flags[key]),
+          last: flags.lastEdit[key] ?? null,
+        }))
+      : []),
+  ];
+}
+
+/** On for anyone at all: a feature without a flag cannot be switched off. */
+const rowOn = (r: ListRow) =>
+  r.kind === 'feature' ? (r.row.flag?.enabled ?? true) : r.flag.enabled;
 
 function HubFeaturesLoader() {
   const [load, reload] = useLoad<StaffFeatureHub>('staffFeatureHub', {}, 'featureHub');
+  const [flags, reloadFlags] = useLoad<FlagsView>('staffFlags', {}, 'flags');
   return (
     <Loaded load={load} reload={reload}>
-      {(hub) => <HubFeaturesView hub={hub} onChanged={reload} />}
+      {(hub) => (
+        <HubFeaturesView
+          hub={hub}
+          flags={flags.status === 'ok' ? flags.data : null}
+          onChanged={() => {
+            reload();
+            reloadFlags();
+          }}
+        />
+      )}
     </Loaded>
   );
 }
 
-type Filter = 'all' | FeatureTier;
+export const listFilters = ['all', 'free', 'premium', 'beta', 'system'] as const;
+type ListFilter = (typeof listFilters)[number];
 type Dialog =
   | { kind: 'tier'; row: StaffHubRow; tier: FeatureTier }
-  | { kind: 'rollout'; row: StaffHubRow; flag: StaffHubFlagState; level: RolloutLevel }
-  | { kind: 'kill'; row: StaffHubRow; flag: StaffHubFlagState };
+  | { kind: 'scope'; target: SwitchTarget; choice: ScopeChoice }
+  | { kind: 'toggle'; target: SwitchTarget };
+type Can = { tier: boolean; toggle: boolean; rollout: boolean };
 
 /**
- * The catalogue by group. Each row: name (help behind "?"), Gói, Phát hành, who has it, the kill
- * switch; the row opens its detail (sub-switches, beta list, grace, overrides).
+ * Tính năng: every catalogue feature and every engineering switch in ONE list by area (owner,
+ * 2026-10-21), with the same columns: Tính năng (help behind "?"), Gói (Miễn phí / Premium / Beta;
+ * a switch is "Kỹ thuật"), Ai được dùng, Bật (off = nobody) and the detail.
  */
 export function HubFeaturesView({
   hub,
+  flags,
   onChanged,
-  initialOpen = null,
 }: {
   hub: StaffFeatureHub;
+  /** `staffFlags`, for the engineering switches and the limits; null while it loads. */
+  flags: FlagsView | null;
   onChanged: () => void;
-  /** A row's detail open (tests). */
-  initialOpen?: FeatureKey | null;
 }) {
   const intl = useIntl();
   const staff = useStaff();
-  const can = {
+  const navigate = useNavigate();
+  const can: Can = {
     tier: staffCan(staff.levels, 'premium.config'),
     toggle: staffCan(staff.levels, 'flags.toggle'),
     rollout: staffCan(staff.levels, 'flags.rollout'),
   };
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<ListFilter>('all');
+  const [onOff, setOnOff] = useState<'on' | 'off' | null>(null);
   const [q, setQ] = useState('');
   const [dialog, setDialog] = useState<Dialog | null>(null);
-  const [open, setOpen] = useState<FeatureKey | null>(initialOpen);
-  const name = (r: StaffHubRow) => intl.formatMessage({ id: r.labelId });
-  const help = (r: StaffHubRow) => intl.formatMessage({ id: r.helpId });
-  const match = (r: StaffHubRow) =>
-    (filter === 'all' || r.tier === filter) &&
-    (!q.trim() || `${name(r)} ${help(r)} ${r.key}`.toLowerCase().includes(q.trim().toLowerCase()));
-  const shown = hub.features.filter(match);
-  const count = (t: FeatureTier) => hub.features.filter((r) => r.tier === t).length;
+  const [open, setOpen] = useState<string | null>(null);
+  const rows = listRows(hub, flags);
+  const name = (r: ListRow) =>
+    intl.formatMessage({ id: r.kind === 'feature' ? r.row.labelId : `flag.${r.key}` });
+  const help = (r: ListRow) =>
+    intl.formatMessage({ id: r.kind === 'feature' ? r.row.helpId : `flag.${r.key}.desc` });
+  const kindOf = (r: ListRow): ListFilter => (r.kind === 'feature' ? r.row.tier : 'system');
+  const query = q.trim().toLowerCase();
+  const match = (r: ListRow) =>
+    (filter === 'all' || kindOf(r) === filter) &&
+    (onOff === null || rowOn(r) === (onOff === 'on')) &&
+    (!query || `${name(r)} ${help(r)} ${r.key}`.toLowerCase().includes(query));
+  const shown = rows.filter(match);
   const p = hub.premium;
+  const on = rows.filter(rowOn).length;
   const tiles: StatItem[] = [
     {
       key: 'families',
@@ -246,32 +424,65 @@ export function HubFeaturesView({
       value: `${num(intl, p.families)}${p.capped ? '+' : ''}`,
       foot: <FormattedMessage id="hub.kpi.premiumFoot" values={{ paid: p.paid, admin: p.admin }} />,
     },
-    ...featureTiers.map((t): StatItem => ({
-      key: t,
-      label: <FormattedMessage id={`hub.kpi.tier.${t}`} />,
-      value: count(t),
-      active: filter === t,
-      onClick: () => setFilter(filter === t ? 'all' : t),
-    })),
+    {
+      key: 'on',
+      label: <FormattedMessage id="hub.kpi.on" />,
+      value: on,
+      active: onOff === 'on',
+      onClick: () => setOnOff(onOff === 'on' ? null : 'on'),
+    },
+    {
+      key: 'off',
+      label: <FormattedMessage id="hub.kpi.off" />,
+      value: rows.length - on,
+      tone: rows.length - on ? 'error' : 'muted',
+      active: onOff === 'off',
+      onClick: () => setOnOff(onOff === 'off' ? null : 'off'),
+    },
+    {
+      key: 'beta',
+      label: <FormattedMessage id="hub.kpi.beta" />,
+      value: rows.filter((r) => kindOf(r) === 'beta').length,
+    },
   ];
-  const openRow = hub.features.find((r) => r.key === open) ?? null;
-  const onRollout = (row: StaffHubRow, flag: StaffHubFlagState, level: RolloutLevel) =>
-    setDialog({ kind: 'rollout', row, flag, level });
-  const onKill = (row: StaffHubRow, flag: StaffHubFlagState) =>
-    setDialog({ kind: 'kill', row, flag });
+  const count = (f: ListFilter) =>
+    f === 'all' ? rows.length : rows.filter((r) => kindOf(r) === f).length;
+  const openRow = rows.find((r) => r.key === open) ?? null;
+  const onScope = (target: SwitchTarget, choice: ScopeChoice) =>
+    setDialog({ kind: 'scope', target, choice });
+  const onToggle = (target: SwitchTarget) => setDialog({ kind: 'toggle', target });
+  const done = () => {
+    setDialog(null);
+    onChanged();
+  };
   return (
     <div className="grid min-w-0 gap-4">
       <StatTiles items={tiles} />
       <div className="overflow-hidden rounded-xl border bg-card">
         <FilterBar
-          active={!!q || filter !== 'all'}
+          active={!!q || filter !== 'all' || onOff !== null}
           onClear={() => {
             setQ('');
             setFilter('all');
+            setOnOff(null);
           }}
           shown={shown.length}
-          total={hub.features.length}
+          total={rows.length}
         >
+          <Segmented
+            label={intl.formatMessage({ id: 'hub.filter.label' })}
+            value={filter}
+            onChange={setFilter}
+            options={listFilters.map((f) => ({
+              value: f,
+              label: (
+                <>
+                  <FormattedMessage id={`hub.filter.${f}`} />{' '}
+                  <span className="text-muted-foreground tabular-nums">{count(f)}</span>
+                </>
+              ),
+            }))}
+          />
           <SearchInput
             value={q}
             onChange={setQ}
@@ -281,7 +492,7 @@ export function HubFeaturesView({
         {shown.length === 0 ? (
           <EmptyState icon={Search} title={<FormattedMessage id="features.noMatch" />} />
         ) : (
-          <TableScroll min={900}>
+          <TableScroll min={860}>
             <table className="table">
               <thead>
                 <tr>
@@ -292,13 +503,10 @@ export function HubFeaturesView({
                     <FormattedMessage id="hub.col.tier" />
                   </th>
                   <th>
-                    <FormattedMessage id="hub.col.rollout" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="hub.col.families" />
+                    <FormattedMessage id="hub.col.who" />
                   </th>
                   <th className="w-24">
-                    <FormattedMessage id="hub.col.kill" />
+                    <FormattedMessage id="hub.col.on" />
                   </th>
                   <th className="w-10">
                     <span className="sr-only">
@@ -307,27 +515,32 @@ export function HubFeaturesView({
                   </th>
                 </tr>
               </thead>
-              {hub.groups.map((g) => {
-                const rows = shown.filter((r) => r.group === g);
-                if (!rows.length) return null;
+              {listGroups.map((g) => {
+                const inGroup = shown.filter((r) => r.group === g);
+                if (!inGroup.length) return null;
                 return (
                   <tbody key={g}>
                     <tr className="cl-group-row">
-                      <th colSpan={6} scope="rowgroup">
+                      <th colSpan={5} scope="rowgroup">
                         <FormattedMessage id={`hub.group.${g}`} />
-                        <span className="font-normal text-muted-foreground"> · {rows.length}</span>
+                        <span className="font-normal text-muted-foreground">
+                          {' '}
+                          · {inGroup.length}
+                        </span>
                       </th>
                     </tr>
-                    {rows.map((row) => (
-                      <FeatureRow
-                        key={row.key}
-                        row={row}
+                    {inGroup.map((r) => (
+                      <ListRowView
+                        key={r.key}
+                        r={r}
                         premiumFamilies={p.families}
                         can={can}
-                        onTier={(tier) => setDialog({ kind: 'tier', row, tier })}
-                        onRollout={onRollout}
-                        onKill={onKill}
-                        onOpen={() => setOpen(row.key)}
+                        onTier={(tier) =>
+                          r.kind === 'feature' && setDialog({ kind: 'tier', row: r.row, tier })
+                        }
+                        onScope={onScope}
+                        onToggle={onToggle}
+                        onOpen={() => setOpen(r.key)}
                       />
                     ))}
                   </tbody>
@@ -336,17 +549,32 @@ export function HubFeaturesView({
             </table>
           </TableScroll>
         )}
+        <p className="flex flex-wrap items-center gap-1 border-t px-4 py-2 text-[13px] text-muted-foreground">
+          <FormattedMessage id="hub.switches.billingElsewhere" />
+          <Button kind="ghost" onClick={() => navigate('features', 'plan')}>
+            <FormattedMessage id="hub.tab.plan" />
+          </Button>
+        </p>
       </div>
+      {flags && (
+        <Section collapsible defaultOpen={false} title={<FormattedMessage id="features.limits" />}>
+          <LimitsList limits={flags.limits} />
+        </Section>
+      )}
       {openRow && (
         <DetailSheet title={name(openRow)} onClose={() => setOpen(null)}>
-          <FeatureDetail
-            row={openRow}
-            premiumFamilies={p.families}
-            can={can}
-            onRollout={onRollout}
-            onKill={onKill}
-            onChanged={onChanged}
-          />
+          {openRow.kind === 'feature' ? (
+            <FeatureDetail
+              row={openRow.row}
+              premiumFamilies={p.families}
+              can={can}
+              onScope={onScope}
+              onToggle={onToggle}
+              onChanged={onChanged}
+            />
+          ) : (
+            <SwitchDetail r={openRow} can={can} onScope={onScope} onToggle={onToggle} />
+          )}
         </DetailSheet>
       )}
       {dialog?.kind === 'tier' && (
@@ -354,116 +582,123 @@ export function HubFeaturesView({
           row={dialog.row}
           tier={dialog.tier}
           onClose={() => setDialog(null)}
-          onDone={() => {
-            setDialog(null);
-            onChanged();
-          }}
+          onDone={done}
         />
       )}
-      {dialog?.kind === 'rollout' && (
-        <RolloutDialog
-          row={dialog.row}
-          flag={dialog.flag}
-          level={dialog.level}
+      {dialog?.kind === 'scope' && (
+        <ScopeDialog
+          target={dialog.target}
+          choice={dialog.choice}
           onClose={() => setDialog(null)}
-          onDone={() => {
-            setDialog(null);
-            onChanged();
-          }}
+          onDone={done}
         />
       )}
-      {dialog?.kind === 'kill' && (
-        <KillDialog
-          row={dialog.row}
-          flag={dialog.flag}
-          onClose={() => setDialog(null)}
-          onDone={() => {
-            setDialog(null);
-            onChanged();
-          }}
-        />
+      {dialog?.kind === 'toggle' && (
+        <ToggleDialog target={dialog.target} onClose={() => setDialog(null)} onDone={done} />
       )}
     </div>
   );
 }
 
-type Can = { tier: boolean; toggle: boolean; rollout: boolean };
-
-function FeatureRow({
-  row,
+function ListRowView({
+  r,
   premiumFamilies,
   can,
   onTier,
-  onRollout,
-  onKill,
+  onScope,
+  onToggle,
   onOpen,
 }: {
-  row: StaffHubRow;
+  r: ListRow;
   premiumFamilies: number;
   can: Can;
   onTier: (tier: FeatureTier) => void;
-  onRollout: (row: StaffHubRow, flag: StaffHubFlagState, level: RolloutLevel) => void;
-  onKill: (row: StaffHubRow, flag: StaffHubFlagState) => void;
+  onScope: (target: SwitchTarget, choice: ScopeChoice) => void;
+  onToggle: (target: SwitchTarget) => void;
   onOpen: () => void;
 }) {
   const intl = useIntl();
-  const name = intl.formatMessage({ id: row.labelId });
-  const killed = row.flag ? !row.flag.enabled : false;
+  const feature = r.kind === 'feature' ? r.row : null;
+  const name = intl.formatMessage({ id: feature ? feature.labelId : `flag.${r.key}` });
+  const helpId = feature ? feature.helpId : `flag.${r.key}.desc`;
+  const target: SwitchTarget | null = feature
+    ? feature.flag
+      ? { kind: 'feature', row: feature, flag: feature.flag }
+      : null
+    : r.kind === 'system'
+      ? { kind: 'system', flag: r.flag }
+      : null;
+  const off = target ? !target.flag.enabled : false;
   return (
-    <tr className={cn(killed && 'bg-destructive/5')}>
+    <tr className={cn(off && 'bg-destructive/5')}>
       <td className="max-w-[22rem]">
         <span className="flex items-center gap-1">
           <button type="button" className="link-button text-left font-medium" onClick={onOpen}>
             {name}
           </button>
-          <Hint label={intl.formatMessage({ id: row.helpId })}>
-            <FormattedMessage id={row.helpId} />
+          <Hint label={intl.formatMessage({ id: helpId })}>
+            <FormattedMessage id={helpId} />
+            {!feature && (
+              <>
+                {'. '}
+                <FormattedMessage id="features.whenOff" />{' '}
+                <FormattedMessage id={`flag.${r.key}.offEffect`} />
+              </>
+            )}
           </Hint>
         </span>
-        {row.grace && (
+        {feature?.grace && (
           <span className="block text-xs text-muted-foreground">
             <FormattedMessage
               id="hub.grace.until"
-              values={{ date: dayText(intl, row.grace.until) }}
+              values={{ date: dayText(intl, feature.grace.until) }}
             />
           </span>
         )}
-        {row.subFlags.length > 0 && (
+        {feature && feature.subFlags.length > 0 && (
           <span className="block text-xs text-muted-foreground">
-            <FormattedMessage id="hub.subFlags.count" values={{ n: row.subFlags.length }} />
+            <FormattedMessage id="hub.subFlags.count" values={{ n: feature.subFlags.length }} />
           </span>
         )}
       </td>
       <td>
-        <TierSelect row={row} disabled={!can.tier} onPick={onTier} />
-      </td>
-      <td>
-        {row.flag ? (
-          <RolloutSelect
-            label={intl.formatMessage({ id: 'hub.rollout.label' }, { feature: name })}
-            flag={row.flag}
-            disabled={!can.rollout}
-            onPick={(level) => onRollout(row, row.flag!, level)}
-          />
+        {feature ? (
+          <TierSelect row={feature} disabled={!can.tier} onPick={onTier} />
         ) : (
           <span className="text-[13px] text-muted-foreground">
-            <FormattedMessage id="hub.rollout.none" />
+            <FormattedMessage id="hub.tier.system" />
           </span>
         )}
       </td>
-      <td className="text-[13px]">
-        <FamilyCounts row={row} premiumFamilies={premiumFamilies} />
+      <td>
+        <WhoCell
+          name={name}
+          tier={feature?.tier ?? null}
+          target={target}
+          disabled={!can.rollout}
+          onScope={onScope}
+        />
+        {feature && (
+          <span className="mt-0.5 block text-xs">
+            <FamilyCounts row={feature} premiumFamilies={premiumFamilies} quiet />
+          </span>
+        )}
       </td>
       <td>
-        {row.flag ? (
-          <KillSwitch
+        {target ? (
+          <OnSwitch
             name={name}
-            flag={row.flag}
+            flag={target.flag}
             disabled={!can.toggle}
-            onToggle={() => onKill(row, row.flag!)}
+            onToggle={() => onToggle(target)}
           />
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span
+            className="text-muted-foreground"
+            title={intl.formatMessage({ id: 'hub.on.always' })}
+          >
+            —
+          </span>
         )}
       </td>
       <td className="cell-actions">
@@ -482,87 +717,105 @@ function FeatureRow({
   );
 }
 
-function TierSelect({
-  row,
+/**
+ * Ai được dùng. Premium rows read "Người có Premium" and offer when everyone else sees it; a
+ * feature without a flag follows its tier only.
+ */
+function WhoCell({
+  name,
+  tier,
+  target,
   disabled,
-  onPick,
+  onScope,
 }: {
-  row: StaffHubRow;
+  name: string;
+  tier: FeatureTier | null;
+  target: SwitchTarget | null;
   disabled: boolean;
-  onPick: (tier: FeatureTier) => void;
+  onScope: (target: SwitchTarget, choice: ScopeChoice) => void;
 }) {
-  const intl = useIntl();
-  const name = intl.formatMessage({ id: row.labelId });
-  if (disabled || !row.tierable) {
+  if (!target) {
     return (
-      <span className="grid justify-items-start gap-0.5">
-        <TierPill tier={row.tier} />
-        {row.credits && row.tier === 'premium' && <CreditsNote />}
+      <span className="text-[13px]">
+        <FormattedMessage
+          id={
+            tier === 'premium'
+              ? 'hub.who.premium'
+              : tier === 'beta'
+                ? 'hub.scope.none.beta'
+                : 'hub.scope.all'
+          }
+        />
       </span>
     );
   }
   return (
-    <span className="grid justify-items-start gap-0.5">
-      <SelectMenu
-        className="min-w-32"
-        label={intl.formatMessage({ id: 'hub.tier.label' }, { feature: name })}
-        value={row.tier}
-        options={featureTiers.map((t) => ({
-          value: t,
-          label: intl.formatMessage({ id: `hub.tier.${t}` }),
-        }))}
-        onChange={(t) => t !== row.tier && onPick(t)}
+    <span className="grid justify-items-start gap-1">
+      {tier === 'premium' && (
+        <span className="text-[13px] font-medium">
+          <FormattedMessage id="hub.who.premium" />
+        </span>
+      )}
+      <ScopeSelect
+        name={name}
+        flag={target.flag}
+        tier={tier}
+        disabled={disabled}
+        onPick={(choice) => onScope(target, choice)}
       />
-      {row.credits && row.tier === 'premium' && <CreditsNote />}
     </span>
   );
 }
 
-function CreditsNote() {
-  return (
-    <span className="text-xs text-muted-foreground">
-      <FormattedMessage id="hub.tier.credits" />
-    </span>
-  );
-}
-
-export function RolloutSelect({
-  label,
+export function ScopeSelect({
+  name,
   flag,
+  tier,
   disabled,
   onPick,
 }: {
-  label: string;
+  name: string;
   flag: StaffHubFlagState;
+  tier: FeatureTier | null;
   disabled: boolean;
-  onPick: (level: RolloutLevel) => void;
+  onPick: (choice: ScopeChoice) => void;
 }) {
   const intl = useIntl();
-  const level = rolloutLevel(flag);
-  const text = (l: RolloutLevel) =>
-    intl.formatMessage(
-      { id: `hub.rollout.${l === 'internal' && flag.families.length ? 'internalSome' : l}` },
-      { n: flag.families.length },
-    );
+  const current = scopeChoice(flag);
+  const text = (c: ScopeChoice) =>
+    c === 'none'
+      ? intl.formatMessage({ id: noneId(tier) })
+      : intl.formatMessage(
+          { id: `hub.scope.${c}` },
+          {
+            n: flag.families.length,
+            p: c === current ? flag.percent : 0,
+          },
+        );
+  const label = intl.formatMessage(
+    { id: tier === 'premium' ? 'hub.scope.labelPremium' : 'hub.scope.label' },
+    { feature: name },
+  );
   if (disabled) {
     return (
-      <Pill tone={level === 'all' ? 'ok' : level === 'off' ? 'muted' : 'purple'}>
-        {text(level)}
+      <Pill tone={current === 'all' ? 'ok' : current === 'none' ? 'muted' : 'purple'}>
+        {text(current)}
       </Pill>
     );
   }
   return (
     <SelectMenu
-      className="min-w-40"
+      className="min-w-44"
       label={label}
-      value={level}
-      options={rolloutLevels.map((l) => ({ value: l, label: text(l) }))}
-      onChange={(l) => onPick(l)}
+      value={current}
+      options={scopeChoices.map((c) => ({ value: c, label: text(c) }))}
+      onChange={(c) => onPick(c)}
     />
   );
 }
 
-function KillSwitch({
+/** Bật: off = nobody, whatever the tier, overrides or Premium. */
+function OnSwitch({
   name,
   flag,
   disabled,
@@ -578,7 +831,7 @@ function KillSwitch({
     <span className="flex items-center gap-2">
       <Switch
         checked={flag.enabled}
-        aria-label={intl.formatMessage({ id: 'hub.kill.label' }, { feature: name })}
+        aria-label={intl.formatMessage({ id: 'hub.on.label' }, { feature: name })}
         disabled={disabled}
         title={disabled ? intl.formatMessage({ id: 'features.toggleRole' }) : undefined}
         // Confirmed in a dialog first (A11): turning off can show families a notice.
@@ -586,15 +839,24 @@ function KillSwitch({
       />
       {!flag.enabled && (
         <span className="text-xs font-medium text-destructive">
-          <FormattedMessage id="hub.kill.off" />
+          <FormattedMessage id="hub.on.off" />
         </span>
       )}
     </span>
   );
 }
 
-/** Who has it beyond the rollout: Premium families, the beta list, per-family overrides. */
-function FamilyCounts({ row, premiumFamilies }: { row: StaffHubRow; premiumFamilies: number }) {
+/** Who has it beyond "Ai được dùng": Premium families, the beta list, per-family overrides. */
+function FamilyCounts({
+  row,
+  premiumFamilies,
+  quiet,
+}: {
+  row: StaffHubRow;
+  premiumFamilies: number;
+  /** In the list: one muted line, and nothing when there is nothing to add. */
+  quiet?: boolean;
+}) {
   const parts: ReactNode[] = [];
   if (row.tier === 'premium') {
     parts.push(<FormattedMessage key="p" id="hub.count.premium" values={{ n: premiumFamilies }} />);
@@ -613,12 +875,13 @@ function FamilyCounts({ row, premiumFamilies }: { row: StaffHubRow; premiumFamil
       />,
     );
   }
-  if (!parts.length) return <span className="text-muted-foreground">—</span>;
+  if (!parts.length) return quiet ? null : <span className="text-muted-foreground">—</span>;
   return (
-    <span className="grid gap-0.5">
-      {parts.map((p, i) => (
-        <span key={i} className={i ? 'text-muted-foreground' : undefined}>
-          {p}
+    <span className={cn('flex flex-wrap gap-x-1', quiet && 'text-muted-foreground')}>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {i > 0 && '· '}
+          {part}
         </span>
       ))}
     </span>
@@ -672,22 +935,22 @@ function DetailSheet({
 }
 
 /**
- * One feature in full: its help, Gói, each switch (main and parts, e.g. the assistant's photos,
- * care, live, writes and upsell), the beta list, the 30-day grace and the overrides.
+ * One feature in full: its help, Gói, each switch (main and parts: the assistant's photos, care
+ * and upsell), the beta list, the 30-day grace and the overrides.
  */
 export function FeatureDetail({
   row,
   premiumFamilies,
   can,
-  onRollout,
-  onKill,
+  onScope,
+  onToggle,
   onChanged,
 }: {
   row: StaffHubRow;
   premiumFamilies: number;
   can: Can;
-  onRollout: (row: StaffHubRow, flag: StaffHubFlagState, level: RolloutLevel) => void;
-  onKill: (row: StaffHubRow, flag: StaffHubFlagState) => void;
+  onScope: (target: SwitchTarget, choice: ScopeChoice) => void;
+  onToggle: (target: SwitchTarget) => void;
   onChanged: () => void;
 }) {
   const intl = useIntl();
@@ -762,6 +1025,7 @@ export function FeatureDetail({
           </h3>
           <ul className="grid divide-y rounded-lg border">
             {flags.map((f) => {
+              const target: SwitchTarget = { kind: 'feature', row, flag: f };
               const flagName = intl.formatMessage({ id: `flag.${f.key}` });
               return (
                 <li key={f.key} className="grid gap-2 px-3 py-2.5">
@@ -779,18 +1043,19 @@ export function FeatureDetail({
                         <FormattedMessage id={`flag.${f.key}.desc`} />
                       </span>
                     </span>
-                    <KillSwitch
+                    <OnSwitch
                       name={flagName}
                       flag={f}
                       disabled={!can.toggle}
-                      onToggle={() => onKill(row, f)}
+                      onToggle={() => onToggle(target)}
                     />
                   </div>
-                  <RolloutSelect
-                    label={intl.formatMessage({ id: 'hub.rollout.label' }, { feature: flagName })}
+                  <ScopeSelect
+                    name={flagName}
                     flag={f}
+                    tier={row.tier}
                     disabled={!can.rollout}
-                    onPick={(level) => onRollout(row, f, level)}
+                    onPick={(choice) => onScope(target, choice)}
                   />
                   {f.scope === 'internal' && f.families.length > 0 && <Codes codes={f.families} />}
                 </li>
@@ -815,6 +1080,82 @@ export function FeatureDetail({
       <p className="text-xs text-muted-foreground">
         <FormattedMessage id="hub.detail.overridesNote" />
       </p>
+    </div>
+  );
+}
+
+/** One engineering switch: what it does, what turning it off does, who uses it. */
+export function SwitchDetail({
+  r,
+  can,
+  onScope,
+  onToggle,
+}: {
+  r: Extract<ListRow, { kind: 'system' }>;
+  can: Can;
+  onScope: (target: SwitchTarget, choice: ScopeChoice) => void;
+  onToggle: (target: SwitchTarget) => void;
+}) {
+  const intl = useIntl();
+  const target: SwitchTarget = { kind: 'system', flag: r.flag };
+  const name = intl.formatMessage({ id: `flag.${r.key}` });
+  return (
+    <div className="grid gap-4 text-sm">
+      <p className="text-muted-foreground">
+        <FormattedMessage id={`flag.${r.key}.desc`} />
+      </p>
+      <dl className="kv">
+        <dt>
+          <FormattedMessage id="hub.col.tier" />
+        </dt>
+        <dd>
+          <FormattedMessage id="hub.tier.system" />
+        </dd>
+        <dt>
+          <FormattedMessage id="features.whenOff" />
+        </dt>
+        <dd>
+          <FormattedMessage id={`flag.${r.key}.offEffect`} />
+        </dd>
+        {!r.flag.enabled && r.flag.notice && (
+          <>
+            <dt>
+              <FormattedMessage id="features.notify" />
+            </dt>
+            <dd>{r.flag.notice}</dd>
+          </>
+        )}
+        {r.last && (
+          <>
+            <dt>
+              <FormattedMessage id="col.lastEdit" />
+            </dt>
+            <dd>
+              {r.last.by} · {shortDate(intl, r.last.at)}
+            </dd>
+          </>
+        )}
+      </dl>
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2.5">
+        <ScopeSelect
+          name={name}
+          flag={r.flag}
+          tier={null}
+          disabled={!can.rollout}
+          onPick={(choice) => onScope(target, choice)}
+        />
+        <span className="ml-auto">
+          <OnSwitch
+            name={name}
+            flag={r.flag}
+            disabled={!can.toggle}
+            onToggle={() => onToggle(target)}
+          />
+        </span>
+      </div>
+      {r.flag.scope === 'internal' && r.flag.families.length > 0 && (
+        <Codes codes={r.flag.families} />
+      )}
     </div>
   );
 }
@@ -1005,54 +1346,80 @@ export function TierDialog({
   );
 }
 
-/** Phát hành of the feature (or one of its switches); picked families for "Nội bộ" and Beta. */
-export function RolloutDialog({
-  row,
-  flag,
-  level,
+/**
+ * Ai được dùng of a feature (or one of its parts) or a switch: the share for "Theo %", the families
+ * for "Một số gia đình", and a Beta feature's beta list.
+ */
+export function ScopeDialog({
+  target,
+  choice,
   onClose,
   onDone,
 }: {
-  row: StaffHubRow;
-  flag: StaffHubFlagState;
-  level: RolloutLevel;
+  target: SwitchTarget;
+  choice: ScopeChoice;
   onClose: () => void;
   onDone: () => void;
 }) {
   const intl = useIntl();
   const api = useApi();
-  const main = flag.key === row.flag?.key;
+  const flag = target.flag;
+  const row = target.kind === 'feature' ? target.row : null;
+  const [percent, setPercent] = useState<10 | 25 | 50>(() =>
+    flag.percent === 25 || flag.percent === 50 ? flag.percent : 10,
+  );
   const [families, setFamilies] = useState(flag.families);
-  const [beta, setBeta] = useState(row.betaFamilies);
+  const [beta, setBeta] = useState(row?.betaFamilies ?? []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
-  const name = intl.formatMessage({ id: main ? row.labelId : `flag.${flag.key}` });
-  const withBeta = main && row.tier === 'beta';
-  const betaChanged = JSON.stringify(beta) !== JSON.stringify(row.betaFamilies);
+  const name = intl.formatMessage({ id: targetLabelId(target) });
+  const withBeta = !!row && isMain(target) && row.tier === 'beta';
+  const betaChanged = JSON.stringify(beta) !== JSON.stringify(row?.betaFamilies ?? []);
+  const tier = row?.tier ?? null;
   return (
     <Modal
-      wide={level === 'internal' || withBeta}
-      title={<FormattedMessage id="hub.rollout.title" values={{ feature: name }} />}
+      wide={choice === 'some' || withBeta}
+      title={<FormattedMessage id="hub.scope.title" values={{ feature: name }} />}
       onClose={onClose}
     >
       <Notice tone="info">
-        <FormattedMessage id={`hub.rolloutNote.${level}`} />
-        {row.tier === 'premium' && (
+        <FormattedMessage
+          id={choice === 'none' ? noneId(tier) : `hub.scope.${choice}`}
+          values={{ n: 0, p: 0 }}
+        />
+        {': '}
+        <FormattedMessage id={`hub.scopeNote.${choice}`} />
+        {tier === 'premium' && (
           <>
             {' '}
-            <FormattedMessage id="hub.rolloutNote.premium" />
+            <FormattedMessage id="hub.scopeNote.premium" />
           </>
         )}
       </Notice>
       {!flag.enabled && (
         <Notice tone="warn">
-          <FormattedMessage id="hub.rolloutNote.killed" />
+          <FormattedMessage id="hub.scopeNote.off" />
         </Notice>
       )}
-      {level === 'internal' && (
+      {choice === 'percent' && (
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={String(percent)}
+          aria-label={intl.formatMessage({ id: 'hub.scope.share' })}
+          onValueChange={(v) => v && setPercent(Number(v) as 10 | 25 | 50)}
+        >
+          {([10, 25, 50] as const).map((p) => (
+            <ToggleGroupItem key={p} value={String(p)} className="px-3 tabular-nums">
+              {p}%
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      )}
+      {choice === 'some' && (
         <div className="grid gap-2">
           <span className="text-[13px] font-medium">
-            <FormattedMessage id="hub.rollout.families" />
+            <FormattedMessage id="hub.scope.families" />
           </span>
           <FamilyPicker value={families} onChange={setFamilies} />
         </div>
@@ -1081,19 +1448,16 @@ export function RolloutDialog({
         </Button>
         <Button
           kind="primary"
-          disabled={busy}
+          disabled={busy || (choice === 'some' && families.length === 0)}
           onClick={() => {
             setBusy(true);
             setError(null);
-            setFeatureRollout(api, {
-              feature: row.key,
-              ...(main ? {} : { flag: flag.key }),
-              ...rolloutFields(level),
-              ...(level === 'internal' ? { families } : {}),
+            setScope(api, target, {
+              ...scopeFields(choice, percent, families),
               ...(withBeta && betaChanged ? { betaFamilies: beta } : {}),
             })
               .then(() => {
-                toast.success(intl.formatMessage({ id: 'hub.rollout.done' }, { feature: name }));
+                toast.success(intl.formatMessage({ id: 'hub.scope.done' }, { feature: name }));
                 onDone();
               })
               .catch((e: unknown) =>
@@ -1109,22 +1473,20 @@ export function RolloutDialog({
   );
 }
 
-/** Công tắc khẩn: off for every family at once (Premium and overrides too), with the notice. */
-export function KillDialog({
-  row,
-  flag,
+/** Bật: off for every family at once (Premium and overrides too), with the in-app notice. */
+export function ToggleDialog({
+  target,
   onClose,
   onDone,
 }: {
-  row: StaffHubRow;
-  flag: StaffHubFlagState;
+  target: SwitchTarget;
   onClose: () => void;
   onDone: () => void;
 }) {
   const intl = useIntl();
   const api = useApi();
-  const main = flag.key === row.flag?.key;
-  const name = intl.formatMessage({ id: main ? row.labelId : `flag.${flag.key}` });
+  const flag = target.flag;
+  const name = intl.formatMessage({ id: targetLabelId(target) });
   const off = flag.enabled;
   const [notify, setNotify] = useState(true);
   const [notice, setNotice] = useState(() => defaultNotice(flag.key, name));
@@ -1134,7 +1496,7 @@ export function KillDialog({
     <Modal
       title={
         <FormattedMessage
-          id={off ? 'hub.kill.offTitle' : 'hub.kill.onTitle'}
+          id={off ? 'hub.on.offTitle' : 'hub.on.onTitle'}
           values={{ feature: name }}
         />
       }
@@ -1148,7 +1510,14 @@ export function KillDialog({
       onClose={onClose}
     >
       <Notice tone={off ? 'warn' : 'info'}>
-        <FormattedMessage id={off ? 'hub.kill.offNote' : 'hub.kill.onNote'} />
+        {off ? (
+          <>
+            <FormattedMessage id={`flag.${flag.key}.offEffect`} />{' '}
+            <FormattedMessage id="hub.on.offNote" />
+          </>
+        ) : (
+          <FormattedMessage id="hub.on.onNote" />
+        )}
       </Notice>
       {off && (
         <NoticeField notify={notify} onNotify={setNotify} notice={notice} onNotice={setNotice} />
@@ -1168,12 +1537,7 @@ export function KillDialog({
           onClick={() => {
             setBusy(true);
             setError(null);
-            setFeatureRollout(api, {
-              feature: row.key,
-              ...(main ? {} : { flag: flag.key }),
-              enabled: !off,
-              notice: off && notify && notice.trim() ? notice.trim() : null,
-            })
+            setEnabled(api, target, !off, off && notify && notice.trim() ? notice.trim() : null)
               .then(() => {
                 toast.success(
                   intl.formatMessage(
@@ -1189,10 +1553,54 @@ export function KillDialog({
               .finally(() => setBusy(false));
           }}
         >
-          <FormattedMessage id={off ? 'hub.kill.confirmOff' : 'hub.kill.confirmOn'} />
+          <FormattedMessage id={off ? 'hub.on.confirmOff' : 'hub.on.confirmOn'} />
         </Button>
       </div>
     </Modal>
+  );
+}
+
+function TierSelect({
+  row,
+  disabled,
+  onPick,
+}: {
+  row: StaffHubRow;
+  disabled: boolean;
+  onPick: (tier: FeatureTier) => void;
+}) {
+  const intl = useIntl();
+  const name = intl.formatMessage({ id: row.labelId });
+  if (disabled || !row.tierable) {
+    return (
+      <span className="grid justify-items-start gap-0.5">
+        <TierPill tier={row.tier} />
+        {row.credits && row.tier === 'premium' && <CreditsNote />}
+      </span>
+    );
+  }
+  return (
+    <span className="grid justify-items-start gap-0.5">
+      <SelectMenu
+        className="min-w-32"
+        label={intl.formatMessage({ id: 'hub.tier.label' }, { feature: name })}
+        value={row.tier}
+        options={featureTiers.map((t) => ({
+          value: t,
+          label: intl.formatMessage({ id: `hub.tier.${t}` }),
+        }))}
+        onChange={(t) => t !== row.tier && onPick(t)}
+      />
+      {row.credits && row.tier === 'premium' && <CreditsNote />}
+    </span>
+  );
+}
+
+function CreditsNote() {
+  return (
+    <span className="text-xs text-muted-foreground">
+      <FormattedMessage id="hub.tier.credits" />
+    </span>
   );
 }
 

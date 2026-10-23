@@ -34,6 +34,7 @@ import 'growth_standards_screen.dart';
 import 'who_growth.dart';
 import 'care_repository.dart';
 import 'care_screens.dart';
+import 'stats_screens.dart' show compactDuration;
 import 'care_sheets.dart';
 import 'timer_models.dart';
 import '../solids/solids_calc.dart';
@@ -327,6 +328,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         ..add(
           _Timeline(
             entries: entries,
+            dayEnd: bounds.end,
             timers: timers.whereType<CareTimer>().toList(),
             meals: meals,
             zone: zone,
@@ -866,6 +868,81 @@ class _LinkCard extends StatelessWidget {
 }
 
 /// TimeSectionHeader (59:431) + TimelineItem (48:407) rows, newest first.
+/// The rows of a day, newest first: records, meals and wake-ups merged by time (a span from the
+/// night before sits at the day's start), each with its period. [laterSleeps] are sleep starts
+/// outside [entries] (the next day's) for the time awake after the day's last sleep.
+List<(DateTime, int, CarePeriod, Widget)> _timelineItems({
+  required List<TimelineEntry> entries,
+  required List<CareTimer> timers,
+  required List<SdMeal> meals,
+  required String zone,
+  required String myUid,
+  required DateTime now,
+  DateTime? dayEnd,
+  Iterable<DateTime> laterSleeps = const [],
+}) {
+  final items = <(DateTime, int, CarePeriod, Widget)>[];
+  for (final e in entries) {
+    items.add((
+      e.startedBefore ? DateTime.utc(1970) : e.record.occurredAt,
+      1,
+      e.period,
+      _TimelineRow(entry: e, zone: zone, myUid: myUid),
+    ));
+  }
+  for (final meal in meals) {
+    items.add((
+      meal.occurredAt,
+      1,
+      periodOfHour(inBabyZone(zone, meal.occurredAt).hour),
+      _MealTimelineRow(meal: meal, zone: zone, myUid: myUid),
+    ));
+  }
+  // Owner, 2026-10-22: when the baby woke up is a moment of its own, with how long they were
+  // awake until the next sleep (or "đang thức" for the latest one today).
+  final sleeps = [
+    for (final e in entries)
+      if (e.record.type == CareType.sleep && e.record.endedAt != null) e.record,
+  ];
+  final running = timers
+      .where((t) => t.type == TimerType.sleep)
+      .map((t) => t.startedAt);
+  final starts = [
+    ...sleeps.map((r) => r.occurredAt),
+    ...running,
+    ...laterSleeps,
+  ]..sort();
+  final today = dayEnd == null || dayEnd.isAfter(now);
+  for (final r in sleeps) {
+    final end = r.endedAt!;
+    if (end.isAfter(now) || (dayEnd != null && !end.isBefore(dayEnd))) {
+      continue;
+    }
+    final next = starts.where((t) => !t.isBefore(end)).firstOrNull;
+    items.add((
+      end,
+      0,
+      periodOfHour(inBabyZone(zone, end).hour),
+      _WakeRow(
+        record: r,
+        zone: zone,
+        awakeMinutes: next != null
+            ? next.difference(end).inMinutes
+            : today
+            ? now.difference(end).inMinutes
+            : null,
+        ongoing: next == null && today,
+      ),
+    ));
+  }
+  // Newest first; at the same minute the wake-up sits under what followed it.
+  items.sort((a, b) {
+    final byTime = b.$1.compareTo(a.$1);
+    return byTime != 0 ? byTime : b.$2.compareTo(a.$2);
+  });
+  return items;
+}
+
 class _Timeline extends StatelessWidget {
   const _Timeline({
     required this.entries,
@@ -873,8 +950,12 @@ class _Timeline extends StatelessWidget {
     required this.zone,
     required this.myUid,
     required this.now,
+    this.dayEnd,
     this.meals = const [],
   });
+
+  /// The end of the shown day: a wake-up after it belongs to the next day.
+  final DateTime? dayEnd;
 
   final List<TimelineEntry> entries;
   final List<CareTimer> timers;
@@ -907,26 +988,22 @@ class _Timeline extends StatelessWidget {
       }
     }
 
-    // Newest first: records (already in order; a span from the night before sits at the day's
-    // start) and meals merged by time.
-    final dayMeals = [...meals]..sort((a, b) => sdCompareMeals(b, a));
-    var m = 0;
-    void mealsAfter(DateTime? at) {
-      while (m < dayMeals.length &&
-          (at == null || !dayMeals[m].occurredAt.isBefore(at))) {
-        final meal = dayMeals[m++];
-        place(
-          periodOfHour(inBabyZone(zone, meal.occurredAt).hour),
-          _MealTimelineRow(meal: meal, zone: zone, myUid: myUid),
-        );
-      }
-    }
-
+    final stats = <CarePeriod, _PeriodStats>{};
     for (final e in entries) {
-      mealsAfter(e.startedBefore ? null : e.record.occurredAt);
-      place(e.period, _TimelineRow(entry: e, zone: zone, myUid: myUid));
+      (stats[e.period] ??= _PeriodStats()).add(e.record);
     }
-    mealsAfter(null);
+    final items = _timelineItems(
+      entries: entries,
+      timers: timers,
+      meals: meals,
+      zone: zone,
+      myUid: myUid,
+      now: now,
+      dayEnd: dayEnd,
+    );
+    for (final (_, _, period, row) in items) {
+      place(period, row);
+    }
     String name(CarePeriod p) => switch (p) {
       CarePeriod.lateNight || CarePeriod.night => l10n.periodNight,
       CarePeriod.evening => l10n.periodEvening,
@@ -992,24 +1069,20 @@ class _Timeline extends StatelessWidget {
                           color: cl.colors.inkMuted,
                         ),
                       ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: ClSpace.s2,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: cl.colors.surface2,
-                          borderRadius: BorderRadius.circular(ClRadius.pill),
-                        ),
-                        child: Text(
-                          l10n.periodItems(rows.length),
-                          style: cl.text.caption,
-                        ),
-                      ),
                     ],
                   ),
                 ),
+                // The period in words instead of "8 mục" (owner, 2026-10-22).
+                if (stats[period] case final st? when !st.empty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28 + ClSpace.s2),
+                    child: Text(
+                      _summaryLine(l10n, st),
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: ClSpace.s2),
                 for (final (i, row) in rows.indexed)
                   _Rail(last: i == rows.length - 1, child: row),
@@ -1060,6 +1133,136 @@ class _Marker extends StatelessWidget {
   );
 }
 
+/// What a period holds, for its header chips.
+class _PeriodStats {
+  int feeds = 0, ml = 0, sleepMinutes = 0, diapers = 0;
+  int bottles = 0, breasts = 0, breastMinutes = 0, sleeps = 0;
+  bool get empty => feeds == 0 && sleepMinutes == 0 && diapers == 0;
+
+  void add(CareRecord r) {
+    switch (r.type) {
+      case CareType.bottle:
+        feeds++;
+        bottles++;
+        ml += r.amountMl ?? 0;
+      case CareType.breast:
+        feeds++;
+        breasts++;
+        breastMinutes +=
+            r.durationMin ??
+            (r.endedAt?.difference(r.occurredAt).inMinutes ?? 0);
+      case CareType.sleep when r.endedAt != null:
+        sleeps++;
+        sleepMinutes += r.endedAt!.difference(r.occurredAt).inMinutes;
+      case CareType.diaper:
+        diapers++;
+      default:
+    }
+  }
+}
+
+/// "5 cữ bú · 420 ml · 15 phút bú mẹ · 2 giấc 5g 50p · 2 tã": a period or a day in words.
+String _summaryLine(AppLocalizations l10n, _PeriodStats st) => [
+  if (st.feeds > 0)
+    [
+      l10n.dayFeedsLine(st.feeds),
+      if (st.ml > 0) l10n.amountMl(st.ml),
+    ].join(' · '),
+  if (st.breastMinutes > 0) l10n.dayBreastLine(st.breastMinutes),
+  if (st.sleepMinutes > 0)
+    l10n.daySleepLine(
+      st.sleeps,
+      compactDuration(l10n, Duration(minutes: st.sleepMinutes)),
+    ),
+  if (st.diapers > 0) l10n.periodDiapers(st.diapers),
+].join(' · ');
+
+/// "Thức dậy · Thức 1 giờ 9 phút" where a sleep ended; opens that sleep.
+class _WakeRow extends StatelessWidget {
+  const _WakeRow({
+    required this.record,
+    required this.zone,
+    required this.awakeMinutes,
+    required this.ongoing,
+  });
+  final CareRecord record;
+  final String zone;
+  final int? awakeMinutes;
+  final bool ongoing;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final hm = DateFormat.Hm(Localizations.localeOf(context).toLanguageTag());
+    final at = hm.format(inBabyZone(zone, record.endedAt!));
+    final awake = awakeMinutes;
+    final value = awake == null
+        ? l10n.careWokeUp
+        : ongoing
+        ? l10n.careAwakeNow(durationLabel(l10n, awake))
+        : l10n.careAwakeFor(durationLabel(l10n, awake));
+    return ClPressable(
+      key: Key('wake:${record.id}'),
+      onPressed: () => context.push('${Routes.record}/${record.id}'),
+      pressedOpacity: ClPressable.surfaceOpacity,
+      semanticLabel: '$at, ${l10n.careWokeUp}, $value',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 48,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ClTabularText(
+                    at,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ),
+              ),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: cl.colors.sunshineSoft,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                // Ink on the soft warm fill, also in Night care.
+                child: ClIcon(ClIcons.sunrise, size: 20, color: cl.colors.ink),
+              ),
+              const SizedBox(width: ClSpace.s3),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.careWokeUp, style: cl.text.bodyStrong),
+                      Text(
+                        value,
+                        style: cl.text.caption.copyWith(
+                          color: ongoing
+                              ? cl.colors.mintText
+                              : cl.colors.inkMuted,
+                          fontWeight: ongoing ? FontWeight.w600 : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _TimelineRow extends StatelessWidget {
   const _TimelineRow({
     required this.entry,
@@ -1077,7 +1280,8 @@ class _TimelineRow extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final hm = DateFormat.Hm(locale);
     final r = entry.record;
-    final who = loggedBy(l10n, r, myUid);
+    // Owner, 2026-10-22: "Bạn ghi" on every row was noise; another person's name stays.
+    final who = r.createdBy == myUid ? null : loggedBy(l10n, r, myUid);
     final care = careColor(context, r.type);
     String side(Side? s) => switch (s) {
       Side.left => l10n.sideLeftFull,
@@ -1093,13 +1297,21 @@ class _TimelineRow extends StatelessWidget {
         l10n.rowSleep(
           durationLabel(l10n, r.endedAt!.difference(r.occurredAt).inMinutes),
         ),
-        '${l10n.rowSpan(entry.startedBefore ? l10n.rowYesterdayTime(hm.format(start)) : hm.format(start), hm.format(inBabyZone(zone, r.endedAt!)))} · $who',
+        [
+          l10n.rowSpan(
+            entry.startedBefore
+                ? l10n.rowYesterdayTime(hm.format(start))
+                : hm.format(start),
+            hm.format(inBabyZone(zone, r.endedAt!)),
+          ),
+          ?who,
+        ].join(' · '),
       ),
       CareType.breast => (
         l10n.rowBreastSide(side(r.side)),
         [
           if (r.durationMin != null) durationLabel(l10n, r.durationMin!),
-          who,
+          ?who,
         ].join(' · '),
       ),
       CareType.pump => (
@@ -1107,7 +1319,7 @@ class _TimelineRow extends StatelessWidget {
         [
           side(r.side),
           if (r.durationMin != null) durationLabel(l10n, r.durationMin!),
-          who,
+          ?who,
         ].join(' · '),
       ),
       CareType.growth => (
@@ -1115,10 +1327,10 @@ class _TimelineRow extends StatelessWidget {
         [
           if (r.lengthCm != null) l10n.lengthCm(decimal(locale, r.lengthCm!)),
           if (r.headCm != null) l10n.headCm(decimal(locale, r.headCm!)),
-          who,
+          ?who,
         ].join(' · '),
       ),
-      _ => (recordSummary(l10n, locale, r), who),
+      _ => (recordSummary(l10n, locale, r), who ?? ''),
     };
     final minutes = (r.endedAt ?? r.occurredAt)
         .difference(r.occurredAt)
@@ -1132,10 +1344,11 @@ class _TimelineRow extends StatelessWidget {
             if (r.pending) PendingChip(label: l10n.pendingChip),
           ],
         ),
-        Text(
-          detail,
-          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-        ),
+        if (detail.isNotEmpty)
+          Text(
+            detail,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
         if (span) ...[
           const SizedBox(height: ClSpace.s1),
           // Duration bar, proportional up to 8 h.
@@ -2321,6 +2534,184 @@ class _DatePickerSheetState extends ConsumerState<_DatePickerSheet> {
           expand: true,
           onPressed: () => Navigator.of(context).pop(widget.today),
         ),
+      ],
+    );
+  }
+}
+
+/// The Thống kê timeline (owner, 2026-10-22): the chosen range day by day, newest first, each
+/// day headed by its totals (how many, how many ml, how many minutes), then the same rows as
+/// Lịch sử. The latest [expanded] days are open, older ones open on tap.
+class CareDaysTimeline extends ConsumerStatefulWidget {
+  const CareDaysTimeline({
+    required this.days,
+    required this.records,
+    required this.zone,
+    required this.now,
+    required this.types,
+    this.expanded = 3,
+    super.key,
+  });
+
+  /// Each day's bounds, oldest first (as the charts).
+  final List<({DateTime start, DateTime end})> days;
+  final List<CareRecord> records;
+  final String zone;
+  final DateTime now;
+  final Set<CareType> types;
+  final int expanded;
+
+  @override
+  ConsumerState<CareDaysTimeline> createState() => _CareDaysTimelineState();
+}
+
+class _CareDaysTimelineState extends ConsumerState<CareDaysTimeline> {
+  final _toggled = <DateTime>{};
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final myUid = ref.watch(selectedMembershipProvider)?.uid ?? '';
+    final zone = widget.zone;
+    final now = widget.now;
+    final matching = [
+      for (final r in widget.records)
+        if (widget.types.contains(r.type) && !r.deleted) r,
+    ];
+    final sleepStarts = [
+      for (final r in matching)
+        if (r.type == CareType.sleep) r.occurredAt,
+    ];
+    final cards = <Widget>[];
+    for (final (i, day) in widget.days.reversed.indexed) {
+      if (day.start.isAfter(now)) continue;
+      final entries = timelineOf(matching, zone, day.start, day.end);
+      final stats = _PeriodStats();
+      for (final e in entries) {
+        if (e.startedBefore) continue;
+        stats.add(e.record);
+        // A sleep running past midnight counts only its part of this day.
+        final end = e.record.endedAt;
+        if (e.record.type == CareType.sleep &&
+            end != null &&
+            end.isAfter(day.end)) {
+          stats.sleepMinutes -= end.difference(day.end).inMinutes;
+        }
+      }
+      // A sleep from the night before counts for the day it runs into, as the strip shows it.
+      for (final e in entries) {
+        if (e.startedBefore && e.record.type == CareType.sleep) {
+          stats.sleeps++;
+          stats.sleepMinutes += e.record.endedAt!
+              .difference(day.start)
+              .inMinutes;
+        }
+      }
+      final open = (i < widget.expanded) != _toggled.contains(day.start);
+      final d = inBabyZone(zone, day.start);
+      final isToday = day.end.isAfter(now);
+      final label = [
+        if (isToday) l10n.todayLabel,
+        '${weekdayShort(locale, d)} ${d.day}/${d.month}',
+      ].join(' · ');
+      final rows = open
+          ? [
+              for (final (_, _, _, row) in _timelineItems(
+                entries: entries,
+                timers: const [],
+                meals: const [],
+                zone: zone,
+                myUid: myUid,
+                now: now,
+                dayEnd: day.end,
+                laterSleeps: sleepStarts.where((t) => !t.isBefore(day.end)),
+              ))
+                row,
+            ]
+          : const <Widget>[];
+      cards.add(
+        Container(
+          key: Key('statsDay:${d.year}-${d.month}-${d.day}'),
+          margin: const EdgeInsets.only(bottom: ClSpace.s3),
+          padding: const EdgeInsets.fromLTRB(
+            ClSpace.s3,
+            ClSpace.s3,
+            ClSpace.s3,
+            ClSpace.s2,
+          ),
+          decoration: BoxDecoration(
+            color: cl.colors.surface,
+            borderRadius: BorderRadius.circular(ClRadius.card),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClPressable(
+                onPressed: entries.isEmpty
+                    ? null
+                    : () => setState(() {
+                        if (!_toggled.remove(day.start)) {
+                          _toggled.add(day.start);
+                        }
+                      }),
+                semanticLabel: label,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: Text(label, style: cl.text.headline),
+                          ),
+                        ),
+                        if (entries.isNotEmpty)
+                          ClIcon(
+                            open ? ClIcons.chevronDown : ClIcons.chevronRight,
+                            size: 18,
+                            color: cl.colors.inkMuted,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: ClSpace.s2),
+                    if (stats.empty)
+                      Text(
+                        l10n.dayNothingLogged,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      )
+                    else
+                      Text(
+                        _summaryLine(l10n, stats),
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (rows.isNotEmpty) ...[
+                const SizedBox(height: ClSpace.s2),
+                for (final (j, row) in rows.indexed)
+                  _Rail(last: j == rows.length - 1, child: row),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: ClSpace.s1, bottom: ClSpace.s3),
+          child: Text(l10n.dayStripsTitle, style: cl.text.title2),
+        ),
+        ...cards,
       ],
     );
   }

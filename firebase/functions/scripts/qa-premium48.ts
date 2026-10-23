@@ -15,17 +15,7 @@ const arg = process.argv.indexOf('--project');
 if (arg < 0 || process.argv[arg + 1] !== 'child-life-dev') throw new Error('Dev only');
 const project = 'child-life-dev';
 setDefaultResultOrder('ipv4first');
-const phase = process.argv.includes('--phase6')
-  ? 6
-  : process.argv.includes('--phase5')
-    ? 5
-    : process.argv.includes('--phase4')
-      ? 4
-      : process.argv.includes('--phase3')
-        ? 3
-        : process.argv.includes('--phase2')
-          ? 2
-          : 1;
+const phase = Number(process.argv.find((v) => /^--phase(?:[1-9]|1[0-2])$/.test(v))?.slice(7) ?? 1);
 const phase2 = phase >= 2;
 const phase6 = phase === 6;
 const phase5 = phase === 5;
@@ -44,7 +34,18 @@ const babyId = `test_p48_${suffix}`,
 const out = resolve(import.meta.dirname, `../../../artifacts/premium48-phase${phase}/dev-smoke`);
 mkdirSync(out, { recursive: true });
 const photoIds = Array.from(
-  { length: phase5 ? 8 : phase4 ? 7 : phase2 ? 10 : 5 },
+  {
+    length:
+      phase >= 7
+        ? ({ 7: 10, 8: 8, 9: 8, 10: 10, 11: 17, 12: 10 } as Record<number, number>)[phase]!
+        : phase5
+          ? 8
+          : phase4
+            ? 7
+            : phase2
+              ? 10
+              : 5,
+  },
   () => `med_${randomUUID().replaceAll('-', '')}`,
 );
 const source = resolve(
@@ -122,41 +123,46 @@ try {
   const token = execFileSync('gcloud', ['auth', 'print-identity-token'], {
     encoding: 'utf8',
   }).trim();
-  for (const [id, locale, format, mute] of phase2
+  for (const [id, locale, format, mute] of phase >= 7
     ? ([
-        [
-          phase6
-            ? 'video_premium48_11'
-            : phase5
-              ? 'video_premium48_09'
-              : phase4
-                ? 'video_premium48_07'
-                : phase3
-                  ? 'video_premium48_05'
-                  : 'video_premium48_03',
-          'vi',
-          'story',
-          false,
-        ],
-        [
-          phase6
-            ? 'video_premium48_12'
-            : phase5
-              ? 'video_premium48_10'
-              : phase4
-                ? 'video_premium48_08'
-                : phase3
-                  ? 'video_premium48_06'
-                  : 'video_premium48_04',
-          'en',
-          'portrait',
-          true,
-        ],
+        [`video_premium48_${phase * 2 - 1}`, 'vi', 'story', false],
+        [`video_premium48_${phase * 2}`, 'en', 'portrait', true],
       ] as const)
-    : ([
-        ['video_premium48_01', 'vi', 'story', false],
-        ['video_premium48_02', 'en', 'portrait', true],
-      ] as const)) {
+    : phase2
+      ? ([
+          [
+            phase6
+              ? 'video_premium48_11'
+              : phase5
+                ? 'video_premium48_09'
+                : phase4
+                  ? 'video_premium48_07'
+                  : phase3
+                    ? 'video_premium48_05'
+                    : 'video_premium48_03',
+            'vi',
+            'story',
+            false,
+          ],
+          [
+            phase6
+              ? 'video_premium48_12'
+              : phase5
+                ? 'video_premium48_10'
+                : phase4
+                  ? 'video_premium48_08'
+                  : phase3
+                    ? 'video_premium48_06'
+                    : 'video_premium48_04',
+            'en',
+            'portrait',
+            true,
+          ],
+        ] as const)
+      : ([
+          ['video_premium48_01', 'vi', 'story', false],
+          ['video_premium48_02', 'en', 'portrait', true],
+        ] as const)) {
     const template = catalog.templates.find((t) => t.id === id)!;
     const before = Date.now();
     console.log('Starting dev render', id, locale, format, mute ? 'muted' : 'default music');
@@ -180,66 +186,96 @@ try {
         babyId,
         templateId: id,
         templateVersion: template.version,
-        mediaIds: photoIds.slice(
-          phase2 &&
-            id.endsWith(phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04')
-            ? 5
-            : 0,
-          phase2 &&
-            id.endsWith(phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04')
-            ? phase6
-              ? 10
-              : phase5
-                ? 8
-                : phase4
-                  ? 7
-                  : 10
-            : template.photos.max,
-        ),
+        mediaIds:
+          phase >= 7
+            ? photoIds.filter((_, i) =>
+                (licence[i] as { file: string; templates?: string[] }).templates?.includes(
+                  `V${id.slice(-2)}`,
+                ),
+              )
+            : photoIds.slice(
+                phase2 &&
+                  id.endsWith(
+                    phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04',
+                  )
+                  ? 5
+                  : 0,
+                phase2 &&
+                  id.endsWith(
+                    phase6 ? '_12' : phase5 ? '_10' : phase4 ? '_08' : phase3 ? '_06' : '_04',
+                  )
+                  ? phase6
+                    ? 10
+                    : phase5
+                      ? 8
+                      : phase4
+                        ? 7
+                        : 10
+                  : template.photos.max,
+              ),
         texts: { title: '', message: '' },
         locale,
         audience: 'parents',
         occasion: null,
         ...(mute ? { musicId: null } : {}),
         presentation: {
-          values: Object.fromEntries(
-            template.personalization!.fields.map((f) => [
-              f.key,
-              phase6 && f.key === 'milestoneName'
-                ? locale === 'vi'
-                  ? 'những bước nhỏ'
-                  : 'little steps'
-                : phase6 && f.key === 'momentPhotoConfirmed'
-                  ? 'true'
-                  : phase5 && f.key === 'itemName'
-                    ? locale === 'vi'
-                      ? 'áo cotton'
-                      : 'cotton outfit'
-                    : phase5 && f.key === 'outgrownConfirmed'
-                      ? 'true'
-                      : f.key === 'thenDate'
-                        ? '2026-07-01'
-                        : f.key === 'nowDate'
-                          ? '2026-10-01'
-                          : f.type === 'month'
-                            ? '01'
-                            : f.key === 'babyName'
-                              ? phase6
-                                ? id.endsWith('_12')
-                                  ? 'Emma'
-                                  : 'Oliver'
-                                : phase5
-                                  ? id.endsWith('_10')
-                                    ? 'Lily'
-                                    : 'Noah'
-                                  : 'QA sample'
-                              : f.type === 'date'
-                                ? '2026-09-20'
-                                : f.type === 'confirmation'
-                                  ? 'false'
-                                  : '',
-            ]),
-          ),
+          values:
+            phase >= 7
+              ? {
+                  ...JSON.parse(
+                    readFileSync(
+                      resolve(
+                        import.meta.dirname,
+                        `../../../artifacts/premium48-phase${phase}/templates.json`,
+                      ),
+                      'utf8',
+                    ),
+                  ).demos[id][locale],
+                  momentDate: '2026-10-22',
+                  ...(id.endsWith('_19') ? { hundredConfirmed: 'true' } : {}),
+                  ...(id.endsWith('_22') ? { monthsConfirmed: 'true' } : {}),
+                  ...(id.endsWith('_20')
+                    ? { celebrationTheme: 'tet', occasionName: 'Lunar New Year' }
+                    : {}),
+                }
+              : Object.fromEntries(
+                  template.personalization!.fields.map((f) => [
+                    f.key,
+                    phase6 && f.key === 'milestoneName'
+                      ? locale === 'vi'
+                        ? 'những bước nhỏ'
+                        : 'little steps'
+                      : phase6 && f.key === 'momentPhotoConfirmed'
+                        ? 'true'
+                        : phase5 && f.key === 'itemName'
+                          ? locale === 'vi'
+                            ? 'áo cotton'
+                            : 'cotton outfit'
+                          : phase5 && f.key === 'outgrownConfirmed'
+                            ? 'true'
+                            : f.key === 'thenDate'
+                              ? '2026-07-01'
+                              : f.key === 'nowDate'
+                                ? '2026-10-01'
+                                : f.type === 'month'
+                                  ? '01'
+                                  : f.key === 'babyName'
+                                    ? phase6
+                                      ? id.endsWith('_12')
+                                        ? 'Emma'
+                                        : 'Oliver'
+                                      : phase5
+                                        ? id.endsWith('_10')
+                                          ? 'Lily'
+                                          : 'Noah'
+                                        : 'QA sample'
+                                    : f.type === 'date'
+                                      ? '2026-09-20'
+                                      : f.type === 'confirmation'
+                                        ? 'false'
+                                        : '',
+                  ]),
+                ),
           overrides: {},
           crops: Array.from({ length: template.personalization!.beats.length }, () => ({
             x: 0,

@@ -62,6 +62,11 @@ class OwnRhythmCard extends ConsumerWidget {
           )
         : null;
     final sparse = summary?.result.status == SleepStatus.insufficientData;
+    final noted =
+        canRead &&
+        (ref.watch(checkInsProvider(me.babyId)).value ?? const <CheckIn>[]).any(
+          (c) => c.date == today && c.authorUid == me.uid,
+        );
 
     return RhCard(
       child: Column(
@@ -105,11 +110,20 @@ class OwnRhythmCard extends ConsumerWidget {
           ],
           if (canCheckIn) ...[
             const SizedBox(height: ClSpace.s4),
-            ClButton(
-              label: l10n.rhRecordToday,
-              expand: true,
-              onPressed: () => context.push(Routes.rhythmCheckIn),
-            ),
+            // Owner, 2026-10-22: once this person noted today, the button says so and edits.
+            if (noted)
+              ClButton(
+                label: l10n.rhEditToday,
+                expand: true,
+                style: ClButtonStyle.secondary,
+                onPressed: () => context.push(Routes.rhythmCheckIn),
+              )
+            else
+              ClButton(
+                label: l10n.rhRecordToday,
+                expand: true,
+                onPressed: () => context.push(Routes.rhythmCheckIn),
+              ),
           ],
         ],
       ),
@@ -161,54 +175,77 @@ class RecentCheckIns extends ConsumerWidget {
       );
     }
     var anyMixed = false;
-    final rows = <Widget>[];
+    // Owner, 2026-10-22: the same note by the same person on several days is one line with
+    // its days ("Như mọi ngày · Hôm nay, 21/10, 16/10"), not three identical rows.
+    final groups =
+        <(String, String), ({CheckIn first, List<String> dates, bool mixed})>{};
     for (final date in dates) {
       final day = byDay[date]!;
       final mixed = observationStateOf(day) == ObservationState.mixed;
       anyMixed |= mixed;
-      for (final (i, c) in day.indexed) {
-        final m = members.where((x) => x.uid == c.authorUid).firstOrNull;
-        final who = capitalized(
-          memberLabel(l10n, m, myUid: me.uid, uid: c.authorUid),
-        );
-        // The avatar shows the family label (Mẹ, Ba, Cô Lan), also for me.
-        final initial = memberLabel(l10n, m, myUid: '', uid: c.authorUid);
-        final when = c.date == today
-            ? l10n.rhSinceToday
-            : shortDay(locale, c.date);
-        rows.add(
-          Padding(
-            padding: const EdgeInsets.only(bottom: ClSpace.s2),
-            child: Row(
-              children: [
-                RhInitial(initial),
-                const SizedBox(width: ClSpace.s3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        checkInParts(l10n, c).join(' · '),
-                        style: cl.text.label.copyWith(
-                          color: cl.colors.ink,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        l10n.rhWhoDay(who, when),
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (mixed && i == 0) RhPill(label: l10n.rhMixedDay),
-              ],
-            ),
-          ),
-        );
+      for (final c in day) {
+        final key = (checkInParts(l10n, c).join(' · '), c.authorUid);
+        final g = groups[key];
+        groups[key] = g == null
+            ? (first: c, dates: [date], mixed: mixed)
+            : (
+                first: g.first,
+                dates: [...g.dates, date],
+                mixed: g.mixed || mixed,
+              );
       }
+    }
+    final rows = <Widget>[];
+    // "Ghi khác nhau" once per mixed day, on the first line that has that day.
+    final labelled = <String>{};
+    for (final MapEntry(key: (text, uid), value: g) in groups.entries) {
+      final mixedHere =
+          g.mixed &&
+          g.dates.any(
+            (d) =>
+                observationStateOf(byDay[d]!) == ObservationState.mixed &&
+                labelled.add(d),
+          );
+      final m = members.where((x) => x.uid == uid).firstOrNull;
+      final who = capitalized(memberLabel(l10n, m, myUid: me.uid, uid: uid));
+      // The avatar shows the family label (Mẹ, Ba, Cô Lan), also for me.
+      final initial = memberLabel(l10n, m, myUid: '', uid: uid);
+      final when = [
+        for (final d in g.dates)
+          d == today ? l10n.rhSinceToday : shortDay(locale, d),
+      ].join(', ');
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: ClSpace.s2),
+          child: Row(
+            children: [
+              RhInitial(initial),
+              const SizedBox(width: ClSpace.s3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: cl.text.label.copyWith(
+                        color: cl.colors.ink,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      l10n.rhWhoDay(who, when),
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (mixedHere) RhPill(label: l10n.rhMixedDay),
+            ],
+          ),
+        ),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +289,13 @@ class SleepFactsBlock extends StatelessWidget {
     if (r.status == SleepStatus.insufficientData) {
       const rules = defaultRhythmRules;
       final baselineShort = r.validBaselineDays < rules.baselineMinDays;
-      final filled = math.min(r.validBaselineDays, rules.baselineMinDays);
+      // The bars count what the sentence asks for: the reference days while those are short,
+      // else the recent days (owner, 2026-10-22: full bars beside "chưa đủ" contradicted it).
+      final need = baselineShort ? rules.baselineMinDays : rules.recentMinDays;
+      final filled = math.min(
+        baselineShort ? r.validBaselineDays : r.validRecentDays,
+        need,
+      );
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(ClSpace.s3),
@@ -269,10 +312,10 @@ class SleepFactsBlock extends StatelessWidget {
             ),
             const SizedBox(height: ClSpace.s2),
             Semantics(
-              label: '$filled/${rules.baselineMinDays}',
+              label: '$filled/$need',
               child: Row(
                 children: [
-                  for (var i = 0; i < rules.baselineMinDays; i++) ...[
+                  for (var i = 0; i < need; i++) ...[
                     if (i > 0) const SizedBox(width: 4),
                     Expanded(
                       child: Container(

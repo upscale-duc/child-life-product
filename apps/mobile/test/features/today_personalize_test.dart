@@ -583,7 +583,7 @@ void main() {
         ),
       );
       // Week of life 4 = three completed weeks (Teddy is 21 days old on 8/10).
-      expect(find.text('Tuần thứ 4 · 3 tuần tuổi'), findsOneWidget);
+      expect(find.text('3 tuần tuổi'), findsOneWidget);
       expect(
         find.text('Bé bắt đầu nhìn theo mặt người khi được bế gần'),
         findsOneWidget,
@@ -644,20 +644,20 @@ void main() {
       expect(find.byKey(const Key('forBabyWeekSummary')), findsOneWidget);
     });
 
-    test('numbering: "Tuần thứ N" is completed weeks + 1, "tuần tuổi" '
-        'completed weeks only', () {
+    test('the kicker is the age alone, weeks with their extra days '
+        '(owner 2026-10-22)', () {
       final vi = lookupAppLocalizations(const Locale('vi'));
       final dob = DateTime(2026, 9, 17);
       String? k(DateTime today) => weekKicker(vi, dob: dob, today: today);
-      expect(k(DateTime(2026, 9, 17)), 'Tuần thứ 1 · mới chào đời');
-      expect(k(DateTime(2026, 9, 22)), 'Tuần thứ 1 · 5 ngày tuổi');
-      expect(k(DateTime(2026, 10, 1)), 'Tuần thứ 3 · 2 tuần tuổi');
-      expect(k(DateTime(2026, 10, 7)), 'Tuần thứ 3 · 2 tuần tuổi');
-      expect(k(DateTime(2026, 10, 8)), 'Tuần thứ 4 · 3 tuần tuổi');
-      expect(k(DateTime(2026, 10, 21)), 'Tuần thứ 5 · 4 tuần tuổi');
+      expect(k(DateTime(2026, 9, 17)), 'mới chào đời');
+      expect(k(DateTime(2026, 9, 22)), '5 ngày tuổi');
+      expect(k(DateTime(2026, 10, 1)), '2 tuần tuổi');
+      expect(k(DateTime(2026, 10, 7)), '2 tuần 6 ngày tuổi');
+      expect(k(DateTime(2026, 10, 8)), '3 tuần tuổi');
+      expect(k(DateTime(2026, 10, 24)), '5 tuần 2 ngày tuổi');
       // From 13 weeks, months, as the age chip and the content say it.
-      expect(k(DateTime(2026, 12, 17)), 'Tháng thứ 4 · 3 tháng tuổi');
-      expect(k(DateTime(2027, 1, 30)), 'Tháng thứ 5 · 4 tháng tuổi');
+      expect(k(DateTime(2026, 12, 17)), '3 tháng tuổi');
+      expect(k(DateTime(2027, 1, 30)), '4 tháng tuổi');
       expect(k(DateTime(2026, 9, 1)), isNull);
       // Without the date of birth (caregivers): from the age card's range.
       AgeCard card(int from, int to) => AgeCard(

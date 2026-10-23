@@ -1,0 +1,2252 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_13",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Tên người trong ảnh (tùy chọn)",
+              "en": "Name of the person pictured (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "cuddleConfirmed",
+            "label": {
+              "vi": "Ảnh ghi lại cái ôm",
+              "en": "The photos show cuddles"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "sleepConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba ghi lại bé ngủ",
+              "en": "Photo three shows baby sleeping"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Con và {narratorName}.",
+              "en": "You and {narratorName}."
+            },
+            "requires": [
+              "narratorName"
+            ],
+            "fallback": {
+              "vi": "Những vòng tay thương con.",
+              "en": "Held with love."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Có những cái ôm chẳng cần lời.",
+              "en": "Some cuddles need no words."
+            },
+            "requires": [
+              "cuddleConfirmed"
+            ],
+            "fallback": {
+              "vi": "Có những yêu thương chẳng cần lời.",
+              "en": "Some kinds of love need no words."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Một góc bình yên của nhà mình.",
+              "en": "A little place of comfort, together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Trong vòng tay yêu thương",
+        "en": "Held With Love"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 14,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-margin_b6d8d817.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.075,
+              "y": 0.26,
+              "w": 0.53,
+              "h": 0.42
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-oval_cd5493c4.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.254,
+              "w": 0.546,
+              "h": 0.432
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.65,
+              "y": 0.46,
+              "w": 0.275,
+              "h": 0.245
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-oval_cd5493c4.webp",
+            "rect": {
+              "x": 0.642,
+              "y": 0.454,
+              "w": 0.29100000000000004,
+              "h": 0.257
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-embrace_0eb83b2d.webp",
+            "rect": {
+              "x": 0.08,
+              "y": 0.715,
+              "w": 0.82,
+              "h": 0.045
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-margin_b6d8d817.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.075,
+              "y": 0.255,
+              "w": 0.53,
+              "h": 0.31
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-oval_cd5493c4.webp",
+            "rect": {
+              "x": 0.067,
+              "y": 0.249,
+              "w": 0.546,
+              "h": 0.322
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.65,
+              "y": 0.39,
+              "w": 0.275,
+              "h": 0.19
+            },
+            "shape": "circle",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-oval_cd5493c4.webp",
+            "rect": {
+              "x": 0.642,
+              "y": 0.384,
+              "w": 0.29100000000000004,
+              "h": 0.202
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-held-embrace_0eb83b2d.webp",
+            "rect": {
+              "x": 0.08,
+              "y": 0.61,
+              "w": 0.82,
+              "h": 0.045
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "heldFrame": "art-p48-held-frame_b8ab7d62.webp",
+        "heldOval": "art-p48-held-oval_cd5493c4.webp",
+        "heldMargin": "art-p48-held-margin_b6d8d817.webp",
+        "heldLabel": "art-p48-held-label_acbfd899.webp",
+        "heldClosing": "art-p48-held-closing_0682fb65.webp",
+        "heldEmbrace": "art-p48-held-embrace_0eb83b2d.webp",
+        "heldRibbon": "art-p48-held-ribbon_0e44e09d.webp",
+        "heldNested": "art-p48-held-nested_d25efde1.webp",
+        "heldNameplate": "art-p48-held-nameplate_85855d14.webp",
+        "heldFold": "art-p48-held-fold_79438f4b.webp"
+      },
+      "photos": {
+        "min": 2,
+        "max": 2
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#F5E8E1",
+        "ink": "#704C53",
+        "accent": "#AC7869"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_14",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "relativeName",
+            "label": {
+              "vi": "Tên người thân (tùy chọn)",
+              "en": "Relative’s name (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "handsConfirmed",
+            "label": {
+              "vi": "Ảnh cận ghi lại hai bàn tay",
+              "en": "The detail photo shows both hands"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "heldConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai là người thân bế bé",
+              "en": "Photo two shows your relative holding baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "meetingConfirmed",
+            "label": {
+              "vi": "Đây là ngày gặp nhau đã xác nhận",
+              "en": "This is a confirmed meeting day"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "{babyName} và {relativeName}.",
+              "en": "{babyName} and {relativeName}."
+            },
+            "requires": [
+              "relativeName"
+            ],
+            "fallback": {
+              "vi": "Những thế hệ bên con.",
+              "en": "Across generations, with you."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Một bàn tay nhỏ trong một bàn tay thân thương.",
+              "en": "A little hand, held by someone dear."
+            },
+            "requires": [
+              "handsConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một khoảnh khắc nhỏ bên người thân thương.",
+              "en": "A little moment with someone dear."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Thêm một thế hệ, thêm những ngày bên nhau.",
+              "en": "Another generation. New memories together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Con và ông bà",
+        "en": "Across Generations"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 15,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-margin_b6e21c0d.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.26,
+              "w": 0.55,
+              "h": 0.405
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-frame_9f5ff4dc.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.254,
+              "w": 0.5660000000000001,
+              "h": 0.41700000000000004
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.65,
+              "y": 0.42,
+              "w": 0.28,
+              "h": 0.25
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-frame_9f5ff4dc.webp",
+            "rect": {
+              "x": 0.642,
+              "y": 0.414,
+              "w": 0.29600000000000004,
+              "h": 0.262
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-branch_aa120d07.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.69,
+              "w": 0.83,
+              "h": 0.06
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-margin_b6e21c0d.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.26,
+              "w": 0.55,
+              "h": 0.305
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-frame_9f5ff4dc.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.254,
+              "w": 0.5660000000000001,
+              "h": 0.317
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.65,
+              "y": 0.42,
+              "w": 0.28,
+              "h": 0.2
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-frame_9f5ff4dc.webp",
+            "rect": {
+              "x": 0.642,
+              "y": 0.414,
+              "w": 0.29600000000000004,
+              "h": 0.21200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-generations-branch_aa120d07.webp",
+            "rect": {
+              "x": 0.07,
+              "y": 0.61,
+              "w": 0.83,
+              "h": 0.06
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "generationsFrame": "art-p48-generations-frame_9f5ff4dc.webp",
+        "generationsOval": "art-p48-generations-oval_a8c6ae48.webp",
+        "generationsMargin": "art-p48-generations-margin_b6e21c0d.webp",
+        "generationsLabel": "art-p48-generations-label_6733cb32.webp",
+        "generationsClosing": "art-p48-generations-closing_65f458ae.webp",
+        "generationsBranch": "art-p48-generations-branch_aa120d07.webp",
+        "generationsConnection": "art-p48-generations-connection_4d0029dd.webp",
+        "generationsDoubleframe": "art-p48-generations-doubleframe_482b3ba8.webp",
+        "generationsArchive": "art-p48-generations-archive_4b304134.webp",
+        "generationsSeal": "art-p48-generations-seal_bc172ca9.webp"
+      },
+      "photos": {
+        "min": 2,
+        "max": 2
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#F2E5CF",
+        "ink": "#625A42",
+        "accent": "#AA705D"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_13",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Tên người trong ảnh (tùy chọn)",
+              "en": "Name of the person pictured (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "cuddleConfirmed",
+            "label": {
+              "vi": "Ảnh ghi lại cái ôm",
+              "en": "The photos show cuddles"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "sleepConfirmed",
+            "label": {
+              "vi": "Ảnh thứ ba ghi lại bé ngủ",
+              "en": "Photo three shows baby sleeping"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Con ở đây.",
+              "en": "Here you are."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Trong vòng tay {narratorName}.",
+              "en": "In {narratorName}’s arms."
+            },
+            "requires": [
+              "narratorName",
+              "cuddleConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những vòng tay thương con.",
+              "en": "Held with love."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Có lúc là một giấc ngủ.",
+              "en": "Sometimes, drifting off to sleep."
+            },
+            "requires": [
+              "sleepConfirmed"
+            ],
+            "fallback": {
+              "vi": "Có lúc chỉ là một khoảng lặng.",
+              "en": "Sometimes, a quiet little pause."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Có lúc chỉ là ngồi bên nhau.",
+              "en": "Sometimes, simply being together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Những cái ôm làm nên nhà mình.",
+              "en": "The cuddles that make us family."
+            },
+            "requires": [
+              "cuddleConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những khoảnh khắc làm nên nhà mình.",
+              "en": "The moments that make us family."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Trong vòng tay yêu thương",
+              "en": "Held With Love"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Trong vòng tay yêu thương",
+        "en": "Held With Love"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 14,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumHeldWithLove",
+      "assets": {
+        "heldFrame": "art-p48-held-frame_b8ab7d62.webp",
+        "heldOval": "art-p48-held-oval_cd5493c4.webp",
+        "heldMargin": "art-p48-held-margin_b6d8d817.webp",
+        "heldLabel": "art-p48-held-label_acbfd899.webp",
+        "heldClosing": "art-p48-held-closing_0682fb65.webp",
+        "heldEmbrace": "art-p48-held-embrace_0eb83b2d.webp",
+        "heldRibbon": "art-p48-held-ribbon_0e44e09d.webp",
+        "heldNested": "art-p48-held-nested_d25efde1.webp",
+        "heldNameplate": "art-p48-held-nameplate_85855d14.webp",
+        "heldFold": "art-p48-held-fold_79438f4b.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Trong vòng tay yêu thương",
+            "en": "Photo 1 · held"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Trong vòng tay yêu thương",
+            "en": "Photo 2 · held"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Trong vòng tay yêu thương",
+            "en": "Photo 3 · held"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Trong vòng tay yêu thương",
+            "en": "Photo 4 · held"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Trong vòng tay yêu thương",
+            "en": "Photo 5 · held"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#F5E8E1",
+        "ink": "#704C53",
+        "accent": "#AC7869"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_held",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_14",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Gia đình",
+          "en": "You & Your People"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "relativeName",
+            "label": {
+              "vi": "Tên người thân (tùy chọn)",
+              "en": "Relative’s name (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "handsConfirmed",
+            "label": {
+              "vi": "Ảnh cận ghi lại hai bàn tay",
+              "en": "The detail photo shows both hands"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "heldConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai là người thân bế bé",
+              "en": "Photo two shows your relative holding baby"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          },
+          {
+            "key": "meetingConfirmed",
+            "label": {
+              "vi": "Đây là ngày gặp nhau đã xác nhận",
+              "en": "This is a confirmed meeting day"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Có những người đã chờ được gặp con.",
+              "en": "Someone had been waiting to meet you."
+            },
+            "requires": [
+              "meetingConfirmed"
+            ],
+            "fallback": {
+              "vi": "Có những người thương con thật nhiều.",
+              "en": "Someone who holds you dear."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Hôm nay, con ở trong vòng tay ấy.",
+              "en": "Today, you were finally in those arms."
+            },
+            "requires": [
+              "heldConfirmed",
+              "meetingConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một khoảnh khắc gần nhau.",
+              "en": "A little moment together."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Một bàn tay nhỏ, một bàn tay thân quen.",
+              "en": "A tiny hand, held by a familiar one."
+            },
+            "requires": [
+              "handsConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một chi tiết nhỏ để giữ lại.",
+              "en": "A little detail to keep."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Những câu chuyện mới bắt đầu nối tiếp.",
+              "en": "New stories joining the old."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Con và {relativeName}.",
+              "en": "You and {relativeName}."
+            },
+            "requires": [
+              "relativeName"
+            ],
+            "fallback": {
+              "vi": "Những kỷ niệm nối tiếp.",
+              "en": "Memories across generations."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Con và ông bà",
+              "en": "Across Generations"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Con và ông bà",
+        "en": "Across Generations"
+      },
+      "description": {
+        "vi": "Gia đình",
+        "en": "You & Your People"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 15,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumAcrossGenerations",
+      "assets": {
+        "generationsFrame": "art-p48-generations-frame_9f5ff4dc.webp",
+        "generationsOval": "art-p48-generations-oval_a8c6ae48.webp",
+        "generationsMargin": "art-p48-generations-margin_b6e21c0d.webp",
+        "generationsLabel": "art-p48-generations-label_6733cb32.webp",
+        "generationsClosing": "art-p48-generations-closing_65f458ae.webp",
+        "generationsBranch": "art-p48-generations-branch_aa120d07.webp",
+        "generationsConnection": "art-p48-generations-connection_4d0029dd.webp",
+        "generationsDoubleframe": "art-p48-generations-doubleframe_482b3ba8.webp",
+        "generationsArchive": "art-p48-generations-archive_4b304134.webp",
+        "generationsSeal": "art-p48-generations-seal_bc172ca9.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Con và ông bà",
+            "en": "Photo 1 · generations"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Con và ông bà",
+            "en": "Photo 2 · generations"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Con và ông bà",
+            "en": "Photo 3 · generations"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Con và ông bà",
+            "en": "Photo 4 · generations"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Con và ông bà",
+            "en": "Photo 5 · generations"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#F2E5CF",
+        "ink": "#625A42",
+        "accent": "#AA705D"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_generations",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "card_premium48_13",
+      "locale": "vi",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "title": "Những vòng tay thương con.",
+        "message": "Có những yêu thương chẳng cần lời.",
+        "detail0": "Một góc bình yên của nhà mình.",
+        "signature": "Henry",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_13",
+      "locale": "vi",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "2026-10-22",
+        "narratorName": "Alex",
+        "cuddleConfirmed": "true",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "title": "Con và Alex.",
+        "message": "Có những cái ôm chẳng cần lời.",
+        "detail0": "Một góc bình yên của nhà mình.",
+        "signature": "Henry",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_13",
+      "locale": "en",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "title": "Held with love.",
+        "message": "Some kinds of love need no words.",
+        "detail0": "A little place of comfort, together.",
+        "signature": "Henry",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_13",
+      "locale": "en",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "2026-10-22",
+        "narratorName": "Alex",
+        "cuddleConfirmed": "true",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "title": "You and Alex.",
+        "message": "Some cuddles need no words.",
+        "detail0": "A little place of comfort, together.",
+        "signature": "Henry",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "card_premium48_14",
+      "locale": "vi",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "expected": {
+        "title": "Những thế hệ bên con.",
+        "message": "Một khoảnh khắc nhỏ bên người thân thương.",
+        "detail0": "Thêm một thế hệ, thêm những ngày bên nhau.",
+        "signature": "Grace",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_14",
+      "locale": "vi",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "2026-10-22",
+        "relativeName": "Rose",
+        "handsConfirmed": "true",
+        "heldConfirmed": "true",
+        "meetingConfirmed": "true"
+      },
+      "expected": {
+        "title": "Grace và Rose.",
+        "message": "Một bàn tay nhỏ trong một bàn tay thân thương.",
+        "detail0": "Thêm một thế hệ, thêm những ngày bên nhau.",
+        "signature": "Grace",
+        "label1": "22 tháng 10, 2026"
+      }
+    },
+    {
+      "id": "card_premium48_14",
+      "locale": "en",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "expected": {
+        "title": "Across generations, with you.",
+        "message": "A little moment with someone dear.",
+        "detail0": "Another generation. New memories together.",
+        "signature": "Grace",
+        "label1": ""
+      }
+    },
+    {
+      "id": "card_premium48_14",
+      "locale": "en",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "2026-10-22",
+        "relativeName": "Rose",
+        "handsConfirmed": "true",
+        "heldConfirmed": "true",
+        "meetingConfirmed": "true"
+      },
+      "expected": {
+        "title": "Grace and Rose.",
+        "message": "A little hand, held by someone dear.",
+        "detail0": "Another generation. New memories together.",
+        "signature": "Grace",
+        "label1": "22 October 2026"
+      }
+    },
+    {
+      "id": "video_premium48_13",
+      "locale": "vi",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Con ở đây.",
+        "scene2": "Những vòng tay thương con.",
+        "scene3": "Có lúc chỉ là một khoảng lặng.",
+        "scene4": "Có lúc chỉ là ngồi bên nhau.",
+        "scene5": "Những khoảnh khắc làm nên nhà mình.",
+        "signature": "Henry",
+        "label1": "",
+        "title": "Trong vòng tay yêu thương"
+      }
+    },
+    {
+      "id": "video_premium48_13",
+      "locale": "vi",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "2026-10-22",
+        "narratorName": "Alex",
+        "cuddleConfirmed": "true",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Con ở đây.",
+        "scene2": "Trong vòng tay Alex.",
+        "scene3": "Có lúc là một giấc ngủ.",
+        "scene4": "Có lúc chỉ là ngồi bên nhau.",
+        "scene5": "Những cái ôm làm nên nhà mình.",
+        "signature": "Henry",
+        "label1": "22 tháng 10, 2026",
+        "title": "Trong vòng tay yêu thương"
+      }
+    },
+    {
+      "id": "video_premium48_13",
+      "locale": "en",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Here you are.",
+        "scene2": "Held with love.",
+        "scene3": "Sometimes, a quiet little pause.",
+        "scene4": "Sometimes, simply being together.",
+        "scene5": "The moments that make us family.",
+        "signature": "Henry",
+        "label1": "",
+        "title": "Held With Love"
+      }
+    },
+    {
+      "id": "video_premium48_13",
+      "locale": "en",
+      "values": {
+        "babyName": "Henry",
+        "momentDate": "2026-10-22",
+        "narratorName": "Alex",
+        "cuddleConfirmed": "true",
+        "sleepConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Here you are.",
+        "scene2": "In Alex’s arms.",
+        "scene3": "Sometimes, drifting off to sleep.",
+        "scene4": "Sometimes, simply being together.",
+        "scene5": "The cuddles that make us family.",
+        "signature": "Henry",
+        "label1": "22 October 2026",
+        "title": "Held With Love"
+      }
+    },
+    {
+      "id": "video_premium48_14",
+      "locale": "vi",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Có những người thương con thật nhiều.",
+        "scene2": "Một khoảnh khắc gần nhau.",
+        "scene3": "Một chi tiết nhỏ để giữ lại.",
+        "scene4": "Những câu chuyện mới bắt đầu nối tiếp.",
+        "scene5": "Những kỷ niệm nối tiếp.",
+        "signature": "Grace",
+        "label1": "",
+        "title": "Con và ông bà"
+      }
+    },
+    {
+      "id": "video_premium48_14",
+      "locale": "vi",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "2026-10-22",
+        "relativeName": "Rose",
+        "handsConfirmed": "true",
+        "heldConfirmed": "true",
+        "meetingConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Có những người đã chờ được gặp con.",
+        "scene2": "Hôm nay, con ở trong vòng tay ấy.",
+        "scene3": "Một bàn tay nhỏ, một bàn tay thân quen.",
+        "scene4": "Những câu chuyện mới bắt đầu nối tiếp.",
+        "scene5": "Con và Rose.",
+        "signature": "Grace",
+        "label1": "22 tháng 10, 2026",
+        "title": "Con và ông bà"
+      }
+    },
+    {
+      "id": "video_premium48_14",
+      "locale": "en",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "expected": {
+        "scene1": "Someone who holds you dear.",
+        "scene2": "A little moment together.",
+        "scene3": "A little detail to keep.",
+        "scene4": "New stories joining the old.",
+        "scene5": "Memories across generations.",
+        "signature": "Grace",
+        "label1": "",
+        "title": "Across Generations"
+      }
+    },
+    {
+      "id": "video_premium48_14",
+      "locale": "en",
+      "values": {
+        "babyName": "Grace",
+        "momentDate": "2026-10-22",
+        "relativeName": "Rose",
+        "handsConfirmed": "true",
+        "heldConfirmed": "true",
+        "meetingConfirmed": "true"
+      },
+      "expected": {
+        "scene1": "Someone had been waiting to meet you.",
+        "scene2": "Today, you were finally in those arms.",
+        "scene3": "A tiny hand, held by a familiar one.",
+        "scene4": "New stories joining the old.",
+        "scene5": "You and Rose.",
+        "signature": "Grace",
+        "label1": "22 October 2026",
+        "title": "Across Generations"
+      }
+    }
+  ],
+  "demos": {
+    "card_premium48_13": {
+      "vi": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      }
+    },
+    "card_premium48_14": {
+      "vi": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      }
+    },
+    "video_premium48_13": {
+      "vi": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Henry",
+        "momentDate": "",
+        "narratorName": "",
+        "cuddleConfirmed": "false",
+        "sleepConfirmed": "false"
+      }
+    },
+    "video_premium48_14": {
+      "vi": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Grace",
+        "momentDate": "",
+        "relativeName": "",
+        "handsConfirmed": "false",
+        "heldConfirmed": "false",
+        "meetingConfirmed": "false"
+      }
+    }
+  }
+}

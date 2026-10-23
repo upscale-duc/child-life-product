@@ -196,6 +196,12 @@ sealed class KeepsakeLayer {
         if (rect == null || asset is! String) return null;
         return KeepsakeImage(
           asset: asset,
+          when: j['when'] is Map
+              ? (
+                  field: (j['when'] as Map)['field'] as String,
+                  equals: (j['when'] as Map)['equals'] as String,
+                )
+              : null,
           rect: rect,
           fit: switch (j['fit']) {
             'contain' => BoxFit.contain,
@@ -327,7 +333,9 @@ class KeepsakeImage extends KeepsakeLayer {
     required this.fit,
     required this.opacity,
     this.rotate = 0,
+    this.when,
   });
+  final ({String field, String equals})? when;
   final double rotate;
   final String asset;
   final KeepsakeRect rect;
@@ -420,7 +428,9 @@ class KeepsakePersonalField {
     this.required,
     this.source, [
     this.suggestion,
+    this.options = const [],
   ]);
+  final List<({String value, Localized label})> options;
   final Localized? suggestion;
   final String key, type;
   final Localized label;
@@ -490,6 +500,16 @@ class KeepsakePersonalization {
               f['required'] == true,
               f['source'] as String?,
               Localized.fromJson(f['suggestion']),
+              [
+                for (final o in f['options'] as List? ?? [])
+                  if (o is Map &&
+                      o['value'] is String &&
+                      Localized.fromJson(o['label']) != null)
+                    (
+                      value: o['value'] as String,
+                      label: Localized.fromJson(o['label'])!,
+                    ),
+              ],
             ),
       ],
       copy: [

@@ -1,7 +1,9 @@
 import 'package:child_life/features/nutrition/nutrition_state.dart';
+import 'package:child_life/features/rhythm/personal_day_pages.dart';
 import 'package:child_life/features/rhythm/personalization_sources.dart';
 import 'package:child_life/features/rhythm/personalization_v2_repository.dart';
 import 'package:child_life/features/rhythm/personalization_v2_screen.dart';
+import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/today/today_for_baby.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +71,27 @@ class _WorkCards extends ConsumerWidget {
   }
 }
 
+/// Home's personal card with the first idea as its primary.
+class _IdeaHome extends ConsumerWidget {
+  const _IdeaHome();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cards = ref
+        .watch(
+          personalizedSourceCardsProvider((
+            babyId: teddyId,
+            uid: mai.uid,
+            languageCode: 'vi',
+          )),
+        )
+        .where((c) => c.id.startsWith('act_'))
+        .toList();
+    return Scaffold(
+      body: ListView(children: [PersonalDayHome(primary: cards.firstOrNull)]),
+    );
+  }
+}
+
 void main() {
   final l = lookupAppLocalizations(const Locale('vi'));
   // rhythmNow is 2026-10-08 10:00 in Hà Nội; the snapshot expires at the next midnight.
@@ -129,14 +152,30 @@ void main() {
           personalization: api,
         ),
       );
+      // Each choice says what it does to the ideas.
+      expect(find.text(l.pv2BusyHint), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(l.pv2Busy), 200);
       await tester.tap(find.text(l.pv2Busy));
       await tester.pumpAndSettle();
       expect(api.actions.single, {'kind': 'context', 'value': 'busy'});
-      await tester.scrollUntilVisible(find.text(l.pv2Insufficient), 350);
-      expect(find.text(l.pv2Insufficient), findsOneWidget);
-      expect(find.textContaining('120–'), findsNothing);
+      expect(find.text(l.pv2ToastContext(l.pv2Busy)), findsOneWidget);
+      expect(find.text(l.pv2PatternsNone), findsOneWidget);
     },
   );
+  testWidgets('the rhythm page shows no invented pattern', (tester) async {
+    await pumpRouted(
+      tester,
+      const PersonalPatternsScreen(),
+      overrides: rhythmOverrides(
+        repo: FakeRhythmRepository(),
+        personalDay: snapshot(),
+        personalization: FakePersonalization(),
+      ),
+    );
+    expect(find.text(l.pv2Insufficient), findsOneWidget);
+    expect(find.textContaining('120–'), findsNothing);
+    expect(find.text(l.pv2Unusual), findsOneWidget);
+  });
   testWidgets(
     'helpful outcome remains available after a tried card leaves the feed',
     (tester) async {
@@ -159,10 +198,17 @@ void main() {
           personalization: api,
         ),
       );
-      await tester.scrollUntilVisible(find.text(l.pv2History), 350);
-      await tester.ensureVisible(find.byType(PopupMenuButton<String>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(PopupMenuButton<String>));
+      // The tried idea left today's list but stays under "Hôm nay bạn đã" with its time.
+      final row = find.byKey(Key('personalDone:${activity.id}'));
+      await tester.scrollUntilVisible(row, 200);
+      expect(
+        find.descendant(
+          of: row,
+          matching: find.textContaining(l.pv2StatusTried('09:00')),
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.text(l.pv2HowWasIt));
       await tester.pumpAndSettle();
       await tester.tap(find.text(l.pv2Helpful));
       await tester.pumpAndSettle();
@@ -171,8 +217,206 @@ void main() {
         'contentId': activity.id,
         'value': 'helpful',
       });
+      expect(find.text(l.pv2ToastOutcome), findsOneWidget);
     },
   );
+  testWidgets('the history page answers an attempt later', (tester) async {
+    final api = FakePersonalization();
+    final activity = rhythmContent().activities.first;
+    await pumpRouted(
+      tester,
+      const PersonalHistoryScreen(),
+      overrides: rhythmOverrides(
+        repo: FakeRhythmRepository(),
+        personalDay: snapshot({
+          'responses': {
+            activity.id: {
+              'value': 'tried',
+              'at': '2026-10-08T02:00:00Z',
+              'triedAt': '2026-10-08T02:00:00Z',
+              'until': '2026-10-08T17:00:00Z',
+              'saved': true,
+            },
+          },
+        }),
+        personalization: api,
+      ),
+    );
+    // The group heading, then the row's "Đã lưu" chip in both groups.
+    expect(find.text(l.pv2SavedNow), findsNWidgets(3));
+    expect(find.text(l.pv2TriedBefore), findsOneWidget);
+    await tester.tap(find.byType(PopupMenuButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.pv2Helpful));
+    await tester.pumpAndSettle();
+    expect(api.actions.single, {
+      'kind': 'respond',
+      'contentId': activity.id,
+      'value': 'helpful',
+    });
+  });
+  testWidgets(
+    'a planned idea says so on the screen and on Home after reopening (owner 2026-10-22)',
+    (tester) async {
+      final activity = rhythmContent().activities.first;
+      final day = snapshot({
+        'activityIds': [activity.id],
+        'responses': {
+          activity.id: {
+            'value': 'intend',
+            'at': '2026-10-08T02:00:00Z',
+            'intendedAt': '2026-10-08T02:00:00Z',
+            'saved': true,
+          },
+        },
+      });
+      await pumpRouted(
+        tester,
+        const PersonalizationDayScreen(),
+        overrides: rhythmOverrides(
+          repo: FakeRhythmRepository(),
+          personalDay: day,
+          personalization: FakePersonalization(),
+        ),
+      );
+      final card = find.byKey(Key('personalIdea:${activity.id}'));
+      // Chips, not a line to read: the plan (sunshine) and saved (bookmark).
+      for (final (kind, text) in [
+        ('intend', l.pv2StatusIntend('09:00')),
+        ('saved', l.pv2StatusSaved),
+      ]) {
+        final chip = find.descendant(
+          of: card,
+          matching: find.byKey(Key('personalChip:$kind')),
+        );
+        expect(
+          find.descendant(of: chip, matching: find.text(text)),
+          findsOneWidget,
+        );
+      }
+      // The next step is the primary button now, ahead of "Xem cách làm".
+      expect(
+        tester.getTopLeft(find.text(l.pv2Tried)).dx,
+        lessThan(tester.getTopLeft(find.text(l.pv2OpenActivity)).dx),
+      );
+      // The next step moved on: no second "Mình định thử".
+      expect(
+        find.descendant(of: card, matching: find.text(l.pv2Intend)),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: card, matching: find.text(l.pv2Tried)),
+        findsOneWidget,
+      );
+      expect(find.byTooltip(l.pv2Unsave), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'Home: the plan shows on the card, the next step moves on, today\'s time is a clear row',
+    (tester) async {
+      final api = FakePersonalization();
+      final ideas = rhythmContent().activities
+          .where((a) => a.status == ContentStatus.published)
+          .toList();
+      await pumpRouted(
+        tester,
+        const _IdeaHome(),
+        overrides: homeOverrides(
+          day: snapshot({
+            'activityIds': [ideas[0].id],
+            'responses': {
+              ideas[0].id: {
+                'value': 'intend',
+                'at': '2026-10-08T02:00:00Z',
+                'intendedAt': '2026-10-08T02:00:00Z',
+              },
+              ideas[1].id: {
+                'value': 'tried',
+                'at': '2026-10-08T01:00:00Z',
+                'triedAt': '2026-10-08T01:00:00Z',
+                'until': '2026-10-08T17:00:00Z',
+              },
+            },
+          }),
+          api: api,
+        ),
+      );
+      expect(find.text(l.pv2HomeKicker), findsOneWidget);
+      expect(find.text(l.pv2StatusIntend('09:00')), findsOneWidget);
+      expect(find.text(l.pv2Tried), findsOneWidget);
+      expect(find.text(l.pv2Intend), findsNothing);
+      // What was tried earlier today stays on Home, with its follow-up.
+      expect(
+        find.textContaining(ideas[1].title.of(const Locale('vi'))),
+        findsOneWidget,
+      );
+      expect(find.text(l.pv2HowWasIt), findsOneWidget);
+      expect(find.text(l.pv2Usual), findsOneWidget);
+      await tester.tap(find.byKey(const Key('personalDayContext')));
+      await tester.pumpAndSettle();
+      expect(find.text(l.pv2FewMinutesHint), findsOneWidget);
+      await tester.tap(find.text(l.pv2FewMinutes));
+      await tester.pumpAndSettle();
+      expect(api.actions.single, {'kind': 'context', 'value': 'few_minutes'});
+      expect(find.text(l.pv2ToastContext(l.pv2FewMinutes)), findsOneWidget);
+    },
+  );
+  testWidgets('a saved idea is unsaved from the same button, with undo', (
+    tester,
+  ) async {
+    final api = FakePersonalization();
+    final activity = rhythmContent().activities.first;
+    await pumpRouted(
+      tester,
+      const PersonalizationDayScreen(),
+      overrides: rhythmOverrides(
+        repo: FakeRhythmRepository(),
+        personalDay: snapshot({
+          'activityIds': [activity.id],
+          'responses': {
+            activity.id: {'value': 'save', 'saved': true},
+          },
+        }),
+        personalization: api,
+      ),
+    );
+    await tester.tap(find.byTooltip(l.pv2Unsave));
+    await tester.pumpAndSettle();
+    expect(find.text(l.pv2ToastUnsaved), findsOneWidget);
+    await tester.tap(find.text(l.pv2Undo));
+    await tester.pumpAndSettle();
+    expect(api.actions, [
+      {'kind': 'respond', 'contentId': activity.id, 'value': 'unsave'},
+      {'kind': 'respond', 'contentId': activity.id, 'value': 'save'},
+    ]);
+  });
+  testWidgets('hiding an idea can be undone from the toast', (tester) async {
+    final api = FakePersonalization();
+    final activity = rhythmContent().activities.first;
+    await pumpRouted(
+      tester,
+      const PersonalizationDayScreen(),
+      overrides: rhythmOverrides(
+        repo: FakeRhythmRepository(),
+        personalDay: snapshot({
+          'activityIds': [activity.id],
+        }),
+        personalization: api,
+      ),
+    );
+    await tester.tap(find.byTooltip(l.pv2Controls).first);
+    await tester.pumpAndSettle();
+    expect(find.text(l.pv2Restore), findsNothing);
+    await tester.tap(find.text(l.pv2Hide));
+    await tester.pumpAndSettle();
+    expect(find.text(l.pv2ToastHidden), findsOneWidget);
+    await tester.tap(find.text(l.pv2Undo));
+    await tester.pumpAndSettle();
+    expect(api.actions, [
+      {'kind': 'respond', 'contentId': activity.id, 'value': 'hide'},
+      {'kind': 'respond', 'contentId': activity.id, 'value': 'restore'},
+    ]);
+  });
   testWidgets(
     'a caregiver cannot see a control that excludes an activity for the whole baby',
     (tester) async {
@@ -191,12 +435,9 @@ void main() {
           personalization: FakePersonalization(),
         ),
       );
-      await tester.scrollUntilVisible(find.text(l.pv2Controls), 200);
-      await tester.ensureVisible(find.text(l.pv2Controls));
+      await tester.tap(find.byTooltip(l.pv2Controls).first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l.pv2Controls));
-      await tester.pumpAndSettle();
-      expect(find.text(l.pv2Save), findsOneWidget);
+      expect(find.text(l.pv2Hide), findsOneWidget);
       expect(find.text(l.pv2Exclude), findsNothing);
       expect(find.text(l.pv2Snooze), findsOneWidget);
     },
@@ -223,6 +464,7 @@ void main() {
         'contentId': 'work:rm_mine',
         'value': 'snooze',
       });
+      expect(find.text(l.pv2ToastWorkSnoozed), findsOneWidget);
       // The same × on the primary card of "Hôm nay của nhà mình".
       await tester.tap(find.byTooltip(l.pv2Controls));
       await tester.pumpAndSettle();
@@ -268,7 +510,9 @@ void main() {
       expect(find.text('Người khác chăm'), findsNothing);
       expect(find.text('Bàn giao dễ hơn'), findsNothing);
       expect(find.text(l.pv2Routine), findsNothing);
-      expect(find.text(l.pv2Play), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(l.pv2FocusToggle), 200);
+      expect(find.text(l.pv2FocusToggle), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(l.pv2OpenActivity), -200);
       await tester.scrollUntilVisible(find.text(l.pv2OpenActivity), 200);
       expect(find.text(l.pv2BecauseAge), findsOneWidget);
       expect(find.text(l.pv2BecauseInterest), findsNothing);

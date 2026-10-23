@@ -22,7 +22,7 @@ import 'care_calc.dart';
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
-import 'history_screen.dart' show weekdayShort;
+import 'history_screen.dart' show CareDaysTimeline, weekdayShort;
 import 'stacked_days_chart.dart';
 import '../solids/solids_calc.dart';
 import '../solids/solids_format.dart' show sdShortDate;
@@ -490,7 +490,7 @@ class FeedStatsScreen extends ConsumerWidget {
                 (l10n.durationMinutes(s.breastMinutesPerFeed), l10n.kpiPerFeed),
               ],
             }),
-          if (!today && s.days.isNotEmpty)
+          if (!today && s.days.isNotEmpty) ...[
             switch (kind) {
               FeedKind.all => _FeedsPerDayCard(
                 stats: s,
@@ -510,6 +510,7 @@ class FeedStatsScreen extends ConsumerWidget {
                 zone: zone,
               ),
             },
+          ],
           _Card(
             title: today ? l10n.nightAndToday : l10n.dayNightFeed,
             subtitle: today
@@ -722,6 +723,22 @@ class FeedStatsScreen extends ConsumerWidget {
             zone: zone,
             now: now,
           ),
+          // "Từng ngày" last (owner, 2026-10-22).
+          if (!today && s.days.isNotEmpty)
+            CareDaysTimeline(
+              days: [
+                for (final d in s.days)
+                  (start: d.start, end: d.start.add(const Duration(hours: 24))),
+              ],
+              records: records,
+              zone: zone,
+              now: now,
+              types: switch (kind) {
+                FeedKind.all => const {CareType.bottle, CareType.breast},
+                FeedKind.bottle => const {CareType.bottle},
+                FeedKind.breast => const {CareType.breast},
+              },
+            ),
         ];
       },
     );
@@ -1234,8 +1251,9 @@ class SleepStatsScreen extends ConsumerWidget {
             ),
             (compactDuration(l10n, s.longest), l10n.longestSleep),
           ]),
-          if (!today && s.rows.isNotEmpty)
+          if (!today && s.rows.isNotEmpty) ...[
             _SleepPerDayCard(stats: s, days: days, zone: zone),
+          ],
           _Card(
             title: l10n.dayNightSleep,
             subtitle: today
@@ -1345,6 +1363,17 @@ class SleepStatsScreen extends ConsumerWidget {
               ),
             ],
           ),
+          if (!today && s.rows.isNotEmpty)
+            CareDaysTimeline(
+              days: [
+                for (final r in s.rows)
+                  (start: r.start, end: r.start.add(const Duration(hours: 24))),
+              ],
+              records: records,
+              zone: zone,
+              now: now,
+              types: const {CareType.sleep},
+            ),
         ];
       },
     );

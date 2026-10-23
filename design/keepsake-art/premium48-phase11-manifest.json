@@ -1,0 +1,145 @@
+{
+  "phase": 11,
+  "assets": [
+    {
+      "name": "p48-adventure-frame",
+      "file": "p48-adventure-frame.svg",
+      "title": "Our First Little Adventure · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-oval",
+      "file": "p48-adventure-oval.svg",
+      "title": "Our First Little Adventure · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-margin",
+      "file": "p48-adventure-margin.svg",
+      "title": "Our First Little Adventure · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-label",
+      "file": "p48-adventure-label.svg",
+      "title": "Our First Little Adventure · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-closing",
+      "file": "p48-adventure-closing.svg",
+      "title": "Our First Little Adventure · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-route",
+      "file": "p48-adventure-route.svg",
+      "title": "Our First Little Adventure · route",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-tag",
+      "file": "p48-adventure-tag.svg",
+      "title": "Our First Little Adventure · tag",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-stamp",
+      "file": "p48-adventure-stamp.svg",
+      "title": "Our First Little Adventure · stamp",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-ticket",
+      "file": "p48-adventure-ticket.svg",
+      "title": "Our First Little Adventure · ticket",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-adventure-compass",
+      "file": "p48-adventure-compass.svg",
+      "title": "Our First Little Adventure · compass",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-frame",
+      "file": "p48-months-frame.svg",
+      "title": "Twelve Months of You · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-oval",
+      "file": "p48-months-oval.svg",
+      "title": "Twelve Months of You · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-margin",
+      "file": "p48-months-margin.svg",
+      "title": "Twelve Months of You · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-label",
+      "file": "p48-months-label.svg",
+      "title": "Twelve Months of You · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-closing",
+      "file": "p48-months-closing.svg",
+      "title": "Twelve Months of You · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-tabs",
+      "file": "p48-months-tabs.svg",
+      "title": "Twelve Months of You · tabs",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-grid",
+      "file": "p48-months-grid.svg",
+      "title": "Twelve Months of You · grid",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-spine",
+      "file": "p48-months-spine.svg",
+      "title": "Twelve Months of You · spine",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-seasons",
+      "file": "p48-months-seasons.svg",
+      "title": "Twelve Months of You · seasons",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-months-year",
+      "file": "p48-months-year.svg",
+      "title": "Twelve Months of You · year",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

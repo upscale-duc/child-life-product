@@ -115,6 +115,14 @@ describe('P-172 scoped, expiring personalization', () => {
     expect((await read('carer', new Date('2026-10-20T17:00:00Z'))).context).toBe('usual');
     expect((await read('carer', new Date('2026-10-25T17:00:00Z'))).focus).toBeNull();
   });
+  it('unsaves a saved idea and keeps the last answer (owner 2026-10-22)', async () => {
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'intend' });
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' });
+    expect((await read('carer')).responses.act_a).toMatchObject({ value: 'intend', saved: true });
+    await call('carer', { kind: 'respond', contentId: 'act_a', value: 'unsave' });
+    expect((await read('carer')).responses.act_a).toMatchObject({ value: 'intend', saved: false });
+    expect((await read('carer')).responses.act_a?.intendedAt).toBeTruthy();
+  });
   it('separates save, try and helpful; restores visibility without losing the outcome', async () => {
     await call('carer', { kind: 'respond', contentId: 'act_a', value: 'save' });
     expect(

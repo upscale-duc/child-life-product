@@ -53,7 +53,7 @@ void main() {
       expect(find.text(l10n.rhAgeHeading('Teddy')), findsOneWidget);
       // Week of life 4 (21 days: three completed weeks); the teaser is the age card's
       // first sentence and the card says what tapping does.
-      expect(find.text('Tuần thứ 4 · 3 tuần tuổi'), findsOneWidget);
+      expect(find.text('3 tuần tuổi'), findsOneWidget);
       expect(
         find.text(
           'Nhiều bé ở tuần này nhìn theo khuôn mặt ở gần và quay về phía giọng nói quen.',

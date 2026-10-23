@@ -18,6 +18,8 @@ import {
   premium48Phase4,
   premium48Phase5,
   premium48Phase6,
+  premium48FinalPhase,
+  premium48FinalDesigns,
   publicKeepsakeMusic,
   type KeepsakeMusic,
   type KeepsakeTemplate,
@@ -25,17 +27,8 @@ import {
 import { buildArt } from './keepsake-art.js';
 const at = process.argv.indexOf('--project');
 setDefaultResultOrder('ipv4first');
-const phase = process.argv.includes('--phase6')
-  ? 6
-  : process.argv.includes('--phase5')
-    ? 5
-    : process.argv.includes('--phase4')
-      ? 4
-      : process.argv.includes('--phase3')
-        ? 3
-        : process.argv.includes('--phase2')
-          ? 2
-          : 1;
+const phase = Number(process.argv.find((v) => /^--phase(?:[1-9]|1[0-2])$/.test(v))?.slice(7) ?? 1);
+const finalDesigns = premium48FinalDesigns.filter((d) => Math.ceil(d.n / 2) === phase);
 if (at < 0 || process.argv[at + 1] !== 'child-life-dev')
   throw new Error('Only --project child-life-dev is allowed');
 const project = 'child-life-dev',
@@ -48,6 +41,7 @@ if (phase >= 2) {
     probe: {
       streams: { codec_type: string; nb_frames?: string; width?: number; height?: number }[];
     };
+    id: string;
   }[];
   const photos = JSON.parse(readFileSync(join(out, 'photo-qa.json'), 'utf8')) as {
     count: number;
@@ -60,12 +54,21 @@ if (phase >= 2) {
         !q.probe.streams.some(
           (s) =>
             s.codec_type === 'video' &&
-            s.nb_frames === '1050' &&
+            s.nb_frames === (q.id === 'video_premium48_22' ? '1500' : '1050') &&
             s.width === 1080 &&
             (s.height === 1350 || s.height === 1920),
         ),
     ) ||
-    photos.count !== (phase === 6 ? 10 : phase === 5 ? 8 : phase === 4 ? 7 : 10) ||
+    photos.count !==
+      (phase >= 7
+        ? ({ 7: 10, 8: 8, 9: 8, 10: 10, 11: 17, 12: 10 } as Record<number, number>)[phase]
+        : phase === 6
+          ? 10
+          : phase === 5
+            ? 8
+            : phase === 4
+              ? 7
+              : 10) ||
     !photos.distinctFromExistingCatalog
   )
     throw new Error(`Phase ${phase} media/photo QA incomplete`);
@@ -136,109 +139,164 @@ async function upload(bytes: Buffer, name: string, ext: string, type: string) {
   return asset;
 }
 const assets: Record<string, string> = {};
-for (const a of (await buildArt()).filter((a) =>
-  phase === 6
-    ? /^p48-(milestone-|discover-|grain$)/.test(a.name)
-    : phase === 5
-      ? /^p48-(wardrobe-|smile-|grain$)/.test(a.name)
-      : phase === 4
-        ? /^p48-(chapter-|compare-|grain$)/.test(a.name)
-        : phase === 3
-          ? /^p48-(observe-|letter-|grain$)/.test(a.name)
-          : phase === 2
-            ? /^p48-(home-|scrap-|grain$)/.test(a.name)
-            : /^p48-(arrival-|embrace-|grain$)/.test(a.name),
+const phaseArt =
+  phase >= 7
+    ? (
+        JSON.parse(
+          readFileSync(
+            resolve(
+              import.meta.dirname,
+              `../../design/keepsake-art/premium48-phase${phase}-manifest.json`,
+            ),
+            'utf8',
+          ),
+        ).assets as { name: string }[]
+      ).map(({ name }) => {
+        const t = (
+          JSON.parse(readFileSync(join(out, 'templates.json'), 'utf8'))
+            .templates as KeepsakeTemplate[]
+        ).find((t) =>
+          Object.values(t.assets).some((v) => v.startsWith(`art-${name}`.slice(0, 40) + '_')),
+        )!;
+        const asset = Object.values(t.assets).find((v) =>
+          v.startsWith(`art-${name}`.slice(0, 40) + '_'),
+        )!;
+        return { name, bytes: readFileSync(join(out, asset)) };
+      })
+    : await buildArt();
+for (const a of phaseArt.filter((a) =>
+  phase >= 7
+    ? finalDesigns.some((d) => a.name.startsWith(`p48-${d.part}-`))
+    : phase === 6
+      ? /^p48-(milestone-|discover-|grain$)/.test(a.name)
+      : phase === 5
+        ? /^p48-(wardrobe-|smile-|grain$)/.test(a.name)
+        : phase === 4
+          ? /^p48-(chapter-|compare-|grain$)/.test(a.name)
+          : phase === 3
+            ? /^p48-(observe-|letter-|grain$)/.test(a.name)
+            : phase === 2
+              ? /^p48-(home-|scrap-|grain$)/.test(a.name)
+              : /^p48-(arrival-|embrace-|grain$)/.test(a.name),
 ))
   assets[a.name] = await upload(a.bytes, `art-${a.name}`, 'webp', 'image/webp');
 const music: KeepsakeMusic[] = [];
-for (const [part, vi, en, bpm] of phase === 6
-  ? ([
-      ['milestone', 'Từng bước của con', 'Your Little Steps', 96],
-      ['discover', 'Qua đôi mắt con', 'Through Your Eyes', 82],
-    ] as const)
-  : phase === 5
+for (const [part, vi, en, bpm] of phase >= 7
+  ? finalDesigns.flatMap((d) =>
+      (d.n === 20 ? ['neutral', 'tet', 'christmas'] : ['default']).map(
+        (variant) =>
+          [
+            `${d.part}${variant === 'default' ? '' : `_${variant}`}`,
+            `${d.music.vi}${variant === 'default' ? '' : ` · ${variant}`}`,
+            `${d.music.en}${variant === 'default' ? '' : ` · ${variant}`}`,
+            d.bpm,
+          ] as const,
+      ),
+    )
+  : phase === 6
     ? ([
-        ['wardrobe', 'Sợi chỉ ký ức', 'Threads to Remember', 70],
-        ['smile', 'Nắng trong nụ cười', 'Sunshine in Your Smile', 92],
+        ['milestone', 'Từng bước của con', 'Your Little Steps', 96],
+        ['discover', 'Qua đôi mắt con', 'Through Your Eyes', 82],
       ] as const)
-    : phase === 4
+    : phase === 5
       ? ([
-          ['chapter', 'Trang tháng', 'Monthly Pages', 88],
-          ['compare', 'Giữa hai khoảnh khắc', 'Between Two Moments', 72],
+          ['wardrobe', 'Sợi chỉ ký ức', 'Threads to Remember', 70],
+          ['smile', 'Nắng trong nụ cười', 'Sunshine in Your Smile', 92],
         ] as const)
-      : phase === 3
+      : phase === 4
         ? ([
-            ['observe', 'Những điều bé xíu', 'Tiny Little Things', 84],
-            ['letter', 'Thư gửi con', 'A Letter for You', 62],
+            ['chapter', 'Trang tháng', 'Monthly Pages', 88],
+            ['compare', 'Giữa hai khoảnh khắc', 'Between Two Moments', 72],
           ] as const)
-        : phase === 2
+        : phase === 3
           ? ([
-              ['home', 'Đường về nhà', 'The Way Home', 78],
-              ['month', 'Từng chút một', 'Little by Little', 76],
+              ['observe', 'Những điều bé xíu', 'Tiny Little Things', 84],
+              ['letter', 'Thư gửi con', 'A Letter for You', 62],
             ] as const)
-          : ([
-              ['arrival', 'Ngày con đến', 'The Day You Arrived', 68],
-              ['embrace', 'Vòng tay ấm', 'Held Close', 64],
-            ] as const))
+          : phase === 2
+            ? ([
+                ['home', 'Đường về nhà', 'The Way Home', 78],
+                ['month', 'Từng chút một', 'Little by Little', 76],
+              ] as const)
+            : ([
+                ['arrival', 'Ngày con đến', 'The Day You Arrived', 68],
+                ['embrace', 'Vòng tay ấm', 'Held Close', 64],
+              ] as const))
   music.push({
     id: `music_p48_${part}`,
     title: { vi, en },
     artist: 'Child Life',
     mood: 'emotional',
-    durationSec: 35,
+    durationSec: part === 'months' ? 50 : 35,
     asset: await upload(
-      readFileSync(join(out, `p48-${part}.m4a`)),
-      `p48-${part}`,
+      readFileSync(join(out, `p48-${part.replaceAll('_', '-')}.m4a`)),
+      `p48-${part.replaceAll('_', '-')}`,
       'm4a',
       'audio/mp4',
     ),
     licence: {
       kind: 'original',
       source: 'Child Life · original synthesized score',
-      reference: `apps/renderer/scripts/premium48${phase >= 2 ? `-phase${phase}` : ''}-music.mjs · ${bpm} BPM · 2026-10-21`,
+      reference: `apps/renderer/scripts/premium48${phase >= 7 ? '-final' : phase >= 2 ? `-phase${phase}` : ''}-music.mjs · ${bpm} BPM · 2026-10-22`,
       expiresOn: null,
     },
     status: 'published',
     order:
-      phase === 6
-        ? part === 'milestone'
-          ? 16
-          : 17
-        : phase === 5
-          ? part === 'wardrobe'
-            ? 14
-            : 15
-          : phase === 4
-            ? part === 'chapter'
-              ? 12
-              : 13
-            : phase === 3
-              ? part === 'observe'
-                ? 10
-                : 11
-              : phase === 2
-                ? part === 'home'
-                  ? 8
-                  : 9
-                : part === 'arrival'
-                  ? 6
-                  : 7,
+      phase >= 7
+        ? 18 +
+          premium48FinalDesigns.findIndex((d) => part === d.part || part.startsWith(d.part + '_')) +
+          (part.startsWith('celebrate_')
+            ? ['neutral', 'tet', 'christmas'].indexOf(part.slice(10))
+            : premium48FinalDesigns.findIndex((d) => d.part === part) > 7
+              ? 2
+              : 0)
+        : phase === 6
+          ? part === 'milestone'
+            ? 16
+            : 17
+          : phase === 5
+            ? part === 'wardrobe'
+              ? 14
+              : 15
+            : phase === 4
+              ? part === 'chapter'
+                ? 12
+                : 13
+              : phase === 3
+                ? part === 'observe'
+                  ? 10
+                  : 11
+                : phase === 2
+                  ? part === 'home'
+                    ? 8
+                    : 9
+                  : part === 'arrival'
+                    ? 6
+                    : 7,
   });
 const added: KeepsakeTemplate[] =
-  phase === 6
-    ? premium48Phase6(assets, { milestone: music[0]!.id, discover: music[1]!.id })
-    : phase === 5
-      ? premium48Phase5(assets, { wardrobe: music[0]!.id, smile: music[1]!.id })
-      : phase === 4
-        ? premium48Phase4(assets, { chapter: music[0]!.id, compare: music[1]!.id })
-        : phase === 3
-          ? premium48Phase3(assets, { observe: music[0]!.id, letter: music[1]!.id })
-          : phase === 2
-            ? premium48Phase2(assets, { home: music[0]!.id, month: music[1]!.id })
-            : premium48Phase1(assets, {
-                arrival: music[0]!.id,
-                embrace: music[1]!.id,
-              });
+  phase >= 7
+    ? premium48FinalPhase(
+        phase,
+        assets,
+        Object.fromEntries(
+          finalDesigns.map((d) => [d.part, `music_p48_${d.part}${d.n === 20 ? '_neutral' : ''}`]),
+        ),
+      )
+    : phase === 6
+      ? premium48Phase6(assets, { milestone: music[0]!.id, discover: music[1]!.id })
+      : phase === 5
+        ? premium48Phase5(assets, { wardrobe: music[0]!.id, smile: music[1]!.id })
+        : phase === 4
+          ? premium48Phase4(assets, { chapter: music[0]!.id, compare: music[1]!.id })
+          : phase === 3
+            ? premium48Phase3(assets, { observe: music[0]!.id, letter: music[1]!.id })
+            : phase === 2
+              ? premium48Phase2(assets, { home: music[0]!.id, month: music[1]!.id })
+              : premium48Phase1(assets, {
+                  arrival: music[0]!.id,
+                  embrace: music[1]!.id,
+                });
 // Locale-specific demos prevent an English app from playing a Vietnamese sample.
 for (const t of added) {
   const video = t.kind === 'video';
@@ -256,7 +314,9 @@ for (const t of added) {
       );
     const source = join(
       out,
-      video ? `${n}-${locale}-story-990.png` : `${n}-${locale}-portrait.png`,
+      video
+        ? `${n}-${locale}-story-${t.composition === 'PremiumTwelveMonths' ? 1440 : 990}.png`
+        : `${n}-${locale}-portrait.png`,
     );
     t.thumbs[locale] = await upload(
       await sharp(source).resize({ width: 480 }).webp({ quality: 90 }).toBuffer(),

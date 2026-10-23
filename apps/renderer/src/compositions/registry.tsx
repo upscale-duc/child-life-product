@@ -1,4 +1,6 @@
 import { Premium48Phase6Story } from './premium48-phase6';
+import { Premium48FinalStory } from './premium48-final';
+import { premium48FinalDesigns } from '@child-life/contracts';
 import { Premium48Phase5Story } from './premium48-phase5';
 import { Premium48Story, PREMIUM48_FRAMES, PREMIUM48_POSTER } from './premium48';
 import { Premium48Phase4Story } from './premium48-phase4';
@@ -40,6 +42,16 @@ const ch1 = (id: string): StoryEntry => ({
 });
 
 export const stories: Record<KeepsakeComposition, StoryEntry> = {
+  ...(Object.fromEntries(
+    premium48FinalDesigns.map((d) => [
+      d.composition,
+      {
+        Component: (p: StoryProps) => <Premium48FinalStory {...p} number={d.n} />,
+        frames: () => (d.n === 22 ? 1500 : 1050),
+        poster: () => (d.n === 22 ? 1440 : 990),
+      },
+    ]),
+  ) as unknown as Record<(typeof premium48FinalDesigns)[number]['composition'], StoryEntry>),
   PremiumYouDidIt: {
     Component: (p) => <Premium48Phase6Story {...p} />,
     frames: () => PREMIUM48_FRAMES,
@@ -123,6 +135,7 @@ export const stories: Record<KeepsakeComposition, StoryEntry> = {
       | 'PremiumSmileToKeep'
       | 'PremiumYouDidIt'
       | 'PremiumWorldToDiscover'
+      | (typeof premium48FinalDesigns)[number]['composition']
     >,
     StoryEntry
   >),

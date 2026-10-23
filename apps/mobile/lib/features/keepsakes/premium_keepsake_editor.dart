@@ -136,6 +136,12 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
   bool get _valid {
     for (final f in _spec.fields) {
       final v = _values[f.key] ?? '';
+      if (f.options.isNotEmpty &&
+          (v.isNotEmpty || f.required) &&
+          !f.options.any((o) => o.value == v)) {
+        return false;
+      }
+      if (f.required && f.type == 'confirmation' && v != 'true') return false;
       if (f.type == 'month' &&
           v.isNotEmpty &&
           !RegExp(r'^(0?[1-9]|1[0-2])$').hasMatch(v)) {
@@ -296,8 +302,20 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     'reducedMotion': _reduced,
   };
 
-  KeepsakeMusic? _track(KeepsakeCatalog? catalog) =>
-      catalog?.track(_music == null ? _t.defaultMusic : _music!.id);
+  ({String? id})? get _effectiveMusic =>
+      _music ??
+      (_t.composition == 'PremiumFirstCelebration' &&
+              [
+                'neutral',
+                'tet',
+                'christmas',
+              ].contains(_values['celebrationTheme'])
+          ? (id: 'music_p48_celebrate_${_values['celebrationTheme']}')
+          : null);
+
+  KeepsakeMusic? _track(KeepsakeCatalog? catalog) => catalog?.track(
+    _effectiveMusic == null ? _t.defaultMusic : _effectiveMusic!.id,
+  );
 
   Future<void> _previewVideo(Map<String, MediaItem> byId) async {
     final toaster = ClToaster.of(context);
@@ -399,7 +417,7 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
               presentation: _presentation,
               audience: Audience.parents,
               occasion: _occasion,
-              music: _music,
+              music: _effectiveMusic,
             );
         if (mounted) {
           unawaited(
@@ -622,7 +640,31 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
           for (final f in _spec.fields)
             Padding(
               padding: const EdgeInsets.only(top: ClSpace.s3),
-              child: f.type == 'month'
+              child: f.options.isNotEmpty
+                  ? DropdownButtonFormField<String>(
+                      key: ValueKey('p48-field-${f.key}'),
+                      isExpanded: true,
+                      initialValue: _fields[f.key]!.text.isEmpty
+                          ? null
+                          : _fields[f.key]!.text,
+                      decoration: InputDecoration(
+                        labelText: f.label.of(uiLocale),
+                      ),
+                      items: [
+                        for (final o in f.options)
+                          DropdownMenuItem(
+                            value: o.value,
+                            child: Text(o.label.of(uiLocale)),
+                          ),
+                      ],
+                      onChanged: _busy
+                          ? null
+                          : (v) {
+                              _fields[f.key]!.text = v ?? '';
+                              _changed();
+                            },
+                    )
+                  : f.type == 'month'
                   ? DropdownButtonFormField<String>(
                       initialValue: _fields[f.key]!.text.isEmpty
                           ? null
@@ -757,9 +799,9 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
                           child: SingleChildScrollView(
                             child: KeepsakeMusicSheet(
                               tracks: catalog?.music ?? [],
-                              selected: _music == null
+                              selected: _effectiveMusic == null
                                   ? _t.defaultMusic
-                                  : _music!.id,
+                                  : _effectiveMusic!.id,
                               defaultId: _t.defaultMusic,
                               onPick: (id) => Navigator.of(sheet).pop((id: id)),
                             ),

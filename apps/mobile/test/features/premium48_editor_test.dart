@@ -13,6 +13,52 @@ import '../helpers/memory_fixtures.dart';
 import 'keepsake_test.dart' show pumpScreen;
 
 void main() {
+  testWidgets(
+    'celebration decoration is explicitly selected and keeps its identity in the preview',
+    (tester) async {
+      final raw =
+          jsonDecode(
+                File(
+                  '../../packages/contracts/test/vectors/premium48-phase10.json',
+                ).readAsStringSync(),
+              )
+              as Map;
+      final ts = (raw['templates'] as List)
+          .map(KeepsakeTemplate.fromJson)
+          .nonNulls
+          .toList();
+      final card = ts.singleWhere((t) => t.id == 'card_premium48_20');
+      await pumpScreen(
+        tester,
+        PremiumKeepsakeEditor(template: card, babyId: teddyId),
+        catalog: KeepsakeCatalog(ts),
+      );
+      final dropdown = find.byKey(const ValueKey('p48-field-celebrationTheme'));
+      await tester.scrollUntilVisible(
+        dropdown,
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        tester.widget<DropdownButtonFormField<String>>(dropdown).initialValue,
+        isNull,
+      );
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tết · hoa và phong bao').last);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byType(KeepsakeCardView),
+        -250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      final content = tester
+          .widget<KeepsakeCardView>(find.byType(KeepsakeCardView))
+          .content;
+      expect(content.field('theme'), 'tet');
+      expect(content.field('title'), isNot(contains('đầu tiên')));
+    },
+  );
   late List<KeepsakeTemplate> templates;
   setUp(() {
     mediaBytes = FakeMediaBytes();

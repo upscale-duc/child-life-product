@@ -12,7 +12,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart' show selectedMembershipProvider;
-import '../premium/premium_repository.dart' show capabilitiesProvider;
+import '../premium/premium_repository.dart' show capabilitiesNowProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 import 'assistant_models.dart';
 import 'assistant_screens.dart';
@@ -34,7 +34,7 @@ final assistantAccessProvider = Provider.family<AssistantAccess?, String>((
   ref,
   babyId,
 ) {
-  final caps = ref.watch(capabilitiesProvider(babyId)).value;
+  final caps = ref.watch(capabilitiesNowProvider(babyId));
   if (caps == null || !caps.features.assistant) return null;
   return AssistantAccess(images: caps.features.assistantImages);
 });

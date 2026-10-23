@@ -1,0 +1,1884 @@
+{
+  "templates": [
+    {
+      "id": "card_premium48_23",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Một năm",
+          "en": "A Year of You"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Chữ ký (tùy chọn)",
+              "en": "Signed by (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Gửi {babyName}, một tuổi.",
+              "en": "Dear {babyName}, on your first birthday."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Không nhớ hết từng ngày, nhưng nhớ rất rõ niềm vui có con bên mình.",
+              "en": "We cannot remember every day, but we remember the joy of having you here."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Mong con luôn có người lắng nghe và một nơi để trở về.",
+              "en": "May you always have someone who listens, and a place to come home to."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail1",
+            "label": {
+              "vi": "Chữ ký",
+              "en": "Signed by"
+            },
+            "text": {
+              "vi": "Thương con, {narratorName}.",
+              "en": "With love, {narratorName}."
+            },
+            "requires": [
+              "narratorName"
+            ],
+            "fallback": {
+              "vi": "Thương con, nhà mình.",
+              "en": "With love, your family."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Lá thư sinh nhật đầu tiên",
+        "en": "A Letter on Your First Birthday"
+      },
+      "description": {
+        "vi": "Một năm",
+        "en": "A Year of You"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 24,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-margin_387b2562.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.052,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.69,
+              "y": 0.27,
+              "w": 0.24,
+              "h": 0.2
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-frame_9f7a2bef.webp",
+            "rect": {
+              "x": 0.6819999999999999,
+              "y": 0.264,
+              "w": 0.256,
+              "h": 0.21200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-one_2a76252a.webp",
+            "rect": {
+              "x": 0.73,
+              "y": 0.54,
+              "w": 0.14,
+              "h": 0.19
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-bow_ff504872.webp",
+            "rect": {
+              "x": 0.69,
+              "y": 0.23,
+              "w": 0.24,
+              "h": 0.035
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.3,
+              "w": 0.57,
+              "h": 0.26
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.035,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 5
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.59,
+              "w": 0.58,
+              "h": 0.19
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.032,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 4
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.83,
+              "w": 0.86,
+              "h": 0.055
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.029,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-margin_387b2562.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.052,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.69,
+              "y": 0.27,
+              "w": 0.24,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-frame_9f7a2bef.webp",
+            "rect": {
+              "x": 0.6819999999999999,
+              "y": 0.264,
+              "w": 0.256,
+              "h": 0.17200000000000001
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-one_2a76252a.webp",
+            "rect": {
+              "x": 0.73,
+              "y": 0.5,
+              "w": 0.14,
+              "h": 0.19
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-birthday-bow_ff504872.webp",
+            "rect": {
+              "x": 0.69,
+              "y": 0.23,
+              "w": 0.24,
+              "h": 0.035
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.3,
+              "w": 0.57,
+              "h": 0.25
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.035,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 5
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.59,
+              "w": 0.58,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.032,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 4
+          },
+          {
+            "type": "text",
+            "field": "detail1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.8,
+              "w": 0.86,
+              "h": 0.055
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.029,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "birthdayFrame": "art-p48-birthday-frame_9f7a2bef.webp",
+        "birthdayOval": "art-p48-birthday-oval_ca2ab3e1.webp",
+        "birthdayMargin": "art-p48-birthday-margin_387b2562.webp",
+        "birthdayLabel": "art-p48-birthday-label_b6d49078.webp",
+        "birthdayClosing": "art-p48-birthday-closing_b6536524.webp",
+        "birthdayOne": "art-p48-birthday-one_2a76252a.webp",
+        "birthdayBow": "art-p48-birthday-bow_ff504872.webp",
+        "birthdayEnvelope": "art-p48-birthday-envelope_1d9eece7.webp",
+        "birthdayUnderline": "art-p48-birthday-underline_5d65fc5d.webp",
+        "birthdayRibbon": "art-p48-birthday-ribbon_0e908084.webp"
+      },
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#FCF2E5",
+        "ink": "#75424D",
+        "accent": "#B89B67"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_premium48_24",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Một năm",
+          "en": "A Year of You"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "familyStartConfirmed",
+            "label": {
+              "vi": "Ảnh đầu là ảnh gia đình đầu năm",
+              "en": "Photo one is your family at the start of the year"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Con lớn một tuổi. Nhà mình cũng lớn lên.",
+              "en": "You grew a year. We grew together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "message",
+            "label": {
+              "vi": "Lời nhắn",
+              "en": "Message"
+            },
+            "text": {
+              "vi": "Một năm học cách ở bên nhau.",
+              "en": "A year of learning to be there for each other."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "detail0",
+            "label": {
+              "vi": "Câu kết",
+              "en": "Closing line"
+            },
+            "text": {
+              "vi": "Cảm ơn những người đã cùng chăm con, theo cách của mình.",
+              "en": "For everyone who helped care for you, in their own way: thank you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          }
+        ],
+        "beats": []
+      },
+      "kind": "card",
+      "name": {
+        "vi": "Nhà mình sau một năm",
+        "en": "Our Family, One Year Later"
+      },
+      "description": {
+        "vi": "Một năm",
+        "en": "A Year of You"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 25,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-margin_b7bd381b.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.064,
+              "w": 0.86,
+              "h": 0.145
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.28,
+              "w": 0.4,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.274,
+              "w": 0.41600000000000004,
+              "h": 0.302
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.53,
+              "y": 0.28,
+              "w": 0.4,
+              "h": 0.29
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.522,
+              "y": 0.274,
+              "w": 0.41600000000000004,
+              "h": 0.302
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.34,
+              "y": 0.6,
+              "w": 0.32,
+              "h": 0.18
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.332,
+              "y": 0.594,
+              "w": 0.336,
+              "h": 0.192
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-spine_a01b88fc.webp",
+            "rect": {
+              "x": 0.485,
+              "y": 0.27,
+              "w": 0.03,
+              "h": 0.32
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.835,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.902,
+              "w": 0.86,
+              "h": 0.04
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.932,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.025
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-margin_b7bd381b.webp",
+            "rect": {
+              "x": 0.025,
+              "y": 0.025,
+              "w": 0.95,
+              "h": 0.95
+            },
+            "fit": "fill",
+            "opacity": 0.35,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "title",
+            "rect": {
+              "x": 0.07,
+              "y": 0.083,
+              "w": 0.86,
+              "h": 0.112
+            },
+            "font": "lora",
+            "weight": 600,
+            "size": 0.058,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 3
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.07,
+              "y": 0.28,
+              "w": 0.4,
+              "h": 0.23
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.062000000000000006,
+              "y": 0.274,
+              "w": 0.41600000000000004,
+              "h": 0.24200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 1,
+            "rect": {
+              "x": 0.53,
+              "y": 0.28,
+              "w": 0.4,
+              "h": 0.23
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.522,
+              "y": 0.274,
+              "w": 0.41600000000000004,
+              "h": 0.24200000000000002
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "photo",
+            "slot": 2,
+            "rect": {
+              "x": 0.34,
+              "y": 0.54,
+              "w": 0.32,
+              "h": 0.16
+            },
+            "shape": "rect",
+            "radius": 0.012,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-frame_812a592b.webp",
+            "rect": {
+              "x": 0.332,
+              "y": 0.534,
+              "w": 0.336,
+              "h": 0.17200000000000001
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "image",
+            "asset": "art-p48-familyyear-spine_a01b88fc.webp",
+            "rect": {
+              "x": 0.485,
+              "y": 0.27,
+              "w": 0.03,
+              "h": 0.26
+            },
+            "fit": "fill",
+            "opacity": 1,
+            "rotate": 0
+          },
+          {
+            "type": "text",
+            "field": "message",
+            "rect": {
+              "x": 0.07,
+              "y": 0.79,
+              "w": 0.86,
+              "h": 0.065
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.031,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "detail0",
+            "rect": {
+              "x": 0.07,
+              "y": 0.87,
+              "w": 0.86,
+              "h": 0.048
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.025,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "text",
+            "field": "signature",
+            "rect": {
+              "x": 0.65,
+              "y": 0.94,
+              "w": 0.28,
+              "h": 0.034
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.026,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "label1",
+            "rect": {
+              "x": 0.07,
+              "y": 0.91,
+              "w": 0.55,
+              "h": 0.028
+            },
+            "font": "beVietnamPro",
+            "weight": 400,
+            "size": 0.021,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.07,
+              "y": 0.947,
+              "w": 0.22,
+              "h": 0.018
+            },
+            "color": "ink",
+            "opacity": 0.65
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {
+        "familyyearFrame": "art-p48-familyyear-frame_812a592b.webp",
+        "familyyearOval": "art-p48-familyyear-oval_0790b130.webp",
+        "familyyearMargin": "art-p48-familyyear-margin_b7bd381b.webp",
+        "familyyearLabel": "art-p48-familyyear-label_b8cccf91.webp",
+        "familyyearClosing": "art-p48-familyyear-closing_a623c168.webp",
+        "familyyearSpine": "art-p48-familyyear-spine_a01b88fc.webp",
+        "familyyearStitch": "art-p48-familyyear-stitch_b9972a75.webp",
+        "familyyearAlbum": "art-p48-familyyear-album_97d29695.webp",
+        "familyyearYear": "art-p48-familyyear-year_f9ed0dfe.webp",
+        "familyyearSunset": "art-p48-familyyear-sunset_afb564e6.webp"
+      },
+      "photos": {
+        "min": 3,
+        "max": 3
+      },
+      "scenes": [],
+      "texts": [],
+      "palette": {
+        "background": "#EFE6D8",
+        "ink": "#455B47",
+        "accent": "#C48C70"
+      },
+      "palettes": [],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_premium48_23",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Một năm",
+          "en": "A Year of You"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "narratorName",
+            "label": {
+              "vi": "Chữ ký (tùy chọn)",
+              "en": "Signed by (optional)"
+            },
+            "type": "text",
+            "max": 30,
+            "required": false
+          },
+          {
+            "key": "yearOrderConfirmed",
+            "label": {
+              "vi": "Ảnh thứ hai là đầu năm, thứ ba là giữa năm",
+              "en": "Photo two is from early in the year; photo three is from midyear"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Gửi con, ngày tròn một tuổi.",
+              "en": "Dear little one, on your first birthday."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Một năm qua, nhà mình đã thay đổi nhiều.",
+              "en": "This year has changed so much for us."
+            },
+            "requires": [
+              "yearOrderConfirmed"
+            ],
+            "fallback": {
+              "vi": "Những khung hình dành cho ngày của con.",
+              "en": "Photographs for your special day."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Có những điều chỉ khi bên con mới biết.",
+              "en": "You have taught us things we never knew."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Điều muốn giữ lại không chỉ là ảnh…",
+              "en": "We are keeping more than photographs…"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Mà là cảm giác được cùng con lớn lên.",
+              "en": "We are keeping the feeling of growing with you."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Lá thư sinh nhật đầu tiên",
+              "en": "A Letter on Your First Birthday"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Lá thư sinh nhật đầu tiên",
+        "en": "A Letter on Your First Birthday"
+      },
+      "description": {
+        "vi": "Một năm",
+        "en": "A Year of You"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 24,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumBirthdayLetter",
+      "assets": {
+        "birthdayFrame": "art-p48-birthday-frame_9f7a2bef.webp",
+        "birthdayOval": "art-p48-birthday-oval_ca2ab3e1.webp",
+        "birthdayMargin": "art-p48-birthday-margin_387b2562.webp",
+        "birthdayLabel": "art-p48-birthday-label_b6d49078.webp",
+        "birthdayClosing": "art-p48-birthday-closing_b6536524.webp",
+        "birthdayOne": "art-p48-birthday-one_2a76252a.webp",
+        "birthdayBow": "art-p48-birthday-bow_ff504872.webp",
+        "birthdayEnvelope": "art-p48-birthday-envelope_1d9eece7.webp",
+        "birthdayUnderline": "art-p48-birthday-underline_5d65fc5d.webp",
+        "birthdayRibbon": "art-p48-birthday-ribbon_0e908084.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Lá thư sinh nhật đầu tiên",
+            "en": "Photo 1 · birthday"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Lá thư sinh nhật đầu tiên",
+            "en": "Photo 2 · birthday"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Lá thư sinh nhật đầu tiên",
+            "en": "Photo 3 · birthday"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Lá thư sinh nhật đầu tiên",
+            "en": "Photo 4 · birthday"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Lá thư sinh nhật đầu tiên",
+            "en": "Photo 5 · birthday"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#FCF2E5",
+        "ink": "#75424D",
+        "accent": "#B89B67"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_birthday",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_premium48_24",
+      "version": 1,
+      "personalization": {
+        "group": {
+          "vi": "Một năm",
+          "en": "A Year of You"
+        },
+        "fields": [
+          {
+            "key": "babyName",
+            "label": {
+              "vi": "Tên bé",
+              "en": "Baby’s name"
+            },
+            "type": "text",
+            "source": "babyName",
+            "max": 30,
+            "required": true
+          },
+          {
+            "key": "momentDate",
+            "label": {
+              "vi": "Ngày ghi nhận (nếu biết)",
+              "en": "Date captured (if known)"
+            },
+            "type": "date",
+            "max": 10,
+            "required": false
+          },
+          {
+            "key": "familyStartConfirmed",
+            "label": {
+              "vi": "Ảnh đầu là ảnh gia đình đầu năm",
+              "en": "Photo one is your family at the start of the year"
+            },
+            "type": "confirmation",
+            "max": 5,
+            "required": false
+          }
+        ],
+        "copy": [
+          {
+            "key": "scene1",
+            "label": {
+              "vi": "Cảnh 1",
+              "en": "Scene 1"
+            },
+            "text": {
+              "vi": "Một năm trước, nhà mình bắt đầu chương mới.",
+              "en": "A year ago, a new chapter began."
+            },
+            "requires": [
+              "familyStartConfirmed"
+            ],
+            "fallback": {
+              "vi": "Một năm trước, con bắt đầu hành trình.",
+              "en": "A year ago, your story began."
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene2",
+            "label": {
+              "vi": "Cảnh 2",
+              "en": "Scene 2"
+            },
+            "text": {
+              "vi": "Có những ngày vui, những ngày mệt.",
+              "en": "There were joyful days, and tiring ones."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene3",
+            "label": {
+              "vi": "Cảnh 3",
+              "en": "Scene 3"
+            },
+            "text": {
+              "vi": "Có những người luôn có mặt.",
+              "en": "And people who kept showing up."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene4",
+            "label": {
+              "vi": "Cảnh 4",
+              "en": "Scene 4"
+            },
+            "text": {
+              "vi": "Con lớn lên giữa những điều bình thường ấy.",
+              "en": "You grew among those everyday moments."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "scene5",
+            "label": {
+              "vi": "Cảnh 5",
+              "en": "Scene 5"
+            },
+            "text": {
+              "vi": "Một năm của con. Một năm của nhà mình.",
+              "en": "Your first year. Our year together."
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          },
+          {
+            "key": "signature",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{babyName}",
+              "en": "{babyName}"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "label1",
+            "label": {
+              "vi": "Nhãn",
+              "en": "Label"
+            },
+            "text": {
+              "vi": "{momentDate}",
+              "en": "{momentDate}"
+            },
+            "requires": [
+              "momentDate"
+            ],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": false,
+            "max": 160
+          },
+          {
+            "key": "title",
+            "label": {
+              "vi": "Tiêu đề",
+              "en": "Title"
+            },
+            "text": {
+              "vi": "Nhà mình sau một năm",
+              "en": "Our Family, One Year Later"
+            },
+            "requires": [],
+            "fallback": {
+              "vi": "",
+              "en": ""
+            },
+            "editable": true,
+            "max": 160
+          }
+        ],
+        "beats": [
+          {
+            "slots": [
+              0
+            ],
+            "textKey": "scene1"
+          },
+          {
+            "slots": [
+              1
+            ],
+            "textKey": "scene2"
+          },
+          {
+            "slots": [
+              2
+            ],
+            "textKey": "scene3"
+          },
+          {
+            "slots": [
+              3
+            ],
+            "textKey": "scene4"
+          },
+          {
+            "slots": [
+              4
+            ],
+            "textKey": "scene5"
+          }
+        ]
+      },
+      "kind": "video",
+      "name": {
+        "vi": "Nhà mình sau một năm",
+        "en": "Our Family, One Year Later"
+      },
+      "description": {
+        "vi": "Một năm",
+        "en": "A Year of You"
+      },
+      "tier": "premium",
+      "status": "published",
+      "order": 25,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "PremiumFamilyYear",
+      "assets": {
+        "familyyearFrame": "art-p48-familyyear-frame_812a592b.webp",
+        "familyyearOval": "art-p48-familyyear-oval_0790b130.webp",
+        "familyyearMargin": "art-p48-familyyear-margin_b7bd381b.webp",
+        "familyyearLabel": "art-p48-familyyear-label_b8cccf91.webp",
+        "familyyearClosing": "art-p48-familyyear-closing_a623c168.webp",
+        "familyyearSpine": "art-p48-familyyear-spine_a01b88fc.webp",
+        "familyyearStitch": "art-p48-familyyear-stitch_b9972a75.webp",
+        "familyyearAlbum": "art-p48-familyyear-album_97d29695.webp",
+        "familyyearYear": "art-p48-familyyear-year_f9ed0dfe.webp",
+        "familyyearSunset": "art-p48-familyyear-sunset_afb564e6.webp"
+      },
+      "photos": {
+        "min": 5,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ảnh 1 · Nhà mình sau một năm",
+            "en": "Photo 1 · familyyear"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 2 · Nhà mình sau một năm",
+            "en": "Photo 2 · familyyear"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 3 · Nhà mình sau một năm",
+            "en": "Photo 3 · familyyear"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 4 · Nhà mình sau một năm",
+            "en": "Photo 4 · familyyear"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ảnh 5 · Nhà mình sau một năm",
+            "en": "Photo 5 · familyyear"
+          },
+          "optional": false
+        }
+      ],
+      "texts": [],
+      "palette": {
+        "background": "#EFE6D8",
+        "ink": "#455B47",
+        "accent": "#C48C70"
+      },
+      "palettes": [],
+      "durationSec": 35,
+      "thumb": null,
+      "defaultMusic": "music_p48_familyyear",
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ],
+  "demos": {
+    "card_premium48_23": {
+      "vi": {
+        "babyName": "Oscar",
+        "momentDate": "",
+        "narratorName": ""
+      },
+      "en": {
+        "babyName": "Oscar",
+        "momentDate": "",
+        "narratorName": ""
+      }
+    },
+    "card_premium48_24": {
+      "vi": {
+        "babyName": "Ruby",
+        "momentDate": "",
+        "familyStartConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Ruby",
+        "momentDate": "",
+        "familyStartConfirmed": "false"
+      }
+    },
+    "video_premium48_23": {
+      "vi": {
+        "babyName": "Oscar",
+        "momentDate": "",
+        "narratorName": "",
+        "yearOrderConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Oscar",
+        "momentDate": "",
+        "narratorName": "",
+        "yearOrderConfirmed": "false"
+      }
+    },
+    "video_premium48_24": {
+      "vi": {
+        "babyName": "Ruby",
+        "momentDate": "",
+        "familyStartConfirmed": "false"
+      },
+      "en": {
+        "babyName": "Ruby",
+        "momentDate": "",
+        "familyStartConfirmed": "false"
+      }
+    }
+  }
+}

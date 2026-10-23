@@ -29,6 +29,8 @@ export const notebookKinds = [
 ] as const;
 export const responseKinds = [
   'save',
+  // Owner, 2026-10-22: a saved idea can be taken out of "Đã lưu" again.
+  'unsave',
   'hide',
   'snooze',
   'dislike',

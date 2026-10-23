@@ -1,6 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { featureOfFlag, systemFlagKeys, type FlagKey } from '@child-life/contracts';
 import {
   accountDeletionSteps,
   auditCategories,
@@ -40,15 +39,7 @@ import { Page, reasonMessages } from '../src/ui';
 import { VersionBadge } from '../src/content-kit';
 import { PhoneFrame } from '../src/screens/content-common';
 import { AuditTable } from '../src/screens/Audit';
-import {
-  AuditActionText,
-  LimitsList,
-  RecentList,
-  SystemSwitchesView,
-  billingFlag,
-  defaultNotice,
-  systemFlagGroups,
-} from '../src/screens/Features';
+import { AuditActionText, LimitsList, RecentList, defaultNotice } from '../src/screens/Features';
 import { jobState } from '../src/screens/Jobs';
 import { OverviewView } from '../src/screens/Overview';
 import { SignInScreen, authErrorId, type SignInActions } from '../src/screens/SignIn';
@@ -817,7 +808,7 @@ describe('A04/A05 storage', () => {
   });
 });
 
-describe('A06 jobs, Công tắc hệ thống, A12 audit', () => {
+describe('A06 jobs, flags, A12 audit', () => {
   it('job states map to the A06 pills', () => {
     const base = {
       id: 'j',
@@ -868,37 +859,7 @@ describe('A06 jobs, Công tắc hệ thống, A12 audit', () => {
       '“Tải video” đang tạm dừng một chút, chúng mình sẽ mở lại sớm.',
     );
   });
-  it('Công tắc hệ thống holds every flag outside the feature catalogue, in one group each', () => {
-    const shown = systemFlagGroups.flatMap((g) => g.keys);
-    expect(new Set(shown).size).toBe(shown.length);
-    // Mua gói trong app is on Gói Premium; catalogue features are on the Tính năng tab.
-    expect([...shown, billingFlag].sort()).toEqual([...systemFlagKeys].sort());
-    for (const k of ['assistant', 'auto_save', 'rhythm', 'memory_story'] as FlagKey[]) {
-      expect(shown).not.toContain(k);
-    }
-    // The other tool's engagement switches and the assistant's engineering switches are here.
-    expect(systemFlagGroups.find((g) => g.id === 'engagement')?.keys).toContain(
-      'engagementEnabled',
-    );
-    expect(systemFlagGroups.find((g) => g.id === 'assistant')?.keys).toEqual([
-      'assistant_live',
-      'assistant_writes',
-    ]);
-    expect(
-      flagKeys
-        .filter((k) => !shown.includes(k))
-        .every((k) => k === billingFlag || featureOfFlag(k)),
-    ).toBe(true);
-  });
-  it('kill switches are for engineering; operations see them read-only', () => {
-    const ops = render(<SystemSwitchesView data={flags} onChanged={() => undefined} />, ['ops']);
-    expect(text(ops)).toContain('Mở dần · 25%');
-    expect(text(ops)).toContain('Linh · 2/10');
-    expect(text(ops)).toContain(messages.vi['flag.engagementEnabled']!);
-    expect(text(ops)).not.toContain(messages.vi['flag.auto_save']!);
-    expect(ops.match(/role="switch"[^>]*disabled=""/g)?.length).toBe(
-      systemFlagGroups.flatMap((g) => g.keys).length,
-    );
+  it('recent changes, limits and flag lines read plainly (the list itself: hub.test.tsx)', () => {
     expect(text(render(<RecentList recent={flags.recent} />))).toContain(
       'Mở “AI gợi ý câu chuyện” lên 50%',
     );
@@ -922,34 +883,12 @@ describe('A06 jobs, Công tắc hệ thống, A12 audit', () => {
     expect(text(render(<LimitsList limits={flags.limits} />))).toContain(
       'Tự lưu kỷ niệm · mỗi lần tải lên Tối đa 200 mục',
     );
-    const eng = render(<SystemSwitchesView data={flags} onChanged={() => undefined} />, ['eng']);
-    expect(eng).not.toMatch(/role="switch"[^>]*disabled=""/);
-  });
-  it('a switch can be for a few chosen families, shown by count; the scope opens for rollout', () => {
-    const chosen: FlagsView = {
-      ...flags,
-      flags: {
-        ...flags.flags,
-        night_auto: {
-          enabled: true,
-          scope: 'internal',
-          percent: 0,
-          notice: null,
-          families: ['F-7Q2K', 'F-ABCD'],
-        },
-      },
-    };
-    const raw = render(<SystemSwitchesView data={chosen} onChanged={() => undefined} />, ['eng']);
-    expect(text(raw)).toContain('2 gia đình được chọn');
-    expect(raw).toContain(
-      `aria-label="Ai được dùng “${messages.vi['flag.night_auto']!.replace(/"/g, '&quot;')}”"`,
-    );
     const html = text(
       render(
         <AuditActionText
           action="flags.families"
           target="auto_save"
-          detail={{ after: chosen.flags.night_auto }}
+          detail={{ after: { enabled: true, scope: 'internal', percent: 0, notice: null } }}
         />,
       ),
     );

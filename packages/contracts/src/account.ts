@@ -328,7 +328,7 @@ export const appEventDims: Partial<Record<AppEvent, readonly string[]>> = {
     'moments',
   ],
   feedbackSaved: ['started', 'helpful', 'unsure', 'not_suitable', 'not_today'],
-  feedCardAnswered: ['save', 'hide', 'snooze', 'dislike', 'known', 'exclude', 'restore'],
+  feedCardAnswered: ['save', 'unsave', 'hide', 'snooze', 'dislike', 'known', 'exclude', 'restore'],
   personalizationOutcome: ['intend', 'tried', 'helpful', 'unsure'],
   paywallSeen: ['rhythm', 'templates', 'plan'],
   purchaseStarted: ['rhythm', 'templates', 'plan'],

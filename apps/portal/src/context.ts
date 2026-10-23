@@ -96,6 +96,8 @@ const nestedRoutes: Route[] = [
 export const legacyPaths: Readonly<Record<string, string>> = {
   '/premium': '/features/plan',
   '/assistant': '/system/assistant',
+  // Công tắc hệ thống joined the Tính năng list (owner 2026-10-21).
+  '/features/switches': '/features',
 };
 
 /** The address to show for [pathname]: a merged page's old address becomes its tab's. */

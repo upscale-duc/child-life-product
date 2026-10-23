@@ -27059,32 +27059,32 @@
     "description": "Open the first aid module from Lumi health support"
   },
   "pv2Title": "Hôm nay của nhà mình",
-  "pv2Open": "Xem việc hữu ích hôm nay",
-  "pv2Context": "Hôm nay bạn có thể dành thời gian thế nào?",
+  "pv2Open": "Xem chi tiết",
+  "pv2Context": "Hôm nay bạn rảnh cỡ nào?",
   "pv2Usual": "Như mọi ngày",
   "pv2FewMinutes": "Chỉ vài phút",
   "pv2Busy": "Đang bận",
-  "pv2Temporary": "Lựa chọn hôm nay tự hết hạn vào cuối ngày.",
+  "pv2Temporary": "Ngày mai tự trở về \"Như mọi ngày\".",
   "pv2Focus": "Một điều muốn ưu tiên tuần này",
   "pv2Play": "Có một lúc chơi cùng con",
   "pv2Routine": "Hiểu nhịp sinh hoạt",
   "pv2NoFocus": "Chưa chọn",
-  "pv2Unusual": "Sinh hoạt hôm nay khác thường",
-  "pv2UnusualHint": "Tạm dừng gợi ý theo nhịp; nhắc việc bạn đã đặt vẫn giữ nguyên.",
-  "pv2Next": "Một việc vừa sức lúc này",
+  "pv2Unusual": "Hôm nay bé không như mọi ngày",
+  "pv2UnusualHint": "Ví dụ bé ốm, đi xa hay nhà có khách. Hôm nay tạm ẩn nhịp bú, ngủ thường gặp cho cả nhà; nhắc việc vẫn giữ nguyên.",
+  "pv2Next": "Gợi ý cho hôm nay",
   "pv2BecauseNeed": "Theo điều gia đình vừa ghi nhận hôm nay",
   "pv2BecauseFocus": "Theo ưu tiên tuần này của bạn",
   "pv2BecauseInterest": "Theo tuổi của bé và điều bạn quan tâm",
   "pv2BecauseAge": "Theo tuổi của bé",
   "pv2BecauseHelpful": "Nhà mình từng thấy cách này có ích",
   "pv2Minutes": "phút",
-  "pv2OpenActivity": "Xem cách thực hiện",
-  "pv2Controls": "Điều chỉnh gợi ý",
+  "pv2OpenActivity": "Xem cách làm",
+  "pv2Controls": "Tuỳ chọn khác",
   "pv2Save": "Lưu lại",
-  "pv2Hide": "Ẩn thẻ này",
-  "pv2Snooze": "Hôm nay bận · để sau 3 ngày",
+  "pv2Hide": "Ẩn gợi ý này",
+  "pv2Snooze": "Để sau 3 ngày",
   "pv2WorkSnooze": "Để sau · ẩn đến hết hôm nay",
-  "pv2Dislike": "Tôi không thích gợi ý này",
+  "pv2Dislike": "Không hợp với nhà mình",
   "pv2Known": "Tôi đã biết rồi",
   "pv2Exclude": "Không phù hợp với bé · áp dụng cho cả nhà",
   "pv2Restore": "Khôi phục gợi ý",
@@ -27123,7 +27123,7 @@
   "pv2Delete": "Xoá",
   "pv2Cancel": "Để sau",
   "pv2NoteHint": "Ứng dụng dùng ghi chú đã xác nhận để chọn gợi ý. Ghi chú tự do không phải chỉ định y tế.",
-  "pv2Work": "Bàn giao trong 30 giây",
+  "pv2Work": "Bàn giao cho người chăm",
   "pv2WorkHint": "Việc gia đình đã đặt. Hoàn tất nhắc việc không tự tạo bản ghi chăm sóc.",
   "pv2NoWork": "Chưa có nhắc việc đang chờ.",
   "pv2Accept": "Tôi nhận việc này",
@@ -27138,7 +27138,7 @@
   "pv2WeekTried": "hoạt động đã xác nhận thử",
   "pv2WeekHelpful": "hoạt động thấy có ích",
   "pv2WeekHint": "Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.",
-  "pv2History": "Điều đang dùng để cá nhân hoá",
+  "pv2History": "Đã lưu, đã thử và đã ẩn",
   "pv2Saved": "Đã lưu",
   "pv2Digest": "Gợi ý mỗi ngày trên thiết bị này",
   "pv2DigestHint": "Tự chọn bật. Mỗi ngày tối đa một gợi ý mới, trong giờ cho phép. Chọn giờ trong cài đặt cá nhân hoá.",
@@ -27630,5 +27630,404 @@
   "engPaused": "Gợi ý chủ động đang tạm nghỉ. Bạn có thể chủ động tiếp tục sau ít nhất 14 ngày.",
   "@engPaused": {
     "description": "Explicit fatigue pause explanation"
+  },
+  "pv2HomeKicker": "GỢI Ý HÔM NAY CHO BÉ",
+  "@pv2HomeKicker": {
+    "description": "Kicker of the personal-day card on Home (caps like rhKickerToday)."
+  },
+  "pv2More": "Xem thêm",
+  "@pv2More": {
+    "description": "Link on the Home card to the full personal-day screen."
+  },
+  "pv2TimeToday": "Thời gian hôm nay",
+  "@pv2TimeToday": {
+    "description": "Home card row label; its value is the chosen context (pv2Usual / pv2FewMinutes / pv2Busy)."
+  },
+  "pv2UsualHint": "Tối đa 3 gợi ý, dài ngắn tuỳ việc.",
+  "@pv2UsualHint": {
+    "description": "What \"Như mọi ngày\" does to the suggestions."
+  },
+  "pv2FewMinutesHint": "Chỉ gợi ý việc từ 5 phút trở xuống.",
+  "@pv2FewMinutesHint": {
+    "description": "What \"Chỉ vài phút\" does to the suggestions."
+  },
+  "pv2BusyHint": "Một việc ngắn duy nhất, hôm nay không nhắc gợi ý.",
+  "@pv2BusyHint": {
+    "description": "What \"Đang bận\" does (one activity, no digest)."
+  },
+  "pv2Adjust": "Điều chỉnh gợi ý",
+  "@pv2Adjust": {
+    "description": "Section heading on the personal-day screen."
+  },
+  "pv2FocusToggle": "Tuần này ưu tiên chơi cùng con",
+  "@pv2FocusToggle": {
+    "description": "Switch for the weekly play focus."
+  },
+  "pv2FocusHint": "Gợi ý chơi được ưu tiên đến hết tuần này.",
+  "@pv2FocusHint": {
+    "description": "Subtitle of the weekly focus switch."
+  },
+  "pv2DoneToday": "Hôm nay bạn đã",
+  "@pv2DoneToday": {
+    "description": "Section listing this person's own actions on suggestions today."
+  },
+  "pv2DoneTodayEmpty": "Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.",
+  "@pv2DoneTodayEmpty": {
+    "description": "Empty state of pv2DoneToday."
+  },
+  "pv2NoIdeas": "Hôm nay chưa có gợi ý mới phù hợp. Bạn có thể xem lại những việc đã lưu.",
+  "@pv2NoIdeas": {
+    "description": "When the day has no activity suggestion."
+  },
+  "pv2HowWasIt": "Thấy sao?",
+  "@pv2HowWasIt": {
+    "description": "Row action asking for the outcome after an attempt."
+  },
+  "pv2HowWasItTitle": "Lần thử này thế nào?",
+  "@pv2HowWasItTitle": {
+    "description": "Sheet title for the outcome question."
+  },
+  "pv2AlreadySaved": "Gợi ý này đã nằm trong mục Đã lưu.",
+  "@pv2AlreadySaved": {
+    "description": "Toast when the saved heart is tapped again."
+  },
+  "pv2Undo": "Hoàn tác",
+  "@pv2Undo": {
+    "description": "Toast action that reverses the last change."
+  },
+  "pv2StatusSaved": "Đã lưu",
+  "@pv2StatusSaved": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusHidden": "Đã ẩn",
+  "@pv2StatusHidden": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusExcluded": "Đã loại cho cả nhà",
+  "@pv2StatusExcluded": {
+    "description": "Status line on a suggestion."
+  },
+  "pv2StatusIntend": "Định thử · {when}",
+  "@pv2StatusIntend": {
+    "description": "Status line; when is HH:mm today or dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "10:20"
+      }
+    }
+  },
+  "pv2StatusTried": "Đã thử · {when}",
+  "@pv2StatusTried": {
+    "description": "Status line; when is HH:mm today or dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "10:20"
+      }
+    }
+  },
+  "pv2StatusSnoozed": "Để sau đến {when}",
+  "@pv2StatusSnoozed": {
+    "description": "Status line; when is dd/MM.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "25/10"
+      }
+    }
+  },
+  "pv2ToastSaved": "Đã lưu. Xem lại trong \"Đã lưu, đã thử và đã ẩn\".",
+  "@pv2ToastSaved": {
+    "description": "Toast after saving a suggestion."
+  },
+  "pv2ToastIntend": "Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".",
+  "@pv2ToastIntend": {
+    "description": "Toast after \"Mình định thử\"."
+  },
+  "pv2ToastTried": "Đã ghi bạn đã thử. Gợi ý này chuyển xuống \"Hôm nay bạn đã\".",
+  "@pv2ToastTried": {
+    "description": "Toast after \"Mình đã thử\" (the card leaves the list until tomorrow)."
+  },
+  "pv2ToastOutcome": "Cảm ơn bạn, đã ghi lại.",
+  "@pv2ToastOutcome": {
+    "description": "Toast after an outcome answer."
+  },
+  "pv2ToastHidden": "Đã ẩn gợi ý này.",
+  "@pv2ToastHidden": {
+    "description": "Toast after hiding a suggestion."
+  },
+  "pv2ToastSnoozed": "Sẽ gợi ý lại sau 3 ngày.",
+  "@pv2ToastSnoozed": {
+    "description": "Toast after snoozing a suggestion."
+  },
+  "pv2ToastWorkSnoozed": "Đã ẩn đến hết hôm nay. Việc vẫn còn trong Nhắc việc.",
+  "@pv2ToastWorkSnoozed": {
+    "description": "Toast after putting off a work card."
+  },
+  "pv2ToastExcluded": "Đã loại gợi ý này cho cả nhà.",
+  "@pv2ToastExcluded": {
+    "description": "Toast after excluding an activity for the baby."
+  },
+  "pv2ToastRestored": "Đã khôi phục gợi ý.",
+  "@pv2ToastRestored": {
+    "description": "Toast after restoring a suggestion."
+  },
+  "pv2ToastContext": "Đã chọn \"{choice}\". Gợi ý đã cập nhật.",
+  "@pv2ToastContext": {
+    "description": "Toast after choosing today's time.",
+    "placeholders": {
+      "choice": {
+        "type": "String",
+        "example": "Chỉ vài phút"
+      }
+    }
+  },
+  "pv2ToastFocusOn": "Tuần này sẽ ưu tiên gợi ý chơi cùng con.",
+  "@pv2ToastFocusOn": {
+    "description": "Toast after turning on the weekly focus."
+  },
+  "pv2ToastFocusOff": "Đã bỏ ưu tiên tuần này.",
+  "@pv2ToastFocusOff": {
+    "description": "Toast after turning off the weekly focus."
+  },
+  "pv2ToastUnusualOn": "Đã ghi hôm nay bé không như mọi ngày.",
+  "@pv2ToastUnusualOn": {
+    "description": "Toast after turning on the unusual-day switch."
+  },
+  "pv2ToastUnusualOff": "Đã bật lại nhịp thường gặp.",
+  "@pv2ToastUnusualOff": {
+    "description": "Toast after turning off the unusual-day switch."
+  },
+  "pv2ToastAcknowledged": "Đã ghi bạn nhận bàn giao.",
+  "@pv2ToastAcknowledged": {
+    "description": "Toast after acknowledging the handover."
+  },
+  "pv2WorkCount": "{count, plural, other{{count} việc đang chờ}}",
+  "@pv2WorkCount": {
+    "description": "Subtitle of the handover row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2NotesCount": "{count, plural, =0{Chưa có ghi chú} other{{count} ghi chú}}",
+  "@pv2NotesCount": {
+    "description": "Subtitle of the notebook row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2PatternsPaused": "Đã tạm ẩn hôm nay",
+  "@pv2PatternsPaused": {
+    "description": "Subtitle of the rhythm row on an unusual day."
+  },
+  "pv2PatternsNone": "Chưa đủ dữ liệu",
+  "@pv2PatternsNone": {
+    "description": "Subtitle of the rhythm row without patterns."
+  },
+  "pv2WeekLine": "Tuần này: {tried} đã thử · {helpful} có ích",
+  "@pv2WeekLine": {
+    "description": "Subtitle of the history row.",
+    "placeholders": {
+      "tried": {
+        "type": "int"
+      },
+      "helpful": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2AcknowledgedShort": "Đã nhận bàn giao",
+  "@pv2AcknowledgedShort": {
+    "description": "Status chip after acknowledging."
+  },
+  "pv2HiddenNow": "Đang ẩn",
+  "@pv2HiddenNow": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2SavedNow": "Đã lưu",
+  "@pv2SavedNow": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2TriedBefore": "Đã thử",
+  "@pv2TriedBefore": {
+    "description": "Group heading in the history screen."
+  },
+  "pv2Reminders": "Nhắc việc đang chờ",
+  "@pv2Reminders": {
+    "description": "Heading of the open reminders on the handover screen."
+  },
+  "pv2ChipHelpful": "Có ích",
+  "@pv2ChipHelpful": {
+    "description": "Status chip: the person found the idea helpful."
+  },
+  "pv2ChipUnsure": "Chưa rõ",
+  "@pv2ChipUnsure": {
+    "description": "Status chip: not clear yet after trying."
+  },
+  "pv2Unsave": "Bỏ lưu",
+  "@pv2Unsave": {
+    "description": "Action/tooltip that takes an idea out of saved."
+  },
+  "pv2ToastUnsaved": "Đã bỏ lưu.",
+  "@pv2ToastUnsaved": {
+    "description": "Toast after unsaving."
+  },
+  "hnCheckInDone": "Hôm nay: {what}",
+  "@hnCheckInDone": {
+    "description": "Home row after today's check-in; what is the observation label.",
+    "placeholders": {
+      "what": {
+        "type": "String",
+        "example": "Như mọi ngày"
+      }
+    }
+  },
+  "hnCheckInDoneSub": "{who} đã ghi · Chạm để sửa hoặc thêm",
+  "@hnCheckInDoneSub": {
+    "description": "Subtitle of the check-in row once answered.",
+    "placeholders": {
+      "who": {
+        "type": "String",
+        "example": "Bạn"
+      }
+    }
+  },
+  "ageWeeksDays": "{weeks} tuần {days} ngày tuổi",
+  "@ageWeeksDays": {
+    "description": "Age under 13 weeks with the extra days (owner 2026-10-22: \"5 tuần 3 ngày\").",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortWeeksDays": "{weeks} tuần {days} ngày",
+  "@ageShortWeeksDays": {
+    "description": "Short age under 13 weeks with the extra days (header chip).",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekOfPast": "Tuần vừa qua của {baby}",
+  "@rhWeekOfPast": {
+    "description": "Week summary title (replaces \"Tuần thứ N\", owner 2026-10-22).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekOfNow": "Tuần này của {baby}",
+  "@rhWeekOfNow": {
+    "description": "Week summary title while the week is in progress.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekShareSheet": "Gửi tổng kết tuần",
+  "@rhWeekShareSheet": {
+    "description": "Title of the week share sheet."
+  },
+  "rhWeekShareImage": "Gửi ảnh",
+  "@rhWeekShareImage": {
+    "description": "Share the week summary picture through the system share sheet."
+  },
+  "rhWeekShareTextOnly": "Gửi dạng chữ",
+  "@rhWeekShareTextOnly": {
+    "description": "Share the week summary as plain text."
+  },
+  "rhWeekShareFooter": "Từ nhật ký của cả nhà · Child Life",
+  "@rhWeekShareFooter": {
+    "description": "Footer of the shared week picture."
+  },
+  "rhEditToday": "Sửa ghi nhận hôm nay",
+  "@rhEditToday": {
+    "description": "Button on Nhịp riêng của con once this person noted today."
+  },
+  "periodDiapers": "{count} tã",
+  "@periodDiapers": {
+    "description": "Timeline period chip: diapers in the period.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayStripsTitle": "Từng ngày",
+  "@dayStripsTitle": {
+    "description": "Stats card: each day of the range as a 0–24 h strip."
+  },
+  "dayNothingLogged": "Chưa ghi",
+  "@dayNothingLogged": {
+    "description": "Day row with nothing of the chosen kind."
+  },
+  "dayFeedsLine": "{count} cữ bú",
+  "@dayFeedsLine": {
+    "description": "Day summary: feeds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayBreastLine": "{minutes} phút bú mẹ",
+  "@dayBreastLine": {
+    "description": "Day summary: breastfeeding minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "daySleepLine": "{count} giấc {duration}",
+  "@daySleepLine": {
+    "description": "Day summary: sleeps and total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "careWokeUp": "Thức dậy",
+  "@careWokeUp": {
+    "description": "Timeline: when a sleep ended."
+  },
+  "careAwakeFor": "Thức {duration} đến giấc sau",
+  "@careAwakeFor": {
+    "description": "Timeline: time awake until the next sleep.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "1 giờ 9 phút"
+      }
+    }
+  },
+  "careAwakeNow": "Đang thức · {duration}",
+  "@careAwakeNow": {
+    "description": "Timeline: the latest wake-up today, still awake.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "45 phút"
+      }
+    }
   }
 }

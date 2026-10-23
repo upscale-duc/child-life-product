@@ -1,0 +1,145 @@
+{
+  "phase": 9,
+  "assets": [
+    {
+      "name": "p48-details-frame",
+      "file": "p48-details-frame.svg",
+      "title": "The Tiniest Details · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-oval",
+      "file": "p48-details-oval.svg",
+      "title": "The Tiniest Details · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-margin",
+      "file": "p48-details-margin.svg",
+      "title": "The Tiniest Details · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-label",
+      "file": "p48-details-label.svg",
+      "title": "The Tiniest Details · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-closing",
+      "file": "p48-details-closing.svg",
+      "title": "The Tiniest Details · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-film",
+      "file": "p48-details-film.svg",
+      "title": "The Tiniest Details · film",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-rule",
+      "file": "p48-details-rule.svg",
+      "title": "The Tiniest Details · rule",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-caption",
+      "file": "p48-details-caption.svg",
+      "title": "The Tiniest Details · caption",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-cotton",
+      "file": "p48-details-cotton.svg",
+      "title": "The Tiniest Details · cotton",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-details-viewfinder",
+      "file": "p48-details-viewfinder.svg",
+      "title": "The Tiniest Details · viewfinder",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-frame",
+      "file": "p48-sleep-frame.svg",
+      "title": "Sleep Softly, Little One · frame",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-oval",
+      "file": "p48-sleep-oval.svg",
+      "title": "Sleep Softly, Little One · oval",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-margin",
+      "file": "p48-sleep-margin.svg",
+      "title": "Sleep Softly, Little One · margin",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-label",
+      "file": "p48-sleep-label.svg",
+      "title": "Sleep Softly, Little One · label",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-closing",
+      "file": "p48-sleep-closing.svg",
+      "title": "Sleep Softly, Little One · closing",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-moon",
+      "file": "p48-sleep-moon.svg",
+      "title": "Sleep Softly, Little One · moon",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-stars",
+      "file": "p48-sleep-stars.svg",
+      "title": "Sleep Softly, Little One · stars",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-arch",
+      "file": "p48-sleep-arch.svg",
+      "title": "Sleep Softly, Little One · arch",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-constellation",
+      "file": "p48-sleep-constellation.svg",
+      "title": "Sleep Softly, Little One · constellation",
+      "width": 800,
+      "height": 800
+    },
+    {
+      "name": "p48-sleep-horizon",
+      "file": "p48-sleep-horizon.svg",
+      "title": "Sleep Softly, Little One · horizon",
+      "width": 800,
+      "height": 800
+    }
+  ]
+}

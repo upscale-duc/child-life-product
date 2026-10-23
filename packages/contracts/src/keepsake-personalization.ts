@@ -14,6 +14,11 @@ export const keepsakePersonalizationSchema = z
           key,
           label: copy,
           suggestion: copy.optional(),
+          options: z
+            .array(z.object({ value: key, label: copy }))
+            .min(2)
+            .max(12)
+            .optional(),
           type: z.enum(['text', 'date', 'time', 'confirmation', 'month']),
           source: z.enum(['babyName', 'birthDate', 'momentDate']).optional(),
           max: z.number().int().min(1).max(160),
@@ -115,6 +120,8 @@ export function resolveKeepsakeCopy(
     const f = fields.get(k);
     if (!f || v.length > f.max) throw new Error('personalization-field');
     if (!v) continue;
+    if (f.options && !f.options.some((o) => o.value === v))
+      throw new Error('personalization-option');
     if (f.type === 'date' && !z.iso.date().safeParse(v).success)
       throw new Error('personalization-date');
     if (f.type === 'time' && !/^([01]\d|2[0-3]):[0-5]\d$/.test(v))
@@ -126,7 +133,11 @@ export function resolveKeepsakeCopy(
     if (/[{}]/.test(v)) throw new Error('personalization-token');
   }
   for (const f of spec.fields)
-    if (f.required && !values[f.key]?.trim()) throw new Error('personalization-required');
+    if (
+      f.required &&
+      (!values[f.key]?.trim() || (f.type === 'confirmation' && values[f.key] !== 'true'))
+    )
+      throw new Error('personalization-required');
   let elapsedDays = '';
   if (spec.dateRange) {
     const start = values[spec.dateRange.start],

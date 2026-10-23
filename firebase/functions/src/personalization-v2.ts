@@ -177,8 +177,10 @@ export async function updatePersonalization(
           responses[action.contentId] = { ...previous, value: 'restore', at, until: null };
         } else {
           // Whole-map write (not recursive merge) makes restore reliable and bounds storage.
+          // Saving and unsaving only flip `saved`; the person's last answer stays.
+          const saving = action.value === 'save' || action.value === 'unsave';
           const response: PersonalResponse = {
-            value: action.value === 'save' ? (previous?.value ?? 'save') : action.value,
+            value: saving ? (previous?.value ?? 'save') : action.value,
             at,
             until: ['snooze', 'tried', 'helpful'].includes(action.value)
               ? dayBoundsIn(
@@ -186,7 +188,12 @@ export async function updatePersonalization(
                   addDaysIso(localDateIn(zone, now), action.value === 'snooze' && !work ? 2 : 0),
                 ).end.toISOString()
               : null,
-            saved: action.value === 'save' ? true : (previous?.saved ?? false),
+            saved:
+              action.value === 'save'
+                ? true
+                : action.value === 'unsave'
+                  ? false
+                  : (previous?.saved ?? false),
             ...(previous?.intendedAt ? { intendedAt: previous.intendedAt } : {}),
             ...(previous?.triedAt ? { triedAt: previous.triedAt } : {}),
             ...(previous?.outcome
@@ -242,7 +249,11 @@ export async function updatePersonalization(
         }
         if (
           activity &&
-          (action.value === 'save' ? previous?.saved !== true : previous?.value !== action.value)
+          (action.value === 'save'
+            ? previous?.saved !== true
+            : action.value === 'unsave'
+              ? previous?.saved === true
+              : previous?.value !== action.value)
         ) {
           tx.set(
             db.doc(`contentStatsDaily/${localDateIn('Asia/Ho_Chi_Minh', now)}`),

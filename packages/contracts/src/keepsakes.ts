@@ -121,6 +121,18 @@ export const keepsakeCompositions = [
   'PremiumSmileToKeep',
   'PremiumYouDidIt',
   'PremiumWorldToDiscover',
+  'PremiumHeldWithLove',
+  'PremiumAcrossGenerations',
+  'PremiumCircleOfLove',
+  'PremiumDayWithYou',
+  'PremiumTiniestDetails',
+  'PremiumSleepSoftly',
+  'PremiumHundredDays',
+  'PremiumFirstCelebration',
+  'PremiumLittleAdventure',
+  'PremiumTwelveMonths',
+  'PremiumBirthdayLetter',
+  'PremiumFamilyYear',
 ] as const;
 export type KeepsakeComposition = (typeof keepsakeCompositions)[number];
 
@@ -219,6 +231,16 @@ export const keepsakeTextFields = [
   'message',
   'photoLabel0',
   'photoLabel1',
+  'photoLabel2',
+  'photoLabel3',
+  'photoLabel4',
+  'photoLabel5',
+  'photoLabel6',
+  'photoLabel7',
+  'photoLabel8',
+  'photoLabel9',
+  'photoLabel10',
+  'photoLabel11',
   'detail0',
   'detail1',
   'detail2',
@@ -290,6 +312,10 @@ export const keepsakeLayerSchema = z.discriminatedUnion('type', [
   /** An uploaded picture: frame, sticker, texture. */
   z.object({
     type: z.literal('image'),
+    /** Optional authored-copy switch, e.g. an explicitly selected celebration theme. */
+    when: z
+      .object({ field: z.string().regex(/^[a-z][a-zA-Z0-9]{0,31}$/), equals: z.string().max(32) })
+      .optional(),
     asset: keepsakeAssetSchema,
     rect: keepsakeRectSchema,
     fit: z.enum(['cover', 'contain', 'fill']),

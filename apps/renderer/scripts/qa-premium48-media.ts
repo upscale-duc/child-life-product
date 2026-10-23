@@ -1,3 +1,4 @@
+import { premium48FinalDesigns } from '@child-life/contracts';
 /** Verify an already-rendered Premium review; writes evidence, never changes source media. */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -31,12 +32,12 @@ for (const file of files) {
   const video = probe.streams.find((s: { codec_type: string }) => s.codec_type === 'video'),
     audio = probe.streams.find((s: { codec_type: string }) => s.codec_type === 'audio');
   if (
-    video.nb_frames !== '1050' ||
+    video.nb_frames !== (file.startsWith('V22-') ? '1500' : '1050') ||
     video.width !== 1080 ||
     video.height !== (file.includes('story') ? 1920 : 1350) ||
     video.codec_name !== 'h264' ||
     !['yuv420p', 'yuvj420p'].includes(video.pix_fmt) ||
-    Number(video.duration) !== 35 ||
+    Number(video.duration) !== (file.startsWith('V22-') ? 50 : 35) ||
     audio?.codec_name !== 'aac' ||
     audio?.sample_rate !== '48000' ||
     audio?.channels !== 2
@@ -76,7 +77,13 @@ for (const file of files) {
     throw new Error('Audio/black QA failed: ' + file);
   const props = JSON.parse(readFileSync(path.replace(/\.mp4$/, '.json'), 'utf8'));
   if (
-    !(out.endsWith('phase6') ? ['Oliver', 'Emma'] : ['Noah', 'Lily']).includes(props.name) ||
+    !(
+      Number(out.match(/phase(\d+)$/)?.[1]) >= 7
+        ? premium48FinalDesigns.map((d) => String(d.baby))
+        : out.endsWith('phase6')
+          ? ['Oliver', 'Emma']
+          : ['Noah', 'Lily']
+    ).includes(props.name) ||
     props.presentation.copy.signature !== props.name
   )
     throw new Error('English demo name lost: ' + file);
@@ -85,7 +92,7 @@ for (const file of files) {
     noBlack,
     integratedLufs: integrated,
     truePeakDbtp: truePeak,
-    frames: 1050,
+    frames: file.startsWith('V22-') ? 1500 : 1050,
     width: 1080,
     height: file.includes('story') ? 1920 : 1350,
     name: props.name,

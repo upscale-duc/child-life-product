@@ -218,7 +218,8 @@ void main() {
         container.read(sharedPreferencesProvider).getString('stats.feed.kind'),
         'bottle',
       );
-      await tester.tap(find.text('Bú bình'));
+      // The kind pill (the day timeline below also says "Bú bình" on its rows).
+      await tester.tap(find.text('Bú bình').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Theo thời gian bú (phút)'));
       await tester.pumpAndSettle();
@@ -237,12 +238,11 @@ void main() {
         const SleepStatsScreen(),
         overrides: careOverrides(),
       );
-      expect(
-        find.text(
-          'Giấc đêm dài nhất tăng từ 3 giờ 30 phút lên 6 giờ 30 phút trong 7 ngày.',
-        ),
-        findsOneWidget,
+      final insight = find.text(
+        'Giấc đêm dài nhất tăng từ 3 giờ 30 phút lên 6 giờ 30 phút trong 7 ngày.',
       );
+      await tester.scrollUntilVisible(insight, 300);
+      expect(insight, findsOneWidget);
       // Below "Tổng giờ ngủ mỗi ngày" and "Ngủ ngày và đêm" (v1.0 improvement).
       await tester.scrollUntilVisible(find.text('Nhịp ngủ 7 ngày'), 300);
       expect(find.text('Nhịp ngủ 7 ngày'), findsOneWidget);
