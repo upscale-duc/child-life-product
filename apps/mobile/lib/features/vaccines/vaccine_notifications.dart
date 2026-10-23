@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/route_guard.dart';
@@ -20,11 +22,18 @@ VaccinePush? vaccinePushOf(Map<String, dynamic> data) {
 }
 
 /// "Xem lịch tiêm" → the book; a tap or "Dời lịch" → the milestone page (VX 2), where the
-/// appointment date is set.
+/// appointment date is set. On top of what is showing: Back returns there.
 void openVaccinePush(WidgetRef ref, VaccinePush push, {String? action}) {
   if (ref.read(selectedBabyIdProvider) != push.babyId) {
     ref.read(selectedBabyIdProvider.notifier).select(push.babyId);
   }
-  final router = ref.read(routerProvider)..go(Routes.vaccines);
-  if (action != 'view') router.push('${Routes.vaccineAge}/${push.months}');
+  unawaited(
+    ref
+        .read(routerProvider)
+        .push<Object?>(
+          action == 'view'
+              ? Routes.vaccines
+              : '${Routes.vaccineAge}/${push.months}',
+        ),
+  );
 }

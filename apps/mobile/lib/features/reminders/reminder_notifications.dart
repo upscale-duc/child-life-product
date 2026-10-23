@@ -39,6 +39,7 @@ import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
 import '../me/me_repository.dart';
+import '../notifications/notification_destinations.dart' show untilInApp;
 
 /// One local notification this device should have pending (D-032: once, at due − lead).
 @immutable
@@ -374,9 +375,9 @@ class _ReminderNotificationSyncState
     final notifications = ref.read(reminderNotificationsProvider);
     unawaited(
       notifications
-          .init(_open)
+          .init((payload) => unawaited(_open(payload)))
           .then((_) async {
-            _open(await notifications.launchPayload());
+            await _open(await notifications.launchPayload());
           })
           .catchError((Object _) {}),
     );
@@ -396,7 +397,12 @@ class _ReminderNotificationSyncState
     }
   }
 
-  void _open(String? payload) {
+  Future<void> _open(String? payload) async {
+    if (payload == null) return;
+    // A cold start: the session and the tabs first, else the checks below find no membership
+    // yet and the tap was dropped.
+    await untilInApp(ref);
+    if (!mounted) return;
     // Nhịp lớn lên weekly summary (EN07 → EN09): open the week of that baby.
     final weekBaby = rhythmWeekOfPayload(payload);
     if (weekBaby != null && mounted) {

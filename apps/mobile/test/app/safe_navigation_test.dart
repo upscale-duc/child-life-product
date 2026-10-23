@@ -28,6 +28,7 @@ import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/milestones/milestone_screens.dart';
+import 'package:child_life/features/notifications/notification_destinations.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/purchase_resume.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
@@ -53,6 +54,7 @@ import '../helpers/library_fixtures.dart';
 import '../helpers/me_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/milestone_fixtures.dart';
+import '../helpers/notification_fixtures.dart';
 import '../helpers/reminder_fixtures.dart';
 import '../helpers/rhythm_fixtures.dart';
 import '../helpers/rhythm_week_fixtures.dart';
@@ -491,6 +493,107 @@ void main() {
       await _back(tester, router, _Back.system);
       _landedInTabs(tester, router);
       expect(find.byType(ReminderDetailScreen), findsNothing);
+      await _end(tester, container);
+    });
+  });
+
+  // Owner, 2026-10-23: a tapped push opens its destination on top of the screen the app was
+  // on, warm or cold, and Back returns there.
+  group('push taps (P-174 resolver)', () {
+    List<Override> pushOverrides() => [
+      ..._base(),
+      notificationOpenReporterProvider.overrideWithValue(
+        FakeNotificationOpenReporter(),
+      ),
+    ];
+    final reminders = NotificationTarget.fromPush({
+      'kind': 'memories',
+      'babyId': teddyId,
+      'destination': 'CARE_REMINDERS',
+      'inboxId': 'n_push000001',
+    });
+    late WidgetRef ref;
+    Widget capture(Widget app) => Consumer(
+      builder: (context, r, _) {
+        ref = r;
+        return app;
+      },
+    );
+
+    Future<void> tapPush(WidgetTester tester) async {
+      unawaited(
+        openNotification(ref, reminders, surface: NotificationSurface.push),
+      );
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('above the tabs: on top of the page, Back returns to it', (
+      tester,
+    ) async {
+      final (router, container) = await _app(
+        tester,
+        pushOverrides(),
+        wrap: capture,
+      );
+      await _open(tester, router, Routes.growth);
+      await _opensOnOpener(
+        tester,
+        router,
+        opener: GrowthScreen,
+        open: () => tapPush(tester),
+        location: Routes.reminders,
+        target: find.byType(RemindersScreen),
+        how: _Back.system,
+      );
+      await _end(tester, container);
+    });
+
+    testWidgets('inside the tabs: on top of the tab page, Back returns to it', (
+      tester,
+    ) async {
+      final (router, container) = await _app(
+        tester,
+        pushOverrides(),
+        tab: Routes.today,
+        wrap: capture,
+      );
+      await _open(tester, router, Routes.history);
+      final history = tester.element(find.byType(HistoryScreen));
+      await tapPush(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(RemindersScreen), findsOneWidget);
+      expect(_shells(router), 1);
+      await _back(tester, router, _Back.system);
+      expect(find.byType(RemindersScreen), findsNothing);
+      expect(tester.element(find.byType(HistoryScreen)), same(history));
+      await _back(tester, router, _Back.system);
+      _landedInTabs(tester, router);
+      expect(find.byType(TodayScreen), findsOneWidget);
+      await _end(tester, container);
+    });
+
+    testWidgets('a cold start: lands on it over the tabs once the splash is done', (
+      tester,
+    ) async {
+      final (router, container) = await _app(
+        tester,
+        pushOverrides(),
+        tab: null,
+        wrap: capture,
+      );
+      // The tap is handed over while the app is still starting.
+      unawaited(
+        openNotification(ref, reminders, surface: NotificationSurface.push),
+      );
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(RemindersScreen), findsOneWidget);
+      expect(_shells(router), 1);
+      await _back(tester, router, _Back.system);
+      _landedInTabs(tester, router);
+      expect(find.byType(RemindersScreen), findsNothing);
       await _end(tester, container);
     });
   });

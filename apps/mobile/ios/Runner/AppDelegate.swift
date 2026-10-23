@@ -37,6 +37,8 @@ import UserNotifications
     withCompletionHandler completionHandler: @escaping () -> Void
   ) {
     if RuleNotifications.handle(response, completion: completionHandler) { return }
+    // A server push that opens the app: queued for Flutter (cold starts lost it otherwise).
+    RuleNotifications.recordTap(response)
     // AR03 "Có 8 ảnh mới có thể có Teddy" opens the Tự lưu review.
     if response.notification.request.identifier.hasPrefix("autosave.") {
       let scheme = (Bundle.main.object(forInfoDictionaryKey: "CLURLScheme") as? String) ?? "childlife"

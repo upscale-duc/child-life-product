@@ -58,7 +58,13 @@ Future<bool> openEngagement(
       RegExp(r'^/memories/album/[A-Za-z0-9_-]{1,128}$').hasMatch(route) ||
       RegExp(r'^/story/[A-Za-z0-9_-]{1,128}$').hasMatch(route);
   if (!allowed) return false;
-  ref.read(routerProvider).go(route);
+  final router = ref.read(routerProvider);
+  if (surface == 'in_app') {
+    router.go(route);
+  } else {
+    // From a push or the inbox: on top of what is showing, so Back returns there.
+    unawaited(router.push<Object?>(route));
+  }
   return true;
 }
 

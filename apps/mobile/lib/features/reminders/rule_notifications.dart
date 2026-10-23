@@ -8,6 +8,7 @@ import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
 import '../home/home_shell.dart';
+import '../notifications/notification_destinations.dart' show untilInApp;
 import 'rule_screens.dart';
 
 /// A rule reminder push (D-051): `kind = reminderRule` with the baby, the rule and when it rang.
@@ -28,7 +29,8 @@ class RuleNotificationChannel {
 
   static const _channel = MethodChannel('childlife/rules');
 
-  /// Android: the data of the drawn notice that opened the app, taken once.
+  /// The data of the tapped push that opened the app, taken once: Android's drawn notices, and
+  /// on iOS every server push (queued natively, so a cold start does not lose it).
   Future<Map<String, dynamic>?> takeTappedPush() async {
     try {
       final r = await _channel.invokeMapMethod<String, Object?>(
@@ -36,11 +38,11 @@ class RuleNotificationChannel {
       );
       return r?.cast<String, dynamic>();
     } on Object {
-      return null; // iOS, tests.
+      return null; // Tests.
     }
   }
 
-  /// Android: [onTapped] runs when a drawn notice is tapped while the app runs.
+  /// [onTapped] runs when a push is tapped while the app runs (then [takeTappedPush]).
   void listen(void Function() onTapped) {
     try {
       _channel.setMethodCallHandler((call) async {
@@ -96,6 +98,8 @@ Future<void> openRulePush(
     router.go('${Routes.today}?log=${_logType(push.type)}');
     return;
   }
+  // A cold start: in the app first (past the splash), or the sheet opens under its redirect.
+  await untilInApp(ref, babyId: push.babyId);
   for (var i = 0; i < 40; i++) {
     final ready =
         ref.read(sessionProvider) is SessionSignedIn &&

@@ -21,6 +21,30 @@ enum RuleNotifications {
   /// "Ghi …" from a notification, for the app to pick up once Flutter runs.
   private static var launchAction: [String: Any]?
 
+  /// The server push that was tapped (its data, strings only), for the app to take: a cold start
+  /// runs Dart long after iOS hands over the tap, and the messaging plugin's own "opened" event
+  /// is lost when nothing listens yet. Taken once by `takeTappedPush`.
+  private static var tappedPush: [String: String]?
+  private static var lastTapId: String?
+  private static var channel: FlutterMethodChannel?
+
+  /// Keeps a tapped server push (not a dismissal, not a local notification) and tells Flutter.
+  static func recordTap(_ response: UNNotificationResponse) {
+    guard response.notification.request.trigger is UNPushNotificationTrigger,
+      response.actionIdentifier != UNNotificationDismissActionIdentifier
+    else { return }
+    // The same tap is never opened twice.
+    let id = response.notification.request.identifier
+    if id == lastTapId { return }
+    lastTapId = id
+    var data: [String: String] = [:]
+    for (key, value) in response.notification.request.content.userInfo {
+      if let key = key as? String, key != "aps", let value = value as? String { data[key] = value }
+    }
+    tappedPush = data
+    channel?.invokeMethod("tapped", arguments: nil)
+  }
+
   private static var vietnamese: Bool {
     // The in-app language (G-081) wins over the device's.
     if let chosen = UserDefaults.standard.string(forKey: "flutter.app.locale") {
@@ -168,11 +192,15 @@ enum RuleNotifications {
 
   static func register(with messenger: FlutterBinaryMessenger) {
     let channel = FlutterMethodChannel(name: "childlife/rules", binaryMessenger: messenger)
+    self.channel = channel
     channel.setMethodCallHandler { call, result in
       switch call.method {
       case "takeLaunchAction":
         result(launchAction)
         launchAction = nil
+      case "takeTappedPush":
+        result(tappedPush)
+        tappedPush = nil
       case "refreshCategories":
         registerCategories()
         result(nil)

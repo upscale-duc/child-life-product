@@ -476,9 +476,9 @@ Future<NotificationOpenOutcome> openNotification(
 }) async {
   // INBOX needs no baby (a removed member's row names one they no longer follow, D-092).
   if (surface == NotificationSurface.push) {
-    await _settle(
+    await untilInApp(
       ref,
-      target.destination == inboxDestination ? null : target.babyId,
+      babyId: target.destination == inboxDestination ? null : target.babyId,
     );
   }
   final session = ref.read(sessionProvider);
@@ -526,7 +526,6 @@ Future<NotificationOpenOutcome> openNotification(
       target,
       session,
       surface: surface,
-      first: i == 0,
       launchAction: launchAction,
     );
     if (opened == _Opened.engagementFailed) engagementFailed = true;
@@ -563,21 +562,31 @@ Future<NotificationOpenOutcome> openNotification(
   return outcome;
 }
 
-/// A push can open the app before the session (or a just-joined baby) has loaded: wait for it
-/// a little, as the rule reminder sheet always did.
-Future<void> _settle(WidgetRef ref, String? babyId) async {
+/// A tap can open the app before the session (or a just-joined baby) has loaded and while the
+/// splash still shows: wait (up to 10 s) until the person is in the app, on the tabs or above
+/// them, so what opens lands on top of that and not under the splash's own redirect (a cold
+/// start lost the destination). Shared by pushes and local notifications.
+Future<void> untilInApp(WidgetRef ref, {String? babyId}) async {
   for (var i = 0; i < 40; i++) {
     final session = ref.read(sessionProvider);
     final ready = switch (session) {
       SessionLoading() => false,
       SessionSignedIn() =>
-        babyId == null || session.membershipFor(babyId) != null,
+        (babyId == null || session.membershipFor(babyId) != null) &&
+            _showsApp(ref.read(routerProvider)),
       _ => true,
     };
     if (ready) return;
     await Future<void>.delayed(const Duration(milliseconds: 250));
   }
 }
+
+/// The tab shell is up (a router without one, as in tests, always is).
+bool _showsApp(GoRouter router) =>
+    !router.configuration.routes.any((r) => r is ShellRouteBase) ||
+    router.routerDelegate.currentConfiguration.matches.any(
+      (m) => m is ShellRouteMatch,
+    );
 
 bool _babyAllowed(SessionSignedIn session, String? babyId) =>
     babyId == null || session.membershipFor(babyId) != null;
@@ -666,7 +675,6 @@ Future<_Opened> _tryOpen(
   NotificationTarget target,
   SessionSignedIn session, {
   required NotificationSurface surface,
-  required bool first,
   Future<String?> Function()? launchAction,
 }) async {
   final def = notificationDestinations[id];
@@ -685,6 +693,11 @@ Future<_Opened> _tryOpen(
     }
   }
 
+  // Every destination opens ON TOP of what is showing (owner, 2026-10-23: keep the screen the
+  // person was on, Back returns to it): the router's push stacks a tab page as its overlay twin
+  // above a full-screen page (D-076 nav), and a tab root opens in the tabs, whose other stacks
+  // stay as they were.
+  void open(String location) => unawaited(router.push<Object?>(location));
   switch (id) {
     case 'CARE_RULE_REMINDER':
       final action = await launchAction?.call();
@@ -695,7 +708,7 @@ Future<_Opened> _tryOpen(
       ), action: action);
     case 'CARE_REMINDERS':
       select();
-      router.go(Routes.reminders);
+      open(Routes.reminders);
     case 'CARE_VACCINES':
       final push = vaccinePushOf({...target.data, 'kind': 'vaccine'});
       if (push != null) {
@@ -703,40 +716,28 @@ Future<_Opened> _tryOpen(
         openVaccinePush(ref, push, action: action);
       } else {
         select();
-        router.go(Routes.vaccines);
+        open(Routes.vaccines);
       }
     case 'SPENDING':
       select();
-      // Chi tiêu lives in Tiện ích (450:6597).
-      router
-        ..go(Routes.utilities)
-        ..push(Routes.spending);
+      open(Routes.spending);
     case 'SPENDING_IMPORT':
       select();
       // Nhập chi tiêu (D-060): the import's result.
-      router
-        ..go(Routes.utilities)
-        ..push(Routes.spending)
-        ..push('${Routes.spendingImport}/${params['importId']}');
+      open('${Routes.spendingImport}/${params['importId']}');
     case 'MEMORIES':
       select();
-      router.go(Routes.memories);
+      open(Routes.memories);
     case 'MEMORIES_ALBUM':
       select();
-      router
-        ..go(Routes.memories)
-        ..push('${Routes.memories}/album/${params['albumId']}');
+      open('${Routes.memories}/album/${params['albumId']}');
     case 'MEMORIES_STORY':
       select();
-      router
-        ..go(Routes.memories)
-        ..push('${Routes.story}/${params['storyId']}');
+      open('${Routes.story}/${params['storyId']}');
     case 'MEMORIES_VIDEO_JOB':
       // Video kỷ niệm ready or not made (D-068 #4): MM09 / MM14 for that job.
       select();
-      router
-        ..go(Routes.memories)
-        ..push('${Routes.memoryStoryJob}/${params['jobId']}?baby=$babyId');
+      open('${Routes.memoryStoryJob}/${params['jobId']}?baby=$babyId');
     case 'MEMORIES_PENDING_REVIEW' ||
         'MEMORIES_KEEPSAKE_SUGGESTION' ||
         'MEMORIES_WEEKLY_RECAP' ||
@@ -746,34 +747,16 @@ Future<_Opened> _tryOpen(
       if (!opened) return _Opened.engagementFailed;
     case 'FAMILY_MESSAGES':
       select();
-      if (surface == NotificationSurface.inbox) {
-        router.push(Routes.messages);
-      } else {
-        router
-          ..go(Routes.today)
-          ..push(Routes.messages);
-      }
+      open(Routes.messages);
     case 'FAMILY_MEMBERS':
       // Gia đình lives in Tiện ích.
       select();
-      router.go(Routes.family);
+      open(Routes.family);
     case 'FAMILY_STORAGE':
-      if (surface == NotificationSurface.inbox) {
-        router.push(Routes.meStorage);
-      } else {
-        router
-          ..go(Routes.today)
-          ..push(Routes.meStorage);
-      }
+      open(Routes.meStorage);
     case 'INBOX':
       // From the inbox: already there.
-      if (surface == NotificationSurface.push) {
-        if (first) {
-          router.push(Routes.notifications);
-        } else {
-          router.go(Routes.notifications);
-        }
-      }
+      if (surface == NotificationSurface.push) open(Routes.notifications);
     default:
       return _Opened.no;
   }

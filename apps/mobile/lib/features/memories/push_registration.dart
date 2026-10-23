@@ -30,8 +30,8 @@ import '../reminders/rule_notifications.dart';
 /// push token for generic family notices (S10, R-120) when there is one, and the app language
 /// for the notice copy. A remote "Đăng xuất" (S11) signs this install out. It never asks
 /// for permission itself: iOS needs a granted notification permission and APNs (Apple team),
-/// Android 13+ uses the permission reminders already ask for (8c). Tapping a notice opens
-/// Kỷ niệm; a rule reminder (v1.0 1f) opens its sheet.
+/// Android 13+ uses the permission reminders already ask for (8c). Tapping a push opens its
+/// destination ([openNotification]) on top of the screen the app was on, cold or warm.
 ///
 /// P-137: the first launch or return to the foreground on a local day also writes the activity
 /// heartbeat (`lastActiveAt`, coarse `model`, `osVersion`) on that row, and on Android the
@@ -58,6 +58,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   var _beating = false;
   late final AppLifecycleListener _lifecycle;
   String? _installFor;
+  final _openedIds = <String>{};
 
   @override
   void initState() {
@@ -91,22 +92,25 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   }
 
   Future<void> _listenForTaps() async {
-    try {
-      final initial = await FirebaseMessaging.instance.getInitialMessage();
-      if (initial != null) unawaited(_open(initial));
-      _opened = FirebaseMessaging.onMessageOpenedApp.listen(
-        (m) => unawaited(_open(m)),
-      );
-      // Android draws reminder pushes itself (A6): their taps come through Push.kt.
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        const rules = RuleNotificationChannel();
-        Future<void> tapped() async {
-          final data = await rules.takeTappedPush();
-          if (data != null && mounted) await _open(RemoteMessage(data: data));
-        }
+    // Taps the native side queued (taken once): on iOS every server push, since the messaging
+    // plugin hands a cold start's tap over before Dart listens and it was lost (the app opened
+    // on Hôm nay); on Android the reminder pushes the app draws itself (A6, Push.kt).
+    const rules = RuleNotificationChannel();
+    Future<void> tapped() async {
+      final data = await rules.takeTappedPush();
+      if (data != null && mounted) await _open(RemoteMessage(data: data));
+    }
 
-        rules.listen(() => unawaited(tapped()));
-        unawaited(tapped());
+    rules.listen(() => unawaited(tapped()));
+    unawaited(tapped());
+    try {
+      if (defaultTargetPlatform != TargetPlatform.iOS) {
+        // Listening before asking for the launch message, so a tap in between is not missed.
+        _opened = FirebaseMessaging.onMessageOpenedApp.listen(
+          (m) => unawaited(_open(m)),
+        );
+        final initial = await FirebaseMessaging.instance.getInitialMessage();
+        if (initial != null) unawaited(_open(initial));
       }
       // A rule reminder that rings while the app is open shows 1g at once; a Video kỷ niệm that
       // finishes (or fails) while it is open says so, with "Xem".
@@ -124,6 +128,16 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   }
 
   Future<void> _open(RemoteMessage message) async {
+    if (!mounted) return;
+    // One open per notification, whichever way it arrived.
+    final id = message.data['inboxId'] ?? message.messageId;
+    if (id is String) {
+      if (_openedIds.contains(id)) return;
+      _openedIds.add(id);
+    }
+    // A cold start: the session (and the tabs) first, or the row is not marked read and an
+    // engagement link waits for a sign-in that already happened.
+    await untilInApp(ref);
     if (!mounted) return;
     // D-076 #2: the push's row in Hộp thông báo is read once the push is opened.
     markPushRead(ref, message.data);
@@ -155,9 +169,14 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     if (ref.read(selectedBabyIdProvider) != job.babyId) {
       ref.read(selectedBabyIdProvider.notifier).select(job.babyId);
     }
-    ref.read(routerProvider)
-      ..go(Routes.memories)
-      ..push('${Routes.memoryStoryJob}/${job.jobId}?baby=${job.babyId}');
+    // On top of what is showing: Back returns there.
+    unawaited(
+      ref
+          .read(routerProvider)
+          .push<Object?>(
+            '${Routes.memoryStoryJob}/${job.jobId}?baby=${job.babyId}',
+          ),
+    );
   }
 
   void _toastJob(KeepsakeJobPush job) {

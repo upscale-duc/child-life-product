@@ -487,7 +487,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 19);
+      expect(notificationDestinations.length, 18);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {
@@ -582,35 +582,31 @@ void main() {
             'date': '2026-10-09',
             'months': '2',
           },
-          ['/care/vaccines', '/care/vaccines/age/2'],
+          ['/care/vaccines/age/2'],
         ),
         (
           {'kind': 'spending', 'babyId': teddyId},
-          ['/utilities', '/utilities/spending'],
+          ['/utilities/spending'],
         ),
         (
           {'kind': 'spending', 'babyId': teddyId, 'importId': importId},
-          [
-            '/utilities',
-            '/utilities/spending',
-            '/utilities/spending/import/$importId',
-          ],
+          ['/utilities/spending/import/$importId'],
         ),
         ({'kind': 'memories', 'babyId': teddyId}, ['/memories']),
         (
           {'kind': 'album', 'babyId': teddyId, 'albumId': 'a1'},
-          ['/memories', '/memories/album/a1'],
+          ['/memories/album/a1'],
         ),
         (
           {'kind': 'story', 'babyId': teddyId, 'storyId': 's1'},
-          ['/memories', '/story/s1'],
+          ['/story/s1'],
         ),
         (
           {'kind': 'keepsakeVideo', 'babyId': teddyId, 'jobId': jobId},
-          ['/memories', '/memories/video/job/$jobId?baby=$teddyId'],
+          ['/memories/video/job/$jobId?baby=$teddyId'],
         ),
-        ({'kind': 'message', 'babyId': teddyId}, ['/today', '/messages']),
-        ({'kind': 'storage', 'babyId': teddyId}, ['/today', '/me/storage']),
+        ({'kind': 'message', 'babyId': teddyId}, ['/messages']),
+        ({'kind': 'storage', 'babyId': teddyId}, ['/me/storage']),
         ({'kind': 'weeklySummary', 'babyId': teddyId, 'engagementId': eng}, []),
         (
           {
@@ -623,7 +619,7 @@ void main() {
         ({'kind': 'test'}, ['/notifications']),
       ];
       for (final (data, expected) in cases) {
-        // Back to the probe (the last destination replaced it).
+        // Back to the probe alone (each destination opens on top of it).
         ProviderScope.containerOf(
           tester.element(find.byType(Scaffold).first),
         ).read(routerProvider).go('/');
@@ -666,7 +662,7 @@ void main() {
         surface: NotificationSurface.push,
       );
       expect(outcome, NotificationOpenOutcome.fallback);
-      expect(visits, unorderedEquals(['/utilities', '/utilities/spending']));
+      expect(visits, ['/utilities/spending']);
       expect(
         find.text('Không mở được đúng mục này, đã mở trang gần nhất.'),
         findsOneWidget,
@@ -801,7 +797,8 @@ void main() {
       );
       await tester.tap(find.text('Album được cập nhật'));
       await tester.pumpAndSettle();
-      expect(visits, unorderedEquals(['/memories', '/memories/album/a1']));
+      // On top of the inbox: Back returns to it.
+      expect(visits, ['/memories/album/a1']);
       final r = reporter.records.single;
       expect(r.inboxId, 'n_album00001');
       expect(r.surface, NotificationSurface.inbox);
