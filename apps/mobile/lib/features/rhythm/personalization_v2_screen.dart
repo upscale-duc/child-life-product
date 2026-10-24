@@ -13,6 +13,8 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
+import '../reminders/reminder_notifications.dart';
+import 'try_reminders.dart';
 import 'rhythm_access.dart';
 import '../me/me_widgets.dart';
 import 'personalization_events.dart';
@@ -104,6 +106,19 @@ Future<bool> mutateDay(
   try {
     // Owner, 2026-10-22: every action that calls the server shows that it is working.
     await withClProgress(context, () => updatePersonalDay(ref, key, action));
+    final value = action['kind'] == 'respond' ? action['value'] : null;
+    final contentId = '${action['contentId']}';
+    // P-179: an answer ends the plan's reminders; a plan asks when to remind.
+    final store = ref.read(tryReminderStoreProvider);
+    if (store != null &&
+        tryReminderClearingValues.contains(value) &&
+        await store.clear(contentId)) {
+      ref.read(tryRemindersRevisionProvider.notifier).bump();
+    }
+    if (value == 'intend' && context.mounted) {
+      await _askTryReminder(context, ref, key, contentId);
+      return true;
+    }
     if (context.mounted) {
       final undo = undoOf(action, before);
       showClToast(
@@ -132,6 +147,68 @@ Future<bool> mutateDay(
     }
     return false;
   }
+}
+
+/// P-179: "Mình sẽ thử" asks when this phone should remind (tonight at 19:00 or 20:30 while
+/// ahead, in an hour before 21:00, else tomorrow at 09:00, or none). The next morning at 08:30
+/// it asks "Đã thử chưa?" unless an answer came first.
+Future<void> _askTryReminder(
+  BuildContext context,
+  WidgetRef ref,
+  PersonalDayKey key,
+  String contentId,
+) async {
+  final l = AppLocalizations.of(context);
+  final locale = Localizations.localeOf(context);
+  final now = DateTime.now();
+  String hhmm(DateTime t) =>
+      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+  final soon = now.add(const Duration(minutes: 10));
+  final tonight = [
+    for (final (h, m) in const [(19, 0), (20, 30)])
+      if (DateTime(now.year, now.month, now.day, h, m).isAfter(soon))
+        DateTime(now.year, now.month, now.day, h, m),
+  ];
+  final options = <(String, String, DateTime?)>[
+    for (final t in tonight) (hhmm(t), l.pv2RemindTonight(hhmm(t)), t),
+    if (now.hour < 21)
+      ('1h', l.pv2RemindIn1h, now.add(const Duration(hours: 1))),
+    if (tonight.isEmpty)
+      (
+        'tomorrow',
+        l.pv2RemindTomorrow('09:00'),
+        DateTime(now.year, now.month, now.day + 1, 9),
+      ),
+    ('none', l.pv2RemindNone, null),
+  ];
+  final choice = await _optionSheet(context, l.pv2RemindAsk, [
+    for (final (value, label, _) in options) (value, label),
+  ]);
+  final at = options.where((o) => o.$1 == choice).firstOrNull?.$3;
+  final store = ref.read(tryReminderStoreProvider);
+  if (at == null || store == null) {
+    if (context.mounted) showClToast(context, message: l.pv2ToastIntend);
+    return;
+  }
+  await ref.read(reminderNotificationsProvider).request();
+  await store.prune(now);
+  await store.set(
+    TryReminder(
+      contentId: contentId,
+      babyId: key.babyId,
+      title:
+          ref
+              .read(rhythmContentProvider)
+              .value
+              ?.activity(contentId)
+              ?.title
+              .of(locale) ??
+          '',
+      at: at,
+    ),
+  );
+  ref.read(tryRemindersRevisionProvider.notifier).bump();
+  if (context.mounted) showClToast(context, message: l.pv2RemindSet(hhmm(at)));
 }
 
 /// A sheet of options, each a plain row; returns the chosen value.

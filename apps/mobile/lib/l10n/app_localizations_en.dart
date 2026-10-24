@@ -19976,6 +19976,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2ChipHelpful => 'Helpful';
 
   @override
+  String get pv2RemindAsk => 'When should we remind you?';
+
+  @override
+  String pv2RemindTonight(String time) {
+    return 'Tonight at $time';
+  }
+
+  @override
+  String get pv2RemindIn1h => 'In 1 hour';
+
+  @override
+  String pv2RemindTomorrow(String time) {
+    return 'Tomorrow at $time';
+  }
+
+  @override
+  String get pv2RemindNone => 'No reminder';
+
+  @override
+  String pv2RemindSet(String time) {
+    return 'We will remind you at $time';
+  }
+
+  @override
+  String get pv2TryNowTitle => 'Time to try';
+
+  @override
+  String get pv2TryAskTitle => 'Did you try it?';
+
+  @override
+  String pv2TryAskBody(String title) {
+    return '$title · Tap to answer';
+  }
+
+  @override
   String get pv2ChipHelpedBefore => 'Helped before';
 
   @override

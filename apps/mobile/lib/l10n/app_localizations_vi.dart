@@ -18856,6 +18856,41 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2ChipHelpful => 'Có ích';
 
   @override
+  String get pv2RemindAsk => 'Nhắc mình thử lúc nào?';
+
+  @override
+  String pv2RemindTonight(String time) {
+    return 'Tối nay $time';
+  }
+
+  @override
+  String get pv2RemindIn1h => 'Sau 1 giờ';
+
+  @override
+  String pv2RemindTomorrow(String time) {
+    return 'Sáng mai $time';
+  }
+
+  @override
+  String get pv2RemindNone => 'Không cần nhắc';
+
+  @override
+  String pv2RemindSet(String time) {
+    return 'Sẽ nhắc bạn lúc $time';
+  }
+
+  @override
+  String get pv2TryNowTitle => 'Đến giờ thử rồi';
+
+  @override
+  String get pv2TryAskTitle => 'Đã thử chưa?';
+
+  @override
+  String pv2TryAskBody(String title) {
+    return '$title · Chạm để trả lời';
+  }
+
+  @override
   String get pv2ChipHelpedBefore => 'Từng có ích';
 
   @override

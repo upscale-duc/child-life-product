@@ -20,6 +20,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
+import '../rhythm/try_reminders.dart';
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/personalization_digest.dart';
 import '../rhythm/personalization_events.dart';
@@ -438,6 +439,23 @@ class _ReminderNotificationSyncState
       });
       return;
     }
+    final tried = tryReminderFromPayload(payload);
+    if (tried != null && mounted) {
+      final session = ref.read(sessionProvider);
+      final member = session is SessionSignedIn
+          ? session.membershipFor(tried.babyId)
+          : null;
+      if (member == null) return;
+      ref.read(selectedBabyIdProvider.notifier).select(tried.babyId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(routerProvider)
+              .push('${Routes.rhythmActivity}/${tried.contentId}');
+        }
+      });
+      return;
+    }
     final personalBaby = personalDayFromPayload(payload);
     if (personalBaby != null && mounted) {
       final session = ref.read(sessionProvider);
@@ -580,6 +598,9 @@ class _ReminderNotificationSyncState
     for (final p in ref.read(rhythmWeeklyPlanProvider)) {
       out.add(rhythmWeeklyNotification(l10n, p));
     }
+    // P-179: "Mình sẽ thử" at a chosen time, and the next morning's question.
+    final tries = ref.read(tryReminderStoreProvider)?.read().values ?? const [];
+    out.addAll(tryReminderNotifications(l10n, tries, DateTime.now()));
     final digest = ref.read(personalDigestPlanProvider).value;
     if (digest != null) {
       out.add(
@@ -634,6 +655,7 @@ class _ReminderNotificationSyncState
   @override
   Widget build(BuildContext context) {
     ref.watch(engagementRevisionProvider);
+    ref.watch(tryReminderStoreProvider);
     final enabled = ref.watch(notificationsEnabledProvider);
     ref.watch(deviceRemindersProvider);
     for (final r in ref.watch(deviceRemindersProvider)) {

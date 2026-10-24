@@ -27885,6 +27885,62 @@
   "@pv2ChipHelpful": {
     "description": "Status chip: the person found the idea helpful."
   },
+  "pv2RemindAsk": "Nhắc mình thử lúc nào?",
+  "@pv2RemindAsk": {
+    "description": "Sheet title after \"Mình sẽ thử\": when this phone reminds the person to try the idea."
+  },
+  "pv2RemindTonight": "Tối nay {time}",
+  "@pv2RemindTonight": {
+    "description": "Reminder choice: today at a clock time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2RemindIn1h": "Sau 1 giờ",
+  "@pv2RemindIn1h": {
+    "description": "Reminder choice: an hour from now."
+  },
+  "pv2RemindTomorrow": "Sáng mai {time}",
+  "@pv2RemindTomorrow": {
+    "description": "Reminder choice: tomorrow morning at a clock time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2RemindNone": "Không cần nhắc",
+  "@pv2RemindNone": {
+    "description": "Reminder choice: none."
+  },
+  "pv2RemindSet": "Sẽ nhắc bạn lúc {time}",
+  "@pv2RemindSet": {
+    "description": "Toast after choosing a reminder time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2TryNowTitle": "Đến giờ thử rồi",
+  "@pv2TryNowTitle": {
+    "description": "Notification title at the time the person chose to try an idea; the body is the idea."
+  },
+  "pv2TryAskTitle": "Đã thử chưa?",
+  "@pv2TryAskTitle": {
+    "description": "Next-morning notification title when the person has not answered after a planned try."
+  },
+  "pv2TryAskBody": "{title} · Chạm để trả lời",
+  "@pv2TryAskBody": {
+    "description": "Next-morning notification body: the idea, then how to answer.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "pv2ChipHelpedBefore": "Từng có ích",
   "@pv2ChipHelpedBefore": {
     "description": "Status chip: an earlier try was helpful and the idea is planned again (owner, 2026-10-24: \"Có ích\" next to \"Mình sẽ thử\" read as a contradiction)."

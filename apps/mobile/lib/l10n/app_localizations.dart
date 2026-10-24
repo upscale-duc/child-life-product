@@ -31506,6 +31506,60 @@ abstract class AppLocalizations {
   /// **'Có ích'**
   String get pv2ChipHelpful;
 
+  /// Sheet title after "Mình sẽ thử": when this phone reminds the person to try the idea.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc mình thử lúc nào?'**
+  String get pv2RemindAsk;
+
+  /// Reminder choice: today at a clock time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối nay {time}'**
+  String pv2RemindTonight(String time);
+
+  /// Reminder choice: an hour from now.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sau 1 giờ'**
+  String get pv2RemindIn1h;
+
+  /// Reminder choice: tomorrow morning at a clock time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng mai {time}'**
+  String pv2RemindTomorrow(String time);
+
+  /// Reminder choice: none.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không cần nhắc'**
+  String get pv2RemindNone;
+
+  /// Toast after choosing a reminder time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ nhắc bạn lúc {time}'**
+  String pv2RemindSet(String time);
+
+  /// Notification title at the time the person chose to try an idea; the body is the idea.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ thử rồi'**
+  String get pv2TryNowTitle;
+
+  /// Next-morning notification title when the person has not answered after a planned try.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử chưa?'**
+  String get pv2TryAskTitle;
+
+  /// Next-morning notification body: the idea, then how to answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'{title} · Chạm để trả lời'**
+  String pv2TryAskBody(String title);
+
   /// Status chip: an earlier try was helpful and the idea is planned again (owner, 2026-10-24: "Có ích" next to "Mình sẽ thử" read as a contradiction).
   ///
   /// In vi, this message translates to:
