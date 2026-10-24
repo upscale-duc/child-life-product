@@ -6,7 +6,7 @@ Sources:
 
 Where the two disagree, **Figma wins**, because it is V1 scope (CLAUDE.md).
 
-Status: phases A–E are in the workspace (§8–§12), uncommitted, dark behind `adaptive_experience` / `adaptive_nav`; nothing is deployed and nothing has been tried on a phone. Owner decisions: D-097. Engineering proposals P-175 … P-178, questions Q-087 … Q-094 and the design gap note G-110 are in the business map.
+Status: phases A–E are committed and pushed on `s2-onboarding` (1bfee4d4; audit fixes 5a0a4a15, §13), deployed to dev (rules, indexes, flag and analytics functions, portal) and installed on the owner's iPhone. They are dark behind `adaptive_experience` / `adaptive_nav` unless the flags are on for the family. Owner decisions: D-097. Engineering proposals P-175 … P-178, questions Q-087 … Q-094 and the design gap note G-110 are in the business map.
 
 ---
 
@@ -103,7 +103,7 @@ The full list is in the extraction (§ Open questions, 30 items). The ones that 
 
 | # | Issue | Recommendation (engineering default until the owner decides) |
 |---|---|---|
-| 1 | The drawn Todays disagree with one another. AX10, AX11, AX12, AX13 and AX14 follow the AX00 "thứ tự mặc định" row. AX06 (Na, the same preset goals as AX12) puts Cả nhà 4th and Nhắc nhở 5th. Read literally ("goal = serves a chosen goal"), the AX00 weights reproduce AX06 only | Keep the weights, but score the **goal term relative to the age preset** (§4.4): +1 for a goal the person added, −1 for a preset goal they removed. With the presets, Today is exactly the AX00 default (5 of 6 frames); AX06 is treated as the outlier (Q-087) |
+| 1 | The drawn Todays disagree with one another. AX10, AX11, AX12, AX13 and AX14 follow the AX00 "thứ tự mặc định" row. AX06 (Na, the same preset goals as AX12) puts Cả nhà 4th and Nhắc nhở 5th. Read literally ("goal = serves a chosen goal"), the AX00 weights reproduce AX06 only | Keep the weights. **Untouched goals** (skipped, migrated): the goal term is relative to the presets, so Today is exactly the AX00 default (AX10–AX14). **Ticked goals**: every ticked goal counts the same, which also gives AX06 (§4.4). This was refined after the device test (§13); Q-087 was first answered with "relative" in every case |
 | 2 | AX41 shows quick log for a 1–3 child without the care goal, but its own note says quick log only appears after "Chọn theo dõi" | **The quick-log widget follows the child's trackers.** At add-child, the default trackers come from the band (0–1: bú bình, bú mẹ, ngủ, tã; 1–3: ngủ, tã; 3+: none). AX05 edits them when the care goal is on. This satisfies both AX11 ("Ngủ, tã (gợi ý)") and the AX41 note (Q-088) |
 | 3 | "Ẩn theo gợi ý tuổi" (AX14) could read as an auto-hide | It means **hidden by default when the layout was created**, never hidden later. The engine freezes defaults at the band that was applied (§4.4) |
 | 4 | Goals and layout "per child": per person or shared? P-061 kept the layout per device | **Per person × child, synced** (`users/{uid}/experience/{babyId}`). The goal ("what do *you* want help with") is personal, and Mẹ and Ba may differ. Moving off the device makes Hồ sơ › "mục tiêu & Hôm nay" work on every phone. This supersedes P-061 for Today only (P-175, Q-089) |
@@ -206,8 +206,9 @@ The display order of the goal list is the presets first, then the rest in a fixe
 
 ```
 score = 0.35·goal + 0.25·age + 0.20·usage + 0.10·recent + 0.10·product
-goal    = [serves a chosen goal] − [serves a goal of the band's preset]   ∈ {−1, 0, 1}
-          (the AX00 default list already encodes the preset goals, so the presets change nothing)
+goal    = goals ticked by the person (goalsSource = chosen):  [serves a ticked goal]        ∈ {0, 1}
+          not ticked yet (skipped, migrated):               [serves a goal] − [serves a preset goal] = 0
+          (the AX00 default list already encodes the presets, so an unticked Today is the age order)
 age     = 1 − index/len in the band's default list (AX00 "thứ tự mặc định"); 0 if absent
 usage   = this person's opens of the widget's module over 28 days, normalised to the top module (0 at cold start)
 recent  = 1 if the module had activity for this child in the last 48 h, else 0
@@ -238,10 +239,30 @@ Band default lists (AX00, with the existing sections in their D-076 places):
 - `bandApplied` is stored. It changes only when the person presses "Áp dụng" (AX33), "Khôi phục gợi ý theo tuổi" (AX14) or edits the goals.
 - The current band is only used to decide whether to *offer* AX33.
 
+**Why two cases** (audit, 2026-10-24, §13): an earlier version scored the goal term relative to the presets in every case. Then Cam, 17 months, ticked "Lưu giữ kỷ niệm" and "Tăng trưởng & tiêm chủng" (both presets for 1–3) together with three more goals. The two presets got no goal credit and ranked 4th and 6th, under the added ones. Now a ticked goal is a ticked goal. Before anything is ticked, Hôm nay is exactly the AX00 default.
+
 **Worked examples.** Unit tests in both languages pin these.
-- **Na, 4 years, preset goals:** every goal term is 0, so the order is the age order. That gives moment_today, create_from_memories, spending, reminders, family_view, which is AX12 and AX14.
-- **Na, the person adds "Tăng trưởng & tiêm chủng":** growth scores .35 and goes to the top. That is above moment_today (.25), and growth becomes visible.
-- **Teddy, 2 months, the person unticks "Theo dõi bú, ngủ, tã":** tiles scores −.35 + .25 = −.10 and goes to the bottom. Tiles still show while the child has trackers on, because removing a goal never hides on its own.
+- **Na, 4 years, goals skipped:** goal term 0 everywhere, so the order is the age order. That gives moment_today, create_from_memories, spending, reminders, family_view, which is AX12 and AX14.
+- **Na, the presets ticked in AX04:**
+  | Widget | Score |
+  |---|---|
+  | moment_today | .35 + .25 = .60 |
+  | create_from_memories | .55 |
+  | spending | .50 |
+  | family_view | .35 + .05 = .40 |
+  | reminders | .10 |
+
+  This is **AX06** (Cả nhà before Nhắc nhở), so AX06 is no longer an outlier.
+- **Cam, 17 months, ticks memories, growth_vaccines, family, spending, reminders:**
+  | Widget | Score |
+  |---|---|
+  | recent_memories | .60 |
+  | reminders | .35 + .08 = .43 |
+  | growth | .35 + .04 = .39 |
+  | spending, family_view | .35 each |
+  | tiles | .21 (in the 1–3 list, its goal not ticked) |
+- **Teddy, 2 months, unticks "Theo dõi bú, ngủ, tã" (keeps memories):** tiles has no goal credit any more, .25. Kỷ niệm gần đây rises to .35 + .08 = .43 and leads. Tiles still show while the child has trackers on, because removing a goal never hides on its own.
+- **Visibility is unchanged by ticking:** only goals *added* beyond the presets make a widget visible by default. Ticking the preset "Lưu giữ kỷ niệm" for a newborn does not add Lưu khoảnh khắc hôm nay.
 
 ### 4.5 Storage: `users/{uid}/experience/{babyId}`
 
@@ -370,7 +391,7 @@ Each phase is shippable and dark-launched. "Done" follows CLAUDE.md: dev Firebas
 ## 7. Decisions needed from the owner
 
 These are mirrored as Q-087 … Q-094.
-1. **Q-087:** Score the goal term relative to the age preset, so that AX10–AX14 are the cold-start Todays and AX06's order (Cả nhà before Nhắc nhở) is the outlier? Or should AX06 win, which would also reorder AX10 and AX11?
+1. **Q-087 (D-097, refined 2026-10-24):** "relative to the preset" now applies only while the goals are untouched. Once ticked, every goal counts (§4.4, §13).
 2. **Q-088:** Quick log follows the child's trackers, with band defaults at add-child (1–3: ngủ, tã)?
 3. **Q-089:** Goals and Today layout per person × child, synced (superseding P-061 for Today)?
 4. **Q-090:** Hồ sơ keeps every current Tôi row in an extra "Ứng dụng" group?
@@ -477,3 +498,22 @@ Uncommitted and behind `adaptive_experience`. All 4092 Flutter tests, 907 contra
 - The portal "Phân tích sản phẩm" readout does not filter or group by `stageBand` / adaptive events yet. The facts are recorded and the readout needs its own change.
 - Remaining design gaps G-110: the AX30/AX31 switcher sheet and switch motion, the Chi tiêu / Nhắc nhở AX cards, the "Nhịp hôm nay" header and the "Ghi lần đầu" tile pill.
 - None of phases A–E has been tried on a phone or on dev Firebase. A dev deploy needs `firestore:rules`, `firestore:indexes` and `functions` (entitlements, account, product analytics). Then turn on `adaptive_experience` and `adaptive_nav` for an internal family.
+
+## 13. Device test and audit (2026-10-24)
+
+The owner tested on an iPhone 14 Pro Max (dev build, flags on, Cam 17 months) and reported two bugs. The audit of the screenshots and the code found four more. All are fixed in `5a0a4a15`, with tests.
+
+| # | Found | Fix | Test |
+|---|---|---|---|
+| 1 | **Owner:** reordering AX14 / AX06 was hard. Only the small grid icon dragged, and it was the wrong icon | `AxReorderGroup` (`features/adaptive/reorder_group.dart`), as in the old Tuỳ chỉnh sheet (370:1525): a long press anywhere on a row lifts it; the three-bar `DragHandle` (44 pt target) drags at once; lift, shadow and haptic | `adaptive_today_test.dart` "a long press anywhere on a row reorders" |
+| 2 | **Owner:** some children had no "Tuỳ chỉnh Hôm nay". It was hidden on the first run (nothing logged, no photo), and nothing else opens AX14 there. The old test passed only because the link was off screen | The link shows on every Hôm nay except a relative's | `adaptive_today_test.dart` first-run case, now scrolled to |
+| 3 | Ticked preset goals ranked last (Cam: Kỷ niệm 4th, Tăng trưởng 6th) | Ticked goals all count; "relative to the presets" only while untouched (§4.4) | `adaptive.test.ts` / `adaptive_engine_test.dart` "ticked goals all count", "AX06" |
+| 4 | Khám phá: the Lumi row drew an empty square (`brandMark` is a filled mark) | `spark` icon | golden `ax20` / `ax21` |
+| 5 | AX06: the quick log said "Vì: Luôn có"; the rank pills changed width with the digit | Age picks say "Vì: Gợi ý cho tuổi của {tên}", "Luôn có" is for Nhắc nhở only; fixed 28 pt circles | `adaptive_setup_test.dart`, golden `ax06` |
+| 6 | A scroll that ended on a Hôm nay widget counted as a tap (inflating the usage signal) | `AdaptiveTapTracker` counts a tap only within 12 px and 600 ms | `adaptive_signals_test.dart` "a tap counts as use; a scroll … does not" |
+| 7 | Khám phá's Tiêm chủng row hid what the book needs: a child added at 17 months showed "Sơ sinh · đã quá 527 ngày" inside | The row shows "Ghi các mũi đã tiêm" / "N mũi quá hạn" like the Chăm sóc tile; the book's own setup ("{tên} đã tiêm những mũi nào?") was already there | `explore_screen.dart` (vaccine book state) |
+
+**Notes:**
+- `auto_save_test.dart` fails now and then in a full run and passes alone (three times this round). That file is untouched here.
+- Another session's Print Studio work was in progress in the shared tree and broke `flutter gen-l10n` (`@psTab` missing). The device build was therefore made from HEAD plus this round's files in a scratch copy, and the commit holds only those files.
+
