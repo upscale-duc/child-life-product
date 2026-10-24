@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { logger } from 'firebase-functions';
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import {
   addDaysIso,
@@ -11,6 +12,7 @@ import {
   aiSummaryPromptVersion,
   checkInSchema,
   claimProblems,
+  forbiddenClaimPatterns,
   daysBetweenIso,
   familyCan,
   generateSummaryRequestSchema,
@@ -509,13 +511,21 @@ async function buildSnapshot(
 type Section = SummaryAnswer['sections'][number];
 const cut = (s: string) => (s.length > 600 ? `${s.slice(0, 599)}…` : s);
 
-/** Newest first, "YYYY-MM-DD: line" (the app renders dates; the template stays plain). */
+/**
+ * Newest first, one line per distinct fact text with its days ("• Như mọi ngày · 23/10, 22/10"):
+ * the joined "YYYY-MM-DD: …; …" read as one block and repeated the same line (owner, 2026-10-24).
+ */
 function lines(facts: readonly SummaryFact[], max = 4): string {
-  return facts
-    .slice(-max)
-    .reverse()
-    .map((f) => `${f.date}: ${f.text}`)
-    .join('; ');
+  const days = new Map<string, string[]>();
+  for (const f of [...facts].reverse()) {
+    const [, m, d] = f.date.split('-');
+    const day = m && d ? `${d}/${m}` : f.date;
+    const seen = days.get(f.text);
+    if (seen) {
+      if (!seen.includes(day)) seen.push(day);
+    } else if (days.size < max) days.set(f.text, [day]);
+  }
+  return [...days].map(([text, d]) => `• ${text} · ${d.join(', ')}`).join('\n');
 }
 
 export function templateSummary(
@@ -805,11 +815,50 @@ async function callProvider(
   }
 }
 
+/**
+ * Ungrounded or unsafe sections are dropped one by one, not the whole answer: a closing line
+ * with no fact, a "chắc chắn", a 7th section or an over-long paragraph used to send every such
+ * reply to the template ("AI chưa phản hồi"). What is shown is still only grounded, claim-free
+ * text; with nothing left, the template answers. Reason codes are logged, never the text.
+ */
+export function salvageSections(
+  raw: unknown,
+  factIds: readonly string[],
+): {
+  raw: unknown;
+  dropped: string[];
+} {
+  const r = raw as { sections?: unknown } | null;
+  if (!r || typeof r !== 'object' || !Array.isArray(r.sections)) return { raw, dropped: [] };
+  const facts = new Set(factIds);
+  const dropped: string[] = [];
+  const kept = r.sections.filter((s: unknown) => {
+    const x = s as { text?: unknown; factIds?: unknown };
+    const text = typeof x?.text === 'string' ? x.text.trim() : '';
+    const ids = Array.isArray(x?.factIds) ? (x.factIds as unknown[]) : [];
+    const reason =
+      !text || text.length > 600
+        ? 'length'
+        : ids.length === 0
+          ? 'ungrounded'
+          : ids.length > 12 || !ids.every((f) => typeof f === 'string' && facts.has(f))
+            ? 'unknown-fact'
+            : forbiddenClaimPatterns.some((p) => p.test(text))
+              ? 'claim'
+              : null;
+    if (reason) dropped.push(reason);
+    return reason === null;
+  });
+  if (kept.length > 6) dropped.push(...Array<string>(kept.length - 6).fill('too-many'));
+  return { raw: { ...r, sections: kept.slice(0, 6) }, dropped };
+}
+
 /** Output checks (A04–A08 + claims): `null` when the model's answer may be shown. */
 export function outputProblem(
-  raw: unknown,
+  raw0: unknown,
   x: { locale: Locale; factIds: readonly string[]; candidateIds: readonly string[] },
 ): { output: AiOutput } | { problem: 'invalid' } {
+  const { raw, dropped } = salvageSections(raw0, x.factIds);
   const parsed = aiOutputSchema.safeParse(raw);
   const gate = aiGate({
     entitled: true,
@@ -825,10 +874,23 @@ export function outputProblem(
     allowedContent: x.candidateIds,
     suggestionId: parsed.success ? parsed.data.suggestionContentId : null,
   });
-  if (gate !== 'AI_VALID' || !parsed.success) return { problem: 'invalid' };
-  if (claimProblems(parsed.data).length > 0) return { problem: 'invalid' };
-  // Grounded: every section rests on at least one fact of the snapshot.
-  if (parsed.data.sections.some((s) => s.factIds.length === 0)) return { problem: 'invalid' };
+  const claims = parsed.success ? claimProblems(parsed.data) : [];
+  if (dropped.length || gate !== 'AI_VALID' || !parsed.success || claims.length) {
+    logger.warn('ai summary sections checked', {
+      dropped,
+      gate,
+      claims: claims.length,
+      issues: parsed.success
+        ? []
+        : parsed.error.issues
+            .slice(0, 6)
+            .map(
+              (i) =>
+                `${i.path.map((p) => (typeof p === 'number' ? '#' : String(p))).join('.')}:${i.code}`,
+            ),
+    });
+  }
+  if (gate !== 'AI_VALID' || !parsed.success || claims.length > 0) return { problem: 'invalid' };
   return { output: parsed.data };
 }
 

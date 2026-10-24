@@ -854,8 +854,12 @@ class _SectionCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: ClSpace.s2),
-          Text(section.text, style: cl.text.body.copyWith(height: 1.45)),
+          // The template's text is the same lines as the rows below (owner, 2026-10-24: "nguyên
+          // 1 mớ đoạn chữ"); it is shown only when the AI worded it or there are no rows.
+          if (answer.aiWorded || facts.isEmpty) ...[
+            const SizedBox(height: ClSpace.s2),
+            Text(section.text, style: cl.text.body.copyWith(height: 1.45)),
+          ],
           // Owner, 2026-10-22: what each source says ("Nằm sấp có người lớn bên cạnh · Có
           // ích · 21/10"), one per line, not four identical "Phản hồi của bạn" chips.
           if (facts.isNotEmpty) ...[
