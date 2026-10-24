@@ -58,8 +58,12 @@ List<PersonalStatus> responseStatus(
   if (r.isEmpty) return const [];
   final value = r['value'];
   final active = day.suppressed(id, now);
+  final helped = r['outcome'] == 'helpful' || value == 'helpful';
+  // Planned again after a helpful try: the plan is the state, the outcome its history ("Định
+  // thử · 24/10", "Từng có ích"), not "Có ích" beside a plan (owner, 2026-10-24).
+  final again = helped && r['triedAt'] == null && r['intendedAt'] != null;
   return [
-    if (r['outcome'] == 'helpful' || value == 'helpful')
+    if (helped && !again)
       (kind: PersonalStatusKind.helpful, label: l.pv2ChipHelpful),
     if (r['outcome'] == 'unsure')
       (kind: PersonalStatusKind.unsure, label: l.pv2ChipUnsure),
@@ -73,6 +77,7 @@ List<PersonalStatus> responseStatus(
         kind: PersonalStatusKind.intend,
         label: l.pv2StatusIntend(dayStamp(day, r['intendedAt'], locale)),
       ),
+    if (again) (kind: PersonalStatusKind.tried, label: l.pv2ChipHelpedBefore),
     if (active && _hiding.contains(value))
       (kind: PersonalStatusKind.hidden, label: l.pv2StatusHidden),
     if (active && value == 'snooze')

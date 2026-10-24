@@ -18856,6 +18856,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2ChipHelpful => 'Có ích';
 
   @override
+  String get pv2ChipHelpedBefore => 'Từng có ích';
+
+  @override
   String get pv2ChipUnsure => 'Chưa rõ';
 
   @override

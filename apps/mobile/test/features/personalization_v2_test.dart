@@ -1,4 +1,5 @@
 import 'package:child_life/features/nutrition/nutrition_state.dart';
+import 'package:child_life/features/rhythm/personal_day_widgets.dart';
 import 'package:child_life/features/rhythm/personal_day_pages.dart';
 import 'package:child_life/features/rhythm/personalization_sources.dart';
 import 'package:child_life/features/rhythm/personalization_v2_repository.dart';
@@ -242,9 +243,10 @@ void main() {
         personalization: api,
       ),
     );
-    // The group heading, then the row's "Đã lưu" chip in both groups.
-    expect(find.text(l.pv2SavedNow), findsNWidgets(3));
+    // Once, under "Đã thử" (owner, 2026-10-24): no "Đã lưu" group, only the row's chip.
+    expect(find.text(l.pv2SavedNow), findsOneWidget);
     expect(find.text(l.pv2TriedBefore), findsOneWidget);
+    expect(find.byType(PersonalIdeaRow), findsOneWidget);
     await tester.tap(find.byType(PopupMenuButton<String>).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.pv2Helpful));
@@ -255,6 +257,32 @@ void main() {
       'value': 'helpful',
     });
   });
+  testWidgets(
+    'planned again after a helpful try: the plan, then "Từng có ích", never "Có ích" beside it',
+    (tester) async {
+      final activity = rhythmContent().activities.first;
+      await pumpRouted(
+        tester,
+        const PersonalHistoryScreen(),
+        overrides: rhythmOverrides(
+          repo: FakeRhythmRepository(),
+          personalDay: snapshot({
+            'responses': {
+              activity.id: {
+                'value': 'intend',
+                'outcome': 'helpful',
+                'at': '2026-10-08T02:00:00Z',
+                'intendedAt': '2026-10-08T02:00:00Z',
+                'saved': true,
+              },
+            },
+          }),
+        ),
+      );
+      expect(find.text(l.pv2ChipHelpedBefore), findsOneWidget);
+      expect(find.text(l.pv2ChipHelpful), findsNothing);
+    },
+  );
   testWidgets(
     'a planned idea says so on the screen and on Home after reopening (owner 2026-10-22)',
     (tester) async {

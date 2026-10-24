@@ -31506,6 +31506,12 @@ abstract class AppLocalizations {
   /// **'Có ích'**
   String get pv2ChipHelpful;
 
+  /// Status chip: an earlier try was helpful and the idea is planned again (owner, 2026-10-24: "Có ích" next to "Mình sẽ thử" read as a contradiction).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từng có ích'**
+  String get pv2ChipHelpedBefore;
+
   /// Status chip: not clear yet after trying.
   ///
   /// In vi, this message translates to:

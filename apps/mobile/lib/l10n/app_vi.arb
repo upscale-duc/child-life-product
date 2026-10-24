@@ -27885,6 +27885,10 @@
   "@pv2ChipHelpful": {
     "description": "Status chip: the person found the idea helpful."
   },
+  "pv2ChipHelpedBefore": "Từng có ích",
+  "@pv2ChipHelpedBefore": {
+    "description": "Status chip: an earlier try was helpful and the idea is planned again (owner, 2026-10-24: \"Có ích\" next to \"Mình sẽ thử\" read as a contradiction)."
+  },
   "pv2ChipUnsure": "Chưa rõ",
   "@pv2ChipUnsure": {
     "description": "Status chip: not clear yet after trying."

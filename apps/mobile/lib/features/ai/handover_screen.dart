@@ -33,7 +33,7 @@ import '../rhythm/rhythm_actions.dart';
 import '../rhythm/rhythm_calc.dart' show isoOf;
 import '../rhythm/rhythm_home.dart' show RhHealthCard;
 import '../rhythm/rhythm_labels.dart';
-import '../rhythm/rhythm_models.dart' show FeedbackKind;
+import '../rhythm/rhythm_models.dart' show FeedbackKind, RecFeedback;
 import '../rhythm/rhythm_repository.dart';
 import '../rhythm/rhythm_widgets.dart';
 import 'ai_models.dart';
@@ -937,7 +937,7 @@ class RecordChip extends ConsumerWidget {
         if (c != null) title = checkInParts(l10n, c).join(' · ');
       case FactKind.feedback:
         final rows = ref.watch(recFeedbackProvider(me.babyId)).value ?? [];
-        final kinds = <FeedbackKind>{};
+        final answers = <RecFeedback>[];
         for (final f in sorted) {
           final row = rows.where((x) => x.id == f.id).firstOrNull;
           if (row == null) continue;
@@ -947,13 +947,27 @@ class RecordChip extends ConsumerWidget {
               ?.activity(row.contentId)
               ?.title
               .of(locale);
-          kinds.add(row.kind);
+          answers.add(row);
         }
-        // Always the same order, the outcome first: "Có ích", then "Mình sẽ thử"…
-        for (final k in [
-          ...kinds,
-        ]..sort((a, b) => _tagOrder(a) - _tagOrder(b))) {
-          tags.add(switch (k) {
+        // The latest answer is the state (owner, 2026-10-24: "Có ích" beside "Mình sẽ thử" read
+        // as a contradiction); an earlier helpful try under a new plan reads "Từng có ích".
+        answers.sort(
+          (a, b) => '${a.date}${a.createdAt?.toIso8601String() ?? ''}'
+              .compareTo('${b.date}${b.createdAt?.toIso8601String() ?? ''}'),
+        );
+        final latest = answers.lastOrNull?.kind;
+        final helpedBefore =
+            latest == FeedbackKind.started &&
+            answers.any((a) => a.kind == FeedbackKind.helpful);
+        if (helpedBefore) {
+          tags.add((
+            l10n.pv2ChipHelpedBefore,
+            cl.colors.surface,
+            cl.colors.inkMuted,
+          ));
+        }
+        for (final k in [?latest]) {
+          tags.insert(0, switch (k) {
             FeedbackKind.helpful => (
               feedbackKindLabel(l10n, k),
               cl.colors.mintDeep,
@@ -1060,14 +1074,6 @@ class RecordChip extends ConsumerWidget {
     );
   }
 }
-
-int _tagOrder(FeedbackKind k) => switch (k) {
-  FeedbackKind.helpful => 0,
-  FeedbackKind.unsure => 1,
-  FeedbackKind.started => 2,
-  FeedbackKind.notToday => 3,
-  FeedbackKind.notSuitable => 4,
-};
 
 /// The note a link points to, as this phone has it (the check-in with its answers, the feedback
 /// with its activity), else the engine's line; feedback opens its activity.

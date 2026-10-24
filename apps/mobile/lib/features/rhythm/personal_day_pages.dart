@@ -485,33 +485,55 @@ class PersonalHistoryScreen extends StatelessWidget {
       bool hidden(MapEntry<String, dynamic> e) =>
           day.suppressed(e.key, now) &&
           !['tried', 'helpful'].contains(dayMap(e.value)['value']);
+      bool tried(MapEntry<String, dynamic> e) =>
+          dayMap(e.value)['triedAt'] != null;
+      // Each idea once (owner, 2026-10-24): put away, else tried, else saved; its chips still
+      // say "Đã lưu" when a tried idea is also saved.
       final groups = [
         (
           l.pv2SavedNow,
-          entries.where((e) => dayMap(e.value)['saved'] == true).toList(),
+          entries
+              .where(
+                (e) =>
+                    !hidden(e) && !tried(e) && dayMap(e.value)['saved'] == true,
+              )
+              .toList(),
         ),
         (
           l.pv2TriedBefore,
-          entries.where((e) => dayMap(e.value)['triedAt'] != null).toList(),
+          entries.where((e) => !hidden(e) && tried(e)).toList(),
         ),
         (l.pv2HiddenNow, entries.where(hidden).toList()),
       ];
       String title(String id) =>
           content?.activity(id)?.title.of(locale) ?? l.rhUnknownActivity;
       return [
+        // The week as two numbers, not a sentence (owner, 2026-10-24).
         RhCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(l.pv2Weekly, style: context.cl.text.bodyStrong),
-              const SizedBox(height: ClSpace.s1),
-              Text(
-                l.pv2WeekLine(
-                  (weekly['tried'] as num? ?? 0).toInt(),
-                  (weekly['helpful'] as num? ?? 0).toInt(),
-                ),
+              const SizedBox(height: ClSpace.s3),
+              Row(
+                children: [
+                  Expanded(
+                    child: _WeekStat(
+                      value: (weekly['tried'] as num? ?? 0).toInt(),
+                      label: l.pv2WeekTriedShort,
+                    ),
+                  ),
+                  const SizedBox(width: ClSpace.s2),
+                  Expanded(
+                    child: _WeekStat(
+                      value: (weekly['helpful'] as num? ?? 0).toInt(),
+                      label: l.pv2WeekHelpfulShort,
+                      highlight: true,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: ClSpace.s1),
+              const SizedBox(height: ClSpace.s2),
               Text(l.pv2WeekHint, style: _muted(context)),
             ],
           ),
@@ -526,6 +548,9 @@ class PersonalHistoryScreen extends StatelessWidget {
                     key: Key('personalHistory:$heading:${e.key}'),
                     title: title(e.key),
                     status: responseStatus(l, day, e.key, locale, now),
+                    // The activity itself: how to do it, why, its source.
+                    onTap: () =>
+                        context.push('${Routes.rhythmActivity}/${e.key}'),
                     trailing: !day.writable
                         ? null
                         : PopupMenuButton<String>(
@@ -593,4 +618,49 @@ class PersonalHistoryScreen extends StatelessWidget {
       ];
     },
   );
+}
+
+/// One number of the week ("6 · hoạt động đã xác nhận thử"); helpful on the mint fill.
+class _WeekStat extends StatelessWidget {
+  const _WeekStat({
+    required this.value,
+    required this.label,
+    this.highlight = false,
+  });
+  final int value;
+  final String label;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Semantics(
+      label: '$value $label',
+      child: ExcludeSemantics(
+        child: Container(
+          padding: const EdgeInsets.all(ClSpace.s3),
+          decoration: BoxDecoration(
+            color: highlight ? cl.colors.mintSoft : cl.colors.surface2,
+            borderRadius: BorderRadius.circular(ClRadius.control),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$value',
+                style: cl.text.title.copyWith(
+                  color: highlight ? cl.colors.mintText : cl.colors.ink,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -19976,6 +19976,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2ChipHelpful => 'Helpful';
 
   @override
+  String get pv2ChipHelpedBefore => 'Helped before';
+
+  @override
   String get pv2ChipUnsure => 'Not sure yet';
 
   @override
