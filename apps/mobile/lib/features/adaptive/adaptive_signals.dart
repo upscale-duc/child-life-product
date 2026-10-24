@@ -139,17 +139,47 @@ void recordWidgetTap(WidgetRef ref, BuildContext context, WidgetId id) {
   reportAdaptive(ref, context, 'adaptive_widget_opened', id.wire);
 }
 
-/// Wraps a ranked Hôm nay widget so any tap in it counts as using it.
-class AdaptiveTapTracker extends ConsumerWidget {
+/// Wraps a ranked Hôm nay widget so a tap in it counts as using it. A scroll that ends on the
+/// widget is not a tap: the finger must stay within [slop] and lift within [maxPress].
+class AdaptiveTapTracker extends ConsumerStatefulWidget {
   const AdaptiveTapTracker({required this.id, required this.child, super.key});
   final WidgetId id;
   final Widget child;
 
+  static const slop = 12.0;
+  static const maxPress = Duration(milliseconds: 600);
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Listener(
+  ConsumerState<AdaptiveTapTracker> createState() => _AdaptiveTapTrackerState();
+}
+
+class _AdaptiveTapTrackerState extends ConsumerState<AdaptiveTapTracker> {
+  Offset? _down;
+  DateTime? _at;
+
+  @override
+  Widget build(BuildContext context) => Listener(
     behavior: HitTestBehavior.translucent,
-    onPointerUp: (_) => recordWidgetTap(ref, context, id),
-    child: child,
+    onPointerDown: (e) {
+      _down = e.position;
+      _at = DateTime.now();
+    },
+    onPointerMove: (e) {
+      if (_down != null &&
+          (e.position - _down!).distance > AdaptiveTapTracker.slop) {
+        _down = null;
+      }
+    },
+    onPointerCancel: (_) => _down = null,
+    onPointerUp: (e) {
+      final down = _down, at = _at;
+      _down = null;
+      if (down == null || at == null) return;
+      if ((e.position - down).distance > AdaptiveTapTracker.slop) return;
+      if (DateTime.now().difference(at) > AdaptiveTapTracker.maxPress) return;
+      recordWidgetTap(ref, context, widget.id);
+    },
+    child: widget.child,
   );
 }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/adaptive_fixtures.dart';
+import '../helpers/family_fixtures.dart';
 import '../helpers/hn_fixtures.dart';
 import '../helpers/router_pump.dart';
 
@@ -31,6 +32,39 @@ void main() {
         expect(store.usage('u', 'other', now), isEmpty);
       },
     );
+  });
+
+  testWidgets('a tap counts as use; a scroll ending on the widget does not', (
+    tester,
+  ) async {
+    final mem = <String, String>{};
+    final store = UsageStore((k) => mem[k], (k, v) => mem[k] = v);
+    await pumpRouted(
+      tester,
+      const Scaffold(
+        body: AdaptiveTapTracker(
+          id: WidgetId.growth,
+          child: SizedBox(width: 300, height: 300),
+        ),
+      ),
+      overrides: [
+        ...hnOverrides(
+          repo: StampingRhythmRepository(preferences: personalized()),
+        ),
+        ...adaptiveOverrides(
+          band: AgeBand.b0_1,
+          repo: FakeExperienceRepository(),
+        ),
+        usageStoreProvider.overrideWithValue(store),
+      ],
+    );
+    final box = find.byType(AdaptiveTapTracker);
+    await tester.drag(box, const Offset(0, -120));
+    await tester.pumpAndSettle();
+    expect(store.usage('u_mai', teddyId, DateTime.now()), isEmpty);
+    await tester.tap(box);
+    await tester.pumpAndSettle();
+    expect(mem.values.single, contains('growth'));
   });
 
   test('AX14 "Xong" reports what changed, as closed details', () {

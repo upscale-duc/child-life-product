@@ -347,14 +347,21 @@ class RankSignals {
   final Set<WidgetId> recent;
 }
 
+/// [explicit]: the person ticked the goals (AX03/AX04 or "Sửa"). Then every ticked goal counts
+/// the same; before that (skipped, migrated) the goal term is relative to the band's presets, so
+/// Hôm nay is exactly the AX00 default (D-097 Q-087). Owner, 2026-10-24: a 17-month-old's ticked
+/// "Lưu giữ kỷ niệm" and "Tăng trưởng & tiêm chủng" ranked last, under the goals added to them.
 double scoreWidget(
   WidgetId id,
   AgeBand band,
   List<Goal> chosen, [
   RankSignals signals = const RankSignals(),
+  bool explicit = false,
 ]) {
   bool serves(List<Goal> gs) => id.goals.any(gs.contains);
-  final goal = (serves(chosen) ? 1 : 0) - (serves(presetGoals[band]!) ? 1 : 0);
+  final goal = explicit
+      ? (serves(chosen) ? 1 : 0)
+      : (serves(chosen) ? 1 : 0) - (serves(presetGoals[band]!) ? 1 : 0);
   final list = bandDefaults[band]!;
   final at = list.indexOf(id);
   final age = at < 0 ? 0.0 : 1 - at / list.length;
@@ -404,7 +411,14 @@ List<RankedWidget> rankToday(
       if (available.contains(id)) id,
   ];
   final scored = {
-    for (final id in avail) id: scoreWidget(id, band, exp.goals, signals),
+    for (final id in avail)
+      id: scoreWidget(
+        id,
+        band,
+        exp.goals,
+        signals,
+        exp.goalsSource == GoalsSource.chosen,
+      ),
   };
   int byScore(WidgetId a, WidgetId b) {
     final d = scored[b]!.compareTo(scored[a]!);

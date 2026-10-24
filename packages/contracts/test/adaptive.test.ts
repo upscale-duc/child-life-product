@@ -118,6 +118,37 @@ describe('rankToday', () => {
     expect(order[order.length - 1]).toBe('tiles'); // still shown: removing a goal never hides
   });
 
+  it('ticked goals all count: Cam, 17 months, keeps Kỷ niệm first and Tăng trưởng up (owner 2026-10-24)', () => {
+    const cam: Experience = {
+      ...defaultExperience('b1_3'),
+      goalsSource: 'chosen',
+      goals: ['memories', 'growth_vaccines', 'family', 'spending', 'reminders'],
+    };
+    const ids = visibleIds(cam, [
+      'recent_memories',
+      'tiles',
+      'reminders',
+      'growth',
+      'spending',
+      'family_view',
+    ]);
+    expect(ids[0]).toBe('recent_memories');
+    expect(ids.indexOf('growth')).toBeLessThan(ids.indexOf('tiles'));
+  });
+
+  it('AX06: Na with the presets ticked → Cả nhà before Nhắc nhở', () => {
+    const na: Experience = { ...defaultExperience('b3_6'), goalsSource: 'chosen' };
+    expect(
+      visibleIds(na, [
+        'moment_today',
+        'create_from_memories',
+        'spending',
+        'reminders',
+        'family_view',
+      ]),
+    ).toEqual(['moment_today', 'create_from_memories', 'spending', 'family_view', 'reminders']);
+  });
+
   it('only available widgets are listed (AX00 rule 4: released features only)', () => {
     expect(rankToday(defaultExperience('b0_1'), ['reminders']).map((w) => w.id)).toEqual([
       'reminders',

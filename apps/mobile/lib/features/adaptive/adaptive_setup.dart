@@ -24,6 +24,7 @@ import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import '../today/today_personalize.dart'
     show notificationsAfterOnboardingProvider, personalizeAfterSetupProvider;
 import 'adaptive_engine.dart';
+import 'reorder_group.dart';
 import 'adaptive_signals.dart' show reportAdaptive;
 import 'experience_repository.dart';
 import 'today_adaptive.dart';
@@ -348,8 +349,11 @@ class _SetupPreviewScreenState extends ConsumerState<SetupPreviewScreen> {
       for (final w in rankToday(exp, setupAvailable(ref, draft)))
         if (w.visible) w,
     ];
+    // AX06 "Vì: …": the goal, "Luôn có" for what every Hôm nay has (Nhắc nhở), else the age
+    // (the quick log of a 17-month-old said "Luôn có", owner 2026-10-24).
     String because(RankedWidget w) => switch (w.reason) {
       ReasonGoal(:final goal) => goalLabel(l10n, goal),
+      ReasonAge() when w.id != WidgetId.reminders => l10n.axBecauseAge(name),
       _ => l10n.axBecauseAlways,
     };
 
@@ -364,91 +368,68 @@ class _SetupPreviewScreenState extends ConsumerState<SetupPreviewScreen> {
           subtitle: l10n.axPreviewSub(name),
         ),
         const SizedBox(height: ClSpace.s6),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: cl.colors.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: cl.shadows.card,
-          ),
-          child: ReorderableListView(
-            key: const Key('setupPreview'),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            buildDefaultDragHandles: false,
-            onReorderItem: (from, to) {
-              final ids = [for (final w in shown) w.id];
-              ids.insert(to, ids.removeAt(from));
-              ref
-                  .read(adaptiveSetupProvider.notifier)
-                  .update(ref.read(adaptiveSetupProvider).copyWith(order: ids));
-            },
-            children: [
-              for (final (i, w) in shown.indexed)
-                Padding(
-                  key: ValueKey(w.id),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
+        // Long press anywhere on a row, or drag the handle (owner, 2026-10-24: hard to drag).
+        AxReorderGroup<RankedWidget>(
+          key: const Key('setupPreview'),
+          items: shown,
+          onReorder: (from, to) {
+            final ids = [for (final w in shown) w.id];
+            ids.insert(to, ids.removeAt(from));
+            ref
+                .read(adaptiveSetupProvider.notifier)
+                .update(ref.read(adaptiveSetupProvider).copyWith(order: ids));
+          },
+          row: (w, i, handle) => Padding(
+            padding: const EdgeInsets.only(
+              left: 14,
+              right: 2,
+              top: 6,
+              bottom: 6,
+            ),
+            child: Row(
+              children: [
+                // A fixed circle, so the titles line up whatever the digit.
+                Container(
+                  width: 28,
+                  height: 28,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintSoft,
+                    shape: BoxShape.circle,
                   ),
-                  child: Row(
+                  child: Text(
+                    '${i + 1}',
+                    style: cl.text.bodyStrong.copyWith(
+                      fontSize: 14,
+                      color: cl.colors.mintText,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: cl.colors.mintSoft,
-                          borderRadius: BorderRadius.circular(ClRadius.pill),
-                        ),
-                        child: Text(
-                          '${i + 1}',
-                          style: cl.text.bodyStrong.copyWith(
-                            fontSize: 14,
-                            color: cl.colors.mintText,
-                          ),
+                      Text(
+                        widgetTitle(l10n, w.id),
+                        style: cl.text.body.copyWith(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: cl.colors.ink,
                         ),
                       ),
-                      const SizedBox(width: ClSpace.s3),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widgetTitle(l10n, w.id),
-                              style: cl.text.body.copyWith(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: cl.colors.ink,
-                              ),
-                            ),
-                            Text(
-                              l10n.axPreviewBecause(because(w)),
-                              style: cl.text.caption.copyWith(
-                                color: cl.colors.inkMuted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ReorderableDragStartListener(
-                        index: i,
-                        child: SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: Center(
-                            child: ClIcon(
-                              ClIcons.grid,
-                              size: 16,
-                              color: cl.colors.inkMuted,
-                            ),
-                          ),
+                      Text(
+                        l10n.axPreviewBecause(because(w)),
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
                         ),
                       ),
                     ],
                   ),
                 ),
-            ],
+                handle,
+              ],
+            ),
           ),
         ),
         const SizedBox(height: ClSpace.s4),

@@ -226,15 +226,26 @@ export interface RankedWidget {
 
 const entryOf = (id: WidgetId): WidgetEntry => widgetRegistry.find((w) => w.id === id)!;
 
+/**
+ * [explicit]: the person ticked the goals (AX03/AX04 or "Sửa"). Then every ticked goal counts
+ * the same; before that (skipped, migrated) the goal term is relative to the band's presets, so
+ * Hôm nay is exactly the AX00 default (D-097 Q-087). Owner, 2026-10-24: a 17-month-old's ticked
+ * "Lưu giữ kỷ niệm" and "Tăng trưởng & tiêm chủng" ranked last, under the goals added to them.
+ */
 export function scoreWidget(
   id: WidgetId,
   band: AgeBand,
   chosen: readonly Goal[],
   signals: RankSignals = {},
+  explicit = false,
 ): number {
   const entry = entryOf(id);
   const serves = (gs: readonly Goal[]) => entry.goals.some((g) => gs.includes(g));
-  const goal = (serves(chosen) ? 1 : 0) - (serves(presetGoals[band]) ? 1 : 0);
+  const goal = explicit
+    ? serves(chosen)
+      ? 1
+      : 0
+    : (serves(chosen) ? 1 : 0) - (serves(presetGoals[band]) ? 1 : 0);
   const list = bandDefaults[band];
   const at = list.indexOf(id);
   const age = at < 0 ? 0 : 1 - at / list.length;
@@ -283,7 +294,10 @@ export function rankToday(
     return (at < 0 ? bandDefaults[band].length : at) * 100 + widgetIds.indexOf(id);
   };
   const avail = widgetIds.filter((id) => available.includes(id));
-  const scored = new Map(avail.map((id) => [id, scoreWidget(id, band, exp.goals, signals)]));
+  const explicit = exp.goalsSource === 'chosen';
+  const scored = new Map(
+    avail.map((id) => [id, scoreWidget(id, band, exp.goals, signals, explicit)]),
+  );
   const byScore = (a: WidgetId, b: WidgetId) => scored.get(b)! - scored.get(a)! || tie(a) - tie(b);
 
   const pinned = exp.pinned.filter((id) => scored.has(id));

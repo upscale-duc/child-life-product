@@ -28,6 +28,7 @@ import '../memories/memory_repository.dart';
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../memories/memory_widgets.dart' show MediaTile;
 import 'adaptive_engine.dart';
+import 'reorder_group.dart';
 import 'adaptive_signals.dart' show customizeDetails, reportAdaptive;
 import 'experience_repository.dart';
 
@@ -705,25 +706,16 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
       ),
     );
 
-    Widget row(RankedWidget w, {required bool on, int? index}) {
+    Widget row(RankedWidget w, {required bool on, Widget? handle}) {
       final title = widgetTitle(l10n, w.id);
       return Container(
         key: ValueKey(w.id),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.only(left: 2, right: 14, top: 6, bottom: 6),
         child: Row(
           children: [
-            if (index != null && !w.pinned)
-              ReorderableDragStartListener(
-                index: index,
-                child: ClIcon(
-                  ClIcons.grid,
-                  size: 16,
-                  color: cl.colors.inkMuted,
-                ),
-              )
-            else
-              const SizedBox(width: 16),
-            const SizedBox(width: ClSpace.s3),
+            // Pinned and hidden rows do not move; the gap keeps the titles aligned.
+            handle ?? const SizedBox(width: 44),
+            const SizedBox(width: ClSpace.s1),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -908,32 +900,22 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
             ],
             const SizedBox(height: 20),
             _Label(l10n.axShowing),
-            _Group(
-              child: Column(
-                children: [
-                  for (final w in showing.where((w) => w.pinned))
-                    row(w, on: true),
-                  ReorderableListView(
-                    key: const Key('axShowing'),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    buildDefaultDragHandles: false,
-                    onReorderItem: (from, to) {
-                      final ids = [for (final w in movable) w.id];
-                      ids.insert(to, ids.removeAt(from));
-                      update(
-                        draft.copyWith(
-                          order: [...ids, for (final w in hidden) w.id],
-                        ),
-                      );
-                    },
-                    children: [
-                      for (var i = 0; i < movable.length; i++)
-                        row(movable[i], on: true, index: i),
-                    ],
-                  ),
-                ],
-              ),
+            // Long press anywhere on a row, or drag the handle (owner, 2026-10-24: hard to drag).
+            AxReorderGroup<RankedWidget>(
+              key: const Key('axShowing'),
+              header: [
+                for (final w in showing.where((w) => w.pinned))
+                  row(w, on: true),
+              ],
+              items: movable,
+              row: (w, i, handle) => row(w, on: true, handle: handle),
+              onReorder: (from, to) {
+                final ids = [for (final w in movable) w.id];
+                ids.insert(to, ids.removeAt(from));
+                update(
+                  draft.copyWith(order: [...ids, for (final w in hidden) w.id]),
+                );
+              },
             ),
             if (hidden.isNotEmpty) ...[
               const SizedBox(height: 20),

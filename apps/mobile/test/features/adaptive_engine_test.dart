@@ -122,6 +122,54 @@ void main() {
       },
     );
 
+    test('ticked goals all count (Cam, 17 months, owner 2026-10-24)', () {
+      final cam = Experience.defaults(AgeBand.b1_3).copyWith(
+        goalsSource: GoalsSource.chosen,
+        goals: const [
+          Goal.memories,
+          Goal.growthVaccines,
+          Goal.family,
+          Goal.spending,
+          Goal.reminders,
+        ],
+      );
+      final ids = visible(cam, const [
+        WidgetId.recentMemories,
+        WidgetId.tiles,
+        WidgetId.reminders,
+        WidgetId.growth,
+        WidgetId.spending,
+        WidgetId.familyView,
+      ]);
+      expect(ids.first, WidgetId.recentMemories);
+      expect(
+        ids.indexOf(WidgetId.growth),
+        lessThan(ids.indexOf(WidgetId.tiles)),
+      );
+    });
+
+    test('AX06: Na with the presets ticked → Cả nhà before Nhắc nhở', () {
+      final na = Experience.defaults(
+        AgeBand.b3_6,
+      ).copyWith(goalsSource: GoalsSource.chosen);
+      expect(
+        visible(na, const [
+          WidgetId.momentToday,
+          WidgetId.createFromMemories,
+          WidgetId.spending,
+          WidgetId.reminders,
+          WidgetId.familyView,
+        ]),
+        [
+          WidgetId.momentToday,
+          WidgetId.createFromMemories,
+          WidgetId.spending,
+          WidgetId.familyView,
+          WidgetId.reminders,
+        ],
+      );
+    });
+
     test('pinned first and never moved; hidden stays hidden', () {
       final exp = Experience.defaults(AgeBand.b3_6).copyWith(
         pinned: const [WidgetId.reminders],

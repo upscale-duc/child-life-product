@@ -172,7 +172,7 @@ void main() {
     double y(String t) => tester.getTopLeft(find.text(t)).dy;
     expect(y('Lưu khoảnh khắc hôm nay'), lessThan(y('Chi tiêu tháng này')));
     expect(y('Chi tiêu tháng này'), lessThan(y('Nhắc nhở')));
-    expect(find.text('Vì: Luôn có'), findsOneWidget);
+    expect(find.text('Vì: Luôn có'), findsOneWidget); // Nhắc nhở only
     // Kỷ niệm 2.0 is a beta a first child may not have: not promised here.
     expect(find.text('Tạo từ kỷ niệm'), findsNothing);
     await tester.tap(find.byKey(const Key('setupPreviewGo')));

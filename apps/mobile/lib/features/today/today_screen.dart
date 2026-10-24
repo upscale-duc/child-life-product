@@ -214,7 +214,6 @@ class TodayScreen extends ConsumerWidget {
     final ranked = adaptive
         ? ref.watch(adaptiveTodayProvider(babyId))
         : const <RankedWidget>[];
-    final firstRun = adaptive && ref.watch(todayFirstRunProvider(babyId));
 
     // The baby header stays pinned while the day scrolls under it.
     return ClPinnedHeaderScaffold(
@@ -318,7 +317,9 @@ class TodayScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-            if (!readOnly && !firstRun) const AxCustomizeLink(),
+            // On the first run too: without it some children had no way to Tuỳ chỉnh (owner,
+            // 2026-10-24), as AX40's empty Today has no other entry.
+            if (!readOnly) const AxCustomizeLink(),
           ] else
             for (final section in layout.order)
               if (layout.shows(section)) ...sectionParts(section),

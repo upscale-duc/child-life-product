@@ -2,6 +2,7 @@ import 'package:child_life/features/adaptive/adaptive_engine.dart';
 import 'package:child_life/features/adaptive/today_adaptive.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/today/today_screen.dart';
+import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -78,8 +79,9 @@ void main() {
       expect(find.text('Chào Teddy 👋'), findsOneWidget);
       await _scrollTo(tester, find.byKey(const Key('axFirstMoment')));
       expect(find.text('Lưu khoảnh khắc đầu tiên'), findsOneWidget);
-      // No "Tuỳ chỉnh Hôm nay" on an empty Today (AX40).
-      expect(find.byKey(const Key('axCustomize')), findsNothing);
+      // "Tuỳ chỉnh Hôm nay" on the first run too (owner, 2026-10-24: some children had none).
+      await _scrollTo(tester, find.byKey(const Key('axCustomize')));
+      expect(find.byKey(const Key('axCustomize')), findsOneWidget);
     },
   );
 
@@ -171,6 +173,31 @@ void main() {
       await tester.tap(find.byKey(const Key('axDone')));
       await tester.pumpAndSettle();
       expect(repo.stored!.pinned, [WidgetId.reminders]);
+    });
+
+    testWidgets('a long press anywhere on a row reorders (owner, 2026-10-24)', (
+      tester,
+    ) async {
+      final repo = await open(tester);
+      final first = find.text('Lưu khoảnh khắc hôm nay');
+      final third = find.text('Chi tiêu tháng này');
+      final dy = tester.getCenter(third).dy - tester.getCenter(first).dy;
+      final gesture = await tester.startGesture(tester.getCenter(first));
+      await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+      for (var i = 0; i < 10; i++) {
+        await gesture.moveBy(Offset(0, (dy + 30) / 10));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('axDone')));
+      await tester.pumpAndSettle();
+      final order = repo.stored!.order;
+      expect(order.indexOf(WidgetId.momentToday), greaterThan(0));
+      expect(
+        order.indexOf(WidgetId.spending),
+        lessThan(order.indexOf(WidgetId.momentToday)),
+      );
     });
 
     testWidgets('"Sửa" edits the goals; an added goal shows its widget', (

@@ -26,6 +26,8 @@ import '../memories/memories_screen.dart' show memoryCtx;
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../spending/spending_calc.dart' show foldVietnamese;
 import '../spending/spending_models.dart' show SpendingAccess;
+import '../vaccines/vaccine_format.dart'
+    show VaccineBookReady, vaccineBookProvider;
 import 'adaptive_engine.dart';
 import 'adaptive_signals.dart' show reportAdaptive;
 import 'experience_repository.dart';
@@ -182,11 +184,23 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         l10n.axGrowthTitle,
         l10n.exGrowthSub,
       ),
+      // Like the Chăm sóc tile: what the book needs (a child added later has shots to tick,
+      // or overdue ones) before the reference line.
       ExploreItem.vaccines => (
         ClIcons.heart,
         cl.colors.sunshineSoft,
         l10n.axChipVaccines,
-        band == AgeBand.b0_1 ? l10n.exVaccinesSub : l10n.exVaccinesSubOlder,
+        switch (ref.watch(vaccineBookProvider(me))) {
+          VaccineBookReady(:final book) when book.overdue.isNotEmpty =>
+            l10n.vxTileOverdue(book.overdue.length),
+          VaccineBookReady(:final book)
+              when !book.plan.setupDone &&
+                  me.role == MemberRole.coParent &&
+                  book.dueSoFar.isNotEmpty =>
+            l10n.vxTileSetup,
+          _ =>
+            band == AgeBand.b0_1 ? l10n.exVaccinesSub : l10n.exVaccinesSubOlder,
+        },
       ),
       ExploreItem.memories => (
         ClIcons.memories,
@@ -225,7 +239,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         older ? l10n.exFamilySubOlder : l10n.exFamilySub,
       ),
       ExploreItem.lumi => (
-        ClIcons.brandMark,
+        // brandMark is a filled mark: as a line icon it drew an empty square (owner, 2026-10-24).
+        ClIcons.spark,
         cl.colors.mintSoft,
         l10n.exLumi,
         older ? l10n.exLumiSubOlder(name) : l10n.exLumiSub,

@@ -568,7 +568,7 @@ class _ReorderGroup<T extends Object> extends StatelessWidget {
                 child: SizedBox(
                   width: 48,
                   height: 48,
-                  child: Center(child: _Handle(color: cl.colors.inkMuted)),
+                  child: Center(child: DragHandle(color: cl.colors.inkMuted)),
                 ),
               ),
             ),
@@ -662,9 +662,9 @@ class _ReorderGroup<T extends Object> extends StatelessWidget {
   }
 }
 
-/// 370:1525 drag handle: three 14×2 bars.
-class _Handle extends StatelessWidget {
-  const _Handle({required this.color});
+/// 370:1525 drag handle: three 14×2 bars (also Tuỳ chỉnh Hôm nay v2 and AX06).
+class DragHandle extends StatelessWidget {
+  const DragHandle({required this.color, super.key});
   final Color color;
 
   @override
