@@ -19,6 +19,10 @@ abstract final class Routes {
   static const who = '/setup/who';
   static const babyProfile = '/setup/baby';
   static const trackers = '/setup/trackers';
+
+  /// Adaptive Experience (P-175, AX03/AX04 and AX06) between 11 and the new child.
+  static const setupGoals = '/setup/goals';
+  static const setupPreview = '/setup/preview';
   static const today = '/today';
 
   /// Chăm sóc tab (v1.0 improvement 370:1971): 20 Lịch sử, 20g / 20h, reminders; the dock stays.
@@ -140,6 +144,10 @@ abstract final class Routes {
 
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
+
+  /// NavBar v2 · Adaptive tabs (P-178): Khám phá and Hồ sơ.
+  static const explore = '/explore';
+  static const profile = '/profile';
   static const family = '/utilities/family';
   static const invite = '/family/invite';
   static const inviteSend = '/family/invite/send';

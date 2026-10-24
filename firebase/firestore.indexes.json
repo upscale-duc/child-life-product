@@ -1163,6 +1163,20 @@
       ]
     },
     {
+      "collectionGroup": "experience",
+      "fieldPath": "babyId",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
       "collectionGroup": "personalization",
       "fieldPath": "babyId",
       "indexes": [

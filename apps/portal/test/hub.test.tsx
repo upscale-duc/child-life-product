@@ -449,9 +449,9 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     const offRows = listed.filter((r) =>
       r.kind === 'feature' ? r.row.flag?.enabled === false : !r.flag.enabled,
     ).length;
-    expect(offRows).toBe(16);
+    expect(offRows).toBe(18);
     expect(t).toContain(`Đang bật ${listed.length - offRows} Đang tắt ${offRows} Beta 1`);
-    expect(t).toContain('Tất cả 26 Miễn phí 1 Premium 4 Beta 1 Kỹ thuật 20');
+    expect(t).toContain('Tất cả 28 Miễn phí 1 Premium 4 Beta 1 Kỹ thuật 22');
     expect(t).toContain('Tính năng Gói Ai được dùng Bật');
     for (const old of ['Công tắc khẩn', 'Phát hành', 'Công tắc hệ thống']) {
       expect(t).not.toContain(old);
@@ -459,7 +459,7 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     // Groups: the catalogue's areas and the switches' together, each once.
     expect(rowGroups(raw)).toEqual([
       'Kỷ niệm · 4',
-      'Cá nhân hoá · 2',
+      'Cá nhân hoá · 4',
       'Trợ lý AI · 3',
       'Tải lên · 2',
       'Nhắc nhở & gợi ý · 11',
@@ -476,7 +476,7 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     // Gói: a select on catalogue rows, "Kỹ thuật" (not editable) on switches.
     expect(raw).toContain('aria-label="Gói của “Nhịp lớn lên”"');
     expect(raw).not.toContain(`aria-label="Gói của “${messages.vi['flag.invites']}”"`);
-    expect(t.match(/Kỹ thuật/g)?.length).toBe(21);
+    expect(t.match(/Kỹ thuật/g)?.length).toBe(23);
     // Ai được dùng: one control; Premium rows say who has it first.
     expect(raw).toContain('aria-label="Ai được dùng “Nhịp lớn lên”"');
     expect(raw).toContain(
@@ -494,7 +494,7 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     expect(t).toContain('Bật riêng 1 · tắt riêng 0');
     expect(t).toContain('2 gia đình trong beta');
     // Bật: one switch per row with a flag (Mẫu kỷ niệm Premium has none); off ones say so.
-    expect(switches(raw)).toBe(25);
+    expect(switches(raw)).toBe(27);
     expect(raw).toContain('aria-label="Bật “Nhịp lớn lên”"');
     expect(t.match(/Đang tắt/g)?.length).toBe(offRows + 1);
     expect(disabledSwitches(raw)).toBe(0);

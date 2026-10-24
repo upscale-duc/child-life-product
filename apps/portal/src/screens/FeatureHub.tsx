@@ -294,6 +294,9 @@ const switchGroups: Partial<Record<FlagKey, (typeof listGroups)[number]>> = {
   lock_widgets: 'family',
   night_auto: 'family',
   product_analytics: 'analytics',
+  // P-175 / P-178: Hôm nay by age + goals and the adaptive dock.
+  adaptive_experience: 'personalization',
+  adaptive_nav: 'personalization',
 };
 
 /** Where an engineering switch sits; one added later shows under "Khác" until it gets a group. */

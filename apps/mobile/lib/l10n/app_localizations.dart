@@ -31847,6 +31847,1014 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Trích dẫn'**
   String get sryKindQuote;
+
+  /// AX10/AX11 greeting before noon.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi sáng, {name} ☀️'**
+  String axGreetMorning(String name);
+
+  /// Engineering-supplied afternoon twin of AX10 (G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi chiều, {name}'**
+  String axGreetAfternoon(String name);
+
+  /// Engineering-supplied evening twin of AX10 (G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi tối, {name} 🌙'**
+  String axGreetEvening(String name);
+
+  /// AX12 greeting (3–6 years).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay của {name} thế nào?'**
+  String axGreet36(String name);
+
+  /// AX13 greeting (6–12 years).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng lưu lại hành trình của {name}'**
+  String axGreet612(String name);
+
+  /// AX10 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp hôm nay của con, ghi nhanh trong một chạm.'**
+  String get axSub01;
+
+  /// AX11 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay con lại khám phá thêm điều mới.'**
+  String get axSub13;
+
+  /// AX12 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu lại một khoảnh khắc nhỏ — mai này sẽ thành câu chuyện lớn.'**
+  String get axSub36;
+
+  /// AX13 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những ngày đi học, những chuyến đi, những điều con tự hào.'**
+  String get axSub612;
+
+  /// AX40–AX43 first-run greeting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào {name} 👋'**
+  String axHello(String name);
+
+  /// AX40 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu bằng một việc nhỏ — không cần mời ai trước.'**
+  String get axHelloSub01;
+
+  /// AX41 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu lúc nào cũng kịp — giữ lại từ hôm nay, tìm lại cả những ngày đã qua.'**
+  String get axHelloSub13;
+
+  /// AX42 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi khoảnh khắc là một câu chuyện. Bắt đầu từ hôm nay nhé.'**
+  String get axHelloSub36;
+
+  /// AX43 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng lưu lại hành trình đi học, những chuyến đi và điều con tự hào.'**
+  String get axHelloSub612;
+
+  /// AX10/AX11/AX13 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm gần đây'**
+  String get axRecentTitle;
+
+  /// AX10/AX11 subtitle: photos in the last 7 days.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Chưa có ảnh tuần này} other{Tuần này · {count} ảnh}}'**
+  String axRecentSub(int count);
+
+  /// Widget header link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get axSeeAll;
+
+  /// Primary button on memory widgets (AX11, AX12, AX40–AX42).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm khoảnh khắc'**
+  String get axAddMoment;
+
+  /// AX13 / AX43 button (6–12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết nhật ký hôm nay'**
+  String get axWriteJournal;
+
+  /// AX40 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu khoảnh khắc đầu tiên'**
+  String get axFirstMomentTitle;
+
+  /// AX41/AX42 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu khoảnh khắc đầu tiên của {name}'**
+  String axFirstMomentOf(String name);
+
+  /// AX43 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu cuốn nhật ký của {name}'**
+  String axFirstJournal(String name);
+
+  /// AX40 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh hoặc vài dòng về hôm nay'**
+  String get axFirstMomentSub01;
+
+  /// AX41 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video hoặc nhật ký'**
+  String get axFirstMomentSub;
+
+  /// AX42 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một bức vẽ, một buổi đi chơi, một câu nói ngộ nghĩnh'**
+  String get axFirstMomentSub36;
+
+  /// AX12 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu khoảnh khắc hôm nay'**
+  String get axMomentTodayTitle;
+
+  /// AX12 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video hoặc vài dòng nhật ký'**
+  String get axMomentTodaySub;
+
+  /// AX12 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo từ kỷ niệm của {name}'**
+  String axCreateTitle(String name);
+
+  /// AX12 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video, thiệp từ ảnh bạn chọn'**
+  String get axCreateSub;
+
+  /// AX12 tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video kỷ niệm'**
+  String get axCreateVideo;
+
+  /// AX12 tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ ảnh của bạn'**
+  String get axCreateVideoSub;
+
+  /// AX12 tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp'**
+  String get axCreateCard;
+
+  /// AX12 tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịp đáng nhớ'**
+  String get axCreateCardSub;
+
+  /// AX10/AX11/AX13 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get axGrowthTitle;
+
+  /// Widget subtitle; ago is "3 ngày trước".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đo lần cuối {ago}'**
+  String axGrowthLast(String ago);
+
+  /// Growth widget without a measure.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số đo nào'**
+  String get axGrowthNone;
+
+  /// Growth widget link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi số đo'**
+  String get axGrowthLog;
+
+  /// AX12 widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng xem'**
+  String get axFamilyTitle;
+
+  /// AX12 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ông bà xem được những kỷ niệm bạn chia sẻ với gia đình.'**
+  String get axFamilyBody;
+
+  /// AX42 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ mình bạn trong gia đình của {name}'**
+  String axFamilyAlone(String name);
+
+  /// AX12 / AX42 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời người thân'**
+  String get axInvite;
+
+  /// Link at the end of every populated Hôm nay (AX10–AX13).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh Hôm nay'**
+  String get axCustomizeLink;
+
+  /// AX14 intro.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của {name} và mục tiêu bạn chọn.'**
+  String axCustomizeIntro(String name);
+
+  /// AX14 label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu của gia đình'**
+  String get axGoalsLabel;
+
+  /// AX14 chip that opens the goals.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get axGoalsEdit;
+
+  /// AX14 list label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang hiện'**
+  String get axShowing;
+
+  /// AX14 list label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn'**
+  String get axHiddenLabel;
+
+  /// AX14 row subtitle of a pinned widget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghim · luôn ở đầu'**
+  String get axPinned;
+
+  /// Accessibility label of the pin button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghim {title}'**
+  String axPin(String title);
+
+  /// Accessibility label of the pin button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ghim {title}'**
+  String axUnpin(String title);
+
+  /// AX14 row reason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo mục tiêu “{goal}”'**
+  String axBecauseGoal(String goal);
+
+  /// AX14 row reason (engineering wording, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho tuổi của {name}'**
+  String axBecauseAge(String name);
+
+  /// AX06 "Vì: Luôn có".
+  ///
+  /// In vi, this message translates to:
+  /// **'Luôn có'**
+  String get axBecauseAlways;
+
+  /// AX14 hidden row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào'**
+  String get axHiddenByAge;
+
+  /// AX14 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục gợi ý theo tuổi của {name}'**
+  String axRestore(String name);
+
+  /// AX03/AX04 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn Child Life giúp gì cho {name}?'**
+  String axGoalsTitle(String name);
+
+  /// AX03/AX04 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tất cả những gì bạn quan tâm · đổi được bất cứ lúc nào'**
+  String get axGoalsSub;
+
+  /// AX03/AX04 badge; age is "2 tháng" / "4 tuổi".
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho {age}'**
+  String axGoalsSuggested(String age);
+
+  /// AX03/AX04 counter.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Chưa chọn mục nào} other{Đã chọn {count} mục}}'**
+  String axGoalsChosen(int count);
+
+  /// Goal track_care.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi bú, ngủ, tã'**
+  String get axGoalTrackCare;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh và xem nhịp của con'**
+  String get axGoalTrackCareSub;
+
+  /// Goal memories.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu giữ kỷ niệm'**
+  String get axGoalMemories;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video, nhật ký, thiệp'**
+  String get axGoalMemoriesSub;
+
+  /// Goal growth_vaccines.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng & tiêm chủng'**
+  String get axGoalGrowth;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số đo, lịch tiêm'**
+  String get axGoalGrowthSub;
+
+  /// Goal family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng chăm & cùng xem'**
+  String get axGoalFamily;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời ba/mẹ, ông bà, người chăm'**
+  String get axGoalFamilySub;
+
+  /// Goal spending.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu cho con'**
+  String get axGoalSpending;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Biết tiền đã chi vào đâu'**
+  String get axGoalSpendingSub;
+
+  /// Goal reminders.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở việc của bé'**
+  String get axGoalReminders;
+
+  /// Goal subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không quên việc quan trọng'**
+  String get axGoalRemindersSub;
+
+  /// AX14 row for the tracker tiles.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh'**
+  String get axWidgetTiles;
+
+  /// AX14 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhanh'**
+  String get axWidgetQuickActions;
+
+  /// AX14 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiêm sắp tới'**
+  String get axWidgetVaccine;
+
+  /// AX14 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu tháng này'**
+  String get axWidgetSpending;
+
+  /// AX14 row for the day's rhythm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi hôm nay'**
+  String get axWidgetRhythm;
+
+  /// AX14 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở'**
+  String get axWidgetReminders;
+
+  /// AX14 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo từ kỷ niệm'**
+  String get axWidgetCreate;
+
+  /// AX14 row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video, thiệp'**
+  String get axWidgetCreateSub;
+
+  /// AX14 save.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get axDone;
+
+  /// AX06 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay của {name} sẽ ưu tiên'**
+  String axPreviewTitle(String name);
+
+  /// AX06 sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dựa trên tuổi của {name} và mục tiêu bạn chọn.'**
+  String axPreviewSub(String name);
+
+  /// AX06 row reason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì: {reason}'**
+  String axPreviewBecause(String reason);
+
+  /// AX06 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kéo để đổi thứ tự. Sửa bất cứ lúc nào trong “Tuỳ chỉnh Hôm nay”.'**
+  String get axPreviewHint;
+
+  /// AX06 button; creates the child.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào Hôm nay của {name}'**
+  String axPreviewGo(String name);
+
+  /// AX02 card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi tính năng của Child Life đều dùng được cho {name}.'**
+  String axInfoTitle(String name);
+
+  /// AX02 card sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho tuổi của {name} — bạn sẽ thấy trước trên Hôm nay:'**
+  String axInfoSub(String name);
+
+  /// AX02 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm & album'**
+  String get axChipMemories;
+
+  /// AX02 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video & thiệp'**
+  String get axChipVideo;
+
+  /// AX02 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu'**
+  String get axChipSpending;
+
+  /// AX02 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get axChipVaccines;
+
+  /// AX02 footnote (with the new nav, P-178).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Khám phá khi bạn cần.'**
+  String get axInfoFoot;
+
+  /// AX02 footnote while the current tabs are in place (engineering wording).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Chăm sóc và Tiện ích khi bạn cần.'**
+  String get axInfoFootTabs;
+
+  /// AX05 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn ghi những gì cho {name}?'**
+  String axTrackersTitle(String name);
+
+  /// AX05 sub-line ("Hồ sơ › Tuỳ chỉnh theo dõi" until the Hồ sơ tab exists).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.'**
+  String get axTrackersSub;
+
+  /// NavBar v2 tab (917:3012).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khám phá'**
+  String get tabExplore;
+
+  /// NavBar v2 tab (917:3012); replaces the header avatar's Tôi.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồ sơ'**
+  String get tabProfile;
+
+  /// AX20 search placeholder (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm tính năng, ví dụ: tiêm, chi tiêu, sơ cứu'**
+  String get exSearch01;
+
+  /// AX21 search placeholder (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm tính năng, ví dụ: chi tiêu, tiêm, kỷ niệm'**
+  String get exSearchOlder;
+
+  /// AX20/AX21 top group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho {name} lúc này'**
+  String exForChild(String name);
+
+  /// AX20 group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng suốt hành trình của con'**
+  String get exLifelong;
+
+  /// AX21 group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sức khoẻ & an toàn'**
+  String get exHealth;
+
+  /// AX21 group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình & trợ lý'**
+  String get exFamilyAssistant;
+
+  /// AX21 group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi chăm sóc'**
+  String get exCareTools;
+
+  /// Group for Mốc phát triển and the Chăm sóc hub (engineering, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu con & phát triển'**
+  String get exUnderstand;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi bú, ngủ, tã'**
+  String get exCare;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh, hẹn giờ ngủ, hút sữa'**
+  String get exCareSub;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê & lịch sử'**
+  String get exStats;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú, ngủ, tã theo ngày'**
+  String get exStatsSub;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng, chiều cao'**
+  String get exGrowthSub;
+
+  /// Khám phá row subtitle (0–1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch mũi tiêm của con'**
+  String get exVaccinesSub;
+
+  /// Khám phá row subtitle (1+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi nhắc theo lịch'**
+  String get exVaccinesSubOlder;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm & album'**
+  String get exMemories;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video, nhật ký'**
+  String get exMemoriesSub;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video & thiệp kỷ niệm'**
+  String get exKeepsakes;
+
+  /// Khám phá row subtitle (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo từ ảnh bạn chọn'**
+  String get exKeepsakesSub;
+
+  /// Khám phá row subtitle (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật, ngày đầu đi học…'**
+  String get exKeepsakesSubOlder;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu kỷ niệm'**
+  String get exAutoSave;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý ảnh có {name} từ thư viện máy'**
+  String exAutoSaveSub(String name);
+
+  /// Khám phá badge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Beta'**
+  String get exBeta;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu cho con'**
+  String get exSpending;
+
+  /// Khám phá row subtitle (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng, danh mục, người chi'**
+  String get exSpendingSub;
+
+  /// Khám phá row subtitle (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ trẻ & học, quần áo…'**
+  String get exSpendingSubOlder;
+
+  /// Khám phá row subtitle (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc của bé, nhắc cả nhà'**
+  String get exRemindersSub;
+
+  /// Khám phá row subtitle (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch học, khám, tiêm nhắc'**
+  String get exRemindersSubOlder;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình & chia sẻ'**
+  String get exFamily;
+
+  /// Khám phá row subtitle (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên, vai trò, lời mời'**
+  String get exFamilySub;
+
+  /// Khám phá row subtitle (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ông bà xem kỷ niệm được chia sẻ'**
+  String get exFamilySubOlder;
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi'**
+  String get exLumi;
+
+  /// Khám phá row subtitle (0–3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi, ghi nhanh bằng một câu nhắn'**
+  String get exLumiSub;
+
+  /// Khám phá row subtitle (3+).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi về lịch, kỷ niệm, chi tiêu của {name}'**
+  String exLumiSubOlder(String name);
+
+  /// Khám phá row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ cứu trẻ em'**
+  String get exFirstAid;
+
+  /// Khám phá row opening the Chăm sóc hub.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả công cụ chăm sóc'**
+  String get exAllCare;
+
+  /// Khám phá row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng, ăn dặm, Wonder Weeks, thư viện…'**
+  String get exAllCareSub;
+
+  /// AX20 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng con lớn lên'**
+  String get exGrowTitle;
+
+  /// AX20 card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang phát triển · chưa có trong app'**
+  String get exGrowBadge;
+
+  /// AX20 card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life đang xây thêm cho các chặng 1–3, 3–6 và 6–12 tuổi. Mọi kỷ niệm, chi tiêu và lịch sử của {name} vẫn được giữ trọn.'**
+  String exGrowBody(String name);
+
+  /// AX20 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'1–3 tuổi'**
+  String get exBand13;
+
+  /// AX20 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'3–6 tuổi'**
+  String get exBand36;
+
+  /// AX20 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'6–12 tuổi'**
+  String get exBand612;
+
+  /// AX20/AX45 button; records interest (no marketing push).
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo tôi khi có'**
+  String get exNotify;
+
+  /// After "Báo tôi khi có" (G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận'**
+  String get exNotified;
+
+  /// Toast after "Báo tôi khi có" (G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận. Child Life sẽ báo trong app khi có.'**
+  String get exNotifiedToast;
+
+  /// AX45 no-result title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có tính năng “{query}”'**
+  String exNoneTitle(String query);
+
+  /// AX45 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life đang phát triển thêm cho từng độ tuổi. Hiện bạn có thể lưu những điều đáng nhớ của {name} vào Kỷ niệm.'**
+  String exNoneBody(String name);
+
+  /// AX45 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Kỷ niệm'**
+  String get exSaveToMemories;
+
+  /// AX34 group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bé'**
+  String get pfChildren;
+
+  /// AX34 child row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{age} · mục tiêu & Hôm nay'**
+  String pfChildRow(String age);
+
+  /// AX34 group link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get pfAdd;
+
+  /// Hồ sơ group carrying the other Tôi rows (D-097 Q-090).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ứng dụng'**
+  String get pfApp;
+
+  /// AX33 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} tròn 1 tuổi rồi!'**
+  String axStageTitle1(String name);
+
+  /// AX33 at 36 months (engineering, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} tròn 3 tuổi rồi!'**
+  String axStageTitle3(String name);
+
+  /// AX33 at 72 months (engineering, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} tròn 6 tuổi rồi!'**
+  String axStageTitle6(String name);
+
+  /// AX33 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhiều gia đình bớt ghi bú từ lúc này. Muốn Hôm nay gọn hơn không?'**
+  String get axStageBody1;
+
+  /// AX33 body at 36 / 72 months (engineering, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Muốn Hôm nay hợp với tuổi mới của con hơn không? Lịch sử vẫn giữ nguyên.'**
+  String get axStageBodyLater;
+
+  /// AX33 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đưa Kỷ niệm lên đầu Hôm nay'**
+  String get axStageLeadMemories;
+
+  /// AX33 option at 36 months.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đưa Lưu khoảnh khắc lên đầu Hôm nay'**
+  String get axStageLeadMoment;
+
+  /// AX33 option at 72 months.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đưa Kỷ niệm, nhật ký lên đầu Hôm nay'**
+  String get axStageLeadJournal;
+
+  /// AX33 option ("vẫn có trong Khám phá" in Figma; neutral until the new nav is on).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn Bú bình khỏi Ghi nhanh · vẫn ghi được khi cần'**
+  String get axStageHideFeeds;
+
+  /// AX33 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ Ngủ, Tã trong Ghi nhanh'**
+  String get axStageKeepSleep;
+
+  /// AX33 option at 36 months.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn Ghi nhanh khỏi Hôm nay · bật lại trong Tuỳ chỉnh'**
+  String get axStageHideQuickLog;
+
+  /// AX33 option at 72 months.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ Tăng trưởng trên Hôm nay'**
+  String get axStageKeepGrowth;
+
+  /// AX33 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng'**
+  String get axStageApply;
+
+  /// AX33 secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ như cũ'**
+  String get axStageKeep;
+
+  /// AX00 "Lumi gợi ý hỏi" 0–1.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần bú cuối lúc mấy giờ?'**
+  String get axLumiQ01;
+
+  /// AX00 "Lumi gợi ý hỏi" 1–3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này {name} ngủ trưa thế nào?'**
+  String axLumiQ13(String name);
+
+  /// AX00 "Lumi gợi ý hỏi" 3–6.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng này đã chi cho {name} bao nhiêu?'**
+  String axLumiQ36(String name);
+
+  /// AX00 "Lumi gợi ý hỏi" 6–12.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần tới {name} có lịch gì?'**
+  String axLumiQ612(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -409,6 +409,10 @@ export interface CapabilitiesAnswer {
     assistantImages: boolean;
     assistantCare: boolean;
     assistantUpsell: boolean;
+    /** P-175 `adaptive_experience`. */
+    adaptiveExperience: boolean;
+    /** P-178 `adaptive_nav`; only true while `adaptive_experience` is on too. */
+    adaptiveNav: boolean;
   };
 }
 

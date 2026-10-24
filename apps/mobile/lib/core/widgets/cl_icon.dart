@@ -49,6 +49,9 @@ enum ClIcons {
   mail,
   memories,
   plus,
+
+  /// NavBar v2 Hồ sơ tab (Figma Icon/profile, engineering drawing in the line style).
+  profile,
   retry,
   ruler,
   search,

@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/route_guard.dart';
-import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
@@ -25,14 +24,11 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../l10n/app_localizations.dart';
 import '../family/countries.dart';
 import '../family/my_invites.dart';
+import '../adaptive/adaptive_setup.dart';
 import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
-import '../baby/baby_repository.dart';
 import '../baby/time_zones.dart';
-import '../home/home_shell.dart';
-import '../today/today_personalize.dart'
-    show notificationsAfterOnboardingProvider, personalizeAfterSetupProvider;
 import 'setup_draft.dart';
 import 'setup_sheets.dart';
 import 'widgets/onboarding_layout.dart';
@@ -252,20 +248,28 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
       );
       return;
     }
-    context.push(Routes.trackers);
+    // P-175: the goal step for a child of any age, else 12 as before.
+    continueAfterBabyProfile(context, ref);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final adaptive = ref.watch(setupAdaptiveProvider);
     return OnboardingScaffold(
-      topBar: ClTopBar(onBack: () => context.pop(), progress: _progressBaby),
+      topBar: ClTopBar(
+        onBack: () => context.pop(),
+        progress: adaptive
+            ? setupProgress(ref, Routes.babyProfile)
+            : _progressBaby,
+      ),
       content: babyFormFields(
         context,
         ref,
         nickname: _nickname,
         focus: _nicknameFocus,
         askCountry: true,
+        ageInfo: adaptive,
       ),
       bottom: [
         ClButton(label: l10n.actionNext, expand: true, onPressed: _next),
@@ -286,50 +290,9 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
   bool _busy = false;
 
   Future<void> _create() async {
-    final l10n = AppLocalizations.of(context);
-    final draft = ref.read(setupDraftProvider);
-    final repo = ref.read(babyRepositoryProvider);
-    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
-    try {
-      final babyId = await repo.createBaby(draft.toInput());
-      // D-076 #1: Hôm nay opens EN01–EN03 for this baby (lib/features/today/today_personalize.dart).
-      container.read(personalizeAfterSetupProvider.notifier).request(babyId);
-      container
-          .read(notificationsAfterOnboardingProvider.notifier)
-          .request(babyId);
-      final photo = draft.avatarPhoto;
-      if (photo != null) {
-        try {
-          await repo.setAvatarPhoto(babyId, photo);
-        } on Object {
-          if (mounted) showClToast(context, message: l10n.avatarUploadFailed);
-        }
-      }
-      ref.read(setupDraftProvider.notifier).reset();
-      if (ref.read(addingBabyProvider)) {
-        // "Thêm hồ sơ bé": open the new baby once the membership has arrived.
-        await waitForMembership(container, babyId);
-        container.read(selectedBabyIdProvider.notifier).select(babyId);
-        container.read(addingBabyProvider.notifier).set(false);
-        if (mounted) context.go(Routes.today);
-      }
-      // A first baby: the session now has a baby and the router opens Today.
-    } on BabyException catch (e) {
-      if (!mounted) return;
-      showClToast(
-        context,
-        message: switch (e.failure) {
-          BabyFailure.babyLimit => l10n.createBabyLimit,
-          BabyFailure.dobInFuture => l10n.createBabyDobFuture,
-          _ => l10n.createBabyFailed,
-        },
-      );
-    } on Object {
-      if (mounted) showClToast(context, message: l10n.createBabyFailed);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+    await createSetupBaby(context, ref);
+    if (mounted) setState(() => _busy = false);
   }
 
   @override
@@ -362,15 +325,21 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
     );
 
     final count = draft.trackers.length;
+    // AX05: in the adaptive flow this step only picks; AX06 creates the child (P-175).
+    final adaptive = ref.watch(setupAdaptiveProvider);
     return OnboardingScaffold(
       topBar: ClTopBar(
         onBack: () => context.pop(),
-        progress: _progressTrackers,
+        progress: adaptive
+            ? setupProgress(ref, Routes.trackers)
+            : _progressTrackers,
       ),
       content: [
         ScreenHeading(
-          title: l10n.trackersTitle,
-          subtitle: l10n.trackersSubtitle,
+          title: adaptive
+              ? l10n.axTrackersTitle(draft.nickname.trim())
+              : l10n.trackersTitle,
+          subtitle: adaptive ? l10n.axTrackersSub : l10n.trackersSubtitle,
         ),
         const SizedBox(height: ClSpace.s6),
         Row(
@@ -395,9 +364,17 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
       ],
       bottom: [
         ClButton(
-          label: count == 0 ? l10n.trackersPickOne : l10n.trackersDone(count),
+          label: count == 0
+              ? l10n.trackersPickOne
+              : adaptive
+              ? l10n.actionNext
+              : l10n.trackersDone(count),
           expand: true,
-          onPressed: count == 0 || _busy ? null : _create,
+          onPressed: count == 0 || _busy
+              ? null
+              : adaptive
+              ? () => context.push(Routes.setupPreview)
+              : _create,
           loading: _busy,
         ),
       ],
@@ -504,6 +481,10 @@ List<Widget> babyFormFields(
   required TextEditingController nickname,
   required FocusNode focus,
   bool askCountry = false,
+
+  /// AX01/AX02 (P-175): the live age under the date and, from 12 months, "Mọi tính năng … đều
+  /// dùng được cho {tên}".
+  bool ageInfo = false,
 }) {
   final l10n = AppLocalizations.of(context);
   final cl = context.cl;
@@ -640,6 +621,17 @@ List<Widget> babyFormFields(
           ),
       ],
     ),
+    if (ageInfo) ...[
+      Padding(
+        padding: const EdgeInsets.only(top: ClSpace.s2, left: ClSpace.s1),
+        child: Text(
+          dobHint(l10n, draft.nickname, draft.dateOfBirth),
+          key: const Key('setupAgeHint'),
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ),
+      const SetupAgeInfoCard(),
+    ],
     const SizedBox(height: ClSpace.s6),
     Text.rich(
       TextSpan(

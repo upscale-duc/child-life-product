@@ -22,7 +22,8 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
-import '../assistant/assistant_entry.dart' show AssistantFloatingEntry;
+import '../assistant/assistant_entry.dart'
+    show AssistantFloatingEntry, assistantAccessProvider;
 import '../analytics/product_analytics.dart';
 import '../auto_save/auto_save_today.dart';
 import '../auto_save/auto_save_widgets.dart';
@@ -41,6 +42,7 @@ import '../care/timer_models.dart';
 import 'today_tour.dart';
 import '../family/save_account.dart';
 import '../onboarding/setup_draft.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 
 const _kSelectedBaby = 'today.selectedBabyId';
 
@@ -79,16 +81,36 @@ ClRole clRoleOf(MemberRole role) => switch (role) {
   MemberRole.relative => ClRole.relative,
 };
 
-List<ClTab> tabsFor(Membership m) => tabsForRole(
-  clRoleOf(m.role),
-  relativeSeesToday: m.role == MemberRole.relative && m.canViewToday,
+List<ClTab> tabsFor(Membership m, {bool v2 = false}) =>
+    (v2 ? tabsForRoleV2 : tabsForRole)(
+      clRoleOf(m.role),
+      relativeSeesToday: m.role == MemberRole.relative && m.canViewToday,
+    );
+
+/// NavBar v2 · Adaptive is on for the selected baby's family (`adaptive_nav`, P-178).
+final adaptiveNavProvider = Provider<bool>(
+  (ref) =>
+      ref.watch(selectedCapabilitiesProvider)?.features.adaptiveNav ?? false,
 );
+
+/// The tab the dock lights: with NavBar v2, Chăm sóc and Tiện ích are parts of Khám phá.
+ClTab dockTabOf(ClTab branch, {required bool v2}) =>
+    v2 && (branch == ClTab.care || branch == ClTab.utilities)
+    ? ClTab.explore
+    : branch;
 
 /// Overlap conflicts already opened on this device (27 shows once by itself).
 final _shownConflicts = <String>{};
 
 /// Branch order of the shell route.
-const shellTabs = [ClTab.today, ClTab.memories, ClTab.care, ClTab.utilities];
+const shellTabs = [
+  ClTab.today,
+  ClTab.memories,
+  ClTab.care,
+  ClTab.utilities,
+  ClTab.explore,
+  ClTab.profile,
+];
 
 /// The tabs' own screens: the only places that show the dock.
 const _tabRoots = {
@@ -96,6 +118,8 @@ const _tabRoots = {
   Routes.memories,
   Routes.care,
   Routes.utilities,
+  Routes.explore,
+  Routes.profile,
 };
 
 /// Tab shell (NavBar v1.0.1, v1.0 improvement 370:1246) with role-aware tabs (R-021): parents see
@@ -112,8 +136,9 @@ class HomeShell extends ConsumerWidget {
     final cl = context.cl;
     final membership = ref.watch(selectedMembershipProvider);
     if (membership == null) return Scaffold(backgroundColor: cl.colors.cloud);
-    final tabs = tabsFor(membership);
-    final active = shellTabs[shell.currentIndex];
+    final v2 = ref.watch(adaptiveNavProvider);
+    final tabs = tabsFor(membership, v2: v2);
+    final active = dockTabOf(shellTabs[shell.currentIndex], v2: v2);
     final babyId = membership.babyId;
     final analytics = ref.watch(productAnalyticsReporterProvider);
     if (analytics != null) {
@@ -220,7 +245,12 @@ class HomeShell extends ConsumerWidget {
               banner: const AutoSaveKeeper(child: GlobalUploadPill()),
               // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing
               // unless the `assistant` flag is on. It rides above the upload pill, never under it.
-              fab: active == ClTab.today && path == Routes.today && !showTour
+              // NavBar v2: Lumi sits at the end of the dock instead (owner, 2026-10-24).
+              fab:
+                  !v2 &&
+                      active == ClTab.today &&
+                      path == Routes.today &&
+                      !showTour
                   ? AssistantFloatingEntry(
                       // Lumi's first-run tooltip waits while Hôm nay has a sheet open on
                       // its own navigator (D-076 #11: never over another modal).
@@ -243,6 +273,25 @@ class HomeShell extends ConsumerWidget {
                   initialLocation: shellTabs.indexOf(tab) == shell.currentIndex,
                 ),
                 action: action,
+                // NavBar v2 (917:3012): Lumi at the end of the row, outside the tab bar (owner,
+                // 2026-10-24); not for relatives (AX32); nothing unless the `assistant` flag is on.
+                trailing:
+                    v2 &&
+                        !showTour &&
+                        membership.role != MemberRole.relative &&
+                        ref.watch(assistantAccessProvider(babyId)) != null
+                    ? AssistantFloatingEntry(
+                        key: const Key('dockLumi'),
+                        canShowIntro: () =>
+                            shell
+                                .route
+                                .branches[shell.currentIndex]
+                                .navigatorKey
+                                .currentState
+                                ?.canPop() !=
+                            true,
+                      )
+                    : null,
                 // AR02: Tự lưu suggestions wait for the selected baby.
                 dots: {if (ref.watch(autoSaveTabDotProvider)) ClTab.memories},
                 dotLabel: l10n.autoSaveTabDot,
@@ -300,9 +349,12 @@ class BabyHeader extends ConsumerWidget {
                 semanticLabel: l10n.a11yBack,
                 onPressed: () => context.pop(),
               )
-            else
+            else if (!ref.watch(adaptiveNavProvider)) ...[
+              // NavBar v2: Hồ sơ is a tab; the switcher pill leads (AX10).
               UserAvatar(membership: membership),
-            const SizedBox(width: ClSpace.s2),
+            ],
+            if (_openedOnTop(context) || !ref.watch(adaptiveNavProvider))
+              const SizedBox(width: ClSpace.s2),
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,

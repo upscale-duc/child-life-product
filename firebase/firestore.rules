@@ -157,6 +157,14 @@ service cloud.firestore {
         allow read: if signedIn() && request.auth.uid == uid && canReadCare(babyId);
         allow write: if false;
       }
+      // P-175: this person's Hôm nay for one child (goals, order, pins, hides, AX33 answers).
+      // Written by its owner while an active member of the baby; readable and deletable by its
+      // owner only (purged with the account or the membership).
+      match /experience/{babyId} {
+        allow read, delete: if signedIn() && request.auth.uid == uid;
+        allow create, update: if signedIn() && request.auth.uid == uid && activeMember(babyId) &&
+          validExperience(request.resource.data, babyId);
+      }
     }
 
     // "Thông báo" EN07 (D-076 #2; G-056 keys first): mirrors `notificationSettingsDocSchema`, every
@@ -195,6 +203,30 @@ service cloud.firestore {
           d.quietHours.to is string && d.quietHours.to.matches(hhmm))) &&
         (d.updatedAt == request.time || d.updatedAt == null ||
           (d.updatedAt is string && d.updatedAt.size() <= 40));
+    }
+
+    // P-175 Adaptive Experience (`packages/contracts/src/adaptive.ts` experienceSchema): one
+    // person's arrangement of one child's Hôm nay. Ids are the contract's widget and goal ids.
+    function validWidgetList(l) {
+      return l is list && l.size() <= 13 && l.toSet().size() == l.size() &&
+        l.hasOnly(['tiles', 'forYou', 'solids', 'reminders', 'quickActions', 'vaccine', 'spending',
+          'rhythm', 'recent_memories', 'moment_today', 'create_from_memories', 'growth',
+          'family_view']);
+    }
+
+    function validExperience(d, babyId) {
+      let keys = ['v', 'babyId', 'goals', 'goalsSource', 'bandApplied', 'order', 'pinned', 'shown', 'hidden',
+        'stagePrompts', 'updatedAt'];
+      return d.keys().hasOnly(keys) && d.keys().hasAll(keys) && d.v == 1 && d.babyId == babyId &&
+        d.goals is list && d.goals.size() <= 6 && d.goals.toSet().size() == d.goals.size() &&
+        d.goals.hasOnly(['track_care', 'memories', 'growth_vaccines', 'family', 'spending', 'reminders']) &&
+        d.goalsSource in ['chosen', 'skipped', 'migrated'] &&
+        d.bandApplied in ['b0_1', 'b1_3', 'b3_6', 'b6_12'] &&
+        validWidgetList(d.order) && validWidgetList(d.pinned) &&
+        validWidgetList(d.shown) && validWidgetList(d.hidden) &&
+        d.stagePrompts is map && d.stagePrompts.keys().hasOnly(['m12', 'm36', 'm72']) &&
+        d.stagePrompts.values().hasOnly(['applied', 'kept']) &&
+        d.updatedAt == request.time;
     }
 
     // P-137: `lastActiveAt` (once a local day, the analytics heartbeat), `osVersion` and a coarse

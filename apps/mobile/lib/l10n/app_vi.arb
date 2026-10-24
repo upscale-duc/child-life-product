@@ -28263,5 +28263,882 @@
   "sryKindQuote": "Trích dẫn",
   "@sryKindQuote": {
     "description": "Story editor add button."
+  },
+  "axGreetMorning": "Chào buổi sáng, {name} ☀️",
+  "@axGreetMorning": {
+    "description": "AX10/AX11 greeting before noon.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGreetAfternoon": "Chào buổi chiều, {name}",
+  "@axGreetAfternoon": {
+    "description": "Engineering-supplied afternoon twin of AX10 (G-110).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGreetEvening": "Chào buổi tối, {name} 🌙",
+  "@axGreetEvening": {
+    "description": "Engineering-supplied evening twin of AX10 (G-110).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGreet36": "Hôm nay của {name} thế nào?",
+  "@axGreet36": {
+    "description": "AX12 greeting (3–6 years).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGreet612": "Cùng lưu lại hành trình của {name}",
+  "@axGreet612": {
+    "description": "AX13 greeting (6–12 years).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axSub01": "Nhịp hôm nay của con, ghi nhanh trong một chạm.",
+  "@axSub01": {
+    "description": "AX10 sub-line."
+  },
+  "axSub13": "Hôm nay con lại khám phá thêm điều mới.",
+  "@axSub13": {
+    "description": "AX11 sub-line."
+  },
+  "axSub36": "Lưu lại một khoảnh khắc nhỏ — mai này sẽ thành câu chuyện lớn.",
+  "@axSub36": {
+    "description": "AX12 sub-line."
+  },
+  "axSub612": "Những ngày đi học, những chuyến đi, những điều con tự hào.",
+  "@axSub612": {
+    "description": "AX13 sub-line."
+  },
+  "axHello": "Chào {name} 👋",
+  "@axHello": {
+    "description": "AX40–AX43 first-run greeting.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axHelloSub01": "Bắt đầu bằng một việc nhỏ — không cần mời ai trước.",
+  "@axHelloSub01": {
+    "description": "AX40 sub-line."
+  },
+  "axHelloSub13": "Bắt đầu lúc nào cũng kịp — giữ lại từ hôm nay, tìm lại cả những ngày đã qua.",
+  "@axHelloSub13": {
+    "description": "AX41 sub-line."
+  },
+  "axHelloSub36": "Mỗi khoảnh khắc là một câu chuyện. Bắt đầu từ hôm nay nhé.",
+  "@axHelloSub36": {
+    "description": "AX42 sub-line."
+  },
+  "axHelloSub612": "Cùng lưu lại hành trình đi học, những chuyến đi và điều con tự hào.",
+  "@axHelloSub612": {
+    "description": "AX43 sub-line."
+  },
+  "axRecentTitle": "Kỷ niệm gần đây",
+  "@axRecentTitle": {
+    "description": "AX10/AX11/AX13 widget title."
+  },
+  "axRecentSub": "{count, plural, =0{Chưa có ảnh tuần này} other{Tuần này · {count} ảnh}}",
+  "@axRecentSub": {
+    "description": "AX10/AX11 subtitle: photos in the last 7 days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "axSeeAll": "Xem tất cả",
+  "@axSeeAll": {
+    "description": "Widget header link."
+  },
+  "axAddMoment": "Thêm khoảnh khắc",
+  "@axAddMoment": {
+    "description": "Primary button on memory widgets (AX11, AX12, AX40–AX42)."
+  },
+  "axWriteJournal": "Viết nhật ký hôm nay",
+  "@axWriteJournal": {
+    "description": "AX13 / AX43 button (6–12)."
+  },
+  "axFirstMomentTitle": "Lưu khoảnh khắc đầu tiên",
+  "@axFirstMomentTitle": {
+    "description": "AX40 widget title."
+  },
+  "axFirstMomentOf": "Lưu khoảnh khắc đầu tiên của {name}",
+  "@axFirstMomentOf": {
+    "description": "AX41/AX42 widget title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axFirstJournal": "Bắt đầu cuốn nhật ký của {name}",
+  "@axFirstJournal": {
+    "description": "AX43 widget title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axFirstMomentSub01": "Ảnh hoặc vài dòng về hôm nay",
+  "@axFirstMomentSub01": {
+    "description": "AX40 subtitle."
+  },
+  "axFirstMomentSub": "Ảnh, video hoặc nhật ký",
+  "@axFirstMomentSub": {
+    "description": "AX41 subtitle."
+  },
+  "axFirstMomentSub36": "Một bức vẽ, một buổi đi chơi, một câu nói ngộ nghĩnh",
+  "@axFirstMomentSub36": {
+    "description": "AX42 subtitle."
+  },
+  "axMomentTodayTitle": "Lưu khoảnh khắc hôm nay",
+  "@axMomentTodayTitle": {
+    "description": "AX12 widget title."
+  },
+  "axMomentTodaySub": "Ảnh, video hoặc vài dòng nhật ký",
+  "@axMomentTodaySub": {
+    "description": "AX12 subtitle."
+  },
+  "axCreateTitle": "Tạo từ kỷ niệm của {name}",
+  "@axCreateTitle": {
+    "description": "AX12 widget title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axCreateSub": "Video, thiệp từ ảnh bạn chọn",
+  "@axCreateSub": {
+    "description": "AX12 subtitle."
+  },
+  "axCreateVideo": "Video kỷ niệm",
+  "@axCreateVideo": {
+    "description": "AX12 tile."
+  },
+  "axCreateVideoSub": "Từ ảnh của bạn",
+  "@axCreateVideoSub": {
+    "description": "AX12 tile subtitle."
+  },
+  "axCreateCard": "Thiệp",
+  "@axCreateCard": {
+    "description": "AX12 tile."
+  },
+  "axCreateCardSub": "Dịp đáng nhớ",
+  "@axCreateCardSub": {
+    "description": "AX12 tile subtitle."
+  },
+  "axGrowthTitle": "Tăng trưởng",
+  "@axGrowthTitle": {
+    "description": "AX10/AX11/AX13 widget title."
+  },
+  "axGrowthLast": "Đo lần cuối {ago}",
+  "@axGrowthLast": {
+    "description": "Widget subtitle; ago is \"3 ngày trước\".",
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "axGrowthNone": "Chưa có số đo nào",
+  "@axGrowthNone": {
+    "description": "Growth widget without a measure."
+  },
+  "axGrowthLog": "Ghi số đo",
+  "@axGrowthLog": {
+    "description": "Growth widget link."
+  },
+  "axFamilyTitle": "Cả nhà cùng xem",
+  "@axFamilyTitle": {
+    "description": "AX12 widget title."
+  },
+  "axFamilyBody": "Ông bà xem được những kỷ niệm bạn chia sẻ với gia đình.",
+  "@axFamilyBody": {
+    "description": "AX12 body."
+  },
+  "axFamilyAlone": "Chỉ mình bạn trong gia đình của {name}",
+  "@axFamilyAlone": {
+    "description": "AX42 subtitle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axInvite": "Mời người thân",
+  "@axInvite": {
+    "description": "AX12 / AX42 button."
+  },
+  "axCustomizeLink": "Tuỳ chỉnh Hôm nay",
+  "@axCustomizeLink": {
+    "description": "Link at the end of every populated Hôm nay (AX10–AX13)."
+  },
+  "axCustomizeIntro": "Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của {name} và mục tiêu bạn chọn.",
+  "@axCustomizeIntro": {
+    "description": "AX14 intro.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGoalsLabel": "Mục tiêu của gia đình",
+  "@axGoalsLabel": {
+    "description": "AX14 label."
+  },
+  "axGoalsEdit": "Sửa",
+  "@axGoalsEdit": {
+    "description": "AX14 chip that opens the goals."
+  },
+  "axShowing": "Đang hiện",
+  "@axShowing": {
+    "description": "AX14 list label."
+  },
+  "axHiddenLabel": "Đã ẩn",
+  "@axHiddenLabel": {
+    "description": "AX14 list label."
+  },
+  "axPinned": "Ghim · luôn ở đầu",
+  "@axPinned": {
+    "description": "AX14 row subtitle of a pinned widget."
+  },
+  "axPin": "Ghim {title}",
+  "@axPin": {
+    "description": "Accessibility label of the pin button.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "axUnpin": "Bỏ ghim {title}",
+  "@axUnpin": {
+    "description": "Accessibility label of the pin button.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "axBecauseGoal": "Theo mục tiêu “{goal}”",
+  "@axBecauseGoal": {
+    "description": "AX14 row reason.",
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "axBecauseAge": "Gợi ý cho tuổi của {name}",
+  "@axBecauseAge": {
+    "description": "AX14 row reason (engineering wording, G-110).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axBecauseAlways": "Luôn có",
+  "@axBecauseAlways": {
+    "description": "AX06 \"Vì: Luôn có\"."
+  },
+  "axHiddenByAge": "Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào",
+  "@axHiddenByAge": {
+    "description": "AX14 hidden row subtitle."
+  },
+  "axRestore": "Khôi phục gợi ý theo tuổi của {name}",
+  "@axRestore": {
+    "description": "AX14 link.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGoalsTitle": "Bạn muốn Child Life giúp gì cho {name}?",
+  "@axGoalsTitle": {
+    "description": "AX03/AX04 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axGoalsSub": "Chọn tất cả những gì bạn quan tâm · đổi được bất cứ lúc nào",
+  "@axGoalsSub": {
+    "description": "AX03/AX04 sub-line."
+  },
+  "axGoalsSuggested": "Gợi ý cho {age}",
+  "@axGoalsSuggested": {
+    "description": "AX03/AX04 badge; age is \"2 tháng\" / \"4 tuổi\".",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "axGoalsChosen": "{count, plural, =0{Chưa chọn mục nào} other{Đã chọn {count} mục}}",
+  "@axGoalsChosen": {
+    "description": "AX03/AX04 counter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "axGoalTrackCare": "Theo dõi bú, ngủ, tã",
+  "@axGoalTrackCare": {
+    "description": "Goal track_care."
+  },
+  "axGoalTrackCareSub": "Ghi nhanh và xem nhịp của con",
+  "@axGoalTrackCareSub": {
+    "description": "Goal subtitle."
+  },
+  "axGoalMemories": "Lưu giữ kỷ niệm",
+  "@axGoalMemories": {
+    "description": "Goal memories."
+  },
+  "axGoalMemoriesSub": "Ảnh, video, nhật ký, thiệp",
+  "@axGoalMemoriesSub": {
+    "description": "Goal subtitle."
+  },
+  "axGoalGrowth": "Tăng trưởng & tiêm chủng",
+  "@axGoalGrowth": {
+    "description": "Goal growth_vaccines."
+  },
+  "axGoalGrowthSub": "Số đo, lịch tiêm",
+  "@axGoalGrowthSub": {
+    "description": "Goal subtitle."
+  },
+  "axGoalFamily": "Cả nhà cùng chăm & cùng xem",
+  "@axGoalFamily": {
+    "description": "Goal family."
+  },
+  "axGoalFamilySub": "Mời ba/mẹ, ông bà, người chăm",
+  "@axGoalFamilySub": {
+    "description": "Goal subtitle."
+  },
+  "axGoalSpending": "Chi tiêu cho con",
+  "@axGoalSpending": {
+    "description": "Goal spending."
+  },
+  "axGoalSpendingSub": "Biết tiền đã chi vào đâu",
+  "@axGoalSpendingSub": {
+    "description": "Goal subtitle."
+  },
+  "axGoalReminders": "Nhắc nhở việc của bé",
+  "@axGoalReminders": {
+    "description": "Goal reminders."
+  },
+  "axGoalRemindersSub": "Không quên việc quan trọng",
+  "@axGoalRemindersSub": {
+    "description": "Goal subtitle."
+  },
+  "axWidgetTiles": "Ghi nhanh",
+  "@axWidgetTiles": {
+    "description": "AX14 row for the tracker tiles."
+  },
+  "axWidgetQuickActions": "Tạo nhanh",
+  "@axWidgetQuickActions": {
+    "description": "AX14 row."
+  },
+  "axWidgetVaccine": "Mũi tiêm sắp tới",
+  "@axWidgetVaccine": {
+    "description": "AX14 row."
+  },
+  "axWidgetSpending": "Chi tiêu tháng này",
+  "@axWidgetSpending": {
+    "description": "AX14 row."
+  },
+  "axWidgetRhythm": "Đã ghi hôm nay",
+  "@axWidgetRhythm": {
+    "description": "AX14 row for the day's rhythm."
+  },
+  "axWidgetReminders": "Nhắc nhở",
+  "@axWidgetReminders": {
+    "description": "AX14 row."
+  },
+  "axWidgetCreate": "Tạo từ kỷ niệm",
+  "@axWidgetCreate": {
+    "description": "AX14 row."
+  },
+  "axWidgetCreateSub": "Video, thiệp",
+  "@axWidgetCreateSub": {
+    "description": "AX14 row subtitle."
+  },
+  "axDone": "Xong",
+  "@axDone": {
+    "description": "AX14 save."
+  },
+  "axPreviewTitle": "Hôm nay của {name} sẽ ưu tiên",
+  "@axPreviewTitle": {
+    "description": "AX06 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axPreviewSub": "Dựa trên tuổi của {name} và mục tiêu bạn chọn.",
+  "@axPreviewSub": {
+    "description": "AX06 sub-line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axPreviewBecause": "Vì: {reason}",
+  "@axPreviewBecause": {
+    "description": "AX06 row reason.",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "axPreviewHint": "Kéo để đổi thứ tự. Sửa bất cứ lúc nào trong “Tuỳ chỉnh Hôm nay”.",
+  "@axPreviewHint": {
+    "description": "AX06 banner."
+  },
+  "axPreviewGo": "Vào Hôm nay của {name}",
+  "@axPreviewGo": {
+    "description": "AX06 button; creates the child.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axInfoTitle": "Mọi tính năng của Child Life đều dùng được cho {name}.",
+  "@axInfoTitle": {
+    "description": "AX02 card title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axInfoSub": "Gợi ý cho tuổi của {name} — bạn sẽ thấy trước trên Hôm nay:",
+  "@axInfoSub": {
+    "description": "AX02 card sub-line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axChipMemories": "Kỷ niệm & album",
+  "@axChipMemories": {
+    "description": "AX02 chip."
+  },
+  "axChipVideo": "Video & thiệp",
+  "@axChipVideo": {
+    "description": "AX02 chip."
+  },
+  "axChipSpending": "Chi tiêu",
+  "@axChipSpending": {
+    "description": "AX02 chip."
+  },
+  "axChipVaccines": "Tiêm chủng",
+  "@axChipVaccines": {
+    "description": "AX02 chip."
+  },
+  "axInfoFoot": "Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Khám phá khi bạn cần.",
+  "@axInfoFoot": {
+    "description": "AX02 footnote (with the new nav, P-178)."
+  },
+  "axInfoFootTabs": "Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Chăm sóc và Tiện ích khi bạn cần.",
+  "@axInfoFootTabs": {
+    "description": "AX02 footnote while the current tabs are in place (engineering wording)."
+  },
+  "axTrackersTitle": "Bạn muốn ghi những gì cho {name}?",
+  "@axTrackersTitle": {
+    "description": "AX05 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axTrackersSub": "Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.",
+  "@axTrackersSub": {
+    "description": "AX05 sub-line (\"Hồ sơ › Tuỳ chỉnh theo dõi\" until the Hồ sơ tab exists)."
+  },
+  "tabExplore": "Khám phá",
+  "@tabExplore": {
+    "description": "NavBar v2 tab (917:3012)."
+  },
+  "tabProfile": "Hồ sơ",
+  "@tabProfile": {
+    "description": "NavBar v2 tab (917:3012); replaces the header avatar's Tôi."
+  },
+  "exSearch01": "Tìm tính năng, ví dụ: tiêm, chi tiêu, sơ cứu",
+  "@exSearch01": {
+    "description": "AX20 search placeholder (0–3)."
+  },
+  "exSearchOlder": "Tìm tính năng, ví dụ: chi tiêu, tiêm, kỷ niệm",
+  "@exSearchOlder": {
+    "description": "AX21 search placeholder (3+)."
+  },
+  "exForChild": "Gợi ý cho {name} lúc này",
+  "@exForChild": {
+    "description": "AX20/AX21 top group.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exLifelong": "Dùng suốt hành trình của con",
+  "@exLifelong": {
+    "description": "AX20 group."
+  },
+  "exHealth": "Sức khoẻ & an toàn",
+  "@exHealth": {
+    "description": "AX21 group."
+  },
+  "exFamilyAssistant": "Gia đình & trợ lý",
+  "@exFamilyAssistant": {
+    "description": "AX21 group."
+  },
+  "exCareTools": "Theo dõi chăm sóc",
+  "@exCareTools": {
+    "description": "AX21 group."
+  },
+  "exUnderstand": "Hiểu con & phát triển",
+  "@exUnderstand": {
+    "description": "Group for Mốc phát triển and the Chăm sóc hub (engineering, G-110)."
+  },
+  "exCare": "Theo dõi bú, ngủ, tã",
+  "@exCare": {
+    "description": "Khám phá row."
+  },
+  "exCareSub": "Ghi nhanh, hẹn giờ ngủ, hút sữa",
+  "@exCareSub": {
+    "description": "Khám phá row subtitle."
+  },
+  "exStats": "Thống kê & lịch sử",
+  "@exStats": {
+    "description": "Khám phá row."
+  },
+  "exStatsSub": "Bú, ngủ, tã theo ngày",
+  "@exStatsSub": {
+    "description": "Khám phá row subtitle."
+  },
+  "exGrowthSub": "Cân nặng, chiều cao",
+  "@exGrowthSub": {
+    "description": "Khám phá row subtitle."
+  },
+  "exVaccinesSub": "Lịch mũi tiêm của con",
+  "@exVaccinesSub": {
+    "description": "Khám phá row subtitle (0–1)."
+  },
+  "exVaccinesSubOlder": "Mũi nhắc theo lịch",
+  "@exVaccinesSubOlder": {
+    "description": "Khám phá row subtitle (1+)."
+  },
+  "exMemories": "Kỷ niệm & album",
+  "@exMemories": {
+    "description": "Khám phá row."
+  },
+  "exMemoriesSub": "Ảnh, video, nhật ký",
+  "@exMemoriesSub": {
+    "description": "Khám phá row subtitle."
+  },
+  "exKeepsakes": "Video & thiệp kỷ niệm",
+  "@exKeepsakes": {
+    "description": "Khám phá row."
+  },
+  "exKeepsakesSub": "Tạo từ ảnh bạn chọn",
+  "@exKeepsakesSub": {
+    "description": "Khám phá row subtitle (0–3)."
+  },
+  "exKeepsakesSubOlder": "Sinh nhật, ngày đầu đi học…",
+  "@exKeepsakesSubOlder": {
+    "description": "Khám phá row subtitle (3+)."
+  },
+  "exAutoSave": "Tự lưu kỷ niệm",
+  "@exAutoSave": {
+    "description": "Khám phá row."
+  },
+  "exAutoSaveSub": "Gợi ý ảnh có {name} từ thư viện máy",
+  "@exAutoSaveSub": {
+    "description": "Khám phá row subtitle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exBeta": "Beta",
+  "@exBeta": {
+    "description": "Khám phá badge."
+  },
+  "exSpending": "Chi tiêu cho con",
+  "@exSpending": {
+    "description": "Khám phá row."
+  },
+  "exSpendingSub": "Theo tháng, danh mục, người chi",
+  "@exSpendingSub": {
+    "description": "Khám phá row subtitle (0–3)."
+  },
+  "exSpendingSubOlder": "Giữ trẻ & học, quần áo…",
+  "@exSpendingSubOlder": {
+    "description": "Khám phá row subtitle (3+)."
+  },
+  "exRemindersSub": "Việc của bé, nhắc cả nhà",
+  "@exRemindersSub": {
+    "description": "Khám phá row subtitle (0–3)."
+  },
+  "exRemindersSubOlder": "Lịch học, khám, tiêm nhắc",
+  "@exRemindersSubOlder": {
+    "description": "Khám phá row subtitle (3+)."
+  },
+  "exFamily": "Gia đình & chia sẻ",
+  "@exFamily": {
+    "description": "Khám phá row."
+  },
+  "exFamilySub": "Thành viên, vai trò, lời mời",
+  "@exFamilySub": {
+    "description": "Khám phá row subtitle (0–3)."
+  },
+  "exFamilySubOlder": "Ông bà xem kỷ niệm được chia sẻ",
+  "@exFamilySubOlder": {
+    "description": "Khám phá row subtitle (3+)."
+  },
+  "exLumi": "Lumi",
+  "@exLumi": {
+    "description": "Khám phá row."
+  },
+  "exLumiSub": "Hỏi, ghi nhanh bằng một câu nhắn",
+  "@exLumiSub": {
+    "description": "Khám phá row subtitle (0–3)."
+  },
+  "exLumiSubOlder": "Hỏi về lịch, kỷ niệm, chi tiêu của {name}",
+  "@exLumiSubOlder": {
+    "description": "Khám phá row subtitle (3+).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exFirstAid": "Sơ cứu trẻ em",
+  "@exFirstAid": {
+    "description": "Khám phá row."
+  },
+  "exAllCare": "Tất cả công cụ chăm sóc",
+  "@exAllCare": {
+    "description": "Khám phá row opening the Chăm sóc hub."
+  },
+  "exAllCareSub": "Dinh dưỡng, ăn dặm, Wonder Weeks, thư viện…",
+  "@exAllCareSub": {
+    "description": "Khám phá row subtitle."
+  },
+  "exGrowTitle": "Cùng con lớn lên",
+  "@exGrowTitle": {
+    "description": "AX20 card."
+  },
+  "exGrowBadge": "Đang phát triển · chưa có trong app",
+  "@exGrowBadge": {
+    "description": "AX20 card subtitle."
+  },
+  "exGrowBody": "Child Life đang xây thêm cho các chặng 1–3, 3–6 và 6–12 tuổi. Mọi kỷ niệm, chi tiêu và lịch sử của {name} vẫn được giữ trọn.",
+  "@exGrowBody": {
+    "description": "AX20 card body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exBand13": "1–3 tuổi",
+  "@exBand13": {
+    "description": "AX20 chip."
+  },
+  "exBand36": "3–6 tuổi",
+  "@exBand36": {
+    "description": "AX20 chip."
+  },
+  "exBand612": "6–12 tuổi",
+  "@exBand612": {
+    "description": "AX20 chip."
+  },
+  "exNotify": "Báo tôi khi có",
+  "@exNotify": {
+    "description": "AX20/AX45 button; records interest (no marketing push)."
+  },
+  "exNotified": "Đã ghi nhận",
+  "@exNotified": {
+    "description": "After \"Báo tôi khi có\" (G-110)."
+  },
+  "exNotifiedToast": "Đã ghi nhận. Child Life sẽ báo trong app khi có.",
+  "@exNotifiedToast": {
+    "description": "Toast after \"Báo tôi khi có\" (G-110)."
+  },
+  "exNoneTitle": "Chưa có tính năng “{query}”",
+  "@exNoneTitle": {
+    "description": "AX45 no-result title.",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "exNoneBody": "Child Life đang phát triển thêm cho từng độ tuổi. Hiện bạn có thể lưu những điều đáng nhớ của {name} vào Kỷ niệm.",
+  "@exNoneBody": {
+    "description": "AX45 body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exSaveToMemories": "Lưu vào Kỷ niệm",
+  "@exSaveToMemories": {
+    "description": "AX45 button."
+  },
+  "pfChildren": "Các bé",
+  "@pfChildren": {
+    "description": "AX34 group."
+  },
+  "pfChildRow": "{age} · mục tiêu & Hôm nay",
+  "@pfChildRow": {
+    "description": "AX34 child row subtitle.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "pfAdd": "Thêm",
+  "@pfAdd": {
+    "description": "AX34 group link."
+  },
+  "pfApp": "Ứng dụng",
+  "@pfApp": {
+    "description": "Hồ sơ group carrying the other Tôi rows (D-097 Q-090)."
+  },
+  "axStageTitle1": "{name} tròn 1 tuổi rồi!",
+  "@axStageTitle1": {
+    "description": "AX33 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axStageTitle3": "{name} tròn 3 tuổi rồi!",
+  "@axStageTitle3": {
+    "description": "AX33 at 36 months (engineering, G-110).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axStageTitle6": "{name} tròn 6 tuổi rồi!",
+  "@axStageTitle6": {
+    "description": "AX33 at 72 months (engineering, G-110).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axStageBody1": "Nhiều gia đình bớt ghi bú từ lúc này. Muốn Hôm nay gọn hơn không?",
+  "@axStageBody1": {
+    "description": "AX33 body."
+  },
+  "axStageBodyLater": "Muốn Hôm nay hợp với tuổi mới của con hơn không? Lịch sử vẫn giữ nguyên.",
+  "@axStageBodyLater": {
+    "description": "AX33 body at 36 / 72 months (engineering, G-110)."
+  },
+  "axStageLeadMemories": "Đưa Kỷ niệm lên đầu Hôm nay",
+  "@axStageLeadMemories": {
+    "description": "AX33 option."
+  },
+  "axStageLeadMoment": "Đưa Lưu khoảnh khắc lên đầu Hôm nay",
+  "@axStageLeadMoment": {
+    "description": "AX33 option at 36 months."
+  },
+  "axStageLeadJournal": "Đưa Kỷ niệm, nhật ký lên đầu Hôm nay",
+  "@axStageLeadJournal": {
+    "description": "AX33 option at 72 months."
+  },
+  "axStageHideFeeds": "Ẩn Bú bình khỏi Ghi nhanh · vẫn ghi được khi cần",
+  "@axStageHideFeeds": {
+    "description": "AX33 option (\"vẫn có trong Khám phá\" in Figma; neutral until the new nav is on)."
+  },
+  "axStageKeepSleep": "Giữ Ngủ, Tã trong Ghi nhanh",
+  "@axStageKeepSleep": {
+    "description": "AX33 option."
+  },
+  "axStageHideQuickLog": "Ẩn Ghi nhanh khỏi Hôm nay · bật lại trong Tuỳ chỉnh",
+  "@axStageHideQuickLog": {
+    "description": "AX33 option at 36 months."
+  },
+  "axStageKeepGrowth": "Giữ Tăng trưởng trên Hôm nay",
+  "@axStageKeepGrowth": {
+    "description": "AX33 option at 72 months."
+  },
+  "axStageApply": "Áp dụng",
+  "@axStageApply": {
+    "description": "AX33 primary."
+  },
+  "axStageKeep": "Giữ như cũ",
+  "@axStageKeep": {
+    "description": "AX33 secondary."
+  },
+  "axLumiQ01": "Lần bú cuối lúc mấy giờ?",
+  "@axLumiQ01": {
+    "description": "AX00 \"Lumi gợi ý hỏi\" 0–1."
+  },
+  "axLumiQ13": "Tuần này {name} ngủ trưa thế nào?",
+  "@axLumiQ13": {
+    "description": "AX00 \"Lumi gợi ý hỏi\" 1–3.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axLumiQ36": "Tháng này đã chi cho {name} bao nhiêu?",
+  "@axLumiQ36": {
+    "description": "AX00 \"Lumi gợi ý hỏi\" 3–6.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axLumiQ612": "Tuần tới {name} có lịch gì?",
+  "@axLumiQ612": {
+    "description": "AX00 \"Lumi gợi ý hỏi\" 6–12.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

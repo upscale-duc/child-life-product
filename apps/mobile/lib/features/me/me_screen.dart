@@ -13,10 +13,12 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../app_update/app_update_screens.dart' show AppVersionRow;
+import '../adaptive/profile_children.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/countries.dart';
@@ -50,7 +52,11 @@ String babyNames(WidgetRef ref, Iterable<String> babyIds) => [
 /// "Tôi" per role (13a parent, 13g caregiver, 13h relative; R-123), pushed from the header
 /// avatar since NavBar v1.0.1 (370:1898).
 class MeScreen extends ConsumerWidget {
-  const MeScreen({super.key});
+  const MeScreen({this.asTab = false, super.key});
+
+  /// Hồ sơ (AX34, P-178): the tab root with the dock, no back, "Các bé" first; every Tôi row
+  /// stays (D-097 Q-090).
+  final bool asTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,7 +96,14 @@ class MeScreen extends ConsumerWidget {
     final staffTransfer = openStaffTransfer(ref, account?.staffTransfer);
 
     return MePage(
-      title: l10n.tabMe,
+      title: asTab ? l10n.tabProfile : l10n.tabMe,
+      back: !asTab,
+      bottomPadding: asTab
+          ? switch (HomeFloatingClearance.of(context)) {
+              final c? => c + ClSpace.s4,
+              null => ClTabDock.contentBottomPadding + ClSpace.s6,
+            }
+          : null,
       children: [
         if (account?.offer case final offer?) ...[
           OwnershipOfferCard(offer: offer),
@@ -115,6 +128,7 @@ class MeScreen extends ConsumerWidget {
             ),
           ],
         ),
+        if (asTab && parent) const ProfileChildren(),
         if (parent) ...[
           const SizedBox(height: ClSpace.s3),
           StorageCard(babyId: me.babyId),

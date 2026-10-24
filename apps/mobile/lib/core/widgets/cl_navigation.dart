@@ -18,7 +18,29 @@ enum ClRole { parent, caregiver, relative }
 
 /// Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích (v1.0 improvement 450:6597, R1–R4): Tiện ích replaced
 /// Gia đình, which now opens from Tiện ích. There is no "Tôi" tab: it opens from the header avatar.
-enum ClTab { today, memories, care, utilities }
+/// [explore] and [profile] are NavBar v2 · Adaptive (917:3012, P-178): Khám phá gathers Chăm sóc
+/// and Tiện ích, Hồ sơ replaces the avatar's Tôi.
+enum ClTab { today, memories, care, utilities, explore, profile }
+
+/// NavBar v2 · Adaptive (917:3012, P-178): parent Hôm nay · Kỷ niệm · Khám phá · Hồ sơ; caregiver
+/// Hôm nay · Khám phá · Hồ sơ; relative Kỷ niệm · Hồ sơ, plus Hôm nay when granted daily care
+/// (D-018, which the Figma relative variant does not draw).
+List<ClTab> tabsForRoleV2(ClRole role, {bool relativeSeesToday = false}) =>
+    switch (role) {
+      ClRole.parent => const [
+        ClTab.today,
+        ClTab.memories,
+        ClTab.explore,
+        ClTab.profile,
+      ],
+      ClRole.caregiver => const [ClTab.today, ClTab.explore, ClTab.profile],
+      ClRole.relative when relativeSeesToday => const [
+        ClTab.today,
+        ClTab.memories,
+        ClTab.profile,
+      ],
+      ClRole.relative => const [ClTab.memories, ClTab.profile],
+    };
 
 /// Tabs per role: parent Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích; caregiver without Kỷ niệm
 /// (450:6873); relative Kỷ niệm · Tiện ích, plus a read-only Hôm nay when granted daily care
@@ -138,12 +160,15 @@ class _ClNavBarState extends State<ClNavBar>
       ClTab.memories => l10n.tabMemories,
       ClTab.care => l10n.tabCare,
       ClTab.utilities => l10n.tabUtilities,
+      ClTab.explore => l10n.tabExplore,
+      ClTab.profile => l10n.tabProfile,
     };
     ClIcons icon(ClTab t) => switch (t) {
       ClTab.today => ClIcons.today,
       ClTab.memories => ClIcons.memories,
       ClTab.care => ClIcons.care,
-      ClTab.utilities => ClIcons.grid,
+      ClTab.utilities || ClTab.explore => ClIcons.grid,
+      ClTab.profile => ClIcons.profile,
     };
 
     return Container(
@@ -365,6 +390,7 @@ class ClTabDock extends StatelessWidget {
     this.tabs,
     this.dots = const {},
     this.dotLabel,
+    this.trailing,
     super.key,
   });
 
@@ -373,6 +399,10 @@ class ClTabDock extends StatelessWidget {
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
   final ClDockAction? action;
+
+  /// At the end of the bar's row, outside the bar (NavBar v2: Lumi, owner 2026-10-24 "nút Lumi ở
+  /// cuối, tách ra khỏi tabbar").
+  final Widget? trailing;
 
   /// See [ClNavBar.dots].
   final Set<ClTab> dots;
@@ -388,6 +418,14 @@ class ClTabDock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final bar = ClNavBar(
+      role: role,
+      active: active,
+      onSelect: onSelect,
+      tabs: tabs,
+      dots: dots,
+      dotLabel: dotLabel,
+    );
     return Padding(
       padding: EdgeInsets.fromLTRB(
         ClSpace.s4,
@@ -412,14 +450,16 @@ class ClTabDock extends StatelessWidget {
                 ),
               ),
             ),
-          ClNavBar(
-            role: role,
-            active: active,
-            onSelect: onSelect,
-            tabs: tabs,
-            dots: dots,
-            dotLabel: dotLabel,
-          ),
+          if (trailing case final t?)
+            Row(
+              children: [
+                Expanded(child: bar),
+                const SizedBox(width: ClSpace.s2),
+                t,
+              ],
+            )
+          else
+            bar,
         ],
       ),
     );

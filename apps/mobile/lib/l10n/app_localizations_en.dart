@@ -20248,4 +20248,621 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sryKindQuote => 'Quote';
+
+  @override
+  String axGreetMorning(String name) {
+    return 'Good morning, $name ☀️';
+  }
+
+  @override
+  String axGreetAfternoon(String name) {
+    return 'Good afternoon, $name';
+  }
+
+  @override
+  String axGreetEvening(String name) {
+    return 'Good evening, $name 🌙';
+  }
+
+  @override
+  String axGreet36(String name) {
+    return 'How is $name\'s day going?';
+  }
+
+  @override
+  String axGreet612(String name) {
+    return 'Let\'s keep $name\'s journey';
+  }
+
+  @override
+  String get axSub01 => 'Today\'s rhythm, logged in one tap.';
+
+  @override
+  String get axSub13 => 'Another day of new discoveries.';
+
+  @override
+  String get axSub36 =>
+      'Keep a small moment today — one day it becomes a big story.';
+
+  @override
+  String get axSub612 => 'School days, trips, the things they\'re proud of.';
+
+  @override
+  String axHello(String name) {
+    return 'Hi, $name 👋';
+  }
+
+  @override
+  String get axHelloSub01 =>
+      'Start with one small thing — no need to invite anyone first.';
+
+  @override
+  String get axHelloSub13 =>
+      'It\'s never too late — keep today, and find the days already gone.';
+
+  @override
+  String get axHelloSub36 => 'Every moment is a story. Let\'s start today.';
+
+  @override
+  String get axHelloSub612 =>
+      'Keep the school journey, the trips and what they\'re proud of.';
+
+  @override
+  String get axRecentTitle => 'Recent memories';
+
+  @override
+  String axRecentSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'This week · $count photos',
+      one: 'This week · 1 photo',
+      zero: 'No photos this week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axSeeAll => 'See all';
+
+  @override
+  String get axAddMoment => 'Add a moment';
+
+  @override
+  String get axWriteJournal => 'Write today\'s journal';
+
+  @override
+  String get axFirstMomentTitle => 'Save the first moment';
+
+  @override
+  String axFirstMomentOf(String name) {
+    return 'Save $name\'s first moment';
+  }
+
+  @override
+  String axFirstJournal(String name) {
+    return 'Start $name\'s journal';
+  }
+
+  @override
+  String get axFirstMomentSub01 => 'A photo or a few lines about today';
+
+  @override
+  String get axFirstMomentSub => 'Photos, videos or a journal';
+
+  @override
+  String get axFirstMomentSub36 =>
+      'A drawing, a day out, a funny thing they said';
+
+  @override
+  String get axMomentTodayTitle => 'Save today\'s moment';
+
+  @override
+  String get axMomentTodaySub => 'Photos, videos or a few journal lines';
+
+  @override
+  String axCreateTitle(String name) {
+    return 'Make something from $name\'s memories';
+  }
+
+  @override
+  String get axCreateSub => 'Videos and cards from photos you pick';
+
+  @override
+  String get axCreateVideo => 'Memory video';
+
+  @override
+  String get axCreateVideoSub => 'From your photos';
+
+  @override
+  String get axCreateCard => 'Card';
+
+  @override
+  String get axCreateCardSub => 'A day to remember';
+
+  @override
+  String get axGrowthTitle => 'Growth';
+
+  @override
+  String axGrowthLast(String ago) {
+    return 'Last measured $ago';
+  }
+
+  @override
+  String get axGrowthNone => 'No measurements yet';
+
+  @override
+  String get axGrowthLog => 'Add a measure';
+
+  @override
+  String get axFamilyTitle => 'The whole family';
+
+  @override
+  String get axFamilyBody =>
+      'Grandparents can see the memories you share with the family.';
+
+  @override
+  String axFamilyAlone(String name) {
+    return 'It\'s just you in $name\'s family';
+  }
+
+  @override
+  String get axInvite => 'Invite family';
+
+  @override
+  String get axCustomizeLink => 'Customise Today';
+
+  @override
+  String axCustomizeIntro(String name) {
+    return 'Reorder, pin or hide. Suggestions follow $name\'s age and the goals you chose.';
+  }
+
+  @override
+  String get axGoalsLabel => 'Your family\'s goals';
+
+  @override
+  String get axGoalsEdit => 'Edit';
+
+  @override
+  String get axShowing => 'Showing';
+
+  @override
+  String get axHiddenLabel => 'Hidden';
+
+  @override
+  String get axPinned => 'Pinned · always first';
+
+  @override
+  String axPin(String title) {
+    return 'Pin $title';
+  }
+
+  @override
+  String axUnpin(String title) {
+    return 'Unpin $title';
+  }
+
+  @override
+  String axBecauseGoal(String goal) {
+    return 'From your goal “$goal”';
+  }
+
+  @override
+  String axBecauseAge(String name) {
+    return 'Suggested for $name\'s age';
+  }
+
+  @override
+  String get axBecauseAlways => 'Always here';
+
+  @override
+  String get axHiddenByAge => 'Hidden for this age · turn it on any time';
+
+  @override
+  String axRestore(String name) {
+    return 'Restore the suggestions for $name\'s age';
+  }
+
+  @override
+  String axGoalsTitle(String name) {
+    return 'What would you like Child Life to help with for $name?';
+  }
+
+  @override
+  String get axGoalsSub =>
+      'Pick everything you care about · change it any time';
+
+  @override
+  String axGoalsSuggested(String age) {
+    return 'Suggested for $age';
+  }
+
+  @override
+  String axGoalsChosen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '1 selected',
+      zero: 'Nothing selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axGoalTrackCare => 'Track feeds, sleep, diapers';
+
+  @override
+  String get axGoalTrackCareSub => 'Quick logs and your child\'s rhythm';
+
+  @override
+  String get axGoalMemories => 'Keep memories';
+
+  @override
+  String get axGoalMemoriesSub => 'Photos, videos, journal, cards';
+
+  @override
+  String get axGoalGrowth => 'Growth & vaccines';
+
+  @override
+  String get axGoalGrowthSub => 'Measures, vaccine schedule';
+
+  @override
+  String get axGoalFamily => 'Care and share as a family';
+
+  @override
+  String get axGoalFamilySub => 'Invite a partner, grandparents, a caregiver';
+
+  @override
+  String get axGoalSpending => 'Spending on your child';
+
+  @override
+  String get axGoalSpendingSub => 'Know where the money goes';
+
+  @override
+  String get axGoalReminders => 'Reminders for your child';
+
+  @override
+  String get axGoalRemindersSub => 'Never miss what matters';
+
+  @override
+  String get axWidgetTiles => 'Quick log';
+
+  @override
+  String get axWidgetQuickActions => 'Shortcuts';
+
+  @override
+  String get axWidgetVaccine => 'Next vaccine';
+
+  @override
+  String get axWidgetSpending => 'This month\'s spending';
+
+  @override
+  String get axWidgetRhythm => 'Logged today';
+
+  @override
+  String get axWidgetReminders => 'Reminders';
+
+  @override
+  String get axWidgetCreate => 'Make from memories';
+
+  @override
+  String get axWidgetCreateSub => 'Videos, cards';
+
+  @override
+  String get axDone => 'Done';
+
+  @override
+  String axPreviewTitle(String name) {
+    return '$name\'s Today will lead with';
+  }
+
+  @override
+  String axPreviewSub(String name) {
+    return 'Based on $name\'s age and the goals you chose.';
+  }
+
+  @override
+  String axPreviewBecause(String reason) {
+    return 'Because: $reason';
+  }
+
+  @override
+  String get axPreviewHint =>
+      'Drag to reorder. Change it any time in “Customise Today”.';
+
+  @override
+  String axPreviewGo(String name) {
+    return 'Open $name\'s Today';
+  }
+
+  @override
+  String axInfoTitle(String name) {
+    return 'Every Child Life feature works for $name.';
+  }
+
+  @override
+  String axInfoSub(String name) {
+    return 'Suggested for $name\'s age — first on Today:';
+  }
+
+  @override
+  String get axChipMemories => 'Memories & albums';
+
+  @override
+  String get axChipVideo => 'Videos & cards';
+
+  @override
+  String get axChipSpending => 'Spending';
+
+  @override
+  String get axChipVaccines => 'Vaccines';
+
+  @override
+  String get axInfoFoot =>
+      'Feeds, sleep, diapers, first aid, Lumi… are always in Explore when you need them.';
+
+  @override
+  String get axInfoFootTabs =>
+      'Feeds, sleep, diapers, first aid, Lumi… are always in Care and Utilities when you need them.';
+
+  @override
+  String axTrackersTitle(String name) {
+    return 'What would you like to log for $name?';
+  }
+
+  @override
+  String get axTrackersSub =>
+      'Only what you pick shows on Today. Change it later in the child\'s profile.';
+
+  @override
+  String get tabExplore => 'Explore';
+
+  @override
+  String get tabProfile => 'Profile';
+
+  @override
+  String get exSearch01 => 'Find a feature, e.g. vaccines, spending, first aid';
+
+  @override
+  String get exSearchOlder =>
+      'Find a feature, e.g. spending, vaccines, memories';
+
+  @override
+  String exForChild(String name) {
+    return 'Suggested for $name right now';
+  }
+
+  @override
+  String get exLifelong => 'For the whole journey';
+
+  @override
+  String get exHealth => 'Health & safety';
+
+  @override
+  String get exFamilyAssistant => 'Family & assistant';
+
+  @override
+  String get exCareTools => 'Care tracking';
+
+  @override
+  String get exUnderstand => 'Understanding & development';
+
+  @override
+  String get exCare => 'Feeds, sleep, diapers';
+
+  @override
+  String get exCareSub => 'Quick logs, sleep timer, pumping';
+
+  @override
+  String get exStats => 'Stats & history';
+
+  @override
+  String get exStatsSub => 'Feeds, sleep and diapers by day';
+
+  @override
+  String get exGrowthSub => 'Weight, height';
+
+  @override
+  String get exVaccinesSub => 'Your child\'s vaccine schedule';
+
+  @override
+  String get exVaccinesSubOlder => 'Boosters on schedule';
+
+  @override
+  String get exMemories => 'Memories & albums';
+
+  @override
+  String get exMemoriesSub => 'Photos, videos, journal';
+
+  @override
+  String get exKeepsakes => 'Memory videos & cards';
+
+  @override
+  String get exKeepsakesSub => 'Made from photos you pick';
+
+  @override
+  String get exKeepsakesSubOlder => 'Birthdays, the first day of school…';
+
+  @override
+  String get exAutoSave => 'Auto-save memories';
+
+  @override
+  String exAutoSaveSub(String name) {
+    return 'Suggests photos of $name from your library';
+  }
+
+  @override
+  String get exBeta => 'Beta';
+
+  @override
+  String get exSpending => 'Spending on your child';
+
+  @override
+  String get exSpendingSub => 'By month, category, who paid';
+
+  @override
+  String get exSpendingSubOlder => 'Childcare & school, clothes…';
+
+  @override
+  String get exRemindersSub => 'Your child\'s to-dos, for the whole family';
+
+  @override
+  String get exRemindersSubOlder => 'School, check-ups, boosters';
+
+  @override
+  String get exFamily => 'Family & sharing';
+
+  @override
+  String get exFamilySub => 'Members, roles, invitations';
+
+  @override
+  String get exFamilySubOlder => 'Grandparents see the memories you share';
+
+  @override
+  String get exLumi => 'Lumi';
+
+  @override
+  String get exLumiSub => 'Ask, or log with one message';
+
+  @override
+  String exLumiSubOlder(String name) {
+    return 'Ask about $name\'s schedule, memories, spending';
+  }
+
+  @override
+  String get exFirstAid => 'Child first aid';
+
+  @override
+  String get exAllCare => 'All care tools';
+
+  @override
+  String get exAllCareSub => 'Nutrition, solids, Wonder Weeks, library…';
+
+  @override
+  String get exGrowTitle => 'Growing up together';
+
+  @override
+  String get exGrowBadge => 'In development · not in the app yet';
+
+  @override
+  String exGrowBody(String name) {
+    return 'Child Life is building more for ages 1–3, 3–6 and 6–12. All of $name\'s memories, spending and history stay with you.';
+  }
+
+  @override
+  String get exBand13 => 'Ages 1–3';
+
+  @override
+  String get exBand36 => 'Ages 3–6';
+
+  @override
+  String get exBand612 => 'Ages 6–12';
+
+  @override
+  String get exNotify => 'Tell me when it\'s ready';
+
+  @override
+  String get exNotified => 'Noted';
+
+  @override
+  String get exNotifiedToast =>
+      'Noted. Child Life will let you know in the app.';
+
+  @override
+  String exNoneTitle(String query) {
+    return 'No “$query” feature yet';
+  }
+
+  @override
+  String exNoneBody(String name) {
+    return 'Child Life is building more for every age. For now you can keep what matters about $name in Memories.';
+  }
+
+  @override
+  String get exSaveToMemories => 'Save to Memories';
+
+  @override
+  String get pfChildren => 'Children';
+
+  @override
+  String pfChildRow(String age) {
+    return '$age · goals & Today';
+  }
+
+  @override
+  String get pfAdd => 'Add';
+
+  @override
+  String get pfApp => 'App';
+
+  @override
+  String axStageTitle1(String name) {
+    return '$name is 1 today!';
+  }
+
+  @override
+  String axStageTitle3(String name) {
+    return '$name is 3 today!';
+  }
+
+  @override
+  String axStageTitle6(String name) {
+    return '$name is 6 today!';
+  }
+
+  @override
+  String get axStageBody1 =>
+      'Many families log fewer feeds from now on. Make Today simpler?';
+
+  @override
+  String get axStageBodyLater => 'Fit Today to the new age? All history stays.';
+
+  @override
+  String get axStageLeadMemories => 'Put Memories at the top of Today';
+
+  @override
+  String get axStageLeadMoment => 'Put today\'s moment at the top of Today';
+
+  @override
+  String get axStageLeadJournal =>
+      'Put memories and the journal at the top of Today';
+
+  @override
+  String get axStageHideFeeds =>
+      'Hide bottle from the quick log · still there when you need it';
+
+  @override
+  String get axStageKeepSleep => 'Keep sleep and diapers in the quick log';
+
+  @override
+  String get axStageHideQuickLog =>
+      'Hide the quick log from Today · turn it back on in Customise';
+
+  @override
+  String get axStageKeepGrowth => 'Keep growth on Today';
+
+  @override
+  String get axStageApply => 'Apply';
+
+  @override
+  String get axStageKeep => 'Keep as is';
+
+  @override
+  String get axLumiQ01 => 'When was the last feed?';
+
+  @override
+  String axLumiQ13(String name) {
+    return 'How were $name\'s naps this week?';
+  }
+
+  @override
+  String axLumiQ36(String name) {
+    return 'How much have we spent on $name this month?';
+  }
+
+  @override
+  String axLumiQ612(String name) {
+    return 'What\'s on $name\'s schedule next week?';
+  }
 }

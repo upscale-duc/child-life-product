@@ -548,6 +548,8 @@ async function babyStep(
       // P-172: private per-viewer state and delivery/lease docs linked to this baby.
       await deleteQuery(db, db.collectionGroup('personalization').where('babyId', '==', babyId));
       await deleteQuery(db, db.collectionGroup('settings').where('babyId', '==', babyId));
+      // P-175: every viewer's Hôm nay arrangement for this baby.
+      await deleteQuery(db, db.collectionGroup('experience').where('babyId', '==', babyId));
       // Assistant chats, tasks, drafts and photos about this baby (every member's).
       await purgeAssistantForBaby(db, deps.store, babyId, now);
       return;

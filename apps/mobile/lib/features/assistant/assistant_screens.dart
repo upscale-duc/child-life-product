@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../adaptive/adaptive_engine.dart' show AgeBand;
+import '../adaptive/experience_repository.dart'
+    show adaptiveOnProvider, childBandProvider;
 import '../../app/navigation.dart' show SafePush, SafePushContext;
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
@@ -578,62 +581,81 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     AssistantScope scope, {
     required bool viewer,
     required VoidCallback? onPhoto,
-  }) => [
-    if (scope.household) ...[
-      if (!viewer)
-        (
-          label: l10n.asChipExpense,
-          icon: ClIcons.grid,
-          onPressed: () => _prefill(l10n.asPrefillExpense),
-        ),
-    ] else ...[
-      if (!viewer) ...[
-        (
-          label: l10n.pv2Notes,
-          icon: ClIcons.journal,
-          onPressed: () {
-            final me = _membership(ref, scope.babyId);
-            if (me == null) return;
-            final text = _text.text.trim();
-            showNotebookEditor(
-              context,
-              ref,
-              (
-                babyId: scope.babyId,
-                uid: me.uid,
-                locale: Localizations.localeOf(context).languageCode,
-              ),
-              me.role == MemberRole.coParent,
-              note: text.isEmpty
-                  ? null
-                  : {
-                      'text': text.length > 200 ? text.substring(0, 200) : text,
-                      'scope': 'baby',
-                      'source': 'lumi',
-                    },
-            );
-          },
-        ),
-        (
-          label: l10n.asChipLogFeed,
-          icon: ClIcons.feed,
-          onPressed: () => _prefill(l10n.asPrefillFeed),
-        ),
-        (
-          label: l10n.asChipLogSleep,
-          icon: ClIcons.sleep,
-          onPressed: () => _prefill(l10n.asPrefillSleep),
-        ),
+  }) {
+    // Adaptive Experience: a 1–3 child has no feed chip, a 3+ child no care chips at all.
+    final band = ref.read(adaptiveOnProvider)
+        ? ref.read(childBandProvider(scope.babyId))
+        : null;
+    final feeds = band == null || band == AgeBand.b0_1;
+    final sleep = band == null || band.index <= AgeBand.b1_3.index;
+    return [
+      if (scope.household) ...[
+        if (!viewer)
+          (
+            label: l10n.asChipExpense,
+            icon: ClIcons.grid,
+            onPressed: () => _prefill(l10n.asPrefillExpense),
+          ),
+      ] else ...[
+        if (!viewer) ...[
+          (
+            label: l10n.pv2Notes,
+            icon: ClIcons.journal,
+            onPressed: () {
+              final me = _membership(ref, scope.babyId);
+              if (me == null) return;
+              final text = _text.text.trim();
+              showNotebookEditor(
+                context,
+                ref,
+                (
+                  babyId: scope.babyId,
+                  uid: me.uid,
+                  locale: Localizations.localeOf(context).languageCode,
+                ),
+                me.role == MemberRole.coParent,
+                note: text.isEmpty
+                    ? null
+                    : {
+                        'text': text.length > 200
+                            ? text.substring(0, 200)
+                            : text,
+                        'scope': 'baby',
+                        'source': 'lumi',
+                      },
+              );
+            },
+          ),
+          if (feeds)
+            (
+              label: l10n.asChipLogFeed,
+              icon: ClIcons.feed,
+              onPressed: () => _prefill(l10n.asPrefillFeed),
+            ),
+          if (sleep)
+            (
+              label: l10n.asChipLogSleep,
+              icon: ClIcons.sleep,
+              onPressed: () => _prefill(l10n.asPrefillSleep),
+            ),
+          if (!sleep)
+            (
+              label: l10n.asChipExpense,
+              icon: ClIcons.grid,
+              onPressed: () => _prefill(l10n.asPrefillExpense),
+            ),
+        ],
+        if (feeds)
+          (
+            label: l10n.asChipFeedsShort,
+            icon: ClIcons.journal,
+            onPressed: () => _prefill(l10n.asChipFeedsToday),
+          ),
       ],
-      (
-        label: l10n.asChipFeedsShort,
-        icon: ClIcons.journal,
-        onPressed: () => _prefill(l10n.asChipFeedsToday),
-      ),
-    ],
-    if (onPhoto != null)
-      (label: l10n.asChipReceipt, icon: ClIcons.camera, onPressed: onPhoto),
-  ];
+      if (onPhoto != null)
+        (label: l10n.asChipReceipt, icon: ClIcons.camera, onPressed: onPhoto),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -734,6 +756,10 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
             images: images,
             onExample: _prefill,
             onPhoto: onPhoto,
+            // Adaptive Experience (AX00 "Lumi gợi ý hỏi"): examples for the child's age.
+            band: ref.watch(adaptiveOnProvider)
+                ? ref.watch(childBandProvider(scope.babyId))
+                : null,
           ),
         ),
       if (chat.loadingOlder || chat.olderFailed)
@@ -3361,8 +3387,12 @@ class _EmptyState extends StatelessWidget {
     required this.images,
     required this.onExample,
     required this.onPhoto,
+    this.band,
   });
 
+  /// With the Adaptive Experience on: the child's band picks the examples (feeds for 0–1,
+  /// naps for 1–3, spending and schedule after); null = the examples as before.
+  final AgeBand? band;
   final AssistantScope scope;
   final String babyName;
   final bool images;
@@ -3434,7 +3464,27 @@ class _EmptyState extends StatelessWidget {
             l10n.asExampleExpense,
             () => onExample(l10n.asExampleExpenseText),
           )
-        else ...[
+        else if (band case final b? when b != AgeBand.b0_1) ...[
+          example(
+            ClIcons.journal,
+            switch (b) {
+              AgeBand.b1_3 => l10n.axLumiQ13(babyName),
+              AgeBand.b3_6 => l10n.axLumiQ36(babyName),
+              _ => l10n.axLumiQ612(babyName),
+            },
+            () => onExample(switch (b) {
+              AgeBand.b1_3 => l10n.axLumiQ13(babyName),
+              AgeBand.b3_6 => l10n.axLumiQ36(babyName),
+              _ => l10n.axLumiQ612(babyName),
+            }),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          example(
+            ClIcons.grid,
+            l10n.asExampleExpense,
+            () => onExample(l10n.asExampleExpenseText),
+          ),
+        ] else ...[
           example(
             ClIcons.feed,
             l10n.asExampleFeed,
@@ -3443,8 +3493,10 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: ClSpace.s2),
           example(
             ClIcons.journal,
-            l10n.asExampleFeedsToday,
-            () => onExample(l10n.asChipFeedsToday),
+            band == AgeBand.b0_1 ? l10n.axLumiQ01 : l10n.asExampleFeedsToday,
+            () => onExample(
+              band == AgeBand.b0_1 ? l10n.axLumiQ01 : l10n.asChipFeedsToday,
+            ),
           ),
         ],
         if (images && onPhoto != null) ...[

@@ -15,12 +15,16 @@ class MePage extends StatelessWidget {
     this.back = true,
     this.trailing,
     this.onRefresh,
+    this.bottomPadding,
     super.key,
   });
 
   final String title;
   final List<Widget> children;
   final bool back;
+
+  /// Space the last row keeps from the bottom edge; a tab root (Hồ sơ, P-178) clears the dock.
+  final double? bottomPadding;
   final Widget? trailing;
   final Future<void> Function()? onRefresh;
 
@@ -34,7 +38,7 @@ class MePage extends StatelessWidget {
         ClSpace.s4,
         0,
         ClSpace.s4,
-        MediaQuery.paddingOf(context).bottom + ClSpace.s6,
+        bottomPadding ?? MediaQuery.paddingOf(context).bottom + ClSpace.s6,
       ),
       children: [
         const SizedBox(height: ClSpace.s2),

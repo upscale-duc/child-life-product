@@ -68,6 +68,10 @@ import '../features/spending/spending_categories.dart';
 import '../features/spending/spending_plan_screens.dart';
 import '../features/spending/spending_screens.dart';
 import '../features/spending/spending_stats.dart';
+import '../features/adaptive/adaptive_setup.dart'
+    show SetupGoalsScreen, SetupPreviewScreen;
+import '../features/adaptive/explore_screen.dart' show ExploreScreen;
+import '../features/adaptive/today_adaptive.dart' show adaptiveRoutes;
 import '../features/today/today_personalize.dart' show todayRoutes;
 import '../features/today/today_screen.dart';
 import 'navigation.dart' show SafeGoRouter;
@@ -242,6 +246,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const BabyProfileScreen(),
       ),
       _route(path: Routes.trackers, builder: (_, _) => const TrackersScreen()),
+      _route(
+        path: Routes.setupGoals,
+        builder: (_, _) => const SetupGoalsScreen(),
+      ),
+      _route(
+        path: Routes.setupPreview,
+        builder: (_, _) => const SetupPreviewScreen(),
+      ),
       _route(path: Routes.messages, builder: (_, _) => const MessagesScreen()),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, shell) =>
@@ -622,6 +634,24 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          // NavBar v2 · Adaptive (P-178, `adaptive_nav`): Khám phá and Hồ sơ. Chăm sóc and Tiện ích
+          // keep their branches and paths, so every link into them still opens.
+          StatefulShellBranch(
+            routes: [
+              _route(
+                path: Routes.explore,
+                builder: (_, _) => const ExploreScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              _route(
+                path: Routes.profile,
+                builder: (_, _) => const MeScreen(asTab: true),
+              ),
+            ],
+          ),
         ],
       ),
       // EN06 Hộp thông báo (D-076 #2), from the Hôm nay bell or a push: pushed, without the dock.
@@ -741,6 +771,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ...libraryRoutes(),
       // D-076 #1: EN01–EN03 personalisation (lib/features/today/today_personalize.dart).
       ...todayRoutes(),
+      // P-175 AX14 "Tuỳ chỉnh Hôm nay" (Adaptive Experience).
+      ...adaptiveRoutes(),
       ...premiumRoutes(),
       ...assistantRoutes(),
       _route(

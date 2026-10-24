@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { widgetIds } from './adaptive.js';
 
 /** MET-01 / P-137: product observations are private operational receipts; staff get aggregates. */
 export const productAnalyticsSections = [
@@ -78,6 +79,42 @@ export const engagementReasonCodes = [
 ] as const;
 export type EngagementReasonCode = (typeof engagementReasonCodes)[number];
 export const analyticsContexts = ['current', 'retrospective', 'unknown'] as const;
+
+/**
+ * Adaptive Experience events (P-175, plan §1.3 / §4.8): what a person did with Hôm nay, AX33 and
+ * Khám phá. One closed `detail` each; never a name, a date of birth or free text (a search term
+ * is reduced to `search`).
+ */
+export const adaptiveEvents = [
+  'adaptive_goals_set',
+  'adaptive_widget_opened',
+  'adaptive_customized',
+  'adaptive_stage_answered',
+  'adaptive_interest',
+] as const;
+export type AdaptiveEvent = (typeof adaptiveEvents)[number];
+export const adaptiveDetails = [
+  // adaptive_goals_set
+  'chosen',
+  'skipped',
+  // adaptive_widget_opened: the widget id
+  ...widgetIds,
+  // adaptive_customized
+  'pin',
+  'unpin',
+  'hide',
+  'show',
+  'reorder',
+  'goals',
+  'restore',
+  // adaptive_stage_answered
+  'applied',
+  'kept',
+  // adaptive_interest
+  'card',
+  'search',
+] as const;
+export type AdaptiveDetail = (typeof adaptiveDetails)[number];
 export type AnalyticsContext = (typeof analyticsContexts)[number];
 
 /** Closed client events. Source references are validated against owned domain data, never logged. */
@@ -96,6 +133,7 @@ export const analyticsObservationSchema = z
       'memory_story_share_sheet_opened',
       'memory_story_share_result',
       'lumi_answer_viewed',
+      ...adaptiveEvents,
     ]),
     babyId: z
       .string()
@@ -108,8 +146,14 @@ export const analyticsObservationSchema = z
     platform: z.enum(['ios', 'android', 'unknown']),
     locale: z.enum(['vi', 'en', 'other', 'unknown']),
     result: z.enum(['platform_confirmed', 'cancelled', 'unknown']).optional(),
+    /** Adaptive events only (required there, refused elsewhere). */
+    detail: z.enum(adaptiveDetails).optional(),
   })
-  .strict();
+  .strict()
+  .refine(
+    (r) => (r.event.startsWith('adaptive_') ? r.detail !== undefined : r.detail === undefined),
+    { message: 'detail is for adaptive events only', path: ['detail'] },
+  );
 export type AnalyticsObservation = z.infer<typeof analyticsObservationSchema>;
 
 const dateOnly = z

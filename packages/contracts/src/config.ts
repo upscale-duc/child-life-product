@@ -55,6 +55,12 @@ export const flagKeys = [
   'assistant_writes',
   /** Upgrade prompts when credits run out. */
   'assistant_upsell',
+  /** Adaptive Experience (Figma 930:11858, P-175): Hôm nay ordered by age band + goals, AX14
+   * customise v2, goal steps when adding a child. Off = today's Hôm nay. */
+  'adaptive_experience',
+  /** Adaptive navigation (P-178): Hôm nay · Kỷ niệm · Khám phá · Hồ sơ dock, switcher pill.
+   * Needs `adaptive_experience`. Off = Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích. */
+  'adaptive_nav',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -119,6 +125,8 @@ export const defaultFlags: Flags = {
   assistant_live: off('internal'),
   assistant_writes: off('internal'),
   assistant_upsell: off('internal'),
+  adaptive_experience: off('internal'),
+  adaptive_nav: off('internal'),
 };
 
 /**

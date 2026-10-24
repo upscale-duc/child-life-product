@@ -447,6 +447,8 @@ export async function getCapabilities(
       assistantImages: flagOn(ctx, 'assistant_images'),
       assistantCare: flagOn(ctx, 'assistant_care'),
       assistantUpsell: flagOn(ctx, 'assistant_upsell'),
+      adaptiveExperience: flagOn(ctx, 'adaptive_experience'),
+      adaptiveNav: flagOn(ctx, 'adaptive_experience') && flagOn(ctx, 'adaptive_nav'),
     },
   };
 }

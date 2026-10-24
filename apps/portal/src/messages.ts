@@ -835,6 +835,16 @@ const vi: Record<string, string> = {
   'flag.assistant_upsell': 'Trợ lý · gợi ý nâng cấp',
   'flag.assistant_upsell.desc': 'Gợi ý Premium khi hết lượt',
   'flag.assistant_upsell.offEffect': 'Hết lượt chỉ hiện ngày làm mới, không gợi ý mua.',
+  'flag.adaptive_experience': 'Trải nghiệm theo tuổi',
+  'flag.adaptive_experience.desc':
+    'Hôm nay xếp theo tuổi và mục tiêu, Tuỳ chỉnh Hôm nay mới, chọn mục tiêu khi thêm bé',
+  'flag.adaptive_experience.offEffect':
+    'Hôm nay như hiện tại; dữ liệu và tuỳ chỉnh đã lưu vẫn giữ.',
+  'flag.adaptive_nav': 'Thanh điều hướng mới',
+  'flag.adaptive_nav.desc':
+    'Hôm nay · Kỷ niệm · Khám phá · Hồ sơ, đổi bé ở đầu trang (cần Trải nghiệm theo tuổi)',
+  'flag.adaptive_nav.offEffect':
+    'Quay lại Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích; mọi liên kết vẫn mở được.',
 
   // A12
   'audit.title': 'Nhật ký thao tác',
@@ -3845,6 +3855,15 @@ const en: Record<string, string> = {
   'flag.assistant_upsell': 'Assistant · upgrade prompts',
   'flag.assistant_upsell.desc': 'Suggests Premium when credits run out',
   'flag.assistant_upsell.offEffect': 'Running out only shows the reset date, no purchase prompt.',
+  'flag.adaptive_experience': 'Age-adaptive experience',
+  'flag.adaptive_experience.desc':
+    'Today ordered by age and goals, new Customise Today, goal steps when adding a child',
+  'flag.adaptive_experience.offEffect': 'Today as it is now; saved data and layouts are kept.',
+  'flag.adaptive_nav': 'New navigation',
+  'flag.adaptive_nav.desc':
+    'Today · Memories · Explore · Profile, child switcher at the top (needs the age-adaptive experience)',
+  'flag.adaptive_nav.offEffect':
+    'Back to Today · Memories · Care · Utilities; every link still opens.',
 
   'audit.title': 'Action log',
   'audit.sub':

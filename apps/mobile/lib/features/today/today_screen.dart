@@ -35,6 +35,10 @@ import '../home/today_tour.dart';
 import '../notifications/notification_bell.dart'; // D-076 #2
 import '../solids/solids_today.dart' show SdTodayCard, sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
+import '../adaptive/adaptive_engine.dart' show RankedWidget, WidgetId;
+import '../adaptive/experience_repository.dart';
+import '../adaptive/adaptive_signals.dart';
+import '../adaptive/today_adaptive.dart';
 import 'today_cards.dart';
 import 'today_for_baby.dart';
 import 'today_layout.dart';
@@ -103,6 +107,115 @@ class TodayScreen extends ConsumerWidget {
         ? growth.firstOrNull
         : recent.where((r) => r.type == type).firstOrNull;
 
+    List<Widget> sectionParts(TodaySection section) => switch (section) {
+      // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
+      TodaySection.forYou => [const TodayForBabySection()],
+      TodaySection.tiles => [
+        const SizedBox(height: ClSpace.s4),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          // Without it the grid pads itself by the home indicator, so the gap below
+          // the tiles was ~34 pt taller than between the other sections (owner,
+          // 2026-10-14).
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: ClSpace.s3,
+          crossAxisSpacing: ClSpace.s3,
+          childAspectRatio: 166 / 156,
+          children: [
+            for (final kind in layout.tiles(trackers))
+              if (!layout.hiddenTiles.contains(kind))
+                if (careTypeOf(kind) case final type?)
+                  KeyedSubtree(
+                    key: switch (type) {
+                      CareType.bottle => TourTargets.bottle,
+                      CareType.growth => TourTargets.growth,
+                      _ => null,
+                    },
+                    child: CareTile(
+                      type: type,
+                      last: last(type),
+                      previousGrowth:
+                          type == CareType.growth && growth.length > 1
+                          ? growth[1]
+                          : null,
+                      myUid: membership.uid,
+                      now: now,
+                      readOnly: readOnly,
+                      timer: running(type),
+                      onTap: () => tap(type),
+                      onLongPress: last(type) == null
+                          ? null
+                          : () => context.push(
+                              '${Routes.record}/${last(type)!.id}',
+                            ),
+                    ),
+                  ),
+          ],
+        ),
+        // A care tool, with the tiles rather than among the suggestions (owner,
+        // 2026-10-15).
+        const TodayHandoverRow(),
+      ],
+      // ReminderPeek (128:665, R-094); not for relatives (D-018).
+      TodaySection.reminders => [
+        if (!readOnly) ...[
+          // A section like "Hôm nay" below: its own header, the same gap.
+          const SizedBox(height: ClSpace.s6),
+          const ReminderPeek(),
+        ],
+      ],
+      // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
+      TodaySection.quickActions => [
+        if (!readOnly) ...[
+          const SizedBox(height: ClSpace.s6),
+          TodayQuickActions(layout: layout),
+        ],
+      ],
+      TodaySection.vaccine => [
+        const SizedBox(height: ClSpace.s6),
+        const TodayVaccineCard(),
+      ],
+      TodaySection.spending => [
+        if (SpendingAccess.of(membership).viewAll) ...[
+          const SizedBox(height: ClSpace.s6),
+          const TodaySpendingCard(),
+        ],
+      ],
+      // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
+      // nay" on (the card draws nothing otherwise).
+      TodaySection.solids => [
+        if (ref.watch(sdOnTodayProvider)) ...[
+          const SizedBox(height: ClSpace.s4),
+          const SdTodayCard(),
+        ],
+      ],
+      TodaySection.rhythm => [
+        const SizedBox(height: ClSpace.s6),
+        ClSectionHeader(
+          title: l10n.todayTitle,
+          linkLabel: l10n.todayHistory,
+          onLink: () => context.push(Routes.history),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        DayRhythm(
+          records: recent,
+          dayStart: day.start,
+          dayEnd: day.end,
+          now: now,
+        ),
+      ],
+    };
+
+    // Adaptive Experience (Figma 930:11858, P-175): greeting by age band, ranked widgets,
+    // "Tuỳ chỉnh Hôm nay" (AX14). Off: the layout this device kept (370:1525).
+    final adaptive = ref.watch(adaptiveOnProvider);
+    final ranked = adaptive
+        ? ref.watch(adaptiveTodayProvider(babyId))
+        : const <RankedWidget>[];
+    final firstRun = adaptive && ref.watch(todayFirstRunProvider(babyId));
+
     // The baby header stays pinned while the day scrolls under it.
     return ClPinnedHeaderScaffold(
       // ---- D-076 #2 notification centre: the bell (559:57622) before Night care ----
@@ -149,27 +262,31 @@ class TodayScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: ClSpace.s4),
-          Text(
-            toBeginningOfSentenceCase(
-              DateFormat('EEEE, d MMMM', locale).format(now),
+          if (adaptive)
+            const AdaptiveGreeting()
+          else ...[
+            const SizedBox(height: ClSpace.s4),
+            Text(
+              toBeginningOfSentenceCase(
+                DateFormat('EEEE, d MMMM', locale).format(now),
+              ),
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    l10n.todayTitle,
-                    style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
+            Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      l10n.todayTitle,
+                      style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
+                    ),
                   ),
                 ),
-              ),
-              if (!readOnly) const _CustomizePill(),
-            ],
-          ),
+                if (!readOnly) const _CustomizePill(),
+              ],
+            ),
+          ],
           // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
           const WhatsNewBanner(),
           // AR02: new library photos that may show the baby (Tự lưu, D-066).
@@ -179,108 +296,32 @@ class TodayScreen extends ConsumerWidget {
           // and EN01 right after this phone created the baby.
           const PersonalizeInviteCard(),
           const PersonalizeAfterSetupGate(),
-          for (final section in layout.order)
-            if (layout.shows(section))
-              ...switch (section) {
-                // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
-                TodaySection.forYou => [const TodayForBabySection()],
-                TodaySection.tiles => [
-                  const SizedBox(height: ClSpace.s4),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    // Without it the grid pads itself by the home indicator, so the gap below
-                    // the tiles was ~34 pt taller than between the other sections (owner,
-                    // 2026-10-14).
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: ClSpace.s3,
-                    crossAxisSpacing: ClSpace.s3,
-                    childAspectRatio: 166 / 156,
-                    children: [
-                      for (final kind in layout.tiles(trackers))
-                        if (!layout.hiddenTiles.contains(kind))
-                          if (careTypeOf(kind) case final type?)
-                            KeyedSubtree(
-                              key: switch (type) {
-                                CareType.bottle => TourTargets.bottle,
-                                CareType.growth => TourTargets.growth,
-                                _ => null,
-                              },
-                              child: CareTile(
-                                type: type,
-                                last: last(type),
-                                previousGrowth:
-                                    type == CareType.growth && growth.length > 1
-                                    ? growth[1]
-                                    : null,
-                                myUid: membership.uid,
-                                now: now,
-                                readOnly: readOnly,
-                                timer: running(type),
-                                onTap: () => tap(type),
-                                onLongPress: last(type) == null
-                                    ? null
-                                    : () => context.push(
-                                        '${Routes.record}/${last(type)!.id}',
-                                      ),
-                              ),
-                            ),
-                    ],
+          if (adaptive) ...[
+            // Adaptive Experience (P-175): the ranked widgets of this child's band and goals.
+            // AX33: once at 12, 36 and 72 months; it only suggests.
+            const AxStageCard(),
+            for (final w in ranked)
+              if (w.visible)
+                AdaptiveTapTracker(
+                  id: w.id,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: switch (w.id) {
+                      WidgetId.recentMemories => [const AxRecentMemories()],
+                      WidgetId.momentToday => [const AxMomentToday()],
+                      WidgetId.createFromMemories => [
+                        const AxCreateFromMemories(),
+                      ],
+                      WidgetId.growth => [const AxGrowth()],
+                      WidgetId.familyView => [const AxFamilyView()],
+                      _ => sectionParts(TodaySection.values.byName(w.id.wire)),
+                    },
                   ),
-                  // A care tool, with the tiles rather than among the suggestions (owner,
-                  // 2026-10-15).
-                  const TodayHandoverRow(),
-                ],
-                // ReminderPeek (128:665, R-094); not for relatives (D-018).
-                TodaySection.reminders => [
-                  if (!readOnly) ...[
-                    // A section like "Hôm nay" below: its own header, the same gap.
-                    const SizedBox(height: ClSpace.s6),
-                    const ReminderPeek(),
-                  ],
-                ],
-                // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
-                TodaySection.quickActions => [
-                  if (!readOnly) ...[
-                    const SizedBox(height: ClSpace.s6),
-                    TodayQuickActions(layout: layout),
-                  ],
-                ],
-                TodaySection.vaccine => [
-                  const SizedBox(height: ClSpace.s6),
-                  const TodayVaccineCard(),
-                ],
-                TodaySection.spending => [
-                  if (SpendingAccess.of(membership).viewAll) ...[
-                    const SizedBox(height: ClSpace.s6),
-                    const TodaySpendingCard(),
-                  ],
-                ],
-                // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
-                // nay" on (the card draws nothing otherwise).
-                TodaySection.solids => [
-                  if (ref.watch(sdOnTodayProvider)) ...[
-                    const SizedBox(height: ClSpace.s4),
-                    const SdTodayCard(),
-                  ],
-                ],
-                TodaySection.rhythm => [
-                  const SizedBox(height: ClSpace.s6),
-                  ClSectionHeader(
-                    title: l10n.todayTitle,
-                    linkLabel: l10n.todayHistory,
-                    onLink: () => context.push(Routes.history),
-                  ),
-                  const SizedBox(height: ClSpace.s3),
-                  DayRhythm(
-                    records: recent,
-                    dayStart: day.start,
-                    dayEnd: day.end,
-                    now: now,
-                  ),
-                ],
-              },
+                ),
+            if (!readOnly && !firstRun) const AxCustomizeLink(),
+          ] else
+            for (final section in layout.order)
+              if (layout.shows(section)) ...sectionParts(section),
         ],
       ),
     );

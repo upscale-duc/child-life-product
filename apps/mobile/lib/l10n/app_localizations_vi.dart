@@ -19072,4 +19072,620 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sryKindQuote => 'Trích dẫn';
+
+  @override
+  String axGreetMorning(String name) {
+    return 'Chào buổi sáng, $name ☀️';
+  }
+
+  @override
+  String axGreetAfternoon(String name) {
+    return 'Chào buổi chiều, $name';
+  }
+
+  @override
+  String axGreetEvening(String name) {
+    return 'Chào buổi tối, $name 🌙';
+  }
+
+  @override
+  String axGreet36(String name) {
+    return 'Hôm nay của $name thế nào?';
+  }
+
+  @override
+  String axGreet612(String name) {
+    return 'Cùng lưu lại hành trình của $name';
+  }
+
+  @override
+  String get axSub01 => 'Nhịp hôm nay của con, ghi nhanh trong một chạm.';
+
+  @override
+  String get axSub13 => 'Hôm nay con lại khám phá thêm điều mới.';
+
+  @override
+  String get axSub36 =>
+      'Lưu lại một khoảnh khắc nhỏ — mai này sẽ thành câu chuyện lớn.';
+
+  @override
+  String get axSub612 =>
+      'Những ngày đi học, những chuyến đi, những điều con tự hào.';
+
+  @override
+  String axHello(String name) {
+    return 'Chào $name 👋';
+  }
+
+  @override
+  String get axHelloSub01 =>
+      'Bắt đầu bằng một việc nhỏ — không cần mời ai trước.';
+
+  @override
+  String get axHelloSub13 =>
+      'Bắt đầu lúc nào cũng kịp — giữ lại từ hôm nay, tìm lại cả những ngày đã qua.';
+
+  @override
+  String get axHelloSub36 =>
+      'Mỗi khoảnh khắc là một câu chuyện. Bắt đầu từ hôm nay nhé.';
+
+  @override
+  String get axHelloSub612 =>
+      'Cùng lưu lại hành trình đi học, những chuyến đi và điều con tự hào.';
+
+  @override
+  String get axRecentTitle => 'Kỷ niệm gần đây';
+
+  @override
+  String axRecentSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tuần này · $count ảnh',
+      zero: 'Chưa có ảnh tuần này',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axSeeAll => 'Xem tất cả';
+
+  @override
+  String get axAddMoment => 'Thêm khoảnh khắc';
+
+  @override
+  String get axWriteJournal => 'Viết nhật ký hôm nay';
+
+  @override
+  String get axFirstMomentTitle => 'Lưu khoảnh khắc đầu tiên';
+
+  @override
+  String axFirstMomentOf(String name) {
+    return 'Lưu khoảnh khắc đầu tiên của $name';
+  }
+
+  @override
+  String axFirstJournal(String name) {
+    return 'Bắt đầu cuốn nhật ký của $name';
+  }
+
+  @override
+  String get axFirstMomentSub01 => 'Ảnh hoặc vài dòng về hôm nay';
+
+  @override
+  String get axFirstMomentSub => 'Ảnh, video hoặc nhật ký';
+
+  @override
+  String get axFirstMomentSub36 =>
+      'Một bức vẽ, một buổi đi chơi, một câu nói ngộ nghĩnh';
+
+  @override
+  String get axMomentTodayTitle => 'Lưu khoảnh khắc hôm nay';
+
+  @override
+  String get axMomentTodaySub => 'Ảnh, video hoặc vài dòng nhật ký';
+
+  @override
+  String axCreateTitle(String name) {
+    return 'Tạo từ kỷ niệm của $name';
+  }
+
+  @override
+  String get axCreateSub => 'Video, thiệp từ ảnh bạn chọn';
+
+  @override
+  String get axCreateVideo => 'Video kỷ niệm';
+
+  @override
+  String get axCreateVideoSub => 'Từ ảnh của bạn';
+
+  @override
+  String get axCreateCard => 'Thiệp';
+
+  @override
+  String get axCreateCardSub => 'Dịp đáng nhớ';
+
+  @override
+  String get axGrowthTitle => 'Tăng trưởng';
+
+  @override
+  String axGrowthLast(String ago) {
+    return 'Đo lần cuối $ago';
+  }
+
+  @override
+  String get axGrowthNone => 'Chưa có số đo nào';
+
+  @override
+  String get axGrowthLog => 'Ghi số đo';
+
+  @override
+  String get axFamilyTitle => 'Cả nhà cùng xem';
+
+  @override
+  String get axFamilyBody =>
+      'Ông bà xem được những kỷ niệm bạn chia sẻ với gia đình.';
+
+  @override
+  String axFamilyAlone(String name) {
+    return 'Chỉ mình bạn trong gia đình của $name';
+  }
+
+  @override
+  String get axInvite => 'Mời người thân';
+
+  @override
+  String get axCustomizeLink => 'Tuỳ chỉnh Hôm nay';
+
+  @override
+  String axCustomizeIntro(String name) {
+    return 'Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của $name và mục tiêu bạn chọn.';
+  }
+
+  @override
+  String get axGoalsLabel => 'Mục tiêu của gia đình';
+
+  @override
+  String get axGoalsEdit => 'Sửa';
+
+  @override
+  String get axShowing => 'Đang hiện';
+
+  @override
+  String get axHiddenLabel => 'Đã ẩn';
+
+  @override
+  String get axPinned => 'Ghim · luôn ở đầu';
+
+  @override
+  String axPin(String title) {
+    return 'Ghim $title';
+  }
+
+  @override
+  String axUnpin(String title) {
+    return 'Bỏ ghim $title';
+  }
+
+  @override
+  String axBecauseGoal(String goal) {
+    return 'Theo mục tiêu “$goal”';
+  }
+
+  @override
+  String axBecauseAge(String name) {
+    return 'Gợi ý cho tuổi của $name';
+  }
+
+  @override
+  String get axBecauseAlways => 'Luôn có';
+
+  @override
+  String get axHiddenByAge => 'Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào';
+
+  @override
+  String axRestore(String name) {
+    return 'Khôi phục gợi ý theo tuổi của $name';
+  }
+
+  @override
+  String axGoalsTitle(String name) {
+    return 'Bạn muốn Child Life giúp gì cho $name?';
+  }
+
+  @override
+  String get axGoalsSub =>
+      'Chọn tất cả những gì bạn quan tâm · đổi được bất cứ lúc nào';
+
+  @override
+  String axGoalsSuggested(String age) {
+    return 'Gợi ý cho $age';
+  }
+
+  @override
+  String axGoalsChosen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã chọn $count mục',
+      zero: 'Chưa chọn mục nào',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axGoalTrackCare => 'Theo dõi bú, ngủ, tã';
+
+  @override
+  String get axGoalTrackCareSub => 'Ghi nhanh và xem nhịp của con';
+
+  @override
+  String get axGoalMemories => 'Lưu giữ kỷ niệm';
+
+  @override
+  String get axGoalMemoriesSub => 'Ảnh, video, nhật ký, thiệp';
+
+  @override
+  String get axGoalGrowth => 'Tăng trưởng & tiêm chủng';
+
+  @override
+  String get axGoalGrowthSub => 'Số đo, lịch tiêm';
+
+  @override
+  String get axGoalFamily => 'Cả nhà cùng chăm & cùng xem';
+
+  @override
+  String get axGoalFamilySub => 'Mời ba/mẹ, ông bà, người chăm';
+
+  @override
+  String get axGoalSpending => 'Chi tiêu cho con';
+
+  @override
+  String get axGoalSpendingSub => 'Biết tiền đã chi vào đâu';
+
+  @override
+  String get axGoalReminders => 'Nhắc nhở việc của bé';
+
+  @override
+  String get axGoalRemindersSub => 'Không quên việc quan trọng';
+
+  @override
+  String get axWidgetTiles => 'Ghi nhanh';
+
+  @override
+  String get axWidgetQuickActions => 'Tạo nhanh';
+
+  @override
+  String get axWidgetVaccine => 'Mũi tiêm sắp tới';
+
+  @override
+  String get axWidgetSpending => 'Chi tiêu tháng này';
+
+  @override
+  String get axWidgetRhythm => 'Đã ghi hôm nay';
+
+  @override
+  String get axWidgetReminders => 'Nhắc nhở';
+
+  @override
+  String get axWidgetCreate => 'Tạo từ kỷ niệm';
+
+  @override
+  String get axWidgetCreateSub => 'Video, thiệp';
+
+  @override
+  String get axDone => 'Xong';
+
+  @override
+  String axPreviewTitle(String name) {
+    return 'Hôm nay của $name sẽ ưu tiên';
+  }
+
+  @override
+  String axPreviewSub(String name) {
+    return 'Dựa trên tuổi của $name và mục tiêu bạn chọn.';
+  }
+
+  @override
+  String axPreviewBecause(String reason) {
+    return 'Vì: $reason';
+  }
+
+  @override
+  String get axPreviewHint =>
+      'Kéo để đổi thứ tự. Sửa bất cứ lúc nào trong “Tuỳ chỉnh Hôm nay”.';
+
+  @override
+  String axPreviewGo(String name) {
+    return 'Vào Hôm nay của $name';
+  }
+
+  @override
+  String axInfoTitle(String name) {
+    return 'Mọi tính năng của Child Life đều dùng được cho $name.';
+  }
+
+  @override
+  String axInfoSub(String name) {
+    return 'Gợi ý cho tuổi của $name — bạn sẽ thấy trước trên Hôm nay:';
+  }
+
+  @override
+  String get axChipMemories => 'Kỷ niệm & album';
+
+  @override
+  String get axChipVideo => 'Video & thiệp';
+
+  @override
+  String get axChipSpending => 'Chi tiêu';
+
+  @override
+  String get axChipVaccines => 'Tiêm chủng';
+
+  @override
+  String get axInfoFoot =>
+      'Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Khám phá khi bạn cần.';
+
+  @override
+  String get axInfoFootTabs =>
+      'Theo dõi bú, ngủ, tã, sơ cứu, Lumi… luôn có trong Chăm sóc và Tiện ích khi bạn cần.';
+
+  @override
+  String axTrackersTitle(String name) {
+    return 'Bạn muốn ghi những gì cho $name?';
+  }
+
+  @override
+  String get axTrackersSub =>
+      'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.';
+
+  @override
+  String get tabExplore => 'Khám phá';
+
+  @override
+  String get tabProfile => 'Hồ sơ';
+
+  @override
+  String get exSearch01 => 'Tìm tính năng, ví dụ: tiêm, chi tiêu, sơ cứu';
+
+  @override
+  String get exSearchOlder => 'Tìm tính năng, ví dụ: chi tiêu, tiêm, kỷ niệm';
+
+  @override
+  String exForChild(String name) {
+    return 'Gợi ý cho $name lúc này';
+  }
+
+  @override
+  String get exLifelong => 'Dùng suốt hành trình của con';
+
+  @override
+  String get exHealth => 'Sức khoẻ & an toàn';
+
+  @override
+  String get exFamilyAssistant => 'Gia đình & trợ lý';
+
+  @override
+  String get exCareTools => 'Theo dõi chăm sóc';
+
+  @override
+  String get exUnderstand => 'Hiểu con & phát triển';
+
+  @override
+  String get exCare => 'Theo dõi bú, ngủ, tã';
+
+  @override
+  String get exCareSub => 'Ghi nhanh, hẹn giờ ngủ, hút sữa';
+
+  @override
+  String get exStats => 'Thống kê & lịch sử';
+
+  @override
+  String get exStatsSub => 'Bú, ngủ, tã theo ngày';
+
+  @override
+  String get exGrowthSub => 'Cân nặng, chiều cao';
+
+  @override
+  String get exVaccinesSub => 'Lịch mũi tiêm của con';
+
+  @override
+  String get exVaccinesSubOlder => 'Mũi nhắc theo lịch';
+
+  @override
+  String get exMemories => 'Kỷ niệm & album';
+
+  @override
+  String get exMemoriesSub => 'Ảnh, video, nhật ký';
+
+  @override
+  String get exKeepsakes => 'Video & thiệp kỷ niệm';
+
+  @override
+  String get exKeepsakesSub => 'Tạo từ ảnh bạn chọn';
+
+  @override
+  String get exKeepsakesSubOlder => 'Sinh nhật, ngày đầu đi học…';
+
+  @override
+  String get exAutoSave => 'Tự lưu kỷ niệm';
+
+  @override
+  String exAutoSaveSub(String name) {
+    return 'Gợi ý ảnh có $name từ thư viện máy';
+  }
+
+  @override
+  String get exBeta => 'Beta';
+
+  @override
+  String get exSpending => 'Chi tiêu cho con';
+
+  @override
+  String get exSpendingSub => 'Theo tháng, danh mục, người chi';
+
+  @override
+  String get exSpendingSubOlder => 'Giữ trẻ & học, quần áo…';
+
+  @override
+  String get exRemindersSub => 'Việc của bé, nhắc cả nhà';
+
+  @override
+  String get exRemindersSubOlder => 'Lịch học, khám, tiêm nhắc';
+
+  @override
+  String get exFamily => 'Gia đình & chia sẻ';
+
+  @override
+  String get exFamilySub => 'Thành viên, vai trò, lời mời';
+
+  @override
+  String get exFamilySubOlder => 'Ông bà xem kỷ niệm được chia sẻ';
+
+  @override
+  String get exLumi => 'Lumi';
+
+  @override
+  String get exLumiSub => 'Hỏi, ghi nhanh bằng một câu nhắn';
+
+  @override
+  String exLumiSubOlder(String name) {
+    return 'Hỏi về lịch, kỷ niệm, chi tiêu của $name';
+  }
+
+  @override
+  String get exFirstAid => 'Sơ cứu trẻ em';
+
+  @override
+  String get exAllCare => 'Tất cả công cụ chăm sóc';
+
+  @override
+  String get exAllCareSub => 'Dinh dưỡng, ăn dặm, Wonder Weeks, thư viện…';
+
+  @override
+  String get exGrowTitle => 'Cùng con lớn lên';
+
+  @override
+  String get exGrowBadge => 'Đang phát triển · chưa có trong app';
+
+  @override
+  String exGrowBody(String name) {
+    return 'Child Life đang xây thêm cho các chặng 1–3, 3–6 và 6–12 tuổi. Mọi kỷ niệm, chi tiêu và lịch sử của $name vẫn được giữ trọn.';
+  }
+
+  @override
+  String get exBand13 => '1–3 tuổi';
+
+  @override
+  String get exBand36 => '3–6 tuổi';
+
+  @override
+  String get exBand612 => '6–12 tuổi';
+
+  @override
+  String get exNotify => 'Báo tôi khi có';
+
+  @override
+  String get exNotified => 'Đã ghi nhận';
+
+  @override
+  String get exNotifiedToast =>
+      'Đã ghi nhận. Child Life sẽ báo trong app khi có.';
+
+  @override
+  String exNoneTitle(String query) {
+    return 'Chưa có tính năng “$query”';
+  }
+
+  @override
+  String exNoneBody(String name) {
+    return 'Child Life đang phát triển thêm cho từng độ tuổi. Hiện bạn có thể lưu những điều đáng nhớ của $name vào Kỷ niệm.';
+  }
+
+  @override
+  String get exSaveToMemories => 'Lưu vào Kỷ niệm';
+
+  @override
+  String get pfChildren => 'Các bé';
+
+  @override
+  String pfChildRow(String age) {
+    return '$age · mục tiêu & Hôm nay';
+  }
+
+  @override
+  String get pfAdd => 'Thêm';
+
+  @override
+  String get pfApp => 'Ứng dụng';
+
+  @override
+  String axStageTitle1(String name) {
+    return '$name tròn 1 tuổi rồi!';
+  }
+
+  @override
+  String axStageTitle3(String name) {
+    return '$name tròn 3 tuổi rồi!';
+  }
+
+  @override
+  String axStageTitle6(String name) {
+    return '$name tròn 6 tuổi rồi!';
+  }
+
+  @override
+  String get axStageBody1 =>
+      'Nhiều gia đình bớt ghi bú từ lúc này. Muốn Hôm nay gọn hơn không?';
+
+  @override
+  String get axStageBodyLater =>
+      'Muốn Hôm nay hợp với tuổi mới của con hơn không? Lịch sử vẫn giữ nguyên.';
+
+  @override
+  String get axStageLeadMemories => 'Đưa Kỷ niệm lên đầu Hôm nay';
+
+  @override
+  String get axStageLeadMoment => 'Đưa Lưu khoảnh khắc lên đầu Hôm nay';
+
+  @override
+  String get axStageLeadJournal => 'Đưa Kỷ niệm, nhật ký lên đầu Hôm nay';
+
+  @override
+  String get axStageHideFeeds =>
+      'Ẩn Bú bình khỏi Ghi nhanh · vẫn ghi được khi cần';
+
+  @override
+  String get axStageKeepSleep => 'Giữ Ngủ, Tã trong Ghi nhanh';
+
+  @override
+  String get axStageHideQuickLog =>
+      'Ẩn Ghi nhanh khỏi Hôm nay · bật lại trong Tuỳ chỉnh';
+
+  @override
+  String get axStageKeepGrowth => 'Giữ Tăng trưởng trên Hôm nay';
+
+  @override
+  String get axStageApply => 'Áp dụng';
+
+  @override
+  String get axStageKeep => 'Giữ như cũ';
+
+  @override
+  String get axLumiQ01 => 'Lần bú cuối lúc mấy giờ?';
+
+  @override
+  String axLumiQ13(String name) {
+    return 'Tuần này $name ngủ trưa thế nào?';
+  }
+
+  @override
+  String axLumiQ36(String name) {
+    return 'Tháng này đã chi cho $name bao nhiêu?';
+  }
+
+  @override
+  String axLumiQ612(String name) {
+    return 'Tuần tới $name có lịch gì?';
+  }
 }

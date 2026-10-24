@@ -4,7 +4,10 @@ import {
   flagsSchema,
   localDateIn,
   ageInUnit,
+  ageBandFor,
+  ageInMonths,
   isFlagOnForFamily,
+  type AgeBand,
   type AnalyticsAgeBand,
   type AnalyticsContext,
   type AnalyticsModule,
@@ -40,6 +43,8 @@ export interface AnalyticsFact {
   meaningful?: boolean;
   windowClosesAt?: Date | null;
   reason?: EngagementReasonCode;
+  /** Adaptive Experience band (0–1 / 1–3 / 3–6 / 6+, P-175); `ageBand` stops at 12m_plus. */
+  stageBand?: AgeBand | 'unknown';
 }
 
 /** P-122: no config mutation here. Missing flags ship dark, including older config documents. */
@@ -56,6 +61,17 @@ export async function analyticsCollectionEnabled(db: Firestore, familyId?: strin
     parseInt(analyticsHash(familyId).slice(0, 8), 16) % 100,
     family.get('internal') === true,
   );
+}
+
+/** The Adaptive Experience band of a child on [at] in its zone (P-175). */
+export function analyticsStageBand(dob: unknown, at: Date, zone: string): AgeBand | 'unknown' {
+  if (typeof dob !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) return 'unknown';
+  try {
+    const today = localDateIn(zone, at);
+    return dob > today ? 'unknown' : ageBandFor(ageInMonths(dob, today));
+  } catch {
+    return 'unknown';
+  }
 }
 
 export function analyticsAgeBand(dob: unknown, at: Date, zone: string): AnalyticsAgeBand {
@@ -157,6 +173,7 @@ export async function recordAnalyticsFact(
     meaningful: fact.meaningful === true,
     windowClosesAt: fact.windowClosesAt ?? null,
     reason: fact.reason ?? 'none',
+    stageBand: fact.stageBand ?? null,
     expiresAt: fact.kind
       ? new Date((fact.windowClosesAt ?? fact.at).getTime() + 30 * ANALYTICS_DAY_MS)
       : new Date(now.getTime() + 400 * ANALYTICS_DAY_MS),
@@ -225,6 +242,7 @@ export async function recordAnalyticsObservation(
   if (caller.anonymous) return { recorded: false };
   let familyId: string | null = null;
   let band: AnalyticsAgeBand = 'unknown';
+  let stageBand: AgeBand | 'unknown' = 'unknown';
   let creator = false;
   if (r.event !== 'app_foreground_observed' && !r.babyId)
     throw new AccountError('invalid-argument', 'malformed');
@@ -255,6 +273,11 @@ export async function recordAnalyticsObservation(
     familyId = (baby.get('familyId') as string | undefined) ?? null;
     creator = member.get('role') === 'coParent';
     band = analyticsAgeBand(
+      profile.get('dateOfBirth'),
+      at,
+      (baby.get('timeZone.zone') as string) ?? ANALYTICS_ZONE,
+    );
+    stageBand = analyticsStageBand(
       profile.get('dateOfBirth'),
       at,
       (baby.get('timeZone.zone') as string) ?? ANALYTICS_ZONE,
@@ -317,11 +340,14 @@ export async function recordAnalyticsObservation(
       : r.event === 'family_context_viewed'
         ? `context:${dayKey}:${r.babyId}`
         : `client:${caller.uid}:${r.receiptId}`;
+  const adaptive = r.event.startsWith('adaptive_');
   const module: AnalyticsModule = r.event.startsWith('lumi_')
     ? 'lumi'
     : r.event === 'family_content_viewed'
       ? 'family'
-      : 'remember';
+      : adaptive
+        ? 'personalization'
+        : 'remember';
   const recorded = await recordAnalyticsFact(
     db,
     key,
@@ -338,6 +364,8 @@ export async function recordAnalyticsObservation(
       locale: r.locale,
       ageBand: band,
       ...(['app_foreground_observed', 'family_context_viewed'].includes(r.event) ? {} : { module }),
+      // P-175: the closed detail rides in `template`, the band in `stageBand`.
+      ...(adaptive && r.detail ? { template: r.detail, stageBand } : {}),
     },
     now,
   );

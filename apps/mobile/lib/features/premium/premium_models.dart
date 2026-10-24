@@ -132,6 +132,8 @@ class Capabilities {
         assistantImages: f['assistantImages'] == true,
         assistantCare: f['assistantCare'] == true,
         assistantUpsell: f['assistantUpsell'] == true,
+        adaptiveExperience: f['adaptiveExperience'] == true,
+        adaptiveNav: f['adaptiveNav'] == true,
       ),
       billingProvider: json['provider'] is String
           ? json['provider'] as String
@@ -166,6 +168,8 @@ class Capabilities {
       'assistantImages': features.assistantImages,
       'assistantCare': features.assistantCare,
       'assistantUpsell': features.assistantUpsell,
+      'adaptiveExperience': features.adaptiveExperience,
+      'adaptiveNav': features.adaptiveNav,
     },
     'provider': billingProvider,
   };
@@ -183,6 +187,8 @@ class PremiumFeatures {
     this.assistantImages = false,
     this.assistantCare = false,
     this.assistantUpsell = false,
+    this.adaptiveExperience = false,
+    this.adaptiveNav = false,
   });
   final bool rhythm;
   final bool personalization;
@@ -196,6 +202,13 @@ class PremiumFeatures {
   final bool assistantImages;
   final bool assistantCare;
   final bool assistantUpsell;
+
+  /// Adaptive Experience (P-175 `adaptive_experience`): Hôm nay by age band + goals.
+  final bool adaptiveExperience;
+
+  /// Adaptive navigation (P-178 `adaptive_nav`); the server sends it only with
+  /// [adaptiveExperience].
+  final bool adaptiveNav;
 
   bool get any => rhythm || personalization || aiAssist || billing || assistant;
 }

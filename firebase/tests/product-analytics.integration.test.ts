@@ -131,6 +131,35 @@ it('validates actual shared media visibility before recording a family view', as
   ).rejects.toMatchObject({ reason: 'not-a-member' });
 });
 
+it('records adaptive events with their closed detail and the stage band, never the name', async () => {
+  const f = await family(6);
+  // Born 2026-04-01: 6 months on 2026-10-01, the 0–1 band.
+  const event = {
+    ...observation(f.uid, f.babyId),
+    event: 'adaptive_widget_opened',
+    detail: 'recent_memories',
+  };
+  expect(await recordAnalyticsObservation(db, f.caller, event, created)).toEqual({
+    recorded: true,
+  });
+  const rows = (await db.collection('productAnalyticsFacts').get()).docs.filter(
+    (d) => d.get('event') === 'adaptive_widget_opened',
+  );
+  expect(rows).toHaveLength(1);
+  expect(rows[0]!.get('template')).toBe('recent_memories');
+  expect(rows[0]!.get('stageBand')).toBe('b0_1');
+  expect(rows[0]!.get('module')).toBe('personalization');
+  expect(JSON.stringify(rows[0]!.data())).not.toContain('PRIVATE_CHILD_NAME');
+  await expect(
+    recordAnalyticsObservation(
+      db,
+      f.caller,
+      { ...event, receiptId: randomUUID(), detail: 'free text' },
+      created,
+    ),
+  ).rejects.toMatchObject({ reason: 'malformed' });
+});
+
 it('does not turn metadata recovery into a selected registration denominator', async () => {
   await recordAnalyticsRegistration(db, 'recovered', created, now, 'auth_metadata');
   const ref = db.doc('productAnalyticsAccounts/recovered');

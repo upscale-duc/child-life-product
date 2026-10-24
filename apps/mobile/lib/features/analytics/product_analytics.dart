@@ -37,6 +37,9 @@ class ProductAnalyticsReporter {
     String? babyId,
     String? sourceId,
     String? result,
+
+    /// Adaptive events' closed detail (`adaptiveDetails`, P-175).
+    String? detail,
     String locale = 'unknown',
     String platform = 'unknown',
     bool oncePerDay = false,
@@ -63,6 +66,7 @@ class ProductAnalyticsReporter {
             'babyId': ?babyId,
             'sourceId': ?sourceId,
             'result': ?result,
+            'detail': ?detail,
           });
           await write(
             jsonEncode(
