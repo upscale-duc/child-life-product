@@ -513,7 +513,7 @@ function MetricHint({ metric: m }: { metric: ProductMetric }) {
 export function ProductAnalyticsView({ data }: { data: ProductAnalyticsResult }) {
   const intl = useIntl();
   const [dimension, setDimension] = useState<
-    'module' | 'platform' | 'locale' | 'ageBand' | 'template'
+    'module' | 'platform' | 'locale' | 'ageBand' | 'template' | 'stageBand' | 'adaptive'
   >(data.section === 'features' ? 'module' : data.section === 'memories' ? 'template' : 'platform');
   const [kind, setKind] = useState('all');
   const [seriesUnit, setSeriesUnit] = useState<'users' | 'families'>('users');
@@ -748,9 +748,20 @@ export function ProductAnalyticsView({ data }: { data: ProductAnalyticsResult })
                 <SelectMenu
                   label={intl.formatMessage({ id: 'pa.breakdown' })}
                   value={dimension}
-                  options={(['module', 'platform', 'locale', 'ageBand', 'template'] as const).map(
-                    (d) => ({ value: d, label: intl.formatMessage({ id: `pa.dimension.${d}` }) }),
-                  )}
+                  options={(
+                    [
+                      'module',
+                      'platform',
+                      'locale',
+                      'ageBand',
+                      'template',
+                      'stageBand',
+                      'adaptive',
+                    ] as const
+                  ).map((d) => ({
+                    value: d,
+                    label: intl.formatMessage({ id: `pa.dimension.${d}` }),
+                  }))}
                   onChange={setDimension}
                 />
               }
@@ -777,6 +788,14 @@ export function ProductAnalyticsView({ data }: { data: ProductAnalyticsResult })
                               <FormattedMessage id={`pa.module.${b.key}`} />
                             ) : b.dimension === 'ageBand' ? (
                               <FormattedMessage id={`pa.age.${b.key}`} />
+                            ) : b.dimension === 'stageBand' ? (
+                              <FormattedMessage id={`pa.band.${b.key}`} />
+                            ) : b.dimension === 'adaptive' ? (
+                              <>
+                                <FormattedMessage id={`pa.adaptive.${b.key.split(':')[0]}`} />
+                                {' · '}
+                                {b.key.split(':')[1]}
+                              </>
                             ) : (
                               b.key
                             )}

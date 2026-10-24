@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -58,6 +60,7 @@ Future<(List<Visit>, SharedPreferences)> _entry(
   bool Function()? allow,
   bool images = false,
   Membership? me,
+  Future<void> Function()? launchAsk,
 }) async {
   final (visits, _) = await pumpRouted(
     tester,
@@ -76,6 +79,7 @@ Future<(List<Visit>, SharedPreferences)> _entry(
         repo: FakeAssistantRepository(),
         images: images,
         me: me,
+        launchAsk: launchAsk,
       ),
       assistantAccessProvider.overrideWith(
         (ref, babyId) => AssistantAccess(images: images),
@@ -147,6 +151,20 @@ void main() {
   });
 
   group('Lumi first-run tooltip (669:64442)', () {
+    testWidgets('waits while the system notification prompt is open (D-098)', (
+      tester,
+    ) async {
+      final prompt = Completer<void>();
+      await _entry(tester, launchAsk: () => prompt.future);
+      await tester.pump(AssistantFloatingEntry.introDelay);
+      await tester.pump(AssistantFloatingEntry.introRetry);
+      expect(find.text(_title), findsNothing);
+      prompt.complete();
+      await tester.pump();
+      await tester.pump(AssistantFloatingEntry.introRetry);
+      expect(find.text(_title), findsOneWidget);
+    });
+
     testWidgets('once per person: "Để sau" closes it for good', (tester) async {
       final (_, prefs) = await _entry(tester);
       expect(find.text(_title), findsNothing);

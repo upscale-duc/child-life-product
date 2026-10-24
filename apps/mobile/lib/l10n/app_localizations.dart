@@ -32867,6 +32867,108 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tuần tới {name} có lịch gì?'**
   String axLumiQ612(String name);
+
+  /// AX30 group label for children the person does not manage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn được mời vào'**
+  String get axSwitcherInvited;
+
+  /// AX30 row subtitle for a relative.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người thân · chỉ xem kỷ niệm được chia sẻ'**
+  String get axSwitcherRelative;
+
+  /// AX30 row subtitle for a caregiver (engineering, G-110).
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chăm bé · ghi chăm sóc, xem nhắc nhở'**
+  String get axSwitcherCaregiver;
+
+  /// AX31 toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xem {name} · {age}'**
+  String axSwitchedTo(String name, String age);
+
+  /// AX10 section over the quick-log tiles (0–1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp hôm nay'**
+  String get axRhythmToday;
+
+  /// AX10 section link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lịch sử'**
+  String get axSeeHistory;
+
+  /// AX11 section link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử'**
+  String get axHistoryShort;
+
+  /// AX40 section over empty tiles.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi hoạt động đầu tiên'**
+  String get axFirstLogTitle;
+
+  /// AX40 pill on an empty tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lần đầu'**
+  String get axLogFirst;
+
+  /// AX12 subtitle: month name and number of expenses.
+  ///
+  /// In vi, this message translates to:
+  /// **'{month} · {count, plural, =0{chưa có khoản nào} other{{count} khoản}}'**
+  String axSpendSub(String month, int count);
+
+  /// AX12 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get axSpendAdd;
+
+  /// AX42 / AX43 title on an empty month.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu cho {name}'**
+  String axSpendFor(String name);
+
+  /// AX42 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có khoản chi nào'**
+  String get axSpendNone;
+
+  /// AX42 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khoản chi đầu tiên'**
+  String get axSpendFirst;
+
+  /// AX10–AX13 reminders subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Chưa có nhắc nhở nào} other{{count} sắp tới}}'**
+  String axRemindersCount(int count);
+
+  /// AX10 reminders link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get axRemindersAll;
+
+  /// AX40 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhắc nhở đầu tiên'**
+  String get axRemindersFirst;
 }
 
 class _AppLocalizationsDelegate

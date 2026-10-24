@@ -35,7 +35,7 @@ import '../home/today_tour.dart';
 import '../notifications/notification_bell.dart'; // D-076 #2
 import '../solids/solids_today.dart' show SdTodayCard, sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
-import '../adaptive/adaptive_engine.dart' show RankedWidget, WidgetId;
+import '../adaptive/adaptive_engine.dart' show AgeBand, RankedWidget, WidgetId;
 import '../adaptive/experience_repository.dart';
 import '../adaptive/adaptive_signals.dart';
 import '../adaptive/today_adaptive.dart';
@@ -111,7 +111,26 @@ class TodayScreen extends ConsumerWidget {
       // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
       TodaySection.forYou => [const TodayForBabySection()],
       TodaySection.tiles => [
-        const SizedBox(height: ClSpace.s4),
+        // AX10 / AX11 / AX40: the quick log has its own header in the adaptive Hôm nay.
+        if (ref.watch(adaptiveOnProvider)) ...[
+          const SizedBox(height: ClSpace.s6),
+          ClSectionHeader(
+            title: ref.watch(todayFirstRunProvider(babyId))
+                ? l10n.axFirstLogTitle
+                : ref.watch(experienceProvider(babyId)).bandApplied ==
+                      AgeBand.b0_1
+                ? l10n.axRhythmToday
+                : l10n.axWidgetTiles,
+            linkLabel:
+                ref.watch(experienceProvider(babyId)).bandApplied ==
+                    AgeBand.b0_1
+                ? l10n.axSeeHistory
+                : l10n.axHistoryShort,
+            onLink: () => context.push(Routes.history),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ] else
+          const SizedBox(height: ClSpace.s4),
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
@@ -143,6 +162,7 @@ class TodayScreen extends ConsumerWidget {
                       myUid: membership.uid,
                       now: now,
                       readOnly: readOnly,
+                      firstLogPill: ref.watch(adaptiveOnProvider),
                       timer: running(type),
                       onTap: () => tap(type),
                       onLongPress: last(type) == null
@@ -162,8 +182,11 @@ class TodayScreen extends ConsumerWidget {
       TodaySection.reminders => [
         if (!readOnly) ...[
           // A section like "Hôm nay" below: its own header, the same gap.
-          const SizedBox(height: ClSpace.s6),
-          const ReminderPeek(),
+          SizedBox(
+            height: ref.watch(adaptiveOnProvider) ? ClSpace.s4 : ClSpace.s6,
+          ),
+          // AX10–AX13: one card with its header inside, in the adaptive Hôm nay.
+          ReminderPeek(ax: ref.watch(adaptiveOnProvider)),
         ],
       ],
       // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
@@ -178,10 +201,14 @@ class TodayScreen extends ConsumerWidget {
         const TodayVaccineCard(),
       ],
       TodaySection.spending => [
-        if (SpendingAccess.of(membership).viewAll) ...[
-          const SizedBox(height: ClSpace.s6),
-          const TodaySpendingCard(),
-        ],
+        if (SpendingAccess.of(membership).viewAll)
+          if (ref.watch(adaptiveOnProvider))
+            // AX12 / AX13 / AX42: total, stacked bar by category, "Thêm".
+            const AxSpending()
+          else ...[
+            const SizedBox(height: ClSpace.s6),
+            const TodaySpendingCard(),
+          ],
       ],
       // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
       // nay" on (the card draws nothing otherwise).
@@ -485,11 +512,15 @@ class CareTile extends ConsumerStatefulWidget {
     this.previousGrowth,
     this.readOnly = false,
     this.onLongPress,
+    this.firstLogPill = false,
     super.key,
   });
 
   final CareType type;
   final CareRecord? last;
+
+  /// AX40: an empty tile shows the "Ghi lần đầu" pill instead of "Chạm để ghi".
+  final bool firstLogPill;
 
   /// A running timer of this type: "Tone=Active" with live elapsed time (54:530).
   final CareTimer? timer;
@@ -624,7 +655,34 @@ class _CareTileState extends ConsumerState<CareTile>
                 const SizedBox(height: ClSpace.s1),
                 if (lines == null) ...[
                   const Spacer(),
-                  if (!widget.readOnly)
+                  if (!widget.readOnly && widget.firstLogPill)
+                    Container(
+                      key: const Key('tileFirstLog'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: cl.colors.surface,
+                        borderRadius: BorderRadius.circular(ClRadius.pill),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClIcon(ClIcons.plus, size: 12, color: care.ink),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.axLogFirst,
+                            style: cl.text.caption.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: care.ink,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (!widget.readOnly)
                     Text(
                       l10n.todayTileTapToLog,
                       style: cl.text.label.copyWith(color: care.ink),

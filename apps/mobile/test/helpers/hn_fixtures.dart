@@ -10,6 +10,7 @@ import 'package:child_life/features/library/library_today.dart'
     show lbWeekTeaserProvider;
 import 'package:child_life/features/rhythm/rhythm_home.dart' show WeekTeaser;
 import 'package:child_life/features/today/today_for_baby.dart';
+import 'package:child_life/features/spending/spending_models.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'family_fixtures.dart';
@@ -71,6 +72,9 @@ List<Override> hnOverrides({
 
   /// The current stage's teaser for "Tuần này của {bé}" (Giai đoạn của bé); none by default.
   WeekTeaser? weekTeaser,
+
+  /// Chi tiêu (the adaptive Hôm nay's spending card); none by default.
+  List<Expense> expenses = const [],
 }) => [
   articleForBabyCardsProvider.overrideWith((ref, q) => articles),
   milestoneForBabyCardsProvider.overrideWith((ref, q) => milestones),
@@ -79,6 +83,7 @@ List<Override> hnOverrides({
     me: me ?? mai,
     now: rhythmNow,
     notifications: notifications ?? FakeReminderNotifications(),
+    expenses: expenses,
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
   ...personalizationTestOverrides(),

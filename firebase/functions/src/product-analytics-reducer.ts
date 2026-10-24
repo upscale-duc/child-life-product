@@ -37,6 +37,8 @@ export interface ProductFactRow {
   meaningful: boolean;
   windowClosesAt: number | null;
   reason: EngagementReasonCode;
+  /** Adaptive events only (P-175): b0_1 / b1_3 / b3_6 / b6_12 / unknown. */
+  stageBand?: string | null;
 }
 export interface ProductAccountRow {
   uid: string;
@@ -446,6 +448,22 @@ export function reduceProductAnalytics(input: {
     if ([...map.values()].every((set) => set.size >= threshold))
       for (const [key, set] of map) breakdowns.push({ dimension, key, count: set.size });
   }
+  // P-175 Adaptive Experience: distinct people per stage band (published only when every band
+  // reaches the threshold, like the other splits) and per event·detail (each slice on its own).
+  const adaptiveFacts = current.filter((f) => f.uid && f.event.startsWith('adaptive_'));
+  const bands = new Map<string, Set<string>>();
+  const details = new Map<string, Set<string>>();
+  for (const f of adaptiveFacts) {
+    const band = f.stageBand ?? 'unknown';
+    bands.set(band, (bands.get(band) ?? new Set<string>()).add(f.uid!));
+    const key = `${f.event.slice('adaptive_'.length)}:${f.template ?? 'unknown'}`;
+    details.set(key, (details.get(key) ?? new Set<string>()).add(f.uid!));
+  }
+  if (bands.size && [...bands.values()].every((set) => set.size >= threshold))
+    for (const [key, set] of bands)
+      breakdowns.push({ dimension: 'stageBand', key, count: set.size });
+  for (const [key, set] of details)
+    if (set.size >= threshold) breakdowns.push({ dimension: 'adaptive', key, count: set.size });
   const engagement = engagementKinds.map((kind) => {
     const eligible = current.filter(
       (f) => f.kind === kind && f.stage === 'eligible' && f.opportunity,

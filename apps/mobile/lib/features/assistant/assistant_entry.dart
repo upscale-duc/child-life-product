@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../reminders/reminder_notifications.dart'
+    show notificationsLaunchAskProvider;
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/appearance/appearance_providers.dart';
@@ -331,16 +333,36 @@ class _AssistantFloatingEntryState
   final _link = LayerLink();
   Timer? _wait;
 
+  /// A system alert (the D-098 notification prompt) makes the app inactive: the tooltip steps
+  /// aside, still unseen, and comes back once the app is active again (owner, 2026-10-24: both
+  /// showed at once).
+  late final AppLifecycleListener _life = AppLifecycleListener(
+    onInactive: () {
+      if (mounted && _tip.isShowing) setState(_tip.hide);
+    },
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _life;
+  }
+
   @override
   void dispose() {
     _wait?.cancel();
+    _life.dispose();
     super.dispose();
   }
 
   bool _allowed(String uid) {
     if (!mounted || ref.read(lumiIntroSeenProvider(uid))) return false;
+    final state = WidgetsBinding.instance.lifecycleState;
     final route = ModalRoute.of(context);
-    return (route == null || route.isCurrent) &&
+    return (state == null || state == AppLifecycleState.resumed) &&
+        // D-098: the system notification prompt on the first entry goes first.
+        !ref.read(notificationsLaunchAskProvider).isLoading &&
+        (route == null || route.isCurrent) &&
         TickerMode.valuesOf(context).enabled &&
         (widget.canShowIntro?.call() ?? true);
   }
@@ -377,6 +399,8 @@ class _AssistantFloatingEntryState
       return const SizedBox.shrink();
     }
     final seen = ref.watch(lumiIntroSeenProvider(me.uid));
+    // Started here too, so the tooltip's check finds it settled (the shell also watches it).
+    ref.watch(notificationsLaunchAskProvider);
     if (!seen) {
       // Something came on top while it showed: hide (still unseen) and wait for it to go.
       if (_tip.isShowing && !_allowed(me.uid)) {

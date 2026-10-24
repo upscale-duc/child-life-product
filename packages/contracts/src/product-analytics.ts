@@ -231,7 +231,9 @@ export interface ProductAnalyticsResult {
     d30: ProductMetric;
   }>;
   breakdowns: Array<{
-    dimension: 'platform' | 'locale' | 'ageBand' | 'module' | 'template';
+    /** `stageBand` / `adaptive`: Adaptive Experience (P-175), people per band and per
+     * `event:detail` (e.g. `widget_opened:moment_today`), each slice at the privacy threshold. */
+    dimension: 'platform' | 'locale' | 'ageBand' | 'module' | 'template' | 'stageBand' | 'adaptive';
     key: string;
     count: number | null;
   }>;

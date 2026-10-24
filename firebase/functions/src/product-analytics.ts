@@ -176,6 +176,7 @@ export async function buildProductAnalyticsQuery(db: Firestore, queryId: string,
             meaningful: f.meaningful === true,
             windowClosesAt: analyticsTime(f.windowClosesAt) || null,
             reason: (f.reason ?? 'none') as EngagementReasonCode,
+            stageBand: typeof f.stageBand === 'string' ? f.stageBand : null,
           });
         }
       }

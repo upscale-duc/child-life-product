@@ -29148,5 +29148,99 @@
         "type": "String"
       }
     }
+  },
+  "axSwitcherInvited": "Bạn được mời vào",
+  "@axSwitcherInvited": {
+    "description": "AX30 group label for children the person does not manage."
+  },
+  "axSwitcherRelative": "Người thân · chỉ xem kỷ niệm được chia sẻ",
+  "@axSwitcherRelative": {
+    "description": "AX30 row subtitle for a relative."
+  },
+  "axSwitcherCaregiver": "Người chăm bé · ghi chăm sóc, xem nhắc nhở",
+  "@axSwitcherCaregiver": {
+    "description": "AX30 row subtitle for a caregiver (engineering, G-110)."
+  },
+  "axSwitchedTo": "Đang xem {name} · {age}",
+  "@axSwitchedTo": {
+    "description": "AX31 toast.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "axRhythmToday": "Nhịp hôm nay",
+  "@axRhythmToday": {
+    "description": "AX10 section over the quick-log tiles (0–1)."
+  },
+  "axSeeHistory": "Xem lịch sử",
+  "@axSeeHistory": {
+    "description": "AX10 section link."
+  },
+  "axHistoryShort": "Lịch sử",
+  "@axHistoryShort": {
+    "description": "AX11 section link."
+  },
+  "axFirstLogTitle": "Ghi hoạt động đầu tiên",
+  "@axFirstLogTitle": {
+    "description": "AX40 section over empty tiles."
+  },
+  "axLogFirst": "Ghi lần đầu",
+  "@axLogFirst": {
+    "description": "AX40 pill on an empty tile."
+  },
+  "axSpendSub": "{month} · {count, plural, =0{chưa có khoản nào} other{{count} khoản}}",
+  "@axSpendSub": {
+    "description": "AX12 subtitle: month name and number of expenses.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "axSpendAdd": "Thêm",
+  "@axSpendAdd": {
+    "description": "AX12 link."
+  },
+  "axSpendFor": "Chi tiêu cho {name}",
+  "@axSpendFor": {
+    "description": "AX42 / AX43 title on an empty month.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "axSpendNone": "Chưa có khoản chi nào",
+  "@axSpendNone": {
+    "description": "AX42 subtitle."
+  },
+  "axSpendFirst": "Ghi khoản chi đầu tiên",
+  "@axSpendFirst": {
+    "description": "AX42 button."
+  },
+  "axRemindersCount": "{count, plural, =0{Chưa có nhắc nhở nào} other{{count} sắp tới}}",
+  "@axRemindersCount": {
+    "description": "AX10–AX13 reminders subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "axRemindersAll": "Tất cả",
+  "@axRemindersAll": {
+    "description": "AX10 reminders link."
+  },
+  "axRemindersFirst": "Tạo nhắc nhở đầu tiên",
+  "@axRemindersFirst": {
+    "description": "AX40 button."
   }
 }

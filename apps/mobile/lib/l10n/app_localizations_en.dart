@@ -20872,4 +20872,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String axLumiQ612(String name) {
     return 'What\'s on $name\'s schedule next week?';
   }
+
+  @override
+  String get axSwitcherInvited => 'You were invited to';
+
+  @override
+  String get axSwitcherRelative => 'Family · sees shared memories only';
+
+  @override
+  String get axSwitcherCaregiver => 'Caregiver · logs care, sees reminders';
+
+  @override
+  String axSwitchedTo(String name, String age) {
+    return 'Now viewing $name · $age';
+  }
+
+  @override
+  String get axRhythmToday => 'Today\'s rhythm';
+
+  @override
+  String get axSeeHistory => 'See history';
+
+  @override
+  String get axHistoryShort => 'History';
+
+  @override
+  String get axFirstLogTitle => 'Log the first activity';
+
+  @override
+  String get axLogFirst => 'Log the first';
+
+  @override
+  String axSpendSub(String month, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count expenses',
+      one: '1 expense',
+      zero: 'nothing yet',
+    );
+    return '$month · $_temp0';
+  }
+
+  @override
+  String get axSpendAdd => 'Add';
+
+  @override
+  String axSpendFor(String name) {
+    return 'Spending on $name';
+  }
+
+  @override
+  String get axSpendNone => 'No expenses yet';
+
+  @override
+  String get axSpendFirst => 'Log the first expense';
+
+  @override
+  String axRemindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count coming up',
+      zero: 'No reminders yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axRemindersAll => 'All';
+
+  @override
+  String get axRemindersFirst => 'Create the first reminder';
 }

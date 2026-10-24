@@ -244,7 +244,9 @@ class HomeShell extends ConsumerWidget {
               // iOS hidesBottomBarWhenPushed (owner, 2026-10-11); it slides back on return.
               hideDock: !_tabRoots.contains(path),
               dockExtra: action == null ? 0 : ClTabDock.actionExtent,
-              content: shell,
+              // AX31: switching child crossfades the tab (200 ms) instead of flashing the
+              // old child's content; everything below is keyed by the baby and reloads.
+              content: v2 ? _BabySwitchFade(child: shell) : shell,
               // Keeps Tự lưu loaded so it checks when the app opens (AR01).
               banner: const AutoSaveKeeper(child: GlobalUploadPill()),
               // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing
@@ -619,6 +621,27 @@ class _BabyPickerSheet extends ConsumerWidget {
     final selected = ref.watch(selectedBabyIdProvider);
     final owned = session.active.where((m) => m.isOwner).length;
     final canAdd = owned < maxOwnedBabies && !session.isAnonymous;
+    // NavBar v2 (AX30): managed children youngest first, then the ones you were invited to.
+    final v2 = ref.watch(adaptiveNavProvider);
+    DateTime? dobOf(Membership m) => m.canViewBabyInfo
+        ? ref.watch(babyPrivateProfileProvider(m.babyId)).value?.dateOfBirth
+        : null;
+    int byAge(Membership a, Membership b) {
+      final da = dobOf(a), db = dobOf(b);
+      if (da == null || db == null) return 0;
+      return db.compareTo(da);
+    }
+
+    final managed = [
+      for (final m in session.active)
+        if (m.role == MemberRole.coParent) m,
+    ]..sort(byAge);
+    final invited = [
+      for (final m in session.active)
+        if (m.role != MemberRole.coParent) m,
+    ]..sort(byAge);
+    final ordered = v2 ? [...managed, ...invited] : session.active;
+    final firstInvited = invited.firstOrNull;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -633,18 +656,48 @@ class _BabyPickerSheet extends ConsumerWidget {
             unawaited(showMyInviteSheet(host, invite));
           },
         ),
-        for (final m in session.active) ...[
+        for (final m in ordered) ...[
+          // AX30: the children you manage, then "Bạn được mời vào".
+          if (v2 && m == firstInvited)
+            Padding(
+              padding: const EdgeInsets.only(
+                top: ClSpace.s2,
+                bottom: ClSpace.s2,
+              ),
+              child: Text(
+                l10n.axSwitcherInvited,
+                style: cl.text.caption.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cl.colors.inkMuted,
+                ),
+              ),
+            ),
           _BabyRow(
             membership: m,
             selected: m.babyId == selected,
+            v2: v2,
             onTap: () {
               Navigator.of(context).pop();
               if (m.babyId == selected) return;
               ref.read(selectedBabyIdProvider.notifier).select(m.babyId);
               final name = ref.read(babyProvider(m.babyId)).value?.nickname;
-              if (name != null) {
-                showClToast(context, message: l10n.babySwitched(name));
-              }
+              if (name == null) return;
+              final dob = m.canViewBabyInfo
+                  ? ref
+                        .read(babyPrivateProfileProvider(m.babyId))
+                        .value
+                        ?.dateOfBirth
+                  : null;
+              showClToast(
+                context,
+                // AX31 "Đang xem Na · 4 tuổi".
+                message: v2 && dob != null
+                    ? l10n.axSwitchedTo(
+                        name,
+                        ageShort(l10n, dob, ref.read(timerClockProvider)()),
+                      )
+                    : l10n.babySwitched(name),
+              );
             },
           ),
           const SizedBox(height: ClSpace.s2),
@@ -745,11 +798,15 @@ class _BabyRow extends ConsumerWidget {
     required this.membership,
     required this.selected,
     required this.onTap,
+    this.v2 = false,
   });
 
   final Membership membership;
   final bool selected;
   final VoidCallback onTap;
+
+  /// AX30: an invited child says what this person can do there.
+  final bool v2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -760,11 +817,15 @@ class _BabyRow extends ConsumerWidget {
         ? ref.watch(babyPrivateProfileProvider(membership.babyId)).value
         : null;
     // Parents read as their relation ("Bạn là Mẹ"), everyone else as their role (125:13223).
-    final youAre = l10n.babyPickerYouAre(
-      membership.role == MemberRole.coParent
-          ? memberRelation(l10n, membership)
-          : roleLabel(l10n, membership.role),
-    );
+    final youAre = switch (membership.role) {
+      MemberRole.relative when v2 => l10n.axSwitcherRelative,
+      MemberRole.caregiver when v2 => l10n.axSwitcherCaregiver,
+      _ => l10n.babyPickerYouAre(
+        membership.role == MemberRole.coParent
+            ? memberRelation(l10n, membership)
+            : roleLabel(l10n, membership.role),
+      ),
+    };
     final detail = profile == null
         ? youAre
         : l10n.babyPickerRowDetail(
@@ -1169,5 +1230,55 @@ class RenderGapAboveIfShown extends RenderShiftedBox {
   double computeMaxIntrinsicHeight(double width) {
     final h = child?.getMaxIntrinsicHeight(width) ?? 0;
     return h > 0 ? h + _gap : 0;
+  }
+}
+
+/// AX31: a 200 ms crossfade when the selected child changes: the page background covers the
+/// tab at once and fades out while the new child's content arrives. Nothing with Reduce Motion.
+class _BabySwitchFade extends ConsumerStatefulWidget {
+  const _BabySwitchFade({required this.child});
+  final Widget child;
+
+  @override
+  ConsumerState<_BabySwitchFade> createState() => _BabySwitchFadeState();
+}
+
+class _BabySwitchFadeState extends ConsumerState<_BabySwitchFade>
+    with SingleTickerProviderStateMixin {
+  late final _fade = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 200),
+    value: 0,
+  );
+
+  @override
+  void dispose() {
+    _fade.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(selectedBabyIdProvider, (prev, next) {
+      if (prev == null || prev == next || context.reduceMotion) return;
+      _fade
+        ..value = 1
+        ..animateTo(0, curve: Curves.easeOut);
+    });
+    final cloud = context.cl.colors.cloud;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        widget.child,
+        IgnorePointer(
+          child: AnimatedBuilder(
+            animation: _fade,
+            builder: (context, _) => _fade.value == 0
+                ? const SizedBox.shrink()
+                : ColoredBox(color: cloud.withValues(alpha: _fade.value)),
+          ),
+        ),
+      ],
+    );
   }
 }

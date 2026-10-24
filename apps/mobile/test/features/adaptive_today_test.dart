@@ -1,6 +1,7 @@
 import 'package:child_life/features/adaptive/adaptive_engine.dart';
 import 'package:child_life/features/adaptive/today_adaptive.dart';
 import 'package:child_life/features/memories/memory_models.dart';
+import 'package:child_life/features/spending/spending_models.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../helpers/adaptive_fixtures.dart';
 import '../helpers/hn_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/router_pump.dart';
+import '../helpers/spending_fixtures.dart';
 
 /// Adaptive Experience Hôm nay (Figma 930:11858, P-175, D-097): greeting by age band, ranked
 /// widgets, first run, "Tuỳ chỉnh Hôm nay" (AX14).
@@ -23,8 +25,12 @@ List<Override> _overrides({
   required FakeExperienceRepository repo,
   List<MediaItem> media = const [],
   bool adaptive = true,
+  List<Expense> expenses = const [],
 }) => [
-  ...hnOverrides(repo: StampingRhythmRepository(preferences: personalized())),
+  ...hnOverrides(
+    repo: StampingRhythmRepository(preferences: personalized()),
+    expenses: expenses,
+  ),
   ...adaptiveOverrides(
     band: band,
     repo: repo,
@@ -84,6 +90,37 @@ void main() {
       expect(find.byKey(const Key('axCustomize')), findsOneWidget);
     },
   );
+
+  testWidgets('AX12 Chi tiêu tháng này: total, month · count, the categories', (
+    tester,
+  ) async {
+    final repo = FakeExperienceRepository(Experience.defaults(AgeBand.b3_6));
+    await pumpRouted(
+      tester,
+      _today,
+      overrides: _overrides(
+        band: AgeBand.b3_6,
+        repo: repo,
+        media: [photo],
+        expenses: [
+          spend('1', 1000000, 'c_childcare', DateTime(2026, 10, 2)),
+          spend('2', 500000, 'c_childcare', DateTime(2026, 10, 5)),
+          spend('3', 950000, 'c_clothes', DateTime(2026, 10, 6)),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _scrollTo(tester, find.byKey(const Key('axSpending')));
+    final card = find.byKey(const Key('axSpending'));
+    expect(
+      find.descendant(of: card, matching: find.text('Tháng 10 · 3 khoản')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: card, matching: find.textContaining('2.450.000')),
+      findsOneWidget,
+    );
+  });
 
   testWidgets('flag off: the Hôm nay this device kept, unchanged', (
     tester,

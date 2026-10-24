@@ -6420,5 +6420,22 @@
   "axLumiQ01": "When was the last feed?",
   "axLumiQ13": "How were {name}'s naps this week?",
   "axLumiQ36": "How much have we spent on {name} this month?",
-  "axLumiQ612": "What's on {name}'s schedule next week?"
+  "axLumiQ612": "What's on {name}'s schedule next week?",
+  "axSwitcherInvited": "You were invited to",
+  "axSwitcherRelative": "Family · sees shared memories only",
+  "axSwitcherCaregiver": "Caregiver · logs care, sees reminders",
+  "axSwitchedTo": "Now viewing {name} · {age}",
+  "axRhythmToday": "Today's rhythm",
+  "axSeeHistory": "See history",
+  "axHistoryShort": "History",
+  "axFirstLogTitle": "Log the first activity",
+  "axLogFirst": "Log the first",
+  "axSpendSub": "{month} · {count, plural, =0{nothing yet} =1{1 expense} other{{count} expenses}}",
+  "axSpendAdd": "Add",
+  "axSpendFor": "Spending on {name}",
+  "axSpendNone": "No expenses yet",
+  "axSpendFirst": "Log the first expense",
+  "axRemindersCount": "{count, plural, =0{No reminders yet} other{{count} coming up}}",
+  "axRemindersAll": "All",
+  "axRemindersFirst": "Create the first reminder"
 }

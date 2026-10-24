@@ -19695,4 +19695,76 @@ class AppLocalizationsVi extends AppLocalizations {
   String axLumiQ612(String name) {
     return 'Tuần tới $name có lịch gì?';
   }
+
+  @override
+  String get axSwitcherInvited => 'Bạn được mời vào';
+
+  @override
+  String get axSwitcherRelative => 'Người thân · chỉ xem kỷ niệm được chia sẻ';
+
+  @override
+  String get axSwitcherCaregiver =>
+      'Người chăm bé · ghi chăm sóc, xem nhắc nhở';
+
+  @override
+  String axSwitchedTo(String name, String age) {
+    return 'Đang xem $name · $age';
+  }
+
+  @override
+  String get axRhythmToday => 'Nhịp hôm nay';
+
+  @override
+  String get axSeeHistory => 'Xem lịch sử';
+
+  @override
+  String get axHistoryShort => 'Lịch sử';
+
+  @override
+  String get axFirstLogTitle => 'Ghi hoạt động đầu tiên';
+
+  @override
+  String get axLogFirst => 'Ghi lần đầu';
+
+  @override
+  String axSpendSub(String month, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count khoản',
+      zero: 'chưa có khoản nào',
+    );
+    return '$month · $_temp0';
+  }
+
+  @override
+  String get axSpendAdd => 'Thêm';
+
+  @override
+  String axSpendFor(String name) {
+    return 'Chi tiêu cho $name';
+  }
+
+  @override
+  String get axSpendNone => 'Chưa có khoản chi nào';
+
+  @override
+  String get axSpendFirst => 'Ghi khoản chi đầu tiên';
+
+  @override
+  String axRemindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sắp tới',
+      zero: 'Chưa có nhắc nhở nào',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get axRemindersAll => 'Tất cả';
+
+  @override
+  String get axRemindersFirst => 'Tạo nhắc nhở đầu tiên';
 }

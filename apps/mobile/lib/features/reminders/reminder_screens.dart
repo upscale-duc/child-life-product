@@ -1607,7 +1607,11 @@ Future<void> _maybeAsk(
 /// rows, dated ones and rules' next times together, overdue first; a row opens its reminder
 /// (a rule that rang opens its "Ghi …" sheet). Owner, 2026-10-11. Hidden for relatives (D-018).
 class ReminderPeek extends ConsumerWidget {
-  const ReminderPeek({super.key});
+  const ReminderPeek({this.ax = false, super.key});
+
+  /// Adaptive Hôm nay (AX10–AX13): one card, header inside ("Nhắc nhở · N sắp tới · Tất cả"),
+  /// the next two as title + time rows; empty: "Tạo nhắc nhở đầu tiên" (AX40).
+  final bool ax;
 
   /// Rows on Hôm nay; the rest are behind "Xem tất cả".
   static const shown = 3;
@@ -1740,6 +1744,127 @@ class ReminderPeek extends ConsumerWidget {
         color: overdue ? cl.colors.error : cl.colors.ink,
       ),
     );
+
+    if (ax) {
+      return Container(
+        key: const Key('axReminders'),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: 14,
+        ),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: cl.shadows.card,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(ClSpace.s2),
+                  decoration: BoxDecoration(
+                    color: cl.colors.sunshineSoft,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  // Ink on the soft warm fill (Night care).
+                  child: ClIcon(ClIcons.clock, size: 20, color: cl.colors.ink),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.axWidgetReminders,
+                        style: cl.text.bodyStrong.copyWith(
+                          fontSize: 16,
+                          color: cl.colors.ink,
+                        ),
+                      ),
+                      Text(
+                        l10n.axRemindersCount(items.length),
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (items.isNotEmpty)
+                  ClPressable(
+                    onPressed: () => context.push(Routes.reminders),
+                    semanticLabel: l10n.axRemindersAll,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 44),
+                      child: Center(
+                        child: Text(
+                          l10n.axRemindersAll,
+                          style: cl.text.label.copyWith(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: cl.colors.mintText,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: ClSpace.s2),
+            if (items.isEmpty)
+              ClButton(
+                label: parent ? l10n.axRemindersFirst : l10n.reminderPeekMore,
+                style: ClButtonStyle.secondary,
+                expand: true,
+                onPressed: () => parent
+                    ? showReminderSheet(context)
+                    : context.push(Routes.reminders),
+              )
+            else
+              for (final i in items.take(2))
+                ClPressable(
+                  onPressed: i.open,
+                  semanticLabel: '${i.title}, ${when(i.at, i.overdue, i.day)}',
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            i.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.body.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: cl.colors.ink,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: ClSpace.s2),
+                        Flexible(
+                          child: Text(
+                            when(i.at, i.overdue, i.day),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.end,
+                            style: cl.text.caption.copyWith(
+                              color: i.overdue
+                                  ? cl.colors.error
+                                  : cl.colors.inkMuted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          ],
+        ),
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

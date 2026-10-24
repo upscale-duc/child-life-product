@@ -517,3 +517,18 @@ The owner tested on an iPhone 14 Pro Max (dev build, flags on, Cam 17 months) an
 - `auto_save_test.dart` fails now and then in a full run and passes alone (three times this round). That file is untouched here.
 - Another session's Print Studio work was in progress in the shared tree and broke `flutter gen-l10n` (`@psTab` missing). The device build was therefore made from HEAD plus this round's files in a scratch copy, and the commit holds only those files.
 
+## 14. Remaining items closed (2026-10-24)
+
+| Item | What was done | Code / test |
+|---|---|---|
+| Lumi tooltip over the system notification prompt (seen on the simulator) | The tooltip waits until D-098's launch prompt is answered, never shows while the app is inactive (an iOS alert), and steps aside if the app goes inactive while it shows | `assistant_entry.dart`; `lumi_test.dart` "waits while the system notification prompt is open" |
+| D-098 server defaults on dev | 17 functions redeployed from HEAD (engagement callables, triggers and schedulers, `staffSetEngagementPolicy`, the three rule-reminder functions); verify reports 276/276 on the newest revision | `scripts/deploy.sh dev` |
+| Portal readout by band (§1.3 metrics) | Two new breakdowns in Phân tích sản phẩm: `stageBand` (distinct people with an adaptive event per 0–1 / 1–3 / 3–6 / 6+, published only when every band reaches the privacy threshold) and `adaptive` (`event:detail`, each slice at the threshold) | `product-analytics-reducer.ts`, `ProductAnalytics.tsx`, `messages-product-analytics.ts`; `firebase/functions/test/product-analytics.test.ts` |
+| G-110: AX30 switcher | With `adaptive_nav`: managed children youngest first, then "Bạn được mời vào" with what the role allows ("Người thân · chỉ xem kỷ niệm được chia sẻ", "Người chăm bé · ghi chăm sóc, xem nhắc nhở") | `home_shell.dart` `_BabyPickerSheet` |
+| G-110: AX31 switch | Toast "Đang xem {tên} · {tuổi}"; a 200 ms crossfade over the tab (none with Reduce Motion); content is keyed by the child, so nothing of the old child stays | `home_shell.dart` `_BabySwitchFade` |
+| G-110: Nhịp hôm nay header, "Ghi lần đầu" | The tiles get "Nhịp hôm nay · Xem lịch sử" (0–1), "Ghi nhanh · Lịch sử" (later), "Ghi hoạt động đầu tiên" on the first run; an empty tile shows the "+ Ghi lần đầu" pill | `today_screen.dart` (`CareTile.firstLogPill`); goldens `ax10`, `ax40` |
+| G-110: Chi tiêu and Nhắc nhở AX cards | Chi tiêu tháng này: total, "Tháng 10 · N khoản", stacked bar in the categories' own accents and their legend, "Thêm"; empty month "Chi tiêu cho {tên}" + "Ghi khoản chi đầu tiên". Nhắc nhở: one card, "N sắp tới · Tất cả", the next two as title + time; empty "Tạo nhắc nhở đầu tiên" | `today_adaptive.dart` `AxSpending`, `reminder_screens.dart` `ReminderPeek(ax:)`; `adaptive_today_test.dart` "AX12 Chi tiêu tháng này" |
+| Android | The dev flavor (debug) builds, installs and launches on the Pixel 6 Pro emulator (API 36) with no exception in logcat. The emulator's account (Bin) is in a family **without** the flags, so it showed the flag-off Hôm nay and dock unchanged. The adaptive screens on Android still need a run with the flags on for that family | `flutter build apk --flavor dev --debug` |
+
+Still open for design review (G-110): the AX33 copy at 36 and 72 months, the afternoon and evening greetings, and the caregiver and relative variants, which are not drawn.
+

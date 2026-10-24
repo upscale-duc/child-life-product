@@ -269,3 +269,31 @@ describe('product cohort reducer', () => {
     ).toBeNull();
   });
 });
+
+it('Adaptive Experience: people per stage band and per event·detail, only above the threshold', () => {
+  const adaptive = accounts.map((_, i) =>
+    fact(i, '2026-10-03', {
+      event: 'adaptive_widget_opened',
+      module: 'personalization',
+      template: i < 20 ? 'moment_today' : 'growth',
+      stageBand: 'b3_6',
+    }),
+  );
+  const result = reduce({
+    request: { ...request, section: 'features' },
+    facts: [...foreground, ...adaptive],
+  });
+  const rows = result.breakdowns.filter((b) => b.dimension === 'adaptive');
+  expect(rows).toContainEqual({
+    dimension: 'adaptive',
+    key: 'widget_opened:moment_today',
+    count: 20,
+  });
+  // The one who opened growth stays hidden (below 20).
+  expect(rows.find((b) => b.key === 'widget_opened:growth')).toBeUndefined();
+  expect(result.breakdowns).toContainEqual({
+    dimension: 'stageBand',
+    key: 'b3_6',
+    count: accounts.length,
+  });
+});

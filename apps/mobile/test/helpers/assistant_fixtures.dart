@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:child_life/features/reminders/reminder_notifications.dart'
+    show notificationsLaunchAskProvider;
 import 'package:child_life/features/assistant/assistant_controller.dart';
 import 'package:child_life/features/assistant/assistant_models.dart';
 import 'package:child_life/features/assistant/assistant_photos.dart';
@@ -755,9 +757,16 @@ List<Override> assistantOverrides({
   /// Lumi 2026-10-16: the baby's running timers (none by default; the timer clock is
   /// [assistantNow]).
   Map<TimerType, CareTimer> timers = const {},
+
+  /// D-098's launch prompt; over at once unless a test keeps it open.
+  Future<void> Function()? launchAsk,
 }) {
   var n = 0;
   return [
+    // The Lumi tooltip waits for the launch prompt; no system dialog in widget tests.
+    notificationsLaunchAskProvider.overrideWith(
+      (ref) => launchAsk?.call() ?? Future.value(),
+    ),
     ...rhythmOverrides(
       repo: FakeRhythmRepository(),
       me: me ?? mai,

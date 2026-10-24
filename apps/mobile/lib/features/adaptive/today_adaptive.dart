@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
@@ -27,6 +28,11 @@ import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../memories/memory_widgets.dart' show MediaTile;
+import '../spending/spending_calc.dart' show MonthSummary, monthOf;
+import '../spending/spending_format.dart'
+    show categoryName, money, spLocale, tintColors;
+import '../spending/spending_sheets.dart' show showExpenseSheet;
+import '../spending/spending_widgets.dart' show watchSpending;
 import 'adaptive_engine.dart';
 import 'reorder_group.dart';
 import 'adaptive_signals.dart' show customizeDetails, reportAdaptive;
@@ -1307,6 +1313,121 @@ class _Chip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// AX12 / AX13 "Chi tiêu tháng này": the month's total, a stacked bar by category (the
+/// categories' own accents) and its legend, "Thêm"; empty month: AX42 "Chi tiêu cho {tên}" with
+/// "Ghi khoản chi đầu tiên". Only for who sees all spending (as today's card).
+class AxSpending extends ConsumerWidget {
+  const AxSpending({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final scope = watchSpending(ref);
+    if (scope == null || !scope.access.viewAll) return const SizedBox.shrink();
+    final locale = spLocale(context);
+    final s = MonthSummary.of(
+      scope.expenses,
+      monthOf(scope.today),
+      scope.today,
+      currency: scope.currency,
+    );
+    void add() => showExpenseSheet(context, scope: scope);
+    final name = scope.baby?.nickname ?? '';
+    if (s.items.isEmpty) {
+      return AxCard(
+        key: const Key('axSpending'),
+        icon: ClIcons.drop,
+        chip: cl.colors.mintSoft,
+        title: l10n.axSpendFor(name),
+        subtitle: l10n.axSpendNone,
+        child: scope.access.record
+            ? ClButton(
+                label: l10n.axSpendFirst,
+                style: ClButtonStyle.secondary,
+                expand: true,
+                onPressed: add,
+              )
+            : null,
+      );
+    }
+    final month = toBeginningOfSentenceCase(
+      DateFormat.MMMM(locale).format(DateTime(s.month.year, s.month.month)),
+    );
+    final parts = [
+      for (final e
+          in (s.byCategory.entries.toList()
+            ..sort((a, b) => b.value.compareTo(a.value))))
+        (category: scope.category(e.key), amount: e.value),
+    ];
+    final shown = parts.take(3).toList();
+    final rest = parts.skip(3).fold(0, (a, p) => a + p.amount);
+    final total = s.total == 0 ? 1 : s.total;
+    return AxCard(
+      key: const Key('axSpending'),
+      icon: ClIcons.drop,
+      chip: cl.colors.mintSoft,
+      title: l10n.axWidgetSpending,
+      subtitle: l10n.axSpendSub(month, s.items.length),
+      link: scope.access.record ? l10n.axSpendAdd : null,
+      onLink: scope.access.record ? add : null,
+      child: ClPressable(
+        onPressed: () => context.push(Routes.spending),
+        semanticLabel: money(locale, s.total, scope.currency),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              money(locale, s.total, scope.currency),
+              style: cl.text.title2.copyWith(
+                fontSize: 22,
+                color: cl.colors.ink,
+              ),
+            ),
+            const SizedBox(height: ClSpace.s2),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(ClRadius.pill),
+              child: SizedBox(
+                height: 8,
+                child: Row(
+                  children: [
+                    for (final (i, p) in shown.indexed) ...[
+                      if (i > 0) const SizedBox(width: 2),
+                      Expanded(
+                        flex: (p.amount * 1000 ~/ total).clamp(1, 1000),
+                        child: ColoredBox(
+                          color: tintColors(context, p.category.tint).accent,
+                        ),
+                      ),
+                    ],
+                    if (rest > 0) ...[
+                      const SizedBox(width: 2),
+                      Expanded(
+                        flex: (rest * 1000 ~/ total).clamp(1, 1000),
+                        child: ColoredBox(color: cl.colors.separator),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: ClSpace.s2),
+            Text(
+              [
+                for (final p in shown) categoryName(l10n, p.category),
+                if (rest > 0) l10n.spCatOther,
+              ].join(' · '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+        ),
       ),
     );
   }
