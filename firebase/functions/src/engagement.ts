@@ -935,10 +935,8 @@ export async function dispatchEngagement(
     const decision = decideEngagement(
       {
         now: n,
-        dueAt:
-          i.kind === 'ENG-06'
-            ? Math.max(i.dueAt, Number(state.get('lastLumiAt') ?? 0) + 7 * ENG_DAY)
-            : i.dueAt,
+        // D-099: ENG-06 is the daily suggestion now, not a weekly insight (was lastLumiAt + 7 d).
+        dueAt: i.dueAt,
         expiresAt: i.expiresAt,
         scheduled: i.status === 'scheduled',
         enabled: config.enabled && config.on(kindFlag[i.kind]),

@@ -430,61 +430,110 @@ export async function discoverEngagementSources(
         now,
       );
   }
-  if (config.on('engagementLumiEnabled') && ['coParent', 'caregiver'].includes(scope.role)) {
-    const delivery = await db.doc(`users/${uid}/settings/personalizationDelivery`).get();
-    if (
-      delivery.get('enabled') !== true ||
-      delivery.get('babyId') !== r.babyId ||
-      delivery.get('deviceId') !== r.deviceId
-    )
-      return;
-    const snap = await personalizedDay(
-      db,
-      uid,
-      { babyId: r.babyId, locale: 'vi' },
-      now,
-      serverGrantEnvironment(),
-    );
-    if (
-      !snap.writable ||
-      snap.health ||
-      snap.context === 'busy' ||
-      snap.lastRecords.length < 3 ||
-      !snap.activityIds.length
-    )
-      return;
-    const oldLease = await db.doc(`users/${uid}/settings/personalizationDigestLease`).get();
-    if (oldLease.get('date') === localDateIn(scope.zone, now)) return; // A legacy OS reservation cannot be assumed cancelled.
-    const personal = await db.doc(`users/${uid}/settings/personalization`).get(),
-      time = personal.get('digestTime');
-    if (typeof time !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return;
-    const dueAt = reminderInstantIn(scope.zone, localDateIn(scope.zone, now), time).getTime();
-    if (dueAt <= now.getTime()) return;
-    const fingerprint = engHash(
-      JSON.stringify({ activity: snap.activityIds[0], version: snap.handoverVersion }),
-    );
-    const expiresAt = Math.min(Date.parse(snap.expiresAt), now.getTime() + ENG_DAY);
-    await upsertEngagement(
-      db,
-      {
-        ...base(uid, r.babyId, scope, now),
-        kind: 'ENG-06',
-        source: `insight:${fingerprint}`,
-        context: 'current',
-        dueAt,
-        expiresAt,
-        windowClosesAt: expiresAt,
-        sourceData: {
-          fingerprint,
-          deviceId: r.deviceId,
-          version: snap.handoverVersion,
-          activity: snap.activityIds[0],
-        },
-      },
-      now,
-    );
-  }
+  await scheduleDailySuggestion(db, uid, r.babyId, r.deviceId, scope, config, now);
 }
+
+/**
+ * D-099: "Gợi ý mỗi ngày" (ENG-06) is a server push at the person's chosen time
+ * (`settings/personalization.digestTime`, 20:30 until chosen), every day, whether or not the app
+ * was opened: the next slot (today, or tomorrow once today's has passed) is queued here, from the
+ * app's refresh and from the hourly [dailySuggestionScheduler]. What it suggests is decided at
+ * send time ([validateEngagementSource]); a day with nothing to suggest sends nothing. The
+ * "Hôm nay của bé" device switch (`personalizationDelivery`) no longer gates it (D-098 defaults).
+ */
+export async function scheduleDailySuggestion(
+  db: Firestore,
+  uid: string,
+  babyId: string,
+  deviceId: string,
+  scope: Scope,
+  config: Config,
+  now: Date,
+) {
+  if (!config.on('engagementLumiEnabled') || !['coParent', 'caregiver'].includes(scope.role))
+    return;
+  const chosen = (await db.doc(`users/${uid}/settings/personalization`).get()).get('digestTime');
+  const time =
+    typeof chosen === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(chosen) ? chosen : '20:30';
+  let date = localDateIn(scope.zone, now);
+  let dueAt = reminderInstantIn(scope.zone, date, time).getTime();
+  if (dueAt <= now.getTime()) {
+    date = addDaysIso(date, 1);
+    dueAt = reminderInstantIn(scope.zone, date, time).getTime();
+  }
+  // Held through quiet hours or a slow tick, it still goes the same morning or evening.
+  const expiresAt = dueAt + 3 * 3_600_000;
+  const queued = await upsertEngagement(
+    db,
+    {
+      ...base(uid, babyId, scope, now),
+      kind: 'ENG-06',
+      source: `daily:${date}`,
+      context: 'current',
+      dueAt,
+      expiresAt,
+      windowClosesAt: expiresAt,
+      sourceData: { deviceId, date, time },
+    },
+    now,
+  );
+  // A changed clock or a new install moves the not-yet-sent slot instead of adding a second one.
+  if (
+    queued &&
+    !queued.sentAt &&
+    ['eligible', 'scheduled', 'in_app_only'].includes(queued.status) &&
+    (queued.dueAt !== dueAt || queued.sourceData.deviceId !== deviceId)
+  )
+    await db.doc(`engagementIntents/${queued.id}`).update({
+      dueAt,
+      expiresAt,
+      windowClosesAt: expiresAt,
+      nextAt: dueAt,
+      'sourceData.deviceId': deviceId,
+      'sourceData.time': time,
+    });
+}
+/**
+ * D-099: the hourly pass that queues tomorrow's (or today's) daily suggestion for every install
+ * holding a live ENG-06 push lease, so the push no longer depends on the app being opened
+ * before the chosen time. Opted-out people (Gợi ý thông minh or its ENG-06 row) are skipped;
+ * the send-time checks run again in the tick.
+ */
+export async function scheduleDailySuggestions(db: Firestore, now: Date) {
+  const { engagementPreferencesSchema } = await import('@child-life/contracts');
+  const leases = await db
+    .collectionGroup('settings')
+    .where('handoffKinds', 'array-contains', 'ENG-06')
+    .get();
+  let queued = 0;
+  for (const lease of leases.docs) {
+    const uid = lease.ref.parent.parent?.id;
+    const babyId = lease.get('babyId') as string | undefined;
+    const deviceId = lease.get('deviceId') as string | undefined;
+    if (
+      lease.id !== 'engagementDevice' ||
+      !uid ||
+      !babyId ||
+      !deviceId ||
+      lease.get('pushAllowed') !== true ||
+      !(Number(lease.get('validUntil')) > now.getTime())
+    )
+      continue;
+    try {
+      const pref = await db.doc(`users/${uid}/settings/engagement`).get();
+      const prefs = engagementPreferencesSchema.parse(pref.get('preferences') ?? {});
+      if (!prefs.consent || !prefs.kinds['ENG-06']) continue;
+      const scope = await engagementScope(db, uid, babyId, now);
+      const config = await engagementConfig(db, scope.familyId);
+      await scheduleDailySuggestion(db, uid, babyId, deviceId, scope, config, now);
+      queued++;
+    } catch {
+      // Not a member any more, or a transient read: the next hour or the app's refresh retries.
+    }
+  }
+  return { leases: leases.size, queued };
+}
+
 /** One campaign evidence read per baby for a whole pass (reconcile, refresh), not per intent. */
 export type EngagementEvidenceCache = Map<string, ReturnType<typeof campaignEvidence>>;
 export async function validateEngagementSource(
@@ -627,13 +676,8 @@ export async function validateEngagementSource(
     return resolved();
   }
   if (i.kind === 'ENG-06') {
-    const delivery = await db.doc(`users/${i.uid}/settings/personalizationDelivery`).get();
-    if (
-      delivery.get('enabled') !== true ||
-      delivery.get('babyId') !== i.babyId ||
-      delivery.get('deviceId') !== i.sourceData.deviceId
-    )
-      return resolved();
+    // D-099: what to suggest is read now; nothing to suggest (a health day, "bận", too few
+    // records, no activity) ends the slot without a push.
     const s = await personalizedDay(
       db,
       i.uid,
@@ -641,15 +685,21 @@ export async function validateEngagementSource(
       now,
       serverGrantEnvironment(),
     );
+    const activity = s.activityIds[0];
     if (
       !s.writable ||
       s.health ||
       s.context === 'busy' ||
-      Date.parse(s.expiresAt) <= now.getTime() ||
-      s.handoverVersion !== i.sourceData.version ||
-      !s.activityIds.includes(String(i.sourceData.activity))
+      s.lastRecords.length < 3 ||
+      !activity ||
+      Date.parse(s.expiresAt) <= now.getTime()
     )
-      return unknown;
+      return resolved();
+    // The push names today's activity ([engagementCopyValues] reads it from the intent).
+    if (i.sourceData.activity !== activity) {
+      i.sourceData.activity = activity;
+      await db.doc(`engagementIntents/${i.id}`).update({ 'sourceData.activity': activity });
+    }
     return { state: 'ready', route: '/rhythm/day' };
   }
   return unknown;

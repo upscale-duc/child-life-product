@@ -205,9 +205,7 @@ class _NotificationSettingsScreenState
             MeRow(
               key: const Key('nt-digest'),
               title: l10n.ntDigest,
-              subtitle: digest == null
-                  ? l10n.meOff
-                  : l10n.ntDigestDaily(digest),
+              subtitle: l10n.ntDigestDaily(digest ?? '20:30'),
               onTap: () => context.push(Routes.rhythmDigest),
             ),
             MeRow(
@@ -276,6 +274,16 @@ class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final data = ref.watch(engagementProvider).value;
+    final session = ref.watch(sessionProvider);
+    // The server's default slot until the person picks one (D-099).
+    final digestTime =
+        (session is SessionSignedIn
+            ? ref
+                  .watch(userPreferencesProvider(session.user.uid))
+                  .value
+                  ?.digestTime
+            : null) ??
+        '20:30';
     if (data?['enabled'] != true) return const SizedBox.shrink();
     final fatigue = Map<String, dynamic>.from(
       data?['fatigue'] as Map? ?? const {},
@@ -317,6 +325,11 @@ class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
               MeRow(
                 key: Key('eng-$k'),
                 title: engagementTitle(l10n, k),
+                // D-099: the daily suggestion says when it comes; tapping the row picks the time.
+                subtitle: k == 'ENG-06' ? l10n.ntDigestDaily(digestTime) : null,
+                onTap: k == 'ENG-06'
+                    ? () => context.push(Routes.rhythmDigest)
+                    : null,
                 trailing: ClToggle(
                   value: consent && kinds[k]!,
                   semanticLabel: engagementTitle(l10n, k),

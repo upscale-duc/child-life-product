@@ -19747,7 +19747,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get engFamily => 'Family updates';
 
   @override
-  String get engLumi => 'Lumi suggestions';
+  String get engLumi => 'Daily suggestion';
 
   @override
   String get engOffline =>

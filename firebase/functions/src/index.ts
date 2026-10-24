@@ -7,7 +7,7 @@ import {
   runEngagement,
   purgeEngagement,
 } from './engagement.js';
-import { familyEngagementFromInbox } from './engagement-sources.js';
+import { familyEngagementFromInbox, scheduleDailySuggestions } from './engagement-sources.js';
 import {
   reconcileBabyEngagement,
   careInboxEngagement,
@@ -3226,6 +3226,14 @@ export const engagementTick = onSchedule(
   },
   async () => {
     await runEngagement(getFirestore(), pushSender(), new Date());
+  },
+);
+/** D-099: queues each person's next "Gợi ý mỗi ngày" slot; [engagementTick] sends it on time. */
+export const dailySuggestionScheduler = onSchedule(
+  { schedule: 'every 60 minutes', timeZone: 'Asia/Ho_Chi_Minh', maxInstances: 1 },
+  async () => {
+    const r = await scheduleDailySuggestions(getFirestore(), new Date());
+    logger.info('daily suggestions queued', r);
   },
 );
 export const engagementCleanup = onSchedule(

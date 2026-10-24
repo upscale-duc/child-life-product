@@ -18631,7 +18631,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get engFamily => 'Cập nhật gia đình';
 
   @override
-  String get engLumi => 'Gợi ý Lumi';
+  String get engLumi => 'Gợi ý mỗi ngày';
 
   @override
   String get engOffline =>

@@ -1,6 +1,10 @@
 import contentSeed from '../../content/rhythm/content.seed.json' with { type: 'json' };
 import { reservePersonalizedDigest } from '../functions/src/personalization-v2.js';
-import { familyEngagementFromInbox } from '../functions/src/engagement-sources.js';
+import {
+  familyEngagementFromInbox,
+  scheduleDailySuggestions,
+  validateEngagementSource,
+} from '../functions/src/engagement-sources.js';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { initializeApp, deleteApp } from 'firebase-admin/app';
@@ -24,6 +28,7 @@ import {
   saveEngagementSettings,
   runEngagement,
   ENG_DAY,
+  type EngagementIntent,
 } from '../functions/src/engagement.js';
 import {
   reconcileBabyEngagement,
@@ -148,7 +153,9 @@ it('ships dark without approved policy, rejects raw local data and denies direct
 });
 it('retains one discovery episode across retries and proves completion from an approved ready batch', async () => {
   const p = await pending();
-  expect((await db.collection('engagementIntents').get()).size).toBe(1);
+  expect((await db.collection('engagementIntents').where('kind', '==', 'ENG-01').get()).size).toBe(
+    1,
+  );
   expect((await p.ref.get()).get('dueAt')).toBe(start.getTime() + ENG_DAY);
   await refreshEngagement(
     db,
@@ -327,7 +334,9 @@ it('waits for OS handoff acknowledgement and keeps one intent after acknowledgem
   await refreshEngagement(db, 'parent', p.data, now);
   await dispatchEngagement(db, sender, (await p.ref.get()) as never, now);
   expect(calls).toBe(1);
-  expect((await db.collection('engagementIntents').get()).size).toBe(1);
+  expect((await db.collection('engagementIntents').where('kind', '==', 'ENG-01').get()).size).toBe(
+    1,
+  );
 });
 it('the device lease lasts the policy days (30 by default), not 2 hours (D-092)', async () => {
   await pending();
@@ -383,7 +392,9 @@ it('does not resurrect an episode after its payload is expired and cleaned', asy
   await engagementAction(db, 'parent', { id: p.ref.id, action: 'dismiss' }, now);
   await p.ref.delete();
   await refreshEngagement(db, 'parent', p.data, now);
-  expect((await db.collection('engagementIntents').get()).empty).toBe(true);
+  expect((await db.collection('engagementIntents').where('kind', '==', 'ENG-01').get()).empty).toBe(
+    true,
+  );
 });
 it('builds the closed week from save time, excludes drafts, and completes only on a real authorized source view', async () => {
   const r = await family(),
@@ -439,7 +450,7 @@ it('groups real family updates, suppresses own/revoked sources and completes onl
   expect((await groups.docs[0]!.ref.get()).get('status')).toBe('completed');
 });
 
-it('uses the existing opted-in Lumi source and suppresses the legacy digest producer', async () => {
+it('D-099: the daily suggestion is a server slot at the chosen time, decided at send time', async () => {
   await db.doc('config/entitlements').set({
     ...defaultEntitlementsConfig,
     regions: { advanced: ['VN'] },
@@ -459,18 +470,19 @@ it('uses the existing opted-in Lumi source and suppresses the legacy digest prod
   await db.doc('families/family').update({ country: 'VN' });
   await db.doc('publicConfig/content_rhythm').set(contentSeed);
   await db.doc('babies/baby/restricted/profile').set({ dateOfBirth: '2026-08-15' });
-  await db.doc('users/parent/settings/personalizationDelivery').set({
-    enabled: true,
-    babyId: 'baby',
-    deviceId: 'd_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    zone: 'Asia/Ho_Chi_Minh',
-  });
+  // No "Hôm nay của bé" device switch: the Gợi ý thông minh default (D-098) is enough.
   await db
     .doc('users/parent/settings/personalization')
     .set({ digestTime: '20:30', quietHours: { from: '22:00', to: '06:00' } });
   await refreshEngagement(db, 'parent', r, now);
-  expect((await db.collection('engagementIntents').where('kind', '==', 'ENG-06').get()).empty).toBe(
-    true,
+  const slots = await db.collection('engagementIntents').where('kind', '==', 'ENG-06').get();
+  expect(slots.size).toBe(1);
+  const slot = slots.docs[0]!;
+  // 10:01 in Hồ Chí Minh: today's 20:30.
+  expect(slot.get('dueAt')).toBe(Date.parse('2026-10-21T13:30:00Z'));
+  // Too few records yet: nothing to suggest, no push.
+  expect((await validateEngagementSource(db, slot.data() as EngagementIntent, now)).state).toBe(
+    'resolved',
   );
   for (const type of ['bottle', 'breast', 'diaper'])
     await db.doc(`babies/baby/records/${type}`).set({
@@ -481,9 +493,10 @@ it('uses the existing opted-in Lumi source and suppresses the legacy digest prod
       deleted: false,
       data: {},
     });
-  await refreshEngagement(db, 'parent', r, now);
-  const insights = await db.collection('engagementIntents').where('kind', '==', 'ENG-06').get();
-  expect(insights.size).toBe(1);
+  const ready = await validateEngagementSource(db, slot.data() as EngagementIntent, now);
+  expect(ready).toMatchObject({ state: 'ready', route: '/rhythm/day' });
+  expect((await slot.ref.get()).get('sourceData.activity')).toEqual(expect.any(String));
+  // The device's own reservation stays off: the server owns the lane.
   expect(
     (
       await reservePersonalizedDigest(
@@ -495,14 +508,45 @@ it('uses the existing opted-in Lumi source and suppresses the legacy digest prod
       )
     ).fireAt,
   ).toBeNull();
-  await observeEngagementContent(
-    db,
-    'parent',
-    { babyId: 'baby', sourceType: 'personal_day', sourceId: 'baby' },
-    now,
-  );
-  expect((await insights.docs[0]!.ref.get()).get('status')).toBe('completed');
   expect((await db.collection('aiUsageDaily').get()).empty).toBe(true);
+});
+
+it('D-099: the hourly pass queues tomorrow once today has passed, and a new clock moves the slot', async () => {
+  const r = await family();
+  await refreshEngagement(db, 'parent', r, now);
+  await db.doc('users/parent/settings/personalization').set({ digestTime: '08:00' });
+  // 10:01 local: 08:00 has passed, so the slot is tomorrow's, without the app being opened.
+  const late = await scheduleDailySuggestions(db, now);
+  expect(late.queued).toBe(1);
+  const tomorrow = await db
+    .collection('engagementIntents')
+    .where('kind', '==', 'ENG-06')
+    .where('sourceData.date', '==', '2026-10-22')
+    .get();
+  expect(tomorrow.size).toBe(1);
+  expect(tomorrow.docs[0]!.get('dueAt')).toBe(Date.parse('2026-10-22T01:00:00Z'));
+  await db.doc('users/parent/settings/personalization').set({ digestTime: '07:30' });
+  await scheduleDailySuggestions(db, now);
+  const moved = await tomorrow.docs[0]!.ref.get();
+  expect(moved.get('dueAt')).toBe(Date.parse('2026-10-22T00:30:00Z'));
+  expect(moved.get('nextAt')).toBe(Date.parse('2026-10-22T00:30:00Z'));
+  // Opting out of the ENG-06 row stops the queueing.
+  await db.doc('users/parent/settings/engagement').set(
+    {
+      preferences: {
+        consent: true,
+        kinds: {
+          'ENG-01': true,
+          'ENG-02': true,
+          'ENG-03': true,
+          'ENG-05': true,
+          'ENG-06': false,
+        },
+      },
+    },
+    { merge: true },
+  );
+  expect((await scheduleDailySuggestions(db, now)).queued).toBe(0);
 });
 
 it('records an explicit rejected handoff as failed while an ambiguous send stays unknown', async () => {

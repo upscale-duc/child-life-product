@@ -15,8 +15,6 @@ import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import 'rhythm_access.dart';
 import '../me/me_widgets.dart';
-import '../reminders/device_identity.dart';
-import '../reminders/reminder_notifications.dart';
 import 'personalization_events.dart';
 import 'personalization_v2_repository.dart';
 import 'rhythm_repository.dart';
@@ -746,8 +744,6 @@ List<Widget> _dayChildren(
   ];
   final shown = {for (final a in ideas) a.id};
   final done = actedToday(day).where((id) => !shown.contains(id)).toList();
-  final device = ref.watch(deviceIdentityProvider).value;
-  final delivery = dayMap(day.data['delivery']);
   final weekly = dayMap(day.data['weekly']);
   final firstPattern = day.patterns.firstOrNull;
   final caption = cl.text.caption.copyWith(color: cl.colors.inkMuted);
@@ -832,31 +828,6 @@ List<Widget> _dayChildren(
                   ? null
                   : (on) =>
                         write({'kind': 'focus', 'value': on ? 'play' : null}),
-            ),
-          ),
-          MeRow(
-            title: l.pv2Digest,
-            subtitle: l.pv2DigestHint,
-            trailing: ClToggle(
-              semanticLabel: l.pv2Digest,
-              value:
-                  delivery['enabled'] == true &&
-                  delivery['deviceId'] == device?.id,
-              onChanged: busy || device == null
-                  ? null
-                  : (enabled) async {
-                      if (enabled &&
-                          !await ref
-                              .read(reminderNotificationsProvider)
-                              .request()) {
-                        return;
-                      }
-                      await write({
-                        'kind': 'digest',
-                        'enabled': enabled,
-                        'deviceId': device.id,
-                      });
-                    },
             ),
           ),
         ],

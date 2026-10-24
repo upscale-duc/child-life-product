@@ -31131,7 +31131,7 @@ abstract class AppLocalizations {
   /// Smart Engagement V1: engLumi
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý Lumi'**
+  /// **'Gợi ý mỗi ngày'**
   String get engLumi;
 
   /// Smart Engagement V1: engOffline
