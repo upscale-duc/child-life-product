@@ -165,18 +165,29 @@ class AlbumsView extends ConsumerWidget {
         children: [
           AspectRatio(
             aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(ClRadius.card - 6),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (coverPath != null) ...[
-                    ColoredBox(color: cl.colors.surface2),
-                    Image(image: StorageImage(coverPath), fit: BoxFit.cover),
-                  ] else
-                    _EmptyCover(empty: empty, canAdd: c.parentView && addable),
-                  Positioned(left: 8, top: 8, child: badge),
-                ],
+            // D-096: the cover is the album's card; a light cover (a keepsake card) sank into
+            // the Light background without the tile shadow.
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(ClRadius.card - 6),
+                boxShadow: cl.shadows.tile,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(ClRadius.card - 6),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (coverPath != null) ...[
+                      ColoredBox(color: cl.colors.surface2),
+                      Image(image: StorageImage(coverPath), fit: BoxFit.cover),
+                    ] else
+                      _EmptyCover(
+                        empty: empty,
+                        canAdd: c.parentView && addable,
+                      ),
+                    Positioned(left: 8, top: 8, child: badge),
+                  ],
+                ),
               ),
             ),
           ),
@@ -305,9 +316,11 @@ class AlbumsView extends ConsumerWidget {
             ),
             const SizedBox(height: ClSpace.s3),
             SizedBox(
-              height: 172,
+              height: 172 + 20,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
+                // The cover's tile shadow (D-096) needs room the strip would clip.
+                padding: ClTileShadow.stripPadding,
                 itemCount: milestones.length,
                 separatorBuilder: (_, _) => const SizedBox(width: ClSpace.s3),
                 itemBuilder: (_, i) {

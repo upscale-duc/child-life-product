@@ -402,3 +402,23 @@ class _LabelValue extends StatelessWidget {
     ),
   );
 }
+
+/// D-096: a picture tile on the page (album cover, video, card, milestone) lifts off the Light
+/// background with `shadow-tile`, like the cards around it. Night care has its own tile shadow.
+class ClTileShadow extends StatelessWidget {
+  const ClTileShadow({required this.child, this.radius = 12, super.key});
+  final Widget child;
+  final double radius;
+
+  /// Room a horizontal strip leaves under its tiles so the shadow is not cut off.
+  static const stripPadding = EdgeInsets.only(top: 2, bottom: 18);
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(radius),
+      boxShadow: context.cl.shadows.tile,
+    ),
+    child: child,
+  );
+}

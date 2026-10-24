@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/navigation.dart' show SafePush;
-import '../../app/providers.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
 import '../../app/route_guard.dart';
@@ -217,70 +216,6 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
           ],
         );
       },
-    );
-  }
-}
-
-class EngagementPreferencesPanel extends ConsumerWidget {
-  const EngagementPreferencesPanel({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = AppLocalizations.of(context),
-        data = ref.watch(engagementProvider).value;
-    if (data?['enabled'] != true) return const SizedBox.shrink();
-    final fatigue = Map<String, dynamic>.from(
-      data?['fatigue'] as Map? ?? const {},
-    );
-    final prefs = Map<String, dynamic>.from(
-          data?['preferences'] as Map? ?? const {},
-        ),
-        kinds = Map<String, dynamic>.from(prefs['kinds'] as Map? ?? const {});
-    Future<void> save(Map<String, Object?> change) async {
-      try {
-        await ref
-            .read(functionsProvider)
-            .httpsCallable('setEngagementPreferences')
-            .call<Object?>(change);
-        ref.invalidate(engagementProvider);
-      } catch (_) {
-        if (context.mounted) ClToaster.of(context).show(message: l.engOffline);
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l.engTitle, style: Theme.of(context).textTheme.titleMedium),
-        Text(l.engSettingsHint),
-        if (fatigue['paused'] == true) Text(l.engPaused),
-        SwitchListTile(
-          title: Text(l.engConsent),
-          value: prefs['consent'] == true,
-          onChanged: (v) => save({
-            'preferences': {'consent': v, 'kinds': kinds},
-          }),
-        ),
-        for (final kind in ['ENG-01', 'ENG-02', 'ENG-03', 'ENG-05', 'ENG-06'])
-          SwitchListTile(
-            title: Text(engagementTitle(l, kind)),
-            value: kinds[kind] == true,
-            onChanged: (v) => save({
-              'preferences': {
-                'consent': prefs['consent'] == true,
-                'kinds': {...kinds, kind: v},
-              },
-            }),
-          ),
-        TextButton(
-          onPressed:
-              fatigue['paused'] == true &&
-                  (fatigue['pausedUntil'] as num? ?? 0) >
-                      DateTime.now().millisecondsSinceEpoch
-              ? null
-              : () => save({'resume': true}),
-          child: Text(l.engResume),
-        ),
-      ],
     );
   }
 }

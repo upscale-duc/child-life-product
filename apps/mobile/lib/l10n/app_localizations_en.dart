@@ -16550,6 +16550,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntMasterOff => 'Off in system settings';
 
   @override
+  String get ntOffTitle => 'Notifications are off';
+
+  @override
+  String get ntOffBody =>
+      'You won\'t get feeding, sleep or vaccine reminders, or news from your family. Tap to turn them on in Settings.';
+
+  @override
   String get ntGroupReminders => 'REMINDERS YOU SET';
 
   @override

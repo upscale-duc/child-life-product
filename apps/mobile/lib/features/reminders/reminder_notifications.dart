@@ -267,6 +267,27 @@ class NotificationsEnabled extends Notifier<bool?> {
   }
 }
 
+const _kAskedOnLaunch = 'notifications.askedOnLaunch';
+
+/// D-098: the system notification prompt on the first entry into the app, once per install
+/// (a refusal is final for the OS; the Thông báo screen then says they are off).
+Future<void> askNotificationsOnLaunch(Ref ref) async {
+  final prefs = ref.read(sharedPreferencesProvider);
+  if (prefs.getBool(_kAskedOnLaunch) == true) return;
+  await prefs.setBool(_kAskedOnLaunch, true);
+  try {
+    if (await ref.read(reminderNotificationsProvider).enabled()) return;
+  } on Object {
+    return;
+  }
+  await ref.read(notificationsEnabledProvider.notifier).request();
+}
+
+/// Runs [askNotificationsOnLaunch] once per app run; watched by the home shell.
+final notificationsLaunchAskProvider = FutureProvider<void>(
+  askNotificationsOnLaunch,
+);
+
 // ---- D-075 #5: "Giờ nhắc việc cả ngày" ----
 
 const _kAllDayMinutes = 'reminders.allDayMinutes';

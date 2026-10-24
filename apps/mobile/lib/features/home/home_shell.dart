@@ -40,6 +40,8 @@ import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
 import 'today_tour.dart';
+import '../reminders/reminder_notifications.dart'
+    show notificationsLaunchAskProvider;
 import '../family/save_account.dart';
 import '../onboarding/setup_draft.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
@@ -140,6 +142,8 @@ class HomeShell extends ConsumerWidget {
     final tabs = tabsFor(membership, v2: v2);
     final active = dockTabOf(shellTabs[shell.currentIndex], v2: v2);
     final babyId = membership.babyId;
+    // D-098: the system notification prompt as soon as someone is in the app.
+    ref.watch(notificationsLaunchAskProvider);
     final analytics = ref.watch(productAnalyticsReporterProvider);
     if (analytics != null) {
       final locale = Localizations.localeOf(context).languageCode == 'en'

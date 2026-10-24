@@ -25980,6 +25980,18 @@ abstract class AppLocalizations {
   /// **'Đang tắt trong cài đặt hệ thống'**
   String get ntMasterOff;
 
+  /// D-098: warning on Thông báo when the system has notifications off
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo đang tắt'**
+  String get ntOffTitle;
+
+  /// D-098: what is missed; tapping opens system settings
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn sẽ không nhận nhắc bú, ngủ, tiêm chủng hay tin từ gia đình. Chạm để bật lại trong Cài đặt.'**
+  String get ntOffBody;
+
   /// EN07 group header.
   ///
   /// In vi, this message translates to:

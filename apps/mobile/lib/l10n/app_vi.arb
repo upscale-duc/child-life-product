@@ -23009,6 +23009,14 @@
   "@ntMasterOff": {
     "description": "EN07 master card: OS permission not granted."
   },
+  "ntOffTitle": "Thông báo đang tắt",
+  "@ntOffTitle": {
+    "description": "D-098: warning on Thông báo when the system has notifications off"
+  },
+  "ntOffBody": "Bạn sẽ không nhận nhắc bú, ngủ, tiêm chủng hay tin từ gia đình. Chạm để bật lại trong Cài đặt.",
+  "@ntOffBody": {
+    "description": "D-098: what is missed; tapping opens system settings"
+  },
   "ntGroupReminders": "NHẮC VIỆC BẠN ĐẶT",
   "@ntGroupReminders": {
     "description": "EN07 group header."

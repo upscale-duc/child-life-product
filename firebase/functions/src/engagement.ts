@@ -1066,10 +1066,13 @@ export async function dispatchEngagement(
     validateEngagementSource(db, i, now),
     db.doc(`users/${i.uid}/settings/engagement`).get(),
   ]);
+  // Through the schema: someone who never saved a choice has the defaults (D-098: on).
+  const latest = engagementPreferencesSchema.safeParse(latestPref.get('preferences') ?? {});
   if (
     live.get('status') !== 'attempted' ||
-    latestPref.get('preferences.consent') !== true ||
-    latestPref.get(`preferences.kinds.${i.kind}`) !== true ||
+    !latest.success ||
+    !latest.data.consent ||
+    !latest.data.kinds[i.kind as keyof EngagementPreferences['kinds']] ||
     live.get('dismissed') ||
     live.get('completedAt') ||
     !latestConfig.enabled ||

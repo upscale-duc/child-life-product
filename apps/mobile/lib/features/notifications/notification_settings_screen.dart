@@ -1,21 +1,25 @@
-import '../engagement/engagement_widgets.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/providers.dart' show functionsProvider;
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/platform/external_apps.dart' show openNotificationSettings;
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../engagement/engagement_local.dart' show engagementRevisionProvider;
+import '../engagement/engagement_repository.dart' show engagementProvider;
+import '../engagement/engagement_widgets.dart' show engagementTitle;
 import '../me/me_widgets.dart';
 import '../reminders/reminder_notifications.dart';
 import '../rhythm/rhythm_repository.dart' show userPreferencesProvider;
@@ -115,7 +119,18 @@ class _NotificationSettingsScreenState
     return MePage(
       title: l10n.meNotifications,
       children: [
-        const EngagementPreferencesPanel(),
+        // D-098: switched off in system settings, nothing here reaches the phone; say so first.
+        if (system == false) ...[
+          MeNotice(
+            key: const Key('nt-off'),
+            tone: MeTone.warn,
+            icon: ClIcons.alert,
+            title: l10n.ntOffTitle,
+            body: l10n.ntOffBody,
+            onTap: () => unawaited(_system(false)),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
         ClCardGroup(
           children: [
             MeRow(
@@ -135,6 +150,7 @@ class _NotificationSettingsScreenState
             toggle('babyName', l10n.ntBabyName, l10n.ntBabyNameHint),
           ],
         ),
+        const _SmartSuggestions(),
         if (cares) ...[
           _Group(l10n.ntGroupReminders, hint: l10n.ntGroupRemindersHint),
           ClCardGroup(
@@ -207,6 +223,128 @@ class _NotificationSettingsScreenState
           l10n.ntFootnote,
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
+      ],
+    );
+  }
+}
+
+/// Gợi ý thông minh (ENG-01…06) in this screen's own rows. D-098: on until the person turns it
+/// off. A switch moves at once and stays (the reload of `getEngagement` is paced for background
+/// changes and would hold the old value for up to a minute); a failed save puts it back. The
+/// kinds follow the main switch: off, they are greyed out.
+class _SmartSuggestions extends ConsumerStatefulWidget {
+  const _SmartSuggestions();
+
+  @override
+  ConsumerState<_SmartSuggestions> createState() => _SmartSuggestionsState();
+}
+
+class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
+  static const _kinds = ['ENG-01', 'ENG-02', 'ENG-03', 'ENG-05', 'ENG-06'];
+  bool? _consent;
+  Map<String, bool>? _chosen;
+
+  Future<void> _call(Map<String, Object?> change) => ref
+      .read(functionsProvider)
+      .httpsCallable('setEngagementPreferences')
+      .call<Object?>(change);
+
+  Future<void> _save(bool consent, Map<String, bool> kinds) async {
+    final toaster = ClToaster.of(context);
+    final l10n = AppLocalizations.of(context);
+    final before = (_consent, _chosen);
+    setState(() {
+      _consent = consent;
+      _chosen = kinds;
+    });
+    try {
+      await _call({
+        'preferences': {'consent': consent, 'kinds': kinds},
+      });
+      ref.read(engagementRevisionProvider.notifier).refresh();
+    } on Object {
+      if (!mounted) return;
+      setState(() {
+        _consent = before.$1;
+        _chosen = before.$2;
+      });
+      toaster.show(message: l10n.ntSaveFailed, error: true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final data = ref.watch(engagementProvider).value;
+    if (data?['enabled'] != true) return const SizedBox.shrink();
+    final fatigue = Map<String, dynamic>.from(
+      data?['fatigue'] as Map? ?? const {},
+    );
+    final prefs = Map<String, dynamic>.from(
+      data?['preferences'] as Map? ?? const {},
+    );
+    final stored = Map<String, dynamic>.from(
+      prefs['kinds'] as Map? ?? const {},
+    );
+    final consent = _consent ?? prefs['consent'] != false;
+    final kinds = {
+      for (final k in _kinds) k: _chosen?[k] ?? stored[k] != false,
+    };
+    final paused = fatigue['paused'] == true;
+    final cooling =
+        (fatigue['pausedUntil'] as num? ?? 0) >
+        DateTime.now().millisecondsSinceEpoch;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Group(l10n.engTitle, hint: l10n.engSettingsHint),
+        if (paused) ...[
+          MeNotice(title: l10n.engPaused),
+          const SizedBox(height: ClSpace.s2),
+        ],
+        ClCardGroup(
+          children: [
+            MeRow(
+              key: const Key('eng-consent'),
+              title: l10n.engConsent,
+              trailing: ClToggle(
+                value: consent,
+                semanticLabel: l10n.engConsent,
+                onChanged: (v) => unawaited(_save(v, kinds)),
+              ),
+            ),
+            for (final k in _kinds)
+              MeRow(
+                key: Key('eng-$k'),
+                title: engagementTitle(l10n, k),
+                trailing: ClToggle(
+                  value: consent && kinds[k]!,
+                  semanticLabel: engagementTitle(l10n, k),
+                  onChanged: consent
+                      ? (v) => unawaited(_save(true, {...kinds, k: v}))
+                      : null,
+                ),
+              ),
+          ],
+        ),
+        // Only while paused and past the 14-day cool-down.
+        if (paused && !cooling)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ClButton(
+              label: l10n.engResume,
+              style: ClButtonStyle.plain,
+              onPressed: () async {
+                final toaster = ClToaster.of(context);
+                try {
+                  await _call({'resume': true});
+                  ref.read(engagementRevisionProvider.notifier).refresh();
+                } on Object {
+                  toaster.show(message: l10n.ntSaveFailed, error: true);
+                }
+              },
+            ),
+          ),
       ],
     );
   }

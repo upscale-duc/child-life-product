@@ -91,7 +91,12 @@ describe('ENG-00 decisions', () => {
       'fatigue',
     ]);
     expect(defaultEngagementPolicy).toMatchObject({ dailyCap: 1, weeklyCap: 3, approved: false });
-    expect(engagementPreferencesSchema.parse({}).consent).toBe(false);
+    // D-098: on until the person turns it off.
+    expect(engagementPreferencesSchema.parse({})).toMatchObject({
+      consent: true,
+      kinds: { 'ENG-01': true, 'ENG-06': true },
+    });
+    expect(engagementPreferencesSchema.parse({ consent: false }).consent).toBe(false);
     expect(
       engagementRefreshSchema.safeParse({
         babyId: 'b',

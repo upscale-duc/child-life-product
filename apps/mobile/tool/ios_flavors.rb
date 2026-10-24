@@ -23,7 +23,7 @@ FLAVORS = {
              # Associated Domains). Both landing hosts: the invite page's "Mở app" button links
              # to the other one, because iOS ignores a Universal Link to the page's own domain.
              applinks: ['dev.childlife.app', 'child-life-dev-landing.web.app'],
-             extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
+             extension_profiles: { 'widgetExtension' => 'hsba widgets dev', 'share' => 'hsba share dev' } },
   # prod has no team until the Child Life developer account exists: signing it on the borrowed
   # team would register app.childlife there (it did once, from Xcode's automatic signing).
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod', team: nil,

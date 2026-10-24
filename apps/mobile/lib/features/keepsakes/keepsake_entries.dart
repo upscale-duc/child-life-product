@@ -13,6 +13,7 @@ import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart' show ClTileShadow;
 import '../../l10n/app_localizations.dart';
 import '../memories/media_bytes.dart';
 import '../memories/media_viewer.dart';
@@ -350,18 +351,22 @@ class KeepsakeStorySections extends ConsumerWidget {
           ),
           const SizedBox(height: ClSpace.s3),
           SizedBox(
-            height: 200,
+            height: 200 + 20,
             child: ListView(
               scrollDirection: Axis.horizontal,
+              padding: ClTileShadow.stripPadding,
               children: [
                 for (final (i, v) in videos.indexed) ...[
                   if (i > 0) const SizedBox(width: ClSpace.s2),
                   SizedBox(
                     width: 112,
-                    child: MediaTile(
-                      item: v,
-                      radius: 12,
-                      onTap: () => openViewer(context, items: videos, start: i),
+                    child: ClTileShadow(
+                      child: MediaTile(
+                        item: v,
+                        radius: 12,
+                        onTap: () =>
+                            openViewer(context, items: videos, start: i),
+                      ),
                     ),
                   ),
                 ],
@@ -381,17 +386,20 @@ class KeepsakeStorySections extends ConsumerWidget {
           ),
           const SizedBox(height: ClSpace.s3),
           SizedBox(
-            height: 140,
+            height: 140 + 20,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              padding: ClTileShadow.stripPadding,
               itemCount: cards.length,
               separatorBuilder: (_, _) => const SizedBox(width: ClSpace.s2),
               itemBuilder: (context, i) => SizedBox(
                 width: 112,
-                child: MediaTile(
-                  item: cards[i],
-                  radius: 12,
-                  onTap: () => openViewer(context, items: cards, start: i),
+                child: ClTileShadow(
+                  child: MediaTile(
+                    item: cards[i],
+                    radius: 12,
+                    onTap: () => openViewer(context, items: cards, start: i),
+                  ),
                 ),
               ),
             ),

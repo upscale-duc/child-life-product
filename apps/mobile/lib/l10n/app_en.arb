@@ -4312,6 +4312,8 @@
   "ntMaster": "Child Life notifications",
   "ntMasterOn": "On in system settings",
   "ntMasterOff": "Off in system settings",
+  "ntOffTitle": "Notifications are off",
+  "ntOffBody": "You won't get feeding, sleep or vaccine reminders, or news from your family. Tap to turn them on in Settings.",
   "ntGroupReminders": "REMINDERS YOU SET",
   "ntGroupRemindersHint": "Always on time, even in quiet hours",
   "ntCare": "Feeding, sleep, diapers",

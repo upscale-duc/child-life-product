@@ -35,24 +35,25 @@ export const engagementPolicySchema = z
 export type EngagementPolicy = z.infer<typeof engagementPolicySchema>;
 export const defaultEngagementPolicy = engagementPolicySchema.parse({});
 export const proactiveKinds = ['ENG-01', 'ENG-02', 'ENG-03', 'ENG-05', 'ENG-06'] as const;
+// D-098: Gợi ý thông minh is on for someone who never chose; an explicit "off" is kept.
 export const engagementPreferencesSchema = z
   .object({
-    consent: z.boolean().default(false),
+    consent: z.boolean().default(true),
     kinds: z
       .object({
-        'ENG-01': z.boolean().default(false),
-        'ENG-02': z.boolean().default(false),
-        'ENG-03': z.boolean().default(false),
-        'ENG-05': z.boolean().default(false),
-        'ENG-06': z.boolean().default(false),
+        'ENG-01': z.boolean().default(true),
+        'ENG-02': z.boolean().default(true),
+        'ENG-03': z.boolean().default(true),
+        'ENG-05': z.boolean().default(true),
+        'ENG-06': z.boolean().default(true),
       })
       .strict()
       .default(() => ({
-        'ENG-01': false,
-        'ENG-02': false,
-        'ENG-03': false,
-        'ENG-05': false,
-        'ENG-06': false,
+        'ENG-01': true,
+        'ENG-02': true,
+        'ENG-03': true,
+        'ENG-05': true,
+        'ENG-06': true,
       })),
   })
   .strict();

@@ -15520,6 +15520,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntMasterOff => 'Đang tắt trong cài đặt hệ thống';
 
   @override
+  String get ntOffTitle => 'Thông báo đang tắt';
+
+  @override
+  String get ntOffBody =>
+      'Bạn sẽ không nhận nhắc bú, ngủ, tiêm chủng hay tin từ gia đình. Chạm để bật lại trong Cài đặt.';
+
+  @override
   String get ntGroupReminders => 'NHẮC VIỆC BẠN ĐẶT';
 
   @override
