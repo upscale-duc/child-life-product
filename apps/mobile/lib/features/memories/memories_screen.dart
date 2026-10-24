@@ -249,16 +249,25 @@ String monthTitle(AppLocalizations l10n, String locale, DateTime month) =>
 
 /// Kỷ niệm (10a Nhật ký, 10b Ảnh; Album and Câu chuyện arrive with S10 / S12). Cùng nuôi see
 /// both audiences; relatives what is shared (R-119); caregivers never get this tab (12a).
-class MemoriesScreen extends ConsumerStatefulWidget {
+class MemoriesScreen extends StatelessWidget {
   const MemoriesScreen({super.key});
 
+  // Kept mounted under the other tabs: no rebuilds (grouping the whole grid) while hidden.
   @override
-  ConsumerState<MemoriesScreen> createState() => _MemoriesScreenState();
+  Widget build(BuildContext context) =>
+      const ClHiddenTabFreeze(child: _MemoriesTab());
+}
+
+class _MemoriesTab extends ConsumerStatefulWidget {
+  const _MemoriesTab();
+
+  @override
+  ConsumerState<_MemoriesTab> createState() => _MemoriesTabState();
 }
 
 /// The four tabs are pages side by side: a swipe moves between them, a tap on a title slides
 /// to it (owner request 2026-10-11).
-class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
+class _MemoriesTabState extends ConsumerState<_MemoriesTab> {
   late final _pages = PageController(
     initialPage: ref.read(memoryViewProvider).tab.index,
   );

@@ -857,3 +857,48 @@ class _ClPinnedHeaderScaffoldState extends State<ClPinnedHeaderScaffold> {
     );
   }
 }
+
+/// Keeps a hidden tab still. `StatefulShellRoute.indexedStack` keeps every tab mounted and turns
+/// [TickerMode] off for the hidden ones (also for a screen covered by a pushed route); Riverpod
+/// then pauses their `ref.watch`es, but an inherited change still rebuilds them, e.g. the bottom
+/// padding when the keyboard opens on another tab. While hidden, [child] keeps the [MediaQuery]
+/// it last showed with and catches up the moment it shows again. Visible, it passes the live
+/// [MediaQuery] through unchanged.
+class ClHiddenTabFreeze extends StatefulWidget {
+  const ClHiddenTabFreeze({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  State<ClHiddenTabFreeze> createState() => _ClHiddenTabFreezeState();
+}
+
+class _ClHiddenTabFreezeState extends State<ClHiddenTabFreeze> {
+  ValueListenable<TickerModeData>? _shown;
+  MediaQueryData? _frozen;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final shown = TickerMode.getValuesNotifier(context);
+    if (shown != _shown) {
+      _shown?.removeListener(_onShown);
+      _shown = shown..addListener(_onShown);
+    }
+  }
+
+  void _onShown() => setState(() {});
+
+  @override
+  void dispose() {
+    _shown?.removeListener(_onShown);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final live = MediaQuery.of(context);
+    if (_shown?.value.enabled ?? true) _frozen = live;
+    return MediaQuery(data: _frozen ?? live, child: widget.child);
+  }
+}
