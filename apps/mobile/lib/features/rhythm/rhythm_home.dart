@@ -62,6 +62,7 @@ class ForYouSection extends ConsumerWidget {
     this.more = const [],
     this.weekTeaser,
     this.enablePrimary = true,
+    this.whenNoSuggestion = const [],
     super.key,
   });
 
@@ -75,6 +76,10 @@ class ForYouSection extends ConsumerWidget {
   /// Replaces the age card's teaser in "Tuần này của {bé}" (the current stage).
   final WeekTeaser? weekTeaser;
   final bool enablePrimary;
+
+  /// D-102 (audit 2026-10-25): one hero on Hôm nay. These (the "Để ý tuần này" carousel) show
+  /// only when no suggestion of the day leads the section.
+  final List<Widget> whenNoSuggestion;
   // ---- end D-076 #4 ----
 
   @override
@@ -244,6 +249,7 @@ class ForYouSection extends ConsumerWidget {
           secondary: secondaryActivities(content, home!),
         ),
       ...more, // D-076 #4
+      if (!showPrimary) ...whenNoSuggestion,
       if (canCheckIn)
         _CheckInEntry(
           // Owner, 2026-10-22: after answering, the row says what was noted today.
@@ -1073,42 +1079,22 @@ class _RowContent extends StatelessWidget {
 class _SupportCard extends StatelessWidget {
   const _SupportCard();
 
+  // D-102 (audit 2026-10-25): one quiet row like "Hôm nay con có gì khác?", not a paragraph
+  // competing with the day's suggestion.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
     return RhCard(
+      key: const Key('forBabySupport'),
       hairline: true,
-      // PR01 from Nhịp lớn lên (entry A).
-      onTap: () => openPaywall(context, entry: PaywallEntry.rhythm),
-      semanticLabel: '${l10n.rhSupportTitle}. ${l10n.rhLearnMore}',
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClIcon(ClIcons.spark, size: 18, color: cl.colors.mintText),
-          const SizedBox(width: ClSpace.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.rhSupportTitle, style: cl.text.bodyStrong),
-                const SizedBox(height: 2),
-                Text(
-                  l10n.rhSupportBody,
-                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                ),
-                const SizedBox(height: ClSpace.s2),
-                Text(
-                  l10n.rhLearnMore,
-                  style: cl.text.label.copyWith(
-                    color: cl.colors.mintText,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      padding: EdgeInsets.zero,
+      child: _RowContent(
+        icon: ClIcons.spark,
+        tone: WeekRowTone.mint,
+        title: l10n.rhSupportTitle,
+        sub: l10n.rhLearnMore,
+        // PR01 from Nhịp lớn lên (entry A).
+        onTap: () => openPaywall(context, entry: PaywallEntry.rhythm),
       ),
     );
   }

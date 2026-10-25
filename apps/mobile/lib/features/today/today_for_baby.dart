@@ -41,9 +41,9 @@ export '../rhythm/rhythm_home.dart' show soothingDays;
 /// owner's of 2026-10-15, see [ForYouSection]):
 ///
 /// 1. heading and "≈ Theo điều bạn quan tâm · Đổi" (Đổi opens EN01, the person's interests);
-/// 2. Nhịp lớn lên's suggestion (compact), then "Để ý tuần này": small cards from other modules
-///    ([ForBabyCard]) through the providers below, ranked by the person's interests; then
-///    "Hôm nay con có gì khác?";
+/// 2. one idea of the day (the personal card, else Nhịp lớn lên's suggestion); only without one,
+///    "Để ý tuần này": small cards from other modules ([ForBabyCard]) through the providers
+///    below, ranked by the person's interests (D-102: one hero); then "Hôm nay con có gì khác?";
 /// 3. "Tuần này của {bé}": one card whose teaser is the current stage's first "Bé đang thế nào"
 ///    point ([lbWeekTeaserProvider]; the carousel then leaves that stage out) or the Nhịp lớn lên
 ///    age card, with the reference calendar and the week summary as rows.
@@ -103,10 +103,12 @@ class TodayForBabySection extends ConsumerWidget {
                 PersonalDayHome(primary: cards.firstOrNull)
               else if (v2Pending)
                 const PersonalDayHomePlaceholder(),
-              if (!v2Pending && cards.length > (v2Ready ? 1 : 0))
-                ForBabyCarousel(
-                  cards: v2Ready ? cards.skip(1).take(2).toList() : cards,
-                ),
+            ],
+            // D-102 (audit 2026-10-25): one hero. The small cards show only when no idea of
+            // the day leads; with the personal card the first of them is that card already.
+            whenNoSuggestion: [
+              if (!v2Ready && !v2Pending && cards.isNotEmpty)
+                ForBabyCarousel(cards: cards),
             ],
           ),
         ],
