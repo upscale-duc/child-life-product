@@ -21,6 +21,7 @@ import '../premium/billing_models.dart' show PaywallEntry;
 import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
+import 'personalization_v2_screen.dart' show askTryReminder;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
@@ -531,9 +532,7 @@ class _PrimaryCard extends ConsumerWidget {
         : null;
 
     final again = rec.changes.contains(RecChange.prefersHelpful);
-    final tryLabel = again
-        ? (evening ? l10n.rhTryAgainTonight : l10n.rhTryAgainToday)
-        : (evening ? l10n.rhTryTonight : l10n.rhTryToday);
+    final tryLabel = again ? l10n.rhTryAgain : l10n.rhIllTry;
 
     void open() =>
         context.push(activityLocation(activity.id, checkInId: rec.checkInId));
@@ -626,32 +625,43 @@ class _PrimaryCard extends ConsumerWidget {
               zone: zone,
             ),
           ],
-          if (canAct && plan != null) ...[
+          // One try in three steps (owner, 2026-10-25): "Mình sẽ thử" → "Sẽ thử · tối nay" →
+          // "Có ích / Chưa rõ / Không hợp" right on the card once there was a chance to try.
+          if (canAct && plan != null && plan.due) ...[
+            const SizedBox(height: ClSpace.s3),
+            RhOutcomeChoices(
+              onPick: (kind) {
+                giveFeedbackOn(context, ref, me, kind: kind, activity: activity);
+                showClToast(context, message: l10n.rhFeedbackSaved);
+              },
+            ),
+            const SizedBox(height: ClSpace.s1),
+            Row(
+              children: [
+                RhLink(
+                  label: l10n.rhDidNotTry,
+                  muted: true,
+                  onTap: () =>
+                      withdrawPlan(context, ref, me, plan, notTried: true),
+                ),
+                const Spacer(),
+                RhLink(label: l10n.rhSeeHow, onTap: open),
+              ],
+            ),
+          ] else if (canAct && plan != null) ...[
             const SizedBox(height: ClSpace.s3),
             Wrap(
               spacing: ClSpace.s2,
               runSpacing: ClSpace.s2,
               children: [
-                if (plan.due) ...[
-                  RhPillButton(
-                    label: l10n.rhTellHow,
-                    onTap: () =>
-                        context.push(activityFeedbackLocation(activity.id)),
-                  ),
-                  RhPillButton(
-                    label: l10n.rhDidNotTry,
-                    primary: false,
-                    onTap: () =>
-                        withdrawPlan(context, ref, me, plan, notTried: true),
-                  ),
-                ] else if (plan.mine(me.uid))
+                RhPillButton(label: l10n.rhSeeHow, primary: false, onTap: open),
+                if (plan.mine(me.uid))
                   RhPillButton(
                     label: l10n.rhCancelPlan,
                     primary: false,
                     onTap: () =>
                         withdrawPlan(context, ref, me, plan, notTried: false),
                   ),
-                RhPillButton(label: l10n.rhHow, primary: false, onTap: open),
               ],
             ),
           ] else if (canAct) ...[
@@ -670,11 +680,12 @@ class _PrimaryCard extends ConsumerWidget {
                       kind: FeedbackKind.started,
                       activity: activity,
                     );
-                    open();
+                    // P-179: when should this phone remind; the card then waits.
+                    askTryReminder(context, ref, me.babyId, activity.id);
                   },
                 ),
                 RhPillButton(
-                  label: ps02 ? l10n.rhSomethingElse : l10n.rhNotToday,
+                  label: l10n.rhNotToday,
                   primary: false,
                   onTap: () {
                     giveFeedbackOn(
@@ -690,7 +701,7 @@ class _PrimaryCard extends ConsumerWidget {
               ],
             ),
           ] else
-            RhLink(label: l10n.rhHow, start: true, onTap: open),
+            RhLink(label: l10n.rhSeeHow, start: true, onTap: open),
           const SizedBox(height: ClSpace.s3),
           RhReviewNote(activity.review),
           if (secondary.isNotEmpty) ...[

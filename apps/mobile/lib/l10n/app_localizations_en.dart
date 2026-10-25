@@ -12107,19 +12107,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhKickerTonight => 'ONE THING FOR TONIGHT';
 
   @override
-  String get rhTryToday => 'Try today';
+  String get rhTryToday => 'I\'ll try it';
 
   @override
-  String get rhTryTonight => 'Try tonight';
+  String get rhTryTonight => 'I\'ll try it';
 
   @override
-  String get rhTryAgainToday => 'Do it again today';
+  String get rhTryAgainToday => 'Try it again';
 
   @override
-  String get rhTryAgainTonight => 'Do it again tonight';
+  String get rhTryAgainTonight => 'Try it again';
 
   @override
-  String get rhNotToday => 'Not today';
+  String get rhNotToday => 'Another day';
 
   @override
   String get rhSomethingElse => 'Something else';
@@ -12522,10 +12522,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhNotRight => 'Not right for my baby';
 
   @override
-  String get rhAnotherIdea => 'Another idea';
+  String get rhAnotherIdea => 'Another day';
 
   @override
-  String get rhTellHow => 'Tell us how it went';
+  String get rhTellHow => 'How did it go?';
 
   @override
   String get rhStartedToast => 'Good luck! Tell us how it went afterwards.';
@@ -12538,10 +12538,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhActivityMissing => 'This suggestion is no longer available';
 
   @override
-  String get rhHowLastNight => 'How did last night go?';
+  String get rhHowLastNight => 'How was last night?';
 
   @override
-  String get rhHowDidItGo => 'How did it go?';
+  String get rhHowDidItGo => 'Tried it? How was it?';
 
   @override
   String get rhHelpful => 'Helpful';
@@ -12550,14 +12550,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhUnsure => 'Not sure';
 
   @override
-  String get rhNotAFit => 'Not a fit';
+  String get rhNotAFit => 'Not for us';
 
   @override
   String get rhNoteHint => 'Note (optional)';
 
   @override
   String get rhFeedbackInfo =>
-      'This feedback shapes your next suggestion. “Helpful” doesn’t mean this caused the change.';
+      'Used to pick the next idea, not proof that this works.';
 
   @override
   String get rhSaveFeedback => 'Save feedback';
@@ -15908,14 +15908,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asUsageButton => 'Usage';
 
   @override
-  String get rhPlannedTonight => 'Planned · tonight';
+  String get rhPlannedTonight => 'Trying · tonight';
 
   @override
-  String get rhPlannedToday => 'Planned · today';
+  String get rhPlannedToday => 'Trying · today';
 
   @override
   String rhPlannedOn(String date) {
-    return 'Planned · $date';
+    return 'Trying · $date';
   }
 
   @override
@@ -15925,26 +15925,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String rhPlannedBy(String who, String when) {
-    return '$who planned it · $when';
+    return '$who is trying it · $when';
   }
 
   @override
-  String get rhPlanAskMorning => 'You can tell how it went tomorrow morning.';
+  String get rhPlanAskMorning => 'We\'ll ask how it went tomorrow morning.';
 
   @override
-  String get rhPlanAskEvening => 'You can tell how it went from 6 pm today.';
+  String get rhPlanAskEvening => 'We\'ll ask how it went from 18:00.';
 
   @override
-  String get rhKickerFollowUp => 'DID YOU GET A CHANCE TO TRY IT?';
+  String get rhKickerFollowUp => 'TRIED IT? HOW WAS IT?';
 
   @override
-  String get rhCancelPlan => 'Cancel plan';
+  String get rhCancelPlan => 'Won\'t try it';
 
   @override
-  String get rhPlanCanceled => 'Plan cancelled';
+  String get rhPlanCanceled => 'Dropped this try';
 
   @override
-  String get rhDidNotTry => 'Didn’t try';
+  String get rhDidNotTry => 'Didn\'t get to it';
 
   @override
   String get rhDidNotTryToast => 'No problem, you can try another time.';
@@ -16688,7 +16688,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntSaveFailed => 'Couldn’t save. Please try again.';
 
   @override
-  String get rhPlannedPill => 'Planned';
+  String get rhPlannedPill => 'Trying';
 
   @override
   String mtTodayKicker(String range) {
@@ -19451,13 +19451,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Restore => 'Restore suggestion';
 
   @override
-  String get pv2Intend => 'I plan to try';
+  String get pv2Intend => 'I\'ll try it';
 
   @override
-  String get pv2Tried => 'I tried it';
+  String get pv2Tried => 'Tried it';
 
   @override
-  String get pv2Helpful => 'Helpful for our family';
+  String get pv2Helpful => 'Helpful';
 
   @override
   String get pv2Unsure => 'Not sure yet';
@@ -19843,7 +19843,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2DoneToday => 'What you did today';
 
   @override
-  String get pv2DoneTodayEmpty => 'Ideas you save, plan or try show up here.';
+  String get pv2DoneTodayEmpty => 'Ideas you save or plan to try show here.';
 
   @override
   String get pv2NoIdeas =>
@@ -19853,7 +19853,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2HowWasIt => 'How was it?';
 
   @override
-  String get pv2HowWasItTitle => 'How did it go?';
+  String get pv2HowWasItTitle => 'Tried it? How was it?';
 
   @override
   String get pv2AlreadySaved => 'This idea is already saved.';
@@ -19872,7 +19872,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2StatusIntend(String when) {
-    return 'Planned · $when';
+    return 'Trying · $when';
   }
 
   @override
@@ -19891,7 +19891,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2ToastIntend =>
-      'Noted that you plan to try it. Tap \"I tried it\" afterwards.';
+      'Noted. When you have tried it, tap “How was it?”.';
 
   @override
   String get pv2ToastTried =>
@@ -21213,4 +21213,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get axWidgetCareDuty => 'Who is caring';
+
+  @override
+  String get rhSeeHow => 'See how';
 }

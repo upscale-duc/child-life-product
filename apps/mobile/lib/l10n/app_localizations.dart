@@ -18808,31 +18808,31 @@ abstract class AppLocalizations {
   /// H02 primary (feedback started).
   ///
   /// In vi, this message translates to:
-  /// **'Thử hôm nay'**
+  /// **'Mình sẽ thử'**
   String get rhTryToday;
 
   /// PS01 primary for an evening activity (feedback started).
   ///
   /// In vi, this message translates to:
-  /// **'Thử tối nay'**
+  /// **'Mình sẽ thử'**
   String get rhTryTonight;
 
   /// PS02 primary when it helped before.
   ///
   /// In vi, this message translates to:
-  /// **'Thử lại hôm nay'**
+  /// **'Thử lại lần nữa'**
   String get rhTryAgainToday;
 
   /// PS02 primary when it helped before (evening).
   ///
   /// In vi, this message translates to:
-  /// **'Thử lại tối nay'**
+  /// **'Thử lại lần nữa'**
   String get rhTryAgainTonight;
 
   /// H02 secondary (feedback not_today → cooldown).
   ///
   /// In vi, this message translates to:
-  /// **'Không phải hôm nay'**
+  /// **'Để hôm khác'**
   String get rhNotToday;
 
   /// PS02 secondary (feedback not_today → cooldown).
@@ -19527,13 +19527,13 @@ abstract class AppLocalizations {
   /// AC01 link (feedback not_today → cooldown).
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý khác'**
+  /// **'Để hôm khác'**
   String get rhAnotherIdea;
 
   /// AC01 after starting → AC02.
   ///
   /// In vi, this message translates to:
-  /// **'Kể lại kết quả'**
+  /// **'Con thế nào?'**
   String get rhTellHow;
 
   /// Toast after "Mình sẽ thử".
@@ -19557,13 +19557,13 @@ abstract class AppLocalizations {
   /// AC02 question for an evening activity tried yesterday.
   ///
   /// In vi, this message translates to:
-  /// **'Tối qua thế nào?'**
+  /// **'Tối qua con thế nào?'**
   String get rhHowLastNight;
 
   /// AC02 question otherwise.
   ///
   /// In vi, this message translates to:
-  /// **'Lần thử thế nào?'**
+  /// **'Thử rồi, con thế nào?'**
   String get rhHowDidItGo;
 
   /// AC02 choice (helpful).
@@ -19581,7 +19581,7 @@ abstract class AppLocalizations {
   /// AC02 choice (not_suitable).
   ///
   /// In vi, this message translates to:
-  /// **'Không phù hợp'**
+  /// **'Không hợp'**
   String get rhNotAFit;
 
   /// AC02 note field.
@@ -19593,7 +19593,7 @@ abstract class AppLocalizations {
   /// AC02 info strip (no causality claims).
   ///
   /// In vi, this message translates to:
-  /// **'Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.'**
+  /// **'Dùng để chọn gợi ý lần sau, không phải kết luận cách này có tác dụng.'**
   String get rhFeedbackInfo;
 
   /// AC02 primary.
@@ -24939,19 +24939,19 @@ abstract class AppLocalizations {
   /// Plan waiting state of an evening (or any-time) item, with a check, instead of "Kể lại kết quả" right away (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lên kế hoạch · tối nay'**
+  /// **'Sẽ thử · tối nay'**
   String get rhPlannedTonight;
 
   /// Plan waiting state of a daytime item (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lên kế hoạch · hôm nay'**
+  /// **'Sẽ thử · hôm nay'**
   String get rhPlannedToday;
 
   /// Status pill of a plan from an earlier day ("tối 08/10"). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lên kế hoạch · {date}'**
+  /// **'Sẽ thử · {date}'**
   String rhPlannedOn(String date);
 
   /// An evening of a day ("tối 08/10"), as AC02 590:6558 "Đã thử · tối 08/10".
@@ -24963,43 +24963,43 @@ abstract class AppLocalizations {
   /// Who planned and for when ("Ba lên kế hoạch · tối 08/10"). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'{who} lên kế hoạch · {when}'**
+  /// **'{who} sẽ thử · {when}'**
   String rhPlannedBy(String who, String when);
 
   /// Plan waiting note: the result is asked from 05:00 the next morning (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Sáng mai có thể kể lại kết quả.'**
+  /// **'Sáng mai hỏi lại con thế nào.'**
   String get rhPlanAskMorning;
 
   /// Plan waiting note for a daytime item: the result is asked from 18:00 (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Từ 18:00 hôm nay có thể kể lại kết quả.'**
+  /// **'Từ 18:00 hỏi lại con thế nào.'**
   String get rhPlanAskEvening;
 
   /// H02 kicker once the chance to try has passed (never "đã thử": the family only said they would). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?'**
+  /// **'THỬ RỒI, CON THẾ NÀO?'**
   String get rhKickerFollowUp;
 
   /// Secondary action of the plan waiting state: takes back my own plan (deletes my `started` row). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Bỏ kế hoạch'**
+  /// **'Thôi, không thử'**
   String get rhCancelPlan;
 
   /// Toast after "Bỏ kế hoạch". VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã bỏ kế hoạch'**
+  /// **'Đã bỏ lượt thử này'**
   String get rhPlanCanceled;
 
   /// Answer next to "Kể lại kết quả" once the chance has passed, always available (CH17 "Chưa thử"). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa thử'**
+  /// **'Chưa thử được'**
   String get rhDidNotTry;
 
   /// Toast after "Chưa thử". VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -26241,7 +26241,7 @@ abstract class AppLocalizations {
   /// Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lên kế hoạch'**
+  /// **'Sẽ thử'**
   String get rhPlannedPill;
 
   /// Home small card kicker ({range} = "tham khảo 1–3 tháng").
@@ -30573,25 +30573,25 @@ abstract class AppLocalizations {
   /// Personalization v2: Intend
   ///
   /// In vi, this message translates to:
-  /// **'Mình định thử'**
+  /// **'Mình sẽ thử'**
   String get pv2Intend;
 
   /// Personalization v2: Tried
   ///
   /// In vi, this message translates to:
-  /// **'Mình đã thử'**
+  /// **'Thử rồi'**
   String get pv2Tried;
 
   /// Personalization v2: Helpful
   ///
   /// In vi, this message translates to:
-  /// **'Có ích với nhà mình'**
+  /// **'Có ích'**
   String get pv2Helpful;
 
   /// Personalization v2: Unsure
   ///
   /// In vi, this message translates to:
-  /// **'Chưa thấy rõ'**
+  /// **'Chưa rõ'**
   String get pv2Unsure;
 
   /// Personalization v2: NoAnswer
@@ -31305,7 +31305,7 @@ abstract class AppLocalizations {
   /// Empty state of pv2DoneToday.
   ///
   /// In vi, this message translates to:
-  /// **'Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.'**
+  /// **'Gợi ý bạn lưu hoặc sẽ thử hiện ở đây.'**
   String get pv2DoneTodayEmpty;
 
   /// When the day has no activity suggestion.
@@ -31317,13 +31317,13 @@ abstract class AppLocalizations {
   /// Row action asking for the outcome after an attempt.
   ///
   /// In vi, this message translates to:
-  /// **'Thấy sao?'**
+  /// **'Con thế nào?'**
   String get pv2HowWasIt;
 
   /// Sheet title for the outcome question.
   ///
   /// In vi, this message translates to:
-  /// **'Lần thử này thế nào?'**
+  /// **'Thử rồi, con thế nào?'**
   String get pv2HowWasItTitle;
 
   /// Toast when the saved heart is tapped again.
@@ -31359,7 +31359,7 @@ abstract class AppLocalizations {
   /// Status line; when is HH:mm today or dd/MM.
   ///
   /// In vi, this message translates to:
-  /// **'Định thử · {when}'**
+  /// **'Sẽ thử · {when}'**
   String pv2StatusIntend(String when);
 
   /// Status line; when is HH:mm today or dd/MM.
@@ -31383,7 +31383,7 @@ abstract class AppLocalizations {
   /// Toast after "Mình định thử".
   ///
   /// In vi, this message translates to:
-  /// **'Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".'**
+  /// **'Đã ghi. Thử xong, chạm “Con thế nào?”.'**
   String get pv2ToastIntend;
 
   /// Toast after "Mình đã thử" (the card leaves the list until tomorrow).
@@ -33365,6 +33365,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ai đang trông bé'**
   String get axWidgetCareDuty;
+
+  /// Button: opens the activity steps (one try vocabulary, owner 2026-10-25).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem cách làm'**
+  String get rhSeeHow;
 }
 
 class _AppLocalizationsDelegate

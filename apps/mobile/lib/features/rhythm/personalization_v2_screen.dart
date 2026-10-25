@@ -442,24 +442,9 @@ class PersonalDayHome extends ConsumerWidget {
                 if (steps.firstOrNull case final step?)
                   RhPillButton(
                     key: Key('personalDayStep:$step'),
-                    label: step == 'helpful'
-                        ? l.pv2HowWasIt
-                        : responseLabel(l, step),
+                    label: stepLabel(l, step),
                     primary: stepFirst,
-                    onTap: () async {
-                      if (step == 'helpful') {
-                        await askOutcome(context, ref, key, activity!.id);
-                        return;
-                      }
-                      final ok = await mutateDay(context, ref, key, {
-                        'kind': 'respond',
-                        'contentId': activity!.id,
-                        'value': step,
-                      });
-                      if (ok) {
-                        personalEvent(ref, 'personalizationOutcome', step);
-                      }
-                    },
+                    onTap: () => runStep(context, ref, key, activity!.id, step),
                   ),
               ]),
             ),
@@ -1050,9 +1035,13 @@ class _IdeaCard extends ConsumerWidget {
               for (final step in steps)
                 RhPillButton(
                   key: Key('personalStep:$id:$step'),
-                  label: responseLabel(l, step),
+                  label: stepLabel(l, step),
                   primary: stepFirst && step == steps.first,
                   onTap: () async {
+                    if (step == 'helpful') {
+                      await askOutcome(context, ref, dayKey, id);
+                      return;
+                    }
                     final ok = await write({
                       'kind': 'respond',
                       'contentId': id,

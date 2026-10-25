@@ -11321,19 +11321,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhKickerTonight => 'VIỆC CÓ THỂ THỬ TỐI NAY';
 
   @override
-  String get rhTryToday => 'Thử hôm nay';
+  String get rhTryToday => 'Mình sẽ thử';
 
   @override
-  String get rhTryTonight => 'Thử tối nay';
+  String get rhTryTonight => 'Mình sẽ thử';
 
   @override
-  String get rhTryAgainToday => 'Thử lại hôm nay';
+  String get rhTryAgainToday => 'Thử lại lần nữa';
 
   @override
-  String get rhTryAgainTonight => 'Thử lại tối nay';
+  String get rhTryAgainTonight => 'Thử lại lần nữa';
 
   @override
-  String get rhNotToday => 'Không phải hôm nay';
+  String get rhNotToday => 'Để hôm khác';
 
   @override
   String get rhSomethingElse => 'Gợi ý khác';
@@ -11730,10 +11730,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhNotRight => 'Không phù hợp với con';
 
   @override
-  String get rhAnotherIdea => 'Gợi ý khác';
+  String get rhAnotherIdea => 'Để hôm khác';
 
   @override
-  String get rhTellHow => 'Kể lại kết quả';
+  String get rhTellHow => 'Con thế nào?';
 
   @override
   String get rhStartedToast =>
@@ -11747,10 +11747,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhActivityMissing => 'Gợi ý này không còn nữa';
 
   @override
-  String get rhHowLastNight => 'Tối qua thế nào?';
+  String get rhHowLastNight => 'Tối qua con thế nào?';
 
   @override
-  String get rhHowDidItGo => 'Lần thử thế nào?';
+  String get rhHowDidItGo => 'Thử rồi, con thế nào?';
 
   @override
   String get rhHelpful => 'Có ích';
@@ -11759,14 +11759,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhUnsure => 'Chưa rõ';
 
   @override
-  String get rhNotAFit => 'Không phù hợp';
+  String get rhNotAFit => 'Không hợp';
 
   @override
   String get rhNoteHint => 'Ghi chú (tuỳ chọn)';
 
   @override
   String get rhFeedbackInfo =>
-      'Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.';
+      'Dùng để chọn gợi ý lần sau, không phải kết luận cách này có tác dụng.';
 
   @override
   String get rhSaveFeedback => 'Lưu phản hồi';
@@ -14922,14 +14922,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asUsageButton => 'Mức dùng';
 
   @override
-  String get rhPlannedTonight => 'Đã lên kế hoạch · tối nay';
+  String get rhPlannedTonight => 'Sẽ thử · tối nay';
 
   @override
-  String get rhPlannedToday => 'Đã lên kế hoạch · hôm nay';
+  String get rhPlannedToday => 'Sẽ thử · hôm nay';
 
   @override
   String rhPlannedOn(String date) {
-    return 'Đã lên kế hoạch · $date';
+    return 'Sẽ thử · $date';
   }
 
   @override
@@ -14939,26 +14939,26 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhPlannedBy(String who, String when) {
-    return '$who lên kế hoạch · $when';
+    return '$who sẽ thử · $when';
   }
 
   @override
-  String get rhPlanAskMorning => 'Sáng mai có thể kể lại kết quả.';
+  String get rhPlanAskMorning => 'Sáng mai hỏi lại con thế nào.';
 
   @override
-  String get rhPlanAskEvening => 'Từ 18:00 hôm nay có thể kể lại kết quả.';
+  String get rhPlanAskEvening => 'Từ 18:00 hỏi lại con thế nào.';
 
   @override
-  String get rhKickerFollowUp => 'CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?';
+  String get rhKickerFollowUp => 'THỬ RỒI, CON THẾ NÀO?';
 
   @override
-  String get rhCancelPlan => 'Bỏ kế hoạch';
+  String get rhCancelPlan => 'Thôi, không thử';
 
   @override
-  String get rhPlanCanceled => 'Đã bỏ kế hoạch';
+  String get rhPlanCanceled => 'Đã bỏ lượt thử này';
 
   @override
-  String get rhDidNotTry => 'Chưa thử';
+  String get rhDidNotTry => 'Chưa thử được';
 
   @override
   String get rhDidNotTryToast => 'Không sao, lúc khác thử cũng được.';
@@ -15659,7 +15659,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntSaveFailed => 'Chưa lưu được. Thử lại nhé.';
 
   @override
-  String get rhPlannedPill => 'Đã lên kế hoạch';
+  String get rhPlannedPill => 'Sẽ thử';
 
   @override
   String mtTodayKicker(String range) {
@@ -18335,16 +18335,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Restore => 'Khôi phục gợi ý';
 
   @override
-  String get pv2Intend => 'Mình định thử';
+  String get pv2Intend => 'Mình sẽ thử';
 
   @override
-  String get pv2Tried => 'Mình đã thử';
+  String get pv2Tried => 'Thử rồi';
 
   @override
-  String get pv2Helpful => 'Có ích với nhà mình';
+  String get pv2Helpful => 'Có ích';
 
   @override
-  String get pv2Unsure => 'Chưa thấy rõ';
+  String get pv2Unsure => 'Chưa rõ';
 
   @override
   String get pv2NoAnswer =>
@@ -18724,18 +18724,17 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2DoneToday => 'Hôm nay bạn đã';
 
   @override
-  String get pv2DoneTodayEmpty =>
-      'Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.';
+  String get pv2DoneTodayEmpty => 'Gợi ý bạn lưu hoặc sẽ thử hiện ở đây.';
 
   @override
   String get pv2NoIdeas =>
       'Hôm nay chưa có gợi ý mới phù hợp. Bạn có thể xem lại những việc đã lưu.';
 
   @override
-  String get pv2HowWasIt => 'Thấy sao?';
+  String get pv2HowWasIt => 'Con thế nào?';
 
   @override
-  String get pv2HowWasItTitle => 'Lần thử này thế nào?';
+  String get pv2HowWasItTitle => 'Thử rồi, con thế nào?';
 
   @override
   String get pv2AlreadySaved => 'Gợi ý này đã nằm trong mục Đã lưu.';
@@ -18754,7 +18753,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2StatusIntend(String when) {
-    return 'Định thử · $when';
+    return 'Sẽ thử · $when';
   }
 
   @override
@@ -18772,8 +18771,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đã lưu. Xem lại trong \"Đã lưu, đã thử và đã ẩn\".';
 
   @override
-  String get pv2ToastIntend =>
-      'Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".';
+  String get pv2ToastIntend => 'Đã ghi. Thử xong, chạm “Con thế nào?”.';
 
   @override
   String get pv2ToastTried =>
@@ -20017,4 +20015,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get axWidgetCareDuty => 'Ai đang trông bé';
+
+  @override
+  String get rhSeeHow => 'Xem cách làm';
 }

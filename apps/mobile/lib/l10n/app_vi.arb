@@ -16937,23 +16937,23 @@
   "@rhKickerTonight": {
     "description": "PS02 card kicker for an evening activity."
   },
-  "rhTryToday": "Thử hôm nay",
+  "rhTryToday": "Mình sẽ thử",
   "@rhTryToday": {
     "description": "H02 primary (feedback started)."
   },
-  "rhTryTonight": "Thử tối nay",
+  "rhTryTonight": "Mình sẽ thử",
   "@rhTryTonight": {
     "description": "PS01 primary for an evening activity (feedback started)."
   },
-  "rhTryAgainToday": "Thử lại hôm nay",
+  "rhTryAgainToday": "Thử lại lần nữa",
   "@rhTryAgainToday": {
     "description": "PS02 primary when it helped before."
   },
-  "rhTryAgainTonight": "Thử lại tối nay",
+  "rhTryAgainTonight": "Thử lại lần nữa",
   "@rhTryAgainTonight": {
     "description": "PS02 primary when it helped before (evening)."
   },
-  "rhNotToday": "Không phải hôm nay",
+  "rhNotToday": "Để hôm khác",
   "@rhNotToday": {
     "description": "H02 secondary (feedback not_today → cooldown)."
   },
@@ -17534,11 +17534,11 @@
   "@rhNotRight": {
     "description": "AC01 link (feedback not_suitable)."
   },
-  "rhAnotherIdea": "Gợi ý khác",
+  "rhAnotherIdea": "Để hôm khác",
   "@rhAnotherIdea": {
     "description": "AC01 link (feedback not_today → cooldown)."
   },
-  "rhTellHow": "Kể lại kết quả",
+  "rhTellHow": "Con thế nào?",
   "@rhTellHow": {
     "description": "AC01 after starting → AC02."
   },
@@ -17554,11 +17554,11 @@
   "@rhActivityMissing": {
     "description": "An activity id not in the published content."
   },
-  "rhHowLastNight": "Tối qua thế nào?",
+  "rhHowLastNight": "Tối qua con thế nào?",
   "@rhHowLastNight": {
     "description": "AC02 question for an evening activity tried yesterday."
   },
-  "rhHowDidItGo": "Lần thử thế nào?",
+  "rhHowDidItGo": "Thử rồi, con thế nào?",
   "@rhHowDidItGo": {
     "description": "AC02 question otherwise."
   },
@@ -17570,7 +17570,7 @@
   "@rhUnsure": {
     "description": "AC02 choice (unsure)."
   },
-  "rhNotAFit": "Không phù hợp",
+  "rhNotAFit": "Không hợp",
   "@rhNotAFit": {
     "description": "AC02 choice (not_suitable)."
   },
@@ -17578,7 +17578,7 @@
   "@rhNoteHint": {
     "description": "AC02 note field."
   },
-  "rhFeedbackInfo": "Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.",
+  "rhFeedbackInfo": "Dùng để chọn gợi ý lần sau, không phải kết luận cách này có tác dụng.",
   "@rhFeedbackInfo": {
     "description": "AC02 info strip (no causality claims)."
   },
@@ -22119,15 +22119,15 @@
   "@asUsageButton": {
     "description": "Chat top-bar icon button (tooltip and screen-reader label) that opens CH19; replaces the \"Chi tiết\" link (612:7741). EN is an engineering draft for owner review."
   },
-  "rhPlannedTonight": "Đã lên kế hoạch · tối nay",
+  "rhPlannedTonight": "Sẽ thử · tối nay",
   "@rhPlannedTonight": {
     "description": "Plan waiting state of an evening (or any-time) item, with a check, instead of \"Kể lại kết quả\" right away (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhPlannedToday": "Đã lên kế hoạch · hôm nay",
+  "rhPlannedToday": "Sẽ thử · hôm nay",
   "@rhPlannedToday": {
     "description": "Plan waiting state of a daytime item (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhPlannedOn": "Đã lên kế hoạch · {date}",
+  "rhPlannedOn": "Sẽ thử · {date}",
   "@rhPlannedOn": {
     "description": "Status pill of a plan from an earlier day (\"tối 08/10\"). VI and EN are engineering drafts (no frame draws this state) for owner review.",
     "placeholders": {
@@ -22145,7 +22145,7 @@
       }
     }
   },
-  "rhPlannedBy": "{who} lên kế hoạch · {when}",
+  "rhPlannedBy": "{who} sẽ thử · {when}",
   "@rhPlannedBy": {
     "description": "Who planned and for when (\"Ba lên kế hoạch · tối 08/10\"). VI and EN are engineering drafts (no frame draws this state) for owner review.",
     "placeholders": {
@@ -22157,27 +22157,27 @@
       }
     }
   },
-  "rhPlanAskMorning": "Sáng mai có thể kể lại kết quả.",
+  "rhPlanAskMorning": "Sáng mai hỏi lại con thế nào.",
   "@rhPlanAskMorning": {
     "description": "Plan waiting note: the result is asked from 05:00 the next morning (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhPlanAskEvening": "Từ 18:00 hôm nay có thể kể lại kết quả.",
+  "rhPlanAskEvening": "Từ 18:00 hỏi lại con thế nào.",
   "@rhPlanAskEvening": {
     "description": "Plan waiting note for a daytime item: the result is asked from 18:00 (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhKickerFollowUp": "CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?",
+  "rhKickerFollowUp": "THỬ RỒI, CON THẾ NÀO?",
   "@rhKickerFollowUp": {
     "description": "H02 kicker once the chance to try has passed (never \"đã thử\": the family only said they would). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhCancelPlan": "Bỏ kế hoạch",
+  "rhCancelPlan": "Thôi, không thử",
   "@rhCancelPlan": {
     "description": "Secondary action of the plan waiting state: takes back my own plan (deletes my `started` row). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhPlanCanceled": "Đã bỏ kế hoạch",
+  "rhPlanCanceled": "Đã bỏ lượt thử này",
   "@rhPlanCanceled": {
     "description": "Toast after \"Bỏ kế hoạch\". VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhDidNotTry": "Chưa thử",
+  "rhDidNotTry": "Chưa thử được",
   "@rhDidNotTry": {
     "description": "Answer next to \"Kể lại kết quả\" once the chance has passed, always available (CH17 \"Chưa thử\"). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -23194,7 +23194,7 @@
   "@ntSaveFailed": {
     "description": "EN07 toast when a switch fails to save."
   },
-  "rhPlannedPill": "Đã lên kế hoạch",
+  "rhPlannedPill": "Sẽ thử",
   "@rhPlannedPill": {
     "description": "Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -27124,10 +27124,10 @@
   "pv2Known": "Tôi đã biết rồi",
   "pv2Exclude": "Không phù hợp với bé · áp dụng cho cả nhà",
   "pv2Restore": "Khôi phục gợi ý",
-  "pv2Intend": "Mình định thử",
-  "pv2Tried": "Mình đã thử",
-  "pv2Helpful": "Có ích với nhà mình",
-  "pv2Unsure": "Chưa thấy rõ",
+  "pv2Intend": "Mình sẽ thử",
+  "pv2Tried": "Thử rồi",
+  "pv2Helpful": "Có ích",
+  "pv2Unsure": "Chưa rõ",
   "pv2NoAnswer": "Bạn có thể trả lời sau. Một lần thử chưa nói lên tác dụng.",
   "pv2Patterns": "Nhịp riêng từ nhật ký",
   "pv2FeedPattern": "Khoảng cách giữa các lần ghi bú",
@@ -27707,7 +27707,7 @@
   "@pv2DoneToday": {
     "description": "Section listing this person's own actions on suggestions today."
   },
-  "pv2DoneTodayEmpty": "Khi bạn lưu, định thử hay đã thử một gợi ý, nó sẽ hiện ở đây.",
+  "pv2DoneTodayEmpty": "Gợi ý bạn lưu hoặc sẽ thử hiện ở đây.",
   "@pv2DoneTodayEmpty": {
     "description": "Empty state of pv2DoneToday."
   },
@@ -27715,11 +27715,11 @@
   "@pv2NoIdeas": {
     "description": "When the day has no activity suggestion."
   },
-  "pv2HowWasIt": "Thấy sao?",
+  "pv2HowWasIt": "Con thế nào?",
   "@pv2HowWasIt": {
     "description": "Row action asking for the outcome after an attempt."
   },
-  "pv2HowWasItTitle": "Lần thử này thế nào?",
+  "pv2HowWasItTitle": "Thử rồi, con thế nào?",
   "@pv2HowWasItTitle": {
     "description": "Sheet title for the outcome question."
   },
@@ -27743,7 +27743,7 @@
   "@pv2StatusExcluded": {
     "description": "Status line on a suggestion."
   },
-  "pv2StatusIntend": "Định thử · {when}",
+  "pv2StatusIntend": "Sẽ thử · {when}",
   "@pv2StatusIntend": {
     "description": "Status line; when is HH:mm today or dd/MM.",
     "placeholders": {
@@ -27777,7 +27777,7 @@
   "@pv2ToastSaved": {
     "description": "Toast after saving a suggestion."
   },
-  "pv2ToastIntend": "Đã ghi bạn định thử. Thử xong thì bấm \"Mình đã thử\".",
+  "pv2ToastIntend": "Đã ghi. Thử xong, chạm “Con thế nào?”.",
   "@pv2ToastIntend": {
     "description": "Toast after \"Mình định thử\"."
   },
@@ -29646,5 +29646,9 @@
   "axWidgetCareDuty": "Ai đang trông bé",
   "@axWidgetCareDuty": {
     "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
+  },
+  "rhSeeHow": "Xem cách làm",
+  "@rhSeeHow": {
+    "description": "Button: opens the activity steps (one try vocabulary, owner 2026-10-25)."
   }
 }

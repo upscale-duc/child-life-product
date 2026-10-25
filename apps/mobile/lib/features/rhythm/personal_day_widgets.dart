@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
@@ -14,6 +15,8 @@ import 'personalization_events.dart';
 import 'personalization_v2_repository.dart';
 import 'personalization_v2_screen.dart';
 import 'rhythm_calc.dart' show isoOf;
+import 'rhythm_models.dart' show FeedbackKind;
+import 'rhythm_widgets.dart' show RhOutcomeChoices;
 
 // P-172 (owner, 2026-10-22): whatever a person did on a suggestion stays visible on the card,
 // on Home and on "Hôm nay bạn đã" after the app is reopened, not only in a toast.
@@ -242,12 +245,35 @@ List<String> actedToday(PersonalDay day) {
 
 /// The next step on an activity: plan, then tried, then how it went (never skipping "tried",
 /// the server refuses an outcome before it).
+// One try in three steps (owner, 2026-10-25): "Mình sẽ thử", then "Con thế nào?" (which also
+// records the attempt), then nothing. 'helpful' stands for that question.
 List<String> nextSteps(PersonalDay day, String id) {
   final r = dayMap(day.responses[id]);
   if (r['triedAt'] != null) {
-    return r['outcome'] == null ? const ['helpful', 'unsure'] : const [];
+    return r['outcome'] == null ? const ['helpful'] : const [];
   }
-  return r['intendedAt'] != null ? const ['tried'] : const ['intend', 'tried'];
+  return r['intendedAt'] != null ? const ['helpful'] : const ['intend'];
+}
+
+/// The button for a step: "Mình sẽ thử" or "Con thế nào?".
+String stepLabel(AppLocalizations l, String step) =>
+    step == 'helpful' ? l.pv2HowWasIt : responseLabel(l, step);
+
+/// Runs a step from [nextSteps]: the question opens the answer sheet, the rest are saved.
+Future<void> runStep(
+  BuildContext context,
+  WidgetRef ref,
+  PersonalDayKey key,
+  String id,
+  String step,
+) async {
+  if (step == 'helpful') return askOutcome(context, ref, key, id);
+  final ok = await mutateDay(context, ref, key, {
+    'kind': 'respond',
+    'contentId': id,
+    'value': step,
+  });
+  if (ok) personalEvent(ref, 'personalizationOutcome', step);
 }
 
 /// The toast after a saved change says what changed and where it can be seen again.
@@ -419,7 +445,8 @@ Future<void> chooseDayContext(
   }
 }
 
-/// "Thấy sao?" after an attempt: helpful or not clear yet.
+/// "Thử rồi, con thế nào?": the same three answers as Nhịp lớn lên (Có ích / Chưa rõ / Không hợp).
+/// The server takes an answer only after an attempt, so a plan is first marked tried.
 Future<void> askOutcome(
   BuildContext context,
   WidgetRef ref,
@@ -427,7 +454,7 @@ Future<void> askOutcome(
   String id,
 ) async {
   final l = AppLocalizations.of(context);
-  final value = await showClSheet<String>(
+  final kind = await showClSheet<FeedbackKind>(
     context: context,
     builder: (sheet) => Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -441,17 +468,8 @@ Future<void> askOutcome(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ClSheetHeader(title: l.pv2HowWasItTitle),
-          ClCardGroup(
-            color: sheet.cl.colors.surface2,
-            children: [
-              for (final v in const ['helpful', 'unsure'])
-                ClListRow(
-                  title: responseLabel(l, v),
-                  onTap: () => Navigator.of(sheet).pop(v),
-                ),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s2),
+          RhOutcomeChoices(onPick: (k) => Navigator.of(sheet).pop(k)),
+          const SizedBox(height: ClSpace.s3),
           Text(
             l.pv2NoAnswer,
             style: sheet.cl.text.caption.copyWith(
@@ -462,14 +480,37 @@ Future<void> askOutcome(
       ),
     ),
   );
-  if (value != null && context.mounted) {
-    final ok = await mutateDay(context, ref, key, {
-      'kind': 'respond',
-      'contentId': id,
-      'value': value,
-    });
-    if (ok) personalEvent(ref, 'personalizationOutcome', value);
+  if (kind == null || !context.mounted) return;
+  final value = switch (kind) {
+    FeedbackKind.helpful => 'helpful',
+    FeedbackKind.unsure => 'unsure',
+    _ => 'dislike',
+  };
+  final day = ref.read(personalDayProvider(key)).value;
+  if (day != null && dayMap(day.responses[id])['triedAt'] == null) {
+    try {
+      await withClProgress(
+        context,
+        () => updatePersonalDay(ref, key, {
+          'kind': 'respond',
+          'contentId': id,
+          'value': 'tried',
+        }),
+      );
+    } catch (_) {
+      if (context.mounted) {
+        showClToast(context, message: l.pv2Unavailable, error: true);
+      }
+      return;
+    }
+    if (!context.mounted) return;
   }
+  final ok = await mutateDay(context, ref, key, {
+    'kind': 'respond',
+    'contentId': id,
+    'value': value,
+  });
+  if (ok) personalEvent(ref, 'personalizationOutcome', value);
 }
 
 /// A small mint text action at the end of a line ("Thấy sao?", "Xem thêm").

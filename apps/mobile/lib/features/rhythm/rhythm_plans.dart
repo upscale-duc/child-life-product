@@ -229,8 +229,8 @@ String planAskNote(
     ? l10n.rhPlanAskEvening
     : l10n.rhPlanAskMorning;
 
-/// The plan's status for H02, AC01 and AC02: a check, "Đã lên kế hoạch · tối nay", who planned it
-/// (when it was someone else) and, while waiting, when the result is asked.
+/// The plan's status for H02, AC01 and AC02: a check, "Sẽ thử · tối nay" (or who will try it
+/// when it was someone else) and, while waiting, when the result is asked.
 class PlanStatus extends ConsumerWidget {
   const PlanStatus({
     required this.me,
@@ -255,9 +255,10 @@ class PlanStatus extends ConsumerWidget {
     final members =
         ref.watch(familyMembersProvider(me.babyId)).value ??
         const <Membership>[];
-    final status = planStatusLabel(l10n, locale, plan, timeOfDay, today: today);
-    final by = plan.mine(me.uid)
-        ? null
+    // One line (owner, 2026-10-25): "Sẽ thử · tối nay" for my own plan, "Mẹ sẽ thử · tối 07/10"
+    // for someone else's, never both.
+    final status = plan.mine(me.uid)
+        ? planStatusLabel(l10n, locale, plan, timeOfDay, today: today)
         : l10n.rhPlannedBy(
             capitalized(
               memberLabel(
@@ -298,11 +299,6 @@ class PlanStatus extends ConsumerWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                if (by != null)
-                  Text(
-                    by,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
                 if (!plan.due)
                   Text(
                     planAskNote(l10n, plan, zone: zone, today: today),

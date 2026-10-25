@@ -510,6 +510,10 @@ class PersonalHistoryScreen extends StatelessWidget {
                             icon: const PersonalDots(),
                             tooltip: l.pv2Controls,
                             onSelected: (value) async {
+                              if (value == 'helpful') {
+                                await askOutcome(context, ref, key, e.key);
+                                return;
+                              }
                               final ok = await write({
                                 'kind': 'respond',
                                 'contentId': e.key,
@@ -536,7 +540,7 @@ class PersonalHistoryScreen extends StatelessWidget {
                               ])
                                 PopupMenuItem(
                                   value: value,
-                                  child: Text(responseLabel(l, value)),
+                                  child: Text(stepLabel(l, value)),
                                 ),
                             ],
                           ),

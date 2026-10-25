@@ -267,9 +267,12 @@ void main() {
     expect(find.text(l.pv2SavedNow), findsOneWidget);
     expect(find.text(l.pv2TriedBefore), findsOneWidget);
     expect(find.byType(PersonalIdeaRow), findsOneWidget);
+    // "Con thế nào?" opens the same three answers as Nhịp lớn lên (owner, 2026-10-25).
     await tester.tap(find.byType(PopupMenuButton<String>).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text(l.pv2Helpful));
+    await tester.tap(find.text(l.pv2HowWasIt));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('rh.outcome.helpful')));
     await tester.pumpAndSettle();
     expect(api.actions.single, {
       'kind': 'respond',
@@ -344,16 +347,16 @@ void main() {
       }
       // The next step is the primary button now, ahead of "Xem cách làm".
       expect(
-        tester.getTopLeft(find.text(l.pv2Tried)).dx,
+        tester.getTopLeft(find.text(l.pv2HowWasIt)).dx,
         lessThan(tester.getTopLeft(find.text(l.pv2OpenActivity)).dx),
       );
-      // The next step moved on: no second "Mình định thử".
+      // The next step moved on: no second "Mình sẽ thử", and "Con thế nào?" stands for "Thử rồi".
       expect(
         find.descendant(of: card, matching: find.text(l.pv2Intend)),
         findsNothing,
       );
       expect(
-        find.descendant(of: card, matching: find.text(l.pv2Tried)),
+        find.descendant(of: card, matching: find.text(l.pv2HowWasIt)),
         findsOneWidget,
       );
       expect(find.byTooltip(l.pv2Unsave), findsOneWidget);
@@ -391,14 +394,15 @@ void main() {
       );
       expect(find.text(l.pv2HomeKicker), findsOneWidget);
       expect(find.text(l.pv2StatusIntend('09:00')), findsOneWidget);
-      expect(find.text(l.pv2Tried), findsOneWidget);
+      expect(find.text(l.pv2Tried), findsNothing);
       expect(find.text(l.pv2Intend), findsNothing);
       // What was tried earlier today stays on Home, with its follow-up.
       expect(
         find.textContaining(ideas[1].title.of(const Locale('vi'))),
         findsOneWidget,
       );
-      expect(find.text(l.pv2HowWasIt), findsOneWidget);
+      // "Con thế nào?" for the plan and for what was tried earlier.
+      expect(find.text(l.pv2HowWasIt), findsNWidgets(2));
       expect(find.text(l.pv2Usual), findsOneWidget);
       await tester.tap(find.byKey(const Key('personalDayContext')));
       await tester.pumpAndSettle();

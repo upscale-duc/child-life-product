@@ -204,8 +204,8 @@ void main() {
     );
   });
 
-  group('H02 after "Thử tối nay"', () {
-    testWidgets('waits: planned for tonight, no "Kể lại kết quả" yet', (
+  group('H02 after "Mình sẽ thử"', () {
+    testWidgets('waits: "Sẽ thử · tối nay", no answers yet', (
       tester,
     ) async {
       final plan = _fb(FeedbackKind.started, at: DateTime.utc(2026, 10, 8, 2));
@@ -213,17 +213,17 @@ void main() {
       expect(find.text(l10n.rhKickerTonight), findsOneWidget);
       expect(find.text(l10n.rhPlannedTonight), findsOneWidget);
       expect(find.text(l10n.rhPlanAskMorning), findsOneWidget);
-      expect(find.text(l10n.rhTellHow), findsNothing);
-      expect(find.text(l10n.rhTryTonight), findsNothing);
-      // "Bỏ kế hoạch" takes my plan back: the idea can be planned again.
+      expect(find.byKey(const ValueKey('rh.outcome.helpful')), findsNothing);
+      expect(find.text(l10n.rhIllTry), findsNothing);
+      // "Thôi, không thử" takes my plan back: the idea can be planned again.
       await tester.tap(find.text(l10n.rhCancelPlan));
       await tester.pumpAndSettle();
       expect(repo.deletedFeedback, [plan.id]);
       expect(find.text(l10n.rhPlanCanceled), findsOneWidget);
-      expect(find.text(l10n.rhTryTonight), findsOneWidget);
+      expect(find.text(l10n.rhIllTry), findsOneWidget);
     });
 
-    testWidgets('someone else\'s plan: who planned it, no "Bỏ kế hoạch"', (
+    testWidgets('someone else\'s plan: one line saying who, no "Thôi, không thử"', (
       tester,
     ) async {
       await _pumpHome(tester, [
@@ -233,12 +233,13 @@ void main() {
           at: DateTime.utc(2026, 10, 8, 2),
         ),
       ]);
-      expect(find.text(l10n.rhPlannedTonight), findsOneWidget);
-      expect(find.text('Mẹ lên kế hoạch · tối 08/10'), findsOneWidget);
+      // Owner, 2026-10-25: one line, not "Đã lên kế hoạch" and "Mẹ lên kế hoạch" twice.
+      expect(find.text(l10n.rhPlannedTonight), findsNothing);
+      expect(find.text('Mẹ sẽ thử · tối 08/10'), findsOneWidget);
       expect(find.text(l10n.rhCancelPlan), findsNothing);
     });
 
-    testWidgets('after the chance: "Kể lại kết quả" with "Chưa thử"', (
+    testWidgets('after the chance: Có ích / Chưa rõ / Không hợp on the card', (
       tester,
     ) async {
       final plan = _fb(
@@ -246,17 +247,15 @@ void main() {
         date: '2026-10-07',
         at: DateTime.utc(2026, 10, 7, 13),
       );
-      final (visits, repo) = await _pumpHome(tester, [plan]);
+      final (_, repo) = await _pumpHome(tester, [plan]);
       expect(find.text(l10n.rhKickerFollowUp), findsOneWidget);
       expect(find.text(l10n.rhPlannedOn('tối 07/10')), findsOneWidget);
       expect(find.text(l10n.rhPlanAskMorning), findsNothing);
       expect(find.text(l10n.rhDidNotTry), findsOneWidget);
-      await tester.tap(find.text(l10n.rhTellHow));
+      await tester.tap(find.byKey(const ValueKey('rh.outcome.helpful')));
       await tester.pumpAndSettle();
-      expect(
-        visits.last.location,
-        '${Routes.rhythmActivity}/act_wind_down/feedback',
-      );
+      expect(repo.savedFeedback.single.kind, FeedbackKind.helpful);
+      expect(find.text(l10n.rhFeedbackSaved), findsOneWidget);
       expect(repo.deletedFeedback, isEmpty);
     });
 
@@ -275,7 +274,7 @@ void main() {
       // Only its author may delete it: nothing written, set aside on this phone.
       expect(repo.deletedFeedback, isEmpty);
       expect(find.text(l10n.rhDidNotTryToast), findsOneWidget);
-      expect(find.text(l10n.rhTryTonight), findsOneWidget);
+      expect(find.text(l10n.rhIllTry), findsOneWidget);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getStringList('rhythm.plansSetAside.u_minh|$teddyId'), [
         plan.id,
@@ -361,10 +360,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text(l10n.rhTriedHistoryTitle), findsOneWidget);
-      expect(find.text('Mẹ lên kế hoạch · tối 05/10'), findsOneWidget);
+      expect(find.text('Mẹ sẽ thử · tối 05/10'), findsOneWidget);
       expect(find.text('Bạn · 06/10 · ${l10n.rhHelpful}'), findsOneWidget);
       expect(find.text('“Con vào giấc nhanh hơn”'), findsOneWidget);
-      expect(find.text('Mẹ lên kế hoạch · 07/10'), findsOneWidget);
+      expect(find.text('Mẹ sẽ thử · 07/10'), findsOneWidget);
       // The skin-to-skin plan's chance has passed: answer it here.
       expect(find.text(l10n.rhDidNotTry), findsOneWidget);
       await tester.tap(find.text(l10n.rhTellHow));

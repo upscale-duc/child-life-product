@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -94,27 +93,14 @@ class ActivityScreen extends ConsumerWidget {
           onPressed: () => leaveRhythm(context),
         ),
         const Spacer(),
-        if (activity != null)
-          if (plan != null)
-            RhPill(
-              label: planStatusLabel(
-                l10n,
-                locale,
-                plan,
-                activity.timeOfDay,
-                today: today,
-              ),
-              icon: ClIcons.check,
-              mint: true,
-            )
-          else if (answered)
+        // A plan shows once, in its card below (owner, 2026-10-25: no status said twice).
+        if (activity != null && plan == null)
+          if (answered)
             RhPill(
               label: l10n.rhTriedOn(shortDay(locale, last.date)),
               icon: ClIcons.check,
               mint: true,
             )
-          else
-            RhPill(label: l10n.rhNotTried, icon: ClIcons.clock),
       ],
     );
     if (activity == null) {
@@ -305,19 +291,23 @@ class ActivityScreen extends ConsumerWidget {
       ],
       bottom: canAct && plan != null
           ? [
+              // The same three answers as the Home card (owner, 2026-10-25).
               if (plan.due) ...[
-                ClButton(
-                  label: l10n.rhTellHow,
-                  expand: true,
-                  onPressed: () =>
-                      context.push(activityFeedbackLocation(contentId)),
+                Text(
+                  activity.timeOfDay == ActivityTime.evening &&
+                          plan.started.date.compareTo(today) < 0
+                      ? l10n.rhHowLastNight
+                      : l10n.rhHowDidItGo,
+                  style: cl.text.bodyStrong,
                 ),
                 const SizedBox(height: ClSpace.s2),
-                ClButton(
+                RhOutcomeChoices(
+                  onPick: (kind) => feedbackAndLeave(kind, l10n.rhFeedbackSaved),
+                ),
+                RhLink(
                   label: l10n.rhDidNotTry,
-                  style: ClButtonStyle.secondary,
-                  expand: true,
-                  onPressed: () =>
+                  muted: true,
+                  onTap: () =>
                       withdrawPlan(context, ref, me, plan, notTried: true),
                 ),
               ] else if (plan.mine(me.uid))
@@ -532,27 +522,9 @@ class _ActivityFeedbackScreenState
                     style: cl.text.bodyStrong,
                   ),
                   const SizedBox(height: ClSpace.s3),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (final (i, k) in const [
-                          FeedbackKind.helpful,
-                          FeedbackKind.unsure,
-                          FeedbackKind.notSuitable,
-                        ].indexed) ...[
-                          if (i > 0) const SizedBox(width: ClSpace.s2),
-                          Expanded(
-                            child: RhChip(
-                              expand: true,
-                              label: feedbackKindLabel(l10n, k),
-                              selected: _kind == k,
-                              onTap: () => setState(() => _kind = k),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                  RhOutcomeChoices(
+                    selected: _kind,
+                    onPick: (k) => setState(() => _kind = k),
                   ),
                   const SizedBox(height: ClSpace.s3),
                   ClTextField(

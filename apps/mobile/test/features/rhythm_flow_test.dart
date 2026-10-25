@@ -160,7 +160,7 @@ void main() {
       });
     }
 
-    testWidgets('H02: "Thử tối nay" starts it and opens the activity', (
+    testWidgets('H02: "Mình sẽ thử" plans it and the card waits', (
       tester,
     ) async {
       final repo = FakeRhythmRepository(
@@ -190,18 +190,21 @@ void main() {
       );
       expect(find.text(l10n.rhSupportTitle), findsNothing);
 
-      await tester.tap(find.text(l10n.rhTryTonight));
+      // Owner, 2026-10-25: "Mình sẽ thử" stays on Hôm nay, asks when to remind (P-179), and the
+      // card then waits ("Sẽ thử · tối nay").
+      await tester.tap(find.text(l10n.rhIllTry));
       await tester.pumpAndSettle();
       expect(repo.savedFeedback.single.kind, FeedbackKind.started);
       expect(repo.savedFeedback.single.authorUid, 'u_minh');
       expect(repo.savedFeedback.single.date, rhythmToday);
-      expect(
-        visits.last.location,
-        '${Routes.rhythmActivity}/act_wind_down?ci=${sleepCheckIn(date: rhythmToday).id}',
-      );
+      await tester.tap(find.text(l10n.pv2RemindNone));
+      await tester.pumpAndSettle();
+      expect(visits, isEmpty);
+      expect(find.text(l10n.rhPlannedTonight), findsOneWidget);
+      expect(find.text(l10n.rhSeeHow), findsOneWidget);
     });
 
-    testWidgets('H02: "Không phải hôm nay" puts it off and hides it', (
+    testWidgets('H02: "Để hôm khác" puts it off and hides it', (
       tester,
     ) async {
       final repo = FakeRhythmRepository(
@@ -242,8 +245,8 @@ void main() {
       // Compact on Home: one line of why; the feedback behind it is in "Vì sao gợi ý này?".
       expect(find.text(l10n.hnWhyFeedbackShort), findsOneWidget);
       expect(find.text(l10n.rhBasedOnFeedback), findsNothing);
-      expect(find.text(l10n.rhTryAgainTonight), findsOneWidget);
-      expect(find.text(l10n.rhSomethingElse), findsOneWidget);
+      expect(find.text(l10n.rhTryAgain), findsOneWidget);
+      expect(find.text(l10n.rhNotToday), findsOneWidget);
       await tester.tap(find.byKey(const Key('forBabyWhy')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('forBabyWhySheet')), findsOneWidget);
@@ -673,7 +676,8 @@ void main() {
         ),
         overrides: rhythmOverrides(me: minh, repo: repo),
       );
-      expect(find.text(l10n.rhNotTried), findsOneWidget);
+      // No "Chưa thử" pill: it read like a button (audit 2026-10-25).
+      expect(find.text(l10n.rhNotTried), findsNothing);
       expect(
         find.text('Vì: “khó vào giấc, giấc đêm, 2–3 ngày” (Mẹ ghi 07/10)'),
         findsOneWidget,

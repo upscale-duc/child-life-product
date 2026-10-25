@@ -347,6 +347,84 @@ class RhChip extends StatelessWidget {
   }
 }
 
+/// "Có ích / Chưa rõ / Không hợp" in one row of three tiles, an icon over each word (owner,
+/// 2026-10-25: one way to say how a try went, on the Home card, the activity and the history).
+class RhOutcomeChoices extends StatelessWidget {
+  const RhOutcomeChoices({required this.onPick, this.selected, super.key});
+
+  final ValueChanged<FeedbackKind> onPick;
+  final FeedbackKind? selected;
+
+  static const kinds = [
+    FeedbackKind.helpful,
+    FeedbackKind.unsure,
+    FeedbackKind.notSuitable,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, k) in kinds.indexed) ...[
+            if (i > 0) const SizedBox(width: ClSpace.s2),
+            Expanded(
+              child: ClPressable(
+                key: ValueKey('rh.outcome.${k.name}'),
+                onPressed: () => onPick(k),
+                selected: selected == k,
+                semanticLabel: feedbackKindLabel(l10n, k),
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(minHeight: 60),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: ClSpace.s1,
+                    vertical: ClSpace.s2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: selected == k
+                        ? cl.colors.mintSoft
+                        : cl.colors.surface,
+                    borderRadius: BorderRadius.circular(ClRadius.control),
+                    border: Border.all(
+                      color: selected == k
+                          ? cl.colors.mintDeep
+                          : cl.colors.controlBorder,
+                      width: selected == k ? 1.5 : 1,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClIcon(switch (k) {
+                        FeedbackKind.helpful => ClIcons.heart,
+                        FeedbackKind.unsure => ClIcons.clock,
+                        _ => ClIcons.close,
+                      }, size: 18, color: i == 0 ? cl.colors.mintText : cl.colors.inkMuted),
+                      const SizedBox(height: 4),
+                      Text(
+                        feedbackKindLabel(l10n, k),
+                        textAlign: TextAlign.center,
+                        style: cl.text.label.copyWith(
+                          color: i == 0 ? cl.colors.mintText : cl.colors.ink,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 /// A white question card with a title and wrap chips (C02).
 class RhQuestionCard extends StatelessWidget {
   const RhQuestionCard({
