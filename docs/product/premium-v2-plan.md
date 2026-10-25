@@ -237,8 +237,15 @@ Everything below runs only for families with `premium_v2` on (dev: `internal`); 
 
 **Not built yet, by design or for later:**
 
-- PT01 Tổng quan thương mại: revenue, store fees and renewals need IAP; the counts that exist today are on Phân tích.
+- PT01 Tổng quan thương mại: built as Tính năng & Premium › **Tổng quan** (Free / Premium families, conversion, add-ons, new families and new Premium per day / week / month, allowances run out, renewals, needs a hand). Gross revenue, net revenue and the cost to serve show "—" until in-app purchase and per-family cost metering.
 - E07 inside the chat (CH24 card): the sheet exists (`showLumiCreditsUsed`) but the chat keeps its own "hết lượt" card until the assistant copy moves to credits (Figma's CH20 / CH21 still say "20 lượt · làm mới", see §2).
 - E10 (Kỷ niệm upload pill): the Kỷ niệm screen is being changed by another session; the suggestion (`showStorageFullSuggestion`) is ready to wire.
 - Nhờ người quản lý nâng cấp sends nothing to the server: it opens the share sheet with a short message (no draft, no question), so the manager is never notified without the member choosing to.
 - Auto-restore of write access when the family upgrades again: the manager opens PV44 and saves; the server already allows anyone back when there is room.
+
+**Owner, 2026-10-25 (after the first device test):**
+
+- The paywall has two kinds of entry: chosen by the user (Tôi, Gói của gia đình › Xem các gói) shows the general page (PW06); a feature that needs Premium shows its headline, the small line saying what is kept, its card first and "Bạn đang cần" (PW01–PW05, plus Nhịp lớn lên with engineering copy).
+- The paywall shows the plans and the CTA as drawn; until the store account is ready the CTA says the payment step is coming.
+- The portal runs a family with one switch, **Gói: Free | Premium** (`staffSetFamilyPlan`): Premium = every Premium capability (optional last day); Free = every staff grant taken back and the per-feature "on" overrides cleared; a store subscription stays. Per-feature settings moved under "Nâng cao".
+- The old beta campaigns are gone from the portal, and dev's `config/entitlements.betaCampaigns` was emptied (it held one, `duckie_beta`). Prod still needs the same before v2 runs there.

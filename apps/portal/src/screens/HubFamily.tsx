@@ -17,7 +17,6 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button as UiButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import { ApiError, useApi, useLoad, type Api } from '../api';
@@ -30,6 +29,7 @@ import {
   Loaded,
   Modal,
   Pill,
+  Segmented,
   TableScroll,
   errorMessageId,
   type PillTone,
@@ -301,13 +301,21 @@ export function FamilyCard({
           <FormattedMessage id="hub.family.regionNote" />
         </Notice>
       )}
-      <FullPremium family={family} canEdit={canGrant} onChanged={onChanged} />
-      <FamilyFeatures
-        family={family}
-        canOverride={canGrant}
-        canBeta={canBeta}
-        onChanged={onChanged}
-      />
+      {/* Owner, 2026-10-25: one switch for the plan; a subscription is all of Premium. */}
+      <FamilyPlanSwitch family={family} canEdit={canGrant} onChanged={onChanged} />
+      <Section
+        collapsible
+        defaultOpen={false}
+        title={<FormattedMessage id="pv2.family.advanced" />}
+        summary={<FormattedMessage id="pv2.family.advancedNote" />}
+      >
+        <FamilyFeatures
+          family={family}
+          canOverride={canGrant}
+          canBeta={canBeta}
+          onChanged={onChanged}
+        />
+      </Section>
       <Section
         collapsible
         defaultOpen={false}
@@ -325,8 +333,12 @@ export function FamilyCard({
   );
 }
 
-/** "Bật toàn bộ Premium": one switch; no end by default, an optional last day. */
-function FullPremium({
+/**
+ * "Gói của gia đình: Free | Premium" (owner, 2026-10-25). Premium = every Premium capability (the
+ * "toàn bộ Premium" grant, no end by default, an optional last day). Free = every staff grant
+ * taken back and the per-feature "on" overrides cleared; a store subscription stays.
+ */
+function FamilyPlanSwitch({
   family,
   canEdit,
   onChanged,
@@ -336,43 +348,62 @@ function FullPremium({
   onChanged: () => void;
 }) {
   const intl = useIntl();
-  const [asking, setAsking] = useState<'on' | 'end' | 'off' | null>(null);
-  const on = family.fullPremium.on;
+  const api = useApi();
+  const [asking, setAsking] = useState<'premium' | 'end' | 'free' | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const premium = family.plan === 'premium';
+  const paid = family.grants.some(
+    (g) => g.source === 'paid' && (g.status === 'active' || g.status === 'grace'),
+  );
+  const until = family.fullPremium.on ? family.fullPremium.until : family.validUntil;
   return (
-    <section className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border bg-card px-5 py-4">
+    <section className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border bg-card px-5 py-4">
       <div className="min-w-0 flex-1 basis-64">
         <p className="font-semibold">
-          <FormattedMessage id="hub.full.title" />
+          <FormattedMessage id="pv2.family.plan" />
         </p>
         <p className="text-[13px] text-muted-foreground">
-          {on ? (
-            family.fullPremium.until ? (
-              <FormattedMessage
-                id="hub.full.onUntil"
-                values={{ until: lastDay(intl, family.fullPremium.until) }}
-              />
-            ) : (
-              <FormattedMessage id="hub.full.onOpen" />
-            )
+          {!premium ? (
+            <FormattedMessage id="pv2.family.freeNote" />
+          ) : paid ? (
+            <FormattedMessage id="pv2.family.paidNote" />
+          ) : until ? (
+            <FormattedMessage
+              id="pv2.family.premiumUntil"
+              values={{ until: lastDay(intl, until) }}
+            />
           ) : (
-            <FormattedMessage id="hub.full.help" />
+            <FormattedMessage id="pv2.family.premiumOpen" />
           )}
         </p>
       </div>
-      {on && canEdit && (
-        // Turning it on again while it runs only moves the end (the credit month is kept).
+      {premium && family.fullPremium.on && canEdit && (
         <Button kind="ghost" onClick={() => setAsking('end')}>
           <FormattedMessage id="hub.full.changeEnd" />
         </Button>
       )}
-      <Switch
-        checked={on}
-        disabled={!canEdit}
-        aria-label={intl.formatMessage({ id: 'hub.full.title' })}
-        title={canEdit ? undefined : intl.formatMessage({ id: 'error.role' })}
-        onCheckedChange={() => setAsking(on ? 'off' : 'on')}
-      />
-      {(asking === 'on' || asking === 'end') && (
+      {!canEdit ? (
+        // Vận hành and Kỹ sư read the plan; only Toàn quyền (premium.grant) changes it.
+        <Pill tone={premium ? 'ok' : 'muted'}>
+          <FormattedMessage id={premium ? 'pv2.plans.premium' : 'pv2.plans.free'} />
+        </Pill>
+      ) : (
+        <Segmented
+          label={intl.formatMessage({ id: 'pv2.family.plan' })}
+          value={premium ? 'premium' : 'free'}
+          onChange={(v: 'free' | 'premium') => {
+            if (v === (premium ? 'premium' : 'free')) return;
+            setError(null);
+            setAsking(v === 'premium' ? 'premium' : 'free');
+          }}
+          options={[
+            { value: 'free', label: <FormattedMessage id="pv2.plans.free" /> },
+            { value: 'premium', label: <FormattedMessage id="pv2.plans.premium" /> },
+          ]}
+        />
+      )}
+      {(asking === 'premium' || asking === 'end') && (
         <FullPremiumDialog
           code={family.code}
           changeEnd={asking === 'end'}
@@ -388,15 +419,40 @@ function FullPremium({
           }}
         />
       )}
-      {asking === 'off' && (
-        <FullPremiumOff
-          code={family.code}
-          onClose={() => setAsking(null)}
-          onDone={() => {
-            setAsking(null);
-            onChanged();
+      {asking === 'free' && (
+        <ConfirmModal
+          title={<FormattedMessage id="pv2.family.toFreeTitle" values={{ code: family.code }} />}
+          confirm={<FormattedMessage id="pv2.family.toFree" />}
+          danger
+          busy={busy}
+          error={error}
+          onCancel={() => setAsking(null)}
+          onConfirm={() => {
+            setBusy(true);
+            setError(null);
+            api
+              .call<{ revoked: number; paidRemains: boolean }>('staffSetFamilyPlan', {
+                code: family.code,
+                plan: 'free',
+              })
+              .then((r) => {
+                toast.success(
+                  intl.formatMessage(
+                    { id: r.paidRemains ? 'pv2.family.toFreePaid' : 'pv2.family.toFreeDone' },
+                    { n: r.revoked },
+                  ),
+                );
+                setAsking(null);
+                onChanged();
+              })
+              .catch((e: unknown) =>
+                setError(e instanceof ApiError ? e : new ApiError('unknown', null)),
+              )
+              .finally(() => setBusy(false));
           }}
-        />
+        >
+          <FormattedMessage id="pv2.family.toFreeEffect" />
+        </ConfirmModal>
       )}
     </section>
   );
@@ -478,44 +534,6 @@ export function FullPremiumDialog({
         </Button>
       </div>
     </Modal>
-  );
-}
-
-function FullPremiumOff({
-  code,
-  onClose,
-  onDone,
-}: {
-  code: string;
-  onClose: () => void;
-  onDone: () => void;
-}) {
-  const intl = useIntl();
-  const api = useApi();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<ApiError | null>(null);
-  return (
-    <ConfirmModal
-      title={<FormattedMessage id="hub.full.offTitle" values={{ code }} />}
-      confirm={<FormattedMessage id="hub.full.confirmOff" />}
-      danger
-      busy={busy}
-      error={error}
-      onCancel={onClose}
-      onConfirm={() => {
-        setBusy(true);
-        setError(null);
-        setFullPremium(api, code, false, null)
-          .then(() => {
-            toast.success(intl.formatMessage({ id: 'hub.full.doneOff' }, { code }));
-            onDone();
-          })
-          .catch((e: unknown) => setError(asApiError(e)))
-          .finally(() => setBusy(false));
-      }}
-    >
-      <FormattedMessage id="hub.full.offBody" />
-    </ConfirmModal>
   );
 }
 

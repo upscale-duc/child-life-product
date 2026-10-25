@@ -140,6 +140,7 @@ import {
   setFeatureRollout,
   setFeatureTier,
   setFullPremium,
+  setFamilyPlan,
 } from './features-hub.js';
 import { aiPolicy, familyQuota, renderOps } from './premium-ops.js';
 // Child Life Assistant portal ops (slice A6).
@@ -421,6 +422,7 @@ import {
   proposePlans,
   refundVideoJob,
 } from './premium-plans-staff.js';
+import { premiumOverview } from './premium-overview.js';
 import {
   familyPlanAnswer,
   familyUsageHistory as readUsageHistory,
@@ -2347,6 +2349,13 @@ export const staffAdjustUsage = staffCall('staffAdjustUsage', (s, d) =>
 );
 export const staffRefundVideoJob = staffCall('staffRefundVideoJob', (s, d) =>
   refundVideoJob(getFirestore(), s, d, new Date()),
+);
+// PT01 Tổng quan Premium and "Gói: Free | Premium" per family (owner, 2026-10-25).
+export const staffPremiumOverview = staffCall('staffPremiumOverview', (s, d) =>
+  premiumOverview(getFirestore(), s, d, new Date()),
+);
+export const staffSetFamilyPlan = staffCall('staffSetFamilyPlan', (s, d) =>
+  setFamilyPlan(getFirestore(), s, d, new Date()),
 );
 
 // "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".

@@ -351,3 +351,57 @@ export interface StaffProposal {
   /** The caller wrote it and may not approve it (unless the Owner self-approve switch). */
   mine: boolean;
 }
+
+// ---------- Portal: Tổng quan Premium (PT01) and the family plan switch ----------
+
+export const premiumOverviewRanges = ['7d', '30d', '12m'] as const;
+export type PremiumOverviewRange = (typeof premiumOverviewRanges)[number];
+export const premiumOverviewRequestSchema = z.object({
+  range: z.enum(premiumOverviewRanges).default('30d'),
+});
+
+/** A share: [n] of [of] (null when there is nobody to count). */
+export interface OverviewShare {
+  n: number;
+  of: number;
+}
+
+/** `staffPremiumOverview`: counts only, never a family's content. Revenue, store fees and the
+ * cost to serve come with in-app purchase and cost metering; until then they are null. */
+export interface StaffPremiumOverview {
+  range: PremiumOverviewRange;
+  families: {
+    total: number;
+    free: number;
+    premium: number;
+    /** Premium from a store subscription / given by staff. */
+    paid: number;
+    granted: number;
+    /** Families created in the range, and the change against the range before (%). */
+    newInRange: number;
+    growthPct: number | null;
+  };
+  addOns: { total: number; storage20: number; storage50: number };
+  revenue: { gross: number | null; net: number | null; costPerPremium: number | null };
+  /** Buckets of the range (days for 7d, weeks for 30d, months for 12m), oldest first. */
+  trend: Array<{ start: string; newFamilies: number; newPremium: number }>;
+  limits: {
+    premiumLumiOut: OverviewShare;
+    premiumVideoOut: OverviewShare;
+    storage80: OverviewShare;
+    freeTrialOut: OverviewShare;
+  };
+  renewals: { active: number; dueInRange: number; cancelled: number; billingIssue: number; refunded: number };
+  attention: { failedJobs24h: number; held: number; unmatched: number };
+  /** A scan hit its cap: counts are a floor. */
+  capped: boolean;
+}
+
+/** "Gói: Free | Premium" for one family. Premium: every Premium capability (the one staff grant,
+ * optional last day). Free: every staff / promo grant revoked; a store subscription stays. */
+export const setFamilyPlanSchema = z.object({
+  code: familyCode,
+  plan: z.enum(['free', 'premium']),
+  until: z.string().datetime().nullish(),
+  reason: staffReasonSchema,
+});

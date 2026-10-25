@@ -1,12 +1,10 @@
 import {
   staffCan,
   staffEntitlementsConfigSchema,
-  type BetaCampaign,
   type GrantEnvironment,
 } from '@child-life/contracts';
-import { Upload } from 'lucide-react';
 import { useEffect, useId, useState, type ReactNode } from 'react';
-import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -19,7 +17,7 @@ import {
   type StaffPremiumConfig,
   type StaffPremiumView,
 } from '../api';
-import { EmptyState, Field, Notice, Section } from '../content-kit';
+import { Field, Notice, Section } from '../content-kit';
 import { useStaff } from '../context';
 import { ZONE } from '../format';
 import {
@@ -31,7 +29,6 @@ import {
   Segmented,
   TableScroll,
   errorMessageId,
-  type PillTone,
 } from '../ui';
 import { FlagDialog, FlagRow, billingFlag, type FlagChange } from './Features';
 import { FieldSelect } from './form-controls';
@@ -71,29 +68,6 @@ export function isoFromDay(day: string, end = false): string {
   return new Date(Date.parse(`${day}T00:00:00+07:00`) + (end ? DAY : 0)).toISOString();
 }
 
-function fullDate(intl: IntlShape, iso: string) {
-  return intl.formatDate(iso, {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-    timeZone: ZONE,
-  });
-}
-
-/** "14/10/2026 – 13/11/2026": the end shown is the last day included. */
-function Range({ from, until }: { from: string; until: string }) {
-  const intl = useIntl();
-  return (
-    <FormattedMessage
-      id="premium.range"
-      values={{
-        from: fullDate(intl, from),
-        to: fullDate(intl, new Date(Date.parse(until) - 1).toISOString()),
-      }}
-    />
-  );
-}
-
 /** Country name in the portal language ("Việt Nam", "Vietnam"); the code when unknown. */
 export function countryName(locale: string, code: string): string {
   try {
@@ -122,7 +96,7 @@ export async function savePremiumConfig(
 
 // ---------- The tab ----------
 
-export const planSections = ['config', 'plans', 'ai', 'campaigns'] as const;
+export const planSections = ['config', 'plans', 'ai'] as const;
 export type PlanSection = (typeof planSections)[number];
 
 export function PremiumPlanLoader() {
@@ -147,7 +121,6 @@ export function PremiumPlanView({
   flags,
   onChanged,
   onFlagsChanged = () => undefined,
-  now = new Date(),
   initialSection = 'config',
 }: {
   data: StaffPremiumView;
@@ -213,7 +186,6 @@ export function PremiumPlanView({
         // The limits themselves are edited in Cấu hình.
         <AiPolicyLoader onOpenLimits={() => setSection('config')} />
       )}
-      {section === 'campaigns' && <CampaignsSection config={data.config} now={now} />}
       {saving && (
         <SaveDialog
           config={draft}
@@ -603,36 +575,6 @@ function ReadRow({ label, children }: { label: ReactNode; children: ReactNode })
   );
 }
 
-function campaignState(c: BetaCampaign, now: Date): { tone: PillTone; id: string } {
-  const t = now.getTime();
-  if (t < Date.parse(c.validFrom)) return { tone: 'wait', id: 'premium.campaign.upcoming' };
-  if (t >= Date.parse(c.validUntil)) return { tone: 'muted', id: 'premium.campaign.ended' };
-  return { tone: 'ok', id: 'premium.campaign.running' };
-}
-
-function ScopeLabel({ c }: { c: BetaCampaign }) {
-  if (c.scope === 'internal') {
-    const n = c.families?.length ?? 0;
-    return (
-      <Pill tone="purple">
-        <FormattedMessage id={n ? 'scope.chosen' : 'scope.internal'} values={{ n }} />
-      </Pill>
-    );
-  }
-  if (c.scope === 'percent') {
-    return (
-      <Pill tone="wait">
-        <FormattedMessage id="scope.percent" values={{ p: c.percent }} />
-      </Pill>
-    );
-  }
-  return (
-    <span className="text-muted-foreground">
-      <FormattedMessage id="scope.all" />
-    </span>
-  );
-}
-
 /** Lưu cấu hình: what it does, then save (no reason: D-090). */
 function SaveDialog({
   config,
@@ -680,81 +622,5 @@ function SaveDialog({
         </Button>
       </div>
     </Modal>
-  );
-}
-
-// ---------- Chiến dịch beta (cũ), read-only ----------
-
-/**
- * The beta campaigns stored before the hub, read-only: their grants still count until they end
- * (`hub.why.beta_campaign`); new betas are Beta features with a beta list.
- */
-export function CampaignsSection({ config, now }: { config: StaffPremiumConfig; now: Date }) {
-  const intl = useIntl();
-  const list = config.betaCampaigns;
-  return (
-    <Section flush title={<FormattedMessage id="premium.beta.title" />}>
-      <div className="px-5 pb-4">
-        <Notice tone="info">
-          <FormattedMessage id="hub.plan.campaignsNote" />
-        </Notice>
-      </div>
-      {list.length === 0 ? (
-        <EmptyState icon={Upload} title={<FormattedMessage id="premium.beta.none" />} />
-      ) : (
-        <ul className="divide-y border-t">
-          {list.map((c, i) => {
-            const state = campaignState(c, now);
-            return (
-              <li key={`${c.id}-${i}`} className="grid gap-2 px-5 py-4">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <strong className="font-mono text-[15px]">{c.id}</strong>
-                  <Pill tone={state.tone}>
-                    <FormattedMessage id={state.id} />
-                  </Pill>
-                  <span className="text-sm text-muted-foreground tabular-nums">
-                    <Range from={c.validFrom} until={c.validUntil} />
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {c.capabilities.map((cap) => (
-                    <Badge key={cap} variant="outline" className="font-normal">
-                      <FormattedMessage id={`premium.cap.${cap}`} />
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                  <span>
-                    <span className="text-muted-foreground">
-                      <FormattedMessage id="premium.col.countries" />:
-                    </span>{' '}
-                    {c.countries.length === 0 ? (
-                      <FormattedMessage id="premium.beta.everyRegion" />
-                    ) : (
-                      c.countries.map((r) => countryName(intl.locale, r)).join(', ')
-                    )}
-                  </span>
-                  <span className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-muted-foreground">
-                      <FormattedMessage id="features.who" />:
-                    </span>
-                    <ScopeLabel c={c} />
-                    {c.scope === 'internal' &&
-                      (c.families ?? []).map((code) => (
-                        <span
-                          key={code}
-                          className="rounded-md bg-secondary px-1.5 py-0.5 font-mono text-xs"
-                        >
-                          {code}
-                        </span>
-                      ))}
-                  </span>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </Section>
   );
 }

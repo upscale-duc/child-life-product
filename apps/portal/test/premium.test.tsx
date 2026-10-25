@@ -147,7 +147,7 @@ describe('Gói Premium: configuration', () => {
       <PremiumPlanView data={data} flags={flags} onChanged={() => {}} now={now} />,
     );
     const html = text(raw);
-    expect(html).toContain('Cấu hình Gói & hạn mức (v2) Chính sách AI Chiến dịch beta (cũ)');
+    expect(html).toContain('Cấu hình Gói & hạn mức (v2) Chính sách AI');
     expect(html).toContain('Mua gói trong app');
     expect(html).toContain(messages.vi['flag.premium_billing']!);
     expect(raw).toContain('role="switch"');
@@ -260,38 +260,6 @@ describe('Gói Premium: configuration', () => {
     );
     expect(errorMessageId(new ApiError('invalid-argument', 'malformed'))).toBe('error.invalid');
     expect(errorMessageId(new ApiError('permission-denied', 'role'))).toBe('error.role');
-  });
-});
-
-describe('Gói Premium: the old beta campaigns, read-only', () => {
-  it('lists them with their dates, reach and capabilities, and says Beta features replace them', () => {
-    for (const roles of [['ops'], ['owner']] as StaffRole[][]) {
-      const raw = render(
-        <PremiumPlanView
-          data={view}
-          flags={flags}
-          onChanged={() => {}}
-          now={now}
-          initialSection="campaigns"
-        />,
-        roles,
-      );
-      const html = text(raw);
-      expect(html).toContain('Chỉ để xem. Beta giờ là gói của từng tính năng');
-      expect(html).toContain('beta-a-vn');
-      expect(html).toContain('Đang chạy');
-      expect(html).toContain('Sắp chạy');
-      expect(html).toContain('Gợi ý xuyên mô-đun Nhịp lớn lên nâng cao');
-      // Ends are exclusive: 1/12 00:00 UTC is 07:00 in Vietnam, so 1/12 is the last day included.
-      expect(html).toContain('1/10/2026 – 1/12/2026');
-      expect(html).toContain('1 gia đình được chọn');
-      expect(html).toContain('F-7Q2K');
-      expect(html).toContain('Mọi khu vực mở');
-      expect(html).toContain('Mở dần · 25%');
-      // Nothing to add, edit or remove: only the section switcher's buttons.
-      expect(html).not.toContain('Thêm chiến dịch');
-      expect(raw).not.toMatch(/<input|<textarea|role="switch"/);
-    }
   });
 });
 

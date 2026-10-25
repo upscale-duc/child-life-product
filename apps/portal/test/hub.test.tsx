@@ -64,6 +64,7 @@ import {
 import { ActDialog as FirstAidActDialog } from '../src/screens/FirstAid';
 import {
   FamilyCard,
+  FamilyFeatures,
   FullPremiumDialog,
   HubFamilies,
   endOfDay,
@@ -368,11 +369,12 @@ const rowGroups = (raw: string) =>
 describe('Tính năng & Premium › the page', () => {
   it('four tabs; /premium, /features/<tab> and the old /features/switches open their tab', () => {
     const raw = render(<FeatureHubScreen initialTab="families" />);
-    expect(tabs(raw)).toEqual(['Tính năng', 'Gia đình', 'Gói Premium', 'Lịch sử']);
+    expect(tabs(raw)).toEqual(['Tổng quan', 'Tính năng', 'Gia đình', 'Gói Premium', 'Lịch sử']);
     expect(raw).toMatch(/aria-selected="true"[^>]*>Gia đình/);
     // The page's name is for screen readers; the rule behind the "i".
     expect(raw).toContain('<h1 class="sr-only">Tính năng &amp; Premium</h1>');
     expect(hubTabs.map((t) => messages.en[`hub.tab.${t}`])).toEqual([
+      'Overview',
       'Features',
       'Families',
       'Premium plan',
@@ -780,17 +782,26 @@ describe('Tính năng & Premium › Gia đình', () => {
     expect(none).toContain('Không tìm thấy gia đình nào.');
   });
 
-  it('the family card: plan, "Bật toàn bộ Premium", every feature with its state and why', () => {
-    const raw = render(<HubFamilies initial={answer} now={now} />, ['admin']);
-    const t = text(raw);
+  it('the family card: one Free | Premium switch; per-feature settings behind Nâng cao', () => {
+    const card = text(render(<HubFamilies initial={answer} now={now} />, ['admin']));
+    expect(card).toContain(
+      'Gói của gia đình Premium toàn bộ · không thời hạn Đổi ngày kết thúc Free Premium',
+    );
+    expect(card).toContain('Tuỳ chỉnh riêng từng tính năng (nâng cao)');
+    expect(card).not.toContain('Lý do');
+    const raw = render(
+      <>
+        <FamilyFeatures family={family} canOverride canBeta onChanged={noop} />
+      </>,
+      ['admin'],
+    );
+    const t = card + text(raw);
     expect(t).toContain('F-7Q2K');
     expect(t).toContain('Gói Premium');
     expect(t).toContain('Hoa Kỳ · US');
     expect(t).toContain('Gia đình nội bộ');
     // Admin Premium skips the country (D-089): said plainly, not as a blocker.
     expect(t).toContain('Premium được cấp (Bật toàn bộ Premium) vẫn dùng được');
-    expect(t).toContain('Bật toàn bộ Premium Đang bật · đến khi tắt Đổi ngày kết thúc');
-    expect(raw).toContain('aria-label="Bật toàn bộ Premium"');
     expect(t).toContain('5/6 đang dùng được');
     expect(t).toContain('Có · Miễn phí');
     expect(t).toContain('Có · Premium được cấp');
@@ -811,18 +822,28 @@ describe('Tính năng & Premium › Gia đình', () => {
   });
 
   it('Vận hành reads; only Toàn quyền (premium.grant) turns Premium or overrides on', () => {
-    const ops = render(<FamilyCard family={family} now={now} onChanged={noop} />, ['ops']);
-    expect(ops).toMatch(/<button[^>]*role="switch"[^>]*disabled=""/);
+    const planSwitch = 'aria-label="Gói của gia đình"';
+    const features = (roles: StaffRole[], grant: boolean, beta: boolean) =>
+      render(
+        <FamilyFeatures family={family} canOverride={grant} canBeta={beta} onChanged={noop} />,
+        roles,
+      );
+    const opsCard = render(<FamilyCard family={family} now={now} onChanged={noop} />, ['ops']);
+    expect(opsCard).not.toContain(planSwitch);
+    const ops = features(['ops'], false, false);
     const lockedChoices = (raw: string) => raw.match(/role="radio"[^>]*disabled=""/g)?.length ?? 0;
     expect(lockedChoices(ops)).toBe(3 * family.features.length);
     expect(text(ops)).not.toContain('Thêm vào beta');
-    const eng = render(<FamilyCard family={family} now={now} onChanged={noop} />, ['eng']);
+    const engCard = render(<FamilyCard family={family} now={now} onChanged={noop} />, ['eng']);
+    expect(engCard).not.toContain(planSwitch);
+    const eng = features(['eng'], false, true);
     // Kỹ sư (Tính năng · Sửa) manages beta lists, not Premium.
     expect(text(eng)).toContain('Thêm vào beta');
-    expect(eng).toMatch(/<button[^>]*role="switch"[^>]*disabled=""/);
     expect(lockedChoices(eng)).toBe(3 * family.features.length);
-    const admin = render(<FamilyCard family={family} now={now} onChanged={noop} />, ['admin']);
-    expect(admin).not.toMatch(/<button[^>]*role="switch"[^>]*disabled=""/);
+    expect(render(<FamilyCard family={family} now={now} onChanged={noop} />, ['admin'])).toContain(
+      planSwitch,
+    );
+    const admin = features(['admin'], true, true);
     expect(lockedChoices(admin)).toBe(0);
   });
 
@@ -911,7 +932,7 @@ describe('Tính năng & Premium › messages', () => {
       ...hubTabs.map((t) => `hub.tab.${t}`),
       ...['on', 'off', 'rule'].map((c) => `hub.override.${c}`),
       ...['code', 'email', 'nickname'].map((m) => `hub.family.matchedBy.${m}`),
-      ...['config', 'ai', 'campaigns'].map((s) => `hub.plan.${s}`),
+      ...['config', 'ai'].map((s) => `hub.plan.${s}`),
       ...['kill', 'override', 'premium', 'beta', 'free'].map((r) => `hub.rules.${r}`),
       ...['tier', 'beta', 'beta.add', 'beta.remove', 'override', 'override.clear'].map(
         (a) => `audit.hub.${a}`,

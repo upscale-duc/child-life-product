@@ -334,12 +334,7 @@ describe('Premium › AI', () => {
         initialSection="ai"
       />,
     );
-    expect(buttons(raw).slice(0, 4)).toEqual([
-      'Cấu hình',
-      'Gói & hạn mức (v2)',
-      'Chính sách AI',
-      'Chiến dịch beta (cũ)',
-    ]);
+    expect(buttons(raw).slice(0, 4)).toEqual(['Cấu hình', 'Gói & hạn mức (v2)', 'Chính sách AI']);
     expect(raw).toMatch(/aria-selected="true"[^>]*>Chính sách AI/);
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
       expect(allowedRoute(levelsForRoles([role]), 'features')).toBe('features');
@@ -464,7 +459,7 @@ describe('Premium operations: messages', () => {
       ...keepsakeJobErrors.flatMap((e) => [`render.error.${e}`, `render.errorShort.${e}`]),
       ...['reserved', 'committed', 'released', 'none'].map((s) => `render.state.${s}`),
       ...['not-released', 'not-committed', 'not-held', 'missing'].map((i) => `render.issue.${i}`),
-      ...['config', 'ai', 'campaigns'].map((t) => `hub.plan.${t}`),
+      ...['config', 'ai'].map((t) => `hub.plan.${t}`),
     ];
     for (const locale of ['vi', 'en'] as const) {
       for (const id of ids) expect(messages[locale][id], `${locale} ${id}`).toBeTruthy();

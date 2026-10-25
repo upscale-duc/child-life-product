@@ -27,6 +27,8 @@ import {
   refundVideoJob,
 } from '../functions/src/premium-plans-staff.js';
 import { familyCode, StaffError, type Staff } from '../functions/src/staff.js';
+import { setFamilyPlan } from '../functions/src/features-hub.js';
+import { premiumOverview } from '../functions/src/premium-overview.js';
 
 // Premium v2 (Figma 958:13863, D-101): the plan's storage limit and the write seats
 // (Q-095, Q-097, Q-101) against the Firestore emulator.
@@ -352,17 +354,53 @@ describe('portal: versions, two approvers, adjustments (PT02, PT03)', () => {
     await db
       .doc(`families/${familyId}/quotaOps/vr_1`)
       .set({ feature: 'video', windowId: 'video_w', state: 'committed', reservedAt: now });
-    await db
-      .doc(`babies/${babyId}/keepsakeJobs/job_1`)
-      .set({
-        familyId,
-        createdAt: now,
-        quota: { reservationId: 'vr_1', windowId: 'video_w', seq: 0 },
-      });
+    await db.doc(`babies/${babyId}/keepsakeJobs/job_1`).set({
+      familyId,
+      createdAt: now,
+      quota: { reservationId: 'vr_1', windowId: 'video_w', seq: 0 },
+    });
     const req = { code, job: renderJobCode('job_1'), reason };
     expect(await refundVideoJob(db, owner, req, now)).toEqual({ outcome: 'refunded' });
     expect(await refundVideoJob(db, owner, req, now)).toEqual({ outcome: 'already' });
     expect((await db.doc(`families/${familyId}/quota/video_w`).get()).get('used')).toBe(0);
     expect(await staffReason(refundVideoJob(db, eng, req, now))).toBe('role');
+  });
+});
+
+describe('Gói: Free | Premium and Tổng quan Premium (owner, 2026-10-25)', () => {
+  const owner: Staff = { uid: 's_owner', name: 'Owner', roles: ['owner'] };
+
+  beforeEach(async () => {
+    await db.doc(`familyDirectory/${familyId}`).set({ code: familyCode(familyId) });
+    await v2(true);
+  });
+
+  it('one switch: Premium gives everything, Free takes every staff grant back', async () => {
+    const code = familyCode(familyId);
+    // An old promo grant on top of the switch.
+    await db.doc(`families/${familyId}/grants/promo_old`).set({
+      familyId,
+      source: 'promo',
+      status: 'active',
+      environment: 'test',
+      capabilities: ['templates.premium'],
+      validFrom: new Date(now.getTime() - 86_400_000),
+      validUntil: new Date(now.getTime() + 30 * 86_400_000),
+      provider: 'staff',
+    });
+    await setFamilyPlan(db, owner, { code, plan: 'premium' }, now, 'test');
+    let plan = await familyPlanAnswer(db, 'mom', { babyId }, now, 'test');
+    expect(plan.plan).toBe('premium');
+    let overview = await premiumOverview(db, owner, { range: '30d' }, now, 'test');
+    expect(overview.families).toMatchObject({ total: 1, premium: 1, free: 0, granted: 1 });
+
+    const r = await setFamilyPlan(db, owner, { code, plan: 'free' }, now, 'test');
+    expect(r).toEqual({ plan: 'free', revoked: 2, paidRemains: false });
+    plan = await familyPlanAnswer(db, 'mom', { babyId }, now, 'test');
+    expect(plan.plan).toBe('free');
+    overview = await premiumOverview(db, owner, { range: '30d' }, now, 'test');
+    expect(overview.families).toMatchObject({ total: 1, premium: 0, free: 1, newInRange: 1 });
+    expect(overview.revenue).toEqual({ gross: null, net: null, costPerPremium: null });
+    expect(overview.trend).toHaveLength(5);
   });
 });

@@ -94,6 +94,8 @@ export type Callable =
   | 'staffDecidePremiumProposal'
   | 'staffAdjustUsage'
   | 'staffRefundVideoJob'
+  | 'staffPremiumOverview'
+  | 'staffSetFamilyPlan'
   | 'staffAiPolicy'
   | 'staffRenderOps'
   | 'staffFamilyQuota'

@@ -66,6 +66,7 @@ import {
 } from './Features';
 import { HubFamilies, TierPill } from './HubFamily';
 import { PremiumPlanLoader } from './Premium';
+import { PremiumOverviewLoader } from './PremiumOverview';
 
 /**
  * "Tính năng & Premium" (D-089, `docs/product/features-premium-hub-plan.md`): one hub instead of
@@ -76,9 +77,10 @@ import { PremiumPlanLoader } from './Premium';
  * (`decideFeature`); the portal shows its answer. No reason is asked anywhere (D-090).
  */
 
-export const hubTabs = ['features', 'families', 'plan', 'history'] as const;
+export const hubTabs = ['overview', 'features', 'families', 'plan', 'history'] as const;
 export type HubTab = (typeof hubTabs)[number];
 const hubTabPath: Record<HubTab, string> = {
+  overview: 'overview',
   features: '',
   families: 'families',
   plan: 'plan',
@@ -110,6 +112,15 @@ export function FeatureHubScreen({ initialTab }: { initialTab?: HubTab }) {
             </TabsTrigger>
           ))}
         </TabsList>
+        <TabsContent value="overview" className="min-w-0">
+          {/* PT01 Tổng quan Premium (D-101): counts only. */}
+          <PremiumOverviewLoader
+            onOpenJobs={() => {
+              window.history.pushState({}, '', routePaths.jobs);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+          />
+        </TabsContent>
         <TabsContent value="features" className="min-w-0">
           <HubFeaturesLoader />
         </TabsContent>

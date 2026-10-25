@@ -263,6 +263,8 @@ describe('message catalogs (D-012)', () => {
               missing: 1,
               title: 'x',
               // Premium v2 (D-101, PT02–PT04)
+              pct: '8%',
+              granted: 1,
               addOns: 'x',
               signed: '+1',
               before: 1,

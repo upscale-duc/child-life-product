@@ -14,6 +14,7 @@ import {
   hubBetaFamilySchema,
   hubFamilySchema,
   hubFullPremiumSchema,
+  setFamilyPlanSchema,
   hubSetOverrideSchema,
   hubSetRolloutSchema,
   hubSetTierSchema,
@@ -72,7 +73,7 @@ import {
  */
 
 /** Collection-group scans (grants, overrides, families for a percent rollout) stop here. */
-const SCAN_CAP = 5000;
+export const SCAN_CAP = 5000;
 const FAMILY_SCAN_CAP = 20_000;
 const DAY_MS = 86_400_000;
 
@@ -100,7 +101,7 @@ function flagState(flags: Flags, key: FlagKey): StaffHubFlagState {
 }
 
 /** Valid grants giving Premium now, by family (paid, staff, "toàn bộ"); one capped scan. */
-async function premiumFamilies(db: Firestore, now: Date, environment: GrantEnvironment) {
+export async function premiumFamilies(db: Firestore, now: Date, environment: GrantEnvironment) {
   const snap = await db
     .collectionGroup('grants')
     .select('source', 'status', 'environment', 'validFrom', 'validUntil')
@@ -772,4 +773,67 @@ export async function setFullPremium(
     );
   });
   return { on: req.on, until: req.on && !isOpenEndedUntil(until) ? until.toISOString() : null };
+}
+
+/**
+ * "Gói: Free | Premium" (owner, 2026-10-25): one switch per family. Premium is the one staff grant
+ * of every Premium capability (as "Bật toàn bộ Premium", optional last day). Free revokes every
+ * stored grant staff gave (promo, "toàn bộ", old staff grants) and clears the per-feature "on"
+ * overrides, so nothing Premium is left behind; a store subscription is the buyer's and stays.
+ */
+export async function setFamilyPlan(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  environment: GrantEnvironment = serverGrantEnvironment(),
+): Promise<{ plan: 'free' | 'premium'; revoked: number; paidRemains: boolean }> {
+  const req = parse(setFamilyPlanSchema, data);
+  const s = requireStaff(staff, 'premium.grant');
+  if (req.plan === 'premium') {
+    await setFullPremium(
+      db,
+      staff,
+      { code: req.code, on: true, until: req.until ?? null, reason: req.reason },
+      now,
+      environment,
+    );
+    return { plan: 'premium', revoked: 0, paidRemains: false };
+  }
+  const familyId = await familyIdOf(db, req.code);
+  const grantsCol = db.collection(`families/${familyId}/grants`);
+  const overridesCol = db.collection(`families/${familyId}/featureOverrides`);
+  return db.runTransaction(async (tx) => {
+    const [grants, overrides] = await Promise.all([tx.get(grantsCol), tx.get(overridesCol)]);
+    const t = now.getTime();
+    let revoked = 0;
+    let paidRemains = false;
+    for (const g of grants.docs) {
+      const live =
+        ['active', 'grace'].includes(g.get('status') as string) && t < ms(g.get('validUntil'));
+      if (!live) continue;
+      if (g.get('source') === 'paid') {
+        paidRemains = true;
+        continue;
+      }
+      tx.update(g.ref, { status: 'revoked', updatedAt: now });
+      revoked += 1;
+    }
+    for (const o of overrides.docs) if (o.get('state') === 'on') tx.delete(o.ref);
+    bumpVersion(tx, db, familyId);
+    staffAudit(
+      tx,
+      db,
+      s,
+      {
+        action: 'premium.plan.free',
+        category: 'premium',
+        target: req.code,
+        reason: req.reason,
+        detail: { revoked, paidRemains, environment },
+      },
+      now,
+    );
+    return { plan: 'free' as const, revoked, paidRemains };
+  });
 }
