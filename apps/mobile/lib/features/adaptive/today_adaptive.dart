@@ -35,7 +35,8 @@ import '../spending/spending_sheets.dart' show showExpenseSheet;
 import '../spending/spending_widgets.dart' show watchSpending;
 import 'adaptive_engine.dart';
 import 'reorder_group.dart';
-import 'adaptive_signals.dart' show customizeDetails, reportAdaptive;
+import 'adaptive_signals.dart'
+    show customizeDetails, rankSignalsProvider, reportAdaptive;
 import 'experience_repository.dart';
 
 /// Hôm nay of the Adaptive Experience (Figma 930:11858): the greeting per age band (AX10–AX13),
@@ -79,7 +80,9 @@ class AdaptiveGreeting extends ConsumerWidget {
         : hour < 18
         ? l10n.axGreetAfternoon(name)
         : l10n.axGreetEvening(name);
-    final (title, sub) = first
+    // Owner, 2026-10-25: the every-day greeting has no sub-line ("Nhịp hôm nay của con, ghi
+    // nhanh trong một chạm."); the first-run hello keeps its guidance.
+    final (String title, String? sub) = first
         ? (
             l10n.axHello(name),
             switch (band) {
@@ -89,14 +92,17 @@ class AdaptiveGreeting extends ConsumerWidget {
               AgeBand.b6_12 => l10n.axHelloSub612,
             },
           )
-        : switch (band) {
-            AgeBand.b0_1 => (timeOfDay, l10n.axSub01),
-            AgeBand.b1_3 => (timeOfDay, l10n.axSub13),
-            AgeBand.b3_6 => (l10n.axGreet36(name), l10n.axSub36),
-            AgeBand.b6_12 => (l10n.axGreet612(name), l10n.axSub612),
-          };
+        : (
+            switch (band) {
+              AgeBand.b0_1 || AgeBand.b1_3 => timeOfDay,
+              AgeBand.b3_6 => l10n.axGreet36(name),
+              AgeBand.b6_12 => l10n.axGreet612(name),
+            },
+            null,
+          );
     return Padding(
-      padding: const EdgeInsets.only(top: ClSpace.s4),
+      // Close under the baby header (owner, 2026-10-25).
+      padding: const EdgeInsets.only(top: ClSpace.s1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -112,14 +118,16 @@ class AdaptiveGreeting extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: ClSpace.s1),
-          Text(
-            sub,
-            style: cl.text.body.copyWith(
-              fontSize: 14,
-              color: cl.colors.inkMuted,
+          if (sub != null) ...[
+            const SizedBox(height: ClSpace.s1),
+            Text(
+              sub,
+              style: cl.text.body.copyWith(
+                fontSize: 14,
+                color: cl.colors.inkMuted,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -681,9 +689,12 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
     void update(Experience next) => setState(() => _draft = next);
     final name = ref.watch(babyProvider(babyId)).value?.nickname ?? '';
     final band = ref.watch(childBandProvider(babyId)) ?? draft.bandApplied;
+    // The same signals as Hôm nay (adaptiveTodayProvider): without them this list showed one
+    // order and Hôm nay, reordered by taps, another (owner, 2026-10-25: "ko theo cài đặt").
     final ranked = rankToday(
       draft,
       ref.watch(availableWidgetsProvider(babyId)),
+      ref.watch(rankSignalsProvider(babyId)),
     );
     final showing = [
       for (final w in ranked)

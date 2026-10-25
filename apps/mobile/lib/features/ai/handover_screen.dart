@@ -69,13 +69,20 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
   AiException? _error;
   var _busy = false;
   var _autoAsked = false;
+
+  /// The automatic generate is a refresh of a stale one (its loading line says so).
+  var _refreshing = false;
   var _sending = false;
   late var _summaryOpen = widget.summaryOpen;
 
   /// Sends marked "seen" from this screen (once each).
   final _seenMarked = <String>{};
 
-  Future<void> _generate(Membership me, {bool fresh = false}) async {
+  Future<void> _generate(
+    Membership me, {
+    bool fresh = false,
+    bool auto = false,
+  }) async {
     if (_busy) return;
     if (fresh) _requestId = newAiRequestId();
     final locale = Localizations.localeOf(context).languageCode;
@@ -97,9 +104,13 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       // Home's entry and the next open read the new one.
       ref.invalidate(handoversProvider(me.babyId));
     } on AiException catch (e) {
-      if (mounted) setState(() => _error = e);
+      // A refresh nobody asked for that fails (quota, network) keeps the stored version and
+      // its "Có ghi nhận mới · Tạo lại" instead of an error (D-103).
+      if (mounted && !auto) setState(() => _error = e);
     } on Object {
-      if (mounted) setState(() => _error = const AiException('unavailable'));
+      if (mounted && !auto) {
+        setState(() => _error = const AiException('unavailable'));
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -172,16 +183,28 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         .firstOrNull;
 
     // A Cùng nuôi opening it with nothing stored in this language asks once (idempotent; an
-    // unchanged household answers from the cache, free).
+    // unchanged household answers from the cache, free). D-103: a stored one older than the
+    // diary is made again on opening too, the old one showing meanwhile; a handover opened
+    // from a send (summaryId) stays as it was sent.
+    final storedStale =
+        stored != null &&
+        (stored.stale ||
+            (dataVersion != null &&
+                stored.dataVersion != null &&
+                dataVersion > stored.dataVersion!));
     if (canGenerate &&
         online &&
         widget.summaryId == null &&
         !_autoAsked &&
         !storedAsync.isLoading &&
-        (stored == null || stored.language != locale.languageCode)) {
+        (stored == null ||
+            stored.language != locale.languageCode ||
+            storedStale)) {
       _autoAsked = true;
+      _refreshing = storedStale && stored.language == locale.languageCode;
+      final refresh = _refreshing;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(_generate(me));
+        if (mounted) unawaited(_generate(me, fresh: refresh, auto: refresh));
       });
     }
 
@@ -336,7 +359,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
 
     // States above the summary.
     final states = <Widget>[];
-    if (_busy) states.add(const _Loading());
+    if (_busy) states.add(_Loading(refreshing: _refreshing));
     if (!online) {
       states.add(
         AiStateCard(
@@ -847,7 +870,10 @@ class _Skeleton extends StatelessWidget {
 }
 
 class _Loading extends StatelessWidget {
-  const _Loading();
+  const _Loading({this.refreshing = false});
+
+  /// Bringing a stored handover up to the newest notes (D-103), not making the first one.
+  final bool refreshing;
 
   @override
   Widget build(BuildContext context) {
@@ -860,7 +886,9 @@ class _Loading extends StatelessWidget {
           const SizedBox(width: ClSpace.s3),
           Expanded(
             child: Text(
-              AppLocalizations.of(context).aiLoading,
+              refreshing
+                  ? AppLocalizations.of(context).aiRefreshing
+                  : AppLocalizations.of(context).aiLoading,
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
           ),

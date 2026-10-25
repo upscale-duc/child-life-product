@@ -20820,6 +20820,12 @@ abstract class AppLocalizations {
   /// **'Đang tổng hợp ghi nhận…'**
   String get aiLoading;
 
+  /// D-103: Bàn giao re-made on opening because new notes arrived
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang cập nhật theo ghi nhận mới…'**
+  String get aiRefreshing;
+
   /// SU01 with no section. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

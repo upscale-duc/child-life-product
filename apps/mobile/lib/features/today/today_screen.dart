@@ -108,13 +108,15 @@ class TodayScreen extends ConsumerWidget {
         ? growth.firstOrNull
         : recent.where((r) => r.type == type).firstOrNull;
 
+    // The first adaptive widget sits closer to the greeting (owner, 2026-10-25).
+    WidgetId? lead;
     List<Widget> sectionParts(TodaySection section) => switch (section) {
       // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
       TodaySection.forYou => [const TodayForBabySection()],
       TodaySection.tiles => [
         // AX10 / AX11 / AX40: the quick log has its own header in the adaptive Hôm nay.
         if (ref.watch(adaptiveOnProvider)) ...[
-          const SizedBox(height: ClSpace.s6),
+          SizedBox(height: lead == WidgetId.tiles ? ClSpace.s3 : ClSpace.s6),
           ClSectionHeader(
             title: ref.watch(todayFirstRunProvider(babyId))
                 ? l10n.axFirstLogTitle
@@ -184,7 +186,11 @@ class TodayScreen extends ConsumerWidget {
         if (!readOnly) ...[
           // A section like "Hôm nay" below: its own header, the same gap.
           SizedBox(
-            height: ref.watch(adaptiveOnProvider) ? ClSpace.s4 : ClSpace.s6,
+            height: !ref.watch(adaptiveOnProvider)
+                ? ClSpace.s6
+                : lead == WidgetId.reminders
+                ? ClSpace.s2
+                : ClSpace.s4,
           ),
           // AX10–AX13: one card with its header inside, in the adaptive Hôm nay.
           ReminderPeek(ax: ref.watch(adaptiveOnProvider)),
@@ -242,6 +248,7 @@ class TodayScreen extends ConsumerWidget {
     final ranked = adaptive
         ? ref.watch(adaptiveTodayProvider(babyId))
         : const <RankedWidget>[];
+    lead = ranked.where((w) => w.visible).firstOrNull?.id;
 
     // The baby header stays pinned while the day scrolls under it.
     return ClPinnedHeaderScaffold(
@@ -314,10 +321,9 @@ class TodayScreen extends ConsumerWidget {
               ],
             ),
           ],
-          // P-181: who is caring for the baby now, by age and the person's own Tuỳ chỉnh.
-          if (adaptive
-              ? ranked.any((w) => w.id == WidgetId.careDuty && w.visible)
-              : careDutyByAge(ref.watch(childBandProvider(babyId))))
+          // P-181: who is caring for the baby now, by age. Adaptive: at its place in the
+          // person's Tuỳ chỉnh order, below (owner, 2026-10-25).
+          if (!adaptive && careDutyByAge(ref.watch(childBandProvider(babyId))))
             const CareDutyChip(),
           // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
           const WhatsNewBanner(),
@@ -346,8 +352,9 @@ class TodayScreen extends ConsumerWidget {
                       ],
                       WidgetId.growth => [const AxGrowth()],
                       WidgetId.familyView => [const AxFamilyView()],
-                      // Rendered under the title, where the family looks first.
-                      WidgetId.careDuty => const <Widget>[],
+                      // Where Tuỳ chỉnh puts it, like every other widget.
+                      // (The chip has its own top gap, and nothing when hidden.)
+                      WidgetId.careDuty => [const CareDutyChip()],
                       _ => sectionParts(TodaySection.values.byName(w.id.wire)),
                     },
                   ),

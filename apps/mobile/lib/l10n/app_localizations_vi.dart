@@ -12508,6 +12508,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get aiLoading => 'Đang tổng hợp ghi nhận…';
 
   @override
+  String get aiRefreshing => 'Đang cập nhật theo ghi nhận mới…';
+
+  @override
   String get aiNoSections =>
       'Chưa có đủ ghi nhận để bàn giao. Ghi nhận hôm nay để bắt đầu.';
 

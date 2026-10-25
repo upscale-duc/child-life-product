@@ -47,10 +47,11 @@ Future<(List<Visit>, FakeAiRepository)> _handover(
   List<Shared>? shared,
   Locale locale = const Locale('vi'),
   member,
+  String? summaryId,
 }) async {
   final (visits, _) = await pumpRouted(
     tester,
-    const HandoverScreen(summaryOpen: true),
+    HandoverScreen(summaryId: summaryId, summaryOpen: true),
     locale: locale,
     overrides: aiOverrides(
       ai: ai,
@@ -340,7 +341,7 @@ void main() {
       expect(find.text(l10n.pmGateRegionTitle), findsOneWidget);
     });
 
-    testWidgets('stale: "Có ghi nhận mới · Tạo lại", never by itself', (
+    testWidgets('stale: made again on opening (D-103), no card left', (
       tester,
     ) async {
       final ai = FakeAiRepository(
@@ -349,12 +350,39 @@ void main() {
         dataVersion: 9,
       );
       await _handover(tester, ai);
-      // Something stored in this language: no call on open.
-      expect(ai.calls, isEmpty);
-      expect(find.text(l10n.aiStateStaleTitle), findsOneWidget);
-      await _tap(tester, find.text(l10n.aiStateStaleAction));
       expect(ai.calls, hasLength(1));
       expect(find.text(l10n.aiStateStaleTitle), findsNothing);
+    });
+
+    testWidgets('stale and the refresh fails: the stored one with "Tạo lại"', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(
+        error: const AiException('unavailable'),
+        stored: [handover(dataVersion: 7)],
+        dataVersion: 9,
+      );
+      await _handover(tester, ai);
+      // No error card for a refresh nobody asked for (D-103).
+      expect(find.text(l10n.aiStateFailedTitle), findsNothing);
+      expect(find.text(l10n.aiStateStaleTitle), findsOneWidget);
+      ai
+        ..error = null
+        ..answer = handover(dataVersion: 9);
+      await _tap(tester, find.text(l10n.aiStateStaleAction));
+      expect(find.text(l10n.aiStateStaleTitle), findsNothing);
+    });
+
+    testWidgets('stale but opened from a send: kept as it was sent', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(
+        answer: handover(dataVersion: 9),
+        stored: [handover(dataVersion: 7)],
+        dataVersion: 9,
+      );
+      await _handover(tester, ai, summaryId: handover().id);
+      expect(ai.calls, isEmpty);
     });
 
     testWidgets('offline: the last stored version, no call', (tester) async {

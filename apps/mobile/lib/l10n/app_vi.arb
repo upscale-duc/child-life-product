@@ -18683,6 +18683,10 @@
     "description": "Shared text footer for the template. EN is an engineering draft for owner review."
   },
   "aiLoading": "Đang tổng hợp ghi nhận…",
+  "aiRefreshing": "Đang cập nhật theo ghi nhận mới…",
+  "@aiRefreshing": {
+    "description": "D-103: Bàn giao re-made on opening because new notes arrived"
+  },
   "@aiLoading": {
     "description": "SU01 while generating. EN is an engineering draft for owner review."
   },

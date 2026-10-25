@@ -13335,6 +13335,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiLoading => 'Putting the notes together…';
 
   @override
+  String get aiRefreshing => 'Updating with the latest notes…';
+
+  @override
   String get aiNoSections =>
       'Not enough notes for a handover yet. Add today’s note to start.';
 

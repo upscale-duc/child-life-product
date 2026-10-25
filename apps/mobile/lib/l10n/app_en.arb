@@ -3464,6 +3464,7 @@
   "aiShareAiLine": "(Worded by AI from saved notes)",
   "aiShareTemplateLine": "(Template summary from saved notes)",
   "aiLoading": "Putting the notes together…",
+  "aiRefreshing": "Updating with the latest notes…",
   "aiNoSections": "Not enough notes for a handover yet. Add today’s note to start.",
   "aiChipCheckIn": "{who}’s note · {date}",
   "aiChipCheckInMine": "Your note · {date}",
