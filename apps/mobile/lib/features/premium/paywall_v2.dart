@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design/tokens.g.dart';
@@ -111,94 +112,98 @@ class _PaywallV2State extends State<PaywallV2View> {
     final bottom = MediaQuery.paddingOf(context).bottom;
     final explore = widget.entry == PremiumEntry.explore;
 
-    return Scaffold(
-      backgroundColor: PremiumPalette.deep,
-      body: Stack(
-        children: [
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [PremiumPalette.deepTop, PremiumPalette.deep],
-                ),
-              ),
-            ),
-          ),
-          // "Glow · mint" (top left) and "Glow · gold" (top right).
-          const Positioned(
-            left: -120,
-            top: -120,
-            child: _Glow(width: 420, height: 320, color: Color(0x332CBFB3)),
-          ),
-          const Positioned(
-            left: 150,
-            top: 40,
-            child: _Glow(width: 360, height: 280, color: Color(0x26E9C77B)),
-          ),
-          Column(
-            children: [
-              Expanded(
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    children: [
-                      _TopBar(
-                        onClose: widget.onClose,
-                        onRestore: widget.busy ? null : widget.onRestore,
-                      ),
-                      Expanded(
-                        child: ListView(
-                          padding: const EdgeInsets.only(bottom: ClSpace.s6),
-                          children: [
-                            _Head(
-                              headline: _headline(l10n),
-                              reason: explore ? null : widget.reason,
-                            ),
-                            const SizedBox(height: 12),
-                            _Carousel(
-                              controller: _pages,
-                              page: _page,
-                              onPage: (i) => setState(() => _page = i),
-                              free: free,
-                              premium: premium,
-                              babyName: widget.babyName,
-                            ),
-                            const SizedBox(height: 19),
-                            _Compare(
-                              free: free,
-                              premium: premium,
-                              need: explore ? null : widget.entry,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    // Dark page: white status bar; leaving it, the screen below applies its own again.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: PremiumPalette.deep,
+        body: Stack(
+          children: [
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [PremiumPalette.deepTop, PremiumPalette.deep],
                   ),
                 ),
               ),
-              _Footer(
-                kind: widget.footer,
-                yearly: _yearly,
-                price: price,
-                vnd: widget.vnd,
-                storeName: widget.storeName,
-                managerName: widget.managerName ?? l10n.pv2TheManager,
-                busy: widget.busy,
-                bottom: bottom,
-                onPeriod: (y) => setState(() => _yearly = y),
-                onBuy: widget.onBuy == null
-                    ? null
-                    : () => widget.onBuy!(_yearly),
-                onAskManager: widget.onAskManager,
-                onOpenPlan: widget.onOpenPlan,
-                onTerms: widget.onTerms,
-                onPrivacy: widget.onPrivacy,
-              ),
-            ],
-          ),
-        ],
+            ),
+            // "Glow · mint" (top left) and "Glow · gold" (top right).
+            const Positioned(
+              left: -120,
+              top: -120,
+              child: _Glow(width: 420, height: 320, color: Color(0x332CBFB3)),
+            ),
+            const Positioned(
+              left: 150,
+              top: 40,
+              child: _Glow(width: 360, height: 280, color: Color(0x26E9C77B)),
+            ),
+            Column(
+              children: [
+                Expanded(
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      children: [
+                        _TopBar(
+                          onClose: widget.onClose,
+                          onRestore: widget.busy ? null : widget.onRestore,
+                        ),
+                        Expanded(
+                          child: ListView(
+                            padding: const EdgeInsets.only(bottom: ClSpace.s6),
+                            children: [
+                              _Head(
+                                headline: _headline(l10n),
+                                reason: explore ? null : widget.reason,
+                              ),
+                              const SizedBox(height: 12),
+                              _Carousel(
+                                controller: _pages,
+                                page: _page,
+                                onPage: (i) => setState(() => _page = i),
+                                free: free,
+                                premium: premium,
+                                babyName: widget.babyName,
+                              ),
+                              const SizedBox(height: 19),
+                              _Compare(
+                                free: free,
+                                premium: premium,
+                                need: explore ? null : widget.entry,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                _Footer(
+                  kind: widget.footer,
+                  yearly: _yearly,
+                  price: price,
+                  vnd: widget.vnd,
+                  storeName: widget.storeName,
+                  managerName: widget.managerName ?? l10n.pv2TheManager,
+                  busy: widget.busy,
+                  bottom: bottom,
+                  onPeriod: (y) => setState(() => _yearly = y),
+                  onBuy: widget.onBuy == null
+                      ? null
+                      : () => widget.onBuy!(_yearly),
+                  onAskManager: widget.onAskManager,
+                  onOpenPlan: widget.onOpenPlan,
+                  onTerms: widget.onTerms,
+                  onPrivacy: widget.onPrivacy,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -364,52 +369,90 @@ class _Carousel extends StatelessWidget {
         SizedBox(
           // The tallest card (Dung lượng / Người chăm, 298) at 0.9.
           height: 270,
-          child: PageView.builder(
-            controller: controller,
-            clipBehavior: Clip.none,
-            itemCount: PremiumCard.values.length,
-            onPageChanged: onPage,
-            itemBuilder: (context, i) => AnimatedBuilder(
-              animation: controller,
-              builder: (context, child) {
-                final current =
-                    controller.hasClients &&
-                        controller.position.hasContentDimensions
-                    ? (controller.page ?? page.toDouble())
-                    : page.toDouble();
-                final d = (i - current).abs().clamp(0.0, 2.0);
-                final t = d.clamp(0.0, 1.0);
-                final scale = _big - (_big - _small) * t;
-                final opacity = d >= 2
-                    ? 0.0
-                    : (d <= 1 ? 1 - 0.65 * t : 0.35 * (2 - d));
-                return Opacity(
-                  opacity: opacity,
-                  child: Transform.scale(
-                    scale: scale,
-                    // Beside the current card the smaller one keeps the 12 gap on its near side.
-                    alignment: i > current
-                        ? Alignment.topLeft
-                        : i < current
-                        ? Alignment.topRight
-                        : Alignment.topCenter,
-                    child: child,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // The card's glow and depth, drawn once behind the centre slot (never scaled).
+              IgnorePointer(
+                child: Container(
+                  width: 270,
+                  height: 252,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: _cardShadow,
                   ),
-                );
-              },
-              child: OverflowBox(
-                alignment: Alignment.topCenter,
-                minWidth: 300,
-                maxWidth: 300,
-                maxHeight: 340,
-                child: PremiumFeatureCard(
-                  card: PremiumCard.values[i],
-                  free: free,
-                  premium: premium,
-                  babyName: babyName,
                 ),
               ),
-            ),
+              PageView.builder(
+                controller: controller,
+                clipBehavior: Clip.none,
+                itemCount: PremiumCard.values.length,
+                onPageChanged: onPage,
+                itemBuilder: (context, i) => AnimatedBuilder(
+                  animation: controller,
+                  builder: (context, child) {
+                    final current =
+                        controller.hasClients &&
+                            controller.position.hasContentDimensions
+                        ? (controller.page ?? page.toDouble())
+                        : page.toDouble();
+                    final d = (i - current).abs().clamp(0.0, 2.0);
+                    final t = d.clamp(0.0, 1.0);
+                    final scale = _big - (_big - _small) * t;
+                    final opacity = d >= 2
+                        ? 0.0
+                        : (d <= 1 ? 1 - 0.65 * t : 0.35 * (2 - d));
+                    if (opacity <= 0) return const SizedBox.shrink();
+                    // Smooth swipe (owner, 2026-10-25): the card is recorded once (RepaintBoundary)
+                    // and only moved / scaled; the dimming is a scrim painted on top in the page's
+                    // own colour instead of an opacity layer, and there is no blurred shadow to
+                    // rasterise again at every scale.
+                    return Transform.scale(
+                      scale: scale,
+                      // Beside the current card the smaller one keeps the 12 gap on its near side.
+                      alignment: i > current
+                          ? Alignment.topLeft
+                          : i < current
+                          ? Alignment.topRight
+                          : Alignment.topCenter,
+                      child: Stack(
+                        children: [
+                          child!,
+                          if (opacity < 1)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: PremiumPalette.deep.withValues(
+                                      alpha: 1 - opacity,
+                                    ),
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: OverflowBox(
+                    alignment: Alignment.topCenter,
+                    minWidth: 300,
+                    maxWidth: 300,
+                    maxHeight: 340,
+                    child: RepaintBoundary(
+                      child: PremiumFeatureCard(
+                        card: PremiumCard.values[i],
+                        free: free,
+                        premium: premium,
+                        babyName: babyName,
+                        shadow: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 14),
@@ -450,6 +493,12 @@ class _Dots extends StatelessWidget {
 // ---------- Component · Premium · Thẻ tính năng (1019:17008) ----------
 
 const _goldText = TextStyle(color: PremiumPalette.gold);
+
+/// Thẻ tính năng's glow + depth (0 0 28 gold 18 %, 0 16 32 black 55 %).
+const _cardShadow = [
+  BoxShadow(color: Color(0x2EE8BF66), blurRadius: 28),
+  BoxShadow(color: Color(0x8C000000), blurRadius: 32, offset: Offset(0, 16)),
+];
 const _white92 = Color(0xEBFFFFFF);
 
 /// A 300-wide card: the demo panel (276 × 156) and its text block, as in the component.
@@ -459,9 +508,12 @@ class PremiumFeatureCard extends StatelessWidget {
     required this.free,
     required this.premium,
     this.babyName = '',
+    this.shadow = true,
     super.key,
   });
 
+  /// The carousel draws the glow once behind its centre slot instead (smooth swipe).
+  final bool shadow;
   final PremiumCard card;
   final PlanOffer free;
   final PlanOffer premium;
@@ -532,14 +584,7 @@ class PremiumFeatureCard extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [PremiumPalette.cardTop, PremiumPalette.cardBottom],
           ),
-          boxShadow: const [
-            BoxShadow(color: Color(0x2EE8BF66), blurRadius: 28),
-            BoxShadow(
-              color: Color(0x8C000000),
-              blurRadius: 32,
-              offset: Offset(0, 16),
-            ),
-          ],
+          boxShadow: shadow ? _cardShadow : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -645,6 +690,8 @@ Widget _photo(
     'assets/premium/$asset',
     width: width,
     height: height,
+    // Decoded at about the size drawn (3x), not the file's.
+    cacheWidth: ((width ?? 80) * 3).round(),
     fit: BoxFit.cover,
     excludeFromSemantics: true,
   ),

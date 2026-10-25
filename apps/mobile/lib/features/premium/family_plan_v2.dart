@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -1233,208 +1234,212 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
         (plan?.addOnGb ?? 0);
     final bottom = MediaQuery.paddingOf(context).bottom;
     const muted = TextStyle(color: PremiumPalette.textMuted, fontSize: 13);
-    return Scaffold(
-      backgroundColor: PremiumPalette.deep,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [PremiumPalette.deepTop, PremiumPalette.deep],
+    // Dark page: white status bar, restored by the screen below when it closes.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: PremiumPalette.deep,
+        body: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [PremiumPalette.deepTop, PremiumPalette.deep],
+            ),
           ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s2,
-                  ClSpace.s4,
-                  0,
-                ),
-                child: Row(
-                  children: [
-                    ClPressable(
-                      onPressed: () => context.pop(),
-                      semanticLabel: l10n.a11yClose,
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: PremiumPalette.fill,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const ClIcon(
-                          ClIcons.close,
-                          size: 20,
-                          color: PremiumPalette.text,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView(
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                Padding(
                   padding: const EdgeInsets.fromLTRB(
-                    ClSpace.s6,
-                    ClSpace.s3,
-                    ClSpace.s6,
-                    ClSpace.s6,
+                    ClSpace.s4,
+                    ClSpace.s2,
+                    ClSpace.s4,
+                    0,
                   ),
-                  children: [
-                    const PremiumCrest(),
-                    const SizedBox(height: ClSpace.s2),
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        l10n.pv2AddOnHead,
-                        style: const TextStyle(
-                          fontFamily: PremiumPalette.serif,
-                          color: PremiumPalette.text,
-                          fontSize: 28,
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: ClSpace.s4),
-                    if (plan != null)
-                      Container(
-                        padding: const EdgeInsets.all(ClSpace.s4),
-                        decoration: BoxDecoration(
-                          color: PremiumPalette.fill,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: PremiumPalette.line),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(l10n.pv2AddOnUsed, style: muted),
-                            const SizedBox(height: ClSpace.s1),
-                            ClTabularText(
-                              l10n.pv2StorageOf(
-                                premiumGb(context, plan.usedBytes),
-                                premiumGb(context, plan.limitBytes),
-                              ),
-                              style: const TextStyle(
-                                fontFamily: PremiumPalette.serif,
-                                color: PremiumPalette.text,
-                                fontSize: 22,
-                              ),
-                            ),
-                            const SizedBox(height: ClSpace.s2),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: LinearProgressIndicator(
-                                value: plan.storageRatio,
-                                minHeight: 8,
-                                color: PremiumPalette.gold,
-                                backgroundColor: PremiumPalette.line,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(height: ClSpace.s4),
-                    for (final (i, a) in addOns.indexed) ...[
-                      _AddOnOption(
-                        title: l10n.pv2AddOnOption(a.gb),
-                        total: l10n.pv2AddOnTotal(baseGb + a.gb),
-                        perYear: l10n.pv2PerYear(
-                          premiumPrice(
-                            context,
-                            vnd ? a.vn.year : a.intl.year,
-                            vnd: vnd,
+                  child: Row(
+                    children: [
+                      ClPressable(
+                        onPressed: () => context.pop(),
+                        semanticLabel: l10n.a11yClose,
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: PremiumPalette.fill,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const ClIcon(
+                            ClIcons.close,
+                            size: 20,
+                            color: PremiumPalette.text,
                           ),
                         ),
-                        perMonth: l10n.pv2OrPerMonth(
-                          premiumPrice(
-                            context,
-                            vnd ? a.vn.month : a.intl.month,
-                            vnd: vnd,
-                          ),
-                        ),
-                        selected: _selected == i,
-                        onTap: () => setState(() => _selected = i),
                       ),
-                      const SizedBox(height: ClSpace.s3),
                     ],
-                    Text(l10n.pv2AddOnNote, style: muted),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s4,
-                  ClSpace.s4,
-                  bottom + ClSpace.s3,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(28),
                   ),
-                  border: Border(
-                    top: BorderSide(
-                      color: PremiumPalette.gold.withValues(alpha: 0.25),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      ClSpace.s6,
+                      ClSpace.s3,
+                      ClSpace.s6,
+                      ClSpace.s6,
                     ),
-                  ),
-                  color: const Color(0xFF0A1212),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Owner, 2026-10-25: the CTA as drawn; the store step says it is coming
-                    // (Q-102) until in-app purchase opens. Free families are told it is for
-                    // Premium.
-                    if (plan?.premium == false)
-                      Text(
-                        l10n.pv2AddOnPremiumOnly,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: PremiumPalette.text,
-                          fontSize: 14,
+                    children: [
+                      const PremiumCrest(),
+                      const SizedBox(height: ClSpace.s2),
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          l10n.pv2AddOnHead,
+                          style: const TextStyle(
+                            fontFamily: PremiumPalette.serif,
+                            color: PremiumPalette.text,
+                            fontSize: 28,
+                            height: 1.2,
+                          ),
                         ),
-                      )
-                    else if (addOns.isNotEmpty)
-                      PremiumGoldButton(
-                        label: l10n.pv2AddOnBuy(
-                          addOns[_selected.clamp(0, addOns.length - 1)].gb,
-                          l10n.pv2PerYear(
+                      ),
+                      const SizedBox(height: ClSpace.s4),
+                      if (plan != null)
+                        Container(
+                          padding: const EdgeInsets.all(ClSpace.s4),
+                          decoration: BoxDecoration(
+                            color: PremiumPalette.fill,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: PremiumPalette.line),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(l10n.pv2AddOnUsed, style: muted),
+                              const SizedBox(height: ClSpace.s1),
+                              ClTabularText(
+                                l10n.pv2StorageOf(
+                                  premiumGb(context, plan.usedBytes),
+                                  premiumGb(context, plan.limitBytes),
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: PremiumPalette.serif,
+                                  color: PremiumPalette.text,
+                                  fontSize: 22,
+                                ),
+                              ),
+                              const SizedBox(height: ClSpace.s2),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: plan.storageRatio,
+                                  minHeight: 8,
+                                  color: PremiumPalette.gold,
+                                  backgroundColor: PremiumPalette.line,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: ClSpace.s4),
+                      for (final (i, a) in addOns.indexed) ...[
+                        _AddOnOption(
+                          title: l10n.pv2AddOnOption(a.gb),
+                          total: l10n.pv2AddOnTotal(baseGb + a.gb),
+                          perYear: l10n.pv2PerYear(
                             premiumPrice(
                               context,
-                              vnd
-                                  ? addOns[_selected.clamp(
-                                          0,
-                                          addOns.length - 1,
-                                        )]
-                                        .vn
-                                        .year
-                                  : addOns[_selected.clamp(
-                                          0,
-                                          addOns.length - 1,
-                                        )]
-                                        .intl
-                                        .year,
+                              vnd ? a.vn.year : a.intl.year,
                               vnd: vnd,
                             ),
                           ),
+                          perMonth: l10n.pv2OrPerMonth(
+                            premiumPrice(
+                              context,
+                              vnd ? a.vn.month : a.intl.month,
+                              vnd: vnd,
+                            ),
+                          ),
+                          selected: _selected == i,
+                          onTap: () => setState(() => _selected = i),
                         ),
-                        onPressed: () => showPaymentSoon(context),
-                      ),
-                    const SizedBox(height: ClSpace.s2),
-                    PremiumTextButton(
-                      label: l10n.pv2ManageMedia,
-                      onPressed: () => context.push(Routes.meStorage),
-                    ),
-                  ],
+                        const SizedBox(height: ClSpace.s3),
+                      ],
+                      Text(l10n.pv2AddOnNote, style: muted),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                Container(
+                  padding: EdgeInsets.fromLTRB(
+                    ClSpace.s4,
+                    ClSpace.s4,
+                    ClSpace.s4,
+                    bottom + ClSpace.s3,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(28),
+                    ),
+                    border: Border(
+                      top: BorderSide(
+                        color: PremiumPalette.gold.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    color: const Color(0xFF0A1212),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Owner, 2026-10-25: the CTA as drawn; the store step says it is coming
+                      // (Q-102) until in-app purchase opens. Free families are told it is for
+                      // Premium.
+                      if (plan?.premium == false)
+                        Text(
+                          l10n.pv2AddOnPremiumOnly,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: PremiumPalette.text,
+                            fontSize: 14,
+                          ),
+                        )
+                      else if (addOns.isNotEmpty)
+                        PremiumGoldButton(
+                          label: l10n.pv2AddOnBuy(
+                            addOns[_selected.clamp(0, addOns.length - 1)].gb,
+                            l10n.pv2PerYear(
+                              premiumPrice(
+                                context,
+                                vnd
+                                    ? addOns[_selected.clamp(
+                                            0,
+                                            addOns.length - 1,
+                                          )]
+                                          .vn
+                                          .year
+                                    : addOns[_selected.clamp(
+                                            0,
+                                            addOns.length - 1,
+                                          )]
+                                          .intl
+                                          .year,
+                                vnd: vnd,
+                              ),
+                            ),
+                          ),
+                          onPressed: () => showPaymentSoon(context),
+                        ),
+                      const SizedBox(height: ClSpace.s2),
+                      PremiumTextButton(
+                        label: l10n.pv2ManageMedia,
+                        onPressed: () => context.push(Routes.meStorage),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
