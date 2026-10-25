@@ -427,13 +427,33 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         ],
       ),
       const SizedBox(height: ClSpace.s4),
+      // Often reached from a reminder sent on the phone's last report (owner, 2026-10-25:
+      // "chỉ cần show message cho thân thiện"): say the photos are handled, offer Kỷ niệm.
       if (all.isEmpty)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: ClSpace.s6),
-          child: Text(
-            l10n.autoSaveReviewEmpty,
-            textAlign: TextAlign.center,
-            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+          child: Column(
+            children: [
+              ClIcon(ClIcons.check, size: 32, color: cl.colors.mintText),
+              const SizedBox(height: ClSpace.s3),
+              Text(
+                l10n.autoSaveReviewDoneTitle,
+                textAlign: TextAlign.center,
+                style: cl.text.bodyStrong,
+              ),
+              const SizedBox(height: ClSpace.s1),
+              Text(
+                l10n.autoSaveReviewDoneBody,
+                textAlign: TextAlign.center,
+                style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+              ),
+              const SizedBox(height: ClSpace.s4),
+              ClButton(
+                label: l10n.autoSaveReviewOpenMemories,
+                style: ClButtonStyle.secondary,
+                onPressed: () => context.go(Routes.memories),
+              ),
+            ],
           ),
         ),
       for (final e in days.entries) ...[

@@ -10372,6 +10372,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get autoSaveReviewDoneTitle => 'These photos are taken care of';
+
+  @override
+  String get autoSaveReviewDoneBody =>
+      'They were saved or skipped already. When new photos that may show your baby turn up, Child Life will suggest them.';
+
+  @override
+  String get autoSaveReviewOpenMemories => 'Open Moments';
+
+  @override
   String get autoSaveReviewEmpty => 'No suggestions left to review.';
 
   @override

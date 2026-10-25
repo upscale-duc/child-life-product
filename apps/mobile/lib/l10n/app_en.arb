@@ -2662,6 +2662,18 @@
   "autoSaveRoundRest": "{rest, plural, =1{Up to {cap} items per upload · 1 more suggestion waits for next time} other{Up to {cap} items per upload · {rest} more suggestions wait for next time}}",
   "autoSaveRoundFull": "{cap, plural, other{Up to {cap} items per upload}}",
   "autoSaveContinue": "{count, plural, =1{Continue with 1 item} other{Continue with {count} items}}",
+  "autoSaveReviewDoneTitle": "These photos are taken care of",
+  "@autoSaveReviewDoneTitle": {
+    "description": "Review screen with nothing left (often opened from an older reminder): a friendly title instead of an empty list (owner, 2026-10-25)."
+  },
+  "autoSaveReviewDoneBody": "They were saved or skipped already. When new photos that may show your baby turn up, Child Life will suggest them.",
+  "@autoSaveReviewDoneBody": {
+    "description": "Body under autoSaveReviewDoneTitle."
+  },
+  "autoSaveReviewOpenMemories": "Open Moments",
+  "@autoSaveReviewOpenMemories": {
+    "description": "Button under the empty review: opens Kỷ niệm."
+  },
   "autoSaveReviewEmpty": "No suggestions left to review.",
   "autoSaveViewerPos": "{index} / {total} · {time}",
   "autoSaveFor": "Suggested for",

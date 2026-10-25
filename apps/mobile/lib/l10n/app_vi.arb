@@ -14514,6 +14514,18 @@
       }
     }
   },
+  "autoSaveReviewDoneTitle": "Ảnh mới đã được xử lý rồi",
+  "@autoSaveReviewDoneTitle": {
+    "description": "Review screen with nothing left (often opened from an older reminder): a friendly title instead of an empty list (owner, 2026-10-25)."
+  },
+  "autoSaveReviewDoneBody": "Những ảnh này đã được lưu hoặc bỏ qua. Khi điện thoại có ảnh mới có thể có bé, Child Life sẽ gợi ý tiếp.",
+  "@autoSaveReviewDoneBody": {
+    "description": "Body under autoSaveReviewDoneTitle."
+  },
+  "autoSaveReviewOpenMemories": "Xem Kỷ niệm",
+  "@autoSaveReviewOpenMemories": {
+    "description": "Button under the empty review: opens Kỷ niệm."
+  },
   "autoSaveReviewEmpty": "Không còn gợi ý nào chờ duyệt.",
   "@autoSaveReviewEmpty": {
     "description": "AS07 empty (engineering state)"

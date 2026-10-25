@@ -108,6 +108,15 @@ async function pending(babyId = 'baby') {
     )!.ref,
   };
 }
+it('ENG-01 is sent on the last pending state the phone reported, however old (owner, 2026-10-25)', async () => {
+  const p = await pending();
+  const later = new Date(now.getTime() + 2 * ENG_DAY);
+  const intent = (await p.ref.get()).data() as EngagementIntent;
+  expect(await validateEngagementSource(db, intent, later)).toMatchObject({
+    state: 'ready',
+    route: '/memories/auto-save/review',
+  });
+});
 it('renews headless access only for the current owner and every live parent scope', async () => {
   const a = await family('one');
   await family('two');

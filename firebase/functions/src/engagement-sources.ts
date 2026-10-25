@@ -585,8 +585,10 @@ export async function validateEngagementSource(
     }
     if (proof.state === 'resolved')
       return (proof.approvedBatches as unknown[] | undefined)?.length ? unknown : resolved();
-    if (proof.state !== 'pending' || Number(proof.proofAt) < now.getTime() - 30 * 60_000)
-      return unknown;
+    // Owner, 2026-10-25: send on the last state this phone reported ("Chỉ cần push ko cần làm
+    // chính xác"). The 30-minute proof meant a push only when the app had just run near the
+    // 24 h mark, so it was almost never sent; a stale one opens a friendly "đã xử lý rồi".
+    if (proof.state !== 'pending') return unknown;
     return { state: 'ready', route };
   }
   if (i.kind === 'ENG-02') {

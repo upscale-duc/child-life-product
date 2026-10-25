@@ -9690,6 +9690,16 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get autoSaveReviewDoneTitle => 'Ảnh mới đã được xử lý rồi';
+
+  @override
+  String get autoSaveReviewDoneBody =>
+      'Những ảnh này đã được lưu hoặc bỏ qua. Khi điện thoại có ảnh mới có thể có bé, Child Life sẽ gợi ý tiếp.';
+
+  @override
+  String get autoSaveReviewOpenMemories => 'Xem Kỷ niệm';
+
+  @override
   String get autoSaveReviewEmpty => 'Không còn gợi ý nào chờ duyệt.';
 
   @override

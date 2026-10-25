@@ -16075,6 +16075,24 @@ abstract class AppLocalizations {
   /// **'{count, plural, other{Tiếp tục với {count} mục}}'**
   String autoSaveContinue(int count);
 
+  /// Review screen with nothing left (often opened from an older reminder): a friendly title instead of an empty list (owner, 2026-10-25).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mới đã được xử lý rồi'**
+  String get autoSaveReviewDoneTitle;
+
+  /// Body under autoSaveReviewDoneTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những ảnh này đã được lưu hoặc bỏ qua. Khi điện thoại có ảnh mới có thể có bé, Child Life sẽ gợi ý tiếp.'**
+  String get autoSaveReviewDoneBody;
+
+  /// Button under the empty review: opens Kỷ niệm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Kỷ niệm'**
+  String get autoSaveReviewOpenMemories;
+
   /// AS07 empty (engineering state)
   ///
   /// In vi, this message translates to:
