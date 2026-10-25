@@ -102,6 +102,7 @@ beforeEach(async () => {
       seenAt: null,
       receivedAt: null,
     });
+    await setDoc(doc(db, 'babies/b1/careDuty/current'), { uid: 'nanny', since: new Date() });
     await setDoc(doc(db, 'babies/b1/episodes/ep_open'), {
       ...episode('nanny', 'ep_open'),
       createdAt: new Date(),
@@ -129,6 +130,19 @@ describe('users/{uid}/settings/ai (consent)', () => {
   });
 });
 
+describe('babies/{b}/careDuty (P-181)', () => {
+  it('everyone who reads care sees who is on duty; outsiders do not; no client writes', async () => {
+    await assertSucceeds(getDoc(doc(as('mom'), 'babies/b1/careDuty/current')));
+    await assertSucceeds(getDoc(doc(as('nanny'), 'babies/b1/careDuty/current')));
+    // A relative with daily-care rights sees it too (they read care).
+    await assertSucceeds(getDoc(doc(as('aunt'), 'babies/b1/careDuty/current')));
+    await assertFails(getDoc(doc(as('other'), 'babies/b1/careDuty/current')));
+    await assertFails(
+      setDoc(doc(as('mom'), 'babies/b1/careDuty/current'), { uid: 'mom', since: new Date() }),
+    );
+  });
+});
+
 describe('babies/{b}/handoverSends (D-093)', () => {
   it('its sender and its recipient read it; nobody else in the family does', async () => {
     await assertSucceeds(getDoc(doc(as('mom'), 'babies/b1/handoverSends/hs_1')));
@@ -150,9 +164,7 @@ describe('babies/{b}/handoverSends (D-093)', () => {
     await assertFails(
       updateDoc(doc(as('nanny'), 'babies/b1/handoverSends/hs_1'), { seenAt: new Date() }),
     );
-    await assertFails(
-      setDoc(doc(as('mom'), 'babies/b1/handoverSends/hs_2'), { senderUid: 'mom' }),
-    );
+    await assertFails(setDoc(doc(as('mom'), 'babies/b1/handoverSends/hs_2'), { senderUid: 'mom' }));
   });
 });
 

@@ -19953,4 +19953,65 @@ class AppLocalizationsVi extends AppLocalizations {
   String hoVaccineOverdue(int count) {
     return 'Quá hạn tiêm · $count mũi';
   }
+
+  @override
+  String dutyOnNow(String name, String time) {
+    return '$name đang trông · từ $time';
+  }
+
+  @override
+  String dutyOnSinceYesterday(String name) {
+    return '$name trông từ hôm qua';
+  }
+
+  @override
+  String get dutyNobody => 'Chưa ai nhận trông bé';
+
+  @override
+  String dutySheetTitle(String name) {
+    return 'Ai đang trông $name?';
+  }
+
+  @override
+  String dutyStateOn(String time, String duration) {
+    return 'từ $time · $duration';
+  }
+
+  @override
+  String dutyStateUntil(String time) {
+    return 'đến $time';
+  }
+
+  @override
+  String get dutyNobodyBody =>
+      'Chưa ai nhận trông bé. Người đang chăm bé nhận để cả nhà cùng biết.';
+
+  @override
+  String get dutyTake => 'Tôi trông bé từ bây giờ';
+
+  @override
+  String get dutyEnd => 'Kết thúc ca của tôi';
+
+  @override
+  String get dutyOpenHandover => 'Mở bàn giao';
+
+  @override
+  String get dutyTakenToast => 'Bạn đang trông bé. Cả nhà sẽ thấy.';
+
+  @override
+  String get dutyEndedToast => 'Đã kết thúc ca của bạn.';
+
+  @override
+  String get dutyFailed => 'Chưa cập nhật được. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String get dutyLabel => 'Đang trông';
+
+  @override
+  String dutyLine(String name, String time, String duration) {
+    return '$name · từ $time · $duration';
+  }
+
+  @override
+  String get hoTakeOver => 'Tôi nhận trông bé';
 }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:child_life/features/care/care_duty.dart';
 import 'package:child_life/features/rhythm/personalization_digest.dart';
 
 import 'package:child_life/app/session.dart';
@@ -197,6 +198,7 @@ ValidInvite invitePreview({
 
 /// Signed in as [me] with Teddy selected; the family list and pending invites are fixed.
 List<Override> familyOverrides({
+  BabyPrivateProfile? profile,
   Membership? me,
   bool anonymous = false,
   List<Membership>? members,
@@ -245,9 +247,13 @@ List<Override> familyOverrides({
 
   /// Hộp thông báo / EN07 (D-076 #2): empty, defaults, unless a test gives its own.
   NotificationRepository? notificationRepo,
+
+  /// P-181 who is on duty (nobody unless a test says so).
+  CareDuty? duty,
 }) {
   final self = me ?? mai;
   return [
+    careDutyProvider.overrideWith((ref, babyId) => Stream.value(duty)),
     personalDeliveryProvider.overrideWith(
       (ref, uid) => Stream.value(<String, dynamic>{}),
     ),
@@ -278,7 +284,7 @@ List<Override> familyOverrides({
     myInvitesProvider.overrideWith((ref) async => myInvites),
     babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
     babyPrivateProfileProvider.overrideWith(
-      (ref, id) => Stream.value(teddyProfile()),
+      (ref, id) => Stream.value(profile ?? teddyProfile()),
     ),
     familyMembersProvider.overrideWith(
       (ref, id) => Stream.value(members ?? [mai, minh, lan, hoa]),

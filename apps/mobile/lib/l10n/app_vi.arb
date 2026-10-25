@@ -29536,5 +29536,111 @@
         "type": "int"
       }
     }
+  },
+  "dutyOnNow": "{name} đang trông · từ {time}",
+  "@dutyOnNow": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyOnSinceYesterday": "{name} trông từ hôm qua",
+  "@dutyOnSinceYesterday": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyNobody": "Chưa ai nhận trông bé",
+  "@dutyNobody": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutySheetTitle": "Ai đang trông {name}?",
+  "@dutySheetTitle": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyStateOn": "từ {time} · {duration}",
+  "@dutyStateOn": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyStateUntil": "đến {time}",
+  "@dutyStateUntil": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyNobodyBody": "Chưa ai nhận trông bé. Người đang chăm bé nhận để cả nhà cùng biết.",
+  "@dutyNobodyBody": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyTake": "Tôi trông bé từ bây giờ",
+  "@dutyTake": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyEnd": "Kết thúc ca của tôi",
+  "@dutyEnd": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyOpenHandover": "Mở bàn giao",
+  "@dutyOpenHandover": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyTakenToast": "Bạn đang trông bé. Cả nhà sẽ thấy.",
+  "@dutyTakenToast": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyEndedToast": "Đã kết thúc ca của bạn.",
+  "@dutyEndedToast": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyFailed": "Chưa cập nhật được. Kiểm tra mạng rồi thử lại.",
+  "@dutyFailed": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyLabel": "Đang trông",
+  "@dutyLabel": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyLine": "{name} · từ {time} · {duration}",
+  "@dutyLine": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hoTakeOver": "Tôi nhận trông bé",
+  "@hoTakeOver": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
   }
 }

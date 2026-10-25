@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../care/care_duty.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -202,7 +203,10 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         ),
         style: cl.text.label.copyWith(color: cl.colors.inkMuted),
       ),
-      const SizedBox(height: ClSpace.s4),
+      const SizedBox(height: ClSpace.s3),
+      // P-181: who is caring now, for everyone; tapping it takes or ends a shift.
+      CareDutyLine(me: me),
+      const SizedBox(height: ClSpace.s3),
     ];
     final healthCard = [
       if (health) ...[
@@ -414,6 +418,10 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       if (toMe != null) {
         content.add(
           _ReceiveAction(
+            // P-181: a carer receiving it also takes over ("Tôi nhận trông bé").
+            label: familyCan(me, FamilyAction.rhythmFeedback)
+                ? l10n.hoTakeOver
+                : l10n.pv2Acknowledge,
             receivedAt: toMe.receivedAt == null
                 ? null
                 : DateFormat(
@@ -1569,7 +1577,12 @@ class _ReceivedBanner extends StatelessWidget {
 
 /// The recipient's action at the foot of Bàn giao: "Tôi đã nhận bàn giao", then the receipt.
 class _ReceiveAction extends StatelessWidget {
-  const _ReceiveAction({required this.receivedAt, required this.onReceived});
+  const _ReceiveAction({
+    required this.label,
+    required this.receivedAt,
+    required this.onReceived,
+  });
+  final String label;
   final String? receivedAt;
   final Future<void> Function() onReceived;
 
@@ -1595,7 +1608,7 @@ class _ReceiveAction extends StatelessWidget {
     }
     return ClButton(
       key: const Key('handoverAcknowledge'),
-      label: l10n.pv2Acknowledge,
+      label: label,
       expand: true,
       onPressed: onReceived,
     );

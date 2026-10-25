@@ -585,6 +585,13 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // P-181 "Ai đang trông bé": the whole family who reads care sees who is on duty; written by
+      // `setCareDuty` / `markHandover` only.
+      match /careDuty/{doc} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+
       // D-093 "Gửi cho Jun": a sent handover is read by its sender and its recipient only (sent,
       // seen, received); written by `sendHandover` / `markHandover`.
       match /handoverSends/{sendId} {

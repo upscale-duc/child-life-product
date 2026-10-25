@@ -33263,6 +33263,102 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Quá hạn tiêm · {count} mũi'**
   String hoVaccineOverdue(int count);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đang trông · từ {time}'**
+  String dutyOnNow(String name, String time);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} trông từ hôm qua'**
+  String dutyOnSinceYesterday(String name);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ai nhận trông bé'**
+  String get dutyNobody;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai đang trông {name}?'**
+  String dutySheetTitle(String name);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'từ {time} · {duration}'**
+  String dutyStateOn(String time, String duration);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'đến {time}'**
+  String dutyStateUntil(String time);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ai nhận trông bé. Người đang chăm bé nhận để cả nhà cùng biết.'**
+  String get dutyNobodyBody;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi trông bé từ bây giờ'**
+  String get dutyTake;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc ca của tôi'**
+  String get dutyEnd;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở bàn giao'**
+  String get dutyOpenHandover;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang trông bé. Cả nhà sẽ thấy.'**
+  String get dutyTakenToast;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã kết thúc ca của bạn.'**
+  String get dutyEndedToast;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa cập nhật được. Kiểm tra mạng rồi thử lại.'**
+  String get dutyFailed;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trông'**
+  String get dutyLabel;
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · từ {time} · {duration}'**
+  String dutyLine(String name, String time, String duration);
+
+  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi nhận trông bé'**
+  String get hoTakeOver;
 }
 
 class _AppLocalizationsDelegate

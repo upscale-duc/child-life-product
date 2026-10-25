@@ -21148,4 +21148,66 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Vaccines overdue · $_temp0';
   }
+
+  @override
+  String dutyOnNow(String name, String time) {
+    return '$name on duty · since $time';
+  }
+
+  @override
+  String dutyOnSinceYesterday(String name) {
+    return '$name on duty since yesterday';
+  }
+
+  @override
+  String get dutyNobody => 'Nobody is on duty';
+
+  @override
+  String dutySheetTitle(String name) {
+    return 'Who is caring for $name?';
+  }
+
+  @override
+  String dutyStateOn(String time, String duration) {
+    return 'since $time · $duration';
+  }
+
+  @override
+  String dutyStateUntil(String time) {
+    return 'until $time';
+  }
+
+  @override
+  String get dutyNobodyBody =>
+      'Nobody is on duty. Whoever is caring now can take it so the family knows.';
+
+  @override
+  String get dutyTake => 'I’m caring from now';
+
+  @override
+  String get dutyEnd => 'End my shift';
+
+  @override
+  String get dutyOpenHandover => 'Open handover';
+
+  @override
+  String get dutyTakenToast => 'You’re on duty. The family can see it.';
+
+  @override
+  String get dutyEndedToast => 'Your shift has ended.';
+
+  @override
+  String get dutyFailed =>
+      'Couldn’t update. Check the connection and try again.';
+
+  @override
+  String get dutyLabel => 'On duty';
+
+  @override
+  String dutyLine(String name, String time, String duration) {
+    return '$name · since $time · $duration';
+  }
+
+  @override
+  String get hoTakeOver => 'I’ll take over';
 }

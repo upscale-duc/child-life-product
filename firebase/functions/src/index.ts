@@ -393,6 +393,7 @@ import {
   markHandover as runMarkHandover,
   sendHandover as runSendHandover,
 } from './handover-send.js';
+import { setCareDuty as runSetCareDuty } from './care-duty.js';
 import { sweepAiReservations } from './quota-sweeper.js';
 // ---- Child Life Assistant, slice A2 server core (docs/assistant/) ----
 import {
@@ -1689,6 +1690,11 @@ export const sendHandover = aiCall('sendHandover', (r) =>
 /** D-093: the recipient opened (`seen`) or acknowledged (`received`) a sent handover. */
 export const markHandover = aiCall('markHandover', (r) =>
   runMarkHandover(getFirestore(), requireAccount(r), r.data, new Date()),
+);
+
+/** P-181 "Tôi trông bé" / "Kết thúc ca của tôi": who is on duty for this baby. */
+export const setCareDuty = aiCall('setCareDuty', (r) =>
+  runSetCareDuty(getFirestore(), requireAccount(r), r.data, new Date()),
 );
 
 // ---------- Nhập chi tiêu (D-060, P-144) ----------

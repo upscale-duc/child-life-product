@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../care/care_duty.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
@@ -313,6 +314,8 @@ class TodayScreen extends ConsumerWidget {
               ],
             ),
           ],
+          // P-181: who is caring for the baby now, for the whole family.
+          const CareDutyChip(),
           // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
           const WhatsNewBanner(),
           // AR02: new library photos that may show the baby (Tự lưu, D-066).

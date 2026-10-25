@@ -6731,5 +6731,111 @@
         "type": "int"
       }
     }
+  },
+  "dutyOnNow": "{name} on duty · since {time}",
+  "@dutyOnNow": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyOnSinceYesterday": "{name} on duty since yesterday",
+  "@dutyOnSinceYesterday": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyNobody": "Nobody is on duty",
+  "@dutyNobody": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutySheetTitle": "Who is caring for {name}?",
+  "@dutySheetTitle": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyStateOn": "since {time} · {duration}",
+  "@dutyStateOn": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyStateUntil": "until {time}",
+  "@dutyStateUntil": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyNobodyBody": "Nobody is on duty. Whoever is caring now can take it so the family knows.",
+  "@dutyNobodyBody": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyTake": "I’m caring from now",
+  "@dutyTake": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyEnd": "End my shift",
+  "@dutyEnd": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyOpenHandover": "Open handover",
+  "@dutyOpenHandover": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyTakenToast": "You’re on duty. The family can see it.",
+  "@dutyTakenToast": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyEndedToast": "Your shift has ended.",
+  "@dutyEndedToast": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyFailed": "Couldn’t update. Check the connection and try again.",
+  "@dutyFailed": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyLabel": "On duty",
+  "@dutyLabel": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "dutyLine": "{name} · since {time} · {duration}",
+  "@dutyLine": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hoTakeOver": "I’ll take over",
+  "@hoTakeOver": {
+    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
   }
 }

@@ -10,6 +10,7 @@ import {
 import { AiSummaryError } from './ai-summary.js';
 import { isActiveMember } from './family.js';
 import { createOnce } from './social.js';
+import { canTakeDuty, careDutyRef, writeCareDuty } from './care-duty.js';
 
 // D-093 "Gửi cho Jun": a stored handover sent to one family member inside the app. The send is
 // recorded in `babies/{b}/handoverSends/{id}` (its sender and recipient read it: sent, seen,
@@ -22,7 +23,10 @@ export function handoverSendId(summaryId: string, recipientUid: string): string 
   return `hs_${createHash('sha256').update(`${summaryId}|${recipientUid}`).digest('hex').slice(0, 32)}`;
 }
 
-function parse<T>(schema: { safeParse(d: unknown): { success: boolean; data?: T } }, data: unknown): T {
+function parse<T>(
+  schema: { safeParse(d: unknown): { success: boolean; data?: T } },
+  data: unknown,
+): T {
   const r = schema.safeParse(data);
   if (!r.success) throw new AiSummaryError('invalid-argument', 'bad-request');
   return r.data as T;
@@ -36,7 +40,8 @@ function grantOf(member: DocumentSnapshot): MemberGrant {
   };
 }
 
-const iso = (v: unknown): string | null => (v instanceof Timestamp ? v.toDate().toISOString() : null);
+const iso = (v: unknown): string | null =>
+  v instanceof Timestamp ? v.toDate().toISOString() : null;
 
 export interface HandoverSendResult {
   sendId: string;
@@ -104,7 +109,9 @@ export async function sendHandover(
       delivered: false,
     });
   }
-  const sentAt = created ? now.toISOString() : (iso((await ref.get()).get('sentAt')) ?? now.toISOString());
+  const sentAt = created
+    ? now.toISOString()
+    : (iso((await ref.get()).get('sentAt')) ?? now.toISOString());
 
   const [devices, settings] = await Promise.all([
     db.collection(`users/${req.recipientUid}/devices`).get(),
@@ -129,11 +136,20 @@ export async function markHandover(
     if (!send.exists || send.get('recipientUid') !== uid) {
       throw new AiSummaryError('not-found', 'send-not-found');
     }
+    // P-181: receiving a handover makes the recipient the one on duty (once, carers only).
+    const receiving = req.action === 'received' && !send.get('receivedAt');
+    const dutyRef = careDutyRef(db, req.babyId);
+    const [member, duty] = receiving
+      ? await Promise.all([tx.get(db.doc(`babies/${req.babyId}/members/${uid}`)), tx.get(dutyRef)])
+      : [null, null];
     const at = Timestamp.fromDate(now);
     const seenAt = (send.get('seenAt') as Timestamp | null) ?? at;
     const receivedAt =
       (send.get('receivedAt') as Timestamp | null) ?? (req.action === 'received' ? at : null);
     tx.update(ref, { seenAt, receivedAt });
+    if (member && duty && canTakeDuty(member, now)) {
+      writeCareDuty(tx, dutyRef, duty, uid, 'take', 'handover', now);
+    }
     return { seenAt: iso(seenAt), receivedAt: iso(receivedAt) };
   });
 }

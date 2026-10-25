@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AiSummaryError } from '../functions/src/ai-summary.js';
 import { handoverSendId, markHandover, sendHandover } from '../functions/src/handover-send.js';
 import { deliverNotice, type PushSender } from '../functions/src/social.js';
+import { setCareDuty } from '../functions/src/care-duty.js';
 
 // D-093 "Gửi cho Jun": a handover sent to one member, through the family notice pipeline.
 const projectId = 'demo-child-life';
@@ -49,7 +50,9 @@ beforeEach(async () => {
     method: 'DELETE',
   });
   pushed.length = 0;
-  await db.doc(`babies/${babyId}`).set({ nickname: 'Teddy', timeZone: { zone: 'Asia/Ho_Chi_Minh' } });
+  await db
+    .doc(`babies/${babyId}`)
+    .set({ nickname: 'Teddy', timeZone: { zone: 'Asia/Ho_Chi_Minh' } });
   const member = (uid: string, role: string, extra: Record<string, unknown> = {}) =>
     db.doc(`babies/${babyId}/members/${uid}`).set({
       uid,
@@ -111,9 +114,9 @@ describe('sendHandover (D-093)', () => {
     expect(
       (await sendHandover(db, 'jun', { babyId, summaryId, recipientUid: 'mom' }, now)).pushable,
     ).toBe(false);
-    expect(await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'mom' }, now))).toBe(
-      'self',
-    );
+    expect(
+      await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'mom' }, now)),
+    ).toBe('self');
     expect(
       await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'grandma' }, now)),
     ).toBe('recipient-cannot-read');
@@ -130,7 +133,12 @@ describe('sendHandover (D-093)', () => {
   });
 
   it('the recipient marks it seen, then received; nobody else can', async () => {
-    const { sendId } = await sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now);
+    const { sendId } = await sendHandover(
+      db,
+      'mom',
+      { babyId, summaryId, recipientUid: 'jun' },
+      now,
+    );
     expect(await reasonOf(markHandover(db, 'mom', { babyId, sendId, action: 'seen' }, now))).toBe(
       'send-not-found',
     );
@@ -146,5 +154,54 @@ describe('sendHandover (D-093)', () => {
     expect(
       await reasonOf(sendHandover(db, 'mom', { babyId, summaryId, recipientUid: 'jun' }, now)),
     ).toBe('summary-not-found');
+  });
+});
+
+describe('P-181 "Ai đang trông bé"', () => {
+  const duty = async () => (await db.doc(`babies/${babyId}/careDuty/current`).get()).data();
+  const later = new Date(now.getTime() + 60 * 60_000);
+
+  it('a carer takes it, the next one takes over, and only the one on duty can end it', async () => {
+    expect(await setCareDuty(db, 'mom', { babyId, action: 'take' }, now)).toEqual({
+      uid: 'mom',
+      since: now.toISOString(),
+    });
+    expect(await duty()).toMatchObject({ uid: 'mom', via: 'manual', previousUid: null });
+    await setCareDuty(db, 'jun', { babyId, action: 'take' }, later);
+    const d = await duty();
+    expect(d).toMatchObject({ uid: 'jun', previousUid: 'mom' });
+    expect(d?.previousUntil.toDate()).toEqual(later);
+    // Mẹ ending someone else's duty changes nothing; Jun ending theirs clears it.
+    await setCareDuty(db, 'mom', { babyId, action: 'end' }, later);
+    expect(await duty()).toMatchObject({ uid: 'jun' });
+    await setCareDuty(db, 'jun', { babyId, action: 'end' }, later);
+    expect(await duty()).toMatchObject({ uid: null, previousUid: 'jun' });
+  });
+
+  it('a relative (no care logging) cannot take it; bad input is refused', async () => {
+    expect(await reasonOf(setCareDuty(db, 'grandma', { babyId, action: 'take' }, now))).toBe(
+      'not-a-carer',
+    );
+    expect(await reasonOf(setCareDuty(db, 'mom', { babyId, action: 'nap' }, now))).toBe(
+      'bad-request',
+    );
+  });
+
+  it('receiving a handover puts the recipient on duty, once', async () => {
+    await setCareDuty(db, 'mom', { babyId, action: 'take' }, now);
+    const { sendId } = await sendHandover(
+      db,
+      'mom',
+      { babyId, summaryId, recipientUid: 'jun' },
+      now,
+    );
+    await markHandover(db, 'jun', { babyId, sendId, action: 'seen' }, now);
+    expect(await duty()).toMatchObject({ uid: 'mom' });
+    await markHandover(db, 'jun', { babyId, sendId, action: 'received' }, later);
+    expect(await duty()).toMatchObject({ uid: 'jun', via: 'handover', previousUid: 'mom' });
+    // Mẹ takes it back; a second "received" does not move it again.
+    await setCareDuty(db, 'mom', { babyId, action: 'take' }, later);
+    await markHandover(db, 'jun', { babyId, sendId, action: 'received' }, later);
+    expect(await duty()).toMatchObject({ uid: 'mom' });
   });
 });

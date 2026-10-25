@@ -30,6 +30,7 @@ export * from './rhythm.js';
 export * from './personalization.js';
 export * from './quota.js';
 export * from './ai-summary.js';
+export * from './care-duty.js';
 export * from './billing.js';
 export * from './assistant.js';
 // Lumi rework 2026-10-15: deterministic text rules (money, spending detector, durations, dates).
