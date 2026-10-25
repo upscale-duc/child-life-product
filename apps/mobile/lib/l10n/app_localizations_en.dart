@@ -22451,10 +22451,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'YOUR CHILD\'S RHYTHM';
 
   @override
-  String get pv2CardRhythmTitle => 'Lumi looks back at the week';
+  String get pv2CardRhythmTitle => 'Small changes, easier to see.';
 
   @override
-  String get pv2CardRhythmBody => 'One clear note, from the family\'s journal.';
+  String get pv2CardRhythmBody =>
+      'Look back at feeds and sleep from your child\'s journal, with a short note and the sources to check.';
 
   @override
   String pv2CardRhythmLimit(int n) {
@@ -22471,15 +22472,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardStorageEyebrow => 'STORAGE';
 
   @override
-  String get pv2CardStorageTitle => 'New photos just keep saving';
+  String get pv2CardStorageTitle => 'Room for the months ahead.';
 
   @override
   String get pv2CardStorageBody =>
-      'Auto-save runs every day, no clearing out at the end of the month.';
+      'Keep more photos and videos in the family\'s private album.';
 
   @override
   String pv2CardStorageLimit(String gb) {
-    return '$gb GB for the family · add 20/50 GB when needed';
+    return '$gb GB shared · more available';
   }
 
   @override
@@ -22520,7 +22521,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2RowLumiFree(int n) {
-    return '$n trial credits, once';
+    return '$n trial credits';
   }
 
   @override
@@ -22541,7 +22542,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2RowVideoFree(int n) {
-    return '$n trial exports, once';
+    return '$n trial exports';
   }
 
   @override
@@ -22553,7 +22554,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2RowTemplates => 'Card & video templates';
 
   @override
-  String get pv2RowTemplatesFree => 'Basic templates · preview premium ones';
+  String get pv2RowTemplatesFree => 'Basic templates';
 
   @override
   String get pv2RowTemplatesPremium => 'Every premium template';
@@ -23137,4 +23138,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pv2ReasonRhythm =>
       'This week\'s journal is kept · Lumi looks back once the family has Premium.';
+
+  @override
+  String pv2DemoStorageFree(String gb) {
+    return 'Free · $gb';
+  }
+
+  @override
+  String pv2DemoStoragePremium(String gb) {
+    return 'Premium · $gb';
+  }
+
+  @override
+  String get pv2DemoStorageWaiting => '12 new photos waiting to be saved';
+
+  @override
+  String get pv2RowRhythm => 'Your child\'s rhythm';
+
+  @override
+  String get pv2RowRhythmFree => 'Journal & basic milestones';
+
+  @override
+  String get pv2RowRhythmPremium => 'Weekly notes · with sources';
 }

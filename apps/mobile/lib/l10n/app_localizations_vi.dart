@@ -21249,11 +21249,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'HIỂU NHỊP CON';
 
   @override
-  String get pv2CardRhythmTitle => 'Lumi nhìn lại tuần giúp bạn';
+  String get pv2CardRhythmTitle => 'Những thay đổi nhỏ, dễ nhìn thấy hơn.';
 
   @override
   String get pv2CardRhythmBody =>
-      'Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.';
+      'Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.';
 
   @override
   String pv2CardRhythmLimit(int n) {
@@ -21270,15 +21270,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardStorageEyebrow => 'DUNG LƯỢNG';
 
   @override
-  String get pv2CardStorageTitle => 'Ảnh mới cứ thế được lưu';
+  String get pv2CardStorageTitle => 'Thêm chỗ cho những tháng ngày tiếp theo.';
 
   @override
   String get pv2CardStorageBody =>
-      'Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.';
+      'Giữ thêm ảnh và video trong album riêng của gia đình.';
 
   @override
   String pv2CardStorageLimit(String gb) {
-    return '$gb GB cho cả nhà · cần thêm thì mua 20/50 GB riêng';
+    return '$gb GB dùng chung · có thể mua thêm';
   }
 
   @override
@@ -21319,7 +21319,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2RowLumiFree(int n) {
-    return '$n credit trải nghiệm một lần';
+    return '$n credit dùng thử';
   }
 
   @override
@@ -21340,7 +21340,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2RowVideoFree(int n) {
-    return '$n lượt trải nghiệm một lần';
+    return '$n lượt dùng thử';
   }
 
   @override
@@ -21352,7 +21352,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2RowTemplates => 'Mẫu thiệp & video';
 
   @override
-  String get pv2RowTemplatesFree => 'Mẫu cơ bản · xem trước mẫu cao cấp';
+  String get pv2RowTemplatesFree => 'Mẫu cơ bản';
 
   @override
   String get pv2RowTemplatesPremium => 'Toàn bộ mẫu cao cấp';
@@ -21933,4 +21933,26 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get pv2ReasonRhythm =>
       'Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.';
+
+  @override
+  String pv2DemoStorageFree(String gb) {
+    return 'Free · $gb';
+  }
+
+  @override
+  String pv2DemoStoragePremium(String gb) {
+    return 'Premium · $gb';
+  }
+
+  @override
+  String get pv2DemoStorageWaiting => '12 ảnh mới đang chờ được lưu';
+
+  @override
+  String get pv2RowRhythm => 'Hiểu nhịp con';
+
+  @override
+  String get pv2RowRhythmFree => 'Nhật ký & mốc cơ bản';
+
+  @override
+  String get pv2RowRhythmPremium => 'Nhận xét tuần · có nguồn';
 }

@@ -181,7 +181,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        expect(find.text('Lumi nhìn lại tuần giúp bạn'), findsOneWidget);
+        expect(find.text('Những thay đổi nhỏ, dễ nhìn thấy hơn.'), findsOneWidget);
         await tester.scrollUntilVisible(
           find.text('Bạn đang cần'),
           200,

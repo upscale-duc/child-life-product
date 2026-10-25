@@ -35529,13 +35529,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Lumi nhìn lại tuần giúp bạn'**
+  /// **'Những thay đổi nhỏ, dễ nhìn thấy hơn.'**
   String get pv2CardRhythmTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.'**
+  /// **'Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.'**
   String get pv2CardRhythmBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
@@ -35565,19 +35565,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Ảnh mới cứ thế được lưu'**
+  /// **'Thêm chỗ cho những tháng ngày tiếp theo.'**
   String get pv2CardStorageTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.'**
+  /// **'Giữ thêm ảnh và video trong album riêng của gia đình.'**
   String get pv2CardStorageBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
   ///
   /// In vi, this message translates to:
-  /// **'{gb} GB cho cả nhà · cần thêm thì mua 20/50 GB riêng'**
+  /// **'{gb} GB dùng chung · có thể mua thêm'**
   String pv2CardStorageLimit(String gb);
 
   /// Premium v2 (Figma 958:13863, D-101). Storage card demo row.
@@ -35649,7 +35649,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} credit trải nghiệm một lần'**
+  /// **'{n} credit dùng thử'**
   String pv2RowLumiFree(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
@@ -35679,7 +35679,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} lượt trải nghiệm một lần'**
+  /// **'{n} lượt dùng thử'**
   String pv2RowVideoFree(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
@@ -35697,7 +35697,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'Mẫu cơ bản · xem trước mẫu cao cấp'**
+  /// **'Mẫu cơ bản'**
   String get pv2RowTemplatesFree;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
@@ -36647,6 +36647,42 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.'**
   String get pv2ReasonRhythm;
+
+  /// Premium v2 (Figma 958:13863, D-101). Storage card demo: the Free bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Free · {gb}'**
+  String pv2DemoStorageFree(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Storage card demo: the Premium bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium · {gb}'**
+  String pv2DemoStoragePremium(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Storage card demo: photos waiting.
+  ///
+  /// In vi, this message translates to:
+  /// **'12 ảnh mới đang chờ được lưu'**
+  String get pv2DemoStorageWaiting;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row (owner, 2026-10-25).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu nhịp con'**
+  String get pv2RowRhythm;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký & mốc cơ bản'**
+  String get pv2RowRhythmFree;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận xét tuần · có nguồn'**
+  String get pv2RowRhythmPremium;
 }
 
 class _AppLocalizationsDelegate

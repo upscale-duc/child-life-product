@@ -1376,8 +1376,46 @@ class _StorageDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Owner, 2026-10-25: the benefit is more room, not auto-save; the demo shows the room
+    // growing and photos waiting for it.
+    final free = premiumGb(context, PlanOffer.free.storageBytes);
+    final premium = premiumGb(context, PlanOffer.premium.storageBytes);
+    Widget bar(String label, double share, bool gold) => Row(
+      children: [
+        SizedBox(
+          width: 82,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: gold ? PremiumPalette.gold : const Color(0x99FFFFFF),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: share,
+              child: Container(
+                height: 10,
+                decoration: BoxDecoration(
+                  color: gold
+                      ? PremiumPalette.gold
+                      : Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
     return _Panel(
       children: [
+        bar(l10n.pv2DemoStorageFree(free), 0.1, false),
+        bar(l10n.pv2DemoStoragePremium(premium), 1, true),
         Row(
           children: [
             for (final (i, f) in const [
@@ -1385,15 +1423,32 @@ class _StorageDemo extends StatelessWidget {
               'baby-newborn.jpg',
               'baby-smile.jpg',
               'family-1.jpg',
-              'family-2.jpg',
             ].indexed) ...[
               if (i > 0) const SizedBox(width: 4),
-              _photo(f, width: 48, height: 48, radius: 8),
+              _photo(f, width: 40, height: 40, radius: 8),
             ],
+            const SizedBox(width: 4),
+            Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+              ),
+              child: const Text(
+                '+8',
+                style: TextStyle(
+                  color: _white92,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
           ],
         ),
-        _demoRow('✓', l10n.pv2CardStorageDemo, '09:41'),
-        _demoRow('↑', l10n.pv2DemoUploading, '68%'),
+        _demoRow('↑', l10n.pv2DemoStorageWaiting),
       ],
     );
   }
@@ -1440,8 +1495,13 @@ class _Compare extends StatelessWidget {
         l10n.pv2RowLumi,
         l10n.pv2RowLumiFree(free.lumiCredits),
         l10n.pv2RowLumiPremium(premium.lumiCredits),
-        // Nhịp lớn lên counts in the Lumi credit ("Gồm trong 200 credit").
-        need == PremiumEntry.lumi || need == PremiumEntry.rhythm,
+        need == PremiumEntry.lumi,
+      ),
+      (
+        l10n.pv2RowRhythm,
+        l10n.pv2RowRhythmFree,
+        l10n.pv2RowRhythmPremium,
+        need == PremiumEntry.rhythm,
       ),
       (
         l10n.pv2RowStorage,

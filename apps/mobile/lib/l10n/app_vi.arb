@@ -31146,11 +31146,11 @@
   "@pv2CardRhythmEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardRhythmTitle": "Lumi nhìn lại tuần giúp bạn",
+  "pv2CardRhythmTitle": "Những thay đổi nhỏ, dễ nhìn thấy hơn.",
   "@pv2CardRhythmTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardRhythmBody": "Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.",
+  "pv2CardRhythmBody": "Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.",
   "@pv2CardRhythmBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
@@ -31175,15 +31175,15 @@
   "@pv2CardStorageEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardStorageTitle": "Ảnh mới cứ thế được lưu",
+  "pv2CardStorageTitle": "Thêm chỗ cho những tháng ngày tiếp theo.",
   "@pv2CardStorageTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardStorageBody": "Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.",
+  "pv2CardStorageBody": "Giữ thêm ảnh và video trong album riêng của gia đình.",
   "@pv2CardStorageBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardStorageLimit": "{gb} GB cho cả nhà · cần thêm thì mua 20/50 GB riêng",
+  "pv2CardStorageLimit": "{gb} GB dùng chung · có thể mua thêm",
   "@pv2CardStorageLimit": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
     "placeholders": {
@@ -31244,7 +31244,7 @@
   "@pv2RowLumi": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
-  "pv2RowLumiFree": "{n} credit trải nghiệm một lần",
+  "pv2RowLumiFree": "{n} credit dùng thử",
   "@pv2RowLumiFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31279,7 +31279,7 @@
   "@pv2RowVideo": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
-  "pv2RowVideoFree": "{n} lượt trải nghiệm một lần",
+  "pv2RowVideoFree": "{n} lượt dùng thử",
   "@pv2RowVideoFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31301,7 +31301,7 @@
   "@pv2RowTemplates": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
-  "pv2RowTemplatesFree": "Mẫu cơ bản · xem trước mẫu cao cấp",
+  "pv2RowTemplatesFree": "Mẫu cơ bản",
   "@pv2RowTemplatesFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
   },
@@ -32197,5 +32197,39 @@
   "pv2ReasonRhythm": "Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.",
   "@pv2ReasonRhythm": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall reason line from Nhịp lớn lên (engineering copy)."
+  },
+  "pv2DemoStorageFree": "Free · {gb}",
+  "@pv2DemoStorageFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo: the Free bar.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2DemoStoragePremium": "Premium · {gb}",
+  "@pv2DemoStoragePremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo: the Premium bar.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2DemoStorageWaiting": "12 ảnh mới đang chờ được lưu",
+  "@pv2DemoStorageWaiting": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo: photos waiting."
+  },
+  "pv2RowRhythm": "Hiểu nhịp con",
+  "@pv2RowRhythm": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row (owner, 2026-10-25)."
+  },
+  "pv2RowRhythmFree": "Nhật ký & mốc cơ bản",
+  "@pv2RowRhythmFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
+  },
+  "pv2RowRhythmPremium": "Nhận xét tuần · có nguồn",
+  "@pv2RowRhythmPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
   }
 }
