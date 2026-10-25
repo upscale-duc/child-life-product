@@ -5,15 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
-import '../../core/widgets/cl_feedback.dart' show ClSkeleton;
-import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart' show babyProvider;
 import '../family/family_repository.dart';
-import '../home/home_shell.dart';
-import '../onboarding/widgets/onboarding_layout.dart';
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_labels.dart';
@@ -21,69 +17,6 @@ import 'rhythm_models.dart';
 import 'rhythm_plans.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
-
-/// "Các cách đã thử" (D-076 #10; C01 589:6451 → AC02 590:6558): every suggestion the family
-/// planned or answered in the feedback window, newest first — who planned it, who answered what
-/// (with the note), and what is still open. A plan whose chance has passed can be answered here
-/// ("Kể lại kết quả" → AC02, or "Chưa thử"); one still waiting says when, and its author may take
-/// it back. For members who read care (`history.read`); answering needs `rhythm.feedback`.
-class ActivityHistoryScreen extends ConsumerWidget {
-  const ActivityHistoryScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final me = ref.watch(selectedMembershipProvider);
-    final topBar = Align(
-      alignment: Alignment.centerLeft,
-      child: RhRoundIcon(
-        icon: ClIcons.back,
-        label: l10n.a11yBack,
-        onPressed: () => leaveRhythm(context),
-      ),
-    );
-    final heading = [
-      Semantics(
-        header: true,
-        child: Text(l10n.rhTriedHistoryTitle, style: cl.text.title),
-      ),
-      const SizedBox(height: ClSpace.s1),
-      Text(
-        l10n.rhTriedHistoryBody(feedbackWindowDays),
-        style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-      ),
-      const SizedBox(height: ClSpace.s4),
-    ];
-    if (me == null || !familyCan(me, FamilyAction.historyRead)) {
-      return OnboardingScaffold(
-        topBar: topBar,
-        content: [
-          ...heading,
-          RhInfoBox(icon: ClIcons.lock, text: l10n.rhTriedHistoryEmpty),
-        ],
-      );
-    }
-    watchRhythmClock(ref, me.babyId);
-    final async = ref.watch(recFeedbackProvider(me.babyId));
-    final entries = triedEntries(async.value ?? const <RecFeedback>[]);
-    return OnboardingScaffold(
-      topBar: topBar,
-      content: [
-        ...heading,
-        if (async.isLoading && !async.hasValue)
-          const ClSkeleton(height: 160, radius: 16)
-        else if (entries.isEmpty)
-          RhInfoBox(icon: ClIcons.heart, text: l10n.rhTriedHistoryEmpty)
-        else
-          for (final (i, e) in entries.indexed) ...[
-            if (i > 0) const SizedBox(height: ClSpace.s3),
-            TriedEntryCard(me: me, entry: e, entries: entries),
-          ],
-      ],
-    );
-  }
-}
 
 /// One try: the activity, who planned it and when, each answer (who, when, what, the note), and
 /// what can still be done with it.

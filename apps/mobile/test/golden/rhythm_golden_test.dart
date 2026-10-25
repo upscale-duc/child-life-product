@@ -7,7 +7,6 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/design/tokens.g.dart';
 import 'package:child_life/features/premium/premium_repository.dart';
-import 'package:child_life/features/rhythm/activity_history_screen.dart';
 import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/checkin_screens.dart';
 import 'package:child_life/features/rhythm/health_screen.dart';
@@ -21,6 +20,7 @@ import 'package:child_life/features/rhythm/rhythm_overview.dart';
 import 'package:child_life/features/rhythm/rhythm_own.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_setup.dart';
+import 'package:child_life/features/rhythm/tried_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -307,7 +307,7 @@ final _cases = <String, _Case>{
   ),
   // "Các cách đã thử": an answered plan, an open one past its chance, one waiting.
   'tried_history': (
-    build: () => const ActivityHistoryScreen(),
+    build: () => const TriedScreen(),
     overrides: () => rhythmOverrides(
       me: minh,
       caps: rhythmCaps(plan: 'beta', groupA: true),

@@ -631,7 +631,13 @@ class _PrimaryCard extends ConsumerWidget {
             const SizedBox(height: ClSpace.s3),
             RhOutcomeChoices(
               onPick: (kind) {
-                giveFeedbackOn(context, ref, me, kind: kind, activity: activity);
+                giveFeedbackOn(
+                  context,
+                  ref,
+                  me,
+                  kind: kind,
+                  activity: activity,
+                );
                 showClToast(context, message: l10n.rhFeedbackSaved);
               },
             ),

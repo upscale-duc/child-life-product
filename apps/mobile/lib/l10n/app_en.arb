@@ -4162,8 +4162,8 @@
   "rhPlanCanceled": "Dropped this try",
   "rhDidNotTry": "Didn't get to it",
   "rhDidNotTryToast": "No problem, you can try another time.",
-  "rhTriedHistoryTitle": "What we’ve tried",
-  "rhTriedHistoryBody": "Suggestions the family planned or answered in the last {days} days, who did and how it went.",
+  "rhTriedHistoryTitle": "What we have tried",
+  "rhTriedHistoryBody": "Last {days} days · the whole family",
   "rhTriedHistoryEmpty": "Nothing planned or tried yet.",
   "rhSeeAllTried": "See all",
   "rhWeekMakeVideo": "Make a week {n} video",
@@ -6842,5 +6842,10 @@
   "@axWidgetCareDuty": {
     "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
   },
-  "rhSeeHow": "See how"
+  "rhSeeHow": "See how",
+  "rhTriedAll": "All",
+  "rhTriedStatTried": "tried",
+  "rhTriedStatHelpful": "helpful",
+  "rhTriedStatPlanned": "to try",
+  "rhTriedNote": "From your family's answers, not a medical conclusion."
 }

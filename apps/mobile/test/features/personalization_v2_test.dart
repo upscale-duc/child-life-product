@@ -1,11 +1,11 @@
 import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/features/nutrition/nutrition_state.dart';
-import 'package:child_life/features/rhythm/personal_day_widgets.dart';
 import 'package:child_life/features/rhythm/personal_day_pages.dart';
 import 'package:child_life/features/rhythm/personalization_sources.dart';
 import 'package:child_life/features/rhythm/personalization_v2_repository.dart';
 import 'package:child_life/features/rhythm/personalization_v2_screen.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
+import 'package:child_life/features/rhythm/tried_screen.dart';
 import 'package:child_life/features/today/today_for_baby.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -246,7 +246,7 @@ void main() {
     final activity = rhythmContent().activities.first;
     await pumpRouted(
       tester,
-      const PersonalHistoryScreen(),
+      const TriedScreen(),
       overrides: rhythmOverrides(
         repo: FakeRhythmRepository(),
         personalDay: snapshot({
@@ -263,14 +263,10 @@ void main() {
         personalization: api,
       ),
     );
-    // Once, under "Đã thử" (owner, 2026-10-24): no "Đã lưu" group, only the row's chip.
-    expect(find.text(l.pv2SavedNow), findsOneWidget);
-    expect(find.text(l.pv2TriedBefore), findsOneWidget);
-    expect(find.byType(PersonalIdeaRow), findsOneWidget);
-    // "Con thế nào?" opens the same three answers as Nhịp lớn lên (owner, 2026-10-25).
-    await tester.tap(find.byType(PopupMenuButton<String>).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text(l.pv2HowWasIt));
+    // D-102: one history, each idea once; a try without an answer asks "Con thế nào?".
+    expect(find.byKey(Key('tried.row.${activity.id}')), findsOneWidget);
+    await tester.tap(find.byKey(Key('tried.ask.${activity.id}')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('rh.outcome.helpful')));
     await tester.pumpAndSettle();
@@ -281,12 +277,12 @@ void main() {
     });
   });
   testWidgets(
-    'planned again after a helpful try: the plan, then "Từng có ích", never "Có ích" beside it',
+    'planned again after a helpful try: one row, the plan, never "Có ích" beside it',
     (tester) async {
       final activity = rhythmContent().activities.first;
       await pumpRouted(
         tester,
-        const PersonalHistoryScreen(),
+        const TriedScreen(),
         overrides: rhythmOverrides(
           repo: FakeRhythmRepository(),
           personalDay: snapshot({
@@ -302,7 +298,9 @@ void main() {
           }),
         ),
       );
-      expect(find.text(l.pv2ChipHelpedBefore), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.byKey(Key('tried.row.${activity.id}')), findsOneWidget);
+      expect(find.byKey(Key('tried.ask.${activity.id}')), findsOneWidget);
       expect(find.text(l.pv2ChipHelpful), findsNothing);
     },
   );

@@ -2,13 +2,13 @@ import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/features/keepsakes/keepsake_access.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
-import 'package:child_life/features/rhythm/activity_history_screen.dart';
 import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/rhythm_home.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_plans.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_week.dart';
+import 'package:child_life/features/rhythm/tried_screen.dart';
 import 'package:child_life/features/rhythm/week_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -326,8 +326,8 @@ void main() {
     });
   });
 
-  group('"Các cách đã thử"', () {
-    testWidgets('every plan and answer, who and when; open ones answerable', (
+  group('"Cách nhà mình đã thử" (D-102)', () {
+    testWidgets('each idea once: its answer, who and when; a due plan answered here', (
       tester,
     ) async {
       final repo = FakeRhythmRepository(
@@ -353,31 +353,40 @@ void main() {
           ),
         ],
       );
-      final (visits, _) = await pumpRouted(
+      await pumpRouted(
         tester,
-        const ActivityHistoryScreen(),
+        const TriedScreen(),
         overrides: rhythmOverrides(me: minh, repo: repo),
       );
       await tester.pumpAndSettle();
       expect(find.text(l10n.rhTriedHistoryTitle), findsOneWidget);
-      expect(find.text('Mẹ sẽ thử · tối 05/10'), findsOneWidget);
+      // Three numbers: tried, helpful, to try.
+      expect(find.bySemanticsLabel('1 ${l10n.rhTriedStatTried}'), findsOneWidget);
+      expect(find.bySemanticsLabel('1 ${l10n.rhTriedStatHelpful}'), findsOneWidget);
+      expect(find.bySemanticsLabel('1 ${l10n.rhTriedStatPlanned}'), findsOneWidget);
+      // The answer stands for the plan behind it: one row, not two lines.
       expect(find.text('Bạn · 06/10 · ${l10n.rhHelpful}'), findsOneWidget);
+      expect(find.text('Mẹ sẽ thử · tối 05/10'), findsNothing);
       expect(find.text('“Con vào giấc nhanh hơn”'), findsOneWidget);
       expect(find.text('Mẹ sẽ thử · 07/10'), findsOneWidget);
-      // The skin-to-skin plan's chance has passed: answer it here.
-      expect(find.text(l10n.rhDidNotTry), findsOneWidget);
-      await tester.tap(find.text(l10n.rhTellHow));
+      // The skin-to-skin plan's chance has passed: the same three answers, here.
+      await tester.tap(find.byKey(const ValueKey('tried.ask.act_skin_to_skin')));
       await tester.pumpAndSettle();
-      expect(
-        visits.last.location,
-        '${Routes.rhythmActivity}/act_skin_to_skin/feedback',
-      );
+      expect(find.text(l10n.rhDidNotTry), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('rh.outcome.helpful')));
+      await tester.pumpAndSettle();
+      expect(repo.savedFeedback.single.kind, FeedbackKind.helpful);
+      expect(repo.savedFeedback.single.contentId, 'act_skin_to_skin');
+      // The filter keeps only what was helpful.
+      await tester.tap(find.byKey(const ValueKey('tried.filter.helpful')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('tried.row.act_wind_down')), findsOneWidget);
     });
 
     testWidgets('nothing yet', (tester) async {
       await pumpRouted(
         tester,
-        const ActivityHistoryScreen(),
+        const TriedScreen(),
         overrides: rhythmOverrides(me: minh, repo: FakeRhythmRepository()),
       );
       await tester.pumpAndSettle();

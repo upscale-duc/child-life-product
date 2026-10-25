@@ -15950,11 +15950,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhDidNotTryToast => 'No problem, you can try another time.';
 
   @override
-  String get rhTriedHistoryTitle => 'What we’ve tried';
+  String get rhTriedHistoryTitle => 'What we have tried';
 
   @override
   String rhTriedHistoryBody(int days) {
-    return 'Suggestions the family planned or answered in the last $days days, who did and how it went.';
+    return 'Last $days days · the whole family';
   }
 
   @override
@@ -21216,4 +21216,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhSeeHow => 'See how';
+
+  @override
+  String get rhTriedAll => 'All';
+
+  @override
+  String get rhTriedStatTried => 'tried';
+
+  @override
+  String get rhTriedStatHelpful => 'helpful';
+
+  @override
+  String get rhTriedStatPlanned => 'to try';
+
+  @override
+  String get rhTriedNote =>
+      'From your family\'s answers, not a medical conclusion.';
 }

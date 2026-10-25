@@ -22185,11 +22185,11 @@
   "@rhDidNotTryToast": {
     "description": "Toast after \"Chưa thử\". VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhTriedHistoryTitle": "Các cách đã thử",
+  "rhTriedHistoryTitle": "Cách nhà mình đã thử",
   "@rhTriedHistoryTitle": {
     "description": "Activity history title: plans and answers of the family (C01 / AC02). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhTriedHistoryBody": "Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.",
+  "rhTriedHistoryBody": "{days} ngày qua · cả nhà",
   "@rhTriedHistoryBody": {
     "description": "Activity history intro. VI and EN are engineering drafts (no frame draws this state) for owner review.",
     "placeholders": {
@@ -29650,5 +29650,25 @@
   "rhSeeHow": "Xem cách làm",
   "@rhSeeHow": {
     "description": "Button: opens the activity steps (one try vocabulary, owner 2026-10-25)."
+  },
+  "rhTriedAll": "Tất cả",
+  "@rhTriedAll": {
+    "description": "History filter: every idea not hidden (D-102)."
+  },
+  "rhTriedStatTried": "đã thử",
+  "@rhTriedStatTried": {
+    "description": "History stat tile label under a number: ideas answered."
+  },
+  "rhTriedStatHelpful": "có ích",
+  "@rhTriedStatHelpful": {
+    "description": "History stat tile label under a number: ideas answered “Có ích”."
+  },
+  "rhTriedStatPlanned": "sẽ thử",
+  "@rhTriedStatPlanned": {
+    "description": "History stat tile label under a number: ideas planned, not answered yet."
+  },
+  "rhTriedNote": "Theo câu trả lời của nhà mình, không phải kết luận y khoa.",
+  "@rhTriedNote": {
+    "description": "History footnote, once at the bottom (D-102)."
   }
 }

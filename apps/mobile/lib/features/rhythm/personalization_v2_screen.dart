@@ -935,7 +935,7 @@ List<Widget> _dayChildren(
         MeRow(
           key: const Key('personalDayHistory'),
           icon: ClIcons.heart,
-          title: l.pv2History,
+          title: l.rhTriedHistoryTitle,
           subtitle: l.pv2WeekLine(
             (weekly['tried'] as num? ?? 0).toInt(),
             (weekly['helpful'] as num? ?? 0).toInt(),

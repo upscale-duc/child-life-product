@@ -13,6 +13,7 @@ import 'package:child_life/features/rhythm/personalization_sources.dart';
 import 'package:child_life/features/rhythm/personalization_v2_repository.dart';
 import 'package:child_life/features/rhythm/personalization_v2_screen.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
+import 'package:child_life/features/rhythm/tried_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -127,7 +128,7 @@ final _cases =
         700,
         null,
       ),
-      'history': (() => const PersonalHistoryScreen(), 900, null),
+      'history': (() => const TriedScreen(), 900, null),
       // The notebook editor: one caption per group, the same gap between groups.
       'notes_editor': (
         () => const PersonalNotesScreen(),

@@ -399,11 +399,15 @@ class RhOutcomeChoices extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ClIcon(switch (k) {
-                        FeedbackKind.helpful => ClIcons.heart,
-                        FeedbackKind.unsure => ClIcons.clock,
-                        _ => ClIcons.close,
-                      }, size: 18, color: i == 0 ? cl.colors.mintText : cl.colors.inkMuted),
+                      ClIcon(
+                        switch (k) {
+                          FeedbackKind.helpful => ClIcons.heart,
+                          FeedbackKind.unsure => ClIcons.clock,
+                          _ => ClIcons.close,
+                        },
+                        size: 18,
+                        color: i == 0 ? cl.colors.mintText : cl.colors.inkMuted,
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         feedbackKindLabel(l10n, k),

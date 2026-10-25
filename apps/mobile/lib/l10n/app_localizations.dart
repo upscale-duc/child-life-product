@@ -25011,13 +25011,13 @@ abstract class AppLocalizations {
   /// Activity history title: plans and answers of the family (C01 / AC02). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Các cách đã thử'**
+  /// **'Cách nhà mình đã thử'**
   String get rhTriedHistoryTitle;
 
   /// Activity history intro. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.'**
+  /// **'{days} ngày qua · cả nhà'**
   String rhTriedHistoryBody(int days);
 
   /// Activity history without rows. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -33371,6 +33371,36 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xem cách làm'**
   String get rhSeeHow;
+
+  /// History filter: every idea not hidden (D-102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get rhTriedAll;
+
+  /// History stat tile label under a number: ideas answered.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã thử'**
+  String get rhTriedStatTried;
+
+  /// History stat tile label under a number: ideas answered “Có ích”.
+  ///
+  /// In vi, this message translates to:
+  /// **'có ích'**
+  String get rhTriedStatHelpful;
+
+  /// History stat tile label under a number: ideas planned, not answered yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'sẽ thử'**
+  String get rhTriedStatPlanned;
+
+  /// History footnote, once at the bottom (D-102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo câu trả lời của nhà mình, không phải kết luận y khoa.'**
+  String get rhTriedNote;
 }
 
 class _AppLocalizationsDelegate

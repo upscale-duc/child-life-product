@@ -100,7 +100,7 @@ class ActivityScreen extends ConsumerWidget {
               label: l10n.rhTriedOn(shortDay(locale, last.date)),
               icon: ClIcons.check,
               mint: true,
-            )
+            ),
       ],
     );
     if (activity == null) {
@@ -302,7 +302,8 @@ class ActivityScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: ClSpace.s2),
                 RhOutcomeChoices(
-                  onPick: (kind) => feedbackAndLeave(kind, l10n.rhFeedbackSaved),
+                  onPick: (kind) =>
+                      feedbackAndLeave(kind, l10n.rhFeedbackSaved),
                 ),
                 RhLink(
                   label: l10n.rhDidNotTry,

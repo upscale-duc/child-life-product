@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../ai/ai_consent_screen.dart';
 import '../ai/handover_screen.dart';
-import 'activity_history_screen.dart';
 import 'activity_screens.dart';
 import 'age_screens.dart';
 import 'checkin_screens.dart';
@@ -18,6 +17,7 @@ import 'rhythm_calendar.dart';
 import 'rhythm_models.dart';
 import 'rhythm_overview.dart';
 import 'rhythm_setup.dart';
+import 'tried_screen.dart';
 import 'week_screen.dart';
 
 /// Nhịp lớn lên routes, full screen above the tabs (no new tab, plan §7.1). Flat on purpose:
@@ -51,11 +51,12 @@ List<RouteBase> rhythmRoutes() => [
   _page(Routes.personalDayHandover, (_, _) => const PersonalHandoverScreen()),
   _page(Routes.personalDayPatterns, (_, _) => const PersonalPatternsScreen()),
   _page(Routes.personalDayNotes, (_, _) => const PersonalNotesScreen()),
-  _page(Routes.personalDayHistory, (_, _) => const PersonalHistoryScreen()),
+  // D-102: one history; the old "Đã lưu, đã thử và đã ẩn" path opens it too.
+  _page(Routes.personalDayHistory, (_, _) => const TriedScreen()),
   _page(Routes.rhythmInterests, (_, _) => const InterestsScreen()),
   _page(Routes.rhythmDigest, (_, _) => const DigestScreen()),
   _page(Routes.rhythmFeedbackHistory, (_, _) => const FeedbackHistoryScreen()),
-  _page(Routes.rhythmTried, (_, _) => const ActivityHistoryScreen()),
+  _page(Routes.rhythmTried, (_, _) => const TriedScreen()),
   _page(Routes.rhythmCheckIn, modal: true, (_, _) => const CheckInScreen()),
   _page(
     Routes.rhythmCheckInMore,

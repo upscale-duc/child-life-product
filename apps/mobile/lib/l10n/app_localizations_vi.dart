@@ -14964,11 +14964,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhDidNotTryToast => 'Không sao, lúc khác thử cũng được.';
 
   @override
-  String get rhTriedHistoryTitle => 'Các cách đã thử';
+  String get rhTriedHistoryTitle => 'Cách nhà mình đã thử';
 
   @override
   String rhTriedHistoryBody(int days) {
-    return 'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong $days ngày qua, ai làm và thấy thế nào.';
+    return '$days ngày qua · cả nhà';
   }
 
   @override
@@ -20018,4 +20018,20 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhSeeHow => 'Xem cách làm';
+
+  @override
+  String get rhTriedAll => 'Tất cả';
+
+  @override
+  String get rhTriedStatTried => 'đã thử';
+
+  @override
+  String get rhTriedStatHelpful => 'có ích';
+
+  @override
+  String get rhTriedStatPlanned => 'sẽ thử';
+
+  @override
+  String get rhTriedNote =>
+      'Theo câu trả lời của nhà mình, không phải kết luận y khoa.';
 }
