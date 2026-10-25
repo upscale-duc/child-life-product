@@ -24,12 +24,17 @@ enum PremiumCard {
       values.where((e) => e.name == v).firstOrNull;
 }
 
-/// What the paywall says it is for (PW01–PW06). [explore]: opened on purpose (PW06, no reason
-/// line, no "Bạn đang cần").
+/// What the paywall says it is for. Two kinds (owner, 2026-10-25; Note · PW01 / PW06):
+/// [explore] is the user choosing to look at Premium (Tôi, Gói của gia đình › Xem các gói):
+/// the general headline, no reason line, the Video card first, no "Bạn đang cần". Every other
+/// value is an entry point that needs Premium: its own headline, the small line saying what is
+/// kept, its card first and the tag on its row. [rhythm] (Nhịp lớn lên) is not drawn in Figma;
+/// its copy is engineering's.
 enum PremiumEntry {
   video,
   card,
   lumi,
+  rhythm,
   storage,
   caregivers,
   explore;
@@ -41,6 +46,7 @@ enum PremiumEntry {
     PremiumEntry.video || PremiumEntry.explore => PremiumCard.video,
     PremiumEntry.card => PremiumCard.card,
     PremiumEntry.lumi => PremiumCard.lumi,
+    PremiumEntry.rhythm => PremiumCard.rhythm,
     PremiumEntry.storage => PremiumCard.storage,
     PremiumEntry.caregivers => PremiumCard.caregivers,
   };

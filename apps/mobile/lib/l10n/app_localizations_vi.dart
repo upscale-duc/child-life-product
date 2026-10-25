@@ -21924,4 +21924,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2Privacy => 'Quyền riêng tư';
+
+  @override
+  String pv2HeadRhythm(String name) {
+    return 'Hiểu nhịp của $name rõ hơn mỗi tuần';
+  }
+
+  @override
+  String get pv2ReasonRhythm =>
+      'Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.';
 }

@@ -93,6 +93,7 @@ class _PaywallV2State extends State<PaywallV2View> {
     PremiumEntry.video => l10n.pv2HeadVideo(widget.babyName),
     PremiumEntry.card => l10n.pv2HeadCard(widget.babyName),
     PremiumEntry.lumi => l10n.pv2HeadLumi(widget.babyName),
+    PremiumEntry.rhythm => l10n.pv2HeadRhythm(widget.babyName),
     PremiumEntry.storage => l10n.pv2HeadStorage,
     PremiumEntry.caregivers => l10n.pv2HeadCaregivers(widget.babyName),
     PremiumEntry.explore => l10n.pv2HeadExplore,
@@ -1390,7 +1391,8 @@ class _Compare extends StatelessWidget {
         l10n.pv2RowLumi,
         l10n.pv2RowLumiFree(free.lumiCredits),
         l10n.pv2RowLumiPremium(premium.lumiCredits),
-        need == PremiumEntry.lumi,
+        // Nhịp lớn lên counts in the Lumi credit ("Gồm trong 200 credit").
+        need == PremiumEntry.lumi || need == PremiumEntry.rhythm,
       ),
       (
         l10n.pv2RowStorage,

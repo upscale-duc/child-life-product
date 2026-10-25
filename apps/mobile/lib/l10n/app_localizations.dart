@@ -36635,6 +36635,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Quyền riêng tư'**
   String get pv2Privacy;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall headline from Nhịp lớn lên (not drawn in Figma; engineering copy).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu nhịp của {name} rõ hơn mỗi tuần'**
+  String pv2HeadRhythm(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall reason line from Nhịp lớn lên (engineering copy).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.'**
+  String get pv2ReasonRhythm;
 }
 
 class _AppLocalizationsDelegate

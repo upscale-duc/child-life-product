@@ -109,6 +109,7 @@ final _cases = <String, _Case>{
   'pw02_card': _paywall(PremiumEntry.card, subject: 'Hồng phấn'),
   'pw03_lumi': _paywall(PremiumEntry.lumi),
   'pw05_caregivers': _paywall(PremiumEntry.caregivers),
+  'pw_rhythm': _paywall(PremiumEntry.rhythm),
   'pw06_explore': _paywall(PremiumEntry.explore),
   'pw07_member': _paywall(PremiumEntry.video, owner: false),
   'e01_sheet': (

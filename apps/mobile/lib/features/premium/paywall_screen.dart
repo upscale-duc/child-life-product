@@ -219,8 +219,10 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
   PremiumEntry get _v2Entry =>
       widget.v2Entry ??
       switch (widget.entry) {
+        // Nhịp lớn lên asks for Premium: an entry point, not the user browsing.
         PaywallEntry.templates => PremiumEntry.video,
-        PaywallEntry.rhythm || PaywallEntry.plan => PremiumEntry.explore,
+        PaywallEntry.rhythm => PremiumEntry.rhythm,
+        PaywallEntry.plan => PremiumEntry.explore,
       };
 
   /// PW01–PW08 (Premium v2, D-101): same purchase flow, new page.
@@ -256,13 +258,17 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
                   ? l10n.pv2ReasonVideo
                   : l10n.pv2ReasonTemplate(subject),
             PremiumEntry.lumi => l10n.pv2ReasonLumi(free.lumiCredits),
-            PremiumEntry.storage when plan != null => l10n.pv2ReasonStorage(
-              premiumGb(context, plan.usedBytes),
-              premiumGb(context, plan.limitBytes),
+            PremiumEntry.rhythm => l10n.pv2ReasonRhythm,
+            // While the plan loads: the Free limits as configured.
+            PremiumEntry.storage => l10n.pv2ReasonStorage(
+              premiumGb(context, plan?.usedBytes ?? free.storageBytes),
+              premiumGb(context, plan?.limitBytes ?? free.storageBytes),
             ),
-            PremiumEntry.caregivers when plan != null =>
-              l10n.pv2ReasonCaregivers(plan.seatsUsed, plan.seatsLimit),
-            _ => null,
+            PremiumEntry.caregivers => l10n.pv2ReasonCaregivers(
+              plan?.seatsUsed ?? free.caregiverSeats,
+              plan?.seatsLimit ?? free.caregiverSeats,
+            ),
+            PremiumEntry.explore => null,
           };
     final store = ref.watch(storeGatewayProvider);
     final vi = Localizations.localeOf(context).languageCode == 'vi';

@@ -32184,5 +32184,18 @@
   "pv2Privacy": "Quyền riêng tư",
   "@pv2Privacy": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line link."
+  },
+  "pv2HeadRhythm": "Hiểu nhịp của {name} rõ hơn mỗi tuần",
+  "@pv2HeadRhythm": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall headline from Nhịp lớn lên (not drawn in Figma; engineering copy).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ReasonRhythm": "Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.",
+  "@pv2ReasonRhythm": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall reason line from Nhịp lớn lên (engineering copy)."
   }
 }

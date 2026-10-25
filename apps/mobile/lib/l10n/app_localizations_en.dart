@@ -23128,4 +23128,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2Privacy => 'Privacy';
+
+  @override
+  String pv2HeadRhythm(String name) {
+    return 'Understand $name\'s rhythm better every week';
+  }
+
+  @override
+  String get pv2ReasonRhythm =>
+      'This week\'s journal is kept · Lumi looks back once the family has Premium.';
 }

@@ -163,6 +163,53 @@ void main() {
       },
     );
 
+    testWidgets(
+      'Nhịp lớn lên needs Premium: its headline, the small line, the Nhịp card',
+      (tester) async {
+        await _pump(
+          tester,
+          const PaywallScreen(entry: PaywallEntry.rhythm),
+          premiumV2Overrides(plan: freePlan),
+        );
+        expect(
+          find.text('Hiểu nhịp của Teddy rõ hơn mỗi tuần'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Nhật ký tuần này vẫn được giữ · Lumi nhìn lại khi nhà mình có Premium.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Lumi nhìn lại tuần giúp bạn'), findsOneWidget);
+        await tester.scrollUntilVisible(
+          find.text('Bạn đang cần'),
+          200,
+          scrollable: _page,
+        );
+        expect(find.text('Bạn đang cần'), findsOneWidget);
+      },
+    );
+
+    testWidgets('chosen from Tôi (E13): the general page, no small line', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        const PaywallScreen(
+          entry: PaywallEntry.plan,
+          v2Entry: PremiumEntry.explore,
+        ),
+        premiumV2Overrides(plan: freePlan),
+      );
+      expect(
+        find.text('Những năm đầu của con, giữ trọn vẹn hơn'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('vẫn được giữ'), findsNothing);
+      expect(find.text('Những ảnh rời, thành câu chuyện'), findsOneWidget);
+    });
+
     testWidgets('flag off: the PR01 page as before', (tester) async {
       await _pump(
         tester,
