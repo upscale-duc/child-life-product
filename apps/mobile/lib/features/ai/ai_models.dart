@@ -472,6 +472,7 @@ class HandoverSend {
     required this.sentAt,
     this.seenAt,
     this.receivedAt,
+    this.note,
   });
 
   final String id;
@@ -481,6 +482,9 @@ class HandoverSend {
   final DateTime sentAt;
   final DateTime? seenAt;
   final DateTime? receivedAt;
+
+  /// The sender's own words for the recipient, when they wrote some.
+  final String? note;
 
   static DateTime? _at(Object? v) => v is String ? DateTime.tryParse(v) : null;
 
@@ -492,5 +496,8 @@ class HandoverSend {
     sentAt: _at(j['sentAt']) ?? DateTime.fromMillisecondsSinceEpoch(0),
     seenAt: _at(j['seenAt']),
     receivedAt: _at(j['receivedAt']),
+    note: j['note'] is String && (j['note'] as String).isNotEmpty
+        ? j['note'] as String
+        : null,
   );
 }

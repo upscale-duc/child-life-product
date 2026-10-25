@@ -140,11 +140,13 @@ class AiRepository {
     required String babyId,
     required String summaryId,
     required String recipientUid,
+    String? note,
   }) async {
     final data = await _call('sendHandover', {
       'babyId': babyId,
       'summaryId': summaryId,
       'recipientUid': recipientUid,
+      if (note != null && note.isNotEmpty) 'note': note,
     });
     return (
       sendId: data['sendId'] as String? ?? '',

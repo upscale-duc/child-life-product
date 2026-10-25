@@ -185,6 +185,8 @@ export const sendHandoverRequestSchema = z
     babyId: z.string().min(1).max(128),
     summaryId: z.string().regex(/^su_[a-f0-9]{32}$/),
     recipientUid: z.string().min(1).max(128),
+    /** Owner, 2026-10-25: the sender's own words for the next person (never logged or pushed). */
+    note: z.string().trim().max(300).nullish(),
   })
   .strict();
 

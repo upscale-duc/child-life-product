@@ -810,7 +810,6 @@ List<Widget> _dayChildren(
 ) {
   final l = AppLocalizations.of(context);
   final cl = context.cl;
-  final locale = Localizations.localeOf(context);
   final content = ref.watch(rhythmContentProvider).value;
   final ideas = [
     if (!day.health && day.data['contentVersion'] == content?.version)
@@ -913,15 +912,19 @@ List<Widget> _dayChildren(
     const SizedBox(height: ClSpace.s6),
     ClCardGroup(
       children: [
+        // One Bàn giao for the next person (owner, 2026-10-25): live state, notes, receipt.
+        MeRow(
+          key: const Key('personalDayHandoverSheet'),
+          icon: ClIcons.mail,
+          title: l.aiHandoverTitle,
+          onTap: () => context.push(Routes.rhythmHandover),
+        ),
         MeRow(
           key: const Key('personalDayHandover'),
           icon: ClIcons.family,
           title: l.pv2Work,
           subtitle: day.work.isNotEmpty
               ? l.pv2WorkCount(day.work.length)
-              : day.data['acknowledgedAt'] != null &&
-                    day.data['handoverChanged'] != true
-              ? '${l.pv2AcknowledgedShort} · ${dayStamp(day, day.data['acknowledgedAt'], locale)}'
               : l.pv2NoWork,
           onTap: () => context.push(Routes.personalDayHandover),
         ),

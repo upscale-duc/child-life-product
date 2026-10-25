@@ -12,8 +12,6 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
-import '../care/care_format.dart';
-import '../care/care_models.dart';
 import '../care/care_repository.dart' show careClockProvider;
 import '../family/family_repository.dart' show familyMembersProvider;
 import '../me/me_widgets.dart';
@@ -156,7 +154,8 @@ class PersonalHeading extends StatelessWidget {
 TextStyle _muted(BuildContext context) =>
     context.cl.text.label.copyWith(color: context.cl.colors.inkMuted);
 
-/// "Bàn giao cho người chăm": last records, open work and the acknowledgement.
+/// "Việc cần làm hôm nay": the family's open tasks to take, finish or hand back. The last
+/// records and "Tôi đã nhận bàn giao" live on Bàn giao now (owner, 2026-10-25).
 class PersonalHandoverScreen extends StatelessWidget {
   const PersonalHandoverScreen({super.key});
   @override
@@ -168,9 +167,6 @@ class PersonalHandoverScreen extends StatelessWidget {
       final locale = Localizations.localeOf(context);
       final members =
           ref.watch(familyMembersProvider(key.babyId)).value ?? const [];
-      final acknowledged =
-          day.data['acknowledgedAt'] != null &&
-          day.data['handoverChanged'] != true;
       String who(String uid) => memberLabel(
         l,
         members.where((m) => m.uid == uid).firstOrNull,
@@ -179,32 +175,6 @@ class PersonalHandoverScreen extends StatelessWidget {
       );
       return [
         Text(l.pv2WorkHint, style: _muted(context)),
-        if (day.data['handoverChanged'] == true) ...[
-          const SizedBox(height: ClSpace.s3),
-          Text(l.pv2HandoverChanged, style: cl.text.bodyStrong),
-        ],
-        PersonalHeading(l.pv2LastRecords),
-        if (dayRows(day.data['lastRecords']) case final records
-            when records.isNotEmpty)
-          ClCardGroup(
-            children: [
-              for (final record in records)
-                MeRow(
-                  title: careTypeLabel(
-                    l,
-                    CareType.values
-                            .where((t) => t.name == record['type'])
-                            .firstOrNull ??
-                        CareType.bottle,
-                  ),
-                  value: [
-                    dayStamp(day, record['at'], locale),
-                    if (record['amountMl'] is num)
-                      l.amountMl((record['amountMl'] as num).round()),
-                  ].join(' · '),
-                ),
-            ],
-          ),
         PersonalHeading(l.pv2Reminders),
         if (day.work.isEmpty) Text(l.pv2NoWork, style: _muted(context)),
         for (final work in day.work)
@@ -280,23 +250,6 @@ class PersonalHandoverScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        const SizedBox(height: ClSpace.s4),
-        if (acknowledged)
-          PersonalStatusLine([
-            l.pv2AcknowledgedShort,
-            dayStamp(day, day.data['acknowledgedAt'], locale),
-          ])
-        else if (day.writable)
-          ClButton(
-            label: l.pv2Acknowledge,
-            expand: true,
-            onPressed: busy
-                ? null
-                : () => write({
-                    'kind': 'acknowledge',
-                    'version': day.data['handoverVersion'],
-                  }),
           ),
       ];
     },

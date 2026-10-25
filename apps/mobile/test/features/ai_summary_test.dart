@@ -443,7 +443,7 @@ void main() {
         FakeAiRepository(answer: handover(language: 'en')),
         locale: const Locale('en'),
       );
-      expect(find.text('Handover for the next carer'), findsOneWidget);
+      expect(find.text('Handover'), findsOneWidget);
       expect(find.text('Dad · 7 Oct'), findsOneWidget);
       expect(find.text('Send the handover'), findsOneWidget);
     });
@@ -458,7 +458,14 @@ void main() {
         // Ba and Cô Lan both read care: "Gửi bàn giao" asks who.
         await _tap(tester, find.byKey(const Key('handoverSend')));
         await _tap(tester, find.text('Cô Lan'));
+        // An optional note for the next person (owner, 2026-10-25), then send.
+        await tester.enterText(
+          find.byType(EditableText).last,
+          'Bé hay quấy sau 11h, bế đi dạo là ngủ.',
+        );
+        await _tap(tester, find.text(l10n.aiSendTo('Cô Lan')).last);
         expect(ai.sends.single.recipientUid, 'u_lan');
+        expect(ai.sends.single.note, 'Bé hay quấy sau 11h, bế đi dạo là ngủ.');
         expect(find.text(l10n.aiSentToast('Cô Lan')), findsOneWidget);
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('handoverSendStatus')), findsOneWidget);
@@ -483,6 +490,8 @@ void main() {
       await _handover(tester, ai);
       await _tap(tester, find.byKey(const Key('handoverSend')));
       await _tap(tester, find.text('Ba'));
+      await _tap(tester, find.text(l10n.aiSendTo('Ba')).last);
+      expect(ai.sends.single.note, isNull);
       expect(find.text(l10n.aiSentNoPush('Ba')), findsOneWidget);
       expect(find.text(l10n.aiShareShort), findsOneWidget);
     });
@@ -498,6 +507,7 @@ void main() {
               senderUid: 'u_mai',
               recipientUid: 'u_lan',
               sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+              note: 'Bé hay quấy sau 11h.',
             ),
           );
         await pumpRouted(
@@ -506,11 +516,15 @@ void main() {
           overrides: aiOverrides(ai: ai, member: lan),
         );
         expect(find.byKey(const Key('handoverReceived')), findsOneWidget);
+        expect(find.text('“Bé hay quấy sau 11h.”'), findsOneWidget);
         expect(ai.marks.first, ('hs_1', false));
         await _tap(tester, find.byKey(const Key('handoverAcknowledge')));
         expect(ai.marks.last, ('hs_1', true));
         expect(find.byKey(const Key('handoverAcknowledge')), findsNothing);
-        expect(find.textContaining(l10n.aiYouReceived('').trim()), findsOneWidget);
+        expect(
+          find.textContaining(l10n.aiYouReceived('').trim()),
+          findsOneWidget,
+        );
       },
     );
   });

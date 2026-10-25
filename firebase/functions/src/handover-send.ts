@@ -85,6 +85,7 @@ export async function sendHandover(
     summaryId: req.summaryId,
     senderUid: uid,
     recipientUid: req.recipientUid,
+    note: req.note ? req.note : null,
     sentAt: Timestamp.fromDate(now),
     seenAt: null,
     receivedAt: null,

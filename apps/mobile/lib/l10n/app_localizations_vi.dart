@@ -12441,7 +12441,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhOtherIdeas => 'Cách khác có thể thử';
 
   @override
-  String get aiHandoverTitle => 'Bàn giao cho người chăm tiếp';
+  String get aiHandoverTitle => 'Bàn giao';
 
   @override
   String get aiHandoverEntrySub => 'Tóm tắt 3 phần từ ghi nhận của cả nhà';
@@ -18444,11 +18444,11 @@ class AppLocalizationsVi extends AppLocalizations {
       'Ứng dụng dùng ghi chú đã xác nhận để chọn gợi ý. Ghi chú tự do không phải chỉ định y tế.';
 
   @override
-  String get pv2Work => 'Bàn giao cho người chăm';
+  String get pv2Work => 'Việc cần làm hôm nay';
 
   @override
   String get pv2WorkHint =>
-      'Việc gia đình đã đặt. Hoàn tất nhắc việc không tự tạo bản ghi chăm sóc.';
+      'Việc gia đình đã hẹn. Nhận việc để cả nhà biết ai đang làm.';
 
   @override
   String get pv2NoWork => 'Chưa có nhắc việc đang chờ.';
@@ -19818,4 +19818,81 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get axRemindersFirst => 'Tạo nhắc nhở đầu tiên';
+
+  @override
+  String get hoNow => 'Bé lúc này';
+
+  @override
+  String get hoSleep => 'Ngủ';
+
+  @override
+  String get hoFeed => 'Bú';
+
+  @override
+  String get hoDiaper => 'Tã';
+
+  @override
+  String hoSleepingSince(String time) {
+    return 'Đang ngủ từ $time';
+  }
+
+  @override
+  String hoAwakeSince(String time) {
+    return 'Thức từ $time';
+  }
+
+  @override
+  String get hoNoneYet => 'Chưa ghi gần đây';
+
+  @override
+  String hoNextFeed(String time) {
+    return 'Cữ tới khoảng $time';
+  }
+
+  @override
+  String hoDiapersToday(int count) {
+    return 'Hôm nay $count lần';
+  }
+
+  @override
+  String get hoUpcoming => 'Sắp tới';
+
+  @override
+  String get hoNothingUpcoming => 'Hôm nay không có việc nào đã hẹn.';
+
+  @override
+  String get hoAllDay => 'Cả ngày';
+
+  @override
+  String get hoWatch => 'Cần lưu ý';
+
+  @override
+  String get hoNoHealth => 'Không có dấu hiệu sức khoẻ nào trong 2 ngày qua';
+
+  @override
+  String hoHealthNoted(String date) {
+    return 'Có dấu hiệu sức khoẻ · $date';
+  }
+
+  @override
+  String hoCall(String number) {
+    return 'Gọi cấp cứu $number';
+  }
+
+  @override
+  String get hoFirstAid => 'Sơ cứu';
+
+  @override
+  String get hoHelps => 'Cách giúp bé';
+
+  @override
+  String get hoSummary => 'Tóm tắt mấy ngày qua';
+
+  @override
+  String hoNoteFrom(String name) {
+    return 'Lời nhắn của $name';
+  }
+
+  @override
+  String get hoNoteHint => 'Lời nhắn cho người nhận (không bắt buộc)';
 }

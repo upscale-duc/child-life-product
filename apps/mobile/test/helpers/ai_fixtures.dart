@@ -327,6 +327,7 @@ class FakeAiRepository implements AiRepository {
     required String babyId,
     required String summaryId,
     required String recipientUid,
+    String? note,
   }) async {
     final id = 'hs_${summaryId.hashCode}_$recipientUid';
     if (!sends.any((s) => s.id == id)) {
@@ -337,6 +338,7 @@ class FakeAiRepository implements AiRepository {
           senderUid: sender,
           recipientUid: recipientUid,
           sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+          note: note == null || note.isEmpty ? null : note,
         ),
       );
       _sendsLive.add(null);
@@ -365,6 +367,7 @@ class FakeAiRepository implements AiRepository {
       sentAt: s.sentAt,
       seenAt: s.seenAt ?? at,
       receivedAt: s.receivedAt ?? (received ? at : null),
+      note: s.note,
     );
     _sendsLive.add(null);
   }

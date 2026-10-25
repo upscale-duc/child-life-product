@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
@@ -28,6 +29,7 @@ import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_gate.dart' show showGateSheet;
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
+import '../rhythm/personal_day_pages.dart' show PersonalHeading;
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/rhythm_actions.dart';
 import '../rhythm/rhythm_calc.dart' show isoOf;
@@ -36,6 +38,7 @@ import '../rhythm/rhythm_labels.dart';
 import '../rhythm/rhythm_models.dart' show FeedbackKind, RecFeedback;
 import '../rhythm/rhythm_repository.dart';
 import '../rhythm/rhythm_widgets.dart';
+import 'handover_now.dart';
 import 'ai_models.dart';
 import 'ai_repository.dart';
 import 'ai_widgets.dart';
@@ -187,7 +190,11 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     final content = <Widget>[title];
 
     if (shown == null) {
-      content.add(const SizedBox(height: ClSpace.s4));
+      content.addAll([
+        const SizedBox(height: ClSpace.s2),
+        HandoverNow(me: me),
+        PersonalHeading(l10n.hoSummary),
+      ]);
       if (health) {
         content.addAll([
           RhHealthCard(signs: healthToday?.healthSigns ?? const []),
@@ -294,6 +301,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       content.addAll([
         _ReceivedBanner(
           title: l10n.aiSentToYou(from, at),
+          note: toMe.note,
           receivedAt: toMe.receivedAt == null
               ? null
               : DateFormat('HH:mm').format(inBabyZone(zone, toMe.receivedAt!)),
@@ -311,6 +319,10 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         const SizedBox(height: ClSpace.s4),
       ]);
     }
+
+    // What the next person needs first, live from the diary (owner, 2026-10-25); the summary of
+    // the last days follows under its own heading.
+    content.addAll([HandoverNow(me: me), PersonalHeading(l10n.hoSummary)]);
 
     // States above the summary.
     final states = <Widget>[];
@@ -582,6 +594,43 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
 
   /// D-093: sends [a] to one member (asked first when there are several). When the push cannot
   /// reach them (no device, switch off) it says so and offers the share sheet.
+  /// An optional note before sending; null when the sheet is dismissed.
+  Future<String?> _askNote(BuildContext context, String sendLabel) {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    return showClSheet<String>(
+      context: context,
+      builder: (sheet) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          ClSpace.s3,
+          ClSpace.s4,
+          ClSpace.s6 + MediaQuery.viewInsetsOf(sheet).bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.aiSendToFamily),
+            ClTextField(
+              controller: controller,
+              placeholder: l10n.hoNoteHint,
+              maxLength: 300,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: ClSpace.s3),
+            ClButton(
+              label: sendLabel,
+              expand: true,
+              onPressed: () => Navigator.of(sheet).pop(controller.text.trim()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _send(
     BuildContext context,
     Membership me,
@@ -622,7 +671,13 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
               ),
             ),
           );
-    if (to == null || !mounted) return;
+    if (to == null || !mounted || !context.mounted) return;
+    // The sender's own words for the next person (owner, 2026-10-25); dismissing cancels.
+    final note = await _askNote(
+      context,
+      l10n.aiSendTo(capitalized(memberLabel(l10n, to, myUid: ''))),
+    );
+    if (note == null || !mounted) return;
     setState(() => _sending = true);
     try {
       final result = await ref
@@ -631,6 +686,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
             babyId: me.babyId,
             summaryId: a.id,
             recipientUid: to.uid,
+            note: note,
           );
       final name = capitalized(memberLabel(l10n, to, myUid: ''));
       if (result.pushable) {
@@ -1450,9 +1506,13 @@ class _ReceivedBanner extends StatelessWidget {
     required this.title,
     required this.receivedAt,
     required this.onReceived,
+    this.note,
   });
   final String title;
   final String? receivedAt;
+
+  /// The sender's own words (owner, 2026-10-25), shown under who sent it.
+  final String? note;
   final Future<void> Function() onReceived;
 
   @override
@@ -1480,6 +1540,10 @@ class _ReceivedBanner extends StatelessWidget {
               ),
             ],
           ),
+          if (note case final n?) ...[
+            const SizedBox(height: ClSpace.s2),
+            Text('“$n”', style: cl.text.body.copyWith(height: 1.45)),
+          ],
           const SizedBox(height: ClSpace.s3),
           if (receivedAt case final at?)
             Row(

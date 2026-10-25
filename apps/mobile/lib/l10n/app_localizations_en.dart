@@ -13255,7 +13255,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhOtherIdeas => 'Other things to try';
 
   @override
-  String get aiHandoverTitle => 'Handover for the next carer';
+  String get aiHandoverTitle => 'Handover';
 
   @override
   String get aiHandoverEntrySub =>
@@ -19560,11 +19560,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Confirmed notes help select suggestions. A free-text note is not medical guidance.';
 
   @override
-  String get pv2Work => 'Handover for the next carer';
+  String get pv2Work => 'Today’s tasks';
 
   @override
   String get pv2WorkHint =>
-      'Tasks your family set. Completing a reminder does not create a care record.';
+      'Tasks the family set. Take one so everyone knows who is on it.';
 
   @override
   String get pv2NoWork => 'No pending reminders.';
@@ -20995,4 +20995,87 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get axRemindersFirst => 'Create the first reminder';
+
+  @override
+  String get hoNow => 'Right now';
+
+  @override
+  String get hoSleep => 'Sleep';
+
+  @override
+  String get hoFeed => 'Feeding';
+
+  @override
+  String get hoDiaper => 'Diaper';
+
+  @override
+  String hoSleepingSince(String time) {
+    return 'Asleep since $time';
+  }
+
+  @override
+  String hoAwakeSince(String time) {
+    return 'Awake since $time';
+  }
+
+  @override
+  String get hoNoneYet => 'Nothing recent';
+
+  @override
+  String hoNextFeed(String time) {
+    return 'Next feed around $time';
+  }
+
+  @override
+  String hoDiapersToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times today',
+      one: 'Once today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hoUpcoming => 'Coming up';
+
+  @override
+  String get hoNothingUpcoming => 'Nothing scheduled for today.';
+
+  @override
+  String get hoAllDay => 'All day';
+
+  @override
+  String get hoWatch => 'Watch for';
+
+  @override
+  String get hoNoHealth => 'No health signs in the last 2 days';
+
+  @override
+  String hoHealthNoted(String date) {
+    return 'Health signs noted · $date';
+  }
+
+  @override
+  String hoCall(String number) {
+    return 'Call emergency $number';
+  }
+
+  @override
+  String get hoFirstAid => 'First aid';
+
+  @override
+  String get hoHelps => 'What helps';
+
+  @override
+  String get hoSummary => 'The last few days';
+
+  @override
+  String hoNoteFrom(String name) {
+    return 'A note from $name';
+  }
+
+  @override
+  String get hoNoteHint => 'A note for them (optional)';
 }

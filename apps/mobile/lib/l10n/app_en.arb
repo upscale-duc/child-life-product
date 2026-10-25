@@ -3445,7 +3445,7 @@
   "rhFewerLikeThis": "Fewer ideas like this",
   "rhFewerToast": "Got it. You’ll see fewer ideas about {topic}.",
   "rhOtherIdeas": "Other things to try",
-  "aiHandoverTitle": "Handover for the next carer",
+  "aiHandoverTitle": "Handover",
   "aiHandoverEntrySub": "A three-part summary from the family’s notes",
   "aiHandoverEntryLatest": "Latest · {date}",
   "aiHandoverFrom": "{range} · from {count, plural, =1{1 note} other{{count} notes}} by {names}",
@@ -5140,8 +5140,8 @@
   "pv2Delete": "Delete",
   "pv2Cancel": "Later",
   "pv2NoteHint": "Confirmed notes help select suggestions. A free-text note is not medical guidance.",
-  "pv2Work": "Handover for the next carer",
-  "pv2WorkHint": "Tasks your family set. Completing a reminder does not create a care record.",
+  "pv2Work": "Today’s tasks",
+  "pv2WorkHint": "Tasks the family set. Take one so everyone knows who is on it.",
   "pv2NoWork": "No pending reminders.",
   "pv2Accept": "I’ll take this",
   "pv2Release": "Release task",
@@ -6513,5 +6513,124 @@
   "axSpendFirst": "Log the first expense",
   "axRemindersCount": "{count, plural, =0{No reminders yet} other{{count} coming up}}",
   "axRemindersAll": "All",
-  "axRemindersFirst": "Create the first reminder"
+  "axRemindersFirst": "Create the first reminder",
+  "hoNow": "Right now",
+  "@hoNow": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoSleep": "Sleep",
+  "@hoSleep": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoFeed": "Feeding",
+  "@hoFeed": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoDiaper": "Diaper",
+  "@hoDiaper": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoSleepingSince": "Asleep since {time}",
+  "@hoSleepingSince": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoAwakeSince": "Awake since {time}",
+  "@hoAwakeSince": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoNoneYet": "Nothing recent",
+  "@hoNoneYet": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoNextFeed": "Next feed around {time}",
+  "@hoNextFeed": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoDiapersToday": "{count, plural, =1{Once today} other{{count} times today}}",
+  "@hoDiapersToday": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoUpcoming": "Coming up",
+  "@hoUpcoming": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoNothingUpcoming": "Nothing scheduled for today.",
+  "@hoNothingUpcoming": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoAllDay": "All day",
+  "@hoAllDay": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoWatch": "Watch for",
+  "@hoWatch": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoNoHealth": "No health signs in the last 2 days",
+  "@hoNoHealth": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoHealthNoted": "Health signs noted · {date}",
+  "@hoHealthNoted": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hoCall": "Call emergency {number}",
+  "@hoCall": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "hoFirstAid": "First aid",
+  "@hoFirstAid": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoHelps": "What helps",
+  "@hoHelps": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoSummary": "The last few days",
+  "@hoSummary": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoNoteFrom": "A note from {name}",
+  "@hoNoteFrom": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hoNoteHint": "A note for them (optional)",
+  "@hoNoteHint": {
+    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  }
 }
