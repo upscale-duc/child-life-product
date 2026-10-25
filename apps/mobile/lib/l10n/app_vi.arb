@@ -32067,5 +32067,25 @@
   "pv2PlanFree": "Free",
   "@pv2PlanFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Plan name on Gói của gia đình (PV40B)."
+  },
+  "pv2PaySoonTitle": "Bước thanh toán sắp mở",
+  "@pv2PaySoonTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Sheet after the paywall CTA while in-app purchase is not open (owner, 2026-10-25)."
+  },
+  "pv2PaySoonBody": "Đăng ký qua App Store / Google Play sẽ mở khi tài khoản cửa hàng của Child Life sẵn sàng. Gói và giá như bạn vừa xem.",
+  "@pv2PaySoonBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Payment-soon sheet body."
+  },
+  "pv2AddOnBuy": "Thêm {gb} GB · {price}",
+  "@pv2AddOnBuy": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 CTA.",
+    "placeholders": {
+      "gb": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   }
 }

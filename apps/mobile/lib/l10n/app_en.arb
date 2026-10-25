@@ -7816,5 +7816,8 @@
   "rhTriedStatPlanned": "to try",
   "rhTriedNote": "From your family's answers, not a medical conclusion.",
   "pv2PlanPremium": "Premium",
-  "pv2PlanFree": "Free"
+  "pv2PlanFree": "Free",
+  "pv2PaySoonTitle": "Payment opens soon",
+  "pv2PaySoonBody": "Subscribing through the App Store / Google Play opens once the Child Life store account is ready. Plans and prices as you just saw.",
+  "pv2AddOnBuy": "Add {gb} GB · {price}"
 }

@@ -108,9 +108,10 @@ void main() {
           scrollable: _page,
         );
         expect(find.text('Bạn đang cần'), findsOneWidget);
-        // In-app purchase comes later: prices, no dead button.
-        expect(find.text('Sắp mở đăng ký trong app'), findsOneWidget);
-        expect(find.textContaining('Đăng ký Premium ·'), findsNothing);
+        // The CTA as drawn; before in-app purchase it says the payment step is coming.
+        await tester.tap(find.text('Đăng ký Premium · 599.000đ/năm'));
+        await tester.pumpAndSettle();
+        expect(find.text('Bước thanh toán sắp mở'), findsOneWidget);
       },
     );
 

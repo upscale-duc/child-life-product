@@ -36479,6 +36479,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Free'**
   String get pv2PlanFree;
+
+  /// Premium v2 (Figma 958:13863, D-101). Sheet after the paywall CTA while in-app purchase is not open (owner, 2026-10-25).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước thanh toán sắp mở'**
+  String get pv2PaySoonTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Payment-soon sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký qua App Store / Google Play sẽ mở khi tài khoản cửa hàng của Child Life sẵn sàng. Gói và giá như bạn vừa xem.'**
+  String get pv2PaySoonBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 CTA.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm {gb} GB · {price}'**
+  String pv2AddOnBuy(int gb, String price);
 }
 
 class _AppLocalizationsDelegate

@@ -23043,4 +23043,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2PlanFree => 'Free';
+
+  @override
+  String get pv2PaySoonTitle => 'Payment opens soon';
+
+  @override
+  String get pv2PaySoonBody =>
+      'Subscribing through the App Store / Google Play opens once the Child Life store account is ready. Plans and prices as you just saw.';
+
+  @override
+  String pv2AddOnBuy(int gb, String price) {
+    return 'Add $gb GB · $price';
+  }
 }

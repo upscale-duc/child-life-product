@@ -21839,4 +21839,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2PlanFree => 'Free';
+
+  @override
+  String get pv2PaySoonTitle => 'Bước thanh toán sắp mở';
+
+  @override
+  String get pv2PaySoonBody =>
+      'Đăng ký qua App Store / Google Play sẽ mở khi tài khoản cửa hàng của Child Life sẵn sàng. Gói và giá như bạn vừa xem.';
+
+  @override
+  String pv2AddOnBuy(int gb, String price) {
+    return 'Thêm $gb GB · $price';
+  }
 }

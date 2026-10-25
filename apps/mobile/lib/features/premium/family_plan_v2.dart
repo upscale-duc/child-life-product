@@ -867,7 +867,8 @@ class _SeatPickerState extends ConsumerState<SeatPickerSheet> {
       final chosen = widget.plan.suspended.isNotEmpty;
       _keep = {
         for (final w in writers)
-          if (w.isOwner || (chosen && !widget.plan.suspended.contains(w.uid))) w.uid,
+          if (w.isOwner || (chosen && !widget.plan.suspended.contains(w.uid)))
+            w.uid,
       };
     }
     final keep = _keep ?? const <String>{};
@@ -1015,7 +1016,9 @@ class _SeatRow extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: checked
-                      ? (onChanged == null ? cl.colors.inkMuted : cl.colors.mintDeep)
+                      ? (onChanged == null
+                            ? cl.colors.inkMuted
+                            : cl.colors.mintDeep)
                       : null,
                   borderRadius: BorderRadius.circular(7),
                   border: checked
@@ -1023,7 +1026,11 @@ class _SeatRow extends StatelessWidget {
                       : Border.all(color: cl.colors.controlBorder, width: 2),
                 ),
                 child: checked
-                    ? ClIcon(ClIcons.check, size: 18, color: cl.colors.onMintDeep)
+                    ? ClIcon(
+                        ClIcons.check,
+                        size: 18,
+                        color: cl.colors.onMintDeep,
+                      )
                     : null,
               ),
             ],
@@ -1381,28 +1388,44 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Q-102: "Sắp có" until in-app purchase; no dead button.
-                    Row(
-                      children: [
-                        const ClIcon(
-                          ClIcons.clock,
-                          size: 20,
-                          color: PremiumPalette.gold,
+                    // Owner, 2026-10-25: the CTA as drawn; the store step says it is coming
+                    // (Q-102) until in-app purchase opens. Free families are told it is for
+                    // Premium.
+                    if (plan?.premium == false)
+                      Text(
+                        l10n.pv2AddOnPremiumOnly,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: PremiumPalette.text,
+                          fontSize: 14,
                         ),
-                        const SizedBox(width: ClSpace.s3),
-                        Expanded(
-                          child: Text(
-                            plan?.premium == false
-                                ? l10n.pv2AddOnPremiumOnly
-                                : l10n.pv2AddOnSoon,
-                            style: const TextStyle(
-                              color: PremiumPalette.text,
-                              fontSize: 14,
+                      )
+                    else if (addOns.isNotEmpty)
+                      PremiumGoldButton(
+                        label: l10n.pv2AddOnBuy(
+                          addOns[_selected.clamp(0, addOns.length - 1)].gb,
+                          l10n.pv2PerYear(
+                            premiumPrice(
+                              context,
+                              vnd
+                                  ? addOns[_selected.clamp(
+                                          0,
+                                          addOns.length - 1,
+                                        )]
+                                        .vn
+                                        .year
+                                  : addOns[_selected.clamp(
+                                          0,
+                                          addOns.length - 1,
+                                        )]
+                                        .intl
+                                        .year,
+                              vnd: vnd,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                        onPressed: () => showPaymentSoon(context),
+                      ),
                     const SizedBox(height: ClSpace.s2),
                     PremiumTextButton(
                       label: l10n.pv2ManageMedia,

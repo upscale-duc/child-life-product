@@ -176,6 +176,18 @@ Future<PremiumSuggestionChoice> showPremiumSuggestion(
   return choice ?? PremiumSuggestionChoice.dismissed;
 }
 
+/// The CTA before in-app purchase is open (owner, 2026-10-25): the paywall is complete, only
+/// the store step waits for the App Store / Google Play account.
+Future<void> showPaymentSoon(BuildContext context) async {
+  final l10n = AppLocalizations.of(context);
+  await showPremiumSuggestion(
+    context,
+    title: l10n.pv2PaySoonTitle,
+    body: l10n.pv2PaySoonBody,
+    primary: l10n.pv2GotIt,
+  );
+}
+
 class PremiumSuggestionSheet extends StatelessWidget {
   const PremiumSuggestionSheet({
     required this.title,

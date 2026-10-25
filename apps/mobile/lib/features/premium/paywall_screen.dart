@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -238,13 +239,13 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     final baby = ref.watch(babyProvider(babyId)).value;
     final members = ref.watch(familyMembersProvider(babyId)).value ?? const [];
     final manager = members.where((m) => m.isOwner).firstOrNull?.displayName;
+    // The manager always sees the plans and the CTA (owner, 2026-10-25); until the store is
+    // open the CTA says the payment step is coming, never a dead button.
     final footer = premium
         ? PaywallFooter.premium
         : !owner
         ? PaywallFooter.member
-        : open
-        ? PaywallFooter.buy
-        : PaywallFooter.soon;
+        : PaywallFooter.buy;
     final free = plan?.free ?? PlanOffer.free;
     final subject = widget.subject;
     final String? reason = !owner && !premium
@@ -271,7 +272,12 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
       reason: reason,
       babyName: baby?.nickname ?? '',
       vnd: caps.country == null || caps.country == 'VN',
-      storeName: store.provider == StoreProvider.google
+      storeName:
+          (store.provider ??
+                  (defaultTargetPlatform == TargetPlatform.android
+                      ? StoreProvider.google
+                      : StoreProvider.apple)) ==
+              StoreProvider.google
           ? l10n.pv2StoreGoogle
           : l10n.pv2StoreApple,
       managerName: manager,
@@ -282,6 +288,10 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
           : null,
       onBuy: footer == PaywallFooter.buy
           ? (yearly) {
+              if (!open) {
+                unawaited(showPaymentSoon(context));
+                return;
+              }
               final p =
                   products
                       .where(
