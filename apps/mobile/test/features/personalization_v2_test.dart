@@ -1,3 +1,4 @@
+import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/features/nutrition/nutrition_state.dart';
 import 'package:child_life/features/rhythm/personal_day_widgets.dart';
 import 'package:child_life/features/rhythm/personal_day_pages.dart';
@@ -219,6 +220,25 @@ void main() {
         'value': 'helpful',
       });
       expect(find.text(l.pv2ToastOutcome), findsOneWidget);
+    },
+  );
+  testWidgets(
+    '"Tuần này điều gì hữu ích?" → "Xem chi tiết" opens the week\'s tried ideas (owner 2026-10-25)',
+    (tester) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: PersonalWeekBlock())),
+        overrides: rhythmOverrides(
+          repo: FakeRhythmRepository(),
+          personalDay: snapshot({
+            'weekly': {'tried': 7, 'helpful': 6},
+          }),
+        ),
+      );
+      await tester.scrollUntilVisible(find.text(l.pv2Open), 200);
+      await tester.tap(find.text(l.pv2Open));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, Routes.personalDayHistory);
     },
   );
   testWidgets('the history page answers an attempt later', (tester) async {

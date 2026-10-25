@@ -768,11 +768,12 @@ class PersonalWeekBlock extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: ClSpace.s2),
+          // The week's tried and helpful ideas (owner, 2026-10-25), not today's suggestions.
           ClButton(
             label: l.pv2Open,
             expand: true,
             style: ClButtonStyle.secondary,
-            onPressed: () => context.push(Routes.personalDay),
+            onPressed: () => context.push(Routes.personalDayHistory),
           ),
         ],
       ),
