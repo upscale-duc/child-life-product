@@ -106,6 +106,7 @@ import { FamiliesScreen } from './screens/Families';
 import { FeatureHubScreen } from './screens/FeatureHub';
 import { FirstAidScreen } from './screens/FirstAid';
 import { KeepsakesScreen } from './screens/Keepsakes';
+import { PrintStudioScreen } from './screens/PrintStudio';
 import { MilestonesScreen } from './screens/Milestones';
 import { NutritionScreen } from './screens/Nutrition';
 import { JobsScreen } from './screens/Jobs';
@@ -151,6 +152,7 @@ const nav: NavItem[] = [
   { route: 'firstAid', icon: HeartPulse, group: 'content', can: 'content.view' },
   { route: 'rhythm', icon: CalendarHeart, group: 'content', can: 'content.view' },
   { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
+  { route: 'printStudio', icon: BookOpen, group: 'ops', can: 'support.view' },
   // Editorial content (D-076 #5–#7): Bài viết, Nội dung theo giai đoạn, Mốc phát triển, Duyệt.
   { route: 'articles', icon: Newspaper, group: 'content', can: 'content.view' },
   { route: 'stages', icon: CalendarRange, group: 'content', can: 'content.view' },
@@ -373,6 +375,8 @@ function Screen({ route }: { route: Route }) {
       return <RhythmScreen />;
     case 'keepsakes':
       return <KeepsakesScreen />;
+    case 'printStudio':
+      return <PrintStudioScreen />;
     case 'articles':
       return <ArticlesScreen />;
     case 'stages':

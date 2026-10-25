@@ -707,32 +707,35 @@ void main() {
       );
     });
 
-    test('ranking: interests first, fewer topics last, at most two supporting cards', () {
-      ForBabyCard card(String id, Interest? i) => ForBabyCard(
-        id: id,
-        kicker: id,
-        title: id,
-        action: id,
-        interest: i,
-        onOpen: (_) {},
-      );
-      final prefs = UserPreferences.fromJson({
-        'interests': ['milestones'],
-        'digestTime': null,
-        'quietHours': null,
-        'fewer': ['feeding'],
-        'updatedAt': null,
-      });
-      final ranked = rankForBabyCards([
-        card('a', Interest.sleep),
-        card('b', Interest.feeding),
-        card('c', Interest.milestones),
-        card('a', Interest.sleep),
-        card('d', null),
-        card('e', Interest.milestones),
-      ], prefs);
-      expect(ranked.map((c) => c.id), ['c', 'e']);
-    });
+    test(
+      'ranking: interests first, fewer topics last, at most two supporting cards',
+      () {
+        ForBabyCard card(String id, Interest? i) => ForBabyCard(
+          id: id,
+          kicker: id,
+          title: id,
+          action: id,
+          interest: i,
+          onOpen: (_) {},
+        );
+        final prefs = UserPreferences.fromJson({
+          'interests': ['milestones'],
+          'digestTime': null,
+          'quietHours': null,
+          'fewer': ['feeding'],
+          'updatedAt': null,
+        });
+        final ranked = rankForBabyCards([
+          card('a', Interest.sleep),
+          card('b', Interest.feeding),
+          card('c', Interest.milestones),
+          card('a', Interest.sleep),
+          card('d', null),
+          card('e', Interest.milestones),
+        ], prefs);
+        expect(ranked.map((c) => c.id), ['c', 'e']);
+      },
+    );
 
     test('soothing days count the last three days', () {
       CheckIn ci(String date, Observation o) => CheckIn(

@@ -1,4 +1,5 @@
 packages:
+  - apps/launch-film
   - apps/landing
   - apps/portal
   - apps/renderer

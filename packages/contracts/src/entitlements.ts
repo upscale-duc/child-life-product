@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { defaultPremiumPlans, premiumPlansSchema } from './premium-v2.js';
 import { staffReasonSchema } from './staff-reason.js';
 import type { FamilyAction } from './family-actions.js';
 import type { FlagKey } from './config.js';
@@ -334,10 +335,21 @@ export const entitlementsConfigSchema = z.object({
       .default(() => ({ free: 20, premium: 200, textCredits: 1, imageCredits: 3 })),
   }),
   betaCampaigns: z.array(betaCampaignSchema).max(20),
+  /**
+   * Premium v2 (Figma 958:13863 PV00, D-101): Free and Premium limits, the storage add-ons and
+   * the task costs shown to staff. Read only while the `premium_v2` flag is on for the family;
+   * before that the `quotas` above keep their meaning. Every value is the owner's to change in
+   * the portal ("free và premium giá trị khác nhau").
+   */
+  plans: premiumPlansSchema.default(() => structuredClone(defaultPremiumPlans)),
+  /** PT03: the approved plans version ("2.0-launch"); changed only by a second approver. */
+  plansVersion: z.string().min(1).max(40).default('2.0-launch'),
 });
 export type EntitlementsConfig = z.infer<typeof entitlementsConfigSchema>;
 
 export const defaultEntitlementsConfig: EntitlementsConfig = {
+  plans: structuredClone(defaultPremiumPlans),
+  plansVersion: '2.0-launch',
   policyVersion: 'policy-v2-draft',
   regions: { advanced: [] },
   quotas: {
@@ -413,6 +425,8 @@ export interface CapabilitiesAnswer {
     adaptiveExperience: boolean;
     /** P-178 `adaptive_nav`; only true while `adaptive_experience` is on too. */
     adaptiveNav: boolean;
+    /** D-101 `premium_v2`: Free trial allowances, seats, Gói của gia đình v2. */
+    premiumV2: boolean;
   };
 }
 

@@ -25,6 +25,8 @@ import '../memories/upload_queue.dart';
 import 'me_models.dart';
 import 'me_repository.dart';
 import 'me_widgets.dart';
+import '../premium/premium_entries.dart';
+import '../premium/premium_repository.dart';
 
 /// Items held on this device for quota ("3 mục mới được giữ trên máy", 13d).
 int heldForQuota(WidgetRef ref) => [
@@ -68,6 +70,11 @@ class StorageScreen extends ConsumerWidget {
     }
     final tints = babySoftTints(context);
     final full = s.state == StorageState.full;
+    // Premium v2 (D-101): E08 / E09 replace "Liên hệ quản trị" with Free → Premium or the
+    // Premium add-on (PW10).
+    final v2 =
+        ref.watch(capabilitiesProvider(me.babyId)).value?.features.premiumV2 ??
+        false;
     final quota = formatBytes(s.quotaBytes, locale);
     return MePage(
       title: l10n.meStorage,
@@ -113,7 +120,7 @@ class StorageScreen extends ConsumerWidget {
             tone: MeTone.warn,
             icon: ClIcons.alert,
             title: l10n.stNearTitle(s.percent),
-            body: l10n.stNearBody,
+            body: v2 ? null : l10n.stNearBody,
           ),
         ],
         if (full) ...[
@@ -125,6 +132,7 @@ class StorageScreen extends ConsumerWidget {
             body: held > 0 ? l10n.stFullBody(held) : l10n.stFullBodyNone,
           ),
         ],
+        if (v2) StoragePremiumInline(babyId: me.babyId),
         MeSection(l10n.stByBaby),
         ClCardGroup(
           children: [
@@ -164,37 +172,43 @@ class StorageScreen extends ConsumerWidget {
               ),
           ],
         ),
-        const SizedBox(height: ClSpace.s4),
-        MeNotice(
-          title: l10n.stNeedMore,
-          body: l10n.stNeedMoreBody(quota),
-          child: s.openRequestGb != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.stRequested(
-                        s.openRequestGb!,
-                        DateFormat.MMMd(locale).format(s.openRequestAt!),
+        if (!v2) ...[
+          const SizedBox(height: ClSpace.s4),
+          MeNotice(
+            title: l10n.stNeedMore,
+            body: l10n.stNeedMoreBody(quota),
+            child: s.openRequestGb != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.stRequested(
+                          s.openRequestGb!,
+                          DateFormat.MMMd(locale).format(s.openRequestAt!),
+                        ),
+                        style: cl.text.bodyStrong.copyWith(
+                          color: cl.colors.mintText,
+                        ),
                       ),
-                      style: cl.text.bodyStrong.copyWith(
-                        color: cl.colors.mintText,
+                      Text(
+                        l10n.stRequestedHint,
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
                       ),
-                    ),
-                    Text(
-                      l10n.stRequestedHint,
-                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                    ),
-                  ],
-                )
-              : ClButton(
-                  label: l10n.stContact,
-                  style: full ? ClButtonStyle.primary : ClButtonStyle.secondary,
-                  expand: true,
-                  onPressed: () =>
-                      showStorageRequestSheet(context, me.babyId, s),
-                ),
-        ),
+                    ],
+                  )
+                : ClButton(
+                    label: l10n.stContact,
+                    style: full
+                        ? ClButtonStyle.primary
+                        : ClButtonStyle.secondary,
+                    expand: true,
+                    onPressed: () =>
+                        showStorageRequestSheet(context, me.babyId, s),
+                  ),
+          ),
+        ],
       ],
     );
   }

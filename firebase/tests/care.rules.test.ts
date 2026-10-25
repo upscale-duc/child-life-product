@@ -410,3 +410,21 @@ describe('sleep and timers (S5)', () => {
     await assertFails(setDoc(doc(as('mom'), 'babies/b1/conflicts/x'), { status: 'open' }));
   });
 });
+
+describe('write seats (PV44, D-101 Q-101)', () => {
+  it('a writer left out after a downgrade reads but no longer logs or edits', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await updateDoc(doc(ctx.firestore(), 'babies/b1/members/nanny'), { writeSuspended: true });
+    });
+    const id = newId();
+    await assertFails(setDoc(rec('nanny', id), record('nanny', id)));
+    await assertFails(updateDoc(rec('nanny', 'r_nanny'), { 'data.amountMl': 90 }));
+    await assertSucceeds(getDoc(rec('nanny', 'r_mom')));
+    // Others keep writing; the flag is never the member's to clear.
+    const dadId = newId();
+    await assertSucceeds(setDoc(rec('dad', dadId), record('dad', dadId)));
+    await assertFails(
+      updateDoc(doc(as('nanny'), 'babies/b1/members/nanny'), { writeSuspended: false }),
+    );
+  });
+});

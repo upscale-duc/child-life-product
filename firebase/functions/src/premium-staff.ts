@@ -86,7 +86,7 @@ export async function setEntitlementsConfig(
 ) {
   const req = parse(setEntitlementsConfigSchema, data);
   const s = requireStaff(staff, 'premium.config');
-  const campaigns = [];
+  const campaigns: EntitlementsConfig['betaCampaigns'] = [];
   for (const c of req.config.betaCampaigns) {
     if (Date.parse(c.validUntil) <= Date.parse(c.validFrom)) {
       throw new StaffError('invalid-argument', 'bad-dates');
@@ -96,10 +96,16 @@ export async function setEntitlementsConfig(
   if (new Set(campaigns.map((c) => c.id)).size !== campaigns.length) {
     throw new StaffError('invalid-argument', 'duplicate-campaign');
   }
-  const config: EntitlementsConfig = { ...req.config, betaCampaigns: campaigns };
   await db.runTransaction(async (tx) => {
     const ref = db.doc('config/entitlements');
     const before = entitlementsConfigSchema.safeParse((await tx.get(ref)).data());
+    // D-101 PT03: the plans change only through an approved version (staffProposePlans).
+    const config: EntitlementsConfig = {
+      ...req.config,
+      betaCampaigns: campaigns,
+      plans: before.success ? before.data.plans : req.config.plans,
+      plansVersion: before.success ? before.data.plansVersion : req.config.plansVersion,
+    };
     tx.set(ref, config);
     staffAudit(
       tx,

@@ -41,6 +41,7 @@ import 'me_models.dart';
 import 'me_repository.dart';
 import 'me_widgets.dart';
 import 'staff_transfer.dart';
+import '../premium/premium_entries.dart';
 
 /// Nicknames of [babyIds] joined "Teddy, Na".
 String babyNames(WidgetRef ref, Iterable<String> babyIds) => [
@@ -132,6 +133,8 @@ class MeScreen extends ConsumerWidget {
         if (parent) ...[
           const SizedBox(height: ClSpace.s3),
           StorageCard(babyId: me.babyId),
+          // E13 (D-101): a Free family's manager sees Premium under Dung lượng → PW06.
+          MePremiumInline(babyId: me.babyId, top: ClSpace.s3),
         ],
         const SizedBox(height: ClSpace.s3),
         ClCardGroup(

@@ -25,6 +25,7 @@ import {
   TableScroll,
   type PillTone,
 } from '../ui';
+import { RefundJobButton } from './PremiumPlans';
 
 /**
  * Premium operations (plan §5.6, brief "Portal cần thêm"), read-only: the AI policy in force
@@ -674,6 +675,12 @@ export function RenderOpsView({
                           <span className="muted mono">
                             {j.reservation.window} · {j.reservation.id}
                           </span>
+                          {/* PT04 (D-101): give back the lượt of a video that came out wrong. */}
+                          {j.reservation.state === 'committed' && (
+                            <div>
+                              <RefundJobButton family={j.family} job={j.code} />
+                            </div>
+                          )}
                         </>
                       ) : (
                         <span className="muted">

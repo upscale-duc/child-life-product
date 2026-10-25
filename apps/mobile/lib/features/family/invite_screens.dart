@@ -36,6 +36,7 @@ import 'family_labels.dart';
 import 'family_models.dart';
 import 'family_repository.dart';
 import 'family_screen.dart';
+import '../premium/premium_entries.dart';
 
 /// Invite progress on 14b → 14c (Figma draws the same ~77 % on both; Q in extract 01).
 const _progressRole = 0.5;
@@ -114,7 +115,17 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
         setState(() => _requestId = const Uuid().v4());
       }
     } on FamilyException catch (e) {
-      if (mounted) {
+      if (!mounted) return;
+      if (e.failure == FamilyFailure.seatsFull) {
+        // E12 (D-101): the writer seats are full; Premium (PW05) or invite as a relative.
+        final relative = await showSeatsFullSuggestion(context, ref, me.babyId);
+        if (relative && mounted) {
+          setState(() {
+            _role = MemberRole.relative;
+            _requestId = const Uuid().v4();
+          });
+        }
+      } else {
         showClToast(context, message: familyMessage(l10n, e.failure));
       }
     } finally {

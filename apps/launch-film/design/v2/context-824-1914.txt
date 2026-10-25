@@ -1,0 +1,37 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/5e6d37a2-ead3-49de-a127-3c13ffa217ab";
+const imgImagePhoto = `${assetPathPrefix}/dacb8.png`;
+const imgAccentBand = `${assetPathPrefix}/ea83a.svg`;
+const imgAccentSun = `${assetPathPrefix}/91e76.svg`;
+
+export default function S01Opening0005SHero9X16() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="824:1914" data-name="S01_Opening_00-05s_HERO_9x16">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="824:1915" data-name="Background" />
+      <div className="absolute h-[520px] left-0 top-[1400px] w-[1080px]" data-node-id="824:1916" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <div className="absolute left-[780px] size-[240px] top-[560px]" data-node-id="824:1918" data-name="Accent/Sun">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentSun} />
+      </div>
+      <div className="absolute bg-[var(--surface-2,#eef6f5)] h-[1000px] left-[96px] overflow-clip rounded-[56px] shadow-[0px_10px_22px_-4px_rgba(18,46,51,0.16),0px_2px_4px_0px_rgba(18,46,51,0.1)] top-[660px] w-[888px]" data-node-id="824:1919" data-name="Photo/MeVaBe · ảnh web (xem credit)">
+        <div className="absolute h-[1000px] left-0 top-0 w-[888px]" data-node-id="824:8055" data-name="Image · photo">
+          <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto} />
+        </div>
+      </div>
+      <div className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[0] left-[96px] not-italic text-[112px] text-[color:var(--ink,#173d44)] top-[300px] tracking-[-1.68px] whitespace-nowrap" data-node-id="824:1923">
+        <p className="leading-[1.08] mb-0">Con lớn lên</p>
+        <p className="leading-[1.08]">từng ngày.</p>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: shadow-tile: Effect(type: DROP_SHADOW, color: #122E331A, offset: (0, 2), radius: 4, spread: 0); Effect(type: DROP_SHADOW, color: #122E3329, offset: (0, 10), radius: 22, spread: -4).
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

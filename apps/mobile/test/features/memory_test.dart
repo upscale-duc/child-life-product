@@ -303,47 +303,46 @@ void main() {
       expect(find.text('17 – 23 tháng 9 · 3 ảnh'), findsOneWidget);
     });
 
-    testWidgets(
-      'a parent sees the private note; a relative never does (R-119)',
-      (tester) async {
-        const note = 'Đêm qua con ngủ một mạch 4 tiếng. Mẹ dậy mà vẫn thấy lạ.';
-        await pumpRouted(
-          tester,
-          const Scaffold(body: MemoriesScreen()),
-          overrides: [
-            ...careOverrides(),
-            startOn(MemoryTab.journal),
-            ...memoryOverrides(),
-          ],
-        );
-        await tester.dragUntilVisible(
-          find.text(note),
-          find.byType(CustomScrollView),
-          const Offset(0, -300),
-        );
-        expect(find.text(note), findsOneWidget);
+    testWidgets('a parent sees the private note; a relative never does (R-119)', (
+      tester,
+    ) async {
+      const note = 'Đêm qua con ngủ một mạch 4 tiếng. Mẹ dậy mà vẫn thấy lạ.';
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [
+          ...careOverrides(),
+          startOn(MemoryTab.journal),
+          ...memoryOverrides(),
+        ],
+      );
+      await tester.dragUntilVisible(
+        find.text(note),
+        find.byType(CustomScrollView),
+        const Offset(0, -300),
+      );
+      expect(find.text(note), findsOneWidget);
 
-        await pumpRouted(
-          tester,
-          const Scaffold(body: MemoriesScreen()),
-          overrides: [
-            ...careOverrides(me: hoa),
-            ...memoryOverrides(),
-          ],
-        );
-        expect(find.bySemanticsLabel('Thêm vào Kỷ niệm'), findsNothing);
-        await tester.dragUntilVisible(
-          find.text('Tuần thứ 1'),
-          find.byType(CustomScrollView),
-          const Offset(0, -300),
-        );
-        expect(find.text(note), findsNothing);
-        // Unmount here so Riverpod's zero-delay dispose timer runs inside the test.
-        await tester.pumpWidget(const SizedBox());
-        await tester.pump(const Duration(milliseconds: 1));
-        await tester.pump(const Duration(milliseconds: 1));
-      },
-    );
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [
+          ...careOverrides(me: hoa),
+          ...memoryOverrides(),
+        ],
+      );
+      expect(find.bySemanticsLabel('Thêm vào Kỷ niệm'), findsNothing);
+      await tester.dragUntilVisible(
+        find.text('Tuần thứ 1'),
+        find.byType(CustomScrollView),
+        const Offset(0, -300),
+      );
+      expect(find.text(note), findsNothing);
+      // Unmount here so Riverpod's zero-delay dispose timer runs inside the test.
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 1));
+      await tester.pump(const Duration(milliseconds: 1));
+    });
 
     testWidgets(
       '"Xem như người thân" hides private things until "Thoát" (10c)',

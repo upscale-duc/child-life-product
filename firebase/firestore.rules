@@ -30,7 +30,15 @@ service cloud.firestore {
 
     // Writes lock while the profile is being deleted (13l, Q-037); reads stay until the purge.
     function babyOpen(babyId) {
-      return get(/databases/$(database)/documents/babies/$(babyId)).data.get('state', 'active') == 'active';
+      return get(/databases/$(database)/documents/babies/$(babyId)).data.get('state', 'active') == 'active' &&
+        !writeSuspended(babyId);
+    }
+
+    // PV44 (D-101 Q-101): a writer the manager left out after a downgrade is view-only until
+    // given a seat again. Set only by `chooseFamilyWriteSeats`; members are never removed.
+    function writeSuspended(babyId) {
+      return signedIn() && exists(memberDoc(babyId)) &&
+        get(memberDoc(babyId)).data.get('writeSuspended', false) == true;
     }
 
     // Public projections of feature flags and global limits (P-122, D-011).
@@ -40,8 +48,12 @@ service cloud.firestore {
     match /publicConfig/{docId} {
       allow get: if docId in ['flags', 'limits', 'reference_growth_weight', 'reference_growth_length',
         'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate', 'keepsakes',
-        'rhythm_reference', 'content_rhythm'];
+        'rhythm_reference', 'content_rhythm', 'printStudio'];
       allow list, write: if false;
+    }
+    match /printReviewsPublic/{id} {
+      allow read: if signedIn();
+      allow write: if false;
     }
 
     // Editorial content (D-076 #5–#7): Thư viện chăm bé articles, "Giai đoạn của bé" stage content
@@ -663,6 +675,15 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      match /printDrafts/{uid} {
+        allow read: if isParent(babyId) && request.auth.uid == uid;
+        allow write: if false;
+      }
+      match /printOrders/{orderId} {
+        allow read: if isParent(babyId) && resource.data.uid == request.auth.uid;
+        allow write: if false;
+      }
+
       // The baby's milestones: "Mốc nhà mình đã tạo" (10h3, 10h4, R-105), MS01 "Lưu vào Mốc" and
       // Mốc phát triển records (3a–3g, D-076 #6; packages/contracts/src/milestones.ts). One
       // collection: custom `ms_<hex>` and reference `p_<referenceId>`. Written by a Cùng nuôi only
@@ -857,7 +878,8 @@ service cloud.firestore {
 
     // Relatives never log (12a, 7b: no "+").
     function canLog(babyId) {
-      return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'];
+      return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'] &&
+        !writeSuspended(babyId);
     }
 
     // Q-012 → D-022: any Cùng nuôi edits or deletes any record; a caregiver only their own

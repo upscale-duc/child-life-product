@@ -1,4 +1,5 @@
 import { freezeKeepsakePresentation } from '@child-life/contracts';
+import { storageLimitBytes } from './premium-v2.js';
 import { createHash } from 'node:crypto';
 import {
   fillName,
@@ -13,8 +14,6 @@ import {
   keepsakeJobLiveSchema,
   keepsakeNeedsPremiumCheck,
   keepsakeTemplateAccess,
-  limitsSchema,
-  defaultLimits,
   memoryStoryRequestSchema,
   memoryStoryRetrySchema,
   occasions,
@@ -147,6 +146,7 @@ export async function requestMemoryStory(
     !member.exists ||
     member.get('status') !== 'active' ||
     member.get('role') !== 'coParent' ||
+    member.get('writeSuspended') === true ||
     (until && until.toMillis() <= now.getTime())
   ) {
     throw new KeepsakeJobError('permission-denied', 'not-allowed');
@@ -244,7 +244,7 @@ export async function requestMemoryStory(
   }
 
   // One at a time per baby, a daily cap per family, and room in the quota (D-068 #5).
-  const [active, today, family, limitsDoc] = await Promise.all([
+  const [active, today, family] = await Promise.all([
     db
       .collection(`babies/${req.babyId}/keepsakeJobs`)
       .where('status', 'in', ['queued', 'rendering'])
@@ -257,7 +257,6 @@ export async function requestMemoryStory(
       .count()
       .get(),
     db.doc(`families/${familyId}`).get(),
-    db.doc('config/limits').get(),
   ]);
   if (active.size >= keepsakeJobLimits.activePerBaby) {
     throw new KeepsakeJobError('resource-exhausted', 'busy');
@@ -265,10 +264,8 @@ export async function requestMemoryStory(
   if (today.data().count >= keepsakeJobLimits.perFamilyPerDay) {
     throw new KeepsakeJobError('resource-exhausted', 'daily-limit');
   }
-  const limits = limitsSchema.safeParse(limitsDoc.data());
-  const quota =
-    (family.get('quotaBytes') as number | undefined) ??
-    (limits.success ? limits.data : defaultLimits).familyQuotaBytes;
+  // Premium v2 (D-101): the plan's storage limit; today's `quotaBytes` while v2 is off.
+  const quota = await storageLimitBytes(db, familyId, family, now);
   const used =
     ((family.get('usedBytes') as number | undefined) ?? 0) +
     ((family.get('reservedBytes') as number | undefined) ?? 0);
@@ -383,7 +380,7 @@ export async function requestMemoryStory(
       window,
       windowSnap,
       reservationId,
-      { babyId: req.babyId, jobId },
+      { babyId: req.babyId, jobId, uid },
       now,
     );
     if (held.outcome !== 'reserved') {
@@ -569,6 +566,7 @@ export async function retryMemoryStory(
     if (
       member.get('status') !== 'active' ||
       member.get('role') !== 'coParent' ||
+      member.get('writeSuspended') === true ||
       (until && until.toMillis() <= now.getTime())
     )
       throw new KeepsakeJobError('permission-denied', 'not-allowed');
@@ -590,7 +588,7 @@ export async function retryMemoryStory(
       window,
       windowSnap,
       reservationId,
-      { babyId, jobId },
+      { babyId, jobId, uid },
       now,
       base,
     );

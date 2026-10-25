@@ -22,6 +22,9 @@ import {
   type InvitePreview,
   type InviteTicket,
   type MyInvitesResponse,
+  chooseWriteSeatsRequestSchema,
+  seatAvailable,
+  seatRoles,
 } from '@child-life/contracts';
 import {
   FieldValue,
@@ -30,6 +33,7 @@ import {
   type Firestore,
   type Transaction,
 } from 'firebase-admin/firestore';
+import { familyPlan } from './premium-v2.js';
 
 export type FamilyErrorCode =
   | 'invalid-argument'
@@ -93,6 +97,47 @@ async function requireCoParent(
   return member;
 }
 
+const isSeatRole = (role: unknown) => (seatRoles as readonly unknown[]).includes(role);
+
+/**
+ * D-101 Q-097: a new writer (Cùng nuôi / Người chăm sóc) needs a free seat in the family.
+ * Families already over the limit keep every member; only the next writer is refused, and the
+ * app opens E12 → PW05. Pending write invites hold a seat so the limit cannot be oversold.
+ * Nothing changes while `premium_v2` is off for the family.
+ */
+async function requireSeat(
+  db: Firestore,
+  tx: Transaction,
+  familyId: string,
+  now: Date,
+  options: { joiningUid?: string; exceptInviteId?: string } = {},
+): Promise<void> {
+  const plan = await familyPlan(db, familyId, now);
+  if (!plan.v2) return;
+  const babies = await tx.get(db.collection('babies').where('familyId', '==', familyId));
+  const writers = new Set<string>();
+  let pending = 0;
+  for (const baby of babies.docs) {
+    const [members, invites] = await Promise.all([
+      tx.get(db.collection(`babies/${baby.id}/members`).where('role', 'in', [...seatRoles])),
+      tx.get(db.collection(`babies/${baby.id}/pendingInvites`).where('role', 'in', [...seatRoles])),
+    ]);
+    for (const m of members.docs) {
+      if (isActiveMember(m, now) && m.get('writeSuspended') !== true) writers.add(m.id);
+    }
+    for (const i of invites.docs) {
+      const expires = i.get('expiresAt') as Timestamp | undefined;
+      if (i.id !== options.exceptInviteId && (!expires || expires.toMillis() > now.getTime()))
+        pending += 1;
+    }
+  }
+  // Someone who already writes for another baby of the family keeps their one seat.
+  if (options.joiningUid && writers.has(options.joiningUid)) return;
+  if (!seatAvailable(writers.size + pending, plan.limits.caregiverSeats)) {
+    throw new FamilyError('resource-exhausted', 'seats-full');
+  }
+}
+
 function audit(tx: Transaction, db: Firestore, entry: Record<string, unknown>, now: Date) {
   tx.create(db.collection('audit').doc(), { ...entry, at: now });
 }
@@ -131,6 +176,7 @@ export async function createInvite(
     }
     const baby = await tx.get(db.doc(`babies/${req.babyId}`));
     if (!baby.exists) throw new FamilyError('not-found', 'baby-not-found');
+    if (isSeatRole(req.role)) await requireSeat(db, tx, baby.get('familyId') as string, now);
 
     const code = await freeCode(db, tx, now);
     const token = newToken();
@@ -576,6 +622,12 @@ export async function acceptInvite(
     const parents = await tx.get(
       db.collection(`babies/${babyId}/members`).where('role', '==', 'coParent'),
     );
+    if (isSeatRole(invite.get('role'))) {
+      await requireSeat(db, tx, invite.get('familyId') as string, now, {
+        joiningUid: caller.uid,
+        exceptInviteId: invite.id,
+      });
+    }
 
     tx.set(memberRef, {
       uid: caller.uid,
@@ -689,6 +741,10 @@ export async function updateMember(
     if ((fromRole === 'coParent' || toRole === 'coParent') && !actorIsOwner) {
       throw new FamilyError('permission-denied', 'owner-only');
     }
+    if (isSeatRole(toRole) && !isSeatRole(fromRole)) {
+      const baby = await tx.get(db.doc(`babies/${req.babyId}`));
+      await requireSeat(db, tx, baby.get('familyId') as string, now, { joiningUid: req.uid });
+    }
     const update: Record<string, unknown> = { updatedAt: now, updatedBy: caller.uid };
     if (req.role) update.role = req.role;
     const rights = req.extraRights ?? (target.get('extraRights') as ExtraRights | null) ?? null;
@@ -796,6 +852,75 @@ function membershipNotice(
     recipients: extra.recipients,
     createdAt: now,
     delivered: false,
+  });
+}
+
+/**
+ * PV44 "Chọn ai giữ quyền ghi" (D-101 Q-101): after a downgrade the manager picks who keeps
+ * write access. The others get `writeSuspended` (Rules: view-only), are never removed, and hear
+ * once. Until the manager chooses, everyone keeps writing. Choosing again (or with room for all)
+ * gives write access back.
+ */
+export async function chooseWriteSeats(
+  db: Firestore,
+  caller: Caller,
+  data: unknown,
+  now: Date,
+): Promise<{ suspended: number }> {
+  const parsed = chooseWriteSeatsRequestSchema.safeParse(data);
+  if (!parsed.success) throw new FamilyError('invalid-argument', 'malformed');
+  const req = parsed.data;
+  const baby = await db.doc(`babies/${req.babyId}`).get();
+  if (!baby.exists) throw new FamilyError('not-found', 'baby-not-found');
+  const familyId = baby.get('familyId') as string;
+  const plan = await familyPlan(db, familyId, now);
+  if (!plan.v2) throw new FamilyError('failed-precondition', 'not-available');
+  return db.runTransaction(async (tx) => {
+    const family = await tx.get(db.doc(`families/${familyId}`));
+    const owner = family.get('ownerUid') as string | undefined;
+    if (owner !== caller.uid) throw new FamilyError('permission-denied', 'owner-only');
+    const keep = new Set([owner, ...req.keep]);
+    if (keep.size > plan.limits.caregiverSeats)
+      throw new FamilyError('resource-exhausted', 'seats-full');
+    const babies = await tx.get(db.collection('babies').where('familyId', '==', familyId));
+    const writers: DocumentSnapshot[] = [];
+    for (const b of babies.docs) {
+      const members = await tx.get(
+        db.collection(`babies/${b.id}/members`).where('role', 'in', [...seatRoles]),
+      );
+      writers.push(...members.docs.filter((m) => isActiveMember(m, now)));
+    }
+    const suspended = new Set<string>();
+    for (const m of writers) {
+      const off = !keep.has(m.id);
+      if (off) suspended.add(m.id);
+      if ((m.get('writeSuspended') === true) === off) continue;
+      tx.update(m.ref, { writeSuspended: off, updatedAt: now, updatedBy: caller.uid });
+      if (off)
+        membershipNotice(
+          tx,
+          db,
+          m.get('babyId') as string,
+          `seat_${m.id}_${now.getTime().toString(36)}`,
+          'roleChanged',
+          now,
+          { actorUid: caller.uid, recipients: [m.id] },
+        );
+    }
+    audit(
+      tx,
+      db,
+      {
+        action: 'member.writeSeats',
+        actor: caller.uid,
+        babyId: req.babyId,
+        target: familyId,
+        after: { kept: keep.size, suspended: suspended.size },
+        category: 'family',
+      },
+      now,
+    );
+    return { suspended: suspended.size };
   });
 }
 

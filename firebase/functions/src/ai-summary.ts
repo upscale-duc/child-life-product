@@ -1077,6 +1077,8 @@ export async function generateSummary(
       windows: [pool.request],
       requestId: req.requestId,
       units: aiSummaryCredits,
+      actorUid: ctx.uid,
+      task: 'lumi.summary',
       now,
     });
     if (r.outcome === 'denied') {

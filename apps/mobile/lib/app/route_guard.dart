@@ -2,6 +2,8 @@
 library;
 
 abstract final class Routes {
+  static const printStudio = '/memories/print';
+  static const printStudioOrders = '/memories/print/orders';
   static const splash = '/';
   static const welcome = '/welcome';
   static const tour = '/tour';

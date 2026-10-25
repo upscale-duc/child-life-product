@@ -1,0 +1,632 @@
+{
+  "PI01|Card/Stage/0-12m": {
+    "file": "intro/layers/PI01-card-stage-0-12m.svg",
+    "nodeId": "852:81682",
+    "state": "END",
+    "svgW": 756,
+    "svgH": 756,
+    "originX": 982.0,
+    "originY": 142.0,
+    "bytes": 830811
+  },
+  "PI01|Card/StageChip/0-12m": {
+    "file": "intro/layers/PI01-card-stagechip-0-12m.svg",
+    "nodeId": "852:81660",
+    "state": "HERO",
+    "svgW": 401,
+    "svgH": 96,
+    "originX": 189.5,
+    "originY": 908.0,
+    "bytes": 17670
+  },
+  "PI01|Card/Stage/1-3y": {
+    "file": "intro/layers/PI01-card-stage-1-3y.svg",
+    "nodeId": "852:81662",
+    "state": "HERO",
+    "svgW": 246,
+    "svgH": 246,
+    "originX": 697.0,
+    "originY": 507.0,
+    "bytes": 98543
+  },
+  "PI01|Card/StageChip/1-3y": {
+    "file": "intro/layers/PI01-card-stagechip-1-3y.svg",
+    "nodeId": "852:81663",
+    "state": "HERO",
+    "svgW": 344,
+    "svgH": 96,
+    "originX": 648.0,
+    "originY": 723.0,
+    "bytes": 17397
+  },
+  "PI01|Card/Stage/3-6y": {
+    "file": "intro/layers/PI01-card-stage-3-6y.svg",
+    "nodeId": "852:81665",
+    "state": "HERO",
+    "svgW": 216,
+    "svgH": 216,
+    "originX": 1112.0,
+    "originY": 352.0,
+    "bytes": 622734
+  },
+  "PI01|Card/StageChip/3-6y": {
+    "file": "intro/layers/PI01-card-stagechip-3-6y.svg",
+    "nodeId": "852:81666",
+    "state": "HERO",
+    "svgW": 344,
+    "svgH": 96,
+    "originX": 1048.0,
+    "originY": 538.0,
+    "bytes": 16279
+  },
+  "PI01|Card/Stage/6-12y": {
+    "file": "intro/layers/PI01-card-stage-6-12y.svg",
+    "nodeId": "852:81668",
+    "state": "HERO",
+    "svgW": 196,
+    "svgH": 196,
+    "originX": 1487.0,
+    "originY": 207.0,
+    "bytes": 167736
+  },
+  "PI01|Card/StageChip/6-12y": {
+    "file": "intro/layers/PI01-card-stagechip-6-12y.svg",
+    "nodeId": "852:81669",
+    "state": "HERO",
+    "svgW": 353,
+    "svgH": 96,
+    "originX": 1408.5,
+    "originY": 373.0,
+    "bytes": 15910
+  },
+  "PI02|Photo/motherbaby": {
+    "file": "intro/layers/PI02-photo-motherbaby.svg",
+    "nodeId": "844:10497",
+    "state": "HERO",
+    "svgW": 756,
+    "svgH": 836,
+    "originX": 1042.0,
+    "originY": 132.0,
+    "bytes": 1356085
+  },
+  "PI02|Card/Note · Last feed · 9:10?": {
+    "file": "intro/layers/PI02-card-note-last-feed-9-10.svg",
+    "nodeId": "844:10505",
+    "state": "END",
+    "svgW": 275,
+    "svgH": 113,
+    "originX": 908.617,
+    "originY": 162.942,
+    "bytes": 15996
+  },
+  "PI02|Card/Note · Nap at 1:30?": {
+    "file": "intro/layers/PI02-card-note-nap-at-1-30.svg",
+    "nodeId": "844:10507",
+    "state": "END",
+    "svgW": 229,
+    "svgH": 107,
+    "originX": 1602.71,
+    "originY": 542.717,
+    "bytes": 11802
+  },
+  "PI02|Card/Note · Vitamin D": {
+    "file": "intro/layers/PI02-card-note-vitamin-d.svg",
+    "nodeId": "844:10509",
+    "state": "END",
+    "svgW": 195,
+    "svgH": 103,
+    "originX": 960.316,
+    "originY": 812.48,
+    "bytes": 7256
+  },
+  "PI03|Photo/motherbaby": {
+    "file": "intro/layers/PI03-photo-motherbaby.svg",
+    "nodeId": "844:10526",
+    "state": "HERO",
+    "svgW": 358,
+    "svgH": 360,
+    "originX": 107.345,
+    "originY": 593.666,
+    "bytes": 1357446
+  },
+  "PI03|Card/Note · Last feed · 9:10?": {
+    "file": "intro/layers/PI03-card-note-last-feed-9-10.svg",
+    "nodeId": "844:10528",
+    "state": "HERO",
+    "svgW": 325,
+    "svgH": 124,
+    "originX": 598.059,
+    "originY": 322.942,
+    "bytes": 16008
+  },
+  "PI03|Card/Note · Next nap?": {
+    "file": "intro/layers/PI03-card-note-next-nap.svg",
+    "nodeId": "844:10530",
+    "state": "HERO",
+    "svgW": 232,
+    "svgH": 118,
+    "originX": 1162.94,
+    "originY": 229.479,
+    "bytes": 8751
+  },
+  "PI03|Card/Message · Did she eat yet?": {
+    "file": "intro/layers/PI03-card-message-did-she-eat-yet.svg",
+    "nodeId": "844:10532",
+    "state": "HERO",
+    "svgW": 258,
+    "svgH": 104,
+    "originX": 1236.0,
+    "originY": 544.0,
+    "bytes": 13357
+  },
+  "PI03|Card/Message · Yes — 120 ml at 9": {
+    "file": "intro/layers/PI03-card-message-yes-120-ml-at-9.svg",
+    "nodeId": "844:10534",
+    "state": "HERO",
+    "svgW": 304,
+    "svgH": 104,
+    "originX": 1356.0,
+    "originY": 634.0,
+    "bytes": 16482
+  },
+  "PI03|Card/Note · Vaccine · Sat": {
+    "file": "intro/layers/PI03-card-note-vaccine-sat.svg",
+    "nodeId": "844:10537",
+    "state": "HERO",
+    "svgW": 235,
+    "svgH": 107,
+    "originX": 739.468,
+    "originY": 752.713,
+    "bytes": 13024
+  },
+  "PI03|Card/Family · loose": {
+    "file": "intro/layers/PI03-card-family-loose.svg",
+    "nodeId": "844:10539",
+    "state": "HERO",
+    "svgW": 196,
+    "svgH": 72,
+    "originX": 1560.0,
+    "originY": 860.0,
+    "bytes": 4265
+  },
+  "PI03|Card/Note · Bath tonight": {
+    "file": "intro/layers/PI03-card-note-bath-tonight.svg",
+    "nodeId": "844:10565",
+    "state": "END",
+    "svgW": 229,
+    "svgH": 112,
+    "originX": 963.166,
+    "originY": 536.606,
+    "bytes": 11686
+  },
+  "PI04|Card/Note · Last feed · 9:10?": {
+    "file": "intro/layers/PI04-card-note-last-feed-9-10.svg",
+    "nodeId": "844:10611",
+    "state": "END",
+    "svgW": 326,
+    "svgH": 138,
+    "originX": 535.069,
+    "originY": 293.601,
+    "bytes": 16015
+  },
+  "PI04|Card/Note · Next nap?": {
+    "file": "intro/layers/PI04-card-note-next-nap.svg",
+    "nodeId": "844:10613",
+    "state": "END",
+    "svgW": 233,
+    "svgH": 124,
+    "originX": 1203.39,
+    "originY": 183.212,
+    "bytes": 8774
+  },
+  "PI04|Card/Message · Did she eat yet?": {
+    "file": "intro/layers/PI04-card-message-did-she-eat-yet.svg",
+    "nodeId": "844:10615",
+    "state": "END",
+    "svgW": 258,
+    "svgH": 104,
+    "originX": 1276.0,
+    "originY": 524.0,
+    "bytes": 13370
+  },
+  "PI04|Card/Note · Vaccine · Sat": {
+    "file": "intro/layers/PI04-card-note-vaccine-sat.svg",
+    "nodeId": "844:10617",
+    "state": "END",
+    "svgW": 236,
+    "svgH": 113,
+    "originX": 677.762,
+    "originY": 793.166,
+    "bytes": 13043
+  },
+  "PI04|Card/Note · Bath tonight": {
+    "file": "intro/layers/PI04-card-note-bath-tonight.svg",
+    "nodeId": "844:10619",
+    "state": "END",
+    "svgW": 229,
+    "svgH": 112,
+    "originX": 963.166,
+    "originY": 536.606,
+    "bytes": 11721
+  },
+  "PI04|Photo/smile": {
+    "file": "intro/layers/PI04-photo-smile.svg",
+    "nodeId": "844:10604",
+    "state": "HERO",
+    "svgW": 676,
+    "svgH": 796,
+    "originX": 1082.0,
+    "originY": 152.0,
+    "bytes": 528514
+  },
+  "PI05|Card/Note · Last feed · 9:10?": {
+    "file": "intro/layers/PI05-card-note-last-feed-9-10.svg",
+    "nodeId": "844:10665",
+    "state": "END",
+    "svgW": 308,
+    "svgH": 120,
+    "originX": 158.268,
+    "originY": 422.942,
+    "bytes": 15979
+  },
+  "PI05|Card/Note · Next nap?": {
+    "file": "intro/layers/PI05-card-note-next-nap.svg",
+    "nodeId": "844:10629",
+    "state": "START",
+    "svgW": 200,
+    "svgH": 105,
+    "originX": 922.713,
+    "originY": 484.234,
+    "bytes": 8773
+  },
+  "PI05|Card/Note · Vaccine · Sat": {
+    "file": "intro/layers/PI05-card-note-vaccine-sat.svg",
+    "nodeId": "845:10561",
+    "state": "END",
+    "svgW": 262,
+    "svgH": 114,
+    "originX": 1022.71,
+    "originY": 620.99,
+    "bytes": 13047
+  },
+  "PI05|Photo/smile": {
+    "file": "intro/layers/PI05-photo-smile.svg",
+    "nodeId": "844:10633",
+    "state": "START",
+    "svgW": 245,
+    "svgH": 247,
+    "originX": 832.447,
+    "originY": 413.019,
+    "bytes": 529879
+  },
+  "PI05|Logo": {
+    "file": "intro/layers/PI05-logo.svg",
+    "nodeId": "844:10639",
+    "state": "HERO",
+    "svgW": 600,
+    "svgH": 116,
+    "originX": 660.0,
+    "originY": 300.0,
+    "bytes": 7814
+  },
+  "PI05|UICrop/HomNay_BuBinh": {
+    "file": "intro/layers/PI05-uicrop-homnay-bubinh.svg",
+    "nodeId": "844:10674",
+    "state": "END",
+    "svgW": 430,
+    "svgH": 399,
+    "originX": 528.0,
+    "originY": 280.0,
+    "bytes": 612951
+  },
+  "PI05|UICrop/HomNay_NhacNho": {
+    "file": "intro/layers/PI05-uicrop-homnay-nhacnho.svg",
+    "nodeId": "845:10570",
+    "state": "END",
+    "svgW": 750,
+    "svgH": 224,
+    "originX": 1068.0,
+    "originY": 400.0,
+    "bytes": 612893
+  },
+  "PI06|Photo/feeding": {
+    "file": "intro/layers/PI06-photo-feeding.svg",
+    "nodeId": "853:11474",
+    "state": "HERO",
+    "svgW": 676,
+    "svgH": 756,
+    "originX": 102.0,
+    "originY": 192.0,
+    "bytes": 55698
+  },
+  "PI06|UICrop/Widget": {
+    "file": "intro/layers/PI06-uicrop-widget.svg",
+    "nodeId": "853:11494",
+    "state": "HERO",
+    "svgW": 630,
+    "svgH": 325,
+    "originX": 828.0,
+    "originY": 260.0,
+    "bytes": 77333
+  },
+  "PI06|AppScreen/AppleWatch": {
+    "file": "intro/layers/PI06-appscreen-applewatch.svg",
+    "nodeId": "853:11495",
+    "state": "HERO",
+    "svgW": 306,
+    "svgH": 345,
+    "originX": 860.0,
+    "originY": 600.0,
+    "bytes": 94980
+  },
+  "PI06|Card/Siri": {
+    "file": "intro/layers/PI06-card-siri.svg",
+    "nodeId": "853:11549",
+    "state": "HERO",
+    "svgW": 544,
+    "svgH": 241,
+    "originX": 1208.0,
+    "originY": 620.0,
+    "bytes": 47485
+  },
+  "PI06|Photo/father": {
+    "file": "intro/layers/PI06-photo-father.svg",
+    "nodeId": "853:11562",
+    "state": "END",
+    "svgW": 596,
+    "svgH": 676,
+    "originX": 102.0,
+    "originY": 232.0,
+    "bytes": 101485
+  },
+  "PI06|Card/BanGiao": {
+    "file": "intro/layers/PI06-card-bangiao.svg",
+    "nodeId": "853:11571",
+    "state": "END",
+    "svgW": 750,
+    "svgH": 192,
+    "originX": 748.0,
+    "originY": 310.0,
+    "bytes": 52749
+  },
+  "PI06|Card/Member/Me": {
+    "file": "intro/layers/PI06-card-member-me.svg",
+    "nodeId": "853:11587",
+    "state": "END",
+    "svgW": 458,
+    "svgH": 131,
+    "originX": 756.0,
+    "originY": 584.0,
+    "bytes": 17240
+  },
+  "PI06|Card/Member/CoLan": {
+    "file": "intro/layers/PI06-card-member-colan.svg",
+    "nodeId": "853:11603",
+    "state": "END",
+    "svgW": 458,
+    "svgH": 131,
+    "originX": 1236.0,
+    "originY": 584.0,
+    "bytes": 29831
+  },
+  "PI06|UICrop/HomNay_BuBinh": {
+    "file": "intro/layers/PI06-uicrop-homnay-bubinh.svg",
+    "nodeId": "853:11611",
+    "state": "END",
+    "svgW": 297,
+    "svgH": 277,
+    "originX": 748.0,
+    "originY": 720.0,
+    "bytes": 612968
+  },
+  "PI07|Accent/Lumi": {
+    "file": "intro/layers/PI07-accent-lumi.svg",
+    "nodeId": "853:11616",
+    "state": "START",
+    "svgW": 296,
+    "svgH": 306,
+    "originX": 812.188,
+    "originY": 399.375,
+    "bytes": 6420
+  },
+  "PI07|UICrop/Lumi_Drafts": {
+    "file": "intro/layers/PI07-uicrop-lumi-drafts.svg",
+    "nodeId": "853:11657",
+    "state": "HERO",
+    "svgW": 589,
+    "svgH": 904,
+    "originX": 1068.0,
+    "originY": 60.0,
+    "bytes": 244581
+  },
+  "PI07|Card/GoiYHomNay": {
+    "file": "intro/layers/PI07-card-goiyhomnay.svg",
+    "nodeId": "853:11892",
+    "state": "END",
+    "svgW": 665,
+    "svgH": 456,
+    "originX": 608.0,
+    "originY": 300.0,
+    "bytes": 105577
+  },
+  "PI07|List/NhacViec": {
+    "file": "intro/layers/PI07-list-nhacviec.svg",
+    "nodeId": "853:11908",
+    "state": "END",
+    "svgW": 613,
+    "svgH": 252,
+    "originX": 608.0,
+    "originY": 722.0,
+    "bytes": 48692
+  },
+  "PI08|Card/GrowthChart": {
+    "file": "intro/layers/PI08-card-growthchart.svg",
+    "nodeId": "845:80886",
+    "state": "START",
+    "svgW": 678,
+    "svgH": 730,
+    "originX": 621.0,
+    "originY": 150.0,
+    "bytes": 82171
+  },
+  "PI08|Card/Milestone": {
+    "file": "intro/layers/PI08-card-milestone.svg",
+    "nodeId": "845:80949",
+    "state": "HERO",
+    "svgW": 604,
+    "svgH": 692,
+    "originX": 608.0,
+    "originY": 280.0,
+    "bytes": 2001525
+  },
+  "PI08|UICrop/Album_CaNha": {
+    "file": "intro/layers/PI08-uicrop-album-canha.svg",
+    "nodeId": "845:81052",
+    "state": "END",
+    "svgW": 664,
+    "svgH": 768,
+    "originX": 628.0,
+    "originY": 100.0,
+    "bytes": 911142
+  },
+  "PI08|Card/Family": {
+    "file": "intro/layers/PI08-card-family.svg",
+    "nodeId": "845:81053",
+    "state": "END",
+    "svgW": 348,
+    "svgH": 96,
+    "originX": 786.0,
+    "originY": 860.0,
+    "bytes": 4475
+  },
+  "PI09|Photo/basket": {
+    "file": "intro/layers/PI09-photo-basket.svg",
+    "nodeId": "846:10944",
+    "state": "START",
+    "svgW": 358,
+    "svgH": 360,
+    "originX": 137.345,
+    "originY": 613.666,
+    "bytes": 55861
+  },
+  "PI09|Photo/foot": {
+    "file": "intro/layers/PI09-photo-foot.svg",
+    "nodeId": "846:10946",
+    "state": "START",
+    "svgW": 354,
+    "svgH": 356,
+    "originX": 543.346,
+    "originY": 532.418,
+    "bytes": 475948
+  },
+  "PI09|Photo/sleepbed": {
+    "file": "intro/layers/PI09-photo-sleepbed.svg",
+    "nodeId": "846:10948",
+    "state": "START",
+    "svgW": 350,
+    "svgH": 352,
+    "originX": 907.213,
+    "originY": 603.02,
+    "bytes": 107359
+  },
+  "PI09|Photo/feet": {
+    "file": "intro/layers/PI09-photo-feet.svg",
+    "nodeId": "846:10950",
+    "state": "START",
+    "svgW": 358,
+    "svgH": 360,
+    "originX": 1303.67,
+    "originY": 527.52,
+    "bytes": 63369
+  },
+  "PI09|Card/Thiep": {
+    "file": "intro/layers/PI09-card-thiep.svg",
+    "nodeId": "846:10967",
+    "state": "HERO",
+    "svgW": 580,
+    "svgH": 580,
+    "originX": 517.95,
+    "originY": 282.0,
+    "bytes": 46247
+  },
+  "PI09|Card/VideoPreview": {
+    "file": "intro/layers/PI09-card-videopreview.svg",
+    "nodeId": "846:11010",
+    "state": "END",
+    "svgW": 840,
+    "svgH": 840,
+    "originX": 1022.0,
+    "originY": 100.0,
+    "bytes": 42512
+  },
+  "PI10|Card/Note · Last feed · 9:10?": {
+    "file": "intro/layers/PI10-card-note-last-feed-9-10.svg",
+    "nodeId": "846:11055",
+    "state": "START",
+    "svgW": 276,
+    "svgH": 120,
+    "originX": 196.905,
+    "originY": 633.385,
+    "bytes": 15987
+  },
+  "PI10|Card/Note · Next nap?": {
+    "file": "intro/layers/PI10-card-note-next-nap.svg",
+    "nodeId": "846:11057",
+    "state": "START",
+    "svgW": 201,
+    "svgH": 110,
+    "originX": 1483.17,
+    "originY": 679.047,
+    "bytes": 8768
+  },
+  "PI10|Photo/newborn": {
+    "file": "intro/layers/PI10-photo-newborn.svg",
+    "nodeId": "846:11065",
+    "state": "HERO",
+    "svgW": 226,
+    "svgH": 228,
+    "originX": 490.65,
+    "originY": 793.346,
+    "bytes": 832069
+  },
+  "PI10|Photo/toddler": {
+    "file": "intro/layers/PI10-photo-toddler.svg",
+    "nodeId": "846:11067",
+    "state": "HERO",
+    "svgW": 224,
+    "svgH": 226,
+    "originX": 883.019,
+    "originY": 643.598,
+    "bytes": 99757
+  },
+  "PI10|Photo/child6": {
+    "file": "intro/layers/PI10-photo-child6.svg",
+    "nodeId": "846:11069",
+    "state": "HERO",
+    "svgW": 224,
+    "svgH": 226,
+    "originX": 1213.49,
+    "originY": 513.02,
+    "bytes": 168969
+  },
+  "PI10|Logo": {
+    "file": "intro/layers/PI10-logo.svg",
+    "nodeId": "846:11077",
+    "state": "END",
+    "svgW": 600,
+    "svgH": 116,
+    "originX": 660.0,
+    "originY": 360.0,
+    "bytes": 7801
+  },
+  "PI10|CTA": {
+    "file": "intro/layers/PI10-cta.svg",
+    "nodeId": "846:11088",
+    "state": "END",
+    "svgW": 650,
+    "svgH": 38,
+    "originX": 635.0,
+    "originY": 700.0,
+    "bytes": 33825
+  }
+}

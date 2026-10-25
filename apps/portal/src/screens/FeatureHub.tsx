@@ -297,6 +297,8 @@ const switchGroups: Partial<Record<FlagKey, (typeof listGroups)[number]>> = {
   // P-175 / P-178: Hôm nay by age + goals and the adaptive dock.
   adaptive_experience: 'personalization',
   adaptive_nav: 'personalization',
+  // D-101: Free trial allowances, storage per plan and writer seats.
+  premium_v2: 'family',
 };
 
 /** Where an engineering switch sits; one added later shows under "Khác" until it gets a group. */

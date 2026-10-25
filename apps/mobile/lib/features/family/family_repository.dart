@@ -23,6 +23,9 @@ enum FamilyFailure {
   tooSoon,
   suppressed,
   dateInPast,
+
+  /// D-101 Q-097: no writer seat left (E12 → PW05).
+  seatsFull,
   network,
   other,
 }
@@ -54,6 +57,7 @@ FamilyFailure familyFailureOf(FirebaseFunctionsException e) {
     'too-soon' => FamilyFailure.tooSoon,
     'suppressed' => FamilyFailure.suppressed,
     'date-in-past' => FamilyFailure.dateInPast,
+    'seats-full' => FamilyFailure.seatsFull,
     _ => switch (e.code) {
       'unavailable' || 'deadline-exceeded' => FamilyFailure.network,
       _ => FamilyFailure.other,

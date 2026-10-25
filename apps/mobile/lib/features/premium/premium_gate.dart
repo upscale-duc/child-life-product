@@ -14,6 +14,8 @@ import '../rhythm/personalization_events.dart';
 import 'billing_models.dart';
 import 'paywall_screen.dart';
 import 'premium_models.dart';
+import 'premium_style.dart';
+import 'premium_v2.dart';
 import 'premium_repository.dart';
 import 'purchase_resume.dart';
 
@@ -91,8 +93,37 @@ Future<PremiumTemplateChoice> showPremiumTemplateSheet(
   required String templateName,
   required Capabilities? caps,
   PurchaseResume Function()? keep,
+  KeepsakeKind kind = KeepsakeKind.video,
+  int videosPerMonth = 4,
 }) async {
   final l10n = AppLocalizations.of(context);
+  // Premium v2 (D-101): Gợi ý Premium · Sheet, E01 (video) / E02 (thiệp) → PW01 / PW02.
+  if (caps?.features.premiumV2 ?? false) {
+    final card = kind == KeepsakeKind.card;
+    final v2 = await showPremiumSuggestion(
+      context,
+      title: card
+          ? l10n.pv2E02Title(templateName)
+          : l10n.pv2E01Title(templateName),
+      body: card ? l10n.pv2E02Body : l10n.pv2E01Body(videosPerMonth),
+      secondary: card ? l10n.pv2E02Secondary : l10n.pv2E01Secondary,
+    );
+    if (v2 == PremiumSuggestionChoice.primary && context.mounted) {
+      final done = await openPaywall(
+        context,
+        entry: PaywallEntry.templates,
+        resume: keep?.call(),
+        card: card ? PremiumEntry.card : PremiumEntry.video,
+        subject: templateName,
+      );
+      return done
+          ? PremiumTemplateChoice.unlocked
+          : PremiumTemplateChoice.dismissed;
+    }
+    return v2 == PremiumSuggestionChoice.secondary
+        ? PremiumTemplateChoice.useFree
+        : PremiumTemplateChoice.dismissed;
+  }
   final choice = await showClSheet<PremiumTemplateChoice>(
     context: context,
     builder: (sheet) => _GateBody(
@@ -154,6 +185,14 @@ Future<bool> ensureTemplateAllowed(
     templateName: template.name.of(Localizations.localeOf(context)),
     caps: caps,
     keep: keep,
+    kind: template.kind,
+    videosPerMonth:
+        ref
+            .read(familyPlanV2Provider(babyId))
+            .value
+            ?.premiumOffer
+            .videoExports ??
+        PlanOffer.premium.videoExports,
   );
   if (choice != PremiumTemplateChoice.unlocked) return false;
   // Access is what getCapabilities says now (the paywall already read it back).

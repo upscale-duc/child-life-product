@@ -1,0 +1,3499 @@
+{
+  "frames": [
+    {
+      "id": "808:70121",
+      "name": "S01_Opening_00-05s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70122",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70123",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 760,
+          "w": 1920,
+          "h": 380,
+          "opacity": 0.6000000238418579,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70125",
+          "name": "Accent/Sun",
+          "x": 1500,
+          "y": 140,
+          "w": 180,
+          "h": 180,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70126",
+          "name": "Photo/MeVaBe · PLACEHOLDER",
+          "x": 600,
+          "y": 150,
+          "w": 720,
+          "h": 780,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 56
+        },
+        {
+          "id": "808:70135",
+          "name": "Headline",
+          "x": 200,
+          "y": 420,
+          "w": 639,
+          "h": 260,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Con lớn lên\ntừng ngày.",
+          "fontSize": 120,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 108.00000429153442
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70136",
+      "name": "S01_Opening_00-05s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70137",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70138",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70140",
+          "name": "Accent/Sun",
+          "x": 1500,
+          "y": 90,
+          "w": 260,
+          "h": 260,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70141",
+          "name": "Photo/MeVaBe · PLACEHOLDER",
+          "x": 1000,
+          "y": 140,
+          "w": 720,
+          "h": 800,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 56
+        },
+        {
+          "id": "808:70150",
+          "name": "Headline",
+          "x": 200,
+          "y": 380,
+          "w": 639,
+          "h": 260,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Con lớn lên\ntừng ngày.",
+          "fontSize": 120,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 108.00000429153442
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70151",
+      "name": "S01_Opening_00-05s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70152",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70153",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70155",
+          "name": "Accent/Sun",
+          "x": 249.36170959472656,
+          "y": 347.8723449707031,
+          "w": 20.4255313873291,
+          "h": 20.4255313873291,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70156",
+          "name": "Photo/MeVaBe · PLACEHOLDER",
+          "x": 1180,
+          "y": 330,
+          "w": 320,
+          "h": 320,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 28
+        },
+        {
+          "id": "808:70165",
+          "name": "Headline",
+          "x": 200,
+          "y": 330,
+          "w": 639,
+          "h": 260,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Con lớn lên\ntừng ngày.",
+          "fontSize": 120,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 108.00000429153442
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70166",
+      "name": "S01_Opening_00-05s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:70167",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70168",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70170",
+          "name": "Accent/Sun",
+          "x": 780,
+          "y": 560,
+          "w": 240,
+          "h": 240,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70171",
+          "name": "Photo/MeVaBe · PLACEHOLDER",
+          "x": 96,
+          "y": 660,
+          "w": 888,
+          "h": 1000,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 56
+        },
+        {
+          "id": "808:70180",
+          "name": "Headline",
+          "x": 96,
+          "y": 300,
+          "w": 597,
+          "h": 242,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Con lớn lên\ntừng ngày.",
+          "fontSize": 112,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 108.00000429153442
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70181",
+      "name": "S02_Intro_05-10s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70182",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70183",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70302",
+          "name": "AppScreen/NhatKy",
+          "x": 1260,
+          "y": 86,
+          "w": 420,
+          "h": 909,
+          "opacity": 0.3499999940395355,
+          "rotation": 0,
+          "cornerRadius": 55
+        },
+        {
+          "id": "808:70303",
+          "name": "Photo/MeVaBe · PLACEHOLDER",
+          "x": 1260,
+          "y": 330,
+          "w": 320,
+          "h": 320,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 28
+        },
+        {
+          "id": "808:70312",
+          "name": "Logo",
+          "x": 200,
+          "y": 330,
+          "w": 440,
+          "h": 85.037109375,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70322",
+          "name": "Headline",
+          "x": 200,
+          "y": 480,
+          "w": 659,
+          "h": 94,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Cùng chăm con.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:70323",
+          "name": "Headline/2",
+          "x": 200,
+          "y": 580,
+          "w": 912,
+          "h": 94,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Giữ từng khoảnh khắc.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:70324",
+          "name": "Accent/Sun",
+          "x": 249.36170959472656,
+          "y": 347.8723449707031,
+          "w": 20.4255313873291,
+          "h": 20.4255313873291,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:70325",
+      "name": "S02_Intro_05-10s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70326",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70327",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70446",
+          "name": "AppScreen/NhatKy",
+          "x": 1260,
+          "y": 86,
+          "w": 420,
+          "h": 909,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 55
+        },
+        {
+          "id": "808:70447",
+          "name": "Logo",
+          "x": 200,
+          "y": 330,
+          "w": 440,
+          "h": 85.037109375,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70457",
+          "name": "Headline",
+          "x": 200,
+          "y": 480,
+          "w": 659,
+          "h": 94,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cùng chăm con.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:70458",
+          "name": "Headline/2",
+          "x": 200,
+          "y": 580,
+          "w": 912,
+          "h": 94,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Giữ từng khoảnh khắc.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70459",
+      "name": "S02_Intro_05-10s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:70460",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70461",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70470",
+          "name": "AppScreen/HomNay",
+          "x": 740,
+          "y": 73.5,
+          "w": 440,
+          "h": 953,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:70471",
+          "name": "Logo",
+          "x": 120,
+          "y": 330,
+          "w": 440,
+          "h": 85.037109375,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70481",
+          "name": "Headline",
+          "x": 120,
+          "y": 480,
+          "w": 659,
+          "h": 94,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Cùng chăm con.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:70482",
+          "name": "Headline/2",
+          "x": 120,
+          "y": 580,
+          "w": 912,
+          "h": 94,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Giữ từng khoảnh khắc.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:70483",
+      "name": "S02_Intro_05-10s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:70484",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:70485",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70487",
+          "name": "Logo",
+          "x": 300,
+          "y": 250,
+          "w": 480,
+          "h": 92.76775360107422,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:70497",
+          "name": "Headline",
+          "x": 195,
+          "y": 420,
+          "w": 690,
+          "h": 99,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cùng chăm con.",
+          "fontSize": 88,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:70498",
+          "name": "Headline/2",
+          "x": 62.5,
+          "y": 530,
+          "w": 955,
+          "h": 99,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Giữ từng khoảnh khắc.",
+          "fontSize": 88,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:70616",
+          "name": "AppScreen/NhatKy",
+          "x": 240,
+          "y": 760,
+          "w": 600,
+          "h": 1299,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 78
+        }
+      ]
+    },
+    {
+      "id": "808:71251",
+      "name": "S03_Care_10-19s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71252",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71253",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71262",
+          "name": "AppScreen/HomNay",
+          "x": 740,
+          "y": 73.5,
+          "w": 440,
+          "h": 953,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:71263",
+          "name": "Headline",
+          "x": 160,
+          "y": 330,
+          "w": 760,
+          "h": 188,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Nhẹ hơn những ngày bận rộn.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:71264",
+      "name": "S03_Care_10-19s_MID",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71265",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71266",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71275",
+          "name": "AppScreen/GhiBuBinh",
+          "x": 1020,
+          "y": -693.4933471679688,
+          "w": 760,
+          "h": 1646,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 99
+        },
+        {
+          "id": "808:71276",
+          "name": "Accent/TapRing",
+          "x": 1323.9866943359375,
+          "y": 771.7733154296875,
+          "w": 150,
+          "h": 150,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71277",
+          "name": "Headline",
+          "x": 160,
+          "y": 300,
+          "w": 760,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhẹ hơn những ngày bận rộn.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:71483",
+          "name": "Card/Chip · Bú",
+          "x": 160,
+          "y": 620,
+          "w": 180,
+          "h": 96,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71488",
+          "name": "Card/Chip · Ngủ",
+          "x": 360,
+          "y": 620,
+          "w": 206,
+          "h": 96,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71493",
+          "name": "Card/Chip · Thay tã",
+          "x": 586,
+          "y": 620,
+          "w": 275,
+          "h": 96,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 999
+        }
+      ]
+    },
+    {
+      "id": "808:71294",
+      "name": "S03_Care_10-19s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71295",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71296",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71305",
+          "name": "AppScreen/DaGhi",
+          "x": 1020,
+          "y": -183.1999969482422,
+          "w": 760,
+          "h": 1646,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 99
+        },
+        {
+          "id": "808:71310",
+          "name": "Headline",
+          "x": 160,
+          "y": 300,
+          "w": 760,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhẹ hơn những ngày bận rộn.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:71499",
+          "name": "Card/Chip · Bú",
+          "x": 160,
+          "y": 620,
+          "w": 180,
+          "h": 96,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71504",
+          "name": "Card/Chip · Ngủ",
+          "x": 360,
+          "y": 620,
+          "w": 206,
+          "h": 96,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71509",
+          "name": "Card/Chip · Thay tã",
+          "x": 586,
+          "y": 620,
+          "w": 275,
+          "h": 96,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71515",
+          "name": "Accent/TileGlow",
+          "x": 1050.47998046875,
+          "y": 165.6666717529297,
+          "w": 348.4266662597656,
+          "h": 320.0533447265625,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 40
+        },
+        {
+          "id": "808:71519",
+          "name": "Card/SavedToast",
+          "x": 1120.5,
+          "y": 880,
+          "w": 559,
+          "h": 83,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 40
+        }
+      ]
+    },
+    {
+      "id": "808:71327",
+      "name": "S03_Care_10-19s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71328",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71329",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71338",
+          "name": "AppScreen/DaGhi",
+          "x": 144.53334045410156,
+          "y": -1079.199951171875,
+          "w": 1100,
+          "h": 2382,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 143
+        },
+        {
+          "id": "808:71339",
+          "name": "Headline",
+          "x": 160,
+          "y": 240,
+          "w": 760,
+          "h": 188,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Nhẹ hơn những ngày bận rộn.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:71340",
+      "name": "S03_Care_10-19s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:71341",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71342",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71344",
+          "name": "Headline",
+          "x": 100,
+          "y": 240,
+          "w": 880,
+          "h": 180,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhẹ hơn những ngày bận rộn.",
+          "fontSize": 80,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:71345",
+          "name": "Card/Chip · Bú",
+          "x": 100,
+          "y": 470,
+          "w": 128,
+          "h": 69,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71350",
+          "name": "Card/Chip · Ngủ",
+          "x": 244,
+          "y": 470,
+          "w": 147,
+          "h": 69,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71355",
+          "name": "Card/Chip · Thay tã",
+          "x": 407,
+          "y": 470,
+          "w": 196,
+          "h": 69,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 999
+        },
+        {
+          "id": "808:71368",
+          "name": "AppScreen/DaGhi",
+          "x": 180,
+          "y": 620,
+          "w": 720,
+          "h": 1559,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 94
+        },
+        {
+          "id": "808:71372",
+          "name": "Card/SavedToast",
+          "x": 232.79998779296875,
+          "y": 1400,
+          "w": 614.4000244140625,
+          "h": 91.80000305175781,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 21
+        }
+      ]
+    },
+    {
+      "id": "808:71520",
+      "name": "S04_Grow_19-27s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71521",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71522",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71578",
+          "name": "Card/GrowthChart",
+          "x": 1060,
+          "y": 170,
+          "w": 682,
+          "h": 740,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 28
+        },
+        {
+          "id": "808:71580",
+          "name": "Headline",
+          "x": 160,
+          "y": 380,
+          "w": 661,
+          "h": 188,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Nhìn con lớn lên,\ntừng chút một.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:71581",
+      "name": "S04_Grow_19-27s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71582",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71583",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71639",
+          "name": "Card/GrowthChart",
+          "x": 1060,
+          "y": 170,
+          "w": 682,
+          "h": 740,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 28
+        },
+        {
+          "id": "808:71640",
+          "name": "Headline",
+          "x": 160,
+          "y": 380,
+          "w": 661,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhìn con lớn lên,\ntừng chút một.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:71641",
+      "name": "S04_Grow_19-27s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71642",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71643",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71699",
+          "name": "Card/GrowthChart",
+          "x": 920,
+          "y": 250,
+          "w": 545.5999755859375,
+          "h": 592,
+          "opacity": 0.44999998807907104,
+          "rotation": 0,
+          "cornerRadius": 22.399999618530273
+        },
+        {
+          "id": "808:71700",
+          "name": "Card/Milestone",
+          "x": 1180,
+          "y": 180.3466796875,
+          "w": 620,
+          "h": 719.306640625,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 46.293331146240234
+        },
+        {
+          "id": "808:71715",
+          "name": "Accent/Sun",
+          "x": 1720,
+          "y": 120,
+          "w": 120,
+          "h": 120,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71716",
+          "name": "Headline",
+          "x": 160,
+          "y": 380,
+          "w": 661,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhìn con lớn lên,\ntừng chút một.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:71717",
+      "name": "S04_Grow_19-27s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:71718",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71719",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71721",
+          "name": "Headline",
+          "x": 100,
+          "y": 240,
+          "w": 661,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Nhìn con lớn lên,\ntừng chút một.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:71776",
+          "name": "Card/GrowthChart",
+          "x": 130.79998779296875,
+          "y": 520,
+          "w": 818.4000244140625,
+          "h": 888,
+          "opacity": 0.550000011920929,
+          "rotation": 0,
+          "cornerRadius": 33.599998474121094
+        },
+        {
+          "id": "808:71777",
+          "name": "Card/Milestone",
+          "x": 230,
+          "y": 880,
+          "w": 700,
+          "h": 812.7333374023438,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 52.266666412353516
+        }
+      ]
+    },
+    {
+      "id": "808:71814",
+      "name": "S05_Remember_27-39s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71815",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71816",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71818",
+          "name": "Photo/Photo01 · PLACEHOLDER",
+          "x": 90,
+          "y": 400,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": -6.999999910278043,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71828",
+          "name": "Photo/Photo02 · PLACEHOLDER",
+          "x": 400,
+          "y": 560,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": 4.9999999854766894,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71838",
+          "name": "Photo/Photo03 · PLACEHOLDER",
+          "x": 720,
+          "y": 410,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": -3.000000013495513,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71848",
+          "name": "Photo/Photo04 · PLACEHOLDER",
+          "x": 1030,
+          "y": 570,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": 5.999999940167531,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71858",
+          "name": "Photo/Photo05 · PLACEHOLDER",
+          "x": 1340,
+          "y": 420,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": -4.9999999854766894,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71868",
+          "name": "Photo/Photo06 · PLACEHOLDER",
+          "x": 1610,
+          "y": 560,
+          "w": 300,
+          "h": 304,
+          "opacity": 1,
+          "rotation": 3.999999713091089,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71878",
+          "name": "Headline",
+          "x": 461.5,
+          "y": 110,
+          "w": 997,
+          "h": 94,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Có những khoảnh khắc…",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:71879",
+          "name": "Headline/2",
+          "x": 572,
+          "y": 220,
+          "w": 776,
+          "h": 94,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "mình muốn giữ mãi.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        }
+      ]
+    },
+    {
+      "id": "808:71880",
+      "name": "S05_Remember_27-39s_MID",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71881",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71882",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71884",
+          "name": "Headline",
+          "x": 160,
+          "y": 150,
+          "w": 712,
+          "h": 94,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Từ ảnh hằng ngày",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:71885",
+          "name": "Accent/TimelineRail",
+          "x": 160,
+          "y": 840,
+          "w": 1600,
+          "h": 6,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 3
+        },
+        {
+          "id": "808:71886",
+          "name": "Photo/Photo01 · PLACEHOLDER",
+          "x": 160,
+          "y": 420,
+          "w": 290,
+          "h": 329,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71897",
+          "name": "Accent/TimelineDot/1",
+          "x": 292,
+          "y": 830,
+          "w": 26,
+          "h": 26,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71898",
+          "name": "Photo/Photo02 · PLACEHOLDER",
+          "x": 490,
+          "y": 420,
+          "w": 290,
+          "h": 329,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71909",
+          "name": "Accent/TimelineDot/2",
+          "x": 622,
+          "y": 830,
+          "w": 26,
+          "h": 26,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71910",
+          "name": "Photo/Photo03 · PLACEHOLDER",
+          "x": 820,
+          "y": 420,
+          "w": 290,
+          "h": 329,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71921",
+          "name": "Accent/TimelineDot/3",
+          "x": 952,
+          "y": 830,
+          "w": 26,
+          "h": 26,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71922",
+          "name": "Photo/Photo04 · PLACEHOLDER",
+          "x": 1150,
+          "y": 420,
+          "w": 290,
+          "h": 329,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71933",
+          "name": "Accent/TimelineDot/4",
+          "x": 1282,
+          "y": 830,
+          "w": 26,
+          "h": 26,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71934",
+          "name": "Photo/Photo05 · PLACEHOLDER",
+          "x": 1480,
+          "y": 420,
+          "w": 290,
+          "h": 329,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 22
+        },
+        {
+          "id": "808:71945",
+          "name": "Accent/TimelineDot/5",
+          "x": 1612,
+          "y": 830,
+          "w": 26,
+          "h": 26,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:71946",
+      "name": "S05_Remember_27-39s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71947",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71948",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71950",
+          "name": "Headline",
+          "x": 637.5,
+          "y": 80,
+          "w": 645,
+          "h": 85,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Từ ảnh hằng ngày",
+          "fontSize": 76,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:71951",
+          "name": "Headline/2",
+          "x": 329,
+          "y": 180,
+          "w": 1262,
+          "h": 85,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "thành những kỷ niệm đáng xem lại.",
+          "fontSize": 76,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:71952",
+          "name": "Card/Thiep",
+          "x": 400,
+          "y": 330,
+          "w": 548.7999877929688,
+          "h": 528,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71968",
+          "name": "Card/VideoPreview",
+          "x": 1000,
+          "y": 310,
+          "w": 548.7999877929688,
+          "h": 592,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:71991",
+      "name": "S05_Remember_27-39s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:71992",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:71993",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:71995",
+          "name": "Card/Thiep",
+          "x": 140,
+          "y": 360,
+          "w": 411.6000061035156,
+          "h": 396,
+          "opacity": 0.30000001192092896,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72011",
+          "name": "Card/VideoPreview",
+          "x": 565.5499877929688,
+          "y": 114.5,
+          "w": 788.9000244140625,
+          "h": 851,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:72034",
+      "name": "S05_Remember_27-39s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:72035",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:72036",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72038",
+          "name": "Headline",
+          "x": 217.5,
+          "y": 240,
+          "w": 645,
+          "h": 85,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Từ ảnh hằng ngày",
+          "fontSize": 76,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:72039",
+          "name": "Headline/2",
+          "x": 162.5,
+          "y": 340,
+          "w": 755,
+          "h": 170,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "thành những kỷ niệm\nđáng xem lại.",
+          "fontSize": 76,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "808:72040",
+          "name": "Card/VideoPreview",
+          "x": 420,
+          "y": 620,
+          "w": 651.7000122070312,
+          "h": 703,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72063",
+          "name": "Card/Thiep",
+          "x": 60,
+          "y": 820,
+          "w": 497.3500061035156,
+          "h": 478.5,
+          "opacity": 1,
+          "rotation": -3.999999713091089,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:72157",
+      "name": "S06_Family_39-46s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:72158",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:72159",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72198",
+          "name": "AppScreen/AlbumGioTam",
+          "x": 740,
+          "y": 73.5,
+          "w": 440,
+          "h": 953,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:72199",
+          "name": "Headline",
+          "x": 160,
+          "y": 360,
+          "w": 651,
+          "h": 216,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Cả nhà\ncùng bên con.",
+          "fontSize": 96,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:72200",
+      "name": "S06_Family_39-46s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:72201",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:72202",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72204",
+          "name": "Headline",
+          "x": 160,
+          "y": 360,
+          "w": 651,
+          "h": 216,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cả nhà\ncùng bên con.",
+          "fontSize": 96,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:72242",
+          "name": "AppScreen/AlbumGioTam",
+          "x": 1080,
+          "y": 64,
+          "w": 440,
+          "h": 953,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:72251",
+          "name": "Card/Member/Me",
+          "x": 720,
+          "y": 170,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72260",
+          "name": "Card/Member/Ba",
+          "x": 1416.699951171875,
+          "y": 320,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72269",
+          "name": "Card/Member/NguoiCham",
+          "x": 720,
+          "y": 640,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72278",
+          "name": "Card/Member/BaNoi",
+          "x": 1416.699951171875,
+          "y": 770,
+          "w": 443.3000183105469,
+          "h": 88.4000015258789,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        }
+      ]
+    },
+    {
+      "id": "808:72279",
+      "name": "S06_Family_39-46s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:72280",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:72281",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72320",
+          "name": "AppScreen/AlbumGioTam",
+          "x": 770,
+          "y": 40,
+          "w": 380,
+          "h": 823,
+          "opacity": 0.8999999761581421,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "808:72329",
+          "name": "Card/Member/Me",
+          "x": 180,
+          "y": 880,
+          "w": 358.04998779296875,
+          "h": 72.44999694824219,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72338",
+          "name": "Card/Member/Ba",
+          "x": 562.0499877929688,
+          "y": 880,
+          "w": 358.04998779296875,
+          "h": 72.44999694824219,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72347",
+          "name": "Card/Member/NguoiCham",
+          "x": 944.0999755859375,
+          "y": 880,
+          "w": 358.04998779296875,
+          "h": 72.44999694824219,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72356",
+          "name": "Card/Member/BaNoi",
+          "x": 1326.14990234375,
+          "y": 880,
+          "w": 358.04998779296875,
+          "h": 71.39999389648438,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72357",
+          "name": "Accent/Sun",
+          "x": 1680,
+          "y": 160,
+          "w": 120,
+          "h": 120,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "808:72358",
+      "name": "S06_Family_39-46s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:72359",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:72360",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:72362",
+          "name": "Headline",
+          "x": 100,
+          "y": 250,
+          "w": 834,
+          "h": 90,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cả nhà cùng bên con.",
+          "fontSize": 80,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:72400",
+          "name": "AppScreen/AlbumGioTam",
+          "x": 260,
+          "y": 440,
+          "w": 560,
+          "h": 1213,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 73
+        },
+        {
+          "id": "808:72409",
+          "name": "Card/Member/Me",
+          "x": 40,
+          "y": 560,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72418",
+          "name": "Card/Member/Ba",
+          "x": 560,
+          "y": 760,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72427",
+          "name": "Card/Member/NguoiCham",
+          "x": 40,
+          "y": 1080,
+          "w": 443.3000183105469,
+          "h": 89.70000457763672,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        },
+        {
+          "id": "808:72436",
+          "name": "Card/Member/BaNoi",
+          "x": 560,
+          "y": 1280,
+          "w": 443.3000183105469,
+          "h": 88.4000015258789,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 24
+        }
+      ]
+    },
+    {
+      "id": "808:73049",
+      "name": "S07_Personal_46-53s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:73050",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:73051",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:73105",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 740,
+          "y": 73.5,
+          "w": 440,
+          "h": 953,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:73106",
+          "name": "Headline",
+          "x": 160,
+          "y": 380,
+          "w": 687,
+          "h": 188,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Đồng hành theo\nnhịp lớn của con.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:73107",
+      "name": "S07_Personal_46-53s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:73108",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:73109",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:73163",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 1200,
+          "y": 64,
+          "w": 440,
+          "h": 953,
+          "opacity": 0.3499999940395355,
+          "rotation": 0,
+          "cornerRadius": 57
+        },
+        {
+          "id": "808:73174",
+          "name": "Card/AgeCard",
+          "x": 1051.0999755859375,
+          "y": 391.8666687011719,
+          "w": 788.9000244140625,
+          "h": 207.40000915527344,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 46
+        },
+        {
+          "id": "808:73175",
+          "name": "Headline",
+          "x": 160,
+          "y": 380,
+          "w": 687,
+          "h": 188,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Đồng hành theo\nnhịp lớn của con.",
+          "fontSize": 84,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        }
+      ]
+    },
+    {
+      "id": "808:73176",
+      "name": "S07_Personal_46-53s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "808:73177",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:73178",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:73180",
+          "name": "Accent/Sun",
+          "x": 750,
+          "y": 330,
+          "w": 420,
+          "h": 420,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:73191",
+          "name": "Card/AgeCard",
+          "x": 685.5999755859375,
+          "y": 700,
+          "w": 548.7999877929688,
+          "h": 142.8000030517578,
+          "opacity": 0.699999988079071,
+          "rotation": 0,
+          "cornerRadius": 32
+        }
+      ]
+    },
+    {
+      "id": "808:73192",
+      "name": "S07_Personal_46-53s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "808:73193",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "808:73194",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "808:73196",
+          "name": "Headline",
+          "x": 100,
+          "y": 250,
+          "w": 654,
+          "h": 180,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Đồng hành theo\nnhịp lớn của con.",
+          "fontSize": 80,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1.5
+          },
+          "textAlignHorizontal": "LEFT"
+        },
+        {
+          "id": "808:73249",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 240,
+          "y": 560,
+          "w": 600,
+          "h": 1299,
+          "opacity": 0.3499999940395355,
+          "rotation": 0,
+          "cornerRadius": 78
+        },
+        {
+          "id": "808:73260",
+          "name": "Card/AgeCard",
+          "x": 68.375,
+          "y": 1008,
+          "w": 943.25,
+          "h": 246.5,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 55
+        }
+      ]
+    },
+    {
+      "id": "809:12407",
+      "name": "S08_Brand_53-60s_START",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "809:12408",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "809:12409",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 700,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12411",
+          "name": "Accent/Sun",
+          "x": 810,
+          "y": 300,
+          "w": 300,
+          "h": 300,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12419",
+          "name": "AppScreen/HomNay",
+          "x": 330,
+          "y": 1120,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12495",
+          "name": "AppScreen/Album",
+          "x": 770,
+          "y": 1070,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12548",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 1210,
+          "y": 1120,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12549",
+          "name": "Logo",
+          "x": 730,
+          "y": 120,
+          "w": 460,
+          "h": 88.90243530273438,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12559",
+          "name": "Headline",
+          "x": 277.5,
+          "y": 260,
+          "w": 1365,
+          "h": 63,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Cùng chăm con, giữ từng khoảnh khắc con lớn lên.",
+          "fontSize": 56,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12560",
+          "name": "SupportingText",
+          "x": 657.5,
+          "y": 340,
+          "w": 605,
+          "h": 34,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Growing together, every step of the way.",
+          "fontSize": 30,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "Medium"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": 0
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12561",
+          "name": "CTA",
+          "x": 677.5,
+          "y": 410,
+          "w": 565,
+          "h": 75,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "809:12565",
+      "name": "S08_Brand_53-60s_HERO",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "809:12566",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "809:12567",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 760,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12576",
+          "name": "AppScreen/HomNay",
+          "x": 330,
+          "y": 600,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12652",
+          "name": "AppScreen/Album",
+          "x": 770,
+          "y": 550,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12705",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 1210,
+          "y": 600,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12706",
+          "name": "Logo",
+          "x": 730,
+          "y": 120,
+          "w": 460,
+          "h": 88.90243530273438,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12716",
+          "name": "Headline",
+          "x": 277.5,
+          "y": 260,
+          "w": 1365,
+          "h": 63,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cùng chăm con, giữ từng khoảnh khắc con lớn lên.",
+          "fontSize": 56,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12717",
+          "name": "SupportingText",
+          "x": 657.5,
+          "y": 340,
+          "w": 605,
+          "h": 34,
+          "opacity": 0,
+          "rotation": 0,
+          "characters": "Growing together, every step of the way.",
+          "fontSize": 30,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "Medium"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": 0
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12718",
+          "name": "CTA",
+          "x": 677.5,
+          "y": 410,
+          "w": 565,
+          "h": 75,
+          "opacity": 0,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "809:12722",
+      "name": "S08_Brand_53-60s_END",
+      "width": 1920,
+      "height": 1080,
+      "layers": [
+        {
+          "id": "809:12723",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "809:12724",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 760,
+          "w": 1920,
+          "h": 380,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12733",
+          "name": "AppScreen/HomNay",
+          "x": 330,
+          "y": 560,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12809",
+          "name": "AppScreen/Album",
+          "x": 770,
+          "y": 510,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12862",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 1210,
+          "y": 560,
+          "w": 380,
+          "h": 823,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 49
+        },
+        {
+          "id": "809:12863",
+          "name": "Logo",
+          "x": 730,
+          "y": 100,
+          "w": 460,
+          "h": 88.90243530273438,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:12873",
+          "name": "Headline",
+          "x": 277.5,
+          "y": 240,
+          "w": 1365,
+          "h": 63,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cùng chăm con, giữ từng khoảnh khắc con lớn lên.",
+          "fontSize": 56,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12874",
+          "name": "SupportingText",
+          "x": 657.5,
+          "y": 322,
+          "w": 605,
+          "h": 34,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Growing together, every step of the way.",
+          "fontSize": 30,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "Medium"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": 0
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:12875",
+          "name": "CTA",
+          "x": 677.5,
+          "y": 396,
+          "w": 565,
+          "h": 75,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        }
+      ]
+    },
+    {
+      "id": "809:72841",
+      "name": "S08_Brand_53-60s_HERO_9x16",
+      "width": 1080,
+      "height": 1920,
+      "layers": [
+        {
+          "id": "809:72842",
+          "name": "Background",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0,
+          "color": {
+            "r": 0.9647058844566345,
+            "g": 0.9882352948188782,
+            "b": 0.9843137264251709
+          }
+        },
+        {
+          "id": "809:72843",
+          "name": "Accent/Band",
+          "x": 0,
+          "y": 1400,
+          "w": 1080,
+          "h": 520,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:72845",
+          "name": "Logo",
+          "x": 280,
+          "y": 260,
+          "w": 520,
+          "h": 100.49840545654297,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:72855",
+          "name": "Headline",
+          "x": 203.5,
+          "y": 420,
+          "w": 673,
+          "h": 216,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Cùng chăm con,\ngiữ từng khoảnh khắc\ncon lớn lên.",
+          "fontSize": 64,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "SemiBold"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": -1
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:72856",
+          "name": "SupportingText",
+          "x": 237.5,
+          "y": 680,
+          "w": 605,
+          "h": 34,
+          "opacity": 1,
+          "rotation": 0,
+          "characters": "Growing together, every step of the way.",
+          "fontSize": 30,
+          "fontName": {
+            "family": "Be Vietnam Pro",
+            "style": "Medium"
+          },
+          "lineHeight": {
+            "unit": "PERCENT",
+            "value": 112.00000047683716
+          },
+          "letterSpacing": {
+            "unit": "PERCENT",
+            "value": 0
+          },
+          "textAlignHorizontal": "CENTER"
+        },
+        {
+          "id": "809:72857",
+          "name": "CTA",
+          "x": 258.5,
+          "y": 760,
+          "w": 563,
+          "h": 75,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 0
+        },
+        {
+          "id": "809:72868",
+          "name": "AppScreen/HomNay",
+          "x": 40,
+          "y": 1010,
+          "w": 300,
+          "h": 650,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 39
+        },
+        {
+          "id": "809:72944",
+          "name": "AppScreen/Album",
+          "x": 390,
+          "y": 940,
+          "w": 300,
+          "h": 650,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 39
+        },
+        {
+          "id": "809:72997",
+          "name": "AppScreen/TheTheoTuoi",
+          "x": 740,
+          "y": 1010,
+          "w": 300,
+          "h": 650,
+          "opacity": 1,
+          "rotation": 0,
+          "cornerRadius": 39
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {
+      "name": "Handoff · S01",
+      "text": "S01 · Mở đầu cảm xúc · 00:00–00:05 · f0–150 (150f)\nThời gian\nBắt đầu 0.0s (f0) → kết thúc 5.0s (f150). Frame trong cảnh = frame tổng.\nThông điệp\nHeadline: “Con lớn lên / từng ngày.” (1 layer, 2 dòng — tách dòng khi dựng code).\nThứ tự layer & chuyển động (frame cục bộ)\nf0: Photo/MeVaBe đã hiện (720×780 tại 600,150). Ảnh bên trong scale 1.08 → 1.00 suốt cảnh (Ken Burns, linear).\nf0–36: Photo → 1000,140 · 720×800 · bo 56 — film.spring.soft.\nf18–36: Accent/Band y 760→700, opacity .6→1 — film.gentle.\nf24–42: Accent/Sun d 180→260, opacity 0→1, sau ảnh — film.spring.soft.\nf30–48: Headline y 420→380, opacity 0→1 — film.gentle; dòng 2 trễ 6f.\nf48–126: giữ, đọc (2.6s).\nf126–150 (cầu nối): Photo → 1180,330 · 320×320 · bo 28 (motion.standard); Headline y→330, opacity→0 (motion.exit); Accent/Sun thu về d 20.4 tại (249.4, 347.9) = đúng vị trí mặt trời của logo ở S02 (film.gentle).\nChuyển sang S02\nCắt thẳng ở f150; Accent/Sun và Photo giữ nguyên vị trí → S02 START.\nAsset\nPhoto: Illustration/Photo · Tone=Peach (131:683) — PLACEHOLDER, thay ảnh được cấp quyền (≥ 1600px). Accent/Band, Accent/Sun: hình khối lấy từ logo (Band, Sun) → SVG hoặc vẽ bằng code.\nÂm thanh\nf0: nốt piano mở đầu, nhẹ. f24: chime rất nhẹ khi mặt trời hiện.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 760 · w 1920 · h 380 · scale 1 · opacity 0.6\n2. Accent/Sun  x 1500 · y 140 · w 180 · h 180 · scale 0.7 · opacity 0\n3. Photo/MeVaBe · PLACEHOLDER  x 600 · y 150 · w 720 · h 780 · scale 1 · opacity 1\n4. Headline  x 200 · y 420 · w 639 · h 260 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Accent/Sun  x 1500 · y 90 · w 260 · h 260 · scale 1 · opacity 1\n3. Photo/MeVaBe · PLACEHOLDER  x 1000 · y 140 · w 720 · h 800 · scale 1 · opacity 1\n4. Headline  x 200 · y 380 · w 639 · h 260 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Accent/Sun  x 249 · y 348 · w 20 · h 20 · scale 0.1 · opacity 1\n3. Photo/MeVaBe · PLACEHOLDER  x 1180 · y 330 · w 320 · h 320 · scale 0.4 · opacity 1\n4. Headline  x 200 · y 330 · w 639 · h 260 · scale 1 · opacity 0"
+    },
+    {
+      "name": "Handoff · S02",
+      "text": "S02 · Giới thiệu Child Life · 00:05–00:10 · f150–300 (150f)\nThời gian\n5.0s (f150) → 10.0s (f300). Frame cục bộ 0–150.\nThông điệp\nHeadline: “Cùng chăm con.” · Headline/2: “Giữ từng khoảnh khắc.” — hai nhịp riêng.\nThứ tự layer & chuyển động\nf0: Photo (từ S01) tại 1260,330; AppScreen/NhatKy opacity .35, scale .96.\nf0–24: AppScreen/NhatKy opacity→1, scale→1 (motion.standard); Photo opacity 1→0 (f6–24) — ảnh tan vào dòng Nhật ký.\nf8–26: Logo opacity 0→1 quanh Accent/Sun (mặt trời trùng vị trí); xoá Accent/Sun sau f26.\nf30–48: Headline vào (y +24→0, opacity 0→1, film.gentle).\nf60–78: Headline/2 vào — nhịp thứ hai, khớp phách nhạc.\nf78–126: giữ.\nf126–150: Logo, Headline, Headline/2 trượt x −80, opacity→0 (motion.exit). Điện thoại về giữa (740,73), rộng 420→440; màn hình hoà tan NhatKy → HomNay (12f).\nChuyển sang S03\nĐiện thoại Hôm nay ở giữa = S03 START.\nAsset\nLogo/Lockup Horizontal · Style=Color (35:181) → SVG. Màn hình: 10a Kỷ niệm · Dòng thời gian (133:16184), Proto A1 Hôm nay (273:879) → PNG @2x.\nÂm thanh\nHai phách nhẹ ở f30 và f60.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/NhatKy  x 1260 · y 86 · w 420 · h 909 · scale 1 · opacity 0.3\n3. Photo/MeVaBe · PLACEHOLDER  x 1260 · y 330 · w 320 · h 320 · scale 1 · opacity 1\n4. Logo  x 200 · y 330 · w 440 · h 85 · scale 1 · opacity 0\n5. Headline  x 200 · y 480 · w 659 · h 94 · scale 1 · opacity 0\n6. Headline/2  x 200 · y 580 · w 912 · h 94 · scale 1 · opacity 0\n7. Accent/Sun  x 249 · y 348 · w 20 · h 20 · scale 1 · opacity 1\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/NhatKy  x 1260 · y 86 · w 420 · h 909 · scale 1 · opacity 1\n3. Logo  x 200 · y 330 · w 440 · h 85 · scale 1 · opacity 1\n4. Headline  x 200 · y 480 · w 659 · h 94 · scale 1 · opacity 1\n5. Headline/2  x 200 · y 580 · w 912 · h 94 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/HomNay  x 740 · y 74 · w 440 · h 953 · scale 1 · opacity 1\n3. Logo  x 120 · y 330 · w 440 · h 85 · scale 1 · opacity 0\n4. Headline  x 120 · y 480 · w 659 · h 94 · scale 1 · opacity 0\n5. Headline/2  x 120 · y 580 · w 912 · h 94 · scale 1 · opacity 0"
+    },
+    {
+      "name": "Handoff · S03",
+      "text": "S03 · Care · 00:10–00:19 · f300–570 (270f)\nThời gian\n10.0s (f300) → 19.0s (f570). Frame cục bộ 0–270. Có thêm frame MID (≈12.5s).\nThông điệp\nHeadline: “Nhẹ hơn những ngày bận rộn.” · nhãn lần lượt: Bú · Ngủ · Thay tã.\nThứ tự layer & chuyển động\nf0: AppScreen/HomNay giữa khung (440 rộng).\nf0–30: zoom điện thoại 440→760, tới (1020, −693.6) để vùng sheet ở giữa; f12 sheet “Bú bình” trượt lên (motion.standard, scrim 0→32%) — dựng bằng PNG riêng của sheet (A2, y 431–812).\nf20–38: Headline vào.\nf40–52: Card/Chip · Bú vào (rise 8px, motion.quick).\nf60–72: Accent/TapRing trên nút “Lưu”: scale .6→1, opacity 0→1 (motion.instant), nút co .96.\nf72–84: sheet đóng (motion.exit), màn hình → A3 “Đã ghi”.\nf72–96: điện thoại pan lên y −183.2 để thấy các ô (film.spring.soft).\nf80–92: Card/SavedToast “✓ Đã ghi · Bú bình 120 ml” trượt lên 24px; giữ tới f200 (app ẩn sau 4s).\nf84–120: Accent/TileGlow quanh ô Bú bình sáng rồi tắt.\nf96–110: Card/Chip · Ngủ; f110–124: Card/Chip · Thay tã (stagger 14f).\nf124–220: giữ (HERO ≈ f165).\nf220–270: chip, headline, toast ra (opacity→0, y −16). Điện thoại zoom vào ô Tăng trưởng: rộng 760→1100, tới (144.7, −1079).\nChuyển sang S04\nÔ “Tăng trưởng” màu peach lấp khung → biến thành Card/GrowthChart.\nAsset\nProto A1/A2/A3 (273:879, 273:921, 273:950) — ảnh raster của màn Hôm nay trong file Motion; Toast 273:976. Luồng đúng theo mẫu P1 “Lưu một lần ghi” trong page Motion. Số liệu 120 ml là bản ghi, không phải khuyến nghị.\nÂm thanh\nf66: tick chạm rất nhẹ. f80: “pop” thành công nhỏ.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/HomNay  x 740 · y 74 · w 440 · h 953 · scale 1 · opacity 1\n3. Headline  x 160 · y 330 · w 760 · h 188 · scale 1 · opacity 0\n— MID —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/GhiBuBinh  x 1020 · y -693 · w 760 · h 1646 · scale 1 · opacity 1\n3. Accent/TapRing  x 1324 · y 772 · w 150 · h 150 · scale 1 · opacity 1\n4. Headline  x 160 · y 300 · w 760 · h 188 · scale 1 · opacity 1\n5. Card/Chip · Bú  x 160 · y 620 · w 180 · h 96 · scale 1 · opacity 1\n6. Card/Chip · Ngủ  x 360 · y 620 · w 206 · h 96 · scale 1 · opacity 0\n7. Card/Chip · Thay tã  x 586 · y 620 · w 275 · h 96 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/DaGhi  x 1020 · y -183 · w 760 · h 1646 · scale 1 · opacity 1\n3. Headline  x 160 · y 300 · w 760 · h 188 · scale 1 · opacity 1\n4. Card/Chip · Bú  x 160 · y 620 · w 180 · h 96 · scale 1 · opacity 1\n5. Card/Chip · Ngủ  x 360 · y 620 · w 206 · h 96 · scale 1 · opacity 1\n6. Card/Chip · Thay tã  x 586 · y 620 · w 275 · h 96 · scale 1 · opacity 1\n7. Accent/TileGlow  x 1050 · y 166 · w 348 · h 320 · scale 1 · opacity 1\n8. Card/SavedToast  x 1121 · y 880 · w 559 · h 83 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/DaGhi  x 145 · y -1079 · w 1100 · h 2382 · scale 1.4 · opacity 1\n3. Headline  x 160 · y 240 · w 760 · h 188 · scale 1 · opacity 0"
+    },
+    {
+      "name": "Handoff · S04",
+      "text": "S04 · Grow · 00:19–00:27 · f570–810 (240f)\nThời gian\n19.0s (f570) → 27.0s (f810). Frame cục bộ 0–240.\nThông điệp\nHeadline: “Nhìn con lớn lên, / từng chút một.”\nThứ tự layer & chuyển động\nf0–18: Card/GrowthChart vào từ ô Tăng trưởng (scale .5→1, opacity 0→1, motion.standard).\nf10–28: Headline vào.\nf18–66: đường Accent/GrowthLine vẽ trái→phải (mask Accent/LineReveal thu về 0; Easing.inOut(cubic), 1.6s). Chấm GrowthDot/1–3 nảy ở f24, f44, f62.\nf66–126: giữ.\nf126–150: biểu đồ lùi lại: scale 1→.8, tới (920,250), opacity→.45 (film.gentle).\nf132–156: Card/Milestone “Mỉm cười đáp lại” vào từ phải: x 1920→1180, xoay 3°→0 (film.spring.soft). f150: Accent/Sun nhỏ (d120) nảy góc phải.\nf156–222: giữ milestone.\nf222–240: Headline ra; hai ảnh trong milestone tách ra → S05.\nLưu ý nội dung\nĐã ẩn trong bản sao: chip “Bình thường”, dải WHO, đường trung vị, chú thích và link “Xem tiêu chuẩn WHO”. Không thêm thông điệp đánh giá đạt chuẩn/chậm.\nAsset\nThẻ Tăng trưởng từ 20d Tăng trưởng · Cân nặng (346:47820) → PNG @2x hoặc dựng SVG đường (346:47846) để vẽ dần. Milestone từ 3d · Đã lưu mốc (311:1436). Ảnh trong milestone: Illustration/Photo (placeholder).\nÂm thanh\nArpeggio piano đi lên theo đường biểu đồ (f18–66).\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Card/GrowthChart  x 1060 · y 170 · w 682 · h 740 · scale 1 · opacity 1\n3. Headline  x 160 · y 380 · w 661 · h 188 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Card/GrowthChart  x 1060 · y 170 · w 682 · h 740 · scale 1 · opacity 1\n3. Headline  x 160 · y 380 · w 661 · h 188 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Card/GrowthChart  x 920 · y 250 · w 546 · h 592 · scale 0.8 · opacity 0.4\n3. Card/Milestone  x 1180 · y 180 · w 620 · h 719 · scale 1 · opacity 1\n4. Accent/Sun  x 1720 · y 120 · w 120 · h 120 · scale 1 · opacity 1\n5. Headline  x 160 · y 380 · w 661 · h 188 · scale 1 · opacity 1"
+    },
+    {
+      "name": "Handoff · S05",
+      "text": "S05 · Remember / Moments · 00:27–00:39 · f810–1170 (360f)\nThời gian\n27.0s (f810) → 39.0s (f1170). Frame cục bộ 0–360. Có frame MID (≈31s). Cao trào cảm xúc của phim.\nThông điệp\nNhịp 1: “Có những khoảnh khắc…” / “mình muốn giữ mãi.”  Nhịp 2: “Từ ảnh hằng ngày” / “thành những kỷ niệm đáng xem lại.”\nThứ tự layer & chuyển động\nf0–30: 6 ảnh polaroid (Photo01–06) bay từ vị trí milestone/mép khung tới vị trí rải rác ở nửa dưới khung (y 400–570), xoay ±3–7° (film.spring.soft, stagger 4f).\nf12–30: Headline “Có những khoảnh khắc…” vào (giữa, y 110 — phía trên các ảnh).\nf45–63: Headline/2 “mình muốn giữ mãi.” vào (y 220). Giữ tới f100.\nf100–112: hai dòng ra (opacity→0, y −16).\nf100–130 (MID): ảnh xếp thành dòng thời gian x = 160 + i·330, y 420, xoay→0 (film.spring.soft, stagger 3f); Photo06 ra. Accent/TimelineRail vẽ 0→1600px (f110–140); TimelineDot nảy stagger 4f; nhãn Tuần 1 … 1 tháng hiện.\nf112–130: Headline “Từ ảnh hằng ngày” vào (160,150).\nf140–170: giữ.\nf170–200: ảnh gom về giữa, thu nhỏ .3, mờ dần → Card/Thiep hiện (400,330; scale .6→1, film.gentle) rồi Card/VideoPreview (1000,310) trễ 15f. Headline dời lên giữa (y 80).\nf200–218: Headline/2 “thành những kỷ niệm đáng xem lại.” vào (y 180).\nf218–300: giữ HERO 2.7s — nhìn rõ thành phẩm.\nf300–360 (END): headline ra; Card/Thiep → (140,360) scale .75, opacity .3; Card/VideoPreview phóng lên giữa 789×851; nút play thở nhẹ (scale 1→1.04, 1s).\nChuyển sang S06\nVideo preview thu nhỏ và trùng vào ảnh bìa album “Giờ tắm”.\nAsset\nThiệp: MM12 · Thiệp đã sẵn sàng → “Thiệp + hiệu ứng” (531:9389), mẫu “1 tháng” có sẵn. Video: MM09 · Video đã sẵn sàng → “pv” (530:9437), mẫu “Tháng đầu tiên của Teddy” có sẵn. Không thêm hiệu ứng mà sản phẩm chưa hỗ trợ. Ảnh polaroid: Illustration/Photo các tone (placeholder).\nÂm thanh\nf170: nhạc dâng (swell) — đây là đỉnh cảm xúc. f45: phách nhẹ cho dòng “mình muốn giữ mãi.”\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Photo/Photo01 · PLACEHOLDER  x 90 · y 400 · w 300 · h 304 · scale 1 · opacity 1 · rot -7°\n3. Photo/Photo02 · PLACEHOLDER  x 400 · y 560 · w 300 · h 304 · scale 1 · opacity 1 · rot 5°\n4. Photo/Photo03 · PLACEHOLDER  x 720 · y 410 · w 300 · h 304 · scale 1 · opacity 1 · rot -3°\n5. Photo/Photo04 · PLACEHOLDER  x 1030 · y 570 · w 300 · h 304 · scale 1 · opacity 1 · rot 6°\n6. Photo/Photo05 · PLACEHOLDER  x 1340 · y 420 · w 300 · h 304 · scale 1 · opacity 1 · rot -5°\n7. Photo/Photo06 · PLACEHOLDER  x 1610 · y 560 · w 300 · h 304 · scale 1 · opacity 1 · rot 4°\n8. Headline  x 462 · y 110 · w 997 · h 94 · scale 1.5 · opacity 1\n9. Headline/2  x 572 · y 220 · w 776 · h 94 · scale 0.6 · opacity 0\n— MID —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Headline  x 160 · y 150 · w 712 · h 94 · scale 1.1 · opacity 1\n3. Accent/TimelineRail  x 160 · y 840 · w 1600 · h 6 · scale 1 · opacity 1\n4. Photo/Photo01 · PLACEHOLDER  x 160 · y 420 · w 290 · h 329 · scale 1 · opacity 1\n5. Accent/TimelineDot/1  x 292 · y 830 · w 26 · h 26 · scale 1 · opacity 1\n6. Photo/Photo02 · PLACEHOLDER  x 490 · y 420 · w 290 · h 329 · scale 1 · opacity 1\n7. Accent/TimelineDot/2  x 622 · y 830 · w 26 · h 26 · scale 1 · opacity 1\n8. Photo/Photo03 · PLACEHOLDER  x 820 · y 420 · w 290 · h 329 · scale 1 · opacity 1\n9. Accent/TimelineDot/3  x 952 · y 830 · w 26 · h 26 · scale 1 · opacity 1\n10. Photo/Photo04 · PLACEHOLDER  x 1150 · y 420 · w 290 · h 329 · scale 1 · opacity 1\n11. Accent/TimelineDot/4  x 1282 · y 830 · w 26 · h 26 · scale 1 · opacity 1\n12. Photo/Photo05 · PLACEHOLDER  x 1480 · y 420 · w 290 · h 329 · scale 1 · opacity 1\n13. Accent/TimelineDot/5  x 1612 · y 830 · w 26 · h 26 · scale 1 · opacity 1\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Headline  x 638 · y 80 · w 645 · h 85 · scale 1 · opacity 1\n3. Headline/2  x 329 · y 180 · w 1262 · h 85 · scale 1 · opacity 1\n4. Card/Thiep  x 400 · y 330 · w 549 · h 528 · scale 1 · opacity 1\n5. Card/VideoPreview  x 1000 · y 310 · w 549 · h 592 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Card/Thiep  x 140 · y 360 · w 412 · h 396 · scale 0.8 · opacity 0.3\n3. Card/VideoPreview  x 566 · y 115 · w 789 · h 851 · scale 1.4 · opacity 1"
+    },
+    {
+      "name": "Handoff · S06",
+      "text": "S06 · Cả nhà cùng bên con · 00:39–00:46 · f1170–1380 (210f)\nThời gian\n39.0s (f1170) → 46.0s (f1380). Frame cục bộ 0–210.\nThông điệp\nHeadline: “Cả nhà / cùng bên con.”\nThứ tự layer & chuyển động\nf0–24: VideoPreview hoà vào AppScreen/AlbumGioTam (giữa, 440 rộng): opacity 0→1, scale .96→1 (motion.standard).\nf20–44: điện thoại → (1080,64) (film.spring.soft). f30–48: Headline vào.\nf48–96: Card/Member lần lượt (stagger 10f): Mai (720,170) → Minh (1417,320) → Cô Lan (720,640) → Bà nội Hoa (1417,770); mỗi thẻ opacity 0→1, y +16→0, scale .96→1.\nf96–170: giữ.\nf170–210 (END): các thẻ gom thành hàng y 880 (scale 1.3→1.05); điện thoại → giữa, 380 rộng, opacity .9; Headline ra; Accent/Sun d120 hiện góc phải (cầu nối S07).\nLưu ý nội dung\nAlbum riêng tư (“Mẹ chia sẻ với gia đình”). Thành viên lấy đúng từ màn Gia đình (14a). Không thêm like/comment/thông báo ngoài UI gốc; nút “Thương” là UI có sẵn, không nhấn mạnh.\nAsset\n11f Chi tiết album · người thân (188:472) → PNG @2x. MemberRow (116:11310, 116:11318, 116:11327, 116:11335) → PNG @2x hoặc dựng lại bằng component.\nÂm thanh\nMỗi thẻ thành viên một nốt nhỏ (pizzicato/piano), rất khẽ.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/AlbumGioTam  x 740 · y 74 · w 440 · h 953 · scale 1 · opacity 1\n3. Headline  x 160 · y 360 · w 651 · h 216 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Headline  x 160 · y 360 · w 651 · h 216 · scale 1 · opacity 1\n3. AppScreen/AlbumGioTam  x 1080 · y 64 · w 440 · h 953 · scale 1 · opacity 1\n4. Card/Member/Me  x 720 · y 170 · w 443 · h 90 · scale 1 · opacity 1\n5. Card/Member/Ba  x 1417 · y 320 · w 443 · h 90 · scale 1 · opacity 1\n6. Card/Member/NguoiCham  x 720 · y 640 · w 443 · h 90 · scale 1 · opacity 1\n7. Card/Member/BaNoi  x 1417 · y 770 · w 443 · h 88 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/AlbumGioTam  x 770 · y 40 · w 380 · h 823 · scale 0.9 · opacity 0.9\n3. Card/Member/Me  x 180 · y 880 · w 358 · h 72 · scale 0.8 · opacity 1\n4. Card/Member/Ba  x 562 · y 880 · w 358 · h 72 · scale 0.8 · opacity 1\n5. Card/Member/NguoiCham  x 944 · y 880 · w 358 · h 72 · scale 0.8 · opacity 1\n6. Card/Member/BaNoi  x 1326 · y 880 · w 358 · h 71 · scale 0.8 · opacity 1\n7. Accent/Sun  x 1680 · y 160 · w 120 · h 120 · scale 1 · opacity 1"
+    },
+    {
+      "name": "Handoff · S07",
+      "text": "S07 · Cá nhân hoá theo tuổi · 00:46–00:53 · f1380–1590 (210f)\nThời gian\n46.0s (f1380) → 53.0s (f1590). Frame cục bộ 0–210.\nThông điệp\nHeadline: “Đồng hành theo / nhịp lớn của con.” — một lợi ích: nội dung theo đúng tuổi của bé.\nThứ tự layer & chuyển động\nf0–20: màn hình chuyển Album → Thẻ theo tuổi (hoà tan), điện thoại giữa khung.\nf20–44: điện thoại → (1200,64), opacity 1→.35 (film.gentle).\nf30–48: Headline vào.\nf40–64: Card/AgeCard “3–4 tuần · Bé đang ở đây” nhấc ra khỏi điện thoại đúng hàng của nó: từ (1216,422, 403 rộng) → (1051,402, 789 rộng), bóng đổ tăng dần (film.spring.soft).\nf64–170: giữ.\nf170–210 (END): điện thoại ra; AgeCard thu về (565,700) opacity .7; Accent/Sun lớn dần 0→420 ở giữa (film.gentle) → S08.\nLưu ý nội dung\nDùng màn 2a · Thẻ theo tuổi (cá nhân hoá, tách khỏi Lumi). Không mô tả là lời khuyên y khoa, không hứa độ chính xác. Lumi không xuất hiện trong cảnh này.\nAsset\n2a · Thẻ theo tuổi (310:42550) → PNG @2x; thẻ nổi bật 310:42591 → PNG @3x.\nÂm thanh\nPad ấm giữ nền, không thêm hiệu ứng.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/TheTheoTuoi  x 740 · y 74 · w 440 · h 953 · scale 1 · opacity 1\n3. Headline  x 160 · y 380 · w 687 · h 188 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/TheTheoTuoi  x 1200 · y 64 · w 440 · h 953 · scale 1 · opacity 0.3\n3. Card/AgeCard  x 1051 · y 392 · w 789 · h 207 · scale 1 · opacity 1\n4. Headline  x 160 · y 380 · w 687 · h 188 · scale 1 · opacity 1\n— END —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Accent/Sun  x 750 · y 330 · w 420 · h 420 · scale 1 · opacity 1\n3. Card/AgeCard  x 686 · y 700 · w 549 · h 143 · scale 0.7 · opacity 0.7"
+    },
+    {
+      "name": "Handoff · S08",
+      "text": "S08 · Brand & CTA · 00:53–01:00 · f1590–1800 (210f)\nThời gian\n53.0s (f1590) → 60.0s (f1800). Frame cục bộ 0–210. Logo + CTA đứng yên ≥ 3s (f114–210 = 3.2s).\nThông điệp\nLogo · Headline “Cùng chăm con, giữ từng khoảnh khắc con lớn lên.” · SupportingText “Growing together, every step of the way.” · CTA “Khám phá Child Life” · CTA/URL “childlife.app”.\nThứ tự layer & chuyển động\nf0–20: Accent/Sun (d300 giữa) thu vào vị trí mặt trời của logo (781.6,138.7; d 21.4); Logo opacity 0→1 f10–28.\nf10–40: 3 điện thoại (Hôm nay · Album · Thẻ theo tuổi) đi lên từ y 1120 → 600 (giữa cao hơn 50px), stagger 6f, film.spring.soft.\nf28–46: Headline vào (y 260).\nHERO ≈ f75 (55.5s).\nf75–105: ổn định bố cục: logo y 120→100, headline 260→240, điện thoại 600→560 (film.gentle).\nf84–102: SupportingText vào (y 322). f96–114: CTA vào (scale .96→1, opacity).\nf114–210: đứng yên. Nhạc fade out f180–210. Không fade đen.\nCTA thay thế\nCTA/Label là text thường: “Khám phá Child Life” (mặc định) hoặc “Tải Child Life” khi đã xác nhận phát hành. Không đặt huy hiệu App Store / Google Play khi chưa xác nhận.\nAsset\nLogo/Lockup Horizontal · Color (35:181) → SVG. Màn hình: A3 Hôm nay (273:950), 10d Album (135:17615), 2a Thẻ theo tuổi (310:42550) → PNG @2x.\nÂm thanh\nHợp âm kết ở f0 (53s), ngân tới hết; fade 54→60s cuối.\nBảng trạng thái (tự trích từ Figma · toạ độ px trong khung 1920×1080 · scale so với HERO)\n— START —\n1. Accent/Band  x 0 · y 700 · w 1920 · h 380 · scale 1 · opacity 1\n2. Accent/Sun  x 810 · y 300 · w 300 · h 300 · scale 1 · opacity 1\n3. AppScreen/HomNay  x 330 · y 1120 · w 380 · h 823 · scale 1 · opacity 1\n4. AppScreen/Album  x 770 · y 1070 · w 380 · h 823 · scale 1 · opacity 1\n5. AppScreen/TheTheoTuoi  x 1210 · y 1120 · w 380 · h 823 · scale 1 · opacity 1\n6. Logo  x 730 · y 120 · w 460 · h 89 · scale 1 · opacity 0\n7. Headline  x 278 · y 260 · w 1365 · h 63 · scale 1 · opacity 0\n8. SupportingText  x 658 · y 340 · w 605 · h 34 · scale 1 · opacity 0\n9. CTA  x 678 · y 410 · w 565 · h 75 · scale 1 · opacity 0\n— HERO —\n1. Accent/Band  x 0 · y 760 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/HomNay  x 330 · y 600 · w 380 · h 823 · scale 1 · opacity 1\n3. AppScreen/Album  x 770 · y 550 · w 380 · h 823 · scale 1 · opacity 1\n4. AppScreen/TheTheoTuoi  x 1210 · y 600 · w 380 · h 823 · scale 1 · opacity 1\n5. Logo  x 730 · y 120 · w 460 · h 89 · scale 1 · opacity 1\n6. Headline  x 278 · y 260 · w 1365 · h 63 · scale 1 · opacity 1\n7. SupportingText  x 658 · y 340 · w 605 · h 34 · scale 1 · opacity 0\n8. CTA  x 678 · y 410 · w 565 · h 75 · scale 1 · opacity 0\n— END —\n1. Accent/Band  x 0 · y 760 · w 1920 · h 380 · scale 1 · opacity 1\n2. AppScreen/HomNay  x 330 · y 560 · w 380 · h 823 · scale 1 · opacity 1\n3. AppScreen/Album  x 770 · y 510 · w 380 · h 823 · scale 1 · opacity 1\n4. AppScreen/TheTheoTuoi  x 1210 · y 560 · w 380 · h 823 · scale 1 · opacity 1\n5. Logo  x 730 · y 100 · w 460 · h 89 · scale 1 · opacity 1\n6. Headline  x 278 · y 240 · w 1365 · h 63 · scale 1 · opacity 1\n7. SupportingText  x 658 · y 322 · w 605 · h 34 · scale 1 · opacity 1\n8. CTA  x 678 · y 396 · w 565 · h 75 · scale 1 · opacity 1"
+    }
+  ]
+}

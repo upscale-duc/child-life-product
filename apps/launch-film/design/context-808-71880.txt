@@ -1,0 +1,129 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/c7ace36b-94a7-4ec7-874c-a47fc31ca3bd";
+const imgNhMinhHoTrongFileThaynhDcCpQuyn = `${assetPathPrefix}/61240.png`;
+const imgNhMinhHoTrongFileThaynhDcCpQuyn1 = `${assetPathPrefix}/4222e.png`;
+const imgNhMinhHoTrongFileThaynhDcCpQuyn2 = `${assetPathPrefix}/0d3f8.png`;
+const imgNhMinhHoTrongFileThaynhDcCpQuyn3 = `${assetPathPrefix}/5d2ff.png`;
+const imgNhMinhHoTrongFileThaynhDcCpQuyn4 = `${assetPathPrefix}/1025f.png`;
+const imgAccentBand = `${assetPathPrefix}/bd7c0.svg`;
+const imgAccentTimelineDot1 = `${assetPathPrefix}/851f1.svg`;
+
+export default function S05Remember2739SMid() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="808:71880" data-name="S05_Remember_27-39s_MID">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="808:71881" data-name="Background" />
+      <div className="absolute h-[380px] left-0 top-[700px] w-[1920px]" data-node-id="808:71882" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[160px] not-italic text-[84px] text-[color:var(--ink,#173d44)] top-[150px] tracking-[-1.26px] whitespace-nowrap" data-node-id="808:71884">
+        Từ ảnh hằng ngày
+      </p>
+      <div className="absolute bg-[var(--mint,#2cbfb3)] h-[6px] left-[160px] rounded-[3px] top-[840px] w-[1600px]" data-node-id="808:71885" data-name="Accent/TimelineRail" />
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col gap-[10px] items-start left-[160px] pb-[16px] pt-[12px] px-[12px] rounded-[22px] top-[420px]" data-node-id="808:71886" data-name="Photo/Photo01 · PLACEHOLDER">
+        <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[266px]" data-node-id="808:71887" data-name="img">
+          <div className="absolute left-0 overflow-clip size-[266px] top-0" data-node-id="808:71888" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(207, 239, 234) 0%, rgb(143, 214, 203) 71.429%)" }} data-name="Ảnh minh hoạ trong file — thay ảnh được cấp quyền">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgNhMinhHoTrongFileThaynhDcCpQuyn} />
+          </div>
+          <div className="absolute bg-[rgba(255,255,255,0.85)] content-stretch flex items-start left-[12px] px-[10px] py-[4px] rounded-[999px] top-[12px]" data-node-id="808:71894" data-name="_Label/Placeholder (không render)">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[11px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71895">
+              Ảnh placeholder
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[20px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71896">
+          Tuần 1
+        </p>
+      </div>
+      <div className="absolute left-[292px] size-[26px] top-[830px]" data-node-id="808:71897" data-name="Accent/TimelineDot/1">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentTimelineDot1} />
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col gap-[10px] items-start left-[490px] pb-[16px] pt-[12px] px-[12px] rounded-[22px] top-[420px]" data-node-id="808:71898" data-name="Photo/Photo02 · PLACEHOLDER">
+        <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[266px]" data-node-id="808:71899" data-name="img">
+          <div className="absolute left-0 overflow-clip size-[266px] top-0" data-node-id="808:71900" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(220, 235, 250) 0%, rgb(169, 203, 239) 71.429%)" }} data-name="Ảnh minh hoạ trong file — thay ảnh được cấp quyền">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgNhMinhHoTrongFileThaynhDcCpQuyn1} />
+          </div>
+          <div className="absolute bg-[rgba(255,255,255,0.85)] content-stretch flex items-start left-[12px] px-[10px] py-[4px] rounded-[999px] top-[12px]" data-node-id="808:71906" data-name="_Label/Placeholder (không render)">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[11px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71907">
+              Ảnh placeholder
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[20px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71908">
+          Tuần 2
+        </p>
+      </div>
+      <div className="absolute left-[622px] size-[26px] top-[830px]" data-node-id="808:71909" data-name="Accent/TimelineDot/2">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentTimelineDot1} />
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col gap-[10px] items-start left-[820px] pb-[16px] pt-[12px] px-[12px] rounded-[22px] top-[420px]" data-node-id="808:71910" data-name="Photo/Photo03 · PLACEHOLDER">
+        <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[266px]" data-node-id="808:71911" data-name="img">
+          <div className="absolute left-0 overflow-clip size-[266px] top-0" data-node-id="808:71912" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(255, 227, 216) 0%, rgb(247, 185, 165) 71.429%)" }} data-name="Ảnh minh hoạ trong file — thay ảnh được cấp quyền">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgNhMinhHoTrongFileThaynhDcCpQuyn2} />
+          </div>
+          <div className="absolute bg-[rgba(255,255,255,0.85)] content-stretch flex items-start left-[12px] px-[10px] py-[4px] rounded-[999px] top-[12px]" data-node-id="808:71918" data-name="_Label/Placeholder (không render)">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[11px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71919">
+              Ảnh placeholder
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[20px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71920">
+          Tuần 3
+        </p>
+      </div>
+      <div className="absolute left-[952px] size-[26px] top-[830px]" data-node-id="808:71921" data-name="Accent/TimelineDot/3">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentTimelineDot1} />
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col gap-[10px] items-start left-[1150px] pb-[16px] pt-[12px] px-[12px] rounded-[22px] top-[420px]" data-node-id="808:71922" data-name="Photo/Photo04 · PLACEHOLDER">
+        <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[266px]" data-node-id="808:71923" data-name="img">
+          <div className="absolute left-0 overflow-clip size-[266px] top-0" data-node-id="808:71924" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(207, 239, 234) 0%, rgb(143, 214, 203) 71.429%)" }} data-name="Ảnh minh hoạ trong file — thay ảnh được cấp quyền">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgNhMinhHoTrongFileThaynhDcCpQuyn3} />
+          </div>
+          <div className="absolute bg-[rgba(255,255,255,0.85)] content-stretch flex items-start left-[12px] px-[10px] py-[4px] rounded-[999px] top-[12px]" data-node-id="808:71930" data-name="_Label/Placeholder (không render)">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[11px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71931">
+              Ảnh placeholder
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[20px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71932">
+          Tuần 4
+        </p>
+      </div>
+      <div className="absolute left-[1282px] size-[26px] top-[830px]" data-node-id="808:71933" data-name="Accent/TimelineDot/4">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentTimelineDot1} />
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col gap-[10px] items-start left-[1480px] pb-[16px] pt-[12px] px-[12px] rounded-[22px] top-[420px]" data-node-id="808:71934" data-name="Photo/Photo05 · PLACEHOLDER">
+        <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[266px]" data-node-id="808:71935" data-name="img">
+          <div className="absolute left-0 overflow-clip size-[266px] top-0" data-node-id="808:71936" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(237, 227, 248) 0%, rgb(200, 177, 232) 71.429%)" }} data-name="Ảnh minh hoạ trong file — thay ảnh được cấp quyền">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgNhMinhHoTrongFileThaynhDcCpQuyn4} />
+          </div>
+          <div className="absolute bg-[rgba(255,255,255,0.85)] content-stretch flex items-start left-[12px] px-[10px] py-[4px] rounded-[999px] top-[12px]" data-node-id="808:71942" data-name="_Label/Placeholder (không render)">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[11px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71943">
+              Ảnh placeholder
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[20px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71944">
+          1 tháng
+        </p>
+      </div>
+      <div className="absolute left-[1612px] size-[26px] top-[830px]" data-node-id="808:71945" data-name="Accent/TimelineDot/5">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentTimelineDot1} />
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: shadow-tile: Effect(type: DROP_SHADOW, color: #122E331A, offset: (0, 2), radius: 4, spread: 0); Effect(type: DROP_SHADOW, color: #122E3329, offset: (0, 10), radius: 22, spread: -4).
+Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.
+
+## Illustration/Photo
+**Node ID:** 131:758
+
+Illustrated baby photo placeholder (privacy-safe). Use instead of real photos in mockups.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

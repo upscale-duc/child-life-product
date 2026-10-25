@@ -24,6 +24,7 @@ import {
   updateMyProfileSchema,
   type FamilyStorage,
 } from '@child-life/contracts';
+import { storageLimitBytes } from './premium-v2.js';
 import {
   FieldValue,
   Timestamp,
@@ -203,7 +204,7 @@ export async function familyStorage(
   return {
     familyId,
     isOwner: family.get('ownerUid') === caller.uid,
-    quotaBytes: (family.get('quotaBytes') as number | undefined) ?? 0,
+    quotaBytes: await storageLimitBytes(db, familyId, family, now),
     usedBytes: Math.max(0, (family.get('usedBytes') as number | undefined) ?? 0),
     binBytes: Math.max(0, (family.get('binBytes') as number | undefined) ?? 0),
     notesBytes: texts * noteBytesEstimate,
@@ -268,7 +269,7 @@ export async function requestStorage(
     );
     if (!open.empty) return { id: open.docs[0]!.id, created: false };
     const used = (family.get('usedBytes') as number | undefined) ?? 0;
-    const quota = (family.get('quotaBytes') as number | undefined) ?? 0;
+    const quota = await storageLimitBytes(db, familyId, family, now);
     tx.create(db.doc(`storageRequests/${id}`), {
       familyId,
       requesterUid: caller.uid,
@@ -310,7 +311,7 @@ export async function maybeStorageNotice(
     if (!family.exists) return null;
     const state = storageState(
       (family.get('usedBytes') as number | undefined) ?? 0,
-      (family.get('quotaBytes') as number | undefined) ?? 0,
+      await storageLimitBytes(db, familyId, family, now),
     );
     const last = (family.get('storageNoticeState') as string | undefined) ?? 'ok';
     if (state === last) return null;
@@ -468,7 +469,14 @@ export interface JobDeps {
 }
 
 /** Top-level collections that point at a baby and go with it. */
-const babyLinked = ['invites', 'dataJobs'] as const;
+const babyLinked = [
+  'invites',
+  'dataJobs',
+  'printOrderIndex',
+  'printOrderOps',
+  'printArtifacts',
+  'printReviews',
+] as const;
 
 class DeletionWaiting extends Error {
   constructor(readonly until: Date) {
@@ -508,6 +516,13 @@ async function babyStep(
       {
         const jobs = await babyRef.collection('keepsakeJobs').get();
         let until = now.getTime();
+        const printLeases = await babyRef.collection('printLeases').get();
+        for (const lease of printLeases.docs) {
+          until = Math.max(
+            until,
+            (lease.get('expiresAt') as Timestamp | undefined)?.toMillis() ?? 0,
+          );
+        }
         for (const render of jobs.docs) {
           for (const field of ['leaseUntilAt', 'filingUntilAt']) {
             until = Math.max(until, (render.get(field) as Timestamp | undefined)?.toMillis() ?? 0);
@@ -538,6 +553,9 @@ async function babyStep(
       await purgeProductAnalytics(db, 'babyId', babyId, now);
       await purgeNotificationLedger(db, 'babyId', babyId);
       for (const c of await babyRef.listCollections()) await db.recursiveDelete(c);
+      const printReviews = await db.collection('printReviews').where('babyId', '==', babyId).get();
+      for (const review of printReviews.docs)
+        await db.doc(`printReviewsPublic/${review.id}`).delete();
       for (const name of babyLinked) {
         await deleteQuery(db, db.collection(name).where('babyId', '==', babyId));
       }

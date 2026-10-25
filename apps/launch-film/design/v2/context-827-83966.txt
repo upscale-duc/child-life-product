@@ -1,0 +1,164 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/adecddc1-97f4-4291-a670-99d4543b8ef5";
+const imgIllustrationPhoto = `${assetPathPrefix}/61240.png`;
+const imgAccentBand = `${assetPathPrefix}/63977.svg`;
+const imgEllipse = `${assetPathPrefix}/3283b.svg`;
+const imgIconStar = `${assetPathPrefix}/aee39.svg`;
+const imgIconStar1 = `${assetPathPrefix}/c2164.svg`;
+const imgIconStar2 = `${assetPathPrefix}/0493a.svg`;
+const imgIconStar3 = `${assetPathPrefix}/1e2e0.svg`;
+const imgEllipse1 = `${assetPathPrefix}/9ba35.svg`;
+const imgIconStar4 = `${assetPathPrefix}/3688a.svg`;
+const imgIconStar5 = `${assetPathPrefix}/1c7ed.svg`;
+const imgPlay = `${assetPathPrefix}/26706.svg`;
+const imgIconStar6 = `${assetPathPrefix}/5e9aa.svg`;
+const imgIconStar7 = `${assetPathPrefix}/ce13b.svg`;
+const imgIconStar8 = `${assetPathPrefix}/c4d0d.svg`;
+
+export default function S06Remember3648SHeroDark() {
+  return (
+    <div className="bg-[var(--cloud,#0c1719)] relative size-full" data-node-id="827:83966" data-name="S06_Remember_36-48s_HERO_DARK">
+      <div className="absolute bg-[var(--cloud,#0c1719)] inset-0" data-node-id="827:83967" data-name="Background" />
+      <div className="absolute h-[380px] left-0 top-[700px] w-[1920px]" data-node-id="827:83968" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[960px] not-italic text-[76px] text-[color:var(--ink,#e6f2f1)] text-center top-[80px] tracking-[-1.14px] whitespace-nowrap" data-node-id="827:83970">
+        Từ ảnh hằng ngày
+      </p>
+      <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[960px] not-italic text-[76px] text-[color:var(--mint-deep,#3fd0c3)] text-center top-[180px] tracking-[-1.14px] whitespace-nowrap" data-node-id="827:83971">
+        thành những kỷ niệm đáng xem lại.
+      </p>
+      <div className="absolute h-[528px] left-[400px] top-[330px] w-[548.8px]" data-node-id="827:83972" data-name="Card/Thiep">
+        <div className="absolute left-[49.6px] size-[448px] top-[32px]" data-node-id="827:83973" data-name="Ellipse">
+          <div className="absolute inset-[-21.43%]">
+            <img alt="" className="block max-w-none size-full" src={imgEllipse} />
+          </div>
+        </div>
+        <div className="absolute flex h-[514.455px] items-center justify-center left-[56.12px] top-[12.8px] w-[417.234px]" data-node-id="827:83974">
+          <div className="flex-none rotate-2">
+            <div className="bg-[#fcf5e5] h-[500.8px] overflow-clip relative rounded-[28.8px] w-[400px]" data-name="Thiệp · 1 tháng">
+              <div className="absolute bg-[var(--surface-2,#1c2e33)] left-[76px] overflow-clip rounded-[1598.4px] size-[248px] top-[40px]" data-node-id="827:83975" data-name="Photo">
+                <div className="absolute left-0 overflow-clip size-[248px] top-0" data-node-id="827:83976" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(207, 239, 234) 0%, rgb(143, 214, 203) 71.429%)" }} data-name="Illustration/Photo">
+                  <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgIllustrationPhoto} />
+                </div>
+              </div>
+              <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:Bold'] leading-[normal] left-[200px] not-italic text-[#d97359] text-[65.6px] text-center top-[303px] w-[400px]" data-node-id="827:83977">
+                1 tháng
+              </p>
+              <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] left-[200px] not-italic text-[#21333d] text-[25.6px] text-center top-[386.2px] w-[400px]" data-node-id="827:83978">
+                Teddy
+              </p>
+              <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[200px] not-italic opacity-60 text-[#21333d] text-[20.8px] text-center top-[423.2px] w-[400px]" data-node-id="827:83979">
+                14.11.2026
+              </p>
+              <div className="absolute left-[344px] size-[25.6px] top-[20.03px]" data-node-id="827:83980" data-name="Icon/star">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar} />
+              </div>
+              <div className="absolute left-[24px] size-[25.6px] top-[250.4px]" data-node-id="827:83981" data-name="Icon/star">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar} />
+              </div>
+              <div className="absolute left-[360px] size-[25.6px] top-[310.5px]" data-node-id="827:83982" data-name="Icon/star">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar} />
+              </div>
+              <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] left-[200px] not-italic text-[#d97359] text-[20.8px] text-center top-[456px] w-[400px]" data-node-id="827:83983">
+                “Một tháng yêu thương”
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="absolute left-[22.4px] size-[22.4px] top-[32px]" data-node-id="827:83984" data-name="Icon/star">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar1} />
+        </div>
+        <div className="absolute left-[496px] size-[16px] top-[64px]" data-node-id="827:83985" data-name="Icon/star">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar2} />
+        </div>
+        <div className="absolute left-[38.4px] size-[16px] top-[448px]" data-node-id="827:83986" data-name="Icon/star">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar3} />
+        </div>
+        <div className="absolute left-[505.6px] size-[22.4px] top-[432px]" data-node-id="827:83987" data-name="Icon/star">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar1} />
+        </div>
+      </div>
+      <div className="absolute content-stretch flex flex-col items-center left-[1000px] top-[310px] w-[548.8px]" data-node-id="827:83988" data-name="Card/VideoPreview">
+        <div className="h-[592px] relative shrink-0 w-[548.8px]" data-node-id="827:83989" data-name="Video + hiệu ứng">
+          <div className="absolute left-[33.6px] size-[480px] top-[64px]" data-node-id="827:83990" data-name="Ellipse">
+            <div className="absolute inset-[-20%]">
+              <img alt="" className="block max-w-none size-full" src={imgEllipse1} />
+            </div>
+          </div>
+          <div className="absolute bg-[var(--surface-2,#1c2e33)] h-[580.8px] left-[111.2px] overflow-clip rounded-[35.2px] top-[6.4px] w-[326.4px]" data-node-id="827:83991" data-name="Mẫu video · Tháng đầu tiên của Teddy">
+            <div className="absolute bg-[var(--surface-2,#1c2e33)] h-[580.8px] left-0 overflow-clip top-0 w-[326.4px]" data-node-id="827:83992" data-name="Photo">
+              <div className="absolute left-[-127.2px] overflow-clip size-[580.8px] top-0" data-node-id="827:83993" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(207, 239, 234) 0%, rgb(143, 214, 203) 71.429%)" }} data-name="Illustration/Photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgIllustrationPhoto} />
+              </div>
+            </div>
+            <div className="absolute bg-gradient-to-b from-[rgba(0,0,0,0)] h-[348.48px] left-0 to-[rgba(0,0,0,0.72)] top-[232.32px] w-[326.4px]" data-node-id="827:83994" data-name="Gradient" />
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[27.2px] not-italic text-[24px] text-[rgba(255,255,255,0.8)] top-[517.76px] whitespace-nowrap" data-node-id="827:83995">
+              14.10 – 14.11.2026
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Bold'] leading-[1.18] left-[27.2px] not-italic text-[32px] text-white top-[435.52px] w-[272px]" data-node-id="827:83996">
+              Tháng đầu tiên của Teddy
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Bold'] leading-none left-[27.2px] not-italic text-[108.8px] text-[rgba(255,255,255,0.95)] top-[332.16px] whitespace-nowrap" data-node-id="827:83997">
+              1
+            </p>
+            <div className="absolute left-[261.12px] size-[30.4px] top-[40.66px]" data-node-id="827:83998" data-name="Icon/star">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar4} />
+            </div>
+            <div className="absolute left-[32.64px] size-[22.4px] top-[92.93px]" data-node-id="827:83999" data-name="Icon/star">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar5} />
+            </div>
+            <div className="absolute left-[235.01px] size-[22.4px] top-[174.24px]" data-node-id="827:84000" data-name="Icon/star">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar5} />
+            </div>
+            <div className="absolute h-[73.6px] left-[126.82px] top-[208px] w-[72.768px]" data-node-id="827:84001" data-name="play">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgPlay} />
+            </div>
+            <div className="absolute bg-[rgba(0,0,0,0.5)] content-stretch flex items-start left-[241.6px] px-[12.8px] py-[4.8px] rounded-[1598.4px] top-[16px]" data-node-id="827:84003" data-name="dur">
+              <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold'] leading-[normal] not-italic relative shrink-0 text-[17.6px] text-white whitespace-nowrap" data-node-id="827:84004">
+                0:45
+              </p>
+            </div>
+          </div>
+          <div className="absolute left-[32px] size-[22.4px] top-[48px]" data-node-id="827:84005" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar1} />
+          </div>
+          <div className="absolute left-[480px] size-[16px] top-[96px]" data-node-id="827:84006" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar2} />
+          </div>
+          <div className="absolute left-[64px] size-[14.4px] top-[400px]" data-node-id="827:84007" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar6} />
+          </div>
+          <div className="absolute left-[473.6px] size-[22.4px] top-[480px]" data-node-id="827:84008" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar1} />
+          </div>
+          <div className="absolute left-[16px] size-[11.2px] top-[240px]" data-node-id="827:84009" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar7} />
+          </div>
+          <div className="absolute left-[508.8px] size-[12.8px] top-[288px]" data-node-id="827:84010" data-name="Icon/star">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar8} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.
+
+## Illustration/Photo
+**Node ID:** 131:758
+
+Illustrated baby photo placeholder (privacy-safe). Use instead of real photos in mockups.
+
+## Icon/star
+**Node ID:** 22:194
+
+Line icon (24px, 1.8 stroke) — placeholder; production uses SF Symbols.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

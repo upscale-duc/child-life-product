@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../app/route_guard.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/design/cl_theme.dart';
@@ -326,6 +328,14 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
         ],
         const SizedBox(height: ClSpace.s3),
         if (parent) ...[
+          if (!item.isVideo) ...[
+            RailButton(
+              icon: ClIcons.memories,
+              semanticLabel: l10n.psTitle,
+              onPressed: () => context.push('${Routes.printStudio}?product=single&photo=${item.id}'),
+            ),
+            const SizedBox(height: ClSpace.s3),
+          ],
           RailButton(
             icon: ClIcons.upload,
             semanticLabel: l10n.viewerShare,

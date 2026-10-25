@@ -20,6 +20,7 @@ export type Route =
   | 'firstAid'
   | 'rhythm'
   | 'keepsakes'
+  | 'printStudio'
   // Editorial content (D-076 #5–#7): B01/B02, B05/B06, B07/B08, B03/B04.
   | 'articles'
   | 'stages'
@@ -51,6 +52,7 @@ export const routePaths: Record<Route, string> = {
   firstAid: '/first-aid',
   rhythm: '/rhythm',
   keepsakes: '/keepsakes',
+  printStudio: '/print-studio',
   articles: '/articles',
   stages: '/stages',
   milestones: '/milestones',

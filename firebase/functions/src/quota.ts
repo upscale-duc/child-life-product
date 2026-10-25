@@ -65,7 +65,12 @@ export type QuotaWindowRef =
       grantId: string;
       periodStart: Date;
       periodEnd: Date;
-    };
+    }
+  /** Premium v2 Free allowance used once (D-101): never resets; [key] starts a new one. */
+  | { kind: 'trial'; feature: QuotaFeature; key: string };
+
+/** The end of a trial window: never. */
+export const NEVER = new Date('9999-12-31T00:00:00Z');
 
 /** A window plus the limit to freeze into it if it does not exist yet (from config). */
 export interface QuotaWindowRequest {
@@ -144,6 +149,19 @@ type WindowShape = Omit<StoredQuotaWindow, 'used' | 'reserved' | 'limit'>;
 
 function shapeFor(ref: QuotaWindowRef, at: Date): WindowShape {
   switch (ref.kind) {
+    case 'trial':
+      return {
+        windowId: quotaWindowId(ref.feature, { kind: 'trial', key: ref.key }),
+        feature: ref.feature,
+        scope: 'trial',
+        babyId: null,
+        grantId: null,
+        zone: null,
+        startDate: '1970-01-01',
+        endDate: NEVER.toISOString().slice(0, 10),
+        startsAt: new Date(0),
+        resetsAt: NEVER,
+      };
     case 'calendar_month': {
       const w = calendarMonthWindow(ref.zone, at);
       return {
@@ -309,6 +327,9 @@ export interface ReserveInput {
   holder?: string | null;
   /** How many units this use takes in every window (default 1; assistant: text 1, image 3). */
   units?: number;
+  /** Who used it and a task label id, for the usage history (PV41); never the content. */
+  actorUid?: string | null;
+  task?: string | null;
   now: Date;
 }
 
@@ -347,7 +368,10 @@ export async function reserveQuota(
   }
   const after = resolved.map((r, i) => ({ ...r.window, ...applied[i]!.window }));
   if (!after.every(quotaInvariantHolds)) throw new QuotaError('failed-precondition', 'invariant');
-  resolved.forEach((r, i) => tx.set(r.ref, windowData(after[i]!, input.now, !r.exists)));
+  // Merge: keeps `createdAt` (the usage history dates an allowance by it, PV41).
+  resolved.forEach((r, i) =>
+    tx.set(r.ref, windowData(after[i]!, input.now, !r.exists), { merge: true }),
+  );
   const now = Timestamp.fromDate(input.now);
   tx.create(opDoc, {
     reservationId: input.reservationId,
@@ -359,6 +383,8 @@ export async function reserveQuota(
     state: 'reserved' satisfies ReservationState,
     requestId: input.requestId ?? null,
     holder: input.holder ?? null,
+    actorUid: input.actorUid ?? null,
+    task: input.task ?? null,
     units,
     createdAt: now,
     updatedAt: now,
@@ -405,7 +431,7 @@ async function settle(
   if (applied[0]!.outcome === 'noop') return { outcome: 'noop', state: stored.state, windows };
   const after = windows.map((w, i) => ({ ...w, ...applied[i]!.window }));
   after.forEach((w, i) => {
-    if (snaps[i]!.exists) tx.set(refs[i]!, windowData(w, input.now, false));
+    if (snaps[i]!.exists) tx.set(refs[i]!, windowData(w, input.now, false), { merge: true });
   });
   const at = Timestamp.fromDate(input.now);
   tx.update(opDoc, {
@@ -483,3 +509,43 @@ export const peekQuotaWindow = (
 
 /** Exposed for tests: the window a request would use at [now] (no write). */
 export const _resolveWindowForTest = peekQuotaWindow;
+
+/**
+ * PT02 (D-101): staff add [delta] units to (or take them from) the window [req] resolves to now,
+ * never below what is used or held. Logged as a `granted` line for the usage history (PV41).
+ */
+export async function adjustQuotaLimit(
+  tx: Transaction,
+  db: Firestore,
+  input: {
+    familyId: string;
+    adjustmentId: string;
+    request: QuotaWindowRequest;
+    delta: number;
+    now: Date;
+  },
+): Promise<{ windowId: string; before: number; after: number }> {
+  checkReservationId(input.adjustmentId);
+  const r = await resolveWindow(tx, db, input.familyId, input.request, input.now);
+  const before = r.window.limit;
+  const after = Math.max(r.window.used + r.window.reserved, before + input.delta, 0);
+  tx.set(r.ref, windowData({ ...r.window, limit: after }, input.now, !r.exists), { merge: true });
+  const at = Timestamp.fromDate(input.now);
+  tx.create(opRef(db, input.familyId, input.adjustmentId), {
+    reservationId: input.adjustmentId,
+    familyId: input.familyId,
+    feature: r.window.feature,
+    windowId: r.window.windowId,
+    windowIds: [r.window.windowId],
+    features: [r.window.feature],
+    state: 'granted',
+    requestId: null,
+    holder: null,
+    actorUid: null,
+    task: 'lumi.grant',
+    units: after - before,
+    createdAt: at,
+    updatedAt: at,
+  });
+  return { windowId: r.window.windowId, before, after };
+}

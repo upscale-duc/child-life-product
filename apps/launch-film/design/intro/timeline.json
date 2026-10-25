@@ -1,0 +1,2237 @@
+{
+  "version": "product-intro-v2-rev2",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 2700,
+  "durationSec": 90,
+  "timingStatus": "ESTIMATED. Re-time every scene after the final voice-over is recorded; keep scene IDs stable.",
+  "figma": {
+    "fileKey": "sJLG1fAXKDnDr9YI6Yx8ex",
+    "page": "Child Life — Product Introduction V2",
+    "pageId": "844:1883"
+  },
+  "coordinateSystem": "Top-left px inside a 1920x1080 frame. Layers with the same name across START/HERO/END are the same element; interpolate between states. threadPath is an SVG path d in viewBox 0 0 1920 1080 for the single Accent/Thread motif.",
+  "scenes": [
+    {
+      "id": "PI01",
+      "slug": "vision",
+      "startSec": 0,
+      "endSec": 8,
+      "startFrame": 0,
+      "endFrame": 240,
+      "durationInFrames": 240,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "proposed",
+      "vo": "Every child grows up one moment at a time. Child Life is here to walk alongside your family — starting with the very first year.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI01_Vision_00-08s_START",
+          "figmaNodeId": "852:81632",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 900 C 150 860, 280 800, 390 770",
+          "layers": [
+            {
+              "name": "Accent/SunHalo",
+              "x": 1610,
+              "y": 160,
+              "w": 340,
+              "h": 340,
+              "opacity": 0.4,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Sun",
+              "x": 1670,
+              "y": 220,
+              "w": 220,
+              "h": 220,
+              "opacity": 0.6,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/0-12m",
+              "x": 250,
+              "y": 630,
+              "w": 280,
+              "h": 280,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/0-12m",
+              "x": 214,
+              "y": 924,
+              "w": 353,
+              "h": 48,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/1-3y",
+              "x": 715,
+              "y": 515,
+              "w": 210,
+              "h": 210,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/1-3y",
+              "x": 672,
+              "y": 739,
+              "w": 296,
+              "h": 48,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/3-6y",
+              "x": 1130,
+              "y": 360,
+              "w": 180,
+              "h": 180,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/3-6y",
+              "x": 1072,
+              "y": 554,
+              "w": 296,
+              "h": 48,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/6-12y",
+              "x": 1505,
+              "y": 215,
+              "w": 160,
+              "h": 160,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/6-12y",
+              "x": 1433,
+              "y": 389,
+              "w": 305,
+              "h": 48,
+              "opacity": 0,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 110,
+              "w": 493,
+              "h": 94,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Growing up,"
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 210,
+              "w": 906,
+              "h": 94,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "one moment at a time."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 340,
+              "w": 588,
+              "h": 84,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Child Life walks alongside your family —\nstarting with the very first year."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI01_Vision_00-08s_HERO",
+          "figmaNodeId": "852:81653",
+          "atLocalSec": 4.2,
+          "atLocalFrame": 126,
+          "threadPath": "M -20 900 C 150 860, 280 800, 390 770 S 650 660, 820 620 S 1080 500, 1220 450 S 1460 320, 1585 295 S 1700 200, 1780 150",
+          "layers": [
+            {
+              "name": "Accent/SunHalo",
+              "x": 1610,
+              "y": -20,
+              "w": 340,
+              "h": 340,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Sun",
+              "x": 1670,
+              "y": 40,
+              "w": 220,
+              "h": 220,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/0-12m",
+              "x": 250,
+              "y": 630,
+              "w": 280,
+              "h": 280,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/0-12m",
+              "x": 214,
+              "y": 924,
+              "w": 353,
+              "h": 48,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/1-3y",
+              "x": 715,
+              "y": 515,
+              "w": 210,
+              "h": 210,
+              "opacity": 0.88,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/1-3y",
+              "x": 672,
+              "y": 739,
+              "w": 296,
+              "h": 48,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/3-6y",
+              "x": 1130,
+              "y": 360,
+              "w": 180,
+              "h": 180,
+              "opacity": 0.88,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/3-6y",
+              "x": 1072,
+              "y": 554,
+              "w": 296,
+              "h": 48,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/6-12y",
+              "x": 1505,
+              "y": 215,
+              "w": 160,
+              "h": 160,
+              "opacity": 0.88,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/6-12y",
+              "x": 1433,
+              "y": 389,
+              "w": 305,
+              "h": 48,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 110,
+              "w": 493,
+              "h": 94,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Growing up,"
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 210,
+              "w": 906,
+              "h": 94,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "one moment at a time."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 340,
+              "w": 588,
+              "h": 84,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Child Life walks alongside your family —\nstarting with the very first year."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI01_Vision_00-08s_END",
+          "figmaNodeId": "852:81674",
+          "atLocalSec": 8,
+          "atLocalFrame": 240,
+          "threadPath": "M -20 1000 C 300 960, 600 860, 760 800",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Sun",
+              "x": 1670,
+              "y": 40,
+              "w": 220,
+              "h": 220,
+              "opacity": 0.35,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/1-3y",
+              "x": 1020,
+              "y": 500,
+              "w": 147,
+              "h": 147,
+              "opacity": 0.2,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/3-6y",
+              "x": 1420,
+              "y": 330,
+              "w": 126,
+              "h": 126,
+              "opacity": 0.2,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/6-12y",
+              "x": 1785,
+              "y": 175,
+              "w": 112,
+              "h": 112,
+              "opacity": 0.2,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Stage/0-12m",
+              "x": 1000,
+              "y": 150,
+              "w": 720,
+              "h": 720,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/StageChip/0-12m",
+              "x": 1184,
+              "y": 900,
+              "w": 353,
+              "h": 48,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 110,
+              "w": 493,
+              "h": 94,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Growing up,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI02",
+      "slug": "firsts",
+      "startSec": 8,
+      "endSec": 14,
+      "startFrame": 240,
+      "endFrame": 420,
+      "durationInFrames": 180,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "Life with a little one is full of firsts. And a lot to keep track of.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI02_Firsts_08-14s_START",
+          "figmaNodeId": "844:10487",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 760 C 200 700, 320 820, 520 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 620,
+              "y": 170,
+              "w": 680,
+              "h": 740,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 380,
+              "w": 576,
+              "h": 108,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Full of firsts."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI02_Firsts_08-14s_HERO",
+          "figmaNodeId": "844:10493",
+          "atLocalSec": 3,
+          "atLocalFrame": 90,
+          "threadPath": "M -20 760 C 300 640, 520 900, 900 720 S 1300 860, 1500 980",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 1060,
+              "y": 140,
+              "w": 720,
+              "h": 800,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 380,
+              "w": 576,
+              "h": 108,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Full of firsts."
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 510,
+              "w": 701,
+              "h": 63,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "And a lot to keep track of."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI02_Firsts_08-14s_END",
+          "figmaNodeId": "844:10500",
+          "atLocalSec": 6,
+          "atLocalFrame": 180,
+          "threadPath": "M -20 760 C 300 640, 520 900, 820 620 S 1100 300, 1400 420 S 1700 760, 1950 600",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 1120,
+              "y": 200,
+              "w": 600,
+              "h": 660,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 930,
+              "y": 170,
+              "w": 237,
+              "h": 62,
+              "opacity": 1,
+              "rotation": -4
+            },
+            {
+              "name": "Card/Note · Nap at 1:30?",
+              "x": 1620,
+              "y": 560,
+              "w": 191,
+              "h": 62,
+              "opacity": 1,
+              "rotation": 3
+            },
+            {
+              "name": "Card/Note · Vitamin D",
+              "x": 980,
+              "y": 820,
+              "w": 157,
+              "h": 62,
+              "opacity": 1,
+              "rotation": -2
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 380,
+              "w": 576,
+              "h": 108,
+              "opacity": 0.35,
+              "rotation": 0,
+              "text": "Full of firsts."
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 510,
+              "w": 701,
+              "h": 63,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "And a lot to keep track of."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI03",
+      "slug": "juggle",
+      "startSec": 14,
+      "endSec": 23,
+      "startFrame": 420,
+      "endFrame": 690,
+      "durationInFrames": 270,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "The last feed. The next nap. The little updates you share so everyone knows how the day is going.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI03_Juggle_14-23s_START",
+          "figmaNodeId": "844:10513",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 760 C 300 640, 520 900, 820 620 S 1100 300, 1400 420 S 1700 760, 1950 600",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 160,
+              "y": 560,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 700,
+              "y": 330,
+              "w": 286,
+              "h": 70,
+              "opacity": 1,
+              "rotation": -4
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 140,
+              "w": 528,
+              "h": 90,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "The last feed."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI03_Juggle_14-23s_HERO",
+          "figmaNodeId": "844:10522",
+          "atLocalSec": 5,
+          "atLocalFrame": 150,
+          "threadPath": "M -20 600 C 200 300, 500 900, 700 500 S 1000 200, 900 600 S 1300 900, 1500 400 S 1800 700, 1600 900 S 1200 1000, 1950 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 150,
+              "y": 600,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 620,
+              "y": 330,
+              "w": 286,
+              "h": 70,
+              "opacity": 1,
+              "rotation": -4
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1180,
+              "y": 250,
+              "w": 193,
+              "h": 70,
+              "opacity": 1,
+              "rotation": 4
+            },
+            {
+              "name": "Card/Message · Did she eat yet?",
+              "x": 1260,
+              "y": 560,
+              "w": 210,
+              "h": 56,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Message · Yes — 120 ml at 9",
+              "x": 1380,
+              "y": 650,
+              "w": 256,
+              "h": 56,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 760,
+              "y": 760,
+              "w": 197,
+              "h": 62,
+              "opacity": 1,
+              "rotation": -3
+            },
+            {
+              "name": "Card/Family · loose",
+              "x": 1560,
+              "y": 860,
+              "w": 196,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 120,
+              "w": 963,
+              "h": 81,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "The last feed. The next nap."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 215,
+              "w": 874,
+              "h": 34,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "The little updates, so everyone knows how the day is going."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI03_Juggle_14-23s_END",
+          "figmaNodeId": "844:10548",
+          "atLocalSec": 9,
+          "atLocalFrame": 270,
+          "threadPath": "M -20 600 C 200 300, 500 900, 700 500 S 1000 200, 900 600 S 1300 900, 1500 400 S 1800 700, 1600 900 S 1200 1000, 1950 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/motherbaby",
+              "x": 120,
+              "y": 640,
+              "w": 260,
+              "h": 262,
+              "opacity": 1,
+              "rotation": -8
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 560,
+              "y": 300,
+              "w": 286,
+              "h": 70,
+              "opacity": 1,
+              "rotation": -7
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1220,
+              "y": 210,
+              "w": 193,
+              "h": 70,
+              "opacity": 1,
+              "rotation": 6
+            },
+            {
+              "name": "Card/Message · Did she eat yet?",
+              "x": 1300,
+              "y": 540,
+              "w": 210,
+              "h": 56,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Message · Yes — 120 ml at 9",
+              "x": 1420,
+              "y": 630,
+              "w": 256,
+              "h": 56,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 700,
+              "y": 800,
+              "w": 197,
+              "h": 62,
+              "opacity": 1,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Bath tonight",
+              "x": 980,
+              "y": 560,
+              "w": 190,
+              "h": 62,
+              "opacity": 1,
+              "rotation": 5
+            },
+            {
+              "name": "Card/Family · loose",
+              "x": 1600,
+              "y": 880,
+              "w": 196,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 120,
+              "w": 963,
+              "h": 81,
+              "opacity": 0.5,
+              "rotation": 0,
+              "text": "The last feed. The next nap."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI04",
+      "slug": "moment",
+      "startSec": 23,
+      "endSec": 30,
+      "startFrame": 690,
+      "endFrame": 900,
+      "durationInFrames": 210,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "And somewhere between it all, another first happens. A smile. A sound. A moment you want to remember.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI04_Moment_23-30s_START",
+          "figmaNodeId": "844:10575",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 600 C 200 300, 500 900, 700 500 S 1000 200, 900 600 S 1300 900, 1500 400 S 1800 700, 1600 900 S 1200 1000, 1950 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 0.5,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 560,
+              "y": 300,
+              "w": 286,
+              "h": 70,
+              "opacity": 0.35,
+              "rotation": -7
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1220,
+              "y": 210,
+              "w": 193,
+              "h": 70,
+              "opacity": 0.35,
+              "rotation": 6
+            },
+            {
+              "name": "Card/Message · Did she eat yet?",
+              "x": 1300,
+              "y": 540,
+              "w": 210,
+              "h": 56,
+              "opacity": 0.35,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 700,
+              "y": 800,
+              "w": 197,
+              "h": 62,
+              "opacity": 0.35,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Bath tonight",
+              "x": 980,
+              "y": 560,
+              "w": 190,
+              "h": 62,
+              "opacity": 0.35,
+              "rotation": 5
+            },
+            {
+              "name": "Photo/smile",
+              "x": 780,
+              "y": 320,
+              "w": 360,
+              "h": 440,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI04_Moment_23-30s_HERO",
+          "figmaNodeId": "844:10590",
+          "atLocalSec": 3.5,
+          "atLocalFrame": 105,
+          "threadPath": "M -20 700 C 400 650, 700 760, 1100 700 S 1600 640, 1950 720",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 0.6,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 560,
+              "y": 300,
+              "w": 286,
+              "h": 70,
+              "opacity": 0.15,
+              "rotation": -7
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1220,
+              "y": 210,
+              "w": 193,
+              "h": 70,
+              "opacity": 0.15,
+              "rotation": 6
+            },
+            {
+              "name": "Card/Message · Did she eat yet?",
+              "x": 1300,
+              "y": 540,
+              "w": 210,
+              "h": 56,
+              "opacity": 0.15,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 700,
+              "y": 800,
+              "w": 197,
+              "h": 62,
+              "opacity": 0.15,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Bath tonight",
+              "x": 980,
+              "y": 560,
+              "w": 190,
+              "h": 62,
+              "opacity": 0.15,
+              "rotation": 5
+            },
+            {
+              "name": "Photo/smile",
+              "x": 1100,
+              "y": 160,
+              "w": 640,
+              "h": 760,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 380,
+              "w": 722,
+              "h": 99,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "A smile. A sound."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 500,
+              "w": 664,
+              "h": 45,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "A moment you want to remember."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI04_Moment_23-30s_END",
+          "figmaNodeId": "844:10607",
+          "atLocalSec": 7,
+          "atLocalFrame": 210,
+          "threadPath": "M -20 600 C 200 300, 500 900, 700 500 S 1000 200, 900 600 S 1300 900, 1500 400 S 1800 700, 1600 900 S 1200 1000, 1950 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 0.7,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 560,
+              "y": 300,
+              "w": 286,
+              "h": 70,
+              "opacity": 0.8,
+              "rotation": -7
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1220,
+              "y": 210,
+              "w": 193,
+              "h": 70,
+              "opacity": 0.8,
+              "rotation": 6
+            },
+            {
+              "name": "Card/Message · Did she eat yet?",
+              "x": 1300,
+              "y": 540,
+              "w": 210,
+              "h": 56,
+              "opacity": 0.8,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 700,
+              "y": 800,
+              "w": 197,
+              "h": 62,
+              "opacity": 0.8,
+              "rotation": -5
+            },
+            {
+              "name": "Card/Note · Bath tonight",
+              "x": 980,
+              "y": 560,
+              "w": 190,
+              "h": 62,
+              "opacity": 0.8,
+              "rotation": 5
+            },
+            {
+              "name": "Photo/smile",
+              "x": 1640,
+              "y": 700,
+              "w": 300,
+              "h": 360,
+              "opacity": 0.6,
+              "rotation": 8
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 500,
+              "w": 664,
+              "h": 45,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "A moment you want to remember."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI05",
+      "slug": "meet",
+      "startSec": 30,
+      "endSec": 37,
+      "startFrame": 900,
+      "endFrame": 1110,
+      "durationInFrames": 210,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "Meet Child Life. A shared space for caring for your child, and keeping their story close.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI05_Meet_30-37s_START",
+          "figmaNodeId": "844:10623",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 540 C 500 520, 1400 560, 1940 540",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 820,
+              "y": 470,
+              "w": 237,
+              "h": 62,
+              "opacity": 0.5,
+              "rotation": -3
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 940,
+              "y": 500,
+              "w": 162,
+              "h": 62,
+              "opacity": 0.5,
+              "rotation": 3
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 880,
+              "y": 540,
+              "w": 197,
+              "h": 62,
+              "opacity": 0.5,
+              "rotation": -2
+            },
+            {
+              "name": "Photo/smile",
+              "x": 860,
+              "y": 420,
+              "w": 200,
+              "h": 202,
+              "opacity": 0.6,
+              "rotation": -3
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI05_Meet_30-37s_HERO",
+          "figmaNodeId": "844:10635",
+          "atLocalSec": 2.5,
+          "atLocalFrame": 75,
+          "threadPath": "M -20 700 C 500 700, 1400 700, 1940 700",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Logo",
+              "x": 660,
+              "y": 300,
+              "w": 600,
+              "h": 116,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 490,
+              "y": 500,
+              "w": 940,
+              "h": 54,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "A shared space for caring for your child,"
+            },
+            {
+              "name": "Headline/2",
+              "x": 614,
+              "y": 570,
+              "w": 693,
+              "h": 54,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "and keeping their story close."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI05_Meet_30-37s_END",
+          "figmaNodeId": "844:10651",
+          "atLocalSec": 7,
+          "atLocalFrame": 210,
+          "threadPath": "M -20 960 C 600 930, 1300 990, 1940 950",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Logo",
+              "x": 140,
+              "y": 120,
+              "w": 320,
+              "h": 62,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 180,
+              "y": 430,
+              "w": 269,
+              "h": 67,
+              "opacity": 0.45,
+              "rotation": -4
+            },
+            {
+              "name": "UICrop/HomNay_BuBinh",
+              "x": 560,
+              "y": 300,
+              "w": 365,
+              "h": 334,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Vaccine · Sat",
+              "x": 1040,
+              "y": 640,
+              "w": 224,
+              "h": 67,
+              "opacity": 0.45,
+              "rotation": 3
+            },
+            {
+              "name": "UICrop/HomNay_NhacNho",
+              "x": 1100,
+              "y": 420,
+              "w": 686,
+              "h": 160,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI06",
+      "slug": "quick-care",
+      "startSec": 37,
+      "endSec": 47,
+      "startFrame": 1110,
+      "endFrame": 1410,
+      "durationInFrames": 300,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "proposed",
+      "vo": "Log a feed in a tap — from a home-screen widget, your Apple Watch, or just by asking Siri. So whoever looks after your little one next can pick up where you left off.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI06_QuickCare_37-47s_START",
+          "figmaNodeId": "853:11464",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 980 C 300 960, 520 900, 700 840",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/feeding",
+              "x": 120,
+              "y": 160,
+              "w": 700,
+              "h": 760,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 900,
+              "y": 110,
+              "w": 498,
+              "h": 81,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Log it in a tap."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI06_QuickCare_37-47s_HERO",
+          "figmaNodeId": "853:11470",
+          "atLocalSec": 4,
+          "atLocalFrame": 120,
+          "threadPath": "M -20 980 C 300 960, 520 900, 760 820 S 880 420, 960 360 S 1200 760, 1300 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/feeding",
+              "x": 120,
+              "y": 200,
+              "w": 640,
+              "h": 720,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 860,
+              "y": 90,
+              "w": 498,
+              "h": 81,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Log it in a tap."
+            },
+            {
+              "name": "SupportingText",
+              "x": 860,
+              "y": 190,
+              "w": 488,
+              "h": 34,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Phone widget · Apple Watch · Siri"
+            },
+            {
+              "name": "UICrop/Widget",
+              "x": 860,
+              "y": 280,
+              "w": 566,
+              "h": 260,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "AppScreen/AppleWatch",
+              "x": 860,
+              "y": 600,
+              "w": 295,
+              "h": 345,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Siri",
+              "x": 1240,
+              "y": 640,
+              "w": 480,
+              "h": 177,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI06_QuickCare_37-47s_END",
+          "figmaNodeId": "853:11558",
+          "atLocalSec": 10,
+          "atLocalFrame": 300,
+          "threadPath": "M -20 980 C 400 960, 700 860, 860 760 S 1100 560, 1940 600",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/father",
+              "x": 120,
+              "y": 240,
+              "w": 560,
+              "h": 640,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 780,
+              "y": 120,
+              "w": 826,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Pick up where they left off."
+            },
+            {
+              "name": "Card/BanGiao",
+              "x": 780,
+              "y": 330,
+              "w": 686,
+              "h": 128,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Member/Me",
+              "x": 780,
+              "y": 600,
+              "w": 409,
+              "h": 83,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Member/CoLan",
+              "x": 1260,
+              "y": 600,
+              "w": 409,
+              "h": 83,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "UICrop/HomNay_BuBinh",
+              "x": 780,
+              "y": 740,
+              "w": 232,
+              "h": 213,
+              "opacity": 0.95,
+              "rotation": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI07",
+      "slug": "lumi",
+      "startSec": 47,
+      "endSec": 58,
+      "startFrame": 1410,
+      "endFrame": 1740,
+      "durationInFrames": 330,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "proposed",
+      "vo": "Or just tell Lumi what happened — it drafts the log for you to check. And each day brings ideas that fit your child’s age, with reminders right when they matter.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI07_Lumi_47-58s_START",
+          "figmaNodeId": "853:11612",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 760 C 400 740, 700 700, 860 640",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Lumi",
+              "x": 850,
+              "y": 420,
+              "w": 220,
+              "h": 220,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 330,
+              "w": 381,
+              "h": 94,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Tell Lumi."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI07_Lumi_47-58s_HERO",
+          "figmaNodeId": "853:11630",
+          "atLocalSec": 3.5,
+          "atLocalFrame": 105,
+          "threadPath": "M -20 760 C 400 740, 700 700, 900 620 S 1000 400, 1060 300",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 330,
+              "w": 381,
+              "h": 94,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Tell Lumi."
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 440,
+              "w": 725,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "It drafts the log for you."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 540,
+              "w": 347,
+              "h": 34,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "You check it, then save."
+            },
+            {
+              "name": "UICrop/Lumi_Drafts",
+              "x": 1100,
+              "y": 80,
+              "w": 525,
+              "h": 840,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Lumi",
+              "x": 980,
+              "y": 820,
+              "w": 140,
+              "h": 140,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI07_Lumi_47-58s_END",
+          "figmaNodeId": "853:11762",
+          "atLocalSec": 11,
+          "atLocalFrame": 330,
+          "threadPath": "M -20 900 C 400 880, 800 820, 1940 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "UICrop/Lumi_Drafts",
+              "x": 140,
+              "y": 300,
+              "w": 338,
+              "h": 540,
+              "opacity": 0.35,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 640,
+              "y": 110,
+              "w": 711,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Ideas that fit their age."
+            },
+            {
+              "name": "Headline/2",
+              "x": 640,
+              "y": 200,
+              "w": 677,
+              "h": 54,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Reminders when they matter."
+            },
+            {
+              "name": "Card/GoiYHomNay",
+              "x": 640,
+              "y": 320,
+              "w": 600,
+              "h": 392,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "List/NhacViec",
+              "x": 640,
+              "y": 742,
+              "w": 549,
+              "h": 188,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI08",
+      "slug": "grow",
+      "startSec": 58,
+      "endSec": 66,
+      "startFrame": 1740,
+      "endFrame": 1980,
+      "durationInFrames": 240,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "Follow the little changes. Celebrate the firsts. And bring your family along as your child grows.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI08_Grow_58-66s_START",
+          "figmaNodeId": "845:80828",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 900 C 500 880, 900 700, 1300 640 S 1700 500, 1940 460",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 0.6,
+              "rotation": 0
+            },
+            {
+              "name": "Card/GrowthChart",
+              "x": 653,
+              "y": 170,
+              "w": 614,
+              "h": 666,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI08_Grow_58-66s_HERO",
+          "figmaNodeId": "845:80888",
+          "atLocalSec": 4.5,
+          "atLocalFrame": 135,
+          "threadPath": "M -20 900 C 500 880, 900 700, 1300 640 S 1700 500, 1940 460",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 90,
+              "w": 622,
+              "h": 72,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Celebrate the firsts."
+            },
+            {
+              "name": "SupportingText",
+              "x": 140,
+              "y": 180,
+              "w": 705,
+              "h": 34,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "And bring your family along as your child grows."
+            },
+            {
+              "name": "Card/GrowthChart",
+              "x": 140,
+              "y": 320,
+              "w": 460,
+              "h": 500,
+              "opacity": 0.9,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Milestone",
+              "x": 640,
+              "y": 300,
+              "w": 540,
+              "h": 628,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "UICrop/Album_CaNha",
+              "x": 1300,
+              "y": 280,
+              "w": 413,
+              "h": 484,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Family",
+              "x": 1380,
+              "y": 800,
+              "w": 268,
+              "h": 76,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI08_Grow_58-66s_END",
+          "figmaNodeId": "845:81011",
+          "atLocalSec": 8,
+          "atLocalFrame": 240,
+          "threadPath": "M -20 900 C 500 880, 900 760, 1300 760 S 1700 760, 1940 760",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "UICrop/Album_CaNha",
+              "x": 660,
+              "y": 120,
+              "w": 600,
+              "h": 704,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Family",
+              "x": 786,
+              "y": 860,
+              "w": 348,
+              "h": 96,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 90,
+              "w": 622,
+              "h": 72,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Celebrate the firsts."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI09",
+      "slug": "keepsakes",
+      "startSec": 66,
+      "endSec": 78,
+      "startFrame": 1980,
+      "endFrame": 2340,
+      "durationInFrames": 360,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "Turn everyday photos into keepsakes you can return to—because the days you're living now are the memories you'll treasure later.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI09_Keepsakes_66-78s_START",
+          "figmaNodeId": "846:10940",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 860 C 400 800, 800 900, 1200 820 S 1700 760, 1940 800",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/basket",
+              "x": 180,
+              "y": 620,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": -5
+            },
+            {
+              "name": "Photo/foot",
+              "x": 560,
+              "y": 560,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": 4
+            },
+            {
+              "name": "Photo/sleepbed",
+              "x": 940,
+              "y": 610,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": -3
+            },
+            {
+              "name": "Photo/feet",
+              "x": 1320,
+              "y": 560,
+              "w": 300,
+              "h": 302,
+              "opacity": 1,
+              "rotation": 5
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 140,
+              "w": 647,
+              "h": 85,
+              "opacity": 0,
+              "rotation": 0,
+              "text": "Everyday photos,"
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI09_Keepsakes_66-78s_HERO",
+          "figmaNodeId": "846:10953",
+          "atLocalSec": 4,
+          "atLocalFrame": 120,
+          "threadPath": "M -20 860 C 400 800, 800 900, 1200 820 S 1700 760, 1940 800",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/basket",
+              "x": 80,
+              "y": 700,
+              "w": 220,
+              "h": 222,
+              "opacity": 0.9,
+              "rotation": -5
+            },
+            {
+              "name": "Photo/foot",
+              "x": 300,
+              "y": 760,
+              "w": 220,
+              "h": 222,
+              "opacity": 0.9,
+              "rotation": 4
+            },
+            {
+              "name": "Photo/sleepbed",
+              "x": 1460,
+              "y": 700,
+              "w": 220,
+              "h": 222,
+              "opacity": 0.9,
+              "rotation": -3
+            },
+            {
+              "name": "Photo/feet",
+              "x": 1680,
+              "y": 760,
+              "w": 220,
+              "h": 222,
+              "opacity": 0.9,
+              "rotation": 5
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 110,
+              "w": 613,
+              "h": 81,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Everyday photos,"
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 200,
+              "w": 790,
+              "h": 81,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "turned into keepsakes."
+            },
+            {
+              "name": "Card/Thiep",
+              "x": 560,
+              "y": 340,
+              "w": 497,
+              "h": 479,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/VideoPreview",
+              "x": 1080,
+              "y": 320,
+              "w": 497,
+              "h": 537,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI09_Keepsakes_66-78s_END",
+          "figmaNodeId": "846:11006",
+          "atLocalSec": 12,
+          "atLocalFrame": 360,
+          "threadPath": "M -20 900 C 400 860, 800 940, 1200 880 S 1700 840, 1940 860",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/VideoPreview",
+              "x": 1100,
+              "y": 140,
+              "w": 686,
+              "h": 740,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Thiep",
+              "x": 820,
+              "y": 560,
+              "w": 343,
+              "h": 330,
+              "opacity": 0.5,
+              "rotation": -4
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 360,
+              "w": 765,
+              "h": 67,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "The days you’re living now"
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 450,
+              "w": 799,
+              "h": 49,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "are the memories you’ll treasure later."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PI10",
+      "slug": "hold",
+      "startSec": 78,
+      "endSec": 90,
+      "startFrame": 2340,
+      "endFrame": 2700,
+      "durationInFrames": 360,
+      "timingStatus": "estimated — not yet aligned to recorded VO",
+      "voStatus": "locked",
+      "vo": "Less to keep track of. More to hold on to. Child Life. Growing together, every step of the way.",
+      "keyframes": [
+        {
+          "state": "START",
+          "figmaFrame": "PI10_Hold_78-90s_START",
+          "figmaNodeId": "846:11051",
+          "atLocalSec": 0,
+          "atLocalFrame": 0,
+          "threadPath": "M -20 760 C 500 740, 1000 780, 1940 740",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Card/Note · Last feed · 9:10?",
+              "x": 220,
+              "y": 640,
+              "w": 237,
+              "h": 62,
+              "opacity": 0.3,
+              "rotation": -6
+            },
+            {
+              "name": "Card/Note · Next nap?",
+              "x": 1500,
+              "y": 700,
+              "w": 162,
+              "h": 62,
+              "opacity": 0.3,
+              "rotation": 5
+            },
+            {
+              "name": "Headline",
+              "x": 460,
+              "y": 360,
+              "w": 1001,
+              "h": 108,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Less to keep track of."
+            }
+          ]
+        },
+        {
+          "state": "HERO",
+          "figmaFrame": "PI10_Hold_78-90s_HERO",
+          "figmaNodeId": "846:11060",
+          "atLocalSec": 4,
+          "atLocalFrame": 120,
+          "threadPath": "M 240 1000 C 700 940, 820 760, 1100 700 S 1480 520, 1560 360",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Accent/Sun",
+              "x": 1460,
+              "y": 220,
+              "w": 200,
+              "h": 200,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "Photo/newborn",
+              "x": 520,
+              "y": 800,
+              "w": 180,
+              "h": 182,
+              "opacity": 1,
+              "rotation": -4
+            },
+            {
+              "name": "Photo/toddler",
+              "x": 900,
+              "y": 660,
+              "w": 180,
+              "h": 182,
+              "opacity": 1,
+              "rotation": 3
+            },
+            {
+              "name": "Photo/child6",
+              "x": 1240,
+              "y": 520,
+              "w": 180,
+              "h": 182,
+              "opacity": 1,
+              "rotation": -3
+            },
+            {
+              "name": "Headline",
+              "x": 140,
+              "y": 170,
+              "w": 876,
+              "h": 94,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Less to keep track of."
+            },
+            {
+              "name": "Headline/2",
+              "x": 140,
+              "y": 280,
+              "w": 762,
+              "h": 94,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "More to hold on to."
+            }
+          ]
+        },
+        {
+          "state": "END",
+          "figmaFrame": "PI10_Hold_78-90s_END",
+          "figmaNodeId": "846:11073",
+          "atLocalSec": 12,
+          "atLocalFrame": 360,
+          "threadPath": "M -20 640 C 600 640, 1300 640, 1940 640",
+          "layers": [
+            {
+              "name": "Accent/Thread",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "opacity": 0.8,
+              "rotation": 0
+            },
+            {
+              "name": "Logo",
+              "x": 660,
+              "y": 360,
+              "w": 600,
+              "h": 116,
+              "opacity": 1,
+              "rotation": 0
+            },
+            {
+              "name": "SupportingText",
+              "x": 557,
+              "y": 520,
+              "w": 806,
+              "h": 45,
+              "opacity": 1,
+              "rotation": 0,
+              "text": "Growing together, every step of the way."
+            },
+            {
+              "name": "CTA",
+              "x": 635,
+              "y": 700,
+              "w": 650,
+              "h": 38,
+              "opacity": 1,
+              "rotation": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

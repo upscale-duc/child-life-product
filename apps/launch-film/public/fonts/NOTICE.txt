@@ -1,0 +1,4 @@
+Be Vietnam Pro — Copyright 2021 The Be Vietnam Pro Project Authors. SIL Open Font License 1.1 (OFL.txt).
+Lora — Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic). SIL Open Font License 1.1.
+Dancing Script — Copyright 2016 The Dancing Script Project Authors (https://github.com/googlefonts/DancingScript). SIL Open Font License 1.1.
+Lora and Dancing Script are self-hosted latin + vietnamese subsets from Google Fonts (decorative StoryCard art only).

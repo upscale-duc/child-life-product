@@ -47,6 +47,7 @@ import 'keepsake_jobs.dart';
 import 'keepsake_live.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_preview.dart';
+import '../premium/premium_entries.dart';
 import 'keepsake_resume.dart' show keepVideoDraft;
 import 'milestone_card_screens.dart'
     show
@@ -1752,6 +1753,11 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
         final caps = await readCapabilities(ref, c.babyId);
         if (!mounted) return;
         setState(() => _busy = false);
+        // E03 (D-101): Free → PW01, Premium → the refill date; the draft stays.
+        if (caps?.features.premiumV2 ?? false) {
+          await showVideoExportsUsed(context, ref, c.babyId);
+          return;
+        }
         await showVideoQuotaSheet(
           context,
           quota: quota,

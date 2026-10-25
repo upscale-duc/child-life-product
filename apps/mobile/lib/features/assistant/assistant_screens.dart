@@ -60,6 +60,7 @@ import 'assistant_timer_card.dart';
 import 'assistant_voice.dart';
 import 'assistant_widgets.dart';
 import '../rhythm/personalization_v2_screen.dart' show showNotebookEditor;
+import '../premium/premium_v2.dart' show PremiumEntry;
 
 /// What a Home chip or a module entry hands the chat: text that only PREFILLS the composer
 /// (never sent by itself) and the module's intent hint.
@@ -94,7 +95,13 @@ final assistantPaywallProvider =
     >(
       (ref) =>
           (context, resume) =>
-              openPaywall(context, entry: PaywallEntry.plan, resume: resume),
+              // E05 / E06 (D-101): PW03 · Lumi when Premium v2 is on.
+              openPaywall(
+                context,
+                entry: PaywallEntry.plan,
+                resume: resume,
+                card: PremiumEntry.lumi,
+              ),
     );
 
 /// The record kinds [me] may save through the chat (the server checks again per item).
@@ -4497,7 +4504,11 @@ class AssistantUsageScreen extends ConsumerWidget {
                       AsLink(
                         label: l10n.asSeePremium,
                         onPressed: () =>
-                            openPaywall(context, entry: PaywallEntry.plan),
+                            openPaywall(
+                              context,
+                              entry: PaywallEntry.plan,
+                              card: PremiumEntry.lumi,
+                            ),
                       ),
                     ],
                   ),

@@ -128,7 +128,10 @@ final _cases = <String, _Case>{
     overrides: () => rhythmOverrides(
       me: minh,
       caps: rhythmCaps(plan: 'beta', groupA: true),
-      repo: FakeRhythmRepository(home: h02Home(), checkIns: [sleepCheckIn(date: rhythmToday)]),
+      repo: FakeRhythmRepository(
+        home: h02Home(),
+        checkIns: [sleepCheckIn(date: rhythmToday)],
+      ),
     ),
     act: null,
   ),

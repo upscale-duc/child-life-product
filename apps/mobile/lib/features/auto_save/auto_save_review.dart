@@ -29,6 +29,8 @@ import '../memories/memory_repository.dart';
 import 'auto_save_controller.dart';
 import 'auto_save_engine.dart';
 import 'auto_save_widgets.dart';
+import '../premium/premium_entries.dart';
+import '../premium/premium_repository.dart';
 
 /// What AS07 hands to AS10: the ticked items and everything that was on screen.
 @immutable
@@ -1211,7 +1213,21 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
               formatBytes(left < 0 ? 0 : left, locale),
               fit.length,
             ),
-            onTap: () => context.push(Routes.meStorage),
+            // E11 (D-101): with Premium v2, Free → PW04 / Premium → PW10.
+            onTap: () =>
+                ref
+                        .read(capabilitiesProvider(babies.first))
+                        .value
+                        ?.features
+                        .premiumV2 ==
+                    true
+                ? showStorageFullSuggestion(
+                    context,
+                    ref,
+                    babies.first,
+                    autoSave: true,
+                  )
+                : context.push(Routes.meStorage),
           ),
         ],
         if (storage != null) ...[

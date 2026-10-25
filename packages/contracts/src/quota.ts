@@ -85,9 +85,13 @@ export function quotaWindowId(
   scope:
     | { kind: 'calendar'; key: string }
     | { kind: 'paid'; grantId: string; periodStart: string }
-    | { kind: 'day'; babyId: string; date: string },
+    | { kind: 'day'; babyId: string; date: string }
+    /** Premium v2 Free allowance used once (`assistant_trial_v2`, `video_trial_v2`, D-101). */
+    | { kind: 'trial'; key: string },
 ): string {
   switch (scope.kind) {
+    case 'trial':
+      return `${feature}_trial_${scope.key}`;
     case 'calendar':
       return `${feature}_cal_${scope.key}`;
     case 'paid':

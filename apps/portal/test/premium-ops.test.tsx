@@ -334,7 +334,12 @@ describe('Premium › AI', () => {
         initialSection="ai"
       />,
     );
-    expect(buttons(raw).slice(0, 3)).toEqual(['Cấu hình', 'Chính sách AI', 'Chiến dịch beta (cũ)']);
+    expect(buttons(raw).slice(0, 4)).toEqual([
+      'Cấu hình',
+      'Gói & hạn mức (v2)',
+      'Chính sách AI',
+      'Chiến dịch beta (cũ)',
+    ]);
     expect(raw).toMatch(/aria-selected="true"[^>]*>Chính sách AI/);
     for (const role of ['owner', 'admin', 'ops', 'eng'] as StaffRole[]) {
       expect(allowedRoute(levelsForRoles([role]), 'features')).toBe('features');

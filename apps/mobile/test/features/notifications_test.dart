@@ -593,10 +593,7 @@ void main() {
           },
           ['/care/vaccines/age/2'],
         ),
-        (
-          {'kind': 'spending', 'babyId': teddyId},
-          ['/utilities/spending'],
-        ),
+        ({'kind': 'spending', 'babyId': teddyId}, ['/utilities/spending']),
         (
           {'kind': 'spending', 'babyId': teddyId, 'importId': importId},
           ['/utilities/spending/import/$importId'],
@@ -606,10 +603,7 @@ void main() {
           {'kind': 'album', 'babyId': teddyId, 'albumId': 'a1'},
           ['/memories/album/a1'],
         ),
-        (
-          {'kind': 'story', 'babyId': teddyId, 'storyId': 's1'},
-          ['/story/s1'],
-        ),
+        ({'kind': 'story', 'babyId': teddyId, 'storyId': 's1'}, ['/story/s1']),
         (
           {'kind': 'keepsakeVideo', 'babyId': teddyId, 'jobId': jobId},
           ['/memories/video/job/$jobId?baby=$teddyId'],

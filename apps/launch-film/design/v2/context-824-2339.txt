@@ -1,0 +1,179 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/9903b9f1-76d7-4b3b-ac48-c7d3999216f7";
+const imgBackground = `${assetPathPrefix}/7dbdf.png`;
+const imgAccentBand = `${assetPathPrefix}/bd7c0.svg`;
+const imgIcon = `${assetPathPrefix}/39660.svg`;
+const imgIconFeed = `${assetPathPrefix}/e3e50.svg`;
+const imgIconSleep = `${assetPathPrefix}/40206.svg`;
+const imgIconDiaper = `${assetPathPrefix}/3a35e.svg`;
+
+export default function S03Care1019SHero() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="824:2339" data-name="S03_Care_10-19s_HERO">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="824:2340" data-name="Background" />
+      <div className="absolute h-[380px] left-0 top-[700px] w-[1920px]" data-node-id="824:2341" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] border-20 border-[var(--ink,#173d44)] border-solid h-[1646px] left-[1020px] overflow-clip rounded-[99px] shadow-[0px_12px_32px_0px_rgba(23,61,68,0.18)] top-[-183.2px] w-[760px]" data-node-id="824:2343" data-name="AppScreen/DaGhi">
+        <div className="absolute bg-[var(--cloud,#f6fcfb)] h-[1645.653px] left-[-20px] overflow-clip rounded-[81.067px] top-[-20px] w-[760px]" data-node-id="827:79476" data-name="Screen · Proto · A3 Đã ghi">
+          <div className="absolute h-[2280px] left-0 top-0 w-[760px]" data-node-id="827:79477" data-name="Background">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBackground} />
+          </div>
+          <div className="absolute bg-[#0a1a1c] h-[1645.653px] left-0 opacity-0 top-0 w-[760px]" data-node-id="827:79478" data-name="Scrim" />
+          <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_-8.107px_24.32px_rgba(13,38,33,0.18)] flex flex-col items-start left-0 pb-[var(--space-6,48.64px)] pt-[var(--space-2,16.213px)] px-[var(--space-4,32.427px)] rounded-tl-[var(--radius-sheet,64.853px)] rounded-tr-[var(--radius-sheet,64.853px)] top-[1645.65px] w-[760px]" data-node-id="827:79479" data-name="Sheet">
+            <div className="content-stretch flex items-start justify-center overflow-clip pb-[var(--space-3,24.32px)] relative shrink-0 w-full" data-node-id="I827:79479;11:160" data-name="Grabber wrap">
+              <div className="bg-[var(--separator,#dce8e7)] h-[10.133px] relative rounded-[999px] shrink-0 w-[81.067px]" data-node-id="I827:79479;11:161" data-name="Grabber" />
+            </div>
+            <div className="content-stretch flex items-center justify-between overflow-clip pb-[var(--space-4,32.427px)] relative shrink-0 w-full" data-node-id="I827:79479;11:162" data-name="Header">
+              <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[64.853px] not-italic relative shrink-0 text-[48.64px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="I827:79479;11:163">
+                Bú bình
+              </p>
+              <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0 size-[89.173px]" data-node-id="I827:79479;11:164" data-name="Close">
+                <div className="relative shrink-0 size-[48.64px]" data-node-id="I827:79479;11:165" data-name="Icon">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIcon} />
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col gap-[var(--space-3,24.32px)] items-start overflow-clip relative shrink-0 w-full" data-node-id="I827:79479;11:167" data-name="Fields">
+              <div className="bg-[var(--surface-2,#eef6f5)] content-stretch flex gap-[8.107px] items-center p-[10.133px] relative rounded-[var(--radius-pill,2024.64px)] shrink-0 w-full" data-node-id="I827:79479;11:168" data-name="Segmented">
+                <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_16.213px_24.32px_rgba(23,61,68,0.08),0px_2.027px_2.027px_rgba(23,61,68,0.06)] flex flex-[1_0_0] h-[93.227px] items-center justify-center min-w-px px-[var(--space-3,24.32px)] relative rounded-[var(--radius-pill,2024.64px)]" data-node-id="I827:79479;11:168;9:113" data-name="Segmented/Item">
+                  <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[48.64px] not-italic relative shrink-0 text-[32.43px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="I827:79479;11:168;9:113;9:108">
+                    Sữa mẹ
+                  </p>
+                </div>
+                <div className="content-stretch flex flex-[1_0_0] h-[93.227px] items-center justify-center min-w-px px-[var(--space-3,24.32px)] relative rounded-[var(--radius-pill,2024.64px)]" data-node-id="I827:79479;11:168;9:115" data-name="Segmented/Item">
+                  <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular'] leading-[48.64px] not-italic relative shrink-0 text-[32.43px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="I827:79479;11:168;9:115;9:110">
+                    Sữa công thức
+                  </p>
+                </div>
+              </div>
+              <div className="[word-break:break-word] bg-[var(--surface-2,#eef6f5)] content-stretch flex font-['Be_Vietnam_Pro:Medium'] gap-[var(--space-2,16.213px)] items-baseline justify-center not-italic px-[var(--space-4,32.427px)] py-[var(--space-3,24.32px)] relative rounded-[var(--radius-card,48.64px)] shrink-0 w-full whitespace-nowrap" data-node-id="I827:79479;11:173" data-name="NumField">
+                <p className="leading-[113.493px] relative shrink-0 text-[105.39px] text-[color:var(--ink,#173d44)] tracking-[-1px]" data-node-id="I827:79479;11:173;11:154">
+                  120
+                </p>
+                <p className="leading-[52.693px] relative shrink-0 text-[36.48px] text-[color:var(--ink-muted,#55707a)]" data-node-id="I827:79479;11:173;11:155">
+                  ml
+                </p>
+              </div>
+              <div className="[word-break:break-word] content-stretch flex h-[89.173px] items-center justify-between leading-[48.64px] not-italic relative shrink-0 text-[32.43px] w-full whitespace-nowrap" data-node-id="I827:79479;11:176" data-name="FieldRow">
+                <p className="font-['Be_Vietnam_Pro:Regular'] relative shrink-0 text-[color:var(--ink,#173d44)]" data-node-id="I827:79479;11:176;11:157">
+                  Lúc
+                </p>
+                <p className="font-['Be_Vietnam_Pro:Medium'] relative shrink-0 text-[color:var(--mint-text,#06716d)]" data-node-id="I827:79479;11:176;11:158">
+                  Bây giờ · 15:05
+                </p>
+              </div>
+              <div className="bg-[var(--mint-deep,#087f7b)] content-stretch flex gap-[var(--space-2,16.213px)] h-[113.493px] items-center justify-center px-[var(--space-6,48.64px)] relative rounded-[var(--radius-pill,2024.64px)] shrink-0 w-full" data-node-id="I827:79479;11:179" data-name="Button">
+                <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[48.64px] not-italic relative shrink-0 text-[34.45px] text-[color:var(--on-mint-deep,white)] whitespace-nowrap" data-node-id="I827:79479;11:179;8:8">
+                  Lưu
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[160px] not-italic text-[84px] text-[color:var(--ink,#173d44)] top-[300px] tracking-[-1.26px] w-[760px]" data-node-id="824:2346">
+        Nhẹ hơn những ngày bận rộn.
+      </p>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_8px_12px_rgba(23,61,68,0.16)] flex gap-[15px] items-center left-[160px] pl-[20px] pr-[35px] py-[18px] rounded-[999px] top-[620px]" data-node-id="824:2347" data-name="Card/Chip · Bú">
+        <div className="bg-[var(--care-bottle-soft,#e5f1fb)] content-stretch flex items-center justify-center relative rounded-[999px] shrink-0 size-[60px]" data-node-id="824:2348" data-name="ic">
+          <div className="relative shrink-0 size-[33px]" data-node-id="824:2349" data-name="Icon/feed">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconFeed} />
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[38px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="824:2350">
+          Bú
+        </p>
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_8px_12px_rgba(23,61,68,0.16)] flex gap-[15px] items-center left-[360px] pl-[20px] pr-[35px] py-[18px] rounded-[999px] top-[620px]" data-node-id="824:2351" data-name="Card/Chip · Ngủ">
+        <div className="bg-[var(--care-sleep-soft,#edeefc)] content-stretch flex items-center justify-center relative rounded-[999px] shrink-0 size-[60px]" data-node-id="824:2352" data-name="ic">
+          <div className="relative shrink-0 size-[33px]" data-node-id="824:2353" data-name="Icon/sleep">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconSleep} />
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[38px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="824:2354">
+          Ngủ
+        </p>
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_8px_12px_rgba(23,61,68,0.16)] flex gap-[15px] items-center left-[586px] pl-[20px] pr-[35px] py-[18px] rounded-[999px] top-[620px]" data-node-id="824:2355" data-name="Card/Chip · Thay tã">
+        <div className="bg-[var(--care-diaper-soft,#e7f4e3)] content-stretch flex items-center justify-center relative rounded-[999px] shrink-0 size-[60px]" data-node-id="824:2356" data-name="ic">
+          <div className="relative shrink-0 size-[33px]" data-node-id="824:2357" data-name="Icon/diaper">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconDiaper} />
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[38px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="824:2358">
+          Thay tã
+        </p>
+      </div>
+      <div className="absolute border-6 border-[var(--mint,#2cbfb3)] border-solid h-[320.053px] left-[1050.48px] rounded-[40px] top-[165.67px] w-[348.427px]" data-node-id="824:2359" data-name="Accent/TileGlow" />
+      <div className="absolute drop-shadow-[0px_12px_16px_rgba(23,61,68,0.18)] h-[83px] left-[1120.5px] overflow-clip rounded-[40px] top-[880px] w-[559px]" data-node-id="827:86030" data-name="Card/SavedToast">
+        <div className="[word-break:break-word] absolute bg-[#163d44] content-stretch flex gap-[20px] items-center leading-[normal] left-0 overflow-clip px-[32px] py-[24px] rounded-[1998px] text-[28px] top-0" data-node-id="827:86031" data-name="Toast">
+          <p className="font-['Be_Vietnam_Pro:SemiBold'] font-semibold relative shrink-0 text-white whitespace-pre" data-node-id="827:86032" style={{ fontVariationSettings: '"CTGR" 0, "wdth" 100' }}>{`✓  Đã ghi · Bú bình 120 ml`}</p>
+          <p className="font-['Be_Vietnam_Pro:Bold'] not-italic relative shrink-0 text-[#8ce5cc] whitespace-nowrap" data-node-id="827:86033">
+            Hoàn tác
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: shadow-lift: Effect(type: DROP_SHADOW, color: #173D442E, offset: (0, 12), radius: 32, spread: 0), shadow-chip: Effect(type: DROP_SHADOW, color: #173D4429, offset: (0, 8), radius: 24, spread: 0).
+Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.
+
+## BottomSheet/Feed
+**Node ID:** 11:159
+
+Quick-log bottom sheet (Ghi cữ bú): grabber, title + close, segmented type, optional amount, time row, full-width Lưu. ≤3 taps to save; the keyboard never covers Lưu. Presents with spring ≈ duration-base over a scrim.
+
+## Icon/close
+**Node ID:** 7:63
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Segmented
+**Node ID:** 9:124
+
+Pill segmented control on surface-2 track (pad 5, gap 4). 2–3 short options (Sữa mẹ · Sữa công thức; Ướt · Bẩn · Cả hai). Remembers the last choice as the default.
+
+## Segmented/Item
+**Node ID:** 9:111
+
+One segment. Selected: surface + shadow-card, ink, weight 500. Unselected: transparent, ink-muted. Change animates in duration-quick.
+
+## NumField
+**Node ID:** 11:153
+
+Numeric entry (ml / kg) in numeral-xl, tabular figures. Optional — amount is never required to save.
+
+## FieldRow
+**Node ID:** 11:156
+
+Tappable field row (≥44): label + current value in mint-text. Smart default: time = now.
+
+## Button
+**Node ID:** 8:33
+
+Pill button, label = 1–2-word verb (Lưu, Bắt đầu, Kết thúc, Chỉnh giờ, Mời, Thử lại). Primary h56 mint-deep/on-mint-deep, one per screen in the thumb zone. Secondary h52 surface-2. Tinted for secondary actions. Plain for text buttons (≥44 tap). Apple: use Apple’s official button in production. Press: scale 0.97 in duration-tap. Disabled: opacity 40%. Stretch to fill width for block buttons.
+
+## Icon/feed
+**Node ID:** 7:9
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Icon/sleep
+**Node ID:** 7:12
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Icon/diaper
+**Node ID:** 7:16
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

@@ -449,6 +449,7 @@ export async function getCapabilities(
       assistantUpsell: flagOn(ctx, 'assistant_upsell'),
       adaptiveExperience: flagOn(ctx, 'adaptive_experience'),
       adaptiveNav: flagOn(ctx, 'adaptive_experience') && flagOn(ctx, 'adaptive_nav'),
+      premiumV2: flagOn(ctx, 'premium_v2'),
     },
   };
 }

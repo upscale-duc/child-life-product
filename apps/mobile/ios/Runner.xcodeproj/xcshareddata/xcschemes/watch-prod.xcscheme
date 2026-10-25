@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "184EE99574889F2BFA7C69CB"
-               BuildableName = "watch.app"
+               BuildableName = "ChildLifeWatch.app"
                BlueprintName = "watch"
                ReferencedContainer = "container:Runner.xcodeproj">
             </BuildableReference>
@@ -31,7 +31,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "184EE99574889F2BFA7C69CB"
-            BuildableName = "watch.app"
+            BuildableName = "ChildLifeWatch.app"
             BlueprintName = "watch"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -54,7 +54,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "184EE99574889F2BFA7C69CB"
-            BuildableName = "watch.app"
+            BuildableName = "ChildLifeWatch.app"
             BlueprintName = "watch"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -71,7 +71,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "184EE99574889F2BFA7C69CB"
-            BuildableName = "watch.app"
+            BuildableName = "ChildLifeWatch.app"
             BlueprintName = "watch"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>

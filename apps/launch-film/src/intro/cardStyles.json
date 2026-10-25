@@ -1,0 +1,163 @@
+{
+ "PI01|Card/StageChip/0-12m": {
+  "w": 353.0,
+  "h": 48.0,
+  "rx": 24.0,
+  "fill": "#087F7B",
+  "ink": "white"
+ },
+ "PI01|Card/StageChip/1-3y": {
+  "w": 296.0,
+  "h": 48.0,
+  "rx": 24.0,
+  "fill": "white",
+  "ink": "#55707A"
+ },
+ "PI01|Card/StageChip/3-6y": {
+  "w": 296.0,
+  "h": 48.0,
+  "rx": 24.0,
+  "fill": "white",
+  "ink": "#55707A"
+ },
+ "PI01|Card/StageChip/6-12y": {
+  "w": 305.0,
+  "h": 48.0,
+  "rx": 24.0,
+  "fill": "white",
+  "ink": "#55707A"
+ },
+ "PI02|Card/Note · Last feed · 9:10?": {
+  "w": 237.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#FFF4D6",
+  "ink": "#173D44"
+ },
+ "PI02|Card/Note · Nap at 1:30?": {
+  "w": 191.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#EDEEFC",
+  "ink": "#173D44"
+ },
+ "PI02|Card/Note · Vitamin D": {
+  "w": 157.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#E6F7F5",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Note · Last feed · 9:10?": {
+  "w": 286.0,
+  "h": 70.0,
+  "rx": 14.0,
+  "fill": "#FFF4D6",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Note · Next nap?": {
+  "w": 193.0,
+  "h": 70.0,
+  "rx": 14.0,
+  "fill": "#EDEEFC",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Message · Did she eat yet?": {
+  "w": 210.0,
+  "h": 56.0,
+  "rx": 22.0,
+  "fill": "white",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Message · Yes — 120 ml at 9": {
+  "w": 256.0,
+  "h": 56.0,
+  "rx": 22.0,
+  "fill": "#E6F7F5",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Note · Vaccine · Sat": {
+  "w": 197.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#FFE3DA",
+  "ink": "#173D44"
+ },
+ "PI03|Card/Note · Bath tonight": {
+  "w": 190.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#E6F7F5",
+  "ink": "#173D44"
+ },
+ "PI04|Card/Note · Last feed · 9:10?": {
+  "w": 286.0,
+  "h": 70.0,
+  "rx": 14.0,
+  "fill": "#FFF4D6",
+  "ink": "#173D44"
+ },
+ "PI04|Card/Note · Next nap?": {
+  "w": 193.0,
+  "h": 70.0,
+  "rx": 14.0,
+  "fill": "#EDEEFC",
+  "ink": "#173D44"
+ },
+ "PI04|Card/Message · Did she eat yet?": {
+  "w": 210.0,
+  "h": 56.0,
+  "rx": 22.0,
+  "fill": "white",
+  "ink": "#173D44"
+ },
+ "PI04|Card/Note · Vaccine · Sat": {
+  "w": 197.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#FFE3DA",
+  "ink": "#173D44"
+ },
+ "PI04|Card/Note · Bath tonight": {
+  "w": 190.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#E6F7F5",
+  "ink": "#173D44"
+ },
+ "PI05|Card/Note · Last feed · 9:10?": {
+  "w": 269.0,
+  "h": 67.0,
+  "rx": 14.0,
+  "fill": "#FFF4D6",
+  "ink": "#173D44"
+ },
+ "PI05|Card/Note · Next nap?": {
+  "w": 162.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#EDEEFC",
+  "ink": "#173D44"
+ },
+ "PI05|Card/Note · Vaccine · Sat": {
+  "w": 224.0,
+  "h": 67.0,
+  "rx": 14.0,
+  "fill": "#FFE3DA",
+  "ink": "#173D44"
+ },
+ "PI10|Card/Note · Last feed · 9:10?": {
+  "w": 237.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#FFF4D6",
+  "ink": "#173D44"
+ },
+ "PI10|Card/Note · Next nap?": {
+  "w": 162.0,
+  "h": 62.0,
+  "rx": 14.0,
+  "fill": "#EDEEFC",
+  "ink": "#173D44"
+ }
+}

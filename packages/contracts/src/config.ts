@@ -61,6 +61,9 @@ export const flagKeys = [
   /** Adaptive navigation (P-178): Hôm nay · Kỷ niệm · Khám phá · Hồ sơ dock, switcher pill.
    * Needs `adaptive_experience`. Off = Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích. */
   'adaptive_nav',
+  /** Premium v2 (Figma 958:13863, D-101): plans.free / plans.premium limits, seats, the paywall
+   * and Gói của gia đình. Off = today's quotas and screens. */
+  'premium_v2',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -127,6 +130,7 @@ export const defaultFlags: Flags = {
   assistant_upsell: off('internal'),
   adaptive_experience: off('internal'),
   adaptive_nav: off('internal'),
+  premium_v2: off('internal'),
 };
 
 /**

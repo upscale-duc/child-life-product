@@ -1,0 +1,34 @@
+{
+  "name": "child-life-launch-film",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts --port=3010",
+    "scene": "node scripts/scene.mjs",
+    "render": "remotion render src/index.ts ChildLifeLaunchV2 out/child-life-launch-v21-sound-design-preview.mp4 --codec=h264 --crf=18",
+    "render:vertical": "remotion render src/index.ts ChildLifeLaunchV2Vertical out/child-life-launch-v21-vertical.mp4 --codec=h264 --crf=18",
+    "typecheck": "tsc --noEmit",
+    "music:prepare": "node scripts/prepare-music.mjs",
+    "sound:prepare": "node scripts/prepare-music.mjs && node scripts/make-sfx.mjs",
+    "studio:intro": "remotion studio src/index.ts ChildLifeIntroV2 --port=3010",
+    "render:intro": "remotion render src/index.ts ChildLifeIntroV2 out/intro/child-life-intro-v2.mp4 --codec=h264 --crf=18",
+    "vo:make": "node scripts/make-vo.mjs",
+    "sfx:intro": "node scripts/make-intro-sfx.mjs",
+    "render:intro:vi": "remotion render src/index.ts ChildLifeIntroV2-VI out/intro/child-life-intro-v2-vi.mp4 --codec=h264 --crf=18",
+    "studio:intro:vi": "remotion studio src/index.ts ChildLifeIntroV2-VI --port=3010"
+  },
+  "dependencies": {
+    "@remotion/media": "4.0.529",
+    "@remotion/paths": "4.0.529",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.529",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.529",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "typescript": "6.0.3"
+  }
+}

@@ -3,6 +3,8 @@ import {
   calendarMonthWindow,
   dayBoundsIn,
   defaultAssistantCreditPolicy,
+  freeTrialKey,
+  monthlyCycle,
   grantGives,
   isOpenEndedUntil,
   type AssistantCreditPolicy,
@@ -11,7 +13,7 @@ import {
   type EntitlementsConfig,
 } from '@child-life/contracts';
 import { toDate, type TrustedScope } from './assistant-common.js';
-import type { EntitlementContext } from './entitlements.js';
+import { flagOn, type EntitlementContext, type FamilyEntitlements } from './entitlements.js';
 import { peekQuotaWindow, type QuotaWindowRef, type QuotaWindowRequest } from './quota.js';
 
 /**
@@ -57,7 +59,7 @@ export type PoolScope = Pick<TrustedScope, 'familyId' | 'householdZone'> & {
 const sourceRank = { paid: 0, promo: 1, beta: 2 } as const;
 
 /** The grant giving the Premium budget now (paid over promo over beta, then the latest end). */
-export function premiumBudgetGrant(ctx: EntitlementContext, now: Date) {
+export function premiumBudgetGrant(ctx: FamilyEntitlements, now: Date) {
   return ctx.grants
     .filter(
       (g) =>
@@ -83,6 +85,37 @@ export async function assistantPool(
 ): Promise<AssistantPool> {
   const policy = creditPolicy(s.ctx.config);
   const premium = premiumBudgetGrant(s.ctx, now);
+  // Premium v2 (D-101): Free has 30 credit once (a window that never resets; v2 starts every
+  // family fresh, Q-096); Premium has 200 per monthly cycle on the subscription day, also on a
+  // yearly plan (PV40).
+  if (flagOn(s.ctx, 'premium_v2')) {
+    const plans = s.ctx.config.plans;
+    if (!premium) {
+      return {
+        plan: 'free',
+        request: {
+          window: { kind: 'trial', feature: 'assistant', key: freeTrialKey },
+          limit: plans.free.lumiCreditsOneTime,
+        },
+        grantId: null,
+      };
+    }
+    const cycle = monthlyCycle(premium.validFrom, now, premium.validUntil);
+    return {
+      plan: 'premium',
+      request: {
+        window: {
+          kind: 'paid',
+          feature: 'assistant',
+          grantId: premium.id.replace(/[^A-Za-z0-9_-]/g, '-'),
+          periodStart: cycle.start,
+          periodEnd: cycle.end,
+        },
+        limit: plans.premium.lumiCreditsPerCycle,
+      },
+      grantId: premium.id,
+    };
+  }
   if (premium && (premium.source === 'beta' || isOpenEndedUntil(premium.validUntil))) {
     // A beta, or "Bật toàn bộ Premium" with no end date (D-089): monthly, in the household
     // zone, inside the grant's validity (one window per month, not one for ever).

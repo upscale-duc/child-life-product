@@ -41,3 +41,6 @@ content/first-aid/source/
 
 # Local review renders and QA exports (sources, manifests and tests are committed).
 /artifacts/
+
+# Flutter golden failure diffs
+apps/mobile/test/**/failures/

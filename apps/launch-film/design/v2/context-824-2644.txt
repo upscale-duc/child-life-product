@@ -1,0 +1,101 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/d2905e20-7f67-46e4-91dd-b8c5cfd748a0";
+const imgImagePhoto = `${assetPathPrefix}/e9abe.png`;
+const imgImagePhoto1 = `${assetPathPrefix}/4aefa.png`;
+const imgImagePhoto2 = `${assetPathPrefix}/510bd.png`;
+const imgImagePhoto3 = `${assetPathPrefix}/b97ac.png`;
+const imgImagePhoto4 = `${assetPathPrefix}/5e32d.png`;
+const imgImagePhoto5 = `${assetPathPrefix}/695f6.png`;
+const imgAccentBand = `${assetPathPrefix}/bd7c0.svg`;
+
+export default function S06Remember3648SStart() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="824:2644" data-name="S06_Remember_36-48s_START">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="824:2645" data-name="Background" />
+      <div className="absolute h-[380px] left-0 top-[700px] w-[1920px]" data-node-id="824:2646" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <div className="absolute flex h-[338.295px] items-center justify-center left-[52.95px] top-[400px] w-[334.812px]" data-node-id="824:2648">
+        <div className="flex-none rotate-7">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P01_NguTrongGio · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2649" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8057" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[328.99px] items-center justify-center left-[400px] top-[533.85px] w-[325.354px]" data-node-id="824:2653">
+        <div className="-rotate-5 flex-none">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P02_BanChan · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2654" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8058" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto1} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[319.284px] items-center justify-center left-[704.09px] top-[410px] w-[315.499px]" data-node-id="824:2658">
+        <div className="flex-none rotate-3">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P03_BeCuoi · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2659" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8059" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto2} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[333.693px] items-center justify-center left-[1030px] top-[538.64px] w-[330.133px]" data-node-id="824:2663">
+        <div className="-rotate-6 flex-none">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P04_BoVaBe · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2664" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8060" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto3} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[328.99px] items-center justify-center left-[1313.5px] top-[420px] w-[325.354px]" data-node-id="824:2668">
+        <div className="flex-none rotate-5">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P05_BeNgu · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2669" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8061" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto4} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[324.186px] items-center justify-center left-[1610px] top-[539.07px] w-[320.475px]" data-node-id="824:2673">
+        <div className="-rotate-4 flex-none">
+          <div className="bg-[var(--surface,white)] content-stretch drop-shadow-[0px_10px_11px_rgba(18,46,51,0.16),0px_2px_2px_rgba(18,46,51,0.1)] flex flex-col items-start pb-[16px] pt-[12px] px-[12px] relative rounded-[22px]" data-name="Photo/P06_MeHonBe · ảnh web (xem credit)">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[14px] shrink-0 size-[276px]" data-node-id="824:2674" data-name="img">
+              <div className="absolute left-0 size-[276px] top-0" data-node-id="824:8062" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto5} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[960px] not-italic text-[84px] text-[color:var(--ink,#173d44)] text-center top-[110px] tracking-[-1.26px] whitespace-nowrap" data-node-id="824:2678">
+        Có những khoảnh khắc…
+      </p>
+      <p className="-translate-x-1/2 [word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[960px] not-italic opacity-0 text-[84px] text-[color:var(--mint-deep,#087f7b)] text-center top-[220px] tracking-[-1.26px] whitespace-nowrap" data-node-id="824:2679">
+        mình muốn giữ mãi.
+      </p>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: shadow-tile: Effect(type: DROP_SHADOW, color: #122E331A, offset: (0, 2), radius: 4, spread: 0); Effect(type: DROP_SHADOW, color: #122E3329, offset: (0, 10), radius: 22, spread: -4).
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

@@ -41,6 +41,7 @@ String familyMessage(AppLocalizations l10n, FamilyFailure failure) =>
       FamilyFailure.revoked ||
       FamilyFailure.used => l10n.inviteErrorClosed,
       FamilyFailure.network => l10n.authErrorNetwork,
+      FamilyFailure.seatsFull => l10n.pv2E12FullBody,
       _ => l10n.familyErrorGeneric,
     };
 

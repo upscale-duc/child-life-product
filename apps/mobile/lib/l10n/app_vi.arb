@@ -27123,7 +27123,7 @@
   "pv2Dislike": "Không hợp với nhà mình",
   "pv2Known": "Tôi đã biết rồi",
   "pv2Exclude": "Không phù hợp với bé · áp dụng cho cả nhà",
-  "pv2Restore": "Khôi phục gợi ý",
+  "pv2Restore": "Khôi phục",
   "pv2Intend": "Mình sẽ thử",
   "pv2Tried": "Thử rồi",
   "pv2Helpful": "Có ích",
@@ -27140,7 +27140,7 @@
   "pv2Notes": "Sổ tay nhà mình",
   "pv2AddNote": "Thêm điều muốn ứng dụng nhớ",
   "pv2NoteText": "Điều nhà mình muốn ghi nhớ",
-  "pv2Shared": "Chia sẻ với người được xem chăm sóc bé",
+  "pv2Shared": "Cả nhà dùng chung",
   "pv2Personal": "Chỉ riêng bạn",
   "pv2Category": "Loại ghi chú",
   "pv2Sleep": "Ngủ",
@@ -27174,7 +27174,7 @@
   "pv2WeekTried": "hoạt động đã xác nhận thử",
   "pv2WeekHelpful": "hoạt động thấy có ích",
   "pv2WeekHint": "Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.",
-  "pv2History": "Đã lưu, đã thử và đã ẩn",
+  "pv2History": "Lịch sử sử dụng",
   "pv2Saved": "Đã lưu",
   "pv2Digest": "Gợi ý mỗi ngày trên thiết bị này",
   "pv2DigestHint": "Tự chọn bật. Mỗi ngày tối đa một gợi ý mới, trong giờ cho phép. Chọn giờ trong cài đặt cá nhân hoá.",
@@ -27275,7 +27275,7 @@
     "description": "Personalization v2: Exclude"
   },
   "@pv2Restore": {
-    "description": "Personalization v2: Restore"
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall top bar: restore purchases."
   },
   "@pv2Intend": {
     "description": "Personalization v2: Intend"
@@ -27326,7 +27326,7 @@
     "description": "Personalization v2: NoteText"
   },
   "@pv2Shared": {
-    "description": "Personalization v2: Shared"
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45)."
   },
   "@pv2Personal": {
     "description": "Personalization v2: Personal"
@@ -27428,7 +27428,7 @@
     "description": "Personalization v2: WeekHint"
   },
   "@pv2History": {
-    "description": "Personalization v2: History"
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 action row: PV41."
   },
   "@pv2Saved": {
     "description": "Personalization v2: Saved"
@@ -29225,6 +29225,602 @@
       }
     }
   },
+  "psTab": "Kỷ vật",
+  "psTitle": "In & giữ trên tay",
+  "psIntro": "Từ những kỷ niệm của con, thành món quà cho cả nhà.",
+  "psSingle": "Một khung",
+  "psTrio": "Bộ 3 khung",
+  "psFive": "Bộ 5 khung",
+  "psBook": "Sách ảnh",
+  "psFrames": "Khung đặt bàn",
+  "psBooks": "Photo Book",
+  "psOrders": "Đơn in của tôi",
+  "psPolicy": "Giao hàng & đổi trả",
+  "psCustomize": "Tuỳ chỉnh",
+  "psStyle": "Phong cách",
+  "psMinimal": "Tối giản",
+  "psPlayful": "Đáng yêu",
+  "psTimeless": "Cổ điển",
+  "psInSet": "Trong bộ",
+  "psPortrait": "Chân dung",
+  "psInfo": "Thông tin bé",
+  "psCollage": "Ghép 4 ảnh",
+  "psEdit": "Sửa",
+  "psNext": "Tiếp tục",
+  "psDone": "Xong",
+  "psSave": "Lưu nháp",
+  "psSaved": "Đã lưu bản nháp",
+  "psSaving": "Đang lưu…",
+  "psSaveFailed": "Chưa lưu được. Thử lại trước khi rời màn hình.",
+  "psName": "Tên trên khung",
+  "psMessage": "Lời nhắn",
+  "psDefaultMessage": "Cảm ơn con đã đến bên ba mẹ",
+  "psBirthDetails": "Thông tin ngày sinh, cân nặng, chiều dài",
+  "psShowBirth": "Hiện thông tin ngày sinh",
+  "psOccasion": "Dịp kỷ niệm",
+  "psMonth": "Đầy tháng",
+  "psHundred": "100 ngày",
+  "psBirthday": "Sinh nhật",
+  "psCustom": "Dịp riêng",
+  "psDate": "Ngày trên bản in",
+  "psPrintTitle": "Tiêu đề",
+  "psSafeArea": "Vùng nét đứt: giữ nội dung quan trọng bên trong để tránh bị cắt.",
+  "psPhotoChange": "Đổi ảnh",
+  "psPhotosMissing": "Thêm ảnh để hoàn thiện bản in",
+  "psPhotosHelp": "Chọn ảnh đã lưu trong Kỷ niệm. Ảnh và thông tin chỉ được dùng cho bản thiết kế này.",
+  "psNoPhotos": "Chưa có ảnh phù hợp. Hãy thêm ảnh vào Kỷ niệm rồi quay lại.",
+  "psChoose": "Chọn ảnh",
+  "psOptions": "Chọn kích thước & khung",
+  "psSize": "Kích thước",
+  "psWhite": "Classic · trắng",
+  "psWood": "Classic · gỗ sáng",
+  "psGift": "Premium · hộp quà",
+  "psAcrylic": "Mặt acrylic an toàn · có chân đỡ để bàn",
+  "psPreview": "Xem thiết kế",
+  "psFlat": "Xem bản in phẳng",
+  "psDownload": "Tải file để in",
+  "psOrder": "Đặt in",
+  "psConfirm": "Đơn in của bạn",
+  "psApproved": "Tôi đã kiểm tra ảnh, chữ, ngày và bố cục trên từng bản in.",
+  "psImmutable": "Đơn lưu đúng bản thiết kế đã duyệt. Sửa kỷ niệm sau này không làm thay đổi đơn.",
+  "psShipping": "Giao đến đâu?",
+  "psRecipient": "Người nhận",
+  "psPhone": "Số điện thoại",
+  "psAddress": "Địa chỉ đầy đủ",
+  "psCountry": "Quốc gia giao hàng",
+  "psCountryHelp": "Hiện giao hàng tại Việt Nam. Ở quốc gia khác, bạn có thể tải file để in gần nhà.",
+  "psNeededBy": "Cần nhận trước ngày (không bắt buộc)",
+  "psTooSoon": "Có thể không kịp ngày bạn cần. Chọn ngày muộn hơn hoặc tải file để in tại tiệm gần bạn.",
+  "psGiftDelivery": "Gửi tặng",
+  "psGiftNote": "Thiệp nhắn tặng",
+  "psSubtotal": "Tiền sản phẩm",
+  "psShippingFee": "Phí giao hàng",
+  "psTotal": "Tổng cộng",
+  "psSubmit": "Xác nhận đặt hàng",
+  "psOrderCreated": "Đã nhận đơn in của bạn",
+  "psConfirmed": "Đã xác nhận",
+  "psPrinting": "Đang in",
+  "psShipped": "Đang giao",
+  "psDelivered": "Đã nhận hàng",
+  "psCancelled": "Đã huỷ",
+  "psCopy": "Sao chép",
+  "psCopied": "Đã sao chép",
+  "psCancelOrder": "Huỷ đơn",
+  "psCancelConfirm": "Huỷ yêu cầu đặt in này? Đơn sẽ không được chuyển sang sản xuất.",
+  "psKeep": "Giữ đơn",
+  "psNoOrders": "Chưa có đơn in",
+  "psNoOrdersHelp": "Bắt đầu từ một bộ khung hoặc cuốn sách của con.",
+  "psTracking": "Mã vận đơn",
+  "psQuantity": "Số lượng",
+  "psExportTitle": "Tải file in",
+  "psPdf": "PDF · bleed 3 mm · khuyên dùng",
+  "psJpg": "JPG · 300 DPI · file ZIP",
+  "psPng": "PNG · 300 DPI · file ZIP",
+  "psCropMarks": "Dấu cắt (crop marks)",
+  "psExportHelp": "File được dựng từ ảnh gốc ở 300 DPI. In đúng kích thước, không chọn co giãn vừa trang. Màu in có thể khác màn hình.",
+  "psExportReady": "File đã sẵn sàng",
+  "psExportReadyHelp": "Lưu file về máy trong vòng một giờ. Bạn có thể tạo lại nếu liên kết hết hạn.",
+  "psOpenFile": "Lưu / chia sẻ file",
+  "psGenerating": "Đang dựng file in… Bạn có thể cần chờ một chút.",
+  "psLowQuality": "Ảnh có thể mờ khi in",
+  "psLowQualityHelp": "Một số ảnh có độ phân giải thấp hoặc chưa có thông tin kích thước. Đổi ảnh gốc rõ hơn hoặc chọn kích thước nhỏ.",
+  "psAcceptQuality": "Vẫn tải file này",
+  "psUnavailable": "Đặt in chưa mở. Bạn vẫn có thể thiết kế và tải file để tự in.",
+  "psError": "Chưa thực hiện được. Kiểm tra kết nối rồi thử lại; bản thiết kế vẫn còn ở đây.",
+  "psPriceChanged": "Giá hoặc cấu hình đã thay đổi. Hãy kiểm tra lại tổng tiền trước khi đặt.",
+  "psInvalidForm": "Kiểm tra tên, số điện thoại Việt Nam và địa chỉ.",
+  "psRetry": "Thử lại",
+  "psSamplePrice": "Giá dự kiến · phí giao tính ở bước cuối",
+  "psSparseBook": "Ít ảnh cũng thành một cuốn sách đẹp. Các trang có thể dùng lại ảnh; bạn được đổi ảnh và lời nhắn trước khi in.",
+  "psBookPages24": "24 trang",
+  "psBookPages40": "40 trang",
+  "psPage": "Trang",
+  "psReview": "Viết đánh giá",
+  "psReviewMessage": "Cảm nhận của bạn",
+  "psReviewHelp": "Chỉ người đã nhận hàng mới đánh giá được. Nội dung được duyệt trước khi công khai. Không ghi số điện thoại, địa chỉ hay thông tin riêng của bé.",
+  "psReviewSent": "Đã gửi đánh giá để duyệt",
+  "psSendReview": "Gửi đánh giá",
+  "psRating": "Số sao",
+  "psNoReviews": "Chưa có đánh giá từ người đã mua",
+  "psDetails": "Chi tiết sản phẩm",
+  "psSpecs": "Ảnh in giấy lụa · khung trắng hoặc gỗ sáng · mặt acrylic · chân đỡ để bàn. Thông số và giá chính thức sẽ được xác nhận khi mở đặt in.",
+  "psResume": "Tiếp tục bản nháp",
+  "psNewDesign": "Tạo thiết kế mới",
+  "psForParents": "Chức năng này dành cho ba mẹ cùng nuôi.",
+  "psNameRequired": "Nhập tên để tiếp tục.",
+  "psClose": "Đóng",
+  "psBirth": "Chào đời",
+  "psUnsaved": "Bản nháp chưa lưu được. Bạn có muốn rời đi và bỏ các thay đổi chưa lưu?",
+  "psLeave": "Rời đi",
+  "psViewOrder": "Xem đơn",
+  "psReturn": "Về Kỷ vật",
+  "@psTab": {
+    "description": "Print Studio · Tab"
+  },
+  "@psTitle": {
+    "description": "Print Studio · Title"
+  },
+  "@psIntro": {
+    "description": "Print Studio · Intro"
+  },
+  "@psSingle": {
+    "description": "Print Studio · Single"
+  },
+  "@psTrio": {
+    "description": "Print Studio · Trio"
+  },
+  "@psFive": {
+    "description": "Print Studio · Five"
+  },
+  "@psBook": {
+    "description": "Print Studio · Book"
+  },
+  "@psFrames": {
+    "description": "Print Studio · Frames"
+  },
+  "@psBooks": {
+    "description": "Print Studio · Books"
+  },
+  "@psOrders": {
+    "description": "Print Studio · Orders"
+  },
+  "@psPolicy": {
+    "description": "Print Studio · Policy"
+  },
+  "@psCustomize": {
+    "description": "Print Studio · Customize"
+  },
+  "@psStyle": {
+    "description": "Print Studio · Style"
+  },
+  "@psMinimal": {
+    "description": "Print Studio · Minimal"
+  },
+  "@psPlayful": {
+    "description": "Print Studio · Playful"
+  },
+  "@psTimeless": {
+    "description": "Print Studio · Timeless"
+  },
+  "@psInSet": {
+    "description": "Print Studio · InSet"
+  },
+  "@psPortrait": {
+    "description": "Print Studio · Portrait"
+  },
+  "@psInfo": {
+    "description": "Print Studio · Info"
+  },
+  "@psCollage": {
+    "description": "Print Studio · Collage"
+  },
+  "@psEdit": {
+    "description": "Print Studio · Edit"
+  },
+  "@psNext": {
+    "description": "Print Studio · Next"
+  },
+  "@psDone": {
+    "description": "Print Studio · Done"
+  },
+  "@psSave": {
+    "description": "Print Studio · Save"
+  },
+  "@psSaved": {
+    "description": "Print Studio · Saved"
+  },
+  "@psSaving": {
+    "description": "Print Studio · Saving"
+  },
+  "@psSaveFailed": {
+    "description": "Print Studio · SaveFailed"
+  },
+  "@psName": {
+    "description": "Print Studio · Name"
+  },
+  "@psMessage": {
+    "description": "Print Studio · Message"
+  },
+  "@psDefaultMessage": {
+    "description": "Print Studio · DefaultMessage"
+  },
+  "@psBirthDetails": {
+    "description": "Print Studio · BirthDetails"
+  },
+  "@psShowBirth": {
+    "description": "Print Studio · ShowBirth"
+  },
+  "@psOccasion": {
+    "description": "Print Studio · Occasion"
+  },
+  "@psMonth": {
+    "description": "Print Studio · Month"
+  },
+  "@psHundred": {
+    "description": "Print Studio · Hundred"
+  },
+  "@psBirthday": {
+    "description": "Print Studio · Birthday"
+  },
+  "@psCustom": {
+    "description": "Print Studio · Custom"
+  },
+  "@psDate": {
+    "description": "Print Studio · Date"
+  },
+  "@psPrintTitle": {
+    "description": "Print Studio · PrintTitle"
+  },
+  "@psSafeArea": {
+    "description": "Print Studio · SafeArea"
+  },
+  "@psPhotoChange": {
+    "description": "Print Studio · PhotoChange"
+  },
+  "@psPhotosMissing": {
+    "description": "Print Studio · PhotosMissing"
+  },
+  "@psPhotosHelp": {
+    "description": "Print Studio · PhotosHelp"
+  },
+  "@psNoPhotos": {
+    "description": "Print Studio · NoPhotos"
+  },
+  "@psChoose": {
+    "description": "Print Studio · Choose"
+  },
+  "@psOptions": {
+    "description": "Print Studio · Options"
+  },
+  "@psSize": {
+    "description": "Print Studio · Size"
+  },
+  "@psWhite": {
+    "description": "Print Studio · White"
+  },
+  "@psWood": {
+    "description": "Print Studio · Wood"
+  },
+  "@psGift": {
+    "description": "Print Studio · Gift"
+  },
+  "@psAcrylic": {
+    "description": "Print Studio · Acrylic"
+  },
+  "@psPreview": {
+    "description": "Print Studio · Preview"
+  },
+  "@psFlat": {
+    "description": "Print Studio · Flat"
+  },
+  "@psDownload": {
+    "description": "Print Studio · Download"
+  },
+  "@psOrder": {
+    "description": "Print Studio · Order"
+  },
+  "@psConfirm": {
+    "description": "Print Studio · Confirm"
+  },
+  "@psApproved": {
+    "description": "Print Studio · Approved"
+  },
+  "@psImmutable": {
+    "description": "Print Studio · Immutable"
+  },
+  "@psShipping": {
+    "description": "Print Studio · Shipping"
+  },
+  "@psRecipient": {
+    "description": "Print Studio · Recipient"
+  },
+  "@psPhone": {
+    "description": "Print Studio · Phone"
+  },
+  "@psAddress": {
+    "description": "Print Studio · Address"
+  },
+  "@psCountry": {
+    "description": "Print Studio · Country"
+  },
+  "@psCountryHelp": {
+    "description": "Print Studio · CountryHelp"
+  },
+  "@psNeededBy": {
+    "description": "Print Studio · NeededBy"
+  },
+  "@psTooSoon": {
+    "description": "Print Studio · TooSoon"
+  },
+  "@psGiftDelivery": {
+    "description": "Print Studio · GiftDelivery"
+  },
+  "@psGiftNote": {
+    "description": "Print Studio · GiftNote"
+  },
+  "@psSubtotal": {
+    "description": "Print Studio · Subtotal"
+  },
+  "@psShippingFee": {
+    "description": "Print Studio · ShippingFee"
+  },
+  "@psTotal": {
+    "description": "Print Studio · Total"
+  },
+  "@psSubmit": {
+    "description": "Print Studio manual ordering · Submit"
+  },
+  "@psOrderCreated": {
+    "description": "Print Studio manual ordering · OrderCreated"
+  },
+  "@psConfirmed": {
+    "description": "Print Studio manual ordering · Confirmed"
+  },
+  "@psPrinting": {
+    "description": "Print Studio · Printing"
+  },
+  "@psShipped": {
+    "description": "Print Studio · Shipped"
+  },
+  "@psDelivered": {
+    "description": "Print Studio · Delivered"
+  },
+  "@psCancelled": {
+    "description": "Print Studio · Cancelled"
+  },
+  "@psCopy": {
+    "description": "Print Studio · Copy"
+  },
+  "@psCopied": {
+    "description": "Print Studio · Copied"
+  },
+  "@psCancelOrder": {
+    "description": "Print Studio · CancelOrder"
+  },
+  "@psCancelConfirm": {
+    "description": "Print Studio manual ordering · CancelConfirm"
+  },
+  "@psKeep": {
+    "description": "Print Studio · Keep"
+  },
+  "@psNoOrders": {
+    "description": "Print Studio · NoOrders"
+  },
+  "@psNoOrdersHelp": {
+    "description": "Print Studio · NoOrdersHelp"
+  },
+  "@psTracking": {
+    "description": "Print Studio · Tracking"
+  },
+  "@psQuantity": {
+    "description": "Print Studio · Quantity"
+  },
+  "@psExportTitle": {
+    "description": "Print Studio · ExportTitle"
+  },
+  "@psPdf": {
+    "description": "Print Studio · Pdf"
+  },
+  "@psJpg": {
+    "description": "Print Studio · Jpg"
+  },
+  "@psPng": {
+    "description": "Print Studio · Png"
+  },
+  "@psCropMarks": {
+    "description": "Print Studio · CropMarks"
+  },
+  "@psExportHelp": {
+    "description": "Print Studio · ExportHelp"
+  },
+  "@psExportReady": {
+    "description": "Print Studio · ExportReady"
+  },
+  "@psExportReadyHelp": {
+    "description": "Print Studio · ExportReadyHelp"
+  },
+  "@psOpenFile": {
+    "description": "Print Studio · OpenFile"
+  },
+  "@psGenerating": {
+    "description": "Print Studio · Generating"
+  },
+  "@psLowQuality": {
+    "description": "Print Studio · LowQuality"
+  },
+  "@psLowQualityHelp": {
+    "description": "Print Studio · LowQualityHelp"
+  },
+  "@psAcceptQuality": {
+    "description": "Print Studio · AcceptQuality"
+  },
+  "@psUnavailable": {
+    "description": "Print Studio · Unavailable"
+  },
+  "@psError": {
+    "description": "Print Studio · Error"
+  },
+  "@psPriceChanged": {
+    "description": "Print Studio · PriceChanged"
+  },
+  "@psInvalidForm": {
+    "description": "Print Studio · InvalidForm"
+  },
+  "@psRetry": {
+    "description": "Print Studio · Retry"
+  },
+  "@psSamplePrice": {
+    "description": "Print Studio manual ordering · SamplePrice"
+  },
+  "@psSparseBook": {
+    "description": "Print Studio · SparseBook"
+  },
+  "@psBookPages24": {
+    "description": "Print Studio · BookPages24"
+  },
+  "@psBookPages40": {
+    "description": "Print Studio · BookPages40"
+  },
+  "@psPage": {
+    "description": "Print Studio · Page"
+  },
+  "@psReview": {
+    "description": "Print Studio · Review"
+  },
+  "@psReviewMessage": {
+    "description": "Print Studio · ReviewMessage"
+  },
+  "@psReviewHelp": {
+    "description": "Print Studio · ReviewHelp"
+  },
+  "@psReviewSent": {
+    "description": "Print Studio · ReviewSent"
+  },
+  "@psSendReview": {
+    "description": "Print Studio · SendReview"
+  },
+  "@psRating": {
+    "description": "Print Studio · Rating"
+  },
+  "@psNoReviews": {
+    "description": "Print Studio · NoReviews"
+  },
+  "@psDetails": {
+    "description": "Print Studio · Details"
+  },
+  "@psSpecs": {
+    "description": "Print Studio · Specs"
+  },
+  "@psResume": {
+    "description": "Print Studio · Resume"
+  },
+  "@psNewDesign": {
+    "description": "Print Studio · NewDesign"
+  },
+  "@psForParents": {
+    "description": "Print Studio · ForParents"
+  },
+  "@psNameRequired": {
+    "description": "Print Studio · NameRequired"
+  },
+  "@psClose": {
+    "description": "Print Studio · Close"
+  },
+  "@psBirth": {
+    "description": "Print Studio · Birth"
+  },
+  "@psUnsaved": {
+    "description": "Print Studio · Unsaved"
+  },
+  "@psLeave": {
+    "description": "Print Studio · Leave"
+  },
+  "@psViewOrder": {
+    "description": "Print Studio · ViewOrder"
+  },
+  "@psReturn": {
+    "description": "Print Studio · Return"
+  },
+  "psDeleteReview": "Xoá đánh giá",
+  "@psDeleteReview": {
+    "description": "Print Studio · DeleteReview"
+  },
+  "psAllReviews": "Tất cả",
+  "@psAllReviews": {
+    "description": "Print Studio · AllReviews"
+  },
+  "psVerifiedBuyer": "Đã mua hàng",
+  "@psVerifiedBuyer": {
+    "description": "Print Studio · VerifiedBuyer"
+  },
+  "psVietnam": "Việt Nam",
+  "@psVietnam": {
+    "description": "Print Studio · Vietnam"
+  },
+  "psOtherCountry": "Quốc gia khác",
+  "@psOtherCountry": {
+    "description": "Print Studio · OtherCountry"
+  },
+  "psOrderReview": "Xác nhận đơn in",
+  "@psOrderReview": {
+    "description": "Print Studio manual ordering · OrderReview"
+  },
+  "psManualOrderNote": "Bạn chưa cần thanh toán khi đặt hàng. Child Life sẽ liên hệ để xác nhận sản phẩm, ngày nhận và cách thanh toán trước khi in.",
+  "@psManualOrderNote": {
+    "description": "Print Studio manual ordering · ManualOrderNote"
+  },
+  "psPendingConfirmation": "Chờ xác nhận",
+  "@psPendingConfirmation": {
+    "description": "Print Studio manual ordering · PendingConfirmation"
+  },
+  "psOrderReceivedHelp": "Đã ghi nhận đơn của bạn. Child Life sẽ liên hệ để xác nhận trước khi in. Bạn có thể theo dõi trạng thái tại đây.",
+  "@psOrderReceivedHelp": {
+    "description": "Print Studio manual ordering · OrderReceivedHelp"
+  },
+  "psEstimatedPriceNote": "Đây là giá dự kiến, gồm phí giao hàng đang hiển thị. Nếu có thay đổi, Child Life sẽ thống nhất lại với bạn trước khi in.",
+  "@psEstimatedPriceNote": {
+    "description": "Print Studio manual ordering · EstimatedPriceNote"
+  },
+  "psEstimatedTotal": "Tổng dự kiến",
+  "@psEstimatedTotal": {
+    "description": "Print Studio manual ordering · EstimatedTotal"
+  },
+  "psProductNotOpen": "Sản phẩm này chưa mở nhận đơn. Bạn vẫn có thể thiết kế và tải file để tự in.",
+  "@psProductNotOpen": {
+    "description": "Print Studio manual ordering · ProductNotOpen"
+  },
+  "psCancelReason": "Lý do huỷ",
+  "@psCancelReason": {
+    "description": "Print Studio manual ordering · CancelReason"
+  },
+  "psCancelChangedMind": "Thay đổi ý định",
+  "@psCancelChangedMind": {
+    "description": "Print Studio manual ordering · CancelChangedMind"
+  },
+  "psCancelPrice": "Giá sản phẩm",
+  "@psCancelPrice": {
+    "description": "Print Studio manual ordering · CancelPrice"
+  },
+  "psCancelShipping": "Phí giao hàng",
+  "@psCancelShipping": {
+    "description": "Print Studio manual ordering · CancelShipping"
+  },
+  "psCancelDelivery": "Thời gian nhận hàng",
+  "@psCancelDelivery": {
+    "description": "Print Studio manual ordering · CancelDelivery"
+  },
+  "psCancelDesign": "Thiết kế chưa phù hợp",
+  "@psCancelDesign": {
+    "description": "Print Studio manual ordering · CancelDesign"
+  },
+  "psCancelUnreachable": "Không liên hệ được",
+  "@psCancelUnreachable": {
+    "description": "Print Studio manual ordering · CancelUnreachable"
+  },
+  "psCancelOther": "Lý do khác",
+  "@psCancelOther": {
+    "description": "Print Studio manual ordering · CancelOther"
+  },
   "axSwitcherInvited": "Bạn được mời vào",
   "@axSwitcherInvited": {
     "description": "AX30 group label for children the person does not manage."
@@ -29319,6 +29915,197 @@
   "@axRemindersFirst": {
     "description": "AX40 button."
   },
+  "psMadeFrom": "Tạo từ kỷ niệm của {name}",
+  "@psMadeFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psMadeFor": "✨ Đã thiết kế riêng cho {occasion} của {name}",
+  "@psMadeFor": {
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psSetTitle": "Bộ khung {occasion} của {name}",
+  "@psSetTitle": {
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psHeroTitle": "Bộ 3 khung đặt bàn · {occasion}",
+  "@psHeroTitle": {
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "psBookTitle": "Cuốn sách {occasion} của {name}",
+  "@psBookTitle": {
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psSelectionHelp": "Chọn số khung để xem và tự tay chỉnh thiết kế của con.",
+  "psNationwide": "🇻🇳 Giao toàn quốc",
+  "psSeeAll": "Xem tất cả",
+  "psInformationFrame": "Khung thông tin",
+  "psFirstYear": "Năm đầu đời",
+  "psFromPrice": "từ {price}",
+  "@psFromPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "psChooseProduct": "Chọn sản phẩm",
+  "psPopular": "Phổ biến",
+  "psSetContents": "Chân dung · Thông tin bé · Ghép ảnh",
+  "psPortraitHelp": "Ảnh rõ nét nhất của con",
+  "psInfoHelp": "Tên, ngày sinh, cân nặng, lời nhắn",
+  "psCollageHelp": "4 khoảnh khắc đáng yêu",
+  "psFrameNumber": "Khung {number}",
+  "@psFrameNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "psFrameSizeHelpSmall": "Khung nhỏ trang trí bàn",
+  "psFrameSizeHelpMedium": "Khung để bàn tiêu chuẩn",
+  "psFrameSizeHelpLarge": "Nổi bật trên bàn gallery",
+  "psRecommended": "khuyên dùng",
+  "psAcrylicTitle": "Mặt acrylic an toàn",
+  "psAcrylicHelp": "Không vỡ khi vận chuyển · mặc định",
+  "psDeliveryEstimate": "Thời gian nhận dự kiến: khoảng {days} ngày. Child Life sẽ liên hệ xác nhận trước khi in.",
+  "@psDeliveryEstimate": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "psConfirmStep": "Bản in",
+  "psShippingStep": "Giao hàng",
+  "psOrderReviewStep": "Xác nhận",
+  "psPhoneHelp": "Child Life gọi số này để xác nhận trước khi in.",
+  "psGiftHelp": "Không kèm hoá đơn giá · thêm thiệp chúc",
+  "psPrintLocked": "Bản in đã khoá",
+  "psInYourSet": "Trong bộ gồm những gì?",
+  "psProductInfo": "Thông số",
+  "psCustomerReviews": "Đánh giá từ người đã mua",
+  "psShippingAndPayment": "Giao hàng & xác nhận",
+  "psNoDepositTitle": "Không cần thanh toán trước",
+  "psNoDepositHelp": "Gửi yêu cầu, Child Life sẽ liên hệ để thống nhất giá, ngày nhận và cách thanh toán.",
+  "psCustomizeFirst": "Cá nhân hoá thiết kế",
+  "psBookHelp": "Mở ra xem những ảnh ba mẹ đã lưu — rồi tự tay sắp xếp, sửa từng trang.",
+  "psBookSourceNote": "Ảnh và lời nhắn lấy từ Kỷ niệm của bé — không tự thêm sự kiện chưa ghi.",
+  "psBookPageHelp": "Chạm vào ảnh để thay · chạm vào chữ để sửa",
+  "psBookPagesCount": "{count} trang",
+  "@psBookPagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "psSuggested": "Gợi ý",
+  "psUsePhoto": "Dùng ảnh này",
+  "psPickPhotoTitle": "Chọn ảnh cho Khung {number}",
+  "@psPickPhotoTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "psPickPhotoHelp": "Ưu tiên ảnh rõ nét, thấy mặt bé, đủ độ phân giải để in.",
+  "psPreviewGallery": "Xem ảnh sản phẩm",
+  "psPolicySummary": "Xác nhận trước khi in · không cần cọc",
+  "psDownloadShort": "Tải file",
+  "psShippingLater": "Phí ship tính ở bước sau",
+  "psApprovedDetail": "Tôi đã kiểm tra tên, ngày và ảnh trên từng bản in. Child Life in đúng như bản xác nhận.",
+  "@psSelectionHelp": {},
+  "@psNationwide": {},
+  "@psSeeAll": {},
+  "@psInformationFrame": {},
+  "@psFirstYear": {},
+  "@psChooseProduct": {},
+  "@psPopular": {},
+  "@psSetContents": {},
+  "@psPortraitHelp": {},
+  "@psInfoHelp": {},
+  "@psCollageHelp": {},
+  "@psFrameSizeHelpSmall": {},
+  "@psFrameSizeHelpMedium": {},
+  "@psFrameSizeHelpLarge": {},
+  "@psRecommended": {},
+  "@psAcrylicTitle": {},
+  "@psAcrylicHelp": {},
+  "@psConfirmStep": {},
+  "@psShippingStep": {},
+  "@psOrderReviewStep": {},
+  "@psPhoneHelp": {},
+  "@psGiftHelp": {},
+  "@psPrintLocked": {},
+  "@psInYourSet": {},
+  "@psProductInfo": {},
+  "@psCustomerReviews": {},
+  "@psShippingAndPayment": {},
+  "@psNoDepositTitle": {},
+  "@psNoDepositHelp": {},
+  "@psCustomizeFirst": {},
+  "@psBookHelp": {},
+  "@psBookSourceNote": {},
+  "@psBookPageHelp": {},
+  "@psSuggested": {},
+  "@psUsePhoto": {},
+  "@psPickPhotoHelp": {},
+  "@psPreviewGallery": {},
+  "@psPolicySummary": {},
+  "@psDownloadShort": {},
+  "@psShippingLater": {},
+  "@psApprovedDetail": {},
+  "psHowStands": "Khung đứng thế nào?",
+  "@psHowStands": {},
+  "psStanding": "Nghiêng 75°",
+  "@psStanding": {},
+  "psStandingHelp": "Chân đỡ bật ra, đứng vững trên bàn",
+  "@psStandingHelp": {},
+  "psFrameBack": "Mặt sau",
+  "@psFrameBack": {},
+  "psFrameBackHelp": "Chân đỡ + móc treo tường",
+  "@psFrameBackHelp": {},
+  "psFrameSide": "Góc nghiêng",
+  "@psFrameSide": {},
+  "psFrameSideHelp": "Gọn trên kệ, tủ đầu giường",
+  "@psFrameSideHelp": {},
+  "psSizeComparison": "So với điện thoại",
+  "@psSizeComparison": {},
+  "psComparisonHelp": "Minh hoạ kích thước · điện thoại khoảng 15 cm",
+  "@psComparisonHelp": {},
+  "psFormat": "Định dạng",
+  "@psFormat": {},
   "hoSleep": "Ngủ",
   "@hoSleep": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
@@ -29537,6 +30324,195 @@
       }
     }
   },
+  "psCheckout": "Đặt hàng",
+  "@psCheckout": {},
+  "psCheckoutProof": "Tôi đã kiểm tra tên, ngày và ảnh trên bản in",
+  "@psCheckoutProof": {},
+  "psReviewPrint": "Xem lại bản in",
+  "@psReviewPrint": {},
+  "psDeliverTo": "Giao tới",
+  "@psDeliverTo": {},
+  "psAddAddress": "Thêm địa chỉ giao hàng",
+  "@psAddAddress": {},
+  "psPayment": "Thanh toán",
+  "@psPayment": {},
+  "psCod": "Thanh toán khi nhận hàng",
+  "@psCod": {},
+  "psCodHelp": "Kiểm tra hàng rồi trả tiền mặt hoặc chuyển khoản cho shipper",
+  "@psCodHelp": {},
+  "psTransfer": "Chuyển khoản / VietQR ngay",
+  "@psTransfer": {},
+  "psTransferHelp": "Không bắt buộc · Child Life sẽ liên hệ sau khi đặt",
+  "@psTransferHelp": {},
+  "psWrap": "Gói quà & thiệp viết tay",
+  "@psWrap": {},
+  "psCheckoutPolicy": "Sản phẩm in riêng cho bé: đổi mới miễn phí khi lỗi in hoặc hư hỏng khi giao (báo trong 48 giờ). Xem chính sách giao hàng & đổi trả.",
+  "@psCheckoutPolicy": {},
+  "psOrderSuccess": "Đặt hàng thành công!",
+  "@psOrderSuccess": {},
+  "psOrderCode": "Mã đơn {code}",
+  "@psOrderCode": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "psOrderSuccessHelp": "Đã ghi nhận bản in của {name}. Child Life sẽ liên hệ xác nhận trước khi in. Bạn không cần trả trước.",
+  "@psOrderSuccessHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psOrderAccepted": "Đã nhận đơn",
+  "@psOrderAccepted": {},
+  "psProduction": "In & đóng khung",
+  "@psProduction": {},
+  "psDelivery": "Giao hàng",
+  "@psDelivery": {},
+  "psPayOnReceipt": "Thanh toán khi nhận",
+  "@psPayOnReceipt": {},
+  "psBackMemories": "Về Kỷ niệm",
+  "@psBackMemories": {},
+  "psExpectedDays": "Khoảng {days} ngày",
+  "@psExpectedDays": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "psFrameLabel": "Khung",
+  "@psFrameLabel": {},
+  "psSetSize": "Kích thước (cả bộ)",
+  "@psSetSize": {},
+  "psBookOptions": "Tuỳ chọn sách",
+  "@psBookOptions": {},
+  "psBookStyle": "Phong cách sách",
+  "@psBookStyle": {},
+  "psQrVideo": "Thêm mã QR xem video kỷ niệm",
+  "@psQrVideo": {},
+  "psComingSoon": "Sắp có",
+  "@psComingSoon": {},
+  "psBookMonth": "Tháng {month}",
+  "@psBookMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "psBookBirth": "Chào đời",
+  "@psBookBirth": {},
+  "psBookMessages": "Lời nhắn",
+  "@psBookMessages": {},
+  "psBookMonthPhotos": "Ảnh tháng {month} của {name}",
+  "@psBookMonthPhotos": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psUnused": "Chưa dùng",
+  "@psUnused": {},
+  "psUsed": "Đã dùng",
+  "@psUsed": {},
+  "psFavorites": "Yêu thích",
+  "@psFavorites": {},
+  "psVideos": "Video",
+  "@psVideos": {},
+  "psBookLibraryHelp": "Chạm ảnh để thêm vào trang đang mở · giữ và kéo lên trang để thay ảnh",
+  "@psBookLibraryHelp": {},
+  "psFullscreen": "Toàn màn hình",
+  "@psFullscreen": {},
+  "psLandscape": "Ngang",
+  "@psLandscape": {},
+  "psPortraitMode": "Dọc",
+  "@psPortraitMode": {},
+  "psEditPage": "Sửa trang",
+  "@psEditPage": {},
+  "psBookFullscreenHelp": "Vuốt trái/phải để lật · chạm để ẩn thanh điều khiển",
+  "@psBookFullscreenHelp": {},
+  "psBookImages": "Ảnh",
+  "@psBookImages": {},
+  "psBookText": "Chữ",
+  "@psBookText": {},
+  "psBookLayout": "Bố cục",
+  "@psBookLayout": {},
+  "psBookSubtitle": "Dòng phụ",
+  "@psBookSubtitle": {},
+  "psBookTitleHint": "Ngày lấy từ cột mốc ba mẹ đã ghi",
+  "@psBookTitleHint": {},
+  "psFrameMessageHint": "Gợi ý: “100 ngày yêu thương” · “Con là món quà”",
+  "@psFrameMessageHint": {},
+  "psBirthHelp": "Lấy từ hồ sơ & lần đo đầu tiên · sửa được",
+  "@psBirthHelp": {},
+  "psBirthDateLabel": "NGÀY SINH",
+  "@psBirthDateLabel": {},
+  "psBirthMeasureLabel": "CÂN NẶNG · CHIỀU DÀI",
+  "@psBirthMeasureLabel": {},
+  "psBookPagesNote": "{count} trang · tự lưu bản nháp",
+  "@psBookPagesNote": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "psContactPrint": "Cần in theo yêu cầu riêng?",
+  "@psContactPrint": {},
+  "psContactPrintHelp": "Liên hệ Child Life để được tư vấn",
+  "@psContactPrintHelp": {},
+  "psFrameDelivery": "Đặt hôm nay, nhận khoảng {from}–{to}.",
+  "@psFrameDelivery": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "psBookSparseMonth": "Tháng này còn ít ảnh. Bạn có thể thêm ảnh hoặc tiếp tục với những kỷ niệm đã có.",
+  "@psBookSparseMonth": {},
+  "psOpenPage": "Trang {page} / {total}",
+  "@psOpenPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "psDetailsPreview": "Xem thiết kế của {name}",
+  "@psDetailsPreview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "psPdfShort": "Tải PDF",
+  "@psPdfShort": {},
+  "psNoReviewsYet": "Chưa có đánh giá từ người mua",
+  "@psNoReviewsYet": {},
+  "psPendingShort": "Chờ xác nhận",
+  "@psPendingShort": {},
+  "psMaterialShortWhite": "Trắng",
+  "@psMaterialShortWhite": {},
+  "psMaterialShortWood": "Gỗ sáng",
+  "@psMaterialShortWood": {},
+  "psNoAdvancePayment": "Trả khi nhận hàng",
+  "@psNoAdvancePayment": {},
   "dutyOnNow": "{name} đang trông · từ {time}",
   "@dutyOnNow": {
     "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved).",
@@ -29643,6 +30619,72 @@
   "@hoTakeOver": {
     "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
   },
+  "psGalleryTable": "Trên bàn",
+  "@psGalleryTable": {},
+  "psGalleryAngle": "Nghiêng",
+  "@psGalleryAngle": {},
+  "psPolicyIntro": "Áp dụng cho khung ảnh và Photo Book in tại Việt Nam.",
+  "@psPolicyIntro": {},
+  "psPolicyCancelTitle": "Huỷ trước khi in: miễn phí",
+  "@psPolicyCancelTitle": {},
+  "psPolicyCancelHelp": "Huỷ trong app khi đơn chưa vào xưởng in. Sản phẩm đang in hoặc đang giao không thể huỷ.",
+  "@psPolicyCancelHelp": {},
+  "psPolicyReturnTitle": "In lại miễn phí",
+  "@psPolicyReturnTitle": {},
+  "psPolicyReturnHelp": "Lỗi in, sai so với bản bạn đã duyệt hoặc hư hỏng khi vận chuyển: báo trong 48 giờ và gửi ảnh khi liên hệ hỗ trợ. Không đổi trả vì đổi ý với nội dung đã xác nhận.",
+  "@psPolicyReturnHelp": {},
+  "psPolicyPrivacyTitle": "Đóng gói & bảo vệ ảnh",
+  "@psPolicyPrivacyTitle": {},
+  "psPolicyPrivacyHelp": "File in chỉ dùng để thực hiện đơn của bạn. Khung được đóng gói bảo vệ khi vận chuyển.",
+  "@psPolicyPrivacyHelp": {},
+  "psPolicyDeliveryHelp": "Child Life xác nhận ngày giao dự kiến và tổng tiền trước khi chuyển đơn sang sản xuất.",
+  "@psPolicyDeliveryHelp": {},
+  "psPreviewPriceCaption": "{count} khung {size} · chưa gồm ship",
+  "@psPreviewPriceCaption": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "psBookUsedPage": "Trang {page}",
+  "@psBookUsedPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "psBookMonthSummary": "{from} – {to} · {count} ảnh · {used} đã dùng trong sách",
+  "@psBookMonthSummary": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      },
+      "used": {
+        "type": "String"
+      }
+    }
+  },
+  "psAutoSave": "Tự lưu",
+  "@psAutoSave": {},
+  "psAutoSavedAt": "Tự lưu · {time}",
+  "@psAutoSavedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "axWidgetCareDuty": "Ai đang trông bé",
   "@axWidgetCareDuty": {
     "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
@@ -29650,6 +30692,1353 @@
   "rhSeeHow": "Xem cách làm",
   "@rhSeeHow": {
     "description": "Button: opens the activity steps (one try vocabulary, owner 2026-10-25)."
+  },
+  "pv2Crest": "CHILD LIFE PREMIUM",
+  "@pv2Crest": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Crest above every Premium suggestion and the paywall."
+  },
+  "pv2SeePremium": "Xem Premium",
+  "@pv2SeePremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Gold button of a Premium suggestion: opens the paywall."
+  },
+  "pv2SeePlans": "Xem các gói",
+  "@pv2SeePlans": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40B: opens the paywall opened on purpose (PW06)."
+  },
+  "pv2GotIt": "Đã hiểu",
+  "@pv2GotIt": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E07: closes an info sheet (no purchase)."
+  },
+  "pv2E01Title": "Mẫu “{name}” thuộc Premium",
+  "@pv2E01Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E01: a Premium video template was tapped.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E01Body": "Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và {videos} lượt xuất video mỗi tháng.",
+  "@pv2E01Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E01 body.",
+    "placeholders": {
+      "videos": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E01Secondary": "Dùng mẫu miễn phí tương tự",
+  "@pv2E01Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E01 text button."
+  },
+  "pv2E02Title": "Mẫu thiệp “{name}” thuộc Premium",
+  "@pv2E02Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E02: a Premium card template was tapped.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E02Body": "Premium mở toàn bộ mẫu thiệp & video cao cấp. Ảnh và lời nhắn bạn đã chọn sẽ được giữ.",
+  "@pv2E02Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E02 body."
+  },
+  "pv2E02Secondary": "Chọn mẫu miễn phí",
+  "@pv2E02Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E02 text button."
+  },
+  "pv2E04Title": "Bản nháp này dùng mẫu cao cấp",
+  "@pv2E04Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E04: continuing a draft on a Premium template without Premium."
+  },
+  "pv2E04Body": "Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.",
+  "@pv2E04Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E04 body."
+  },
+  "pv2E04Secondary": "Đổi sang mẫu miễn phí",
+  "@pv2E04Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E04 text button."
+  },
+  "pv2E03Title": "Bạn đã dùng {n} lượt xuất video trải nghiệm",
+  "@pv2E03Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E03: Free family out of trial exports.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E03Body": "Premium có {m} lượt xuất video mỗi tháng. Bản nháp này vẫn được giữ.",
+  "@pv2E03Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E03 body.",
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E03Secondary": "Lưu bản nháp, để sau",
+  "@pv2E03Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E03 text button."
+  },
+  "pv2E03PremiumTitle": "Đã dùng hết {n} lượt video tháng này",
+  "@pv2E03PremiumTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E03 for a Premium family: no purchase, the refill date.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E03PremiumBody": "Lượt mới được cấp ngày {date}. Bản nháp này vẫn được giữ.",
+  "@pv2E03PremiumBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E03 Premium body.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E07Title": "Lumi đã dùng hết {n} credit tháng này",
+  "@pv2E07Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E07: a Premium family out of Lumi credits (no paywall).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E07Body": "Credit mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.",
+  "@pv2E07Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E07 body.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E07Secondary": "Xem mức dùng của gia đình",
+  "@pv2E07Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E07 text button: opens Gói của gia đình."
+  },
+  "pv2E10Title": "Hết {gb} GB của gói Free",
+  "@pv2E10Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E10: an upload with Free storage full.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E10Body": "Ảnh, video mới vẫn an toàn trên máy. Premium có {premiumGb} GB cho cả nhà, tự tải tiếp sau khi nâng cấp.",
+  "@pv2E10Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E10 body.",
+    "placeholders": {
+      "premiumGb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ManageMedia": "Quản lý ảnh/video",
+  "@pv2ManageMedia": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Text button: opens Dung lượng."
+  },
+  "pv2E11Title": "Tự lưu kỷ niệm đang tạm dừng",
+  "@pv2E11Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E11: auto-save stopped for lack of Free storage."
+  },
+  "pv2E11Body": "Gói Free đã dùng hết {gb} GB. Premium có {premiumGb} GB cho cả nhà, Tự lưu chạy tiếp ngay.",
+  "@pv2E11Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E11 body.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      },
+      "premiumGb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E12Title": "Gia đình đã dùng {used}/{limit} chỗ người chăm sóc",
+  "@pv2E12Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E12: inviting a writer with the Free seats full.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E12Body": "Premium có {premium} chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.",
+  "@pv2E12Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E12 body.",
+    "placeholders": {
+      "premium": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E12Secondary": "Mời làm người thân",
+  "@pv2E12Secondary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E12 text button: back to the invite with the relative role."
+  },
+  "pv2E12FullTitle": "Gia đình đã dùng hết {limit} chỗ người ghi",
+  "@pv2E12FullTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E12 for a Premium family (no paywall).",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2E12FullBody": "Mời làm người thân để cùng xem album, hoặc đổi quyền một người đang ghi.",
+  "@pv2E12FullBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E12 Premium body."
+  },
+  "pv2E08Title": "Nhà mình sắp hết chỗ lưu kỷ niệm",
+  "@pv2E08Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E08: storage over 80 %."
+  },
+  "pv2E08BodyPremium": "Đã dùng {pct}% của {gb} GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.",
+  "@pv2E08BodyPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E08 body for a Premium family (PW10).",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E09Title": "Đã dùng hết {gb} GB",
+  "@pv2E09Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E09: storage full.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E09BodyPremium": "Ảnh, video mới đang chờ và sẽ tự tải tiếp sau khi thêm dung lượng. Vẫn xem, tải và xoá nội dung cũ bình thường.",
+  "@pv2E09BodyPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E09 body for a Premium family."
+  },
+  "pv2StorageInlineFreeTitle": "Thêm chỗ cho những kỷ niệm tiếp theo",
+  "@pv2StorageInlineFreeTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E08 / E09 for a Free family (PW04)."
+  },
+  "pv2StorageInlineFreeBody": "Premium có {premiumGb} GB cho cả nhà, ảnh mới cứ thế được lưu.",
+  "@pv2StorageInlineFreeBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E08 / E09 Free body.",
+    "placeholders": {
+      "premiumGb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AddStorage": "Thêm dung lượng",
+  "@pv2AddStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E08 / E09: opens PW10."
+  },
+  "pv2E13Title": "Child Life Premium",
+  "@pv2E13Title": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E13 Tôi inline card title."
+  },
+  "pv2E13Body": "{videos} video mỗi tháng, {credits} credit Lumi, mẫu cao cấp và {gb} GB cho cả nhà · {price}/tháng.",
+  "@pv2E13Body": {
+    "description": "Premium v2 (Figma 958:13863, D-101). E13 body.",
+    "placeholders": {
+      "videos": {
+        "type": "int"
+      },
+      "credits": {
+        "type": "int"
+      },
+      "gb": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2HeadVideo": "Giữ tháng này của {name} thành một câu chuyện",
+  "@pv2HeadVideo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW01 headline.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2HeadCard": "Thiệp xứng với tháng đầu của {name}",
+  "@pv2HeadCard": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW02 headline.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2HeadLumi": "Tiếp tục hỏi Lumi về {name}",
+  "@pv2HeadLumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW03 headline.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2HeadStorage": "Thêm chỗ cho kỷ niệm tiếp theo",
+  "@pv2HeadStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW04 headline."
+  },
+  "pv2HeadCaregivers": "Để cả nhà cùng chăm {name}",
+  "@pv2HeadCaregivers": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW05 headline (Figma names the invitee; engineering generalises).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2HeadExplore": "Những năm đầu của con, giữ trọn vẹn hơn",
+  "@pv2HeadExplore": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW06 headline, opened on purpose (no reason line)."
+  },
+  "pv2ReasonTemplate": "Mẫu “{name}” và ảnh bạn chọn vẫn được giữ.",
+  "@pv2ReasonTemplate": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW01 / PW02 reason line (only from an entry point).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ReasonVideo": "Bản nháp và ảnh bạn chọn vẫn được giữ.",
+  "@pv2ReasonVideo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW01 reason line without a template name."
+  },
+  "pv2ReasonLumi": "Câu hỏi của bạn đang chờ · đã dùng hết {n} credit trải nghiệm.",
+  "@pv2ReasonLumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW03 reason line.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2ReasonStorage": "Đã dùng {used} / {limit} · mục mới vẫn an toàn trên máy.",
+  "@pv2ReasonStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW04 reason line.",
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ReasonCaregivers": "Gia đình đã dùng {used} / {limit} chỗ người chăm sóc của gói Free.",
+  "@pv2ReasonCaregivers": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW05 reason line.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2ReasonMember": "Có trong Premium — gói dùng chung của cả nhà.",
+  "@pv2ReasonMember": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 reason line for a member who does not manage the plan."
+  },
+  "pv2CardVideoEyebrow": "VIDEO KỶ NIỆM",
+  "@pv2CardVideoEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardVideoTitle": "Những ảnh rời, thành câu chuyện",
+  "@pv2CardVideoTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardVideoBody": "Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.",
+  "@pv2CardVideoBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardVideoLimit": "{n} video mỗi tháng",
+  "@pv2CardVideoLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CardVideoDemo1": "Một tháng trước, nhà mình đón con.",
+  "@pv2CardVideoDemo1": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Video card demo scene."
+  },
+  "pv2CardVideoDemo2": "Ngày đầu về nhà",
+  "@pv2CardVideoDemo2": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Video card demo chip."
+  },
+  "pv2CardCardEyebrow": "MẪU CAO CẤP",
+  "@pv2CardCardEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardCardTitle": "Thiệp dành riêng cho con",
+  "@pv2CardCardTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardCardBody": "Thêm tên, lời thương và đổi phong cách chỉ với một chạm.",
+  "@pv2CardCardBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardCardLimit": "Toàn bộ mẫu cao cấp · Việt – Anh",
+  "@pv2CardCardLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line."
+  },
+  "pv2CardCardDemo": "100 NGÀY",
+  "@pv2CardCardDemo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo label."
+  },
+  "pv2CardLumiEyebrow": "LUMI MỖI THÁNG",
+  "@pv2CardLumiEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardLumiTitle": "Hỏi một câu, Lumi tóm tắt giúp",
+  "@pv2CardLumiTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardLumiBody": "Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.",
+  "@pv2CardLumiBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardLumiLimit": "{n} credit mỗi tháng",
+  "@pv2CardLumiLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CardLumiDemoQ": "Hôm nay con bú thế nào?",
+  "@pv2CardLumiDemoQ": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo question."
+  },
+  "pv2CardLumiDemoA": "Đến 14:20: 3 cữ bú bình · 390 ml",
+  "@pv2CardLumiDemoA": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo answer."
+  },
+  "pv2CardLumiDemoSource": "Theo nhật ký đã ghi",
+  "@pv2CardLumiDemoSource": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo source line."
+  },
+  "pv2CardRhythmEyebrow": "HIỂU NHỊP CON",
+  "@pv2CardRhythmEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardRhythmTitle": "Lumi nhìn lại tuần giúp bạn",
+  "@pv2CardRhythmTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardRhythmBody": "Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.",
+  "@pv2CardRhythmBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardRhythmLimit": "Gồm trong {n} credit mỗi tháng",
+  "@pv2CardRhythmLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CardRhythmDemoLast": "Tuần trước",
+  "@pv2CardRhythmDemoLast": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Rhythm card demo bar label."
+  },
+  "pv2CardRhythmDemoThis": "Tuần này",
+  "@pv2CardRhythmDemoThis": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Rhythm card demo bar label."
+  },
+  "pv2CardStorageEyebrow": "DUNG LƯỢNG",
+  "@pv2CardStorageEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardStorageTitle": "Ảnh mới cứ thế được lưu",
+  "@pv2CardStorageTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardStorageBody": "Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.",
+  "@pv2CardStorageBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardStorageLimit": "{gb} GB cho cả nhà · cần thêm thì mua 20/50 GB riêng",
+  "@pv2CardStorageLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2CardStorageDemo": "Đã tự lưu 12 ảnh mới hôm nay",
+  "@pv2CardStorageDemo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo row."
+  },
+  "pv2CardCaregiversEyebrow": "CẢ NHÀ CÙNG CHĂM",
+  "@pv2CardCaregiversEyebrow": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
+  },
+  "pv2CardCaregiversTitle": "Cả nhà cùng chăm, không hỏi lại",
+  "@pv2CardCaregiversTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
+  },
+  "pv2CardCaregiversBody": "Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.",
+  "@pv2CardCaregiversBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
+  },
+  "pv2CardCaregiversLimit": "Thêm chỗ cho tối đa {premium} người cùng chăm (Free: {free})",
+  "@pv2CardCaregiversLimit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "placeholders": {
+      "premium": {
+        "type": "int"
+      },
+      "free": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CardCaregiversDemo1": "Mẹ · Đã ghi cữ bú 120 ml",
+  "@pv2CardCaregiversDemo1": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
+  },
+  "pv2CardCaregiversDemo2": "Ba · Bắt đầu giấc ngủ",
+  "@pv2CardCaregiversDemo2": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
+  },
+  "pv2CompareTitle": "Free và Premium",
+  "@pv2CompareTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall comparison heading."
+  },
+  "pv2CompareBenefit": "Quyền lợi",
+  "@pv2CompareBenefit": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison column."
+  },
+  "pv2YouNeed": "Bạn đang cần",
+  "@pv2YouNeed": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Tag on the comparison row of the entry point."
+  },
+  "pv2RowLumi": "Credit Lumi",
+  "@pv2RowLumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2RowLumiFree": "{n} credit trải nghiệm một lần",
+  "@pv2RowLumiFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2RowLumiPremium": "{n} credit/tháng",
+  "@pv2RowLumiPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2RowStorage": "Dung lượng",
+  "@pv2RowStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2RowStoragePremium": "{gb} GB · mua thêm khi cần",
+  "@pv2RowStoragePremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2RowVideo": "Xuất video",
+  "@pv2RowVideo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2RowVideoFree": "{n} lượt trải nghiệm một lần",
+  "@pv2RowVideoFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2RowVideoPremium": "{n} lượt/tháng",
+  "@pv2RowVideoPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2RowTemplates": "Mẫu thiệp & video",
+  "@pv2RowTemplates": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2RowTemplatesFree": "Mẫu cơ bản · xem trước mẫu cao cấp",
+  "@pv2RowTemplatesFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
+  },
+  "pv2RowTemplatesPremium": "Toàn bộ mẫu cao cấp",
+  "@pv2RowTemplatesPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
+  },
+  "pv2RowCaregivers": "Người chăm sóc",
+  "@pv2RowCaregivers": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2RowPeople": "{n} người",
+  "@pv2RowPeople": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2RowRelatives": "Người thân xem album",
+  "@pv2RowRelatives": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
+  },
+  "pv2Unlimited": "Không giới hạn",
+  "@pv2Unlimited": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
+  },
+  "pv2PromiseCancel": "Huỷ bất cứ lúc nào",
+  "@pv2PromiseCancel": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
+  },
+  "pv2PromiseNoTopUps": "Không bán credit lẻ",
+  "@pv2PromiseNoTopUps": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
+  },
+  "pv2PromiseYours": "Kỷ niệm luôn là của bạn",
+  "@pv2PromiseYours": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
+  },
+  "pv2PeriodYear": "Theo năm",
+  "@pv2PeriodYear": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Period tile."
+  },
+  "pv2PeriodMonth": "Theo tháng",
+  "@pv2PeriodMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Period tile."
+  },
+  "pv2PerMonthApprox": "≈ {price}/tháng",
+  "@pv2PerMonthApprox": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Yearly tile: the price per month.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2EachMonth": "mỗi tháng",
+  "@pv2EachMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Monthly tile caption."
+  },
+  "pv2SubscribeYear": "Đăng ký Premium · {price}/năm",
+  "@pv2SubscribeYear": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, yearly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2SubscribeMonth": "Đăng ký Premium · {price}/tháng",
+  "@pv2SubscribeMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, monthly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2LegalYear": "Thanh toán {price} hôm nay · tự gia hạn mỗi năm · huỷ trong {store} bất cứ lúc nào",
+  "@pv2LegalYear": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line, yearly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2LegalMonth": "Thanh toán {price} hôm nay · tự gia hạn mỗi tháng · huỷ trong {store} bất cứ lúc nào",
+  "@pv2LegalMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line, monthly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2SoonTitle": "Sắp mở đăng ký trong app",
+  "@pv2SoonTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Footer while in-app purchase is not open (owner: IAP comes later)."
+  },
+  "pv2SoonBody": "Gói và giá như trên. Bạn sẽ đăng ký được ngay trong Child Life.",
+  "@pv2SoonBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Footer body while in-app purchase is not open."
+  },
+  "pv2HasPremium": "Nhà mình đã có Premium",
+  "@pv2HasPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall footer for a Premium family."
+  },
+  "pv2OpenFamilyPlan": "Xem gói của gia đình",
+  "@pv2OpenFamilyPlan": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Opens Gói của gia đình."
+  },
+  "pv2ManagedBy": "Gói của nhà do {name} quản lý",
+  "@pv2ManagedBy": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 footer title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2OnlyManager": "Chỉ {name} có thể nâng cấp cho cả nhà",
+  "@pv2OnlyManager": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 footer body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AskManager": "Nhờ {name} nâng cấp",
+  "@pv2AskManager": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 CTA: shares a short message.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AskPrivacy": "{name} chỉ nhận lời nhắn ngắn, không thấy bản nháp hay câu hỏi của bạn.",
+  "@pv2AskPrivacy": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 privacy line.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AskMessage": "Mình muốn dùng Child Life Premium cho cả nhà. Bạn nâng cấp giúp mình trong Tôi › Gói của gia đình nhé.",
+  "@pv2AskMessage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 message shared with the manager (no child data)."
+  },
+  "pv2TheManager": "người quản lý",
+  "@pv2TheManager": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW07 when the manager name is unknown."
+  },
+  "pv2PlanTitle": "Gói của gia đình",
+  "@pv2PlanTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 title."
+  },
+  "pv2InUse": "Đang dùng",
+  "@pv2InUse": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan card tag (manager)."
+  },
+  "pv2ManagerYou": "Người quản lý: {name} (bạn)",
+  "@pv2ManagerYou": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan card line for the manager.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ManagerOther": "Quản lý bởi {name}",
+  "@pv2ManagerOther": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan card line for a member.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2LimitsTitle": "Hạn mức",
+  "@pv2LimitsTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 card heading."
+  },
+  "pv2Lumi": "Lumi",
+  "@pv2Lumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance row."
+  },
+  "pv2LumiTrial": "Lumi · trải nghiệm",
+  "@pv2LumiTrial": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance row (Free)."
+  },
+  "pv2Video": "Video kỷ niệm",
+  "@pv2Video": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance row."
+  },
+  "pv2VideoTrial": "Video · trải nghiệm",
+  "@pv2VideoTrial": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance row (Free)."
+  },
+  "pv2Storage": "Dung lượng",
+  "@pv2Storage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance row."
+  },
+  "pv2CreditsLeft": "còn {left} / {limit} credit",
+  "@pv2CreditsLeft": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance value.",
+    "placeholders": {
+      "left": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2ExportsLeft": "còn {left} / {limit} lượt",
+  "@pv2ExportsLeft": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance value.",
+    "placeholders": {
+      "left": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2StorageOf": "{used} / {limit}",
+  "@pv2StorageOf": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance value (sizes).",
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2RefillOn": "Cấp lại {date}",
+  "@pv2RefillOn": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance caption (Premium).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2TrialOnce": "Dùng một lần, không cấp lại",
+  "@pv2TrialOnce": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Allowance caption (Free)."
+  },
+  "pv2NextRefill": "Bổ sung tiếp",
+  "@pv2NextRefill": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 row label."
+  },
+  "pv2NextRefillValue": "{date} · mỗi tháng theo ngày đăng ký",
+  "@pv2NextRefillValue": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 row value.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2Renews": "Gia hạn",
+  "@pv2Renews": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 row label."
+  },
+  "pv2IfCancel": "Nếu huỷ",
+  "@pv2IfCancel": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 row label."
+  },
+  "pv2IfCancelValue": "Premium còn tới {date}; sau đó về Free. Kỷ niệm, nhật ký, video đã xuất vẫn xem và tải được.",
+  "@pv2IfCancelValue": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 row value.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2FreeUpsellTitle": "Mỗi tháng, thêm một câu chuyện của {name}",
+  "@pv2FreeUpsellTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40B upsell.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2FreeUpsellBody": "Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.",
+  "@pv2FreeUpsellBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40B upsell body."
+  },
+  "pv2BuyStorage": "Mua thêm dung lượng",
+  "@pv2BuyStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 action row: PW10."
+  },
+  "pv2HistoryMine": "Lịch sử sử dụng của tôi",
+  "@pv2HistoryMine": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV45 action row."
+  },
+  "pv2HistorySub": "Theo người và tác vụ",
+  "@pv2HistorySub": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 action row subtitle."
+  },
+  "pv2ManageRenewal": "Quản lý gia hạn",
+  "@pv2ManageRenewal": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 action row: PV42."
+  },
+  "pv2OpenStore": "Mở {store}",
+  "@pv2OpenStore": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV40 action row subtitle.",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2MemberNote": "Chỉ {name} có thể đổi, gia hạn hoặc huỷ gói. Bạn vẫn dùng mọi quyền lợi của gói.",
+  "@pv2MemberNote": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV45 info.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2Seats": "Người ghi",
+  "@pv2Seats": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan row: writer seats used."
+  },
+  "pv2SeatsOf": "{used} / {limit} chỗ",
+  "@pv2SeatsOf": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan row value.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2DowngradedBanner": "Nhà mình đã về Free từ {date}. Không có gì bị xoá.",
+  "@pv2DowngradedBanner": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 banner.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2DowngradedBannerNoDate": "Nhà mình đang dùng Free. Không có gì bị xoá.",
+  "@pv2DowngradedBannerNoDate": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 banner without a date."
+  },
+  "pv2OverStorageTitle": "Vượt dung lượng · {used} / {limit}",
+  "@pv2OverStorageTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 state card.",
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2OverStorageBody": "Mọi ảnh, video vẫn xem và tải về được. Tạm dừng tải ảnh mới cho tới khi dưới {limit}.",
+  "@pv2OverStorageBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 state card body.",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2OverSeatsTitle": "Vượt chỗ người chăm sóc · {used} / {limit}",
+  "@pv2OverSeatsTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 state card.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2OverSeatsBody": "Chọn {limit} người giữ quyền ghi chăm sóc. Người còn lại tạm chỉ xem, không bị xoá.",
+  "@pv2OverSeatsBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 state card body.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2ChoosePeople": "Chọn người",
+  "@pv2ChoosePeople": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 link: PV44."
+  },
+  "pv2ExportData": "Xuất dữ liệu",
+  "@pv2ExportData": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 link."
+  },
+  "pv2UpgradeAgain": "Nâng lại Premium",
+  "@pv2UpgradeAgain": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV43 link."
+  },
+  "pv2SuspendedNote": "Bạn đang tạm chỉ xem vì gói Free có ít chỗ người ghi hơn. Mọi thứ vẫn còn nguyên.",
+  "@pv2SuspendedNote": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Shown to a writer the manager left out (PV44)."
+  },
+  "pv2FilterAll": "Tất cả",
+  "@pv2FilterAll": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 filter."
+  },
+  "pv2FilterLumi": "Lumi",
+  "@pv2FilterLumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 filter."
+  },
+  "pv2FilterVideo": "Video",
+  "@pv2FilterVideo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 filter."
+  },
+  "pv2FilterGrants": "Cấp & hoàn",
+  "@pv2FilterGrants": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 filter."
+  },
+  "pv2HistoryEmpty": "Chưa có gì được dùng.",
+  "@pv2HistoryEmpty": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 empty."
+  },
+  "pv2HistoryError": "Chưa tải được lịch sử. Thử lại khi có mạng.",
+  "@pv2HistoryError": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 error."
+  },
+  "pv2HistoryPrivacy": "Chỉ hiện người, loại tác vụ và số lượng. Nội dung câu hỏi và trả lời không hiển thị ở đây.",
+  "@pv2HistoryPrivacy": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 privacy note."
+  },
+  "pv2System": "Hệ thống",
+  "@pv2System": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41: a line with no person."
+  },
+  "pv2Someone": "Thành viên",
+  "@pv2Someone": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41: a person no longer in the family."
+  },
+  "pv2TaskLumiChat": "Lumi · Hỏi đáp",
+  "@pv2TaskLumiChat": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 task."
+  },
+  "pv2TaskLumiSummary": "Lumi · Tóm tắt hôm nay",
+  "@pv2TaskLumiSummary": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 task."
+  },
+  "pv2TaskLumiPhoto": "Lumi · Đọc ảnh",
+  "@pv2TaskLumiPhoto": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 task."
+  },
+  "pv2TaskVideoExport": "Video · Xuất video",
+  "@pv2TaskVideoExport": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 task."
+  },
+  "pv2TaskLumiTrial": "Credit trải nghiệm",
+  "@pv2TaskLumiTrial": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskLumiCycle": "Cấp credit tháng",
+  "@pv2TaskLumiCycle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskVideoTrial": "Lượt video trải nghiệm",
+  "@pv2TaskVideoTrial": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskVideoCycle": "Cấp lượt video tháng",
+  "@pv2TaskVideoCycle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskLumiGrant": "Thêm credit từ hỗ trợ",
+  "@pv2TaskLumiGrant": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskVideoGrant": "Thêm lượt video từ hỗ trợ",
+  "@pv2TaskVideoGrant": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 grant."
+  },
+  "pv2TaskRefundLumi": "Hoàn credit · lỗi",
+  "@pv2TaskRefundLumi": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 refund."
+  },
+  "pv2TaskRefundVideo": "Hoàn lượt video",
+  "@pv2TaskRefundVideo": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 refund."
+  },
+  "pv2AmountExports": "{amount} lượt",
+  "@pv2AmountExports": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 amount in exports (signed).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2Held": "đang giữ",
+  "@pv2Held": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41: held until it succeeds."
+  },
+  "pv2Month": "Tháng {month}",
+  "@pv2Month": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV41 month heading (vi: number; en: month name).",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2PickTitle": "Ai giữ quyền ghi chăm sóc?",
+  "@pv2PickTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 sheet title."
+  },
+  "pv2PickBody": "Gói hiện tại có {limit} chỗ. Người không chọn vẫn xem được mọi thứ và quay lại khi nhà mình nâng gói.",
+  "@pv2PickBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 body.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2PickManager": "{relation} · người quản lý",
+  "@pv2PickManager": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 manager row role.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2PickSave": "Lưu · {chosen}/{limit}",
+  "@pv2PickSave": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 button.",
+    "placeholders": {
+      "chosen": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2PickSaved": "Đã lưu. Người không chọn sẽ nhận thông báo nhẹ.",
+  "@pv2PickSaved": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 toast."
+  },
+  "pv2PickFailed": "Chưa lưu được. Thử lại nhé.",
+  "@pv2PickFailed": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV44 error toast."
+  },
+  "pv2You": "{name} (bạn)",
+  "@pv2You": {
+    "description": "Premium v2 (Figma 958:13863, D-101). A row naming the reader.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2CancelTitle": "Huỷ gia hạn Premium",
+  "@pv2CancelTitle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 title."
+  },
+  "pv2CancelLead": "Premium vẫn dùng được tới hết {date}.",
+  "@pv2CancelLead": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 lead.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2CancelLeadNoDate": "Premium vẫn dùng được tới hết kỳ đã trả.",
+  "@pv2CancelLeadNoDate": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 lead without a date."
+  },
+  "pv2CancelAfter": "Sau ngày đó, nhà mình về Free",
+  "@pv2CancelAfter": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 section."
+  },
+  "pv2CancelKeep": "Giữ nguyên",
+  "@pv2CancelKeep": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row."
+  },
+  "pv2CancelKeepBody": "Kỷ niệm, nhật ký, video đã xuất, thành viên",
+  "@pv2CancelKeepBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row body."
+  },
+  "pv2CancelStorage": "Dung lượng {used} > {free}",
+  "@pv2CancelStorage": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row.",
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2CancelStorageBody": "Không xoá; tạm dừng tải ảnh mới cho tới khi dọn hoặc nâng lại",
+  "@pv2CancelStorageBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row body."
+  },
+  "pv2CancelSeats": "{used} người ghi > {free} chỗ",
+  "@pv2CancelSeats": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "free": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CancelSeatsBody": "Không xoá ai; bạn chọn {free} người giữ quyền ghi",
+  "@pv2CancelSeatsBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row body.",
+    "placeholders": {
+      "free": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2CancelTemplates": "Bản nháp dùng mẫu Premium",
+  "@pv2CancelTemplates": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row."
+  },
+  "pv2CancelTemplatesBody": "Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản",
+  "@pv2CancelTemplatesBody": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 row body."
+  },
+  "pv2KeepPremium": "Giữ Premium",
+  "@pv2KeepPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 primary."
+  },
+  "pv2ContinueCancel": "Tiếp tục huỷ trong {store}",
+  "@pv2ContinueCancel": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PV42 secondary: opens the store subscription page.",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AddOnHead": "Thêm chỗ cho những ngày con lớn lên.",
+  "@pv2AddOnHead": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 headline."
+  },
+  "pv2AddOnUsing": "Đang dùng",
+  "@pv2AddOnUsing": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 card label."
+  },
+  "pv2AddOnUsed": "Đã dùng",
+  "@pv2AddOnUsed": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 card caption."
+  },
+  "pv2AddOnOption": "Thêm {gb} GB",
+  "@pv2AddOnOption": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 option.",
+    "placeholders": {
+      "gb": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2AddOnTotal": "Tổng {gb} GB cho cả nhà",
+  "@pv2AddOnTotal": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 option caption.",
+    "placeholders": {
+      "gb": {
+        "type": "int"
+      }
+    }
+  },
+  "pv2PerYear": "{price}/năm",
+  "@pv2PerYear": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Price per year.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2OrPerMonth": "hoặc {price}/tháng",
+  "@pv2OrPerMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Price per month, second.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AddOnNote": "Dùng chung cho cả gia đình · gia hạn cùng kỳ với Premium · huỷ bất cứ lúc nào.",
+  "@pv2AddOnNote": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 footnote."
+  },
+  "pv2AddOnSoon": "Sắp có · mua thêm dung lượng mở cùng lúc với đăng ký trong app.",
+  "@pv2AddOnSoon": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 while in-app purchase is not open (Q-102)."
+  },
+  "pv2AddOnPremiumOnly": "Mua thêm dung lượng dành cho gia đình có Premium.",
+  "@pv2AddOnPremiumOnly": {
+    "description": "Premium v2 (Figma 958:13863, D-101). PW10 for a Free family."
+  },
+  "pv2StoreApple": "App Store",
+  "@pv2StoreApple": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Store name."
+  },
+  "pv2StoreGoogle": "Google Play",
+  "@pv2StoreGoogle": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Store name."
   },
   "rhTriedAll": "Tất cả",
   "@rhTriedAll": {
@@ -29670,5 +32059,13 @@
   "rhTriedNote": "Theo câu trả lời của nhà mình, không phải kết luận y khoa.",
   "@rhTriedNote": {
     "description": "History footnote, once at the bottom (D-102)."
+  },
+  "pv2PlanPremium": "Premium",
+  "@pv2PlanPremium": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan name on Gói của gia đình (PV40)."
+  },
+  "pv2PlanFree": "Free",
+  "@pv2PlanFree": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan name on Gói của gia đình (PV40B)."
   }
 }

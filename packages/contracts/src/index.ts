@@ -71,6 +71,8 @@ export * from './staff-reason.js';
 // "Tính năng & Premium" hub (plan features-premium-hub-plan.md §2): catalogue, tiers, overrides.
 export * from './features-hub.js';
 export * from './adaptive.js';
+export * from './premium-v2.js';
 
 export * from './keepsakes-premium48-phase6.js';
 export * from './keepsakes-premium48-final.js';
+export * from './print-studio.js';

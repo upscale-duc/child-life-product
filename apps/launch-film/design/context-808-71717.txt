@@ -1,0 +1,160 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/476bdbcc-3761-4ba4-b32a-0b3f7a10b8f5";
+const imgIllustrationPhoto = `${assetPathPrefix}/0d3f8.png`;
+const imgIllustrationPhoto1 = `${assetPathPrefix}/22456.png`;
+const imgAccentBand = `${assetPathPrefix}/ea83a.svg`;
+const imgAccentGrowthLine = `${assetPathPrefix}/a8f0e.svg`;
+const imgAccentGrowthDot1 = `${assetPathPrefix}/772d3.svg`;
+const imgAccentGrowthDot3 = `${assetPathPrefix}/e87a1.svg`;
+const imgIconCheck = `${assetPathPrefix}/2d452.svg`;
+
+export default function S04Grow1927SHero9X16() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="808:71717" data-name="S04_Grow_19-27s_HERO_9x16">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="808:71718" data-name="Background" />
+      <div className="absolute h-[520px] left-0 top-[1400px] w-[1080px]" data-node-id="808:71719" data-name="Accent/Band">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentBand} />
+      </div>
+      <div className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[0] left-[100px] not-italic text-[84px] text-[color:var(--ink,#173d44)] top-[240px] tracking-[-1.26px] whitespace-nowrap" data-node-id="808:71721">
+        <p className="leading-[1.12] mb-0">Nhìn con lớn lên,</p>
+        <p className="leading-[1.12]">từng chút một.</p>
+      </div>
+      <div className="absolute bg-[var(--surface,white)] h-[888px] left-[130.8px] opacity-55 overflow-clip rounded-[33.6px] shadow-[0px_12px_32px_0px_rgba(23,61,68,0.18)] top-[520px] w-[818.4px]" data-node-id="808:71776" data-name="Card/GrowthChart">
+        <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_19.2px_28.8px_rgba(23,61,68,0.08),0px_2.4px_2.4px_rgba(23,61,68,0.06)] flex flex-col gap-[28.8px] items-start left-0 p-[38.4px] rounded-[48px] top-0 w-[818.4px]" data-node-id="808:71722" data-name="content">
+          <div className="bg-[var(--surface-2,#eef6f5)] content-stretch flex gap-[4.8px] items-start p-[9.6px] relative rounded-[33.6px] shrink-0 w-full" data-node-id="808:71723" data-name="Segmented">
+            <div className="bg-[var(--surface,white)] content-stretch flex flex-[1_0_0] items-start justify-center min-w-px px-[24px] py-[19.2px] relative rounded-[24px]" data-node-id="808:71724" data-name="Cân nặng">
+              <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[33.6px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71725">
+                Cân nặng
+              </p>
+            </div>
+            <div className="content-stretch flex flex-[1_0_0] items-start justify-center min-w-px px-[24px] py-[19.2px] relative rounded-[24px]" data-node-id="808:71726" data-name="Chiều dài">
+              <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[normal] not-italic relative shrink-0 text-[33.6px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71727">
+                Chiều dài
+              </p>
+            </div>
+          </div>
+          <div className="content-stretch flex gap-[19.2px] items-center relative shrink-0 w-full" data-node-id="808:71728" data-name="val">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold'] leading-[normal] not-italic relative shrink-0 text-[67.2px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="808:71729">
+              4,3 kg
+            </p>
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[normal] not-italic relative shrink-0 text-[31.2px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="808:71730">
+              · 3 tuần tuổi
+            </p>
+            <div className="flex-[1_0_0] h-[2.4px] min-w-px relative" data-node-id="808:71731" data-name="spacer" />
+          </div>
+          <div className="content-stretch flex gap-[14.4px] items-start relative shrink-0" data-node-id="808:71732" data-name="st">
+            <div className="bg-[var(--care-growth-soft,#fdede2)] content-stretch flex items-center px-[28.8px] py-[14.4px] relative rounded-[2397.6px] shrink-0" data-node-id="808:71736" data-name="+0,4 kg so với 1 thg 10">
+              <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[28.8px] text-[color:var(--care-growth-ink,#9a4a14)] whitespace-nowrap" data-node-id="808:71737">
+                +0,4 kg so với 1 thg 10
+              </p>
+            </div>
+          </div>
+          <div className="h-[484.8px] overflow-clip relative shrink-0 w-[746.4px]" data-node-id="808:71738" data-name="Growth chart">
+            <div className="absolute bg-[var(--separator,#dce8e7)] h-[2.4px] left-[81.6px] top-[432px] w-[664.8px]" data-node-id="808:71739" data-name="Rectangle" />
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-0 not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[415.2px] whitespace-nowrap" data-node-id="808:71740">
+              2 kg
+            </p>
+            <div className="absolute bg-[var(--separator,#dce8e7)] h-[2.4px] left-[81.6px] top-[250.67px] w-[664.8px]" data-node-id="808:71741" data-name="Rectangle" />
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-0 not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[233.87px] whitespace-nowrap" data-node-id="808:71742">
+              4 kg
+            </p>
+            <div className="absolute bg-[var(--separator,#dce8e7)] h-[2.4px] left-[81.6px] top-[69.33px] w-[664.8px]" data-node-id="808:71743" data-name="Rectangle" />
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-0 not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[52.53px] whitespace-nowrap" data-node-id="808:71744">
+              6 kg
+            </p>
+            <div className="absolute h-[99.84px] left-[81.6px] top-[223.47px] w-[387.36px]" data-node-id="808:71747" data-name="Accent/GrowthLine">
+              <div className="absolute inset-[-2.89%_-0.21%_-2.92%_-0.19%]">
+                <img alt="" className="block max-w-none size-full" src={imgAccentGrowthLine} />
+              </div>
+            </div>
+            <div className="absolute left-[72px] size-[19.2px] top-[313.6px]" data-node-id="808:71748" data-name="Accent/GrowthDot/1">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentGrowthDot1} />
+            </div>
+            <div className="absolute left-[330.24px] size-[19.2px] top-[250.13px]" data-node-id="808:71749" data-name="Accent/GrowthDot/2">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentGrowthDot1} />
+            </div>
+            <div className="absolute left-[454.56px] size-[28.8px] top-[209.07px]" data-node-id="808:71750" data-name="Accent/GrowthDot/3">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentGrowthDot3} />
+            </div>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[67.2px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71751">
+              Sinh
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[175.92px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71752">
+              1 tuần
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[301.44px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71753">
+              2 tuần
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[430.56px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71754">
+              3 tuần
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[559.68px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71755">
+              4 tuần
+            </p>
+            <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[normal] left-[669.6px] not-italic text-[24px] text-[color:var(--ink-muted,#55707a)] top-[446.4px] whitespace-nowrap" data-node-id="808:71756">
+              5 tuần
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_12px_16px_rgba(23,61,68,0.18)] flex flex-col gap-[22.4px] items-start left-[230px] pb-[41.067px] pt-[37.333px] px-[29.867px] rounded-[52.267px] top-[880px] w-[700px]" data-node-id="808:71777" data-name="Card/Milestone">
+        <div className="content-stretch flex gap-[11.2px] items-start relative shrink-0 w-full" data-node-id="808:71778" data-name="chips">
+          <div className="bg-[var(--mint-soft,#e6f7f5)] content-stretch flex gap-[11.2px] items-center px-[22.4px] py-[11.2px] relative rounded-[1864.8px] shrink-0" data-node-id="808:71779" data-name="Đã quan sát">
+            <div className="relative shrink-0 size-[26.133px]" data-node-id="808:71780" data-name="Icon/check">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconCheck} />
+            </div>
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[24.267px] text-[color:var(--mint-text,#06716d)] whitespace-nowrap" data-node-id="808:71781">
+              Đã quan sát
+            </p>
+          </div>
+          <div className="bg-[var(--peach-soft,#ffe3da)] content-stretch flex items-center px-[22.4px] py-[11.2px] relative rounded-[1864.8px] shrink-0" data-node-id="808:71782" data-name="Giao tiếp">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[24.267px] text-[color:var(--care-bottle-ink,#1d5f99)] whitespace-nowrap" data-node-id="808:71783">
+              Giao tiếp
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold'] leading-[normal] not-italic relative shrink-0 text-[52.267px] text-[color:var(--ink,#173d44)] w-full" data-node-id="808:71784">
+          Mỉm cười đáp lại
+        </p>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[normal] not-italic relative shrink-0 text-[26.133px] text-[color:var(--ink-muted,#55707a)] w-full" data-node-id="808:71785">
+          Thứ Năm, 08/10/2026 · lúc Teddy 3 tuần 4 ngày · Mẹ ghi
+        </p>
+        <div className="content-stretch flex gap-[14.933px] items-start relative shrink-0 w-full" data-node-id="808:71786" data-name="photos">
+          <div className="bg-[var(--surface-2,#eef6f5)] h-[373.333px] overflow-clip relative rounded-[33.6px] shrink-0 w-[311.733px]" data-node-id="808:71787" data-name="Photo">
+            <div className="absolute left-[-30.8px] overflow-clip size-[373.333px] top-0" data-node-id="808:71788" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(255, 227, 216) 0%, rgb(247, 185, 165) 71.429%)" }} data-name="Illustration/Photo">
+              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgIllustrationPhoto} />
+            </div>
+          </div>
+          <div className="bg-[var(--surface-2,#eef6f5)] h-[373.333px] overflow-clip relative rounded-[33.6px] shrink-0 w-[311.733px]" data-node-id="808:71789" data-name="Photo">
+            <div className="absolute left-[-30.8px] overflow-clip size-[373.333px] top-0" data-node-id="808:71790" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(255, 241, 201) 0%, rgb(249, 215, 126) 71.429%)" }} data-name="Illustration/Photo">
+              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgIllustrationPhoto1} />
+            </div>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[1.55] not-italic relative shrink-0 text-[28px] text-[color:var(--ink,#173d44)] w-full" data-node-id="808:71791">
+          Bé cười khi mẹ hát bài “Cả nhà thương nhau” sau cữ bú sáng.
+        </p>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: shadow-lift: Effect(type: DROP_SHADOW, color: #173D442E, offset: (0, 12), radius: 32, spread: 0).
+Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.
+
+## Icon/check
+**Node ID:** 7:45
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Illustration/Photo
+**Node ID:** 131:758
+
+Illustrated baby photo placeholder (privacy-safe). Use instead of real photos in mockups.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

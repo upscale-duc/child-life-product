@@ -158,7 +158,9 @@ final _cases = <String, _Case>{
         find.descendant(
           of: find
               .ancestor(
-                of: find.textContaining(RegExp(r'^(Tạo nhanh|Quick add)$')).first,
+                of: find
+                    .textContaining(RegExp(r'^(Tạo nhanh|Quick add)$'))
+                    .first,
                 matching: find.byType(Row),
               )
               .first,

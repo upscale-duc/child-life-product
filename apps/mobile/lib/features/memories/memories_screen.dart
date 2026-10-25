@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../keepsakes/keepsake_entries.dart';
+import '../print_studio/print_hub.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
@@ -40,7 +41,7 @@ import '../stories/stories_view.dart';
 // ---------- View state (10c) and selection (10b2) ----------
 
 /// Owner request (2026-10-11): Ảnh first, then Album, Nhật ký, Câu chuyện; Kỷ niệm opens on Ảnh.
-enum MemoryTab { photos, albums, journal, stories }
+enum MemoryTab { photos, albums, journal, stories, keepsakes }
 
 enum MemoryGroup { day, week, month }
 
@@ -347,6 +348,7 @@ class _MemoriesTabState extends ConsumerState<_MemoriesTab> {
         MemoryTab.photos => PhotosView(ctx: c, media: media),
         MemoryTab.albums => AlbumsView(ctx: c),
         MemoryTab.stories => StoriesView(ctx: c),
+        MemoryTab.keepsakes => PrintKeepsakesView(ctx: c),
       },
     );
 
@@ -358,6 +360,7 @@ class _MemoriesTabState extends ConsumerState<_MemoriesTab> {
           MemoryTab.albums => l10n.memAlbums,
           MemoryTab.journal => l10n.memJournal,
           MemoryTab.stories => l10n.memStories,
+          MemoryTab.keepsakes => l10n.psTab,
         },
     ];
     return Stack(

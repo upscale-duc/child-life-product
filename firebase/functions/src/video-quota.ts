@@ -11,7 +11,12 @@ import {
   type QuotaSnapshot,
   type QuotaWindow,
   type ReservationState,
+  freeTrialKey,
+  monthlyCycle,
 } from '@child-life/contracts';
+import { premiumBudgetGrant } from './assistant-usage.js';
+import { flagOn, loadFamilyEntitlements } from './entitlements.js';
+import { NEVER } from './quota.js';
 import type { Firestore, Timestamp, Transaction } from 'firebase-admin/firestore';
 
 /**
@@ -60,6 +65,39 @@ export async function videoWindowFor(
   environment: GrantEnvironment,
   now: Date,
 ): Promise<VideoWindow> {
+  // Premium v2 (D-101): Free has 2 exports once (a window that never resets, fresh for every
+  // family when v2 turns on, Q-096); Premium has 4 per monthly cycle on the subscription day.
+  const ctx = await loadFamilyEntitlements(db, familyId, now, environment);
+  if (flagOn(ctx, 'premium_v2')) {
+    const plans = ctx.config.plans;
+    const premium = premiumBudgetGrant(ctx, now);
+    if (!premium) {
+      return {
+        id: quotaWindowId('video', { kind: 'trial', key: freeTrialKey }),
+        kind: 'free',
+        limit: plans.free.videoExportsTrial,
+        start: new Date(0),
+        end: NEVER,
+        zone: null,
+        grantId: null,
+      };
+    }
+    const cycle = monthlyCycle(premium.validFrom, now, premium.validUntil);
+    const grantId = premium.id.replace(/[^A-Za-z0-9_-]/g, '-');
+    return {
+      id: quotaWindowId('video', {
+        kind: 'paid',
+        grantId,
+        periodStart: cycle.start.toISOString(),
+      }),
+      kind: 'paid',
+      limit: plans.premium.videoExportsPerCycle,
+      start: cycle.start,
+      end: cycle.end,
+      zone: null,
+      grantId: premium.id,
+    };
+  }
   const t = now.getTime();
   const paid = (
     await db.collection(`families/${familyId}/grants`).where('source', '==', 'paid').get()
@@ -132,7 +170,9 @@ function countersOf(
   const used = (snap.get('used') as number | undefined) ?? 0;
   const reserved = (snap.get('reserved') as number | undefined) ?? 0;
   const stored = (snap.get('limit') as number | undefined) ?? 0;
-  const limit = configLimit === null ? stored : Math.max(configLimit, used + reserved);
+  // PT02: lượt staff added (or took) for this window, on top of the config (D-101).
+  const bonus = (snap.get('bonus') as number | undefined) ?? 0;
+  const limit = configLimit === null ? stored : Math.max(configLimit + bonus, used + reserved, 0);
   return { limit, used, reserved };
 }
 
@@ -152,7 +192,11 @@ export async function readVideoQuota(
   window: VideoWindow,
 ): Promise<QuotaSnapshot> {
   const snap = await windowRef(db, familyId, window.id).get();
-  return snapshotOf(countersOf(snap, window.limit), window.end);
+  // A Free trial never resets: no "làm mới" date (PV40B "dùng một lần, không cấp lại").
+  return snapshotOf(
+    countersOf(snap, window.limit),
+    window.end.getTime() >= NEVER.getTime() ? null : window.end,
+  );
 }
 
 /** Reads for a reserve inside a transaction (all reads come before any write). */
@@ -176,7 +220,8 @@ export function reserveInTx(
   window: VideoWindow,
   windowSnap: FirebaseFirestore.DocumentSnapshot,
   reservationId: string,
-  meta: { babyId: string; jobId: string },
+  /** [uid]: who asked, for the usage history (PV41); never the content. */
+  meta: { babyId: string; jobId: string; uid?: string },
   now: Date,
   /** Earlier changes to the same window in this transaction (a retry's release). */
   base?: QuotaWindow,
@@ -211,6 +256,8 @@ export function reserveInTx(
     windowId: window.id,
     babyId: meta.babyId,
     jobId: meta.jobId,
+    actorUid: meta.uid ?? null,
+    task: 'video.export',
     state: 'reserved' satisfies ReservationState,
     reservedAt: now,
     committedAt: null,
@@ -268,4 +315,73 @@ export function countersAfter(
   settled: { window: QuotaWindow | null },
 ): QuotaWindow | null {
   return reads.window?.exists ? (settled.window ?? countersOf(reads.window, null)) : null;
+}
+
+/**
+ * PT02 (D-101): staff add [delta] lượt to (or take them from) [window], kept as `bonus` on top of
+ * the config so a later config change does not undo it; logged for the usage history (PV41).
+ */
+export function adjustVideoBonus(
+  tx: Transaction,
+  db: Firestore,
+  familyId: string,
+  window: VideoWindow,
+  windowSnap: FirebaseFirestore.DocumentSnapshot,
+  adjustmentId: string,
+  delta: number,
+  now: Date,
+): { before: number; after: number } {
+  const before = countersOf(windowSnap, window.limit);
+  const bonus = ((windowSnap.get('bonus') as number | undefined) ?? 0) + delta;
+  const after = Math.max(window.limit + bonus, before.used + before.reserved, 0);
+  tx.set(
+    windowRef(db, familyId, window.id),
+    {
+      feature: 'video',
+      kind: window.kind,
+      limit: after,
+      bonus,
+      used: before.used,
+      reserved: before.reserved,
+      windowStart: window.start,
+      windowEnd: window.end,
+      zone: window.zone,
+      grantId: window.grantId,
+      updatedAt: now,
+      ...(windowSnap.exists ? {} : { createdAt: now }),
+    },
+    { merge: true },
+  );
+  tx.create(opRef(db, familyId, adjustmentId), {
+    feature: 'video',
+    windowId: window.id,
+    state: 'granted',
+    task: 'video.grant',
+    actorUid: null,
+    units: after - before.limit,
+    reservedAt: now,
+  });
+  return { before: before.limit, after };
+}
+
+/**
+ * PT04 (D-101): give back the lượt of a video that rendered but came out wrong. A held lượt is
+ * released; a used one is returned once (`released`, reason staff). Never twice.
+ */
+export function refundVideoInTx(
+  tx: Transaction,
+  reads: SettleReads,
+  now: Date,
+): 'refunded' | 'already' | 'missing' {
+  if (!reads.op.exists || !reads.window?.exists) return 'missing';
+  const state = reads.op.get('state') as string;
+  if (state === 'released') return 'already';
+  const w = countersOf(reads.window, null);
+  const next =
+    state === 'reserved'
+      ? { used: w.used, reserved: Math.max(0, w.reserved - 1) }
+      : { used: Math.max(0, w.used - 1), reserved: w.reserved };
+  tx.update(reads.window.ref, { ...next, updatedAt: now });
+  tx.update(reads.op.ref, { state: 'released', releasedAt: now, releaseReason: 'staff' });
+  return 'refunded';
 }

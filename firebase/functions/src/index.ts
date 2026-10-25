@@ -1,4 +1,22 @@
 import { authorizeEngagementBackground } from './engagement.js';
+import {
+  getPrintCatalog,
+  exportPrint,
+  savePrintDraft,
+  createPrintOrder,
+  cancelPrintOrder,
+  staffPrintStudio as readStaffPrintStudio,
+  staffPrintCatalog as saveStaffPrintCatalog,
+  staffPrintOrder as actStaffPrintOrder,
+  submitPrintReview,
+  type PrintStore,
+  cleanupPrintArtifacts,
+  staffPrintReview as moderatePrintReview,
+  removePrintReview,
+  renderPrintOrder,
+  recoverPrintRenders,
+  recordPrintSignal,
+} from './print-studio.js';
 import { observeEngagementContent } from './engagement-observers.js';
 import {
   refreshEngagement,
@@ -75,6 +93,7 @@ import {
   revokeInvite,
   sendInviteEmail,
   updateMember,
+  chooseWriteSeats,
   type Caller,
 } from './family.js';
 import { FeatureError, featureAccess } from './features.js';
@@ -395,6 +414,18 @@ import {
 } from './handover-send.js';
 import { setCareDuty as runSetCareDuty } from './care-duty.js';
 import { sweepAiReservations } from './quota-sweeper.js';
+import {
+  adjustUsage,
+  decideProposal as decidePremiumProposal,
+  listProposals as listPremiumProposals,
+  proposePlans,
+  refundVideoJob,
+} from './premium-plans-staff.js';
+import {
+  familyPlanAnswer,
+  familyUsageHistory as readUsageHistory,
+  UsageHistoryError,
+} from './premium-v2.js';
 // ---- Child Life Assistant, slice A2 server core (docs/assistant/) ----
 import {
   cancelTask as runCancelTask,
@@ -487,7 +518,8 @@ function asHttpsError(operation: string, error: unknown): HttpsError {
     error instanceof FeatureError ||
     error instanceof EntitlementError ||
     error instanceof RhythmError ||
-    error instanceof AiSummaryError
+    error instanceof AiSummaryError ||
+    error instanceof UsageHistoryError
   ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
@@ -602,6 +634,16 @@ export const getCapabilities = familyCall('getCapabilities', (r) =>
   capabilitiesOf(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
 );
 
+/** PV40 / PV40B / PV45 (D-101): the plan, its limits and balances (plan screens only, D-081). */
+export const getFamilyPlan = familyCall('getFamilyPlan', (r) =>
+  familyPlanAnswer(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+
+/** PV41 / PV45 (D-101): who used the household's Lumi credit and video lượt (no content). */
+export const familyUsageHistory = familyCall('familyUsageHistory', (r) =>
+  readUsageHistory(getFirestore(), requireAccount(r), r.data, new Date()),
+);
+
 /** The family owner sets the household country / time zone (D-072 #1, #3). */
 export const setFamilySettings = familyCall('setFamilySettings', (r) =>
   saveFamilySettings(getFirestore(), requireAccount(r), r.data, new Date()),
@@ -677,6 +719,10 @@ export const acceptFamilyInvite = familyCall('acceptFamilyInvite', (r) =>
 );
 export const updateFamilyMember = familyCall('updateFamilyMember', (r) =>
   updateMember(getFirestore(), callerOf(r), r.data, new Date()),
+);
+/** PV44 (D-101 Q-101): the manager picks who keeps write access after a downgrade. */
+export const chooseFamilyWriteSeats = familyCall('chooseFamilyWriteSeats', (r) =>
+  chooseWriteSeats(getFirestore(), callerOf(r), r.data, new Date()),
 );
 export const removeFamilyMember = familyCall('removeFamilyMember', (r) =>
   removeMember(getFirestore(), callerOf(r), r.data, new Date()),
@@ -2055,6 +2101,106 @@ const staffCall = <T>(
 
 export const staffBadges = staffCall('staffBadges', (s) => badges(getFirestore(), s));
 
+// Print Studio: no personal payloads or render errors are logged by these callables.
+function printStore(): PrintStore {
+  const bucket = getStorage().bucket();
+  return {
+    read: async (path) => (await bucket.file(path).download())[0],
+    save: async (path, bytes, contentType) => {
+      await bucket.file(path).save(bytes, { contentType, resumable: false });
+    },
+    url: async (path, expires) =>
+      (await bucket.file(path).getSignedUrl({ action: 'read', expires }))[0],
+  };
+}
+const printCall = <T>(run: (uid: string, data: unknown) => Promise<T>) =>
+  onCall({ timeoutSeconds: 300, memory: '1GiB', concurrency: 1 }, async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(request.auth.uid, request.data);
+    } catch (e) {
+      if (e instanceof AccountError) throw new HttpsError(e.code, e.reason, { reason: e.reason });
+      throw new HttpsError('internal', 'print-unavailable');
+    }
+  });
+export const printStudioCatalog = printCall(() => getPrintCatalog(getFirestore()));
+export const printStudioSaveDraft = printCall((uid, data) =>
+  savePrintDraft(getFirestore(), uid, data, new Date()),
+);
+export const printStudioExport = printCall((uid, data) =>
+  exportPrint(getFirestore(), printStore(), uid, data, new Date()),
+);
+export const printStudioOrder = printCall((uid, data) =>
+  createPrintOrder(getFirestore(), uid, data, new Date()),
+);
+export const printStudioSignal = printCall((uid, data) =>
+  recordPrintSignal(getFirestore(), uid, data, new Date()),
+);
+export const renderPrintStudioOrder = onDocumentWritten(
+  {
+    document: 'babies/{babyId}/printOrders/{orderId}',
+    timeoutSeconds: 300,
+    memory: '1GiB',
+    concurrency: 1,
+    retry: true,
+  },
+  async (event) => {
+    const after = event.data?.after,
+      before = event.data?.before;
+    if (!after?.exists || after.get('render.status') !== 'queued') return;
+    if (
+      before?.get('render.status') === 'queued' &&
+      before.get('render.attempt') === after.get('render.attempt')
+    )
+      return;
+    await renderPrintOrder(
+      getFirestore(),
+      printStore(),
+      event.params.babyId,
+      event.params.orderId,
+      after.get('render.attempt'),
+      new Date(),
+    );
+  },
+);
+export const recoverPrintStudioRenders = onSchedule(
+  { schedule: 'every 10 minutes', timeoutSeconds: 540, memory: '1GiB' },
+  async () => {
+    await recoverPrintRenders(getFirestore(), printStore(), new Date());
+  },
+);
+export const printStudioCancel = printCall((uid, data) =>
+  cancelPrintOrder(getFirestore(), uid, data, new Date()),
+);
+export const printStudioReview = printCall((uid, data) =>
+  submitPrintReview(getFirestore(), uid, data, new Date()),
+);
+export const printStudioRemoveReview = printCall((uid, data) =>
+  removePrintReview(getFirestore(), uid, data, new Date()),
+);
+export const cleanupPrintStudio = onSchedule('every day 03:30', async () => {
+  await cleanupPrintArtifacts(
+    getFirestore(),
+    async (path, prefix) => {
+      if (prefix) await getStorage().bucket().deleteFiles({ prefix: path });
+      else await getStorage().bucket().file(path).delete({ ignoreNotFound: true });
+    },
+    new Date(),
+  );
+});
+export const staffPrintStudio = staffCall('staffPrintStudio', (s) =>
+  readStaffPrintStudio(getFirestore(), s),
+);
+export const staffPrintReview = staffCall('staffPrintReview', (s, d) =>
+  moderatePrintReview(getFirestore(), s, d, new Date()),
+);
+export const staffPrintCatalog = staffCall('staffPrintCatalog', (s, d) =>
+  saveStaffPrintCatalog(getFirestore(), s, d, new Date()),
+);
+export const staffPrintOrder = staffCall('staffPrintOrder', (s, d) =>
+  actStaffPrintOrder(getFirestore(), printStore(), s, d, new Date()),
+);
+
 // ---------- Notifications & Engagement (P-174) ----------
 
 export const staffNotificationTemplates = staffCall('staffNotificationTemplates', (s) =>
@@ -2184,6 +2330,23 @@ export const staffGrantPromo = staffCall('staffGrantPromo', (s, d) =>
 );
 export const staffRevokeGrant = staffCall('staffRevokeGrant', (s, d) =>
   revokeGrant(getFirestore(), s, d, new Date()),
+);
+
+// Premium v2 (PT01–PT04, D-101): plans versions and large adjustments need a second approver.
+export const staffPremiumProposals = staffCall('staffPremiumProposals', (s) =>
+  listPremiumProposals(getFirestore(), s),
+);
+export const staffProposePlans = staffCall('staffProposePlans', (s, d) =>
+  proposePlans(getFirestore(), s, d, new Date()),
+);
+export const staffDecidePremiumProposal = staffCall('staffDecidePremiumProposal', (s, d) =>
+  decidePremiumProposal(getFirestore(), s, d, new Date()),
+);
+export const staffAdjustUsage = staffCall('staffAdjustUsage', (s, d) =>
+  adjustUsage(getFirestore(), s, d, new Date()),
+);
+export const staffRefundVideoJob = staffCall('staffRefundVideoJob', (s, d) =>
+  refundVideoJob(getFirestore(), s, d, new Date()),
 );
 
 // "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".

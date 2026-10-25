@@ -985,6 +985,8 @@ export async function startTask(
         requestId: req.clientRequestId,
         holder: taskId,
         units: credits,
+        actorUid: s.uid,
+        task: modality === 'image' ? 'lumi.photo' : 'lumi.chat',
         now,
       });
       if (r.outcome === 'denied') {

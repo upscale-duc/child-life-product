@@ -16,6 +16,7 @@ import '../home/home_shell.dart';
 import '../family/countries.dart';
 import '../me/me_widgets.dart';
 import 'billing_models.dart';
+import 'family_plan_v2.dart';
 import 'paywall_screen.dart';
 import 'premium_models.dart';
 import 'premium_repository.dart';
@@ -40,6 +41,10 @@ class HouseholdPlanScreen extends ConsumerWidget {
     if (me == null) return ColoredBox(color: cl.colors.cloud);
     final async = ref.watch(capabilitiesProvider(me.babyId));
     final caps = async.value;
+    // Premium v2 (D-101): Gói của gia đình PV40 / PV40B / PV43 / PV45.
+    if (caps != null && caps.features.premiumV2) {
+      return FamilyPlanV2Screen(babyId: me.babyId, caps: caps);
+    }
     final locale = Localizations.localeOf(context).toLanguageTag();
     String date(DateTime d) => DateFormat.yMMMd(locale).format(d.toLocal());
 

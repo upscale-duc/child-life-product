@@ -28,6 +28,10 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
  * role on every call (P-121).
  */
 export type Callable =
+  | 'staffPrintStudio'
+  | 'staffPrintCatalog'
+  | 'staffPrintOrder'
+  | 'staffPrintReview'
   | 'staffBadges'
   | 'staffOverview'
   | 'staffTickets'
@@ -85,6 +89,11 @@ export type Callable =
   | 'staffFamilyPremium'
   | 'staffGrantPromo'
   | 'staffRevokeGrant'
+  | 'staffPremiumProposals'
+  | 'staffProposePlans'
+  | 'staffDecidePremiumProposal'
+  | 'staffAdjustUsage'
+  | 'staffRefundVideoJob'
   | 'staffAiPolicy'
   | 'staffRenderOps'
   | 'staffFamilyQuota'

@@ -36,6 +36,7 @@ import {
 import { FlagDialog, FlagRow, billingFlag, type FlagChange } from './Features';
 import { FieldSelect } from './form-controls';
 import { AiPolicyLoader } from './PremiumOps';
+import { PlansVersionSection } from './PremiumPlans';
 
 /**
  * Tính năng & Premium › Gói Premium (D-089; was Premium › Cấu hình and Chính sách AI): Mua gói
@@ -121,7 +122,7 @@ export async function savePremiumConfig(
 
 // ---------- The tab ----------
 
-export const planSections = ['config', 'ai', 'campaigns'] as const;
+export const planSections = ['config', 'plans', 'ai', 'campaigns'] as const;
 export type PlanSection = (typeof planSections)[number];
 
 export function PremiumPlanLoader() {
@@ -207,6 +208,7 @@ export function PremiumPlanView({
           <ConfigSections config={draft} editable={canConfig} onChange={setDraft} />
         </>
       )}
+      {section === 'plans' && <PlansVersionSection config={data.config} onChanged={onChanged} />}
       {section === 'ai' && (
         // The limits themselves are edited in Cấu hình.
         <AiPolicyLoader onOpenLimits={() => setSection('config')} />

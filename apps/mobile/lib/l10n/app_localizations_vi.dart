@@ -18329,7 +18329,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Exclude => 'Không phù hợp với bé · áp dụng cho cả nhà';
 
   @override
-  String get pv2Restore => 'Khôi phục gợi ý';
+  String get pv2Restore => 'Khôi phục';
 
   @override
   String get pv2Intend => 'Mình sẽ thử';
@@ -18383,7 +18383,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2NoteText => 'Điều nhà mình muốn ghi nhớ';
 
   @override
-  String get pv2Shared => 'Chia sẻ với người được xem chăm sóc bé';
+  String get pv2Shared => 'Cả nhà dùng chung';
 
   @override
   String get pv2Personal => 'Chỉ riêng bạn';
@@ -18488,7 +18488,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.';
 
   @override
-  String get pv2History => 'Đã lưu, đã thử và đã ẩn';
+  String get pv2History => 'Lịch sử sử dụng';
 
   @override
   String get pv2Saved => 'Đã lưu';
@@ -19743,6 +19743,477 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get psTab => 'Kỷ vật';
+
+  @override
+  String get psTitle => 'In & giữ trên tay';
+
+  @override
+  String get psIntro => 'Từ những kỷ niệm của con, thành món quà cho cả nhà.';
+
+  @override
+  String get psSingle => 'Một khung';
+
+  @override
+  String get psTrio => 'Bộ 3 khung';
+
+  @override
+  String get psFive => 'Bộ 5 khung';
+
+  @override
+  String get psBook => 'Sách ảnh';
+
+  @override
+  String get psFrames => 'Khung đặt bàn';
+
+  @override
+  String get psBooks => 'Photo Book';
+
+  @override
+  String get psOrders => 'Đơn in của tôi';
+
+  @override
+  String get psPolicy => 'Giao hàng & đổi trả';
+
+  @override
+  String get psCustomize => 'Tuỳ chỉnh';
+
+  @override
+  String get psStyle => 'Phong cách';
+
+  @override
+  String get psMinimal => 'Tối giản';
+
+  @override
+  String get psPlayful => 'Đáng yêu';
+
+  @override
+  String get psTimeless => 'Cổ điển';
+
+  @override
+  String get psInSet => 'Trong bộ';
+
+  @override
+  String get psPortrait => 'Chân dung';
+
+  @override
+  String get psInfo => 'Thông tin bé';
+
+  @override
+  String get psCollage => 'Ghép 4 ảnh';
+
+  @override
+  String get psEdit => 'Sửa';
+
+  @override
+  String get psNext => 'Tiếp tục';
+
+  @override
+  String get psDone => 'Xong';
+
+  @override
+  String get psSave => 'Lưu nháp';
+
+  @override
+  String get psSaved => 'Đã lưu bản nháp';
+
+  @override
+  String get psSaving => 'Đang lưu…';
+
+  @override
+  String get psSaveFailed => 'Chưa lưu được. Thử lại trước khi rời màn hình.';
+
+  @override
+  String get psName => 'Tên trên khung';
+
+  @override
+  String get psMessage => 'Lời nhắn';
+
+  @override
+  String get psDefaultMessage => 'Cảm ơn con đã đến bên ba mẹ';
+
+  @override
+  String get psBirthDetails => 'Thông tin ngày sinh, cân nặng, chiều dài';
+
+  @override
+  String get psShowBirth => 'Hiện thông tin ngày sinh';
+
+  @override
+  String get psOccasion => 'Dịp kỷ niệm';
+
+  @override
+  String get psMonth => 'Đầy tháng';
+
+  @override
+  String get psHundred => '100 ngày';
+
+  @override
+  String get psBirthday => 'Sinh nhật';
+
+  @override
+  String get psCustom => 'Dịp riêng';
+
+  @override
+  String get psDate => 'Ngày trên bản in';
+
+  @override
+  String get psPrintTitle => 'Tiêu đề';
+
+  @override
+  String get psSafeArea =>
+      'Vùng nét đứt: giữ nội dung quan trọng bên trong để tránh bị cắt.';
+
+  @override
+  String get psPhotoChange => 'Đổi ảnh';
+
+  @override
+  String get psPhotosMissing => 'Thêm ảnh để hoàn thiện bản in';
+
+  @override
+  String get psPhotosHelp =>
+      'Chọn ảnh đã lưu trong Kỷ niệm. Ảnh và thông tin chỉ được dùng cho bản thiết kế này.';
+
+  @override
+  String get psNoPhotos =>
+      'Chưa có ảnh phù hợp. Hãy thêm ảnh vào Kỷ niệm rồi quay lại.';
+
+  @override
+  String get psChoose => 'Chọn ảnh';
+
+  @override
+  String get psOptions => 'Chọn kích thước & khung';
+
+  @override
+  String get psSize => 'Kích thước';
+
+  @override
+  String get psWhite => 'Classic · trắng';
+
+  @override
+  String get psWood => 'Classic · gỗ sáng';
+
+  @override
+  String get psGift => 'Premium · hộp quà';
+
+  @override
+  String get psAcrylic => 'Mặt acrylic an toàn · có chân đỡ để bàn';
+
+  @override
+  String get psPreview => 'Xem thiết kế';
+
+  @override
+  String get psFlat => 'Xem bản in phẳng';
+
+  @override
+  String get psDownload => 'Tải file để in';
+
+  @override
+  String get psOrder => 'Đặt in';
+
+  @override
+  String get psConfirm => 'Đơn in của bạn';
+
+  @override
+  String get psApproved =>
+      'Tôi đã kiểm tra ảnh, chữ, ngày và bố cục trên từng bản in.';
+
+  @override
+  String get psImmutable =>
+      'Đơn lưu đúng bản thiết kế đã duyệt. Sửa kỷ niệm sau này không làm thay đổi đơn.';
+
+  @override
+  String get psShipping => 'Giao đến đâu?';
+
+  @override
+  String get psRecipient => 'Người nhận';
+
+  @override
+  String get psPhone => 'Số điện thoại';
+
+  @override
+  String get psAddress => 'Địa chỉ đầy đủ';
+
+  @override
+  String get psCountry => 'Quốc gia giao hàng';
+
+  @override
+  String get psCountryHelp =>
+      'Hiện giao hàng tại Việt Nam. Ở quốc gia khác, bạn có thể tải file để in gần nhà.';
+
+  @override
+  String get psNeededBy => 'Cần nhận trước ngày (không bắt buộc)';
+
+  @override
+  String get psTooSoon =>
+      'Có thể không kịp ngày bạn cần. Chọn ngày muộn hơn hoặc tải file để in tại tiệm gần bạn.';
+
+  @override
+  String get psGiftDelivery => 'Gửi tặng';
+
+  @override
+  String get psGiftNote => 'Thiệp nhắn tặng';
+
+  @override
+  String get psSubtotal => 'Tiền sản phẩm';
+
+  @override
+  String get psShippingFee => 'Phí giao hàng';
+
+  @override
+  String get psTotal => 'Tổng cộng';
+
+  @override
+  String get psSubmit => 'Xác nhận đặt hàng';
+
+  @override
+  String get psOrderCreated => 'Đã nhận đơn in của bạn';
+
+  @override
+  String get psConfirmed => 'Đã xác nhận';
+
+  @override
+  String get psPrinting => 'Đang in';
+
+  @override
+  String get psShipped => 'Đang giao';
+
+  @override
+  String get psDelivered => 'Đã nhận hàng';
+
+  @override
+  String get psCancelled => 'Đã huỷ';
+
+  @override
+  String get psCopy => 'Sao chép';
+
+  @override
+  String get psCopied => 'Đã sao chép';
+
+  @override
+  String get psCancelOrder => 'Huỷ đơn';
+
+  @override
+  String get psCancelConfirm =>
+      'Huỷ yêu cầu đặt in này? Đơn sẽ không được chuyển sang sản xuất.';
+
+  @override
+  String get psKeep => 'Giữ đơn';
+
+  @override
+  String get psNoOrders => 'Chưa có đơn in';
+
+  @override
+  String get psNoOrdersHelp =>
+      'Bắt đầu từ một bộ khung hoặc cuốn sách của con.';
+
+  @override
+  String get psTracking => 'Mã vận đơn';
+
+  @override
+  String get psQuantity => 'Số lượng';
+
+  @override
+  String get psExportTitle => 'Tải file in';
+
+  @override
+  String get psPdf => 'PDF · bleed 3 mm · khuyên dùng';
+
+  @override
+  String get psJpg => 'JPG · 300 DPI · file ZIP';
+
+  @override
+  String get psPng => 'PNG · 300 DPI · file ZIP';
+
+  @override
+  String get psCropMarks => 'Dấu cắt (crop marks)';
+
+  @override
+  String get psExportHelp =>
+      'File được dựng từ ảnh gốc ở 300 DPI. In đúng kích thước, không chọn co giãn vừa trang. Màu in có thể khác màn hình.';
+
+  @override
+  String get psExportReady => 'File đã sẵn sàng';
+
+  @override
+  String get psExportReadyHelp =>
+      'Lưu file về máy trong vòng một giờ. Bạn có thể tạo lại nếu liên kết hết hạn.';
+
+  @override
+  String get psOpenFile => 'Lưu / chia sẻ file';
+
+  @override
+  String get psGenerating => 'Đang dựng file in… Bạn có thể cần chờ một chút.';
+
+  @override
+  String get psLowQuality => 'Ảnh có thể mờ khi in';
+
+  @override
+  String get psLowQualityHelp =>
+      'Một số ảnh có độ phân giải thấp hoặc chưa có thông tin kích thước. Đổi ảnh gốc rõ hơn hoặc chọn kích thước nhỏ.';
+
+  @override
+  String get psAcceptQuality => 'Vẫn tải file này';
+
+  @override
+  String get psUnavailable =>
+      'Đặt in chưa mở. Bạn vẫn có thể thiết kế và tải file để tự in.';
+
+  @override
+  String get psError =>
+      'Chưa thực hiện được. Kiểm tra kết nối rồi thử lại; bản thiết kế vẫn còn ở đây.';
+
+  @override
+  String get psPriceChanged =>
+      'Giá hoặc cấu hình đã thay đổi. Hãy kiểm tra lại tổng tiền trước khi đặt.';
+
+  @override
+  String get psInvalidForm =>
+      'Kiểm tra tên, số điện thoại Việt Nam và địa chỉ.';
+
+  @override
+  String get psRetry => 'Thử lại';
+
+  @override
+  String get psSamplePrice => 'Giá dự kiến · phí giao tính ở bước cuối';
+
+  @override
+  String get psSparseBook =>
+      'Ít ảnh cũng thành một cuốn sách đẹp. Các trang có thể dùng lại ảnh; bạn được đổi ảnh và lời nhắn trước khi in.';
+
+  @override
+  String get psBookPages24 => '24 trang';
+
+  @override
+  String get psBookPages40 => '40 trang';
+
+  @override
+  String get psPage => 'Trang';
+
+  @override
+  String get psReview => 'Viết đánh giá';
+
+  @override
+  String get psReviewMessage => 'Cảm nhận của bạn';
+
+  @override
+  String get psReviewHelp =>
+      'Chỉ người đã nhận hàng mới đánh giá được. Nội dung được duyệt trước khi công khai. Không ghi số điện thoại, địa chỉ hay thông tin riêng của bé.';
+
+  @override
+  String get psReviewSent => 'Đã gửi đánh giá để duyệt';
+
+  @override
+  String get psSendReview => 'Gửi đánh giá';
+
+  @override
+  String get psRating => 'Số sao';
+
+  @override
+  String get psNoReviews => 'Chưa có đánh giá từ người đã mua';
+
+  @override
+  String get psDetails => 'Chi tiết sản phẩm';
+
+  @override
+  String get psSpecs =>
+      'Ảnh in giấy lụa · khung trắng hoặc gỗ sáng · mặt acrylic · chân đỡ để bàn. Thông số và giá chính thức sẽ được xác nhận khi mở đặt in.';
+
+  @override
+  String get psResume => 'Tiếp tục bản nháp';
+
+  @override
+  String get psNewDesign => 'Tạo thiết kế mới';
+
+  @override
+  String get psForParents => 'Chức năng này dành cho ba mẹ cùng nuôi.';
+
+  @override
+  String get psNameRequired => 'Nhập tên để tiếp tục.';
+
+  @override
+  String get psClose => 'Đóng';
+
+  @override
+  String get psBirth => 'Chào đời';
+
+  @override
+  String get psUnsaved =>
+      'Bản nháp chưa lưu được. Bạn có muốn rời đi và bỏ các thay đổi chưa lưu?';
+
+  @override
+  String get psLeave => 'Rời đi';
+
+  @override
+  String get psViewOrder => 'Xem đơn';
+
+  @override
+  String get psReturn => 'Về Kỷ vật';
+
+  @override
+  String get psDeleteReview => 'Xoá đánh giá';
+
+  @override
+  String get psAllReviews => 'Tất cả';
+
+  @override
+  String get psVerifiedBuyer => 'Đã mua hàng';
+
+  @override
+  String get psVietnam => 'Việt Nam';
+
+  @override
+  String get psOtherCountry => 'Quốc gia khác';
+
+  @override
+  String get psOrderReview => 'Xác nhận đơn in';
+
+  @override
+  String get psManualOrderNote =>
+      'Bạn chưa cần thanh toán khi đặt hàng. Child Life sẽ liên hệ để xác nhận sản phẩm, ngày nhận và cách thanh toán trước khi in.';
+
+  @override
+  String get psPendingConfirmation => 'Chờ xác nhận';
+
+  @override
+  String get psOrderReceivedHelp =>
+      'Đã ghi nhận đơn của bạn. Child Life sẽ liên hệ để xác nhận trước khi in. Bạn có thể theo dõi trạng thái tại đây.';
+
+  @override
+  String get psEstimatedPriceNote =>
+      'Đây là giá dự kiến, gồm phí giao hàng đang hiển thị. Nếu có thay đổi, Child Life sẽ thống nhất lại với bạn trước khi in.';
+
+  @override
+  String get psEstimatedTotal => 'Tổng dự kiến';
+
+  @override
+  String get psProductNotOpen =>
+      'Sản phẩm này chưa mở nhận đơn. Bạn vẫn có thể thiết kế và tải file để tự in.';
+
+  @override
+  String get psCancelReason => 'Lý do huỷ';
+
+  @override
+  String get psCancelChangedMind => 'Thay đổi ý định';
+
+  @override
+  String get psCancelPrice => 'Giá sản phẩm';
+
+  @override
+  String get psCancelShipping => 'Phí giao hàng';
+
+  @override
+  String get psCancelDelivery => 'Thời gian nhận hàng';
+
+  @override
+  String get psCancelDesign => 'Thiết kế chưa phù hợp';
+
+  @override
+  String get psCancelUnreachable => 'Không liên hệ được';
+
+  @override
+  String get psCancelOther => 'Lý do khác';
+
+  @override
   String get axSwitcherInvited => 'Bạn được mời vào';
 
   @override
@@ -19813,6 +20284,216 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get axRemindersFirst => 'Tạo nhắc nhở đầu tiên';
+
+  @override
+  String psMadeFrom(String name) {
+    return 'Tạo từ kỷ niệm của $name';
+  }
+
+  @override
+  String psMadeFor(String occasion, String name) {
+    return '✨ Đã thiết kế riêng cho $occasion của $name';
+  }
+
+  @override
+  String psSetTitle(String occasion, String name) {
+    return 'Bộ khung $occasion của $name';
+  }
+
+  @override
+  String psHeroTitle(String occasion) {
+    return 'Bộ 3 khung đặt bàn · $occasion';
+  }
+
+  @override
+  String psBookTitle(String occasion, String name) {
+    return 'Cuốn sách $occasion của $name';
+  }
+
+  @override
+  String get psSelectionHelp =>
+      'Chọn số khung để xem và tự tay chỉnh thiết kế của con.';
+
+  @override
+  String get psNationwide => '🇻🇳 Giao toàn quốc';
+
+  @override
+  String get psSeeAll => 'Xem tất cả';
+
+  @override
+  String get psInformationFrame => 'Khung thông tin';
+
+  @override
+  String get psFirstYear => 'Năm đầu đời';
+
+  @override
+  String psFromPrice(String price) {
+    return 'từ $price';
+  }
+
+  @override
+  String get psChooseProduct => 'Chọn sản phẩm';
+
+  @override
+  String get psPopular => 'Phổ biến';
+
+  @override
+  String get psSetContents => 'Chân dung · Thông tin bé · Ghép ảnh';
+
+  @override
+  String get psPortraitHelp => 'Ảnh rõ nét nhất của con';
+
+  @override
+  String get psInfoHelp => 'Tên, ngày sinh, cân nặng, lời nhắn';
+
+  @override
+  String get psCollageHelp => '4 khoảnh khắc đáng yêu';
+
+  @override
+  String psFrameNumber(String number) {
+    return 'Khung $number';
+  }
+
+  @override
+  String get psFrameSizeHelpSmall => 'Khung nhỏ trang trí bàn';
+
+  @override
+  String get psFrameSizeHelpMedium => 'Khung để bàn tiêu chuẩn';
+
+  @override
+  String get psFrameSizeHelpLarge => 'Nổi bật trên bàn gallery';
+
+  @override
+  String get psRecommended => 'khuyên dùng';
+
+  @override
+  String get psAcrylicTitle => 'Mặt acrylic an toàn';
+
+  @override
+  String get psAcrylicHelp => 'Không vỡ khi vận chuyển · mặc định';
+
+  @override
+  String psDeliveryEstimate(String days) {
+    return 'Thời gian nhận dự kiến: khoảng $days ngày. Child Life sẽ liên hệ xác nhận trước khi in.';
+  }
+
+  @override
+  String get psConfirmStep => 'Bản in';
+
+  @override
+  String get psShippingStep => 'Giao hàng';
+
+  @override
+  String get psOrderReviewStep => 'Xác nhận';
+
+  @override
+  String get psPhoneHelp => 'Child Life gọi số này để xác nhận trước khi in.';
+
+  @override
+  String get psGiftHelp => 'Không kèm hoá đơn giá · thêm thiệp chúc';
+
+  @override
+  String get psPrintLocked => 'Bản in đã khoá';
+
+  @override
+  String get psInYourSet => 'Trong bộ gồm những gì?';
+
+  @override
+  String get psProductInfo => 'Thông số';
+
+  @override
+  String get psCustomerReviews => 'Đánh giá từ người đã mua';
+
+  @override
+  String get psShippingAndPayment => 'Giao hàng & xác nhận';
+
+  @override
+  String get psNoDepositTitle => 'Không cần thanh toán trước';
+
+  @override
+  String get psNoDepositHelp =>
+      'Gửi yêu cầu, Child Life sẽ liên hệ để thống nhất giá, ngày nhận và cách thanh toán.';
+
+  @override
+  String get psCustomizeFirst => 'Cá nhân hoá thiết kế';
+
+  @override
+  String get psBookHelp =>
+      'Mở ra xem những ảnh ba mẹ đã lưu — rồi tự tay sắp xếp, sửa từng trang.';
+
+  @override
+  String get psBookSourceNote =>
+      'Ảnh và lời nhắn lấy từ Kỷ niệm của bé — không tự thêm sự kiện chưa ghi.';
+
+  @override
+  String get psBookPageHelp => 'Chạm vào ảnh để thay · chạm vào chữ để sửa';
+
+  @override
+  String psBookPagesCount(String count) {
+    return '$count trang';
+  }
+
+  @override
+  String get psSuggested => 'Gợi ý';
+
+  @override
+  String get psUsePhoto => 'Dùng ảnh này';
+
+  @override
+  String psPickPhotoTitle(String number) {
+    return 'Chọn ảnh cho Khung $number';
+  }
+
+  @override
+  String get psPickPhotoHelp =>
+      'Ưu tiên ảnh rõ nét, thấy mặt bé, đủ độ phân giải để in.';
+
+  @override
+  String get psPreviewGallery => 'Xem ảnh sản phẩm';
+
+  @override
+  String get psPolicySummary => 'Xác nhận trước khi in · không cần cọc';
+
+  @override
+  String get psDownloadShort => 'Tải file';
+
+  @override
+  String get psShippingLater => 'Phí ship tính ở bước sau';
+
+  @override
+  String get psApprovedDetail =>
+      'Tôi đã kiểm tra tên, ngày và ảnh trên từng bản in. Child Life in đúng như bản xác nhận.';
+
+  @override
+  String get psHowStands => 'Khung đứng thế nào?';
+
+  @override
+  String get psStanding => 'Nghiêng 75°';
+
+  @override
+  String get psStandingHelp => 'Chân đỡ bật ra, đứng vững trên bàn';
+
+  @override
+  String get psFrameBack => 'Mặt sau';
+
+  @override
+  String get psFrameBackHelp => 'Chân đỡ + móc treo tường';
+
+  @override
+  String get psFrameSide => 'Góc nghiêng';
+
+  @override
+  String get psFrameSideHelp => 'Gọn trên kệ, tủ đầu giường';
+
+  @override
+  String get psSizeComparison => 'So với điện thoại';
+
+  @override
+  String get psComparisonHelp =>
+      'Minh hoạ kích thước · điện thoại khoảng 15 cm';
+
+  @override
+  String get psFormat => 'Định dạng';
 
   @override
   String get hoSleep => 'Ngủ';
@@ -19950,6 +20631,220 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get psCheckout => 'Đặt hàng';
+
+  @override
+  String get psCheckoutProof => 'Tôi đã kiểm tra tên, ngày và ảnh trên bản in';
+
+  @override
+  String get psReviewPrint => 'Xem lại bản in';
+
+  @override
+  String get psDeliverTo => 'Giao tới';
+
+  @override
+  String get psAddAddress => 'Thêm địa chỉ giao hàng';
+
+  @override
+  String get psPayment => 'Thanh toán';
+
+  @override
+  String get psCod => 'Thanh toán khi nhận hàng';
+
+  @override
+  String get psCodHelp =>
+      'Kiểm tra hàng rồi trả tiền mặt hoặc chuyển khoản cho shipper';
+
+  @override
+  String get psTransfer => 'Chuyển khoản / VietQR ngay';
+
+  @override
+  String get psTransferHelp =>
+      'Không bắt buộc · Child Life sẽ liên hệ sau khi đặt';
+
+  @override
+  String get psWrap => 'Gói quà & thiệp viết tay';
+
+  @override
+  String get psCheckoutPolicy =>
+      'Sản phẩm in riêng cho bé: đổi mới miễn phí khi lỗi in hoặc hư hỏng khi giao (báo trong 48 giờ). Xem chính sách giao hàng & đổi trả.';
+
+  @override
+  String get psOrderSuccess => 'Đặt hàng thành công!';
+
+  @override
+  String psOrderCode(String code) {
+    return 'Mã đơn $code';
+  }
+
+  @override
+  String psOrderSuccessHelp(String name) {
+    return 'Đã ghi nhận bản in của $name. Child Life sẽ liên hệ xác nhận trước khi in. Bạn không cần trả trước.';
+  }
+
+  @override
+  String get psOrderAccepted => 'Đã nhận đơn';
+
+  @override
+  String get psProduction => 'In & đóng khung';
+
+  @override
+  String get psDelivery => 'Giao hàng';
+
+  @override
+  String get psPayOnReceipt => 'Thanh toán khi nhận';
+
+  @override
+  String get psBackMemories => 'Về Kỷ niệm';
+
+  @override
+  String psExpectedDays(String days) {
+    return 'Khoảng $days ngày';
+  }
+
+  @override
+  String get psFrameLabel => 'Khung';
+
+  @override
+  String get psSetSize => 'Kích thước (cả bộ)';
+
+  @override
+  String get psBookOptions => 'Tuỳ chọn sách';
+
+  @override
+  String get psBookStyle => 'Phong cách sách';
+
+  @override
+  String get psQrVideo => 'Thêm mã QR xem video kỷ niệm';
+
+  @override
+  String get psComingSoon => 'Sắp có';
+
+  @override
+  String psBookMonth(String month) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String get psBookBirth => 'Chào đời';
+
+  @override
+  String get psBookMessages => 'Lời nhắn';
+
+  @override
+  String psBookMonthPhotos(String month, String name) {
+    return 'Ảnh tháng $month của $name';
+  }
+
+  @override
+  String get psUnused => 'Chưa dùng';
+
+  @override
+  String get psUsed => 'Đã dùng';
+
+  @override
+  String get psFavorites => 'Yêu thích';
+
+  @override
+  String get psVideos => 'Video';
+
+  @override
+  String get psBookLibraryHelp =>
+      'Chạm ảnh để thêm vào trang đang mở · giữ và kéo lên trang để thay ảnh';
+
+  @override
+  String get psFullscreen => 'Toàn màn hình';
+
+  @override
+  String get psLandscape => 'Ngang';
+
+  @override
+  String get psPortraitMode => 'Dọc';
+
+  @override
+  String get psEditPage => 'Sửa trang';
+
+  @override
+  String get psBookFullscreenHelp =>
+      'Vuốt trái/phải để lật · chạm để ẩn thanh điều khiển';
+
+  @override
+  String get psBookImages => 'Ảnh';
+
+  @override
+  String get psBookText => 'Chữ';
+
+  @override
+  String get psBookLayout => 'Bố cục';
+
+  @override
+  String get psBookSubtitle => 'Dòng phụ';
+
+  @override
+  String get psBookTitleHint => 'Ngày lấy từ cột mốc ba mẹ đã ghi';
+
+  @override
+  String get psFrameMessageHint =>
+      'Gợi ý: “100 ngày yêu thương” · “Con là món quà”';
+
+  @override
+  String get psBirthHelp => 'Lấy từ hồ sơ & lần đo đầu tiên · sửa được';
+
+  @override
+  String get psBirthDateLabel => 'NGÀY SINH';
+
+  @override
+  String get psBirthMeasureLabel => 'CÂN NẶNG · CHIỀU DÀI';
+
+  @override
+  String psBookPagesNote(String count) {
+    return '$count trang · tự lưu bản nháp';
+  }
+
+  @override
+  String get psContactPrint => 'Cần in theo yêu cầu riêng?';
+
+  @override
+  String get psContactPrintHelp => 'Liên hệ Child Life để được tư vấn';
+
+  @override
+  String psFrameDelivery(String from, String to) {
+    return 'Đặt hôm nay, nhận khoảng $from–$to.';
+  }
+
+  @override
+  String get psBookSparseMonth =>
+      'Tháng này còn ít ảnh. Bạn có thể thêm ảnh hoặc tiếp tục với những kỷ niệm đã có.';
+
+  @override
+  String psOpenPage(String page, String total) {
+    return 'Trang $page / $total';
+  }
+
+  @override
+  String psDetailsPreview(String name) {
+    return 'Xem thiết kế của $name';
+  }
+
+  @override
+  String get psPdfShort => 'Tải PDF';
+
+  @override
+  String get psNoReviewsYet => 'Chưa có đánh giá từ người mua';
+
+  @override
+  String get psPendingShort => 'Chờ xác nhận';
+
+  @override
+  String get psMaterialShortWhite => 'Trắng';
+
+  @override
+  String get psMaterialShortWood => 'Gỗ sáng';
+
+  @override
+  String get psNoAdvancePayment => 'Trả khi nhận hàng';
+
+  @override
   String dutyOnNow(String name, String time) {
     return '$name đang trông · từ $time';
   }
@@ -20011,10 +20906,917 @@ class AppLocalizationsVi extends AppLocalizations {
   String get hoTakeOver => 'Tôi nhận trông bé';
 
   @override
+  String get psGalleryTable => 'Trên bàn';
+
+  @override
+  String get psGalleryAngle => 'Nghiêng';
+
+  @override
+  String get psPolicyIntro =>
+      'Áp dụng cho khung ảnh và Photo Book in tại Việt Nam.';
+
+  @override
+  String get psPolicyCancelTitle => 'Huỷ trước khi in: miễn phí';
+
+  @override
+  String get psPolicyCancelHelp =>
+      'Huỷ trong app khi đơn chưa vào xưởng in. Sản phẩm đang in hoặc đang giao không thể huỷ.';
+
+  @override
+  String get psPolicyReturnTitle => 'In lại miễn phí';
+
+  @override
+  String get psPolicyReturnHelp =>
+      'Lỗi in, sai so với bản bạn đã duyệt hoặc hư hỏng khi vận chuyển: báo trong 48 giờ và gửi ảnh khi liên hệ hỗ trợ. Không đổi trả vì đổi ý với nội dung đã xác nhận.';
+
+  @override
+  String get psPolicyPrivacyTitle => 'Đóng gói & bảo vệ ảnh';
+
+  @override
+  String get psPolicyPrivacyHelp =>
+      'File in chỉ dùng để thực hiện đơn của bạn. Khung được đóng gói bảo vệ khi vận chuyển.';
+
+  @override
+  String get psPolicyDeliveryHelp =>
+      'Child Life xác nhận ngày giao dự kiến và tổng tiền trước khi chuyển đơn sang sản xuất.';
+
+  @override
+  String psPreviewPriceCaption(String count, String size) {
+    return '$count khung $size · chưa gồm ship';
+  }
+
+  @override
+  String psBookUsedPage(String page) {
+    return 'Trang $page';
+  }
+
+  @override
+  String psBookMonthSummary(String from, String to, String count, String used) {
+    return '$from – $to · $count ảnh · $used đã dùng trong sách';
+  }
+
+  @override
+  String get psAutoSave => 'Tự lưu';
+
+  @override
+  String psAutoSavedAt(String time) {
+    return 'Tự lưu · $time';
+  }
+
+  @override
   String get axWidgetCareDuty => 'Ai đang trông bé';
 
   @override
   String get rhSeeHow => 'Xem cách làm';
+
+  @override
+  String get pv2Crest => 'CHILD LIFE PREMIUM';
+
+  @override
+  String get pv2SeePremium => 'Xem Premium';
+
+  @override
+  String get pv2SeePlans => 'Xem các gói';
+
+  @override
+  String get pv2GotIt => 'Đã hiểu';
+
+  @override
+  String pv2E01Title(String name) {
+    return 'Mẫu “$name” thuộc Premium';
+  }
+
+  @override
+  String pv2E01Body(int videos) {
+    return 'Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và $videos lượt xuất video mỗi tháng.';
+  }
+
+  @override
+  String get pv2E01Secondary => 'Dùng mẫu miễn phí tương tự';
+
+  @override
+  String pv2E02Title(String name) {
+    return 'Mẫu thiệp “$name” thuộc Premium';
+  }
+
+  @override
+  String get pv2E02Body =>
+      'Premium mở toàn bộ mẫu thiệp & video cao cấp. Ảnh và lời nhắn bạn đã chọn sẽ được giữ.';
+
+  @override
+  String get pv2E02Secondary => 'Chọn mẫu miễn phí';
+
+  @override
+  String get pv2E04Title => 'Bản nháp này dùng mẫu cao cấp';
+
+  @override
+  String get pv2E04Body =>
+      'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.';
+
+  @override
+  String get pv2E04Secondary => 'Đổi sang mẫu miễn phí';
+
+  @override
+  String pv2E03Title(int n) {
+    return 'Bạn đã dùng $n lượt xuất video trải nghiệm';
+  }
+
+  @override
+  String pv2E03Body(int m) {
+    return 'Premium có $m lượt xuất video mỗi tháng. Bản nháp này vẫn được giữ.';
+  }
+
+  @override
+  String get pv2E03Secondary => 'Lưu bản nháp, để sau';
+
+  @override
+  String pv2E03PremiumTitle(int n) {
+    return 'Đã dùng hết $n lượt video tháng này';
+  }
+
+  @override
+  String pv2E03PremiumBody(String date) {
+    return 'Lượt mới được cấp ngày $date. Bản nháp này vẫn được giữ.';
+  }
+
+  @override
+  String pv2E07Title(int n) {
+    return 'Lumi đã dùng hết $n credit tháng này';
+  }
+
+  @override
+  String pv2E07Body(String date) {
+    return 'Credit mới được cấp ngày $date. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.';
+  }
+
+  @override
+  String get pv2E07Secondary => 'Xem mức dùng của gia đình';
+
+  @override
+  String pv2E10Title(String gb) {
+    return 'Hết $gb GB của gói Free';
+  }
+
+  @override
+  String pv2E10Body(String premiumGb) {
+    return 'Ảnh, video mới vẫn an toàn trên máy. Premium có $premiumGb GB cho cả nhà, tự tải tiếp sau khi nâng cấp.';
+  }
+
+  @override
+  String get pv2ManageMedia => 'Quản lý ảnh/video';
+
+  @override
+  String get pv2E11Title => 'Tự lưu kỷ niệm đang tạm dừng';
+
+  @override
+  String pv2E11Body(String gb, String premiumGb) {
+    return 'Gói Free đã dùng hết $gb GB. Premium có $premiumGb GB cho cả nhà, Tự lưu chạy tiếp ngay.';
+  }
+
+  @override
+  String pv2E12Title(int used, int limit) {
+    return 'Gia đình đã dùng $used/$limit chỗ người chăm sóc';
+  }
+
+  @override
+  String pv2E12Body(int premium) {
+    return 'Premium có $premium chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.';
+  }
+
+  @override
+  String get pv2E12Secondary => 'Mời làm người thân';
+
+  @override
+  String pv2E12FullTitle(int limit) {
+    return 'Gia đình đã dùng hết $limit chỗ người ghi';
+  }
+
+  @override
+  String get pv2E12FullBody =>
+      'Mời làm người thân để cùng xem album, hoặc đổi quyền một người đang ghi.';
+
+  @override
+  String get pv2E08Title => 'Nhà mình sắp hết chỗ lưu kỷ niệm';
+
+  @override
+  String pv2E08BodyPremium(int pct, String gb) {
+    return 'Đã dùng $pct% của $gb GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.';
+  }
+
+  @override
+  String pv2E09Title(String gb) {
+    return 'Đã dùng hết $gb GB';
+  }
+
+  @override
+  String get pv2E09BodyPremium =>
+      'Ảnh, video mới đang chờ và sẽ tự tải tiếp sau khi thêm dung lượng. Vẫn xem, tải và xoá nội dung cũ bình thường.';
+
+  @override
+  String get pv2StorageInlineFreeTitle =>
+      'Thêm chỗ cho những kỷ niệm tiếp theo';
+
+  @override
+  String pv2StorageInlineFreeBody(String premiumGb) {
+    return 'Premium có $premiumGb GB cho cả nhà, ảnh mới cứ thế được lưu.';
+  }
+
+  @override
+  String get pv2AddStorage => 'Thêm dung lượng';
+
+  @override
+  String get pv2E13Title => 'Child Life Premium';
+
+  @override
+  String pv2E13Body(int videos, int credits, String gb, String price) {
+    return '$videos video mỗi tháng, $credits credit Lumi, mẫu cao cấp và $gb GB cho cả nhà · $price/tháng.';
+  }
+
+  @override
+  String pv2HeadVideo(String name) {
+    return 'Giữ tháng này của $name thành một câu chuyện';
+  }
+
+  @override
+  String pv2HeadCard(String name) {
+    return 'Thiệp xứng với tháng đầu của $name';
+  }
+
+  @override
+  String pv2HeadLumi(String name) {
+    return 'Tiếp tục hỏi Lumi về $name';
+  }
+
+  @override
+  String get pv2HeadStorage => 'Thêm chỗ cho kỷ niệm tiếp theo';
+
+  @override
+  String pv2HeadCaregivers(String name) {
+    return 'Để cả nhà cùng chăm $name';
+  }
+
+  @override
+  String get pv2HeadExplore => 'Những năm đầu của con, giữ trọn vẹn hơn';
+
+  @override
+  String pv2ReasonTemplate(String name) {
+    return 'Mẫu “$name” và ảnh bạn chọn vẫn được giữ.';
+  }
+
+  @override
+  String get pv2ReasonVideo => 'Bản nháp và ảnh bạn chọn vẫn được giữ.';
+
+  @override
+  String pv2ReasonLumi(int n) {
+    return 'Câu hỏi của bạn đang chờ · đã dùng hết $n credit trải nghiệm.';
+  }
+
+  @override
+  String pv2ReasonStorage(String used, String limit) {
+    return 'Đã dùng $used / $limit · mục mới vẫn an toàn trên máy.';
+  }
+
+  @override
+  String pv2ReasonCaregivers(int used, int limit) {
+    return 'Gia đình đã dùng $used / $limit chỗ người chăm sóc của gói Free.';
+  }
+
+  @override
+  String get pv2ReasonMember => 'Có trong Premium — gói dùng chung của cả nhà.';
+
+  @override
+  String get pv2CardVideoEyebrow => 'VIDEO KỶ NIỆM';
+
+  @override
+  String get pv2CardVideoTitle => 'Những ảnh rời, thành câu chuyện';
+
+  @override
+  String get pv2CardVideoBody =>
+      'Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.';
+
+  @override
+  String pv2CardVideoLimit(int n) {
+    return '$n video mỗi tháng';
+  }
+
+  @override
+  String get pv2CardVideoDemo1 => 'Một tháng trước, nhà mình đón con.';
+
+  @override
+  String get pv2CardVideoDemo2 => 'Ngày đầu về nhà';
+
+  @override
+  String get pv2CardCardEyebrow => 'MẪU CAO CẤP';
+
+  @override
+  String get pv2CardCardTitle => 'Thiệp dành riêng cho con';
+
+  @override
+  String get pv2CardCardBody =>
+      'Thêm tên, lời thương và đổi phong cách chỉ với một chạm.';
+
+  @override
+  String get pv2CardCardLimit => 'Toàn bộ mẫu cao cấp · Việt – Anh';
+
+  @override
+  String get pv2CardCardDemo => '100 NGÀY';
+
+  @override
+  String get pv2CardLumiEyebrow => 'LUMI MỖI THÁNG';
+
+  @override
+  String get pv2CardLumiTitle => 'Hỏi một câu, Lumi tóm tắt giúp';
+
+  @override
+  String get pv2CardLumiBody =>
+      'Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.';
+
+  @override
+  String pv2CardLumiLimit(int n) {
+    return '$n credit mỗi tháng';
+  }
+
+  @override
+  String get pv2CardLumiDemoQ => 'Hôm nay con bú thế nào?';
+
+  @override
+  String get pv2CardLumiDemoA => 'Đến 14:20: 3 cữ bú bình · 390 ml';
+
+  @override
+  String get pv2CardLumiDemoSource => 'Theo nhật ký đã ghi';
+
+  @override
+  String get pv2CardRhythmEyebrow => 'HIỂU NHỊP CON';
+
+  @override
+  String get pv2CardRhythmTitle => 'Lumi nhìn lại tuần giúp bạn';
+
+  @override
+  String get pv2CardRhythmBody =>
+      'Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.';
+
+  @override
+  String pv2CardRhythmLimit(int n) {
+    return 'Gồm trong $n credit mỗi tháng';
+  }
+
+  @override
+  String get pv2CardRhythmDemoLast => 'Tuần trước';
+
+  @override
+  String get pv2CardRhythmDemoThis => 'Tuần này';
+
+  @override
+  String get pv2CardStorageEyebrow => 'DUNG LƯỢNG';
+
+  @override
+  String get pv2CardStorageTitle => 'Ảnh mới cứ thế được lưu';
+
+  @override
+  String get pv2CardStorageBody =>
+      'Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.';
+
+  @override
+  String pv2CardStorageLimit(String gb) {
+    return '$gb GB cho cả nhà · cần thêm thì mua 20/50 GB riêng';
+  }
+
+  @override
+  String get pv2CardStorageDemo => 'Đã tự lưu 12 ảnh mới hôm nay';
+
+  @override
+  String get pv2CardCaregiversEyebrow => 'CẢ NHÀ CÙNG CHĂM';
+
+  @override
+  String get pv2CardCaregiversTitle => 'Cả nhà cùng chăm, không hỏi lại';
+
+  @override
+  String get pv2CardCaregiversBody =>
+      'Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.';
+
+  @override
+  String pv2CardCaregiversLimit(int premium, int free) {
+    return 'Thêm chỗ cho tối đa $premium người cùng chăm (Free: $free)';
+  }
+
+  @override
+  String get pv2CardCaregiversDemo1 => 'Mẹ · Đã ghi cữ bú 120 ml';
+
+  @override
+  String get pv2CardCaregiversDemo2 => 'Ba · Bắt đầu giấc ngủ';
+
+  @override
+  String get pv2CompareTitle => 'Free và Premium';
+
+  @override
+  String get pv2CompareBenefit => 'Quyền lợi';
+
+  @override
+  String get pv2YouNeed => 'Bạn đang cần';
+
+  @override
+  String get pv2RowLumi => 'Credit Lumi';
+
+  @override
+  String pv2RowLumiFree(int n) {
+    return '$n credit trải nghiệm một lần';
+  }
+
+  @override
+  String pv2RowLumiPremium(int n) {
+    return '$n credit/tháng';
+  }
+
+  @override
+  String get pv2RowStorage => 'Dung lượng';
+
+  @override
+  String pv2RowStoragePremium(String gb) {
+    return '$gb GB · mua thêm khi cần';
+  }
+
+  @override
+  String get pv2RowVideo => 'Xuất video';
+
+  @override
+  String pv2RowVideoFree(int n) {
+    return '$n lượt trải nghiệm một lần';
+  }
+
+  @override
+  String pv2RowVideoPremium(int n) {
+    return '$n lượt/tháng';
+  }
+
+  @override
+  String get pv2RowTemplates => 'Mẫu thiệp & video';
+
+  @override
+  String get pv2RowTemplatesFree => 'Mẫu cơ bản · xem trước mẫu cao cấp';
+
+  @override
+  String get pv2RowTemplatesPremium => 'Toàn bộ mẫu cao cấp';
+
+  @override
+  String get pv2RowCaregivers => 'Người chăm sóc';
+
+  @override
+  String pv2RowPeople(int n) {
+    return '$n người';
+  }
+
+  @override
+  String get pv2RowRelatives => 'Người thân xem album';
+
+  @override
+  String get pv2Unlimited => 'Không giới hạn';
+
+  @override
+  String get pv2PromiseCancel => 'Huỷ bất cứ lúc nào';
+
+  @override
+  String get pv2PromiseNoTopUps => 'Không bán credit lẻ';
+
+  @override
+  String get pv2PromiseYours => 'Kỷ niệm luôn là của bạn';
+
+  @override
+  String get pv2PeriodYear => 'Theo năm';
+
+  @override
+  String get pv2PeriodMonth => 'Theo tháng';
+
+  @override
+  String pv2PerMonthApprox(String price) {
+    return '≈ $price/tháng';
+  }
+
+  @override
+  String get pv2EachMonth => 'mỗi tháng';
+
+  @override
+  String pv2SubscribeYear(String price) {
+    return 'Đăng ký Premium · $price/năm';
+  }
+
+  @override
+  String pv2SubscribeMonth(String price) {
+    return 'Đăng ký Premium · $price/tháng';
+  }
+
+  @override
+  String pv2LegalYear(String price, String store) {
+    return 'Thanh toán $price hôm nay · tự gia hạn mỗi năm · huỷ trong $store bất cứ lúc nào';
+  }
+
+  @override
+  String pv2LegalMonth(String price, String store) {
+    return 'Thanh toán $price hôm nay · tự gia hạn mỗi tháng · huỷ trong $store bất cứ lúc nào';
+  }
+
+  @override
+  String get pv2SoonTitle => 'Sắp mở đăng ký trong app';
+
+  @override
+  String get pv2SoonBody =>
+      'Gói và giá như trên. Bạn sẽ đăng ký được ngay trong Child Life.';
+
+  @override
+  String get pv2HasPremium => 'Nhà mình đã có Premium';
+
+  @override
+  String get pv2OpenFamilyPlan => 'Xem gói của gia đình';
+
+  @override
+  String pv2ManagedBy(String name) {
+    return 'Gói của nhà do $name quản lý';
+  }
+
+  @override
+  String pv2OnlyManager(String name) {
+    return 'Chỉ $name có thể nâng cấp cho cả nhà';
+  }
+
+  @override
+  String pv2AskManager(String name) {
+    return 'Nhờ $name nâng cấp';
+  }
+
+  @override
+  String pv2AskPrivacy(String name) {
+    return '$name chỉ nhận lời nhắn ngắn, không thấy bản nháp hay câu hỏi của bạn.';
+  }
+
+  @override
+  String get pv2AskMessage =>
+      'Mình muốn dùng Child Life Premium cho cả nhà. Bạn nâng cấp giúp mình trong Tôi › Gói của gia đình nhé.';
+
+  @override
+  String get pv2TheManager => 'người quản lý';
+
+  @override
+  String get pv2PlanTitle => 'Gói của gia đình';
+
+  @override
+  String get pv2InUse => 'Đang dùng';
+
+  @override
+  String pv2ManagerYou(String name) {
+    return 'Người quản lý: $name (bạn)';
+  }
+
+  @override
+  String pv2ManagerOther(String name) {
+    return 'Quản lý bởi $name';
+  }
+
+  @override
+  String get pv2LimitsTitle => 'Hạn mức';
+
+  @override
+  String get pv2Lumi => 'Lumi';
+
+  @override
+  String get pv2LumiTrial => 'Lumi · trải nghiệm';
+
+  @override
+  String get pv2Video => 'Video kỷ niệm';
+
+  @override
+  String get pv2VideoTrial => 'Video · trải nghiệm';
+
+  @override
+  String get pv2Storage => 'Dung lượng';
+
+  @override
+  String pv2CreditsLeft(int left, int limit) {
+    return 'còn $left / $limit credit';
+  }
+
+  @override
+  String pv2ExportsLeft(int left, int limit) {
+    return 'còn $left / $limit lượt';
+  }
+
+  @override
+  String pv2StorageOf(String used, String limit) {
+    return '$used / $limit';
+  }
+
+  @override
+  String pv2RefillOn(String date) {
+    return 'Cấp lại $date';
+  }
+
+  @override
+  String get pv2TrialOnce => 'Dùng một lần, không cấp lại';
+
+  @override
+  String get pv2NextRefill => 'Bổ sung tiếp';
+
+  @override
+  String pv2NextRefillValue(String date) {
+    return '$date · mỗi tháng theo ngày đăng ký';
+  }
+
+  @override
+  String get pv2Renews => 'Gia hạn';
+
+  @override
+  String get pv2IfCancel => 'Nếu huỷ';
+
+  @override
+  String pv2IfCancelValue(String date) {
+    return 'Premium còn tới $date; sau đó về Free. Kỷ niệm, nhật ký, video đã xuất vẫn xem và tải được.';
+  }
+
+  @override
+  String pv2FreeUpsellTitle(String name) {
+    return 'Mỗi tháng, thêm một câu chuyện của $name';
+  }
+
+  @override
+  String get pv2FreeUpsellBody =>
+      'Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.';
+
+  @override
+  String get pv2BuyStorage => 'Mua thêm dung lượng';
+
+  @override
+  String get pv2HistoryMine => 'Lịch sử sử dụng của tôi';
+
+  @override
+  String get pv2HistorySub => 'Theo người và tác vụ';
+
+  @override
+  String get pv2ManageRenewal => 'Quản lý gia hạn';
+
+  @override
+  String pv2OpenStore(String store) {
+    return 'Mở $store';
+  }
+
+  @override
+  String pv2MemberNote(String name) {
+    return 'Chỉ $name có thể đổi, gia hạn hoặc huỷ gói. Bạn vẫn dùng mọi quyền lợi của gói.';
+  }
+
+  @override
+  String get pv2Seats => 'Người ghi';
+
+  @override
+  String pv2SeatsOf(int used, int limit) {
+    return '$used / $limit chỗ';
+  }
+
+  @override
+  String pv2DowngradedBanner(String date) {
+    return 'Nhà mình đã về Free từ $date. Không có gì bị xoá.';
+  }
+
+  @override
+  String get pv2DowngradedBannerNoDate =>
+      'Nhà mình đang dùng Free. Không có gì bị xoá.';
+
+  @override
+  String pv2OverStorageTitle(String used, String limit) {
+    return 'Vượt dung lượng · $used / $limit';
+  }
+
+  @override
+  String pv2OverStorageBody(String limit) {
+    return 'Mọi ảnh, video vẫn xem và tải về được. Tạm dừng tải ảnh mới cho tới khi dưới $limit.';
+  }
+
+  @override
+  String pv2OverSeatsTitle(int used, int limit) {
+    return 'Vượt chỗ người chăm sóc · $used / $limit';
+  }
+
+  @override
+  String pv2OverSeatsBody(int limit) {
+    return 'Chọn $limit người giữ quyền ghi chăm sóc. Người còn lại tạm chỉ xem, không bị xoá.';
+  }
+
+  @override
+  String get pv2ChoosePeople => 'Chọn người';
+
+  @override
+  String get pv2ExportData => 'Xuất dữ liệu';
+
+  @override
+  String get pv2UpgradeAgain => 'Nâng lại Premium';
+
+  @override
+  String get pv2SuspendedNote =>
+      'Bạn đang tạm chỉ xem vì gói Free có ít chỗ người ghi hơn. Mọi thứ vẫn còn nguyên.';
+
+  @override
+  String get pv2FilterAll => 'Tất cả';
+
+  @override
+  String get pv2FilterLumi => 'Lumi';
+
+  @override
+  String get pv2FilterVideo => 'Video';
+
+  @override
+  String get pv2FilterGrants => 'Cấp & hoàn';
+
+  @override
+  String get pv2HistoryEmpty => 'Chưa có gì được dùng.';
+
+  @override
+  String get pv2HistoryError => 'Chưa tải được lịch sử. Thử lại khi có mạng.';
+
+  @override
+  String get pv2HistoryPrivacy =>
+      'Chỉ hiện người, loại tác vụ và số lượng. Nội dung câu hỏi và trả lời không hiển thị ở đây.';
+
+  @override
+  String get pv2System => 'Hệ thống';
+
+  @override
+  String get pv2Someone => 'Thành viên';
+
+  @override
+  String get pv2TaskLumiChat => 'Lumi · Hỏi đáp';
+
+  @override
+  String get pv2TaskLumiSummary => 'Lumi · Tóm tắt hôm nay';
+
+  @override
+  String get pv2TaskLumiPhoto => 'Lumi · Đọc ảnh';
+
+  @override
+  String get pv2TaskVideoExport => 'Video · Xuất video';
+
+  @override
+  String get pv2TaskLumiTrial => 'Credit trải nghiệm';
+
+  @override
+  String get pv2TaskLumiCycle => 'Cấp credit tháng';
+
+  @override
+  String get pv2TaskVideoTrial => 'Lượt video trải nghiệm';
+
+  @override
+  String get pv2TaskVideoCycle => 'Cấp lượt video tháng';
+
+  @override
+  String get pv2TaskLumiGrant => 'Thêm credit từ hỗ trợ';
+
+  @override
+  String get pv2TaskVideoGrant => 'Thêm lượt video từ hỗ trợ';
+
+  @override
+  String get pv2TaskRefundLumi => 'Hoàn credit · lỗi';
+
+  @override
+  String get pv2TaskRefundVideo => 'Hoàn lượt video';
+
+  @override
+  String pv2AmountExports(String amount) {
+    return '$amount lượt';
+  }
+
+  @override
+  String get pv2Held => 'đang giữ';
+
+  @override
+  String pv2Month(String month) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String get pv2PickTitle => 'Ai giữ quyền ghi chăm sóc?';
+
+  @override
+  String pv2PickBody(int limit) {
+    return 'Gói hiện tại có $limit chỗ. Người không chọn vẫn xem được mọi thứ và quay lại khi nhà mình nâng gói.';
+  }
+
+  @override
+  String pv2PickManager(String relation) {
+    return '$relation · người quản lý';
+  }
+
+  @override
+  String pv2PickSave(int chosen, int limit) {
+    return 'Lưu · $chosen/$limit';
+  }
+
+  @override
+  String get pv2PickSaved => 'Đã lưu. Người không chọn sẽ nhận thông báo nhẹ.';
+
+  @override
+  String get pv2PickFailed => 'Chưa lưu được. Thử lại nhé.';
+
+  @override
+  String pv2You(String name) {
+    return '$name (bạn)';
+  }
+
+  @override
+  String get pv2CancelTitle => 'Huỷ gia hạn Premium';
+
+  @override
+  String pv2CancelLead(String date) {
+    return 'Premium vẫn dùng được tới hết $date.';
+  }
+
+  @override
+  String get pv2CancelLeadNoDate => 'Premium vẫn dùng được tới hết kỳ đã trả.';
+
+  @override
+  String get pv2CancelAfter => 'Sau ngày đó, nhà mình về Free';
+
+  @override
+  String get pv2CancelKeep => 'Giữ nguyên';
+
+  @override
+  String get pv2CancelKeepBody => 'Kỷ niệm, nhật ký, video đã xuất, thành viên';
+
+  @override
+  String pv2CancelStorage(String used, String free) {
+    return 'Dung lượng $used > $free';
+  }
+
+  @override
+  String get pv2CancelStorageBody =>
+      'Không xoá; tạm dừng tải ảnh mới cho tới khi dọn hoặc nâng lại';
+
+  @override
+  String pv2CancelSeats(int used, int free) {
+    return '$used người ghi > $free chỗ';
+  }
+
+  @override
+  String pv2CancelSeatsBody(int free) {
+    return 'Không xoá ai; bạn chọn $free người giữ quyền ghi';
+  }
+
+  @override
+  String get pv2CancelTemplates => 'Bản nháp dùng mẫu Premium';
+
+  @override
+  String get pv2CancelTemplatesBody =>
+      'Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản';
+
+  @override
+  String get pv2KeepPremium => 'Giữ Premium';
+
+  @override
+  String pv2ContinueCancel(String store) {
+    return 'Tiếp tục huỷ trong $store';
+  }
+
+  @override
+  String get pv2AddOnHead => 'Thêm chỗ cho những ngày con lớn lên.';
+
+  @override
+  String get pv2AddOnUsing => 'Đang dùng';
+
+  @override
+  String get pv2AddOnUsed => 'Đã dùng';
+
+  @override
+  String pv2AddOnOption(int gb) {
+    return 'Thêm $gb GB';
+  }
+
+  @override
+  String pv2AddOnTotal(int gb) {
+    return 'Tổng $gb GB cho cả nhà';
+  }
+
+  @override
+  String pv2PerYear(String price) {
+    return '$price/năm';
+  }
+
+  @override
+  String pv2OrPerMonth(String price) {
+    return 'hoặc $price/tháng';
+  }
+
+  @override
+  String get pv2AddOnNote =>
+      'Dùng chung cho cả gia đình · gia hạn cùng kỳ với Premium · huỷ bất cứ lúc nào.';
+
+  @override
+  String get pv2AddOnSoon =>
+      'Sắp có · mua thêm dung lượng mở cùng lúc với đăng ký trong app.';
+
+  @override
+  String get pv2AddOnPremiumOnly =>
+      'Mua thêm dung lượng dành cho gia đình có Premium.';
+
+  @override
+  String get pv2StoreApple => 'App Store';
+
+  @override
+  String get pv2StoreGoogle => 'Google Play';
 
   @override
   String get rhTriedAll => 'Tất cả';
@@ -20031,4 +21833,10 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get rhTriedNote =>
       'Theo câu trả lời của nhà mình, không phải kết luận y khoa.';
+
+  @override
+  String get pv2PlanPremium => 'Premium';
+
+  @override
+  String get pv2PlanFree => 'Free';
 }

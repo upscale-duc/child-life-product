@@ -130,6 +130,8 @@ flutter:
     # existing w700 text keeps rendering as before. SIL OFL 1.1 (assets/fonts/OFL.txt).
     - family: Be Vietnam Pro Keepsake
       fonts:
+        - asset: assets/fonts/BeVietnamPro-Light.ttf
+          weight: 300
         - asset: assets/fonts/BeVietnamPro-Regular.ttf
           weight: 400
         - asset: assets/fonts/BeVietnamPro-Medium.ttf
@@ -181,7 +183,14 @@ flutter:
         - asset: assets/fonts/PatrickHand-Regular.ttf
           weight: 400
 
+    - family: Cormorant Garamond Keepsake
+      fonts:
+        - asset: assets/fonts/CormorantGaramond.ttf
+        - asset: assets/fonts/CormorantGaramond-Italic.ttf
+          style: italic
+
   assets:
+    - assets/print-studio/
     - assets/icons/
     - assets/logo/
     - assets/brands/

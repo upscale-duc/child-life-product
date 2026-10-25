@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/providers.dart';
@@ -17,9 +18,15 @@ import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_resume.dart';
 import '../me/me_widgets.dart';
+import '../baby/baby_repository.dart';
+import '../family/family_repository.dart';
 import 'billing_models.dart';
 import 'billing_repository.dart';
+import 'family_plan_v2.dart';
+import 'paywall_v2.dart';
 import 'premium_models.dart';
+import 'premium_style.dart';
+import 'premium_v2.dart';
 import 'premium_repository.dart';
 import 'purchase_controller.dart';
 import 'purchase_sheets.dart';
@@ -37,11 +44,19 @@ class PaywallScreen extends ConsumerStatefulWidget {
     required this.entry,
     this.resume,
     this.awaited = false,
+    this.v2Entry,
+    this.subject,
     super.key,
   });
 
   final PaywallEntry entry;
   final PurchaseResume? resume;
+
+  /// Premium v2 (D-101): which card opened the paywall (PW01–PW06); null maps [entry].
+  final PremiumEntry? v2Entry;
+
+  /// The template the reason line names (E01 / E02), when there is one.
+  final String? subject;
 
   /// A flow is waiting for the result (`openPaywall`) and continues itself after a purchase.
   final bool awaited;
@@ -50,10 +65,21 @@ class PaywallScreen extends ConsumerStatefulWidget {
   ConsumerState<PaywallScreen> createState() => _PaywallState();
 }
 
-/// The location of PR01 for [entry]; the resume record rides in the query.
-String paywallLocation(PaywallEntry entry, [PurchaseResume? resume]) => Uri(
+/// The location of PR01 for [entry]; the resume record rides in the query. [card] / [subject]:
+/// the Premium v2 entry card and the template its reason line names.
+String paywallLocation(
+  PaywallEntry entry, [
+  PurchaseResume? resume,
+  PremiumEntry? card,
+  String? subject,
+]) => Uri(
   path: Routes.premium,
-  queryParameters: {'entry': entry.name, ...?resume?.toQuery()},
+  queryParameters: {
+    'entry': entry.name,
+    if (card != null) 'card': card.name,
+    if (subject != null && subject.isNotEmpty) 'subject': subject,
+    ...?resume?.toQuery(),
+  },
 ).toString();
 
 /// Opens PR01; true when the household has Premium afterwards (verified, read back from
@@ -62,11 +88,13 @@ Future<bool> openPaywall(
   BuildContext context, {
   required PaywallEntry entry,
   PurchaseResume? resume,
+  PremiumEntry? card,
+  String? subject,
 }) async {
   final router = GoRouter.of(context);
   final done =
       await router.push<Object?>(
-        paywallLocation(entry, resume),
+        paywallLocation(entry, resume, card, subject),
         extra: const PaywallHandoff(),
       ) ==
       true;
@@ -186,6 +214,98 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     }
   }
 
+  /// The v2 entry: the card asked for, else what the legacy entry stands for.
+  PremiumEntry get _v2Entry =>
+      widget.v2Entry ??
+      switch (widget.entry) {
+        PaywallEntry.templates => PremiumEntry.video,
+        PaywallEntry.rhythm || PaywallEntry.plan => PremiumEntry.explore,
+      };
+
+  /// PW01–PW08 (Premium v2, D-101): same purchase flow, new page.
+  Widget _v2(
+    AppLocalizations l10n,
+    String babyId,
+    Capabilities caps,
+    bool open,
+    bool owner,
+    bool premium,
+    List<StoreProduct> products,
+    PurchaseFlow flow,
+  ) {
+    final entry = _v2Entry;
+    final plan = ref.watch(familyPlanV2Provider(babyId)).value;
+    final baby = ref.watch(babyProvider(babyId)).value;
+    final members = ref.watch(familyMembersProvider(babyId)).value ?? const [];
+    final manager = members.where((m) => m.isOwner).firstOrNull?.displayName;
+    final footer = premium
+        ? PaywallFooter.premium
+        : !owner
+        ? PaywallFooter.member
+        : open
+        ? PaywallFooter.buy
+        : PaywallFooter.soon;
+    final free = plan?.free ?? PlanOffer.free;
+    final subject = widget.subject;
+    final String? reason = !owner && !premium
+        ? l10n.pv2ReasonMember
+        : switch (entry) {
+            PremiumEntry.video || PremiumEntry.card =>
+              subject == null
+                  ? l10n.pv2ReasonVideo
+                  : l10n.pv2ReasonTemplate(subject),
+            PremiumEntry.lumi => l10n.pv2ReasonLumi(free.lumiCredits),
+            PremiumEntry.storage when plan != null => l10n.pv2ReasonStorage(
+              premiumGb(context, plan.usedBytes),
+              premiumGb(context, plan.limitBytes),
+            ),
+            PremiumEntry.caregivers when plan != null =>
+              l10n.pv2ReasonCaregivers(plan.seatsUsed, plan.seatsLimit),
+            _ => null,
+          };
+    final store = ref.watch(storeGatewayProvider);
+    return PaywallV2View(
+      entry: entry,
+      footer: footer,
+      plan: plan,
+      reason: reason,
+      babyName: baby?.nickname ?? '',
+      vnd: caps.country == null || caps.country == 'VN',
+      storeName: store.provider == StoreProvider.google
+          ? l10n.pv2StoreGoogle
+          : l10n.pv2StoreApple,
+      managerName: manager,
+      busy: flow.busy,
+      onClose: () => context.pop(false),
+      onRestore: owner && !premium && store.available
+          ? () => _restore(babyId)
+          : null,
+      onBuy: footer == PaywallFooter.buy
+          ? (yearly) {
+              final p =
+                  products
+                      .where(
+                        (p) =>
+                            p.period ==
+                            (yearly
+                                ? ProductPeriod.yearly
+                                : ProductPeriod.monthly),
+                      )
+                      .firstOrNull ??
+                  products.firstOrNull;
+              if (p != null) unawaited(_buy(babyId, p));
+            }
+          : null,
+      onAskManager: () => unawaited(
+        SharePlus.instance.share(ShareParams(text: l10n.pv2AskMessage)),
+      ),
+      onOpenPlan: () {
+        context.pop(false);
+        unawaited(GoRouter.of(context).push(Routes.mePlan));
+      },
+    );
+  }
+
   /// The template's name for PR02 Success, from the draft kept for this purchase.
   String? _templateName() {
     final r = widget.resume;
@@ -229,6 +349,10 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
         products.isNotEmpty;
     final provider = store.provider;
     final product = _selected(products);
+
+    if (caps?.features.premiumV2 ?? false) {
+      return _v2(l10n, me.babyId, caps!, open, owner, premium, products, flow);
+    }
 
     final groupA = _BenefitCard(
       title: l10n.pmGroupATitle,
@@ -681,7 +805,11 @@ List<RouteBase> premiumRoutes() => [
         entry: PaywallEntry.fromWire(state.uri.queryParameters['entry']),
         resume: PurchaseResume.fromQuery(state.uri.queryParameters),
         awaited: state.extra is PaywallHandoff,
+        v2Entry: PremiumEntry.fromWire(state.uri.queryParameters['card']),
+        subject: state.uri.queryParameters['subject'],
       ),
     ),
   ),
+  // Premium v2 (D-101): PV41 history, PV42 cancel, PW10 extra storage.
+  ...planV2Routes(),
 ];

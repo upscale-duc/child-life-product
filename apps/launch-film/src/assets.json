@@ -1,0 +1,1337 @@
+{
+  "Accent/Band": {
+    "file": "figma/accent-band.svg",
+    "sourceContext": "context-s01context.txt",
+    "sourceAsset": "bd7c0.svg",
+    "alphaCorrection": 1
+  },
+  "Accent/Sun": {
+    "file": "figma/accent-sun.svg",
+    "sourceContext": "context-s01context.txt",
+    "sourceAsset": "6bda9.svg",
+    "alphaCorrection": 1
+  },
+  "AppScreen/NhatKy": {
+    "file": "figma/appscreen-nhatky.png",
+    "nodeId": "808:70446",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-70446",
+    "originalSourceNode": "133:16184",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Logo": {
+    "file": "figma/logo-child-life.svg",
+    "nodeId": "808:70447",
+    "format": "SVG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-70447",
+    "originalSourceNode": "35:181",
+    "alphaCorrection": 1
+  },
+  "AppScreen/HomNay": {
+    "file": "figma/appscreen-homnay.png",
+    "nodeId": "808:70470",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-70470",
+    "originalSourceNode": "273:879",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "AppScreen/GhiBuBinh": {
+    "file": "figma/appscreen-ghibubinh.png",
+    "nodeId": "808:71275",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71275",
+    "originalSourceNode": "273:921",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Accent/TapRing": {
+    "file": "figma/accent-tapring.png",
+    "nodeId": "808:71276",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71276",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Chip · Bú": {
+    "file": "figma/card-chip-feed.png",
+    "nodeId": "808:71483",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71483",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "AppScreen/DaGhi": {
+    "file": "figma/appscreen-daghi.png",
+    "nodeId": "808:71305",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71305",
+    "originalSourceNode": "273:950",
+    "exportScale": 1,
+    "alphaCorrection": 1
+  },
+  "Card/Chip · Ngủ": {
+    "file": "figma/card-chip-sleep.png",
+    "nodeId": "808:71504",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71504",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Chip · Thay tã": {
+    "file": "figma/card-chip-diaper.png",
+    "nodeId": "808:71509",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71509",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Accent/TileGlow": {
+    "file": "figma/accent-tileglow.png",
+    "nodeId": "808:71515",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71515",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/SavedToast": {
+    "file": "figma/card-savedtoast.png",
+    "nodeId": "808:71519",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71519",
+    "originalSourceNode": "273:976",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/GrowthChart": {
+    "file": "figma/card-growthchart.png",
+    "nodeId": "808:71578",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71578",
+    "originalSourceNode": "346:47820",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Milestone": {
+    "file": "figma/card-milestone.png",
+    "nodeId": "808:71700",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71700",
+    "originalSourceNode": "311:1436",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Accent/TimelineRail": {
+    "file": "figma/accent-timelinerail.png",
+    "nodeId": "808:71885",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71885",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Thiep": {
+    "file": "figma/card-thiep.png",
+    "nodeId": "808:71952",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71952",
+    "originalSourceNode": "531:9389",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/VideoPreview": {
+    "file": "figma/card-videopreview.png",
+    "nodeId": "808:71968",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-71968",
+    "originalSourceNode": "530:9437",
+    "exportScale": 1,
+    "alphaCorrection": 1
+  },
+  "AppScreen/AlbumGioTam": {
+    "file": "figma/appscreen-albumgiotam.png",
+    "nodeId": "808:72198",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-72198",
+    "originalSourceNode": "188:472",
+    "exportScale": 1,
+    "alphaCorrection": 1
+  },
+  "Card/Member/Me": {
+    "file": "figma/card-member-me.png",
+    "nodeId": "808:72251",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-72251",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Member/Ba": {
+    "file": "figma/card-member-ba.png",
+    "nodeId": "808:72260",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-72260",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Member/NguoiCham": {
+    "file": "figma/card-member-nguoicham.png",
+    "nodeId": "808:72269",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-72269",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/Member/BaNoi": {
+    "file": "figma/card-member-banoi.png",
+    "nodeId": "808:72278",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-72278",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "AppScreen/TheTheoTuoi": {
+    "file": "figma/appscreen-thetheotuoi.png",
+    "nodeId": "808:73105",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-73105",
+    "originalSourceNode": "310:42550",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Card/AgeCard": {
+    "file": "figma/card-agecard.png",
+    "nodeId": "808:73174",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=808-73174",
+    "originalSourceNode": "310:42591",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "AppScreen/Album": {
+    "file": "figma/appscreen-album.png",
+    "nodeId": "809:12495",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=809-12495",
+    "originalSourceNode": "135:17615",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "CTA": {
+    "file": "figma/cta.png",
+    "nodeId": "809:12875",
+    "format": "PNG",
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=809-12875",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "Photo/MeVaBe": {
+    "file": "figma/v2/photo-opening.png",
+    "sourceContext": "design/v2/context-824-1894.txt",
+    "sourceAsset": "dacb8.png",
+    "alphaCorrection": 1
+  },
+  "Photo/Photo01 · PLACEHOLDER": {
+    "file": "figma/photo-01.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "61240.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Photo/Photo02 · PLACEHOLDER": {
+    "file": "figma/photo-02.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "4222e.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Photo/Photo03 · PLACEHOLDER": {
+    "file": "figma/photo-03.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "0d3f8.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Photo/Photo04 · PLACEHOLDER": {
+    "file": "figma/photo-04.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "5d2ff.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Photo/Photo05 · PLACEHOLDER": {
+    "file": "figma/photo-05.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "1025f.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Photo/Photo06 · PLACEHOLDER": {
+    "file": "figma/photo-06.jpg",
+    "sourceNode": "808:71814",
+    "sourceAsset": "ae95e.png",
+    "placeholder": true,
+    "alphaCorrection": 1
+  },
+  "Accent/GrowthLine": {
+    "file": "figma/growth-line.svg",
+    "sourceContext": "context-808-71581.txt",
+    "sourceAsset": "f45b1.svg",
+    "alphaCorrection": 1
+  },
+  "Accent/GrowthDot/1": {
+    "file": "figma/growth-dot-small.svg",
+    "sourceContext": "context-808-71581.txt",
+    "sourceAsset": "fc486.svg",
+    "alphaCorrection": 1
+  },
+  "Accent/GrowthDot/3": {
+    "file": "figma/growth-dot-large.svg",
+    "sourceContext": "context-808-71581.txt",
+    "sourceAsset": "3fe96.svg",
+    "alphaCorrection": 1
+  },
+  "Photo/P01_NguTrongGio · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-01.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "e9abe.png",
+    "alphaCorrection": 1
+  },
+  "Photo/P02_BanChan · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-02.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "4aefa.png",
+    "alphaCorrection": 1
+  },
+  "Photo/P03_BeCuoi · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-03.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "510bd.png",
+    "alphaCorrection": 1
+  },
+  "Photo/P04_BoVaBe · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-04.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "b97ac.png",
+    "alphaCorrection": 1
+  },
+  "Photo/P05_BeNgu · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-05.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "5e32d.png",
+    "alphaCorrection": 1
+  },
+  "Photo/P06_MeHonBe · ảnh web (xem credit)": {
+    "file": "figma/v2/photo-06.png",
+    "sourceContext": "design/v2/context-824-2644.txt",
+    "sourceAsset": "695f6.png",
+    "alphaCorrection": 1
+  },
+  "v2:dark:Accent/Band": {
+    "file": "figma/v2/accent-band-dark.svg",
+    "sourceContext": "design/v2/context-827-82969.txt",
+    "sourceAsset": "63977.svg",
+    "alphaCorrection": 1
+  },
+  "v2:light:AppScreen/HomeWidget": {
+    "file": "figma/v2/light-appscreen-homewidget.png",
+    "nodeId": "826:13900",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13900"
+  },
+  "v2:light:Card/Chip · Widget": {
+    "file": "figma/v2/light-card-chip-widget.png",
+    "nodeId": "826:13862",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 298,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13862"
+  },
+  "v2:light:Card/Chip · Apple Watch": {
+    "file": "figma/v2/light-card-chip-apple-watch.png",
+    "nodeId": "826:13869",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 422,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13869"
+  },
+  "v2:light:Card/Chip · Màn hình khoá": {
+    "file": "figma/v2/light-card-chip-man-hinh-khoa.png",
+    "nodeId": "826:13874",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 452,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13874"
+  },
+  "v2:light:Card/Chip · Siri": {
+    "file": "figma/v2/light-card-chip-siri.png",
+    "nodeId": "826:13879",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 210,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13879"
+  },
+  "v2:light:AppScreen/AppleWatch": {
+    "file": "figma/v2/light-appscreen-applewatch.png",
+    "nodeId": "826:13901",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 767,
+    "height": 897,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13901"
+  },
+  "v2:light:AppScreen/LockScreen": {
+    "file": "figma/v2/light-appscreen-lockscreen.png",
+    "nodeId": "826:13964",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=826-13964"
+  },
+  "v2:dark:AppScreen/NhatKy": {
+    "file": "figma/v2/dark-appscreen-nhatky.png",
+    "nodeId": "827:82984",
+    "exportScale": 1.6501650165016502,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 694,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-82984"
+  },
+  "v2:dark:Logo": {
+    "file": "figma/v2/dark-logo.png",
+    "nodeId": "827:83102",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 880,
+    "height": 171,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83102"
+  },
+  "v2:dark:AppScreen/DaGhi": {
+    "file": "figma/v2/dark-appscreen-daghi.png",
+    "nodeId": "827:83643",
+    "exportScale": 0.9113001215066828,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83643"
+  },
+  "v2:dark:Card/Chip · Bú": {
+    "file": "figma/v2/dark-card-chip-bu.png",
+    "nodeId": "827:83652",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 360,
+    "height": 192,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83652"
+  },
+  "v2:dark:Card/Chip · Ngủ": {
+    "file": "figma/v2/dark-card-chip-ngu.png",
+    "nodeId": "827:83656",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 412,
+    "height": 192,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83656"
+  },
+  "v2:dark:Card/Chip · Thay tã": {
+    "file": "figma/v2/dark-card-chip-thay-ta.png",
+    "nodeId": "827:83660",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 550,
+    "height": 192,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83660"
+  },
+  "v2:dark:Accent/TileGlow": {
+    "file": "figma/v2/dark-accent-tileglow.png",
+    "nodeId": "827:83664",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 697,
+    "height": 641,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83664"
+  },
+  "v2:dark:Card/SavedToast": {
+    "file": "figma/v2/dark-card-savedtoast.png",
+    "nodeId": "827:86034",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1118,
+    "height": 166,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-86034"
+  },
+  "v2:dark:Card/Chip · Widget": {
+    "file": "figma/v2/dark-card-chip-widget.png",
+    "nodeId": "827:85327",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 298,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85327"
+  },
+  "v2:dark:Card/Chip · Apple Watch": {
+    "file": "figma/v2/dark-card-chip-apple-watch.png",
+    "nodeId": "827:85330",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 422,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85330"
+  },
+  "v2:dark:Card/Chip · Màn hình khoá": {
+    "file": "figma/v2/dark-card-chip-man-hinh-khoa.png",
+    "nodeId": "827:85333",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 452,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85333"
+  },
+  "v2:dark:Card/Chip · Siri": {
+    "file": "figma/v2/dark-card-chip-siri.png",
+    "nodeId": "827:85336",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 210,
+    "height": 104,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85336"
+  },
+  "v2:dark:AppScreen/HomeWidget": {
+    "file": "figma/v2/dark-appscreen-homewidget.png",
+    "nodeId": "827:85339",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85339"
+  },
+  "v2:dark:AppScreen/AppleWatch": {
+    "file": "figma/v2/dark-appscreen-applewatch.png",
+    "nodeId": "827:85357",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 767,
+    "height": 897,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85357"
+  },
+  "v2:dark:AppScreen/LockScreen": {
+    "file": "figma/v2/dark-appscreen-lockscreen.png",
+    "nodeId": "827:85411",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85411"
+  },
+  "v2:light:Card/BanGiao": {
+    "file": "figma/v2/light-card-bangiao.png",
+    "nodeId": "827:78413",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1304,
+    "height": 244,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-78413"
+  },
+  "v2:dark:Card/Thiep": {
+    "file": "figma/v2/dark-card-thiep.png",
+    "nodeId": "827:83972",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1098,
+    "height": 1056,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83972"
+  },
+  "v2:dark:Card/VideoPreview": {
+    "file": "figma/v2/dark-card-videopreview.png",
+    "nodeId": "827:83988",
+    "exportScale": 1,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 549,
+    "height": 592,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-83988"
+  },
+  "v2:dark:AppScreen/AlbumGioTam": {
+    "file": "figma/v2/dark-appscreen-albumgiotam.png",
+    "nodeId": "827:84042",
+    "exportScale": 1,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 440,
+    "height": 953,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84042"
+  },
+  "v2:dark:Card/Member/Me": {
+    "file": "figma/v2/dark-card-member-me.png",
+    "nodeId": "827:84080",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 887,
+    "height": 180,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84080"
+  },
+  "v2:dark:Card/Member/Ba": {
+    "file": "figma/v2/dark-card-member-ba.png",
+    "nodeId": "827:84082",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 887,
+    "height": 180,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84082"
+  },
+  "v2:dark:Card/Member/NguoiCham": {
+    "file": "figma/v2/dark-card-member-nguoicham.png",
+    "nodeId": "827:84084",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 887,
+    "height": 180,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84084"
+  },
+  "v2:dark:Card/Member/BaNoi": {
+    "file": "figma/v2/dark-card-member-banoi.png",
+    "nodeId": "827:84086",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 887,
+    "height": 177,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84086"
+  },
+  "v2:light:S10:AppScreen/HomNayV2": {
+    "file": "figma/v2/light-s10-appscreen-homnayv2.png",
+    "nodeId": "827:78548",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-78548"
+  },
+  "v2:light:Card/TuanNayCuaTeddy": {
+    "file": "figma/v2/light-card-tuannaycuateddy.png",
+    "nodeId": "827:78708",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1304,
+    "height": 983,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-78708"
+  },
+  "v2:light:S11:AppScreen/HomNayV2": {
+    "file": "figma/v2/light-s11-appscreen-homnayv2.png",
+    "nodeId": "827:82194",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-82194"
+  },
+  "v2:light:AppScreen/Lumi_HoiDap": {
+    "file": "figma/v2/light-appscreen-lumi-hoidap.png",
+    "nodeId": "827:82294",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-82294"
+  },
+  "v2:light:S11:AppScreen/HomNayV2:END": {
+    "file": "figma/v2/light-s11-appscreen-homnayv2-end.png",
+    "nodeId": "827:82469",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-82469"
+  },
+  "v2:light:CTA": {
+    "file": "figma/v2/light-cta.png",
+    "nodeId": "824:3665",
+    "exportScale": 1.5090543259557343,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1500,
+    "height": 114,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=824-3665"
+  },
+  "v2:light:Accent/Lumi": {
+    "file": "figma/v2/light-accent-lumi.png",
+    "nodeId": "827:14625",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 240,
+    "height": 240,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-14625"
+  },
+  "v2:light:AppScreen/Lumi_GhiNhap": {
+    "file": "figma/v2/light-appscreen-lumi-ghinhap.png",
+    "nodeId": "827:14338",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-14338"
+  },
+  "v2:light:S09:AppScreen/HomNayV2": {
+    "file": "figma/v2/light-s09-appscreen-homnayv2.png",
+    "nodeId": "827:14970",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-14970"
+  },
+  "v2:light:Card/GoiYHomNay": {
+    "file": "figma/v2/light-card-goiyhomnay.png",
+    "nodeId": "827:15141",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1304,
+    "height": 849,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-15141"
+  },
+  "v2:light:S09:AppScreen/HomNayV2:END": {
+    "file": "figma/v2/light-s09-appscreen-homnayv2-end.png",
+    "nodeId": "827:15281",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 0.25,
+    "alphaCorrection": 3.984375,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-15281"
+  },
+  "v2:light:Card/DeYTuanNay": {
+    "file": "figma/v2/weekly-cards.png",
+    "nodeId": "827:15282",
+    "offset": {
+      "x": 16,
+      "y": 406,
+      "w": 867,
+      "h": 214.4
+    },
+    "baseWidth": 867,
+    "alphaCorrection": 1
+  },
+  "v2:dark:S10:AppScreen/HomNayV2": {
+    "file": "figma/v2/dark-s10-appscreen-homnayv2.png",
+    "nodeId": "827:84463",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 0.3499999940395355,
+    "alphaCorrection": 2.865168539325843,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84463"
+  },
+  "v2:dark:Card/TuanNayCuaTeddy": {
+    "file": "figma/v2/dark-card-tuannaycuateddy.png",
+    "nodeId": "827:84598",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1304,
+    "height": 983,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84598"
+  },
+  "v2:dark:S11:AppScreen/HomNayV2": {
+    "file": "figma/v2/dark-s11-appscreen-homnayv2.png",
+    "nodeId": "827:84697",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84697"
+  },
+  "v2:dark:AppScreen/Album": {
+    "file": "figma/v2/dark-appscreen-album.png",
+    "nodeId": "827:84832",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84832"
+  },
+  "v2:dark:AppScreen/Lumi_HoiDap": {
+    "file": "figma/v2/dark-appscreen-lumi-hoidap.png",
+    "nodeId": "827:84908",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-84908"
+  },
+  "v2:dark:AppScreen/Lumi_GhiNhap": {
+    "file": "figma/v2/dark-appscreen-lumi-ghinhap.png",
+    "nodeId": "827:85583",
+    "exportScale": 1.8226002430133657,
+    "sourceOpacity": 0.4000000059604645,
+    "alphaCorrection": 2.5,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85583"
+  },
+  "v2:dark:Accent/Lumi": {
+    "file": "figma/v2/dark-accent-lumi.png",
+    "nodeId": "827:85643",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 240,
+    "height": 240,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85643"
+  },
+  "v2:dark:S09:AppScreen/HomNayV2": {
+    "file": "figma/v2/dark-s09-appscreen-homnayv2.png",
+    "nodeId": "827:85774",
+    "exportScale": 1.5739769150052465,
+    "sourceOpacity": 0.3499999940395355,
+    "alphaCorrection": 2.865168539325843,
+    "width": 693,
+    "height": 1500,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85774"
+  },
+  "v2:dark:Card/GoiYHomNay": {
+    "file": "figma/v2/dark-card-goiyhomnay.png",
+    "nodeId": "827:85909",
+    "exportScale": 2,
+    "sourceOpacity": 1,
+    "alphaCorrection": 1,
+    "width": 1304,
+    "height": 849,
+    "source": "https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=827-85909"
+  },
+  "journey:light:Card/Stage/0-12m": {
+    "id": "836:18033",
+    "name": "Card/Stage/0-12m",
+    "theme": "light",
+    "w": 141.89999389648438,
+    "h": 141.89999389648438,
+    "opacity": 1,
+    "key": "journey:light:Card/Stage/0-12m",
+    "file": "figma/v2/journey-836-18033.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Stage/1-3y": {
+    "id": "836:18036",
+    "name": "Card/Stage/1-3y",
+    "theme": "light",
+    "w": 105.5999984741211,
+    "h": 105.5999984741211,
+    "opacity": 0.5,
+    "key": "journey:light:Card/Stage/1-3y",
+    "file": "figma/v2/journey-836-18036.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Stage/3-6y": {
+    "id": "836:18038",
+    "name": "Card/Stage/3-6y",
+    "theme": "light",
+    "w": 92.4000015258789,
+    "h": 92.4000015258789,
+    "opacity": 0.5,
+    "key": "journey:light:Card/Stage/3-6y",
+    "file": "figma/v2/journey-836-18038.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Stage/6-12y": {
+    "id": "836:18040",
+    "name": "Card/Stage/6-12y",
+    "theme": "light",
+    "w": 82.5,
+    "h": 82.5,
+    "opacity": 0.5,
+    "key": "journey:light:Card/Stage/6-12y",
+    "file": "figma/v2/journey-836-18040.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/StageChip/0–12 tháng": {
+    "id": "836:18042",
+    "name": "Card/StageChip/0–12 tháng",
+    "theme": "light",
+    "w": 345,
+    "h": 38.20000076293945,
+    "opacity": 1,
+    "key": "journey:light:Card/StageChip/0–12 tháng",
+    "file": "figma/v2/journey-836-18042.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/StageChip/1–3 tuổi": {
+    "id": "836:18044",
+    "name": "Card/StageChip/1–3 tuổi",
+    "theme": "light",
+    "w": 286,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:light:Card/StageChip/1–3 tuổi",
+    "file": "figma/v2/journey-836-18044.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/StageChip/3–6 tuổi": {
+    "id": "836:18046",
+    "name": "Card/StageChip/3–6 tuổi",
+    "theme": "light",
+    "w": 281,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:light:Card/StageChip/3–6 tuổi",
+    "file": "figma/v2/journey-836-18046.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/StageChip/6–12 tuổi": {
+    "id": "836:18048",
+    "name": "Card/StageChip/6–12 tuổi",
+    "theme": "light",
+    "w": 289,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:light:Card/StageChip/6–12 tuổi",
+    "file": "figma/v2/journey-836-18048.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Float/BuBinh": {
+    "id": "836:18050",
+    "name": "Card/Float/BuBinh",
+    "theme": "light",
+    "w": 350.20001220703125,
+    "h": 93.5999984741211,
+    "opacity": 1,
+    "key": "journey:light:Card/Float/BuBinh",
+    "file": "figma/v2/journey-836-18050.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Float/HocTap · tương lai": {
+    "id": "836:18057",
+    "name": "Card/Float/HocTap · tương lai",
+    "theme": "light",
+    "w": 383.4000244140625,
+    "h": 105.5999984741211,
+    "opacity": 1,
+    "key": "journey:light:Card/Float/HocTap · tương lai",
+    "file": "figma/v2/journey-836-18057.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Card/Float/VideoDayThang": {
+    "id": "836:18064",
+    "name": "Card/Float/VideoDayThang",
+    "theme": "light",
+    "w": 346.5,
+    "h": 307.3999938964844,
+    "opacity": 1,
+    "key": "journey:light:Card/Float/VideoDayThang",
+    "file": "figma/v2/journey-836-18064.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Stage/0-12m": {
+    "id": "837:18000",
+    "name": "Card/Stage/0-12m",
+    "theme": "dark",
+    "w": 141.89999389648438,
+    "h": 141.89999389648438,
+    "opacity": 1,
+    "key": "journey:dark:Card/Stage/0-12m",
+    "file": "figma/v2/journey-837-18000.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Stage/1-3y": {
+    "id": "837:18004",
+    "name": "Card/Stage/1-3y",
+    "theme": "dark",
+    "w": 105.5999984741211,
+    "h": 105.5999984741211,
+    "opacity": 0.5,
+    "key": "journey:dark:Card/Stage/1-3y",
+    "file": "figma/v2/journey-837-18004.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Stage/3-6y": {
+    "id": "837:18006",
+    "name": "Card/Stage/3-6y",
+    "theme": "dark",
+    "w": 92.4000015258789,
+    "h": 92.4000015258789,
+    "opacity": 0.5,
+    "key": "journey:dark:Card/Stage/3-6y",
+    "file": "figma/v2/journey-837-18006.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Stage/6-12y": {
+    "id": "837:18008",
+    "name": "Card/Stage/6-12y",
+    "theme": "dark",
+    "w": 82.5,
+    "h": 82.5,
+    "opacity": 0.5,
+    "key": "journey:dark:Card/Stage/6-12y",
+    "file": "figma/v2/journey-837-18008.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/StageChip/0–12 tháng": {
+    "id": "837:18010",
+    "name": "Card/StageChip/0–12 tháng",
+    "theme": "dark",
+    "w": 345,
+    "h": 38.20000076293945,
+    "opacity": 1,
+    "key": "journey:dark:Card/StageChip/0–12 tháng",
+    "file": "figma/v2/journey-837-18010.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/StageChip/1–3 tuổi": {
+    "id": "837:18012",
+    "name": "Card/StageChip/1–3 tuổi",
+    "theme": "dark",
+    "w": 286,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:dark:Card/StageChip/1–3 tuổi",
+    "file": "figma/v2/journey-837-18012.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/StageChip/3–6 tuổi": {
+    "id": "837:18014",
+    "name": "Card/StageChip/3–6 tuổi",
+    "theme": "dark",
+    "w": 281,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:dark:Card/StageChip/3–6 tuổi",
+    "file": "figma/v2/journey-837-18014.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/StageChip/6–12 tuổi": {
+    "id": "837:18016",
+    "name": "Card/StageChip/6–12 tuổi",
+    "theme": "dark",
+    "w": 289,
+    "h": 38.20000076293945,
+    "opacity": 0.75,
+    "key": "journey:dark:Card/StageChip/6–12 tuổi",
+    "file": "figma/v2/journey-837-18016.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Float/BuBinh": {
+    "id": "837:18018",
+    "name": "Card/Float/BuBinh",
+    "theme": "dark",
+    "w": 350.20001220703125,
+    "h": 93.5999984741211,
+    "opacity": 1,
+    "key": "journey:dark:Card/Float/BuBinh",
+    "file": "figma/v2/journey-837-18018.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Float/HocTap · tương lai": {
+    "id": "837:18025",
+    "name": "Card/Float/HocTap · tương lai",
+    "theme": "dark",
+    "w": 383.4000244140625,
+    "h": 105.5999984741211,
+    "opacity": 1,
+    "key": "journey:dark:Card/Float/HocTap · tương lai",
+    "file": "figma/v2/journey-837-18025.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:dark:Card/Float/VideoDayThang": {
+    "id": "837:18032",
+    "name": "Card/Float/VideoDayThang",
+    "theme": "dark",
+    "w": 346.5,
+    "h": 307.3999938964844,
+    "opacity": 1,
+    "key": "journey:dark:Card/Float/VideoDayThang",
+    "file": "figma/v2/journey-837-18032.png",
+    "exportScale": 2,
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Sun": {
+    "file": "figma/v2/journey-light-accent-sun.svg",
+    "width": 148.5,
+    "height": 148.5,
+    "nodeSource": "836:18016",
+    "sourceAsset": "cb0ef.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/SunHalo": {
+    "file": "figma/v2/journey-light-accent-sunhalo.svg",
+    "width": 214.5,
+    "height": 214.5,
+    "nodeSource": "836:18016",
+    "sourceAsset": "6338f.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Path": {
+    "file": "figma/v2/journey-light-accent-path.svg",
+    "width": 577.501,
+    "height": 478.501,
+    "nodeSource": "836:18016",
+    "sourceAsset": "9821e.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/PathDash": {
+    "file": "figma/v2/journey-light-accent-pathdash.svg",
+    "width": 565.95,
+    "height": 466.95,
+    "nodeSource": "836:18016",
+    "sourceAsset": "c6e26.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/1a": {
+    "file": "figma/v2/journey-light-accent-cloud-1a.svg",
+    "width": 99.0,
+    "height": 56.1,
+    "nodeSource": "836:18016",
+    "sourceAsset": "6e2c4.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/1b": {
+    "file": "figma/v2/journey-light-accent-cloud-1b.svg",
+    "width": 92.4,
+    "height": 72.6,
+    "nodeSource": "836:18016",
+    "sourceAsset": "8df6e.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/1c": {
+    "file": "figma/v2/journey-light-accent-cloud-1c.svg",
+    "width": 82.5,
+    "height": 52.8,
+    "nodeSource": "836:18016",
+    "sourceAsset": "d9cdf.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/2a": {
+    "file": "figma/v2/journey-light-accent-cloud-2a.svg",
+    "width": 69.3,
+    "height": 39.27,
+    "nodeSource": "836:18016",
+    "sourceAsset": "996a0.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/2b": {
+    "file": "figma/v2/journey-light-accent-cloud-2b.svg",
+    "width": 64.68,
+    "height": 50.82,
+    "nodeSource": "836:18016",
+    "sourceAsset": "5763a.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Cloud/2c": {
+    "file": "figma/v2/journey-light-accent-cloud-2c.svg",
+    "width": 57.75,
+    "height": 36.96,
+    "nodeSource": "836:18016",
+    "sourceAsset": "f22fa.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Hill/1": {
+    "file": "figma/v2/journey-light-accent-hill-1.svg",
+    "width": 1485.0,
+    "height": 693.0,
+    "nodeSource": "836:18016",
+    "sourceAsset": "f4a32.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Hill/2": {
+    "file": "figma/v2/journey-light-accent-hill-2.svg",
+    "width": 1320.0,
+    "height": 627.0,
+    "nodeSource": "836:18016",
+    "sourceAsset": "e88f9.svg",
+    "alphaCorrection": 1
+  },
+  "journey:light:Accent/Hill/3": {
+    "file": "figma/v2/journey-light-accent-hill-3.svg",
+    "width": 1155.0,
+    "height": 495.0,
+    "nodeSource": "836:18016",
+    "sourceAsset": "adca1.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Sun": {
+    "file": "figma/v2/journey-dark-accent-sun.svg",
+    "width": 148.5,
+    "height": 148.5,
+    "nodeSource": "837:17983",
+    "sourceAsset": "cb0ef.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/SunHalo": {
+    "file": "figma/v2/journey-dark-accent-sunhalo.svg",
+    "width": 214.5,
+    "height": 214.5,
+    "nodeSource": "837:17983",
+    "sourceAsset": "6338f.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Path": {
+    "file": "figma/v2/journey-dark-accent-path.svg",
+    "width": 577.501,
+    "height": 478.501,
+    "nodeSource": "837:17983",
+    "sourceAsset": "9821e.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/PathDash": {
+    "file": "figma/v2/journey-dark-accent-pathdash.svg",
+    "width": 565.95,
+    "height": 466.95,
+    "nodeSource": "837:17983",
+    "sourceAsset": "afa2f.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/1a": {
+    "file": "figma/v2/journey-dark-accent-cloud-1a.svg",
+    "width": 99.0,
+    "height": 56.1,
+    "nodeSource": "837:17983",
+    "sourceAsset": "6e2c4.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/1b": {
+    "file": "figma/v2/journey-dark-accent-cloud-1b.svg",
+    "width": 92.4,
+    "height": 72.6,
+    "nodeSource": "837:17983",
+    "sourceAsset": "8df6e.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/1c": {
+    "file": "figma/v2/journey-dark-accent-cloud-1c.svg",
+    "width": 82.5,
+    "height": 52.8,
+    "nodeSource": "837:17983",
+    "sourceAsset": "d9cdf.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/2a": {
+    "file": "figma/v2/journey-dark-accent-cloud-2a.svg",
+    "width": 69.3,
+    "height": 39.27,
+    "nodeSource": "837:17983",
+    "sourceAsset": "996a0.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/2b": {
+    "file": "figma/v2/journey-dark-accent-cloud-2b.svg",
+    "width": 64.68,
+    "height": 50.82,
+    "nodeSource": "837:17983",
+    "sourceAsset": "5763a.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Cloud/2c": {
+    "file": "figma/v2/journey-dark-accent-cloud-2c.svg",
+    "width": 57.75,
+    "height": 36.96,
+    "nodeSource": "837:17983",
+    "sourceAsset": "f22fa.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Hill/1": {
+    "file": "figma/v2/journey-dark-accent-hill-1.svg",
+    "width": 1485.0,
+    "height": 693.0,
+    "nodeSource": "837:17983",
+    "sourceAsset": "5e644.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Hill/2": {
+    "file": "figma/v2/journey-dark-accent-hill-2.svg",
+    "width": 1320.0,
+    "height": 627.0,
+    "nodeSource": "837:17983",
+    "sourceAsset": "fc2c6.svg",
+    "alphaCorrection": 1
+  },
+  "journey:dark:Accent/Hill/3": {
+    "file": "figma/v2/journey-dark-accent-hill-3.svg",
+    "width": 1155.0,
+    "height": 495.0,
+    "nodeSource": "837:17983",
+    "sourceAsset": "7f216.svg",
+    "alphaCorrection": 1
+  },
+  "v2:dark:Accent/GrowthLine": {
+    "file": "figma/v2/dark-accent-growthline.svg",
+    "sourceAsset": "86374.svg",
+    "nodeSource": "827:83910",
+    "alphaCorrection": 1
+  },
+  "v2:dark:Accent/GrowthDot/1": {
+    "file": "figma/v2/dark-accent-growthdot-1.svg",
+    "sourceAsset": "f3d2a.svg",
+    "nodeSource": "827:83910",
+    "alphaCorrection": 1
+  },
+  "v2:dark:Accent/GrowthDot/3": {
+    "file": "figma/v2/dark-accent-growthdot-3.svg",
+    "sourceAsset": "284fa.svg",
+    "nodeSource": "827:83910",
+    "alphaCorrection": 1
+  }
+}

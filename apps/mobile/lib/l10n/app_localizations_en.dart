@@ -19445,7 +19445,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Exclude => 'Unsuitable for baby · applies to the family';
 
   @override
-  String get pv2Restore => 'Restore suggestion';
+  String get pv2Restore => 'Restore';
 
   @override
   String get pv2Intend => 'I\'ll try it';
@@ -19499,7 +19499,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2NoteText => 'What your family wants to remember';
 
   @override
-  String get pv2Shared => 'Share with members allowed to view baby care';
+  String get pv2Shared => 'Shared by the family';
 
   @override
   String get pv2Personal => 'Only you';
@@ -19604,7 +19604,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'From your feedback over the last 7 days; before-and-after numbers do not establish an effect.';
 
   @override
-  String get pv2History => 'Saved, tried and hidden';
+  String get pv2History => 'Usage history';
 
   @override
   String get pv2Saved => 'Saved';
@@ -20922,6 +20922,478 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get psTab => 'Keepsakes';
+
+  @override
+  String get psTitle => 'Print & hold close';
+
+  @override
+  String get psIntro =>
+      'Turn your child’s memories into something the family can hold.';
+
+  @override
+  String get psSingle => 'Single frame';
+
+  @override
+  String get psTrio => 'Set of 3 frames';
+
+  @override
+  String get psFive => 'Set of 5 frames';
+
+  @override
+  String get psBook => 'Photo book';
+
+  @override
+  String get psFrames => 'Tabletop frames';
+
+  @override
+  String get psBooks => 'Photo book';
+
+  @override
+  String get psOrders => 'My print orders';
+
+  @override
+  String get psPolicy => 'Shipping & returns';
+
+  @override
+  String get psCustomize => 'Customize';
+
+  @override
+  String get psStyle => 'Style';
+
+  @override
+  String get psMinimal => 'Minimal';
+
+  @override
+  String get psPlayful => 'Playful';
+
+  @override
+  String get psTimeless => 'Timeless';
+
+  @override
+  String get psInSet => 'In your set';
+
+  @override
+  String get psPortrait => 'Portrait';
+
+  @override
+  String get psInfo => 'Baby details';
+
+  @override
+  String get psCollage => 'Four-photo collage';
+
+  @override
+  String get psEdit => 'Edit';
+
+  @override
+  String get psNext => 'Continue';
+
+  @override
+  String get psDone => 'Done';
+
+  @override
+  String get psSave => 'Save draft';
+
+  @override
+  String get psSaved => 'Draft saved';
+
+  @override
+  String get psSaving => 'Saving…';
+
+  @override
+  String get psSaveFailed => 'Could not save. Try again before leaving.';
+
+  @override
+  String get psName => 'Name on print';
+
+  @override
+  String get psMessage => 'Message';
+
+  @override
+  String get psDefaultMessage => 'Thank you for coming into our lives';
+
+  @override
+  String get psBirthDetails => 'Birth date, weight & length';
+
+  @override
+  String get psShowBirth => 'Show birth details';
+
+  @override
+  String get psOccasion => 'Occasion';
+
+  @override
+  String get psMonth => 'One month';
+
+  @override
+  String get psHundred => '100 days';
+
+  @override
+  String get psBirthday => 'Birthday';
+
+  @override
+  String get psCustom => 'Your occasion';
+
+  @override
+  String get psDate => 'Date on print';
+
+  @override
+  String get psPrintTitle => 'Title';
+
+  @override
+  String get psSafeArea =>
+      'Keep important details inside the dashed safe area to avoid trimming.';
+
+  @override
+  String get psPhotoChange => 'Change photo';
+
+  @override
+  String get psPhotosMissing => 'Add photos to finish your print';
+
+  @override
+  String get psPhotosHelp =>
+      'Choose photos saved in Memories. They are only used for this design.';
+
+  @override
+  String get psNoPhotos =>
+      'No photos yet. Add photos to Memories, then come back.';
+
+  @override
+  String get psChoose => 'Choose photos';
+
+  @override
+  String get psOptions => 'Size & frame';
+
+  @override
+  String get psSize => 'Print size';
+
+  @override
+  String get psWhite => 'Classic · white';
+
+  @override
+  String get psWood => 'Classic · light wood';
+
+  @override
+  String get psGift => 'Premium · gift box';
+
+  @override
+  String get psAcrylic => 'Safe acrylic front · tabletop stand';
+
+  @override
+  String get psPreview => 'Preview design';
+
+  @override
+  String get psFlat => 'View flat print';
+
+  @override
+  String get psDownload => 'Download print files';
+
+  @override
+  String get psOrder => 'Order prints';
+
+  @override
+  String get psConfirm => 'Your prints';
+
+  @override
+  String get psApproved => 'I have checked every photo, text, date and layout.';
+
+  @override
+  String get psImmutable =>
+      'Your approved design is saved with the order. Later edits to memories will not change it.';
+
+  @override
+  String get psShipping => 'Where should we deliver?';
+
+  @override
+  String get psRecipient => 'Recipient';
+
+  @override
+  String get psPhone => 'Phone number';
+
+  @override
+  String get psAddress => 'Full delivery address';
+
+  @override
+  String get psCountry => 'Delivery country';
+
+  @override
+  String get psCountryHelp =>
+      'Currently delivering in Vietnam. Elsewhere, download files to print locally.';
+
+  @override
+  String get psNeededBy => 'Needed by (optional)';
+
+  @override
+  String get psTooSoon =>
+      'Your date is too soon. Choose a later date or download files to print locally.';
+
+  @override
+  String get psGiftDelivery => 'Send as a gift';
+
+  @override
+  String get psGiftNote => 'Gift message';
+
+  @override
+  String get psSubtotal => 'Items';
+
+  @override
+  String get psShippingFee => 'Delivery';
+
+  @override
+  String get psTotal => 'Total';
+
+  @override
+  String get psSubmit => 'Confirm order';
+
+  @override
+  String get psOrderCreated => 'Your print order has been received';
+
+  @override
+  String get psConfirmed => 'Confirmed';
+
+  @override
+  String get psPrinting => 'Printing';
+
+  @override
+  String get psShipped => 'Shipped';
+
+  @override
+  String get psDelivered => 'Delivered';
+
+  @override
+  String get psCancelled => 'Cancelled';
+
+  @override
+  String get psCopy => 'Copy';
+
+  @override
+  String get psCopied => 'Copied';
+
+  @override
+  String get psCancelOrder => 'Cancel order';
+
+  @override
+  String get psCancelConfirm =>
+      'Cancel this print request? It will not be sent to production.';
+
+  @override
+  String get psKeep => 'Keep order';
+
+  @override
+  String get psNoOrders => 'No print orders yet';
+
+  @override
+  String get psNoOrdersHelp =>
+      'Start with a frame set or your child’s photo book.';
+
+  @override
+  String get psTracking => 'Tracking reference';
+
+  @override
+  String get psQuantity => 'Quantity';
+
+  @override
+  String get psExportTitle => 'Download print files';
+
+  @override
+  String get psPdf => 'PDF · 3 mm bleed · recommended';
+
+  @override
+  String get psJpg => 'JPG · 300 DPI · ZIP archive';
+
+  @override
+  String get psPng => 'PNG · 300 DPI · ZIP archive';
+
+  @override
+  String get psCropMarks => 'Crop marks';
+
+  @override
+  String get psExportHelp =>
+      'Files use original photos at 300 DPI. Print at actual size, without fitting to page. Printed colors may differ from your screen.';
+
+  @override
+  String get psExportReady => 'Your files are ready';
+
+  @override
+  String get psExportReadyHelp =>
+      'Save your files within one hour. Generate them again if the link expires.';
+
+  @override
+  String get psOpenFile => 'Save / share files';
+
+  @override
+  String get psGenerating => 'Preparing print files… This may take a moment.';
+
+  @override
+  String get psLowQuality => 'Photos may look soft in print';
+
+  @override
+  String get psLowQualityHelp =>
+      'Some photos have low or unknown resolution. Choose a sharper original or a smaller print size.';
+
+  @override
+  String get psAcceptQuality => 'Download anyway';
+
+  @override
+  String get psUnavailable =>
+      'Ordering is not open yet. You can design and download files to print locally.';
+
+  @override
+  String get psError =>
+      'Could not complete this. Check your connection and try again. Your design is still here.';
+
+  @override
+  String get psPriceChanged =>
+      'Prices or options changed. Please review the updated total before ordering.';
+
+  @override
+  String get psInvalidForm =>
+      'Check the recipient name, Vietnamese phone number and address.';
+
+  @override
+  String get psRetry => 'Try again';
+
+  @override
+  String get psSamplePrice =>
+      'Estimated price · delivery calculated at checkout';
+
+  @override
+  String get psSparseBook =>
+      'A few photos can still make a lovely book. Some pages may reuse photos; edit them before printing.';
+
+  @override
+  String get psBookPages24 => '24 pages';
+
+  @override
+  String get psBookPages40 => '40 pages';
+
+  @override
+  String get psPage => 'Page';
+
+  @override
+  String get psReview => 'Write a review';
+
+  @override
+  String get psReviewMessage => 'Your experience';
+
+  @override
+  String get psReviewHelp =>
+      'Only buyers who received their order can review it. Reviews are moderated before publication. Please leave out phone numbers, addresses and your child’s private information.';
+
+  @override
+  String get psReviewSent => 'Review submitted for moderation';
+
+  @override
+  String get psSendReview => 'Submit review';
+
+  @override
+  String get psRating => 'Rating';
+
+  @override
+  String get psNoReviews => 'No verified buyer reviews yet';
+
+  @override
+  String get psDetails => 'Product details';
+
+  @override
+  String get psSpecs =>
+      'Silk photo paper · white or light wood frame · acrylic front · tabletop stand. Final specifications and prices are confirmed when ordering opens.';
+
+  @override
+  String get psResume => 'Continue draft';
+
+  @override
+  String get psNewDesign => 'New design';
+
+  @override
+  String get psForParents => 'This feature is available to co-parents.';
+
+  @override
+  String get psNameRequired => 'Enter a name to continue.';
+
+  @override
+  String get psClose => 'Close';
+
+  @override
+  String get psBirth => 'Welcome to the world';
+
+  @override
+  String get psUnsaved =>
+      'Your draft has not been saved. Leave and discard unsaved changes?';
+
+  @override
+  String get psLeave => 'Leave';
+
+  @override
+  String get psViewOrder => 'View order';
+
+  @override
+  String get psReturn => 'Back to keepsakes';
+
+  @override
+  String get psDeleteReview => 'Delete review';
+
+  @override
+  String get psAllReviews => 'All';
+
+  @override
+  String get psVerifiedBuyer => 'Verified buyer';
+
+  @override
+  String get psVietnam => 'Vietnam';
+
+  @override
+  String get psOtherCountry => 'Another country';
+
+  @override
+  String get psOrderReview => 'Review your order';
+
+  @override
+  String get psManualOrderNote =>
+      'No payment is required to place your order. Child Life will contact you to confirm the product, delivery date and payment arrangements before printing.';
+
+  @override
+  String get psPendingConfirmation => 'Awaiting confirmation';
+
+  @override
+  String get psOrderReceivedHelp =>
+      'Your order has been recorded. Child Life will contact you before printing. You can track its status here.';
+
+  @override
+  String get psEstimatedPriceNote =>
+      'This is an estimated price, including the displayed delivery fee. Child Life will agree any changes with you before printing.';
+
+  @override
+  String get psEstimatedTotal => 'Estimated total';
+
+  @override
+  String get psProductNotOpen =>
+      'Orders for this product are not open yet. You can still design and download print files.';
+
+  @override
+  String get psCancelReason => 'Cancellation reason';
+
+  @override
+  String get psCancelChangedMind => 'Changed my mind';
+
+  @override
+  String get psCancelPrice => 'Product price';
+
+  @override
+  String get psCancelShipping => 'Delivery fee';
+
+  @override
+  String get psCancelDelivery => 'Delivery time';
+
+  @override
+  String get psCancelDesign => 'Design did not fit';
+
+  @override
+  String get psCancelUnreachable => 'Could not reach customer';
+
+  @override
+  String get psCancelOther => 'Another reason';
+
+  @override
   String get axSwitcherInvited => 'You were invited to';
 
   @override
@@ -20992,6 +21464,217 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get axRemindersFirst => 'Create the first reminder';
+
+  @override
+  String psMadeFrom(String name) {
+    return 'Made from $name’s memories';
+  }
+
+  @override
+  String psMadeFor(String occasion, String name) {
+    return '✨ Designed for $name’s $occasion';
+  }
+
+  @override
+  String psSetTitle(String occasion, String name) {
+    return '$name’s $occasion frame set';
+  }
+
+  @override
+  String psHeroTitle(String occasion) {
+    return '3 tabletop frames · $occasion';
+  }
+
+  @override
+  String psBookTitle(String occasion, String name) {
+    return '$name’s $occasion photo book';
+  }
+
+  @override
+  String get psSelectionHelp =>
+      'Choose a set, then personalize your child’s design.';
+
+  @override
+  String get psNationwide => '🇻🇳 Delivery in Vietnam';
+
+  @override
+  String get psSeeAll => 'See all';
+
+  @override
+  String get psInformationFrame => 'Baby details frame';
+
+  @override
+  String get psFirstYear => 'The first year';
+
+  @override
+  String psFromPrice(String price) {
+    return 'from $price';
+  }
+
+  @override
+  String get psChooseProduct => 'Choose a product';
+
+  @override
+  String get psPopular => 'Popular';
+
+  @override
+  String get psSetContents => 'Portrait · Baby details · Photo collage';
+
+  @override
+  String get psPortraitHelp => 'Your child’s clearest portrait';
+
+  @override
+  String get psInfoHelp => 'Name, birth date, weight & a message';
+
+  @override
+  String get psCollageHelp => '4 lovely moments';
+
+  @override
+  String psFrameNumber(String number) {
+    return 'Frame $number';
+  }
+
+  @override
+  String get psFrameSizeHelpSmall => 'A small frame for your desk';
+
+  @override
+  String get psFrameSizeHelpMedium => 'Standard tabletop frame';
+
+  @override
+  String get psFrameSizeHelpLarge => 'A statement on your gallery table';
+
+  @override
+  String get psRecommended => 'recommended';
+
+  @override
+  String get psAcrylicTitle => 'Safe acrylic front';
+
+  @override
+  String get psAcrylicHelp => 'Shatter resistant in transit · included';
+
+  @override
+  String psDeliveryEstimate(String days) {
+    return 'Estimated delivery: around $days days. Child Life will confirm before printing.';
+  }
+
+  @override
+  String get psConfirmStep => 'Prints';
+
+  @override
+  String get psShippingStep => 'Delivery';
+
+  @override
+  String get psOrderReviewStep => 'Confirm';
+
+  @override
+  String get psPhoneHelp =>
+      'Child Life will call this number to confirm before printing.';
+
+  @override
+  String get psGiftHelp => 'No price invoice · include a gift message';
+
+  @override
+  String get psPrintLocked => 'Approved print saved';
+
+  @override
+  String get psInYourSet => 'What’s in your set?';
+
+  @override
+  String get psProductInfo => 'Specifications';
+
+  @override
+  String get psCustomerReviews => 'Verified buyer reviews';
+
+  @override
+  String get psShippingAndPayment => 'Delivery & confirmation';
+
+  @override
+  String get psNoDepositTitle => 'No payment to place your order';
+
+  @override
+  String get psNoDepositHelp =>
+      'Submit your request. Child Life will contact you to agree the price, delivery date and payment arrangements.';
+
+  @override
+  String get psCustomizeFirst => 'Personalize design';
+
+  @override
+  String get psBookHelp =>
+      'Open the memories you saved, then arrange and edit each page.';
+
+  @override
+  String get psBookSourceNote =>
+      'Photos and messages come from your child’s Memories. No unrecorded events are added.';
+
+  @override
+  String get psBookPageHelp => 'Tap a photo to change it · tap text to edit';
+
+  @override
+  String psBookPagesCount(String count) {
+    return '$count pages';
+  }
+
+  @override
+  String get psSuggested => 'Suggested';
+
+  @override
+  String get psUsePhoto => 'Use this photo';
+
+  @override
+  String psPickPhotoTitle(String number) {
+    return 'Choose a photo for Frame $number';
+  }
+
+  @override
+  String get psPickPhotoHelp =>
+      'Choose a clear photo with your child’s face and enough resolution to print.';
+
+  @override
+  String get psPreviewGallery => 'View product photos';
+
+  @override
+  String get psPolicySummary => 'Confirm before printing · no deposit';
+
+  @override
+  String get psDownloadShort => 'Download';
+
+  @override
+  String get psShippingLater => 'Delivery calculated at the next step';
+
+  @override
+  String get psApprovedDetail =>
+      'I have checked the names, dates and photos on every print. Child Life prints the approved design.';
+
+  @override
+  String get psHowStands => 'How does the frame stand?';
+
+  @override
+  String get psStanding => '75° angle';
+
+  @override
+  String get psStandingHelp => 'Fold out the stand to display on a table';
+
+  @override
+  String get psFrameBack => 'Back';
+
+  @override
+  String get psFrameBackHelp => 'Tabletop stand + wall hanger';
+
+  @override
+  String get psFrameSide => 'Side view';
+
+  @override
+  String get psFrameSideHelp => 'For a shelf or bedside table';
+
+  @override
+  String get psSizeComparison => 'Compared with a phone';
+
+  @override
+  String get psComparisonHelp =>
+      'Size illustration · phone approximately 15 cm';
+
+  @override
+  String get psFormat => 'Format';
 
   @override
   String get hoSleep => 'Sleep';
@@ -21147,6 +21830,221 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get psCheckout => 'Place order';
+
+  @override
+  String get psCheckoutProof =>
+      'I have checked the names, dates and photos on the prints';
+
+  @override
+  String get psReviewPrint => 'Review prints';
+
+  @override
+  String get psDeliverTo => 'Deliver to';
+
+  @override
+  String get psAddAddress => 'Add a delivery address';
+
+  @override
+  String get psPayment => 'Payment';
+
+  @override
+  String get psCod => 'Pay on delivery';
+
+  @override
+  String get psCodHelp =>
+      'Check your order, then pay cash or transfer to the courier';
+
+  @override
+  String get psTransfer => 'Bank transfer / VietQR';
+
+  @override
+  String get psTransferHelp =>
+      'Optional · Child Life will contact you after you order';
+
+  @override
+  String get psWrap => 'Gift wrap & handwritten card';
+
+  @override
+  String get psCheckoutPolicy =>
+      'Personalized prints: free replacement for printing defects or delivery damage reported within 48 hours. View shipping & returns.';
+
+  @override
+  String get psOrderSuccess => 'Order placed!';
+
+  @override
+  String psOrderCode(String code) {
+    return 'Order $code';
+  }
+
+  @override
+  String psOrderSuccessHelp(String name) {
+    return 'We have received $name’s prints. Child Life will contact you before printing. No upfront payment is required.';
+  }
+
+  @override
+  String get psOrderAccepted => 'Order received';
+
+  @override
+  String get psProduction => 'Printing & framing';
+
+  @override
+  String get psDelivery => 'Delivery';
+
+  @override
+  String get psPayOnReceipt => 'Pay on delivery';
+
+  @override
+  String get psBackMemories => 'Back to Memories';
+
+  @override
+  String psExpectedDays(String days) {
+    return 'Around $days days';
+  }
+
+  @override
+  String get psFrameLabel => 'Frame';
+
+  @override
+  String get psSetSize => 'Size (whole set)';
+
+  @override
+  String get psBookOptions => 'Book options';
+
+  @override
+  String get psBookStyle => 'Book style';
+
+  @override
+  String get psQrVideo => 'Add a QR code for your memory video';
+
+  @override
+  String get psComingSoon => 'Coming soon';
+
+  @override
+  String psBookMonth(String month) {
+    return 'Month $month';
+  }
+
+  @override
+  String get psBookBirth => 'Welcome';
+
+  @override
+  String get psBookMessages => 'Messages';
+
+  @override
+  String psBookMonthPhotos(String month, String name) {
+    return '$name’s month $month photos';
+  }
+
+  @override
+  String get psUnused => 'Unused';
+
+  @override
+  String get psUsed => 'Used';
+
+  @override
+  String get psFavorites => 'Favorites';
+
+  @override
+  String get psVideos => 'Videos';
+
+  @override
+  String get psBookLibraryHelp =>
+      'Tap a photo to add it to the open page · hold and drag onto the page to replace a photo';
+
+  @override
+  String get psFullscreen => 'Full screen';
+
+  @override
+  String get psLandscape => 'Landscape';
+
+  @override
+  String get psPortraitMode => 'Portrait';
+
+  @override
+  String get psEditPage => 'Edit page';
+
+  @override
+  String get psBookFullscreenHelp =>
+      'Swipe to turn pages · tap to hide controls';
+
+  @override
+  String get psBookImages => 'Photos';
+
+  @override
+  String get psBookText => 'Text';
+
+  @override
+  String get psBookLayout => 'Layout';
+
+  @override
+  String get psBookSubtitle => 'Subtitle';
+
+  @override
+  String get psBookTitleHint => 'Dates come from milestones you recorded';
+
+  @override
+  String get psFrameMessageHint =>
+      'Try: “100 days of love” · “You are our gift”';
+
+  @override
+  String get psBirthHelp => 'From the profile & first measurement · editable';
+
+  @override
+  String get psBirthDateLabel => 'DATE OF BIRTH';
+
+  @override
+  String get psBirthMeasureLabel => 'WEIGHT · LENGTH';
+
+  @override
+  String psBookPagesNote(String count) {
+    return '$count pages · draft saved automatically';
+  }
+
+  @override
+  String get psContactPrint => 'Need a custom print?';
+
+  @override
+  String get psContactPrintHelp => 'Contact Child Life for help';
+
+  @override
+  String psFrameDelivery(String from, String to) {
+    return 'Order today, expected around $from–$to.';
+  }
+
+  @override
+  String get psBookSparseMonth =>
+      'This month has fewer photos. Add more, or continue with the memories you already have.';
+
+  @override
+  String psOpenPage(String page, String total) {
+    return 'Page $page / $total';
+  }
+
+  @override
+  String psDetailsPreview(String name) {
+    return 'View $name’s design';
+  }
+
+  @override
+  String get psPdfShort => 'Download PDF';
+
+  @override
+  String get psNoReviewsYet => 'No buyer reviews yet';
+
+  @override
+  String get psPendingShort => 'Awaiting confirmation';
+
+  @override
+  String get psMaterialShortWhite => 'White';
+
+  @override
+  String get psMaterialShortWood => 'Light wood';
+
+  @override
+  String get psNoAdvancePayment => 'Pay on delivery';
+
+  @override
   String dutyOnNow(String name, String time) {
     return '$name on duty · since $time';
   }
@@ -21209,10 +22107,920 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hoTakeOver => 'I’ll take over';
 
   @override
+  String get psGalleryTable => 'On a table';
+
+  @override
+  String get psGalleryAngle => 'Angled';
+
+  @override
+  String get psPolicyIntro =>
+      'For printed frames and Photo Books delivered in Vietnam.';
+
+  @override
+  String get psPolicyCancelTitle => 'Free cancellation before printing';
+
+  @override
+  String get psPolicyCancelHelp =>
+      'Cancel in the app before production starts. Orders in production or transit cannot be cancelled.';
+
+  @override
+  String get psPolicyReturnTitle => 'Free replacement';
+
+  @override
+  String get psPolicyReturnHelp =>
+      'Report printing defects, differences from the approved proof or shipping damage within 48 hours. Include photos when contacting support. Personalised orders cannot be returned for a change of mind.';
+
+  @override
+  String get psPolicyPrivacyTitle => 'Packaging & photo privacy';
+
+  @override
+  String get psPolicyPrivacyHelp =>
+      'Print files are used to fulfil your order. Frames are packed for protection during delivery.';
+
+  @override
+  String get psPolicyDeliveryHelp =>
+      'Child Life confirms the estimated delivery date and total before sending your order to production.';
+
+  @override
+  String psPreviewPriceCaption(String count, String size) {
+    return '$count frames $size · shipping extra';
+  }
+
+  @override
+  String psBookUsedPage(String page) {
+    return 'Page $page';
+  }
+
+  @override
+  String psBookMonthSummary(String from, String to, String count, String used) {
+    return '$from – $to · $count photos · $used used in book';
+  }
+
+  @override
+  String get psAutoSave => 'Autosave';
+
+  @override
+  String psAutoSavedAt(String time) {
+    return 'Saved · $time';
+  }
+
+  @override
   String get axWidgetCareDuty => 'Who is caring';
 
   @override
   String get rhSeeHow => 'See how';
+
+  @override
+  String get pv2Crest => 'CHILD LIFE PREMIUM';
+
+  @override
+  String get pv2SeePremium => 'See Premium';
+
+  @override
+  String get pv2SeePlans => 'See the plans';
+
+  @override
+  String get pv2GotIt => 'Got it';
+
+  @override
+  String pv2E01Title(String name) {
+    return '“$name” is a Premium template';
+  }
+
+  @override
+  String pv2E01Body(int videos) {
+    return 'Preview for free. Premium opens every premium template and $videos video exports a month.';
+  }
+
+  @override
+  String get pv2E01Secondary => 'Use a similar free template';
+
+  @override
+  String pv2E02Title(String name) {
+    return 'The “$name” card is Premium';
+  }
+
+  @override
+  String get pv2E02Body =>
+      'Premium opens every premium card and video template. The photos and message you chose are kept.';
+
+  @override
+  String get pv2E02Secondary => 'Choose a free template';
+
+  @override
+  String get pv2E04Title => 'This draft uses a premium template';
+
+  @override
+  String get pv2E04Body =>
+      'The draft is kept. Upgrade to Premium to export, or switch to a basic template.';
+
+  @override
+  String get pv2E04Secondary => 'Switch to a free template';
+
+  @override
+  String pv2E03Title(int n) {
+    return 'You have used your $n trial video exports';
+  }
+
+  @override
+  String pv2E03Body(int m) {
+    return 'Premium has $m video exports a month. This draft is kept.';
+  }
+
+  @override
+  String get pv2E03Secondary => 'Keep the draft for later';
+
+  @override
+  String pv2E03PremiumTitle(int n) {
+    return 'All $n video exports used this month';
+  }
+
+  @override
+  String pv2E03PremiumBody(String date) {
+    return 'New exports arrive on $date. This draft is kept.';
+  }
+
+  @override
+  String pv2E07Title(int n) {
+    return 'Lumi has used all $n credits this month';
+  }
+
+  @override
+  String pv2E07Body(String date) {
+    return 'New credits arrive on $date. Meanwhile you can still log directly and read the journal as usual.';
+  }
+
+  @override
+  String get pv2E07Secondary => 'See the family\'s usage';
+
+  @override
+  String pv2E10Title(String gb) {
+    return 'The Free $gb GB is full';
+  }
+
+  @override
+  String pv2E10Body(String premiumGb) {
+    return 'New photos and videos stay safe on this phone. Premium has $premiumGb GB for the family and uploads them after the upgrade.';
+  }
+
+  @override
+  String get pv2ManageMedia => 'Manage photos & videos';
+
+  @override
+  String get pv2E11Title => 'Auto-save is paused';
+
+  @override
+  String pv2E11Body(String gb, String premiumGb) {
+    return 'The Free $gb GB is full. Premium has $premiumGb GB for the family and auto-save carries on at once.';
+  }
+
+  @override
+  String pv2E12Title(int used, int limit) {
+    return 'The family has used $used/$limit caregiver seats';
+  }
+
+  @override
+  String pv2E12Body(int premium) {
+    return 'Premium has $premium caregiver seats. Or invite them as a relative — albums with no limit.';
+  }
+
+  @override
+  String get pv2E12Secondary => 'Invite as a relative';
+
+  @override
+  String pv2E12FullTitle(int limit) {
+    return 'All $limit writer seats are in use';
+  }
+
+  @override
+  String get pv2E12FullBody =>
+      'Invite them as a relative to see the albums, or change someone\'s role.';
+
+  @override
+  String get pv2E08Title => 'The family is running out of room';
+
+  @override
+  String pv2E08BodyPremium(int pct, String gb) {
+    return 'Used $pct% of $gb GB. Add 20 GB or 50 GB, shared by the whole family.';
+  }
+
+  @override
+  String pv2E09Title(String gb) {
+    return 'All $gb GB used';
+  }
+
+  @override
+  String get pv2E09BodyPremium =>
+      'New photos and videos wait and upload once you add storage. You can still view, download and delete as usual.';
+
+  @override
+  String get pv2StorageInlineFreeTitle => 'Room for the next memories';
+
+  @override
+  String pv2StorageInlineFreeBody(String premiumGb) {
+    return 'Premium has $premiumGb GB for the family, new photos just keep saving.';
+  }
+
+  @override
+  String get pv2AddStorage => 'Add storage';
+
+  @override
+  String get pv2E13Title => 'Child Life Premium';
+
+  @override
+  String pv2E13Body(int videos, int credits, String gb, String price) {
+    return '$videos videos a month, $credits Lumi credits, premium templates and $gb GB for the family · $price/month.';
+  }
+
+  @override
+  String pv2HeadVideo(String name) {
+    return 'Turn this month of $name\'s into a story';
+  }
+
+  @override
+  String pv2HeadCard(String name) {
+    return 'A card worthy of $name\'s first month';
+  }
+
+  @override
+  String pv2HeadLumi(String name) {
+    return 'Keep asking Lumi about $name';
+  }
+
+  @override
+  String get pv2HeadStorage => 'Room for the next memories';
+
+  @override
+  String pv2HeadCaregivers(String name) {
+    return 'Let the whole family care for $name';
+  }
+
+  @override
+  String get pv2HeadExplore => 'Keep your child\'s first years more fully';
+
+  @override
+  String pv2ReasonTemplate(String name) {
+    return 'The “$name” template and the photos you chose are kept.';
+  }
+
+  @override
+  String get pv2ReasonVideo => 'Your draft and the photos you chose are kept.';
+
+  @override
+  String pv2ReasonLumi(int n) {
+    return 'Your question is waiting · all $n trial credits used.';
+  }
+
+  @override
+  String pv2ReasonStorage(String used, String limit) {
+    return 'Used $used / $limit · new items stay safe on this phone.';
+  }
+
+  @override
+  String pv2ReasonCaregivers(int used, int limit) {
+    return 'The family uses $used / $limit caregiver seats of the Free plan.';
+  }
+
+  @override
+  String get pv2ReasonMember =>
+      'It\'s in Premium — the plan the whole family shares.';
+
+  @override
+  String get pv2CardVideoEyebrow => 'MEMORY VIDEOS';
+
+  @override
+  String get pv2CardVideoTitle => 'Loose photos, one story';
+
+  @override
+  String get pv2CardVideoBody =>
+      'Pick photos, add a message, keep the months with your child.';
+
+  @override
+  String pv2CardVideoLimit(int n) {
+    return '$n videos a month';
+  }
+
+  @override
+  String get pv2CardVideoDemo1 => 'A month ago, we welcomed you home.';
+
+  @override
+  String get pv2CardVideoDemo2 => 'First day home';
+
+  @override
+  String get pv2CardCardEyebrow => 'PREMIUM TEMPLATES';
+
+  @override
+  String get pv2CardCardTitle => 'Cards made for your child';
+
+  @override
+  String get pv2CardCardBody =>
+      'Add a name and a loving note, change the style in one tap.';
+
+  @override
+  String get pv2CardCardLimit =>
+      'Every premium template · Vietnamese – English';
+
+  @override
+  String get pv2CardCardDemo => '100 DAYS';
+
+  @override
+  String get pv2CardLumiEyebrow => 'LUMI EVERY MONTH';
+
+  @override
+  String get pv2CardLumiTitle => 'Ask once, Lumi sums it up';
+
+  @override
+  String get pv2CardLumiBody =>
+      'Ask about feeds and sleep, or log in one sentence.';
+
+  @override
+  String pv2CardLumiLimit(int n) {
+    return '$n credits a month';
+  }
+
+  @override
+  String get pv2CardLumiDemoQ => 'How did the feeds go today?';
+
+  @override
+  String get pv2CardLumiDemoA => 'By 14:20: 3 bottle feeds · 390 ml';
+
+  @override
+  String get pv2CardLumiDemoSource => 'From the journal';
+
+  @override
+  String get pv2CardRhythmEyebrow => 'YOUR CHILD\'S RHYTHM';
+
+  @override
+  String get pv2CardRhythmTitle => 'Lumi looks back at the week';
+
+  @override
+  String get pv2CardRhythmBody => 'One clear note, from the family\'s journal.';
+
+  @override
+  String pv2CardRhythmLimit(int n) {
+    return 'Included in $n credits a month';
+  }
+
+  @override
+  String get pv2CardRhythmDemoLast => 'Last week';
+
+  @override
+  String get pv2CardRhythmDemoThis => 'This week';
+
+  @override
+  String get pv2CardStorageEyebrow => 'STORAGE';
+
+  @override
+  String get pv2CardStorageTitle => 'New photos just keep saving';
+
+  @override
+  String get pv2CardStorageBody =>
+      'Auto-save runs every day, no clearing out at the end of the month.';
+
+  @override
+  String pv2CardStorageLimit(String gb) {
+    return '$gb GB for the family · add 20/50 GB when needed';
+  }
+
+  @override
+  String get pv2CardStorageDemo => 'Auto-saved 12 new photos today';
+
+  @override
+  String get pv2CardCaregiversEyebrow => 'THE WHOLE FAMILY CARES';
+
+  @override
+  String get pv2CardCaregiversTitle => 'Everyone cares, no asking twice';
+
+  @override
+  String get pv2CardCaregiversBody =>
+      'Whatever anyone logs, everyone sees it in the shared journal.';
+
+  @override
+  String pv2CardCaregiversLimit(int premium, int free) {
+    return 'Room for up to $premium caregivers (Free: $free)';
+  }
+
+  @override
+  String get pv2CardCaregiversDemo1 => 'Mum · Logged a 120 ml feed';
+
+  @override
+  String get pv2CardCaregiversDemo2 => 'Dad · Started a nap';
+
+  @override
+  String get pv2CompareTitle => 'Free and Premium';
+
+  @override
+  String get pv2CompareBenefit => 'Benefit';
+
+  @override
+  String get pv2YouNeed => 'You need this';
+
+  @override
+  String get pv2RowLumi => 'Lumi credits';
+
+  @override
+  String pv2RowLumiFree(int n) {
+    return '$n trial credits, once';
+  }
+
+  @override
+  String pv2RowLumiPremium(int n) {
+    return '$n credits/month';
+  }
+
+  @override
+  String get pv2RowStorage => 'Storage';
+
+  @override
+  String pv2RowStoragePremium(String gb) {
+    return '$gb GB · add more when needed';
+  }
+
+  @override
+  String get pv2RowVideo => 'Video exports';
+
+  @override
+  String pv2RowVideoFree(int n) {
+    return '$n trial exports, once';
+  }
+
+  @override
+  String pv2RowVideoPremium(int n) {
+    return '$n exports/month';
+  }
+
+  @override
+  String get pv2RowTemplates => 'Card & video templates';
+
+  @override
+  String get pv2RowTemplatesFree => 'Basic templates · preview premium ones';
+
+  @override
+  String get pv2RowTemplatesPremium => 'Every premium template';
+
+  @override
+  String get pv2RowCaregivers => 'Caregivers';
+
+  @override
+  String pv2RowPeople(int n) {
+    return '$n people';
+  }
+
+  @override
+  String get pv2RowRelatives => 'Relatives viewing albums';
+
+  @override
+  String get pv2Unlimited => 'No limit';
+
+  @override
+  String get pv2PromiseCancel => 'Cancel any time';
+
+  @override
+  String get pv2PromiseNoTopUps => 'No single credits sold';
+
+  @override
+  String get pv2PromiseYours => 'Your memories stay yours';
+
+  @override
+  String get pv2PeriodYear => 'Yearly';
+
+  @override
+  String get pv2PeriodMonth => 'Monthly';
+
+  @override
+  String pv2PerMonthApprox(String price) {
+    return '≈ $price/month';
+  }
+
+  @override
+  String get pv2EachMonth => 'every month';
+
+  @override
+  String pv2SubscribeYear(String price) {
+    return 'Get Premium · $price/year';
+  }
+
+  @override
+  String pv2SubscribeMonth(String price) {
+    return 'Get Premium · $price/month';
+  }
+
+  @override
+  String pv2LegalYear(String price, String store) {
+    return 'Pay $price today · renews every year · cancel in $store any time';
+  }
+
+  @override
+  String pv2LegalMonth(String price, String store) {
+    return 'Pay $price today · renews every month · cancel in $store any time';
+  }
+
+  @override
+  String get pv2SoonTitle => 'Subscribing in the app opens soon';
+
+  @override
+  String get pv2SoonBody =>
+      'Plans and prices as above. You will be able to subscribe right in Child Life.';
+
+  @override
+  String get pv2HasPremium => 'Your family has Premium';
+
+  @override
+  String get pv2OpenFamilyPlan => 'See the family\'s plan';
+
+  @override
+  String pv2ManagedBy(String name) {
+    return '$name manages the family\'s plan';
+  }
+
+  @override
+  String pv2OnlyManager(String name) {
+    return 'Only $name can upgrade for the family';
+  }
+
+  @override
+  String pv2AskManager(String name) {
+    return 'Ask $name to upgrade';
+  }
+
+  @override
+  String pv2AskPrivacy(String name) {
+    return '$name only gets a short message, never your drafts or questions.';
+  }
+
+  @override
+  String get pv2AskMessage =>
+      'I\'d like Child Life Premium for the family. Could you upgrade in Me › Family plan?';
+
+  @override
+  String get pv2TheManager => 'the manager';
+
+  @override
+  String get pv2PlanTitle => 'Family plan';
+
+  @override
+  String get pv2InUse => 'Current';
+
+  @override
+  String pv2ManagerYou(String name) {
+    return 'Manager: $name (you)';
+  }
+
+  @override
+  String pv2ManagerOther(String name) {
+    return 'Managed by $name';
+  }
+
+  @override
+  String get pv2LimitsTitle => 'Allowances';
+
+  @override
+  String get pv2Lumi => 'Lumi';
+
+  @override
+  String get pv2LumiTrial => 'Lumi · trial';
+
+  @override
+  String get pv2Video => 'Memory videos';
+
+  @override
+  String get pv2VideoTrial => 'Videos · trial';
+
+  @override
+  String get pv2Storage => 'Storage';
+
+  @override
+  String pv2CreditsLeft(int left, int limit) {
+    return '$left / $limit credits left';
+  }
+
+  @override
+  String pv2ExportsLeft(int left, int limit) {
+    return '$left / $limit exports left';
+  }
+
+  @override
+  String pv2StorageOf(String used, String limit) {
+    return '$used / $limit';
+  }
+
+  @override
+  String pv2RefillOn(String date) {
+    return 'Refills $date';
+  }
+
+  @override
+  String get pv2TrialOnce => 'Once, not refilled';
+
+  @override
+  String get pv2NextRefill => 'Next refill';
+
+  @override
+  String pv2NextRefillValue(String date) {
+    return '$date · monthly on the subscription day';
+  }
+
+  @override
+  String get pv2Renews => 'Renews';
+
+  @override
+  String get pv2IfCancel => 'If cancelled';
+
+  @override
+  String pv2IfCancelValue(String date) {
+    return 'Premium lasts until $date, then Free. Memories, the journal and exported videos stay viewable and downloadable.';
+  }
+
+  @override
+  String pv2FreeUpsellTitle(String name) {
+    return 'Every month, one more story of $name';
+  }
+
+  @override
+  String get pv2FreeUpsellBody =>
+      'Premium refills Lumi and video exports every month, opens the Premium templates and adds storage for the family.';
+
+  @override
+  String get pv2BuyStorage => 'Buy more storage';
+
+  @override
+  String get pv2HistoryMine => 'My usage history';
+
+  @override
+  String get pv2HistorySub => 'By person and task';
+
+  @override
+  String get pv2ManageRenewal => 'Manage renewal';
+
+  @override
+  String pv2OpenStore(String store) {
+    return 'Open $store';
+  }
+
+  @override
+  String pv2MemberNote(String name) {
+    return 'Only $name can change, renew or cancel the plan. You still get everything it includes.';
+  }
+
+  @override
+  String get pv2Seats => 'Writers';
+
+  @override
+  String pv2SeatsOf(int used, int limit) {
+    return '$used / $limit seats';
+  }
+
+  @override
+  String pv2DowngradedBanner(String date) {
+    return 'The family has been on Free since $date. Nothing was deleted.';
+  }
+
+  @override
+  String get pv2DowngradedBannerNoDate =>
+      'The family is on Free. Nothing was deleted.';
+
+  @override
+  String pv2OverStorageTitle(String used, String limit) {
+    return 'Over storage · $used / $limit';
+  }
+
+  @override
+  String pv2OverStorageBody(String limit) {
+    return 'Every photo and video stays viewable and downloadable. New uploads pause until you are under $limit.';
+  }
+
+  @override
+  String pv2OverSeatsTitle(int used, int limit) {
+    return 'Over caregiver seats · $used / $limit';
+  }
+
+  @override
+  String pv2OverSeatsBody(int limit) {
+    return 'Choose $limit people who keep writing. The others can only view for now and are never removed.';
+  }
+
+  @override
+  String get pv2ChoosePeople => 'Choose people';
+
+  @override
+  String get pv2ExportData => 'Export data';
+
+  @override
+  String get pv2UpgradeAgain => 'Upgrade again';
+
+  @override
+  String get pv2SuspendedNote =>
+      'You can only view for now because Free has fewer writer seats. Everything is still there.';
+
+  @override
+  String get pv2FilterAll => 'All';
+
+  @override
+  String get pv2FilterLumi => 'Lumi';
+
+  @override
+  String get pv2FilterVideo => 'Video';
+
+  @override
+  String get pv2FilterGrants => 'Grants & refunds';
+
+  @override
+  String get pv2HistoryEmpty => 'Nothing used yet.';
+
+  @override
+  String get pv2HistoryError =>
+      'Could not load the history. Try again when online.';
+
+  @override
+  String get pv2HistoryPrivacy =>
+      'Only the person, the kind of task and the amount. Questions and answers never show here.';
+
+  @override
+  String get pv2System => 'System';
+
+  @override
+  String get pv2Someone => 'A member';
+
+  @override
+  String get pv2TaskLumiChat => 'Lumi · Question';
+
+  @override
+  String get pv2TaskLumiSummary => 'Lumi · Today\'s summary';
+
+  @override
+  String get pv2TaskLumiPhoto => 'Lumi · Photo reading';
+
+  @override
+  String get pv2TaskVideoExport => 'Video · Export';
+
+  @override
+  String get pv2TaskLumiTrial => 'Trial credits';
+
+  @override
+  String get pv2TaskLumiCycle => 'Monthly credits';
+
+  @override
+  String get pv2TaskVideoTrial => 'Trial video exports';
+
+  @override
+  String get pv2TaskVideoCycle => 'Monthly video exports';
+
+  @override
+  String get pv2TaskLumiGrant => 'Credits added by support';
+
+  @override
+  String get pv2TaskVideoGrant => 'Exports added by support';
+
+  @override
+  String get pv2TaskRefundLumi => 'Credits back · error';
+
+  @override
+  String get pv2TaskRefundVideo => 'Export given back';
+
+  @override
+  String pv2AmountExports(String amount) {
+    return '$amount exports';
+  }
+
+  @override
+  String get pv2Held => 'held';
+
+  @override
+  String pv2Month(String month) {
+    return '$month';
+  }
+
+  @override
+  String get pv2PickTitle => 'Who keeps writing?';
+
+  @override
+  String pv2PickBody(int limit) {
+    return 'The current plan has $limit seats. Those not chosen still see everything and come back when the family upgrades.';
+  }
+
+  @override
+  String pv2PickManager(String relation) {
+    return '$relation · manager';
+  }
+
+  @override
+  String pv2PickSave(int chosen, int limit) {
+    return 'Save · $chosen/$limit';
+  }
+
+  @override
+  String get pv2PickSaved => 'Saved. Those not chosen get a gentle notice.';
+
+  @override
+  String get pv2PickFailed => 'Not saved. Please try again.';
+
+  @override
+  String pv2You(String name) {
+    return '$name (you)';
+  }
+
+  @override
+  String get pv2CancelTitle => 'Cancel Premium renewal';
+
+  @override
+  String pv2CancelLead(String date) {
+    return 'Premium keeps working until $date.';
+  }
+
+  @override
+  String get pv2CancelLeadNoDate =>
+      'Premium keeps working until the end of the paid period.';
+
+  @override
+  String get pv2CancelAfter => 'After that, the family is on Free';
+
+  @override
+  String get pv2CancelKeep => 'Kept as is';
+
+  @override
+  String get pv2CancelKeepBody =>
+      'Memories, the journal, exported videos, members';
+
+  @override
+  String pv2CancelStorage(String used, String free) {
+    return 'Storage $used > $free';
+  }
+
+  @override
+  String get pv2CancelStorageBody =>
+      'Nothing deleted; new uploads pause until you clear space or upgrade';
+
+  @override
+  String pv2CancelSeats(int used, int free) {
+    return '$used writers > $free seats';
+  }
+
+  @override
+  String pv2CancelSeatsBody(int free) {
+    return 'Nobody removed; you choose $free people who keep writing';
+  }
+
+  @override
+  String get pv2CancelTemplates => 'Drafts on Premium templates';
+
+  @override
+  String get pv2CancelTemplatesBody =>
+      'Drafts kept; exporting needs Premium or a basic template';
+
+  @override
+  String get pv2KeepPremium => 'Keep Premium';
+
+  @override
+  String pv2ContinueCancel(String store) {
+    return 'Continue cancelling in $store';
+  }
+
+  @override
+  String get pv2AddOnHead => 'Room for the days your child grows.';
+
+  @override
+  String get pv2AddOnUsing => 'In use';
+
+  @override
+  String get pv2AddOnUsed => 'Used';
+
+  @override
+  String pv2AddOnOption(int gb) {
+    return 'Add $gb GB';
+  }
+
+  @override
+  String pv2AddOnTotal(int gb) {
+    return '$gb GB in total for the family';
+  }
+
+  @override
+  String pv2PerYear(String price) {
+    return '$price/year';
+  }
+
+  @override
+  String pv2OrPerMonth(String price) {
+    return 'or $price/month';
+  }
+
+  @override
+  String get pv2AddOnNote =>
+      'Shared by the whole family · renews with Premium · cancel any time.';
+
+  @override
+  String get pv2AddOnSoon =>
+      'Coming soon · buying storage opens together with in-app subscriptions.';
+
+  @override
+  String get pv2AddOnPremiumOnly =>
+      'Extra storage is for families with Premium.';
+
+  @override
+  String get pv2StoreApple => 'App Store';
+
+  @override
+  String get pv2StoreGoogle => 'Google Play';
 
   @override
   String get rhTriedAll => 'All';
@@ -21229,4 +23037,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get rhTriedNote =>
       'From your family\'s answers, not a medical conclusion.';
+
+  @override
+  String get pv2PlanPremium => 'Premium';
+
+  @override
+  String get pv2PlanFree => 'Free';
 }

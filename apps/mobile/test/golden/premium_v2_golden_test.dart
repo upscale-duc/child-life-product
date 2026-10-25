@@ -1,0 +1,252 @@
+@Tags(['golden'])
+library;
+
+import 'package:child_life/app/environment.dart';
+import 'package:child_life/app/providers.dart';
+import 'package:child_life/core/appearance/appearance_providers.dart';
+import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/premium/billing_models.dart';
+import 'package:child_life/features/premium/family_plan_v2.dart';
+import 'package:child_life/features/premium/paywall_screen.dart';
+import 'package:child_life/features/premium/plan_screen.dart';
+import 'package:child_life/features/premium/premium_entries.dart';
+import 'package:child_life/features/premium/premium_style.dart';
+import 'package:child_life/features/premium/premium_v2.dart';
+import 'package:child_life/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/family_fixtures.dart';
+import '../helpers/premium_v2_fixtures.dart';
+
+/// Premium v2 (Figma 958:13863, D-101): paywall by entry (PW01 / PW03 / PW05 / PW06 / PW07),
+/// the suggestion sheet and inline cards (E01, E12, E13), Gói của gia đình (PV40, PV40B, PV43,
+/// PV45), PV41, PV42, PV44 and PW10, in Light / Night care × vi / en. Synthetic data only.
+/// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/premium_v2_golden_test.dart
+
+typedef _Case = ({
+  Widget Function() build,
+  List<Override> overrides,
+  Future<void> Function(WidgetTester tester)? act,
+});
+
+Widget _opener(void Function(BuildContext context) show) => Scaffold(
+  body: Builder(
+    builder: (context) => Center(
+      child: TextButton(
+        onPressed: () => show(context),
+        child: const Text('open'),
+      ),
+    ),
+  ),
+);
+
+Future<void> _open(WidgetTester tester) async {
+  await tester.tap(find.text('open'));
+  await tester.pumpAndSettle();
+}
+
+_Case _paywall(PremiumEntry entry, {bool owner = true, String? subject}) => (
+  build: () =>
+      PaywallScreen(entry: PaywallEntry.plan, v2Entry: entry, subject: subject),
+  overrides: premiumV2Overrides(
+    plan: owner ? freePlan : asMember(freePlan),
+    caps: v2Answer(owner: owner),
+    me: owner ? mai : minh,
+  ),
+  act: null,
+);
+
+_Case _plan(
+  FamilyPlanV2 plan, {
+  Map<String, Object?>? caps,
+  bool owner = true,
+}) => (
+  build: () => const HouseholdPlanScreen(),
+  overrides: premiumV2Overrides(
+    plan: owner ? plan : asMember(plan),
+    caps:
+        caps ?? v2Answer(plan: plan.premium ? 'premium' : 'free', owner: owner),
+    me: owner ? mai : minh,
+  ),
+  act: null,
+);
+
+final _cases = <String, _Case>{
+  'pw01_video': _paywall(PremiumEntry.video, subject: '100 ngày yêu thương'),
+  'pw03_lumi': _paywall(PremiumEntry.lumi),
+  'pw05_caregivers': _paywall(PremiumEntry.caregivers),
+  'pw06_explore': _paywall(PremiumEntry.explore),
+  'pw07_member': _paywall(PremiumEntry.video, owner: false),
+  'e01_sheet': (
+    build: () => _opener(
+      (context) => showPremiumSuggestion(
+        context,
+        title: AppLocalizations.of(context).pv2E01Title('100 ngày yêu thương'),
+        body: AppLocalizations.of(context).pv2E01Body(4),
+        secondary: AppLocalizations.of(context).pv2E01Secondary,
+      ),
+    ),
+    overrides: premiumV2Overrides(plan: freePlan),
+    act: _open,
+  ),
+  'e12_sheet': (
+    build: () => Consumer(
+      builder: (context, ref, _) =>
+          _opener((context) => showSeatsFullSuggestion(context, ref, teddyId)),
+    ),
+    overrides: premiumV2Overrides(plan: freePlan),
+    act: _open,
+  ),
+  'e13_inline': (
+    build: () => const Scaffold(
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(16, 80, 16, 0),
+        child: Column(
+          children: [
+            MePremiumInline(babyId: teddyId),
+            StoragePremiumInline(babyId: teddyId),
+          ],
+        ),
+      ),
+    ),
+    overrides: premiumV2Overrides(plan: freePlan),
+    act: null,
+  ),
+  'pv40_premium': _plan(
+    premiumPlan,
+    caps: v2Answer(
+      plan: 'premium',
+      provider: 'apple',
+      validUntil: '2027-10-24T03:00:00.000Z',
+    ),
+  ),
+  'pv40b_free': _plan(freePlan),
+  'pv43_downgraded': _plan(
+    downgradedPlan,
+    caps: v2Answer(plan: 'expired', validUntil: '2026-10-24T03:00:00.000Z'),
+  ),
+  'pv45_member': _plan(premiumPlan, owner: false),
+  'pv41_history': (
+    build: () => const UsageHistoryScreen(),
+    overrides: premiumV2Overrides(plan: premiumPlan),
+    act: null,
+  ),
+  'pv42_cancel': (
+    build: () => const CancelRenewalScreen(),
+    overrides: premiumV2Overrides(
+      plan: FamilyPlanV2(
+        v2: true,
+        premium: true,
+        isManager: true,
+        lumi: premiumPlan.lumi,
+        video: premiumPlan.video,
+        usedBytes: premiumPlan.usedBytes,
+        limitBytes: premiumPlan.limitBytes,
+        seatsUsed: 5,
+        seatsLimit: 6,
+        validUntil: premiumPlan.validUntil,
+      ),
+      caps: v2Answer(plan: 'premium', provider: 'apple'),
+    ),
+    act: null,
+  ),
+  'pv44_picker': (
+    build: () => _opener(
+      (context) =>
+          showSeatPicker(context, babyId: teddyId, plan: downgradedPlan),
+    ),
+    overrides: [
+      ...premiumV2Overrides(plan: downgradedPlan),
+      familyWritersProvider.overrideWith(
+        (ref, id) => [
+          mai,
+          minh,
+          lan,
+          member(
+            'u_ong',
+            'Ông nội',
+            MemberRole.caregiver,
+            Relation.grandfather,
+          ),
+          member('u_ba', 'Bà nội', MemberRole.caregiver, Relation.grandmother),
+        ],
+      ),
+    ],
+    act: _open,
+  ),
+  'pw10_addon': (
+    build: () => const StorageAddOnScreen(),
+    overrides: premiumV2Overrides(plan: premiumPlan),
+    act: null,
+  ),
+};
+
+void main() {
+  for (final MapEntry(key: name, value: c) in _cases.entries) {
+    for (final palette in ClPalette.values) {
+      for (final locale in const [Locale('vi'), Locale('en')]) {
+        testWidgets('$name ${palette.name} ${locale.languageCode}', (
+          tester,
+        ) async {
+          SharedPreferences.setMockInitialValues(const {});
+          final prefs = await SharedPreferences.getInstance();
+          tester.view.physicalSize = const Size(375, 812);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                sharedPreferencesProvider.overrideWithValue(prefs),
+                environmentProvider.overrideWithValue(AppEnvironment.dev),
+                ...c.overrides,
+              ],
+              child: MediaQuery(
+                data: const MediaQueryData(
+                  size: Size(375, 812),
+                  disableAnimations: true,
+                  padding: EdgeInsets.only(top: 47, bottom: 34),
+                ),
+                child: RepaintBoundary(
+                  key: const ValueKey('golden'),
+                  child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    theme: buildClTheme(palette),
+                    locale: locale,
+                    supportedLocales: const [Locale('vi'), Locale('en')],
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    home: c.build(),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await c.act?.call(tester);
+          debugDisableShadows = false;
+          try {
+            await tester.pump();
+            await expectLater(
+              find.byKey(const ValueKey('golden')),
+              matchesGoldenFile(
+                'goldens/pv2/${name}_${palette.name}_${locale.languageCode}.png',
+              ),
+            );
+          } finally {
+            debugDisableShadows = true;
+          }
+        });
+      }
+    }
+  }
+}

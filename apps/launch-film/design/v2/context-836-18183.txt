@@ -1,0 +1,232 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/7bbc7d97-b942-47e7-8d41-9ae24897a96e";
+const imgImagePhoto = `${assetPathPrefix}/dacb8.png`;
+const imgIllustrationPhoto = `${assetPathPrefix}/22456.png`;
+const imgImagePhoto1 = `${assetPathPrefix}/e9abe.png`;
+const imgAccentSun = `${assetPathPrefix}/9d6f1.svg`;
+const imgAccentSunHalo = `${assetPathPrefix}/491c8.svg`;
+const imgAccentCloud1A = `${assetPathPrefix}/93d10.svg`;
+const imgAccentCloud1B = `${assetPathPrefix}/0017e.svg`;
+const imgAccentCloud1C = `${assetPathPrefix}/3ad53.svg`;
+const imgAccentCloud2A = `${assetPathPrefix}/6b955.svg`;
+const imgAccentCloud2B = `${assetPathPrefix}/1eb42.svg`;
+const imgAccentCloud2C = `${assetPathPrefix}/3c4b8.svg`;
+const imgAccentHill1 = `${assetPathPrefix}/80694.svg`;
+const imgAccentHill2 = `${assetPathPrefix}/9be44.svg`;
+const imgAccentHill3 = `${assetPathPrefix}/0a425.svg`;
+const imgAccentPath = `${assetPathPrefix}/f468b.svg`;
+const imgAccentPathDash = `${assetPathPrefix}/305d9.svg`;
+const imgIconStar = `${assetPathPrefix}/a0b1e.svg`;
+const imgIconSpark = `${assetPathPrefix}/12aed.svg`;
+const imgIconGlobe = `${assetPathPrefix}/89ac8.svg`;
+const imgIconFeed = `${assetPathPrefix}/c8c69.svg`;
+const imgIconArrowRight = `${assetPathPrefix}/20eb4.svg`;
+const imgIconCamera = `${assetPathPrefix}/8bfa7.svg`;
+
+export default function S01Vision0008SHero9X16() {
+  return (
+    <div className="bg-[var(--cloud,#f6fcfb)] relative size-full" data-node-id="836:18183" data-name="S01_Vision_00-08s_HERO_9x16">
+      <div className="absolute bg-[var(--cloud,#f6fcfb)] inset-0" data-node-id="836:18184" data-name="Background" />
+      <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[90px] not-italic text-[72px] text-[color:var(--ink,#173d44)] top-[230px] tracking-[-1.08px] whitespace-nowrap" data-node-id="836:18185">
+        Cùng con lớn lên,
+      </p>
+      <p className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:SemiBold'] leading-[1.12] left-[90px] not-italic text-[72px] text-[color:var(--mint-deep,#087f7b)] top-[320px] tracking-[-1.08px] whitespace-nowrap" data-node-id="836:18186">
+        qua từng khoảnh khắc.
+      </p>
+      <div className="[word-break:break-word] absolute font-['Be_Vietnam_Pro:Medium'] leading-[0] left-[90px] not-italic text-[30px] text-[color:var(--ink-muted,#55707a)] top-[435px] whitespace-nowrap" data-node-id="836:18187">
+        <p className="leading-[1.4] mb-0">Đồng hành cùng con — từ ngày đầu đời</p>
+        <p className="leading-[1.4]">đến khi trưởng thành.</p>
+      </div>
+      <div className="absolute h-[928px] left-[44px] top-[600px] w-[992px]" data-node-id="836:18188" data-name="Illustration/Journey">
+        <div className="absolute bg-gradient-to-b from-[#fff5d9] left-[80px] overflow-clip rounded-[76.8px] size-[864px] to-[#e0f5f0] top-[32px]" data-node-id="836:18189" data-name="Accent/Landscape">
+          <div className="absolute left-[640px] size-[144px] top-[73.6px]" data-node-id="836:18190" data-name="Accent/Sun">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentSun} />
+          </div>
+          <div className="absolute left-[608px] size-[208px] top-[41.6px]" data-node-id="836:18191" data-name="Accent/SunHalo">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentSunHalo} />
+          </div>
+          <div className="absolute h-[54.4px] left-[96px] top-[128px] w-[96px]" data-node-id="836:18192" data-name="Accent/Cloud/1a">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud1A} />
+          </div>
+          <div className="absolute h-[70.4px] left-[134.4px] top-[112px] w-[89.6px]" data-node-id="836:18193" data-name="Accent/Cloud/1b">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud1B} />
+          </div>
+          <div className="absolute h-[51.2px] left-[182.4px] top-[131.2px] w-[80px]" data-node-id="836:18194" data-name="Accent/Cloud/1c">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud1C} />
+          </div>
+          <div className="absolute h-[38.08px] left-[400px] top-[75.2px] w-[67.2px]" data-node-id="836:18195" data-name="Accent/Cloud/2a">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud2A} />
+          </div>
+          <div className="absolute h-[49.28px] left-[426.88px] top-[64px] w-[62.72px]" data-node-id="836:18196" data-name="Accent/Cloud/2b">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud2B} />
+          </div>
+          <div className="absolute h-[35.84px] left-[460.48px] top-[77.44px] w-[56px]" data-node-id="836:18197" data-name="Accent/Cloud/2c">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentCloud2C} />
+          </div>
+          <div className="absolute h-[672px] left-[-480px] top-[528px] w-[1440px]" data-node-id="836:18198" data-name="Accent/Hill/1">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentHill1} />
+          </div>
+          <div className="absolute h-[608px] left-[192px] top-[608px] w-[1280px]" data-node-id="836:18199" data-name="Accent/Hill/2">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentHill2} />
+          </div>
+          <div className="absolute h-[480px] left-[-288px] top-[720px] w-[1120px]" data-node-id="836:18200" data-name="Accent/Hill/3">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgAccentHill3} />
+          </div>
+          <div className="absolute h-[448px] left-[176px] top-[304px] w-[544px]" data-node-id="836:18201" data-name="Accent/Path">
+            <div className="absolute inset-[-1.79%_-1.47%]">
+              <img alt="" className="block max-w-none size-full" src={imgAccentPath} />
+            </div>
+          </div>
+          <div className="absolute h-[448px] left-[176px] top-[304px] w-[544px]" data-node-id="836:18202" data-name="Accent/PathDash">
+            <div className="absolute inset-[-0.54%_-0.44%]">
+              <img alt="" className="block max-w-none size-full" src={imgAccentPathDash} />
+            </div>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] border-[6.4px] border-[var(--mint-deep,#087f7b)] border-solid left-[107.2px] overflow-clip rounded-[68.8px] size-[137.6px] top-[683.2px]" data-node-id="836:18203" data-name="Card/Stage/0-12m">
+            <div className="absolute bg-[var(--surface-2,#eef6f5)] left-[-6.4px] overflow-clip size-[137.6px] top-[-6.4px]" data-node-id="836:18204" data-name="Photo">
+              <div className="absolute left-0 size-[137.6px] top-0" data-node-id="836:18258" data-name="Image · photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto} />
+              </div>
+            </div>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] border-[6.4px] border-[var(--sunshine,#ffd166)] border-dashed left-[316.8px] opacity-50 overflow-clip rounded-[51.2px] size-[102.4px] top-[524.8px]" data-node-id="836:18206" data-name="Card/Stage/1-3y">
+            <div className="absolute left-[24.32px] size-[40.96px] top-[24.32px]" data-node-id="836:18207" data-name="Icon/star">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconStar} />
+            </div>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] border-[6.4px] border-[var(--care-sleep-accent,#6c6fd8)] border-dashed left-[499.2px] opacity-50 overflow-clip rounded-[44.8px] size-[89.6px] top-[419.2px]" data-node-id="836:18208" data-name="Card/Stage/3-6y">
+            <div className="absolute left-[20.48px] size-[35.84px] top-[20.48px]" data-node-id="836:18209" data-name="Icon/spark">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconSpark} />
+            </div>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] border-[6.4px] border-[var(--care-bottle-accent,#3b8fd9)] border-dashed left-[680px] opacity-50 overflow-clip rounded-[40px] size-[80px] top-[264px]" data-node-id="836:18210" data-name="Card/Stage/6-12y">
+            <div className="absolute left-[17.6px] size-[32px] top-[17.6px]" data-node-id="836:18211" data-name="Icon/globe">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconGlobe} />
+            </div>
+          </div>
+          <div className="absolute bg-[var(--mint-deep,#087f7b)] content-stretch flex items-center left-[96px] px-[16px] py-[6.4px] rounded-[1598.4px] top-[816px]" data-node-id="836:18212" data-name="Card/StageChip/0–12 tháng">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[19.2px] text-[color:var(--on-mint-deep,white)] whitespace-nowrap" data-node-id="836:18213">
+              0–12 tháng · Đang có trong app
+            </p>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] content-stretch flex items-center left-[313.6px] opacity-75 px-[16px] py-[6.4px] rounded-[1598.4px] top-[646.4px]" data-node-id="836:18214" data-name="Card/StageChip/1–3 tuổi">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[19.2px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="836:18215">
+              1–3 tuổi · Chặng tiếp theo
+            </p>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] content-stretch flex items-center left-[489.6px] opacity-75 px-[16px] py-[6.4px] rounded-[1598.4px] top-[521.6px]" data-node-id="836:18216" data-name="Card/StageChip/3–6 tuổi">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[19.2px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="836:18217">
+              3–6 tuổi · Trong tương lai
+            </p>
+          </div>
+          <div className="absolute bg-[var(--surface,white)] content-stretch flex items-center left-[579.2px] opacity-75 px-[16px] py-[6.4px] rounded-[1598.4px] top-[358.4px]" data-node-id="836:18218" data-name="Card/StageChip/6–12 tuổi">
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:SemiBold'] leading-[normal] not-italic relative shrink-0 text-[19.2px] text-[color:var(--ink,#173d44)] whitespace-nowrap" data-node-id="836:18219">
+              6–12 tuổi · Trong tương lai
+            </p>
+          </div>
+        </div>
+        <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_12.8px_19.2px_rgba(23,61,68,0.08),0px_1.6px_1.6px_rgba(23,61,68,0.06)] flex flex-col items-start left-[16px] px-[22.4px] py-[19.2px] rounded-[28.8px] top-[176px]" data-node-id="836:18220" data-name="Card/Float/BuBinh">
+          <div className="content-stretch flex gap-[12.8px] items-center relative shrink-0" data-node-id="836:18221" data-name="h">
+            <div className="bg-[var(--care-bottle-soft,#e5f1fb)] content-stretch flex items-start p-[12.8px] relative rounded-[19.2px] shrink-0" data-node-id="836:18222" data-name="ic">
+              <div className="relative shrink-0 size-[25.6px]" data-node-id="836:18223" data-name="Icon/feed">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconFeed} />
+              </div>
+            </div>
+            <div className="[word-break:break-word] content-stretch flex flex-col items-start leading-[normal] not-italic relative shrink-0 whitespace-nowrap" data-node-id="836:18224" data-name="t">
+              <p className="font-['Be_Vietnam_Pro:Bold'] relative shrink-0 text-[22.4px] text-[color:var(--ink,#173d44)]" data-node-id="836:18225">
+                Bú bình · 120 ml
+              </p>
+              <p className="font-['Be_Vietnam_Pro:Medium'] relative shrink-0 text-[19.2px] text-[color:var(--ink-muted,#55707a)]" data-node-id="836:18226">
+                Ba vừa ghi · 2 phút trước
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_12.8px_19.2px_rgba(23,61,68,0.08),0px_1.6px_1.6px_rgba(23,61,68,0.06)] flex flex-col items-start left-0 px-[22.4px] py-[19.2px] rounded-[28.8px] top-[560px]" data-node-id="836:18227" data-name="Card/Float/HocTap · tương lai">
+          <div className="content-stretch flex gap-[12.8px] items-center relative shrink-0" data-node-id="836:18228" data-name="h">
+            <div className="bg-[var(--surface-2,#eef6f5)] overflow-clip relative rounded-[16px] shrink-0 size-[64px]" data-node-id="836:18229" data-name="Photo">
+              <div className="absolute left-0 overflow-clip size-[64px] top-0" data-node-id="836:18230" style={{ backgroundImage: "linear-gradient(143.13010167113708deg, rgb(255, 241, 201) 0%, rgb(249, 215, 126) 71.429%)" }} data-name="Illustration/Photo">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgIllustrationPhoto} />
+              </div>
+            </div>
+            <div className="[word-break:break-word] content-stretch flex flex-col items-start leading-[normal] not-italic relative shrink-0 whitespace-nowrap" data-node-id="836:18231" data-name="t">
+              <p className="font-['Be_Vietnam_Pro:Bold'] relative shrink-0 text-[22.4px] text-[color:var(--ink,#173d44)]" data-node-id="836:18232">
+                Học tập
+              </p>
+              <p className="font-['Be_Vietnam_Pro:Medium'] relative shrink-0 text-[19.2px] text-[color:var(--mint-text,#06716d)]" data-node-id="836:18233">
+                Hôm nay con học thế nào?
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bg-[var(--surface,white)] content-stretch drop-shadow-[0px_12.8px_19.2px_rgba(23,61,68,0.08),0px_1.6px_1.6px_rgba(23,61,68,0.06)] flex flex-col gap-[12.8px] items-start left-[656px] pb-[19.2px] pt-[12.8px] px-[12.8px] rounded-[32px] top-[608px] w-[336px]" data-node-id="836:18234" data-name="Card/Float/VideoDayThang">
+          <div className="bg-[var(--surface-2,#eef6f5)] h-[192px] overflow-clip relative rounded-[22.4px] shrink-0 w-[310.4px]" data-node-id="836:18235" data-name="Photo">
+            <div className="absolute bg-[var(--surface,white)] content-stretch flex items-start left-[131.2px] p-[12.8px] rounded-[1598.4px] top-[72px]" data-node-id="836:18237" data-name="play">
+              <div className="relative shrink-0 size-[22.4px]" data-node-id="836:18238" data-name="Icon/arrow-right">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconArrowRight} />
+              </div>
+            </div>
+            <div className="absolute h-[192px] left-0 top-0 w-[310.4px]" data-node-id="836:18264" data-name="Image · photo">
+              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImagePhoto1} />
+            </div>
+          </div>
+          <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold'] leading-[normal] min-w-full not-italic relative shrink-0 text-[20.8px] text-[color:var(--ink,#173d44)] w-[min-content]" data-node-id="836:18239">
+            Video đầy tháng của Teddy
+          </p>
+          <div className="content-stretch flex gap-[9.6px] items-center relative shrink-0" data-node-id="836:18240" data-name="t">
+            <div className="relative shrink-0 size-[19.2px]" data-node-id="836:18241" data-name="Icon/camera">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIconCamera} />
+            </div>
+            <p className="[word-break:break-word] font-['Be_Vietnam_Pro:Medium'] leading-[normal] not-italic relative shrink-0 text-[17.6px] text-[color:var(--ink-muted,#55707a)] whitespace-nowrap" data-node-id="836:18242">
+              0:45 · từ ảnh bạn chọn
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.
+
+## Icon/star
+**Node ID:** 22:194
+
+Line icon (24px, 1.8 stroke) — placeholder; production uses SF Symbols.
+
+## Icon/spark
+**Node ID:** 7:56
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Icon/globe
+**Node ID:** 22:165
+
+Line icon (24px, 1.8 stroke) — placeholder; production uses SF Symbols.
+
+## Icon/feed
+**Node ID:** 7:9
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Illustration/Photo
+**Node ID:** 131:758
+
+Illustrated baby photo placeholder (privacy-safe). Use instead of real photos in mockups.
+
+## Icon/arrow-right
+**Node ID:** 7:42
+
+Line icon (24px, 1.8 stroke) — placeholder drawing; production uses SF Symbols. Recolour by overriding the stroke with a text-colour token.
+
+## Icon/camera
+**Node ID:** 22:161
+
+Line icon (24px, 1.8 stroke) — placeholder; production uses SF Symbols.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

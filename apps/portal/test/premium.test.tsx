@@ -147,7 +147,7 @@ describe('Gói Premium: configuration', () => {
       <PremiumPlanView data={data} flags={flags} onChanged={() => {}} now={now} />,
     );
     const html = text(raw);
-    expect(html).toContain('Cấu hình Chính sách AI Chiến dịch beta (cũ)');
+    expect(html).toContain('Cấu hình Gói & hạn mức (v2) Chính sách AI Chiến dịch beta (cũ)');
     expect(html).toContain('Mua gói trong app');
     expect(html).toContain(messages.vi['flag.premium_billing']!);
     expect(raw).toContain('role="switch"');

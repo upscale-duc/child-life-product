@@ -1,9 +1,11 @@
 import type { SupportedLocale } from '@child-life/web-config';
+import { printEn, printVi } from './messages-print';
 import { contentEn, contentVi } from './messages-content';
 import { nutritionEn, nutritionVi } from './messages-nutrition';
 import { solidsEn, solidsVi } from './messages-solids';
 import { productAnalyticsEn, productAnalyticsVi } from './messages-product-analytics';
 import { hubEn, hubVi } from './messages-hub';
+import { premiumV2En, premiumV2Vi } from './messages-premium-v2';
 import { notificationsEn, notificationsVi } from './messages-notifications';
 
 /**
@@ -845,6 +847,11 @@ const vi: Record<string, string> = {
     'Hôm nay · Kỷ niệm · Khám phá · Hồ sơ, đổi bé ở đầu trang (cần Trải nghiệm theo tuổi)',
   'flag.adaptive_nav.offEffect':
     'Quay lại Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích; mọi liên kết vẫn mở được.',
+  'flag.premium_v2': 'Gói Premium v2',
+  'flag.premium_v2.desc':
+    'Free 30 credit + 2 video một lần, 1 GB, 3 người ghi; Premium làm mới theo ngày đăng ký (D-101)',
+  'flag.premium_v2.offEffect':
+    'Hạn mức như hiện tại (theo tháng, dung lượng đã cấp); chỗ người ghi không giới hạn.',
 
   // A12
   'audit.title': 'Nhật ký thao tác',
@@ -3864,6 +3871,11 @@ const en: Record<string, string> = {
     'Today · Memories · Explore · Profile, child switcher at the top (needs the age-adaptive experience)',
   'flag.adaptive_nav.offEffect':
     'Back to Today · Memories · Care · Utilities; every link still opens.',
+  'flag.premium_v2': 'Premium plans v2',
+  'flag.premium_v2.desc':
+    'Free 30 credits + 2 videos once, 1 GB, 3 writers; Premium refills on the subscription day (D-101)',
+  'flag.premium_v2.offEffect':
+    'Limits as they are now (monthly, granted storage); no writer seat limit.',
 
   'audit.title': 'Action log',
   'audit.sub':
@@ -6087,21 +6099,25 @@ const en: Record<string, string> = {
 // Hệ thống & AI in messages-hub.ts.
 export const messages: Record<SupportedLocale, Record<string, string>> = {
   vi: {
+    ...printVi,
     ...vi,
     ...contentVi,
     ...nutritionVi,
     ...solidsVi,
     ...productAnalyticsVi,
     ...hubVi,
+    ...premiumV2Vi,
     ...notificationsVi,
   },
   en: {
+    ...printEn,
     ...en,
     ...contentEn,
     ...nutritionEn,
     ...solidsEn,
     ...productAnalyticsEn,
     ...hubEn,
+    ...premiumV2En,
     ...notificationsEn,
   },
 };

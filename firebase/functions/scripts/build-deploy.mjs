@@ -3,7 +3,7 @@
 // Cloud Build can install from npm. Workspace protocol dependencies never reach Cloud Build.
 import { build } from 'esbuild';
 import { execFileSync } from 'node:child_process';
-import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,6 +23,7 @@ const external = [
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
+await cp(join(root, 'src/print-fonts'), join(out, 'print-fonts'), { recursive: true });
 
 await build({
   entryPoints: [join(root, 'src/index.ts')],

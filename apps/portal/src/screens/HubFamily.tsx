@@ -35,6 +35,7 @@ import {
   type PillTone,
 } from '../ui';
 import { FamilyQuotaView } from './PremiumOps';
+import { AdjustUsagePanel } from './PremiumPlans';
 
 /**
  * Tính năng & Premium › Gia đình (plan §2.3): find a family by its code, an account email or a
@@ -874,7 +875,13 @@ function QuotaLoader({ code, now }: { code: string; now: Date }) {
   const [load, reload] = useLoad<StaffFamilyQuota>('staffFamilyQuota', { code }, `quota-${code}`);
   return (
     <Loaded load={load} reload={reload}>
-      {(data) => <FamilyQuotaView data={data} now={now} />}
+      {(data) => (
+        <div className="grid gap-4">
+          {/* PT02 (D-101): the manual adjustment sits next to the windows it changes. */}
+          <AdjustUsagePanel code={code} onDone={reload} />
+          <FamilyQuotaView data={data} now={now} />
+        </div>
+      )}
     </Loaded>
   );
 }

@@ -262,6 +262,11 @@ describe('message catalogs (D-012)', () => {
               replaced: 1,
               missing: 1,
               title: 'x',
+              // Premium v2 (D-101, PT02–PT04)
+              addOns: 'x',
+              signed: '+1',
+              before: 1,
+              after: 2,
               // Editorial content (D-076 #5–#7, B01–B08)
               who: 'x',
               on: 'x',

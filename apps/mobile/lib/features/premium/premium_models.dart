@@ -134,6 +134,7 @@ class Capabilities {
         assistantUpsell: f['assistantUpsell'] == true,
         adaptiveExperience: f['adaptiveExperience'] == true,
         adaptiveNav: f['adaptiveNav'] == true,
+        premiumV2: f['premiumV2'] == true,
       ),
       billingProvider: json['provider'] is String
           ? json['provider'] as String
@@ -170,6 +171,7 @@ class Capabilities {
       'assistantUpsell': features.assistantUpsell,
       'adaptiveExperience': features.adaptiveExperience,
       'adaptiveNav': features.adaptiveNav,
+      'premiumV2': features.premiumV2,
     },
     'provider': billingProvider,
   };
@@ -189,6 +191,7 @@ class PremiumFeatures {
     this.assistantUpsell = false,
     this.adaptiveExperience = false,
     this.adaptiveNav = false,
+    this.premiumV2 = false,
   });
   final bool rhythm;
   final bool personalization;
@@ -209,6 +212,10 @@ class PremiumFeatures {
   /// Adaptive navigation (P-178 `adaptive_nav`); the server sends it only with
   /// [adaptiveExperience].
   final bool adaptiveNav;
+
+  /// Premium v2 (D-101 `premium_v2`): Free trial allowances, writer seats, Gói của gia đình v2
+  /// and the paywall by card (Figma 958:13863).
+  final bool premiumV2;
 
   bool get any => rhythm || personalization || aiAssist || billing || assistant;
 }

@@ -30564,10 +30564,10 @@ abstract class AppLocalizations {
   /// **'Không phù hợp với bé · áp dụng cho cả nhà'**
   String get pv2Exclude;
 
-  /// Personalization v2: Restore
+  /// Premium v2 (Figma 958:13863, D-101). Paywall top bar: restore purchases.
   ///
   /// In vi, this message translates to:
-  /// **'Khôi phục gợi ý'**
+  /// **'Khôi phục'**
   String get pv2Restore;
 
   /// Personalization v2: Intend
@@ -30666,10 +30666,10 @@ abstract class AppLocalizations {
   /// **'Điều nhà mình muốn ghi nhớ'**
   String get pv2NoteText;
 
-  /// Personalization v2: Shared
+  /// Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45).
   ///
   /// In vi, this message translates to:
-  /// **'Chia sẻ với người được xem chăm sóc bé'**
+  /// **'Cả nhà dùng chung'**
   String get pv2Shared;
 
   /// Personalization v2: Personal
@@ -30870,10 +30870,10 @@ abstract class AppLocalizations {
   /// **'Theo phản hồi của bạn trong 7 ngày qua; không kết luận tác dụng từ số liệu trước và sau.'**
   String get pv2WeekHint;
 
-  /// Personalization v2: History
+  /// Premium v2 (Figma 958:13863, D-101). PV40 action row: PV41.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lưu, đã thử và đã ẩn'**
+  /// **'Lịch sử sử dụng'**
   String get pv2History;
 
   /// Personalization v2: Saved
@@ -32952,6 +32952,900 @@ abstract class AppLocalizations {
   /// **'Tuần tới {name} có lịch gì?'**
   String axLumiQ612(String name);
 
+  /// Print Studio · Tab
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ vật'**
+  String get psTab;
+
+  /// Print Studio · Title
+  ///
+  /// In vi, this message translates to:
+  /// **'In & giữ trên tay'**
+  String get psTitle;
+
+  /// Print Studio · Intro
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ những kỷ niệm của con, thành món quà cho cả nhà.'**
+  String get psIntro;
+
+  /// Print Studio · Single
+  ///
+  /// In vi, this message translates to:
+  /// **'Một khung'**
+  String get psSingle;
+
+  /// Print Studio · Trio
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ 3 khung'**
+  String get psTrio;
+
+  /// Print Studio · Five
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ 5 khung'**
+  String get psFive;
+
+  /// Print Studio · Book
+  ///
+  /// In vi, this message translates to:
+  /// **'Sách ảnh'**
+  String get psBook;
+
+  /// Print Studio · Frames
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung đặt bàn'**
+  String get psFrames;
+
+  /// Print Studio · Books
+  ///
+  /// In vi, this message translates to:
+  /// **'Photo Book'**
+  String get psBooks;
+
+  /// Print Studio · Orders
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn in của tôi'**
+  String get psOrders;
+
+  /// Print Studio · Policy
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao hàng & đổi trả'**
+  String get psPolicy;
+
+  /// Print Studio · Customize
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh'**
+  String get psCustomize;
+
+  /// Print Studio · Style
+  ///
+  /// In vi, this message translates to:
+  /// **'Phong cách'**
+  String get psStyle;
+
+  /// Print Studio · Minimal
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối giản'**
+  String get psMinimal;
+
+  /// Print Studio · Playful
+  ///
+  /// In vi, this message translates to:
+  /// **'Đáng yêu'**
+  String get psPlayful;
+
+  /// Print Studio · Timeless
+  ///
+  /// In vi, this message translates to:
+  /// **'Cổ điển'**
+  String get psTimeless;
+
+  /// Print Studio · InSet
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong bộ'**
+  String get psInSet;
+
+  /// Print Studio · Portrait
+  ///
+  /// In vi, this message translates to:
+  /// **'Chân dung'**
+  String get psPortrait;
+
+  /// Print Studio · Info
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin bé'**
+  String get psInfo;
+
+  /// Print Studio · Collage
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghép 4 ảnh'**
+  String get psCollage;
+
+  /// Print Studio · Edit
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get psEdit;
+
+  /// Print Studio · Next
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get psNext;
+
+  /// Print Studio · Done
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get psDone;
+
+  /// Print Studio · Save
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu nháp'**
+  String get psSave;
+
+  /// Print Studio · Saved
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu bản nháp'**
+  String get psSaved;
+
+  /// Print Studio · Saving
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu…'**
+  String get psSaving;
+
+  /// Print Studio · SaveFailed
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại trước khi rời màn hình.'**
+  String get psSaveFailed;
+
+  /// Print Studio · Name
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên trên khung'**
+  String get psName;
+
+  /// Print Studio · Message
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get psMessage;
+
+  /// Print Studio · DefaultMessage
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn con đã đến bên ba mẹ'**
+  String get psDefaultMessage;
+
+  /// Print Studio · BirthDetails
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin ngày sinh, cân nặng, chiều dài'**
+  String get psBirthDetails;
+
+  /// Print Studio · ShowBirth
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện thông tin ngày sinh'**
+  String get psShowBirth;
+
+  /// Print Studio · Occasion
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịp kỷ niệm'**
+  String get psOccasion;
+
+  /// Print Studio · Month
+  ///
+  /// In vi, this message translates to:
+  /// **'Đầy tháng'**
+  String get psMonth;
+
+  /// Print Studio · Hundred
+  ///
+  /// In vi, this message translates to:
+  /// **'100 ngày'**
+  String get psHundred;
+
+  /// Print Studio · Birthday
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật'**
+  String get psBirthday;
+
+  /// Print Studio · Custom
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịp riêng'**
+  String get psCustom;
+
+  /// Print Studio · Date
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày trên bản in'**
+  String get psDate;
+
+  /// Print Studio · PrintTitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề'**
+  String get psPrintTitle;
+
+  /// Print Studio · SafeArea
+  ///
+  /// In vi, this message translates to:
+  /// **'Vùng nét đứt: giữ nội dung quan trọng bên trong để tránh bị cắt.'**
+  String get psSafeArea;
+
+  /// Print Studio · PhotoChange
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh'**
+  String get psPhotoChange;
+
+  /// Print Studio · PhotosMissing
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh để hoàn thiện bản in'**
+  String get psPhotosMissing;
+
+  /// Print Studio · PhotosHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh đã lưu trong Kỷ niệm. Ảnh và thông tin chỉ được dùng cho bản thiết kế này.'**
+  String get psPhotosHelp;
+
+  /// Print Studio · NoPhotos
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh phù hợp. Hãy thêm ảnh vào Kỷ niệm rồi quay lại.'**
+  String get psNoPhotos;
+
+  /// Print Studio · Choose
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh'**
+  String get psChoose;
+
+  /// Print Studio · Options
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn kích thước & khung'**
+  String get psOptions;
+
+  /// Print Studio · Size
+  ///
+  /// In vi, this message translates to:
+  /// **'Kích thước'**
+  String get psSize;
+
+  /// Print Studio · White
+  ///
+  /// In vi, this message translates to:
+  /// **'Classic · trắng'**
+  String get psWhite;
+
+  /// Print Studio · Wood
+  ///
+  /// In vi, this message translates to:
+  /// **'Classic · gỗ sáng'**
+  String get psWood;
+
+  /// Print Studio · Gift
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium · hộp quà'**
+  String get psGift;
+
+  /// Print Studio · Acrylic
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặt acrylic an toàn · có chân đỡ để bàn'**
+  String get psAcrylic;
+
+  /// Print Studio · Preview
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thiết kế'**
+  String get psPreview;
+
+  /// Print Studio · Flat
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản in phẳng'**
+  String get psFlat;
+
+  /// Print Studio · Download
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải file để in'**
+  String get psDownload;
+
+  /// Print Studio · Order
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt in'**
+  String get psOrder;
+
+  /// Print Studio · Confirm
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn in của bạn'**
+  String get psConfirm;
+
+  /// Print Studio · Approved
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đã kiểm tra ảnh, chữ, ngày và bố cục trên từng bản in.'**
+  String get psApproved;
+
+  /// Print Studio · Immutable
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn lưu đúng bản thiết kế đã duyệt. Sửa kỷ niệm sau này không làm thay đổi đơn.'**
+  String get psImmutable;
+
+  /// Print Studio · Shipping
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao đến đâu?'**
+  String get psShipping;
+
+  /// Print Studio · Recipient
+  ///
+  /// In vi, this message translates to:
+  /// **'Người nhận'**
+  String get psRecipient;
+
+  /// Print Studio · Phone
+  ///
+  /// In vi, this message translates to:
+  /// **'Số điện thoại'**
+  String get psPhone;
+
+  /// Print Studio · Address
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa chỉ đầy đủ'**
+  String get psAddress;
+
+  /// Print Studio · Country
+  ///
+  /// In vi, this message translates to:
+  /// **'Quốc gia giao hàng'**
+  String get psCountry;
+
+  /// Print Studio · CountryHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện giao hàng tại Việt Nam. Ở quốc gia khác, bạn có thể tải file để in gần nhà.'**
+  String get psCountryHelp;
+
+  /// Print Studio · NeededBy
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần nhận trước ngày (không bắt buộc)'**
+  String get psNeededBy;
+
+  /// Print Studio · TooSoon
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể không kịp ngày bạn cần. Chọn ngày muộn hơn hoặc tải file để in tại tiệm gần bạn.'**
+  String get psTooSoon;
+
+  /// Print Studio · GiftDelivery
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi tặng'**
+  String get psGiftDelivery;
+
+  /// Print Studio · GiftNote
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp nhắn tặng'**
+  String get psGiftNote;
+
+  /// Print Studio · Subtotal
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiền sản phẩm'**
+  String get psSubtotal;
+
+  /// Print Studio · ShippingFee
+  ///
+  /// In vi, this message translates to:
+  /// **'Phí giao hàng'**
+  String get psShippingFee;
+
+  /// Print Studio · Total
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng cộng'**
+  String get psTotal;
+
+  /// Print Studio manual ordering · Submit
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận đặt hàng'**
+  String get psSubmit;
+
+  /// Print Studio manual ordering · OrderCreated
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận đơn in của bạn'**
+  String get psOrderCreated;
+
+  /// Print Studio manual ordering · Confirmed
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xác nhận'**
+  String get psConfirmed;
+
+  /// Print Studio · Printing
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang in'**
+  String get psPrinting;
+
+  /// Print Studio · Shipped
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang giao'**
+  String get psShipped;
+
+  /// Print Studio · Delivered
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận hàng'**
+  String get psDelivered;
+
+  /// Print Studio · Cancelled
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ'**
+  String get psCancelled;
+
+  /// Print Studio · Copy
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép'**
+  String get psCopy;
+
+  /// Print Studio · Copied
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép'**
+  String get psCopied;
+
+  /// Print Studio · CancelOrder
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ đơn'**
+  String get psCancelOrder;
+
+  /// Print Studio manual ordering · CancelConfirm
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ yêu cầu đặt in này? Đơn sẽ không được chuyển sang sản xuất.'**
+  String get psCancelConfirm;
+
+  /// Print Studio · Keep
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ đơn'**
+  String get psKeep;
+
+  /// Print Studio · NoOrders
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đơn in'**
+  String get psNoOrders;
+
+  /// Print Studio · NoOrdersHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu từ một bộ khung hoặc cuốn sách của con.'**
+  String get psNoOrdersHelp;
+
+  /// Print Studio · Tracking
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã vận đơn'**
+  String get psTracking;
+
+  /// Print Studio · Quantity
+  ///
+  /// In vi, this message translates to:
+  /// **'Số lượng'**
+  String get psQuantity;
+
+  /// Print Studio · ExportTitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải file in'**
+  String get psExportTitle;
+
+  /// Print Studio · Pdf
+  ///
+  /// In vi, this message translates to:
+  /// **'PDF · bleed 3 mm · khuyên dùng'**
+  String get psPdf;
+
+  /// Print Studio · Jpg
+  ///
+  /// In vi, this message translates to:
+  /// **'JPG · 300 DPI · file ZIP'**
+  String get psJpg;
+
+  /// Print Studio · Png
+  ///
+  /// In vi, this message translates to:
+  /// **'PNG · 300 DPI · file ZIP'**
+  String get psPng;
+
+  /// Print Studio · CropMarks
+  ///
+  /// In vi, this message translates to:
+  /// **'Dấu cắt (crop marks)'**
+  String get psCropMarks;
+
+  /// Print Studio · ExportHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'File được dựng từ ảnh gốc ở 300 DPI. In đúng kích thước, không chọn co giãn vừa trang. Màu in có thể khác màn hình.'**
+  String get psExportHelp;
+
+  /// Print Studio · ExportReady
+  ///
+  /// In vi, this message translates to:
+  /// **'File đã sẵn sàng'**
+  String get psExportReady;
+
+  /// Print Studio · ExportReadyHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu file về máy trong vòng một giờ. Bạn có thể tạo lại nếu liên kết hết hạn.'**
+  String get psExportReadyHelp;
+
+  /// Print Studio · OpenFile
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu / chia sẻ file'**
+  String get psOpenFile;
+
+  /// Print Studio · Generating
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dựng file in… Bạn có thể cần chờ một chút.'**
+  String get psGenerating;
+
+  /// Print Studio · LowQuality
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh có thể mờ khi in'**
+  String get psLowQuality;
+
+  /// Print Studio · LowQualityHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Một số ảnh có độ phân giải thấp hoặc chưa có thông tin kích thước. Đổi ảnh gốc rõ hơn hoặc chọn kích thước nhỏ.'**
+  String get psLowQualityHelp;
+
+  /// Print Studio · AcceptQuality
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn tải file này'**
+  String get psAcceptQuality;
+
+  /// Print Studio · Unavailable
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt in chưa mở. Bạn vẫn có thể thiết kế và tải file để tự in.'**
+  String get psUnavailable;
+
+  /// Print Studio · Error
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thực hiện được. Kiểm tra kết nối rồi thử lại; bản thiết kế vẫn còn ở đây.'**
+  String get psError;
+
+  /// Print Studio · PriceChanged
+  ///
+  /// In vi, this message translates to:
+  /// **'Giá hoặc cấu hình đã thay đổi. Hãy kiểm tra lại tổng tiền trước khi đặt.'**
+  String get psPriceChanged;
+
+  /// Print Studio · InvalidForm
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra tên, số điện thoại Việt Nam và địa chỉ.'**
+  String get psInvalidForm;
+
+  /// Print Studio · Retry
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get psRetry;
+
+  /// Print Studio manual ordering · SamplePrice
+  ///
+  /// In vi, this message translates to:
+  /// **'Giá dự kiến · phí giao tính ở bước cuối'**
+  String get psSamplePrice;
+
+  /// Print Studio · SparseBook
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít ảnh cũng thành một cuốn sách đẹp. Các trang có thể dùng lại ảnh; bạn được đổi ảnh và lời nhắn trước khi in.'**
+  String get psSparseBook;
+
+  /// Print Studio · BookPages24
+  ///
+  /// In vi, this message translates to:
+  /// **'24 trang'**
+  String get psBookPages24;
+
+  /// Print Studio · BookPages40
+  ///
+  /// In vi, this message translates to:
+  /// **'40 trang'**
+  String get psBookPages40;
+
+  /// Print Studio · Page
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang'**
+  String get psPage;
+
+  /// Print Studio · Review
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết đánh giá'**
+  String get psReview;
+
+  /// Print Studio · ReviewMessage
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm nhận của bạn'**
+  String get psReviewMessage;
+
+  /// Print Studio · ReviewHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ người đã nhận hàng mới đánh giá được. Nội dung được duyệt trước khi công khai. Không ghi số điện thoại, địa chỉ hay thông tin riêng của bé.'**
+  String get psReviewHelp;
+
+  /// Print Studio · ReviewSent
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi đánh giá để duyệt'**
+  String get psReviewSent;
+
+  /// Print Studio · SendReview
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đánh giá'**
+  String get psSendReview;
+
+  /// Print Studio · Rating
+  ///
+  /// In vi, this message translates to:
+  /// **'Số sao'**
+  String get psRating;
+
+  /// Print Studio · NoReviews
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đánh giá từ người đã mua'**
+  String get psNoReviews;
+
+  /// Print Studio · Details
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết sản phẩm'**
+  String get psDetails;
+
+  /// Print Studio · Specs
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh in giấy lụa · khung trắng hoặc gỗ sáng · mặt acrylic · chân đỡ để bàn. Thông số và giá chính thức sẽ được xác nhận khi mở đặt in.'**
+  String get psSpecs;
+
+  /// Print Studio · Resume
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục bản nháp'**
+  String get psResume;
+
+  /// Print Studio · NewDesign
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thiết kế mới'**
+  String get psNewDesign;
+
+  /// Print Studio · ForParents
+  ///
+  /// In vi, this message translates to:
+  /// **'Chức năng này dành cho ba mẹ cùng nuôi.'**
+  String get psForParents;
+
+  /// Print Studio · NameRequired
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên để tiếp tục.'**
+  String get psNameRequired;
+
+  /// Print Studio · Close
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get psClose;
+
+  /// Print Studio · Birth
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào đời'**
+  String get psBirth;
+
+  /// Print Studio · Unsaved
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp chưa lưu được. Bạn có muốn rời đi và bỏ các thay đổi chưa lưu?'**
+  String get psUnsaved;
+
+  /// Print Studio · Leave
+  ///
+  /// In vi, this message translates to:
+  /// **'Rời đi'**
+  String get psLeave;
+
+  /// Print Studio · ViewOrder
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem đơn'**
+  String get psViewOrder;
+
+  /// Print Studio · Return
+  ///
+  /// In vi, this message translates to:
+  /// **'Về Kỷ vật'**
+  String get psReturn;
+
+  /// Print Studio · DeleteReview
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá đánh giá'**
+  String get psDeleteReview;
+
+  /// Print Studio · AllReviews
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get psAllReviews;
+
+  /// Print Studio · VerifiedBuyer
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã mua hàng'**
+  String get psVerifiedBuyer;
+
+  /// Print Studio · Vietnam
+  ///
+  /// In vi, this message translates to:
+  /// **'Việt Nam'**
+  String get psVietnam;
+
+  /// Print Studio · OtherCountry
+  ///
+  /// In vi, this message translates to:
+  /// **'Quốc gia khác'**
+  String get psOtherCountry;
+
+  /// Print Studio manual ordering · OrderReview
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận đơn in'**
+  String get psOrderReview;
+
+  /// Print Studio manual ordering · ManualOrderNote
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa cần thanh toán khi đặt hàng. Child Life sẽ liên hệ để xác nhận sản phẩm, ngày nhận và cách thanh toán trước khi in.'**
+  String get psManualOrderNote;
+
+  /// Print Studio manual ordering · PendingConfirmation
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ xác nhận'**
+  String get psPendingConfirmation;
+
+  /// Print Studio manual ordering · OrderReceivedHelp
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận đơn của bạn. Child Life sẽ liên hệ để xác nhận trước khi in. Bạn có thể theo dõi trạng thái tại đây.'**
+  String get psOrderReceivedHelp;
+
+  /// Print Studio manual ordering · EstimatedPriceNote
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là giá dự kiến, gồm phí giao hàng đang hiển thị. Nếu có thay đổi, Child Life sẽ thống nhất lại với bạn trước khi in.'**
+  String get psEstimatedPriceNote;
+
+  /// Print Studio manual ordering · EstimatedTotal
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng dự kiến'**
+  String get psEstimatedTotal;
+
+  /// Print Studio manual ordering · ProductNotOpen
+  ///
+  /// In vi, this message translates to:
+  /// **'Sản phẩm này chưa mở nhận đơn. Bạn vẫn có thể thiết kế và tải file để tự in.'**
+  String get psProductNotOpen;
+
+  /// Print Studio manual ordering · CancelReason
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do huỷ'**
+  String get psCancelReason;
+
+  /// Print Studio manual ordering · CancelChangedMind
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay đổi ý định'**
+  String get psCancelChangedMind;
+
+  /// Print Studio manual ordering · CancelPrice
+  ///
+  /// In vi, this message translates to:
+  /// **'Giá sản phẩm'**
+  String get psCancelPrice;
+
+  /// Print Studio manual ordering · CancelShipping
+  ///
+  /// In vi, this message translates to:
+  /// **'Phí giao hàng'**
+  String get psCancelShipping;
+
+  /// Print Studio manual ordering · CancelDelivery
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian nhận hàng'**
+  String get psCancelDelivery;
+
+  /// Print Studio manual ordering · CancelDesign
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết kế chưa phù hợp'**
+  String get psCancelDesign;
+
+  /// Print Studio manual ordering · CancelUnreachable
+  ///
+  /// In vi, this message translates to:
+  /// **'Không liên hệ được'**
+  String get psCancelUnreachable;
+
+  /// Print Studio manual ordering · CancelOther
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do khác'**
+  String get psCancelOther;
+
   /// AX30 group label for children the person does not manage.
   ///
   /// In vi, this message translates to:
@@ -33053,6 +33947,372 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tạo nhắc nhở đầu tiên'**
   String get axRemindersFirst;
+
+  /// No description provided for @psMadeFrom.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo từ kỷ niệm của {name}'**
+  String psMadeFrom(String name);
+
+  /// No description provided for @psMadeFor.
+  ///
+  /// In vi, this message translates to:
+  /// **'✨ Đã thiết kế riêng cho {occasion} của {name}'**
+  String psMadeFor(String occasion, String name);
+
+  /// No description provided for @psSetTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ khung {occasion} của {name}'**
+  String psSetTitle(String occasion, String name);
+
+  /// No description provided for @psHeroTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ 3 khung đặt bàn · {occasion}'**
+  String psHeroTitle(String occasion);
+
+  /// No description provided for @psBookTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cuốn sách {occasion} của {name}'**
+  String psBookTitle(String occasion, String name);
+
+  /// No description provided for @psSelectionHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn số khung để xem và tự tay chỉnh thiết kế của con.'**
+  String get psSelectionHelp;
+
+  /// No description provided for @psNationwide.
+  ///
+  /// In vi, this message translates to:
+  /// **'🇻🇳 Giao toàn quốc'**
+  String get psNationwide;
+
+  /// No description provided for @psSeeAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get psSeeAll;
+
+  /// No description provided for @psInformationFrame.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung thông tin'**
+  String get psInformationFrame;
+
+  /// No description provided for @psFirstYear.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năm đầu đời'**
+  String get psFirstYear;
+
+  /// No description provided for @psFromPrice.
+  ///
+  /// In vi, this message translates to:
+  /// **'từ {price}'**
+  String psFromPrice(String price);
+
+  /// No description provided for @psChooseProduct.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn sản phẩm'**
+  String get psChooseProduct;
+
+  /// No description provided for @psPopular.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phổ biến'**
+  String get psPopular;
+
+  /// No description provided for @psSetContents.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chân dung · Thông tin bé · Ghép ảnh'**
+  String get psSetContents;
+
+  /// No description provided for @psPortraitHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh rõ nét nhất của con'**
+  String get psPortraitHelp;
+
+  /// No description provided for @psInfoHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên, ngày sinh, cân nặng, lời nhắn'**
+  String get psInfoHelp;
+
+  /// No description provided for @psCollageHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'4 khoảnh khắc đáng yêu'**
+  String get psCollageHelp;
+
+  /// No description provided for @psFrameNumber.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung {number}'**
+  String psFrameNumber(String number);
+
+  /// No description provided for @psFrameSizeHelpSmall.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung nhỏ trang trí bàn'**
+  String get psFrameSizeHelpSmall;
+
+  /// No description provided for @psFrameSizeHelpMedium.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung để bàn tiêu chuẩn'**
+  String get psFrameSizeHelpMedium;
+
+  /// No description provided for @psFrameSizeHelpLarge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nổi bật trên bàn gallery'**
+  String get psFrameSizeHelpLarge;
+
+  /// No description provided for @psRecommended.
+  ///
+  /// In vi, this message translates to:
+  /// **'khuyên dùng'**
+  String get psRecommended;
+
+  /// No description provided for @psAcrylicTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặt acrylic an toàn'**
+  String get psAcrylicTitle;
+
+  /// No description provided for @psAcrylicHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không vỡ khi vận chuyển · mặc định'**
+  String get psAcrylicHelp;
+
+  /// No description provided for @psDeliveryEstimate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian nhận dự kiến: khoảng {days} ngày. Child Life sẽ liên hệ xác nhận trước khi in.'**
+  String psDeliveryEstimate(String days);
+
+  /// No description provided for @psConfirmStep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản in'**
+  String get psConfirmStep;
+
+  /// No description provided for @psShippingStep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao hàng'**
+  String get psShippingStep;
+
+  /// No description provided for @psOrderReviewStep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận'**
+  String get psOrderReviewStep;
+
+  /// No description provided for @psPhoneHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life gọi số này để xác nhận trước khi in.'**
+  String get psPhoneHelp;
+
+  /// No description provided for @psGiftHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không kèm hoá đơn giá · thêm thiệp chúc'**
+  String get psGiftHelp;
+
+  /// No description provided for @psPrintLocked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản in đã khoá'**
+  String get psPrintLocked;
+
+  /// No description provided for @psInYourSet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong bộ gồm những gì?'**
+  String get psInYourSet;
+
+  /// No description provided for @psProductInfo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông số'**
+  String get psProductInfo;
+
+  /// No description provided for @psCustomerReviews.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá từ người đã mua'**
+  String get psCustomerReviews;
+
+  /// No description provided for @psShippingAndPayment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao hàng & xác nhận'**
+  String get psShippingAndPayment;
+
+  /// No description provided for @psNoDepositTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không cần thanh toán trước'**
+  String get psNoDepositTitle;
+
+  /// No description provided for @psNoDepositHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi yêu cầu, Child Life sẽ liên hệ để thống nhất giá, ngày nhận và cách thanh toán.'**
+  String get psNoDepositHelp;
+
+  /// No description provided for @psCustomizeFirst.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cá nhân hoá thiết kế'**
+  String get psCustomizeFirst;
+
+  /// No description provided for @psBookHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở ra xem những ảnh ba mẹ đã lưu — rồi tự tay sắp xếp, sửa từng trang.'**
+  String get psBookHelp;
+
+  /// No description provided for @psBookSourceNote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và lời nhắn lấy từ Kỷ niệm của bé — không tự thêm sự kiện chưa ghi.'**
+  String get psBookSourceNote;
+
+  /// No description provided for @psBookPageHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm vào ảnh để thay · chạm vào chữ để sửa'**
+  String get psBookPageHelp;
+
+  /// No description provided for @psBookPagesCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} trang'**
+  String psBookPagesCount(String count);
+
+  /// No description provided for @psSuggested.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý'**
+  String get psSuggested;
+
+  /// No description provided for @psUsePhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng ảnh này'**
+  String get psUsePhoto;
+
+  /// No description provided for @psPickPhotoTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh cho Khung {number}'**
+  String psPickPhotoTitle(String number);
+
+  /// No description provided for @psPickPhotoHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ưu tiên ảnh rõ nét, thấy mặt bé, đủ độ phân giải để in.'**
+  String get psPickPhotoHelp;
+
+  /// No description provided for @psPreviewGallery.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem ảnh sản phẩm'**
+  String get psPreviewGallery;
+
+  /// No description provided for @psPolicySummary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận trước khi in · không cần cọc'**
+  String get psPolicySummary;
+
+  /// No description provided for @psDownloadShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải file'**
+  String get psDownloadShort;
+
+  /// No description provided for @psShippingLater.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phí ship tính ở bước sau'**
+  String get psShippingLater;
+
+  /// No description provided for @psApprovedDetail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đã kiểm tra tên, ngày và ảnh trên từng bản in. Child Life in đúng như bản xác nhận.'**
+  String get psApprovedDetail;
+
+  /// No description provided for @psHowStands.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung đứng thế nào?'**
+  String get psHowStands;
+
+  /// No description provided for @psStanding.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghiêng 75°'**
+  String get psStanding;
+
+  /// No description provided for @psStandingHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chân đỡ bật ra, đứng vững trên bàn'**
+  String get psStandingHelp;
+
+  /// No description provided for @psFrameBack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặt sau'**
+  String get psFrameBack;
+
+  /// No description provided for @psFrameBackHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chân đỡ + móc treo tường'**
+  String get psFrameBackHelp;
+
+  /// No description provided for @psFrameSide.
+  ///
+  /// In vi, this message translates to:
+  /// **'Góc nghiêng'**
+  String get psFrameSide;
+
+  /// No description provided for @psFrameSideHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọn trên kệ, tủ đầu giường'**
+  String get psFrameSideHelp;
+
+  /// No description provided for @psSizeComparison.
+  ///
+  /// In vi, this message translates to:
+  /// **'So với điện thoại'**
+  String get psSizeComparison;
+
+  /// No description provided for @psComparisonHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Minh hoạ kích thước · điện thoại khoảng 15 cm'**
+  String get psComparisonHelp;
+
+  /// No description provided for @psFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Định dạng'**
+  String get psFormat;
 
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
@@ -33264,6 +34524,384 @@ abstract class AppLocalizations {
   /// **'Quá hạn tiêm · {count} mũi'**
   String hoVaccineOverdue(int count);
 
+  /// No description provided for @psCheckout.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt hàng'**
+  String get psCheckout;
+
+  /// No description provided for @psCheckoutProof.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đã kiểm tra tên, ngày và ảnh trên bản in'**
+  String get psCheckoutProof;
+
+  /// No description provided for @psReviewPrint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lại bản in'**
+  String get psReviewPrint;
+
+  /// No description provided for @psDeliverTo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao tới'**
+  String get psDeliverTo;
+
+  /// No description provided for @psAddAddress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm địa chỉ giao hàng'**
+  String get psAddAddress;
+
+  /// No description provided for @psPayment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán'**
+  String get psPayment;
+
+  /// No description provided for @psCod.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán khi nhận hàng'**
+  String get psCod;
+
+  /// No description provided for @psCodHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra hàng rồi trả tiền mặt hoặc chuyển khoản cho shipper'**
+  String get psCodHelp;
+
+  /// No description provided for @psTransfer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển khoản / VietQR ngay'**
+  String get psTransfer;
+
+  /// No description provided for @psTransferHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không bắt buộc · Child Life sẽ liên hệ sau khi đặt'**
+  String get psTransferHelp;
+
+  /// No description provided for @psWrap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói quà & thiệp viết tay'**
+  String get psWrap;
+
+  /// No description provided for @psCheckoutPolicy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sản phẩm in riêng cho bé: đổi mới miễn phí khi lỗi in hoặc hư hỏng khi giao (báo trong 48 giờ). Xem chính sách giao hàng & đổi trả.'**
+  String get psCheckoutPolicy;
+
+  /// No description provided for @psOrderSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt hàng thành công!'**
+  String get psOrderSuccess;
+
+  /// No description provided for @psOrderCode.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã đơn {code}'**
+  String psOrderCode(String code);
+
+  /// No description provided for @psOrderSuccessHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận bản in của {name}. Child Life sẽ liên hệ xác nhận trước khi in. Bạn không cần trả trước.'**
+  String psOrderSuccessHelp(String name);
+
+  /// No description provided for @psOrderAccepted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận đơn'**
+  String get psOrderAccepted;
+
+  /// No description provided for @psProduction.
+  ///
+  /// In vi, this message translates to:
+  /// **'In & đóng khung'**
+  String get psProduction;
+
+  /// No description provided for @psDelivery.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao hàng'**
+  String get psDelivery;
+
+  /// No description provided for @psPayOnReceipt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán khi nhận'**
+  String get psPayOnReceipt;
+
+  /// No description provided for @psBackMemories.
+  ///
+  /// In vi, this message translates to:
+  /// **'Về Kỷ niệm'**
+  String get psBackMemories;
+
+  /// No description provided for @psExpectedDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng {days} ngày'**
+  String psExpectedDays(String days);
+
+  /// No description provided for @psFrameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung'**
+  String get psFrameLabel;
+
+  /// No description provided for @psSetSize.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kích thước (cả bộ)'**
+  String get psSetSize;
+
+  /// No description provided for @psBookOptions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn sách'**
+  String get psBookOptions;
+
+  /// No description provided for @psBookStyle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phong cách sách'**
+  String get psBookStyle;
+
+  /// No description provided for @psQrVideo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm mã QR xem video kỷ niệm'**
+  String get psQrVideo;
+
+  /// No description provided for @psComingSoon.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp có'**
+  String get psComingSoon;
+
+  /// No description provided for @psBookMonth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String psBookMonth(String month);
+
+  /// No description provided for @psBookBirth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào đời'**
+  String get psBookBirth;
+
+  /// No description provided for @psBookMessages.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get psBookMessages;
+
+  /// No description provided for @psBookMonthPhotos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh tháng {month} của {name}'**
+  String psBookMonthPhotos(String month, String name);
+
+  /// No description provided for @psUnused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa dùng'**
+  String get psUnused;
+
+  /// No description provided for @psUsed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng'**
+  String get psUsed;
+
+  /// No description provided for @psFavorites.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu thích'**
+  String get psFavorites;
+
+  /// No description provided for @psVideos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get psVideos;
+
+  /// No description provided for @psBookLibraryHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm ảnh để thêm vào trang đang mở · giữ và kéo lên trang để thay ảnh'**
+  String get psBookLibraryHelp;
+
+  /// No description provided for @psFullscreen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn màn hình'**
+  String get psFullscreen;
+
+  /// No description provided for @psLandscape.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngang'**
+  String get psLandscape;
+
+  /// No description provided for @psPortraitMode.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dọc'**
+  String get psPortraitMode;
+
+  /// No description provided for @psEditPage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa trang'**
+  String get psEditPage;
+
+  /// No description provided for @psBookFullscreenHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vuốt trái/phải để lật · chạm để ẩn thanh điều khiển'**
+  String get psBookFullscreenHelp;
+
+  /// No description provided for @psBookImages.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get psBookImages;
+
+  /// No description provided for @psBookText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chữ'**
+  String get psBookText;
+
+  /// No description provided for @psBookLayout.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bố cục'**
+  String get psBookLayout;
+
+  /// No description provided for @psBookSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dòng phụ'**
+  String get psBookSubtitle;
+
+  /// No description provided for @psBookTitleHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày lấy từ cột mốc ba mẹ đã ghi'**
+  String get psBookTitleHint;
+
+  /// No description provided for @psFrameMessageHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý: “100 ngày yêu thương” · “Con là món quà”'**
+  String get psFrameMessageHint;
+
+  /// No description provided for @psBirthHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lấy từ hồ sơ & lần đo đầu tiên · sửa được'**
+  String get psBirthHelp;
+
+  /// No description provided for @psBirthDateLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'NGÀY SINH'**
+  String get psBirthDateLabel;
+
+  /// No description provided for @psBirthMeasureLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'CÂN NẶNG · CHIỀU DÀI'**
+  String get psBirthMeasureLabel;
+
+  /// No description provided for @psBookPagesNote.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} trang · tự lưu bản nháp'**
+  String psBookPagesNote(String count);
+
+  /// No description provided for @psContactPrint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần in theo yêu cầu riêng?'**
+  String get psContactPrint;
+
+  /// No description provided for @psContactPrintHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên hệ Child Life để được tư vấn'**
+  String get psContactPrintHelp;
+
+  /// No description provided for @psFrameDelivery.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt hôm nay, nhận khoảng {from}–{to}.'**
+  String psFrameDelivery(String from, String to);
+
+  /// No description provided for @psBookSparseMonth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng này còn ít ảnh. Bạn có thể thêm ảnh hoặc tiếp tục với những kỷ niệm đã có.'**
+  String get psBookSparseMonth;
+
+  /// No description provided for @psOpenPage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang {page} / {total}'**
+  String psOpenPage(String page, String total);
+
+  /// No description provided for @psDetailsPreview.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thiết kế của {name}'**
+  String psDetailsPreview(String name);
+
+  /// No description provided for @psPdfShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải PDF'**
+  String get psPdfShort;
+
+  /// No description provided for @psNoReviewsYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đánh giá từ người mua'**
+  String get psNoReviewsYet;
+
+  /// No description provided for @psPendingShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ xác nhận'**
+  String get psPendingShort;
+
+  /// No description provided for @psMaterialShortWhite.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trắng'**
+  String get psMaterialShortWhite;
+
+  /// No description provided for @psMaterialShortWood.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gỗ sáng'**
+  String get psMaterialShortWood;
+
+  /// No description provided for @psNoAdvancePayment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trả khi nhận hàng'**
+  String get psNoAdvancePayment;
+
   /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
   ///
   /// In vi, this message translates to:
@@ -33360,6 +34998,96 @@ abstract class AppLocalizations {
   /// **'Tôi nhận trông bé'**
   String get hoTakeOver;
 
+  /// No description provided for @psGalleryTable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên bàn'**
+  String get psGalleryTable;
+
+  /// No description provided for @psGalleryAngle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghiêng'**
+  String get psGalleryAngle;
+
+  /// No description provided for @psPolicyIntro.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng cho khung ảnh và Photo Book in tại Việt Nam.'**
+  String get psPolicyIntro;
+
+  /// No description provided for @psPolicyCancelTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ trước khi in: miễn phí'**
+  String get psPolicyCancelTitle;
+
+  /// No description provided for @psPolicyCancelHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ trong app khi đơn chưa vào xưởng in. Sản phẩm đang in hoặc đang giao không thể huỷ.'**
+  String get psPolicyCancelHelp;
+
+  /// No description provided for @psPolicyReturnTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'In lại miễn phí'**
+  String get psPolicyReturnTitle;
+
+  /// No description provided for @psPolicyReturnHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi in, sai so với bản bạn đã duyệt hoặc hư hỏng khi vận chuyển: báo trong 48 giờ và gửi ảnh khi liên hệ hỗ trợ. Không đổi trả vì đổi ý với nội dung đã xác nhận.'**
+  String get psPolicyReturnHelp;
+
+  /// No description provided for @psPolicyPrivacyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng gói & bảo vệ ảnh'**
+  String get psPolicyPrivacyTitle;
+
+  /// No description provided for @psPolicyPrivacyHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'File in chỉ dùng để thực hiện đơn của bạn. Khung được đóng gói bảo vệ khi vận chuyển.'**
+  String get psPolicyPrivacyHelp;
+
+  /// No description provided for @psPolicyDeliveryHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life xác nhận ngày giao dự kiến và tổng tiền trước khi chuyển đơn sang sản xuất.'**
+  String get psPolicyDeliveryHelp;
+
+  /// No description provided for @psPreviewPriceCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} khung {size} · chưa gồm ship'**
+  String psPreviewPriceCaption(String count, String size);
+
+  /// No description provided for @psBookUsedPage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang {page}'**
+  String psBookUsedPage(String page);
+
+  /// No description provided for @psBookMonthSummary.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from} – {to} · {count} ảnh · {used} đã dùng trong sách'**
+  String psBookMonthSummary(String from, String to, String count, String used);
+
+  /// No description provided for @psAutoSave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu'**
+  String get psAutoSave;
+
+  /// No description provided for @psAutoSavedAt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu · {time}'**
+  String psAutoSavedAt(String time);
+
   /// Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6).
   ///
   /// In vi, this message translates to:
@@ -33371,6 +35099,1344 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xem cách làm'**
   String get rhSeeHow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Crest above every Premium suggestion and the paywall.
+  ///
+  /// In vi, this message translates to:
+  /// **'CHILD LIFE PREMIUM'**
+  String get pv2Crest;
+
+  /// Premium v2 (Figma 958:13863, D-101). Gold button of a Premium suggestion: opens the paywall.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Premium'**
+  String get pv2SeePremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40B: opens the paywall opened on purpose (PW06).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem các gói'**
+  String get pv2SeePlans;
+
+  /// Premium v2 (Figma 958:13863, D-101). E07: closes an info sheet (no purchase).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hiểu'**
+  String get pv2GotIt;
+
+  /// Premium v2 (Figma 958:13863, D-101). E01: a Premium video template was tapped.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu “{name}” thuộc Premium'**
+  String pv2E01Title(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). E01 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và {videos} lượt xuất video mỗi tháng.'**
+  String pv2E01Body(int videos);
+
+  /// Premium v2 (Figma 958:13863, D-101). E01 text button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng mẫu miễn phí tương tự'**
+  String get pv2E01Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E02: a Premium card template was tapped.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu thiệp “{name}” thuộc Premium'**
+  String pv2E02Title(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). E02 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium mở toàn bộ mẫu thiệp & video cao cấp. Ảnh và lời nhắn bạn đã chọn sẽ được giữ.'**
+  String get pv2E02Body;
+
+  /// Premium v2 (Figma 958:13863, D-101). E02 text button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn mẫu miễn phí'**
+  String get pv2E02Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E04: continuing a draft on a Premium template without Premium.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp này dùng mẫu cao cấp'**
+  String get pv2E04Title;
+
+  /// Premium v2 (Figma 958:13863, D-101). E04 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.'**
+  String get pv2E04Body;
+
+  /// Premium v2 (Figma 958:13863, D-101). E04 text button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi sang mẫu miễn phí'**
+  String get pv2E04Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E03: Free family out of trial exports.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã dùng {n} lượt xuất video trải nghiệm'**
+  String pv2E03Title(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). E03 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có {m} lượt xuất video mỗi tháng. Bản nháp này vẫn được giữ.'**
+  String pv2E03Body(int m);
+
+  /// Premium v2 (Figma 958:13863, D-101). E03 text button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu bản nháp, để sau'**
+  String get pv2E03Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E03 for a Premium family: no purchase, the refill date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng hết {n} lượt video tháng này'**
+  String pv2E03PremiumTitle(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). E03 Premium body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt mới được cấp ngày {date}. Bản nháp này vẫn được giữ.'**
+  String pv2E03PremiumBody(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). E07: a Premium family out of Lumi credits (no paywall).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi đã dùng hết {n} credit tháng này'**
+  String pv2E07Title(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). E07 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Credit mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.'**
+  String pv2E07Body(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). E07 text button: opens Gói của gia đình.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mức dùng của gia đình'**
+  String get pv2E07Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E10: an upload with Free storage full.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết {gb} GB của gói Free'**
+  String pv2E10Title(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). E10 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video mới vẫn an toàn trên máy. Premium có {premiumGb} GB cho cả nhà, tự tải tiếp sau khi nâng cấp.'**
+  String pv2E10Body(String premiumGb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Text button: opens Dung lượng.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý ảnh/video'**
+  String get pv2ManageMedia;
+
+  /// Premium v2 (Figma 958:13863, D-101). E11: auto-save stopped for lack of Free storage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu kỷ niệm đang tạm dừng'**
+  String get pv2E11Title;
+
+  /// Premium v2 (Figma 958:13863, D-101). E11 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói Free đã dùng hết {gb} GB. Premium có {premiumGb} GB cho cả nhà, Tự lưu chạy tiếp ngay.'**
+  String pv2E11Body(String gb, String premiumGb);
+
+  /// Premium v2 (Figma 958:13863, D-101). E12: inviting a writer with the Free seats full.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đã dùng {used}/{limit} chỗ người chăm sóc'**
+  String pv2E12Title(int used, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). E12 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có {premium} chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.'**
+  String pv2E12Body(int premium);
+
+  /// Premium v2 (Figma 958:13863, D-101). E12 text button: back to the invite with the relative role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời làm người thân'**
+  String get pv2E12Secondary;
+
+  /// Premium v2 (Figma 958:13863, D-101). E12 for a Premium family (no paywall).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đã dùng hết {limit} chỗ người ghi'**
+  String pv2E12FullTitle(int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). E12 Premium body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời làm người thân để cùng xem album, hoặc đổi quyền một người đang ghi.'**
+  String get pv2E12FullBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). E08: storage over 80 %.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình sắp hết chỗ lưu kỷ niệm'**
+  String get pv2E08Title;
+
+  /// Premium v2 (Figma 958:13863, D-101). E08 body for a Premium family (PW10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng {pct}% của {gb} GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.'**
+  String pv2E08BodyPremium(int pct, String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). E09: storage full.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng hết {gb} GB'**
+  String pv2E09Title(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). E09 body for a Premium family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video mới đang chờ và sẽ tự tải tiếp sau khi thêm dung lượng. Vẫn xem, tải và xoá nội dung cũ bình thường.'**
+  String get pv2E09BodyPremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). E08 / E09 for a Free family (PW04).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chỗ cho những kỷ niệm tiếp theo'**
+  String get pv2StorageInlineFreeTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). E08 / E09 Free body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có {premiumGb} GB cho cả nhà, ảnh mới cứ thế được lưu.'**
+  String pv2StorageInlineFreeBody(String premiumGb);
+
+  /// Premium v2 (Figma 958:13863, D-101). E08 / E09: opens PW10.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm dung lượng'**
+  String get pv2AddStorage;
+
+  /// Premium v2 (Figma 958:13863, D-101). E13 Tôi inline card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life Premium'**
+  String get pv2E13Title;
+
+  /// Premium v2 (Figma 958:13863, D-101). E13 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'{videos} video mỗi tháng, {credits} credit Lumi, mẫu cao cấp và {gb} GB cho cả nhà · {price}/tháng.'**
+  String pv2E13Body(int videos, int credits, String gb, String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW01 headline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ tháng này của {name} thành một câu chuyện'**
+  String pv2HeadVideo(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW02 headline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp xứng với tháng đầu của {name}'**
+  String pv2HeadCard(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW03 headline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục hỏi Lumi về {name}'**
+  String pv2HeadLumi(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW04 headline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chỗ cho kỷ niệm tiếp theo'**
+  String get pv2HeadStorage;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW05 headline (Figma names the invitee; engineering generalises).
+  ///
+  /// In vi, this message translates to:
+  /// **'Để cả nhà cùng chăm {name}'**
+  String pv2HeadCaregivers(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW06 headline, opened on purpose (no reason line).
+  ///
+  /// In vi, this message translates to:
+  /// **'Những năm đầu của con, giữ trọn vẹn hơn'**
+  String get pv2HeadExplore;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW01 / PW02 reason line (only from an entry point).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu “{name}” và ảnh bạn chọn vẫn được giữ.'**
+  String pv2ReasonTemplate(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW01 reason line without a template name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp và ảnh bạn chọn vẫn được giữ.'**
+  String get pv2ReasonVideo;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW03 reason line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi của bạn đang chờ · đã dùng hết {n} credit trải nghiệm.'**
+  String pv2ReasonLumi(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW04 reason line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng {used} / {limit} · mục mới vẫn an toàn trên máy.'**
+  String pv2ReasonStorage(String used, String limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW05 reason line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đã dùng {used} / {limit} chỗ người chăm sóc của gói Free.'**
+  String pv2ReasonCaregivers(int used, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 reason line for a member who does not manage the plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có trong Premium — gói dùng chung của cả nhà.'**
+  String get pv2ReasonMember;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'VIDEO KỶ NIỆM'**
+  String get pv2CardVideoEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những ảnh rời, thành câu chuyện'**
+  String get pv2CardVideoTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.'**
+  String get pv2CardVideoBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} video mỗi tháng'**
+  String pv2CardVideoLimit(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Video card demo scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một tháng trước, nhà mình đón con.'**
+  String get pv2CardVideoDemo1;
+
+  /// Premium v2 (Figma 958:13863, D-101). Video card demo chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đầu về nhà'**
+  String get pv2CardVideoDemo2;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'MẪU CAO CẤP'**
+  String get pv2CardCardEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp dành riêng cho con'**
+  String get pv2CardCardTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm tên, lời thương và đổi phong cách chỉ với một chạm.'**
+  String get pv2CardCardBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ mẫu cao cấp · Việt – Anh'**
+  String get pv2CardCardLimit;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo label.
+  ///
+  /// In vi, this message translates to:
+  /// **'100 NGÀY'**
+  String get pv2CardCardDemo;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'LUMI MỖI THÁNG'**
+  String get pv2CardLumiEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi một câu, Lumi tóm tắt giúp'**
+  String get pv2CardLumiTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.'**
+  String get pv2CardLumiBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit mỗi tháng'**
+  String pv2CardLumiLimit(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Lumi card demo question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay con bú thế nào?'**
+  String get pv2CardLumiDemoQ;
+
+  /// Premium v2 (Figma 958:13863, D-101). Lumi card demo answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến 14:20: 3 cữ bú bình · 390 ml'**
+  String get pv2CardLumiDemoA;
+
+  /// Premium v2 (Figma 958:13863, D-101). Lumi card demo source line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo nhật ký đã ghi'**
+  String get pv2CardLumiDemoSource;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'HIỂU NHỊP CON'**
+  String get pv2CardRhythmEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi nhìn lại tuần giúp bạn'**
+  String get pv2CardRhythmTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một câu nhận xét rõ ràng, từ nhật ký cả nhà đã ghi.'**
+  String get pv2CardRhythmBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gồm trong {n} credit mỗi tháng'**
+  String pv2CardRhythmLimit(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Rhythm card demo bar label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần trước'**
+  String get pv2CardRhythmDemoLast;
+
+  /// Premium v2 (Figma 958:13863, D-101). Rhythm card demo bar label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này'**
+  String get pv2CardRhythmDemoThis;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'DUNG LƯỢNG'**
+  String get pv2CardStorageEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mới cứ thế được lưu'**
+  String get pv2CardStorageTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu kỷ niệm chạy đều mỗi ngày, không phải xoá bớt cuối tháng.'**
+  String get pv2CardStorageBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{gb} GB cho cả nhà · cần thêm thì mua 20/50 GB riêng'**
+  String pv2CardStorageLimit(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Storage card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tự lưu 12 ảnh mới hôm nay'**
+  String get pv2CardStorageDemo;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'CẢ NHÀ CÙNG CHĂM'**
+  String get pv2CardCaregiversEyebrow;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng chăm, không hỏi lại'**
+  String get pv2CardCaregiversTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.'**
+  String get pv2CardCaregiversBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chỗ cho tối đa {premium} người cùng chăm (Free: {free})'**
+  String pv2CardCaregiversLimit(int premium, int free);
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹ · Đã ghi cữ bú 120 ml'**
+  String get pv2CardCaregiversDemo1;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba · Bắt đầu giấc ngủ'**
+  String get pv2CardCaregiversDemo2;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall comparison heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Free và Premium'**
+  String get pv2CompareTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison column.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền lợi'**
+  String get pv2CompareBenefit;
+
+  /// Premium v2 (Figma 958:13863, D-101). Tag on the comparison row of the entry point.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang cần'**
+  String get pv2YouNeed;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Credit Lumi'**
+  String get pv2RowLumi;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit trải nghiệm một lần'**
+  String pv2RowLumiFree(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit/tháng'**
+  String pv2RowLumiPremium(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get pv2RowStorage;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{gb} GB · mua thêm khi cần'**
+  String pv2RowStoragePremium(String gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video'**
+  String get pv2RowVideo;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} lượt trải nghiệm một lần'**
+  String pv2RowVideoFree(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} lượt/tháng'**
+  String pv2RowVideoPremium(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu thiệp & video'**
+  String get pv2RowTemplates;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu cơ bản · xem trước mẫu cao cấp'**
+  String get pv2RowTemplatesFree;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ mẫu cao cấp'**
+  String get pv2RowTemplatesPremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chăm sóc'**
+  String get pv2RowCaregivers;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} người'**
+  String pv2RowPeople(int n);
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người thân xem album'**
+  String get pv2RowRelatives;
+
+  /// Premium v2 (Figma 958:13863, D-101). Comparison value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giới hạn'**
+  String get pv2Unlimited;
+
+  /// Premium v2 (Figma 958:13863, D-101). Commitment chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ bất cứ lúc nào'**
+  String get pv2PromiseCancel;
+
+  /// Premium v2 (Figma 958:13863, D-101). Commitment chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không bán credit lẻ'**
+  String get pv2PromiseNoTopUps;
+
+  /// Premium v2 (Figma 958:13863, D-101). Commitment chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm luôn là của bạn'**
+  String get pv2PromiseYours;
+
+  /// Premium v2 (Figma 958:13863, D-101). Period tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo năm'**
+  String get pv2PeriodYear;
+
+  /// Premium v2 (Figma 958:13863, D-101). Period tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng'**
+  String get pv2PeriodMonth;
+
+  /// Premium v2 (Figma 958:13863, D-101). Yearly tile: the price per month.
+  ///
+  /// In vi, this message translates to:
+  /// **'≈ {price}/tháng'**
+  String pv2PerMonthApprox(String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). Monthly tile caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'mỗi tháng'**
+  String get pv2EachMonth;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall CTA, yearly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký Premium · {price}/năm'**
+  String pv2SubscribeYear(String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall CTA, monthly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký Premium · {price}/tháng'**
+  String pv2SubscribeMonth(String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall legal line, yearly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán {price} hôm nay · tự gia hạn mỗi năm · huỷ trong {store} bất cứ lúc nào'**
+  String pv2LegalYear(String price, String store);
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall legal line, monthly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán {price} hôm nay · tự gia hạn mỗi tháng · huỷ trong {store} bất cứ lúc nào'**
+  String pv2LegalMonth(String price, String store);
+
+  /// Premium v2 (Figma 958:13863, D-101). Footer while in-app purchase is not open (owner: IAP comes later).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp mở đăng ký trong app'**
+  String get pv2SoonTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Footer body while in-app purchase is not open.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói và giá như trên. Bạn sẽ đăng ký được ngay trong Child Life.'**
+  String get pv2SoonBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall footer for a Premium family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã có Premium'**
+  String get pv2HasPremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). Opens Gói của gia đình.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem gói của gia đình'**
+  String get pv2OpenFamilyPlan;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 footer title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói của nhà do {name} quản lý'**
+  String pv2ManagedBy(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 footer body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ {name} có thể nâng cấp cho cả nhà'**
+  String pv2OnlyManager(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 CTA: shares a short message.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ {name} nâng cấp'**
+  String pv2AskManager(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 privacy line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} chỉ nhận lời nhắn ngắn, không thấy bản nháp hay câu hỏi của bạn.'**
+  String pv2AskPrivacy(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 message shared with the manager (no child data).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình muốn dùng Child Life Premium cho cả nhà. Bạn nâng cấp giúp mình trong Tôi › Gói của gia đình nhé.'**
+  String get pv2AskMessage;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW07 when the manager name is unknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'người quản lý'**
+  String get pv2TheManager;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói của gia đình'**
+  String get pv2PlanTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan card tag (manager).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dùng'**
+  String get pv2InUse;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan card line for the manager.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người quản lý: {name} (bạn)'**
+  String pv2ManagerYou(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan card line for a member.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý bởi {name}'**
+  String pv2ManagerOther(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 card heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hạn mức'**
+  String get pv2LimitsTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi'**
+  String get pv2Lumi;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance row (Free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi · trải nghiệm'**
+  String get pv2LumiTrial;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video kỷ niệm'**
+  String get pv2Video;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance row (Free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Video · trải nghiệm'**
+  String get pv2VideoTrial;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get pv2Storage;
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance value.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {left} / {limit} credit'**
+  String pv2CreditsLeft(int left, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance value.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {left} / {limit} lượt'**
+  String pv2ExportsLeft(int left, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance value (sizes).
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} / {limit}'**
+  String pv2StorageOf(String used, String limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance caption (Premium).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp lại {date}'**
+  String pv2RefillOn(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). Allowance caption (Free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng một lần, không cấp lại'**
+  String get pv2TrialOnce;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 row label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bổ sung tiếp'**
+  String get pv2NextRefill;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · mỗi tháng theo ngày đăng ký'**
+  String pv2NextRefillValue(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 row label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia hạn'**
+  String get pv2Renews;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 row label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu huỷ'**
+  String get pv2IfCancel;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium còn tới {date}; sau đó về Free. Kỷ niệm, nhật ký, video đã xuất vẫn xem và tải được.'**
+  String pv2IfCancelValue(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40B upsell.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi tháng, thêm một câu chuyện của {name}'**
+  String pv2FreeUpsellTitle(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40B upsell body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.'**
+  String get pv2FreeUpsellBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 action row: PW10.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua thêm dung lượng'**
+  String get pv2BuyStorage;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV45 action row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử sử dụng của tôi'**
+  String get pv2HistoryMine;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 action row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo người và tác vụ'**
+  String get pv2HistorySub;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 action row: PV42.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý gia hạn'**
+  String get pv2ManageRenewal;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV40 action row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở {store}'**
+  String pv2OpenStore(String store);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV45 info.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ {name} có thể đổi, gia hạn hoặc huỷ gói. Bạn vẫn dùng mọi quyền lợi của gói.'**
+  String pv2MemberNote(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan row: writer seats used.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người ghi'**
+  String get pv2Seats;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} / {limit} chỗ'**
+  String pv2SeatsOf(int used, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã về Free từ {date}. Không có gì bị xoá.'**
+  String pv2DowngradedBanner(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 banner without a date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đang dùng Free. Không có gì bị xoá.'**
+  String get pv2DowngradedBannerNoDate;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 state card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vượt dung lượng · {used} / {limit}'**
+  String pv2OverStorageTitle(String used, String limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 state card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi ảnh, video vẫn xem và tải về được. Tạm dừng tải ảnh mới cho tới khi dưới {limit}.'**
+  String pv2OverStorageBody(String limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 state card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vượt chỗ người chăm sóc · {used} / {limit}'**
+  String pv2OverSeatsTitle(int used, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 state card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn {limit} người giữ quyền ghi chăm sóc. Người còn lại tạm chỉ xem, không bị xoá.'**
+  String pv2OverSeatsBody(int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 link: PV44.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn người'**
+  String get pv2ChoosePeople;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất dữ liệu'**
+  String get pv2ExportData;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV43 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nâng lại Premium'**
+  String get pv2UpgradeAgain;
+
+  /// Premium v2 (Figma 958:13863, D-101). Shown to a writer the manager left out (PV44).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang tạm chỉ xem vì gói Free có ít chỗ người ghi hơn. Mọi thứ vẫn còn nguyên.'**
+  String get pv2SuspendedNote;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get pv2FilterAll;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi'**
+  String get pv2FilterLumi;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get pv2FilterVideo;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp & hoàn'**
+  String get pv2FilterGrants;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có gì được dùng.'**
+  String get pv2HistoryEmpty;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được lịch sử. Thử lại khi có mạng.'**
+  String get pv2HistoryError;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 privacy note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ hiện người, loại tác vụ và số lượng. Nội dung câu hỏi và trả lời không hiển thị ở đây.'**
+  String get pv2HistoryPrivacy;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41: a line with no person.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hệ thống'**
+  String get pv2System;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41: a person no longer in the family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên'**
+  String get pv2Someone;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 task.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi · Hỏi đáp'**
+  String get pv2TaskLumiChat;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 task.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi · Tóm tắt hôm nay'**
+  String get pv2TaskLumiSummary;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 task.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi · Đọc ảnh'**
+  String get pv2TaskLumiPhoto;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 task.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video · Xuất video'**
+  String get pv2TaskVideoExport;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Credit trải nghiệm'**
+  String get pv2TaskLumiTrial;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp credit tháng'**
+  String get pv2TaskLumiCycle;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt video trải nghiệm'**
+  String get pv2TaskVideoTrial;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp lượt video tháng'**
+  String get pv2TaskVideoCycle;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm credit từ hỗ trợ'**
+  String get pv2TaskLumiGrant;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 grant.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm lượt video từ hỗ trợ'**
+  String get pv2TaskVideoGrant;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 refund.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn credit · lỗi'**
+  String get pv2TaskRefundLumi;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 refund.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn lượt video'**
+  String get pv2TaskRefundVideo;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 amount in exports (signed).
+  ///
+  /// In vi, this message translates to:
+  /// **'{amount} lượt'**
+  String pv2AmountExports(String amount);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41: held until it succeeds.
+  ///
+  /// In vi, this message translates to:
+  /// **'đang giữ'**
+  String get pv2Held;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV41 month heading (vi: number; en: month name).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String pv2Month(String month);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai giữ quyền ghi chăm sóc?'**
+  String get pv2PickTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói hiện tại có {limit} chỗ. Người không chọn vẫn xem được mọi thứ và quay lại khi nhà mình nâng gói.'**
+  String pv2PickBody(int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 manager row role.
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · người quản lý'**
+  String pv2PickManager(String relation);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu · {chosen}/{limit}'**
+  String pv2PickSave(int chosen, int limit);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu. Người không chọn sẽ nhận thông báo nhẹ.'**
+  String get pv2PickSaved;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV44 error toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại nhé.'**
+  String get pv2PickFailed;
+
+  /// Premium v2 (Figma 958:13863, D-101). A row naming the reader.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} (bạn)'**
+  String pv2You(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ gia hạn Premium'**
+  String get pv2CancelTitle;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 lead.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium vẫn dùng được tới hết {date}.'**
+  String pv2CancelLead(String date);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 lead without a date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium vẫn dùng được tới hết kỳ đã trả.'**
+  String get pv2CancelLeadNoDate;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sau ngày đó, nhà mình về Free'**
+  String get pv2CancelAfter;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ nguyên'**
+  String get pv2CancelKeep;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm, nhật ký, video đã xuất, thành viên'**
+  String get pv2CancelKeepBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng {used} > {free}'**
+  String pv2CancelStorage(String used, String free);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không xoá; tạm dừng tải ảnh mới cho tới khi dọn hoặc nâng lại'**
+  String get pv2CancelStorageBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} người ghi > {free} chỗ'**
+  String pv2CancelSeats(int used, int free);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không xoá ai; bạn chọn {free} người giữ quyền ghi'**
+  String pv2CancelSeatsBody(int free);
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp dùng mẫu Premium'**
+  String get pv2CancelTemplates;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 row body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản'**
+  String get pv2CancelTemplatesBody;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ Premium'**
+  String get pv2KeepPremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). PV42 secondary: opens the store subscription page.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục huỷ trong {store}'**
+  String pv2ContinueCancel(String store);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 headline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chỗ cho những ngày con lớn lên.'**
+  String get pv2AddOnHead;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 card label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dùng'**
+  String get pv2AddOnUsing;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 card caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng'**
+  String get pv2AddOnUsed;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm {gb} GB'**
+  String pv2AddOnOption(int gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 option caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng {gb} GB cho cả nhà'**
+  String pv2AddOnTotal(int gb);
+
+  /// Premium v2 (Figma 958:13863, D-101). Price per year.
+  ///
+  /// In vi, this message translates to:
+  /// **'{price}/năm'**
+  String pv2PerYear(String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). Price per month, second.
+  ///
+  /// In vi, this message translates to:
+  /// **'hoặc {price}/tháng'**
+  String pv2OrPerMonth(String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng chung cho cả gia đình · gia hạn cùng kỳ với Premium · huỷ bất cứ lúc nào.'**
+  String get pv2AddOnNote;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 while in-app purchase is not open (Q-102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp có · mua thêm dung lượng mở cùng lúc với đăng ký trong app.'**
+  String get pv2AddOnSoon;
+
+  /// Premium v2 (Figma 958:13863, D-101). PW10 for a Free family.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua thêm dung lượng dành cho gia đình có Premium.'**
+  String get pv2AddOnPremiumOnly;
+
+  /// Premium v2 (Figma 958:13863, D-101). Store name.
+  ///
+  /// In vi, this message translates to:
+  /// **'App Store'**
+  String get pv2StoreApple;
+
+  /// Premium v2 (Figma 958:13863, D-101). Store name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Google Play'**
+  String get pv2StoreGoogle;
 
   /// History filter: every idea not hidden (D-102).
   ///
@@ -33401,6 +36467,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Theo câu trả lời của nhà mình, không phải kết luận y khoa.'**
   String get rhTriedNote;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan name on Gói của gia đình (PV40).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium'**
+  String get pv2PlanPremium;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan name on Gói của gia đình (PV40B).
+  ///
+  /// In vi, this message translates to:
+  /// **'Free'**
+  String get pv2PlanFree;
 }
 
 class _AppLocalizationsDelegate

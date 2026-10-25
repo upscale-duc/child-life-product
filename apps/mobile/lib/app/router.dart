@@ -1,3 +1,5 @@
+import '../features/print_studio/print_screen.dart';
+import '../features/print_studio/print_orders.dart';
 import '../features/engagement/engagement_week.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -306,6 +308,40 @@ final routerProvider = Provider<GoRouter>((ref) {
                 // S10: album, favourites and milestone pages (10e, 11f); like every screen opened
                 // from a tab, they hide the dock (owner, 2026-10-11).
                 routes: [
+                  _route(
+                    path: 'print',
+                    builder: (_, s) => PrintStudioScreen(
+                      product:
+                          const [
+                            'single',
+                            'trio',
+                            'five',
+                            'book',
+                          ].contains(s.uri.queryParameters['product'])
+                          ? s.uri.queryParameters['product']!
+                          : 'trio',
+                      detail: s.uri.queryParameters['detail'] == '1',
+                      select: s.uri.queryParameters['select'] == '1',
+                      info: s.uri.queryParameters['info'] == '1',
+                      resume: s.uri.queryParameters['resume'] == '1',
+                      photoId: s.uri.queryParameters['photo'],
+                    ),
+                    routes: [
+                      _route(
+                        path: 'orders',
+                        builder: (_, _) => const PrintOrdersScreen(),
+                        routes: [
+                          _route(
+                            path: ':id',
+                            builder: (_, s) => PrintOrdersScreen(
+                              id: s.pathParameters['id'],
+                              babyId: s.uri.queryParameters['baby'],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   _route(
                     path: 'album/:key',
                     builder: (_, s) => AlbumDetailScreen(

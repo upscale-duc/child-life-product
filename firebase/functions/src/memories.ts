@@ -27,6 +27,7 @@ import {
   type MediaStatus,
   type UploadItem,
 } from '@child-life/contracts';
+import { storageLimitBytes } from './premium-v2.js';
 
 /**
  * Memories (S9). The server owns `memories` and `media`: the app asks for an upload session
@@ -101,6 +102,8 @@ interface Member {
   displayName: string;
   relation: string;
   relationCustom: string | null;
+  /** PV44 (D-101): left out of the write seats after a downgrade — view-only. */
+  writeSuspended: boolean;
 }
 
 async function activeMember(
@@ -119,6 +122,7 @@ async function activeMember(
     displayName: (snap.get('displayName') as string | undefined) ?? '',
     relation: (snap.get('relation') as string | undefined) ?? 'other',
     relationCustom: (snap.get('relationCustom') as string | null | undefined) ?? null,
+    writeSuspended: snap.get('writeSuspended') === true,
   };
 }
 
@@ -131,7 +135,8 @@ async function requireParent(
   now: Date,
 ): Promise<Member> {
   const me = await activeMember(tx, db, babyId, uid, now);
-  if (!me || me.role !== 'coParent') throw new MemoryError('permission-denied', 'not-allowed');
+  if (!me || me.role !== 'coParent' || me.writeSuspended)
+    throw new MemoryError('permission-denied', 'not-allowed');
   return me;
 }
 
@@ -248,7 +253,8 @@ export async function createMemory(
     const zone = (baby.get('timeZone.zone') as string | undefined) ?? 'Asia/Ho_Chi_Minh';
     const familyRef = db.doc(`families/${familyId}`);
     const family = await tx.get(familyRef);
-    const quota = (family.get('quotaBytes') as number | undefined) ?? limits.familyQuotaBytes;
+    // Premium v2 (D-101): the plan's limit (Free 1 GB, Premium 10 GB + add-on + staff grants).
+    const quota = await storageLimitBytes(db, familyId, family, now);
     const used = (family.get('usedBytes') as number | undefined) ?? 0;
     const reservedNow = (family.get('reservedBytes') as number | undefined) ?? 0;
     let free = quota - used - reservedNow;
@@ -436,7 +442,7 @@ export async function reserveUploads(
     const familyRef = db.doc(`families/${familyId}`);
     const family = await tx.get(familyRef);
     let free =
-      ((family.get('quotaBytes') as number) ?? 0) -
+      (await storageLimitBytes(db, familyId, family, now)) -
       ((family.get('usedBytes') as number) ?? 0) -
       ((family.get('reservedBytes') as number) ?? 0);
     const reserved: string[] = [];
@@ -513,7 +519,8 @@ export async function cancelUploads(
   const { babyId, mediaIds } = parsed.data;
   const cancelled = await db.runTransaction(async (tx) => {
     const me = await activeMember(tx, db, babyId, uid, now);
-    if (!me || me.role !== 'coParent') throw new MemoryError('permission-denied', 'not-allowed');
+    if (!me || me.role !== 'coParent' || me.writeSuspended)
+      throw new MemoryError('permission-denied', 'not-allowed');
     const snaps = await tx.getAll(...mediaIds.map((m) => db.doc(`babies/${babyId}/media/${m}`)));
     const out: string[] = [];
     for (const s of snaps) {

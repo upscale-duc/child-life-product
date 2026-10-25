@@ -510,79 +510,75 @@ void main() {
       expect(find.text(durationLabel(l10n, 0)), findsNothing);
     });
 
-    testWidgets(
-      'advanced: sleep against the usual level, notes, tried, one idea',
-      (tester) async {
-        final (visits, _) = await pumpRouted(
-          tester,
-          const WeekSummaryScreen(),
-          overrides: weekOverrides(
-            caps: rhythmCaps(plan: 'beta', groupA: true),
-            now: sundayNow,
-            log: [
-              ...longLog(),
-              ...weekLog(
-                monday: '2026-10-05',
-                fullDays: allDays,
-                until: sundayNow,
-                nightBefore: false,
+    testWidgets('advanced: sleep against the usual level, notes, tried, one idea', (
+      tester,
+    ) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const WeekSummaryScreen(),
+        overrides: weekOverrides(
+          caps: rhythmCaps(plan: 'beta', groupA: true),
+          now: sundayNow,
+          log: [
+            ...longLog(),
+            ...weekLog(
+              monday: '2026-10-05',
+              fullDays: allDays,
+              until: sundayNow,
+              nightBefore: false,
+            ),
+          ],
+          repo: FakeRhythmRepository(
+            checkIns: recentCheckIns(),
+            feedback: familyFeedback(),
+            episodes: [
+              ObservationEpisode(
+                id: episodeIdFor(teddyId, '2026-10-06'),
+                babyId: teddyId,
+                startDate: '2026-10-06',
+                confirmedBy: 'u_mai',
+                checkInIds: [recentCheckIns().last.id],
               ),
             ],
-            repo: FakeRhythmRepository(
-              checkIns: recentCheckIns(),
-              feedback: familyFeedback(),
-              episodes: [
-                ObservationEpisode(
-                  id: episodeIdFor(teddyId, '2026-10-06'),
-                  babyId: teddyId,
-                  startDate: '2026-10-06',
-                  confirmedBy: 'u_mai',
-                  checkInIds: [recentCheckIns().last.id],
-                ),
-              ],
-              recommendations: [
-                Recommendation.fromJson(
-                  recommendationJson(contentId: 'act_evening_repeat'),
-                )!,
-              ],
-            ),
+            recommendations: [
+              Recommendation.fromJson(
+                recommendationJson(contentId: 'act_evening_repeat'),
+              )!,
+            ],
           ),
-        );
-        expect(find.text('Tuần này của Teddy'), findsOneWidget);
-        expect(find.text('5 – 11 tháng 10'), findsOneWidget);
-        expect(find.text(l10n.rhWeekInProgress), findsOneWidget);
-        // Sunday is still running: 6/7.
-        expect(find.text(l10n.rhWeekCoverage(6, 7)), findsOneWidget);
-        expect(find.text(l10n.rhWeekGatePremium), findsNothing);
-        expect(find.text(l10n.rhSleepSame), findsOneWidget);
-        expect(
-          find.text(l10n.rhSleepBasis(3, '08/10 – 10/10', 7)),
-          findsOneWidget,
-        );
-        // The week's days as a strip (owner 2026-10-22), the changes as chips with counts.
-        expect(find.byType(RecentCheckIns), findsOneWidget);
-        expect(find.textContaining('×'), findsWidgets);
-        expect(find.text(l10n.rhEpOpenTitle('06/10')), findsOneWidget);
-        expect(
-          find.text('Giảm kích thích 30 phút trước giấc đêm'),
-          findsOneWidget,
-        );
-        expect(find.text(l10n.rhHelpful), findsOneWidget);
-        expect(find.text(l10n.rhUnsure), findsOneWidget);
-        expect(find.text(l10n.rhWeekNextIdea), findsOneWidget);
-        // Tuần tới 12 – 18/10: the reference window, labelled as such.
-        expect(find.text(l10n.rhStageName(1)), findsOneWidget);
-        expect(
-          find.text(l10n.rhWeekReference('12/10 – 21/10')),
-          findsOneWidget,
-        );
-        await _tap(tester, find.text(l10n.rhHow));
-        expect(
-          visits.last.location,
-          '${Routes.rhythmActivity}/act_evening_repeat?ci=${sleepCheckIn(date: rhythmToday).id}',
-        );
-      },
-    );
+        ),
+      );
+      expect(find.text('Tuần này của Teddy'), findsOneWidget);
+      expect(find.text('5 – 11 tháng 10'), findsOneWidget);
+      expect(find.text(l10n.rhWeekInProgress), findsOneWidget);
+      // Sunday is still running: 6/7.
+      expect(find.text(l10n.rhWeekCoverage(6, 7)), findsOneWidget);
+      expect(find.text(l10n.rhWeekGatePremium), findsNothing);
+      expect(find.text(l10n.rhSleepSame), findsOneWidget);
+      expect(
+        find.text(l10n.rhSleepBasis(3, '08/10 – 10/10', 7)),
+        findsOneWidget,
+      );
+      // The week's days as a strip (owner 2026-10-22), the changes as chips with counts.
+      expect(find.byType(RecentCheckIns), findsOneWidget);
+      expect(find.textContaining('×'), findsWidgets);
+      expect(find.text(l10n.rhEpOpenTitle('06/10')), findsOneWidget);
+      expect(
+        find.text('Giảm kích thích 30 phút trước giấc đêm'),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.rhHelpful), findsOneWidget);
+      expect(find.text(l10n.rhUnsure), findsOneWidget);
+      expect(find.text(l10n.rhWeekNextIdea), findsOneWidget);
+      // Tuần tới 12 – 18/10: the reference window, labelled as such.
+      expect(find.text(l10n.rhStageName(1)), findsOneWidget);
+      expect(find.text(l10n.rhWeekReference('12/10 – 21/10')), findsOneWidget);
+      await _tap(tester, find.text(l10n.rhHow));
+      expect(
+        visits.last.location,
+        '${Routes.rhythmActivity}/act_evening_repeat?ci=${sleepCheckIn(date: rhythmToday).id}',
+      );
+    });
 
     testWidgets('a caregiver: the date range as title, no due-date window', (
       tester,

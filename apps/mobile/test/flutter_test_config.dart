@@ -21,6 +21,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     (
       'Be Vietnam Pro Keepsake',
       [
+        'BeVietnamPro-Light',
         'BeVietnamPro-Regular',
         'BeVietnamPro-Medium',
         'BeVietnamPro-SemiBold',
@@ -37,6 +38,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     ),
     ('Baloo 2 Keepsake', ['Baloo2-Medium', 'Baloo2-Bold', 'Baloo2-ExtraBold']),
     ('Patrick Hand Keepsake', ['PatrickHand-Regular']),
+    ('Cormorant Garamond Keepsake', ['CormorantGaramond','CormorantGaramond-Italic']),
   ]) {
     final loader = FontLoader(family);
     for (final file in files) {
