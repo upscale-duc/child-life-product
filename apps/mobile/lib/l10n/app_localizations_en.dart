@@ -12513,6 +12513,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhSafety => 'Safety';
 
   @override
+  String get rhTryAgain => 'Try it again';
+
+  @override
   String get rhIllTry => 'I’ll try this';
 
   @override
@@ -16163,7 +16166,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mtOwn => 'Our own';
 
   @override
-  String get mtSeen => 'Observed';
+  String get mtSeen => 'Already does';
 
   @override
   String get mtFollowingSection => 'Following';
@@ -16271,16 +16274,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mtHealthLink => 'See health guidance';
 
   @override
-  String get mtMarkSeen => 'Mark as observed';
+  String get mtMarkSeen => 'My baby does this';
 
   @override
-  String get mtFollow => 'Save to follow';
+  String get mtFollow => 'Follow this milestone';
 
   @override
   String get mtUnfollow => 'Stop following';
 
   @override
-  String get mtFollowed => 'Saved to follow';
+  String get mtFollowed => 'Following';
 
   @override
   String get mtUnfollowed => 'No longer following';

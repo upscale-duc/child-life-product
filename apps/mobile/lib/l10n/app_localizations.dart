@@ -19506,6 +19506,12 @@ abstract class AppLocalizations {
   /// **'Lưu ý an toàn'**
   String get rhSafety;
 
+  /// Activity primary button when this idea was already tried (owner, 2026-10-25: "Mình sẽ thử" on a tried idea read oddly).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại lần nữa'**
+  String get rhTryAgain;
+
   /// AC01 primary (feedback started).
   ///
   /// In vi, this message translates to:
@@ -25329,7 +25335,7 @@ abstract class AppLocalizations {
   /// 3a section; 3c sheet title; 3d chip.
   ///
   /// In vi, this message translates to:
-  /// **'Đã quan sát'**
+  /// **'Bé đã làm được'**
   String get mtSeen;
 
   /// 3a section of milestones saved to follow.
@@ -25497,13 +25503,13 @@ abstract class AppLocalizations {
   /// 3b primary button.
   ///
   /// In vi, this message translates to:
-  /// **'Đánh dấu đã quan sát'**
+  /// **'Bé đã làm được'**
   String get mtMarkSeen;
 
   /// 3b plain button.
   ///
   /// In vi, this message translates to:
-  /// **'Lưu để theo dõi'**
+  /// **'Theo dõi mốc này'**
   String get mtFollow;
 
   /// 3b plain button on a followed milestone.
@@ -25515,7 +25521,7 @@ abstract class AppLocalizations {
   /// Toast.
   ///
   /// In vi, this message translates to:
-  /// **'Đã lưu để theo dõi'**
+  /// **'Đang theo dõi'**
   String get mtFollowed;
 
   /// Toast.

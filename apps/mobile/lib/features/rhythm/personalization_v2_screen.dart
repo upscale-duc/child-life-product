@@ -116,7 +116,7 @@ Future<bool> mutateDay(
       ref.read(tryRemindersRevisionProvider.notifier).bump();
     }
     if (value == 'intend' && context.mounted) {
-      await _askTryReminder(context, ref, key, contentId);
+      await askTryReminder(context, ref, key.babyId, contentId);
       return true;
     }
     if (context.mounted) {
@@ -152,10 +152,10 @@ Future<bool> mutateDay(
 /// P-179: "Mình sẽ thử" asks when this phone should remind (tonight at 19:00 or 20:30 while
 /// ahead, in an hour before 21:00, else tomorrow at 09:00, or none). The next morning at 08:30
 /// it asks "Đã thử chưa?" unless an answer came first.
-Future<void> _askTryReminder(
+Future<void> askTryReminder(
   BuildContext context,
   WidgetRef ref,
-  PersonalDayKey key,
+  String babyId,
   String contentId,
 ) async {
   final l = AppLocalizations.of(context);
@@ -195,7 +195,7 @@ Future<void> _askTryReminder(
   await store.set(
     TryReminder(
       contentId: contentId,
-      babyId: key.babyId,
+      babyId: babyId,
       title:
           ref
               .read(rhythmContentProvider)

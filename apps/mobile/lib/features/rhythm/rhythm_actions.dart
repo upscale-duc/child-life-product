@@ -13,6 +13,7 @@ import 'personalization_events.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
 import 'rhythm_repository.dart';
+import 'try_reminders.dart';
 
 /// What the screens write and where they go next. Writes never wait for the server (offline
 /// works); Home's `composeHome` is asked again once the write has landed.
@@ -122,6 +123,15 @@ RecFeedback giveFeedback(
     ),
     onError: (_) => toaster.show(message: l10n.rhSaveFailed, error: true),
   );
+  // P-179: an answer (helpful, unsure, not today, not suitable) ends that plan's reminders.
+  if (kind != FeedbackKind.started) {
+    final store = ref.read(tryReminderStoreProvider);
+    if (store != null) {
+      store.clear(contentId).then((cleared) {
+        if (cleared) ref.read(tryRemindersRevisionProvider.notifier).bump();
+      }).ignore();
+    }
+  }
   final sink = ref.read(personalizationEventSinkProvider);
   repo.committed(feedback.id)?.then((_) {
     sink('feedbackSaved', kind.wire).ignore();

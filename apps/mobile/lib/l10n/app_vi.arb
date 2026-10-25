@@ -17522,6 +17522,10 @@
   "@rhSafety": {
     "description": "AC01 safety heading."
   },
+  "rhTryAgain": "Thử lại lần nữa",
+  "@rhTryAgain": {
+    "description": "Activity primary button when this idea was already tried (owner, 2026-10-25: \"Mình sẽ thử\" on a tried idea read oddly)."
+  },
   "rhIllTry": "Mình sẽ thử",
   "@rhIllTry": {
     "description": "AC01 primary (feedback started)."
@@ -22461,7 +22465,7 @@
   "@mtOwn": {
     "description": "Own milestones: 3a chip and row subline, 3g title."
   },
-  "mtSeen": "Đã quan sát",
+  "mtSeen": "Bé đã làm được",
   "@mtSeen": {
     "description": "3a section; 3c sheet title; 3d chip."
   },
@@ -22620,11 +22624,11 @@
   "@mtHealthLink": {
     "description": "3b link to the health guidance (HL01)."
   },
-  "mtMarkSeen": "Đánh dấu đã quan sát",
+  "mtMarkSeen": "Bé đã làm được",
   "@mtMarkSeen": {
     "description": "3b primary button."
   },
-  "mtFollow": "Lưu để theo dõi",
+  "mtFollow": "Theo dõi mốc này",
   "@mtFollow": {
     "description": "3b plain button."
   },
@@ -22632,7 +22636,7 @@
   "@mtUnfollow": {
     "description": "3b plain button on a followed milestone."
   },
-  "mtFollowed": "Đã lưu để theo dõi",
+  "mtFollowed": "Đang theo dõi",
   "@mtFollowed": {
     "description": "Toast."
   },

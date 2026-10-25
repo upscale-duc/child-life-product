@@ -11721,6 +11721,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhSafety => 'Lưu ý an toàn';
 
   @override
+  String get rhTryAgain => 'Thử lại lần nữa';
+
+  @override
   String get rhIllTry => 'Mình sẽ thử';
 
   @override
@@ -15153,7 +15156,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mtOwn => 'Mốc riêng';
 
   @override
-  String get mtSeen => 'Đã quan sát';
+  String get mtSeen => 'Bé đã làm được';
 
   @override
   String get mtFollowingSection => 'Đang theo dõi';
@@ -15254,16 +15257,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mtHealthLink => 'Xem hướng dẫn sức khoẻ';
 
   @override
-  String get mtMarkSeen => 'Đánh dấu đã quan sát';
+  String get mtMarkSeen => 'Bé đã làm được';
 
   @override
-  String get mtFollow => 'Lưu để theo dõi';
+  String get mtFollow => 'Theo dõi mốc này';
 
   @override
   String get mtUnfollow => 'Bỏ theo dõi';
 
   @override
-  String get mtFollowed => 'Đã lưu để theo dõi';
+  String get mtFollowed => 'Đang theo dõi';
 
   @override
   String get mtUnfollowed => 'Đã bỏ theo dõi';

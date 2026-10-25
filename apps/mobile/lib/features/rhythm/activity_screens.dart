@@ -17,6 +17,7 @@ import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'preferences_screens.dart' show fewerLikeThis;
+import 'personalization_v2_screen.dart' show askTryReminder;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_labels.dart';
@@ -331,9 +332,10 @@ class ActivityScreen extends ConsumerWidget {
           : canAct
           ? [
               ClButton(
-                label: l10n.rhIllTry,
+                // Owner, 2026-10-25: "Mình sẽ thử" on an idea already tried read oddly.
+                label: answered ? l10n.rhTryAgain : l10n.rhIllTry,
                 expand: true,
-                onPressed: () {
+                onPressed: () async {
                   giveFeedbackOn(
                     context,
                     ref,
@@ -341,7 +343,8 @@ class ActivityScreen extends ConsumerWidget {
                     kind: FeedbackKind.started,
                     activity: activity,
                   );
-                  showClToast(context, message: l10n.rhStartedToast);
+                  // P-179: when should this phone remind (its own toast says what was set).
+                  await askTryReminder(context, ref, me.babyId, contentId);
                 },
               ),
               Row(
