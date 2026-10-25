@@ -29642,5 +29642,9 @@
   "hoTakeOver": "Tôi nhận trông bé",
   "@hoTakeOver": {
     "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+  },
+  "axWidgetCareDuty": "Ai đang trông bé",
+  "@axWidgetCareDuty": {
+    "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
   }
 }

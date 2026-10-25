@@ -26,7 +26,7 @@ void main() {
         const Scaffold(body: TodayScreen()),
         overrides: careOverrides(),
       );
-      await tester.ensureVisible(find.text('Lịch sử'));
+      await tester.scrollUntilVisible(find.text('Lịch sử'), 200);
       await tester.tap(find.text('Lịch sử'));
       await tester.pumpAndSettle();
       expect(visits.single.location, Routes.history);

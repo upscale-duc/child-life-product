@@ -1,3 +1,5 @@
+import '../rhythm/rhythm_access.dart';
+import '../family/family_repository.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -243,7 +245,13 @@ final availableWidgetsProvider = Provider.family<Set<WidgetId>, String>((
   final parent = me.role == MemberRole.coParent;
   final caregiver = me.role == MemberRole.caregiver;
   final relative = me.role == MemberRole.relative;
+  // P-181: only where two or more people care for the baby, for those who read care.
+  final carers = (ref.watch(familyMembersProvider(babyId)).value ?? const [])
+      .where((m) => m.isActive && familyCan(m, FamilyAction.rhythmFeedback))
+      .length;
   return {
+    if (familyCan(me, FamilyAction.historyRead) && carers >= 2)
+      WidgetId.careDuty,
     if (trackers.isNotEmpty) WidgetId.tiles,
     if (features?.rhythm ?? false) WidgetId.forYou,
     if (ref.watch(sdOnTodayProvider)) WidgetId.solids,

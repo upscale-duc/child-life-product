@@ -33359,6 +33359,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tôi nhận trông bé'**
   String get hoTakeOver;
+
+  /// Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai đang trông bé'**
+  String get axWidgetCareDuty;
 }
 
 class _AppLocalizationsDelegate

@@ -21210,4 +21210,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hoTakeOver => 'I’ll take over';
+
+  @override
+  String get axWidgetCareDuty => 'Who is caring';
 }

@@ -314,8 +314,11 @@ class TodayScreen extends ConsumerWidget {
               ],
             ),
           ],
-          // P-181: who is caring for the baby now, for the whole family.
-          const CareDutyChip(),
+          // P-181: who is caring for the baby now, by age and the person's own Tuỳ chỉnh.
+          if (adaptive
+              ? ranked.any((w) => w.id == WidgetId.careDuty && w.visible)
+              : careDutyByAge(ref.watch(childBandProvider(babyId))))
+            const CareDutyChip(),
           // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
           const WhatsNewBanner(),
           // AR02: new library photos that may show the baby (Tự lưu, D-066).
@@ -343,6 +346,8 @@ class TodayScreen extends ConsumerWidget {
                       ],
                       WidgetId.growth => [const AxGrowth()],
                       WidgetId.familyView => [const AxFamilyView()],
+                      // Rendered under the title, where the family looks first.
+                      WidgetId.careDuty => const <Widget>[],
                       _ => sectionParts(TodaySection.values.byName(w.id.wire)),
                     },
                   ),

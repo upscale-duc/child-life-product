@@ -88,7 +88,12 @@ enum WidgetId {
   momentToday('moment_today', [Goal.memories]),
   createFromMemories('create_from_memories', [Goal.memories]),
   growth('growth', [Goal.growthVaccines]),
-  familyView('family_view', [Goal.family]);
+  familyView('family_view', [Goal.family]),
+
+  /// P-181 "Ai đang trông bé": the chip under the title (rendered there, not in the list). On by
+  /// age up to 6 (bé cần người trông và bàn giao nhiều), from 6 only with the Gia đình goal or
+  /// the person's own switch (owner, 2026-10-25).
+  careDuty('care_duty', [Goal.family]);
 
   const WidgetId(this.wire, this.goals);
   final String wire;
@@ -117,6 +122,7 @@ const bandDefaults = <AgeBand, List<WidgetId>>{
     WidgetId.reminders,
     WidgetId.recentMemories,
     WidgetId.growth,
+    WidgetId.careDuty,
   ],
   AgeBand.b1_3: [
     WidgetId.recentMemories,
@@ -125,6 +131,7 @@ const bandDefaults = <AgeBand, List<WidgetId>>{
     WidgetId.solids,
     WidgetId.reminders,
     WidgetId.growth,
+    WidgetId.careDuty,
   ],
   AgeBand.b3_6: [
     WidgetId.momentToday,
@@ -132,6 +139,7 @@ const bandDefaults = <AgeBand, List<WidgetId>>{
     WidgetId.spending,
     WidgetId.reminders,
     WidgetId.familyView,
+    WidgetId.careDuty,
   ],
   AgeBand.b6_12: [
     WidgetId.recentMemories,

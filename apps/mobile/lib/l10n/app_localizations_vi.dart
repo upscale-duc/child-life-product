@@ -20014,4 +20014,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hoTakeOver => 'Tôi nhận trông bé';
+
+  @override
+  String get axWidgetCareDuty => 'Ai đang trông bé';
 }

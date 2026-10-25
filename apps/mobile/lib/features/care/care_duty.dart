@@ -1,3 +1,4 @@
+import '../adaptive/adaptive_engine.dart' show AgeBand;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -65,6 +66,10 @@ final careDutyWriterProvider =
                 'action': take ? 'take' : 'end',
               }),
     );
+
+/// Without Adaptive Experience (no Tuỳ chỉnh switch): the same age rule as its band defaults,
+/// on up to 6 years (and while the age is unknown).
+bool careDutyByAge(AgeBand? band) => band != AgeBand.b6_12;
 
 /// How long ago [since] is, for a chip: 12 h or more reads "from yesterday" and muted; 24 h or
 /// more is not shown as current at all.

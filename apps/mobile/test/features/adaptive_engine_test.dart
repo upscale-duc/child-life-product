@@ -56,6 +56,27 @@ void main() {
       WidgetId.quickActions,
     ];
 
+    test(
+      'P-181 "Ai đang trông bé": on by age up to 6, from 6 with Gia đình or the switch',
+      () {
+        bool on(Experience e) =>
+            rankToday(e, const [WidgetId.careDuty]).single.visible;
+        for (final band in [AgeBand.b0_1, AgeBand.b1_3, AgeBand.b3_6]) {
+          expect(on(Experience.defaults(band)), isTrue, reason: '$band');
+        }
+        final older = Experience.defaults(AgeBand.b6_12);
+        expect(on(older), isFalse);
+        expect(
+          on(older.copyWith(goals: [...older.goals, Goal.family])),
+          isTrue,
+        );
+        expect(on(older.copyWith(shown: [WidgetId.careDuty])), isTrue);
+        // The person's own "off" in Tuỳ chỉnh wins over the age default.
+        final baby = Experience.defaults(AgeBand.b0_1);
+        expect(on(baby.copyWith(hidden: [WidgetId.careDuty])), isFalse);
+      },
+    );
+
     test('preset goals give the AX00 default per band (AX10–AX13)', () {
       expect(visible(Experience.defaults(AgeBand.b0_1), core), [
         WidgetId.tiles,
