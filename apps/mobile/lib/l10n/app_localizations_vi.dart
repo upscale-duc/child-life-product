@@ -19820,9 +19820,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get axRemindersFirst => 'Tạo nhắc nhở đầu tiên';
 
   @override
-  String get hoNow => 'Bé lúc này';
-
-  @override
   String get hoSleep => 'Ngủ';
 
   @override
@@ -19832,22 +19829,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get hoDiaper => 'Tã';
 
   @override
-  String hoSleepingSince(String time) {
-    return 'Đang ngủ từ $time';
-  }
-
-  @override
-  String hoAwakeSince(String time) {
-    return 'Thức từ $time';
-  }
-
-  @override
   String get hoNoneYet => 'Chưa ghi gần đây';
-
-  @override
-  String hoNextFeed(String time) {
-    return 'Cữ tới khoảng $time';
-  }
 
   @override
   String hoDiapersToday(int count) {
@@ -19855,16 +19837,13 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get hoUpcoming => 'Sắp tới';
+  String get hoUpcoming => 'Tiếp theo';
 
   @override
   String get hoNothingUpcoming => 'Hôm nay không có việc nào đã hẹn.';
 
   @override
   String get hoAllDay => 'Cả ngày';
-
-  @override
-  String get hoWatch => 'Cần lưu ý';
 
   @override
   String get hoNoHealth => 'Không có dấu hiệu sức khoẻ nào trong 2 ngày qua';
@@ -19876,7 +19855,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String hoCall(String number) {
-    return 'Gọi cấp cứu $number';
+    return 'Gọi $number';
   }
 
   @override
@@ -19895,4 +19874,83 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hoNoteHint => 'Lời nhắn cho người nhận (không bắt buộc)';
+
+  @override
+  String get hoAsleep => 'Đang ngủ';
+
+  @override
+  String get hoAwake => 'Đang thức';
+
+  @override
+  String hoSleptAt(String time) {
+    return 'ngủ lúc $time';
+  }
+
+  @override
+  String hoWokeAt(String time) {
+    return 'dậy lúc $time';
+  }
+
+  @override
+  String hoLastNap(String duration) {
+    return 'Giấc vừa rồi $duration';
+  }
+
+  @override
+  String hoLastNight(String duration) {
+    return 'đêm qua $duration';
+  }
+
+  @override
+  String get hoLastFeed => 'Bú gần nhất';
+
+  @override
+  String get hoLastDiaper => 'Tã gần nhất';
+
+  @override
+  String hoBottleMl(String amount) {
+    return 'bình $amount';
+  }
+
+  @override
+  String get hoNextFeedTitle => 'Cữ bú tới';
+
+  @override
+  String hoAround(String time) {
+    return 'khoảng $time';
+  }
+
+  @override
+  String hoNextFeedLeft(String duration) {
+    return 'còn khoảng $duration · theo các cữ hôm nay';
+  }
+
+  @override
+  String get hoFeedDue => 'Đến giờ bú theo các cữ hôm nay';
+
+  @override
+  String get hoStripA11y => 'Ngủ, bú và thay tã trong 24 giờ qua';
+
+  @override
+  String hoYesterdayAt(String time) {
+    return '$time hôm qua';
+  }
+
+  @override
+  String get hoNowLabel => 'bây giờ';
+
+  @override
+  String hoUpdated(String name, String time) {
+    return '$name · cập nhật $time từ nhật ký';
+  }
+
+  @override
+  String hoVaccineNext(int count) {
+    return 'Tiêm phòng · $count mũi';
+  }
+
+  @override
+  String hoVaccineOverdue(int count) {
+    return 'Quá hạn tiêm · $count mũi';
+  }
 }

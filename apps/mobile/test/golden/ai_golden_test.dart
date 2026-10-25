@@ -9,6 +9,7 @@ import 'package:child_life/core/design/tokens.g.dart';
 import 'package:child_life/features/ai/ai_consent_screen.dart';
 import 'package:child_life/features/ai/ai_models.dart';
 import 'package:child_life/features/ai/handover_screen.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_episodes.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
@@ -22,6 +23,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/ai_fixtures.dart';
+import '../helpers/reminder_fixtures.dart';
+import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/rhythm_fixtures.dart';
 
@@ -38,13 +41,14 @@ typedef _Case = ({
 });
 
 const _heights = {
-  'su01_ai': 960.0,
+  'su01_ai': 1500.0,
   'su01_consent': 1240.0,
   'su01_error': 1240.0,
   'su01_quota': 1240.0,
   'su01_offline': 1240.0,
   'su01_stale': 1240.0,
   'su01_caregiver': 1100.0,
+  'su01_received': 1400.0,
   'ai_consent': 1360.0,
   'nl07b_suggest': 900.0,
   'nl07_episode': 900.0,
@@ -80,6 +84,7 @@ List<Override> _su01(
   bool stored = false,
   int? dataVersion,
   bool caregiver = false,
+  bool sentToMe = false,
 }) {
   final answer = handover(
     method: method,
@@ -87,19 +92,36 @@ List<Override> _su01(
     language: language,
     quota: quota,
   );
+  final ai = FakeAiRepository(
+    answer: answer,
+    stored: stored ? [answer] : const [],
+    settings:
+        settings ??
+        const AiSettings(
+          consent: AiConsent(version: aiConsentVersion, shareMyNotes: true),
+        ),
+    dataVersion: dataVersion,
+  );
+  // Mẹ sent it to Cô Lan with a note (P-180 v2: the recipient's view and action).
+  if (sentToMe) {
+    ai.sends.add(
+      HandoverSend(
+        id: 'hs_golden',
+        summaryId: answer.id,
+        senderUid: 'u_mai',
+        recipientUid: 'u_lan',
+        sentAt: DateTime.utc(2026, 10, 8, 2, 40),
+        note: 'Bé hay quấy sau 11h, bế đi dạo là ngủ.',
+      ),
+    );
+  }
   return aiOverrides(
-    ai: FakeAiRepository(
-      answer: answer,
-      stored: stored ? [answer] : const [],
-      settings:
-          settings ??
-          const AiSettings(
-            consent: AiConsent(version: aiConsentVersion, shareMyNotes: true),
-          ),
-      dataVersion: dataVersion,
-    ),
+    ai: ai,
     online: online,
     member: caregiver ? lan : null,
+    // A realistic morning at 10:00 (senior-ui-ux §2): the live part read like a carer would.
+    records: _morning(),
+    reminders: [reminder('Cho bé uống vitamin D', vn(8, 16, 0), mai)],
   );
 }
 
@@ -108,7 +130,7 @@ final _cases = <String, _Case>{
   'su01_ai': (build: () => const HandoverScreen(), overrides: _su01),
   // NL10b / ST01: no consent yet → the template, still three parts, the consent link.
   'su01_consent': (
-    build: () => const HandoverScreen(),
+    build: () => const HandoverScreen(summaryOpen: true),
     overrides: (l) => _su01(
       l,
       method: 'fallback',
@@ -118,12 +140,12 @@ final _cases = <String, _Case>{
   ),
   // ST01 card 3: AI didn't respond → template, "không trừ lượt", Thử lại.
   'su01_error': (
-    build: () => const HandoverScreen(),
+    build: () => const HandoverScreen(summaryOpen: true),
     overrides: (l) => _su01(l, method: 'fallback', reason: 'timeout'),
   ),
   // Quota used up today: template + the quota line, no plan.
   'su01_quota': (
-    build: () => const HandoverScreen(),
+    build: () => const HandoverScreen(summaryOpen: true),
     overrides: (l) => _su01(
       l,
       method: 'fallback',
@@ -133,18 +155,23 @@ final _cases = <String, _Case>{
   ),
   // ST01 card 4: offline → the last stored version.
   'su01_offline': (
-    build: () => const HandoverScreen(),
+    build: () => const HandoverScreen(summaryOpen: true),
     overrides: (l) => _su01(l, online: false, stored: true),
   ),
   // New notes since this version: "Có ghi nhận mới · Tạo lại".
   'su01_stale': (
-    build: () => const HandoverScreen(),
+    build: () => const HandoverScreen(summaryOpen: true),
     overrides: (l) => _su01(l, stored: true, dataVersion: 9),
   ),
   // Cô Lan reads the latest stored handover (no "Gửi cho").
   'su01_caregiver': (
     build: () => const HandoverScreen(),
     overrides: (l) => _su01(l, stored: true, caregiver: true),
+  ),
+  // Mẹ sent it to Cô Lan with a note: who and the note on top, "Tôi đã nhận bàn giao" below.
+  'su01_received': (
+    build: () => const HandoverScreen(),
+    overrides: (l) => _su01(l, stored: true, caregiver: true, sentToMe: true),
   ),
   // A1: what is sent, never sent, who handles it, share my notes, version.
   'ai_consent': (
@@ -244,3 +271,26 @@ void main() {
     }
   }
 }
+
+/// Teddy's night and morning up to 10:00 in Hồ Chí Minh ([rhythmNow]).
+List<CareRecord> _morning() => [
+  rec(CareType.diaper, vn(8, 9, 35), lan, diaper: DiaperKind.wet),
+  rec(
+    CareType.bottle,
+    vn(8, 9, 30),
+    lan,
+    amountMl: 120,
+    milk: MilkType.formula,
+  ),
+  rec(CareType.sleep, vn(8, 8, 30), lan, endedAt: vn(8, 9, 20)),
+  rec(CareType.diaper, vn(8, 7, 5), mai, diaper: DiaperKind.dirty),
+  rec(
+    CareType.bottle,
+    vn(8, 6, 50),
+    mai,
+    amountMl: 90,
+    milk: MilkType.breastMilk,
+  ),
+  rec(CareType.sleep, vn(7, 22, 0), mai, endedAt: vn(8, 6, 40)),
+  rec(CareType.breast, vn(8, 3, 10), mai, endedAt: vn(8, 3, 25)),
+];

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:child_life/features/reminders/reminder_models.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/ai/ai_models.dart';
 import 'package:child_life/features/ai/ai_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -343,7 +345,11 @@ class FakeAiRepository implements AiRepository {
       );
       _sendsLive.add(null);
     }
-    return (sendId: id, sentAt: DateTime.utc(2026, 10, 8, 13, 30), pushable: pushable);
+    return (
+      sendId: id,
+      sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+      pushable: pushable,
+    );
   }
 
   final marks = <(String, bool)>[];
@@ -414,8 +420,12 @@ List<Override> aiOverrides({
   bool online = true,
   List<Shared>? shared,
   Membership? member,
+  List<CareRecord> records = const [],
+  List<Reminder> reminders = const [],
 }) => [
   ...rhythmOverrides(
+    records: records,
+    reminders: reminders,
     repo:
         repo ??
         FakeRhythmRepository(

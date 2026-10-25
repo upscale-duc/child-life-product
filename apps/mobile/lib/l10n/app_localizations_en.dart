@@ -20997,9 +20997,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get axRemindersFirst => 'Create the first reminder';
 
   @override
-  String get hoNow => 'Right now';
-
-  @override
   String get hoSleep => 'Sleep';
 
   @override
@@ -21009,22 +21006,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hoDiaper => 'Diaper';
 
   @override
-  String hoSleepingSince(String time) {
-    return 'Asleep since $time';
-  }
-
-  @override
-  String hoAwakeSince(String time) {
-    return 'Awake since $time';
-  }
-
-  @override
   String get hoNoneYet => 'Nothing recent';
-
-  @override
-  String hoNextFeed(String time) {
-    return 'Next feed around $time';
-  }
 
   @override
   String hoDiapersToday(int count) {
@@ -21038,16 +21020,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get hoUpcoming => 'Coming up';
+  String get hoUpcoming => 'Next';
 
   @override
   String get hoNothingUpcoming => 'Nothing scheduled for today.';
 
   @override
   String get hoAllDay => 'All day';
-
-  @override
-  String get hoWatch => 'Watch for';
 
   @override
   String get hoNoHealth => 'No health signs in the last 2 days';
@@ -21059,7 +21038,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String hoCall(String number) {
-    return 'Call emergency $number';
+    return 'Call $number';
   }
 
   @override
@@ -21078,4 +21057,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hoNoteHint => 'A note for them (optional)';
+
+  @override
+  String get hoAsleep => 'Asleep';
+
+  @override
+  String get hoAwake => 'Awake';
+
+  @override
+  String hoSleptAt(String time) {
+    return 'fell asleep at $time';
+  }
+
+  @override
+  String hoWokeAt(String time) {
+    return 'woke at $time';
+  }
+
+  @override
+  String hoLastNap(String duration) {
+    return 'Last nap $duration';
+  }
+
+  @override
+  String hoLastNight(String duration) {
+    return 'last night $duration';
+  }
+
+  @override
+  String get hoLastFeed => 'Last feed';
+
+  @override
+  String get hoLastDiaper => 'Last diaper';
+
+  @override
+  String hoBottleMl(String amount) {
+    return 'bottle $amount';
+  }
+
+  @override
+  String get hoNextFeedTitle => 'Next feed';
+
+  @override
+  String hoAround(String time) {
+    return 'around $time';
+  }
+
+  @override
+  String hoNextFeedLeft(String duration) {
+    return 'about $duration to go · from today’s feeds';
+  }
+
+  @override
+  String get hoFeedDue => 'Due now, from today’s feeds';
+
+  @override
+  String get hoStripA11y => 'Sleep, feeds and diapers over the last 24 hours';
+
+  @override
+  String hoYesterdayAt(String time) {
+    return '$time yesterday';
+  }
+
+  @override
+  String get hoNowLabel => 'now';
+
+  @override
+  String hoUpdated(String name, String time) {
+    return '$name · updated $time from the diary';
+  }
+
+  @override
+  String hoVaccineNext(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shots',
+      one: '1 shot',
+    );
+    return 'Vaccines · $_temp0';
+  }
+
+  @override
+  String hoVaccineOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shots',
+      one: '1 shot',
+    );
+    return 'Vaccines overdue · $_temp0';
+  }
 }

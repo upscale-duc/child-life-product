@@ -17,7 +17,14 @@ void main() {
       await pumpRouted(
         tester,
         Scaffold(
-          body: SingleChildScrollView(child: HandoverNow(me: mai)),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                HandoverNow(me: mai),
+                HandoverSafety(me: mai),
+              ],
+            ),
+          ),
         ),
         overrides: [
           ...careOverrides(),
@@ -26,12 +33,14 @@ void main() {
           rhythmContentProvider.overrideWith((ref) => Stream.value(null)),
         ],
       );
-      for (final heading in [l.hoNow, l.hoUpcoming, l.hoWatch]) {
+      for (final heading in [l.hoUpcoming]) {
         expect(find.text(heading), findsOneWidget);
       }
       // The mock day: a 120 ml bottle at 14:20 and a wet diaper at 13:40 (Hồ Chí Minh).
-      expect(find.textContaining('14:20 · 120 ml'), findsOneWidget);
+      expect(find.text(l.hoLastFeed), findsOneWidget);
+      expect(find.textContaining('14:20 · bình 120 ml'), findsOneWidget);
       expect(find.textContaining('13:40'), findsOneWidget);
+      expect(find.text(l.hoNextFeedTitle), findsOneWidget);
       expect(find.text(l.hoNoHealth), findsOneWidget);
       expect(find.text(l.hoCall('115')), findsOneWidget);
       expect(find.text(l.hoFirstAid), findsOneWidget);

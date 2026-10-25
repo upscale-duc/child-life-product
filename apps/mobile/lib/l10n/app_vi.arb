@@ -29319,10 +29319,6 @@
   "@axRemindersFirst": {
     "description": "AX40 button."
   },
-  "hoNow": "Bé lúc này",
-  "@hoNow": {
-    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
-  },
   "hoSleep": "Ngủ",
   "@hoSleep": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
@@ -29335,36 +29331,9 @@
   "@hoDiaper": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
   },
-  "hoSleepingSince": "Đang ngủ từ {time}",
-  "@hoSleepingSince": {
-    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "hoAwakeSince": "Thức từ {time}",
-  "@hoAwakeSince": {
-    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "hoNoneYet": "Chưa ghi gần đây",
   "@hoNoneYet": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
-  },
-  "hoNextFeed": "Cữ tới khoảng {time}",
-  "@hoNextFeed": {
-    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
   },
   "hoDiapersToday": "Hôm nay {count} lần",
   "@hoDiapersToday": {
@@ -29375,7 +29344,7 @@
       }
     }
   },
-  "hoUpcoming": "Sắp tới",
+  "hoUpcoming": "Tiếp theo",
   "@hoUpcoming": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
   },
@@ -29385,10 +29354,6 @@
   },
   "hoAllDay": "Cả ngày",
   "@hoAllDay": {
-    "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
-  },
-  "hoWatch": "Cần lưu ý",
-  "@hoWatch": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
   },
   "hoNoHealth": "Không có dấu hiệu sức khoẻ nào trong 2 ngày qua",
@@ -29404,7 +29369,7 @@
       }
     }
   },
-  "hoCall": "Gọi cấp cứu {number}",
+  "hoCall": "Gọi {number}",
   "@hoCall": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.",
     "placeholders": {
@@ -29437,5 +29402,139 @@
   "hoNoteHint": "Lời nhắn cho người nhận (không bắt buộc)",
   "@hoNoteHint": {
     "description": "Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first."
+  },
+  "hoAsleep": "Đang ngủ",
+  "@hoAsleep": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoAwake": "Đang thức",
+  "@hoAwake": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoSleptAt": "ngủ lúc {time}",
+  "@hoSleptAt": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoWokeAt": "dậy lúc {time}",
+  "@hoWokeAt": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoLastNap": "Giấc vừa rồi {duration}",
+  "@hoLastNap": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hoLastNight": "đêm qua {duration}",
+  "@hoLastNight": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hoLastFeed": "Bú gần nhất",
+  "@hoLastFeed": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoLastDiaper": "Tã gần nhất",
+  "@hoLastDiaper": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoBottleMl": "bình {amount}",
+  "@hoBottleMl": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hoNextFeedTitle": "Cữ bú tới",
+  "@hoNextFeedTitle": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoAround": "khoảng {time}",
+  "@hoAround": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoNextFeedLeft": "còn khoảng {duration} · theo các cữ hôm nay",
+  "@hoNextFeedLeft": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hoFeedDue": "Đến giờ bú theo các cữ hôm nay",
+  "@hoFeedDue": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoStripA11y": "Ngủ, bú và thay tã trong 24 giờ qua",
+  "@hoStripA11y": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoYesterdayAt": "{time} hôm qua",
+  "@hoYesterdayAt": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoNowLabel": "bây giờ",
+  "@hoNowLabel": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first."
+  },
+  "hoUpdated": "{name} · cập nhật {time} từ nhật ký",
+  "@hoUpdated": {
+    "description": "Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoVaccineNext": "Tiêm phòng · {count} mũi",
+  "@hoVaccineNext": {
+    "description": "Bàn giao v2: the next vaccines (overdue on the warm fill).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoVaccineOverdue": "Quá hạn tiêm · {count} mũi",
+  "@hoVaccineOverdue": {
+    "description": "Bàn giao v2: the next vaccines (overdue on the warm fill).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

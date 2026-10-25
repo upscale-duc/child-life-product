@@ -50,10 +50,13 @@ import 'ai_widgets.dart';
 /// Every gate keeps the free template; only PREMIUM_REQUIRED links to the plan. A health sign
 /// today shows the free health route and never AI text. Offline: the last stored version.
 class HandoverScreen extends ConsumerStatefulWidget {
-  const HandoverScreen({this.summaryId, super.key});
+  const HandoverScreen({this.summaryId, this.summaryOpen = false, super.key});
 
   /// D-093: the handover a family member sent (from its notification); else the latest.
   final String? summaryId;
+
+  /// Whether "Tóm tắt mấy ngày qua" starts open (P-180 v2: folded; tests open it).
+  final bool summaryOpen;
 
   @override
   ConsumerState<HandoverScreen> createState() => _HandoverScreenState();
@@ -66,6 +69,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
   var _busy = false;
   var _autoAsked = false;
   var _sending = false;
+  late var _summaryOpen = widget.summaryOpen;
 
   /// Sends marked "seen" from this screen (once each).
   final _seenMarked = <String>{};
@@ -187,20 +191,32 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
               .firstOrNull;
     final shown = _answer ?? picked ?? stored;
     final health = healthToday != null || (shown?.health ?? false);
-    final content = <Widget>[title];
+    // P-180 v2: whose handover and how fresh the diary is, not when a summary was made.
+    final content = <Widget>[
+      title,
+      const SizedBox(height: ClSpace.s1),
+      Text(
+        l10n.hoUpdated(
+          baby?.nickname ?? '',
+          DateFormat('HH:mm').format(inBabyZone(zone, now)),
+        ),
+        style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+      ),
+      const SizedBox(height: ClSpace.s4),
+    ];
+    final healthCard = [
+      if (health) ...[
+        RhHealthCard(signs: healthToday?.healthSigns ?? const []),
+        const SizedBox(height: ClSpace.s3),
+      ],
+    ];
 
     if (shown == null) {
       content.addAll([
-        const SizedBox(height: ClSpace.s2),
+        ...healthCard,
         HandoverNow(me: me),
         PersonalHeading(l10n.hoSummary),
       ]);
-      if (health) {
-        content.addAll([
-          RhHealthCard(signs: healthToday?.healthSigns ?? const []),
-          const SizedBox(height: ClSpace.s3),
-        ]);
-      }
       if (_busy ||
           storedAsync.isLoading ||
           (canGenerate && online && _error == null)) {
@@ -233,6 +249,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           ),
         );
       }
+      content.add(HandoverSafety(me: me));
       return OnboardingScaffold(topBar: topBar, content: content);
     }
 
@@ -250,30 +267,15 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         : from == to
         ? shortDay(locale, from)
         : l10n.rhDateRange(shortDay(locale, from), shortDay(locale, to));
-    final count = shown.records.isEmpty
-        ? shown.facts.length
-        : shown.records.length;
-    final names = [for (final u in shown.authorUids) who(u)];
-    final subtitle = names.isEmpty
-        ? l10n.aiHandoverFromCount(range, count)
-        : l10n.aiHandoverFrom(range, count, joinNames(l10n, names));
-    content.addAll([
-      const SizedBox(height: ClSpace.s1),
-      if (range.isNotEmpty)
-        Text(
-          capitalized(subtitle),
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
+    // One line: the days it covers and when it was made (who wrote what is inside).
+    final summaryMeta = [
+      if (range.isNotEmpty) range,
       if (shown.generatedAt case final at?)
-        Text(
-          l10n.aiGeneratedAt(
-            '${shortDay(locale, isoOf(inBabyZone(zone, at)))} · '
-            '${DateFormat('HH:mm').format(inBabyZone(zone, at))}',
-          ),
-          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        l10n.aiGeneratedAt(
+          '${shortDay(locale, isoOf(inBabyZone(zone, at)))} · '
+          '${DateFormat('HH:mm').format(inBabyZone(zone, at))}',
         ),
-      const SizedBox(height: ClSpace.s4),
-    ]);
+    ].join(' · ');
 
     // D-093: sent to me — a banner with who sent it and "Tôi đã nhận bàn giao"; opening it marks
     // it seen for the sender.
@@ -299,30 +301,34 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       final from = capitalized(who(toMe.senderUid));
       final at = DateFormat('HH:mm').format(inBabyZone(zone, toMe.sentAt));
       content.addAll([
-        _ReceivedBanner(
-          title: l10n.aiSentToYou(from, at),
-          note: toMe.note,
-          receivedAt: toMe.receivedAt == null
-              ? null
-              : DateFormat('HH:mm').format(inBabyZone(zone, toMe.receivedAt!)),
-          onReceived: () => withClProgress(
-            context,
-            () => ref
-                .read(aiRepositoryProvider)
-                .markHandover(
-                  babyId: me.babyId,
-                  sendId: toMe.id,
-                  received: true,
-                ),
-          ),
-        ),
+        _ReceivedBanner(title: l10n.aiSentToYou(from, at), note: toMe.note),
         const SizedBox(height: ClSpace.s4),
       ]);
     }
 
     // What the next person needs first, live from the diary (owner, 2026-10-25); the summary of
     // the last days follows under its own heading.
-    content.addAll([HandoverNow(me: me), PersonalHeading(l10n.hoSummary)]);
+    content.addAll([...healthCard, HandoverNow(me: me)]);
+    // Everything below folds under "Tóm tắt mấy ngày qua" (states, sections, the AI line).
+    final summaryStart = content.length;
+    var folded = false;
+    void fold() {
+      if (folded) return;
+      folded = true;
+      final parts = content.sublist(summaryStart);
+      content.removeRange(summaryStart, content.length);
+      content.addAll([
+        const SizedBox(height: ClSpace.s4),
+        _SummaryFold(
+          title: l10n.hoSummary,
+          meta: summaryMeta,
+          open: _summaryOpen,
+          onTap: () => setState(() => _summaryOpen = !_summaryOpen),
+        ),
+        if (_summaryOpen) ...[const SizedBox(height: ClSpace.s3), ...parts],
+        HandoverSafety(me: me),
+      ]);
+    }
 
     // States above the summary.
     final states = <Widget>[];
@@ -371,9 +377,6 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         states.add(card);
       }
     }
-    if (health) {
-      states.add(RhHealthCard(signs: healthToday?.healthSigns ?? const []));
-    }
     for (final (i, s) in states.indexed) {
       if (i > 0) content.add(const SizedBox(height: ClSpace.s3));
       content.add(s);
@@ -406,6 +409,30 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
             ? AiLabel(l10n.aiWordedByAi)
             : RhNote(l10n.aiTemplateLine, icon: ClIcons.journal),
       );
+      fold();
+      // The recipient's action is the receipt; sending stays the sender's (owner, 2026-10-25).
+      if (toMe != null) {
+        content.add(
+          _ReceiveAction(
+            receivedAt: toMe.receivedAt == null
+                ? null
+                : DateFormat(
+                    'HH:mm',
+                  ).format(inBabyZone(zone, toMe.receivedAt!)),
+            onReceived: () => withClProgress(
+              context,
+              () => ref
+                  .read(aiRepositoryProvider)
+                  .markHandover(
+                    babyId: me.babyId,
+                    sendId: toMe.id,
+                    received: true,
+                  ),
+            ),
+          ),
+        );
+        return OnboardingScaffold(topBar: topBar, content: content);
+      }
       // D-093 "Gửi cho Jun": everyone else in the family who reads care can be sent it, in
       // either direction; the caregiver comes first ("Gửi cho Jun").
       final candidates =
@@ -493,6 +520,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         ),
       ]);
     }
+    fold();
     return OnboardingScaffold(topBar: topBar, content: content);
   }
 
@@ -1502,22 +1530,14 @@ class _SendStatus extends StatelessWidget {
 
 /// D-093: on the recipient's screen — who sent it, and "Tôi đã nhận bàn giao".
 class _ReceivedBanner extends StatelessWidget {
-  const _ReceivedBanner({
-    required this.title,
-    required this.receivedAt,
-    required this.onReceived,
-    this.note,
-  });
+  const _ReceivedBanner({required this.title, this.note});
   final String title;
-  final String? receivedAt;
 
   /// The sender's own words (owner, 2026-10-25), shown under who sent it.
   final String? note;
-  final Future<void> Function() onReceived;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     return RhCard(
       key: const Key('handoverReceived'),
@@ -1532,10 +1552,7 @@ class _ReceivedBanner extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: cl.text.label.copyWith(
-                    color: cl.colors.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                 ),
               ),
             ],
@@ -1544,26 +1561,107 @@ class _ReceivedBanner extends StatelessWidget {
             const SizedBox(height: ClSpace.s2),
             Text('“$n”', style: cl.text.body.copyWith(height: 1.45)),
           ],
-          const SizedBox(height: ClSpace.s3),
-          if (receivedAt case final at?)
-            Row(
-              children: [
-                ClIcon(ClIcons.check, size: 16, color: cl.colors.mintText),
-                const SizedBox(width: 6),
-                Text(
-                  l10n.aiYouReceived(at),
-                  style: cl.text.label.copyWith(color: cl.colors.mintText),
-                ),
-              ],
-            )
-          else
-            ClButton(
-              key: const Key('handoverAcknowledge'),
-              label: l10n.pv2Acknowledge,
-              expand: true,
-              onPressed: onReceived,
-            ),
         ],
+      ),
+    );
+  }
+}
+
+/// The recipient's action at the foot of Bàn giao: "Tôi đã nhận bàn giao", then the receipt.
+class _ReceiveAction extends StatelessWidget {
+  const _ReceiveAction({required this.receivedAt, required this.onReceived});
+  final String? receivedAt;
+  final Future<void> Function() onReceived;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    if (receivedAt case final at?) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClIcon(ClIcons.check, size: 18, color: cl.colors.mintText),
+            const SizedBox(width: 6),
+            Text(
+              l10n.aiYouReceived(at),
+              style: cl.text.bodyStrong.copyWith(color: cl.colors.mintText),
+            ),
+          ],
+        ),
+      );
+    }
+    return ClButton(
+      key: const Key('handoverAcknowledge'),
+      label: l10n.pv2Acknowledge,
+      expand: true,
+      onPressed: onReceived,
+    );
+  }
+}
+
+/// "Tóm tắt mấy ngày qua": the AI summary behind one row, with its range and time.
+class _SummaryFold extends StatelessWidget {
+  const _SummaryFold({
+    required this.title,
+    required this.meta,
+    required this.open,
+    required this.onTap,
+  });
+  final String title;
+  final String meta;
+  final bool open;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      key: const Key('handoverSummaryFold'),
+      onPressed: onTap,
+      semanticLabel: title,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s3,
+        ),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.card),
+          border: Border.all(color: cl.colors.separator),
+        ),
+        child: Row(
+          children: [
+            ClIcon(ClIcons.spark, size: 18, color: cl.colors.inkMuted),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: cl.text.body),
+                  if (meta.isNotEmpty)
+                    Text(
+                      meta,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            AnimatedRotation(
+              turns: open ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: ClIcon(
+                ClIcons.chevronDown,
+                size: 18,
+                color: cl.colors.inkMuted,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

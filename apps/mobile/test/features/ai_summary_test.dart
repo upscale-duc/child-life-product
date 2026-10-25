@@ -50,7 +50,7 @@ Future<(List<Visit>, FakeAiRepository)> _handover(
 }) async {
   final (visits, _) = await pumpRouted(
     tester,
-    const HandoverScreen(),
+    const HandoverScreen(summaryOpen: true),
     locale: locale,
     overrides: aiOverrides(
       ai: ai,
@@ -178,11 +178,11 @@ void main() {
       expect(ai.calls.single.kind, AiSummaryKind.handover);
       expect(ai.calls.single.locale, 'vi');
       expect(find.text(l10n.aiHandoverTitle), findsOneWidget);
+      expect(find.textContaining('06/10 – 08/10'), findsOneWidget);
       expect(
-        find.text('06/10 – 08/10 · từ 4 ghi nhận của bạn, Ba và Cô Lan'),
+        find.textContaining(l10n.aiGeneratedAt('08/10 · 20:12')),
         findsOneWidget,
       );
-      expect(find.text(l10n.aiGeneratedAt('08/10 · 20:12')), findsOneWidget);
       expect(find.text(l10n.aiSectionNoticed), findsOneWidget);
       expect(find.text(l10n.aiSectionHelped), findsOneWidget);
       expect(find.text(l10n.aiSectionNext), findsOneWidget);
@@ -512,7 +512,7 @@ void main() {
           );
         await pumpRouted(
           tester,
-          const HandoverScreen(summaryId: 'sum_handover_1'),
+          const HandoverScreen(summaryId: 'sum_handover_1', summaryOpen: true),
           overrides: aiOverrides(ai: ai, member: lan),
         );
         expect(find.byKey(const Key('handoverReceived')), findsOneWidget);

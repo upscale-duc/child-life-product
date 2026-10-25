@@ -33057,12 +33057,6 @@ abstract class AppLocalizations {
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
   /// In vi, this message translates to:
-  /// **'Bé lúc này'**
-  String get hoNow;
-
-  /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
-  ///
-  /// In vi, this message translates to:
   /// **'Ngủ'**
   String get hoSleep;
 
@@ -33081,26 +33075,8 @@ abstract class AppLocalizations {
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
   /// In vi, this message translates to:
-  /// **'Đang ngủ từ {time}'**
-  String hoSleepingSince(String time);
-
-  /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thức từ {time}'**
-  String hoAwakeSince(String time);
-
-  /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
-  ///
-  /// In vi, this message translates to:
   /// **'Chưa ghi gần đây'**
   String get hoNoneYet;
-
-  /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cữ tới khoảng {time}'**
-  String hoNextFeed(String time);
 
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
@@ -33111,7 +33087,7 @@ abstract class AppLocalizations {
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
   /// In vi, this message translates to:
-  /// **'Sắp tới'**
+  /// **'Tiếp theo'**
   String get hoUpcoming;
 
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
@@ -33129,12 +33105,6 @@ abstract class AppLocalizations {
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
   /// In vi, this message translates to:
-  /// **'Cần lưu ý'**
-  String get hoWatch;
-
-  /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
-  ///
-  /// In vi, this message translates to:
   /// **'Không có dấu hiệu sức khoẻ nào trong 2 ngày qua'**
   String get hoNoHealth;
 
@@ -33147,7 +33117,7 @@ abstract class AppLocalizations {
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
   ///
   /// In vi, this message translates to:
-  /// **'Gọi cấp cứu {number}'**
+  /// **'Gọi {number}'**
   String hoCall(String number);
 
   /// Bàn giao redesign (owner, 2026-10-25): the live part a caregiver reads first.
@@ -33179,6 +33149,120 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lời nhắn cho người nhận (không bắt buộc)'**
   String get hoNoteHint;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ'**
+  String get hoAsleep;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thức'**
+  String get hoAwake;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngủ lúc {time}'**
+  String hoSleptAt(String time);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'dậy lúc {time}'**
+  String hoWokeAt(String time);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc vừa rồi {duration}'**
+  String hoLastNap(String duration);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'đêm qua {duration}'**
+  String hoLastNight(String duration);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú gần nhất'**
+  String get hoLastFeed;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã gần nhất'**
+  String get hoLastDiaper;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'bình {amount}'**
+  String hoBottleMl(String amount);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú tới'**
+  String get hoNextFeedTitle;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'khoảng {time}'**
+  String hoAround(String time);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn khoảng {duration} · theo các cữ hôm nay'**
+  String hoNextFeedLeft(String duration);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ bú theo các cữ hôm nay'**
+  String get hoFeedDue;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ, bú và thay tã trong 24 giờ qua'**
+  String get hoStripA11y;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} hôm qua'**
+  String hoYesterdayAt(String time);
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'bây giờ'**
+  String get hoNowLabel;
+
+  /// Bàn giao v2 (owner, 2026-10-25, mockup approved): the live part a caregiver reads first.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · cập nhật {time} từ nhật ký'**
+  String hoUpdated(String name, String time);
+
+  /// Bàn giao v2: the next vaccines (overdue on the warm fill).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm phòng · {count} mũi'**
+  String hoVaccineNext(int count);
+
+  /// Bàn giao v2: the next vaccines (overdue on the warm fill).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hạn tiêm · {count} mũi'**
+  String hoVaccineOverdue(int count);
 }
 
 class _AppLocalizationsDelegate
