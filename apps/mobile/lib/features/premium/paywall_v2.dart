@@ -339,9 +339,11 @@ class _Head extends StatelessWidget {
   );
 }
 
-/// Component · Premium · Carousel (1020:17765): the card in view at 270 (0.9 of the 300 card),
-/// the ones beside it at 228 (0.76) and 35 % opacity, the rest hidden; the scale follows the
-/// swipe ("vuốt có hiệu ứng", PV00B). Dots under it: the active one a 22 pill.
+/// Component · Premium · Carousel (1020:17765): on the 375 frame the card in view is 270 wide
+/// (0.9 of the 300 card) and the ones beside it 228 (0.76) at 35 % opacity, the rest hidden. On
+/// a phone the same share of the width (270 / 375), so a 430 screen shows a 310 card (owner,
+/// 2026-10-25: "card nhỏ"). The scale follows the swipe ("vuốt có hiệu ứng", PV00B) and so does
+/// the point it scales from, so nothing jumps when the card settles. Dots: the active one a pill.
 class _Carousel extends StatelessWidget {
   const _Carousel({
     required this.controller,
@@ -359,24 +361,26 @@ class _Carousel extends StatelessWidget {
   final PlanOffer premium;
   final String babyName;
 
-  static const _big = 0.9;
-  static const _small = 0.76;
-
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    // 270 of 375 in the frame; never wider than 340 (tablets).
+    final shown = (width * 270 / 375).clamp(240.0, 340.0);
+    final big = shown / 300;
+    final small = big * 228 / 270;
     return Column(
       children: [
         SizedBox(
-          // The tallest card (Dung lượng / Người chăm, 298) at 0.9.
-          height: 270,
+          // The tallest card (Dung lượng / Người chăm, 298) at the shown scale.
+          height: 300 * big,
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
               // The card's glow and depth, drawn once behind the centre slot (never scaled).
               IgnorePointer(
                 child: Container(
-                  width: 270,
-                  height: 252,
+                  width: shown,
+                  height: 280 * big,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: _cardShadow,
@@ -398,7 +402,7 @@ class _Carousel extends StatelessWidget {
                         : page.toDouble();
                     final d = (i - current).abs().clamp(0.0, 2.0);
                     final t = d.clamp(0.0, 1.0);
-                    final scale = _big - (_big - _small) * t;
+                    final scale = big - (big - small) * t;
                     final opacity = d >= 2
                         ? 0.0
                         : (d <= 1 ? 1 - 0.65 * t : 0.35 * (2 - d));
@@ -409,12 +413,10 @@ class _Carousel extends StatelessWidget {
                     // rasterise again at every scale.
                     return Transform.scale(
                       scale: scale,
-                      // Beside the current card the smaller one keeps the 12 gap on its near side.
-                      alignment: i > current
-                          ? Alignment.topLeft
-                          : i < current
-                          ? Alignment.topRight
-                          : Alignment.topCenter,
+                      // Beside the current card the smaller one keeps the 12 gap on its near
+                      // side; the origin slides with the swipe (left → centre → right), so the
+                      // settled card is exactly where it was while moving.
+                      alignment: Alignment(-(i - current).clamp(-1.0, 1.0), -1),
                       child: Stack(
                         children: [
                           child!,
