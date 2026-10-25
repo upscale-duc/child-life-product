@@ -530,6 +530,50 @@ it('D-099: the hourly pass queues tomorrow once today has passed, and a new cloc
   const moved = await tomorrow.docs[0]!.ref.get();
   expect(moved.get('dueAt')).toBe(Date.parse('2026-10-22T00:30:00Z'));
   expect(moved.get('nextAt')).toBe(Date.parse('2026-10-22T00:30:00Z'));
+  // Looking at today's ideas leaves tomorrow's slot alone (with enough to suggest).
+  await db.doc('config/entitlements').set({
+    ...defaultEntitlementsConfig,
+    regions: { advanced: ['VN'] },
+    betaCampaigns: [
+      {
+        id: 'test_beta',
+        capabilities: ['personalization.cross_module'],
+        validFrom: '2026-10-01T00:00:00Z',
+        validUntil: '2026-11-01T00:00:00Z',
+        countries: [],
+        scope: 'all',
+        percent: 100,
+      },
+    ],
+  });
+  await db.doc('families/family').update({ country: 'VN' });
+  await db.doc('publicConfig/content_rhythm').set(contentSeed);
+  await db.doc('babies/baby/restricted/profile').set({ dateOfBirth: '2026-08-15' });
+  for (const type of ['bottle', 'breast', 'diaper'])
+    await db.doc(`babies/baby/records/${type}`).set({
+      type,
+      createdBy: 'parent',
+      occurredAt: now,
+      createdAt: now,
+      deleted: false,
+      data: {},
+    });
+  expect(
+    (
+      await validateEngagementSource(
+        db,
+        (await tomorrow.docs[0]!.ref.get()).data() as EngagementIntent,
+        now,
+      )
+    ).state,
+  ).toBe('ready');
+  await observeEngagementContent(
+    db,
+    'parent',
+    { babyId: 'baby', sourceType: 'personal_day', sourceId: 'baby' },
+    now,
+  );
+  expect((await tomorrow.docs[0]!.ref.get()).get('status')).toBe('eligible');
   // Opting out of the ENG-06 row stops the queueing.
   await db.doc('users/parent/settings/engagement').set(
     {

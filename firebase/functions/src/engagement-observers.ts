@@ -12,7 +12,7 @@ import {
   type EngagementIntent,
 } from './engagement.js';
 import { validateEngagementSource } from './engagement-sources.js';
-import { engagementContentSchema, reminderInstantIn } from '@child-life/contracts';
+import { engagementContentSchema, localDateIn, reminderInstantIn } from '@child-life/contracts';
 import { AccountError } from './account.js';
 
 export async function observeEngagementContent(
@@ -98,7 +98,14 @@ export async function observeEngagementContent(
           matches = true;
       }
     }
-    if (i.kind === 'ENG-06' && r.sourceType === 'personal_day' && r.sourceId === i.babyId)
+    // D-099: a view settles that day's slot only; tomorrow's, queued as soon as today's time
+    // passes, must not be closed by looking at today's ideas.
+    if (
+      i.kind === 'ENG-06' &&
+      r.sourceType === 'personal_day' &&
+      r.sourceId === i.babyId &&
+      (typeof i.sourceData.date !== 'string' || i.sourceData.date === localDateIn(i.zone, now))
+    )
       matches = true;
     if (matches) {
       const valid = await validateEngagementSource(db, i, now);
