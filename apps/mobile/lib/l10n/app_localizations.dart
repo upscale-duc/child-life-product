@@ -19827,25 +19827,25 @@ abstract class AppLocalizations {
   /// NL07 fact (change_detected, lower).
   ///
   /// In vi, this message translates to:
-  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng {delta} so với trước.'**
+  /// **'Gần đây ít hơn khoảng {delta} so với trước.'**
   String rhSleepLower(String delta);
 
   /// NL07 fact (change_detected, higher).
   ///
   /// In vi, this message translates to:
-  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng {delta} so với trước.'**
+  /// **'Gần đây nhiều hơn khoảng {delta} so với trước.'**
   String rhSleepHigher(String delta);
 
   /// NL07 fact (no_change).
   ///
   /// In vi, this message translates to:
-  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.'**
+  /// **'Gần đây gần với mức thường của con.'**
   String get rhSleepSame;
 
   /// NL07 basis line.
   ///
   /// In vi, this message translates to:
-  /// **'Căn cứ: {recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó. Không phải chẩn đoán.'**
+  /// **'{recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó.'**
   String rhSleepBasis(int recent, String range, int baseline);
 
   /// NL07 chart legend: the baseline median.
@@ -21351,13 +21351,13 @@ abstract class AppLocalizations {
   /// NL07b title.
   ///
   /// In vi, this message translates to:
-  /// **'Nhóm thành một đợt quan sát?'**
+  /// **'Mấy ngày này con khác?'**
   String get rhEpSuggestTitle;
 
   /// NL07b body ("2 ngày gần đây có ghi nhận thay đổi: Mẹ (06/10) và Ba (07/10) thấy …").
   ///
   /// In vi, this message translates to:
-  /// **'{count} ngày gần đây có ghi nhận thay đổi: {people} thấy {what}.'**
+  /// **'{count} ngày gần đây cả nhà thấy con {what}.'**
   String rhEpSuggestBody(int count, String people, String what);
 
   /// NL07b: who and when.
@@ -21369,13 +21369,13 @@ abstract class AppLocalizations {
   /// NL07b disclaimer.
   ///
   /// In vi, this message translates to:
-  /// **'Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.'**
+  /// **'Không phải xác nhận một giai đoạn Wonder Weeks.'**
   String get rhEpNotWonder;
 
   /// NL07b primary.
   ///
   /// In vi, this message translates to:
-  /// **'Tạo đợt quan sát'**
+  /// **'Theo dõi'**
   String get rhEpCreate;
 
   /// NL07b secondary.
@@ -21387,7 +21387,7 @@ abstract class AppLocalizations {
   /// NL07 episode card title.
   ///
   /// In vi, this message translates to:
-  /// **'Đợt quan sát {start} – nay'**
+  /// **'Mấy ngày con khác · {start} – nay'**
   String rhEpOpenTitle(String start);
 
   /// NL07 episode status pill.
@@ -21399,7 +21399,7 @@ abstract class AppLocalizations {
   /// NL07 episode card body.
   ///
   /// In vi, this message translates to:
-  /// **'{who} xác nhận nhóm {count} ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.'**
+  /// **'{who} gom {count} ghi nhận lại để theo dõi. Khép lại khi cả nhà thấy “con đã ổn hơn”.'**
   String rhEpOpenBody(String who, int count);
 
   /// NL07: closes the episode (never automatic).
@@ -21411,7 +21411,7 @@ abstract class AppLocalizations {
   /// Close confirm title. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Kết thúc đợt quan sát?'**
+  /// **'Khép lại mấy ngày này?'**
   String get rhEpCloseTitle;
 
   /// Close confirm body. EN is an engineering draft for owner review.
@@ -21429,13 +21429,13 @@ abstract class AppLocalizations {
   /// Toast after NL07b. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã tạo đợt quan sát'**
+  /// **'Đã bắt đầu theo dõi'**
   String get rhEpCreated;
 
   /// Toast after "Con đã ổn hơn". EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã kết thúc đợt quan sát'**
+  /// **'Đã khép lại'**
   String get rhEpClosed;
 
   /// Evening check-in notification body (title is rhCheckInEntry). EN is an engineering draft for owner review.
@@ -22107,7 +22107,7 @@ abstract class AppLocalizations {
   /// EN09 group A section subtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán'**
+  /// **'Từ ghi nhận và nhật ký của nhà mình'**
   String get rhWeekInsightSub;
 
   /// EN09 group A: the week’s check-ins.

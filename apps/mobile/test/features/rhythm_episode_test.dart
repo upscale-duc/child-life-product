@@ -211,10 +211,8 @@ void main() {
       );
       expect(find.text(l10n.rhEpSuggestTitle), findsOneWidget);
       expect(find.text(l10n.rhEpNotWonder), findsOneWidget);
-      expect(
-        find.textContaining('bạn (06/10), Ba (07/10) và Cô Lan (08/10)'),
-        findsOneWidget,
-      );
+      // D-102: the days show as dots above; the sentence says what, not who and when.
+      expect(find.textContaining('3 ngày gần đây cả nhà thấy con'), findsOneWidget);
       await _tap(tester, find.text(l10n.rhEpCreate));
       final created = repo.savedEpisodes.single;
       expect(created.startDate, '2026-10-06');

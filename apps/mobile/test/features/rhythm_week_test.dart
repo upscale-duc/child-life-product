@@ -461,10 +461,10 @@ void main() {
         expect(find.text('4,3 kg'), findsOneWidget);
         expect(find.text('+0,4 kg so với 24/09'), findsOneWidget);
         expect(find.text(l10n.rhWeekPhotos(3)), findsOneWidget);
-        expect(
-          find.text('Bạn 15 lần · Cô Lan 10 lần · Ba 16 lần'),
-          findsOneWidget,
-        );
+        // D-102: one bar per person; the count is read out per row.
+        for (final who in ['Bạn 15 lần', 'Cô Lan 10 lần', 'Ba 16 lần']) {
+          expect(_bar(who), findsOneWidget);
+        }
         // Tuần tới (5 – 11/10): the reminder still ahead; the past ones are gone.
         expect(find.text('Tiêm 6 trong 1'), findsOneWidget);
         expect(find.text('Mua sữa công thức'), findsNothing);
@@ -603,8 +603,8 @@ void main() {
       expect(find.textContaining('của Teddy'), findsOneWidget);
       expect(find.text(l10n.rhStageName(1)), findsNothing);
       // Bạn = Cô Lan herself; Mẹ and Ba by their family labels.
-      expect(find.textContaining('Bạn 10 lần'), findsOneWidget);
-      expect(find.textContaining('Mẹ 15 lần'), findsOneWidget);
+      expect(_bar('Bạn 10 lần'), findsOneWidget);
+      expect(_bar('Mẹ 15 lần'), findsOneWidget);
     });
 
     testWidgets('a relative sees it only with "Chăm sóc hằng ngày"', (
@@ -745,3 +745,8 @@ void main() {
     });
   });
 }
+
+/// One person's bar in "Cả nhà đã cùng chăm", by what it reads out (D-102).
+Finder _bar(String label) => find.byWidgetPredicate(
+  (w) => w is Semantics && w.properties.label == label,
+);

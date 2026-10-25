@@ -12713,21 +12713,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String rhSleepLower(String delta) {
-    return 'On recent complete days, logged total sleep is about $delta lower than before.';
+    return 'Lately about $delta less than before.';
   }
 
   @override
   String rhSleepHigher(String delta) {
-    return 'On recent complete days, logged total sleep is about $delta higher than before.';
+    return 'Lately about $delta more than before.';
   }
 
   @override
-  String get rhSleepSame =>
-      'On recent complete days, logged total sleep is close to your baby’s usual.';
+  String get rhSleepSame => 'Lately close to the usual.';
 
   @override
   String rhSleepBasis(int recent, String range, int baseline) {
-    return 'Basis: the last $recent days ($range) vs the $baseline complete days before. Not a diagnosis.';
+    return 'Last $recent days ($range) against the $baseline fully logged days before.';
   }
 
   @override
@@ -13647,11 +13646,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Explaining more isn’t available for your household right now.';
 
   @override
-  String get rhEpSuggestTitle => 'Group into one observation period?';
+  String get rhEpSuggestTitle => 'A few different days?';
 
   @override
   String rhEpSuggestBody(int count, String people, String what) {
-    return '$count recent days had changes noted by $people: $what.';
+    return 'For $count days the family noticed $what.';
   }
 
   @override
@@ -13660,18 +13659,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get rhEpNotWonder =>
-      'This is just how your family keeps track, not confirmation of a Wonder Weeks stage.';
+  String get rhEpNotWonder => 'Not a confirmed Wonder Weeks stage.';
 
   @override
-  String get rhEpCreate => 'Create observation period';
+  String get rhEpCreate => 'Follow them';
 
   @override
   String get rhEpNoNeed => 'No need';
 
   @override
   String rhEpOpenTitle(String start) {
-    return 'Observation period $start – now';
+    return 'Different days · $start – now';
   }
 
   @override
@@ -13685,14 +13683,14 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count notes',
       one: '1 note',
     );
-    return '$who grouped $_temp0 into one period. It ends only when your family taps “Better now”.';
+    return '$who grouped $_temp0 to follow them. Close it when your family taps “Better now”.';
   }
 
   @override
   String get rhEpBetter => 'Better now';
 
   @override
-  String get rhEpCloseTitle => 'End this observation period?';
+  String get rhEpCloseTitle => 'Close these days?';
 
   @override
   String rhEpCloseBody(String start) {
@@ -13703,10 +13701,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhEpNotYet => 'Not yet';
 
   @override
-  String get rhEpCreated => 'Observation period created';
+  String get rhEpCreated => 'Following these days';
 
   @override
-  String get rhEpClosed => 'Observation period ended';
+  String get rhEpClosed => 'Closed';
 
   @override
   String get rhEveningBody =>
@@ -14149,8 +14147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhWeekInsightTitle => 'Looking back on the week';
 
   @override
-  String get rhWeekInsightSub =>
-      'From your family’s notes and log · not a diagnosis';
+  String get rhWeekInsightSub => 'From your family’s notes and log';
 
   @override
   String get rhWeekNotesTitle => 'Notes this week';

@@ -103,7 +103,10 @@ class TriedEntryCard extends ConsumerWidget {
         ),
       for (final a in entry.answers) ...[
         Text(
-          '${l10n.rhWhoDay(who(a.authorUid), shortDay(locale, a.date))} · ${feedbackKindLabel(l10n, a.kind)}',
+          // Compact rows carry the answer in their pill already (D-102: not said twice).
+          compact
+              ? l10n.rhWhoDay(who(a.authorUid), shortDay(locale, a.date))
+              : '${l10n.rhWhoDay(who(a.authorUid), shortDay(locale, a.date))} · ${feedbackKindLabel(l10n, a.kind)}',
           style: cl.text.caption.copyWith(color: cl.colors.ink),
         ),
         if (!compact && a.note != null)

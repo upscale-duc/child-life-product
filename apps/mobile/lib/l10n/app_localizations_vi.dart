@@ -11916,21 +11916,20 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhSleepLower(String delta) {
-    return 'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng $delta so với trước.';
+    return 'Gần đây ít hơn khoảng $delta so với trước.';
   }
 
   @override
   String rhSleepHigher(String delta) {
-    return 'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng $delta so với trước.';
+    return 'Gần đây nhiều hơn khoảng $delta so với trước.';
   }
 
   @override
-  String get rhSleepSame =>
-      'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.';
+  String get rhSleepSame => 'Gần đây gần với mức thường của con.';
 
   @override
   String rhSleepBasis(int recent, String range, int baseline) {
-    return 'Căn cứ: $recent ngày gần nhất ($range) so với $baseline ngày ghi đủ trước đó. Không phải chẩn đoán.';
+    return '$recent ngày gần nhất ($range) so với $baseline ngày ghi đủ trước đó.';
   }
 
   @override
@@ -12820,11 +12819,11 @@ class AppLocalizationsVi extends AppLocalizations {
       'Giải thích thêm chưa dùng được cho nhà mình lúc này.';
 
   @override
-  String get rhEpSuggestTitle => 'Nhóm thành một đợt quan sát?';
+  String get rhEpSuggestTitle => 'Mấy ngày này con khác?';
 
   @override
   String rhEpSuggestBody(int count, String people, String what) {
-    return '$count ngày gần đây có ghi nhận thay đổi: $people thấy $what.';
+    return '$count ngày gần đây cả nhà thấy con $what.';
   }
 
   @override
@@ -12833,18 +12832,17 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get rhEpNotWonder =>
-      'Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.';
+  String get rhEpNotWonder => 'Không phải xác nhận một giai đoạn Wonder Weeks.';
 
   @override
-  String get rhEpCreate => 'Tạo đợt quan sát';
+  String get rhEpCreate => 'Theo dõi';
 
   @override
   String get rhEpNoNeed => 'Không cần';
 
   @override
   String rhEpOpenTitle(String start) {
-    return 'Đợt quan sát $start – nay';
+    return 'Mấy ngày con khác · $start – nay';
   }
 
   @override
@@ -12852,14 +12850,14 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhEpOpenBody(String who, int count) {
-    return '$who xác nhận nhóm $count ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.';
+    return '$who gom $count ghi nhận lại để theo dõi. Khép lại khi cả nhà thấy “con đã ổn hơn”.';
   }
 
   @override
   String get rhEpBetter => 'Con đã ổn hơn';
 
   @override
-  String get rhEpCloseTitle => 'Kết thúc đợt quan sát?';
+  String get rhEpCloseTitle => 'Khép lại mấy ngày này?';
 
   @override
   String rhEpCloseBody(String start) {
@@ -12870,10 +12868,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhEpNotYet => 'Chưa';
 
   @override
-  String get rhEpCreated => 'Đã tạo đợt quan sát';
+  String get rhEpCreated => 'Đã bắt đầu theo dõi';
 
   @override
-  String get rhEpClosed => 'Đã kết thúc đợt quan sát';
+  String get rhEpClosed => 'Đã khép lại';
 
   @override
   String get rhEveningBody =>
@@ -13279,8 +13277,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhWeekInsightTitle => 'Nhìn lại tuần qua';
 
   @override
-  String get rhWeekInsightSub =>
-      'Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán';
+  String get rhWeekInsightSub => 'Từ ghi nhận và nhật ký của nhà mình';
 
   @override
   String get rhWeekNotesTitle => 'Ghi nhận trong tuần';

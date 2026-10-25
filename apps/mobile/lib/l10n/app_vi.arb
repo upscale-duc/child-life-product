@@ -17812,7 +17812,7 @@
       }
     }
   },
-  "rhSleepLower": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng {delta} so với trước.",
+  "rhSleepLower": "Gần đây ít hơn khoảng {delta} so với trước.",
   "@rhSleepLower": {
     "description": "NL07 fact (change_detected, lower).",
     "placeholders": {
@@ -17821,7 +17821,7 @@
       }
     }
   },
-  "rhSleepHigher": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng {delta} so với trước.",
+  "rhSleepHigher": "Gần đây nhiều hơn khoảng {delta} so với trước.",
   "@rhSleepHigher": {
     "description": "NL07 fact (change_detected, higher).",
     "placeholders": {
@@ -17830,11 +17830,11 @@
       }
     }
   },
-  "rhSleepSame": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.",
+  "rhSleepSame": "Gần đây gần với mức thường của con.",
   "@rhSleepSame": {
     "description": "NL07 fact (no_change)."
   },
-  "rhSleepBasis": "Căn cứ: {recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó. Không phải chẩn đoán.",
+  "rhSleepBasis": "{recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó.",
   "@rhSleepBasis": {
     "description": "NL07 basis line.",
     "placeholders": {
@@ -19109,11 +19109,11 @@
   "@aiExplainUnavailable": {
     "description": "Explain for other gate reasons. EN is an engineering draft for owner review."
   },
-  "rhEpSuggestTitle": "Nhóm thành một đợt quan sát?",
+  "rhEpSuggestTitle": "Mấy ngày này con khác?",
   "@rhEpSuggestTitle": {
     "description": "NL07b title."
   },
-  "rhEpSuggestBody": "{count} ngày gần đây có ghi nhận thay đổi: {people} thấy {what}.",
+  "rhEpSuggestBody": "{count} ngày gần đây cả nhà thấy con {what}.",
   "@rhEpSuggestBody": {
     "description": "NL07b body (\"2 ngày gần đây có ghi nhận thay đổi: Mẹ (06/10) và Ba (07/10) thấy …\").",
     "placeholders": {
@@ -19140,11 +19140,11 @@
       }
     }
   },
-  "rhEpNotWonder": "Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.",
+  "rhEpNotWonder": "Không phải xác nhận một giai đoạn Wonder Weeks.",
   "@rhEpNotWonder": {
     "description": "NL07b disclaimer."
   },
-  "rhEpCreate": "Tạo đợt quan sát",
+  "rhEpCreate": "Theo dõi",
   "@rhEpCreate": {
     "description": "NL07b primary."
   },
@@ -19152,7 +19152,7 @@
   "@rhEpNoNeed": {
     "description": "NL07b secondary."
   },
-  "rhEpOpenTitle": "Đợt quan sát {start} – nay",
+  "rhEpOpenTitle": "Mấy ngày con khác · {start} – nay",
   "@rhEpOpenTitle": {
     "description": "NL07 episode card title.",
     "placeholders": {
@@ -19165,7 +19165,7 @@
   "@rhEpUpdating": {
     "description": "NL07 episode status pill."
   },
-  "rhEpOpenBody": "{who} xác nhận nhóm {count} ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.",
+  "rhEpOpenBody": "{who} gom {count} ghi nhận lại để theo dõi. Khép lại khi cả nhà thấy “con đã ổn hơn”.",
   "@rhEpOpenBody": {
     "description": "NL07 episode card body.",
     "placeholders": {
@@ -19181,7 +19181,7 @@
   "@rhEpBetter": {
     "description": "NL07: closes the episode (never automatic)."
   },
-  "rhEpCloseTitle": "Kết thúc đợt quan sát?",
+  "rhEpCloseTitle": "Khép lại mấy ngày này?",
   "@rhEpCloseTitle": {
     "description": "Close confirm title. EN is an engineering draft for owner review."
   },
@@ -19198,11 +19198,11 @@
   "@rhEpNotYet": {
     "description": "Close confirm cancel. EN is an engineering draft for owner review."
   },
-  "rhEpCreated": "Đã tạo đợt quan sát",
+  "rhEpCreated": "Đã bắt đầu theo dõi",
   "@rhEpCreated": {
     "description": "Toast after NL07b. EN is an engineering draft for owner review."
   },
-  "rhEpClosed": "Đã kết thúc đợt quan sát",
+  "rhEpClosed": "Đã khép lại",
   "@rhEpClosed": {
     "description": "Toast after \"Con đã ổn hơn\". EN is an engineering draft for owner review."
   },
@@ -19789,7 +19789,7 @@
   "@rhWeekInsightTitle": {
     "description": "EN09 group A section heading."
   },
-  "rhWeekInsightSub": "Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán",
+  "rhWeekInsightSub": "Từ ghi nhận và nhật ký của nhà mình",
   "@rhWeekInsightSub": {
     "description": "EN09 group A section subtitle."
   },

@@ -517,8 +517,8 @@ class _Tiles extends StatelessWidget {
   }
 }
 
-/// "Mẹ 41 lần" for one author: the family label (D-024), "Bạn" for me on screen ([myUid]).
-String authorCountLabel(
+/// "Mẹ": the family label of one author (D-024), "Bạn" for me on screen ([myUid]).
+String authorName(
   AppLocalizations l10n,
   AuthorCount a,
   List<Membership> members, {
@@ -533,8 +533,17 @@ String authorCountLabel(
           isMe: false,
           relationLabel: (r, c) => relationLabel(l10n, r, c),
         );
-  return l10n.rhWeekFamilyCount(capitalized(who), a.count);
+  return capitalized(who);
 }
+
+/// "Mẹ 41 lần" for one author (shared text and screen readers).
+String authorCountLabel(
+  AppLocalizations l10n,
+  AuthorCount a,
+  List<Membership> members, {
+  required String myUid,
+}) =>
+    l10n.rhWeekFamilyCount(authorName(l10n, a, members, myUid: myUid), a.count);
 
 /// "Cả nhà đã cùng chăm": entries per person, in the order they first logged; no ranking.
 class _FamilyCard extends StatelessWidget {
@@ -551,14 +560,14 @@ class _FamilyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final line = facts.authors.isEmpty
-        ? l10n.rhWeekFamilyEmpty
-        : [
-            for (final a in facts.authors)
-              authorCountLabel(l10n, a, members, myUid: me.uid),
-          ].join(' · ');
+    final most = facts.authors.fold<int>(
+      1,
+      (m, a) => a.count > m ? a.count : m,
+    );
+    // A container, not merged: each person's bar is read on its own ("Mẹ 15 lần").
     return RhCard(
-      child: MergeSemantics(
+      child: Semantics(
+        container: true,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -570,10 +579,74 @@ class _FamilyCard extends StatelessWidget {
                 children: [
                   Text(l10n.rhWeekFamilyTitle, style: cl.text.bodyStrong),
                   const SizedBox(height: 2),
-                  Text(
-                    line,
-                    style: cl.text.label.copyWith(color: cl.colors.ink),
-                  ),
+                  // One bar per person, in the order they first logged (D-102: numbers as a
+                  // visual, not "Bạn 21 lần · Cô Lan 14 lần · Ba 20 lần" in a sentence).
+                  if (facts.authors.isEmpty)
+                    Text(
+                      l10n.rhWeekFamilyEmpty,
+                      style: cl.text.label.copyWith(color: cl.colors.ink),
+                    )
+                  else
+                    for (final a in facts.authors)
+                      Padding(
+                        padding: const EdgeInsets.only(top: ClSpace.s1),
+                        child: Semantics(
+                          label: authorCountLabel(
+                            l10n,
+                            a,
+                            members,
+                            myUid: me.uid,
+                          ),
+                          child: ExcludeSemantics(
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 64,
+                                  child: Text(
+                                    authorName(l10n, a, members, myUid: me.uid),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: cl.text.label.copyWith(
+                                      color: cl.colors.ink,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: LayoutBuilder(
+                                    builder: (context, box) => Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        width: box.maxWidth * a.count / most,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: cl.colors.mintDeep,
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 36,
+                                  child: Text(
+                                    '${a.count}',
+                                    textAlign: TextAlign.end,
+                                    style: cl.text.label.copyWith(
+                                      color: cl.colors.ink,
+                                      fontWeight: FontWeight.w600,
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                   if (facts.authors.isNotEmpty) ...[
                     const SizedBox(height: ClSpace.s1),
                     Text(
