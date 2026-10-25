@@ -35517,7 +35517,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Lumi card demo source line.
   ///
   /// In vi, this message translates to:
-  /// **'Theo nhật ký đã ghi'**
+  /// **'Theo nhật ký đã ghi · Xem nguồn'**
   String get pv2CardLumiDemoSource;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
@@ -36497,6 +36497,144 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thêm {gb} GB · {price}'**
   String pv2AddOnBuy(int gb, String price);
+
+  /// Premium v2 (Figma 958:13863, D-101). Video card demo, last scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một tháng bên {name}.'**
+  String pv2DemoVideoEnd(String name);
+
+  /// Premium v2 (Figma 958:13863, D-101). Video card demo timeline.
+  ///
+  /// In vi, this message translates to:
+  /// **'♪ bật tiếng'**
+  String get pv2DemoMuted;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, minimal print.
+  ///
+  /// In vi, this message translates to:
+  /// **'100 NGÀY · 25.11.2026'**
+  String get pv2DemoCardDate;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, playful print.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào con yêu!'**
+  String get pv2DemoCardHello;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, playful print.
+  ///
+  /// In vi, this message translates to:
+  /// **'100 ngày'**
+  String get pv2DemoCardDays;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, playful print.
+  ///
+  /// In vi, this message translates to:
+  /// **'NGÀY SINH'**
+  String get pv2DemoCardBorn;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, playful print.
+  ///
+  /// In vi, this message translates to:
+  /// **'CÂN NẶNG · CHIỀU DÀI'**
+  String get pv2DemoCardSize;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo, playful print.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn con đã đến bên ba mẹ'**
+  String get pv2DemoCardThanks;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo style chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối giản'**
+  String get pv2DemoStyleMinimal;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo style chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đáng yêu'**
+  String get pv2DemoStylePlayful;
+
+  /// Premium v2 (Figma 958:13863, D-101). Card demo style chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cổ điển'**
+  String get pv2DemoStyleClassic;
+
+  /// Premium v2 (Figma 958:13863, D-101). Lumi card demo answer, second line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ gần nhất 13:10 · 120 ml (Ba ghi)'**
+  String get pv2DemoLumiLast;
+
+  /// Premium v2 (Figma 958:13863, D-101). Rhythm card demo note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này (13–19/10), giấc đêm đã ghi trung bình 9 giờ 10 — dài hơn 25 phút so với tuần trước (6–12/10).'**
+  String get pv2DemoRhythm;
+
+  /// Premium v2 (Figma 958:13863, D-101). Storage card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'3 video đang tải lên · không cần chờ'**
+  String get pv2DemoUploading;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹ'**
+  String get pv2DemoMum;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'09:10 · Đã ghi cữ bú 120 ml'**
+  String get pv2DemoMumDid;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba'**
+  String get pv2DemoDad;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'10:30 · Bắt đầu giấc ngủ'**
+  String get pv2DemoDadDid;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bà ngoại'**
+  String get pv2DemoGran;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xem cập nhật'**
+  String get pv2DemoGranDid;
+
+  /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng chăm đã có ở Free; Premium tăng số người tham gia.'**
+  String get pv2DemoCareNote;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall legal line link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều khoản'**
+  String get pv2Terms;
+
+  /// Premium v2 (Figma 958:13863, D-101). Paywall legal line link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền riêng tư'**
+  String get pv2Privacy;
 }
 
 class _AppLocalizationsDelegate

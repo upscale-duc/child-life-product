@@ -22445,7 +22445,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardLumiDemoA => 'By 14:20: 3 bottle feeds · 390 ml';
 
   @override
-  String get pv2CardLumiDemoSource => 'From the journal';
+  String get pv2CardLumiDemoSource => 'From the journal · See sources';
 
   @override
   String get pv2CardRhythmEyebrow => 'YOUR CHILD\'S RHYTHM';
@@ -23055,4 +23055,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String pv2AddOnBuy(int gb, String price) {
     return 'Add $gb GB · $price';
   }
+
+  @override
+  String pv2DemoVideoEnd(String name) {
+    return 'A month with $name.';
+  }
+
+  @override
+  String get pv2DemoMuted => '♪ sound on';
+
+  @override
+  String get pv2DemoCardDate => '100 DAYS · 25.11.2026';
+
+  @override
+  String get pv2DemoCardHello => 'Hello, sweetheart!';
+
+  @override
+  String get pv2DemoCardDays => '100 days';
+
+  @override
+  String get pv2DemoCardBorn => 'BORN';
+
+  @override
+  String get pv2DemoCardSize => 'WEIGHT · LENGTH';
+
+  @override
+  String get pv2DemoCardThanks => 'Thank you for coming to us';
+
+  @override
+  String get pv2DemoStyleMinimal => 'Minimal';
+
+  @override
+  String get pv2DemoStylePlayful => 'Playful';
+
+  @override
+  String get pv2DemoStyleClassic => 'Classic';
+
+  @override
+  String get pv2DemoLumiLast => 'Last feed 13:10 · 120 ml (Dad logged)';
+
+  @override
+  String get pv2DemoRhythm =>
+      'This week (13–19/10), logged night sleep averaged 9 h 10 — 25 minutes longer than last week (6–12/10).';
+
+  @override
+  String get pv2DemoUploading => '3 videos uploading · no need to wait';
+
+  @override
+  String get pv2DemoMum => 'Mum';
+
+  @override
+  String get pv2DemoMumDid => '09:10 · Logged a 120 ml feed';
+
+  @override
+  String get pv2DemoDad => 'Dad';
+
+  @override
+  String get pv2DemoDadDid => '10:30 · Started a nap';
+
+  @override
+  String get pv2DemoGran => 'Grandma';
+
+  @override
+  String get pv2DemoGranDid => 'Saw the update';
+
+  @override
+  String get pv2DemoCareNote =>
+      'Caring together is in Free; Premium adds more people.';
+
+  @override
+  String get pv2Terms => 'Terms';
+
+  @override
+  String get pv2Privacy => 'Privacy';
 }

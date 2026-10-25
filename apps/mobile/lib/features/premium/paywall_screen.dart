@@ -265,6 +265,7 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
             _ => null,
           };
     final store = ref.watch(storeGatewayProvider);
+    final vi = Localizations.localeOf(context).languageCode == 'vi';
     return PaywallV2View(
       entry: entry,
       footer: footer,
@@ -306,6 +307,9 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
               if (p != null) unawaited(_buy(babyId, p));
             }
           : null,
+      onTerms: () => unawaited(_openLegal(vi ? '/dieu-khoan/' : '/en/terms/')),
+      onPrivacy: () =>
+          unawaited(_openLegal(vi ? '/quyen-rieng-tu/' : '/en/privacy/')),
       onAskManager: () => unawaited(
         SharePlus.instance.share(ShareParams(text: l10n.pv2AskMessage)),
       ),
@@ -315,6 +319,11 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
       },
     );
   }
+
+  Future<void> _openLegal(String path) => launchUrl(
+    Uri.parse('${ref.read(environmentProvider).webOrigin}$path'),
+    mode: LaunchMode.inAppBrowserView,
+  );
 
   /// The template's name for PR02 Success, from the draft kept for this purchase.
   String? _templateName() {

@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -10,11 +11,9 @@ import 'premium_v2.dart';
 
 /// Who is reading the paywall and what its footer can do.
 enum PaywallFooter {
-  /// The manager, with in-app purchase open: period tiles and the gold CTA.
+  /// The manager: period tiles and the gold CTA (before in-app purchase the CTA says the payment
+  /// step is coming, owner 2026-10-25).
   buy,
-
-  /// The manager while in-app purchase is not open yet (owner: IAP comes later).
-  soon,
 
   /// A member who does not manage the plan (PW07): ask the manager.
   member,
@@ -43,6 +42,8 @@ class PaywallV2View extends StatefulWidget {
     this.onRestore,
     this.onAskManager,
     this.onOpenPlan,
+    this.onTerms,
+    this.onPrivacy,
     super.key,
   });
 
@@ -65,6 +66,10 @@ class PaywallV2View extends StatefulWidget {
   final VoidCallback? onAskManager;
   final VoidCallback? onOpenPlan;
 
+  /// "Điều khoản" / "Quyền riêng tư" at the end of the legal line.
+  final VoidCallback? onTerms;
+  final VoidCallback? onPrivacy;
+
   @override
   State<PaywallV2View> createState() => _PaywallV2State();
 }
@@ -72,7 +77,8 @@ class PaywallV2View extends StatefulWidget {
 class _PaywallV2State extends State<PaywallV2View> {
   var _yearly = true;
   late final PageController _pages = PageController(
-    viewportFraction: 0.78,
+    // Component · Carousel: a 270 card centred in 375 with 12 between cards.
+    viewportFraction: 282 / 375,
     initialPage: widget.entry.firstCard.index,
   );
   late int _page = widget.entry.firstCard.index;
@@ -98,185 +104,185 @@ class _PaywallV2State extends State<PaywallV2View> {
     final plan = widget.plan;
     final free = plan?.free ?? PlanOffer.free;
     final premium = plan?.premiumOffer ?? PlanOffer.premium;
-    final price = plan?.priceVn != null && widget.vnd
-        ? plan!.priceVn
+    final price = widget.vnd
+        ? (plan?.priceVn ?? const PlanPrice(month: 59000, year: 599000))
         : (plan?.priceIntl ?? const PlanPrice(month: 5.99, year: 49.99));
     final bottom = MediaQuery.paddingOf(context).bottom;
     final explore = widget.entry == PremiumEntry.explore;
 
     return Scaffold(
       backgroundColor: PremiumPalette.deep,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [PremiumPalette.deepTop, PremiumPalette.deep],
+      body: Stack(
+        children: [
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [PremiumPalette.deepTop, PremiumPalette.deep],
+                ),
+              ),
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        ClSpace.s4,
-                        ClSpace.s2,
-                        ClSpace.s4,
-                        0,
+          // "Glow · mint" (top left) and "Glow · gold" (top right).
+          const Positioned(
+            left: -120,
+            top: -120,
+            child: _Glow(width: 420, height: 320, color: Color(0x332CBFB3)),
+          ),
+          const Positioned(
+            left: 150,
+            top: 40,
+            child: _Glow(width: 360, height: 280, color: Color(0x26E9C77B)),
+          ),
+          Column(
+            children: [
+              Expanded(
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    children: [
+                      _TopBar(
+                        onClose: widget.onClose,
+                        onRestore: widget.busy ? null : widget.onRestore,
                       ),
-                      child: Row(
-                        children: [
-                          _CloseButton(
-                            label: l10n.a11yClose,
-                            onTap: widget.onClose,
-                          ),
-                          const Spacer(),
-                          if (widget.onRestore case final r?)
-                            ClPressable(
-                              onPressed: widget.busy ? null : r,
-                              semanticLabel: l10n.pv2Restore,
-                              child: Padding(
-                                padding: const EdgeInsets.all(ClSpace.s2),
-                                child: Text(
-                                  l10n.pv2Restore,
-                                  style: const TextStyle(
-                                    color: PremiumPalette.textMuted,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.only(bottom: ClSpace.s6),
+                          children: [
+                            _Head(
+                              headline: _headline(l10n),
+                              reason: explore ? null : widget.reason,
                             ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.only(bottom: ClSpace.s6),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              ClSpace.s6,
-                              ClSpace.s3,
-                              ClSpace.s6,
-                              0,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const PremiumCrest(),
-                                const SizedBox(height: ClSpace.s2),
-                                Semantics(
-                                  header: true,
-                                  child: Text(
-                                    _headline(l10n),
-                                    style: const TextStyle(
-                                      fontFamily: PremiumPalette.serif,
-                                      color: PremiumPalette.text,
-                                      fontSize: 25,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ),
-                                if (widget.reason case final r?
-                                    when !explore) ...[
-                                  const SizedBox(height: ClSpace.s2),
-                                  Text(
-                                    r,
-                                    style: const TextStyle(
-                                      color: PremiumPalette.textMuted,
-                                      fontSize: 14,
-                                      height: 1.4,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: ClSpace.s4),
-                          SizedBox(
-                            height: 318,
-                            child: PageView.builder(
+                            const SizedBox(height: 12),
+                            _Carousel(
                               controller: _pages,
-                              itemCount: PremiumCard.values.length,
-                              onPageChanged: (i) => setState(() => _page = i),
-                              itemBuilder: (context, i) => AnimatedOpacity(
-                                duration: const Duration(milliseconds: 200),
-                                opacity: (i - _page).abs() <= 1
-                                    ? (i == _page ? 1 : 0.4)
-                                    : 0,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: ClSpace.s2,
-                                  ),
-                                  child: PremiumFeatureCard(
-                                    card: PremiumCard.values[i],
-                                    free: free,
-                                    premium: premium,
-                                  ),
-                                ),
-                              ),
+                              page: _page,
+                              onPage: (i) => setState(() => _page = i),
+                              free: free,
+                              premium: premium,
+                              babyName: widget.babyName,
                             ),
-                          ),
-                          const SizedBox(height: ClSpace.s3),
-                          _Dots(
-                            count: PremiumCard.values.length,
-                            active: _page,
-                          ),
-                          const SizedBox(height: ClSpace.s6),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: ClSpace.s4,
-                            ),
-                            child: _Compare(
+                            const SizedBox(height: 19),
+                            _Compare(
                               free: free,
                               premium: premium,
                               need: explore ? null : widget.entry,
                             ),
-                          ),
-                          const SizedBox(height: ClSpace.s4),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: ClSpace.s4,
-                            ),
-                            child: Wrap(
-                              spacing: ClSpace.s2,
-                              runSpacing: ClSpace.s2,
-                              alignment: WrapAlignment.center,
-                              children: [
-                                for (final p in [
-                                  l10n.pv2PromiseCancel,
-                                  l10n.pv2PromiseNoTopUps,
-                                  l10n.pv2PromiseYours,
-                                ])
-                                  _Promise(label: p),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              _Footer(
+                kind: widget.footer,
+                yearly: _yearly,
+                price: price,
+                vnd: widget.vnd,
+                storeName: widget.storeName,
+                managerName: widget.managerName ?? l10n.pv2TheManager,
+                busy: widget.busy,
+                bottom: bottom,
+                onPeriod: (y) => setState(() => _yearly = y),
+                onBuy: widget.onBuy == null
+                    ? null
+                    : () => widget.onBuy!(_yearly),
+                onAskManager: widget.onAskManager,
+                onOpenPlan: widget.onOpenPlan,
+                onTerms: widget.onTerms,
+                onPrivacy: widget.onPrivacy,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Glow extends StatelessWidget {
+  const _Glow({required this.width, required this.height, required this.color});
+  final double width;
+  final double height;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+    child: Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
+      ),
+    ),
+  );
+}
+
+/// "Top": close (34) at the left, "Khôi phục" at the right.
+class _TopBar extends StatelessWidget {
+  const _TopBar({required this.onClose, this.onRestore});
+  final VoidCallback onClose;
+  final VoidCallback? onRestore;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: SizedBox(
+        height: 44,
+        child: Row(
+          children: [
+            ClPressable(
+              onPressed: onClose,
+              semanticLabel: l10n.a11yClose,
+              child: SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.1),
                       ),
                     ),
-                  ],
+                    child: const ClIcon(
+                      ClIcons.close,
+                      size: 16,
+                      color: PremiumPalette.text,
+                    ),
+                  ),
                 ),
               ),
             ),
-            _Footer(
-              kind: widget.footer,
-              yearly: _yearly,
-              price: price,
-              vnd: widget.vnd,
-              storeName: widget.storeName,
-              managerName: widget.managerName ?? l10n.pv2TheManager,
-              busy: widget.busy,
-              bottom: bottom,
-              onPeriod: (y) => setState(() => _yearly = y),
-              onBuy: widget.onBuy == null ? null : () => widget.onBuy!(_yearly),
-              onAskManager: widget.onAskManager,
-              onOpenPlan: widget.onOpenPlan,
-            ),
+            const Spacer(),
+            if (onRestore != null)
+              ClPressable(
+                onPressed: onRestore,
+                semanticLabel: l10n.pv2Restore,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 4,
+                  ),
+                  child: Text(
+                    l10n.pv2Restore,
+                    style: const TextStyle(
+                      color: Color(0xB3FFFFFF),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -284,26 +290,132 @@ class _PaywallV2State extends State<PaywallV2View> {
   }
 }
 
-class _CloseButton extends StatelessWidget {
-  const _CloseButton({required this.label, required this.onTap});
-  final String label;
-  final VoidCallback onTap;
+/// "Head": crest, headline (Playfair 21) and the reason line.
+class _Head extends StatelessWidget {
+  const _Head({required this.headline, this.reason});
+  final String headline;
+  final String? reason;
 
   @override
-  Widget build(BuildContext context) => ClPressable(
-    onPressed: onTap,
-    semanticLabel: label,
-    child: Container(
-      width: 44,
-      height: 44,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: PremiumPalette.fill,
-        shape: BoxShape.circle,
-      ),
-      child: const ClIcon(ClIcons.close, size: 20, color: PremiumPalette.text),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PremiumCrest(),
+        const SizedBox(height: 4),
+        Semantics(
+          header: true,
+          child: Text(
+            headline,
+            style: const TextStyle(
+              fontFamily: PremiumPalette.serif,
+              color: PremiumPalette.text,
+              fontSize: 21,
+              height: 1.18,
+            ),
+          ),
+        ),
+        if (reason case final r?) ...[
+          const SizedBox(height: 4),
+          Text(
+            r,
+            style: const TextStyle(
+              color: PremiumPalette.textMuted,
+              fontSize: 12,
+              height: 1.4,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ],
     ),
   );
+}
+
+/// Component · Premium · Carousel (1020:17765): the card in view at 270 (0.9 of the 300 card),
+/// the ones beside it at 228 (0.76) and 35 % opacity, the rest hidden; the scale follows the
+/// swipe ("vuốt có hiệu ứng", PV00B). Dots under it: the active one a 22 pill.
+class _Carousel extends StatelessWidget {
+  const _Carousel({
+    required this.controller,
+    required this.page,
+    required this.onPage,
+    required this.free,
+    required this.premium,
+    required this.babyName,
+  });
+
+  final PageController controller;
+  final int page;
+  final ValueChanged<int> onPage;
+  final PlanOffer free;
+  final PlanOffer premium;
+  final String babyName;
+
+  static const _big = 0.9;
+  static const _small = 0.76;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          // The tallest card (Dung lượng / Người chăm, 298) at 0.9.
+          height: 270,
+          child: PageView.builder(
+            controller: controller,
+            clipBehavior: Clip.none,
+            itemCount: PremiumCard.values.length,
+            onPageChanged: onPage,
+            itemBuilder: (context, i) => AnimatedBuilder(
+              animation: controller,
+              builder: (context, child) {
+                final current =
+                    controller.hasClients &&
+                        controller.position.hasContentDimensions
+                    ? (controller.page ?? page.toDouble())
+                    : page.toDouble();
+                final d = (i - current).abs().clamp(0.0, 2.0);
+                final t = d.clamp(0.0, 1.0);
+                final scale = _big - (_big - _small) * t;
+                final opacity = d >= 2
+                    ? 0.0
+                    : (d <= 1 ? 1 - 0.65 * t : 0.35 * (2 - d));
+                return Opacity(
+                  opacity: opacity,
+                  child: Transform.scale(
+                    scale: scale,
+                    // Beside the current card the smaller one keeps the 12 gap on its near side.
+                    alignment: i > current
+                        ? Alignment.topLeft
+                        : i < current
+                        ? Alignment.topRight
+                        : Alignment.topCenter,
+                    child: child,
+                  ),
+                );
+              },
+              child: OverflowBox(
+                alignment: Alignment.topCenter,
+                minWidth: 300,
+                maxWidth: 300,
+                maxHeight: 340,
+                child: PremiumFeatureCard(
+                  card: PremiumCard.values[i],
+                  free: free,
+                  premium: premium,
+                  babyName: babyName,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        _Dots(count: PremiumCard.values.length, active: page),
+      ],
+    );
+  }
 }
 
 class _Dots extends StatelessWidget {
@@ -319,11 +431,13 @@ class _Dots extends StatelessWidget {
         for (var i = 0; i < count; i++)
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            margin: const EdgeInsets.symmetric(horizontal: 3),
+            margin: EdgeInsets.only(left: i == 0 ? 0 : 6),
             width: i == active ? 22 : 6,
             height: 6,
             decoration: BoxDecoration(
-              color: i == active ? PremiumPalette.gold : PremiumPalette.line,
+              color: i == active
+                  ? PremiumPalette.gold
+                  : Colors.white.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(3),
             ),
           ),
@@ -332,45 +446,25 @@ class _Dots extends StatelessWidget {
   );
 }
 
-class _Promise extends StatelessWidget {
-  const _Promise({required this.label});
-  final String label;
+// ---------- Component · Premium · Thẻ tính năng (1019:17008) ----------
 
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3, vertical: 6),
-    decoration: BoxDecoration(
-      color: PremiumPalette.fill,
-      borderRadius: BorderRadius.circular(ClRadius.pill),
-      border: Border.all(color: PremiumPalette.line),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const ClIcon(ClIcons.check, size: 14, color: PremiumPalette.gold),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: const TextStyle(color: PremiumPalette.textMuted, fontSize: 12),
-        ),
-      ],
-    ),
-  );
-}
+const _goldText = TextStyle(color: PremiumPalette.gold);
+const _white92 = Color(0xEBFFFFFF);
 
-/// Component · Premium · Thẻ tính năng (1019:17008): a demo panel, then eyebrow, title,
-/// benefit and the limit line in gold.
+/// A 300-wide card: the demo panel (276 × 156) and its text block, as in the component.
 class PremiumFeatureCard extends StatelessWidget {
   const PremiumFeatureCard({
     required this.card,
     required this.free,
     required this.premium,
+    this.babyName = '',
     super.key,
   });
 
   final PremiumCard card;
   final PlanOffer free;
   final PlanOffer premium;
+  final String babyName;
 
   @override
   Widget build(BuildContext context) {
@@ -417,12 +511,15 @@ class PremiumFeatureCard extends StatelessWidget {
         ),
       ),
     };
+    final name = babyName.isEmpty ? 'Teddy' : babyName;
     return Semantics(
       container: true,
       label: '$eyebrow. $title. $body. $limit',
       excludeSemantics: true,
       child: Container(
-        padding: const EdgeInsets.all(ClSpace.s3),
+        width: 300,
+        // Figma's 1.2 stroke sits inside the 12 padding: the demo panel stays 276 wide.
+        padding: const EdgeInsets.all(12 - 1.2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(26),
           border: Border.all(
@@ -434,66 +531,79 @@ class PremiumFeatureCard extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [PremiumPalette.cardTop, PremiumPalette.cardBottom],
           ),
-          boxShadow: [
+          boxShadow: const [
+            BoxShadow(color: Color(0x2EE8BF66), blurRadius: 28),
             BoxShadow(
-              color: PremiumPalette.gold.withValues(alpha: 0.12),
-              blurRadius: 24,
+              color: Color(0x8C000000),
+              blurRadius: 32,
+              offset: Offset(0, 16),
             ),
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 124,
-              width: double.infinity,
-              padding: const EdgeInsets.all(ClSpace.s3),
+              width: 276,
+              height: 156,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.28),
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: _Demo(card: card),
+              child: switch (card) {
+                PremiumCard.video => _VideoDemo(name: name),
+                PremiumCard.card => _CardDemo(name: name),
+                PremiumCard.lumi => const _LumiDemo(),
+                PremiumCard.rhythm => const _RhythmDemo(),
+                PremiumCard.storage => const _StorageDemo(),
+                PremiumCard.caregivers => const _CaregiversDemo(),
+              },
             ),
-            const SizedBox(height: ClSpace.s3),
-            Text(
-              eyebrow,
-              style: const TextStyle(
-                color: PremiumPalette.gold,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.4,
-              ),
-            ),
-            const SizedBox(height: ClSpace.s1),
-            Text(
-              title,
-              maxLines: 2,
-              style: const TextStyle(
-                fontFamily: PremiumPalette.serif,
-                color: PremiumPalette.text,
-                fontSize: 18,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: ClSpace.s1),
-            Text(
-              body,
-              maxLines: 3,
-              style: const TextStyle(
-                color: Color(0xA8FFFFFF),
-                fontSize: 12.5,
-                height: 1.35,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              limit,
-              maxLines: 2,
-              style: const TextStyle(
-                color: PremiumPalette.gold,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 0, 6, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    eyebrow,
+                    style: _goldText.copyWith(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.44,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontFamily: PremiumPalette.serif,
+                      color: _white92,
+                      fontSize: 17,
+                      height: 1.18,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    body,
+                    style: const TextStyle(
+                      color: Color(0xA8FFFFFF),
+                      fontSize: 12,
+                      height: 1.42,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    limit,
+                    style: _goldText.copyWith(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -503,238 +613,767 @@ class PremiumFeatureCard extends StatelessWidget {
   }
 }
 
-/// The small picture of each card (never the family's data: illustrative copy only).
-class _Demo extends StatelessWidget {
-  const _Demo({required this.card});
-  final PremiumCard card;
+/// The demo panel's own padding and gap (10, 7).
+class _Panel extends StatelessWidget {
+  const _Panel({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (i, c) in children.indexed) ...[
+          if (i > 0) const SizedBox(height: 7),
+          c,
+        ],
+      ],
+    ),
+  );
+}
+
+Widget _photo(
+  String asset, {
+  double? width,
+  double? height,
+  double radius = 0,
+}) => ClipRRect(
+  borderRadius: BorderRadius.circular(radius),
+  child: Image.asset(
+    'assets/premium/$asset',
+    width: width,
+    height: height,
+    fit: BoxFit.cover,
+    excludeFromSemantics: true,
+  ),
+);
+
+class _VideoDemo extends StatelessWidget {
+  const _VideoDemo({required this.name});
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    const muted = TextStyle(color: PremiumPalette.textMuted, fontSize: 11);
-    Widget row(ClIcons icon, String text) => Padding(
-      padding: const EdgeInsets.only(bottom: ClSpace.s2),
-      child: Row(
-        children: [
-          ClIcon(icon, size: 16, color: PremiumPalette.mint),
-          const SizedBox(width: ClSpace.s2),
-          Expanded(
-            child: Text(
-              text,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: PremiumPalette.text, fontSize: 12),
-            ),
-          ),
-        ],
-      ),
+    Widget scene(Widget child) => ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(width: 80, height: 104, child: child),
     );
-    return switch (card) {
-      PremiumCard.video => Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(ClSpace.s2),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF6EFE2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                l10n.pv2CardVideoDemo1,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: PremiumPalette.serif,
-                  fontStyle: FontStyle.italic,
-                  color: Color(0xFF3A2E22),
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: ClSpace.s2),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFF2C6A0), Color(0xFF8FC9C2)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              alignment: Alignment.bottomLeft,
-              padding: const EdgeInsets.all(ClSpace.s2),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.45),
-                  borderRadius: BorderRadius.circular(ClRadius.pill),
-                ),
-                child: Text(
-                  l10n.pv2CardVideoDemo2,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.white, fontSize: 9.5),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      PremiumCard.card => Row(
-        children: [
-          for (final (bg, ink) in const [
-            (Color(0xFFF7EFE6), Color(0xFF6B4F3A)),
-            (Color(0xFFFBE3E8), Color(0xFFB0506A)),
-            (Color(0xFF1C2938), Color(0xFFFAD173)),
-          ]) ...[
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  l10n.pv2CardCardDemo,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: PremiumPalette.serif,
-                    color: ink,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+    return _Panel(
+      children: [
+        Row(
+          children: [
+            scene(
+              ColoredBox(
+                color: const Color(0xFFF7F2E5),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Text(
+                      l10n.pv2CardVideoDemo1,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: PremiumPalette.serif,
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF3B3329),
+                        fontSize: 10,
+                        height: 1.25,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 6),
-          ],
-        ]..removeLast(),
-      ),
-      PremiumCard.lumi => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: ClSpace.s3,
-                vertical: 6,
-              ),
-              decoration: BoxDecoration(
-                color: PremiumPalette.gold,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Text(
-                l10n.pv2CardLumiDemoQ,
-                style: const TextStyle(
-                  color: PremiumPalette.onGold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          Container(
-            padding: const EdgeInsets.all(ClSpace.s2),
-            decoration: BoxDecoration(
-              color: PremiumPalette.fill,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.pv2CardLumiDemoA,
-                  style: const TextStyle(
-                    color: PremiumPalette.text,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: ClSpace.s1),
-                Text(l10n.pv2CardLumiDemoSource, style: muted),
-              ],
-            ),
-          ),
-        ],
-      ),
-      PremiumCard.rhythm => Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          for (final (label, value, h, gold) in [
-            (l10n.pv2CardRhythmDemoLast, '8g45', 36.0, false),
-            (l10n.pv2CardRhythmDemoThis, '9g10', 52.0, true),
-          ])
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ClTabularText(
-                  value,
-                  style: TextStyle(
-                    color: gold
-                        ? PremiumPalette.gold
-                        : PremiumPalette.textMuted,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: ClSpace.s1),
-                Container(
-                  width: 40,
-                  height: h,
-                  decoration: BoxDecoration(
-                    color: gold ? PremiumPalette.gold : PremiumPalette.line,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                const SizedBox(height: ClSpace.s1),
-                Text(label, style: muted),
-              ],
-            ),
-        ],
-      ),
-      PremiumCard.storage => Column(
-        children: [
-          Row(
-            children: [
-              for (final c in const [
-                Color(0xFFF2C6A0),
-                Color(0xFF8FC9C2),
-                Color(0xFFE8B4C0),
-                Color(0xFFB9C9E8),
-                Color(0xFFF4DD9B),
-              ]) ...[
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: DecoratedBox(
+            scene(
+              Stack(
+                fit: StackFit.expand,
+                children: [
+                  _photo('baby-sleeping.jpg'),
+                  Positioned(
+                    left: 5,
+                    top: 86,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
-                        color: c,
-                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        l10n.pv2CardVideoDemo2,
+                        style: const TextStyle(
+                          color: _white92,
+                          fontSize: 7,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 6),
+            scene(
+              Stack(
+                fit: StackFit.expand,
+                children: [
+                  _photo('baby-newborn.jpg'),
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0.3, 1],
+                        colors: [Color(0x00000000), Color(0xBF000000)],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 5,
+                    right: 5,
+                    top: 62,
+                    child: Text(
+                      l10n.pv2DemoVideoEnd(name),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: PremiumPalette.serif,
+                        color: Colors.white,
+                        fontSize: 11,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            const Text(
+              '▸ 0:12 / 0:35',
+              style: TextStyle(
+                color: Color(0xCCFFFFFF),
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              width: 150,
+              height: 4,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Container(
+                width: 58,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: PremiumPalette.gold,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                const SizedBox(width: 4),
-              ],
-            ]..removeLast(),
-          ),
-          const Spacer(),
-          row(ClIcons.check, l10n.pv2CardStorageDemo),
-        ],
-      ),
-      PremiumCard.caregivers => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          row(ClIcons.feed, l10n.pv2CardCaregiversDemo1),
-          row(ClIcons.sleep, l10n.pv2CardCaregiversDemo2),
-        ],
-      ),
-    };
+              ),
+            ),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                l10n.pv2DemoMuted,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: const TextStyle(
+                  color: Color(0x8CFFFFFF),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
+
+class _CardDemo extends StatelessWidget {
+  const _CardDemo({required this.name});
+  final String name;
+
+  static const _shadow = [
+    BoxShadow(color: Color(0x73000000), blurRadius: 12, offset: Offset(0, 6)),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    const rad = 7 * 3.1415926535 / 180;
+    Widget dot(String file, double left, double top, double size) => Positioned(
+      left: left,
+      top: top,
+      child: SvgPicture.asset(
+        'assets/premium/$file',
+        width: size,
+        height: size,
+        excludeFromSemantics: true,
+      ),
+    );
+    Text center(
+      String s,
+      double size,
+      Color color, {
+      String? family,
+      FontWeight weight = FontWeight.w700,
+      double spacing = 0,
+    }) => Text(
+      s,
+      textAlign: TextAlign.center,
+      maxLines: 2,
+      style: TextStyle(
+        fontFamily: family,
+        fontSize: size,
+        color: color,
+        fontWeight: weight,
+        letterSpacing: spacing,
+        height: 1.15,
+      ),
+    );
+    // Print/minimal/portrait.
+    final minimal = Container(
+      width: 78,
+      height: 108,
+      decoration: const BoxDecoration(
+        color: Color(0xFFF8F3EA),
+        boxShadow: _shadow,
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 7.2,
+            top: 8.4,
+            child: _photo('baby-newborn.jpg', width: 63.6, height: 68.7),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 80.7,
+            child: center(
+              name,
+              10.8,
+              const Color(0xFF3B3229),
+              family: PremiumPalette.serif,
+              weight: FontWeight.w400,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 95.7,
+            child: center(
+              l10n.pv2DemoCardDate,
+              3.3,
+              const Color(0xFFB89B72),
+              weight: FontWeight.w300,
+              spacing: 0.6,
+            ),
+          ),
+        ],
+      ),
+    );
+    // Print/playful/info (Quicksand is not shipped: the app's rounded Baloo 2 stands in).
+    const ink = Color(0xFF2F4858);
+    const orange = Color(0xFFE9A23B);
+    const baloo = 'Baloo 2 Keepsake';
+    final playful = Container(
+      width: 78,
+      height: 108,
+      decoration: const BoxDecoration(
+        color: Color(0xFFFCEEF1),
+        boxShadow: _shadow,
+      ),
+      child: Stack(
+        children: [
+          dot('card-dot-c4ee9.svg', 6.24, 6.48, 6),
+          dot('card-dot-0b23b.svg', 67.08, 10.8, 4.2),
+          dot('card-dot-266a7.svg', 70.2, 84.24, 5.4),
+          dot('card-dot-97ebc.svg', 4.68, 90.72, 3.6),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 13.2,
+            child: center(l10n.pv2DemoCardHello, 3.3, orange, family: baloo),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 18,
+            child: center(name, 16.8, ink, family: baloo),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 46.2,
+            child: center(l10n.pv2DemoCardDays, 7.2, orange, family: baloo),
+          ),
+          const Positioned(
+            left: 30,
+            top: 62.4,
+            child: SizedBox(
+              width: 18,
+              height: 0.36,
+              child: ColoredBox(color: orange),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 67.2,
+            child: center(
+              l10n.pv2DemoCardBorn,
+              2.5,
+              orange,
+              family: baloo,
+              spacing: 0.3,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 70.2,
+            child: center('17.08.2026', 5.1, ink, family: baloo),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 79.2,
+            child: center(
+              l10n.pv2DemoCardSize,
+              2.5,
+              orange,
+              family: baloo,
+              spacing: 0.3,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 82.2,
+            child: center('3,2 kg · 50 cm', 5.1, ink, family: baloo),
+          ),
+          Positioned(
+            left: 9,
+            right: 9,
+            top: 96,
+            child: center(l10n.pv2DemoCardThanks, 3.6, ink, family: baloo),
+          ),
+        ],
+      ),
+    );
+    // Print/timeless/collage.
+    final timeless = Container(
+      width: 78,
+      height: 108,
+      decoration: const BoxDecoration(
+        color: Color(0xFFECE5DA),
+        boxShadow: _shadow,
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 3,
+            top: 3,
+            child: Container(
+              width: 72,
+              height: 102,
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFF8C7B66), width: 0.48),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 4.2,
+            top: 4.2,
+            child: Container(
+              width: 69.6,
+              height: 99.6,
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0x998C7B66), width: 0.24),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 7.2,
+            top: 8.4,
+            child: _photo(
+              'baby-smile.jpg',
+              width: 30.6,
+              height: 35.2,
+              radius: 0.6,
+            ),
+          ),
+          Positioned(
+            left: 40.2,
+            top: 8.4,
+            child: _photo(
+              'baby-hands.jpg',
+              width: 30.6,
+              height: 35.2,
+              radius: 0.6,
+            ),
+          ),
+          Positioned(
+            left: 7.2,
+            top: 46,
+            child: _photo(
+              'baby-feet.jpg',
+              width: 30.6,
+              height: 35.2,
+              radius: 0.6,
+            ),
+          ),
+          Positioned(
+            left: 40.2,
+            top: 46,
+            child: _photo(
+              'baby-portrait.jpg',
+              width: 30.6,
+              height: 35.2,
+              radius: 0.6,
+            ),
+          ),
+          Positioned(
+            left: 6,
+            right: 6,
+            top: 84.8,
+            child: center(
+              name,
+              7.2,
+              const Color(0xFF4A3F35),
+              family: 'Cormorant Garamond Keepsake',
+              weight: FontWeight.w500,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 94.4,
+            child: center(
+              '25.11.2026',
+              4.8,
+              const Color(0xFF8C7B66),
+              family: 'Dancing Script',
+              weight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+    Widget chip(String s) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Text(
+        s,
+        style: const TextStyle(
+          color: _white92,
+          fontSize: 8,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+    return Stack(
+      clipBehavior: Clip.hardEdge,
+      children: [
+        Positioned(
+          left: 4.84 + (90.58 - 78) / 2,
+          top: 16 + (116.7 - 108) / 2,
+          child: Transform.rotate(angle: rad, child: minimal),
+        ),
+        Positioned(left: 98, top: 6, child: playful),
+        Positioned(
+          left: 178 + (90.58 - 78) / 2,
+          top: 6.49 + (116.7 - 108) / 2,
+          child: Transform.rotate(angle: -rad, child: timeless),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 134,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              chip(l10n.pv2DemoStyleMinimal),
+              const SizedBox(width: 4),
+              chip(l10n.pv2DemoStylePlayful),
+              const SizedBox(width: 4),
+              chip(l10n.pv2DemoStyleClassic),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LumiDemo extends StatelessWidget {
+  const _LumiDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return _Panel(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+            decoration: BoxDecoration(
+              color: PremiumPalette.gold.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Text(
+              l10n.pv2CardLumiDemoQ,
+              style: const TextStyle(
+                color: PremiumPalette.onGold,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        _Box(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          radius: 12,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.pv2CardLumiDemoA,
+                style: const TextStyle(
+                  color: _white92,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.pv2DemoLumiLast,
+                style: const TextStyle(
+                  color: Color(0xB3FFFFFF),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.pv2CardLumiDemoSource,
+                style: _goldText.copyWith(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RhythmDemo extends StatelessWidget {
+  const _RhythmDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    Widget week(String value, String label, double height, bool now) => Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          width: 26,
+          height: height,
+          decoration: BoxDecoration(
+            color: now
+                ? PremiumPalette.gold
+                : Colors.white.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: now ? Colors.white : const Color(0x99FFFFFF),
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0x80FFFFFF),
+                fontSize: 9,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+    return _Panel(
+      children: [
+        Text(
+          l10n.pv2DemoRhythm,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: PremiumPalette.serif,
+            color: _white92,
+            fontSize: 13,
+            height: 1.32,
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            week('8g45', l10n.pv2CardRhythmDemoLast, 38, false),
+            const SizedBox(width: 12),
+            week('9g10', l10n.pv2CardRhythmDemoThis, 46, true),
+          ],
+        ),
+        Text(
+          l10n.pv2CardLumiDemoSource,
+          style: _goldText.copyWith(fontSize: 9, fontWeight: FontWeight.w600),
+        ),
+      ],
+    );
+  }
+}
+
+class _Box extends StatelessWidget {
+  const _Box({
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+    this.radius = 10,
+  });
+
+  final Widget child;
+  final EdgeInsets padding;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: padding,
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.06),
+      borderRadius: BorderRadius.circular(radius),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+    ),
+    child: child,
+  );
+}
+
+/// A demo row: a gold lead (a mark or a role), the line, and a muted trailing value.
+Widget _demoRow(String lead, String text, [String? trailing]) => _Box(
+  child: Row(
+    children: [
+      Text(
+        lead,
+        style: _goldText.copyWith(fontSize: 10, fontWeight: FontWeight.w700),
+      ),
+      const SizedBox(width: 7),
+      Expanded(
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: _white92,
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      if (trailing != null) ...[
+        const SizedBox(width: 7),
+        Text(
+          trailing,
+          style: const TextStyle(
+            color: Color(0x8CFFFFFF),
+            fontSize: 9,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    ],
+  ),
+);
+
+class _StorageDemo extends StatelessWidget {
+  const _StorageDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return _Panel(
+      children: [
+        Row(
+          children: [
+            for (final (i, f) in const [
+              'baby-sleeping.jpg',
+              'baby-newborn.jpg',
+              'baby-smile.jpg',
+              'family-1.jpg',
+              'family-2.jpg',
+            ].indexed) ...[
+              if (i > 0) const SizedBox(width: 4),
+              _photo(f, width: 48, height: 48, radius: 8),
+            ],
+          ],
+        ),
+        _demoRow('✓', l10n.pv2CardStorageDemo, '09:41'),
+        _demoRow('↑', l10n.pv2DemoUploading, '68%'),
+      ],
+    );
+  }
+}
+
+class _CaregiversDemo extends StatelessWidget {
+  const _CaregiversDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return _Panel(
+      children: [
+        _demoRow(l10n.pv2DemoMum, l10n.pv2DemoMumDid),
+        _demoRow(l10n.pv2DemoDad, l10n.pv2DemoDadDid),
+        _demoRow(l10n.pv2DemoGran, l10n.pv2DemoGranDid, '10:32'),
+        Text(
+          l10n.pv2DemoCareNote,
+          style: const TextStyle(
+            color: Color(0x8CFFFFFF),
+            fontSize: 9,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------- Compare (1021:17841) ----------
 
 /// "Free và Premium" (Bảng so sánh), "Bạn đang cần" on the entry's row.
 class _Compare extends StatelessWidget {
@@ -782,152 +1421,175 @@ class _Compare extends StatelessWidget {
       (l10n.pv2RowRelatives, l10n.pv2Unlimited, l10n.pv2Unlimited, false),
     ];
     const head = TextStyle(
-      color: PremiumPalette.textFaint,
+      color: Color(0x80FFFFFF),
       fontSize: 11,
       fontWeight: FontWeight.w700,
-      letterSpacing: 0.4,
     );
-    return Column(
+    Widget cols(Widget a, Widget b, Widget c) => Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Semantics(
-          header: true,
-          child: Text(
-            l10n.pv2CompareTitle,
-            style: const TextStyle(
-              fontFamily: PremiumPalette.serif,
-              color: PremiumPalette.text,
-              fontSize: 20,
+        Expanded(flex: 110, child: a),
+        const SizedBox(width: 8),
+        Expanded(flex: 90, child: b),
+        const SizedBox(width: 8),
+        Expanded(flex: 99, child: c),
+      ],
+    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.pv2CompareTitle,
+              style: const TextStyle(
+                fontFamily: PremiumPalette.serif,
+                color: _white92,
+                fontSize: 18,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: ClSpace.s3),
-        Container(
-          decoration: BoxDecoration(
-            color: PremiumPalette.fill,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: PremiumPalette.line),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  ClSpace.s3,
-                  ClSpace.s3,
-                  ClSpace.s3,
-                  ClSpace.s2,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: Text(l10n.pv2CompareBenefit, style: head),
+          const SizedBox(height: 10),
+          Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: cols(
+                    Text(l10n.pv2CompareBenefit, style: head),
+                    Text(l10n.pv2PlanFree, style: head),
+                    Text(
+                      l10n.pv2PlanPremium,
+                      style: head.copyWith(color: PremiumPalette.gold),
                     ),
-                    const Expanded(flex: 4, child: Text('Free', style: head)),
-                    const Expanded(
-                      flex: 4,
-                      child: Text(
-                        'Premium',
-                        style: TextStyle(
-                          color: PremiumPalette.gold,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.4,
+                  ),
+                ),
+                for (final (label, f, p, here) in rows)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 11,
+                    ),
+                    decoration: BoxDecoration(
+                      color: here
+                          ? PremiumPalette.gold.withValues(alpha: 0.1)
+                          : null,
+                      border: Border(
+                        top: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.07),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              for (final (label, f, p, here) in rows)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: ClSpace.s3,
-                    vertical: ClSpace.s3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: here
-                        ? PremiumPalette.gold.withValues(alpha: 0.10)
-                        : null,
-                    border: const Border(
-                      top: BorderSide(color: PremiumPalette.line),
-                    ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              label,
-                              style: const TextStyle(
-                                color: PremiumPalette.text,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                    child: cols(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: const TextStyle(
+                              color: _white92,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (here) ...[
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: PremiumPalette.gold,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                l10n.pv2YouNeed,
+                                style: const TextStyle(
+                                  color: PremiumPalette.onGold,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
-                            if (here) ...[
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: PremiumPalette.gold,
-                                  borderRadius: BorderRadius.circular(
-                                    ClRadius.pill,
-                                  ),
-                                ),
-                                child: Text(
-                                  l10n.pv2YouNeed,
-                                  style: const TextStyle(
-                                    color: PremiumPalette.onGold,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ],
                           ],
+                        ],
+                      ),
+                      Text(
+                        f,
+                        style: const TextStyle(
+                          color: Color(0x8CFFFFFF),
+                          fontSize: 11,
+                          height: 1.35,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                          f,
-                          style: const TextStyle(
-                            color: PremiumPalette.textMuted,
-                            fontSize: 12,
-                          ),
+                      Text(
+                        p,
+                        style: _goldText.copyWith(
+                          fontSize: 12,
+                          height: 1.35,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                          p,
-                          style: const TextStyle(
-                            color: PremiumPalette.text,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            alignment: WrapAlignment.center,
+            children: [
+              for (final s in [
+                l10n.pv2PromiseCancel,
+                l10n.pv2PromiseNoTopUps,
+                l10n.pv2PromiseYours,
+              ])
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: Text(
+                    s,
+                    style: const TextStyle(
+                      color: Color(0xB3FFFFFF),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-/// Component · Premium · Chọn gói (1020:17820), or what stands in for it (PW07, soon, has).
+// ---------- Component · Premium · Chọn gói (1020:17820) ----------
+
 class _Footer extends StatelessWidget {
   const _Footer({
     required this.kind,
@@ -942,6 +1604,8 @@ class _Footer extends StatelessWidget {
     this.onBuy,
     this.onAskManager,
     this.onOpenPlan,
+    this.onTerms,
+    this.onPrivacy,
   });
 
   final PaywallFooter kind;
@@ -956,6 +1620,8 @@ class _Footer extends StatelessWidget {
   final VoidCallback? onBuy;
   final VoidCallback? onAskManager;
   final VoidCallback? onOpenPlan;
+  final VoidCallback? onTerms;
+  final VoidCallback? onPrivacy;
 
   @override
   Widget build(BuildContext context) {
@@ -967,56 +1633,78 @@ class _Footer extends StatelessWidget {
     final saving = price.month <= 0
         ? 0
         : (100 - price.year / (price.month * 12) * 100).round();
+    const legal = TextStyle(
+      color: Color(0x73FFFFFF),
+      fontSize: 10,
+      height: 1.45,
+      fontWeight: FontWeight.w500,
+    );
+    TextSpan link(String label, VoidCallback? onTap) => TextSpan(
+      text: label,
+      style: legal.copyWith(
+        decoration: onTap == null ? null : TextDecoration.underline,
+      ),
+      recognizer: onTap == null
+          ? null
+          : (TapGestureRecognizer()..onTap = onTap),
+    );
 
     final children = <Widget>[];
     switch (kind) {
-      case PaywallFooter.buy || PaywallFooter.soon:
+      case PaywallFooter.buy:
         children.addAll([
-          Row(
-            children: [
-              Expanded(
-                child: _PeriodTile(
-                  label: l10n.pv2PeriodYear,
-                  badge: saving > 0 ? '−$saving%' : null,
-                  price: money(price.year),
-                  note: l10n.pv2PerMonthApprox(money(perMonth)),
-                  selected: yearly,
-                  onTap: () => onPeriod(true),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _PeriodTile(
+                    label: l10n.pv2PeriodYear,
+                    badge: saving > 0 ? '−$saving%' : null,
+                    price: money(price.year),
+                    note: l10n.pv2PerMonthApprox(money(perMonth)),
+                    selected: yearly,
+                    onTap: () => onPeriod(true),
+                  ),
                 ),
-              ),
-              const SizedBox(width: ClSpace.s3),
-              Expanded(
-                child: _PeriodTile(
-                  label: l10n.pv2PeriodMonth,
-                  price: money(price.month),
-                  note: l10n.pv2EachMonth,
-                  selected: !yearly,
-                  onTap: () => onPeriod(false),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _PeriodTile(
+                    label: l10n.pv2PeriodMonth,
+                    price: money(price.month),
+                    note: l10n.pv2EachMonth,
+                    selected: !yearly,
+                    onTap: () => onPeriod(false),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: ClSpace.s3),
-          if (kind == PaywallFooter.buy) ...[
-            PremiumGoldButton(
-              label: yearly
-                  ? l10n.pv2SubscribeYear(money(price.year))
-                  : l10n.pv2SubscribeMonth(money(price.month)),
-              onPressed: busy ? null : onBuy,
+          const SizedBox(height: 10),
+          PremiumGoldButton(
+            label: yearly
+                ? l10n.pv2SubscribeYear(money(price.year))
+                : l10n.pv2SubscribeMonth(money(price.month)),
+            onPressed: busy ? null : onBuy,
+          ),
+          const SizedBox(height: 10),
+          Text.rich(
+            TextSpan(
+              style: legal,
+              children: [
+                TextSpan(
+                  text: yearly
+                      ? l10n.pv2LegalYear(money(price.year), storeName ?? '')
+                      : l10n.pv2LegalMonth(money(price.month), storeName ?? ''),
+                ),
+                const TextSpan(text: ' · '),
+                link(l10n.pv2Terms, onTerms),
+                const TextSpan(text: ' · '),
+                link(l10n.pv2Privacy, onPrivacy),
+              ],
             ),
-            const SizedBox(height: ClSpace.s2),
-            Text(
-              yearly
-                  ? l10n.pv2LegalYear(money(price.year), storeName ?? '')
-                  : l10n.pv2LegalMonth(money(price.month), storeName ?? ''),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: PremiumPalette.textFaint,
-                fontSize: 10.5,
-              ),
-            ),
-          ] else
-            _Soon(title: l10n.pv2SoonTitle, body: l10n.pv2SoonBody),
+            textAlign: TextAlign.center,
+          ),
         ]);
       case PaywallFooter.member:
         children.addAll([
@@ -1027,10 +1715,7 @@ class _Footer extends StatelessWidget {
                 backgroundColor: PremiumPalette.gold.withValues(alpha: 0.2),
                 child: Text(
                   managerName.characters.first.toUpperCase(),
-                  style: const TextStyle(
-                    color: PremiumPalette.gold,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: _goldText.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
               const SizedBox(width: ClSpace.s3),
@@ -1041,7 +1726,7 @@ class _Footer extends StatelessWidget {
                     Text(
                       l10n.pv2ManagedBy(managerName),
                       style: const TextStyle(
-                        color: PremiumPalette.text,
+                        color: _white92,
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1058,19 +1743,16 @@ class _Footer extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: ClSpace.s3),
+          const SizedBox(height: 10),
           PremiumGoldButton(
             label: l10n.pv2AskManager(managerName),
             onPressed: onAskManager,
           ),
-          const SizedBox(height: ClSpace.s2),
+          const SizedBox(height: 10),
           Text(
             l10n.pv2AskPrivacy(managerName),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: PremiumPalette.textFaint,
-              fontSize: 11,
-            ),
+            style: legal,
           ),
         ]);
       case PaywallFooter.premium:
@@ -1079,12 +1761,12 @@ class _Footer extends StatelessWidget {
             l10n.pv2HasPremium,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: PremiumPalette.text,
+              color: _white92,
               fontSize: 15,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: ClSpace.s3),
+          const SizedBox(height: 10),
           PremiumGoldButton(
             label: l10n.pv2OpenFamilyPlan,
             onPressed: onOpenPlan,
@@ -1092,17 +1774,10 @@ class _Footer extends StatelessWidget {
         ]);
     }
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        ClSpace.s4,
-        ClSpace.s4,
-        bottom + ClSpace.s3,
-      ),
+      padding: EdgeInsets.fromLTRB(16, 14, 16, bottom > 0 ? bottom : 28),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border(
-          top: BorderSide(color: PremiumPalette.gold.withValues(alpha: 0.25)),
-        ),
+        border: Border.all(color: PremiumPalette.gold.withValues(alpha: 0.25)),
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -1116,51 +1791,6 @@ class _Footer extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Soon extends StatelessWidget {
-  const _Soon({required this.title, required this.body});
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(ClSpace.s3),
-    decoration: BoxDecoration(
-      color: PremiumPalette.fill,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: PremiumPalette.line),
-    ),
-    child: Row(
-      children: [
-        const ClIcon(ClIcons.clock, size: 20, color: PremiumPalette.gold),
-        const SizedBox(width: ClSpace.s3),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: PremiumPalette.text,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                body,
-                style: const TextStyle(
-                  color: PremiumPalette.textMuted,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 class _PeriodTile extends StatelessWidget {
@@ -1189,14 +1819,16 @@ class _PeriodTile extends StatelessWidget {
     child: ClPressable(
       onPressed: onTap,
       child: Container(
-        padding: const EdgeInsets.all(ClSpace.s3),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: selected
               ? PremiumPalette.gold.withValues(alpha: 0.12)
-              : PremiumPalette.fill,
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: selected ? PremiumPalette.gold : PremiumPalette.line,
+            color: selected
+                ? PremiumPalette.gold
+                : Colors.white.withValues(alpha: 0.12),
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -1205,55 +1837,54 @@ class _PeriodTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      color: selected
-                          ? PremiumPalette.gold
-                          : PremiumPalette.textMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: selected
+                        ? PremiumPalette.gold
+                        : const Color(0xB3FFFFFF),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (badge case final b?) ...[
-                  const SizedBox(width: 6),
+                const Spacer(),
+                if (badge case final b?)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
-                      vertical: 1,
+                      vertical: 2,
                     ),
                     decoration: BoxDecoration(
                       color: PremiumPalette.gold,
-                      borderRadius: BorderRadius.circular(ClRadius.pill),
+                      borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
                       b,
                       style: const TextStyle(
                         color: PremiumPalette.onGold,
-                        fontSize: 10,
+                        fontSize: 9,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                ],
               ],
             ),
-            const SizedBox(height: ClSpace.s1),
-            ClTabularText(
+            const SizedBox(height: 2),
+            Text(
               price,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: PremiumPalette.serif,
-                color: PremiumPalette.text,
+                color: selected ? Colors.white : const Color(0xBFFFFFFF),
                 fontSize: 20,
               ),
             ),
+            const SizedBox(height: 2),
             Text(
               note,
               style: const TextStyle(
-                color: PremiumPalette.textFaint,
-                fontSize: 11,
+                color: Color(0x80FFFFFF),
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],

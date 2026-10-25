@@ -31138,7 +31138,7 @@
   "@pv2CardLumiDemoA": {
     "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo answer."
   },
-  "pv2CardLumiDemoSource": "Theo nhật ký đã ghi",
+  "pv2CardLumiDemoSource": "Theo nhật ký đã ghi · Xem nguồn",
   "@pv2CardLumiDemoSource": {
     "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo source line."
   },
@@ -32087,5 +32087,102 @@
         "type": "String"
       }
     }
+  },
+  "pv2DemoVideoEnd": "Một tháng bên {name}.",
+  "@pv2DemoVideoEnd": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Video card demo, last scene.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2DemoMuted": "♪ bật tiếng",
+  "@pv2DemoMuted": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Video card demo timeline."
+  },
+  "pv2DemoCardDate": "100 NGÀY · 25.11.2026",
+  "@pv2DemoCardDate": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, minimal print."
+  },
+  "pv2DemoCardHello": "Chào con yêu!",
+  "@pv2DemoCardHello": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, playful print."
+  },
+  "pv2DemoCardDays": "100 ngày",
+  "@pv2DemoCardDays": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, playful print."
+  },
+  "pv2DemoCardBorn": "NGÀY SINH",
+  "@pv2DemoCardBorn": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, playful print."
+  },
+  "pv2DemoCardSize": "CÂN NẶNG · CHIỀU DÀI",
+  "@pv2DemoCardSize": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, playful print."
+  },
+  "pv2DemoCardThanks": "Cảm ơn con đã đến bên ba mẹ",
+  "@pv2DemoCardThanks": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo, playful print."
+  },
+  "pv2DemoStyleMinimal": "Tối giản",
+  "@pv2DemoStyleMinimal": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo style chip."
+  },
+  "pv2DemoStylePlayful": "Đáng yêu",
+  "@pv2DemoStylePlayful": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo style chip."
+  },
+  "pv2DemoStyleClassic": "Cổ điển",
+  "@pv2DemoStyleClassic": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Card demo style chip."
+  },
+  "pv2DemoLumiLast": "Cữ gần nhất 13:10 · 120 ml (Ba ghi)",
+  "@pv2DemoLumiLast": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Lumi card demo answer, second line."
+  },
+  "pv2DemoRhythm": "Tuần này (13–19/10), giấc đêm đã ghi trung bình 9 giờ 10 — dài hơn 25 phút so với tuần trước (6–12/10).",
+  "@pv2DemoRhythm": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Rhythm card demo note."
+  },
+  "pv2DemoUploading": "3 video đang tải lên · không cần chờ",
+  "@pv2DemoUploading": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo row."
+  },
+  "pv2DemoMum": "Mẹ",
+  "@pv2DemoMum": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo role."
+  },
+  "pv2DemoMumDid": "09:10 · Đã ghi cữ bú 120 ml",
+  "@pv2DemoMumDid": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
+  },
+  "pv2DemoDad": "Ba",
+  "@pv2DemoDad": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo role."
+  },
+  "pv2DemoDadDid": "10:30 · Bắt đầu giấc ngủ",
+  "@pv2DemoDadDid": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
+  },
+  "pv2DemoGran": "Bà ngoại",
+  "@pv2DemoGran": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo role."
+  },
+  "pv2DemoGranDid": "Đã xem cập nhật",
+  "@pv2DemoGranDid": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
+  },
+  "pv2DemoCareNote": "Cùng chăm đã có ở Free; Premium tăng số người tham gia.",
+  "@pv2DemoCareNote": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo footnote."
+  },
+  "pv2Terms": "Điều khoản",
+  "@pv2Terms": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line link."
+  },
+  "pv2Privacy": "Quyền riêng tư",
+  "@pv2Privacy": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line link."
   }
 }

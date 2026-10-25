@@ -9,6 +9,7 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/family_plan_v2.dart';
 import 'package:child_life/features/premium/paywall_screen.dart';
+import 'package:child_life/features/premium/paywall_v2.dart';
 import 'package:child_life/features/premium/plan_screen.dart';
 import 'package:child_life/features/premium/premium_entries.dart';
 import 'package:child_life/features/premium/premium_style.dart';
@@ -77,8 +78,35 @@ _Case _plan(
   act: null,
 );
 
+/// Component · Premium · Thẻ tính năng (1019:17008), three at a time at their own 300 width.
+_Case _cards(List<PremiumCard> cards) => (
+  build: () => Scaffold(
+    backgroundColor: PremiumPalette.deep,
+    body: FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final c in cards) ...[
+            PremiumFeatureCard(
+              card: c,
+              free: PlanOffer.free,
+              premium: PlanOffer.premium,
+              babyName: 'Teddy',
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
+      ),
+    ),
+  ),
+  overrides: premiumV2Overrides(plan: freePlan),
+  act: null,
+);
+
 final _cases = <String, _Case>{
   'pw01_video': _paywall(PremiumEntry.video, subject: '100 ngày yêu thương'),
+  'pw02_card': _paywall(PremiumEntry.card, subject: 'Hồng phấn'),
   'pw03_lumi': _paywall(PremiumEntry.lumi),
   'pw05_caregivers': _paywall(PremiumEntry.caregivers),
   'pw06_explore': _paywall(PremiumEntry.explore),
@@ -180,6 +208,16 @@ final _cases = <String, _Case>{
     ],
     act: _open,
   ),
+  'cards_a': _cards(const [
+    PremiumCard.video,
+    PremiumCard.card,
+    PremiumCard.lumi,
+  ]),
+  'cards_b': _cards(const [
+    PremiumCard.rhythm,
+    PremiumCard.storage,
+    PremiumCard.caregivers,
+  ]),
   'pw10_addon': (
     build: () => const StorageAddOnScreen(),
     overrides: premiumV2Overrides(plan: premiumPlan),
@@ -233,6 +271,21 @@ void main() {
           );
           await tester.pumpAndSettle();
           await c.act?.call(tester);
+          // Demo photos decode outside the fake clock.
+          for (var round = 0; round < 2; round++) {
+            final images = tester
+                .widgetList<Image>(find.byType(Image))
+                .toList();
+            await tester.runAsync(() async {
+              for (final image in images) {
+                await precacheImage(
+                  image.image,
+                  tester.element(find.byWidget(image).first),
+                );
+              }
+            });
+            await tester.pumpAndSettle();
+          }
           debugDisableShadows = false;
           try {
             await tester.pump();

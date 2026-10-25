@@ -21243,7 +21243,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardLumiDemoA => 'Đến 14:20: 3 cữ bú bình · 390 ml';
 
   @override
-  String get pv2CardLumiDemoSource => 'Theo nhật ký đã ghi';
+  String get pv2CardLumiDemoSource => 'Theo nhật ký đã ghi · Xem nguồn';
 
   @override
   String get pv2CardRhythmEyebrow => 'HIỂU NHỊP CON';
@@ -21851,4 +21851,77 @@ class AppLocalizationsVi extends AppLocalizations {
   String pv2AddOnBuy(int gb, String price) {
     return 'Thêm $gb GB · $price';
   }
+
+  @override
+  String pv2DemoVideoEnd(String name) {
+    return 'Một tháng bên $name.';
+  }
+
+  @override
+  String get pv2DemoMuted => '♪ bật tiếng';
+
+  @override
+  String get pv2DemoCardDate => '100 NGÀY · 25.11.2026';
+
+  @override
+  String get pv2DemoCardHello => 'Chào con yêu!';
+
+  @override
+  String get pv2DemoCardDays => '100 ngày';
+
+  @override
+  String get pv2DemoCardBorn => 'NGÀY SINH';
+
+  @override
+  String get pv2DemoCardSize => 'CÂN NẶNG · CHIỀU DÀI';
+
+  @override
+  String get pv2DemoCardThanks => 'Cảm ơn con đã đến bên ba mẹ';
+
+  @override
+  String get pv2DemoStyleMinimal => 'Tối giản';
+
+  @override
+  String get pv2DemoStylePlayful => 'Đáng yêu';
+
+  @override
+  String get pv2DemoStyleClassic => 'Cổ điển';
+
+  @override
+  String get pv2DemoLumiLast => 'Cữ gần nhất 13:10 · 120 ml (Ba ghi)';
+
+  @override
+  String get pv2DemoRhythm =>
+      'Tuần này (13–19/10), giấc đêm đã ghi trung bình 9 giờ 10 — dài hơn 25 phút so với tuần trước (6–12/10).';
+
+  @override
+  String get pv2DemoUploading => '3 video đang tải lên · không cần chờ';
+
+  @override
+  String get pv2DemoMum => 'Mẹ';
+
+  @override
+  String get pv2DemoMumDid => '09:10 · Đã ghi cữ bú 120 ml';
+
+  @override
+  String get pv2DemoDad => 'Ba';
+
+  @override
+  String get pv2DemoDadDid => '10:30 · Bắt đầu giấc ngủ';
+
+  @override
+  String get pv2DemoGran => 'Bà ngoại';
+
+  @override
+  String get pv2DemoGranDid => 'Đã xem cập nhật';
+
+  @override
+  String get pv2DemoCareNote =>
+      'Cùng chăm đã có ở Free; Premium tăng số người tham gia.';
+
+  @override
+  String get pv2Terms => 'Điều khoản';
+
+  @override
+  String get pv2Privacy => 'Quyền riêng tư';
 }

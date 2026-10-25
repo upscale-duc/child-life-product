@@ -38,15 +38,30 @@ class PremiumCrest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Crest (1021:17688): "◆" 7 Medium, 6 apart, "CHILD LIFE PREMIUM" 9 Bold tracking 1.62.
     return ExcludeSemantics(
-      child: Text(
-        '◆  ${l10n.pv2Crest}',
-        style: const TextStyle(
-          color: PremiumPalette.gold,
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.6,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            '◆',
+            style: TextStyle(
+              color: PremiumPalette.gold,
+              fontSize: 7,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            l10n.pv2Crest,
+            style: const TextStyle(
+              color: PremiumPalette.gold,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.62,
+            ),
+          ),
+        ],
       ),
     );
   }
