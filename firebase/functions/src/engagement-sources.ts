@@ -678,6 +678,11 @@ export async function validateEngagementSource(
     return resolved();
   }
   if (i.kind === 'ENG-06') {
+    // A later day's slot (queued once today's time has passed) is judged on its own day:
+    // today's "bận", health day or missing activity must not end tomorrow's suggestion
+    // (owner, 2026-10-26: no "Gợi ý hôm nay" push — the next slot was cancelled the day before).
+    if (typeof i.sourceData.date === 'string' && i.sourceData.date > localDateIn(i.zone, now))
+      return unknown;
     // D-099: what to suggest is read now; nothing to suggest (a health day, "bận", too few
     // records, no activity) ends the slot without a push.
     const s = await personalizedDay(

@@ -558,6 +558,10 @@ it('D-099: the hourly pass queues tomorrow once today has passed, and a new cloc
   await db.doc('families/family').update({ country: 'VN' });
   await db.doc('publicConfig/content_rhythm').set(contentSeed);
   await db.doc('babies/baby/restricted/profile').set({ dateOfBirth: '2026-08-15' });
+  // Today has nothing to suggest (too few records): tomorrow's slot is not judged on today
+  // (owner, 2026-10-26 — it was cancelled the day before and no push came).
+  const slot = async () => (await tomorrow.docs[0]!.ref.get()).data() as EngagementIntent;
+  expect((await validateEngagementSource(db, await slot(), now)).state).toBe('unknown');
   for (const type of ['bottle', 'breast', 'diaper'])
     await db.doc(`babies/baby/records/${type}`).set({
       type,
@@ -567,15 +571,9 @@ it('D-099: the hourly pass queues tomorrow once today has passed, and a new cloc
       deleted: false,
       data: {},
     });
-  expect(
-    (
-      await validateEngagementSource(
-        db,
-        (await tomorrow.docs[0]!.ref.get()).data() as EngagementIntent,
-        now,
-      )
-    ).state,
-  ).toBe('ready');
+  // On its own day it is decided as usual.
+  const due = new Date(Date.parse('2026-10-22T00:30:00Z'));
+  expect((await validateEngagementSource(db, await slot(), due)).state).toBe('ready');
   await observeEngagementContent(
     db,
     'parent',

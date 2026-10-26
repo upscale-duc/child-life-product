@@ -27,6 +27,16 @@ final engagementProvider = FutureProvider.autoDispose<Map<String, dynamic>>(
   retry: (_, _) => null,
 );
 
+/// What the push lease (`getEngagement.pushAllowed`) reports: the phone's real notification
+/// permission once it is known. Read while still loading, it said "not allowed", the server kept
+/// that lease for 30 days and every Smart Engagement suggestion went in-app only (owner,
+/// 2026-10-26: no "Gợi ý" push in the morning).
+final engagementPushAllowedProvider = FutureProvider.autoDispose<bool>(
+  (ref) => ref
+      .watch(osNotificationsEnabledProvider.future)
+      .catchError((Object _) => false),
+);
+
 /// Background changes settle this long before `getEngagement` is called again (doc 18 #20).
 const engagementSettle = Duration(seconds: 30);
 
@@ -117,7 +127,7 @@ Future<Map<String, dynamic>> buildEngagement(Ref ref) async {
       available: view.available,
     );
   }
-  final permission = ref.watch(osNotificationsEnabledProvider).value == true;
+  final permission = await ref.watch(engagementPushAllowedProvider.future);
   String? zone;
   try {
     zone = (await FlutterTimezone.getLocalTimezone()).identifier;
