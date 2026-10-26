@@ -392,7 +392,7 @@ export function BeforeSendPanel({
     .sort(([, a], [, b]) => b - a)
     .slice(0, 4);
   return (
-    <div id={BEFORE_SEND_ID} className="scroll-mt-4">
+    <div id={BEFORE_SEND_ID} className="scroll-mt-36">
       <Panel
         title={
           <span className="inline-flex items-center gap-1">
