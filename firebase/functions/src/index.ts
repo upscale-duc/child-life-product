@@ -17,6 +17,7 @@ import {
   recoverPrintRenders,
   recordPrintSignal,
 } from './print-studio.js';
+import { engagementHealth } from './engagement-health.js';
 import { observeEngagementContent } from './engagement-observers.js';
 import {
   refreshEngagement,
@@ -2220,6 +2221,9 @@ export const staffNotificationTemplateAction = staffCall(
 );
 export const staffNotificationStats = staffCall('staffNotificationStats', (s, d) =>
   notificationStats(getFirestore(), s, d, new Date()),
+);
+export const staffEngagementHealth = staffCall('staffEngagementHealth', (s, d) =>
+  engagementHealth(getFirestore(), s, d, new Date()),
 );
 export const staffNotificationTimeline = staffCall('staffNotificationTimeline', (s, d) =>
   notificationTimeline(getFirestore(), s, d, new Date()),

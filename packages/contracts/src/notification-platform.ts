@@ -1937,6 +1937,42 @@ export const staffNotificationStatsSchema = z
     message: 'Invalid range',
   });
 
+/**
+ * Owner, 2026-10-26: the delivery numbers only see notices that were created, so a suggestion
+ * that never became a push (in-app only because the device lease said "not allowed", or closed
+ * before its day) left the overview "all good". These checks look before the send.
+ */
+export const staffEngagementHealthSchema = staffNotificationStatsSchema;
+export const engagementHealthSignalIds = [
+  'channel_unavailable',
+  'permission_mismatch',
+  'closed_early',
+  'daily_missed',
+] as const;
+export type EngagementHealthSignalId = (typeof engagementHealthSignalIds)[number];
+export const engagementOutcomes = [
+  'pushed',
+  'in_app_only',
+  'held',
+  'closed',
+  'expired',
+  'pending',
+] as const;
+export type EngagementOutcome = (typeof engagementOutcomes)[number];
+export interface EngagementHealthResponse {
+  range: { from: string; to: string };
+  computedAt: string;
+  /** Suggestions due in the range, by what became of them, and why the unsent ones were not. */
+  outcomes: Record<EngagementOutcome, number>;
+  reasons: Record<string, number>;
+  /** One per check; `families` are masked codes for Hành trình (at most 10), never uids. */
+  signals: Array<{ id: EngagementHealthSignalId; n: number; families: string[] }>;
+  /** "Gợi ý mỗi ngày" (ENG-06) per Vietnam day: slots, pushed, and missed (window passed). */
+  daily: Array<{ day: string; slots: number; pushed: number; missed: number }>;
+  /** Totals were cut at the scan limit. */
+  truncated: boolean;
+}
+
 export const staffNotificationTimelineSchema = z
   .object({
     code: z.string().regex(/^F-[A-Z2-9]{4}$/),

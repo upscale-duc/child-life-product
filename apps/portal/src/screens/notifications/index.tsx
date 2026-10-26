@@ -1,4 +1,5 @@
 import {
+  type EngagementHealthResponse,
   staffCan,
   type NotificationOpsResponse,
   type NotificationStatsResponse,
@@ -73,6 +74,13 @@ export function NotificationsScreen({ initial }: { initial?: NtfLocation }) {
     {},
     'ntf-templates',
   );
+  // Owner, 2026-10-26: what never became a push (in-app only, closed early, missed).
+  const [engagement] = useOptionalLoad<EngagementHealthResponse>(
+    canView,
+    'staffEngagementHealth',
+    week,
+    `ntf-eng-health:${week.from}:${week.to}`,
+  );
   const [ops, reloadOps] = useOptionalLoad<NotificationOpsResponse>(
     canView,
     'staffNotificationOps',
@@ -128,6 +136,7 @@ export function NotificationsScreen({ initial }: { initial?: NtfLocation }) {
         stats={stats}
         reloadStats={reloadStats}
         ops={ops}
+        engagement={engagement?.status === 'ok' ? engagement.data : null}
         reviewCount={rows ? (badges.templates?.n ?? 0) : null}
         canTimeline={!!openTimeline}
         onTab={setTab}

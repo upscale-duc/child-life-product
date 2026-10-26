@@ -437,6 +437,8 @@ export async function finishEngagement(
       status: completed ? 'completed' : 'cancelled',
       reason: 'source_resolved',
       completedAt: completed ? completedAt : null,
+      // When it was closed (a cancel has no completedAt): the Portal's "closed early" check.
+      closedAt: now.getTime(),
       nextAt: FieldValue.delete(),
     });
     tx.set(db.doc(`engagementReceipts/${i.id}`), {

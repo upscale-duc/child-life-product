@@ -1,9 +1,12 @@
 import {
   defaultNotificationOpsConfig,
+  engagementHealthSignalIds,
   engagementKinds,
+  engagementOutcomes,
   engagementReasonCodes,
   engagementStages,
   inboxGroups,
+  type EngagementHealthResponse,
   notificationActionStates,
   notificationDeliveryReasons,
   notificationDeliveryStates,
@@ -817,6 +820,9 @@ describe('message catalog (D-012)', () => {
       ['ntf.stage', engagementStages],
       ['ntf.engReason', engagementReasonCodes],
       ['ntf.channel', ['push_inbox', 'inbox', 'in_app', 'none']],
+      ['ntf.eng.outcome', engagementOutcomes],
+      ['ntf.eng.check', engagementHealthSignalIds],
+      ['ntf.health.signal.eng', engagementHealthSignalIds],
     ];
     for (const [prefix, values] of families)
       for (const v of values)
@@ -869,6 +875,45 @@ describe('D-092 additions', () => {
     const t = text(render(<OverviewView data={stats()} reviewCount={2} />));
     expect(t).toContain('Cần chú ý');
     expect(t).toContain('Bản nháp chờ duyệt');
+  });
+
+  // Owner, 2026-10-26: 0 % failures while suggestions never became pushes.
+  it('overview: what never became a push raises attention and lists the families', () => {
+    const engagement: EngagementHealthResponse = {
+      range: { from: '2026-10-20', to: '2026-10-26' },
+      computedAt: '2026-10-26T05:00:00.000Z',
+      outcomes: { pushed: 1, in_app_only: 9, held: 0, closed: 2, expired: 0, pending: 1 },
+      reasons: { channel_unavailable: 9, source_resolved: 2 },
+      signals: [
+        { id: 'channel_unavailable', n: 9, families: ['F-AB23'] },
+        { id: 'permission_mismatch', n: 1, families: ['F-AB23'] },
+      ],
+      daily: [],
+      truncated: false,
+    };
+    const ok = stats({
+      problems: [],
+      days: [{ day: '2026-10-18', totals: { attempted: 100, accepted: 100 } }],
+    });
+    expect(overviewHealth(ok).level).toBe('ok');
+    const h = overviewHealth(ok, ok.ops, engagement);
+    expect(h.level).toBe('attention');
+    expect(h.signals.map((s) => s.id)).toEqual([
+      'eng.channel_unavailable',
+      'eng.permission_mismatch',
+    ]);
+    const t = text(
+      render(
+        <OverviewView data={ok} engagement={engagement} canTimeline onTimeline={() => undefined} />,
+      ),
+    );
+    expect(t).toContain('Cần chú ý');
+    expect(t).toContain('9 gợi ý chỉ hiện trong app vì không có kênh push.');
+    expect(t).toContain('Gợi ý thông minh trước khi gửi');
+    expect(t).toContain('Chỉ hiện trong app');
+    expect(t).toContain('Quyền thông báo bị báo sai');
+    expect(t).toContain('F-AB23');
+    expect(t).toContain('Đóng trước ngày');
   });
 
   it('settings show the policy panel, its safe-default notice and read-only state', () => {

@@ -132,6 +132,7 @@ export type Callable =
   | 'staffSaveNotificationTemplate'
   | 'staffNotificationTemplateAction'
   | 'staffNotificationStats'
+  | 'staffEngagementHealth'
   | 'staffNotificationTimeline'
   | 'staffNotificationDetail'
   | 'staffRetryNotification'

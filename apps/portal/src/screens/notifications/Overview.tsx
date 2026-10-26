@@ -1,5 +1,8 @@
 import {
+  engagementOutcomes,
   inboxGroups,
+  type EngagementHealthResponse,
+  type EngagementHealthSignalId,
   type NotificationOpsResponse,
   type NotificationStatsResponse,
 } from '@child-life/contracts';
@@ -63,7 +66,8 @@ export function Freshness({ data }: { data: NotificationStatsResponse }) {
   );
 }
 
-export type HealthSignal = 'failure' | 'backlog' | 'render' | 'paused' | 'templatesOff';
+export type HealthSignal =
+  'failure' | 'backlog' | 'render' | 'paused' | 'templatesOff' | `eng.${EngagementHealthSignalId}`;
 export interface OverviewHealth {
   level: 'no_data' | 'ok' | 'attention';
   signals: Array<{ id: HealthSignal; n: number }>;
@@ -76,11 +80,14 @@ export const FAILURE_ATTENTION_RATE = 0.02;
 /**
  * The health line of the overview: attention when the failure rate reaches 2 %, deliveries wait
  * for a retry, templates failed to render, or a group's push is paused; no data before the
- * ledger exists (never "OK" on an empty week).
+ * ledger exists (never "OK" on an empty week). Since 2026-10-26 also what never became a push
+ * ([EngagementHealthResponse]: in-app only for want of a channel, a wrong device lease, a daily
+ * suggestion closed early or missed) — the delivery numbers cannot see those.
  */
 export function overviewHealth(
   data: NotificationStatsResponse,
   ops: NotificationOpsResponse['ops'] | null = data.ops,
+  engagement: EngagementHealthResponse | null = null,
 ): OverviewHealth {
   const days = daysWithData(data.days, data.sourceStartDay);
   const totals = sumCounts(days.map((d) => d.totals));
@@ -94,6 +101,7 @@ export function overviewHealth(
   const paused = ops ? inboxGroups.filter((g) => ops.pushPaused[g]).length : 0;
   if (paused > 0) signals.push({ id: 'paused', n: paused });
   if (ops && !ops.templatesEnabled) signals.push({ id: 'templatesOff', n: 1 });
+  for (const e of engagement?.signals ?? []) signals.push({ id: `eng.${e.id}`, n: e.n });
   if (!days.length) return { level: 'no_data', signals, failureRate };
   return { level: signals.length ? 'attention' : 'ok', signals, failureRate };
 }
@@ -118,6 +126,7 @@ export function OverviewView({
   canTimeline,
   onTab,
   onTimeline,
+  engagement = null,
 }: {
   data: NotificationStatsResponse;
   ops?: NotificationOpsResponse | null;
@@ -125,10 +134,11 @@ export function OverviewView({
   canTimeline?: boolean;
   onTab?: (tab: NotificationTab) => void;
   onTimeline?: (code: string) => void;
+  engagement?: EngagementHealthResponse | null;
 }) {
   const intl = useIntl();
   const switches = ops?.ops ?? data.ops;
-  const health = overviewHealth(data, switches);
+  const health = overviewHealth(data, switches, engagement);
   const days = daysWithData(data.days, data.sourceStartDay);
   const totals = sumCounts(days.map((d) => d.totals));
   const hasData = days.length > 0;
@@ -176,6 +186,12 @@ export function OverviewView({
       <p className="text-[12px] text-muted-foreground">
         <FormattedMessage id="ntf.acceptedNotDelivered" />
       </p>
+      {engagement && (
+        <BeforeSendPanel
+          data={engagement}
+          onTimeline={canTimeline && onTimeline ? onTimeline : undefined}
+        />
+      )}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
         <Panel title={<FormattedMessage id="ntf.ov.quick" />}>
           <ul className="grid gap-1">
@@ -293,6 +309,135 @@ function HealthLine({
   );
 }
 
+const checks: EngagementHealthSignalId[] = [
+  'channel_unavailable',
+  'permission_mismatch',
+  'closed_early',
+  'daily_missed',
+];
+
+/**
+ * "Trước khi gửi": Smart Engagement suggestions due this week by what became of them, and the
+ * four checks on what never became a push, each with the families to open in Hành trình.
+ */
+export function BeforeSendPanel({
+  data,
+  onTimeline,
+}: {
+  data: EngagementHealthResponse;
+  onTimeline?: (code: string) => void;
+}) {
+  const intl = useIntl();
+  const total = engagementOutcomes.reduce((n, o) => n + data.outcomes[o], 0);
+  const unsent = Object.entries(data.reasons)
+    .filter(([, n]) => n > 0)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 4);
+  return (
+    <Panel
+      title={
+        <span className="inline-flex items-center gap-1">
+          <FormattedMessage id="ntf.eng.title" />
+          <Hint>
+            <FormattedMessage id="ntf.eng.def" />
+          </Hint>
+        </span>
+      }
+    >
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
+        <div>
+          <p className="mb-2 text-[13px] text-muted-foreground">
+            <FormattedMessage id="ntf.eng.due" values={{ n: total }} />
+          </p>
+          <ul className="grid gap-1 text-sm">
+            {engagementOutcomes.map((o) => (
+              <li key={o} className="flex items-center justify-between gap-2">
+                <StatusDot
+                  tone={
+                    o === 'pushed'
+                      ? 'ok'
+                      : (o === 'in_app_only' || o === 'expired') && data.outcomes[o] > 0
+                        ? 'warn'
+                        : 'muted'
+                  }
+                >
+                  <FormattedMessage id={`ntf.eng.outcome.${o}`} />
+                </StatusDot>
+                <span className="font-semibold tabular-nums">
+                  {intl.formatNumber(data.outcomes[o])}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {unsent.length > 0 && (
+            <p className="mt-2 text-[12px] text-muted-foreground">
+              <FormattedMessage
+                id="ntf.eng.why"
+                values={{
+                  list: unsent
+                    .map(
+                      ([r, n]) =>
+                        `${intl.formatMessage({ id: `ntf.engReason.${r}`, defaultMessage: r })} ${intl.formatNumber(n)}`,
+                    )
+                    .join(' · '),
+                }}
+              />
+            </p>
+          )}
+        </div>
+        <ul className="grid gap-2 text-sm">
+          {checks.map((id) => {
+            const hit = data.signals.find((s) => s.id === id);
+            return (
+              <li key={id} className="grid gap-1">
+                <div className="flex items-center justify-between gap-2">
+                  <StatusDot tone={hit ? 'warn' : 'ok'}>
+                    <span className="inline-flex items-center gap-1">
+                      <FormattedMessage id={`ntf.eng.check.${id}`} />
+                      <Hint>
+                        <FormattedMessage id={`ntf.eng.check.${id}.def`} />
+                      </Hint>
+                    </span>
+                  </StatusDot>
+                  <span className="font-semibold tabular-nums">
+                    {hit ? intl.formatNumber(hit.n) : <FormattedMessage id="ntf.eng.none" />}
+                  </span>
+                </div>
+                {hit && hit.families.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pl-4">
+                    {hit.families.map((code) =>
+                      onTimeline ? (
+                        <button
+                          key={code}
+                          type="button"
+                          onClick={() => onTimeline(code)}
+                          className="rounded border px-1.5 py-0.5 font-mono text-[12px] outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          aria-label={intl.formatMessage({ id: 'ntf.eng.openFamily' }, { code })}
+                        >
+                          {code}
+                        </button>
+                      ) : (
+                        <span key={code} className="font-mono text-[12px]">
+                          {code}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      {data.truncated && (
+        <p className="mt-2 text-[12px] text-muted-foreground">
+          <FormattedMessage id="ntf.eng.truncated" />
+        </p>
+      )}
+    </Panel>
+  );
+}
+
 function QuickLink({
   label,
   count,
@@ -398,12 +543,14 @@ export function OverviewTab({
   stats,
   reloadStats,
   ops,
+  engagement = null,
   reviewCount,
   canTimeline,
   onTab,
   onTimeline,
 }: {
   stats: Load<NotificationStatsResponse> | null;
+  engagement?: EngagementHealthResponse | null;
   reloadStats: () => void;
   ops: Load<NotificationOpsResponse> | null;
   reviewCount?: number | null;
@@ -418,6 +565,7 @@ export function OverviewTab({
         <OverviewView
           data={data}
           ops={ops?.status === 'ok' ? ops.data : null}
+          engagement={engagement}
           reviewCount={reviewCount}
           canTimeline={canTimeline}
           onTab={onTab}
