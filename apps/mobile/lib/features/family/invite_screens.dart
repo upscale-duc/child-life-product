@@ -176,7 +176,8 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
     return OnboardingScaffold(
       topBar: ClTopBar(onBack: () => context.pop(), progress: _progressRole),
       content: [
-        ScreenHeading(title: l10n.familyInvite, subtitle: l10n.inviteSubtitle),
+        // D-118: no subtitle; "Người được mời là" and "Quyền" below say what to choose.
+        ScreenHeading(title: l10n.familyInvite),
         const SizedBox(height: ClSpace.s6),
         Text(
           l10n.inviteRelationLabel,

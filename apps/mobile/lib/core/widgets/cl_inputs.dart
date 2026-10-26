@@ -449,33 +449,61 @@ class ClTimeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
+    final chip = ClPressable(
+      onPressed: onTap,
+      semanticLabel: '$label, $value',
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: cl.colors.mintSoft,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+        ),
+        // A min-size Row centres the value in the pill's height without stretching its width.
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: cl.text.body.copyWith(
+                fontWeight: FontWeight.w500,
+                color: cl.colors.mintText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    final head = [
+      ClIcon(icon, size: 20, color: cl.colors.inkMuted),
+      const SizedBox(width: 10),
+    ];
+    // Large text: the value goes under the label instead of crushing it to "Th…".
+    if (MediaQuery.textScalerOf(context).scale(10) > 13) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ...head,
+                Expanded(child: Text(label, style: cl.text.body)),
+              ],
+            ),
+            const SizedBox(height: ClSpace.s1),
+            chip,
+          ],
+        ),
+      );
+    }
     return SizedBox(
       height: 52,
       child: Row(
         children: [
-          ClIcon(icon, size: 20, color: cl.colors.inkMuted),
-          const SizedBox(width: 10),
+          ...head,
           Expanded(child: Text(label, style: cl.text.body)),
-          ClPressable(
-            onPressed: onTap,
-            semanticLabel: '$label, $value',
-            child: Container(
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: cl.colors.mintSoft,
-                borderRadius: BorderRadius.circular(ClRadius.pill),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                value,
-                style: cl.text.body.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: cl.colors.mintText,
-                ),
-              ),
-            ),
-          ),
+          chip,
         ],
       ),
     );

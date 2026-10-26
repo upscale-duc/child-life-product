@@ -349,14 +349,6 @@ class _SetupPreviewScreenState extends ConsumerState<SetupPreviewScreen> {
       for (final w in rankToday(exp, setupAvailable(ref, draft)))
         if (w.visible) w,
     ];
-    // AX06 "Vì: …": the goal, "Luôn có" for what every Hôm nay has (Nhắc nhở), else the age
-    // (the quick log of a 17-month-old said "Luôn có", owner 2026-10-24).
-    String because(RankedWidget w) => switch (w.reason) {
-      ReasonGoal(:final goal) => goalLabel(l10n, goal),
-      ReasonAge() when w.id != WidgetId.reminders => l10n.axBecauseAge(name),
-      _ => l10n.axBecauseAlways,
-    };
-
     return OnboardingScaffold(
       topBar: ClTopBar(
         onBack: () => context.pop(),
@@ -406,25 +398,15 @@ class _SetupPreviewScreenState extends ConsumerState<SetupPreviewScreen> {
                   ),
                 ),
                 const SizedBox(width: ClSpace.s3),
+                // D-110 / D-115: a clean ordered list of names; "Vì: …" explained the ranking.
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widgetTitle(l10n, w.id),
-                        style: cl.text.body.copyWith(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: cl.colors.ink,
-                        ),
-                      ),
-                      Text(
-                        l10n.axPreviewBecause(because(w)),
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    widgetTitle(l10n, w.id),
+                    style: cl.text.body.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: cl.colors.ink,
+                    ),
                   ),
                 ),
                 handle,

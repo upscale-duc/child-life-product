@@ -162,12 +162,12 @@ void main() {
       expect(find.text('Kết thúc 3 giờ 20 phút trước'), findsOneWidget);
       // The day's totals sit under the reminders card, which lists up to 3 now.
       await tester.scrollUntilVisible(
-        find.text('2 cữ · 240 ml'),
+        find.text('2\u00a0cữ · 240\u00a0ml'),
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(find.text('2 cữ · 240 ml'), findsOneWidget);
-      expect(find.text('1 cữ · 15 phút'), findsOneWidget);
+      expect(find.text('2\u00a0cữ · 240\u00a0ml'), findsOneWidget);
+      expect(find.text('1\u00a0cữ · 15\u00a0phút'), findsOneWidget);
       expect(find.text('2 lần'), findsOneWidget);
       expect(find.textContaining('chờ đồng bộ'), findsNothing);
     });
@@ -289,7 +289,7 @@ void main() {
       );
       await tester.tap(find.text('open'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Lưu'));
+      await tester.tap(find.text('Lưu lần thay tã'));
       await tester.pumpAndSettle();
       expect(repo.created.last.type, CareType.diaper);
     });

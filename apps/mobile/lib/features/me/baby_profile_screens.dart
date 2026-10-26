@@ -380,8 +380,8 @@ class BabyProfileViewScreen extends ConsumerWidget {
                 if (parent || mine.role == MemberRole.caregiver)
                   MeRow(
                     icon: ClIcons.ruler,
+                    // D-117: title only, like the Chăm sóc row.
                     title: l10n.trackerGrowth,
-                    subtitle: l10n.bpGrowthHint,
                     onTap: () {
                       ref.read(selectedBabyIdProvider.notifier).select(babyId);
                       // D-076 nav: 13l is above the tabs; Lịch sử is a Chăm sóc page.

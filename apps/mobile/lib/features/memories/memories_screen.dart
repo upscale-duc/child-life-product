@@ -459,7 +459,9 @@ class MemoryHeader extends ConsumerWidget {
                 child: ClIcon(ClIcons.sliders, size: 20, color: cl.colors.ink),
               ),
             ),
-            if (ctx.isParent) ...[
+            // D-120: the dock's "+" adds a memory (parents); a second "+" here duplicated it.
+            // Kept where there is no dock "+" (Kỷ niệm opened on top of another screen).
+            if (ctx.isParent && !DockAddScope.memoriesOf(context)) ...[
               const SizedBox(width: ClSpace.s2),
               ClPressable(
                 onPressed: () => showAddSheet(context, ref, ctx),
@@ -920,6 +922,10 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
   final _monthKeys = <Object, GlobalKey>{};
   Object? _visibleMonth;
 
+  /// A section title has reached the pinned filter bar. Until then the title itself is on screen,
+  /// so the floating jump pill would only repeat it and cover the cards above the grid.
+  bool _inGrid = false;
+
   /// Ids already on screen while this tab is open: anything new fades in.
   final _seen = <String>{};
   var _primed = false;
@@ -955,8 +961,14 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
       final y = box.localToGlobal(Offset.zero).dy;
       if (y <= line) best = e.key;
     }
+    final inGrid = best != null;
     best ??= _monthKeys.keys.firstOrNull;
-    if (best != _visibleMonth) setState(() => _visibleMonth = best);
+    if (best != _visibleMonth || inGrid != _inGrid) {
+      setState(() {
+        _visibleMonth = best;
+        _inGrid = inGrid;
+      });
+    }
   }
 
   /// Scrolls the section's title to just under the pinned filter bar.
@@ -1325,12 +1337,14 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                       key: _monthKeys[e.key],
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: Text(
-                            sectionTitle(e.key),
-                            style: cl.text.headline.copyWith(fontSize: 18),
-                          ),
+                        // D-120: the title takes its width; the caption gets the rest and wraps
+                        // ("1 – 7 tháng 10 · 6 ảnh, 3 video" was cut to "6 ảnh, 3 vid…").
+                        Text(
+                          sectionTitle(e.key),
+                          style: cl.text.headline.copyWith(fontSize: 18),
                         ),
+                        const SizedBox(width: ClSpace.s3),
+                        if (selecting) const Spacer(),
                         if (selecting)
                           ClPressable(
                             onPressed: () {
@@ -1357,12 +1371,10 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                             ),
                           )
                         else
-                          Flexible(
+                          Expanded(
                             child: Text(
                               sectionCaption(e.key, e.value),
                               textAlign: TextAlign.end,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                               style: cl.text.caption.copyWith(
                                 color: cl.colors.inkMuted,
                               ),
@@ -1451,7 +1463,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
               ),
             ],
           ),
-          if (scrubber != null && !selecting)
+          if (scrubber != null && !selecting && _inGrid)
             Positioned(
               right: ClSpace.s4,
               bottom: MediaQuery.paddingOf(context).bottom + 160,

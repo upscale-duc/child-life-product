@@ -57,6 +57,7 @@ import '../helpers/keepsake_fixtures.dart';
 import '../helpers/library_fixtures.dart';
 import '../helpers/me_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
+import 'package:child_life/features/engagement/engagement_week.dart';
 import '../helpers/milestone_fixtures.dart';
 import '../helpers/notification_fixtures.dart';
 import '../helpers/reminder_fixtures.dart';
@@ -259,6 +260,29 @@ class _Notifications extends FakeReminderNotifications {
 }
 
 void main() {
+  // Owner, 2026-10-26: "vào rồi về lại ko dc". "Nhìn lại tuần qua" (`/memories?week=…&engagement=…`)
+  // replaced Kỷ niệm's root, so Back had nowhere to go; it is a page above Kỷ niệm now.
+  testWidgets('ENG-03 week opens above Kỷ niệm and Back returns to it', (
+    tester,
+  ) async {
+    final id = 'a' * 64;
+    final (router, container) = await _app(tester, [
+      ..._base(),
+      engagementWeekProvider.overrideWith(
+        (ref, _) async => {'state': 'ready', 'babyId': teddyId, 'content': {}},
+      ),
+    ], tab: Routes.memories);
+    router.go('${Routes.memories}?week=2026-10-19&engagement=$id');
+    await tester.pumpAndSettle();
+    expect(find.byType(EngagementWeekScreen), findsOneWidget);
+    expect(router.canPop(), isTrue);
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(find.byType(EngagementWeekScreen), findsNothing);
+    expect(find.byType(MemoriesScreen), findsOneWidget);
+    await _end(tester, container);
+  });
+
   group('the helper', () {
     // A plain push in this state is what froze (the Navigator's duplicate page keys); it is not
     // replayed here because the broken tree also breaks the tests after it.
@@ -779,7 +803,10 @@ void main() {
         tester,
         router,
         opener: BabyProfileViewScreen,
-        open: () => _tap(tester, find.text(l10n.bpGrowthHint)),
+        open: () => _tap(
+          tester,
+          find.text(l10n.trackerGrowth),
+        ), // D-117: title-only row
         location: '${Routes.history}?filter=growth',
         target: find.byType(HistoryScreen),
         how: _Back.system,

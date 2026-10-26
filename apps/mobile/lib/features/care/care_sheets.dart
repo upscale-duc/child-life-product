@@ -176,25 +176,31 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
       mainAxisSize: MainAxisSize.min,
       children: [
         ClSheetHeader(title: l10n.quickLogTitle),
-        Row(
-          children: [
+        // Three per row; two at large text sizes so labels break between words, not inside them.
+        for (final (i, row) in _rowsOf(
+          [
             tile(CareType.bottle, l10n.trackerBottle),
-            const SizedBox(width: ClSpace.s3),
             tile(CareType.breast, l10n.trackerBreast),
-            const SizedBox(width: ClSpace.s3),
             tile(CareType.sleep, l10n.quickSleep),
-          ],
-        ),
-        const SizedBox(height: ClSpace.s3),
-        Row(
-          children: [
             tile(CareType.diaper, l10n.trackerDiaper),
-            const SizedBox(width: ClSpace.s3),
             tile(CareType.growth, l10n.trackerGrowth),
-            const SizedBox(width: ClSpace.s3),
             tile(CareType.pump, l10n.trackerPump),
           ],
-        ),
+          MediaQuery.textScalerOf(sheetContext).scale(10) > 13 ? 2 : 3,
+        ).indexed) ...[
+          if (i > 0) const SizedBox(height: ClSpace.s3),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (j, t) in row.indexed) ...[
+                  if (j > 0) const SizedBox(width: ClSpace.s3),
+                  t,
+                ],
+              ],
+            ),
+          ),
+        ],
         // Ăn dặm (P-164 #1): while tracking is on, for who logs.
         Consumer(
           builder: (_, ref, _) => ref.watch(sdQuickLogProvider)
@@ -213,6 +219,11 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
     );
   },
 );
+
+List<List<T>> _rowsOf<T>(List<T> items, int perRow) => [
+  for (var i = 0; i < items.length; i += perRow)
+    items.sublist(i, (i + perRow).clamp(0, items.length)),
+];
 
 class _QuickTile extends StatelessWidget {
   const _QuickTile({
@@ -236,13 +247,17 @@ class _QuickTile extends StatelessWidget {
       onLongPress: onLongPress,
       semanticLabel: label,
       child: Container(
-        height: 120,
+        // 120 at default text; taller (never clipped) when the label grows.
+        constraints: const BoxConstraints(minHeight: 120),
         width: double.infinity,
         decoration: BoxDecoration(
           color: care.soft,
           borderRadius: BorderRadius.circular(ClRadius.tile),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s2,
+          vertical: ClSpace.s1,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1080,7 +1095,7 @@ class _DiaperSheetState extends ConsumerState<DiaperSheet>
     return CareSheetFrame(
       title: l10n.diaperTitle,
       titleColor: careColor(context, CareType.diaper).ink,
-      primary: ClButton(label: l10n.actionSave, expand: true, onPressed: _save),
+      primary: ClButton(label: l10n.saveDiaper, expand: true, onPressed: _save),
       children: [
         Row(
           children: [

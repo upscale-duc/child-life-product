@@ -329,7 +329,7 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final tag = isManager ? l10n.pv2InUse : l10n.pv2Shared;
+    final tag = isManager ? l10n.pv2InUse : l10n.pv2PlanShared;
     return Container(
       padding: const EdgeInsets.all(ClSpace.s4),
       decoration: BoxDecoration(

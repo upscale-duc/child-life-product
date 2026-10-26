@@ -454,7 +454,8 @@ class _SleepRingState extends State<SleepRing>
     final minutes = widget.elapsed.inSeconds % 3600 / 3600;
     const halo = _size * SleepBreath.haloToRing;
     return Semantics(
-      label: '${widget.label} ${clockLabel(widget.elapsed, hours: true)}',
+      label:
+          '${widget.label} ${clockLabel(widget.elapsed, hours: true)}, ${widget.since}',
       child: ExcludeSemantics(
         child: SizedBox(
           width: _size,
@@ -488,34 +489,15 @@ class _SleepRingState extends State<SleepRing>
                   ),
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RepaintBoundary(
-                    child: ScaleTransition(
-                      key: const ValueKey('sleep-moon'),
-                      scale: _moonScale,
-                      child: const ClArt(
-                        ClIllustration.miniMoon,
-                        width: 48,
-                        height: 48,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: ClSpace.s1),
-                  Text(
-                    widget.label,
-                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                  ),
-                  ClTabularText(
-                    clockLabel(widget.elapsed, hours: true),
-                    style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
-                  ),
-                  Text(
-                    widget.since,
-                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ],
+              // Inside the ring at any text size: large text scales the block down to fit
+              // rather than running across the arc.
+              SizedBox(
+                width: _size,
+                height: _size,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _ringContent(cl),
+                ),
               ),
             ],
           ),
@@ -523,6 +505,28 @@ class _SleepRingState extends State<SleepRing>
       ),
     );
   }
+
+  Widget _ringContent(ClTheme cl) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      RepaintBoundary(
+        child: ScaleTransition(
+          key: const ValueKey('sleep-moon'),
+          scale: _moonScale,
+          child: const ClArt(ClIllustration.miniMoon, width: 48, height: 48),
+        ),
+      ),
+      // D-112: no "Đang ngủ" / "Từ 13:37" here; the heading right above says both (the screen
+      // reader still hears them through the ring's label).
+      const SizedBox(height: ClSpace.s2),
+      ClTabularText(
+        clockLabel(widget.elapsed, hours: true),
+        style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+      ),
+      // Balances the moon, so the readout sits at the ring's centre.
+      const SizedBox(height: 56),
+    ],
+  );
 }
 
 class _RingPainter extends CustomPainter {
@@ -634,23 +638,28 @@ class _SidesBody extends ConsumerWidget {
             border: Border.all(color: care.accent, width: running ? 0 : 1.5),
             boxShadow: running ? cl.shadows.card : null,
           ),
+          padding: const EdgeInsets.all(ClSpace.s4),
           child: ExcludeSemantics(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  label,
-                  style: cl.text.label.copyWith(color: ink, letterSpacing: 1),
-                ),
-                ClTabularText(
-                  clockLabel(s.elapsedAt(now)),
-                  style: cl.text.title.copyWith(
-                    color: ink,
-                    fontWeight: FontWeight.w600,
+            // Stays inside the disc at large text sizes.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: cl.text.label.copyWith(color: ink, letterSpacing: 1),
                   ),
-                ),
-                Text(state, style: cl.text.caption.copyWith(color: ink)),
-              ],
+                  ClTabularText(
+                    clockLabel(s.elapsedAt(now)),
+                    style: cl.text.title.copyWith(
+                      color: ink,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(state, style: cl.text.caption.copyWith(color: ink)),
+                ],
+              ),
             ),
           ),
         ),
@@ -663,9 +672,12 @@ class _SidesBody extends ConsumerWidget {
           l10n.totalTime,
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
-        ClTabularText(
-          clockLabel(timer.totalAt(now)),
-          style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: ClTabularText(
+            clockLabel(timer.totalAt(now)),
+            style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+          ),
         ),
         const SizedBox(height: ClSpace.s4),
         FittedBox(
@@ -741,13 +753,7 @@ Future<void> showSleepChooser(BuildContext context, WidgetRef ref) {
               host.push(Routes.manualSleep);
             },
           ),
-          const SizedBox(height: ClSpace.s3),
-          Text(
-            l10n.sleepChooserFootnote,
-            style: sheetContext.cl.text.caption.copyWith(
-              color: sheetContext.cl.colors.inkMuted,
-            ),
-          ),
+          // D-110: no footnote on switching modes; each option already says what it does.
         ],
       );
     },
@@ -865,60 +871,8 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
       content: [
         ScreenHeading(title: l10n.manualSleepTitle),
         const SizedBox(height: ClSpace.s4),
-        Container(
-          height: 140,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: care.soft,
-            borderRadius: BorderRadius.circular(ClRadius.card),
-          ),
-          child: Stack(
-            children: [
-              const Positioned(
-                right: 16,
-                top: 12,
-                child: ClArt(ClIllustration.miniMoon, width: 72, height: 72),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(ClSpace.s4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.durationLabel,
-                      style: cl.text.label.copyWith(color: care.ink),
-                    ),
-                    Text(
-                      minutes > 0 ? durationLabel(l10n, minutes) : '—',
-                      style: cl.text.title.copyWith(color: cl.colors.ink),
-                    ),
-                    if (overnight) ...[
-                      const SizedBox(height: ClSpace.s2),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: ClSpace.s3,
-                          vertical: ClSpace.s1,
-                        ),
-                        decoration: BoxDecoration(
-                          color: cl.colors.surface,
-                          borderRadius: BorderRadius.circular(ClRadius.pill),
-                        ),
-                        child: Text(
-                          l10n.overnight,
-                          style: cl.text.caption.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: care.ink,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: ClSpace.s4),
+        // D-112: start and end are the task, so they come first; the duration is their result,
+        // read as the total of the same group (it was a 140 pt card above the inputs).
         ClCardGroup(
           shadow: true,
           children: [
@@ -940,6 +894,57 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
                 onTap: () => pick(false),
               ),
             ),
+            MergeSemantics(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(ClSpace.s4),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: ClSpace.s3,
+                  runSpacing: ClSpace.s1,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          l10n.durationLabel,
+                          style: cl.text.body.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                        if (overnight) ...[
+                          const SizedBox(width: ClSpace.s2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: ClSpace.s2,
+                              vertical: ClSpace.s1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: care.soft,
+                              borderRadius: BorderRadius.circular(
+                                ClRadius.pill,
+                              ),
+                            ),
+                            child: Text(
+                              l10n.overnight,
+                              style: cl.text.caption.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: care.ink,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      minutes > 0 ? durationLabel(l10n, minutes) : '—',
+                      style: cl.text.title.copyWith(color: cl.colors.ink),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
         if (_error != null) ...[
@@ -952,11 +957,14 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
             ),
           ),
         ],
-        const SizedBox(height: ClSpace.s3),
-        Text(
-          l10n.overnightNote(gmtOffsetLabel(zone, now)),
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
+        // D-110: how an overnight sleep is split only matters when the sleep is overnight.
+        if (overnight) ...[
+          const SizedBox(height: ClSpace.s3),
+          Text(
+            l10n.overnightNote(gmtOffsetLabel(zone, now)),
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
         if (widget.edit == null) ...[
           const SizedBox(height: ClSpace.s4),
           ClPressable(
@@ -979,17 +987,25 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
                 children: [
                   ClIcon(ClIcons.clock, size: 18, color: care.ink),
                   const SizedBox(width: ClSpace.s2),
-                  Text(
-                    l10n.sleepingNow(baby?.nickname ?? ''),
-                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                  ),
-                  const SizedBox(width: ClSpace.s1),
+                  // One paragraph, so at large text the question and the link wrap together.
                   Expanded(
-                    child: Text(
-                      l10n.sleepStartTimer,
-                      style: cl.text.label.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: care.ink,
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${l10n.sleepingNow(baby?.nickname ?? '')} ',
+                            style: cl.text.label.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                          TextSpan(
+                            text: l10n.sleepStartTimer,
+                            style: cl.text.label.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: care.ink,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

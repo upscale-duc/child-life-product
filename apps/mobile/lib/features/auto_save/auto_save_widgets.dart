@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../app/environment.dart';
+import '../../core/appearance/appearance_providers.dart';
 import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
@@ -55,6 +57,29 @@ final autoSaveFlagProvider = FutureProvider.autoDispose.family<bool, String>((
   unawaited(controller.rememberAllowed(babyId, on));
   return on;
 });
+
+/// D-122: Tự lưu's tier on the portal (Tính năng › Hạng) is Beta for [babyId]'s family, asked
+/// from `getFeatureAccess` and remembered on the phone for offline. No answer yet, no badge.
+final autoSaveBetaProvider = FutureProvider.autoDispose.family<bool, String>((
+  ref,
+  babyId,
+) async {
+  final prefs = ref.read(sharedPreferencesProvider);
+  final key = 'autoSave.beta.$babyId';
+  // No Firebase (widget tests, a broken install): the last answer, never a call.
+  if (Firebase.apps.isEmpty) return prefs.getBool(key) ?? false;
+  try {
+    final result = await ref
+        .watch(functionsProvider)
+        .httpsCallable('getFeatureAccess')
+        .call<Object?>({'babyId': babyId});
+    final beta = (result.data as Map?)?['autoSaveBeta'] == true;
+    await prefs.setBool(key, beta);
+    return beta;
+  } on Object {
+    return prefs.getBool(key) ?? false;
+  }
+}, retry: (_, _) => null);
 
 /// Tự lưu is offered to the selected baby (iOS only, D-066 #3).
 final autoSaveAvailableProvider = Provider<bool>((ref) {
@@ -233,12 +258,17 @@ Future<Uint8List?> _thumbOf(AssetEntity a, DeliveryMode mode) async {
   }
 }
 
-/// "Beta miễn phí" (D-066): travels with the feature name.
-class AutoSaveBetaBadge extends StatelessWidget {
+/// "Beta miễn phí" (D-066), only while the portal has Tự lưu at the Beta tier (D-122).
+class AutoSaveBetaBadge extends ConsumerWidget {
   const AutoSaveBetaBadge({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final babyId = ref.watch(selectedBabyIdProvider);
+    if (babyId == null ||
+        ref.watch(autoSaveBetaProvider(babyId)).value != true) {
+      return const SizedBox.shrink();
+    }
     final cl = context.cl;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -475,7 +505,7 @@ class AutoSaveEntryCard extends ConsumerWidget {
     return Padding(
       padding: padding,
       child: ClPressable(
-        semanticLabel: '${l10n.autoSaveTitle}, ${l10n.autoSaveBeta}. $subtitle',
+        semanticLabel: '${l10n.autoSaveTitle}. $subtitle',
         onPressed: () => context.push(Routes.autoSave),
         // AS01 (479:7358): one row on the surface, the spark on a sunshine-soft tile, a
         // chevron; waiting suggestions add a count, not a second button (owner, 2026-10-14).
@@ -503,15 +533,9 @@ class AutoSaveEntryCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 2,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(l10n.autoSaveTitle, style: cl.text.bodyStrong),
-                        const AutoSaveBetaBadge(),
-                      ],
-                    ),
+                    // D-121: "Beta miễn phí" is said once, on the intro (AS02) where the parent
+                    // decides; not on this row they pass every day.
+                    Text(l10n.autoSaveTitle, style: cl.text.bodyStrong),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,

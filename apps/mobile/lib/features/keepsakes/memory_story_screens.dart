@@ -19,7 +19,6 @@ import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
-import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../auto_save/library_save.dart';
@@ -212,6 +211,7 @@ class VideoCover extends StatelessWidget {
                   if (mark != null)
                     Text(
                       mark!,
+                      textScaler: TextScaler.noScaling,
                       style: TextStyle(
                         fontSize: 44 * s,
                         height: 1,
@@ -224,6 +224,7 @@ class VideoCover extends StatelessWidget {
                   if (title.isNotEmpty)
                     Text(
                       title,
+                      textScaler: TextScaler.noScaling,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -239,6 +240,7 @@ class VideoCover extends StatelessWidget {
                     SizedBox(height: 4 * s),
                     Text(
                       dateLine!,
+                      textScaler: TextScaler.noScaling,
                       style: TextStyle(
                         fontSize: 11 * s,
                         color: Colors.white.withValues(alpha: 0.8),
@@ -613,31 +615,16 @@ class _VideoTemplateTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    template.name.of(locale),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: cl.text.label.copyWith(
-                      color: cl.colors.ink,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                if (suggested) ...[
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.ksSuggested,
-                    style: cl.text.caption.copyWith(
-                      color: cl.colors.mintText,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ],
+            Text(
+              template.name.of(locale),
+              maxLines: 3,
+              style: cl.text.label.copyWith(color: cl.colors.ink),
             ),
+            if (suggested)
+              Text(
+                l10n.ksSuggested,
+                style: cl.text.caption.copyWith(color: cl.colors.mintText),
+              ),
             Text(
               l10n.ksVideoNeeds(template.photosMin, template.photosMax),
               style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
@@ -728,7 +715,6 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
 
   /// Photos sent from the phone's library (as Chỉ ba mẹ memories): picked once they are ready.
   final _importing = <String>{};
-  var _fromDevice = false;
 
   static List<String?> _slotted(List<String> ids, int slots) => [
     for (var i = 0; i < slots; i++) i < ids.length ? ids[i] : null,
@@ -764,7 +750,6 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
       for (final p in picked ?? const <PickedMedia>[])
         if (p.type == MediaKind.photo) p,
     ];
-    setState(() => _fromDevice = false);
     if (photos.isEmpty || !mounted) return;
     final memoryId = newMemoryId();
     await ref
@@ -915,10 +900,13 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
                               onPressed: () => Navigator.of(context).maybePop(),
                             ),
                             const Spacer(),
-                            Text(
-                              t.name.of(locale),
-                              style: cl.text.label.copyWith(
-                                color: cl.colors.inkMuted,
+                            Flexible(
+                              child: Text(
+                                t.name.of(locale),
+                                textAlign: TextAlign.end,
+                                style: cl.text.label.copyWith(
+                                  color: cl.colors.inkMuted,
+                                ),
                               ),
                             ),
                           ],
@@ -960,15 +948,12 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
                           ),
                         ],
                         const SizedBox(height: ClSpace.s4),
-                        ClSegmented<bool>(
-                          options: const [false, true],
-                          selected: _fromDevice,
-                          labelOf: (d) =>
-                              d ? l10n.ksFromDevice : l10n.ksFromMemories,
-                          onChanged: (d) {
-                            setState(() => _fromDevice = d);
-                            if (d) unawaited(_addFromDevice(c));
-                          },
+                        ClButton(
+                          label: l10n.ksAddDevicePhotos,
+                          icon: ClIcons.plus,
+                          style: ClButtonStyle.secondary,
+                          expand: true,
+                          onPressed: () => _addFromDevice(c),
                         ),
                         if (scene != null) ...[
                           const SizedBox(height: ClSpace.s4),
@@ -1050,7 +1035,6 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
               right: needMore > 0
                   ? l10n.ksVideoNeedMore(needMore)
                   : l10n.ksVideoCanAdd(t.photosMax - count),
-              warn: needMore > 0,
               button: ClButton(
                 label: l10n.actionContinue,
                 expand: true,
@@ -1106,8 +1090,9 @@ class _SceneStrip extends StatefulWidget {
 }
 
 class _SceneStripState extends State<_SceneStrip> {
-  static const _w = 84.0;
-  static const _gap = 8.0;
+  double get _w =>
+      MediaQuery.textScalerOf(context).scale(ClSpace.s4 * 5 + ClSpace.s1);
+  static const _gap = ClSpace.s2;
   final _scroll = ScrollController();
 
   /// Keeps the chosen scene in view (centred when it can be).
@@ -1156,6 +1141,31 @@ class _SceneStripState extends State<_SceneStrip> {
     final locale = Localizations.localeOf(context);
     final t = widget.template;
     final filled = widget.slots.where((m) => m != null).length;
+    double labelHeight(String text, TextStyle style, {int? maxLines}) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: maxLines,
+      )..layout(maxWidth: _w);
+      final height = painter.height;
+      painter.dispose();
+      return height;
+    }
+
+    final labelsHeight = [
+      for (var i = 0; i < widget.slots.length; i++)
+        labelHeight(
+              i < t.scenes.length
+                  ? t.scenes[i].hint.of(locale)
+                  : l10n.ksVideoSceneN(i + 1),
+              cl.text.caption.copyWith(height: 1.2),
+              maxLines: 3,
+            ) +
+            (i < t.scenes.length && t.scenes[i].optional
+                ? labelHeight(l10n.ksVideoSceneOptionalTag, cl.text.caption)
+                : 0),
+    ].fold(0.0, math.max);
     return Container(
       padding: const EdgeInsets.fromLTRB(ClSpace.s3, ClSpace.s3, 0, ClSpace.s3),
       decoration: BoxDecoration(
@@ -1168,27 +1178,25 @@ class _SceneStripState extends State<_SceneStrip> {
         children: [
           Padding(
             padding: const EdgeInsets.only(right: ClSpace.s3),
-            child: Row(
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: ClSpace.s3,
+              runSpacing: ClSpace.s1,
               children: [
-                Expanded(
-                  child: Text(
-                    l10n.ksVideoScenesFilled(filled, widget.slots.length),
-                    style: cl.text.bodyStrong,
-                  ),
+                Text(
+                  l10n.ksVideoScenesFilled(filled, widget.slots.length),
+                  style: cl.text.bodyStrong,
                 ),
                 Text(
                   l10n.ksVideoMinimum(t.photosMin),
-                  style: cl.text.caption.copyWith(
-                    color: widget.enough ? cl.colors.inkMuted : cl.colors.peach,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                 ),
               ],
             ),
           ),
           const SizedBox(height: ClSpace.s3),
           SizedBox(
-            height: _w * 4 / 3 + 58,
+            height: _w * 4 / 3 + ClSpace.s2 + labelsHeight,
             child: ListView.separated(
               controller: _scroll,
               scrollDirection: Axis.horizontal,
@@ -1293,7 +1301,7 @@ class _SceneCard extends StatelessWidget {
                         top: 2,
                         child: ClPressable(
                           onPressed: onClear,
-                          minSize: const Size(28, 28),
+                          minSize: const Size(ClSpace.tapMin, ClSpace.tapMin),
                           semanticLabel: l10n.ksVideoClearScene(n),
                           child: Container(
                             width: 20,
@@ -1318,7 +1326,7 @@ class _SceneCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               hint ?? l10n.ksVideoSceneN(n),
-              maxLines: 2,
+              maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: cl.text.caption.copyWith(
                 color: active ? cl.colors.ink : cl.colors.inkMuted,
@@ -1329,10 +1337,7 @@ class _SceneCard extends StatelessWidget {
             if (optional)
               Text(
                 l10n.ksVideoSceneOptionalTag,
-                style: cl.text.caption.copyWith(
-                  color: cl.colors.inkMuted,
-                  fontSize: 11,
-                ),
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
               ),
           ],
         ),
@@ -1352,10 +1357,14 @@ class _OrderBadge extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(color: cl.colors.mint, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: cl.colors.mintDeep,
+        shape: BoxShape.circle,
+      ),
       alignment: Alignment.center,
       child: Text(
         '$n',
+        textScaler: TextScaler.noScaling,
         style: TextStyle(
           fontSize: size * 0.58,
           fontWeight: FontWeight.w700,
@@ -1494,17 +1503,10 @@ class _NotEnough extends StatelessWidget {
 }
 
 class _BottomBar extends StatelessWidget {
-  const _BottomBar({
-    required this.button,
-    this.left,
-    this.right,
-    this.warn = false,
-    this.note,
-  });
+  const _BottomBar({required this.button, this.left, this.right, this.note});
   final Widget button;
   final String? left;
   final String? right;
-  final bool warn;
   final String? note;
 
   @override
@@ -1529,15 +1531,17 @@ class _BottomBar extends StatelessWidget {
           if (left != null || right != null)
             Padding(
               padding: const EdgeInsets.only(bottom: ClSpace.s2),
-              child: Row(
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: ClSpace.s3,
+                runSpacing: ClSpace.s1,
                 children: [
                   if (left != null) Text(left!, style: cl.text.bodyStrong),
-                  const Spacer(),
                   if (right != null)
                     Text(
                       right!,
                       style: cl.text.label.copyWith(
-                        color: warn ? cl.colors.peach : cl.colors.inkMuted,
+                        color: cl.colors.inkMuted,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1882,40 +1886,12 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: cl.colors.mintSoft,
-                                borderRadius: BorderRadius.circular(
-                                  ClRadius.pill,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ClIcon(
-                                    ClIcons.check,
-                                    size: 12,
-                                    color: cl.colors.mintText,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    l10n.ksVideoPrefilled,
-                                    style: cl.text.caption.copyWith(
-                                      color: cl.colors.mintText,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: ClSpace.s2),
                             _Fact(
                               label: l10n.ksVideoBaby,
-                              value: '${c.nickname} · $age',
+                              value: [
+                                c.nickname,
+                                if (age.isNotEmpty) age,
+                              ].join(' · '),
                             ),
                             _Fact(
                               label: l10n.ksVideoDay,
@@ -1966,14 +1942,15 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
                     field,
                   ],
                   const SizedBox(height: ClSpace.s4),
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: ClSpace.s3,
+                    runSpacing: ClSpace.s1,
                     children: [
-                      Expanded(
-                        child: Text(
-                          l10n.ksVideoOrder(_order.length),
-                          style: cl.text.label.copyWith(
-                            color: cl.colors.inkMuted,
-                          ),
+                      Text(
+                        l10n.ksVideoOrder(_order.length),
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
                         ),
                       ),
                       Text(
@@ -2107,17 +2084,15 @@ class _Fact extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
+      padding: const EdgeInsets.only(bottom: ClSpace.s2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 72,
-            child: Text(
-              label,
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
+          Text(
+            label,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
           ),
-          Expanded(child: Text(value, style: cl.text.bodyStrong)),
+          Text(value, style: cl.text.bodyStrong),
         ],
       ),
     );
@@ -2417,20 +2392,22 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
                 children: [
                   ClIcon(ClIcons.check, size: 12, color: cl.colors.mintText),
                   const SizedBox(width: 6),
-                  Text(
-                    video == null
-                        ? l10n.ksVideoFiling
-                        : [
-                            l10n.ksVideoSaved,
-                            if (week != null && week > 0)
-                              l10n.ksVideoWeek(week),
-                            job.audience == Audience.parents
-                                ? l10n.ksAudienceParents
-                                : l10n.ksAudienceFamily,
-                          ].join(' · '),
-                    style: cl.text.caption.copyWith(
-                      color: cl.colors.mintText,
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Text(
+                      video == null
+                          ? l10n.ksVideoFiling
+                          : [
+                              l10n.ksVideoSaved,
+                              if (week != null && week > 0)
+                                l10n.ksVideoWeek(week),
+                              job.audience == Audience.parents
+                                  ? l10n.ksAudienceParents
+                                  : l10n.ksAudienceFamily,
+                            ].join(' · '),
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.mintText,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -2612,12 +2589,19 @@ class _Ring extends StatelessWidget {
               color: cl.colors.mint,
             ),
           ),
-          Text(
-            '${(progress * 100).round()}%',
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.all(ClSpace.s2),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${(progress * 100).round()}%',
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ],

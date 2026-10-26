@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:child_life/core/design/tabular_text.dart';
 import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -312,6 +314,7 @@ List<Override> careOverrides({
   Map<TimerType, CareTimer> timers = const {},
   List<SleepConflict> conflicts = const [],
   List<CareRecord>? range,
+  bool rangeLoading = false,
   List<Reminder>? reminders,
   ReminderNotifications? notifications,
   List<ReminderRule> rules = const [],
@@ -353,11 +356,16 @@ List<Override> careOverrides({
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),
   // History and stats (S6) read ranges; serve them from [range] (default: the mock week).
+  // [rangeLoading]: the range never arrives (History / Stats loading state).
   rangeRecordsProvider.overrideWith(
-    (ref, key) => Stream.value([
-      for (final r in range ?? mockWeek())
-        if (!r.occurredAt.isBefore(key.$2) && r.occurredAt.isBefore(key.$3)) r,
-    ]),
+    (ref, key) => rangeLoading
+        ? StreamController<List<CareRecord>>().stream
+        : Stream.value([
+            for (final r in range ?? mockWeek())
+              if (!r.occurredAt.isBefore(key.$2) &&
+                  r.occurredAt.isBefore(key.$3))
+                r,
+          ]),
   ),
   dayMarksProvider.overrideWith((ref, key) {
     final marks = <String, DayMarks>{};

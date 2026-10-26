@@ -522,10 +522,13 @@ void main() {
       expect(find.text('Tuần thứ 4'), findsOneWidget);
       expect(find.textContaining('8 – 14 tháng 10 ·'), findsOneWidget);
 
+      await _intoGrid(
+        tester,
+      ); // D-120: the jump pill shows once the grid is reached.
       await tester.tap(find.byKey(const Key('photoScrubber')));
       await tester.pumpAndSettle();
       expect(find.text('Đi tới tuần'), findsOneWidget);
-      expect(find.text('Tuần thứ 4'), findsNWidgets(2));
+      expect(find.text('Tuần thứ 4'), findsWidgets); // in the sheet (the title may be scrolled off)
       Navigator.of(tester.element(find.text('Đi tới tuần'))).pop();
       await tester.pumpAndSettle();
 
@@ -558,6 +561,9 @@ void main() {
       );
       await _tab(tester, 'Ảnh');
       await _byMonth(tester);
+      await _intoGrid(
+        tester,
+      ); // D-120: the jump pill shows once the grid is reached.
       await tester.tap(find.byKey(const Key('photoScrubber')));
       await tester.pumpAndSettle();
       expect(find.text('Đi tới tháng'), findsOneWidget);
@@ -610,4 +616,10 @@ void main() {
       },
     );
   });
+}
+
+/// Scrolls the photo grid under the filter bar, where the "Tuần … ⌄" jump pill appears.
+Future<void> _intoGrid(WidgetTester tester) async {
+  await tester.drag(find.byType(CustomScrollView).last, const Offset(0, -200));
+  await tester.pumpAndSettle();
 }

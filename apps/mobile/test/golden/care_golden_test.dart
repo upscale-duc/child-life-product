@@ -7,6 +7,8 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/premium/premium_models.dart';
+import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_screens.dart';
@@ -24,6 +26,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
+import '../helpers/library_fixtures.dart';
+import '../helpers/nutrition_fixtures.dart';
+import '../helpers/rhythm_fixtures.dart';
 
 /// S4 screens and sheets in Light / Night care × vi / en at 375 × 812 (Figma frame size), on
 /// the 19 mock day (Thursday 8 Oct, 15:05). Sheets open over Today, as drawn.
@@ -131,6 +136,21 @@ final _cases = <String, _Case>{
   'v1i_care_hub': (
     build: () => const Scaffold(body: CareHubScreen()),
     overrides: () => careOverrides(growth: mockGrowth()),
+    act: null,
+  ),
+  // D-111: the hub as families see it, with every feature live (Nhịp lớn lên on, stages and
+  // articles published, a nutrition stage for 3 weeks). `v1i_care_hub` keeps the "Sớm ra mắt"
+  // fallback before content is published.
+  'v1i_care_hub_live': (
+    build: () => const Scaffold(body: CareHubScreen()),
+    overrides: () => [
+      ...careOverrides(growth: mockGrowth()),
+      ...libraryOverrides(),
+      ...nutritionOverrides(),
+      capabilitiesProvider.overrideWith(
+        (ref, babyId) async => Capabilities.fromJson(rhythmCaps(rhythm: true)),
+      ),
+    ],
     act: null,
   ),
   'v1i_care_hub_caregiver': (

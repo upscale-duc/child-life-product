@@ -291,8 +291,7 @@ class AsPhotoReadyCard extends StatelessWidget {
           keep ? l10n.asKeepReceiptOn : l10n.asKeepReceiptOff,
           style: cl.text.caption.copyWith(height: 1.4, color: c.inkMuted),
         ),
-        const SizedBox(height: ClSpace.s3),
-        AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData),
+        // D-119 (owner): no "Chữ trong ảnh … không phải lệnh cho app"; the safeguard is unchanged.
         if (canceled) ...[
           const SizedBox(height: ClSpace.s2),
           Text(

@@ -115,27 +115,28 @@ void main() {
       );
     });
 
-    testWidgets('tracking on: today\'s meals; after Dinh dưỡng; opens Ăn dặm', (
-      tester,
-    ) async {
-      final (visits, _) = await pumpRouted(
-        tester,
-        const Scaffold(body: CareHubScreen()),
-        overrides: solidsOverrides(),
-      );
-      final tile = find.byKey(const Key('careSolids'));
-      await _see(tester, tile);
-      expect(_in('careSolids', find.text('Hôm nay · 2 bữa')), findsOneWidget);
-      expect(
-        tester.getTopLeft(tile).dy,
-        greaterThan(
-          tester.getTopLeft(find.byKey(const Key('careNutrition'))).dy,
-        ),
-      );
-      await tester.tap(tile);
-      await tester.pumpAndSettle();
-      expect(visits.last.location, '/care/solids');
-    });
+    testWidgets(
+      'tracking on: today\'s meals; before Dinh dưỡng (D-113); opens Ăn dặm',
+      (tester) async {
+        final (visits, _) = await pumpRouted(
+          tester,
+          const Scaffold(body: CareHubScreen()),
+          overrides: solidsOverrides(),
+        );
+        final tile = find.byKey(const Key('careSolids'));
+        await _see(tester, tile);
+        expect(_in('careSolids', find.text('Hôm nay · 2 bữa')), findsOneWidget);
+        expect(
+          tester.getTopLeft(tile).dy,
+          lessThan(
+            tester.getTopLeft(find.byKey(const Key('careNutrition'))).dy,
+          ),
+        );
+        await tester.tap(tile);
+        await tester.pumpAndSettle();
+        expect(visits.last.location, '/care/solids');
+      },
+    );
 
     testWidgets('caregivers read the age from the vaccine plan (P-133)', (
       tester,

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_feedback.dart' show ClSkeleton;
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -147,9 +148,10 @@ class _StatsFrame extends ConsumerWidget {
           Duration(days: custom == null ? 31 : 1).inMilliseconds,
       isUtc: true,
     );
-    final records =
-        ref.watch(rangeRecordsProvider((me.babyId, from, today.end))).value ??
-        const <CareRecord>[];
+    final recordsAsync = ref.watch(
+      rangeRecordsProvider((me.babyId, from, today.end)),
+    );
+    final records = recordsAsync.value ?? const <CareRecord>[];
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -198,12 +200,62 @@ class _StatsFrame extends ConsumerWidget {
                           ref.read(_windowProvider(screen).notifier).set(w),
                     ),
                   const SizedBox(height: ClSpace.s4),
-                  ...builder(context, window, records, zone, now),
+                  // Zeros before the first value would read as "nothing logged".
+                  if (recordsAsync.hasValue)
+                    ...builder(context, window, records, zone, now)
+                  else
+                    const _StatsSkeleton(),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// The stats while their records load: three tiles and a chart card, shaped like the result.
+class _StatsSkeleton extends StatelessWidget {
+  const _StatsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Semantics(
+      label: AppLocalizations.of(context).careLoadingRecords,
+      child: Column(
+        children: [
+          const Row(
+            children: [
+              Expanded(child: ClSkeleton(height: 64, radius: ClRadius.control)),
+              SizedBox(width: ClSpace.s2),
+              Expanded(child: ClSkeleton(height: 64, radius: ClRadius.control)),
+              SizedBox(width: ClSpace.s2),
+              Expanded(child: ClSkeleton(height: 64, radius: ClRadius.control)),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s4),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(ClSpace.s4),
+            decoration: BoxDecoration(
+              color: cl.colors.surface,
+              borderRadius: BorderRadius.circular(ClRadius.card),
+              boxShadow: cl.shadows.card,
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClSkeleton(width: 140, height: 18),
+                SizedBox(height: ClSpace.s2),
+                ClSkeleton(width: 180, height: 12),
+                SizedBox(height: ClSpace.s4),
+                ClSkeleton(height: 180),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

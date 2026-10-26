@@ -819,9 +819,8 @@ List<Widget> _dayChildren(
     else ...[
       PersonalHeading(
         l.pv2Next,
-        sub: day.context == 'usual'
-            ? null
-            : '${contextLabel(l, day.context)}: ${contextHint(l, day.context)}',
+        // D-118: the choice only; its explanation is on the option under "Điều chỉnh gợi ý".
+        sub: day.context == 'usual' ? null : contextLabel(l, day.context),
       ),
       for (final (i, activity) in ideas.indexed)
         Padding(

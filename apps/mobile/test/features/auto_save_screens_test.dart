@@ -118,7 +118,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Tự lưu kỷ niệm'), findsWidgets);
-    expect(find.text('Beta miễn phí'), findsWidgets);
+    expect(find.text('Beta miễn phí'), findsNothing); // D-121 / D-122: intro only, by tier
     await tester.tap(find.text('Tự lưu kỷ niệm').first);
     await tester.pumpAndSettle();
     expect(visits.last.location, '/memories/auto-save');

@@ -524,7 +524,7 @@ class ReferenceCalendarScreen extends ConsumerWidget {
     content.addAll([
       const SizedBox(height: ClSpace.s2),
       Text(
-        l10n.rhCalendarFooter(model.version),
+        l10n.rhCalendarNote,
         style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
       ),
       const SizedBox(height: ClSpace.s1),
@@ -742,13 +742,12 @@ class StageDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: ClSpace.s1),
               RhReviewNote(model!.review),
-              Text(
-                [
-                  l10n.rhModelVersion(model.version),
-                  for (final s in model.sources) s.label,
-                ].join(' · '),
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-              ),
+              // D-116: the model version is for staff (portal), not parents.
+              if (model.sources.isNotEmpty)
+                Text(
+                  [for (final s in model.sources) s.label].join(' · '),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
               Text(
                 l10n.rhNotPartner(
                   model.label.isEmpty ? 'Wonder Weeks' : model.label,

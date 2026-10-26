@@ -23,6 +23,7 @@ import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../adaptive/today_adaptive.dart' show AxCard;
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -352,8 +353,7 @@ class RemindersScreen extends ConsumerWidget {
                       group(l10n.remindersUpcoming, groups.upcoming),
                     if (groups.done.isNotEmpty)
                       group(l10n.remindersDone, groups.done),
-                    const SizedBox(height: ClSpace.s4),
-                    _Note(icon: ClIcons.clock, text: l10n.remindersInfo),
+                    // D-119: said once, on the sheet that creates the reminder (reminderFootnote).
                     if (parent) ...[
                       const SizedBox(height: ClSpace.s4),
                       ClButton(
@@ -785,13 +785,15 @@ class ReminderDetailScreen extends ConsumerWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: ClSpace.s4),
-                  _Note(
-                    icon: ClIcons.clock,
-                    text: assignee == null
-                        ? l10n.reminderDetailNote
-                        : l10n.reminderDetailNoteAssigned,
-                  ),
+                  // D-119: the "Thông báo" row already names the device; only the assignee's
+                  // case needs a note.
+                  if (assignee != null) ...[
+                    const SizedBox(height: ClSpace.s4),
+                    _Note(
+                      icon: ClIcons.clock,
+                      text: l10n.reminderDetailNoteAssigned,
+                    ),
+                  ],
                   const SizedBox(height: ClSpace.s6),
                   if (!r.done)
                     ClButton(
@@ -1730,139 +1732,131 @@ class ReminderPeek extends ConsumerWidget {
       return '$label · $left';
     }
 
+    // D-108: an ordinary overdue reminder is warm attention (alert + "Quá hạn …" in `pending`
+    // on `sunshineSoft`, ink icon), never `error` red; the words carry it, not the colour alone.
     Widget mark(ClIcons icon, Color tint, {bool overdue = false}) => Container(
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: overdue ? cl.colors.errorSoft : tint,
+        color: overdue ? cl.colors.sunshineSoft : tint,
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       child: ClIcon(
-        icon,
+        overdue ? ClIcons.alert : icon,
         size: 20,
-        color: overdue ? cl.colors.error : cl.colors.ink,
+        color: cl.colors.ink,
       ),
     );
 
     if (ax) {
-      return Container(
+      // D-108: the "Nhắc việc" card, title then status · time on two lines, never cut, up to
+      // [shown] rows; a row opens its reminder.
+      return AxCard(
         key: const Key('axReminders'),
-        padding: const EdgeInsets.symmetric(
-          horizontal: ClSpace.s4,
-          vertical: 14,
-        ),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: cl.shadows.card,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(ClSpace.s2),
-                  decoration: BoxDecoration(
-                    color: cl.colors.sunshineSoft,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  // Ink on the soft warm fill (Night care).
-                  child: ClIcon(ClIcons.clock, size: 20, color: cl.colors.ink),
-                ),
-                const SizedBox(width: ClSpace.s3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.axWidgetReminders,
-                        style: cl.text.bodyStrong.copyWith(
-                          fontSize: 16,
-                          color: cl.colors.ink,
-                        ),
-                      ),
-                      Text(
-                        l10n.axRemindersCount(items.length),
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (items.isNotEmpty)
-                  ClPressable(
-                    onPressed: () => context.push(Routes.reminders),
-                    semanticLabel: l10n.axRemindersAll,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(minHeight: 44),
-                      child: Center(
-                        child: Text(
-                          l10n.axRemindersAll,
-                          style: cl.text.label.copyWith(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: cl.colors.mintText,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: ClSpace.s2),
-            if (items.isEmpty)
-              ClButton(
+        top: 0,
+        icon: ClIcons.clock,
+        chip: cl.colors.sunshineSoft,
+        title: l10n.reminderPeekTitle,
+        subtitle: items.isEmpty ? null : l10n.axRemindersCount(items.length),
+        link: items.isEmpty ? null : l10n.reminderPeekMore,
+        onLink: () => context.push(Routes.reminders),
+        child: items.isEmpty
+            ? ClButton(
                 label: parent ? l10n.axRemindersFirst : l10n.reminderPeekMore,
-                style: ClButtonStyle.secondary,
+                style: ClButtonStyle.tinted,
                 expand: true,
                 onPressed: () => parent
                     ? showReminderSheet(context)
                     : context.push(Routes.reminders),
               )
-            else
-              for (final i in items.take(2))
-                ClPressable(
-                  onPressed: i.open,
-                  semanticLabel: '${i.title}, ${when(i.at, i.overdue, i.day)}',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            i.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: cl.text.body.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: cl.colors.ink,
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (n, i) in items.take(shown).indexed) ...[
+                    if (n > 0) const SizedBox(height: ClSpace.s2),
+                    ClPressable(
+                      onPressed: i.open,
+                      semanticLabel:
+                          '${i.title}, ${when(i.at, i.overdue, i.day)}',
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 44),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: i.overdue
+                                    ? cl.colors.sunshineSoft
+                                    : cl.colors.mintSoft,
+                                borderRadius: BorderRadius.circular(
+                                  ClRadius.control,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: ClIcon(
+                                i.icon,
+                                size: 20,
+                                color: cl.colors.ink,
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: ClSpace.s2),
-                        Flexible(
-                          child: Text(
-                            when(i.at, i.overdue, i.day),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: cl.text.caption.copyWith(
-                              color: i.overdue
-                                  ? cl.colors.error
-                                  : cl.colors.inkMuted,
+                            const SizedBox(width: ClSpace.s3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    i.title,
+                                    style: cl.text.body.copyWith(
+                                      color: cl.colors.ink,
+                                    ),
+                                  ),
+                                  if (i.overdue)
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 2,
+                                          ),
+                                          child: ClIcon(
+                                            ClIcons.alert,
+                                            size: 16,
+                                            color: cl.colors.pending,
+                                          ),
+                                        ),
+                                        const SizedBox(width: ClSpace.s1),
+                                        Expanded(
+                                          child: Text(
+                                            when(i.at, i.overdue, i.day),
+                                            style: cl.text.label.copyWith(
+                                              color: cl.colors.pending,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  else
+                                    Text(
+                                      when(i.at, i.overdue, i.day),
+                                      style: cl.text.label.copyWith(
+                                        color: cl.colors.inkMuted,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-          ],
-        ),
+                  ],
+                ],
+              ),
       );
     }
 
@@ -1896,7 +1890,7 @@ class ReminderPeek extends ConsumerWidget {
                   leading: mark(i.icon, i.tint, overdue: i.overdue),
                   title: i.title,
                   subtitle: when(i.at, i.overdue, i.day),
-                  subtitleColor: i.overdue ? cl.colors.error : null,
+                  subtitleColor: i.overdue ? cl.colors.pending : null,
                   onTap: i.open,
                 ),
           ],

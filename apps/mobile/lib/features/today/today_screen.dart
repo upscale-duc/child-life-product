@@ -36,7 +36,7 @@ import '../home/today_tour.dart';
 import '../notifications/notification_bell.dart'; // D-076 #2
 import '../solids/solids_today.dart' show SdTodayCard, sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
-import '../adaptive/adaptive_engine.dart' show AgeBand, RankedWidget, WidgetId;
+import '../adaptive/adaptive_engine.dart' show RankedWidget, WidgetId;
 import '../adaptive/experience_repository.dart';
 import '../adaptive/adaptive_signals.dart';
 import '../adaptive/today_adaptive.dart';
@@ -117,66 +117,59 @@ class TodayScreen extends ConsumerWidget {
         // AX10 / AX11 / AX40: the quick log has its own header in the adaptive Hôm nay.
         if (ref.watch(adaptiveOnProvider)) ...[
           SizedBox(height: lead == WidgetId.tiles ? ClSpace.s3 : ClSpace.s6),
+          // D-108: "Nhịp hôm nay · Xem lịch sử" for every band; no history yet on the first run.
           ClSectionHeader(
             title: ref.watch(todayFirstRunProvider(babyId))
                 ? l10n.axFirstLogTitle
-                : ref.watch(experienceProvider(babyId)).bandApplied ==
-                      AgeBand.b0_1
-                ? l10n.axRhythmToday
-                : l10n.axWidgetTiles,
-            linkLabel:
-                ref.watch(experienceProvider(babyId)).bandApplied ==
-                    AgeBand.b0_1
-                ? l10n.axSeeHistory
-                : l10n.axHistoryShort,
+                : l10n.axRhythmToday,
+            linkLabel: ref.watch(todayFirstRunProvider(babyId))
+                ? null
+                : l10n.axSeeHistory,
             onLink: () => context.push(Routes.history),
           ),
           const SizedBox(height: ClSpace.s3),
         ] else
           const SizedBox(height: ClSpace.s4),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          // Without it the grid pads itself by the home indicator, so the gap below
-          // the tiles was ~34 pt taller than between the other sections (owner,
-          // 2026-10-14).
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: ClSpace.s3,
-          crossAxisSpacing: ClSpace.s3,
-          childAspectRatio: 166 / 156,
-          children: [
-            for (final kind in layout.tiles(trackers))
-              if (!layout.hiddenTiles.contains(kind))
-                if (careTypeOf(kind) case final type?)
-                  KeyedSubtree(
-                    key: switch (type) {
-                      CareType.bottle => TourTargets.bottle,
-                      CareType.growth => TourTargets.growth,
-                      _ => null,
-                    },
-                    child: CareTile(
-                      type: type,
-                      last: last(type),
-                      previousGrowth:
-                          type == CareType.growth && growth.length > 1
-                          ? growth[1]
-                          : null,
-                      myUid: membership.uid,
-                      now: now,
-                      readOnly: readOnly,
-                      firstLogPill: ref.watch(adaptiveOnProvider),
-                      timer: running(type),
-                      onTap: () => tap(type),
-                      onLongPress: last(type) == null
-                          ? null
-                          : () => context.push(
-                              '${Routes.record}/${last(type)!.id}',
-                            ),
+        // D-108: until the records load, tile-shaped skeletons, never "Chưa có" (adaptive).
+        if (ref.watch(adaptiveOnProvider) &&
+            !ref.watch(recentRecordsProvider(babyId)).hasValue)
+          const _TilesSkeleton()
+        else
+          // D-108: rows sized by their content (at least the old 166:156 tile), so the tiles grow
+          // with large text instead of overflowing a fixed-ratio grid.
+          _TileRows(
+            children: [
+              for (final kind in layout.tiles(trackers))
+                if (!layout.hiddenTiles.contains(kind))
+                  if (careTypeOf(kind) case final type?)
+                    KeyedSubtree(
+                      key: switch (type) {
+                        CareType.bottle => TourTargets.bottle,
+                        CareType.growth => TourTargets.growth,
+                        _ => null,
+                      },
+                      child: CareTile(
+                        type: type,
+                        last: last(type),
+                        previousGrowth:
+                            type == CareType.growth && growth.length > 1
+                            ? growth[1]
+                            : null,
+                        myUid: membership.uid,
+                        now: now,
+                        readOnly: readOnly,
+                        firstLogPill: ref.watch(adaptiveOnProvider),
+                        timer: running(type),
+                        onTap: () => tap(type),
+                        onLongPress: last(type) == null
+                            ? null
+                            : () => context.push(
+                                '${Routes.record}/${last(type)!.id}',
+                              ),
+                      ),
                     ),
-                  ),
-          ],
-        ),
+            ],
+          ),
         // A care tool, with the tiles rather than among the suggestions (owner,
         // 2026-10-15).
         const TodayHandoverRow(),
@@ -686,12 +679,15 @@ class _CareTileState extends ConsumerState<CareTile>
                         children: [
                           ClIcon(ClIcons.plus, size: 12, color: care.ink),
                           const SizedBox(width: 4),
-                          Text(
-                            l10n.axLogFirst,
-                            style: cl.text.caption.copyWith(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: care.ink,
+                          // Wraps at 200 % text instead of running past the tile (D-108).
+                          Flexible(
+                            child: Text(
+                              l10n.axLogFirst,
+                              style: cl.text.caption.copyWith(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: care.ink,
+                              ),
                             ),
                           ),
                         ],
@@ -1147,4 +1143,77 @@ class _StripPainter extends CustomPainter {
   @override
   bool shouldRepaint(_StripPainter old) =>
       old.records != records || old.now != now || old.track != track;
+}
+
+/// The care tiles two per row, each row as tall as its tallest tile and at least the old
+/// 166:156 proportion (D-108), so 100 % text looks as before and 200 % text grows the row.
+class _TileRows extends StatelessWidget {
+  const _TileRows({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      final minHeight = (box.maxWidth - ClSpace.s3) / 2 * 156 / 166;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < children.length; i += 2) ...[
+            if (i > 0) const SizedBox(height: ClSpace.s3),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var j = i; j < i + 2; j++) ...[
+                    if (j > i) const SizedBox(width: ClSpace.s3),
+                    Expanded(
+                      child: j < children.length
+                          ? ConstrainedBox(
+                              constraints: BoxConstraints(minHeight: minHeight),
+                              child: children[j],
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ],
+      );
+    },
+  );
+}
+
+/// Loading care tiles: four tile-shaped skeletons at the tile proportion (D-108).
+class _TilesSkeleton extends StatelessWidget {
+  const _TilesSkeleton();
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: AppLocalizations.of(context).axTilesLoading,
+    child: LayoutBuilder(
+      builder: (context, box) {
+        final height = (box.maxWidth - ClSpace.s3) / 2 * 156 / 166;
+        Widget row() => Row(
+          children: [
+            Expanded(
+              child: ClSkeleton(height: height, radius: ClRadius.tile),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: ClSkeleton(height: height, radius: ClRadius.tile),
+            ),
+          ],
+        );
+        return Column(
+          children: [
+            row(),
+            const SizedBox(height: ClSpace.s3),
+            row(),
+          ],
+        );
+      },
+    ),
+  );
 }

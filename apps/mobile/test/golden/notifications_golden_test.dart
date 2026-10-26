@@ -6,6 +6,7 @@ import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/design/tokens.g.dart';
+import 'package:child_life/features/engagement/engagement_repository.dart';
 import 'package:child_life/features/home/home_shell.dart';
 import 'package:child_life/features/notifications/inbox_screen.dart';
 import 'package:child_life/features/notifications/notification_bell.dart';
@@ -54,6 +55,14 @@ List<Override> _base(
     (ref, uid) => Stream.value(
       UserPreferences.defaults.copyWith(digestTime: () => '20:30'),
     ),
+  ),
+  // Gợi ý thông minh on, as D-098 defaults it, so EN07 shows that group too.
+  engagementProvider.overrideWith(
+    (ref) async => {
+      'enabled': true,
+      'preferences': {'consent': true},
+      'fatigue': <String, Object?>{},
+    },
   ),
 ];
 
@@ -107,7 +116,13 @@ final _cases = <String, _Case>{
     build: () => const NotificationSettingsScreen(),
     overrides: () => _base(FakeNotificationRepository()),
     act: (tester) async {
-      await tester.drag(find.byType(Scrollable).first, const Offset(0, -900));
+      // To the end: Gợi ý thông minh, Thời gian and the footnote.
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('nt-quiet')),
+        400,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -400));
       await tester.pumpAndSettle();
     },
   ),

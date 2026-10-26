@@ -217,6 +217,9 @@ export interface FeatureAccess {
   milestoneCards: boolean;
   /** Video kỷ niệm (D-068): the `memory_story` flag, as above. */
   memoryStory: boolean;
+  /** D-122: Tự lưu's tier on the portal (Tính năng › Hạng) is Beta, so the app shows "Beta miễn
+   * phí". Missing (an older server) reads as false. */
+  autoSaveBeta?: boolean;
 }
 
 /** Whether a flag is on for a given family (stable hash bucket 0–99); a family picked in A10

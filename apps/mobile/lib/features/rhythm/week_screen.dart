@@ -174,27 +174,22 @@ class WeekSummaryScreen extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: ClSpace.s6),
-        _SectionTitle(
-          title: l10n.rhWeekRecordedTitle,
-          sub: l10n.rhWeekRecordedSub,
-        ),
+        // D-116: no "Từ nhật ký của cả nhà" under the title; every figure here is from the log.
+        _SectionTitle(title: l10n.rhWeekRecordedTitle),
         const SizedBox(height: ClSpace.s3),
         if (facts == null)
           const ClSkeleton(height: 220, radius: 16)
         else ...[
           _Tiles(facts: facts, zone: zone),
-          const SizedBox(height: ClSpace.s3),
-          RhNote(l10n.rhWeekCoverageNote, icon: ClIcons.eye),
+          // D-116: the sleep tile already says "trung bình ngày ghi đủ · 6/7 ngày ghi đủ"; the
+          // note repeating it stays only in the shared text, where there is no tile.
           const SizedBox(height: ClSpace.s4),
           _FamilyCard(me: me, facts: facts, members: members),
         ],
         const SizedBox(height: ClSpace.s6),
         _NextWeek(me: me, week: week, zone: zone, now: now),
         const SizedBox(height: ClSpace.s6),
-        _SectionTitle(
-          title: l10n.rhWeekInsightTitle,
-          sub: l10n.rhWeekInsightSub,
-        ),
+        _SectionTitle(title: l10n.rhWeekInsightTitle),
         const SizedBox(height: ClSpace.s3),
         _LookBack(me: me, caps: caps, week: week, zone: zone, today: today),
         WeekVideoButton(me: me, week: week, zone: zone, weekOfLife: n),
@@ -279,22 +274,17 @@ class _TopBar extends StatelessWidget {
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title, required this.sub});
+  const _SectionTitle({required this.title});
   final String title;
-  final String sub;
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: ClSpace.s1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(header: true, child: Text(title, style: cl.text.headline)),
-          const SizedBox(height: 2),
-          Text(sub, style: cl.text.caption.copyWith(color: cl.colors.inkMuted)),
-        ],
+      child: Semantics(
+        header: true,
+        child: Text(title, style: cl.text.headline),
       ),
     );
   }

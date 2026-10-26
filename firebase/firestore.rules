@@ -220,10 +220,11 @@ service cloud.firestore {
     // P-175 Adaptive Experience (`packages/contracts/src/adaptive.ts` experienceSchema): one
     // person's arrangement of one child's Hôm nay. Ids are the contract's widget and goal ids.
     function validWidgetList(l) {
-      return l is list && l.size() <= 13 && l.toSet().size() == l.size() &&
+      // care_duty: P-181 "Ai đang trông bé" (missing here, every save that listed it was refused).
+      return l is list && l.size() <= 14 && l.toSet().size() == l.size() &&
         l.hasOnly(['tiles', 'forYou', 'solids', 'reminders', 'quickActions', 'vaccine', 'spending',
           'rhythm', 'recent_memories', 'moment_today', 'create_from_memories', 'growth',
-          'family_view']);
+          'family_view', 'care_duty']);
     }
 
     function validExperience(d, babyId) {

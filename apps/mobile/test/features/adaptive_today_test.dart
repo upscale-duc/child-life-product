@@ -1,15 +1,23 @@
+import 'package:child_life/core/widgets/cl_button.dart';
+import 'package:child_life/core/widgets/cl_feedback.dart' show ClSkeleton;
 import 'package:child_life/features/adaptive/adaptive_engine.dart';
 import 'package:child_life/features/adaptive/today_adaptive.dart';
+import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/baby/baby_repository.dart';
+import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/spending/spending_models.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import '../helpers/adaptive_fixtures.dart';
+import '../helpers/family_fixtures.dart' show teddy;
 import '../helpers/hn_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/router_pump.dart';
@@ -187,25 +195,27 @@ void main() {
       return repo;
     }
 
-    testWidgets('shows the goals, reasons and the hidden-by-age rows', (
+    // D-115: rows are titles only; the ranking reasons are gone.
+    testWidgets('shows the goals, the instruction and the hidden rows', (
       tester,
     ) async {
       await open(tester);
       expect(find.text('Tuỳ chỉnh Hôm nay'), findsOneWidget);
       expect(find.text('Lưu giữ kỷ niệm'), findsOneWidget);
-      expect(find.text('Theo mục tiêu “Chi tiêu cho con”'), findsOneWidget);
-      await _scrollTo(tester, find.byKey(const Key('axHidden')));
       expect(
-        find.text('Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào'),
-        findsWidgets,
+        find.text('Kéo để đổi thứ tự. Ghim để luôn ở đầu.'),
+        findsOneWidget,
       );
+      expect(find.textContaining('Theo mục tiêu'), findsNothing);
+      await _scrollTo(tester, find.byKey(const Key('axHidden')));
+      expect(find.textContaining('Ẩn theo gợi ý tuổi'), findsNothing);
     });
 
     testWidgets('pin and hide are kept only on "Xong"', (tester) async {
       final repo = await open(tester);
       await tester.tap(find.bySemanticsLabel('Ghim Nhắc nhở'));
       await tester.pumpAndSettle();
-      expect(find.text('Ghim · luôn ở đầu'), findsOneWidget);
+      expect(find.bySemanticsLabel('Bỏ ghim Nhắc nhở'), findsOneWidget);
       expect(repo.saves, isEmpty);
       await tester.tap(find.byKey(const Key('axDone')));
       await tester.pumpAndSettle();
@@ -255,6 +265,87 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.stored!.goals, contains(Goal.growthVaccines));
       expect(repo.stored!.goalsSource, GoalsSource.chosen);
+    });
+  });
+
+  group('D-108 Version A', () {
+    testWidgets('loading: care tiles are skeletons, never "Chưa có"', (
+      tester,
+    ) async {
+      final repo = FakeExperienceRepository(Experience.defaults(AgeBand.b0_1));
+      await pumpRouted(
+        tester,
+        // The day's records never arrive.
+        ProviderScope(
+          overrides: [
+            recentRecordsProvider.overrideWith(
+              (ref, id) => const Stream<List<CareRecord>>.empty(),
+            ),
+          ],
+          child: _today,
+        ),
+        overrides: _overrides(band: AgeBand.b0_1, repo: repo, media: [photo]),
+      );
+      // The skeleton shimmers, so no pumpAndSettle.
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(ClSkeleton), findsNWidgets(4));
+      expect(find.text('Bú bình'), findsNothing);
+      expect(find.text('Chưa có'), findsNothing);
+    });
+
+    testWidgets('no nickname yet: a nameless greeting', (tester) async {
+      final repo = FakeExperienceRepository(Experience.defaults(AgeBand.b3_6));
+      final nameless = Baby(
+        id: teddy.id,
+        familyId: teddy.familyId,
+        ownerUid: teddy.ownerUid,
+        nickname: '',
+        avatar: teddy.avatar,
+        trackers: teddy.trackers,
+        timeZone: teddy.timeZone,
+      );
+      await pumpRouted(
+        tester,
+        ProviderScope(
+          overrides: [
+            babyProvider.overrideWith((ref, id) => Stream.value(nameless)),
+          ],
+          child: _today,
+        ),
+        overrides: _overrides(band: AgeBand.b3_6, repo: repo, media: [photo]),
+      );
+      await tester.pumpAndSettle();
+      final greeting = tester.widget<Text>(find.byKey(const Key('axGreeting')));
+      // The fixtures' clock is 10:00 in the baby's zone.
+      expect(greeting.data, 'Chào buổi sáng ☀️');
+    });
+
+    testWidgets('Nhắc việc, empty: the existing keys, a tinted first step', (
+      tester,
+    ) async {
+      final repo = FakeExperienceRepository(Experience.defaults(AgeBand.b0_1));
+      await pumpRouted(
+        tester,
+        _today,
+        overrides: _overrides(band: AgeBand.b0_1, repo: repo, media: [photo]),
+      );
+      await tester.pumpAndSettle();
+      await _scrollTo(tester, find.byKey(const Key('axReminders')));
+      final card = find.byKey(const Key('axReminders'));
+      expect(
+        find.descendant(of: card, matching: find.text('Nhắc việc')),
+        findsOneWidget,
+      );
+      // Nothing behind "Xem tất cả" yet; the rows themselves are in the AX goldens.
+      expect(
+        find.descendant(of: card, matching: find.text('Xem tất cả')),
+        findsNothing,
+      );
+      final first = tester.widget<ClButton>(
+        find.descendant(of: card, matching: find.byType(ClButton)),
+      );
+      expect(first.label, 'Tạo nhắc nhở đầu tiên');
+      expect(first.style, ClButtonStyle.tinted);
     });
   });
 }

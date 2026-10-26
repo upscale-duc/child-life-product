@@ -167,15 +167,18 @@ void main() {
       expect(y('Kiến thức chăm bé'), lessThan(y('Thư viện chăm bé')));
       // D-076 #5: "Thẻ theo tuổi" is "Giai đoạn của bé" in the app.
       expect(find.text('Giai đoạn của bé'), findsOneWidget);
-      // D-083: Dinh dưỡng in "Chăm hằng ngày" (a teaser until a stage is published); D-085:
-      // "Ăn dặm" is a live tile right after it (P-164 #1; Teddy is 3 weeks: "Từ 6 tháng").
+      // D-083: Dinh dưỡng in "Chăm hằng ngày" (a teaser until a stage is published); D-113:
+      // "Ăn dặm" (live; Teddy is 3 weeks: "Từ 6 tháng") comes before it, teasers last.
       await tester.scrollUntilVisible(
         find.text('Ăn dặm'),
         -200,
         scrollable: find.byType(Scrollable).first,
       );
       expect(y('Dinh dưỡng'), lessThan(y('Hiểu con & phát triển')));
-      expect(y('Dinh dưỡng'), lessThan(y('Ăn dặm')));
+      expect(y('Ăn dặm'), lessThan(y('Dinh dưỡng')));
+      // D-113: frequency order, History and Stats first.
+      expect(y('Lịch sử'), lessThan(y('Thống kê')));
+      expect(y('Thống kê'), lessThan(y('Nhắc nhở')));
       expect(y('Ăn dặm'), lessThan(y('Hiểu con & phát triển')));
       expect(find.text('Từ 6 tháng'), findsOneWidget);
     });

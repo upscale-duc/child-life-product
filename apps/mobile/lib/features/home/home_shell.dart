@@ -246,7 +246,10 @@ class HomeShell extends ConsumerWidget {
               dockExtra: action == null ? 0 : ClTabDock.actionExtent,
               // AX31: switching child crossfades the tab (200 ms) instead of flashing the
               // old child's content; everything below is keyed by the baby and reloads.
-              content: v2 ? _BabySwitchFade(child: shell) : shell,
+              content: DockAddScope(
+                memories: active == ClTab.memories && action != null,
+                child: v2 ? _BabySwitchFade(child: shell) : shell,
+              ),
               // Keeps Tự lưu loaded so it checks when the app opens (AR01).
               banner: const AutoSaveKeeper(child: GlobalUploadPill()),
               // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing
@@ -312,7 +315,6 @@ class HomeShell extends ConsumerWidget {
   }
 }
 
-/// True when this tab page is an overlay twin pushed above other screens (D-076 nav).
 bool _openedOnTop(BuildContext context) {
   try {
     return OverlayTwin.isTwin(GoRouterState.of(context).matchedLocation) &&
@@ -1281,4 +1283,20 @@ class _BabySwitchFadeState extends ConsumerState<_BabySwitchFade>
       ],
     );
   }
+}
+
+/// The dock under the tabs has a "+" that adds a memory (Kỷ niệm, parents). Kỷ niệm's header
+/// then leaves out its own "+" (D-120: two "+" for the same sheet); without the dock (opened on
+/// top of another screen, tests) the header keeps it.
+class DockAddScope extends InheritedWidget {
+  const DockAddScope({required this.memories, required super.child, super.key});
+  final bool memories;
+
+  static bool memoriesOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<DockAddScope>()?.memories ??
+      false;
+
+  @override
+  bool updateShouldNotify(DockAddScope oldWidget) =>
+      memories != oldWidget.memories;
 }

@@ -98,7 +98,7 @@ class _NotificationSettingsScreenState
       }
     }
 
-    Widget toggle(String key, String title, String hint) => MeRow(
+    Widget toggle(String key, String title, [String? hint]) => MeRow(
       key: Key('nt-$key'),
       title: title,
       subtitle: hint,
@@ -135,9 +135,12 @@ class _NotificationSettingsScreenState
           children: [
             MeRow(
               key: const Key('nt-system'),
-              icon: ClIcons.alert,
+              // A bell, not the warning mark: this row reads "on" most of the time.
+              icon: ClIcons.bell,
               title: l10n.ntMaster,
-              subtitle: system == false ? l10n.ntMasterOff : l10n.ntMasterOn,
+              // The switch shows "on"; only "off" needs saying (owner, 2026-10-26: no labels
+              // that add nothing).
+              subtitle: system == false ? l10n.ntMasterOff : null,
               trailing: ClToggle(
                 value: system ?? true,
                 semanticLabel: l10n.ntMaster,
@@ -150,12 +153,13 @@ class _NotificationSettingsScreenState
             toggle('babyName', l10n.ntBabyName, l10n.ntBabyNameHint),
           ],
         ),
-        const _SmartSuggestions(),
+        // What the person set comes first; the app's own suggestions follow the groups of
+        // pushes they already know (owner, 2026-10-26).
         if (cares) ...[
           _Group(l10n.ntGroupReminders, hint: l10n.ntGroupRemindersHint),
           ClCardGroup(
             children: [
-              toggle('reminders', l10n.ntCare, l10n.ntCareHint),
+              toggle('reminders', l10n.ntCare),
               toggle('vaccines', l10n.ntVaccines, l10n.ntVaccinesHint),
               if (parent)
                 toggle('spending', l10n.ntSpending, l10n.ntSpendingHint),
@@ -199,15 +203,19 @@ class _NotificationSettingsScreenState
               toggle('handovers', l10n.ntHandovers, l10n.ntHandoversHint),
           ],
         ),
+        const _SmartSuggestions(),
         _Group(l10n.ntGroupTiming),
         ClCardGroup(
           children: [
-            MeRow(
-              key: const Key('nt-digest'),
-              title: l10n.ntDigest,
-              subtitle: l10n.ntDigestDaily(digest ?? '20:30'),
-              onTap: () => context.push(Routes.rhythmDigest),
-            ),
+            // The time also shows, and opens, on "Gợi ý mỗi ngày" above (D-099); twice in a row
+            // was one label too many (owner, 2026-10-26).
+            if (ref.watch(engagementProvider).value?['enabled'] != true)
+              MeRow(
+                key: const Key('nt-digest'),
+                title: l10n.ntDigest,
+                subtitle: l10n.ntDigestDaily(digest ?? '20:30'),
+                onTap: () => context.push(Routes.rhythmDigest),
+              ),
             MeRow(
               key: const Key('nt-quiet'),
               title: l10n.ntQuiet,
@@ -305,7 +313,8 @@ class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Group(l10n.engTitle, hint: l10n.engSettingsHint),
+        // Caps like the other group headers (the term itself stays "Gợi ý thông minh").
+        _Group(l10n.engTitle.toUpperCase(), hint: l10n.engSettingsHint),
         if (paused) ...[
           MeNotice(title: l10n.engPaused),
           const SizedBox(height: ClSpace.s2),

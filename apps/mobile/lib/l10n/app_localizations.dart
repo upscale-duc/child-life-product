@@ -1562,12 +1562,6 @@ abstract class AppLocalizations {
   /// **'Chưa tải được danh sách. Kiểm tra mạng nhé.'**
   String get familyLoadFailed;
 
-  /// 14b subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn người đó là ai và được làm gì.'**
-  String get inviteSubtitle;
-
   /// 14b relation label.
   ///
   /// In vi, this message translates to:
@@ -2453,13 +2447,13 @@ abstract class AppLocalizations {
   /// Bottle total.
   ///
   /// In vi, this message translates to:
-  /// **'{count} cữ · {ml} ml'**
+  /// **'{count} cữ · {ml} ml'**
   String rhythmFeeds(int count, int ml);
 
   /// Breast total.
   ///
   /// In vi, this message translates to:
-  /// **'{count} cữ · {minutes} phút'**
+  /// **'{count} cữ · {minutes} phút'**
   String rhythmBreast(int count, int minutes);
 
   /// Sleep total label.
@@ -2983,12 +2977,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Quên bấm giờ? Chọn giờ bắt đầu và kết thúc'**
   String get sleepManualHint;
-
-  /// 25a footnote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.'**
-  String get sleepChooserFootnote;
 
   /// Timer sync pill (R-070).
   ///
@@ -3740,12 +3728,6 @@ abstract class AppLocalizations {
   /// **'Chưa ghi {what} hôm nay'**
   String emptyTodayTitle(String what);
 
-  /// 20e body.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.'**
-  String get emptyDayBody;
-
   /// 20e button.
   ///
   /// In vi, this message translates to:
@@ -4196,12 +4178,6 @@ abstract class AppLocalizations {
   /// **'Đã xong'**
   String get remindersDone;
 
-  /// 8a info line (R-091).
-  ///
-  /// In vi, this message translates to:
-  /// **'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
-  String get remindersInfo;
-
   /// 8a button / 8b title.
   ///
   /// In vi, this message translates to:
@@ -4391,7 +4367,7 @@ abstract class AppLocalizations {
   /// 8c body.
   ///
   /// In vi, this message translates to:
-  /// **'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
+  /// **'Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
   String get notifPromptBody;
 
   /// 8c primary.
@@ -4441,12 +4417,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã xong'**
   String get reminderDoneRow;
-
-  /// 8e note.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.'**
-  String get reminderDetailNote;
 
   /// 8e primary.
   ///
@@ -5653,12 +5623,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thêm vào Yêu thích'**
   String get actFavorite;
-
-  /// 10b3.
-  ///
-  /// In vi, this message translates to:
-  /// **'Gom vào album Yêu thích của bạn'**
-  String get actFavoriteHint;
 
   /// 10b3.
   ///
@@ -7127,12 +7091,6 @@ abstract class AppLocalizations {
   /// 13j row.
   ///
   /// In vi, this message translates to:
-  /// **'Biểu đồ cân nặng, chiều cao'**
-  String get bpGrowthHint;
-
-  /// 13j row.
-  ///
-  /// In vi, this message translates to:
   /// **'Dung lượng của {name}'**
   String bpStorage(String name);
 
@@ -7685,7 +7643,7 @@ abstract class AppLocalizations {
   /// Footnote (R-120).
   ///
   /// In vi, this message translates to:
-  /// **'Thông báo không bao giờ kèm ảnh hay tên bé.'**
+  /// **'Thông báo không bao giờ kèm ảnh của bé.'**
   String get ntFootnote;
 
   /// Help form.
@@ -9778,7 +9736,7 @@ abstract class AppLocalizations {
   /// 20g Bú bình callout.
   ///
   /// In vi, this message translates to:
-  /// **'{day} · {ml} ml · {count} cữ'**
+  /// **'{day} · {ml} ml · {count} cữ'**
   String milkDayTip(String day, int ml, int count);
 
   /// 20g Bú bình average line.
@@ -9814,7 +9772,7 @@ abstract class AppLocalizations {
   /// 20g Bú mẹ callout.
   ///
   /// In vi, this message translates to:
-  /// **'{day} · {minutes} phút · {count} cữ'**
+  /// **'{day} · {minutes} phút · {count} cữ'**
   String breastDayTip(String day, int minutes, int count);
 
   /// 20g Bú mẹ average line.
@@ -9844,7 +9802,7 @@ abstract class AppLocalizations {
   /// 20g Bú mẹ day/night detail.
   ///
   /// In vi, this message translates to:
-  /// **'{minutes} phút · {count} cữ'**
+  /// **'{minutes} phút · {count} cữ'**
   String minutesAndFeeds(int minutes, int count);
 
   /// 20g Bú mẹ insight.
@@ -9919,23 +9877,11 @@ abstract class AppLocalizations {
   /// **'Lịch sử'**
   String get careHistory;
 
-  /// Care tile subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mọi lần đã ghi'**
-  String get careHistorySub;
-
   /// Care tile.
   ///
   /// In vi, this message translates to:
   /// **'Tăng trưởng'**
   String get careGrowth;
-
-  /// Care tile subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cân nặng, chiều dài'**
-  String get careGrowthSub;
 
   /// Care section and badge.
   ///
@@ -15214,7 +15160,7 @@ abstract class AppLocalizations {
   /// FB2 intro
   ///
   /// In vi, this message translates to:
-  /// **'Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.'**
+  /// **'Đội ngũ Child Life đọc từng góp ý.'**
   String get fbIntro;
 
   /// FB2 chip
@@ -15400,7 +15346,7 @@ abstract class AppLocalizations {
   /// AS02 lead
   ///
   /// In vi, this message translates to:
-  /// **'Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.'**
+  /// **'Child Life tìm ảnh và video có thể có con. Bạn xem lại rồi mới tải lên.'**
   String get autoSaveIntroLead;
 
   /// AS02 step 1
@@ -15408,12 +15354,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chọn bé và vài ảnh rõ mặt'**
   String get autoSaveStep1;
-
-  /// AS02 step 1 hint
-  ///
-  /// In vi, this message translates to:
-  /// **'Giúp app gợi ý đúng hơn'**
-  String get autoSaveStep1Hint;
 
   /// AS02 step 2
   ///
@@ -15424,7 +15364,7 @@ abstract class AppLocalizations {
   /// AS02 step 2 hint
   ///
   /// In vi, this message translates to:
-  /// **'Chỉ những ảnh bạn cho phép xem'**
+  /// **'Ngay trên máy, chỉ những ảnh bạn cho phép xem, không gửi đi'**
   String get autoSaveStep2Hint;
 
   /// AS02 step 3
@@ -15436,19 +15376,19 @@ abstract class AppLocalizations {
   /// AS02 step 3 hint
   ///
   /// In vi, this message translates to:
-  /// **'Không tự tải, không tự chia sẻ'**
+  /// **'Không tự chia sẻ'**
   String get autoSaveStep3Hint;
 
   /// AS02 footnote with the family's live usage, e.g. '3,2 / 10 GB'; P-147 adds the on-device sentence
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ({usage}).'**
+  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình (đã dùng {usage}).'**
   String autoSaveIntroFootnote(String usage);
 
   /// AS02 footnote while storage usage is unknown
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.'**
+  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình.'**
   String get autoSaveIntroFootnoteNoUsage;
 
   /// AS02 primary button
@@ -16318,7 +16258,7 @@ abstract class AppLocalizations {
   /// AS19 master switch subtitle
   ///
   /// In vi, this message translates to:
-  /// **'Đang bật · Beta miễn phí'**
+  /// **'Đang bật'**
   String get autoSaveOnBeta;
 
   /// AS19 master switch subtitle when off
@@ -16954,7 +16894,7 @@ abstract class AppLocalizations {
   /// MM01 Thiệp cột mốc tile.
   ///
   /// In vi, this message translates to:
-  /// **'Ảnh PNG để chia sẻ'**
+  /// **'Ảnh để chia sẻ'**
   String get ksCardTileHint;
 
   /// MM02 Thiệp cột mốc tile.
@@ -19713,7 +19653,7 @@ abstract class AppLocalizations {
   /// NL01: the next window and days left.
   ///
   /// In vi, this message translates to:
-  /// **'Dự kiến {range} · còn {days} ngày đến giai đoạn'**
+  /// **'Dự kiến {range} · còn {days} ngày'**
   String rhStageExpectedLine(String range, int days);
 
   /// NL01: the current window.
@@ -20262,12 +20202,6 @@ abstract class AppLocalizations {
   /// **'Giai đoạn {n}'**
   String rhStageShort(int n);
 
-  /// NL03 footer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình {version}.'**
-  String rhCalendarFooter(String version);
-
   /// Source block (D-072 #7).
   ///
   /// In vi, this message translates to:
@@ -20315,12 +20249,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nguồn & duyệt'**
   String get rhSourcesReview;
-
-  /// NL04 sources: the model version.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mô hình {version}'**
-  String rhModelVersion(String version);
 
   /// NL04 secondary: saves a usual check-in.
   ///
@@ -21924,12 +21852,6 @@ abstract class AppLocalizations {
   /// **'Đã ghi trong tuần'**
   String get rhWeekRecordedTitle;
 
-  /// EN09 free section subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Từ nhật ký của cả nhà'**
-  String get rhWeekRecordedSub;
-
   /// EN09 tile label.
   ///
   /// In vi, this message translates to:
@@ -22109,12 +22031,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhìn lại tuần qua'**
   String get rhWeekInsightTitle;
-
-  /// EN09 group A section subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Từ ghi nhận và nhật ký của nhà mình'**
-  String get rhWeekInsightSub;
 
   /// EN09 group A: the week’s check-ins.
   ///
@@ -23682,12 +23598,6 @@ abstract class AppLocalizations {
   /// **'Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.'**
   String get asKeepReceiptOff;
 
-  /// CH09 / CH14 notice (618:10251, 614:9037).
-  ///
-  /// In vi, this message translates to:
-  /// **'Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.'**
-  String get asPhotoTextIsData;
-
   /// CH09 primary ("Tiếp tục" in the frame): uploads and reads. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
@@ -24801,7 +24711,7 @@ abstract class AppLocalizations {
   /// 2a intro (no review claim).
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.'**
+  /// **'Mỗi bé phát triển theo nhịp riêng.'**
   String get lbStagesIntro;
 
   /// 2a current stage pill.
@@ -25293,7 +25203,7 @@ abstract class AppLocalizations {
   /// 3a summary card body.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.'**
+  /// **'Mỗi bé có nhịp riêng.'**
   String get mtLead;
 
   /// 3a summary for caregivers and relatives (they never see the records).
@@ -26079,7 +25989,7 @@ abstract class AppLocalizations {
   /// EN07 group helper.
   ///
   /// In vi, this message translates to:
-  /// **'Gom lại, tối đa 2 thông báo mỗi ngày'**
+  /// **'Tối đa 2 thông báo mỗi ngày'**
   String get ntGroupBabyHint;
 
   /// EN07 row.
@@ -26091,7 +26001,7 @@ abstract class AppLocalizations {
   /// EN07 row helper.
   ///
   /// In vi, this message translates to:
-  /// **'Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày'**
+  /// **'3 ngày trước mỗi giai đoạn mới'**
   String get ntRhythmHint;
 
   /// EN07 row ("Thẻ theo tuổi", renamed by D-076 #5).
@@ -26157,7 +26067,7 @@ abstract class AppLocalizations {
   /// EN07 row helper.
   ///
   /// In vi, this message translates to:
-  /// **'Tự lưu kỷ niệm · tối đa 1 lần/ngày'**
+  /// **'Từ Tự lưu kỷ niệm, tối đa 1 lần mỗi ngày'**
   String get ntPhotosHint;
 
   /// EN07 row.
@@ -26181,7 +26091,7 @@ abstract class AppLocalizations {
   /// EN07 row helper.
   ///
   /// In vi, this message translates to:
-  /// **'Thích, xem kỷ niệm'**
+  /// **'Khi có người thích hoặc xem kỷ niệm'**
   String get ntFamilyActivityHint;
 
   /// EN07 switch (D-092, key familyMembers): someone joined or declined an invitation.
@@ -26205,7 +26115,7 @@ abstract class AppLocalizations {
   /// EN07 subtitle of ntBabyName.
   ///
   /// In vi, this message translates to:
-  /// **'Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.'**
+  /// **'Tắt thì thông báo chỉ ghi “bé”.'**
   String get ntBabyNameHint;
 
   /// EN07 group header.
@@ -30672,10 +30582,10 @@ abstract class AppLocalizations {
   /// **'Điều nhà mình muốn ghi nhớ'**
   String get pv2NoteText;
 
-  /// Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45).
+  /// Personalization v2 notes editor: switch that makes a note visible to members who can view the baby's care (scope baby); also the scope label of a shared note.
   ///
   /// In vi, this message translates to:
-  /// **'Cả nhà dùng chung'**
+  /// **'Chia sẻ với người được xem chăm sóc bé'**
   String get pv2Shared;
 
   /// Personalization v2: Personal
@@ -31188,12 +31098,6 @@ abstract class AppLocalizations {
   /// **'Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.'**
   String get engBackfillBody;
 
-  /// Smart Engagement V1: engBody
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.'**
-  String get engBody;
-
   /// Smart Engagement V1: engChooseTemplate
   ///
   /// In vi, this message translates to:
@@ -31227,13 +31131,13 @@ abstract class AppLocalizations {
   /// Smart Engagement V1: engSettingsHint
   ///
   /// In vi, this message translates to:
-  /// **'Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.'**
+  /// **'Gợi ý đúng lúc, xem khi tiện. Không ảnh hưởng nhắc việc bạn đặt.'**
   String get engSettingsHint;
 
   /// Smart Engagement V1: engConsent
   ///
   /// In vi, this message translates to:
-  /// **'Cho phép lời mời chủ động'**
+  /// **'Nhận gợi ý thông minh'**
   String get engConsent;
 
   /// Smart Engagement V1: engResume
@@ -31749,7 +31653,7 @@ abstract class AppLocalizations {
   /// One-line reminder under the reference calendar card.
   ///
   /// In vi, this message translates to:
-  /// **'chỉ để tham khảo, mỗi bé một khác'**
+  /// **'mỗi bé một khác'**
   String get rhCalendarDisclaimerShort;
 
   /// A day of the 7-day strip nobody noted.
@@ -32202,12 +32106,6 @@ abstract class AppLocalizations {
   /// **'Tuỳ chỉnh Hôm nay'**
   String get axCustomizeLink;
 
-  /// AX14 intro.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của {name} và mục tiêu bạn chọn.'**
-  String axCustomizeIntro(String name);
-
   /// AX14 label.
   ///
   /// In vi, this message translates to:
@@ -32232,12 +32130,6 @@ abstract class AppLocalizations {
   /// **'Đã ẩn'**
   String get axHiddenLabel;
 
-  /// AX14 row subtitle of a pinned widget.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ghim · luôn ở đầu'**
-  String get axPinned;
-
   /// Accessibility label of the pin button.
   ///
   /// In vi, this message translates to:
@@ -32249,30 +32141,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bỏ ghim {title}'**
   String axUnpin(String title);
-
-  /// AX14 row reason.
-  ///
-  /// In vi, this message translates to:
-  /// **'Theo mục tiêu “{goal}”'**
-  String axBecauseGoal(String goal);
-
-  /// AX14 row reason (engineering wording, G-110).
-  ///
-  /// In vi, this message translates to:
-  /// **'Gợi ý cho tuổi của {name}'**
-  String axBecauseAge(String name);
-
-  /// AX06 "Vì: Luôn có".
-  ///
-  /// In vi, this message translates to:
-  /// **'Luôn có'**
-  String get axBecauseAlways;
-
-  /// AX14 hidden row subtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào'**
-  String get axHiddenByAge;
 
   /// AX14 link.
   ///
@@ -32441,12 +32309,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Dựa trên tuổi của {name} và mục tiêu bạn chọn.'**
   String axPreviewSub(String name);
-
-  /// AX06 row reason.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vì: {reason}'**
-  String axPreviewBecause(String reason);
 
   /// AX06 banner.
   ///
@@ -36689,6 +36551,138 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhận xét tuần · có nguồn'**
   String get pv2RowRhythmPremium;
+
+  /// Hôm nay greeting before noon when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi sáng ☀️'**
+  String get axGreetMorningNoName;
+
+  /// Hôm nay greeting 12:00–18:00 when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi chiều'**
+  String get axGreetAfternoonNoName;
+
+  /// Hôm nay greeting after 18:00 when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi tối 🌙'**
+  String get axGreetEveningNoName;
+
+  /// Screen-reader label of the care tile skeletons on Hôm nay while records load. D-108. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải nhịp hôm nay'**
+  String get axTilesLoading;
+
+  /// Screen-reader label of the History and Stats skeleton while the day's care records load.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải ghi chép'**
+  String get careLoadingRecords;
+
+  /// Primary button of the diaper sheet (24), named like the other care sheets (saveFeed, savePump, saveSleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu lần thay tã'**
+  String get saveDiaper;
+
+  /// Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà dùng chung'**
+  String get pv2PlanShared;
+
+  /// Tuỳ chỉnh Hôm nay (AX14) instruction under the title (D-115): the two actions that are not obvious; replaces axCustomizeIntro on this screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kéo để đổi thứ tự. Ghim để luôn ở đầu.'**
+  String get axCustomizeHint;
+
+  /// NL03 calendar footer (D-116): rhCalendarFooter without the model version, which is for staff.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé.'**
+  String get rhCalendarNote;
+
+  /// Screen-reader label of the "…" on a smart-suggestion row in Kỷ niệm (D-120): opens Xem / Để sau / Bỏ qua gợi ý.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn gợi ý'**
+  String get engMore;
+
+  /// Card editor: why Save is unavailable; n is the number of required photo slots still empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thêm {n} ảnh để lưu thiệp'**
+  String ksCardMissingPhotos(int n);
+
+  /// Video photo picker: opens the device library to add photos to scenes; an action, not a source tab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh từ máy'**
+  String get ksAddDevicePhotos;
+
+  /// Card editor: destination and audience before saving; does not claim the card is already saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Kỷ niệm · Chỉ ba mẹ'**
+  String get ksCardSaveAudience;
+
+  /// Tự lưu settings switch while on and the portal has Tự lưu at the Beta tier (D-122); autoSaveOnBeta otherwise.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật · Beta miễn phí'**
+  String get autoSaveOnBetaFree;
+
+  /// Editor section: information about the baby or moment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin'**
+  String get p48InfoTab;
+
+  /// Editor section: editable text appearing in the finished keepsake.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get p48TextTab;
+
+  /// Video editor section: framing the chosen photos and music.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh & nhạc'**
+  String get p48MediaTab;
+
+  /// Card editor section: actual card artwork and photo editing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get p48PhotosTab;
+
+  /// Expandable optional moment details, such as birth time and birthplace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chi tiết'**
+  String get p48MoreDetails;
+
+  /// Optional moment metadata, omitted from the keepsake when left blank.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn · Chỉ hiện khi bạn nhập'**
+  String get p48OptionalDetails;
+
+  /// Opens output language, aspect ratio and gentle motion settings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh'**
+  String get p48Settings;
+
+  /// Clears an optional date or time without substituting a default.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá giá trị'**
+  String get p48ClearValue;
 }
 
 class _AppLocalizationsDelegate

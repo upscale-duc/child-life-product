@@ -12,6 +12,7 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_choices.dart';
+import '../../core/widgets/cl_feedback.dart' show ClSkeleton;
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -144,18 +145,16 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final dob = profile?.dateOfBirth;
     final bounds = babyDateBounds(zone, day);
     // A sleep from the night before still belongs to the day (D-027).
-    final records =
-        ref
-            .watch(
-              rangeRecordsProvider((
-                babyId,
-                bounds.start.subtract(const Duration(days: 1)),
-                bounds.end,
-              )),
-            )
-            .value ??
-        const <CareRecord>[];
-    final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
+    final recordsAsync = ref.watch(
+      rangeRecordsProvider((
+        babyId,
+        bounds.start.subtract(const Duration(days: 1)),
+        bounds.end,
+      )),
+    );
+    final records = recordsAsync.value ?? const <CareRecord>[];
+    final growthAsync = ref.watch(growthRecordsProvider(babyId));
+    final growth = growthAsync.value ?? const [];
     // D-085 #3: meals join the timeline while tracking is on, for members who read the diary.
     final sd = ref.watch(sdStateProvider);
     final solidsOn =
@@ -163,6 +162,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final filter = _filter == HistoryFilter.solids && !solidsOn
         ? HistoryFilter.all
         : _filter;
+    // Until the first value arrives the day is unknown, not empty: never say "Chưa ghi".
+    final loading = filter == HistoryFilter.growth
+        ? !growthAsync.hasValue
+        : !recordsAsync.hasValue;
     final meals =
         solidsOn &&
             (filter == HistoryFilter.all || filter == HistoryFilter.solids)
@@ -182,13 +185,17 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     final dateLabel = shortDate(context, day);
     final children = <Widget>[
-      Row(
+      // A Wrap, not a Row: at large text sizes the month moves under the title instead of
+      // squeezing it into "Lịch / sử".
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: ClSpace.s3,
+        runSpacing: ClSpace.s2,
         children: [
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(l10n.historyTitle, style: cl.text.largeTitle),
-            ),
+          Semantics(
+            header: true,
+            child: Text(l10n.historyTitle, style: cl.text.largeTitle),
           ),
           _MonthChip(
             label: locale.startsWith('vi')
@@ -263,7 +270,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       const SizedBox(height: ClSpace.s4),
     ];
 
-    if (filter == HistoryFilter.growth) {
+    if (loading) {
+      children.add(const _DaySkeleton());
+    } else if (filter == HistoryFilter.growth) {
       children.add(
         _GrowthPanel(
           records: growth,
@@ -415,7 +424,7 @@ class _MonthChip extends StatelessWidget {
       onPressed: onTap,
       semanticLabel: label,
       child: Container(
-        height: 40,
+        constraints: const BoxConstraints(minHeight: 40),
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
         decoration: BoxDecoration(
           color: cl.colors.surface,
@@ -1595,6 +1604,73 @@ class _RunningRow extends ConsumerWidget {
 }
 
 /// 20e (105:9471): nothing for this filter on this day, with "Ghi bù" and "Xem tất cả".
+/// The day while its records load: a summary card and three timeline rows, shaped like what
+/// replaces them, so nothing jumps and no empty-day copy shows before the data does.
+class _DaySkeleton extends StatelessWidget {
+  const _DaySkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    Widget card(List<Widget> children) => Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(ClSpace.s4),
+      decoration: BoxDecoration(
+        color: cl.colors.surface,
+        borderRadius: BorderRadius.circular(ClRadius.card),
+        boxShadow: cl.shadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+    Widget row() => Padding(
+      padding: const EdgeInsets.only(top: ClSpace.s4),
+      child: Row(
+        children: [
+          const ClSkeleton(width: 40, height: 14),
+          const SizedBox(width: ClSpace.s3),
+          const ClSkeleton(width: 36, height: 36, radius: 18),
+          const SizedBox(width: ClSpace.s3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                ClSkeleton(width: 140, height: 16),
+                SizedBox(height: ClSpace.s1),
+                ClSkeleton(width: 80, height: 12),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    return Semantics(
+      label: AppLocalizations.of(context).careLoadingRecords,
+      child: Column(
+        children: [
+          card([
+            const ClSkeleton(width: 120, height: 14),
+            const SizedBox(height: ClSpace.s3),
+            const Row(
+              children: [
+                Expanded(child: ClSkeleton(height: 40)),
+                SizedBox(width: ClSpace.s4),
+                Expanded(child: ClSkeleton(height: 40)),
+              ],
+            ),
+            const SizedBox(height: ClSpace.s3),
+            const ClSkeleton(height: 28),
+          ]),
+          const SizedBox(height: ClSpace.s4),
+          card([const ClSkeleton(width: 160, height: 18), row(), row(), row()]),
+        ],
+      ),
+    );
+  }
+}
+
 class _EmptyDay extends StatelessWidget {
   const _EmptyDay({
     required this.filter,
@@ -1652,12 +1728,8 @@ class _EmptyDay extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: cl.text.headline,
               ),
-              const SizedBox(height: ClSpace.s1),
-              Text(
-                l10n.emptyDayBody,
-                textAlign: TextAlign.center,
-                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-              ),
+
+              // D-110: no body line; the button already says what can be logged.
               if (!readOnly) ...[
                 const SizedBox(height: ClSpace.s4),
                 ClButton(

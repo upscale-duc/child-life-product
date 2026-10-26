@@ -301,9 +301,10 @@ void main() {
           tester.widget<CupertinoSwitch>(find.byType(CupertinoSwitch)).value,
           isTrue,
         );
+        // D-119 (owner): the footnote is gone; the safeguard stays server-side.
         expect(
           _text('Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.'),
-          findsOneWidget,
+          findsNothing,
         );
         // Nothing uploaded, nothing started yet.
         expect(repo.named('createAttachmentUpload'), isEmpty);
@@ -919,9 +920,10 @@ void main() {
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
       expect(_text('Ghi chi tiêu'), findsOneWidget);
+      // D-119 (owner): no footnote.
       expect(
         _text('Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.'),
-        findsOneWidget,
+        findsNothing,
       );
       await _tap(tester, _text('Không làm gì'));
       expect(repo.named('submitClarification').single.args['choiceId'], 'none');

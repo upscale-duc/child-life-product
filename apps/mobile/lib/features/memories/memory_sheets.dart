@@ -1596,12 +1596,13 @@ Future<void> showSelectionActions(
           ),
         ),
       );
-      Widget row(ClIcons icon, String title, String subtitle, String? value) =>
+      // D-117: the subtitle is optional (only when it adds something the title doesn't say).
+      Widget row(ClIcons icon, String title, String? subtitle, String? value) =>
           ClPressable(
             onPressed: value == null
                 ? null
                 : () => Navigator.of(sheet).pop(value),
-            semanticLabel: '$title. $subtitle',
+            semanticLabel: [title, ?subtitle].join('. '),
             child: Opacity(
               opacity: value == null ? 0.5 : 1,
               child: Padding(
@@ -1618,12 +1619,13 @@ Future<void> showSelectionActions(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(title, style: cl.text.bodyStrong),
-                          Text(
-                            subtitle,
-                            style: cl.text.caption.copyWith(
-                              color: cl.colors.inkMuted,
+                          if (subtitle != null)
+                            Text(
+                              subtitle,
+                              style: cl.text.caption.copyWith(
+                                color: cl.colors.inkMuted,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -1660,12 +1662,7 @@ Future<void> showSelectionActions(
         ClCardGroup(
           color: cl.colors.surface2,
           children: [
-            row(
-              ClIcons.bookmark,
-              l10n.actFavorite,
-              l10n.actFavoriteHint,
-              'favorite',
-            ),
+            row(ClIcons.bookmark, l10n.actFavorite, null, 'favorite'),
             row(
               ClIcons.star,
               l10n.msTitle,

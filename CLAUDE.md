@@ -2,9 +2,18 @@
 
 ## Source of truth
 
-- Final Figma `sJLG1fAXKDnDr9YI6Yx8ex` is the V1 scope. **Read-only**: never call Figma write tools. The MCP is rate-limited per minute — batch reads, back off ~90 s, and prefer the saved extraction in `docs/discovery/figma-extract/`.
-- Owner decisions (D-xxx), rules (R-xxx), proposals (P-xxx), questions (Q-xxx) and gaps (G-xxx) live in `docs/product/business-map.md`. Cite ids in code comments where a rule is enforced.
-- Never mark a Figma row done in `docs/product/figma-coverage-checklist.md` unless it works end-to-end on dev Firebase, on iOS and Android, Light and Night care, with code and test paths filled in.
+- **Current UI and copy: the Flutter app** (D-104) — code in `apps/mobile/lib`, ARB in `apps/mobile/lib/l10n`, goldens in `apps/mobile/test/golden/goldens`. New screens are designed in code; no Figma frame is needed, and an outdated Figma look or copy is never restored just because it differs.
+- **Figma `sJLG1fAXKDnDr9YI6Yx8ex` is history**: the original V1 feature scope and optional context for past decisions. **Read-only**: never call Figma write tools. The MCP is rate-limited per minute — batch reads, back off ~90 s, and prefer the saved extraction in `docs/discovery/figma-extract/`.
+- Owner decisions (D-xxx), rules (R-xxx), proposals (P-xxx), questions (Q-xxx) and gaps (G-xxx) live in `docs/product/business-map.md`; product requirements there stay valid unless superseded. Cite ids in code comments where a rule is enforced.
+- `docs/product/figma-coverage-checklist.md` tracks the historical V1 scope: never mark a row done unless it works end-to-end on dev Firebase, on iOS and Android, Light and Night care, with code and test paths filled in.
+
+## Product design
+
+- Meaningful Flutter UI work (screens, sections, cards, sheets, user-facing copy or numbers, states) starts with the `senior-ui-ux` skill, which routes to the five `cl-*` design skills (foundations, components, screen patterns, UX writing, design review). Architecture: `docs/design/product-design-skill-architecture.md`.
+- UI/UX improvement is **autonomous** (D-109): Discover → Verify sources → Fresh render → Audit → Simplify → Structure → Design → Implement → Re-render → Review → Iterate → Verify → Report. **Preserving behaviour ≠ preserving the layout (D-112):** classify each screen KEEP / REFINE / RESTRUCTURE / REDESIGN; structural problems get two rendered prototypes (`test/design_explorations/`), an autonomous choice and a self-critique. **Simplify is mandatory (D-110):** every visible element must earn its place — remove redundant text, subtitles and decoration before polishing what stays; never remove essential status, units, warnings or errors. L1 polish and L2 redesign (major screens included) ship without routine owner approval while behaviour, reachability, destinations, permissions, preferences and decisions are unchanged; only L3 product decisions (business logic, features, Adaptive ranking, Customization, permissions, entitlements, canonical terms, new tokens, legal/privacy, AI or health claims) stop for the owner, isolated so the rest continues.
+- **Fresh render = visual truth (D-111):** never audit from stored screenshots or goldens alone; `apps/mobile/tool/golden_freshness.sh <tests>` renders the current code without writing baselines (mismatches → `test/golden/failures/*_testImage.png`). Never update a baseline to make a run pass or one another session's change made outdated.
+- UI work is done only after a design review on **rendered** UI: goldens in Light + Night care × vi + en, looked at before and after, not only read as code; update only the goldens of the screens you changed and open every diff.
+- Tokens grow only from real needs, through `packages/design-tokens` (D-106); one dominant primary action per screen or sheet (D-105); shared components with purposeful variation, no new feature-prefixed widget kits (D-107).
 
 ## Commands
 
@@ -16,7 +25,7 @@
 ## Conventions
 
 - Environments: `dev` → `child-life-dev`, `prod` → `child-life-ecosystem`; region `asia-southeast1`. Builds refuse mixed or missing config (Dart `resolveEnvironment`, web `resolveWebEnvironment`).
-- i18n (D-012): every user-facing string goes through ARB (`apps/mobile/lib/l10n`, Vietnamese template) or the web `messages.ts` catalogs; vi and en must have the same ids. Figma copy is the Vietnamese source; English is drafted by engineering for owner review.
+- i18n (D-012): every user-facing string goes through ARB (`apps/mobile/lib/l10n`, Vietnamese template) or the web `messages.ts` catalogs; vi and en must have the same ids. The shipped Vietnamese copy (ARB template / vi catalog) is the source (D-104); English is drafted by engineering for owner review.
 - Security: deny-by-default Rules; sensitive operations via callable Functions with zod validation; no child data (names, DOB, photos, captions, care payloads) in logs, analytics or crash keys.
 - Functions deploy from `firebase/functions/deploy` (esbuild bundle); workspace packages are bundled, only `firebase-functions` / `firebase-admin` are installed by Cloud Build.
 - Feature flags and limits: `config/{flags,limits}` (server) mirrored to `publicConfig/*`; shapes in `packages/contracts/src/config.ts`.

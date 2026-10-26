@@ -79,7 +79,8 @@ class ClSyncStatus extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       child: Container(
-        height: 32,
+        // A minimum, not a fixed height: the words stay whole at large text sizes.
+        constraints: const BoxConstraints(minHeight: 32),
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
         decoration: BoxDecoration(
           color: fill,

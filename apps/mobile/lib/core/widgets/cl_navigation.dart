@@ -539,8 +539,13 @@ class ClTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
-    return SizedBox(
-      height: ClSpace.tapMin,
+    // The tap height; at large text sizes it may grow so its pills are never clipped.
+    final large = MediaQuery.textScalerOf(context).scale(10) > 13;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: ClSpace.tapMin,
+        maxHeight: large ? double.infinity : ClSpace.tapMin,
+      ),
       child: Row(
         children: [
           if (brand != null)
@@ -552,6 +557,14 @@ class ClTopBar extends StatelessWidget {
           if (progress != null) ...[
             Expanded(child: ClProgress(value: progress!)),
             const SizedBox(width: 28),
+          ] else if (trailing != null && countdown == null && onSkip == null)
+          // A lone trailing pill (sync status, baby) takes the rest of the row and shrinks
+          // with an ellipsis at large text sizes instead of running off the screen.
+          ...[
+            const SizedBox(width: ClSpace.s2),
+            Expanded(
+              child: Align(alignment: Alignment.centerRight, child: trailing),
+            ),
           ] else
             const Spacer(),
           ?countdown,
@@ -564,7 +577,8 @@ class ClTopBar extends StatelessWidget {
                 style: cl.text.label.copyWith(color: cl.colors.mintText),
               ),
             ),
-          ?trailing,
+          if (progress != null || countdown != null || onSkip != null)
+            ?trailing,
         ],
       ),
     );
@@ -658,8 +672,9 @@ class ClBabySwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
+    // A minimum, not a fixed height: the name stays whole at large text sizes.
     final chip = Container(
-      height: 40,
+      constraints: const BoxConstraints(minHeight: 40),
       padding: const EdgeInsets.fromLTRB(4, 4, 12, 4),
       decoration: BoxDecoration(
         color: cl.colors.surface2,

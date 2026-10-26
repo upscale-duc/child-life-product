@@ -63,10 +63,10 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     super.dispose();
   }
 
-  bool _matches(String title, String subtitle) =>
+  bool _matches(String title, String? subtitle) =>
       _query.isEmpty ||
       title.toLowerCase().contains(_query) ||
-      subtitle.toLowerCase().contains(_query);
+      (subtitle?.toLowerCase().contains(_query) ?? false);
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,25 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     // Dinh dưỡng (9a, D-083): live once a published stage covers the baby's age, "Cần ngày sinh
     // của bé" without a date of birth, a "Sớm ra mắt" teaser otherwise (P-163 #11).
     final nutrition = ref.watch(nuTileProvider);
+    // D-113 (owner, 2026-10-26): ordered by how often a parent opens each one: History and
+    // Stats daily, Reminders and Vaccines when due, Growth monthly, then Ăn dặm and Dinh dưỡng.
+    // Groups stay as D-069; a "Sớm ra mắt" teaser (only before content is published) sinks to
+    // the end of its group (`_Grid`).
     final daily = [
+      _Tile(
+        icon: ClIcons.journal,
+        tint: cl.care.diaper.soft,
+        // D-110: title only; "Mọi lần đã ghi" restated it.
+        title: l10n.careHistory,
+        onTap: () => context.push(Routes.history),
+      ),
+      _Tile(
+        icon: ClIcons.sliders,
+        tint: cl.care.sleep.soft,
+        title: l10n.careStats,
+        subtitle: l10n.careStatsSub,
+        onTap: () => _showStatsPicker(context),
+      ),
       _Tile(
         icon: ClIcons.clock,
         tint: cl.colors.mintSoft,
@@ -115,6 +133,11 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         icon: ClIcons.heart,
         tint: cl.colors.peachSoft,
         title: l10n.vxTile,
+        // Overdue shots are the one thing on this screen that needs attention: drawn warm.
+        attention: switch (ref.watch(vaccineBookProvider(me))) {
+          VaccineBookReady(:final book) => book.overdue.isNotEmpty,
+          _ => false,
+        },
         subtitle: switch (ref.watch(vaccineBookProvider(me))) {
           VaccineBookReady(:final book) when book.overdue.isNotEmpty =>
             l10n.vxTileOverdue(book.overdue.length),
@@ -131,30 +154,30 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         },
         onTap: () => context.push(Routes.vaccines),
       ),
-      _Tile(
-        icon: ClIcons.sliders,
-        tint: cl.care.sleep.soft,
-        title: l10n.careStats,
-        subtitle: l10n.careStatsSub,
-        onTap: () => _showStatsPicker(context),
-      ),
-      _Tile(
-        icon: ClIcons.journal,
-        tint: cl.care.diaper.soft,
-        title: l10n.careHistory,
-        subtitle: l10n.careHistorySub,
-        onTap: () => context.push(Routes.history),
-      ),
       if (!caregiver)
         _Tile(
           icon: ClIcons.ruler,
           tint: cl.care.growth.soft,
+          // D-110: title only; "Cân nặng, chiều dài" restated it.
           title: l10n.careGrowth,
-          subtitle: l10n.careGrowthSub,
           onTap: () => context.push(
             '${Routes.history}?filter=${HistoryFilter.growth.name}',
           ),
         ),
+      // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
+      // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).
+      _Tile(
+        key: const Key('careSolids'),
+        icon: ClIcons.feed,
+        tint: cl.colors.sunshineSoft,
+        title: l10n.careSolids,
+        subtitle: sdTileLine(
+          l10n,
+          ref.watch(sdStateProvider),
+          ref.watch(sdTodayProvider),
+        ),
+        onTap: () => context.push(SdRoutes.home),
+      ),
       _Tile(
         key: const Key('careNutrition'),
         icon: ClIcons.feed,
@@ -171,20 +194,6 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         onTap: nutrition is NuTileTeaser
             ? soon
             : () => context.push(NuRoutes.home),
-      ),
-      // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
-      // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).
-      _Tile(
-        key: const Key('careSolids'),
-        icon: ClIcons.feed,
-        tint: cl.colors.sunshineSoft,
-        title: l10n.careSolids,
-        subtitle: sdTileLine(
-          l10n,
-          ref.watch(sdStateProvider),
-          ref.watch(sdTodayProvider),
-        ),
-        onTap: () => context.push(SdRoutes.home),
       ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 
@@ -209,8 +218,8 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     // this member; until then they stay teasers.
     final stagesLive = (ref.watch(lbStagesProvider).value?.items ?? const [])
         .any((s) => s.audience.contains(me.role));
-    final libraryLive = (ref.watch(lbArticlesProvider).value?.items ?? const [])
-        .isNotEmpty;
+    final libraryLive =
+        (ref.watch(lbArticlesProvider).value?.items ?? const []).isNotEmpty;
     final develop = [
       if (rhythm && _matches(l10n.careWonderWeek, l10n.careWonderWeekSub))
         _Tile(
@@ -394,34 +403,16 @@ class _Section extends StatelessWidget {
   );
 }
 
+/// D-112: one card per section, a row per destination (it was a grid of equal-weight tiles that
+/// took two screens for eleven links). D-113: live rows first, a "Sớm ra mắt" teaser last.
 class _Grid extends StatelessWidget {
   const _Grid(this.tiles);
   final List<_Tile> tiles;
 
   @override
-  Widget build(BuildContext context) {
-    final rows = <Widget>[];
-    for (var i = 0; i < tiles.length; i += 2) {
-      rows.add(
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: tiles[i]),
-              const SizedBox(width: ClSpace.s3),
-              Expanded(
-                child: i + 1 < tiles.length
-                    ? tiles[i + 1]
-                    : const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ),
-      );
-      if (i + 2 < tiles.length) rows.add(const SizedBox(height: ClSpace.s3));
-    }
-    return Column(children: rows);
-  }
+  Widget build(BuildContext context) => ClCardGroup(
+    children: [...tiles.where((t) => !t.soon), ...tiles.where((t) => t.soon)],
+  );
 }
 
 class _Tile extends StatelessWidget {
@@ -429,67 +420,101 @@ class _Tile extends StatelessWidget {
     required this.icon,
     required this.tint,
     required this.title,
-    required this.subtitle,
     required this.onTap,
+    this.subtitle,
     this.soon = false,
+    this.attention = false,
     super.key,
   });
 
   final ClIcons icon;
   final Color tint;
   final String title;
-  final String subtitle;
+
+  /// Optional (D-110): only when it adds something the title doesn't say (status, scope).
+  final String? subtitle;
   final VoidCallback onTap;
   final bool soon;
+
+  /// The subtitle needs attention (overdue): warm fill, ink, alert icon, never colour alone.
+  final bool attention;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final line = subtitle;
     return ClPressable(
       onPressed: onTap,
-      semanticLabel: soon ? '$title. ${l10n.careSoon}' : '$title. $subtitle',
+      semanticLabel: soon
+          ? '$title. ${l10n.careSoon}'
+          : [title, ?subtitle].join('. '),
       child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: cl.shadows.card,
+        constraints: const BoxConstraints(minHeight: 60),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s2,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: tint,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ClIcon(icon, size: 18, color: cl.colors.ink),
-                ),
-                const Spacer(),
-                if (soon) const CareSoonBadge(),
-              ],
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: tint,
+                borderRadius: BorderRadius.circular(ClRadius.control),
+              ),
+              alignment: Alignment.center,
+              child: ClIcon(icon, size: 18, color: cl.colors.ink),
             ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: cl.text.bodyStrong.copyWith(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(title, style: cl.text.body),
+                  if (line != null && attention)
+                    Container(
+                      margin: const EdgeInsets.only(top: ClSpace.s1),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ClSpace.s2,
+                        vertical: ClSpace.s1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: cl.colors.sunshineSoft,
+                        borderRadius: BorderRadius.circular(ClRadius.pill),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClIcon(ClIcons.alert, size: 14, color: cl.colors.ink),
+                          const SizedBox(width: ClSpace.s1),
+                          Flexible(
+                            child: Text(
+                              line,
+                              style: cl.text.caption.copyWith(
+                                color: cl.colors.ink,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (line != null)
+                    Text(
+                      line,
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                    ),
+                ],
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: cl.text.caption.copyWith(
-                color: cl.colors.inkMuted,
-                height: 1.4,
-              ),
-            ),
+            const SizedBox(width: ClSpace.s2),
+            if (soon)
+              const CareSoonBadge()
+            else
+              ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
           ],
         ),
       ),

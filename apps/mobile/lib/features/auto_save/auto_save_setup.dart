@@ -68,7 +68,8 @@ class AutoSaveIntro extends ConsumerWidget {
         ? null
         : ref.watch(familyStorageProvider(babyId)).value;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    Widget step(int n, String title, String hint) => Padding(
+    // D-120: a hint only where it says something the step doesn't.
+    Widget step(int n, String title, [String? hint]) => Padding(
       padding: const EdgeInsets.only(bottom: ClSpace.s3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,10 +93,11 @@ class AutoSaveIntro extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: cl.text.bodyStrong),
-                Text(
-                  hint,
-                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                ),
+                if (hint != null)
+                  Text(
+                    hint,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
               ],
             ),
           ),
@@ -120,7 +122,7 @@ class AutoSaveIntro extends ConsumerWidget {
         AutoSaveCard(
           child: Column(
             children: [
-              step(1, l10n.autoSaveStep1, l10n.autoSaveStep1Hint),
+              step(1, l10n.autoSaveStep1),
               step(2, l10n.autoSaveStep2, l10n.autoSaveStep2Hint),
               step(3, l10n.autoSaveStep3, l10n.autoSaveStep3Hint),
             ],

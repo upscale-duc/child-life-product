@@ -838,9 +838,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get familyLoadFailed => 'Chưa tải được danh sách. Kiểm tra mạng nhé.';
 
   @override
-  String get inviteSubtitle => 'Chọn người đó là ai và được làm gì.';
-
-  @override
   String get inviteRelationLabel => 'Người được mời là';
 
   @override
@@ -1397,12 +1394,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhythmFeeds(int count, int ml) {
-    return '$count cữ · $ml ml';
+    return '$count cữ · $ml ml';
   }
 
   @override
   String rhythmBreast(int count, int minutes) {
-    return '$count cữ · $minutes phút';
+    return '$count cữ · $minutes phút';
   }
 
   @override
@@ -1701,10 +1698,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sleepManualHint => 'Quên bấm giờ? Chọn giờ bắt đầu và kết thúc';
-
-  @override
-  String get sleepChooserFootnote =>
-      'Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.';
 
   @override
   String get timerFamilySees => 'Cả nhà đang thấy';
@@ -2150,10 +2143,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get emptyDayBody =>
-      'Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.';
-
-  @override
   String backLog(String what) {
     return 'Ghi bù $what';
   }
@@ -2438,10 +2427,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get remindersDone => 'Đã xong';
 
   @override
-  String get remindersInfo =>
-      'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.';
-
-  @override
   String get reminderNew => 'Nhắc việc mới';
 
   @override
@@ -2549,7 +2534,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get notifPromptBody =>
-      'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.';
+      'Thông báo chỉ được đặt trên máy tạo nhắc việc.';
 
   @override
   String get notifPromptAllow => 'Bật thông báo';
@@ -2578,10 +2563,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get reminderDoneRow => 'Đã xong';
-
-  @override
-  String get reminderDetailNote =>
-      'Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.';
 
   @override
   String get reminderMarkDone => 'Đánh dấu đã xong';
@@ -3302,9 +3283,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get actFavorite => 'Thêm vào Yêu thích';
-
-  @override
-  String get actFavoriteHint => 'Gom vào album Yêu thích của bạn';
 
   @override
   String get actMilestoneHint => 'Ví dụ: Lần đầu cười';
@@ -4209,9 +4187,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get bpGrowthHint => 'Biểu đồ cân nặng, chiều cao';
-
-  @override
   String bpStorage(String name) {
     return 'Dung lượng của $name';
   }
@@ -4560,7 +4535,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntStorageHint => 'Khi gần đầy hoặc đã đầy';
 
   @override
-  String get ntFootnote => 'Thông báo không bao giờ kèm ảnh hay tên bé.';
+  String get ntFootnote => 'Thông báo không bao giờ kèm ảnh của bé.';
 
   @override
   String get hpTopic => 'Chủ đề';
@@ -5869,7 +5844,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String milkDayTip(String day, int ml, int count) {
-    return '$day · $ml ml · $count cữ';
+    return '$day · $ml ml · $count cữ';
   }
 
   @override
@@ -5891,7 +5866,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String breastDayTip(String day, int minutes, int count) {
-    return '$day · $minutes phút · $count cữ';
+    return '$day · $minutes phút · $count cữ';
   }
 
   @override
@@ -5911,7 +5886,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String minutesAndFeeds(int minutes, int count) {
-    return '$minutes phút · $count cữ';
+    return '$minutes phút · $count cữ';
   }
 
   @override
@@ -5957,13 +5932,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get careHistory => 'Lịch sử';
 
   @override
-  String get careHistorySub => 'Mọi lần đã ghi';
-
-  @override
   String get careGrowth => 'Tăng trưởng';
-
-  @override
-  String get careGrowthSub => 'Cân nặng, chiều dài';
 
   @override
   String get careSoon => 'Sớm ra mắt';
@@ -9052,8 +9021,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get fbTitle => 'Góp ý';
 
   @override
-  String get fbIntro =>
-      'Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.';
+  String get fbIntro => 'Đội ngũ Child Life đọc từng góp ý.';
 
   @override
   String get fbTypeIdea => 'Ý tưởng';
@@ -9161,34 +9129,32 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get autoSaveIntroLead =>
-      'Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.';
+      'Child Life tìm ảnh và video có thể có con. Bạn xem lại rồi mới tải lên.';
 
   @override
   String get autoSaveStep1 => 'Chọn bé và vài ảnh rõ mặt';
 
   @override
-  String get autoSaveStep1Hint => 'Giúp app gợi ý đúng hơn';
-
-  @override
   String get autoSaveStep2 => 'App tìm trong ảnh mới';
 
   @override
-  String get autoSaveStep2Hint => 'Chỉ những ảnh bạn cho phép xem';
+  String get autoSaveStep2Hint =>
+      'Ngay trên máy, chỉ những ảnh bạn cho phép xem, không gửi đi';
 
   @override
   String get autoSaveStep3 => 'Bạn duyệt rồi mới tải';
 
   @override
-  String get autoSaveStep3Hint => 'Không tự tải, không tự chia sẻ';
+  String get autoSaveStep3Hint => 'Không tự chia sẻ';
 
   @override
   String autoSaveIntroFootnote(String usage) {
-    return 'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ($usage).';
+    return 'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình (đã dùng $usage).';
   }
 
   @override
   String get autoSaveIntroFootnoteNoUsage =>
-      'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.';
+      'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình.';
 
   @override
   String get autoSaveStart => 'Bắt đầu thiết lập';
@@ -9843,7 +9809,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get autoSaveSettingsTitle => 'Cài đặt Tự lưu';
 
   @override
-  String get autoSaveOnBeta => 'Đang bật · Beta miễn phí';
+  String get autoSaveOnBeta => 'Đang bật';
 
   @override
   String get autoSaveOffValue => 'Đang tắt';
@@ -10206,7 +10172,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ksNew => 'Mới';
 
   @override
-  String get ksCardTileHint => 'Ảnh PNG để chia sẻ';
+  String get ksCardTileHint => 'Ảnh để chia sẻ';
 
   @override
   String get ksCardTileHintShort => 'Ảnh để chia sẻ';
@@ -11839,7 +11805,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhStageExpectedLine(String range, int days) {
-    return 'Dự kiến $range · còn $days ngày đến giai đoạn';
+    return 'Dự kiến $range · còn $days ngày';
   }
 
   @override
@@ -12189,11 +12155,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String rhCalendarFooter(String version) {
-    return 'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình $version.';
-  }
-
-  @override
   String rhNotPartner(String label) {
     return '$label được dùng làm tham khảo, không phải đối tác.';
   }
@@ -12222,11 +12183,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhSourcesReview => 'Nguồn & duyệt';
-
-  @override
-  String rhModelVersion(String version) {
-    return 'Mô hình $version';
-  }
 
   @override
   String get rhSameAsUsual => 'Con vẫn như mọi ngày';
@@ -13157,9 +13113,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhWeekRecordedTitle => 'Đã ghi trong tuần';
 
   @override
-  String get rhWeekRecordedSub => 'Từ nhật ký của cả nhà';
-
-  @override
   String get rhWeekFeeds => 'Bú';
 
   @override
@@ -13278,9 +13231,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhWeekInsightTitle => 'Nhìn lại tuần qua';
-
-  @override
-  String get rhWeekInsightSub => 'Từ ghi nhận và nhật ký của nhà mình';
 
   @override
   String get rhWeekNotesTitle => 'Ghi nhận trong tuần';
@@ -14181,10 +14131,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.';
 
   @override
-  String get asPhotoTextIsData =>
-      'Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.';
-
-  @override
   String get asSendPhoto => 'Gửi ảnh';
 
   @override
@@ -14842,8 +14788,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get lbStagesTitle => 'Giai đoạn của bé';
 
   @override
-  String get lbStagesIntro =>
-      'Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.';
+  String get lbStagesIntro => 'Mỗi bé phát triển theo nhịp riêng.';
 
   @override
   String get lbHere => 'Bé đang ở đây';
@@ -15130,8 +15075,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get mtLead =>
-      'Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.';
+  String get mtLead => 'Mỗi bé có nhịp riêng.';
 
   @override
   String get mtLeadViewer =>
@@ -15568,14 +15512,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntGroupBaby => 'GỢI Ý CHO BÉ';
 
   @override
-  String get ntGroupBabyHint => 'Gom lại, tối đa 2 thông báo mỗi ngày';
+  String get ntGroupBabyHint => 'Tối đa 2 thông báo mỗi ngày';
 
   @override
   String get ntRhythm => 'Nhịp lớn lên';
 
   @override
-  String get ntRhythmHint =>
-      'Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày';
+  String get ntRhythmHint => '3 ngày trước mỗi giai đoạn mới';
 
   @override
   String get ntStages => 'Giai đoạn của bé';
@@ -15608,7 +15551,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntPhotos => 'Ảnh mới có thể có bé';
 
   @override
-  String get ntPhotosHint => 'Tự lưu kỷ niệm · tối đa 1 lần/ngày';
+  String get ntPhotosHint => 'Từ Tự lưu kỷ niệm, tối đa 1 lần mỗi ngày';
 
   @override
   String get ntKeepsakes => 'Gợi ý tạo video, thiệp';
@@ -15620,7 +15563,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntFamilyActivity => 'Hoạt động của gia đình';
 
   @override
-  String get ntFamilyActivityHint => 'Thích, xem kỷ niệm';
+  String get ntFamilyActivityHint => 'Khi có người thích hoặc xem kỷ niệm';
 
   @override
   String get ntFamilyMembers => 'Thành viên gia đình';
@@ -15633,8 +15576,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntBabyName => 'Hiện tên bé trong thông báo';
 
   @override
-  String get ntBabyNameHint =>
-      'Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.';
+  String get ntBabyNameHint => 'Tắt thì thông báo chỉ ghi “bé”.';
 
   @override
   String get ntGroupTiming => 'THỜI GIAN';
@@ -18386,7 +18328,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2NoteText => 'Điều nhà mình muốn ghi nhớ';
 
   @override
-  String get pv2Shared => 'Cả nhà dùng chung';
+  String get pv2Shared => 'Chia sẻ với người được xem chăm sóc bé';
 
   @override
   String get pv2Personal => 'Chỉ riêng bạn';
@@ -18661,10 +18603,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.';
 
   @override
-  String get engBody =>
-      'Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.';
-
-  @override
   String get engChooseTemplate => 'Chọn mẫu video';
 
   @override
@@ -18681,10 +18619,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get engSettingsHint =>
-      'Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.';
+      'Gợi ý đúng lúc, xem khi tiện. Không ảnh hưởng nhắc việc bạn đặt.';
 
   @override
-  String get engConsent => 'Cho phép lời mời chủ động';
+  String get engConsent => 'Nhận gợi ý thông minh';
 
   @override
   String get engResume => 'Tiếp tục nhận gợi ý sau thời gian nghỉ';
@@ -19006,7 +18944,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhStageLastDay => 'ngày cuối';
 
   @override
-  String get rhCalendarDisclaimerShort => 'chỉ để tham khảo, mỗi bé một khác';
+  String get rhCalendarDisclaimerShort => 'mỗi bé một khác';
 
   @override
   String get rhDayNotNoted => 'chưa ghi';
@@ -19294,11 +19232,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get axCustomizeLink => 'Tuỳ chỉnh Hôm nay';
 
   @override
-  String axCustomizeIntro(String name) {
-    return 'Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của $name và mục tiêu bạn chọn.';
-  }
-
-  @override
   String get axGoalsLabel => 'Mục tiêu của gia đình';
 
   @override
@@ -19311,9 +19244,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get axHiddenLabel => 'Đã ẩn';
 
   @override
-  String get axPinned => 'Ghim · luôn ở đầu';
-
-  @override
   String axPin(String title) {
     return 'Ghim $title';
   }
@@ -19322,22 +19252,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String axUnpin(String title) {
     return 'Bỏ ghim $title';
   }
-
-  @override
-  String axBecauseGoal(String goal) {
-    return 'Theo mục tiêu “$goal”';
-  }
-
-  @override
-  String axBecauseAge(String name) {
-    return 'Gợi ý cho tuổi của $name';
-  }
-
-  @override
-  String get axBecauseAlways => 'Luôn có';
-
-  @override
-  String get axHiddenByAge => 'Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào';
 
   @override
   String axRestore(String name) {
@@ -19440,11 +19354,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String axPreviewSub(String name) {
     return 'Dựa trên tuổi của $name và mục tiêu bạn chọn.';
-  }
-
-  @override
-  String axPreviewBecause(String reason) {
-    return 'Vì: $reason';
   }
 
   @override
@@ -21958,4 +21867,73 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2RowRhythmPremium => 'Nhận xét tuần · có nguồn';
+
+  @override
+  String get axGreetMorningNoName => 'Chào buổi sáng ☀️';
+
+  @override
+  String get axGreetAfternoonNoName => 'Chào buổi chiều';
+
+  @override
+  String get axGreetEveningNoName => 'Chào buổi tối 🌙';
+
+  @override
+  String get axTilesLoading => 'Đang tải nhịp hôm nay';
+
+  @override
+  String get careLoadingRecords => 'Đang tải ghi chép';
+
+  @override
+  String get saveDiaper => 'Lưu lần thay tã';
+
+  @override
+  String get pv2PlanShared => 'Cả nhà dùng chung';
+
+  @override
+  String get axCustomizeHint => 'Kéo để đổi thứ tự. Ghim để luôn ở đầu.';
+
+  @override
+  String get rhCalendarNote =>
+      'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé.';
+
+  @override
+  String get engMore => 'Tuỳ chọn gợi ý';
+
+  @override
+  String ksCardMissingPhotos(int n) {
+    return 'Chọn thêm $n ảnh để lưu thiệp';
+  }
+
+  @override
+  String get ksAddDevicePhotos => 'Thêm ảnh từ máy';
+
+  @override
+  String get ksCardSaveAudience => 'Lưu vào Kỷ niệm · Chỉ ba mẹ';
+
+  @override
+  String get autoSaveOnBetaFree => 'Đang bật · Beta miễn phí';
+
+  @override
+  String get p48InfoTab => 'Thông tin';
+
+  @override
+  String get p48TextTab => 'Lời nhắn';
+
+  @override
+  String get p48MediaTab => 'Ảnh & nhạc';
+
+  @override
+  String get p48PhotosTab => 'Ảnh';
+
+  @override
+  String get p48MoreDetails => 'Thêm chi tiết';
+
+  @override
+  String get p48OptionalDetails => 'Tuỳ chọn · Chỉ hiện khi bạn nhập';
+
+  @override
+  String get p48Settings => 'Tuỳ chỉnh';
+
+  @override
+  String get p48ClearValue => 'Xoá giá trị';
 }

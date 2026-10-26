@@ -700,30 +700,34 @@ class _ReferenceViewState extends ConsumerState<_ReferenceView> {
               ),
             ),
         ],
-        const SizedBox(height: 14),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: cl.colors.surface2,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClIcon(ClIcons.heart, size: 16, color: cl.colors.inkMuted),
-              const SizedBox(width: ClSpace.s2),
-              Expanded(
-                child: Text(
-                  l10n.mtReassure,
-                  style: cl.text.label.copyWith(
-                    color: cl.colors.inkMuted,
-                    height: 1.45,
+        // D-116: the reassurance only when no "Khi nào nên hỏi bác sĩ" card says it already
+        // ("Mỗi bé một nhịp; bác sĩ sẽ cùng bạn quan sát thêm").
+        if (m.talkToDoctor == null) ...[
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: cl.colors.surface2,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClIcon(ClIcons.heart, size: 16, color: cl.colors.inkMuted),
+                const SizedBox(width: ClSpace.s2),
+                Expanded(
+                  child: Text(
+                    l10n.mtReassure,
+                    style: cl.text.label.copyWith(
+                      color: cl.colors.inkMuted,
+                      height: 1.45,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
         const SizedBox(height: ClSpace.s4),
         if (c.canRecord) ...[
           ClButton(

@@ -303,6 +303,9 @@ class KeepsakeCardView extends ConsumerWidget {
             : premiumTextFit(value, l, size).size;
         final text = Text(
           value,
+          // Template coordinates describe a fixed export canvas. System text size
+          // scales the editor controls, not the artwork or the exported image.
+          textScaler: TextScaler.noScaling,
           maxLines: l.maxLines,
           overflow: template.personalization == null
               ? TextOverflow.ellipsis

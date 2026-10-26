@@ -1,0 +1,6 @@
+compare_text-200_light_en.png: Multiple exceptions (6) were detected during the running of the current test, and at least one was unexpected.
+compare_text-200_light_vi.png: Multiple exceptions (7) were detected during the running of the current test, and at least one was unexpected.
+version-a_text-200_light_en.png: A RenderFlex overflowed by 40 pixels on the right.
+version-a_text-200_light_vi.png: A RenderFlex overflowed by 30 pixels on the right.
+version-b_text-200_light_en.png: A RenderFlex overflowed by 40 pixels on the right.
+version-b_text-200_light_vi.png: A RenderFlex overflowed by 30 pixels on the right.

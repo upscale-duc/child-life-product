@@ -36,12 +36,18 @@ typedef _Case = ({
 _Case _history(
   HistoryFilter filter, {
   List<CareRecord>? range,
+  bool loading = false,
   List<CareRecord> Function() growth = mockGrowth,
   Membership? me,
   Future<void> Function(WidgetTester tester)? act,
 }) => (
   build: () => HistoryScreen(filter: filter),
-  overrides: () => careOverrides(range: range, growth: growth(), me: me),
+  overrides: () => careOverrides(
+    range: range,
+    rangeLoading: loading,
+    growth: growth(),
+    me: me,
+  ),
   prefs: const {},
   act: act,
 );
@@ -66,6 +72,8 @@ final _cases = <String, _Case>{
   ),
   '20d_history_growth_head_none': _history(HistoryFilter.growth, act: _headTab),
   '20e_history_empty': _history(HistoryFilter.diaper, range: const []),
+  // Care pass (D-109): records still loading draw a skeleton, never the empty day.
+  '20i_history_loading': _history(HistoryFilter.diaper, loading: true),
   '20f_date_picker': _history(
     HistoryFilter.all,
     act: (t) async {
@@ -79,6 +87,12 @@ final _cases = <String, _Case>{
   '20g_feed_stats': (
     build: () => const FeedStatsScreen(),
     overrides: careOverrides,
+    prefs: const {},
+    act: null,
+  ),
+  '20j_sleep_stats_loading': (
+    build: () => const SleepStatsScreen(),
+    overrides: () => careOverrides(rangeLoading: true),
     prefs: const {},
     act: null,
   ),

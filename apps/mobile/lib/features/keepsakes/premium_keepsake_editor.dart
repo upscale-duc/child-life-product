@@ -11,7 +11,10 @@ import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
+import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../memories/media_bytes.dart';
 import '../memories/media_picker.dart';
@@ -52,7 +55,14 @@ class PremiumKeepsakeEditor extends ConsumerStatefulWidget {
 
 class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
   final _boundary = GlobalKey();
+  final _scroll = ScrollController();
+  int _section = 0;
+  bool _detailsExpanded = false;
   final _fields = <String, TextEditingController>{};
+
+  // Profile streams may resolve after the first build. Seed once, without
+  // replacing a parent's edit (including an intentionally cleared field).
+  final _profileEdits = <String>{};
   final _copies = <String, TextEditingController>{};
   final _overrides = <String, Map<String, String>>{'vi': {}, 'en': {}};
   final _crops = <({double x, double y, double zoom, String fit})>[];
@@ -99,7 +109,8 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
         // A first embrace's date is not inferred from today's date or a photo upload.
         _ => f.type == 'confirmation' ? 'false' : '',
       };
-      _fields[f.key] = TextEditingController(text: value);
+      _fields[f.key] = TextEditingController(text: value)
+        ..addListener(() => _profileEdits.add(f.key));
     }
     for (var slot = 0; slot < _t.photosMax; slot++) {
       _photos.add(widget.cardDraft?.photoAt(slot));
@@ -112,12 +123,31 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     if (_video) _format = KeepsakeFormat.story;
   }
 
+  void _fillProfile(MemoryCtx c) {
+    for (final f in _spec.fields) {
+      if (_profileEdits.contains(f.key)) continue;
+      final value = switch (f.source) {
+        'babyName' => c.baby?.nickname,
+        'birthDate' =>
+          c.dob == null ? null : DateFormat('yyyy-MM-dd').format(c.dob!),
+        _ => null,
+      };
+      if (value == null) continue;
+      if (_fields[f.key]!.text != value) {
+        _fields[f.key]!.text = value;
+        _requestId = null;
+      }
+      _profileEdits.add(f.key);
+    }
+  }
+
   void _changed() => setState(() {
     _requestId = null;
   });
 
   @override
   void dispose() {
+    _scroll.dispose();
     for (final c in [..._fields.values, ..._copies.values]) {
       c.dispose();
     }
@@ -133,7 +163,7 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     personalized: _copy,
   );
 
-  bool get _valid {
+  bool get _fieldsValid {
     for (final f in _spec.fields) {
       final v = _values[f.key] ?? '';
       if (f.options.isNotEmpty &&
@@ -158,6 +188,11 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
       final end = DateTime.tryParse(_values[range.end] ?? '');
       if (start != null && end != null && end.isBefore(start)) return false;
     }
+    return true;
+  }
+
+  bool get _valid {
+    if (!_fieldsValid) return false;
     for (final c in _spec.copy) {
       final text = _copy[c.key] ?? '';
       if (text.length > c.max || RegExp(r'[{}]').hasMatch(text)) return false;
@@ -400,7 +435,12 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     if (!_valid || !_fits) return;
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      // Card export needs its actual artwork painted, including when saving from another section.
+      if (!_video) _section = 2;
+    });
+    if (!_video && _scroll.hasClients) _scroll.jumpTo(0);
     try {
       if (_video) {
         _requestId ??= newKeepsakeRequestId();
@@ -493,6 +533,7 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
     final c = memoryCtx(context, ref);
     if (c == null) return const SizedBox.shrink();
     _initialize(c);
+    _fillProfile(c);
     final l10n = AppLocalizations.of(context), cl = context.cl;
     final uiLocale = Localizations.localeOf(context);
     final media =
@@ -509,342 +550,553 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
       backgroundColor: cl.colors.cloud,
       appBar: AppBar(
         title: Text(_t.name.of(uiLocale), style: cl.text.bodyStrong),
+        actions: [
+          IconButton(
+            tooltip: l10n.p48Settings,
+            onPressed: _busy ? null : _showSettings,
+            icon: const ClIcon(ClIcons.sliders),
+          ),
+        ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(ClSpace.s4),
-        children: [
-          Text(
-            _spec.group.of(uiLocale),
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          if (!_video)
-            LayoutBuilder(
-              builder: (context, box) => Center(
-                child: RepaintBoundary(
-                  key: _boundary,
-                  child: KeepsakeCardView(
-                    template: _t,
-                    format: _format,
-                    content: _content,
-                    width: math.min(box.maxWidth, 420),
-                    onPhotoTap: _busy
-                        ? null
-                        : (slot) => _memoryPhoto(media, slot),
-                    onPhotoChanged: _busy
-                        ? null
-                        : (slot, p) => setState(() => _photos[slot] = p),
-                    activeSlot: !_busy && _t.photosMax > 1 ? _activeSlot : null,
-                    photoPlaceholder: Text(l10n.ksChoosePhoto),
-                  ),
-                ),
-              ),
+      bottomNavigationBar: ColoredBox(
+        color: cl.colors.surface,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              ClSpace.s4,
+              ClSpace.s2,
+              ClSpace.s4,
+              ClSpace.s3 + MediaQuery.viewInsetsOf(context).bottom,
             ),
-          if (!_video && _t.photosMax > 1)
-            Wrap(
-              spacing: 8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                for (var slot = 0; slot < _t.photosMax; slot++)
-                  ChoiceChip(
-                    key: ValueKey('premium-photo-$slot'),
-                    label: Text(l10n.p48PhotoSlot(slot + 1)),
-                    selected: slot == _activeSlot,
-                    onSelected: _busy
-                        ? null
-                        : (_) => setState(() => _activeSlot = slot),
+                if (!ready || !valid || !fits)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: ClSpace.s2),
+                    child: Semantics(
+                      liveRegion: true,
+                      child: TextButton(
+                        onPressed: _busy
+                            ? null
+                            : () => _selectSection(
+                                !ready
+                                    ? 2
+                                    : !_fieldsValid
+                                    ? 0
+                                    : 1,
+                              ),
+                        child: Text(
+                          !ready
+                              ? (_video
+                                    ? l10n.ksVideoNeedMore(
+                                        _t.photosMax - widget.mediaIds.length,
+                                      )
+                                    : l10n.ksCardMissingPhotos(
+                                        _t.photosMax -
+                                            _photos
+                                                .whereType<CardPhoto>()
+                                                .length,
+                                      ))
+                              : !valid
+                              ? l10n.p48Invalid
+                              : l10n.p48TooLong,
+                          textAlign: TextAlign.center,
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.mintText,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-              ],
-            ),
-          if (!_video)
-            Wrap(
-              spacing: 8,
-              children: [
-                TextButton(
-                  onPressed: _busy
+                if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                  ClButton(
+                    label: l10n.ksPreview,
+                    style: ClButtonStyle.plain,
+                    expand: true,
+                    loading: _previewing,
+                    onPressed: _busy || _previewing || !ready || !valid || !fits
+                        ? null
+                        : () => _video ? _previewVideo(byId) : _previewCard(),
+                  ),
+                ClButton(
+                  label: _video ? l10n.ksVideoCreate : l10n.ksSaveCard,
+                  expand: true,
+                  loading: _busy,
+                  onPressed: _busy || !ready || !valid || !fits
                       ? null
-                      : () => _memoryPhoto(media, _activeSlot),
-                  child: Text(l10n.ksFromMemories),
-                ),
-                TextButton(
-                  onPressed: _busy ? null : _devicePhoto,
-                  child: Text(l10n.ksFromDevice),
+                      : () => _save(c),
                 ),
               ],
             ),
-          const SizedBox(height: ClSpace.s4),
-          DropdownButtonFormField<String>(
-            initialValue: _locale!.languageCode,
-            decoration: InputDecoration(labelText: l10n.p48Language),
-            items: const [
-              DropdownMenuItem(value: 'vi', child: Text('Tiếng Việt')),
-              DropdownMenuItem(value: 'en', child: Text('English')),
-            ],
-            onChanged: _busy
-                ? null
-                : (v) => setState(() {
-                    _locale = Locale(v!);
-                    _requestId = null;
-                  }),
           ),
-          const SizedBox(height: ClSpace.s3),
-          DropdownButtonFormField<KeepsakeFormat>(
-            initialValue: _format,
-            decoration: InputDecoration(labelText: l10n.p48Format),
-            items: const [
-              DropdownMenuItem(
-                value: KeepsakeFormat.portrait,
-                child: Text('4:5'),
-              ),
-              DropdownMenuItem(
-                value: KeepsakeFormat.story,
-                child: Text('9:16'),
-              ),
-            ],
-            onChanged: _busy
-                ? null
-                : (v) => setState(() {
-                    _format = v!;
-                    _requestId = null;
-                  }),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.p48ReducedMotion),
-            value: _reduced,
-            onChanged: _busy
-                ? null
-                : (v) => setState(() {
-                    _reduced = v;
-                    _requestId = null;
-                  }),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Text(l10n.p48Details, style: cl.text.bodyStrong),
-          if (_spec.fields.any((f) => f.suggestion != null)) ...[
-            Text(l10n.p48SuggestionsHint, style: cl.text.label),
-            TextButton(
-              onPressed: _busy
-                  ? null
-                  : () {
-                      for (final f in _spec.fields) {
-                        if (f.suggestion != null &&
-                            _fields[f.key]!.text.trim().isEmpty) {
-                          _fields[f.key]!.text = f.suggestion!.of(_locale!);
-                        }
-                      }
-                      _changed();
-                    },
-              child: Text(l10n.p48UseSuggestions),
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: ClSpace.s4,
+              vertical: ClSpace.s2,
             ),
-          ],
-          for (final f in _spec.fields)
-            Padding(
-              padding: const EdgeInsets.only(top: ClSpace.s3),
-              child: f.options.isNotEmpty
-                  ? DropdownButtonFormField<String>(
-                      key: ValueKey('p48-field-${f.key}'),
-                      isExpanded: true,
-                      initialValue: _fields[f.key]!.text.isEmpty
-                          ? null
-                          : _fields[f.key]!.text,
-                      decoration: InputDecoration(
-                        labelText: f.label.of(uiLocale),
-                      ),
-                      items: [
-                        for (final o in f.options)
-                          DropdownMenuItem(
-                            value: o.value,
-                            child: Text(o.label.of(uiLocale)),
-                          ),
-                      ],
-                      onChanged: _busy
-                          ? null
-                          : (v) {
-                              _fields[f.key]!.text = v ?? '';
-                              _changed();
-                            },
-                    )
-                  : f.type == 'month'
-                  ? DropdownButtonFormField<String>(
-                      initialValue: _fields[f.key]!.text.isEmpty
-                          ? null
-                          : _fields[f.key]!.text.padLeft(2, '0'),
-                      decoration: InputDecoration(
-                        labelText: f.label.of(uiLocale),
-                      ),
-                      items: [
-                        for (var month = 1; month <= 12; month++)
-                          DropdownMenuItem(
-                            value: '$month'.padLeft(2, '0'),
-                            child: Text('$month'.padLeft(2, '0')),
-                          ),
-                      ],
-                      onChanged: _busy
-                          ? null
-                          : (value) {
-                              _fields[f.key]!.text = value ?? '';
-                              _changed();
-                            },
-                    )
-                  : f.type == 'confirmation'
-                  ? CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(f.label.of(uiLocale)),
-                      value: _fields[f.key]!.text == 'true',
-                      onChanged: _busy
-                          ? null
-                          : (v) {
-                              _fields[f.key]!.text = v == true
-                                  ? 'true'
-                                  : 'false';
-                              _changed();
-                            },
-                    )
-                  : TextField(
-                      controller: _fields[f.key],
-                      readOnly: f.type != 'text' || _busy,
-                      maxLength: f.type == 'text' ? f.max : null,
-                      onTap: !_busy && (f.type == 'date' || f.type == 'time')
-                          ? () => _pickField(f)
-                          : null,
-                      decoration: InputDecoration(
-                        labelText: f.label.of(uiLocale),
-                        hintText: f.suggestion?.of(_locale!),
-                        suffixIcon: f.type != 'text'
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: _busy
-                                    ? null
-                                    : () {
-                                        _fields[f.key]!.clear();
-                                        _changed();
-                                      },
-                              )
-                            : null,
-                      ),
-                      onChanged: (_) => _changed(),
+            child: Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s1,
+              children: [
+                for (final (index, label) in [
+                  l10n.p48InfoTab,
+                  l10n.p48TextTab,
+                  _video ? l10n.p48MediaTab : l10n.p48PhotosTab,
+                ].indexed)
+                  ChoiceChip(
+                    key: ValueKey('p48-section-$index'),
+                    label: Text(label),
+                    selected: _section == index,
+                    showCheckmark: false,
+                    selectedColor: cl.colors.mintDeep,
+                    labelStyle: cl.text.label.copyWith(
+                      color: _section == index
+                          ? cl.colors.onMintDeep
+                          : cl.colors.ink,
                     ),
-            ),
-          const SizedBox(height: ClSpace.s4),
-          Row(
-            children: [
-              Expanded(child: Text(l10n.p48Copy, style: cl.text.bodyStrong)),
-              TextButton(
-                onPressed: _busy
-                    ? null
-                    : () => setState(() {
-                        _overrides[_locale!.languageCode]!.clear();
-                        _requestId = null;
-                      }),
-                child: Text(l10n.p48Reset),
-              ),
-            ],
-          ),
-          for (final item in _spec.copy.where((x) => x.editable))
-            Builder(
-              builder: (context) {
-                final key = '${_locale!.languageCode}:${item.key}';
-                final ctrl = _copies.putIfAbsent(
-                  key,
-                  () => TextEditingController(),
-                );
-                if (ctrl.text != copy[item.key]) {
-                  ctrl.text = copy[item.key] ?? '';
-                }
-                return Padding(
-                  padding: const EdgeInsets.only(top: ClSpace.s3),
-                  child: TextField(
-                    key: ValueKey(key),
-                    controller: ctrl,
-                    maxLength: item.max,
-                    minLines: 1,
-                    maxLines: 3,
-                    readOnly: _busy,
-                    decoration: InputDecoration(
-                      labelText: item.label.of(uiLocale),
-                    ),
-                    onChanged: (v) {
-                      _overrides[_locale!.languageCode]![item.key] = v;
-                      _changed();
-                    },
+                    onSelected: _busy ? null : (_) => _selectSection(index),
                   ),
-                );
-              },
+              ],
             ),
-          if (_video) ...[
-            const SizedBox(height: ClSpace.s4),
-            Text(l10n.p48CropHint, style: cl.text.label),
-            for (final (i, beat) in _spec.beats.indexed)
-              _cropTile(i, beat.slots.first, byId),
-            TextButton(
-              onPressed: _busy ? null : () => Navigator.of(context).maybePop(),
-              child: Text(l10n.p48ChangePhotos),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.ksVideoMusic),
-              subtitle: Text(
-                _music != null && _music!.id == null
-                    ? l10n.ksMusicNone
-                    : _track(catalog)?.title.of(uiLocale) ?? l10n.ksMusicNone,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: _busy
-                  ? null
-                  : () async {
-                      final picked = await showModalBottomSheet<({String? id})>(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (sheet) => SafeArea(
-                          child: SingleChildScrollView(
-                            child: KeepsakeMusicSheet(
-                              tracks: catalog?.music ?? [],
-                              selected: _effectiveMusic == null
-                                  ? _t.defaultMusic
-                                  : _effectiveMusic!.id,
-                              defaultId: _t.defaultMusic,
-                              onPick: (id) => Navigator.of(sheet).pop((id: id)),
+          ),
+          Expanded(
+            child: ListView(
+              controller: _scroll,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.all(ClSpace.s4),
+              children: [
+                if (_section == 0) ...[
+                  Text(l10n.p48Details, style: cl.text.bodyStrong),
+                  const SizedBox(height: ClSpace.s4),
+                  if (_spec.fields.any((f) => f.suggestion != null)) ...[
+                    Text(l10n.p48SuggestionsHint, style: cl.text.label),
+                    TextButton(
+                      onPressed: _busy
+                          ? null
+                          : () {
+                              for (final f in _spec.fields) {
+                                if (f.suggestion != null &&
+                                    _fields[f.key]!.text.trim().isEmpty) {
+                                  _fields[f.key]!.text = f.suggestion!.of(
+                                    _locale!,
+                                  );
+                                }
+                              }
+                              _changed();
+                            },
+                      child: Text(l10n.p48UseSuggestions),
+                    ),
+                  ],
+                  for (final f in _spec.fields.where(
+                    (f) => !_optionalDetail(f),
+                  ))
+                    _field(f),
+                  if (_spec.fields.any(_optionalDetail))
+                    ExpansionTile(
+                      key: const ValueKey('p48-optional-details'),
+                      initiallyExpanded: _detailsExpanded,
+                      onExpansionChanged: (value) => _detailsExpanded = value,
+                      trailing: const ClIcon(ClIcons.chevronDown),
+                      tilePadding: EdgeInsets.zero,
+                      title: Text(
+                        l10n.p48MoreDetails,
+                        style: cl.text.bodyStrong,
+                      ),
+                      subtitle: Text(
+                        l10n.p48OptionalDetails,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                      children: [
+                        for (final f in _spec.fields.where(_optionalDetail))
+                          _field(f),
+                      ],
+                    ),
+                ],
+                if (_section == 1) ...[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _busy
+                          ? null
+                          : () => setState(() {
+                              _overrides[_locale!.languageCode]!.clear();
+                              _requestId = null;
+                            }),
+                      child: Text(l10n.p48Reset),
+                    ),
+                  ),
+                  for (final item in _spec.copy.where((x) => x.editable))
+                    Builder(
+                      builder: (context) {
+                        final key = '${_locale!.languageCode}:${item.key}';
+                        final ctrl = _copies.putIfAbsent(
+                          key,
+                          () => TextEditingController(),
+                        );
+                        if (ctrl.text != copy[item.key]) {
+                          ctrl.text = copy[item.key] ?? '';
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: ClSpace.s3),
+                          child: AbsorbPointer(
+                            absorbing: _busy,
+                            child: ClTextField(
+                              key: ValueKey(key),
+                              label: item.label.of(uiLocale),
+                              controller: ctrl,
+                              maxLength: item.max,
+                              maxLines: 3,
+                              onChanged: (v) {
+                                _overrides[_locale!.languageCode]![item.key] =
+                                    v;
+                                _changed();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+                if (_section == 2) ...[
+                  if (!_video)
+                    LayoutBuilder(
+                      builder: (context, box) => Center(
+                        child: RepaintBoundary(
+                          key: _boundary,
+                          child: KeepsakeCardView(
+                            template: _t,
+                            format: _format,
+                            content: _content,
+                            width: math.min(box.maxWidth, 420),
+                            onPhotoTap: _busy
+                                ? null
+                                : (slot) => _memoryPhoto(media, slot),
+                            onPhotoChanged: _busy
+                                ? null
+                                : (slot, p) =>
+                                      setState(() => _photos[slot] = p),
+                            activeSlot: !_busy && _t.photosMax > 1
+                                ? _activeSlot
+                                : null,
+                            photoPlaceholder: Text(
+                              l10n.ksChoosePhoto,
+                              style: cl.text.label.copyWith(
+                                color: _t.palette.ink,
+                              ),
                             ),
                           ),
                         ),
-                      );
-                      if (picked != null && mounted) {
-                        setState(() {
-                          _music = picked;
-                          _requestId = null;
-                        });
-                      }
-                    },
+                      ),
+                    ),
+                  if (!_video && _t.photosMax > 1)
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        for (var slot = 0; slot < _t.photosMax; slot++)
+                          ChoiceChip(
+                            key: ValueKey('premium-photo-$slot'),
+                            label: Text(l10n.p48PhotoSlot(slot + 1)),
+                            selected: slot == _activeSlot,
+                            onSelected: _busy
+                                ? null
+                                : (_) => setState(() => _activeSlot = slot),
+                          ),
+                      ],
+                    ),
+                  if (!_video)
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        TextButton(
+                          onPressed: _busy
+                              ? null
+                              : () => _memoryPhoto(media, _activeSlot),
+                          child: Text(l10n.ksFromMemories),
+                        ),
+                        TextButton(
+                          onPressed: _busy ? null : _devicePhoto,
+                          child: Text(l10n.ksFromDevice),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: ClSpace.s4),
+                  if (_video) ...[
+                    const SizedBox(height: ClSpace.s4),
+                    Text(l10n.p48CropHint, style: cl.text.label),
+                    for (final (i, beat) in _spec.beats.indexed)
+                      _cropTile(i, beat.slots.first, byId),
+                    TextButton(
+                      onPressed: _busy
+                          ? null
+                          : () => Navigator.of(context).maybePop(),
+                      child: Text(l10n.p48ChangePhotos),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.ksVideoMusic),
+                      subtitle: Text(
+                        _music != null && _music!.id == null
+                            ? l10n.ksMusicNone
+                            : _track(catalog)?.title.of(uiLocale) ??
+                                  l10n.ksMusicNone,
+                      ),
+                      trailing: const ClIcon(ClIcons.chevronRight),
+                      onTap: _busy
+                          ? null
+                          : () async {
+                              final picked = await showClSheet<({String? id})>(
+                                context: context,
+                                builder: (sheet) => KeepsakeMusicSheet(
+                                  tracks: catalog?.music ?? [],
+                                  selected: _effectiveMusic == null
+                                      ? _t.defaultMusic
+                                      : _effectiveMusic!.id,
+                                  defaultId: _t.defaultMusic,
+                                  onPick: (id) =>
+                                      Navigator.of(sheet).pop((id: id)),
+                                ),
+                              );
+                              if (picked != null && mounted) {
+                                setState(() {
+                                  _music = picked;
+                                  _requestId = null;
+                                });
+                              }
+                            },
+                    ),
+                  ],
+                ],
+              ],
             ),
-          ],
-          if (!valid || !fits)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                !valid ? l10n.p48Invalid : l10n.p48TooLong,
-                style: cl.text.label.copyWith(color: cl.colors.peach),
-              ),
-            ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: _video ? l10n.ksPreview : l10n.p48MotionPreview,
-            expand: true,
-            loading: _previewing,
-            onPressed: _busy || _previewing || !ready || !valid || !fits
-                ? null
-                : () => _video ? _previewVideo(byId) : _previewCard(),
           ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: _video ? l10n.ksVideoCreate : l10n.ksSaveCard,
-            expand: true,
-            loading: _busy,
-            onPressed: _busy || !ready || !valid || !fits
-                ? null
-                : () => _save(c),
-          ),
-          const SizedBox(height: ClSpace.s6),
         ],
+      ),
+    );
+  }
+
+  // Only known incidental metadata is collapsed. Required fields, choices and
+  // confirmations always stay visible in Information for every template family.
+  bool _optionalDetail(KeepsakePersonalField f) =>
+      !f.required && const {'birthTime', 'placeName'}.contains(f.key);
+
+  void _selectSection(int index) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _section = index);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
+  Widget _field(KeepsakePersonalField f) {
+    final uiLocale = Localizations.localeOf(context), cl = context.cl;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: ClSpace.s3),
+      child: f.options.isNotEmpty
+          ? DropdownButtonFormField<String>(
+              key: ValueKey('p48-field-${f.key}'),
+              isExpanded: true,
+              initialValue: _fields[f.key]!.text.isEmpty
+                  ? null
+                  : _fields[f.key]!.text,
+              decoration: InputDecoration(labelText: f.label.of(uiLocale)),
+              items: [
+                for (final o in f.options)
+                  DropdownMenuItem(
+                    value: o.value,
+                    child: Text(o.label.of(uiLocale)),
+                  ),
+              ],
+              onChanged: _busy
+                  ? null
+                  : (v) {
+                      _fields[f.key]!.text = v ?? '';
+                      _changed();
+                    },
+            )
+          : f.type == 'month'
+          ? DropdownButtonFormField<String>(
+              initialValue: _fields[f.key]!.text.isEmpty
+                  ? null
+                  : _fields[f.key]!.text.padLeft(2, '0'),
+              decoration: InputDecoration(labelText: f.label.of(uiLocale)),
+              items: [
+                for (var month = 1; month <= 12; month++)
+                  DropdownMenuItem(
+                    value: '$month'.padLeft(2, '0'),
+                    child: Text('$month'.padLeft(2, '0')),
+                  ),
+              ],
+              onChanged: _busy
+                  ? null
+                  : (value) {
+                      _fields[f.key]!.text = value ?? '';
+                      _changed();
+                    },
+            )
+          : f.type == 'confirmation'
+          ? CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(f.label.of(uiLocale)),
+              value: _fields[f.key]!.text == 'true',
+              onChanged: _busy
+                  ? null
+                  : (v) {
+                      _fields[f.key]!.text = v == true ? 'true' : 'false';
+                      _changed();
+                    },
+            )
+          : f.type == 'text'
+          ? AbsorbPointer(
+              absorbing: _busy,
+              child: ClTextField(
+                key: ValueKey('p48-input-${f.key}'),
+                label: f.label.of(uiLocale),
+                controller: _fields[f.key],
+                placeholder: f.suggestion?.of(_locale!),
+                maxLength: f.max,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.next,
+                onChanged: (_) => _changed(),
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  f.label.of(uiLocale),
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+                const SizedBox(height: ClSpace.s1),
+                TextField(
+                  key: ValueKey('p48-input-${f.key}'),
+                  controller: _fields[f.key],
+                  readOnly: true,
+                  onTap: _busy ? null : () => _pickField(f),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(ClRadius.card),
+                    ),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(ClSpace.s3),
+                      child: ClIcon(
+                        f.type == 'time' ? ClIcons.clock : ClIcons.calendar,
+                      ),
+                    ),
+                    suffixIcon: _fields[f.key]!.text.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: AppLocalizations.of(context).p48ClearValue,
+                            icon: const ClIcon(ClIcons.close),
+                            onPressed: _busy
+                                ? null
+                                : () {
+                                    _fields[f.key]!.clear();
+                                    _changed();
+                                  },
+                          ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Future<void> _showSettings() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final l10n = AppLocalizations.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    await showClSheet<void>(
+      context: context,
+      builder: (sheet) => MediaQuery(
+        data: mediaQuery,
+        child: StatefulBuilder(
+          builder: (sheet, refresh) {
+            void changed(VoidCallback update) {
+              setState(update);
+              refresh(() {});
+            }
+
+            return Material(
+              color: context.cl.colors.surface,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ClSheetHeader(title: l10n.p48Settings),
+                    DropdownButtonFormField<String>(
+                      initialValue: _locale!.languageCode,
+                      isExpanded: true,
+                      icon: const ClIcon(ClIcons.chevronDown),
+                      decoration: InputDecoration(labelText: l10n.p48Language),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'vi',
+                          child: Text('Tiếng Việt'),
+                        ),
+                        DropdownMenuItem(value: 'en', child: Text('English')),
+                      ],
+                      onChanged: _busy
+                          ? null
+                          : (v) => changed(() {
+                              _locale = Locale(v!);
+                              _requestId = null;
+                            }),
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    DropdownButtonFormField<KeepsakeFormat>(
+                      initialValue: _format,
+                      icon: const ClIcon(ClIcons.chevronDown),
+                      decoration: InputDecoration(labelText: l10n.p48Format),
+                      items: const [
+                        DropdownMenuItem(
+                          value: KeepsakeFormat.portrait,
+                          child: Text('4:5'),
+                        ),
+                        DropdownMenuItem(
+                          value: KeepsakeFormat.story,
+                          child: Text('9:16'),
+                        ),
+                      ],
+                      onChanged: _busy
+                          ? null
+                          : (v) => changed(() {
+                              _format = v!;
+                              _requestId = null;
+                            }),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.p48ReducedMotion),
+                      value: _reduced,
+                      onChanged: _busy
+                          ? null
+                          : (v) => changed(() {
+                              _reduced = v;
+                              _requestId = null;
+                            }),
+                    ),
+
+                    const SizedBox(height: ClSpace.s4),
+                    ClButton(
+                      label: l10n.actionDone,
+                      expand: true,
+                      onPressed: () => Navigator.of(sheet).pop(),
+                    ),
+                    const SizedBox(height: ClSpace.s4),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -868,10 +1120,13 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
         });
     return ExpansionTile(
       key: ValueKey('premium-crop-$beat'),
+      trailing: const ClIcon(ClIcons.chevronDown),
       tilePadding: EdgeInsets.zero,
       title: Text('${l10n.p48Crop} · ${beat + 1}'),
       children: [
         DropdownButton<String>(
+          isExpanded: true,
+          icon: const ClIcon(ClIcons.chevronDown),
           value: crop.fit,
           items: [
             DropdownMenuItem(value: 'contain', child: Text(l10n.p48WholePhoto)),

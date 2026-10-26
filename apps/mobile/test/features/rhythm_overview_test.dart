@@ -64,7 +64,7 @@ void main() {
       );
       expect(find.text(l10n.rhStageComingN(1)), findsOneWidget);
       expect(
-        find.text('Dự kiến 12/10 – 21/10 · còn 4 ngày đến giai đoạn'),
+        find.text('Dự kiến 12/10 – 21/10 · còn 4 ngày'), // D-116
         findsOneWidget,
       );
       // The estimate keeps its label (brief p.13).

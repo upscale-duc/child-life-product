@@ -13,6 +13,11 @@ import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_sheets.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
+import 'package:child_life/features/auto_save/auto_save_widgets.dart';
+import 'package:child_life/features/auto_save/auto_save_setup.dart';
+import 'package:child_life/features/me/me_models.dart';
+import 'package:child_life/features/me/me_repository.dart';
+import 'package:child_life/features/engagement/engagement_repository.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +67,7 @@ List<Override> _base({
   List<FamilyMilestone> milestones = const [],
   FakeMemoryRepository? repo,
   NetworkKind network = NetworkKind.wifi,
+  bool live = false,
 }) => [
   ...careOverrides(me: me),
   ...memoryOverrides(
@@ -70,7 +76,24 @@ List<Override> _base({
     milestones: milestones,
     repo: repo,
     network: network,
+    keepsakes: live
+        ? (cards: true, videos: true)
+        : (cards: false, videos: false),
   ),
+  // D-111: the tab as families on dev see it (Tự lưu, Gợi ý thông minh, Kỷ niệm 2.0 on).
+  if (live) ...[
+    autoSaveAvailableProvider.overrideWithValue(true),
+    engagementProvider.overrideWith(
+      (ref) async => {
+        'enabled': true,
+        'preferences': {'consent': true},
+        'fatigue': <String, Object?>{},
+        'suggestions': [
+          {'id': 'a' * 64, 'kind': 'ENG-03', 'context': 'weekly'},
+        ],
+      },
+    ),
+  ],
   memoryViewProvider.overrideWith(() => _View(view)),
   if (selected != null)
     memorySelectionProvider.overrideWith(() => _Selection(selected)),
@@ -294,6 +317,37 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: null,
   ),
+  '10b_photos_live': (
+    build: _tab,
+    overrides: () =>
+        _base(view: const MemoryView(tab: MemoryTab.photos), live: true),
+    prefs: const {},
+    act: null,
+  ),
+  // AS02 Tự lưu kỷ niệm intro, which had no golden (D-111); storage over quota like the
+  // owner's phone (2 GB used of 1 GB).
+  'as02_auto_save_intro': (
+    build: () => const AutoSaveIntro(),
+    overrides: () => [
+      ..._base(live: true),
+      // D-122: the portal has Tự lưu at the Beta tier, so the intro shows "Beta miễn phí".
+      autoSaveBetaProvider.overrideWith((ref, id) async => true),
+      familyStorageProvider.overrideWith(
+        (ref, id) async => const FamilyStorage(
+          familyId: 'f_1',
+          isOwner: true,
+          quotaBytes: 1024 * 1024 * 1024,
+          usedBytes: 2 * 1024 * 1024 * 1024,
+          binBytes: 0,
+          notesBytes: 0,
+          babies: [],
+          largestVideos: [],
+        ),
+      ),
+    ],
+    prefs: const {},
+    act: null,
+  ),
   '10b2_select': (
     build: _tab,
     overrides: () => _base(
@@ -330,7 +384,7 @@ final _cases = <String, _Case>{
       ),
     ),
     prefs: const {},
-    act: (t) async => t.tap(find.byKey(const Key('photoScrubber'))),
+    act: _openScrubber,
   ),
   // v1.0 "Nhật ký gọn hơn" (382:2793): the three sheets of 10b.
   'v1i_10b_group_sheet': (
@@ -349,7 +403,7 @@ final _cases = <String, _Case>{
     build: _tab,
     overrides: () => _base(view: const MemoryView(tab: MemoryTab.photos)),
     prefs: const {},
-    act: (t) async => t.tap(find.byKey(const Key('photoScrubber'))),
+    act: _openScrubber,
   ),
   'v1i_10b_by_age_month': (
     build: _tab,
@@ -568,4 +622,11 @@ void main() {
       }
     }
   }
+}
+
+/// D-120: the jump pill appears once the grid is under the filter bar.
+Future<void> _openScrubber(WidgetTester t) async {
+  await t.drag(find.byType(CustomScrollView).last, const Offset(0, -200));
+  await t.pumpAndSettle();
+  await t.tap(find.byKey(const Key('photoScrubber')));
 }

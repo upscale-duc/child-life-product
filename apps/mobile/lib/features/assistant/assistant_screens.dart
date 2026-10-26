@@ -2527,11 +2527,8 @@ class _ThreadView {
                 ),
             ],
           ),
-        // CH14: text in a photo is content, never a command.
-        if (c.field == 'image.intent' && !pending)
-          AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData)
-        else
-          const SizedBox.shrink(),
+        // CH14: text in a photo is still treated as content, never a command; D-119 (owner): no
+        // footnote saying so.
         // CH15: red flags go to health guidance, free, whatever the credits.
         if (task.care?.topic == 'sleep_concern')
           AsSafetyNote(
@@ -4503,12 +4500,11 @@ class AssistantUsageScreen extends ConsumerWidget {
                       ),
                       AsLink(
                         label: l10n.asSeePremium,
-                        onPressed: () =>
-                            openPaywall(
-                              context,
-                              entry: PaywallEntry.plan,
-                              card: PremiumEntry.lumi,
-                            ),
+                        onPressed: () => openPaywall(
+                          context,
+                          entry: PaywallEntry.plan,
+                          card: PremiumEntry.lumi,
+                        ),
                       ),
                     ],
                   ),

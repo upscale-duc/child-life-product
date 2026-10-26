@@ -1,0 +1,26 @@
+{
+  "source": "apps/mobile/lib/features/keepsakes/premium_keepsake_editor.dart",
+  "sha256": "a8dc157fb352441b477de38288a788c625268aa6a844ab1800c6b87e15a42b83",
+  "fixture": "packages/contracts/test/vectors/premium48.json; mockJournal; synthetic media",
+  "viewport": "375x812",
+  "locales": [
+    "vi",
+    "en"
+  ],
+  "themes": [
+    "light",
+    "nightCare"
+  ],
+  "textScales": [
+    1,
+    2
+  ],
+  "historical": [
+    "before",
+    "A",
+    "B",
+    "iteration-1"
+  ],
+  "current": "after",
+  "note": "Keyboard insets are simulated at 300px; keyboard artwork itself is not rendered."
+}

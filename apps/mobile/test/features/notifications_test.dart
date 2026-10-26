@@ -313,7 +313,9 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(os.requests, 1);
-      expect(find.text('Đang bật trong cài đặt hệ thống'), findsOneWidget);
+      // On: the switch says so; the "off" line and the warning go (owner, 2026-10-26).
+      expect(find.text('Đang tắt trong cài đặt hệ thống'), findsNothing);
+      expect(find.byKey(const Key('nt-off')), findsNothing);
     });
   });
 

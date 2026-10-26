@@ -5,7 +5,13 @@ import '../../app/navigation.dart' show SafePush;
 import '../../app/router.dart';
 import '../../app/session.dart';
 import '../../app/route_guard.dart';
+import '../../core/design/cl_theme.dart';
+import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_occasions.dart';
@@ -80,23 +86,36 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context),
         state = ref.watch(engagementProvider);
+    // Keep what is showing while the list reloads. It reloads whenever the media count or Tự lưu
+    // state changes (both change for a while after the app opens) and each reload waits up to a
+    // minute to settle (doc 18 #20); drawing those reloads as "loading" hid the card and brought
+    // it back later (owner, 2026-10-26: "chưa xem mà nó tự mất … mở app nó lại hiển thị rồi mất").
     return state.when(
       skipLoadingOnRefresh: true,
+      skipLoadingOnReload: true,
       loading: () => const SizedBox.shrink(),
       // Only someone who already had the shelf sees "offline"; feature-off, an undeployed
       // callable or the refresh limit stay invisible.
       error: (_, _) => state.value?['enabled'] != true
           ? const SizedBox.shrink()
           : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.only(top: ClSpace.s3),
               child: Row(
                 children: [
-                  Expanded(child: Text(l.engOffline)),
-                  TextButton(
+                  Expanded(
+                    child: Text(
+                      l.engOffline,
+                      style: context.cl.text.caption.copyWith(
+                        color: context.cl.colors.inkMuted,
+                      ),
+                    ),
+                  ),
+                  ClButton(
+                    label: l.engRetry,
+                    style: ClButtonStyle.plain,
                     // The person asked: reload now, past the background settling.
                     onPressed: () =>
                         ref.read(engagementRevisionProvider.notifier).refresh(),
-                    child: Text(l.engRetry),
                   ),
                 ],
               ),
@@ -162,52 +181,133 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
                     }
                   }
 
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item['context'] == 'retrospective'
-                                ? l.engBackfill
-                                : engagementTitle(l, kind),
-                            style: Theme.of(context).textTheme.titleMedium,
+                  // D-120: one row like "Tự lưu kỷ niệm" above it (it was a Material Card with
+                  // three text buttons and a sentence telling parents they decide). The card
+                  // opens the suggestion; "Để sau" and "Bỏ qua gợi ý" sit behind "…".
+                  final title = item['context'] == 'retrospective'
+                      ? l.engBackfill
+                      : engagementTitle(l, kind);
+                  final occasion =
+                      kind == 'ENG-02' && item['occasion'] is String
+                      ? Occasion.fromWire(item['occasion'] as String)?.label(l)
+                      : null;
+                  final line = item['context'] == 'retrospective'
+                      ? l.engBackfillBody
+                      : occasion;
+                  final cl = context.cl;
+                  return Padding(
+                    padding: const EdgeInsets.only(top: ClSpace.s3),
+                    child: ClPressable(
+                      onPressed: () => action('open'),
+                      semanticLabel: [title, ?line].join('. '),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(
+                          ClSpace.s3,
+                          10,
+                          ClSpace.s1,
+                          10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: cl.colors.surface,
+                          boxShadow: cl.shadows.card,
+                          borderRadius: BorderRadius.circular(
+                            ClRadius.card - 6,
                           ),
-                          const SizedBox(height: 8),
-                          if (kind == 'ENG-02' && item['occasion'] is String)
-                            Text(
-                              Occasion.fromWire(
-                                    item['occasion'] as String,
-                                  )?.label(l) ??
-                                  '',
-                            ),
-                          Text(
-                            item['context'] == 'retrospective'
-                                ? l.engBackfillBody
-                                : l.engBody,
-                          ),
-                          Wrap(
-                            children: [
-                              TextButton(
-                                onPressed: () => action('open'),
-                                child: Text(
-                                  kind == 'ENG-02'
-                                      ? l.engChooseTemplate
-                                      : l.engOpen,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: cl.colors.mintSoft,
+                                borderRadius: BorderRadius.circular(
+                                  ClRadius.control,
                                 ),
                               ),
-                              TextButton(
-                                onPressed: () => action('snooze'),
-                                child: Text(l.engLater),
+                              alignment: Alignment.center,
+                              child: ClIcon(
+                                kind == 'ENG-02'
+                                    ? ClIcons.video
+                                    : ClIcons.memories,
+                                size: 16,
+                                color: cl.colors.mintText,
                               ),
-                              TextButton(
-                                onPressed: () => action('dismiss'),
-                                child: Text(l.engDismiss),
+                            ),
+                            const SizedBox(width: ClSpace.s3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(title, style: cl.text.bodyStrong),
+                                  if (line != null) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      line,
+                                      style: cl.text.caption.copyWith(
+                                        color: cl.colors.inkMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            ClPressable(
+                              key: Key('engMore_$id'),
+                              onPressed: () async {
+                                final choice = await showClSheet<String>(
+                                  context: context,
+                                  builder: (sheet) => Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      ClSheetHeader(title: title),
+                                      ClButton(
+                                        label: kind == 'ENG-02'
+                                            ? l.engChooseTemplate
+                                            : l.engOpen,
+                                        expand: true,
+                                        onPressed: () =>
+                                            Navigator.of(sheet).pop('open'),
+                                      ),
+                                      const SizedBox(height: ClSpace.s2),
+                                      ClButton(
+                                        label: l.engLater,
+                                        style: ClButtonStyle.secondary,
+                                        expand: true,
+                                        onPressed: () =>
+                                            Navigator.of(sheet).pop('snooze'),
+                                      ),
+                                      ClButton(
+                                        label: l.engDismiss,
+                                        style: ClButtonStyle.plain,
+                                        expand: true,
+                                        onPressed: () =>
+                                            Navigator.of(sheet).pop('dismiss'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                if (choice != null) await action(choice);
+                              },
+                              semanticLabel: l.engMore,
+                              child: SizedBox(
+                                width: 44,
+                                height: 44,
+                                child: Center(
+                                  child: Text(
+                                    '•••',
+                                    style: cl.text.label.copyWith(
+                                      color: cl.colors.inkMuted,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

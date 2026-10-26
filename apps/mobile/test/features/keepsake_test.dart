@@ -352,7 +352,7 @@ void main() {
     }
 
     for (final palette in [ClPalette.light, ClPalette.nightCare]) {
-      testWidgets('tools, layouts and the prefilled note (${palette.name})', (
+      testWidgets('tools, layouts and the saving audience (${palette.name})', (
         tester,
       ) async {
         await pumpScreen(
@@ -363,9 +363,11 @@ void main() {
         for (final t in ['Ảnh', 'Bố cục', 'Lời nhắn', 'Màu', 'Lưu thiệp']) {
           expect(find.text(t), findsOneWidget);
         }
+        await tester.tap(find.text('Ảnh'));
+        await tester.pumpAndSettle();
         expect(find.text('Chạm ảnh để đổi · kéo để căn'), findsOneWidget);
         expect(
-          find.text('Tên, tuổi và ngày được điền sẵn từ hồ sơ của Teddy'),
+          find.text('Lưu vào Kỷ niệm · Chỉ ba mẹ'),
           findsOneWidget,
         );
         expect(find.text('“Một tháng yêu thương”'), findsWidgets);
@@ -621,7 +623,7 @@ void main() {
         prefs: noNudges,
       );
       expect(find.text('Tạo từ kỷ niệm của Teddy'), findsOneWidget);
-      expect(find.text('Ảnh PNG để chia sẻ'), findsOneWidget);
+      expect(find.text('Ảnh để chia sẻ'), findsOneWidget); // D-120: no "PNG"
       await tester.tap(find.text('Thiệp cột mốc'));
       await tester.pumpAndSettle();
       expect(visits.last.location, '/memories/card');

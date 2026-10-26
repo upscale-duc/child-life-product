@@ -76,7 +76,7 @@ import '../features/adaptive/explore_screen.dart' show ExploreScreen;
 import '../features/adaptive/today_adaptive.dart' show adaptiveRoutes;
 import '../features/today/today_personalize.dart' show todayRoutes;
 import '../features/today/today_screen.dart';
-import 'navigation.dart' show SafeGoRouter;
+import 'navigation.dart' show OverlayTwin, SafeGoRouter;
 import 'route_guard.dart';
 import 'providers.dart';
 import 'session.dart';
@@ -297,17 +297,29 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               _route(
                 path: Routes.memories,
-                builder: (_, s) =>
-                    RegExp(
-                      r'^[a-f0-9]{64}$',
-                    ).hasMatch(s.uri.queryParameters['engagement'] ?? '')
-                    ? EngagementWeekScreen(
-                        id: s.uri.queryParameters['engagement']!,
-                      )
-                    : const MemoriesScreen(),
+                // ENG-03 "Nhìn lại tuần qua" (`/memories?week=…&engagement=…` from the server) is
+                // a page above Kỷ niệm, not Kỷ niệm itself: it used to replace the tab's root, so
+                // there was nothing to go back to (owner, 2026-10-26).
+                redirect: (_, s) {
+                  final id = s.uri.queryParameters['engagement'] ?? '';
+                  // Also its overlay twin (`/o/memories`, from a push): the twin turns the
+                  // target into `/o/memories/week`, on top of what was open.
+                  return (s.uri.path == Routes.memories ||
+                              s.uri.path == OverlayTwin.of(Routes.memories)) &&
+                          RegExp(r'^[a-f0-9]{64}$').hasMatch(id)
+                      ? '${Routes.memories}/week?engagement=$id'
+                      : null;
+                },
+                builder: (_, _) => const MemoriesScreen(),
                 // S10: album, favourites and milestone pages (10e, 11f); like every screen opened
                 // from a tab, they hide the dock (owner, 2026-10-11).
                 routes: [
+                  _route(
+                    path: 'week',
+                    builder: (_, s) => EngagementWeekScreen(
+                      id: s.uri.queryParameters['engagement'] ?? '',
+                    ),
+                  ),
                   _route(
                     path: 'print',
                     builder: (_, s) => PrintStudioScreen(

@@ -570,24 +570,38 @@ class RecordDetailScreen extends ConsumerWidget {
       relationLabel: (r, c) => _relation(l10n, r, c),
     );
 
-    Widget row(String label, Widget value) => Container(
-      constraints: const BoxConstraints(minHeight: 56),
-      padding: const EdgeInsets.symmetric(
-        horizontal: ClSpace.s4,
-        vertical: ClSpace.s2,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-            ),
-          ),
-          value,
-        ],
-      ),
-    );
+    // Large text: the value goes under its label instead of crushing it a letter per line.
+    final stacked = MediaQuery.textScalerOf(context).scale(10) > 13;
+    Widget row(String label, Widget value) {
+      final name = Text(
+        label,
+        style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+      );
+      return Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s2,
+        ),
+        child: stacked
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  name,
+                  const SizedBox(height: ClSpace.s1),
+                  value,
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: name),
+                  value,
+                ],
+              ),
+      );
+    }
+
     Widget text(String v) => Text(v, style: cl.text.bodyStrong);
 
     return OnboardingScaffold(
@@ -620,9 +634,14 @@ class RecordDetailScreen extends ConsumerWidget {
                       [careTypeLabel(l10n, record.type), ?subtitle].join(' · '),
                       style: cl.text.label.copyWith(color: care.ink),
                     ),
-                    Text(
-                      recordValue(l10n, locale, record),
-                      style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+                    // One line: "120 ml" never splits from its unit at large text.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        recordValue(l10n, locale, record),
+                        style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+                      ),
                     ),
                     Text(
                       when(record.occurredAt).replaceFirst(' · ', ', '),

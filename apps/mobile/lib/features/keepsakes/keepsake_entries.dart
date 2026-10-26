@@ -616,7 +616,12 @@ class MilestoneNudgeCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: ClSpace.s3),
-            Row(
+            // A Wrap, not a Row with a Spacer: "Make a video · Make a card · Later" is wider than
+            // the card in English and at large text (found on a live-state render, D-111).
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 if (access.videos) ...[
                   _NudgePill(
@@ -627,7 +632,6 @@ class MilestoneNudgeCard extends ConsumerWidget {
                       '${Routes.memoryStory}?occasion=${occasion.wire}',
                     ),
                   ),
-                  const SizedBox(width: ClSpace.s2),
                 ],
                 if (access.cards)
                   _NudgePill(
@@ -638,7 +642,6 @@ class MilestoneNudgeCard extends ConsumerWidget {
                       '${Routes.milestoneCard}?occasion=${occasion.wire}',
                     ),
                   ),
-                const Spacer(),
                 ClPressable(
                   onPressed: () async {
                     await ref

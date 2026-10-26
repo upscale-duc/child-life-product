@@ -118,7 +118,7 @@ void main() {
         expect(find.text('Chưa ghi thay tã ngày 7 thg 10'), findsOneWidget);
         await tester.tap(find.text('Ghi bù thay tã'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Lưu'));
+        await tester.tap(find.text('Lưu lần thay tã'));
         await tester.pumpAndSettle();
         final saved = repo.created.single;
         expect(saved.type, CareType.diaper);

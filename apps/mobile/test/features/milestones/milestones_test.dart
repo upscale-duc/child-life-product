@@ -165,7 +165,8 @@ void main() {
       expect(find.text('Mỉm cười đáp lại'), findsOneWidget);
       expect(find.text(l10n.mtHowTo), findsOneWidget);
       expect(find.text('Tham khảo 1–3 tháng'), findsOneWidget);
-      expect(find.text(l10n.mtReassure), findsOneWidget);
+      // D-116: the doctor card already reassures; the extra note shows only without it.
+      expect(find.text(l10n.mtReassure), findsNothing);
       expect(find.text(l10n.mtTalkToDoctor), findsOneWidget);
       await _tap(tester, find.text(l10n.mtFollow));
       expect(repo.writes, ['follow p_first_smile']);

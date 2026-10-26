@@ -1202,10 +1202,6 @@
   "@familyLoadFailed": {
     "description": "Members list failed to load."
   },
-  "inviteSubtitle": "Chọn người đó là ai và được làm gì.",
-  "@inviteSubtitle": {
-    "description": "14b subtitle."
-  },
   "inviteRelationLabel": "Người được mời là",
   "@inviteRelationLabel": {
     "description": "14b relation label."
@@ -2033,7 +2029,7 @@
   "@dayRhythmTitle": {
     "description": "DayRhythm card title (48:409)."
   },
-  "rhythmFeeds": "{count} cữ · {ml} ml",
+  "rhythmFeeds": "{count} cữ · {ml} ml",
   "@rhythmFeeds": {
     "description": "Bottle total.",
     "placeholders": {
@@ -2045,7 +2041,7 @@
       }
     }
   },
-  "rhythmBreast": "{count} cữ · {minutes} phút",
+  "rhythmBreast": "{count} cữ · {minutes} phút",
   "@rhythmBreast": {
     "description": "Breast total.",
     "placeholders": {
@@ -2502,10 +2498,6 @@
   "sleepManualHint": "Quên bấm giờ? Chọn giờ bắt đầu và kết thúc",
   "@sleepManualHint": {
     "description": "25a option subtitle."
-  },
-  "sleepChooserFootnote": "Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.",
-  "@sleepChooserFootnote": {
-    "description": "25a footnote."
   },
   "timerFamilySees": "Cả nhà đang thấy",
   "@timerFamilySees": {
@@ -3186,10 +3178,6 @@
       }
     }
   },
-  "emptyDayBody": "Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.",
-  "@emptyDayBody": {
-    "description": "20e body."
-  },
   "backLog": "Ghi bù {what}",
   "@backLog": {
     "description": "20e button.",
@@ -3676,10 +3664,6 @@
   "@remindersDone": {
     "description": "8a group."
   },
-  "remindersInfo": "Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.",
-  "@remindersInfo": {
-    "description": "8a info line (R-091)."
-  },
   "reminderNew": "Nhắc việc mới",
   "@reminderNew": {
     "description": "8a button / 8b title."
@@ -3835,7 +3819,7 @@
   "@notifPromptTitle": {
     "description": "8c (127:13809)."
   },
-  "notifPromptBody": "Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.",
+  "notifPromptBody": "Thông báo chỉ được đặt trên máy tạo nhắc việc.",
   "@notifPromptBody": {
     "description": "8c body."
   },
@@ -3883,10 +3867,6 @@
   "reminderDoneRow": "Đã xong",
   "@reminderDoneRow": {
     "description": "8e row for a done reminder."
-  },
-  "reminderDetailNote": "Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.",
-  "@reminderDetailNote": {
-    "description": "8e note."
   },
   "reminderMarkDone": "Đánh dấu đã xong",
   "@reminderMarkDone": {
@@ -4988,10 +4968,6 @@
   "actFavorite": "Thêm vào Yêu thích",
   "@actFavorite": {
     "description": "10b3 (S10)."
-  },
-  "actFavoriteHint": "Gom vào album Yêu thích của bạn",
-  "@actFavoriteHint": {
-    "description": "10b3."
   },
   "actMilestoneHint": "Ví dụ: Lần đầu cười",
   "@actMilestoneHint": {
@@ -6387,10 +6363,6 @@
       }
     }
   },
-  "bpGrowthHint": "Biểu đồ cân nặng, chiều cao",
-  "@bpGrowthHint": {
-    "description": "13j row."
-  },
   "bpStorage": "Dung lượng của {name}",
   "@bpStorage": {
     "description": "13j row.",
@@ -6921,7 +6893,7 @@
   "@ntStorageHint": {
     "description": "Toggle hint."
   },
-  "ntFootnote": "Thông báo không bao giờ kèm ảnh hay tên bé.",
+  "ntFootnote": "Thông báo không bao giờ kèm ảnh của bé.",
   "@ntFootnote": {
     "description": "Footnote (R-120)."
   },
@@ -8859,7 +8831,7 @@
       }
     }
   },
-  "milkDayTip": "{day} · {ml} ml · {count} cữ",
+  "milkDayTip": "{day} · {ml} ml · {count} cữ",
   "@milkDayTip": {
     "description": "20g Bú bình callout.",
     "placeholders": {
@@ -8899,7 +8871,7 @@
   "@breastPerDayHint": {
     "description": "20g Bú mẹ card subtitle."
   },
-  "breastDayTip": "{day} · {minutes} phút · {count} cữ",
+  "breastDayTip": "{day} · {minutes} phút · {count} cữ",
   "@breastDayTip": {
     "description": "20g Bú mẹ callout.",
     "placeholders": {
@@ -8935,7 +8907,7 @@
   "@breastByTimeNote": {
     "description": "20g Bú mẹ banner."
   },
-  "minutesAndFeeds": "{minutes} phút · {count} cữ",
+  "minutesAndFeeds": "{minutes} phút · {count} cữ",
   "@minutesAndFeeds": {
     "description": "20g Bú mẹ day/night detail.",
     "placeholders": {
@@ -9016,17 +8988,9 @@
   "@careHistory": {
     "description": "Care tile."
   },
-  "careHistorySub": "Mọi lần đã ghi",
-  "@careHistorySub": {
-    "description": "Care tile subtitle."
-  },
   "careGrowth": "Tăng trưởng",
   "@careGrowth": {
     "description": "Care tile."
-  },
-  "careGrowthSub": "Cân nặng, chiều dài",
-  "@careGrowthSub": {
-    "description": "Care tile subtitle."
   },
   "careSoon": "Sớm ra mắt",
   "@careSoon": {
@@ -13672,7 +13636,7 @@
   "@fbTitle": {
     "description": "FB2 title (477:6493)"
   },
-  "fbIntro": "Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.",
+  "fbIntro": "Đội ngũ Child Life đọc từng góp ý.",
   "@fbIntro": {
     "description": "FB2 intro"
   },
@@ -13814,7 +13778,7 @@
   "@autoSaveReviewShort": {
     "description": "AR04 entry card button"
   },
-  "autoSaveIntroLead": "Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.",
+  "autoSaveIntroLead": "Child Life tìm ảnh và video có thể có con. Bạn xem lại rồi mới tải lên.",
   "@autoSaveIntroLead": {
     "description": "AS02 lead"
   },
@@ -13822,15 +13786,11 @@
   "@autoSaveStep1": {
     "description": "AS02 step 1"
   },
-  "autoSaveStep1Hint": "Giúp app gợi ý đúng hơn",
-  "@autoSaveStep1Hint": {
-    "description": "AS02 step 1 hint"
-  },
   "autoSaveStep2": "App tìm trong ảnh mới",
   "@autoSaveStep2": {
     "description": "AS02 step 2"
   },
-  "autoSaveStep2Hint": "Chỉ những ảnh bạn cho phép xem",
+  "autoSaveStep2Hint": "Ngay trên máy, chỉ những ảnh bạn cho phép xem, không gửi đi",
   "@autoSaveStep2Hint": {
     "description": "AS02 step 2 hint"
   },
@@ -13838,11 +13798,11 @@
   "@autoSaveStep3": {
     "description": "AS02 step 3"
   },
-  "autoSaveStep3Hint": "Không tự tải, không tự chia sẻ",
+  "autoSaveStep3Hint": "Không tự chia sẻ",
   "@autoSaveStep3Hint": {
     "description": "AS02 step 3 hint"
   },
-  "autoSaveIntroFootnote": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ({usage}).",
+  "autoSaveIntroFootnote": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình (đã dùng {usage}).",
   "@autoSaveIntroFootnote": {
     "description": "AS02 footnote with the family's live usage, e.g. '3,2 / 10 GB'; P-147 adds the on-device sentence",
     "placeholders": {
@@ -13851,7 +13811,7 @@
       }
     }
   },
-  "autoSaveIntroFootnoteNoUsage": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.",
+  "autoSaveIntroFootnoteNoUsage": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Tệp đã tải tính vào dung lượng của gia đình.",
   "@autoSaveIntroFootnoteNoUsage": {
     "description": "AS02 footnote while storage usage is unknown"
   },
@@ -14733,7 +14693,7 @@
   "@autoSaveSettingsTitle": {
     "description": "AS19 title"
   },
-  "autoSaveOnBeta": "Đang bật · Beta miễn phí",
+  "autoSaveOnBeta": "Đang bật",
   "@autoSaveOnBeta": {
     "description": "AS19 master switch subtitle"
   },
@@ -15241,7 +15201,7 @@
   "@ksNew": {
     "description": "Badge on the new creation tiles (MM01, MM02)."
   },
-  "ksCardTileHint": "Ảnh PNG để chia sẻ",
+  "ksCardTileHint": "Ảnh để chia sẻ",
   "@ksCardTileHint": {
     "description": "MM01 Thiệp cột mốc tile."
   },
@@ -17681,7 +17641,7 @@
       }
     }
   },
-  "rhStageExpectedLine": "Dự kiến {range} · còn {days} ngày đến giai đoạn",
+  "rhStageExpectedLine": "Dự kiến {range} · còn {days} ngày",
   "@rhStageExpectedLine": {
     "description": "NL01: the next window and days left.",
     "placeholders": {
@@ -18221,15 +18181,6 @@
       }
     }
   },
-  "rhCalendarFooter": "Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình {version}.",
-  "@rhCalendarFooter": {
-    "description": "NL03 footer.",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
   "rhNotPartner": "{label} được dùng làm tham khảo, không phải đối tác.",
   "@rhNotPartner": {
     "description": "Source block (D-072 #7).",
@@ -18274,15 +18225,6 @@
   "rhSourcesReview": "Nguồn & duyệt",
   "@rhSourcesReview": {
     "description": "NL04 card."
-  },
-  "rhModelVersion": "Mô hình {version}",
-  "@rhModelVersion": {
-    "description": "NL04 sources: the model version.",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
   },
   "rhSameAsUsual": "Con vẫn như mọi ngày",
   "@rhSameAsUsual": {
@@ -19587,10 +19529,6 @@
   "@rhWeekRecordedTitle": {
     "description": "EN09 free section heading."
   },
-  "rhWeekRecordedSub": "Từ nhật ký của cả nhà",
-  "@rhWeekRecordedSub": {
-    "description": "EN09 free section subtitle."
-  },
   "rhWeekFeeds": "Bú",
   "@rhWeekFeeds": {
     "description": "EN09 tile label."
@@ -19792,10 +19730,6 @@
   "rhWeekInsightTitle": "Nhìn lại tuần qua",
   "@rhWeekInsightTitle": {
     "description": "EN09 group A section heading."
-  },
-  "rhWeekInsightSub": "Từ ghi nhận và nhật ký của nhà mình",
-  "@rhWeekInsightSub": {
-    "description": "EN09 group A section subtitle."
   },
   "rhWeekNotesTitle": "Ghi nhận trong tuần",
   "@rhWeekNotesTitle": {
@@ -21065,10 +20999,6 @@
   "@asKeepReceiptOff": {
     "description": "CH09 retention off (delete_after_read; G05). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asPhotoTextIsData": "Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.",
-  "@asPhotoTextIsData": {
-    "description": "CH09 / CH14 notice (618:10251, 614:9037)."
-  },
   "asSendPhoto": "Gửi ảnh",
   "@asSendPhoto": {
     "description": "CH09 primary (\"Tiếp tục\" in the frame): uploads and reads. VI and EN are engineering drafts (no frame draws this state) for owner review."
@@ -22022,7 +21952,7 @@
   "@lbStagesTitle": {
     "description": "2a title; Chăm sóc tile (D-076 #5, never \"thẻ\")."
   },
-  "lbStagesIntro": "Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.",
+  "lbStagesIntro": "Mỗi bé phát triển theo nhịp riêng.",
   "@lbStagesIntro": {
     "description": "2a intro (no review claim)."
   },
@@ -22437,7 +22367,7 @@
       }
     }
   },
-  "mtLead": "Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.",
+  "mtLead": "Mỗi bé có nhịp riêng.",
   "@mtLead": {
     "description": "3a summary card body."
   },
@@ -23073,7 +23003,7 @@
   "@ntGroupBaby": {
     "description": "EN07 group header."
   },
-  "ntGroupBabyHint": "Gom lại, tối đa 2 thông báo mỗi ngày",
+  "ntGroupBabyHint": "Tối đa 2 thông báo mỗi ngày",
   "@ntGroupBabyHint": {
     "description": "EN07 group helper."
   },
@@ -23081,7 +23011,7 @@
   "@ntRhythm": {
     "description": "EN07 row."
   },
-  "ntRhythmHint": "Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày",
+  "ntRhythmHint": "3 ngày trước mỗi giai đoạn mới",
   "@ntRhythmHint": {
     "description": "EN07 row helper."
   },
@@ -23125,7 +23055,7 @@
   "@ntPhotos": {
     "description": "EN07 row."
   },
-  "ntPhotosHint": "Tự lưu kỷ niệm · tối đa 1 lần/ngày",
+  "ntPhotosHint": "Từ Tự lưu kỷ niệm, tối đa 1 lần mỗi ngày",
   "@ntPhotosHint": {
     "description": "EN07 row helper."
   },
@@ -23141,7 +23071,7 @@
   "@ntFamilyActivity": {
     "description": "EN07 row."
   },
-  "ntFamilyActivityHint": "Thích, xem kỷ niệm",
+  "ntFamilyActivityHint": "Khi có người thích hoặc xem kỷ niệm",
   "@ntFamilyActivityHint": {
     "description": "EN07 row helper."
   },
@@ -23157,7 +23087,7 @@
   "@ntBabyName": {
     "description": "EN07 switch (D-094, key babyName): pushes show the baby’s nickname, else “bé”."
   },
-  "ntBabyNameHint": "Ví dụ “Bin sắp tròn 100 ngày”. Tắt để thông báo chỉ ghi “bé”.",
+  "ntBabyNameHint": "Tắt thì thông báo chỉ ghi “bé”.",
   "@ntBabyNameHint": {
     "description": "EN07 subtitle of ntBabyName."
   },
@@ -27144,7 +27074,7 @@
   "pv2Notes": "Sổ tay nhà mình",
   "pv2AddNote": "Thêm điều muốn ứng dụng nhớ",
   "pv2NoteText": "Điều nhà mình muốn ghi nhớ",
-  "pv2Shared": "Cả nhà dùng chung",
+  "pv2Shared": "Chia sẻ với người được xem chăm sóc bé",
   "pv2Personal": "Chỉ riêng bạn",
   "pv2Category": "Loại ghi chú",
   "pv2Sleep": "Ngủ",
@@ -27330,7 +27260,7 @@
     "description": "Personalization v2: NoteText"
   },
   "@pv2Shared": {
-    "description": "Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45)."
+    "description": "Personalization v2 notes editor: switch that makes a note visible to members who can view the baby's care (scope baby); also the scope label of a shared note."
   },
   "@pv2Personal": {
     "description": "Personalization v2: Personal"
@@ -27601,14 +27531,13 @@
   "engRetry": "Thử lại",
   "engBackfill": "Nhìn lại những khoảnh khắc đã có",
   "engBackfillBody": "Bạn có thể làm video cho mốc đã qua từ ảnh đã lưu.",
-  "engBody": "Xem khi thuận tiện. Bạn luôn là người quyết định lưu hay tạo kỷ niệm.",
   "engChooseTemplate": "Chọn mẫu video",
   "engOpen": "Xem gợi ý",
   "engLater": "Để sau",
   "engDismiss": "Bỏ qua gợi ý",
   "engExpired": "Gợi ý này đã hết hạn hoặc không còn khả dụng.",
-  "engSettingsHint": "Áp dụng cho các lời mời chủ động mới. Lịch chăm sóc bạn đặt và cập nhật giao dịch vẫn theo cài đặt riêng.",
-  "engConsent": "Cho phép lời mời chủ động",
+  "engSettingsHint": "Gợi ý đúng lúc, xem khi tiện. Không ảnh hưởng nhắc việc bạn đặt.",
+  "engConsent": "Nhận gợi ý thông minh",
   "engResume": "Tiếp tục nhận gợi ý sau thời gian nghỉ",
   "@engTitle": {
     "description": "Smart Engagement V1: engTitle"
@@ -27639,9 +27568,6 @@
   },
   "@engBackfillBody": {
     "description": "Smart Engagement V1: engBackfillBody"
-  },
-  "@engBody": {
-    "description": "Smart Engagement V1: engBody"
   },
   "@engChooseTemplate": {
     "description": "Smart Engagement V1: engChooseTemplate"
@@ -28143,7 +28069,7 @@
   "@rhStageLastDay": {
     "description": "Reference window bar on its last day."
   },
-  "rhCalendarDisclaimerShort": "chỉ để tham khảo, mỗi bé một khác",
+  "rhCalendarDisclaimerShort": "mỗi bé một khác",
   "@rhCalendarDisclaimerShort": {
     "description": "One-line reminder under the reference calendar card."
   },
@@ -28580,15 +28506,6 @@
   "@axCustomizeLink": {
     "description": "Link at the end of every populated Hôm nay (AX10–AX13)."
   },
-  "axCustomizeIntro": "Sắp xếp, ghim hoặc ẩn. Gợi ý dựa trên tuổi của {name} và mục tiêu bạn chọn.",
-  "@axCustomizeIntro": {
-    "description": "AX14 intro.",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "axGoalsLabel": "Mục tiêu của gia đình",
   "@axGoalsLabel": {
     "description": "AX14 label."
@@ -28604,10 +28521,6 @@
   "axHiddenLabel": "Đã ẩn",
   "@axHiddenLabel": {
     "description": "AX14 list label."
-  },
-  "axPinned": "Ghim · luôn ở đầu",
-  "@axPinned": {
-    "description": "AX14 row subtitle of a pinned widget."
   },
   "axPin": "Ghim {title}",
   "@axPin": {
@@ -28626,32 +28539,6 @@
         "type": "String"
       }
     }
-  },
-  "axBecauseGoal": "Theo mục tiêu “{goal}”",
-  "@axBecauseGoal": {
-    "description": "AX14 row reason.",
-    "placeholders": {
-      "goal": {
-        "type": "String"
-      }
-    }
-  },
-  "axBecauseAge": "Gợi ý cho tuổi của {name}",
-  "@axBecauseAge": {
-    "description": "AX14 row reason (engineering wording, G-110).",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "axBecauseAlways": "Luôn có",
-  "@axBecauseAlways": {
-    "description": "AX06 \"Vì: Luôn có\"."
-  },
-  "axHiddenByAge": "Ẩn theo gợi ý tuổi · bật lại bất cứ lúc nào",
-  "@axHiddenByAge": {
-    "description": "AX14 hidden row subtitle."
   },
   "axRestore": "Khôi phục gợi ý theo tuổi của {name}",
   "@axRestore": {
@@ -28791,15 +28678,6 @@
     "description": "AX06 sub-line.",
     "placeholders": {
       "name": {
-        "type": "String"
-      }
-    }
-  },
-  "axPreviewBecause": "Vì: {reason}",
-  "@axPreviewBecause": {
-    "description": "AX06 row reason.",
-    "placeholders": {
-      "reason": {
         "type": "String"
       }
     }
@@ -32235,5 +32113,98 @@
   "pv2RowRhythmPremium": "Nhận xét tuần · có nguồn",
   "@pv2RowRhythmPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
+  },
+  "axGreetMorningNoName": "Chào buổi sáng ☀️",
+  "@axGreetMorningNoName": {
+    "description": "Hôm nay greeting before noon when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review."
+  },
+  "axGreetAfternoonNoName": "Chào buổi chiều",
+  "@axGreetAfternoonNoName": {
+    "description": "Hôm nay greeting 12:00–18:00 when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review."
+  },
+  "axGreetEveningNoName": "Chào buổi tối 🌙",
+  "@axGreetEveningNoName": {
+    "description": "Hôm nay greeting after 18:00 when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review."
+  },
+  "axTilesLoading": "Đang tải nhịp hôm nay",
+  "@axTilesLoading": {
+    "description": "Screen-reader label of the care tile skeletons on Hôm nay while records load. D-108. EN is an engineering draft for owner review."
+  },
+  "careLoadingRecords": "Đang tải ghi chép",
+  "@careLoadingRecords": {
+    "description": "Screen-reader label of the History and Stats skeleton while the day's care records load."
+  },
+  "saveDiaper": "Lưu lần thay tã",
+  "@saveDiaper": {
+    "description": "Primary button of the diaper sheet (24), named like the other care sheets (saveFeed, savePump, saveSleep)."
+  },
+  "pv2PlanShared": "Cả nhà dùng chung",
+  "@pv2PlanShared": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Plan card tag (member, PV45)."
+  },
+  "axCustomizeHint": "Kéo để đổi thứ tự. Ghim để luôn ở đầu.",
+  "@axCustomizeHint": {
+    "description": "Tuỳ chỉnh Hôm nay (AX14) instruction under the title (D-115): the two actions that are not obvious; replaces axCustomizeIntro on this screen."
+  },
+  "rhCalendarNote": "Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé.",
+  "@rhCalendarNote": {
+    "description": "NL03 calendar footer (D-116): rhCalendarFooter without the model version, which is for staff."
+  },
+  "engMore": "Tuỳ chọn gợi ý",
+  "@engMore": {
+    "description": "Screen-reader label of the \"…\" on a smart-suggestion row in Kỷ niệm (D-120): opens Xem / Để sau / Bỏ qua gợi ý."
+  },
+  "ksCardMissingPhotos": "Chọn thêm {n} ảnh để lưu thiệp",
+  "@ksCardMissingPhotos": {
+    "description": "Card editor: why Save is unavailable; n is the number of required photo slots still empty.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksAddDevicePhotos": "Thêm ảnh từ máy",
+  "@ksAddDevicePhotos": {
+    "description": "Video photo picker: opens the device library to add photos to scenes; an action, not a source tab."
+  },
+  "ksCardSaveAudience": "Lưu vào Kỷ niệm · Chỉ ba mẹ",
+  "@ksCardSaveAudience": {
+    "description": "Card editor: destination and audience before saving; does not claim the card is already saved."
+  },
+  "autoSaveOnBetaFree": "Đang bật · Beta miễn phí",
+  "@autoSaveOnBetaFree": {
+    "description": "Tự lưu settings switch while on and the portal has Tự lưu at the Beta tier (D-122); autoSaveOnBeta otherwise."
+  },
+  "p48InfoTab": "Thông tin",
+  "@p48InfoTab": {
+    "description": "Editor section: information about the baby or moment."
+  },
+  "p48TextTab": "Lời nhắn",
+  "@p48TextTab": {
+    "description": "Editor section: editable text appearing in the finished keepsake."
+  },
+  "p48MediaTab": "Ảnh & nhạc",
+  "@p48MediaTab": {
+    "description": "Video editor section: framing the chosen photos and music."
+  },
+  "p48PhotosTab": "Ảnh",
+  "@p48PhotosTab": {
+    "description": "Card editor section: actual card artwork and photo editing."
+  },
+  "p48MoreDetails": "Thêm chi tiết",
+  "@p48MoreDetails": {
+    "description": "Expandable optional moment details, such as birth time and birthplace."
+  },
+  "p48OptionalDetails": "Tuỳ chọn · Chỉ hiện khi bạn nhập",
+  "@p48OptionalDetails": {
+    "description": "Optional moment metadata, omitted from the keepsake when left blank."
+  },
+  "p48Settings": "Tuỳ chỉnh",
+  "@p48Settings": {
+    "description": "Opens output language, aspect ratio and gentle motion settings."
+  },
+  "p48ClearValue": "Xoá giá trị",
+  "@p48ClearValue": {
+    "description": "Clears an optional date or time without substituting a default."
   }
 }

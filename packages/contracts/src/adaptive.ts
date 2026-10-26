@@ -90,6 +90,8 @@ export const widgetIds = [
   'create_from_memories',
   'growth',
   'family_view',
+  // P-181: "Ai đang trông bé" (the app's WidgetId.careDuty).
+  'care_duty',
 ] as const;
 export type WidgetId = (typeof widgetIds)[number];
 
@@ -115,6 +117,7 @@ export const widgetRegistry: readonly WidgetEntry[] = [
   { id: 'create_from_memories', goals: ['memories'], product: 0 },
   { id: 'growth', goals: ['growth_vaccines'], product: 0 },
   { id: 'family_view', goals: ['family'], product: 0 },
+  { id: 'care_duty', goals: ['family'], product: 0 },
 ];
 
 /**
@@ -123,9 +126,16 @@ export const widgetRegistry: readonly WidgetEntry[] = [
  * preset goals, which is why the goal term is scored relative to the presets.
  */
 export const bandDefaults: Record<AgeBand, readonly WidgetId[]> = {
-  b0_1: ['tiles', 'forYou', 'solids', 'reminders', 'recent_memories', 'growth'],
-  b1_3: ['recent_memories', 'tiles', 'forYou', 'solids', 'reminders', 'growth'],
-  b3_6: ['moment_today', 'create_from_memories', 'spending', 'reminders', 'family_view'],
+  b0_1: ['tiles', 'forYou', 'solids', 'reminders', 'recent_memories', 'growth', 'care_duty'],
+  b1_3: ['recent_memories', 'tiles', 'forYou', 'solids', 'reminders', 'growth', 'care_duty'],
+  b3_6: [
+    'moment_today',
+    'create_from_memories',
+    'spending',
+    'reminders',
+    'family_view',
+    'care_duty',
+  ],
   b6_12: ['recent_memories', 'reminders', 'spending', 'growth'],
 };
 

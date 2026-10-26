@@ -897,9 +897,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t load the list. Check your connection.';
 
   @override
-  String get inviteSubtitle => 'Choose who they are and what they can do.';
-
-  @override
   String get inviteRelationLabel => 'They are your baby\'s';
 
   @override
@@ -1464,12 +1461,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String rhythmFeeds(int count, int ml) {
-    return '$count feeds · $ml ml';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0 · $ml ml';
   }
 
   @override
   String rhythmBreast(int count, int minutes) {
-    return '$count feeds · $minutes min';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0 · $minutes min';
   }
 
   @override
@@ -1781,10 +1790,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sleepManualHint =>
       'Forgot the timer? Pick when it started and ended';
-
-  @override
-  String get sleepChooserFootnote =>
-      'Switch any time: the timer lets you fix the start, manual entry can switch to the timer.';
 
   @override
   String get timerFamilySees => 'The family can see this';
@@ -2251,10 +2256,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get emptyDayBody =>
-      'If you forgot at the time, you can log it now with a time on that day.';
-
-  @override
   String backLog(String what) {
     return 'Log $what for that day';
   }
@@ -2373,7 +2374,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String lastNightInsight(int count, String gap, String from, String to) {
-    return 'Last night: $count feeds, longest gap $gap ($from–$to).';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return 'Last night: $_temp0, longest gap $gap ($from–$to).';
   }
 
   @override
@@ -2557,10 +2564,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersDone => 'Done';
 
   @override
-  String get remindersInfo =>
-      'The family sees reminders in the app. Notifications are set only on the device that created the reminder.';
-
-  @override
   String get reminderNew => 'New reminder';
 
   @override
@@ -2668,7 +2671,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifPromptBody =>
-      'The family sees reminders in the app. Notifications are set only on the device that created the reminder.';
+      'Notifications are set only on the device that created the reminder.';
 
   @override
   String get notifPromptAllow => 'Turn on notifications';
@@ -2697,10 +2700,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderDoneRow => 'Done';
-
-  @override
-  String get reminderDetailNote =>
-      'Notifications are set only on the device that created the reminder. Mark it done once it’s done.';
 
   @override
   String get reminderMarkDone => 'Mark as done';
@@ -3504,9 +3503,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actFavorite => 'Add to Favourites';
-
-  @override
-  String get actFavoriteHint => 'Collects into your Favourites album';
 
   @override
   String get actMilestoneHint => 'e.g. First smile';
@@ -4556,9 +4552,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bpGrowthHint => 'Weight and length charts';
-
-  @override
   String bpStorage(String name) {
     return '$name’s storage';
   }
@@ -4908,8 +4901,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntStorageHint => 'When nearly or completely full';
 
   @override
-  String get ntFootnote =>
-      'Notifications never include photos or the baby’s name.';
+  String get ntFootnote => 'Notifications never include photos of your baby.';
 
   @override
   String get hpTopic => 'Topic';
@@ -6246,7 +6238,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String milkDayTip(String day, int ml, int count) {
-    return '$day · $ml ml · $count feeds';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$day · $ml ml · $_temp0';
   }
 
   @override
@@ -6268,7 +6266,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String breastDayTip(String day, int minutes, int count) {
-    return '$day · $minutes min · $count feeds';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$day · $minutes min · $_temp0';
   }
 
   @override
@@ -6288,12 +6292,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String minutesAndFeeds(int minutes, int count) {
-    return '$minutes min · $count feeds';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$minutes min · $_temp0';
   }
 
   @override
   String lastNightBreastInsight(int count, int minutes, String time) {
-    return 'Last night: $count breastfeeds, $minutes min ($time).';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count breastfeeds',
+      one: '1 breastfeed',
+    );
+    return 'Last night: $_temp0, $minutes min ($time).';
   }
 
   @override
@@ -6346,13 +6362,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careHistory => 'History';
 
   @override
-  String get careHistorySub => 'Every logged entry';
-
-  @override
   String get careGrowth => 'Growth';
-
-  @override
-  String get careGrowthSub => 'Weight, length';
 
   @override
   String get careSoon => 'Coming soon';
@@ -9716,8 +9726,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fbTitle => 'Feedback';
 
   @override
-  String get fbIntro =>
-      'The Child Life team reads every message. Thank you for helping make the app better for families.';
+  String get fbIntro => 'The Child Life team reads every message.';
 
   @override
   String get fbTypeIdea => 'Idea';
@@ -9825,34 +9834,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSaveIntroLead =>
-      'No more digging through your library. Child Life finds photos and videos that may show your baby, and you check them before anything is uploaded.';
+      'Child Life finds photos and videos that may show your baby. You check them before anything is uploaded.';
 
   @override
   String get autoSaveStep1 => 'Pick your baby and a few clear photos';
 
   @override
-  String get autoSaveStep1Hint => 'Helps the app suggest better';
-
-  @override
   String get autoSaveStep2 => 'The app looks through new photos';
 
   @override
-  String get autoSaveStep2Hint => 'Only the photos you let it see';
+  String get autoSaveStep2Hint =>
+      'On this phone, only the photos you let it see, never sent anywhere';
 
   @override
   String get autoSaveStep3 => 'You approve before anything uploads';
 
   @override
-  String get autoSaveStep3Hint => 'Nothing uploads or shares on its own';
+  String get autoSaveStep3Hint => 'Nothing is shared on its own';
 
   @override
   String autoSaveIntroFootnote(String usage) {
-    return 'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Photos are checked on this phone and never sent anywhere. The beta is free; uploaded files still count towards your family\'s storage ($usage).';
+    return 'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Uploaded files count towards your family\'s storage ($usage used).';
   }
 
   @override
   String get autoSaveIntroFootnoteNoUsage =>
-      'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Photos are checked on this phone and never sent anywhere. The beta is free; uploaded files still count towards your family\'s storage.';
+      'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Uploaded files count towards your family\'s storage.';
 
   @override
   String get autoSaveStart => 'Set up';
@@ -10527,7 +10534,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSaveSettingsTitle => 'Auto-save settings';
 
   @override
-  String get autoSaveOnBeta => 'On · Free beta';
+  String get autoSaveOnBeta => 'On';
 
   @override
   String get autoSaveOffValue => 'Off';
@@ -10894,7 +10901,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ksNew => 'New';
 
   @override
-  String get ksCardTileHint => 'A PNG picture to share';
+  String get ksCardTileHint => 'An image to share';
 
   @override
   String get ksCardTileHintShort => 'A picture to share';
@@ -12994,11 +13001,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String rhCalendarFooter(String version) {
-    return 'The calendar is a reference model, not proven accurate for each baby. Model $version.';
-  }
-
-  @override
   String rhNotPartner(String label) {
     return '$label is used as a reference, not a partner.';
   }
@@ -13027,11 +13029,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhSourcesReview => 'Sources & review';
-
-  @override
-  String rhModelVersion(String version) {
-    return 'Model $version';
-  }
 
   @override
   String get rhSameAsUsual => 'Same as usual today';
@@ -13992,9 +13989,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhWeekRecordedTitle => 'Logged this week';
 
   @override
-  String get rhWeekRecordedSub => 'From the family’s log';
-
-  @override
   String get rhWeekFeeds => 'Feeds';
 
   @override
@@ -14148,9 +14142,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhWeekInsightTitle => 'Looking back on the week';
-
-  @override
-  String get rhWeekInsightSub => 'From your family’s notes and log';
 
   @override
   String get rhWeekNotesTitle => 'Notes this week';
@@ -15102,10 +15093,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'The photo is deleted after reading. The app says it’s deleted only once that’s confirmed.';
 
   @override
-  String get asPhotoTextIsData =>
-      'Text in photos is content to read, never a command to the app.';
-
-  @override
   String get asSendPhoto => 'Send photo';
 
   @override
@@ -15827,8 +15814,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lbStagesTitle => 'Your baby’s stages';
 
   @override
-  String get lbStagesIntro =>
-      'Short ideas for each stage. Every baby grows at their own pace.';
+  String get lbStagesIntro => 'Every baby grows at their own pace.';
 
   @override
   String get lbHere => 'Baby is here';
@@ -16140,8 +16126,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get mtLead =>
-      'Record it when you see your baby do it. Every baby has their own pace.';
+  String get mtLead => 'Every baby has their own pace.';
 
   @override
   String get mtLeadViewer =>
@@ -16597,14 +16582,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntGroupBaby => 'SUGGESTIONS FOR BABY';
 
   @override
-  String get ntGroupBabyHint => 'Bundled, at most 2 a day';
+  String get ntGroupBabyHint => 'At most 2 a day';
 
   @override
   String get ntRhythm => 'Growth rhythm';
 
   @override
-  String get ntRhythmHint =>
-      '3 days before each phase · check-in at most once a day';
+  String get ntRhythmHint => '3 days before each new phase';
 
   @override
   String get ntStages => 'Baby’s stages';
@@ -16637,7 +16621,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntPhotos => 'New photos that may include baby';
 
   @override
-  String get ntPhotosHint => 'Auto-save · at most once a day';
+  String get ntPhotosHint => 'From Auto-save, at most once a day';
 
   @override
   String get ntKeepsakes => 'Video and card ideas';
@@ -16649,7 +16633,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntFamilyActivity => 'Family activity';
 
   @override
-  String get ntFamilyActivityHint => 'Likes, memory views';
+  String get ntFamilyActivityHint => 'When someone likes or views a memory';
 
   @override
   String get ntFamilyMembers => 'Family members';
@@ -16662,8 +16646,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntBabyName => 'Show your baby’s name';
 
   @override
-  String get ntBabyNameHint =>
-      'For example “Bin is almost 100 days”. Turn off to say “your baby” instead.';
+  String get ntBabyNameHint => 'Turn off to say “your baby” instead.';
 
   @override
   String get ntGroupTiming => 'TIMING';
@@ -19502,7 +19485,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2NoteText => 'What your family wants to remember';
 
   @override
-  String get pv2Shared => 'Shared by the family';
+  String get pv2Shared => 'Share with members allowed to view baby care';
 
   @override
   String get pv2Personal => 'Only you';
@@ -19777,10 +19760,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Make a video for a past milestone using your saved photos.';
 
   @override
-  String get engBody =>
-      'Take a look when convenient. You always decide what to save or create.';
-
-  @override
   String get engChooseTemplate => 'Choose a video template';
 
   @override
@@ -19798,10 +19777,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get engSettingsHint =>
-      'Applies to new proactive invitations. Your scheduled Care routines and transactional updates keep their own settings.';
+      'Timely ideas, to look at when convenient. Your own reminders aren\'t affected.';
 
   @override
-  String get engConsent => 'Allow proactive invitations';
+  String get engConsent => 'Get smart suggestions';
 
   @override
   String get engResume => 'Resume suggestions after the break';
@@ -20176,8 +20155,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhStageLastDay => 'last day';
 
   @override
-  String get rhCalendarDisclaimerShort =>
-      'a reference only — every baby differs';
+  String get rhCalendarDisclaimerShort => 'every baby differs';
 
   @override
   String get rhDayNotNoted => 'not noted';
@@ -20471,11 +20449,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get axCustomizeLink => 'Customise Today';
 
   @override
-  String axCustomizeIntro(String name) {
-    return 'Reorder, pin or hide. Suggestions follow $name\'s age and the goals you chose.';
-  }
-
-  @override
   String get axGoalsLabel => 'Your family\'s goals';
 
   @override
@@ -20488,9 +20461,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get axHiddenLabel => 'Hidden';
 
   @override
-  String get axPinned => 'Pinned · always first';
-
-  @override
   String axPin(String title) {
     return 'Pin $title';
   }
@@ -20499,22 +20469,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String axUnpin(String title) {
     return 'Unpin $title';
   }
-
-  @override
-  String axBecauseGoal(String goal) {
-    return 'From your goal “$goal”';
-  }
-
-  @override
-  String axBecauseAge(String name) {
-    return 'Suggested for $name\'s age';
-  }
-
-  @override
-  String get axBecauseAlways => 'Always here';
-
-  @override
-  String get axHiddenByAge => 'Hidden for this age · turn it on any time';
 
   @override
   String axRestore(String name) {
@@ -20618,11 +20572,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String axPreviewSub(String name) {
     return 'Based on $name\'s age and the goals you chose.';
-  }
-
-  @override
-  String axPreviewBecause(String reason) {
-    return 'Because: $reason';
   }
 
   @override
@@ -23163,4 +23112,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2RowRhythmPremium => 'Weekly notes · with sources';
+
+  @override
+  String get axGreetMorningNoName => 'Good morning ☀️';
+
+  @override
+  String get axGreetAfternoonNoName => 'Good afternoon';
+
+  @override
+  String get axGreetEveningNoName => 'Good evening 🌙';
+
+  @override
+  String get axTilesLoading => 'Loading today\'s rhythm';
+
+  @override
+  String get careLoadingRecords => 'Loading entries';
+
+  @override
+  String get saveDiaper => 'Save diaper change';
+
+  @override
+  String get pv2PlanShared => 'Shared by the family';
+
+  @override
+  String get axCustomizeHint => 'Drag to reorder. Pin to keep at the top.';
+
+  @override
+  String get rhCalendarNote =>
+      'The calendar is a reference model, not proven accurate for each baby.';
+
+  @override
+  String get engMore => 'Suggestion options';
+
+  @override
+  String ksCardMissingPhotos(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Choose $n more photos to save your card',
+      one: 'Choose 1 more photo to save your card',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ksAddDevicePhotos => 'Add photos from device';
+
+  @override
+  String get ksCardSaveAudience => 'Save to Memories · Parents only';
+
+  @override
+  String get autoSaveOnBetaFree => 'On · Free beta';
+
+  @override
+  String get p48InfoTab => 'Details';
+
+  @override
+  String get p48TextTab => 'Wording';
+
+  @override
+  String get p48MediaTab => 'Photos & music';
+
+  @override
+  String get p48PhotosTab => 'Photos';
+
+  @override
+  String get p48MoreDetails => 'More details';
+
+  @override
+  String get p48OptionalDetails => 'Optional · Shown only when entered';
+
+  @override
+  String get p48Settings => 'Options';
+
+  @override
+  String get p48ClearValue => 'Clear value';
 }

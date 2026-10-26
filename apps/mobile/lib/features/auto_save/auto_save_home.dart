@@ -19,6 +19,7 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../home/home_shell.dart' show selectedBabyIdProvider;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../me/me_widgets.dart';
@@ -279,7 +280,7 @@ class _Home extends ConsumerWidget {
 
     return AutoSavePage(
       title: l10n.autoSaveTitle,
-      beta: true,
+      // D-121: the badge only on the intro (AS02).
       trailing: ClRoundButton(
         icon: ClIcons.sliders,
         semanticLabel: l10n.autoSaveSettingsTitle,
@@ -474,6 +475,10 @@ class AutoSaveSettingsScreen extends ConsumerWidget {
         if (!s.babies.containsKey(id)) id,
     ];
     final last = s.lastScanAt;
+    final selected = ref.watch(selectedBabyIdProvider);
+    final beta =
+        selected != null &&
+        ref.watch(autoSaveBetaProvider(selected)).value == true;
     return AutoSavePage(
       title: l10n.autoSaveSettingsTitle,
       children: [
@@ -482,7 +487,12 @@ class AutoSaveSettingsScreen extends ConsumerWidget {
             ClSettingRow(
               icon: ClIcons.spark,
               title: l10n.autoSaveTitle,
-              subtitle: s.enabled ? l10n.autoSaveOnBeta : l10n.autoSaveOffValue,
+              // D-122: "· Beta miễn phí" only while the portal says Beta.
+              subtitle: !s.enabled
+                  ? l10n.autoSaveOffValue
+                  : beta
+                  ? l10n.autoSaveOnBetaFree
+                  : l10n.autoSaveOnBeta,
               value: s.enabled,
               onChanged: (on) => unawaited(c.setEnabled(on)),
             ),

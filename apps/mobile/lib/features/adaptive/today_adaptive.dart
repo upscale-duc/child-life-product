@@ -75,16 +75,18 @@ class AdaptiveGreeting extends ConsumerWidget {
       baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh',
       now,
     ).hour;
+    // D-108: without a nickname yet, a nameless greeting (never "Chào buổi chiều, ").
+    final named = name.trim().isNotEmpty;
     final timeOfDay = hour < 12
-        ? l10n.axGreetMorning(name)
+        ? (named ? l10n.axGreetMorning(name) : l10n.axGreetMorningNoName)
         : hour < 18
-        ? l10n.axGreetAfternoon(name)
-        : l10n.axGreetEvening(name);
+        ? (named ? l10n.axGreetAfternoon(name) : l10n.axGreetAfternoonNoName)
+        : (named ? l10n.axGreetEvening(name) : l10n.axGreetEveningNoName);
     // Owner, 2026-10-25: the every-day greeting has no sub-line ("Nhịp hôm nay của con, ghi
     // nhanh trong một chạm."); the first-run hello keeps its guidance.
     final (String title, String? sub) = first
         ? (
-            l10n.axHello(name),
+            named ? l10n.axHello(name) : timeOfDay,
             switch (band) {
               AgeBand.b0_1 => l10n.axHelloSub01,
               AgeBand.b1_3 => l10n.axHelloSub13,
@@ -95,8 +97,9 @@ class AdaptiveGreeting extends ConsumerWidget {
         : (
             switch (band) {
               AgeBand.b0_1 || AgeBand.b1_3 => timeOfDay,
-              AgeBand.b3_6 => l10n.axGreet36(name),
-              AgeBand.b6_12 => l10n.axGreet612(name),
+              AgeBand.b3_6 when named => l10n.axGreet36(name),
+              AgeBand.b6_12 when named => l10n.axGreet612(name),
+              _ => timeOfDay,
             },
             null,
           );
@@ -135,6 +138,7 @@ class AdaptiveGreeting extends ConsumerWidget {
 }
 
 /// The AX widget card: icon chip, title, subtitle, optional trailing link, then [child].
+/// On tokens (D-108): radius `card`, padding s4, title bodyStrong, link label.
 class AxCard extends StatelessWidget {
   const AxCard({
     required this.icon,
@@ -144,6 +148,7 @@ class AxCard extends StatelessWidget {
     this.link,
     this.onLink,
     this.child,
+    this.top = ClSpace.s4,
     super.key,
   });
 
@@ -155,15 +160,18 @@ class AxCard extends StatelessWidget {
   final VoidCallback? onLink;
   final Widget? child;
 
+  /// The gap above the card; 0 where the screen sets it (ReminderPeek on Hôm nay).
+  final double top;
+
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     return Container(
-      margin: const EdgeInsets.only(top: ClSpace.s4),
-      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4, vertical: 14),
+      margin: EdgeInsets.only(top: top),
+      padding: const EdgeInsets.all(ClSpace.s4),
       decoration: BoxDecoration(
         color: cl.colors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ClRadius.card),
         boxShadow: cl.shadows.card,
       ),
       child: Column(
@@ -175,8 +183,9 @@ class AxCard extends StatelessWidget {
                 padding: const EdgeInsets.all(ClSpace.s2),
                 decoration: BoxDecoration(
                   color: chip,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(ClRadius.control),
                 ),
+                // Ink on the soft fills, Night care included.
                 child: ClIcon(icon, size: 20, color: cl.colors.ink),
               ),
               const SizedBox(width: ClSpace.s3),
@@ -186,10 +195,7 @@ class AxCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: cl.text.bodyStrong.copyWith(
-                        fontSize: 16,
-                        color: cl.colors.ink,
-                      ),
+                      style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
                     ),
                     if (subtitle != null)
                       Text(
@@ -201,7 +207,8 @@ class AxCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (link != null)
+              if (link != null) ...[
+                const SizedBox(width: ClSpace.s2),
                 ClPressable(
                   onPressed: onLink,
                   semanticLabel: link,
@@ -211,17 +218,16 @@ class AxCard extends StatelessWidget {
                       child: Text(
                         link!,
                         style: cl.text.label.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
                           color: cl.colors.mintText,
                         ),
                       ),
                     ),
                   ),
                 ),
+              ],
             ],
           ),
-          if (child != null) ...[const SizedBox(height: ClSpace.s3), child!],
+          if (child != null) ...[const SizedBox(height: ClSpace.s4), child!],
         ],
       ),
     );
@@ -255,13 +261,13 @@ class _Thumbs extends StatelessWidget {
             child: i < items.length
                 ? MediaTile(
                     item: items[i],
-                    radius: 12,
+                    radius: ClRadius.control,
                     onTap: () => context.go(Routes.memories),
                   )
                 : DecoratedBox(
                     decoration: BoxDecoration(
                       color: context.cl.colors.surface2,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(ClRadius.control),
                     ),
                   ),
           ),
@@ -306,6 +312,7 @@ class AxRecentMemories extends ConsumerWidget {
                 label: band == AgeBand.b6_12
                     ? l10n.axWriteJournal
                     : l10n.axAddMoment,
+                style: ClButtonStyle.tinted,
                 expand: true,
                 onPressed: () => _addMoment(context, ref),
               )
@@ -334,9 +341,7 @@ class AxRecentMemories extends ConsumerWidget {
               label: band == AgeBand.b6_12
                   ? l10n.axWriteJournal
                   : l10n.axAddMoment,
-              style: band == AgeBand.b6_12
-                  ? ClButtonStyle.secondary
-                  : ClButtonStyle.primary,
+              style: ClButtonStyle.tinted,
               expand: true,
               onPressed: () => _addMoment(context, ref),
             ),
@@ -372,13 +377,14 @@ class AxMomentToday extends ConsumerWidget {
             height: 150,
             child: MediaTile(
               item: media.first,
-              radius: 14,
+              radius: ClRadius.control,
               onTap: () => context.go(Routes.memories),
             ),
           ),
           const SizedBox(height: ClSpace.s3),
           ClButton(
             label: l10n.axAddMoment,
+            style: ClButtonStyle.tinted,
             expand: true,
             onPressed: () => _addMoment(context, ref),
           ),
@@ -409,17 +415,14 @@ class AxCreateFromMemories extends ConsumerWidget {
           padding: const EdgeInsets.all(ClSpace.s3),
           decoration: BoxDecoration(
             color: cl.colors.surface2,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ClRadius.control),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: cl.text.bodyStrong.copyWith(
-                  fontSize: 14,
-                  color: cl.colors.ink,
-                ),
+                style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
               ),
               Text(
                 sub,
@@ -484,10 +487,7 @@ class AxGrowth extends ConsumerWidget {
               semanticLabel: parts.join(' · '),
               child: Text(
                 parts.join(' · '),
-                style: cl.text.title2.copyWith(
-                  fontSize: 20,
-                  color: cl.colors.ink,
-                ),
+                style: cl.text.title2.copyWith(color: cl.colors.ink),
               ),
             ),
     );
@@ -529,10 +529,7 @@ class AxFamilyView extends ConsumerWidget {
           if (!alone) ...[
             Text(
               l10n.axFamilyBody,
-              style: cl.text.caption.copyWith(
-                fontSize: 13,
-                color: cl.colors.ink,
-              ),
+              style: cl.text.label.copyWith(color: cl.colors.ink),
             ),
             const SizedBox(height: ClSpace.s3),
             SizedBox(
@@ -565,7 +562,7 @@ class AxFamilyView extends ConsumerWidget {
           ],
           ClButton(
             label: l10n.axInvite,
-            style: ClButtonStyle.secondary,
+            style: ClButtonStyle.tinted,
             expand: true,
             onPressed: () => context.push(Routes.invite),
           ),
@@ -706,13 +703,6 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
     ];
     final parent = me.role == MemberRole.coParent;
 
-    String reason(RankedWidget w) => switch (w.reason) {
-      ReasonPinned() => l10n.axPinned,
-      ReasonGoal(:final goal) => l10n.axBecauseGoal(goalLabel(l10n, goal)),
-      ReasonAge() => l10n.axBecauseAge(name),
-      ReasonAlways() => l10n.axBecauseAlways,
-    };
-
     void setVisible(WidgetId id, bool on) => update(
       draft.copyWith(
         shown: on
@@ -726,35 +716,25 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
 
     Widget row(RankedWidget w, {required bool on, Widget? handle}) {
       final title = widgetTitle(l10n, w.id);
+      // D-110 / D-115: title only. The ranking reason ("Theo mục tiêu …", "Gợi ý cho tuổi …",
+      // "Luôn có", "Ẩn theo gợi ý tuổi …") explained the engine, not a choice the parent makes.
       return Container(
         key: ValueKey(w.id),
-        padding: const EdgeInsets.only(left: 2, right: 14, top: 6, bottom: 6),
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.only(left: 2, right: 14, top: 4, bottom: 4),
         child: Row(
           children: [
             // Pinned and hidden rows do not move; the gap keeps the titles aligned.
             handle ?? const SizedBox(width: 44),
             const SizedBox(width: ClSpace.s1),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: cl.text.body.copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: cl.colors.ink,
-                    ),
-                  ),
-                  Text(
-                    on
-                        ? reason(w)
-                        : (draft.hidden.contains(w.id)
-                              ? reason(w)
-                              : l10n.axHiddenByAge),
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ],
+              child: Text(
+                title,
+                style: cl.text.body.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: cl.colors.ink,
+                ),
               ),
             ),
             if (on)
@@ -869,8 +849,9 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
               ),
             ),
             const SizedBox(height: ClSpace.s1),
+            // D-115: what to do here (drag, pin), not how the suggestions are made.
             Text(
-              l10n.axCustomizeIntro(name),
+              l10n.axCustomizeHint,
               style: cl.text.body.copyWith(
                 fontSize: 14,
                 color: cl.colors.inkMuted,
@@ -1361,7 +1342,7 @@ class AxSpending extends ConsumerWidget {
         child: scope.access.record
             ? ClButton(
                 label: l10n.axSpendFirst,
-                style: ClButtonStyle.secondary,
+                style: ClButtonStyle.tinted,
                 expand: true,
                 onPressed: add,
               )
@@ -1396,10 +1377,7 @@ class AxSpending extends ConsumerWidget {
           children: [
             Text(
               money(locale, s.total, scope.currency),
-              style: cl.text.title2.copyWith(
-                fontSize: 22,
-                color: cl.colors.ink,
-              ),
+              style: cl.text.title2.copyWith(color: cl.colors.ink),
             ),
             const SizedBox(height: ClSpace.s2),
             ClipRRect(

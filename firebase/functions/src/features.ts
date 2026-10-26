@@ -1,5 +1,9 @@
 import type { Firestore, Timestamp } from 'firebase-admin/firestore';
-import { featureAccessRequestSchema, type FeatureAccess } from '@child-life/contracts';
+import {
+  featureAccessRequestSchema,
+  featureTierOf,
+  type FeatureAccess,
+} from '@child-life/contracts';
 import { familyFeatureOn, loadFamilyEntitlements, serverGrantEnvironment } from './entitlements.js';
 
 export { familyBucket } from './bucket.js';
@@ -41,7 +45,7 @@ export async function featureAccess(
   const familyId = (await db.doc(`babies/${babyId}`).get()).get('familyId') as string | undefined;
   if (!familyId) throw new FeatureError('not-found', 'no-family');
   if (member.get('role') !== 'coParent') {
-    return { autoSave: false, milestoneCards: false, memoryStory: false };
+    return { autoSave: false, milestoneCards: false, memoryStory: false, autoSaveBeta: false };
   }
   // A missing or older document reads as every flag off (or its default), never as an error.
   const state = await loadFamilyEntitlements(db, familyId, now, serverGrantEnvironment());
@@ -49,5 +53,7 @@ export async function featureAccess(
     autoSave: familyFeatureOn(state, 'auto_save'),
     milestoneCards: familyFeatureOn(state, 'milestone_cards'),
     memoryStory: familyFeatureOn(state, 'memory_story'),
+    // D-122: the badge follows the tier staff set on the portal, not a constant in the app.
+    autoSaveBeta: featureTierOf(state.hub, 'auto_save') === 'beta',
   };
 }

@@ -103,6 +103,20 @@ describe('experience: shape (experienceSchema)', () => {
     );
   });
 
+  it('accepts "Ai đang trông bé" (care_duty, P-181) in every list', async () => {
+    await assertSucceeds(
+      setDoc(
+        ref('mom'),
+        exp({
+          order: ['care_duty', 'tiles'],
+          pinned: ['care_duty'],
+          shown: ['care_duty'],
+          hidden: ['care_duty'],
+        }),
+      ),
+    );
+  });
+
   it('rejects unknown ids, duplicates, extra fields and a client clock', async () => {
     await assertFails(setDoc(ref('mom'), exp({ hidden: ['learning'] })));
     await assertFails(setDoc(ref('mom'), exp({ pinned: ['tiles', 'tiles'] })));

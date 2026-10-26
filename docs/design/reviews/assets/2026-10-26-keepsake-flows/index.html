@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Child Life · Thiệp & video · Review 26/10/2026</title>
+<style>
+body{font:16px system-ui,sans-serif;margin:24px;background:#f4f7f6;color:#173d44}h1{font-size:24px}label{display:inline-block;margin:8px 16px 8px 0}select{font:inherit;padding:8px;border:1px solid #789394;border-radius:8px}main{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}figure{margin:12px 0;max-width:375px}figcaption{margin-bottom:8px;font-weight:600}img{display:block;width:100%;border:1px solid #d5dfdf;border-radius:12px}p{max-width:850px;line-height:1.6}.missing{padding:24px;background:white;border-radius:12px}
+</style>
+<h1>Thiệp & video từ Kỷ niệm</h1>
+<p>Bản render Flutter từ mã nguồn, 26/10/2026. Các ô màu là ảnh tổng hợp dùng trong kiểm thử. So sánh trước/sau dùng cùng dữ liệu và kích thước 375 × 812. Các màn mở rộng chỉ có ảnh sau sửa. Phần trắng dưới ảnh bàn phím đại diện cho vùng bàn phím hệ thống 300 px.</p>
+<label>Màn hình <select id="screen"></select></label>
+<label>Ngôn ngữ <select id="lang"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></label>
+<label>Giao diện <select id="theme"><option value="light">Light</option><option value="nightCare">Night care</option></select></label>
+<label>Cỡ chữ <select id="scale"><option value="1.0">100%</option><option value="2.0">200%</option></select></label>
+<main>
+<figure><figcaption>Trước</figcaption><img id="before" alt="Giao diện trước sửa"><p class="missing" id="missing" hidden>Không có bản render trước cho màn này; xem trạng thái đã kiểm tra ở bên phải.</p></figure>
+<figure><figcaption>Sau</figcaption><img id="after" alt="Giao diện sau sửa"></figure>
+</main>
+<script>
+const screens={card_edit:'Chỉnh thiệp',card_missing:'Thiệp thiếu ảnh',video_photos:'Chọn ảnh cho video',video_finish:'Hoàn thiện video',premium_card:'Thiệp cá nhân hoá',premium_video:'Video cá nhân hoá',card_templates:'Chọn mẫu thiệp',video_templates:'Chọn mẫu video',card_keyboard:'Chỉnh lời nhắn · bàn phím',video_rendering:'Video đang tạo',video_ready:'Video đã sẵn sàng',video_failed:'Video chưa tạo được'};
+const originals=new Set(['card_edit','card_missing','video_photos','video_finish','premium_card']);
+const fields=['screen','lang','theme','scale'].map(id=>document.getElementById(id));
+for(const [value,label] of Object.entries(screens)){fields[0].add(new Option(label,value));}
+function update(){const [screen,lang,theme,scale]=fields.map(f=>f.value);const name=`${screen}_${theme}_${lang}_${scale}x.png`;document.getElementById('after').src=`after/${name}`;const before=document.getElementById('before');before.hidden=!originals.has(screen);document.getElementById('missing').hidden=originals.has(screen);if(originals.has(screen))before.src=`before/${name}`;}
+fields.forEach(f=>f.addEventListener('change',update));update();
+</script>
+</html>

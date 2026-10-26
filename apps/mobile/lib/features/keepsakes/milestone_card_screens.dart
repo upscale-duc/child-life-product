@@ -355,15 +355,26 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
           }),
         ),
         const SizedBox(height: ClSpace.s4),
-        ClSegmented<KeepsakeFormat>(
-          options: KeepsakeFormat.values,
-          selected: _format,
-          onChanged: (f) => setState(() => _format = f),
-          labelOf: (f) => switch (f) {
-            KeepsakeFormat.portrait => l10n.ksFormatPortrait,
-            KeepsakeFormat.square => l10n.ksFormatSquare,
-            KeepsakeFormat.story => l10n.ksFormatStory,
-          },
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: math.max(
+              MediaQuery.sizeOf(context).width - ClSpace.s4 * 2,
+              MediaQuery.textScalerOf(
+                context,
+              ).scale(MediaQuery.sizeOf(context).width - ClSpace.s4 * 2),
+            ),
+            child: ClSegmented<KeepsakeFormat>(
+              options: KeepsakeFormat.values,
+              selected: _format,
+              onChanged: (f) => setState(() => _format = f),
+              labelOf: (f) => switch (f) {
+                KeepsakeFormat.portrait => l10n.ksFormatPortrait,
+                KeepsakeFormat.square => l10n.ksFormatSquare,
+                KeepsakeFormat.story => l10n.ksFormatStory,
+              },
+            ),
+          ),
         ),
         const SizedBox(height: ClSpace.s4),
         if (catalog.isLoading && !catalog.hasValue)
@@ -859,10 +870,12 @@ class KeepsakePreviewPage extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  label,
-                                  style: cl.text.body.copyWith(
-                                    color: cl.colors.inkMuted,
+                                Expanded(
+                                  child: Text(
+                                    label,
+                                    style: cl.text.body.copyWith(
+                                      color: cl.colors.inkMuted,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: ClSpace.s4),
@@ -1003,7 +1016,7 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
   final _boundary = GlobalKey();
   late CardDraft _d = widget.draft;
   late final _quote = TextEditingController(text: widget.draft.quote);
-  var _tool = _Tool.layout;
+  late var _tool = widget.draft.ready ? _Tool.layout : _Tool.photo;
   var _busy = false;
 
   /// MO03: opened again after a verified purchase from this template.
@@ -1135,6 +1148,13 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
           const <CareRecord>[];
     }
     if (c == null) return const SizedBox.shrink();
+    final missingPhotos = _d.template
+        .photoSlots(_d.format)
+        .where(
+          (slot) => slot < _d.template.photosMin && _d.photoAt(slot) == null,
+        )
+        .length;
+    final textScaler = MediaQuery.textScalerOf(context);
     final catalog = ref.watch(keepsakeCatalogProvider).value;
     final layouts = [
       for (final t in catalog?.cards ?? [_d.template])
@@ -1150,220 +1170,290 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
       if (palettes.length > 1) _Tool.color,
     ];
     final tool = tools.contains(_tool) ? _tool : _Tool.layout;
+    final labels = {
+      _Tool.photo: l10n.ksToolPhoto,
+      _Tool.layout: l10n.ksToolLayout,
+      _Tool.message: l10n.ksToolMessage,
+      _Tool.color: l10n.ksToolColor,
+    };
+    final toolWidth = tools
+        .map((tool) {
+          final painter = TextPainter(
+            text: TextSpan(text: labels[tool], style: cl.text.caption),
+            textDirection: Directionality.of(context),
+            textScaler: textScaler,
+          )..layout();
+          final width = painter.width + ClSpace.s4;
+          painter.dispose();
+          return width;
+        })
+        .fold(0.0, math.max);
 
     return Scaffold(
       backgroundColor: cl.colors.cloud,
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          ClSpace.s3,
+          ClSpace.s4,
+          MediaQuery.paddingOf(context).bottom +
+              ClSpace.s3 +
+              MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(ClRadius.card),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClButton(
+              label: l10n.ksSaveCard,
+              expand: true,
+              loading: _busy,
+              onPressed: _busy || !_d.ready ? null : () => _save(c),
+            ),
+            const SizedBox(height: ClSpace.s2),
+            Text(
+              missingPhotos > 0
+                  ? l10n.ksCardMissingPhotos(missingPhotos)
+                  : l10n.ksCardSaveAudience,
+              textAlign: TextAlign.center,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-              child: Row(
-                children: [
-                  KeepsakeRoundIcon(
-                    icon: ClIcons.close,
-                    label: l10n.a11yClose,
-                    onTap: () => Navigator.of(context).maybePop(),
-                  ),
-                  const Spacer(),
-                  ClPressable(
-                    onPressed: () => _preview(c),
-                    semanticLabel: l10n.ksPreview,
-                    child: Text(
-                      l10n.ksPreview,
-                      style: cl.text.label.copyWith(
-                        color: cl.colors.mintText,
-                        fontWeight: FontWeight.w600,
+        child: LayoutBuilder(
+          builder: (context, viewport) {
+            // Keep the canvas and controls reachable with a keyboard or large text.
+            final height = math.max(
+              viewport.maxHeight,
+              ClSpace.buttonHeight * 8 +
+                  textScaler.scale(ClSpace.buttonHeight) * 2,
+            );
+            return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: SizedBox(
+                height: height,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ClSpace.s4,
+                      ),
+                      child: Row(
+                        children: [
+                          KeepsakeRoundIcon(
+                            icon: ClIcons.close,
+                            label: l10n.a11yClose,
+                            onTap: () => Navigator.of(context).maybePop(),
+                          ),
+                          const Spacer(),
+                          ClPressable(
+                            onPressed: () => _preview(c),
+                            semanticLabel: l10n.ksPreview,
+                            child: Text(
+                              l10n.ksPreview,
+                              style: cl.text.label.copyWith(
+                                color: cl.colors.mintText,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            if (_resumed)
-              const Padding(
-                padding: EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s3,
-                  ClSpace.s4,
-                  0,
-                ),
-                child: ResumedBanner(),
-              ),
-            const SizedBox(height: ClSpace.s3),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, box) {
-                  final w = math.min(
-                    box.maxWidth - 2 * ClSpace.s8 - 30,
-                    box.maxHeight * _d.format.aspect,
-                  );
-                  return Center(
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(18 * w / 250),
-                          child: RepaintBoundary(
-                            key: _boundary,
-                            child: KeepsakeCardView(
-                              template: _d.template,
-                              format: _d.format,
-                              palette: _d.palette,
-                              content: cardContent(
-                                l10n,
-                                Localizations.localeOf(context),
-                                c,
-                                _d,
-                                _growth,
-                              ),
-                              width: w,
-                              onPhotoTap: (slot) => setState(() {
-                                _tool = _Tool.photo;
-                                _d = _d.copyWith(slot: slot);
-                              }),
-                              onPhotoChanged: (slot, p) =>
-                                  setState(() => _d = _d.withPhoto(p, slot)),
-                              // Which slot "Ảnh" fills; on screen only (hidden while saving).
-                              activeSlot:
-                                  !_busy &&
-                                      _d.template.photoSlots(_d.format).length >
-                                          1
-                                  ? _d.slot
-                                  : null,
-                              photoPlaceholder: Text(
-                                l10n.ksChoosePhoto,
-                                style: cl.text.caption.copyWith(
-                                  color: _d.palette.ink,
+                    if (_resumed)
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          ClSpace.s4,
+                          ClSpace.s3,
+                          ClSpace.s4,
+                          0,
+                        ),
+                        child: ResumedBanner(),
+                      ),
+                    const SizedBox(height: ClSpace.s3),
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, box) {
+                          final w = math.min(
+                            box.maxWidth - 2 * ClSpace.s8,
+                            box.maxHeight * _d.format.aspect,
+                          );
+                          return Center(
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    18 * w / 250,
+                                  ),
+                                  child: RepaintBoundary(
+                                    key: _boundary,
+                                    child: KeepsakeCardView(
+                                      template: _d.template,
+                                      format: _d.format,
+                                      palette: _d.palette,
+                                      content: cardContent(
+                                        l10n,
+                                        Localizations.localeOf(context),
+                                        c,
+                                        _d,
+                                        _growth,
+                                      ),
+                                      width: w,
+                                      onPhotoTap: (slot) => setState(() {
+                                        _tool = _Tool.photo;
+                                        _d = _d.copyWith(slot: slot);
+                                      }),
+                                      onPhotoChanged: (slot, p) => setState(
+                                        () => _d = _d.withPhoto(p, slot),
+                                      ),
+                                      // Which slot "Ảnh" fills; on screen only (hidden while saving).
+                                      activeSlot:
+                                          !_busy &&
+                                              _d.template
+                                                      .photoSlots(_d.format)
+                                                      .length >
+                                                  1
+                                          ? _d.slot
+                                          : null,
+                                      photoPlaceholder: Text(
+                                        l10n.ksChoosePhoto,
+                                        style: cl.text.caption.copyWith(
+                                          color: _d.palette.ink,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    if (tool == _Tool.photo && _d.photoAt(_d.slot) != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: ClSpace.s4,
+                          vertical: ClSpace.s2,
+                        ),
+                        child: Text(
+                          l10n.ksPhotoHint,
+                          textAlign: TextAlign.center,
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ClSpace.s4,
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: math.max(
+                            MediaQuery.sizeOf(context).width - ClSpace.s4 * 2,
+                            tools.length * toolWidth +
+                                (tools.length - 1) * ClSpace.s2,
+                          ),
+                          child: Row(
+                            children: [
+                              for (final (i, t) in tools.indexed) ...[
+                                if (i > 0) const SizedBox(width: ClSpace.s2),
+                                Expanded(
+                                  child: _ToolTile(
+                                    icon: switch (t) {
+                                      _Tool.photo => ClIcons.camera,
+                                      _Tool.layout => ClIcons.grid,
+                                      _Tool.message => ClIcons.edit,
+                                      _Tool.color => ClIcons.spark,
+                                    },
+                                    label: switch (t) {
+                                      _Tool.photo => l10n.ksToolPhoto,
+                                      _Tool.layout => l10n.ksToolLayout,
+                                      _Tool.message => l10n.ksToolMessage,
+                                      _Tool.color => l10n.ksToolColor,
+                                    },
+                                    selected: t == tool,
+                                    onTap: () => setState(() => _tool = t),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    SizedBox(
+                      height: math.max(
+                        ClSpace.s8 * 3,
+                        textScaler.scale(ClSpace.s8) * 2 + ClSpace.s6,
+                      ),
+                      child: switch (tool) {
+                        _Tool.layout => _LayoutStrip(
+                          templates: layouts,
+                          selected: _d.template,
+                          draft: _d,
+                          content: cardContent(
+                            l10n,
+                            Localizations.localeOf(context),
+                            c,
+                            _d,
+                            _growth,
+                          ),
+                          onPick: (t) => setState(
+                            () => _d = _d.copyWith(
+                              template: t,
+                              palette: t.palette,
                             ),
                           ),
                         ),
-                        // Outside the boundary: never part of the export.
-                        if (_d.photoAt(0) != null &&
-                            _d.template.photoSlots(_d.format).length == 1)
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: w / _d.format.aspect * 0.42,
-                            child: IgnorePointer(
-                              child: Center(
-                                child: KeepsakePhotoHint(l10n.ksPhotoHint),
-                              ),
+                        _Tool.photo => _PhotoStrip(
+                          babyId: c.babyId,
+                          occasion: _d.occasion,
+                          date: _d.date,
+                          onDevice: _pickDevice,
+                          onPick: (m) =>
+                              setState(() => _d = _d.withPhoto(photoOf(m))),
+                        ),
+                        _Tool.message => Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: ClSpace.s4,
+                          ),
+                          child: ClTextField(
+                            label: l10n.ksMessageLabel,
+                            controller: _quote,
+                            maxLength: _d.template.text('quote')?.max ?? 60,
+                            textCapitalization: TextCapitalization.sentences,
+                            onChanged: (v) => setState(
+                              () => _d = _d.copyWith(quote: v.trim()),
                             ),
                           ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: ClSpace.s3),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-              child: Row(
-                children: [
-                  for (final (i, t) in tools.indexed) ...[
-                    if (i > 0) const SizedBox(width: ClSpace.s2),
-                    Expanded(
-                      child: _ToolTile(
-                        icon: switch (t) {
-                          _Tool.photo => ClIcons.camera,
-                          _Tool.layout => ClIcons.grid,
-                          _Tool.message => ClIcons.edit,
-                          _Tool.color => ClIcons.spark,
-                        },
-                        label: switch (t) {
-                          _Tool.photo => l10n.ksToolPhoto,
-                          _Tool.layout => l10n.ksToolLayout,
-                          _Tool.message => l10n.ksToolMessage,
-                          _Tool.color => l10n.ksToolColor,
-                        },
-                        selected: t == tool,
-                        onTap: () => setState(() => _tool = t),
-                      ),
+                        ),
+                        _Tool.color => _PaletteStrip(
+                          palettes: palettes,
+                          selected: _d.palette,
+                          onPick: (p) =>
+                              setState(() => _d = _d.copyWith(palette: p)),
+                        ),
+                      },
                     ),
                   ],
-                ],
-              ),
-            ),
-            const SizedBox(height: ClSpace.s3),
-            SizedBox(
-              height: 96,
-              child: switch (tool) {
-                _Tool.layout => _LayoutStrip(
-                  templates: layouts,
-                  selected: _d.template,
-                  draft: _d,
-                  content: cardContent(
-                    l10n,
-                    Localizations.localeOf(context),
-                    c,
-                    _d,
-                    _growth,
-                  ),
-                  onPick: (t) => setState(
-                    () => _d = _d.copyWith(template: t, palette: t.palette),
-                  ),
-                ),
-                _Tool.photo => _PhotoStrip(
-                  babyId: c.babyId,
-                  occasion: _d.occasion,
-                  date: _d.date,
-                  onDevice: _pickDevice,
-                  onPick: (m) => setState(() => _d = _d.withPhoto(photoOf(m))),
-                ),
-                _Tool.message => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-                  child: ClTextField(
-                    label: l10n.ksMessageLabel,
-                    controller: _quote,
-                    maxLength: _d.template.text('quote')?.max ?? 60,
-                    textCapitalization: TextCapitalization.sentences,
-                    onChanged: (v) =>
-                        setState(() => _d = _d.copyWith(quote: v.trim())),
-                  ),
-                ),
-                _Tool.color => _PaletteStrip(
-                  palettes: palettes,
-                  selected: _d.palette,
-                  onPick: (p) => setState(() => _d = _d.copyWith(palette: p)),
-                ),
-              },
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                ClSpace.s4,
-                ClSpace.s3,
-                ClSpace.s4,
-                MediaQuery.paddingOf(context).bottom + ClSpace.s3,
-              ),
-              decoration: BoxDecoration(
-                color: cl.colors.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(ClRadius.card),
                 ),
               ),
-              child: Column(
-                children: [
-                  ClButton(
-                    label: l10n.ksSaveCard,
-                    expand: true,
-                    loading: _busy,
-                    onPressed: _busy || !_d.ready ? null : () => _save(c),
-                  ),
-                  const SizedBox(height: ClSpace.s2),
-                  Text(
-                    l10n.ksPrefilled(c.nickname),
-                    textAlign: TextAlign.center,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -1440,25 +1530,18 @@ class KeepsakePhotoHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    padding: const EdgeInsets.symmetric(
+      horizontal: ClSpace.s3,
+      vertical: ClSpace.s1,
+    ),
     decoration: BoxDecoration(
       color: const Color(0x8C000000),
       borderRadius: BorderRadius.circular(ClRadius.pill),
     ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const ClIcon(ClIcons.camera, size: 12, color: Colors.white),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-      ],
+    child: Text(
+      text,
+      textAlign: TextAlign.center,
+      style: context.cl.text.caption.copyWith(color: Colors.white),
     ),
   );
 }
@@ -1512,7 +1595,8 @@ class _ToolTile extends StatelessWidget {
       selected: selected,
       semanticLabel: label,
       child: Container(
-        height: 57,
+        constraints: const BoxConstraints(minHeight: ClSpace.buttonHeight),
+        padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
         width: double.infinity,
         decoration: BoxDecoration(
           color: selected ? cl.colors.mintSoft : cl.colors.surface2,
@@ -1522,13 +1606,11 @@ class _ToolTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ClIcon(icon, size: 18, color: ink),
-            const SizedBox(height: 4),
+            const SizedBox(height: ClSpace.s1),
             Text(
               label,
-              style: cl.text.caption.copyWith(
-                color: ink,
-                fontWeight: FontWeight.w600,
-              ),
+              textAlign: TextAlign.center,
+              style: cl.text.caption.copyWith(color: ink),
             ),
           ],
         ),
@@ -1631,7 +1713,10 @@ class _PhotoStrip extends ConsumerWidget {
           .abs()
           .compareTo(b.captureAt.difference(date).abs());
     });
-    const size = 80.0;
+    final size = math.max(
+      ClSpace.s4 * 5,
+      MediaQuery.textScalerOf(context).scale(ClSpace.s4) * 4,
+    );
     return ListView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
@@ -1965,15 +2050,19 @@ class KeepsakeActionTile extends StatelessWidget {
       onPressed: onTap,
       semanticLabel: label,
       child: Container(
-        height: 82,
+        constraints: const BoxConstraints(minHeight: ClSpace.buttonHeight),
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s2,
+          vertical: ClSpace.s3,
+        ),
         decoration: BoxDecoration(
           color: cl.colors.surface,
           boxShadow: cl.shadows.card,
           borderRadius: BorderRadius.circular(ClRadius.control + 4),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -1989,6 +2078,7 @@ class KeepsakeActionTile extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
+              textAlign: TextAlign.center,
               style: cl.text.caption.copyWith(
                 color: cl.colors.ink,
                 fontWeight: FontWeight.w600,
@@ -2097,7 +2187,7 @@ class KeepsakeKindTabs extends StatelessWidget {
             selected: t > 0.5,
             semanticLabel: label,
             pressedOpacity: 1,
-            minSize: Size.zero,
+            minSize: const Size(0, ClSpace.tapMin),
             child: Semantics(
               header: t > 0.5,
               child: Text(
@@ -2114,12 +2204,15 @@ class KeepsakeKindTabs extends StatelessWidget {
           );
         }
 
-        return Row(
-          children: [
-            tab(l10n.ksTabCards, 0),
-            const SizedBox(width: ClSpace.s4),
-            tab(l10n.ksTabVideos, 1),
-          ],
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              tab(l10n.ksTabCards, 0),
+              const SizedBox(width: ClSpace.s4),
+              tab(l10n.ksTabVideos, 1),
+            ],
+          ),
         );
       },
     );

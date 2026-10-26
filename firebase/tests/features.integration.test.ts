@@ -51,6 +51,7 @@ describe('getFeatureAccess · auto_save', () => {
       autoSave: false,
       milestoneCards: false,
       memoryStory: false,
+      autoSaveBeta: true,
     });
     await db.doc('config/flags').set({
       media_upload: { ...defaultFlags.media_upload, enabled: true },
@@ -59,6 +60,7 @@ describe('getFeatureAccess · auto_save', () => {
       autoSave: false,
       milestoneCards: false,
       memoryStory: false,
+      autoSaveBeta: true,
     });
   });
 
@@ -107,6 +109,7 @@ describe('getFeatureAccess · Kỷ niệm 2.0 (D-068)', () => {
       autoSave: false,
       milestoneCards: true,
       memoryStory: false,
+      autoSaveBeta: true,
     });
     expect((await featureAccess(db, 'nanny', { babyId: 'b1' }, now)).milestoneCards).toBe(false);
     await db.doc('config/flags').set({
@@ -116,6 +119,20 @@ describe('getFeatureAccess · Kỷ niệm 2.0 (D-068)', () => {
       autoSave: false,
       milestoneCards: false,
       memoryStory: true,
+      autoSaveBeta: true,
     });
+  });
+});
+
+describe('getFeatureAccess · the Beta badge follows the portal tier (D-122)', () => {
+  it('is Beta by default and not once staff set Tự lưu to Miễn phí', async () => {
+    await autoSave({ scope: 'all' });
+    expect((await featureAccess(db, 'mom', { babyId: 'b1' }, now)).autoSaveBeta).toBe(true);
+    await db.doc('config/features').set({
+      features: { auto_save: { tier: 'free', betaFamilies: [], grace: null } },
+    });
+    const access = await featureAccess(db, 'mom', { babyId: 'b1' }, now);
+    expect(access.autoSave).toBe(true);
+    expect(access.autoSaveBeta).toBe(false);
   });
 });

@@ -126,7 +126,12 @@ describe('defaults: the hub changes nothing until staff change it', () => {
     });
     expect(c.capabilities['templates.premium'].reason).toBe('PREMIUM_REQUIRED');
     expect(c.capabilities['ai.assistance']).toEqual({ allowed: true, reason: null, via: 'free' });
-    expect(await access()).toEqual({ autoSave: false, milestoneCards: false, memoryStory: false });
+    expect(await access()).toEqual({
+      autoSave: false,
+      milestoneCards: false,
+      memoryStory: false,
+      autoSaveBeta: true,
+    });
   });
 });
 
@@ -233,7 +238,12 @@ describe('overrides (Bật / Tắt / Theo quy tắc)', () => {
     ).toBe('role');
     await setFeatureOverride(db, owner, { code: vn, feature: 'auto_save', state: 'on' }, now);
     await setFeatureOverride(db, owner, { code: vn, feature: 'memory_story', state: 'on' }, now);
-    expect(await access()).toEqual({ autoSave: true, milestoneCards: false, memoryStory: true });
+    expect(await access()).toEqual({
+      autoSave: true,
+      milestoneCards: false,
+      memoryStory: true,
+      autoSaveBeta: true,
+    });
     expect(await familyFeatureEnabled(db, 'f_vn', 'memory_story', now, 'test')).toBe(true);
     expect(await familyFeatureEnabled(db, 'f_us', 'memory_story', now, 'test')).toBe(false);
 

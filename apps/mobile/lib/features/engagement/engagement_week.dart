@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../app/router.dart';
 import '../../app/route_guard.dart';
+import '../../core/widgets/cl_button.dart';
+import '../../core/widgets/cl_feedback.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
@@ -34,15 +36,17 @@ class EngagementWeekScreen extends ConsumerWidget {
     return week.when(
       loading: () => MePage(
         title: l.engWeekly,
-        children: const [LinearProgressIndicator()],
+        children: const [ClSkeleton(height: 240, radius: 16)],
       ),
       error: (_, _) => MePage(
         title: l.engWeekly,
         children: [
-          Text(l.engOffline),
-          TextButton(
+          MeNotice(title: l.engOffline),
+          ClButton(
+            label: l.engRetry,
+            style: ClButtonStyle.secondary,
+            expand: true,
             onPressed: () => ref.invalidate(engagementWeekProvider(id)),
-            child: Text(l.engRetry),
           ),
         ],
       ),
@@ -67,7 +71,7 @@ class EngagementWeekScreen extends ConsumerWidget {
           title: l.engWeekly,
           children: [
             if (items == null)
-              const LinearProgressIndicator()
+              const ClSkeleton(height: 240, radius: 16)
             else if (items.isNotEmpty)
               GridView.builder(
                 shrinkWrap: true,
@@ -84,10 +88,12 @@ class EngagementWeekScreen extends ConsumerWidget {
                 ),
               ),
             for (final story in content['storyIds'] as List? ?? const [])
-              TextButton(
+              ClButton(
+                label: l.engOpen,
+                style: ClButtonStyle.secondary,
+                expand: true,
                 onPressed: () =>
                     ref.read(routerProvider).push('${Routes.story}/$story'),
-                child: Text(l.engOpen),
               ),
           ],
         );

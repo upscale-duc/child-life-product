@@ -1,3 +1,6 @@
+@Tags(['golden'])
+library;
+
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
@@ -223,73 +226,87 @@ void main() {
 
   for (final MapEntry(key: name, value: (build, extra, prefsInit))
       in _cases.entries) {
-    for (final palette in ClPalette.values) {
-      testWidgets('$name ${palette.name}', (tester) async {
-        SharedPreferences.setMockInitialValues(prefsInit);
-        final prefs = await SharedPreferences.getInstance();
-        tester.view.physicalSize = const Size(375, 812);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              sharedPreferencesProvider.overrideWithValue(prefs),
-              ...(extra.isEmpty
-                  ? keepsakeOverrides()
-                  : [
-                      ...careOverrides(),
-                      minuteClockProvider.overrideWith(
-                        (ref) => Stream.value(DateTime(2026, 10, 8, 10)),
-                      ),
-                      ...extra,
-                      environmentProvider.overrideWithValue(AppEnvironment.dev),
-                      providerDisplayNameProvider.overrideWithValue(null),
-                    ]),
-            ],
-            child: MediaQuery(
-              data: const MediaQueryData(
-                size: Size(375, 812),
-                disableAnimations: true,
-                padding: EdgeInsets.only(top: 47, bottom: 34),
-              ),
-              child: RepaintBoundary(
-                key: const ValueKey('golden'),
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  theme: buildClTheme(palette),
-                  locale: const Locale('vi'),
-                  supportedLocales: const [Locale('vi'), Locale('en')],
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  home: build(),
+    for (final locale in [
+      const Locale('vi'),
+      if (const {'mm11_edit', 'mm06_photos', 'mm07_finish'}.contains(name))
+        const Locale('en'),
+    ]) {
+      for (final palette in ClPalette.values) {
+        testWidgets('$name ${palette.name} ${locale.languageCode}', (
+          tester,
+        ) async {
+          SharedPreferences.setMockInitialValues(prefsInit);
+          final prefs = await SharedPreferences.getInstance();
+          tester.view.physicalSize = const Size(375, 812);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                sharedPreferencesProvider.overrideWithValue(prefs),
+                ...(extra.isEmpty
+                    ? keepsakeOverrides()
+                    : [
+                        ...careOverrides(),
+                        minuteClockProvider.overrideWith(
+                          (ref) => Stream.value(DateTime(2026, 10, 8, 10)),
+                        ),
+                        ...extra,
+                        environmentProvider.overrideWithValue(
+                          AppEnvironment.dev,
+                        ),
+                        providerDisplayNameProvider.overrideWithValue(null),
+                      ]),
+              ],
+              child: MediaQuery(
+                data: const MediaQueryData(
+                  size: Size(375, 812),
+                  disableAnimations: true,
+                  padding: EdgeInsets.only(top: 47, bottom: 34),
+                ),
+                child: RepaintBoundary(
+                  key: const ValueKey('golden'),
+                  child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    theme: buildClTheme(palette),
+                    locale: locale,
+                    supportedLocales: const [Locale('vi'), Locale('en')],
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    home: build(),
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        // Media bytes decode outside the fake clock: let every visible image finish first.
-        for (var round = 0; round < 2; round++) {
-          final images = tester.widgetList<Image>(find.byType(Image)).toList();
-          await tester.runAsync(() async {
-            for (final image in images) {
-              await precacheImage(
-                image.image,
-                tester.element(find.byWidget(image).first),
-              );
-            }
-          });
+          );
           await tester.pumpAndSettle();
-        }
-        await expectLater(
-          find.byKey(const ValueKey('golden')),
-          matchesGoldenFile('goldens/mm/${name}_${palette.name}.png'),
-        );
-      });
+          // Media bytes decode outside the fake clock: let every visible image finish first.
+          for (var round = 0; round < 2; round++) {
+            final images = tester
+                .widgetList<Image>(find.byType(Image))
+                .toList();
+            await tester.runAsync(() async {
+              for (final image in images) {
+                await precacheImage(
+                  image.image,
+                  tester.element(find.byWidget(image).first),
+                );
+              }
+            });
+            await tester.pumpAndSettle();
+          }
+          await expectLater(
+            find.byKey(const ValueKey('golden')),
+            matchesGoldenFile(
+              'goldens/mm/${name}_${palette.name}${locale.languageCode == 'vi' ? '' : '_en'}.png',
+            ),
+          );
+        });
+      }
     }
   }
 }

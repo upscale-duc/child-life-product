@@ -129,24 +129,29 @@ class ClDayPill extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: selected ? null : cl.shadows.card,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              weekday,
-              style: cl.text.caption.copyWith(
-                color: selected ? cl.colors.onMintDeep : cl.colors.inkMuted,
+        padding: const EdgeInsets.all(ClSpace.s1),
+        // The pill keeps its size in a seven-day strip; large text scales down inside it.
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                weekday,
+                style: cl.text.caption.copyWith(
+                  color: selected ? cl.colors.onMintDeep : cl.colors.inkMuted,
+                ),
               ),
-            ),
-            Text(
-              day,
-              style: cl.text.headline.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: ink,
+              Text(
+                day,
+                style: cl.text.headline.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: ink,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -178,7 +183,12 @@ class ClChoiceTile extends StatelessWidget {
       child: AnimatedContainer(
         duration: context.motion(ClMotion.quick),
         width: 106,
-        height: 120,
+        // 120 at default text; taller (never clipped) when the label grows.
+        constraints: const BoxConstraints(minHeight: 120),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s1,
+          vertical: ClSpace.s2,
+        ),
         decoration: BoxDecoration(
           color: selected ? cl.colors.mintSoft : cl.colors.surface2,
           borderRadius: BorderRadius.circular(ClRadius.tile),
@@ -187,11 +197,12 @@ class ClChoiceTile extends StatelessWidget {
               : null,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(width: 52, height: 52, child: art),
             const SizedBox(height: ClSpace.s2),
-            Text(label, style: cl.text.headline),
+            Text(label, textAlign: TextAlign.center, style: cl.text.headline),
           ],
         ),
       ),
