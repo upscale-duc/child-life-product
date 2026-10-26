@@ -70,7 +70,7 @@ export type HealthSignal =
   'failure' | 'backlog' | 'render' | 'paused' | 'templatesOff' | `eng.${EngagementHealthSignalId}`;
 export interface OverviewHealth {
   level: 'no_data' | 'ok' | 'attention';
-  signals: Array<{ id: HealthSignal; n: number }>;
+  signals: Array<{ id: HealthSignal; n: number; families?: string[] }>;
   failureRate: number | null;
 }
 
@@ -101,7 +101,8 @@ export function overviewHealth(
   const paused = ops ? inboxGroups.filter((g) => ops.pushPaused[g]).length : 0;
   if (paused > 0) signals.push({ id: 'paused', n: paused });
   if (ops && !ops.templatesEnabled) signals.push({ id: 'templatesOff', n: 1 });
-  for (const e of engagement?.signals ?? []) signals.push({ id: `eng.${e.id}`, n: e.n });
+  for (const e of engagement?.signals ?? [])
+    signals.push({ id: `eng.${e.id}`, n: e.n, families: e.families });
   if (!days.length) return { level: 'no_data', signals, failureRate };
   return { level: signals.length ? 'attention' : 'ok', signals, failureRate };
 }
@@ -152,7 +153,11 @@ export function OverviewView({
         title={<FormattedMessage id="ntf.tab.overview" />}
         purpose={<FormattedMessage id="ntf.purpose.overview" />}
       />
-      <HealthLine health={health} onTab={onTab} />
+      <HealthLine
+        health={health}
+        onTab={onTab}
+        onTimeline={canTimeline && onTimeline ? onTimeline : undefined}
+      />
       <Freshness data={data} />
       {!hasData && (
         <EmptyState icon={BellOff} title={<FormattedMessage id="ntf.noStats" />}>
@@ -260,12 +265,28 @@ export function OverviewView({
   );
 }
 
+/** Where the health line's button goes: the first signal's own place (owner, 2026-10-26: a
+ * suggestion closed early sent people to Gửi & lỗi, which only lists failed sends). */
+export function healthAction(
+  signals: OverviewHealth['signals'],
+): 'delivery' | 'settings' | 'beforeSend' | null {
+  const ids = signals.map((s) => s.id);
+  if (ids.some((id) => id === 'failure' || id === 'backlog' || id === 'render')) return 'delivery';
+  if (ids.some((id) => id === 'paused' || id === 'templatesOff')) return 'settings';
+  if (ids.some((id) => id.startsWith('eng.'))) return 'beforeSend';
+  return null;
+}
+
+const BEFORE_SEND_ID = 'ntf-before-send';
+
 function HealthLine({
   health,
   onTab,
+  onTimeline,
 }: {
   health: OverviewHealth;
   onTab?: (tab: NotificationTab) => void;
+  onTimeline?: (code: string) => void;
 }) {
   const intl = useIntl();
   if (health.level === 'no_data')
@@ -283,15 +304,31 @@ function HealthLine({
         />
       </Notice>
     );
+  const action = healthAction(health.signals);
   return (
     <Notice
       tone="warn"
       title={<FormattedMessage id="ntf.health.attention" />}
       action={
-        onTab && (
-          <Button onClick={() => onTab('delivery')}>
-            <FormattedMessage id="ntf.ov.openDelivery" />
+        action === 'beforeSend' ? (
+          <Button
+            onClick={() =>
+              document
+                .getElementById(BEFORE_SEND_ID)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+          >
+            <FormattedMessage id="ntf.ov.openBeforeSend" />
           </Button>
+        ) : (
+          action &&
+          onTab && (
+            <Button onClick={() => onTab(action)}>
+              <FormattedMessage
+                id={action === 'delivery' ? 'ntf.ov.openDelivery' : 'ntf.ov.openSettings'}
+              />
+            </Button>
+          )
         )
       }
     >
@@ -302,6 +339,27 @@ function HealthLine({
               id={`ntf.health.signal.${s.id}`}
               values={{ n: s.n, v: rateText(intl, health.failureRate) }}
             />
+            {!!s.families?.length && (
+              <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
+                {s.families.map((code) =>
+                  onTimeline ? (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => onTimeline(code)}
+                      className="rounded border px-1.5 py-0.5 font-mono text-[12px] outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      aria-label={intl.formatMessage({ id: 'ntf.eng.openFamily' }, { code })}
+                    >
+                      {code}
+                    </button>
+                  ) : (
+                    <span key={code} className="font-mono text-[12px]">
+                      {code}
+                    </span>
+                  ),
+                )}
+              </span>
+            )}
           </li>
         ))}
       </ul>
@@ -334,107 +392,109 @@ export function BeforeSendPanel({
     .sort(([, a], [, b]) => b - a)
     .slice(0, 4);
   return (
-    <Panel
-      title={
-        <span className="inline-flex items-center gap-1">
-          <FormattedMessage id="ntf.eng.title" />
-          <Hint>
-            <FormattedMessage id="ntf.eng.def" />
-          </Hint>
-        </span>
-      }
-    >
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
-        <div>
-          <p className="mb-2 text-[13px] text-muted-foreground">
-            <FormattedMessage id="ntf.eng.due" values={{ n: total }} />
-          </p>
-          <ul className="grid gap-1 text-sm">
-            {engagementOutcomes.map((o) => (
-              <li key={o} className="flex items-center justify-between gap-2">
-                <StatusDot
-                  tone={
-                    o === 'pushed'
-                      ? 'ok'
-                      : (o === 'in_app_only' || o === 'expired') && data.outcomes[o] > 0
-                        ? 'warn'
-                        : 'muted'
-                  }
-                >
-                  <FormattedMessage id={`ntf.eng.outcome.${o}`} />
-                </StatusDot>
-                <span className="font-semibold tabular-nums">
-                  {intl.formatNumber(data.outcomes[o])}
-                </span>
-              </li>
-            ))}
-          </ul>
-          {unsent.length > 0 && (
-            <p className="mt-2 text-[12px] text-muted-foreground">
-              <FormattedMessage
-                id="ntf.eng.why"
-                values={{
-                  list: unsent
-                    .map(
-                      ([r, n]) =>
-                        `${intl.formatMessage({ id: `ntf.engReason.${r}`, defaultMessage: r })} ${intl.formatNumber(n)}`,
-                    )
-                    .join(' · '),
-                }}
-              />
+    <div id={BEFORE_SEND_ID} className="scroll-mt-4">
+      <Panel
+        title={
+          <span className="inline-flex items-center gap-1">
+            <FormattedMessage id="ntf.eng.title" />
+            <Hint>
+              <FormattedMessage id="ntf.eng.def" />
+            </Hint>
+          </span>
+        }
+      >
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
+          <div>
+            <p className="mb-2 text-[13px] text-muted-foreground">
+              <FormattedMessage id="ntf.eng.due" values={{ n: total }} />
             </p>
-          )}
-        </div>
-        <ul className="grid gap-2 text-sm">
-          {checks.map((id) => {
-            const hit = data.signals.find((s) => s.id === id);
-            return (
-              <li key={id} className="grid gap-1">
-                <div className="flex items-center justify-between gap-2">
-                  <StatusDot tone={hit ? 'warn' : 'ok'}>
-                    <span className="inline-flex items-center gap-1">
-                      <FormattedMessage id={`ntf.eng.check.${id}`} />
-                      <Hint>
-                        <FormattedMessage id={`ntf.eng.check.${id}.def`} />
-                      </Hint>
-                    </span>
+            <ul className="grid gap-1 text-sm">
+              {engagementOutcomes.map((o) => (
+                <li key={o} className="flex items-center justify-between gap-2">
+                  <StatusDot
+                    tone={
+                      o === 'pushed'
+                        ? 'ok'
+                        : (o === 'in_app_only' || o === 'expired') && data.outcomes[o] > 0
+                          ? 'warn'
+                          : 'muted'
+                    }
+                  >
+                    <FormattedMessage id={`ntf.eng.outcome.${o}`} />
                   </StatusDot>
                   <span className="font-semibold tabular-nums">
-                    {hit ? intl.formatNumber(hit.n) : <FormattedMessage id="ntf.eng.none" />}
+                    {intl.formatNumber(data.outcomes[o])}
                   </span>
-                </div>
-                {hit && hit.families.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pl-4">
-                    {hit.families.map((code) =>
-                      onTimeline ? (
-                        <button
-                          key={code}
-                          type="button"
-                          onClick={() => onTimeline(code)}
-                          className="rounded border px-1.5 py-0.5 font-mono text-[12px] outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                          aria-label={intl.formatMessage({ id: 'ntf.eng.openFamily' }, { code })}
-                        >
-                          {code}
-                        </button>
-                      ) : (
-                        <span key={code} className="font-mono text-[12px]">
-                          {code}
-                        </span>
-                      ),
-                    )}
+                </li>
+              ))}
+            </ul>
+            {unsent.length > 0 && (
+              <p className="mt-2 text-[12px] text-muted-foreground">
+                <FormattedMessage
+                  id="ntf.eng.why"
+                  values={{
+                    list: unsent
+                      .map(
+                        ([r, n]) =>
+                          `${intl.formatMessage({ id: `ntf.engReason.${r}`, defaultMessage: r })} ${intl.formatNumber(n)}`,
+                      )
+                      .join(' · '),
+                  }}
+                />
+              </p>
+            )}
+          </div>
+          <ul className="grid gap-2 text-sm">
+            {checks.map((id) => {
+              const hit = data.signals.find((s) => s.id === id);
+              return (
+                <li key={id} className="grid gap-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <StatusDot tone={hit ? 'warn' : 'ok'}>
+                      <span className="inline-flex items-center gap-1">
+                        <FormattedMessage id={`ntf.eng.check.${id}`} />
+                        <Hint>
+                          <FormattedMessage id={`ntf.eng.check.${id}.def`} />
+                        </Hint>
+                      </span>
+                    </StatusDot>
+                    <span className="font-semibold tabular-nums">
+                      {hit ? intl.formatNumber(hit.n) : <FormattedMessage id="ntf.eng.none" />}
+                    </span>
                   </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      {data.truncated && (
-        <p className="mt-2 text-[12px] text-muted-foreground">
-          <FormattedMessage id="ntf.eng.truncated" />
-        </p>
-      )}
-    </Panel>
+                  {hit && hit.families.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pl-4">
+                      {hit.families.map((code) =>
+                        onTimeline ? (
+                          <button
+                            key={code}
+                            type="button"
+                            onClick={() => onTimeline(code)}
+                            className="rounded border px-1.5 py-0.5 font-mono text-[12px] outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                            aria-label={intl.formatMessage({ id: 'ntf.eng.openFamily' }, { code })}
+                          >
+                            {code}
+                          </button>
+                        ) : (
+                          <span key={code} className="font-mono text-[12px]">
+                            {code}
+                          </span>
+                        ),
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {data.truncated && (
+          <p className="mt-2 text-[12px] text-muted-foreground">
+            <FormattedMessage id="ntf.eng.truncated" />
+          </p>
+        )}
+      </Panel>
+    </div>
   );
 }
 

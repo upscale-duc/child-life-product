@@ -51,7 +51,7 @@ import {
 import { CatalogView } from '../src/screens/notifications/Catalog';
 import { DeliveryView, deliveryOutcomes } from '../src/screens/notifications/Delivery';
 import { JourneysView, funnelOf, kindsOfScenario } from '../src/screens/notifications/Journeys';
-import { OverviewView, overviewHealth } from '../src/screens/notifications/Overview';
+import { OverviewView, healthAction, overviewHealth } from '../src/screens/notifications/Overview';
 import {
   SettingsView,
   policyDiff,
@@ -914,6 +914,26 @@ describe('D-092 additions', () => {
     expect(t).toContain('Quyền thông báo bị báo sai');
     expect(t).toContain('F-AB23');
     expect(t).toContain('Đóng trước ngày');
+    // Its button goes to the lost suggestions, not to Gửi & lỗi (which lists failed sends).
+    expect(t).toContain('Xem gợi ý bị mất');
+    expect(t).not.toContain('Mở Gửi & lỗi');
+  });
+
+  it('the health button goes where the first problem lives', () => {
+    expect(healthAction([{ id: 'eng.closed_early', n: 1 }])).toBe('beforeSend');
+    expect(
+      healthAction([
+        { id: 'paused', n: 1 },
+        { id: 'eng.daily_missed', n: 1 },
+      ]),
+    ).toBe('settings');
+    expect(
+      healthAction([
+        { id: 'eng.closed_early', n: 1 },
+        { id: 'failure', n: 3 },
+      ]),
+    ).toBe('delivery');
+    expect(healthAction([])).toBeNull();
   });
 
   it('settings show the policy panel, its safe-default notice and read-only state', () => {

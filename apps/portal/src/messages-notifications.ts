@@ -1132,6 +1132,7 @@ const rows: Row[] = [
   ['ntf.eng.outcome.pending', 'Đang chờ', 'Waiting'],
   ['ntf.eng.why', 'Lý do không push: {list}', 'Why not pushed: {list}'],
   ['ntf.eng.none', 'Không có', 'None'],
+  ['ntf.ov.openBeforeSend', 'Xem gợi ý bị mất', 'See lost suggestions'],
   ['ntf.eng.openFamily', 'Mở hành trình {code}', 'Open {code}’s timeline'],
   [
     'ntf.eng.truncated',
