@@ -167,13 +167,19 @@ class MeRepository {
 
   // ---------- Export (R-187) ----------
 
-  Future<String> requestExport(String babyId, ExportKind kind) async =>
-      (await _call('requestDataExport', {
-            'requestId': const Uuid().v4(),
-            'babyId': babyId,
-            'kind': kind.name,
-          }))['jobId']!
-          as String;
+  /// EX-1: a reply without a job id is a failure the sheet can show, never a TypeError that
+  /// leaves its button spinning.
+  Future<String> requestExport(String babyId, ExportKind kind) async {
+    final r = await _call('requestDataExport', {
+      'requestId': const Uuid().v4(),
+      'babyId': babyId,
+      'kind': kind.name,
+    });
+    return switch (r['jobId']) {
+      final String id when id.isNotEmpty => id,
+      _ => throw const AccountActionException('malformed'),
+    };
+  }
 
   Stream<List<ExportJob>> watchExports(String uid) => _db
       .collection('dataJobs')

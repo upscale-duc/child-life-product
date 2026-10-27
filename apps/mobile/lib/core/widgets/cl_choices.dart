@@ -526,3 +526,50 @@ class ClEntryOption extends StatelessWidget {
     );
   }
 }
+
+/// 10b filter pill: surface, separator border, icon · label · chevron. Opens a choice (a sheet);
+/// two side by side replace stacked chip rows and segmented bars (Kỷ niệm Ảnh, Tự lưu AS07).
+class ClFilterPill extends StatelessWidget {
+  const ClFilterPill({
+    required this.icon,
+    required this.label,
+    this.onTap,
+    super.key,
+  });
+  final ClIcons icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onTap,
+      semanticLabel: label,
+      child: Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          border: Border.all(color: cl.colors.separator),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClIcon(icon, size: 14, color: cl.colors.ink),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: 3),
+              ClIcon(ClIcons.chevronDown, size: 12, color: cl.colors.ink),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}

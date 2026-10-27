@@ -459,17 +459,9 @@
   "@existsTitle": {
     "description": "Screen 10 title (27:673)."
   },
-  "existsBody": "Đăng nhập bằng Apple hoặc Google, rồi liên kết.",
+  "existsBody": "Đăng nhập bằng cách bạn đã dùng trước đây, hoặc nhận link đăng nhập qua email.",
   "@existsBody": {
     "description": "Screen 10 body; provider is not revealed (email privacy)."
-  },
-  "existsProvider": "Apple · Google",
-  "@existsProvider": {
-    "description": "Provider chip on the account row."
-  },
-  "existsUseOtherEmail": "Dùng email khác",
-  "@existsUseOtherEmail": {
-    "description": "Back to 07."
   },
   "existsLinked": "Đã liên kết email với tài khoản của bạn.",
   "@existsLinked": {
@@ -1104,6 +1096,128 @@
   "saveAccountMerged": "Đã gộp vào tài khoản của bạn",
   "@saveAccountMerged": {
     "description": "Toast after saving into an existing account (P-007)."
+  },
+  "saveAccountMergedArriving": "Đã gộp vào tài khoản của bạn. Gia đình đang tải, chờ chút nhé.",
+  "@saveAccountMergedArriving": {
+    "description": "AU-1: merge done, the merged babies have not arrived yet."
+  },
+  "saveAccountMergedSignIn": "Đã gộp vào tài khoản của bạn. Đăng nhập lại để mở.",
+  "@saveAccountMergedSignIn": {
+    "description": "AU-1: merge done but this phone could not sign in afterwards."
+  },
+  "existsOtherMethod": "Email của tài khoản này đã đăng ký theo cách khác. Thử gửi link đăng nhập.",
+  "@existsOtherMethod": {
+    "description": "AU-2: Google/Apple on screen 10 hits account-exists-with-different-credential."
+  },
+  "signOutUnsent": "{count, plural, =0{Còn thay đổi chưa gửi lên.} other{Còn {count} bản ghi chưa gửi lên.}} Đăng xuất bây giờ thì chúng chỉ được gửi khi bạn đăng nhập lại trên máy này.",
+  "@signOutUnsent": {
+    "description": "AU-3: sign-out sheet when writes are still on the device; count 0 = unknown how many.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signOutAnonUnsent": "{count, plural, =0{Thay đổi chưa gửi lên cũng sẽ mất.} other{{count} bản ghi chưa gửi lên cũng sẽ mất.}}",
+  "@signOutAnonUnsent": {
+    "description": "AU-3: added to the temporary-account sign-out body; count 0 = unknown how many.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unsentSendNow": "Thử gửi ngay",
+  "@unsentSendNow": {
+    "description": "AU-3: send pending writes before signing out."
+  },
+  "unsentStillPending": "Vẫn chưa gửi được. Kiểm tra mạng rồi thử lại.",
+  "@unsentStillPending": {
+    "description": "AU-3: \"Thử gửi ngay\" timed out."
+  },
+  "meSignOutAnyway": "Vẫn đăng xuất",
+  "@meSignOutAnyway": {
+    "description": "AU-3: sign out although writes are unsent."
+  },
+  "acDeleteUnsent": "{count, plural, =0{Thay đổi chưa gửi lên sẽ mất khi xoá tài khoản.} other{{count} bản ghi chưa gửi lên sẽ mất khi xoá tài khoản.}}",
+  "@acDeleteUnsent": {
+    "description": "AU-3: account deletion with writes still on the device; count 0 = unknown how many.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "acDeleteAnyway": "Vẫn xoá tài khoản",
+  "@acDeleteAnyway": {
+    "description": "AU-3: delete although writes are unsent."
+  },
+  "acDeleteOwnsBabies": "Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.",
+  "@acDeleteOwnsBabies": {
+    "description": "AU-3: server refused deletion, the account still owns babies (R-046)."
+  },
+  "profileSaveFailed": "Chưa lưu được hồ sơ. Thử lại nhé.",
+  "@profileSaveFailed": {
+    "description": "AU-4: baby or personal profile save failed."
+  },
+  "bpLoadFailed": "Chưa tải được hồ sơ của bé.",
+  "@bpLoadFailed": {
+    "description": "AU-5: 13k edit form could not load the saved profile."
+  },
+  "joinLoadFailedTitle": "Chưa mở được lời mời",
+  "@joinLoadFailedTitle": {
+    "description": "FJ-1: 16 preview failed (not a closed invite)."
+  },
+  "joinLoadFailedOffline": "Không có mạng. Lời mời vẫn còn, kết nối rồi thử lại nhé.",
+  "@joinLoadFailedOffline": {
+    "description": "FJ-1: preview failed offline."
+  },
+  "joinLoadFailedBody": "Có lỗi khi mở lời mời. Thử lại nhé.",
+  "@joinLoadFailedBody": {
+    "description": "FJ-1: preview failed for another reason."
+  },
+  "joinFullTitle": "Gia đình đã hết chỗ người ghi",
+  "@joinFullTitle": {
+    "description": "FJ-2: joiner-side closed reason, no writer seat left (D-127 Q3)."
+  },
+  "joinFullBody": "Nhờ người mời bạn mở thêm chỗ, hoặc mời bạn làm người thân để cùng xem album.",
+  "@joinFullBody": {
+    "description": "FJ-2: joiner-side full family body."
+  },
+  "pv2SeatsHeld": "{count, plural, other{{count} lời mời đang giữ chỗ}}",
+  "@pv2SeatsHeld": {
+    "description": "FJ-3 (D-127 Q3): after \"x / y chỗ\", pending writer invites.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteSeatsHeldHint": "Lời mời chưa nhận cũng giữ chỗ. Huỷ lời mời không cần nữa trong Gia đình để mở chỗ.",
+  "@inviteSeatsHeldHint": {
+    "description": "FJ-3: 14b when pending invites fill the last seats."
+  },
+  "joinArriving": "Đã vào gia đình {baby}. Đang tải, chờ chút nhé…",
+  "@joinArriving": {
+    "description": "FJ-4: joined, membership not on this phone yet.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinCountdownMinutes": "{minutes, plural, other{Còn {minutes} phút}}",
+  "@joinCountdownMinutes": {
+    "description": "FJ-5: 16 countdown chip under an hour.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "familyLoadFailedGeneric": "Chưa tải được danh sách.",
+  "@familyLoadFailedGeneric": {
+    "description": "FJ-5: 14a member list failed while online."
   },
   "saveEmailSubtitle": "Tạo tài khoản mới, hoặc đăng nhập tài khoản đã có để gộp vào đó.",
   "@saveEmailSubtitle": {
@@ -3819,7 +3933,7 @@
   "@notifPromptTitle": {
     "description": "8c (127:13809)."
   },
-  "notifPromptBody": "Thông báo chỉ được đặt trên máy tạo nhắc việc.",
+  "notifPromptBody": "Để nhắc việc kêu đúng giờ, kể cả khi đang đóng app.",
   "@notifPromptBody": {
     "description": "8c body."
   },
@@ -6292,7 +6406,7 @@
   "@stVideosEmpty": {
     "description": "G-058 empty."
   },
-  "stLoadFailed": "Không tải được dung lượng. Kéo xuống để thử lại.",
+  "stLoadFailed": "Ảnh, video vẫn an toàn. Thử lại khi có kết nối.",
   "@stLoadFailed": {
     "description": "13b error (G-001)."
   },
@@ -12600,9 +12714,9 @@
   "@upSafeBody": {
     "description": "UP1 reassurance row, second line."
   },
-  "upPendingTitle": "{count} lần ghi chưa đồng bộ",
+  "upPendingTitle": "{count} ảnh, video chưa tải lên",
   "@upPendingTitle": {
-    "description": "UP1: uploads still on this phone.",
+    "description": "UP1: photos and videos still on this phone that go up by themselves (UPD-2: not care records; failed or over-quota ones not counted).",
     "placeholders": {
       "count": {
         "type": "int"
@@ -14267,22 +14381,6 @@
       }
     }
   },
-  "autoSaveReviewSub": "{count, plural, other{{count} gợi ý · kiểm tra lúc {time}. Bỏ chọn những mục không muốn lưu.}}",
-  "@autoSaveReviewSub": {
-    "description": "AS07 subtitle",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "autoSaveGroupedHint": "Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.",
-  "@autoSaveGroupedHint": {
-    "description": "AS07 grouping note (P-146, G-102)"
-  },
   "autoSaveWeek": "Tuần {n} · {count}",
   "@autoSaveWeek": {
     "description": "AS07 week-of-age chip: pending tiles in that week (P-171)",
@@ -14313,18 +14411,9 @@
       }
     }
   },
-  "autoSaveWeekHint": "Duyệt theo tuần tuổi của {name}: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.",
-  "@autoSaveWeekHint": {
-    "description": "AS07 line above the week chips",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "autoSaveFilterAll": "Tất cả · {count}",
+  "autoSaveFilterAll": "Ảnh & video · {count}",
   "@autoSaveFilterAll": {
-    "description": "AS07 filter chip",
+    "description": "AS07 kind pill and its first option, like Kỷ niệm Ảnh \"Ảnh & video\". EN is an engineering draft for owner review.",
     "placeholders": {
       "count": {
         "type": "int"
@@ -14367,15 +14456,6 @@
       }
     }
   },
-  "autoSaveDayCount": "{count, plural, other{{count} mục}}",
-  "@autoSaveDayCount": {
-    "description": "AS07 day header count",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "autoSaveAlready": "Đã có",
   "@autoSaveAlready": {
     "description": "AS07 tag: already in Kỷ niệm"
@@ -14384,9 +14464,9 @@
   "@autoSaveInCloud": {
     "description": "AS07 tag: original not on the phone"
   },
-  "autoSaveLegend": "\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.",
+  "autoSaveLegend": "“Trên iCloud”: tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.",
   "@autoSaveLegend": {
-    "description": "AS07 footnote"
+    "description": "AS07 legend under the grid (the \"Đã có\" explanation lives on its own section). EN is an engineering draft for owner review."
   },
   "autoSaveGroupTitle": "{count, plural, other{{count} ảnh giống nhau · đã chọn {chosen}}}",
   "@autoSaveGroupTitle": {
@@ -14402,10 +14482,6 @@
   },
   "autoSaveGroupAll": "Chọn cả nhóm",
   "@autoSaveGroupAll": {
-    "description": "AS07 expanded group action (G-102)"
-  },
-  "autoSaveGroupCollapse": "Thu gọn",
-  "@autoSaveGroupCollapse": {
     "description": "AS07 expanded group action (G-102)"
   },
   "autoSaveBest": "Rõ nhất",
@@ -14426,23 +14502,6 @@
         "type": "int"
       }
     }
-  },
-  "autoSaveMerged": "{count, plural, other{Đã gộp {count} ảnh giống nhau · không xoá gì trong máy}}",
-  "@autoSaveMerged": {
-    "description": "AS07 summary line (P-146)",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "autoSaveDeselectAll": "Bỏ chọn tất cả",
-  "@autoSaveDeselectAll": {
-    "description": "AS07 top bar: untick everything shown, to pick a few by hand"
-  },
-  "autoSaveSelectAll": "Chọn tất cả",
-  "@autoSaveSelectAll": {
-    "description": "AS07 top bar once nothing is ticked: tick the suggested picks again (up to the limit, D-070)"
   },
   "autoSaveRoundRest": "{rest, plural, other{Mỗi lần tải tối đa {cap} mục · {rest} gợi ý còn lại chờ lần sau}}",
   "@autoSaveRoundRest": {
@@ -14633,24 +14692,6 @@
   "@autoSaveConfirmFootnote": {
     "description": "AS10 footnote"
   },
-  "autoSaveNoRoom": "Không đủ dung lượng: {count} mục cần {need}, gia đình còn {left}. Bạn có thể tải trước {fit} mục vừa đủ, phần còn lại vẫn giữ trên máy.",
-  "@autoSaveNoRoom": {
-    "description": "AS18 banner",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "need": {
-        "type": "String"
-      },
-      "left": {
-        "type": "String"
-      },
-      "fit": {
-        "type": "int"
-      }
-    }
-  },
   "autoSaveUploadFit": "{count, plural, other{Tải trước {count} mục vừa đủ}}",
   "@autoSaveUploadFit": {
     "description": "AS18 primary button",
@@ -14667,18 +14708,6 @@
   "autoSaveSeeStorage": "Xem dung lượng",
   "@autoSaveSeeStorage": {
     "description": "AS18 link"
-  },
-  "autoSavePreparing": "Đang chuẩn bị {done}/{total}…",
-  "@autoSavePreparing": {
-    "description": "AS10 while originals are read (may come from iCloud)",
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
   },
   "autoSaveQueued": "{count, plural, other{Đang tải {count} mục lên Kỷ niệm}}",
   "@autoSaveQueued": {
@@ -15079,7 +15108,7 @@
   "@ksFormatStory": {
     "description": "MM10 format."
   },
-  "ksPremium": "Cao cấp",
+  "ksPremium": "Premium",
   "@ksPremium": {
     "description": "Template badge (MM10); free during the beta (D-068 #3)."
   },
@@ -16269,7 +16298,7 @@
   "@pmBadgeExpired": {
     "description": "Plan badge: Premium ended (588:6290)."
   },
-  "pmPlanTitle": "Gói của hộ",
+  "pmPlanTitle": "Gói của gia đình",
   "@pmPlanTitle": {
     "description": "PR03 title; also the Tôi row."
   },
@@ -19360,7 +19389,7 @@
   "@pmNotOwnerTitle": {
     "description": "PR02 not_owner (D-072 #1)."
   },
-  "pmNotOwnerBody": "Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.",
+  "pmNotOwnerBody": "Nhờ chủ hộ mở Gói của gia đình để nâng cấp hoặc khôi phục.",
   "@pmNotOwnerBody": {
     "description": "PR02 not_owner body."
   },
@@ -20612,7 +20641,7 @@
       }
     }
   },
-  "asPremiumTeaser": "Premium có nhiều lượt hơn, cùng cá nhân hoá chủ động và mẫu thẻ/video Premium.",
+  "asPremiumTeaser": "Premium có thêm credit Lumi, gợi ý cá nhân và mẫu thiệp, video cao cấp.",
   "@asPremiumTeaser": {
     "description": "CH19 Premium card (Free only)."
   },
@@ -20680,13 +20709,13 @@
   },
   "asOutBodyFree": "Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.",
   "@asOutBodyFree": {
-    "description": "CH21 body."
+    "description": "CH21 / CH24 body, after asOutResetOn / asOutResetNext (AI-4: the upsell is the button, never a sentence; with assistant_upsell off nothing sells)."
   },
   "asOpenTodayLog": "Mở nhật ký hôm nay",
   "@asOpenTodayLog": {
     "description": "CH21 direct action."
   },
-  "asUpgradeContinue": "Nâng cấp & tiếp tục câu hỏi",
+  "asUpgradeContinue": "Xem Premium để hỏi tiếp",
   "@asUpgradeContinue": {
     "description": "CH21 primary (paywall; resumes the kept question once after a verified purchase)."
   },
@@ -20701,15 +20730,6 @@
   "asOutTitlePremium": "Hộ đã dùng hết lượt hỗ trợ AI kỳ này.",
   "@asOutTitlePremium": {
     "description": "CH24 title."
-  },
-  "asOutBodyPremium": "Làm mới {date}. Bạn vẫn ghi trực tiếp, xem nhật ký, dùng mẫu Premium và quota xuất video riêng.",
-  "@asOutBodyPremium": {
-    "description": "CH24 body.",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
   },
   "asSeeUsage": "Xem chi tiết mức dùng",
   "@asSeeUsage": {
@@ -23128,6 +23148,30 @@
   "@ntSaveFailed": {
     "description": "EN07 toast when a switch fails to save."
   },
+  "ntSettingsLoadFailed": "Chưa tải được cài đặt thông báo",
+  "@ntSettingsLoadFailed": {
+    "description": "EN07 error notice title when the stored switches cannot load (NT-1); body ntLoadFailed, tap retries."
+  },
+  "ntGroupLoadFailed": "Chưa tải được. Chạm để thử lại.",
+  "@ntGroupLoadFailed": {
+    "description": "EN07 Gợi ý thông minh group when it cannot load (NT-7); tap retries."
+  },
+  "ntTurnOn": "Bật",
+  "@ntTurnOn": {
+    "description": "Button on the notifications-off card before the system prompt was ever shown (NT-3)."
+  },
+  "ruleNotifOff": "Máy này đang tắt thông báo nên nhắc theo quy tắc sẽ không hiện.",
+  "@ruleNotifOff": {
+    "description": "Theo quy tắc tab: system notifications off while a rule sends to this person (NT-5)."
+  },
+  "meNotifOffDevice": "Tắt trong máy",
+  "@meNotifOffDevice": {
+    "description": "Tôi › Thông báo row value when the phone's system notifications are off (NT-2)."
+  },
+  "meRateOpenFailed": "Chưa mở được cửa hàng ứng dụng. Thử lại sau nhé.",
+  "@meRateOpenFailed": {
+    "description": "FB1 rate row toast when the store page does not open (UPD-1)."
+  },
   "rhPlannedPill": "Sẽ thử",
   "@rhPlannedPill": {
     "description": "Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review."
@@ -23317,6 +23361,92 @@
   "asErrorFriendly": "Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.",
   "@asErrorFriendly": {
     "description": "CH25 as a Lumi bubble (no blame), followed by \"Thử lại\" and \"Ghi trực tiếp\". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asActOffline": "Đang ngoại tuyến · chưa gửi được. Có mạng rồi thử lại.",
+  "@asActOffline": {
+    "description": "Toast when a chat action (an answer chip, \"Thử tối nay\", feedback) could not go out offline; drafts keep asSaveOffline. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review."
+  },
+  "asActFailed": "Chưa gửi được. Bạn thử lại nhé.",
+  "@asActFailed": {
+    "description": "Toast when a chat action other than saving drafts failed. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review."
+  },
+  "asActChecking": "Mạng chậm · đang kiểm tra lại…",
+  "@asActChecking": {
+    "description": "Toast when an action got no answer in time: the server may have done it, the chat reads it again. Flow audit 2026-10-26 (AI-6). VI and EN are engineering drafts for owner review."
+  },
+  "asAnswerStale": "Câu hỏi vừa thay đổi. Xem lại ở trên nhé.",
+  "@asAnswerStale": {
+    "description": "Toast when an answer reached a question that had already moved on. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review."
+  },
+  "asAnswerOffline": "Đang ngoại tuyến · câu trả lời chưa gửi, vẫn ở ô nhập.",
+  "@asAnswerOffline": {
+    "description": "Toast when a typed clarification answer could not go out offline; the words go back to the composer. Flow audit 2026-10-26 (AI-5). VI and EN are engineering drafts for owner review."
+  },
+  "asAnswerFailed": "Chưa gửi được câu trả lời. Chữ vẫn ở ô nhập, bạn thử lại nhé.",
+  "@asAnswerFailed": {
+    "description": "Toast when a typed clarification answer failed; the words go back to the composer. Flow audit 2026-10-26 (AI-5). VI and EN are engineering drafts for owner review."
+  },
+  "asChecking": "Đang kiểm tra…",
+  "@asChecking": {
+    "description": "Status under my kept bubble while the chat asks the server again after no answer in time. Flow audit 2026-10-26 (AI-6). VI and EN are engineering drafts for owner review."
+  },
+  "asEditKept": "Sửa lại",
+  "@asEditKept": {
+    "description": "Action under a kept bubble a resend cannot help: the words go back to the composer. Flow audit 2026-10-26 (AI-8). VI and EN are engineering drafts for owner review."
+  },
+  "asErrorNoRetry": "Mình chưa làm được việc này. Chưa có gì được lưu — bạn ghi trực tiếp nhé.",
+  "@asErrorNoRetry": {
+    "description": "Lumi bubble for a failure that a retry cannot fix (no \"Thử lại\"), followed by \"Ghi trực tiếp\". Flow audit 2026-10-26 (AI-8). VI and EN are engineering drafts for owner review."
+  },
+  "asStillWorking": "Lumi vẫn đang xử lý…",
+  "@asStillWorking": {
+    "description": "Typing indicator after a task has been working for a while (the chat reads it again). Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review."
+  },
+  "asTaskSlowBody": "Lumi đang lâu hơn thường lệ. Chưa có gì được lưu từ câu này.",
+  "@asTaskSlowBody": {
+    "description": "Lumi bubble when a task still has not moved after the chat read it again; followed by \"Kiểm tra lại\" (and \"Huỷ\" for its author). Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review."
+  },
+  "asCheckAgain": "Kiểm tra lại",
+  "@asCheckAgain": {
+    "description": "Chip under asTaskSlowBody: reads the task again. Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review."
+  },
+  "asOutResetOn": "Lượt mới có từ {date}.",
+  "@asOutResetOn": {
+    "description": "First sentence of the used-up card when the reset date is known (D-127 Q6: \"lượt\", never \"Credit\"). Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "asOutResetNext": "Lượt mới có vào kỳ tới.",
+  "@asOutResetNext": {
+    "description": "First sentence of the used-up card when the reset date is not known yet. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review."
+  },
+  "asBlockedOld": "Chưa trả lời · lúc đó đã hết lượt",
+  "@asBlockedOld": {
+    "description": "Note under an earlier question that was kept because the pool was used up. Flow audit 2026-10-26 (AI-3). VI and EN are engineering drafts for owner review."
+  },
+  "asAskAgain": "Hỏi lại",
+  "@asAskAgain": {
+    "description": "Chip under my own earlier used-up question once the pool has room again. Flow audit 2026-10-26 (AI-3). VI and EN are engineering drafts for owner review."
+  },
+  "asPhotoQuoteTitleOver": "Đọc ảnh này cần {credits} lượt, nhiều hơn số lượt còn lại.",
+  "@asPhotoQuoteTitleOver": {
+    "description": "CH20 title when the remaining number is not known. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.",
+    "placeholders": {
+      "credits": {
+        "type": "int"
+      }
+    }
+  },
+  "asPhotoQuoteWait": "Bạn có thể nhập tay hoặc đợi lượt mới. Ảnh chưa được gửi đi.",
+  "@asPhotoQuoteWait": {
+    "description": "CH20 body without a known reset date and without an upgrade. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review."
+  },
+  "asPhotoQuoteWaitUpgrade": "Bạn có thể nhập tay, đợi lượt mới hoặc nâng cấp để tiếp tục ngay. Ảnh chưa được gửi đi.",
+  "@asPhotoQuoteWaitUpgrade": {
+    "description": "CH20 Free body without a known reset date. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review."
   },
   "asReadingPhoto": "Lumi đang đọc ảnh…",
   "@asReadingPhoto": {
@@ -27057,7 +27187,7 @@
   "pv2Dislike": "Không hợp với nhà mình",
   "pv2Known": "Tôi đã biết rồi",
   "pv2Exclude": "Không phù hợp với bé · áp dụng cho cả nhà",
-  "pv2Restore": "Khôi phục",
+  "pv2Restore": "Khôi phục giao dịch",
   "pv2Intend": "Mình sẽ thử",
   "pv2Tried": "Thử rồi",
   "pv2Helpful": "Có ích",
@@ -29907,7 +30037,7 @@
   "@psBookPagesCount": {
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -30222,7 +30352,7 @@
   "@psCod": {},
   "psCodHelp": "Kiểm tra hàng rồi trả tiền mặt hoặc chuyển khoản cho shipper",
   "@psCodHelp": {},
-  "psTransfer": "Chuyển khoản / VietQR ngay",
+  "psTransfer": "Chuyển khoản / VietQR",
   "@psTransfer": {},
   "psTransferHelp": "Không bắt buộc · Child Life sẽ liên hệ sau khi đặt",
   "@psTransferHelp": {},
@@ -30454,9 +30584,9 @@
   "@dutyNobodyBody": {
     "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
   },
-  "dutyTake": "Tôi trông bé từ bây giờ",
+  "dutyTake": "Tôi trông bé",
   "@dutyTake": {
-    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+    "description": "Action: starts the viewer’s care shift now."
   },
   "dutyEnd": "Kết thúc ca của tôi",
   "@dutyEnd": {
@@ -30525,7 +30655,7 @@
   "@psPreviewPriceCaption": {
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       },
       "size": {
         "type": "String"
@@ -30583,7 +30713,7 @@
   "@pv2SeePremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Gold button of a Premium suggestion: opens the paywall."
   },
-  "pv2SeePlans": "Xem các gói",
+  "pv2SeePlans": "Xem Premium",
   "@pv2SeePlans": {
     "description": "Premium v2 (Figma 958:13863, D-101). PV40B: opens the paywall opened on purpose (PW06)."
   },
@@ -30600,7 +30730,7 @@
       }
     }
   },
-  "pv2E01Body": "Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và {videos} lượt xuất video mỗi tháng.",
+  "pv2E01Body": "Mẫu này có trong Premium, cùng khả năng xuất Full HD 1080p không giới hạn lượt. Ảnh và lời nhắn đang chọn được giữ nguyên.",
   "@pv2E01Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E01 body.",
     "placeholders": {
@@ -30609,7 +30739,7 @@
       }
     }
   },
-  "pv2E01Secondary": "Dùng mẫu miễn phí tương tự",
+  "pv2E01Secondary": "Dùng mẫu miễn phí",
   "@pv2E01Secondary": {
     "description": "Premium v2 (Figma 958:13863, D-101). E01 text button."
   },
@@ -30626,7 +30756,7 @@
   "@pv2E02Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E02 body."
   },
-  "pv2E02Secondary": "Chọn mẫu miễn phí",
+  "pv2E02Secondary": "Dùng mẫu miễn phí",
   "@pv2E02Secondary": {
     "description": "Premium v2 (Figma 958:13863, D-101). E02 text button."
   },
@@ -30634,7 +30764,7 @@
   "@pv2E04Title": {
     "description": "Premium v2 (Figma 958:13863, D-101). E04: continuing a draft on a Premium template without Premium."
   },
-  "pv2E04Body": "Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.",
+  "pv2E04Body": "Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu miễn phí.",
   "@pv2E04Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E04 body."
   },
@@ -30682,7 +30812,7 @@
       }
     }
   },
-  "pv2E07Title": "Lumi đã dùng hết {n} credit tháng này",
+  "pv2E07Title": "Lumi đã dùng hết {n} lượt tháng này",
   "@pv2E07Title": {
     "description": "Premium v2 (Figma 958:13863, D-101). E07: a Premium family out of Lumi credits (no paywall).",
     "placeholders": {
@@ -30691,7 +30821,7 @@
       }
     }
   },
-  "pv2E07Body": "Credit mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.",
+  "pv2E07Body": "Lượt mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.",
   "@pv2E07Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E07 body.",
     "placeholders": {
@@ -30742,7 +30872,7 @@
       }
     }
   },
-  "pv2E12Title": "Gia đình đã dùng {used}/{limit} chỗ người chăm sóc",
+  "pv2E12Title": "Gia đình đã dùng {used}/{limit} chỗ người ghi",
   "@pv2E12Title": {
     "description": "Premium v2 (Figma 958:13863, D-101). E12: inviting a writer with the Free seats full.",
     "placeholders": {
@@ -30754,7 +30884,7 @@
       }
     }
   },
-  "pv2E12Body": "Premium có {premium} chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.",
+  "pv2E12Body": "Premium có {premium} chỗ người ghi. Hoặc mời làm người thân — xem album không giới hạn.",
   "@pv2E12Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E12 body.",
     "placeholders": {
@@ -30784,7 +30914,7 @@
   "@pv2E08Title": {
     "description": "Premium v2 (Figma 958:13863, D-101). E08: storage over 80 %."
   },
-  "pv2E08BodyPremium": "Đã dùng {pct}% của {gb} GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.",
+  "pv2E08BodyPremium": "Đã dùng {pct}% của {gb} GB. Thêm {options}, dùng chung cho cả gia đình.",
   "@pv2E08BodyPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). E08 body for a Premium family (PW10).",
     "placeholders": {
@@ -30792,6 +30922,9 @@
         "type": "int"
       },
       "gb": {
+        "type": "String"
+      },
+      "options": {
         "type": "String"
       }
     }
@@ -30830,7 +30963,7 @@
   "@pv2E13Title": {
     "description": "Premium v2 (Figma 958:13863, D-101). E13 Tôi inline card title."
   },
-  "pv2E13Body": "{videos} video mỗi tháng, {credits} credit Lumi, mẫu cao cấp và {gb} GB cho cả nhà · {price}/tháng.",
+  "pv2E13Body": "Mẫu cao cấp, video Full HD, thêm credit Lumi và dung lượng dùng chung cho cả nhà.",
   "@pv2E13Body": {
     "description": "Premium v2 (Figma 958:13863, D-101). E13 body.",
     "placeholders": {
@@ -30848,7 +30981,7 @@
       }
     }
   },
-  "pv2HeadVideo": "Giữ tháng này của {name} thành một câu chuyện",
+  "pv2HeadVideo": "Tạo video kỷ niệm của {name}",
   "@pv2HeadVideo": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW01 headline.",
     "placeholders": {
@@ -30857,7 +30990,7 @@
       }
     }
   },
-  "pv2HeadCard": "Thiệp xứng với tháng đầu của {name}",
+  "pv2HeadCard": "Tạo thiệp dành riêng cho {name}",
   "@pv2HeadCard": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW02 headline.",
     "placeholders": {
@@ -30879,7 +31012,7 @@
   "@pv2HeadStorage": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW04 headline."
   },
-  "pv2HeadCaregivers": "Để cả nhà cùng chăm {name}",
+  "pv2HeadCaregivers": "Thêm người cùng chăm {name}",
   "@pv2HeadCaregivers": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW05 headline (Figma names the invitee; engineering generalises).",
     "placeholders": {
@@ -30888,7 +31021,7 @@
       }
     }
   },
-  "pv2HeadExplore": "Những năm đầu của con, giữ trọn vẹn hơn",
+  "pv2HeadExplore": "Nâng cấp lên Premium",
   "@pv2HeadExplore": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW06 headline, opened on purpose (no reason line)."
   },
@@ -30905,7 +31038,7 @@
   "@pv2ReasonVideo": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW01 reason line without a template name."
   },
-  "pv2ReasonLumi": "Câu hỏi của bạn đang chờ · đã dùng hết {n} credit trải nghiệm.",
+  "pv2ReasonLumi": "Câu hỏi của bạn đang chờ · đã dùng hết {n} lượt trải nghiệm.",
   "@pv2ReasonLumi": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW03 reason line.",
     "placeholders": {
@@ -30926,7 +31059,7 @@
       }
     }
   },
-  "pv2ReasonCaregivers": "Gia đình đã dùng {used} / {limit} chỗ người chăm sóc của gói Free.",
+  "pv2ReasonCaregivers": "Gói Free: {used} / {limit} chỗ người ghi.",
   "@pv2ReasonCaregivers": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW05 reason line.",
     "placeholders": {
@@ -30942,19 +31075,19 @@
   "@pv2ReasonMember": {
     "description": "Premium v2 (Figma 958:13863, D-101). PW07 reason line for a member who does not manage the plan."
   },
-  "pv2CardVideoEyebrow": "VIDEO KỶ NIỆM",
+  "pv2CardVideoEyebrow": "THIỆP & VIDEO KỶ NIỆM",
   "@pv2CardVideoEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardVideoTitle": "Những ảnh rời, thành câu chuyện",
+  "pv2CardVideoTitle": "Kỷ niệm mang dấu ấn của con",
   "@pv2CardVideoTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardVideoBody": "Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.",
+  "pv2CardVideoBody": "Chọn mẫu cao cấp, thêm ảnh, tên và lời nhắn.",
   "@pv2CardVideoBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardVideoLimit": "{n} video mỗi tháng",
+  "pv2CardVideoLimit": "Xuất video không giới hạn lượt",
   "@pv2CardVideoLimit": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
     "placeholders": {
@@ -30979,7 +31112,7 @@
   "@pv2CardCardTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardCardBody": "Thêm tên, lời thương và đổi phong cách chỉ với một chạm.",
+  "pv2CardCardBody": "Thêm tên, ảnh và lời nhắn theo mẫu bạn chọn.",
   "@pv2CardCardBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
@@ -30995,17 +31128,17 @@
   "@pv2CardLumiEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardLumiTitle": "Hỏi một câu, Lumi tóm tắt giúp",
+  "pv2CardLumiTitle": "Hỏi Lumi về nhật ký của con",
   "@pv2CardLumiTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardLumiBody": "Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.",
+  "pv2CardLumiBody": "Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.",
   "@pv2CardLumiBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardLumiLimit": "{n} credit mỗi tháng",
+  "pv2CardLumiLimit": "{n} credit/tháng · cả nhà dùng chung",
   "@pv2CardLumiLimit": {
-    "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
+    "description": "Approved Figma Premium details, config-driven allowances.",
     "placeholders": {
       "n": {
         "type": "int"
@@ -31028,15 +31161,15 @@
   "@pv2CardRhythmEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardRhythmTitle": "Những thay đổi nhỏ, dễ nhìn thấy hơn.",
+  "pv2CardRhythmTitle": "Gợi ý cá nhân & nhịp nâng cao",
   "@pv2CardRhythmTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardRhythmBody": "Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.",
+  "pv2CardRhythmBody": "Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.",
   "@pv2CardRhythmBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardRhythmLimit": "Gồm trong {n} credit mỗi tháng",
+  "pv2CardRhythmLimit": "Có trong Premium",
   "@pv2CardRhythmLimit": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
     "placeholders": {
@@ -31057,15 +31190,15 @@
   "@pv2CardStorageEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardStorageTitle": "Thêm chỗ cho những tháng ngày tiếp theo.",
+  "pv2CardStorageTitle": "Thêm chỗ lưu ảnh và video",
   "@pv2CardStorageTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardStorageBody": "Giữ thêm ảnh và video trong album riêng của gia đình.",
+  "pv2CardStorageBody": "Dung lượng dùng chung cho ảnh và video của cả gia đình.",
   "@pv2CardStorageBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardStorageLimit": "{gb} GB dùng chung · có thể mua thêm",
+  "pv2CardStorageLimit": "{gb} GB dùng chung cho cả nhà",
   "@pv2CardStorageLimit": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
     "placeholders": {
@@ -31082,15 +31215,15 @@
   "@pv2CardCaregiversEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardCaregiversTitle": "Cả nhà cùng chăm, không hỏi lại",
+  "pv2CardCaregiversTitle": "Cùng ghi nhật ký chăm con",
   "@pv2CardCaregiversTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardCaregiversBody": "Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.",
+  "pv2CardCaregiversBody": "Cùng ghi cữ bú, giấc ngủ và xem cập nhật trong nhật ký.",
   "@pv2CardCaregiversBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
-  "pv2CardCaregiversLimit": "Thêm chỗ cho tối đa {premium} người cùng chăm (Free: {free})",
+  "pv2CardCaregiversLimit": "{premium} chỗ người ghi · Free: {free}",
   "@pv2CardCaregiversLimit": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card limit line.",
     "placeholders": {
@@ -31110,7 +31243,7 @@
   "@pv2CardCaregiversDemo2": {
     "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
   },
-  "pv2CompareTitle": "Free và Premium",
+  "pv2CompareTitle": "So sánh Free và Premium",
   "@pv2CompareTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall comparison heading."
   },
@@ -31122,11 +31255,11 @@
   "@pv2YouNeed": {
     "description": "Premium v2 (Figma 958:13863, D-101). Tag on the comparison row of the entry point."
   },
-  "pv2RowLumi": "Credit Lumi",
+  "pv2RowLumi": "Lumi",
   "@pv2RowLumi": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
-  "pv2RowLumiFree": "{n} credit dùng thử",
+  "pv2RowLumiFree": "{n} credit dùng thử một lần",
   "@pv2RowLumiFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31135,7 +31268,7 @@
       }
     }
   },
-  "pv2RowLumiPremium": "{n} credit/tháng",
+  "pv2RowLumiPremium": "{n} lượt/tháng",
   "@pv2RowLumiPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31157,11 +31290,11 @@
       }
     }
   },
-  "pv2RowVideo": "Xuất video",
+  "pv2RowVideo": "Xuất video kỷ niệm",
   "@pv2RowVideo": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
-  "pv2RowVideoFree": "{n} lượt dùng thử",
+  "pv2RowVideoFree": "Không giới hạn · 720p",
   "@pv2RowVideoFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31170,7 +31303,7 @@
       }
     }
   },
-  "pv2RowVideoPremium": "{n} lượt/tháng",
+  "pv2RowVideoPremium": "Không giới hạn · Full HD 1080p",
   "@pv2RowVideoPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value.",
     "placeholders": {
@@ -31191,7 +31324,7 @@
   "@pv2RowTemplatesPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
   },
-  "pv2RowCaregivers": "Người chăm sóc",
+  "pv2RowCaregivers": "Người có quyền ghi",
   "@pv2RowCaregivers": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row."
   },
@@ -31216,7 +31349,7 @@
   "@pv2PromiseCancel": {
     "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
   },
-  "pv2PromiseNoTopUps": "Không bán credit lẻ",
+  "pv2PromiseNoTopUps": "Không bán lượt lẻ",
   "@pv2PromiseNoTopUps": {
     "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
   },
@@ -31224,15 +31357,15 @@
   "@pv2PromiseYours": {
     "description": "Premium v2 (Figma 958:13863, D-101). Commitment chip."
   },
-  "pv2PeriodYear": "Theo năm",
+  "pv2PeriodYear": "Gói năm",
   "@pv2PeriodYear": {
     "description": "Premium v2 (Figma 958:13863, D-101). Period tile."
   },
-  "pv2PeriodMonth": "Theo tháng",
+  "pv2PeriodMonth": "Gói tháng",
   "@pv2PeriodMonth": {
     "description": "Premium v2 (Figma 958:13863, D-101). Period tile."
   },
-  "pv2PerMonthApprox": "≈ {price}/tháng",
+  "pv2PerMonthApprox": "Tương đương khoảng {price}/tháng",
   "@pv2PerMonthApprox": {
     "description": "Premium v2 (Figma 958:13863, D-101). Yearly tile: the price per month.",
     "placeholders": {
@@ -31241,11 +31374,11 @@
       }
     }
   },
-  "pv2EachMonth": "mỗi tháng",
+  "pv2EachMonth": "Thanh toán hằng tháng",
   "@pv2EachMonth": {
     "description": "Premium v2 (Figma 958:13863, D-101). Monthly tile caption."
   },
-  "pv2SubscribeYear": "Đăng ký Premium · {price}/năm",
+  "pv2SubscribeYear": "Đăng ký gói năm · {price}",
   "@pv2SubscribeYear": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, yearly.",
     "placeholders": {
@@ -31254,7 +31387,7 @@
       }
     }
   },
-  "pv2SubscribeMonth": "Đăng ký Premium · {price}/tháng",
+  "pv2SubscribeMonth": "Đăng ký gói tháng · {price}",
   "@pv2SubscribeMonth": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, monthly.",
     "placeholders": {
@@ -31397,7 +31530,7 @@
   "@pv2Storage": {
     "description": "Premium v2 (Figma 958:13863, D-101). Allowance row."
   },
-  "pv2CreditsLeft": "còn {left} / {limit} credit",
+  "pv2CreditsLeft": "còn {left} / {limit} lượt",
   "@pv2CreditsLeft": {
     "description": "Premium v2 (Figma 958:13863, D-101). Allowance value.",
     "placeholders": {
@@ -31485,7 +31618,7 @@
       }
     }
   },
-  "pv2FreeUpsellBody": "Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.",
+  "pv2FreeUpsellBody": "Thêm credit Lumi hằng tháng, mẫu cao cấp, video Full HD và dung lượng chung cho cả nhà.",
   "@pv2FreeUpsellBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). PV40B upsell body."
   },
@@ -31573,7 +31706,7 @@
       }
     }
   },
-  "pv2OverSeatsTitle": "Vượt chỗ người chăm sóc · {used} / {limit}",
+  "pv2OverSeatsTitle": "Vượt chỗ người ghi · {used} / {limit}",
   "@pv2OverSeatsTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). PV43 state card.",
     "placeholders": {
@@ -31837,7 +31970,7 @@
   "@pv2CancelTemplates": {
     "description": "Premium v2 (Figma 958:13863, D-101). PV42 row."
   },
-  "pv2CancelTemplatesBody": "Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản",
+  "pv2CancelTemplatesBody": "Giữ bản nháp; xuất cần Premium hoặc đổi sang mẫu miễn phí",
   "@pv2CancelTemplatesBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). PV42 row body."
   },
@@ -32027,7 +32160,7 @@
   "@pv2DemoRhythm": {
     "description": "Premium v2 (Figma 958:13863, D-101). Rhythm card demo note."
   },
-  "pv2DemoUploading": "3 video đang tải lên · không cần chờ",
+  "pv2DemoUploading": "3 video đang tải lên",
   "@pv2DemoUploading": {
     "description": "Premium v2 (Figma 958:13863, D-101). Storage card demo row."
   },
@@ -32055,11 +32188,11 @@
   "@pv2DemoGranDid": {
     "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo row."
   },
-  "pv2DemoCareNote": "Cùng chăm đã có ở Free; Premium tăng số người tham gia.",
+  "pv2DemoCareNote": "Free cũng có nhật ký chung; Premium thêm chỗ cho người ghi.",
   "@pv2DemoCareNote": {
     "description": "Premium v2 (Figma 958:13863, D-101). Caregivers card demo footnote."
   },
-  "pv2Terms": "Điều khoản",
+  "pv2Terms": "Điều khoản sử dụng",
   "@pv2Terms": {
     "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line link."
   },
@@ -32106,11 +32239,11 @@
   "@pv2RowRhythm": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison row (owner, 2026-10-25)."
   },
-  "pv2RowRhythmFree": "Nhật ký & mốc cơ bản",
+  "pv2RowRhythmFree": "Theo tuổi & lịch tham khảo",
   "@pv2RowRhythmFree": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
   },
-  "pv2RowRhythmPremium": "Nhận xét tuần · có nguồn",
+  "pv2RowRhythmPremium": "Gợi ý riêng & nhịp nâng cao",
   "@pv2RowRhythmPremium": {
     "description": "Premium v2 (Figma 958:13863, D-101). Comparison value."
   },
@@ -32206,5 +32339,1200 @@
   "p48ClearValue": "Xoá giá trị",
   "@p48ClearValue": {
     "description": "Clears an optional date or time without substituting a default."
+  },
+  "autoSaveReviewTicked": "App đã chọn sẵn ảnh rõ nhất. Bỏ chọn mục không muốn lưu.",
+  "@autoSaveReviewTicked": {
+    "description": "AS07 line under \"Có thể có {tên}\": the app ticks the clearest of each group (not near-copies, not \"Đã có\"). EN is an engineering draft for owner review."
+  },
+  "premiumSharedPlans": "Cả nhà dùng chung, dù chọn gói năm hay gói tháng.",
+  "@premiumSharedPlans": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumChoosePlan": "Chọn gói",
+  "@premiumChoosePlan": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumBenefits": "Premium có gì?",
+  "@premiumBenefits": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumMemories": "Thiệp & video kỷ niệm",
+  "@premiumMemories": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumMemoriesSubtitle": "Toàn bộ mẫu cao cấp chất lượng cao",
+  "@premiumMemoriesSubtitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumRhythm": "Gợi ý cá nhân & nhịp nâng cao",
+  "@premiumRhythm": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmSubtitle": "Gợi ý theo nhu cầu và nhật ký của con",
+  "@premiumRhythmSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumTodayTotal": "Thanh toán hôm nay",
+  "@premiumTodayTotal": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumBackToPlans": "Quay lại chọn gói",
+  "@premiumBackToPlans": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumUnlimitedVideo": "Xuất video không giới hạn lượt",
+  "@premiumUnlimitedVideo": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoFree": "Mẫu cơ bản · Video 720p",
+  "@premiumVideoFree": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoPaid": "Mọi mẫu · Full HD 1080p",
+  "@premiumVideoPaid": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoDetail": "Không giới hạn lượt xuất: Free 720p, Premium Full HD 1080p.",
+  "@premiumVideoDetail": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumFeatureIntro": "Tìm hiểu Premium cho tính năng này",
+  "@premiumFeatureIntro": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQuality": "Chất lượng video",
+  "@videoQuality": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityHd": "HD 720p",
+  "@videoQualityHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityFullHd": "Full HD 1080p",
+  "@videoQualityFullHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityHdHint": "Tệp nhẹ hơn, dễ chia sẻ",
+  "@videoQualityHdHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityFullHdHint": "Hình ảnh rõ nét hơn",
+  "@videoQualityFullHdHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityPremiumHint": "Cần Premium · Tìm hiểu",
+  "@videoQualityPremiumHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoExportHd": "Xuất video HD 720p",
+  "@videoExportHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoExportFullHd": "Xuất video Full HD 1080p",
+  "@videoExportFullHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoFullHdIntroTitle": "Xuất Full HD với Premium",
+  "@videoFullHdIntroTitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoFullHdIntroBody": "Premium cho phép xuất video Full HD 1080p và dùng mọi mẫu cao cấp. Free vẫn xuất HD 720p không giới hạn lượt. Video đang làm được giữ nguyên.",
+  "@videoFullHdIntroBody": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoContinueHd": "Tiếp tục với HD 720p",
+  "@videoContinueHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmCompareFree": "Theo tuổi & lịch tham khảo",
+  "@premiumRhythmCompareFree": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmComparePaid": "Gợi ý riêng & nhịp nâng cao",
+  "@premiumRhythmComparePaid": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumStorageSubtitle": "Dung lượng dùng chung cho ảnh và video của cả nhà",
+  "@premiumStorageSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumSeatsSubtitle": "Cùng ghi cữ bú, giấc ngủ và xem nhật ký",
+  "@premiumSeatsSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumNeedsPremium": "Cần Premium",
+  "@premiumNeedsPremium": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumUseTemplate": "Dùng mẫu Premium",
+  "@premiumUseTemplate": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityChecking": "Đang kiểm tra gói · Thử lại",
+  "@videoQualityChecking": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoRenderRateLimit": "Bạn vừa gửi nhiều yêu cầu tạo video. Thử lại sau một phút nhé.",
+  "@videoRenderRateLimit": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumPaymentDetails": "Chi tiết thanh toán",
+  "@premiumPaymentDetails": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumTaxIncluded": "Giá đã gồm thuế.",
+  "@premiumTaxIncluded": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoAfterCancel": "Video đã xuất giữ nguyên chất lượng. Video mới xuất HD 720p, không giới hạn lượt.",
+  "@premiumVideoAfterCancel": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveSelectAll": "Chọn hết",
+  "@autoSaveSelectAll": {
+    "description": "AS07 top bar when nothing in view is ticked: ticks every new item (not \"Đã có\"). EN is an engineering draft for owner review."
+  },
+  "autoSaveDeselectAll": "Bỏ chọn hết",
+  "@autoSaveDeselectAll": {
+    "description": "AS07 top bar while something in view is ticked. EN is an engineering draft for owner review."
+  },
+  "autoSaveGroupBestOnly": "Chỉ giữ ảnh rõ nhất",
+  "@autoSaveGroupBestOnly": {
+    "description": "AS07 near-copy block, when all of them are ticked: untick all but the clearest. EN is an engineering draft for owner review."
+  },
+  "autoSaveSavedSection": "{count, plural, other{Đã có trong Kỷ niệm · {count}}}",
+  "@autoSaveSavedSection": {
+    "description": "AS07 folded section at the end: items the app thinks are already in Kỷ niệm (a guess, same capture second). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSavedHint": "Không chọn sẵn. Mở ra để chọn nếu app nhầm.",
+  "@autoSaveSavedHint": {
+    "description": "AS07 under \"Đã có trong Kỷ niệm\": they start unticked and can be ticked. EN is an engineering draft for owner review."
+  },
+  "premiumPlanCheckFailed": "Chưa kiểm tra được gói gia đình",
+  "@premiumPlanCheckFailed": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumPlanCheckFailedBody": "Thử lại khi có kết nối nhé. Nội dung bạn đang làm vẫn được giữ.",
+  "@premiumPlanCheckFailedBody": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveWeekSheet": "Tuần tuổi",
+  "@autoSaveWeekSheet": {
+    "description": "AS07 sheet title behind the week pill (one row of pills instead of two bars, owner 2026-10-26: \"hai cái tabbar … chiếm nhiều diện tích\"). EN is an engineering draft for owner review."
+  },
+  "autoSaveKindSheet": "Hiện",
+  "@autoSaveKindSheet": {
+    "description": "AS07 sheet title behind the Ảnh & video pill. EN is an engineering draft for owner review."
+  },
+  "premiumRhythmDetail": "Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu. Gợi ý để tham khảo, không chẩn đoán bệnh.",
+  "@premiumRhythmDetail": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoPremiumChanged": "Video này cần Premium đang còn hiệu lực. Bạn có thể đổi sang mẫu cơ bản và HD 720p; bản dựng vẫn được giữ.",
+  "@videoPremiumChanged": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveWeekRowTitle": "Tuần {n} · {range}",
+  "@autoSaveWeekRowTitle": {
+    "description": "AS07 week sheet row: the week of age and its days (\"15–21/10\"). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveWeekRowBefore": "Trước sinh",
+  "@autoSaveWeekRowBefore": {
+    "description": "AS07 week sheet row for photos taken before the birth date. EN is an engineering draft for owner review."
+  },
+  "autoSaveWeekRowProgress": "{saved} đã có trong Kỷ niệm · {waiting} chờ bạn xem",
+  "@autoSaveWeekRowProgress": {
+    "description": "AS07 week sheet row: files of that week already in Kỷ niệm, and suggestions to review. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "saved": {
+        "type": "int"
+      },
+      "waiting": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveWeekRowWaiting": "{waiting} chờ bạn xem",
+  "@autoSaveWeekRowWaiting": {
+    "description": "AS07 week sheet row when nothing of that week is in Kỷ niệm yet. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "waiting": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveWeekRowDone": "Đã xem hết · {saved} trong Kỷ niệm",
+  "@autoSaveWeekRowDone": {
+    "description": "AS07 week sheet row for a week already sent. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "saved": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveAllWeeks": "Tất cả các tuần · {count}",
+  "@autoSaveAllWeeks": {
+    "description": "AS07 week pill when every week is shown together. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveAllWeeksRow": "Tất cả các tuần",
+  "@autoSaveAllWeeksRow": {
+    "description": "AS07 week sheet, first row: review every week at once. EN is an engineering draft for owner review."
+  },
+  "autoSaveCheckingSpace": "Đang kiểm tra dung lượng…",
+  "@autoSaveCheckingSpace": {
+    "description": "AS10 button while the family storage is not known yet: nothing uploads before it is checked. EN is an engineering draft for owner review."
+  },
+  "autoSaveFullTitle": "Gia đình đã hết dung lượng",
+  "@autoSaveFullTitle": {
+    "description": "AS18 notice when nothing fits. EN is an engineering draft for owner review."
+  },
+  "autoSaveFullBody": "{count, plural, other{{count} mục cần khoảng {need}. Thêm dung lượng để tải lên; các mục vẫn ở trong máy.}}",
+  "@autoSaveFullBody": {
+    "description": "AS18 notice body when nothing fits. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveShortTitle": "Chỉ đủ chỗ cho {fit}/{count} mục",
+  "@autoSaveShortTitle": {
+    "description": "AS18 notice when only some fit. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "fit": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveShortBody": "Cần khoảng {need}, gia đình còn {left}. Ảnh được tải trước video; phần còn lại vẫn ở trong máy.",
+  "@autoSaveShortBody": {
+    "description": "AS18 notice body when only some fit. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "need": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSavePrepTitle": "Đang chuẩn bị {done}/{total}",
+  "@autoSavePrepTitle": {
+    "description": "AS10 while the chosen files are read and made ready for upload, one by one. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSavePrepWaiting": "Chờ",
+  "@autoSavePrepWaiting": {
+    "description": "AS10 per-file state: not started yet. EN is an engineering draft for owner review."
+  },
+  "autoSavePrepWorking": "Đang chuẩn bị",
+  "@autoSavePrepWorking": {
+    "description": "AS10 per-file state: being read and converted. EN is an engineering draft for owner review."
+  },
+  "autoSavePrepQueued": "Đã vào hàng tải",
+  "@autoSavePrepQueued": {
+    "description": "AS10 per-file state: ready, waiting in the upload queue. EN is an engineering draft for owner review."
+  },
+  "autoSavePrepFailed": "Không đọc được tệp",
+  "@autoSavePrepFailed": {
+    "description": "AS10 per-file state: the phone could not open it (deleted, damaged or not downloadable). EN is an engineering draft for owner review."
+  },
+  "autoSavePrepDone": "Xong",
+  "@autoSavePrepDone": {
+    "description": "AS10 button after preparation, to continue. EN is an engineering draft for owner review."
+  },
+  "autoSavePrepSummary": "{queued} mục đã vào hàng tải · {failed} không đọc được",
+  "@autoSavePrepSummary": {
+    "description": "AS10 after preparation when some files could not be read. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "queued": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "qQuotaTitle": "Hết dung lượng gia đình",
+  "@qQuotaTitle": {
+    "description": "Upload queue: items wait because the family storage is full. EN is an engineering draft for owner review."
+  },
+  "qQuotaBody": "{count, plural, other{{count} mục đang chờ, vẫn ở trong máy. Thêm dung lượng để tiếp tục tải.}}",
+  "@qQuotaBody": {
+    "description": "Upload queue, under \"Hết dung lượng gia đình\". EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qDropWaiting": "{count, plural, other{Bỏ {count} mục khỏi hàng chờ}}",
+  "@qDropWaiting": {
+    "description": "Upload queue: cancel the items waiting for space (they stay on the phone). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qDropUnreadable": "{count, plural, other{Bỏ {count} tệp không đọc được}}",
+  "@qDropUnreadable": {
+    "description": "Upload queue: cancel the files that cannot be read. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qUnreadableHint": "Máy không mở được các tệp này (có thể đã bị xoá hoặc hỏng).",
+  "@qUnreadableHint": {
+    "description": "Upload queue, under the unreadable count. EN is an engineering draft for owner review."
+  },
+  "autoSaveAddSpacePremium": "Thêm dung lượng với Premium",
+  "@autoSaveAddSpacePremium": {
+    "description": "AS18 / upload queue, Free family with Premium v2: opens the Premium storage offer (D-125). EN is an engineering draft for owner review."
+  },
+  "autoSaveBuySpace": "Mua thêm dung lượng",
+  "@autoSaveBuySpace": {
+    "description": "AS18 / upload queue, Premium family: opens the paid storage add-on (D-125). EN is an engineering draft for owner review."
+  },
+  "autoSaveManageSpace": "Quản lý dung lượng",
+  "@autoSaveManageSpace": {
+    "description": "AS18 / upload queue without Premium v2: opens Dung lượng. EN is an engineering draft for owner review."
+  },
+  "autoSavePremiumSpaceNote": "Premium có thêm dung lượng cho cả nhà.",
+  "@autoSavePremiumSpaceNote": {
+    "description": "AS18 / upload queue notice, Free family with Premium v2: says Premium before the button (D-125). EN is an engineering draft for owner review."
+  },
+  "careFailedNew": "Chưa lưu được: {record}, {time}",
+  "@careFailedNew": {
+    "description": "SY-4 toast: a new care record the server refused. record = \"Bú bình · 120 ml\", time = \"14:05\".",
+    "placeholders": {
+      "record": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "careFailedEdit": "Chưa lưu thay đổi: {record}, {time}",
+  "@careFailedEdit": {
+    "description": "SY-4 toast: an edit the server refused.",
+    "placeholders": {
+      "record": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "careFailedDelete": "Chưa xoá được: {record}, {time}",
+  "@careFailedDelete": {
+    "description": "SY-4 toast: a delete the server refused.",
+    "placeholders": {
+      "record": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "careFailedRestore": "Chưa khôi phục được: {record}, {time}",
+  "@careFailedRestore": {
+    "description": "SY-4 toast: an undo of a delete the server refused.",
+    "placeholders": {
+      "record": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "careFailedTimer": "Chưa lưu được thay đổi của bộ đếm",
+  "@careFailedTimer": {
+    "description": "SY-4 toast: a timer write the server refused (not a race with another phone)."
+  },
+  "careFailedDenied": "{message}. Có thể quyền của bạn đã thay đổi.",
+  "@careFailedDenied": {
+    "description": "SY-4: appended only when the server said permission-denied.",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "retryRefused": "Có thay đổi không lưu được. Có thể quyền của bạn đã thay đổi.",
+  "@retryRefused": {
+    "description": "SY-3 9b \"Thử lại ngay\": the server refused a write meanwhile (never \"Đã đồng bộ\")."
+  },
+  "pendingOthers": "{count} thay đổi khác (xoá, sửa, bộ đếm) chờ gửi",
+  "@pendingOthers": {
+    "description": "SY-3 9b: unsent writes without a row of their own.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "careLoadFailed": "Chưa tải được nhật ký",
+  "@careLoadFailed": {
+    "description": "SY-1 / SY-2 / AI-10 error notice title, with \"Thử lại\"."
+  },
+  "todayLoadFailedBody": "Lần ghi gần nhất chưa hiện. Bạn vẫn ghi mới được.",
+  "@todayLoadFailedBody": {
+    "description": "SY-1 Hôm nay: under \"Chưa tải được nhật ký\"; the tiles stay usable."
+  },
+  "statsTodayFrom18": "Tính từ 18:00 hôm qua, gồm cả cữ đêm",
+  "@statsTodayFrom18": {
+    "description": "SY-5 Thống kê bú, window Hôm nay: one line for the three tiles."
+  },
+  "hoLoading": "Đang tải nhật ký của bé",
+  "@hoLoading": {
+    "description": "AI-10 Bàn giao: screen-reader label of the live part skeleton."
+  },
+  "hoRemindersFailed": "Chưa tải được việc đã hẹn",
+  "@hoRemindersFailed": {
+    "description": "AI-10 Bàn giao \"Tiếp theo\": reminders failed (never \"không có việc nào\")."
+  },
+  "hoHealthFailed": "Chưa tải được dấu hiệu sức khoẻ",
+  "@hoHealthFailed": {
+    "description": "AI-10 Bàn giao: check-ins failed (never the all-clear line)."
+  },
+  "hoNotFoundTitle": "Bản bàn giao này không còn",
+  "@hoNotFoundTitle": {
+    "description": "AI-11: opened from a send whose handover is gone."
+  },
+  "hoNotFoundBody": "Có thể đã có bản mới hơn thay thế.",
+  "@hoNotFoundBody": {
+    "description": "AI-11 body."
+  },
+  "hoSeeLatest": "Xem bản mới nhất",
+  "@hoSeeLatest": {
+    "description": "AI-11 action when another handover is stored."
+  },
+  "hoCreateNew": "Tạo bản mới",
+  "@hoCreateNew": {
+    "description": "AI-11 action when nothing is stored."
+  },
+  "hoCreateTitle": "Chưa có bản tóm tắt",
+  "@hoCreateTitle": {
+    "description": "AI-14 (D-127 Q5): nothing stored; made only on a tap."
+  },
+  "hoCreateBody": "Tóm tắt từ ghi nhận của cả nhà mấy ngày qua. Mỗi lần tạo dùng tối đa 1 lượt AI.",
+  "@hoCreateBody": {
+    "description": "AI-14 body: says the cost before the tap."
+  },
+  "hoCreateAction": "Tạo bản tóm tắt",
+  "@hoCreateAction": {
+    "description": "AI-14 action."
+  },
+  "aiStateFailedOffline": "Cần kết nối mạng để tạo. Ghi nhận của nhà mình vẫn giữ nguyên.",
+  "@aiStateFailedOffline": {
+    "description": "AI-12: generate failed for the network."
+  },
+  "aiStateQuotaOut": "Nhà mình đã dùng hết lượt AI trong kỳ này.",
+  "@aiStateQuotaOut": {
+    "description": "AI-12: generate refused for quota (no template came back)."
+  },
+  "aiStatePremiumOnly": "Tóm tắt bằng AI nằm trong Child Life Premium.",
+  "@aiStatePremiumOnly": {
+    "description": "AI-12: generate refused, Premium required."
+  },
+  "aiStateUnavailable": "AI chưa dùng được cho nhà mình lúc này.",
+  "@aiStateUnavailable": {
+    "description": "AI-12: generate refused for another gate (role, region…), with \"Tại sao\"."
+  },
+  "aiStateQuotaDayNoDate": "Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Bạn vẫn xem được bản theo mẫu.",
+  "@aiStateQuotaDayNoDate": {
+    "description": "AI-13: aiStateQuotaDay without a known reset date.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "aiStateQuotaMonthNoDate": "Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Bạn vẫn xem được bản theo mẫu.",
+  "@aiStateQuotaMonthNoDate": {
+    "description": "AI-13: aiStateQuotaMonth without a known reset date.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "aiSendFailedOther": "Chưa gửi được bàn giao. Thử lại sau.",
+  "@aiSendFailedOther": {
+    "description": "AI-12: send failed for a reason other than the network."
+  },
+  "aiMomentAsk": "Viết lời gợi ý bằng AI",
+  "@aiMomentAsk": {
+    "description": "AI-14 (D-127 Q5) MS01: the moment nudge only on a tap."
+  },
+  "aiMomentFailed": "Chưa viết được lời gợi ý lúc này.",
+  "@aiMomentFailed": {
+    "description": "AI-14 MS01: the nudge failed."
+  },
+  "engWeekFailed": "Chưa mở được bản nhìn lại tuần này",
+  "@engWeekFailed": {
+    "description": "AI-15 Nhìn lại tuần qua: network or server failure, with \"Thử lại\"."
+  },
+  "engWeekMediaFailed": "Chưa tải được ảnh của tuần",
+  "@engWeekMediaFailed": {
+    "description": "AI-15: the photos failed to load."
+  },
+  "engWeekEmpty": "Ảnh và câu chuyện của tuần này không còn trong Kỷ niệm.",
+  "@engWeekEmpty": {
+    "description": "AI-15: nothing of the week is left."
+  },
+  "engOpenFailed": "Chưa mở được gợi ý. Thử lại sau.",
+  "@engOpenFailed": {
+    "description": "AI-15 shelf toast: opening failed."
+  },
+  "engActFailed": "Chưa lưu được lựa chọn. Thử lại sau.",
+  "@engActFailed": {
+    "description": "AI-15 shelf toast: \"Để sau\" / \"Bỏ qua gợi ý\" failed."
+  },
+  "stLoadFailedTitle": "Chưa tải được dung lượng",
+  "@stLoadFailedTitle": {
+    "description": "Dung lượng: the storage answer failed (ST-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "stQuotaUnknown": "Chưa kiểm tra được dung lượng của gói",
+  "@stQuotaUnknown": {
+    "description": "Dung lượng / Gói của gia đình: the limit is unknown; never shown as full or 0 B (ST-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "stReserved": "Đang giữ chỗ {size} cho {count, plural, other{{count} mục}} đang tải lên",
+  "@stReserved": {
+    "description": "Dung lượng: space reserved by uploads in flight, counted in \"full\" (D-127 Q2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stFreeUpVideos": "Xoá bớt video lớn",
+  "@stFreeUpVideos": {
+    "description": "Full storage secondary action: opens the largest videos (ST-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "stRowFailed": "Chưa tải được",
+  "@stRowFailed": {
+    "description": "Tôi › Dung lượng row value when the storage read failed (ST-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2AskStorage": "Nhờ {name} thêm dung lượng",
+  "@pv2AskStorage": {
+    "description": "Premium storage full, member who is not the plan manager (D-127 Q7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2AskStorageMessage": "Nhà mình sắp hết dung lượng Child Life. Bạn thêm dung lượng giúp mình trong Tôi › Gói của gia đình nhé.",
+  "@pv2AskStorageMessage": {
+    "description": "Share text sent to the plan manager from \"Nhờ {name} thêm dung lượng\" (D-127 Q7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2AddOnUnknown": "Chưa tải được các gói dung lượng",
+  "@pv2AddOnUnknown": {
+    "description": "PW10: the add-on list is empty or unpriced (ST-5, P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2OptionOr": "{a} hoặc {b}",
+  "@pv2OptionOr": {
+    "description": "Joins storage add-on sizes: \"20 GB hoặc 50 GB\" (ST-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2E08BodyPremiumPlain": "Đã dùng {pct}% của {gb} GB.",
+  "@pv2E08BodyPremiumPlain": {
+    "description": "E08 body when no add-on is configured. D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2ManagerYouNoName": "Bạn quản lý gói này",
+  "@pv2ManagerYouNoName": {
+    "description": "Gói của gia đình: the manager line when the name is empty (P-8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2FreeUpsellTitleNoName": "Mỗi tháng, thêm một câu chuyện của bé",
+  "@pv2FreeUpsellTitleNoName": {
+    "description": "Gói của gia đình Free upsell when the baby name is empty (P-8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2PriceUnknown": "Chưa tải được giá. Thử lại khi có kết nối.",
+  "@pv2PriceUnknown": {
+    "description": "Paywall: prices are not configured or not loaded; no price is shown (P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2SubscribeNoPrice": "Đăng ký Premium",
+  "@pv2SubscribeNoPrice": {
+    "description": "Paywall CTA, disabled while the price is unknown (P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2BusyBuying": "Đang mở {store}…",
+  "@pv2BusyBuying": {
+    "description": "Paywall line under the CTA while the store sheet opens (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pv2BusyVerifying": "Đang xác nhận giao dịch…",
+  "@pv2BusyVerifying": {
+    "description": "Paywall line while the server verifies (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2BusyRestoring": "Đang khôi phục…",
+  "@pv2BusyRestoring": {
+    "description": "Paywall line while restoring (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pv2BusyPending": "Đang chờ cửa hàng xác nhận",
+  "@pv2BusyPending": {
+    "description": "Paywall line while a purchase is pending; no second purchase (P-6). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "pmStoreLoadFailed": "Chưa kết nối được cửa hàng. Thử lại sau.",
+  "@pmStoreLoadFailed": {
+    "description": "Paywall: the store or its products failed to load; not \"sắp có\" (P-7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psExportQueued": "Đang chuẩn bị dựng file in…",
+  "@psExportQueued": {
+    "description": "Print file job queued (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psExportProgress": "Đang dựng file in · trang {done}/{total}",
+  "@psExportProgress": {
+    "description": "Print file job progress (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "psExportLeave": "Bạn có thể rời màn hình này. Quay lại đây để mở file khi xong.",
+  "@psExportLeave": {
+    "description": "Print file job: the parent may leave (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psExportFailed": "Chưa dựng được file in. Thử lại nhé.",
+  "@psExportFailed": {
+    "description": "Print file job failed (PR-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psExportBannerReady": "File in đã sẵn sàng · Mở",
+  "@psExportBannerReady": {
+    "description": "Print preview: the remembered print file job is ready (PR-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psExportFiles": "{pages} trang · {format}",
+  "@psExportFiles": {
+    "description": "Print file ready card (PR-1, PR-5 plural). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "pages": {
+        "type": "int"
+      },
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "psCountryUnsupported": "Child Life chưa giao bản in tới {country}.",
+  "@psCountryUnsupported": {
+    "description": "Checkout: unsupported shipping country (PR-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "psCountryUnsupportedDigital": "Child Life chưa giao bản in tới {country}. Bạn có thể tải file in để in ở nơi gần bạn.",
+  "@psCountryUnsupportedDigital": {
+    "description": "Checkout: unsupported country with digital files open (PR-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "psPayByTransfer": "Chuyển khoản sau khi Child Life xác nhận",
+  "@psPayByTransfer": {
+    "description": "Checkout caption when Chuyển khoản is chosen (PR-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psPayTransferRow": "Chuyển khoản",
+  "@psPayTransferRow": {
+    "description": "Order success row label when Chuyển khoản is chosen (PR-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psOrderMaybeSent": "Chưa nhận được phản hồi. Có thể đơn đã được ghi nhận — xem Đơn in trước khi đặt lại.",
+  "@psOrderMaybeSent": {
+    "description": "Checkout: the order call timed out (PR-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psViewOrders": "Xem Đơn in",
+  "@psViewOrders": {
+    "description": "Opens Đơn in của tôi (PR-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psOrderNotFound": "Không tìm thấy đơn in này",
+  "@psOrderNotFound": {
+    "description": "Order detail for an id that is not in the list (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psOrderNotFoundHelp": "Đơn có thể thuộc tài khoản khác hoặc chưa tải xong.",
+  "@psOrderNotFoundHelp": {
+    "description": "Order detail not found body (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psStatusUnknown": "Đang cập nhật trạng thái",
+  "@psStatusUnknown": {
+    "description": "An order status this app version does not know (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "psOrderCancelledToast": "Đã huỷ đơn in",
+  "@psOrderCancelledToast": {
+    "description": "Toast after cancelling a print order (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review."
+  },
+  "premiumYearSuffix": "/năm",
+  "@premiumYearSuffix": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumMonthSuffix": "/tháng",
+  "@premiumMonthSuffix": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSavePercent": "Tiết kiệm {n}%",
+  "@premiumSavePercent": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiListTitle": "Trợ lý Lumi",
+  "@premiumLumiListTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumStorageListTitle": "{gb} cho cả nhà",
+  "@premiumStorageListTitle": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSeatsListTitle": "{n} người có quyền ghi",
+  "@premiumSeatsListTitle": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLegalIntro": "Tự động gia hạn. Huỷ bất cứ lúc nào trong {store}. Khi đăng ký, bạn đồng ý với ",
+  "@premiumLegalIntro": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumPaymentEquivalent": "Tương đương mỗi tháng",
+  "@premiumPaymentEquivalent": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentSaving": "Tiết kiệm so với 12 tháng trả theo tháng",
+  "@premiumPaymentSaving": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentTax": "Thuế",
+  "@premiumPaymentTax": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentTaxValue": "Đã gồm trong giá",
+  "@premiumPaymentTaxValue": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentRenewal": "Tự động gia hạn {price}. Muốn huỷ, hãy huỷ trong {store} ít nhất 24 giờ trước ngày gia hạn.",
+  "@premiumPaymentRenewal": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumMemoriesBullet1": "Thiệp: mẫu cao cấp, thêm ảnh, tên và lời nhắn.",
+  "@premiumMemoriesBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumMemoriesBullet2": "Video: ghép ảnh cùng lời nhắn và nhạc.",
+  "@premiumMemoriesBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet1": "Hỏi về nhật ký và xem dữ liệu Lumi dùng để trả lời.",
+  "@premiumLumiBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet2": "Nhờ Lumi soạn bản ghi để bạn kiểm tra trước khi lưu.",
+  "@premiumLumiBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet3": "{n} credit/tháng dùng chung cho cả nhà, được cấp mỗi tháng.",
+  "@premiumLumiBullet3": {
+    "description": "Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumRhythmBullet1": "Gợi ý theo tuổi, nhu cầu và phản hồi của bạn.",
+  "@premiumRhythmBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumRhythmBullet2": "Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu.",
+  "@premiumRhythmBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumRhythmBullet3": "Hiểu con hơn mỗi ngày.",
+  "@premiumRhythmBullet3": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumStorageBullet1": "{gb} cho ảnh và video của cả gia đình.",
+  "@premiumStorageBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumStorageBullet2": "Xem mức sử dụng trong Gói của gia đình.",
+  "@premiumStorageBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumStorageBullet3": "Mua thêm dung lượng: Sắp có.",
+  "@premiumStorageBullet3": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet1": "Cùng ghi cữ bú, giấc ngủ và xem cập nhật.",
+  "@premiumSeatsBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet2": "Quyền xem và ghi theo vai trò của từng người.",
+  "@premiumSeatsBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet3": "Thoải mái cùng {n} người chăm con",
+  "@premiumSeatsBullet3": {
+    "description": "Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumRhythmPager": "Gợi ý & nhịp nâng cao",
+  "@premiumRhythmPager": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsPager": "Người có quyền ghi",
+  "@premiumSeatsPager": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSubscribeYearShort": "Đăng ký gói năm",
+  "premiumSubscribeMonthShort": "Đăng ký gói tháng",
+  "@premiumSubscribeYearShort": {
+    "description": "Premium Figma payment-sheet action."
+  },
+  "@premiumSubscribeMonthShort": {
+    "description": "Premium Figma payment-sheet action."
+  },
+  "premiumLumiCompareFree": "{n} credit dùng thử · không cấp lại",
+  "@premiumLumiCompareFree": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiComparePaid": "{n} credit/tháng · cả nhà dùng chung",
+  "@premiumLumiComparePaid": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumSeatsCardLimit": "{premium} người có quyền ghi · Free: {free}",
+  "@premiumSeatsCardLimit": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "free": {
+        "type": "int"
+      },
+      "premium": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiPager": "Hỏi Lumi",
+  "premiumLumiDetailTitle": "Hỏi Lumi mọi thứ về con",
+  "premiumRhythmDetailTitle": "Gợi ý cá nhân và nhịp nâng cao của con",
+  "premiumMemoriesBullet3": "Không giới hạn lượt xuất chất lượng cao",
+  "@premiumLumiPager": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumLumiDetailTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumRhythmDetailTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumMemoriesBullet3": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "hhMorning": "Chào ngày mới cùng {name}",
+  "@hhMorning": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhMorningNoName": "Chào ngày mới",
+  "@hhMorningNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAfternoon": "Một ngày của {name} thế nào rồi?",
+  "@hhAfternoon": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhAfternoonNoName": "Ngày của bé thế nào rồi?",
+  "@hhAfternoonNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhEvening": "Chào buổi tối, {name}",
+  "@hhEvening": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhEveningNoName": "Chào buổi tối",
+  "@hhEveningNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhBirthday": "Mừng sinh nhật {name}!",
+  "@hhBirthday": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutyNow": "{name} đang trông bé",
+  "@hhDutyNow": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutySince": "Hiện tại · từ {time}",
+  "@hhDutySince": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutyRetry": "Chưa tải được trạng thái trông bé · Thử lại",
+  "@hhDutyRetry": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSettings": "Cài đặt giao diện",
+  "@hhSettings": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSettingsSubtitle": "Hình nền đầu trang Hôm nay",
+  "@hhSettingsSubtitle": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhWallpaper": "Hình nền",
+  "@hhWallpaper": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPreview": "Xem trước",
+  "@hhPreview": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPattern": "Hoạ tiết theo buổi",
+  "@hhPattern": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAvatar": "Ảnh đại diện của bé",
+  "@hhAvatar": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhChooseMemory": "Chọn ảnh từ Kỷ niệm",
+  "@hhChooseMemory": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPhotoEmpty": "Chưa có ảnh để chọn trong Kỷ niệm.",
+  "@hhPhotoEmpty": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhDeviceOnly": "Chỉ áp dụng trên thiết bị này cho bé đang chọn.",
+  "@hhDeviceOnly": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhApply": "Áp dụng",
+  "@hhApply": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSaveFailed": "Chưa lưu được giao diện. Bạn thử lại nhé.",
+  "@hhSaveFailed": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhHeaderSection": "Trong đầu trang",
+  "@hhHeaderSection": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhDutyFixed": "Trạng thái trông bé nằm cố định trong đầu trang.",
+  "@hhDutyFixed": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAvatarMissing": "Bé chưa có ảnh đại diện; tạm dùng hoạ tiết.",
+  "@hhAvatarMissing": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSelected": "Đang chọn",
+  "@hhSelected": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "dutyParents": "Ba và Mẹ",
+  "@dutyParents": {
+    "description": "Two verified parents currently caring together."
+  },
+  "dutyTogether": "Ba và Mẹ cùng trông",
+  "@dutyTogether": {
+    "description": "Action: records the viewer and the other active parent as caring together."
+  },
+  "dutyTogetherToast": "Ba và Mẹ đang cùng trông bé. Cả nhà sẽ thấy.",
+  "@dutyTogetherToast": {
+    "description": "Confirmed only after a successful server write."
+  },
+  "dutyJustStarted": "Vừa bắt đầu",
+  "@dutyJustStarted": {
+    "description": "Shift duration under one minute; not rounded up."
+  },
+  "dutyPrevious": "Trước đó",
+  "@dutyPrevious": {
+    "description": "Previous carer or parent pair, not currently on duty."
+  },
+  "dutyLoadFailed": "Chưa tải được trạng thái trông bé.",
+  "@dutyLoadFailed": {
+    "description": "Load error in care duty sheet; never shown as nobody caring."
+  },
+  "dutyOwnPart": "Kết thúc phần của bạn; người còn lại vẫn đang trông bé.",
+  "@dutyOwnPart": {
+    "description": "Shown for a current parent pair before ending only the viewer’s part."
+  },
+  "dutyStartedAt": "Từ {time}",
+  "@dutyStartedAt": {
+    "description": "Local start time of the current care shift.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyTogetherNow": "Ba và Mẹ đang cùng trông bé",
+  "@dutyTogetherNow": {
+    "description": "Current parent-pair label, with plural grammar."
+  },
+  "dutyTogetherSince": "Ba và Mẹ cùng trông · từ {time}",
+  "@dutyTogetherSince": {
+    "description": "Parent-pair status with baby-local start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyYouNow": "Bạn đang trông bé",
+  "@dutyYouNow": {
+    "description": "Viewer’s own care status; uses correct second-person grammar."
+  },
+  "dutyYouSince": "Bạn đang trông · từ {time}",
+  "@dutyYouSince": {
+    "description": "Viewer’s own care status with local start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

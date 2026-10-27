@@ -312,9 +312,10 @@ class _AiExplainBlockState extends ConsumerState<AiExplainBlock> {
   }
 }
 
-/// MS01's moment nudge (kind `moment`): once the milestone is saved, a sentence worded from the
-/// family's notes under "Giữ khoảnh khắc này?". Nothing shows until there is one; the screen's
-/// own copy is the fallback and stays.
+/// MS01's moment nudge (kind `moment`): once the milestone is saved, "Viết lời gợi ý" under
+/// "Giữ khoảnh khắc này?" words a sentence from the family's notes. Only on a tap (D-127 Q5,
+/// AI-14): a new sentence may spend one of the family's AI credits. The screen's own copy is the
+/// fallback and stays; a failure says so quietly.
 class AiMomentNudge extends ConsumerStatefulWidget {
   const AiMomentNudge({
     required this.babyId,
@@ -331,16 +332,16 @@ class AiMomentNudge extends ConsumerStatefulWidget {
 
 class _AiMomentNudgeState extends ConsumerState<AiMomentNudge> {
   SummaryAnswer? _answer;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_ask()));
-  }
+  var _busy = false;
+  var _failed = false;
+  final _requestId = newAiRequestId();
 
   Future<void> _ask() async {
-    if (!mounted) return;
     final locale = Localizations.localeOf(context).languageCode;
+    setState(() {
+      _busy = true;
+      _failed = false;
+    });
     try {
       final a = await ref
           .read(aiRepositoryProvider)
@@ -348,23 +349,51 @@ class _AiMomentNudgeState extends ConsumerState<AiMomentNudge> {
             babyId: widget.babyId,
             kind: AiSummaryKind.moment,
             locale: locale,
-            requestId: newAiRequestId(),
+            requestId: _requestId,
             milestoneId: widget.milestoneId,
           );
       if (mounted) setState(() => _answer = a);
     } on Object {
-      // The screen's own copy stays; nothing to add.
+      if (mounted) setState(() => _failed = true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final a = _answer;
-    if (a == null || a.health || a.sections.isEmpty) {
-      return const SizedBox.shrink();
-    }
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final a = _answer;
+    // A health sign or nothing to say: the screen's own copy, never AI text (P-151).
+    if (a != null && (a.health || a.sections.isEmpty)) {
+      return const SizedBox.shrink();
+    }
+    if (a == null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: ClSpace.s2),
+        child: _busy
+            ? Text(
+                l10n.aiExplainLoading,
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_failed)
+                    Text(
+                      l10n.aiMomentFailed,
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                    ),
+                  RhLink(
+                    label: _failed ? l10n.rhRetry : l10n.aiMomentAsk,
+                    onTap: _ask,
+                    start: true,
+                  ),
+                ],
+              ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(top: ClSpace.s2),
       child: Column(

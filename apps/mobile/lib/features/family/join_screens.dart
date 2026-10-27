@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +25,7 @@ import '../auth/auth_repository.dart';
 import '../auth/auth_screens.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../care/care_repository.dart' show onlineProvider;
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../today/today_personalize.dart'
@@ -33,6 +35,7 @@ import 'family_labels.dart';
 import 'family_models.dart';
 import 'family_repository.dart';
 import 'family_screen.dart';
+import 'invite_link_join.dart';
 import 'invite_screens.dart';
 
 /// Hosts whose `/i/{token}` links are this environment's invites (plan §3.7).
@@ -123,6 +126,14 @@ class _EnterCodeScreenState extends ConsumerState<EnterCodeScreen> {
           .previewInvite(lookup);
       if (!mounted) return;
       switch (preview) {
+        case ValidInvite(:final seatsFull, :final alreadyMember)
+            when seatsFull && !alreadyMember:
+          // D-127 Q3: the joiner learns a full family before "Tham gia".
+          unawaited(
+            context.push(
+              '${Routes.joinClosed}?reason=${InviteClosedReason.full.name}',
+            ),
+          );
         case ValidInvite():
           final args = JoinArgs(lookup: lookup, preview: preview);
           unawaited(
@@ -343,6 +354,10 @@ class AcceptInviteScreen extends ConsumerStatefulWidget {
 class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
   ValidInvite? _preview;
 
+  /// FJ-1: why the preview could not be read; the invite itself may be fine.
+  String? _loadError;
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -351,35 +366,55 @@ class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
   }
 
   Future<void> _load() async {
+    setState(() => _loading = true);
     try {
       final preview = await ref
           .read(familyRepositoryProvider)
           .previewInvite(widget.lookup);
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       switch (preview) {
         case ValidInvite():
           JoinArgs.remember(widget.lookup, preview);
-          setState(() => _preview = preview);
+          setState(() {
+            _preview = preview;
+            _loadError = null;
+          });
         case ClosedInvite(:final reason):
           context.pushReplacement('${Routes.joinClosed}?reason=${reason.name}');
-        case LockedInvite():
-          context.pushReplacement(
-            '${Routes.joinClosed}?reason=${InviteClosedReason.notFound.name}',
+        case LockedInvite(:final retryAfter):
+          // FJ-5: the lockout says when, not "Không tìm thấy".
+          setState(
+            () => _loadError = l10n.joinLocked(
+              (retryAfter.inSeconds / 60).ceil(),
+            ),
           );
       }
-    } on FamilyException {
-      if (mounted) {
-        context.pushReplacement(
-          '${Routes.joinClosed}?reason=${InviteClosedReason.notFound.name}',
-        );
-      }
+    } on FamilyException catch (e) {
+      // FJ-1: offline or a backend hiccup is not a closed invite: say so and offer "Thử lại".
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      final offline =
+          e.failure == FamilyFailure.network ||
+          ref.read(onlineProvider).value == false;
+      setState(
+        () => _loadError = offline
+            ? l10n.joinLoadFailedOffline
+            : l10n.joinLoadFailedBody,
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   void _join(ValidInvite preview) {
     final l10n = AppLocalizations.of(context);
     if (preview.alreadyMember) {
-      // G-036: friendly no-op.
+      // G-036: friendly no-op, on that baby (FJ-5).
+      final babyId = preview.babyId;
+      if (babyId != null) {
+        ref.read(selectedBabyIdProvider.notifier).select(babyId);
+      }
       showClToast(
         context,
         message: l10n.joinAlreadyMember(preview.babyNickname),
@@ -405,6 +440,31 @@ class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
     final preview = _preview;
     void back() =>
         context.canPop() ? context.pop() : leaveJoinFlow(context, ref);
+    final loadError = _loadError;
+    if (preview == null && loadError != null) {
+      return OnboardingScaffold(
+        topBar: ClTopBar(onBack: back),
+        content: [
+          const InviteCodeHero(),
+          const SizedBox(height: ClSpace.s6),
+          Semantics(
+            liveRegion: true,
+            child: ScreenHeading(
+              title: l10n.joinLoadFailedTitle,
+              subtitle: loadError,
+            ),
+          ),
+        ],
+        bottom: [
+          ClButton(
+            label: l10n.actionRetry,
+            expand: true,
+            onPressed: _loading ? null : _load,
+            loading: _loading,
+          ),
+        ],
+      );
+    }
     if (preview == null) {
       return OnboardingScaffold(
         topBar: ClTopBar(onBack: back),
@@ -417,17 +477,24 @@ class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
         ],
       );
     }
-    final hours = preview.expiresAt
-        .difference(DateTime.now())
-        .inMinutes
-        .clamp(60, 1 << 30);
+    // D-127 Q3: no writer seat left — said before "Tham gia" (FJ-2).
+    if (preview.seatsFull && !preview.alreadyMember) {
+      return const InviteClosedScreen(reason: InviteClosedReason.full);
+    }
+    // FJ-5: under an hour the chip counts minutes.
+    final minutes = max(
+      1,
+      preview.expiresAt.difference(DateTime.now()).inMinutes,
+    );
     final inviter =
         '${relationLabel(l10n, preview.inviterRelation, preview.inviterRelationCustom ?? '')} ${preview.inviterName}';
     return OnboardingScaffold(
       topBar: ClTopBar(
         onBack: back,
         countdown: ClChip(
-          label: l10n.joinCountdownHours((hours / 60).floor()),
+          label: minutes < 60
+              ? l10n.joinCountdownMinutes(minutes)
+              : l10n.joinCountdownHours(minutes ~/ 60),
           icon: ClIcons.clock,
         ),
       ),
@@ -587,6 +654,9 @@ class _ConfirmJoinScreenState extends ConsumerState<ConfirmJoinScreen> {
   late Relation _relation = widget.args.preview.relation;
   bool _busy = false;
 
+  /// FJ-4: joined, but the membership has not reached this phone yet; Today opens when it does.
+  String? _arriving;
+
   @override
   void initState() {
     super.initState();
@@ -628,22 +698,30 @@ class _ConfirmJoinScreenState extends ConsumerState<ConfirmJoinScreen> {
             relation: _relation,
             relationCustom: _custom.text,
           );
-      await waitForMembership(container, babyId);
-      container.read(selectedBabyIdProvider.notifier).select(babyId);
-      // Hôm nay then asks for notifications (EN03, lib/features/today/today_personalize.dart).
-      container
-          .read(notificationsAfterOnboardingProvider.notifier)
-          .request(babyId);
-      if (mounted) context.go(Routes.today);
+      if (!await waitForMembership(container, babyId)) {
+        // FJ-4: never route on to "Nhập mã mời"; wait here and say so.
+        if (mounted) setState(() => _arriving = babyId);
+        return;
+      }
+      _opened(container, babyId);
     } on FamilyException catch (e) {
       if (!mounted) return;
       switch (e.failure) {
         case FamilyFailure.alreadyMember:
+          final babyId = preview.babyId;
+          if (babyId != null) {
+            container.read(selectedBabyIdProvider.notifier).select(babyId);
+          }
           showClToast(
             context,
             message: l10n.joinAlreadyMember(preview.babyNickname),
           );
           context.go(Routes.today);
+        case FamilyFailure.seatsFull:
+          // FJ-2: the joiner's own reason, not the inviter's E12 advice.
+          context.go(
+            '${Routes.joinClosed}?reason=${InviteClosedReason.full.name}',
+          );
         case FamilyFailure.expired:
           context.go('${Routes.joinClosed}?reason=expired');
         case FamilyFailure.revoked:
@@ -660,11 +738,34 @@ class _ConfirmJoinScreenState extends ConsumerState<ConfirmJoinScreen> {
     }
   }
 
+  /// The membership is here: Today on that baby, which then asks for notifications (EN03,
+  /// lib/features/today/today_personalize.dart).
+  void _opened(ProviderContainer container, String babyId) {
+    container.read(selectedBabyIdProvider.notifier).select(babyId);
+    container
+        .read(notificationsAfterOnboardingProvider.notifier)
+        .request(babyId);
+    if (mounted) context.go(Routes.today);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final preview = widget.args.preview;
+    final arriving = _arriving;
+    if (arriving != null) {
+      final session = ref.watch(sessionProvider);
+      if (session is SessionSignedIn &&
+          session.membershipFor(arriving) != null) {
+        _arriving = null;
+        final container = ProviderScope.containerOf(context, listen: false);
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _opened(container, arriving),
+        );
+      }
+      return JoiningProgress(message: l10n.joinArriving(preview.babyNickname));
+    }
     final options = [
       ...selfRelations,
       if (preview.relation == Relation.friend) Relation.friend,
@@ -747,6 +848,7 @@ class InviteClosedScreen extends ConsumerWidget {
         l10n.joinNotFoundTitle,
         l10n.joinNotFoundBody,
       ),
+      InviteClosedReason.full => (l10n.joinFullTitle, l10n.joinFullBody),
     };
     return OnboardingScaffold(
       topBar: ClTopBar(
@@ -754,7 +856,11 @@ class InviteClosedScreen extends ConsumerWidget {
             context.canPop() ? context.pop() : leaveJoinFlow(context, ref),
       ),
       content: [
-        const ExpiredHero(),
+        // The invite itself is fine when the family is full: the ticket, not the hourglass.
+        if (reason == InviteClosedReason.full)
+          const InviteCodeHero()
+        else
+          const ExpiredHero(),
         const SizedBox(height: ClSpace.s6),
         ScreenHeading(title: title, subtitle: body),
       ],

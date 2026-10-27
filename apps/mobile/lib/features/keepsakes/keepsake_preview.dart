@@ -38,6 +38,7 @@ class KeepsakePreviewRequest {
     this.title,
     this.info,
     this.onUse,
+    this.useLabel,
     this.variants = const {},
     this.selectedLocale,
   });
@@ -50,11 +51,13 @@ class KeepsakePreviewRequest {
   final String? title;
   final String? info;
   final VoidCallback? onUse;
+  final String? useLabel;
 
   KeepsakePreviewRequest withUse({
     required String title,
     required String info,
     required VoidCallback onUse,
+    String? useLabel,
   }) => KeepsakePreviewRequest(
     composition: composition,
     props: props,
@@ -63,6 +66,7 @@ class KeepsakePreviewRequest {
     title: title,
     info: info,
     onUse: onUse,
+    useLabel: useLabel,
     variants: variants,
     selectedLocale: selectedLocale,
   );
@@ -78,6 +82,7 @@ class KeepsakePreviewRequest {
     title: title,
     info: info,
     onUse: onUse,
+    useLabel: useLabel,
     variants: choices,
     selectedLocale: selected,
   );
@@ -499,7 +504,7 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
                   if (_request.onUse case final use?) ...[
                     const SizedBox(height: ClSpace.s3),
                     ClButton(
-                      label: l10n.ksUseTemplate,
+                      label: _request.useLabel ?? l10n.ksUseTemplate,
                       expand: true,
                       onPressed: () {
                         Navigator.of(context).pop();

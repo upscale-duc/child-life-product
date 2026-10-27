@@ -26,9 +26,9 @@ import 'notification_repository.dart';
 /// 90 days, newest first, under Hôm nay · Tuần này · Trước đó; chips filter by the P-174 inbox
 /// groups Kỷ niệm · Gia đình · Chăm sóc · Khác. Unread rows are white cards with a dot; a tap
 /// reads the row and opens what the push opens (one resolver, P-174); "Đánh dấu đã đọc" reads
-/// the loaded ones; a swipe hides one (archived). 30 rows load first, 30 more at the end; pull
-/// to refresh re-subscribes. The sliders button opens EN07 (engineering addition: the design
-/// has no way there from here).
+/// every unread one (NT-6); a swipe hides one (archived). 30 rows load first, 30 more at the
+/// end; pull to refresh re-subscribes. The sliders button opens EN07 (engineering addition:
+/// the design has no way there from here).
 class InboxScreen extends ConsumerStatefulWidget {
   const InboxScreen({super.key});
 
@@ -71,10 +71,19 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
     if (async.hasValue) _last = async.value;
     final page = async.hasValue ? async.value : _last;
     final all = page?.items ?? const <InboxItem>[];
-    final unread = [
-      for (final i in all)
-        if (i.unread) i.id,
-    ];
+    // NT-6: unread anywhere in the inbox, not only on the loaded page.
+    final anyUnread =
+        all.any((i) => i.unread) ||
+        (ref.watch(unreadCountProvider(uid)).value ?? 0) > 0;
+    // NT-6: a page made only of hidden (archived or expired) rows is not the end: the next
+    // one loads by itself instead of saying "no notifications" above an unreachable "Xem thêm".
+    if (page != null && all.isEmpty && page.more && !async.isLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _limit == key.limit) {
+          setState(() => _limit += inboxPageSize);
+        }
+      });
+    }
     final shown = [
       for (final i in all)
         if (_filter == null || i.inboxGroup == _filter) i,
@@ -93,13 +102,13 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (unread.isNotEmpty)
+          if (anyUnread)
             ClPressable(
               key: const Key('ntMarkAllRead'),
               semanticLabel: l10n.ntMarkAllRead,
               onPressed: () => ref
                   .read(notificationRepositoryProvider)
-                  .markRead(uid, unread)
+                  .markAllRead(uid)
                   .catchError((Object _) {}),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
@@ -157,7 +166,7 @@ class _InboxScreenState extends ConsumerState<InboxScreen> {
               onAction: () => _refresh(key),
             ),
           )
-        else if (page == null)
+        else if (page == null || (all.isEmpty && page.more))
           const _Loading()
         else if (all.isEmpty)
           Padding(

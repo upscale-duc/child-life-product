@@ -86,13 +86,17 @@ class PlanBalance {
 @immutable
 class PlanPrice {
   const PlanPrice({required this.month, required this.year});
-  factory PlanPrice.fromJson(Object? raw) {
-    final m = raw is Map ? raw : const {};
-    return PlanPrice(
-      month: (m['month'] as num?) ?? 0,
-      year: (m['year'] as num?) ?? 0,
-    );
+
+  /// Null when either price is missing or not above 0 (P-3): an unknown price is hidden and its
+  /// CTA disabled, never shown as "0đ".
+  static PlanPrice? tryParse(Object? raw) {
+    if (raw is! Map) return null;
+    final month = raw['month'];
+    final year = raw['year'];
+    if (month is! num || year is! num || month <= 0 || year <= 0) return null;
+    return PlanPrice(month: month, year: year);
   }
+
   final num month;
   final num year;
 }
@@ -109,6 +113,8 @@ class StorageAddOn {
   final int gb;
   final PlanPrice vn;
   final PlanPrice intl;
+
+  PlanPrice price({required bool vnd}) => vnd ? vn : intl;
 }
 
 /// One plan as configured (the paywall comparison, PV42).
@@ -168,8 +174,10 @@ class FamilyPlanV2 {
     required this.video,
     required this.usedBytes,
     required this.limitBytes,
+    this.reservedBytes = 0,
     required this.seatsUsed,
     required this.seatsLimit,
+    this.seatsPending = 0,
     this.addOnGb = 0,
     this.cycleEnd,
     this.validUntil,
@@ -196,10 +204,15 @@ class FamilyPlanV2 {
       lumi: PlanBalance.fromJson(j['lumi']),
       video: PlanBalance.fromJson(j['video']),
       usedBytes: (storage['usedBytes'] as num?)?.toInt() ?? 0,
-      limitBytes: (storage['limitBytes'] as num?)?.toInt() ?? 0,
+      limitBytes: switch ((storage['limitBytes'] as num?)?.toInt()) {
+        final b? when b > 0 => b,
+        _ => null,
+      },
+      reservedBytes: (storage['reservedBytes'] as num?)?.toInt() ?? 0,
       addOnGb: (storage['addOnGb'] as num?)?.toInt() ?? 0,
       seatsUsed: (seats['used'] as num?)?.toInt() ?? 0,
       seatsLimit: (seats['limit'] as num?)?.toInt() ?? 0,
+      seatsPending: (seats['pendingInvites'] as num?)?.toInt() ?? 0,
       suspended: [
         for (final s in (seats['suspended'] as List?) ?? const [])
           if (s is String) s,
@@ -210,17 +223,18 @@ class FamilyPlanV2 {
       premiumTemplates: j['premiumTemplates'] == true,
       free: PlanOffer.fromJson(offer['free'], PlanOffer.free),
       premiumOffer: PlanOffer.fromJson(offer['premium'], PlanOffer.premium),
-      priceVn: PlanPrice.fromJson(prices['vn']),
-      priceIntl: PlanPrice.fromJson(prices['intl']),
+      priceVn: PlanPrice.tryParse(prices['vn']),
+      priceIntl: PlanPrice.tryParse(prices['intl']),
+      // An add-on without a size or a price cannot be offered (P-3): left out, not "0đ".
       addOns: [
         for (final a in (j['storageAddOns'] as List?) ?? const [])
           if (a is Map)
-            StorageAddOn(
-              id: '${a['id']}',
-              gb: (a['gb'] as num?)?.toInt() ?? 0,
-              vn: PlanPrice.fromJson((a['price'] as Map?)?['vn']),
-              intl: PlanPrice.fromJson((a['price'] as Map?)?['intl']),
-            ),
+            if (((a['gb'] as num?)?.toInt() ?? 0) case final gb when gb > 0)
+              if (PlanPrice.tryParse((a['price'] as Map?)?['vn'])
+                  case final vn?)
+                if (PlanPrice.tryParse((a['price'] as Map?)?['intl'])
+                    case final intl?)
+                  StorageAddOn(id: '${a['id']}', gb: gb, vn: vn, intl: intl),
       ],
     );
   }
@@ -231,9 +245,20 @@ class FamilyPlanV2 {
   final PlanBalance lumi;
   final PlanBalance video;
   final int usedBytes;
-  final int limitBytes;
+
+  /// Null when the answer had none (ST-1): unknown, never "full" or "0 GB".
+  final int? limitBytes;
+
+  /// Held by uploads in flight; "full" is used + reserved (D-127 Q2).
+  final int reservedBytes;
   final int addOnGb;
   final int seatsUsed;
+
+  /// Unexpired writer invites: they hold a seat too (D-127 Q3, FJ-3).
+  final int seatsPending;
+
+  /// No seat left for a new writer, counted as the server counts (writers + pending invites).
+  bool get seatsFull => seatsUsed + seatsPending >= seatsLimit;
   final int seatsLimit;
 
   /// Writers left out after a downgrade (PV44): view-only, never removed.
@@ -244,15 +269,28 @@ class FamilyPlanV2 {
   final DateTime? cycleEnd;
   final DateTime? validUntil;
   final bool premiumTemplates;
-  final PlanPrice priceVn;
-  final PlanPrice priceIntl;
+
+  /// Null when not configured (P-3): the paywall hides the price and disables its CTA.
+  final PlanPrice? priceVn;
+  final PlanPrice? priceIntl;
+  PlanPrice? price({required bool vnd}) => vnd ? priceVn : priceIntl;
   final List<StorageAddOn> addOns;
   final PlanOffer free;
   final PlanOffer premiumOffer;
 
-  bool get storageOver => limitBytes > 0 && usedBytes > limitBytes;
-  double get storageRatio =>
-      limitBytes <= 0 ? 1 : (usedBytes / limitBytes).clamp(0, 1);
+  bool get storageKnown => limitBytes != null;
+
+  /// More stored than the plan allows (after a downgrade).
+  bool get storageOver => limitBytes != null && usedBytes > limitBytes!;
+
+  /// Used + reserved: what the server counts against the limit.
+  int get storageCounted => usedBytes + reservedBytes;
+  bool get storageFull => limitBytes != null && storageCounted >= limitBytes!;
+
+  /// 0 when unknown: callers check [storageKnown] before drawing it as a state.
+  double get storageRatio => limitBytes == null
+      ? 0
+      : (storageCounted / limitBytes!).clamp(0, 1).toDouble();
 }
 
 /// One line of "Lịch sử sử dụng" (PV41): person · task · amount, never content.

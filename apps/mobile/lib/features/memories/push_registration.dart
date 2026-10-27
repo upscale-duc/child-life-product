@@ -60,6 +60,11 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   String? _installFor;
   final _openedIds = <String>{};
 
+  /// The row is written but no push token yet (no APNs or permission when [_register] ran):
+  /// asked again on the next resume, e.g. back from granting it (NT-7).
+  var _tokenMissing = false;
+  var _tokenBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -251,18 +256,34 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       // The row exists for "Thiết bị đang đăng nhập" even without push; on the first launch
       // of the day the same write is the heartbeat.
       if (!await _beat()) await save(null);
+      _tokenMissing = true;
+      await _pushToken();
+    } on Object {
+      _registeredFor = null; // Try again on the next change.
+    }
+  }
+
+  /// The push token on this install's row, once there is one; [_tokenMissing] until then.
+  Future<void> _pushToken() async {
+    final save = _save;
+    if (save == null || _tokenBusy) return;
+    _tokenBusy = true;
+    try {
       final messaging = FirebaseMessaging.instance;
       if (defaultTargetPlatform == TargetPlatform.iOS &&
           await _apnsToken(messaging) == null) {
         return; // No APNs (simulator, or push not allowed for this build).
       }
       final token = await messaging.getToken();
-      if (token == null) return;
+      if (token == null || !identical(save, _save)) return;
       await save(token);
+      _tokenMissing = false;
       await _refresh?.cancel();
       _refresh = messaging.onTokenRefresh.listen((t) => unawaited(save(t)));
     } on Object {
-      _registeredFor = null; // Try again on the next change.
+      // Offline or no messaging: the next resume tries again.
+    } finally {
+      _tokenBusy = false;
     }
   }
 
@@ -291,6 +312,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     } on Object {
       // Offline or signed out meanwhile: the next launch or resume tries again.
     }
+    if (_tokenMissing) await _pushToken();
   }
 
   /// Android install source, once per account (P-137); a failure retries next session.

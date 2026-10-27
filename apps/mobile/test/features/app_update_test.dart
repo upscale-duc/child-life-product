@@ -1,3 +1,4 @@
+import 'package:child_life/features/memories/upload_queue.dart' show QueueState;
 import 'package:child_life/features/app_update/app_update_models.dart';
 import 'package:child_life/features/app_update/app_update_repository.dart';
 import 'package:child_life/features/app_update/app_update_screens.dart';
@@ -353,6 +354,22 @@ void main() {
         expect(find.text('Đây là bản mới nhất'), findsOneWidget);
         expect(find.text('Cập nhật'), findsNothing);
       },
+    );
+  });
+
+  test('UPD-2: UP1 promises only uploads that go up by themselves', () {
+    expect(
+      [
+        for (final s in QueueState.values)
+          if (upGoesUpByItself(s)) s,
+      ],
+      [
+        QueueState.pendingSession,
+        QueueState.queued,
+        QueueState.waitingWifi,
+        QueueState.uploading,
+        QueueState.paused,
+      ],
     );
   });
 }

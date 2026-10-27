@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 
 import '../../core/design/tokens.g.dart';
+import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -9,6 +13,7 @@ import '../../l10n/app_localizations.dart';
 /// Light screen, E07). These are the one place its colours live.
 abstract final class PremiumPalette {
   static const deep = Color(0xFF0E1716);
+  static const scrim = Color(0x99000000); // Premium detail Dim, Figma 60%.
   static const deepTop = Color(0xFF13211F);
   static const sheetTop = Color(0xFF172624);
   static const sheetBottom = Color(0xFF0D1414);
@@ -73,6 +78,7 @@ class PremiumGoldButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.compact = false,
+    this.loading = false,
     super.key,
   });
 
@@ -80,18 +86,21 @@ class PremiumGoldButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool compact;
 
+  /// Buying or verifying (P-4): a spinner beside the label, at full strength, not tappable.
+  final bool loading;
+
   @override
   Widget build(BuildContext context) {
-    final enabled = onPressed != null;
+    final enabled = onPressed != null && !loading;
     return Semantics(
       button: true,
       enabled: enabled,
       label: label,
       excludeSemantics: true,
       child: ClPressable(
-        onPressed: onPressed,
+        onPressed: enabled ? onPressed : null,
         child: Opacity(
-          opacity: enabled ? 1 : 0.5,
+          opacity: enabled || loading ? 1 : 0.5,
           child: Container(
             constraints: BoxConstraints(minHeight: compact ? 36 : 52),
             padding: EdgeInsets.symmetric(
@@ -106,20 +115,40 @@ class PremiumGoldButton extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: PremiumPalette.gold.withValues(alpha: 0.28),
+                  color: PremiumPalette.gold.withValues(
+                    alpha: compact ? .28 : .35,
+                  ),
                   blurRadius: compact ? 8 : 18,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, compact ? 4 : 6),
                 ),
               ],
             ),
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: PremiumPalette.onGold,
-                fontSize: compact ? 13 : 16,
-                fontWeight: FontWeight.w700,
-              ),
+            child: Row(
+              mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (loading) ...[
+                  const CupertinoActivityIndicator(
+                    color: PremiumPalette.onGold,
+                    radius: 9,
+                  ),
+                  const SizedBox(width: ClSpace.s2),
+                ],
+                Flexible(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: PremiumPalette.onGold,
+                      fontFamily: 'Be Vietnam Pro Keepsake',
+                      fontSize: compact ? 13 : 16,
+                      height: 1.25,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -402,3 +431,21 @@ String premiumGb(BuildContext context, int bytes) {
       : gb.toStringAsFixed(1);
   return '${vi ? s.replaceAll('.', ',') : s} GB';
 }
+
+/// Premium details retain the shared sheet route (motion, drag, keyboard and safe areas),
+/// with Night care's dark surface around the feature's dark illustration and live text.
+Future<T?> showPremiumDetails<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+}) => Navigator.of(context, rootNavigator: true).push<T>(
+  ClSheetRoute<T>(
+    builder: builder,
+    customSurface: true,
+    scrimColor: PremiumPalette.scrim,
+    dismissible: true,
+    nightCare: context.cl.isNightCare,
+    reduceMotion: context.reduceMotion,
+    theme: buildClTheme(ClPalette.nightCare),
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+  ),
+);

@@ -65,8 +65,13 @@ Future<bool> openEngagement(
       RegExp(r'^/story/[A-Za-z0-9_-]{1,128}$').hasMatch(route);
   if (!allowed) return false;
   final router = ref.read(routerProvider);
-  if (surface == 'in_app') {
+  // The Kỷ niệm tab root is switched to; any other page opens on top of the current one, so Back
+  // returns to where the card was (owner, 2026-10-26: "Ảnh đang chờ chọn lưu" opened the review
+  // and Back landed on Tự lưu instead of Kỷ niệm, because `go` rebuilt the stack).
+  if (surface == 'in_app' && Uri.parse(route).path == Routes.memories) {
     router.go(route);
+  } else if (surface == 'in_app') {
+    unawaited(router.push<Object?>(route));
   } else {
     // From a push or the inbox: on top of what is showing, so Back returns there.
     unawaited(router.push<Object?>(router.notificationLocation(route)));
@@ -175,8 +180,14 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
                         await actEngagement(ref, id, choice);
                       }
                     } catch (_) {
+                      // AI-15: what did not happen, not "Chưa kiểm tra được gợi ý".
                       if (context.mounted) {
-                        ClToaster.of(context).show(message: l.engOffline);
+                        ClToaster.of(context).show(
+                          message: choice == 'open'
+                              ? l.engOpenFailed
+                              : l.engActFailed,
+                          error: true,
+                        );
                       }
                     }
                   }

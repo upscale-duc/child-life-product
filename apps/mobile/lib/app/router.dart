@@ -11,6 +11,7 @@ import '../features/keepsakes/memory_story_screens.dart';
 import '../features/keepsakes/milestone_card_screens.dart';
 import '../features/assistant/assistant_screens.dart' show assistantRoutes;
 import '../features/appearance/appearance_screen.dart';
+import '../features/today/header_appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/auth/email_link.dart';
 import '../features/auto_save/auto_save_home.dart';
@@ -901,6 +902,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       _route(
         path: Routes.appearance,
         builder: (_, _) => const AppearanceScreen(),
+      ),
+      _route(
+        path: Routes.todayAppearance,
+        builder: (_, _) => const HeaderAppearanceScreen(),
       ),
       _route(path: Routes.showcase, builder: (_, _) => const ShowcaseScreen()),
       _route(

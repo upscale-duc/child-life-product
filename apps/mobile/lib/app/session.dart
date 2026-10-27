@@ -225,20 +225,25 @@ class AddingBaby extends Notifier<bool> {
   void set(bool value) => state = value;
 }
 
-/// Waits (≤ 10 s) until "my babies" includes [babyId] — after createBabyProfile or
-/// acceptFamilyInvite, before routing to Today (otherwise the guard would bounce back).
-Future<void> waitForMembership(
+/// Waits (≤ [timeout]) until "my babies" includes [babyId] — after createBabyProfile or
+/// acceptFamilyInvite, before routing to Today (otherwise the guard would bounce back). False
+/// when it has not arrived yet (FJ-4): the caller says so instead of routing on.
+Future<bool> waitForMembership(
   ProviderContainer container,
-  String babyId,
-) async {
-  final deadline = DateTime.now().add(const Duration(seconds: 10));
-  while (DateTime.now().isBefore(deadline)) {
+  String babyId, {
+  Duration timeout = const Duration(seconds: 10),
+}) async {
+  bool arrived() {
     final session = container.read(sessionProvider);
-    if (session is SessionSignedIn && session.membershipFor(babyId) != null) {
-      return;
-    }
+    return session is SessionSignedIn && session.membershipFor(babyId) != null;
+  }
+
+  final deadline = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(deadline)) {
+    if (arrived()) return true;
     await Future<void>.delayed(const Duration(milliseconds: 150));
   }
+  return arrived();
 }
 
 /// Deep equality for Firestore document data (maps, lists, Timestamps).

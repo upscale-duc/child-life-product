@@ -265,7 +265,7 @@ class FakeCareRepository extends Fake implements CareRepository {
   }) => restored.add(record);
 
   @override
-  Future<bool> retryNow() async => true;
+  Future<CareRetry> retryNow() async => CareRetry.synced;
 
   final started = <CareTimer>[];
   final updated = <CareTimer>[];
@@ -307,6 +307,7 @@ class FakeCareRepository extends Fake implements CareRepository {
 List<Override> careOverrides({
   Membership? me,
   List<CareRecord>? records,
+  Stream<List<CareRecord>> Function()? recordsStream,
   List<CareRecord>? growth,
   bool online = true,
   FakeCareRepository? repo,
@@ -315,6 +316,7 @@ List<Override> careOverrides({
   List<SleepConflict> conflicts = const [],
   List<CareRecord>? range,
   bool rangeLoading = false,
+  bool rangeFails = false,
   List<Reminder>? reminders,
   ReminderNotifications? notifications,
   List<ReminderRule> rules = const [],
@@ -334,6 +336,7 @@ List<Override> careOverrides({
     me: me,
     notificationRepo: notificationRepo,
     records: records ?? mockDay(),
+    recordsStream: recordsStream,
     growth: growth ?? const [],
     online: online,
     now: careNow,
@@ -356,9 +359,12 @@ List<Override> careOverrides({
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),
   // History and stats (S6) read ranges; serve them from [range] (default: the mock week).
-  // [rangeLoading]: the range never arrives (History / Stats loading state).
+  // [rangeLoading]: the range never arrives (History / Stats loading state); [rangeFails]: the
+  // query fails (SY-2).
   rangeRecordsProvider.overrideWith(
-    (ref, key) => rangeLoading
+    (ref, key) => rangeFails
+        ? Stream<List<CareRecord>>.error(StateError('query failed'))
+        : rangeLoading
         ? StreamController<List<CareRecord>>().stream
         : Stream.value([
             for (final r in range ?? mockWeek())

@@ -36,8 +36,54 @@ String printStatusName(AppLocalizations l, String s) => switch (s) {
   'shipped' => l.psShipped,
   'delivered' => l.psDelivered,
   'cancelled' => l.psCancelled,
-  _ => s,
+  // PR-5: a status this build does not know is never shown as its wire name.
+  _ => l.psStatusUnknown,
 };
+
+/// PR-1 (D-127 Q8): the print file building in the background, page by page. The parent may
+/// leave; the draft remembers the job.
+class PrintExportProgress extends StatelessWidget {
+  const PrintExportProgress({
+    required this.done,
+    required this.total,
+    super.key,
+  });
+  final int done;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context), cl = context.cl;
+    final ratio = total <= 0 ? null : (done / total).clamp(0.0, 1.0);
+    return PrintCard(
+      lifted: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            done == 0 ? l.psExportQueued : l.psExportProgress(done, total),
+            style: psText(context, 15, weight: FontWeight.w700),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: done == 0 ? null : ratio,
+              minHeight: 6,
+              color: cl.colors.mintDeep,
+              backgroundColor: cl.colors.separator,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            l.psExportLeave,
+            style: psText(context, 13, color: cl.colors.inkMuted, height: 1.4),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class PrintCard extends StatelessWidget {
   const PrintCard({

@@ -199,6 +199,8 @@ sealed class InvitePreview {
               : ExtraRights.fromJson(json['extraRights']),
           expiresAt: DateTime.parse(json['expiresAt'] as String),
           alreadyMember: json['alreadyMember'] == true,
+          babyId: json['babyId'] as String?,
+          seatsFull: json['seatsFull'] == true,
         );
       case 'locked':
         return LockedInvite(
@@ -224,6 +226,8 @@ class ValidInvite extends InvitePreview {
     required this.extraRights,
     required this.expiresAt,
     required this.alreadyMember,
+    this.babyId,
+    this.seatsFull = false,
   });
 
   final String babyNickname;
@@ -238,6 +242,12 @@ class ValidInvite extends InvitePreview {
 
   /// The caller already belongs to this baby (G-036).
   final bool alreadyMember;
+
+  /// Given only to a member ([alreadyMember]), so the app opens that baby (FJ-5).
+  final String? babyId;
+
+  /// D-127 Q3: a writer invite and the family has no writer seat left for the caller.
+  final bool seatsFull;
 }
 
 /// 17 and its undrawn siblings (G-035).
@@ -245,7 +255,10 @@ enum InviteClosedReason {
   expired,
   revoked,
   used,
-  notFound;
+  notFound,
+
+  /// FJ-2: no writer seat left in the family (joiner side; the server keeps the invite).
+  full;
 
   static InviteClosedReason fromStatus(Object? status) => switch (status) {
     'expired' => expired,

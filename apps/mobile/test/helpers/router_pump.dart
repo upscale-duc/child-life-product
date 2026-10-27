@@ -22,6 +22,7 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
   Widget screen, {
   Locale locale = const Locale('vi'),
   ClPalette palette = ClPalette.light,
+  TextScaler? textScaler,
   List<Override> overrides = const [],
   Map<String, Object> prefs = const {},
 
@@ -71,6 +72,12 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
           disableAnimations: true,
         ),
         child: MaterialApp.router(
+          builder: (context, child) => textScaler == null
+              ? child!
+              : MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
           theme: buildClTheme(palette),
           locale: locale,
           supportedLocales: const [Locale('vi'), Locale('en')],

@@ -112,6 +112,12 @@ final _cases = <String, _Case>{
     overrides: () => _base(FakeNotificationRepository(), systemOn: false),
     act: null,
   ),
+  // NT-1: the stored switches have not loaded: none is drawn or tappable.
+  'en07_loading': (
+    build: () => const NotificationSettingsScreen(),
+    overrides: () => _base(FakeNotificationRepository(holdSettings: true)),
+    act: null,
+  ),
   'en07_settings_bottom': (
     build: () => const NotificationSettingsScreen(),
     overrides: () => _base(FakeNotificationRepository()),

@@ -417,7 +417,7 @@ describe('Yêu cầu dữ liệu › Video kỷ niệm', () => {
     expect(t).toContain('Lỗi dựng 1');
     expect(t).toContain('Chỉ xem: không có nút chạy lại');
     // Even an owner gets no retry: the only buttons are the filter.
-    expect(buttons(raw)).toEqual(['Tất cả', 'Xuất dữ liệu', 'Xoá dữ liệu', 'Video kỷ niệm']);
+    expect(buttons(raw)).toEqual(['Tất cả', 'Xuất dữ liệu', 'Xoá dữ liệu', 'Dựng video']);
     const en = text(html(<RenderOpsView data={data} now={now} />, ['owner'], 'en'));
     expect(en).toContain('The renderer reported an error');
     expect(en).toContain('Not given back');

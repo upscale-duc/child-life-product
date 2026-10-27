@@ -305,7 +305,7 @@ describe('navigation and addresses', () => {
 describe('Thực phẩm', () => {
   it('lists by food group with allergen, minimum age, iron and "Gợi ý"', () => {
     const html = text(render(<FoodsBody view={view('food', foodRows)} onOpen={() => undefined} />));
-    expect(html).toContain('Đang trên app 2');
+    expect(html).toContain('Đang hiển thị trong ứng dụng 2');
     expect(html).toContain('Rau củ · 1 Bí đỏ Rau củ — Từ 6 tháng — Có');
     expect(html).toContain(
       'Đạm động vật · 2 Thịt bò Đạm động vật — Từ 6 tháng Giàu sắt Có Chờ duyệt',
@@ -499,8 +499,8 @@ describe('Hướng dẫn', () => {
     expect(html).toContain('Dấu hiệu bé sẵn sàng ăn dặm');
     expect(html).toContain('BLW hay truyền thống?');
     expect(html).not.toContain('Giấc ngủ ngắn');
-    expect(html).toContain('Đang trên app 1');
-    expect(html).toContain('Nháp 1');
+    expect(html).toContain('Đang hiển thị trong ứng dụng 1');
+    expect(html).toContain('Bản nháp 1');
     expect(html).toContain('chủ đề “Bú & sữa”');
   });
 
@@ -555,7 +555,7 @@ describe('food editor', () => {
 
   it('edits the food and previews the 5e row and the food detail', () => {
     const html = editor(itemOf(fullFood(), { id: 'fd_egg' }));
-    expect(html).toContain('Ăn dặm Trứng gà Nháp');
+    expect(html).toContain('Ăn dặm Trứng gà Bản nháp');
     expect(html).toContain('Tên 8/40');
     expect(html).toContain('Tên gọi khác (VI) 1/8');
     expect(html).toContain('Tuổi tối thiểu');
@@ -585,7 +585,7 @@ describe('food editor', () => {
     const html = editor(itemOf(bad, { id: 'fd_egg' }), [
       row({ id: 'fd_egg2', title: t('Trứng gà', 'Hen egg') }),
     ]);
-    expect(html).toContain('Chưa gửi duyệt được: 1 chỗ cần sửa');
+    expect(html).toContain('Cần sửa 1 mục trước khi gửi duyệt');
     expect(html).toContain(
       'Cách chuẩn bị · mục 1 · Nội dung · VI: “5 mg” trông như một liều thuốc',
     );
@@ -596,7 +596,7 @@ describe('food editor', () => {
   it('a new food has no workflow; empty synonyms are not saved', () => {
     const html = editor(null);
     expect(html).toContain('Thực phẩm mới');
-    expect(html).toContain('Chưa lưu');
+    expect(html).toContain('Có thay đổi chưa lưu');
     expect(html).not.toContain('Gửi duyệt');
     expect(prepareFood(fullFood()).synonyms).toEqual({ vi: ['trứng'], en: ['hen egg'] });
   });
@@ -666,7 +666,7 @@ describe('recipe editor', () => {
   it('derives the allergens and previews 5g', () => {
     const raw = editorRaw(recipeItem(fullRecipe()));
     const html = text(raw);
-    expect(html).toContain('Ăn dặm Cháo trứng bí đỏ · 7–11 tháng Nháp');
+    expect(html).toContain('Ăn dặm Cháo trứng bí đỏ · 7–11 tháng Bản nháp');
     expect(hasButton(raw, 'Gửi duyệt')).toBe(true);
     expect(html).toContain('Nguyên liệu 1 Bí đỏ · Rau củ');
     expect(html).toContain('Nguyên liệu 2 Trứng gà · Đạm động vật Trứng');
@@ -701,7 +701,7 @@ describe('recipe editor', () => {
     });
     const raw = editorRaw(recipeItem(honey));
     const html = text(raw);
-    expect(html).toContain('Chưa hợp tuổi: 1 nguyên liệu');
+    expect(html).toContain('1 nguyên liệu chưa phù hợp với độ tuổi');
     expect(html).toContain('Mật ong chỉ từ 12 tháng');
     expect(html).toContain('Từ 12 tháng');
     // The honey line is a seasoning too.

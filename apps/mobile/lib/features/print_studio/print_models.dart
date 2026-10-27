@@ -198,3 +198,65 @@ class PrintCatalog {
     return (subtotal: subtotal, shipping: shipping, total: total);
   }
 }
+
+enum PrintExportState { working, ready, failed }
+
+/// PR-1 (D-127 Q8): the print file job (`babies/{b}/printExportJobs/{id}`), built in the
+/// background so the parent can leave and come back.
+@immutable
+class PrintExportJob {
+  const PrintExportJob({
+    required this.id,
+    required this.state,
+    required this.done,
+    required this.total,
+    this.pages,
+    this.format,
+    this.error,
+  });
+
+  /// Null when the job is gone or its file expired. A worker past its lease, or a job queued for
+  /// more than ten minutes, is shown as failed so the parent can try again.
+  static PrintExportJob? fromMap(
+    String id,
+    Map<String, dynamic>? j,
+    DateTime now,
+  ) {
+    if (j == null) return null;
+    DateTime? at(Object? v) =>
+        v is DateTime ? v : (v as dynamic)?.toDate() as DateTime?;
+    final status = j['status'];
+    final expires = at(j['expiresAt']);
+    if (expires != null && !expires.isAfter(now)) return null;
+    final lease = at(j['leaseUntil']);
+    final created = at(j['createdAt']);
+    final stale =
+        (status == 'rendering' && lease != null && lease.isBefore(now)) ||
+        (status == 'queued' &&
+            created != null &&
+            now.difference(created) > const Duration(minutes: 10));
+    return PrintExportJob(
+      id: id,
+      state: stale || status == 'failed'
+          ? PrintExportState.failed
+          : status == 'ready'
+          ? PrintExportState.ready
+          : PrintExportState.working,
+      done: (j['done'] as num?)?.toInt() ?? 0,
+      total: (j['total'] as num?)?.toInt() ?? 0,
+      pages: (j['pages'] as num?)?.toInt(),
+      format: j['format'] as String?,
+      error: stale ? 'render-failed' : j['error'] as String?,
+    );
+  }
+
+  final String id;
+  final PrintExportState state;
+  final int done;
+  final int total;
+  final int? pages;
+
+  /// `pdf` or `zip`.
+  final String? format;
+  final String? error;
+}

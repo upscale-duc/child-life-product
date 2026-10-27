@@ -870,6 +870,8 @@ class _LookBack extends ConsumerWidget {
     final cl = context.cl;
     final locale = Localizations.localeOf(context);
     final advanced = caps?.allows(Capability.rhythmAdvanced) ?? false;
+    // D-125: a plan not known yet (loading, failed) is never a reason to show Premium.
+    if (!advanced && caps == null) return const ClSkeleton(height: 96);
     if (!advanced) {
       final reason =
           caps?.reasonFor(Capability.rhythmAdvanced) ??
@@ -882,7 +884,7 @@ class _LookBack extends ConsumerWidget {
         child: Align(
           alignment: Alignment.centerLeft,
           child: RhLink(
-            label: premium ? l10n.rhLearnMore : l10n.rhWhy,
+            label: premium ? l10n.pv2SeePremium : l10n.rhWhy,
             onTap: () => premium
                 ? openPaywall(context, entry: PaywallEntry.rhythm)
                 : showGateSheet(context, reason),

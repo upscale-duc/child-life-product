@@ -251,16 +251,27 @@ export async function familyWriters(
   db: Firestore,
   familyId: string,
   now: Date,
-): Promise<{ writers: Set<string>; suspended: Set<string> }> {
+): Promise<{ writers: Set<string>; suspended: Set<string>; pendingInvites: number }> {
   const babies = await db.collection('babies').where('familyId', '==', familyId).get();
-  const lists = await Promise.all(
-    babies.docs.map((b) =>
-      db
-        .collection(`babies/${b.id}/members`)
-        .where('role', 'in', [...seatRoles])
-        .get(),
+  const [lists, invites] = await Promise.all([
+    Promise.all(
+      babies.docs.map((b) =>
+        db
+          .collection(`babies/${b.id}/members`)
+          .where('role', 'in', [...seatRoles])
+          .get(),
+      ),
     ),
-  );
+    // D-127 Q3: unexpired writer invites hold a seat, as requireSeat (family.ts) counts them.
+    Promise.all(
+      babies.docs.map((b) =>
+        db
+          .collection(`babies/${b.id}/pendingInvites`)
+          .where('role', 'in', [...seatRoles])
+          .get(),
+      ),
+    ),
+  ]);
   const writers = new Set<string>();
   const suspended = new Set<string>();
   for (const m of lists.flatMap((l) => l.docs)) {
@@ -270,7 +281,13 @@ export async function familyWriters(
     else writers.add(m.id);
   }
   for (const uid of writers) suspended.delete(uid);
-  return { writers, suspended };
+  const pendingInvites = invites
+    .flatMap((l) => l.docs)
+    .filter((i) => {
+      const expires = toDate(i.get('expiresAt'));
+      return !expires || expires > now;
+    }).length;
+  return { writers, suspended, pendingInvites };
 }
 
 const balanceOf = (q: QuotaSnapshot) => ({
@@ -320,15 +337,17 @@ export async function familyPlanAnswer(
     validUntil:
       plan.grant && plan.grant.validUntil < NEVER ? plan.grant.validUntil.toISOString() : null,
     lumi: balanceOf({ ...lumi, resetsAt: lumi.resetsAt }),
-    video: balanceOf(video),
+    video: { ...balanceOf(video), ...(plan.v2 ? { unlimited: true, resetsAt: null } : {}) },
     storage: {
       usedBytes: Math.max(0, (family.get('usedBytes') as number | undefined) ?? 0),
+      reservedBytes: Math.max(0, (family.get('reservedBytes') as number | undefined) ?? 0),
       limitBytes: await storageLimitBytes(db, ctx.familyId, family, now, environment),
       addOnGb: plan.premium ? activeAddOnGb(family, now) : 0,
     },
     seats: {
       used: seats.writers.size,
       limit: plan.limits.caregiverSeats,
+      pendingInvites: plan.v2 ? seats.pendingInvites : 0,
       suspended: [...seats.suspended],
       overLimit: plan.v2 && seats.writers.size > plan.limits.caregiverSeats,
     },
@@ -336,13 +355,17 @@ export async function familyPlanAnswer(
     offer: {
       free: {
         lumiCredits: plans.free.lumiCreditsOneTime,
-        videoExports: plans.free.videoExportsTrial,
+        videoExports: 0, // Historical field, never displayed as a remaining allowance.
+        videoUnlimited: true,
+        maxVideoQuality: 'hd720',
         storageBytes: Math.round(plans.free.storageGB * GB),
         caregiverSeats: plans.free.caregiverSeats,
       },
       premium: {
         lumiCredits: plans.premium.lumiCreditsPerCycle,
-        videoExports: plans.premium.videoExportsPerCycle,
+        videoExports: 0,
+        videoUnlimited: true,
+        maxVideoQuality: 'fullHd1080',
         storageBytes: Math.round(plans.premium.storageGB * GB),
         caregiverSeats: plans.premium.caregiverSeats,
       },

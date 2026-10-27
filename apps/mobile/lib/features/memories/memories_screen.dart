@@ -15,6 +15,7 @@ import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_choices.dart' show ClFilterPill;
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_misc.dart';
@@ -1218,7 +1219,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _FilterPill(
+                              ClFilterPill(
                                 icon: ClIcons.cake,
                                 label: switch (mode) {
                                   PhotoGroup.ageWeek => l10n.photoPillWeek,
@@ -1230,7 +1231,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                                     : () => showPhotoGroupSheet(context, ref),
                               ),
                               const SizedBox(width: 6),
-                              _FilterPill(
+                              ClFilterPill(
                                 icon: ClIcons.camera,
                                 label: switch (view.photoShow) {
                                   PhotoShow.all => l10n.photoShowAll,
@@ -1523,46 +1524,6 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
   }
 }
 
-/// 10b filter pill: surface, separator border, icon · label · chevron.
-class _FilterPill extends StatelessWidget {
-  const _FilterPill({required this.icon, required this.label, this.onTap});
-  final ClIcons icon;
-  final String label;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cl = context.cl;
-    return ClPressable(
-      onPressed: onTap,
-      semanticLabel: label,
-      child: Container(
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(ClRadius.pill),
-          border: Border.all(color: cl.colors.separator),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ClIcon(icon, size: 14, color: cl.colors.ink),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
-            ),
-            if (onTap != null) ...[
-              const SizedBox(width: 3),
-              ClIcon(ClIcons.chevronDown, size: 12, color: cl.colors.ink),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 /// The Ảnh filters ("Theo tuần tuổi ▾", "Ảnh & video ▾", select), pinned on the screen colour.
 class _FilterBar extends SliverPersistentHeaderDelegate {

@@ -192,6 +192,7 @@ flutter:
   assets:
     - assets/print-studio/
     - assets/premium/
+    - assets/today/
     - assets/icons/
     - assets/logo/
     - assets/brands/

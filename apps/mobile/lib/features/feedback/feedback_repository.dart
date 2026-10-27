@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../app/providers.dart';
 import '../auth/auth_repository.dart';
@@ -65,7 +65,13 @@ class FeedbackRepository {
   final FirebaseStorage Function() _storage;
   final String? Function() _uid;
 
+  /// The screenshot gets this long to go up (Storage would otherwise retry for ~10 minutes).
+  static const shotTimeout = Duration(seconds: 60);
+
+  /// [requestId] is the draft's, kept across "Gửi" retries: the server makes one ticket per
+  /// id, so a retry after a lost answer never files the same Góp ý twice (FB-1).
   Future<String> send({
+    required String requestId,
     required FeedbackType type,
     required String message,
     required FeedbackShot? shot,
@@ -75,10 +81,9 @@ class FeedbackRepository {
   }) async {
     final uid = _uid();
     if (uid == null) throw StateError('signed out');
-    final requestId = const Uuid().v4();
     final ext = shot == null ? null : (shot.png ? 'png' : 'jpg');
     if (shot != null) {
-      await _storage()
+      final task = _storage()
           .ref('feedback/$uid/$requestId.$ext')
           .putData(
             shot.bytes,
@@ -86,6 +91,12 @@ class FeedbackRepository {
               contentType: shot.png ? 'image/png' : 'image/jpeg',
             ),
           );
+      try {
+        await task.timeout(shotTimeout);
+      } on TimeoutException {
+        unawaited(task.cancel().then((_) {}, onError: (Object _) {}));
+        rethrow;
+      }
     }
     final result = await _functions()
         .httpsCallable('sendFeedback')

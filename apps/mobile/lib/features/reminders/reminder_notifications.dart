@@ -14,6 +14,7 @@ import '../../app/router.dart';
 import '../../app/session.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/platform/android_channels.dart';
+import '../../core/platform/external_apps.dart' show openNotificationSettings;
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -256,6 +257,15 @@ class NotificationsEnabled extends Notifier<bool?> {
     }
   }
 
+  /// "Bật" wherever notifications are off (EN07, 8d, the rules tab): the system prompt while it
+  /// can still show, else system settings, so the tap is never a no-op (NT-3).
+  Future<void> turnOn() async {
+    if (await request()) return;
+    await openNotificationSettings();
+  }
+
+  /// The system prompt. Whoever asks (the launch prompt, EN03, 8c), it counts as asked for all
+  /// of them: the OS shows its prompt once, so the next "Bật" can only open Settings (NT-3).
   Future<bool> request() async {
     var on = false;
     try {
@@ -263,19 +273,45 @@ class NotificationsEnabled extends Notifier<bool?> {
     } on Object {
       on = false;
     }
-    if (ref.mounted) state = on;
+    if (ref.mounted) {
+      state = on;
+      await ref.read(notificationsAskedProvider.notifier).mark();
+    }
     return on;
   }
 }
 
+const _kAsked = 'reminders.notificationsAsked';
 const _kAskedOnLaunch = 'notifications.askedOnLaunch';
 
+/// Whether this install has shown the system notification prompt: one flag for the launch
+/// prompt (D-098), EN03 and 8c (NT-3). 8d's card and EN07 then link to Settings (R-092).
+/// Installs from before NT-3 kept two flags; either one counts.
+final notificationsAskedProvider = NotifierProvider<NotificationsAsked, bool>(
+  NotificationsAsked.new,
+);
+
+class NotificationsAsked extends Notifier<bool> {
+  @override
+  bool build() {
+    final prefs = ref.read(sharedPreferencesProvider);
+    return (prefs.getBool(_kAsked) ?? false) ||
+        (prefs.getBool(_kAskedOnLaunch) ?? false);
+  }
+
+  Future<void> mark() async {
+    if (state) return;
+    state = true;
+    await ref.read(sharedPreferencesProvider).setBool(_kAsked, true);
+  }
+}
+
 /// D-098: the system notification prompt on the first entry into the app, once per install
-/// (a refusal is final for the OS; the Thông báo screen then says they are off).
+/// (a refusal is final for the OS; the Thông báo screen then says they are off). Not when
+/// EN03 or 8c already asked.
 Future<void> askNotificationsOnLaunch(Ref ref) async {
-  final prefs = ref.read(sharedPreferencesProvider);
-  if (prefs.getBool(_kAskedOnLaunch) == true) return;
-  await prefs.setBool(_kAskedOnLaunch, true);
+  if (ref.read(notificationsAskedProvider)) return;
+  await ref.read(notificationsAskedProvider.notifier).mark();
   try {
     if (await ref.read(reminderNotificationsProvider).enabled()) return;
   } on Object {

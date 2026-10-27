@@ -20,8 +20,8 @@ import '../onboarding/widgets/onboarding_layout.dart';
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
 import '../reminders/reminder_notifications.dart'
-    show notificationsEnabledProvider;
-import '../reminders/reminder_screens.dart' show notificationsAskedProvider;
+    show notificationsAskedProvider, notificationsEnabledProvider;
+import '../reminders/reminder_screens.dart' show showNotificationsRefused;
 import '../rhythm/rhythm_labels.dart';
 import '../rhythm/rhythm_models.dart';
 import '../rhythm/rhythm_repository.dart';
@@ -380,7 +380,10 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
     await enabled.refresh();
     if (!mounted) return;
     setState(() => _busy = false);
-    if (ref.read(notificationsEnabledProvider) ?? false) {
+    // Already on, or the system prompt was shown before (at launch or from 8c): the OS would
+    // not ask again, so "Bật thông báo" could do nothing (NT-3).
+    if ((ref.read(notificationsEnabledProvider) ?? false) ||
+        ref.read(notificationsAskedProvider)) {
       _leave();
     } else {
       setState(() => _step = 2);
@@ -392,11 +395,11 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
     final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     final on = await ref.read(notificationsEnabledProvider.notifier).request();
-    await ref.read(notificationsAskedProvider.notifier).mark();
     if (!mounted) return;
     setState(() => _busy = false);
     _leave();
-    if (!on) toaster.show(message: l10n.hnNotifDenied);
+    // Refused: only system settings can turn them on now (NT-3).
+    if (!on) showNotificationsRefused(toaster, l10n);
   }
 
   @override

@@ -29,6 +29,9 @@ import '../me/me_widgets.dart';
 import 'billing_models.dart';
 import 'paywall_screen.dart';
 import 'plan_screen.dart' show showRegionSheet;
+import 'purchase_controller.dart' show purchaseControllerProvider;
+import 'purchase_sheets.dart';
+import 'premium_entries.dart' show askManagerForStorage, planManagerName;
 import 'premium_models.dart';
 import 'premium_repository.dart';
 import 'premium_style.dart';
@@ -108,8 +111,18 @@ class FamilyPlanV2Screen extends ConsumerWidget {
     final me = ref.watch(selectedMembershipProvider);
     final baby = ref.watch(babyProvider(babyId)).value;
     final manager = members.where((m) => m.isOwner).firstOrNull;
-    final managerName = manager?.displayName ?? l10n.pv2TheManager;
+    final managerName = _nonEmpty(manager?.displayName) ?? l10n.pv2TheManager;
     final isManager = plan?.isManager ?? caps.canManageBilling;
+    // P-8: never "người quản lý (bạn)" while members load; the line waits for a real name.
+    final managerLine = isManager
+        ? switch (_nonEmpty(me?.displayName)) {
+            final name? => l10n.pv2ManagerYou(name),
+            null => l10n.pv2ManagerYouNoName,
+          }
+        : switch (_nonEmpty(manager?.displayName)) {
+            final name? => l10n.pv2ManagerOther(name),
+            null => null,
+          };
     final premium = plan?.premium ?? caps.plan == HouseholdPlan.premium;
     final suspendedMe =
         me != null && (plan?.suspended.contains(me.uid) ?? false);
@@ -120,11 +133,18 @@ class FamilyPlanV2Screen extends ConsumerWidget {
     if (async.isLoading && plan == null) {
       children.add(const ClSkeleton(height: 320));
     } else if (plan == null) {
+      // P-8: the plan, not "lịch sử", could not be read; with a way to try again.
       children.add(
         MeNotice(
           tone: MeTone.warn,
           icon: ClIcons.cloudOff,
-          title: l10n.pv2HistoryError,
+          title: l10n.premiumPlanCheckFailed,
+          child: ClButton(
+            label: l10n.actionRetry,
+            style: ClButtonStyle.outline,
+            expand: true,
+            onPressed: () => ref.invalidate(familyPlanV2Provider(babyId)),
+          ),
         ),
       );
     } else {
@@ -149,7 +169,7 @@ class FamilyPlanV2Screen extends ConsumerWidget {
         _PlanCard(
           premium: premium,
           isManager: isManager,
-          managerName: managerName,
+          managerLine: managerLine,
         ),
         const SizedBox(height: ClSpace.s3),
         if (isManager && plan.storageOver && !premium) ...[
@@ -157,9 +177,9 @@ class FamilyPlanV2Screen extends ConsumerWidget {
             icon: ClIcons.cloudOff,
             title: l10n.pv2OverStorageTitle(
               premiumGb(context, plan.usedBytes),
-              premiumGb(context, plan.limitBytes),
+              premiumGb(context, plan.limitBytes!),
             ),
-            body: l10n.pv2OverStorageBody(premiumGb(context, plan.limitBytes)),
+            body: l10n.pv2OverStorageBody(premiumGb(context, plan.limitBytes!)),
             actions: [
               (l10n.pv2ManageMedia, () => context.push(Routes.meStorage)),
               (
@@ -215,7 +235,10 @@ class FamilyPlanV2Screen extends ConsumerWidget {
       if (isManager && !premium) {
         children.addAll([
           _Upsell(
-            title: l10n.pv2FreeUpsellTitle(baby?.nickname ?? ''),
+            title: switch (_nonEmpty(baby?.nickname)) {
+              final name? => l10n.pv2FreeUpsellTitle(name),
+              null => l10n.pv2FreeUpsellTitleNoName,
+            },
             body: l10n.pv2FreeUpsellBody,
             action: l10n.pv2SeePlans,
             onTap: () => openPaywall(
@@ -268,6 +291,10 @@ class FamilyPlanV2Screen extends ConsumerWidget {
               MeRow(
                 icon: ClIcons.family,
                 title: l10n.pv2Seats,
+                // D-127 Q3 (FJ-3): invites not yet accepted hold a seat, and say so.
+                subtitle: plan.seatsPending > 0
+                    ? l10n.pv2SeatsHeld(plan.seatsPending)
+                    : null,
                 value: l10n.pv2SeatsOf(plan.seatsUsed, plan.seatsLimit),
                 onTap: plan.overLimit || plan.suspended.isNotEmpty
                     ? () => showSeatPicker(context, babyId: babyId, plan: plan)
@@ -290,7 +317,20 @@ class FamilyPlanV2Screen extends ConsumerWidget {
               MeRow(
                 icon: ClIcons.retry,
                 title: l10n.pmRestore,
-                onTap: () => openPaywall(context, entry: PaywallEntry.plan),
+                // D-125: "Khôi phục" restores the purchase (as on the legacy plan screen); it
+                // used to open the plans, which nobody tapping "restore" expects.
+                onTap: () async {
+                  final ok = await showPurchaseSheet(
+                    context,
+                    PurchaseSheetKind.restoreConfirm,
+                    entry: PaywallEntry.plan,
+                  );
+                  if (ok == PurchaseSheetAction.primary) {
+                    await ref
+                        .read(purchaseControllerProvider.notifier)
+                        .restore(babyId, source: 'plan');
+                  }
+                },
               ),
           ],
         ),
@@ -315,15 +355,19 @@ class FamilyPlanV2Screen extends ConsumerWidget {
   }
 }
 
+String? _nonEmpty(String? s) => (s?.trim().isEmpty ?? true) ? null : s!.trim();
+
 class _PlanCard extends StatelessWidget {
   const _PlanCard({
     required this.premium,
     required this.isManager,
-    required this.managerName,
+    required this.managerLine,
   });
   final bool premium;
   final bool isManager;
-  final String managerName;
+
+  /// Null while the manager's name is not known yet.
+  final String? managerLine;
 
   @override
   Widget build(BuildContext context) {
@@ -367,20 +411,17 @@ class _PlanCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: ClSpace.s1),
-          Text(
-            isManager
-                ? l10n.pv2ManagerYou(managerName)
-                : l10n.pv2ManagerOther(managerName),
-            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-          ),
+          if (managerLine case final line?) ...[
+            const SizedBox(height: ClSpace.s1),
+            Text(line, style: cl.text.body.copyWith(color: cl.colors.inkMuted)),
+          ],
         ],
       ),
     );
   }
 }
 
-/// "Hạn mức": Lumi, video and storage as three bars (Note · PV40).
+/// Metered Lumi and storage, plus explicit unlimited video quality (D-124).
 class _Allowances extends StatelessWidget {
   const _Allowances({required this.plan});
   final FamilyPlanV2 plan;
@@ -415,23 +456,23 @@ class _Allowances extends StatelessWidget {
             color: cl.colors.mintDeep,
           ),
           const SizedBox(height: ClSpace.s4),
-          _Bar(
-            label: premium ? l10n.pv2Video : l10n.pv2VideoTrial,
-            value: l10n.pv2ExportsLeft(plan.video.left, plan.video.limit),
-            caption: refill(plan.video),
-            ratio: plan.video.limit == 0
-                ? 1
-                : plan.video.left / plan.video.limit,
-            color: cl.colors.sunshine,
+          Text(l10n.premiumUnlimitedVideo, style: cl.text.bodyStrong),
+          Text(
+            premium ? l10n.videoQualityFullHd : l10n.videoQualityHd,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
           ),
           const SizedBox(height: ClSpace.s4),
+          // ST-1: an unknown limit shows what is used and says the limit is not read.
           _Bar(
             label: l10n.pv2Storage,
-            value: l10n.pv2StorageOf(
-              premiumGb(context, plan.usedBytes),
-              premiumGb(context, plan.limitBytes),
-            ),
-            caption: null,
+            value: switch (plan.limitBytes) {
+              final limit? => l10n.pv2StorageOf(
+                premiumGb(context, plan.usedBytes),
+                premiumGb(context, limit),
+              ),
+              null => premiumGb(context, plan.usedBytes),
+            },
+            caption: plan.storageKnown ? null : l10n.stQuotaUnknown,
             ratio: plan.storageRatio,
             color: plan.storageRatio >= 0.9 ? cl.colors.peach : cl.colors.mint,
           ),
@@ -1089,6 +1130,12 @@ class CancelRenewalScreen extends ConsumerWidget {
           body: l10n.pv2CancelSeatsBody(free.caregiverSeats),
         ),
       _Consequence(
+        icon: ClIcons.camera,
+        tint: cl.colors.surface2,
+        title: l10n.videoQuality,
+        body: l10n.premiumVideoAfterCancel,
+      ),
+      _Consequence(
         icon: ClIcons.star,
         tint: cl.colors.surface2,
         title: l10n.pv2CancelTemplates,
@@ -1225,13 +1272,23 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
     final l10n = AppLocalizations.of(context);
     final me = ref.watch(selectedMembershipProvider);
     if (me == null) return const ColoredBox(color: PremiumPalette.deep);
-    final plan = ref.watch(familyPlanV2Provider(me.babyId)).value;
+    final async = ref.watch(familyPlanV2Provider(me.babyId));
+    final plan = async.value;
+    final loading = async.isLoading && plan == null;
     final caps = ref.watch(capabilitiesProvider(me.babyId)).value;
     final vnd = caps?.country == null || caps?.country == 'VN';
     final addOns = plan?.addOns ?? const <StorageAddOn>[];
-    final baseGb =
-        ((plan?.limitBytes ?? 0) / (1024 * 1024 * 1024)).round() -
-        (plan?.addOnGb ?? 0);
+    final limit = plan?.limitBytes;
+    // "Tổng {n} GB" only from a known limit (ST-1).
+    final baseGb = limit == null
+        ? null
+        : (limit / (1024 * 1024 * 1024)).round() - plan!.addOnGb;
+    // D-127 Q7: only the manager buys; everyone else asks them.
+    final member = plan != null && !plan.isManager;
+    final selected = addOns.isEmpty
+        ? null
+        : addOns[_selected.clamp(0, addOns.length - 1)];
+    void retry() => ref.invalidate(familyPlanV2Provider(me.babyId));
     final bottom = MediaQuery.paddingOf(context).bottom;
     const muted = TextStyle(color: PremiumPalette.textMuted, fontSize: 13);
     // Dark page: white status bar, restored by the screen below when it closes.
@@ -1305,6 +1362,15 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
                         ),
                       ),
                       const SizedBox(height: ClSpace.s4),
+                      // ST-5: loading and failure are said, never an empty page.
+                      if (loading)
+                        const _DarkSkeleton(height: 220)
+                      else if (plan == null)
+                        _DarkNotice(
+                          text: l10n.premiumPlanCheckFailed,
+                          action: l10n.actionRetry,
+                          onAction: retry,
+                        ),
                       if (plan != null)
                         Container(
                           padding: const EdgeInsets.all(ClSpace.s4),
@@ -1319,10 +1385,12 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
                               Text(l10n.pv2AddOnUsed, style: muted),
                               const SizedBox(height: ClSpace.s1),
                               ClTabularText(
-                                l10n.pv2StorageOf(
-                                  premiumGb(context, plan.usedBytes),
-                                  premiumGb(context, plan.limitBytes),
-                                ),
+                                limit == null
+                                    ? premiumGb(context, plan.usedBytes)
+                                    : l10n.pv2StorageOf(
+                                        premiumGb(context, plan.usedBytes),
+                                        premiumGb(context, limit),
+                                      ),
                                 style: const TextStyle(
                                   fontFamily: PremiumPalette.serif,
                                   color: PremiumPalette.text,
@@ -1343,21 +1411,31 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
                           ),
                         ),
                       const SizedBox(height: ClSpace.s4),
+                      if (plan != null && plan.premium && addOns.isEmpty) ...[
+                        _DarkNotice(
+                          text: l10n.pv2AddOnUnknown,
+                          action: l10n.actionRetry,
+                          onAction: retry,
+                        ),
+                        const SizedBox(height: ClSpace.s3),
+                      ],
                       for (final (i, a) in addOns.indexed) ...[
                         _AddOnOption(
                           title: l10n.pv2AddOnOption(a.gb),
-                          total: l10n.pv2AddOnTotal(baseGb + a.gb),
+                          total: baseGb == null
+                              ? null
+                              : l10n.pv2AddOnTotal(baseGb + a.gb),
                           perYear: l10n.pv2PerYear(
                             premiumPrice(
                               context,
-                              vnd ? a.vn.year : a.intl.year,
+                              a.price(vnd: vnd).year,
                               vnd: vnd,
                             ),
                           ),
                           perMonth: l10n.pv2OrPerMonth(
                             premiumPrice(
                               context,
-                              vnd ? a.vn.month : a.intl.month,
+                              a.price(vnd: vnd).month,
                               vnd: vnd,
                             ),
                           ),
@@ -1404,26 +1482,29 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
                             fontSize: 14,
                           ),
                         )
-                      else if (addOns.isNotEmpty)
+                      else if (member) ...[
+                        Text(
+                          l10n.pv2OnlyManager(
+                            planManagerName(ref, l10n, me.babyId),
+                          ),
+                          textAlign: TextAlign.center,
+                          style: muted,
+                        ),
+                        const SizedBox(height: ClSpace.s2),
+                        PremiumGoldButton(
+                          label: l10n.pv2AskStorage(
+                            planManagerName(ref, l10n, me.babyId),
+                          ),
+                          onPressed: () => askManagerForStorage(context),
+                        ),
+                      ] else if (selected != null)
                         PremiumGoldButton(
                           label: l10n.pv2AddOnBuy(
-                            addOns[_selected.clamp(0, addOns.length - 1)].gb,
+                            selected.gb,
                             l10n.pv2PerYear(
                               premiumPrice(
                                 context,
-                                vnd
-                                    ? addOns[_selected.clamp(
-                                            0,
-                                            addOns.length - 1,
-                                          )]
-                                          .vn
-                                          .year
-                                    : addOns[_selected.clamp(
-                                            0,
-                                            addOns.length - 1,
-                                          )]
-                                          .intl
-                                          .year,
+                                selected.price(vnd: vnd).year,
                                 vnd: vnd,
                               ),
                             ),
@@ -1447,6 +1528,55 @@ class _StorageAddOnState extends ConsumerState<StorageAddOnScreen> {
   }
 }
 
+/// Loading on the dark Premium surface.
+class _DarkSkeleton extends StatelessWidget {
+  const _DarkSkeleton({required this.height});
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    height: height,
+    decoration: BoxDecoration(
+      color: PremiumPalette.fill,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: PremiumPalette.line),
+    ),
+  );
+}
+
+/// A failure on the dark Premium surface, with its one way out.
+class _DarkNotice extends StatelessWidget {
+  const _DarkNotice({
+    required this.text,
+    required this.action,
+    required this.onAction,
+  });
+  final String text;
+  final String action;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(ClSpace.s4),
+    decoration: BoxDecoration(
+      color: PremiumPalette.fill,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: PremiumPalette.line),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          text,
+          style: const TextStyle(color: PremiumPalette.text, fontSize: 15),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        PremiumTextButton(label: action, onPressed: onAction),
+      ],
+    ),
+  );
+}
+
 class _AddOnOption extends StatelessWidget {
   const _AddOnOption({
     required this.title,
@@ -1458,7 +1588,7 @@ class _AddOnOption extends StatelessWidget {
   });
 
   final String title;
-  final String total;
+  final String? total;
   final String perYear;
   final String perMonth;
   final bool selected;
@@ -1468,7 +1598,7 @@ class _AddOnOption extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     selected: selected,
     button: true,
-    label: '$title, $total, $perYear, $perMonth',
+    label: [title, ?total, perYear, perMonth].join(', '),
     excludeSemantics: true,
     child: ClPressable(
       onPressed: onTap,
@@ -1498,13 +1628,14 @@ class _AddOnOption extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Text(
-                    total,
-                    style: const TextStyle(
-                      color: PremiumPalette.textMuted,
-                      fontSize: 12,
+                  if (total case final t?)
+                    Text(
+                      t,
+                      style: const TextStyle(
+                        color: PremiumPalette.textMuted,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

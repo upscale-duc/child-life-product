@@ -75,10 +75,11 @@ class FamilyRepository {
 
   Future<Map<String, dynamic>> _call(
     String name,
-    Map<String, Object?> data,
-  ) async {
+    Map<String, Object?> data, {
+    FirebaseFunctions? as,
+  }) async {
     try {
-      final result = await _functions
+      final result = await (as ?? _functions)
           .httpsCallable(name)
           .call<Map<String, dynamic>?>(data);
       return result.data ?? const {};
@@ -237,9 +238,20 @@ class FamilyRepository {
   Future<void> removeMember({required String babyId, required String uid}) =>
       _call('removeFamilyMember', {'babyId': babyId, 'uid': uid});
 
-  /// P-007: moves a temporary identity's memberships into the signed-in account.
-  Future<void> claimAnonymous(String anonymousIdToken) =>
-      _call('claimAnonymousIdentity', {'anonymousIdToken': anonymousIdToken});
+  /// P-007: moves a temporary identity's memberships into the account [as] is signed into (the
+  /// merge's second app, AU-1). Returns the babies that account now belongs to through it.
+  Future<List<String>> claimAnonymous(
+    String anonymousIdToken, {
+    FirebaseFunctions? as,
+  }) async {
+    final data = await _call('claimAnonymousIdentity', {
+      'anonymousIdToken': anonymousIdToken,
+    }, as: as);
+    return [
+      for (final id in (data['babyIds'] as List? ?? const []))
+        if (id is String) id,
+    ];
+  }
 }
 
 final familyRepositoryProvider = Provider<FamilyRepository>(

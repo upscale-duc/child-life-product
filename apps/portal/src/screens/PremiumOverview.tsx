@@ -213,10 +213,6 @@ export function PremiumOverviewView({
               value={pct(intl, data.limits.premiumLumiOut)}
             />
             <Row
-              label={<FormattedMessage id="pov.limits.video" />}
-              value={pct(intl, data.limits.premiumVideoOut)}
-            />
-            <Row
               label={<FormattedMessage id="pov.limits.storage" />}
               value={pct(intl, data.limits.storage80)}
             />

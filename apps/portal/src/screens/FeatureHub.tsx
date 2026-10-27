@@ -451,7 +451,7 @@ export function HubFeaturesView({
       key: 'off',
       label: <FormattedMessage id="hub.kpi.off" />,
       value: rows.length - on,
-      tone: rows.length - on ? 'error' : 'muted',
+      tone: 'muted',
       active: onOff === 'off',
       onClick: () => setOnOff(onOff === 'off' ? null : 'off'),
     },
@@ -646,7 +646,7 @@ function ListRowView({
       : null;
   const off = target ? !target.flag.enabled : false;
   return (
-    <tr className={cn(off && 'bg-destructive/5')}>
+    <tr className={cn(off && 'bg-muted/30')}>
       <td className="max-w-[22rem]">
         <span className="flex items-center gap-1">
           <button type="button" className="link-button text-left font-medium" onClick={onOpen}>
@@ -854,7 +854,7 @@ function OnSwitch({
         onCheckedChange={onToggle}
       />
       {!flag.enabled && (
-        <span className="text-xs font-medium text-destructive">
+        <span className="text-xs font-medium text-muted-foreground">
           <FormattedMessage id="hub.on.off" />
         </span>
       )}

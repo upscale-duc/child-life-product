@@ -203,6 +203,29 @@ export function Segmented<T extends string | number>({
           type="button"
           role="tab"
           aria-selected={o.value === value}
+          tabIndex={o.value === value ? 0 : -1}
+          onKeyDown={(event) => {
+            const current = options.findIndex((option) => option.value === o.value);
+            const rtl = event.currentTarget.closest('[dir="rtl"]') !== null;
+            const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+            const backward = rtl ? 'ArrowRight' : 'ArrowLeft';
+            const next =
+              event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                  ? options.length - 1
+                  : event.key === forward
+                    ? (current + 1) % options.length
+                    : event.key === backward
+                      ? (current - 1 + options.length) % options.length
+                      : null;
+            if (next === null) return;
+            event.preventDefault();
+            onChange(options[next]!.value);
+            (
+              event.currentTarget.parentElement?.children[next] as HTMLButtonElement | undefined
+            )?.focus();
+          }}
           className={`seg__item ${o.value === value ? 'seg__item--on' : ''}`}
           onClick={() => onChange(o.value)}
         >
@@ -403,8 +426,15 @@ export function SortTh({
  * one-word columns. `min` is the width below which the table stops shrinking.
  */
 export function TableScroll({ min = 640, children }: { min?: number; children: ReactNode }) {
+  const intl = useIntl();
   return (
-    <div className="table-scroll" style={{ '--table-min': `${min}px` } as CSSProperties}>
+    <div
+      className="table-scroll"
+      role="region"
+      aria-label={intl.formatMessage({ id: 'table.scroll' })}
+      tabIndex={0}
+      style={{ '--table-min': `${min}px` } as CSSProperties}
+    >
       {children}
     </div>
   );

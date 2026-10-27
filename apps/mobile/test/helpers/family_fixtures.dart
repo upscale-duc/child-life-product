@@ -183,6 +183,8 @@ InviteTicket ticket() => InviteTicket(
 ValidInvite invitePreview({
   MemberRole role = MemberRole.caregiver,
   Relation relation = Relation.grandmother,
+  Duration expiresIn = const Duration(hours: 68, minutes: 30),
+  bool seatsFull = false,
 }) => ValidInvite(
   babyNickname: 'Teddy',
   inviterName: 'Mai',
@@ -192,18 +194,25 @@ ValidInvite invitePreview({
   relation: relation,
   relationCustom: null,
   extraRights: null,
-  expiresAt: DateTime.now().add(const Duration(hours: 68, minutes: 30)),
+  expiresAt: DateTime.now().add(expiresIn),
   alreadyMember: false,
+  seatsFull: seatsFull,
 );
 
 /// Signed in as [me] with Teddy selected; the family list and pending invites are fixed.
 List<Override> familyOverrides({
   BabyPrivateProfile? profile,
+  // Replaces [profile]'s stream: one that never arrives (AU-5 loading) or fails.
+  Stream<BabyPrivateProfile?> Function()? profileStream,
+  // Replaces [members]' stream (FJ-5: the list fails to load).
+  Stream<List<Membership>> Function()? membersStream,
   Membership? me,
   bool anonymous = false,
   List<Membership>? members,
   List<PendingInvite>? pending,
   List<CareRecord> records = const [],
+  // Replaces [records]' stream: one that never arrives (loading) or fails (SY-1, AI-10).
+  Stream<List<CareRecord>> Function()? recordsStream,
   List<CareRecord> growth = const [],
   bool online = true,
   DateTime? now,
@@ -284,15 +293,20 @@ List<Override> familyOverrides({
     myInvitesProvider.overrideWith((ref) async => myInvites),
     babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
     babyPrivateProfileProvider.overrideWith(
-      (ref, id) => Stream.value(profile ?? teddyProfile()),
+      (ref, id) =>
+          profileStream?.call() ?? Stream.value(profile ?? teddyProfile()),
     ),
     familyMembersProvider.overrideWith(
-      (ref, id) => Stream.value(members ?? [mai, minh, lan, hoa]),
+      (ref, id) =>
+          membersStream?.call() ??
+          Stream.value(members ?? [mai, minh, lan, hoa]),
     ),
     pendingInvitesProvider.overrideWith(
       (ref, id) => Stream.value(pending ?? [pendingGrandma]),
     ),
-    recentRecordsProvider.overrideWith((ref, id) => Stream.value(records)),
+    recentRecordsProvider.overrideWith(
+      (ref, id) => recordsStream?.call() ?? Stream.value(records),
+    ),
     growthRecordsProvider.overrideWith((ref, id) => Stream.value(growth)),
     onlineProvider.overrideWith((ref) => Stream.value(online)),
     careClockProvider.overrideWith(

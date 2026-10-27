@@ -48,6 +48,7 @@ Future<(List<Visit>, FakeAiRepository)> _handover(
   Locale locale = const Locale('vi'),
   member,
   String? summaryId,
+  bool create = true,
 }) async {
   final (visits, _) = await pumpRouted(
     tester,
@@ -62,6 +63,9 @@ Future<(List<Visit>, FakeAiRepository)> _handover(
       member: member,
     ),
   );
+  // D-127 Q5: nothing is made on opening; "Tạo bản tóm tắt" is the tap that makes it.
+  final make = find.text(lookupAppLocalizations(locale).hoCreateAction);
+  if (create && make.evaluate().isNotEmpty) await _tap(tester, make);
   return (visits, ai);
 }
 
@@ -174,7 +178,7 @@ void main() {
         FakeAiRepository(answer: handover()),
         shared: shared,
       );
-      // Nothing stored: a Cùng nuôi's open asks once.
+      // Nothing stored: one call, on the Cùng nuôi's tap.
       expect(ai.calls, hasLength(1));
       expect(ai.calls.single.kind, AiSummaryKind.handover);
       expect(ai.calls.single.locale, 'vi');
@@ -272,7 +276,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.aiStateDisabledBody), findsOneWidget);
-      expect(find.text(l10n.rhLearnMoreOptional), findsNothing);
+      expect(find.text(l10n.pv2SeePremium), findsNothing);
       expect(find.text(l10n.aiWordedByAi), findsNothing);
     });
 
@@ -312,7 +316,7 @@ void main() {
       );
       expect(find.text(l10n.aiStateQuotaEyebrow), findsOneWidget);
       expect(find.text(l10n.aiStateQuotaDay(1, 1, '09/10')), findsOneWidget);
-      expect(find.text(l10n.rhLearnMoreOptional), findsNothing);
+      expect(find.text(l10n.pv2SeePremium), findsNothing);
     });
 
     testWidgets('PREMIUM_REQUIRED alone links to the plan', (tester) async {
@@ -323,7 +327,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.aiStatePremiumBody), findsOneWidget);
-      await _tap(tester, find.text(l10n.rhLearnMoreOptional));
+      await _tap(tester, find.text(l10n.pv2SeePremium));
       // PR01 from Nhịp lớn lên (entry A).
       expect(visits.last.location, '${Routes.premium}?entry=rhythm');
     });
@@ -336,12 +340,12 @@ void main() {
         ),
       );
       expect(find.text(l10n.aiStateOtherBody), findsOneWidget);
-      expect(find.text(l10n.rhLearnMoreOptional), findsNothing);
+      expect(find.text(l10n.pv2SeePremium), findsNothing);
       await _tap(tester, find.text(l10n.rhWhy));
       expect(find.text(l10n.pmGateRegionTitle), findsOneWidget);
     });
 
-    testWidgets('stale: made again on opening (D-103), no card left', (
+    testWidgets('stale: never made again on opening (D-127 Q5), "Tạo lại"', (
       tester,
     ) async {
       final ai = FakeAiRepository(
@@ -350,11 +354,28 @@ void main() {
         dataVersion: 9,
       );
       await _handover(tester, ai);
+      // Opening spends no credit: the stored one with "Có ghi nhận mới · Tạo lại".
+      expect(ai.calls, isEmpty);
+      expect(find.text(l10n.aiStateStaleTitle), findsOneWidget);
+      await _tap(tester, find.text(l10n.aiStateStaleAction));
       expect(ai.calls, hasLength(1));
       expect(find.text(l10n.aiStateStaleTitle), findsNothing);
     });
 
-    testWidgets('stale and the refresh fails: the stored one with "Tạo lại"', (
+    testWidgets('nothing stored: "Tạo bản tóm tắt", no call until the tap', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(answer: handover());
+      await _handover(tester, ai, create: false);
+      expect(ai.calls, isEmpty);
+      expect(find.text(l10n.hoCreateTitle), findsOneWidget);
+      expect(find.text(l10n.hoCreateBody), findsOneWidget);
+      await _tap(tester, find.text(l10n.hoCreateAction));
+      expect(ai.calls, hasLength(1));
+      expect(find.text(l10n.aiSectionNoticed), findsOneWidget);
+    });
+
+    testWidgets('"Tạo lại" failing offline says so, with a retry', (
       tester,
     ) async {
       final ai = FakeAiRepository(
@@ -363,14 +384,33 @@ void main() {
         dataVersion: 9,
       );
       await _handover(tester, ai);
-      // No error card for a refresh nobody asked for (D-103).
-      expect(find.text(l10n.aiStateFailedTitle), findsNothing);
-      expect(find.text(l10n.aiStateStaleTitle), findsOneWidget);
-      ai
-        ..error = null
-        ..answer = handover(dataVersion: 9);
       await _tap(tester, find.text(l10n.aiStateStaleAction));
-      expect(find.text(l10n.aiStateStaleTitle), findsNothing);
+      expect(find.text(l10n.aiStateFailedTitle), findsOneWidget);
+      expect(find.text(l10n.aiStateFailedOffline), findsOneWidget);
+      expect(find.text(l10n.rhRetry), findsOneWidget);
+    });
+
+    testWidgets('a gate refusal is explained, never an endless retry', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(error: const AiException('ROLE_DENIED'));
+      await _handover(tester, ai);
+      expect(find.text(l10n.aiStateFailedTitle), findsOneWidget);
+      expect(find.text(l10n.aiStateUnavailable), findsOneWidget);
+      expect(find.text(l10n.rhRetry), findsNothing);
+      expect(find.text(l10n.rhWhy), findsOneWidget);
+    });
+
+    testWidgets('opened from a send that is gone: says so, never a skeleton', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(answer: handover());
+      await _handover(tester, ai, summaryId: 'sum_gone');
+      expect(ai.calls, isEmpty);
+      expect(find.text(l10n.hoNotFoundTitle), findsOneWidget);
+      await _tap(tester, find.text(l10n.hoCreateNew));
+      expect(ai.calls, hasLength(1));
+      expect(find.text(l10n.aiSectionNoticed), findsOneWidget);
     });
 
     testWidgets('stale but opened from a send: kept as it was sent', (
@@ -680,6 +720,33 @@ void main() {
       await _toastGone(tester);
     });
 
+    testWidgets('a toggle that fails to save goes back (AI-12)', (
+      tester,
+    ) async {
+      final ai = FakeAiRepository(
+        settings: AiSettings(
+          consent: AiConsent(
+            version: aiConsentVersion,
+            shareMyNotes: true,
+            grantedAt: DateTime.utc(2026, 10, 1, 3),
+          ),
+          updatedAt: DateTime.utc(2026, 10, 1, 3),
+        ),
+        consentError: const AiException('unavailable'),
+      );
+      await pumpRouted(
+        tester,
+        const AiConsentScreen(),
+        overrides: aiOverrides(ai: ai),
+      );
+      final toggle = find.byType(CupertinoSwitch).first;
+      expect(tester.widget<CupertinoSwitch>(toggle).value, isTrue);
+      await _tap(tester, toggle);
+      expect(find.text(l10n.aiConsentFailed), findsOneWidget);
+      expect(tester.widget<CupertinoSwitch>(toggle).value, isTrue);
+      await _toastGone(tester);
+    });
+
     testWidgets('a failure keeps the screen and says so', (tester) async {
       final ai = FakeAiRepository(
         settings: AiSettings.none,
@@ -852,6 +919,9 @@ void main() {
         overrides: aiOverrides(ai: ai),
       );
       await _tap(tester, find.text(l10n.rhSaveToMilestones));
+      // D-127 Q5: only on a tap.
+      expect(ai.calls, isEmpty);
+      await _tap(tester, find.text(l10n.aiMomentAsk));
       expect(ai.calls.single.kind, AiSummaryKind.moment);
       expect(ai.calls.single.milestoneId, isNotNull);
       expect(find.textContaining('giữ lại cùng một tấm ảnh'), findsOneWidget);
@@ -868,8 +938,10 @@ void main() {
         overrides: aiOverrides(ai: ai),
       );
       await _tap(tester, find.text(l10n.rhSaveToMilestones));
+      await _tap(tester, find.text(l10n.aiMomentAsk));
       expect(find.text(l10n.rhMsKeepTitle), findsOneWidget);
       expect(find.text(l10n.aiWordedShort), findsNothing);
+      expect(find.text(l10n.aiMomentFailed), findsOneWidget);
     });
   });
 }

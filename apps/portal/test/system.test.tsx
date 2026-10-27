@@ -131,7 +131,7 @@ describe('Hệ thống & AI › Lưu trữ', () => {
     expect(raw).not.toContain('role="alert"');
     expect(t).toContain('Ảnh, video đã lưu 120 GB');
     expect(t).toContain('Video chờ xử lý 3 Ngưỡng 20 video');
-    expect(t).toContain('Tải lên lỗi 0,4%');
+    expect(t).toContain('Tỷ lệ tải lên lỗi 0,4%');
     expect(t).toContain('Hạn mức 10 GB · 100 gia đình');
     expect(t).toContain('Dưới ngưỡng');
     expect(t).toContain('Chưa gia đình nào dùng trên 80%.');
@@ -199,10 +199,10 @@ describe('Hệ thống & AI › Chuyển mã video (P-170)', () => {
     const raw = html(<SystemView data={health} now={now} />);
     const t = text(raw);
     expect(raw).not.toContain('role="alert"');
-    expect(t).toContain('Chuyển mã video');
+    expect(t).toContain('Xử lý video để phát trực tuyến');
     expect(t).toContain('0 Chờ 0 Đang chạy 12 Xong 0 Lỗi 1 Bỏ qua 0 Mất dấu');
     expect(t).toContain('Trung vị 42 giây mỗi video');
-    expect(t).toContain('Không có việc nào lỗi trong 24 giờ qua.');
+    expect(t).toContain('Chưa có tác vụ lỗi, bỏ qua hoặc chưa rõ kết quả trong 24 giờ qua.');
     // Ops see the figures only: the matrix gives them system › view.
     expect(t).not.toContain('Thử xử lý lại video');
   });
@@ -216,7 +216,7 @@ describe('Hệ thống & AI › Chuyển mã video (P-170)', () => {
     expect(t).toContain('med_0000000000000000000000000000000a 2 Lỗi ffmpeg exit 1');
     expect(t).toContain('med_0000000000000000000000000000000b 1 Bỏ qua too-long');
     expect(t).toContain('Thử xử lý lại video');
-    expect(t).toContain('Chuyển mã video cũ');
+    expect(t).toContain('Xử lý video đã tải trước đây');
     expect((t.match(/Xử lý lại/g) ?? []).length).toBeGreaterThanOrEqual(2);
     // Nothing about the family: ids and codes only.
     expect(t).not.toMatch(/\.mov|original|caption|Teddy/);

@@ -158,8 +158,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('ntMarkAllRead')));
       await tester.pumpAndSettle();
-      expect(repo.calls.single.$1, 'markRead');
-      expect(repo.calls.single.$2, {'n_vx-1', 'n_bn-1'});
+      // NT-6: every unread row, not only the loaded page.
+      expect(repo.calls.single.$1, 'markAllRead');
       expect(find.byKey(const Key('ntUnreadDot')), findsNothing);
       expect(find.byKey(const Key('ntMarkAllRead')), findsNothing);
     });
@@ -196,6 +196,37 @@ void main() {
       await tester.pumpAndSettle();
       expect(visits, isEmpty);
       expect(find.text('Mục này không còn mở được.'), findsOneWidget);
+    });
+
+    testWidgets('NT-6: a page of only hidden rows loads the next by itself', (
+      tester,
+    ) async {
+      final rows = mockInbox();
+      final archived = [
+        for (var i = 0; i < inboxPageSize; i++)
+          inboxItem(
+            'n_old-$i',
+            kind: 'message',
+            category: NotificationCategory.family,
+            route: '/messages',
+            at: _now.subtract(Duration(minutes: i)),
+            vi: ('Ẩn', 'Ẩn'),
+            en: ('Hidden', 'Hidden'),
+          ),
+      ];
+      final repo = FakeNotificationRepository(
+        inbox: [for (final a in archived) a, for (final r in rows) r],
+        firestorePaging: true,
+      );
+      for (final a in archived) {
+        await repo.archive(mai.uid, a.id);
+      }
+      repo.calls.clear();
+      await _pump(tester, const InboxScreen(), _overrides(repo));
+      await tester.pumpAndSettle();
+      expect(repo.limits, contains(2 * inboxPageSize));
+      expect(find.text('Chưa có thông báo nào'), findsNothing);
+      expect(find.text('Ngày mai có lịch tiêm của bé'), findsOneWidget);
     });
 
     testWidgets('a swipe hides a row (archived)', (tester) async {
@@ -316,6 +347,60 @@ void main() {
       // On: the switch says so; the "off" line and the warning go (owner, 2026-10-26).
       expect(find.text('Đang tắt trong cài đặt hệ thống'), findsNothing);
       expect(find.byKey(const Key('nt-off')), findsNothing);
+    });
+
+    testWidgets('NT-1: no switch until the stored ones load', (tester) async {
+      final repo = FakeNotificationRepository(holdSettings: true);
+      await _pump(tester, const NotificationSettingsScreen(), _overrides(repo));
+      await tester.pump();
+      final row = find.byKey(const Key('nt-reminders'));
+      expect(row, findsOneWidget);
+      expect(
+        find.descendant(of: row, matching: find.byType(ClToggle)),
+        findsNothing,
+      );
+      await tester.tap(row);
+      await tester.pump();
+      expect(repo.calls, isEmpty);
+    });
+
+    testWidgets('NT-1: a load failure says so; switches stay out of reach', (
+      tester,
+    ) async {
+      final repo = FakeNotificationRepository(settingsError: StateError('x'));
+      await _pump(tester, const NotificationSettingsScreen(), _overrides(repo));
+      await tester.pump();
+      expect(find.byKey(const Key('nt-load-failed')), findsOneWidget);
+      expect(find.text('Chưa tải được cài đặt thông báo'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('nt-reminders')),
+          matching: find.byType(ClToggle),
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets('NT-3: refused before, the switch opens Settings, not a no-op', (
+      tester,
+    ) async {
+      // The OS no longer shows its prompt: request() answers "no" at once.
+      final os = FakeReminderNotifications(on: false, grant: false);
+      await _pump(
+        tester,
+        const NotificationSettingsScreen(),
+        _overrides(FakeNotificationRepository(), os: os),
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('nt-system')),
+          matching: find.byType(ClToggle),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(os.requests, 1);
+      // Still off; the warning stays (Settings opened, a platform call tests do not see).
+      expect(find.byKey(const Key('nt-off')), findsOneWidget);
     });
   });
 

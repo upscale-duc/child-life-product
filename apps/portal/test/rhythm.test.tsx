@@ -479,7 +479,7 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
     expect(calls[0]!.name).toBe('staffRhythm');
     const raw = render(body(data, { edit: true, approve: true }));
     const html = text(raw);
-    expect(html).toContain('Mô hình tham khảo Hoạt động & thẻ theo tuổi Quy tắc');
+    expect(html).toContain('Giai đoạn tham khảo Hoạt động & thẻ theo tuổi Điều kiện gợi ý');
     // The live status in one line: version, date, review.
     // The live version is a badge; its id, date and review are in the popover and tooltip.
     expect(html).not.toContain('● Đang phát hành');
@@ -565,7 +565,7 @@ describe('Nhịp lớn lên: versions and workflow (PN01)', () => {
       'Bế áp da trong phòng ánh sáng dịu 10 phút · Lúc nào cũng được ~0–3 tháng Cần được dỗ · Gắn kết Phát hành BS. Hà (nhi khoa) · 01/10/2026 VI · EN',
     );
     expect(html).toContain(
-      'Tiếng ồn trắng trước giấc đêm 15 phút · Buổi tối (“Thử tối nay”) ~0–6 tháng Ngủ Nháp Chờ chuyên môn VI',
+      'Tiếng ồn trắng trước giấc đêm 15 phút · Buổi tối (“Thử tối nay”) ~0–6 tháng Ngủ Bản nháp Chờ chuyên môn VI',
     );
     // Ids and versions are in the item, not in the list.
     expect(html).not.toContain('act_skin_to_skin');
@@ -775,7 +775,7 @@ describe('Nhịp lớn lên: drafts', () => {
     );
     const html = text(raw);
     expect(html).toContain('Xem trước với dự sinh 21/09/2026 → giai đoạn 12/10/2026 – 21/10/2026.');
-    expect(html).toContain('Bắt đầu ngày sau ngày dự sinh');
+    expect(html).toContain('Bắt đầu ngày tính từ ngày dự sinh');
     expect(raw).toContain('value="21"');
     expect(html).not.toContain('startOffsetDays');
     // The language with a problem is marked.

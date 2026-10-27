@@ -684,6 +684,11 @@ service cloud.firestore {
         allow read: if isParent(babyId) && resource.data.uid == request.auth.uid;
         allow write: if false;
       }
+      // PR-1 (D-127 Q8): the print file job the Cùng nuôi who asked follows; Functions write it.
+      match /printExportJobs/{jobId} {
+        allow read: if isParent(babyId) && resource.data.uid == request.auth.uid;
+        allow write: if false;
+      }
 
       // The baby's milestones: "Mốc nhà mình đã tạo" (10h3, 10h4, R-105), MS01 "Lưu vào Mốc" and
       // Mốc phát triển records (3a–3g, D-076 #6; packages/contracts/src/milestones.ts). One

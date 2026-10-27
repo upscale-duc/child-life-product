@@ -5,6 +5,7 @@ import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/premium/premium_v2.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/keepsakes/keepsake_card_view.dart';
@@ -28,6 +29,7 @@ import '../helpers/family_fixtures.dart';
 import '../helpers/keepsake_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/story_fixtures.dart';
+import '../helpers/premium_v2_fixtures.dart' show freePlan;
 
 // Thiệp cột mốc (D-068): MM10 `530:9515`, MM11 `530:9663`, and every seed card in every format.
 // Figma draws Night care only; Light comes from the same components (D-068 #6).
@@ -167,6 +169,21 @@ final _cases = <String, (Widget Function(), List<Override>, Map<String, Object>)
     _video(),
     const {},
   ),
+  'mm07_quality_hd': (
+    () => MemoryStoryFinishScreen(
+      draft: VideoDraft(
+        babyId: teddyId,
+        template: seedCatalog().videos.first,
+        occasion: Occasion.m1,
+        mediaIds: _photoIds().take(6).toList(),
+      ),
+    ),
+    [
+      ..._video(),
+      familyPlanV2Provider.overrideWith((ref, id) async => freePlan),
+    ],
+    const {},
+  ),
   'mm07_finish': (
     () => MemoryStoryFinishScreen(
       draft: VideoDraft(
@@ -228,7 +245,12 @@ void main() {
       in _cases.entries) {
     for (final locale in [
       const Locale('vi'),
-      if (const {'mm11_edit', 'mm06_photos', 'mm07_finish'}.contains(name))
+      if (const {
+        'mm11_edit',
+        'mm06_photos',
+        'mm07_finish',
+        'mm07_quality_hd',
+      }.contains(name))
         const Locale('en'),
     ]) {
       for (final palette in ClPalette.values) {

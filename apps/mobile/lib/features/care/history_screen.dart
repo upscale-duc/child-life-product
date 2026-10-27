@@ -145,13 +145,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final dob = profile?.dateOfBirth;
     final bounds = babyDateBounds(zone, day);
     // A sleep from the night before still belongs to the day (D-027).
-    final recordsAsync = ref.watch(
-      rangeRecordsProvider((
-        babyId,
-        bounds.start.subtract(const Duration(days: 1)),
-        bounds.end,
-      )),
+    final rangeKey = (
+      babyId,
+      bounds.start.subtract(const Duration(days: 1)),
+      bounds.end,
     );
+    final recordsAsync = ref.watch(rangeRecordsProvider(rangeKey));
     final records = recordsAsync.value ?? const <CareRecord>[];
     final growthAsync = ref.watch(growthRecordsProvider(babyId));
     final growth = growthAsync.value ?? const [];
@@ -163,9 +162,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         ? HistoryFilter.all
         : _filter;
     // Until the first value arrives the day is unknown, not empty: never say "Chưa ghi".
-    final loading = filter == HistoryFilter.growth
-        ? !growthAsync.hasValue
-        : !recordsAsync.hasValue;
+    final shownAsync = filter == HistoryFilter.growth
+        ? growthAsync
+        : recordsAsync;
+    final loading = !shownAsync.hasValue;
+    // SY-2: a query that fails is said so with a retry, never an endless "Đang tải".
+    final failed = loading && shownAsync.hasError;
     final meals =
         solidsOn &&
             (filter == HistoryFilter.all || filter == HistoryFilter.solids)
@@ -270,7 +272,15 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       const SizedBox(height: ClSpace.s4),
     ];
 
-    if (loading) {
+    if (failed) {
+      children.add(
+        CareLoadFailed(
+          onRetry: () => filter == HistoryFilter.growth
+              ? ref.invalidate(growthRecordsProvider(babyId))
+              : ref.invalidate(rangeRecordsProvider(rangeKey)),
+        ),
+      );
+    } else if (loading) {
       children.add(const _DaySkeleton());
     } else if (filter == HistoryFilter.growth) {
       children.add(

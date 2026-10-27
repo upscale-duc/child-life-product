@@ -1,0 +1,1590 @@
+{
+  "articles.new": {
+    "vi": "Bài viết mới",
+    "en": "New article"
+  },
+  "assistant.draft.state.draft": {
+    "vi": "Nháp",
+    "en": "Draft"
+  },
+  "assistant.kpi.exhausted": {
+    "vi": "Hộ hết credit",
+    "en": "Households out of credits"
+  },
+  "assistant.model.observedCost": {
+    "vi": "Ước tính từ token có đơn giá (USD)",
+    "en": "Estimate from rated tokens (USD)"
+  },
+  "assistant.model.operation": {
+    "vi": "Tác vụ từ nhà cung cấp",
+    "en": "Provider operation"
+  },
+  "assistant.model.tokens": {
+    "vi": "Token vào / ra (provider)",
+    "en": "Input / output tokens (provider)"
+  },
+  "assistant.model.unknownUsage": {
+    "vi": "{n} call chưa biết usage",
+    "en": "{n} calls with unknown usage"
+  },
+  "assistant.model.unratedCalls": {
+    "vi": "{n} call chưa đủ usage/đơn giá",
+    "en": "{n} calls without usage/rates"
+  },
+  "assistant.model.usageCoverage": {
+    "vi": "Call có usage / tổng call ghi nhận",
+    "en": "Calls with usage / observed calls"
+  },
+  "assistant.pool": {
+    "vi": "Quỹ credit theo gói",
+    "en": "Credit pool by budget"
+  },
+  "assistant.task.noReservation": {
+    "vi": "Không giữ credit (hỗ trợ sức khoẻ, bị chặn hoặc chưa bắt đầu).",
+    "en": "No credit held (health support, blocked or not started)."
+  },
+  "assistant.task.reservation": {
+    "vi": "Giữ chỗ credit",
+    "en": "Credit reservation"
+  },
+  "col.created": {
+    "vi": "Tạo lúc",
+    "en": "Created"
+  },
+  "col.progress": {
+    "vi": "Tiến độ",
+    "en": "Progress"
+  },
+  "col.requester": {
+    "vi": "Người yêu cầu",
+    "en": "Requester"
+  },
+  "content.filter.allLangs": {
+    "vi": "Ngôn ngữ: Đủ cả hai",
+    "en": "Language: Any"
+  },
+  "content.kpi.drafts": {
+    "vi": "Nháp",
+    "en": "Drafts"
+  },
+  "content.kpi.inApp": {
+    "vi": "Đang trên app",
+    "en": "On the app"
+  },
+  "content.kpi.pendingFoot": {
+    "vi": "{n} đã duyệt, chờ xuất bản",
+    "en": "{n} approved, waiting to publish"
+  },
+  "content.noMatch": {
+    "vi": "Không có mục nào khớp bộ lọc.",
+    "en": "Nothing matches the filters."
+  },
+  "content.status.archived": {
+    "vi": "Lưu trữ",
+    "en": "Archived"
+  },
+  "content.status.draft": {
+    "vi": "Nháp",
+    "en": "Draft"
+  },
+  "content.untitled": {
+    "vi": "(chưa có tiêu đề)",
+    "en": "(untitled)"
+  },
+  "error.generic": {
+    "vi": "Chưa tải được. Kiểm tra mạng rồi thử lại.",
+    "en": "Couldn't load. Check your connection and try again."
+  },
+  "error.notFailed": {
+    "vi": "Việc này không còn ở trạng thái thất bại.",
+    "en": "This job is no longer in a failed state."
+  },
+  "error.notStaff": {
+    "vi": "Phiên đăng nhập không còn quyền vận hành. Đăng nhập lại nhé.",
+    "en": "This session no longer has operations access. Please sign in again."
+  },
+  "error.role": {
+    "vi": "Vai trò của bạn chưa được làm việc này. Nhờ Admin hoặc Owner nếu cần.",
+    "en": "Your role can't do this yet. Ask an Admin or Owner if needed."
+  },
+  "families.col.storage": {
+    "vi": "Dung lượng",
+    "en": "Storage"
+  },
+  "families.empty": {
+    "vi": "Chưa có gia đình nào khớp bộ lọc.",
+    "en": "No family matches these filters."
+  },
+  "firstAid.field.chips": {
+    "vi": "Nhãn nhỏ",
+    "en": "Small labels"
+  },
+  "firstAid.field.cpr": {
+    "vi": "Chế độ CPR",
+    "en": "CPR mode"
+  },
+  "firstAid.field.tool": {
+    "vi": "Công cụ thêm",
+    "en": "Extra tool"
+  },
+  "firstAid.field.variantAge": {
+    "vi": "Mặc định cho bé trong độ tuổi",
+    "en": "Default for babies aged"
+  },
+  "firstAid.field.variantHero": {
+    "vi": "Ảnh đầu trang riêng",
+    "en": "Own header picture"
+  },
+  "firstAid.field.variantId": {
+    "vi": "Mã biến thể",
+    "en": "Variant id"
+  },
+  "firstAid.field.variantKind": {
+    "vi": "Loại biến thể",
+    "en": "Variant type"
+  },
+  "firstAid.field.variantLabel": {
+    "vi": "Nhãn biến thể",
+    "en": "Variant label"
+  },
+  "flag.assistant.offEffect": {
+    "vi": "Ẩn trợ lý; lịch sử chat vẫn xem được, các module ghi trực tiếp không đổi.",
+    "en": "Hides the assistant; chat history stays readable, direct logging is unchanged."
+  },
+  "flag.assistant_writes": {
+    "vi": "Trợ lý · lưu vào module",
+    "en": "Assistant · save to modules"
+  },
+  "flag.assistant_writes.offEffect": {
+    "vi": "Tạm dừng lưu từ trợ lý; ghi trực tiếp trong module vẫn chạy.",
+    "en": "Saving from the assistant pauses; direct module logging keeps working."
+  },
+  "hub.feature.assistant.help": {
+    "vi": "Trợ lý chat; ảnh, hướng dẫn chăm sóc và lời mời nâng cấp là công tắc thành phần. Premium có quỹ credit lớn hơn.",
+    "en": "The chat assistant; photos, care guidance and the upgrade invitation are part switches. Premium has a bigger credit pool."
+  },
+  "hub.feature.personalization.help": {
+    "vi": "Gợi ý liên mục theo ghi chép của gia đình và phần nâng cao của Nhịp lớn lên (nhóm A).",
+    "en": "Cross-module suggestions from the family's records and the advanced part of the growing rhythm (group A)."
+  },
+  "hub.feature.rhythm.help": {
+    "vi": "Lịch tham khảo theo tuổi và check-in hằng ngày cho từng bé.",
+    "en": "The age-based reference calendar and daily check-ins for each baby."
+  },
+  "hub.feature.templates_premium.help": {
+    "vi": "Các mẫu kỷ niệm Cao cấp (nhóm B). Mẫu nào là Cao cấp vẫn chọn ở Mẫu kỷ niệm.",
+    "en": "The Premium keepsake templates (group B). Which templates are Premium is still set in Keepsake templates."
+  },
+  "hub.filter.system": {
+    "vi": "Kỹ thuật",
+    "en": "Technical"
+  },
+  "hub.full.onBody": {
+    "vi": "Gia đình dùng được mọi tính năng Premium và quỹ credit Premium ngay lần mở app tiếp theo.",
+    "en": "The family gets every Premium feature and the Premium credit pool the next time the app opens."
+  },
+  "hub.scope.internal": {
+    "vi": "Thử nội bộ",
+    "en": "Internal testing"
+  },
+  "hub.scope.percent": {
+    "vi": "{p, plural, =0 {Theo %} other {Theo % · #%}}",
+    "en": "{p, plural, =0 {By %} other {By % · #%}}"
+  },
+  "hub.tier.system": {
+    "vi": "Kỹ thuật",
+    "en": "Technical"
+  },
+  "jobs.deletionsTab": {
+    "vi": "Xoá dữ liệu",
+    "en": "Deletions"
+  },
+  "jobs.empty": {
+    "vi": "Không có yêu cầu nào trong 30 ngày qua.",
+    "en": "No requests in the last 30 days."
+  },
+  "jobs.exportTime": {
+    "vi": "Thời gian xuất (trung vị)",
+    "en": "Export time (median)"
+  },
+  "jobs.exports": {
+    "vi": "Xuất dữ liệu",
+    "en": "Exports"
+  },
+  "jobs.failed": {
+    "vi": "Thất bại trong 24 giờ",
+    "en": "Failed in 24 hours"
+  },
+  "jobs.render": {
+    "vi": "Video kỷ niệm",
+    "en": "Keepsake videos"
+  },
+  "jobs.rerun": {
+    "vi": "Chạy lại",
+    "en": "Re-run"
+  },
+  "jobs.running": {
+    "vi": "Đang chạy",
+    "en": "Running"
+  },
+  "jobs.steps": {
+    "vi": "Các bước",
+    "en": "Steps"
+  },
+  "kit.clearSearch": {
+    "vi": "Xoá ô tìm",
+    "en": "Clear search"
+  },
+  "kit.results": {
+    "vi": "{n} / {total} mục",
+    "en": "{n} of {total}"
+  },
+  "kit.saved": {
+    "vi": "Đã lưu",
+    "en": "Saved"
+  },
+  "kit.unsaved": {
+    "vi": "Chưa lưu",
+    "en": "Unsaved"
+  },
+  "ks.col.formats": {
+    "vi": "Khổ",
+    "en": "Formats"
+  },
+  "ks.emptyEdit": {
+    "vi": "Chưa có bộ mẫu nào. Bắt đầu từ bộ mẫu đầu tiên (4 thiệp theo Figma MM10, 4 video) rồi chỉnh sửa, tải ảnh lên và gửi duyệt.",
+    "en": "No template set yet. Start from the first set (4 cards from Figma MM10, 4 videos), then edit, upload artwork and send for approval."
+  },
+  "ks.f.composition": {
+    "vi": "Composition (Remotion)",
+    "en": "Composition (Remotion)"
+  },
+  "ks.f.layers": {
+    "vi": "Các lớp (JSON)",
+    "en": "Layers (JSON)"
+  },
+  "ks.f.layersHelp": {
+    "vi": "Lớp: background · photo · text · shape · image. Vị trí theo tỉ lệ 0–1 của thiệp; cỡ chữ theo tỉ lệ bề ngang; màu \"background\" / \"ink\" / \"accent\" đổi theo \"Màu\". Ảnh lấy tên từ Thư viện.",
+    "en": "Layers: background · photo · text · shape · image. Positions are 0–1 fractions of the card; text size is a fraction of its width; \"background\" / \"ink\" / \"accent\" colours follow \"Colour\". Pictures are named from the Library."
+  },
+  "ks.f.noFormat": {
+    "vi": "Mẫu chưa có khổ này. Bấm “Thêm khổ” để chép từ khổ đầu tiên.",
+    "en": "This template has no such format. “Add format” copies the first one."
+  },
+  "ks.f.previewNone": {
+    "vi": "Chưa có · app chạy bản mẫu tự động",
+    "en": "None · the app plays an automatic sample"
+  },
+  "ks.f.scenesJson": {
+    "vi": "Cảnh (JSON)",
+    "en": "Scenes (JSON)"
+  },
+  "ks.lib.title": {
+    "vi": "Tệp mẫu",
+    "en": "Template files"
+  },
+  "ks.music.col.licence": {
+    "vi": "License",
+    "en": "Licence"
+  },
+  "ks.music.empty": {
+    "vi": "Chưa có bài nhạc nào. Tải file MP3/M4A lên tab Tệp rồi thêm bài.",
+    "en": "No tracks yet. Upload an MP3/M4A in Files, then add the track."
+  },
+  "ks.music.note": {
+    "vi": "Chỉ dùng nhạc có license thương mại. Bài “Hiện trong app” cần nguồn và số license. Phụ huynh chọn bài ở bước Hoàn thiện video; mỗi mẫu có một bài mặc định.",
+    "en": "Commercially licensed music only. A track “Shown in the app” needs its source and licence number. Parents pick a track when finishing a video; each template has a default."
+  },
+  "ks.newHelp": {
+    "vi": "Mã mẫu: {id}. Chép bố cục, màu, chữ và nhạc từ mẫu đã chọn; dịp và độ tuổi để trống. Mẫu mới ở trạng thái “Ẩn (đang làm)”; lưu nháp và gửi duyệt khi xong.",
+    "en": "Template id: {id}. Layout, colours, words and music are copied from the chosen template; occasions and age start empty. The new template starts hidden (in progress); save the draft and send it for approval when it is ready."
+  },
+  "ks.status.draft": {
+    "vi": "Nháp",
+    "en": "Draft"
+  },
+  "ks.sub": {
+    "vi": "Thiệp cột mốc và Video kỷ niệm trong app (Kỷ niệm 2.0): hình ảnh, bố cục, nhạc, Miễn phí / Cao cấp. Người khác duyệt mới xuất bản.",
+    "en": "Milestone cards and memory videos in the app (Memories 2.0): artwork, layout, music, Free / Premium. Someone else approves before it goes live."
+  },
+  "milestones.new": {
+    "vi": "Mốc mới",
+    "en": "New milestone"
+  },
+  "ntf.acceptedNotDelivered": {
+    "vi": "“Nhà cung cấp đã nhận” nghĩa là FCM/APNs nhận ít nhất một mã thiết bị — không chứng minh thông báo đã hiện trên máy.",
+    "en": "“Provider accepted” means FCM/APNs accepted at least one device token — it is not proof that the device showed the notification."
+  },
+  "ntf.acceptedNotDelivered.title": {
+    "vi": "Đã nhận ≠ đã đến máy",
+    "en": "Accepted ≠ delivered"
+  },
+  "ntf.catalog.gaps": {
+    "vi": "Chưa gửi trong V1",
+    "en": "Not sent in V1"
+  },
+  "ntf.catalog.gapsNote": {
+    "vi": "Sự kiện có trong yêu cầu nhưng V1 không đẩy push (G-109).",
+    "en": "Events in the brief that V1 does not push (G-109)."
+  },
+  "ntf.channel.push_inbox": {
+    "vi": "Push + hộp thư",
+    "en": "Push + inbox"
+  },
+  "ntf.col.certainty": {
+    "vi": "Độ chắc chắn",
+    "en": "Certainty"
+  },
+  "ntf.col.delivery": {
+    "vi": "Gửi",
+    "en": "Delivery"
+  },
+  "ntf.col.destination": {
+    "vi": "Điểm đến",
+    "en": "Destination"
+  },
+  "ntf.col.lifecycle": {
+    "vi": "Vòng đời",
+    "en": "Lifecycle"
+  },
+  "ntf.col.producer": {
+    "vi": "Nơi gửi",
+    "en": "Producer"
+  },
+  "ntf.col.read": {
+    "vi": "Đọc",
+    "en": "Read"
+  },
+  "ntf.col.setting": {
+    "vi": "Công tắc (EN07)",
+    "en": "Switch (EN07)"
+  },
+  "ntf.col.trigger": {
+    "vi": "Khi nào",
+    "en": "Trigger"
+  },
+  "ntf.delivery.accepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.dest.title": {
+    "vi": "Điểm đến",
+    "en": "Destinations"
+  },
+  "ntf.detail.providerAccepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.detail.pushAttempted": {
+    "vi": "Đã thử push",
+    "en": "Push attempted"
+  },
+  "ntf.draftState.ready_for_review": {
+    "vi": "Nháp chờ duyệt",
+    "en": "Draft in review"
+  },
+  "ntf.eng.check.channel_unavailable": {
+    "vi": "Không có kênh push",
+    "en": "No push channel"
+  },
+  "ntf.eng.check.channel_unavailable.def": {
+    "vi": "Gợi ý chỉ hiện trong app vì thiết bị không dùng được để push. Cảnh báo khi từ 20% gợi ý đã quyết định trở lên.",
+    "en": "Suggestions kept in the app because no device could take a push. Raised at 20% of decided suggestions or more."
+  },
+  "ntf.eng.def": {
+    "vi": "Những gợi ý không thành push thì không có trong các số ở trên (chúng chỉ đếm thông báo đã tạo). Ở đây là mọi gợi ý đến hạn trong 7 ngày và các lần kiểm tra cho những gì bị mất trước khi gửi.",
+    "en": "Suggestions that never became a push are not in the numbers above (they only count notices that were created). This shows every suggestion due in the 7 days and the checks for what was lost before sending."
+  },
+  "ntf.eng.outcome.pushed": {
+    "vi": "Đã gửi push",
+    "en": "Pushed"
+  },
+  "ntf.eng.why": {
+    "vi": "Lý do không push: {list}",
+    "en": "Why not pushed: {list}"
+  },
+  "ntf.freshness": {
+    "vi": "{from} – {to} · giờ Việt Nam · Tính lúc {at} · Có dữ liệu từ {date}",
+    "en": "{from} – {to} · Vietnam time · Computed {at} · Data since {date}"
+  },
+  "ntf.health.no_data.note": {
+    "vi": "Sổ gửi chưa có ngày nào trong 7 ngày qua.",
+    "en": "The ledger has no day in the last 7 days."
+  },
+  "ntf.health.ok": {
+    "vi": "Mọi thứ ổn",
+    "en": "All good"
+  },
+  "ntf.health.signal.eng.channel_unavailable": {
+    "vi": "{n} gợi ý chỉ hiện trong app vì không có kênh push.",
+    "en": "{n} suggestions stayed in the app: no push channel."
+  },
+  "ntf.health.signal.paused": {
+    "vi": "Push đang tạm dừng cho {n} nhóm.",
+    "en": "Push is paused for {n} groups."
+  },
+  "ntf.health.signal.render": {
+    "vi": "{n} lần dựng nội dung mẫu bị lỗi.",
+    "en": "{n} template render errors."
+  },
+  "ntf.health.signal.templatesOff": {
+    "vi": "Mẫu Portal đang tắt: mọi nơi gửi dùng phiên bản 0.",
+    "en": "Portal templates are off: every producer uses version 0."
+  },
+  "ntf.info": {
+    "vi": "Một danh mục cho mọi loại thông báo, mẫu nội dung VI/EN có phiên bản, tình trạng gửi, hành trình Gợi ý thông minh và dòng thời gian của một gia đình. “Nhà cung cấp đã nhận” không có nghĩa là thiết bị đã hiển thị.",
+    "en": "One catalog for every notification type, versioned VI/EN templates, delivery health, Smart Engagement journeys and one family’s timeline. “Provider accepted” does not mean the device showed it."
+  },
+  "ntf.intent.accepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.metric.accepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.metric.accepted.def": {
+    "vi": "FCM/APNs nhận ít nhất một mã — không phải bằng chứng đã hiện trên máy.",
+    "en": "FCM/APNs accepted at least one token — not proof it showed on the device."
+  },
+  "ntf.metric.attempted.def": {
+    "vi": "Đã gọi nhà cung cấp push ít nhất một lần.",
+    "en": "The push provider was called at least once."
+  },
+  "ntf.metric.cancelled.def": {
+    "vi": "Push bị huỷ (công tắc tạm dừng, hết hạn…).",
+    "en": "Push cancelled (kill switch, expiry…)."
+  },
+  "ntf.metric.created.def": {
+    "vi": "Thông báo nhà sản xuất đã tạo cho một người nhận.",
+    "en": "Notifications a producer created for one recipient."
+  },
+  "ntf.metric.held": {
+    "vi": "Giữ (giờ yên tĩnh)",
+    "en": "Held (quiet hours)"
+  },
+  "ntf.metric.held.def": {
+    "vi": "Push được giữ vì giờ yên tĩnh.",
+    "en": "Push held because of quiet hours."
+  },
+  "ntf.metric.no_device.def": {
+    "vi": "Người nhận không có mã thiết bị nhận push.",
+    "en": "The recipient has no push token."
+  },
+  "ntf.metric.opened.def": {
+    "vi": "Người nhận chạm vào push hoặc dòng trong hộp thư.",
+    "en": "The recipient tapped the push or the inbox row."
+  },
+  "ntf.metric.opened_push": {
+    "vi": "Mở từ push",
+    "en": "Opened from push"
+  },
+  "ntf.noStatsNote": {
+    "vi": "Sổ gửi chỉ bắt đầu ghi khi nền tảng thông báo mới chạy; những ngày trước đó là “chưa có dữ liệu”, không phải 0.",
+    "en": "The delivery ledger starts with the new notification platform; earlier days are “no data”, not 0."
+  },
+  "ntf.ops.group.note": {
+    "vi": "Tắt để tạm dừng push của nhóm khi có sự cố.",
+    "en": "Turn off to pause this group’s push during an incident."
+  },
+  "ntf.ops.pushFor": {
+    "vi": "Push nhóm {name}",
+    "en": "{name} push"
+  },
+  "ntf.outcome.accepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.outcome.notPushed": {
+    "vi": "Không đẩy push",
+    "en": "Not pushed"
+  },
+  "ntf.ov.openDelivery": {
+    "vi": "Mở Gửi & lỗi",
+    "en": "Open Delivery"
+  },
+  "ntf.ov.pausedGroups": {
+    "vi": "Đang tạm dừng push cho ít nhất một nhóm. Thông báo vẫn vào hộp thư nhưng không đẩy lên máy.",
+    "en": "Push is paused for at least one group. Notifications still reach the inbox but are not pushed."
+  },
+  "ntf.ov.switches": {
+    "vi": "Công tắc vận hành",
+    "en": "Ops switches"
+  },
+  "ntf.purpose.analytics": {
+    "vi": "Tỉ lệ nhận, mở, đọc và lỗi — mỗi tỉ lệ ghi rõ tử số và mẫu số.",
+    "en": "Acceptance, open, read and failure rates — each with its numerator and denominator."
+  },
+  "ntf.purpose.catalog": {
+    "vi": "{n}/{total} loại đang gửi · {a} điểm đến. Mở một dòng để xem chi tiết.",
+    "en": "{n}/{total} types live · {a} destinations. Open a row for details."
+  },
+  "ntf.purpose.delivery": {
+    "vi": "Lần gửi lỗi cần xử lý trước, rồi kết quả gửi theo loại và phiên bản mẫu.",
+    "en": "Failed deliveries first, then outcomes by type and template version."
+  },
+  "ntf.purpose.journeys": {
+    "vi": "Mỗi kịch bản Gợi ý thông minh gửi gì, đi đâu, và phễu 30 ngày.",
+    "en": "What each Smart Engagement scenario sends, where it leads, and its 30-day funnel."
+  },
+  "ntf.purpose.overview": {
+    "vi": "7 ngày gần nhất trong một màn hình: tình trạng, con số chính và việc cần xem.",
+    "en": "The last 7 days at a glance: health, key numbers and what needs a look."
+  },
+  "ntf.purpose.settings": {
+    "vi": "Công tắc vận hành và chính sách Gợi ý thông minh; mọi thay đổi được ghi kiểm toán.",
+    "en": "Ops switches and the Smart Engagement policy; every change is audited."
+  },
+  "ntf.purpose.templates": {
+    "vi": "Nội dung VI/EN của từng thông báo, có phiên bản và quy trình duyệt.",
+    "en": "VI/EN copy of each notification, versioned with a review workflow."
+  },
+  "ntf.reason.ambiguous": {
+    "vi": "Kết quả mơ hồ",
+    "en": "Ambiguous"
+  },
+  "ntf.reason.kill_switch": {
+    "vi": "Công tắc tạm dừng",
+    "en": "Kill switch"
+  },
+  "ntf.reason.no_sender": {
+    "vi": "Chưa có nơi gửi",
+    "en": "No sender"
+  },
+  "ntf.rule.device_registered": {
+    "vi": "Có thiết bị nhận push",
+    "en": "Device registered"
+  },
+  "ntf.rule.push_not_paused": {
+    "vi": "Push nhóm không tạm dừng",
+    "en": "Group push not paused"
+  },
+  "ntf.settings.careWarn": {
+    "vi": "Nhắc việc phụ huynh tự đặt sẽ không kêu trên máy cho đến khi bật lại.",
+    "en": "Reminders parents set will not ring on their phones until this is turned back on."
+  },
+  "ntf.settings.careWarn.title": {
+    "vi": "Push Chăm sóc đang tạm dừng",
+    "en": "Care push is paused"
+  },
+  "ntf.settings.confirm.care": {
+    "vi": "Bạn đang tạm dừng push Chăm sóc: nhắc bú, ngủ, thay tã và lịch tiêm mà phụ huynh tự đặt sẽ KHÔNG kêu trên máy. Chỉ làm khi có sự cố.",
+    "en": "You are pausing Care push: feeding, sleep, diaper and vaccination reminders parents set will NOT ring on their phones. Only do this during an incident."
+  },
+  "ntf.settings.confirm.title": {
+    "vi": "Lưu thay đổi công tắc?",
+    "en": "Save the switch changes?"
+  },
+  "ntf.settings.flags": {
+    "vi": "Bật/tắt từng kịch bản ENG nằm ở Tính năng & Premium; trang này không sửa chúng.",
+    "en": "Turning each ENG scenario on or off lives in Features & Premium; this page does not change them."
+  },
+  "ntf.settings.ops": {
+    "vi": "Vận hành",
+    "en": "Operations"
+  },
+  "ntf.settings.opsNote": {
+    "vi": "Mỗi lần lưu được ghi vào nhật ký kiểm toán.",
+    "en": "Every save is written to the audit log."
+  },
+  "ntf.settings.push": {
+    "vi": "Tạm dừng push theo nhóm",
+    "en": "Pause push by group"
+  },
+  "ntf.settings.pushNote": {
+    "vi": "Khi tạm dừng, thông báo vẫn vào hộp thư nhưng không đẩy lên máy.",
+    "en": "While paused, notifications still reach the inbox but are not pushed."
+  },
+  "ntf.settings.save": {
+    "vi": "Lưu công tắc",
+    "en": "Save switches"
+  },
+  "ntf.settings.saved": {
+    "vi": "Đã lưu công tắc.",
+    "en": "Switches saved."
+  },
+  "ntf.stage.accepted": {
+    "vi": "Nhà cung cấp đã nhận",
+    "en": "Provider accepted"
+  },
+  "ntf.tab.delivery": {
+    "vi": "Gửi & lỗi",
+    "en": "Delivery"
+  },
+  "ntf.test.accepted": {
+    "vi": "Nhà cung cấp đã nhận {a}/{c} thiết bị",
+    "en": "Provider accepted {a}/{c} devices"
+  },
+  "ntf.test.confirm.body": {
+    "vi": "Push thật sẽ đến điện thoại của {name} trong gia đình {code}.",
+    "en": "A real push will reach the phone of {name} in family {code}."
+  },
+  "ntf.test.devOnly.title": {
+    "vi": "Chỉ có trên môi trường dev",
+    "en": "Dev environment only"
+  },
+  "ntf.test.howto.swipe": {
+    "vi": "Gửi lại, vuốt bỏ push rồi mở từ Hộp thông báo: vẫn đi đúng nơi.",
+    "en": "Send again, swipe the push away, open it from the inbox: same destination."
+  },
+  "ntf.test.noDevice": {
+    "vi": "Chưa có thiết bị nhận push — thông báo vẫn vào Hộp thông báo.",
+    "en": "No push device yet — it still reaches the Notification Center."
+  },
+  "ntf.test.surface.push": {
+    "vi": "từ push trên màn hình khoá",
+    "en": "from the push"
+  },
+  "ntf.tpl.archive.body": {
+    "vi": "Các nơi gửi quay về phiên bản 0 (trong mã) và vẫn gửi bình thường. Có thể quay lại một phiên bản cũ sau.",
+    "en": "Producers fall back to version 0 (in code) and keep sending. You can roll back to an old version later."
+  },
+  "ntf.tpl.archived.body": {
+    "vi": "Mẫu đã lưu trữ: các nơi gửi dùng phiên bản 0 (trong mã).",
+    "en": "Archived: producers use version 0 (in code)."
+  },
+  "ntf.tpl.liveV0": {
+    "vi": "Đang gửi: phiên bản 0 (trong mã)",
+    "en": "Sending: version 0 (in code)"
+  },
+  "ntf.tpl.noPlaceholders": {
+    "vi": "Mẫu này không dùng biến.",
+    "en": "This template has no placeholders."
+  },
+  "ntf.tpl.pause": {
+    "vi": "Tạm dừng",
+    "en": "Pause"
+  },
+  "ntf.tpl.pause.body": {
+    "vi": "Trong lúc tạm dừng, các nơi gửi dùng phiên bản 0 (trong mã); thông báo vẫn được gửi.",
+    "en": "While paused, producers use version 0 (in code); notifications keep being sent."
+  },
+  "ntf.tpl.pause.title": {
+    "vi": "Tạm dừng mẫu này?",
+    "en": "Pause this template?"
+  },
+  "ntf.tpl.paused.body": {
+    "vi": "Các nơi gửi đang dùng phiên bản 0 (trong mã); thông báo vẫn được gửi. Bấm “Dùng lại” để quay về phiên bản đã xuất bản.",
+    "en": "Producers use version 0 (in code); notifications keep being sent. Press “Resume” to return to the published version."
+  },
+  "ntf.tpl.paused.title": {
+    "vi": "Mẫu đang tạm dừng",
+    "en": "The template is paused"
+  },
+  "ntf.tpl.pausedFallback": {
+    "vi": "Khi mẫu tạm dừng, lưu trữ hoặc “Mẫu nội dung” bị tắt trong Cài đặt, các nơi gửi dùng phiên bản 0 và vẫn gửi.",
+    "en": "When a template is paused, archived, or templates are off in Settings, producers use version 0 and keep sending."
+  },
+  "ntf.tpl.placeholders": {
+    "vi": "Biến được phép",
+    "en": "Allowed placeholders"
+  },
+  "ntf.tpl.placeholdersNote": {
+    "vi": "Bấm một biến để chèn vào vị trí con trỏ của ô đang sửa.",
+    "en": "Click a placeholder to insert it at the cursor of the field you are editing."
+  },
+  "ntf.tpl.required": {
+    "vi": "Bắt buộc",
+    "en": "Required"
+  },
+  "ntf.tpl.resume": {
+    "vi": "Dùng lại",
+    "en": "Resume"
+  },
+  "ntf.tpl.v0": {
+    "vi": "Phiên bản 0 (trong mã)",
+    "en": "Version 0 (in code)"
+  },
+  "ntf.tpl.v0note": {
+    "vi": "Nội dung gốc trong mã, luôn có sẵn",
+    "en": "The copy in code, always available"
+  },
+  "ntf.tpl.v0short": {
+    "vi": "v0 · trong mã",
+    "en": "v0 · in code"
+  },
+  "ntf.version.builtin": {
+    "vi": "v0 · trong mã",
+    "en": "v0 · in code"
+  },
+  "nutrition.col.focus": {
+    "vi": "Giai đoạn chú ý",
+    "en": "When it matters"
+  },
+  "nutrition.col.nutrients": {
+    "vi": "Vi chất chú ý",
+    "en": "Micronutrients"
+  },
+  "nutrition.copy.title": {
+    "vi": "Chưa gửi duyệt được: {n} chỗ cần sửa",
+    "en": "Cannot send for review yet: {n, plural, one {# place} other {# places}} to fix"
+  },
+  "nutrition.field.focus": {
+    "vi": "Giai đoạn chú ý",
+    "en": "When it matters"
+  },
+  "nutrition.field.fromDay": {
+    "vi": "Từ ngày",
+    "en": "From day"
+  },
+  "nutrition.field.nutrientIds": {
+    "vi": "Vi chất chú ý",
+    "en": "Micronutrients"
+  },
+  "nutrition.field.perDayMl": {
+    "vi": "ml mỗi ngày",
+    "en": "ml per day"
+  },
+  "nutrition.field.perFeedMl": {
+    "vi": "ml mỗi cữ",
+    "en": "ml per feed"
+  },
+  "nutrition.field.remindAfterDays": {
+    "vi": "Nhắc đo lại",
+    "en": "Remeasure reminder"
+  },
+  "nutrition.field.toDay": {
+    "vi": "Đến ngày",
+    "en": "To day"
+  },
+  "nutrition.search.rules": {
+    "vi": "Tìm quy tắc…",
+    "en": "Search rules…"
+  },
+  "nutrition.tab.rules": {
+    "vi": "Quy tắc gợi ý",
+    "en": "Suggestion rules"
+  },
+  "overview.attention": {
+    "vi": "Cần xử lý",
+    "en": "Needs action"
+  },
+  "overview.funnel": {
+    "vi": "Hành trình bắt đầu dùng",
+    "en": "Getting started"
+  },
+  "overview.multi": {
+    "vi": "Gia đình có từ 2 người chăm",
+    "en": "Families with 2+ carers"
+  },
+  "overview.setup": {
+    "vi": "Hoàn thành thiết lập",
+    "en": "Setup completed"
+  },
+  "pa.chapter": {
+    "vi": "Chapter",
+    "en": "Chapter"
+  },
+  "pa.chapter.all": {
+    "vi": "Mọi Chapter",
+    "en": "All Chapters"
+  },
+  "pa.chapter.chapter01": {
+    "vi": "Chapter 01 · cần mapping nguồn",
+    "en": "Chapter 01 · source mapping required"
+  },
+  "pa.chapter.unknown": {
+    "vi": "Chưa được gán Chapter",
+    "en": "Unassigned Chapter"
+  },
+  "pa.costNote": {
+    "vi": "Token có usage từ provider khác với chi phí thực trên hóa đơn. Ước tính chỉ gồm call có đơn giá, không cộng với ước tính VND cũ. Credits không phải tiền. Render, storage và hóa đơn chưa có nguồn vẫn chưa đo được. Billing/IAP nằm backlog.",
+    "en": "Provider-observed tokens differ from invoiced expense. Estimates include rated calls only and are not added to legacy VND estimates. Credits are not money. Render, storage and invoice costs remain unavailable without sources. IAP/billing is backlogged."
+  },
+  "pa.coverageNote": {
+    "vi": "Chỉ hiển thị dữ liệu có nguồn. Thiếu actor, bước funnel hoặc nguồn lịch sử vẫn là chưa biết; không suy ngược từ tổng lượt. Cửa sổ mới chờ thêm 72 giờ để nhận dữ liệu muộn. Không có tuyên bố ý nghĩa thống kê khi mẫu nhỏ.",
+    "en": "Only source-backed data is shown. Missing actors, funnel stages or historical evidence remain unknown. Recent windows allow 72 hours for late observations. Small samples do not support statistical-significance claims."
+  },
+  "pa.definition": {
+    "vi": "Mã {id}. Cửa sổ {days} ngày. Tỷ lệ dùng nhóm đủ điều kiện; bản nháp, hàng đợi tải và lịch thông báo không phải kết quả hoàn tất.",
+    "en": "Metric {id}. Window: {days} days. Rates use eligible cohorts; drafts, upload queues and notification schedules are not completions."
+  },
+  "pa.definition.A01": {
+    "vi": "Tài khoản có sự kiện đăng ký từ Auth được xác minh trong khoảng báo cáo; loại staff. Metadata khôi phục hoặc tài khoản khách liên kết chưa có bằng chứng không được đoán là đăng ký mới.",
+    "en": "Verified Auth registration events in the reporting range, excluding staff. Metadata recovery or linked guests without registration evidence are not guessed as new registrations."
+  },
+  "pa.definition.A05_1": {
+    "vi": "Cohort đăng ký quay lại đúng ngày lịch D1 theo giờ Việt Nam, chia cho cohort đã đủ thời gian quan sát; không phải mở bất kỳ ngày nào sau đăng ký.",
+    "en": "Registration cohort users active on exact Vietnam calendar day D1, divided by mature cohort users; not activity on any later day."
+  },
+  "pa.definition.A05_30": {
+    "vi": "Cohort đăng ký hoạt động đúng ngày D30; khác chỉ số D30 theo cửa sổ 28–32 ngày của báo cáo cũ.",
+    "en": "Registration cohort activity on exact day D30, distinct from the legacy day-28–32 windowed metric."
+  },
+  "pa.definition.A05_7": {
+    "vi": "Cohort đăng ký hoạt động đúng ngày D7. Ô chưa hết ngày D7 và thêm 72 giờ chờ dữ liệu được giữ chưa hoàn tất.",
+    "en": "Registration cohort activity on exact day D7. Cells remain immature until that day and 72 hours of late-data settlement have ended."
+  },
+  "pa.definition.A08": {
+    "vi": "Người có kết quả Care/Grow, media sẵn sàng, Story hoặc keepsake đã lưu, hoặc chủ động xem nội dung người khác chia sẻ, trong 7×24 giờ từ đăng ký. Mẫu số là cohort đăng ký đã hết cửa sổ và chờ thêm 72 giờ.",
+    "en": "Registered users with a qualified Care/Grow, ready media, saved Story/keepsake or intentional authorized shared-content view within 7×24 hours. Denominator: registration cohorts whose window and 72-hour settlement have ended."
+  },
+  "pa.definition.A10": {
+    "vi": "Người ở vai trò tạo nội dung có media đầu tiên cloud-ready trong bảy ngày đăng ký, trên cohort cùng vai trò đã đủ thời gian. Approved hoặc queued chưa phải ready.",
+    "en": "Creator-role users with their first cloud-ready media within seven days of registration, over mature eligible creator cohorts. Approval and queueing are not readiness."
+  },
+  "pa.definition.A11": {
+    "vi": "Gia đình có ít nhất một kết quả Care/Grow, media sẵn sàng, Story hoặc keepsake đã lưu trong tuần ISO vừa kết thúc. Một gia đình nhiều người/nhiều bé vẫn chỉ tính một lần.",
+    "en": "Distinct families with a confirmed Care/Grow, ready media, saved Story or filed keepsake in the last closed ISO week. Multiple caregivers and babies still count once."
+  },
+  "pa.definition.C_actual": {
+    "vi": "Chỉ có khi đối soát được nguồn hóa đơn provider đã duyệt; chưa có nguồn không đồng nghĩa không tốn phí.",
+    "en": "Available only from approved reconciled provider statements. Missing source does not mean no expense."
+  },
+  "pa.definition.C_cached": {
+    "vi": "Cached input tokens provider ghi rõ. Chỉ hiển thị khi mọi call trong kỳ có breakdown cache; dữ liệu cũ thiếu bằng chứng giữ chưa đo được.",
+    "en": "Explicit provider cached input tokens. Shown only when every call has cache coverage; legacy unknown breakdowns remain unavailable."
+  },
+  "pa.definition.C_calls": {
+    "vi": "Call thực sự được observer provider ghi nhận, bao gồm các call lỗi. Không lấy quota credits làm số call.",
+    "en": "Provider calls recorded by the usage observer, including failures. Commercial credits are not provider call counts."
+  },
+  "pa.definition.C_credits": {
+    "vi": "Units trong quota ledger có state committed, giữ riêng với reserved/released. Không phải token hay tiền.",
+    "en": "Committed quota-ledger units, separate from reserved/released units. Credits are neither tokens nor currency."
+  },
+  "pa.definition.C_estimate": {
+    "vi": "Ước tính USD từ token có đơn giá theo version cấu hình. Không bao gồm call chưa đủ usage/rate; không phải chi phí invoice thực tế.",
+    "en": "USD estimate from rated observed tokens using configured rate versions. Excludes unrated calls and is not an actual invoice amount."
+  },
+  "pa.definition.C_input": {
+    "vi": "Input tokens do provider trả về cho các call có usage; call thiếu usage giữ riêng, không quy về 0.",
+    "en": "Provider-reported input tokens. Missing usage remains unknown rather than zero."
+  },
+  "pa.definition.C_output": {
+    "vi": "Output tokens do provider trả về; không suy bằng độ dài câu trả lời hoặc credits.",
+    "en": "Provider-reported output tokens, not estimates from answer length or credits."
+  },
+  "pa.definition.C_rated": {
+    "vi": "Call có usage và đơn giá/model/version hợp lệ để tính ước tính, chưa phải đã đối soát hóa đơn.",
+    "en": "Calls with valid usage/model/rate-version data for estimation, not invoice reconciliation."
+  },
+  "pa.definition.C_render": {
+    "vi": "Cần metering compute hoặc chi phí đã phân bổ đáng tin cậy; thời lượng video xuất ra không phải billable compute time.",
+    "en": "Requires measured compute or reliable cost allocation. Output video duration is not billable compute time."
+  },
+  "pa.definition.C_storage": {
+    "vi": "Cần byte-hours, egress/requests hoặc chi phí đã đối soát; quota dung lượng gia đình không phải hóa đơn lưu trữ.",
+    "en": "Requires byte-hours, egress/requests or reconciled cost. Household storage quota is not a storage invoice."
+  },
+  "pa.definition.C_unknown": {
+    "vi": "Số call ghi nhận chưa có đủ token usage từ provider.",
+    "en": "Observed calls lacking sufficient provider token usage."
+  },
+  "pa.definition.E_ENG-01": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.E_ENG-02": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.E_ENG-03": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.E_ENG-04": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.E_ENG-05": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.E_ENG-06": {
+    "vi": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "en": "Qualified opportunities completed with the correct outcome within their source-defined window, divided by mature eligible cohorts after 72-hour settlement. Direct completion counts without a push open; this is not causal lift."
+  },
+  "pa.definition.F02": {
+    "vi": "Gia đình có hành động hợp lệ trong ít nhất hai module khác nhau. Một record tăng trưởng không được tính thêm lần nữa vào Care.",
+    "en": "Families with qualified usage in at least two distinct modules. One growth record is not also counted as a Care action."
+  },
+  "pa.definition.M_approved": {
+    "vi": "Cần liên kết lựa chọn duyệt với từng discovery cohort; tổng approved cũ không đủ tính conversion.",
+    "en": "Requires approval associations to discovery cohorts; legacy approved totals cannot provide cohort conversion."
+  },
+  "pa.definition.M_card": {
+    "vi": "Thiệp tạo có chủ đích đã thành media ready; giữ riêng với video và bản xem thử.",
+    "en": "Explicitly created cards whose media is ready, separate from videos and previews."
+  },
+  "pa.definition.M_cloud_conversion": {
+    "vi": "Ảnh trong cùng discovery cohort được review, duyệt và server ready trong cửa sổ. Thiếu bước hoặc batch join vẫn là unknown.",
+    "en": "Same-cohort photos reviewed, approved and server-ready within the conversion window. Missing stages or batch joins remain unknown."
+  },
+  "pa.definition.M_discovered": {
+    "vi": "Cần episode và thời điểm phát hiện ổn định theo nguồn local. Chưa có liên kết này thì để chưa đo được, không lấy số ảnh gợi ý làm cohort.",
+    "en": "Requires stable local episodes and discovery timestamps. Without this association, suggestion totals are not a discovery cohort."
+  },
+  "pa.definition.M_ready": {
+    "vi": "Media được server xác nhận status=ready. Ngày hoàn tất là readyAt, không phải ngày chụp hoặc ngày mốc lịch sử.",
+    "en": "Media confirmed status=ready by the server, counted at readiness rather than historical capture or occasion dates."
+  },
+  "pa.definition.M_render_failed": {
+    "vi": "Job từng có trạng thái failed trong kỳ; có thể đã retry thành công sau đó. Không lấy số này suy ra tỷ lệ lỗi cuối cùng.",
+    "en": "Jobs with a failed state observed in range; retries may later succeed. This count is not a final-failure rate."
+  },
+  "pa.definition.M_rendered": {
+    "vi": "Job đạt trạng thái render completed, trước khi xác nhận đã lưu thành phẩm.",
+    "en": "Logical jobs reaching render-completed status, separate from successful filing."
+  },
+  "pa.definition.M_review": {
+    "vi": "Lượt mở màn review được gắn đúng người và nguồn có quyền; không suy số ảnh đã xem từ số lượt này.",
+    "en": "Authorized review opens associated with the actor/source. Open counts do not prove how many photos were reviewed."
+  },
+  "pa.definition.M_share": {
+    "vi": "Share sheet đã mở cho video có quyền xem. Không chứng minh chia sẻ thành công hoặc người nhận đã xem.",
+    "en": "Share sheet opens for authorized filed videos, not proof of completed sharing or recipient views."
+  },
+  "pa.definition.M_story": {
+    "vi": "Story văn bản chuyển sang saved một lần theo nguồn; bản nháp AI chưa tính hoàn tất.",
+    "en": "Text Stories transitioning to saved once per logical source. AI-generated drafts are not completions."
+  },
+  "pa.definition.M_upload": {
+    "vi": "Media có yêu cầu upload hợp lệ; có thể đang chờ quota hoặc đang tải. Chưa phải số ảnh được duyệt hay lưu xong.",
+    "en": "Media with validated upload requests, including waiting-quota/uploading states. Not photo approvals or completed saves."
+  },
+  "pa.definition.M_video": {
+    "vi": "Job completed đã có memoryId được backend lưu vào Memories. Render xong nhưng chưa filed không tính.",
+    "en": "Completed jobs filed into Memories with a server memoryId. Render success without filing does not count."
+  },
+  "pa.definition.M_video_requested": {
+    "vi": "Yêu cầu tạo video tạo được logical job mới; retry và file thành phẩm là các bước khác.",
+    "en": "Accepted requests creating logical video jobs. Retry attempts and filed results are separate stages."
+  },
+  "pa.deliveryNote": {
+    "vi": "Provider chấp nhận hoặc đã đặt lịch không chứng minh điện thoại hiển thị. Khi engine chưa ghi cohort/attribution thì không tính conversion từ bộ đếm cũ.",
+    "en": "Provider acceptance and scheduling do not prove device display. Legacy counts cannot produce a conversion rate without eligibility and outcome associations."
+  },
+  "pa.filtersNote": {
+    "vi": "Ngày báo cáo theo giờ Việt Nam. Bộ lọc nền tảng/ngôn ngữ có thể chưa áp dụng cho kết quả backend chưa có nguồn liên kết; chỉ số đó sẽ ghi chưa đo được. Không cộng iOS và Android thành tổng người dùng.",
+    "en": "Reporting days use Vietnam time. Platform/language filters may be unavailable for backend outcomes without source attribution. iOS and Android users overlap; do not add them together."
+  },
+  "pa.memoriesNote": {
+    "vi": "Yêu cầu upload, cloud-ready, render xong và video đã lưu là các bước riêng. Chưa có liên kết discovery → review → approve thì không suy conversion. Ảnh lịch sử chỉ tính hoạt động lúc nhập/lưu thực tế.",
+    "en": "Upload requested, cloud-ready, rendered and filed are separate stages. Missing discovery/review/approval joins do not become conversion estimates. Historical photos count activity when actually imported or saved."
+  },
+  "pa.metric.A02_1": {
+    "vi": "DAU · người dùng",
+    "en": "DAU · users"
+  },
+  "pa.metric.A02_30": {
+    "vi": "MAU · người dùng",
+    "en": "MAU · users"
+  },
+  "pa.metric.A02_7": {
+    "vi": "WAU · người dùng",
+    "en": "WAU · users"
+  },
+  "pa.metric.A05_1": {
+    "vi": "Retention D1",
+    "en": "D1 retention"
+  },
+  "pa.metric.A05_30": {
+    "vi": "Retention D30",
+    "en": "D30 retention"
+  },
+  "pa.metric.A05_7": {
+    "vi": "Retention D7",
+    "en": "D7 retention"
+  },
+  "pa.metric.A08": {
+    "vi": "Activation trong 7 ngày",
+    "en": "Activation within 7 days"
+  },
+  "pa.metric.C_cached": {
+    "vi": "Cached input tokens",
+    "en": "Cached input tokens"
+  },
+  "pa.metric.C_calls": {
+    "vi": "Provider calls ghi nhận",
+    "en": "Observed provider calls"
+  },
+  "pa.metric.C_credits": {
+    "vi": "Credits đã committed",
+    "en": "Committed credits"
+  },
+  "pa.metric.C_input": {
+    "vi": "Input tokens ghi nhận",
+    "en": "Observed input tokens"
+  },
+  "pa.metric.C_output": {
+    "vi": "Output tokens ghi nhận",
+    "en": "Observed output tokens"
+  },
+  "pa.metric.C_rated": {
+    "vi": "Call đủ đơn giá",
+    "en": "Rated calls"
+  },
+  "pa.metric.C_render": {
+    "vi": "Chi phí render",
+    "en": "Render cost"
+  },
+  "pa.metric.C_storage": {
+    "vi": "Chi phí storage",
+    "en": "Storage cost"
+  },
+  "pa.metric.C_unknown": {
+    "vi": "Call chưa biết usage",
+    "en": "Calls with unknown usage"
+  },
+  "pa.metric.E_ENG-01": {
+    "vi": "Ảnh chờ review · hoàn tất / đủ điều kiện",
+    "en": "Pending photos · completed / eligible"
+  },
+  "pa.metric.E_ENG-03": {
+    "vi": "Digest tuần · hoàn tất / đủ điều kiện",
+    "en": "Weekly digest · completed / eligible"
+  },
+  "pa.metric.E_ENG-04": {
+    "vi": "Care · hoàn tất / đủ điều kiện",
+    "en": "Care · completed / eligible"
+  },
+  "pa.metric.F02": {
+    "vi": "Gia đình dùng từ hai module",
+    "en": "Families using at least two modules"
+  },
+  "pa.metric.M_approved": {
+    "vi": "Approval cohort",
+    "en": "Approval cohort"
+  },
+  "pa.metric.M_cloud_conversion": {
+    "vi": "Discovery → cloud-ready",
+    "en": "Discovery → cloud-ready"
+  },
+  "pa.metric.M_discovered": {
+    "vi": "Discovery cohort",
+    "en": "Discovery cohort"
+  },
+  "pa.metric.M_ready": {
+    "vi": "Media cloud-ready",
+    "en": "Cloud-ready media"
+  },
+  "pa.metric.M_render_failed": {
+    "vi": "Job từng thất bại",
+    "en": "Jobs with a failure"
+  },
+  "pa.metric.M_rendered": {
+    "vi": "Video render xong",
+    "en": "Rendered videos"
+  },
+  "pa.metric.M_review": {
+    "vi": "Lượt mở review hợp lệ",
+    "en": "Authorized review opens"
+  },
+  "pa.metric.M_story": {
+    "vi": "Story văn bản đã lưu",
+    "en": "Saved text Stories"
+  },
+  "pa.metric.M_upload": {
+    "vi": "Yêu cầu upload media",
+    "en": "Media upload requests"
+  },
+  "pa.module.care": {
+    "vi": "Care",
+    "en": "Care"
+  },
+  "pa.module.grow": {
+    "vi": "Grow",
+    "en": "Grow"
+  },
+  "pa.module.remember": {
+    "vi": "Remember",
+    "en": "Remember"
+  },
+  "pa.noData": {
+    "vi": "Chưa có dữ liệu cho khoảng đã chọn. Dữ liệu thử nghiệm không được thay vào báo cáo này.",
+    "en": "No data for this range. Test fixtures are never substituted into this report."
+  },
+  "pa.noExperiment": {
+    "vi": "Chưa có phân nhóm thử nghiệm được phê duyệt. Không kết luận mức tăng do reminder từ so sánh trước/sau.",
+    "en": "No approved experimental assignment is connected. Before/after comparisons do not establish incremental reminder lift."
+  },
+  "pa.reason.none": {
+    "vi": "Số tổng hợp không chứa định danh cá nhân. Kết quả theo ngày thao tác thật, không theo ngày chụp ảnh cũ.",
+    "en": "Aggregates contain no personal identifiers. Actions use their actual completion date, not historical photo dates."
+  },
+  "pa.reason.not_instrumented": {
+    "vi": "Chưa đủ instrumentation hoặc liên kết nguồn để tính đúng chỉ số này.",
+    "en": "Instrumentation or source associations are not yet sufficient for this metric."
+  },
+  "pa.reason.window_open": {
+    "vi": "Cohort chưa có đủ thời gian quan sát, không tính là 0%.",
+    "en": "This cohort has not completed its observation window; it is not 0% retention."
+  },
+  "pa.recordingOff": {
+    "vi": "Thu thập mới đang tắt. Số liệu đã ghi nhận vẫn được đọc theo quyền; không tự bật cấu hình production.",
+    "en": "New collection is off. Authorized historical reporting remains available; production configuration is not enabled automatically."
+  },
+  "pa.retention": {
+    "vi": "Quay lại đúng ngày D1 / D7 / D30",
+    "en": "Exact-day D1 / D7 / D30 retention"
+  },
+  "pa.section.acquisition": {
+    "vi": "Thu hút & quay lại",
+    "en": "Acquisition & retention"
+  },
+  "pa.stage.accepted": {
+    "vi": "Provider nhận",
+    "en": "Provider accepted"
+  },
+  "pa.status.immature": {
+    "vi": "Chưa hết cửa sổ quan sát",
+    "en": "Observation window open"
+  },
+  "pa.status.provisional": {
+    "vi": "Tạm tính · chờ dữ liệu muộn",
+    "en": "Provisional · awaiting late events"
+  },
+  "pa.status.ready": {
+    "vi": "Đã đối soát theo nguồn hiện có",
+    "en": "Computed from available sources"
+  },
+  "pa.suppression.budget": {
+    "vi": "Đã chạm hạn mức nhắc",
+    "en": "Frequency cap reached"
+  },
+  "pa.suppression.digest_member": {
+    "vi": "Đã gom vào digest",
+    "en": "Grouped into digest"
+  },
+  "pa.suppression.fatigue_paused": {
+    "vi": "Tạm dừng do mệt mỏi thông báo",
+    "en": "Paused for notification fatigue"
+  },
+  "pa.suppression.higher_priority": {
+    "vi": "Nhường cơ hội ưu tiên hơn",
+    "en": "Higher-priority opportunity"
+  },
+  "pa.suppression.holdout": {
+    "vi": "Nhóm đối chứng đã được phân",
+    "en": "Assigned control group"
+  },
+  "pa.suppression.reserved": {
+    "vi": "Đã giữ slot hợp lệ",
+    "en": "Valid slot reserved"
+  },
+  "pa.suppression.window_closed": {
+    "vi": "Hết cửa sổ hữu ích",
+    "en": "Validity window closed"
+  },
+  "page.info": {
+    "vi": "Về trang này",
+    "en": "About this page"
+  },
+  "pov.attention.held": {
+    "vi": "Lượt/credit đang giữ quá 15 phút",
+    "en": "Credit / exports held over 15 minutes"
+  },
+  "pov.attention.jobs": {
+    "vi": "Job video lỗi (24 giờ)",
+    "en": "Failed video jobs (24 h)"
+  },
+  "pov.attention.open": {
+    "vi": "Mở Job video & hoàn lượt ›",
+    "en": "Open video jobs & refunds ›"
+  },
+  "pov.kpi.cost": {
+    "vi": "Chi phí phục vụ / Premium",
+    "en": "Cost to serve / Premium"
+  },
+  "pov.kpi.costFoot": {
+    "vi": "AI + render + storage",
+    "en": "AI + render + storage"
+  },
+  "pov.kpi.free": {
+    "vi": "Gia đình Free",
+    "en": "Free families"
+  },
+  "pov.limits.lumi": {
+    "vi": "Gia đình Premium hết credit Lumi trước kỳ",
+    "en": "Premium families out of Lumi credit before the cycle ends"
+  },
+  "pov.limits.trial": {
+    "vi": "Free hết credit trải nghiệm",
+    "en": "Free families out of trial credit"
+  },
+  "pov.renewals.issue": {
+    "vi": "Lỗi thanh toán (đang retry của store)",
+    "en": "Payment issue (store retrying)"
+  },
+  "print.access": {
+    "vi": "Mở đơn hiển thị thông tin giao hàng và ghi nhật ký truy cập.",
+    "en": "Opening an order reveals delivery information and records an access audit."
+  },
+  "print.countries": {
+    "vi": "Quốc gia giao hàng (VN, …)",
+    "en": "Delivery countries (VN, …)"
+  },
+  "print.digital": {
+    "vi": "Cho phép tải file",
+    "en": "Enable file downloads"
+  },
+  "print.fileExpired": {
+    "vi": "File sản xuất đã được xoá theo thời hạn lưu trữ.",
+    "en": "The production file has been removed under the retention policy."
+  },
+  "print.freeFrom": {
+    "vi": "Miễn giao từ",
+    "en": "Free shipping from"
+  },
+  "print.lead": {
+    "vi": "Số ngày nhận dự kiến",
+    "en": "Estimated delivery days"
+  },
+  "print.note": {
+    "vi": "Ghi chú nội bộ · khách không nhìn thấy",
+    "en": "Internal notes · hidden from customers"
+  },
+  "print.render": {
+    "vi": "File sản xuất",
+    "en": "Production file"
+  },
+  "print.render.failed": {
+    "vi": "Cần xử lý lỗi file",
+    "en": "Needs attention"
+  },
+  "print.render.queued": {
+    "vi": "Đang chờ dựng file",
+    "en": "Queued"
+  },
+  "print.render.ready": {
+    "vi": "File sẵn sàng",
+    "en": "Ready"
+  },
+  "print.render.rendering": {
+    "vi": "Đang dựng file",
+    "en": "Preparing"
+  },
+  "print.renderFailed": {
+    "vi": "Đơn vẫn được lưu. Chưa dựng được file; hãy thử lại hoặc liên hệ hỗ trợ kỹ thuật.",
+    "en": "The order is saved. File generation failed; retry or contact technical support."
+  },
+  "print.retryRender": {
+    "vi": "Dựng lại file",
+    "en": "Retry file generation"
+  },
+  "pv2.plans.caregiverSeats": {
+    "vi": "Chỗ người ghi",
+    "en": "Writer seats"
+  },
+  "pv2.plans.free": {
+    "vi": "Free",
+    "en": "Free"
+  },
+  "pv2.plans.key": {
+    "vi": "Khoá",
+    "en": "Key"
+  },
+  "pv2.plans.note": {
+    "vi": "Một nguồn cho app, backend và portal. Thay đổi tạo phiên bản mới và chỉ chạy khi người thứ hai duyệt.",
+    "en": "One source for the app, backend and portal. A change makes a new version that runs only once a second person approves it."
+  },
+  "pv2.plans.running": {
+    "vi": "Đang chạy: {version}",
+    "en": "Running: {version}"
+  },
+  "pv2.plans.storagePremium": {
+    "vi": "{n} (+{addOns} add-on)",
+    "en": "{n} (+{addOns} add-on)"
+  },
+  "pv2.plans.taskCosts": {
+    "vi": "Chi phí tác vụ (credit)",
+    "en": "Task costs (credits)"
+  },
+  "pv2.plans.taskCostsNote": {
+    "vi": "Chi phí thật (₫) ghi riêng theo tác vụ, không hiển thị cho người dùng.",
+    "en": "Real costs (₫) are recorded per task and never shown to users."
+  },
+  "qa.col.level": {
+    "vi": "Mức",
+    "en": "Level"
+  },
+  "qa.start.levels.core": {
+    "vi": "<b>Core</b> — các luồng chính (happy path) của từng phân hệ. Chạy trước khi đưa một bản lên production (nghiệm thu UAT).",
+    "en": "<b>Core</b> — the main happy paths of each module. Run them before promoting a build to production (UAT sign-off)."
+  },
+  "qa.start.levels.title": {
+    "vi": "Smoke và core",
+    "en": "Smoke vs core cases"
+  },
+  "qa.start.purpose.body": {
+    "vi": "Sổ tay giải thích mỗi phân hệ của Child Life làm gì trên từng bề mặt — app di động (Flutter, iOS + Android), website, trang xem câu chuyện được chia sẻ và cổng vận hành — và liệt kê các ca chính cần chạy trước khi một bản build lên production.",
+    "en": "This handbook explains what each Child Life module does on every surface — the mobile app (Flutter, iOS + Android), the website, the shared-story page and the staff portal — and lists the main cases to run before a build goes to production."
+  },
+  "qa.sub": {
+    "vi": "Mỗi phân hệ làm gì trên app iOS/Android, website, trang chia sẻ và cổng vận hành — và các ca chính cần chạy trước khi một bản build lên production.",
+    "en": "What each module does on the iOS/Android app, website, share page and staff portal — and the main cases to run before a build reaches production."
+  },
+  "qa.table.empty": {
+    "vi": "Không có ca nào khớp bộ lọc.",
+    "en": "No case matches these filters."
+  },
+  "reference.builtin": {
+    "vi": "Bản gói sẵn trong app",
+    "en": "The copy shipped in the app"
+  },
+  "reference.col.step": {
+    "vi": "Bước tăng khi chỉnh",
+    "en": "Adjustment step"
+  },
+  "reference.csvSub": {
+    "vi": "Bản nhập trở thành bản nháp; một người khác có quyền Duyệt phải duyệt trước khi app dùng.",
+    "en": "The import becomes a draft; someone else with Approve must approve it before the app uses it."
+  },
+  "reference.howApp": {
+    "vi": "Cách app đánh giá",
+    "en": "How the app assesses"
+  },
+  "review.kind.nutritionRule": {
+    "vi": "Quy tắc gợi ý",
+    "en": "Suggestion rule"
+  },
+  "rhythm.field.itemId": {
+    "vi": "Mã",
+    "en": "Id"
+  },
+  "rhythm.field.itemStatus": {
+    "vi": "Trạng thái trên app",
+    "en": "Status in the app"
+  },
+  "rhythm.field.maxAgeDays": {
+    "vi": "Chỉ hỏi khi bé dưới (ngày tuổi)",
+    "en": "Only asked under (days of age)"
+  },
+  "rhythm.field.offsetUnit": {
+    "vi": "ngày sau ngày dự sinh",
+    "en": "days after the due date"
+  },
+  "rhythm.field.safety": {
+    "vi": "Không khi… (an toàn)",
+    "en": "Not when… (safety)"
+  },
+  "rhythm.field.sources": {
+    "vi": "Nguồn",
+    "en": "Sources"
+  },
+  "rhythm.field.version": {
+    "vi": "Phiên bản nội dung",
+    "en": "Content version"
+  },
+  "rhythm.itemStatus.draft": {
+    "vi": "Nháp",
+    "en": "Draft"
+  },
+  "rhythm.metrics.digestOpened": {
+    "vi": "Mở từ thông báo",
+    "en": "Opened from notice"
+  },
+  "rhythm.metrics.digestScheduled": {
+    "vi": "Đặt lịch gợi ý",
+    "en": "Digests scheduled"
+  },
+  "rhythm.metrics.generated": {
+    "vi": "Đã tạo",
+    "en": "Generated"
+  },
+  "rhythm.metrics.hint": {
+    "vi": "Số lượt trong 14 ngày có dữ liệu gần nhất. Gợi ý được tạo không đồng nghĩa đã hiển thị; lưu và định thử không phải đã thử. Số lượt đặt lịch thông báo không xác nhận thiết bị đã hiển thị. Phản hồi có thể thay đổi; không tự kết luận hiệu quả hoặc số gia đình từ các bộ đếm này.",
+    "en": "Counts from the latest 14 days with data. Generated suggestions are not impressions; saves and intentions are not confirmed attempts. Scheduled notices do not establish delivery. Responses may change; these counters do not establish efficacy or unique-family counts."
+  },
+  "rhythm.metrics.intend": {
+    "vi": "Định thử",
+    "en": "Intended"
+  },
+  "rhythm.metrics.tried": {
+    "vi": "Xác nhận thử",
+    "en": "Confirmed tried"
+  },
+  "rhythm.sub.health": {
+    "vi": "Sức khoẻ",
+    "en": "Health"
+  },
+  "rhythm.tab.reference": {
+    "vi": "Mô hình tham khảo",
+    "en": "Reference model"
+  },
+  "rhythm.tab.rules": {
+    "vi": "Quy tắc",
+    "en": "Rules"
+  },
+  "search.empty": {
+    "vi": "Không có kết quả.",
+    "en": "No results."
+  },
+  "search.open": {
+    "vi": "Tìm nhanh",
+    "en": "Search"
+  },
+  "search.placeholder": {
+    "vi": "Tìm trang hoặc thao tác…",
+    "en": "Search pages or actions…"
+  },
+  "signIn.confirmSub": {
+    "vi": "Nhập lại email đã nhận link để hoàn tất đăng nhập.",
+    "en": "Enter the email the link was sent to, to finish signing in."
+  },
+  "signIn.headline": {
+    "vi": "Chăm sóc người dùng, mà không chạm vào kỷ niệm của họ.",
+    "en": "Care for users without touching their memories."
+  },
+  "signIn.link": {
+    "vi": "Link qua email",
+    "en": "Email link"
+  },
+  "signIn.promise.photos": {
+    "vi": "Không xem được ảnh, video, chú thích hay ghi chép",
+    "en": "Cannot view photos, videos, captions or care records"
+  },
+  "signIn.promise.reason": {
+    "vi": "Mọi thao tác đều được ghi nhật ký",
+    "en": "Every action is logged"
+  },
+  "signIn.sendLink": {
+    "vi": "Gửi link đăng nhập",
+    "en": "Send sign-in link"
+  },
+  "signIn.sub": {
+    "vi": "Dùng email công việc đã được cấp quyền vận hành.",
+    "en": "Use the work email that was given operations access."
+  },
+  "solids.age.title": {
+    "vi": "Chưa hợp tuổi: {n} nguyên liệu",
+    "en": "{n, plural, one {# ingredient is} other {# ingredients are}} too young for this recipe"
+  },
+  "solids.col.allergen": {
+    "vi": "Dị ứng",
+    "en": "Allergen"
+  },
+  "solids.col.allergens": {
+    "vi": "Dị ứng",
+    "en": "Allergens"
+  },
+  "solids.col.minAge": {
+    "vi": "Từ",
+    "en": "From"
+  },
+  "solids.copy.title": {
+    "vi": "Chưa gửi duyệt được: {n} chỗ cần sửa",
+    "en": "Can’t submit yet: {n, plural, one {# place} other {# places}} to fix"
+  },
+  "solids.field.cookMinutes": {
+    "vi": "Nấu",
+    "en": "Cooking"
+  },
+  "solids.field.foodId": {
+    "vi": "Thực phẩm",
+    "en": "Food"
+  },
+  "solids.field.minAgeMonths": {
+    "vi": "Tuổi tối thiểu",
+    "en": "Minimum age"
+  },
+  "solids.field.prepMinutes": {
+    "vi": "Sơ chế",
+    "en": "Prep"
+  },
+  "staff.col.access": {
+    "vi": "Thời hạn quyền",
+    "en": "Access until"
+  },
+  "staff.col.last": {
+    "vi": "Gần nhất",
+    "en": "Last seen"
+  },
+  "staff.col.scope": {
+    "vi": "Phạm vi",
+    "en": "Scope"
+  },
+  "staff.empty": {
+    "vi": "Không có thành viên nào khớp.",
+    "en": "No member matches."
+  },
+  "staff.inviteTitle": {
+    "vi": "Mời thành viên",
+    "en": "Invite member"
+  },
+  "stages.new": {
+    "vi": "Nội dung mới",
+    "en": "New stage content"
+  },
+  "stages.state.draft": {
+    "vi": "Nháp",
+    "en": "Draft"
+  },
+  "storage.granted": {
+    "vi": "Đã duyệt",
+    "en": "Approved"
+  },
+  "storage.reminded": {
+    "vi": "Đã nhận nhắc trong app",
+    "en": "Already reminded in the app"
+  },
+  "support.claim": {
+    "vi": "Nhận xử lý",
+    "en": "Claim"
+  },
+  "support.close": {
+    "vi": "Đóng yêu cầu",
+    "en": "Close request"
+  },
+  "support.empty": {
+    "vi": "Không có yêu cầu nào ở đây.",
+    "en": "No requests here."
+  },
+  "system.backfill": {
+    "vi": "Chuyển mã video cũ",
+    "en": "Older videos"
+  },
+  "system.backfillAgain": {
+    "vi": "Xếp tiếp",
+    "en": "Queue more"
+  },
+  "system.backfillBody": {
+    "vi": "Xếp hàng các video đã tải xong nhưng chưa có bản phát trực tuyến, cũ nhất trước, mỗi lượt tối đa {max} video. Chạy tiếp tới khi không còn video nào.",
+    "en": "Queues uploaded videos that have no streaming copy yet, oldest first, up to {max} per run. Run again until none is left."
+  },
+  "system.backfillConfirm": {
+    "vi": "Xếp hàng",
+    "en": "Queue"
+  },
+  "system.backfillTitle": {
+    "vi": "Chuyển mã video tải lên trước đây",
+    "en": "Build renditions for older videos"
+  },
+  "system.reminded": {
+    "vi": "Đã nhắc trong app",
+    "en": "Reminded in the app"
+  },
+  "system.rendition": {
+    "vi": "Chuyển mã video",
+    "en": "Video renditions"
+  },
+  "system.renditionNote": {
+    "vi": "Bản phát trực tuyến (display.mp4) · việc tạo trong 24 giờ qua",
+    "en": "Streaming copies (display.mp4) · jobs created in the last 24 hours"
+  },
+  "system.renditionRecent": {
+    "vi": "Việc lỗi, bỏ qua hoặc mất dấu gần đây",
+    "en": "Recent failed, skipped or lost jobs"
+  },
+  "system.renditionRecentEmpty": {
+    "vi": "Không có việc nào lỗi trong 24 giờ qua.",
+    "en": "No job failed in the last 24 hours."
+  },
+  "system.renditionStates": {
+    "vi": "Việc chuyển mã theo trạng thái",
+    "en": "Rendition jobs by state"
+  },
+  "system.requeueDone": {
+    "vi": "Đã xếp hàng lần {attempt} · việc {job}",
+    "en": "Queued attempt {attempt} · job {job}"
+  },
+  "system.uploadFailures": {
+    "vi": "Tải lên lỗi",
+    "en": "Upload failures"
+  },
+  "ntf.tplStatus.paused": {
+    "vi": "Tạm dừng",
+    "en": "Paused"
+  }
+}

@@ -50,6 +50,7 @@ Map<String, Object> _kept(
   KeptReason reason, {
   String requestId = 'req-kept',
   bool started = false,
+  AssistantReason? blockReason,
 }) => {
   _key('kept', teddyScope): jsonEncode(
     KeptInput(
@@ -59,6 +60,7 @@ Map<String, Object> _kept(
       reason: reason,
       at: assistantNow,
       started: started,
+      blockReason: blockReason,
     ).toJson(),
   ),
 };
@@ -867,7 +869,7 @@ void main() {
       expect(_text('Đã dùng hết 20/20 lượt · làm mới 01/11'), findsNothing);
       expect(_text('Đã hết lượt AI tháng này'), findsOneWidget);
       expect(tester.widget<TextField>(find.byType(TextField)).readOnly, isTrue);
-      expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsOneWidget);
+      expect(_text('Xem Premium để hỏi tiếp'), findsOneWidget);
       // Ready drafts still save at 0 credits (brief p.17); D-081 dropped the
       // footnote saying so.
       expect(
@@ -901,7 +903,7 @@ void main() {
           _text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'),
           findsOneWidget,
         );
-        expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
+        expect(_text('Xem Premium để hỏi tiếp'), findsNothing);
         expect(_text('Mở Hướng dẫn sức khoẻ'), findsOneWidget);
       },
     );
@@ -921,7 +923,7 @@ void main() {
         prefs: _kept('So với hôm qua?', KeptReason.blocked),
       );
       expect(_text('Hộ đã dùng hết lượt hỗ trợ AI kỳ này.'), findsOneWidget);
-      expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
+      expect(_text('Xem Premium để hỏi tiếp'), findsNothing);
       expect(_text('Xem Premium'), findsNothing);
       expect(_text('Hết lượt AI · vẫn ghi trực tiếp được'), findsOneWidget);
       expect(_text('Mở Hướng dẫn sức khoẻ'), findsOneWidget);
@@ -965,7 +967,7 @@ void main() {
           billingApiProvider.overrideWithValue(billing),
         ],
       );
-      await tester.tap(_text('Nâng cấp & tiếp tục câu hỏi'));
+      await tester.tap(_text('Xem Premium để hỏi tiếp'));
       for (var i = 0; i < 12; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
@@ -1029,11 +1031,11 @@ void main() {
           return true;
         },
       );
-      await tester.tap(_text('Nâng cấp & tiếp tục câu hỏi'));
+      await tester.tap(_text('Xem Premium để hỏi tiếp'));
       await tester.pumpAndSettle();
-      // Still blocked (the server did not grant yet): the button is now spent.
-      await tester.tap(_text('Nâng cấp & tiếp tục câu hỏi'));
-      await tester.pumpAndSettle();
+      // Still blocked (the server did not grant yet): the button is spent, so it goes
+      // (AI-3: never a disabled button with no reason).
+      expect(_text('Xem Premium để hỏi tiếp'), findsNothing);
       expect(opened, 1);
       expect(repo.named('quoteTask'), isEmpty);
       // Still kept, still blocked: nothing was charged or shown as answered.
@@ -1283,7 +1285,7 @@ void main() {
         expect(_text('Hãy liên hệ hỗ trợ y tế ngay'), findsOneWidget);
         // D-081: no "costs no credit" note on the health card.
         expect(_text('Không trừ lượt'), findsNothing);
-        expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
+        expect(_text('Xem Premium để hỏi tiếp'), findsNothing);
         await tester.tap(_text('Gọi 115'));
         await tester.pumpAndSettle();
         expect(dialled, ['115']);
@@ -1594,5 +1596,242 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
+  });
+
+  group('Flow audit 2026-10-26 (AI-1 … AI-9)', () {
+    testWidgets('AI-1: a region refusal keeps its reason and never locks the '
+        'composer', (tester) async {
+      final repo = FakeAssistantRepository(
+        error: {
+          'startTask': const AssistantException(
+            'failed-precondition',
+            reason: AssistantReason.regionUnsupported,
+          ),
+        },
+      );
+      await _pump(tester, repo: repo);
+      await _type(tester, 'Con hay quấy tối, nên làm gì?');
+      await _send(tester);
+      expect(_text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'), findsNothing);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).readOnly,
+        isFalse,
+      );
+      // A resend cannot help: the words can go back to the composer.
+      expect(_text('Sửa lại'), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      final kept = KeptInput.fromJson(
+        jsonDecode(prefs.getString(_key('kept', teddyScope))!),
+      )!;
+      expect(kept.reason, KeptReason.blocked);
+      expect(kept.blockReason, AssistantReason.regionUnsupported);
+      await tester.tap(_text('Sửa lại'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        'Con hay quấy tối, nên làm gì?',
+      );
+      expect(_text('Chưa gửi'), findsNothing);
+    });
+
+    testWidgets('AI-1: a kept refusal reopens as that refusal', (tester) async {
+      await _pump(
+        tester,
+        repo: FakeAssistantRepository(),
+        prefs: _kept(
+          'Thêm “mua bỉm” vào việc cần làm',
+          KeptReason.blocked,
+          blockReason: AssistantReason.moduleUnavailable,
+        ),
+      );
+      expect(_text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'), findsNothing);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).readOnly,
+        isFalse,
+      );
+    });
+
+    testWidgets('AI-2: after the reset the used-up card goes and "Gửi" resumes '
+        'the same request', (tester) async {
+      final repo = FakeAssistantRepository(usage: usageJson(used: 0));
+      await _pump(
+        tester,
+        repo: repo,
+        prefs: _kept(
+          'Hôm nay con bú thế nào?',
+          KeptReason.blocked,
+          requestId: 'req-blocked',
+          started: true,
+        ),
+      );
+      expect(_text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'), findsNothing);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).readOnly,
+        isFalse,
+      );
+      await tester.tap(_text('Gửi').first);
+      await tester.pumpAndSettle();
+      expect(repo.named('startTask').single.args['requestId'], 'req-blocked');
+    });
+
+    testWidgets('AI-4: no reset date known → "kỳ tới", never a blank date', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        repo: FakeAssistantRepository(
+          usage: {...usageJson(used: 20), 'resetsAt': null},
+        ),
+        prefs: _kept('Hôm nay con bú thế nào?', KeptReason.blocked),
+      );
+      expect(find.textContaining('Lượt mới có vào kỳ tới.'), findsOneWidget);
+      expect(find.textContaining('Credit'), findsNothing);
+    });
+
+    testWidgets('AI-5: a typed answer that did not go comes back to the box', (
+      tester,
+    ) async {
+      final repo = FakeAssistantRepository(
+        tasks: {
+          taskA: snapshotWith(
+            task: taskJson(
+              state: 'awaiting_clarification',
+              clarification: clarificationJson(),
+            ),
+          ),
+        },
+        error: {'submitClarification': const AssistantException('internal')},
+      );
+      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      await tester.tap(_text('Khác…'));
+      await tester.pumpAndSettle();
+      await _type(tester, '21:30 đến 6:00');
+      await _send(tester);
+      expect(repo.named('submitClarification'), hasLength(1));
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '21:30 đến 6:00',
+      );
+      // AI-7: about the answer, not a draft.
+      expect(
+        _text('Chưa gửi được câu trả lời. Chữ vẫn ở ô nhập, bạn thử lại nhé.'),
+        findsOneWidget,
+      );
+      expect(_text('Chưa lưu được. Bản nháp vẫn giữ nguyên.'), findsNothing);
+    });
+
+    testWidgets('AI-6: a timeout is "Đang kiểm tra…", then the same request id '
+        'again', (tester) async {
+      final repo = FakeAssistantRepository(
+        error: {'startTask': const AssistantException('timeout')},
+      );
+      await _pump(tester, repo: repo);
+      await _type(tester, '8 giờ con bú bình 120 ml');
+      await tester.tap(find.bySemanticsLabel('Gửi').last);
+      await tester.pump();
+      await tester.pump();
+      expect(_text('Đang kiểm tra…'), findsOneWidget);
+      expect(_text('Chưa gửi · đang ngoại tuyến'), findsNothing);
+      repo.error = null;
+      await tester.pump(AssistantChat.checkDelay);
+      await tester.pumpAndSettle();
+      final starts = repo.named('startTask');
+      expect(starts, hasLength(2));
+      expect(starts[1].args['requestId'], starts[0].args['requestId']);
+      expect(_text('Đang kiểm tra…'), findsNothing);
+    });
+
+    testWidgets('AI-6: a confirm after a timeout keeps its request id', (
+      tester,
+    ) async {
+      final repo = FakeAssistantRepository(
+        tasks: {taskA: batchSnapshot()},
+        error: {'confirmDrafts': const AssistantException('deadline-exceeded')},
+      );
+      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      await tester.tap(_text('Lưu 2 mục'));
+      await tester.pumpAndSettle();
+      expect(_text('Mạng chậm · đang kiểm tra lại…'), findsOneWidget);
+      repo.error = null;
+      await tester.pump(const Duration(seconds: 5));
+      await tester.tap(_text('Lưu 2 mục'));
+      await tester.pumpAndSettle();
+      final confirms = repo.named('confirmDrafts');
+      expect(confirms, hasLength(2));
+      expect(confirms[1].args['requestId'], confirms[0].args['requestId']);
+    });
+
+    testWidgets('AI-8: a refusal offers no endless "Thử lại"', (tester) async {
+      final repo = FakeAssistantRepository(
+        error: {'startTask': const AssistantException('resource-exhausted')},
+      );
+      await _pump(tester, repo: repo);
+      await _type(tester, 'Hôm nay con bú thế nào?');
+      await _send(tester);
+      expect(
+        _text(
+          'Mình chưa làm được việc này. Chưa có gì được lưu — bạn ghi trực tiếp nhé.',
+        ),
+        findsOneWidget,
+      );
+      expect(_text('Thử lại'), findsNothing);
+      expect(_text('Gửi lại'), findsNothing);
+      expect(_text('Sửa lại'), findsOneWidget);
+    });
+
+    testWidgets('AI-8: another member\'s failed question has no "Thử lại"', (
+      tester,
+    ) async {
+      final repo = FakeAssistantRepository(
+        tasks: {
+          taskA: snapshotWith(
+            task: {
+              ...sharedTaskJson(by: minh, state: 'failed'),
+              'errorCode': 'AI_UNAVAILABLE',
+            },
+            messages: [userMessage('8 giờ con bú bình 120 ml')],
+          ),
+        },
+      );
+      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      expect(
+        _text(
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.',
+        ),
+        findsOneWidget,
+      );
+      expect(_text('Thử lại'), findsNothing);
+    });
+
+    testWidgets(
+      'AI-9: a task that does not move says so, then offers a way out',
+      (tester) async {
+        final repo = FakeAssistantRepository(
+          tasks: {
+            taskA: snapshotWith(
+              task: taskJson(state: 'processing', version: 2),
+              messages: [userMessage('Hôm nay con bú thế nào?')],
+            ),
+          },
+        );
+        await _pump(tester, repo: repo, prefs: _thread([taskA]));
+        expect(_text('Lumi đang soạn…'), findsOneWidget);
+        await tester.pump(AssistantChat.slowAfter);
+        await tester.pump();
+        expect(_text('Lumi vẫn đang xử lý…'), findsOneWidget);
+        await tester.pump(AssistantChat.stuckAfter);
+        await tester.pump();
+        expect(
+          _text('Lumi đang lâu hơn thường lệ. Chưa có gì được lưu từ câu này.'),
+          findsOneWidget,
+        );
+        // The task finished meanwhile: "Kiểm tra lại" reads it.
+        repo.tasks[taskA] = batchSnapshot();
+        await tester.tap(_text('Kiểm tra lại'));
+        await tester.pumpAndSettle();
+        expect(_text('Lưu 2 mục'), findsOneWidget);
+        expect(_text('Lumi vẫn đang xử lý…'), findsNothing);
+      },
+    );
   });
 }

@@ -1,3 +1,5 @@
+import '../premium/premium_v2.dart';
+import 'video_quality_selector.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -33,7 +35,8 @@ import '../memories/memory_widgets.dart' show PlayGlyph;
 import '../memories/upload_queue.dart';
 import '../premium/billing_repository.dart' show videoQuotaProvider;
 import '../premium/premium_gate.dart';
-import '../premium/premium_repository.dart' show readCapabilities;
+import '../premium/premium_repository.dart'
+    show readCapabilities, capabilitiesProvider;
 import '../premium/premium_widgets.dart';
 import '../premium/purchase_resume.dart' show takeJustResumed;
 import 'keepsake_access.dart';
@@ -46,7 +49,6 @@ import 'keepsake_jobs.dart';
 import 'keepsake_live.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_preview.dart';
-import '../premium/premium_entries.dart';
 import 'keepsake_resume.dart' show keepVideoDraft;
 import 'milestone_card_screens.dart'
     show
@@ -100,6 +102,7 @@ class VideoDraft {
     String? message,
     Audience? audience,
     String? requestId,
+    bool newRequest = false,
     String? outputLocale,
   }) => VideoDraft(
     babyId: babyId,
@@ -109,7 +112,7 @@ class VideoDraft {
     title: title ?? this.title,
     message: message ?? this.message,
     audience: audience ?? this.audience,
-    requestId: requestId ?? this.requestId,
+    requestId: newRequest ? null : (requestId ?? this.requestId),
     outputLocale: outputLocale ?? this.outputLocale,
   );
 }
@@ -481,6 +484,7 @@ Future<void> playVideoTemplate(
     return use == null
         ? request
         : request.withUse(
+            useLabel: t.premium ? l10n.premiumUseTemplate : null,
             title: t.name.of(outputLocale),
             info: [
               l10n.ksVideoNeeds(t.photosMin, t.photosMax),
@@ -1695,6 +1699,8 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
     if (picked != null) setState(() => _music = picked);
   }
 
+  String? _quality;
+
   Future<void> _create(MemoryCtx c) async {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
@@ -1707,6 +1713,7 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
       final jobId = await ref
           .read(keepsakeJobRepositoryProvider)
           .request(
+            quality: videoExportQuality(ref, c.babyId, _quality),
             requestId: requestId,
             babyId: c.babyId,
             template: _d.template,
@@ -1748,6 +1755,13 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
       );
       ref.invalidate(videoQuotaProvider(c.babyId));
     } on KeepsakeJobException catch (e) {
+      if (e.reason == 'PREMIUM_REQUIRED' &&
+          videoQualityV2Enabled(ref, c.babyId)) {
+        ref.invalidate(familyPlanV2Provider(c.babyId));
+        ref.invalidate(capabilitiesProvider(c.babyId));
+        toaster.show(message: l10n.videoPremiumChanged, error: true);
+        return;
+      }
       if (e.reason == 'QUOTA_EXCEEDED') {
         // MO04 "Khi hết lượt": never a paywall by itself (brief p.10).
         ref.invalidate(videoQuotaProvider(c.babyId));
@@ -1757,9 +1771,10 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
         final caps = await readCapabilities(ref, c.babyId);
         if (!mounted) return;
         setState(() => _busy = false);
-        // E03 (D-101): Free → PW01, Premium → the refill date; the draft stays.
+        // D-124: a stale count-based backend must not trigger a v2 quota upsell.
         if (caps?.features.premiumV2 ?? false) {
-          await showVideoExportsUsed(context, ref, c.babyId);
+          // A v2 client reaching a legacy backend must never claim the unlimited plan is out.
+          toaster.show(message: l10n.toastActionFailed, error: true);
           return;
         }
         await showVideoQuotaSheet(
@@ -1792,6 +1807,8 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
     final cl = context.cl;
     final c = memoryCtx(context, ref);
     if (c == null) return const SizedBox.shrink();
+    ref.watch(familyPlanV2Provider(c.babyId));
+    ref.watch(capabilitiesProvider(c.babyId));
     final locale = Localizations.localeOf(context);
     final t = _d.template;
     final defaultTitle =
@@ -2059,10 +2076,19 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
                 ],
               ),
             ),
+            VideoQualitySelector(
+              babyId: c.babyId,
+              selection: _quality,
+              enabled: !_busy,
+              onChanged: (value) => setState(() {
+                _quality = value;
+                _d = _d.copyWith(newRequest: true);
+              }),
+            ),
             _BottomBar(
               note: l10n.ksVideoTakes,
               button: ClButton(
-                label: l10n.ksVideoCreate,
+                label: videoExportLabel(ref, c.babyId, _quality, l10n),
                 expand: true,
                 loading: _busy,
                 onPressed: _busy ? null : () => _create(c),
@@ -2102,6 +2128,7 @@ class _Fact extends StatelessWidget {
 String _reasonText(AppLocalizations l10n, String reason) => switch (reason) {
   'busy' => l10n.ksVideoErrBusy,
   'daily-limit' => l10n.ksVideoErrDaily,
+  'rate-limit' => l10n.videoRenderRateLimit,
   'quota-full' => l10n.ksVideoErrQuota,
   'photo-unavailable' => l10n.ksVideoErrPhoto,
   'template-unavailable' => l10n.ksVideoErrTemplate,

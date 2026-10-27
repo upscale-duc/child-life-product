@@ -196,9 +196,9 @@ describe('navigation', () => {
 describe('B01 articles list', () => {
   it('shows the counts, rows, status and re-review flags', () => {
     const html = text(render(<ArticlesBody view={articleView} onOpen={() => undefined} />));
-    expect(html).toContain('Đang trên app 9');
+    expect(html).toContain('Đang hiển thị trong ứng dụng 9');
     expect(html).toContain('Chờ duyệt 3');
-    expect(html).toContain('1 đã duyệt, chờ xuất bản');
+    expect(html).toContain('1 mục đã duyệt, chờ xuất bản');
     expect(html).toContain('Cần rà soát lại 1');
     expect(html).toContain('Giấc ngủ của bé sơ sinh');
     expect(html).toContain('0–3 tháng');
@@ -293,7 +293,7 @@ describe('B02 article editor', () => {
   it('edits the safe blocks and shows the app reader preview', () => {
     const html = editor(itemOf(fullArticle()));
     // The editor bar: back to the list, the title, the status, the next step.
-    expect(html).toContain('Thư viện chăm bé Giấc ngủ của bé sơ sinh Nháp');
+    expect(html).toContain('Thư viện chăm bé Giấc ngủ của bé sơ sinh Bản nháp');
     expect(html).toContain('Nội dung bài (4/60 khối)');
     for (const kind of ['Đoạn văn', 'Tiêu đề mục', 'Danh sách', 'Hộp lưu ý']) {
       expect(html).toContain(kind);
@@ -310,8 +310,8 @@ describe('B02 article editor', () => {
 
   it('a new article starts as an unsaved draft without workflow buttons', () => {
     const html = editor(null);
-    expect(html).toContain('Bài viết mới');
-    expect(html).toContain('Chưa lưu');
+    expect(html).toContain('Tạo bài viết');
+    expect(html).toContain('Có thay đổi chưa lưu');
     expect(html).not.toContain('Gửi duyệt');
   });
 
@@ -476,7 +476,7 @@ describe('B07 / B08 milestones', () => {
     const html = text(raw);
     // The no-judgement note sits behind the "?" of the reference-age column.
     expect(raw).toMatch(/Độ tuổi tham khảo<button[^>]*aria-label="Giải thích"/);
-    expect(html).toContain('Đang trên app 9');
+    expect(html).toContain('Đang hiển thị trong ứng dụng 9');
     expect(html.indexOf('Vận động')).toBeLessThan(html.indexOf('Cảm xúc – xã hội'));
     expect(html).toContain('1–3 tháng');
     expect(html).toContain('4–12 tuần');
@@ -498,7 +498,7 @@ describe('B07 / B08 milestones', () => {
         />,
       ),
     );
-    expect(html).toContain('Mốc mới');
+    expect(html).toContain('Tạo mốc phát triển');
     expect(html).toContain('Cách nhận biết');
     expect(html).toContain('Tham khảo: 1–3 tháng');
   });
@@ -536,7 +536,7 @@ describe('B03 / B04 review queue', () => {
     expect(html).toContain('Chờ duyệt 1 Kiểm tra và duyệt');
     expect(html).toContain('Đã duyệt 1 Chờ xuất bản lên app');
     expect(html).toContain('Cần rà soát lại 1 Quá 12 tháng từ lần duyệt');
-    expect(text(render(<ReviewSteps />))).toContain('Nháp Chờ duyệt Đã duyệt Đã xuất bản');
+    expect(text(render(<ReviewSteps />))).toContain('Bản nháp Chờ duyệt Đã duyệt Đã xuất bản');
     const published = text(
       render(<ReviewBody view={queue} onChanged={() => undefined} initialTab="approved" />),
     );

@@ -260,6 +260,7 @@ class ClOptionRow extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.subtitle,
+    this.detail,
     super.key,
   });
 
@@ -267,6 +268,9 @@ class ClOptionRow extends StatelessWidget {
   final String? subtitle;
   final bool selected;
   final VoidCallback onTap;
+
+  /// Optional visual under the subtitle (e.g. a small progress bar, AS07 weeks).
+  final Widget? detail;
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +294,10 @@ class ClOptionRow extends StatelessWidget {
                     subtitle!,
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                   ),
+                if (detail != null) ...[
+                  const SizedBox(height: ClSpace.s2),
+                  detail!,
+                ],
               ],
             ),
           ),

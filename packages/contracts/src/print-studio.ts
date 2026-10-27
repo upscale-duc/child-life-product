@@ -157,6 +157,16 @@ export const printExportRequestSchema = z.object({
   acknowledgeQuality: z.boolean(),
 });
 
+/**
+ * PR-1 (D-127 Q8): the print file is built by a background job the parent can leave. The request
+ * id makes a retried start return the same job.
+ */
+export const printExportJobRequestSchema = printExportRequestSchema.extend({
+  requestId: z.string().uuid(),
+});
+export const printExportJobStatuses = ['queued', 'rendering', 'ready', 'failed'] as const;
+export type PrintExportJobStatus = (typeof printExportJobStatuses)[number];
+
 /** Older preview builds used a deposit state. It now means an unconfirmed order. */
 export const normalizePrintStatus = (status: string): PrintOrderStatus =>
   status === 'awaitingDeposit' ? 'pendingConfirmation' : (status as PrintOrderStatus);

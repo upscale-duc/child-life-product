@@ -8,7 +8,6 @@ import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../app/navigation.dart' show OverlayTwin;
 import '../../app/route_guard.dart';
-import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/haptics.dart';
 import '../../core/design/tokens.g.dart';
@@ -312,7 +311,7 @@ class RemindersScreen extends ConsumerWidget {
                   else ...[
                     if (blocked) ...[
                       const SizedBox(height: ClSpace.s4),
-                      const _NotificationsOffCard(),
+                      NotificationsOffCard(message: l10n.remindersNotifOff),
                     ],
                     if (!parent) ...[
                       const SizedBox(height: ClSpace.s3),
@@ -424,14 +423,18 @@ class _Note extends StatelessWidget {
   }
 }
 
-/// 8d (127:13867): "Đã lưu nhắc việc. Chưa bật thông báo trên máy này." + "Cài đặt".
-class _NotificationsOffCard extends StatelessWidget {
-  const _NotificationsOffCard();
+/// 8d (127:13867): "Đã lưu nhắc việc. Chưa bật thông báo trên máy này." + "Cài đặt"; the
+/// same card on "Theo quy tắc" with its own line (NT-5).
+class NotificationsOffCard extends ConsumerWidget {
+  const NotificationsOffCard({required this.message, super.key});
+
+  final String message;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final asked = ref.watch(notificationsAskedProvider);
     return Container(
       padding: const EdgeInsets.fromLTRB(
         ClSpace.s4,
@@ -447,11 +450,15 @@ class _NotificationsOffCard extends StatelessWidget {
         children: [
           ClIcon(ClIcons.bell, size: 20, color: cl.colors.ink),
           const SizedBox(width: ClSpace.s3),
-          Expanded(child: Text(l10n.remindersNotifOff, style: cl.text.label)),
+          Expanded(child: Text(message, style: cl.text.label)),
+          // Never asked on this install: the system prompt can still show; afterwards only
+          // Settings can (NT-3).
           ClButton(
-            label: l10n.remindersOpenSettings,
+            label: asked ? l10n.remindersOpenSettings : l10n.ntTurnOn,
             style: ClButtonStyle.plain,
-            onPressed: openNotificationSettings,
+            onPressed: () => unawaited(
+              ref.read(notificationsEnabledProvider.notifier).turnOn(),
+            ),
           ),
         ],
       ),
@@ -900,8 +907,11 @@ Future<void> showReminderSheet(BuildContext context, {Reminder? edit}) async {
   if (saved != true || !context.mounted) return;
   if (edit == null) {
     // 8c: the reminder is saved first, then this device asks (R-092); the toast follows so
-    // it never covers the prompt's buttons.
-    await _maybeAsk(context, ProviderScope.containerOf(context));
+    // it never covers the prompt's buttons. Refused: it says so, with "Cài đặt" (NT-3).
+    if (await _maybeAsk(context, ProviderScope.containerOf(context))) {
+      showNotificationsRefused(toaster, l10n, message: l10n.remindersNotifOff);
+      return;
+    }
   }
   toaster.show(message: l10n.reminderSaved);
 }
@@ -1538,37 +1548,46 @@ class _Wheel extends StatelessWidget {
 
 // ---------- 8c pre-prompt ----------
 
-const _kAsked = 'reminders.notificationsAsked';
-
-/// Whether 8c has been shown on this device; 8d's card only appears after it (R-092).
-final notificationsAskedProvider = NotifierProvider<NotificationsAsked, bool>(
-  NotificationsAsked.new,
-);
-
-class NotificationsAsked extends Notifier<bool> {
-  @override
-  bool build() => ref.read(sharedPreferencesProvider).getBool(_kAsked) ?? false;
-
-  Future<void> mark() async {
-    await ref.read(sharedPreferencesProvider).setBool(_kAsked, true);
-    state = true;
+/// 8c after the first save on this device, or after moving a notification here (D-029):
+/// "Bật thông báo trên máy này?" → the OS prompt. Not when this install already asked, here,
+/// at launch or on EN03 (NT-3); afterwards 8d's card links to Settings. A refusal at the
+/// system prompt says so with "Cài đặt"; true when it was refused.
+Future<bool> maybeAskForNotifications(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final refused = await _maybeAsk(context, ProviderScope.containerOf(context));
+  if (refused && context.mounted) {
+    showNotificationsRefused(
+      ClToaster.of(context),
+      AppLocalizations.of(context),
+    );
   }
+  return refused;
 }
 
-/// 8c after the first save on this device, or after moving a notification here (D-029):
-/// "Bật thông báo trên máy này?" → the OS prompt. Asked once; afterwards 8d's card links to
-/// Settings.
-Future<void> maybeAskForNotifications(BuildContext context, WidgetRef ref) =>
-    _maybeAsk(context, ProviderScope.containerOf(context));
+/// The toast after a refusal at the system prompt: only system settings can turn them on now.
+void showNotificationsRefused(
+  ClToaster toaster,
+  AppLocalizations l10n, {
+  String? message,
+}) => toaster.show(
+  message: message ?? l10n.hnNotifDenied,
+  actionLabel: l10n.remindersOpenSettings,
+  onAction: () => unawaited(openNotificationSettings()),
+);
 
-Future<void> _maybeAsk(
+/// 8c itself; true when the person said "Bật" and the system prompt then refused.
+Future<bool> _maybeAsk(
   BuildContext context,
   ProviderContainer container,
 ) async {
   final enabled = container.read(notificationsEnabledProvider.notifier);
   await enabled.refresh();
-  if (container.read(notificationsEnabledProvider) == true) return;
-  if (container.read(notificationsAskedProvider) || !context.mounted) return;
+  if (container.read(notificationsEnabledProvider) == true) return false;
+  if (container.read(notificationsAskedProvider) || !context.mounted) {
+    return false;
+  }
   final l10n = AppLocalizations.of(context);
   final allow = await showClSheet<bool>(
     context: context,
@@ -1600,7 +1619,7 @@ Future<void> _maybeAsk(
     ),
   );
   await container.read(notificationsAskedProvider.notifier).mark();
-  if (allow == true) await enabled.request();
+  return allow == true && !await enabled.request();
 }
 
 // ---------- ReminderPeek (128:665) ----------

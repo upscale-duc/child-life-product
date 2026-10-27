@@ -473,7 +473,7 @@ void main() {
         expect(find.text(l10n.rhWeekGatePremium), findsOneWidget);
         expect(find.text(l10n.rhSleepSame), findsNothing);
         expect(find.text(l10n.rhWeekNotesTitle), findsNothing);
-        await _tap(tester, find.text(l10n.rhLearnMore));
+        await _tap(tester, find.text(l10n.pv2SeePremium));
         expect(visits.last.location, '${Routes.premium}?entry=rhythm');
       },
     );
@@ -488,7 +488,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.rhWeekGateOther), findsOneWidget);
-      expect(find.text(l10n.rhLearnMore), findsNothing);
+      expect(find.text(l10n.pv2SeePremium), findsNothing);
       await _tap(tester, find.text(l10n.rhWhy));
       expect(find.text(l10n.pmGateRegionTitle), findsOneWidget);
     });

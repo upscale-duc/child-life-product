@@ -497,7 +497,7 @@ class _FreeContent extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: RhLink(
-                          label: l10n.rhLearnMoreOptional,
+                          label: l10n.pv2SeePremium,
                           // PR01 entry A, only on tap (PS01F).
                           onTap: () =>
                               openPaywall(context, entry: PaywallEntry.rhythm),

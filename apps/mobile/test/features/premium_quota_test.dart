@@ -40,6 +40,7 @@ class _QuotaFull extends FakeKeepsakeJobs {
     required String message,
     Map<String, String> extra = const {},
     String locale = 'vi',
+    String quality = 'hd720',
     required Audience audience,
     required Occasion? occasion,
     ({String? id})? music,

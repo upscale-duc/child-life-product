@@ -105,11 +105,14 @@ enum ChatBlockKind {
 
 @immutable
 class ChatBlock {
-  const ChatBlock(this.kind, {this.quote});
+  const ChatBlock(this.kind, {this.quote, this.retry = true});
   final ChatBlockKind kind;
 
   /// The refusing quote (CH20 numbers).
   final AssistantQuote? quote;
+
+  /// AI-8: a failure "Thử lại" can fix (the server's `retryable`, a transport problem).
+  final bool retry;
 }
 
 /// Where the chosen photo stands on this phone (CH09 → CH10), before the task exists.
@@ -214,7 +217,8 @@ typedef PendingAnswer = ({String taskId, String text, int after});
 typedef _Fetched = ({TaskSnapshot? snapshot, bool gone, bool failed});
 
 /// What a person's action came to, for the toast the screen shows.
-enum ActionOutcome { ok, partial, offline, stale, failed, nothing }
+/// `unknown` (AI-6): no answer in time; the server may have done it, the chat reads it again.
+enum ActionOutcome { ok, partial, offline, stale, failed, unknown, nothing }
 
 @immutable
 class ChatState {
@@ -241,6 +245,9 @@ class ChatState {
     this.hasOlder = false,
     this.loadingOlder = false,
     this.olderFailed = false,
+    this.checking = false,
+    this.slow = const {},
+    this.stuck = const {},
   });
 
   final AssistantScope scope;
@@ -289,6 +296,15 @@ class ChatState {
 
   /// The last scroll up could not load them ("Thử lại" instead of asking again by itself).
   final bool olderFailed;
+
+  /// AI-6: the kept input's send got no answer in time; the same request id is asked again
+  /// ("Đang kiểm tra…"), never reported as offline or "nothing saved".
+  final bool checking;
+
+  /// AI-9: working tasks that are taking long ("Lumi vẫn đang xử lý…"), then ones that still
+  /// have not moved after the chat read them again (a card with a way out).
+  final Set<String> slow;
+  final Set<String> stuck;
 
   bool get empty =>
       threads.isEmpty &&
@@ -361,6 +377,9 @@ class ChatState {
     bool? hasOlder,
     bool? loadingOlder,
     bool? olderFailed,
+    bool? checking,
+    Set<String>? slow,
+    Set<String>? stuck,
   }) => ChatState(
     scope: scope,
     conversationId: clearConversation
@@ -388,6 +407,9 @@ class ChatState {
     hasOlder: hasOlder ?? this.hasOlder,
     loadingOlder: loadingOlder ?? this.loadingOlder,
     olderFailed: olderFailed ?? this.olderFailed,
+    checking: checking ?? this.checking,
+    slow: slow ?? this.slow,
+    stuck: stuck ?? this.stuck,
   );
 }
 
@@ -484,6 +506,7 @@ class AssistantChat extends Notifier<ChatState> {
     _uploader = ref.read(assistantUploaderProvider);
     _photos = ref.read(assistantPhotoCacheProvider);
     ref.onDispose(_closeAll);
+    ref.onDispose(() => _checkTimer?.cancel());
     ref.listen(assistantOnlineProvider, (prev, next) {
       if (prev?.value == false && next.value == true) unawaited(_reconnect());
     });
@@ -516,12 +539,28 @@ class AssistantChat extends Notifier<ChatState> {
       block: switch (kept?.reason) {
         null => null,
         KeptReason.offline => const ChatBlock(ChatBlockKind.offline),
-        KeptReason.failed => const ChatBlock(ChatBlockKind.failure),
-        KeptReason.blocked => const ChatBlock(ChatBlockKind.exhausted),
+        KeptReason.failed => ChatBlock(
+          ChatBlockKind.failure,
+          retry: kept!.retry,
+        ),
+        // AI-1: the refusal it was kept for (an older phone's kept input had none: used up).
+        KeptReason.blocked => _blockFor(
+          kept!.blockReason ?? AssistantReason.usageExhausted,
+        ),
         KeptReason.consent => const ChatBlock(ChatBlockKind.consent),
         KeptReason.photo => null,
       },
     );
+  }
+
+  /// The chat screen went away: no timer outlives it (the next [open] watches again).
+  void stopTimers() {
+    for (final t in _watchdogs.values) {
+      t.cancel();
+    }
+    _watchdogs.clear();
+    _checkTimer?.cancel();
+    _checkTimer = null;
   }
 
   void _closeAll() {
@@ -529,12 +568,26 @@ class AssistantChat extends Notifier<ChatState> {
       unawaited(s.cancel());
     }
     _subs.clear();
+    for (final t in _watchdogs.values) {
+      t.cancel();
+    }
+    _watchdogs.clear();
   }
 
   /// The screen opened: restore the open conversation (or [conversationId] from CH03) from the
   /// server's snapshots and read the household pool. Opening costs nothing.
   Future<void> open(String locale, {String? conversationId}) async {
     _locale = locale;
+    // A check stopped with the screen: the words wait for "Gửi lại" (same request id).
+    if (state.checking && _checkTimer == null) {
+      state = state.copyWith(
+        checking: false,
+        block: const ChatBlock(ChatBlockKind.failure),
+      );
+    }
+    for (final t in state.threads) {
+      _guard(t.taskId);
+    }
     if (_opened && conversationId == null) return;
     _opened = true;
     unawaited(refreshUsage());
@@ -775,14 +828,21 @@ class AssistantChat extends Notifier<ChatState> {
   Future<void> refreshUsage() async {
     try {
       final u = await _repo.usage(state.scope.babyId, locale: _locale);
-      if (u != null) state = state.copyWith(usage: u);
+      _setUsage(u);
     } on Object {
       // Unknown usage shows no number (never a static one).
     }
   }
 
   void _setUsage(AssistantUsage? u) {
-    if (u != null) state = state.copyWith(usage: u);
+    if (u == null) return;
+    // AI-2: after the monthly reset or an upgrade the pool has room again: the used-up card
+    // goes and the kept question offers "Gửi" (the same request id resumes it once).
+    final room = UsageView.of(u).level != UsageLevel.out;
+    state = state.copyWith(
+      usage: u,
+      clearBlock: room && state.block?.kind == ChatBlockKind.exhausted,
+    );
   }
 
   // ---------- Threads and live updates ----------
@@ -805,6 +865,53 @@ class AssistantChat extends Notifier<ChatState> {
     state = state.copyWith(threads: threads, clearPendingAnswer: arrived);
     final cursor = _cursors.putIfAbsent(id, EventCursor.new);
     cursor.accept(s.events);
+    _guard(id);
+  }
+
+  // ---------- AI-9: a task that does not move ----------
+
+  /// After this long working, the chat reads the task again and says "vẫn đang xử lý".
+  static const slowAfter = Duration(seconds: 20);
+
+  /// After this much longer, still working: a card with a way out (check again, cancel).
+  static const stuckAfter = Duration(seconds: 70);
+
+  final _watchdogs = <String, Timer>{};
+
+  void _guard(String taskId) {
+    final working = state.thread(taskId)?.snapshot?.task.state.working ?? false;
+    if (!working) {
+      _watchdogs.remove(taskId)?.cancel();
+      if (state.slow.contains(taskId) || state.stuck.contains(taskId)) {
+        state = state.copyWith(
+          slow: {...state.slow}..remove(taskId),
+          stuck: {...state.stuck}..remove(taskId),
+        );
+      }
+      return;
+    }
+    if (!ref.mounted || _watchdogs.containsKey(taskId)) return;
+    if (state.stuck.contains(taskId)) return;
+    final slow = state.slow.contains(taskId);
+    _watchdogs[taskId] = Timer(slow ? stuckAfter : slowAfter, () async {
+      await _refresh(taskId);
+      _watchdogs.remove(taskId);
+      if (!ref.mounted) return;
+      final still = state.thread(taskId)?.snapshot?.task.state.working ?? false;
+      if (!still) return;
+      state = slow
+          ? state.copyWith(stuck: {...state.stuck, taskId})
+          : state.copyWith(slow: {...state.slow, taskId});
+      _guard(taskId);
+    });
+  }
+
+  /// "Kiểm tra lại" on a task that has not moved: reads it again and keeps watching.
+  Future<void> checkTask(String taskId) async {
+    state = state.copyWith(stuck: {...state.stuck}..remove(taskId));
+    _watchdogs.remove(taskId)?.cancel();
+    await _refresh(taskId);
+    _guard(taskId);
   }
 
   void _dropThread(String taskId) {
@@ -851,7 +958,12 @@ class AssistantChat extends Notifier<ChatState> {
     if (!ref.mounted || _subs.containsKey(taskId)) return;
     _subs[taskId] = _repo
         .watchTask(taskId)
-        .listen((live) => onLive(taskId, live), onError: (Object _) {});
+        .listen(
+          (live) => onLive(taskId, live),
+          // AI-9: a listener that fails no longer leaves the thread as it was: the snapshot is
+          // read again (the watchdog keeps asking while the task works).
+          onError: (Object _) => unawaited(_refresh(taskId)),
+        );
   }
 
   /// One live update from Firestore (public for tests of the reconnect rules).
@@ -962,7 +1074,11 @@ class AssistantChat extends Notifier<ChatState> {
     AssistantReason.authRequired,
   };
 
-  ChatBlock _blockFor(AssistantReason? r, {bool offline = false}) {
+  ChatBlock _blockFor(
+    AssistantReason? r, {
+    bool offline = false,
+    bool retry = true,
+  }) {
     if (offline) return const ChatBlock(ChatBlockKind.offline);
     return ChatBlock(switch (r) {
       AssistantReason.usageExhausted => ChatBlockKind.exhausted,
@@ -976,8 +1092,12 @@ class AssistantChat extends Notifier<ChatState> {
       AssistantReason.authRequired => ChatBlockKind.notMember,
       AssistantReason.aiUnavailable || null => ChatBlockKind.failure,
       _ => ChatBlockKind.generic,
-    });
+    }, retry: retry);
   }
+
+  /// The refusals that keep the words as blocked (never "failed": the same answer each time).
+  static bool _refusal(AssistantReason? r) =>
+      r == AssistantReason.usageExhausted || _gates.contains(r);
 
   /// Send what the person typed (an explicit tap). Suggestions only prefill; nothing here runs
   /// by itself. The input is kept on the phone until a task exists for it.
@@ -986,12 +1106,14 @@ class AssistantChat extends Notifier<ChatState> {
   /// question, a draft waiting above, a record just saved — so typed words go to `startTask`
   /// (whose resolver routes them, whichever app or voice sent them; [openQuestion] is only the
   /// composer's hint). Only an explicit "Gõ câu trả lời" on a question answers it directly.
-  Future<void> send(String raw, {IntentHint? hint}) async {
+  ///
+  /// AI-5: an answer typed for a question returns how it went, so the screen can give the
+  /// words back when it did not go; a new task's words are kept here (the kept bubble).
+  Future<ActionOutcome> send(String raw, {IntentHint? hint}) async {
     final text = raw.trim();
-    if (text.isEmpty || state.sending) return;
+    if (text.isEmpty || state.sending) return ActionOutcome.nothing;
     if (state.answering case final taskId?) {
-      await answerText(taskId, text);
-      return;
+      return answerText(taskId, text);
     }
     final key = taskInputKey(
       conversationId: state.conversationId,
@@ -1014,23 +1136,48 @@ class AssistantChat extends Notifier<ChatState> {
     }
     _keep(kept);
     // Optimistic: my bubble and "Lumi đang soạn…" show at once, before any call returns.
-    state = state.copyWith(resumed: false, sending: true, clearBlock: true);
+    _checkTimer?.cancel();
+    state = state.copyWith(
+      resumed: false,
+      sending: true,
+      clearBlock: true,
+      checking: false,
+    );
     await _dispatch(kept, hint);
+    return ActionOutcome.ok;
   }
 
-  /// "Gửi" on the kept input (back online, after a failure).
+  /// "Gửi" on the kept input (back online, after a failure, or AI-2 once the pool has room
+  /// again: the same request id resumes a blocked start once).
   Future<void> sendKept() async {
     final kept = state.kept;
     if (kept == null || state.sending) return;
-    state = state.copyWith(sending: true, clearBlock: true);
+    _checkTimer?.cancel();
+    state = state.copyWith(sending: true, clearBlock: true, checking: false);
     await _dispatch(kept, null);
   }
+
+  /// "Sửa lại" on kept words a resend cannot help (a refusal, a request the server will not
+  /// take): they leave the thread and go back to the composer ([text] is returned).
+  String? takeKept() {
+    final kept = state.kept;
+    if (kept == null || state.sending) return null;
+    _checkTimer?.cancel();
+    _keep(null);
+    state = state.copyWith(clearBlock: true, checking: false);
+    return kept.text;
+  }
+
+  /// AI-6: how long the chat waits before asking again after a send got no answer in time.
+  static const checkDelay = Duration(seconds: 3);
+  Timer? _checkTimer;
 
   Future<void> _dispatch(
     KeptInput kept,
     IntentHint? hint, {
     bool resumed = false,
     int attempt = 0,
+    bool rechecked = false,
   }) async {
     if (!_online) {
       _keep(kept.copyWith(reason: KeptReason.offline));
@@ -1048,7 +1195,7 @@ class AssistantChat extends Notifier<ChatState> {
       );
       return;
     }
-    state = state.copyWith(sending: true, clearBlock: true);
+    state = state.copyWith(sending: true, clearBlock: true, checking: false);
     // An expense question stays private (D-075 #2: spending never enters the shared thread).
     final conversationId = kept.started
         ? kept.conversationId
@@ -1080,6 +1227,8 @@ class AssistantChat extends Notifier<ChatState> {
           state = state.copyWith(conversationId: c);
           _persistThread();
         }
+        final reason =
+            a.reason ?? snapshot?.task.error ?? AssistantReason.usageExhausted;
         _keep(
           KeptInput(
             text: kept.text,
@@ -1090,13 +1239,10 @@ class AssistantChat extends Notifier<ChatState> {
             resumeUsed: kept.resumeUsed,
             started: true,
             conversationId: conversationId,
+            blockReason: reason,
           ),
         );
-        state = state.copyWith(
-          block: _blockFor(
-            a.reason ?? snapshot?.task.error ?? AssistantReason.usageExhausted,
-          ),
-        );
+        state = state.copyWith(block: _blockFor(reason));
         return;
       }
       _addThread(snapshot, kept.text, requestId: kept.requestId);
@@ -1115,17 +1261,37 @@ class AssistantChat extends Notifier<ChatState> {
         await _dispatch(next, hint, resumed: resumed, attempt: 1);
         return;
       }
+      if (e.unknown && !rechecked) {
+        // AI-6: the server may have started it. Ask again with the same request id (the same
+        // task comes back if it exists), shown as "Đang kiểm tra…", never as offline.
+        _keep(kept.copyWith(reason: KeptReason.failed));
+        state = state.copyWith(checking: true);
+        _checkTimer?.cancel();
+        _checkTimer = Timer(checkDelay, () {
+          if (!ref.mounted || state.kept?.requestId != kept.requestId) return;
+          state = state.copyWith(sending: true, checking: false);
+          unawaited(_dispatch(kept, hint, resumed: resumed, rechecked: true));
+        });
+        return;
+      }
+      // AI-1: a refusal keeps its own reason (the region, the role, the switch, used up), so
+      // the composer locks only when the pool is really used up.
+      final reason = e.effectiveReason;
+      final refused = !e.offline && _refusal(reason);
       _keep(
         kept.copyWith(
           reason: e.offline
               ? KeptReason.offline
-              // A gate the quote used to report (consent, the switch, the region, the role).
-              : _gates.contains(e.reason)
+              : refused
               ? KeptReason.blocked
               : KeptReason.failed,
+          blockReason: refused ? reason : null,
+          retry: e.canRetry,
         ),
       );
-      state = state.copyWith(block: _blockFor(e.reason, offline: e.offline));
+      state = state.copyWith(
+        block: _blockFor(reason, offline: e.offline, retry: e.canRetry),
+      );
     } on Object {
       _keep(kept.copyWith(reason: KeptReason.failed));
       state = state.copyWith(block: const ChatBlock(ChatBlockKind.failure));
@@ -1136,10 +1302,14 @@ class AssistantChat extends Notifier<ChatState> {
 
   /// CH25 "Thử lại" on a task that failed (AI_UNAVAILABLE): its credits were released, so a new
   /// task for the same words never charges twice.
+  ///
+  /// AI-8: only my own question; another member's words in a shared thread are never re-sent
+  /// as mine.
   Future<void> retryTask(String taskId) async {
     final thread = state.thread(taskId);
     final text = thread?.userText;
     if (thread == null || text == null || state.sending) return;
+    if (!(thread.snapshot?.task.authoredBy(_uid) ?? true)) return;
     _dropThread(taskId);
     final kept = KeptInput(
       text: text,
@@ -1516,6 +1686,11 @@ class AssistantChat extends Notifier<ChatState> {
     state = state.copyWith(clearPhoto: true, clearBlock: true);
   }
 
+  String? get _uid {
+    final session = ref.mounted ? ref.read(sessionProvider) : null;
+    return session is SessionSignedIn ? session.user.uid : null;
+  }
+
   // ---------- Clarification (CH05) ----------
 
   /// L1 (P-167 #3): the task whose question the composer answers (my own latest, waiting).
@@ -1579,7 +1754,9 @@ class AssistantChat extends Notifier<ChatState> {
       return ActionOutcome.ok;
     } on AssistantException catch (e) {
       if (e.offline) return ActionOutcome.offline;
+      // The question as the server has it now (AI-6: a late answer may already be in).
       unawaited(_refresh(taskId));
+      if (e.unknown) return ActionOutcome.unknown;
       return e.reason == AssistantReason.invalidState
           ? ActionOutcome.stale
           : ActionOutcome.failed;
@@ -1629,10 +1806,17 @@ class AssistantChat extends Notifier<ChatState> {
     if (chosen.isEmpty) return ActionOutcome.nothing;
     if (!_online) return ActionOutcome.offline;
     final ids = {for (final d in chosen) d.id};
+    // AI-6: the same choice (drafts at their revisions) keeps one request id until the server
+    // answers, so a retry after a timeout is the same confirm, never a second save.
+    final confirmKey = ([
+      for (final d in chosen) '${d.id}@${d.revision}',
+    ]..sort()).join(',');
+    final requestId = _confirmIds.putIfAbsent(confirmKey, _newId);
     state = state.copyWith(
       saving: {...state.saving, ...ids},
       stale: {...state.stale}..removeAll(ids),
     );
+    var answered = true;
     try {
       final r = await _repo.confirm(
         taskId: taskId,
@@ -1641,7 +1825,7 @@ class AssistantChat extends Notifier<ChatState> {
           for (final d in chosen)
             ConfirmSelection(d.id, d.revision, acknowledge[d.id] ?? const []),
         ],
-        requestId: _newId(),
+        requestId: requestId,
         locale: _locale,
       );
       final thread = state.thread(taskId);
@@ -1661,7 +1845,13 @@ class AssistantChat extends Notifier<ChatState> {
       }
       return r.partial ? ActionOutcome.partial : ActionOutcome.ok;
     } on AssistantException catch (e) {
+      if (e.offline || e.unknown) answered = false;
       if (e.offline) return ActionOutcome.offline;
+      if (e.unknown) {
+        // The drafts as the server has them: saved ones show saved.
+        unawaited(_refresh(taskId));
+        return ActionOutcome.unknown;
+      }
       if (e.reason == AssistantReason.draftStale ||
           e.reason == AssistantReason.scopeChanged ||
           e.reason == AssistantReason.draftSaved) {
@@ -1675,11 +1865,15 @@ class AssistantChat extends Notifier<ChatState> {
       }
       return ActionOutcome.failed;
     } on Object {
+      answered = false;
       return ActionOutcome.failed;
     } finally {
+      if (answered) _confirmIds.remove(confirmKey);
       state = state.copyWith(saving: {...state.saving}..removeAll(ids));
     }
   }
+
+  final _confirmIds = <String, String>{};
 
   /// CH07 "Thử lại mục lỗi": only the failed items a retry can fix; saved ones are never sent
   /// again (no second record).

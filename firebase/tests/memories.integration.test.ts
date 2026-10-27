@@ -605,6 +605,18 @@ describe('Thiệp cột mốc saved to Kỷ niệm (D-068)', () => {
     ).rejects.toMatchObject({ reason: 'malformed' });
   });
 
+  it('v2 Free cannot save a Premium card through the legacy everyone catalog setting', async () => {
+    await db
+      .doc('config/flags')
+      .set({ media_upload: on(true), milestone_cards: on(true), premium_v2: on(true) });
+    await publish('everyone');
+    const blush = { ...generated, templateId: 'card_blush', templateVersion: 1 };
+    await expect(
+      createMemory(db, 'mom', request([photo(id('med'), 1000)], { generated: blush }), now),
+    ).rejects.toMatchObject({ reason: 'PREMIUM_REQUIRED' });
+    await createMemory(db, 'mom', request([photo(id('med'), 1000)], { generated }), now);
+  });
+
   it('only a published card at a published version, under the portal’s Cao cấp setting (D-068 #8)', async () => {
     await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(true) });
     const save = (g: Record<string, unknown>) =>

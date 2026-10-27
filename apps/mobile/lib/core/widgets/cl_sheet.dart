@@ -44,8 +44,16 @@ class ClSheetRoute<T> extends PopupRoute<T> {
     required this.reduceMotion,
     required this.theme,
     required this.barrierLabel,
+    this.customSurface = false,
+    this.scrimColor,
   });
 
+  /// The child owns its surface and safe-area padding (for branded sheets).
+  /// Motion, scrim, drag-to-dismiss and keyboard avoidance remain shared.
+  final bool customSurface;
+
+  /// Optional branded scrim; drag and transitions still animate its opacity.
+  final Color? scrimColor;
   final WidgetBuilder builder;
   final bool dismissible;
   final bool nightCare;
@@ -167,9 +175,11 @@ class ClSheetRoute<T> extends PopupRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    final scrimColor = ClTheme.of(
-      nightCare ? ClPalette.nightCare : ClPalette.light,
-    ).colors.scrim;
+    final scrimColor =
+        this.scrimColor ??
+        ClTheme.of(
+          nightCare ? ClPalette.nightCare : ClPalette.light,
+        ).colors.scrim;
     final slide = SlideTransition(
       position: Tween(
         begin: const Offset(0, 1),
@@ -252,19 +262,23 @@ class _SheetBodyState extends State<_SheetBody> {
           child: Container(
             key: _key,
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: cl.colors.surface,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(ClRadius.sheet),
-              ),
-              boxShadow: cl.shadows.sheet,
-            ),
-            padding: EdgeInsets.fromLTRB(
-              ClSpace.s4,
-              ClSpace.s2,
-              ClSpace.s4,
-              ClSpace.s6 + padding.bottom,
-            ),
+            decoration: widget.route.customSurface
+                ? null
+                : BoxDecoration(
+                    color: cl.colors.surface,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(ClRadius.sheet),
+                    ),
+                    boxShadow: cl.shadows.sheet,
+                  ),
+            padding: widget.route.customSurface
+                ? EdgeInsets.zero
+                : EdgeInsets.fromLTRB(
+                    ClSpace.s4,
+                    ClSpace.s2,
+                    ClSpace.s4,
+                    ClSpace.s6 + padding.bottom,
+                  ),
             child: SafeArea(top: false, bottom: false, child: widget.child),
           ),
         ),

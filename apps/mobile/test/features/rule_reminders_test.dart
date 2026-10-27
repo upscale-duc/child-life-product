@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
+import '../helpers/reminder_fixtures.dart';
 import '../helpers/router_pump.dart';
 import '../helpers/rule_fixtures.dart';
 
@@ -79,6 +80,44 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Nhắc bú'), findsNothing);
       expect(find.text('Thêm nhắc'), findsNothing);
+    });
+
+    testWidgets(
+      'NT-5: notifications off on this phone, the rules tab says so',
+      (tester) async {
+        final notifications = FakeReminderNotifications(on: false);
+        await pumpRouted(
+          tester,
+          const RemindersScreen(),
+          overrides: careOverrides(
+            rules: [feed, sleep],
+            notifications: notifications,
+          ),
+        );
+        await _rulesTab(tester);
+        expect(find.byKey(const Key('rule-notif-off')), findsOneWidget);
+        expect(
+          find.text(
+            'Máy này đang tắt thông báo nên nhắc theo quy tắc sẽ không hiện.',
+          ),
+          findsOneWidget,
+        );
+        // Never asked on this install: "Bật" shows the system prompt (NT-3).
+        await tester.tap(find.text('Bật'));
+        await tester.pumpAndSettle();
+        expect(notifications.requests, 1);
+        expect(find.byKey(const Key('rule-notif-off')), findsNothing);
+      },
+    );
+
+    testWidgets('NT-5: no card while notifications are on', (tester) async {
+      await pumpRouted(
+        tester,
+        const RemindersScreen(),
+        overrides: careOverrides(rules: [feed]),
+      );
+      await _rulesTab(tester);
+      expect(find.byKey(const Key('rule-notif-off')), findsNothing);
     });
 
     testWidgets('caregivers see the rules but cannot pause or add', (

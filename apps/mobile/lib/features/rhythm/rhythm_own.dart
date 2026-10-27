@@ -104,6 +104,9 @@ class OwnRhythmCard extends ConsumerWidget {
               summary == null
                   ? const ClSkeleton(height: 96)
                   : SleepFactsBlock(summary: summary, today: today)
+            // D-125: a plan not known yet is never a reason to show Premium.
+            else if (caps == null)
+              const ClSkeleton(height: 96)
             else
               _SleepGate(
                 reason:
@@ -621,7 +624,7 @@ class _SleepGate extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: RhLink(
-          label: premium ? l10n.rhLearnMore : l10n.rhWhy,
+          label: premium ? l10n.pv2SeePremium : l10n.rhWhy,
           onTap: () => premium
               ? openPaywall(context, entry: PaywallEntry.rhythm)
               : showGateSheet(context, reason),

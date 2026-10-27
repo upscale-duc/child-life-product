@@ -36,6 +36,7 @@ class _AiConsentScreenState extends ConsumerState<AiConsentScreen> {
     Future<void> Function(AiRepository repo) write, {
     required String done,
     bool pop = false,
+    VoidCallback? undo,
   }) async {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
@@ -46,6 +47,8 @@ class _AiConsentScreenState extends ConsumerState<AiConsentScreen> {
       toaster.show(message: done);
       if (pop) leaveRhythm(context);
     } on Object {
+      // AI-12: a switch that did not save goes back to what is saved.
+      if (mounted) undo?.call();
       toaster.show(message: l10n.aiConsentFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -163,6 +166,7 @@ class _AiConsentScreenState extends ConsumerState<AiConsentScreen> {
                     _run(
                       (r) => r.setConsent(shareMyNotes: v),
                       done: l10n.aiConsentSaved,
+                      undo: () => setState(() => _share = null),
                     );
                   }
                 },

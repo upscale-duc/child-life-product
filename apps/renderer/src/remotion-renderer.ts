@@ -1,3 +1,4 @@
+import { videoRenderScale } from '@child-life/contracts';
 import { renderMedia, renderStill, selectComposition, ensureBrowser } from '@remotion/renderer';
 import { cpus } from 'node:os';
 import { storyOf } from './compositions/registry';
@@ -11,9 +12,11 @@ import type { Renderer } from './job';
 export async function remotionRenderer(serveUrl: string): Promise<Renderer> {
   await ensureBrowser();
   return {
-    async render({ composition: id, props, video, poster, onProgress }) {
+    async render({ composition: id, props, quality, video, poster, onProgress }) {
       const composition = await selectComposition({ serveUrl, id, inputProps: props });
+      const scale = videoRenderScale(quality ?? 'fullHd1080');
       await renderMedia({
+        scale,
         composition,
         serveUrl,
         inputProps: props,
@@ -27,6 +30,7 @@ export async function remotionRenderer(serveUrl: string): Promise<Renderer> {
         onProgress: ({ progress }) => onProgress(progress),
       });
       await renderStill({
+        scale,
         composition,
         serveUrl,
         inputProps: props,
@@ -37,8 +41,8 @@ export async function remotionRenderer(serveUrl: string): Promise<Renderer> {
       });
       return {
         durationMs: Math.round((composition.durationInFrames / composition.fps) * 1000),
-        width: composition.width,
-        height: composition.height,
+        width: Math.round(composition.width * scale),
+        height: Math.round(composition.height * scale),
       };
     },
   };

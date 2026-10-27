@@ -86,7 +86,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       _changed.clear();
       toaster.show(message: l10n.pfSaved);
     } on Object {
-      toaster.show(message: l10n.toastSaveFailed);
+      toaster.show(message: l10n.profileSaveFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

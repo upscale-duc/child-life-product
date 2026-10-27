@@ -11,6 +11,7 @@ import {
   type KeepsakeJobInput,
 } from '@child-life/contracts';
 import {
+  getVideoQuota,
   attachKeepsakeLive,
   completeKeepsakeJob,
   deleteMemoryStory,
@@ -146,13 +147,11 @@ beforeEach(async () => {
 describe('requestMemoryStory', () => {
   for (const t of premium48Phase2().filter((t) => t.kind === 'video'))
     it(`phase 2 freezes ${t.id} fallback copy and collage slots in English`, async () => {
-      await db
-        .doc('publicConfig/keepsakes')
-        .set({
-          version: 'ks_p48_phase2',
-          templates: [...keepsakeSeedV1.templates, t],
-          premium: keepsakeSeedV1.premium,
-        });
+      await db.doc('publicConfig/keepsakes').set({
+        version: 'ks_p48_phase2',
+        templates: [...keepsakeSeedV1.templates, t],
+        premium: keepsakeSeedV1.premium,
+      });
       const tasks = new FakeDispatcher();
       const req = request({
         templateId: t.id,
@@ -595,5 +594,95 @@ describe('completion, retry and the sweeper', () => {
     expect(
       await reason(requestMemoryStory(db, null, 'mom', request({ musicId: 'music_nope' }), now)),
     ).toBe('music-unavailable');
+  });
+});
+
+// D-124 / reviewed Premium v2: quality is a server decision, counts are usage history only.
+describe('Premium v2 unlimited exports and quality', () => {
+  async function enable() {
+    await db.doc('config/flags').set({ premium_v2: on() }, { merge: true });
+  }
+  async function premium() {
+    await db.doc(`families/${familyId}/grants/promo_quality`).set({
+      familyId,
+      source: 'promo',
+      status: 'active',
+      environment: 'test',
+      capabilities: ['templates.premium', 'assistant.premium_budget'],
+      billingOwnerUid: null,
+      provider: 'staff',
+      sourceRef: null,
+      campaignId: 'quality',
+      autoRenew: null,
+      updatedAt: now,
+      validFrom: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+      validUntil: Timestamp.fromDate(new Date('2026-11-01T00:00:00Z')),
+    });
+  }
+  it('Free defaults to 720p even after the historical trial is exhausted', async () => {
+    await enable();
+    await db
+      .doc(`families/${familyId}/quota/video_trial_v2`)
+      .set({ limit: 2, used: 100, reserved: 0 });
+    const out = await requestMemoryStory(db, null, 'mom', request(), now, 'test');
+    const job = await db.doc(`babies/${babyId}/keepsakeJobs/${out.jobId}`).get();
+    expect(job.get('input.quality')).toBe('hd720');
+    expect((await getVideoQuota(db, 'mom', { babyId }, now, 'test')).unlimited).toBe(true);
+  });
+  it('Free cannot request Full HD or smuggle an invalid quality', async () => {
+    await enable();
+    expect(
+      await reason(
+        requestMemoryStory(db, null, 'mom', request({ quality: 'fullHd1080' }), now, 'test'),
+      ),
+    ).toBe('PREMIUM_REQUIRED');
+    expect(
+      await reason(requestMemoryStory(db, null, 'mom', request({ quality: '4k' }), now, 'test')),
+    ).toBe('malformed');
+    expect((await db.collection(`babies/${babyId}/keepsakeJobs`).get()).size).toBe(0);
+  });
+  it('Free cannot use a premium template even when the old catalog opens premium to all', async () => {
+    await enable();
+    await db.doc('publicConfig/keepsakes').set({
+      version: 'premium_policy',
+      premium: { access: 'everyone', badges: true },
+      templates: keepsakeSeedV1.templates.map((t) =>
+        t.id === 'video_first_month' ? { ...t, tier: 'premium' } : t,
+      ),
+    });
+    expect(
+      await reason(requestMemoryStory(db, null, 'mom', request({ quality: 'hd720' }), now, 'test')),
+    ).toBe('PREMIUM_REQUIRED');
+  });
+  it('Premium can choose either resolution; a retry after downgrade cannot re-render Full HD', async () => {
+    await enable();
+    await premium();
+    const out = await requestMemoryStory(
+      db,
+      null,
+      'mom',
+      request({ quality: 'fullHd1080' }),
+      now,
+      'test',
+    );
+    const ref = db.doc(`babies/${babyId}/keepsakeJobs/${out.jobId}`);
+    expect((await ref.get()).get('input.quality')).toBe('fullHd1080');
+    await ref.update({ status: 'failed' });
+    await db.doc(`families/${familyId}/grants/promo_quality`).update({ status: 'revoked' });
+    expect(
+      await reason(retryMemoryStory(db, null, 'mom', { babyId, jobId: out.jobId }, now, 'test')),
+    ).toBe('PREMIUM_REQUIRED');
+    await premium();
+    const hd = await requestMemoryStory(
+      db,
+      null,
+      'mom',
+      request({ quality: 'hd720' }),
+      now,
+      'test',
+    );
+    expect(
+      (await db.doc(`babies/${babyId}/keepsakeJobs/${hd.jobId}`).get()).get('input.quality'),
+    ).toBe('hd720');
   });
 });

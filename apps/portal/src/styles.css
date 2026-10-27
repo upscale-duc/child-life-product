@@ -3213,3 +3213,59 @@ button.aup-btn {
   flex: 1 1 320px;
   min-width: 0;
 }
+
+/* Portal readability review: keep every destination and operation, improve legibility. */
+.page {
+  min-width: 0;
+}
+.panel__note,
+.field__help {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.panel__head > div {
+  min-width: 0;
+}
+.panel__title {
+  overflow-wrap: anywhere;
+}
+.seg {
+  max-width: 100%;
+}
+.seg__item {
+  min-height: 36px;
+  white-space: normal;
+  text-align: start;
+}
+.table th {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.table td {
+  line-height: 1.6;
+}
+.table-scroll {
+  position: relative;
+  max-width: 100%;
+}
+.field__label {
+  line-height: 1.5;
+}
+.field__help {
+  max-width: 72ch;
+}
+@media (max-width: 767px) {
+  .panel {
+    padding: 16px;
+  }
+  .panel--flush {
+    padding: 0;
+  }
+  .page__actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .page__lead {
+    flex-wrap: wrap;
+  }
+}

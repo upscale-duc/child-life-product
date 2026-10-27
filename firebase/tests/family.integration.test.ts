@@ -200,6 +200,8 @@ describe('redeeming (15 → 16 → 16a)', () => {
     const second = await invite(mom);
     expect(await previewInvite(db, 'nanny', null, { code: second.code }, now)).toMatchObject({
       alreadyMember: true,
+      // FJ-5: a member learns which baby, so the app opens that one.
+      babyId,
     });
     expect(await reasonOf(join(nanny, second.code))).toBe('already-member');
 
@@ -505,7 +507,7 @@ describe('saving a temporary identity (16d, P-007)', () => {
       { anonymousIdToken: 'x'.repeat(40) },
       now,
     );
-    expect(result).toEqual({ moved: 1 });
+    expect(result).toEqual({ moved: 1, babyIds: [babyId] });
     expect((await db.doc(`babies/${babyId}/members/hoa`).get()).data()).toMatchObject({
       role: 'relative',
       status: 'active',

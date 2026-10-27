@@ -260,6 +260,24 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: null,
   ),
+  // Over the family quota with one unreadable file: a way out, no "Tạm dừng" (owner, 2026-10-26).
+  '10i_queue_quota': (
+    build: () => _Host((c, r, m) => showQueueSheet(c, r, m)),
+    overrides: () => _base(
+      repo: _refusing(),
+      store: MemoryQueueStore()
+        ..saved = [
+          _plainBatch('q', [
+            _item('IMG_4001.HEIC', QueueState.waitingQuota),
+            _item('IMG_4002.HEIC', QueueState.waitingQuota),
+            _item('IMG_4003.HEIC', QueueState.waitingQuota),
+            _item('IMG_4004.HEIC', QueueState.unreadable),
+          ]),
+        ],
+    ),
+    prefs: const {},
+    act: null,
+  ),
   '10a_pill_uploads_paused': (
     build: _tabWithPill,
     overrides: () => _base(

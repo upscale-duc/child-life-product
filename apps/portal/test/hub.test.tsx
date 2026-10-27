@@ -453,9 +453,9 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     ).length;
     expect(offRows).toBe(19);
     expect(t).toContain(`Đang bật ${listed.length - offRows} Đang tắt ${offRows} Beta 1`);
-    expect(t).toContain('Tất cả 29 Miễn phí 1 Premium 4 Beta 1 Kỹ thuật 23');
+    expect(t).toContain('Tất cả 29 Miễn phí 1 Premium 4 Beta 1 Công tắc hệ thống 23');
     expect(t).toContain('Tính năng Gói Ai được dùng Bật');
-    for (const old of ['Công tắc khẩn', 'Phát hành', 'Công tắc hệ thống']) {
+    for (const old of ['Công tắc khẩn', 'Phát hành']) {
       expect(t).not.toContain(old);
     }
     // Groups: the catalogue's areas and the switches' together, each once.
@@ -478,7 +478,7 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     // Gói: a select on catalogue rows, "Kỹ thuật" (not editable) on switches.
     expect(raw).toContain('aria-label="Gói của “Nhịp lớn lên”"');
     expect(raw).not.toContain(`aria-label="Gói của “${messages.vi['flag.invites']}”"`);
-    expect(t.match(/Kỹ thuật/g)?.length).toBe(24);
+    expect(t.match(/Công tắc hệ thống/g)?.length).toBe(24);
     // Ai được dùng: one control; Premium rows say who has it first.
     expect(raw).toContain('aria-label="Ai được dùng “Nhịp lớn lên”"');
     expect(raw).toContain(
@@ -487,10 +487,10 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     expect(raw).toContain(`aria-label="Ai được dùng “${messages.vi['flag.night_auto']}”"`);
     expect(t).toContain('Người có Premium');
     expect(t).toContain('Mọi gia đình');
-    expect(t).toContain('Theo % · 25%');
+    expect(t).toContain('Theo tỷ lệ · 25%');
     expect(t).toContain('Một số gia đình · 1');
     expect(t).toContain('Một số gia đình · 2');
-    expect(t).toContain('Thử nội bộ');
+    expect(t).toContain('Gia đình nội bộ');
     // Who has it beyond that: Premium families, the beta list, per-family choices.
     expect(t).toContain('12 gia đình Premium');
     expect(t).toContain('Bật riêng 1 · tắt riêng 0');
@@ -583,7 +583,7 @@ describe('Tính năng & Premium › Tính năng: one list (owner 2026-10-21)', (
     const sw = text(render(<SwitchDetail r={night} can={can} onScope={noop} onToggle={noop} />));
     expect(sw).toContain(messages.vi['flag.night_auto.desc']!);
     expect(sw).toContain(`Khi tắt: ${messages.vi['flag.night_auto.offEffect']}`);
-    expect(sw).toContain('Gói Kỹ thuật');
+    expect(sw).toContain('Gói Công tắc hệ thống');
     expect(sw).toContain('Một số gia đình · 2');
     expect(sw).toContain('F-ABCD');
     expect(sw).toContain('Minh Kỹ sư · 20/10');
@@ -785,7 +785,7 @@ describe('Tính năng & Premium › Gia đình', () => {
   it('the family card: one Free | Premium switch; per-feature settings behind Nâng cao', () => {
     const card = text(render(<HubFamilies initial={answer} now={now} />, ['admin']));
     expect(card).toContain(
-      'Gói của gia đình Premium toàn bộ · không thời hạn Đổi ngày kết thúc Free Premium',
+      'Gói của gia đình Premium toàn bộ · không thời hạn Đổi ngày kết thúc Miễn phí Premium',
     );
     expect(card).toContain('Tuỳ chỉnh riêng từng tính năng (nâng cao)');
     expect(card).not.toContain('Lý do');

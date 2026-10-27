@@ -103,6 +103,8 @@ export function quotaWindowId(
 
 /** What the app shows (MO04 "3 / 5 · 2 đã dùng · 1 đang giữ chỗ · làm mới …"). */
 export interface QuotaSnapshot {
+  /** D-124: counters are history, never an export allowance. */
+  unlimited?: boolean;
   limit: number;
   used: number;
   reserved: number;

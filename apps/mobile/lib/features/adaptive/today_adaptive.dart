@@ -695,11 +695,11 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
     );
     final showing = [
       for (final w in ranked)
-        if (w.visible) w,
+        if (w.visible && w.id != WidgetId.careDuty) w,
     ];
     final hidden = [
       for (final w in ranked)
-        if (!w.visible) w,
+        if (!w.visible && w.id != WidgetId.careDuty) w,
     ];
     final parent = me.role == MemberRole.coParent;
 
@@ -812,7 +812,15 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
                   key: const Key('axDone'),
                   onPressed: () {
                     if (_draft case final d?) {
-                      ref.read(experienceProvider(babyId).notifier).set(d);
+                      ref
+                          .read(experienceProvider(babyId).notifier)
+                          .set(
+                            d.copyWith(
+                              pinned: d.pinned
+                                  .where((w) => w != WidgetId.careDuty)
+                                  .toList(),
+                            ),
+                          );
                       for (final detail in customizeDetails(saved, d)) {
                         reportAdaptive(
                           ref,
@@ -898,6 +906,28 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
               ),
             ],
             const SizedBox(height: 20),
+            if (ranked.where((w) => w.id == WidgetId.careDuty).firstOrNull
+                case final duty?) ...[
+              _Label(l10n.hhHeaderSection),
+              _Group(
+                child: Row(
+                  children: [
+                    const SizedBox(width: ClSpace.s4),
+                    Expanded(
+                      child: Text(l10n.axWidgetCareDuty, style: cl.text.body),
+                    ),
+                    ClToggle(
+                      key: const Key('hhDutyVisibility'),
+                      value: duty.visible,
+                      semanticLabel: l10n.axWidgetCareDuty,
+                      onChanged: (v) => setVisible(WidgetId.careDuty, v),
+                    ),
+                    const SizedBox(width: ClSpace.s4),
+                  ],
+                ),
+              ),
+              const SizedBox(height: ClSpace.s6),
+            ],
             _Label(l10n.axShowing),
             // Long press anywhere on a row, or drag the handle (owner, 2026-10-24: hard to drag).
             AxReorderGroup<RankedWidget>(

@@ -22,38 +22,76 @@ import '../auth/auth_screens.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import 'family_repository.dart';
 
-/// P-007: the temporary identity already matches an account — sign into it, move the
-/// memberships server-side, and keep routing still until the babies show up.
-Future<void> mergeIntoExistingAccount(
+/// How [mergeIntoExistingAccount] ended (AU-1): the success toast is said only when true.
+enum MergeOutcome {
+  /// Signed into the account and its babies, the merged ones included, are here.
+  done,
+
+  /// Merged and signed in, but the babies have not arrived yet; routing keeps waiting.
+  arriving,
+
+  /// Merged, but this app could not sign in afterwards: sign in again.
+  signInAgain,
+}
+
+/// P-007: the temporary identity already matches an account — move the memberships there
+/// first (AU-1: the temporary identity is kept until that worked), then sign in, and keep
+/// routing still until the merged babies show up.
+Future<MergeOutcome> mergeIntoExistingAccount(
   ProviderContainer container, {
   String? email,
   String? password,
 }) async {
   final merging = container.read(accountMergeInProgressProvider.notifier)
     ..set(true);
+  var release = true;
   try {
-    await container
+    final result = await container
         .read(authRepositoryProvider)
         .mergeAnonymousInto(
           email: email,
           password: password,
-          claim: (token) =>
-              container.read(familyRepositoryProvider).claimAnonymous(token),
+          claim: (token, asAccount) => container
+              .read(familyRepositoryProvider)
+              .claimAnonymous(token, as: asAccount),
         );
-    final deadline = DateTime.now().add(const Duration(seconds: 8));
-    while (DateTime.now().isBefore(deadline)) {
+    if (!result.signedIn) return MergeOutcome.signInAgain;
+    bool arrived() {
       final session = container.read(sessionProvider);
-      if (session is SessionSignedIn &&
+      return session is SessionSignedIn &&
           !session.isAnonymous &&
-          session.hasBaby) {
-        break;
-      }
+          session.hasBaby &&
+          result.babyIds.every((id) => session.membershipFor(id) != null);
+    }
+
+    final deadline = DateTime.now().add(const Duration(seconds: 10));
+    while (DateTime.now().isBefore(deadline)) {
+      if (arrived()) return MergeOutcome.done;
       await Future<void>.delayed(const Duration(milliseconds: 200));
     }
+    // Slow network: keep routing still (no setup screen for an account that has babies)
+    // until they arrive, for a minute at most.
+    release = false;
+    unawaited(() async {
+      final until = DateTime.now().add(const Duration(minutes: 1));
+      while (!arrived() && DateTime.now().isBefore(until)) {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+      }
+      merging.set(false);
+    }());
+    return MergeOutcome.arriving;
   } finally {
-    merging.set(false);
+    if (release) merging.set(false);
   }
 }
+
+/// The toast for a merge that went through.
+String mergeMessage(AppLocalizations l10n, MergeOutcome outcome) =>
+    switch (outcome) {
+      MergeOutcome.done => l10n.saveAccountMerged,
+      MergeOutcome.arriving => l10n.saveAccountMergedArriving,
+      MergeOutcome.signInAgain => l10n.saveAccountMergedSignIn,
+    };
 
 /// 16d Lưu tài khoản (123:12712): Apple / Google / email / "Để sau" (R-031).
 Future<void> showSaveAccountSheet(BuildContext context, String babyNickname) =>
@@ -89,10 +127,12 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
       final linked = await ref
           .read(authRepositoryProvider)
           .saveAnonymousWithProvider(apple: apple);
-      if (!linked) await mergeIntoExistingAccount(container);
+      final merged = linked ? null : await mergeIntoExistingAccount(container);
       navigator.pop();
       toaster.show(
-        message: linked ? l10n.saveAccountDone : l10n.saveAccountMerged,
+        message: merged == null
+            ? l10n.saveAccountDone
+            : mergeMessage(l10n, merged),
       );
     } on AuthException catch (e) {
       if (mounted && e.failure != AuthFailure.cancelled) {
@@ -206,10 +246,11 @@ class _SaveAccountEmailScreenState
       ..setLanguage(Localizations.localeOf(context).languageCode);
     setState(() => _busy = true);
     try {
+      MergeOutcome? merged;
       if (_mode == EmailMode.create) {
         await repo.saveAnonymousWithEmail(email, password);
       } else {
-        await mergeIntoExistingAccount(
+        merged = await mergeIntoExistingAccount(
           container,
           email: email,
           password: password,
@@ -218,11 +259,12 @@ class _SaveAccountEmailScreenState
       if (!mounted) return;
       showClToast(
         context,
-        message: _mode == EmailMode.create
+        message: merged == null
             ? l10n.saveAccountDone
-            : l10n.saveAccountMerged,
+            : mergeMessage(l10n, merged),
       );
-      context.go(Routes.today);
+      // Signed out after a merge: the router opens sign-in.
+      if (merged != MergeOutcome.signInAgain) context.go(Routes.today);
     } on AuthException catch (e) {
       if (!mounted) return;
       if (e.failure == AuthFailure.emailInUse) {

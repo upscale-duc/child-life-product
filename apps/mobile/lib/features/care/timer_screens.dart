@@ -71,8 +71,10 @@ void openOrStartTimer(
         .read(careRepositoryProvider)
         .startTimer(
           CareTimer.start(type: type, me: me, now: DateTime.now(), side: side),
-          onError: (_) =>
-              toaster.show(message: l10n.careSaveFailed, error: true),
+          onError: (e) => toaster.show(
+            message: careWriteFailed(l10n, '', CareWrite.timer, e),
+            error: true,
+          ),
         );
   }
   final location = '${Routes.timer}/${type.name}';
@@ -126,11 +128,16 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
   CareRepository get _repo => ref.read(careRepositoryProvider);
 
-  void _failed(Object _) {
+  void _failed(Object e) {
     if (mounted) {
       showClToast(
         context,
-        message: AppLocalizations.of(context).careSaveFailed,
+        message: careWriteFailed(
+          AppLocalizations.of(context),
+          '',
+          CareWrite.timer,
+          e,
+        ),
         error: true,
       );
     }
@@ -161,15 +168,23 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       by: (uid: me.uid, author: CareAuthor.of(me)),
     );
     final toaster = ClToaster.of(context);
+    final repo = _repo;
+    // The screen is gone when the server answers: the toaster outlives it (SY-4).
+    void Function(Object) failed(CareWrite write) =>
+        (e) => toaster.show(
+          message: careWriteFailed(l10n, locale, write, e, record),
+          error: true,
+        );
     _leaving = true;
-    _repo.endTimer(timer, record, onError: _failed);
+    repo.endTimer(timer, record, onError: failed(CareWrite.create));
     ClHaptics.success();
     ref.read(lastSavedProvider.notifier).mark(record.type);
     context.popOrToday();
     toaster.show(
       message: l10n.savedToast(recordSummary(l10n, locale, record)),
       actionLabel: l10n.undo,
-      onAction: () => _repo.softDelete(record, me.uid),
+      onAction: () =>
+          repo.softDelete(record, me.uid, onError: failed(CareWrite.delete)),
     );
   }
 
@@ -205,8 +220,15 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       ),
     );
     if (confirmed != true || !mounted) return;
+    final toaster = ClToaster.of(context);
     _leaving = true;
-    _repo.cancelTimer(timer, onError: _failed);
+    _repo.cancelTimer(
+      timer,
+      onError: (e) => toaster.show(
+        message: careWriteFailed(l10n, '', CareWrite.timer, e),
+        error: true,
+      ),
+    );
     context.popOrToday();
   }
 

@@ -117,16 +117,19 @@ void commitRecord(
   if (me == null) return;
   // Toasts outlive the sheet (and a write that fails later).
   final toaster = ClToaster.of(context);
-  void failed(Object _) {
+  void Function(Object) failed(CareWrite write) => (e) {
     // FB5: no rating prompt after an error (D-065).
     ReviewSession.afterError = true;
-    toaster.show(message: l10n.careSaveFailed, error: true);
-  }
+    toaster.show(
+      message: careWriteFailed(l10n, locale, write, e, record),
+      error: true,
+    );
+  };
 
   if (isEdit) {
-    repo.edit(record, me.uid, onError: failed);
+    repo.edit(record, me.uid, onError: failed(CareWrite.edit));
   } else {
-    repo.create(record, onError: failed);
+    repo.create(record, onError: failed(CareWrite.create));
     // FB5: logs count towards "≥ 10 logs" and a full week of logs is a happy moment.
     unawaited(ref.read(reviewPrompterProvider).logged(DateTime.now()));
   }
@@ -139,7 +142,8 @@ void commitRecord(
     toaster.show(
       message: l10n.savedToast(recordSummary(l10n, locale, record)),
       actionLabel: l10n.undo,
-      onAction: () => repo.softDelete(record, me.uid, onError: failed),
+      onAction: () =>
+          repo.softDelete(record, me.uid, onError: failed(CareWrite.delete)),
     );
   }
 }
@@ -945,8 +949,16 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
           .endTimer(
             timer,
             record,
-            onError: (_) =>
-                toaster.show(message: l10n.careSaveFailed, error: true),
+            onError: (e) => toaster.show(
+              message: careWriteFailed(
+                l10n,
+                Localizations.localeOf(context).toLanguageTag(),
+                CareWrite.create,
+                e,
+                record,
+              ),
+              error: true,
+            ),
           );
       ClHaptics.success();
       ref.read(lastSavedProvider.notifier).mark(CareType.pump);

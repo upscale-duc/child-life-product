@@ -254,7 +254,7 @@ describe('Trợ lý AI › Mức dùng', () => {
     expect(t).toContain('2 hỗ trợ sức khoẻ · 2 bị chặn');
     expect(t).toContain('Tác vụ lỗi 4');
     expect(t).toContain('Mã lỗi nhiều nhất: OCR_UNREADABLE');
-    expect(t).toContain('Hộ hết credit 2');
+    expect(t).toContain('Gia đình đã dùng hết credit 2');
     expect(t).toContain('Credit đã tính 47');
     expect(t).toContain('9 đã trả lại · 1 đang giữ');
     expect(t).toContain('Miễn phí');
@@ -344,8 +344,8 @@ describe('Trợ lý AI › Mức dùng', () => {
     expect(m).toContain('actual-understanding-snapshot');
     expect(m).toContain('understand');
     expect(m).toContain('100 / 20');
-    expect(m).toContain('1 call chưa biết usage');
-    expect(m).toContain('2 call chưa đủ usage/đơn giá');
+    expect(m).toContain('1 lượt gọi chưa có dữ liệu sử dụng');
+    expect(m).toContain('2 lượt gọi chưa đủ dữ liệu hoặc đơn giá');
     expect(m).toContain('15.000 đ');
   });
 
@@ -465,7 +465,7 @@ describe('Trợ lý AI › Tra cứu tác vụ', () => {
         />,
       ),
     );
-    expect(h).toContain('Không giữ credit');
+    expect(h).toContain('Không tạm giữ credit');
     expect(h).toContain('Tác vụ này không có bản nháp.');
     expect(h).toContain('Tác vụ này không có ảnh.');
     expect(h).toContain('Chưa có sự kiện.');

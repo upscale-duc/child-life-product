@@ -666,6 +666,7 @@ List<Override> rhythmOverrides({
   List<String>? dialled,
   bool online = true,
   List<CareRecord> records = const [],
+  Stream<List<CareRecord>> Function()? recordsStream,
 
   /// The care log the sleep comparison reads (NL01 / NL07).
   List<CareRecord> sleepRecords = const [],
@@ -684,6 +685,7 @@ List<Override> rhythmOverrides({
     now: now ?? rhythmNow,
     online: online,
     records: records,
+    recordsStream: recordsStream,
     growth: growth,
     reminders: reminders,
     timers: timers,

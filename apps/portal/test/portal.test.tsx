@@ -436,15 +436,15 @@ describe('session (A01, D-043)', () => {
     const html = text(
       render(<SignInScreen actions={actions} notice="denied" pendingLink={false} />),
     );
-    expect(html).toContain('Không xem được ảnh, video, chú thích hay ghi chép');
+    expect(html).toContain('Không truy cập ảnh, video, chú thích hay ghi chép của gia đình');
     expect(html).toContain('Mật khẩu');
-    expect(html).toContain('Link qua email');
+    expect(html).toContain('Liên kết qua email');
     expect(html).toContain('Quên mật khẩu?');
     expect(html).not.toContain('30 phút'); // D-062: no idle sign-out
     expect(html).toContain('chưa được cấp quyền');
     expect(html).not.toMatch(/xác minh 2 bước/i);
     const pending = text(render(<SignInScreen actions={actions} notice={null} pendingLink />));
-    expect(pending).toContain('Nhập lại email');
+    expect(pending).toContain('Nhập email đã nhận liên kết');
     expect(pending).not.toContain('Quên mật khẩu?');
   });
 });
@@ -629,7 +629,7 @@ describe('A03 support', () => {
       />,
     );
     expect(empty).not.toContain('data-slot="table"');
-    expect(text(empty)).toContain('Không có yêu cầu nào ở đây.');
+    expect(text(empty)).toContain('Không có yêu cầu phù hợp với bộ lọc.');
   });
 
   it('a ticket: actions on top, account facts, diagnostics, then the reply box', () => {
@@ -696,7 +696,7 @@ describe('portal UX round 1 (owner, 2026-10-21)', () => {
     expect(html).not.toContain('page__title');
     expect(html).not.toContain('page__sub');
     // Outside the Shell (no header slot) the "i" joins the actions row.
-    expect(html).toContain('aria-label="Về trang này"');
+    expect(html).toContain('aria-label="Hướng dẫn trang này"');
     expect(html).not.toContain('Ghi chú của trang');
     expect(text(html)).toContain('Xuất Nội dung');
     // Nothing to put on top: the content starts right away.

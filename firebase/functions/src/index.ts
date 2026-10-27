@@ -16,6 +16,9 @@ import {
   renderPrintOrder,
   recoverPrintRenders,
   recordPrintSignal,
+  startPrintExport,
+  runPrintExport,
+  printExportUrl,
 } from './print-studio.js';
 import { engagementHealth } from './engagement-health.js';
 import { observeEngagementContent } from './engagement-observers.js';
@@ -2132,6 +2135,30 @@ export const printStudioSaveDraft = printCall((uid, data) =>
 );
 export const printStudioExport = printCall((uid, data) =>
   exportPrint(getFirestore(), printStore(), uid, data, new Date()),
+);
+// PR-1 (D-127 Q8): the print file as a background job with progress.
+export const printStudioExportStart = printCall((uid, data) =>
+  startPrintExport(getFirestore(), uid, data, new Date()),
+);
+export const printStudioExportUrl = printCall((uid, data) =>
+  printExportUrl(getFirestore(), printStore(), uid, data, new Date()),
+);
+export const runPrintStudioExport = onDocumentCreated(
+  {
+    document: 'babies/{babyId}/printExportJobs/{jobId}',
+    timeoutSeconds: 300,
+    memory: '1GiB',
+    concurrency: 1,
+  },
+  async (event) => {
+    await runPrintExport(
+      getFirestore(),
+      printStore(),
+      event.params.babyId,
+      event.params.jobId,
+      new Date(),
+    );
+  },
 );
 export const printStudioOrder = printCall((uid, data) =>
   createPrintOrder(getFirestore(), uid, data, new Date()),

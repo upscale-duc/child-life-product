@@ -1,9 +1,12 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design/tokens.g.dart';
+import '../../core/design/motion.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
@@ -23,10 +26,8 @@ enum PaywallFooter {
   premium,
 }
 
-/// PW01–PW08 (Figma 1021:17681…): headline and reason by entry, the six-card carousel opened at
-/// the entry's card, Free vs Premium with "Bạn đang cần" on the entry's row, the promises and
-/// the footer. The reason line shows only from an entry point (Note · PW01); opened on purpose
-/// (PW06) it has none and no tag. Numbers come from the plan config (`getFamilyPlan`).
+/// Reviewed Premium v2 (1153:5491): shared plans, five benefits with details, and a sticky
+/// payment summary. Contextual introductions live at the entry point. Config supplies prices.
 class PaywallV2View extends StatefulWidget {
   const PaywallV2View({
     required this.entry,
@@ -34,11 +35,12 @@ class PaywallV2View extends StatefulWidget {
     required this.babyName,
     required this.onClose,
     this.plan,
-    this.reason,
     this.vnd = true,
     this.storeName,
     this.managerName,
     this.busy = false,
+    this.busyLine,
+    this.onRetryPrice,
     this.onBuy,
     this.onRestore,
     this.onAskManager,
@@ -53,12 +55,16 @@ class PaywallV2View extends StatefulWidget {
   final String babyName;
   final FamilyPlanV2? plan;
 
-  /// What is waiting (the entry's work), shown under the headline; null when opened on purpose.
-  final String? reason;
   final bool vnd;
   final String? storeName;
   final String? managerName;
   final bool busy;
+
+  /// What is happening while [busy] ("Đang mở App Store…", "Đang xác nhận giao dịch…", P-4).
+  final String? busyLine;
+
+  /// Reloads the plan when its prices are unknown (P-3).
+  final VoidCallback? onRetryPrice;
   final VoidCallback onClose;
 
   /// Yearly (true) or monthly; only with [PaywallFooter.buy].
@@ -77,28 +83,32 @@ class PaywallV2View extends StatefulWidget {
 
 class _PaywallV2State extends State<PaywallV2View> {
   var _yearly = true;
-  late final PageController _pages = PageController(
-    // Component · Carousel: a 270 card centred in 375 with 12 between cards.
-    viewportFraction: 282 / 375,
-    initialPage: widget.entry.firstCard.index,
-  );
-  late int _page = widget.entry.firstCard.index;
+  final _scroll = ScrollController();
+  bool _scrolled = false;
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(() {
+      final scrolled = _scroll.offset > 4;
+      if (scrolled != _scrolled) setState(() => _scrolled = scrolled);
+    });
+  }
 
   @override
   void dispose() {
-    _pages.dispose();
+    _scroll.dispose();
     super.dispose();
   }
 
-  String _headline(AppLocalizations l10n) => switch (widget.entry) {
-    PremiumEntry.video => l10n.pv2HeadVideo(widget.babyName),
-    PremiumEntry.card => l10n.pv2HeadCard(widget.babyName),
-    PremiumEntry.lumi => l10n.pv2HeadLumi(widget.babyName),
-    PremiumEntry.rhythm => l10n.pv2HeadRhythm(widget.babyName),
-    PremiumEntry.storage => l10n.pv2HeadStorage,
-    PremiumEntry.caregivers => l10n.pv2HeadCaregivers(widget.babyName),
-    PremiumEntry.explore => l10n.pv2HeadExplore,
-  };
+  Future<void> _details(int index) => showPremiumDetails<void>(
+    context: context,
+    builder: (sheet) => _BenefitDetails(
+      initial: index,
+      free: widget.plan?.free ?? PlanOffer.free,
+      premium: widget.plan?.premiumOffer ?? PlanOffer.premium,
+      babyName: widget.babyName,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +116,19 @@ class _PaywallV2State extends State<PaywallV2View> {
     final plan = widget.plan;
     final free = plan?.free ?? PlanOffer.free;
     final premium = plan?.premiumOffer ?? PlanOffer.premium;
-    final price = widget.vnd
-        ? (plan?.priceVn ?? const PlanPrice(month: 59000, year: 599000))
-        : (plan?.priceIntl ?? const PlanPrice(month: 5.99, year: 49.99));
+    // P-3: no configured price → no price shown and no CTA, never "0đ" or a guessed one.
+    final price = plan?.price(vnd: widget.vnd);
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final explore = widget.entry == PremiumEntry.explore;
+    final benefits = _benefits(context, l10n, free, premium);
+    final equivalent = price == null
+        ? 0
+        : widget.vnd
+        ? (price.year / 12 / 100).floor() * 100
+        : (price.year / 12 * 100).floor() / 100;
+    final saving = price == null
+        ? 0
+        : (100 - price.year / (price.month * 12) * 100).round();
+    String money(num n) => premiumPrice(context, n, vnd: widget.vnd);
 
     // Dark page: white status bar; leaving it, the screen below applies its own again.
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -134,52 +152,108 @@ class _PaywallV2State extends State<PaywallV2View> {
             const Positioned(
               left: -120,
               top: -120,
-              child: _Glow(width: 420, height: 320, color: Color(0x332CBFB3)),
+              child: _Glow(width: 420, height: 320, color: Color(0x472EC4A6)),
             ),
             const Positioned(
               left: 150,
               top: 40,
-              child: _Glow(width: 360, height: 280, color: Color(0x26E9C77B)),
+              child: _Glow(width: 360, height: 280, color: Color(0x38E9C77B)),
             ),
             Column(
               children: [
                 Expanded(
-                  child: SafeArea(
-                    bottom: false,
-                    child: Column(
-                      children: [
-                        _TopBar(
-                          onClose: widget.onClose,
-                          onRestore: widget.busy ? null : widget.onRestore,
+                  child: Stack(
+                    children: [
+                      ListView(
+                        controller: _scroll,
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          MediaQuery.paddingOf(context).top + 49,
+                          16,
+                          24,
                         ),
-                        Expanded(
-                          child: ListView(
-                            padding: const EdgeInsets.only(bottom: ClSpace.s6),
-                            children: [
-                              _Head(
-                                headline: _headline(l10n),
-                                reason: explore ? null : widget.reason,
+                        children: [
+                          _Head(
+                            headline: l10n.pv2HeadExplore,
+                            reason: l10n.premiumSharedPlans,
+                          ),
+                          const SizedBox(height: 24),
+                          if (widget.footer == PaywallFooter.buy &&
+                              price == null)
+                            _PriceUnknown(onRetry: widget.onRetryPrice)
+                          else if (widget.footer == PaywallFooter.buy &&
+                              price != null) ...[
+                            Text(
+                              l10n.premiumChoosePlan,
+                              style: _premiumText(14, .75, FontWeight.w600),
+                            ),
+                            const SizedBox(height: 12),
+                            _PeriodTile(
+                              label: l10n.pv2PeriodYear,
+                              price: money(price.year),
+                              suffix: l10n.premiumYearSuffix,
+                              note: l10n.pv2PerMonthApprox(money(equivalent)),
+                              badge: saving > 0
+                                  ? l10n.premiumSavePercent(saving)
+                                  : null,
+                              selected: _yearly,
+                              onTap: widget.busy
+                                  ? null
+                                  : () => setState(() => _yearly = true),
+                            ),
+                            const SizedBox(height: 12),
+                            _PeriodTile(
+                              label: l10n.pv2PeriodMonth,
+                              price: money(price.month),
+                              suffix: l10n.premiumMonthSuffix,
+                              note: l10n.pv2EachMonth,
+                              selected: !_yearly,
+                              onTap: widget.busy
+                                  ? null
+                                  : () => setState(() => _yearly = false),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                          Text(
+                            l10n.premiumBenefits,
+                            style: _premiumText(14, .75, FontWeight.w600),
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: .06),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: .10),
                               ),
-                              const SizedBox(height: 12),
-                              _Carousel(
-                                controller: _pages,
-                                page: _page,
-                                onPage: (i) => setState(() => _page = i),
-                                free: free,
-                                premium: premium,
-                                babyName: widget.babyName,
-                              ),
-                              const SizedBox(height: 19),
-                              _Compare(
-                                free: free,
-                                premium: premium,
-                                need: explore ? null : widget.entry,
-                              ),
-                            ],
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            child: Column(
+                              children: [
+                                for (var i = 0; i < benefits.length; i++)
+                                  _BenefitRow(
+                                    benefit: benefits[i],
+                                    onTap: () => _details(i),
+                                    last: i == benefits.length - 1,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      ColoredBox(
+                        color: _scrolled
+                            ? PremiumPalette.deepTop
+                            : Colors.transparent,
+                        child: SafeArea(
+                          bottom: false,
+                          child: _TopBar(
+                            onClose: widget.onClose,
+                            onRestore: widget.busy ? null : widget.onRestore,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 _Footer(
@@ -190,14 +264,30 @@ class _PaywallV2State extends State<PaywallV2View> {
                   storeName: widget.storeName,
                   managerName: widget.managerName ?? l10n.pv2TheManager,
                   busy: widget.busy,
+                  busyLine: widget.busyLine,
                   bottom: bottom,
-                  onPeriod: (y) => setState(() => _yearly = y),
                   onBuy: widget.onBuy == null
                       ? null
                       : () => widget.onBuy!(_yearly),
                   onAskManager: widget.onAskManager,
                   onOpenPlan: widget.onOpenPlan,
                   onTerms: widget.onTerms,
+                  onDetails: () => showPremiumDetails<void>(
+                    context: context,
+                    builder: (sheet) => _PaymentDetails(
+                      yearly: _yearly,
+                      price: price,
+                      equivalent: equivalent,
+                      vnd: widget.vnd,
+                      storeName: widget.storeName,
+                      onBuy: widget.busy || widget.onBuy == null
+                          ? null
+                          : () {
+                              Navigator.of(sheet).pop();
+                              widget.onBuy!(_yearly);
+                            },
+                    ),
+                  ),
                   onPrivacy: widget.onPrivacy,
                 ),
               ],
@@ -217,238 +307,93 @@ class _Glow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IgnorePointer(
-    child: Container(
+    child: SizedBox(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
+      child: ImageFiltered(
+        imageFilter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.all(
+              Radius.elliptical(width / 2, height / 2),
+            ),
+          ),
+        ),
       ),
     ),
   );
 }
 
-/// "Top": close (34) at the left, "Khôi phục" at the right.
+// Values below follow the approved Premium Figma, separate from care-screen typography.
+TextStyle _premiumText(
+  double size,
+  double opacity, [
+  FontWeight weight = FontWeight.w500,
+]) => TextStyle(
+  fontFamily: 'Be Vietnam Pro Keepsake',
+  fontSize: size,
+  letterSpacing: 0,
+  height: 1.25,
+  color: Colors.white.withValues(alpha: opacity),
+  fontWeight: weight,
+);
+
 class _TopBar extends StatelessWidget {
   const _TopBar({required this.onClose, this.onRestore});
   final VoidCallback onClose;
   final VoidCallback? onRestore;
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-      child: SizedBox(
-        height: 44,
-        child: Row(
-          children: [
-            ClPressable(
-              onPressed: onClose,
-              semanticLabel: l10n.a11yClose,
-              child: SizedBox(
-                width: 44,
-                height: 44,
-                child: Center(
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.1),
-                      ),
-                    ),
-                    child: const ClIcon(
-                      ClIcons.close,
-                      size: 16,
-                      color: PremiumPalette.text,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(),
-            if (onRestore != null)
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Transform.translate(
+        offset: const Offset(0, -4),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
               ClPressable(
                 onPressed: onRestore,
-                semanticLabel: l10n.pv2Restore,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 4,
-                  ),
-                  child: Text(
-                    l10n.pv2Restore,
-                    style: const TextStyle(
-                      color: Color(0xB3FFFFFF),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                semanticLabel: l.pv2Restore,
+                child: SizedBox(
+                  height: 44,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l.pv2Restore,
+                      style: _premiumText(13, .6, FontWeight.w600),
                     ),
                   ),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// "Head": crest, headline (Playfair 21) and the reason line.
-class _Head extends StatelessWidget {
-  const _Head({required this.headline, this.reason});
-  final String headline;
-  final String? reason;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PremiumCrest(),
-        const SizedBox(height: 4),
-        Semantics(
-          header: true,
-          child: Text(
-            headline,
-            style: const TextStyle(
-              fontFamily: PremiumPalette.serif,
-              color: PremiumPalette.text,
-              fontSize: 21,
-              height: 1.18,
-            ),
-          ),
-        ),
-        if (reason case final r?) ...[
-          const SizedBox(height: 4),
-          Text(
-            r,
-            style: const TextStyle(
-              color: PremiumPalette.textMuted,
-              fontSize: 12,
-              height: 1.4,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ],
-    ),
-  );
-}
-
-/// Component · Premium · Carousel (1020:17765): on the 375 frame the card in view is 270 wide
-/// (0.9 of the 300 card) and the ones beside it 228 (0.76) at 35 % opacity, the rest hidden. On
-/// a phone the same share of the width (270 / 375), so a 430 screen shows a 310 card (owner,
-/// 2026-10-25: "card nhỏ"). The scale follows the swipe ("vuốt có hiệu ứng", PV00B) and so does
-/// the point it scales from, so nothing jumps when the card settles. Dots: the active one a pill.
-class _Carousel extends StatelessWidget {
-  const _Carousel({
-    required this.controller,
-    required this.page,
-    required this.onPage,
-    required this.free,
-    required this.premium,
-    required this.babyName,
-  });
-
-  final PageController controller;
-  final int page;
-  final ValueChanged<int> onPage;
-  final PlanOffer free;
-  final PlanOffer premium;
-  final String babyName;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    // 270 of 375 in the frame; never wider than 340 (tablets).
-    final shown = (width * 270 / 375).clamp(240.0, 340.0);
-    final big = shown / 300;
-    final small = big * 228 / 270;
-    return Column(
-      children: [
-        SizedBox(
-          // The tallest card (Dung lượng / Người chăm, 298) at the shown scale.
-          height: 300 * big,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              // The card's glow and depth, drawn once behind the centre slot (never scaled).
-              IgnorePointer(
-                child: Container(
-                  width: shown,
-                  height: 280 * big,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: _cardShadow,
-                  ),
-                ),
-              ),
-              PageView.builder(
-                controller: controller,
-                clipBehavior: Clip.none,
-                itemCount: PremiumCard.values.length,
-                onPageChanged: onPage,
-                itemBuilder: (context, i) => AnimatedBuilder(
-                  animation: controller,
-                  builder: (context, child) {
-                    final current =
-                        controller.hasClients &&
-                            controller.position.hasContentDimensions
-                        ? (controller.page ?? page.toDouble())
-                        : page.toDouble();
-                    final d = (i - current).abs().clamp(0.0, 2.0);
-                    final t = d.clamp(0.0, 1.0);
-                    final scale = big - (big - small) * t;
-                    final opacity = d >= 2
-                        ? 0.0
-                        : (d <= 1 ? 1 - 0.65 * t : 0.35 * (2 - d));
-                    if (opacity <= 0) return const SizedBox.shrink();
-                    // Smooth swipe (owner, 2026-10-25): the card is recorded once (RepaintBoundary)
-                    // and only moved / scaled; the dimming is a scrim painted on top in the page's
-                    // own colour instead of an opacity layer, and there is no blurred shadow to
-                    // rasterise again at every scale.
-                    return Transform.scale(
-                      scale: scale,
-                      // Beside the current card the smaller one keeps the 12 gap on its near
-                      // side; the origin slides with the swipe (left → centre → right), so the
-                      // settled card is exactly where it was while moving.
-                      alignment: Alignment(-(i - current).clamp(-1.0, 1.0), -1),
-                      child: Stack(
-                        children: [
-                          child!,
-                          if (opacity < 1)
-                            Positioned.fill(
-                              child: IgnorePointer(
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: PremiumPalette.deep.withValues(
-                                      alpha: 1 - opacity,
-                                    ),
-                                    borderRadius: BorderRadius.circular(26),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: OverflowBox(
-                    alignment: Alignment.topCenter,
-                    minWidth: 300,
-                    maxWidth: 300,
-                    maxHeight: 340,
-                    child: RepaintBoundary(
-                      child: PremiumFeatureCard(
-                        card: PremiumCard.values[i],
-                        free: free,
-                        premium: premium,
-                        babyName: babyName,
-                        shadow: false,
+              const Spacer(),
+              Transform.translate(
+                offset: const Offset(5, 0),
+                child: ClPressable(
+                  onPressed: onClose,
+                  semanticLabel: l.a11yClose,
+                  child: SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Center(
+                      child: Container(
+                        width: 34,
+                        height: 34,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: .06),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: .1),
+                          ),
+                        ),
+                        child: const ClIcon(
+                          ClIcons.close,
+                          size: 16,
+                          color: PremiumPalette.text,
+                        ),
                       ),
                     ),
                   ),
@@ -457,11 +402,64 @@ class _Carousel extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 14),
-        _Dots(count: PremiumCard.values.length, active: page),
-      ],
+      ),
     );
   }
+}
+
+class _Head extends StatelessWidget {
+  const _Head({required this.headline, this.reason});
+  final String headline;
+  final String? reason;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Row(
+        children: [
+          Transform.rotate(
+            angle: .785398,
+            child: const SizedBox(
+              width: 7,
+              height: 7,
+              child: ColoredBox(color: PremiumPalette.gold),
+            ),
+          ),
+          const SizedBox(width: 13),
+          Text(
+            AppLocalizations.of(context).pv2Crest,
+            style: const TextStyle(
+              fontFamily: 'Be Vietnam Pro Keepsake',
+              color: PremiumPalette.gold,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 2.42,
+              height: 1.25,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 6),
+      Semantics(
+        header: true,
+        child: Text(
+          headline,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontFamily: PremiumPalette.serif,
+            fontWeight: FontWeight.w400,
+            fontSize: 24,
+            height: 1.33,
+            color: PremiumPalette.text,
+          ),
+        ),
+      ),
+      if (reason != null) ...[
+        const SizedBox(height: 6),
+        Text(reason!, textAlign: TextAlign.center, style: _premiumText(13, .7)),
+      ],
+    ],
+  );
 }
 
 class _Dots extends StatelessWidget {
@@ -476,10 +474,10 @@ class _Dots extends StatelessWidget {
       children: [
         for (var i = 0; i < count; i++)
           AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: context.motion(ClMotion.quick),
             margin: EdgeInsets.only(left: i == 0 ? 0 : 6),
-            width: i == active ? 22 : 6,
-            height: 6,
+            width: i == active ? 22 : 7,
+            height: 7,
             decoration: BoxDecoration(
               color: i == active
                   ? PremiumPalette.gold
@@ -498,8 +496,8 @@ const _goldText = TextStyle(color: PremiumPalette.gold);
 
 /// Thẻ tính năng's glow + depth (0 0 28 gold 18 %, 0 16 32 black 55 %).
 const _cardShadow = [
-  BoxShadow(color: Color(0x2EE8BF66), blurRadius: 28),
   BoxShadow(color: Color(0x8C000000), blurRadius: 32, offset: Offset(0, 16)),
+  BoxShadow(color: Color(0x2EE8BF66), blurRadius: 28),
 ];
 const _white92 = Color(0xEBFFFFFF);
 
@@ -511,11 +509,15 @@ class PremiumFeatureCard extends StatelessWidget {
     required this.premium,
     this.babyName = '',
     this.shadow = true,
+    this.detail = false,
     super.key,
   });
 
   /// The carousel draws the glow once behind its centre slot instead (smooth swipe).
   final bool shadow;
+
+  /// The reviewed benefit sheet shows only the illustration, eyebrow and title.
+  final bool detail;
   final PremiumCard card;
   final PlanOffer free;
   final PlanOffer premium;
@@ -560,21 +562,28 @@ class PremiumFeatureCard extends StatelessWidget {
         l10n.pv2CardCaregiversEyebrow,
         l10n.pv2CardCaregiversTitle,
         l10n.pv2CardCaregiversBody,
-        l10n.pv2CardCaregiversLimit(
-          premium.caregiverSeats,
-          free.caregiverSeats,
-        ),
+        l10n.premiumSeatsCardLimit(premium.caregiverSeats, free.caregiverSeats),
       ),
+    };
+    final shownEyebrow = detail && card == PremiumCard.lumi
+        ? l10n.premiumLumiListTitle.toUpperCase()
+        : eyebrow;
+    final detailTitle = switch (card) {
+      PremiumCard.lumi => l10n.premiumLumiDetailTitle,
+      PremiumCard.rhythm => l10n.premiumRhythmDetailTitle,
+      _ => title,
     };
     final name = babyName.isEmpty ? 'Teddy' : babyName;
     return Semantics(
       container: true,
-      label: '$eyebrow. $title. $body. $limit',
+      label: detail
+          ? '$shownEyebrow. $detailTitle'
+          : '$eyebrow. $title. $body. $limit',
       excludeSemantics: true,
       child: Container(
         width: 300,
         // Figma's 1.2 stroke sits inside the 12 padding: the demo panel stays 276 wide.
-        padding: const EdgeInsets.all(12 - 1.2),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(26),
           border: Border.all(
@@ -592,22 +601,117 @@ class PremiumFeatureCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 276,
+            SizedBox(
               height: 156,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.28),
-                borderRadius: BorderRadius.circular(18),
+              child: OverflowBox(
+                alignment: Alignment.topLeft,
+                minWidth: 276,
+                maxWidth: 276,
+                minHeight: 156,
+                maxHeight: 156,
+                child: Container(
+                  width: 276,
+                  height: 156,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    // Exported Vietnamese panels already contain Figma's 28% black fill.
+                    color:
+                        Localizations.localeOf(context).languageCode == 'vi' &&
+                            card != PremiumCard.card
+                        ? Colors.transparent
+                        : Colors.black.withValues(alpha: 0.28),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: SizedBox(
+                      width: 276,
+                      height: 156,
+                      child: MediaQuery.withNoTextScaling(
+                        child: switch (card) {
+                          PremiumCard.video
+                              when Localizations.localeOf(
+                                    context,
+                                  ).languageCode ==
+                                  'vi' =>
+                            Image.asset(
+                              'assets/premium/keepsakes-demo-vi.png',
+                              width: 276,
+                              height: 156,
+                              excludeFromSemantics: true,
+                            ),
+                          PremiumCard.video => Row(
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: _CardDemo(name: name, single: true),
+                              ),
+                              Expanded(
+                                child: FittedBox(
+                                  child: SizedBox(
+                                    width: 276,
+                                    height: 156,
+                                    child: _VideoDemo(name: name),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          PremiumCard.card => _CardDemo(name: name),
+                          PremiumCard.lumi
+                              when Localizations.localeOf(
+                                    context,
+                                  ).languageCode ==
+                                  'vi' =>
+                            Image.asset(
+                              'assets/premium/lumi-demo-vi.png',
+                              width: 276,
+                              height: 156,
+                              excludeFromSemantics: true,
+                            ),
+                          PremiumCard.lumi => const _LumiDemo(),
+                          PremiumCard.rhythm
+                              when Localizations.localeOf(
+                                    context,
+                                  ).languageCode ==
+                                  'vi' =>
+                            Image.asset(
+                              'assets/premium/rhythm-demo-vi.png',
+                              width: 276,
+                              height: 156,
+                              excludeFromSemantics: true,
+                            ),
+                          PremiumCard.rhythm => const _RhythmDemo(),
+                          PremiumCard.storage
+                              when Localizations.localeOf(
+                                    context,
+                                  ).languageCode ==
+                                  'vi' =>
+                            Image.asset(
+                              'assets/premium/storage-demo-vi.png',
+                              width: 276,
+                              height: 156,
+                              excludeFromSemantics: true,
+                            ),
+                          PremiumCard.storage => const _StorageDemo(),
+                          PremiumCard.caregivers
+                              when Localizations.localeOf(
+                                    context,
+                                  ).languageCode ==
+                                  'vi' =>
+                            Image.asset(
+                              'assets/premium/caregivers-demo-vi.png',
+                              width: 276,
+                              height: 156,
+                              excludeFromSemantics: true,
+                            ),
+                          PremiumCard.caregivers => const _CaregiversDemo(),
+                        },
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: switch (card) {
-                PremiumCard.video => _VideoDemo(name: name),
-                PremiumCard.card => _CardDemo(name: name),
-                PremiumCard.lumi => const _LumiDemo(),
-                PremiumCard.rhythm => const _RhythmDemo(),
-                PremiumCard.storage => const _StorageDemo(),
-                PremiumCard.caregivers => const _CaregiversDemo(),
-              },
             ),
             const SizedBox(height: 10),
             Padding(
@@ -616,41 +720,49 @@ class PremiumFeatureCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    eyebrow,
+                    shownEyebrow,
                     style: _goldText.copyWith(
+                      fontFamily: 'Be Vietnam Pro Keepsake',
                       fontSize: 9,
+                      height: 11 / 9,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.44,
                     ),
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    title,
+                    detail ? detailTitle : title,
                     style: const TextStyle(
                       fontFamily: PremiumPalette.serif,
+                      fontWeight: FontWeight.w400,
                       color: _white92,
                       fontSize: 17,
-                      height: 1.18,
+                      height: 20 / 17,
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    body,
-                    style: const TextStyle(
-                      color: Color(0xA8FFFFFF),
-                      fontSize: 12,
-                      height: 1.42,
-                      fontWeight: FontWeight.w500,
+                  if (!detail) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      body,
+                      style: const TextStyle(
+                        color: Color(0xA8FFFFFF),
+                        fontFamily: 'Be Vietnam Pro Keepsake',
+                        fontSize: 12,
+                        height: 17 / 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    limit,
-                    style: _goldText.copyWith(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
+                    const SizedBox(height: 3),
+                    Text(
+                      limit,
+                      style: _goldText.copyWith(
+                        fontFamily: 'Be Vietnam Pro Keepsake',
+                        fontSize: 11,
+                        height: 14 / 11,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -725,6 +837,7 @@ class _VideoDemo extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: PremiumPalette.serif,
+                        fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF3B3329),
                         fontSize: 10,
@@ -791,6 +904,7 @@ class _VideoDemo extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: PremiumPalette.serif,
+                        fontWeight: FontWeight.w400,
                         color: Colors.white,
                         fontSize: 11,
                         height: 1.2,
@@ -851,7 +965,8 @@ class _VideoDemo extends StatelessWidget {
 }
 
 class _CardDemo extends StatelessWidget {
-  const _CardDemo({required this.name});
+  const _CardDemo({required this.name, this.single = false});
+  final bool single;
   final String name;
 
   static const _shadow = [
@@ -1122,6 +1237,11 @@ class _CardDemo extends StatelessWidget {
         ],
       ),
     );
+    if (single) {
+      return Center(
+        child: Transform.rotate(angle: rad, child: minimal),
+      );
+    }
     Widget chip(String s) => Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
@@ -1288,6 +1408,7 @@ class _RhythmDemo extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             fontFamily: PremiumPalette.serif,
+            fontWeight: FontWeight.w400,
             color: _white92,
             fontSize: 13,
             height: 1.32,
@@ -1481,224 +1602,6 @@ class _CaregiversDemo extends StatelessWidget {
 // ---------- Compare (1021:17841) ----------
 
 /// "Free và Premium" (Bảng so sánh), "Bạn đang cần" on the entry's row.
-class _Compare extends StatelessWidget {
-  const _Compare({required this.free, required this.premium, this.need});
-  final PlanOffer free;
-  final PlanOffer premium;
-  final PremiumEntry? need;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final rows = [
-      (
-        l10n.pv2RowLumi,
-        l10n.pv2RowLumiFree(free.lumiCredits),
-        l10n.pv2RowLumiPremium(premium.lumiCredits),
-        need == PremiumEntry.lumi,
-      ),
-      (
-        l10n.pv2RowRhythm,
-        l10n.pv2RowRhythmFree,
-        l10n.pv2RowRhythmPremium,
-        need == PremiumEntry.rhythm,
-      ),
-      (
-        l10n.pv2RowStorage,
-        premiumGb(context, free.storageBytes),
-        l10n.pv2RowStoragePremium(
-          premiumGb(context, premium.storageBytes).replaceAll(' GB', ''),
-        ),
-        need == PremiumEntry.storage,
-      ),
-      (
-        l10n.pv2RowVideo,
-        l10n.pv2RowVideoFree(free.videoExports),
-        l10n.pv2RowVideoPremium(premium.videoExports),
-        need == PremiumEntry.video,
-      ),
-      (
-        l10n.pv2RowTemplates,
-        l10n.pv2RowTemplatesFree,
-        l10n.pv2RowTemplatesPremium,
-        need == PremiumEntry.card,
-      ),
-      (
-        l10n.pv2RowCaregivers,
-        l10n.pv2RowPeople(free.caregiverSeats),
-        l10n.pv2RowPeople(premium.caregiverSeats),
-        need == PremiumEntry.caregivers,
-      ),
-      (l10n.pv2RowRelatives, l10n.pv2Unlimited, l10n.pv2Unlimited, false),
-    ];
-    const head = TextStyle(
-      color: Color(0x80FFFFFF),
-      fontSize: 11,
-      fontWeight: FontWeight.w700,
-    );
-    Widget cols(Widget a, Widget b, Widget c) => Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(flex: 110, child: a),
-        const SizedBox(width: 8),
-        Expanded(flex: 90, child: b),
-        const SizedBox(width: 8),
-        Expanded(flex: 99, child: c),
-      ],
-    );
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Semantics(
-            header: true,
-            child: Text(
-              l10n.pv2CompareTitle,
-              style: const TextStyle(
-                fontFamily: PremiumPalette.serif,
-                color: _white92,
-                fontSize: 18,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  child: cols(
-                    Text(l10n.pv2CompareBenefit, style: head),
-                    Text(l10n.pv2PlanFree, style: head),
-                    Text(
-                      l10n.pv2PlanPremium,
-                      style: head.copyWith(color: PremiumPalette.gold),
-                    ),
-                  ),
-                ),
-                for (final (label, f, p, here) in rows)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 11,
-                    ),
-                    decoration: BoxDecoration(
-                      color: here
-                          ? PremiumPalette.gold.withValues(alpha: 0.1)
-                          : null,
-                      border: Border(
-                        top: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.07),
-                        ),
-                      ),
-                    ),
-                    child: cols(
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            label,
-                            style: const TextStyle(
-                              color: _white92,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (here) ...[
-                            const SizedBox(height: 4),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 7,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: PremiumPalette.gold,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                l10n.pv2YouNeed,
-                                style: const TextStyle(
-                                  color: PremiumPalette.onGold,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      Text(
-                        f,
-                        style: const TextStyle(
-                          color: Color(0x8CFFFFFF),
-                          fontSize: 11,
-                          height: 1.35,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        p,
-                        style: _goldText.copyWith(
-                          fontSize: 12,
-                          height: 1.35,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            alignment: WrapAlignment.center,
-            children: [
-              for (final s in [
-                l10n.pv2PromiseCancel,
-                l10n.pv2PromiseNoTopUps,
-                l10n.pv2PromiseYours,
-              ])
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 9,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Text(
-                    s,
-                    style: const TextStyle(
-                      color: Color(0xB3FFFFFF),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // ---------- Component · Premium · Chọn gói (1020:17820) ----------
 
 class _Footer extends StatelessWidget {
@@ -1711,23 +1614,25 @@ class _Footer extends StatelessWidget {
     required this.managerName,
     required this.busy,
     required this.bottom,
-    required this.onPeriod,
+    this.busyLine,
     this.onBuy,
     this.onAskManager,
     this.onOpenPlan,
     this.onTerms,
     this.onPrivacy,
+    this.onDetails,
   });
 
+  final VoidCallback? onDetails;
   final PaywallFooter kind;
   final bool yearly;
-  final PlanPrice price;
+  final PlanPrice? price;
   final bool vnd;
   final String? storeName;
   final String managerName;
   final bool busy;
+  final String? busyLine;
   final double bottom;
-  final ValueChanged<bool> onPeriod;
   final VoidCallback? onBuy;
   final VoidCallback? onAskManager;
   final VoidCallback? onOpenPlan;
@@ -1738,13 +1643,8 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     String money(num v) => premiumPrice(context, v, vnd: vnd);
-    final perMonth = vnd
-        ? (price.year / 12 / 100).floor() * 100
-        : (price.year / 12 * 100).floor() / 100;
-    final saving = price.month <= 0
-        ? 0
-        : (100 - price.year / (price.month * 12) * 100).round();
     const legal = TextStyle(
+      fontFamily: 'Be Vietnam Pro Keepsake',
       color: Color(0x73FFFFFF),
       fontSize: 10,
       height: 1.45,
@@ -1762,56 +1662,76 @@ class _Footer extends StatelessWidget {
 
     final children = <Widget>[];
     switch (kind) {
+      case PaywallFooter.buy when price == null:
+        // P-3: the period tiles say the price is unknown; the CTA waits for it.
+        children.add(
+          PremiumGoldButton(label: l10n.pv2SubscribeNoPrice, onPressed: null),
+        );
       case PaywallFooter.buy:
+        final price = this.price!;
         children.addAll([
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: _PeriodTile(
-                    label: l10n.pv2PeriodYear,
-                    badge: saving > 0 ? '−$saving%' : null,
-                    price: money(price.year),
-                    note: l10n.pv2PerMonthApprox(money(perMonth)),
-                    selected: yearly,
-                    onTap: () => onPeriod(true),
+          ClPressable(
+            onPressed: onDetails,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 44),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.premiumTodayTotal,
+                      style: _premiumText(13, .7),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _PeriodTile(
-                    label: l10n.pv2PeriodMonth,
-                    price: money(price.month),
-                    note: l10n.pv2EachMonth,
-                    selected: !yearly,
-                    onTap: () => onPeriod(false),
+                  Text(
+                    money(yearly ? price.year : price.month),
+                    style: const TextStyle(
+                      fontFamily: PremiumPalette.serif,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 22,
+                      height: 1.32,
+                      color: PremiumPalette.text,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: ClSpace.s2),
+                  const RotatedBox(
+                    quarterTurns: 2,
+                    child: ClIcon(
+                      ClIcons.chevronDown,
+                      size: 16,
+                      color: PremiumPalette.textMuted,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 2.5),
           PremiumGoldButton(
             label: yearly
                 ? l10n.pv2SubscribeYear(money(price.year))
                 : l10n.pv2SubscribeMonth(money(price.month)),
+            loading: busy,
             onPressed: busy ? null : onBuy,
           ),
           const SizedBox(height: 10),
+          if (busy && busyLine != null) ...[
+            Text(
+              busyLine!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: PremiumPalette.textMuted,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 6),
+          ],
           Text.rich(
             TextSpan(
               style: legal,
               children: [
-                TextSpan(
-                  text: yearly
-                      ? l10n.pv2LegalYear(money(price.year), storeName ?? '')
-                      : l10n.pv2LegalMonth(money(price.month), storeName ?? ''),
-                ),
-                const TextSpan(text: ' · '),
+                TextSpan(text: l10n.premiumLegalIntro(storeName ?? '')),
                 link(l10n.pv2Terms, onTerms),
-                const TextSpan(text: ' · '),
-                link(l10n.pv2Privacy, onPrivacy),
+                const TextSpan(text: '.'),
               ],
             ),
             textAlign: TextAlign.center,
@@ -1824,8 +1744,9 @@ class _Footer extends StatelessWidget {
               CircleAvatar(
                 radius: 18,
                 backgroundColor: PremiumPalette.gold.withValues(alpha: 0.2),
+                // P-8: an empty name must not crash the footer.
                 child: Text(
-                  managerName.characters.first.toUpperCase(),
+                  (managerName.characters.firstOrNull ?? '·').toUpperCase(),
                   style: _goldText.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
@@ -1885,10 +1806,16 @@ class _Footer extends StatelessWidget {
         ]);
     }
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 14, 16, bottom > 0 ? bottom : 28),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        kind == PaywallFooter.buy && price != null ? 6.5 : 14,
+        16,
+        28 + (bottom > 34 ? bottom - 34 : 0),
+      ),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border.all(color: PremiumPalette.gold.withValues(alpha: 0.25)),
+        border: Border(
+          top: BorderSide(color: PremiumPalette.gold.withValues(alpha: 0.2)),
+        ),
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -1908,99 +1835,655 @@ class _PeriodTile extends StatelessWidget {
   const _PeriodTile({
     required this.label,
     required this.price,
+    required this.suffix,
     required this.note,
     required this.selected,
     required this.onTap,
     this.badge,
   });
-
-  final String label;
-  final String price;
-  final String note;
+  final String label, price, suffix, note;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String? badge;
-
   @override
   Widget build(BuildContext context) => Semantics(
     selected: selected,
     button: true,
-    label: '$label, $price, $note',
+    label: '$label, $price$suffix, $note',
     excludeSemantics: true,
     child: ClPressable(
       onPressed: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected
-              ? PremiumPalette.gold.withValues(alpha: 0.12)
-              : Colors.white.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: selected
-                ? PremiumPalette.gold
-                : Colors.white.withValues(alpha: 0.12),
-            width: selected ? 1.5 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+            decoration: BoxDecoration(
+              color: selected
+                  ? PremiumPalette.gold.withValues(alpha: .1)
+                  : Colors.white.withValues(alpha: .05),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
+                color: selected
+                    ? PremiumPalette.gold
+                    : Colors.white.withValues(alpha: .12),
+                width: selected ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
               children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: selected
-                        ? PremiumPalette.gold
-                        : const Color(0xB3FFFFFF),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: _premiumText(
+                          14,
+                          selected ? .95 : .7,
+                          FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: price,
+                              style: TextStyle(
+                                fontFamily: PremiumPalette.serif,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 26,
+                                height: 35 / 26,
+                                color: selected
+                                    ? PremiumPalette.gold
+                                    : const Color(0xE6FFFFFF),
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' $suffix',
+                              style: _premiumText(13, .8, FontWeight.w600)
+                                  .copyWith(
+                                    color: selected
+                                        ? PremiumPalette.gold
+                                        : const Color(0xCCFFFFFF),
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(note, style: _premiumText(12, .55)),
+                    ],
                   ),
                 ),
-                const Spacer(),
-                if (badge case final b?)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: PremiumPalette.gold,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      b,
-                      style: const TextStyle(
-                        color: PremiumPalette.onGold,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                      ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 24,
+                  height: 24,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected ? PremiumPalette.gold : Colors.transparent,
+                    border: Border.all(
+                      color: selected
+                          ? PremiumPalette.gold
+                          : Colors.white.withValues(alpha: .3),
                     ),
                   ),
+                  child: selected
+                      ? const DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: PremiumPalette.deep,
+                          ),
+                        )
+                      : null,
+                ),
               ],
             ),
-            const SizedBox(height: 2),
-            Text(
-              price,
-              style: TextStyle(
-                fontFamily: PremiumPalette.serif,
-                color: selected ? Colors.white : const Color(0xBFFFFFFF),
-                fontSize: 20,
+          ),
+          if (badge != null)
+            Positioned(
+              top: -12.5,
+              right: 18,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: PremiumPalette.gold,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  badge!,
+                  style: const TextStyle(
+                    fontFamily: 'Be Vietnam Pro Keepsake',
+                    fontSize: 11,
+                    height: 1.25,
+                    fontWeight: FontWeight.w700,
+                    color: PremiumPalette.onGold,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              note,
-              style: const TextStyle(
-                color: Color(0x80FFFFFF),
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
+        ],
+      ),
+    ),
+  );
+}
+
+// Five reviewed benefits. Video and card share one detail, never two competing upgrades.
+typedef _Benefit = ({
+  String title,
+  String subtitle,
+  PremiumCard card,
+  ClIcons icon,
+});
+List<_Benefit> _benefits(
+  BuildContext context,
+  AppLocalizations l,
+  PlanOffer free,
+  PlanOffer paid,
+) => [
+  (
+    title: l.premiumMemories,
+    subtitle: l.premiumMemoriesSubtitle,
+    card: PremiumCard.video,
+    icon: ClIcons.camera,
+  ),
+  (
+    title: l.premiumLumiListTitle,
+    subtitle: l.pv2CardLumiLimit(paid.lumiCredits),
+    card: PremiumCard.lumi,
+    icon: ClIcons.spark,
+  ),
+  (
+    title: l.premiumRhythm,
+    subtitle: l.premiumRhythmSubtitle,
+    card: PremiumCard.rhythm,
+    icon: ClIcons.sleep,
+  ),
+  (
+    title: l.premiumStorageListTitle(premiumGb(context, paid.storageBytes)),
+    subtitle: l.premiumStorageSubtitle,
+    card: PremiumCard.storage,
+    icon: ClIcons.cloudOff,
+  ),
+  (
+    title: l.premiumSeatsListTitle(paid.caregiverSeats),
+    subtitle: l.premiumSeatsSubtitle,
+    card: PremiumCard.caregivers,
+    icon: ClIcons.family,
+  ),
+];
+
+class _BenefitRow extends StatelessWidget {
+  const _BenefitRow({
+    required this.benefit,
+    required this.onTap,
+    this.last = false,
+  });
+  final _Benefit benefit;
+  final VoidCallback onTap;
+  final bool last;
+  @override
+  Widget build(BuildContext context) => ClPressable(
+    onPressed: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        border: last
+            ? null
+            : Border(
+                bottom: BorderSide(color: Colors.white.withValues(alpha: .07)),
               ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: PremiumPalette.gold.withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: ClIcon(benefit.icon, size: 20, color: PremiumPalette.gold),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  benefit.title,
+                  style: _premiumText(14, .92, FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  benefit.subtitle,
+                  style: _premiumText(12, .55).copyWith(height: 1.35),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          const ClIcon(
+            ClIcons.chevronRight,
+            size: 16,
+            color: PremiumPalette.textMuted,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _BenefitDetails extends StatefulWidget {
+  const _BenefitDetails({
+    required this.initial,
+    required this.free,
+    required this.premium,
+    required this.babyName,
+  });
+  final int initial;
+  final PlanOffer free;
+  final PlanOffer premium;
+  final String babyName;
+  @override
+  State<_BenefitDetails> createState() => _BenefitDetailsState();
+}
+
+/// Figma sheets own their dark surface; the shared route owns dismissal and motion.
+class _BenefitDetailsState extends State<_BenefitDetails> {
+  // Latest Figma's tallest detail (Lumi). One height across all five pages prevents jumps.
+  // The route clamps it on smaller screens; large text scrolls inside the page.
+  static const _sheetHeight = 552.0;
+  late int _page = 5000 + widget.initial;
+  late final _controller = PageController(initialPage: _page);
+  int get _index => _page % 5;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _move(bool next) {
+    final target = _page + (next ? 1 : -1);
+    if (context.reduceMotion) {
+      _controller.jumpToPage(target);
+    } else {
+      _controller.animateToPage(
+        target,
+        duration: context.motion(ClMotion.quick),
+        curve: ClCurves.quick,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final items = _benefits(context, l, widget.free, widget.premium);
+    final allBullets = [
+      [
+        l.premiumMemoriesBullet1,
+        l.premiumMemoriesBullet2,
+        l.premiumMemoriesBullet3,
+      ],
+      [
+        l.premiumLumiBullet1,
+        l.premiumLumiBullet2,
+        l.premiumLumiBullet3(widget.premium.lumiCredits),
+      ],
+      [l.premiumRhythmBullet1, l.premiumRhythmBullet2, l.premiumRhythmBullet3],
+      [
+        l.premiumStorageBullet1(
+          premiumGb(context, widget.premium.storageBytes),
+        ),
+        l.premiumStorageBullet2,
+        l.premiumStorageBullet3,
+      ],
+      [
+        l.premiumSeatsBullet1,
+        l.premiumSeatsBullet2,
+        l.premiumSeatsBullet3(widget.premium.caregiverSeats),
+      ],
+    ];
+
+    final titles = [
+      for (var i = 0; i < items.length; i++)
+        '${i + 1}/5 · ${switch (i) {
+          1 => l.premiumLumiPager,
+          2 => l.premiumRhythmPager,
+          4 => l.premiumSeatsPager,
+          _ => items[i].title,
+        }}',
+    ];
+    final titleStyle = _premiumText(12, .8, FontWeight.w600);
+    Widget arrow(bool next) => SizedBox(
+      width: 44,
+      height: 44,
+      child: ClPressable(
+        onPressed: () => _move(next),
+        semanticLabel: next
+            ? MaterialLocalizations.of(context).nextPageTooltip
+            : MaterialLocalizations.of(context).previousPageTooltip,
+        child: Align(
+          alignment: next ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: .08),
+            ),
+            child: ClIcon(
+              next ? ClIcons.chevronRight : ClIcons.back,
+              size: 16,
+              color: PremiumPalette.textMuted,
+            ),
+          ),
+        ),
+      ),
+    );
+    Widget page(int index) {
+      final item = items[index];
+      final bullets = allBullets[index];
+      return SingleChildScrollView(
+        key: PageStorageKey('premium-benefit-$index'),
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: PremiumFeatureCard(
+                card: item.card,
+                free: widget.free,
+                premium: widget.premium,
+                babyName: widget.babyName,
+                shadow: true,
+                detail: true,
+              ),
+            ),
+            const SizedBox(height: 14),
+            for (var i = 0; i < bullets.length; i++) ...[
+              if (i > 0) const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const ClIcon(
+                    ClIcons.check,
+                    size: 12,
+                    color: PremiumPalette.gold,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      bullets[i],
+                      style: _premiumText(13, .8).copyWith(height: 19 / 13),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return SizedBox(
+      key: const ValueKey('premium-benefit-sheet'),
+      height: _sheetHeight,
+      child: _DetailSurface(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _DetailGrabber(),
+            const SizedBox(height: 8),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Reserve the longest localized title at this text scale, so the header also stays still.
+                double titleHeight = 0;
+                for (final title in titles) {
+                  final painter = TextPainter(
+                    text: TextSpan(text: title, style: titleStyle),
+                    textScaler: MediaQuery.textScalerOf(context),
+                    textDirection: Directionality.of(context),
+                    locale: Localizations.localeOf(context),
+                  )..layout(maxWidth: constraints.maxWidth - 88);
+                  if (painter.height > titleHeight) {
+                    titleHeight = painter.height;
+                  }
+                  painter.dispose();
+                }
+                return Row(
+                  children: [
+                    arrow(false),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: titleHeight,
+                            child: Center(
+                              child: Text(
+                                titles[_index],
+                                textAlign: TextAlign.center,
+                                style: titleStyle,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          _Dots(count: 5, active: _index),
+                        ],
+                      ),
+                    ),
+                    arrow(true),
+                  ],
+                );
+              },
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _controller,
+                allowImplicitScrolling: true,
+                onPageChanged: (page) => setState(() => _page = page),
+                itemBuilder: (context, index) => page(index % 5),
+              ),
+            ),
+            const SizedBox(height: 14),
+            PremiumGoldButton(
+              label: l.premiumBackToPlans,
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DetailSurface extends StatelessWidget {
+  const _DetailSurface({required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: EdgeInsets.fromLTRB(
+      20,
+      12,
+      20,
+      30 +
+          (MediaQuery.paddingOf(context).bottom > 34
+              ? MediaQuery.paddingOf(context).bottom - 34
+              : 0),
+    ),
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+      border: Border.all(color: PremiumPalette.gold.withValues(alpha: .2)),
+      gradient: const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [PremiumPalette.sheetTop, PremiumPalette.sheetBottom],
+      ),
+    ),
+    child: child,
+  );
+}
+
+class _DetailGrabber extends StatelessWidget {
+  const _DetailGrabber();
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Container(
+      width: 40,
+      height: 5,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .25),
+        borderRadius: BorderRadius.circular(3),
+      ),
     ),
   );
+}
+
+class _PaymentDetails extends StatelessWidget {
+  const _PaymentDetails({
+    required this.yearly,
+    required this.price,
+    required this.equivalent,
+    required this.vnd,
+    required this.storeName,
+    required this.onBuy,
+  });
+  final bool yearly, vnd;
+  final PlanPrice? price;
+  final num equivalent;
+  final String? storeName;
+  final VoidCallback? onBuy;
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    String money(num v) => premiumPrice(context, v, vnd: vnd);
+    final total = price == null
+        ? ''
+        : money(yearly ? price!.year : price!.month);
+    Widget row(String title, String value, {bool total = false}) => Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: _premiumText(
+              total ? 14 : 13,
+              .7,
+              total ? FontWeight.w600 : FontWeight.w500,
+            ),
+          ),
+        ),
+        const SizedBox(width: 24),
+        Text(
+          value,
+          style: total
+              ? const TextStyle(
+                  fontFamily: PremiumPalette.serif,
+                  fontWeight: FontWeight.w400,
+                  color: PremiumPalette.gold,
+                  fontSize: 22,
+                  height: 1.32,
+                )
+              : _premiumText(13, .85, FontWeight.w600),
+        ),
+      ],
+    );
+    return _DetailSurface(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _DetailGrabber(),
+            const SizedBox(height: 12),
+            Text(
+              l.premiumPaymentDetails,
+              style: const TextStyle(
+                fontFamily: PremiumPalette.serif,
+                fontWeight: FontWeight.w400,
+                fontSize: 20,
+                height: 1.35,
+                color: PremiumPalette.text,
+              ),
+            ),
+            const SizedBox(height: 12),
+            row(
+              'Premium · ${yearly ? l.pv2PeriodYear : l.pv2PeriodMonth}',
+              total,
+            ),
+            if (yearly && price != null) ...[
+              const SizedBox(height: 12),
+              row(l.premiumPaymentEquivalent, money(equivalent)),
+              const SizedBox(height: 12),
+              row(
+                l.premiumPaymentSaving,
+                '${money(price!.month * 12 - price!.year)}${l.premiumYearSuffix}',
+              ),
+            ],
+            const SizedBox(height: 12),
+            row(l.premiumPaymentTax, l.premiumPaymentTaxValue),
+            const SizedBox(height: 12),
+            Divider(height: 1, color: Colors.white.withValues(alpha: .1)),
+            const SizedBox(height: 12),
+            row(l.premiumTodayTotal, total, total: true),
+            const SizedBox(height: 12),
+            Text(
+              l.premiumPaymentRenewal(total, storeName ?? ''),
+              style: _premiumText(11, .55).copyWith(height: 1.45),
+            ),
+            const SizedBox(height: 12),
+            PremiumGoldButton(
+              label: yearly
+                  ? l.premiumSubscribeYearShort
+                  : l.premiumSubscribeMonthShort,
+              onPressed: onBuy,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// P-3: the plan's prices could not be read; nothing to choose until they are.
+class _PriceUnknown extends StatelessWidget {
+  const _PriceUnknown({this.onRetry});
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.all(ClSpace.s4),
+      decoration: BoxDecoration(
+        color: PremiumPalette.fill,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: PremiumPalette.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.pv2PriceUnknown,
+            style: const TextStyle(color: PremiumPalette.text, fontSize: 15),
+          ),
+          if (onRetry case final retry?) ...[
+            const SizedBox(height: ClSpace.s2),
+            PremiumTextButton(label: l10n.actionRetry, onPressed: retry),
+          ],
+        ],
+      ),
+    );
+  }
 }

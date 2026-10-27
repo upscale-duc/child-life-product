@@ -1,3 +1,6 @@
+import '../premium/premium_repository.dart';
+import '../premium/premium_v2.dart';
+import 'video_quality_selector.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
@@ -57,6 +60,7 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
   final _boundary = GlobalKey();
   final _scroll = ScrollController();
   int _section = 0;
+  String? _quality;
   bool _detailsExpanded = false;
   final _fields = <String, TextEditingController>{};
 
@@ -455,6 +459,7 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
               message: '',
               locale: _locale!.languageCode,
               presentation: _presentation,
+              quality: videoExportQuality(ref, widget.babyId, _quality),
               audience: Audience.parents,
               occasion: _occasion,
               music: _effectiveMusic,
@@ -521,6 +526,19 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
           context.pushReplacement(Routes.milestoneCardDone, extra: result);
         }
       }
+    } on KeepsakeJobException catch (e) {
+      if (e.reason == 'PREMIUM_REQUIRED') {
+        ref.invalidate(familyPlanV2Provider(c.babyId));
+        ref.invalidate(capabilitiesProvider(c.babyId));
+      }
+      toaster.show(
+        message: e.reason == 'PREMIUM_REQUIRED'
+            ? l10n.videoPremiumChanged
+            : e.reason == 'rate-limit'
+            ? l10n.videoRenderRateLimit
+            : l10n.ksSaveFailed,
+        error: true,
+      );
     } on Object {
       toaster.show(message: l10n.ksSaveFailed, error: true);
     } finally {
@@ -530,6 +548,8 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(familyPlanV2Provider(widget.babyId));
+    ref.watch(capabilitiesProvider(widget.babyId));
     final c = memoryCtx(context, ref);
     if (c == null) return const SizedBox.shrink();
     _initialize(c);
@@ -620,8 +640,20 @@ class _PremiumEditorState extends ConsumerState<PremiumKeepsakeEditor> {
                         ? null
                         : () => _video ? _previewVideo(byId) : _previewCard(),
                   ),
+                if (_video)
+                  VideoQualitySelector(
+                    babyId: widget.babyId,
+                    selection: _quality,
+                    enabled: !_busy,
+                    onChanged: (value) => setState(() {
+                      _quality = value;
+                      _requestId = null;
+                    }),
+                  ),
                 ClButton(
-                  label: _video ? l10n.ksVideoCreate : l10n.ksSaveCard,
+                  label: _video
+                      ? videoExportLabel(ref, widget.babyId, _quality, l10n)
+                      : l10n.ksSaveCard,
                   expand: true,
                   loading: _busy,
                   onPressed: _busy || !ready || !valid || !fits

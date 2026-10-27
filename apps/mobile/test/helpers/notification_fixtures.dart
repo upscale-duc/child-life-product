@@ -10,8 +10,21 @@ class FakeNotificationRepository implements NotificationRepository {
   FakeNotificationRepository({
     List<InboxItem> inbox = const [],
     NotificationSettings? settings,
+    this.holdSettings = false,
+    this.settingsError,
+    this.firestorePaging = false,
   }) : _inbox = [...inbox],
        _settings = settings ?? NotificationSettings.defaults;
+
+  /// [watchSettings] never answers (EN07 still loading).
+  final bool holdSettings;
+
+  /// [watchSettings] fails with it (EN07 load error).
+  final Object? settingsError;
+
+  /// Pages like Firestore: the limit counts archived rows too, which the page then leaves
+  /// out, so a page can come back empty with more behind it (NT-6).
+  final bool firestorePaging;
 
   final List<InboxItem> _inbox;
   NotificationSettings _settings;
@@ -29,10 +42,18 @@ class FakeNotificationRepository implements NotificationRepository {
   /// How many times [watchInbox] was subscribed, and with which limits.
   final limits = <int>[];
 
-  InboxPage _page(int limit) => InboxPage(
-    items: visible.take(limit).toList(),
-    more: visible.length > limit,
-  );
+  InboxPage _page(int limit) => firestorePaging
+      ? InboxPage(
+          items: [
+            for (final i in _inbox.take(limit))
+              if (i.archivedAt == null) i,
+          ],
+          more: _inbox.length >= limit,
+        )
+      : InboxPage(
+          items: visible.take(limit).toList(),
+          more: visible.length > limit,
+        );
 
   @override
   Stream<InboxPage> watchInbox(String uid, {int limit = inboxPageSize}) async* {
@@ -65,6 +86,15 @@ class FakeNotificationRepository implements NotificationRepository {
   }
 
   @override
+  Future<void> markAllRead(String uid) async {
+    calls.add(('markAllRead', uid));
+    for (var i = 0; i < _inbox.length; i++) {
+      if (_inbox[i].unread) _inbox[i] = _copy(_inbox[i], read: true);
+    }
+    _changes.add(null);
+  }
+
+  @override
   Future<void> archive(String uid, String id) async {
     calls.add(('archive', id));
     for (var i = 0; i < _inbox.length; i++) {
@@ -75,6 +105,11 @@ class FakeNotificationRepository implements NotificationRepository {
 
   @override
   Stream<NotificationSettings> watchSettings(String uid) async* {
+    if (holdSettings) {
+      await Completer<void>().future;
+    }
+    final error = settingsError;
+    if (error != null) throw error;
     yield _settings;
     await for (final _ in _changes.stream) {
       yield _settings;

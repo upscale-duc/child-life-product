@@ -658,7 +658,7 @@ describe('two-person re-run (P-139) and the v1.0 sidebar', () => {
         ),
       );
     expect(sidebar(['admin'])).toContain(
-      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu Thông báo & Gắn kết NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung Bảng tham chiếu HỆ THỐNG Hệ thống & AI Tính năng & Premium Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
+      'Tổng quan Phân tích VẬN HÀNH Gia đình Hỗ trợ Mở rộng dung lượng Yêu cầu dữ liệu Thông báo & Gắn kết Print Studio NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm Thư viện chăm bé Nội dung theo giai đoạn Mốc phát triển Dinh dưỡng Ăn dặm Duyệt nội dung Bảng tham chiếu HỆ THỐNG Hệ thống & AI Tính năng & Premium Cập nhật ứng dụng Nhân sự & phân quyền Nhật ký thao tác PHÁT TRIỂN Sổ tay kiểm thử',
     );
     expect(sidebar(['analyst'])).toContain(
       'Tổng quan Phân tích VẬN HÀNH Thông báo & Gắn kết PHÁT TRIỂN Sổ tay kiểm thử',

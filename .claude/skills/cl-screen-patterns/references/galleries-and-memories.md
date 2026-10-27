@@ -59,6 +59,53 @@ one mode is active, and the UI must show which:
 **Don't add new behaviours** (e.g. tap-to-select by default, swipe-to-delete on media) without
 approval.
 
+### Review grids and bulk selection (lesson from AS07 Tự lưu review, owner 2026-10-26, D-123)
+
+Three patched attempts failed on this screen: a sheet of one-shot commands, then a stateful
+"Chọn nhanh" sheet with a footer status line, then hidden near-copies counted as tiles. The
+owner's verdicts:
+- "chọn mấy option … ko biết là đã chọn gì … rất ko tính liên kết";
+- "tiếp tục với 18 mục mà tất cả có 14 mục";
+- "làm đi làm lại vẫn ko đúng và khó hiểu";
+- "hai cái tabbar … chiếm nhiều diện tích".
+
+The model that worked:
+
+- **One unit everywhere.** Every file is a tile, and every number counts files: filters, week
+  pill, 📷 / 🎬, and "Tiếp tục với n mục". Never mix "tiles" (a group counted as one) with
+  "files" on the same screen.
+- **Nothing that can be sent is hidden.**
+  - Show near-copies together in a tinted block: "n ảnh giống nhau · đã chọn k", the app's pick
+    tagged ("Rõ nhất") and pre-ticked, and one link "Chọn cả nhóm" / "Chỉ giữ ảnh rõ nhất". Not
+    behind a "+n" badge.
+  - Put guesses the person may overrule ("Đã có") in a folded section at the end, with a
+    one-line hint. Never use a hide toggle in a sheet.
+- **The ticks are the state.** Prefer inline controls (group links, one top-bar "Chọn hết / Bỏ
+  chọn hết") over a bulk-selection sheet. A sheet holding selection modes separates the cause
+  from its effect. If a sheet is unavoidable:
+  - derive its state from the data (radio, plus "Tự chọn" when nothing matches);
+  - update it in place;
+  - say the active state next to the result.
+- **An automatic guess** (duplicate, "Đã có", best of a group) **is a default, never a lock.**
+  The person can open and tick each item.
+- **Filters take one row.** Two stacked bars (chips + segmented) cost about 110 pt above the
+  photos. Use `ClFilterPill`s side by side ("Tuần 6 · 14 ▾", "Ảnh & video · 14 ▾"), each opening
+  a radio sheet, as on Kỷ niệm Ảnh.
+- **The footer is visual, not prose.**
+  - Show what will be sent as icons and numbers (📷 3 · 🎬 2 · ~0,7 GB), with the sentence kept
+    as the semantics label.
+  - Don't repeat the count that the CTA already says.
+- **Count in the reader's terms, and don't make them compute.**
+  - "Chờ bạn xem" means not yet saved, so leave out what seems saved already ("Đã có").
+  - The counts on the filters are the waiting files; the CTA says how many will go. Anything
+    optional the person ticks simply grows the CTA.
+  - The owner removed a "5/6" ratio and a "Chưa chọn: 1 ảnh giống nhau" line as noise: show only
+    what has not been uploaded, plus the CTA.
+- **When fixes keep failing, stop patching and re-analyse the model** (units, what is hidden,
+  where the state lives) before touching widgets.
+- **Verify by tapping through.** Assert in widget tests that every count on screen agrees after
+  each action, and render the folded and opened states.
+
 ## 4. Visual richness with performance
 
 - **Photos are the hero.** Keep chrome quiet (thin meta, `caption` muted), and use warm accents

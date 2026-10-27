@@ -67,7 +67,7 @@ void main() {
       overrides: _overrides(band: AgeBand.b3_6, repo: repo, media: [photo]),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Hôm nay của Teddy thế nào?'), findsOneWidget);
+    expect(find.text('Chào ngày mới cùng Teddy'), findsOneWidget);
     expect(find.byKey(const Key('axMomentToday')), findsOneWidget);
     await _scrollTo(tester, find.byKey(const Key('axFamily')));
     expect(
@@ -90,7 +90,7 @@ void main() {
         overrides: _overrides(band: AgeBand.b0_1, repo: repo),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Chào Teddy 👋'), findsOneWidget);
+      expect(find.text('Chào ngày mới cùng Teddy'), findsOneWidget);
       await _scrollTo(tester, find.byKey(const Key('axFirstMoment')));
       expect(find.text('Lưu khoảnh khắc đầu tiên'), findsOneWidget);
       // "Tuỳ chỉnh Hôm nay" on the first run too (owner, 2026-10-24: some children had none).
@@ -130,20 +130,21 @@ void main() {
     );
   });
 
-  testWidgets('flag off: the Hôm nay this device kept, unchanged', (
-    tester,
-  ) async {
-    final repo = FakeExperienceRepository();
-    await pumpRouted(
-      tester,
-      _today,
-      overrides: _overrides(band: AgeBand.b3_6, repo: repo, adaptive: false),
-    );
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('axGreeting')), findsNothing);
-    expect(find.text('Tuỳ chỉnh'), findsOneWidget);
-    expect(repo.saves, isEmpty);
-  });
+  testWidgets(
+    'flag off: Living Header keeps legacy customization and widget preferences',
+    (tester) async {
+      final repo = FakeExperienceRepository();
+      await pumpRouted(
+        tester,
+        _today,
+        overrides: _overrides(band: AgeBand.b3_6, repo: repo, adaptive: false),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('axGreeting')), findsOneWidget);
+      expect(find.text('Tuỳ chỉnh'), findsOneWidget);
+      expect(repo.saves, isEmpty);
+    },
+  );
 
   testWidgets(
     'a person with no arrangement gets one saved (bandApplied frozen)',
@@ -317,7 +318,7 @@ void main() {
       await tester.pumpAndSettle();
       final greeting = tester.widget<Text>(find.byKey(const Key('axGreeting')));
       // The fixtures' clock is 10:00 in the baby's zone.
-      expect(greeting.data, 'Chào buổi sáng ☀️');
+      expect(greeting.data, 'Chào ngày mới');
     });
 
     testWidgets('Nhắc việc, empty: the existing keys, a tinted first step', (

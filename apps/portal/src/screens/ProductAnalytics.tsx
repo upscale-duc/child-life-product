@@ -469,9 +469,12 @@ export function ProductAnalyticsMeta({ data }: { data: ProductAnalyticsResult })
       <FormattedMessage
         id="pa.metadata"
         values={{
-          from: data.range.from,
-          to: data.range.to,
-          zone: data.reportingZone,
+          from: shortDate(intl, `${data.range.from}T12:00:00+07:00`),
+          to: shortDate(intl, `${data.range.to}T12:00:00+07:00`),
+          zone:
+            data.reportingZone === 'Asia/Ho_Chi_Minh'
+              ? intl.formatMessage({ id: 'pa.vietnamTime' })
+              : data.reportingZone,
           at: data.computedAt
             ? intl.formatDate(data.computedAt, {
                 dateStyle: 'short',

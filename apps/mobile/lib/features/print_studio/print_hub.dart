@@ -167,7 +167,7 @@ class PrintKeepsakesView extends ConsumerWidget {
               if (price != null)
                 Text(
                   d.isBook
-                      ? '${l.psBookPagesCount('${d.pages}')} · ${printMoney(context, price)}'
+                      ? '${l.psBookPagesCount(d.pages)} · ${printMoney(context, price)}'
                       : key == 'single'
                       ? l.psFromPrice(printMoney(context, price))
                       : printMoney(context, price),

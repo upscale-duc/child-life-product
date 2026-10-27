@@ -82,10 +82,15 @@ Future<void> _next(WidgetTester t) async {
   await t.pumpAndSettle();
 }
 
-_Case _rules({Membership? me}) => (
+_Case _rules({Membership? me, bool on = true}) => (
   build: () => const RemindersScreen(),
-  overrides: () => careOverrides(me: me, rules: [feed, sleep, diaper]),
-  prefs: const {},
+  overrides: () => careOverrides(
+    me: me,
+    rules: [feed, sleep, diaper],
+    notifications: FakeReminderNotifications(on: on),
+  ),
+  // Asked before on this phone: the card offers Settings (NT-3).
+  prefs: on ? const {} : const {'reminders.notificationsAsked': true},
   // "Theo quy tắc" is the second half now ("Một lần" opens first).
   act: (t) async {
     await t.tap(find.text(_l10n(t).ruleTabRules));
@@ -132,6 +137,8 @@ final _cases = <String, _Case>{
   // v1.0 rule reminders (370:1247).
   'v1i_1a_rules': _rules(),
   'v1i_1a_rules_caregiver': _rules(me: lan),
+  // NT-5: the system's notifications are off while rules send to this person.
+  'v1i_1a_rules_notifications_off': _rules(on: false),
   'v1i_1b_new_rule': _editor(null),
   'v1i_1c_after_last': _editor(_next),
   'v1i_1c2_fixed': _editor((t) async {

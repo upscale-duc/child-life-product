@@ -40,15 +40,44 @@ class HouseholdPlanScreen extends ConsumerWidget {
     final me = ref.watch(selectedMembershipProvider);
     if (me == null) return ColoredBox(color: cl.colors.cloud);
     final async = ref.watch(capabilitiesProvider(me.babyId));
-    final caps = async.value;
+    // P-1: this phone's last answer first; unknown is said, never "Đang dùng gói cơ bản".
+    final caps = ref.watch(capabilitiesNowProvider(me.babyId));
+    // P-5: the restore result sheets act (Kiểm tra lại, Thử lại), on both plan pages.
+    ref.listen(purchaseControllerProvider, (prev, next) async {
+      if (prev?.phase == next.phase || next.source != 'plan') return;
+      await _onPlanPhase(context, ref, next, me.babyId);
+    });
+    if (caps == null) {
+      return MePage(
+        title: l10n.pmPlanTitle,
+        onRefresh: () => ref.refresh(capabilitiesProvider(me.babyId).future),
+        children: [
+          if (async.isLoading)
+            const ClSkeleton(height: 120)
+          else
+            MeNotice(
+              tone: MeTone.warn,
+              icon: ClIcons.cloudOff,
+              title: l10n.premiumPlanCheckFailed,
+              child: ClButton(
+                label: l10n.actionRetry,
+                style: ClButtonStyle.outline,
+                expand: true,
+                onPressed: () =>
+                    ref.invalidate(capabilitiesProvider(me.babyId)),
+              ),
+            ),
+        ],
+      );
+    }
     // Premium v2 (D-101): Gói của gia đình PV40 / PV40B / PV43 / PV45.
-    if (caps != null && caps.features.premiumV2) {
+    if (caps.features.premiumV2) {
       return FamilyPlanV2Screen(babyId: me.babyId, caps: caps);
     }
     final locale = Localizations.localeOf(context).toLanguageTag();
     String date(DateTime d) => DateFormat.yMMMd(locale).format(d.toLocal());
 
-    final (badge, title, body) = switch (caps?.plan ?? HouseholdPlan.free) {
+    final (badge, title, body) = switch (caps.plan) {
       HouseholdPlan.free => (
         l10n.pmBadgeFree,
         l10n.pmPlanFree,
@@ -58,18 +87,18 @@ class HouseholdPlanScreen extends ConsumerWidget {
         l10n.pmBadgeBeta,
         l10n.pmPlanBeta,
         l10n.pmPlanBetaBody(
-          caps?.validUntil == null ? '—' : date(caps!.validUntil!),
+          caps.validUntil == null ? '—' : date(caps.validUntil!),
         ),
       ),
       HouseholdPlan.premium => (
         l10n.pmBadgePremium,
         l10n.pmPlanPremium,
         [
-          if (caps?.validUntil case final d?)
-            caps!.autoRenew == false
+          if (caps.validUntil case final d?)
+            caps.autoRenew == false
                 ? l10n.pmPlanEnds(date(d))
                 : l10n.pmPlanRenews(date(d)),
-          caps!.canManageBilling ? l10n.pmPlanShared : l10n.pmPlanHouseholdHas,
+          caps.canManageBilling ? l10n.pmPlanShared : l10n.pmPlanHouseholdHas,
         ].join('\n'),
       ),
       HouseholdPlan.pending => (
@@ -80,36 +109,15 @@ class HouseholdPlanScreen extends ConsumerWidget {
       HouseholdPlan.expired => (
         l10n.pmBadgeExpired,
         l10n.pmPlanExpired(
-          caps?.validUntil == null ? '—' : date(caps!.validUntil!),
+          caps.validUntil == null ? '—' : date(caps.validUntil!),
         ),
         l10n.pmPlanExpiredBody,
       ),
     };
 
-    final owner = caps?.canManageBilling == true;
-    final plan = caps?.plan ?? HouseholdPlan.free;
+    final owner = caps.canManageBilling;
+    final plan = caps.plan;
     final store = ref.watch(storeGatewayProvider);
-    // Restore after a result sheet; the controller's phase drives it like on PR01.
-    ref.listen(purchaseControllerProvider, (prev, next) async {
-      if (prev?.phase == next.phase || next.source != 'plan') return;
-      final kind = switch (next.phase) {
-        PurchasePhase.restored => PurchaseSheetKind.restored,
-        PurchasePhase.pending => PurchaseSheetKind.pending,
-        PurchasePhase.error => switch (next.problem) {
-          PurchaseProblem.notOwner => PurchaseSheetKind.notOwner,
-          PurchaseProblem.alreadyBound => PurchaseSheetKind.alreadyBound,
-          PurchaseProblem.nothingToRestore =>
-            PurchaseSheetKind.nothingToRestore,
-          PurchaseProblem.network => PurchaseSheetKind.networkError,
-          PurchaseProblem.verify => PurchaseSheetKind.verifyError,
-          _ => PurchaseSheetKind.storeError,
-        },
-        _ => null,
-      };
-      if (kind == null) return;
-      await showPurchaseSheet(context, kind, entry: PaywallEntry.plan);
-      ref.read(purchaseControllerProvider.notifier).reset();
-    });
     Future<void> restore() async {
       final ok = await showPurchaseSheet(
         context,
@@ -124,13 +132,13 @@ class HouseholdPlanScreen extends ConsumerWidget {
     }
 
     // The store the plan was bought in; unknown: both (PR03 draws App Store only).
-    final providers = switch (caps?.billingProvider) {
+    final providers = switch (caps.billingProvider) {
       'apple' => [StoreProvider.apple],
       'google' => [StoreProvider.google],
       _ => StoreProvider.values,
     };
     final actions = <(String, VoidCallback)>[
-      if (owner && plan == HouseholdPlan.premium && caps!.paidPlan)
+      if (owner && plan == HouseholdPlan.premium && caps.paidPlan)
         for (final p in providers)
           (
             p == StoreProvider.apple ? l10n.pmManageApple : l10n.pmManageGoogle,
@@ -163,9 +171,7 @@ class HouseholdPlanScreen extends ConsumerWidget {
       title: l10n.pmPlanTitle,
       onRefresh: () => ref.refresh(capabilitiesProvider(me.babyId).future),
       children: [
-        if (async.isLoading && caps == null)
-          const ClSkeleton(height: 120)
-        else ...[
+        ...[
           _PlanCard(badge: badge, title: title, body: body, actions: actions),
           if (plan == HouseholdPlan.expired) ...[
             const SizedBox(height: ClSpace.s3),
@@ -187,17 +193,15 @@ class HouseholdPlanScreen extends ConsumerWidget {
               MeRow(
                 icon: ClIcons.globe,
                 title: l10n.pmRegionRow,
-                subtitle: caps?.canManageBilling == true
-                    ? null
-                    : l10n.pmRegionOwnerOnly,
-                value: caps?.country == null
+                subtitle: caps.canManageBilling ? null : l10n.pmRegionOwnerOnly,
+                value: caps.country == null
                     ? l10n.pmRegionUnset
-                    : countryName(l10n, caps!.country!),
-                onTap: caps?.canManageBilling == true
+                    : countryName(l10n, caps.country!),
+                onTap: caps.canManageBilling
                     ? () => showRegionSheet(
                         context,
                         babyId: me.babyId,
-                        current: caps!.country,
+                        current: caps.country,
                       )
                     : null,
               ),
@@ -206,6 +210,62 @@ class HouseholdPlanScreen extends ConsumerWidget {
         ],
       ],
     );
+  }
+}
+
+/// A restore started on Gói của gia đình: its result sheet, and what its buttons do (P-5).
+Future<void> _onPlanPhase(
+  BuildContext context,
+  WidgetRef ref,
+  PurchaseFlow flow,
+  String babyId,
+) async {
+  final kind = switch (flow.phase) {
+    PurchasePhase.restored => PurchaseSheetKind.restored,
+    PurchasePhase.pending => PurchaseSheetKind.pending,
+    PurchasePhase.error => switch (flow.problem) {
+      PurchaseProblem.notOwner => PurchaseSheetKind.notOwner,
+      PurchaseProblem.alreadyBound => PurchaseSheetKind.alreadyBound,
+      PurchaseProblem.nothingToRestore => PurchaseSheetKind.nothingToRestore,
+      PurchaseProblem.network => PurchaseSheetKind.networkError,
+      PurchaseProblem.verify => PurchaseSheetKind.verifyError,
+      _ => PurchaseSheetKind.storeError,
+    },
+    _ => null,
+  };
+  if (kind == null || !context.mounted) return;
+  final action = await showPurchaseSheet(
+    context,
+    kind,
+    entry: PaywallEntry.plan,
+  );
+  if (!context.mounted) return;
+  final controller = ref.read(purchaseControllerProvider.notifier);
+  // Moved on while the sheet was open (a late success): show that instead.
+  final latest = ref.read(purchaseControllerProvider);
+  if (latest.phase != flow.phase || latest.problem != flow.problem) {
+    await _onPlanPhase(context, ref, latest, babyId);
+    return;
+  }
+  final retry = action == PurchaseSheetAction.primary;
+  switch (kind) {
+    case PurchaseSheetKind.pending when retry:
+      await controller.checkAgain();
+    case PurchaseSheetKind.storeError ||
+            PurchaseSheetKind.networkError ||
+            PurchaseSheetKind.verifyError
+        when retry:
+      if (controller.canCheckAgain) {
+        await controller.checkAgain();
+      } else {
+        controller.acknowledge();
+        await controller.restore(babyId, source: 'plan');
+      }
+    case PurchaseSheetKind.pending:
+      // Still waiting on the store: kept, so the next delivery is verified.
+      controller.acknowledge();
+    default:
+      controller.reset();
   }
 }
 

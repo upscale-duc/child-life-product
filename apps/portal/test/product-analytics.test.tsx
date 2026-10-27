@@ -150,7 +150,7 @@ describe('live product analytics presentation contracts', () => {
     expect(html).not.toContain('<details');
     expect(html).toContain('Chi tiết chỉ số');
     expect(html).toContain('1 chỉ số');
-    expect(html).not.toContain('Đã đối soát theo nguồn hiện có</td>');
+    expect(html).not.toContain('Đã tổng hợp từ dữ liệu hiện có</td>');
     expect(html).toContain('Độ phủ và giới hạn dữ liệu');
     expect(html).not.toContain('Chỉ hiển thị dữ liệu có nguồn');
     expect(html).not.toContain('Các nhóm nhỏ hoặc thiếu bằng chứng được ẩn');

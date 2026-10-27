@@ -419,7 +419,7 @@ describe('Catalog and destinations', () => {
     for (const g of notificationCatalogGaps) expect(html).toContain(`data-gap="${g.id}"`);
     for (const d of notificationDestinationIds) expect(html).toContain(`data-destination="${d}"`);
     const t = text(html);
-    expect(t).toContain('Chưa gửi trong V1');
+    expect(t).toContain('Loại thông báo chưa được triển khai');
     expect(t).toContain('Luôn gửi');
     expect(t).toContain('Hộp thông báo');
   });
@@ -442,7 +442,7 @@ describe('Template editor', () => {
     const t = text(render(<TemplateEditorView initial={tplDetail()} onBack={() => undefined} />));
     expect(t).toContain('Có 7 khoảnh khắc mới');
     expect(t).toContain('Mai vừa chia sẻ với gia đình');
-    expect(t).toContain('Phiên bản 0 (trong mã)');
+    expect(t).toContain('Phiên bản 0 · nội dung mặc định');
     expect(t).toContain('Tên thành viên gia đình');
     expect(t).toContain('Lưu nháp');
   });
@@ -484,8 +484,8 @@ describe('Template editor', () => {
         <TemplateEditorView initial={tplDetail({ status: 'paused' })} onBack={() => undefined} />,
       ),
     );
-    expect(t).toContain('Mẫu đang tạm dừng');
-    expect(t).toContain('Dùng lại');
+    expect(t).toContain('Đang dùng nội dung mặc định');
+    expect(t).toContain('Dùng lại bản xuất bản');
   });
 
   it('inserts at the cursor and renders sample values', () => {
@@ -507,7 +507,7 @@ describe('Template editor', () => {
     const row: NotificationTemplateRow = { ...tplDetail(), draftState: 'ready_for_review' };
     const t = text(render(<TemplatesView rows={[row]} onOpen={() => undefined} />));
     expect(t).toContain('Khoảnh khắc mới');
-    expect(t).toContain('Nháp chờ duyệt');
+    expect(t).toContain('Bản nháp chờ duyệt');
     expect(t).toContain('v2');
     expect(t).toContain('Đang dùng');
   });
@@ -536,7 +536,7 @@ describe('Delivery, overview, analytics and settings', () => {
 
   it('overview counts only days with data and says accepted ≠ delivered', () => {
     const t = text(render(<OverviewView data={stats()} />));
-    expect(t).toContain('không chứng minh thông báo đã hiện trên máy');
+    expect(t).toContain('chưa xác nhận thông báo đã hiển thị trên điện thoại');
     expect(t).toMatch(/Đã tạo .*15/);
   });
 
@@ -580,7 +580,7 @@ describe('Delivery, overview, analytics and settings', () => {
   it('settings: read-only without notifications.ops, care pause warns', () => {
     const ro = text(render(<SettingsView data={opsResponse()} />, ['support']));
     expect(ro).toContain('Bạn chỉ xem được các công tắc');
-    expect(ro).not.toContain('Lưu công tắc');
+    expect(ro).not.toContain('Lưu thiết lập gửi');
     const paused = text(
       render(
         <SettingsView
@@ -593,8 +593,8 @@ describe('Delivery, overview, analytics and settings', () => {
         />,
       ),
     );
-    expect(paused).toContain('Push Chăm sóc đang tạm dừng');
-    expect(paused).toContain('Lưu công tắc');
+    expect(paused).toContain('Đang tạm dừng gửi nhắc Chăm sóc đến thiết bị');
+    expect(paused).toContain('Lưu thiết lập gửi');
   });
 });
 
@@ -615,7 +615,7 @@ describe('Family timeline', () => {
     expect(t).not.toContain('Thành viên 1');
     expect(t).not.toContain('linh@example.com');
     expect(t).toContain('Ảnh chờ chọn');
-    expect(t).toContain('Nhà cung cấp đã nhận');
+    expect(t).toContain('Dịch vụ gửi đã nhận');
     expect(t).toContain('Tạm dừng vì gửi nhiều');
     expect(html).toContain('data-certainty="confirmed"');
     expect(html).toContain('data-certainty="predicted"');
@@ -689,7 +689,7 @@ describe('Family timeline', () => {
     expect(t).toContain('Đạt');
     expect(t).toContain('Không đạt');
     expect(t).toContain('Không rõ');
-    expect(t).toContain('Gửi → Nhà cung cấp đã nhận');
+    expect(t).toContain('Gửi → Dịch vụ gửi đã nhận');
     expect(t).toContain('Tự lưu · Ảnh chờ chọn');
     expect(t).toContain('messaging/registration-token-not-registered');
   });
@@ -908,7 +908,7 @@ describe('D-092 additions', () => {
       ),
     );
     expect(t).toContain('Cần chú ý');
-    expect(t).toContain('9 gợi ý chỉ hiện trong app vì không có kênh push.');
+    expect(t).toContain('9 gợi ý chỉ hiện trong ứng dụng vì không thể gửi đến thiết bị.');
     expect(t).toContain('Gợi ý thông minh trước khi gửi');
     expect(t).toContain('Chỉ hiện trong app');
     expect(t).toContain('Quyền thông báo bị báo sai');
@@ -916,7 +916,7 @@ describe('D-092 additions', () => {
     expect(t).toContain('Đóng trước ngày');
     // Its button goes to the lost suggestions, not to Gửi & lỗi (which lists failed sends).
     expect(t).toContain('Xem gợi ý bị mất');
-    expect(t).not.toContain('Mở Gửi & lỗi');
+    expect(t).not.toContain('Xem tình trạng gửi');
   });
 
   it('the health button goes where the first problem lives', () => {
@@ -1091,7 +1091,7 @@ describe('Gửi thử (D-092)', () => {
 
   it('outside dev it only explains why', () => {
     const t = text(render(<TestSendView targets={targets({ enabled: false })} rows={null} />));
-    expect(t).toContain('Chỉ có trên môi trường dev');
+    expect(t).toContain('Chỉ dùng trong môi trường thử nghiệm (dev)');
     expect(t).not.toContain('Gửi thử Đã gửi');
     expect(
       render(<TestSendView targets={targets({ enabled: false })} rows={null} />),
@@ -1150,7 +1150,7 @@ describe('Gửi thử (D-092)', () => {
     expect(t).toContain('Album');
     expect(t).toContain('alb_42');
     expect(t).toContain('Không có albumId cho bé này');
-    expect(t).toContain('Nhà cung cấp đã nhận 1/1 thiết bị');
+    expect(t).toContain('Dịch vụ gửi đã nhận 1/1 thiết bị');
     expect(t).toContain('Bản nháp');
     expect(t).toContain('Theo dõi trực tiếp');
   });
@@ -1158,7 +1158,7 @@ describe('Gửi thử (D-092)', () => {
   it('the timeline marks test sends and draft versions', () => {
     expect(versionLabel(intlVi, -1)).toBe('Bản nháp');
     expect(versionLabel(intlVi, 'draft')).toBe('Bản nháp');
-    expect(versionLabel(intlVi, 0)).toBe('v0 · trong mã');
+    expect(versionLabel(intlVi, 0)).toBe('v0 · mặc định');
     const entries = [{ ...timeline.entries[0]!, test: true, templateVersion: -1 }];
     const t = text(
       render(

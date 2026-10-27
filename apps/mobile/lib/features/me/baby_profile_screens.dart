@@ -526,19 +526,23 @@ class _BabyEditScreenState extends ConsumerState<BabyEditScreen> {
       showClToast(context, message: l10n.babyNicknameRequired);
       return;
     }
+    // AU-5: never send fields that were not loaded (the form's defaults would overwrite the
+    // date of birth with today and the gender with "unspecified").
     final baby = _baby;
+    final profile = _profile;
+    if (baby == null || profile == null) return;
     final change = <String, Object?>{
-      if (draft.nickname.trim() != baby?.nickname)
+      if (draft.nickname.trim() != baby.nickname)
         'nickname': draft.nickname.trim(),
-      if (_profile == null || draft.dateOfBirth != _profile!.dateOfBirth)
+      if (draft.dateOfBirth != profile.dateOfBirth)
         'dateOfBirth': isoDate(draft.dateOfBirth),
-      if (draft.gender != _profile?.gender) 'gender': draft.gender.name,
+      if (draft.gender != profile.gender) 'gender': draft.gender.name,
       if (draft.timeZone != null &&
-          (draft.timeZone!.zone != baby?.timeZone.zone ||
-              draft.timeZone!.auto != baby?.timeZone.auto))
+          (draft.timeZone!.zone != baby.timeZone.zone ||
+              draft.timeZone!.auto != baby.timeZone.auto))
         'timeZone': draft.timeZone!.toJson(),
     };
-    final presetChanged = switch (baby?.avatar) {
+    final presetChanged = switch (baby.avatar) {
       PresetAvatar(:final preset) => preset != draft.avatarPreset,
       _ => draft.avatarPhoto == null,
     };
@@ -562,10 +566,11 @@ class _BabyEditScreenState extends ConsumerState<BabyEditScreen> {
       toaster.show(
         message: e.reason == 'dob-in-future'
             ? l10n.createBabyDobFuture
-            : l10n.toastSaveFailed,
+            : l10n.profileSaveFailed,
+        error: true,
       );
     } on Object {
-      toaster.show(message: l10n.toastSaveFailed);
+      toaster.show(message: l10n.profileSaveFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -574,14 +579,24 @@ class _BabyEditScreenState extends ConsumerState<BabyEditScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final baby = ref.watch(babyProvider(widget.babyId)).value;
-    final profile = ref.watch(babyPrivateProfileProvider(widget.babyId)).value;
+    final babyAsync = ref.watch(babyProvider(widget.babyId));
+    final profileAsync = ref.watch(babyPrivateProfileProvider(widget.babyId));
+    final baby = babyAsync.value;
+    final profile = profileAsync.value;
     if (!_prefilled && baby != null && profile != null) {
       _prefilled = true;
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => _prefill(baby, profile),
       );
     }
+    // AU-5: the form shows (and Save works) only once the saved profile filled it.
+    final ready = _baby != null && _profile != null;
+    final failed =
+        !ready &&
+        (babyAsync.hasError ||
+            profileAsync.hasError ||
+            (babyAsync.hasValue && baby == null) ||
+            (profileAsync.hasValue && profile == null));
     return OnboardingScaffold(
       topBar: ClTopBar(
         onBack: () {
@@ -589,14 +604,49 @@ class _BabyEditScreenState extends ConsumerState<BabyEditScreen> {
           context.pop();
         },
       ),
-      content: babyFormFields(context, ref, nickname: _nickname, focus: _focus),
+      content: ready
+          ? babyFormFields(context, ref, nickname: _nickname, focus: _focus)
+          : failed
+          ? [
+              MeNotice(
+                title: l10n.bpLoadFailed,
+                icon: ClIcons.alert,
+                tone: MeTone.error,
+              ),
+            ]
+          // Shaped like the form: photo, nickname, date of birth + time zone, gender.
+          : const [
+              Center(
+                child: ClSkeleton(
+                  height: 148,
+                  width: 148,
+                  radius: ClRadius.pill,
+                ),
+              ),
+              SizedBox(height: ClSpace.s4),
+              Center(child: ClSkeleton(height: 36, width: 140)),
+              SizedBox(height: ClSpace.s6),
+              ClSkeleton(height: 112, radius: ClRadius.card),
+              SizedBox(height: ClSpace.s6),
+              ClSkeleton(height: 56, radius: ClRadius.pill),
+            ],
       bottom: [
-        ClButton(
-          label: l10n.bpSave,
-          expand: true,
-          onPressed: _save,
-          loading: _busy,
-        ),
+        if (failed)
+          ClButton(
+            label: l10n.actionRetry,
+            expand: true,
+            onPressed: () {
+              ref.invalidate(babyProvider(widget.babyId));
+              ref.invalidate(babyPrivateProfileProvider(widget.babyId));
+            },
+          )
+        else
+          ClButton(
+            label: l10n.bpSave,
+            expand: true,
+            onPressed: ready ? _save : null,
+            loading: _busy,
+          ),
       ],
     );
   }

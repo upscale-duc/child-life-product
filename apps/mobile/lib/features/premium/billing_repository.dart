@@ -68,11 +68,16 @@ class FirebaseBillingApi implements BillingApi {
   // until then (D-074, P-152) there is nothing to read and nothing is sold.
   @override
   Future<List<BillingProductIds>> productIds() async {
+    // P-7: "not configured" (no doc, Rules not open yet) is a closed store; any other failure
+    // is reported, so the paywall offers "Thử lại" instead of "Mua trong app sắp có".
     try {
       final d = await _db.doc('publicConfig/billing').get();
       return BillingProductIds.listFromJson(d.data());
-    } on Object {
-      return const [];
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied' || e.code == 'not-found') {
+        return const [];
+      }
+      rethrow;
     }
   }
 

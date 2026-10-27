@@ -53,6 +53,15 @@ export const familyStorageSchema = z.object({
   isOwner: z.boolean(),
   quotaBytes: z.number().int().nonnegative(),
   usedBytes: z.number().int().nonnegative(),
+  /**
+   * Held by uploads in flight (P-031). "Full" is used + reserved, the server's own arithmetic
+   * (D-127 Q2); optional so an older server's answer still parses.
+   */
+  reservedBytes: z.number().int().nonnegative().optional(),
+  /** How many items hold that space ("đang giữ chỗ cho n mục", D-127 Q2). */
+  reservedItems: z.number().int().nonnegative().optional(),
+  /** limit − used − reserved, never below 0: what the next upload can use. */
+  availableBytes: z.number().int().nonnegative().optional(),
   /** In "Đã xoá gần đây": still counted until the 30-day purge (P-034, G-041). */
   binBytes: z.number().int().nonnegative(),
   /** "Câu chuyện & ghi chú": text is tiny; an estimate from note and story counts. */

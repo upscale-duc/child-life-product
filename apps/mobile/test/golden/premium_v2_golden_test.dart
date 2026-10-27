@@ -1,11 +1,16 @@
 @Tags(['golden'])
 library;
 
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/core/widgets/cl_pressable.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/keepsakes/video_quality_selector.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/family_plan_v2.dart';
 import 'package:child_life/features/premium/paywall_screen.dart';
@@ -16,6 +21,7 @@ import 'package:child_life/features/premium/premium_style.dart';
 import 'package:child_life/features/premium/premium_v2.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -104,7 +110,92 @@ _Case _cards(List<PremiumCard> cards) => (
   act: null,
 );
 
+_Case _detail(PremiumEntry entry) => (
+  build: () => PaywallScreen(entry: PaywallEntry.plan, v2Entry: entry),
+  overrides: premiumV2Overrides(plan: freePlan),
+  act: (tester) async {
+    final l = AppLocalizations.of(tester.element(find.byType(PaywallV2View)));
+    final index = switch (entry) {
+      PremiumEntry.video || PremiumEntry.card || PremiumEntry.explore => 0,
+      PremiumEntry.lumi => 1,
+      PremiumEntry.rhythm => 2,
+      PremiumEntry.storage => 3,
+      PremiumEntry.caregivers => 4,
+    };
+    // Follow the Figma pager prototype, keeping the same underlying plan position.
+    final first = find.text(l.premiumMemories).hitTestable();
+    if (first.evaluate().isEmpty) {
+      await tester.scrollUntilVisible(
+        first,
+        120,
+        scrollable: find.byType(Scrollable).first,
+      );
+    }
+    await tester.tap(first);
+    await tester.pumpAndSettle();
+    final next = MaterialLocalizations.of(
+      tester.element(find.byType(PaywallV2View)),
+    ).nextPageTooltip;
+    for (var i = 0; i < index; i++) {
+      await tester.tap(
+        find.byWidgetPredicate(
+          (widget) => widget is ClPressable && widget.semanticLabel == next,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+    expect(find.textContaining('/5 · '), findsOneWidget);
+  },
+);
+_Case _quality(bool premium) => (
+  build: () => Scaffold(
+    body: VideoQualitySelector(
+      babyId: teddyId,
+      selection: null,
+      onChanged: (_) {},
+    ),
+  ),
+  overrides: premiumV2Overrides(plan: premium ? premiumPlan : freePlan),
+  act: (tester) async {
+    final l = AppLocalizations.of(
+      tester.element(find.byType(VideoQualitySelector)),
+    );
+    await tester.tap(find.text(l.videoQuality));
+    await tester.pumpAndSettle();
+  },
+);
+
+_Case _planChoice({bool monthly = false, bool details = false}) => (
+  build: () => const PaywallScreen(
+    entry: PaywallEntry.plan,
+    v2Entry: PremiumEntry.explore,
+  ),
+  overrides: premiumV2Overrides(plan: freePlan),
+  act: (tester) async {
+    final l = AppLocalizations.of(tester.element(find.byType(PaywallV2View)));
+    if (monthly) {
+      await tester.tap(find.text(l.pv2PeriodMonth));
+      await tester.pumpAndSettle();
+    }
+    if (details) {
+      await tester.tap(find.text(l.premiumTodayTotal));
+      await tester.pumpAndSettle();
+    }
+  },
+);
+
 final _cases = <String, _Case>{
+  'pw_monthly': _planChoice(monthly: true),
+  'payment_details': _planChoice(details: true),
+  'detail_memories': _detail(PremiumEntry.video),
+  'detail_lumi': _detail(PremiumEntry.lumi),
+  'detail_rhythm': _detail(PremiumEntry.rhythm),
+  'detail_storage': _detail(PremiumEntry.storage),
+  'detail_seats': _detail(PremiumEntry.caregivers),
+  'quality_free': _quality(false),
+  'quality_premium': _quality(true),
+  'pw_large': _paywall(PremiumEntry.explore),
+  'detail_large': _detail(PremiumEntry.video),
   'pw01_video': _paywall(PremiumEntry.video, subject: '100 ngày yêu thương'),
   'pw02_card': _paywall(PremiumEntry.card, subject: 'Hồng phấn'),
   'pw03_lumi': _paywall(PremiumEntry.lumi),
@@ -238,6 +329,9 @@ void main() {
           tester.view.physicalSize = const Size(375, 812);
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.reset);
+          // Enable before constructing painters; toggling after pump leaves cached flat shadows.
+          debugDisableShadows = false;
+          addTearDown(() => debugDisableShadows = true);
           await tester.pumpWidget(
             ProviderScope(
               overrides: [
@@ -255,6 +349,14 @@ void main() {
                   key: const ValueKey('golden'),
                   child: MaterialApp(
                     debugShowCheckedModeBanner: false,
+                    builder: (context, child) => MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        textScaler: TextScaler.linear(
+                          name.endsWith('large') ? 2 : 1,
+                        ),
+                      ),
+                      child: child!,
+                    ),
                     theme: buildClTheme(palette),
                     locale: locale,
                     supportedLocales: const [Locale('vi'), Locale('en')],
@@ -290,6 +392,30 @@ void main() {
           debugDisableShadows = false;
           try {
             await tester.pump();
+            // Optional retina evidence for direct comparison with Figma. Baselines stay 1x.
+            const captureDirectory = String.fromEnvironment(
+              'PREMIUM_CAPTURE_DIRECTORY',
+            );
+            if (captureDirectory.isNotEmpty) {
+              await tester.runAsync(() async {
+                final boundary = tester.renderObject<RenderRepaintBoundary>(
+                  find.byKey(const ValueKey('golden')),
+                );
+                final image = await boundary.toImage(pixelRatio: 3);
+                try {
+                  final bytes = await image.toByteData(
+                    format: ui.ImageByteFormat.png,
+                  );
+                  final file = File(
+                    '$captureDirectory/${name}_${palette.name}_${locale.languageCode}.png',
+                  );
+                  await file.parent.create(recursive: true);
+                  await file.writeAsBytes(bytes!.buffer.asUint8List());
+                } finally {
+                  image.dispose();
+                }
+              });
+            }
             await expectLater(
               find.byKey(const ValueKey('golden')),
               matchesGoldenFile(

@@ -1,6 +1,8 @@
 @Tags(['golden'])
 library;
 
+import 'dart:async';
+
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
@@ -60,6 +62,24 @@ final _cases = <String, _Case>{
   '19_today': (
     build: _today,
     overrides: () => careOverrides(growth: mockGrowth()),
+    act: null,
+  ),
+  // SY-1 (D-127): non-adaptive Hôm nay before the diary arrives: skeletons, never "Chưa có".
+  '19_today_loading': (
+    build: _today,
+    overrides: () => careOverrides(
+      recordsStream: () => StreamController<List<CareRecord>>().stream,
+      growth: mockGrowth(),
+    ),
+    act: null,
+  ),
+  // SY-1: the diary failed: said so with "Thử lại"; the tiles still log, with no "Chưa có".
+  '19_today_failed': (
+    build: _today,
+    overrides: () => careOverrides(
+      recordsStream: () => Stream.error(StateError('denied')),
+      growth: mockGrowth(),
+    ),
     act: null,
   ),
   '9a_today_offline': (

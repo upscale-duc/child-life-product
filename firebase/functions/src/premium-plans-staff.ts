@@ -15,6 +15,7 @@ import { Timestamp, type Firestore, type Transaction } from 'firebase-admin/fire
 import { assistantPool } from './assistant-usage.js';
 import { mayApproveOwn, readContentPolicy } from './content-policy.js';
 import {
+  flagOn,
   loadFamilyEntitlements,
   readEntitlementsConfig,
   serverGrantEnvironment,
@@ -174,6 +175,7 @@ async function applyAdjustment(
     environment,
     now,
   );
+  if (window.unlimited) throw new StaffError('failed-precondition', 'video-unlimited');
   const snap = await tx.get(windowRef(db, target.familyId, window.id));
   return adjustVideoBonus(tx, db, target.familyId, window, snap, adjustmentId, target.amount, now);
 }
@@ -191,6 +193,12 @@ export async function adjustUsage(
   const s = requireStaff(staff, 'premium.grant');
   const req = parse(adjustUsageSchema, data);
   const familyId = (await familyIdsOf(db, [req.code]))[0]!;
+  if (
+    req.feature === 'video' &&
+    flagOn(await loadFamilyEntitlements(db, familyId, now, environment), 'premium_v2')
+  ) {
+    throw new StaffError('failed-precondition', 'video-unlimited');
+  }
   const target: AdjustmentTarget = { familyId, feature: req.feature, amount: req.amount };
   const id = newId('pa');
   if (Math.abs(req.amount) > adjustmentApprovalThreshold) {

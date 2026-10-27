@@ -225,6 +225,23 @@ describe('storage (13b–13e)', () => {
     expect(rebuilt.binBytes).toBe(2_000_000);
   });
 
+  it('reports space held by uploads in flight, and what is left (D-127 Q2)', async () => {
+    await db.doc(`families/${FAMILY}`).update({ usedBytes: 95_000_000, reservedBytes: 5_000_000 });
+    await db
+      .doc(`families/${FAMILY}/reservations/r1`)
+      .set({ babyId: TEDDY, mediaId: 'r1', bytes: 3_000_000, state: 'reserved' });
+    await db
+      .doc(`families/${FAMILY}/reservations/r2`)
+      .set({ babyId: TEDDY, mediaId: 'r2', bytes: 2_000_000, state: 'reserved' });
+    await db
+      .doc(`families/${FAMILY}/reservations/r3`)
+      .set({ babyId: TEDDY, mediaId: 'r3', bytes: 1_000_000, state: 'released' });
+    const s = await familyStorage(db, caller('dad'), { babyId: TEDDY }, now);
+    expect(s.reservedBytes).toBe(5_000_000);
+    expect(s.reservedItems).toBe(2);
+    expect(s.availableBytes).toBe(Math.max(0, s.quotaBytes - 100_000_000));
+  });
+
   it('only Cùng nuôi see storage (13g, 13h)', async () => {
     expect(await reason(familyStorage(db, caller('grandma'), { babyId: TEDDY }, now))).toBe(
       'parents-only',

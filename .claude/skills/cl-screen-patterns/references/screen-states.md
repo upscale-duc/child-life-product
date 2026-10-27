@@ -60,6 +60,39 @@ For any other data type, check its repository before writing a status.
 | **Health day** (a health sign logged, or the first-aid route) | Safety information first; AI text suppressed (Handover hides AI wording when there is a health sign, `ai/handover_screen.dart`); the free health route is never behind Premium | "Gọi 115" / first aid reachable | Calm, factual | Never diagnose |
 | **Subscription restricted** | Show the feature's value and what Free keeps; one calm upsell (Premium surfaces, `pv2/pw*` sheets) | Upgrade / Later | — | Quotas from config, never hard-coded in copy |
 
+## 3b. Long-running work, capacity and dead ends (lesson from the Tự lưu upload flow, D-126)
+
+The owner found, in one session, all of the failures below on one flow:
+
+- the upload prepared 104 files while family storage was 0 B;
+- there was no Premium path;
+- the copy said "tải trước 0 mục vừa đủ";
+- the progress was a single "Đang chuẩn bị 18/104" spinner;
+- the queue sat at "0/80 mục" with "Tạm dừng" and every row "Hết dung lượng".
+
+The owner's verdict: "toàn lỗi ui/ux cơ bản. hãy audit phân tích ui/ux và flow cho tốt đi". Trace
+every flow end to end, including its failure states, before polishing any screen.
+
+- **Never start work that can't finish.** Check capacity (storage, quota, credits, permission,
+  network) before preparing or uploading anything. While the check runs, the action is disabled
+  and says so ("Đang kiểm tra dung lượng…"). A failed check may defer to the server; an unknown
+  check must not be read as "enough".
+- **A blocking error always has a way out, as the primary action.**
+  - Examples: upgrade or add space (`showStorageFullSuggestion` for Premium v2, else Dung
+    lượng), free space, retry, or remove the stuck items.
+  - Never hide the way out in a tappable notice.
+  - When nothing can proceed, there is no main action that can't succeed.
+- **The blocking reason comes first.** Place it right under what it is about, not below a form.
+- **Copy fits the state.** No "0 mục", no "tự thử lại khi có mạng" for a quota error, and no
+  "Tạm dừng" when nothing is moving. Write separate strings for "none fits" and "some fits".
+- **Long batches show each item.** Use a list with a thumbnail, identity (time / name) and a
+  state (Chờ / Đang chuẩn bị / Đã vào hàng / Lỗi + reason), under "d/n" and a bar.
+  - Failures stay listed with a summary and a "Xong", rather than vanishing behind a toast.
+- **No stuck states.** A queue or job that can't progress says why and offers the way out, and
+  controls that can't act (pause, retry) are hidden.
+- **Verify the failure paths too.** Write widget tests for the checking, full and partial
+  states and for the unreadable list, plus goldens of each, opened and looked at.
+
 ## 4. Night care
 
 Night care is a palette and a behaviour (no shimmer, no bounce, success-only haptics). States

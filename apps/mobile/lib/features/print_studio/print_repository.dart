@@ -40,6 +40,28 @@ final printDraftProvider = StreamProvider.family<PrintDesign?, String>((
       });
 });
 
+/// PR-1: the print file job the draft remembers (cleared when the design changes).
+final printDraftExportJobProvider = StreamProvider.autoDispose
+    .family<String?, String>((ref, babyId) {
+      final session = ref.watch(sessionProvider);
+      if (session is! SessionSignedIn) return Stream.value(null);
+      return ref
+          .watch(firestoreProvider)
+          .doc('babies/$babyId/printDrafts/${session.user.uid}')
+          .snapshots()
+          .map((d) => d.data()?['exportJobId'] as String?);
+    });
+
+/// PR-1: one print file job, live while it builds.
+final printExportJobProvider = StreamProvider.autoDispose
+    .family<Map<String, dynamic>?, (String, String)>(
+      (ref, key) => ref
+          .watch(firestoreProvider)
+          .doc('babies/${key.$1}/printExportJobs/${key.$2}')
+          .snapshots()
+          .map((d) => d.data()),
+    );
+
 final printOrdersProvider =
     StreamProvider.family<List<Map<String, dynamic>>, String>((ref, babyId) {
       final session = ref.watch(sessionProvider);

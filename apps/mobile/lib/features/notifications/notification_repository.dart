@@ -15,6 +15,9 @@ abstract class NotificationRepository {
   /// Unread rows (at most [unreadCap]) for the bell, whatever page the inbox has loaded.
   Stream<int> watchUnreadCount(String uid);
   Future<void> markRead(String uid, Iterable<String> ids);
+
+  /// "Đánh dấu đã đọc": every unread row, not only the loaded page (NT-6).
+  Future<void> markAllRead(String uid);
   Future<void> archive(String uid, String id);
   Stream<NotificationSettings> watchSettings(String uid);
   Future<void> saveSettings(String uid, NotificationSettings settings);
@@ -72,6 +75,19 @@ class FirestoreNotificationRepository implements NotificationRepository {
         });
       }
       await batch.commit();
+    }
+  }
+
+  @override
+  Future<void> markAllRead(String uid) async {
+    // 400 a round (under the batch limit); a long-unread inbox is bounded at 25 rounds.
+    for (var round = 0; round < 25; round++) {
+      final q = await _inbox(
+        uid,
+      ).where('readAt', isNull: true).limit(400).get();
+      if (q.docs.isEmpty) return;
+      await markRead(uid, q.docs.map((d) => d.id));
+      if (q.docs.length < 400) return;
     }
   }
 
@@ -134,14 +150,19 @@ final unreadNotificationsProvider = Provider<int>((ref) {
   return ref.watch(unreadCountProvider(session.user.uid)).value ?? 0;
 });
 
-/// Whether the OS lets this app show notifications (EN07 master card). Re-read after a request
-/// or on return from system settings.
+/// Whether the OS lets this app show notifications (EN07 master card, Tôi › Thông báo, the
+/// push lease). Re-read after a request or on return from system settings. One answer with
+/// [notificationsEnabledProvider] (NT-7): reading here refreshes it, and any change it learns
+/// (a request, a resume) re-reads this one, so the two never disagree.
 final osNotificationsEnabledProvider = FutureProvider.autoDispose<bool>((
   ref,
 ) async {
-  try {
-    return await ref.read(reminderNotificationsProvider).enabled();
-  } on Object {
-    return false;
-  }
+  await ref.read(notificationsEnabledProvider.notifier).refresh();
+  final enabled = ref.read(notificationsEnabledProvider) ?? false;
+  ref.listen(notificationsEnabledProvider, (before, after) {
+    if (before != null && after != null && before != after) {
+      ref.invalidateSelf();
+    }
+  });
+  return enabled;
 });

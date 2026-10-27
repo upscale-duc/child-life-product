@@ -4,7 +4,7 @@ import 'package:child_life/features/assistant/assistant_entry.dart'
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/onboarding/setup_screens.dart';
-import 'package:child_life/features/reminders/reminder_screens.dart'
+import 'package:child_life/features/reminders/reminder_notifications.dart'
     show notificationsAskedProvider;
 import 'package:child_life/features/rhythm/rhythm_home.dart'
     show firstSentence, weekKicker;
@@ -428,6 +428,49 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Để Child Life nhắc bạn đúng lúc'), findsNothing);
       expect(visits.last.location, Routes.today);
+    });
+
+    testWidgets('NT-3: asked at launch already, EN03 is not shown', (
+      tester,
+    ) async {
+      final notifications = FakeReminderNotifications(on: false);
+      final (visits, _) = await pumpRouted(
+        tester,
+        const PersonalizeFlowScreen(),
+        overrides: hnOverrides(
+          repo: StampingRhythmRepository(),
+          notifications: notifications,
+        ),
+        prefs: const {'notifications.askedOnLaunch': true},
+      );
+      await tester.tap(find.text('Tiếp tục'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tiếp tục'));
+      await tester.pumpAndSettle();
+      expect(find.text('Để Child Life nhắc bạn đúng lúc'), findsNothing);
+      expect(notifications.requests, 0);
+      expect(visits.last.location, Routes.today);
+    });
+
+    testWidgets('NT-3: refused on EN03, the toast offers Cài đặt', (
+      tester,
+    ) async {
+      final notifications = FakeReminderNotifications(on: false, grant: false);
+      await pumpRouted(
+        tester,
+        const PersonalizeFlowScreen(notificationsOnly: true),
+        overrides: hnOverrides(
+          repo: StampingRhythmRepository(),
+          rhythm: false,
+          notifications: notifications,
+        ),
+      );
+      await tester.tap(find.text('Bật thông báo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(notifications.requests, 1);
+      expect(find.text('Cài đặt'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
     });
 
     testWidgets('"Bỏ qua" on EN01 saves nothing: the invite stays', (

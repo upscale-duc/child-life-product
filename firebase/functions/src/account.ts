@@ -194,6 +194,18 @@ export async function familyStorage(
     .limit(40)
     .get();
 
+  // D-127 Q2: what uploads in flight hold, so "full" here matches what createMemorySession decides.
+  const reservedBytes = Math.max(0, (family.get('reservedBytes') as number | undefined) ?? 0);
+  const reservedItems = reservedBytes
+    ? (
+        await db
+          .collection(`families/${familyId}/reservations`)
+          .where('state', '==', 'reserved')
+          .count()
+          .get()
+      ).data().count
+    : 0;
+
   const open = await db
     .collection('storageRequests')
     .where('familyId', '==', familyId)
@@ -201,11 +213,16 @@ export async function familyStorage(
     .limit(1)
     .get();
 
+  const quotaBytes = await storageLimitBytes(db, familyId, family, now);
+  const usedBytes = Math.max(0, (family.get('usedBytes') as number | undefined) ?? 0);
   return {
     familyId,
     isOwner: family.get('ownerUid') === caller.uid,
-    quotaBytes: await storageLimitBytes(db, familyId, family, now),
-    usedBytes: Math.max(0, (family.get('usedBytes') as number | undefined) ?? 0),
+    quotaBytes,
+    usedBytes,
+    reservedBytes,
+    reservedItems,
+    availableBytes: Math.max(0, quotaBytes - usedBytes - reservedBytes),
     binBytes: Math.max(0, (family.get('binBytes') as number | undefined) ?? 0),
     notesBytes: texts * noteBytesEstimate,
     babies: babySnaps

@@ -27,7 +27,7 @@ import {
   type MediaStatus,
   type UploadItem,
 } from '@child-life/contracts';
-import { storageLimitBytes } from './premium-v2.js';
+import { familyPlan, storageLimitBytes } from './premium-v2.js';
 
 /**
  * Memories (S9). The server owns `memories` and `media`: the app asks for an upload session
@@ -216,7 +216,8 @@ export async function createMemory(
       if (access === 'unavailable') {
         throw new MemoryError('failed-precondition', 'template-unavailable');
       }
-      if (access === 'premium-required') {
+      const plan = await familyPlan(db, familyId, now);
+      if (access === 'premium-required' || (plan.v2 && t.tier === 'premium' && !plan.premium)) {
         throw new MemoryError('permission-denied', 'PREMIUM_REQUIRED');
       }
     }

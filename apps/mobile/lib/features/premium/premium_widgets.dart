@@ -134,6 +134,9 @@ class VideoQuotaCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final q = quota;
+    if (q.unlimited) {
+      return Text(l10n.premiumUnlimitedVideo, style: cl.text.bodyStrong);
+    }
     final detail = q.resetsAt == null
         ? l10n.pmQuotaDetailNoDate(q.used, q.reserved)
         : l10n.pmQuotaDetail(

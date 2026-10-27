@@ -10,6 +10,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../app/route_guard.dart';
+import '../me/me_widgets.dart' show MeNotice, MeTone;
+import '../auto_save/auto_save_widgets.dart'
+    show StorageWayOut, openStorageWayOut, storageWayOut, storageWayOutLabel;
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
@@ -1200,6 +1203,23 @@ class QueueSheet extends ConsumerWidget {
     final unreadable = items
         .where((i) => i.state == QueueState.unreadable)
         .length;
+    // Owner, 2026-10-26: "khi tải lên lỗi cả hết thì ui cứ show mãi": over the family quota, items
+    // wait with a way out (more space, or take them off); "Tạm dừng" only while something can move.
+    final quota = [
+      for (final i in items)
+        if (i.state == QueueState.waitingQuota) i,
+    ];
+    final way = storageWayOut(ref, ctx.babyId);
+    final canMove = items.any(
+      (i) => switch (i.state) {
+        QueueState.pendingSession ||
+        QueueState.queued ||
+        QueueState.waitingWifi ||
+        QueueState.uploading ||
+        QueueState.paused => true,
+        _ => false,
+      },
+    );
     final sent = items.fold<int>(0, (s, i) => s + math.min(i.sent, i.bytes));
     final bytes = items.fold<int>(0, (s, i) => s + i.bytes);
     final notify = batches.any((b) => b.notifyFamily && !b.done);
@@ -1236,7 +1256,7 @@ class QueueSheet extends ConsumerWidget {
                       style: cl.text.bodyStrong,
                     ),
                   ),
-                  if (!finished)
+                  if (!finished && (canMove || incoming > 0))
                     ClButton(
                       label: view.paused ? l10n.qResume : l10n.qPause,
                       style: ClButtonStyle.secondary,
@@ -1290,10 +1310,63 @@ class QueueSheet extends ConsumerWidget {
                     ),
                   ],
                 ),
+                if (unreadable > 0) ...[
+                  Text(
+                    l10n.qUnreadableHint,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ClButton(
+                      key: const Key('qDropUnreadable'),
+                      label: l10n.qDropUnreadable(unreadable),
+                      style: ClButtonStyle.plain,
+                      onPressed: () {
+                        for (final i in items) {
+                          if (i.state == QueueState.unreadable) {
+                            unawaited(queue.cancel(i.mediaId));
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ],
             ],
           ),
         ),
+        if (quota.isNotEmpty) ...[
+          const SizedBox(height: ClSpace.s3),
+          MeNotice(
+            key: const Key('qQuota'),
+            tone: MeTone.error,
+            icon: ClIcons.alert,
+            title: l10n.qQuotaTitle,
+            body: [
+              l10n.qQuotaBody(quota.length),
+              // D-125: Premium is named before the button that opens it.
+              if (way == StorageWayOut.premium) l10n.autoSavePremiumSpaceNote,
+            ].join(' '),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          ClButton(
+            key: const Key('qAddSpace'),
+            label: storageWayOutLabel(ref, l10n, ctx.babyId, way),
+            expand: true,
+            onPressed: () => openStorageWayOut(context, ref, ctx.babyId, way),
+          ),
+          ClButton(
+            key: const Key('qDropWaiting'),
+            label: l10n.qDropWaiting(quota.length),
+            style: ClButtonStyle.plain,
+            expand: true,
+            onPressed: () {
+              for (final i in quota) {
+                unawaited(queue.cancel(i.mediaId));
+              }
+            },
+          ),
+        ],
         const SizedBox(height: ClSpace.s3),
         ConstrainedBox(
           constraints: BoxConstraints(
@@ -1349,12 +1422,15 @@ class QueueSheet extends ConsumerWidget {
           },
         ),
       ],
-      const SizedBox(height: ClSpace.s2),
-      Text(
-        l10n.qFootnote,
-        textAlign: TextAlign.center,
-        style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-      ),
+      // "Tự thử lại khi có mạng" is about network failures only (not a full family space).
+      if (failed > 0) ...[
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.qFootnote,
+          textAlign: TextAlign.center,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ],
     ]);
   }
 }

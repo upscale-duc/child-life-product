@@ -26,6 +26,7 @@ class ClButton extends StatelessWidget {
     this.leading,
     this.expand = false,
     this.loading = false,
+    this.wrapLabel = false,
     super.key,
   });
 
@@ -36,6 +37,9 @@ class ClButton extends StatelessWidget {
   /// Submitting: a spinner replaces the icon, the label stays, taps are ignored and the button
   /// is not dimmed (it is busy, not unavailable).
   final bool loading;
+
+  /// Let longer action labels grow with accessibility text size instead of truncating.
+  final bool wrapLabel;
   final ClIcons? icon;
 
   /// Custom leading mark (e.g. the Apple logo) when a line icon does not fit.
@@ -87,8 +91,8 @@ class ClButton extends StatelessWidget {
         Flexible(
           child: Text(
             label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            maxLines: wrapLabel ? null : 1,
+            overflow: wrapLabel ? TextOverflow.visible : TextOverflow.ellipsis,
             style: context.cl.text.bodyStrong.copyWith(color: ink),
           ),
         ),
@@ -99,9 +103,13 @@ class ClButton extends StatelessWidget {
       onPressed: loading ? () {} : onPressed,
       semanticLabel: label,
       child: Container(
-        height: height,
+        height: wrapLabel ? null : height,
+        constraints: wrapLabel ? BoxConstraints(minHeight: height) : null,
         width: expand ? double.infinity : null,
-        padding: EdgeInsets.symmetric(horizontal: padding),
+        padding: EdgeInsets.symmetric(
+          horizontal: padding,
+          vertical: wrapLabel ? ClSpace.s3 : 0,
+        ),
         decoration: BoxDecoration(
           color: fill,
           border: border,

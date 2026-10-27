@@ -1,0 +1,33 @@
+{
+  "figmaFile": "sJLG1fAXKDnDr9YI6Yx8ex",
+  "figmaNode": "1134:3884",
+  "date": "2026-10-26",
+  "copyIds": 30,
+  "locales": [
+    "vi",
+    "en"
+  ],
+  "themes": [
+    "light",
+    "nightCare"
+  ],
+  "baselineFreshRenders": 80,
+  "updatedRelevantRenders": 40,
+  "changedGoldenPngs": 36,
+  "verifiedGoldenTests": 80,
+  "featureTests": 65,
+  "viewport": [
+    375,
+    812
+  ],
+  "textScale": 1,
+  "limitations": [
+    "Figma list-specific sheets documented, not implemented in Flutter carousel",
+    "No 200% text, long-name or screen reader validation",
+    "IAP remains unavailable; no live store transaction tested"
+  ],
+  "filesSha256": {
+    "apps/mobile/tool/premium_paywall_wording.py": "4ef87af8c1d4c95385473e8dbf20cb0c1b3693573ef3681320506bb57cd2dfcc",
+    "apps/mobile/test/features/premium_paywall_copy_test.dart": "7bf726200285617baeff1db1f871a5796f419dbc68aeb4206e40b28249fd98c6"
+  }
+}

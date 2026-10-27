@@ -52,10 +52,14 @@ final appUpdateStatusProvider = Provider<AppUpdateStatus>(
   ),
 );
 
-/// Opens the store page ("Cập nhật trên App Store").
+/// Opens the store page ("Cập nhật trên App Store"). Throws when nothing opened it, so the
+/// caller says so instead of a tap that silently does nothing (UPD-1, on the blocking UP1).
 final openStoreProvider = Provider<Future<void> Function(Uri url)>(
-  (ref) =>
-      (url) => launchUrl(url, mode: LaunchMode.externalApplication),
+  (ref) => (url) async {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw StateError('store page did not open');
+    }
+  },
 );
 
 /// What this phone remembers about updates, in app preferences:

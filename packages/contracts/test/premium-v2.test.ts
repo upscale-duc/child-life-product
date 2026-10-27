@@ -45,7 +45,7 @@ describe('Premium v2 plans (PV00, D-101)', () => {
     expect(free).toMatchObject({
       plan: 'free',
       lumi: { limit: 30, refill: 'once' },
-      video: { limit: 2, refill: 'once' },
+      video: { unlimited: true, maxQuality: 'hd720' },
       storageBytes: GB,
       caregiverSeats: 3,
       premiumTemplates: false,
@@ -127,5 +127,20 @@ describe('portal requests (PT02–PT04, D-101)', () => {
       true,
     );
     expect(chooseWriteSeatsRequestSchema.safeParse({ babyId: 'b1' }).success).toBe(false);
+  });
+});
+
+// D-124: plan quality replaces count quotas; Lumi remains metered.
+describe('unlimited video quality', () => {
+  it('keeps both plans unlimited with different maximum quality', () => {
+    expect(planLimits(defaultPremiumPlans, false).video).toEqual({
+      unlimited: true,
+      maxQuality: 'hd720',
+    });
+    expect(planLimits(defaultPremiumPlans, true).video).toEqual({
+      unlimited: true,
+      maxQuality: 'fullHd1080',
+    });
+    expect(planLimits(defaultPremiumPlans, false).lumi.limit).toBe(30);
   });
 });

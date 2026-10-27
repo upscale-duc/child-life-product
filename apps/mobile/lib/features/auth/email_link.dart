@@ -201,6 +201,9 @@ class _EmailLinkSentScreenState extends ConsumerState<EmailLinkSentScreen> {
 
 enum _LinkPhase { signingIn, needEmail, expired, failed }
 
+/// How long signing in with the link may take before "Thử lại" is offered (AU-6).
+const _signInTimeout = Duration(seconds: 20);
+
 /// The email sign-in link opened in the app (`/auth/link/?mode=signIn&oobCode=…&exp=…`,
 /// D-064). Signs in with the address kept on this phone; without it (another phone, or the app
 /// reinstalled) the person types it. The router moves on once signed in (setup or Hôm nay).
@@ -256,14 +259,31 @@ class _EmailLinkScreenState extends ConsumerState<EmailLinkScreen> {
       _error = null;
     });
     final l10n = AppLocalizations.of(context);
+    final repo = ref.read(authRepositoryProvider);
     try {
-      await ref
-          .read(authRepositoryProvider)
-          .signInWithEmailLink(email, widget.link.toString());
+      // AU-6: a sign-in that never answers falls back to "Thử lại" instead of spinning.
+      await repo
+          .signInWithEmailLink(email, widget.link.toString())
+          .timeout(_signInTimeout);
       await ref.read(emailLinkStoreProvider).clear();
       // The router leaves this screen for setup or Hôm nay.
+    } on TimeoutException {
+      if (!mounted || repo.currentUser != null) return;
+      setState(() {
+        _phase = _LinkPhase.failed;
+        _error = l10n.authErrorGeneric;
+      });
     } on AuthException catch (e) {
       if (!mounted) return;
+      // AU-6: signed in, only the earlier credential did not link — that is not a failed
+      // sign-in. The router moves on; the toast says what is left to do.
+      if (e.failure == AuthFailure.linkFailed) {
+        await ref.read(emailLinkStoreProvider).clear();
+        if (mounted) {
+          showClToast(context, message: authMessage(l10n, e.failure));
+        }
+        return;
+      }
       setState(() {
         switch (e.failure) {
           case AuthFailure.linkExpired:
@@ -307,7 +327,9 @@ class _EmailLinkScreenState extends ConsumerState<EmailLinkScreen> {
             ),
           );
     return switch (_phase) {
+      // AU-6: Back is always there, also while signing in.
       _LinkPhase.signingIn => OnboardingScaffold(
+        topBar: ClTopBar(onBack: _again),
         content: [
           const SizedBox(height: ClSpace.s8 * 2),
           const Center(child: CircularProgressIndicator()),

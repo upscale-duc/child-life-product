@@ -267,7 +267,7 @@ describe('contents and table', () => {
   it('the start page explains smoke vs core and the statuses', () => {
     const html = text(render(<QaStart />));
     expect(html).toContain('Smoke — đường đi quan trọng nhất');
-    expect(html).toContain('Core — các luồng chính');
+    expect(html).toContain('Core — Luồng chính');
     expect(html).toContain('Bị chặn — chưa chạy được');
     expect(html).toContain('Không dán ảnh, tên, ngày sinh');
   });

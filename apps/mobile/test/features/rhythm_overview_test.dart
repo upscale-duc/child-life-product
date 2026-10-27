@@ -85,7 +85,7 @@ void main() {
       // "Cách nhà mình đã thử".
       expect(find.text(l10n.rhTriedHeading), findsOneWidget);
       expect(find.text(l10n.rhHelpful), findsOneWidget);
-      await _tap(tester, find.text(l10n.rhLearnMore));
+      await _tap(tester, find.text(l10n.pv2SeePremium));
       // PR01 from Nhịp lớn lên (entry A).
       expect(visits.last.location, '${Routes.premium}?entry=rhythm');
     });
@@ -123,7 +123,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.rhSleepGateOther), findsOneWidget);
-      expect(find.text(l10n.rhLearnMore), findsNothing);
+      expect(find.text(l10n.pv2SeePremium), findsNothing);
       await _tap(tester, find.text(l10n.rhWhy));
       expect(find.text(l10n.pmGateRegionTitle), findsOneWidget);
     });

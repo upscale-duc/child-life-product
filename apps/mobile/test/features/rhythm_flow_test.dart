@@ -204,9 +204,7 @@ void main() {
       expect(find.text(l10n.rhSeeHow), findsOneWidget);
     });
 
-    testWidgets('H02: "Để hôm khác" puts it off and hides it', (
-      tester,
-    ) async {
+    testWidgets('H02: "Để hôm khác" puts it off and hides it', (tester) async {
       final repo = FakeRhythmRepository(
         home: h02Home(),
         checkIns: [sleepCheckIn(date: rhythmToday)],
@@ -532,7 +530,7 @@ void main() {
         );
         expect(find.text(l10n.rhMoreForAge), findsOneWidget);
         expect(find.text(l10n.rhDone), findsOneWidget);
-        await tester.tap(find.text(l10n.rhLearnMoreOptional));
+        await tester.tap(find.text(l10n.pv2SeePremium));
         await tester.pumpAndSettle();
         expect(visits.last.location, '${Routes.premium}?entry=rhythm');
       },

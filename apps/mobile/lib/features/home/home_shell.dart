@@ -27,7 +27,6 @@ import '../assistant/assistant_entry.dart'
 import '../analytics/product_analytics.dart';
 import '../auto_save/auto_save_today.dart';
 import '../auto_save/auto_save_widgets.dart';
-import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -327,7 +326,8 @@ bool _openedOnTop(BuildContext context) {
 /// Header shared by the tabs: baby switcher (45:321) + Night care toggle, and the 16c banner
 /// "Chưa lưu tài khoản · Lưu" while the identity is temporary (R-030).
 class BabyHeader extends ConsumerWidget {
-  const BabyHeader({this.actions, super.key});
+  const BabyHeader({this.actions, this.hero = false, super.key});
+  final bool hero;
 
   /// Replaces the Night care toggle (Kỷ niệm: "Cách xem" + "+", 10a).
   final List<Widget>? actions;
@@ -372,6 +372,7 @@ class BabyHeader extends ConsumerWidget {
                         clipBehavior: Clip.none,
                         children: [
                           ClBabySwitcher(
+                            hero: hero,
                             label: _switcherLabel(
                               context,
                               ref,
@@ -548,7 +549,8 @@ class _UnsavedBanner extends StatelessWidget {
 
 /// Round moon button: switches Light ↔ Night care immediately (a11y "Night care").
 class NightCareToggle extends ConsumerWidget {
-  const NightCareToggle({super.key});
+  const NightCareToggle({this.hero = false, super.key});
+  final bool hero;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -572,8 +574,9 @@ class NightCareToggle extends ConsumerWidget {
         width: ClSpace.tapMin,
         height: ClSpace.tapMin,
         decoration: BoxDecoration(
-          color: cl.colors.surface2,
+          color: hero ? cl.colors.surface : cl.colors.surface2,
           shape: BoxShape.circle,
+          boxShadow: hero ? cl.shadows.chip : null,
         ),
         alignment: Alignment.center,
         // Moon in Light, sun in Night care: the icon turns and cross-fades with the palette
@@ -894,50 +897,6 @@ void startAddingBaby(BuildContext context, WidgetRef ref) {
       .update(SetupDraft().copyWith(displayName: me?.displayName ?? ''));
   ref.read(addingBabyProvider.notifier).set(true);
   context.push(Routes.who);
-}
-
-/// A temporary identity cannot sign back in: say so before signing out (R-031).
-Future<void> confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
-  final l10n = AppLocalizations.of(context);
-  return showClSheet<void>(
-    context: context,
-    builder: (sheetContext) => Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClSheetHeader(title: l10n.signOutAnonTitle),
-        Text(
-          l10n.signOutAnonBody,
-          style: sheetContext.cl.text.body.copyWith(
-            color: sheetContext.cl.colors.inkMuted,
-          ),
-        ),
-        const SizedBox(height: ClSpace.s6),
-        ClButton(
-          label: l10n.saveAccountTitle,
-          expand: true,
-          onPressed: () {
-            Navigator.of(sheetContext).pop();
-            final m = ref.read(selectedMembershipProvider);
-            final name = m == null
-                ? ''
-                : ref.read(babyProvider(m.babyId)).value?.nickname ?? '';
-            showSaveAccountSheet(context, name);
-          },
-        ),
-        const SizedBox(height: ClSpace.s2),
-        ClButton(
-          label: l10n.signOutAnonConfirm,
-          style: ClButtonStyle.destructive,
-          expand: true,
-          onPressed: () {
-            Navigator.of(sheetContext).pop();
-            ref.read(authRepositoryProvider).signOut();
-          },
-        ),
-      ],
-    ),
-  );
 }
 
 /// Hides the tab dock while the content scrolls down and brings it back as soon as the user

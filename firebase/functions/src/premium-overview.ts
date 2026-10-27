@@ -170,7 +170,7 @@ export async function premiumOverview(
         ((w.get('limit') as number | undefined) ?? 0) > 0;
       if (!out) continue;
       if (w.get('feature') === 'assistant') lumi = true;
-      if (w.get('feature') === 'video') video = true;
+      if (w.get('feature') === 'video' && w.get('unlimited') !== true) video = true;
     }
     if (lumi) lumiOut += 1;
     if (video) videoOut += 1;

@@ -9,6 +9,7 @@ import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_feedback.dart' show ClSkeleton;
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
+import '../care/care_screens.dart' show CareLoadFailed;
 import '../care/timer_models.dart';
 import '../library/content_repository.dart' show contentEmergencyNumberProvider;
 import '../reminders/reminder_repository.dart';
@@ -52,17 +54,30 @@ class HandoverNow extends ConsumerWidget {
     String ago(DateTime t) => relativeAgo(l, t, now);
     String span(Duration d) => durationLabel(l, math.max(1, d.inMinutes));
 
+    // AI-10 (D-127): while the diary loads, or when it fails, a carer must never read "Đang
+    // thức" or "Chưa ghi gần đây": a skeleton, or an error with a retry.
+    final recordsAsync = ref.watch(recentRecordsProvider(me.babyId));
+    final timerAsync = ref.watch(
+      careTimerProvider((me.babyId, TimerType.sleep)),
+    );
+    if (!recordsAsync.hasValue || !timerAsync.hasValue) {
+      if (recordsAsync.hasError || timerAsync.hasError) {
+        return CareLoadFailed(
+          onRetry: () {
+            ref.invalidate(recentRecordsProvider(me.babyId));
+            ref.invalidate(careTimerProvider((me.babyId, TimerType.sleep)));
+          },
+        );
+      }
+      return const HandoverNowSkeleton();
+    }
     final records = [
-      for (final r
-          in ref.watch(recentRecordsProvider(me.babyId)).value ??
-              const <CareRecord>[])
+      for (final r in recordsAsync.value!)
         if (!r.deleted) r,
     ]..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
     bool isFeed(CareRecord r) =>
         r.type == CareType.bottle || r.type == CareType.breast;
-    final timer = ref
-        .watch(careTimerProvider((me.babyId, TimerType.sleep)))
-        .value;
+    final timer = timerAsync.value;
     final sleeps = [
       for (final r in records)
         if (r.type == CareType.sleep && r.endedAt != null) r,
@@ -98,8 +113,9 @@ class HandoverNow extends ConsumerWidget {
     }
 
     // Tiếp theo: the next feed, today's open reminders, the next vaccines within a week.
+    final remindersAsync = ref.watch(remindersProvider(me.babyId));
     final reminders = [
-      for (final r in ref.watch(remindersProvider(me.babyId)).value ?? const [])
+      for (final r in remindersAsync.value ?? const [])
         if (!r.done &&
             (r.allDay
                 ? r.dueDate == isoOf(local)
@@ -213,7 +229,8 @@ class HandoverNow extends ConsumerWidget {
           : [
               hhmm(diaper.occurredAt),
               if (diaper.diaper case final kind?) diaperChoice(l, kind),
-              l.hoDiapersToday(diapersToday),
+              // "Hôm nay 0 lần" says nothing the time above doesn't (B11).
+              if (diapersToday > 0) l.hoDiapersToday(diapersToday),
             ].join(' · '),
     );
 
@@ -268,13 +285,22 @@ class HandoverNow extends ConsumerWidget {
           ),
         ),
         _Label(l.hoUpcoming),
-        if (nextRows.isEmpty)
+        if (nextRows.isNotEmpty) _Group(rows: nextRows),
+        // "Nothing scheduled" only once the reminders are known (AI-10).
+        if (remindersAsync.hasError && !remindersAsync.hasValue) ...[
+          if (nextRows.isNotEmpty) const SizedBox(height: ClSpace.s2),
+          _Muted(
+            icon: ClIcons.alert,
+            text: l.hoRemindersFailed,
+            color: cl.colors.error,
+          ),
+        ] else if (!remindersAsync.hasValue)
+          const ClSkeleton(height: 44, radius: ClRadius.control)
+        else if (nextRows.isEmpty)
           Text(
             l.hoNothingUpcoming,
             style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-          )
-        else
-          _Group(rows: nextRows),
+          ),
         if (helpful.isNotEmpty && content != null) ...[
           _Label(l.hoHelps),
           Wrap(
@@ -320,8 +346,9 @@ class HandoverSafety extends ConsumerWidget {
         'Asia/Ho_Chi_Minh';
     final local = inBabyZone(zone, now);
     final yesterday = isoOf(DateTime(local.year, local.month, local.day - 1));
+    final checkIns = ref.watch(checkInsProvider(me.babyId));
     final health = [
-      for (final c in ref.watch(checkInsProvider(me.babyId)).value ?? const [])
+      for (final c in checkIns.value ?? const [])
         if (c.date.compareTo(yesterday) >= 0 &&
             (c.needsHealthSupport || c.healthSigns.isNotEmpty))
           c,
@@ -353,7 +380,16 @@ class HandoverSafety extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: ClSpace.s4),
-        if (health.isEmpty)
+        // AI-10: "no health signs" is said only once the check-ins have loaded; never as a
+        // false all-clear at handover.
+        if (!checkIns.hasValue && checkIns.hasError)
+          CareLoadFailed(
+            title: l.hoHealthFailed,
+            onRetry: () => ref.invalidate(checkInsProvider(me.babyId)),
+          )
+        else if (!checkIns.hasValue)
+          const ClSkeleton(height: 20, radius: ClRadius.control)
+        else if (health.isEmpty)
           Row(
             children: [
               ClIcon(ClIcons.check, size: 16, color: cl.colors.mintText),
@@ -824,6 +860,56 @@ class _Label extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// AI-10: the live part while the diary loads, shaped like it (the hero, two tiles, a row).
+class HandoverNowSkeleton extends StatelessWidget {
+  const HandoverNowSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: AppLocalizations.of(context).hoLoading,
+    child: const ExcludeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSkeleton(height: 150, radius: ClRadius.card),
+          SizedBox(height: ClSpace.s2),
+          Row(
+            children: [
+              Expanded(child: ClSkeleton(height: 84, radius: ClRadius.card)),
+              SizedBox(width: ClSpace.s2),
+              Expanded(child: ClSkeleton(height: 84, radius: ClRadius.card)),
+            ],
+          ),
+          SizedBox(height: ClSpace.s4),
+          ClSkeleton(height: 44, radius: ClRadius.control),
+        ],
+      ),
+    ),
+  );
+}
+
+/// One quiet line with an icon (a failed part of the live view).
+class _Muted extends StatelessWidget {
+  const _Muted({required this.icon, required this.text, required this.color});
+  final ClIcons icon;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Row(
+      children: [
+        ClIcon(icon, size: 16, color: color),
+        const SizedBox(width: ClSpace.s1),
+        Expanded(
+          child: Text(text, style: cl.text.label.copyWith(color: color)),
+        ),
+      ],
     );
   }
 }

@@ -22,7 +22,9 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../care/care_repository.dart' show onlineProvider;
 import '../home/home_shell.dart';
+import '../me/me_widgets.dart';
 import 'family_labels.dart';
 import 'family_models.dart';
 import 'family_repository.dart';
@@ -42,8 +44,13 @@ String familyMessage(AppLocalizations l10n, FamilyFailure failure) =>
       FamilyFailure.used => l10n.inviteErrorClosed,
       FamilyFailure.network => l10n.authErrorNetwork,
       FamilyFailure.seatsFull => l10n.pv2E12FullBody,
+      // FJ-5: the lockout's own words (P-021).
+      FamilyFailure.locked => l10n.joinLocked(inviteLockMinutes),
       _ => l10n.familyErrorGeneric,
     };
+
+/// P-021 lockout after repeated wrong codes (contracts `inviteLookupLockMinutes`).
+const inviteLockMinutes = 15;
 
 /// Can the caller open 14f for [target]? Cùng nuôi manage others; the owner is protected and
 /// only the owner manages other Cùng nuôi (Q-013 → D-017).
@@ -150,11 +157,21 @@ class FamilyScreen extends ConsumerWidget {
                   ),
               ],
             ),
-            AsyncError() => Padding(
-              padding: const EdgeInsets.symmetric(vertical: ClSpace.s4),
-              child: Text(
-                l10n.familyLoadFailed,
-                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            // FJ-5: the network is blamed only when the phone is offline; "Thử lại" reloads.
+            AsyncError() => MeNotice(
+              title: ref.watch(onlineProvider).value == false
+                  ? l10n.familyLoadFailed
+                  : l10n.familyLoadFailedGeneric,
+              icon: ClIcons.alert,
+              tone: MeTone.error,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ClButton(
+                  label: l10n.actionRetry,
+                  style: ClButtonStyle.plain,
+                  onPressed: () =>
+                      ref.invalidate(familyMembersProvider(babyId)),
+                ),
               ),
             ),
             _ => const ClCardGroup(
@@ -168,7 +185,12 @@ class FamilyScreen extends ConsumerWidget {
           },
           if (pending.isNotEmpty) ...[
             const SizedBox(height: ClSpace.s6),
-            ClSectionHeader(title: l10n.familyPending(pending.length)),
+            // FJ-5: expired invites stay listed (with "Gửi lại") but are not counted as waiting.
+            ClSectionHeader(
+              title: l10n.familyPending(
+                pending.where((i) => !i.isExpiredAt(DateTime.now())).length,
+              ),
+            ),
             const SizedBox(height: ClSpace.s2),
             for (final invite in pending) ...[
               _PendingCard(

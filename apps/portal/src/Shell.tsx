@@ -738,10 +738,25 @@ function CommandMenu({
               <CommandItem
                 key={item.route}
                 value={`${t(`nav.${item.route}`)} ${item.route}`}
+                keywords={[
+                  t(`nav.help.${item.route}`),
+                  `${t(`nav.${item.route}`)} ${t(`nav.help.${item.route}`)}`
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replaceAll('đ', 'd')
+                    .replaceAll('Đ', 'D'),
+                ]}
                 onSelect={() => run(() => navigate(item.route))}
               >
                 <item.icon />
-                <FormattedMessage id={`nav.${item.route}`} />
+                <span className="grid min-w-0 gap-0.5">
+                  <span>
+                    <FormattedMessage id={`nav.${item.route}`} />
+                  </span>
+                  <span className="text-xs leading-5 text-muted-foreground">
+                    <FormattedMessage id={`nav.help.${item.route}`} />
+                  </span>
+                </span>
               </CommandItem>
             ))}
           </CommandGroup>

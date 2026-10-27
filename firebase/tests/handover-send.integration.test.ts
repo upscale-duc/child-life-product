@@ -62,8 +62,8 @@ beforeEach(async () => {
       displayName: uid === 'mom' ? 'Duckie' : uid,
       ...extra,
     });
-  await member('mom', 'coParent');
-  await member('jun', 'caregiver');
+  await member('mom', 'coParent', { relation: 'mother' });
+  await member('jun', 'caregiver', { relation: 'father' });
   await member('grandma', 'relative');
   await db.doc(`babies/${babyId}/summaries/${summaryId}`).set({
     id: summaryId,
@@ -161,6 +161,69 @@ describe('P-181 "Ai đang trông bé"', () => {
   const duty = async () => (await db.doc(`babies/${babyId}/careDuty/current`).get()).data();
   const later = new Date(now.getTime() + 60 * 60_000);
 
+  it('records the verified parent pair, with idempotent retries from either parent', async () => {
+    const result = await setCareDuty(
+      db,
+      'mom',
+      { babyId, action: 'together', coCarerUid: 'jun' },
+      now,
+    );
+    expect(result).toEqual({ uid: 'mom', coCarerUid: 'jun', since: now.toISOString() });
+    expect(
+      await setCareDuty(db, 'jun', { babyId, action: 'together', coCarerUid: 'mom' }, later),
+    ).toEqual(result);
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60_000);
+    expect(
+      await setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid: 'jun' }, tomorrow),
+    ).toMatchObject({ since: tomorrow.toISOString() });
+  });
+
+  it.each(['mom', 'jun'])('ending %s’s part keeps the other parent on duty', async (ending) => {
+    await setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid: 'jun' }, now);
+    const remaining = ending === 'mom' ? 'jun' : 'mom';
+    expect(await setCareDuty(db, ending, { babyId, action: 'end' }, later)).toEqual({
+      uid: remaining,
+      since: now.toISOString(),
+    });
+    expect(await duty()).toMatchObject({ uid: remaining, coCarerUid: null, previousUid: ending });
+    await setCareDuty(db, remaining, { babyId, action: 'end' }, later);
+    expect(await duty()).toMatchObject({ uid: null, coCarerUid: null });
+  });
+
+  it('refuses a fabricated parent pair or inactive parent without changing the current duty', async () => {
+    await setCareDuty(db, 'mom', { babyId, action: 'take' }, now);
+    for (const coCarerUid of ['mom', 'grandma', 'unknown']) {
+      expect(
+        await reasonOf(setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid }, later)),
+      ).toBe('not-a-parent-pair');
+    }
+    await db.doc(`babies/${babyId}/members/jun`).update({ status: 'removed' });
+    expect(
+      await reasonOf(
+        setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid: 'jun' }, later),
+      ),
+    ).toBe('not-a-parent-pair');
+    expect(await duty()).toMatchObject({ uid: 'mom', coCarerUid: null });
+    expect(await reasonOf(setCareDuty(db, 'mom', { babyId, action: 'together' }, later))).toBe(
+      'bad-request',
+    );
+  });
+
+  it('a solo take or a received handover clears the previous parent pair', async () => {
+    await setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid: 'jun' }, now);
+    await setCareDuty(db, 'mom', { babyId, action: 'take' }, later);
+    expect(await duty()).toMatchObject({ uid: 'mom', coCarerUid: null, previousCoCarerUid: 'jun' });
+    await setCareDuty(db, 'mom', { babyId, action: 'together', coCarerUid: 'jun' }, now);
+    const { sendId } = await sendHandover(
+      db,
+      'mom',
+      { babyId, summaryId, recipientUid: 'jun' },
+      now,
+    );
+    await markHandover(db, 'jun', { babyId, sendId, action: 'received' }, later);
+    expect(await duty()).toMatchObject({ uid: 'jun', coCarerUid: null, via: 'handover' });
+  });
+
   it('a carer takes it, the next one takes over, and only the one on duty can end it', async () => {
     expect(await setCareDuty(db, 'mom', { babyId, action: 'take' }, now)).toEqual({
       uid: 'mom',
@@ -185,6 +248,19 @@ describe('P-181 "Ai đang trông bé"', () => {
     expect(await reasonOf(setCareDuty(db, 'mom', { babyId, action: 'nap' }, now))).toBe(
       'bad-request',
     );
+  });
+
+  it('renews an expired shift for the same carer; a fresh retry keeps its start time', async () => {
+    await setCareDuty(db, 'mom', { babyId, action: 'take' }, now);
+    const freshRetry = await setCareDuty(db, 'mom', { babyId, action: 'take' }, later);
+    expect(freshRetry.since).toBe(now.toISOString());
+    expect((await duty())?.since.toDate()).toEqual(now);
+
+    // Mobile treats a shift >=24h old as inactive and offers "Tôi trông bé" again.
+    const nextDay = new Date(now.getTime() + 24 * 60 * 60_000);
+    const renewed = await setCareDuty(db, 'mom', { babyId, action: 'take' }, nextDay);
+    expect(renewed).toEqual({ uid: 'mom', since: nextDay.toISOString() });
+    expect((await duty())?.since.toDate()).toEqual(nextDay);
   });
 
   it('receiving a handover puts the recipient on duty, once', async () => {

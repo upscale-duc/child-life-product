@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart' show FirebaseException;
 import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -145,3 +146,32 @@ String growthMeasureTab(AppLocalizations l10n, GrowthMeasure m) => switch (m) {
   GrowthMeasure.length => l10n.growthLengthTab,
   GrowthMeasure.head => l10n.growthHeadTab,
 };
+
+/// What a refused care write was (SY-4): the toast names the record and the action.
+enum CareWrite { create, edit, delete, restore, timer }
+
+/// "Chưa lưu được: Bú bình · 120 ml, 14:05", plus "Có thể quyền của bạn đã thay đổi." only when
+/// the server said so (SY-4: one generic sentence covered every failure before).
+String careWriteFailed(
+  AppLocalizations l10n,
+  String locale,
+  CareWrite write,
+  Object error, [
+  CareRecord? record,
+]) {
+  final what = record == null ? '' : recordSummary(l10n, locale, record);
+  final at = record == null
+      ? ''
+      : DateFormat.Hm(locale).format(record.occurredAt);
+  final message = switch (write) {
+    _ when record == null => l10n.careFailedTimer,
+    CareWrite.create => l10n.careFailedNew(what, at),
+    CareWrite.edit => l10n.careFailedEdit(what, at),
+    CareWrite.delete => l10n.careFailedDelete(what, at),
+    CareWrite.restore => l10n.careFailedRestore(what, at),
+    CareWrite.timer => l10n.careFailedTimer,
+  };
+  return error is FirebaseException && error.code == 'permission-denied'
+      ? l10n.careFailedDenied(message)
+      : message;
+}

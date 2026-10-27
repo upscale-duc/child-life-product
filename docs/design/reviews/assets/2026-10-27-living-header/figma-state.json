@@ -1,0 +1,140 @@
+{
+  "runId": "living-header-20261027",
+  "scope": "reconciliation/update",
+  "status": "complete",
+  "session": {
+    "fileKey": "sJLG1fAXKDnDr9YI6Yx8ex",
+    "link_id": "link_6ac8d8d080588191b7cd7f44791ad8b9",
+    "sessionId": "fd123af8-b037-439c-a0ca-590b47f9e2d9"
+  },
+  "frames": [
+    {
+      "id": "1192:15942",
+      "name": "HH01 · Hôm nay · Tối · Hoạ tiết · Chưa ai nhận",
+      "w": 375,
+      "h": 812,
+      "x": 80,
+      "y": 1200
+    },
+    {
+      "id": "1192:16104",
+      "name": "HH02 · Hôm nay · Tối · Ảnh bé · Ba đang trông",
+      "w": 375,
+      "h": 812,
+      "x": 535,
+      "y": 1200
+    },
+    {
+      "id": "1192:16261",
+      "name": "HH03 · Hôm nay · Sáng · Hoạ tiết · Chưa ai nhận",
+      "w": 375,
+      "h": 812,
+      "x": 990,
+      "y": 1200
+    },
+    {
+      "id": "1192:16419",
+      "name": "HH01N · Night care · Tối · Hoạ tiết",
+      "w": 375,
+      "h": 812,
+      "x": 1445,
+      "y": 1200
+    },
+    {
+      "id": "1192:16580",
+      "name": "HH02N · Night care · Tối · Ảnh bé · Ba đang trông",
+      "w": 375,
+      "h": 812,
+      "x": 1900,
+      "y": 1200
+    },
+    {
+      "id": "1195:16445",
+      "name": "HH04 · Cài đặt giao diện · Hoạ tiết · Xem trước",
+      "w": 375,
+      "h": 812,
+      "x": 2355,
+      "y": 1200
+    },
+    {
+      "id": "1204:17083",
+      "name": "HH05 · Cài đặt giao diện · Ảnh bé · Xem trước",
+      "w": 375,
+      "h": 812,
+      "x": 2810,
+      "y": 1200
+    },
+    {
+      "id": "1204:17214",
+      "name": "HH06 · Hôm nay · Cuối danh sách · Cài đặt giao diện",
+      "w": 375,
+      "h": 812,
+      "x": 3265,
+      "y": 1200
+    },
+    {
+      "id": "1204:17355",
+      "name": "HH07 · Ai đang trông Teddy · Chi tiết ca",
+      "w": 375,
+      "h": 812,
+      "x": 3720,
+      "y": 1200
+    },
+    {
+      "id": "1205:17258",
+      "name": "HH09 · Cài đặt giao diện · Ảnh từ Kỷ niệm · Xem trước",
+      "w": 375,
+      "h": 812,
+      "x": 2355,
+      "y": 2200
+    },
+    {
+      "id": "1209:17217",
+      "name": "HH10 · Hôm nay · Đã áp dụng ảnh từ Kỷ niệm",
+      "w": 375,
+      "h": 812,
+      "x": 2810,
+      "y": 2200
+    },
+    {
+      "id": "1209:17277",
+      "name": "HH08 · Chọn ảnh từ Kỷ niệm",
+      "w": 375,
+      "h": 812,
+      "x": 4175,
+      "y": 1200
+    }
+  ],
+  "componentVariants": [
+    {
+      "id": "1187:15787",
+      "name": "Trạng thái=Chưa ai nhận",
+      "w": 238,
+      "h": 44
+    },
+    {
+      "id": "1187:15797",
+      "name": "Trạng thái=Có người trông",
+      "w": 294,
+      "h": 60
+    },
+    {
+      "id": "1211:17323",
+      "name": "Trạng thái=Bạn đang trông",
+      "w": 294,
+      "h": 60
+    }
+  ],
+  "verification": {
+    "brokenLinks": [],
+    "textOutsideParent": [],
+    "rendered": [
+      "footer",
+      "photo",
+      "memory",
+      "care",
+      "night"
+    ]
+  },
+  "notes": "Figma only; care mutation and special-day toggle remain design examples, not a data simulation."
+}

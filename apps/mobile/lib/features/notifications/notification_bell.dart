@@ -14,7 +14,8 @@ import 'notification_repository.dart';
 /// The bell in the Hôm nay header (559:57622): a 44 pt circle like the Night care toggle, with a
 /// red dot while the inbox has unread rows (EN04); opens EN06.
 class NotificationBell extends ConsumerWidget {
-  const NotificationBell({super.key});
+  const NotificationBell({this.hero = false, super.key});
+  final bool hero;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,8 +35,9 @@ class NotificationBell extends ConsumerWidget {
               width: ClSpace.tapMin,
               height: ClSpace.tapMin,
               decoration: BoxDecoration(
-                color: cl.colors.surface2,
+                color: hero ? cl.colors.surface : cl.colors.surface2,
                 shape: BoxShape.circle,
+                boxShadow: hero ? cl.shadows.chip : null,
               ),
               alignment: Alignment.center,
               child: ClIcon(ClIcons.bell, size: 22, color: cl.colors.ink),

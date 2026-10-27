@@ -6,6 +6,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
@@ -71,6 +72,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   bool? _reply;
   var _busy = false;
 
+  /// One id per draft, kept across retries (FB-1).
+  final _requestId = const Uuid().v4();
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +116,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
       await ref
           .read(feedbackRepositoryProvider)
           .send(
+            requestId: _requestId,
             type: _type,
             message: _message.text,
             shot: _shot,

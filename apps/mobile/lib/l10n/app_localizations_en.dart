@@ -352,13 +352,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get existsTitle => 'This email already has an account';
 
   @override
-  String get existsBody => 'Sign in with Apple or Google, then we\'ll link it.';
-
-  @override
-  String get existsProvider => 'Apple · Google';
-
-  @override
-  String get existsUseOtherEmail => 'Use another email';
+  String get existsBody =>
+      'Sign in the way you did before, or get a sign-in link by email.';
 
   @override
   String get existsLinked => 'Your email is now linked to your account.';
@@ -830,6 +825,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveAccountMerged => 'Merged into your account';
+
+  @override
+  String get saveAccountMergedArriving =>
+      'Merged into your account. Your family is loading, just a moment.';
+
+  @override
+  String get saveAccountMergedSignIn =>
+      'Merged into your account. Sign in again to open it.';
+
+  @override
+  String get existsOtherMethod =>
+      'This account\'s email is registered another way. Try sending a sign-in link.';
+
+  @override
+  String signOutUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count logs haven\'t been sent yet.',
+      one: '1 log hasn\'t been sent yet.',
+      zero: 'Some changes haven\'t been sent yet.',
+    );
+    return '$_temp0 If you sign out now, they\'re sent only when you sign in again on this phone.';
+  }
+
+  @override
+  String signOutAnonUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count logs not sent yet will be lost too.',
+      one: '1 log not sent yet will be lost too.',
+      zero: 'Changes not sent yet will be lost too.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get unsentSendNow => 'Try sending now';
+
+  @override
+  String get unsentStillPending =>
+      'Still not sent. Check your connection and try again.';
+
+  @override
+  String get meSignOutAnyway => 'Sign out anyway';
+
+  @override
+  String acDeleteUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count logs not sent yet will be lost when you delete your account.',
+      one: '1 log not sent yet will be lost when you delete your account.',
+      zero: 'Changes not sent yet will be lost when you delete your account.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get acDeleteAnyway => 'Delete anyway';
+
+  @override
+  String get acDeleteOwnsBabies =>
+      'Transfer your baby profiles before deleting your account.';
+
+  @override
+  String get profileSaveFailed =>
+      'Couldn\'t save the profile. Please try again.';
+
+  @override
+  String get bpLoadFailed => 'Couldn\'t load the baby\'s profile.';
+
+  @override
+  String get joinLoadFailedTitle => 'Couldn\'t open the invite';
+
+  @override
+  String get joinLoadFailedOffline =>
+      'You\'re offline. The invite is still there; connect and try again.';
+
+  @override
+  String get joinLoadFailedBody =>
+      'Something went wrong opening the invite. Please try again.';
+
+  @override
+  String get joinFullTitle => 'This family has no writer seats left';
+
+  @override
+  String get joinFullBody =>
+      'Ask the person who invited you to free a seat, or to invite you as a relative to see the album.';
+
+  @override
+  String pv2SeatsHeld(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invites holding a seat',
+      one: '1 invite holding a seat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteSeatsHeldHint =>
+      'Invites not yet accepted hold a seat too. Cancel the ones you no longer need in Family to free one.';
+
+  @override
+  String joinArriving(String baby) {
+    return 'You\'ve joined $baby\'s family. Loading, just a moment…';
+  }
+
+  @override
+  String joinCountdownMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes left',
+      one: '1 minute left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get familyLoadFailedGeneric => 'Couldn\'t load the list.';
 
   @override
   String get saveEmailSubtitle =>
@@ -2671,7 +2791,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifPromptBody =>
-      'Notifications are set only on the device that created the reminder.';
+      'So reminders ring on time, even when the app is closed.';
 
   @override
   String get notifPromptAllow => 'Turn on notifications';
@@ -4506,7 +4626,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stVideosEmpty => 'No videos yet.';
 
   @override
-  String get stLoadFailed => 'Couldn’t load storage. Pull down to try again.';
+  String get stLoadFailed =>
+      'Your photos and videos are safe. Try again when you’re connected.';
 
   @override
   String bpCarers(String age, int count) {
@@ -8926,10 +9047,10 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'items',
-      one: 'item',
+      other: 'photos and videos',
+      one: 'photo or video',
     );
-    return '$count $_temp0 not synced yet';
+    return '$count $_temp0 not uploaded yet';
   }
 
   @override
@@ -10221,23 +10342,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String autoSaveReviewSub(int count, String time) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count suggestions · checked at $time. Untick anything you don\'t want to save.',
-      one:
-          '1 suggestion · checked at $time. Untick anything you don\'t want to save.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get autoSaveGroupedHint =>
-      'Similar photos are grouped; the clearest one is already ticked.';
-
-  @override
   String autoSaveWeek(int n, int count) {
     return 'Week $n · $count';
   }
@@ -10253,13 +10357,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String autoSaveWeekHint(String name) {
-    return 'Review by $name\'s week of age: upload a week at a time; finished weeks are marked.';
-  }
-
-  @override
   String autoSaveFilterAll(int count) {
-    return 'All · $count';
+    return 'Photos & videos · $count';
   }
 
   @override
@@ -10283,17 +10382,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String autoSaveDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count items',
-      one: '1 item',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get autoSaveAlready => 'Saved';
 
   @override
@@ -10301,7 +10389,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSaveLegend =>
-      '\"Saved\": already in Memories, won\'t be uploaded again. \"In iCloud\": the original isn\'t on this phone yet and is fetched when online.';
+      '“In iCloud”: the original isn’t on this phone yet and is fetched when online.';
 
   @override
   String autoSaveGroupTitle(int count, int chosen) {
@@ -10317,32 +10405,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSaveGroupAll => 'Tick all';
 
   @override
-  String get autoSaveGroupCollapse => 'Collapse';
-
-  @override
   String get autoSaveBest => 'Clearest';
 
   @override
   String autoSaveChosen(int count, int photos, int videos) {
     return '$count ticked · $photos photos, $videos videos';
   }
-
-  @override
-  String autoSaveMerged(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count similar photos grouped · nothing deleted on your phone',
-      one: '1 similar photo grouped · nothing deleted on your phone',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get autoSaveDeselectAll => 'Deselect all';
-
-  @override
-  String get autoSaveSelectAll => 'Select all';
 
   @override
   String autoSaveRoundRest(int rest, int cap) {
@@ -10492,11 +10560,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Originals stay on your phone. \"Saved\" appears once the upload finishes.';
 
   @override
-  String autoSaveNoRoom(int count, String need, String left, int fit) {
-    return 'Not enough space: $count items need $need and your family has $left left. You can upload $fit items that fit now; the rest stay on your phone.';
-  }
-
-  @override
   String autoSaveUploadFit(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -10513,11 +10576,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSaveSeeStorage => 'See storage';
-
-  @override
-  String autoSavePreparing(int done, int total) {
-    return 'Preparing $done/$total…';
-  }
 
   @override
   String autoSaveQueued(int count) {
@@ -11680,7 +11738,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmBadgeExpired => 'Expired';
 
   @override
-  String get pmPlanTitle => 'Household plan';
+  String get pmPlanTitle => 'Family plan';
 
   @override
   String get pmPlanFree => 'On the Basic plan';
@@ -13871,7 +13929,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmNotOwnerBody =>
-      'Ask the family owner to open Household plan to upgrade or restore.';
+      'Ask the family owner to open Family plan to upgrade or restore.';
 
   @override
   String get pmRestoreTitle => 'Restore purchase';
@@ -14792,7 +14850,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asPremiumTeaser =>
-      'Premium has more help, plus proactive personalisation and Premium card/video templates.';
+      'Premium includes more Lumi credits, personal suggestions and premium card and video templates.';
 
   @override
   String get asSeePremium => 'See Premium';
@@ -14842,7 +14900,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asOpenTodayLog => 'Open today’s log';
 
   @override
-  String get asUpgradeContinue => 'Upgrade & continue';
+  String get asUpgradeContinue => 'See Premium to keep asking';
 
   @override
   String get asHealthStillOpen => 'Essential health guidance stays open.';
@@ -14853,11 +14911,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asOutTitlePremium =>
       'Your household has used all AI help this period.';
-
-  @override
-  String asOutBodyPremium(String date) {
-    return 'Resets $date. You can still log directly, view logs, use Premium templates and your separate video quota.';
-  }
 
   @override
   String get asSeeUsage => 'See usage details';
@@ -16671,6 +16724,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ntSaveFailed => 'Couldn’t save. Please try again.';
 
   @override
+  String get ntSettingsLoadFailed => 'Couldn’t load your notification settings';
+
+  @override
+  String get ntGroupLoadFailed => 'Couldn’t load. Tap to try again.';
+
+  @override
+  String get ntTurnOn => 'Turn on';
+
+  @override
+  String get ruleNotifOff =>
+      'Notifications are off on this device, so rule-based reminders won’t show.';
+
+  @override
+  String get meNotifOffDevice => 'Off on device';
+
+  @override
+  String get meRateOpenFailed =>
+      'Couldn’t open the app store. Try again later.';
+
+  @override
   String get rhPlannedPill => 'Trying';
 
   @override
@@ -16805,6 +16878,74 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asErrorFriendly =>
       'I couldn’t answer just now. Nothing was saved — try again, or log it directly.';
+
+  @override
+  String get asActOffline =>
+      'You’re offline · not sent. Try again once you’re online.';
+
+  @override
+  String get asActFailed => 'Couldn’t send. Please try again.';
+
+  @override
+  String get asActChecking => 'Slow connection · checking again…';
+
+  @override
+  String get asAnswerStale => 'The question just changed. Take a look above.';
+
+  @override
+  String get asAnswerOffline =>
+      'You’re offline · your answer wasn’t sent; it’s still in the box.';
+
+  @override
+  String get asAnswerFailed =>
+      'Couldn’t send your answer. It’s still in the box — please try again.';
+
+  @override
+  String get asChecking => 'Checking…';
+
+  @override
+  String get asEditKept => 'Edit';
+
+  @override
+  String get asErrorNoRetry =>
+      'I can’t do this one. Nothing was saved — you can log it directly.';
+
+  @override
+  String get asStillWorking => 'Lumi is still working…';
+
+  @override
+  String get asTaskSlowBody =>
+      'This is taking Lumi longer than usual. Nothing from this message has been saved.';
+
+  @override
+  String get asCheckAgain => 'Check again';
+
+  @override
+  String asOutResetOn(String date) {
+    return 'New credits from $date.';
+  }
+
+  @override
+  String get asOutResetNext => 'New credits arrive next period.';
+
+  @override
+  String get asBlockedOld => 'Not answered · no credits left then';
+
+  @override
+  String get asAskAgain => 'Ask again';
+
+  @override
+  String asPhotoQuoteTitleOver(int credits) {
+    return 'Reading this photo needs $credits, more than you have left.';
+  }
+
+  @override
+  String get asPhotoQuoteWait =>
+      'You can type it in or wait for new credits. The photo hasn’t been sent.';
+
+  @override
+  String get asPhotoQuoteWaitUpgrade =>
+      'You can type it in, wait for new credits, or upgrade to continue now. The photo hasn’t been sent.';
 
   @override
   String get asReadingPhoto => 'Lumi is reading the photo…';
@@ -19431,7 +19572,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2Exclude => 'Unsuitable for baby · applies to the family';
 
   @override
-  String get pv2Restore => 'Restore';
+  String get pv2Restore => 'Restore purchases';
 
   @override
   String get pv2Intend => 'I\'ll try it';
@@ -21562,8 +21703,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get psBookPageHelp => 'Tap a photo to change it · tap text to edit';
 
   @override
-  String psBookPagesCount(String count) {
-    return '$count pages';
+  String psBookPagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages',
+      one: '1 page',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -22029,7 +22176,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Nobody is on duty. Whoever is caring now can take it so the family knows.';
 
   @override
-  String get dutyTake => 'I’m caring from now';
+  String get dutyTake => 'I’m caring for my baby';
 
   @override
   String get dutyEnd => 'End my shift';
@@ -22094,8 +22241,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Child Life confirms the estimated delivery date and total before sending your order to production.';
 
   @override
-  String psPreviewPriceCaption(String count, String size) {
-    return '$count frames $size · shipping extra';
+  String psPreviewPriceCaption(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count frames',
+      one: '1 frame',
+    );
+    return '$_temp0 $size · shipping extra';
   }
 
   @override
@@ -22129,7 +22282,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2SeePremium => 'See Premium';
 
   @override
-  String get pv2SeePlans => 'See the plans';
+  String get pv2SeePlans => 'See Premium';
 
   @override
   String get pv2GotIt => 'Got it';
@@ -22141,11 +22294,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2E01Body(int videos) {
-    return 'Preview for free. Premium opens every premium template and $videos video exports a month.';
+    return 'Premium includes this template and unlimited Full HD 1080p exports. Your selected photos and message are kept.';
   }
 
   @override
-  String get pv2E01Secondary => 'Use a similar free template';
+  String get pv2E01Secondary => 'Use a free template';
 
   @override
   String pv2E02Title(String name) {
@@ -22157,14 +22310,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Premium opens every premium card and video template. The photos and message you chose are kept.';
 
   @override
-  String get pv2E02Secondary => 'Choose a free template';
+  String get pv2E02Secondary => 'Use a free template';
 
   @override
   String get pv2E04Title => 'This draft uses a premium template';
 
   @override
   String get pv2E04Body =>
-      'The draft is kept. Upgrade to Premium to export, or switch to a basic template.';
+      'The draft is kept. Upgrade to Premium to export, or switch to a free template.';
 
   @override
   String get pv2E04Secondary => 'Switch to a free template';
@@ -22228,12 +22381,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2E12Title(int used, int limit) {
-    return 'The family has used $used/$limit caregiver seats';
+    return 'The family has used $used/$limit logging seats';
   }
 
   @override
   String pv2E12Body(int premium) {
-    return 'Premium has $premium caregiver seats. Or invite them as a relative — albums with no limit.';
+    return 'Premium has $premium logging seats. Or invite them as a relative — albums with no limit.';
   }
 
   @override
@@ -22252,8 +22405,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2E08Title => 'The family is running out of room';
 
   @override
-  String pv2E08BodyPremium(int pct, String gb) {
-    return 'Used $pct% of $gb GB. Add 20 GB or 50 GB, shared by the whole family.';
+  String pv2E08BodyPremium(int pct, String gb, String options) {
+    return 'Used $pct% of $gb GB. Add $options, shared by the whole family.';
   }
 
   @override
@@ -22281,17 +22434,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2E13Body(int videos, int credits, String gb, String price) {
-    return '$videos videos a month, $credits Lumi credits, premium templates and $gb GB for the family · $price/month.';
+    return 'Premium templates, Full HD video, more Lumi credits and shared family storage.';
   }
 
   @override
   String pv2HeadVideo(String name) {
-    return 'Turn this month of $name\'s into a story';
+    return 'Create a memory video for $name';
   }
 
   @override
   String pv2HeadCard(String name) {
-    return 'A card worthy of $name\'s first month';
+    return 'Create a card for $name';
   }
 
   @override
@@ -22304,11 +22457,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2HeadCaregivers(String name) {
-    return 'Let the whole family care for $name';
+    return 'Invite more people to care for $name';
   }
 
   @override
-  String get pv2HeadExplore => 'Keep your child\'s first years more fully';
+  String get pv2HeadExplore => 'Upgrade to Premium';
 
   @override
   String pv2ReasonTemplate(String name) {
@@ -22330,7 +22483,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2ReasonCaregivers(int used, int limit) {
-    return 'The family uses $used / $limit caregiver seats of the Free plan.';
+    return 'Free plan: $used / $limit logging seats.';
   }
 
   @override
@@ -22338,18 +22491,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'It\'s in Premium — the plan the whole family shares.';
 
   @override
-  String get pv2CardVideoEyebrow => 'MEMORY VIDEOS';
+  String get pv2CardVideoEyebrow => 'KEEPSAKE CARDS & VIDEOS';
 
   @override
-  String get pv2CardVideoTitle => 'Loose photos, one story';
+  String get pv2CardVideoTitle => 'Keepsakes that feel like your baby';
 
   @override
   String get pv2CardVideoBody =>
-      'Pick photos, add a message, keep the months with your child.';
+      'Choose premium templates and add photos, a name and a message.';
 
   @override
   String pv2CardVideoLimit(int n) {
-    return '$n videos a month';
+    return 'Unlimited video exports';
   }
 
   @override
@@ -22366,7 +22519,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2CardCardBody =>
-      'Add a name and a loving note, change the style in one tap.';
+      'Add a name, photos and a message to your chosen design.';
 
   @override
   String get pv2CardCardLimit =>
@@ -22379,15 +22532,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardLumiEyebrow => 'LUMI EVERY MONTH';
 
   @override
-  String get pv2CardLumiTitle => 'Ask once, Lumi sums it up';
+  String get pv2CardLumiTitle => 'Ask Lumi about your baby’s logs';
 
   @override
   String get pv2CardLumiBody =>
-      'Ask about feeds and sleep, or log in one sentence.';
+      'Get log summaries and drafts to review before saving.';
 
   @override
   String pv2CardLumiLimit(int n) {
-    return '$n credits a month';
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n credits/month',
+      one: '$n credit/month',
+    );
+    return '$_temp0 · shared with your family';
   }
 
   @override
@@ -22403,15 +22562,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'YOUR CHILD\'S RHYTHM';
 
   @override
-  String get pv2CardRhythmTitle => 'Small changes, easier to see.';
+  String get pv2CardRhythmTitle => 'Personal suggestions & advanced rhythms';
 
   @override
   String get pv2CardRhythmBody =>
-      'Look back at feeds and sleep from your child\'s journal, with a short note and the sources to check.';
+      'Suggestions for your baby’s needs and feeding and sleep patterns from your logs.';
 
   @override
   String pv2CardRhythmLimit(int n) {
-    return 'Included in $n credits a month';
+    return 'Included in Premium';
   }
 
   @override
@@ -22424,15 +22583,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardStorageEyebrow => 'STORAGE';
 
   @override
-  String get pv2CardStorageTitle => 'Room for the months ahead.';
+  String get pv2CardStorageTitle => 'More room for photos and videos';
 
   @override
   String get pv2CardStorageBody =>
-      'Keep more photos and videos in the family\'s private album.';
+      'Shared storage for your family’s photos and videos.';
 
   @override
   String pv2CardStorageLimit(String gb) {
-    return '$gb GB shared · more available';
+    return '$gb GB shared by your family';
   }
 
   @override
@@ -22442,15 +22601,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardCaregiversEyebrow => 'THE WHOLE FAMILY CARES';
 
   @override
-  String get pv2CardCaregiversTitle => 'Everyone cares, no asking twice';
+  String get pv2CardCaregiversTitle => 'Keep care logs together';
 
   @override
   String get pv2CardCaregiversBody =>
-      'Whatever anyone logs, everyone sees it in the shared journal.';
+      'Log feeds and sleep together, and check updates in the journal.';
 
   @override
   String pv2CardCaregiversLimit(int premium, int free) {
-    return 'Room for up to $premium caregivers (Free: $free)';
+    String _temp0 = intl.Intl.pluralLogic(
+      premium,
+      locale: localeName,
+      other: '$premium logging seats',
+      one: '$premium logging seat',
+    );
+    return '$_temp0 · Free: $free';
   }
 
   @override
@@ -22460,7 +22625,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardCaregiversDemo2 => 'Dad · Started a nap';
 
   @override
-  String get pv2CompareTitle => 'Free and Premium';
+  String get pv2CompareTitle => 'Compare Free and Premium';
 
   @override
   String get pv2CompareBenefit => 'Benefit';
@@ -22469,11 +22634,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2YouNeed => 'You need this';
 
   @override
-  String get pv2RowLumi => 'Lumi credits';
+  String get pv2RowLumi => 'Lumi';
 
   @override
   String pv2RowLumiFree(int n) {
-    return '$n trial credits';
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n one-time trial credits',
+      one: '$n one-time trial credit',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -22490,16 +22661,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pv2RowVideo => 'Video exports';
+  String get pv2RowVideo => 'Memory video exports';
 
   @override
   String pv2RowVideoFree(int n) {
-    return '$n trial exports';
+    return 'Unlimited · 720p';
   }
 
   @override
   String pv2RowVideoPremium(int n) {
-    return '$n exports/month';
+    return 'Unlimited · Full HD 1080p';
   }
 
   @override
@@ -22512,7 +22683,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2RowTemplatesPremium => 'Every premium template';
 
   @override
-  String get pv2RowCaregivers => 'Caregivers';
+  String get pv2RowCaregivers => 'People who can log care';
 
   @override
   String pv2RowPeople(int n) {
@@ -22535,27 +22706,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2PromiseYours => 'Your memories stay yours';
 
   @override
-  String get pv2PeriodYear => 'Yearly';
+  String get pv2PeriodYear => 'Yearly plan';
 
   @override
-  String get pv2PeriodMonth => 'Monthly';
+  String get pv2PeriodMonth => 'Monthly plan';
 
   @override
   String pv2PerMonthApprox(String price) {
-    return '≈ $price/month';
+    return 'About $price/month';
   }
 
   @override
-  String get pv2EachMonth => 'every month';
+  String get pv2EachMonth => 'Billed monthly';
 
   @override
   String pv2SubscribeYear(String price) {
-    return 'Get Premium · $price/year';
+    return 'Subscribe yearly · $price';
   }
 
   @override
   String pv2SubscribeMonth(String price) {
-    return 'Get Premium · $price/month';
+    return 'Subscribe monthly · $price';
   }
 
   @override
@@ -22691,7 +22862,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2FreeUpsellBody =>
-      'Premium refills Lumi and video exports every month, opens the Premium templates and adds storage for the family.';
+      'Get monthly Lumi credits, premium templates, Full HD video and more shared storage.';
 
   @override
   String get pv2BuyStorage => 'Buy more storage';
@@ -22744,7 +22915,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pv2OverSeatsTitle(int used, int limit) {
-    return 'Over caregiver seats · $used / $limit';
+    return 'Over logging seats · $used / $limit';
   }
 
   @override
@@ -22918,7 +23089,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2CancelTemplatesBody =>
-      'Drafts kept; exporting needs Premium or a basic template';
+      'Drafts kept; exporting needs Premium or a free template';
 
   @override
   String get pv2KeepPremium => 'Keep Premium';
@@ -23052,7 +23223,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This week (13–19/10), logged night sleep averaged 9 h 10 — 25 minutes longer than last week (6–12/10).';
 
   @override
-  String get pv2DemoUploading => '3 videos uploading · no need to wait';
+  String get pv2DemoUploading => '3 videos uploading';
 
   @override
   String get pv2DemoMum => 'Mum';
@@ -23074,10 +23245,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2DemoCareNote =>
-      'Caring together is in Free; Premium adds more people.';
+      'Shared logs are included in Free; Premium lets more people log care.';
 
   @override
-  String get pv2Terms => 'Terms';
+  String get pv2Terms => 'Terms of Use';
 
   @override
   String get pv2Privacy => 'Privacy';
@@ -23108,10 +23279,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2RowRhythm => 'Your child\'s rhythm';
 
   @override
-  String get pv2RowRhythmFree => 'Journal & basic milestones';
+  String get pv2RowRhythmFree => 'Age-based suggestions & reference schedules';
 
   @override
-  String get pv2RowRhythmPremium => 'Weekly notes · with sources';
+  String get pv2RowRhythmPremium => 'Personal suggestions & advanced rhythms';
 
   @override
   String get axGreetMorningNoName => 'Good morning ☀️';
@@ -23187,4 +23358,897 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get p48ClearValue => 'Clear value';
+
+  @override
+  String get autoSaveReviewTicked =>
+      'The clearest ones are ticked. Untick anything you don\'t want to save.';
+
+  @override
+  String get premiumSharedPlans =>
+      'Shared with your family on both yearly and monthly plans.';
+
+  @override
+  String get premiumChoosePlan => 'Choose a plan';
+
+  @override
+  String get premiumBenefits => 'What’s included?';
+
+  @override
+  String get premiumMemories => 'Keepsake cards & videos';
+
+  @override
+  String get premiumMemoriesSubtitle => 'All high-quality premium templates';
+
+  @override
+  String get premiumRhythm => 'Personal suggestions & advanced rhythms';
+
+  @override
+  String get premiumRhythmSubtitle =>
+      'Suggestions based on your baby’s needs and logs';
+
+  @override
+  String get premiumTodayTotal => 'Due today';
+
+  @override
+  String get premiumBackToPlans => 'Back to plans';
+
+  @override
+  String get premiumUnlimitedVideo => 'Unlimited video exports';
+
+  @override
+  String get premiumVideoFree => 'Basic templates · 720p video';
+
+  @override
+  String get premiumVideoPaid => 'All templates · Full HD 1080p';
+
+  @override
+  String get premiumVideoDetail =>
+      'Unlimited exports: 720p on Free, Full HD 1080p on Premium.';
+
+  @override
+  String get premiumFeatureIntro => 'Explore Premium for this feature';
+
+  @override
+  String get videoQuality => 'Video quality';
+
+  @override
+  String get videoQualityHd => 'HD 720p';
+
+  @override
+  String get videoQualityFullHd => 'Full HD 1080p';
+
+  @override
+  String get videoQualityHdHint => 'Smaller files, easy to share';
+
+  @override
+  String get videoQualityFullHdHint => 'Sharper video';
+
+  @override
+  String get videoQualityPremiumHint => 'Requires Premium · Learn more';
+
+  @override
+  String get videoExportHd => 'Export HD 720p video';
+
+  @override
+  String get videoExportFullHd => 'Export Full HD 1080p video';
+
+  @override
+  String get videoFullHdIntroTitle => 'Export in Full HD with Premium';
+
+  @override
+  String get videoFullHdIntroBody =>
+      'Premium includes Full HD 1080p exports and all premium templates. Free still includes unlimited HD 720p exports. Your video stays as it is.';
+
+  @override
+  String get videoContinueHd => 'Continue with HD 720p';
+
+  @override
+  String get premiumRhythmCompareFree =>
+      'Age-based suggestions & reference schedules';
+
+  @override
+  String get premiumRhythmComparePaid =>
+      'Personal suggestions & advanced rhythms';
+
+  @override
+  String get premiumStorageSubtitle =>
+      'Shared storage for your family’s photos and videos';
+
+  @override
+  String get premiumSeatsSubtitle =>
+      'Log feeds and sleep, and view the journal together';
+
+  @override
+  String get premiumNeedsPremium => 'Requires Premium';
+
+  @override
+  String get premiumUseTemplate => 'Use Premium template';
+
+  @override
+  String get videoQualityChecking => 'Checking your plan · Try again';
+
+  @override
+  String get videoRenderRateLimit =>
+      'You’ve sent several video requests. Please try again in a minute.';
+
+  @override
+  String get premiumPaymentDetails => 'Payment details';
+
+  @override
+  String get premiumTaxIncluded => 'Tax included.';
+
+  @override
+  String get premiumVideoAfterCancel =>
+      'Existing exports keep their quality. New videos export in HD 720p, with unlimited exports.';
+
+  @override
+  String get autoSaveSelectAll => 'Tick all';
+
+  @override
+  String get autoSaveDeselectAll => 'Untick all';
+
+  @override
+  String get autoSaveGroupBestOnly => 'Keep the clearest only';
+
+  @override
+  String autoSaveSavedSection(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Already in Memories · $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSavedHint =>
+      'Not ticked. Open to tick any the app got wrong.';
+
+  @override
+  String get premiumPlanCheckFailed => 'Couldn’t check your family plan';
+
+  @override
+  String get premiumPlanCheckFailedBody =>
+      'Try again when you’re connected. Your work is kept.';
+
+  @override
+  String get autoSaveWeekSheet => 'Week of age';
+
+  @override
+  String get autoSaveKindSheet => 'Show';
+
+  @override
+  String get premiumRhythmDetail =>
+      'View feeding and sleep patterns when there are enough logs. Suggestions are for reference, not a diagnosis.';
+
+  @override
+  String get videoPremiumChanged =>
+      'This video needs an active Premium plan. You can switch to a basic template and HD 720p; your work is kept.';
+
+  @override
+  String autoSaveWeekRowTitle(int n, String range) {
+    return 'Week $n · $range';
+  }
+
+  @override
+  String get autoSaveWeekRowBefore => 'Before birth';
+
+  @override
+  String autoSaveWeekRowProgress(int saved, int waiting) {
+    return '$saved in Memories · $waiting waiting for you';
+  }
+
+  @override
+  String autoSaveWeekRowWaiting(int waiting) {
+    return '$waiting waiting for you';
+  }
+
+  @override
+  String autoSaveWeekRowDone(int saved) {
+    return 'All reviewed · $saved in Memories';
+  }
+
+  @override
+  String autoSaveAllWeeks(int count) {
+    return 'All weeks · $count';
+  }
+
+  @override
+  String get autoSaveAllWeeksRow => 'All weeks';
+
+  @override
+  String get autoSaveCheckingSpace => 'Checking space…';
+
+  @override
+  String get autoSaveFullTitle => 'Your family\'s space is full';
+
+  @override
+  String autoSaveFullBody(int count, String need) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count items need about $need. Add space to upload them; they stay on your phone.',
+      one:
+          '1 item needs about $need. Add space to upload it; it stays on your phone.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveShortTitle(int fit, int count) {
+    return 'Room for $fit of $count items';
+  }
+
+  @override
+  String autoSaveShortBody(String need, String left) {
+    return 'They need about $need; your family has $left left. Photos go first, then videos; the rest stay on your phone.';
+  }
+
+  @override
+  String autoSavePrepTitle(int done, int total) {
+    return 'Preparing $done of $total';
+  }
+
+  @override
+  String get autoSavePrepWaiting => 'Waiting';
+
+  @override
+  String get autoSavePrepWorking => 'Preparing';
+
+  @override
+  String get autoSavePrepQueued => 'Queued to upload';
+
+  @override
+  String get autoSavePrepFailed => 'Couldn\'t read the file';
+
+  @override
+  String get autoSavePrepDone => 'Done';
+
+  @override
+  String autoSavePrepSummary(int queued, int failed) {
+    return '$queued queued · $failed unreadable';
+  }
+
+  @override
+  String get qQuotaTitle => 'Family space is full';
+
+  @override
+  String qQuotaBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count items are waiting and stay on your phone. Add space to keep uploading.',
+      one:
+          '1 item is waiting and stays on your phone. Add space to keep uploading.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String qDropWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Remove $count items from the queue',
+      one: 'Remove 1 item from the queue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String qDropUnreadable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Remove $count unreadable files',
+      one: 'Remove 1 unreadable file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get qUnreadableHint =>
+      'Your phone couldn\'t open these files (they may be deleted or damaged).';
+
+  @override
+  String get autoSaveAddSpacePremium => 'Add space with Premium';
+
+  @override
+  String get autoSaveBuySpace => 'Buy more space';
+
+  @override
+  String get autoSaveManageSpace => 'Manage space';
+
+  @override
+  String get autoSavePremiumSpaceNote =>
+      'Premium gives the whole family more space.';
+
+  @override
+  String careFailedNew(String record, String time) {
+    return 'Not saved: $record, $time';
+  }
+
+  @override
+  String careFailedEdit(String record, String time) {
+    return 'Change not saved: $record, $time';
+  }
+
+  @override
+  String careFailedDelete(String record, String time) {
+    return 'Not deleted: $record, $time';
+  }
+
+  @override
+  String careFailedRestore(String record, String time) {
+    return 'Not restored: $record, $time';
+  }
+
+  @override
+  String get careFailedTimer => 'The timer change wasn’t saved';
+
+  @override
+  String careFailedDenied(String message) {
+    return '$message. Your access may have changed.';
+  }
+
+  @override
+  String get retryRefused =>
+      'Some changes couldn’t be saved. Your access may have changed.';
+
+  @override
+  String pendingOthers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count other changes',
+      one: '1 other change',
+    );
+    return '$_temp0 (deletes, edits, timers) waiting to send';
+  }
+
+  @override
+  String get careLoadFailed => 'Couldn’t load the diary';
+
+  @override
+  String get todayLoadFailedBody =>
+      'Recent entries aren’t showing. You can still log.';
+
+  @override
+  String get statsTodayFrom18 =>
+      'Counted from 6 pm yesterday, night feeds included';
+
+  @override
+  String get hoLoading => 'Loading the baby’s diary';
+
+  @override
+  String get hoRemindersFailed => 'Couldn’t load today’s reminders';
+
+  @override
+  String get hoHealthFailed => 'Couldn’t load health signs';
+
+  @override
+  String get hoNotFoundTitle => 'This handover is no longer available';
+
+  @override
+  String get hoNotFoundBody => 'A newer one may have replaced it.';
+
+  @override
+  String get hoSeeLatest => 'See the latest';
+
+  @override
+  String get hoCreateNew => 'Make a new one';
+
+  @override
+  String get hoCreateTitle => 'No summary yet';
+
+  @override
+  String get hoCreateBody =>
+      'A summary of the family’s notes from the last few days. Each one uses at most 1 AI credit.';
+
+  @override
+  String get hoCreateAction => 'Make a summary';
+
+  @override
+  String get aiStateFailedOffline =>
+      'Making one needs a connection. Your family’s notes are unchanged.';
+
+  @override
+  String get aiStateQuotaOut =>
+      'Your household has used this period’s AI credits.';
+
+  @override
+  String get aiStatePremiumOnly =>
+      'AI summaries are part of Child Life Premium.';
+
+  @override
+  String get aiStateUnavailable =>
+      'AI isn’t available for your household right now.';
+
+  @override
+  String aiStateQuotaDayNoDate(int used, int limit) {
+    return 'Used $used of $limit AI summaries today for this baby. You can still use the template version.';
+  }
+
+  @override
+  String aiStateQuotaMonthNoDate(int used, int limit) {
+    return 'Your household used $used of $limit AI credits this period (shared by summaries and the assistant). You can still use the template version.';
+  }
+
+  @override
+  String get aiSendFailedOther =>
+      'Couldn’t send the handover. Try again later.';
+
+  @override
+  String get aiMomentAsk => 'Suggest a caption with AI';
+
+  @override
+  String get aiMomentFailed => 'Couldn’t suggest a caption right now.';
+
+  @override
+  String get engWeekFailed => 'Couldn’t open this week’s recap';
+
+  @override
+  String get engWeekMediaFailed => 'Couldn’t load the week’s photos';
+
+  @override
+  String get engWeekEmpty =>
+      'This week’s photos and stories are no longer in Memories.';
+
+  @override
+  String get engOpenFailed => 'Couldn’t open the suggestion. Try again later.';
+
+  @override
+  String get engActFailed => 'Couldn’t save your choice. Try again later.';
+
+  @override
+  String get stLoadFailedTitle => 'Couldn’t load storage';
+
+  @override
+  String get stQuotaUnknown => 'Couldn’t check your plan’s storage limit';
+
+  @override
+  String stReserved(String size, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$size held for $_temp0 uploading';
+  }
+
+  @override
+  String get stFreeUpVideos => 'Remove large videos';
+
+  @override
+  String get stRowFailed => 'Couldn’t load';
+
+  @override
+  String pv2AskStorage(String name) {
+    return 'Ask $name to add storage';
+  }
+
+  @override
+  String get pv2AskStorageMessage =>
+      'Our Child Life storage is almost full. Could you add storage in Me › Family plan?';
+
+  @override
+  String get pv2AddOnUnknown => 'Couldn’t load storage options';
+
+  @override
+  String pv2OptionOr(String a, String b) {
+    return '$a or $b';
+  }
+
+  @override
+  String pv2E08BodyPremiumPlain(int pct, String gb) {
+    return 'Used $pct% of $gb GB.';
+  }
+
+  @override
+  String get pv2ManagerYouNoName => 'You manage this plan';
+
+  @override
+  String get pv2FreeUpsellTitleNoName =>
+      'Every month, one more story of your baby';
+
+  @override
+  String get pv2PriceUnknown =>
+      'Couldn’t load prices. Try again when you’re connected.';
+
+  @override
+  String get pv2SubscribeNoPrice => 'Subscribe to Premium';
+
+  @override
+  String pv2BusyBuying(String store) {
+    return 'Opening $store…';
+  }
+
+  @override
+  String get pv2BusyVerifying => 'Confirming your purchase…';
+
+  @override
+  String get pv2BusyRestoring => 'Restoring…';
+
+  @override
+  String get pv2BusyPending => 'Waiting for the store to confirm';
+
+  @override
+  String get pmStoreLoadFailed => 'Couldn’t reach the store. Try again.';
+
+  @override
+  String get psExportQueued => 'Getting your print file ready…';
+
+  @override
+  String psExportProgress(int done, int total) {
+    return 'Building your print file · page $done of $total';
+  }
+
+  @override
+  String get psExportLeave =>
+      'You can leave this screen. Come back here to open the file when it’s done.';
+
+  @override
+  String get psExportFailed =>
+      'Couldn’t build the print file. Please try again.';
+
+  @override
+  String get psExportBannerReady => 'Print file ready · Open';
+
+  @override
+  String psExportFiles(int pages, String format) {
+    String _temp0 = intl.Intl.pluralLogic(
+      pages,
+      locale: localeName,
+      other: '$pages pages',
+      one: '1 page',
+    );
+    return '$_temp0 · $format';
+  }
+
+  @override
+  String psCountryUnsupported(String country) {
+    return 'Child Life doesn’t deliver prints to $country yet.';
+  }
+
+  @override
+  String psCountryUnsupportedDigital(String country) {
+    return 'Child Life doesn’t deliver prints to $country yet. You can download the print file and print it near you.';
+  }
+
+  @override
+  String get psPayByTransfer => 'Bank transfer after Child Life confirms';
+
+  @override
+  String get psPayTransferRow => 'Bank transfer';
+
+  @override
+  String get psOrderMaybeSent =>
+      'No reply yet. Your order may already be in — check My print orders before ordering again.';
+
+  @override
+  String get psViewOrders => 'View print orders';
+
+  @override
+  String get psOrderNotFound => 'Couldn’t find this print order';
+
+  @override
+  String get psOrderNotFoundHelp =>
+      'It may belong to another account, or hasn’t loaded yet.';
+
+  @override
+  String get psStatusUnknown => 'Status updating';
+
+  @override
+  String get psOrderCancelledToast => 'Print order cancelled';
+
+  @override
+  String get premiumYearSuffix => '/year';
+
+  @override
+  String get premiumMonthSuffix => '/month';
+
+  @override
+  String premiumSavePercent(int n) {
+    return 'Save $n%';
+  }
+
+  @override
+  String get premiumLumiListTitle => 'Lumi assistant';
+
+  @override
+  String premiumStorageListTitle(String gb) {
+    return '$gb for your family';
+  }
+
+  @override
+  String premiumSeatsListTitle(int n) {
+    return '$n people can log care';
+  }
+
+  @override
+  String premiumLegalIntro(String store) {
+    return 'Auto-renews. Cancel anytime in $store. By subscribing, you agree to the ';
+  }
+
+  @override
+  String get premiumPaymentEquivalent => 'Equivalent per month';
+
+  @override
+  String get premiumPaymentSaving =>
+      'Savings compared with 12 monthly payments';
+
+  @override
+  String get premiumPaymentTax => 'Tax';
+
+  @override
+  String get premiumPaymentTaxValue => 'Included in the price';
+
+  @override
+  String premiumPaymentRenewal(String price, String store) {
+    return 'Auto-renews at $price. To cancel, use $store at least 24 hours before renewal.';
+  }
+
+  @override
+  String get premiumMemoriesBullet1 =>
+      'Cards: premium templates, photos, a name and a message.';
+
+  @override
+  String get premiumMemoriesBullet2 =>
+      'Videos: combine photos with a message and music.';
+
+  @override
+  String get premiumLumiBullet1 =>
+      'Ask about your journal and see the data behind Lumi’s answers.';
+
+  @override
+  String get premiumLumiBullet2 =>
+      'Ask Lumi to draft a log for you to check before saving.';
+
+  @override
+  String premiumLumiBullet3(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n credits/month shared with your family, refilled monthly.',
+      one: '$n credit/month shared with your family, refilled monthly.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get premiumRhythmBullet1 =>
+      'Suggestions based on age, needs and your feedback.';
+
+  @override
+  String get premiumRhythmBullet2 =>
+      'View feeding and sleep patterns when there are enough logs.';
+
+  @override
+  String get premiumRhythmBullet3 => 'Understand your baby better every day.';
+
+  @override
+  String premiumStorageBullet1(String gb) {
+    return '$gb for your family’s photos and videos.';
+  }
+
+  @override
+  String get premiumStorageBullet2 => 'View usage in Your family plan.';
+
+  @override
+  String get premiumStorageBullet3 => 'Additional storage: Coming soon.';
+
+  @override
+  String get premiumSeatsBullet1 =>
+      'Log feeds and sleep, and view updates together.';
+
+  @override
+  String get premiumSeatsBullet2 =>
+      'Viewing and logging permissions follow each person’s role.';
+
+  @override
+  String premiumSeatsBullet3(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Care for your baby with $n carers',
+      one: 'Care for your baby with $n carer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get premiumRhythmPager => 'Suggestions & advanced rhythms';
+
+  @override
+  String get premiumSeatsPager => 'People who can log care';
+
+  @override
+  String get premiumSubscribeYearShort => 'Subscribe yearly';
+
+  @override
+  String get premiumSubscribeMonthShort => 'Subscribe monthly';
+
+  @override
+  String premiumLumiCompareFree(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n trial credits · no refill',
+      one: '$n trial credit · no refill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String premiumLumiComparePaid(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n credits/month · shared with your family',
+      one: '$n credit/month · shared with your family',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String premiumSeatsCardLimit(int free, int premium) {
+    String _temp0 = intl.Intl.pluralLogic(
+      premium,
+      locale: localeName,
+      other: '$premium logging seats',
+      one: '$premium logging seat',
+    );
+    return '$_temp0 · Free: $free';
+  }
+
+  @override
+  String get premiumLumiPager => 'Ask Lumi';
+
+  @override
+  String get premiumLumiDetailTitle => 'Ask Lumi about your baby';
+
+  @override
+  String get premiumRhythmDetailTitle =>
+      'Personal suggestions and advanced rhythms for your baby';
+
+  @override
+  String get premiumMemoriesBullet3 => 'Unlimited high-quality exports';
+
+  @override
+  String hhMorning(String name) {
+    return 'A new day with $name';
+  }
+
+  @override
+  String get hhMorningNoName => 'A new day together';
+
+  @override
+  String hhAfternoon(String name) {
+    return 'How is $name’s day going?';
+  }
+
+  @override
+  String get hhAfternoonNoName => 'How is your baby’s day going?';
+
+  @override
+  String hhEvening(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String get hhEveningNoName => 'Good evening';
+
+  @override
+  String hhBirthday(String name) {
+    return 'Happy birthday, $name!';
+  }
+
+  @override
+  String hhDutyNow(String name) {
+    return '$name is caring for your baby';
+  }
+
+  @override
+  String hhDutySince(String time) {
+    return 'Now · since $time';
+  }
+
+  @override
+  String get hhDutyRetry => 'Couldn’t load care status · Retry';
+
+  @override
+  String get hhSettings => 'Appearance settings';
+
+  @override
+  String get hhSettingsSubtitle => 'Today header background';
+
+  @override
+  String get hhWallpaper => 'Background';
+
+  @override
+  String get hhPreview => 'Preview';
+
+  @override
+  String get hhPattern => 'Time-of-day artwork';
+
+  @override
+  String get hhAvatar => 'Your baby’s profile photo';
+
+  @override
+  String get hhChooseMemory => 'Choose a photo from Memories';
+
+  @override
+  String get hhPhotoEmpty =>
+      'There are no photos to choose from in Memories yet.';
+
+  @override
+  String get hhDeviceOnly =>
+      'Applies to the selected baby on this device only.';
+
+  @override
+  String get hhApply => 'Apply';
+
+  @override
+  String get hhSaveFailed =>
+      'Couldn’t save your appearance settings. Try again.';
+
+  @override
+  String get hhHeaderSection => 'In the header';
+
+  @override
+  String get hhDutyFixed => 'Care status stays in the header.';
+
+  @override
+  String get hhAvatarMissing =>
+      'No profile photo yet; artwork is shown for now.';
+
+  @override
+  String get hhSelected => 'Selected';
+
+  @override
+  String get dutyParents => 'Dad and Mom';
+
+  @override
+  String get dutyTogether => 'Dad and Mom care together';
+
+  @override
+  String get dutyTogetherToast =>
+      'Dad and Mom are caring together. Your family can see this.';
+
+  @override
+  String get dutyJustStarted => 'Just started';
+
+  @override
+  String get dutyPrevious => 'Previously';
+
+  @override
+  String get dutyLoadFailed => 'Couldn’t load care status.';
+
+  @override
+  String get dutyOwnPart =>
+      'End your part; the other parent will still be caring.';
+
+  @override
+  String dutyStartedAt(String time) {
+    return 'Since $time';
+  }
+
+  @override
+  String get dutyTogetherNow => 'Dad and Mom are caring together';
+
+  @override
+  String dutyTogetherSince(String time) {
+    return 'Dad and Mom are caring · since $time';
+  }
+
+  @override
+  String get dutyYouNow => 'You’re caring for your baby';
+
+  @override
+  String dutyYouSince(String time) {
+    return 'You’re caring · since $time';
+  }
 }

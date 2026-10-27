@@ -23,6 +23,7 @@ import 'care_calc.dart';
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
+import 'care_screens.dart' show CareLoadFailed;
 import 'history_screen.dart' show CareDaysTimeline, weekdayShort;
 import 'stacked_days_chart.dart';
 import '../solids/solids_calc.dart';
@@ -203,6 +204,13 @@ class _StatsFrame extends ConsumerWidget {
                   // Zeros before the first value would read as "nothing logged".
                   if (recordsAsync.hasValue)
                     ...builder(context, window, records, zone, now)
+                  // SY-2: a failed query says so, never an endless skeleton.
+                  else if (recordsAsync.hasError)
+                    CareLoadFailed(
+                      onRetry: () => ref.invalidate(
+                        rangeRecordsProvider((me.babyId, from, today.end)),
+                      ),
+                    )
                   else
                     const _StatsSkeleton(),
                 ],
@@ -508,16 +516,23 @@ class FeedStatsScreen extends ConsumerWidget {
                   .round();
         return [
           // v1.0 improvement 20g: cữ / ml bú bình / phút bú mẹ per day.
-          if (today)
+          // SY-5: every number of "Hôm nay" here counts from 18:00 yesterday (the night's
+          // feeds), unlike Hôm nay's midnight day; one line says so for all three tiles.
+          if (today) ...[
+            Text(
+              l10n.statsTodayFrom18,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+            const SizedBox(height: ClSpace.s2),
             _Kpis([
-              (l10n.amountMl(s.bottleMl), l10n.sinceYesterday18),
+              (l10n.amountMl(s.bottleMl), l10n.trackerBottle),
               (
                 l10n.feedsCount(s.feeds),
                 l10n.bottlesBreasts(s.bottleFeeds, s.breastFeeds),
               ),
               (gap, l10n.gapAverage),
-            ])
-          else
+            ]),
+          ] else
             _Kpis(switch (kind) {
               FeedKind.all => [
                 (l10n.feedsCount(s.feeds), l10n.kpiFeedsPerDay),

@@ -904,7 +904,7 @@ class KeepsakePreviewPage extends StatelessWidget {
                 bottom > 0 ? bottom : ClSpace.s4,
               ),
               child: ClButton(
-                label: l10n.ksUseTemplate,
+                label: premium ? l10n.premiumUseTemplate : l10n.ksUseTemplate,
                 expand: true,
                 onPressed: onUse,
               ),

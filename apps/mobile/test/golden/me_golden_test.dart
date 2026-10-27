@@ -32,6 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/me_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
+import '../helpers/reminder_fixtures.dart';
 
 /// S11 Me, storage, baby profiles, your profile, account and the engineering-supplied gaps in
 /// Light / Night care × vi / en at 375 × 812. Regenerate on macOS:
@@ -62,9 +63,11 @@ List<Override> _base({
   AccountDoc account = const AccountDoc(),
   List<ExportJob> exports = const [],
   NotificationPrefs prefs = const NotificationPrefs(),
+  bool systemNotifications = true,
 }) => [
   ...familyOverrides(
     me: me,
+    notifications: FakeReminderNotifications(on: systemNotifications),
     growth: _growth,
     now: DateTime(2026, 10, 8, 10),
     email: '${(me ?? mai).displayName.split(' ').last.toLowerCase()}@gmail.com',
@@ -83,6 +86,12 @@ Widget _me() => const MeScreen();
 
 final _cases = <String, _Case>{
   '13a_me_parent': (build: _me, overrides: _base, act: null),
+  // NT-2: the phone's notifications are off: "Tắt trong máy", whatever the switches say.
+  '13a_me_notifications_off': (
+    build: _me,
+    overrides: () => _base(systemNotifications: false),
+    act: null,
+  ),
   '13a_offer': (
     build: _me,
     overrides: () => _base(

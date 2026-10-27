@@ -47,16 +47,45 @@ class AssistantException implements Exception {
   final AssistantReason? reason;
   final bool retryable;
 
-  /// Never reached the server, or no answer in time: nothing was charged or saved.
+  /// Never reached the server: nothing was charged or saved.
   bool get offline =>
       reason == null &&
-      const {
-        'unavailable',
-        'deadline-exceeded',
-        'timeout',
-        'offline',
-        'network',
-      }.contains(code);
+      const {'unavailable', 'offline', 'network'}.contains(code);
+
+  /// AI-6: no answer in time. The server may still have done it, so this is never "nothing
+  /// was saved": the caller checks the server again (the same request id).
+  bool get unknown =>
+      reason == null && const {'timeout', 'deadline-exceeded'}.contains(code);
+
+  /// AI-8: whether "Thử lại" can help. The server says so in `details.retryable`
+  /// (AI_UNAVAILABLE, internal); a transport problem can too. A refusal (role, consent,
+  /// region, used up, a bad request) answers the same way every time.
+  bool get canRetry =>
+      retryable ||
+      offline ||
+      unknown ||
+      (reason == null &&
+          !const {
+            'permission-denied',
+            'unauthenticated',
+            'failed-precondition',
+            'resource-exhausted',
+            'invalid-argument',
+            'not-found',
+            'already-exists',
+            'out-of-range',
+            'unimplemented',
+          }.contains(code));
+
+  /// The refusal this stands for: the server's reason, else what its HttpsError code means
+  /// (AI-8: a bare `permission-denied` is the role, `unauthenticated` the sign-in).
+  AssistantReason? get effectiveReason =>
+      reason ??
+      switch (code) {
+        'permission-denied' => AssistantReason.writeDenied,
+        'unauthenticated' => AssistantReason.authRequired,
+        _ => null,
+      };
 
   @override
   String toString() => 'AssistantException($code, ${reason?.wire})';
@@ -472,7 +501,7 @@ class AssistantRepository {
           ref.snapshots().listen((s) {
             final t = AssistantTask.fromJson(_plain(s.data()), id: s.id);
             if (t != null) controller.add(TaskDocLive(t));
-          }, onError: (Object _) {}),
+          }, onError: controller.addError),
         )
         ..add(
           ref.collection('drafts').snapshots().listen((q) {
@@ -482,7 +511,7 @@ class AssistantRepository {
                   ?AssistantDraft.fromJson(_plain(d.data()), id: d.id),
               ]),
             );
-          }, onError: (Object _) {}),
+          }, onError: controller.addError),
         )
         ..add(
           ref
@@ -497,7 +526,7 @@ class AssistantRepository {
                       ?AssistantEvent.fromJson(_plain(d.data()), id: d.id),
                   ]),
                 );
-              }, onError: (Object _) {}),
+              }, onError: controller.addError),
         );
     };
     controller.onCancel = () async {
@@ -536,6 +565,8 @@ class KeptInput {
     this.resumeUsed = false,
     this.started = false,
     this.conversationId,
+    this.blockReason,
+    this.retry = true,
   });
 
   final String text;
@@ -555,11 +586,20 @@ class KeptInput {
   /// The conversation the input was first sent to (part of the task's input key).
   final String? conversationId;
 
+  /// AI-1: the server's refusal ([KeptReason.blocked]: used up, region, role, the switch…),
+  /// kept so a reopened chat shows that same reason, never "used up" for all of them.
+  final AssistantReason? blockReason;
+
+  /// AI-8: whether sending the same words again can help ([KeptReason.failed]).
+  final bool retry;
+
   KeptInput copyWith({
     KeptReason? reason,
     String? requestId,
     bool? resumeUsed,
     bool? started,
+    AssistantReason? blockReason,
+    bool? retry,
   }) => KeptInput(
     text: text,
     requestId: requestId ?? this.requestId,
@@ -569,6 +609,8 @@ class KeptInput {
     resumeUsed: resumeUsed ?? this.resumeUsed,
     started: started ?? this.started,
     conversationId: conversationId,
+    blockReason: blockReason ?? this.blockReason,
+    retry: retry ?? this.retry,
   );
 
   Map<String, Object?> toJson() => {
@@ -580,6 +622,8 @@ class KeptInput {
     'resumeUsed': resumeUsed,
     'started': started,
     'conversationId': conversationId,
+    'blockReason': blockReason?.wire,
+    'retry': retry,
   };
 
   static KeptInput? fromJson(Object? json) {
@@ -599,6 +643,8 @@ class KeptInput {
       conversationId: json['conversationId'] is String
           ? json['conversationId'] as String
           : null,
+      blockReason: AssistantReason.fromWire(json['blockReason']),
+      retry: json['retry'] != false,
     );
   }
 }

@@ -49,8 +49,8 @@ function planRows(plans: PremiumPlans, locale: string, t: (id: string, v?: objec
     },
     {
       key: 'videoExports',
-      free: t('pv2.plans.lumiFree', { n: plans.free.videoExportsTrial }),
-      premium: t('pv2.plans.lumiPremium', { n: plans.premium.videoExportsPerCycle }),
+      free: t('pv2.plans.videoFree'),
+      premium: t('pv2.plans.videoPremium'),
     },
     {
       key: 'storageGB',
@@ -190,16 +190,6 @@ function PlansEditor({
           label={<>{f('pv2.plans.lumiCredits')} · Premium</>}
           value={plans.premium.lumiCreditsPerCycle}
           onChange={(v) => set((p) => void (p.premium.lumiCreditsPerCycle = v))}
-        />
-        <IntField
-          label={<>{f('pv2.plans.videoExports')} · Free</>}
-          value={plans.free.videoExportsTrial}
-          onChange={(v) => set((p) => void (p.free.videoExportsTrial = v))}
-        />
-        <IntField
-          label={<>{f('pv2.plans.videoExports')} · Premium</>}
-          value={plans.premium.videoExportsPerCycle}
-          onChange={(v) => set((p) => void (p.premium.videoExportsPerCycle = v))}
         />
         <IntField
           label={<>{f('pv2.plans.storageGB')} · Free</>}
@@ -606,10 +596,7 @@ export function AdjustUsagePanel({ code, onDone }: { code: string; onDone: () =>
           <FieldSelect
             id={featureId}
             value={feature}
-            options={[
-              { value: 'lumi', label: intl.formatMessage({ id: 'pv2.adjust.lumi' }) },
-              { value: 'video', label: intl.formatMessage({ id: 'pv2.adjust.video' }) },
-            ]}
+            options={[{ value: 'lumi', label: intl.formatMessage({ id: 'pv2.adjust.lumi' }) }]}
             onChange={setFeature}
           />
         </Field>

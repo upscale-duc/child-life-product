@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart'
-    show careClockProvider, inBabyZone, onlineProvider;
+    show careClockProvider, inBabyZone, onlineProvider, recentRecordsProvider;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
@@ -68,21 +69,14 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
   SummaryAnswer? _answer;
   AiException? _error;
   var _busy = false;
-  var _autoAsked = false;
-
-  /// The automatic generate is a refresh of a stale one (its loading line says so).
-  var _refreshing = false;
   var _sending = false;
   late var _summaryOpen = widget.summaryOpen;
 
   /// Sends marked "seen" from this screen (once each).
   final _seenMarked = <String>{};
 
-  Future<void> _generate(
-    Membership me, {
-    bool fresh = false,
-    bool auto = false,
-  }) async {
+  /// Only ever on a tap (D-127 Q5, AI-14): opening Bàn giao never spends a shared AI credit.
+  Future<void> _generate(Membership me, {bool fresh = false}) async {
     if (_busy) return;
     if (fresh) _requestId = newAiRequestId();
     final locale = Localizations.localeOf(context).languageCode;
@@ -104,13 +98,9 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       // Home's entry and the next open read the new one.
       ref.invalidate(handoversProvider(me.babyId));
     } on AiException catch (e) {
-      // A refresh nobody asked for that fails (quota, network) keeps the stored version and
-      // its "Có ghi nhận mới · Tạo lại" instead of an error (D-103).
-      if (mounted && !auto) setState(() => _error = e);
+      if (mounted) setState(() => _error = e);
     } on Object {
-      if (mounted && !auto) {
-        setState(() => _error = const AiException('unavailable'));
-      }
+      if (mounted) setState(() => _error = const AiException('invalid'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -182,50 +172,36 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         .where((c) => c.date == today && c.needsHealthSupport)
         .firstOrNull;
 
-    // A Cùng nuôi opening it with nothing stored in this language asks once (idempotent; an
-    // unchanged household answers from the cache, free). D-103: a stored one older than the
-    // diary is made again on opening too, the old one showing meanwhile; a handover opened
-    // from a send (summaryId) stays as it was sent.
-    final storedStale =
-        stored != null &&
-        (stored.stale ||
-            (dataVersion != null &&
-                stored.dataVersion != null &&
-                dataVersion > stored.dataVersion!));
-    if (canGenerate &&
-        online &&
-        widget.summaryId == null &&
-        !_autoAsked &&
-        !storedAsync.isLoading &&
-        (stored == null ||
-            stored.language != locale.languageCode ||
-            storedStale)) {
-      _autoAsked = true;
-      _refreshing = storedStale && stored.language == locale.languageCode;
-      final refresh = _refreshing;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(_generate(me, fresh: refresh, auto: refresh));
-      });
-    }
-
+    // D-127 Q5 (AI-14; supersedes D-103's refresh on opening): nothing is made without a tap,
+    // since each new version may spend one of the family's AI credits. Nothing stored offers
+    // "Tạo bản tóm tắt"; a stored one older than the diary shows "Có ghi nhận mới · Tạo lại".
     final picked = widget.summaryId == null
         ? null
         : (storedAsync.value ?? const <SummaryAnswer>[])
               .where((a) => a.id == widget.summaryId)
               .firstOrNull;
-    final shown = _answer ?? picked ?? stored;
+    // AI-11: opened from a send that no longer exists (or is past the stored list): said so,
+    // never an endless skeleton or silently another handover.
+    final missing =
+        widget.summaryId != null &&
+        _answer == null &&
+        picked == null &&
+        !storedAsync.isLoading;
+    final shown = _answer ?? picked ?? (missing ? null : stored);
     final health = healthToday != null || (shown?.health ?? false);
     // P-180 v2: whose handover and how fresh the diary is, not when a summary was made.
     final content = <Widget>[
       title,
       const SizedBox(height: ClSpace.s1),
-      Text(
-        l10n.hoUpdated(
+      // AI-12: how fresh the diary is (its last entry), not the clock; just the name until the
+      // diary has loaded.
+      Text(switch (_lastLogged(me)) {
+        final at? => l10n.hoUpdated(
           baby?.nickname ?? '',
-          DateFormat('HH:mm').format(inBabyZone(zone, now)),
+          _when(l10n, locale, zone, at, now),
         ),
-        style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-      ),
+        null => baby?.nickname ?? '',
+      }, style: cl.text.label.copyWith(color: cl.colors.inkMuted)),
       const SizedBox(height: ClSpace.s3),
       // P-181: who is caring now, for everyone; tapping it takes or ends a shift.
       CareDutyLine(me: me),
@@ -244,10 +220,24 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         HandoverNow(me: me),
         PersonalHeading(l10n.hoSummary),
       ]);
-      if (_busy ||
-          storedAsync.isLoading ||
-          (canGenerate && online && _error == null)) {
+      if (_busy || storedAsync.isLoading) {
         content.add(const _Skeleton());
+      } else if (missing) {
+        content.add(
+          AiStateCard(
+            icon: ClIcons.journal,
+            title: l10n.hoNotFoundTitle,
+            body: l10n.hoNotFoundBody,
+            action: stored != null
+                ? (
+                    l10n.hoSeeLatest,
+                    () => context.replace(Routes.rhythmHandover),
+                  )
+                : canGenerate && online
+                ? (l10n.hoCreateNew, () => _generate(me, fresh: true))
+                : null,
+          ),
+        );
       } else if (!online) {
         content.add(
           AiStateCard(
@@ -257,14 +247,15 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
             body: l10n.aiStateOfflineBody,
           ),
         );
-      } else if (_error != null) {
+      } else if (_error case final e?) {
+        content.add(_failedCard(context, me, e));
+      } else if (canGenerate) {
         content.add(
           AiStateCard(
-            icon: ClIcons.alert,
-            warm: true,
-            title: l10n.aiStateFailedTitle,
-            body: l10n.aiStateFailedBody,
-            action: (l10n.rhRetry, () => _generate(me, fresh: true)),
+            icon: ClIcons.spark,
+            title: l10n.hoCreateTitle,
+            body: l10n.hoCreateBody,
+            action: (l10n.hoCreateAction, () => _generate(me, fresh: true)),
           ),
         );
       } else {
@@ -359,7 +350,12 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
 
     // States above the summary.
     final states = <Widget>[];
-    if (_busy) states.add(_Loading(refreshing: _refreshing));
+    final shownStale =
+        shown.stale ||
+        (dataVersion != null &&
+            shown.dataVersion != null &&
+            dataVersion > shown.dataVersion!);
+    if (_busy) states.add(_Loading(refreshing: shownStale));
     if (!online) {
       states.add(
         AiStateCard(
@@ -369,24 +365,9 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           body: l10n.aiStateOfflineBody,
         ),
       );
-    } else if (_error != null && !_busy) {
-      states.add(
-        AiStateCard(
-          icon: ClIcons.alert,
-          warm: true,
-          eyebrow: l10n.aiStateErrorEyebrow,
-          title: l10n.aiStateFailedTitle,
-          body: l10n.aiStateFailedBody,
-          action: canGenerate
-              ? (l10n.rhRetry, () => _generate(me, fresh: true))
-              : null,
-        ),
-      );
-    } else if (!_busy &&
-        (shown.stale ||
-            (dataVersion != null &&
-                shown.dataVersion != null &&
-                dataVersion > shown.dataVersion!))) {
+    } else if (_error case final e? when !_busy) {
+      states.add(_failedCard(context, me, e));
+    } else if (!_busy && shownStale) {
       states.add(
         AiStateCard(
           icon: ClIcons.spark,
@@ -530,7 +511,8 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
                 : l10n.aiSendToOther,
             expand: true,
             loading: _sending,
-            onPressed: _sending
+            // AI-12: sending needs the server; the offline card above says so.
+            onPressed: _sending || !online
                 ? null
                 : () => _send(context, me, shown, unsent, range),
           ),
@@ -553,6 +535,87 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     }
     fold();
     return OnboardingScaffold(topBar: topBar, content: content);
+  }
+
+  /// The newest entry in the diary (when it was logged), null until the diary has loaded.
+  DateTime? _lastLogged(Membership me) {
+    final records = ref.watch(recentRecordsProvider(me.babyId)).value;
+    if (records == null) return null;
+    DateTime? latest;
+    for (final r in records) {
+      if (latest == null || r.loggedAt.isAfter(latest)) latest = r.loggedAt;
+    }
+    return latest;
+  }
+
+  /// "14:05" today, "22:10 hôm qua", else the day.
+  String _when(
+    AppLocalizations l10n,
+    Locale locale,
+    String zone,
+    DateTime at,
+    DateTime now,
+  ) {
+    final day = babyTodayIso(zone, at);
+    final hm = DateFormat('HH:mm').format(inBabyZone(zone, at));
+    if (day == babyTodayIso(zone, now)) return hm;
+    if (day == babyTodayIso(zone, now.subtract(const Duration(days: 1)))) {
+      return l10n.hoYesterdayAt(hm);
+    }
+    return shortDay(locale, day);
+  }
+
+  /// AI-12: a failed "Tạo" says what happened: no connection (retry), a gate (explained, no
+  /// endless retry), or an unknown failure (retry).
+  AiStateCard _failedCard(BuildContext context, Membership me, AiException e) {
+    final l10n = AppLocalizations.of(context);
+    final retry = (l10n.rhRetry, () => _generate(me, fresh: true));
+    if (e.offline) {
+      return AiStateCard(
+        icon: ClIcons.cloudOff,
+        eyebrow: l10n.aiStateOfflineEyebrow,
+        title: l10n.aiStateFailedTitle,
+        body: l10n.aiStateFailedOffline,
+        action: retry,
+      );
+    }
+    return switch (e.gate) {
+      null => AiStateCard(
+        icon: ClIcons.alert,
+        warm: true,
+        eyebrow: l10n.aiStateErrorEyebrow,
+        title: l10n.aiStateFailedTitle,
+        body: l10n.aiStateFailedBody,
+        action: retry,
+      ),
+      GateReason.quotaExceeded => AiStateCard(
+        icon: ClIcons.clock,
+        eyebrow: l10n.aiStateQuotaEyebrow,
+        title: l10n.aiStateFailedTitle,
+        body: l10n.aiStateQuotaOut,
+      ),
+      GateReason.consentRequired => AiStateCard(
+        icon: ClIcons.spark,
+        eyebrow: l10n.aiStateConsentEyebrow,
+        title: l10n.aiStateFailedTitle,
+        action: (l10n.aiStateConsentAction, () => _toConsent(me)),
+      ),
+      GateReason.premiumRequired => AiStateCard(
+        icon: ClIcons.spark,
+        title: l10n.aiStateFailedTitle,
+        body: l10n.aiStatePremiumOnly,
+        action: (
+          l10n.pv2SeePremium,
+          () => openPaywall(context, entry: PaywallEntry.rhythm),
+        ),
+      ),
+      final GateReason other => AiStateCard(
+        icon: ClIcons.spark,
+        title: l10n.aiStateFailedTitle,
+        body: l10n.aiStateUnavailable,
+        action: (l10n.rhWhy, () => showGateSheet(context, other)),
+      ),
+    };
   }
 
   /// Why the template is shown, by its reason (ST01); only PREMIUM_REQUIRED links to the plan.
@@ -612,15 +675,24 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           body: l10n.aiStateDisabledBody,
         );
       case GateReason.quotaExceeded:
-        String when(QuotaWindow w) => w.resetsAt == null
-            ? '—'
+        // AI-13: the count includes credits in use right now (what "exhausted" counts), and an
+        // unknown reset date is left out rather than shown as "—".
+        String? when(QuotaWindow w) => w.resetsAt == null
+            ? null
             : shortDay(locale, isoOf(inBabyZone(_zone(me), w.resetsAt!)));
+        int taken(QuotaWindow w) => math.min(w.limit, w.used + w.reserved);
         final day = a.quotaDay, month = a.quotaMonth;
-        final body = day != null && day.exhausted
-            ? l10n.aiStateQuotaDay(day.used, day.limit, when(day))
-            : month != null && month.exhausted
-            ? l10n.aiStateQuotaMonth(month.used, month.limit, when(month))
-            : l10n.aiStateQuotaPlain;
+        final body = switch ((day, month)) {
+          (final d?, _) when d.exhausted => switch (when(d)) {
+            final at? => l10n.aiStateQuotaDay(taken(d), d.limit, at),
+            null => l10n.aiStateQuotaDayNoDate(taken(d), d.limit),
+          },
+          (_, final m?) when m.exhausted => switch (when(m)) {
+            final at? => l10n.aiStateQuotaMonth(taken(m), m.limit, at),
+            null => l10n.aiStateQuotaMonthNoDate(taken(m), m.limit),
+          },
+          _ => l10n.aiStateQuotaPlain,
+        };
         return AiStateCard(
           icon: ClIcons.clock,
           eyebrow: l10n.aiStateQuotaEyebrow,
@@ -635,7 +707,7 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           body: l10n.aiStatePremiumBody,
           // PR01 from Nhịp lớn lên (entry A).
           action: (
-            l10n.rhLearnMoreOptional,
+            l10n.pv2SeePremium,
             () => openPaywall(context, entry: PaywallEntry.rhythm),
           ),
         );
@@ -762,8 +834,12 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
           },
         );
       }
-    } on AiException {
-      toaster.show(message: l10n.aiSendFailed, error: true);
+    } on AiException catch (e) {
+      // "Kiểm tra mạng" only when it was the network (AI-12).
+      toaster.show(
+        message: e.offline ? l10n.aiSendFailed : l10n.aiSendFailedOther,
+        error: true,
+      );
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -872,7 +948,7 @@ class _Skeleton extends StatelessWidget {
 class _Loading extends StatelessWidget {
   const _Loading({this.refreshing = false});
 
-  /// Bringing a stored handover up to the newest notes (D-103), not making the first one.
+  /// Bringing a stored handover up to the newest notes ("Tạo lại"), not making the first one.
   final bool refreshing;
 
   @override

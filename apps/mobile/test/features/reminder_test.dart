@@ -167,6 +167,72 @@ void main() {
     });
   });
 
+  group('NT-3: one "asked" flag for the launch prompt, EN03 and 8c', () {
+    testWidgets('asked at launch: 8c does not ask again after a save', (
+      tester,
+    ) async {
+      final repo = FakeReminderRepository();
+      final notifications = FakeReminderNotifications(on: false);
+      await pumpRouted(
+        tester,
+        const RemindersScreen(),
+        overrides: familyOverrides(
+          reminders: const [],
+          reminderRepo: repo,
+          notifications: notifications,
+          now: careNow,
+        ),
+        // What the launch prompt (D-098) wrote before NT-3.
+        prefs: const {'notifications.askedOnLaunch': true},
+      );
+      await _oneTime(tester);
+      await tester.tap(find.text('Nhắc việc mới'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(EditableText), 'Tiêm 6 trong 1');
+      await tester.tap(find.text('Lưu nhắc việc'));
+      await tester.pumpAndSettle();
+      expect(repo.created, hasLength(1));
+      expect(find.text('Bật thông báo trên máy này?'), findsNothing);
+      expect(notifications.requests, 0);
+    });
+
+    testWidgets('8c refused at the system prompt: the toast offers Cài đặt', (
+      tester,
+    ) async {
+      final notifications = FakeReminderNotifications(on: false, grant: false);
+      await pumpRouted(
+        tester,
+        const RemindersScreen(),
+        overrides: familyOverrides(
+          reminders: const [],
+          reminderRepo: FakeReminderRepository(),
+          notifications: notifications,
+          now: careNow,
+        ),
+      );
+      await _oneTime(tester);
+      await tester.tap(find.text('Nhắc việc mới'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(EditableText), 'Tiêm 6 trong 1');
+      await tester.tap(find.text('Lưu nhắc việc'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Để nhắc việc kêu đúng giờ, kể cả khi đang đóng app.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Bật thông báo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(notifications.requests, 1);
+      expect(
+        find.text('Đã lưu nhắc việc. Chưa bật thông báo trên máy này.'),
+        findsWidgets,
+      );
+      expect(find.text('Cài đặt'), findsWidgets);
+      await tester.pump(const Duration(seconds: 5));
+    });
+  });
+
   group('8b / 8c create', () {
     testWidgets('needs a title; saves on this device, then asks once (R-092)', (
       tester,

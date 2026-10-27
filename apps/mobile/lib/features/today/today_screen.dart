@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,6 @@ import '../../core/design/motion.dart';
 import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
-import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -33,7 +33,6 @@ import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
-import '../notifications/notification_bell.dart'; // D-076 #2
 import '../solids/solids_today.dart' show SdTodayCard, sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 import '../adaptive/adaptive_engine.dart' show RankedWidget, WidgetId;
@@ -44,6 +43,9 @@ import 'today_cards.dart';
 import 'today_for_baby.dart';
 import 'today_layout.dart';
 import 'today_personalize.dart';
+import 'living_header.dart';
+import 'header_settings.dart';
+import '../me/me_widgets.dart' show MeRow;
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
 /// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
@@ -61,17 +63,25 @@ class TodayScreen extends ConsumerWidget {
     if (membership == null) return ColoredBox(color: cl.colors.cloud);
     final babyId = membership.babyId;
     final baby = ref.watch(babyProvider(babyId)).value;
-    final locale = Localizations.localeOf(context).toLanguageTag();
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final trackers = baby?.trackers ?? const <TrackerKind>[];
     final readOnly = membership.role == MemberRole.relative;
     // v1.0 improvement 370:1525: the sections and tiles this device shows, in its order.
     final layout = ref.watch(todayLayoutProvider(babyId));
-    final recent = ref.watch(recentRecordsProvider(babyId)).value ?? const [];
+    final recentAsync = ref.watch(recentRecordsProvider(babyId));
+    final recent = recentAsync.value ?? const [];
+    // SY-1 (D-127): until the records arrive the day is unknown, never "Chưa có"; a failed load
+    // says so instead of reading as an empty day (a parent would log the same feed twice).
+    final recentFailed = !recentAsync.hasValue && recentAsync.hasError;
     final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
     final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
     final day = babyDayBounds(zone, now);
-    final pendingCount = recent.where((r) => r.pending).length;
+    // SY-3: deletes, undos, old edits and timers count too (the outbox), not only the records
+    // Today's query still marks as pending (those survive a restart).
+    final pendingCount = math.max(
+      recent.where((r) => r.pending).length,
+      ref.watch(careOutboxProvider),
+    );
     final online = ref.watch(onlineProvider).value ?? true;
 
     CareTimer? running(CareType type) => switch (type) {
@@ -130,9 +140,15 @@ class TodayScreen extends ConsumerWidget {
           const SizedBox(height: ClSpace.s3),
         ] else
           const SizedBox(height: ClSpace.s4),
-        // D-108: until the records load, tile-shaped skeletons, never "Chưa có" (adaptive).
-        if (ref.watch(adaptiveOnProvider) &&
-            !ref.watch(recentRecordsProvider(babyId)).hasValue)
+        // D-108 / SY-1: until the records load, tile-shaped skeletons, never "Chưa có".
+        if (recentFailed) ...[
+          CareLoadFailed(
+            body: l10n.todayLoadFailedBody,
+            onRetry: () => ref.invalidate(recentRecordsProvider(babyId)),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        if (!recentAsync.hasValue && !recentFailed)
           const _TilesSkeleton()
         else
           // D-108: rows sized by their content (at least the old 166:156 tile), so the tiles grow
@@ -151,6 +167,7 @@ class TodayScreen extends ConsumerWidget {
                       child: CareTile(
                         type: type,
                         last: last(type),
+                        unknown: recentFailed && type != CareType.growth,
                         previousGrowth:
                             type == CareType.growth && growth.length > 1
                             ? growth[1]
@@ -218,20 +235,30 @@ class TodayScreen extends ConsumerWidget {
           const SdTodayCard(),
         ],
       ],
+      // SY-1: no "Chưa có ghi chép hôm nay" while loading; nothing on a failed load (the
+      // notice above the tiles says so).
       TodaySection.rhythm => [
-        const SizedBox(height: ClSpace.s6),
-        ClSectionHeader(
-          title: l10n.todayTitle,
-          linkLabel: l10n.todayHistory,
-          onLink: () => context.push(Routes.history),
-        ),
-        const SizedBox(height: ClSpace.s3),
-        DayRhythm(
-          records: recent,
-          dayStart: day.start,
-          dayEnd: day.end,
-          now: now,
-        ),
+        if (!recentFailed) ...[
+          const SizedBox(height: ClSpace.s6),
+          ClSectionHeader(
+            title: l10n.todayTitle,
+            linkLabel: l10n.todayHistory,
+            onLink: () => context.push(Routes.history),
+          ),
+          const SizedBox(height: ClSpace.s3),
+          if (recentAsync.hasValue)
+            DayRhythm(
+              records: recent,
+              dayStart: day.start,
+              dayEnd: day.end,
+              now: now,
+            )
+          else
+            Semantics(
+              label: l10n.axTilesLoading,
+              child: const ClSkeleton(height: 132, radius: ClRadius.card),
+            ),
+        ],
       ],
     };
 
@@ -241,123 +268,118 @@ class TodayScreen extends ConsumerWidget {
     final ranked = adaptive
         ? ref.watch(adaptiveTodayProvider(babyId))
         : const <RankedWidget>[];
-    lead = ranked.where((w) => w.visible).firstOrNull?.id;
+    lead = ranked
+        .where((w) => w.visible && w.id != WidgetId.careDuty)
+        .firstOrNull
+        ?.id;
 
-    // The baby header stays pinned while the day scrolls under it.
-    return ClPinnedHeaderScaffold(
-      // ---- D-076 #2 notification centre: the bell (559:57622) before Night care ----
-      header: const BabyHeader(
-        actions: [
-          NotificationBell(),
-          SizedBox(width: ClSpace.s2),
-          NightCareToggle(),
-        ],
-      ),
-      // ---- end D-076 #2 ----
-      body: ListView(
-        // The last section ends above the dock, its "+" and Lumi (owner, 2026-10-15: Lumi sat on
-        // "Xem tất cả" of Nhắc việc); 140 outside the home shell.
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          switch (HomeFloatingClearance.of(context)) {
+    // Owner 27/10/2026: care duty is fixed in the header, with visibility only.
+    final dutyEnabled = adaptive
+        ? ranked.any((w) => w.id == WidgetId.careDuty && w.visible)
+        : careDutyByAge(ref.watch(childBandProvider(babyId))) &&
+              ref.watch(headerSettingsProvider).showDuty;
+    final showDuty = dutyEnabled && ref.watch(careDutyChipVisibleProvider);
+    return ColoredBox(
+      color: cl.colors.cloud,
+      child: ListView(
+        padding: EdgeInsets.only(
+          bottom: switch (HomeFloatingClearance.of(context)) {
             final c? => c + ClSpace.s4,
             null => 140,
           },
         ),
         children: [
-          if (myConflict != null) ...[
-            const SizedBox(height: ClSpace.s3),
-            _SyncBanner(
-              label: l10n.overlapBanner,
-              onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
-            ),
-          ],
-          // Owner, 2026-10-22: a save that syncs in a moment no longer flashes this banner in
-          // and out (the whole screen jumped); online it shows only if sending takes a while.
-          _AfterDelay(
-            show: pendingCount > 0,
-            immediately: !online,
-            child: Padding(
-              padding: const EdgeInsets.only(top: ClSpace.s3),
-              child: _SyncBanner(
-                label: online
-                    ? l10n.syncingBanner(pendingCount)
-                    : l10n.offlineBanner(pendingCount),
-                onTap: () => showPendingSheet(context),
-              ),
-            ),
-          ),
-          if (adaptive)
-            const AdaptiveGreeting()
-          else ...[
-            const SizedBox(height: ClSpace.s4),
-            Text(
-              toBeginningOfSentenceCase(
-                DateFormat('EEEE, d MMMM', locale).format(now),
-              ),
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
-            Row(
+          TodayLivingHeader(showDuty: showDuty),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(
-                      l10n.todayTitle,
-                      style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
+                if (myConflict != null) ...[
+                  const SizedBox(height: ClSpace.s3),
+                  _SyncBanner(
+                    label: l10n.overlapBanner,
+                    onTap: () =>
+                        context.push('${Routes.overlap}/${myConflict.id}'),
+                  ),
+                ],
+                // Owner, 2026-10-22: a save that syncs in a moment no longer flashes this banner in
+                // and out (the whole screen jumped); online it shows only if sending takes a while.
+                _AfterDelay(
+                  show: pendingCount > 0,
+                  immediately: !online,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: ClSpace.s3),
+                    child: _SyncBanner(
+                      label: online
+                          ? l10n.syncingBanner(pendingCount)
+                          : l10n.offlineBanner(pendingCount),
+                      onTap: () => showPendingSheet(context),
                     ),
                   ),
                 ),
-                if (!readOnly) const _CustomizePill(),
+                if (!adaptive && !readOnly)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: _CustomizePill(),
+                  ),
+                // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
+                const WhatsNewBanner(),
+                // AR02: new library photos that may show the baby (Tự lưu, D-066).
+                const AutoSaveTodayBanner(),
+                // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
+                // D-076 #1: "Hôm nay theo cách của nhà bạn" (559:57870) for who has not personalised,
+                // and EN01 right after this phone created the baby.
+                const PersonalizeInviteCard(),
+                const PersonalizeAfterSetupGate(),
+                if (adaptive) ...[
+                  // Adaptive Experience (P-175): the ranked widgets of this child's band and goals.
+                  // AX33: once at 12, 36 and 72 months; it only suggests.
+                  const AxStageCard(),
+                  for (final w in ranked)
+                    if (w.visible && w.id != WidgetId.careDuty)
+                      AdaptiveTapTracker(
+                        id: w.id,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: switch (w.id) {
+                            WidgetId.recentMemories => [
+                              const AxRecentMemories(),
+                            ],
+                            WidgetId.momentToday => [const AxMomentToday()],
+                            WidgetId.createFromMemories => [
+                              const AxCreateFromMemories(),
+                            ],
+                            WidgetId.growth => [const AxGrowth()],
+                            WidgetId.familyView => [const AxFamilyView()],
+                            // Care status has a fixed home in the living header.
+                            WidgetId.careDuty => const <Widget>[],
+                            _ => sectionParts(
+                              TodaySection.values.byName(w.id.wire),
+                            ),
+                          },
+                        ),
+                      ),
+                  // On the first run too: without it some children had no way to Tuỳ chỉnh (owner,
+                  // 2026-10-24), as AX40's empty Today has no other entry.
+                  if (!readOnly) const AxCustomizeLink(),
+                ] else
+                  for (final section in layout.order)
+                    if (layout.shows(section)) ...sectionParts(section),
+                const SizedBox(height: ClSpace.s4),
+                ClCardGroup(
+                  children: [
+                    MeRow(
+                      title: l10n.hhSettings,
+                      subtitle: l10n.hhSettingsSubtitle,
+                      icon: ClIcons.edit,
+                      onTap: () => context.push(Routes.todayAppearance),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-          // P-181: who is caring for the baby now, by age. Adaptive: at its place in the
-          // person's Tuỳ chỉnh order, below (owner, 2026-10-25).
-          if (!adaptive && careDutyByAge(ref.watch(childBandProvider(babyId))))
-            const CareDutyChip(),
-          // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
-          const WhatsNewBanner(),
-          // AR02: new library photos that may show the baby (Tự lưu, D-066).
-          const AutoSaveTodayBanner(),
-          // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
-          // D-076 #1: "Hôm nay theo cách của nhà bạn" (559:57870) for who has not personalised,
-          // and EN01 right after this phone created the baby.
-          const PersonalizeInviteCard(),
-          const PersonalizeAfterSetupGate(),
-          if (adaptive) ...[
-            // Adaptive Experience (P-175): the ranked widgets of this child's band and goals.
-            // AX33: once at 12, 36 and 72 months; it only suggests.
-            const AxStageCard(),
-            for (final w in ranked)
-              if (w.visible)
-                AdaptiveTapTracker(
-                  id: w.id,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: switch (w.id) {
-                      WidgetId.recentMemories => [const AxRecentMemories()],
-                      WidgetId.momentToday => [const AxMomentToday()],
-                      WidgetId.createFromMemories => [
-                        const AxCreateFromMemories(),
-                      ],
-                      WidgetId.growth => [const AxGrowth()],
-                      WidgetId.familyView => [const AxFamilyView()],
-                      // Where Tuỳ chỉnh puts it, like every other widget.
-                      // (The chip has its own top gap, and nothing when hidden.)
-                      WidgetId.careDuty => [const CareDutyChip()],
-                      _ => sectionParts(TodaySection.values.byName(w.id.wire)),
-                    },
-                  ),
-                ),
-            // On the first run too: without it some children had no way to Tuỳ chỉnh (owner,
-            // 2026-10-24), as AX40's empty Today has no other entry.
-            if (!readOnly) const AxCustomizeLink(),
-          ] else
-            for (final section in layout.order)
-              if (layout.shows(section)) ...sectionParts(section),
+          ),
         ],
       ),
     );
@@ -521,11 +543,15 @@ class CareTile extends ConsumerStatefulWidget {
     this.readOnly = false,
     this.onLongPress,
     this.firstLogPill = false,
+    this.unknown = false,
     super.key,
   });
 
   final CareType type;
   final CareRecord? last;
+
+  /// SY-1: the diary did not load, so the last entry is unknown: "—", never "Chưa có".
+  final bool unknown;
 
   /// AX40: an empty tile shows the "Ghi lần đầu" pill instead of "Chạm để ghi".
   final bool firstLogPill;
@@ -590,7 +616,12 @@ class _CareTileState extends ConsumerState<CareTile>
     final timer = widget.timer;
     final hm = DateFormat.Hm(locale);
     var lines = r == null ? null : _lines(l10n, locale, r);
-    var value = r == null ? l10n.todayTileEmpty : recordValue(l10n, locale, r);
+    final unknown = widget.unknown && r == null;
+    var value = unknown
+        ? '—'
+        : r == null
+        ? l10n.todayTileEmpty
+        : recordValue(l10n, locale, r);
     if (timer != null) {
       // Tone=Active: live elapsed time and who started it.
       lines = [
@@ -617,7 +648,9 @@ class _CareTileState extends ConsumerState<CareTile>
         r.pending ? l10n.carePending : loggedBy(l10n, r, widget.myUid),
       ];
     }
-    final semantics = r == null && timer == null
+    final semantics = unknown && timer == null
+        ? (widget.readOnly ? label : '$label. ${l10n.todayTileTapToLog}')
+        : r == null && timer == null
         ? (widget.readOnly
               ? '$label, ${l10n.todayTileEmpty}'
               : '$label, ${l10n.todayTileEmpty}. ${l10n.todayTileTapToLog}')
@@ -663,7 +696,7 @@ class _CareTileState extends ConsumerState<CareTile>
                 const SizedBox(height: ClSpace.s1),
                 if (lines == null) ...[
                   const Spacer(),
-                  if (!widget.readOnly && widget.firstLogPill)
+                  if (!widget.readOnly && widget.firstLogPill && !unknown)
                     Container(
                       key: const Key('tileFirstLog'),
                       padding: const EdgeInsets.symmetric(

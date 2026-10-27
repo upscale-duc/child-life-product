@@ -29,8 +29,6 @@ import '../memories/memory_repository.dart';
 import 'auto_save_controller.dart';
 import 'auto_save_engine.dart';
 import 'auto_save_widgets.dart';
-import '../premium/premium_entries.dart';
-import '../premium/premium_repository.dart';
 
 /// What AS07 hands to AS10: the ticked items and everything that was on screen.
 @immutable
@@ -90,6 +88,9 @@ final libraryLocalProvider = FutureProvider.autoDispose.family<bool, String>((
 
 enum _Filter { all, photos, videos }
 
+/// The week pill's "Tất cả các tuần" (not a week of age, which starts at 0).
+const _allWeeks = -1;
+
 // ---------- AS07 Gợi ý chờ duyệt ----------
 
 class AutoSaveReviewScreen extends ConsumerStatefulWidget {
@@ -104,8 +105,10 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   final _measuredBabies = <String>{};
   final _selected = <String>{};
   final _known = <String>{};
-  final _expanded = <String>{};
   var _filter = _Filter.all;
+
+  /// "Đã có trong Kỷ niệm" is folded until opened (D-123).
+  var _savedOpen = false;
 
   /// The week of age being reviewed (P-171), when the person chose one; otherwise the newest
   /// week that still has suggestions (owner, 2026-10-23: newest week first).
@@ -114,7 +117,8 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   /// Items one "Tải lên" may hold (D-070), from `publicConfig/limits`.
   var _cap = 200;
 
-  /// What this review can still tick: its items, less those already in Kỷ niệm.
+  /// What this review can tick: its items. "Đã có" ones too: it is a guess (same capture second
+  /// as a memory) and can be wrong (owner, 2026-10-26), so they start unticked but can be picked.
   var _live = <String>{};
 
   int get _picked => _selected.where(_live.contains).length;
@@ -220,24 +224,36 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         }
       });
     }
+    // AS07, D-123 rework (owner, 2026-10-26: "làm đi làm lại vẫn ko đúng và khó hiểu. hãy phân
+    // tích lại ui/ux"): one unit everywhere. Every photo or video is a tile and every count is
+    // a count of files, so the chips, the ticks and "Tiếp tục với n mục" always agree. Near-copies
+    // are laid out together under "n ảnh giống nhau" (the clearest pre-ticked); the items the app
+    // thinks are already in Kỷ niệm wait, folded, at the end (a guess, so they can be ticked).
+    // No sheet: the ticks on the tiles are the state.
     final byWeek = <int, int>{};
     if (dob != null) {
+      // What waits and is not yet in Kỷ niệm ("Đã có" has its own section).
       for (final g in everything) {
+        final n = g.items.where((c) => !already.contains(c.asset.id)).length;
         byWeek.update(
           ageWeekOf(dob, g.captureAt),
-          (n) => n + 1,
-          ifAbsent: () => 1,
+          (x) => x + n,
+          ifAbsent: () => n,
         );
       }
     }
     // Newest week of age first; "Trước sinh" (week 0) last (owner, 2026-10-23).
     final pendingWeeks = byWeek.keys.toList()..sort((a, b) => b.compareTo(a));
+    // "Tất cả các tuần" (owner, 2026-10-26): every week in one review, still one upload of at
+    // most [_cap]; a week stays the default (P-171).
     final week = dob == null || pendingWeeks.isEmpty
         ? null
+        : _week == _allWeeks && pendingWeeks.length > 1
+        ? _allWeeks
         : byWeek.containsKey(_week)
         ? _week!
         : pendingWeeks.first;
-    final scoped = week == null
+    final scoped = week == null || week == _allWeeks
         ? everything
         : [
             for (final g in everything)
@@ -251,20 +267,17 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     final groups = _round(scoped, already);
     _live = {
       for (final g in groups)
-        for (final c in g.items)
-          if (!already.contains(c.asset.id)) c.asset.id,
+        for (final c in g.items) c.asset.id,
     };
     _learn(groups, already);
-    // Counted as the tiles shown (a group of near-copies is one), so the title, the chips, the
-    // days and "Tiếp tục với n mục" agree; the grouped copies are told apart below (owner,
-    // 2026-10-15: "4 items mà button nói 3").
-    final total = everything.length;
     final all = [for (final g in groups) ...g.items];
-    final photos = groups.where((g) => !g.best.asset.video).length;
-    final shown = [
-      for (final g in groups)
-        if (g.items.any(_keep)) g,
+    // The counts on screen are of what is not yet in Kỷ niệm (owner, 2026-10-26: "bạn lại bắt
+    // user tính toán nữa"); "Đã có" is counted in its own section and adds on top when ticked.
+    final waiting = [
+      for (final c in all)
+        if (!already.contains(c.asset.id)) c,
     ];
+    final photos = waiting.where((c) => !c.asset.video).length;
     final babies = {for (final c in all) c.match.babyId};
     final name = joinNames(l10n, [
       for (final id in babies)
@@ -272,21 +285,25 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     ]);
     final chosen = [
       for (final c in all)
-        if (_selected.contains(c.asset.id) && !already.contains(c.asset.id)) c,
+        if (_selected.contains(c.asset.id)) c,
     ];
     final chosenVideos = chosen.where((c) => c.asset.video).length;
     final bytes = chosen.fold<int>(0, (n, c) => n + c.asset.estimatedBytes);
-    final merged = groups.fold<int>(0, (n, g) => n + g.items.length - 1);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final now = DateTime.now();
-    final last = view.state.lastScanAt;
+    bool isNew(Candidate c) => _keep(c) && !already.contains(c.asset.id);
 
-    // Day sections, newest first.
+    // Day sections, newest first, of what is new; "Đã có" waits at the end.
     final days = <DateTime, List<SuggestionGroup>>{};
-    for (final g in shown) {
+    for (final g in groups) {
+      if (!g.items.any(isNew)) continue;
       final d = g.captureAt;
       (days[DateTime(d.year, d.month, d.day)] ??= []).add(g);
     }
+    final saved = [
+      for (final c in all)
+        if (_keep(c) && already.contains(c.asset.id)) c,
+    ];
     String dayLabel(DateTime d) {
       final date = DateFormat('dd/MM', locale).format(d);
       final today = DateTime(now.year, now.month, now.day);
@@ -297,138 +314,321 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
       return date;
     }
 
-    Widget tile(Candidate c, {SuggestionGroup? group}) {
+    Widget tile(Candidate c, {bool best = false}) {
       final id = c.asset.id;
       final done = already.contains(id);
       final cloud = !(ref.watch(libraryLocalProvider(id)).value ?? true);
-      final more = group == null ? 0 : group.items.length - 1;
       return Stack(
         fit: StackFit.expand,
         children: [
-          if (more > 0)
-            Positioned(
-              left: 4,
-              top: 4,
-              right: -2,
-              bottom: -2,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: cl.colors.surface2,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: cl.colors.separator),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.only(
-              right: more > 0 ? 4 : 0,
-              bottom: more > 0 ? 4 : 0,
-            ),
-            child: LibraryTile(
-              assetId: id,
-              video: c.asset.video,
-              durationMs: c.asset.durationMs,
-              dimmed: done,
-              selected: done ? null : _selected.contains(id),
-              onTap: done ? null : () => _openViewer(all, all.indexOf(c)),
-              badge: done
-                  ? AutoSaveTag(l10n.autoSaveAlready)
-                  : cloud
-                  ? AutoSaveTag(l10n.autoSaveInCloud, warm: true)
-                  : more > 0
-                  ? ClPressable(
-                      semanticLabel: l10n.autoSaveGroupTitle(
-                        group!.items.length,
-                        group.items
-                            .where((x) => _selected.contains(x.asset.id))
-                            .length,
-                      ),
-                      onPressed: () => setState(
-                        () => _expanded.contains(id)
-                            ? _expanded.remove(id)
-                            : _expanded.add(id),
-                      ),
-                      child: AutoSaveTag('+$more', dark: true),
-                    )
-                  : null,
+          LibraryTile(
+            assetId: id,
+            video: c.asset.video,
+            durationMs: c.asset.durationMs,
+            dimmed: done && !_selected.contains(id),
+            selected: _selected.contains(id),
+            onTap: () => _openViewer(all, all.indexOf(c)),
+            badge: cloud
+                ? AutoSaveTag(l10n.autoSaveInCloud, warm: true)
+                : best
+                ? AutoSaveTag(l10n.autoSaveBest, warm: true)
+                : null,
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            width: 40,
+            height: 40,
+            child: ClPressable(
+              semanticLabel: _selected.contains(id)
+                  ? l10n.autoSaveSelected
+                  : l10n.autoSaveSelect,
+              selected: _selected.contains(id),
+              onPressed: () => _toggle(id),
+              child: const SizedBox.expand(),
             ),
           ),
-          if (!done)
-            Positioned(
-              top: 0,
-              right: 0,
-              width: 40,
-              height: 40,
-              child: ClPressable(
-                semanticLabel: _selected.contains(id)
-                    ? l10n.autoSaveSelected
-                    : l10n.autoSaveSelect,
-                selected: _selected.contains(id),
-                onPressed: () => _toggle(id),
-                child: const SizedBox.expand(),
-              ),
-            ),
         ],
       );
     }
 
-    final children = <Widget>[
-      if (week != null) ...[
-        Text(
-          l10n.autoSaveWeekHint(name),
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+    Widget grid(List<Widget> tiles) => GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
+      children: tiles,
+    );
+
+    // A group of near-copies: all of them, the clearest first and tagged, in one tinted block
+    // whose header says how many are ticked and ticks the rest (or keeps only the clearest).
+    Widget copies(SuggestionGroup g, List<Candidate> items) {
+      final ticked = items.where((c) => _selected.contains(c.asset.id)).length;
+      final allOn = ticked == items.length;
+      return Container(
+        key: Key('autoSaveGroup:${g.best.asset.id}'),
+        margin: const EdgeInsets.only(top: ClSpace.s2),
+        padding: const EdgeInsets.fromLTRB(
+          ClSpace.s2,
+          ClSpace.s1,
+          ClSpace.s2,
+          ClSpace.s2,
         ),
-        const SizedBox(height: ClSpace.s2),
+        decoration: BoxDecoration(
+          color: cl.colors.surface2,
+          borderRadius: BorderRadius.circular(ClRadius.control + 4),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.autoSaveGroupTitle(items.length, ticked),
+                    style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                // A text link, so the header keeps one line.
+                ClPressable(
+                  key: Key('autoSaveGroupToggle:${g.best.asset.id}'),
+                  semanticLabel: allOn
+                      ? l10n.autoSaveGroupBestOnly
+                      : l10n.autoSaveGroupAll,
+                  onPressed: () => setState(() {
+                    if (allOn) {
+                      _selected.removeAll([
+                        for (final c in items)
+                          if (c != g.best) c.asset.id,
+                      ]);
+                    } else {
+                      _add([for (final c in items) c.asset.id]);
+                    }
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ClSpace.s1,
+                      vertical: ClSpace.s2,
+                    ),
+                    child: Text(
+                      allOn
+                          ? l10n.autoSaveGroupBestOnly
+                          : l10n.autoSaveGroupAll,
+                      style: cl.text.label.copyWith(
+                        color: cl.colors.mintText,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            grid([for (final c in items) tile(c, best: c == g.best)]),
+          ],
+        ),
+      );
+    }
+
+    String weekLabel(int w) => w == _allWeeks
+        ? l10n.autoSaveAllWeeks(byWeek.values.fold<int>(0, (n, c) => n + c))
+        : switch (byWeek[w]) {
+            null => l10n.autoSaveWeekDone(w),
+            final n when w == 0 => l10n.autoSaveWeekBefore(n),
+            final n => l10n.autoSaveWeek(w, n),
+          };
+    String kindLabel(_Filter f) => switch (f) {
+      _Filter.all => l10n.autoSaveFilterAll(waiting.length),
+      _Filter.photos => l10n.autoSaveFilterPhotos(photos),
+      _Filter.videos => l10n.autoSaveFilterVideos(waiting.length - photos),
+    };
+    Future<void> choose<T>(
+      String title,
+      List<T> options,
+      T current,
+      String Function(T) label,
+      bool Function(T) enabled,
+      void Function(T) pick,
+    ) async {
+      final picked = await showClSheet<T>(
+        context: context,
+        builder: (sheet) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: title),
+            Flexible(
+              child: SingleChildScrollView(
+                child: ClCardGroup(
+                  color: sheet.cl.colors.surface2,
+                  children: [
+                    for (final o in options)
+                      ClOptionRow(
+                        title: label(o),
+                        selected: o == current,
+                        onTap: enabled(o)
+                            ? () => Navigator.of(sheet).pop(o)
+                            : () {},
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (picked != null && mounted) setState(() => pick(picked));
+    }
+
+    // Each week in words and a bar: how much of it is already in Kỷ niệm, how much waits
+    // (owner, 2026-10-26: "nên hiển thị mỗi tuần có bao nhiêu hình trong kỷ niệm rồi bao nhiêu
+    // hình chưa … toàn số vậy cũng khó hiểu").
+    Future<void> chooseWeek() async {
+      final savedByWeek = <int, int>{};
+      if (onlyBaby != null && dob != null) {
+        for (final m
+            in ref.read(completeMediaProvider((onlyBaby, true))).value ??
+                const <MediaItem>[]) {
+          if (m.deleted) continue;
+          final w = ageWeekOf(dob, m.captureAt);
+          savedByWeek[w] = (savedByWeek[w] ?? 0) + 1;
+        }
+      }
+      final picked = await showClSheet<int>(
+        context: context,
+        builder: (sheet) {
+          final l = AppLocalizations.of(sheet);
+          final c = sheet.cl;
+          String title(int w) {
+            if (w == 0) return l.autoSaveWeekRowBefore;
+            final r = ageWeekRange(dob!, w);
+            final end = DateFormat('d/M', locale).format(r.last);
+            final start = r.first.month == r.last.month
+                ? '${r.first.day}'
+                : DateFormat('d/M', locale).format(r.first);
+            return l.autoSaveWeekRowTitle(w, '$start–$end');
+          }
+
+          Widget bar(int saved, int waiting) => ClipRRect(
+            borderRadius: BorderRadius.circular(ClRadius.pill),
+            child: SizedBox(
+              height: 6,
+              child: Row(
+                // Stretched, or the empty coloured boxes collapse to no height.
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (saved > 0)
+                    Expanded(
+                      flex: saved,
+                      child: ColoredBox(color: c.colors.mint),
+                    ),
+                  if (waiting > 0)
+                    Expanded(
+                      flex: waiting,
+                      child: ColoredBox(color: c.colors.sunshine),
+                    ),
+                ],
+              ),
+            ),
+          );
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClSheetHeader(title: l.autoSaveWeekSheet),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: ClCardGroup(
+                    color: c.colors.surface2,
+                    children: [
+                      if (pendingWeeks.length > 1)
+                        ClOptionRow(
+                          key: const Key('autoSaveWeek:all'),
+                          title: l.autoSaveAllWeeksRow,
+                          subtitle: l.autoSaveWeekRowProgress(
+                            savedByWeek.values.fold<int>(0, (n, c) => n + c),
+                            byWeek.values.fold<int>(0, (n, c) => n + c),
+                          ),
+                          detail: bar(
+                            savedByWeek.values.fold<int>(0, (n, c) => n + c),
+                            byWeek.values.fold<int>(0, (n, c) => n + c),
+                          ),
+                          selected: week == _allWeeks,
+                          onTap: () => Navigator.of(sheet).pop(_allWeeks),
+                        ),
+                      for (final w in weekChips)
+                        ClOptionRow(
+                          key: Key('autoSaveWeek:$w'),
+                          title: title(w),
+                          subtitle: switch ((byWeek[w], savedByWeek[w] ?? 0)) {
+                            (null, final s) => l.autoSaveWeekRowDone(s),
+                            (final n?, 0) => l.autoSaveWeekRowWaiting(n),
+                            (final n?, final s) => l.autoSaveWeekRowProgress(
+                              s,
+                              n,
+                            ),
+                          },
+                          detail: bar(savedByWeek[w] ?? 0, byWeek[w] ?? 0),
+                          selected: w == week,
+                          // A sent week has nothing left to choose.
+                          onTap: byWeek[w] == null
+                              ? () {}
+                              : () => Navigator.of(sheet).pop(w),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      if (picked != null && mounted) setState(() => _week = picked);
+    }
+
+    Future<void> chooseKind() => choose<_Filter>(
+      l10n.autoSaveKindSheet,
+      _Filter.values,
+      _filter,
+      kindLabel,
+      (_) => true,
+      (f) => _filter = f,
+    );
+
+    final children = <Widget>[
+      // One row of pills, as on Kỷ niệm Ảnh (owner, 2026-10-26: "hai cái tabbar đi liền nhau
+      // … chiếm nhiều diện tích"): the week and the kind each open their own choice.
+      if (week != null || all.isNotEmpty) ...[
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           clipBehavior: Clip.none,
           child: Row(
             children: [
-              for (final w in weekChips) ...[
-                ClFilterChip(
-                  label: switch (byWeek[w]) {
-                    null => l10n.autoSaveWeekDone(w),
-                    final n when w == 0 => l10n.autoSaveWeekBefore(n),
-                    final n => l10n.autoSaveWeek(w, n),
-                  },
-                  selected: w == week,
-                  onTap: byWeek[w] == null
-                      ? () {}
-                      : () => setState(() => _week = w),
+              if (week != null) ...[
+                ClFilterPill(
+                  key: const Key('autoSaveWeekPill'),
+                  icon: ClIcons.cake,
+                  label: weekLabel(week),
+                  onTap: pendingWeeks.length < 2 && weekChips.length < 2
+                      ? null
+                      : chooseWeek,
                 ),
-                const SizedBox(width: ClSpace.s2),
+                const SizedBox(width: 6),
               ],
+              if (all.isNotEmpty)
+                ClFilterPill(
+                  key: const Key('autoSaveFilter'),
+                  icon: ClIcons.camera,
+                  label: kindLabel(_filter),
+                  onTap: chooseKind,
+                ),
             ],
           ),
         ),
         const SizedBox(height: ClSpace.s4),
       ],
-      Text(
-        l10n.autoSaveGroupedHint,
-        style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-      ),
-      const SizedBox(height: ClSpace.s3),
-      Wrap(
-        spacing: ClSpace.s2,
-        children: [
-          ClFilterChip(
-            label: l10n.autoSaveFilterAll(groups.length),
-            selected: _filter == _Filter.all,
-            onTap: () => setState(() => _filter = _Filter.all),
-          ),
-          ClFilterChip(
-            label: l10n.autoSaveFilterPhotos(photos),
-            selected: _filter == _Filter.photos,
-            onTap: () => setState(() => _filter = _Filter.photos),
-          ),
-          ClFilterChip(
-            label: l10n.autoSaveFilterVideos(groups.length - photos),
-            selected: _filter == _Filter.videos,
-            onTap: () => setState(() => _filter = _Filter.videos),
-          ),
-        ],
-      ),
-      const SizedBox(height: ClSpace.s4),
       // Often reached from a reminder sent on the phone's last report (owner, 2026-10-25:
       // "chỉ cần show message cho thân thiện"): say the photos are handled, offer Kỷ niệm.
       if (all.isEmpty)
@@ -459,95 +659,65 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
           ),
         ),
       for (final e in days.entries) ...[
-        Row(
-          children: [
-            Expanded(child: Text(dayLabel(e.key), style: cl.text.bodyStrong)),
-            Text(
-              l10n.autoSaveDayCount(
-                e.value.where((g) => g.items.any(_keep)).length,
-              ),
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
-          ],
-        ),
+        Text(dayLabel(e.key), style: cl.text.bodyStrong),
         const SizedBox(height: ClSpace.s2),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 6,
-          crossAxisSpacing: 6,
-          children: [
-            for (final g in e.value)
-              if (_keep(g.best)) tile(g.best, group: g),
-          ],
-        ),
-        // An opened group (G-102): every near-copy, the best first.
+        // Single items as a grid, then each group of near-copies in its own block.
+        grid([
+          for (final g in e.value)
+            for (final c in g.items.where(isNew))
+              if (g.items.where(isNew).length == 1) tile(c),
+        ]),
         for (final g in e.value)
-          if (_expanded.contains(g.best.asset.id) && g.items.length > 1)
-            Container(
-              margin: const EdgeInsets.only(top: ClSpace.s2),
-              padding: const EdgeInsets.all(ClSpace.s2),
-              decoration: BoxDecoration(
-                color: cl.colors.surface,
-                boxShadow: cl.shadows.card,
-                borderRadius: BorderRadius.circular(ClRadius.card - 8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l10n.autoSaveGroupTitle(
-                            g.items.length,
-                            g.items
-                                .where((x) => _selected.contains(x.asset.id))
-                                .length,
-                          ),
-                          style: cl.text.label,
-                        ),
-                      ),
-                      ClButton(
-                        label: l10n.autoSaveGroupAll,
-                        style: ClButtonStyle.plain,
-                        onPressed: () => setState(
-                          () => _add([for (final x in g.items) x.asset.id]),
-                        ),
-                      ),
-                      ClButton(
-                        label: l10n.autoSaveGroupCollapse,
-                        style: ClButtonStyle.plain,
-                        onPressed: () =>
-                            setState(() => _expanded.remove(g.best.asset.id)),
-                      ),
-                    ],
-                  ),
-                  GridView.count(
-                    crossAxisCount: 5,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
-                    children: [
-                      for (final (i, x) in g.items.indexed)
-                        LibraryTile(
-                          assetId: x.asset.id,
-                          video: x.asset.video,
-                          durationMs: x.asset.durationMs,
-                          radius: 6,
-                          selected: _selected.contains(x.asset.id),
-                          onTap: () => _toggle(x.asset.id),
-                          badge: i == 0
-                              ? AutoSaveTag(l10n.autoSaveBest, warm: true)
-                              : null,
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+          if (g.items.where(isNew).length > 1)
+            copies(
+              g,
+              [
+                g.best,
+                for (final c in g.items)
+                  if (c != g.best) c,
+              ].where(isNew).toList(),
             ),
+        const SizedBox(height: ClSpace.s4),
+      ],
+      if (saved.isNotEmpty) ...[
+        ClPressable(
+          key: const Key('autoSaveSavedSection'),
+          semanticLabel: l10n.autoSaveSavedSection(saved.length),
+          onPressed: () => setState(() => _savedOpen = !_savedOpen),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.autoSaveSavedSection(saved.length),
+                        style: cl.text.bodyStrong,
+                      ),
+                      Text(
+                        l10n.autoSaveSavedHint,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ClIcon(
+                  _savedOpen ? ClIcons.chevronDown : ClIcons.chevronRight,
+                  size: 18,
+                  color: cl.colors.inkMuted,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (_savedOpen) ...[
+          const SizedBox(height: ClSpace.s2),
+          grid([for (final c in saved) tile(c)]),
+        ],
         const SizedBox(height: ClSpace.s4),
       ],
       if (all.isNotEmpty)
@@ -557,78 +727,91 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         ),
     ];
 
-    // "Bỏ chọn tất cả" to pick a few by hand; once nothing is ticked, "Chọn tất cả" ticks the
-    // suggested picks again. Both follow the Ảnh / Video filter.
-    final scope = {
+    // "Bỏ chọn tất cả" to pick a few by hand; once nothing is ticked, "Chọn tất cả" ticks every
+    // new item (not "Đã có"). Both follow the Ảnh / Video filter.
+    final inView = [
       for (final c in all)
-        if (_keep(c) && !already.contains(c.asset.id)) c.asset.id,
-    };
-    final anyPicked = scope.any(_selected.contains);
+        if (_keep(c)) c.asset.id,
+    ];
+    final anyPicked = inView.any(_selected.contains);
     final selectLabel = anyPicked
         ? l10n.autoSaveDeselectAll
         : l10n.autoSaveSelectAll;
 
     return AutoSavePage(
       title: l10n.autoSaveReviewTitle(name),
-      trailing: scope.isEmpty
+      trailing: inView.isEmpty
           ? null
           : ClPressable(
               key: const Key('autoSaveSelectAll'),
               semanticLabel: selectLabel,
               onPressed: () => setState(
                 () => anyPicked
-                    ? _selected.removeAll(scope)
+                    ? _selected.removeAll(inView)
                     : _add([
-                        for (final g in groups)
-                          for (final id in g.preselected)
-                            if (scope.contains(id)) id,
+                        for (final c in all)
+                          if (isNew(c)) c.asset.id,
                       ]),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
-                child: Center(
-                  child: Text(
-                    selectLabel,
-                    style: cl.text.label.copyWith(color: cl.colors.mintText),
-                  ),
+                child: Text(
+                  selectLabel,
+                  style: cl.text.label.copyWith(color: cl.colors.mintText),
                 ),
               ),
             ),
-      subtitle: last == null
-          ? null
-          : l10n.autoSaveReviewSub(total, checkedAt(context, last, now)),
+      // What to do, once: the clearest are ticked. The total and the check time live on Tự lưu.
+      subtitle: all.isEmpty ? null : l10n.autoSaveReviewTicked,
       bottom: all.isEmpty
           ? null
           : Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.autoSaveChosen(
-                          chosen.length,
-                          chosen.length - chosenVideos,
-                          chosenVideos,
-                        ),
-                        style: cl.text.bodyStrong,
+                // What goes up, as icons and numbers ("Đã chọn n" is the button's).
+                MergeSemantics(
+                  child: Semantics(
+                    label: l10n.autoSaveChosen(
+                      chosen.length,
+                      chosen.length - chosenVideos,
+                      chosenVideos,
+                    ),
+                    child: ExcludeSemantics(
+                      child: Row(
+                        key: const Key('autoSaveChosenStats'),
+                        children: [
+                          for (final (icon, n) in [
+                            (ClIcons.camera, chosen.length - chosenVideos),
+                            (ClIcons.video, chosenVideos),
+                          ]) ...[
+                            ClIcon(icon, size: 16, color: cl.colors.inkMuted),
+                            const SizedBox(width: ClSpace.s1),
+                            Text('$n', style: cl.text.bodyStrong),
+                            const SizedBox(width: ClSpace.s4),
+                          ],
+                          const Spacer(),
+                          Text(
+                            '~ ${formatBytes(bytes, locale)}',
+                            style: cl.text.label.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      '~ ${formatBytes(bytes, locale)}',
-                      style: cl.text.body,
-                    ),
-                  ],
-                ),
-                if (merged > 0)
-                  Text(
-                    l10n.autoSaveMerged(merged),
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),
-                if (total > all.length)
+                ),
+                // Only what this upload leaves out of the chosen week (the per-upload limit);
+                // other weeks wait in their own chips. Counted in files, like everything here.
+                if (scoped.fold<int>(0, (n, g) => n + g.items.length) >
+                    all.length)
                   Text(
-                    l10n.autoSaveRoundRest(total - all.length, _cap),
+                    l10n.autoSaveRoundRest(
+                      scoped.fold<int>(0, (n, g) => n + g.items.length) -
+                          all.length,
+                      _cap,
+                    ),
                     key: const Key('autoSaveRoundRest'),
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),
@@ -640,9 +823,34 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
                       ? null
                       : () {
                           if (week != null && onlyBaby != null) {
-                            ref
-                                .read(reviewedWeeksProvider.notifier)
-                                .add(onlyBaby, week);
+                            final sent = {for (final c in all) c.asset.id};
+                            for (final w
+                                in week == _allWeeks
+                                    ? [
+                                        // Weeks this upload covers in full.
+                                        for (final w in pendingWeeks)
+                                          if (everything
+                                              .where(
+                                                (g) =>
+                                                    ageWeekOf(
+                                                      dob!,
+                                                      g.captureAt,
+                                                    ) ==
+                                                    w,
+                                              )
+                                              .every(
+                                                (g) => g.items.every(
+                                                  (c) =>
+                                                      sent.contains(c.asset.id),
+                                                ),
+                                              ))
+                                            w,
+                                      ]
+                                    : [week]) {
+                              ref
+                                  .read(reviewedWeeksProvider.notifier)
+                                  .add(onlyBaby, w);
+                            }
                           }
                           // Only this week's items are decided; other weeks stay pending.
                           context.push(
@@ -985,7 +1193,13 @@ class AutoSaveConfirmScreen extends ConsumerStatefulWidget {
 class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
   var _audience = Audience.parents;
   var _notify = false;
-  (int, int)? _progress;
+
+  /// Each file while it is made ready for upload (owner, 2026-10-26: "đang chuẩn bị 104 file thì
+  /// người dùng muốn được xem mỗi file đó chuẩn bị gì và đang như thế nào"); null = waiting.
+  /// Null before "Tải lên".
+  Map<String, ApprovePrep?>? _prep;
+  var _sending = const <Candidate>[];
+  var _prepFinished = false;
 
   Future<void> _upload(List<Candidate> items) async {
     final l10n = AppLocalizations.of(context);
@@ -997,7 +1211,12 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
       for (final c in widget.decision.reviewed)
         if (sending.contains(c.asset.id) || !chosenIds.contains(c.asset.id)) c,
     ];
-    setState(() => _progress = (0, items.length));
+    setState(() {
+      _sending = [...items]
+        ..sort((a, b) => a.asset.captureAt.compareTo(b.asset.captureAt));
+      _prep = {for (final c in items) c.asset.id: null};
+      _prepFinished = false;
+    });
     final n = await ref
         .read(autoSaveProvider.notifier)
         .approve(
@@ -1005,12 +1224,27 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
           reviewed: reviewed,
           audience: _audience,
           notifyFamily: _notify,
-          onPrepared: (done, total) {
-            if (mounted) setState(() => _progress = (done, total));
+          onItem: (id, state) {
+            if (mounted) setState(() => _prep?[id] = state);
           },
         );
-    toaster.show(message: l10n.autoSaveQueued(n));
     if (!mounted) return;
+    // Whatever never reached the queue could not be prepared.
+    setState(() {
+      _prep = {
+        for (final e in _prep!.entries)
+          e.key: e.value == ApprovePrep.queued
+              ? ApprovePrep.queued
+              : ApprovePrep.failed,
+      };
+      _prepFinished = true;
+    });
+    toaster.show(message: l10n.autoSaveQueued(n));
+    // With files that could not be read, stay so the person sees which; otherwise go on.
+    if (!_prep!.values.contains(ApprovePrep.failed)) _leave();
+  }
+
+  void _leave() {
     // Another week still waits (P-171): straight back to the review, not the home.
     final decided = {for (final c in widget.decision.reviewed) c.asset.id};
     final more = ref
@@ -1021,21 +1255,127 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
     context.go(more ? Routes.autoSaveReview : Routes.autoSave);
   }
 
+  Widget _preparing(AppLocalizations l10n, ClTheme cl, String locale) {
+    final prep = _prep!;
+    final done = prep.values
+        .where((v) => v != null && v != ApprovePrep.working)
+        .length;
+    final queued = prep.values.where((v) => v == ApprovePrep.queued).length;
+    final failed = prep.values.where((v) => v == ApprovePrep.failed).length;
+    return AutoSavePage(
+      title: l10n.autoSavePrepTitle(done, prep.length),
+      bottom: !_prepFinished
+          ? null
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (failed > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: ClSpace.s2),
+                    child: Text(
+                      l10n.autoSavePrepSummary(queued, failed),
+                      key: const Key('autoSavePrepSummary'),
+                      textAlign: TextAlign.center,
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                    ),
+                  ),
+                ClButton(
+                  key: const Key('autoSavePrepDone'),
+                  label: l10n.autoSavePrepDone,
+                  expand: true,
+                  onPressed: _leave,
+                ),
+              ],
+            ),
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          child: LinearProgressIndicator(
+            value: prep.isEmpty ? 0 : done / prep.length,
+            minHeight: 6,
+            color: cl.colors.mintDeep,
+            backgroundColor: cl.colors.surface2,
+          ),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        ClCardGroup(
+          children: [
+            for (final c in _sending)
+              Padding(
+                key: Key('autoSavePrep:${c.asset.id}'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ClSpace.s3,
+                  vertical: ClSpace.s2,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox.square(
+                      dimension: 40,
+                      child: LibraryTile(
+                        assetId: c.asset.id,
+                        video: c.asset.video,
+                        radius: 6,
+                      ),
+                    ),
+                    const SizedBox(width: ClSpace.s3),
+                    Expanded(
+                      child: Text(
+                        DateFormat(
+                          'dd/MM · HH:mm',
+                          locale,
+                        ).format(c.asset.captureAt),
+                        style: cl.text.label,
+                      ),
+                    ),
+                    const SizedBox(width: ClSpace.s2),
+                    Text(
+                      switch (prep[c.asset.id]) {
+                        null => l10n.autoSavePrepWaiting,
+                        ApprovePrep.working => l10n.autoSavePrepWorking,
+                        ApprovePrep.queued => l10n.autoSavePrepQueued,
+                        ApprovePrep.failed => l10n.autoSavePrepFailed,
+                      },
+                      style: cl.text.caption.copyWith(
+                        color: switch (prep[c.asset.id]) {
+                          ApprovePrep.failed => cl.colors.error,
+                          ApprovePrep.queued => cl.colors.mintText,
+                          _ => cl.colors.inkMuted,
+                        },
+                        fontWeight: prep[c.asset.id] == ApprovePrep.working
+                            ? FontWeight.w600
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final chosen = widget.decision.chosen;
     final locale = Localizations.localeOf(context).toLanguageTag();
+    if (_prep != null) return _preparing(l10n, cl, locale);
     final videos = chosen.where((c) => c.asset.video).length;
     final babies = {for (final c in chosen) c.match.babyId}.toList();
     final names = joinNames(l10n, [
       for (final id in babies)
         ref.watch(babyProvider(id)).value?.nickname ?? '',
     ]);
-    final storage = babies.isEmpty
+    final storageAsync = babies.isEmpty
         ? null
-        : ref.watch(familyStorageProvider(babies.first)).value;
+        : ref.watch(familyStorageProvider(babies.first));
+    final storage = storageAsync?.value;
+    // Owner, 2026-10-26: "hết bộ nhớ lại cho chuẩn bị file": nothing is prepared or uploaded
+    // before the family's space is known (a read that failed still lets the server decide).
+    final checking = storage == null && (storageAsync?.isLoading ?? false);
     final need = chosen.fold<int>(0, (n, c) => n + c.asset.estimatedBytes);
     // Photos before videos, best-ranked first, until the space runs out (AS18).
     final ordered = [
@@ -1055,7 +1395,11 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
       }
     }
     final short = left != null && need > left;
-    final busy = _progress != null;
+    // Nothing fits: no upload at all, the way out is more space (Premium v2 or Dung lượng).
+    final full = short && fit.isEmpty;
+    final way = babies.isEmpty
+        ? StorageWayOut.manage
+        : storageWayOut(ref, babies.first);
 
     Widget audience(Audience a, ClIcons icon, String title, String hint) =>
         Expanded(
@@ -1103,18 +1447,46 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ClButton(
-            label: busy
-                ? l10n.autoSavePreparing(_progress!.$1, _progress!.$2)
-                : short
-                ? l10n.autoSaveUploadFit(fit.length)
-                : l10n.autoSaveUploadCount(chosen.length),
-            expand: true,
-            loading: busy,
-            onPressed: busy || (short && fit.isEmpty)
-                ? null
-                : () => unawaited(_upload(short ? fit : chosen)),
-          ),
+          if (full)
+            ClButton(
+              key: const Key('autoSaveAddSpace'),
+              label: storageWayOutLabel(ref, l10n, babies.first, way),
+              expand: true,
+              onPressed: () => openStorageWayOut(
+                context,
+                ref,
+                babies.first,
+                way,
+                autoSave: true,
+              ),
+            )
+          else
+            ClButton(
+              key: const Key('autoSaveUpload'),
+              label: checking
+                  ? l10n.autoSaveCheckingSpace
+                  : short
+                  ? l10n.autoSaveUploadFit(fit.length)
+                  : l10n.autoSaveUploadCount(chosen.length),
+              expand: true,
+              onPressed: checking
+                  ? null
+                  : () => unawaited(_upload(short ? fit : chosen)),
+            ),
+          if (short && !full)
+            ClButton(
+              key: const Key('autoSaveAddSpace'),
+              label: storageWayOutLabel(ref, l10n, babies.first, way),
+              style: ClButtonStyle.plain,
+              expand: true,
+              onPressed: () => openStorageWayOut(
+                context,
+                ref,
+                babies.first,
+                way,
+                autoSave: true,
+              ),
+            ),
           const SizedBox(height: ClSpace.s2),
           Text(
             short ? l10n.autoSaveNoRoomFootnote : l10n.autoSaveConfirmFootnote,
@@ -1146,6 +1518,32 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
             ],
           ),
         ),
+        if (short) ...[
+          const SizedBox(height: ClSpace.s3),
+          // First, right under the files: what is short and by how much (owner, 2026-10-26: it sat
+          // under the form, half hidden). The buttons below are the way out.
+          MeNotice(
+            key: const Key('autoSaveNoRoom'),
+            tone: MeTone.error,
+            icon: ClIcons.alert,
+            title: full
+                ? l10n.autoSaveFullTitle
+                : l10n.autoSaveShortTitle(fit.length, chosen.length),
+            body: [
+              full
+                  ? l10n.autoSaveFullBody(
+                      chosen.length,
+                      formatBytes(need, locale),
+                    )
+                  : l10n.autoSaveShortBody(
+                      formatBytes(need, locale),
+                      formatBytes(left < 0 ? 0 : left, locale),
+                    ),
+              // D-125: Premium is named before the button that opens it.
+              if (way == StorageWayOut.premium) l10n.autoSavePremiumSpaceNote,
+            ].join(' '),
+          ),
+        ],
         const SizedBox(height: ClSpace.s3),
         ClCardGroup(
           children: [
@@ -1202,34 +1600,6 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
             ),
           ],
         ),
-        if (short) ...[
-          const SizedBox(height: ClSpace.s3),
-          MeNotice(
-            tone: MeTone.error,
-            icon: ClIcons.alert,
-            title: l10n.autoSaveNoRoom(
-              chosen.length,
-              formatBytes(need, locale),
-              formatBytes(left < 0 ? 0 : left, locale),
-              fit.length,
-            ),
-            // E11 (D-101): with Premium v2, Free → PW04 / Premium → PW10.
-            onTap: () =>
-                ref
-                        .read(capabilitiesProvider(babies.first))
-                        .value
-                        ?.features
-                        .premiumV2 ==
-                    true
-                ? showStorageFullSuggestion(
-                    context,
-                    ref,
-                    babies.first,
-                    autoSave: true,
-                  )
-                : context.push(Routes.meStorage),
-          ),
-        ],
         if (storage != null) ...[
           MeSection(l10n.autoSaveStorageAfter),
           AutoSaveCard(

@@ -1092,7 +1092,7 @@ class _SupportCard extends StatelessWidget {
         icon: ClIcons.spark,
         tone: WeekRowTone.mint,
         title: l10n.rhSupportTitle,
-        sub: l10n.rhLearnMore,
+        sub: l10n.premiumNeedsPremium,
         // PR01 from Nhịp lớn lên (entry A).
         onTap: () => openPaywall(context, entry: PaywallEntry.rhythm),
       ),

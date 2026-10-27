@@ -42,7 +42,13 @@ class RateAppRow extends ConsumerWidget {
           showClToast(context, message: l10n.meRateUnavailable);
           return;
         }
-        await ref.read(openStoreProvider)(url);
+        try {
+          await ref.read(openStoreProvider)(url);
+        } on Object {
+          if (context.mounted) {
+            showClToast(context, message: l10n.meRateOpenFailed);
+          }
+        }
       },
     );
   }

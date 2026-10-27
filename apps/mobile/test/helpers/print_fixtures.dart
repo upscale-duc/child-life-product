@@ -85,6 +85,8 @@ List<Override> printOverrides({
   bool savedAddress = true,
   List<MediaItem>? media,
   bool physical = true,
+  String? exportJobId,
+  Map<String, dynamic>? exportJob,
 }) => [
   ...familyOverrides(
     now: DateTime(2026, 10, 25),
@@ -101,6 +103,11 @@ List<Override> printOverrides({
         PrintCatalog({...printCatalog.json, 'physicalEnabled': physical}),
   ),
   printDraftProvider.overrideWith((ref, baby) => Stream.value(null)),
+  // PR-1: the print file job the draft remembers, and its live state.
+  printDraftExportJobProvider.overrideWith(
+    (ref, baby) => Stream.value(exportJobId),
+  ),
+  printExportJobProvider.overrideWith((ref, key) => Stream.value(exportJob)),
   printOrdersProvider.overrideWith(
     (ref, baby) => Stream.value(
       savedAddress

@@ -28,6 +28,7 @@ import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../memories/album_models.dart' show MessageContext;
 import '../memories/social_widgets.dart' show showMessageComposer;
+import '../me/me_widgets.dart' show MeNotice, MeTone;
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
@@ -808,16 +809,21 @@ class RecordDetailScreen extends ConsumerWidget {
     if (confirmed != true || !context.mounted) return;
     final repo = ref.read(careRepositoryProvider);
     final toaster = ClToaster.of(context);
-    void failed(Object _) =>
-        toaster.show(message: l10n.careSaveFailed, error: true);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    void Function(Object) failed(CareWrite write) =>
+        (e) => toaster.show(
+          message: careWriteFailed(l10n, locale, write, e, record),
+          error: true,
+        );
 
-    repo.softDelete(record, me.uid, onError: failed);
+    repo.softDelete(record, me.uid, onError: failed(CareWrite.delete));
     context.popOrToday();
     toaster.show(
       message: l10n.deletedToast,
       actionLabel: l10n.undo,
       visibleFor: const Duration(seconds: 5),
-      onAction: () => repo.restore(record, me.uid, onError: failed),
+      onAction: () =>
+          repo.restore(record, me.uid, onError: failed(CareWrite.restore)),
     );
   }
 }
@@ -850,6 +856,8 @@ class _PendingSheetState extends ConsumerState<_PendingSheet> {
                     const [])
               if (r.pending) r,
           ];
+    // SY-3: deletes, undos, old edits and timers wait too, without a row of their own.
+    final others = ref.watch(careOutboxProvider) - pending.length;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -899,6 +907,11 @@ class _PendingSheetState extends ConsumerState<_PendingSheet> {
               ],
             ),
           ),
+        if (others > 0)
+          Padding(
+            padding: const EdgeInsets.only(bottom: ClSpace.s3),
+            child: Text(l10n.pendingOthers(others), style: cl.text.body),
+          ),
         const SizedBox(height: ClSpace.s2),
         Text(
           l10n.pendingFootnote,
@@ -913,19 +926,66 @@ class _PendingSheetState extends ConsumerState<_PendingSheet> {
               ? null
               : () async {
                   setState(() => _busy = true);
-                  final ok = await ref.read(careRepositoryProvider).retryNow();
+                  final result = await ref
+                      .read(careRepositoryProvider)
+                      .retryNow();
                   if (!mounted) return;
                   setState(() => _busy = false);
-                  if (ok) {
-                    // The toast lives in the root overlay, so it outlasts the sheet.
-                    showClToast(this.context, message: l10n.retrySynced);
-                    Navigator.of(this.context).pop();
-                  } else {
-                    showClToast(this.context, message: l10n.retryStill);
+                  switch (result) {
+                    case CareRetry.synced:
+                      // The toast lives in the root overlay, so it outlasts the sheet.
+                      showClToast(this.context, message: l10n.retrySynced);
+                      Navigator.of(this.context).pop();
+                    case CareRetry.waiting:
+                      showClToast(this.context, message: l10n.retryStill);
+                    // SY-3: never "Đã đồng bộ" when the server refused a write.
+                    case CareRetry.refused:
+                      showClToast(
+                        this.context,
+                        message: l10n.retryRefused,
+                        error: true,
+                      );
                   }
                 },
         ),
       ],
+    );
+  }
+}
+
+/// The diary did not load (SY-1, SY-2; D-127: unknown is never shown as empty): says so where
+/// the content starts, with a way to try again, instead of an empty day or an endless skeleton.
+class CareLoadFailed extends StatelessWidget {
+  const CareLoadFailed({
+    required this.onRetry,
+    this.title,
+    this.body,
+    super.key,
+  });
+  final VoidCallback onRetry;
+
+  /// What did not load; "Chưa tải được nhật ký" by default.
+  final String? title;
+
+  /// What still works, when the screen has more than the failed part.
+  final String? body;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return MeNotice(
+      icon: ClIcons.alert,
+      tone: MeTone.error,
+      title: title ?? l10n.careLoadFailed,
+      body: body,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ClButton(
+          label: l10n.rhRetry,
+          style: ClButtonStyle.plain,
+          onPressed: onRetry,
+        ),
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import {
   acceptInvite,
   chooseWriteSeats,
   createInvite,
+  previewInvite,
   updateMember,
   type Caller,
 } from '../functions/src/family.js';
@@ -154,6 +155,32 @@ describe('write seats (Q-097)', () => {
     ).toBe('seats-full');
   });
 
+  it('pending writer invites show on the plan and in the joiner preview (D-127 Q3)', async () => {
+    await v2(true);
+    await invite('coParent');
+    const nanny = await invite('caregiver');
+    const plan = await familyPlanAnswer(db, 'mom', { babyId }, now, 'test');
+    expect(plan.seats).toMatchObject({ used: 1, limit: 3, pendingInvites: 2 });
+    // Its own seat is held for it: the invitee can still join.
+    expect(await previewInvite(db, 'nanny', null, { code: nanny.code }, now)).toMatchObject({
+      status: 'valid',
+      seatsFull: false,
+    });
+    // The manager turns a relative into a writer: the nanny's seat is gone.
+    const relative = await invite('relative');
+    await join('grandpa', relative.code);
+    await db.doc(`babies/${babyId}/members/grandpa`).update({ role: 'caregiver' });
+    expect(await previewInvite(db, 'nanny', null, { code: nanny.code }, now)).toMatchObject({
+      seatsFull: true,
+    });
+    expect(await reasonOf(join('nanny', nanny.code))).toBe('seats-full');
+    // A relative invite never reports a full family.
+    const other = await invite('relative');
+    expect(await previewInvite(db, 'aunt', null, { code: other.code }, now)).toMatchObject({
+      seatsFull: false,
+    });
+  });
+
   it('the seat count comes from the plan config (portal-editable)', async () => {
     await v2(true);
     const config = structuredClone(defaultEntitlementsConfig);
@@ -241,7 +268,7 @@ describe('Gói của gia đình and Lịch sử sử dụng (PV40B, PV41, PV45)'
       isManager: true,
       cycle: null,
       lumi: { limit: 30, used: 0, resetsAt: null },
-      video: { limit: 2, used: 0, resetsAt: null },
+      video: { unlimited: true, used: 0, resetsAt: null },
       storage: { limitBytes: 1 * GB, addOnGb: 0 },
       seats: { used: 1, limit: 3, suspended: [], overLimit: false },
       premiumTemplates: false,
@@ -327,21 +354,21 @@ describe('portal: versions, two approvers, adjustments (PT02, PT03)', () => {
     const big = await adjustUsage(
       db,
       owner,
-      { code, feature: 'video', amount: 60, reason },
+      { code, feature: 'lumi', amount: 60, reason },
       now,
       'test',
     );
     expect(big.status).toBe('pending');
     let plan = await familyPlanAnswer(db, 'mom', { babyId }, now, 'test');
-    expect(plan).toMatchObject({ lumi: { limit: 40 }, video: { limit: 2 } });
+    expect(plan).toMatchObject({ lumi: { limit: 40 }, video: { unlimited: true } });
     await decideProposal(db, owner2, { id: big.id, approve: true, reason }, now, 'test');
     plan = await familyPlanAnswer(db, 'mom', { babyId }, now, 'test');
-    expect(plan.video.limit).toBe(62);
+    expect(plan.lumi.limit).toBe(100);
     const history = await familyUsageHistory(db, 'mom', { babyId, kind: 'grants' }, now);
     expect(history.rows.map((r) => [r.task, r.amount])).toEqual(
       expect.arrayContaining([
         ['lumi.grant', 10],
-        ['video.grant', 60],
+        ['lumi.grant', 60],
       ]),
     );
   });

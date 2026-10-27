@@ -50,8 +50,29 @@ void main() {
       expect(storageStateOf(7 * _gb, 10 * _gb), StorageState.ok);
       expect(storageStateOf(8 * _gb, 10 * _gb), StorageState.nearFull);
       expect(storageStateOf(10 * _gb, 10 * _gb), StorageState.full);
-      expect(storageStateOf(1, 0), StorageState.full);
+      expect(storageStateOf(1, 0), StorageState.unknown);
+      expect(storageStateOf(1, null), StorageState.unknown);
     });
+
+    test(
+      'an answer without a limit is unknown; reserved space counts (ST-1, D-127 Q2)',
+      () {
+        final unknown = FamilyStorage.fromJson({'usedBytes': 5});
+        expect(unknown.quota, isNull);
+        expect(unknown.state, StorageState.unknown);
+        expect(unknown.availableBytes, isNull);
+        final s = FamilyStorage.fromJson({
+          'quotaBytes': 100,
+          'usedBytes': 79,
+          'reservedBytes': 2,
+          'reservedItems': 1,
+        });
+        expect(s.state, StorageState.nearFull);
+        expect(s.percent, 81);
+        expect(s.availableBytes, 19);
+        expect(storagePercent(999, 1000), 99);
+      },
+    );
 
     test('sizes read like the design ("3,2 GB", "0,8 GB", "40 MB")', () {
       expect(formatBytes((3.2 * _gb).round(), 'vi'), '3,2 GB');

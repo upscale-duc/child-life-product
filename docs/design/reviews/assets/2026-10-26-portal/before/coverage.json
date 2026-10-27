@@ -1,0 +1,575 @@
+[
+  {
+    "route": "/analytics",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "overview_vi_light_1440",
+    "errors": [
+      "MissingTranslationError: [@formatjs/intl Error MISSING_TRANSLATION] Missing message: \"funnel.signup\" for locale \"vi\", using id as fallback.\n\n    at new MissingTranslationError (http://127.0.0.1:5181/node_modules/.vite/deps/react-intl.js?v=7d4e6780:2907:3)\n    at formatMessage (http://127.0.0.1:5181/node_modules/.vite/deps/react-intl.js?v=7d4e6780:3078:98)\n    at formatMessage$1 (http://127.0.0.1:5"
+    ],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nTổng quan\nTìm nhanh\n⌘K\n● Dev\nTổng quan\n7 ngày\n30 ngày\n90 ngày\nXuất CSV\n\nGia đình hoạt động\n\n128\n\n↑ 16% so với 30 ngày trước\n\nTài khoản mới\n\n24\n\n↑ 20% so với 30 ngày trước\n\nHoàn thành thiết lập\n\n78%\n\nTài khoản mới đã có hồ sơ bé\n\nGia đình có từ 2 người chăm\n\n46%\n\nTrong các gia đình đang hoạt động\n\nGia đình hoạt động mỗi ngày\n\nCó ít nhất 1 lần ghi hoặc 1 kỷ niệm\n\n1/10\n2/10\n4/10\n6/10\n7/10\n8/10\n10/10\n12/10\n14/10\n0\n30\n60\n90\n120\nCần xử lý\n1\nChú ý\n2 gia đình xin mở rộng dung lượng, chờ duyệt\nMở rộng dung lượng\n›\nHành trình bắt đầu dùng\n\nTheo tài khoản mới · 30 ngày\n\nfunnel.signup\n124 · 100%\nTạo hồ sơ bé\n96 · 77%\nGhi việc đầu tiên\n82 · 66%\nLượt ghi chăm sóc mỗi tuần\n\nChỉ đếm số lần ghi\n\nTã\nBú\nNgủ\nTìm nhanh\n\nTìm trang hoặc thao tác…\n\n0"
+  },
+  {
+    "route": "/analytics/acquisition",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-acquisition_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/analytics/memories",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-memories_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/analytics/engagement",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-engagement_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/analytics/features",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-features_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/analytics/cost",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-cost_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n2026-10-01 – 2026-10-20 · Asia/Ho_Chi_Minh · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã đối soát theo nguồn hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/analytics/personalization",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "analytics-personalization_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPhân tích\nTìm nhanh\n⌘K\n● Dev\nPhân tích sản phẩm\nTổng quan\nThu hút & quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nHành trình gợi ý theo ngày\n\nChưa có dữ liệu đo lường.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/families",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "families_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nGia đình\nTìm nhanh\n⌘K\n● Dev\nGia đình\n\nTổng gia đình\n\n3.050\n\nHoạt động 7 ngày\n\n2.310\n\n76%\n\nCó từ 2 người chăm\n\n41%\n\nCùng nuôi hoặc người chăm sóc\n\nGần đầy dung lượng\n\n86\n\nTrên 80% gói\n\nTất cả · 3050\nHoạt động · 2310\nÍt hoạt động · 740\nNền tảng: Tất cả\nDung lượng: Tất cả\nGia đình\tThành viên\tBé\tDung lượng\tNền tảng\tHoạt động gần nhất\tTrạng thái\nF-7Q2K\nChủ: n***@gmail.com\t5 người\n2 người chăm\t2\t\n8,2 GB / 10 GB\tAndroid · iOS\t11/10\tHoạt động\nF-3M8D\nChủ: h***@gmail.com\t4 người\n1 lời mời chờ\t1\t\n19,4 GB / 20 GB\tiOS\t29/9\tÍt hoạt động\nTrang 1 · 3050 gia đình\n‹ Trước\nSau ›\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/support",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "support_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nHỗ trợ\nTìm nhanh\n⌘K\n● Dev\nHỗ trợ\nTất cả · 0\nChưa nhận · 0\nĐang xử lý · 0\nChờ người dùng · 0\nĐã đóng\nLoại: Tất cả\n\nKhông có yêu cầu nào ở đây.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/storage",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "storage_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nMở rộng dung lượng\nTìm nhanh\n⌘K\n● Dev\nMở rộng dung lượng\nChờ duyệt · 0\nĐã duyệt\nTừ chối\n\nChờ duyệt\n\n0\n\nKhông có yêu cầu chờ\n\nGia đình dùng trên 80%\n\n0\n\nĐã nhận nhắc trong app\n\nĐã mở rộng tháng này\n\n0\n\n+ 0 GB tổng cộng\n\nThời gian duyệt (trung vị)\n\n—\n\nMục tiêu dưới 24 giờ\n\nYêu cầu chờ duyệt\nMã gia đình đã ẩn danh\nKhông có yêu cầu nào đang chờ.\nHướng dẫn duyệt\n+5 GB\nGia đình 1 bé, dùng ổn định\n+10 GB\nCó từ 2 bé hoặc nhiều video\nTuỳ chỉnh\nTrên 20 GB cần người có quyền Duyệt (Admin, Owner)\n\nDuyệt chỉ thay đổi dung lượng. Không mở ảnh, video hay ghi chép của gia đình.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/jobs",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "jobs_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nYêu cầu dữ liệu\nTìm nhanh\n⌘K\n● Dev\nYêu cầu dữ liệu\n\nĐang chạy\n\n0\n\n0 xuất · 0 xoá\n\nThất bại trong 24 giờ\n\n0\n\nKhông có lỗi\n\nThời gian xuất (trung vị)\n\n—\n\n30 ngày qua\n\nXoá xong\n\n—\n\n0 / 0 yêu cầu\n\nTất cả\nXuất dữ liệu\nXoá dữ liệu\nVideo kỷ niệm\nLink tải tệp xuất tự hết hạn sau 24 giờ\nKhông có yêu cầu nào trong 30 ngày qua.\n\nNhân viên không tải được tệp xuất của người dùng, chỉ xem trạng thái và chạy lại.\n\nChỉ chủ tài khoản xuất được toàn bộ ảnh, video. Quyền được kiểm tra lại ngay trước khi tải.\n\nTrong lúc xoá, gia đình tạm không ghi được. Không hứa xoá tức thì, không hứa khôi phục.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/notifications",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/templates",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-templates_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/catalog",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-catalog_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/delivery",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-delivery_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/journeys",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-journeys_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/timeline",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-timeline_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/analytics",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-analytics_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/notifications/settings",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "notifications-settings_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'length')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/first-aid",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "first-aid_vi_light_1440",
+    "errors": [
+      "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+      "Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+    ],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nSơ cứu\nTìm nhanh\n⌘K\n● Dev\nSơ cứu\nĐang dùng\nCách xuất bản\nTiếp tục sửa bản nháp\nChờ duyệt\nBản đang soạn\n\nSoạn: Minh Phạm · cập nhật 09:00 11/10/2026 · 2 tình huống\n\n“Thêm biến thể từ 1 tuổi”\n\nBS. Hà trả lại: “Thiếu nguồn”\n\nĐang chờ một người khác có quyền Duyệt. Người soạn không tự duyệt được.\n\nXem bản đang dùng\nDuyệt & xuất bản\nTrả lại\nTình huống\n2\nCài đặt chung\nThư viện ảnh\n5\nMọi nhóm\nMọi đánh dấu\nMã\tTình huống\tNhóm\tĐánh dấu\tNội dung\nTH02\t\nHóc dị vật\nBé ho sặc, khó thở\n\tKhẩn cấp\t\nKhẩn cấp\n\t2 biến thể · 2 bước\nTH21\t\nSốt\nNhiệt độ từ 38 °C\n\tSức khoẻ\t\nTheo dõi\n\t1 biến thể · 1 bước\nLịch sử phiên bản\n2 phiên bản\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/rhythm",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "rhythm_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nNhịp lớn lên\nTìm nhanh\n⌘K\n● Dev\nNhịp lớn lên\nMô hình tham khảo\nHoạt động & thẻ theo tuổi\nQuy tắc\nĐang phát hành\nTiếp tục sửa bản nháp\nBản nháp · chờ duyệt\nPhiên bản mô hình đang soạn\nSoạn: Minh Phạm · cập nhật 09:00 11/10/2026 · 3 giai đoạn\n“Thêm giai đoạn 3”\nXem bản đang phát hành\nTrả lại\nDuyệt & xuất bản\nBS. Hà trả lại: “Thiếu nguồn”\nCó 2 chỗ cần viết lại:\nGiai đoạn 3 · Dấu hiệu (VI): “Bé chắc chắn sẽ quấy khóc” · có “chắc chắn”\nGiai đoạn 3 · Dấu hiệu (EN): “Baby will definitely fuss” · có “definitely”\nGiai đoạn · 3/30\nĐang xem bản nháp\nDự sinh mẫu\nKhông được viết\nCách app dùng mô hình\n#\tGiai đoạn\tTính từ ngày dự sinh\tCửa sổ (dự sinh mẫu)\tCần xem\n1\t\nGiai đoạn 1 (Wonder Weeks)\n2 dấu hiệu · 1 hoạt động · có thông báo\n\t+21 → +30 ngày\t16/11/2026 – 25/11/2026\t\n\n2\t\nGiai đoạn 2\n1 dấu hiệu · 0 hoạt động\n\t+49 → +60 ngày\t14/12/2026 – 25/12/2026\t\n\n3\t\nGiai đoạn 3\n1 dấu hiệu · 0 hoạt động\n\t+67 → +77 ngày\t01/01/2027 – 11/01/2027\t\n2 cụm từ không được viết\nMô hình · Wonder Weeks\n1 nguồn · Chưa duyệt chuyên môn\nDanh sách phiên bản mô hình\n3 phiên bản\nCông tắc khẩn cấp\n0/3 đang bật\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/keepsakes",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "keepsakes_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nMẫu kỷ niệm\nTìm nhanh\n⌘K\n● Dev\nMẫu kỷ niệm\nChưa xuất bản\nChưa có bộ mẫu nào. Bắt đầu từ bộ mẫu đầu tiên (4 thiệp theo Figma MM10, 4 video) rồi chỉnh sửa, tải ảnh lên và gửi duyệt.\nBắt đầu từ bộ mẫu đầu tiên\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/print-studio",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "print-studio_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nPrint Studio\nTìm nhanh\n⌘K\n● Dev\nĐơn in & Print Studio\nTải lại\n\nKhách gửi đơn, Child Life liên hệ xác nhận rồi xử lý in và giao hàng thủ công. Chưa thu tiền trong ứng dụng.\n\nKhông thực hiện được. Tải lại để kiểm tra trạng thái trước khi thử lại.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/articles",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "articles_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nThư viện chăm bé\nTìm nhanh\n⌘K\n● Dev\nThư viện chăm bé\nBài viết mới\nĐang trên app\n9\nChờ duyệt\n3\n1 đã duyệt, chờ xuất bản\nNháp\n4\nCần rà soát lại\n1\nQuá 12 tháng từ lần duyệt\nChủ đề: Tất cả\nĐộ tuổi: Tất cả\nTrạng thái: Tất cả\nBộ lọc khác\n\nChưa có bài viết. Tạo bài mới hoặc nhập bản nháp mẫu.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/stages",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "stages_vi_light_1440",
+    "errors": [
+      "Cannot read properties of undefined (reading 'filter')"
+    ],
+    "overflow": {
+      "page": 0
+    },
+    "text": ""
+  },
+  {
+    "route": "/milestones",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "milestones_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nMốc phát triển\nTìm nhanh\n⌘K\n● Dev\nMốc phát triển\nMốc mới\nĐang trên app\n9\nChờ duyệt\n3\n1 đã duyệt, chờ xuất bản\nNháp\n4\nCần rà soát lại\n1\nQuá 12 tháng từ lần duyệt\nNhóm: Tất cả\nTrạng thái: Tất cả\n\nChưa có mốc. Tạo mốc mới hoặc nhập bản nháp mẫu.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/nutrition",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "nutrition_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nDinh dưỡng\nTìm nhanh\n⌘K\n● Dev\nDinh dưỡng\nThêm giai đoạn\nGiai đoạn · 3\nVi chất · 0\nQuy tắc gợi ý · 3\nĐang trên app\n4\nChờ duyệt\n1\nNháp\n2\nCần rà soát lại\n0\nQuá 12 tháng từ lần duyệt\nĐộ phủ 0–36 tháng\n16 / 37 tháng có giai đoạn\nTheo tháng\nGiai đoạn\n0–1 · Những ngày đầu\n6–8 · Bắt đầu ăn dặm\n12–23 · Ăn cùng gia đình\n+ 1–5\n+ 9–11\n+ 24–36\nTháng tuổi\n0\n3\n6\n9\n12\n15\n18\n21\n24\n27\n30\n33\n36\nĐã xuất bản · 3 tháng\nChờ duyệt · 12 tháng\nNháp · 1 tháng\nChưa có · 1–5 tháng, 9–11 tháng, 24–36 tháng\n\nTrên app chưa có giai đoạn cho bé 0–5 tháng, 9–36 tháng: ô Dinh dưỡng hiện “Sớm ra mắt”.\n\nTrạng thái: Tất cả\nĐộ tuổi\n\tGiai đoạn\n\tSữa tham khảo\tĂn dặm\tVi chất chú ý\tDuyệt bởi\tTrạng thái\n\tCập nhật\n\n0–1 tháng\t\nNhững ngày đầu\n\t\n30–90 ml/cữ\n8–12 cữ\n\t—\t\nnut_d\n\t\n—\nDự kiến: BS. Mai Hồ\n\t\nNháp\n\t15/10/2026\n6–8 tháng\t\nBắt đầu ăn dặm\n\t\n180–240 ml/cữ\n600–900 ml/ngày\n\t2–3 bữa\t\nnut_iron\nnut_zinc\n\t\nBS. Mai Hồ\n08/2026\n\t\nĐã xuất bản\n\t15/10/2026\n12–23 tháng\t\nĂn cùng gia đình\n\t\n400–500 ml/ngày\n\t3 bữa + 2 phụ\t—\t\n—\n\t\nChờ duyệt\n\t15/10/2026\nLượng sữa là khoảng tham khảo cho bé bú bình, không phải mục tiêu. App luôn kèm câu “mỗi bé mỗi khác” và không đưa liều thuốc.\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/solids",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "solids_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nĂn dặm\nTìm nhanh\n⌘K\n● Dev\nĂn dặm\nThêm thực phẩm\nThực phẩm · 0\nCông thức · 0\nHướng dẫn · 0\nĐang trên app\n9\nChờ duyệt\n3\n1 đã duyệt, chờ xuất bản\nNháp\n4\nCần rà soát lại\n1\nQuá 12 tháng từ lần duyệt\nĐộ phủ danh mục\n0 món · 0/9 nhóm dị ứng có món · 0 món giàu sắt\nRau củ\n0\nTrái cây\n0\nTinh bột\n0\nĐạm động vật\n0\nĐậu và hạt\n0\nSữa và chế phẩm\n0\nChất béo\n0\n0/9 nhóm dị ứng có món\nTrứng\nĐậu phộng\nSữa bò\nLúa mì\nĐậu nành\nCá\nHải sản có vỏ\nVừng (mè)\nCác loại hạt\nChưa có món: Trứng, Đậu phộng, Sữa bò, Lúa mì, Đậu nành, Cá, Hải sản có vỏ, Vừng (mè), Các loại hạt. Gợi ý giới thiệu dị ứng sẽ bỏ qua các nhóm này.\n0 món giàu sắt\n0 / 0 món đang trên app\nTất cả nhóm\nDị ứng: tất cả\nSắt: tất cả\nGợi ý: tất cả\nTrạng thái: Tất cả\n\nChưa có thực phẩm nào. Thêm thực phẩm hoặc nhập bản nháp mẫu.\n\nTuổi tối thiểu giữ món khỏi công thức và gợi ý cho bé nhỏ hơn (mật ong, sữa bò dạng uống: 12 tháng). App không gọi một món là “dị ứng” của bé, chỉ ghi “có dấu hiệu sau khi ăn”.\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/content-review",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "content-review_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nDuyệt nội dung\nTìm nhanh\n⌘K\n● Dev\nDuyệt nội dung\nQuy trình duyệt\nChờ duyệt\n0\nKiểm tra và duyệt\nĐã duyệt\n0\nChờ xuất bản lên app\nCần rà soát lại\n0\nQuá 12 tháng từ lần duyệt\nChờ duyệt\n0\nMọi loại\n\nKhông có nội dung chờ duyệt.\n\nChọn một mục để xem và duyệt.\n\nChọn một mục bên trái để xem nội dung, nguồn và duyệt.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/reference",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "reference_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nNỘI DUNG/\nBảng tham chiếu\nTìm nhanh\n⌘K\n● Dev\nBảng tham chiếu\nCân nặng theo tuổi (WHO)\nChiều dài theo tuổi (WHO)\nLượng sữa chọn nhanh\nLịch tiêm chủng\nChưa tải được. Kiểm tra mạng rồi thử lại.\nThử lại\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/features",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "features_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm nhanh\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nGia đình có Premium\n12\n9 trả phí · 3 được cấp\nĐang bật\n9\nĐang tắt\n20\nBeta\n1\nTất cả 29\nMiễn phí 1\nPremium 4\nBeta 1\nKỹ thuật 23\nTính năng\tGói\tAi được dùng\tBật\t\nChi tiết\n\nKỷ niệm · 4\n\nMẫu kỷ niệm Premium\n\t\nPremium\n\tNgười có Premium\n12 gia đình Premium\n\t—\t\n\n\nVideo kỷ niệm\nGiữ quyền đến hết 20/11/2026\n\t\nPremium\n\t\nNgười có Premium\nThử nội bộ\n12 gia đình Premium\n\t\n\t\n\n\nTự lưu kỷ niệm\n\t\nBeta\n\t\nThử nội bộ\n2 gia đình trong beta\n\t\nĐang tắt\n\t\n\n\nChia sẻ thiệp ra ngoài\n\tKỹ thuật\t\nMọi gia đình\n\t\n\t\n\nCá nhân hoá · 4\n\nNhịp lớn lên\n\t\nMiễn phí\n\t\nMọi gia đình\n\t\n\t\n\n\nGợi ý cá nhân hoá & Nhịp nâng cao\n\t\nPremium\n\t\nNgười có Premium\nTheo % · 25%\n12 gia đình Premium\n· Bật riêng 1 · tắt riêng 0\n\t\n\t\n\n\nTrải nghiệm theo tuổi\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\n\nThanh điều hướng mới\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\nTrợ lý AI · 3\n\nTrợ lý (chat, ảnh, hướng dẫn chăm sóc)\n+ 3 công tắc thành phần\n\t\nPremium\n+ dùng thử bằng credit\n\t\nNgười có Premium\nMột số gia đình · 1\n12 gia đình Premium\n\t\n\t\n\n\nTrợ lý · gọi AI\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\n\nTrợ lý · lưu vào module\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\nTải lên · 2\n\nTải ảnh, video mới\n\tKỹ thuật\t\nMọi gia đình\n\t\n\t\n\n\nTải video\n\tKỹ thuật\t\nMọi gia đình\n\t\n\t\n\nNhắc nhở & gợi ý · 11\n\nGợi ý thông minh\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nPush gợi ý chủ động\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nẢnh chờ chọn lưu\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nVideo theo mốc kỷ niệm\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nMốc sáu tháng\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nKỷ niệm tuần\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý hoạt động gia đình\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý Lumi\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGiảm tần suất gợi ý\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGom gợi ý\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nThử nghiệm engagement\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nGia đình & tiện ích · 4\n\nGửi lời mời mới\n\tKỹ thuật\t\nMọi gia đình\n\t\n\t\n\n\nWidget màn hình khoá\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nNight care tự bật\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\n\nGói Premium v2\n\tKỹ thuật\t\nThử nội bộ\n\t\nĐang tắt\n\t\n\nĐo lường sản phẩm · 1\n\nĐo lường sản phẩm\n\tKỹ thuật\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nMua gói trong app ở\nGói Premium\n\nGiới hạn hiện tại\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/features/families",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "features-families_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm nhanh\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nTìm\n\nTìm một gia đình để xem từng tính năng có hay không và vì sao, bật riêng, thêm vào beta hoặc bật toàn bộ Premium.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/features/plan",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "features-plan_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm nhanh\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nCấu hình\nGói & hạn mức (v2)\nChính sách AI\nMôi trường quyền: thử nghiệm (test)\nMua gói trong app\nMua Child Life Premium\nNút mua gói trong app (App Store / Google Play)\n\t—\t—\t\nVùng mở Premium\nNgoài các khu vực mở, Premium trả phí và tính năng Premium theo phát hành không mở. Premium được cấp (Bật toàn bộ Premium) không xét quốc gia.\nViệt Nam · VN\n×\nThêm\nVideo kỷ niệm\nVideo kỷ niệm · Miễn phí\nTính theo\nmỗi tháng lịch\nVideo kỷ niệm · Premium\nTính theo\nmỗi kỳ thanh toán\nCredit trợ lý AI · một quỹ chung cho trò chuyện và tóm tắt AI\nMỗi tóm tắt AI tạo mới dùng 1 credit; bộ nhớ đệm, tóm tắt theo mẫu và hỗ trợ sức khoẻ không tính. Hạn mức Premium áp dụng khi gia đình có quyền “Hạn mức trợ lý Premium” (trả phí, khuyến mãi hoặc beta).\nCredit · Miễn phí (mỗi tháng lịch)\nCredit · Premium (kỳ thanh toán; beta: mỗi tháng)\nCredit cho một tin nhắn chữ\nCredit cho một tác vụ ảnh\nPhiên bản chính sách\npolicy-v1\nNguyên tắc\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/features/history",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "features-history_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm nhanh\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nThay đổi gần đây\n\nĐổi gói “Video kỷ niệm” sang Premium\n\nLinh · 21/10\n\nBật riêng “Trợ lý (chat, ảnh, hướng dẫn chăm sóc)” cho F-7Q2K\n\nLinh · 21/10\n\nBật toàn bộ Premium cho F-7Q2K\n\nLinh · 21/10\n\nNhật ký 30 ngày\nTính năng\nPremium\nKhông có thao tác nào trong khoảng này.\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/system",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "system_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nHệ thống & AI\nTìm nhanh\n⌘K\n● Dev\nHệ thống & AI\nLưu trữ\nAI gợi ý câu chuyện\nTrợ lý: mức dùng\nTrợ lý: tra cứu tác vụ\nẢnh, video đã lưu\n120 GB\nGia đình dùng trên 80%\n0\nĐã nhắc trong app\nVideo chờ xử lý\n3\nNgưỡng 20 video\nTải lên lỗi\n0,4%\nTrong 24 giờ qua\nDung lượng mỗi gia đình\nHạn mức 10 GB · 100 gia đình\nDưới 1 GB\n50 · 50%\n1 – 3 GB\n30 · 30%\n3 – 6 GB\n12 · 12%\n6 – 8 GB\n5 · 5%\n8 – 10 GB\n2 · 2%\nĐã mở rộng\n1 · 1%\nHàng đợi video\nVideo chờ xử lý mỗi giờ · 24 giờ qua\nDưới ngưỡng\n15 giờ\n18 giờ\n22 giờ\n02 giờ\n06 giờ\n10 giờ\n14 giờ\n0\n1\n2\n3\n4\nChuyển mã video\nBản phát trực tuyến (display.mp4) · việc tạo trong 24 giờ qua\nThử xử lý lại video\nChuyển mã video cũ\n0\nChờ\n0\nĐang chạy\n12\nXong\n0\nLỗi\n1\nBỏ qua\n0\nMất dấu\n\nTrung vị 42 giây mỗi video\n\nViệc lỗi, bỏ qua hoặc mất dấu gần đây\n\nKhông có việc nào lỗi trong 24 giờ qua.\n\nGần hết dung lượng\nGia đình dùng trên 80% hạn mức\n\nChưa gia đình nào dùng trên 80%.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…\n\n0"
+  },
+  {
+    "route": "/system/ai",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "system-ai_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nHệ thống & AI\nTìm nhanh\n⌘K\n● Dev\nHệ thống & AI\nLưu trữ\nAI gợi ý câu chuyện\nTrợ lý: mức dùng\nTrợ lý: tra cứu tác vụ\nNgân sách AI · Tháng 10\nĐang bật cho 25% gia đình\n\n500.000 đ\n/ 2 triệu đ\n25%\n\nNgày 26/31 trong tháng\nCảnh báo ở 80% · tới 100%, AI tạm dừng gợi ý mới\nChi phí mỗi bản nháp\n1.200 đ\nBản nháp tạo · 7 ngày\n42\nĐược lưu thành câu chuyện\n60%\nPhần lớn sau khi ba mẹ sửa\nBáo nội dung chưa phù hợp\n0\nChưa có cách báo trong app\nBản nháp mỗi ngày\n14 ngày qua\n3/10\n5/10\n7/10\n9/10\n11/10\n13/10\n15/10\n0\n1\n2\n3\n4\nBa mẹ làm gì với bản nháp\n7 ngày qua\nSửa rồi lưu\n48%\nLưu ngay\n12%\nĐể đó\n40%\nGiữ an toàn cho dữ liệu của bé\n4 quy tắc\nTìm nhanh\n\nTìm trang hoặc thao tác…\n\n0"
+  },
+  {
+    "route": "/system/assistant",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "system-assistant_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nHệ thống & AI\nTìm nhanh\n⌘K\n● Dev\nHệ thống & AI\nLưu trữ\nAI gợi ý câu chuyện\nTrợ lý: mức dùng\nTrợ lý: tra cứu tác vụ\nNgân sách AI · Tháng 10\n\n250.000 đ\n/ 15 triệu đ\n2%\n\nNgày 26/31 trong tháng\nTrợ lý, 30 ngày: 38 lần gọi AI · ước tính 15.000 đ\nTác vụ 30 ngày\n40\n2 hỗ trợ sức khoẻ · 2 bị chặn\nTác vụ lỗi\n4\nMã lỗi nhiều nhất: OCR_UNREADABLE\nHộ hết credit\n2\nĐã dùng hoặc giữ hết hạn mức kỳ này\nCredit đã tính\n47\n9 đã trả lại · 1 đang giữ\nMã lỗi\nTác vụ lỗi hoặc bị chặn, theo mã\nOCR_UNREADABLE\n3\nUSAGE_EXHAUSTED\n2\nCredit theo ngày\nĐã tính\nĐã trả lại\n18/9\n21/9\n25/9\n29/9\n2/10\n5/10\n8/10\n11/10\n15/10\n0\n3\n6\n9\n12\nQuỹ credit theo gói\nSửa ở Gói Premium\nGói\tĐã tính\tĐã trả lại\tĐang giữ\tHộ dùng\tHết credit\nMiễn phí\t12\n9 chat · 3 tóm tắt\n\t3\t1\t4\t2\nPremium\t30\n30 chat · 0 tóm tắt\n\t6\t0\t2\t0\nBeta\t5\n4 chat · 1 tóm tắt\n\t0\t0\t1\t0\nĐang áp dụng\nMiễn phí mỗi tháng\n20 credit\nPremium mỗi kỳ (beta: mỗi tháng)\n200 credit\nTác vụ chữ\n1 credit\nTác vụ ảnh\n3 credit\nTóm tắt AI\n1 credit\nTác vụ theo trạng thái và kết quả\n34 chữ · 6 ảnh · 2 hỗ trợ sức khoẻ\nMô hình\n38 lần gọi · p95 12,5 giây\n\nChỉ số tổng hợp 30 ngày: không có tin nhắn, ảnh, nội dung bản nháp hay tên; gia đình hiện bằng mã.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…\n\n0"
+  },
+  {
+    "route": "/system/tasks",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "system-tasks_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nHệ thống & AI\nTìm nhanh\n⌘K\n● Dev\nHệ thống & AI\nLưu trữ\nAI gợi ý câu chuyện\nTrợ lý: mức dùng\nTrợ lý: tra cứu tác vụ\nTra cứu một tác vụ\nDán mã tác vụ (tk_…) gia đình gửi kèm khi báo lỗi.\nMã tác vụ\nTra cứu\n\nChỉ trạng thái, mã và thời điểm: không có tin nhắn, nội dung bản nháp, câu trả lời hỏi lại, dấu hiệu sức khoẻ hay ảnh.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/app-update",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "app-update_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nCập nhật ứng dụng\nTìm nhanh\n⌘K\n● Dev\nCập nhật ứng dụng\n\nĐANG ÁP DỤNG\n\nBản\nau_20261012_01\n· xuất bản 10:00:00 12/10/2026\niOS 1.0.5 → 1.2.0\nAndroid —\nCó gì mới 1.2.0\n\nLịch sử (1)\nPhiên bản\nCó gì mới\n1/4\nTrang giới thiệu\n1/5\nPhiên bản trên store\n\nApp đọc ở lần mở tiếp theo. iOS và Android tính riêng.\n\nBản mới nhất trên store\nBản thấp nhất được dùng\nLink cập nhật\niOS · App Store\nBản mới nhất trên store\nBản thấp nhất được dùng\nLink cập nhật\nAndroid · Google Play\nBản mới nhất trên store\nBản thấp nhất được dùng\nLink cập nhật\nBản mới nhất trên store\nMáy thấp hơn bản này thấy “Child Life có bản mới” (có thể để sau).\nBản thấp nhất được dùng\nMáy thấp hơn bản này phải cập nhật mới dùng tiếp. Để trống = không chặn.\nLink cập nhật\nTrang App Store của app (apps.apple.com), hoặc TestFlight khi thử nghiệm. Trang Google Play của app (play.google.com), hoặc Firebase App Distribution khi thử nghiệm.\nNhắc cập nhật\n\nBấm “Để sau” thì bao lâu nữa mới nhắc lại.\n\nNhắc lại sau (ngày)\nXem trước\nCó bản mới\nVI\nEN\niOS\nAndroid\n\nThứ Năm, 8 tháng 10\n\nHôm nay\nMới · 1.2.0\nChild Life có bản mới\nSơ cứu trẻ em\n25 tình huống, đọc to từng bước\nCập nhật\nĐể sau\n\nHiện trên Hôm nay cho máy dưới “bản mới nhất”. Các dòng nổi bật chỉ hiện khi “Có gì mới” là cho đúng bản này.\n\nChưa có thay đổi\n\nHoàn tác\nXuất bản…\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/staff",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "staff_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nNhân sự & phân quyền\nTìm nhanh\n⌘K\n● Dev\nNhân sự & phân quyền\n+ Mời thành viên\n\nThành viên\n\n2\n\n9 vai trò\n\nQuyền nhạy cảm\n\n1\n\nCó Duyệt hoặc Toàn quyền ở chức năng vận hành, hệ thống\n\nLời mời đang chờ\n\n0\n\nHết hạn sau 7 ngày\n\nThành viên · 3\nVai trò · 9\nLời mời · 0\nVai trò: Tất cả\nThành viên\n\tVai trò\tPhạm vi\tThời hạn quyền\n\tGần nhất\n\tTrạng thái\n\t\n\nM\nMinh Phạm\nminh@childlife.vn\n\t\nOwner\n\tToàn bộ\tKhông giới hạn\t11/10\tHoạt động\t\n\n\nT\nThảo Lê\nthao@gmail.com\n\t\nHỗ trợ\n\tHỗ trợ, Phát triển · Sổ tay kiểm thử\t10/11/2026\t—\tTạm ngưng\t\n\n\nM\nMai Hồ\nmai@x.vn\n\t\nTrực đêm\n\tHỗ trợ, Phát triển · Sổ tay kiểm thử\tKhông giới hạn\t—\tHoạt động\t\n\nOwner, Admin và Kiểm thử là vai trò hệ thống, không sửa được. Chỉ Owner trao hoặc gỡ vai trò Owner, Admin; luôn còn ít nhất một Owner. Mọi thay đổi được ghi vào nhật ký.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/audit",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "audit_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nNhật ký thao tác\nTìm nhanh\n⌘K\n● Dev\nNhật ký thao tác\nXuất CSV\nTất cả\nHỗ trợ\nDung lượng\nDữ liệu\nTính năng\nGia đình\nNhân sự\nBảng tham chiếu\nNội dung\nPhân tích\nPremium\nThông báo\n7 ngày qua\nKhông có thao tác nào trong khoảng này.\n\nNhật ký không chứa nội dung của gia đình — chỉ mã, thao tác, trước và sau. Lưu tối thiểu 2 năm.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  },
+  {
+    "route": "/qa",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "qa_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nPHÁT TRIỂN/\nSổ tay kiểm thử\nTìm nhanh\n⌘K\n● Dev\nSổ tay kiểm thử\n+ Thêm ca\nLượt kiểm thử\n—\n1.0.3 (38) DEV · Dev\n+ Lượt kiểm thử mới\n\nChưa có lượt kiểm thử nào. Tạo lượt mới cho bản build cần kiểm thử để bắt đầu ghi kết quả.\n\nBắt đầu\nTất cả ca kiểm thử\n3\n\nPhân hệ\n\nChào mừng & đăng nhập\n1/1\nGhi chăm sóc\n0/1\nCổng vận hành\n1/1\nCa đã lưu trữ\n1\nSổ tay này để làm gì\n\nSổ tay giải thích mỗi phân hệ của Child Life làm gì trên từng bề mặt — app di động (Flutter, iOS + Android), website, trang xem câu chuyện được chia sẻ và cổng vận hành — và liệt kê các ca chính cần chạy trước khi một bản build lên production.\n\nKết quả được ghi theo từng lượt kiểm thử, nên mỗi bản build giữ lịch sử riêng. Dùng bình luận trên từng ca để ghi bằng chứng, các bước tái hiện và link ticket.\n\nSmoke và core\nSmoke — đường đi quan trọng nhất. Chạy TẤT CẢ ca smoke sau mỗi lần deploy lên một môi trường (khoảng 45–60 phút). Một ca smoke lỗi nghĩa là bản build chưa phát hành được: báo ngay.\nCore — các luồng chính (happy path) của từng phân hệ. Chạy trước khi đưa một bản lên production (nghiệm thu UAT).\nĐây chưa phải bộ hồi quy đầy đủ: thử thêm quanh mỗi ca (dữ liệu biên, vai trò khác, thiết bị khác) và ghi phát hiện vào bình luận.\nCách chạy một lượt\nTạo lượt mới cho bản build cần kiểm thử, ví dụ \"1.0.3 (38) DEV\", và chọn môi trường.\nMở từng ca, đăng nhập bằng tài khoản kiểm thử ghi trên ca, làm theo các bước và so với kết quả mong đợi. Nút ‹ › trên ca chuyển sang ca trước, ca sau.\nGhi kết quả ngay trên ca. Với Lỗi hoặc Bị chặn, thêm bình luận: thiết bị, phiên bản hệ điều hành, phiên bản app, link ảnh chụp hoặc video, mã ticket.\nLưu trữ lượt khi xong bản build. Lượt đã lưu trữ chỉ xem được; mở lại nếu cần ghi tiếp.\nÝ nghĩa trạng thái\nĐạt — đúng mọi kết quả mong đợi, trên mọi nền tảng ghi ở ca.\nLỗi — sai ít nhất một kết quả mong đợi. Luôn kèm bình luận.\nBị chặn — chưa chạy được vì lỗi khác, thiếu dữ liệu hoặc môi trường. Ghi rõ bị chặn bởi gì.\nBỏ qua — không áp dụng cho bản build này. Ghi lý do.\nTài khoản & thiết bị kiểm thử\n\nMỗi ca ghi tài khoản kiểm thử cần dùng. Chỉ dùng tài khoản kiểm thử riêng (ví dụ qa+owner@…) trên môi trường dev, không bao giờ dùng dữ liệu của gia đình thật.\n\nChủ hồ sơ — người tạo hồ sơ bé; toàn quyền và là người duy nhất xoá được bé.\nCùng nuôi — toàn quyền như ba mẹ: chăm sóc, hồ sơ, kỷ niệm, câu chuyện, mời người.\nNgười chăm sóc — ghi và xem chăm sóc của bé được giao; không thấy Kỷ niệm, không mời người.\nNgười thân — chỉ xem kỷ niệm, album và câu chuyện được chia sẻ, cộng quyền xem thêm nếu được chọn.\nDanh tính tạm và khách — người nhận lời mời chọn \"Vào ngay\" (chưa có tài khoản), hoặc người mở website, link câu chuyện mà không đăng nhập.\nNhân viên — tài khoản portal được mời trong \"Nhân sự & phân quyền\" (Owner đầu tiên tạo bằng create-staff.mjs), với vai trò Owner, Admin, Vận hành, Hỗ trợ, Kỹ sư, Phân tích, Chuyên gia hoặc Kiểm thử (Kiểm thử chỉ vào sổ tay này).\n\nCa có app di động phải đạt trên cả iOS và Android, ở cả Light và Night care. Ghi thiết bị và phiên bản hệ điều hành vào bình luận khi có lỗi.\n\nBáo lỗi\n\nBình luận tốt trả lời: bạn đã làm gì, điều gì xảy ra, bạn mong đợi gì — kèm thiết bị/trình duyệt, phiên bản app, link ảnh chụp hoặc video và mã ticket. Địa chỉ trang trỏ thẳng tới ca đang mở, dán vào ticket được ngay.\n\nKhông dán ảnh, tên, ngày sinh hay ghi chép của trẻ thật vào bình luận hoặc ticket.\n\nTìm nhanh\n\nTìm trang hoặc thao tác…"
+  }
+]

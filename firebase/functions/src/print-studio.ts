@@ -8,6 +8,7 @@ import {
   printCatalogSchema,
   printDesignSchema,
   printExportRequestSchema,
+  printExportJobRequestSchema,
   printOrderRequestSchema,
   printOrderStatuses,
   printTotals,
@@ -178,13 +179,162 @@ async function renderExport(
     format: ext,
   };
 }
+const EXPORT_KEEP_MS = 86_400_000;
+const EXPORT_LEASE_MS = 6 * 60_000;
+const exportJobRef = (db: Firestore, babyId: string, jobId: string) =>
+  db.doc(`babies/${babyId}/printExportJobs/${jobId}`);
+
+/**
+ * PR-1 (D-127 Q8): starts the print file as a job and returns at once. The draft remembers it
+ * (any later save of the design forgets it), so leaving and coming back shows its progress.
+ */
+export async function startPrintExport(db: Firestore, uid: string, data: unknown, now: Date) {
+  const req = read(printExportJobRequestSchema, data);
+  await parent(db, uid, req.babyId, now);
+  const c = await getPrintCatalog(db);
+  if (!c.digitalEnabled) throw new AccountError('failed-precondition', 'export-paused');
+  const jobId = `px_${createHash('sha256').update(`${uid}:${req.requestId}`).digest('hex').slice(0, 20)}`;
+  const ref = exportJobRef(db, req.babyId, jobId);
+  await db.runTransaction(async (tx) => {
+    if ((await tx.get(ref)).exists) return;
+    tx.create(ref, {
+      uid,
+      babyId: req.babyId,
+      request: {
+        design: req.design,
+        format: req.format,
+        cropMarks: req.cropMarks,
+        acknowledgeQuality: req.acknowledgeQuality,
+      },
+      format: req.format === 'pdf' ? 'pdf' : 'zip',
+      status: 'queued',
+      done: 0,
+      total: printPageCount(req.design),
+      error: null,
+      leaseUntil: null,
+      createdAt: now,
+      updatedAt: now,
+      expiresAt: new Date(now.getTime() + EXPORT_KEEP_MS),
+    });
+    tx.set(
+      db.doc(`babies/${req.babyId}/printDrafts/${uid}`),
+      { exportJobId: jobId },
+      { merge: true },
+    );
+  });
+  return { jobId };
+}
+
+/** The Firestore worker for [startPrintExport]: one page at a time, progress on the job. */
+export async function runPrintExport(
+  db: Firestore,
+  store: PrintStore,
+  babyId: string,
+  jobId: string,
+  now: Date,
+) {
+  const ref = exportJobRef(db, babyId, jobId);
+  const job = await db.runTransaction(async (tx) => {
+    const doc = await tx.get(ref);
+    if (!doc.exists || doc.get('status') !== 'queued') return null;
+    tx.update(ref, {
+      status: 'rendering',
+      leaseUntil: new Date(now.getTime() + EXPORT_LEASE_MS),
+      updatedAt: now,
+    });
+    return doc.data()!;
+  });
+  if (!job) return;
+  const uid = job.uid as string;
+  try {
+    const req = read(printExportRequestSchema, { babyId, ...job.request });
+    await parent(db, uid, babyId, now);
+    const c = await getPrintCatalog(db);
+    if (!c.digitalEnabled) throw new AccountError('failed-precondition', 'export-paused');
+    const src = await sources(db, store, babyId, req.design);
+    if (printQuality(req.design, src).some((dpi) => dpi < 150) && !req.acknowledgeQuality)
+      throw new AccountError('failed-precondition', 'low-resolution');
+    const total = printPageCount(req.design);
+    const pages: Buffer[] = [];
+    for (let p = 0; p < total; p++) {
+      pages.push(await renderPrintPage(req.design, src, p, req.cropMarks));
+      await ref.update({ done: p + 1, total, updatedAt: new Date() });
+    }
+    const pdf = req.format === 'pdf',
+      ext = pdf ? 'pdf' : 'zip';
+    const key = randomUUID(),
+      path = `babies/${babyId}/printExports/${uid}/${key}.${ext}`;
+    const bytes = pdf
+      ? await printPdf(pages, req.design, req.cropMarks)
+      : await printArchive(pages, req.format as 'jpg' | 'png');
+    await parent(db, uid, babyId, new Date());
+    await db
+      .doc(`printArtifacts/${key}`)
+      .set({ babyId, path, expiresAt: new Date(now.getTime() + EXPORT_KEEP_MS) });
+    await store.save(path, bytes, pdf ? 'application/pdf' : 'application/zip');
+    await ref.update({
+      status: 'ready',
+      path,
+      pages: pages.length,
+      format: ext,
+      leaseUntil: null,
+      updatedAt: new Date(),
+    });
+  } catch (error) {
+    await ref.update({
+      status: 'failed',
+      error: error instanceof AccountError ? error.reason : 'render-failed',
+      leaseUntil: null,
+      updatedAt: new Date(),
+    });
+  }
+}
+
+/** A fresh link to a ready print file (kept 24 hours); only for the parent who asked. */
+export async function printExportUrl(
+  db: Firestore,
+  store: PrintStore,
+  uid: string,
+  data: unknown,
+  now: Date,
+) {
+  const req = read(z.object({ babyId: safeId, jobId: safeId }), data);
+  await parent(db, uid, req.babyId, now);
+  const doc = await exportJobRef(db, req.babyId, req.jobId).get();
+  if (!doc.exists || doc.get('uid') !== uid) throw new AccountError('not-found', 'not-found');
+  if (doc.get('status') !== 'ready') throw new AccountError('failed-precondition', 'not-ready');
+  if ((doc.get('expiresAt') as Timestamp).toMillis() <= now.getTime())
+    throw new AccountError('failed-precondition', 'expired');
+  const expires = new Date(now.getTime() + 3_600_000);
+  return {
+    url: await store.url(doc.get('path') as string, expires),
+    expiresAt: expires.toISOString(),
+  };
+}
+
+/** Key-order independent JSON (Firestore returns map keys in its own order). */
+function canonical(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canonical).join(',')}]`;
+  if (v && typeof v === 'object')
+    return `{${Object.keys(v)
+      .sort()
+      .map((k) => `${JSON.stringify(k)}:${canonical((v as Record<string, unknown>)[k])}`)
+      .join(',')}}`;
+  return JSON.stringify(v ?? null);
+}
+
 export async function savePrintDraft(db: Firestore, uid: string, data: unknown, now: Date) {
   const req = read(z.object({ babyId: safeId, design: printDesignSchema }), data);
   return db.runTransaction(async (tx) => {
     await parent(db, uid, req.babyId, now, tx);
-    tx.set(db.doc(`babies/${req.babyId}/printDrafts/${uid}`), {
+    const ref = db.doc(`babies/${req.babyId}/printDrafts/${uid}`);
+    const old = await tx.get(ref);
+    // PR-1: the print file job stays linked while the design is the same; a change forgets it.
+    const same = canonical(old.get('design') ?? null) === canonical(req.design);
+    tx.set(ref, {
       design: req.design,
       updatedAt: now,
+      ...(same && old.get('exportJobId') ? { exportJobId: old.get('exportJobId') } : {}),
     });
     return { saved: true };
   });
@@ -198,7 +348,8 @@ export async function createPrintOrder(db: Firestore, uid: string, data: unknown
   return db.runTransaction(async (tx) => {
     await parent(db, uid, req.babyId, now, tx);
     const [old, current] = await tx.getAll(ref, db.doc('publicConfig/printStudio'));
-    if (old!.exists) return { id };
+    // PR-5: the server's total, so the success screen never shows a client estimate.
+    if (old!.exists) return { id, total: old!.get('total') as number };
     const live = printCatalogSchema.safeParse(current!.data());
     if (!c.physicalEnabled) throw new AccountError('failed-precondition', 'ordering-unavailable');
     if (
@@ -304,7 +455,7 @@ export async function createPrintOrder(db: Firestore, uid: string, data: unknown
       updatedAt: now,
     });
     countDemand(tx, db, now, 'submitted');
-    return { id };
+    return { id, total: totals.total };
   });
 }
 

@@ -22,7 +22,7 @@ export const premiumPlansSchema = z.object({
   free: z.object({
     /** "30 credit trải nghiệm một lần": never refilled (PV40B). */
     lumiCreditsOneTime: z.number().int().min(0).max(100000),
-    /** "2 lượt trải nghiệm một lần". */
+    /** @deprecated D-124: retained for reading historical plan versions; ignored in v2. */
     videoExportsTrial: z.number().int().min(0).max(1000),
     storageGB: z.number().min(0).max(10000),
     caregiverSeats: z.number().int().min(1).max(100),
@@ -30,6 +30,7 @@ export const premiumPlansSchema = z.object({
   premium: z.object({
     /** Refilled every month on the subscription day, also on a yearly plan (PV40). */
     lumiCreditsPerCycle: z.number().int().min(0).max(100000),
+    /** @deprecated D-124: ignored; both plans export without a count quota. */
     videoExportsPerCycle: z.number().int().min(0).max(1000),
     storageGB: z.number().min(0).max(10000),
     caregiverSeats: z.number().int().min(1).max(100),
@@ -84,7 +85,7 @@ export interface PlanLimits {
   plan: 'free' | 'premium';
   /** Free: one time (`once`), Premium: per monthly cycle. */
   lumi: { limit: number; refill: 'once' | 'monthly' };
-  video: { limit: number; refill: 'once' | 'monthly' };
+  video: { unlimited: true; maxQuality: 'hd720' | 'fullHd1080' };
   storageBytes: number;
   caregiverSeats: number;
   premiumTemplates: boolean;
@@ -104,7 +105,7 @@ export function planLimits(
     return {
       plan: 'free',
       lumi: { limit: plans.free.lumiCreditsOneTime, refill: 'once' },
-      video: { limit: plans.free.videoExportsTrial, refill: 'once' },
+      video: { unlimited: true, maxQuality: 'hd720' },
       storageBytes: Math.round(plans.free.storageGB * GB) + extra,
       caregiverSeats: plans.free.caregiverSeats,
       premiumTemplates: false,
@@ -113,7 +114,7 @@ export function planLimits(
   return {
     plan: 'premium',
     lumi: { limit: plans.premium.lumiCreditsPerCycle, refill: 'monthly' },
-    video: { limit: plans.premium.videoExportsPerCycle, refill: 'monthly' },
+    video: { unlimited: true, maxQuality: 'fullHd1080' },
     storageBytes:
       Math.round((plans.premium.storageGB + Math.max(0, options.addOnGb ?? 0)) * GB) + extra,
     caregiverSeats: plans.premium.caregiverSeats,
@@ -252,6 +253,7 @@ export type ChooseWriteSeatsRequest = z.infer<typeof chooseWriteSeatsRequestSche
 export const familyPlanRequestSchema = z.object({ babyId: z.string().min(1).max(128) });
 
 export interface PlanBalance {
+  unlimited?: boolean;
   limit: number;
   used: number;
   reserved: number;
@@ -260,6 +262,8 @@ export interface PlanBalance {
 }
 
 export interface PlanOffer {
+  videoUnlimited?: boolean;
+  maxVideoQuality?: 'hd720' | 'fullHd1080';
   lumiCredits: number;
   videoExports: number;
   storageBytes: number;
@@ -279,10 +283,18 @@ export interface FamilyPlanAnswer {
   validUntil: string | null;
   lumi: PlanBalance;
   video: PlanBalance;
-  storage: { usedBytes: number; limitBytes: number; addOnGb: number };
+  /** reservedBytes: held by uploads in flight; "full" is used + reserved (D-127 Q2). */
+  storage: { usedBytes: number; reservedBytes: number; limitBytes: number; addOnGb: number };
   /** Writers (Cùng nuôi + Người chăm sóc) against the plan's seats; [suspended] are view-only
-   * after a downgrade (PV44). [overLimit]: the manager has a choice to make. */
-  seats: { used: number; limit: number; suspended: string[]; overLimit: boolean };
+   * after a downgrade (PV44). [overLimit]: the manager has a choice to make. [pendingInvites]:
+   * unexpired writer invites, which hold a seat too (D-127 Q3: "· n lời mời đang giữ chỗ"). */
+  seats: {
+    used: number;
+    limit: number;
+    pendingInvites: number;
+    suspended: string[];
+    overLimit: boolean;
+  };
   premiumTemplates: boolean;
   /** Both plans as configured, for the paywall comparison and PV42 ("sau ngày đó, nhà mình
    * về Free"). */
@@ -391,7 +403,13 @@ export interface StaffPremiumOverview {
     storage80: OverviewShare;
     freeTrialOut: OverviewShare;
   };
-  renewals: { active: number; dueInRange: number; cancelled: number; billingIssue: number; refunded: number };
+  renewals: {
+    active: number;
+    dueInRange: number;
+    cancelled: number;
+    billingIssue: number;
+    refunded: number;
+  };
   attention: { failedJobs24h: number; held: number; unmatched: number };
   /** A scan hit its cap: counts are a floor. */
   capped: boolean;

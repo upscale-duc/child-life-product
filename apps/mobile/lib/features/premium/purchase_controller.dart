@@ -61,9 +61,14 @@ class PurchaseFlow {
     this.resume,
     this.restore = false,
     this.source,
+    this.awaiting = false,
   });
 
   final PurchasePhase phase;
+
+  /// The store has not settled a purchase this phone started (Pending, P-6): kept after the
+  /// sheet is answered, so the buy CTA stays off until it succeeds, fails or is cancelled.
+  final bool awaiting;
   final PurchaseProblem? problem;
   final PurchaseResume? resume;
 
@@ -154,6 +159,13 @@ class PurchaseController extends Notifier<PurchaseFlow> {
         resume: state.resume,
         restore: restore ?? state.restore,
         source: state.source,
+        awaiting: switch (phase) {
+          PurchasePhase.pending => true,
+          PurchasePhase.buying ||
+          PurchasePhase.verifying ||
+          PurchasePhase.restoring => state.awaiting,
+          _ => false,
+        },
       );
 
   /// PR01 "Tiếp tục với Premium" (owner only; the server refuses anyone else).
@@ -164,7 +176,7 @@ class PurchaseController extends Notifier<PurchaseFlow> {
     required PurchaseResume? resume,
   }) async {
     final provider = _store.provider;
-    if (state.busy || provider == null) return;
+    if (state.busy || state.awaiting || provider == null) return;
     _babyId = babyId;
     state = PurchaseFlow(
       phase: PurchasePhase.buying,
@@ -206,7 +218,10 @@ class PurchaseController extends Notifier<PurchaseFlow> {
     switch (p.status) {
       case StorePurchaseStatus.canceled:
         // The parent closed the store sheet: back to the paywall, selection kept.
-        if (state.phase == PurchasePhase.buying) _set(PurchasePhase.idle);
+        // A declined Ask to Buy also ends the wait.
+        if (state.phase == PurchasePhase.buying || state.awaiting) {
+          _set(PurchasePhase.idle);
+        }
       case StorePurchaseStatus.error:
         _set(PurchasePhase.error, problem: PurchaseProblem.store);
       case StorePurchaseStatus.pending:
@@ -376,7 +391,11 @@ class PurchaseController extends Notifier<PurchaseFlow> {
   }
 
   /// The sheet was answered: back to idle (the resume record stays until used).
-  void acknowledge() => state = PurchaseFlow(resume: state.resume);
+  void acknowledge() => state = PurchaseFlow(
+    resume: state.resume,
+    awaiting: state.awaiting,
+    source: state.awaiting ? state.source : null,
+  );
 
   /// Done with the resume record (resumed or abandoned).
   void reset() {

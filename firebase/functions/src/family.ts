@@ -19,6 +19,7 @@ import {
   updateMemberRequestSchema,
   type ExtraRights,
   type InviteLookup,
+  type ClaimAnonymousResponse,
   type InvitePreview,
   type InviteTicket,
   type MyInvitesResponse,
@@ -112,15 +113,32 @@ async function requireSeat(
   now: Date,
   options: { joiningUid?: string; exceptInviteId?: string } = {},
 ): Promise<void> {
+  if (await seatsFullFor(db, familyId, now, { ...options, tx }))
+    throw new FamilyError('resource-exhausted', 'seats-full');
+}
+
+/**
+ * Whether a new writer would find no seat: the seat arithmetic of [requireSeat], also used by
+ * the invite preview so a joiner learns it before "Tham gia" (D-127 Q3). False while
+ * `premium_v2` is off for the family.
+ */
+async function seatsFullFor(
+  db: Firestore,
+  familyId: string,
+  now: Date,
+  options: { joiningUid?: string; exceptInviteId?: string; tx?: Transaction } = {},
+): Promise<boolean> {
   const plan = await familyPlan(db, familyId, now);
-  if (!plan.v2) return;
-  const babies = await tx.get(db.collection('babies').where('familyId', '==', familyId));
+  if (!plan.v2) return false;
+  const { tx } = options;
+  const read = <T>(q: FirebaseFirestore.Query<T>) => (tx ? tx.get(q) : q.get());
+  const babies = await read(db.collection('babies').where('familyId', '==', familyId));
   const writers = new Set<string>();
   let pending = 0;
   for (const baby of babies.docs) {
     const [members, invites] = await Promise.all([
-      tx.get(db.collection(`babies/${baby.id}/members`).where('role', 'in', [...seatRoles])),
-      tx.get(db.collection(`babies/${baby.id}/pendingInvites`).where('role', 'in', [...seatRoles])),
+      read(db.collection(`babies/${baby.id}/members`).where('role', 'in', [...seatRoles])),
+      read(db.collection(`babies/${baby.id}/pendingInvites`).where('role', 'in', [...seatRoles])),
     ]);
     for (const m of members.docs) {
       if (isActiveMember(m, now) && m.get('writeSuspended') !== true) writers.add(m.id);
@@ -132,10 +150,8 @@ async function requireSeat(
     }
   }
   // Someone who already writes for another baby of the family keeps their one seat.
-  if (options.joiningUid && writers.has(options.joiningUid)) return;
-  if (!seatAvailable(writers.size + pending, plan.limits.caregiverSeats)) {
-    throw new FamilyError('resource-exhausted', 'seats-full');
-  }
+  if (options.joiningUid && writers.has(options.joiningUid)) return false;
+  return !seatAvailable(writers.size + pending, plan.limits.caregiverSeats);
 }
 
 function audit(tx: Transaction, db: Firestore, entry: Record<string, unknown>, now: Date) {
@@ -568,14 +584,31 @@ export async function previewInvite(
     return { status: found.status };
   }
   const invite = found.invite;
+  const babyId = invite.get('babyId') as string;
   const alreadyMember = uid
-    ? isActiveMember(await db.doc(memberPath(invite.get('babyId') as string, uid)).get(), now)
+    ? isActiveMember(await db.doc(memberPath(babyId, uid)).get(), now)
     : false;
-  return previewOf(invite, alreadyMember);
+  // D-127 Q3: the joiner learns a full family before "Tham gia" (this invite's own seat is free).
+  const seatsFull =
+    !alreadyMember &&
+    isSeatRole(invite.get('role')) &&
+    (await seatsFullFor(db, invite.get('familyId') as string, now, {
+      ...(uid ? { joiningUid: uid } : {}),
+      exceptInviteId: invite.id,
+    }));
+  return previewOf(invite, alreadyMember, {
+    ...(alreadyMember ? { babyId } : {}),
+    seatsFull,
+  });
 }
 
-function previewOf(invite: DocumentSnapshot, alreadyMember: boolean): InvitePreview {
+function previewOf(
+  invite: DocumentSnapshot,
+  alreadyMember: boolean,
+  extra: { babyId?: string; seatsFull?: boolean } = {},
+): InvitePreview {
   return {
+    ...extra,
     status: 'valid',
     babyNickname: invite.get('babyNickname') as string,
     inviterName: invite.get('inviterName') as string,
@@ -987,7 +1020,7 @@ export async function claimAnonymous(
   caller: Caller,
   data: unknown,
   now: Date,
-): Promise<{ moved: number }> {
+): Promise<ClaimAnonymousResponse> {
   const parsed = claimAnonymousRequestSchema.safeParse(data);
   if (!parsed.success) throw new FamilyError('invalid-argument', 'malformed');
   if (caller.anonymous) throw new FamilyError('permission-denied', 'account-required');
@@ -1002,12 +1035,14 @@ export async function claimAnonymous(
 
   const memberships = await db.collectionGroup('members').where('uid', '==', anon.uid).get();
   let moved = 0;
+  const babyIds: string[] = [];
   for (const old of memberships.docs) {
     const babyId = old.get('babyId') as string;
     await db.runTransaction(async (tx) => {
       const current = await tx.get(old.ref);
       if (current.get('status') !== 'active') return;
       const mine = await tx.get(db.doc(memberPath(babyId, caller.uid)));
+      babyIds.push(babyId);
       if (!isActiveMember(mine, now)) {
         tx.set(mine.ref, {
           ...current.data(),
@@ -1028,7 +1063,7 @@ export async function claimAnonymous(
   }
   await db.doc(`users/${anon.uid}`).set({ mergedInto: caller.uid, mergedAt: now }, { merge: true });
   await verifier.deleteUser(anon.uid).catch(() => undefined);
-  return { moved };
+  return { moved, babyIds: [...new Set(babyIds)] };
 }
 
 export const _test = { sha256, newCode, newToken, FieldValue };

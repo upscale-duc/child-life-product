@@ -25,6 +25,10 @@ beforeEach(async () => {
     ])
       await setDoc(doc(c.firestore(), `babies/b1/members/${uid}`), { uid, role, status: 'active' });
     await setDoc(doc(c.firestore(), 'babies/b1/printOrders/order1'), { uid: 'mom', total: 379000 });
+    await setDoc(doc(c.firestore(), 'babies/b1/printExportJobs/px1'), {
+      uid: 'mom',
+      status: 'queued',
+    });
     await setDoc(doc(c.firestore(), 'babies/b1/printDrafts/mom'), {
       design: { name: 'Private name' },
     });
@@ -59,6 +63,15 @@ it('only the ordering co-parent reads their order and draft; clients never write
     const db = env.authenticatedContext(uid).firestore();
     await assertFails(getDoc(doc(db, 'babies/b1/printOrders/order1')));
     await assertFails(getDoc(doc(db, 'babies/b1/printDrafts/mom')));
+  }
+});
+it('only the co-parent who asked follows a print file job; clients never write it (PR-1)', async () => {
+  const mom = env.authenticatedContext('mom').firestore();
+  await assertSucceeds(getDoc(doc(mom, 'babies/b1/printExportJobs/px1')));
+  await assertFails(setDoc(doc(mom, 'babies/b1/printExportJobs/px1'), { status: 'ready' }));
+  for (const uid of ['dad', 'grandma', 'stranger']) {
+    const db = env.authenticatedContext(uid).firestore();
+    await assertFails(getDoc(doc(db, 'babies/b1/printExportJobs/px1')));
   }
 });
 it('only moderated public reviews can be read; catalog is read-only', async () => {

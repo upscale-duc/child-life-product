@@ -31,7 +31,9 @@ import '../family/family_labels.dart' show initialOf;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart' show MeRow;
-import 'reminder_screens.dart' show maybeAskForNotifications, reminderWho;
+import 'reminder_notifications.dart' show notificationsEnabledProvider;
+import 'reminder_screens.dart'
+    show NotificationsOffCard, maybeAskForNotifications, reminderWho;
 import 'rule_models.dart';
 import 'rule_repository.dart';
 
@@ -173,6 +175,13 @@ class RuleRemindersList extends ConsumerWidget {
     final members =
         ref.watch(familyMembersProvider(c.me.babyId)).value ?? const [];
     final handled = _recentHandled(rules ?? const [], c);
+    // NT-5: a rule that sends to this person cannot show on this phone while the system has
+    // its notifications off; said here as on "Một lần" (8d).
+    final silenced =
+        ref.watch(notificationsEnabledProvider) == false &&
+        (rules ?? const []).any(
+          (r) => r.enabled && r.recipients.contains(c.me.uid),
+        );
 
     final recipients = <String>{
       for (final r in rules ?? const []) ...r.recipients,
@@ -186,6 +195,13 @@ class RuleRemindersList extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (silenced) ...[
+          NotificationsOffCard(
+            key: const Key('rule-notif-off'),
+            message: l10n.ruleNotifOff,
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
         if (handled != null) ...[
           _HandledBanner(rule: handled, ctx: c),
           const SizedBox(height: ClSpace.s3),

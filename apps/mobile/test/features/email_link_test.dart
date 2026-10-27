@@ -271,6 +271,37 @@ void main() {
       expect(find.text('Link đã hết hạn'), findsOneWidget);
     });
 
+    testWidgets('signed in but the earlier sign-in did not link: no error page', (
+      tester,
+    ) async {
+      final auth = _Auth()..signInFails = AuthFailure.linkFailed;
+      final (_, prefs) = await _pump(
+        tester,
+        EmailLinkScreen(link: _link()),
+        auth,
+        prefs: {'auth.linkEmail': 'mai@example.com'},
+        settle: false,
+      );
+      await tester.pump(const Duration(seconds: 1));
+      // AU-6: a toast says what is left; the page keeps waiting for the router, no "Thử lại".
+      expect(find.text('Thử lại'), findsNothing);
+      expect(prefs.getString('auth.linkEmail'), isNull);
+      await tester.pump(const Duration(seconds: 5));
+    });
+
+    testWidgets('while signing in, Back is there (AU-6)', (tester) async {
+      final auth = _Auth();
+      await _pump(
+        tester,
+        EmailLinkScreen(link: _link()),
+        auth,
+        prefs: {'auth.linkEmail': 'mai@example.com'},
+        settle: false,
+      );
+      expect(find.text('Đang đăng nhập…'), findsOneWidget);
+      expect(find.bySemanticsLabel('Quay lại'), findsOneWidget);
+    });
+
     testWidgets('offline: try the same link again', (tester) async {
       final auth = _Auth()..signInFails = AuthFailure.network;
       await _pump(

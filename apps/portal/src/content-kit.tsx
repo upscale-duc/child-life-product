@@ -12,7 +12,15 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { useEffect, useId, useState, type ReactNode } from 'react';
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useId,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -34,6 +42,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -241,11 +250,11 @@ export function FilterBar({
             <X />
             <FormattedMessage id="kit.clearFilters" />
           </Button>
-          <span className="ml-auto text-sm text-muted-foreground" role="status">
-            <FormattedMessage id="kit.results" values={{ n: shown, total }} />
-          </span>
         </>
       )}
+      <span className="ml-auto text-sm text-muted-foreground" role="status" aria-live="polite">
+        <FormattedMessage id="kit.results" values={{ n: shown, total }} />
+      </span>
     </div>
   );
 }
@@ -554,11 +563,38 @@ export function Field({
   children: ReactNode;
   className?: string;
 }) {
+  const generatedId = useId();
+  type ControlProps = {
+    id?: string;
+    'aria-describedby'?: string;
+    'aria-invalid'?: boolean | 'true' | 'false';
+  };
+  const control =
+    isValidElement<ControlProps>(children) &&
+    (children.type === Input ||
+      children.type === Textarea ||
+      (typeof children.type === 'string' &&
+        ['input', 'textarea', 'select'].includes(children.type)))
+      ? (children as ReactElement<ControlProps>)
+      : null;
+  const id = htmlFor ?? control?.props.id ?? generatedId;
+  const descriptionId = `${id}-description`;
+  const describedBy =
+    [control?.props['aria-describedby'], (error || help) && descriptionId]
+      .filter(Boolean)
+      .join(' ') || undefined;
+  const input = control
+    ? cloneElement(control, {
+        id,
+        'aria-invalid': error ? true : control.props['aria-invalid'],
+        'aria-describedby': describedBy,
+      })
+    : children;
   const over = counter ? counter.n > counter.max : false;
   return (
     <div className={cn('grid min-w-0 gap-1.5', className)}>
-      <div className="flex min-h-5 items-center gap-1.5">
-        <Label htmlFor={htmlFor} className="text-[13px] font-medium">
+      <div className="flex min-h-5 items-start gap-1.5">
+        <Label htmlFor={id} className="min-w-0 text-sm leading-5 font-medium">
           {label}
         </Label>
         {hint && <Hint>{hint}</Hint>}
@@ -573,11 +609,17 @@ export function Field({
           </span>
         )}
       </div>
-      {children}
+      {input}
       {error ? (
-        <p className="text-xs text-destructive">{error}</p>
+        <p id={descriptionId} className="text-sm text-destructive" role="alert">
+          {error}
+        </p>
       ) : (
-        help && <p className="text-xs text-muted-foreground">{help}</p>
+        help && (
+          <p id={descriptionId} className="text-sm leading-5 text-muted-foreground">
+            {help}
+          </p>
+        )
       )}
     </div>
   );

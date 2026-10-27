@@ -1,8 +1,9 @@
 import { freezeKeepsakePresentation } from '@child-life/contracts';
-import { storageLimitBytes } from './premium-v2.js';
+import { familyPlan, storageLimitBytes } from './premium-v2.js';
 import { createHash } from 'node:crypto';
 import {
   fillName,
+  videoQualityAllowed,
   dayBoundsIn,
   localDateIn,
   keepsakeAgeLabel,
@@ -187,6 +188,15 @@ export async function requestMemoryStory(
   if (access === 'premium-required') {
     throw new KeepsakeJobError('permission-denied', 'PREMIUM_REQUIRED');
   }
+  // D-124: the family plan, never a client claim, authorizes Full HD.
+  const plan = await familyPlan(db, familyId, now, environment);
+  const quality = req.quality ?? (plan.v2 && !plan.premium ? 'hd720' : 'fullHd1080');
+  if (
+    plan.v2 &&
+    (!videoQualityAllowed(quality, plan.premium) || (live.tier === 'premium' && !plan.premium))
+  ) {
+    throw new KeepsakeJobError('permission-denied', 'PREMIUM_REQUIRED');
+  }
   // An older version still on the phone renders as the published one (only one is kept live).
   const template: KeepsakeTemplate = live;
   // MM07 "Nhạc nền": the parent's pick, none, or the template's default — a published track.
@@ -253,7 +263,7 @@ export async function requestMemoryStory(
     db
       .collectionGroup('keepsakeJobs')
       .where('familyId', '==', familyId)
-      .where('createdAt', '>=', new Date(now.getTime() - 24 * 3600_000))
+      .where('createdAt', '>=', new Date(now.getTime() - (plan.v2 ? 60_000 : 24 * 3600_000)))
       .count()
       .get(),
     db.doc(`families/${familyId}`).get(),
@@ -261,8 +271,11 @@ export async function requestMemoryStory(
   if (active.size >= keepsakeJobLimits.activePerBaby) {
     throw new KeepsakeJobError('resource-exhausted', 'busy');
   }
-  if (today.data().count >= keepsakeJobLimits.perFamilyPerDay) {
-    throw new KeepsakeJobError('resource-exhausted', 'daily-limit');
+  if (
+    today.data().count >=
+    (plan.v2 ? keepsakeJobLimits.perFamilyPerMinute : keepsakeJobLimits.perFamilyPerDay)
+  ) {
+    throw new KeepsakeJobError('resource-exhausted', plan.v2 ? 'rate-limit' : 'daily-limit');
   }
   // Premium v2 (D-101): the plan's storage limit; today's `quotaBytes` while v2 is off.
   const quota = await storageLimitBytes(db, familyId, family, now);
@@ -325,6 +338,7 @@ export async function requestMemoryStory(
     if (first) birthStats = keepsakeBirthStats(first.w, first.l, locale);
   }
   const input: KeepsakeJobInput = {
+    quality,
     ...(presentation ? { presentation } : {}),
     template,
     photos,
@@ -416,7 +430,10 @@ export async function requestMemoryStory(
       startedAt: null,
       finishedAt: null,
     });
-    return snapshotOf(held.window, window.end);
+    return {
+      ...snapshotOf(held.window, window.unlimited ? null : window.end),
+      ...(window.unlimited ? { unlimited: true } : {}),
+    };
   });
   if (created === null) {
     const status = ((await ref.get()).get('status') as string | undefined) ?? 'queued';
@@ -523,7 +540,8 @@ export async function getVideoQuota(
   const window: VideoWindow = await videoWindowFor(db, familyId, babyId, config, environment, now);
   return {
     ...(await readVideoQuota(db, familyId, window)),
-    premiumLimit: window.kind === 'paid' ? null : config.quotas.video.premium.limit,
+    premiumLimit:
+      window.unlimited || window.kind === 'paid' ? null : config.quotas.video.premium.limit,
   };
 }
 
@@ -555,6 +573,16 @@ export async function retryMemoryStory(
     environment,
     now,
   );
+  const retryPlan = await familyPlan(db, familyId, now, environment);
+  const retryInput = first.get('input') as KeepsakeJobInput;
+  if (
+    retryPlan.v2 &&
+    !retryPlan.premium &&
+    ((retryInput.quality ?? 'fullHd1080') === 'fullHd1080' ||
+      retryInput.template.tier === 'premium')
+  ) {
+    throw new KeepsakeJobError('permission-denied', 'PREMIUM_REQUIRED');
+  }
   const retried = await db.runTransaction(async (tx) => {
     const job = await tx.get(ref);
     if (!job.exists || job.get('uid') !== uid) throw new KeepsakeJobError('not-found', 'not-found');
@@ -606,7 +634,13 @@ export async function retryMemoryStory(
       quota: { reservationId, windowId: window.id, seq },
       updatedAt: now,
     });
-    return { retries, quota: snapshotOf(held.window, window.end) };
+    return {
+      retries,
+      quota: {
+        ...snapshotOf(held.window, window.unlimited ? null : window.end),
+        ...(window.unlimited ? { unlimited: true } : {}),
+      },
+    };
   });
   if (retried === null) {
     return { jobId, status: 'unchanged', quota: await readVideoQuota(db, familyId, window) };

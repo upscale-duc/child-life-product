@@ -55,7 +55,11 @@ Map<String, Object> _thread(List<String> taskIds, [String uid = 'u_mai']) => {
   _k('tasks', teddyScope, uid): taskIds,
 };
 
-Map<String, Object> _kept(String text, KeptReason reason) => {
+Map<String, Object> _kept(
+  String text,
+  KeptReason reason, {
+  AssistantReason? blockReason,
+}) => {
   _k('kept', teddyScope): jsonEncode(
     KeptInput(
       text: text,
@@ -63,6 +67,7 @@ Map<String, Object> _kept(String text, KeptReason reason) => {
       inputKey: '',
       reason: reason,
       at: assistantNow,
+      blockReason: blockReason,
     ).toJson(),
   ),
 };
@@ -295,6 +300,34 @@ final _cases = <String, _Case>{
       ),
     ),
     prefs: () => _kept('So với hôm qua thì sao?', KeptReason.blocked),
+  ),
+  // Flow audit 2026-10-26 AI-4: the reset date not known yet ("kỳ tới", never a blank).
+  'ch21_free_out_no_date': _c(
+    repo: () => _repo(usage: {...usageJson(used: 20), 'resetsAt': null}),
+    prefs: () => _kept('Hôm nay con bú thế nào?', KeptReason.blocked),
+  ),
+  // AI-1: a region refusal is that refusal: the composer stays open, the words can go back.
+  'ch27_region_kept': _c(
+    prefs: () => _kept(
+      'Con hay quấy tối, nên làm gì?',
+      KeptReason.blocked,
+      blockReason: AssistantReason.regionUnsupported,
+    ),
+  ),
+  // AI-6: no answer in time → "Đang kiểm tra…" (the same request id is asked again).
+  'ch25_checking': _c(
+    repo: () =>
+        _repo()..error = {'startTask': const AssistantException('timeout')},
+    prefs: () => _kept('8 giờ con bú bình 120 ml', KeptReason.failed),
+    act: (tester) async {
+      await tester.tap(
+        find.text('Gửi lại').evaluate().isEmpty
+            ? find.text('Send again')
+            : find.text('Gửi lại'),
+      );
+      await tester.pump();
+      await tester.pump();
+    },
   ),
   'ch25_failure': _c(
     repo: () => _repo(

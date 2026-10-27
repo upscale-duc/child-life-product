@@ -131,6 +131,11 @@ export const invitePreviewSchema = z.discriminatedUnion('status', [
     ...validInviteFields,
     /** The caller already belongs to this baby (G-036). */
     alreadyMember: z.boolean(),
+    /** Only for a member (alreadyMember), so the app can open that baby (FJ-5). */
+    babyId: z.string().optional(),
+    /** D-127 Q3: a writer invite whose family has no seat left for the caller; the joiner
+     * learns it before "Tham gia". Absent on older servers. */
+    seatsFull: z.boolean().optional(),
   }),
   z.object({ status: z.enum(['expired', 'revoked', 'used', 'not-found']) }),
   z.object({ status: z.literal('locked'), retryAfterSeconds: z.number().int().positive() }),
@@ -195,3 +200,10 @@ export const removeMemberRequestSchema = z.object({ babyId: babyIdSchema, uid: m
 export const claimAnonymousRequestSchema = z.object({
   anonymousIdToken: z.string().min(20).max(4096),
 });
+
+/** P-007 / AU-1: [babyIds] are the babies the caller now belongs to through the merge (moved
+ * or already there), so the app can wait for exactly those before saying it is done. */
+export interface ClaimAnonymousResponse {
+  moved: number;
+  babyIds: string[];
+}

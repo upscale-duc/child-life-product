@@ -1,0 +1,2930 @@
+[
+  {
+    "locale": "vi",
+    "id": "print.fileExpired",
+    "before": "File sản xuất đã được xoá theo thời hạn lưu trữ.",
+    "after": "Tệp dùng để in đã được xoá theo thời hạn lưu trữ."
+  },
+  {
+    "locale": "vi",
+    "id": "print.digital",
+    "before": "Cho phép tải file",
+    "after": "Cho phép tải tệp"
+  },
+  {
+    "locale": "vi",
+    "id": "print.countries",
+    "before": "Quốc gia giao hàng (VN, …)",
+    "after": "Mã quốc gia giao hàng (ví dụ: VN)"
+  },
+  {
+    "locale": "vi",
+    "id": "print.lead",
+    "before": "Số ngày nhận dự kiến",
+    "after": "Thời gian giao dự kiến (ngày)"
+  },
+  {
+    "locale": "vi",
+    "id": "print.freeFrom",
+    "before": "Miễn giao từ",
+    "after": "Miễn phí giao cho đơn từ"
+  },
+  {
+    "locale": "vi",
+    "id": "print.access",
+    "before": "Mở đơn hiển thị thông tin giao hàng và ghi nhật ký truy cập.",
+    "after": "Thông tin giao hàng sẽ hiển thị khi mở đơn. Lượt truy cập được ghi vào nhật ký."
+  },
+  {
+    "locale": "vi",
+    "id": "print.render",
+    "before": "File sản xuất",
+    "after": "Tệp dùng để in"
+  },
+  {
+    "locale": "vi",
+    "id": "print.render.queued",
+    "before": "Đang chờ dựng file",
+    "after": "Chờ tạo tệp in"
+  },
+  {
+    "locale": "vi",
+    "id": "print.render.rendering",
+    "before": "Đang dựng file",
+    "after": "Đang tạo tệp in"
+  },
+  {
+    "locale": "vi",
+    "id": "print.render.ready",
+    "before": "File sẵn sàng",
+    "after": "Tệp in đã sẵn sàng"
+  },
+  {
+    "locale": "vi",
+    "id": "print.render.failed",
+    "before": "Cần xử lý lỗi file",
+    "after": "Tạo tệp in thất bại"
+  },
+  {
+    "locale": "vi",
+    "id": "print.retryRender",
+    "before": "Dựng lại file",
+    "after": "Tạo lại tệp in"
+  },
+  {
+    "locale": "vi",
+    "id": "print.renderFailed",
+    "before": "Đơn vẫn được lưu. Chưa dựng được file; hãy thử lại hoặc liên hệ hỗ trợ kỹ thuật.",
+    "after": "Đơn đã được lưu nhưng chưa tạo được tệp in. Thử lại hoặc liên hệ hỗ trợ kỹ thuật."
+  },
+  {
+    "locale": "vi",
+    "id": "print.note",
+    "before": "Ghi chú nội bộ · khách không nhìn thấy",
+    "after": "Ghi chú nội bộ · không hiển thị cho khách"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.overview",
+    "before": null,
+    "after": "Số liệu chính và việc cần xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.analytics",
+    "before": null,
+    "after": "Người dùng, kết quả sử dụng và chi phí"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.families",
+    "before": null,
+    "after": "Tra cứu gia đình, thành viên và dung lượng"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.support",
+    "before": null,
+    "after": "Nhận và trả lời yêu cầu hỗ trợ"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.storage",
+    "before": null,
+    "after": "Duyệt yêu cầu cấp thêm dung lượng"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.jobs",
+    "before": null,
+    "after": "Theo dõi xuất, xoá dữ liệu và dựng video"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.notifications",
+    "before": null,
+    "after": "Soạn mẫu, kiểm tra gửi và lịch sử thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.printStudio",
+    "before": null,
+    "after": "Xử lý đơn in, giao hàng và cấu hình giá"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.firstAid",
+    "before": null,
+    "after": "Biên soạn và duyệt hướng dẫn sơ cứu"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.rhythm",
+    "before": null,
+    "after": "Giai đoạn, hoạt động và điều kiện gợi ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.keepsakes",
+    "before": null,
+    "after": "Quản lý mẫu thiệp, video, hình ảnh và nhạc"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.articles",
+    "before": null,
+    "after": "Biên soạn bài viết trong Thư viện chăm bé"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.stages",
+    "before": null,
+    "after": "Nội dung chăm sóc theo độ tuổi của bé"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.milestones",
+    "before": null,
+    "after": "Biên soạn các mốc phát triển tham khảo"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.nutrition",
+    "before": null,
+    "after": "Nội dung dinh dưỡng, vi chất và điều kiện gợi ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.solids",
+    "before": null,
+    "after": "Thực phẩm, công thức và hướng dẫn ăn dặm"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.contentReview",
+    "before": null,
+    "after": "Duyệt, xuất bản và rà soát lại nội dung"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.reference",
+    "before": null,
+    "after": "Bảng tăng trưởng, lượng sữa và lịch tiêm"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.features",
+    "before": null,
+    "after": "Bật tính năng và quản lý quyền Premium"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.system",
+    "before": null,
+    "after": "Dung lượng, xử lý video và hoạt động AI"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.appUpdate",
+    "before": null,
+    "after": "Phiên bản được dùng và nội dung Có gì mới"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.staff",
+    "before": null,
+    "after": "Mời nhân viên và quản lý quyền truy cập"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.audit",
+    "before": null,
+    "after": "Tra cứu thao tác của nhân viên"
+  },
+  {
+    "locale": "vi",
+    "id": "nav.help.qa",
+    "before": null,
+    "after": "Hướng dẫn và kết quả các lượt kiểm thử"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.observedCost",
+    "before": "Ước tính từ token có đơn giá (USD)",
+    "after": "Chi phí ước tính từ token (USD)"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.unratedCalls",
+    "before": "{n} call chưa đủ usage/đơn giá",
+    "after": "{n} lượt gọi chưa đủ dữ liệu hoặc đơn giá"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.operation",
+    "before": "Tác vụ từ nhà cung cấp",
+    "after": "Tác vụ AI"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.tokens",
+    "before": "Token vào / ra (provider)",
+    "after": "Token đầu vào / đầu ra"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.usageCoverage",
+    "before": "Call có usage / tổng call ghi nhận",
+    "after": "Lượt gọi có dữ liệu sử dụng / tổng lượt gọi"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.model.unknownUsage",
+    "before": "{n} call chưa biết usage",
+    "after": "{n} lượt gọi chưa có dữ liệu sử dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.hint",
+    "before": "Số lượt trong 14 ngày có dữ liệu gần nhất. Gợi ý được tạo không đồng nghĩa đã hiển thị; lưu và định thử không phải đã thử. Số lượt đặt lịch thông báo không xác nhận thiết bị đã hiển thị. Phản hồi có thể thay đổi; không tự kết luận hiệu quả hoặc số gia đình từ các bộ đếm này.",
+    "after": "Số lượt trong 14 ngày có dữ liệu gần nhất. Tạo gợi ý chưa có nghĩa là đã hiển thị; lưu hoặc định thử chưa phải đã thử. Đặt lịch chưa xác nhận thông báo đã hiện trên thiết bị. Phản hồi có thể thay đổi; các số đếm này không chứng minh hiệu quả hay số gia đình duy nhất."
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.generated",
+    "before": "Đã tạo",
+    "after": "Gợi ý đã tạo"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.intend",
+    "before": "Định thử",
+    "after": "Dự định thử"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.tried",
+    "before": "Xác nhận thử",
+    "after": "Đã xác nhận thử"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.digestScheduled",
+    "before": "Đặt lịch gợi ý",
+    "after": "Đã đặt lịch nhắc"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.metrics.digestOpened",
+    "before": "Mở từ thông báo",
+    "after": "Đã mở từ thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "table.scroll",
+    "before": null,
+    "after": "Bảng dữ liệu · có thể cuộn ngang"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.vietnamTime",
+    "before": null,
+    "after": "giờ Việt Nam"
+  },
+  {
+    "locale": "vi",
+    "id": "kit.saved",
+    "before": "Đã lưu",
+    "after": "Đã lưu bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "kit.unsaved",
+    "before": "Chưa lưu",
+    "after": "Có thay đổi chưa lưu"
+  },
+  {
+    "locale": "vi",
+    "id": "kit.clearSearch",
+    "before": "Xoá ô tìm",
+    "after": "Xoá nội dung tìm kiếm"
+  },
+  {
+    "locale": "vi",
+    "id": "kit.results",
+    "before": "{n} / {total} mục",
+    "after": "{n} / {total} kết quả"
+  },
+  {
+    "locale": "vi",
+    "id": "page.info",
+    "before": "Về trang này",
+    "after": "Hướng dẫn trang này"
+  },
+  {
+    "locale": "vi",
+    "id": "error.role",
+    "before": "Vai trò của bạn chưa được làm việc này. Nhờ Admin hoặc Owner nếu cần.",
+    "after": "Bạn chưa có quyền thực hiện thao tác này. Liên hệ quản trị viên để được cấp quyền."
+  },
+  {
+    "locale": "vi",
+    "id": "error.notStaff",
+    "before": "Phiên đăng nhập không còn quyền vận hành. Đăng nhập lại nhé.",
+    "after": "Phiên đăng nhập đã hết quyền truy cập portal. Vui lòng đăng nhập lại."
+  },
+  {
+    "locale": "vi",
+    "id": "error.notFailed",
+    "before": "Việc này không còn ở trạng thái thất bại.",
+    "after": "Tác vụ này không còn ở trạng thái lỗi. Tải lại để xem kết quả mới nhất."
+  },
+  {
+    "locale": "vi",
+    "id": "error.generic",
+    "before": "Chưa tải được. Kiểm tra mạng rồi thử lại.",
+    "after": "Không thể tải hoặc thực hiện yêu cầu. Kiểm tra kết nối rồi thử lại."
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.headline",
+    "before": "Chăm sóc người dùng, mà không chạm vào kỷ niệm của họ.",
+    "after": "Hỗ trợ gia đình. Bảo vệ dữ liệu riêng tư."
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.promise.photos",
+    "before": "Không xem được ảnh, video, chú thích hay ghi chép",
+    "after": "Không truy cập ảnh, video, chú thích hay ghi chép của gia đình"
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.promise.reason",
+    "before": "Mọi thao tác đều được ghi nhật ký",
+    "after": "Thao tác của nhân viên được ghi vào nhật ký"
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.sub",
+    "before": "Dùng email công việc đã được cấp quyền vận hành.",
+    "after": "Đăng nhập bằng email đã được cấp quyền truy cập portal."
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.confirmSub",
+    "before": "Nhập lại email đã nhận link để hoàn tất đăng nhập.",
+    "after": "Nhập email đã nhận liên kết để hoàn tất đăng nhập."
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.link",
+    "before": "Link qua email",
+    "after": "Liên kết qua email"
+  },
+  {
+    "locale": "vi",
+    "id": "signIn.sendLink",
+    "before": "Gửi link đăng nhập",
+    "after": "Gửi liên kết đăng nhập"
+  },
+  {
+    "locale": "vi",
+    "id": "search.open",
+    "before": "Tìm nhanh",
+    "after": "Tìm trang"
+  },
+  {
+    "locale": "vi",
+    "id": "search.placeholder",
+    "before": "Tìm trang hoặc thao tác…",
+    "after": "Nhập tên trang hoặc thao tác…"
+  },
+  {
+    "locale": "vi",
+    "id": "search.empty",
+    "before": "Không có kết quả.",
+    "after": "Không tìm thấy kết quả. Thử từ khoá khác."
+  },
+  {
+    "locale": "vi",
+    "id": "overview.setup",
+    "before": "Hoàn thành thiết lập",
+    "after": "Tỷ lệ hoàn tất thiết lập"
+  },
+  {
+    "locale": "vi",
+    "id": "overview.multi",
+    "before": "Gia đình có từ 2 người chăm",
+    "after": "Gia đình có nhiều người chăm"
+  },
+  {
+    "locale": "vi",
+    "id": "overview.attention",
+    "before": "Cần xử lý",
+    "after": "Việc cần xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "overview.funnel",
+    "before": "Hành trình bắt đầu dùng",
+    "after": "Các bước bắt đầu sử dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "support.empty",
+    "before": "Không có yêu cầu nào ở đây.",
+    "after": "Không có yêu cầu phù hợp với bộ lọc."
+  },
+  {
+    "locale": "vi",
+    "id": "storage.granted",
+    "before": "Đã duyệt",
+    "after": "Đã cấp dung lượng"
+  },
+  {
+    "locale": "vi",
+    "id": "storage.reminded",
+    "before": "Đã nhận nhắc trong app",
+    "after": "Đã gửi nhắc trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "col.requester",
+    "before": "Người yêu cầu",
+    "after": "Người gửi yêu cầu"
+  },
+  {
+    "locale": "vi",
+    "id": "col.created",
+    "before": "Tạo lúc",
+    "after": "Thời điểm tạo"
+  },
+  {
+    "locale": "vi",
+    "id": "col.progress",
+    "before": "Tiến độ",
+    "after": "Tiến độ xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.running",
+    "before": "Đang chạy",
+    "after": "Tác vụ đang xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.failed",
+    "before": "Thất bại trong 24 giờ",
+    "after": "Tác vụ lỗi trong 24 giờ"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.exportTime",
+    "before": "Thời gian xuất (trung vị)",
+    "after": "Thời gian xuất dữ liệu (trung vị)"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.empty",
+    "before": "Không có yêu cầu nào trong 30 ngày qua.",
+    "after": "Chưa có yêu cầu trong 30 ngày qua."
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.steps",
+    "before": "Các bước",
+    "after": "Xem các bước xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "system.reminded",
+    "before": "Đã nhắc trong app",
+    "after": "Đã gửi nhắc trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "system.uploadFailures",
+    "before": "Tải lên lỗi",
+    "after": "Tỷ lệ tải lên lỗi"
+  },
+  {
+    "locale": "vi",
+    "id": "system.rendition",
+    "before": "Chuyển mã video",
+    "after": "Xử lý video để phát trực tuyến"
+  },
+  {
+    "locale": "vi",
+    "id": "system.renditionNote",
+    "before": "Bản phát trực tuyến (display.mp4) · việc tạo trong 24 giờ qua",
+    "after": "Các tác vụ tạo bản video xem trực tuyến trong 24 giờ qua."
+  },
+  {
+    "locale": "vi",
+    "id": "system.renditionStates",
+    "before": "Việc chuyển mã theo trạng thái",
+    "after": "Tình trạng xử lý video"
+  },
+  {
+    "locale": "vi",
+    "id": "system.renditionRecent",
+    "before": "Việc lỗi, bỏ qua hoặc mất dấu gần đây",
+    "after": "Tác vụ lỗi, bỏ qua hoặc chưa rõ kết quả"
+  },
+  {
+    "locale": "vi",
+    "id": "system.renditionRecentEmpty",
+    "before": "Không có việc nào lỗi trong 24 giờ qua.",
+    "after": "Chưa có tác vụ lỗi, bỏ qua hoặc chưa rõ kết quả trong 24 giờ qua."
+  },
+  {
+    "locale": "vi",
+    "id": "system.requeueDone",
+    "before": "Đã xếp hàng lần {attempt} · việc {job}",
+    "after": "Đã xếp hàng xử lý lần {attempt} · mã tác vụ {job}"
+  },
+  {
+    "locale": "vi",
+    "id": "system.backfill",
+    "before": "Chuyển mã video cũ",
+    "after": "Xử lý video đã tải trước đây"
+  },
+  {
+    "locale": "vi",
+    "id": "system.backfillTitle",
+    "before": "Chuyển mã video tải lên trước đây",
+    "after": "Tạo bản xem trực tuyến cho video cũ"
+  },
+  {
+    "locale": "vi",
+    "id": "system.backfillBody",
+    "before": "Xếp hàng các video đã tải xong nhưng chưa có bản phát trực tuyến, cũ nhất trước, mỗi lượt tối đa {max} video. Chạy tiếp tới khi không còn video nào.",
+    "after": "Xử lý các video đã tải xong nhưng chưa có bản xem trực tuyến, từ cũ đến mới. Mỗi lần tối đa {max} video; có thể tiếp tục nếu còn video chờ."
+  },
+  {
+    "locale": "vi",
+    "id": "system.backfillConfirm",
+    "before": "Xếp hàng",
+    "after": "Bắt đầu xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "system.backfillAgain",
+    "before": "Xếp tiếp",
+    "after": "Xử lý lượt tiếp theo"
+  },
+  {
+    "locale": "vi",
+    "id": "flag.assistant.offEffect",
+    "before": "Ẩn trợ lý; lịch sử chat vẫn xem được, các module ghi trực tiếp không đổi.",
+    "after": "Ẩn trợ lý; gia đình vẫn xem được lịch sử trò chuyện và ghi trực tiếp ở các mục chăm sóc."
+  },
+  {
+    "locale": "vi",
+    "id": "flag.assistant_writes",
+    "before": "Trợ lý · lưu vào module",
+    "after": "Trợ lý · lưu kết quả vào ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "flag.assistant_writes.offEffect",
+    "before": "Tạm dừng lưu từ trợ lý; ghi trực tiếp trong module vẫn chạy.",
+    "after": "Tạm dừng lưu từ trợ lý. Gia đình vẫn có thể ghi trực tiếp trong các mục tương ứng."
+  },
+  {
+    "locale": "vi",
+    "id": "qa.sub",
+    "before": "Mỗi phân hệ làm gì trên app iOS/Android, website, trang chia sẻ và cổng vận hành — và các ca chính cần chạy trước khi một bản build lên production.",
+    "after": "Các chức năng và ca cần kiểm tra trên iOS, Android, website, trang chia sẻ và portal trước khi phát hành."
+  },
+  {
+    "locale": "vi",
+    "id": "qa.table.empty",
+    "before": "Không có ca nào khớp bộ lọc.",
+    "after": "Không có ca kiểm thử phù hợp. Thử đổi hoặc xoá bộ lọc."
+  },
+  {
+    "locale": "vi",
+    "id": "qa.col.level",
+    "before": "Mức",
+    "after": "Nhóm kiểm thử"
+  },
+  {
+    "locale": "vi",
+    "id": "qa.start.purpose.body",
+    "before": "Sổ tay giải thích mỗi phân hệ của Child Life làm gì trên từng bề mặt — app di động (Flutter, iOS + Android), website, trang xem câu chuyện được chia sẻ và cổng vận hành — và liệt kê các ca chính cần chạy trước khi một bản build lên production.",
+    "after": "Hướng dẫn chức năng và các ca cần kiểm tra trên ứng dụng, website, trang chia sẻ và portal trước khi phát hành."
+  },
+  {
+    "locale": "vi",
+    "id": "qa.start.levels.title",
+    "before": "Smoke và core",
+    "after": "Kiểm tra nhanh và luồng chính"
+  },
+  {
+    "locale": "vi",
+    "id": "qa.start.levels.core",
+    "before": "<b>Core</b> — các luồng chính (happy path) của từng phân hệ. Chạy trước khi đưa một bản lên production (nghiệm thu UAT).",
+    "after": "<b>Core — Luồng chính</b>: kiểm tra các thao tác chính của từng mục trước khi phát hành bản chính thức (nghiệm thu UAT)."
+  },
+  {
+    "locale": "vi",
+    "id": "staff.empty",
+    "before": "Không có thành viên nào khớp.",
+    "after": "Không có nhân viên phù hợp với bộ lọc."
+  },
+  {
+    "locale": "vi",
+    "id": "staff.col.scope",
+    "before": "Phạm vi",
+    "after": "Phạm vi quyền"
+  },
+  {
+    "locale": "vi",
+    "id": "staff.col.access",
+    "before": "Thời hạn quyền",
+    "after": "Quyền truy cập đến"
+  },
+  {
+    "locale": "vi",
+    "id": "staff.col.last",
+    "before": "Gần nhất",
+    "after": "Truy cập gần nhất"
+  },
+  {
+    "locale": "vi",
+    "id": "staff.inviteTitle",
+    "before": "Mời thành viên",
+    "after": "Mời nhân viên"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.rerun",
+    "before": "Chạy lại",
+    "after": "Thử xử lý lại"
+  },
+  {
+    "locale": "vi",
+    "id": "families.empty",
+    "before": "Chưa có gia đình nào khớp bộ lọc.",
+    "after": "Không tìm thấy gia đình phù hợp. Thử đổi mã tìm kiếm hoặc bộ lọc."
+  },
+  {
+    "locale": "vi",
+    "id": "families.col.storage",
+    "before": "Dung lượng",
+    "after": "Dung lượng đã dùng / hạn mức"
+  },
+  {
+    "locale": "vi",
+    "id": "reference.builtin",
+    "before": "Bản gói sẵn trong app",
+    "after": "Bản có sẵn trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "reference.howApp",
+    "before": "Cách app đánh giá",
+    "after": "Ứng dụng dùng bảng này thế nào?"
+  },
+  {
+    "locale": "vi",
+    "id": "reference.col.step",
+    "before": "Bước tăng khi chỉnh",
+    "after": "Mỗi lần tăng / giảm"
+  },
+  {
+    "locale": "vi",
+    "id": "reference.csvSub",
+    "before": "Bản nhập trở thành bản nháp; một người khác có quyền Duyệt phải duyệt trước khi app dùng.",
+    "after": "Tệp được nhập vào bản nháp. Một người khác có quyền Duyệt phải phê duyệt trước khi ứng dụng sử dụng."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.sub",
+    "before": "Thiệp cột mốc và Video kỷ niệm trong app (Kỷ niệm 2.0): hình ảnh, bố cục, nhạc, Miễn phí / Cao cấp. Người khác duyệt mới xuất bản.",
+    "after": "Quản lý mẫu thiệp, video, hình ảnh và nhạc. Bộ mẫu chỉ được xuất bản sau khi người khác duyệt."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.status.draft",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.emptyEdit",
+    "before": "Chưa có bộ mẫu nào. Bắt đầu từ bộ mẫu đầu tiên (4 thiệp theo Figma MM10, 4 video) rồi chỉnh sửa, tải ảnh lên và gửi duyệt.",
+    "after": "Chưa có bộ mẫu. Tạo bộ mẫu đầu tiên, thêm nội dung rồi gửi duyệt."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.col.formats",
+    "before": "Khổ",
+    "after": "Tỷ lệ khung hình"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.layers",
+    "before": "Các lớp (JSON)",
+    "after": "Bố cục nâng cao (JSON)"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.layersHelp",
+    "before": "Lớp: background · photo · text · shape · image. Vị trí theo tỉ lệ 0–1 của thiệp; cỡ chữ theo tỉ lệ bề ngang; màu \"background\" / \"ink\" / \"accent\" đổi theo \"Màu\". Ảnh lấy tên từ Thư viện.",
+    "after": "Các lớp: nền (background), ảnh người dùng (photo), chữ (text), hình (shape), ảnh trang trí (image). Vị trí dùng tỷ lệ 0–1; cỡ chữ theo bề ngang thiệp. Màu background, ink, accent lấy từ bảng màu; tên ảnh trang trí lấy từ Thư viện."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.previewNone",
+    "before": "Chưa có · app chạy bản mẫu tự động",
+    "after": "Chưa có video mẫu · ứng dụng dùng bản mẫu tự động"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.music.note",
+    "before": "Chỉ dùng nhạc có license thương mại. Bài “Hiện trong app” cần nguồn và số license. Phụ huynh chọn bài ở bước Hoàn thiện video; mỗi mẫu có một bài mặc định.",
+    "after": "Chỉ dùng nhạc có giấy phép thương mại. Bài hiển thị trong ứng dụng phải có nguồn và số giấy phép. Mỗi mẫu có một bài mặc định; phụ huynh có thể đổi khi hoàn thiện video."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.music.empty",
+    "before": "Chưa có bài nhạc nào. Tải file MP3/M4A lên tab Tệp rồi thêm bài.",
+    "after": "Chưa có bài nhạc. Tải tệp MP3/M4A lên mục Tệp rồi thêm bài."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.music.col.licence",
+    "before": "License",
+    "after": "Giấy phép"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.noFormat",
+    "before": "Mẫu chưa có khổ này. Bấm “Thêm khổ” để chép từ khổ đầu tiên.",
+    "after": "Chưa có bố cục cho tỷ lệ này. Chọn “Thêm khổ” để sao chép bố cục hiện có."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.scenesJson",
+    "before": "Cảnh (JSON)",
+    "after": "Cấu hình cảnh nâng cao (JSON)"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.newHelp",
+    "before": "Mã mẫu: {id}. Chép bố cục, màu, chữ và nhạc từ mẫu đã chọn; dịp và độ tuổi để trống. Mẫu mới ở trạng thái “Ẩn (đang làm)”; lưu nháp và gửi duyệt khi xong.",
+    "after": "Mã mẫu: {id}. Sao chép bố cục, màu, chữ và nhạc từ mẫu đã chọn; dịp và độ tuổi để trống. Mẫu mới được ẩn trong lúc soạn. Lưu nháp rồi gửi duyệt khi hoàn tất."
+  },
+  {
+    "locale": "vi",
+    "id": "ks.f.composition",
+    "before": "Composition (Remotion)",
+    "after": "Kiểu dựng video (Remotion)"
+  },
+  {
+    "locale": "vi",
+    "id": "ks.lib.title",
+    "before": "Tệp mẫu",
+    "after": "Thư viện tệp"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.tool",
+    "before": "Công cụ thêm",
+    "after": "Công cụ đi kèm"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.variantKind",
+    "before": "Loại biến thể",
+    "after": "Loại hướng dẫn theo trường hợp"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.variantId",
+    "before": "Mã biến thể",
+    "after": "Mã trường hợp"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.variantLabel",
+    "before": "Nhãn biến thể",
+    "after": "Tên trường hợp"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.variantAge",
+    "before": "Mặc định cho bé trong độ tuổi",
+    "after": "Mặc định cho độ tuổi"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.variantHero",
+    "before": "Ảnh đầu trang riêng",
+    "after": "Ảnh riêng cho trường hợp này"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.cpr",
+    "before": "Chế độ CPR",
+    "after": "Chế độ hồi sức tim phổi (CPR)"
+  },
+  {
+    "locale": "vi",
+    "id": "firstAid.field.chips",
+    "before": "Nhãn nhỏ",
+    "after": "Nhãn hiển thị"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.tab.reference",
+    "before": "Mô hình tham khảo",
+    "after": "Giai đoạn tham khảo"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.tab.rules",
+    "before": "Quy tắc",
+    "after": "Điều kiện gợi ý"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.offsetUnit",
+    "before": "ngày sau ngày dự sinh",
+    "after": "ngày tính từ ngày dự sinh"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.sources",
+    "before": "Nguồn",
+    "after": "Nguồn tham khảo"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.itemStatus.draft",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.itemId",
+    "before": "Mã",
+    "after": "Mã nội dung"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.version",
+    "before": "Phiên bản nội dung",
+    "after": "Phiên bản của nội dung"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.itemStatus",
+    "before": "Trạng thái trên app",
+    "after": "Trạng thái hiển thị trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.safety",
+    "before": "Không khi… (an toàn)",
+    "after": "Trường hợp không nên áp dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "rhythm.field.maxAgeDays",
+    "before": "Chỉ hỏi khi bé dưới (ngày tuổi)",
+    "after": "Chỉ hỏi khi bé dưới số ngày tuổi này"
+  },
+  {
+    "locale": "vi",
+    "id": "jobs.render",
+    "before": "Video kỷ niệm",
+    "after": "Dựng video"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.kpi.exhausted",
+    "before": "Hộ hết credit",
+    "after": "Gia đình đã dùng hết credit"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.task.reservation",
+    "before": "Giữ chỗ credit",
+    "after": "Credit đang tạm giữ"
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.task.noReservation",
+    "before": "Không giữ credit (hỗ trợ sức khoẻ, bị chặn hoặc chưa bắt đầu).",
+    "after": "Không tạm giữ credit: tác vụ hỗ trợ sức khoẻ, bị chặn hoặc chưa bắt đầu."
+  },
+  {
+    "locale": "vi",
+    "id": "assistant.draft.state.draft",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "content.status.draft",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "content.status.archived",
+    "before": "Lưu trữ",
+    "after": "Đã lưu trữ"
+  },
+  {
+    "locale": "vi",
+    "id": "content.kpi.inApp",
+    "before": "Đang trên app",
+    "after": "Đang hiển thị trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "content.kpi.pendingFoot",
+    "before": "{n} đã duyệt, chờ xuất bản",
+    "after": "{n} mục đã duyệt, chờ xuất bản"
+  },
+  {
+    "locale": "vi",
+    "id": "content.kpi.drafts",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "content.filter.allLangs",
+    "before": "Ngôn ngữ: Đủ cả hai",
+    "after": "Ngôn ngữ: Đủ Việt và Anh"
+  },
+  {
+    "locale": "vi",
+    "id": "content.untitled",
+    "before": "(chưa có tiêu đề)",
+    "after": "Chưa đặt tiêu đề"
+  },
+  {
+    "locale": "vi",
+    "id": "content.noMatch",
+    "before": "Không có mục nào khớp bộ lọc.",
+    "after": "Không tìm thấy nội dung phù hợp. Thử đổi hoặc xoá bộ lọc."
+  },
+  {
+    "locale": "vi",
+    "id": "articles.new",
+    "before": "Bài viết mới",
+    "after": "Tạo bài viết"
+  },
+  {
+    "locale": "vi",
+    "id": "stages.new",
+    "before": "Nội dung mới",
+    "after": "Tạo nội dung giai đoạn"
+  },
+  {
+    "locale": "vi",
+    "id": "stages.state.draft",
+    "before": "Nháp",
+    "after": "Bản nháp"
+  },
+  {
+    "locale": "vi",
+    "id": "milestones.new",
+    "before": "Mốc mới",
+    "after": "Tạo mốc phát triển"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.tab.rules",
+    "before": "Quy tắc gợi ý",
+    "after": "Điều kiện gợi ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.search.rules",
+    "before": "Tìm quy tắc…",
+    "after": "Tìm điều kiện gợi ý…"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.col.nutrients",
+    "before": "Vi chất chú ý",
+    "after": "Vi chất cần lưu ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.col.focus",
+    "before": "Giai đoạn chú ý",
+    "after": "Giai đoạn cần lưu ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.perFeedMl",
+    "before": "ml mỗi cữ",
+    "after": "Lượng mỗi cữ (ml)"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.perDayMl",
+    "before": "ml mỗi ngày",
+    "after": "Lượng mỗi ngày (ml)"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.nutrientIds",
+    "before": "Vi chất chú ý",
+    "after": "Vi chất cần lưu ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.focus",
+    "before": "Giai đoạn chú ý",
+    "after": "Giai đoạn cần lưu ý"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.fromDay",
+    "before": "Từ ngày",
+    "after": "Từ ngày trong tháng"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.toDay",
+    "before": "Đến ngày",
+    "after": "Đến ngày trong tháng"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.field.remindAfterDays",
+    "before": "Nhắc đo lại",
+    "after": "Nhắc đo lại sau (ngày)"
+  },
+  {
+    "locale": "vi",
+    "id": "nutrition.copy.title",
+    "before": "Chưa gửi duyệt được: {n} chỗ cần sửa",
+    "after": "Cần sửa {n} mục trước khi gửi duyệt"
+  },
+  {
+    "locale": "vi",
+    "id": "review.kind.nutritionRule",
+    "before": "Quy tắc gợi ý",
+    "after": "Điều kiện gợi ý"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.col.allergen",
+    "before": "Dị ứng",
+    "after": "Nhóm dị ứng"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.col.minAge",
+    "before": "Từ",
+    "after": "Tuổi tối thiểu"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.col.allergens",
+    "before": "Dị ứng",
+    "after": "Nhóm dị ứng"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.field.minAgeMonths",
+    "before": "Tuổi tối thiểu",
+    "after": "Tuổi tối thiểu (tháng)"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.field.prepMinutes",
+    "before": "Sơ chế",
+    "after": "Thời gian sơ chế (phút)"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.field.cookMinutes",
+    "before": "Nấu",
+    "after": "Thời gian nấu (phút)"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.field.foodId",
+    "before": "Thực phẩm",
+    "after": "Thực phẩm trong danh mục"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.copy.title",
+    "before": "Chưa gửi duyệt được: {n} chỗ cần sửa",
+    "after": "Cần sửa {n} mục trước khi gửi duyệt"
+  },
+  {
+    "locale": "vi",
+    "id": "solids.age.title",
+    "before": "Chưa hợp tuổi: {n} nguyên liệu",
+    "after": "{n} nguyên liệu chưa phù hợp với độ tuổi"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.section.acquisition",
+    "before": "Thu hút & quay lại",
+    "after": "Thu hút và quay lại"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.filtersNote",
+    "before": "Ngày báo cáo theo giờ Việt Nam. Bộ lọc nền tảng/ngôn ngữ có thể chưa áp dụng cho kết quả backend chưa có nguồn liên kết; chỉ số đó sẽ ghi chưa đo được. Không cộng iOS và Android thành tổng người dùng.",
+    "after": "Ngày báo cáo theo giờ Việt Nam. Chỉ áp dụng bộ lọc khi có đủ dữ liệu liên kết; chỉ số không đáp ứng sẽ ghi “Chưa đo được”. Không cộng người dùng iOS và Android để tính tổng."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.recordingOff",
+    "before": "Thu thập mới đang tắt. Số liệu đã ghi nhận vẫn được đọc theo quyền; không tự bật cấu hình production.",
+    "after": "Đang tắt thu thập dữ liệu mới. Bạn vẫn có thể xem dữ liệu đã ghi nhận theo quyền truy cập hiện có."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.noData",
+    "before": "Chưa có dữ liệu cho khoảng đã chọn. Dữ liệu thử nghiệm không được thay vào báo cáo này.",
+    "after": "Chưa có dữ liệu trong khoảng đã chọn."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition",
+    "before": "Mã {id}. Cửa sổ {days} ngày. Tỷ lệ dùng nhóm đủ điều kiện; bản nháp, hàng đợi tải và lịch thông báo không phải kết quả hoàn tất.",
+    "after": "Mã {id} · theo dõi {days} ngày. Tỷ lệ chỉ tính nhóm đủ điều kiện. Bản nháp, chờ tải lên và đặt lịch nhắc chưa phải kết quả hoàn tất."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.status.ready",
+    "before": "Đã đối soát theo nguồn hiện có",
+    "after": "Đã tổng hợp từ dữ liệu hiện có"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.status.provisional",
+    "before": "Tạm tính · chờ dữ liệu muộn",
+    "after": "Tạm tính · đang chờ dữ liệu muộn"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.status.immature",
+    "before": "Chưa hết cửa sổ quan sát",
+    "after": "Chưa đủ thời gian quan sát"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.reason.none",
+    "before": "Số tổng hợp không chứa định danh cá nhân. Kết quả theo ngày thao tác thật, không theo ngày chụp ảnh cũ.",
+    "after": "Số liệu tổng hợp, không kèm định danh cá nhân. Tính theo ngày thực hiện thao tác, không phải ngày chụp ảnh cũ."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.reason.not_instrumented",
+    "before": "Chưa đủ instrumentation hoặc liên kết nguồn để tính đúng chỉ số này.",
+    "after": "Chưa có đủ dữ liệu ghi nhận hoặc liên kết giữa các bước để tính chỉ số này."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.reason.window_open",
+    "before": "Cohort chưa có đủ thời gian quan sát, không tính là 0%.",
+    "after": "Nhóm này chưa đủ thời gian theo dõi. Kết quả chưa được tính là 0%."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.stage.accepted",
+    "before": "Provider nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.deliveryNote",
+    "before": "Provider chấp nhận hoặc đã đặt lịch không chứng minh điện thoại hiển thị. Khi engine chưa ghi cohort/attribution thì không tính conversion từ bộ đếm cũ.",
+    "after": "Đặt lịch hoặc được dịch vụ gửi chấp nhận không có nghĩa là thông báo đã hiện trên điện thoại. Chỉ tính tỷ lệ hoàn tất khi liên kết được nhóm nhận nhắc với kết quả tương ứng."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.noExperiment",
+    "before": "Chưa có phân nhóm thử nghiệm được phê duyệt. Không kết luận mức tăng do reminder từ so sánh trước/sau.",
+    "after": "Chưa có thử nghiệm đối chứng được phê duyệt. So sánh trước và sau không chứng minh hiệu quả do lời nhắc mang lại."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.retention",
+    "before": "Quay lại đúng ngày D1 / D7 / D30",
+    "after": "Quay lại sau 1, 7 và 30 ngày"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.module.care",
+    "before": "Care",
+    "after": "Chăm sóc"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.module.grow",
+    "before": "Grow",
+    "after": "Phát triển"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.module.remember",
+    "before": "Remember",
+    "after": "Kỷ niệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.coverageNote",
+    "before": "Chỉ hiển thị dữ liệu có nguồn. Thiếu actor, bước funnel hoặc nguồn lịch sử vẫn là chưa biết; không suy ngược từ tổng lượt. Cửa sổ mới chờ thêm 72 giờ để nhận dữ liệu muộn. Không có tuyên bố ý nghĩa thống kê khi mẫu nhỏ.",
+    "after": "Chỉ tính khi có dữ liệu xác minh. Không suy người thực hiện hoặc các bước còn thiếu từ tổng lượt. Chờ thêm 72 giờ để nhận dữ liệu muộn; nhóm nhỏ chưa đủ cơ sở kết luận thống kê."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.costNote",
+    "before": "Token có usage từ provider khác với chi phí thực trên hóa đơn. Ước tính chỉ gồm call có đơn giá, không cộng với ước tính VND cũ. Credits không phải tiền. Render, storage và hóa đơn chưa có nguồn vẫn chưa đo được. Billing/IAP nằm backlog.",
+    "after": "Chi phí AI là ước tính từ các lượt có dữ liệu token và đơn giá, chưa phải số tiền trên hoá đơn. Không cộng với ước tính VND cũ. Credit không phải tiền. Chi phí dựng video, lưu trữ và hoá đơn chỉ hiển thị khi có nguồn xác minh; thanh toán trong ứng dụng chưa được đo."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.memoriesNote",
+    "before": "Yêu cầu upload, cloud-ready, render xong và video đã lưu là các bước riêng. Chưa có liên kết discovery → review → approve thì không suy conversion. Ảnh lịch sử chỉ tính hoạt động lúc nhập/lưu thực tế.",
+    "after": "Yêu cầu tải lên, tải xong, dựng video xong và lưu thành phẩm là các bước riêng. Chỉ tính tỷ lệ khi liên kết được từng bước. Ảnh cũ được tính vào ngày nhập hoặc lưu, không phải ngày chụp."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A02_1",
+    "before": "DAU · người dùng",
+    "after": "Người hoạt động mỗi ngày (DAU)"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A02_7",
+    "before": "WAU · người dùng",
+    "after": "Người hoạt động trong 7 ngày (WAU)"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A02_30",
+    "before": "MAU · người dùng",
+    "after": "Người hoạt động trong 30 ngày (MAU)"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A08",
+    "before": "Activation trong 7 ngày",
+    "after": "Có kết quả đầu tiên trong 7 ngày"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A05_1",
+    "before": "Retention D1",
+    "after": "Quay lại đúng ngày thứ 1"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A05_7",
+    "before": "Retention D7",
+    "after": "Quay lại đúng ngày thứ 7"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.A05_30",
+    "before": "Retention D30",
+    "after": "Quay lại đúng ngày thứ 30"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_ready",
+    "before": "Media cloud-ready",
+    "after": "Ảnh và video đã sẵn sàng"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_story",
+    "before": "Story văn bản đã lưu",
+    "after": "Câu chuyện đã lưu"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_rendered",
+    "before": "Video render xong",
+    "after": "Video đã dựng xong"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_render_failed",
+    "before": "Job từng thất bại",
+    "after": "Tác vụ từng gặp lỗi"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_upload",
+    "before": "Yêu cầu upload media",
+    "after": "Yêu cầu tải ảnh và video"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_review",
+    "before": "Lượt mở review hợp lệ",
+    "after": "Lượt mở màn duyệt ảnh hợp lệ"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_discovered",
+    "before": "Discovery cohort",
+    "after": "Nhóm ảnh được phát hiện"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_approved",
+    "before": "Approval cohort",
+    "after": "Nhóm ảnh được chọn lưu"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.M_cloud_conversion",
+    "before": "Discovery → cloud-ready",
+    "after": "Từ phát hiện ảnh đến tải xong"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_calls",
+    "before": "Provider calls ghi nhận",
+    "after": "Lượt gọi dịch vụ AI"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_input",
+    "before": "Input tokens ghi nhận",
+    "after": "Token đầu vào đã ghi nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_output",
+    "before": "Output tokens ghi nhận",
+    "after": "Token đầu ra đã ghi nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_cached",
+    "before": "Cached input tokens",
+    "after": "Token đầu vào từ bộ nhớ đệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_unknown",
+    "before": "Call chưa biết usage",
+    "after": "Lượt gọi thiếu dữ liệu sử dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_rated",
+    "before": "Call đủ đơn giá",
+    "after": "Lượt gọi đủ dữ liệu để tính chi phí"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_render",
+    "before": "Chi phí render",
+    "after": "Chi phí dựng video"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_storage",
+    "before": "Chi phí storage",
+    "after": "Chi phí lưu trữ"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.C_credits",
+    "before": "Credits đã committed",
+    "after": "Credit đã tính vào hạn mức"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.chapter",
+    "before": "Chapter",
+    "after": "Bộ kỷ niệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.chapter.all",
+    "before": "Mọi Chapter",
+    "after": "Mọi bộ kỷ niệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.chapter.chapter01",
+    "before": "Chapter 01 · cần mapping nguồn",
+    "after": "Bộ 01 · chưa liên kết được nguồn dữ liệu"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.chapter.unknown",
+    "before": "Chưa được gán Chapter",
+    "after": "Chưa xác định bộ kỷ niệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.F02",
+    "before": "Gia đình dùng từ hai module",
+    "after": "Gia đình dùng ít nhất hai mục tính năng"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.E_ENG-01",
+    "before": "Ảnh chờ review · hoàn tất / đủ điều kiện",
+    "after": "Ảnh chờ chọn lưu · hoàn tất / đủ điều kiện"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.E_ENG-03",
+    "before": "Digest tuần · hoàn tất / đủ điều kiện",
+    "after": "Kỷ niệm tuần · hoàn tất / đủ điều kiện"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.metric.E_ENG-04",
+    "before": "Care · hoàn tất / đủ điều kiện",
+    "after": "Chăm sóc · hoàn tất / đủ điều kiện"
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A01",
+    "before": "Tài khoản có sự kiện đăng ký từ Auth được xác minh trong khoảng báo cáo; loại staff. Metadata khôi phục hoặc tài khoản khách liên kết chưa có bằng chứng không được đoán là đăng ký mới.",
+    "after": "Số tài khoản có đăng ký được hệ thống xác thực xác nhận trong kỳ, không gồm nhân viên. Không coi tài khoản khôi phục hoặc liên kết khách là đăng ký mới khi chưa có bằng chứng."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A08",
+    "before": "Người có kết quả Care/Grow, media sẵn sàng, Story hoặc keepsake đã lưu, hoặc chủ động xem nội dung người khác chia sẻ, trong 7×24 giờ từ đăng ký. Mẫu số là cohort đăng ký đã hết cửa sổ và chờ thêm 72 giờ.",
+    "after": "Người có kết quả chăm sóc, phát triển, ảnh/video tải xong, câu chuyện/thiệp/video đã lưu hoặc chủ động xem nội dung được chia sẻ trong 7 × 24 giờ từ lúc đăng ký. Chỉ tính nhóm đã hết thời gian quan sát và chờ thêm 72 giờ."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A10",
+    "before": "Người ở vai trò tạo nội dung có media đầu tiên cloud-ready trong bảy ngày đăng ký, trên cohort cùng vai trò đã đủ thời gian. Approved hoặc queued chưa phải ready.",
+    "after": "Người có quyền tạo nội dung tải xong ảnh hoặc video đầu tiên trong 7 ngày từ đăng ký, trên tổng người cùng vai trò đã đủ thời gian quan sát. Chọn lưu hoặc chờ tải chưa được tính là tải xong."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A11",
+    "before": "Gia đình có ít nhất một kết quả Care/Grow, media sẵn sàng, Story hoặc keepsake đã lưu trong tuần ISO vừa kết thúc. Một gia đình nhiều người/nhiều bé vẫn chỉ tính một lần.",
+    "after": "Gia đình có ít nhất một kết quả chăm sóc, phát triển, ảnh/video tải xong hoặc câu chuyện/thiệp/video đã lưu trong tuần ISO vừa kết thúc. Mỗi gia đình chỉ tính một lần, dù có nhiều thành viên hoặc bé."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A05_1",
+    "before": "Cohort đăng ký quay lại đúng ngày lịch D1 theo giờ Việt Nam, chia cho cohort đã đủ thời gian quan sát; không phải mở bất kỳ ngày nào sau đăng ký.",
+    "after": "Tỷ lệ người đăng ký hoạt động đúng ngày lịch thứ 1 sau đăng ký, theo giờ Việt Nam. Chỉ tính nhóm đã đủ thời gian quan sát; mở vào một ngày khác không được tính."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A05_7",
+    "before": "Cohort đăng ký hoạt động đúng ngày D7. Ô chưa hết ngày D7 và thêm 72 giờ chờ dữ liệu được giữ chưa hoàn tất.",
+    "after": "Tỷ lệ người đăng ký hoạt động đúng ngày lịch thứ 7. Chờ hết ngày đó và thêm 72 giờ nhận dữ liệu muộn trước khi chốt kết quả."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.A05_30",
+    "before": "Cohort đăng ký hoạt động đúng ngày D30; khác chỉ số D30 theo cửa sổ 28–32 ngày của báo cáo cũ.",
+    "after": "Tỷ lệ người đăng ký hoạt động đúng ngày lịch thứ 30, khác báo cáo cũ tính trong khoảng ngày 28–32."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_ready",
+    "before": "Media được server xác nhận status=ready. Ngày hoàn tất là readyAt, không phải ngày chụp hoặc ngày mốc lịch sử.",
+    "after": "Ảnh hoặc video được máy chủ xác nhận đã sẵn sàng. Tính vào ngày xác nhận sẵn sàng, không phải ngày chụp hoặc ngày kỷ niệm."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_story",
+    "before": "Story văn bản chuyển sang saved một lần theo nguồn; bản nháp AI chưa tính hoàn tất.",
+    "after": "Số câu chuyện văn bản đã lưu thành công, mỗi câu chuyện tính một lần theo nguồn. Bản nháp AI chưa được tính."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_card",
+    "before": "Thiệp tạo có chủ đích đã thành media ready; giữ riêng với video và bản xem thử.",
+    "after": "Thiệp được tạo và tải lên thành công. Đếm riêng với video và bản xem thử."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_video",
+    "before": "Job completed đã có memoryId được backend lưu vào Memories. Render xong nhưng chưa filed không tính.",
+    "after": "Video đã dựng xong và được máy chủ xác nhận lưu vào Kỷ niệm. Dựng xong nhưng chưa lưu chưa được tính."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_rendered",
+    "before": "Job đạt trạng thái render completed, trước khi xác nhận đã lưu thành phẩm.",
+    "after": "Tác vụ đã dựng xong video, trước bước xác nhận lưu thành phẩm vào Kỷ niệm."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_render_failed",
+    "before": "Job từng có trạng thái failed trong kỳ; có thể đã retry thành công sau đó. Không lấy số này suy ra tỷ lệ lỗi cuối cùng.",
+    "after": "Tác vụ từng lỗi trong kỳ, kể cả sau đó đã xử lý lại thành công. Chỉ số này không phải tỷ lệ tác vụ vẫn đang lỗi."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_upload",
+    "before": "Media có yêu cầu upload hợp lệ; có thể đang chờ quota hoặc đang tải. Chưa phải số ảnh được duyệt hay lưu xong.",
+    "after": "Ảnh hoặc video có yêu cầu tải lên hợp lệ; có thể còn chờ dung lượng hoặc đang tải. Chưa phải số ảnh đã chọn lưu hoặc tải xong."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_review",
+    "before": "Lượt mở màn review được gắn đúng người và nguồn có quyền; không suy số ảnh đã xem từ số lượt này.",
+    "after": "Lượt mở màn duyệt ảnh được gắn đúng người thực hiện và nguồn có quyền truy cập. Không dùng số lượt mở để suy số ảnh đã xem."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_video_requested",
+    "before": "Yêu cầu tạo video tạo được logical job mới; retry và file thành phẩm là các bước khác.",
+    "after": "Yêu cầu tạo được một tác vụ video mới. Xử lý lại tác vụ cũ và tệp video thành phẩm được tính riêng."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_share",
+    "before": "Share sheet đã mở cho video có quyền xem. Không chứng minh chia sẻ thành công hoặc người nhận đã xem.",
+    "after": "Lượt mở bảng chia sẻ cho video người dùng có quyền xem. Không chứng minh đã chia sẻ thành công hoặc người nhận đã xem."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_discovered",
+    "before": "Cần episode và thời điểm phát hiện ổn định theo nguồn local. Chưa có liên kết này thì để chưa đo được, không lấy số ảnh gợi ý làm cohort.",
+    "after": "Cần liên kết được nhóm ảnh với lần và thời điểm phát hiện trên thiết bị. Khi thiếu, ghi “Chưa đo được”; không lấy tổng ảnh gợi ý làm số nhóm."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_approved",
+    "before": "Cần liên kết lựa chọn duyệt với từng discovery cohort; tổng approved cũ không đủ tính conversion.",
+    "after": "Cần liên kết từng ảnh được chọn lưu với nhóm phát hiện ban đầu. Tổng ảnh chọn lưu từ dữ liệu cũ chưa đủ để tính tỷ lệ hoàn tất."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.M_cloud_conversion",
+    "before": "Ảnh trong cùng discovery cohort được review, duyệt và server ready trong cửa sổ. Thiếu bước hoặc batch join vẫn là unknown.",
+    "after": "Tỷ lệ ảnh trong cùng nhóm phát hiện đã được xem, chọn lưu và tải xong trong thời gian theo dõi. Thiếu bước hoặc chưa nối được lô ảnh thì chưa tính."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.F02",
+    "before": "Gia đình có hành động hợp lệ trong ít nhất hai module khác nhau. Một record tăng trưởng không được tính thêm lần nữa vào Care.",
+    "after": "Gia đình có hành động hợp lệ trong ít nhất hai mục tính năng. Một lần ghi tăng trưởng không được tính thêm vào Chăm sóc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_calls",
+    "before": "Call thực sự được observer provider ghi nhận, bao gồm các call lỗi. Không lấy quota credits làm số call.",
+    "after": "Lượt gọi dịch vụ AI được ghi nhận thực tế, gồm cả lượt lỗi. Không lấy số credit làm số lượt gọi."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_input",
+    "before": "Input tokens do provider trả về cho các call có usage; call thiếu usage giữ riêng, không quy về 0.",
+    "after": "Token đầu vào do dịch vụ AI cung cấp. Lượt thiếu dữ liệu được giữ là chưa xác định, không tính bằng 0."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_output",
+    "before": "Output tokens do provider trả về; không suy bằng độ dài câu trả lời hoặc credits.",
+    "after": "Token đầu ra do dịch vụ AI cung cấp, không suy từ độ dài câu trả lời hoặc số credit."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_cached",
+    "before": "Cached input tokens provider ghi rõ. Chỉ hiển thị khi mọi call trong kỳ có breakdown cache; dữ liệu cũ thiếu bằng chứng giữ chưa đo được.",
+    "after": "Token đầu vào được dịch vụ AI xác nhận lấy từ bộ nhớ đệm. Chỉ hiển thị khi mọi lượt trong kỳ đều có thông tin này; dữ liệu cũ thiếu bằng chứng vẫn là chưa xác định."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_unknown",
+    "before": "Số call ghi nhận chưa có đủ token usage từ provider.",
+    "after": "Lượt gọi AI đã được ghi nhận nhưng chưa có đủ dữ liệu token sử dụng."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_rated",
+    "before": "Call có usage và đơn giá/model/version hợp lệ để tính ước tính, chưa phải đã đối soát hóa đơn.",
+    "after": "Lượt gọi có đủ dữ liệu sử dụng, mô hình và phiên bản đơn giá để ước tính chi phí. Chưa phải chi phí đã đối soát hoá đơn."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_estimate",
+    "before": "Ước tính USD từ token có đơn giá theo version cấu hình. Không bao gồm call chưa đủ usage/rate; không phải chi phí invoice thực tế.",
+    "after": "Ước tính USD từ token theo phiên bản đơn giá đã cấu hình. Không gồm lượt thiếu dữ liệu hoặc đơn giá và không phải số tiền thực trên hoá đơn."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_actual",
+    "before": "Chỉ có khi đối soát được nguồn hóa đơn provider đã duyệt; chưa có nguồn không đồng nghĩa không tốn phí.",
+    "after": "Chỉ có khi đối soát được hoá đơn từ nhà cung cấp. Chưa có hoá đơn không có nghĩa là không phát sinh chi phí."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_render",
+    "before": "Cần metering compute hoặc chi phí đã phân bổ đáng tin cậy; thời lượng video xuất ra không phải billable compute time.",
+    "after": "Cần số liệu tài nguyên xử lý hoặc chi phí phân bổ đã xác minh. Độ dài video không phải thời gian tài nguyên được tính tiền."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_storage",
+    "before": "Cần byte-hours, egress/requests hoặc chi phí đã đối soát; quota dung lượng gia đình không phải hóa đơn lưu trữ.",
+    "after": "Cần dữ liệu dung lượng theo thời gian, truyền tải, số yêu cầu hoặc chi phí đã đối soát. Hạn mức dung lượng của gia đình không phải chi phí lưu trữ."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.C_credits",
+    "before": "Units trong quota ledger có state committed, giữ riêng với reserved/released. Không phải token hay tiền.",
+    "after": "Credit đã được tính vào hạn mức, tách riêng với credit đang giữ hoặc đã trả lại. Credit không phải token hay tiền."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-01",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-02",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-03",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-04",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-05",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "pa.definition.E_ENG-06",
+    "before": "Cơ hội đủ điều kiện có kết quả đúng loại trong cửa sổ do nguồn xác nhận, chia cho cohort đã hết cửa sổ và 72 giờ chờ dữ liệu. Không cần mở push để được tính hoàn tất; không chứng minh tác động nhân quả.",
+    "after": "Tỷ lệ cơ hội đủ điều kiện có kết quả phù hợp trong thời gian quy định. Chỉ tính nhóm đã hết thời gian theo dõi và chờ thêm 72 giờ. Người dùng hoàn tất trực tiếp vẫn được tính dù không mở thông báo; chỉ số không chứng minh tác động do lời nhắc."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.feature.rhythm.help",
+    "before": "Lịch tham khảo theo tuổi và check-in hằng ngày cho từng bé.",
+    "after": "Lịch tham khảo theo tuổi và ghi nhận hằng ngày cho từng bé."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.feature.personalization.help",
+    "before": "Gợi ý liên mục theo ghi chép của gia đình và phần nâng cao của Nhịp lớn lên (nhóm A).",
+    "after": "Gợi ý từ các mục chăm sóc và phần nâng cao của Nhịp lớn lên."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.feature.assistant.help",
+    "before": "Trợ lý chat; ảnh, hướng dẫn chăm sóc và lời mời nâng cấp là công tắc thành phần. Premium có quỹ credit lớn hơn.",
+    "after": "Trò chuyện với trợ lý; có thể bật riêng nhận ảnh, hướng dẫn chăm sóc và gợi ý nâng cấp. Gia đình Premium có quỹ credit lớn hơn."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.feature.templates_premium.help",
+    "before": "Các mẫu kỷ niệm Cao cấp (nhóm B). Mẫu nào là Cao cấp vẫn chọn ở Mẫu kỷ niệm.",
+    "after": "Các mẫu kỷ niệm Cao cấp. Chọn gói của từng mẫu tại Mẫu kỷ niệm."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.full.onBody",
+    "before": "Gia đình dùng được mọi tính năng Premium và quỹ credit Premium ngay lần mở app tiếp theo.",
+    "after": "Gia đình dùng được toàn bộ tính năng và quỹ credit Premium ở lần mở ứng dụng tiếp theo."
+  },
+  {
+    "locale": "vi",
+    "id": "hub.tier.system",
+    "before": "Kỹ thuật",
+    "after": "Công tắc hệ thống"
+  },
+  {
+    "locale": "vi",
+    "id": "hub.filter.system",
+    "before": "Kỹ thuật",
+    "after": "Công tắc hệ thống"
+  },
+  {
+    "locale": "vi",
+    "id": "hub.scope.percent",
+    "before": "{p, plural, =0 {Theo %} other {Theo % · #%}}",
+    "after": "{p, plural, =0 {Theo tỷ lệ} other {Theo tỷ lệ · #%}}"
+  },
+  {
+    "locale": "vi",
+    "id": "hub.scope.internal",
+    "before": "Thử nội bộ",
+    "after": "Gia đình nội bộ"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.kpi.free",
+    "before": "Gia đình Free",
+    "after": "Gia đình dùng gói Miễn phí"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.kpi.cost",
+    "before": "Chi phí phục vụ / Premium",
+    "after": "Chi phí phục vụ mỗi gia đình Premium"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.kpi.costFoot",
+    "before": "AI + render + storage",
+    "after": "AI, dựng video và lưu trữ"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.limits.lumi",
+    "before": "Gia đình Premium hết credit Lumi trước kỳ",
+    "after": "Gia đình Premium hết credit Lumi trước khi kết thúc kỳ"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.limits.trial",
+    "before": "Free hết credit trải nghiệm",
+    "after": "Gia đình Miễn phí đã dùng hết credit trải nghiệm"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.renewals.issue",
+    "before": "Lỗi thanh toán (đang retry của store)",
+    "after": "Thanh toán lỗi · cửa hàng đang thử lại"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.attention.jobs",
+    "before": "Job video lỗi (24 giờ)",
+    "after": "Tác vụ dựng video lỗi (24 giờ)"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.attention.held",
+    "before": "Lượt/credit đang giữ quá 15 phút",
+    "after": "Lượt dùng hoặc credit tạm giữ quá 15 phút"
+  },
+  {
+    "locale": "vi",
+    "id": "pov.attention.open",
+    "before": "Mở Job video & hoàn lượt ›",
+    "after": "Xem tác vụ video và hoàn lượt"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.note",
+    "before": "Một nguồn cho app, backend và portal. Thay đổi tạo phiên bản mới và chỉ chạy khi người thứ hai duyệt.",
+    "after": "Cấu hình dùng chung cho ứng dụng và portal. Thay đổi chỉ có hiệu lực sau khi người thứ hai duyệt."
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.running",
+    "before": "Đang chạy: {version}",
+    "after": "Phiên bản đang áp dụng: {version}"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.key",
+    "before": "Khoá",
+    "after": "Mục cấu hình"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.free",
+    "before": "Free",
+    "after": "Miễn phí"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.storagePremium",
+    "before": "{n} (+{addOns} add-on)",
+    "after": "{n} (+{addOns} mua thêm)"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.caregiverSeats",
+    "before": "Chỗ người ghi",
+    "after": "Số người được ghi chép"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.taskCosts",
+    "before": "Chi phí tác vụ (credit)",
+    "after": "Credit cho mỗi tác vụ"
+  },
+  {
+    "locale": "vi",
+    "id": "pv2.plans.taskCostsNote",
+    "before": "Chi phí thật (₫) ghi riêng theo tác vụ, không hiển thị cho người dùng.",
+    "after": "Chi phí vận hành bằng tiền được ghi riêng theo tác vụ và không hiển thị cho người dùng."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.info",
+    "before": "Một danh mục cho mọi loại thông báo, mẫu nội dung VI/EN có phiên bản, tình trạng gửi, hành trình Gợi ý thông minh và dòng thời gian của một gia đình. “Nhà cung cấp đã nhận” không có nghĩa là thiết bị đã hiển thị.",
+    "after": "Quản lý mẫu thông báo, tình trạng gửi và lịch sử theo gia đình. Dịch vụ gửi đã nhận không có nghĩa là thông báo đã hiện trên điện thoại."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tab.delivery",
+    "before": "Gửi & lỗi",
+    "after": "Tình trạng gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.freshness",
+    "before": "{from} – {to} · giờ Việt Nam · Tính lúc {at} · Có dữ liệu từ {date}",
+    "after": "{from} – {to} · giờ Việt Nam · Cập nhật lúc {at} · Có dữ liệu từ {date}"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.noStatsNote",
+    "before": "Sổ gửi chỉ bắt đầu ghi khi nền tảng thông báo mới chạy; những ngày trước đó là “chưa có dữ liệu”, không phải 0.",
+    "after": "Chỉ có dữ liệu từ khi hệ thống bắt đầu ghi nhận. Các ngày trước đó là “Chưa có dữ liệu”, không phải 0."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.acceptedNotDelivered.title",
+    "before": "Đã nhận ≠ đã đến máy",
+    "after": "Đã nhận gửi · chưa xác nhận hiển thị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.acceptedNotDelivered",
+    "before": "“Nhà cung cấp đã nhận” nghĩa là FCM/APNs nhận ít nhất một mã thiết bị — không chứng minh thông báo đã hiện trên máy.",
+    "after": "FCM/APNs đã chấp nhận gửi tới ít nhất một thiết bị. Điều này chưa xác nhận thông báo đã hiển thị trên điện thoại."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.ov.openDelivery",
+    "before": "Mở Gửi & lỗi",
+    "after": "Xem tình trạng gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.ov.switches",
+    "before": "Công tắc vận hành",
+    "after": "Thiết lập gửi thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.ov.pausedGroups",
+    "before": "Đang tạm dừng push cho ít nhất một nhóm. Thông báo vẫn vào hộp thư nhưng không đẩy lên máy.",
+    "after": "Ít nhất một nhóm đang tạm dừng gửi đến thiết bị. Thông báo vẫn vào hộp thư trong ứng dụng."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.created.def",
+    "before": "Thông báo nhà sản xuất đã tạo cho một người nhận.",
+    "after": "Thông báo được hệ thống tạo cho một người nhận."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.held",
+    "before": "Giữ (giờ yên tĩnh)",
+    "after": "Chờ hết giờ yên tĩnh"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.held.def",
+    "before": "Push được giữ vì giờ yên tĩnh.",
+    "after": "Chờ gửi đến thiết bị vì đang trong giờ yên tĩnh."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.no_device.def",
+    "before": "Người nhận không có mã thiết bị nhận push.",
+    "after": "Chưa có thiết bị đăng ký nhận thông báo từ xa cho người nhận này."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.cancelled.def",
+    "before": "Push bị huỷ (công tắc tạm dừng, hết hạn…).",
+    "after": "Đã huỷ gửi đến thiết bị, ví dụ do tạm dừng gửi hoặc hết hạn."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.attempted.def",
+    "before": "Đã gọi nhà cung cấp push ít nhất một lần.",
+    "after": "Đã gọi dịch vụ gửi thông báo ít nhất một lần."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.accepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.accepted.def",
+    "before": "FCM/APNs nhận ít nhất một mã — không phải bằng chứng đã hiện trên máy.",
+    "after": "Dịch vụ gửi đã chấp nhận ít nhất một mã thiết bị, chưa xác nhận điện thoại đã hiển thị thông báo."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.opened.def",
+    "before": "Người nhận chạm vào push hoặc dòng trong hộp thư.",
+    "after": "Người nhận mở từ thông báo trên thiết bị hoặc từ hộp thư trong ứng dụng."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.metric.opened_push",
+    "before": "Mở từ push",
+    "after": "Mở từ thông báo trên thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tplStatus.paused",
+    "before": "Tạm dừng",
+    "after": "Dùng bản mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.draftState.ready_for_review",
+    "before": "Nháp chờ duyệt",
+    "after": "Bản nháp chờ duyệt"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.v0short",
+    "before": "v0 · trong mã",
+    "after": "v0 · mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.v0",
+    "before": "Phiên bản 0 (trong mã)",
+    "after": "Phiên bản 0 · nội dung mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.v0note",
+    "before": "Nội dung gốc trong mã, luôn có sẵn",
+    "after": "Nội dung mặc định có sẵn trong hệ thống"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.liveV0",
+    "before": "Đang gửi: phiên bản 0 (trong mã)",
+    "after": "Đang gửi: nội dung mặc định (v0)"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.pause",
+    "before": "Tạm dừng",
+    "after": "Dùng bản mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.resume",
+    "before": "Dùng lại",
+    "after": "Dùng lại bản xuất bản"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.archive.body",
+    "before": "Các nơi gửi quay về phiên bản 0 (trong mã) và vẫn gửi bình thường. Có thể quay lại một phiên bản cũ sau.",
+    "after": "Thông báo vẫn được gửi bằng nội dung mặc định (phiên bản 0). Bạn có thể xuất bản lại một phiên bản cũ sau này."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.pause.title",
+    "before": "Tạm dừng mẫu này?",
+    "after": "Dùng bản mặc định cho mẫu này?"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.pause.body",
+    "before": "Trong lúc tạm dừng, các nơi gửi dùng phiên bản 0 (trong mã); thông báo vẫn được gửi.",
+    "after": "Thông báo vẫn được gửi bằng nội dung mặc định (phiên bản 0). Bản đã xuất bản được giữ để dùng lại sau."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.paused.title",
+    "before": "Mẫu đang tạm dừng",
+    "after": "Đang dùng nội dung mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.paused.body",
+    "before": "Các nơi gửi đang dùng phiên bản 0 (trong mã); thông báo vẫn được gửi. Bấm “Dùng lại” để quay về phiên bản đã xuất bản.",
+    "after": "Thông báo vẫn được gửi bằng nội dung mặc định (phiên bản 0). Chọn “Dùng lại bản xuất bản” để khôi phục nội dung đã duyệt."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.archived.body",
+    "before": "Mẫu đã lưu trữ: các nơi gửi dùng phiên bản 0 (trong mã).",
+    "after": "Mẫu đã được lưu trữ. Thông báo dùng nội dung mặc định (phiên bản 0)."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.placeholders",
+    "before": "Biến được phép",
+    "after": "Dữ liệu tự điền"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.placeholdersNote",
+    "before": "Bấm một biến để chèn vào vị trí con trỏ của ô đang sửa.",
+    "after": "Chọn một mục để chèn vào vị trí con trỏ trong ô đang sửa."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.noPlaceholders",
+    "before": "Mẫu này không dùng biến.",
+    "after": "Mẫu này không có dữ liệu tự điền."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.required",
+    "before": "Bắt buộc",
+    "after": "Phải có"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.tpl.pausedFallback",
+    "before": "Khi mẫu tạm dừng, lưu trữ hoặc “Mẫu nội dung” bị tắt trong Cài đặt, các nơi gửi dùng phiên bản 0 và vẫn gửi.",
+    "after": "Khi ngừng dùng mẫu, lưu trữ mẫu hoặc tắt mẫu trên portal, thông báo vẫn được gửi bằng nội dung mặc định (phiên bản 0)."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.catalog.gaps",
+    "before": "Chưa gửi trong V1",
+    "after": "Loại thông báo chưa được triển khai"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.catalog.gapsNote",
+    "before": "Sự kiện có trong yêu cầu nhưng V1 không đẩy push (G-109).",
+    "after": "Các sự kiện này đã có trong yêu cầu nhưng chưa gửi thông báo đến thiết bị."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.dest.title",
+    "before": "Điểm đến",
+    "after": "Màn hình đích"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.trigger",
+    "before": "Khi nào",
+    "after": "Điều kiện kích hoạt"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.producer",
+    "before": "Nơi gửi",
+    "after": "Nguồn tạo thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.setting",
+    "before": "Công tắc (EN07)",
+    "after": "Cài đặt của người nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.destination",
+    "before": "Điểm đến",
+    "after": "Màn hình đích"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.delivery",
+    "before": "Gửi",
+    "after": "Kết quả gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.lifecycle",
+    "before": "Vòng đời",
+    "after": "Trạng thái xử lý"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.read",
+    "before": "Đọc",
+    "after": "Trạng thái đọc"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.col.certainty",
+    "before": "Độ chắc chắn",
+    "after": "Mức xác minh"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.delivery.accepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.channel.push_inbox",
+    "before": "Push + hộp thư",
+    "after": "Thiết bị và hộp thư trong ứng dụng"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.reason.no_sender",
+    "before": "Chưa có nơi gửi",
+    "after": "Chưa có dịch vụ gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.reason.kill_switch",
+    "before": "Công tắc tạm dừng",
+    "after": "Đang tạm dừng gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.reason.ambiguous",
+    "before": "Kết quả mơ hồ",
+    "after": "Chưa xác định kết quả gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.stage.accepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.detail.pushAttempted",
+    "before": "Đã thử push",
+    "after": "Đã thử gửi đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.detail.providerAccepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.ops",
+    "before": "Vận hành",
+    "after": "Thiết lập gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.opsNote",
+    "before": "Mỗi lần lưu được ghi vào nhật ký kiểm toán.",
+    "after": "Thay đổi được ghi vào nhật ký thao tác."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.push",
+    "before": "Tạm dừng push theo nhóm",
+    "after": "Tạm dừng gửi đến thiết bị theo nhóm"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.pushNote",
+    "before": "Khi tạm dừng, thông báo vẫn vào hộp thư nhưng không đẩy lên máy.",
+    "after": "Khi tạm dừng, thông báo vẫn vào hộp thư trong ứng dụng nhưng không được gửi đến thiết bị."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.save",
+    "before": "Lưu công tắc",
+    "after": "Lưu thiết lập gửi"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.saved",
+    "before": "Đã lưu công tắc.",
+    "after": "Đã lưu thiết lập gửi."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.confirm.title",
+    "before": "Lưu thay đổi công tắc?",
+    "after": "Lưu thay đổi gửi thông báo?"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.confirm.care",
+    "before": "Bạn đang tạm dừng push Chăm sóc: nhắc bú, ngủ, thay tã và lịch tiêm mà phụ huynh tự đặt sẽ KHÔNG kêu trên máy. Chỉ làm khi có sự cố.",
+    "after": "Bạn đang tạm dừng gửi nhắc Chăm sóc đến thiết bị. Nhắc bú, ngủ, thay tã và lịch tiêm do phụ huynh đặt sẽ không báo trên máy. Chỉ thực hiện khi có sự cố."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.careWarn.title",
+    "before": "Push Chăm sóc đang tạm dừng",
+    "after": "Đang tạm dừng gửi nhắc Chăm sóc đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.careWarn",
+    "before": "Nhắc việc phụ huynh tự đặt sẽ không kêu trên máy cho đến khi bật lại.",
+    "after": "Nhắc việc do phụ huynh tự đặt sẽ không báo trên thiết bị cho đến khi bật lại."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.settings.flags",
+    "before": "Bật/tắt từng kịch bản ENG nằm ở Tính năng & Premium; trang này không sửa chúng.",
+    "after": "Bật hoặc tắt từng kịch bản trong Tính năng & Premium."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.ops.pushFor",
+    "before": "Push nhóm {name}",
+    "after": "Gửi nhóm {name} đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.ops.group.note",
+    "before": "Tắt để tạm dừng push của nhóm khi có sự cố.",
+    "after": "Tắt để tạm dừng gửi nhóm này đến thiết bị khi có sự cố."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.rule.push_not_paused",
+    "before": "Push nhóm không tạm dừng",
+    "after": "Nhóm này không tạm dừng gửi đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.rule.device_registered",
+    "before": "Có thiết bị nhận push",
+    "after": "Có thiết bị đã đăng ký nhận thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.intent.accepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.overview",
+    "before": "7 ngày gần nhất trong một màn hình: tình trạng, con số chính và việc cần xem.",
+    "after": "Tình trạng gửi trong 7 ngày qua và các việc cần xử lý."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.templates",
+    "before": "Nội dung VI/EN của từng thông báo, có phiên bản và quy trình duyệt.",
+    "after": "Soạn nội dung Việt/Anh, gửi duyệt và quản lý các phiên bản."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.catalog",
+    "before": "{n}/{total} loại đang gửi · {a} điểm đến. Mở một dòng để xem chi tiết.",
+    "after": "{n}/{total} loại đang gửi · {a} màn hình đích."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.delivery",
+    "before": "Lần gửi lỗi cần xử lý trước, rồi kết quả gửi theo loại và phiên bản mẫu.",
+    "after": "Kiểm tra lần gửi lỗi, lần chờ thử lại và kết quả theo loại thông báo."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.journeys",
+    "before": "Mỗi kịch bản Gợi ý thông minh gửi gì, đi đâu, và phễu 30 ngày.",
+    "after": "Thông báo, màn hình đích và kết quả 30 ngày của từng kịch bản gợi ý."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.analytics",
+    "before": "Tỉ lệ nhận, mở, đọc và lỗi — mỗi tỉ lệ ghi rõ tử số và mẫu số.",
+    "after": "Tỷ lệ dịch vụ chấp nhận gửi, người dùng mở, đọc và lỗi. Mỗi tỷ lệ có số đếm đi kèm."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.purpose.settings",
+    "before": "Công tắc vận hành và chính sách Gợi ý thông minh; mọi thay đổi được ghi kiểm toán.",
+    "after": "Quản lý việc gửi và tần suất gợi ý. Mọi thay đổi được ghi vào nhật ký."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.ok",
+    "before": "Mọi thứ ổn",
+    "after": "Chưa ghi nhận vấn đề"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.no_data.note",
+    "before": "Sổ gửi chưa có ngày nào trong 7 ngày qua.",
+    "after": "Chưa ghi nhận ngày có dữ liệu gửi trong 7 ngày qua."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.signal.render",
+    "before": "{n} lần dựng nội dung mẫu bị lỗi.",
+    "after": "{n} thông báo lỗi khi tạo nội dung từ mẫu."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.signal.eng.channel_unavailable",
+    "before": "{n} gợi ý chỉ hiện trong app vì không có kênh push.",
+    "after": "{n} gợi ý chỉ hiện trong ứng dụng vì không thể gửi đến thiết bị."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.eng.def",
+    "before": "Những gợi ý không thành push thì không có trong các số ở trên (chúng chỉ đếm thông báo đã tạo). Ở đây là mọi gợi ý đến hạn trong 7 ngày và các lần kiểm tra cho những gì bị mất trước khi gửi.",
+    "after": "Các số phía trên chỉ tính thông báo đã được tạo. Phần này kiểm tra thêm gợi ý đến hạn trong 7 ngày nhưng chưa được gửi đến thiết bị."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.eng.outcome.pushed",
+    "before": "Đã gửi push",
+    "after": "Đã gửi qua dịch vụ thông báo"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.eng.why",
+    "before": "Lý do không push: {list}",
+    "after": "Lý do không gửi đến thiết bị: {list}"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.eng.check.channel_unavailable",
+    "before": "Không có kênh push",
+    "after": "Không thể gửi đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.eng.check.channel_unavailable.def",
+    "before": "Gợi ý chỉ hiện trong app vì thiết bị không dùng được để push. Cảnh báo khi từ 20% gợi ý đã quyết định trở lên.",
+    "after": "Gợi ý chỉ hiện trong ứng dụng vì thiết bị chưa thể nhận thông báo từ xa. Cảnh báo khi tình trạng này chiếm từ 20% gợi ý đã được xét gửi."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.signal.paused",
+    "before": "Push đang tạm dừng cho {n} nhóm.",
+    "after": "Đang tạm dừng gửi đến thiết bị cho {n} nhóm."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.health.signal.templatesOff",
+    "before": "Mẫu Portal đang tắt: mọi nơi gửi dùng phiên bản 0.",
+    "after": "Đang tắt mẫu trên portal. Hệ thống đang dùng nội dung mặc định (phiên bản 0)."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.outcome.accepted",
+    "before": "Nhà cung cấp đã nhận",
+    "after": "Dịch vụ gửi đã nhận"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.outcome.notPushed",
+    "before": "Không đẩy push",
+    "after": "Không gửi đến thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.surface.push",
+    "before": "từ push trên màn hình khoá",
+    "after": "từ thông báo trên màn hình khoá"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.version.builtin",
+    "before": "v0 · trong mã",
+    "after": "v0 · mặc định"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.devOnly.title",
+    "before": "Chỉ có trên môi trường dev",
+    "after": "Chỉ dùng trong môi trường thử nghiệm (dev)"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.noDevice",
+    "before": "Chưa có thiết bị nhận push — thông báo vẫn vào Hộp thông báo.",
+    "after": "Chưa có thiết bị đăng ký nhận thông báo từ xa. Thông báo vẫn vào hộp thư trong ứng dụng."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.confirm.body",
+    "before": "Push thật sẽ đến điện thoại của {name} trong gia đình {code}.",
+    "after": "Gửi thông báo thử đến thiết bị của {name} trong gia đình {code}."
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.accepted",
+    "before": "Nhà cung cấp đã nhận {a}/{c} thiết bị",
+    "after": "Dịch vụ gửi đã nhận {a}/{c} thiết bị"
+  },
+  {
+    "locale": "vi",
+    "id": "ntf.test.howto.swipe",
+    "before": "Gửi lại, vuốt bỏ push rồi mở từ Hộp thông báo: vẫn đi đúng nơi.",
+    "after": "Gửi lại, vuốt bỏ thông báo trên thiết bị rồi mở từ hộp thư trong ứng dụng để kiểm tra màn hình đích."
+  },
+  {
+    "locale": "en",
+    "id": "print.render",
+    "before": "Production file",
+    "after": "Print-ready file"
+  },
+  {
+    "locale": "en",
+    "id": "print.render.ready",
+    "before": "Ready",
+    "after": "Print file ready"
+  },
+  {
+    "locale": "en",
+    "id": "print.render.failed",
+    "before": "Needs attention",
+    "after": "Print file creation failed"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.overview",
+    "before": null,
+    "after": "Key figures and work needing attention"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.analytics",
+    "before": null,
+    "after": "Users, product outcomes and costs"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.families",
+    "before": null,
+    "after": "Find families, members and storage usage"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.support",
+    "before": null,
+    "after": "Claim and reply to support requests"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.storage",
+    "before": null,
+    "after": "Review requests for more storage"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.jobs",
+    "before": null,
+    "after": "Track data exports, deletions and video jobs"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.notifications",
+    "before": null,
+    "after": "Edit templates and check notification delivery"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.printStudio",
+    "before": null,
+    "after": "Manage print orders, shipping and pricing"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.firstAid",
+    "before": null,
+    "after": "Edit and review first aid guides"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.rhythm",
+    "before": null,
+    "after": "Reference stages, activities and suggestion conditions"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.keepsakes",
+    "before": null,
+    "after": "Manage card and video templates, artwork and music"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.articles",
+    "before": null,
+    "after": "Edit articles in the baby care library"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.stages",
+    "before": null,
+    "after": "Care content for each age range"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.milestones",
+    "before": null,
+    "after": "Edit reference developmental milestones"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.nutrition",
+    "before": null,
+    "after": "Nutrition content, nutrients and suggestion conditions"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.solids",
+    "before": null,
+    "after": "Foods, recipes and solids guides"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.contentReview",
+    "before": null,
+    "after": "Review, publish and re-review content"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.reference",
+    "before": null,
+    "after": "Growth tables, bottle presets and vaccine schedules"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.features",
+    "before": null,
+    "after": "Control feature access and Premium entitlements"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.system",
+    "before": null,
+    "after": "Storage, video processing and AI operations"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.appUpdate",
+    "before": null,
+    "after": "Supported app versions and release notes"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.staff",
+    "before": null,
+    "after": "Invite staff and manage access permissions"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.audit",
+    "before": null,
+    "after": "Look up staff actions"
+  },
+  {
+    "locale": "en",
+    "id": "nav.help.qa",
+    "before": null,
+    "after": "Test guidance and run results"
+  },
+  {
+    "locale": "en",
+    "id": "table.scroll",
+    "before": null,
+    "after": "Data table · scroll horizontally"
+  },
+  {
+    "locale": "en",
+    "id": "pa.vietnamTime",
+    "before": null,
+    "after": "Vietnam time"
+  },
+  {
+    "locale": "en",
+    "id": "kit.saved",
+    "before": "Saved",
+    "after": "Draft saved"
+  },
+  {
+    "locale": "en",
+    "id": "kit.unsaved",
+    "before": "Unsaved",
+    "after": "Unsaved changes"
+  },
+  {
+    "locale": "en",
+    "id": "kit.results",
+    "before": "{n} of {total}",
+    "after": "{n} of {total} results"
+  },
+  {
+    "locale": "en",
+    "id": "page.info",
+    "before": "About this page",
+    "after": "Help with this page"
+  },
+  {
+    "locale": "en",
+    "id": "error.generic",
+    "before": "Couldn't load. Check your connection and try again.",
+    "after": "Couldn’t load or complete the request. Check your connection and try again."
+  },
+  {
+    "locale": "en",
+    "id": "signIn.headline",
+    "before": "Care for users without touching their memories.",
+    "after": "Support families. Protect their privacy."
+  },
+  {
+    "locale": "en",
+    "id": "search.open",
+    "before": "Search",
+    "after": "Find a page"
+  },
+  {
+    "locale": "en",
+    "id": "jobs.exportTime",
+    "before": "Export time (median)",
+    "after": "Median data export time"
+  },
+  {
+    "locale": "en",
+    "id": "qa.start.levels.title",
+    "before": "Smoke vs core cases",
+    "after": "Quick checks and core flows"
+  },
+  {
+    "locale": "en",
+    "id": "families.col.storage",
+    "before": "Storage",
+    "after": "Storage used / allowance"
+  },
+  {
+    "locale": "en",
+    "id": "ks.col.formats",
+    "before": "Formats",
+    "after": "Aspect ratios"
+  },
+  {
+    "locale": "en",
+    "id": "firstAid.field.variantKind",
+    "before": "Variant type",
+    "after": "Guide variant type"
+  },
+  {
+    "locale": "en",
+    "id": "rhythm.tab.reference",
+    "before": "Reference model",
+    "after": "Reference stages"
+  },
+  {
+    "locale": "en",
+    "id": "rhythm.tab.rules",
+    "before": "Rules",
+    "after": "Suggestion conditions"
+  },
+  {
+    "locale": "en",
+    "id": "nutrition.tab.rules",
+    "before": "Suggestion rules",
+    "after": "Suggestion conditions"
+  },
+  {
+    "locale": "en",
+    "id": "nutrition.field.perFeedMl",
+    "before": "ml per feed",
+    "after": "Amount per feed (ml)"
+  },
+  {
+    "locale": "en",
+    "id": "nutrition.field.perDayMl",
+    "before": "ml per day",
+    "after": "Amount per day (ml)"
+  },
+  {
+    "locale": "en",
+    "id": "nutrition.field.remindAfterDays",
+    "before": "Remeasure reminder",
+    "after": "Remind to measure after (days)"
+  },
+  {
+    "locale": "en",
+    "id": "solids.field.minAgeMonths",
+    "before": "Minimum age",
+    "after": "Minimum age (months)"
+  },
+  {
+    "locale": "en",
+    "id": "solids.field.prepMinutes",
+    "before": "Prep",
+    "after": "Preparation time (minutes)"
+  },
+  {
+    "locale": "en",
+    "id": "solids.field.cookMinutes",
+    "before": "Cooking",
+    "after": "Cooking time (minutes)"
+  },
+  {
+    "locale": "en",
+    "id": "pa.section.acquisition",
+    "before": "Acquisition & retention",
+    "after": "Acquisition and return visits"
+  },
+  {
+    "locale": "en",
+    "id": "pa.recordingOff",
+    "before": "New collection is off. Authorized historical reporting remains available; production configuration is not enabled automatically.",
+    "after": "New data collection is off. You can still view recorded data within your access permissions."
+  },
+  {
+    "locale": "en",
+    "id": "pa.noData",
+    "before": "No data for this range. Test fixtures are never substituted into this report.",
+    "after": "No data for the selected range."
+  },
+  {
+    "locale": "en",
+    "id": "pa.status.ready",
+    "before": "Computed from available sources",
+    "after": "Compiled from available data"
+  },
+  {
+    "locale": "en",
+    "id": "pa.retention",
+    "before": "Exact-day D1 / D7 / D30 retention",
+    "after": "Return on days 1, 7 and 30"
+  },
+  {
+    "locale": "en",
+    "id": "pa.metric.A08",
+    "before": "Activation within 7 days",
+    "after": "First meaningful outcome within 7 days"
+  },
+  {
+    "locale": "en",
+    "id": "pa.metric.M_discovered",
+    "before": "Discovery cohort",
+    "after": "Discovered photo groups"
+  },
+  {
+    "locale": "en",
+    "id": "pa.metric.M_approved",
+    "before": "Approval cohort",
+    "after": "Approved photo groups"
+  },
+  {
+    "locale": "en",
+    "id": "pa.metric.C_unknown",
+    "before": "Calls with unknown usage",
+    "after": "Calls missing usage data"
+  },
+  {
+    "locale": "en",
+    "id": "pa.metric.C_rated",
+    "before": "Rated calls",
+    "after": "Calls with enough data for cost estimates"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tab.delivery",
+    "before": "Delivery",
+    "after": "Delivery status"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.acceptedNotDelivered.title",
+    "before": "Accepted ≠ delivered",
+    "after": "Accepted for sending · display unconfirmed"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.ov.openDelivery",
+    "before": "Open Delivery",
+    "after": "View delivery status"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.metric.accepted",
+    "before": "Provider accepted",
+    "after": "Accepted by delivery service"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tplStatus.paused",
+    "before": "Paused",
+    "after": "Using default content"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.v0short",
+    "before": "v0 · in code",
+    "after": "v0 · default"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.v0",
+    "before": "Version 0 (in code)",
+    "after": "Version 0 · default content"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.pause",
+    "before": "Pause",
+    "after": "Use default content"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.resume",
+    "before": "Resume",
+    "after": "Restore published content"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.pause.title",
+    "before": "Pause this template?",
+    "after": "Use default content for this template?"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.paused.title",
+    "before": "The template is paused",
+    "after": "Using default content"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.tpl.placeholders",
+    "before": "Allowed placeholders",
+    "after": "Autofill fields"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.settings.push",
+    "before": "Pause push by group",
+    "after": "Pause device notifications by group"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.settings.save",
+    "before": "Save switches",
+    "after": "Save delivery settings"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.settings.saved",
+    "before": "Switches saved.",
+    "after": "Delivery settings saved."
+  },
+  {
+    "locale": "en",
+    "id": "ntf.settings.confirm.title",
+    "before": "Save the switch changes?",
+    "after": "Save notification delivery changes?"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.health.ok",
+    "before": "All good",
+    "after": "No issues recorded"
+  },
+  {
+    "locale": "en",
+    "id": "ntf.eng.outcome.pushed",
+    "before": "Pushed",
+    "after": "Sent via notification service"
+  }
+]

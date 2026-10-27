@@ -180,6 +180,7 @@ abstract final class Routes {
   /// 9d Mất quyền truy cập.
   static const lostAccess = '/lost-access';
   static const appearance = '/appearance';
+  static const todayAppearance = '/today/appearance';
 
   /// S11 tab "Tôi" (13a–13n) and its pages, inside the shell so the dock stays.
   /// R1 "Chào mừng trở lại" (368:1266): a signed-out device that has signed in before.

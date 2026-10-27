@@ -278,7 +278,7 @@ void main() {
           }
           // D-076 #9: basic templates carry no "Miễn phí" badge.
           expect(find.text('Miễn phí'), findsNothing);
-          expect(find.text('Cao cấp'), findsNWidgets(2));
+          expect(find.text('Premium'), findsNWidgets(2));
           // Teddy (17.9) turns one month on 17.10: the cards say so.
           expect(find.text('17.10.2026'), findsWidgets);
           expect(tester.takeException(), isNull);
@@ -314,7 +314,7 @@ void main() {
       );
       expect(find.text('Đêm sao'), findsOneWidget);
       expect(find.text('Miễn phí'), findsNothing);
-      expect(find.text('Cao cấp'), findsNothing);
+      expect(find.text('Premium'), findsNothing);
     });
 
     testWidgets('the dịp chips are one row that scrolls sideways, like Video', (

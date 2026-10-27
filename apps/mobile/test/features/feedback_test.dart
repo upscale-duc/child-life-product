@@ -26,10 +26,13 @@ import '../helpers/family_fixtures.dart';
 
 class _Repo extends Fake implements FeedbackRepository {
   final sent = <Map<String, Object?>>[];
+  final requestIds = <String>[];
+  var failNext = false;
   List<MyTicket> tickets = const [];
 
   @override
   Future<String> send({
+    required String requestId,
     required FeedbackType type,
     required String message,
     required FeedbackShot? shot,
@@ -37,6 +40,11 @@ class _Repo extends Fake implements FeedbackRepository {
     required bool replyByEmail,
     required String locale,
   }) async {
+    requestIds.add(requestId);
+    if (failNext) {
+      failNext = false;
+      throw StateError('offline');
+    }
     sent.add({
       'type': type,
       'message': message,
@@ -174,6 +182,30 @@ void main() {
       );
     });
 
+    testWidgets('FB-1: "Gửi" again after a failure keeps the request id', (
+      tester,
+    ) async {
+      final repo = _Repo()..failNext = true;
+      final (visited, _) = await _pump(
+        tester,
+        const FeedbackScreen(),
+        repo: repo,
+      );
+      await tester.enterText(find.byType(EditableText), 'Không lưu được cữ bú');
+      await tester.tap(find.text('Gửi kèm thông tin thiết bị'));
+      await tester.pump();
+      await tester.tap(find.text('Gửi góp ý'));
+      await tester.pumpAndSettle();
+      expect(repo.sent, isEmpty);
+      await tester.tap(find.text('Gửi góp ý'));
+      await tester.pumpAndSettle();
+      expect(repo.sent, hasLength(1));
+      // One id for the draft: the server files one ticket per id.
+      expect(repo.requestIds, hasLength(2));
+      expect(repo.requestIds.toSet(), hasLength(1));
+      expect(visited, ['/me/feedback/sent']);
+    });
+
     testWidgets('a temporary identity sends without "Cho phép liên hệ lại"', (
       tester,
     ) async {
@@ -262,6 +294,44 @@ void main() {
       );
       expect(rateUrlOf(url, ios: false), url);
       expect(rateUrlOf(null, ios: true), isNull);
+    });
+
+    testWidgets('UPD-1: a store page that does not open says so', (
+      tester,
+    ) async {
+      final (_, container) = await _pump(
+        tester,
+        const Scaffold(body: RateAppRow()),
+        overrides: [
+          appUpdateConfigProvider.overrideWith(
+            (ref) => Stream.value(
+              AppUpdateConfig(
+                ios: PlatformUpdate(
+                  storeUrl: Uri.parse('https://apps.apple.com/app/id1'),
+                ),
+                android: PlatformUpdate(
+                  storeUrl: Uri.parse(
+                    'https://play.google.com/store/apps/details?id=x',
+                  ),
+                ),
+              ),
+            ),
+          ),
+          openStoreProvider.overrideWithValue(
+            (u) async => throw StateError('no store'),
+          ),
+        ],
+      );
+      // The row reads the config when tapped: keep it loaded, as the Me screen does.
+      container.listen(appUpdateConfigProvider, (_, _) {});
+      await tester.pump();
+      await tester.tap(find.byType(RateAppRow));
+      await tester.pump();
+      expect(
+        find.text('Chưa mở được cửa hàng ứng dụng. Thử lại sau nhé.'),
+        findsOneWidget,
+      );
+      await tester.pumpAndSettle(const Duration(seconds: 5));
     });
 
     testWidgets('before the app is published it says so', (tester) async {

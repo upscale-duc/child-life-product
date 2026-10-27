@@ -5,13 +5,20 @@ import 'package:flutter/foundation.dart';
 
 const _gb = 1024 * 1024 * 1024;
 
-/// "Sắp đầy" from 80 %, uploads paused at 100 % (13c, 13d).
-enum StorageState { ok, nearFull, full }
+/// "Sắp đầy" from 80 %, uploads paused at 100 % (13c, 13d). [unknown]: the limit was not read,
+/// never shown as full or "0 B" (D-127).
+enum StorageState { ok, nearFull, full, unknown }
 
-StorageState storageStateOf(int used, int quota) {
-  if (quota <= 0 || used >= quota) return StorageState.full;
+/// [used] is used + reserved: "full" is the server's own arithmetic (D-127 Q2).
+StorageState storageStateOf(int used, int? quota) {
+  if (quota == null || quota <= 0) return StorageState.unknown;
+  if (used >= quota) return StorageState.full;
   return used >= quota * 0.8 ? StorageState.nearFull : StorageState.ok;
 }
+
+/// The one storage percentage (Me and the Premium card, ST-2): floored, so 100 % only when full.
+int storagePercent(int used, int quota) =>
+    quota <= 0 ? 0 : (used * 100 / quota).floor().clamp(0, 100);
 
 /// "3,2 GB" / "3.2 GB", "40 MB": one decimal, locale separator, no trailing ",0".
 String formatBytes(int bytes, String locale) {
@@ -86,20 +93,31 @@ class FamilyStorage {
   const FamilyStorage({
     required this.familyId,
     required this.isOwner,
-    required this.quotaBytes,
+    required int? quotaBytes,
     required this.usedBytes,
     required this.binBytes,
     required this.notesBytes,
     required this.babies,
     required this.largestVideos,
+    this.reservedBytes = 0,
+    this.reservedItems = 0,
     this.openRequestGb,
     this.openRequestAt,
-  });
+  }) : quota = quotaBytes;
 
   final String familyId;
   final bool isOwner;
-  final int quotaBytes;
+
+  /// The limit in force; null when the answer had none (ST-1: unknown, never "full").
+  final int? quota;
+
+  /// [quota] or 0, for callers that only draw a bar. Never decide "full" from it.
+  int get quotaBytes => quota ?? 0;
   final int usedBytes;
+
+  /// Held by uploads in flight, and how many items hold it (D-127 Q2).
+  final int reservedBytes;
+  final int reservedItems;
   final int binBytes;
   final int notesBytes;
   final List<BabyUsage> babies;
@@ -107,9 +125,14 @@ class FamilyStorage {
   final int? openRequestGb;
   final DateTime? openRequestAt;
 
-  StorageState get state => storageStateOf(usedBytes, quotaBytes);
-  int get percent =>
-      quotaBytes <= 0 ? 100 : (usedBytes * 100 / quotaBytes).floor();
+  /// Used + reserved: what the server counts against the limit.
+  int get countedBytes => usedBytes + reservedBytes;
+  StorageState get state => storageStateOf(countedBytes, quota);
+  int get percent => storagePercent(countedBytes, quotaBytes);
+
+  /// What the next upload can use; null when the limit is unknown.
+  int? get availableBytes =>
+      quota == null ? null : (quota! - countedBytes).clamp(0, quota!);
   int get videoBytes => babies.fold(0, (s, b) => s + b.videoBytes);
   int get photoBytes => babies.fold(0, (s, b) => s + b.photoBytes);
 
@@ -122,8 +145,13 @@ class FamilyStorage {
     return FamilyStorage(
       familyId: j['familyId'] as String? ?? '',
       isOwner: j['isOwner'] == true,
-      quotaBytes: (j['quotaBytes'] as num?)?.toInt() ?? 0,
+      quotaBytes: switch ((j['quotaBytes'] as num?)?.toInt()) {
+        final q? when q > 0 => q,
+        _ => null,
+      },
       usedBytes: (j['usedBytes'] as num?)?.toInt() ?? 0,
+      reservedBytes: (j['reservedBytes'] as num?)?.toInt() ?? 0,
+      reservedItems: (j['reservedItems'] as num?)?.toInt() ?? 0,
       binBytes: (j['binBytes'] as num?)?.toInt() ?? 0,
       notesBytes: (j['notesBytes'] as num?)?.toInt() ?? 0,
       babies: list('babies').map(BabyUsage.fromJson).toList(),

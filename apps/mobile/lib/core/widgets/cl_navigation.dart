@@ -661,12 +661,14 @@ class ClBabySwitcher extends StatelessWidget {
     required this.avatar,
     this.hasMultiple = false,
     this.onTap,
+    this.hero = false,
     super.key,
   });
 
   final String label;
   final Widget avatar;
   final bool hasMultiple;
+  final bool hero;
   final VoidCallback? onTap;
 
   @override
@@ -677,8 +679,9 @@ class ClBabySwitcher extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 40),
       padding: const EdgeInsets.fromLTRB(4, 4, 12, 4),
       decoration: BoxDecoration(
-        color: cl.colors.surface2,
+        color: hero ? cl.colors.surface : cl.colors.surface2,
         borderRadius: BorderRadius.circular(ClRadius.pill),
+        boxShadow: hero ? cl.shadows.chip : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -690,7 +693,9 @@ class ClBabySwitcher extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: cl.text.body.copyWith(fontWeight: FontWeight.w500),
+              style: hero
+                  ? cl.text.label
+                  : cl.text.body.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
           if (hasMultiple) ...[

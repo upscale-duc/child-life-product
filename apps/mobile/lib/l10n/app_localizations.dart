@@ -743,20 +743,8 @@ abstract class AppLocalizations {
   /// Screen 10 body; provider is not revealed (email privacy).
   ///
   /// In vi, this message translates to:
-  /// **'Đăng nhập bằng Apple hoặc Google, rồi liên kết.'**
+  /// **'Đăng nhập bằng cách bạn đã dùng trước đây, hoặc nhận link đăng nhập qua email.'**
   String get existsBody;
-
-  /// Provider chip on the account row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Apple · Google'**
-  String get existsProvider;
-
-  /// Back to 07.
-  ///
-  /// In vi, this message translates to:
-  /// **'Dùng email khác'**
-  String get existsUseOtherEmail;
 
   /// Toast after linking.
   ///
@@ -1465,6 +1453,144 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã gộp vào tài khoản của bạn'**
   String get saveAccountMerged;
+
+  /// AU-1: merge done, the merged babies have not arrived yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gộp vào tài khoản của bạn. Gia đình đang tải, chờ chút nhé.'**
+  String get saveAccountMergedArriving;
+
+  /// AU-1: merge done but this phone could not sign in afterwards.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gộp vào tài khoản của bạn. Đăng nhập lại để mở.'**
+  String get saveAccountMergedSignIn;
+
+  /// AU-2: Google/Apple on screen 10 hits account-exists-with-different-credential.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email của tài khoản này đã đăng ký theo cách khác. Thử gửi link đăng nhập.'**
+  String get existsOtherMethod;
+
+  /// AU-3: sign-out sheet when writes are still on the device; count 0 = unknown how many.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Còn thay đổi chưa gửi lên.} other{Còn {count} bản ghi chưa gửi lên.}} Đăng xuất bây giờ thì chúng chỉ được gửi khi bạn đăng nhập lại trên máy này.'**
+  String signOutUnsent(int count);
+
+  /// AU-3: added to the temporary-account sign-out body; count 0 = unknown how many.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Thay đổi chưa gửi lên cũng sẽ mất.} other{{count} bản ghi chưa gửi lên cũng sẽ mất.}}'**
+  String signOutAnonUnsent(int count);
+
+  /// AU-3: send pending writes before signing out.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử gửi ngay'**
+  String get unsentSendNow;
+
+  /// AU-3: "Thử gửi ngay" timed out.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn chưa gửi được. Kiểm tra mạng rồi thử lại.'**
+  String get unsentStillPending;
+
+  /// AU-3: sign out although writes are unsent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn đăng xuất'**
+  String get meSignOutAnyway;
+
+  /// AU-3: account deletion with writes still on the device; count 0 = unknown how many.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Thay đổi chưa gửi lên sẽ mất khi xoá tài khoản.} other{{count} bản ghi chưa gửi lên sẽ mất khi xoá tài khoản.}}'**
+  String acDeleteUnsent(int count);
+
+  /// AU-3: delete although writes are unsent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn xoá tài khoản'**
+  String get acDeleteAnyway;
+
+  /// AU-3: server refused deletion, the account still owns babies (R-046).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.'**
+  String get acDeleteOwnsBabies;
+
+  /// AU-4: baby or personal profile save failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được hồ sơ. Thử lại nhé.'**
+  String get profileSaveFailed;
+
+  /// AU-5: 13k edit form could not load the saved profile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được hồ sơ của bé.'**
+  String get bpLoadFailed;
+
+  /// FJ-1: 16 preview failed (not a closed invite).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được lời mời'**
+  String get joinLoadFailedTitle;
+
+  /// FJ-1: preview failed offline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có mạng. Lời mời vẫn còn, kết nối rồi thử lại nhé.'**
+  String get joinLoadFailedOffline;
+
+  /// FJ-1: preview failed for another reason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có lỗi khi mở lời mời. Thử lại nhé.'**
+  String get joinLoadFailedBody;
+
+  /// FJ-2: joiner-side closed reason, no writer seat left (D-127 Q3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đã hết chỗ người ghi'**
+  String get joinFullTitle;
+
+  /// FJ-2: joiner-side full family body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ người mời bạn mở thêm chỗ, hoặc mời bạn làm người thân để cùng xem album.'**
+  String get joinFullBody;
+
+  /// FJ-3 (D-127 Q3): after "x / y chỗ", pending writer invites.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} lời mời đang giữ chỗ}}'**
+  String pv2SeatsHeld(int count);
+
+  /// FJ-3: 14b when pending invites fill the last seats.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời mời chưa nhận cũng giữ chỗ. Huỷ lời mời không cần nữa trong Gia đình để mở chỗ.'**
+  String get inviteSeatsHeldHint;
+
+  /// FJ-4: joined, membership not on this phone yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã vào gia đình {baby}. Đang tải, chờ chút nhé…'**
+  String joinArriving(String baby);
+
+  /// FJ-5: 16 countdown chip under an hour.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes, plural, other{Còn {minutes} phút}}'**
+  String joinCountdownMinutes(int minutes);
+
+  /// FJ-5: 14a member list failed while online.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được danh sách.'**
+  String get familyLoadFailedGeneric;
 
   /// 16d "Dùng email" screen subtitle (not drawn).
   ///
@@ -4367,7 +4493,7 @@ abstract class AppLocalizations {
   /// 8c body.
   ///
   /// In vi, this message translates to:
-  /// **'Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
+  /// **'Để nhắc việc kêu đúng giờ, kể cả khi đang đóng app.'**
   String get notifPromptBody;
 
   /// 8c primary.
@@ -7031,7 +7157,7 @@ abstract class AppLocalizations {
   /// 13b error (G-001).
   ///
   /// In vi, this message translates to:
-  /// **'Không tải được dung lượng. Kéo xuống để thử lại.'**
+  /// **'Ảnh, video vẫn an toàn. Thử lại khi có kết nối.'**
   String get stLoadFailed;
 
   /// 13i row.
@@ -13969,10 +14095,10 @@ abstract class AppLocalizations {
   /// **'Ảnh, nhật ký và lịch sử chăm sóc được giữ nguyên'**
   String get upSafeBody;
 
-  /// UP1: uploads still on this phone.
+  /// UP1: photos and videos still on this phone that go up by themselves (UPD-2: not care records; failed or over-quota ones not counted).
   ///
   /// In vi, this message translates to:
-  /// **'{count} lần ghi chưa đồng bộ'**
+  /// **'{count} ảnh, video chưa tải lên'**
   String upPendingTitle(int count);
 
   /// UP1 pending row, second line.
@@ -15859,18 +15985,6 @@ abstract class AppLocalizations {
   /// **'Có thể có {name}'**
   String autoSaveReviewTitle(String name);
 
-  /// AS07 subtitle
-  ///
-  /// In vi, this message translates to:
-  /// **'{count, plural, other{{count} gợi ý · kiểm tra lúc {time}. Bỏ chọn những mục không muốn lưu.}}'**
-  String autoSaveReviewSub(int count, String time);
-
-  /// AS07 grouping note (P-146, G-102)
-  ///
-  /// In vi, this message translates to:
-  /// **'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.'**
-  String get autoSaveGroupedHint;
-
   /// AS07 week-of-age chip: pending tiles in that week (P-171)
   ///
   /// In vi, this message translates to:
@@ -15889,16 +16003,10 @@ abstract class AppLocalizations {
   /// **'Tuần {n} · xong'**
   String autoSaveWeekDone(int n);
 
-  /// AS07 line above the week chips
+  /// AS07 kind pill and its first option, like Kỷ niệm Ảnh "Ảnh & video". EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Duyệt theo tuần tuổi của {name}: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.'**
-  String autoSaveWeekHint(String name);
-
-  /// AS07 filter chip
-  ///
-  /// In vi, this message translates to:
-  /// **'Tất cả · {count}'**
+  /// **'Ảnh & video · {count}'**
   String autoSaveFilterAll(int count);
 
   /// AS07 filter chip
@@ -15925,12 +16033,6 @@ abstract class AppLocalizations {
   /// **'Hôm qua · {date}'**
   String autoSaveDayYesterday(String date);
 
-  /// AS07 day header count
-  ///
-  /// In vi, this message translates to:
-  /// **'{count, plural, other{{count} mục}}'**
-  String autoSaveDayCount(int count);
-
   /// AS07 tag: already in Kỷ niệm
   ///
   /// In vi, this message translates to:
@@ -15943,10 +16045,10 @@ abstract class AppLocalizations {
   /// **'Trên iCloud'**
   String get autoSaveInCloud;
 
-  /// AS07 footnote
+  /// AS07 legend under the grid (the "Đã có" explanation lives on its own section). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.'**
+  /// **'“Trên iCloud”: tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.'**
   String get autoSaveLegend;
 
   /// AS07 expanded group header (G-102)
@@ -15961,12 +16063,6 @@ abstract class AppLocalizations {
   /// **'Chọn cả nhóm'**
   String get autoSaveGroupAll;
 
-  /// AS07 expanded group action (G-102)
-  ///
-  /// In vi, this message translates to:
-  /// **'Thu gọn'**
-  String get autoSaveGroupCollapse;
-
   /// AS07 badge on a group's best photo (G-102)
   ///
   /// In vi, this message translates to:
@@ -15978,24 +16074,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã chọn {count} · {photos} ảnh, {videos} video'**
   String autoSaveChosen(int count, int photos, int videos);
-
-  /// AS07 summary line (P-146)
-  ///
-  /// In vi, this message translates to:
-  /// **'{count, plural, other{Đã gộp {count} ảnh giống nhau · không xoá gì trong máy}}'**
-  String autoSaveMerged(int count);
-
-  /// AS07 top bar: untick everything shown, to pick a few by hand
-  ///
-  /// In vi, this message translates to:
-  /// **'Bỏ chọn tất cả'**
-  String get autoSaveDeselectAll;
-
-  /// AS07 top bar once nothing is ticked: tick the suggested picks again (up to the limit, D-070)
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn tất cả'**
-  String get autoSaveSelectAll;
 
   /// AS07 note when suggestions exceed one upload (D-070)
   ///
@@ -16213,12 +16291,6 @@ abstract class AppLocalizations {
   /// **'Ảnh gốc vẫn ở trong máy. Tải xong mới hiện \"Đã lưu\".'**
   String get autoSaveConfirmFootnote;
 
-  /// AS18 banner
-  ///
-  /// In vi, this message translates to:
-  /// **'Không đủ dung lượng: {count} mục cần {need}, gia đình còn {left}. Bạn có thể tải trước {fit} mục vừa đủ, phần còn lại vẫn giữ trên máy.'**
-  String autoSaveNoRoom(int count, String need, String left, int fit);
-
   /// AS18 primary button
   ///
   /// In vi, this message translates to:
@@ -16236,12 +16308,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xem dung lượng'**
   String get autoSaveSeeStorage;
-
-  /// AS10 while originals are read (may come from iCloud)
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang chuẩn bị {done}/{total}…'**
-  String autoSavePreparing(int done, int total);
 
   /// Toast after AS10
   ///
@@ -16726,7 +16792,7 @@ abstract class AppLocalizations {
   /// Template badge (MM10); free during the beta (D-068 #3).
   ///
   /// In vi, this message translates to:
-  /// **'Cao cấp'**
+  /// **'Premium'**
   String get ksPremium;
 
   /// MM10 empty state (G-107).
@@ -18010,7 +18076,7 @@ abstract class AppLocalizations {
   /// PR03 title; also the Tôi row.
   ///
   /// In vi, this message translates to:
-  /// **'Gói của hộ'**
+  /// **'Gói của gia đình'**
   String get pmPlanTitle;
 
   /// PR03 free state title.
@@ -21657,7 +21723,7 @@ abstract class AppLocalizations {
   /// PR02 not_owner body.
   ///
   /// In vi, this message translates to:
-  /// **'Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.'**
+  /// **'Nhờ chủ hộ mở Gói của gia đình để nâng cấp hoặc khôi phục.'**
   String get pmNotOwnerBody;
 
   /// PR02 Restore confirm title.
@@ -23085,7 +23151,7 @@ abstract class AppLocalizations {
   /// CH19 Premium card (Free only).
   ///
   /// In vi, this message translates to:
-  /// **'Premium có nhiều lượt hơn, cùng cá nhân hoá chủ động và mẫu thẻ/video Premium.'**
+  /// **'Premium có thêm credit Lumi, gợi ý cá nhân và mẫu thiệp, video cao cấp.'**
   String get asPremiumTeaser;
 
   /// CH19 / CH20 link to the paywall.
@@ -23154,7 +23220,7 @@ abstract class AppLocalizations {
   /// **'Bạn đã dùng hết lượt hỗ trợ AI tháng này.'**
   String get asOutTitleFree;
 
-  /// CH21 body.
+  /// CH21 / CH24 body, after asOutResetOn / asOutResetNext (AI-4: the upsell is the button, never a sentence; with assistant_upsell off nothing sells).
   ///
   /// In vi, this message translates to:
   /// **'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.'**
@@ -23169,7 +23235,7 @@ abstract class AppLocalizations {
   /// CH21 primary (paywall; resumes the kept question once after a verified purchase).
   ///
   /// In vi, this message translates to:
-  /// **'Nâng cấp & tiếp tục câu hỏi'**
+  /// **'Xem Premium để hỏi tiếp'**
   String get asUpgradeContinue;
 
   /// CH21 / CH24 note, now with a link. Deviates from the frame on purpose (business rule wins; see the A4 report).
@@ -23189,12 +23255,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hộ đã dùng hết lượt hỗ trợ AI kỳ này.'**
   String get asOutTitlePremium;
-
-  /// CH24 body.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm mới {date}. Bạn vẫn ghi trực tiếp, xem nhật ký, dùng mẫu Premium và quota xuất video riêng.'**
-  String asOutBodyPremium(String date);
 
   /// CH24 button.
   ///
@@ -26154,6 +26214,42 @@ abstract class AppLocalizations {
   /// **'Chưa lưu được. Thử lại nhé.'**
   String get ntSaveFailed;
 
+  /// EN07 error notice title when the stored switches cannot load (NT-1); body ntLoadFailed, tap retries.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được cài đặt thông báo'**
+  String get ntSettingsLoadFailed;
+
+  /// EN07 Gợi ý thông minh group when it cannot load (NT-7); tap retries.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được. Chạm để thử lại.'**
+  String get ntGroupLoadFailed;
+
+  /// Button on the notifications-off card before the system prompt was ever shown (NT-3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật'**
+  String get ntTurnOn;
+
+  /// Theo quy tắc tab: system notifications off while a rule sends to this person (NT-5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy này đang tắt thông báo nên nhắc theo quy tắc sẽ không hiện.'**
+  String get ruleNotifOff;
+
+  /// Tôi › Thông báo row value when the phone's system notifications are off (NT-2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt trong máy'**
+  String get meNotifOffDevice;
+
+  /// FB1 rate row toast when the store page does not open (UPD-1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được cửa hàng ứng dụng. Thử lại sau nhé.'**
+  String get meRateOpenFailed;
+
   /// Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
@@ -26357,6 +26453,120 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.'**
   String get asErrorFriendly;
+
+  /// Toast when a chat action (an answer chip, "Thử tối nay", feedback) could not go out offline; drafts keep asSaveOffline. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngoại tuyến · chưa gửi được. Có mạng rồi thử lại.'**
+  String get asActOffline;
+
+  /// Toast when a chat action other than saving drafts failed. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được. Bạn thử lại nhé.'**
+  String get asActFailed;
+
+  /// Toast when an action got no answer in time: the server may have done it, the chat reads it again. Flow audit 2026-10-26 (AI-6). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mạng chậm · đang kiểm tra lại…'**
+  String get asActChecking;
+
+  /// Toast when an answer reached a question that had already moved on. Flow audit 2026-10-26 (AI-7). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi vừa thay đổi. Xem lại ở trên nhé.'**
+  String get asAnswerStale;
+
+  /// Toast when a typed clarification answer could not go out offline; the words go back to the composer. Flow audit 2026-10-26 (AI-5). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngoại tuyến · câu trả lời chưa gửi, vẫn ở ô nhập.'**
+  String get asAnswerOffline;
+
+  /// Toast when a typed clarification answer failed; the words go back to the composer. Flow audit 2026-10-26 (AI-5). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được câu trả lời. Chữ vẫn ở ô nhập, bạn thử lại nhé.'**
+  String get asAnswerFailed;
+
+  /// Status under my kept bubble while the chat asks the server again after no answer in time. Flow audit 2026-10-26 (AI-6). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang kiểm tra…'**
+  String get asChecking;
+
+  /// Action under a kept bubble a resend cannot help: the words go back to the composer. Flow audit 2026-10-26 (AI-8). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa lại'**
+  String get asEditKept;
+
+  /// Lumi bubble for a failure that a retry cannot fix (no "Thử lại"), followed by "Ghi trực tiếp". Flow audit 2026-10-26 (AI-8). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình chưa làm được việc này. Chưa có gì được lưu — bạn ghi trực tiếp nhé.'**
+  String get asErrorNoRetry;
+
+  /// Typing indicator after a task has been working for a while (the chat reads it again). Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi vẫn đang xử lý…'**
+  String get asStillWorking;
+
+  /// Lumi bubble when a task still has not moved after the chat read it again; followed by "Kiểm tra lại" (and "Huỷ" for its author). Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi đang lâu hơn thường lệ. Chưa có gì được lưu từ câu này.'**
+  String get asTaskSlowBody;
+
+  /// Chip under asTaskSlowBody: reads the task again. Flow audit 2026-10-26 (AI-9). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra lại'**
+  String get asCheckAgain;
+
+  /// First sentence of the used-up card when the reset date is known (D-127 Q6: "lượt", never "Credit"). Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt mới có từ {date}.'**
+  String asOutResetOn(String date);
+
+  /// First sentence of the used-up card when the reset date is not known yet. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt mới có vào kỳ tới.'**
+  String get asOutResetNext;
+
+  /// Note under an earlier question that was kept because the pool was used up. Flow audit 2026-10-26 (AI-3). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa trả lời · lúc đó đã hết lượt'**
+  String get asBlockedOld;
+
+  /// Chip under my own earlier used-up question once the pool has room again. Flow audit 2026-10-26 (AI-3). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi lại'**
+  String get asAskAgain;
+
+  /// CH20 title when the remaining number is not known. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc ảnh này cần {credits} lượt, nhiều hơn số lượt còn lại.'**
+  String asPhotoQuoteTitleOver(int credits);
+
+  /// CH20 body without a known reset date and without an upgrade. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể nhập tay hoặc đợi lượt mới. Ảnh chưa được gửi đi.'**
+  String get asPhotoQuoteWait;
+
+  /// CH20 Free body without a known reset date. Flow audit 2026-10-26 (AI-4). VI and EN are engineering drafts for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể nhập tay, đợi lượt mới hoặc nâng cấp để tiếp tục ngay. Ảnh chưa được gửi đi.'**
+  String get asPhotoQuoteWaitUpgrade;
 
   /// Typing indicator of a photo task. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
@@ -30483,7 +30693,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Paywall top bar: restore purchases.
   ///
   /// In vi, this message translates to:
-  /// **'Khôi phục'**
+  /// **'Khôi phục giao dịch'**
   String get pv2Restore;
 
   /// Personalization v2: Intend
@@ -34066,7 +34276,7 @@ abstract class AppLocalizations {
   ///
   /// In vi, this message translates to:
   /// **'{count} trang'**
-  String psBookPagesCount(String count);
+  String psBookPagesCount(int count);
 
   /// No description provided for @psSuggested.
   ///
@@ -34443,7 +34653,7 @@ abstract class AppLocalizations {
   /// No description provided for @psTransfer.
   ///
   /// In vi, this message translates to:
-  /// **'Chuyển khoản / VietQR ngay'**
+  /// **'Chuyển khoản / VietQR'**
   String get psTransfer;
 
   /// No description provided for @psTransferHelp.
@@ -34812,10 +35022,10 @@ abstract class AppLocalizations {
   /// **'Chưa ai nhận trông bé. Người đang chăm bé nhận để cả nhà cùng biết.'**
   String get dutyNobodyBody;
 
-  /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
+  /// Action: starts the viewer’s care shift now.
   ///
   /// In vi, this message translates to:
-  /// **'Tôi trông bé từ bây giờ'**
+  /// **'Tôi trông bé'**
   String get dutyTake;
 
   /// P-181 "Ai đang trông bé" (owner, 2026-10-25, mockup approved).
@@ -34930,7 +35140,7 @@ abstract class AppLocalizations {
   ///
   /// In vi, this message translates to:
   /// **'{count} khung {size} · chưa gồm ship'**
-  String psPreviewPriceCaption(String count, String size);
+  String psPreviewPriceCaption(int count, String size);
 
   /// No description provided for @psBookUsedPage.
   ///
@@ -34983,7 +35193,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PV40B: opens the paywall opened on purpose (PW06).
   ///
   /// In vi, this message translates to:
-  /// **'Xem các gói'**
+  /// **'Xem Premium'**
   String get pv2SeePlans;
 
   /// Premium v2 (Figma 958:13863, D-101). E07: closes an info sheet (no purchase).
@@ -35001,13 +35211,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E01 body.
   ///
   /// In vi, this message translates to:
-  /// **'Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và {videos} lượt xuất video mỗi tháng.'**
+  /// **'Mẫu này có trong Premium, cùng khả năng xuất Full HD 1080p không giới hạn lượt. Ảnh và lời nhắn đang chọn được giữ nguyên.'**
   String pv2E01Body(int videos);
 
   /// Premium v2 (Figma 958:13863, D-101). E01 text button.
   ///
   /// In vi, this message translates to:
-  /// **'Dùng mẫu miễn phí tương tự'**
+  /// **'Dùng mẫu miễn phí'**
   String get pv2E01Secondary;
 
   /// Premium v2 (Figma 958:13863, D-101). E02: a Premium card template was tapped.
@@ -35025,7 +35235,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E02 text button.
   ///
   /// In vi, this message translates to:
-  /// **'Chọn mẫu miễn phí'**
+  /// **'Dùng mẫu miễn phí'**
   String get pv2E02Secondary;
 
   /// Premium v2 (Figma 958:13863, D-101). E04: continuing a draft on a Premium template without Premium.
@@ -35037,7 +35247,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E04 body.
   ///
   /// In vi, this message translates to:
-  /// **'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.'**
+  /// **'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu miễn phí.'**
   String get pv2E04Body;
 
   /// Premium v2 (Figma 958:13863, D-101). E04 text button.
@@ -35079,13 +35289,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E07: a Premium family out of Lumi credits (no paywall).
   ///
   /// In vi, this message translates to:
-  /// **'Lumi đã dùng hết {n} credit tháng này'**
+  /// **'Lumi đã dùng hết {n} lượt tháng này'**
   String pv2E07Title(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). E07 body.
   ///
   /// In vi, this message translates to:
-  /// **'Credit mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.'**
+  /// **'Lượt mới được cấp ngày {date}. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.'**
   String pv2E07Body(String date);
 
   /// Premium v2 (Figma 958:13863, D-101). E07 text button: opens Gói của gia đình.
@@ -35127,13 +35337,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E12: inviting a writer with the Free seats full.
   ///
   /// In vi, this message translates to:
-  /// **'Gia đình đã dùng {used}/{limit} chỗ người chăm sóc'**
+  /// **'Gia đình đã dùng {used}/{limit} chỗ người ghi'**
   String pv2E12Title(int used, int limit);
 
   /// Premium v2 (Figma 958:13863, D-101). E12 body.
   ///
   /// In vi, this message translates to:
-  /// **'Premium có {premium} chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.'**
+  /// **'Premium có {premium} chỗ người ghi. Hoặc mời làm người thân — xem album không giới hạn.'**
   String pv2E12Body(int premium);
 
   /// Premium v2 (Figma 958:13863, D-101). E12 text button: back to the invite with the relative role.
@@ -35163,8 +35373,8 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E08 body for a Premium family (PW10).
   ///
   /// In vi, this message translates to:
-  /// **'Đã dùng {pct}% của {gb} GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.'**
-  String pv2E08BodyPremium(int pct, String gb);
+  /// **'Đã dùng {pct}% của {gb} GB. Thêm {options}, dùng chung cho cả gia đình.'**
+  String pv2E08BodyPremium(int pct, String gb, String options);
 
   /// Premium v2 (Figma 958:13863, D-101). E09: storage full.
   ///
@@ -35205,19 +35415,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). E13 body.
   ///
   /// In vi, this message translates to:
-  /// **'{videos} video mỗi tháng, {credits} credit Lumi, mẫu cao cấp và {gb} GB cho cả nhà · {price}/tháng.'**
+  /// **'Mẫu cao cấp, video Full HD, thêm credit Lumi và dung lượng dùng chung cho cả nhà.'**
   String pv2E13Body(int videos, int credits, String gb, String price);
 
   /// Premium v2 (Figma 958:13863, D-101). PW01 headline.
   ///
   /// In vi, this message translates to:
-  /// **'Giữ tháng này của {name} thành một câu chuyện'**
+  /// **'Tạo video kỷ niệm của {name}'**
   String pv2HeadVideo(String name);
 
   /// Premium v2 (Figma 958:13863, D-101). PW02 headline.
   ///
   /// In vi, this message translates to:
-  /// **'Thiệp xứng với tháng đầu của {name}'**
+  /// **'Tạo thiệp dành riêng cho {name}'**
   String pv2HeadCard(String name);
 
   /// Premium v2 (Figma 958:13863, D-101). PW03 headline.
@@ -35235,13 +35445,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PW05 headline (Figma names the invitee; engineering generalises).
   ///
   /// In vi, this message translates to:
-  /// **'Để cả nhà cùng chăm {name}'**
+  /// **'Thêm người cùng chăm {name}'**
   String pv2HeadCaregivers(String name);
 
   /// Premium v2 (Figma 958:13863, D-101). PW06 headline, opened on purpose (no reason line).
   ///
   /// In vi, this message translates to:
-  /// **'Những năm đầu của con, giữ trọn vẹn hơn'**
+  /// **'Nâng cấp lên Premium'**
   String get pv2HeadExplore;
 
   /// Premium v2 (Figma 958:13863, D-101). PW01 / PW02 reason line (only from an entry point).
@@ -35259,7 +35469,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PW03 reason line.
   ///
   /// In vi, this message translates to:
-  /// **'Câu hỏi của bạn đang chờ · đã dùng hết {n} credit trải nghiệm.'**
+  /// **'Câu hỏi của bạn đang chờ · đã dùng hết {n} lượt trải nghiệm.'**
   String pv2ReasonLumi(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). PW04 reason line.
@@ -35271,7 +35481,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PW05 reason line.
   ///
   /// In vi, this message translates to:
-  /// **'Gia đình đã dùng {used} / {limit} chỗ người chăm sóc của gói Free.'**
+  /// **'Gói Free: {used} / {limit} chỗ người ghi.'**
   String pv2ReasonCaregivers(int used, int limit);
 
   /// Premium v2 (Figma 958:13863, D-101). PW07 reason line for a member who does not manage the plan.
@@ -35283,25 +35493,25 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card eyebrow.
   ///
   /// In vi, this message translates to:
-  /// **'VIDEO KỶ NIỆM'**
+  /// **'THIỆP & VIDEO KỶ NIỆM'**
   String get pv2CardVideoEyebrow;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Những ảnh rời, thành câu chuyện'**
+  /// **'Kỷ niệm mang dấu ấn của con'**
   String get pv2CardVideoTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.'**
+  /// **'Chọn mẫu cao cấp, thêm ảnh, tên và lời nhắn.'**
   String get pv2CardVideoBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
   ///
   /// In vi, this message translates to:
-  /// **'{n} video mỗi tháng'**
+  /// **'Xuất video không giới hạn lượt'**
   String pv2CardVideoLimit(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Video card demo scene.
@@ -35331,7 +35541,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm tên, lời thương và đổi phong cách chỉ với một chạm.'**
+  /// **'Thêm tên, ảnh và lời nhắn theo mẫu bạn chọn.'**
   String get pv2CardCardBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
@@ -35355,19 +35565,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Hỏi một câu, Lumi tóm tắt giúp'**
+  /// **'Hỏi Lumi về nhật ký của con'**
   String get pv2CardLumiTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.'**
+  /// **'Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.'**
   String get pv2CardLumiBody;
 
-  /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
+  /// Approved Figma Premium details, config-driven allowances.
   ///
   /// In vi, this message translates to:
-  /// **'{n} credit mỗi tháng'**
+  /// **'{n} credit/tháng · cả nhà dùng chung'**
   String pv2CardLumiLimit(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Lumi card demo question.
@@ -35397,19 +35607,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Những thay đổi nhỏ, dễ nhìn thấy hơn.'**
+  /// **'Gợi ý cá nhân & nhịp nâng cao'**
   String get pv2CardRhythmTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.'**
+  /// **'Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.'**
   String get pv2CardRhythmBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
   ///
   /// In vi, this message translates to:
-  /// **'Gồm trong {n} credit mỗi tháng'**
+  /// **'Có trong Premium'**
   String pv2CardRhythmLimit(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Rhythm card demo bar label.
@@ -35433,19 +35643,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm chỗ cho những tháng ngày tiếp theo.'**
+  /// **'Thêm chỗ lưu ảnh và video'**
   String get pv2CardStorageTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Giữ thêm ảnh và video trong album riêng của gia đình.'**
+  /// **'Dung lượng dùng chung cho ảnh và video của cả gia đình.'**
   String get pv2CardStorageBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
   ///
   /// In vi, this message translates to:
-  /// **'{gb} GB dùng chung · có thể mua thêm'**
+  /// **'{gb} GB dùng chung cho cả nhà'**
   String pv2CardStorageLimit(String gb);
 
   /// Premium v2 (Figma 958:13863, D-101). Storage card demo row.
@@ -35463,19 +35673,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Cả nhà cùng chăm, không hỏi lại'**
+  /// **'Cùng ghi nhật ký chăm con'**
   String get pv2CardCaregiversTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.'**
+  /// **'Cùng ghi cữ bú, giấc ngủ và xem cập nhật trong nhật ký.'**
   String get pv2CardCaregiversBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm chỗ cho tối đa {premium} người cùng chăm (Free: {free})'**
+  /// **'{premium} chỗ người ghi · Free: {free}'**
   String pv2CardCaregiversLimit(int premium, int free);
 
   /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo row.
@@ -35493,7 +35703,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Paywall comparison heading.
   ///
   /// In vi, this message translates to:
-  /// **'Free và Premium'**
+  /// **'So sánh Free và Premium'**
   String get pv2CompareTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison column.
@@ -35511,19 +35721,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison row.
   ///
   /// In vi, this message translates to:
-  /// **'Credit Lumi'**
+  /// **'Lumi'**
   String get pv2RowLumi;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} credit dùng thử'**
+  /// **'{n} credit dùng thử một lần'**
   String pv2RowLumiFree(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} credit/tháng'**
+  /// **'{n} lượt/tháng'**
   String pv2RowLumiPremium(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison row.
@@ -35541,19 +35751,19 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison row.
   ///
   /// In vi, this message translates to:
-  /// **'Xuất video'**
+  /// **'Xuất video kỷ niệm'**
   String get pv2RowVideo;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} lượt dùng thử'**
+  /// **'Không giới hạn · 720p'**
   String pv2RowVideoFree(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'{n} lượt/tháng'**
+  /// **'Không giới hạn · Full HD 1080p'**
   String pv2RowVideoPremium(int n);
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison row.
@@ -35577,7 +35787,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison row.
   ///
   /// In vi, this message translates to:
-  /// **'Người chăm sóc'**
+  /// **'Người có quyền ghi'**
   String get pv2RowCaregivers;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
@@ -35607,7 +35817,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Commitment chip.
   ///
   /// In vi, this message translates to:
-  /// **'Không bán credit lẻ'**
+  /// **'Không bán lượt lẻ'**
   String get pv2PromiseNoTopUps;
 
   /// Premium v2 (Figma 958:13863, D-101). Commitment chip.
@@ -35619,37 +35829,37 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Period tile.
   ///
   /// In vi, this message translates to:
-  /// **'Theo năm'**
+  /// **'Gói năm'**
   String get pv2PeriodYear;
 
   /// Premium v2 (Figma 958:13863, D-101). Period tile.
   ///
   /// In vi, this message translates to:
-  /// **'Theo tháng'**
+  /// **'Gói tháng'**
   String get pv2PeriodMonth;
 
   /// Premium v2 (Figma 958:13863, D-101). Yearly tile: the price per month.
   ///
   /// In vi, this message translates to:
-  /// **'≈ {price}/tháng'**
+  /// **'Tương đương khoảng {price}/tháng'**
   String pv2PerMonthApprox(String price);
 
   /// Premium v2 (Figma 958:13863, D-101). Monthly tile caption.
   ///
   /// In vi, this message translates to:
-  /// **'mỗi tháng'**
+  /// **'Thanh toán hằng tháng'**
   String get pv2EachMonth;
 
   /// Premium v2 (Figma 958:13863, D-101). Paywall CTA, yearly.
   ///
   /// In vi, this message translates to:
-  /// **'Đăng ký Premium · {price}/năm'**
+  /// **'Đăng ký gói năm · {price}'**
   String pv2SubscribeYear(String price);
 
   /// Premium v2 (Figma 958:13863, D-101). Paywall CTA, monthly.
   ///
   /// In vi, this message translates to:
-  /// **'Đăng ký Premium · {price}/tháng'**
+  /// **'Đăng ký gói tháng · {price}'**
   String pv2SubscribeMonth(String price);
 
   /// Premium v2 (Figma 958:13863, D-101). Paywall legal line, yearly.
@@ -35787,7 +35997,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Allowance value.
   ///
   /// In vi, this message translates to:
-  /// **'còn {left} / {limit} credit'**
+  /// **'còn {left} / {limit} lượt'**
   String pv2CreditsLeft(int left, int limit);
 
   /// Premium v2 (Figma 958:13863, D-101). Allowance value.
@@ -35853,7 +36063,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PV40B upsell body.
   ///
   /// In vi, this message translates to:
-  /// **'Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.'**
+  /// **'Thêm credit Lumi hằng tháng, mẫu cao cấp, video Full HD và dung lượng chung cho cả nhà.'**
   String get pv2FreeUpsellBody;
 
   /// Premium v2 (Figma 958:13863, D-101). PV40 action row: PW10.
@@ -35931,7 +36141,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PV43 state card.
   ///
   /// In vi, this message translates to:
-  /// **'Vượt chỗ người chăm sóc · {used} / {limit}'**
+  /// **'Vượt chỗ người ghi · {used} / {limit}'**
   String pv2OverSeatsTitle(int used, int limit);
 
   /// Premium v2 (Figma 958:13863, D-101). PV43 state card body.
@@ -36219,7 +36429,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). PV42 row body.
   ///
   /// In vi, this message translates to:
-  /// **'Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản'**
+  /// **'Giữ bản nháp; xuất cần Premium hoặc đổi sang mẫu miễn phí'**
   String get pv2CancelTemplatesBody;
 
   /// Premium v2 (Figma 958:13863, D-101). PV42 primary.
@@ -36447,7 +36657,7 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Storage card demo row.
   ///
   /// In vi, this message translates to:
-  /// **'3 video đang tải lên · không cần chờ'**
+  /// **'3 video đang tải lên'**
   String get pv2DemoUploading;
 
   /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo role.
@@ -36489,13 +36699,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Caregivers card demo footnote.
   ///
   /// In vi, this message translates to:
-  /// **'Cùng chăm đã có ở Free; Premium tăng số người tham gia.'**
+  /// **'Free cũng có nhật ký chung; Premium thêm chỗ cho người ghi.'**
   String get pv2DemoCareNote;
 
   /// Premium v2 (Figma 958:13863, D-101). Paywall legal line link.
   ///
   /// In vi, this message translates to:
-  /// **'Điều khoản'**
+  /// **'Điều khoản sử dụng'**
   String get pv2Terms;
 
   /// Premium v2 (Figma 958:13863, D-101). Paywall legal line link.
@@ -36543,13 +36753,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'Nhật ký & mốc cơ bản'**
+  /// **'Theo tuổi & lịch tham khảo'**
   String get pv2RowRhythmFree;
 
   /// Premium v2 (Figma 958:13863, D-101). Comparison value.
   ///
   /// In vi, this message translates to:
-  /// **'Nhận xét tuần · có nguồn'**
+  /// **'Gợi ý riêng & nhịp nâng cao'**
   String get pv2RowRhythmPremium;
 
   /// Hôm nay greeting before noon when the baby has no nickname. D-108, nameless twin of the AX10/AX11 greeting. EN is an engineering draft for owner review.
@@ -36683,6 +36893,1326 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xoá giá trị'**
   String get p48ClearValue;
+
+  /// AS07 line under "Có thể có {tên}": the app ticks the clearest of each group (not near-copies, not "Đã có"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'App đã chọn sẵn ảnh rõ nhất. Bỏ chọn mục không muốn lưu.'**
+  String get autoSaveReviewTicked;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà dùng chung, dù chọn gói năm hay gói tháng.'**
+  String get premiumSharedPlans;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn gói'**
+  String get premiumChoosePlan;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có gì?'**
+  String get premiumBenefits;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp & video kỷ niệm'**
+  String get premiumMemories;
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ mẫu cao cấp chất lượng cao'**
+  String get premiumMemoriesSubtitle;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cá nhân & nhịp nâng cao'**
+  String get premiumRhythm;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo nhu cầu và nhật ký của con'**
+  String get premiumRhythmSubtitle;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán hôm nay'**
+  String get premiumTodayTotal;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại chọn gói'**
+  String get premiumBackToPlans;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video không giới hạn lượt'**
+  String get premiumUnlimitedVideo;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu cơ bản · Video 720p'**
+  String get premiumVideoFree;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi mẫu · Full HD 1080p'**
+  String get premiumVideoPaid;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giới hạn lượt xuất: Free 720p, Premium Full HD 1080p.'**
+  String get premiumVideoDetail;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm hiểu Premium cho tính năng này'**
+  String get premiumFeatureIntro;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chất lượng video'**
+  String get videoQuality;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'HD 720p'**
+  String get videoQualityHd;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Full HD 1080p'**
+  String get videoQualityFullHd;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp nhẹ hơn, dễ chia sẻ'**
+  String get videoQualityHdHint;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hình ảnh rõ nét hơn'**
+  String get videoQualityFullHdHint;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần Premium · Tìm hiểu'**
+  String get videoQualityPremiumHint;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video HD 720p'**
+  String get videoExportHd;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video Full HD 1080p'**
+  String get videoExportFullHd;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất Full HD với Premium'**
+  String get videoFullHdIntroTitle;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium cho phép xuất video Full HD 1080p và dùng mọi mẫu cao cấp. Free vẫn xuất HD 720p không giới hạn lượt. Video đang làm được giữ nguyên.'**
+  String get videoFullHdIntroBody;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục với HD 720p'**
+  String get videoContinueHd;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuổi & lịch tham khảo'**
+  String get premiumRhythmCompareFree;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý riêng & nhịp nâng cao'**
+  String get premiumRhythmComparePaid;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng dùng chung cho ảnh và video của cả nhà'**
+  String get premiumStorageSubtitle;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng ghi cữ bú, giấc ngủ và xem nhật ký'**
+  String get premiumSeatsSubtitle;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần Premium'**
+  String get premiumNeedsPremium;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng mẫu Premium'**
+  String get premiumUseTemplate;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang kiểm tra gói · Thử lại'**
+  String get videoQualityChecking;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn vừa gửi nhiều yêu cầu tạo video. Thử lại sau một phút nhé.'**
+  String get videoRenderRateLimit;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết thanh toán'**
+  String get premiumPaymentDetails;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giá đã gồm thuế.'**
+  String get premiumTaxIncluded;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Video đã xuất giữ nguyên chất lượng. Video mới xuất HD 720p, không giới hạn lượt.'**
+  String get premiumVideoAfterCancel;
+
+  /// AS07 top bar when nothing in view is ticked: ticks every new item (not "Đã có"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn hết'**
+  String get autoSaveSelectAll;
+
+  /// AS07 top bar while something in view is ticked. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chọn hết'**
+  String get autoSaveDeselectAll;
+
+  /// AS07 near-copy block, when all of them are ticked: untick all but the clearest. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ giữ ảnh rõ nhất'**
+  String get autoSaveGroupBestOnly;
+
+  /// AS07 folded section at the end: items the app thinks are already in Kỷ niệm (a guess, same capture second). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã có trong Kỷ niệm · {count}}}'**
+  String autoSaveSavedSection(int count);
+
+  /// AS07 under "Đã có trong Kỷ niệm": they start unticked and can be ticked. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không chọn sẵn. Mở ra để chọn nếu app nhầm.'**
+  String get autoSaveSavedHint;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kiểm tra được gói gia đình'**
+  String get premiumPlanCheckFailed;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại khi có kết nối nhé. Nội dung bạn đang làm vẫn được giữ.'**
+  String get premiumPlanCheckFailedBody;
+
+  /// AS07 sheet title behind the week pill (one row of pills instead of two bars, owner 2026-10-26: "hai cái tabbar … chiếm nhiều diện tích"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần tuổi'**
+  String get autoSaveWeekSheet;
+
+  /// AS07 sheet title behind the Ảnh & video pill. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện'**
+  String get autoSaveKindSheet;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu. Gợi ý để tham khảo, không chẩn đoán bệnh.'**
+  String get premiumRhythmDetail;
+
+  /// Premium v2: transparent feature introduction or video export quality (D-124).
+  ///
+  /// In vi, this message translates to:
+  /// **'Video này cần Premium đang còn hiệu lực. Bạn có thể đổi sang mẫu cơ bản và HD 720p; bản dựng vẫn được giữ.'**
+  String get videoPremiumChanged;
+
+  /// AS07 week sheet row: the week of age and its days ("15–21/10"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n} · {range}'**
+  String autoSaveWeekRowTitle(int n, String range);
+
+  /// AS07 week sheet row for photos taken before the birth date. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước sinh'**
+  String get autoSaveWeekRowBefore;
+
+  /// AS07 week sheet row: files of that week already in Kỷ niệm, and suggestions to review. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{saved} đã có trong Kỷ niệm · {waiting} chờ bạn xem'**
+  String autoSaveWeekRowProgress(int saved, int waiting);
+
+  /// AS07 week sheet row when nothing of that week is in Kỷ niệm yet. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{waiting} chờ bạn xem'**
+  String autoSaveWeekRowWaiting(int waiting);
+
+  /// AS07 week sheet row for a week already sent. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xem hết · {saved} trong Kỷ niệm'**
+  String autoSaveWeekRowDone(int saved);
+
+  /// AS07 week pill when every week is shown together. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả các tuần · {count}'**
+  String autoSaveAllWeeks(int count);
+
+  /// AS07 week sheet, first row: review every week at once. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả các tuần'**
+  String get autoSaveAllWeeksRow;
+
+  /// AS10 button while the family storage is not known yet: nothing uploads before it is checked. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang kiểm tra dung lượng…'**
+  String get autoSaveCheckingSpace;
+
+  /// AS18 notice when nothing fits. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đã hết dung lượng'**
+  String get autoSaveFullTitle;
+
+  /// AS18 notice body when nothing fits. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} mục cần khoảng {need}. Thêm dung lượng để tải lên; các mục vẫn ở trong máy.}}'**
+  String autoSaveFullBody(int count, String need);
+
+  /// AS18 notice when only some fit. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ đủ chỗ cho {fit}/{count} mục'**
+  String autoSaveShortTitle(int fit, int count);
+
+  /// AS18 notice body when only some fit. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần khoảng {need}, gia đình còn {left}. Ảnh được tải trước video; phần còn lại vẫn ở trong máy.'**
+  String autoSaveShortBody(String need, String left);
+
+  /// AS10 while the chosen files are read and made ready for upload, one by one. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị {done}/{total}'**
+  String autoSavePrepTitle(int done, int total);
+
+  /// AS10 per-file state: not started yet. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ'**
+  String get autoSavePrepWaiting;
+
+  /// AS10 per-file state: being read and converted. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị'**
+  String get autoSavePrepWorking;
+
+  /// AS10 per-file state: ready, waiting in the upload queue. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã vào hàng tải'**
+  String get autoSavePrepQueued;
+
+  /// AS10 per-file state: the phone could not open it (deleted, damaged or not downloadable). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đọc được tệp'**
+  String get autoSavePrepFailed;
+
+  /// AS10 button after preparation, to continue. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get autoSavePrepDone;
+
+  /// AS10 after preparation when some files could not be read. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{queued} mục đã vào hàng tải · {failed} không đọc được'**
+  String autoSavePrepSummary(int queued, int failed);
+
+  /// Upload queue: items wait because the family storage is full. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết dung lượng gia đình'**
+  String get qQuotaTitle;
+
+  /// Upload queue, under "Hết dung lượng gia đình". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} mục đang chờ, vẫn ở trong máy. Thêm dung lượng để tiếp tục tải.}}'**
+  String qQuotaBody(int count);
+
+  /// Upload queue: cancel the items waiting for space (they stay on the phone). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Bỏ {count} mục khỏi hàng chờ}}'**
+  String qDropWaiting(int count);
+
+  /// Upload queue: cancel the files that cannot be read. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Bỏ {count} tệp không đọc được}}'**
+  String qDropUnreadable(int count);
+
+  /// Upload queue, under the unreadable count. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy không mở được các tệp này (có thể đã bị xoá hoặc hỏng).'**
+  String get qUnreadableHint;
+
+  /// AS18 / upload queue, Free family with Premium v2: opens the Premium storage offer (D-125). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm dung lượng với Premium'**
+  String get autoSaveAddSpacePremium;
+
+  /// AS18 / upload queue, Premium family: opens the paid storage add-on (D-125). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua thêm dung lượng'**
+  String get autoSaveBuySpace;
+
+  /// AS18 / upload queue without Premium v2: opens Dung lượng. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý dung lượng'**
+  String get autoSaveManageSpace;
+
+  /// AS18 / upload queue notice, Free family with Premium v2: says Premium before the button (D-125). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có thêm dung lượng cho cả nhà.'**
+  String get autoSavePremiumSpaceNote;
+
+  /// SY-4 toast: a new care record the server refused. record = "Bú bình · 120 ml", time = "14:05".
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được: {record}, {time}'**
+  String careFailedNew(String record, String time);
+
+  /// SY-4 toast: an edit the server refused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu thay đổi: {record}, {time}'**
+  String careFailedEdit(String record, String time);
+
+  /// SY-4 toast: a delete the server refused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa xoá được: {record}, {time}'**
+  String careFailedDelete(String record, String time);
+
+  /// SY-4 toast: an undo of a delete the server refused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa khôi phục được: {record}, {time}'**
+  String careFailedRestore(String record, String time);
+
+  /// SY-4 toast: a timer write the server refused (not a race with another phone).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được thay đổi của bộ đếm'**
+  String get careFailedTimer;
+
+  /// SY-4: appended only when the server said permission-denied.
+  ///
+  /// In vi, this message translates to:
+  /// **'{message}. Có thể quyền của bạn đã thay đổi.'**
+  String careFailedDenied(String message);
+
+  /// SY-3 9b "Thử lại ngay": the server refused a write meanwhile (never "Đã đồng bộ").
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thay đổi không lưu được. Có thể quyền của bạn đã thay đổi.'**
+  String get retryRefused;
+
+  /// SY-3 9b: unsent writes without a row of their own.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} thay đổi khác (xoá, sửa, bộ đếm) chờ gửi'**
+  String pendingOthers(int count);
+
+  /// SY-1 / SY-2 / AI-10 error notice title, with "Thử lại".
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được nhật ký'**
+  String get careLoadFailed;
+
+  /// SY-1 Hôm nay: under "Chưa tải được nhật ký"; the tiles stay usable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần ghi gần nhất chưa hiện. Bạn vẫn ghi mới được.'**
+  String get todayLoadFailedBody;
+
+  /// SY-5 Thống kê bú, window Hôm nay: one line for the three tiles.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính từ 18:00 hôm qua, gồm cả cữ đêm'**
+  String get statsTodayFrom18;
+
+  /// AI-10 Bàn giao: screen-reader label of the live part skeleton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải nhật ký của bé'**
+  String get hoLoading;
+
+  /// AI-10 Bàn giao "Tiếp theo": reminders failed (never "không có việc nào").
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được việc đã hẹn'**
+  String get hoRemindersFailed;
+
+  /// AI-10 Bàn giao: check-ins failed (never the all-clear line).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được dấu hiệu sức khoẻ'**
+  String get hoHealthFailed;
+
+  /// AI-11: opened from a send whose handover is gone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản bàn giao này không còn'**
+  String get hoNotFoundTitle;
+
+  /// AI-11 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể đã có bản mới hơn thay thế.'**
+  String get hoNotFoundBody;
+
+  /// AI-11 action when another handover is stored.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản mới nhất'**
+  String get hoSeeLatest;
+
+  /// AI-11 action when nothing is stored.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo bản mới'**
+  String get hoCreateNew;
+
+  /// AI-14 (D-127 Q5): nothing stored; made only on a tap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bản tóm tắt'**
+  String get hoCreateTitle;
+
+  /// AI-14 body: says the cost before the tap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt từ ghi nhận của cả nhà mấy ngày qua. Mỗi lần tạo dùng tối đa 1 lượt AI.'**
+  String get hoCreateBody;
+
+  /// AI-14 action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo bản tóm tắt'**
+  String get hoCreateAction;
+
+  /// AI-12: generate failed for the network.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần kết nối mạng để tạo. Ghi nhận của nhà mình vẫn giữ nguyên.'**
+  String get aiStateFailedOffline;
+
+  /// AI-12: generate refused for quota (no template came back).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã dùng hết lượt AI trong kỳ này.'**
+  String get aiStateQuotaOut;
+
+  /// AI-12: generate refused, Premium required.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI nằm trong Child Life Premium.'**
+  String get aiStatePremiumOnly;
+
+  /// AI-12: generate refused for another gate (role, region…), with "Tại sao".
+  ///
+  /// In vi, this message translates to:
+  /// **'AI chưa dùng được cho nhà mình lúc này.'**
+  String get aiStateUnavailable;
+
+  /// AI-13: aiStateQuotaDay without a known reset date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Bạn vẫn xem được bản theo mẫu.'**
+  String aiStateQuotaDayNoDate(int used, int limit);
+
+  /// AI-13: aiStateQuotaMonth without a known reset date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Bạn vẫn xem được bản theo mẫu.'**
+  String aiStateQuotaMonthNoDate(int used, int limit);
+
+  /// AI-12: send failed for a reason other than the network.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được bàn giao. Thử lại sau.'**
+  String get aiSendFailedOther;
+
+  /// AI-14 (D-127 Q5) MS01: the moment nudge only on a tap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết lời gợi ý bằng AI'**
+  String get aiMomentAsk;
+
+  /// AI-14 MS01: the nudge failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa viết được lời gợi ý lúc này.'**
+  String get aiMomentFailed;
+
+  /// AI-15 Nhìn lại tuần qua: network or server failure, with "Thử lại".
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được bản nhìn lại tuần này'**
+  String get engWeekFailed;
+
+  /// AI-15: the photos failed to load.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được ảnh của tuần'**
+  String get engWeekMediaFailed;
+
+  /// AI-15: nothing of the week is left.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và câu chuyện của tuần này không còn trong Kỷ niệm.'**
+  String get engWeekEmpty;
+
+  /// AI-15 shelf toast: opening failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được gợi ý. Thử lại sau.'**
+  String get engOpenFailed;
+
+  /// AI-15 shelf toast: "Để sau" / "Bỏ qua gợi ý" failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được lựa chọn. Thử lại sau.'**
+  String get engActFailed;
+
+  /// Dung lượng: the storage answer failed (ST-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được dung lượng'**
+  String get stLoadFailedTitle;
+
+  /// Dung lượng / Gói của gia đình: the limit is unknown; never shown as full or 0 B (ST-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kiểm tra được dung lượng của gói'**
+  String get stQuotaUnknown;
+
+  /// Dung lượng: space reserved by uploads in flight, counted in "full" (D-127 Q2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang giữ chỗ {size} cho {count, plural, other{{count} mục}} đang tải lên'**
+  String stReserved(String size, int count);
+
+  /// Full storage secondary action: opens the largest videos (ST-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bớt video lớn'**
+  String get stFreeUpVideos;
+
+  /// Tôi › Dung lượng row value when the storage read failed (ST-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được'**
+  String get stRowFailed;
+
+  /// Premium storage full, member who is not the plan manager (D-127 Q7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ {name} thêm dung lượng'**
+  String pv2AskStorage(String name);
+
+  /// Share text sent to the plan manager from "Nhờ {name} thêm dung lượng" (D-127 Q7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình sắp hết dung lượng Child Life. Bạn thêm dung lượng giúp mình trong Tôi › Gói của gia đình nhé.'**
+  String get pv2AskStorageMessage;
+
+  /// PW10: the add-on list is empty or unpriced (ST-5, P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được các gói dung lượng'**
+  String get pv2AddOnUnknown;
+
+  /// Joins storage add-on sizes: "20 GB hoặc 50 GB" (ST-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{a} hoặc {b}'**
+  String pv2OptionOr(String a, String b);
+
+  /// E08 body when no add-on is configured. D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng {pct}% của {gb} GB.'**
+  String pv2E08BodyPremiumPlain(int pct, String gb);
+
+  /// Gói của gia đình: the manager line when the name is empty (P-8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn quản lý gói này'**
+  String get pv2ManagerYouNoName;
+
+  /// Gói của gia đình Free upsell when the baby name is empty (P-8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi tháng, thêm một câu chuyện của bé'**
+  String get pv2FreeUpsellTitleNoName;
+
+  /// Paywall: prices are not configured or not loaded; no price is shown (P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được giá. Thử lại khi có kết nối.'**
+  String get pv2PriceUnknown;
+
+  /// Paywall CTA, disabled while the price is unknown (P-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký Premium'**
+  String get pv2SubscribeNoPrice;
+
+  /// Paywall line under the CTA while the store sheet opens (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở {store}…'**
+  String pv2BusyBuying(String store);
+
+  /// Paywall line while the server verifies (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xác nhận giao dịch…'**
+  String get pv2BusyVerifying;
+
+  /// Paywall line while restoring (P-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang khôi phục…'**
+  String get pv2BusyRestoring;
+
+  /// Paywall line while a purchase is pending; no second purchase (P-6). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ cửa hàng xác nhận'**
+  String get pv2BusyPending;
+
+  /// Paywall: the store or its products failed to load; not "sắp có" (P-7). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kết nối được cửa hàng. Thử lại sau.'**
+  String get pmStoreLoadFailed;
+
+  /// Print file job queued (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị dựng file in…'**
+  String get psExportQueued;
+
+  /// Print file job progress (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dựng file in · trang {done}/{total}'**
+  String psExportProgress(int done, int total);
+
+  /// Print file job: the parent may leave (PR-1, Q8). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể rời màn hình này. Quay lại đây để mở file khi xong.'**
+  String get psExportLeave;
+
+  /// Print file job failed (PR-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa dựng được file in. Thử lại nhé.'**
+  String get psExportFailed;
+
+  /// Print preview: the remembered print file job is ready (PR-1). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'File in đã sẵn sàng · Mở'**
+  String get psExportBannerReady;
+
+  /// Print file ready card (PR-1, PR-5 plural). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{pages} trang · {format}'**
+  String psExportFiles(int pages, String format);
+
+  /// Checkout: unsupported shipping country (PR-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa giao bản in tới {country}.'**
+  String psCountryUnsupported(String country);
+
+  /// Checkout: unsupported country with digital files open (PR-2). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa giao bản in tới {country}. Bạn có thể tải file in để in ở nơi gần bạn.'**
+  String psCountryUnsupportedDigital(String country);
+
+  /// Checkout caption when Chuyển khoản is chosen (PR-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển khoản sau khi Child Life xác nhận'**
+  String get psPayByTransfer;
+
+  /// Order success row label when Chuyển khoản is chosen (PR-3). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển khoản'**
+  String get psPayTransferRow;
+
+  /// Checkout: the order call timed out (PR-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa nhận được phản hồi. Có thể đơn đã được ghi nhận — xem Đơn in trước khi đặt lại.'**
+  String get psOrderMaybeSent;
+
+  /// Opens Đơn in của tôi (PR-4). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Đơn in'**
+  String get psViewOrders;
+
+  /// Order detail for an id that is not in the list (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy đơn in này'**
+  String get psOrderNotFound;
+
+  /// Order detail not found body (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn có thể thuộc tài khoản khác hoặc chưa tải xong.'**
+  String get psOrderNotFoundHelp;
+
+  /// An order status this app version does not know (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang cập nhật trạng thái'**
+  String get psStatusUnknown;
+
+  /// Toast after cancelling a print order (PR-5). D-127 (flow audit 2026-10-26). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ đơn in'**
+  String get psOrderCancelledToast;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'/năm'**
+  String get premiumYearSuffix;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'/tháng'**
+  String get premiumMonthSuffix;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiết kiệm {n}%'**
+  String premiumSavePercent(int n);
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý Lumi'**
+  String get premiumLumiListTitle;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'{gb} cho cả nhà'**
+  String premiumStorageListTitle(String gb);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} người có quyền ghi'**
+  String premiumSeatsListTitle(int n);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự động gia hạn. Huỷ bất cứ lúc nào trong {store}. Khi đăng ký, bạn đồng ý với '**
+  String premiumLegalIntro(String store);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tương đương mỗi tháng'**
+  String get premiumPaymentEquivalent;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiết kiệm so với 12 tháng trả theo tháng'**
+  String get premiumPaymentSaving;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thuế'**
+  String get premiumPaymentTax;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gồm trong giá'**
+  String get premiumPaymentTaxValue;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự động gia hạn {price}. Muốn huỷ, hãy huỷ trong {store} ít nhất 24 giờ trước ngày gia hạn.'**
+  String premiumPaymentRenewal(String price, String store);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp: mẫu cao cấp, thêm ảnh, tên và lời nhắn.'**
+  String get premiumMemoriesBullet1;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video: ghép ảnh cùng lời nhắn và nhạc.'**
+  String get premiumMemoriesBullet2;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi về nhật ký và xem dữ liệu Lumi dùng để trả lời.'**
+  String get premiumLumiBullet1;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ Lumi soạn bản ghi để bạn kiểm tra trước khi lưu.'**
+  String get premiumLumiBullet2;
+
+  /// Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit/tháng dùng chung cho cả nhà, được cấp mỗi tháng.'**
+  String premiumLumiBullet3(int n);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo tuổi, nhu cầu và phản hồi của bạn.'**
+  String get premiumRhythmBullet1;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu.'**
+  String get premiumRhythmBullet2;
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu con hơn mỗi ngày.'**
+  String get premiumRhythmBullet3;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'{gb} cho ảnh và video của cả gia đình.'**
+  String premiumStorageBullet1(String gb);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mức sử dụng trong Gói của gia đình.'**
+  String get premiumStorageBullet2;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua thêm dung lượng: Sắp có.'**
+  String get premiumStorageBullet3;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng ghi cữ bú, giấc ngủ và xem cập nhật.'**
+  String get premiumSeatsBullet1;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền xem và ghi theo vai trò của từng người.'**
+  String get premiumSeatsBullet2;
+
+  /// Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thoải mái cùng {n} người chăm con'**
+  String premiumSeatsBullet3(int n);
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý & nhịp nâng cao'**
+  String get premiumRhythmPager;
+
+  /// Approved Premium Figma 1153:5491, exact UI alignment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người có quyền ghi'**
+  String get premiumSeatsPager;
+
+  /// Premium Figma payment-sheet action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký gói năm'**
+  String get premiumSubscribeYearShort;
+
+  /// Premium Figma payment-sheet action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký gói tháng'**
+  String get premiumSubscribeMonthShort;
+
+  /// Approved Figma Premium details, config-driven allowances.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit dùng thử · không cấp lại'**
+  String premiumLumiCompareFree(int n);
+
+  /// Approved Figma Premium details, config-driven allowances.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} credit/tháng · cả nhà dùng chung'**
+  String premiumLumiComparePaid(int n);
+
+  /// Approved Figma Premium details, config-driven allowances.
+  ///
+  /// In vi, this message translates to:
+  /// **'{premium} người có quyền ghi · Free: {free}'**
+  String premiumSeatsCardLimit(int free, int premium);
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi Lumi'**
+  String get premiumLumiPager;
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi Lumi mọi thứ về con'**
+  String get premiumLumiDetailTitle;
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cá nhân và nhịp nâng cao của con'**
+  String get premiumRhythmDetailTitle;
+
+  /// Owner-updated Premium Figma 1153:5491, 2026-10-27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giới hạn lượt xuất chất lượng cao'**
+  String get premiumMemoriesBullet3;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào ngày mới cùng {name}'**
+  String hhMorning(String name);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào ngày mới'**
+  String get hhMorningNoName;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một ngày của {name} thế nào rồi?'**
+  String hhAfternoon(String name);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày của bé thế nào rồi?'**
+  String get hhAfternoonNoName;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi tối, {name}'**
+  String hhEvening(String name);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào buổi tối'**
+  String get hhEveningNoName;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mừng sinh nhật {name}!'**
+  String hhBirthday(String name);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đang trông bé'**
+  String hhDutyNow(String name);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện tại · từ {time}'**
+  String hhDutySince(String time);
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được trạng thái trông bé · Thử lại'**
+  String get hhDutyRetry;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt giao diện'**
+  String get hhSettings;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hình nền đầu trang Hôm nay'**
+  String get hhSettingsSubtitle;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hình nền'**
+  String get hhWallpaper;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước'**
+  String get hhPreview;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạ tiết theo buổi'**
+  String get hhPattern;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đại diện của bé'**
+  String get hhAvatar;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh từ Kỷ niệm'**
+  String get hhChooseMemory;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh để chọn trong Kỷ niệm.'**
+  String get hhPhotoEmpty;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ áp dụng trên thiết bị này cho bé đang chọn.'**
+  String get hhDeviceOnly;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng'**
+  String get hhApply;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được giao diện. Bạn thử lại nhé.'**
+  String get hhSaveFailed;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong đầu trang'**
+  String get hhHeaderSection;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trạng thái trông bé nằm cố định trong đầu trang.'**
+  String get hhDutyFixed;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé chưa có ảnh đại diện; tạm dùng hoạ tiết.'**
+  String get hhAvatarMissing;
+
+  /// Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chọn'**
+  String get hhSelected;
+
+  /// Two verified parents currently caring together.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba và Mẹ'**
+  String get dutyParents;
+
+  /// Action: records the viewer and the other active parent as caring together.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba và Mẹ cùng trông'**
+  String get dutyTogether;
+
+  /// Confirmed only after a successful server write.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba và Mẹ đang cùng trông bé. Cả nhà sẽ thấy.'**
+  String get dutyTogetherToast;
+
+  /// Shift duration under one minute; not rounded up.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa bắt đầu'**
+  String get dutyJustStarted;
+
+  /// Previous carer or parent pair, not currently on duty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước đó'**
+  String get dutyPrevious;
+
+  /// Load error in care duty sheet; never shown as nobody caring.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được trạng thái trông bé.'**
+  String get dutyLoadFailed;
+
+  /// Shown for a current parent pair before ending only the viewer’s part.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc phần của bạn; người còn lại vẫn đang trông bé.'**
+  String get dutyOwnPart;
+
+  /// Local start time of the current care shift.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {time}'**
+  String dutyStartedAt(String time);
+
+  /// Current parent-pair label, with plural grammar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba và Mẹ đang cùng trông bé'**
+  String get dutyTogetherNow;
+
+  /// Parent-pair status with baby-local start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba và Mẹ cùng trông · từ {time}'**
+  String dutyTogetherSince(String time);
+
+  /// Viewer’s own care status; uses correct second-person grammar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang trông bé'**
+  String get dutyYouNow;
+
+  /// Viewer’s own care status with local start time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang trông · từ {time}'**
+  String dutyYouSince(String time);
 }
 
 class _AppLocalizationsDelegate

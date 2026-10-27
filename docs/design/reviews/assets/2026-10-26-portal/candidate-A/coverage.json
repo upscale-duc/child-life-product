@@ -1,0 +1,171 @@
+[
+  {
+    "route": "/print-studio",
+    "lang": "en",
+    "theme": "light",
+    "width": 1440,
+    "name": "print-studio_en_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nOverview\nAnalytics\nOPERATIONS\nFamilies\nSupport\n4\nStorage requests\n2\nData requests\n1\nNotifications & Engagement\nPrint Studio\nCONTENT\nFirst aid\nGrowing rhythm\nMemory templates\nBaby-care library\nStage content\nMilestones\nNutrition\nSolid foods\nContent review\nReference tables\nSYSTEM\nSystem & AI\nFeatures & Premium\nApp updates\nStaff & permissions\nAction log\nDEVELOPMENT\nQA handbook\nL\nLinh Trần\nOwner\nOPERATIONS/\nPrint Studio\nFind a page\n⌘K\n● Dev\nPrint orders & Print Studio\nRefresh\n\nCustomers submit orders; Child Life confirms and handles printing and delivery manually. No payment is collected in the app.\n\nDemand · latest 30 active days\n\nCounts activities on the day they occur, not unique people or cohort conversion rates.\n\nProduct views\n\n0\n\nDesigns started\n\n0\n\nOrders submitted\n\n0\n\nConfirmed\n\n0\n\nDelivered\n\n0\n\nChanged mind: 0\n\nProduct price: 0\n\nDelivery fee: 0\n\nDelivery time: 0\n\nDesign did not fit: 0\n\nUnreachable: 0\n\nOther reason: 0\n\nRecent print orders\n\nOpening an order reveals delivery information and records an access audit.\n\nOrder\tStatus\tTotal\tPrint-ready file\t\nprint_review_01\tAwaiting confirmation\t₫129,000\tPrint file ready\tOpen order\nCatalog & fulfillment\nEnable file downloads\nAccept print orders\nDelivery countries (VN, …)\nEstimated prices · agree with customer\n\nProducts accepting orders\n\nSingle frame\nSet of 3\nSet of 5\nPhoto book\nEstimated delivery days\nShipping fee\nFree shipping from\nGift box surcharge\nGift wrapping fee\nVietnamese policy\nEnglish policy\nPrices (VND)\nsingle:10x15\nsingle:13x18\nsingle:15x21\ntrio:10x15\ntrio:13x18\ntrio:15x21\nfive:10x15\nfive:13x18\nfive:15x21\nbook:15x15:24\nbook:20x20:24\nbook:20x20:40\nSave configuration\nFind a page\n\nSearch pages or actions…"
+  },
+  {
+    "route": "/print-studio",
+    "lang": "vi",
+    "theme": "dark",
+    "width": 1440,
+    "name": "print-studio_vi_dark_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nPrint Studio\nTìm trang\n⌘K\n● Dev\nĐơn in & Print Studio\nTải lại\n\nKhách gửi đơn, Child Life liên hệ xác nhận rồi xử lý in và giao hàng thủ công. Chưa thu tiền trong ứng dụng.\n\nNhu cầu · 30 ngày có hoạt động gần nhất\n\nĐếm hoạt động theo ngày phát sinh, không phải số người dùng hoặc tỷ lệ chuyển đổi cùng một nhóm khách.\n\nXem sản phẩm\n\n0\n\nBắt đầu thiết kế\n\n0\n\nGửi đơn\n\n0\n\nĐã xác nhận\n\n0\n\nGiao thành công\n\n0\n\nThay đổi ý định: 0\n\nGiá sản phẩm: 0\n\nPhí giao hàng: 0\n\nThời gian nhận: 0\n\nThiết kế chưa phù hợp: 0\n\nKhông liên hệ được: 0\n\nLý do khác: 0\n\nĐơn in gần đây\n\nThông tin giao hàng sẽ hiển thị khi mở đơn. Lượt truy cập được ghi vào nhật ký.\n\nMã đơn\tTrạng thái\tTổng tiền\tTệp dùng để in\t\nprint_review_01\tChờ xác nhận\t129.000 ₫\tTệp in đã sẵn sàng\tMở đơn\nDanh mục & giao hàng\nCho phép tải tệp\nMở nhận đơn in\nMã quốc gia giao hàng (ví dụ: VN)\nGiá dự kiến · cần thống nhất với khách\n\nSản phẩm được nhận đơn\n\nMột khung\nBộ 3 khung\nBộ 5 khung\nSách ảnh\nThời gian giao dự kiến (ngày)\nPhí giao hàng\nMiễn phí giao cho đơn từ\nPhụ thu hộp quà\nPhụ thu gói quà\nChính sách tiếng Việt\nChính sách tiếng Anh\nGiá bán (VND)\nsingle:10x15\nsingle:13x18\nsingle:15x21\ntrio:10x15\ntrio:13x18\ntrio:15x21\nfive:10x15\nfive:13x18\nfive:15x21\nbook:15x15:24\nbook:20x20:24\nbook:20x20:40\nLưu cấu hình\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/print-studio",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "print-studio_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nVẬN HÀNH/\nPrint Studio\nTìm trang\n⌘K\n● Dev\nĐơn in & Print Studio\nTải lại\n\nKhách gửi đơn, Child Life liên hệ xác nhận rồi xử lý in và giao hàng thủ công. Chưa thu tiền trong ứng dụng.\n\nNhu cầu · 30 ngày có hoạt động gần nhất\n\nĐếm hoạt động theo ngày phát sinh, không phải số người dùng hoặc tỷ lệ chuyển đổi cùng một nhóm khách.\n\nXem sản phẩm\n\n0\n\nBắt đầu thiết kế\n\n0\n\nGửi đơn\n\n0\n\nĐã xác nhận\n\n0\n\nGiao thành công\n\n0\n\nThay đổi ý định: 0\n\nGiá sản phẩm: 0\n\nPhí giao hàng: 0\n\nThời gian nhận: 0\n\nThiết kế chưa phù hợp: 0\n\nKhông liên hệ được: 0\n\nLý do khác: 0\n\nĐơn in gần đây\n\nThông tin giao hàng sẽ hiển thị khi mở đơn. Lượt truy cập được ghi vào nhật ký.\n\nMã đơn\tTrạng thái\tTổng tiền\tTệp dùng để in\t\nprint_review_01\tChờ xác nhận\t129.000 ₫\tTệp in đã sẵn sàng\tMở đơn\nDanh mục & giao hàng\nCho phép tải tệp\nMở nhận đơn in\nMã quốc gia giao hàng (ví dụ: VN)\nGiá dự kiến · cần thống nhất với khách\n\nSản phẩm được nhận đơn\n\nMột khung\nBộ 3 khung\nBộ 5 khung\nSách ảnh\nThời gian giao dự kiến (ngày)\nPhí giao hàng\nMiễn phí giao cho đơn từ\nPhụ thu hộp quà\nPhụ thu gói quà\nChính sách tiếng Việt\nChính sách tiếng Anh\nGiá bán (VND)\nsingle:10x15\nsingle:13x18\nsingle:15x21\ntrio:10x15\ntrio:13x18\ntrio:15x21\nfive:10x15\nfive:13x18\nfive:15x21\nbook:15x15:24\nbook:20x20:24\nbook:20x20:40\nLưu cấu hình\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/print-studio",
+    "lang": "en",
+    "theme": "dark",
+    "width": 1440,
+    "name": "print-studio_en_dark_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nOverview\nAnalytics\nOPERATIONS\nFamilies\nSupport\n4\nStorage requests\n2\nData requests\n1\nNotifications & Engagement\nPrint Studio\nCONTENT\nFirst aid\nGrowing rhythm\nMemory templates\nBaby-care library\nStage content\nMilestones\nNutrition\nSolid foods\nContent review\nReference tables\nSYSTEM\nSystem & AI\nFeatures & Premium\nApp updates\nStaff & permissions\nAction log\nDEVELOPMENT\nQA handbook\nL\nLinh Trần\nOwner\nOPERATIONS/\nPrint Studio\nFind a page\n⌘K\n● Dev\nPrint orders & Print Studio\nRefresh\n\nCustomers submit orders; Child Life confirms and handles printing and delivery manually. No payment is collected in the app.\n\nDemand · latest 30 active days\n\nCounts activities on the day they occur, not unique people or cohort conversion rates.\n\nProduct views\n\n0\n\nDesigns started\n\n0\n\nOrders submitted\n\n0\n\nConfirmed\n\n0\n\nDelivered\n\n0\n\nChanged mind: 0\n\nProduct price: 0\n\nDelivery fee: 0\n\nDelivery time: 0\n\nDesign did not fit: 0\n\nUnreachable: 0\n\nOther reason: 0\n\nRecent print orders\n\nOpening an order reveals delivery information and records an access audit.\n\nOrder\tStatus\tTotal\tPrint-ready file\t\nprint_review_01\tAwaiting confirmation\t₫129,000\tPrint file ready\tOpen order\nCatalog & fulfillment\nEnable file downloads\nAccept print orders\nDelivery countries (VN, …)\nEstimated prices · agree with customer\n\nProducts accepting orders\n\nSingle frame\nSet of 3\nSet of 5\nPhoto book\nEstimated delivery days\nShipping fee\nFree shipping from\nGift box surcharge\nGift wrapping fee\nVietnamese policy\nEnglish policy\nPrices (VND)\nsingle:10x15\nsingle:13x18\nsingle:15x21\ntrio:10x15\ntrio:13x18\ntrio:15x21\nfive:10x15\nfive:13x18\nfive:15x21\nbook:15x15:24\nbook:20x20:24\nbook:20x20:40\nSave configuration\nFind a page\n\nSearch pages or actions…"
+  },
+  {
+    "route": "/features",
+    "lang": "vi",
+    "theme": "light",
+    "width": 1440,
+    "name": "features_vi_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm trang\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nGia đình có Premium\n12\n9 trả phí · 3 được cấp\nĐang bật\n9\nĐang tắt\n20\nBeta\n1\nTất cả 29\nMiễn phí 1\nPremium 4\nBeta 1\nCông tắc hệ thống 23\n29 / 29 kết quả\nTính năng\tGói\tAi được dùng\tBật\t\nChi tiết\n\nKỷ niệm · 4\n\nMẫu kỷ niệm Premium\n\t\nPremium\n\tNgười có Premium\n12 gia đình Premium\n\t—\t\n\n\nVideo kỷ niệm\nGiữ quyền đến hết 20/11/2026\n\t\nPremium\n\t\nNgười có Premium\nGia đình nội bộ\n12 gia đình Premium\n\t\n\t\n\n\nTự lưu kỷ niệm\n\t\nBeta\n\t\nGia đình nội bộ\n2 gia đình trong beta\n\t\nĐang tắt\n\t\n\n\nChia sẻ thiệp ra ngoài\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nCá nhân hoá · 4\n\nNhịp lớn lên\n\t\nMiễn phí\n\t\nMọi gia đình\n\t\n\t\n\n\nGợi ý cá nhân hoá & Nhịp nâng cao\n\t\nPremium\n\t\nNgười có Premium\nTheo tỷ lệ · 25%\n12 gia đình Premium\n· Bật riêng 1 · tắt riêng 0\n\t\n\t\n\n\nTrải nghiệm theo tuổi\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nThanh điều hướng mới\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTrợ lý AI · 3\n\nTrợ lý (chat, ảnh, hướng dẫn chăm sóc)\n+ 3 công tắc thành phần\n\t\nPremium\n+ dùng thử bằng credit\n\t\nNgười có Premium\nMột số gia đình · 1\n12 gia đình Premium\n\t\n\t\n\n\nTrợ lý · gọi AI\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nTrợ lý · lưu kết quả vào ứng dụng\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTải lên · 2\n\nTải ảnh, video mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nTải video\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nNhắc nhở & gợi ý · 11\n\nGợi ý thông minh\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nPush gợi ý chủ động\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nẢnh chờ chọn lưu\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nVideo theo mốc kỷ niệm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nMốc sáu tháng\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nKỷ niệm tuần\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý hoạt động gia đình\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý Lumi\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGiảm tần suất gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGom gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nThử nghiệm engagement\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nGia đình & tiện ích · 4\n\nGửi lời mời mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nWidget màn hình khoá\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nNight care tự bật\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nGói Premium v2\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nĐo lường sản phẩm · 1\n\nĐo lường sản phẩm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nMua gói trong app ở\nGói Premium\n\nGiới hạn hiện tại\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/features",
+    "lang": "vi",
+    "theme": "dark",
+    "width": 1440,
+    "name": "features_vi_dark_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nTổng quan\nPhân tích\nVẬN HÀNH\nGia đình\nHỗ trợ\n4\nMở rộng dung lượng\n2\nYêu cầu dữ liệu\n1\nThông báo & Gắn kết\nPrint Studio\nNỘI DUNG\nSơ cứu\nNhịp lớn lên\nMẫu kỷ niệm\nThư viện chăm bé\nNội dung theo giai đoạn\nMốc phát triển\nDinh dưỡng\nĂn dặm\nDuyệt nội dung\nBảng tham chiếu\nHỆ THỐNG\nHệ thống & AI\nTính năng & Premium\nCập nhật ứng dụng\nNhân sự & phân quyền\nNhật ký thao tác\nPHÁT TRIỂN\nSổ tay kiểm thử\nL\nLinh Trần\nOwner\nHỆ THỐNG/\nTính năng & Premium\nTìm trang\n⌘K\n● Dev\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nGia đình có Premium\n12\n9 trả phí · 3 được cấp\nĐang bật\n9\nĐang tắt\n20\nBeta\n1\nTất cả 29\nMiễn phí 1\nPremium 4\nBeta 1\nCông tắc hệ thống 23\n29 / 29 kết quả\nTính năng\tGói\tAi được dùng\tBật\t\nChi tiết\n\nKỷ niệm · 4\n\nMẫu kỷ niệm Premium\n\t\nPremium\n\tNgười có Premium\n12 gia đình Premium\n\t—\t\n\n\nVideo kỷ niệm\nGiữ quyền đến hết 20/11/2026\n\t\nPremium\n\t\nNgười có Premium\nGia đình nội bộ\n12 gia đình Premium\n\t\n\t\n\n\nTự lưu kỷ niệm\n\t\nBeta\n\t\nGia đình nội bộ\n2 gia đình trong beta\n\t\nĐang tắt\n\t\n\n\nChia sẻ thiệp ra ngoài\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nCá nhân hoá · 4\n\nNhịp lớn lên\n\t\nMiễn phí\n\t\nMọi gia đình\n\t\n\t\n\n\nGợi ý cá nhân hoá & Nhịp nâng cao\n\t\nPremium\n\t\nNgười có Premium\nTheo tỷ lệ · 25%\n12 gia đình Premium\n· Bật riêng 1 · tắt riêng 0\n\t\n\t\n\n\nTrải nghiệm theo tuổi\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nThanh điều hướng mới\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTrợ lý AI · 3\n\nTrợ lý (chat, ảnh, hướng dẫn chăm sóc)\n+ 3 công tắc thành phần\n\t\nPremium\n+ dùng thử bằng credit\n\t\nNgười có Premium\nMột số gia đình · 1\n12 gia đình Premium\n\t\n\t\n\n\nTrợ lý · gọi AI\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nTrợ lý · lưu kết quả vào ứng dụng\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTải lên · 2\n\nTải ảnh, video mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nTải video\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nNhắc nhở & gợi ý · 11\n\nGợi ý thông minh\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nPush gợi ý chủ động\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nẢnh chờ chọn lưu\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nVideo theo mốc kỷ niệm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nMốc sáu tháng\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nKỷ niệm tuần\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý hoạt động gia đình\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý Lumi\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGiảm tần suất gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGom gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nThử nghiệm engagement\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nGia đình & tiện ích · 4\n\nGửi lời mời mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nWidget màn hình khoá\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nNight care tự bật\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nGói Premium v2\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nĐo lường sản phẩm · 1\n\nĐo lường sản phẩm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nMua gói trong app ở\nGói Premium\n\nGiới hạn hiện tại\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/features",
+    "lang": "vi",
+    "theme": "light",
+    "width": 390,
+    "name": "features_vi_light_390",
+    "errors": [],
+    "overflow": {
+      "page": 439,
+      "main": 829
+    },
+    "text": "Tính năng & Premium\nTính năng & Premium\nTổng quan\nTính năng\nGia đình\nGói Premium\nLịch sử\nGia đình có Premium\n12\n9 trả phí · 3 được cấp\nĐang bật\n9\nĐang tắt\n20\nBeta\n1\nTất cả 29\nMiễn phí 1\nPremium 4\nBeta 1\nCông tắc hệ thống 23\n29 / 29 kết quả\nTính năng\tGói\tAi được dùng\tBật\t\nChi tiết\n\nKỷ niệm · 4\n\nMẫu kỷ niệm Premium\n\t\nPremium\n\tNgười có Premium\n12 gia đình Premium\n\t—\t\n\n\nVideo kỷ niệm\nGiữ quyền đến hết 20/11/2026\n\t\nPremium\n\t\nNgười có Premium\nGia đình nội bộ\n12 gia đình Premium\n\t\n\t\n\n\nTự lưu kỷ niệm\n\t\nBeta\n\t\nGia đình nội bộ\n2 gia đình trong beta\n\t\nĐang tắt\n\t\n\n\nChia sẻ thiệp ra ngoài\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nCá nhân hoá · 4\n\nNhịp lớn lên\n\t\nMiễn phí\n\t\nMọi gia đình\n\t\n\t\n\n\nGợi ý cá nhân hoá & Nhịp nâng cao\n\t\nPremium\n\t\nNgười có Premium\nTheo tỷ lệ · 25%\n12 gia đình Premium\n· Bật riêng 1 · tắt riêng 0\n\t\n\t\n\n\nTrải nghiệm theo tuổi\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nThanh điều hướng mới\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTrợ lý AI · 3\n\nTrợ lý (chat, ảnh, hướng dẫn chăm sóc)\n+ 3 công tắc thành phần\n\t\nPremium\n+ dùng thử bằng credit\n\t\nNgười có Premium\nMột số gia đình · 1\n12 gia đình Premium\n\t\n\t\n\n\nTrợ lý · gọi AI\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nTrợ lý · lưu kết quả vào ứng dụng\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nTải lên · 2\n\nTải ảnh, video mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nTải video\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\nNhắc nhở & gợi ý · 11\n\nGợi ý thông minh\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nPush gợi ý chủ động\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nẢnh chờ chọn lưu\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nVideo theo mốc kỷ niệm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nMốc sáu tháng\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nKỷ niệm tuần\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý hoạt động gia đình\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGợi ý Lumi\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGiảm tần suất gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nGom gợi ý\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nThử nghiệm engagement\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nGia đình & tiện ích · 4\n\nGửi lời mời mới\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\n\t\n\n\nWidget màn hình khoá\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\n\nNight care tự bật\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\n\nGói Premium v2\n\tCông tắc hệ thống\t\nGia đình nội bộ\n\t\nĐang tắt\n\t\n\nĐo lường sản phẩm · 1\n\nĐo lường sản phẩm\n\tCông tắc hệ thống\t\nMọi gia đình\n\t\nĐang tắt\n\t\n\nMua gói trong app ở\nGói Premium\n\nGiới hạn hiện tại\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/features",
+    "lang": "en",
+    "theme": "light",
+    "width": 1440,
+    "name": "features_en_light_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nOverview\nAnalytics\nOPERATIONS\nFamilies\nSupport\n4\nStorage requests\n2\nData requests\n1\nNotifications & Engagement\nPrint Studio\nCONTENT\nFirst aid\nGrowing rhythm\nMemory templates\nBaby-care library\nStage content\nMilestones\nNutrition\nSolid foods\nContent review\nReference tables\nSYSTEM\nSystem & AI\nFeatures & Premium\nApp updates\nStaff & permissions\nAction log\nDEVELOPMENT\nQA handbook\nL\nLinh Trần\nOwner\nSYSTEM/\nFeatures & Premium\nFind a page\n⌘K\n● Dev\nFeatures & Premium\nOverview\nFeatures\nFamilies\nPremium plan\nHistory\nFamilies with Premium\n12\n9 paid · 3 granted\nOn\n9\nOff\n20\nBeta\n1\nAll 29\nFree 1\nPremium 4\nBeta 1\nTechnical 23\n29 of 29 results\nFeature\tTier\tWho can use it\tOn\t\nDetails\n\nKeepsakes · 4\n\nPremium keepsake templates\n\t\nPremium\n\tPeople with Premium\n12 Premium families\n\t—\t\n\n\nMemory videos\nKept until the end of 11/20/2026\n\t\nPremium\n\t\nPeople with Premium\nInternal testing\n12 Premium families\n\t\n\t\n\n\nAuto-save keepsakes\n\t\nBeta\n\t\nInternal testing\n2 families in the beta\n\t\nOff\n\t\n\n\nShare cards outside\n\tTechnical\t\nEvery family\n\t\n\t\n\nPersonalization · 4\n\nGrowing rhythm\n\t\nFree\n\t\nEvery family\n\t\n\t\n\n\nPersonalized suggestions & advanced rhythm\n\t\nPremium\n\t\nPeople with Premium\nBy % · 25%\n12 Premium families\n· On for 1 · off for 0\n\t\n\t\n\n\nAge-adaptive experience\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nNew navigation\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nAI assistant · 3\n\nAssistant (chat, photos, care guidance)\n+ 3 part switches\n\t\nPremium\n+ try with credits\n\t\nPeople with Premium\nSome families · 1\n12 Premium families\n\t\n\t\n\n\nAssistant · AI calls\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nAssistant · save to modules\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nUploads · 2\n\nUpload new photos & videos\n\tTechnical\t\nEvery family\n\t\n\t\n\n\nVideo upload\n\tTechnical\t\nEvery family\n\t\n\t\n\nReminders & suggestions · 11\n\nSmart Engagement\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nProactive suggestion push\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nPending photos\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nMemory milestone campaigns\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSix-month campaign\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nWeekly memories\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nFamily recap\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nLumi insight\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSuggestion fatigue policy\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSuggestion grouping\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nEngagement experiments\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\nFamily & extras · 4\n\nSend new invites\n\tTechnical\t\nEvery family\n\t\n\t\n\n\nLock-screen widget\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nNight care auto-on\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nPremium plans v2\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nProduct measurement · 1\n\nProduct measurement\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\nIn-app purchase is on\nPremium plan\n\nCurrent limits\nFind a page\n\nSearch pages or actions…"
+  },
+  {
+    "route": "/features",
+    "lang": "en",
+    "theme": "dark",
+    "width": 1440,
+    "name": "features_en_dark_1440",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 1168
+    },
+    "text": "CL\nChild Life\nVận hành\n● Dev\nOverview\nAnalytics\nOPERATIONS\nFamilies\nSupport\n4\nStorage requests\n2\nData requests\n1\nNotifications & Engagement\nPrint Studio\nCONTENT\nFirst aid\nGrowing rhythm\nMemory templates\nBaby-care library\nStage content\nMilestones\nNutrition\nSolid foods\nContent review\nReference tables\nSYSTEM\nSystem & AI\nFeatures & Premium\nApp updates\nStaff & permissions\nAction log\nDEVELOPMENT\nQA handbook\nL\nLinh Trần\nOwner\nSYSTEM/\nFeatures & Premium\nFind a page\n⌘K\n● Dev\nFeatures & Premium\nOverview\nFeatures\nFamilies\nPremium plan\nHistory\nFamilies with Premium\n12\n9 paid · 3 granted\nOn\n9\nOff\n20\nBeta\n1\nAll 29\nFree 1\nPremium 4\nBeta 1\nTechnical 23\n29 of 29 results\nFeature\tTier\tWho can use it\tOn\t\nDetails\n\nKeepsakes · 4\n\nPremium keepsake templates\n\t\nPremium\n\tPeople with Premium\n12 Premium families\n\t—\t\n\n\nMemory videos\nKept until the end of 11/20/2026\n\t\nPremium\n\t\nPeople with Premium\nInternal testing\n12 Premium families\n\t\n\t\n\n\nAuto-save keepsakes\n\t\nBeta\n\t\nInternal testing\n2 families in the beta\n\t\nOff\n\t\n\n\nShare cards outside\n\tTechnical\t\nEvery family\n\t\n\t\n\nPersonalization · 4\n\nGrowing rhythm\n\t\nFree\n\t\nEvery family\n\t\n\t\n\n\nPersonalized suggestions & advanced rhythm\n\t\nPremium\n\t\nPeople with Premium\nBy % · 25%\n12 Premium families\n· On for 1 · off for 0\n\t\n\t\n\n\nAge-adaptive experience\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nNew navigation\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nAI assistant · 3\n\nAssistant (chat, photos, care guidance)\n+ 3 part switches\n\t\nPremium\n+ try with credits\n\t\nPeople with Premium\nSome families · 1\n12 Premium families\n\t\n\t\n\n\nAssistant · AI calls\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nAssistant · save to modules\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nUploads · 2\n\nUpload new photos & videos\n\tTechnical\t\nEvery family\n\t\n\t\n\n\nVideo upload\n\tTechnical\t\nEvery family\n\t\n\t\n\nReminders & suggestions · 11\n\nSmart Engagement\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nProactive suggestion push\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nPending photos\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nMemory milestone campaigns\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSix-month campaign\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nWeekly memories\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nFamily recap\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nLumi insight\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSuggestion fatigue policy\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nSuggestion grouping\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nEngagement experiments\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\nFamily & extras · 4\n\nSend new invites\n\tTechnical\t\nEvery family\n\t\n\t\n\n\nLock-screen widget\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\n\nNight care auto-on\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\n\nPremium plans v2\n\tTechnical\t\nInternal testing\n\t\nOff\n\t\n\nProduct measurement · 1\n\nProduct measurement\n\tTechnical\t\nEvery family\n\t\nOff\n\t\n\nIn-app purchase is on\nPremium plan\n\nCurrent limits\nFind a page\n\nSearch pages or actions…"
+  },
+  {
+    "route": "/analytics",
+    "lang": "vi",
+    "theme": "light",
+    "width": 390,
+    "name": "analytics_vi_light_390",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 390
+    },
+    "text": "Phân tích\nPhân tích sản phẩm\nTổng quan\nThu hút và quay lại\nKỷ niệm\nNhắc thông minh\nSử dụng tính năng\nChi phí vận hành\nCá nhân hoá\nKhoảng: 30 ngày\nNền tảng: Tất cả\nBộ lọc khác\n1/10 – 20/10 · giờ Việt Nam · Tính lúc 10:00 21/10/26\nXuất CSV\n\nNgười hoạt động trong kỳ\n\n21\n\nĐã tổng hợp từ dữ liệu hiện có\n\nNgười dùng hoạt động theo ngày\nNgười hoạt động trong kỳ\nGia đình hoạt động trong kỳ\nChưa đủ dữ liệu để hiển thị. Nhóm phân tích cần tối thiểu 20 người dùng hoặc gia đình phù hợp.\nPhân nhóm tổng hợp\nNền tảng\nNhóm\tSố lượng\nChi tiết chỉ số\n1 chỉ số\nĐộ phủ và giới hạn dữ liệu\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/app-update",
+    "lang": "vi",
+    "theme": "light",
+    "width": 390,
+    "name": "app-update_vi_light_390",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 390
+    },
+    "text": "Cập nhật ứng dụng\nCập nhật ứng dụng\n\nĐANG ÁP DỤNG\n\nBản\nau_20261012_01\n· xuất bản 10:00:00 12/10/2026\niOS 1.0.5 → 1.2.0\nAndroid —\nCó gì mới 1.2.0\n\nLịch sử (1)\nPhiên bản\nCó gì mới\n1/4\nTrang giới thiệu\n1/5\nXem trước\nPhiên bản trên store\n\nApp đọc ở lần mở tiếp theo. iOS và Android tính riêng.\n\niOS · App Store\nBản mới nhất trên store\nBản thấp nhất được dùng\nLink cập nhật\nAndroid · Google Play\nBản mới nhất trên store\nBản thấp nhất được dùng\nLink cập nhật\nBản mới nhất trên store\nMáy thấp hơn bản này thấy “Child Life có bản mới” (có thể để sau).\nBản thấp nhất được dùng\nMáy thấp hơn bản này phải cập nhật mới dùng tiếp. Để trống = không chặn.\nLink cập nhật\nTrang App Store của app (apps.apple.com), hoặc TestFlight khi thử nghiệm. Trang Google Play của app (play.google.com), hoặc Firebase App Distribution khi thử nghiệm.\nNhắc cập nhật\n\nBấm “Để sau” thì bao lâu nữa mới nhắc lại.\n\nNhắc lại sau (ngày)\n\nChưa có thay đổi\n\nHoàn tác\nXuất bản…\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/notifications",
+    "lang": "vi",
+    "theme": "light",
+    "width": 390,
+    "name": "notifications_vi_light_390",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 390
+    },
+    "text": "Thông báo & Gắn kết\nThông báo & Gắn kết\nTổng quan\nMẫu nội dung\nGửi thử\nDanh mục\nTình trạng gửi\n1\nHành trình\nDòng thời gian gia đình\nPhân tích\nCài đặt\nTổng quan\n\nTình trạng gửi trong 7 ngày qua và các việc cần xử lý.\n\nCần chú ý\nTỉ lệ lỗi 7,7% (1 lần) — từ 2% trở lên.\nXem tình trạng gửi\n\n2026-10-16 – 2026-10-22 · giờ Việt Nam · Cập nhật lúc 09:00 22/10/26 · Có dữ liệu từ 2026-10-18\n\nĐã tạo\n15\nVào hộp thư\n14\nDịch vụ gửi đã nhận\n12\nLỗi\n1\nĐã mở\n4\nĐã đọc\n5\n\nFCM/APNs đã chấp nhận gửi tới ít nhất một thiết bị. Điều này chưa xác nhận thông báo đã hiển thị trên điện thoại.\n\nLối tắt\nLần gửi cần xem\n1\nBản nháp chờ duyệt\n0\nXem dòng thời gian một gia đình\nXem\n\nMã gia đình có dạng F-XXXX.\n\nThiết lập gửi thông báo\nMở Cài đặt\nDùng mẫu nội dung từ Portal\nBật\nTự thử gửi lại\nBật\nGửi nhóm Kỷ niệm đến thiết bị\nĐang gửi\nGửi nhóm Gia đình đến thiết bị\nĐang gửi\nGửi nhóm Chăm sóc đến thiết bị\nĐang gửi\nGửi nhóm Khác đến thiết bị\nĐang gửi\nChính sách Gợi ý thông minh\nĐang tắt\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  },
+  {
+    "route": "/articles",
+    "lang": "vi",
+    "theme": "light",
+    "width": 390,
+    "name": "articles_vi_light_390",
+    "errors": [],
+    "overflow": {
+      "page": 0,
+      "main": 390
+    },
+    "text": "Thư viện chăm bé\nThư viện chăm bé\nTạo bài viết\nĐang hiển thị trong ứng dụng\n9\nChờ duyệt\n3\n1 mục đã duyệt, chờ xuất bản\nBản nháp\n4\nCần rà soát lại\n1\nQuá 12 tháng từ lần duyệt\nChủ đề: Tất cả\nĐộ tuổi: Tất cả\nTrạng thái: Tất cả\nBộ lọc khác\n2 / 2 kết quả\nTiêu đề\n\tChủ đề\n\tĐộ tuổi\n\tPhút đọc\n\tTrạng thái\n\tCập nhật\n\n\nGiấc ngủ của bé sơ sinh\nNhóm chuyên môn · Nhi khoa\n\tGiấc ngủ\t0–3 tháng\t6\t\nBản nháp\n\t15/10/2026\n\nKhi bé sốt: những điều ba mẹ cần biết\nNhóm chuyên môn · Nhi khoa\n\tSốt & ốm vặt\t0–24 tháng\t7\t\nCần rà soát lại\nMinh hoạ\n\t15/10/2026\nTìm trang\n\nNhập tên trang hoặc thao tác…"
+  }
+]

@@ -17,7 +17,6 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
-import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
@@ -859,7 +858,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 }
 
 /// 10 Email đã có tài khoản (27:673). With email privacy on, Firebase does not reveal which
-/// provider owns the email, so both are offered; the typed password is linked after sign-in.
+/// method owns the email, so every way in is offered (AU-2): Apple (iOS) / Google, or a sign-in
+/// link to the email, which works for accounts made with a password or a link too. The typed
+/// password is linked after sign-in.
 class AccountExistsScreen extends ConsumerStatefulWidget {
   const AccountExistsScreen({super.key});
 
@@ -871,24 +872,72 @@ class AccountExistsScreen extends ConsumerStatefulWidget {
 class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
   bool _busy = false;
 
-  /// Which provider button is signing in ('apple' / 'google'), for its spinner.
+  /// Which button is working ('apple' / 'google' / 'link'), for its spinner.
   String? _via;
 
   Future<void> _provider(
     Future<void> Function(AuthRepository) action, {
     required String via,
   }) async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _busy = true;
       _via = via;
     });
     final repo = ref.read(authRepositoryProvider);
     final linking = repo.pendingEmail != null;
-    final ok = await _runProvider(context, () => action(repo));
-    if (ok && linking && mounted) {
-      showClToast(context, message: AppLocalizations.of(context).existsLinked);
+    try {
+      await action(repo);
+      if (linking && mounted) {
+        showClToast(context, message: l10n.existsLinked);
+      }
+    } on AuthException catch (e) {
+      // AU-2: this screen is already the answer to "another method owns it"; never push it
+      // again.
+      if (mounted && e.failure != AuthFailure.cancelled) {
+        showClToast(
+          context,
+          message: e.failure == AuthFailure.emailInUse
+              ? l10n.existsOtherMethod
+              : authMessage(l10n, e.failure),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
-    if (mounted) setState(() => _busy = false);
+  }
+
+  /// "Gửi link đăng nhập" to the email that has the account (07b), or 07a to type it.
+  Future<void> _link(String? email) async {
+    if (email == null) {
+      unawaited(context.push('${Routes.email}?mode=${EmailMode.signIn.name}'));
+      return;
+    }
+    final l10n = AppLocalizations.of(context);
+    setState(() {
+      _busy = true;
+      _via = 'link';
+    });
+    try {
+      await sendEmailSignInLink(
+        ref,
+        email,
+        Localizations.localeOf(context).languageCode,
+      );
+      if (!mounted) return;
+      unawaited(
+        context.push(
+          Uri(
+            path: Routes.emailLinkSent,
+            queryParameters: {'email': email},
+          ).toString(),
+        ),
+      );
+    } on AuthException catch (e) {
+      if (mounted) showClToast(context, message: authMessage(l10n, e.failure));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override
@@ -911,9 +960,13 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
           subtitle: l10n.existsBody,
           large: false,
         ),
+        // The email as on 08; the title already says it has an account.
         if (email != null) ...[
-          const SizedBox(height: ClSpace.s4),
-          ClAccountRow(email: email, provider: l10n.existsProvider),
+          const SizedBox(height: ClSpace.s3),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ClChip(label: email),
+          ),
         ],
       ],
       bottom: [
@@ -932,15 +985,16 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
               : () => _provider((r) => r.signInWithGoogle(), via: 'google'),
           loading: _busy && _via == 'google',
         ),
+        const SizedBox(height: ClSpace.s3),
         ClButton(
-          label: l10n.existsUseOtherEmail,
-          style: ClButtonStyle.plain,
+          label: l10n.emailLinkSend,
+          style: ClButtonStyle.secondary,
+          icon: ClIcons.mail,
           expand: true,
-          onPressed: () {
-            repo.clearPendingLink();
-            context.pop();
-          },
+          onPressed: _busy ? null : () => _link(email),
+          loading: _busy && _via == 'link',
         ),
+        // "Dùng email khác" was Back under another name (D-110); Back clears the pending link.
       ],
     );
   }

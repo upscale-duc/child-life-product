@@ -38,6 +38,17 @@ Future<void> openStore(BuildContext context, WidgetRef ref, Uri? url) async {
 
 // ---------- UP1 · Bắt buộc cập nhật ----------
 
+/// UP1 "{count} ảnh, video chưa tải lên · Sẽ tự gửi lên ngay sau khi cập nhật": photos and
+/// videos that go up by themselves once the app runs again. Failed and over-quota ones need a
+/// tap or space, so they are not promised here (UPD-2).
+bool upGoesUpByItself(QueueState state) => const {
+  QueueState.pendingSession,
+  QueueState.queued,
+  QueueState.waitingWifi,
+  QueueState.uploading,
+  QueueState.paused,
+}.contains(state);
+
 /// Wraps the whole app (D-061): below the oldest allowed version only UP1 shows, offline too
 /// (the last config is cached). It runs its own small router: "Có gì mới trong …" opens the pages,
 /// and the offline Sơ cứu guide stays reachable for emergencies (owner, 2026-10-12, P-143).
@@ -136,12 +147,7 @@ class UpdateRequiredScreen extends ConsumerWidget {
     final pending = [
       for (final b in ref.watch(uploadQueueProvider).batches)
         for (final i in b.items)
-          if (!{
-            QueueState.uploaded,
-            QueueState.unreadable,
-            QueueState.cancelled,
-          }.contains(i.state))
-            i,
+          if (upGoesUpByItself(i.state)) i,
     ].length;
     final appStore = ref.watch(updateFromAppStoreProvider);
 

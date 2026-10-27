@@ -42,6 +42,8 @@ export const keepsakeJobLimits = {
   activePerBaby: 1,
   /** A family's videos per day (cost guard). */
   perFamilyPerDay: 10,
+  /** D-124: temporary burst protection, never a daily or plan allowance. */
+  perFamilyPerMinute: 3,
   /** Renderer attempts before a job fails (Cloud Tasks retries in between). */
   attempts: 3,
   /** A job still rendering after this is failed with `timeout` by the sweeper. */
@@ -55,6 +57,16 @@ export const keepsakeJobLimits = {
   height: 1920,
   fps: 30,
 } as const;
+
+/** D-124: quality is frozen by the server; layout remains at the design size. */
+export const videoQualities = ['hd720', 'fullHd1080'] as const;
+export type VideoQuality = (typeof videoQualities)[number];
+export function videoRenderScale(quality: VideoQuality): number {
+  return quality === 'hd720' ? 2 / 3 : 1;
+}
+export function videoQualityAllowed(quality: VideoQuality, premium: boolean): boolean {
+  return quality === 'hd720' || premium;
+}
 
 /** MM07 "Tạo video". */
 export const memoryStoryRequestSchema = z
@@ -80,6 +92,7 @@ export const memoryStoryRequestSchema = z
     /** The app's language: the template's default texts and the photo labels follow it. */
     locale: z.enum(['vi', 'en']).optional(),
     presentation: keepsakePresentationRequestSchema.optional(),
+    quality: z.enum(videoQualities).optional(),
     /** MM07 "Ai xem được" (default Chỉ ba mẹ). */
     audience: z.enum(audiences),
     occasion: z.enum(occasionIds).nullable(),
@@ -155,6 +168,8 @@ export const renderTaskSchema = z
 
 /** What the renderer needs, frozen in the job (never re-read from the catalog). */
 export interface KeepsakeJobInput {
+  /** Absent only on legacy jobs. Never read from untrusted renderer input. */
+  quality?: VideoQuality;
   presentation?: KeepsakePresentation;
   template: KeepsakeTemplate;
   /** Display renditions in scene order (`babies/{b}/media/{m}/display.jpg`). */

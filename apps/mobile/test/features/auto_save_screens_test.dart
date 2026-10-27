@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:child_life/core/widgets/cl_button.dart';
@@ -12,8 +13,12 @@ import 'package:child_life/features/auto_save/auto_save_today.dart';
 import 'package:child_life/core/widgets/cl_pressable.dart';
 import 'package:child_life/features/auto_save/auto_save_widgets.dart';
 import 'package:child_life/features/me/me_widgets.dart';
+import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
+import 'package:child_life/features/premium/premium_repository.dart';
+import 'package:child_life/features/premium/premium_v2.dart';
+import 'package:child_life/features/premium/premium_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -24,6 +29,7 @@ import '../helpers/family_fixtures.dart';
 import '../helpers/me_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/router_pump.dart';
+import '../helpers/premium_v2_fixtures.dart';
 
 /// Tự lưu kỷ niệm screens (D-066): the AS01 entry, the AS02 intro, the AS14 paused state and
 /// the AS07 review grid with near-copies grouped (P-146).
@@ -60,10 +66,15 @@ void main() {
 
   AutoSaveStore store() => saved;
 
-  List<Override> overrides({bool available = true}) => [
+  List<Override> overrides({
+    bool available = true,
+    Future<FamilyStorage> Function()? storage,
+  }) => [
     ...careOverrides(),
     ...memoryOverrides(),
-    familyStorageProvider.overrideWith((ref, babyId) async => mockStorage()),
+    familyStorageProvider.overrideWith(
+      (ref, babyId) => storage?.call() ?? Future.value(mockStorage()),
+    ),
     autoSaveAvailableProvider.overrideWithValue(available),
     autoSaveEventSinkProvider.overrideWithValue((_, _) async {}),
     autoSaveNativeProvider.overrideWithValue(AutoSaveNative(supported: true)),
@@ -118,7 +129,10 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Tự lưu kỷ niệm'), findsWidgets);
-    expect(find.text('Beta miễn phí'), findsNothing); // D-121 / D-122: intro only, by tier
+    expect(
+      find.text('Beta miễn phí'),
+      findsNothing,
+    ); // D-121 / D-122: intro only, by tier
     await tester.tap(find.text('Tự lưu kỷ niệm').first);
     await tester.pumpAndSettle();
     expect(visits.last.location, '/memories/auto-save');
@@ -229,7 +243,7 @@ void main() {
   });
 
   testWidgets(
-    'AS07: near-copies collapse behind "+n" with the best pre-ticked',
+    'AS07: near-copies are shown together, the clearest pre-ticked; counts are files (D-123)',
     (tester) async {
       await store().save(
         ready(
@@ -246,15 +260,20 @@ void main() {
         overrides: overrides(),
       );
       await tester.pumpAndSettle();
-      expect(find.text('+1'), findsOneWidget);
-      expect(find.text('Đã chọn 2 · 2 ảnh, 0 video'), findsOneWidget);
-      expect(find.textContaining('Đã gộp 1 ảnh giống nhau'), findsOneWidget);
-
-      // Opening the group shows both, the clearest first.
-      await tester.tap(find.text('+1'));
-      await tester.pumpAndSettle();
+      // Every file is a tile and every count counts files.
+      expect(find.text('Ảnh & video · 3'), findsOneWidget);
       expect(find.text('2 ảnh giống nhau · đã chọn 1'), findsOneWidget);
       expect(find.text('Rõ nhất'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Đã chọn 2 · 2 ảnh, 0 video'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Chọn cả nhóm'));
+      await tester.pumpAndSettle();
+      expect(find.text('2 ảnh giống nhau · đã chọn 2'), findsOneWidget);
+      expect(find.text('Tiếp tục với 3 mục'), findsOneWidget);
+      await tester.tap(find.text('Chỉ giữ ảnh rõ nhất'));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Tiếp tục với 2 mục'));
       await tester.pumpAndSettle();
@@ -284,7 +303,10 @@ void main() {
       overrides: overrides(),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Đã chọn 200 · 200 ảnh, 0 video'),
+      findsOneWidget,
+    );
     expect(
       find.text('Mỗi lần tải tối đa 200 mục · 5 gợi ý còn lại chờ lần sau'),
       findsOneWidget,
@@ -321,13 +343,25 @@ void main() {
         overrides: overrides(),
       );
       await tester.pumpAndSettle();
-      // The newest week opens first (owner, 2026-10-23), with only its own items counted.
-      expect(find.text('Tuần 3 · 2'), findsOneWidget);
+      // The newest week opens first (owner, 2026-10-23), with only its own items counted;
+      // the week pill lists the others, newest first.
       expect(find.text('Tuần 4 · 1'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('autoSaveWeekPill')));
+      await tester.pumpAndSettle();
+      // Each week in words: what waits (and what is already in Kỷ niệm), newest first.
       expect(
-        tester.getTopLeft(find.text('Tuần 4 · 1')).dx,
-        lessThan(tester.getTopLeft(find.text('Tuần 3 · 2')).dx),
+        find.descendant(
+          of: find.byKey(const Key('autoSaveWeek:3')),
+          matching: find.textContaining('2 chờ bạn xem'),
+        ),
+        findsOneWidget,
       );
+      expect(
+        tester.getTopLeft(find.byKey(const Key('autoSaveWeek:4'))).dy,
+        lessThan(tester.getTopLeft(find.byKey(const Key('autoSaveWeek:3'))).dy),
+      );
+      await tester.tapAt(const Offset(20, 80)); // closes the sheet
+      await tester.pumpAndSettle();
       expect(find.text('Tiếp tục với 1 mục'), findsOneWidget);
       await tester.tap(find.text('Tiếp tục với 1 mục'));
       await tester.pumpAndSettle();
@@ -335,6 +369,39 @@ void main() {
       expect(decision.chosen.map((c) => c.asset.id), ['w4']);
       // Only this week is decided; week 3 stays pending for its own upload.
       expect(decision.reviewed.map((c) => c.asset.id), ['w4']);
+    },
+  );
+
+  testWidgets(
+    'AS07 "Tất cả các tuần" reviews every week in one upload (owner, 2026-10-26)',
+    (tester) async {
+      await store().save(
+        ready(
+          pending: [
+            candidate('w3', const Duration(days: -9), v([1, 0]), 0.5),
+            candidate('w4', Duration.zero, v([0, 1]), 0.5),
+          ],
+        ),
+      );
+      final (visits, _) = await pumpRouted(
+        tester,
+        const AutoSaveReviewScreen(),
+        overrides: overrides(),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Tiếp tục với 1 mục'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('autoSaveWeekPill')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('autoSaveWeek:all')));
+      await tester.pumpAndSettle();
+      expect(find.text('Tất cả các tuần · 2'), findsOneWidget);
+      await tester.tap(find.text('Tiếp tục với 2 mục'));
+      await tester.pumpAndSettle();
+      final decision = visits.last.extra! as AutoSaveDecision;
+      expect(
+        decision.chosen.map((c) => c.asset.id),
+        unorderedEquals(['w3', 'w4']),
+      );
     },
   );
 
@@ -362,12 +429,23 @@ void main() {
       );
       container.read(reviewedWeeksProvider.notifier).add(teddyId, 4);
       await tester.pumpAndSettle();
-      expect(find.text('Tuần 4 · xong'), findsOneWidget);
+      expect(find.text('Tuần 3 · 2'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('autoSaveWeekPill')));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('autoSaveWeek:4')),
+          matching: find.textContaining('Đã xem hết'),
+        ),
+        findsOneWidget,
+      );
+      await tester.tapAt(const Offset(20, 80));
+      await tester.pumpAndSettle();
       expect(find.text('Tiếp tục với 2 mục'), findsOneWidget);
     },
   );
 
-  testWidgets('AS07 "Bỏ chọn tất cả" clears the picks to choose a few', (
+  testWidgets('AS07 "Bỏ chọn hết" clears the picks to choose a few', (
     tester,
   ) async {
     await store().save(
@@ -384,17 +462,16 @@ void main() {
       overrides: overrides(),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
+    expect(find.bySemanticsLabel('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
 
-    await tester.tap(find.text('Bỏ chọn tất cả'));
+    await tester.tap(find.text('Bỏ chọn hết'));
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 0 · 0 ảnh, 0 video'), findsOneWidget);
-    expect(find.text('Bỏ chọn tất cả'), findsNothing);
+    expect(find.bySemanticsLabel('Đã chọn 0 · 0 ảnh, 0 video'), findsOneWidget);
 
     // One picked by hand, then on.
     await tester.tap(find.bySemanticsLabel('Chọn').first);
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 1 · 1 ảnh, 0 video'), findsOneWidget);
+    expect(find.bySemanticsLabel('Đã chọn 1 · 1 ảnh, 0 video'), findsOneWidget);
     await tester.tap(find.text('Tiếp tục với 1 mục'));
     await tester.pumpAndSettle();
     final decision = visits.last.extra! as AutoSaveDecision;
@@ -402,9 +479,7 @@ void main() {
     expect(decision.reviewed, hasLength(3));
   });
 
-  testWidgets('AS07 "Chọn tất cả" ticks the suggested picks again', (
-    tester,
-  ) async {
+  testWidgets('AS07 "Chọn hết" ticks every new item again', (tester) async {
     await store().save(
       ready(
         pending: [
@@ -419,14 +494,60 @@ void main() {
       overrides: overrides(),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Bỏ chọn tất cả'));
+    await tester.tap(find.text('Bỏ chọn hết'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Chọn tất cả'));
+    await tester.tap(find.text('Chọn hết'));
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
-    expect(find.text('Bỏ chọn tất cả'), findsOneWidget);
+    expect(find.bySemanticsLabel('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
+    expect(find.text('Bỏ chọn hết'), findsOneWidget);
   });
 
+  testWidgets(
+    'AS07 "Đã có" waits folded at the end, unticked, and can be ticked (D-123)',
+    (tester) async {
+      await store().save(
+        ready(
+          pending: [
+            candidate('new', Duration.zero, v([1, 0]), 0.9),
+            candidate('kept', const Duration(hours: 2), v([0, 1]), 0.5),
+          ],
+        ),
+      );
+      final (visits, _) = await pumpRouted(
+        tester,
+        const AutoSaveReviewScreen(),
+        overrides: [
+          ...overrides(),
+          alreadySavedProvider.overrideWith((ref) => {'kept'}),
+        ],
+      );
+      await tester.pumpAndSettle();
+      // Not counted with what waits (it seems saved already), not ticked, folded.
+      expect(find.text('Ảnh & video · 1'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Đã chọn 1 · 1 ảnh, 0 video'),
+        findsOneWidget,
+      );
+      final kept = find.byWidgetPredicate(
+        (w) => w is LibraryTile && w.assetId == 'kept',
+      );
+      expect(kept, findsNothing);
+      await tester.tap(find.text('Đã có trong Kỷ niệm · 1'));
+      await tester.pumpAndSettle();
+      expect(kept, findsOneWidget);
+      // The duplicate check can be wrong: tick it.
+      await tester.ensureVisible(kept);
+      await tester.tapAt(tester.getTopRight(kept) + const Offset(-12, 12));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tiếp tục với 2 mục'));
+      await tester.pumpAndSettle();
+      final decision = visits.last.extra! as AutoSaveDecision;
+      expect(
+        decision.chosen.map((c) => c.asset.id),
+        unorderedEquals(['new', 'kept']),
+      );
+    },
+  );
   testWidgets('AS07: ticking past the limit says so (D-070)', (tester) async {
     await store().save(
       ready(
@@ -456,20 +577,23 @@ void main() {
       overrides: overrides(),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Đã chọn 200 · 200 ảnh, 0 video'),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('autoSaveRoundRest')), findsNothing);
 
-    await tester.ensureVisible(find.text('+1'));
-    await tester.tap(find.text('+1'));
-    await tester.pumpAndSettle();
     final second = find.byWidgetPredicate(
       (w) => w is LibraryTile && w.assetId == 'pair-b',
     );
     await tester.ensureVisible(second);
-    await tester.tap(second);
+    await tester.tapAt(tester.getTopRight(second) + const Offset(-12, 12));
     await tester.pump();
     expect(find.text('Mỗi lần tải tối đa 200 mục'), findsOneWidget);
-    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Đã chọn 200 · 200 ảnh, 0 video'),
+      findsOneWidget,
+    );
     await tester.pumpAndSettle(const Duration(seconds: 5));
   });
 
@@ -589,6 +713,156 @@ void main() {
     expect(parents, family);
     // 375 pt wide, 16 pt margins, 8 pt between.
     expect(parents.width, closeTo((375 - 32 - 8) / 2, 0.5));
+  });
+
+  // Owner, 2026-10-26: "hết bộ nhớ lại cho chuẩn bị file … ko show premium … text hiển thị cũng
+  // kỳ … muốn được xem mỗi file đó chuẩn bị gì và đang như thế nào".
+  FamilyStorage room(int leftBytes) => FamilyStorage(
+    familyId: 'f_1',
+    isOwner: true,
+    quotaBytes: 10 * 1024 * 1024 * 1024,
+    usedBytes: 10 * 1024 * 1024 * 1024 - leftBytes,
+    binBytes: 0,
+    notesBytes: 0,
+    babies: const [],
+    largestVideos: const [],
+  );
+  Future<void> confirm(
+    WidgetTester tester,
+    List<Candidate> chosen, {
+    Future<FamilyStorage> Function()? storage,
+    List<Override> extra = const [],
+  }) async {
+    await pumpRouted(
+      tester,
+      AutoSaveConfirmScreen(
+        decision: AutoSaveDecision(chosen: chosen, reviewed: chosen),
+      ),
+      overrides: [
+        ...overrides(storage: storage),
+        ...extra,
+      ],
+    );
+  }
+
+  testWidgets('AS10: nothing uploads while the space is still being checked', (
+    tester,
+  ) async {
+    final c = candidate('a', Duration.zero, v([1, 0]), 0.5);
+    await confirm(tester, [
+      c,
+    ], storage: () => Completer<FamilyStorage>().future);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Đang kiểm tra dung lượng…'), findsOneWidget);
+    expect(
+      tester
+          .widget<ClButton>(find.byKey(const Key('autoSaveUpload')))
+          .onPressed,
+      isNull,
+    );
+  });
+
+  testWidgets('AS18: with no space left, the only way on is "Thêm dung lượng"', (
+    tester,
+  ) async {
+    final c = candidate('a', Duration.zero, v([1, 0]), 0.5);
+    await confirm(tester, [c], storage: () async => room(0));
+    await tester.pumpAndSettle();
+    expect(find.text('Gia đình đã hết dung lượng'), findsOneWidget);
+    expect(find.byKey(const Key('autoSaveAddSpace')), findsOneWidget);
+    // D-125: named by plan; without Premium v2 it is the Dung lượng screen, not Premium.
+    expect(find.text('Quản lý dung lượng'), findsOneWidget);
+    expect(find.textContaining('Premium'), findsNothing);
+    expect(find.byKey(const Key('autoSaveUpload')), findsNothing);
+    expect(find.textContaining('tải trước 0'), findsNothing);
+  });
+
+  testWidgets(
+    'AS18 (D-125): a Free family on Premium v2 sees Premium named before the tap',
+    (tester) async {
+      final c = candidate('a', Duration.zero, v([1, 0]), 0.5);
+      await confirm(
+        tester,
+        [c],
+        storage: () async => room(0),
+        extra: [
+          capabilitiesProvider.overrideWith(
+            (ref, babyId) async => Capabilities.fromJson(v2Answer()),
+          ),
+          familyPlanV2Provider.overrideWith((ref, id) async => freePlan),
+        ],
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Thêm dung lượng với Premium'), findsOneWidget);
+      expect(
+        find.textContaining('Premium có thêm dung lượng cho cả nhà.'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'AS18 (D-127): a Premium member who does not manage the plan asks the manager',
+    (tester) async {
+      final c = candidate('a', Duration.zero, v([1, 0]), 0.5);
+      await confirm(
+        tester,
+        [c],
+        storage: () async => room(0),
+        extra: [
+          capabilitiesProvider.overrideWith(
+            (ref, babyId) async => Capabilities.fromJson(v2Answer()),
+          ),
+          familyPlanV2Provider.overrideWith(
+            (ref, id) async => asMember(premiumPlan),
+          ),
+        ],
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Nhờ '), findsOneWidget);
+      expect(find.text('Mua thêm dung lượng'), findsNothing);
+    },
+  );
+
+  testWidgets('AS18: room for some: upload those, or add space', (
+    tester,
+  ) async {
+    final a = candidate('a', Duration.zero, v([1, 0]), 0.5);
+    final b = candidate('b', const Duration(hours: 1), v([0, 1]), 0.5);
+    await confirm(
+      tester,
+      [a, b],
+      // One 4032 × 3024 photo is about 3.6 MB: room for one of the two.
+      storage: () async => room(5 * 1024 * 1024),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Chỉ đủ chỗ cho 1/2 mục'), findsOneWidget);
+    expect(find.text('Tải trước 1 mục vừa đủ'), findsOneWidget);
+    expect(find.byKey(const Key('autoSaveAddSpace')), findsOneWidget);
+  });
+
+  testWidgets('AS10: each file shows its state; unreadable ones stay listed', (
+    tester,
+  ) async {
+    final a = candidate('a', Duration.zero, v([1, 0]), 0.5);
+    await confirm(
+      tester,
+      [a],
+      extra: [
+        // The phone cannot open it.
+        libraryResolverProvider.overrideWithValue((_) async => null),
+      ],
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tải lên 1 mục'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('autoSavePrep:a')), findsOneWidget);
+    expect(find.text('Không đọc được tệp'), findsOneWidget);
+    expect(
+      find.text('0 mục đã vào hàng tải · 1 không đọc được'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('autoSavePrepDone')), findsOneWidget);
   });
 
   testWidgets('AS03 → AS04 → AS05 are pages of their own (slide, swipe back)', (

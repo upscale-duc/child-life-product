@@ -177,6 +177,7 @@ class VideoQuota {
     required this.reserved,
     this.resetsAt,
     this.premiumLimit,
+    this.unlimited = false,
   });
 
   final int limit;
@@ -190,10 +191,13 @@ class VideoQuota {
   /// only): "Xem Premium" is offered only when it is larger than [limit].
   final int? premiumLimit;
 
+  /// D-124: counters are usage history; they cannot exhaust the export entitlement.
+  final bool unlimited;
+
   /// Used or held right now (MO04 "3 / 5").
   int get taken => used + reserved;
   int get left => (limit - taken).clamp(0, limit);
-  bool get exhausted => taken >= limit;
+  bool get exhausted => !unlimited && taken >= limit;
 
   /// Reads `getVideoQuota`'s answer: the snapshot itself or `{quota: snapshot, …}`.
   static VideoQuota? fromJson(Object? json) {
@@ -203,6 +207,7 @@ class VideoQuota {
     if (limit is! num || used is! num || reserved is! num) return null;
     final premium = json['premiumLimit'] ?? q['premiumLimit'];
     return VideoQuota(
+      unlimited: q['unlimited'] == true,
       limit: limit.toInt(),
       used: used.toInt(),
       reserved: reserved.toInt(),

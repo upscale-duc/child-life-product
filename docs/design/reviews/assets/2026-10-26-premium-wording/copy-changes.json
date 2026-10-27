@@ -1,0 +1,332 @@
+[
+  {
+    "key": "pv2HeadVideo",
+    "before": {
+      "vi": "Giữ tháng này của {name} thành một câu chuyện",
+      "en": "Turn this month of {name}'s into a story"
+    },
+    "after": {
+      "vi": "Tạo video kỷ niệm của {name}",
+      "en": "Create a memory video for {name}"
+    }
+  },
+  {
+    "key": "pv2HeadCard",
+    "before": {
+      "vi": "Thiệp xứng với tháng đầu của {name}",
+      "en": "A card worthy of {name}'s first month"
+    },
+    "after": {
+      "vi": "Tạo thiệp dành riêng cho {name}",
+      "en": "Create a card for {name}"
+    }
+  },
+  {
+    "key": "pv2HeadCaregivers",
+    "before": {
+      "vi": "Để cả nhà cùng chăm {name}",
+      "en": "Let the whole family care for {name}"
+    },
+    "after": {
+      "vi": "Thêm người cùng chăm {name}",
+      "en": "Invite more people to care for {name}"
+    }
+  },
+  {
+    "key": "pv2HeadExplore",
+    "before": {
+      "vi": "Những năm đầu của con, giữ trọn vẹn hơn",
+      "en": "Keep your child's first years more fully"
+    },
+    "after": {
+      "vi": "Nâng cấp lên Premium",
+      "en": "Upgrade to Premium"
+    }
+  },
+  {
+    "key": "pv2ReasonCaregivers",
+    "before": {
+      "vi": "Gia đình đã dùng {used} / {limit} chỗ người chăm sóc của gói Free.",
+      "en": "The family uses {used} / {limit} caregiver seats of the Free plan."
+    },
+    "after": {
+      "vi": "Gói Free: {used} / {limit} người có quyền ghi.",
+      "en": "Free plan: {used} / {limit} people with logging access."
+    }
+  },
+  {
+    "key": "pv2CardVideoTitle",
+    "before": {
+      "vi": "Những ảnh rời, thành câu chuyện",
+      "en": "Loose photos, one story"
+    },
+    "after": {
+      "vi": "Ghép ảnh thành video kỷ niệm",
+      "en": "Turn photos into a memory video"
+    }
+  },
+  {
+    "key": "pv2CardVideoBody",
+    "before": {
+      "vi": "Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.",
+      "en": "Pick photos, add a message, keep the months with your child."
+    },
+    "after": {
+      "vi": "Chọn ảnh, thêm lời nhắn và nhạc cho video của con.",
+      "en": "Choose photos, add a message and set your video to music."
+    }
+  },
+  {
+    "key": "pv2CardVideoLimit",
+    "before": {
+      "vi": "{n} video mỗi tháng",
+      "en": "{n} videos a month"
+    },
+    "after": {
+      "vi": "{n} lượt xuất video mỗi tháng",
+      "en": "{n, plural, one{{n} video export per month} other{{n} video exports per month}}"
+    }
+  },
+  {
+    "key": "pv2CardCardBody",
+    "before": {
+      "vi": "Thêm tên, lời thương và đổi phong cách chỉ với một chạm.",
+      "en": "Add a name and a loving note, change the style in one tap."
+    },
+    "after": {
+      "vi": "Thêm tên, ảnh và lời nhắn theo mẫu bạn chọn.",
+      "en": "Add a name, photos and a message to your chosen design."
+    }
+  },
+  {
+    "key": "pv2CardLumiTitle",
+    "before": {
+      "vi": "Hỏi một câu, Lumi tóm tắt giúp",
+      "en": "Ask once, Lumi sums it up"
+    },
+    "after": {
+      "vi": "Hỏi Lumi về nhật ký của con",
+      "en": "Ask Lumi about your baby’s logs"
+    }
+  },
+  {
+    "key": "pv2CardLumiBody",
+    "before": {
+      "vi": "Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.",
+      "en": "Ask about feeds and sleep, or log in one sentence."
+    },
+    "after": {
+      "vi": "Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.",
+      "en": "Get log summaries and drafts to review before saving."
+    }
+  },
+  {
+    "key": "pv2CardLumiLimit",
+    "before": {
+      "vi": "{n} credit mỗi tháng",
+      "en": "{n} credits a month"
+    },
+    "after": {
+      "vi": "{n} credit/tháng · cả nhà dùng chung",
+      "en": "{n, plural, one{{n} credit/month} other{{n} credits/month}} · shared by your family"
+    }
+  },
+  {
+    "key": "pv2CardRhythmTitle",
+    "before": {
+      "vi": "Những thay đổi nhỏ, dễ nhìn thấy hơn.",
+      "en": "Small changes, easier to see."
+    },
+    "after": {
+      "vi": "Nhìn lại nhịp bú, ngủ của con",
+      "en": "Look back at feeds and sleep"
+    }
+  },
+  {
+    "key": "pv2CardRhythmBody",
+    "before": {
+      "vi": "Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.",
+      "en": "Look back at feeds and sleep from your child's journal, with a short note and the sources to check."
+    },
+    "after": {
+      "vi": "Lumi tóm tắt nhật ký, kèm thời gian so sánh và nguồn.",
+      "en": "Lumi summarises the logs with comparison dates and sources."
+    }
+  },
+  {
+    "key": "pv2CardRhythmLimit",
+    "before": {
+      "vi": "Gồm trong {n} credit mỗi tháng",
+      "en": "Included in {n} credits a month"
+    },
+    "after": {
+      "vi": "Dùng chung {n} credit Lumi/tháng",
+      "en": "Uses the same {n, plural, one{{n} monthly Lumi credit} other{{n} monthly Lumi credits}}"
+    }
+  },
+  {
+    "key": "pv2CardStorageTitle",
+    "before": {
+      "vi": "Thêm chỗ cho những tháng ngày tiếp theo.",
+      "en": "Room for the months ahead."
+    },
+    "after": {
+      "vi": "Thêm chỗ lưu ảnh và video",
+      "en": "More room for photos and videos"
+    }
+  },
+  {
+    "key": "pv2CardStorageBody",
+    "before": {
+      "vi": "Giữ thêm ảnh và video trong album riêng của gia đình.",
+      "en": "Keep more photos and videos in the family's private album."
+    },
+    "after": {
+      "vi": "Dung lượng dùng chung cho ảnh và video của cả gia đình.",
+      "en": "Shared storage for your family’s photos and videos."
+    }
+  },
+  {
+    "key": "pv2CardStorageLimit",
+    "before": {
+      "vi": "{gb} GB dùng chung · có thể mua thêm",
+      "en": "{gb} GB shared · more available"
+    },
+    "after": {
+      "vi": "{gb} GB dùng chung cho cả nhà",
+      "en": "{gb} GB shared by your family"
+    }
+  },
+  {
+    "key": "pv2CardCaregiversTitle",
+    "before": {
+      "vi": "Cả nhà cùng chăm, không hỏi lại",
+      "en": "Everyone cares, no asking twice"
+    },
+    "after": {
+      "vi": "Cùng ghi nhật ký chăm con",
+      "en": "Keep care logs together"
+    }
+  },
+  {
+    "key": "pv2CardCaregiversBody",
+    "before": {
+      "vi": "Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.",
+      "en": "Whatever anyone logs, everyone sees it in the shared journal."
+    },
+    "after": {
+      "vi": "Cùng ghi cữ bú, giấc ngủ và xem cập nhật trong nhật ký.",
+      "en": "Log feeds and sleep together, and check updates in the journal."
+    }
+  },
+  {
+    "key": "pv2CardCaregiversLimit",
+    "before": {
+      "vi": "Thêm chỗ cho tối đa {premium} người cùng chăm (Free: {free})",
+      "en": "Room for up to {premium} caregivers (Free: {free})"
+    },
+    "after": {
+      "vi": "{premium} người có quyền ghi · Free: {free}",
+      "en": "{premium, plural, one{{premium} person can log care} other{{premium} people can log care}} · Free: {free}"
+    }
+  },
+  {
+    "key": "pv2CompareTitle",
+    "before": {
+      "vi": "Free và Premium",
+      "en": "Free and Premium"
+    },
+    "after": {
+      "vi": "So sánh Free và Premium",
+      "en": "Compare Free and Premium"
+    }
+  },
+  {
+    "key": "pv2RowLumi",
+    "before": {
+      "vi": "Credit Lumi",
+      "en": "Lumi credits"
+    },
+    "after": {
+      "vi": "Lumi",
+      "en": "Lumi"
+    }
+  },
+  {
+    "key": "pv2RowVideo",
+    "before": {
+      "vi": "Xuất video",
+      "en": "Video exports"
+    },
+    "after": {
+      "vi": "Xuất video kỷ niệm",
+      "en": "Memory video exports"
+    }
+  },
+  {
+    "key": "pv2RowCaregivers",
+    "before": {
+      "vi": "Người chăm sóc",
+      "en": "Caregivers"
+    },
+    "after": {
+      "vi": "Người có quyền ghi",
+      "en": "People who can log care"
+    }
+  },
+  {
+    "key": "pv2RowRhythmPremium",
+    "before": {
+      "vi": "Nhận xét tuần · có nguồn",
+      "en": "Weekly notes · with sources"
+    },
+    "after": {
+      "vi": "Tóm tắt tuần · có nguồn",
+      "en": "Weekly summary · with sources"
+    }
+  },
+  {
+    "key": "pv2PeriodYear",
+    "before": {
+      "vi": "Theo năm",
+      "en": "Yearly"
+    },
+    "after": {
+      "vi": "Gói năm",
+      "en": "Yearly plan"
+    }
+  },
+  {
+    "key": "pv2PeriodMonth",
+    "before": {
+      "vi": "Theo tháng",
+      "en": "Monthly"
+    },
+    "after": {
+      "vi": "Gói tháng",
+      "en": "Monthly plan"
+    }
+  },
+  {
+    "key": "pv2DemoUploading",
+    "before": {
+      "vi": "3 video đang tải lên · không cần chờ",
+      "en": "3 videos uploading · no need to wait"
+    },
+    "after": {
+      "vi": "3 video đang tải lên",
+      "en": "3 videos uploading"
+    }
+  },
+  {
+    "key": "pv2DemoCareNote",
+    "before": {
+      "vi": "Cùng chăm đã có ở Free; Premium tăng số người tham gia.",
+      "en": "Caring together is in Free; Premium adds more people."
+    },
+    "after": {
+      "vi": "Free cũng có nhật ký chung; Premium thêm chỗ cho người ghi.",
+      "en": "Shared logs are included in Free; Premium lets more people log care."
+    }
+  }
+]

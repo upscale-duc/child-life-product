@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +29,7 @@ import 'me_repository.dart';
 import 'me_widgets.dart';
 import '../premium/premium_entries.dart';
 import '../premium/premium_repository.dart';
+import '../premium/premium_v2.dart';
 
 /// Items held on this device for quota ("3 mục mới được giữ trên máy", 13d).
 int heldForQuota(WidgetRef ref) => [
@@ -35,7 +38,9 @@ int heldForQuota(WidgetRef ref) => [
       if (i.state == QueueState.waitingQuota) i,
 ].length;
 
-/// 13b / 13c / 13d "Dung lượng" for any Cùng nuôi (P-003).
+/// 13b / 13c / 13d "Dung lượng" for any Cùng nuôi (P-003). One source and one rounding with
+/// the upload queue (ST-2): "full" is used + reserved, reserved space has its own line
+/// (D-127 Q2), an unknown limit is never "full" (ST-1), and full always has a way out (ST-3).
 class StorageScreen extends ConsumerWidget {
   const StorageScreen({super.key});
 
@@ -60,28 +65,51 @@ class StorageScreen extends ConsumerWidget {
           if (async.hasError)
             ClEmptyState(
               icon: ClIcons.cloudOff,
-              title: l10n.meStorage,
+              title: l10n.stLoadFailedTitle,
               message: l10n.stLoadFailed,
+              actionLabel: l10n.actionRetry,
+              onAction: () => unawaited(refresh()),
             )
           else
-            const Center(child: CircularProgressIndicator()),
+            // ST-5: loading is shaped like the page, never "0 B" or empty.
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClSkeleton(width: 200, height: 44),
+                SizedBox(height: ClSpace.s3),
+                ClSkeleton(height: 12),
+                SizedBox(height: ClSpace.s6),
+                ClSkeleton(height: 120),
+                SizedBox(height: ClSpace.s4),
+                ClSkeleton(height: 168),
+              ],
+            ),
         ],
       );
     }
     final tints = babySoftTints(context);
-    final full = s.state == StorageState.full;
+    final state = s.state;
+    final full = state == StorageState.full;
     // Premium v2 (D-101): E08 / E09 replace "Liên hệ quản trị" with Free → Premium or the
     // Premium add-on (PW10).
     final v2 =
         ref.watch(capabilitiesProvider(me.babyId)).value?.features.premiumV2 ??
         false;
-    final quota = formatBytes(s.quotaBytes, locale);
+    final quota = s.quota == null ? null : formatBytes(s.quota!, locale);
+    final freeUp = ClButton(
+      label: l10n.stFreeUpVideos,
+      style: ClButtonStyle.outline,
+      expand: true,
+      onPressed: () => context.push(Routes.meVideos),
+    );
     return MePage(
       title: l10n.meStorage,
       onRefresh: refresh,
       children: [
         Semantics(
-          label: l10n.meStorageOf(formatBytes(s.usedBytes, locale), quota),
+          label: quota == null
+              ? formatBytes(s.usedBytes, locale)
+              : l10n.meStorageOf(formatBytes(s.usedBytes, locale), quota),
           excludeSemantics: true,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -94,27 +122,55 @@ class StorageScreen extends ConsumerWidget {
                   color: full ? cl.colors.error : cl.colors.ink,
                 ),
               ),
-              const SizedBox(width: ClSpace.s2),
-              Text(
-                l10n.stOfQuota(quota),
-                style: cl.text.headline.copyWith(color: cl.colors.inkMuted),
-              ),
+              if (quota != null) ...[
+                const SizedBox(width: ClSpace.s2),
+                Text(
+                  l10n.stOfQuota(quota),
+                  style: cl.text.headline.copyWith(color: cl.colors.inkMuted),
+                ),
+              ],
             ],
           ),
         ),
-        const SizedBox(height: ClSpace.s3),
-        StorageBar(
-          segments: [for (final b in s.babies) b.bytes],
-          quota: s.quotaBytes,
-          full: full,
-          height: 12,
-        ),
+        if (s.quota != null) ...[
+          const SizedBox(height: ClSpace.s3),
+          StorageBar(
+            segments: [for (final b in s.babies) b.bytes],
+            quota: s.quota!,
+            full: full,
+            height: 12,
+          ),
+        ],
+        if (s.reservedItems > 0 || s.reservedBytes > 0) ...[
+          const SizedBox(height: ClSpace.s2),
+          Text(
+            l10n.stReserved(
+              formatBytes(s.reservedBytes, locale),
+              s.reservedItems,
+            ),
+            style: cl.text.label.copyWith(color: cl.colors.ink),
+          ),
+        ],
         const SizedBox(height: ClSpace.s2),
         Text(
           l10n.stFootnote,
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
-        if (s.state == StorageState.nearFull) ...[
+        if (state == StorageState.unknown) ...[
+          const SizedBox(height: ClSpace.s4),
+          MeNotice(
+            tone: MeTone.warn,
+            icon: ClIcons.cloudOff,
+            title: l10n.stQuotaUnknown,
+            child: ClButton(
+              label: l10n.actionRetry,
+              style: ClButtonStyle.outline,
+              expand: true,
+              onPressed: () => unawaited(refresh()),
+            ),
+          ),
+        ],
+        if (state == StorageState.nearFull) ...[
           const SizedBox(height: ClSpace.s4),
           MeNotice(
             tone: MeTone.warn,
@@ -122,17 +178,37 @@ class StorageScreen extends ConsumerWidget {
             title: l10n.stNearTitle(s.percent),
             body: v2 ? null : l10n.stNearBody,
           ),
+          if (v2)
+            StoragePremiumInline(
+              babyId: me.babyId,
+              percent: s.percent,
+              full: false,
+            ),
         ],
-        if (full) ...[
+        if (full && v2)
+          _V2FullWayOut(
+            babyId: me.babyId,
+            quota: quota!,
+            held: held,
+            freeUp: freeUp,
+          ),
+        if (full && !v2) ...[
           const SizedBox(height: ClSpace.s4),
           MeNotice(
             tone: MeTone.error,
             icon: ClIcons.cloudOff,
-            title: l10n.stFullTitle(quota),
+            title: l10n.stFullTitle(quota!),
             body: held > 0 ? l10n.stFullBody(held) : l10n.stFullBodyNone,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _RequestAction(babyId: me.babyId, storage: s, primary: true),
+                const SizedBox(height: ClSpace.s2),
+                freeUp,
+              ],
+            ),
           ),
         ],
-        if (v2) StoragePremiumInline(babyId: me.babyId),
         MeSection(l10n.stByBaby),
         ClCardGroup(
           children: [
@@ -172,43 +248,127 @@ class StorageScreen extends ConsumerWidget {
               ),
           ],
         ),
-        if (!v2) ...[
+        // v1 "Cần thêm dung lượng?" below the breakdown; when full, the request moved up into the
+        // full notice.
+        if (!v2 && !full && quota != null) ...[
           const SizedBox(height: ClSpace.s4),
           MeNotice(
             title: l10n.stNeedMore,
             body: l10n.stNeedMoreBody(quota),
-            child: s.openRequestGb != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.stRequested(
-                          s.openRequestGb!,
-                          DateFormat.MMMd(locale).format(s.openRequestAt!),
-                        ),
-                        style: cl.text.bodyStrong.copyWith(
-                          color: cl.colors.mintText,
-                        ),
-                      ),
-                      Text(
-                        l10n.stRequestedHint,
-                        style: cl.text.label.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ],
-                  )
-                : ClButton(
-                    label: l10n.stContact,
-                    style: full
-                        ? ClButtonStyle.primary
-                        : ClButtonStyle.secondary,
-                    expand: true,
-                    onPressed: () =>
-                        showStorageRequestSheet(context, me.babyId, s),
-                  ),
+            child: _RequestAction(babyId: me.babyId, storage: s),
           ),
         ],
+      ],
+    );
+  }
+}
+
+/// v1 "Liên hệ quản trị", or the open request it already sent.
+class _RequestAction extends StatelessWidget {
+  const _RequestAction({
+    required this.babyId,
+    required this.storage,
+    this.primary = false,
+  });
+  final String babyId;
+  final FamilyStorage storage;
+  final bool primary;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final s = storage;
+    if (s.openRequestGb != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.stRequested(
+              s.openRequestGb!,
+              DateFormat.MMMd(locale).format(s.openRequestAt!),
+            ),
+            style: cl.text.bodyStrong.copyWith(color: cl.colors.mintText),
+          ),
+          Text(
+            l10n.stRequestedHint,
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
+      );
+    }
+    return ClButton(
+      label: l10n.stContact,
+      style: primary ? ClButtonStyle.primary : ClButtonStyle.secondary,
+      expand: true,
+      onPressed: () => showStorageRequestSheet(context, babyId, s),
+    );
+  }
+}
+
+/// Premium v2, full (E09): the plan-named way out, or, while the plan cannot be read, a
+/// retry; "Xoá bớt video lớn" either way (ST-3). One heading: the card's (ST-2).
+class _V2FullWayOut extends ConsumerWidget {
+  const _V2FullWayOut({
+    required this.babyId,
+    required this.quota,
+    required this.held,
+    required this.freeUp,
+  });
+  final String babyId;
+  final String quota;
+  final int held;
+  final Widget freeUp;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final async = ref.watch(familyPlanV2Provider(babyId));
+    final heldLine = held > 0 ? l10n.stFullBody(held) : l10n.stFullBodyNone;
+    if (async.isLoading && !async.hasValue) {
+      return const Padding(
+        padding: EdgeInsets.only(top: ClSpace.s4),
+        child: ClSkeleton(height: 132),
+      );
+    }
+    if (async.value == null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: ClSpace.s4),
+        child: MeNotice(
+          tone: MeTone.error,
+          icon: ClIcons.cloudOff,
+          title: l10n.stFullTitle(quota),
+          body: '$heldLine\n${l10n.premiumPlanCheckFailed}',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClButton(
+                label: l10n.actionRetry,
+                expand: true,
+                onPressed: () => ref.invalidate(familyPlanV2Provider(babyId)),
+              ),
+              const SizedBox(height: ClSpace.s2),
+              freeUp,
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // The card already says uploads wait; the line only adds how many are held here.
+        if (held > 0) ...[
+          const SizedBox(height: ClSpace.s2),
+          Text(heldLine, style: cl.text.label.copyWith(color: cl.colors.error)),
+        ],
+        StoragePremiumInline(
+          babyId: babyId,
+          full: true,
+          onFreeUp: () => context.push(Routes.meVideos),
+        ),
       ],
     );
   }
@@ -345,9 +505,8 @@ class LargestVideosScreen extends ConsumerWidget {
     final me = ref.watch(selectedMembershipProvider);
     if (me == null) return ColoredBox(color: cl.colors.cloud);
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final videos =
-        ref.watch(familyStorageProvider(me.babyId)).value?.largestVideos ??
-        const <LargeVideo>[];
+    final storage = ref.watch(familyStorageProvider(me.babyId));
+    final videos = storage.value?.largestVideos ?? const <LargeVideo>[];
     final byBaby = <String, Map<String, MediaItem>>{};
     for (final b in {for (final v in videos) v.babyId}) {
       byBaby[b] = {
@@ -361,6 +520,14 @@ class LargestVideosScreen extends ConsumerWidget {
       for (final v in videos)
         if (byBaby[v.babyId]?[v.mediaId] case final m?) (v, m),
     ];
+    // ST-5: "Chưa có video nào" only once both the list and the media are read.
+    final loading =
+        (storage.isLoading && !storage.hasValue) ||
+        (items.length < videos.length &&
+            byBaby.keys.any(
+              (b) => !ref.watch(completeMediaProvider((b, true))).hasValue,
+            ));
+    final failed = storage.hasError && !storage.hasValue;
     return MePage(
       title: l10n.stVideosTitle,
       children: [
@@ -369,7 +536,17 @@ class LargestVideosScreen extends ConsumerWidget {
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s3),
-        if (items.isEmpty)
+        if (failed)
+          ClEmptyState(
+            icon: ClIcons.cloudOff,
+            title: l10n.stLoadFailedTitle,
+            message: l10n.stLoadFailed,
+            actionLabel: l10n.actionRetry,
+            onAction: () => ref.invalidate(familyStorageProvider(me.babyId)),
+          )
+        else if (loading && items.isEmpty)
+          const ClSkeleton(height: 216)
+        else if (items.isEmpty)
           ClEmptyState(
             icon: ClIcons.memories,
             title: l10n.stVideosTitle,

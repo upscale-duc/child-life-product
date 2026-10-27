@@ -183,6 +183,13 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     );
     _sheetOpen = false;
     if (!mounted) return;
+    // P-6: the purchase moved on while the sheet was open (a success arriving under Pending):
+    // show where it is now instead of answering a state that is gone.
+    final latest = ref.read(purchaseControllerProvider);
+    if (latest.phase != flow.phase || latest.problem != flow.problem) {
+      unawaited(_onPhase(latest, babyId, products));
+      return;
+    }
     switch (kind) {
       case PurchaseSheetKind.success || PurchaseSheetKind.restored:
         _finish();
@@ -235,6 +242,7 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     bool premium,
     List<StoreProduct> products,
     PurchaseFlow flow,
+    bool storeFailed,
   ) {
     final entry = _v2Entry;
     final plan = ref.watch(familyPlanV2Provider(babyId)).value;
@@ -248,35 +256,12 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
         : !owner
         ? PaywallFooter.member
         : PaywallFooter.buy;
-    final free = plan?.free ?? PlanOffer.free;
-    final subject = widget.subject;
-    final String? reason = !owner && !premium
-        ? l10n.pv2ReasonMember
-        : switch (entry) {
-            PremiumEntry.video || PremiumEntry.card =>
-              subject == null
-                  ? l10n.pv2ReasonVideo
-                  : l10n.pv2ReasonTemplate(subject),
-            PremiumEntry.lumi => l10n.pv2ReasonLumi(free.lumiCredits),
-            PremiumEntry.rhythm => l10n.pv2ReasonRhythm,
-            // While the plan loads: the Free limits as configured.
-            PremiumEntry.storage => l10n.pv2ReasonStorage(
-              premiumGb(context, plan?.usedBytes ?? free.storageBytes),
-              premiumGb(context, plan?.limitBytes ?? free.storageBytes),
-            ),
-            PremiumEntry.caregivers => l10n.pv2ReasonCaregivers(
-              plan?.seatsUsed ?? free.caregiverSeats,
-              plan?.seatsLimit ?? free.caregiverSeats,
-            ),
-            PremiumEntry.explore => null,
-          };
     final store = ref.watch(storeGatewayProvider);
     final vi = Localizations.localeOf(context).languageCode == 'vi';
     return PaywallV2View(
       entry: entry,
       footer: footer,
       plan: plan,
-      reason: reason,
       babyName: baby?.nickname ?? '',
       vnd: caps.country == null || caps.country == 'VN',
       storeName:
@@ -288,13 +273,42 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
           ? l10n.pv2StoreGoogle
           : l10n.pv2StoreApple,
       managerName: manager,
-      busy: flow.busy,
+      // P-4 / P-6: progress while buying or verifying, and no second purchase while the store
+      // has not settled the first.
+      busy: flow.busy || flow.awaiting,
+      busyLine: _busyLine(l10n, flow, store),
+      onRetryPrice: () => ref.invalidate(familyPlanV2Provider(babyId)),
       onClose: () => context.pop(false),
-      onRestore: owner && !premium && store.available
-          ? () => _restore(babyId)
+      onRestore: owner && !premium
+          ? () {
+              if (storeFailed) {
+                ref.invalidate(storeProductsProvider);
+                showClToast(
+                  context,
+                  message: l10n.pmStoreLoadFailed,
+                  error: true,
+                );
+                return;
+              }
+              if (store.available) {
+                _restore(babyId);
+              } else {
+                showPaymentSoon(context);
+              }
+            }
           : null,
       onBuy: footer == PaywallFooter.buy
           ? (yearly) {
+              // P-7: a store that could not be read is a failure with a retry, not "sắp mở".
+              if (storeFailed) {
+                ref.invalidate(storeProductsProvider);
+                showClToast(
+                  context,
+                  message: l10n.pmStoreLoadFailed,
+                  error: true,
+                );
+                return;
+              }
               if (!open) {
                 unawaited(showPaymentSoon(context));
                 return;
@@ -326,6 +340,21 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     );
   }
 
+  String? _busyLine(
+    AppLocalizations l10n,
+    PurchaseFlow flow,
+    StoreGateway store,
+  ) => switch (flow.phase) {
+    PurchasePhase.buying => l10n.pv2BusyBuying(
+      store.provider == StoreProvider.google
+          ? l10n.pv2StoreGoogle
+          : l10n.pv2StoreApple,
+    ),
+    PurchasePhase.verifying => l10n.pv2BusyVerifying,
+    PurchasePhase.restoring => l10n.pv2BusyRestoring,
+    _ => flow.awaiting ? l10n.pv2BusyPending : null,
+  };
+
   Future<void> _openLegal(String path) => launchUrl(
     Uri.parse('${ref.read(environmentProvider).webOrigin}$path'),
     mode: LaunchMode.inAppBrowserView,
@@ -349,7 +378,9 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     final me = ref.watch(selectedMembershipProvider);
     if (me == null) return ColoredBox(color: cl.colors.cloud);
     final capsAsync = ref.watch(capabilitiesProvider(me.babyId));
-    final caps = capsAsync.value;
+    // P-1: this phone's last answer while the fresh one loads; a paying household never sees
+    // the Free or member paywall because a read is slow or failed.
+    final caps = ref.watch(capabilitiesNowProvider(me.babyId));
     final flow = ref.watch(purchaseControllerProvider);
     final store = ref.watch(storeGatewayProvider);
     final productsAsync = ref.watch(storeProductsProvider);
@@ -375,8 +406,29 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     final provider = store.provider;
     final product = _selected(products);
 
-    if (caps?.features.premiumV2 ?? false) {
-      return _v2(l10n, me.babyId, caps!, open, owner, premium, products, flow);
+    final storeFailed =
+        productsAsync.hasError &&
+        store.available &&
+        (caps?.features.billing ?? false);
+    if (caps == null) {
+      return _PlanUnknown(
+        loading: capsAsync.isLoading,
+        onClose: () => context.pop(false),
+        onRetry: () => ref.invalidate(capabilitiesProvider(me.babyId)),
+      );
+    }
+    if (caps.features.premiumV2) {
+      return _v2(
+        l10n,
+        me.babyId,
+        caps,
+        open,
+        owner,
+        premium,
+        products,
+        flow,
+        storeFailed,
+      );
     }
 
     final groupA = _BenefitCard(
@@ -391,9 +443,6 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     );
 
     Widget buyArea() {
-      if (capsAsync.isLoading && caps == null) {
-        return const ClSkeleton(height: 96);
-      }
       if (premium) {
         return MeNotice(
           icon: ClIcons.star,
@@ -416,10 +465,21 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
           body: l10n.pmGateRegionBody,
         );
       }
-      if (productsAsync.isLoading &&
-          store.available &&
-          (caps?.features.billing ?? false)) {
+      if (productsAsync.isLoading && store.available && caps.features.billing) {
         return const ClSkeleton(height: 96);
+      }
+      if (storeFailed) {
+        return MeNotice(
+          tone: MeTone.warn,
+          icon: ClIcons.cloudOff,
+          title: l10n.pmStoreLoadFailed,
+          child: ClButton(
+            label: l10n.actionRetry,
+            style: ClButtonStyle.outline,
+            expand: true,
+            onPressed: () => ref.invalidate(storeProductsProvider),
+          ),
+        );
       }
       if (!open || product == null || provider == null) {
         return MeNotice(
@@ -556,11 +616,21 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
                     ClButton(
                       label: l10n.pmContinuePremium,
                       expand: true,
-                      loading: flow.busy,
-                      onPressed: flow.busy
+                      loading: flow.busy || flow.awaiting,
+                      onPressed: flow.busy || flow.awaiting
                           ? null
                           : () => _buy(me.babyId, product),
                     ),
+                    if (_busyLine(l10n, flow, store) case final line?) ...[
+                      const SizedBox(height: ClSpace.s2),
+                      Text(
+                        line,
+                        textAlign: TextAlign.center,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: ClSpace.s2),
                     Text(
                       l10n.pmStoreLegal,
@@ -574,6 +644,66 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// P-1: the plan is not known yet (loading: a neutral skeleton) or could not be read (a retry).
+/// Neither the light legacy page nor the dark v2 page is guessed.
+class _PlanUnknown extends StatelessWidget {
+  const _PlanUnknown({
+    required this.loading,
+    required this.onClose,
+    required this.onRetry,
+  });
+  final bool loading;
+  final VoidCallback onClose;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return Scaffold(
+      backgroundColor: cl.colors.cloud,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _RoundIcon(
+                  icon: ClIcons.close,
+                  label: l10n.a11yClose,
+                  onTap: onClose,
+                ),
+              ),
+              const SizedBox(height: ClSpace.s4),
+              if (loading) ...[
+                const ClSkeleton(width: 220, height: 32),
+                const SizedBox(height: ClSpace.s3),
+                const ClSkeleton(height: 120),
+                const SizedBox(height: ClSpace.s3),
+                const ClSkeleton(height: 120),
+              ] else
+                MeNotice(
+                  tone: MeTone.warn,
+                  icon: ClIcons.cloudOff,
+                  title: l10n.premiumPlanCheckFailed,
+                  body: l10n.premiumPlanCheckFailedBody,
+                  child: ClButton(
+                    label: l10n.actionRetry,
+                    style: ClButtonStyle.outline,
+                    expand: true,
+                    onPressed: onRetry,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

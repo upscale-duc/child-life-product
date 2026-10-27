@@ -1,0 +1,41 @@
+{
+  "baselineCommit": "1be24ba8d34c37a3fab08648c59b9fc184dd65f0",
+  "captures": 255,
+  "routes": 61,
+  "browserErrors": 0,
+  "pageOverflow": 0,
+  "sourceSha256": {
+    "apps/portal/src/Shell.tsx": "4a790d2445aa2484e56637ad636a1beda0cf791b9769c9bc156c50abe0b149d5",
+    "apps/portal/src/components/ui/tabs.tsx": "aa69eb8a68a1def65b0128fbfed19d88cc372f770deddb7477bfa62a42554917",
+    "apps/portal/src/content-kit.tsx": "73e075e9a29a115e6ca5b5756a9cd6a75dd473105d0615968cfc15256c14ff69",
+    "apps/portal/src/messages-content.ts": "82aaeb8d185357b96821abedac85e87f7ed4384080230928113c34f944806a6a",
+    "apps/portal/src/messages-hub.ts": "eead51c7f28fe0878c7be1167390d9b96053b4ea12c738add47f51ab2aaafff6",
+    "apps/portal/src/messages-notifications.ts": "5a92cc17375d0a5f8987682f4a8cb3b90b94b7bebfa95df150024102ee013c4d",
+    "apps/portal/src/messages-nutrition.ts": "aec312f70b66bc385f22c3d7cc5caa0f2fbdd775e91db4a2ba9d4e21185669f7",
+    "apps/portal/src/messages-premium-v2.ts": "8a3055ba0695130ca20b26256c8c5215d7efdc3f7e6c3eccfffd2f529cda4f08",
+    "apps/portal/src/messages-print.ts": "fcfc097d59bb49cec2162636ad3be4c7fa1378b21a8415d1bd189ae54dce61d4",
+    "apps/portal/src/messages-product-analytics.ts": "193ad79a58e4ce7cfe288e0bd7515cf0cf12a787ad15b3810a293c16b3159c6d",
+    "apps/portal/src/messages-solids.ts": "5a5004c96b6c9763148c78a8e06cb7054b2ee316b2aaa9e9e1a10be80a109c9c",
+    "apps/portal/src/messages.ts": "b1b1fa66cb136cf47d56ce3d92cf0aeb6ad7746da85d28b7ef4494c24750bbe0",
+    "apps/portal/src/screens/FeatureHub.tsx": "4594ba7780bedbeb0eee3862afdf9cfdc5b1ba81706b03c53a2d03b2aaca32bf",
+    "apps/portal/src/screens/PrintStudio.tsx": "dea989c19452cab6bdb9df117a40f52976a6ce027792822c3c62d4a46e76331f",
+    "apps/portal/src/screens/ProductAnalytics.tsx": "58f05330fbd13e65fc4893419e9f3b342528226013dfc772c02bc65927d6ce91",
+    "apps/portal/src/styles.css": "e7f0bd024525d65820a1efe842c419933e5b6cd1befa6cd0bbaf23218b846213",
+    "apps/portal/src/ui.tsx": "7b74102d6c6c9f242f001353c0434b9b29746e10d3235e6a00ace0f4941baac5"
+  },
+  "verification": {
+    "unitTests": 729,
+    "testFiles": 21,
+    "browserChecks": 10,
+    "typecheck": "passed via build:dev",
+    "eslint": "passed",
+    "build:dev": "passed, existing chunk-size warning"
+  },
+  "limitations": [
+    "Synthetic fixtures; no production mutations",
+    "Sparse analytics sample reuses overview metrics across sections",
+    "720px DPR2 is zoom-equivalent layout, not OS text scaling",
+    "Screen reader and live Firebase auth/send/export/payment not evaluated"
+  ],
+  "pausedTemplateStatus": "Final copy clarification verified by catalog and unit tests; existing published-template captures unaffected."
+}

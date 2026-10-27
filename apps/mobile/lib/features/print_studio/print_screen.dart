@@ -28,6 +28,7 @@ import 'print_ui.dart';
 import 'print_book.dart';
 import 'print_book_editor.dart';
 import 'print_motion.dart';
+import '../family/countries.dart' show countryName;
 
 enum _Step {
   preview,
@@ -114,7 +115,13 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
   DateTime? _neededBy, _savedAt;
   String _format = 'pdf';
   bool _cropMarks = false;
-  Map<String, dynamic>? _export;
+
+  /// PR-1 (D-127 Q8): the print file job this design is building, or built.
+  String? _exportJobId;
+  bool _exportSeeded = false;
+
+  /// PR-4: the last order attempt got no answer; the order may already exist.
+  bool _orderMaybeSent = false;
   AppLocalizations get l => AppLocalizations.of(context);
   @override
   void dispose() {
@@ -141,7 +148,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       _design = _design!.copy(v);
       _dirty = true;
       _approved = false;
-      _export = null;
+      _exportJobId = null;
       _requestId = const Uuid().v4();
     });
     _debounce?.cancel();
@@ -443,51 +450,100 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
           false;
       if (!accept || !mounted) return;
     }
+    // PR-1: the server builds the file as a job; this returns at once and the parent may leave.
     await _perform(() async {
-      final result = await printCall(ref, 'printStudioExport', {
+      final result = await printCall(ref, 'printStudioExportStart', {
         'babyId': _babyId,
+        'requestId': const Uuid().v4(),
         'design': _design!.toJson(),
         'format': _format,
         'cropMarks': _cropMarks,
         'acknowledgeQuality': accept,
       });
-      if (mounted) setState(() => _export = result);
+      if (mounted) setState(() => _exportJobId = result['jobId'] as String);
     });
   }
 
+  /// The job being followed, live; null without one or once its file expired.
+  PrintExportJob? _watchJob() {
+    final id = _exportJobId, baby = _babyId;
+    if (id == null || baby == null) return null;
+    return PrintExportJob.fromMap(
+      id,
+      ref.watch(printExportJobProvider((baby, id))).value,
+      DateTime.now(),
+    );
+  }
+
+  /// A fresh link each time (files are kept 24 hours).
+  Future<void> _openExport(PrintExportJob job) => _perform(() async {
+    final r = await printCall(ref, 'printStudioExportUrl', {
+      'babyId': _babyId,
+      'jobId': job.id,
+    });
+    if (!await launchUrl(
+      Uri.parse(r['url'] as String),
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw StateError('open-failed');
+    }
+  });
+
+  String _exportError(String? reason) => switch (reason) {
+    'low-resolution' => l.psLowQualityHelp,
+    'photos-missing' || 'photo-unavailable' => l.psPhotosMissing,
+    'export-paused' => l.psUnavailable,
+    _ => l.psExportFailed,
+  };
+
+  /// PR-4: no answer is not "Kiểm tra kết nối": the order may already be recorded.
+  static bool _noAnswer(Object e) =>
+      e is TimeoutException ||
+      (e is FirebaseFunctionsException &&
+          (e.code == 'deadline-exceeded' || e.code == 'unavailable'));
+
   Future<void> _order(PrintCatalog catalog) async {
     if (!_approved) return;
+    setState(() => _orderMaybeSent = false);
     await _perform(() async {
       // The request id survives a timeout/retry. A changed design creates a new intent.
-      final result = await printCall(ref, 'printStudioOrder', {
-        'babyId': _babyId,
-        'requestId': _requestId,
-        'catalogVersion': catalog.version,
-        'design': _design!.toJson(),
-        'quantity': _quantity,
-        'approved': true,
-        'paymentMethod': _payment,
-        'address': {
-          'recipient': _recipient.text.trim(),
-          'phone': _phone.text.replaceAll(RegExp(r'[\s()-]'), ''),
-          'address': _address.text.trim(),
-          'country': _country.text.trim().toUpperCase(),
-          'neededBy': _neededBy == null
-              ? null
-              : DateFormat('yyyy-MM-dd').format(_neededBy!),
-          'gift': _gift,
-          'giftMessage': _giftMessage.text.trim(),
-        },
-      });
+      final Map<String, dynamic> result;
+      try {
+        result = await printCall(ref, 'printStudioOrder', {
+          'babyId': _babyId,
+          'requestId': _requestId,
+          'catalogVersion': catalog.version,
+          'design': _design!.toJson(),
+          'quantity': _quantity,
+          'approved': true,
+          'paymentMethod': _payment,
+          'address': {
+            'recipient': _recipient.text.trim(),
+            'phone': _phone.text.replaceAll(RegExp(r'[\s()-]'), ''),
+            'address': _address.text.trim(),
+            'country': _country.text.trim().toUpperCase(),
+            'neededBy': _neededBy == null
+                ? null
+                : DateFormat('yyyy-MM-dd').format(_neededBy!),
+            'gift': _gift,
+            'giftMessage': _giftMessage.text.trim(),
+          },
+        });
+      } on Object catch (e) {
+        if (!_noAnswer(e)) rethrow;
+        if (mounted) setState(() => _orderMaybeSent = true);
+        return;
+      }
       if (mounted) {
         _dirty = false;
         _leaving = true;
         setState(() {
           _leaving = false;
           _successId = result['id'] as String;
-          _successTotal = catalog
-              .totals(_design!, _quantity, giftWrap: _gift)
-              .total;
+          // PR-5: the server's total; the local estimate only for an older server.
+          _successTotal =
+              (result['total'] as num?)?.toInt() ??
+              catalog.totals(_design!, _quantity, giftWrap: _gift).total;
           _history.clear();
           _step = _Step.success;
         });
@@ -504,7 +560,10 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
         if (!didPop) unawaited(_back());
       },
       child: PrintFlowTransition(
-        identity: (_step, _step == _Step.export && _export != null),
+        identity: (
+          _step,
+          _step == _Step.export && _watchJob()?.state == PrintExportState.ready,
+        ),
         child: screen,
       ),
     );
@@ -561,6 +620,12 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       );
     }
     final media = mediaAsync.value ?? [], catalog = catalogAsync.requireValue;
+    // PR-1: a resumed draft shows the print file it was building or built.
+    final remembered = ref.watch(printDraftExportJobProvider(ctx.babyId));
+    if (!_exportSeeded && remembered.hasValue) {
+      _exportSeeded = true;
+      if (widget.resume) _exportJobId ??= remembered.value;
+    }
     if (_design == null) {
       _babyId = ctx.babyId;
       _design = widget.resume ? draftAsync!.value : null;
@@ -600,7 +665,8 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       }
     }
     final d = _design!;
-    if (_step == _Step.export && _export == null) {
+    final job = _watchJob();
+    if (_step == _Step.export && job?.state != PrintExportState.ready) {
       return Scaffold(
         backgroundColor: cl.colors.cloud,
         body: Stack(
@@ -658,10 +724,17 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
                             child: ListView(children: _body(d, media, catalog)),
                           ),
                           const SizedBox(height: 10),
+                          // While the job builds the parent may close; the CTA waits.
                           ClButton(
-                            label: l.psDownload,
+                            label: job?.state == PrintExportState.failed
+                                ? l.psRetry
+                                : l.psDownload,
                             expand: true,
-                            onPressed: _busy || !catalog.digital || !d.ready
+                            onPressed:
+                                _busy ||
+                                    !catalog.digital ||
+                                    !d.ready ||
+                                    job?.state == PrintExportState.working
                                 ? null
                                 : _download,
                             loading: _busy,
@@ -685,6 +758,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
             id: _successId!,
             name: d.name,
             total: _successTotal,
+            payment: _payment,
             days: catalog.leadDays,
             onView: () => context.pushReplacement(
               '${Routes.printStudioOrders}/$_successId?baby=$_babyId',
@@ -703,7 +777,10 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       _Step.options => d.isBook ? l.psBookOptions : l.psOptions,
       _Step.checkout => l.psCheckout,
       _Step.success => l.psOrderSuccess,
-      _Step.export => _export == null ? l.psExportTitle : l.psExportReady,
+      _Step.export =>
+        job?.state == PrintExportState.ready
+            ? l.psExportReady
+            : l.psExportTitle,
     };
     return Scaffold(
       backgroundColor: cl.colors.cloud,
@@ -770,6 +847,22 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
                     const SizedBox(height: 14),
                   ],
                   if (_saveFailed) PrintNotice(l.psSaveFailed, warning: true),
+                  // PR-1: the print file keeps building after the parent left.
+                  if (_step == _Step.preview &&
+                      job != null &&
+                      job.state != PrintExportState.failed)
+                    _gap(
+                      PrintCard(
+                        lifted: false,
+                        onTap: () => _go(_Step.export),
+                        child: Text(
+                          job.state == PrintExportState.ready
+                              ? l.psExportBannerReady
+                              : l.psExportProgress(job.done, job.total),
+                          style: psText(context, 14, weight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
                   ..._body(d, media, catalog),
                 ],
               ),
@@ -947,7 +1040,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
             Wrap(
               spacing: 8,
               children: [
-                PrintPill(l.psBookPagesCount('${d.pages}')),
+                PrintPill(l.psBookPagesCount(d.pages)),
                 PrintPill('${d.mediaIds.toSet().length} ${l.memPhotos}'),
               ],
             ),
@@ -1364,7 +1457,39 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
             ),
         ];
       case _Step.checkout:
+        final country = _country.text.trim().toUpperCase();
         return [
+          if (_orderMaybeSent)
+            _gap(PrintNotice(l.psOrderMaybeSent, warning: true)),
+          if (_orderMaybeSent)
+            _gap(
+              ClButton(
+                label: l.psViewOrders,
+                style: ClButtonStyle.secondary,
+                expand: true,
+                onPressed: () =>
+                    context.push('${Routes.printStudioOrders}?baby=$_babyId'),
+              ),
+            ),
+          if (country.isNotEmpty && !c.countries.contains(country)) ...[
+            _gap(
+              PrintNotice(
+                c.digital
+                    ? l.psCountryUnsupportedDigital(_countryLabel(country))
+                    : l.psCountryUnsupported(_countryLabel(country)),
+                warning: true,
+              ),
+            ),
+            if (c.digital)
+              _gap(
+                ClButton(
+                  label: l.psDownloadShort,
+                  style: ClButtonStyle.secondary,
+                  expand: true,
+                  onPressed: () => _go(_Step.export),
+                ),
+              ),
+          ],
           PrintCheckout(
             design: d,
             media: media,
@@ -1398,7 +1523,8 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       case _Step.success:
         return [];
       case _Step.export:
-        if (_export != null) {
+        final job = _watchJob();
+        if (job?.state == PrintExportState.ready) {
           return [
             _gap(PrintNotice(l.psExportReadyHelp)),
             _gap(
@@ -1408,7 +1534,10 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
                     const ClIcon(ClIcons.check, size: 44),
                     const SizedBox(height: 16),
                     Text(
-                      '${_export!['pages']} ${l.psPage.toLowerCase()} · ${_export!['format'].toString().toUpperCase()}',
+                      l.psExportFiles(
+                        job!.pages ?? job.total,
+                        (job.format ?? 'pdf').toUpperCase(),
+                      ),
                       style: context.cl.text.bodyStrong,
                     ),
                   ],
@@ -1418,19 +1547,18 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
             _gap(
               ClButton(
                 label: l.psOpenFile,
-                onPressed: () => _perform(() async {
-                  if (!await launchUrl(
-                    Uri.parse(_export!['url'] as String),
-                    mode: LaunchMode.externalApplication,
-                  )) {
-                    throw StateError('open-failed');
-                  }
-                }),
+                loading: _busy,
+                onPressed: _busy ? null : () => _openExport(job),
               ),
             ),
           ];
         }
+        final working = job?.state == PrintExportState.working;
         return [
+          if (working)
+            _gap(PrintExportProgress(done: job!.done, total: job.total))
+          else if (job?.state == PrintExportState.failed)
+            _gap(PrintNotice(_exportError(job!.error), warning: true)),
           _heading(l.psFormat),
           for (final f in ['pdf', 'jpg', 'png'])
             Padding(
@@ -1506,7 +1634,6 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
             ),
           ),
           if (!d.ready) _gap(PrintNotice(l.psPhotosMissing, warning: true)),
-          if (_busy) _gap(Text(l.psGenerating)),
         ];
     }
   }
@@ -1545,7 +1672,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
     if (price == null) return const SizedBox.shrink();
     final selected = d.size == size && (!d.isBook || d.pages == pages);
     final subtitle = d.isBook
-        ? l.psBookPagesCount('$pages')
+        ? l.psBookPagesCount(pages)
         : size == '10x15'
         ? l.psFrameSizeHelpSmall
         : size == '13x18'
@@ -1697,22 +1824,26 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       ),
       _Step.checkout => (l.psCheckout, () => _submit(c)),
       _Step.success => (l.psViewOrder, null),
-      _Step.export => (
-        _export == null ? l.psDownload : l.psDone,
-        _export == null ? (c.digital && d.ready ? _download : null) : _back,
-      ),
+      _Step.export => switch (_watchJob()?.state) {
+        PrintExportState.ready => (l.psDone, _back),
+        PrintExportState.working => (l.psDownload, null),
+        _ => (l.psDownload, c.digital && d.ready ? _download : null),
+      },
     };
     return PrintBottomBar(
       stacked: false,
       compactPrice: _step == _Step.preview,
       fillAction: _step == _Step.checkout,
       priceLabel: c.pricesEstimated ? l.psEstimatedTotal : l.psTotal,
+      // PR-3: the caption follows the chosen payment.
       caption: _step == _Step.checkout
-          ? l.psNoAdvancePayment
+          ? (_payment == 'bankTransfer'
+                ? l.psPayByTransfer
+                : l.psNoAdvancePayment)
           : _step == _Step.options
           ? l.psShippingLater
           : _step == _Step.preview && !d.isBook
-          ? l.psPreviewPriceCaption('${d.count}', d.size.replaceAll('x', '×'))
+          ? l.psPreviewPriceCaption(d.count, d.size.replaceAll('x', '×'))
           : '${d.size.replaceAll('x', '×')} cm',
       label: label,
       onPressed: _busy ? null : action,
@@ -1783,7 +1914,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       _neededBy = DateTime.tryParse(result['neededBy'] as String? ?? '');
       _requestId = const Uuid().v4();
     });
-    if (!c.countries.contains(_country.text)) _go(_Step.export);
+    // PR-2: an unsupported country is said on checkout, never a silent jump to "Tải file".
   }
 
   Future<void> _submit(PrintCatalog c) async {
@@ -1800,7 +1931,11 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
       return;
     }
     if (!c.countries.contains(_country.text)) {
-      _go(_Step.export);
+      showClToast(
+        context,
+        message: l.psCountryUnsupported(_countryLabel(_country.text)),
+        error: true,
+      );
       return;
     }
     if (!c.canOrder(_design!)) {
@@ -1824,6 +1959,7 @@ class _PrintStudioScreenState extends ConsumerState<PrintStudioScreen> {
     _ => l.psHundred,
   };
   void _policy(PrintCatalog c) => showPrintPolicy(context, c);
+  String _countryLabel(String code) => countryName(l, code);
 }
 
 DateTime _occasionDate(MemoryCtx ctx, String occasion) {

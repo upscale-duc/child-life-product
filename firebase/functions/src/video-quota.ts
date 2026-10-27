@@ -35,6 +35,8 @@ import type { Firestore, Timestamp, Transaction } from 'firebase-admin/firestore
 const defaultZone = 'Asia/Ho_Chi_Minh';
 
 export interface VideoWindow {
+  /** D-124. Keep idempotent usage history without a count admission limit. */
+  unlimited?: boolean;
   id: string;
   kind: 'free' | 'paid';
   /** Configured limit for this window (`config/entitlements` quotas.video). */
@@ -65,17 +67,17 @@ export async function videoWindowFor(
   environment: GrantEnvironment,
   now: Date,
 ): Promise<VideoWindow> {
-  // Premium v2 (D-101): Free has 2 exports once (a window that never resets, fresh for every
-  // family when v2 turns on, Q-096); Premium has 4 per monthly cycle on the subscription day.
+  // D-124: v2 has no export-count quota. Retain stable windows and idempotent ledger ops for
+  // usage history / settlement of jobs already in flight; these windows cannot deny admission.
   const ctx = await loadFamilyEntitlements(db, familyId, now, environment);
   if (flagOn(ctx, 'premium_v2')) {
-    const plans = ctx.config.plans;
     const premium = premiumBudgetGrant(ctx, now);
     if (!premium) {
       return {
         id: quotaWindowId('video', { kind: 'trial', key: freeTrialKey }),
         kind: 'free',
-        limit: plans.free.videoExportsTrial,
+        limit: 0,
+        unlimited: true,
         start: new Date(0),
         end: NEVER,
         zone: null,
@@ -91,7 +93,8 @@ export async function videoWindowFor(
         periodStart: cycle.start.toISOString(),
       }),
       kind: 'paid',
-      limit: plans.premium.videoExportsPerCycle,
+      limit: 0,
+      unlimited: true,
       start: cycle.start,
       end: cycle.end,
       zone: null,
@@ -193,10 +196,13 @@ export async function readVideoQuota(
 ): Promise<QuotaSnapshot> {
   const snap = await windowRef(db, familyId, window.id).get();
   // A Free trial never resets: no "làm mới" date (PV40B "dùng một lần, không cấp lại").
-  return snapshotOf(
-    countersOf(snap, window.limit),
-    window.end.getTime() >= NEVER.getTime() ? null : window.end,
-  );
+  return {
+    ...snapshotOf(
+      countersOf(snap, window.limit),
+      window.unlimited || window.end.getTime() >= NEVER.getTime() ? null : window.end,
+    ),
+    ...(window.unlimited ? { unlimited: true } : {}),
+  };
 }
 
 /** Reads for a reserve inside a transaction (all reads come before any write). */
@@ -228,7 +234,10 @@ export function reserveInTx(
 ): { outcome: QuotaOutcome; window: QuotaWindow } {
   const before = base ?? countersOf(windowSnap, window.limit);
   const r = applyQuotaOp(
-    { ...before, limit: Math.max(window.limit, before.used + before.reserved) },
+    {
+      ...before,
+      limit: Math.max(window.limit, before.used + before.reserved + (window.unlimited ? 1 : 0)),
+    },
     undefined,
     'reserve',
   );
@@ -238,6 +247,7 @@ export function reserveInTx(
     windowRef(db, familyId, window.id),
     {
       feature: 'video',
+      unlimited: window.unlimited === true,
       kind: window.kind,
       limit: r.window.limit,
       used: r.window.used,
@@ -338,6 +348,7 @@ export function adjustVideoBonus(
     windowRef(db, familyId, window.id),
     {
       feature: 'video',
+      unlimited: window.unlimited === true,
       kind: window.kind,
       limit: after,
       bonus,

@@ -270,7 +270,7 @@ void main() {
     await t.enterText(find.byType(EditableText), 'Cả nhà thương con');
     FocusManager.instance.primaryFocus?.unfocus();
     await t.pumpAndSettle();
-    await tap(t, 'Chuyển khoản / VietQR ngay');
+    await tap(t, 'Chuyển khoản / VietQR');
     await t.scrollUntilVisible(
       find.byType(Checkbox),
       -250,
@@ -338,6 +338,100 @@ void main() {
       });
     }
   }
+  // PR-1 (D-127 Q8): the print file builds in the background; the draft remembers it.
+  Map<String, dynamic> job(String status, {int done = 1}) => {
+    'status': status,
+    'done': done,
+    'total': 3,
+    'pages': status == 'ready' ? 3 : null,
+    'format': 'pdf',
+    'error': status == 'failed' ? 'photo-unavailable' : null,
+    'createdAt': DateTime.now(),
+    'leaseUntil': DateTime.now().add(const Duration(minutes: 5)),
+    'expiresAt': DateTime.now().add(const Duration(hours: 20)),
+  };
+  for (final palette in ClPalette.values) {
+    for (final locale in const [Locale('vi'), Locale('en')]) {
+      testWidgets('export progress ${palette.name} ${locale.languageCode}', (
+        t,
+      ) async {
+        await pumpRouted(
+          t,
+          const PrintStudioScreen(resume: true),
+          palette: palette,
+          locale: locale,
+          overrides: printOverrides(
+            exportJobId: 'px_1',
+            exportJob: job('rendering'),
+          ),
+        );
+        final l = await AppLocalizations.delegate.load(locale);
+        await tap(t, l.psExportProgress(1, 3));
+        expect(find.byType(LinearProgressIndicator), findsOneWidget);
+        expect(find.text(l.psExportLeave), findsOneWidget);
+        t.view.physicalSize = const Size(375, 812);
+        t.view.devicePixelRatio = 1;
+        debugDisableShadows = false;
+        await t.pumpAndSettle();
+        await photos(t);
+        await expectLater(
+          find.byType(Scaffold).first,
+          matchesGoldenFile(
+            '../golden/goldens/print/export_progress_${palette.name}_${locale.languageCode}.png',
+          ),
+        );
+        debugDisableShadows = true;
+        t.view.reset();
+      });
+    }
+  }
+  testWidgets('a ready print file opens through a fresh link (PR-1)', (
+    t,
+  ) async {
+    final calls = <String>[];
+    await pumpRouted(
+      t,
+      const PrintStudioScreen(resume: true),
+      overrides: printOverrides(
+        exportJobId: 'px_1',
+        exportJob: job('ready', done: 3),
+        action: (name, data) async {
+          calls.add(name);
+          return {'url': 'https://example.invalid/f.pdf'};
+        },
+      ),
+    );
+    await tap(t, 'File in đã sẵn sàng · Mở');
+    expect(find.text('3 trang · PDF'), findsOneWidget);
+    // launchUrl never answers in a widget test: tap and pump, no settling.
+    await t.tap(find.text('Lưu / chia sẻ file'));
+    await t.pump();
+    expect(calls, contains('printStudioExportUrl'));
+  });
+  testWidgets('a failed print file says why and offers a retry (PR-1)', (
+    t,
+  ) async {
+    final calls = <String>[];
+    await pumpRouted(
+      t,
+      const PrintStudioScreen(resume: true),
+      overrides: printOverrides(
+        exportJobId: 'px_1',
+        exportJob: job('failed'),
+        action: (name, data) async {
+          calls.add(name);
+          return {'jobId': 'px_2'};
+        },
+      ),
+    );
+    // A failed job is not advertised on the preview; the export step says why.
+    expect(find.textContaining('File in'), findsNothing);
+    await tap(t, 'Tiếp tục');
+    await tap(t, 'Tải file');
+    expect(find.text('Thêm ảnh để hoàn thiện bản in'), findsOneWidget);
+    await tap(t, 'Thử lại');
+    expect(calls, contains('printStudioExportStart'));
+  });
   testWidgets('Save persists a newly generated design before any edits', (
     t,
   ) async {
@@ -359,6 +453,26 @@ void main() {
     expect((saved.single['design'] as Map)['product'], 'trio');
     expect((saved.single['design'] as Map)['pagePhotos'], isA<Map>());
   });
+  test(
+    'a print file job past its lease is failed, an expired one is gone (PR-1)',
+    () {
+      final now = DateTime(2026, 10, 26, 12);
+      final stale = PrintExportJob.fromMap('px', {
+        'status': 'rendering',
+        'leaseUntil': now.subtract(const Duration(minutes: 1)),
+        'expiresAt': now.add(const Duration(hours: 1)),
+      }, now)!;
+      expect(stale.state, PrintExportState.failed);
+      expect(stale.error, 'render-failed');
+      expect(
+        PrintExportJob.fromMap('px', {
+          'status': 'ready',
+          'expiresAt': now.subtract(const Duration(minutes: 1)),
+        }, now),
+        isNull,
+      );
+    },
+  );
   test('serialization preserves explicit page layouts and photo slots', () {
     const d = PrintDesign(
       name: 'Teddy',

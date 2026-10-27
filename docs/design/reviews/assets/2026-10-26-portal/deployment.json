@@ -1,0 +1,25 @@
+{
+  "url": "https://child-life-dev-admin.web.app",
+  "environment": "dev",
+  "target": "hosting:admin",
+  "httpStatus": 200,
+  "htmlMatchesBuild": true,
+  "assets": [
+    {
+      "path": "/assets/index-CNapE8R5.js",
+      "sha256": "13ae7f5f36127e755afbe92f74f86d0c51fbe227631cfeb6ad5f2dd6fcbaa268"
+    },
+    {
+      "path": "/assets/index-DlY9xsBR.css",
+      "sha256": "76ccfb87f62c5fca17adebdee4ea8253febe4a775d742491d9300955f9a2cd87"
+    }
+  ],
+  "spaRoute": "/print-studio",
+  "spaMatchesBuild": true,
+  "date": "2026-10-26",
+  "browser": {
+    "signInRendered": true,
+    "pageErrors": [],
+    "authenticatedFlows": "not evaluated"
+  }
+}

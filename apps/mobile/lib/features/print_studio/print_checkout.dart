@@ -434,15 +434,22 @@ class PrintOrderSuccess extends StatelessWidget {
     required this.total,
     required this.days,
     required this.onView,
+    this.payment = 'cod',
     required this.onMemories,
     super.key,
   });
   final String id, name;
   final int total, days;
   final VoidCallback onView, onMemories;
+
+  /// PR-3: the last row names the chosen payment.
+  final String payment;
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context), cl = context.cl;
+    final payLabel = payment == 'bankTransfer'
+        ? l.psPayTransferRow
+        : l.psPayOnReceipt;
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 114, 16, 40),
       children: [
@@ -483,7 +490,7 @@ class PrintOrderSuccess extends StatelessWidget {
                 (l.psOrderAccepted, id),
                 (l.psProduction, l.psPendingShort),
                 (l.psDelivery, l.psExpectedDays('$days')),
-                (l.psPayOnReceipt, printMoney(context, total)),
+                (payLabel, printMoney(context, total)),
               ])
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
@@ -498,7 +505,7 @@ class PrintOrderSuccess extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          '${[l.psOrderAccepted, l.psProduction, l.psDelivery, l.psPayOnReceipt].indexOf(row.$1) + 1}',
+                          '${[l.psOrderAccepted, l.psProduction, l.psDelivery, payLabel].indexOf(row.$1) + 1}',
                           style: psText(context, 12, weight: FontWeight.w700),
                         ),
                       ),

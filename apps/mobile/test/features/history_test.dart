@@ -192,7 +192,7 @@ void main() {
       await tester.tap(find.text('Hôm nay'));
       await tester.pumpAndSettle();
       expect(find.text('540 ml'), findsOneWidget);
-      expect(find.text('Từ 18h hôm qua'), findsOneWidget);
+      expect(find.text('Tính từ 18:00 hôm qua, gồm cả cữ đêm'), findsOneWidget);
       expect(find.text('Từng cữ hôm nay'), findsOneWidget);
       expect(
         container

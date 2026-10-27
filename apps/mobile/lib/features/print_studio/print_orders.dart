@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../app/route_guard.dart';
 import '../home/home_shell.dart';
 import '../../core/design/cl_theme.dart';
@@ -149,11 +150,16 @@ class _PrintOrdersScreenState extends ConsumerState<PrintOrdersScreen> {
         ),
         data: (orders) {
           final order = orders.where((o) => o['id'] == widget.id).firstOrNull;
+          // PR-5: a missing order is not "Chưa có đơn in".
           if (widget.id != null && order == null) {
             return ClEmptyState(
               icon: ClIcons.journal,
-              title: l.psNoOrders,
-              message: l.psNoOrdersHelp,
+              title: l.psOrderNotFound,
+              message: l.psOrderNotFoundHelp,
+              actionLabel: l.psOrders,
+              onAction: () => context.pushReplacement(
+                '${Routes.printStudioOrders}?baby=$baby',
+              ),
             );
           }
           if (order == null) {
@@ -394,6 +400,7 @@ class _PrintOrdersScreenState extends ConsumerState<PrintOrdersScreen> {
                       ? null
                       : () async {
                           var reason = 'customer_changed_mind';
+                          final toaster = ClToaster.of(context);
                           final yes = await showDialog<bool>(
                             context: context,
                             builder: (c) => StatefulBuilder(
@@ -455,6 +462,7 @@ class _PrintOrdersScreenState extends ConsumerState<PrintOrdersScreen> {
                                 'id': o['id'],
                                 'reason': reason,
                               });
+                              toaster.show(message: l.psOrderCancelledToast);
                             });
                           }
                         },
@@ -506,6 +514,11 @@ class _PrintOrdersScreenState extends ConsumerState<PrintOrdersScreen> {
     if (status == 'cancelled') {
       return Text(l.psCancelled, style: cl.text.bodyStrong);
     }
+    // PR-5: a status this build does not know: said plainly, no greyed-out steps.
+    if (current < 0) {
+      return Text(l.psStatusUnknown, style: cl.text.bodyStrong);
+    }
+    final locale = Localizations.localeOf(context).toLanguageTag();
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++)
@@ -555,9 +568,9 @@ class _PrintOrdersScreenState extends ConsumerState<PrintOrdersScreen> {
                         if ((e as Map)['status'] == steps[i] &&
                             dateOf(e['at']) != null)
                           Text(
-                            dateOf(
-                              e['at'],
-                            )!.toLocal().toString().split('.').first,
+                            DateFormat.yMMMd(
+                              locale,
+                            ).add_Hm().format(dateOf(e['at'])!.toLocal()),
                             style: cl.text.caption,
                           ),
                     ],

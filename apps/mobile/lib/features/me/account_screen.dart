@@ -13,6 +13,7 @@ import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../auth/auth_repository.dart';
+import '../auth/sign_out_sheet.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
@@ -446,7 +447,8 @@ Future<void> _showExportSheet(
   );
 }
 
-/// "Xoá tài khoản?" — authored logs stay as "Người dùng đã xoá" (Q-016).
+/// "Xoá tài khoản?" — authored logs stay as "Người dùng đã xoá" (Q-016). Changes still on this
+/// phone are named before they are lost (AU-3); each refusal says its own reason.
 Future<void> _confirmDeleteAccount(
   BuildContext context,
   WidgetRef ref,
@@ -456,6 +458,9 @@ Future<void> _confirmDeleteAccount(
     final l10n = AppLocalizations.of(sheet);
     final cl = sheet.cl;
     var busy = false;
+
+    /// Set once the unsent changes were shown; the next tap deletes anyway.
+    int? unsent;
     return StatefulBuilder(
       builder: (context, setState) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -466,21 +471,57 @@ Future<void> _confirmDeleteAccount(
             l10n.acDeleteBody,
             style: cl.text.body.copyWith(color: cl.colors.inkMuted),
           ),
+          if (unsent != null) ...[
+            const SizedBox(height: ClSpace.s3),
+            Semantics(
+              liveRegion: true,
+              child: MeNotice(
+                title: l10n.acDeleteUnsent(unsent!),
+                icon: ClIcons.alert,
+                tone: MeTone.warn,
+              ),
+            ),
+          ],
           const SizedBox(height: ClSpace.s6),
           ClButton(
-            label: busy ? l10n.acDeleting : l10n.acDelete,
+            label: busy
+                ? l10n.acDeleting
+                : unsent != null
+                ? l10n.acDeleteAnyway
+                : l10n.acDelete,
             style: ClButtonStyle.destructive,
             expand: true,
             onPressed: () async {
               final toaster = ClToaster.of(context);
               setState(() => busy = true);
+              if (unsent == null) {
+                final waiting = await unsentWrites(ref);
+                if (waiting != null) {
+                  setState(() {
+                    busy = false;
+                    unsent = waiting;
+                  });
+                  return;
+                }
+              }
               try {
                 await ref.read(meRepositoryProvider).deleteAccount();
                 // The job removes the account server-side; this device signs out now.
                 await ref.read(authRepositoryProvider).signOut();
+              } on AccountActionException catch (e) {
+                setState(() => busy = false);
+                toaster.show(
+                  message: switch (e.reason) {
+                    'owns-babies' => l10n.acDeleteOwnsBabies,
+                    'unavailable' ||
+                    'deadline-exceeded' => l10n.toastActionFailed,
+                    _ => l10n.familyErrorGeneric,
+                  },
+                  error: true,
+                );
               } on Object {
                 setState(() => busy = false);
-                toaster.show(message: l10n.toastActionFailed, error: true);
+                toaster.show(message: l10n.familyErrorGeneric, error: true);
               }
             },
             loading: busy,

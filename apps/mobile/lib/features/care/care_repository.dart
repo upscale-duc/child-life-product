@@ -20,10 +20,34 @@ const recentWindow = Duration(days: 14);
 /// offline and across restarts (SyncStatus 8:84: "Pending saves must survive an app restart");
 /// nothing is awaited from the server, so the UI updates at once from the local cache.
 class CareRepository {
-  CareRepository(this._db, [this._functions]);
+  CareRepository(this._db, [this._functions, this._outbox]);
 
   final FirebaseFirestore _db;
   final FirebaseFunctions? _functions;
+  final CareOutbox? _outbox;
+
+  /// Every care write goes through here, so the outbox counts it until the server answers
+  /// (SY-3: deletes, undos, old edits and timers too, not only records still in Today's query).
+  void _send(Future<void> write, void Function(Object error)? onError) =>
+      _outbox == null
+      ? write.catchError((Object e) => onError?.call(e))
+      : _outbox.track(write, onError);
+
+  /// A timer write the server refused because another device got there first (two parents,
+  /// one timer): the listener already shows theirs, so it is not this person's error (SY-4).
+  void _sendTimer(
+    Future<void> write,
+    Future<bool> Function() raced,
+    void Function(Object error)? onError,
+  ) => _send(
+    write,
+    onError == null
+        ? null
+        : (e) async {
+            final lost = await raced().catchError((Object _) => false);
+            if (!lost) onError(e);
+          },
+  );
 
   CollectionReference<Map<String, dynamic>> _records(String babyId) =>
       _db.collection('babies/$babyId/records');
@@ -95,10 +119,10 @@ class CareRepository {
   /// Saves without waiting for the server. Failures (e.g. access removed meanwhile) surface
   /// through [onError]; the cache rolls the write back.
   void create(CareRecord record, {void Function(Object error)? onError}) {
-    _records(record.babyId)
-        .doc(record.id)
-        .set(record.toCreateJson())
-        .catchError((Object e) => onError?.call(e));
+    _send(
+      _records(record.babyId).doc(record.id).set(record.toCreateJson()),
+      onError,
+    );
   }
 
   void edit(
@@ -106,10 +130,10 @@ class CareRepository {
     String uid, {
     void Function(Object error)? onError,
   }) {
-    _records(record.babyId)
-        .doc(record.id)
-        .update(record.toEditJson(uid))
-        .catchError((Object e) => onError?.call(e));
+    _send(
+      _records(record.babyId).doc(record.id).update(record.toEditJson(uid)),
+      onError,
+    );
   }
 
   /// "Xóa bản ghi": soft delete into the 30-day bin.
@@ -118,16 +142,16 @@ class CareRepository {
     String uid, {
     void Function(Object error)? onError,
   }) {
-    _records(record.babyId)
-        .doc(record.id)
-        .update({
-          'deleted': true,
-          'deletedAt': FieldValue.serverTimestamp(),
-          'deletedBy': uid,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'updatedBy': uid,
-        })
-        .catchError((Object e) => onError?.call(e));
+    _send(
+      _records(record.babyId).doc(record.id).update({
+        'deleted': true,
+        'deletedAt': FieldValue.serverTimestamp(),
+        'deletedBy': uid,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': uid,
+      }),
+      onError,
+    );
   }
 
   /// "Hoàn tác".
@@ -136,16 +160,16 @@ class CareRepository {
     String uid, {
     void Function(Object error)? onError,
   }) {
-    _records(record.babyId)
-        .doc(record.id)
-        .update({
-          'deleted': false,
-          'deletedAt': null,
-          'deletedBy': null,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'updatedBy': uid,
-        })
-        .catchError((Object e) => onError?.call(e));
+    _send(
+      _records(record.babyId).doc(record.id).update({
+        'deleted': false,
+        'deletedAt': null,
+        'deletedBy': null,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': uid,
+      }),
+      onError,
+    );
   }
 
   // ---------- Timers (S5, P-011) ----------
@@ -163,9 +187,12 @@ class CareRepository {
   /// Starts a timer. If another device already runs one, the server refuses this start and
   /// the listener falls back to theirs — this device joins it.
   void startTimer(CareTimer timer, {void Function(Object error)? onError}) {
-    _timer(timer.babyId, timer.type)
-        .set(timer.toJson(timer.startedBy))
-        .catchError((Object e) => onError?.call(e));
+    final doc = _timer(timer.babyId, timer.type);
+    _sendTimer(
+      doc.set(timer.toJson(timer.startedBy)),
+      () async => (await doc.get()).exists,
+      onError,
+    );
   }
 
   void updateTimer(
@@ -173,17 +200,18 @@ class CareRepository {
     String uid, {
     void Function(Object error)? onError,
   }) {
-    _timer(timer.babyId, timer.type)
-        .update(timer.toUpdateJson(uid))
-        .catchError((Object e) => onError?.call(e));
+    final doc = _timer(timer.babyId, timer.type);
+    _sendTimer(
+      doc.update(timer.toUpdateJson(uid)),
+      () async => !(await doc.get()).exists,
+      onError,
+    );
   }
 
   /// "Hủy, không lưu".
   void cancelTimer(CareTimer timer, {void Function(Object error)? onError}) {
-    _timer(
-      timer.babyId,
-      timer.type,
-    ).delete().catchError((Object e) => onError?.call(e));
+    final doc = _timer(timer.babyId, timer.type);
+    _sendTimer(doc.delete(), () async => !(await doc.get()).exists, onError);
   }
 
   /// "Kết thúc": the record and the end of the timer in one atomic write; the record id comes
@@ -196,7 +224,12 @@ class CareRepository {
     final batch = _db.batch()
       ..set(_records(record.babyId).doc(record.id), record.toCreateJson())
       ..delete(_timer(timer.babyId, timer.type));
-    batch.commit().catchError((Object e) => onError?.call(e));
+    // Ended on another phone first: the record of this session is already there.
+    _sendTimer(
+      batch.commit(),
+      () async => (await _records(record.babyId).doc(record.id).get()).exists,
+      onError,
+    );
   }
 
   // ---------- Overlapping sleeps (27) ----------
@@ -222,22 +255,67 @@ class CareRepository {
     });
   }
 
-  /// "Thử lại ngay" (9b): nudge the network and wait briefly for the queue to drain.
-  Future<bool> retryNow() async {
+  /// "Thử lại ngay" (9b): nudge the network and wait briefly for the queue to drain. True only
+  /// when every care write of this session reached the server and none was refused meanwhile
+  /// (SY-3: `waitForPendingWrites` also resolves for refused writes and other features' ones).
+  Future<CareRetry> retryNow() async {
+    final refusedBefore = _outbox?.refused ?? 0;
     try {
       await _db.enableNetwork();
       await _db.waitForPendingWrites().timeout(const Duration(seconds: 8));
-      return true;
     } on Object {
-      return false;
+      return CareRetry.waiting;
     }
+    final outbox = _outbox;
+    if (outbox == null) return CareRetry.synced;
+    // The write futures settle a moment after the queue drains.
+    for (var i = 0; i < 10 && outbox.count > 0; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    if (outbox.refused != refusedBefore) return CareRetry.refused;
+    return outbox.count == 0 ? CareRetry.synced : CareRetry.waiting;
   }
 }
+
+/// "Thử lại ngay": everything reached the server, something still waits, or the server refused
+/// a write meanwhile (its own toast said which).
+enum CareRetry { synced, waiting, refused }
+
+/// Care writes this app sent and the server has not answered yet, of every kind: new records,
+/// edits, deletes, undos and timers (SY-3). Firestore keeps them across a restart; this count
+/// starts again at 0 then, and Today also counts the records its query marks as pending.
+class CareOutbox extends Notifier<int> {
+  /// Writes the server refused since the app started ("Thử lại ngay" must not say "Đã đồng bộ").
+  var refused = 0;
+
+  int get count => state;
+
+  @override
+  int build() => 0;
+
+  void track(Future<void> write, void Function(Object error)? onError) {
+    state++;
+    write
+        .then<void>(
+          (_) {},
+          onError: (Object e) {
+            refused++;
+            onError?.call(e);
+          },
+        )
+        .whenComplete(() {
+          if (ref.mounted) state--;
+        });
+  }
+}
+
+final careOutboxProvider = NotifierProvider<CareOutbox, int>(CareOutbox.new);
 
 final careRepositoryProvider = Provider<CareRepository>(
   (ref) => CareRepository(
     ref.watch(firestoreProvider),
     ref.watch(functionsProvider),
+    ref.watch(careOutboxProvider.notifier),
   ),
 );
 

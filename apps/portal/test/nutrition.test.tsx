@@ -334,7 +334,7 @@ describe('D01 Giai đoạn', () => {
         />,
       ),
     );
-    expect(html).toContain('Đang trên app 4');
+    expect(html).toContain('Đang hiển thị trong ứng dụng 4');
     expect(html).toContain(
       '6–8 tháng Bắt đầu ăn dặm 180–240 ml/cữ 600–900 ml/ngày 2–3 bữa Sắt Kẽm BS. Mai Hồ 08/2026',
     );
@@ -433,7 +433,7 @@ describe('D01 Giai đoạn', () => {
     expect(html).toContain('Theo tháng');
     expect(html).toContain('Giai đoạn 0–1 · Những ngày đầu');
     expect(html).toContain('0 3 6 9 12 15 18 21 24 27 30 33 36');
-    expect(html).toContain('Đã xuất bản · 3 tháng Chờ duyệt · 12 tháng Nháp · 1 tháng');
+    expect(html).toContain('Đã xuất bản · 3 tháng Chờ duyệt · 12 tháng Bản nháp · 1 tháng');
     expect(html).toContain('Chưa có · 1–5 tháng, 9–11 tháng, 24–36 tháng');
   });
 
@@ -559,7 +559,7 @@ describe('D02 stage editor', () => {
   it('edits the months (last month shown, stored exclusive) and previews 9b', () => {
     const raw = editor(itemOf(fullStage()));
     const html = text(raw);
-    expect(html).toContain('Dinh dưỡng 6–8 tháng · Bắt đầu ăn dặm Nháp');
+    expect(html).toContain('Dinh dưỡng 6–8 tháng · Bắt đầu ăn dặm Bản nháp');
     // "Đến tháng tuổi (gồm cả)" shows 8 for `to: 9`.
     expect(raw).toMatch(/Đến tháng tuổi \(gồm cả\)[\s\S]*?value="8"/);
     expect(html).toContain('Cho bé từ 6 đến 8 tháng tuổi tròn · nhãn trong app “6–8 tháng”');
@@ -584,7 +584,7 @@ describe('D02 stage editor', () => {
     bad.summary.vi = 'Bổ sung sắt 50 mg mỗi ngày.';
     bad.tips[0]!.body.en = 'Avoid obesity later.';
     const html = text(editor(itemOf(bad)));
-    expect(html).toContain('Chưa gửi duyệt được: 2 chỗ cần sửa');
+    expect(html).toContain('Cần sửa 2 mục trước khi gửi duyệt');
     expect(html).toContain('Mô tả ngắn · VI: “50 mg” trông như một liều thuốc');
     expect(html).toContain('Gợi ý · mục 1 · Nội dung · EN: “obesity” là từ app không dùng');
     expect(html).not.toContain('Gửi duyệt');
@@ -598,7 +598,7 @@ describe('D02 stage editor', () => {
     );
     const fresh = text(editor(null));
     expect(fresh).toContain('0–1 tháng');
-    expect(fresh).toContain('Chưa lưu');
+    expect(fresh).toContain('Có thay đổi chưa lưu');
     expect(fresh).not.toContain('Gửi duyệt');
     expect(blankNutritionStage().milk).toEqual({
       perFeedMl: null,
@@ -795,7 +795,7 @@ describe('Duyệt nội dung with the nutrition kinds', () => {
     expect(html).toContain('Chờ duyệt 3');
     expect(html).toContain('Giai đoạn dinh dưỡng 12–23 tháng Ăn cùng gia đình');
     expect(html).toContain('Vi chất 6–23 tháng Kẽm');
-    expect(html).toContain('Quy tắc gợi ý 0–24 tháng');
+    expect(html).toContain('Điều kiện gợi ý 0–24 tháng');
   });
 
   it('previews each kind; rules have no sources; unsafe copy is flagged', () => {

@@ -1,6 +1,8 @@
 @Tags(['golden'])
 library;
 
+import 'dart:async';
+
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
@@ -49,6 +51,9 @@ const _heights = {
   'su01_stale': 1240.0,
   'su01_caregiver': 1100.0,
   'su01_received': 1400.0,
+  'su01_create': 1240.0,
+  'su01_loading': 1100.0,
+  'su01_missing': 1240.0,
   'ai_consent': 1360.0,
   'nl07b_suggest': 900.0,
   'nl07_episode': 900.0,
@@ -85,6 +90,7 @@ List<Override> _su01(
   int? dataVersion,
   bool caregiver = false,
   bool sentToMe = false,
+  bool recordsLoading = false,
 }) {
   final answer = handover(
     method: method,
@@ -121,13 +127,32 @@ List<Override> _su01(
     member: caregiver ? lan : null,
     // A realistic morning at 10:00 (senior-ui-ux §2): the live part read like a carer would.
     records: _morning(),
+    recordsStream: recordsLoading
+        ? () => StreamController<List<CareRecord>>().stream
+        : null,
     reminders: [reminder('Cho bé uống vitamin D', vn(8, 16, 0), mai)],
   );
 }
 
 final _cases = <String, _Case>{
-  // SU01 worded by AI: three parts, record links, the AI label, report / send.
-  'su01_ai': (build: () => const HandoverScreen(), overrides: _su01),
+  // SU01 worded by AI: three parts, record links, the AI label, report / send. Stored, since
+  // opening never makes one (D-127 Q5).
+  'su01_ai': (
+    build: () => const HandoverScreen(),
+    overrides: (l) => _su01(l, stored: true),
+  ),
+  // D-127 Q5 (AI-14): nothing stored → "Tạo bản tóm tắt", no AI call on opening.
+  'su01_create': (build: () => const HandoverScreen(), overrides: _su01),
+  // AI-10: the diary still loading → a skeleton, never "Đang thức" / the all-clear.
+  'su01_loading': (
+    build: () => const HandoverScreen(),
+    overrides: (l) => _su01(l, stored: true, recordsLoading: true),
+  ),
+  // AI-11: opened from a send whose handover is gone.
+  'su01_missing': (
+    build: () => const HandoverScreen(summaryId: 'sum_gone'),
+    overrides: (l) => _su01(l, caregiver: true),
+  ),
   // NL10b / ST01: no consent yet → the template, still three parts, the consent link.
   'su01_consent': (
     build: () => const HandoverScreen(summaryOpen: true),
@@ -136,12 +161,14 @@ final _cases = <String, _Case>{
       method: 'fallback',
       reason: 'CONSENT_REQUIRED',
       settings: AiSettings.none,
+      stored: true,
     ),
   ),
   // ST01 card 3: AI didn't respond → template, "không trừ lượt", Thử lại.
   'su01_error': (
     build: () => const HandoverScreen(summaryOpen: true),
-    overrides: (l) => _su01(l, method: 'fallback', reason: 'timeout'),
+    overrides: (l) =>
+        _su01(l, method: 'fallback', reason: 'timeout', stored: true),
   ),
   // Quota used up today: template + the quota line, no plan.
   'su01_quota': (
@@ -151,6 +178,7 @@ final _cases = <String, _Case>{
       method: 'fallback',
       reason: 'QUOTA_EXCEEDED',
       quota: quotaDayUsed(),
+      stored: true,
     ),
   ),
   // ST01 card 4: offline → the last stored version.

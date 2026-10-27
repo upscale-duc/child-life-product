@@ -23,7 +23,6 @@ import '../engagement/engagement_widgets.dart' show engagementTitle;
 import '../me/me_widgets.dart';
 import '../reminders/reminder_notifications.dart';
 import '../rhythm/rhythm_repository.dart' show userPreferencesProvider;
-import 'notification_models.dart';
 import 'notification_repository.dart';
 
 /// EN07 Cài đặt thông báo (560:2981, D-076 #2): the OS permission on top, then which pushes this
@@ -61,13 +60,14 @@ class _NotificationSettingsScreenState
   }
 
   Future<void> _system(bool enabled) async {
-    if (!enabled) {
-      final granted = await ref.read(reminderNotificationsProvider).request();
-      ref.invalidate(osNotificationsEnabledProvider);
-      if (granted) return;
+    if (enabled) {
+      // Turning off: only system settings can.
+      await openNotificationSettings();
+    } else {
+      // The system prompt while it can still show, else system settings (NT-3).
+      await ref.read(notificationsEnabledProvider.notifier).turnOn();
     }
-    // Turning off, or a refusal the app may not ask again: only system settings can.
-    await openNotificationSettings();
+    ref.invalidate(osNotificationsEnabledProvider);
   }
 
   @override
@@ -81,18 +81,21 @@ class _NotificationSettingsScreenState
     final parent = roles.contains(MemberRole.coParent);
     final cares = parent || roles.contains(MemberRole.caregiver);
     final sees = parent || roles.contains(MemberRole.relative);
-    final settings =
-        ref.watch(notificationSettingsProvider(uid)).value ??
-        NotificationSettings.defaults;
+    // NT-1: until the stored switches have loaded, none is drawn or tappable; a tap on the
+    // defaults would have written them over every stored switch.
+    final settingsAsync = ref.watch(notificationSettingsProvider(uid));
+    final settings = settingsAsync.value;
     final prefs = ref.watch(userPreferencesProvider(uid)).value;
     final system = ref.watch(osNotificationsEnabledProvider).value;
 
     Future<void> save(String key, bool value) async {
       final toaster = ClToaster.of(context);
+      final loaded = settings;
+      if (loaded == null) return;
       try {
         await ref
             .read(notificationRepositoryProvider)
-            .saveSettings(uid, settings.set(key, value));
+            .saveSettings(uid, loaded.set(key, value));
       } on Object {
         toaster.show(message: l10n.ntSaveFailed, error: true);
       }
@@ -102,11 +105,13 @@ class _NotificationSettingsScreenState
       key: Key('nt-$key'),
       title: title,
       subtitle: hint,
-      trailing: ClToggle(
-        value: settings[key],
-        semanticLabel: title,
-        onChanged: (v) => unawaited(save(key, v)),
-      ),
+      trailing: settings == null
+          ? const _ToggleSkeleton()
+          : ClToggle(
+              value: settings[key],
+              semanticLabel: title,
+              onChanged: (v) => unawaited(save(key, v)),
+            ),
     );
 
     final quiet = prefs == null
@@ -128,6 +133,17 @@ class _NotificationSettingsScreenState
             title: l10n.ntOffTitle,
             body: l10n.ntOffBody,
             onTap: () => unawaited(_system(false)),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        if (settings == null && settingsAsync.hasError) ...[
+          MeNotice(
+            key: const Key('nt-load-failed'),
+            tone: MeTone.error,
+            icon: ClIcons.alert,
+            title: l10n.ntSettingsLoadFailed,
+            body: l10n.ntLoadFailed,
+            onTap: () => ref.invalidate(notificationSettingsProvider(uid)),
           ),
           const SizedBox(height: ClSpace.s3),
         ],
@@ -209,7 +225,9 @@ class _NotificationSettingsScreenState
           children: [
             // The time also shows, and opens, on "Gợi ý mỗi ngày" above (D-099); twice in a row
             // was one label too many (owner, 2026-10-26).
-            if (ref.watch(engagementProvider).value?['enabled'] != true)
+            // Not while Gợi ý thông minh is still loading: the row would show, then go.
+            if (ref.watch(engagementProvider) case final eng
+                when !eng.isLoading && eng.value?['enabled'] != true)
               MeRow(
                 key: const Key('nt-digest'),
                 title: l10n.ntDigest,
@@ -281,7 +299,8 @@ class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final data = ref.watch(engagementProvider).value;
+    final async = ref.watch(engagementProvider);
+    final data = async.value;
     final session = ref.watch(sessionProvider);
     // The server's default slot until the person picks one (D-099).
     final digestTime =
@@ -292,6 +311,33 @@ class _SmartSuggestionsState extends ConsumerState<_SmartSuggestions> {
                   ?.digestTime
             : null) ??
         '20:30';
+    // NT-7: unknown is neither "no group" nor its switches. Loading keeps the group's place;
+    // a failure says so and retries.
+    if (!async.hasValue && async.isLoading) {
+      return Column(
+        key: const Key('eng-loading'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _Group(l10n.engTitle.toUpperCase(), hint: l10n.engSettingsHint),
+          const ClSkeleton(height: 3 * 56, radius: ClRadius.card),
+        ],
+      );
+    }
+    if (!async.hasValue && async.hasError) {
+      return Column(
+        key: const Key('eng-failed'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _Group(l10n.engTitle.toUpperCase()),
+          MeNotice(
+            tone: MeTone.error,
+            icon: ClIcons.alert,
+            title: l10n.ntGroupLoadFailed,
+            onTap: () => ref.invalidate(engagementProvider),
+          ),
+        ],
+      );
+    }
     if (data?['enabled'] != true) return const SizedBox.shrink();
     final fatigue = Map<String, dynamic>.from(
       data?['fatigue'] as Map? ?? const {},
@@ -411,4 +457,13 @@ class _Group extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Where a switch goes while the stored ones load (NT-1): the switch's own size.
+class _ToggleSkeleton extends StatelessWidget {
+  const _ToggleSkeleton();
+
+  @override
+  Widget build(BuildContext context) =>
+      const ClSkeleton(width: 51, height: 31, radius: ClRadius.pill);
 }

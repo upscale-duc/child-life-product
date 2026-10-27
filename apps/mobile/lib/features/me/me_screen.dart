@@ -27,8 +27,7 @@ import '../feedback/rate_app.dart';
 import '../home/home_shell.dart';
 import '../memories/album_models.dart';
 import '../memories/memory_repository.dart';
-import '../memories/push_registration.dart';
-import '../memories/upload_queue.dart';
+import '../auth/sign_out_sheet.dart';
 import '../notifications/notification_models.dart';
 import '../notifications/notification_repository.dart';
 import '../onboarding/setup_screens.dart';
@@ -88,10 +87,11 @@ class MeScreen extends ConsumerWidget {
       MemberRole.caregiver => l10n.meRoleCaregiver(relation, names),
       MemberRole.relative => l10n.meRoleRelative(relation, names),
     };
-    // EN07 (D-076 #2): "Bật" while the switches drawn on are on, "Tắt" when all are off.
-    final prefs =
-        ref.watch(notificationSettingsProvider(me.uid)).value ??
-        NotificationSettings.defaults;
+    // EN07 (D-076 #2): "Bật" while the switches drawn on are on, "Tắt" when all are off;
+    // nothing until they load (NT-1). NT-2: with the system's notifications off, none of them
+    // reaches this phone: "Tắt trong máy" whatever the switches say.
+    final prefs = ref.watch(notificationSettingsProvider(me.uid)).value;
+    final osNotifications = ref.watch(osNotificationsEnabledProvider).value;
     final theme = ref.watch(appearanceSettingsProvider).theme;
     final account = ref.watch(accountDocProvider(me.uid)).value;
     final staffTransfer = openStaffTransfer(ref, account?.staffTransfer);
@@ -154,7 +154,11 @@ class MeScreen extends ConsumerWidget {
             MeRow(
               icon: ClIcons.bell,
               title: l10n.meNotifications,
-              value: prefs.allOf(NotificationSettings.onByDefault)
+              value: osNotifications == false
+                  ? l10n.meNotifOffDevice
+                  : prefs == null
+                  ? null
+                  : prefs.allOf(NotificationSettings.onByDefault)
                   ? l10n.meOn
                   : prefs.noneOf(NotificationSettings.keys)
                   ? l10n.meOff
@@ -162,8 +166,11 @@ class MeScreen extends ConsumerWidget {
               onTap: () => context.push(Routes.meNotifications),
             ),
             // PR03 Gói của hộ (D-072): only once a Premium / Nhịp lớn lên rollout reaches the family.
+            // P-8: a v2-only family has the row too.
             if (ref.watch(selectedCapabilitiesProvider) case final caps?
-                when caps.features.any || caps.plan != HouseholdPlan.free)
+                when caps.features.any ||
+                    caps.features.premiumV2 ||
+                    caps.plan != HouseholdPlan.free)
               _PlanRow(caps: caps),
             // D-078: where the family lives (Sơ cứu number, vaccine schedule); Cùng nuôi see it,
             // the owner changes it.
@@ -278,6 +285,8 @@ class _PlanRow extends StatelessWidget {
       icon: ClIcons.star,
       title: l10n.pmPlanTitle,
       value: switch (caps.plan) {
+        // D-127 Q6: "Free" in Premium v2, as on Gói của gia đình.
+        HouseholdPlan.free when caps.features.premiumV2 => l10n.pv2PlanFree,
         HouseholdPlan.free => l10n.pmBadgeFree,
         HouseholdPlan.beta => l10n.pmBadgeBeta,
         HouseholdPlan.premium => l10n.pmBadgePremium,
@@ -352,7 +361,8 @@ class StorageCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final s = ref.watch(familyStorageProvider(babyId)).value;
+    final async = ref.watch(familyStorageProvider(babyId));
+    final s = async.value;
     final tints = babyTints(context);
     // One child: the bar belongs to the Storage row, with no divider between them.
     return ClCardGroup(
@@ -362,15 +372,29 @@ class StorageCard extends ConsumerWidget {
           children: [
             MeRow(
               title: l10n.meStorage,
+              // ST-5: a failed read says so (Dung lượng has "Thử lại"), never a blank row;
+              // ST-1: an unknown limit shows only what is used.
               value: s == null
-                  ? null
+                  ? (async.hasError ? l10n.stRowFailed : null)
+                  : s.quota == null
+                  ? formatBytes(s.usedBytes, locale)
                   : l10n.meStorageOf(
                       formatBytes(s.usedBytes, locale),
-                      formatBytes(s.quotaBytes, locale),
+                      formatBytes(s.quota!, locale),
                     ),
               onTap: () => context.push(Routes.meStorage),
             ),
-            if (s != null)
+            if (s == null && !async.hasError)
+              const Padding(
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  ClSpace.s4,
+                ),
+                child: ClSkeleton(height: 10),
+              ),
+            if (s != null && s.quota != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   ClSpace.s4,
@@ -490,55 +514,10 @@ class _OwnershipOfferCardState extends ConsumerState<OwnershipOfferCard> {
   }
 }
 
-/// "Đăng xuất" with a confirmation; uploads still on the device are named (gap, 13a).
-Future<void> confirmSignOut(BuildContext context, WidgetRef ref) {
-  final session = ref.read(sessionProvider);
-  if (session is SessionSignedIn && session.isAnonymous) {
-    return confirmAnonymousSignOut(context, ref);
-  }
-  final l10n = AppLocalizations.of(context);
-  final pending = [
-    for (final b in ref.read(uploadQueueProvider).batches)
-      for (final i in b.items)
-        if (!{
-          QueueState.uploaded,
-          QueueState.unreadable,
-          QueueState.cancelled,
-        }.contains(i.state))
-          i,
-  ].length;
-  return showClSheet<void>(
-    context: context,
-    builder: (sheet) => Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClSheetHeader(title: l10n.meSignOutTitle),
-        Text(
-          pending > 0 ? l10n.meSignOutPending(pending) : l10n.meSignOutBody,
-          style: sheet.cl.text.body.copyWith(color: sheet.cl.colors.inkMuted),
-        ),
-        const SizedBox(height: ClSpace.s6),
-        ClButton(
-          label: l10n.meSignOut,
-          style: ClButtonStyle.destructive,
-          expand: true,
-          onPressed: () {
-            Navigator.of(sheet).pop();
-            signOutThisDevice(ref);
-          },
-        ),
-        const SizedBox(height: ClSpace.s2),
-        ClButton(
-          label: l10n.actionCancel,
-          style: ClButtonStyle.plain,
-          expand: true,
-          onPressed: () => Navigator.of(sheet).pop(),
-        ),
-      ],
-    ),
-  );
-}
+/// "Đăng xuất" with a confirmation; unsent changes (AU-3) and uploads still on the device are
+/// named (gap, 13a). A temporary identity gets its own wording (R-031).
+Future<void> confirmSignOut(BuildContext context, WidgetRef ref) =>
+    showSignOutSheet(context, ref);
 
 class _SharedOutRow extends ConsumerWidget {
   const _SharedOutRow({required this.uid});

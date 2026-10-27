@@ -37,6 +37,7 @@ import 'family_models.dart';
 import 'family_repository.dart';
 import 'family_screen.dart';
 import '../premium/premium_entries.dart';
+import '../premium/premium_v2.dart';
 
 /// Invite progress on 14b → 14c (Figma draws the same ~77 % on both; Q in extract 01).
 const _progressRole = 0.5;
@@ -92,6 +93,18 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
     final l10n = AppLocalizations.of(context);
     final me = ref.read(selectedMembershipProvider);
     if (me == null) return;
+    final plan = ref.read(familyPlanV2Provider(me.babyId)).value;
+    // D-127 Q3 (FJ-3): pending writer invites hold a seat, as the server counts.
+    if (plan?.v2 == true && _role != MemberRole.relative && plan!.seatsFull) {
+      final relative = await showSeatsFullSuggestion(context, ref, me.babyId);
+      if (relative && mounted) {
+        setState(() {
+          _role = MemberRole.relative;
+          _requestId = const Uuid().v4();
+        });
+      }
+      return;
+    }
     final nickname = ref.read(babyProvider(me.babyId)).value?.nickname ?? '';
     setState(() => _busy = true);
     try {
@@ -154,6 +167,14 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
     final cl = context.cl;
     final me = ref.watch(selectedMembershipProvider);
     final ownerCanAddCoParent = me?.isOwner ?? false;
+    final plan = me == null
+        ? null
+        : ref.watch(familyPlanV2Provider(me.babyId)).value;
+    final seatsFull =
+        plan?.v2 == true && plan!.seatsFull && _role != MemberRole.relative;
+    // The last seats are held by invites nobody accepted yet: cancelling one frees a seat.
+    final heldByInvites =
+        seatsFull && plan.seatsPending > 0 && plan.seatsUsed < plan.seatsLimit;
 
     Widget role(MemberRole r, String hint) => ClOptionRow(
       title: roleLabel(l10n, r),
@@ -216,6 +237,18 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
             role(MemberRole.relative, l10n.roleRelativeHint),
           ],
         ),
+        if (seatsFull)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+            child: Text(
+              heldByInvites
+                  ? l10n.inviteSeatsHeldHint
+                  : plan.premium
+                  ? l10n.pv2E12FullBody
+                  : l10n.pv2E12Body(plan.premiumOffer.caregiverSeats),
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            ),
+          ),
         const SizedBox(height: ClSpace.s2),
         ClButton(
           label: l10n.inviteSeeDetails,
@@ -226,7 +259,9 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
       ],
       bottom: [
         ClButton(
-          label: l10n.inviteNext,
+          label: seatsFull && !plan.premium
+              ? l10n.pv2SeePremium
+              : l10n.inviteNext,
           expand: true,
           onPressed: _complete && !_busy ? _next : null,
           loading: _busy,

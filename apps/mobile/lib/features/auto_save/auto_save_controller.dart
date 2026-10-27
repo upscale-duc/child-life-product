@@ -883,6 +883,9 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     required Audience audience,
     required bool notifyFamily,
     void Function(int done, int total)? onPrepared,
+    // Per file, for AS10's list (owner, 2026-10-26: "muốn được xem mỗi file đó chuẩn bị gì và
+    // đang như thế nào"): read and being converted, in the upload queue, or unreadable.
+    void Function(String assetId, ApprovePrep state)? onItem,
   }) async {
     await _load();
     final perAdd = ref.read(publicLimitsProvider).value?.mediaItemsPerAdd ?? 30;
@@ -902,16 +905,22 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       var batchId = newBatchId();
       var parts = 0;
       var buffer = <PickedMedia>[];
+      var bufferIds = <String>[];
       // The queue counts what is still to come, so the pill reads "x/69" from the first part;
       // enqueue takes off each part as it joins, a missing item is taken off here.
       queue.setPreparing(entry.key, entry.value.length);
       Future<void> send({required bool last}) async {
         parts++;
         final closes = last || parts == _maxBatchParts;
+        final ids = bufferIds;
+        var k = 0;
         await queue.enqueue(
           // The slow part is here (every photo re-encoded, every video remuxed and given a
           // poster), so "Đang chuẩn bị 3/19" counts prepared files, not resolved ones.
-          onPrepared: (_, _) => onPrepared?.call(++prepared, chosen.length),
+          onPrepared: (_, _) {
+            if (k < ids.length) onItem?.call(ids[k++], ApprovePrep.queued);
+            onPrepared?.call(++prepared, chosen.length);
+          },
           babyId: entry.key,
           request: {
             'babyId': entry.key,
@@ -942,6 +951,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         }
         queued += buffer.length;
         buffer = [];
+        bufferIds = [];
         if (closes) {
           batchId = newBatchId();
           parts = 0;
@@ -951,6 +961,8 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       try {
         for (final c in entry.value) {
           PickedMedia? p;
+          // Being read now; "queued" once converted, or "failed" when it can't be opened.
+          onItem?.call(c.asset.id, ApprovePrep.working);
           try {
             p = await resolve(c.asset.id);
           } on Object {
@@ -958,6 +970,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           }
           if (p == null) {
             missing.add(c.asset.id);
+            onItem?.call(c.asset.id, ApprovePrep.failed);
             queue.addPreparing(entry.key, -1);
             onPrepared?.call(++prepared, chosen.length);
             continue;
@@ -965,6 +978,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           // A full part goes once another item follows it, so the last one is always known.
           if (buffer.length == perAdd) await send(last: false);
           buffer.add(p);
+          bufferIds.add(c.asset.id);
         }
         if (buffer.isNotEmpty) await send(last: true);
       } finally {
@@ -1227,3 +1241,6 @@ class AutoSaveController extends Notifier<AutoSaveView> {
 
 String autoSaveMonth(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}';
+
+/// One chosen file on its way to the upload queue (AS10's per-file list).
+enum ApprovePrep { working, queued, failed }

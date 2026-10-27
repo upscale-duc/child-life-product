@@ -18,6 +18,10 @@ import {
   recoverPrintRenders,
   recordPrintSignal,
   staffPrintCatalog,
+  startPrintExport,
+  savePrintDraft,
+  runPrintExport,
+  printExportUrl,
 } from '../functions/src/print-studio.js';
 import { type Staff } from '../functions/src/staff.js';
 
@@ -105,6 +109,58 @@ beforeEach(async () => {
   await db.doc('publicConfig/printStudio').set({
     ...initialPrintCatalog,
     physicalEnabled: true,
+  });
+});
+describe('print file as a background job (PR-1, D-127 Q8)', () => {
+  const exportReq = (requestId = randomUUID()) => ({
+    babyId: 'b1',
+    requestId,
+    design,
+    format: 'pdf' as const,
+    cropMarks: false,
+    acknowledgeQuality: false,
+  });
+  it('starts once per request, renders with progress, and links only for its parent', async () => {
+    const req = exportReq();
+    const { jobId } = await startPrintExport(db, 'mom', req, now);
+    expect((await startPrintExport(db, 'mom', req, now)).jobId).toBe(jobId);
+    const ref = db.doc(`babies/b1/printExportJobs/${jobId}`);
+    expect((await ref.get()).get('status')).toBe('queued');
+    expect((await db.doc('babies/b1/printDrafts/mom').get()).get('exportJobId')).toBe(jobId);
+    await expect(printExportUrl(db, store, 'mom', { babyId: 'b1', jobId }, now)).rejects.toThrow(
+      'not-ready',
+    );
+
+    await runPrintExport(db, store, 'b1', jobId, now);
+    const done = await ref.get();
+    expect(done.get('status')).toBe('ready');
+    expect(done.get('done')).toBe(done.get('total'));
+    expect(done.get('pages')).toBe(1);
+    expect(files.has(done.get('path'))).toBe(true);
+    // A second delivery of the trigger does nothing.
+    await runPrintExport(db, store, 'b1', jobId, now);
+    const link = await printExportUrl(db, store, 'mom', { babyId: 'b1', jobId }, now);
+    expect(link.url).toContain(done.get('path'));
+    await expect(
+      printExportUrl(db, store, 'grandma', { babyId: 'b1', jobId }, now),
+    ).rejects.toThrow();
+  });
+  it('a draft keeps its job while the design is the same, and forgets it on a change', async () => {
+    await savePrintDraft(db, 'mom', { babyId: 'b1', design }, now);
+    const { jobId } = await startPrintExport(db, 'mom', exportReq(), now);
+    await savePrintDraft(db, 'mom', { babyId: 'b1', design }, now);
+    const draft = db.doc('babies/b1/printDrafts/mom');
+    expect((await draft.get()).get('exportJobId')).toBe(jobId);
+    await savePrintDraft(db, 'mom', { babyId: 'b1', design: { ...design, title: 'Khác' } }, now);
+    expect((await draft.get()).get('exportJobId')).toBeUndefined();
+  });
+  it('records why a job failed, so the app can say so', async () => {
+    await db.doc('babies/b1/media/photo1').update({ status: 'uploading' });
+    const { jobId } = await startPrintExport(db, 'mom', exportReq(), now);
+    await runPrintExport(db, store, 'b1', jobId, now);
+    const failed = await db.doc(`babies/b1/printExportJobs/${jobId}`).get();
+    expect(failed.get('status')).toBe('failed');
+    expect(failed.get('error')).toBe('photo-unavailable');
   });
 });
 describe('manual Print Studio orders', () => {

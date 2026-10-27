@@ -107,9 +107,7 @@
   "forgotSend": "Send link",
   "forgotSent": "If this email has an account, a reset link is on its way.",
   "existsTitle": "This email already has an account",
-  "existsBody": "Sign in with Apple or Google, then we'll link it.",
-  "existsProvider": "Apple · Google",
-  "existsUseOtherEmail": "Use another email",
+  "existsBody": "Sign in the way you did before, or get a sign-in link by email.",
   "existsLinked": "Your email is now linked to your account.",
   "whoTitle": "Who are you to the baby?",
   "whoSubtitle": "The family will see “by {label}” on every log.",
@@ -228,6 +226,29 @@
   "saveAccountBody": "So you don't lose {baby} when you change phones or reinstall the app.",
   "saveAccountDone": "Account saved",
   "saveAccountMerged": "Merged into your account",
+  "saveAccountMergedArriving": "Merged into your account. Your family is loading, just a moment.",
+  "saveAccountMergedSignIn": "Merged into your account. Sign in again to open it.",
+  "existsOtherMethod": "This account's email is registered another way. Try sending a sign-in link.",
+  "signOutUnsent": "{count, plural, =0{Some changes haven't been sent yet.} =1{1 log hasn't been sent yet.} other{{count} logs haven't been sent yet.}} If you sign out now, they're sent only when you sign in again on this phone.",
+  "signOutAnonUnsent": "{count, plural, =0{Changes not sent yet will be lost too.} =1{1 log not sent yet will be lost too.} other{{count} logs not sent yet will be lost too.}}",
+  "unsentSendNow": "Try sending now",
+  "unsentStillPending": "Still not sent. Check your connection and try again.",
+  "meSignOutAnyway": "Sign out anyway",
+  "acDeleteUnsent": "{count, plural, =0{Changes not sent yet will be lost when you delete your account.} =1{1 log not sent yet will be lost when you delete your account.} other{{count} logs not sent yet will be lost when you delete your account.}}",
+  "acDeleteAnyway": "Delete anyway",
+  "acDeleteOwnsBabies": "Transfer your baby profiles before deleting your account.",
+  "profileSaveFailed": "Couldn't save the profile. Please try again.",
+  "bpLoadFailed": "Couldn't load the baby's profile.",
+  "joinLoadFailedTitle": "Couldn't open the invite",
+  "joinLoadFailedOffline": "You're offline. The invite is still there; connect and try again.",
+  "joinLoadFailedBody": "Something went wrong opening the invite. Please try again.",
+  "joinFullTitle": "This family has no writer seats left",
+  "joinFullBody": "Ask the person who invited you to free a seat, or to invite you as a relative to see the album.",
+  "pv2SeatsHeld": "{count, plural, =1{1 invite holding a seat} other{{count} invites holding a seat}}",
+  "inviteSeatsHeldHint": "Invites not yet accepted hold a seat too. Cancel the ones you no longer need in Family to free one.",
+  "joinArriving": "You've joined {baby}'s family. Loading, just a moment…",
+  "joinCountdownMinutes": "{minutes, plural, =1{1 minute left} other{{minutes} minutes left}}",
+  "familyLoadFailedGeneric": "Couldn't load the list.",
   "saveEmailSubtitle": "Create a new account, or sign in to an existing one to merge into it.",
   "saveEmailExists": "This email already has an account. Sign in to merge into it.",
   "signOutAnonTitle": "Sign out without saving?",
@@ -711,7 +732,7 @@
   "reminderDeleteTitle": "Delete this reminder?",
   "reminderDeleteBody": "No one in the family will see it any more.",
   "notifPromptTitle": "Turn on notifications on this device?",
-  "notifPromptBody": "Notifications are set only on the device that created the reminder.",
+  "notifPromptBody": "So reminders ring on time, even when the app is closed.",
   "notifPromptAllow": "Turn on notifications",
   "reminderOverline": "Reminder · {name}",
   "reminderTimeZone": "Time zone",
@@ -1155,7 +1176,7 @@
   "stVideosTitle": "Largest videos",
   "stVideosHint": "Open a video to watch, download or delete it.",
   "stVideosEmpty": "No videos yet.",
-  "stLoadFailed": "Couldn’t load storage. Pull down to try again.",
+  "stLoadFailed": "Your photos and videos are safe. Try again when you’re connected.",
   "bpCarers": "{count, plural, =1{{age} · 1 carer} other{{age} · {count} carers}}",
   "bpAdd": "Add a baby",
   "bpDeleting": "Deleting…",
@@ -2311,7 +2332,7 @@
   "upRequiredBody": "This version is too old to sync safely with your family. Updating takes about a minute.",
   "upSafeTitle": "Your baby's data is safe",
   "upSafeBody": "Photos, journal and care history stay as they are",
-  "upPendingTitle": "{count} {count, plural, =1{item} other{items}} not synced yet",
+  "upPendingTitle": "{count} {count, plural, =1{photo or video} other{photos and videos}} not uploaded yet",
   "upPendingBody": "They go up right after you update",
   "upOpenAppStore": "Update on the App Store",
   "upOpenPlay": "Update on Google Play",
@@ -2626,29 +2647,21 @@
   "autoSaveOffBody": "Turn it back on in Auto-save settings to look for new photos. Saved memories aren't affected.",
   "autoSaveNotYet": "Not checked yet",
   "autoSaveReviewTitle": "May show {name}",
-  "autoSaveReviewSub": "{count, plural, =1{1 suggestion · checked at {time}. Untick anything you don't want to save.} other{{count} suggestions · checked at {time}. Untick anything you don't want to save.}}",
-  "autoSaveGroupedHint": "Similar photos are grouped; the clearest one is already ticked.",
   "autoSaveWeek": "Week {n} · {count}",
   "autoSaveWeekBefore": "Before birth · {count}",
   "autoSaveWeekDone": "Week {n} · done",
-  "autoSaveWeekHint": "Review by {name}'s week of age: upload a week at a time; finished weeks are marked.",
-  "autoSaveFilterAll": "All · {count}",
+  "autoSaveFilterAll": "Photos & videos · {count}",
   "autoSaveFilterPhotos": "Photos · {count}",
   "autoSaveFilterVideos": "Videos · {count}",
   "autoSaveDayToday": "Today · {date}",
   "autoSaveDayYesterday": "Yesterday · {date}",
-  "autoSaveDayCount": "{count, plural, =1{1 item} other{{count} items}}",
   "autoSaveAlready": "Saved",
   "autoSaveInCloud": "In iCloud",
-  "autoSaveLegend": "\"Saved\": already in Memories, won't be uploaded again. \"In iCloud\": the original isn't on this phone yet and is fetched when online.",
+  "autoSaveLegend": "“In iCloud”: the original isn’t on this phone yet and is fetched when online.",
   "autoSaveGroupTitle": "{count, plural, other{{count} similar photos · {chosen} ticked}}",
   "autoSaveGroupAll": "Tick all",
-  "autoSaveGroupCollapse": "Collapse",
   "autoSaveBest": "Clearest",
   "autoSaveChosen": "{count} ticked · {photos} photos, {videos} videos",
-  "autoSaveMerged": "{count, plural, =1{1 similar photo grouped · nothing deleted on your phone} other{{count} similar photos grouped · nothing deleted on your phone}}",
-  "autoSaveDeselectAll": "Deselect all",
-  "autoSaveSelectAll": "Select all",
   "autoSaveRoundRest": "{rest, plural, =1{Up to {cap} items per upload · 1 more suggestion waits for next time} other{Up to {cap} items per upload · {rest} more suggestions wait for next time}}",
   "autoSaveRoundFull": "{cap, plural, other{Up to {cap} items per upload}}",
   "autoSaveContinue": "{count, plural, =1{Continue with 1 item} other{Continue with {count} items}}",
@@ -2694,11 +2707,9 @@
   "autoSaveStorageAfter": "Storage after upload",
   "autoSaveUploadCount": "{count, plural, =1{Upload 1 item} other{Upload {count} items}}",
   "autoSaveConfirmFootnote": "Originals stay on your phone. \"Saved\" appears once the upload finishes.",
-  "autoSaveNoRoom": "Not enough space: {count} items need {need} and your family has {left} left. You can upload {fit} items that fit now; the rest stay on your phone.",
   "autoSaveUploadFit": "{count, plural, =1{Upload the 1 item that fits} other{Upload the {count} items that fit}}",
   "autoSaveNoRoomFootnote": "Items not uploaded stay on your phone and in your suggestions.",
   "autoSaveSeeStorage": "See storage",
-  "autoSavePreparing": "Preparing {done}/{total}…",
   "autoSaveQueued": "{count, plural, =1{Uploading 1 item to Memories} other{Uploading {count} items to Memories}}",
   "autoSaveSettingsTitle": "Auto-save settings",
   "autoSaveOnBeta": "On",
@@ -2993,7 +3004,7 @@
   "pmBadgeFree": "Basic",
   "pmBadgePending": "Verifying",
   "pmBadgeExpired": "Expired",
-  "pmPlanTitle": "Household plan",
+  "pmPlanTitle": "Family plan",
   "pmPlanFree": "On the Basic plan",
   "pmPlanFreeBody": "Logging, reference calendar, basic templates, health guidance.",
   "pmPlanBeta": "Personalisation beta active",
@@ -3603,7 +3614,7 @@
   "pmErrorNetworkBody": "Couldn’t reach Child Life. The store’s transaction is kept so it can be checked again.",
   "pmTryAgain": "Try again",
   "pmNotOwnerTitle": "Only the family owner can buy or restore",
-  "pmNotOwnerBody": "Ask the family owner to open Household plan to upgrade or restore.",
+  "pmNotOwnerBody": "Ask the family owner to open Family plan to upgrade or restore.",
   "pmRestoreTitle": "Restore purchase",
   "pmRestoreBody": "We check purchases on this account and re-link them to your household. Plans aren’t moved from other households.",
   "pmCancel": "Cancel",
@@ -3841,7 +3852,7 @@
   "asRecentPhoto": "Read photo",
   "asVideoQuotaTitle": "Keepsake video exports",
   "asVideoQuotaSub": "Separate quota, not AI help · {left}/{limit} left",
-  "asPremiumTeaser": "Premium has more help, plus proactive personalisation and Premium card/video templates.",
+  "asPremiumTeaser": "Premium includes more Lumi credits, personal suggestions and premium card and video templates.",
   "asSeePremium": "See Premium",
   "asPremiumHousehold": "Your household has Premium. There’s no separate chat plan.",
   "asUsageFailed": "Couldn’t load usage.",
@@ -3855,11 +3866,10 @@
   "asOutTitleFree": "You’ve used all AI help this month.",
   "asOutBodyFree": "Your question is kept. You can still log directly and view logs as usual.",
   "asOpenTodayLog": "Open today’s log",
-  "asUpgradeContinue": "Upgrade & continue",
+  "asUpgradeContinue": "See Premium to keep asking",
   "asHealthStillOpen": "Essential health guidance stays open.",
   "asOpenHealth": "Open Health guidance",
   "asOutTitlePremium": "Your household has used all AI help this period.",
-  "asOutBodyPremium": "Resets {date}. You can still log directly, view logs, use Premium templates and your separate video quota.",
   "asSeeUsage": "See usage details",
   "asReadyStillSave": "Drafts that are ready can still be saved, no AI help needed.",
   "asResumedBanner": "Household has Premium · continuing your question",
@@ -4353,6 +4363,12 @@
   "ntQuiet": "Quiet hours",
   "ntQuietRange": "{from} – {to}",
   "ntSaveFailed": "Couldn’t save. Please try again.",
+  "ntSettingsLoadFailed": "Couldn’t load your notification settings",
+  "ntGroupLoadFailed": "Couldn’t load. Tap to try again.",
+  "ntTurnOn": "Turn on",
+  "ruleNotifOff": "Notifications are off on this device, so rule-based reminders won’t show.",
+  "meNotifOffDevice": "Off on device",
+  "meRateOpenFailed": "Couldn’t open the app store. Try again later.",
   "rhPlannedPill": "Trying",
   "mtTodayKicker": "A milestone you may see · {range}",
   "mtTodayAction": "Record it when you see it",
@@ -4387,6 +4403,25 @@
   "asUnsentOffline": "Not sent · offline",
   "asResend": "Send again",
   "asErrorFriendly": "I couldn’t answer just now. Nothing was saved — try again, or log it directly.",
+  "asActOffline": "You’re offline · not sent. Try again once you’re online.",
+  "asActFailed": "Couldn’t send. Please try again.",
+  "asActChecking": "Slow connection · checking again…",
+  "asAnswerStale": "The question just changed. Take a look above.",
+  "asAnswerOffline": "You’re offline · your answer wasn’t sent; it’s still in the box.",
+  "asAnswerFailed": "Couldn’t send your answer. It’s still in the box — please try again.",
+  "asChecking": "Checking…",
+  "asEditKept": "Edit",
+  "asErrorNoRetry": "I can’t do this one. Nothing was saved — you can log it directly.",
+  "asStillWorking": "Lumi is still working…",
+  "asTaskSlowBody": "This is taking Lumi longer than usual. Nothing from this message has been saved.",
+  "asCheckAgain": "Check again",
+  "asOutResetOn": "New credits from {date}.",
+  "asOutResetNext": "New credits arrive next period.",
+  "asBlockedOld": "Not answered · no credits left then",
+  "asAskAgain": "Ask again",
+  "asPhotoQuoteTitleOver": "Reading this photo needs {credits}, more than you have left.",
+  "asPhotoQuoteWait": "You can type it in or wait for new credits. The photo hasn’t been sent.",
+  "asPhotoQuoteWaitUpgrade": "You can type it in, wait for new credits, or upgrade to continue now. The photo hasn’t been sent.",
   "asReadingPhoto": "Lumi is reading the photo…",
   "asChipLogSleep": "Log a sleep",
   "asPrefillSleep": "Slept from ",
@@ -5090,7 +5125,7 @@
   "pv2Dislike": "Not right for our family",
   "pv2Known": "I already know this",
   "pv2Exclude": "Unsuitable for baby · applies to the family",
-  "pv2Restore": "Restore",
+  "pv2Restore": "Restore purchases",
   "pv2Intend": "I'll try it",
   "pv2Tried": "Tried it",
   "pv2Helpful": "Helpful",
@@ -5242,7 +5277,7 @@
     "description": "Personalization v2: Exclude"
   },
   "@pv2Restore": {
-    "description": "Personalization v2: Restore"
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall top bar: restore purchases."
   },
   "@pv2Intend": {
     "description": "Personalization v2: Intend"
@@ -6744,11 +6779,11 @@
   "psBookHelp": "Open the memories you saved, then arrange and edit each page.",
   "psBookSourceNote": "Photos and messages come from your child’s Memories. No unrecorded events are added.",
   "psBookPageHelp": "Tap a photo to change it · tap text to edit",
-  "psBookPagesCount": "{count} pages",
+  "psBookPagesCount": "{count, plural, =1{1 page} other{{count} pages}}",
   "@psBookPagesCount": {
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -7444,9 +7479,9 @@
   "@dutyNobodyBody": {
     "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
   },
-  "dutyTake": "I’m caring from now",
+  "dutyTake": "I’m caring for my baby",
   "@dutyTake": {
-    "description": "P-181 \"Ai đang trông bé\" (owner, 2026-10-25, mockup approved)."
+    "description": "Action: starts the viewer’s care shift now."
   },
   "dutyEnd": "End my shift",
   "@dutyEnd": {
@@ -7511,11 +7546,11 @@
   "@psPolicyPrivacyHelp": {},
   "psPolicyDeliveryHelp": "Child Life confirms the estimated delivery date and total before sending your order to production.",
   "@psPolicyDeliveryHelp": {},
-  "psPreviewPriceCaption": "{count} frames {size} · shipping extra",
+  "psPreviewPriceCaption": "{count, plural, =1{1 frame} other{{count} frames}} {size} · shipping extra",
   "@psPreviewPriceCaption": {
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       },
       "size": {
         "type": "String"
@@ -7564,16 +7599,16 @@
   "rhSeeHow": "See how",
   "pv2Crest": "CHILD LIFE PREMIUM",
   "pv2SeePremium": "See Premium",
-  "pv2SeePlans": "See the plans",
+  "pv2SeePlans": "See Premium",
   "pv2GotIt": "Got it",
   "pv2E01Title": "“{name}” is a Premium template",
-  "pv2E01Body": "Preview for free. Premium opens every premium template and {videos} video exports a month.",
-  "pv2E01Secondary": "Use a similar free template",
+  "pv2E01Body": "Premium includes this template and unlimited Full HD 1080p exports. Your selected photos and message are kept.",
+  "pv2E01Secondary": "Use a free template",
   "pv2E02Title": "The “{name}” card is Premium",
   "pv2E02Body": "Premium opens every premium card and video template. The photos and message you chose are kept.",
-  "pv2E02Secondary": "Choose a free template",
+  "pv2E02Secondary": "Use a free template",
   "pv2E04Title": "This draft uses a premium template",
-  "pv2E04Body": "The draft is kept. Upgrade to Premium to export, or switch to a basic template.",
+  "pv2E04Body": "The draft is kept. Upgrade to Premium to export, or switch to a free template.",
   "pv2E04Secondary": "Switch to a free template",
   "pv2E03Title": "You have used your {n} trial video exports",
   "pv2E03Body": "Premium has {m} video exports a month. This draft is kept.",
@@ -7588,94 +7623,94 @@
   "pv2ManageMedia": "Manage photos & videos",
   "pv2E11Title": "Auto-save is paused",
   "pv2E11Body": "The Free {gb} GB is full. Premium has {premiumGb} GB for the family and auto-save carries on at once.",
-  "pv2E12Title": "The family has used {used}/{limit} caregiver seats",
-  "pv2E12Body": "Premium has {premium} caregiver seats. Or invite them as a relative — albums with no limit.",
+  "pv2E12Title": "The family has used {used}/{limit} logging seats",
+  "pv2E12Body": "Premium has {premium} logging seats. Or invite them as a relative — albums with no limit.",
   "pv2E12Secondary": "Invite as a relative",
   "pv2E12FullTitle": "All {limit} writer seats are in use",
   "pv2E12FullBody": "Invite them as a relative to see the albums, or change someone's role.",
   "pv2E08Title": "The family is running out of room",
-  "pv2E08BodyPremium": "Used {pct}% of {gb} GB. Add 20 GB or 50 GB, shared by the whole family.",
+  "pv2E08BodyPremium": "Used {pct}% of {gb} GB. Add {options}, shared by the whole family.",
   "pv2E09Title": "All {gb} GB used",
   "pv2E09BodyPremium": "New photos and videos wait and upload once you add storage. You can still view, download and delete as usual.",
   "pv2StorageInlineFreeTitle": "Room for the next memories",
   "pv2StorageInlineFreeBody": "Premium has {premiumGb} GB for the family, new photos just keep saving.",
   "pv2AddStorage": "Add storage",
   "pv2E13Title": "Child Life Premium",
-  "pv2E13Body": "{videos} videos a month, {credits} Lumi credits, premium templates and {gb} GB for the family · {price}/month.",
-  "pv2HeadVideo": "Turn this month of {name}'s into a story",
-  "pv2HeadCard": "A card worthy of {name}'s first month",
+  "pv2E13Body": "Premium templates, Full HD video, more Lumi credits and shared family storage.",
+  "pv2HeadVideo": "Create a memory video for {name}",
+  "pv2HeadCard": "Create a card for {name}",
   "pv2HeadLumi": "Keep asking Lumi about {name}",
   "pv2HeadStorage": "Room for the next memories",
-  "pv2HeadCaregivers": "Let the whole family care for {name}",
-  "pv2HeadExplore": "Keep your child's first years more fully",
+  "pv2HeadCaregivers": "Invite more people to care for {name}",
+  "pv2HeadExplore": "Upgrade to Premium",
   "pv2ReasonTemplate": "The “{name}” template and the photos you chose are kept.",
   "pv2ReasonVideo": "Your draft and the photos you chose are kept.",
   "pv2ReasonLumi": "Your question is waiting · all {n} trial credits used.",
   "pv2ReasonStorage": "Used {used} / {limit} · new items stay safe on this phone.",
-  "pv2ReasonCaregivers": "The family uses {used} / {limit} caregiver seats of the Free plan.",
+  "pv2ReasonCaregivers": "Free plan: {used} / {limit} logging seats.",
   "pv2ReasonMember": "It's in Premium — the plan the whole family shares.",
-  "pv2CardVideoEyebrow": "MEMORY VIDEOS",
-  "pv2CardVideoTitle": "Loose photos, one story",
-  "pv2CardVideoBody": "Pick photos, add a message, keep the months with your child.",
-  "pv2CardVideoLimit": "{n} videos a month",
+  "pv2CardVideoEyebrow": "KEEPSAKE CARDS & VIDEOS",
+  "pv2CardVideoTitle": "Keepsakes that feel like your baby",
+  "pv2CardVideoBody": "Choose premium templates and add photos, a name and a message.",
+  "pv2CardVideoLimit": "Unlimited video exports",
   "pv2CardVideoDemo1": "A month ago, we welcomed you home.",
   "pv2CardVideoDemo2": "First day home",
   "pv2CardCardEyebrow": "PREMIUM TEMPLATES",
   "pv2CardCardTitle": "Cards made for your child",
-  "pv2CardCardBody": "Add a name and a loving note, change the style in one tap.",
+  "pv2CardCardBody": "Add a name, photos and a message to your chosen design.",
   "pv2CardCardLimit": "Every premium template · Vietnamese – English",
   "pv2CardCardDemo": "100 DAYS",
   "pv2CardLumiEyebrow": "LUMI EVERY MONTH",
-  "pv2CardLumiTitle": "Ask once, Lumi sums it up",
-  "pv2CardLumiBody": "Ask about feeds and sleep, or log in one sentence.",
-  "pv2CardLumiLimit": "{n} credits a month",
+  "pv2CardLumiTitle": "Ask Lumi about your baby’s logs",
+  "pv2CardLumiBody": "Get log summaries and drafts to review before saving.",
+  "pv2CardLumiLimit": "{n, plural, one{{n} credit/month} other{{n} credits/month}} · shared with your family",
   "pv2CardLumiDemoQ": "How did the feeds go today?",
   "pv2CardLumiDemoA": "By 14:20: 3 bottle feeds · 390 ml",
   "pv2CardLumiDemoSource": "From the journal · See sources",
   "pv2CardRhythmEyebrow": "YOUR CHILD'S RHYTHM",
-  "pv2CardRhythmTitle": "Small changes, easier to see.",
-  "pv2CardRhythmBody": "Look back at feeds and sleep from your child's journal, with a short note and the sources to check.",
-  "pv2CardRhythmLimit": "Included in {n} credits a month",
+  "pv2CardRhythmTitle": "Personal suggestions & advanced rhythms",
+  "pv2CardRhythmBody": "Suggestions for your baby’s needs and feeding and sleep patterns from your logs.",
+  "pv2CardRhythmLimit": "Included in Premium",
   "pv2CardRhythmDemoLast": "Last week",
   "pv2CardRhythmDemoThis": "This week",
   "pv2CardStorageEyebrow": "STORAGE",
-  "pv2CardStorageTitle": "Room for the months ahead.",
-  "pv2CardStorageBody": "Keep more photos and videos in the family's private album.",
-  "pv2CardStorageLimit": "{gb} GB shared · more available",
+  "pv2CardStorageTitle": "More room for photos and videos",
+  "pv2CardStorageBody": "Shared storage for your family’s photos and videos.",
+  "pv2CardStorageLimit": "{gb} GB shared by your family",
   "pv2CardStorageDemo": "Auto-saved 12 new photos today",
   "pv2CardCaregiversEyebrow": "THE WHOLE FAMILY CARES",
-  "pv2CardCaregiversTitle": "Everyone cares, no asking twice",
-  "pv2CardCaregiversBody": "Whatever anyone logs, everyone sees it in the shared journal.",
-  "pv2CardCaregiversLimit": "Room for up to {premium} caregivers (Free: {free})",
+  "pv2CardCaregiversTitle": "Keep care logs together",
+  "pv2CardCaregiversBody": "Log feeds and sleep together, and check updates in the journal.",
+  "pv2CardCaregiversLimit": "{premium, plural, one{{premium} logging seat} other{{premium} logging seats}} · Free: {free}",
   "pv2CardCaregiversDemo1": "Mum · Logged a 120 ml feed",
   "pv2CardCaregiversDemo2": "Dad · Started a nap",
-  "pv2CompareTitle": "Free and Premium",
+  "pv2CompareTitle": "Compare Free and Premium",
   "pv2CompareBenefit": "Benefit",
   "pv2YouNeed": "You need this",
-  "pv2RowLumi": "Lumi credits",
-  "pv2RowLumiFree": "{n} trial credits",
+  "pv2RowLumi": "Lumi",
+  "pv2RowLumiFree": "{n, plural, one{{n} one-time trial credit} other{{n} one-time trial credits}}",
   "pv2RowLumiPremium": "{n} credits/month",
   "pv2RowStorage": "Storage",
   "pv2RowStoragePremium": "{gb} GB · add more when needed",
-  "pv2RowVideo": "Video exports",
-  "pv2RowVideoFree": "{n} trial exports",
-  "pv2RowVideoPremium": "{n} exports/month",
+  "pv2RowVideo": "Memory video exports",
+  "pv2RowVideoFree": "Unlimited · 720p",
+  "pv2RowVideoPremium": "Unlimited · Full HD 1080p",
   "pv2RowTemplates": "Card & video templates",
   "pv2RowTemplatesFree": "Basic templates",
   "pv2RowTemplatesPremium": "Every premium template",
-  "pv2RowCaregivers": "Caregivers",
+  "pv2RowCaregivers": "People who can log care",
   "pv2RowPeople": "{n} people",
   "pv2RowRelatives": "Relatives viewing albums",
   "pv2Unlimited": "No limit",
   "pv2PromiseCancel": "Cancel any time",
   "pv2PromiseNoTopUps": "No single credits sold",
   "pv2PromiseYours": "Your memories stay yours",
-  "pv2PeriodYear": "Yearly",
-  "pv2PeriodMonth": "Monthly",
-  "pv2PerMonthApprox": "≈ {price}/month",
-  "pv2EachMonth": "every month",
-  "pv2SubscribeYear": "Get Premium · {price}/year",
-  "pv2SubscribeMonth": "Get Premium · {price}/month",
+  "pv2PeriodYear": "Yearly plan",
+  "pv2PeriodMonth": "Monthly plan",
+  "pv2PerMonthApprox": "About {price}/month",
+  "pv2EachMonth": "Billed monthly",
+  "pv2SubscribeYear": "Subscribe yearly · {price}",
+  "pv2SubscribeMonth": "Subscribe monthly · {price}",
   "pv2LegalYear": "Pay {price} today · renews every year · cancel in {store} any time",
   "pv2LegalMonth": "Pay {price} today · renews every month · cancel in {store} any time",
   "pv2SoonTitle": "Subscribing in the app opens soon",
@@ -7709,7 +7744,7 @@
   "pv2IfCancel": "If cancelled",
   "pv2IfCancelValue": "Premium lasts until {date}, then Free. Memories, the journal and exported videos stay viewable and downloadable.",
   "pv2FreeUpsellTitle": "Every month, one more story of {name}",
-  "pv2FreeUpsellBody": "Premium refills Lumi and video exports every month, opens the Premium templates and adds storage for the family.",
+  "pv2FreeUpsellBody": "Get monthly Lumi credits, premium templates, Full HD video and more shared storage.",
   "pv2BuyStorage": "Buy more storage",
   "pv2HistoryMine": "My usage history",
   "pv2HistorySub": "By person and task",
@@ -7722,7 +7757,7 @@
   "pv2DowngradedBannerNoDate": "The family is on Free. Nothing was deleted.",
   "pv2OverStorageTitle": "Over storage · {used} / {limit}",
   "pv2OverStorageBody": "Every photo and video stays viewable and downloadable. New uploads pause until you are under {limit}.",
-  "pv2OverSeatsTitle": "Over caregiver seats · {used} / {limit}",
+  "pv2OverSeatsTitle": "Over logging seats · {used} / {limit}",
   "pv2OverSeatsBody": "Choose {limit} people who keep writing. The others can only view for now and are never removed.",
   "pv2ChoosePeople": "Choose people",
   "pv2ExportData": "Export data",
@@ -7770,7 +7805,7 @@
   "pv2CancelSeats": "{used} writers > {free} seats",
   "pv2CancelSeatsBody": "Nobody removed; you choose {free} people who keep writing",
   "pv2CancelTemplates": "Drafts on Premium templates",
-  "pv2CancelTemplatesBody": "Drafts kept; exporting needs Premium or a basic template",
+  "pv2CancelTemplatesBody": "Drafts kept; exporting needs Premium or a free template",
   "pv2KeepPremium": "Keep Premium",
   "pv2ContinueCancel": "Continue cancelling in {store}",
   "pv2AddOnHead": "Room for the days your child grows.",
@@ -7808,15 +7843,15 @@
   "pv2DemoStyleClassic": "Classic",
   "pv2DemoLumiLast": "Last feed 13:10 · 120 ml (Dad logged)",
   "pv2DemoRhythm": "This week (13–19/10), logged night sleep averaged 9 h 10 — 25 minutes longer than last week (6–12/10).",
-  "pv2DemoUploading": "3 videos uploading · no need to wait",
+  "pv2DemoUploading": "3 videos uploading",
   "pv2DemoMum": "Mum",
   "pv2DemoMumDid": "09:10 · Logged a 120 ml feed",
   "pv2DemoDad": "Dad",
   "pv2DemoDadDid": "10:30 · Started a nap",
   "pv2DemoGran": "Grandma",
   "pv2DemoGranDid": "Saw the update",
-  "pv2DemoCareNote": "Caring together is in Free; Premium adds more people.",
-  "pv2Terms": "Terms",
+  "pv2DemoCareNote": "Shared logs are included in Free; Premium lets more people log care.",
+  "pv2Terms": "Terms of Use",
   "pv2Privacy": "Privacy",
   "pv2HeadRhythm": "Understand {name}'s rhythm better every week",
   "pv2ReasonRhythm": "This week's journal is kept · Lumi looks back once the family has Premium.",
@@ -7824,8 +7859,8 @@
   "pv2DemoStoragePremium": "Premium · {gb}",
   "pv2DemoStorageWaiting": "12 new photos waiting to be saved",
   "pv2RowRhythm": "Your child's rhythm",
-  "pv2RowRhythmFree": "Journal & basic milestones",
-  "pv2RowRhythmPremium": "Weekly notes · with sources",
+  "pv2RowRhythmFree": "Age-based suggestions & reference schedules",
+  "pv2RowRhythmPremium": "Personal suggestions & advanced rhythms",
   "axGreetMorningNoName": "Good morning ☀️",
   "axGreetAfternoonNoName": "Good afternoon",
   "axGreetEveningNoName": "Good evening 🌙",
@@ -7885,5 +7920,711 @@
   "p48ClearValue": "Clear value",
   "@p48ClearValue": {
     "description": "Clears an optional date or time without substituting a default."
+  },
+  "autoSaveReviewTicked": "The clearest ones are ticked. Untick anything you don't want to save.",
+  "premiumSharedPlans": "Shared with your family on both yearly and monthly plans.",
+  "@premiumSharedPlans": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumChoosePlan": "Choose a plan",
+  "@premiumChoosePlan": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumBenefits": "What’s included?",
+  "@premiumBenefits": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumMemories": "Keepsake cards & videos",
+  "@premiumMemories": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumMemoriesSubtitle": "All high-quality premium templates",
+  "@premiumMemoriesSubtitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumRhythm": "Personal suggestions & advanced rhythms",
+  "@premiumRhythm": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmSubtitle": "Suggestions based on your baby’s needs and logs",
+  "@premiumRhythmSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumTodayTotal": "Due today",
+  "@premiumTodayTotal": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumBackToPlans": "Back to plans",
+  "@premiumBackToPlans": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumUnlimitedVideo": "Unlimited video exports",
+  "@premiumUnlimitedVideo": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoFree": "Basic templates · 720p video",
+  "@premiumVideoFree": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoPaid": "All templates · Full HD 1080p",
+  "@premiumVideoPaid": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoDetail": "Unlimited exports: 720p on Free, Full HD 1080p on Premium.",
+  "@premiumVideoDetail": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumFeatureIntro": "Explore Premium for this feature",
+  "@premiumFeatureIntro": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQuality": "Video quality",
+  "@videoQuality": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityHd": "HD 720p",
+  "@videoQualityHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityFullHd": "Full HD 1080p",
+  "@videoQualityFullHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityHdHint": "Smaller files, easy to share",
+  "@videoQualityHdHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityFullHdHint": "Sharper video",
+  "@videoQualityFullHdHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityPremiumHint": "Requires Premium · Learn more",
+  "@videoQualityPremiumHint": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoExportHd": "Export HD 720p video",
+  "@videoExportHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoExportFullHd": "Export Full HD 1080p video",
+  "@videoExportFullHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoFullHdIntroTitle": "Export in Full HD with Premium",
+  "@videoFullHdIntroTitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoFullHdIntroBody": "Premium includes Full HD 1080p exports and all premium templates. Free still includes unlimited HD 720p exports. Your video stays as it is.",
+  "@videoFullHdIntroBody": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoContinueHd": "Continue with HD 720p",
+  "@videoContinueHd": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmCompareFree": "Age-based suggestions & reference schedules",
+  "@premiumRhythmCompareFree": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumRhythmComparePaid": "Personal suggestions & advanced rhythms",
+  "@premiumRhythmComparePaid": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumStorageSubtitle": "Shared storage for your family’s photos and videos",
+  "@premiumStorageSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumSeatsSubtitle": "Log feeds and sleep, and view the journal together",
+  "@premiumSeatsSubtitle": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumNeedsPremium": "Requires Premium",
+  "@premiumNeedsPremium": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumUseTemplate": "Use Premium template",
+  "@premiumUseTemplate": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoQualityChecking": "Checking your plan · Try again",
+  "@videoQualityChecking": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoRenderRateLimit": "You’ve sent several video requests. Please try again in a minute.",
+  "@videoRenderRateLimit": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumPaymentDetails": "Payment details",
+  "@premiumPaymentDetails": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumTaxIncluded": "Tax included.",
+  "@premiumTaxIncluded": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumVideoAfterCancel": "Existing exports keep their quality. New videos export in HD 720p, with unlimited exports.",
+  "@premiumVideoAfterCancel": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveSelectAll": "Tick all",
+  "autoSaveDeselectAll": "Untick all",
+  "autoSaveGroupBestOnly": "Keep the clearest only",
+  "autoSaveSavedSection": "{count, plural, other{Already in Memories · {count}}}",
+  "autoSaveSavedHint": "Not ticked. Open to tick any the app got wrong.",
+  "premiumPlanCheckFailed": "Couldn’t check your family plan",
+  "@premiumPlanCheckFailed": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "premiumPlanCheckFailedBody": "Try again when you’re connected. Your work is kept.",
+  "@premiumPlanCheckFailedBody": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveWeekSheet": "Week of age",
+  "autoSaveKindSheet": "Show",
+  "premiumRhythmDetail": "View feeding and sleep patterns when there are enough logs. Suggestions are for reference, not a diagnosis.",
+  "@premiumRhythmDetail": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "videoPremiumChanged": "This video needs an active Premium plan. You can switch to a basic template and HD 720p; your work is kept.",
+  "@videoPremiumChanged": {
+    "description": "Premium v2: transparent feature introduction or video export quality (D-124)."
+  },
+  "autoSaveWeekRowTitle": "Week {n} · {range}",
+  "autoSaveWeekRowBefore": "Before birth",
+  "autoSaveWeekRowProgress": "{saved} in Memories · {waiting} waiting for you",
+  "autoSaveWeekRowWaiting": "{waiting} waiting for you",
+  "autoSaveWeekRowDone": "All reviewed · {saved} in Memories",
+  "autoSaveAllWeeks": "All weeks · {count}",
+  "autoSaveAllWeeksRow": "All weeks",
+  "autoSaveCheckingSpace": "Checking space…",
+  "autoSaveFullTitle": "Your family's space is full",
+  "autoSaveFullBody": "{count, plural, =1{1 item needs about {need}. Add space to upload it; it stays on your phone.} other{{count} items need about {need}. Add space to upload them; they stay on your phone.}}",
+  "autoSaveShortTitle": "Room for {fit} of {count} items",
+  "autoSaveShortBody": "They need about {need}; your family has {left} left. Photos go first, then videos; the rest stay on your phone.",
+  "autoSavePrepTitle": "Preparing {done} of {total}",
+  "autoSavePrepWaiting": "Waiting",
+  "autoSavePrepWorking": "Preparing",
+  "autoSavePrepQueued": "Queued to upload",
+  "autoSavePrepFailed": "Couldn't read the file",
+  "autoSavePrepDone": "Done",
+  "autoSavePrepSummary": "{queued} queued · {failed} unreadable",
+  "qQuotaTitle": "Family space is full",
+  "qQuotaBody": "{count, plural, =1{1 item is waiting and stays on your phone. Add space to keep uploading.} other{{count} items are waiting and stay on your phone. Add space to keep uploading.}}",
+  "qDropWaiting": "{count, plural, =1{Remove 1 item from the queue} other{Remove {count} items from the queue}}",
+  "qDropUnreadable": "{count, plural, =1{Remove 1 unreadable file} other{Remove {count} unreadable files}}",
+  "qUnreadableHint": "Your phone couldn't open these files (they may be deleted or damaged).",
+  "autoSaveAddSpacePremium": "Add space with Premium",
+  "autoSaveBuySpace": "Buy more space",
+  "autoSaveManageSpace": "Manage space",
+  "autoSavePremiumSpaceNote": "Premium gives the whole family more space.",
+  "careFailedNew": "Not saved: {record}, {time}",
+  "careFailedEdit": "Change not saved: {record}, {time}",
+  "careFailedDelete": "Not deleted: {record}, {time}",
+  "careFailedRestore": "Not restored: {record}, {time}",
+  "careFailedTimer": "The timer change wasn’t saved",
+  "careFailedDenied": "{message}. Your access may have changed.",
+  "retryRefused": "Some changes couldn’t be saved. Your access may have changed.",
+  "pendingOthers": "{count, plural, =1{1 other change} other{{count} other changes}} (deletes, edits, timers) waiting to send",
+  "careLoadFailed": "Couldn’t load the diary",
+  "todayLoadFailedBody": "Recent entries aren’t showing. You can still log.",
+  "statsTodayFrom18": "Counted from 6 pm yesterday, night feeds included",
+  "hoLoading": "Loading the baby’s diary",
+  "hoRemindersFailed": "Couldn’t load today’s reminders",
+  "hoHealthFailed": "Couldn’t load health signs",
+  "hoNotFoundTitle": "This handover is no longer available",
+  "hoNotFoundBody": "A newer one may have replaced it.",
+  "hoSeeLatest": "See the latest",
+  "hoCreateNew": "Make a new one",
+  "hoCreateTitle": "No summary yet",
+  "hoCreateBody": "A summary of the family’s notes from the last few days. Each one uses at most 1 AI credit.",
+  "hoCreateAction": "Make a summary",
+  "aiStateFailedOffline": "Making one needs a connection. Your family’s notes are unchanged.",
+  "aiStateQuotaOut": "Your household has used this period’s AI credits.",
+  "aiStatePremiumOnly": "AI summaries are part of Child Life Premium.",
+  "aiStateUnavailable": "AI isn’t available for your household right now.",
+  "aiStateQuotaDayNoDate": "Used {used} of {limit} AI summaries today for this baby. You can still use the template version.",
+  "aiStateQuotaMonthNoDate": "Your household used {used} of {limit} AI credits this period (shared by summaries and the assistant). You can still use the template version.",
+  "aiSendFailedOther": "Couldn’t send the handover. Try again later.",
+  "aiMomentAsk": "Suggest a caption with AI",
+  "aiMomentFailed": "Couldn’t suggest a caption right now.",
+  "engWeekFailed": "Couldn’t open this week’s recap",
+  "engWeekMediaFailed": "Couldn’t load the week’s photos",
+  "engWeekEmpty": "This week’s photos and stories are no longer in Memories.",
+  "engOpenFailed": "Couldn’t open the suggestion. Try again later.",
+  "engActFailed": "Couldn’t save your choice. Try again later.",
+  "stLoadFailedTitle": "Couldn’t load storage",
+  "stQuotaUnknown": "Couldn’t check your plan’s storage limit",
+  "stReserved": "{size} held for {count, plural, =1{1 item} other{{count} items}} uploading",
+  "stFreeUpVideos": "Remove large videos",
+  "stRowFailed": "Couldn’t load",
+  "pv2AskStorage": "Ask {name} to add storage",
+  "pv2AskStorageMessage": "Our Child Life storage is almost full. Could you add storage in Me › Family plan?",
+  "pv2AddOnUnknown": "Couldn’t load storage options",
+  "pv2OptionOr": "{a} or {b}",
+  "pv2E08BodyPremiumPlain": "Used {pct}% of {gb} GB.",
+  "pv2ManagerYouNoName": "You manage this plan",
+  "pv2FreeUpsellTitleNoName": "Every month, one more story of your baby",
+  "pv2PriceUnknown": "Couldn’t load prices. Try again when you’re connected.",
+  "pv2SubscribeNoPrice": "Subscribe to Premium",
+  "pv2BusyBuying": "Opening {store}…",
+  "pv2BusyVerifying": "Confirming your purchase…",
+  "pv2BusyRestoring": "Restoring…",
+  "pv2BusyPending": "Waiting for the store to confirm",
+  "pmStoreLoadFailed": "Couldn’t reach the store. Try again.",
+  "psExportQueued": "Getting your print file ready…",
+  "psExportProgress": "Building your print file · page {done} of {total}",
+  "psExportLeave": "You can leave this screen. Come back here to open the file when it’s done.",
+  "psExportFailed": "Couldn’t build the print file. Please try again.",
+  "psExportBannerReady": "Print file ready · Open",
+  "psExportFiles": "{pages, plural, =1{1 page} other{{pages} pages}} · {format}",
+  "psCountryUnsupported": "Child Life doesn’t deliver prints to {country} yet.",
+  "psCountryUnsupportedDigital": "Child Life doesn’t deliver prints to {country} yet. You can download the print file and print it near you.",
+  "psPayByTransfer": "Bank transfer after Child Life confirms",
+  "psPayTransferRow": "Bank transfer",
+  "psOrderMaybeSent": "No reply yet. Your order may already be in — check My print orders before ordering again.",
+  "psViewOrders": "View print orders",
+  "psOrderNotFound": "Couldn’t find this print order",
+  "psOrderNotFoundHelp": "It may belong to another account, or hasn’t loaded yet.",
+  "psStatusUnknown": "Status updating",
+  "psOrderCancelledToast": "Print order cancelled",
+  "premiumYearSuffix": "/year",
+  "@premiumYearSuffix": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumMonthSuffix": "/month",
+  "@premiumMonthSuffix": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSavePercent": "Save {n}%",
+  "@premiumSavePercent": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiListTitle": "Lumi assistant",
+  "@premiumLumiListTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumStorageListTitle": "{gb} for your family",
+  "@premiumStorageListTitle": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSeatsListTitle": "{n} people can log care",
+  "@premiumSeatsListTitle": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLegalIntro": "Auto-renews. Cancel anytime in {store}. By subscribing, you agree to the ",
+  "@premiumLegalIntro": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumPaymentEquivalent": "Equivalent per month",
+  "@premiumPaymentEquivalent": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentSaving": "Savings compared with 12 monthly payments",
+  "@premiumPaymentSaving": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentTax": "Tax",
+  "@premiumPaymentTax": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentTaxValue": "Included in the price",
+  "@premiumPaymentTaxValue": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumPaymentRenewal": "Auto-renews at {price}. To cancel, use {store} at least 24 hours before renewal.",
+  "@premiumPaymentRenewal": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumMemoriesBullet1": "Cards: premium templates, photos, a name and a message.",
+  "@premiumMemoriesBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumMemoriesBullet2": "Videos: combine photos with a message and music.",
+  "@premiumMemoriesBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet1": "Ask about your journal and see the data behind Lumi’s answers.",
+  "@premiumLumiBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet2": "Ask Lumi to draft a log for you to check before saving.",
+  "@premiumLumiBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumLumiBullet3": "{n, plural, one{{n} credit/month shared with your family, refilled monthly.} other{{n} credits/month shared with your family, refilled monthly.}}",
+  "@premiumLumiBullet3": {
+    "description": "Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumRhythmBullet1": "Suggestions based on age, needs and your feedback.",
+  "@premiumRhythmBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumRhythmBullet2": "View feeding and sleep patterns when there are enough logs.",
+  "@premiumRhythmBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumRhythmBullet3": "Understand your baby better every day.",
+  "@premiumRhythmBullet3": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "premiumStorageBullet1": "{gb} for your family’s photos and videos.",
+  "@premiumStorageBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment.",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumStorageBullet2": "View usage in Your family plan.",
+  "@premiumStorageBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumStorageBullet3": "Additional storage: Coming soon.",
+  "@premiumStorageBullet3": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet1": "Log feeds and sleep, and view updates together.",
+  "@premiumSeatsBullet1": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet2": "Viewing and logging permissions follow each person’s role.",
+  "@premiumSeatsBullet2": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsBullet3": "{n, plural, one{Care for your baby with {n} carer} other{Care for your baby with {n} carers}}",
+  "@premiumSeatsBullet3": {
+    "description": "Owner-updated Premium benefit. n is the configured monthly credits or logging seats, never a fixed allowance.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumRhythmPager": "Suggestions & advanced rhythms",
+  "@premiumRhythmPager": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSeatsPager": "People who can log care",
+  "@premiumSeatsPager": {
+    "description": "Approved Premium Figma 1153:5491, exact UI alignment."
+  },
+  "premiumSubscribeYearShort": "Subscribe yearly",
+  "premiumSubscribeMonthShort": "Subscribe monthly",
+  "@premiumSubscribeYearShort": {
+    "description": "Premium Figma payment-sheet action."
+  },
+  "@premiumSubscribeMonthShort": {
+    "description": "Premium Figma payment-sheet action."
+  },
+  "premiumLumiCompareFree": "{n, plural, one{{n} trial credit · no refill} other{{n} trial credits · no refill}}",
+  "@premiumLumiCompareFree": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiComparePaid": "{n, plural, one{{n} credit/month · shared with your family} other{{n} credits/month · shared with your family}}",
+  "@premiumLumiComparePaid": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumSeatsCardLimit": "{premium, plural, one{{premium} logging seat} other{{premium} logging seats}} · Free: {free}",
+  "@premiumSeatsCardLimit": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "free": {
+        "type": "int"
+      },
+      "premium": {
+        "type": "int"
+      }
+    }
+  },
+  "@pv2CardLumiLimit": {
+    "description": "Approved Figma Premium details, config-driven allowances.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumLumiPager": "Ask Lumi",
+  "premiumLumiDetailTitle": "Ask Lumi about your baby",
+  "premiumRhythmDetailTitle": "Personal suggestions and advanced rhythms for your baby",
+  "premiumMemoriesBullet3": "Unlimited high-quality exports",
+  "@pv2EachMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Monthly tile caption."
+  },
+  "@pv2SubscribeYear": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, yearly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@pv2SubscribeMonth": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall CTA, monthly.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@pv2Terms": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Paywall legal line link."
+  },
+  "@pv2PerMonthApprox": {
+    "description": "Premium v2 (Figma 958:13863, D-101). Yearly tile: the price per month.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@premiumLumiPager": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumLumiDetailTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumRhythmDetailTitle": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "@premiumMemoriesBullet3": {
+    "description": "Owner-updated Premium Figma 1153:5491, 2026-10-27."
+  },
+  "hhMorning": "A new day with {name}",
+  "@hhMorning": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhMorningNoName": "A new day together",
+  "@hhMorningNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAfternoon": "How is {name}’s day going?",
+  "@hhAfternoon": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhAfternoonNoName": "How is your baby’s day going?",
+  "@hhAfternoonNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhEvening": "Good evening, {name}",
+  "@hhEvening": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhEveningNoName": "Good evening",
+  "@hhEveningNoName": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhBirthday": "Happy birthday, {name}!",
+  "@hhBirthday": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutyNow": "{name} is caring for your baby",
+  "@hhDutyNow": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutySince": "Now · since {time}",
+  "@hhDutySince": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hhDutyRetry": "Couldn’t load care status · Retry",
+  "@hhDutyRetry": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSettings": "Appearance settings",
+  "@hhSettings": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSettingsSubtitle": "Today header background",
+  "@hhSettingsSubtitle": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhWallpaper": "Background",
+  "@hhWallpaper": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPreview": "Preview",
+  "@hhPreview": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPattern": "Time-of-day artwork",
+  "@hhPattern": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAvatar": "Your baby’s profile photo",
+  "@hhAvatar": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhChooseMemory": "Choose a photo from Memories",
+  "@hhChooseMemory": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhPhotoEmpty": "There are no photos to choose from in Memories yet.",
+  "@hhPhotoEmpty": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhDeviceOnly": "Applies to the selected baby on this device only.",
+  "@hhDeviceOnly": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhApply": "Apply",
+  "@hhApply": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSaveFailed": "Couldn’t save your appearance settings. Try again.",
+  "@hhSaveFailed": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhHeaderSection": "In the header",
+  "@hhHeaderSection": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhDutyFixed": "Care status stays in the header.",
+  "@hhDutyFixed": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhAvatarMissing": "No profile photo yet; artwork is shown for now.",
+  "@hhAvatarMissing": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "hhSelected": "Selected",
+  "@hhSelected": {
+    "description": "Living Header: owner-approved copy. name is the baby or carer as indicated by the key; time is the local shift-start time."
+  },
+  "dutyParents": "Dad and Mom",
+  "@dutyParents": {
+    "description": "Two verified parents currently caring together."
+  },
+  "dutyTogether": "Dad and Mom care together",
+  "@dutyTogether": {
+    "description": "Action: records the viewer and the other active parent as caring together."
+  },
+  "dutyTogetherToast": "Dad and Mom are caring together. Your family can see this.",
+  "@dutyTogetherToast": {
+    "description": "Confirmed only after a successful server write."
+  },
+  "dutyJustStarted": "Just started",
+  "@dutyJustStarted": {
+    "description": "Shift duration under one minute; not rounded up."
+  },
+  "dutyPrevious": "Previously",
+  "@dutyPrevious": {
+    "description": "Previous carer or parent pair, not currently on duty."
+  },
+  "dutyLoadFailed": "Couldn’t load care status.",
+  "@dutyLoadFailed": {
+    "description": "Load error in care duty sheet; never shown as nobody caring."
+  },
+  "dutyOwnPart": "End your part; the other parent will still be caring.",
+  "@dutyOwnPart": {
+    "description": "Shown for a current parent pair before ending only the viewer’s part."
+  },
+  "dutyStartedAt": "Since {time}",
+  "@dutyStartedAt": {
+    "description": "Local start time of the current care shift.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyTogetherNow": "Dad and Mom are caring together",
+  "@dutyTogetherNow": {
+    "description": "Current parent-pair label, with plural grammar."
+  },
+  "dutyTogetherSince": "Dad and Mom are caring · since {time}",
+  "@dutyTogetherSince": {
+    "description": "Parent-pair status with baby-local start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dutyYouNow": "You’re caring for your baby",
+  "@dutyYouNow": {
+    "description": "Viewer’s own care status; uses correct second-person grammar."
+  },
+  "dutyYouSince": "You’re caring · since {time}",
+  "@dutyYouSince": {
+    "description": "Viewer’s own care status with local start time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

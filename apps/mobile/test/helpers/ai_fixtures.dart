@@ -421,10 +421,12 @@ List<Override> aiOverrides({
   List<Shared>? shared,
   Membership? member,
   List<CareRecord> records = const [],
+  Stream<List<CareRecord>> Function()? recordsStream,
   List<Reminder> reminders = const [],
 }) => [
   ...rhythmOverrides(
     records: records,
+    recordsStream: recordsStream,
     reminders: reminders,
     repo:
         repo ??

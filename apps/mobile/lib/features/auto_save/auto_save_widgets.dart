@@ -23,6 +23,10 @@ import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
 import '../memories/viewer_video.dart' show streamingPlayer;
+import '../premium/premium_entries.dart'
+    show askManagerForStorage, planManagerName, showStorageFullSuggestion;
+import '../premium/premium_repository.dart' show capabilitiesProvider;
+import '../premium/premium_v2.dart' show familyPlanV2Provider;
 import 'auto_save_controller.dart';
 
 // Only the phone calls the background entry point; exporting it keeps it in release builds.
@@ -716,3 +720,45 @@ class AutoSaveCard extends StatelessWidget {
     );
   }
 }
+
+/// The way out of a full family space, named before the tap (D-125, D-126): a Free family on
+/// Premium v2 is offered Premium, a Premium family the paid add-on, and without v2 the Dung lượng
+/// screen; a Premium member who doesn't manage the plan asks the manager (D-127 Q7). Used by
+/// AS18 and the upload queue.
+enum StorageWayOut { premium, addOn, ask, manage }
+
+StorageWayOut storageWayOut(WidgetRef ref, String babyId) {
+  final v2 =
+      ref.watch(capabilitiesProvider(babyId)).value?.features.premiumV2 ??
+      false;
+  if (!v2) return StorageWayOut.manage;
+  final plan = ref.watch(familyPlanV2Provider(babyId)).value;
+  if (!(plan?.premium ?? false)) return StorageWayOut.premium;
+  return plan!.isManager ? StorageWayOut.addOn : StorageWayOut.ask;
+}
+
+String storageWayOutLabel(
+  WidgetRef ref,
+  AppLocalizations l10n,
+  String babyId,
+  StorageWayOut way,
+) => switch (way) {
+  StorageWayOut.premium => l10n.autoSaveAddSpacePremium,
+  StorageWayOut.addOn => l10n.autoSaveBuySpace,
+  StorageWayOut.ask => l10n.pv2AskStorage(planManagerName(ref, l10n, babyId)),
+  StorageWayOut.manage => l10n.autoSaveManageSpace,
+};
+
+void openStorageWayOut(
+  BuildContext context,
+  WidgetRef ref,
+  String babyId,
+  StorageWayOut way, {
+  bool autoSave = false,
+}) => switch (way) {
+  StorageWayOut.manage => unawaited(context.push(Routes.meStorage)),
+  StorageWayOut.ask => unawaited(askManagerForStorage(context)),
+  _ => unawaited(
+    showStorageFullSuggestion(context, ref, babyId, autoSave: autoSave),
+  ),
+};

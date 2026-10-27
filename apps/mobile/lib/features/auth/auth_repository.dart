@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,6 +31,13 @@ enum AuthFailure {
   linkExpired,
   other,
 }
+
+/// [mergeAnonymousInto]'s answer: the babies the account now has through the merge, and
+/// whether this app ended up signed into it.
+typedef MergeResult = ({List<String> babyIds, bool signedIn});
+
+/// The second Firebase app [AuthRepository.mergeAnonymousInto] signs in with.
+typedef MergeTarget = ({FirebaseAuth auth, FirebaseFunctions functions});
 
 class AuthException implements Exception {
   const AuthException(this.failure);
@@ -60,7 +68,12 @@ AuthFailure failureOf(FirebaseAuthException e) => switch (e.code) {
 
 /// Sign-in for 06 / 07 / 09 / 10 (R-001…R-005). One person = one account with linked providers.
 class AuthRepository {
-  AuthRepository(this._auth, this._config, [this._functions]);
+  AuthRepository(
+    this._auth,
+    this._config, [
+    this._functions,
+    this._mergeTarget,
+  ]);
 
   final FirebaseAuth _auth;
   final AuthProviderConfig _config;
@@ -136,7 +149,13 @@ class AuthRepository {
           password: password,
         );
         await _linkPending();
-      } on FirebaseAuthException {
+      } on FirebaseAuthException catch (e) {
+        // AU-2: only "not this password" means another sign-in method owns the email (10);
+        // a rate limit or the network is said as such, on this screen.
+        final failure = failureOf(e);
+        if (failure != AuthFailure.wrongCredentials) {
+          throw AuthException(failure);
+        }
         _pendingLink = EmailAuthProvider.credential(
           email: email,
           password: password,
@@ -337,10 +356,18 @@ class AuthRepository {
 
   AuthCredential? _collision;
 
-  /// P-007: signs into the account that already owns the credential and lets [claim] move the
-  /// temporary identity's memberships there (server verifies the anonymous ID token).
-  Future<void> mergeAnonymousInto({
-    required Future<void> Function(String anonymousIdToken) claim,
+  /// P-007 / AU-1 (G3): moves the temporary identity's memberships into the account that already
+  /// owns the credential. A second Firebase app signs into that account and runs [claim] while
+  /// this app still holds the temporary identity, so a wrong password or a failed claim leaves
+  /// it untouched and the person can simply try again. Only after the claim does this app sign
+  /// into the account; if that last step fails, the memberships are already safe there and the
+  /// person signs in again ([MergeResult.signedIn] false).
+  Future<MergeResult> mergeAnonymousInto({
+    required Future<List<String>> Function(
+      String anonymousIdToken,
+      FirebaseFunctions asAccount,
+    )
+    claim,
     String? email,
     String? password,
   }) async {
@@ -348,22 +375,80 @@ class AuthRepository {
     if (user == null || !user.isAnonymous) {
       throw const AuthException(AuthFailure.other);
     }
-    final anonymousIdToken = await user.getIdToken();
-    if (anonymousIdToken == null) throw const AuthException(AuthFailure.other);
     final credential = email != null && password != null
         ? EmailAuthProvider.credential(email: email, password: password)
         : _collision;
     if (credential == null) throw const AuthException(AuthFailure.other);
-    await _guard(() => _auth.signInWithCredential(credential));
-    _collision = null;
-    await claim(anonymousIdToken);
+    // A fresh token gives the claim its full hour.
+    final anonymousIdToken = await _guard(() => user.getIdToken(true));
+    if (anonymousIdToken == null) throw const AuthException(AuthFailure.other);
+    final target = await (_mergeTarget ?? _defaultMergeTarget)();
+    try {
+      await _guard(() => target.auth.signInWithCredential(credential));
+      final babyIds = await claim(anonymousIdToken, target.functions);
+      _collision = null;
+      try {
+        await _auth.signInWithCredential(credential);
+        return (babyIds: babyIds, signedIn: true);
+      } on FirebaseAuthException {
+        // The temporary user is gone server-side; leave it rather than keep a dead session.
+        await signOut();
+        return (babyIds: babyIds, signedIn: false);
+      }
+    } finally {
+      try {
+        await target.auth.signOut();
+      } on Object {
+        // Nothing to sign out of.
+      }
+    }
   }
 
-  Future<void> _signInWithCredential(AuthCredential credential) =>
-      _guard(() async {
-        await _auth.signInWithCredential(credential);
-        await _linkPending();
-      });
+  /// Tests replace the second app ([mergeAnonymousInto]).
+  final Future<MergeTarget> Function()? _mergeTarget;
+
+  static const _mergeAppName = 'cl-merge';
+  static bool _mergeEmulators = false;
+
+  static Future<MergeTarget> _defaultMergeTarget() async {
+    final app =
+        Firebase.apps.where((a) => a.name == _mergeAppName).firstOrNull ??
+        await Firebase.initializeApp(
+          name: _mergeAppName,
+          options: Firebase.app().options,
+        );
+    final auth = FirebaseAuth.instanceFor(app: app);
+    final functions = FirebaseFunctions.instanceFor(
+      app: app,
+      region: functionsRegion,
+    );
+    // The same local emulators as the main app (bootstrap.dart, CL_EMULATORS).
+    if (const bool.fromEnvironment('CL_EMULATORS') && !_mergeEmulators) {
+      _mergeEmulators = true;
+      final host = defaultTargetPlatform == TargetPlatform.android
+          ? '10.0.2.2'
+          : 'localhost';
+      await auth.useAuthEmulator(host, 9099);
+      functions.useFunctionsEmulator(host, 5001);
+    }
+    return (auth: auth, functions: functions);
+  }
+
+  Future<void> _signInWithCredential(AuthCredential credential) async {
+    try {
+      await _auth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      // AU-2: a Google / Apple email that another method owns (10). Keep the credential so it
+      // is linked once the person signs in that way, or with the email link.
+      if (e.code == 'account-exists-with-different-credential' &&
+          _pendingLink == null) {
+        _pendingLink = e.credential ?? credential;
+        pendingEmail = e.email;
+      }
+      throw AuthException(failureOf(e));
+    }
+    await _guard(_linkPending);
+  }
 
   Future<void> _linkPending() async {
     final pending = _pendingLink;

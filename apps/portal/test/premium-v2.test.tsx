@@ -58,9 +58,9 @@ describe('Gói & hạn mức (PT03)', () => {
     const t = text(
       render(<PlansVersionSection config={defaultEntitlementsConfig} onChanged={() => {}} />),
     );
-    expect(t).toContain('Đang chạy: 2.0-launch');
+    expect(t).toContain('Phiên bản đang áp dụng: 2.0-launch');
     expect(t).toContain('Credit Lumi 30 (một lần) 200 / tháng');
-    expect(t).toContain('Chỗ người ghi 3 6');
+    expect(t).toContain('Số người được ghi chép 3 6');
     expect(t).toContain('Soạn phiên bản mới');
     expect(t).toContain('Đọc ảnh 3');
   });
@@ -71,7 +71,7 @@ describe('Gói & hạn mức (PT03)', () => {
         'analyst',
       ]),
     );
-    expect(t).toContain('Đang chạy: 2.0-launch');
+    expect(t).toContain('Phiên bản đang áp dụng: 2.0-launch');
     expect(t).not.toContain('Soạn phiên bản mới');
   });
 

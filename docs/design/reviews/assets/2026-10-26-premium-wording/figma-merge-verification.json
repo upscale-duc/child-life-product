@@ -1,0 +1,107 @@
+{
+  "mutatedNodeIds": [
+    "1154:5535"
+  ],
+  "sectionId": "1153:5491",
+  "screenCount": 9,
+  "lists": [
+    {
+      "id": "1141:3886",
+      "rows": 5
+    },
+    {
+      "id": "1085:18057",
+      "rows": 5
+    },
+    {
+      "id": "1085:18177",
+      "rows": 5
+    },
+    {
+      "id": "1085:18297",
+      "rows": 5
+    },
+    {
+      "id": "1085:18416",
+      "rows": 5
+    },
+    {
+      "id": "1085:18546",
+      "rows": 5
+    },
+    {
+      "id": "1085:18862",
+      "rows": 5
+    },
+    {
+      "id": "1085:19002",
+      "rows": 5
+    },
+    {
+      "id": "1085:19148",
+      "rows": 5
+    },
+    {
+      "id": "1085:19297",
+      "rows": 5
+    }
+  ],
+  "prototypeLinks": 55,
+  "missingDestinations": [],
+  "linksToRemovedTemplateSheet": [],
+  "remainingSixStepLabels": [],
+  "pagers": [
+    {
+      "id": "1090:18420",
+      "label": "1/5 · Thiệp & video kỷ niệm",
+      "dots": 5,
+      "previous": [],
+      "next": [
+        "1085:18822"
+      ]
+    },
+    {
+      "id": "1090:18588",
+      "label": "2/5 · Hỏi Lumi",
+      "dots": 5,
+      "previous": [
+        "1085:18506"
+      ],
+      "next": [
+        "1085:18962"
+      ]
+    },
+    {
+      "id": "1090:18655",
+      "label": "3/5 · Gợi ý & nhịp nâng cao",
+      "dots": 5,
+      "previous": [
+        "1085:18822"
+      ],
+      "next": [
+        "1085:19108"
+      ]
+    },
+    {
+      "id": "1090:18728",
+      "label": "4/5 · 10 GB cho cả nhà",
+      "dots": 5,
+      "previous": [
+        "1085:18962"
+      ],
+      "next": [
+        "1085:19257"
+      ]
+    },
+    {
+      "id": "1090:18804",
+      "label": "5/5 · Người có quyền ghi",
+      "dots": 5,
+      "previous": [
+        "1085:19108"
+      ],
+      "next": []
+    }
+  ],
+  "freeVideoCopy": "Chỉ mẫu cơ bản · 2 lượt/tháng"
+}

@@ -174,6 +174,9 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
   IntentHint? _hint;
   String? _openedFor;
 
+  /// The open chat's controller: its timers stop with the screen (AI-6 / AI-9).
+  AssistantChat? _opened;
+
   // Scrolling: the thread is a reversed list, so offset 0 is the newest message. It opens
   // there without scrolling, holds there while Lumi answers and while the keyboard opens, and
   // an older page added above never moves what is on screen. Reading further up, a new
@@ -203,6 +206,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
 
   @override
   void dispose() {
+    _opened?.stopTimers();
     WidgetsBinding.instance.removeObserver(this);
     _voice?.dispose();
     _text.dispose();
@@ -302,21 +306,34 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
   void _open(String key) {
     if (_openedFor == key) return;
     _openedFor = key;
+    _opened?.stopTimers();
+    _opened = _ctl(key);
     final locale = Localizations.localeOf(context).languageCode;
     Future.microtask(
       () => _ctl(key).open(locale, conversationId: widget.conversationId),
     );
   }
 
-  void _toast(ActionOutcome o) {
+  /// AI-7: each action says what happened to it; only saving drafts talks about the draft.
+  void _toast(ActionOutcome o, [_Act act = _Act.save]) {
     final l10n = AppLocalizations.of(context);
-    final message = switch (o) {
-      ActionOutcome.offline => l10n.asSaveOffline,
-      ActionOutcome.failed => l10n.asSaveError,
-      ActionOutcome.stale => l10n.asErrStale,
+    final message = switch ((o, act)) {
+      (ActionOutcome.unknown, _) => l10n.asActChecking,
+      // The photo's own card says it (never a second message).
+      (_, _Act.photo) => null,
+      (ActionOutcome.offline, _Act.save) => l10n.asSaveOffline,
+      (ActionOutcome.failed, _Act.save) => l10n.asSaveError,
+      (ActionOutcome.stale, _Act.save) => l10n.asErrStale,
+      (ActionOutcome.offline, _Act.typed) => l10n.asAnswerOffline,
+      (ActionOutcome.failed, _Act.typed) => l10n.asAnswerFailed,
+      (ActionOutcome.stale, _Act.typed || _Act.answer) => l10n.asAnswerStale,
+      (ActionOutcome.offline, _) => l10n.asActOffline,
+      (ActionOutcome.failed || ActionOutcome.stale, _) => l10n.asActFailed,
       _ => null,
     };
-    if (message != null) showClToast(context, message: message, error: true);
+    if (message != null) {
+      showClToast(context, message: message, error: o != ActionOutcome.unknown);
+    }
   }
 
   /// A light tick where it means "it went" (none in Night care, D-048).
@@ -333,7 +350,13 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     _hint = null;
     // My own message: always shown, even when reading further up.
     _forceBottom = true;
-    await _ctl(key).send(text, hint: hint);
+    final o = await _ctl(key).send(text, hint: hint);
+    if (!mounted) return;
+    // AI-5: an answer that did not go gives the words back (unless something new was typed).
+    if (o != ActionOutcome.ok && o != ActionOutcome.nothing) {
+      if (_text.text.trim().isEmpty) _prefill(text);
+      _toast(o, _Act.typed);
+    }
   }
 
   void _prefill(String text) {
@@ -580,7 +603,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     );
     if (picked == null || !mounted) return;
     _forceBottom = true;
-    _toast(await ctl.answerText(t.taskId, picked));
+    _toast(await ctl.answerText(t.taskId, picked), _Act.answer);
   }
 
   List<AsSuggestion> _suggestions(
@@ -688,9 +711,11 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     final upsell =
         ref.watch(selectedCapabilitiesProvider)?.features.assistantUpsell ??
         false;
-    final out =
-        usage?.level == UsageLevel.out ||
-        chat.block?.kind == ChatBlockKind.exhausted;
+    // AI-1 / AI-2: locked only while the pool is used up now (the server's usage when known);
+    // a refusal for another reason (region, role, the switch) never locks the composer.
+    final out = usage != null
+        ? usage.level == UsageLevel.out
+        : chat.block?.kind == ChatBlockKind.exhausted;
     final mode = viewer
         ? ComposerMode.viewer
         : out
@@ -751,6 +776,10 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
           ? (taskId) => _retakePhoto(key, taskId, chat.usage)
           : null,
       onTypeIn: () => _focus.requestFocus(),
+      onEditKept: () {
+        final text = ctl.takeKept();
+        if (text != null) _prefill(text);
+      },
     );
     final entries = <_Entry>[
       if (chat.empty)
@@ -989,6 +1018,10 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
   }
 }
 
+/// What a toast is about (AI-7): saving drafts, a chosen answer, a typed answer (its words are
+/// back in the composer), another chat action, a photo (its card says it).
+enum _Act { save, answer, typed, action, photo }
+
 /// Who an entry of the thread speaks for (runs, Lumi's header, entrances).
 enum _Side { me, lumi, other, note, typing }
 
@@ -1073,6 +1106,7 @@ class _ThreadView {
     required this.onChoosePhoto,
     required this.onRetake,
     required this.onTypeIn,
+    required this.onEditKept,
   });
 
   /// A chat can be scoped to a different baby from the Home tab (CH03).
@@ -1098,7 +1132,7 @@ class _ThreadView {
   final bool premium;
   final bool upsell;
   final bool online;
-  final void Function(ActionOutcome) onToast;
+  final void Function(ActionOutcome outcome, [_Act act]) onToast;
   final Future<void> Function({bool photo}) onUpgrade;
   final VoidCallback onLogDirectly;
   final Future<void> Function(String? number) onDial;
@@ -1114,6 +1148,9 @@ class _ThreadView {
 
   /// "Nhập tay": the composer, the photo flow left as it is.
   final VoidCallback onTypeIn;
+
+  /// AI-8 "Sửa lại": kept words a resend cannot help go back to the composer.
+  final VoidCallback onEditKept;
 
   /// Who is reading (D-075 #2: authors, author-only actions).
   final String? myUid;
@@ -1254,6 +1291,21 @@ class _ThreadView {
       final failed =
           block == ChatBlockKind.failure || block == ChatBlockKind.generic;
       final offline = block == ChatBlockKind.offline;
+      final waiting = chat.sending || chat.checking;
+      // AI-8: "Gửi lại" only where it can help; a refusal or a request the server will not
+      // take gives the words back instead ("Sửa lại").
+      final resend = failed && chat.block!.retry;
+      final refused =
+          (failed && !chat.block!.retry) ||
+          (kept.reason == KeptReason.blocked &&
+              block != null &&
+              block != ChatBlockKind.exhausted &&
+              block != ChatBlockKind.consent);
+      // AI-2: words kept for a used-up pool whose notice went (the pool has room again).
+      final resumable =
+          kept.reason == KeptReason.blocked &&
+          block == null &&
+          (chat.usageView?.level ?? UsageLevel.out) != UsageLevel.out;
       if (_when(context, 'u:${kept.requestId}', kept.at) case final line?) {
         out.add(line);
       }
@@ -1265,25 +1317,30 @@ class _ThreadView {
             text: kept.text,
             mine: true,
             time: _time(kept.at),
-            sendState: chat.sending
+            sendState: waiting
                 ? AsSendState.sending
                 : (failed ? AsSendState.failed : AsSendState.unsent),
             status: chat.sending
                 ? l10n.asSending
+                // AI-6: no answer in time is not "offline, nothing saved".
+                : chat.checking
+                ? l10n.asChecking
                 : failed
                 ? l10n.asNotSent
                 : offline
                 ? l10n.asUnsentOffline
                 : l10n.asUnsent,
-            statusIcon: chat.sending
+            statusIcon: waiting
                 ? ClIcons.clock
                 : (failed ? ClIcons.alert : ClIcons.cloudOff),
-            action: chat.sending
+            action: waiting
                 ? null
-                : failed
+                : resend
                 ? (label: l10n.asResend, onPressed: ctl.sendKept)
-                : offline && online
+                : (offline || resumable) && online
                 ? (label: l10n.asSend, onPressed: ctl.sendKept)
+                : refused
+                ? (label: l10n.asEditKept, onPressed: onEditKept)
                 : null,
           ),
         ),
@@ -1576,17 +1633,26 @@ class _ThreadView {
           TaskState.uploading ||
           TaskState.queued ||
           TaskState.processing:
-        out.add(
-          _typing(
-            context,
-            id,
-            t.photo ? l10n.asReadingPhoto : l10n.asThinking,
-            // Cancel stays with the task's author (D-075 #2).
-            onCancel: task.authoredBy(myUid)
-                ? () => ctl.cancelTask(task.id)
-                : null,
-          ),
-        );
+        if (chat.stuck.contains(id)) {
+          // AI-9: still not moving after the chat read it again: a way out, not dots forever.
+          out.add(_Entry('t:$id:slow', _Side.lumi, _slowCard(context, task)));
+        } else {
+          out.add(
+            _typing(
+              context,
+              id,
+              chat.slow.contains(id)
+                  ? l10n.asStillWorking
+                  : t.photo
+                  ? l10n.asReadingPhoto
+                  : l10n.asThinking,
+              // Cancel stays with the task's author (D-075 #2).
+              onCancel: task.authoredBy(myUid)
+                  ? () => ctl.cancelTask(task.id)
+                  : null,
+            ),
+          );
+        }
         if (t.photo) {
           out.add(
             _Entry(
@@ -1599,23 +1665,7 @@ class _ThreadView {
       case TaskState.failed:
         out.addAll(_many('t:$id:fail', _Side.lumi, _taskFailure(context, t)));
       case TaskState.blocked:
-        out.addAll(
-          _many(
-            't:$id:out',
-            _Side.lumi,
-            _exhausted(
-              context,
-              task.plan == UsagePlan.premium || premium,
-              chat.usage == null
-                  ? ''
-                  : resetDate(
-                      Localizations.localeOf(context).toLanguageTag(),
-                      chat.usage!,
-                      zone,
-                    ),
-            ),
-          ),
-        );
+        out.addAll(_many('t:$id:out', _Side.lumi, _blockedTask(context, t)));
       case TaskState.canceled:
         out.add(
           _Entry(
@@ -1662,6 +1712,79 @@ class _ThreadView {
       );
     }
     return out;
+  }
+
+  /// A task kept blocked by the server. AI-3: only the latest one, while the pool is still
+  /// used up, shows the whole used-up card; an earlier one is a one-line note (with "Hỏi lại"
+  /// on my own words once there is room again). Blocked for another reason: that reason.
+  List<Widget> _blockedTask(BuildContext context, TaskThread t) {
+    final l10n = AppLocalizations.of(context);
+    final task = t.snapshot!.task;
+    final error = task.error;
+    if (error != null && error != AssistantReason.usageExhausted) {
+      return _taskFailure(context, t);
+    }
+    final level = chat.usageView?.level;
+    final latest = chat.threads.lastOrNull?.taskId == t.taskId;
+    if (latest && chat.kept == null && level == UsageLevel.out) {
+      return _exhausted(
+        context,
+        task.plan == UsagePlan.premium || premium,
+        resetDate(
+          Localizations.localeOf(context).toLanguageTag(),
+          chat.usage!,
+          zone,
+        ),
+      );
+    }
+    final again =
+        level != null &&
+        level != UsageLevel.out &&
+        !viewer &&
+        t.userText != null &&
+        task.authoredBy(myUid);
+    return [
+      AsFootnote(text: l10n.asBlockedOld),
+      if (again)
+        Align(
+          alignment: Alignment.centerLeft,
+          child: AsChip(
+            label: l10n.asAskAgain,
+            icon: ClIcons.retry,
+            busy: chat.sending,
+            onPressed: () => ctl.retryTask(t.taskId),
+          ),
+        ),
+    ];
+  }
+
+  /// AI-9: a task still working after the chat read it again.
+  Widget _slowCard(BuildContext context, AssistantTask task) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AsBubble(text: l10n.asTaskSlowBody),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: ClSpace.s2,
+          runSpacing: ClSpace.s2,
+          children: [
+            AsChip(
+              label: l10n.asCheckAgain,
+              icon: ClIcons.retry,
+              onPressed: () => ctl.checkTask(task.id),
+            ),
+            if (task.authoredBy(myUid))
+              AsChip(
+                label: l10n.asCancelTask,
+                onPressed: () => ctl.cancelTask(task.id),
+              ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _resumedBanner(BuildContext context) {
@@ -1715,7 +1838,9 @@ class _ThreadView {
           keep: photo.keep,
           canceled: photo.canceled,
           onKeep: ctl.setKeepPhoto,
-          onSend: online ? () async => onToast(await ctl.sendPhoto()) : null,
+          onSend: online
+              ? () async => onToast(await ctl.sendPhoto(), _Act.photo)
+              : null,
           onRemove: ctl.removePhoto,
         ),
       ],
@@ -1802,24 +1927,36 @@ class _ThreadView {
     return switch (block.kind) {
       // The banner and my bubble's own "Chưa gửi · Gửi" say it (CH25).
       ChatBlockKind.offline => const <Widget>[],
-      ChatBlockKind.failure => [
-        _failureCard(context, onRetry: chat.kept == null ? null : ctl.sendKept),
-      ],
-      ChatBlockKind.generic => [
-        _failureCard(context, onRetry: chat.kept == null ? null : ctl.sendKept),
+      ChatBlockKind.failure || ChatBlockKind.generic => [
+        _failureCard(
+          context,
+          retry: block.retry,
+          onRetry: chat.kept == null || !block.retry ? null : ctl.sendKept,
+        ),
       ],
       ChatBlockKind.consent => [_ConsentCard(ctl: ctl)],
       ChatBlockKind.exhausted => _exhausted(context, planPremium, reset),
       ChatBlockKind.photoQuote => [
         AsCard(
           tone: AsTone.warn,
-          title: l10n.asPhotoQuoteTitle(
-            block.quote?.credits ?? creditsFor(TaskModality.image, usage),
-            chat.usageView?.remaining ?? block.quote?.usage?.remaining ?? 0,
-          ),
-          body: planPremium
-              ? l10n.asPhotoQuotePremium(reset)
-              : l10n.asPhotoQuoteFree(reset),
+          // AI-4: an unknown balance is never "bạn còn 0", an unknown date never blank, and
+          // with assistant_upsell off nothing mentions an upgrade.
+          title: switch (chat.usageView?.remaining ??
+              block.quote?.usage?.remaining) {
+            final remaining? => l10n.asPhotoQuoteTitle(
+              block.quote?.credits ?? creditsFor(TaskModality.image, usage),
+              remaining,
+            ),
+            null => l10n.asPhotoQuoteTitleOver(
+              block.quote?.credits ?? creditsFor(TaskModality.image, usage),
+            ),
+          },
+          body: switch ((reset.isEmpty, !planPremium && upsell)) {
+            (true, true) => l10n.asPhotoQuoteWaitUpgrade,
+            (true, false) => l10n.asPhotoQuoteWait,
+            (false, true) => l10n.asPhotoQuoteFree(reset),
+            (false, false) => l10n.asPhotoQuotePremium(reset),
+          },
           children: [
             Wrap(
               spacing: ClSpace.s2,
@@ -1857,7 +1994,7 @@ class _ThreadView {
                         ? () async {
                             final q = chat.photo?.quote;
                             if (q != null && q.allowed) {
-                              onToast(await ctl.sendPhoto());
+                              onToast(await ctl.sendPhoto(), _Act.photo);
                             } else {
                               await ctl.pickPhotoAgain();
                             }
@@ -1908,11 +2045,16 @@ class _ThreadView {
     final l10n = AppLocalizations.of(context);
     final childScope = !chat.scope.household;
     final logs = childScope && canSaveKind(me, DraftKind.bottle);
+    // AI-4: when the pool comes back, on both plans; "kỳ tới" while the date is not known.
+    final body =
+        '${reset.isEmpty ? l10n.asOutResetNext : l10n.asOutResetOn(reset)} '
+        '${l10n.asOutBodyFree}';
+    final kept = chat.kept;
     return [
       if (planPremium)
         AsCard(
           title: l10n.asOutTitlePremium,
-          body: l10n.asOutBodyPremium(reset),
+          body: body,
           children: [
             AsButton(
               label: l10n.asSeeUsage,
@@ -1930,7 +2072,7 @@ class _ThreadView {
       else
         AsCard(
           title: l10n.asOutTitleFree,
-          body: l10n.asOutBodyFree,
+          body: body,
           children: [
             if (childScope && !viewer) ...[
               AsButton(
@@ -1950,13 +2092,15 @@ class _ThreadView {
               ),
               const SizedBox(height: ClSpace.s2),
             ],
-            if (upsell)
+            // AI-3: never a dead button: hidden once the kept question's one resume is spent
+            // (without a kept question, an upgrade brings "Hỏi lại" back on the old task).
+            if (upsell &&
+                (kept == null ||
+                    (kept.reason == KeptReason.blocked && !kept.resumeUsed)))
               AsButton(
                 label: l10n.asUpgradeContinue,
                 expand: true,
-                onPressed: chat.kept == null || chat.kept!.resumeUsed
-                    ? null
-                    : () => onUpgrade(),
+                onPressed: () => onUpgrade(),
               ),
           ],
         ),
@@ -1966,13 +2110,20 @@ class _ThreadView {
 
   /// CH25 as Lumi says it: no blame, nothing saved, nothing charged; "Thử lại" and "Ghi trực
   /// tiếp" right under it.
-  Widget _failureCard(BuildContext context, {VoidCallback? onRetry}) {
+  ///
+  /// AI-8: [retry] false (a refusal, a request the server will not take) says so and offers
+  /// only "Ghi trực tiếp".
+  Widget _failureCard(
+    BuildContext context, {
+    VoidCallback? onRetry,
+    bool retry = true,
+  }) {
     final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AsBubble(text: l10n.asErrorFriendly),
+        AsBubble(text: retry ? l10n.asErrorFriendly : l10n.asErrorNoRetry),
         const SizedBox(height: 8),
         Wrap(
           spacing: ClSpace.s2,
@@ -2277,8 +2428,10 @@ class _ThreadView {
                   AsButton(
                     label: day ? l10n.asTryToday : l10n.asTryTonight,
                     loading: busy,
-                    onPressed: () async =>
-                        onToast(await ctl.planActivity(t.taskId, p)),
+                    onPressed: () async => onToast(
+                      await ctl.planActivity(t.taskId, p),
+                      _Act.action,
+                    ),
                   ),
                 if (p.alternatives.isNotEmpty)
                   AsButton(
@@ -2377,6 +2530,7 @@ class _ThreadView {
                     ? null
                     : () async => onToast(
                         await ctl.sendFeedback(t.taskId, q, c.outcome),
+                        _Act.action,
                       ),
               ),
           ],
@@ -2431,15 +2585,17 @@ class _ThreadView {
         AssistantReason.moduleUnavailable => _moduleCard(context),
         AssistantReason.regionUnsupported => _regionCard(context),
         AssistantReason.featureDisabled => _offCard(context),
+        // AI-8: "Thử lại" re-sends my own words only, never another member's question.
         AssistantReason.aiUnavailable || null => _failureCard(
           context,
-          onRetry: t.userText == null ? null : () => ctl.retryTask(t.taskId),
+          onRetry:
+              t.userText == null ||
+                  !(t.snapshot?.task.authoredBy(myUid) ?? true)
+              ? null
+              : () => ctl.retryTask(t.taskId),
         ),
-        _ => AsCard(
-          tone: AsTone.errorEdge,
-          body: l10n.asGenericError,
-          children: const [],
-        ),
+        // A failure a retry cannot fix: said so, with "Ghi trực tiếp" as the way on.
+        _ => _failureCard(context, retry: false),
       },
     ];
   }
@@ -2509,7 +2665,7 @@ class _ThreadView {
                       ? null
                       : () async {
                           final o = await ctl.answerChoice(task.id, choice);
-                          onToast(o);
+                          onToast(o, _Act.answer);
                         },
                 ),
               if (c.allowText)
@@ -4439,7 +4595,7 @@ class AssistantUsageScreen extends ConsumerWidget {
                         ),
                 ),
               ],
-              if (video != null) ...[
+              if (video != null && !video.unlimited) ...[
                 const SizedBox(height: ClSpace.s4),
                 Container(
                   padding: const EdgeInsets.all(14),

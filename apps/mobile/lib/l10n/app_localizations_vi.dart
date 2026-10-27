@@ -350,13 +350,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get existsTitle => 'Email đã có tài khoản';
 
   @override
-  String get existsBody => 'Đăng nhập bằng Apple hoặc Google, rồi liên kết.';
-
-  @override
-  String get existsProvider => 'Apple · Google';
-
-  @override
-  String get existsUseOtherEmail => 'Dùng email khác';
+  String get existsBody =>
+      'Đăng nhập bằng cách bạn đã dùng trước đây, hoặc nhận link đăng nhập qua email.';
 
   @override
   String get existsLinked => 'Đã liên kết email với tài khoản của bạn.';
@@ -772,6 +767,123 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get saveAccountMerged => 'Đã gộp vào tài khoản của bạn';
+
+  @override
+  String get saveAccountMergedArriving =>
+      'Đã gộp vào tài khoản của bạn. Gia đình đang tải, chờ chút nhé.';
+
+  @override
+  String get saveAccountMergedSignIn =>
+      'Đã gộp vào tài khoản của bạn. Đăng nhập lại để mở.';
+
+  @override
+  String get existsOtherMethod =>
+      'Email của tài khoản này đã đăng ký theo cách khác. Thử gửi link đăng nhập.';
+
+  @override
+  String signOutUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Còn $count bản ghi chưa gửi lên.',
+      zero: 'Còn thay đổi chưa gửi lên.',
+    );
+    return '$_temp0 Đăng xuất bây giờ thì chúng chỉ được gửi khi bạn đăng nhập lại trên máy này.';
+  }
+
+  @override
+  String signOutAnonUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bản ghi chưa gửi lên cũng sẽ mất.',
+      zero: 'Thay đổi chưa gửi lên cũng sẽ mất.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get unsentSendNow => 'Thử gửi ngay';
+
+  @override
+  String get unsentStillPending =>
+      'Vẫn chưa gửi được. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String get meSignOutAnyway => 'Vẫn đăng xuất';
+
+  @override
+  String acDeleteUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bản ghi chưa gửi lên sẽ mất khi xoá tài khoản.',
+      zero: 'Thay đổi chưa gửi lên sẽ mất khi xoá tài khoản.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get acDeleteAnyway => 'Vẫn xoá tài khoản';
+
+  @override
+  String get acDeleteOwnsBabies =>
+      'Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.';
+
+  @override
+  String get profileSaveFailed => 'Chưa lưu được hồ sơ. Thử lại nhé.';
+
+  @override
+  String get bpLoadFailed => 'Chưa tải được hồ sơ của bé.';
+
+  @override
+  String get joinLoadFailedTitle => 'Chưa mở được lời mời';
+
+  @override
+  String get joinLoadFailedOffline =>
+      'Không có mạng. Lời mời vẫn còn, kết nối rồi thử lại nhé.';
+
+  @override
+  String get joinLoadFailedBody => 'Có lỗi khi mở lời mời. Thử lại nhé.';
+
+  @override
+  String get joinFullTitle => 'Gia đình đã hết chỗ người ghi';
+
+  @override
+  String get joinFullBody =>
+      'Nhờ người mời bạn mở thêm chỗ, hoặc mời bạn làm người thân để cùng xem album.';
+
+  @override
+  String pv2SeatsHeld(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lời mời đang giữ chỗ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteSeatsHeldHint =>
+      'Lời mời chưa nhận cũng giữ chỗ. Huỷ lời mời không cần nữa trong Gia đình để mở chỗ.';
+
+  @override
+  String joinArriving(String baby) {
+    return 'Đã vào gia đình $baby. Đang tải, chờ chút nhé…';
+  }
+
+  @override
+  String joinCountdownMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'Còn $minutes phút',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get familyLoadFailedGeneric => 'Chưa tải được danh sách.';
 
   @override
   String get saveEmailSubtitle =>
@@ -2534,7 +2646,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get notifPromptBody =>
-      'Thông báo chỉ được đặt trên máy tạo nhắc việc.';
+      'Để nhắc việc kêu đúng giờ, kể cả khi đang đóng app.';
 
   @override
   String get notifPromptAllow => 'Bật thông báo';
@@ -4141,7 +4253,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get stVideosEmpty => 'Chưa có video nào.';
 
   @override
-  String get stLoadFailed => 'Không tải được dung lượng. Kéo xuống để thử lại.';
+  String get stLoadFailed => 'Ảnh, video vẫn an toàn. Thử lại khi có kết nối.';
 
   @override
   String bpCarers(String age, int count) {
@@ -8327,7 +8439,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String upPendingTitle(int count) {
-    return '$count lần ghi chưa đồng bộ';
+    return '$count ảnh, video chưa tải lên';
   }
 
   @override
@@ -9506,21 +9618,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String autoSaveReviewSub(int count, String time) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count gợi ý · kiểm tra lúc $time. Bỏ chọn những mục không muốn lưu.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get autoSaveGroupedHint =>
-      'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.';
-
-  @override
   String autoSaveWeek(int n, int count) {
     return 'Tuần $n · $count';
   }
@@ -9536,13 +9633,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String autoSaveWeekHint(String name) {
-    return 'Duyệt theo tuần tuổi của $name: tải từng tuần cho nhẹ, tuần nào xong sẽ được đánh dấu.';
-  }
-
-  @override
   String autoSaveFilterAll(int count) {
-    return 'Tất cả · $count';
+    return 'Ảnh & video · $count';
   }
 
   @override
@@ -9566,16 +9658,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String autoSaveDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count mục',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get autoSaveAlready => 'Đã có';
 
   @override
@@ -9583,7 +9665,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get autoSaveLegend =>
-      '\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.';
+      '“Trên iCloud”: tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.';
 
   @override
   String autoSaveGroupTitle(int count, int chosen) {
@@ -9599,31 +9681,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get autoSaveGroupAll => 'Chọn cả nhóm';
 
   @override
-  String get autoSaveGroupCollapse => 'Thu gọn';
-
-  @override
   String get autoSaveBest => 'Rõ nhất';
 
   @override
   String autoSaveChosen(int count, int photos, int videos) {
     return 'Đã chọn $count · $photos ảnh, $videos video';
   }
-
-  @override
-  String autoSaveMerged(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Đã gộp $count ảnh giống nhau · không xoá gì trong máy',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get autoSaveDeselectAll => 'Bỏ chọn tất cả';
-
-  @override
-  String get autoSaveSelectAll => 'Chọn tất cả';
 
   @override
   String autoSaveRoundRest(int rest, int cap) {
@@ -9769,11 +9832,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Ảnh gốc vẫn ở trong máy. Tải xong mới hiện \"Đã lưu\".';
 
   @override
-  String autoSaveNoRoom(int count, String need, String left, int fit) {
-    return 'Không đủ dung lượng: $count mục cần $need, gia đình còn $left. Bạn có thể tải trước $fit mục vừa đủ, phần còn lại vẫn giữ trên máy.';
-  }
-
-  @override
   String autoSaveUploadFit(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -9789,11 +9847,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get autoSaveSeeStorage => 'Xem dung lượng';
-
-  @override
-  String autoSavePreparing(int done, int total) {
-    return 'Đang chuẩn bị $done/$total…';
-  }
 
   @override
   String autoSaveQueued(int count) {
@@ -10083,7 +10136,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ksFormatStory => 'Story 9:16';
 
   @override
-  String get ksPremium => 'Cao cấp';
+  String get ksPremium => 'Premium';
 
   @override
   String get ksNoTemplates => 'Chưa có mẫu thiệp';
@@ -10856,7 +10909,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pmBadgeExpired => 'Hết hạn';
 
   @override
-  String get pmPlanTitle => 'Gói của hộ';
+  String get pmPlanTitle => 'Gói của gia đình';
 
   @override
   String get pmPlanFree => 'Đang dùng gói cơ bản';
@@ -12997,7 +13050,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmNotOwnerBody =>
-      'Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.';
+      'Nhờ chủ hộ mở Gói của gia đình để nâng cấp hoặc khôi phục.';
 
   @override
   String get pmRestoreTitle => 'Khôi phục giao dịch';
@@ -13832,7 +13885,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asPremiumTeaser =>
-      'Premium có nhiều lượt hơn, cùng cá nhân hoá chủ động và mẫu thẻ/video Premium.';
+      'Premium có thêm credit Lumi, gợi ý cá nhân và mẫu thiệp, video cao cấp.';
 
   @override
   String get asSeePremium => 'Xem Premium';
@@ -13882,7 +13935,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asOpenTodayLog => 'Mở nhật ký hôm nay';
 
   @override
-  String get asUpgradeContinue => 'Nâng cấp & tiếp tục câu hỏi';
+  String get asUpgradeContinue => 'Xem Premium để hỏi tiếp';
 
   @override
   String get asHealthStillOpen => 'Hướng dẫn sức khoẻ thiết yếu vẫn mở.';
@@ -13892,11 +13945,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asOutTitlePremium => 'Hộ đã dùng hết lượt hỗ trợ AI kỳ này.';
-
-  @override
-  String asOutBodyPremium(String date) {
-    return 'Làm mới $date. Bạn vẫn ghi trực tiếp, xem nhật ký, dùng mẫu Premium và quota xuất video riêng.';
-  }
 
   @override
   String get asSeeUsage => 'Xem chi tiết mức dùng';
@@ -15601,6 +15649,26 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ntSaveFailed => 'Chưa lưu được. Thử lại nhé.';
 
   @override
+  String get ntSettingsLoadFailed => 'Chưa tải được cài đặt thông báo';
+
+  @override
+  String get ntGroupLoadFailed => 'Chưa tải được. Chạm để thử lại.';
+
+  @override
+  String get ntTurnOn => 'Bật';
+
+  @override
+  String get ruleNotifOff =>
+      'Máy này đang tắt thông báo nên nhắc theo quy tắc sẽ không hiện.';
+
+  @override
+  String get meNotifOffDevice => 'Tắt trong máy';
+
+  @override
+  String get meRateOpenFailed =>
+      'Chưa mở được cửa hàng ứng dụng. Thử lại sau nhé.';
+
+  @override
   String get rhPlannedPill => 'Sẽ thử';
 
   @override
@@ -15723,6 +15791,74 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get asErrorFriendly =>
       'Mình chưa trả lời được lúc này. Chưa có gì được lưu — bạn thử lại nhé, hoặc ghi trực tiếp.';
+
+  @override
+  String get asActOffline =>
+      'Đang ngoại tuyến · chưa gửi được. Có mạng rồi thử lại.';
+
+  @override
+  String get asActFailed => 'Chưa gửi được. Bạn thử lại nhé.';
+
+  @override
+  String get asActChecking => 'Mạng chậm · đang kiểm tra lại…';
+
+  @override
+  String get asAnswerStale => 'Câu hỏi vừa thay đổi. Xem lại ở trên nhé.';
+
+  @override
+  String get asAnswerOffline =>
+      'Đang ngoại tuyến · câu trả lời chưa gửi, vẫn ở ô nhập.';
+
+  @override
+  String get asAnswerFailed =>
+      'Chưa gửi được câu trả lời. Chữ vẫn ở ô nhập, bạn thử lại nhé.';
+
+  @override
+  String get asChecking => 'Đang kiểm tra…';
+
+  @override
+  String get asEditKept => 'Sửa lại';
+
+  @override
+  String get asErrorNoRetry =>
+      'Mình chưa làm được việc này. Chưa có gì được lưu — bạn ghi trực tiếp nhé.';
+
+  @override
+  String get asStillWorking => 'Lumi vẫn đang xử lý…';
+
+  @override
+  String get asTaskSlowBody =>
+      'Lumi đang lâu hơn thường lệ. Chưa có gì được lưu từ câu này.';
+
+  @override
+  String get asCheckAgain => 'Kiểm tra lại';
+
+  @override
+  String asOutResetOn(String date) {
+    return 'Lượt mới có từ $date.';
+  }
+
+  @override
+  String get asOutResetNext => 'Lượt mới có vào kỳ tới.';
+
+  @override
+  String get asBlockedOld => 'Chưa trả lời · lúc đó đã hết lượt';
+
+  @override
+  String get asAskAgain => 'Hỏi lại';
+
+  @override
+  String asPhotoQuoteTitleOver(int credits) {
+    return 'Đọc ảnh này cần $credits lượt, nhiều hơn số lượt còn lại.';
+  }
+
+  @override
+  String get asPhotoQuoteWait =>
+      'Bạn có thể nhập tay hoặc đợi lượt mới. Ảnh chưa được gửi đi.';
+
+  @override
+  String get asPhotoQuoteWaitUpgrade =>
+      'Bạn có thể nhập tay, đợi lượt mới hoặc nâng cấp để tiếp tục ngay. Ảnh chưa được gửi đi.';
 
   @override
   String get asReadingPhoto => 'Lumi đang đọc ảnh…';
@@ -18274,7 +18410,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2Exclude => 'Không phù hợp với bé · áp dụng cho cả nhà';
 
   @override
-  String get pv2Restore => 'Khôi phục';
+  String get pv2Restore => 'Khôi phục giao dịch';
 
   @override
   String get pv2Intend => 'Mình sẽ thử';
@@ -20341,7 +20477,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get psBookPageHelp => 'Chạm vào ảnh để thay · chạm vào chữ để sửa';
 
   @override
-  String psBookPagesCount(String count) {
+  String psBookPagesCount(int count) {
     return '$count trang';
   }
 
@@ -20568,7 +20704,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Kiểm tra hàng rồi trả tiền mặt hoặc chuyển khoản cho shipper';
 
   @override
-  String get psTransfer => 'Chuyển khoản / VietQR ngay';
+  String get psTransfer => 'Chuyển khoản / VietQR';
 
   @override
   String get psTransferHelp =>
@@ -20789,7 +20925,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chưa ai nhận trông bé. Người đang chăm bé nhận để cả nhà cùng biết.';
 
   @override
-  String get dutyTake => 'Tôi trông bé từ bây giờ';
+  String get dutyTake => 'Tôi trông bé';
 
   @override
   String get dutyEnd => 'Kết thúc ca của tôi';
@@ -20853,7 +20989,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Child Life xác nhận ngày giao dự kiến và tổng tiền trước khi chuyển đơn sang sản xuất.';
 
   @override
-  String psPreviewPriceCaption(String count, String size) {
+  String psPreviewPriceCaption(int count, String size) {
     return '$count khung $size · chưa gồm ship';
   }
 
@@ -20888,7 +21024,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2SeePremium => 'Xem Premium';
 
   @override
-  String get pv2SeePlans => 'Xem các gói';
+  String get pv2SeePlans => 'Xem Premium';
 
   @override
   String get pv2GotIt => 'Đã hiểu';
@@ -20900,11 +21036,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2E01Body(int videos) {
-    return 'Xem trước miễn phí. Premium mở toàn bộ mẫu cao cấp và $videos lượt xuất video mỗi tháng.';
+    return 'Mẫu này có trong Premium, cùng khả năng xuất Full HD 1080p không giới hạn lượt. Ảnh và lời nhắn đang chọn được giữ nguyên.';
   }
 
   @override
-  String get pv2E01Secondary => 'Dùng mẫu miễn phí tương tự';
+  String get pv2E01Secondary => 'Dùng mẫu miễn phí';
 
   @override
   String pv2E02Title(String name) {
@@ -20916,14 +21052,14 @@ class AppLocalizationsVi extends AppLocalizations {
       'Premium mở toàn bộ mẫu thiệp & video cao cấp. Ảnh và lời nhắn bạn đã chọn sẽ được giữ.';
 
   @override
-  String get pv2E02Secondary => 'Chọn mẫu miễn phí';
+  String get pv2E02Secondary => 'Dùng mẫu miễn phí';
 
   @override
   String get pv2E04Title => 'Bản nháp này dùng mẫu cao cấp';
 
   @override
   String get pv2E04Body =>
-      'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu cơ bản.';
+      'Bản nháp vẫn còn. Nâng cấp Premium để xuất, hoặc đổi sang mẫu miễn phí.';
 
   @override
   String get pv2E04Secondary => 'Đổi sang mẫu miễn phí';
@@ -20953,12 +21089,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2E07Title(int n) {
-    return 'Lumi đã dùng hết $n credit tháng này';
+    return 'Lumi đã dùng hết $n lượt tháng này';
   }
 
   @override
   String pv2E07Body(String date) {
-    return 'Credit mới được cấp ngày $date. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.';
+    return 'Lượt mới được cấp ngày $date. Trong lúc chờ, bạn vẫn ghi trực tiếp và xem nhật ký bình thường.';
   }
 
   @override
@@ -20987,12 +21123,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2E12Title(int used, int limit) {
-    return 'Gia đình đã dùng $used/$limit chỗ người chăm sóc';
+    return 'Gia đình đã dùng $used/$limit chỗ người ghi';
   }
 
   @override
   String pv2E12Body(int premium) {
-    return 'Premium có $premium chỗ người chăm sóc. Hoặc mời làm người thân — xem album không giới hạn.';
+    return 'Premium có $premium chỗ người ghi. Hoặc mời làm người thân — xem album không giới hạn.';
   }
 
   @override
@@ -21011,8 +21147,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2E08Title => 'Nhà mình sắp hết chỗ lưu kỷ niệm';
 
   @override
-  String pv2E08BodyPremium(int pct, String gb) {
-    return 'Đã dùng $pct% của $gb GB. Thêm 20 GB hoặc 50 GB, dùng chung cho cả gia đình.';
+  String pv2E08BodyPremium(int pct, String gb, String options) {
+    return 'Đã dùng $pct% của $gb GB. Thêm $options, dùng chung cho cả gia đình.';
   }
 
   @override
@@ -21041,17 +21177,17 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2E13Body(int videos, int credits, String gb, String price) {
-    return '$videos video mỗi tháng, $credits credit Lumi, mẫu cao cấp và $gb GB cho cả nhà · $price/tháng.';
+    return 'Mẫu cao cấp, video Full HD, thêm credit Lumi và dung lượng dùng chung cho cả nhà.';
   }
 
   @override
   String pv2HeadVideo(String name) {
-    return 'Giữ tháng này của $name thành một câu chuyện';
+    return 'Tạo video kỷ niệm của $name';
   }
 
   @override
   String pv2HeadCard(String name) {
-    return 'Thiệp xứng với tháng đầu của $name';
+    return 'Tạo thiệp dành riêng cho $name';
   }
 
   @override
@@ -21064,11 +21200,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2HeadCaregivers(String name) {
-    return 'Để cả nhà cùng chăm $name';
+    return 'Thêm người cùng chăm $name';
   }
 
   @override
-  String get pv2HeadExplore => 'Những năm đầu của con, giữ trọn vẹn hơn';
+  String get pv2HeadExplore => 'Nâng cấp lên Premium';
 
   @override
   String pv2ReasonTemplate(String name) {
@@ -21080,7 +21216,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2ReasonLumi(int n) {
-    return 'Câu hỏi của bạn đang chờ · đã dùng hết $n credit trải nghiệm.';
+    return 'Câu hỏi của bạn đang chờ · đã dùng hết $n lượt trải nghiệm.';
   }
 
   @override
@@ -21090,25 +21226,24 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2ReasonCaregivers(int used, int limit) {
-    return 'Gia đình đã dùng $used / $limit chỗ người chăm sóc của gói Free.';
+    return 'Gói Free: $used / $limit chỗ người ghi.';
   }
 
   @override
   String get pv2ReasonMember => 'Có trong Premium — gói dùng chung của cả nhà.';
 
   @override
-  String get pv2CardVideoEyebrow => 'VIDEO KỶ NIỆM';
+  String get pv2CardVideoEyebrow => 'THIỆP & VIDEO KỶ NIỆM';
 
   @override
-  String get pv2CardVideoTitle => 'Những ảnh rời, thành câu chuyện';
+  String get pv2CardVideoTitle => 'Kỷ niệm mang dấu ấn của con';
 
   @override
-  String get pv2CardVideoBody =>
-      'Chọn ảnh, thêm lời nhắn, giữ lại những tháng ngày bên con.';
+  String get pv2CardVideoBody => 'Chọn mẫu cao cấp, thêm ảnh, tên và lời nhắn.';
 
   @override
   String pv2CardVideoLimit(int n) {
-    return '$n video mỗi tháng';
+    return 'Xuất video không giới hạn lượt';
   }
 
   @override
@@ -21124,8 +21259,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardCardTitle => 'Thiệp dành riêng cho con';
 
   @override
-  String get pv2CardCardBody =>
-      'Thêm tên, lời thương và đổi phong cách chỉ với một chạm.';
+  String get pv2CardCardBody => 'Thêm tên, ảnh và lời nhắn theo mẫu bạn chọn.';
 
   @override
   String get pv2CardCardLimit => 'Toàn bộ mẫu cao cấp · Việt – Anh';
@@ -21137,15 +21271,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardLumiEyebrow => 'LUMI MỖI THÁNG';
 
   @override
-  String get pv2CardLumiTitle => 'Hỏi một câu, Lumi tóm tắt giúp';
+  String get pv2CardLumiTitle => 'Hỏi Lumi về nhật ký của con';
 
   @override
   String get pv2CardLumiBody =>
-      'Hỏi về cữ bú, giấc ngủ, hoặc ghi nhanh bằng một câu nói.';
+      'Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.';
 
   @override
   String pv2CardLumiLimit(int n) {
-    return '$n credit mỗi tháng';
+    return '$n credit/tháng · cả nhà dùng chung';
   }
 
   @override
@@ -21161,15 +21295,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'HIỂU NHỊP CON';
 
   @override
-  String get pv2CardRhythmTitle => 'Những thay đổi nhỏ, dễ nhìn thấy hơn.';
+  String get pv2CardRhythmTitle => 'Gợi ý cá nhân & nhịp nâng cao';
 
   @override
   String get pv2CardRhythmBody =>
-      'Nhìn lại nhịp bú, ngủ từ nhật ký của con, với nhận xét ngắn và nguồn để xem kỹ.';
+      'Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.';
 
   @override
   String pv2CardRhythmLimit(int n) {
-    return 'Gồm trong $n credit mỗi tháng';
+    return 'Có trong Premium';
   }
 
   @override
@@ -21182,15 +21316,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardStorageEyebrow => 'DUNG LƯỢNG';
 
   @override
-  String get pv2CardStorageTitle => 'Thêm chỗ cho những tháng ngày tiếp theo.';
+  String get pv2CardStorageTitle => 'Thêm chỗ lưu ảnh và video';
 
   @override
   String get pv2CardStorageBody =>
-      'Giữ thêm ảnh và video trong album riêng của gia đình.';
+      'Dung lượng dùng chung cho ảnh và video của cả gia đình.';
 
   @override
   String pv2CardStorageLimit(String gb) {
-    return '$gb GB dùng chung · có thể mua thêm';
+    return '$gb GB dùng chung cho cả nhà';
   }
 
   @override
@@ -21200,15 +21334,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardCaregiversEyebrow => 'CẢ NHÀ CÙNG CHĂM';
 
   @override
-  String get pv2CardCaregiversTitle => 'Cả nhà cùng chăm, không hỏi lại';
+  String get pv2CardCaregiversTitle => 'Cùng ghi nhật ký chăm con';
 
   @override
   String get pv2CardCaregiversBody =>
-      'Ai ghi gì, mọi người đều thấy ngay trong nhật ký chung.';
+      'Cùng ghi cữ bú, giấc ngủ và xem cập nhật trong nhật ký.';
 
   @override
   String pv2CardCaregiversLimit(int premium, int free) {
-    return 'Thêm chỗ cho tối đa $premium người cùng chăm (Free: $free)';
+    return '$premium chỗ người ghi · Free: $free';
   }
 
   @override
@@ -21218,7 +21352,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardCaregiversDemo2 => 'Ba · Bắt đầu giấc ngủ';
 
   @override
-  String get pv2CompareTitle => 'Free và Premium';
+  String get pv2CompareTitle => 'So sánh Free và Premium';
 
   @override
   String get pv2CompareBenefit => 'Quyền lợi';
@@ -21227,16 +21361,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2YouNeed => 'Bạn đang cần';
 
   @override
-  String get pv2RowLumi => 'Credit Lumi';
+  String get pv2RowLumi => 'Lumi';
 
   @override
   String pv2RowLumiFree(int n) {
-    return '$n credit dùng thử';
+    return '$n credit dùng thử một lần';
   }
 
   @override
   String pv2RowLumiPremium(int n) {
-    return '$n credit/tháng';
+    return '$n lượt/tháng';
   }
 
   @override
@@ -21248,16 +21382,16 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get pv2RowVideo => 'Xuất video';
+  String get pv2RowVideo => 'Xuất video kỷ niệm';
 
   @override
   String pv2RowVideoFree(int n) {
-    return '$n lượt dùng thử';
+    return 'Không giới hạn · 720p';
   }
 
   @override
   String pv2RowVideoPremium(int n) {
-    return '$n lượt/tháng';
+    return 'Không giới hạn · Full HD 1080p';
   }
 
   @override
@@ -21270,7 +21404,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2RowTemplatesPremium => 'Toàn bộ mẫu cao cấp';
 
   @override
-  String get pv2RowCaregivers => 'Người chăm sóc';
+  String get pv2RowCaregivers => 'Người có quyền ghi';
 
   @override
   String pv2RowPeople(int n) {
@@ -21287,33 +21421,33 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2PromiseCancel => 'Huỷ bất cứ lúc nào';
 
   @override
-  String get pv2PromiseNoTopUps => 'Không bán credit lẻ';
+  String get pv2PromiseNoTopUps => 'Không bán lượt lẻ';
 
   @override
   String get pv2PromiseYours => 'Kỷ niệm luôn là của bạn';
 
   @override
-  String get pv2PeriodYear => 'Theo năm';
+  String get pv2PeriodYear => 'Gói năm';
 
   @override
-  String get pv2PeriodMonth => 'Theo tháng';
+  String get pv2PeriodMonth => 'Gói tháng';
 
   @override
   String pv2PerMonthApprox(String price) {
-    return '≈ $price/tháng';
+    return 'Tương đương khoảng $price/tháng';
   }
 
   @override
-  String get pv2EachMonth => 'mỗi tháng';
+  String get pv2EachMonth => 'Thanh toán hằng tháng';
 
   @override
   String pv2SubscribeYear(String price) {
-    return 'Đăng ký Premium · $price/năm';
+    return 'Đăng ký gói năm · $price';
   }
 
   @override
   String pv2SubscribeMonth(String price) {
-    return 'Đăng ký Premium · $price/tháng';
+    return 'Đăng ký gói tháng · $price';
   }
 
   @override
@@ -21402,7 +21536,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2CreditsLeft(int left, int limit) {
-    return 'còn $left / $limit credit';
+    return 'còn $left / $limit lượt';
   }
 
   @override
@@ -21449,7 +21583,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2FreeUpsellBody =>
-      'Premium cấp lại Lumi và lượt video mỗi tháng, mở bộ mẫu Premium và thêm dung lượng cho cả nhà.';
+      'Thêm credit Lumi hằng tháng, mẫu cao cấp, video Full HD và dung lượng chung cho cả nhà.';
 
   @override
   String get pv2BuyStorage => 'Mua thêm dung lượng';
@@ -21502,7 +21636,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pv2OverSeatsTitle(int used, int limit) {
-    return 'Vượt chỗ người chăm sóc · $used / $limit';
+    return 'Vượt chỗ người ghi · $used / $limit';
   }
 
   @override
@@ -21673,7 +21807,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2CancelTemplatesBody =>
-      'Giữ bản nháp; xuất cần Premium hoặc đổi mẫu cơ bản';
+      'Giữ bản nháp; xuất cần Premium hoặc đổi sang mẫu miễn phí';
 
   @override
   String get pv2KeepPremium => 'Giữ Premium';
@@ -21807,7 +21941,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Tuần này (13–19/10), giấc đêm đã ghi trung bình 9 giờ 10 — dài hơn 25 phút so với tuần trước (6–12/10).';
 
   @override
-  String get pv2DemoUploading => '3 video đang tải lên · không cần chờ';
+  String get pv2DemoUploading => '3 video đang tải lên';
 
   @override
   String get pv2DemoMum => 'Mẹ';
@@ -21829,10 +21963,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2DemoCareNote =>
-      'Cùng chăm đã có ở Free; Premium tăng số người tham gia.';
+      'Free cũng có nhật ký chung; Premium thêm chỗ cho người ghi.';
 
   @override
-  String get pv2Terms => 'Điều khoản';
+  String get pv2Terms => 'Điều khoản sử dụng';
 
   @override
   String get pv2Privacy => 'Quyền riêng tư';
@@ -21863,10 +21997,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2RowRhythm => 'Hiểu nhịp con';
 
   @override
-  String get pv2RowRhythmFree => 'Nhật ký & mốc cơ bản';
+  String get pv2RowRhythmFree => 'Theo tuổi & lịch tham khảo';
 
   @override
-  String get pv2RowRhythmPremium => 'Nhận xét tuần · có nguồn';
+  String get pv2RowRhythmPremium => 'Gợi ý riêng & nhịp nâng cao';
 
   @override
   String get axGreetMorningNoName => 'Chào buổi sáng ☀️';
@@ -21936,4 +22070,830 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get p48ClearValue => 'Xoá giá trị';
+
+  @override
+  String get autoSaveReviewTicked =>
+      'App đã chọn sẵn ảnh rõ nhất. Bỏ chọn mục không muốn lưu.';
+
+  @override
+  String get premiumSharedPlans =>
+      'Cả nhà dùng chung, dù chọn gói năm hay gói tháng.';
+
+  @override
+  String get premiumChoosePlan => 'Chọn gói';
+
+  @override
+  String get premiumBenefits => 'Premium có gì?';
+
+  @override
+  String get premiumMemories => 'Thiệp & video kỷ niệm';
+
+  @override
+  String get premiumMemoriesSubtitle => 'Toàn bộ mẫu cao cấp chất lượng cao';
+
+  @override
+  String get premiumRhythm => 'Gợi ý cá nhân & nhịp nâng cao';
+
+  @override
+  String get premiumRhythmSubtitle => 'Gợi ý theo nhu cầu và nhật ký của con';
+
+  @override
+  String get premiumTodayTotal => 'Thanh toán hôm nay';
+
+  @override
+  String get premiumBackToPlans => 'Quay lại chọn gói';
+
+  @override
+  String get premiumUnlimitedVideo => 'Xuất video không giới hạn lượt';
+
+  @override
+  String get premiumVideoFree => 'Mẫu cơ bản · Video 720p';
+
+  @override
+  String get premiumVideoPaid => 'Mọi mẫu · Full HD 1080p';
+
+  @override
+  String get premiumVideoDetail =>
+      'Không giới hạn lượt xuất: Free 720p, Premium Full HD 1080p.';
+
+  @override
+  String get premiumFeatureIntro => 'Tìm hiểu Premium cho tính năng này';
+
+  @override
+  String get videoQuality => 'Chất lượng video';
+
+  @override
+  String get videoQualityHd => 'HD 720p';
+
+  @override
+  String get videoQualityFullHd => 'Full HD 1080p';
+
+  @override
+  String get videoQualityHdHint => 'Tệp nhẹ hơn, dễ chia sẻ';
+
+  @override
+  String get videoQualityFullHdHint => 'Hình ảnh rõ nét hơn';
+
+  @override
+  String get videoQualityPremiumHint => 'Cần Premium · Tìm hiểu';
+
+  @override
+  String get videoExportHd => 'Xuất video HD 720p';
+
+  @override
+  String get videoExportFullHd => 'Xuất video Full HD 1080p';
+
+  @override
+  String get videoFullHdIntroTitle => 'Xuất Full HD với Premium';
+
+  @override
+  String get videoFullHdIntroBody =>
+      'Premium cho phép xuất video Full HD 1080p và dùng mọi mẫu cao cấp. Free vẫn xuất HD 720p không giới hạn lượt. Video đang làm được giữ nguyên.';
+
+  @override
+  String get videoContinueHd => 'Tiếp tục với HD 720p';
+
+  @override
+  String get premiumRhythmCompareFree => 'Theo tuổi & lịch tham khảo';
+
+  @override
+  String get premiumRhythmComparePaid => 'Gợi ý riêng & nhịp nâng cao';
+
+  @override
+  String get premiumStorageSubtitle =>
+      'Dung lượng dùng chung cho ảnh và video của cả nhà';
+
+  @override
+  String get premiumSeatsSubtitle => 'Cùng ghi cữ bú, giấc ngủ và xem nhật ký';
+
+  @override
+  String get premiumNeedsPremium => 'Cần Premium';
+
+  @override
+  String get premiumUseTemplate => 'Dùng mẫu Premium';
+
+  @override
+  String get videoQualityChecking => 'Đang kiểm tra gói · Thử lại';
+
+  @override
+  String get videoRenderRateLimit =>
+      'Bạn vừa gửi nhiều yêu cầu tạo video. Thử lại sau một phút nhé.';
+
+  @override
+  String get premiumPaymentDetails => 'Chi tiết thanh toán';
+
+  @override
+  String get premiumTaxIncluded => 'Giá đã gồm thuế.';
+
+  @override
+  String get premiumVideoAfterCancel =>
+      'Video đã xuất giữ nguyên chất lượng. Video mới xuất HD 720p, không giới hạn lượt.';
+
+  @override
+  String get autoSaveSelectAll => 'Chọn hết';
+
+  @override
+  String get autoSaveDeselectAll => 'Bỏ chọn hết';
+
+  @override
+  String get autoSaveGroupBestOnly => 'Chỉ giữ ảnh rõ nhất';
+
+  @override
+  String autoSaveSavedSection(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã có trong Kỷ niệm · $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSavedHint => 'Không chọn sẵn. Mở ra để chọn nếu app nhầm.';
+
+  @override
+  String get premiumPlanCheckFailed => 'Chưa kiểm tra được gói gia đình';
+
+  @override
+  String get premiumPlanCheckFailedBody =>
+      'Thử lại khi có kết nối nhé. Nội dung bạn đang làm vẫn được giữ.';
+
+  @override
+  String get autoSaveWeekSheet => 'Tuần tuổi';
+
+  @override
+  String get autoSaveKindSheet => 'Hiện';
+
+  @override
+  String get premiumRhythmDetail =>
+      'Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu. Gợi ý để tham khảo, không chẩn đoán bệnh.';
+
+  @override
+  String get videoPremiumChanged =>
+      'Video này cần Premium đang còn hiệu lực. Bạn có thể đổi sang mẫu cơ bản và HD 720p; bản dựng vẫn được giữ.';
+
+  @override
+  String autoSaveWeekRowTitle(int n, String range) {
+    return 'Tuần $n · $range';
+  }
+
+  @override
+  String get autoSaveWeekRowBefore => 'Trước sinh';
+
+  @override
+  String autoSaveWeekRowProgress(int saved, int waiting) {
+    return '$saved đã có trong Kỷ niệm · $waiting chờ bạn xem';
+  }
+
+  @override
+  String autoSaveWeekRowWaiting(int waiting) {
+    return '$waiting chờ bạn xem';
+  }
+
+  @override
+  String autoSaveWeekRowDone(int saved) {
+    return 'Đã xem hết · $saved trong Kỷ niệm';
+  }
+
+  @override
+  String autoSaveAllWeeks(int count) {
+    return 'Tất cả các tuần · $count';
+  }
+
+  @override
+  String get autoSaveAllWeeksRow => 'Tất cả các tuần';
+
+  @override
+  String get autoSaveCheckingSpace => 'Đang kiểm tra dung lượng…';
+
+  @override
+  String get autoSaveFullTitle => 'Gia đình đã hết dung lượng';
+
+  @override
+  String autoSaveFullBody(int count, String need) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count mục cần khoảng $need. Thêm dung lượng để tải lên; các mục vẫn ở trong máy.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveShortTitle(int fit, int count) {
+    return 'Chỉ đủ chỗ cho $fit/$count mục';
+  }
+
+  @override
+  String autoSaveShortBody(String need, String left) {
+    return 'Cần khoảng $need, gia đình còn $left. Ảnh được tải trước video; phần còn lại vẫn ở trong máy.';
+  }
+
+  @override
+  String autoSavePrepTitle(int done, int total) {
+    return 'Đang chuẩn bị $done/$total';
+  }
+
+  @override
+  String get autoSavePrepWaiting => 'Chờ';
+
+  @override
+  String get autoSavePrepWorking => 'Đang chuẩn bị';
+
+  @override
+  String get autoSavePrepQueued => 'Đã vào hàng tải';
+
+  @override
+  String get autoSavePrepFailed => 'Không đọc được tệp';
+
+  @override
+  String get autoSavePrepDone => 'Xong';
+
+  @override
+  String autoSavePrepSummary(int queued, int failed) {
+    return '$queued mục đã vào hàng tải · $failed không đọc được';
+  }
+
+  @override
+  String get qQuotaTitle => 'Hết dung lượng gia đình';
+
+  @override
+  String qQuotaBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count mục đang chờ, vẫn ở trong máy. Thêm dung lượng để tiếp tục tải.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String qDropWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Bỏ $count mục khỏi hàng chờ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String qDropUnreadable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Bỏ $count tệp không đọc được',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get qUnreadableHint =>
+      'Máy không mở được các tệp này (có thể đã bị xoá hoặc hỏng).';
+
+  @override
+  String get autoSaveAddSpacePremium => 'Thêm dung lượng với Premium';
+
+  @override
+  String get autoSaveBuySpace => 'Mua thêm dung lượng';
+
+  @override
+  String get autoSaveManageSpace => 'Quản lý dung lượng';
+
+  @override
+  String get autoSavePremiumSpaceNote =>
+      'Premium có thêm dung lượng cho cả nhà.';
+
+  @override
+  String careFailedNew(String record, String time) {
+    return 'Chưa lưu được: $record, $time';
+  }
+
+  @override
+  String careFailedEdit(String record, String time) {
+    return 'Chưa lưu thay đổi: $record, $time';
+  }
+
+  @override
+  String careFailedDelete(String record, String time) {
+    return 'Chưa xoá được: $record, $time';
+  }
+
+  @override
+  String careFailedRestore(String record, String time) {
+    return 'Chưa khôi phục được: $record, $time';
+  }
+
+  @override
+  String get careFailedTimer => 'Chưa lưu được thay đổi của bộ đếm';
+
+  @override
+  String careFailedDenied(String message) {
+    return '$message. Có thể quyền của bạn đã thay đổi.';
+  }
+
+  @override
+  String get retryRefused =>
+      'Có thay đổi không lưu được. Có thể quyền của bạn đã thay đổi.';
+
+  @override
+  String pendingOthers(int count) {
+    return '$count thay đổi khác (xoá, sửa, bộ đếm) chờ gửi';
+  }
+
+  @override
+  String get careLoadFailed => 'Chưa tải được nhật ký';
+
+  @override
+  String get todayLoadFailedBody =>
+      'Lần ghi gần nhất chưa hiện. Bạn vẫn ghi mới được.';
+
+  @override
+  String get statsTodayFrom18 => 'Tính từ 18:00 hôm qua, gồm cả cữ đêm';
+
+  @override
+  String get hoLoading => 'Đang tải nhật ký của bé';
+
+  @override
+  String get hoRemindersFailed => 'Chưa tải được việc đã hẹn';
+
+  @override
+  String get hoHealthFailed => 'Chưa tải được dấu hiệu sức khoẻ';
+
+  @override
+  String get hoNotFoundTitle => 'Bản bàn giao này không còn';
+
+  @override
+  String get hoNotFoundBody => 'Có thể đã có bản mới hơn thay thế.';
+
+  @override
+  String get hoSeeLatest => 'Xem bản mới nhất';
+
+  @override
+  String get hoCreateNew => 'Tạo bản mới';
+
+  @override
+  String get hoCreateTitle => 'Chưa có bản tóm tắt';
+
+  @override
+  String get hoCreateBody =>
+      'Tóm tắt từ ghi nhận của cả nhà mấy ngày qua. Mỗi lần tạo dùng tối đa 1 lượt AI.';
+
+  @override
+  String get hoCreateAction => 'Tạo bản tóm tắt';
+
+  @override
+  String get aiStateFailedOffline =>
+      'Cần kết nối mạng để tạo. Ghi nhận của nhà mình vẫn giữ nguyên.';
+
+  @override
+  String get aiStateQuotaOut => 'Nhà mình đã dùng hết lượt AI trong kỳ này.';
+
+  @override
+  String get aiStatePremiumOnly =>
+      'Tóm tắt bằng AI nằm trong Child Life Premium.';
+
+  @override
+  String get aiStateUnavailable => 'AI chưa dùng được cho nhà mình lúc này.';
+
+  @override
+  String aiStateQuotaDayNoDate(int used, int limit) {
+    return 'Đã dùng $used/$limit lượt AI hôm nay cho bé. Bạn vẫn xem được bản theo mẫu.';
+  }
+
+  @override
+  String aiStateQuotaMonthNoDate(int used, int limit) {
+    return 'Nhà mình đã dùng $used/$limit lượt AI kỳ này (chung cho tóm tắt và trợ lý). Bạn vẫn xem được bản theo mẫu.';
+  }
+
+  @override
+  String get aiSendFailedOther => 'Chưa gửi được bàn giao. Thử lại sau.';
+
+  @override
+  String get aiMomentAsk => 'Viết lời gợi ý bằng AI';
+
+  @override
+  String get aiMomentFailed => 'Chưa viết được lời gợi ý lúc này.';
+
+  @override
+  String get engWeekFailed => 'Chưa mở được bản nhìn lại tuần này';
+
+  @override
+  String get engWeekMediaFailed => 'Chưa tải được ảnh của tuần';
+
+  @override
+  String get engWeekEmpty =>
+      'Ảnh và câu chuyện của tuần này không còn trong Kỷ niệm.';
+
+  @override
+  String get engOpenFailed => 'Chưa mở được gợi ý. Thử lại sau.';
+
+  @override
+  String get engActFailed => 'Chưa lưu được lựa chọn. Thử lại sau.';
+
+  @override
+  String get stLoadFailedTitle => 'Chưa tải được dung lượng';
+
+  @override
+  String get stQuotaUnknown => 'Chưa kiểm tra được dung lượng của gói';
+
+  @override
+  String stReserved(String size, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mục',
+    );
+    return 'Đang giữ chỗ $size cho $_temp0 đang tải lên';
+  }
+
+  @override
+  String get stFreeUpVideos => 'Xoá bớt video lớn';
+
+  @override
+  String get stRowFailed => 'Chưa tải được';
+
+  @override
+  String pv2AskStorage(String name) {
+    return 'Nhờ $name thêm dung lượng';
+  }
+
+  @override
+  String get pv2AskStorageMessage =>
+      'Nhà mình sắp hết dung lượng Child Life. Bạn thêm dung lượng giúp mình trong Tôi › Gói của gia đình nhé.';
+
+  @override
+  String get pv2AddOnUnknown => 'Chưa tải được các gói dung lượng';
+
+  @override
+  String pv2OptionOr(String a, String b) {
+    return '$a hoặc $b';
+  }
+
+  @override
+  String pv2E08BodyPremiumPlain(int pct, String gb) {
+    return 'Đã dùng $pct% của $gb GB.';
+  }
+
+  @override
+  String get pv2ManagerYouNoName => 'Bạn quản lý gói này';
+
+  @override
+  String get pv2FreeUpsellTitleNoName =>
+      'Mỗi tháng, thêm một câu chuyện của bé';
+
+  @override
+  String get pv2PriceUnknown => 'Chưa tải được giá. Thử lại khi có kết nối.';
+
+  @override
+  String get pv2SubscribeNoPrice => 'Đăng ký Premium';
+
+  @override
+  String pv2BusyBuying(String store) {
+    return 'Đang mở $store…';
+  }
+
+  @override
+  String get pv2BusyVerifying => 'Đang xác nhận giao dịch…';
+
+  @override
+  String get pv2BusyRestoring => 'Đang khôi phục…';
+
+  @override
+  String get pv2BusyPending => 'Đang chờ cửa hàng xác nhận';
+
+  @override
+  String get pmStoreLoadFailed => 'Chưa kết nối được cửa hàng. Thử lại sau.';
+
+  @override
+  String get psExportQueued => 'Đang chuẩn bị dựng file in…';
+
+  @override
+  String psExportProgress(int done, int total) {
+    return 'Đang dựng file in · trang $done/$total';
+  }
+
+  @override
+  String get psExportLeave =>
+      'Bạn có thể rời màn hình này. Quay lại đây để mở file khi xong.';
+
+  @override
+  String get psExportFailed => 'Chưa dựng được file in. Thử lại nhé.';
+
+  @override
+  String get psExportBannerReady => 'File in đã sẵn sàng · Mở';
+
+  @override
+  String psExportFiles(int pages, String format) {
+    return '$pages trang · $format';
+  }
+
+  @override
+  String psCountryUnsupported(String country) {
+    return 'Child Life chưa giao bản in tới $country.';
+  }
+
+  @override
+  String psCountryUnsupportedDigital(String country) {
+    return 'Child Life chưa giao bản in tới $country. Bạn có thể tải file in để in ở nơi gần bạn.';
+  }
+
+  @override
+  String get psPayByTransfer => 'Chuyển khoản sau khi Child Life xác nhận';
+
+  @override
+  String get psPayTransferRow => 'Chuyển khoản';
+
+  @override
+  String get psOrderMaybeSent =>
+      'Chưa nhận được phản hồi. Có thể đơn đã được ghi nhận — xem Đơn in trước khi đặt lại.';
+
+  @override
+  String get psViewOrders => 'Xem Đơn in';
+
+  @override
+  String get psOrderNotFound => 'Không tìm thấy đơn in này';
+
+  @override
+  String get psOrderNotFoundHelp =>
+      'Đơn có thể thuộc tài khoản khác hoặc chưa tải xong.';
+
+  @override
+  String get psStatusUnknown => 'Đang cập nhật trạng thái';
+
+  @override
+  String get psOrderCancelledToast => 'Đã huỷ đơn in';
+
+  @override
+  String get premiumYearSuffix => '/năm';
+
+  @override
+  String get premiumMonthSuffix => '/tháng';
+
+  @override
+  String premiumSavePercent(int n) {
+    return 'Tiết kiệm $n%';
+  }
+
+  @override
+  String get premiumLumiListTitle => 'Trợ lý Lumi';
+
+  @override
+  String premiumStorageListTitle(String gb) {
+    return '$gb cho cả nhà';
+  }
+
+  @override
+  String premiumSeatsListTitle(int n) {
+    return '$n người có quyền ghi';
+  }
+
+  @override
+  String premiumLegalIntro(String store) {
+    return 'Tự động gia hạn. Huỷ bất cứ lúc nào trong $store. Khi đăng ký, bạn đồng ý với ';
+  }
+
+  @override
+  String get premiumPaymentEquivalent => 'Tương đương mỗi tháng';
+
+  @override
+  String get premiumPaymentSaving => 'Tiết kiệm so với 12 tháng trả theo tháng';
+
+  @override
+  String get premiumPaymentTax => 'Thuế';
+
+  @override
+  String get premiumPaymentTaxValue => 'Đã gồm trong giá';
+
+  @override
+  String premiumPaymentRenewal(String price, String store) {
+    return 'Tự động gia hạn $price. Muốn huỷ, hãy huỷ trong $store ít nhất 24 giờ trước ngày gia hạn.';
+  }
+
+  @override
+  String get premiumMemoriesBullet1 =>
+      'Thiệp: mẫu cao cấp, thêm ảnh, tên và lời nhắn.';
+
+  @override
+  String get premiumMemoriesBullet2 => 'Video: ghép ảnh cùng lời nhắn và nhạc.';
+
+  @override
+  String get premiumLumiBullet1 =>
+      'Hỏi về nhật ký và xem dữ liệu Lumi dùng để trả lời.';
+
+  @override
+  String get premiumLumiBullet2 =>
+      'Nhờ Lumi soạn bản ghi để bạn kiểm tra trước khi lưu.';
+
+  @override
+  String premiumLumiBullet3(int n) {
+    return '$n credit/tháng dùng chung cho cả nhà, được cấp mỗi tháng.';
+  }
+
+  @override
+  String get premiumRhythmBullet1 =>
+      'Gợi ý theo tuổi, nhu cầu và phản hồi của bạn.';
+
+  @override
+  String get premiumRhythmBullet2 => 'Xem nhịp bú, ngủ khi nhật ký đủ dữ liệu.';
+
+  @override
+  String get premiumRhythmBullet3 => 'Hiểu con hơn mỗi ngày.';
+
+  @override
+  String premiumStorageBullet1(String gb) {
+    return '$gb cho ảnh và video của cả gia đình.';
+  }
+
+  @override
+  String get premiumStorageBullet2 => 'Xem mức sử dụng trong Gói của gia đình.';
+
+  @override
+  String get premiumStorageBullet3 => 'Mua thêm dung lượng: Sắp có.';
+
+  @override
+  String get premiumSeatsBullet1 => 'Cùng ghi cữ bú, giấc ngủ và xem cập nhật.';
+
+  @override
+  String get premiumSeatsBullet2 =>
+      'Quyền xem và ghi theo vai trò của từng người.';
+
+  @override
+  String premiumSeatsBullet3(int n) {
+    return 'Thoải mái cùng $n người chăm con';
+  }
+
+  @override
+  String get premiumRhythmPager => 'Gợi ý & nhịp nâng cao';
+
+  @override
+  String get premiumSeatsPager => 'Người có quyền ghi';
+
+  @override
+  String get premiumSubscribeYearShort => 'Đăng ký gói năm';
+
+  @override
+  String get premiumSubscribeMonthShort => 'Đăng ký gói tháng';
+
+  @override
+  String premiumLumiCompareFree(int n) {
+    return '$n credit dùng thử · không cấp lại';
+  }
+
+  @override
+  String premiumLumiComparePaid(int n) {
+    return '$n credit/tháng · cả nhà dùng chung';
+  }
+
+  @override
+  String premiumSeatsCardLimit(int free, int premium) {
+    return '$premium người có quyền ghi · Free: $free';
+  }
+
+  @override
+  String get premiumLumiPager => 'Hỏi Lumi';
+
+  @override
+  String get premiumLumiDetailTitle => 'Hỏi Lumi mọi thứ về con';
+
+  @override
+  String get premiumRhythmDetailTitle =>
+      'Gợi ý cá nhân và nhịp nâng cao của con';
+
+  @override
+  String get premiumMemoriesBullet3 =>
+      'Không giới hạn lượt xuất chất lượng cao';
+
+  @override
+  String hhMorning(String name) {
+    return 'Chào ngày mới cùng $name';
+  }
+
+  @override
+  String get hhMorningNoName => 'Chào ngày mới';
+
+  @override
+  String hhAfternoon(String name) {
+    return 'Một ngày của $name thế nào rồi?';
+  }
+
+  @override
+  String get hhAfternoonNoName => 'Ngày của bé thế nào rồi?';
+
+  @override
+  String hhEvening(String name) {
+    return 'Chào buổi tối, $name';
+  }
+
+  @override
+  String get hhEveningNoName => 'Chào buổi tối';
+
+  @override
+  String hhBirthday(String name) {
+    return 'Mừng sinh nhật $name!';
+  }
+
+  @override
+  String hhDutyNow(String name) {
+    return '$name đang trông bé';
+  }
+
+  @override
+  String hhDutySince(String time) {
+    return 'Hiện tại · từ $time';
+  }
+
+  @override
+  String get hhDutyRetry => 'Chưa tải được trạng thái trông bé · Thử lại';
+
+  @override
+  String get hhSettings => 'Cài đặt giao diện';
+
+  @override
+  String get hhSettingsSubtitle => 'Hình nền đầu trang Hôm nay';
+
+  @override
+  String get hhWallpaper => 'Hình nền';
+
+  @override
+  String get hhPreview => 'Xem trước';
+
+  @override
+  String get hhPattern => 'Hoạ tiết theo buổi';
+
+  @override
+  String get hhAvatar => 'Ảnh đại diện của bé';
+
+  @override
+  String get hhChooseMemory => 'Chọn ảnh từ Kỷ niệm';
+
+  @override
+  String get hhPhotoEmpty => 'Chưa có ảnh để chọn trong Kỷ niệm.';
+
+  @override
+  String get hhDeviceOnly => 'Chỉ áp dụng trên thiết bị này cho bé đang chọn.';
+
+  @override
+  String get hhApply => 'Áp dụng';
+
+  @override
+  String get hhSaveFailed => 'Chưa lưu được giao diện. Bạn thử lại nhé.';
+
+  @override
+  String get hhHeaderSection => 'Trong đầu trang';
+
+  @override
+  String get hhDutyFixed => 'Trạng thái trông bé nằm cố định trong đầu trang.';
+
+  @override
+  String get hhAvatarMissing => 'Bé chưa có ảnh đại diện; tạm dùng hoạ tiết.';
+
+  @override
+  String get hhSelected => 'Đang chọn';
+
+  @override
+  String get dutyParents => 'Ba và Mẹ';
+
+  @override
+  String get dutyTogether => 'Ba và Mẹ cùng trông';
+
+  @override
+  String get dutyTogetherToast =>
+      'Ba và Mẹ đang cùng trông bé. Cả nhà sẽ thấy.';
+
+  @override
+  String get dutyJustStarted => 'Vừa bắt đầu';
+
+  @override
+  String get dutyPrevious => 'Trước đó';
+
+  @override
+  String get dutyLoadFailed => 'Chưa tải được trạng thái trông bé.';
+
+  @override
+  String get dutyOwnPart =>
+      'Kết thúc phần của bạn; người còn lại vẫn đang trông bé.';
+
+  @override
+  String dutyStartedAt(String time) {
+    return 'Từ $time';
+  }
+
+  @override
+  String get dutyTogetherNow => 'Ba và Mẹ đang cùng trông bé';
+
+  @override
+  String dutyTogetherSince(String time) {
+    return 'Ba và Mẹ cùng trông · từ $time';
+  }
+
+  @override
+  String get dutyYouNow => 'Bạn đang trông bé';
+
+  @override
+  String dutyYouSince(String time) {
+    return 'Bạn đang trông · từ $time';
+  }
 }

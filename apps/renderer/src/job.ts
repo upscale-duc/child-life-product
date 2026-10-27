@@ -37,6 +37,7 @@ export interface RenderStore {
 export interface Renderer {
   render(opts: {
     composition: string;
+    quality?: import('@child-life/contracts').VideoQuality;
     props: MemoryStoryProps;
     video: string;
     poster: string;
@@ -231,6 +232,7 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
     try {
       rendered = await deps.renderer.render({
         composition: input.template.composition ?? 'LittleMoments',
+        quality: input.quality ?? 'fullHd1080',
         props,
         video,
         poster,

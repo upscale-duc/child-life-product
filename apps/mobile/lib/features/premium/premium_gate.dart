@@ -16,6 +16,7 @@ import 'paywall_screen.dart';
 import 'premium_models.dart';
 import 'premium_style.dart';
 import 'premium_v2.dart';
+import 'premium_entries.dart' show showPlanUnknown;
 import 'premium_repository.dart';
 import 'purchase_resume.dart';
 
@@ -168,12 +169,41 @@ Future<bool> ensureTemplateAllowed(
   required String babyId,
   PurchaseResume Function()? keep,
 }) async {
-  if (!template.premium ||
+  if (!template.premium) return true;
+  final caps = await ref.read(capabilitiesProvider(babyId).future);
+  // P-2: with no answer and nothing kept on this phone, say so; never offer "Mở với Premium"
+  // to a family that may already pay.
+  if (caps == null && catalog?.premiumAccess == PremiumAccess.subscribers) {
+    if (context.mounted) await showPlanUnknown(context);
+    return false;
+  }
+  if (!(caps?.features.premiumV2 ?? false) &&
       catalog?.premiumAccess != PremiumAccess.subscribers) {
     return true;
   }
-  final caps = await ref.read(capabilitiesProvider(babyId).future);
-  if (caps?.allows(Capability.templatesPremium) ?? false) return true;
+  if (caps?.features.premiumV2 ?? false) {
+    final plan = await ref.read(familyPlanV2Provider(babyId).future);
+    // Unknown is never a reason to sell Premium, nor a tap that does nothing (P-2).
+    if (plan == null) {
+      if (context.mounted) await showPlanUnknown(context);
+      return false;
+    }
+    if (plan.premium) {
+      if (caps?.allows(Capability.templatesPremium) ?? false) return true;
+      if (!context.mounted) return false;
+      final reason = caps?.reasonFor(Capability.templatesPremium);
+      await showGateSheet(
+        context,
+        reason == null || reason == GateReason.premiumRequired
+            ? GateReason.featureDisabled
+            : reason,
+        entry: PaywallEntry.templates,
+      );
+      return false;
+    }
+  } else if (caps?.allows(Capability.templatesPremium) ?? false) {
+    return true;
+  }
   if (!context.mounted) return false;
   final reason = caps?.reasonFor(Capability.templatesPremium);
   if (reason != null && reason != GateReason.premiumRequired) {

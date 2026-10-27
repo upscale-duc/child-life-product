@@ -1,0 +1,52 @@
+{
+  "flowId": "1134:3884",
+  "frames": 10,
+  "checkedTextNodes": 528,
+  "changedTextNodes": 215,
+  "mismatches": [],
+  "originalVideoComponentText": "Những ảnh rời, thành câu chuyện",
+  "sheets": [
+    {
+      "id": "1090:18873",
+      "top": 432,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18417",
+      "top": 157.5999755859375,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18491",
+      "top": 176.5999755859375,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18585",
+      "top": 119.5999755859375,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18652",
+      "top": 157.5999755859375,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18725",
+      "top": 194.5999755859375,
+      "bottom": 812,
+      "fits": true
+    },
+    {
+      "id": "1090:18801",
+      "top": 175.5999755859375,
+      "bottom": 812,
+      "fits": true
+    }
+  ]
+}
