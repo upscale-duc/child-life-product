@@ -91,5 +91,5 @@ Quyết định: D-135 (`docs/product/business-map.md`), phân tích `docs/desig
   - Chọn cách lên lịch 01/02 và tự tạo lịch mỗi sáng.
   - Cảm ơn và lịch sử thay đổi 20.
   - Widget, báo cáo.
-- **Chưa deploy dev:** callable và rules mới cần `scripts/deploy.sh dev functions,firestore` trước khi dùng thật trên máy.
+- **Đã deploy dev (28/10):** rules và 5 callable. Mỗi callable trả JSON 401 khi gọi không đăng nhập, tức là quyền gọi công khai còn nguyên. Bước tự kiểm tra của `deploy.sh` không chạy được vì `gcloud` đang dùng Python 3.9.
 - **Chưa kiểm:** VoiceOver/TalkBack trên máy thật.
