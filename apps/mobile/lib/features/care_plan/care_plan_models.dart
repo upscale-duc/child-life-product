@@ -264,6 +264,22 @@ const carePlanRhythmDays = 7;
 /// The reference templates (D-136 #1), offered on dev only until the owner reviews them.
 const carePlanTemplateMethods = ['basic', 'easy35', 'easy4'];
 
+/// D-136 #4: EASY fits babies under this many months (mirrors `carePlanEasyMaxMonths`).
+const carePlanEasyMaxMonths = 6;
+
+/// Whole calendar months from [dob] to [today] (mirrors `ageInMonths`).
+int carePlanAgeMonths(DateTime dob, DateTime today) {
+  var months = (today.year - dob.year) * 12 + today.month - dob.month;
+  final lastDay = DateTime.utc(today.year, today.month + 1, 0).day;
+  if (today.day < (dob.day < lastDay ? dob.day : lastDay)) months -= 1;
+  return months < 0 ? 0 : months;
+}
+
+/// Whether the template [method] is offered to a baby [ageMonths] old (null: unknown, all are;
+/// mirrors `templateOffered`).
+bool carePlanTemplateOffered(String method, int? ageMonths) =>
+    method == 'basic' || ageMonths == null || ageMonths < carePlanEasyMaxMonths;
+
 /// The family's plan settings (`babies/{b}/carePlanSettings/family`, server-written).
 @immutable
 class CarePlanFamilySettings {

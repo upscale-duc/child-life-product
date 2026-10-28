@@ -220,6 +220,17 @@ describe('Theo nhịp của bé', () => {
     });
   });
 
+  it('EASY only under 6 months (D-136 #4): a 3-year-old gets the basic plan', async () => {
+    await db.doc(`babies/${babyId}/restricted/profile`).set({ dateOfBirth: '2023-09-01' });
+    for (const from of ['easy35', 'easy4'] as const) {
+      await expect(startCarePlanDay(db, mom, { babyId, date, from }, now)).rejects.toThrow(
+        'template-unavailable',
+      );
+    }
+    await startCarePlanDay(db, mom, { babyId, date, from: 'basic' }, now);
+    expect((await items()).map((i) => i.task)).toContain('teeth');
+  });
+
   it('caregivers neither draft nor use a plan', async () => {
     await expect(startCarePlanDay(db, nanny, { babyId, date, from: 'basic' }, now)).rejects.toThrow(
       'not-allowed',

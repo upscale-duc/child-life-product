@@ -1,5 +1,6 @@
 import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/features/adaptive/explore_screen.dart';
+import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/care_plan/care_plan_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
@@ -21,6 +22,7 @@ Future<FakeCarePlanRepository> _pump(
   bool hintDone = true,
   Set<String> drafts = const {},
   int loggedDays = 0,
+  BabyPrivateProfile? profile,
 }) async {
   final repo = FakeCarePlanRepository();
   await pumpRouted(
@@ -29,7 +31,12 @@ Future<FakeCarePlanRepository> _pump(
     viewport: const Size(375, 1600),
     prefs: {if (hintDone) 'carePlan.swipeHint.done': true},
     overrides: [
-      ...familyOverrides(me: me ?? mai, now: carePlanNow, carePlan: false),
+      ...familyOverrides(
+        me: me ?? mai,
+        now: carePlanNow,
+        carePlan: false,
+        profile: profile,
+      ),
       ...carePlanOverrides(
         days: days,
         everyday: everyday,
@@ -279,6 +286,31 @@ void main() {
       'from': 'easy4',
     });
   });
+
+  testWidgets(
+    'EASY only under 6 months (D-136 #4); a 3-year-old sees the basic plan',
+    (tester) async {
+      await _pump(
+        tester,
+        days: const {},
+        profile: BabyPrivateProfile(
+          dateOfBirth: DateTime(2023, 9, 1),
+          gender: Gender.boy,
+        ),
+      );
+      expect(find.byKey(const ValueKey('cp_start_basic')), findsOneWidget);
+      expect(find.byKey(const ValueKey('cp_start_easy35')), findsNothing);
+      expect(find.byKey(const ValueKey('cp_start_easy4')), findsNothing);
+      expect(
+        carePlanAgeMonths(DateTime(2026, 4, 30), DateTime(2026, 10, 28)),
+        5,
+      );
+      expect(
+        carePlanAgeMonths(DateTime(2026, 4, 28), DateTime(2026, 10, 28)),
+        6,
+      );
+    },
+  );
 
   testWidgets('a draft: Mẹ edits it and uses it; no rings until then', (
     tester,

@@ -99,6 +99,18 @@ function dedupe(tasks: DraftTask[]): DraftTask[] {
     .sort((a, b) => a.time.localeCompare(b.time) || a.task.localeCompare(b.task));
 }
 
+/** D-136 #4: EASY 3.5 / EASY 4 fit babies under this many months; older babies get only `basic`. */
+export const carePlanEasyMaxMonths = 6;
+
+/**
+ * Whether [method] is offered to a baby [ageMonths] old (null: date of birth unknown, every
+ * template is offered).
+ */
+export function templateOffered(method: CarePlanTemplateMethod, ageMonths: number | null): boolean {
+  if (method === 'basic' || ageMonths === null) return true;
+  return ageMonths < carePlanEasyMaxMonths;
+}
+
 const at = (feed: 'bottle' | 'breast', feeds: string[], rest: [CarePlanTask, string][]) =>
   dedupe([
     ...feeds.map((time) => ({ task: feed, time })),

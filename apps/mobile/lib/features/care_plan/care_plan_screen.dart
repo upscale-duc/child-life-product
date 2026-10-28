@@ -708,7 +708,18 @@ class _StartDay extends ConsumerWidget {
         marks.values.where((m) => m.feeds && m.sleep).length >=
         carePlanRhythmDays;
     final templates = ref.watch(environmentProvider) == AppEnvironment.dev;
-    bool offered(String from) => from != current;
+    final dob = ref
+        .watch(babyPrivateProfileProvider(babyId))
+        .value
+        ?.dateOfBirth;
+    // D-136 #4: EASY only for a baby under 6 months.
+    final ageMonths = dob == null
+        ? null
+        : carePlanAgeMonths(dob, DateTime.parse(date));
+    bool offered(String from) =>
+        from != current &&
+        (!carePlanTemplateMethods.contains(from) ||
+            carePlanTemplateOffered(from, ageMonths));
 
     final own = [
       if (rhythm && offered('rhythm'))

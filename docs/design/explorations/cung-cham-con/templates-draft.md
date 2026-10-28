@@ -9,6 +9,11 @@
 - Bú dùng việc **Bú mẹ** hoặc **Bú bình** theo loại nhà mình ghi nhiều hơn trong 7 ngày qua (mặc định Bú bình).
 - Dưới danh sách có dòng: "Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến."
 
+## Mẫu nào hiện cho bé nào (D-136 #4)
+
+- **EASY 3.5 và EASY 4 chỉ hiện khi bé dưới 6 tháng** (tính theo ngày sinh và ngày đang lên lịch). Bé từ 6 tháng chỉ thấy Lịch cơ bản theo tuổi. Server cũng từ chối (`template-unavailable`). Chưa có ngày sinh thì hiện cả ba.
+- Lịch cơ bản tự chọn nhóm tuổi (bảng cuối).
+
 ## EASY 3.5 (khoảng 6 tuần – 4 tháng)
 
 Bú mỗi ~3,5 giờ; ngủ sau một quãng thức ngắn. Nguồn: Tracy Hogg, *Secrets of the Baby Whisperer* (2001) và *The Baby Whisperer Solves All Your Problems* (2005), phần lịch EASY 3 giờ / 4 giờ và biến thể 3,5 giờ hay được cộng đồng dùng.

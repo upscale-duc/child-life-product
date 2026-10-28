@@ -24,6 +24,7 @@ import {
   setCarePlanItemStatusSchema,
   startCarePlanDaySchema,
   templateDraft,
+  templateOffered,
   type CarePlanMethod,
   type CarePlanRight,
   type MemberRole,
@@ -335,11 +336,15 @@ async function seedsFor(
         rhythmEvents(db, tx, babyId, zone, date),
       ]);
       const dob = profile.get('dateOfBirth');
-      const months =
+      const known =
         typeof dob === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= date
           ? ageInMonths(dob, date)
-          : 4;
-      return templateDraft(method, months, r.feed).map(plain);
+          : null;
+      // D-136 #4: EASY only for a baby under 6 months.
+      if (!templateOffered(method, known)) {
+        throw new CarePlanError('failed-precondition', 'template-unavailable');
+      }
+      return templateDraft(method, known ?? 4, r.feed).map(plain);
     }
   }
 }

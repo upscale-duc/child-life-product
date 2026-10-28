@@ -7,7 +7,7 @@ Quyết định: D-136 (chủ sản phẩm trả lời 3 câu hỏi bước 4) v
 - **Chọn cách lên lịch (01a/01b/01c) gộp vào màn "Hôm nay chưa có lịch" (04-0)**, không thêm màn mới. Bố mẹ thấy:
   1. **Theo nhịp của bé** · "Bú và ngủ, từ 7 ngày ghi gần đây". Chỉ hiện khi đủ 7/7 ngày trước đó đều có ghi bú và ngủ (D-136 #2).
   2. Dùng lịch mọi ngày, Giống hôm qua (như cũ).
-  3. **Lịch mẫu (chờ duyệt):** Lịch cơ bản theo tuổi, EASY 3.5, EASY 4, kèm dòng "Lịch mẫu không phải lịch y tế…". **Chỉ có trên bản dev**; server cũng từ chối ngoài dev (D-136 #1).
+  3. **Lịch mẫu (chờ duyệt):** Lịch cơ bản theo tuổi, EASY 3.5, EASY 4, kèm dòng "Lịch mẫu không phải lịch y tế…". **Chỉ có trên bản dev**; server cũng từ chối ngoài dev (D-136 #1). EASY chỉ hiện khi bé **dưới 6 tháng** (D-136 #4); bé lớn hơn chỉ thấy Lịch cơ bản theo nhóm tuổi của mình.
   4. Tự thêm việc.
 - **Bản nháp (02):** "Theo nhịp của bé" và lịch mẫu tạo **bản nháp**. Trên đầu lịch có khối "Bản nháp · chưa nhắc ai", nút chính **Dùng lịch này** và liên kết **Đổi cách khác**. Trong bản nháp vẫn sửa, thêm, giao việc như lịch thường, nhưng chưa có vòng đánh dấu và chưa có viền "việc kế tiếp".
   - Người hỗ trợ và người thân **không thấy bản nháp** (thấy "Khi ba mẹ lên lịch, việc sẽ hiện ở đây").
