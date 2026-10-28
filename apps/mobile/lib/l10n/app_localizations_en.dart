@@ -24272,4 +24272,283 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2PriceLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get cpTitle => 'Care together';
+
+  @override
+  String get cpExploreSub => 'One care plan, shared by the family';
+
+  @override
+  String cpDayTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks',
+      one: '1 task',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpStarts(String time, String task) {
+    return 'Starts $time · $task';
+  }
+
+  @override
+  String cpNext(String time, String task) {
+    return 'Next $time · $task';
+  }
+
+  @override
+  String cpLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count left',
+      one: '1 left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpAllDone => 'Everything is done for today';
+
+  @override
+  String cpProgressA11y(int done, int total) {
+    return '$done of $total tasks done';
+  }
+
+  @override
+  String get cpMorning => 'Morning';
+
+  @override
+  String get cpAfternoon => 'Afternoon';
+
+  @override
+  String get cpEvening => 'Evening';
+
+  @override
+  String get cpAssignGroup => 'Assign all';
+
+  @override
+  String get cpAddTask => 'Add task';
+
+  @override
+  String get cpAssignShort => 'Assign';
+
+  @override
+  String cpMarkDone(String task) {
+    return 'Mark done: $task';
+  }
+
+  @override
+  String cpMarkOpen(String task) {
+    return 'Done: $task. Tap to undo';
+  }
+
+  @override
+  String cpDoneToast(String task) {
+    return 'Done · $task';
+  }
+
+  @override
+  String cpDoneBy(String name) {
+    return '$name did it';
+  }
+
+  @override
+  String get cpSkipped => 'Skipped today';
+
+  @override
+  String get cpEveryDay => 'Every day';
+
+  @override
+  String get cpTodayOnly => 'Today only';
+
+  @override
+  String get cpSaveFailed =>
+      'Couldn\'t save. Check your connection and try again.';
+
+  @override
+  String get cpLoadFailed =>
+      'Couldn\'t load the plan. Check your connection and try again.';
+
+  @override
+  String get cpSwipeHint => 'Swipe left to edit or delete';
+
+  @override
+  String get cpGotIt => 'Got it';
+
+  @override
+  String get cpEmptyToday => 'No plan for today yet';
+
+  @override
+  String get cpEmptyDay => 'No plan for this day';
+
+  @override
+  String get cpEmptyViewer =>
+      'When the parents make a plan, the tasks show here.';
+
+  @override
+  String get cpStartEveryday => 'Use the everyday plan';
+
+  @override
+  String get cpStartYesterday => 'Same as yesterday';
+
+  @override
+  String get cpStartEmpty => 'Add tasks yourself';
+
+  @override
+  String get cpAssignWhoMorning => 'Who takes the morning?';
+
+  @override
+  String get cpAssignWhoAfternoon => 'Who takes the afternoon?';
+
+  @override
+  String get cpAssignWhoEvening => 'Who takes the evening?';
+
+  @override
+  String get cpAssignWhoTask => 'Who\'s doing this?';
+
+  @override
+  String cpMemberLoad(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks today',
+      one: '1 task today',
+      zero: 'No tasks today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpAssignTo(String names) {
+    return 'Assign to $names';
+  }
+
+  @override
+  String get cpAssignNobody => 'Leave unassigned';
+
+  @override
+  String cpNamesTwo(String first, String second) {
+    return '$first and $second';
+  }
+
+  @override
+  String cpNamesMore(String first, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$first and $count others',
+      one: '$first and 1 other',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpEditTask => 'Edit task';
+
+  @override
+  String get cpCustomName => 'Task name';
+
+  @override
+  String get cpCustomHint => 'e.g. nose drops';
+
+  @override
+  String get cpTime => 'Time';
+
+  @override
+  String get cpWho => 'Who';
+
+  @override
+  String get cpSkipToday => 'Skip today';
+
+  @override
+  String get cpUnskip => 'Bring it back today';
+
+  @override
+  String cpSkipToast(String task) {
+    return 'Skipped · $task';
+  }
+
+  @override
+  String get cpDelete => 'Delete task';
+
+  @override
+  String cpDeleteTitle(String task) {
+    return 'Delete $task?';
+  }
+
+  @override
+  String get cpDeleteToday => 'Delete today only';
+
+  @override
+  String get cpDeleteEveryDay => 'Delete from every day';
+
+  @override
+  String get cpDeleteBody => 'Anything logged in care stays as it is.';
+
+  @override
+  String cpDeletedToast(String task) {
+    return 'Deleted · $task';
+  }
+
+  @override
+  String get cpSuggested => 'Common';
+
+  @override
+  String get cpMoreTasks => 'More';
+
+  @override
+  String get cpTaskBottle => 'Bottle';
+
+  @override
+  String get cpTaskBreast => 'Breastfeed';
+
+  @override
+  String get cpTaskPump => 'Pump';
+
+  @override
+  String get cpTaskSolids => 'Solids';
+
+  @override
+  String get cpTaskWater => 'Water';
+
+  @override
+  String get cpTaskSleep => 'Sleep';
+
+  @override
+  String get cpTaskDiaper => 'Diaper';
+
+  @override
+  String get cpTaskBath => 'Bath';
+
+  @override
+  String get cpTaskTummy => 'Tummy time';
+
+  @override
+  String get cpTaskRead => 'Reading';
+
+  @override
+  String get cpTaskWalk => 'Walk';
+
+  @override
+  String get cpTaskVitamin => 'Vitamin';
+
+  @override
+  String get cpTaskMedicine => 'Medicine';
+
+  @override
+  String get cpTaskTemperature => 'Check temp';
+
+  @override
+  String get cpTaskTeeth => 'Brush teeth';
+
+  @override
+  String get cpTaskPotty => 'Potty';
+
+  @override
+  String get cpTaskCustom => 'Your own task';
 }

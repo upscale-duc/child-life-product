@@ -33562,5 +33562,392 @@
   "pv2PriceLoadFailedBody": "Kiểm tra kết nối rồi thử lại.",
   "@pv2PriceLoadFailedBody": {
     "description": "Recovery instruction when no valid Premium display prices are available."
+  },
+  "cpTitle": "Cùng Chăm Con",
+  "@cpTitle": {
+    "description": "Cùng Chăm Con: the Khám phá row and the screen title (D-135). EN is an engineering draft for owner review."
+  },
+  "cpExploreSub": "Lịch chăm bé chung, giao việc cho cả nhà",
+  "@cpExploreSub": {
+    "description": "Cùng Chăm Con row subtitle in Khám phá › Gia đình & trợ lý. EN is an engineering draft for owner review."
+  },
+  "cpDayTasks": "{count, plural, other{{count} việc}}",
+  "@cpDayTasks": {
+    "description": "Cùng Chăm Con: how many tasks (the day, a group, a person). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpStarts": "Bắt đầu {time} · {task}",
+  "@cpStarts": {
+    "description": "Cùng Chăm Con summary before anything is done: the first task. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpNext": "Tiếp theo {time} · {task}",
+  "@cpNext": {
+    "description": "Cùng Chăm Con summary once something is done: the next open task. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpLeft": "{count, plural, other{Còn {count} việc}}",
+  "@cpLeft": {
+    "description": "Cùng Chăm Con summary: open tasks left today. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpAllDone": "Xong hết việc hôm nay",
+  "@cpAllDone": {
+    "description": "Cùng Chăm Con summary when every task is done or skipped. EN is an engineering draft for owner review."
+  },
+  "cpProgressA11y": "Đã làm {done} trên {total} việc",
+  "@cpProgressA11y": {
+    "description": "Cùng Chăm Con progress ring, read by screen readers. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "cpMorning": "Sáng",
+  "@cpMorning": {
+    "description": "Cùng Chăm Con group: tasks before 12:00. EN is an engineering draft for owner review."
+  },
+  "cpAfternoon": "Chiều",
+  "@cpAfternoon": {
+    "description": "Cùng Chăm Con group: 12:00–17:59. EN is an engineering draft for owner review."
+  },
+  "cpEvening": "Tối",
+  "@cpEvening": {
+    "description": "Cùng Chăm Con group: from 18:00. EN is an engineering draft for owner review."
+  },
+  "cpAssignGroup": "Giao cả buổi",
+  "@cpAssignGroup": {
+    "description": "Cùng Chăm Con: give every task of this group (Sáng / Chiều / Tối) to the same people. A group is not a shift (D-135). EN is an engineering draft for owner review."
+  },
+  "cpAddTask": "Thêm việc",
+  "@cpAddTask": {
+    "description": "Cùng Chăm Con: add a task (button, sheet title). EN is an engineering draft for owner review."
+  },
+  "cpAssignShort": "Giao",
+  "@cpAssignShort": {
+    "description": "Cùng Chăm Con task with nobody on it: the chip that opens Giao việc. EN is an engineering draft for owner review."
+  },
+  "cpMarkDone": "Đánh dấu đã làm: {task}",
+  "@cpMarkDone": {
+    "description": "Cùng Chăm Con ring, screen reader label. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpMarkOpen": "Đã làm: {task}. Chạm để bỏ đánh dấu",
+  "@cpMarkOpen": {
+    "description": "Cùng Chăm Con ring of a done task, screen reader label. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDoneToast": "Đã làm · {task}",
+  "@cpDoneToast": {
+    "description": "Cùng Chăm Con toast after the ring (with Hoàn tác). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDoneBy": "{name} đã làm",
+  "@cpDoneBy": {
+    "description": "Cùng Chăm Con task line when done, who did it (may differ from who was assigned). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpSkipped": "Bỏ qua hôm nay",
+  "@cpSkipped": {
+    "description": "Cùng Chăm Con task line when skipped. EN is an engineering draft for owner review."
+  },
+  "cpEveryDay": "Mọi ngày",
+  "@cpEveryDay": {
+    "description": "Cùng Chăm Con: a task kept for every day (segment and tag). EN is an engineering draft for owner review."
+  },
+  "cpTodayOnly": "Chỉ hôm nay",
+  "@cpTodayOnly": {
+    "description": "Cùng Chăm Con: change only this day (segment). EN is an engineering draft for owner review."
+  },
+  "cpSaveFailed": "Chưa lưu được. Kiểm tra mạng rồi thử lại.",
+  "@cpSaveFailed": {
+    "description": "Cùng Chăm Con toast when a change did not reach the server. EN is an engineering draft for owner review."
+  },
+  "cpLoadFailed": "Chưa tải được lịch. Kiểm tra mạng rồi thử lại.",
+  "@cpLoadFailed": {
+    "description": "Cùng Chăm Con when the day cannot be read. EN is an engineering draft for owner review."
+  },
+  "cpSwipeHint": "Vuốt sang trái để sửa hoặc xoá",
+  "@cpSwipeHint": {
+    "description": "Cùng Chăm Con one-time hint on the first task (ClTourTip, like the Hôm nay tour). EN is an engineering draft for owner review."
+  },
+  "cpGotIt": "Đã hiểu",
+  "@cpGotIt": {
+    "description": "Cùng Chăm Con one-time hint button. EN is an engineering draft for owner review."
+  },
+  "cpEmptyToday": "Hôm nay chưa có lịch",
+  "@cpEmptyToday": {
+    "description": "Cùng Chăm Con 04-0 title, today. EN is an engineering draft for owner review."
+  },
+  "cpEmptyDay": "Ngày này chưa có lịch",
+  "@cpEmptyDay": {
+    "description": "Cùng Chăm Con 04-0 title, another day. EN is an engineering draft for owner review."
+  },
+  "cpEmptyViewer": "Khi ba mẹ lên lịch, việc sẽ hiện ở đây.",
+  "@cpEmptyViewer": {
+    "description": "Cùng Chăm Con 04-0 for someone who cannot make the plan (Người chăm sóc, Người thân). EN is an engineering draft for owner review."
+  },
+  "cpStartEveryday": "Dùng lịch mọi ngày",
+  "@cpStartEveryday": {
+    "description": "Cùng Chăm Con 04-0: start from the tasks kept every day. EN is an engineering draft for owner review."
+  },
+  "cpStartYesterday": "Giống hôm qua",
+  "@cpStartYesterday": {
+    "description": "Cùng Chăm Con 04-0: copy yesterday. EN is an engineering draft for owner review."
+  },
+  "cpStartEmpty": "Tự thêm việc",
+  "@cpStartEmpty": {
+    "description": "Cùng Chăm Con 04-0: start with no tasks. EN is an engineering draft for owner review."
+  },
+  "cpAssignWhoMorning": "Giao việc buổi sáng cho ai?",
+  "@cpAssignWhoMorning": {
+    "description": "Cùng Chăm Con 05 title, group Sáng. EN is an engineering draft for owner review."
+  },
+  "cpAssignWhoAfternoon": "Giao việc buổi chiều cho ai?",
+  "@cpAssignWhoAfternoon": {
+    "description": "Cùng Chăm Con 05 title, group Chiều. EN is an engineering draft for owner review."
+  },
+  "cpAssignWhoEvening": "Giao việc buổi tối cho ai?",
+  "@cpAssignWhoEvening": {
+    "description": "Cùng Chăm Con 05 title, group Tối. EN is an engineering draft for owner review."
+  },
+  "cpAssignWhoTask": "Ai làm việc này?",
+  "@cpAssignWhoTask": {
+    "description": "Cùng Chăm Con 05 title, one task. EN is an engineering draft for owner review."
+  },
+  "cpMemberLoad": "{count, plural, =0{Chưa có việc hôm nay} other{{count} việc hôm nay}}",
+  "@cpMemberLoad": {
+    "description": "Cùng Chăm Con 05: how many tasks this person has on this day. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpAssignTo": "Giao cho {names}",
+  "@cpAssignTo": {
+    "description": "Cùng Chăm Con 05 main button. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "cpAssignNobody": "Để trống người làm",
+  "@cpAssignNobody": {
+    "description": "Cùng Chăm Con 05 main button with nobody chosen. EN is an engineering draft for owner review."
+  },
+  "cpNamesTwo": "{first} và {second}",
+  "@cpNamesTwo": {
+    "description": "Two people, e.g. \"Ba và Mẹ\". EN is an engineering draft for owner review.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "cpNamesMore": "{first} và {count} người",
+  "@cpNamesMore": {
+    "description": "Three or more people: the first and how many more. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpEditTask": "Sửa việc",
+  "@cpEditTask": {
+    "description": "Cùng Chăm Con 06b sheet title. EN is an engineering draft for owner review."
+  },
+  "cpCustomName": "Tên việc",
+  "@cpCustomName": {
+    "description": "Cùng Chăm Con 06: the name of a custom task. EN is an engineering draft for owner review."
+  },
+  "cpCustomHint": "VD: nhỏ mũi",
+  "@cpCustomHint": {
+    "description": "Cùng Chăm Con 06: custom task placeholder. EN is an engineering draft for owner review."
+  },
+  "cpTime": "Giờ",
+  "@cpTime": {
+    "description": "Cùng Chăm Con 06: time row. EN is an engineering draft for owner review."
+  },
+  "cpWho": "Ai làm",
+  "@cpWho": {
+    "description": "Cùng Chăm Con 06: people label. EN is an engineering draft for owner review."
+  },
+  "cpSkipToday": "Bỏ qua hôm nay",
+  "@cpSkipToday": {
+    "description": "Cùng Chăm Con 06b: skip the task today (can be undone). EN is an engineering draft for owner review."
+  },
+  "cpUnskip": "Làm lại việc này hôm nay",
+  "@cpUnskip": {
+    "description": "Cùng Chăm Con 06b on a skipped task. EN is an engineering draft for owner review."
+  },
+  "cpSkipToast": "Đã bỏ qua · {task}",
+  "@cpSkipToast": {
+    "description": "Cùng Chăm Con toast after skipping (with Hoàn tác). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDelete": "Xoá việc",
+  "@cpDelete": {
+    "description": "Cùng Chăm Con 06b and the swipe action. EN is an engineering draft for owner review."
+  },
+  "cpDeleteTitle": "Xoá {task}?",
+  "@cpDeleteTitle": {
+    "description": "Cùng Chăm Con delete confirm title. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDeleteToday": "Chỉ xoá hôm nay",
+  "@cpDeleteToday": {
+    "description": "Cùng Chăm Con delete confirm, an everyday task: keep it for the days to come. EN is an engineering draft for owner review."
+  },
+  "cpDeleteEveryDay": "Xoá cả những ngày sau",
+  "@cpDeleteEveryDay": {
+    "description": "Cùng Chăm Con delete confirm, an everyday task: also stop it from now on. EN is an engineering draft for owner review."
+  },
+  "cpDeleteBody": "Việc đã ghi trong nhật ký chăm sóc vẫn giữ nguyên.",
+  "@cpDeleteBody": {
+    "description": "Cùng Chăm Con delete confirm body: deleting a plan task never deletes a care record (D-135). EN is an engineering draft for owner review."
+  },
+  "cpDeletedToast": "Đã xoá · {task}",
+  "@cpDeletedToast": {
+    "description": "Cùng Chăm Con toast after delete. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpSuggested": "Hay dùng",
+  "@cpSuggested": {
+    "description": "Cùng Chăm Con 06: tasks suggested for the child's age first. EN is an engineering draft for owner review."
+  },
+  "cpMoreTasks": "Việc khác",
+  "@cpMoreTasks": {
+    "description": "Cùng Chăm Con 06: the rest of the tasks. EN is an engineering draft for owner review."
+  },
+  "cpTaskBottle": "Bú bình",
+  "@cpTaskBottle": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskBreast": "Bú mẹ",
+  "@cpTaskBreast": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskPump": "Hút sữa",
+  "@cpTaskPump": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskSolids": "Ăn dặm",
+  "@cpTaskSolids": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskWater": "Uống nước",
+  "@cpTaskWater": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskSleep": "Ngủ",
+  "@cpTaskSleep": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskDiaper": "Thay tã",
+  "@cpTaskDiaper": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskBath": "Tắm",
+  "@cpTaskBath": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskTummy": "Nằm sấp",
+  "@cpTaskTummy": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskRead": "Đọc sách",
+  "@cpTaskRead": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskWalk": "Đi dạo",
+  "@cpTaskWalk": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskVitamin": "Vitamin",
+  "@cpTaskVitamin": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskMedicine": "Uống thuốc",
+  "@cpTaskMedicine": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskTemperature": "Đo nhiệt độ",
+  "@cpTaskTemperature": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskTeeth": "Đánh răng",
+  "@cpTaskTeeth": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskPotty": "Ngồi bô",
+  "@cpTaskPotty": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpTaskCustom": "Việc riêng",
+  "@cpTaskCustom": {
+    "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
   }
 }

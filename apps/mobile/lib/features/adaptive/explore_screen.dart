@@ -48,6 +48,7 @@ enum ExploreItem {
   spending,
   reminders,
   family,
+  carePlan,
   lumi,
   firstAid,
   milestones,
@@ -66,6 +67,7 @@ const _groupOf = <ExploreItem, _Group>{
   ExploreItem.vaccines: _Group.health,
   ExploreItem.firstAid: _Group.health,
   ExploreItem.family: _Group.familyAssistant,
+  ExploreItem.carePlan: _Group.familyAssistant,
   ExploreItem.lumi: _Group.familyAssistant,
   ExploreItem.care: _Group.care,
   ExploreItem.stats: _Group.care,
@@ -121,6 +123,8 @@ final exploreAvailableProvider = Provider<Set<ExploreItem>>((ref) {
     if (spending.viewAll || spending.record) ExploreItem.spending,
     if (!relative) ExploreItem.reminders,
     ExploreItem.family,
+    // Cùng Chăm Con (D-135): whoever reads care reads the plan.
+    if (careView) ExploreItem.carePlan,
     if (ref.watch(assistantAccessProvider(me.babyId)) != null) ExploreItem.lumi,
     if (ref.watch(firstAidPackProvider).value != null) ExploreItem.firstAid,
     ExploreItem.milestones,
@@ -238,6 +242,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         l10n.exFamily,
         older ? l10n.exFamilySubOlder : l10n.exFamilySub,
       ),
+      ExploreItem.carePlan => (
+        ClIcons.calendar,
+        cl.colors.sunshineSoft,
+        l10n.cpTitle,
+        l10n.cpExploreSub,
+      ),
       ExploreItem.lumi => (
         // brandMark is a filled mark: as a line icon it drew an empty square (owner, 2026-10-24).
         ClIcons.spark,
@@ -290,6 +300,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
           context.push(Routes.reminders);
         case ExploreItem.family:
           context.push(Routes.family);
+        case ExploreItem.carePlan:
+          context.push(Routes.carePlan);
         case ExploreItem.lumi:
           openAssistant(context, AssistantScope.child(me.babyId));
         case ExploreItem.firstAid:

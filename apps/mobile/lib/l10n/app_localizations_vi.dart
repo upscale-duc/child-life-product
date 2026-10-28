@@ -22917,4 +22917,272 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2PriceLoadFailedBody => 'Kiểm tra kết nối rồi thử lại.';
+
+  @override
+  String get cpTitle => 'Cùng Chăm Con';
+
+  @override
+  String get cpExploreSub => 'Lịch chăm bé chung, giao việc cho cả nhà';
+
+  @override
+  String cpDayTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpStarts(String time, String task) {
+    return 'Bắt đầu $time · $task';
+  }
+
+  @override
+  String cpNext(String time, String task) {
+    return 'Tiếp theo $time · $task';
+  }
+
+  @override
+  String cpLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Còn $count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpAllDone => 'Xong hết việc hôm nay';
+
+  @override
+  String cpProgressA11y(int done, int total) {
+    return 'Đã làm $done trên $total việc';
+  }
+
+  @override
+  String get cpMorning => 'Sáng';
+
+  @override
+  String get cpAfternoon => 'Chiều';
+
+  @override
+  String get cpEvening => 'Tối';
+
+  @override
+  String get cpAssignGroup => 'Giao cả buổi';
+
+  @override
+  String get cpAddTask => 'Thêm việc';
+
+  @override
+  String get cpAssignShort => 'Giao';
+
+  @override
+  String cpMarkDone(String task) {
+    return 'Đánh dấu đã làm: $task';
+  }
+
+  @override
+  String cpMarkOpen(String task) {
+    return 'Đã làm: $task. Chạm để bỏ đánh dấu';
+  }
+
+  @override
+  String cpDoneToast(String task) {
+    return 'Đã làm · $task';
+  }
+
+  @override
+  String cpDoneBy(String name) {
+    return '$name đã làm';
+  }
+
+  @override
+  String get cpSkipped => 'Bỏ qua hôm nay';
+
+  @override
+  String get cpEveryDay => 'Mọi ngày';
+
+  @override
+  String get cpTodayOnly => 'Chỉ hôm nay';
+
+  @override
+  String get cpSaveFailed => 'Chưa lưu được. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String get cpLoadFailed => 'Chưa tải được lịch. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String get cpSwipeHint => 'Vuốt sang trái để sửa hoặc xoá';
+
+  @override
+  String get cpGotIt => 'Đã hiểu';
+
+  @override
+  String get cpEmptyToday => 'Hôm nay chưa có lịch';
+
+  @override
+  String get cpEmptyDay => 'Ngày này chưa có lịch';
+
+  @override
+  String get cpEmptyViewer => 'Khi ba mẹ lên lịch, việc sẽ hiện ở đây.';
+
+  @override
+  String get cpStartEveryday => 'Dùng lịch mọi ngày';
+
+  @override
+  String get cpStartYesterday => 'Giống hôm qua';
+
+  @override
+  String get cpStartEmpty => 'Tự thêm việc';
+
+  @override
+  String get cpAssignWhoMorning => 'Giao việc buổi sáng cho ai?';
+
+  @override
+  String get cpAssignWhoAfternoon => 'Giao việc buổi chiều cho ai?';
+
+  @override
+  String get cpAssignWhoEvening => 'Giao việc buổi tối cho ai?';
+
+  @override
+  String get cpAssignWhoTask => 'Ai làm việc này?';
+
+  @override
+  String cpMemberLoad(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc hôm nay',
+      zero: 'Chưa có việc hôm nay',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpAssignTo(String names) {
+    return 'Giao cho $names';
+  }
+
+  @override
+  String get cpAssignNobody => 'Để trống người làm';
+
+  @override
+  String cpNamesTwo(String first, String second) {
+    return '$first và $second';
+  }
+
+  @override
+  String cpNamesMore(String first, int count) {
+    return '$first và $count người';
+  }
+
+  @override
+  String get cpEditTask => 'Sửa việc';
+
+  @override
+  String get cpCustomName => 'Tên việc';
+
+  @override
+  String get cpCustomHint => 'VD: nhỏ mũi';
+
+  @override
+  String get cpTime => 'Giờ';
+
+  @override
+  String get cpWho => 'Ai làm';
+
+  @override
+  String get cpSkipToday => 'Bỏ qua hôm nay';
+
+  @override
+  String get cpUnskip => 'Làm lại việc này hôm nay';
+
+  @override
+  String cpSkipToast(String task) {
+    return 'Đã bỏ qua · $task';
+  }
+
+  @override
+  String get cpDelete => 'Xoá việc';
+
+  @override
+  String cpDeleteTitle(String task) {
+    return 'Xoá $task?';
+  }
+
+  @override
+  String get cpDeleteToday => 'Chỉ xoá hôm nay';
+
+  @override
+  String get cpDeleteEveryDay => 'Xoá cả những ngày sau';
+
+  @override
+  String get cpDeleteBody =>
+      'Việc đã ghi trong nhật ký chăm sóc vẫn giữ nguyên.';
+
+  @override
+  String cpDeletedToast(String task) {
+    return 'Đã xoá · $task';
+  }
+
+  @override
+  String get cpSuggested => 'Hay dùng';
+
+  @override
+  String get cpMoreTasks => 'Việc khác';
+
+  @override
+  String get cpTaskBottle => 'Bú bình';
+
+  @override
+  String get cpTaskBreast => 'Bú mẹ';
+
+  @override
+  String get cpTaskPump => 'Hút sữa';
+
+  @override
+  String get cpTaskSolids => 'Ăn dặm';
+
+  @override
+  String get cpTaskWater => 'Uống nước';
+
+  @override
+  String get cpTaskSleep => 'Ngủ';
+
+  @override
+  String get cpTaskDiaper => 'Thay tã';
+
+  @override
+  String get cpTaskBath => 'Tắm';
+
+  @override
+  String get cpTaskTummy => 'Nằm sấp';
+
+  @override
+  String get cpTaskRead => 'Đọc sách';
+
+  @override
+  String get cpTaskWalk => 'Đi dạo';
+
+  @override
+  String get cpTaskVitamin => 'Vitamin';
+
+  @override
+  String get cpTaskMedicine => 'Uống thuốc';
+
+  @override
+  String get cpTaskTemperature => 'Đo nhiệt độ';
+
+  @override
+  String get cpTaskTeeth => 'Đánh răng';
+
+  @override
+  String get cpTaskPotty => 'Ngồi bô';
+
+  @override
+  String get cpTaskCustom => 'Việc riêng';
 }

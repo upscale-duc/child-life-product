@@ -114,26 +114,29 @@ class ClCoachmark extends StatelessWidget {
 }
 
 /// Spotlight tour tooltip (102:631). Pointer x aligns to the target centre.
+///
+/// A one-off hint ("Vuốt sang trái để sửa hoặc xoá · Đã hiểu", Cùng Chăm Con) is the same bubble
+/// with only [title] and [nextLabel]: [step], [body] and the skip action are optional.
 class ClTourTip extends StatelessWidget {
   const ClTourTip({
-    required this.step,
     required this.title,
-    required this.body,
-    required this.skipLabel,
     required this.nextLabel,
-    required this.onSkip,
     required this.onNext,
+    this.step,
+    this.body,
+    this.skipLabel,
+    this.onSkip,
     this.pointerUp = true,
     this.pointerX = 56,
     super.key,
   });
 
-  final String step;
+  final String? step;
   final String title;
-  final String body;
-  final String skipLabel;
+  final String? body;
+  final String? skipLabel;
   final String nextLabel;
-  final VoidCallback onSkip;
+  final VoidCallback? onSkip;
   final VoidCallback onNext;
   final bool pointerUp;
   final double pointerX;
@@ -171,14 +174,16 @@ class ClTourTip extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            step,
-            style: cl.text.caption.copyWith(
-              fontWeight: FontWeight.w600,
-              color: c.mint,
+          if (step case final step?) ...[
+            Text(
+              step,
+              style: cl.text.caption.copyWith(
+                fontWeight: FontWeight.w600,
+                color: c.mint,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
+            const SizedBox(height: 6),
+          ],
           Text(
             title,
             style: cl.text.headline.copyWith(
@@ -186,26 +191,29 @@ class ClTourTip extends StatelessWidget {
               color: c.surface,
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            body,
-            style: cl.text.label.copyWith(
-              color: c.surface2.withValues(alpha: 0.85),
+          if (body case final body?) ...[
+            const SizedBox(height: 6),
+            Text(
+              body,
+              style: cl.text.label.copyWith(
+                color: c.surface2.withValues(alpha: 0.85),
+              ),
             ),
-          ),
+          ],
           const SizedBox(height: 6),
           Row(
             children: [
-              ClPressable(
-                onPressed: onSkip,
-                semanticLabel: skipLabel,
-                child: Text(
-                  skipLabel,
-                  style: cl.text.label.copyWith(
-                    color: c.surface2.withValues(alpha: 0.75),
+              if (skipLabel case final skip?)
+                ClPressable(
+                  onPressed: onSkip,
+                  semanticLabel: skip,
+                  child: Text(
+                    skip,
+                    style: cl.text.label.copyWith(
+                      color: c.surface2.withValues(alpha: 0.75),
+                    ),
                   ),
                 ),
-              ),
               const Spacer(),
               ClPressable(
                 onPressed: onNext,

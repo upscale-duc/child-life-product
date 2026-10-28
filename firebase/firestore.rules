@@ -790,6 +790,25 @@ service cloud.firestore {
           allow write: if false;
         }
       }
+
+      // Cùng Chăm Con (D-135): the day's shared plan, its everyday tasks and its history. Read
+      // by whoever reads care; written only by the plan Functions (startCarePlanDay, …).
+      match /carePlanDays/{date} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+        match /items/{itemId} {
+          allow read: if canReadCare(babyId);
+          allow write: if false;
+        }
+      }
+      match /carePlanTemplate/{templateId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+      match /carePlanHistory/{entryId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
     }
 
     // ---------- Care (S4) ----------

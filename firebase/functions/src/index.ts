@@ -56,7 +56,7 @@ import {
 import { recordAiCall, cleanupAiUsage } from './ai-telemetry.js';
 import { randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
-import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import {
   onDocumentCreated,
@@ -294,6 +294,14 @@ import {
   saveReminderRule,
   setReminderRuleEnabled,
 } from './reminder-rules.js';
+import {
+  CarePlanError,
+  assignCarePlanItems as runAssignCarePlanItems,
+  deleteCarePlanItem as runDeleteCarePlanItem,
+  saveCarePlanItem as runSaveCarePlanItem,
+  setCarePlanItemStatus as runSetCarePlanItemStatus,
+  startCarePlanDay as runStartCarePlanDay,
+} from './care-plan.js';
 import {
   VaccineReminderError,
   ringVaccineReminders,
@@ -854,6 +862,27 @@ export const deleteRuleReminder = ruleCall((uid, data, now) =>
 export const answerRuleReminder = ruleCall((uid, data, now) =>
   answerReminderRule(getFirestore(), uid, data, now),
 );
+
+// Cùng Chăm Con (D-135): the day's shared plan; only these write it.
+function planCall<T>(run: (db: Firestore, uid: string, data: unknown, now: Date) => Promise<T>) {
+  return onCall(async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(getFirestore(), request.auth.uid, request.data, new Date());
+    } catch (error) {
+      if (error instanceof CarePlanError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      throw error;
+    }
+  });
+}
+
+export const startCarePlanDay = planCall(runStartCarePlanDay);
+export const saveCarePlanItem = planCall(runSaveCarePlanItem);
+export const deleteCarePlanItem = planCall(runDeleteCarePlanItem);
+export const assignCarePlanItems = planCall(runAssignCarePlanItems);
+export const setCarePlanItemStatus = planCall(runSetCarePlanItemStatus);
 
 /** Sổ tiêm chủng reminders: 3 days before and the evening before at 19:00 (P-133). */
 export const ringVaccineReminderPush = onSchedule('every 5 minutes', async () => {

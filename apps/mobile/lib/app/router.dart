@@ -24,6 +24,7 @@ import '../features/care/history_screen.dart';
 import '../features/care/stats_screens.dart';
 import '../features/care/timer_models.dart';
 import '../features/care/timer_screens.dart';
+import '../features/care_plan/care_plan_screen.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
 import '../features/family/family_models.dart';
 import '../features/family/family_screen.dart';
@@ -549,6 +550,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   nutritionRoute(),
                   // Ăn dặm (5a – 5h, D-085).
                   solidsRoute(),
+                  // Cùng Chăm Con (D-135).
+                  _route(
+                    path: 'together',
+                    builder: (_, s) =>
+                        CarePlanScreen(date: s.uri.queryParameters['date']),
+                  ),
                   // S7 reminders (8a–8e, 12f).
                   _route(
                     path: 'reminders',
