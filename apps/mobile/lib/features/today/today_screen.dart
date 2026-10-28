@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../care/care_duty.dart';
 import '../care/bottle_suggestions.dart';
 import '../care/bottle_quick_memory.dart';
 import '../../app/route_guard.dart';
@@ -26,6 +25,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
+import '../care_plan/care_plan_today.dart' show CarePlanTodaySection;
 import '../care/care_screens.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
@@ -288,12 +288,11 @@ class TodayScreen extends ConsumerWidget {
         ? ranked.any((w) => w.id == WidgetId.tiles && w.visible)
         : layout.shows(TodaySection.tiles);
 
-    // Owner 27/10/2026: care duty is fixed in the header, with visibility only.
-    final dutyEnabled = adaptive
+    // D-135: the old "Ai đang trông bé" switch (`duty` / careDuty, visibility only) now shows
+    // "n việc cần làm"; the chip left the header (Q1).
+    final tasksEnabled = adaptive
         ? ranked.any((w) => w.id == WidgetId.careDuty && w.visible)
-        : careDutyByAge(ref.watch(childBandProvider(babyId))) &&
-              ref.watch(headerSettingsProvider).showDuty;
-    final showDuty = dutyEnabled && ref.watch(careDutyChipVisibleProvider);
+        : ref.watch(headerSettingsProvider).showDuty;
     return ColoredBox(
       color: cl.colors.cloud,
       child: ListView(
@@ -304,7 +303,7 @@ class TodayScreen extends ConsumerWidget {
           },
         ),
         children: [
-          TodayLivingHeader(showDuty: showDuty),
+          const TodayLivingHeader(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
             child: Column(
@@ -335,6 +334,9 @@ class TodayScreen extends ConsumerWidget {
                 ),
                 // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
                 const WhatsNewBanner(),
+                // D-135 (14): the viewer's shared Cùng Chăm Con tasks, first under the header;
+                // personal reminders stay in Nhắc việc below (Q4).
+                CarePlanTodaySection(enabled: tasksEnabled),
                 // AR02: new library photos that may show the baby (Tự lưu, D-066).
 
                 // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
@@ -362,7 +364,7 @@ class TodayScreen extends ConsumerWidget {
                             ],
                             WidgetId.growth => [const AxGrowth()],
                             WidgetId.familyView => [const AxFamilyView()],
-                            // Care status has a fixed home in the living header.
+                            // Drawn first, as "n việc cần làm" (D-135).
                             WidgetId.careDuty => const <Widget>[],
                             _ => sectionParts(
                               TodaySection.values.byName(w.id.wire),

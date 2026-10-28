@@ -125,3 +125,67 @@ export function carePlanCan(role: MemberRole, right: CarePlanRight): boolean {
 
 /** Who can be given a task: those who take care of the baby. */
 export const carePlanAssignable = (role: MemberRole) => role === 'coParent' || role === 'caregiver';
+
+// ---------- Task reminders (N1, D-135 Q5) ----------
+
+/**
+ * "Nhắc trước" choices in minutes; 0 = Tắt. Per person, in `users/{uid}/settings/carePlan`
+ * (written by its owner, Rules mirror [carePlanPrefsDocSchema]).
+ */
+export const carePlanReminderLeads = [0, 5, 10, 15] as const;
+export type CarePlanReminderLead = (typeof carePlanReminderLeads)[number];
+
+/** Tasks of one person less than this many minutes apart ring as one push. */
+export const carePlanGroupMinutes = 15;
+
+export const carePlanPrefsDocSchema = z
+  .object({
+    leadMinutes: z.union(carePlanReminderLeads.map((m) => z.literal(m))).optional(),
+    /** "Nhắc cả trong giờ yên lặng" (D-135 Q5): on by default. */
+    quietHours: z.boolean().optional(),
+    updatedAt: z.unknown().optional(),
+  })
+  .strict();
+
+export interface CarePlanPrefs {
+  leadMinutes: CarePlanReminderLead;
+  quietHours: boolean;
+}
+
+export const defaultCarePlanPrefs: CarePlanPrefs = { leadMinutes: 5, quietHours: true };
+
+/** The stored prefs with defaults; anything malformed takes its default. */
+export function carePlanPrefsOf(doc: Record<string, unknown> | null | undefined): CarePlanPrefs {
+  const lead = doc?.leadMinutes;
+  return {
+    leadMinutes: (carePlanReminderLeads as readonly unknown[]).includes(lead)
+      ? (lead as CarePlanReminderLead)
+      : defaultCarePlanPrefs.leadMinutes,
+    quietHours:
+      typeof doc?.quietHours === 'boolean' ? doc.quietHours : defaultCarePlanPrefs.quietHours,
+  };
+}
+
+/**
+ * A task's name in a push (mirrors the app's `cpTask*` strings). A custom task's own title is
+ * free text the family typed and may name a medicine, so it never reaches a lock screen.
+ */
+export const carePlanTaskNames: Record<CarePlanTask, { vi: string; en: string }> = {
+  bottle: { vi: 'Bú bình', en: 'Bottle' },
+  breast: { vi: 'Bú mẹ', en: 'Breastfeed' },
+  pump: { vi: 'Hút sữa', en: 'Pump' },
+  solids: { vi: 'Ăn dặm', en: 'Solids' },
+  water: { vi: 'Uống nước', en: 'Water' },
+  sleep: { vi: 'Ngủ', en: 'Sleep' },
+  diaper: { vi: 'Thay tã', en: 'Diaper' },
+  bath: { vi: 'Tắm', en: 'Bath' },
+  tummy: { vi: 'Nằm sấp', en: 'Tummy time' },
+  read: { vi: 'Đọc sách', en: 'Reading' },
+  walk: { vi: 'Đi dạo', en: 'Walk' },
+  vitamin: { vi: 'Vitamin', en: 'Vitamin' },
+  medicine: { vi: 'Uống thuốc', en: 'Medicine' },
+  temperature: { vi: 'Đo nhiệt độ', en: 'Check temp' },
+  teeth: { vi: 'Đánh răng', en: 'Brush teeth' },
+  potty: { vi: 'Ngồi bô', en: 'Potty' },
+  custom: { vi: 'Việc riêng', en: 'Your own task' },
+};

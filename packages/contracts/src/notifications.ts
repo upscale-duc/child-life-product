@@ -138,6 +138,8 @@ export const notificationKinds = [
   'memberRemoved',
   // D-093: "Gửi cho Jun" — a handover sent to one member.
   'handoverSent',
+  // D-135 N1: a Cùng Chăm Con task of this person is due soon.
+  'careTaskDue',
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 
@@ -172,6 +174,7 @@ export const notificationCategoryOf: Record<NotificationKind, NotificationCatego
   roleChanged: 'family',
   memberRemoved: 'family',
   handoverSent: 'family',
+  careTaskDue: 'reminders',
 };
 
 /**
@@ -206,11 +209,17 @@ export const notificationSettingOf: Record<NotificationKind, NotificationSetting
   roleChanged: null,
   memberRemoved: null,
   handoverSent: 'handovers',
+  // "Nhắc trước · Tắt" in the person's Cùng Chăm Con settings (`users/{uid}/settings/carePlan`)
+  // is its switch: the producer does not send to someone who turned it off.
+  careTaskDue: null,
 };
 
-/** Reminders the person set ring on time even in quiet hours (EN07 "Luôn đến đúng giờ"). */
+/**
+ * Reminders the person set ring on time even in quiet hours (EN07 "Luôn đến đúng giờ"). Care
+ * tasks (D-135 Q5) ring by default; each person may hold them (`settings/carePlan.quietHours`).
+ */
 export function ringsInQuietHours(kind: NotificationKind): boolean {
-  return kind === 'reminderRule' || kind === 'vaccine';
+  return kind === 'reminderRule' || kind === 'vaccine' || kind === 'careTaskDue';
 }
 
 /** Where tapping an inbox row (or its push) goes; ids travel in `data`. */

@@ -7592,7 +7592,7 @@
       }
     }
   },
-  "axWidgetCareDuty": "Who is caring",
+  "axWidgetCareDuty": "Care tasks to do",
   "@axWidgetCareDuty": {
     "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
   },
@@ -8715,5 +8715,23 @@
   "cpTaskTemperature": "Check temp",
   "cpTaskTeeth": "Brush teeth",
   "cpTaskPotty": "Potty",
-  "cpTaskCustom": "Your own task"
+  "cpTaskCustom": "Your own task",
+  "cpHomeTitle": "{count, plural, =1{1 task to do} other{{count} tasks to do}}",
+  "cpHomeAll": "All",
+  "cpDoneAction": "Done",
+  "cpDueTitle": "It's time",
+  "cpDueLater": "Later · 10 min",
+  "cpDueSeeDay": "See today's plan",
+  "cpDueDoneAll": "{count, plural, =1{Done} other{All {count} done}}",
+  "cpDoneManyToast": "{count, plural, =1{1 task done} other{{count} tasks done}}",
+  "cpDueGone": "That task is already done or skipped",
+  "cpRemindTitle": "Care task reminders",
+  "cpRemindBefore": "Remind me",
+  "cpRemindHint": "Only for tasks given to you. Tasks less than 15 minutes apart come in one notification.",
+  "cpLeadMinutes": "{minutes} min",
+  "cpLeadValue": "{minutes} min before",
+  "cpQuietHours": "Also during quiet hours",
+  "cpQuietHoursHint": "Your phone's Do Not Disturb can still silence it.",
+  "ntCareTasks": "Care tasks",
+  "cpHelperOnUntil": "{name} is caring · until {time}"
 }

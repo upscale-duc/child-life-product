@@ -17,6 +17,7 @@ import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../care_plan/care_plan_repository.dart' show carePlanPrefsProvider;
 import '../engagement/engagement_local.dart' show engagementRevisionProvider;
 import '../engagement/engagement_repository.dart' show engagementProvider;
 import '../engagement/engagement_widgets.dart' show engagementTitle;
@@ -176,6 +177,17 @@ class _NotificationSettingsScreenState
           ClCardGroup(
             children: [
               toggle('reminders', l10n.ntCare),
+              // D-135 N1: one place for the task reminders (Cùng Chăm Con settings).
+              MeRow(
+                key: const Key('nt-care-tasks'),
+                title: l10n.ntCareTasks,
+                value: switch (ref.watch(carePlanPrefsProvider(uid)).value) {
+                  null => null,
+                  final p when !p.on => l10n.meOff,
+                  final p => l10n.cpLeadValue(p.leadMinutes),
+                },
+                onTap: () => context.push(Routes.carePlanSettings),
+              ),
               toggle('vaccines', l10n.ntVaccines, l10n.ntVaccinesHint),
               if (parent)
                 toggle('spending', l10n.ntSpending, l10n.ntSpendingHint),

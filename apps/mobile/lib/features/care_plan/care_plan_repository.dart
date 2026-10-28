@@ -31,6 +31,19 @@ class CarePlanRepository {
             ]),
           );
 
+  DocumentReference<Map<String, dynamic>> _prefs(String uid) =>
+      _db.doc('users/$uid/settings/carePlan');
+
+  /// This person's task reminders (N1): "Nhắc trước", "Nhắc cả trong giờ yên lặng".
+  Stream<CarePlanPrefs> watchPrefs(String uid) =>
+      _prefs(uid).snapshots().map((s) => CarePlanPrefs.fromJson(s.data()));
+
+  Future<void> savePrefs(String uid, CarePlanPrefs prefs) => _prefs(uid).set({
+    'leadMinutes': prefs.leadMinutes,
+    'quietHours': prefs.quietHours,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
   /// How many tasks are kept "Mọi ngày" (04-0 offers to start from them).
   Stream<int> watchEverydayCount(String babyId) => _db
       .collection('babies/$babyId/carePlanTemplate')
@@ -148,3 +161,7 @@ final carePlanPendingProvider =
     NotifierProvider<CarePlanPendingStatus, Map<String, CarePlanStatus>>(
       CarePlanPendingStatus.new,
     );
+
+final carePlanPrefsProvider = StreamProvider.family<CarePlanPrefs, String>(
+  (ref, uid) => ref.watch(carePlanRepositoryProvider).watchPrefs(uid),
+);

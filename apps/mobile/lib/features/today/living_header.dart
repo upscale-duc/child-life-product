@@ -10,7 +10,6 @@ import '../../core/design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
-import '../care/care_duty.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../memories/memory_repository.dart';
@@ -109,13 +108,7 @@ final headerPhotoProvider = Provider.family<ImageProvider?, HeaderSettings>((
 });
 
 class TodayLivingHeader extends ConsumerWidget {
-  const TodayLivingHeader({
-    required this.showDuty,
-    this.settings,
-    this.preview = false,
-    super.key,
-  });
-  final bool showDuty;
+  const TodayLivingHeader({this.settings, this.preview = false, super.key});
   final HeaderSettings? settings;
   final bool preview;
 
@@ -156,7 +149,6 @@ class TodayLivingHeader extends ConsumerWidget {
           NightCareToggle(hero: true),
         ],
       ),
-      duty: showDuty ? const CareDutyChip(hero: true) : null,
     );
   }
 }

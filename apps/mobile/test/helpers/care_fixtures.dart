@@ -331,9 +331,11 @@ List<Override> careOverrides({
   FirstAidDevice? firstAidDevice,
   FirstAidStore? firstAidStore,
   NotificationRepository? notificationRepo,
+  bool carePlan = true,
 }) => [
   ...familyOverrides(
     me: me,
+    carePlan: carePlan,
     notificationRepo: notificationRepo,
     records: records ?? mockDay(),
     recordsStream: recordsStream,

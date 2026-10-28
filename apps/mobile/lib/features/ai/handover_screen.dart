@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../care/care_duty.dart';
+import '../care_plan/care_plan_today.dart' show carePlanHelperOnDuty;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -1509,7 +1510,11 @@ class HandoverEntry extends ConsumerWidget {
               uid: waiting.senderUid,
             ),
           );
-    final line = from == null ? sub : l10n.aiSentToYouShort(from);
+    // D-135 Q1: a helper on duty is said here (the chip left the header); a waiting handover
+    // still comes first.
+    final line = from != null
+        ? l10n.aiSentToYouShort(from)
+        : carePlanHelperOnDuty(ref, l10n, me) ?? sub;
     return RhCard(
       onTap: () => context.push(
         waiting == null

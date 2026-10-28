@@ -21012,7 +21012,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get axWidgetCareDuty => 'Ai đang trông bé';
+  String get axWidgetCareDuty => 'Việc chăm con cần làm';
 
   @override
   String get rhSeeHow => 'Xem cách làm';
@@ -23185,4 +23185,87 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpTaskCustom => 'Việc riêng';
+
+  @override
+  String cpHomeTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc cần làm',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpHomeAll => 'Tất cả';
+
+  @override
+  String get cpDoneAction => 'Đã làm';
+
+  @override
+  String get cpDueTitle => 'Đến giờ rồi';
+
+  @override
+  String get cpDueLater => 'Để sau 10 phút';
+
+  @override
+  String get cpDueSeeDay => 'Xem cả lịch hôm nay';
+
+  @override
+  String cpDueDoneAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã làm cả $count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpDoneManyToast(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã làm $count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpDueGone => 'Việc này đã xong hoặc đã được bỏ qua';
+
+  @override
+  String get cpRemindTitle => 'Nhắc việc chăm con';
+
+  @override
+  String get cpRemindBefore => 'Nhắc trước';
+
+  @override
+  String get cpRemindHint =>
+      'Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.';
+
+  @override
+  String cpLeadMinutes(int minutes) {
+    return '$minutes phút';
+  }
+
+  @override
+  String cpLeadValue(int minutes) {
+    return 'Trước $minutes phút';
+  }
+
+  @override
+  String get cpQuietHours => 'Nhắc cả trong giờ yên lặng';
+
+  @override
+  String get cpQuietHoursHint =>
+      'Không làm phiền của điện thoại vẫn có thể chặn thông báo.';
+
+  @override
+  String get ntCareTasks => 'Việc chăm con';
+
+  @override
+  String cpHelperOnUntil(String name, String time) {
+    return '$name đang trông · đến $time';
+  }
 }

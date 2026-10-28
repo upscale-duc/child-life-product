@@ -46,6 +46,7 @@ export const notificationDestinationIds = [
   'FAMILY_STORAGE',
   'FAMILY_MEMBERS',
   'CARE_HANDOVER',
+  'CARE_TASK_DUE',
   'LUMI_INSIGHT',
   'INBOX',
 ] as const;
@@ -237,6 +238,20 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       fallback: 'INBOX',
       completion: t('Xem và nhận bàn giao', 'Read and acknowledge the handover'),
     },
+    // D-135 N1: Hôm nay with "Đến giờ rồi" for those tasks (gone or done: the day's plan).
+    CARE_TASK_DUE: {
+      id: 'CARE_TASK_DUE',
+      screen: t('Đến giờ rồi (Cùng Chăm Con)', 'Time for a care task (Shared care)'),
+      path: '/care/together',
+      params: [
+        babyId,
+        { key: 'date', pattern: /^\d{4}-\d{2}-\d{2}$/, required: true },
+        { key: 'items', pattern: /^pi_[a-f0-9]{32}(,pi_[a-f0-9]{32}){0,9}$/, required: true },
+      ],
+      permission: 'care_read',
+      fallback: 'INBOX',
+      completion: t('Đánh dấu việc đã làm', 'Mark the task done'),
+    },
     FAMILY_MESSAGES: {
       id: 'FAMILY_MESSAGES',
       screen: t('Lời nhắn gia đình', 'Family messages'),
@@ -337,6 +352,7 @@ export const notificationProducers = [
   'staff.storage',
   'family.members',
   'ai.handover',
+  'care.plan',
   'engagement',
   'engineering',
 ] as const;
@@ -824,6 +840,32 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
     engagement: [],
     status: 'live',
   },
+  careTaskDue: {
+    kind: 'careTaskDue',
+    group: 'care',
+    producer: 'care.plan',
+    trigger: both(
+      'Mỗi phút: việc Cùng Chăm Con của người này sắp đến giờ (theo “Nhắc trước” của họ); các việc cách nhau dưới 15 phút gộp một thông báo',
+      'Every minute: this person’s shared-care task is coming up (their “Remind before”); tasks under 15 min apart are one notice',
+    ),
+    recipients: both(
+      'Người được giao việc, còn là Cùng nuôi / Người chăm sóc, chưa tắt “Nhắc trước”',
+      'The task’s assignees who are still co-parents / caregivers and have not turned reminders off',
+    ),
+    priority: 'time_sensitive',
+    templates: ['care.task_due'],
+    destination: 'CARE_TASK_DUE',
+    setting: null,
+    // Per person: "Nhắc cả trong giờ yên lặng" (D-135 Q5, on by default).
+    quietHours: 'rings',
+    dedup: both(
+      'Giao dịch đánh dấu việc + phiên bản đã nhắc cho từng người trước khi gửi',
+      'A transaction marks each task + revision as reminded per person before sending',
+    ),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
   test: {
     kind: 'test',
     group: 'other',
@@ -1119,6 +1161,7 @@ export const notificationTemplateIds = [
   'family.role_changed',
   'family.member_removed',
   'ai.handover_sent',
+  'care.task_due',
 ] as const;
 export type NotificationTemplateId = (typeof notificationTemplateIds)[number];
 
@@ -1237,6 +1280,23 @@ export const notificationPlaceholders = {
     description: both(
       'Tên hoạt động gợi ý (nội dung thư viện, không phải dữ liệu của bé)',
       'Suggested activity title (library content, not the baby’s data)',
+    ),
+  },
+  minutes: {
+    type: 'number',
+    sensitivity: 'safe',
+    fallback: '5',
+    maxLength: 3,
+    description: both('Số phút còn lại trước giờ việc', 'Minutes left before the task'),
+  },
+  task_line: {
+    type: 'text',
+    sensitivity: 'safe',
+    fallback: both('Việc chăm bé', 'A care task'),
+    maxLength: 120,
+    description: both(
+      'Giờ và tên việc trong danh mục (“09:00 Vitamin · 09:10 Bú bình”); không có tên tự gõ',
+      'Times and catalogue task names (“09:00 Vitamin · 09:10 Bottle”); never a typed title',
     ),
   },
   milestone_label: {
@@ -1720,6 +1780,23 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
       },
     },
     { actor_name: 'Mẹ' },
+  ),
+  // D-135 N1: catalogue task names and times only, never a typed title or a care value.
+  'care.task_due': tpl(
+    'care.task_due',
+    'careTaskDue',
+    ['Việc chăm bé sắp đến giờ', 'Care task coming up'],
+    ['minutes', 'task_line', 'baby_name'],
+    {
+      vi: { title: '{{minutes}} phút nữa {{baby_name}} cần bạn rồi nè', body: '{{task_line}}' },
+      en: { title: '{{baby_name}} needs you in {{minutes}} min', body: '{{task_line}}' },
+    },
+    {
+      minutes: 5,
+      task_line: both('09:00 Vitamin · 09:10 Bú bình', '09:00 Vitamin · 09:10 Bottle'),
+      baby_name: both('Bin', 'Bin'),
+    },
+    ['task_line'],
   ),
 };
 

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/route_guard.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -11,6 +13,7 @@ import '../../core/widgets/cl_choices.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_misc.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_swipe.dart';
 import '../../l10n/app_localizations.dart';
@@ -404,7 +407,24 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
       ];
     }
 
-    return MePage(title: l10n.cpTitle, children: [strip, ...body]);
+    return MePage(
+      title: l10n.cpTitle,
+      // N1: whoever can be given a task sets their own reminders.
+      trailing: carePlanCanComplete(me)
+          ? ClPressable(
+              key: const Key('cp_settings'),
+              semanticLabel: l10n.cpRemindTitle,
+              onPressed: () => context.push(Routes.carePlanSettings),
+              child: SizedBox.square(
+                dimension: ClSpace.tapMin,
+                child: Center(
+                  child: ClIcon(ClIcons.bell, size: 22, color: cl.colors.ink),
+                ),
+              ),
+            )
+          : null,
+      children: [strip, ...body],
+    );
   }
 }
 

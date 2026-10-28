@@ -27,7 +27,7 @@ Future<FakeCarePlanRepository> _pump(
     viewport: const Size(375, 1600),
     prefs: {if (hintDone) 'carePlan.swipeHint.done': true},
     overrides: [
-      ...familyOverrides(me: me ?? mai, now: carePlanNow),
+      ...familyOverrides(me: me ?? mai, now: carePlanNow, carePlan: false),
       ...carePlanOverrides(days: days, everyday: everyday, repo: repo),
     ],
   );
@@ -230,7 +230,7 @@ void main() {
           viewport: const Size(375, 2400),
           prefs: {'carePlan.swipeHint.done': false},
           overrides: [
-            ...familyOverrides(me: mai, now: carePlanNow),
+            ...familyOverrides(me: mai, now: carePlanNow, carePlan: false),
             ...carePlanOverrides(days: {carePlanToday: planUnderway()}),
           ],
         );

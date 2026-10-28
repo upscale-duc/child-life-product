@@ -114,16 +114,25 @@ class FakeCarePlanRepository implements CarePlanRepository {
   ) async => calls.add(('status', {'itemId': itemId, 'status': status.name}));
 
   @override
+  Future<void> savePrefs(String uid, CarePlanPrefs prefs) async => calls.add((
+    'prefs',
+    {'leadMinutes': prefs.leadMinutes, 'quietHours': prefs.quietHours},
+  ));
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 /// The plan as the screen reads it: [days] by date (null = no plan that day), the everyday
-/// count, and [repo] for the calls.
+/// count, this person's reminder [prefs], and [repo] for the calls. With [familyOverrides], pass
+/// it `carePlan: false`.
 List<Override> carePlanOverrides({
   Map<String, List<CarePlanItem>?> days = const {},
   int everyday = 0,
   FakeCarePlanRepository? repo,
+  CarePlanPrefs prefs = const CarePlanPrefs(),
 }) => [
+  carePlanPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
   carePlanRepositoryProvider.overrideWithValue(
     repo ?? FakeCarePlanRepository(),
   ),

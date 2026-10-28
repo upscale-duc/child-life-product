@@ -37,6 +37,9 @@ abstract final class Routes {
   /// Cùng Chăm Con (D-135): the family's shared day plan (`?date=yyyy-mm-dd`, today by default).
   static const carePlan = '/care/together';
 
+  /// The person's task reminders (N1, D-135 Q5): "Nhắc trước", quiet hours.
+  static const carePlanSettings = '/care/together/settings';
+
   /// Rule reminders (v1.0 1a–1h): `/new`, `/{id}`, `/{id}/edit`.
   static const ruleDetail = '/care/reminders/rules';
   static const ruleNew = '/care/reminders/rules/new';

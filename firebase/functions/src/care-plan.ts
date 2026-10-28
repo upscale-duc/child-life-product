@@ -18,12 +18,15 @@ import {
   type CarePlanRight,
   type MemberRole,
 } from '@child-life/contracts';
+import { localInstant } from './assistant-tools.js';
 import { isActiveMember } from './family.js';
 
 /**
  * Cùng Chăm Con (D-135): the day's shared plan of care tasks. Only these callables write it;
  * every write bumps the day's `revision` and adds one history entry (who, what, when). Nothing
- * about the child is logged.
+ * about the child is logged. Each task also keeps `dueAt` (its time in the baby's zone, for the
+ * N1 reminder query) and its own `revision`, bumped when its time or people change, so an edited
+ * task is reminded again (`care-plan-reminders.ts`).
  */
 
 export class CarePlanError extends Error {
@@ -83,6 +86,12 @@ export function editableDate(zone: string, date: string, now: Date): boolean {
 interface Caller {
   uid: string;
   role: MemberRole;
+  zone: string;
+}
+
+/** The instant a task at [time] on [date] is due, in the baby's [zone]. */
+export function carePlanDueAt(zone: string, date: string, time: string): Timestamp {
+  return Timestamp.fromDate(localInstant(zone, date, time));
 }
 
 /** Reads the baby and the caller (inside [tx]) and checks [right] and the date. */
@@ -110,7 +119,7 @@ async function caller(
   if (!editableDate(zone, date, now)) {
     throw new CarePlanError('failed-precondition', 'day-closed');
   }
-  return { uid, role: member.get('role') };
+  return { uid, role: member.get('role'), zone };
 }
 
 /** Every assignee must be an active Cùng nuôi or Người chăm sóc (D-018: never a relative). */
@@ -137,6 +146,12 @@ async function requireDay(
   const day = await tx.get(dayRef(db, babyId, date));
   if (!day.exists) throw new CarePlanError('failed-precondition', 'no-day');
   return day;
+}
+
+/** The same people, in any order. */
+function sameMembers(a: string[] | undefined, b: string[]): boolean {
+  const x = new Set(a ?? []);
+  return x.size === b.length && b.every((u) => x.has(u));
 }
 
 function bump(tx: Transaction, day: DocumentSnapshot, uid: string, now: Date) {
@@ -193,7 +208,7 @@ export async function startCarePlanDay(
 ): Promise<{ created: boolean; items: number }> {
   const req = parse(startCarePlanDaySchema, data);
   return db.runTransaction(async (tx) => {
-    await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
+    const { zone } = await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
     const ref = dayRef(db, req.babyId, req.date);
     const day = await tx.get(ref);
     if (day.exists) {
@@ -258,6 +273,8 @@ export async function startCarePlanDay(
         task: s.task,
         title: s.title,
         time: s.time,
+        dueAt: carePlanDueAt(zone, req.date, s.time),
+        revision: 1,
         assignees: s.assignees.filter((u) => still.has(u)),
         status: 'open',
         templateId: s.templateId,
@@ -283,7 +300,7 @@ export async function saveCarePlanItem(
 ): Promise<{ itemId: string; templateId: string | null }> {
   const req = parse(saveCarePlanItemSchema, data);
   return db.runTransaction(async (tx) => {
-    await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
+    const { zone } = await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
     const day = await requireDay(db, tx, req.babyId, req.date);
     const ref = itemsOf(db, req.babyId, req.date).doc(req.itemId);
     const existing = await tx.get(ref);
@@ -316,6 +333,13 @@ export async function saveCarePlanItem(
         updatedBy: uid,
       });
     }
+    const oldRevision = existing.exists
+      ? ((existing.get('revision') as number | undefined) ?? 0)
+      : 0;
+    const moved =
+      !existing.exists ||
+      existing.get('time') !== req.time ||
+      !sameMembers(existing.get('assignees') as string[] | undefined, req.assignees);
     tx.set(ref, {
       id: req.itemId,
       babyId: req.babyId,
@@ -323,6 +347,8 @@ export async function saveCarePlanItem(
       task: req.task,
       title,
       time: req.time,
+      dueAt: carePlanDueAt(zone, req.date, req.time),
+      revision: moved ? oldRevision + 1 : oldRevision,
       assignees: req.assignees,
       status: existing.exists ? existing.get('status') : 'open',
       templateId,
@@ -402,7 +428,13 @@ export async function assignCarePlanItems(
     if (found.length === 0) throw new CarePlanError('not-found', 'not-found');
     const at = Timestamp.fromDate(now);
     for (const i of found) {
-      tx.update(i.ref, { assignees: req.assignees, updatedAt: at, updatedBy: uid });
+      if (sameMembers(i.get('assignees') as string[] | undefined, req.assignees)) continue;
+      tx.update(i.ref, {
+        assignees: req.assignees,
+        revision: FieldValue.increment(1),
+        updatedAt: at,
+        updatedBy: uid,
+      });
     }
     bump(tx, day, uid, now);
     record(db, tx, req.babyId, uid, now, {

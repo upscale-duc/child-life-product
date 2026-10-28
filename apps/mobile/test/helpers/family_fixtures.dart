@@ -34,6 +34,8 @@ import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+
+import 'care_plan_fixtures.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'first_aid_fixtures.dart';
@@ -260,10 +262,15 @@ List<Override> familyOverrides({
 
   /// P-181 who is on duty (nobody unless a test says so).
   CareDuty? duty,
+
+  /// Cùng Chăm Con (D-135): no plan unless a test gives one (or uses [carePlanOverrides],
+  /// which then replaces these; pass `carePlan: false`).
+  bool carePlan = true,
 }) {
   final self = me ?? mai;
   return [
     careDutyProvider.overrideWith((ref, babyId) => Stream.value(duty)),
+    if (carePlan) ...carePlanOverrides(),
     personalDeliveryProvider.overrideWith(
       (ref, uid) => Stream.value(<String, dynamic>{}),
     ),

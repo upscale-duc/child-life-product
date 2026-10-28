@@ -12,6 +12,8 @@ import 'package:child_life/features/notifications/notification_settings_screen.d
 import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
+import 'package:child_life/features/care_plan/care_plan_today.dart'
+    show carePlanDueRequestProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -583,7 +585,7 @@ void main() {
       for (final id in notificationDestinations.keys) {
         expect(destinationChain(id).last, 'INBOX');
       }
-      expect(notificationDestinations.length, 20);
+      expect(notificationDestinations.length, 21);
     });
 
     test('rows parse the P-174 fields and hide when expired', () {
@@ -993,6 +995,42 @@ void main() {
       expect(outcome, NotificationOpenOutcome.navigated);
       expect(visits, ['/notifications']);
       expect(find.text('Mục này không còn mở được.'), findsNothing);
+    });
+
+    testWidgets('CARE_TASK_DUE asks for "Đến giờ rồi" over the open screen', (
+      tester,
+    ) async {
+      final visits = await _pump(
+        tester,
+        probe,
+        _overrides(FakeNotificationRepository()),
+      );
+      final items = ['pi_${'a' * 32}', 'pi_${'b' * 32}'];
+      final outcome = await open(
+        tester,
+        push({
+          'kind': 'careTaskDue',
+          'babyId': teddyId,
+          'date': '2026-10-08',
+          'items': items.join(','),
+        }),
+        surface: NotificationSurface.push,
+      );
+      expect(outcome, NotificationOpenOutcome.navigated);
+      expect(visits, isEmpty);
+      final request = captured.read(carePlanDueRequestProvider)!;
+      expect(request.babyId, teddyId);
+      expect(request.date, '2026-10-08');
+      expect(request.ids, items);
+      // A malformed id never reaches the plan.
+      expect(
+        destinationParams('CARE_TASK_DUE', {
+          'babyId': teddyId,
+          'date': '2026-10-08',
+          'items': 'pi_x',
+        }),
+        isNull,
+      );
     });
 
     testWidgets('FAMILY_MEMBERS for a baby not in the session: inbox only', (

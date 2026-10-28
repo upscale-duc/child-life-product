@@ -4,7 +4,16 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
@@ -85,5 +94,30 @@ describe('Cùng Chăm Con plan', () => {
       await assertFails(updateDoc(doc(as('mom'), p), { x: 2 }));
       await assertFails(deleteDoc(doc(as('mom'), p)));
     }
+  });
+});
+
+describe('Cùng Chăm Con reminder settings (users/{uid}/settings/carePlan)', () => {
+  const ref = (as_: string, uid = as_) => doc(as(as_), `users/${uid}/settings/carePlan`);
+  it('its owner writes a lead of 0 / 5 / 10 / 15 and the quiet-hours switch', async () => {
+    for (const leadMinutes of [0, 5, 10, 15]) {
+      await assertSucceeds(
+        setDoc(ref('mom'), { leadMinutes, quietHours: false, updatedAt: serverTimestamp() }),
+      );
+    }
+    await assertSucceeds(getDoc(ref('mom')));
+  });
+
+  it('nothing else, and nobody else', async () => {
+    await assertFails(setDoc(ref('mom'), { leadMinutes: 7, updatedAt: serverTimestamp() }));
+    await assertFails(setDoc(ref('mom'), { quietHours: 'yes', updatedAt: serverTimestamp() }));
+    await assertFails(
+      setDoc(ref('mom'), { leadMinutes: 5, extra: 1, updatedAt: serverTimestamp() }),
+    );
+    await assertFails(setDoc(ref('mom'), { leadMinutes: 5 }));
+    await assertFails(
+      setDoc(ref('nanny', 'mom'), { leadMinutes: 5, updatedAt: serverTimestamp() }),
+    );
+    await assertFails(getDoc(ref('nanny', 'mom')));
   });
 });

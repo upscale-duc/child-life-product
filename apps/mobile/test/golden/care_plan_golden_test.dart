@@ -133,7 +133,7 @@ void main() {
               viewport: Size(375, c.height),
               prefs: {if (c.hintDone) 'carePlan.swipeHint.done': true},
               overrides: <Override>[
-                ...familyOverrides(me: c.me, now: carePlanNow),
+                ...familyOverrides(me: c.me, now: carePlanNow, carePlan: false),
                 ...carePlanOverrides(days: c.days.cast(), everyday: c.everyday),
               ],
             );

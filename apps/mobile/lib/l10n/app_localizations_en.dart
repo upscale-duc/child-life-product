@@ -22270,7 +22270,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get axWidgetCareDuty => 'Who is caring';
+  String get axWidgetCareDuty => 'Care tasks to do';
 
   @override
   String get rhSeeHow => 'See how';
@@ -24551,4 +24551,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpTaskCustom => 'Your own task';
+
+  @override
+  String cpHomeTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks to do',
+      one: '1 task to do',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpHomeAll => 'All';
+
+  @override
+  String get cpDoneAction => 'Done';
+
+  @override
+  String get cpDueTitle => 'It\'s time';
+
+  @override
+  String get cpDueLater => 'Later · 10 min';
+
+  @override
+  String get cpDueSeeDay => 'See today\'s plan';
+
+  @override
+  String cpDueDoneAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'All $count done',
+      one: 'Done',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpDoneManyToast(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks done',
+      one: '1 task done',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpDueGone => 'That task is already done or skipped';
+
+  @override
+  String get cpRemindTitle => 'Care task reminders';
+
+  @override
+  String get cpRemindBefore => 'Remind me';
+
+  @override
+  String get cpRemindHint =>
+      'Only for tasks given to you. Tasks less than 15 minutes apart come in one notification.';
+
+  @override
+  String cpLeadMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String cpLeadValue(int minutes) {
+    return '$minutes min before';
+  }
+
+  @override
+  String get cpQuietHours => 'Also during quiet hours';
+
+  @override
+  String get cpQuietHoursHint =>
+      'Your phone\'s Do Not Disturb can still silence it.';
+
+  @override
+  String get ntCareTasks => 'Care tasks';
+
+  @override
+  String cpHelperOnUntil(String name, String time) {
+    return '$name is caring · until $time';
+  }
 }

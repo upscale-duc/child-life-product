@@ -30697,9 +30697,9 @@
       }
     }
   },
-  "axWidgetCareDuty": "Ai đang trông bé",
+  "axWidgetCareDuty": "Việc chăm con cần làm",
   "@axWidgetCareDuty": {
-    "description": "Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6)."
+    "description": "Tuỳ chỉnh Hôm nay / Cài đặt giao diện switch for the \"n việc cần làm\" section (D-135; stored as `duty`, so the old \"Ai đang trông bé\" choice carries over). EN is an engineering draft for owner review."
   },
   "rhSeeHow": "Xem cách làm",
   "@rhSeeHow": {
@@ -33949,5 +33949,110 @@
   "cpTaskCustom": "Việc riêng",
   "@cpTaskCustom": {
     "description": "Cùng Chăm Con task name. EN is an engineering draft for owner review."
+  },
+  "cpHomeTitle": "{count, plural, other{{count} việc cần làm}}",
+  "@cpHomeTitle": {
+    "description": "Hôm nay: header of the viewer's open Cùng Chăm Con tasks today (D-135 Q4: shared tasks only, never personal reminders). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpHomeAll": "Tất cả",
+  "@cpHomeAll": {
+    "description": "Hôm nay \"n việc cần làm\": link to the whole day plan (Cùng Chăm Con). EN is an engineering draft for owner review."
+  },
+  "cpDoneAction": "Đã làm",
+  "@cpDoneAction": {
+    "description": "Cùng Chăm Con: mark this task done (Hôm nay row, \"Đến giờ rồi\" sheet). EN is an engineering draft for owner review."
+  },
+  "cpDueTitle": "Đến giờ rồi",
+  "@cpDueTitle": {
+    "description": "Cùng Chăm Con sheet when one of the viewer's tasks is due (app open or reminder push). EN is an engineering draft for owner review."
+  },
+  "cpDueLater": "Để sau 10 phút",
+  "@cpDueLater": {
+    "description": "\"Đến giờ rồi\": put the sheet off for 10 minutes. EN is an engineering draft for owner review."
+  },
+  "cpDueSeeDay": "Xem cả lịch hôm nay",
+  "@cpDueSeeDay": {
+    "description": "\"Đến giờ rồi\": open the whole Cùng Chăm Con day. EN is an engineering draft for owner review."
+  },
+  "cpDueDoneAll": "{count, plural, other{Đã làm cả {count} việc}}",
+  "@cpDueDoneAll": {
+    "description": "\"Đến giờ rồi\" with several tasks due together: mark them all done. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpDoneManyToast": "{count, plural, other{Đã làm {count} việc}}",
+  "@cpDoneManyToast": {
+    "description": "Toast after marking several Cùng Chăm Con tasks done at once. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpDueGone": "Việc này đã xong hoặc đã được bỏ qua",
+  "@cpDueGone": {
+    "description": "Toast when a reminder push is opened for a task that is no longer open. EN is an engineering draft for owner review."
+  },
+  "cpRemindTitle": "Nhắc việc chăm con",
+  "@cpRemindTitle": {
+    "description": "Cùng Chăm Con: this person's reminder settings (screen title, settings button label). EN is an engineering draft for owner review."
+  },
+  "cpRemindBefore": "Nhắc trước",
+  "@cpRemindBefore": {
+    "description": "Cùng Chăm Con settings: how long before a task the reminder comes. EN is an engineering draft for owner review."
+  },
+  "cpRemindHint": "Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.",
+  "@cpRemindHint": {
+    "description": "Cùng Chăm Con settings: what is reminded and the grouping rule (N1). EN is an engineering draft for owner review."
+  },
+  "cpLeadMinutes": "{minutes} phút",
+  "@cpLeadMinutes": {
+    "description": "Cùng Chăm Con \"Nhắc trước\" choice. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "cpLeadValue": "Trước {minutes} phút",
+  "@cpLeadValue": {
+    "description": "Thông báo › Việc chăm con: the current \"Nhắc trước\" choice. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "cpQuietHours": "Nhắc cả trong giờ yên lặng",
+  "@cpQuietHours": {
+    "description": "Cùng Chăm Con settings switch (D-135 Q5, on by default). EN is an engineering draft for owner review."
+  },
+  "cpQuietHoursHint": "Không làm phiền của điện thoại vẫn có thể chặn thông báo.",
+  "@cpQuietHoursHint": {
+    "description": "Under \"Nhắc cả trong giờ yên lặng\": the app cannot override the phone's own setting, so it does not promise to. EN is an engineering draft for owner review."
+  },
+  "ntCareTasks": "Việc chăm con",
+  "@ntCareTasks": {
+    "description": "Thông báo › Nhắc việc: opens the Cùng Chăm Con reminder settings. EN is an engineering draft for owner review."
+  },
+  "cpHelperOnUntil": "{name} đang trông · đến {time}",
+  "@cpHelperOnUntil": {
+    "description": "Hôm nay Bàn giao row: a helper (caregiver role) on duty and the time of their last task today (D-135 Q1, Q2). Never Ba or Mẹ. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -75,6 +75,8 @@ export interface Notice {
   message: (language: Language) => Omit<PushMessage, 'data'>;
   /** The zone quiet hours are read in (the baby's); Hồ Chí Minh when unknown. */
   zone?: string | undefined;
+  /** This send's quiet-hours rule when the person chose it (D-135 Q5); else the kind's. */
+  quietHours?: 'held' | 'rings';
   /** ENG-00 lease-selected install; existing callers retain their multi-device behavior. */
   deviceId?: string;
   /** Portal template that may override the copy, with the producer's placeholder values. */
@@ -140,7 +142,9 @@ export async function notifyUsers(
     babyOf(db, notice.babyId),
   ]);
   const familyId = baby.familyId;
-  const quietApplies = !notice.test && !ringsInQuietHours(notice.kind);
+  const quietApplies =
+    !notice.test &&
+    (notice.quietHours ? notice.quietHours === 'held' : !ringsInQuietHours(notice.kind));
   const prefs = quietApplies
     ? await db.getAll(...people.map((u) => db.doc(`users/${u}/settings/personalization`)))
     : [];

@@ -187,3 +187,58 @@ String newCarePlanItemId([Random? random]) {
   }
   return hex.toString();
 }
+
+/// "Nhắc trước" choices in minutes, 0 = Tắt (mirrors `carePlanReminderLeads`).
+const carePlanReminderLeads = [5, 10, 15, 0];
+
+/// This person's task reminders (N1, D-135 Q5): `users/{uid}/settings/carePlan`, written by its
+/// owner (mirrors `carePlanPrefsOf`).
+@immutable
+class CarePlanPrefs {
+  const CarePlanPrefs({this.leadMinutes = 5, this.quietHours = true});
+
+  /// 5 / 10 / 15 minutes before the task; 0 = no reminder.
+  final int leadMinutes;
+
+  /// "Nhắc cả trong giờ yên lặng": on by default.
+  final bool quietHours;
+
+  bool get on => leadMinutes > 0;
+
+  static CarePlanPrefs fromJson(Map<String, dynamic>? d) {
+    final lead = d?['leadMinutes'];
+    return CarePlanPrefs(
+      leadMinutes: lead is int && carePlanReminderLeads.contains(lead)
+          ? lead
+          : 5,
+      quietHours: d?['quietHours'] is bool ? d!['quietHours'] as bool : true,
+    );
+  }
+
+  CarePlanPrefs copyWith({int? leadMinutes, bool? quietHours}) => CarePlanPrefs(
+    leadMinutes: leadMinutes ?? this.leadMinutes,
+    quietHours: quietHours ?? this.quietHours,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      other is CarePlanPrefs &&
+      other.leadMinutes == leadMinutes &&
+      other.quietHours == quietHours;
+
+  @override
+  int get hashCode => Object.hash(leadMinutes, quietHours);
+}
+
+/// The tasks of [uid] that are open on [items], in time order.
+List<CarePlanItem> carePlanMine(Iterable<CarePlanItem> items, String uid) => [
+  for (final i in items)
+    if (i.status == CarePlanStatus.open && i.assignees.contains(uid)) i,
+];
+
+/// Minutes after midnight of "07:30".
+int carePlanMinutes(String hhmm) {
+  final p = hhmm.split(':');
+  return (int.tryParse(p.first) ?? 0) * 60 +
+      (p.length > 1 ? int.tryParse(p[1]) ?? 0 : 0);
+}

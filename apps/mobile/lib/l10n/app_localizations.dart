@@ -35166,10 +35166,10 @@ abstract class AppLocalizations {
   /// **'Tự lưu · {time}'**
   String psAutoSavedAt(String time);
 
-  /// Tuỳ chỉnh Hôm nay row for the P-181 chip (on by age up to 6).
+  /// Tuỳ chỉnh Hôm nay / Cài đặt giao diện switch for the "n việc cần làm" section (D-135; stored as `duty`, so the old "Ai đang trông bé" choice carries over). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Ai đang trông bé'**
+  /// **'Việc chăm con cần làm'**
   String get axWidgetCareDuty;
 
   /// Button: opens the activity steps (one try vocabulary, owner 2026-10-25).
@@ -38693,6 +38693,114 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Việc riêng'**
   String get cpTaskCustom;
+
+  /// Hôm nay: header of the viewer's open Cùng Chăm Con tasks today (D-135 Q4: shared tasks only, never personal reminders). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} việc cần làm}}'**
+  String cpHomeTitle(int count);
+
+  /// Hôm nay "n việc cần làm": link to the whole day plan (Cùng Chăm Con). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get cpHomeAll;
+
+  /// Cùng Chăm Con: mark this task done (Hôm nay row, "Đến giờ rồi" sheet). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã làm'**
+  String get cpDoneAction;
+
+  /// Cùng Chăm Con sheet when one of the viewer's tasks is due (app open or reminder push). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ rồi'**
+  String get cpDueTitle;
+
+  /// "Đến giờ rồi": put the sheet off for 10 minutes. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau 10 phút'**
+  String get cpDueLater;
+
+  /// "Đến giờ rồi": open the whole Cùng Chăm Con day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem cả lịch hôm nay'**
+  String get cpDueSeeDay;
+
+  /// "Đến giờ rồi" with several tasks due together: mark them all done. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã làm cả {count} việc}}'**
+  String cpDueDoneAll(int count);
+
+  /// Toast after marking several Cùng Chăm Con tasks done at once. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã làm {count} việc}}'**
+  String cpDoneManyToast(int count);
+
+  /// Toast when a reminder push is opened for a task that is no longer open. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc này đã xong hoặc đã được bỏ qua'**
+  String get cpDueGone;
+
+  /// Cùng Chăm Con: this person's reminder settings (screen title, settings button label). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc chăm con'**
+  String get cpRemindTitle;
+
+  /// Cùng Chăm Con settings: how long before a task the reminder comes. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc trước'**
+  String get cpRemindBefore;
+
+  /// Cùng Chăm Con settings: what is reminded and the grouping rule (N1). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.'**
+  String get cpRemindHint;
+
+  /// Cùng Chăm Con "Nhắc trước" choice. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes} phút'**
+  String cpLeadMinutes(int minutes);
+
+  /// Thông báo › Việc chăm con: the current "Nhắc trước" choice. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước {minutes} phút'**
+  String cpLeadValue(int minutes);
+
+  /// Cùng Chăm Con settings switch (D-135 Q5, on by default). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc cả trong giờ yên lặng'**
+  String get cpQuietHours;
+
+  /// Under "Nhắc cả trong giờ yên lặng": the app cannot override the phone's own setting, so it does not promise to. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không làm phiền của điện thoại vẫn có thể chặn thông báo.'**
+  String get cpQuietHoursHint;
+
+  /// Thông báo › Nhắc việc: opens the Cùng Chăm Con reminder settings. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc chăm con'**
+  String get ntCareTasks;
+
+  /// Hôm nay Bàn giao row: a helper (caregiver role) on duty and the time of their last task today (D-135 Q1, Q2). Never Ba or Mẹ. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đang trông · đến {time}'**
+  String cpHelperOnUntil(String name, String time);
 }
 
 class _AppLocalizationsDelegate

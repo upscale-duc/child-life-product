@@ -37,13 +37,13 @@ void main() {
       });
     }
   }
+  // D-135: the duty chip left the header, so "hidden" (no chip) is the only header now.
   const cases = [
-    (name: 'morning', hour: 8, photo: false, duty: true, scale: 1.0),
-    (name: 'afternoon', hour: 14, photo: false, duty: true, scale: 1.0),
-    (name: 'evening', hour: 20, photo: false, duty: true, scale: 1.0),
-    (name: 'photo', hour: 20, photo: true, duty: true, scale: 1.0),
-    (name: 'hidden', hour: 20, photo: false, duty: false, scale: 1.0),
-    (name: 'large_photo', hour: 20, photo: true, duty: true, scale: 2.0),
+    (name: 'morning', hour: 8, photo: false, scale: 1.0),
+    (name: 'afternoon', hour: 14, photo: false, scale: 1.0),
+    (name: 'evening', hour: 20, photo: false, scale: 1.0),
+    (name: 'photo', hour: 20, photo: true, scale: 1.0),
+    (name: 'large_photo', hour: 20, photo: true, scale: 2.0),
   ];
   for (final c in cases) {
     for (final palette in ClPalette.values) {
@@ -65,7 +65,7 @@ void main() {
                         ),
                         child: RepaintBoundary(
                           key: const Key('header-golden'),
-                          child: TodayLivingHeader(showDuty: c.duty),
+                          child: const TodayLivingHeader(),
                         ),
                       ),
                     ],

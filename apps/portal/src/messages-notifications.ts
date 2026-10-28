@@ -1057,6 +1057,9 @@ const rows: Row[] = [
   ['ntf.kind.handoverSent', 'Bàn giao được gửi', 'Handover sent'],
   ['ntf.producer.ai.handover', 'Bàn giao (AI)', 'Handover (AI)'],
   ['ntf.setting.handovers', 'Bàn giao', 'Handovers'],
+  // D-135 N1: Cùng Chăm Con task reminders
+  ['ntf.kind.careTaskDue', 'Việc chăm bé sắp đến giờ', 'Care task coming up'],
+  ['ntf.producer.care.plan', 'Cùng Chăm Con', 'Shared care plan'],
 
   // D-092: UI review — tab purposes, badges, health, quick links
   [

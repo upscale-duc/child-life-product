@@ -302,6 +302,7 @@ import {
   setCarePlanItemStatus as runSetCarePlanItemStatus,
   startCarePlanDay as runStartCarePlanDay,
 } from './care-plan.js';
+import { ringCareTaskReminders as ringCareTaskPushes } from './care-plan-reminders.js';
 import {
   VaccineReminderError,
   ringVaccineReminders,
@@ -936,6 +937,12 @@ export const spendingBudgetAlert = onDocumentWritten(
     if (alerted) logger.info('spending budget alert', { sent });
   },
 );
+
+/** Cùng Chăm Con N1 (D-135): pushes assignees before their task is due. */
+export const ringCareTaskReminders = onSchedule('every 1 minutes', async () => {
+  const { pushes, sent } = await ringCareTaskPushes(getFirestore(), pushSender(), new Date());
+  if (pushes > 0) logger.info('care task reminders rang', { pushes, sent });
+});
 
 /** Rings rule reminders whose time has come (1f). */
 export const ringRuleReminders = onSchedule('every 1 minutes', async () => {

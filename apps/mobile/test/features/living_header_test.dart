@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/adaptive_fixtures.dart';
 import '../helpers/care_fixtures.dart';
+import '../helpers/care_plan_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/router_pump.dart';
 
@@ -219,13 +220,15 @@ void main() {
   );
 
   testWidgets(
-    'hidden care status shortens the real header and is not rendered in the list',
+    'D-135: no duty chip in the header; the careDuty switch shows "n việc cần làm"',
     (tester) async {
+      final plan = planFresh();
       final (_, container) = await pumpRouted(
         tester,
         const Scaffold(body: TodayScreen()),
         overrides: [
-          ...careOverrides(),
+          ...careOverrides(me: minh, carePlan: false),
+          ...carePlanOverrides(days: {'2026-10-08': plan}),
           ...adaptiveOverrides(
             band: AgeBand.b0_1,
             repo: FakeExperienceRepository(
@@ -236,13 +239,8 @@ void main() {
           ),
         ],
       );
-      expect(find.byType(CareDutyChip), findsOneWidget);
-      final shown = tester
-          .getSize(find.byKey(const Key('todayLivingHeader')))
-          .height;
-      final shownArt = tester
-          .getSize(find.byKey(const Key('todayHeaderArtwork')))
-          .height;
+      expect(find.byType(CareDutyChip), findsNothing);
+      expect(find.byKey(const Key('cpTodaySection')), findsOneWidget);
       container
           .read(experienceProvider(teddyId).notifier)
           .set(
@@ -251,16 +249,8 @@ void main() {
                 .copyWith(shown: [], hidden: [WidgetId.careDuty]),
           );
       await tester.pumpAndSettle();
+      expect(find.byKey(const Key('cpTodaySection')), findsNothing);
       expect(find.byType(CareDutyChip), findsNothing);
-      final hidden = tester
-          .getSize(find.byKey(const Key('todayLivingHeader')))
-          .height;
-      final hiddenArt = tester
-          .getSize(find.byKey(const Key('todayHeaderArtwork')))
-          .height;
-      expect(shownArt - hiddenArt, greaterThanOrEqualTo(44));
-      // The compact foreground still leaves enough room for the greeting.
-      expect(shown, greaterThan(hidden));
     },
   );
 

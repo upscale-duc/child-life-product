@@ -38,6 +38,7 @@ import '../memories/memory_sheets.dart' show showAddSheet;
 import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
+import '../care_plan/care_plan_today.dart' show CarePlanDueGate;
 import 'today_tour.dart';
 import '../reminders/reminder_notifications.dart'
     show notificationsLaunchAskProvider;
@@ -325,6 +326,26 @@ class HomeShell extends ConsumerWidget {
           ),
           if (showTour)
             Positioned.fill(child: TodayTour(babyNickname: nickname)),
+          // D-135 (15): "Đến giờ rồi" when the app opens with a task of mine due, or a task
+          // push was opened; never over the tour, the launch prompt or another sheet.
+          // Positioned: it draws nothing and must not size the Stack.
+          Positioned(
+            left: 0,
+            top: 0,
+            child: CarePlanDueGate(
+              blocked: showTour,
+              onTabRoot: () =>
+                  active == ClTab.today &&
+                  _tabRoots.contains(path) &&
+                  shell
+                          .route
+                          .branches[shell.currentIndex]
+                          .navigatorKey
+                          .currentState
+                          ?.canPop() !=
+                      true,
+            ),
+          ),
         ],
       ),
     );

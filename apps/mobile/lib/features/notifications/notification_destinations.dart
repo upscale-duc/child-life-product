@@ -12,6 +12,7 @@ import '../../app/session.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../care_plan/care_plan_today.dart' show carePlanDueRequestProvider;
 import '../engagement/engagement_widgets.dart';
 import '../home/home_shell.dart';
 import '../memories/album_screens.dart' show sharedAlbumKey;
@@ -198,6 +199,17 @@ const _registry = <NotificationDestination>[
     permission: DestinationPermission.careRead,
     fallback: 'INBOX',
   ),
+  // D-135 N1: "Đến giờ rồi" for those tasks (gone or done: the day plan, with a toast).
+  NotificationDestination(
+    id: 'CARE_TASK_DUE',
+    params: [
+      _babyId,
+      DestinationParam('date', r'^\d{4}-\d{2}-\d{2}$'),
+      DestinationParam('items', r'^pi_[a-f0-9]{32}(,pi_[a-f0-9]{32}){0,9}$'),
+    ],
+    permission: DestinationPermission.careRead,
+    fallback: 'INBOX',
+  ),
   NotificationDestination(
     id: 'LUMI_INSIGHT',
     params: [_babyId, _engagementId],
@@ -287,6 +299,8 @@ const notificationKindGroups = <String, InboxGroup>{
   'memberRemoved': InboxGroup.family,
   // D-093.
   'handoverSent': InboxGroup.care,
+  // D-135 N1.
+  'careTaskDue': InboxGroup.care,
   'test': InboxGroup.other,
 };
 
@@ -318,6 +332,7 @@ const notificationKindDestinations = <String, String>{
   // The removed person no longer follows the baby: the row (and its push) opens the inbox.
   'memberRemoved': 'INBOX',
   'handoverSent': 'CARE_HANDOVER',
+  'careTaskDue': 'CARE_TASK_DUE',
   'test': 'INBOX',
 };
 
@@ -788,6 +803,14 @@ Future<_Opened> _tryOpen(
             ? Routes.rhythmHandover
             : '${Routes.rhythmHandover}?summary=${params['summaryId']}',
       );
+    case 'CARE_TASK_DUE':
+      // Over whatever is showing, once nothing is in the way (care_plan_today.dart).
+      select();
+      ref.read(carePlanDueRequestProvider.notifier).open((
+        babyId: babyId!,
+        date: params['date']!,
+        ids: params['items']!.split(','),
+      ));
     case 'FAMILY_MEMBERS':
       // Gia đình lives in Tiện ích.
       select();

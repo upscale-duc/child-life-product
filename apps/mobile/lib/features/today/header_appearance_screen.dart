@@ -11,10 +11,8 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../adaptive/experience_repository.dart';
-import '../adaptive/adaptive_engine.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
-import '../care/care_duty.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../memories/memory_repository.dart';
@@ -41,16 +39,6 @@ class _HeaderAppearanceState extends ConsumerState<HeaderAppearanceScreen> {
     final l = AppLocalizations.of(context);
     final HeaderSettings draft = _draft ?? ref.watch(headerSettingsProvider);
     final me = ref.watch(selectedMembershipProvider);
-    final adaptive = ref.watch(adaptiveOnProvider);
-    final showDuty =
-        me != null &&
-        ref.watch(careDutyChipVisibleProvider) &&
-        (adaptive
-            ? ref
-                  .watch(adaptiveTodayProvider(me.babyId))
-                  .any((w) => w.id == WidgetId.careDuty && w.visible)
-            : draft.showDuty &&
-                  careDutyByAge(ref.watch(childBandProvider(me.babyId))));
     return OnboardingScaffold(
       topBar: ClTopBar(onBack: () => context.pop()),
       content: [
@@ -61,19 +49,18 @@ class _HeaderAppearanceState extends ConsumerState<HeaderAppearanceScreen> {
           child: ColoredBox(
             color: cl.colors.surface2,
             child: SizedBox(
-              height: showDuty ? 252 : 176,
+              height: 176,
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: SizedBox(
                   width: 375,
-                  height: showDuty ? 320 : 224,
+                  height: 224,
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: IgnorePointer(
                       child: ExcludeSemantics(
                         child: MediaQuery.withNoTextScaling(
                           child: TodayLivingHeader(
-                            showDuty: showDuty,
                             settings: draft,
                             preview: true,
                           ),

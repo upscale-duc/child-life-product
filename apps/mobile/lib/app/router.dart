@@ -25,6 +25,7 @@ import '../features/care/stats_screens.dart';
 import '../features/care/timer_models.dart';
 import '../features/care/timer_screens.dart';
 import '../features/care_plan/care_plan_screen.dart';
+import '../features/care_plan/care_plan_settings.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
 import '../features/family/family_models.dart';
 import '../features/family/family_screen.dart';
@@ -555,6 +556,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'together',
                     builder: (_, s) =>
                         CarePlanScreen(date: s.uri.queryParameters['date']),
+                    routes: [
+                      _route(
+                        path: 'settings',
+                        builder: (_, _) => const CarePlanSettingsScreen(),
+                      ),
+                    ],
                   ),
                   // S7 reminders (8a–8e, 12f).
                   _route(
