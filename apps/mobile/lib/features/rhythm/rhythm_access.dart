@@ -21,6 +21,13 @@ enum FamilyAction {
   final String wire;
 }
 
+/// Who may make a handover (mirrors `canGenerateSummary`): Cùng nuôi, and a helper who logs care
+/// for the parents (D-135 Q3). Consent and quota are the server's.
+bool canGenerateHandover(Membership m) =>
+    familyCan(m, FamilyAction.aiGenerate) ||
+    (m.role == MemberRole.caregiver &&
+        familyCan(m, FamilyAction.rhythmFeedback));
+
 bool familyCan(Membership m, FamilyAction action) {
   final role = m.role;
   return switch (action) {

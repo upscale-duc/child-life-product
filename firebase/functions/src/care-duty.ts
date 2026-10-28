@@ -21,9 +21,12 @@ import { isActiveMember } from './family.js';
 export const careDutyRef = (db: Firestore, babyId: string) =>
   db.doc(`babies/${babyId}/careDuty/current`);
 
-/** Whether this member may be on duty (logs care: Cùng nuôi, Người chăm sóc). */
+/**
+ * Whether this member may be on duty: a helper who logs care (Người chăm sóc). Ba and Mẹ care
+ * equally and never take or hold a duty (D-135 Q1, supersedes the parent side of P-181).
+ */
 export function canTakeDuty(member: DocumentSnapshot, now: Date): boolean {
-  if (!isActiveMember(member, now)) return false;
+  if (!isActiveMember(member, now) || member.get('role') !== 'caregiver') return false;
   const grant: MemberGrant = {
     role: member.get('role'),
     isOwner: member.get('isOwner') === true,

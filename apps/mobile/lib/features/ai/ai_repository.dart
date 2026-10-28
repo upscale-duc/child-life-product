@@ -135,17 +135,20 @@ class AiRepository {
   });
 
   /// D-093 "Gửi cho Jun": sends [summaryId] to [recipientUid] in the app (a push and an inbox
-  /// row with no child data). Idempotent per summary and recipient.
+  /// row with no child data), or, from a helper, to both parents ([toParents], D-135).
+  /// Idempotent per summary and recipient.
   Future<HandoverSendResult> sendHandover({
     required String babyId,
     required String summaryId,
-    required String recipientUid,
+    String? recipientUid,
+    bool toParents = false,
     String? note,
   }) async {
     final data = await _call('sendHandover', {
       'babyId': babyId,
       'summaryId': summaryId,
-      'recipientUid': recipientUid,
+      'recipientUid': ?recipientUid,
+      if (toParents) 'toParents': true,
       if (note != null && note.isNotEmpty) 'note': note,
     });
     return (

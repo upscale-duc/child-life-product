@@ -23268,4 +23268,123 @@ class AppLocalizationsVi extends AppLocalizations {
   String cpHelperOnUntil(String name, String time) {
     return '$name đang trông · đến $time';
   }
+
+  @override
+  String cpShiftHello(String name) {
+    return 'Chào $name';
+  }
+
+  @override
+  String cpShiftLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Còn $count việc trong ca',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpShiftAllDone => 'Xong hết việc trong ca';
+
+  @override
+  String get cpShiftStart => 'Bắt đầu ca';
+
+  @override
+  String cpShiftOnSince(String time) {
+    return 'Đang trông từ $time';
+  }
+
+  @override
+  String get cpMyTasks => 'Việc của tôi';
+
+  @override
+  String get cpNotesTitle => 'Ghi chú cho bố mẹ';
+
+  @override
+  String get cpNoteAteWell => 'Ăn ngon';
+
+  @override
+  String get cpNoteFussy => 'Quấy nhẹ';
+
+  @override
+  String get cpNoteSleptWell => 'Ngủ sâu';
+
+  @override
+  String get cpNoteSmiles => 'Cười nhiều';
+
+  @override
+  String get cpNoteMore => 'Viết thêm…';
+
+  @override
+  String get cpHandoverToParents => 'Bàn giao cho bố mẹ';
+
+  @override
+  String hoToParents(String names) {
+    return 'Bàn giao cho $names';
+  }
+
+  @override
+  String hoShiftEnds(String time) {
+    return 'Hết ca $time';
+  }
+
+  @override
+  String get hoInShift => 'Trong ca';
+
+  @override
+  String hoShiftFeeds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cữ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoShiftDiapers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lần',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoShiftDirty(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'đi ngoài $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hoShiftFeedLabel => 'Bú';
+
+  @override
+  String get hoShiftSleepLabel => 'Ngủ';
+
+  @override
+  String get hoShiftDiaperLabel => 'Tã';
+
+  @override
+  String get cpRemainingTitle => 'Việc còn lại hôm nay';
+
+  @override
+  String get hoMessage => 'Lời nhắn';
+
+  @override
+  String get hoMessageAdd => 'Viết lời nhắn';
+
+  @override
+  String get hoSendToParents => 'Gửi cho bố mẹ';
+
+  @override
+  String hoSentToFamily(String name, String time) {
+    return '$name gửi cho cả nhà · $time';
+  }
 }

@@ -184,7 +184,15 @@ export function noticeTemplate(
   kind: string,
   count: number,
   actorName: string,
+  context?: Record<string, unknown> | null,
 ): { id: NotificationTemplateId; values: Record<string, PlaceholderValue> } | undefined {
+  // D-135 N4: a helper's handover for the whole family, with the tasks still waiting.
+  if (kind === 'handoverSent' && context?.family === true) {
+    const open = typeof context.openTasks === 'number' ? context.openTasks : 0;
+    return open > 0
+      ? { id: 'ai.handover_family', values: { actor_name: actorName, count: open } }
+      : undefined;
+  }
   switch (kind) {
     case 'memories':
     case 'shared':
@@ -220,8 +228,34 @@ export function noticeTemplate(
 }
 
 /** Generic lock-screen copy (11b, R-120) in the recipient's language. */
-export function noticeCopy(kind: string, count: number, actorName: string, language: string): Copy {
+export function noticeCopy(
+  kind: string,
+  count: number,
+  actorName: string,
+  language: string,
+  context?: Record<string, unknown> | null,
+): Copy {
   const vi = !language.startsWith('en');
+  // D-135 N4: who sent it and how many tasks wait; never anything about the child.
+  if (kind === 'handoverSent' && context?.family === true) {
+    const open = typeof context.openTasks === 'number' ? context.openTasks : 0;
+    const who = actorName || (vi ? 'Người chăm sóc' : 'Your helper');
+    return vi
+      ? {
+          title: 'Bàn giao cho cả nhà',
+          body:
+            open > 0
+              ? `${who} vừa gửi lời bàn giao cho cả nhà · Còn ${open} việc chờ bố mẹ`
+              : `${who} vừa gửi lời bàn giao cho cả nhà. Mở để xem.`,
+        }
+      : {
+          title: 'A handover for the family',
+          body:
+            open > 0
+              ? `${who} sent the family a handover · ${open} ${open === 1 ? 'task' : 'tasks'} left for you`
+              : `${who} sent the family a handover. Open to read it.`,
+        };
+  }
   switch (kind) {
     case 'memories':
     case 'shared':
@@ -407,8 +441,8 @@ export async function deliverNotice(
           ? { summaryId: claimed.get('sourceId') }
           : {}),
       },
-      message: (language) => noticeCopy(kind, count, actor, language),
-      template: noticeTemplate(kind, count, actor),
+      message: (language) => noticeCopy(kind, count, actor, language, context),
+      template: noticeTemplate(kind, count, actor, context),
       zone: await babyZone(db, babyId),
     },
     now,

@@ -22,11 +22,13 @@ void main() {
           tester,
           const Scaffold(body: CareDutyChip()),
           overrides: [
+            // D-135 Q1: a helper takes and ends their own shift.
             ...familyOverrides(
+              me: lan,
               now: DateTime.utc(2026, 10, 8, 3),
               duty: take
                   ? null
-                  : CareDuty(uid: mai.uid, since: DateTime.utc(2026, 10, 8, 2)),
+                  : CareDuty(uid: lan.uid, since: DateTime.utc(2026, 10, 8, 2)),
             ),
             careDutyWriterProvider.overrideWithValue((babyId, {required take}) {
               calls++;
@@ -92,53 +94,19 @@ void main() {
     },
   );
 
-  testWidgets(
-    'a failed together request releases loading and can be retried; dismissal is safe',
-    (tester) async {
-      final first = Completer<void>();
-      final retry = Completer<void>();
-      var calls = 0;
-      await pumpRouted(
-        tester,
-        const Scaffold(body: CareDutyChip()),
-        overrides: [
-          ...familyOverrides(),
-          careDutyTogetherWriterProvider.overrideWithValue((babyId, partner) {
-            expect(partner, minh.uid);
-            calls++;
-            return calls == 1 ? first.future : retry.future;
-          }),
-        ],
-      );
-      await tester.tap(find.byKey(const Key('careDutyChip')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('careDutyTogether')));
-      await tester.pump();
-      expect(
-        tester
-            .widget<ClButton>(find.byKey(const Key('careDutyTogether')))
-            .loading,
-        isTrue,
-      );
-      first.completeError(StateError('network'));
-      await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<ClButton>(find.byKey(const Key('careDutyTogether')))
-            .loading,
-        isFalse,
-      );
-      await tester.tap(find.byKey(const Key('careDutyTogether')));
-      await tester.pump();
-      expect(calls, 2);
-      Navigator.of(tester.element(find.byType(ClSheetHeader))).pop();
-      await tester.pumpAndSettle();
-      retry.complete();
-      await tester.pumpAndSettle();
-      expect(find.byType(CareDutyChip), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('D-135 Q1: Ba and Mẹ are never offered to take a shift or share one', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const Scaffold(body: CareDutyChip()),
+      overrides: familyOverrides(),
+    );
+    await tester.tap(find.byKey(const Key('careDutyChip')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('careDutyTake')), findsNothing);
+    expect(find.byKey(const Key('careDutyTogether')), findsNothing);
+  });
 
   testWidgets('together is not offered without a verified opposite parent', (
     tester,
@@ -157,7 +125,7 @@ void main() {
   final now = DateTime.utc(2026, 10, 8, 3); // 10:00 in Hồ Chí Minh
 
   testWidgets(
-    'P-181: the chip says who is caring and since when; the sheet lets another carer take over',
+    'P-181: the chip says who is caring and since when; a parent takes nothing over',
     (tester) async {
       final writes = <bool>[];
       await pumpRouted(
@@ -184,7 +152,7 @@ void main() {
       expect(find.text(l.dutyOnNow('Cô Lan', '08:20')), findsOneWidget);
       await tester.tap(find.byKey(const Key('careDutyChip')));
       await tester.pumpAndSettle();
-      // Who is on, who was before, and the one action Mai can take.
+      // Who is on and who was before; Mai, a parent, takes nothing over (D-135 Q1).
       expect(
         find.byWidgetPredicate(
           (w) => w is ClTabularText && w.text == l.dutyStateUntil('08:20'),
@@ -192,10 +160,8 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('careDutyEnd')), findsNothing);
-      await tester.tap(find.byKey(const Key('careDutyTake')));
-      await tester.pumpAndSettle();
-      expect(writes, [true]);
-      expect(find.text(l.dutyTakenToast), findsOneWidget);
+      expect(find.byKey(const Key('careDutyTake')), findsNothing);
+      expect(writes, isEmpty);
     },
   );
 

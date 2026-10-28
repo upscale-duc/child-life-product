@@ -17,8 +17,8 @@ void main() {
     'other',
     'nobody',
     'parents',
+    // D-135 Q1: a helper takes a shift; "Ba và Mẹ cùng trông" is retired.
     'take_pending',
-    'together_pending',
     'end_pending',
     'large_parents',
     'loading',
@@ -68,7 +68,11 @@ void main() {
                 : null,
             locale: Locale(lang),
             overrides: [
-              ...familyOverrides(now: DateTime.utc(2026, 10, 8, 3), duty: duty),
+              ...familyOverrides(
+                me: name == 'take_pending' ? lan : null,
+                now: DateTime.utc(2026, 10, 8, 3),
+                duty: duty,
+              ),
               careDutyWriterProvider.overrideWithValue(
                 (_, {required take}) => pending.future,
               ),

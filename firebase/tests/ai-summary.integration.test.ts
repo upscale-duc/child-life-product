@@ -595,14 +595,24 @@ describe('gates, quota and roles', () => {
     expect(f.calls).toHaveLength(0);
   });
 
-  it('D-072 #2: a caregiver or relative cannot generate, but reads the handover', async () => {
+  it('D-135 Q3: a caregiver makes a handover (the family’s credits), nothing else', async () => {
     const f = fake((i) => good(i));
-    expect(await reason(ask(f.provider, 'test_nanny'))).toBe('ROLE_DENIED');
+    await consent('test_nanny');
+    const theirs = await ask(f.provider, 'test_nanny');
+    expect(theirs.method).toBe('ai');
+    expect(await reason(ask(f.provider, 'test_nanny', { kind: 'moment', milestoneId: 'm1' }))).toBe(
+      'ROLE_DENIED',
+    );
+    const mom = await listSummaries(db, 'test_mom', { babyId: B }, now, 'test');
+    expect(mom.credits).toMatchObject({ pool: 'assistant', used: 1 });
+  });
+
+  it('D-072 #2: a relative cannot generate, but reads the handover', async () => {
+    const f = fake((i) => good(i));
     expect(await reason(ask(f.provider, 'test_aunt'))).toBe('ROLE_DENIED');
     const made = await ask(f.provider);
     const nanny = await listSummaries(db, 'test_nanny', { babyId: B }, now, 'test');
     expect(nanny.summaries.map((s) => s.id)).toEqual([made.id]);
-    expect(nanny.quota).toBeNull();
     const aunt = await listSummaries(db, 'test_aunt', { babyId: B }, now, 'test');
     expect(aunt.summaries).toHaveLength(1);
     expect(await reason(listSummaries(db, 'test_grandma', { babyId: B }, now, 'test'))).toBe(
@@ -611,7 +621,7 @@ describe('gates, quota and roles', () => {
     const mom = await listSummaries(db, 'test_mom', { babyId: B }, now, 'test');
     expect(mom.quota).toMatchObject({ day: null, month: { used: 1, limit: 1 } });
     expect(mom.credits).toMatchObject({ pool: 'assistant', used: 1, limit: 1, remaining: 0 });
-    expect(nanny.credits).toBeNull();
+    expect(aunt.credits).toBeNull();
   });
 
   it('M03: another family can neither generate, read nor report', async () => {

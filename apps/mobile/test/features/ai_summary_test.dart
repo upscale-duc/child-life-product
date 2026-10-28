@@ -463,13 +463,15 @@ void main() {
       expect(find.text(l10n.aiShare), findsNothing);
     });
 
-    testWidgets('caregiver with nothing stored: an honest empty state', (
+    testWidgets('D-135 Q3: a caregiver makes one on a tap, never on opening', (
       tester,
     ) async {
       final ai = FakeAiRepository(answer: handover());
-      await _handover(tester, ai, member: lan);
+      await _handover(tester, ai, member: lan, create: false);
       expect(ai.calls, isEmpty);
-      expect(find.text(l10n.aiReadEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.hoCreateTitle), findsOneWidget);
+      await _tap(tester, find.text(l10n.hoCreateAction));
+      expect(ai.calls, hasLength(1));
     });
 
     testWidgets('a health sign today: the health route, never AI text', (
@@ -622,20 +624,7 @@ void main() {
       expect(find.text(l10n.aiHandoverTitle), findsNothing);
     });
 
-    testWidgets('Home: a caregiver sees it once one is stored', (tester) async {
-      await pumpRouted(
-        tester,
-        const SingleChildScrollView(child: TodayHandoverRow()),
-        overrides: aiOverrides(
-          ai: FakeAiRepository(stored: [handover()]),
-          member: lan,
-        ),
-      );
-      expect(find.text(l10n.aiHandoverTitle), findsOneWidget);
-      expect(find.text(l10n.aiHandoverEntryLatest('08/10')), findsOneWidget);
-    });
-
-    testWidgets('Home: a caregiver with nothing stored sees nothing', (
+    testWidgets('Home: a caregiver can always make one (D-135 Q3)', (
       tester,
     ) async {
       await pumpRouted(
@@ -643,7 +632,8 @@ void main() {
         const SingleChildScrollView(child: TodayHandoverRow()),
         overrides: aiOverrides(ai: FakeAiRepository(), member: lan),
       );
-      expect(find.text(l10n.aiHandoverTitle), findsNothing);
+      expect(find.text(l10n.aiHandoverTitle), findsOneWidget);
+      expect(find.text(l10n.aiHandoverEntrySub), findsOneWidget);
     });
 
     testWidgets('Cá nhân hoá: the AI consent row', (tester) async {

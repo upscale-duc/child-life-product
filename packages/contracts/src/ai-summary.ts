@@ -184,11 +184,15 @@ export const sendHandoverRequestSchema = z
   .object({
     babyId: z.string().min(1).max(128),
     summaryId: z.string().regex(/^su_[a-f0-9]{32}$/),
-    recipientUid: z.string().min(1).max(128),
+    /** One member (D-093)… */
+    recipientUid: z.string().min(1).max(128).optional(),
+    /** …or, from a helper, every active Cùng nuôi at once (D-135 Q1, ANALYSIS §3.3). */
+    toParents: z.literal(true).optional(),
     /** Owner, 2026-10-25: the sender's own words for the next person (never logged or pushed). */
     note: z.string().trim().max(300).nullish(),
   })
-  .strict();
+  .strict()
+  .refine((r) => (r.recipientUid === undefined) !== (r.toParents === undefined));
 
 /** The recipient opened the handover (`seen`) or tapped "Tôi đã nhận bàn giao" (`received`). */
 export const markHandoverRequestSchema = z
@@ -210,6 +214,14 @@ export interface HandoverSend {
   sentAt: string;
   seenAt: string | null;
   receivedAt: string | null;
+  /** D-135: one of a helper's sends to the parents; the first "Đã nhận" settles all of them. */
+  family?: boolean;
+  /** Who received it for the family (may be the other parent). */
+  receivedBy?: string | null;
+  /** Open tasks of the day not the sender's, when it was sent (the push says "Còn 2 việc"). */
+  openTasks?: number;
+  /** The helper's shift start when they sent it (ISO), for the parents' "Trong ca". */
+  shiftSince?: string | null;
 }
 
 export interface SummaryAnswer {

@@ -35,8 +35,12 @@ import '../vaccines/vaccine_format.dart';
 /// progress bar, today's reminders, vaccines within a week) and the ideas found helpful. Health
 /// signs and the emergency buttons are [HandoverSafety], placed by the screen above its action.
 class HandoverNow extends ConsumerWidget {
-  const HandoverNow({required this.me, super.key});
+  const HandoverNow({required this.me, this.shiftSince, super.key});
   final Membership me;
+
+  /// A helper's shift start (D-135, ANALYSIS §3.1): "Trong ca" totals replace the last feed and
+  /// diaper tiles, since the parents taking over want the whole shift, not the last entry.
+  final DateTime? shiftSince;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -269,19 +273,78 @@ class HandoverNow extends ConsumerWidget {
         ),
     ];
 
+    // "Trong ca": feeds (and bottle ml), sleep and diapers since the shift started.
+    final shift = shiftSince;
+    final List<Widget> tiles;
+    if (shift != null) {
+      bool inShift(DateTime t) => !t.isBefore(shift);
+      final feeds = [
+        for (final r in records)
+          if (isFeed(r) && inShift(r.occurredAt)) r,
+      ];
+      final ml = feeds.fold<int>(0, (n, r) => n + (r.amountMl ?? 0));
+      var slept = Duration.zero;
+      for (final (from, to) in [
+        for (final r in sleeps) (r.occurredAt, r.endedAt!),
+        if (timer != null) (timer.startedAt, now),
+      ]) {
+        final a = from.isBefore(shift) ? shift : from;
+        if (to.isAfter(a)) slept += to.difference(a);
+      }
+      final diapers = [
+        for (final r in records)
+          if (r.type == CareType.diaper && inShift(r.occurredAt)) r,
+      ];
+      final dirty = diapers
+          .where(
+            (r) => r.diaper == DiaperKind.dirty || r.diaper == DiaperKind.both,
+          )
+          .length;
+      tiles = [
+        Expanded(
+          child: _Stat(
+            label: l.hoShiftFeedLabel,
+            value: l.hoShiftFeeds(feeds.length),
+            detail: ml > 0 ? l.amountMl(ml) : null,
+          ),
+        ),
+        const SizedBox(width: ClSpace.s2),
+        Expanded(
+          child: _Stat(
+            label: l.hoShiftSleepLabel,
+            // "0 phút" is the shift's answer; "Chưa ghi gần đây" would not fit a total.
+            value: durationLabel(l, slept.inMinutes),
+          ),
+        ),
+        const SizedBox(width: ClSpace.s2),
+        Expanded(
+          child: _Stat(
+            label: l.hoShiftDiaperLabel,
+            value: l.hoShiftDiapers(diapers.length),
+            detail: dirty > 0 ? l.hoShiftDirty(dirty) : null,
+          ),
+        ),
+      ];
+    } else {
+      tiles = [
+        Expanded(child: feedTile),
+        const SizedBox(width: ClSpace.s2),
+        Expanded(child: diaperTile),
+      ];
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         hero,
-        const SizedBox(height: ClSpace.s2),
+        if (shift != null)
+          _Label(l.hoInShift)
+        else
+          const SizedBox(height: ClSpace.s2),
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: feedTile),
-              const SizedBox(width: ClSpace.s2),
-              Expanded(child: diaperTile),
-            ],
+            children: tiles,
           ),
         ),
         _Label(l.hoUpcoming),

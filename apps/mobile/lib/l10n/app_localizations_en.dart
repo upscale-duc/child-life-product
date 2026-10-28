@@ -24637,4 +24637,127 @@ class AppLocalizationsEn extends AppLocalizations {
   String cpHelperOnUntil(String name, String time) {
     return '$name is caring · until $time';
   }
+
+  @override
+  String cpShiftHello(String name) {
+    return 'Hi, $name';
+  }
+
+  @override
+  String cpShiftLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks left in your shift',
+      one: '1 task left in your shift',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpShiftAllDone => 'Everything in your shift is done';
+
+  @override
+  String get cpShiftStart => 'Start shift';
+
+  @override
+  String cpShiftOnSince(String time) {
+    return 'Caring since $time';
+  }
+
+  @override
+  String get cpMyTasks => 'My tasks';
+
+  @override
+  String get cpNotesTitle => 'Notes for the parents';
+
+  @override
+  String get cpNoteAteWell => 'Ate well';
+
+  @override
+  String get cpNoteFussy => 'A bit fussy';
+
+  @override
+  String get cpNoteSleptWell => 'Slept well';
+
+  @override
+  String get cpNoteSmiles => 'Lots of smiles';
+
+  @override
+  String get cpNoteMore => 'Add a note…';
+
+  @override
+  String get cpHandoverToParents => 'Hand over to the parents';
+
+  @override
+  String hoToParents(String names) {
+    return 'Handover for $names';
+  }
+
+  @override
+  String hoShiftEnds(String time) {
+    return 'Shift ends $time';
+  }
+
+  @override
+  String get hoInShift => 'This shift';
+
+  @override
+  String hoShiftFeeds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoShiftDiapers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoShiftDirty(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dirty',
+      one: '1 dirty',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hoShiftFeedLabel => 'Feeds';
+
+  @override
+  String get hoShiftSleepLabel => 'Sleep';
+
+  @override
+  String get hoShiftDiaperLabel => 'Diapers';
+
+  @override
+  String get cpRemainingTitle => 'Still to do today';
+
+  @override
+  String get hoMessage => 'Message';
+
+  @override
+  String get hoMessageAdd => 'Write a message';
+
+  @override
+  String get hoSendToParents => 'Send to the parents';
+
+  @override
+  String hoSentToFamily(String name, String time) {
+    return '$name sent this to the family · $time';
+  }
 }

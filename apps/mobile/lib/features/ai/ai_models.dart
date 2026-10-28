@@ -473,6 +473,9 @@ class HandoverSend {
     this.seenAt,
     this.receivedAt,
     this.note,
+    this.family = false,
+    this.receivedBy,
+    this.shiftSince,
   });
 
   final String id;
@@ -485,6 +488,15 @@ class HandoverSend {
 
   /// The sender's own words for the recipient, when they wrote some.
   final String? note;
+
+  /// D-135: one of a helper's sends to both parents; the first "Đã nhận" settles them all.
+  final bool family;
+
+  /// Who received it for the family (the other parent, perhaps).
+  final String? receivedBy;
+
+  /// The helper's shift start when they sent it: the parents read "Trong ca" from there.
+  final DateTime? shiftSince;
 
   static DateTime? _at(Object? v) => v is String ? DateTime.tryParse(v) : null;
 
@@ -499,5 +511,8 @@ class HandoverSend {
     note: j['note'] is String && (j['note'] as String).isNotEmpty
         ? j['note'] as String
         : null,
+    family: j['family'] == true,
+    receivedBy: j['receivedBy'] as String?,
+    shiftSince: _at(j['shiftSince']),
   );
 }

@@ -38801,6 +38801,168 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{name} đang trông · đến {time}'**
   String cpHelperOnUntil(String name, String time);
+
+  /// Helper's Hôm nay on a shift: the short greeting (their own name as the family calls them). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào {name}'**
+  String cpShiftHello(String name);
+
+  /// Helper's shift card: open tasks of theirs today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Còn {count} việc trong ca}}'**
+  String cpShiftLeft(int count);
+
+  /// Helper's shift card when all their tasks today are done or skipped. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong hết việc trong ca'**
+  String get cpShiftAllDone;
+
+  /// Helper's shift card: say they are now caring for the baby (the family sees "Cô Lan đang trông"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu ca'**
+  String get cpShiftStart;
+
+  /// Helper's shift card while on duty. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trông từ {time}'**
+  String cpShiftOnSince(String time);
+
+  /// Helper's Hôm nay: their Cùng Chăm Con tasks today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc của tôi'**
+  String get cpMyTasks;
+
+  /// Helper's Hôm nay: quick notes kept on this phone during the shift, filled into the handover message. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú cho bố mẹ'**
+  String get cpNotesTitle;
+
+  /// Helper note tag. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn ngon'**
+  String get cpNoteAteWell;
+
+  /// Helper note tag. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quấy nhẹ'**
+  String get cpNoteFussy;
+
+  /// Helper note tag. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ sâu'**
+  String get cpNoteSleptWell;
+
+  /// Helper note tag. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cười nhiều'**
+  String get cpNoteSmiles;
+
+  /// Helper notes: placeholder of the free text field. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết thêm…'**
+  String get cpNoteMore;
+
+  /// Helper's Hôm nay: opens Bàn giao to send it to both parents. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao cho bố mẹ'**
+  String get cpHandoverToParents;
+
+  /// Bàn giao, a helper sending: who receives it (both parents, D-135 Q1). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao cho {names}'**
+  String hoToParents(String names);
+
+  /// Bàn giao, a helper sending: the time of their last task today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết ca {time}'**
+  String hoShiftEnds(String time);
+
+  /// Bàn giao: totals since the helper started their shift. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong ca'**
+  String get hoInShift;
+
+  /// Bàn giao "Trong ca": feeds (bottle and breast). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} cữ}}'**
+  String hoShiftFeeds(int count);
+
+  /// Bàn giao "Trong ca": diaper changes. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} lần}}'**
+  String hoShiftDiapers(int count);
+
+  /// Bàn giao "Trong ca": dirty diapers among them. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{đi ngoài {count}}}'**
+  String hoShiftDirty(int count);
+
+  /// Bàn giao "Trong ca" tile label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get hoShiftFeedLabel;
+
+  /// Bàn giao "Trong ca" tile label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get hoShiftSleepLabel;
+
+  /// Bàn giao "Trong ca" tile label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã'**
+  String get hoShiftDiaperLabel;
+
+  /// Bàn giao: the day's open Cùng Chăm Con tasks. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc còn lại hôm nay'**
+  String get cpRemainingTitle;
+
+  /// Bàn giao: the helper's words for the parents (from their shift notes, editable). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get hoMessage;
+
+  /// Bàn giao: no message yet, write one. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết lời nhắn'**
+  String get hoMessageAdd;
+
+  /// Bàn giao, a helper: send it to both parents at once. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho bố mẹ'**
+  String get hoSendToParents;
+
+  /// Bàn giao, a parent reading a helper's handover: who sent it, when. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} gửi cho cả nhà · {time}'**
+  String hoSentToFamily(String name, String time);
 }
 
 class _AppLocalizationsDelegate

@@ -41,6 +41,18 @@ export interface MemberGrant {
   extraRights?: Partial<ExtraRights> | null;
 }
 
+/**
+ * Who may generate a summary of [kind]: Cùng nuôi any kind (D-072 #2); a helper who logs care
+ * (Người chăm sóc) the handover too, for the parents (D-135 Q3). Consent, quota and the
+ * `ai.assistance` gates are unchanged.
+ */
+export function canGenerateSummary(member: MemberGrant, kind: string): boolean {
+  return (
+    familyCan(member, 'ai.generate') ||
+    (kind === 'handover' && member.role === 'caregiver' && familyCan(member, 'rhythm.feedback'))
+  );
+}
+
 export function familyCan(member: MemberGrant, action: FamilyAction): boolean {
   const { role } = member;
   switch (action) {

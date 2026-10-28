@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:child_life/features/care/care_duty.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/ai/ai_models.dart';
@@ -324,29 +325,38 @@ class FakeAiRepository implements AiRepository {
   String sender = 'u_mai';
   final _sendsLive = StreamController<void>.broadcast();
 
+  /// Who "Gửi cho bố mẹ" reaches (D-135): the active Cùng nuôi.
+  List<String> parents = const ['u_mai', 'u_minh'];
+
   @override
   Future<HandoverSendResult> sendHandover({
     required String babyId,
     required String summaryId,
-    required String recipientUid,
+    String? recipientUid,
+    bool toParents = false,
     String? note,
   }) async {
-    final id = 'hs_${summaryId.hashCode}_$recipientUid';
-    if (!sends.any((s) => s.id == id)) {
-      sends.add(
-        HandoverSend(
-          id: id,
-          summaryId: summaryId,
-          senderUid: sender,
-          recipientUid: recipientUid,
-          sentAt: DateTime.utc(2026, 10, 8, 13, 30),
-          note: note == null || note.isEmpty ? null : note,
-        ),
-      );
-      _sendsLive.add(null);
+    final ids = <String>[];
+    for (final to in toParents ? parents : [recipientUid!]) {
+      final id = 'hs_${summaryId.hashCode}_$to';
+      ids.add(id);
+      if (!sends.any((s) => s.id == id)) {
+        sends.add(
+          HandoverSend(
+            id: id,
+            summaryId: summaryId,
+            senderUid: sender,
+            recipientUid: to,
+            sentAt: DateTime.utc(2026, 10, 8, 13, 30),
+            note: note == null || note.isEmpty ? null : note,
+            family: toParents,
+          ),
+        );
+      }
     }
+    _sendsLive.add(null);
     return (
-      sendId: id,
+      sendId: ids.first,
       sentAt: DateTime.utc(2026, 10, 8, 13, 30),
       pushable: pushable,
     );
@@ -365,16 +375,28 @@ class FakeAiRepository implements AiRepository {
     if (i < 0) return;
     final s = sends[i];
     final at = DateTime.utc(2026, 10, 8, 13, 42);
-    sends[i] = HandoverSend(
+    HandoverSend mark(HandoverSend s, {required bool seen}) => HandoverSend(
       id: s.id,
       summaryId: s.summaryId,
       senderUid: s.senderUid,
       recipientUid: s.recipientUid,
       sentAt: s.sentAt,
-      seenAt: s.seenAt ?? at,
+      seenAt: seen ? (s.seenAt ?? at) : s.seenAt,
       receivedAt: s.receivedAt ?? (received ? at : null),
       note: s.note,
+      family: s.family,
+      receivedBy:
+          s.receivedBy ?? (received && s.family ? sends[i].recipientUid : null),
     );
+    // D-135: the first parent to receive a helper's handover settles it for both.
+    if (received && s.family && s.receivedAt == null) {
+      for (final (j, o) in sends.indexed.toList()) {
+        if (j != i && o.family && o.summaryId == s.summaryId) {
+          sends[j] = mark(o, seen: false);
+        }
+      }
+    }
+    sends[i] = mark(s, seen: true);
     _sendsLive.add(null);
   }
 
@@ -423,8 +445,12 @@ List<Override> aiOverrides({
   List<CareRecord> records = const [],
   Stream<List<CareRecord>> Function()? recordsStream,
   List<Reminder> reminders = const [],
+  bool carePlan = true,
+  CareDuty? duty,
 }) => [
   ...rhythmOverrides(
+    carePlan: carePlan,
+    duty: duty,
     records: records,
     recordsStream: recordsStream,
     reminders: reminders,

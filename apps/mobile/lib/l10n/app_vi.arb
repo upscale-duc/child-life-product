@@ -34054,5 +34054,161 @@
         "type": "String"
       }
     }
+  },
+  "cpShiftHello": "Chào {name}",
+  "@cpShiftHello": {
+    "description": "Helper's Hôm nay on a shift: the short greeting (their own name as the family calls them). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShiftLeft": "{count, plural, other{Còn {count} việc trong ca}}",
+  "@cpShiftLeft": {
+    "description": "Helper's shift card: open tasks of theirs today. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpShiftAllDone": "Xong hết việc trong ca",
+  "@cpShiftAllDone": {
+    "description": "Helper's shift card when all their tasks today are done or skipped. EN is an engineering draft for owner review."
+  },
+  "cpShiftStart": "Bắt đầu ca",
+  "@cpShiftStart": {
+    "description": "Helper's shift card: say they are now caring for the baby (the family sees \"Cô Lan đang trông\"). EN is an engineering draft for owner review."
+  },
+  "cpShiftOnSince": "Đang trông từ {time}",
+  "@cpShiftOnSince": {
+    "description": "Helper's shift card while on duty. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cpMyTasks": "Việc của tôi",
+  "@cpMyTasks": {
+    "description": "Helper's Hôm nay: their Cùng Chăm Con tasks today. EN is an engineering draft for owner review."
+  },
+  "cpNotesTitle": "Ghi chú cho bố mẹ",
+  "@cpNotesTitle": {
+    "description": "Helper's Hôm nay: quick notes kept on this phone during the shift, filled into the handover message. EN is an engineering draft for owner review."
+  },
+  "cpNoteAteWell": "Ăn ngon",
+  "@cpNoteAteWell": {
+    "description": "Helper note tag. EN is an engineering draft for owner review."
+  },
+  "cpNoteFussy": "Quấy nhẹ",
+  "@cpNoteFussy": {
+    "description": "Helper note tag. EN is an engineering draft for owner review."
+  },
+  "cpNoteSleptWell": "Ngủ sâu",
+  "@cpNoteSleptWell": {
+    "description": "Helper note tag. EN is an engineering draft for owner review."
+  },
+  "cpNoteSmiles": "Cười nhiều",
+  "@cpNoteSmiles": {
+    "description": "Helper note tag. EN is an engineering draft for owner review."
+  },
+  "cpNoteMore": "Viết thêm…",
+  "@cpNoteMore": {
+    "description": "Helper notes: placeholder of the free text field. EN is an engineering draft for owner review."
+  },
+  "cpHandoverToParents": "Bàn giao cho bố mẹ",
+  "@cpHandoverToParents": {
+    "description": "Helper's Hôm nay: opens Bàn giao to send it to both parents. EN is an engineering draft for owner review."
+  },
+  "hoToParents": "Bàn giao cho {names}",
+  "@hoToParents": {
+    "description": "Bàn giao, a helper sending: who receives it (both parents, D-135 Q1). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "hoShiftEnds": "Hết ca {time}",
+  "@hoShiftEnds": {
+    "description": "Bàn giao, a helper sending: the time of their last task today. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hoInShift": "Trong ca",
+  "@hoInShift": {
+    "description": "Bàn giao: totals since the helper started their shift. EN is an engineering draft for owner review."
+  },
+  "hoShiftFeeds": "{count, plural, other{{count} cữ}}",
+  "@hoShiftFeeds": {
+    "description": "Bàn giao \"Trong ca\": feeds (bottle and breast). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoShiftDiapers": "{count, plural, other{{count} lần}}",
+  "@hoShiftDiapers": {
+    "description": "Bàn giao \"Trong ca\": diaper changes. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoShiftDirty": "{count, plural, other{đi ngoài {count}}}",
+  "@hoShiftDirty": {
+    "description": "Bàn giao \"Trong ca\": dirty diapers among them. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoShiftFeedLabel": "Bú",
+  "@hoShiftFeedLabel": {
+    "description": "Bàn giao \"Trong ca\" tile label. EN is an engineering draft for owner review."
+  },
+  "hoShiftSleepLabel": "Ngủ",
+  "@hoShiftSleepLabel": {
+    "description": "Bàn giao \"Trong ca\" tile label. EN is an engineering draft for owner review."
+  },
+  "hoShiftDiaperLabel": "Tã",
+  "@hoShiftDiaperLabel": {
+    "description": "Bàn giao \"Trong ca\" tile label. EN is an engineering draft for owner review."
+  },
+  "cpRemainingTitle": "Việc còn lại hôm nay",
+  "@cpRemainingTitle": {
+    "description": "Bàn giao: the day's open Cùng Chăm Con tasks. EN is an engineering draft for owner review."
+  },
+  "hoMessage": "Lời nhắn",
+  "@hoMessage": {
+    "description": "Bàn giao: the helper's words for the parents (from their shift notes, editable). EN is an engineering draft for owner review."
+  },
+  "hoMessageAdd": "Viết lời nhắn",
+  "@hoMessageAdd": {
+    "description": "Bàn giao: no message yet, write one. EN is an engineering draft for owner review."
+  },
+  "hoSendToParents": "Gửi cho bố mẹ",
+  "@hoSendToParents": {
+    "description": "Bàn giao, a helper: send it to both parents at once. EN is an engineering draft for owner review."
+  },
+  "hoSentToFamily": "{name} gửi cho cả nhà · {time}",
+  "@hoSentToFamily": {
+    "description": "Bàn giao, a parent reading a helper's handover: who sent it, when. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

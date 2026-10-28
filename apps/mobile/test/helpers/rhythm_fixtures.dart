@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:child_life/features/care/care_duty.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/timer_models.dart';
@@ -679,10 +680,16 @@ List<Override> rhythmOverrides({
 
   /// Running care timers (Lumi 2026-10-16: the chat's timer cards read them).
   Map<TimerType, CareTimer> timers = const {},
+
+  /// Cùng Chăm Con (D-135): false when the test gives its own [carePlanOverrides].
+  bool carePlan = true,
+  CareDuty? duty,
 }) => [
   ...familyOverrides(
     me: me ?? mai,
     now: now ?? rhythmNow,
+    carePlan: carePlan,
+    duty: duty,
     online: online,
     records: records,
     recordsStream: recordsStream,

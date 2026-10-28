@@ -340,7 +340,8 @@ class _DutySheetState extends ConsumerState<_DutySheet> {
         ? duty
         : null;
     final mine = current?.includes(me.uid) == true;
-    final canTake = familyCan(me, FamilyAction.rhythmFeedback);
+    // D-135 Q1: only a helper takes or ends a shift; Ba and Mẹ care equally and never do.
+    final canTake = me.role == MemberRole.caregiver;
     final opposite = switch (me.relation) {
       Relation.mother => Relation.father,
       Relation.father => Relation.mother,
@@ -360,9 +361,8 @@ class _DutySheetState extends ConsumerState<_DutySheet> {
     final coCarer = parents.length == 1 ? parents.single : null;
     final ready = state.hasValue;
     final busy = _pending != null;
-    final showTogether =
-        _pending == _DutyAction.together ||
-        (canTake && coCarer != null && current?.coCarerUid == null);
+    // D-135 Q1 retired "Ba và Mẹ cùng trông" (parents hold no duty); kept for a pending call.
+    final showTogether = _pending == _DutyAction.together && coCarer != null;
     String name(String uid) => memberLabel(
       l,
       members.where((m) => m.uid == uid).firstOrNull,
@@ -474,8 +474,7 @@ class _DutySheetState extends ConsumerState<_DutySheet> {
               loading: _pending == _DutyAction.together,
               onPressed: busy
                   ? null
-                  : () =>
-                        _write(_DutyAction.together, coCarerUid: coCarer!.uid),
+                  : () => _write(_DutyAction.together, coCarerUid: coCarer.uid),
             ),
           ],
           if (mine) ...[

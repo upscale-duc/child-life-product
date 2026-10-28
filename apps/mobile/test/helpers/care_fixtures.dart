@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:child_life/features/care/care_duty.dart';
 import 'package:child_life/core/design/tabular_text.dart';
 import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -332,10 +333,12 @@ List<Override> careOverrides({
   FirstAidStore? firstAidStore,
   NotificationRepository? notificationRepo,
   bool carePlan = true,
+  CareDuty? duty,
 }) => [
   ...familyOverrides(
     me: me,
     carePlan: carePlan,
+    duty: duty,
     notificationRepo: notificationRepo,
     records: records ?? mockDay(),
     recordsStream: recordsStream,

@@ -7,8 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../care/care_duty.dart';
-import '../care_plan/care_plan_today.dart' show carePlanHelperOnDuty;
+import '../care_plan/care_plan_shift.dart';
+import '../care_plan/care_plan_today.dart'
+    show carePlanHelperOnDuty, carePlanTodayKey;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -151,7 +152,8 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         ],
       );
     }
-    final canGenerate = familyCan(me, FamilyAction.aiGenerate);
+    // D-135 Q3: a helper makes the handover for the parents too.
+    final canGenerate = canGenerateHandover(me);
     final online = ref.watch(onlineProvider).value ?? true;
     final storedAsync = ref.watch(handoversProvider(me.babyId));
     final stored = latestHandover(
@@ -169,6 +171,9 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
     final today = babyTodayIso(zone, now);
+    // D-135: a helper's handover shows their shift ("Trong ca") while they are on duty.
+    final helper = me.role == MemberRole.caregiver;
+    final shiftSince = helper ? carePlanShiftSince(ref, me) : null;
     final healthToday = (ref.watch(checkInsProvider(me.babyId)).value ?? [])
         .where((c) => c.date == today && c.needsHealthSupport)
         .firstOrNull;
@@ -204,9 +209,9 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
         null => baby?.nickname ?? '',
       }, style: cl.text.label.copyWith(color: cl.colors.inkMuted)),
       const SizedBox(height: ClSpace.s3),
-      // P-181: who is caring now, for everyone; tapping it takes or ends a shift.
-      CareDutyLine(me: me),
-      const SizedBox(height: ClSpace.s3),
+      // D-135 Q1: who it goes to (a helper: both parents, until the shift ends), or which helper
+      // is caring now; never Ba or Mẹ "on duty".
+      ?_whoLine(context, me, members, now),
     ];
     final healthCard = [
       if (health) ...[
@@ -218,7 +223,8 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     if (shown == null) {
       content.addAll([
         ...healthCard,
-        HandoverNow(me: me),
+        HandoverNow(me: me, shiftSince: shiftSince),
+        CarePlanRemaining(me: me),
         PersonalHeading(l10n.hoSummary),
       ]);
       if (_busy || storedAsync.isLoading) {
@@ -320,14 +326,28 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       final from = capitalized(who(toMe.senderUid));
       final at = DateFormat('HH:mm').format(inBabyZone(zone, toMe.sentAt));
       content.addAll([
-        _ReceivedBanner(title: l10n.aiSentToYou(from, at), note: toMe.note),
+        _ReceivedBanner(
+          title: toMe.family
+              ? l10n.hoSentToFamily(from, at)
+              : l10n.aiSentToYou(from, at),
+          note: toMe.note,
+        ),
         const SizedBox(height: ClSpace.s4),
       ]);
     }
 
     // What the next person needs first, live from the diary (owner, 2026-10-25); the summary of
     // the last days follows under its own heading.
-    content.addAll([...healthCard, HandoverNow(me: me)]);
+    content.addAll([
+      ...healthCard,
+      // A parent reading a helper's handover sees the helper's shift too (§3.1).
+      HandoverNow(
+        me: me,
+        shiftSince:
+            shiftSince ?? (toMe?.family == true ? toMe?.shiftSince : null),
+      ),
+      CarePlanRemaining(me: me),
+    ]);
     // Everything below folds under "Tóm tắt mấy ngày qua" (states, sections, the AI line).
     final summaryStart = content.length;
     var folded = false;
@@ -423,15 +443,18 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       if (toMe != null) {
         content.add(
           _ReceiveAction(
-            // P-181: a carer receiving it also takes over ("Tôi nhận trông bé").
-            label: familyCan(me, FamilyAction.rhythmFeedback)
-                ? l10n.hoTakeOver
-                : l10n.pv2Acknowledge,
+            // P-181: a helper receiving it also takes over ("Tôi nhận trông bé"); parents only
+            // acknowledge it (D-135 Q1).
+            label: helper ? l10n.hoTakeOver : l10n.pv2Acknowledge,
             receivedAt: toMe.receivedAt == null
                 ? null
                 : DateFormat(
                     'HH:mm',
                   ).format(inBabyZone(zone, toMe.receivedAt!)),
+            // The other parent got there first: one receipt is enough for the family.
+            receivedBy: toMe.receivedBy != null && toMe.receivedBy != me.uid
+                ? capitalized(who(toMe.receivedBy!))
+                : null,
             onReceived: () => withClProgress(
               context,
               () => ref
@@ -443,6 +466,13 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
                   ),
             ),
           ),
+        );
+        return OnboardingScaffold(topBar: topBar, content: content);
+      }
+      // D-135: a helper sends it to both parents at once, with their message.
+      if (helper) {
+        content.addAll(
+          _toParents(context, me, shown, members, zone, now, online, range),
         );
         return OnboardingScaffold(topBar: topBar, content: content);
       }
@@ -536,6 +566,259 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
     }
     fold();
     return OnboardingScaffold(topBar: topBar, content: content);
+  }
+
+  /// The line under the title (D-135 Q1): a helper sees who receives it and when their shift
+  /// ends; a parent sees which helper is caring now. Null when there is nothing to say.
+  Widget? _whoLine(
+    BuildContext context,
+    Membership me,
+    List<Membership> members,
+    DateTime now,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final String text;
+    String? detail;
+    if (me.role == MemberRole.caregiver) {
+      final parents = carePlanParentsNames(l10n, members, me, now);
+      if (parents.isEmpty) return null;
+      text = l10n.hoToParents(parents);
+      final day = carePlanMyDay(ref, me);
+      if (day.isNotEmpty) detail = l10n.hoShiftEnds(day.last.time);
+    } else {
+      final helper = carePlanHelperOnDuty(ref, l10n, me);
+      if (helper == null) return null;
+      text = helper;
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: ClSpace.s3),
+      child: Container(
+        key: const Key('handoverWho'),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s3,
+        ),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.card),
+          border: Border.all(color: cl.colors.separator),
+        ),
+        child: Row(
+          children: [
+            ClIcon(ClIcons.family, size: 18, color: cl.colors.mintText),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(child: Text(text, style: cl.text.bodyStrong)),
+            if (detail != null) ...[
+              const SizedBox(width: ClSpace.s2),
+              Text(
+                detail,
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// A helper's foot of Bàn giao (D-135, ANALYSIS §3.2): "Lời nhắn" from their shift notes
+  /// (editable), "Gửi cho bố mẹ", then one status for both parents.
+  List<Widget> _toParents(
+    BuildContext context,
+    Membership me,
+    SummaryAnswer shown,
+    List<Membership> members,
+    String zone,
+    DateTime now,
+    bool online,
+    String range,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final parents = carePlanParentsNames(l10n, members, me, now);
+    final noteKey = (me.babyId, carePlanTodayKey(ref, me.babyId));
+    final message = ref
+        .watch(carePlanShiftNotesProvider(noteKey))
+        .message(l10n);
+    final sent = [
+      for (final s
+          in ref
+                  .watch(
+                    sentHandoversProvider((babyId: me.babyId, uid: me.uid)),
+                  )
+                  .value ??
+              const <HandoverSend>[])
+        if (s.summaryId == shown.id && s.family) s,
+    ];
+    String hm(DateTime at) => DateFormat('HH:mm').format(inBabyZone(zone, at));
+    String name(String uid) => capitalized(
+      memberLabel(
+        l10n,
+        members.where((m) => m.uid == uid).firstOrNull,
+        myUid: '',
+        uid: uid,
+      ),
+    );
+    final received = sent.where((s) => s.receivedAt != null).firstOrNull;
+    final seen = sent.where((s) => s.seenAt != null).firstOrNull;
+    return [
+      const SizedBox(height: ClSpace.s4),
+      ClSectionHeader(title: l10n.hoMessage),
+      const SizedBox(height: ClSpace.s2),
+      RhCard(
+        key: const Key('handoverMessage'),
+        onTap: sent.isEmpty
+            ? () => _editMessage(context, noteKey, message)
+            : null,
+        semanticLabel: message.isEmpty ? l10n.hoMessageAdd : message,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                message.isEmpty ? l10n.hoMessageAdd : '“$message”',
+                style: message.isEmpty
+                    ? cl.text.body.copyWith(color: cl.colors.mintText)
+                    : cl.text.body.copyWith(height: 1.45),
+              ),
+            ),
+            if (sent.isEmpty) ...[
+              const SizedBox(width: ClSpace.s2),
+              ClIcon(ClIcons.edit, size: 18, color: cl.colors.inkMuted),
+            ],
+          ],
+        ),
+      ),
+      const SizedBox(height: ClSpace.s4),
+      if (sent.isNotEmpty)
+        _SendStatus(
+          line: l10n.aiSentTo(parents, hm(sent.first.sentAt)),
+          state: received != null
+              ? l10n.aiSendReceived(
+                  name(received.receivedBy ?? received.recipientUid),
+                  hm(received.receivedAt!),
+                )
+              : seen != null
+              ? l10n.aiSendSeen(name(seen.recipientUid), hm(seen.seenAt!))
+              : l10n.aiSendNotSeen,
+          done: received != null,
+        )
+      else if (parents.isNotEmpty && shown.id.isNotEmpty)
+        ClButton(
+          key: const Key('handoverSendParents'),
+          label: l10n.hoSendToParents,
+          expand: true,
+          loading: _sending,
+          onPressed: _sending || !online
+              ? null
+              : () => _sendToParents(context, me, shown, message, range),
+        ),
+      Builder(
+        builder: (box) => Center(
+          child: RhLink(
+            label: l10n.aiShareOther,
+            onTap: () => _share(box, shown, range),
+          ),
+        ),
+      ),
+      Center(
+        child: RhLink(
+          label: l10n.aiReport,
+          muted: true,
+          onTap: () => _report(context, me, shown),
+        ),
+      ),
+    ];
+  }
+
+  Future<void> _editMessage(
+    BuildContext context,
+    CarePlanNoteKey key,
+    String message,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController(text: message);
+    final edited = await showClSheet<String>(
+      context: context,
+      builder: (sheet) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          ClSpace.s3,
+          ClSpace.s4,
+          ClSpace.s6 + MediaQuery.viewInsetsOf(sheet).bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.hoMessage),
+            ClTextField(
+              key: const Key('handoverMessageField'),
+              controller: controller,
+              placeholder: l10n.hoNoteHint,
+              maxLength: 300,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: ClSpace.s3),
+            ClButton(
+              label: l10n.actionSave,
+              expand: true,
+              onPressed: () => Navigator.of(sheet).pop(controller.text.trim()),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (edited == null || !mounted) return;
+    ref
+        .read(carePlanShiftNotesProvider(key).notifier)
+        .set(CarePlanShiftNote(text: edited));
+  }
+
+  Future<void> _sendToParents(
+    BuildContext context,
+    Membership me,
+    SummaryAnswer a,
+    String message,
+    String range,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    setState(() => _sending = true);
+    try {
+      final result = await ref
+          .read(aiRepositoryProvider)
+          .sendHandover(
+            babyId: me.babyId,
+            summaryId: a.id,
+            toParents: true,
+            note: message,
+          );
+      final members =
+          ref.read(familyMembersProvider(me.babyId)).value ??
+          const <Membership>[];
+      final names = carePlanParentsNames(l10n, members, me, DateTime.now());
+      if (result.pushable) {
+        toaster.show(message: l10n.aiSentToast(names));
+      } else if (context.mounted) {
+        toaster.show(
+          message: l10n.aiSentNoPush(names),
+          actionLabel: l10n.aiShareShort,
+          visibleFor: const Duration(seconds: 8),
+          onAction: () {
+            if (context.mounted) _share(context, a, range);
+          },
+        );
+      }
+    } on AiException catch (e) {
+      toaster.show(
+        message: e.offline ? l10n.aiSendFailed : l10n.aiSendFailedOther,
+        error: true,
+      );
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 
   /// The newest entry in the diary (when it was logged), null until the diary has loaded.
@@ -1448,7 +1731,7 @@ class HandoverEntry extends ConsumerWidget {
   ) {
     if (caps == null || !caps.features.aiAssist) return false;
     if (!familyCan(me, FamilyAction.historyRead)) return false;
-    if (familyCan(me, FamilyAction.aiGenerate)) return true;
+    if (canGenerateHandover(me)) return true;
     final stored = ref.watch(handoversProvider(me.babyId)).value;
     return latestHandover(stored ?? const [], language) != null;
   }
@@ -1463,7 +1746,7 @@ class HandoverEntry extends ConsumerWidget {
     if (me == null || !visibleFor(ref, me, caps, locale.languageCode)) {
       return const SizedBox.shrink();
     }
-    final reader = !familyCan(me, FamilyAction.aiGenerate);
+    final reader = !canGenerateHandover(me);
     final latest = reader
         ? latestHandover(
             ref.watch(handoversProvider(me.babyId)).value ?? const [],
@@ -1690,9 +1973,13 @@ class _ReceiveAction extends StatelessWidget {
     required this.label,
     required this.receivedAt,
     required this.onReceived,
+    this.receivedBy,
   });
   final String label;
   final String? receivedAt;
+
+  /// Someone else received it for the family (D-135): "Ba đã nhận bàn giao · 17:05".
+  final String? receivedBy;
   final Future<void> Function() onReceived;
 
   @override
@@ -1708,7 +1995,9 @@ class _ReceiveAction extends StatelessWidget {
             ClIcon(ClIcons.check, size: 18, color: cl.colors.mintText),
             const SizedBox(width: 6),
             Text(
-              l10n.aiYouReceived(at),
+              receivedBy == null
+                  ? l10n.aiYouReceived(at)
+                  : l10n.aiSendReceived(receivedBy!, at),
               style: cl.text.bodyStrong.copyWith(color: cl.colors.mintText),
             ),
           ],

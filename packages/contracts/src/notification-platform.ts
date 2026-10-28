@@ -824,11 +824,11 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
       'A member taps “Send to …” on a handover',
     ),
     recipients: both(
-      'Đúng người được chọn (thành viên được xem chăm sóc của bé)',
-      'The one member chosen (who may read the baby’s care)',
+      'Đúng người được chọn (thành viên được xem chăm sóc của bé); bàn giao của người hỗ trợ: mọi Cùng nuôi (D-135)',
+      'The one member chosen (who may read the baby’s care); a helper’s handover: every co-parent (D-135)',
     ),
     priority: 'transactional',
-    templates: ['ai.handover_sent'],
+    templates: ['ai.handover_sent', 'ai.handover_family'],
     destination: 'CARE_HANDOVER',
     setting: 'handovers',
     quietHours: 'held',
@@ -1162,6 +1162,7 @@ export const notificationTemplateIds = [
   'family.member_removed',
   'ai.handover_sent',
   'care.task_due',
+  'ai.handover_family',
 ] as const;
 export type NotificationTemplateId = (typeof notificationTemplateIds)[number];
 
@@ -1780,6 +1781,25 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
       },
     },
     { actor_name: 'Mẹ' },
+  ),
+  // D-135 N4: a helper's handover for both parents; who sent it and how many tasks wait.
+  'ai.handover_family': tpl(
+    'ai.handover_family',
+    'handoverSent',
+    ['Bàn giao cho cả nhà', 'Handover for the family'],
+    ['actor_name', 'count'],
+    {
+      vi: {
+        title: 'Bàn giao cho cả nhà',
+        body: '{{actor_name}} vừa gửi lời bàn giao cho cả nhà · Còn {{count}} việc chờ bố mẹ',
+      },
+      en: {
+        title: 'A handover for the family',
+        body: '{{actor_name}} sent the family a handover · {{plural:count|1 task|{{count}} tasks}} left for you',
+      },
+    },
+    { actor_name: 'Cô Lan', count: 2 },
+    ['actor_name'],
   ),
   // D-135 N1: catalogue task names and times only, never a typed title or a care value.
   'care.task_due': tpl(

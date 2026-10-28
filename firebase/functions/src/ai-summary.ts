@@ -14,6 +14,7 @@ import {
   claimProblems,
   forbiddenClaimPatterns,
   daysBetweenIso,
+  canGenerateSummary,
   familyCan,
   generateSummaryRequestSchema,
   listSummariesRequestSchema,
@@ -943,9 +944,11 @@ export async function generateSummary(
   const { db, provider, now } = deps;
   const req = parseOr(generateSummaryRequestSchema, data);
   const ctx = await loadEntitlementContext(db, uid, req.babyId, now, deps.environment);
-  // Generation is Cùng nuôi only (D-072 #2); everyone with history.read reads stored summaries.
+  // Generation is Cùng nuôi (D-072 #2), and a helper's handover for the parents (D-135 Q3);
+  // everyone with history.read reads stored summaries.
   if (!ctx.member) throw gateError('NOT_MEMBER');
-  if (!familyCan(ctx.member, 'ai.generate')) throw gateError('ROLE_DENIED');
+  if (!canGenerateSummary(ctx.member, req.kind)) throw gateError('ROLE_DENIED');
+  const action = familyCan(ctx.member, 'ai.generate') ? 'ai.generate' : 'rhythm.feedback';
 
   const id = summaryIdFor(uid, req.babyId, req.requestId);
   const ref = summaryRef(db, req.babyId, id);
@@ -981,7 +984,7 @@ export async function generateSummary(
   }
 
   // A02/A03: entitlement (incl. the ai_assist kill switch and region) then the caller's consent.
-  const entitled = checkCapability(ctx, 'ai.assistance', now, 'ai.generate');
+  const entitled = checkCapability(ctx, 'ai.assistance', now, action);
   if (!entitled.allowed) {
     return finish(await storeFallback(db, draft, now, entitled.reason));
   }
@@ -1233,7 +1236,7 @@ export async function listSummaries(
   // The household's assistant credits (line under "Tạo tóm tắt", D-075 #1), for those who may
   // generate; an unused window reads as empty.
   let credit: ReturnType<typeof creditsOf> = { quota: null, credits: null };
-  if (familyCan(ctx.member, 'ai.generate')) {
+  if (canGenerateSummary(ctx.member, req.kind ?? 'handover')) {
     const { pool } = await summaryPool(db, ctx, req.babyId, now);
     const w = await peekQuotaWindow(db, ctx.familyId, pool.request, now);
     credit = creditsOf(pool.plan, w.window, 0);

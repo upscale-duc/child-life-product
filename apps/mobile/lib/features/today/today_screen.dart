@@ -6,12 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../ai/handover_screen.dart' show HandoverEntry;
 import '../care/bottle_suggestions.dart';
 import '../care/bottle_quick_memory.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tabular_text.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_feedback.dart';
@@ -25,6 +27,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
+import '../care_plan/care_plan_shift.dart';
 import '../care_plan/care_plan_today.dart' show CarePlanTodaySection;
 import '../care/care_screens.dart';
 import '../care/care_sheets.dart';
@@ -32,6 +35,9 @@ import '../care/timer_models.dart';
 import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
+import '../notifications/notification_bell.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../rhythm/rhythm_labels.dart' show capitalized, memberLabel;
 import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
@@ -125,6 +131,8 @@ class TodayScreen extends ConsumerWidget {
         : recent.where((r) => r.type == type).firstOrNull;
 
     var tilesLead = false;
+    // D-135 (16): a helper's shift day ends with "Bàn giao cho bố mẹ" instead of the row.
+    var shiftHome = false;
     // The first adaptive widget sits closer to the greeting (owner, 2026-10-25).
     List<Widget> sectionParts(TodaySection section) => [
       Column(
@@ -201,8 +209,10 @@ class TodayScreen extends ConsumerWidget {
               ),
             // A care tool, with the tiles rather than among the suggestions (owner,
             // 2026-10-15).
-            const TodayHandoverRow(),
-            const AutoSaveTodayBanner(top: ClSpace.s4),
+            if (!shiftHome) ...[
+              const TodayHandoverRow(),
+              const AutoSaveTodayBanner(top: ClSpace.s4),
+            ],
           ],
           // ReminderPeek (128:665, R-094); not for relatives (D-018).
           TodaySection.reminders => [
@@ -271,6 +281,111 @@ class TodayScreen extends ConsumerWidget {
       ),
     ];
 
+    // Sync state stays on top in every layout (SY-3).
+    final statusBanners = <Widget>[
+      if (myConflict != null) ...[
+        const SizedBox(height: ClSpace.s3),
+        _SyncBanner(
+          label: l10n.overlapBanner,
+          onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
+        ),
+      ],
+      // Owner, 2026-10-22: a save that syncs in a moment no longer flashes this banner in
+      // and out (the whole screen jumped); online it shows only if sending takes a while.
+      _AfterDelay(
+        show: pendingCount > 0,
+        immediately: !online,
+        child: Padding(
+          padding: const EdgeInsets.only(top: ClSpace.s3),
+          child: _SyncBanner(
+            label: online
+                ? l10n.syncingBanner(pendingCount)
+                : l10n.offlineBanner(pendingCount),
+            onTap: () => showPendingSheet(context),
+          ),
+        ),
+      ),
+    ];
+    final bottomPadding = EdgeInsets.only(
+      bottom: switch (HomeFloatingClearance.of(context)) {
+        final c? => c + ClSpace.s4,
+        null => 140,
+      },
+    );
+
+    // D-135 (16, ANALYSIS §4): a helper with tasks today sees their shift, not the parents' Hôm
+    // nay: a short greeting, the shift card, the quick log, their tasks, notes for the parents
+    // and "Bàn giao cho bố mẹ". Everything else stays reachable from Khám phá.
+    if (carePlanOnShiftDay(ref, membership)) {
+      shiftHome = true;
+      final caps = ref.watch(selectedCapabilitiesProvider);
+      final language = Localizations.localeOf(context).languageCode;
+      final handover =
+          caps != null &&
+          caps.features.rhythm &&
+          HandoverEntry.visibleFor(ref, membership, caps, language);
+      return ColoredBox(
+        color: cl.colors.cloud,
+        child: ListView(
+          padding: bottomPadding,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                MediaQuery.paddingOf(context).top + ClSpace.s2,
+                ClSpace.s4,
+                0,
+              ),
+              child: const BabyHeader(
+                actions: [
+                  NotificationBell(),
+                  SizedBox(width: ClSpace.s2),
+                  NightCareToggle(),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: ClSpace.s4),
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      l10n.cpShiftHello(
+                        capitalized(memberLabel(l10n, membership, myUid: '')),
+                      ),
+                      style: cl.text.title,
+                    ),
+                  ),
+                  ...statusBanners,
+                  const SizedBox(height: ClSpace.s4),
+                  CarePlanShiftCard(me: membership),
+                  ...sectionParts(TodaySection.tiles),
+                  const SizedBox(height: ClSpace.s6),
+                  CarePlanMyTasks(me: membership),
+                  const SizedBox(height: ClSpace.s4),
+                  CarePlanShiftNotesCard(me: membership),
+                  if (handover) ...[
+                    const SizedBox(height: ClSpace.s6),
+                    ClButton(
+                      key: const Key('cpHandoverToParents'),
+                      label: l10n.cpHandoverToParents,
+                      icon: ClIcons.journal,
+                      style: ClButtonStyle.tinted,
+                      expand: true,
+                      onPressed: () => context.push(Routes.rhythmHandover),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     // Adaptive Experience (Figma 930:11858, P-175): greeting by age band, ranked widgets,
     // "Tuỳ chỉnh Hôm nay" (AX14). Off: the layout this device kept (370:1525).
     final adaptive = ref.watch(adaptiveOnProvider);
@@ -296,12 +411,7 @@ class TodayScreen extends ConsumerWidget {
     return ColoredBox(
       color: cl.colors.cloud,
       child: ListView(
-        padding: EdgeInsets.only(
-          bottom: switch (HomeFloatingClearance.of(context)) {
-            final c? => c + ClSpace.s4,
-            null => 140,
-          },
-        ),
+        padding: bottomPadding,
         children: [
           const TodayLivingHeader(),
           Padding(
@@ -309,29 +419,7 @@ class TodayScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (myConflict != null) ...[
-                  const SizedBox(height: ClSpace.s3),
-                  _SyncBanner(
-                    label: l10n.overlapBanner,
-                    onTap: () =>
-                        context.push('${Routes.overlap}/${myConflict.id}'),
-                  ),
-                ],
-                // Owner, 2026-10-22: a save that syncs in a moment no longer flashes this banner in
-                // and out (the whole screen jumped); online it shows only if sending takes a while.
-                _AfterDelay(
-                  show: pendingCount > 0,
-                  immediately: !online,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: ClSpace.s3),
-                    child: _SyncBanner(
-                      label: online
-                          ? l10n.syncingBanner(pendingCount)
-                          : l10n.offlineBanner(pendingCount),
-                      onTap: () => showPendingSheet(context),
-                    ),
-                  ),
-                ),
+                ...statusBanners,
                 // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
                 const WhatsNewBanner(),
                 // D-135 (14): the viewer's shared Cùng Chăm Con tasks, first under the header;
