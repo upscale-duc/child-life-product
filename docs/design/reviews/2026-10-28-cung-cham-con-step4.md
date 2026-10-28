@@ -50,5 +50,6 @@ Quyết định: D-136 (chủ sản phẩm trả lời 3 câu hỏi bước 4) v
 - **Lịch mẫu chờ duyệt nội dung** (`templates-draft.md`), chỉ trên dev. Khi duyệt: bỏ "(chờ duyệt)" và giới hạn dev.
 - **"Theo nhịp" phía app dựa vào dấu theo ngày** (`days/{date}`: có bú, có ngủ); server đếm theo giờ bắt đầu. Một giấc bắt đầu từ tối hôm trước có thể làm app hiện lựa chọn mà server từ chối; khi đó có toast "Chưa đủ 7 ngày có ghi cả bú và ngủ".
 - **Lịch mỗi sáng dùng cách gần nhất** nhà mình chọn; chưa có chỗ chọn riêng cách cho buổi sáng.
-- **Chưa deploy dev** bước này (rules, index, 2 callable mới, scheduler, startCarePlanDay, handover-send). **Chưa kiểm** push N5 thật trên máy, VoiceOver/TalkBack.
+- **Đã deploy dev (28/10):** `scripts/deploy.sh dev` (VERIFY=0, vì gcloud chạy Python 3.9): rules, indexes, startCarePlanDay, saveCarePlanItem, publishCarePlanDay, setCarePlanAutoDraft, draftCarePlanMornings, ringCareTaskReminders, sendHandover, markHandover. Gọi publishCarePlanDay / setCarePlanAutoDraft không đăng nhập trả JSON 401, tức callable vẫn khoẻ.
+- **Chưa kiểm** push N5 thật trên máy, VoiceOver/TalkBack.
 - Golden 04-0 chỉ có bản dev (có Lịch mẫu); bản prod không có golden riêng, logic ẩn đã có test.
