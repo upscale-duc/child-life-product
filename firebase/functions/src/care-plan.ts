@@ -627,6 +627,12 @@ export async function saveCarePlanItem(
       dueAt: carePlanDueAt(zone, req.date, req.time),
       revision: moved ? oldRevision + 1 : oldRevision,
       assignees: req.assignees,
+      // Who gave the task to its people ("Mẹ nhờ Ba nhé", Figma 15): kept until they change.
+      assignedBy: sameMembers(existing.get('assignees') as string[] | undefined, req.assignees)
+        ? (existing.get('assignedBy') ?? null)
+        : req.assignees.length > 0
+          ? uid
+          : null,
       status: existing.exists ? existing.get('status') : 'open',
       templateId,
       // A task added to or edited in a draft waits for "Dùng lịch này" like the others.
@@ -710,6 +716,7 @@ export async function assignCarePlanItems(
       if (sameMembers(i.get('assignees') as string[] | undefined, req.assignees)) continue;
       tx.update(i.ref, {
         assignees: req.assignees,
+        assignedBy: req.assignees.length > 0 ? uid : null,
         revision: FieldValue.increment(1),
         updatedAt: at,
         updatedBy: uid,

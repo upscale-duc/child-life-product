@@ -8,6 +8,7 @@ import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/care_plan/care_plan_settings.dart';
 import 'package:child_life/features/care_plan/care_plan_today.dart';
 import 'package:child_life/features/today/today_screen.dart';
+import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -44,7 +45,17 @@ Future<void> _sheet(WidgetTester tester, List<CarePlanItem> items) async {
   // ignore: discarded_futures
   showClSheet<Object?>(
     context: context,
-    builder: (_) => CarePlanDueSheet(items: items),
+    builder: (ctx) {
+      final l = AppLocalizations.of(ctx);
+      // One task: Mẹ gave it to Ba ("Mẹ nhờ Ba nhé").
+      return CarePlanDueSheet(
+        items: items,
+        askedBy: items.length == 1 ? mai : null,
+        askedByLine: items.length == 1
+            ? l.cpAskedBy(l.relationMother, l.relationFather)
+            : null,
+      );
+    },
   );
   await tester.pumpAndSettle();
 }

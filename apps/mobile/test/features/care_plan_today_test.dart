@@ -296,7 +296,7 @@ void main() {
         const CarePlanSettingsScreen(),
         me: mai,
       );
-      expect(find.text(l.cpFamilySection), findsOneWidget);
+      expect(find.text(l.cpPlanSection), findsOneWidget);
       final toggle = find.descendant(
         of: find.byKey(const Key('cp_auto_draft')),
         matching: find.byType(ClToggle),

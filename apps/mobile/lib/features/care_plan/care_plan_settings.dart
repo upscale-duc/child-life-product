@@ -9,17 +9,19 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
-import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_choices.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart' show selectedMembershipProvider;
 import '../me/me_widgets.dart';
 import 'care_plan_models.dart';
 import 'care_plan_repository.dart';
+import 'care_plan_widgets.dart';
 
-/// 13, the person's own part (D-135 Q5, ANALYSIS §6.2): "Nhắc trước" 5 / 10 / 15 / Tắt and
-/// "Nhắc cả trong giờ yên lặng" for the N1 task reminders. One place: Thông báo › Việc chăm con
-/// opens this screen too. The family's part, for plan managers only: "Tự tạo lịch mỗi sáng"
-/// (D-136 #3, off by default). Rights per person (13 Quyền với lịch) come with a later step.
+/// 13 Cài đặt (Figma 1354:22802), the person's own part (D-135 Q5): "Nhắc trước" 5 / 10 / 15 /
+/// Tắt and "Nhắc cả trong giờ yên lặng" for the N1 task reminders. One place: Thông báo › Việc
+/// chăm con opens this screen too. "Lịch", for plan managers only: "Tự tạo lịch mỗi sáng" (D-136
+/// #3, off by default). "Gộp việc gần nhau", "Lịch sử thay đổi" and "Quyền với lịch" wait for
+/// the owner and step 5.
 class CarePlanSettingsScreen extends ConsumerStatefulWidget {
   const CarePlanSettingsScreen({super.key});
 
@@ -75,8 +77,36 @@ class _CarePlanSettingsScreenState
         ? ref.watch(carePlanFamilySettingsProvider(member.babyId)).value
         : null;
     final autoDraft = _autoChosen ?? family?.autoDraft;
-    return MePage(
-      title: l10n.cpRemindTitle,
+    final c = cl.colors;
+
+    Widget card(List<Widget> children) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(ClRadius.card),
+        boxShadow: cl.shadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, w) in children.indexed) ...[
+            if (i > 0) Container(height: 1, color: c.separator),
+            w,
+          ],
+        ],
+      ),
+    );
+
+    Widget section(String title) => Padding(
+      padding: const EdgeInsets.fromLTRB(0, ClSpace.s4, 0, ClSpace.s2),
+      child: Semantics(
+        header: true,
+        child: Text(title, style: cl.text.label.copyWith(color: c.inkMuted)),
+      ),
+    );
+
+    return CarePlanPage(
+      title: l10n.cpSettingsTitle,
       children: [
         if (prefs == null && async.hasError)
           MeNotice(
@@ -88,69 +118,136 @@ class _CarePlanSettingsScreenState
         else if (prefs == null)
           const ClSkeleton(height: 4 * 56, radius: ClRadius.card)
         else ...[
-          MeSection(l10n.cpRemindBefore),
-          ClCardGroup(
-            children: [
-              for (final lead in carePlanReminderLeads)
-                ClOptionRow(
-                  key: ValueKey('cp_lead_$lead'),
-                  title: lead == 0 ? l10n.meOff : l10n.cpLeadMinutes(lead),
-                  selected: prefs.leadMinutes == lead,
-                  onTap: () =>
-                      unawaited(_save(uid, prefs.copyWith(leadMinutes: lead))),
-                ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              ClSpace.s1,
-              ClSpace.s2,
-              ClSpace.s1,
-              0,
-            ),
-            child: Text(
-              l10n.cpRemindHint,
-              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-            ),
-          ),
-          // Without reminders there is nothing to ring in quiet hours (D-110).
-          if (prefs.on) ...[
-            const SizedBox(height: ClSpace.s4),
-            ClCardGroup(
-              children: [
-                MeRow(
-                  key: const Key('cp_quiet'),
-                  title: l10n.cpQuietHours,
-                  subtitle: l10n.cpQuietHoursHint,
-                  trailing: ClToggle(
-                    value: prefs.quietHours,
-                    semanticLabel: l10n.cpQuietHours,
-                    onChanged: (v) =>
-                        unawaited(_save(uid, prefs.copyWith(quietHours: v))),
+          section(l10n.cpRemindSection),
+          card([
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _IconLabel(
+                    icon: ClIcons.bell,
+                    tint: c.mintSoft,
+                    label: l10n.cpRemindBefore,
                   ),
-                ),
-              ],
+                  const SizedBox(height: ClSpace.s2),
+                  Wrap(
+                    spacing: ClSpace.s2,
+                    runSpacing: ClSpace.s2,
+                    children: [
+                      for (final (i, lead) in carePlanReminderLeads.indexed)
+                        ClRelationChip(
+                          key: ValueKey('cp_lead_$lead'),
+                          // Figma: the unit once, on the first ("5 phút", 10, 15, Tắt).
+                          label: lead == 0
+                              ? l10n.meOff
+                              : i == 0
+                              ? l10n.cpLeadMinutes(lead)
+                              : '$lead',
+                          selected: prefs.leadMinutes == lead,
+                          onTap: () => unawaited(
+                            _save(uid, prefs.copyWith(leadMinutes: lead)),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+            // Without reminders there is nothing to ring in quiet hours (D-110).
+            if (prefs.on)
+              _ToggleRow(
+                key: const Key('cp_quiet'),
+                icon: ClIcons.sleep,
+                tint: cl.care.sleep.soft,
+                label: l10n.cpQuietHours,
+                value: prefs.quietHours,
+                onChanged: (v) =>
+                    unawaited(_save(uid, prefs.copyWith(quietHours: v))),
+              ),
+          ]),
           if (manager && autoDraft != null) ...[
-            MeSection(l10n.cpFamilySection),
-            ClCardGroup(
-              children: [
-                MeRow(
-                  key: const Key('cp_auto_draft'),
-                  title: l10n.cpAutoDraft,
-                  subtitle: l10n.cpAutoDraftHint,
-                  trailing: ClToggle(
-                    value: autoDraft,
-                    semanticLabel: l10n.cpAutoDraft,
-                    onChanged: (v) => unawaited(_setAuto(member.babyId, v)),
-                  ),
-                ),
-              ],
-            ),
+            section(l10n.cpPlanSection),
+            card([
+              _ToggleRow(
+                key: const Key('cp_auto_draft'),
+                icon: ClIcons.sunrise,
+                tint: c.sunshineSoft,
+                label: l10n.cpAutoDraft,
+                value: autoDraft,
+                onChanged: (v) => unawaited(_setAuto(member.babyId, v)),
+              ),
+            ]),
           ],
         ],
       ],
     );
   }
+}
+
+/// An icon on a tinted circle and its label (Figma 13 rows).
+class _IconLabel extends StatelessWidget {
+  const _IconLabel({
+    required this.icon,
+    required this.tint,
+    required this.label,
+  });
+
+  final ClIcons icon;
+  final Color tint;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(color: tint, shape: BoxShape.circle),
+          alignment: Alignment.center,
+          child: ClIcon(icon, size: 18, color: cl.colors.ink),
+        ),
+        const SizedBox(width: ClSpace.s3),
+        Expanded(
+          child: Text(
+            label,
+            style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.icon,
+    required this.tint,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
+
+  final ClIcons icon;
+  final Color tint;
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+    child: Row(
+      children: [
+        Expanded(
+          child: _IconLabel(icon: icon, tint: tint, label: label),
+        ),
+        const SizedBox(width: ClSpace.s2),
+        ClToggle(value: value, semanticLabel: label, onChanged: onChanged),
+      ],
+    ),
+  );
 }

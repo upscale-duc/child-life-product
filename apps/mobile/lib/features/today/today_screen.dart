@@ -336,8 +336,12 @@ class TodayScreen extends ConsumerWidget {
                 ClSpace.s4,
                 0,
               ),
-              child: const BabyHeader(
-                actions: [
+              child: CarePlanShiftHello(
+                me: membership,
+                title: l10n.cpShiftHello(
+                  capitalized(memberLabel(l10n, membership, myUid: '')),
+                ),
+                actions: const [
                   NotificationBell(),
                   SizedBox(width: ClSpace.s2),
                   NightCareToggle(),
@@ -349,20 +353,11 @@ class TodayScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: ClSpace.s4),
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      l10n.cpShiftHello(
-                        capitalized(memberLabel(l10n, membership, myUid: '')),
-                      ),
-                      style: cl.text.title,
-                    ),
-                  ),
                   ...statusBanners,
                   const SizedBox(height: ClSpace.s4),
                   CarePlanShiftCard(me: membership),
-                  ...sectionParts(TodaySection.tiles),
+                  const SizedBox(height: ClSpace.s4),
+                  const CarePlanQuickLog(),
                   const SizedBox(height: ClSpace.s6),
                   CarePlanMyTasks(me: membership),
                   const SizedBox(height: ClSpace.s4),
@@ -372,8 +367,7 @@ class TodayScreen extends ConsumerWidget {
                     ClButton(
                       key: const Key('cpHandoverToParents'),
                       label: l10n.cpHandoverToParents,
-                      icon: ClIcons.journal,
-                      style: ClButtonStyle.tinted,
+                      style: ClButtonStyle.secondary,
                       expand: true,
                       onPressed: () => context.push(Routes.rhythmHandover),
                     ),

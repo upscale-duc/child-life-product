@@ -119,6 +119,7 @@ class CarePlanItem {
     this.doneBy,
     this.doneAt,
     this.draft = false,
+    this.assignedBy,
   });
 
   final String id;
@@ -133,6 +134,10 @@ class CarePlanItem {
 
   /// Part of a draft day (D-136): nobody's to-do yet.
   final bool draft;
+
+  /// Who gave it to [assignees] ("Mẹ nhờ Ba nhé", Figma 15); null for a day started from
+  /// yesterday or a template.
+  final String? assignedBy;
 
   bool get done => status == CarePlanStatus.done;
   bool get skipped => status == CarePlanStatus.skipped;
@@ -155,6 +160,7 @@ class CarePlanItem {
             : null,
         doneAt: doneAt,
         draft: draft,
+        assignedBy: assignedBy,
       );
 
   static CarePlanItem? fromJson(Map<String, dynamic> d) {
@@ -175,6 +181,7 @@ class CarePlanItem {
       doneBy: d['doneBy'] as String?,
       doneAt: (d['doneAt'] as Timestamp?)?.toDate(),
       draft: d['draft'] == true,
+      assignedBy: d['assignedBy'] as String?,
     );
   }
 }

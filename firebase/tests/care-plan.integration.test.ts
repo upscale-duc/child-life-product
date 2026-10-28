@@ -243,6 +243,8 @@ describe('assigning (05) and the ring', () => {
       now,
     );
     expect((await items()).every((i) => i.assignees.join() === 'nanny')).toBe(true);
+    // "Ba nhờ Cô Lan nhé" (Figma 15): who gave it is kept with the task.
+    expect((await items()).every((i) => i.assignedBy === 'dad')).toBe(true);
     await expect(
       assignCarePlanItems(
         db,

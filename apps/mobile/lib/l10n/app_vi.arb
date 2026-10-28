@@ -33959,10 +33959,6 @@
   "@cpRemindBefore": {
     "description": "Cùng Chăm Con settings: how long before a task the reminder comes. EN is an engineering draft for owner review."
   },
-  "cpRemindHint": "Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.",
-  "@cpRemindHint": {
-    "description": "Cùng Chăm Con settings: what is reminded and the grouping rule (N1). EN is an engineering draft for owner review."
-  },
   "cpLeadMinutes": "{minutes} phút",
   "@cpLeadMinutes": {
     "description": "Cùng Chăm Con \"Nhắc trước\" choice. EN is an engineering draft for owner review.",
@@ -33984,10 +33980,6 @@
   "cpQuietHours": "Nhắc cả trong giờ yên lặng",
   "@cpQuietHours": {
     "description": "Cùng Chăm Con settings switch (D-135 Q5, on by default). EN is an engineering draft for owner review."
-  },
-  "cpQuietHoursHint": "Không làm phiền của điện thoại vẫn có thể chặn thông báo.",
-  "@cpQuietHoursHint": {
-    "description": "Under \"Nhắc cả trong giờ yên lặng\": the app cannot override the phone's own setting, so it does not promise to. EN is an engineering draft for owner review."
   },
   "ntCareTasks": "Việc chăm con",
   "@ntCareTasks": {
@@ -34189,17 +34181,9 @@
   "@cpDraftUsed": {
     "description": "Cùng Chăm Con: toast after \"Dùng lịch này\". EN is an engineering draft for owner review."
   },
-  "cpFamilySection": "Cả nhà",
-  "@cpFamilySection": {
-    "description": "Cùng Chăm Con settings: the family's settings, plan managers only. EN is an engineering draft for owner review."
-  },
   "cpAutoDraft": "Tự tạo lịch mỗi sáng",
   "@cpAutoDraft": {
     "description": "Cùng Chăm Con settings (D-136 #3): off by default. EN is an engineering draft for owner review."
-  },
-  "cpAutoDraftHint": "Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.",
-  "@cpAutoDraftHint": {
-    "description": "Cùng Chăm Con settings: what the morning draft does. EN is an engineering draft for owner review."
   },
   "cpTodayCount": "{count, plural, other{Hôm nay có {count} việc}}",
   "@cpTodayCount": {
@@ -34500,5 +34484,37 @@
   "cpDeleteShort": "Xoá",
   "@cpDeleteShort": {
     "description": "Cùng Chăm Con 06b: delete the task (beside Lưu). EN is an engineering draft for owner review."
+  },
+  "cpAssignedBadge": "Phân việc",
+  "@cpAssignedBadge": {
+    "description": "Cùng Chăm Con 14 / 15: badge on a task that comes from the family plan (Figma 1383:22120). EN is an engineering draft for owner review."
+  },
+  "cpAskedBy": "{who} nhờ {me} nhé",
+  "@cpAskedBy": {
+    "description": "Cùng Chăm Con 15: who gave this task to the viewer (\"Mẹ nhờ Ba nhé\"); me is the viewer's relation. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "me": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDueLaterShort": "Để sau 10′",
+  "@cpDueLaterShort": {
+    "description": "Cùng Chăm Con 15: snooze ten minutes, beside Đã làm. EN is an engineering draft for owner review."
+  },
+  "cpSettingsTitle": "Cài đặt",
+  "@cpSettingsTitle": {
+    "description": "Cùng Chăm Con 13: the page title (Figma 1354:22802). EN is an engineering draft for owner review."
+  },
+  "cpRemindSection": "Nhắc việc",
+  "@cpRemindSection": {
+    "description": "Cùng Chăm Con 13: the person's own reminder settings. EN is an engineering draft for owner review."
+  },
+  "cpPlanSection": "Lịch",
+  "@cpPlanSection": {
+    "description": "Cùng Chăm Con 13: the family plan settings (plan managers). EN is an engineering draft for owner review."
   }
 }

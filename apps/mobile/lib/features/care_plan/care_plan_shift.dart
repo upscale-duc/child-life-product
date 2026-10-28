@@ -18,6 +18,9 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_duty.dart';
+import '../care/care_models.dart' show CareType;
+import '../care/care_sheets.dart' show openCareLog;
+import '../care/timer_screens.dart' show showSleepChooser;
 import '../care/care_repository.dart' show careClockProvider, inBabyZone;
 import '../family/family_repository.dart' show familyMembersProvider;
 import 'care_plan_models.dart';
@@ -137,8 +140,9 @@ class _CarePlanShiftCardState extends ConsumerState<CarePlanShiftCard> {
       key: const Key('cpShiftCard'),
       padding: const EdgeInsets.all(ClSpace.s4),
       decoration: BoxDecoration(
-        color: cl.colors.mintSoft,
+        color: cl.colors.cardMint,
         borderRadius: BorderRadius.circular(ClRadius.card),
+        boxShadow: cl.shadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -154,13 +158,13 @@ class _CarePlanShiftCardState extends ConsumerState<CarePlanShiftCard> {
                     Text(
                       span,
                       style: cl.text.title.copyWith(
-                        color: cl.colors.ink,
+                        color: cl.colors.onCard,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                     Text(
                       left == 0 ? l10n.cpShiftAllDone : l10n.cpShiftLeft(left),
-                      style: cl.text.body.copyWith(color: cl.colors.ink),
+                      style: cl.text.label.copyWith(color: cl.colors.onCard),
                     ),
                   ],
                 ),
@@ -183,7 +187,7 @@ class _CarePlanShiftCardState extends ConsumerState<CarePlanShiftCard> {
                       width: 10,
                       height: 10,
                       decoration: BoxDecoration(
-                        color: cl.colors.mintDeep,
+                        color: cl.colors.onCard,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -194,7 +198,7 @@ class _CarePlanShiftCardState extends ConsumerState<CarePlanShiftCard> {
                           DateFormat('HH:mm').format(inBabyZone(zone, since)),
                         ),
                         style: cl.text.bodyStrong.copyWith(
-                          color: cl.colors.mintText,
+                          color: cl.colors.onCard,
                         ),
                       ),
                     ),
@@ -233,7 +237,41 @@ class CarePlanMyTasks extends ConsumerWidget {
       key: const Key('cpMyTasks'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClSectionHeader(title: l10n.cpMyTasks),
+        Row(
+          children: [
+            Expanded(
+              child: Semantics(
+                header: true,
+                child: Text(
+                  l10n.cpMyTasks,
+                  style: context.cl.text.headline.copyWith(
+                    color: context.cl.colors.ink,
+                  ),
+                ),
+              ),
+            ),
+            if (day.where((i) => !i.done).length case final open when open > 0)
+              Container(
+                constraints: const BoxConstraints(minWidth: 28),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ClSpace.s2,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: context.cl.colors.mintSoft,
+                  borderRadius: BorderRadius.circular(ClRadius.pill),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '$open',
+                  style: context.cl.text.label.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.cl.colors.mintText,
+                  ),
+                ),
+              ),
+          ],
+        ),
         const SizedBox(height: ClSpace.s2),
         for (final i in day)
           Padding(
@@ -390,49 +428,155 @@ class _CarePlanShiftNotesCardState
     final note = ref.watch(carePlanShiftNotesProvider(key));
     final notifier = ref.read(carePlanShiftNotesProvider(key).notifier);
     _text ??= TextEditingController(text: note.text);
-    return Column(
+    final c = cl.colors;
+    return Container(
       key: const Key('cpShiftNotes'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClSectionHeader(title: l10n.cpNotesTitle),
-        const SizedBox(height: ClSpace.s2),
-        Container(
-          padding: const EdgeInsets.all(ClSpace.s3),
-          decoration: BoxDecoration(
-            color: cl.colors.surface,
-            borderRadius: BorderRadius.circular(ClRadius.card),
-            boxShadow: cl.shadows.card,
+      padding: const EdgeInsets.all(ClSpace.s4),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(ClRadius.card),
+        boxShadow: cl.shadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.cpNotesTitle,
+              style: cl.text.label.copyWith(color: c.inkMuted),
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          const SizedBox(height: ClSpace.s3),
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
             children: [
-              Wrap(
-                spacing: ClSpace.s2,
-                runSpacing: ClSpace.s2,
-                children: [
-                  for (final t in CarePlanNoteTag.values)
-                    ClFilterChip(
-                      key: ValueKey('cpNoteTag_${t.name}'),
-                      label: carePlanNoteTagLabel(l10n, t),
-                      selected: note.tags.contains(t),
-                      onTap: () => notifier.toggle(t),
-                    ),
-                ],
-              ),
-              const SizedBox(height: ClSpace.s3),
-              ClTextField(
-                key: const Key('cpNoteText'),
-                controller: _text,
-                placeholder: l10n.cpNoteMore,
-                maxLength: 200,
-                maxLines: 3,
-                textCapitalization: TextCapitalization.sentences,
-                onChanged: (v) =>
-                    notifier.set(CarePlanShiftNote(tags: note.tags, text: v)),
-              ),
+              for (final t in CarePlanNoteTag.values)
+                ClRelationChip(
+                  key: ValueKey('cpNoteTag_${t.name}'),
+                  label: carePlanNoteTagLabel(l10n, t),
+                  selected: note.tags.contains(t),
+                  onTap: () => notifier.toggle(t),
+                ),
             ],
           ),
+          const SizedBox(height: ClSpace.s3),
+          ClTextField(
+            key: const Key('cpNoteText'),
+            controller: _text,
+            placeholder: l10n.cpNoteMore,
+            maxLength: 200,
+            maxLines: 3,
+            textCapitalization: TextCapitalization.sentences,
+            onChanged: (v) =>
+                notifier.set(CarePlanShiftNote(tags: note.tags, text: v)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 16 "ghi 1 chạm": Bú bình, Ngủ, Thay tã as three picture tiles; each opens its log.
+class CarePlanQuickLog extends ConsumerWidget {
+  const CarePlanQuickLog({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final c = cl.colors;
+    final tiles = [
+      (
+        CarePlanTask.bottle,
+        l10n.cpTaskBottle,
+        () => openCareLog(context, CareType.bottle),
+      ),
+      (
+        CarePlanTask.sleep,
+        l10n.cpTaskSleep,
+        () => showSleepChooser(context, ref),
+      ),
+      (
+        CarePlanTask.diaper,
+        l10n.cpTaskDiaper,
+        () => openCareLog(context, CareType.diaper),
+      ),
+    ];
+    return Row(
+      key: const Key('cpQuickLog'),
+      children: [
+        for (final (i, (task, label, open)) in tiles.indexed) ...[
+          if (i > 0) const SizedBox(width: ClSpace.s2),
+          Expanded(
+            child: ClPressable(
+              key: ValueKey('cpQuick_${task.name}'),
+              onPressed: () => unawaited(open()),
+              semanticLabel: label,
+              pressedOpacity: ClPressable.surfaceOpacity,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: ClSpace.s3,
+                  horizontal: ClSpace.s1,
+                ),
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(ClRadius.card),
+                  boxShadow: cl.shadows.card,
+                ),
+                child: Column(
+                  children: [
+                    CarePlanArt(task, size: 56),
+                    const SizedBox(height: ClSpace.s2),
+                    Text(
+                      label,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: cl.text.label.copyWith(color: c.ink),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// 16's greeting: the helper's face, "Chào Cô Lan", and the bell and Night care beside it.
+class CarePlanShiftHello extends StatelessWidget {
+  const CarePlanShiftHello({
+    required this.me,
+    required this.title,
+    required this.actions,
+    super.key,
+  });
+
+  final Membership me;
+  final String title;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Row(
+      children: [
+        CarePlanAvatar(me, size: 56),
+        const SizedBox(width: ClSpace.s3),
+        Expanded(
+          child: Semantics(
+            header: true,
+            child: Text(
+              title,
+              style: cl.text.title2.copyWith(color: cl.colors.ink),
+            ),
+          ),
         ),
+        ...actions,
       ],
     );
   }

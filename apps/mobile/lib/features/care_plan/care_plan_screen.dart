@@ -1716,7 +1716,7 @@ class _SwipeHint extends StatelessWidget {
         ClSpace.s1,
       ),
       decoration: BoxDecoration(
-        color: c.cardNight,
+        color: c.ink,
         borderRadius: BorderRadius.circular(ClRadius.control),
       ),
       child: Row(
@@ -1724,7 +1724,7 @@ class _SwipeHint extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.cpSwipeHint,
-              style: cl.text.label.copyWith(color: c.onCard),
+              style: cl.text.label.copyWith(color: c.surface),
             ),
           ),
           ClPressable(

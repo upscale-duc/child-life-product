@@ -12,7 +12,8 @@ import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
-import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -21,6 +22,8 @@ import '../care/care_duty.dart' show DutyAge, careDutyProvider, dutyAge;
 import '../care/care_repository.dart' show careClockProvider, inBabyZone;
 import '../family/family_repository.dart' show familyMembersProvider;
 import '../home/home_shell.dart' show selectedMembershipProvider;
+import '../onboarding/setup_screens.dart' show relationLabel;
+import '../reminders/reminder_screens.dart' show assigneeName;
 import '../rhythm/rhythm_labels.dart' show memberLabel;
 import '../reminders/reminder_notifications.dart'
     show notificationsLaunchAskProvider;
@@ -120,48 +123,145 @@ class CarePlanTodaySection extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final next = mine.first;
     final name = carePlanTaskName(l10n, next);
+    final cl = context.cl;
+    final c = cl.colors;
+    // At large text sizes "Đã làm" goes under the task instead of beside it.
+    final large = MediaQuery.textScalerOf(context).scale(10) > 13;
+    final done = ClButton(
+      key: const Key('cpTodayDone'),
+      label: l10n.cpDoneAction,
+      icon: ClIcons.check,
+      expand: large,
+      onPressed: () => unawaited(
+        markCarePlanDone(
+          ref,
+          ClToaster.of(context),
+          l10n,
+          babyId: me.babyId,
+          date: date,
+          items: [next],
+        ),
+      ),
+    );
     return Padding(
       key: const Key('cpTodaySection'),
       padding: const EdgeInsets.only(top: ClSpace.s4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSectionHeader(
-            title: l10n.cpHomeTitle(mine.length),
-            linkLabel: l10n.cpHomeAll,
-            onLink: () => context.push(Routes.carePlan),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          CarePlanTaskCard(
-            key: ValueKey('cpToday_${next.id}'),
-            item: next,
-            name: name,
-            next: true,
-            status: null,
-            // All of it is mine: no "who" chip (D-110).
-            people: const SizedBox.shrink(),
-            ring: Padding(
-              padding: const EdgeInsets.only(right: ClSpace.s2),
-              child: ClButton(
-                key: const Key('cpTodayDone'),
-                label: l10n.cpDoneAction,
-                style: ClButtonStyle.tinted,
-                onPressed: () => unawaited(
-                  markCarePlanDone(
-                    ref,
-                    ClToaster.of(context),
-                    l10n,
-                    babyId: me.babyId,
-                    date: date,
-                    items: [next],
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          ClSpace.s2,
+          ClSpace.s3,
+          ClSpace.s4,
+        ),
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: BorderRadius.circular(ClRadius.card),
+          boxShadow: cl.shadows.card,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      l10n.cpHomeTitle(mine.length),
+                      style: cl.text.headline.copyWith(color: c.ink),
+                    ),
                   ),
                 ),
+                ClPressable(
+                  key: const Key('cpTodayAll'),
+                  onPressed: () => context.push(Routes.carePlan),
+                  semanticLabel: l10n.cpHomeAll,
+                  child: SizedBox(
+                    height: ClSpace.tapMin,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(
+                          ClSpace.s3,
+                          ClSpace.s1,
+                          ClSpace.s2,
+                          ClSpace.s1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: c.mintSoft,
+                          borderRadius: BorderRadius.circular(ClRadius.pill),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.cpHomeAll,
+                              style: cl.text.label.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: c.mintText,
+                              ),
+                            ),
+                            ClIcon(
+                              ClIcons.chevronRight,
+                              size: 16,
+                              color: c.mintText,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(height: 1, color: c.separator),
+            const SizedBox(height: ClSpace.s3),
+            ClPressable(
+              key: ValueKey('cpToday_${next.id}'),
+              onPressed: () => context.push(Routes.carePlan),
+              semanticLabel: '${next.time} $name',
+              pressedOpacity: ClPressable.surfaceOpacity,
+              child: Row(
+                children: [
+                  CarePlanArt(next.task, size: 56),
+                  const SizedBox(width: ClSpace.s3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: ClSpace.s2,
+                          runSpacing: 2,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              next.time,
+                              style: cl.text.label.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                                color: c.mintText,
+                              ),
+                            ),
+                            const _PlanBadge(),
+                          ],
+                        ),
+                        Text(
+                          name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: cl.text.bodyStrong.copyWith(color: c.ink),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!large) ...[const SizedBox(width: ClSpace.s2), done],
+                ],
               ),
             ),
-            onTap: () => context.push(Routes.carePlan),
-            semanticLabel: '${next.time} $name',
-          ),
-        ],
+            if (large) ...[const SizedBox(height: ClSpace.s3), done],
+          ],
+        ),
       ),
     );
   }
@@ -391,9 +491,24 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
     final router = GoRouter.of(context);
+    final members =
+        ref.read(familyMembersProvider(me.babyId)).value ?? const [];
+    final by = items.length == 1 ? items.single.assignedBy : null;
+    final giver = by == null || by == me.uid
+        ? null
+        : members.where((m) => m.uid == by).firstOrNull;
     final answer = await showClSheet<_DueAnswer>(
       context: context,
-      builder: (_) => CarePlanDueSheet(items: items),
+      builder: (_) => CarePlanDueSheet(
+        items: items,
+        askedBy: giver,
+        askedByLine: giver == null
+            ? null
+            : l10n.cpAskedBy(
+                carePlanCapitalized(assigneeName(l10n, giver, me.uid)),
+                relationLabel(l10n, me.relation, me.relationCustom ?? ''),
+              ),
+      ),
     );
     _showing = false;
     switch (answer) {
@@ -437,27 +552,115 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
   }
 }
 
-/// Figma 15: the time, what, and Đã làm / Để sau 10 phút / Xem cả lịch hôm nay. Several tasks due
-/// together are listed; the one button marks them all.
+/// "Phân việc": a task that comes from the family plan (Figma 14 / 15).
+class _PlanBadge extends StatelessWidget {
+  const _PlanBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final c = cl.colors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2, vertical: 2),
+      decoration: BoxDecoration(
+        color: c.mintSoft,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClIcon(ClIcons.family, size: 12, color: c.mintText),
+          const SizedBox(width: ClSpace.s1),
+          Text(
+            AppLocalizations.of(context).cpAssignedBadge,
+            style: cl.text.caption.copyWith(
+              fontWeight: FontWeight.w600,
+              color: c.mintText,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Figma 15: "Đến giờ rồi · Phân việc", the task large (picture, time, name, who asked), then
+/// Đã làm beside Để sau 10′, and "Xem cả lịch hôm nay →". Several tasks due together are listed;
+/// the one button marks them all.
 class CarePlanDueSheet extends StatelessWidget {
-  const CarePlanDueSheet({required this.items, super.key});
+  const CarePlanDueSheet({
+    required this.items,
+    this.askedBy,
+    this.askedByLine,
+    super.key,
+  });
 
   final List<CarePlanItem> items;
+
+  /// Who gave the one task to the viewer, and the line saying so ("Mẹ nhờ Ba nhé").
+  final Membership? askedBy;
+  final String? askedByLine;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final c = cl.colors;
     final one = items.length == 1;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClSheetHeader(title: l10n.cpDueTitle),
+        Center(
+          child: Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+              color: c.separator,
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        Wrap(
+          spacing: ClSpace.s2,
+          runSpacing: ClSpace.s1,
+          children: [
+            Semantics(
+              header: true,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ClSpace.s2,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: c.sunshine,
+                  borderRadius: BorderRadius.circular(ClRadius.pill),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClIcon(ClIcons.clock, size: 12, color: c.onWarm),
+                    const SizedBox(width: ClSpace.s1),
+                    Text(
+                      l10n.cpDueTitle,
+                      style: cl.text.caption.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: c.onWarm,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const _PlanBadge(),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s4),
         if (one)
           Row(
             children: [
-              CarePlanArt(items.single.task, size: 64),
+              CarePlanArt(items.single.task, size: 72),
               const SizedBox(width: ClSpace.s4),
               Expanded(
                 child: Column(
@@ -465,15 +668,35 @@ class CarePlanDueSheet extends StatelessWidget {
                   children: [
                     Text(
                       items.single.time,
-                      style: cl.text.bodyStrong.copyWith(
-                        color: cl.colors.mintText,
+                      style: cl.text.title.copyWith(
+                        color: c.ink,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                     Text(
                       carePlanTaskName(l10n, items.single),
-                      style: cl.text.title,
+                      style: cl.text.headline.copyWith(color: c.ink),
                     ),
+                    if (askedByLine case final line?)
+                      Padding(
+                        padding: const EdgeInsets.only(top: ClSpace.s1),
+                        child: Row(
+                          children: [
+                            if (askedBy case final m?) ...[
+                              CarePlanAvatar(m, size: 20),
+                              const SizedBox(width: ClSpace.s1),
+                            ],
+                            Flexible(
+                              child: Text(
+                                line,
+                                style: cl.text.caption.copyWith(
+                                  color: c.inkMuted,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -501,29 +724,56 @@ class CarePlanDueSheet extends StatelessWidget {
             ),
           ),
         const SizedBox(height: ClSpace.s6),
-        ClButton(
-          key: const Key('cpDueDone'),
-          label: one ? l10n.cpDoneAction : l10n.cpDueDoneAll(items.length),
-          expand: true,
-          wrapLabel: true,
-          onPressed: () => Navigator.of(context).pop(_DueAnswer.done),
+        Row(
+          children: [
+            Expanded(
+              child: ClButton(
+                key: const Key('cpDueDone'),
+                label: one
+                    ? l10n.cpDoneAction
+                    : l10n.cpDueDoneAll(items.length),
+                expand: true,
+                wrapLabel: true,
+                onPressed: () => Navigator.of(context).pop(_DueAnswer.done),
+              ),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: ClButton(
+                key: const Key('cpDueLater'),
+                label: l10n.cpDueLaterShort,
+                style: ClButtonStyle.tinted,
+                expand: true,
+                wrapLabel: true,
+                onPressed: () => Navigator.of(context).pop(_DueAnswer.later),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: ClSpace.s2),
-        ClButton(
-          key: const Key('cpDueLater'),
-          label: l10n.cpDueLater,
-          style: ClButtonStyle.secondary,
-          expand: true,
-          wrapLabel: true,
-          onPressed: () => Navigator.of(context).pop(_DueAnswer.later),
-        ),
-        ClButton(
-          key: const Key('cpDueSeeDay'),
-          label: l10n.cpDueSeeDay,
-          style: ClButtonStyle.plain,
-          expand: true,
-          wrapLabel: true,
-          onPressed: () => Navigator.of(context).pop(_DueAnswer.seeDay),
+        const SizedBox(height: ClSpace.s1),
+        Center(
+          child: ClPressable(
+            key: const Key('cpDueSeeDay'),
+            onPressed: () => Navigator.of(context).pop(_DueAnswer.seeDay),
+            semanticLabel: l10n.cpDueSeeDay,
+            child: SizedBox(
+              height: ClSpace.tapMin,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.cpDueSeeDay,
+                    style: cl.text.label.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: c.mintText,
+                    ),
+                  ),
+                  const SizedBox(width: ClSpace.s1),
+                  ClIcon(ClIcons.arrowRight, size: 16, color: c.mintText),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

@@ -98,6 +98,19 @@ s('cpSkipShort', 'Bỏ qua', 'Skip', 'Cùng Chăm Con 06b: skip today (in the no
 s('cpUnskipShort', 'Làm lại', 'Undo skip', 'Cùng Chăm Con 06b: a skipped task is back on today.' + NOTE)
 s('cpDeleteShort', 'Xoá', 'Delete', 'Cùng Chăm Con 06b: delete the task (beside Lưu).' + NOTE)
 
+# 14 / 15 Hôm nay
+s('cpAssignedBadge', 'Phân việc', 'Shared plan',
+  'Cùng Chăm Con 14 / 15: badge on a task that comes from the family plan (Figma 1383:22120).' + NOTE)
+s('cpAskedBy', '{who} nhờ {me} nhé', '{who} asked you',
+  'Cùng Chăm Con 15: who gave this task to the viewer ("Mẹ nhờ Ba nhé"); me is the viewer\'s relation.' + NOTE,
+  who='String', me='String')
+s('cpDueLaterShort', 'Để sau 10′', 'Later · 10′', 'Cùng Chăm Con 15: snooze ten minutes, beside Đã làm.' + NOTE)
+
+# 13 Cài đặt
+s('cpSettingsTitle', 'Cài đặt', 'Settings', 'Cùng Chăm Con 13: the page title (Figma 1354:22802).' + NOTE)
+s('cpRemindSection', 'Nhắc việc', 'Reminders', 'Cùng Chăm Con 13: the person\'s own reminder settings.' + NOTE)
+s('cpPlanSection', 'Lịch', 'Plan', 'Cùng Chăm Con 13: the family plan settings (plan managers).' + NOTE)
+
 # Existing ids whose Vietnamese copy now follows Figma (English unchanged).
 VI = {
     'cpAssignGroup': 'Giao cả ca',

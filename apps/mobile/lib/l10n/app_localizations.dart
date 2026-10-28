@@ -38724,12 +38724,6 @@ abstract class AppLocalizations {
   /// **'Nhắc trước'**
   String get cpRemindBefore;
 
-  /// Cùng Chăm Con settings: what is reminded and the grouping rule (N1). EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.'**
-  String get cpRemindHint;
-
   /// Cùng Chăm Con "Nhắc trước" choice. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
@@ -38747,12 +38741,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhắc cả trong giờ yên lặng'**
   String get cpQuietHours;
-
-  /// Under "Nhắc cả trong giờ yên lặng": the app cannot override the phone's own setting, so it does not promise to. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Không làm phiền của điện thoại vẫn có thể chặn thông báo.'**
-  String get cpQuietHoursHint;
 
   /// Thông báo › Nhắc việc: opens the Cùng Chăm Con reminder settings. EN is an engineering draft for owner review.
   ///
@@ -38970,23 +38958,11 @@ abstract class AppLocalizations {
   /// **'Đã dùng lịch hôm nay'**
   String get cpDraftUsed;
 
-  /// Cùng Chăm Con settings: the family's settings, plan managers only. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cả nhà'**
-  String get cpFamilySection;
-
   /// Cùng Chăm Con settings (D-136 #3): off by default. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Tự tạo lịch mỗi sáng'**
   String get cpAutoDraft;
-
-  /// Cùng Chăm Con settings: what the morning draft does. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.'**
-  String get cpAutoDraftHint;
 
   /// Cùng Chăm Con 04: the day card before anything is done (Figma 1380:21966). EN is an engineering draft for owner review.
   ///
@@ -39293,6 +39269,42 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xoá'**
   String get cpDeleteShort;
+
+  /// Cùng Chăm Con 14 / 15: badge on a task that comes from the family plan (Figma 1383:22120). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phân việc'**
+  String get cpAssignedBadge;
+
+  /// Cùng Chăm Con 15: who gave this task to the viewer ("Mẹ nhờ Ba nhé"); me is the viewer's relation. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} nhờ {me} nhé'**
+  String cpAskedBy(String who, String me);
+
+  /// Cùng Chăm Con 15: snooze ten minutes, beside Đã làm. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau 10′'**
+  String get cpDueLaterShort;
+
+  /// Cùng Chăm Con 13: the page title (Figma 1354:22802). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get cpSettingsTitle;
+
+  /// Cùng Chăm Con 13: the person's own reminder settings. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get cpRemindSection;
+
+  /// Cùng Chăm Con 13: the family plan settings (plan managers). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch'**
+  String get cpPlanSection;
 }
 
 class _AppLocalizationsDelegate

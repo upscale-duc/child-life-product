@@ -24578,10 +24578,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cpRemindBefore => 'Remind me';
 
   @override
-  String get cpRemindHint =>
-      'Only for tasks given to you. Tasks less than 15 minutes apart come in one notification.';
-
-  @override
   String cpLeadMinutes(int minutes) {
     return '$minutes min';
   }
@@ -24593,10 +24589,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpQuietHours => 'Also during quiet hours';
-
-  @override
-  String get cpQuietHoursHint =>
-      'Your phone\'s Do Not Disturb can still silence it.';
 
   @override
   String get ntCareTasks => 'Care tasks';
@@ -24753,14 +24745,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cpDraftUsed => 'Today\'s plan is in use';
 
   @override
-  String get cpFamilySection => 'Whole family';
-
-  @override
   String get cpAutoDraft => 'Draft a plan every morning';
-
-  @override
-  String get cpAutoDraftHint =>
-      'At 06:30, the way your family last made a plan. The draft is used only once someone taps Use this plan.';
 
   @override
   String cpTodayCount(int count) {
@@ -24962,4 +24947,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpDeleteShort => 'Delete';
+
+  @override
+  String get cpAssignedBadge => 'Shared plan';
+
+  @override
+  String cpAskedBy(String who, String me) {
+    return '$who asked you';
+  }
+
+  @override
+  String get cpDueLaterShort => 'Later · 10′';
+
+  @override
+  String get cpSettingsTitle => 'Settings';
+
+  @override
+  String get cpRemindSection => 'Reminders';
+
+  @override
+  String get cpPlanSection => 'Plan';
 }

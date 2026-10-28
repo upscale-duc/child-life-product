@@ -23210,10 +23210,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cpRemindBefore => 'Nhắc trước';
 
   @override
-  String get cpRemindHint =>
-      'Chỉ nhắc việc được giao cho bạn. Các việc cách nhau dưới 15 phút đến trong một thông báo.';
-
-  @override
   String cpLeadMinutes(int minutes) {
     return '$minutes phút';
   }
@@ -23225,10 +23221,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpQuietHours => 'Nhắc cả trong giờ yên lặng';
-
-  @override
-  String get cpQuietHoursHint =>
-      'Không làm phiền của điện thoại vẫn có thể chặn thông báo.';
 
   @override
   String get ntCareTasks => 'Việc chăm con';
@@ -23380,14 +23372,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cpDraftUsed => 'Đã dùng lịch hôm nay';
 
   @override
-  String get cpFamilySection => 'Cả nhà';
-
-  @override
   String get cpAutoDraft => 'Tự tạo lịch mỗi sáng';
-
-  @override
-  String get cpAutoDraftHint =>
-      'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.';
 
   @override
   String cpTodayCount(int count) {
@@ -23586,4 +23571,24 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpDeleteShort => 'Xoá';
+
+  @override
+  String get cpAssignedBadge => 'Phân việc';
+
+  @override
+  String cpAskedBy(String who, String me) {
+    return '$who nhờ $me nhé';
+  }
+
+  @override
+  String get cpDueLaterShort => 'Để sau 10′';
+
+  @override
+  String get cpSettingsTitle => 'Cài đặt';
+
+  @override
+  String get cpRemindSection => 'Nhắc việc';
+
+  @override
+  String get cpPlanSection => 'Lịch';
 }
