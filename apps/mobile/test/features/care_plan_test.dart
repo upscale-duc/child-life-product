@@ -19,6 +19,8 @@ Future<FakeCarePlanRepository> _pump(
   dynamic me,
   int everyday = 0,
   bool hintDone = true,
+  Set<String> drafts = const {},
+  int loggedDays = 0,
 }) async {
   final repo = FakeCarePlanRepository();
   await pumpRouted(
@@ -28,7 +30,13 @@ Future<FakeCarePlanRepository> _pump(
     prefs: {if (hintDone) 'carePlan.swipeHint.done': true},
     overrides: [
       ...familyOverrides(me: me ?? mai, now: carePlanNow, carePlan: false),
-      ...carePlanOverrides(days: days, everyday: everyday, repo: repo),
+      ...carePlanOverrides(
+        days: days,
+        everyday: everyday,
+        repo: repo,
+        drafts: drafts,
+        loggedDays: loggedDays,
+      ),
     ],
   );
   await tester.pumpAndSettle();
@@ -243,4 +251,119 @@ void main() {
       }
     },
   );
+
+  // ---------- Step 4 (D-136): how a day's plan is chosen, the draft ----------
+
+  testWidgets('04-0 offers "Theo nhịp của bé" only after 7 logged days', (
+    tester,
+  ) async {
+    await _pump(tester, days: const {}, loggedDays: 6);
+    expect(find.byKey(const ValueKey('cp_start_rhythm')), findsNothing);
+    final repo = await _pump(tester, days: const {}, loggedDays: 7);
+    await _tap(tester, find.byKey(const ValueKey('cp_start_rhythm')));
+    _expectCall(repo.calls.single, 'start', {
+      'date': carePlanToday,
+      'from': 'rhythm',
+    });
+  });
+
+  testWidgets('04-0: the sample plans (dev, in review) start a draft', (
+    tester,
+  ) async {
+    final repo = await _pump(tester, days: const {});
+    expect(find.text(l.cpTemplatesSection), findsOneWidget);
+    expect(find.text(l.cpTemplatesNote), findsOneWidget);
+    await _tap(tester, find.byKey(const ValueKey('cp_start_easy4')));
+    _expectCall(repo.calls.single, 'start', {
+      'date': carePlanToday,
+      'from': 'easy4',
+    });
+  });
+
+  testWidgets('a draft: Mẹ edits it and uses it; no rings until then', (
+    tester,
+  ) async {
+    final plan = planFresh();
+    final repo = await _pump(
+      tester,
+      days: {carePlanToday: plan},
+      drafts: {carePlanToday},
+    );
+    expect(find.text(l.cpDraftTitle), findsOneWidget);
+    expect(find.byKey(ValueKey('cp_ring_${plan.first.id}')), findsNothing);
+    // Still editable like any plan.
+    expect(find.byKey(const ValueKey('cp_add_morning')), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('cp_draft_use')));
+    _expectCall(repo.calls.single, 'publish', {'date': carePlanToday});
+    expect(find.text(l.cpDraftUsed), findsOneWidget);
+  });
+
+  testWidgets('"Đổi cách khác" lists the other ways and keeps the draft', (
+    tester,
+  ) async {
+    final repo = await _pump(
+      tester,
+      days: {carePlanToday: planFresh()},
+      drafts: {carePlanToday},
+      loggedDays: 7,
+    );
+    await _tap(tester, find.byKey(const Key('cp_draft_change')));
+    expect(find.text(l.cpChangeTitle), findsOneWidget);
+    // The draft was made by rhythm: that way is not offered again.
+    expect(find.byKey(const ValueKey('cp_start_rhythm')), findsNothing);
+    await _tap(tester, find.byKey(const Key('cp_keep_draft')));
+    expect(find.text(l.cpDraftTitle), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('cp_draft_change')));
+    await _tap(tester, find.byKey(const ValueKey('cp_start_basic')));
+    _expectCall(repo.calls.single, 'start', {
+      'date': carePlanToday,
+      'from': 'basic',
+    });
+  });
+
+  testWidgets('Cô Lan never sees a draft', (tester) async {
+    await _pump(
+      tester,
+      me: lan,
+      days: {carePlanToday: planFresh()},
+      drafts: {carePlanToday},
+    );
+    expect(find.text(l.cpDraftTitle), findsNothing);
+    expect(find.text(l.cpEmptyViewer), findsOneWidget);
+    expect(find.text(l.cpTaskVitamin), findsNothing);
+  });
+
+  testWidgets('200 % text: the ways to start and a draft do not overflow', (
+    tester,
+  ) async {
+    for (final language in ['vi', 'en']) {
+      for (final drafts in [
+        <String>{},
+        {carePlanToday},
+      ]) {
+        await pumpRouted(
+          tester,
+          const CarePlanScreen(),
+          locale: Locale(language),
+          textScaler: const TextScaler.linear(2),
+          viewport: const Size(375, 3200),
+          prefs: {'carePlan.swipeHint.done': true},
+          overrides: [
+            ...familyOverrides(me: mai, now: carePlanNow, carePlan: false),
+            ...carePlanOverrides(
+              days: {
+                if (drafts.isNotEmpty) carePlanToday: planFresh(),
+                '2026-10-27': planFresh(),
+              },
+              everyday: 2,
+              drafts: drafts,
+              loggedDays: 7,
+            ),
+          ],
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      }
+    }
+  });
 }

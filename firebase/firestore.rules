@@ -819,6 +819,11 @@ service cloud.firestore {
         allow read: if canReadCare(babyId);
         allow write: if false;
       }
+      // D-136: "Tự tạo lịch mỗi sáng" and the method last used; written by the plan Functions.
+      match /carePlanSettings/{docId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
     }
 
     // ---------- Care (S4) ----------

@@ -38963,6 +38963,126 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{name} gửi cho cả nhà · {time}'**
   String hoSentToFamily(String name, String time);
+
+  /// Cùng Chăm Con 04-0: a draft from the usual feed and sleep times logged (D-136 #2). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo nhịp của bé'**
+  String get cpStartRhythm;
+
+  /// Cùng Chăm Con 04-0: what "Theo nhịp của bé" is drafted from. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú và ngủ, từ 7 ngày ghi gần đây'**
+  String get cpStartRhythmSub;
+
+  /// Cùng Chăm Con: toast when the rhythm draft cannot be made (D-136 #2). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ 7 ngày có ghi cả bú và ngủ'**
+  String get cpRhythmNotReady;
+
+  /// Cùng Chăm Con 04-0: the reference templates, shown on dev only until the owner reviews them (D-136 #1). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch mẫu (chờ duyệt)'**
+  String get cpTemplatesSection;
+
+  /// Cùng Chăm Con 04-0: the age-based template. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch cơ bản theo tuổi'**
+  String get cpStartBasic;
+
+  /// Cùng Chăm Con 04-0: what the basic template holds. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú, ngủ và vài việc nhẹ nhàng'**
+  String get cpStartBasicSub;
+
+  /// Cùng Chăm Con 04-0: the EASY 3.5 template (a method name, not translated).
+  ///
+  /// In vi, this message translates to:
+  /// **'EASY 3.5'**
+  String get cpStartEasy35;
+
+  /// Cùng Chăm Con 04-0: the EASY 4 template (a method name, not translated).
+  ///
+  /// In vi, this message translates to:
+  /// **'EASY 4'**
+  String get cpStartEasy4;
+
+  /// Cùng Chăm Con 04-0: when an EASY template fits. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nhà mình đang theo EASY'**
+  String get cpStartEasySub;
+
+  /// Cùng Chăm Con 04-0: under the templates (FLOW §4). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến.'**
+  String get cpTemplatesNote;
+
+  /// Cùng Chăm Con: the ways to start the day, in place of a draft. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi cách lên lịch'**
+  String get cpChangeTitle;
+
+  /// Cùng Chăm Con "Đổi cách khác": back to the draft unchanged. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ bản nháp này'**
+  String get cpKeepDraft;
+
+  /// Cùng Chăm Con: a drafted day, seen by plan managers only (D-136). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp · chưa nhắc ai'**
+  String get cpDraftTitle;
+
+  /// Cùng Chăm Con: what the draft means and what using it does. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa, thêm hay giao việc tuỳ ý. Dùng lịch này để cả nhà thấy và được nhắc.'**
+  String get cpDraftBody;
+
+  /// Cùng Chăm Con: put the draft in use (the primary action). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng lịch này'**
+  String get cpDraftUse;
+
+  /// Cùng Chăm Con: start the draft day another way. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi cách khác'**
+  String get cpDraftChange;
+
+  /// Cùng Chăm Con: toast after "Dùng lịch này". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng lịch hôm nay'**
+  String get cpDraftUsed;
+
+  /// Cùng Chăm Con settings: the family's settings, plan managers only. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà'**
+  String get cpFamilySection;
+
+  /// Cùng Chăm Con settings (D-136 #3): off by default. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự tạo lịch mỗi sáng'**
+  String get cpAutoDraft;
+
+  /// Cùng Chăm Con settings: what the morning draft does. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.'**
+  String get cpAutoDraftHint;
 }
 
 class _AppLocalizationsDelegate

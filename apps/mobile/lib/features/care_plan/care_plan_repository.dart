@@ -59,9 +59,23 @@ class CarePlanRepository {
     return out is Map ? out.cast<String, Object?>() : const {};
   }
 
-  /// 04-0: `everyday`, `yesterday` or `empty`. A day that already exists stays as it is.
+  /// 04-0: `everyday`, `yesterday`, `empty`, or a draft (`rhythm`, `basic`, `easy35`, `easy4`,
+  /// D-136). A day in use stays as it is; a draft started another way is replaced.
   Future<void> startDay(String babyId, String date, String from) =>
       _call('startCarePlanDay', {'babyId': babyId, 'date': date, 'from': from});
+
+  /// 02 "Dùng lịch này": the draft becomes the family's plan.
+  Future<void> publishDay(String babyId, String date) =>
+      _call('publishCarePlanDay', {'babyId': babyId, 'date': date});
+
+  /// The family's plan settings: "Tự tạo lịch mỗi sáng" and the way last used.
+  Stream<CarePlanFamilySettings> watchFamilySettings(String babyId) => _db
+      .doc('babies/$babyId/carePlanSettings/family')
+      .snapshots()
+      .map((s) => CarePlanFamilySettings.fromJson(s.data()));
+
+  Future<void> setAutoDraft(String babyId, {required bool on}) =>
+      _call('setCarePlanAutoDraft', {'babyId': babyId, 'on': on});
 
   /// 06 / 06b: create or edit [itemId]; [everyDay] also keeps it for the days to come.
   Future<void> saveItem(
@@ -138,6 +152,26 @@ final carePlanDayProvider = StreamProvider.family<CarePlanDay?, CarePlanKey>(
 final carePlanItemsProvider =
     StreamProvider.family<List<CarePlanItem>, CarePlanKey>(
       (ref, k) => ref.watch(carePlanRepositoryProvider).watchItems(k.$1, k.$2),
+    );
+
+/// The day's tasks in use: none while the day is a draft (D-136), so Hôm nay, the helper's
+/// shift and "Đến giờ rồi" never show a draft as something to do.
+final carePlanLiveItemsProvider =
+    Provider.family<AsyncValue<List<CarePlanItem>>, CarePlanKey>(
+      (ref, k) => ref
+          .watch(carePlanItemsProvider(k))
+          .whenData(
+            (items) => [
+              for (final i in items)
+                if (!i.draft) i,
+            ],
+          ),
+    );
+
+final carePlanFamilySettingsProvider =
+    StreamProvider.family<CarePlanFamilySettings, String>(
+      (ref, babyId) =>
+          ref.watch(carePlanRepositoryProvider).watchFamilySettings(babyId),
     );
 
 final carePlanEverydayCountProvider = StreamProvider.family<int, String>(

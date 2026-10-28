@@ -336,4 +336,20 @@ describe('a helper’s handover to the parents (D-135, N4)', () => {
     );
     expect(mine.receivedAt).toBe(later.toISOString());
   });
+
+  it('receiving an old handover leaves the helper’s newer shift running', async () => {
+    await setCareDuty(db, 'jun', { babyId, action: 'take' }, now);
+    await sendHandover(db, 'jun', { babyId, summaryId, toParents: true }, now);
+    await setCareDuty(db, 'jun', { babyId, action: 'end' }, later);
+    const nextShift = new Date(later.getTime() + 60_000);
+    await setCareDuty(db, 'jun', { babyId, action: 'take' }, nextShift);
+    await markHandover(
+      db,
+      'dad',
+      { babyId, sendId: handoverSendId(summaryId, 'dad'), action: 'received' },
+      new Date(nextShift.getTime() + 60_000),
+    );
+    expect(await duty()).toMatchObject({ uid: 'jun' });
+    expect((await sends()).every((d) => d.receivedBy === 'dad')).toBe(true);
+  });
 });

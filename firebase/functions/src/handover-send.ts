@@ -67,8 +67,11 @@ async function openTasksNotOf(
     .collection(`babies/${babyId}/carePlanDays/${dateKeyIn(zone, now)}/items`)
     .where('status', '==', 'open')
     .get();
+  // A draft's tasks are not the family's plan yet (D-136 #3).
   return items.docs.filter(
-    (d) => !((d.get('assignees') as string[] | undefined) ?? []).includes(uid),
+    (d) =>
+      d.get('draft') !== true &&
+      !((d.get('assignees') as string[] | undefined) ?? []).includes(uid),
   ).length;
 }
 
@@ -236,8 +239,15 @@ export async function markHandover(
       tx.update(other.ref, { receivedAt: at, receivedBy: uid });
     }
     if (duty && family) {
-      // The helper's shift ends when the family has it.
-      writeCareDuty(tx, dutyRef, duty, senderUid, 'end', 'handover', now);
+      // The helper's shift ends when the family has it, but only the shift this handover closed:
+      // receiving an old send must not end a shift the helper started after sending it.
+      const since = duty.get('since');
+      const sentAt = send.get('sentAt');
+      const sameShift =
+        !(since instanceof Timestamp) ||
+        !(sentAt instanceof Timestamp) ||
+        since.toMillis() <= sentAt.toMillis();
+      if (sameShift) writeCareDuty(tx, dutyRef, duty, senderUid, 'end', 'handover', now);
     } else if (member && duty && canTakeDuty(member, now)) {
       writeCareDuty(tx, dutyRef, duty, uid, 'take', 'handover', now);
     }

@@ -23387,4 +23387,67 @@ class AppLocalizationsVi extends AppLocalizations {
   String hoSentToFamily(String name, String time) {
     return '$name gửi cho cả nhà · $time';
   }
+
+  @override
+  String get cpStartRhythm => 'Theo nhịp của bé';
+
+  @override
+  String get cpStartRhythmSub => 'Bú và ngủ, từ 7 ngày ghi gần đây';
+
+  @override
+  String get cpRhythmNotReady => 'Chưa đủ 7 ngày có ghi cả bú và ngủ';
+
+  @override
+  String get cpTemplatesSection => 'Lịch mẫu (chờ duyệt)';
+
+  @override
+  String get cpStartBasic => 'Lịch cơ bản theo tuổi';
+
+  @override
+  String get cpStartBasicSub => 'Bú, ngủ và vài việc nhẹ nhàng';
+
+  @override
+  String get cpStartEasy35 => 'EASY 3.5';
+
+  @override
+  String get cpStartEasy4 => 'EASY 4';
+
+  @override
+  String get cpStartEasySub => 'Khi nhà mình đang theo EASY';
+
+  @override
+  String get cpTemplatesNote =>
+      'Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến.';
+
+  @override
+  String get cpChangeTitle => 'Đổi cách lên lịch';
+
+  @override
+  String get cpKeepDraft => 'Giữ bản nháp này';
+
+  @override
+  String get cpDraftTitle => 'Bản nháp · chưa nhắc ai';
+
+  @override
+  String get cpDraftBody =>
+      'Sửa, thêm hay giao việc tuỳ ý. Dùng lịch này để cả nhà thấy và được nhắc.';
+
+  @override
+  String get cpDraftUse => 'Dùng lịch này';
+
+  @override
+  String get cpDraftChange => 'Đổi cách khác';
+
+  @override
+  String get cpDraftUsed => 'Đã dùng lịch hôm nay';
+
+  @override
+  String get cpFamilySection => 'Cả nhà';
+
+  @override
+  String get cpAutoDraft => 'Tự tạo lịch mỗi sáng';
+
+  @override
+  String get cpAutoDraftHint =>
+      'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.';
 }

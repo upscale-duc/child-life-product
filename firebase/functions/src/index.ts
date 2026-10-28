@@ -298,11 +298,14 @@ import {
   CarePlanError,
   assignCarePlanItems as runAssignCarePlanItems,
   deleteCarePlanItem as runDeleteCarePlanItem,
+  publishCarePlanDay as runPublishCarePlanDay,
+  setCarePlanAutoDraft as runSetCarePlanAutoDraft,
   saveCarePlanItem as runSaveCarePlanItem,
   setCarePlanItemStatus as runSetCarePlanItemStatus,
   startCarePlanDay as runStartCarePlanDay,
 } from './care-plan.js';
 import { ringCareTaskReminders as ringCareTaskPushes } from './care-plan-reminders.js';
+import { draftCarePlanMornings as draftCarePlanMorningDays } from './care-plan-morning.js';
 import {
   VaccineReminderError,
   ringVaccineReminders,
@@ -884,6 +887,8 @@ export const saveCarePlanItem = planCall(runSaveCarePlanItem);
 export const deleteCarePlanItem = planCall(runDeleteCarePlanItem);
 export const assignCarePlanItems = planCall(runAssignCarePlanItems);
 export const setCarePlanItemStatus = planCall(runSetCarePlanItemStatus);
+export const publishCarePlanDay = planCall(runPublishCarePlanDay);
+export const setCarePlanAutoDraft = planCall(runSetCarePlanAutoDraft);
 
 /** Sổ tiêm chủng reminders: 3 days before and the evening before at 19:00 (P-133). */
 export const ringVaccineReminderPush = onSchedule('every 5 minutes', async () => {
@@ -942,6 +947,16 @@ export const spendingBudgetAlert = onDocumentWritten(
 export const ringCareTaskReminders = onSchedule('every 1 minutes', async () => {
   const { pushes, sent } = await ringCareTaskPushes(getFirestore(), pushSender(), new Date());
   if (pushes > 0) logger.info('care task reminders rang', { pushes, sent });
+});
+
+/** Cùng Chăm Con "Tự tạo lịch mỗi sáng" + N5 (D-136 #3). */
+export const draftCarePlanMornings = onSchedule('every 15 minutes', async () => {
+  const { drafted, sent } = await draftCarePlanMorningDays(
+    getFirestore(),
+    pushSender(),
+    new Date(),
+  );
+  if (drafted > 0) logger.info('care plan morning drafts', { drafted, sent });
 });
 
 /** Rings rule reminders whose time has come (1f). */

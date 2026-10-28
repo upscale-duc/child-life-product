@@ -34210,5 +34210,85 @@
         "type": "String"
       }
     }
+  },
+  "cpStartRhythm": "Theo nhịp của bé",
+  "@cpStartRhythm": {
+    "description": "Cùng Chăm Con 04-0: a draft from the usual feed and sleep times logged (D-136 #2). EN is an engineering draft for owner review."
+  },
+  "cpStartRhythmSub": "Bú và ngủ, từ 7 ngày ghi gần đây",
+  "@cpStartRhythmSub": {
+    "description": "Cùng Chăm Con 04-0: what \"Theo nhịp của bé\" is drafted from. EN is an engineering draft for owner review."
+  },
+  "cpRhythmNotReady": "Chưa đủ 7 ngày có ghi cả bú và ngủ",
+  "@cpRhythmNotReady": {
+    "description": "Cùng Chăm Con: toast when the rhythm draft cannot be made (D-136 #2). EN is an engineering draft for owner review."
+  },
+  "cpTemplatesSection": "Lịch mẫu (chờ duyệt)",
+  "@cpTemplatesSection": {
+    "description": "Cùng Chăm Con 04-0: the reference templates, shown on dev only until the owner reviews them (D-136 #1). EN is an engineering draft for owner review."
+  },
+  "cpStartBasic": "Lịch cơ bản theo tuổi",
+  "@cpStartBasic": {
+    "description": "Cùng Chăm Con 04-0: the age-based template. EN is an engineering draft for owner review."
+  },
+  "cpStartBasicSub": "Bú, ngủ và vài việc nhẹ nhàng",
+  "@cpStartBasicSub": {
+    "description": "Cùng Chăm Con 04-0: what the basic template holds. EN is an engineering draft for owner review."
+  },
+  "cpStartEasy35": "EASY 3.5",
+  "@cpStartEasy35": {
+    "description": "Cùng Chăm Con 04-0: the EASY 3.5 template (a method name, not translated)."
+  },
+  "cpStartEasy4": "EASY 4",
+  "@cpStartEasy4": {
+    "description": "Cùng Chăm Con 04-0: the EASY 4 template (a method name, not translated)."
+  },
+  "cpStartEasySub": "Khi nhà mình đang theo EASY",
+  "@cpStartEasySub": {
+    "description": "Cùng Chăm Con 04-0: when an EASY template fits. EN is an engineering draft for owner review."
+  },
+  "cpTemplatesNote": "Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến.",
+  "@cpTemplatesNote": {
+    "description": "Cùng Chăm Con 04-0: under the templates (FLOW §4). EN is an engineering draft for owner review."
+  },
+  "cpChangeTitle": "Đổi cách lên lịch",
+  "@cpChangeTitle": {
+    "description": "Cùng Chăm Con: the ways to start the day, in place of a draft. EN is an engineering draft for owner review."
+  },
+  "cpKeepDraft": "Giữ bản nháp này",
+  "@cpKeepDraft": {
+    "description": "Cùng Chăm Con \"Đổi cách khác\": back to the draft unchanged. EN is an engineering draft for owner review."
+  },
+  "cpDraftTitle": "Bản nháp · chưa nhắc ai",
+  "@cpDraftTitle": {
+    "description": "Cùng Chăm Con: a drafted day, seen by plan managers only (D-136). EN is an engineering draft for owner review."
+  },
+  "cpDraftBody": "Sửa, thêm hay giao việc tuỳ ý. Dùng lịch này để cả nhà thấy và được nhắc.",
+  "@cpDraftBody": {
+    "description": "Cùng Chăm Con: what the draft means and what using it does. EN is an engineering draft for owner review."
+  },
+  "cpDraftUse": "Dùng lịch này",
+  "@cpDraftUse": {
+    "description": "Cùng Chăm Con: put the draft in use (the primary action). EN is an engineering draft for owner review."
+  },
+  "cpDraftChange": "Đổi cách khác",
+  "@cpDraftChange": {
+    "description": "Cùng Chăm Con: start the draft day another way. EN is an engineering draft for owner review."
+  },
+  "cpDraftUsed": "Đã dùng lịch hôm nay",
+  "@cpDraftUsed": {
+    "description": "Cùng Chăm Con: toast after \"Dùng lịch này\". EN is an engineering draft for owner review."
+  },
+  "cpFamilySection": "Cả nhà",
+  "@cpFamilySection": {
+    "description": "Cùng Chăm Con settings: the family's settings, plan managers only. EN is an engineering draft for owner review."
+  },
+  "cpAutoDraft": "Tự tạo lịch mỗi sáng",
+  "@cpAutoDraft": {
+    "description": "Cùng Chăm Con settings (D-136 #3): off by default. EN is an engineering draft for owner review."
+  },
+  "cpAutoDraftHint": "Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.",
+  "@cpAutoDraftHint": {
+    "description": "Cùng Chăm Con settings: what the morning draft does. EN is an engineering draft for owner review."
   }
 }

@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/environment.dart';
+import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
@@ -18,7 +21,8 @@ import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_swipe.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
-import '../care/care_repository.dart' show careClockProvider, inBabyZone;
+import '../care/care_repository.dart'
+    show careClockProvider, dayMarksProvider, inBabyZone;
 import '../care/history_screen.dart' show weekdayShort;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
@@ -49,6 +53,10 @@ class CarePlanSwipeHintDone extends Notifier<bool> {
 /// add, edit, assign and skip; whoever cares (Cùng nuôi, Người chăm sóc) ticks a task done, and
 /// the task records who did it. Sáng / Chiều / Tối group tasks by time, they are not shifts.
 /// Ticking a task is not a care record (logging stays in Care).
+///
+/// A drafted day (D-136: "Theo nhịp của bé", a reference template, the morning draft) is shown to
+/// the plan managers with "Dùng lịch này" and "Đổi cách khác" on top; everyone else sees no plan
+/// until it is used.
 class CarePlanScreen extends ConsumerStatefulWidget {
   const CarePlanScreen({this.date, super.key});
 
@@ -62,6 +70,31 @@ class CarePlanScreen extends ConsumerStatefulWidget {
 class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
   String? _date;
   bool _starting = false;
+
+  /// "Đổi cách khác" on a draft: the ways to start the day, in place of the draft.
+  bool _changing = false;
+
+  Future<void> _start(String babyId, String date, String from) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    setState(() => _starting = true);
+    try {
+      await ref.read(carePlanRepositoryProvider).startDay(babyId, date, from);
+      if (mounted) setState(() => _changing = false);
+    } on FirebaseFunctionsException catch (e) {
+      final reason = (e.details as Map?)?['reason'] ?? e.message;
+      toaster.show(
+        message: reason == 'not-enough-data'
+            ? l10n.cpRhythmNotReady
+            : l10n.cpSaveFailed,
+        error: true,
+      );
+    } on Object {
+      toaster.show(message: l10n.cpSaveFailed, error: true);
+    } finally {
+      if (mounted) setState(() => _starting = false);
+    }
+  }
 
   Future<void> _run(Future<void> Function() call) async {
     final l10n = AppLocalizations.of(context);
@@ -92,10 +125,12 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
     );
     final editableDay = date.compareTo(yesterday) >= 0;
     final manage = carePlanCanManage(me) && editableDay;
-    final complete = carePlanCanComplete(me) && editableDay;
 
     final key = (babyId, date);
     final dayAsync = ref.watch(carePlanDayProvider(key));
+    final draft = dayAsync.value?.draft ?? false;
+    // A draft is ticked once it is in use.
+    final complete = carePlanCanComplete(me) && editableDay && !draft;
     final itemsAsync = ref.watch(carePlanItemsProvider(key));
     final members = ref.watch(familyMembersProvider(babyId)).value ?? const [];
     final people = [
@@ -116,7 +151,23 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
     final strip = _DayStrip(
       today: todayWall,
       selected: date,
-      onSelect: (d) => setState(() => _date = d),
+      onSelect: (d) => setState(() {
+        _date = d;
+        _changing = false;
+      }),
+    );
+    final startDay = _StartDay(
+      babyId: babyId,
+      date: date,
+      today: date == today,
+      canStart: manage,
+      busy: _starting,
+      current: _changing ? dayAsync.value?.source : null,
+      onKeep: _changing ? () => setState(() => _changing = false) : null,
+      onStart: (from) => unawaited(_start(babyId, date, from)),
+      yesterdayKey: carePlanDateKey(
+        DateTime.parse(date).subtract(const Duration(days: 1)),
+      ),
     );
 
     final List<Widget> body;
@@ -138,31 +189,14 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
         SizedBox(height: ClSpace.s2),
         ClSkeleton(height: 72),
       ];
-    } else if (dayAsync.value == null) {
-      body = [
-        _StartDay(
-          babyId: babyId,
-          date: date,
-          today: date == today,
-          canStart: manage,
-          busy: _starting,
-          onStart: (from) async {
-            setState(() => _starting = true);
-            await _run(
-              () => ref
-                  .read(carePlanRepositoryProvider)
-                  .startDay(babyId, date, from),
-            );
-            if (mounted) setState(() => _starting = false);
-          },
-          yesterdayKey: carePlanDateKey(
-            DateTime.parse(date).subtract(const Duration(days: 1)),
-          ),
-        ),
-      ];
+    } else if (dayAsync.value == null ||
+        (draft && !manage) ||
+        (draft && _changing)) {
+      // Nobody but the plan managers sees a draft (D-136).
+      body = [startDay];
     } else {
       final open = items.where((i) => i.status == CarePlanStatus.open);
-      final nextId = date == today ? open.firstOrNull?.id : null;
+      final nextId = date == today && !draft ? open.firstOrNull?.id : null;
       final showHint = manage && !ref.watch(carePlanSwipeHintDoneProvider);
 
       Future<void> setStatus(CarePlanItem item, CarePlanStatus status) async {
@@ -349,9 +383,28 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
       }
 
       body = [
+        if (draft)
+          _DraftBar(
+            busy: _starting,
+            onUse: () async {
+              final toaster = ClToaster.of(context);
+              setState(() => _starting = true);
+              try {
+                await ref
+                    .read(carePlanRepositoryProvider)
+                    .publishDay(babyId, date);
+                toaster.show(message: l10n.cpDraftUsed);
+              } on Object {
+                toaster.show(message: l10n.cpSaveFailed, error: true);
+              } finally {
+                if (mounted) setState(() => _starting = false);
+              }
+            },
+            onChange: () => setState(() => _changing = true),
+          ),
         if (items.isNotEmpty) ...[
           const SizedBox(height: ClSpace.s4),
-          _Summary(items: items, today: date == today),
+          _Summary(items: items, today: date == today && !draft),
         ],
         for (final p in CarePlanPeriod.values)
           if (manage || items.any((i) => i.period == p))
@@ -589,8 +642,11 @@ class _GroupHeader extends StatelessWidget {
   }
 }
 
-/// 04-0 "Hôm nay chưa có lịch": start from the everyday tasks, yesterday, or nothing. Someone
-/// who cannot make the plan only sees that there is none yet.
+/// 04-0 "Hôm nay chưa có lịch" (with 01 Chọn cách lên lịch folded in, D-136): the family's own
+/// ways (the everyday tasks, yesterday, "Theo nhịp của bé" once 7 days are logged), the reference
+/// templates (dev only until reviewed), or nothing. Someone who cannot make the plan only sees
+/// that there is none yet. With [current] it is "Đổi cách khác" on a draft: that way is left out
+/// and [onKeep] goes back to the draft.
 class _StartDay extends ConsumerWidget {
   const _StartDay({
     required this.babyId,
@@ -600,6 +656,8 @@ class _StartDay extends ConsumerWidget {
     required this.canStart,
     required this.busy,
     required this.onStart,
+    this.current,
+    this.onKeep,
   });
 
   final String babyId;
@@ -609,37 +667,75 @@ class _StartDay extends ConsumerWidget {
   final bool canStart;
   final bool busy;
   final ValueChanged<String> onStart;
+  final String? current;
+  final VoidCallback? onKeep;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final everyday = canStart
-        ? ref.watch(carePlanEverydayCountProvider(babyId)).value ?? 0
-        : 0;
-    final yesterday = canStart
-        ? ref
-                  .watch(carePlanItemsProvider((babyId, yesterdayKey)))
-                  .value
-                  ?.length ??
-              0
-        : 0;
-    final title = today ? l10n.cpEmptyToday : l10n.cpEmptyDay;
+    final title = onKeep != null
+        ? l10n.cpChangeTitle
+        : today
+        ? l10n.cpEmptyToday
+        : l10n.cpEmptyDay;
     if (!canStart) {
       return Padding(
         padding: const EdgeInsets.only(top: ClSpace.s8),
         child: ClEmptyState(
           icon: ClIcons.calendar,
-          title: title,
+          title: today ? l10n.cpEmptyToday : l10n.cpEmptyDay,
           message: l10n.cpEmptyViewer,
         ),
       );
     }
-    final options = [
-      if (everyday > 0)
-        ('everyday', l10n.cpStartEveryday, l10n.cpDayTasks(everyday)),
-      if (yesterday > 0)
-        ('yesterday', l10n.cpStartYesterday, l10n.cpDayTasks(yesterday)),
+    final everyday =
+        ref.watch(carePlanEverydayCountProvider(babyId)).value ?? 0;
+    final yesterday =
+        ref
+            .watch(carePlanItemsProvider((babyId, yesterdayKey)))
+            .value
+            ?.length ??
+        0;
+    // D-136 #2: each of the 7 days before has a feed and a sleep.
+    final first = carePlanDateKey(
+      DateTime.parse(date).subtract(const Duration(days: carePlanRhythmDays)),
+    );
+    final marks =
+        ref.watch(dayMarksProvider((babyId, first, yesterdayKey))).value ??
+        const {};
+    final rhythm =
+        marks.values.where((m) => m.feeds && m.sleep).length >=
+        carePlanRhythmDays;
+    final templates = ref.watch(environmentProvider) == AppEnvironment.dev;
+    bool offered(String from) => from != current;
+
+    final own = [
+      if (rhythm && offered('rhythm'))
+        ('rhythm', ClIcons.spark, l10n.cpStartRhythm, l10n.cpStartRhythmSub),
+      if (everyday > 0 && offered('everyday'))
+        (
+          'everyday',
+          ClIcons.calendar,
+          l10n.cpStartEveryday,
+          l10n.cpDayTasks(everyday),
+        ),
+      if (yesterday > 0 && offered('yesterday'))
+        (
+          'yesterday',
+          ClIcons.retry,
+          l10n.cpStartYesterday,
+          l10n.cpDayTasks(yesterday),
+        ),
+    ];
+    final refs = [
+      if (templates) ...[
+        if (offered('basic'))
+          ('basic', l10n.cpStartBasic, l10n.cpStartBasicSub),
+        if (offered('easy35'))
+          ('easy35', l10n.cpStartEasy35, l10n.cpStartEasySub),
+        if (offered('easy4')) ('easy4', l10n.cpStartEasy4, l10n.cpStartEasySub),
+      ],
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -647,13 +743,13 @@ class _StartDay extends ConsumerWidget {
         const SizedBox(height: ClSpace.s6),
         Text(title, style: cl.text.title2.copyWith(color: cl.colors.ink)),
         const SizedBox(height: ClSpace.s4),
-        if (options.isNotEmpty) ...[
+        if (own.isNotEmpty) ...[
           ClCardGroup(
             children: [
-              for (final (from, label, sub) in options)
+              for (final (from, icon, label, sub) in own)
                 MeRow(
                   key: ValueKey('cp_start_$from'),
-                  icon: from == 'everyday' ? ClIcons.calendar : ClIcons.retry,
+                  icon: icon,
                   title: label,
                   subtitle: sub,
                   onTap: busy ? null : () => onStart(from),
@@ -662,16 +758,102 @@ class _StartDay extends ConsumerWidget {
           ),
           const SizedBox(height: ClSpace.s4),
         ],
+        if (refs.isNotEmpty) ...[
+          MeSection(l10n.cpTemplatesSection),
+          ClCardGroup(
+            children: [
+              for (final (from, label, sub) in refs)
+                MeRow(
+                  key: ValueKey('cp_start_$from'),
+                  title: label,
+                  subtitle: sub,
+                  onTap: busy ? null : () => onStart(from),
+                ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              ClSpace.s1,
+              ClSpace.s2,
+              ClSpace.s1,
+              0,
+            ),
+            child: Text(
+              l10n.cpTemplatesNote,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+        ],
+        if (offered('empty'))
+          ClButton(
+            key: const Key('cp_start_empty'),
+            label: l10n.cpStartEmpty,
+            icon: ClIcons.plus,
+            expand: true,
+            loading: busy,
+            style: own.isEmpty && refs.isEmpty
+                ? ClButtonStyle.primary
+                : ClButtonStyle.secondary,
+            onPressed: () => onStart('empty'),
+          ),
+        if (onKeep != null) ...[
+          const SizedBox(height: ClSpace.s2),
+          ClButton(
+            key: const Key('cp_keep_draft'),
+            label: l10n.cpKeepDraft,
+            style: ClButtonStyle.plain,
+            expand: true,
+            onPressed: onKeep,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// 02 on a draft day (D-136): it is nobody's plan yet; "Dùng lịch này" puts it in use (the one
+/// primary action, D-105), "Đổi cách khác" starts it another way.
+class _DraftBar extends StatelessWidget {
+  const _DraftBar({
+    required this.busy,
+    required this.onUse,
+    required this.onChange,
+  });
+
+  final bool busy;
+  final VoidCallback onUse;
+  final VoidCallback onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      key: const Key('cp_draft'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: ClSpace.s4),
+        MeNotice(
+          tone: MeTone.info,
+          icon: ClIcons.edit,
+          title: l10n.cpDraftTitle,
+          body: l10n.cpDraftBody,
+        ),
+        const SizedBox(height: ClSpace.s3),
         ClButton(
-          key: const Key('cp_start_empty'),
-          label: l10n.cpStartEmpty,
-          icon: ClIcons.plus,
+          key: const Key('cp_draft_use'),
+          label: l10n.cpDraftUse,
           expand: true,
           loading: busy,
-          style: options.isEmpty
-              ? ClButtonStyle.primary
-              : ClButtonStyle.secondary,
-          onPressed: () => onStart('empty'),
+          onPressed: onUse,
+        ),
+        const SizedBox(height: ClSpace.s1),
+        ClButton(
+          key: const Key('cp_draft_change'),
+          label: l10n.cpDraftChange,
+          style: ClButtonStyle.plain,
+          expand: true,
+          onPressed: busy ? null : onChange,
         ),
       ],
     );

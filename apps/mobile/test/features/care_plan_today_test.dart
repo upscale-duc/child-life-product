@@ -1,3 +1,4 @@
+import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/care/care_duty.dart';
 import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/care_plan/care_plan_settings.dart';
@@ -27,6 +28,7 @@ Future<(FakeCarePlanRepository, ProviderContainer)> _pump(
   DateTime? now,
   TextScaler? textScaler,
   Locale locale = const Locale('vi'),
+  bool draft = false,
 }) async {
   final repo = FakeCarePlanRepository();
   final (_, container) = await pumpRouted(
@@ -47,6 +49,7 @@ Future<(FakeCarePlanRepository, ProviderContainer)> _pump(
         days: {carePlanToday: plan ?? planFresh()},
         repo: repo,
         prefs: carePrefs,
+        drafts: {if (draft) carePlanToday},
       ),
     ],
   );
@@ -111,6 +114,15 @@ void main() {
             else
               i,
         ],
+      );
+      expect(find.byKey(const Key('cpTodaySection')), findsNothing);
+    });
+
+    testWidgets('a draft day is nobody\'s to-do yet (D-136)', (tester) async {
+      await _pump(
+        tester,
+        const Scaffold(body: CarePlanTodaySection(enabled: true)),
+        draft: true,
       );
       expect(find.byKey(const Key('cpTodaySection')), findsNothing);
     });
@@ -274,6 +286,29 @@ void main() {
         carePrefs: const CarePlanPrefs(leadMinutes: 0),
       );
       expect(find.text(l.cpQuietHours), findsNothing);
+    });
+
+    testWidgets('"Tự tạo lịch mỗi sáng": plan managers only, off by default', (
+      tester,
+    ) async {
+      final (repo, _) = await _pump(
+        tester,
+        const CarePlanSettingsScreen(),
+        me: mai,
+      );
+      expect(find.text(l.cpFamilySection), findsOneWidget);
+      final toggle = find.descendant(
+        of: find.byKey(const Key('cp_auto_draft')),
+        matching: find.byType(ClToggle),
+      );
+      await tester.ensureVisible(toggle);
+      await tester.pumpAndSettle();
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(repo.calls.last.$1, 'autoDraft');
+      expect(repo.calls.last.$2, {'on': true});
+      await _pump(tester, const CarePlanSettingsScreen(), me: lan);
+      expect(find.text(l.cpAutoDraft), findsNothing);
     });
   });
 

@@ -24760,4 +24760,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String hoSentToFamily(String name, String time) {
     return '$name sent this to the family · $time';
   }
+
+  @override
+  String get cpStartRhythm => 'Follow your baby\'s rhythm';
+
+  @override
+  String get cpStartRhythmSub => 'Feeds and sleep, from the last 7 days logged';
+
+  @override
+  String get cpRhythmNotReady =>
+      'Not yet 7 days with both feeds and sleep logged';
+
+  @override
+  String get cpTemplatesSection => 'Sample plans (in review)';
+
+  @override
+  String get cpStartBasic => 'Basic plan for your baby\'s age';
+
+  @override
+  String get cpStartBasicSub => 'Feeds, sleep and a few gentle routines';
+
+  @override
+  String get cpStartEasy35 => 'EASY 3.5';
+
+  @override
+  String get cpStartEasy4 => 'EASY 4';
+
+  @override
+  String get cpStartEasySub => 'If your family follows EASY';
+
+  @override
+  String get cpTemplatesNote =>
+      'Sample plans are not medical schedules. Feeds and sleep can always differ from the plan.';
+
+  @override
+  String get cpChangeTitle => 'Choose another way';
+
+  @override
+  String get cpKeepDraft => 'Keep this draft';
+
+  @override
+  String get cpDraftTitle => 'Draft · nobody is reminded yet';
+
+  @override
+  String get cpDraftBody =>
+      'Edit, add or assign as you like. Use this plan so everyone sees it and gets reminders.';
+
+  @override
+  String get cpDraftUse => 'Use this plan';
+
+  @override
+  String get cpDraftChange => 'Choose another way';
+
+  @override
+  String get cpDraftUsed => 'Today\'s plan is in use';
+
+  @override
+  String get cpFamilySection => 'Whole family';
+
+  @override
+  String get cpAutoDraft => 'Draft a plan every morning';
+
+  @override
+  String get cpAutoDraftHint =>
+      'At 06:30, the way your family last made a plan. The draft is used only once someone taps Use this plan.';
 }

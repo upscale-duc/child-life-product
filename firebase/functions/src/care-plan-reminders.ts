@@ -51,6 +51,8 @@ function taskOf(d: DocumentSnapshot): Task | null {
   if (!day || day.parent.id !== 'carePlanDays') return null;
   const dueAt = d.get('dueAt');
   if (!(dueAt instanceof Timestamp)) return null;
+  // A draft's tasks wait for "Dùng lịch này" (D-136 #3).
+  if (d.get('draft') === true) return null;
   return {
     ref: d.ref,
     id: d.id,

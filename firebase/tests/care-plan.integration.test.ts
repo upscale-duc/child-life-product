@@ -104,10 +104,11 @@ describe('starting a day (04-0)', () => {
     expect(await startCarePlanDay(db, 'mom', { babyId, date: today, from: 'empty' }, now)).toEqual({
       created: true,
       items: 0,
+      draft: false,
     });
     expect(
       await startCarePlanDay(db, 'dad', { babyId, date: today, from: 'yesterday' }, now),
-    ).toEqual({ created: false, items: 0 });
+    ).toEqual({ created: false, items: 0, draft: false });
     expect((await day())!.revision).toBe(1);
     expect((await day())!.createdBy).toBe('mom');
   });
@@ -127,7 +128,7 @@ describe('starting a day (04-0)', () => {
     await db.doc(`babies/${babyId}/members/nanny`).update({ status: 'removed' });
 
     const r = await startCarePlanDay(db, 'dad', { babyId, date: today, from: 'yesterday' }, now);
-    expect(r).toEqual({ created: true, items: 2 });
+    expect(r).toEqual({ created: true, items: 2, draft: false });
     const copied = (await items()).sort((a, b) => a.time.localeCompare(b.time));
     expect(copied.map((i) => [i.task, i.time, i.status, i.assignees])).toEqual([
       ['bottle', '07:00', 'open', []],

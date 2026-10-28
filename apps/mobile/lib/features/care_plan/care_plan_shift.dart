@@ -35,7 +35,7 @@ List<CarePlanItem> carePlanMyDay(WidgetRef ref, Membership me) {
   final pending = ref.watch(carePlanPendingProvider);
   return [
     for (final i
-        in ref.watch(carePlanItemsProvider((me.babyId, date))).value ??
+        in ref.watch(carePlanLiveItemsProvider((me.babyId, date))).value ??
             const <CarePlanItem>[])
       if (i.assignees.contains(me.uid) && !i.skipped)
         switch (pending[i.id]) {
@@ -456,7 +456,7 @@ class CarePlanRemaining extends ConsumerWidget {
     final pending = ref.watch(carePlanPendingProvider);
     final open = [
       for (final i
-          in ref.watch(carePlanItemsProvider((me.babyId, date))).value ??
+          in ref.watch(carePlanLiveItemsProvider((me.babyId, date))).value ??
               const <CarePlanItem>[])
         if (pending[i.id] == null && i.status == CarePlanStatus.open) i,
     ];

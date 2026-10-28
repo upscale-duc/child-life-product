@@ -89,7 +89,7 @@ Future<void> markCarePlanDone(
 /// Today's open tasks of the viewer, with this phone's pending ticks applied.
 List<CarePlanItem> _myOpen(WidgetRef ref, Membership me, String date) {
   final items =
-      ref.watch(carePlanItemsProvider((me.babyId, date))).value ?? const [];
+      ref.watch(carePlanLiveItemsProvider((me.babyId, date))).value ?? const [];
   final pending = ref.watch(carePlanPendingProvider);
   return carePlanMine([
     for (final i in items)
@@ -337,7 +337,7 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
     if (request != null) {
       if (request.babyId != me.babyId) return;
       final items = ref.read(
-        carePlanItemsProvider((request.babyId, request.date)),
+        carePlanLiveItemsProvider((request.babyId, request.date)),
       );
       if (!items.hasValue) return _schedule(CarePlanDueGate.retry);
       if (!_allowed(fromPush: true)) return _schedule(CarePlanDueGate.retry);
@@ -360,7 +360,7 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
         'Asia/Ho_Chi_Minh';
     final wall = inBabyZone(zone, now);
     final date = carePlanDateKey(wall);
-    final items = ref.read(carePlanItemsProvider((me.babyId, date)));
+    final items = ref.read(carePlanLiveItemsProvider((me.babyId, date)));
     if (!items.hasValue) return _schedule(CarePlanDueGate.retry);
     final due = [
       for (final i in carePlanDueNow(carePlanMine(items.value!, me.uid), wall))
@@ -421,12 +421,15 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
     if (me != null && carePlanCanComplete(me)) {
       // Started here so the check finds them loaded.
       ref.watch(
-        carePlanItemsProvider((me.babyId, carePlanTodayKey(ref, me.babyId))),
+        carePlanLiveItemsProvider((
+          me.babyId,
+          carePlanTodayKey(ref, me.babyId),
+        )),
       );
       ref.watch(notificationsLaunchAskProvider);
       final request = ref.watch(carePlanDueRequestProvider);
       if (request != null) {
-        ref.watch(carePlanItemsProvider((request.babyId, request.date)));
+        ref.watch(carePlanLiveItemsProvider((request.babyId, request.date)));
       }
       if (_look || request != null) _schedule(CarePlanDueGate.delay);
     }
@@ -561,7 +564,7 @@ String? carePlanHelperOnDuty(
   final wall = inBabyZone(zone, now);
   final items =
       ref
-          .watch(carePlanItemsProvider((me.babyId, carePlanDateKey(wall))))
+          .watch(carePlanLiveItemsProvider((me.babyId, carePlanDateKey(wall))))
           .value ??
       const <CarePlanItem>[];
   final last = [

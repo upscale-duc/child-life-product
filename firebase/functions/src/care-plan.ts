@@ -7,18 +7,30 @@ import {
 } from 'firebase-admin/firestore';
 import { randomBytes } from 'node:crypto';
 import {
+  ageInMonths,
   assignCarePlanItemsSchema,
   carePlanAssignable,
   carePlanCan,
   carePlanLimits,
+  carePlanRhythmDays,
+  dayBoundsIn,
   deleteCarePlanItemSchema,
+  isDraftMethod,
+  publishCarePlanDaySchema,
+  rhythmDraft,
+  rhythmReady,
   saveCarePlanItemSchema,
+  setCarePlanAutoDraftSchema,
   setCarePlanItemStatusSchema,
   startCarePlanDaySchema,
+  templateDraft,
+  type CarePlanMethod,
   type CarePlanRight,
   type MemberRole,
+  type RhythmEvent,
 } from '@child-life/contracts';
 import { localInstant } from './assistant-tools.js';
+import { currentProjectId, environmentForProject } from './env.js';
 import { isActiveMember } from './family.js';
 
 /**
@@ -55,6 +67,9 @@ const templateOf = (db: Firestore, babyId: string) =>
   db.collection(`babies/${babyId}/carePlanTemplate`);
 const historyOf = (db: Firestore, babyId: string) =>
   db.collection(`babies/${babyId}/carePlanHistory`);
+/** "Tự tạo lịch mỗi sáng" and the method last used (D-136 #3), server-written. */
+export const carePlanSettingsRef = (db: Firestore, babyId: string) =>
+  db.doc(`babies/${babyId}/carePlanSettings/family`);
 
 const newId = (prefix: 'pi' | 'pt') => `${prefix}_${randomBytes(16).toString('hex')}`;
 
@@ -163,7 +178,7 @@ function bump(tx: Transaction, day: DocumentSnapshot, uid: string, now: Date) {
 }
 
 interface HistoryEntry {
-  action: 'start' | 'add' | 'edit' | 'delete' | 'assign' | 'done' | 'undone' | 'skip';
+  action: 'start' | 'publish' | 'add' | 'edit' | 'delete' | 'assign' | 'done' | 'undone' | 'skip';
   date: string;
   itemIds?: string[];
   task?: string | null;
@@ -199,42 +214,100 @@ function record(
 
 // ---------- Callables ----------
 
-/** 04-0: start the day; a day that already exists is returned as it is (retries, two parents). */
-export async function startCarePlanDay(
+type Seed = {
+  task: string;
+  title: string | null;
+  time: string;
+  assignees: string[];
+  templateId: string | null;
+};
+
+/** The reference templates are offered on dev only until the owner reviews them (D-136 #1). */
+export function carePlanTemplatesOffered(): boolean {
+  try {
+    return environmentForProject(currentProjectId()) === 'dev';
+  } catch {
+    return false;
+  }
+}
+
+/** Feeds and sleeps of the [carePlanRhythmDays] days before [date], and the usual feed. */
+async function rhythmEvents(
   db: Firestore,
-  uid: string,
-  data: unknown,
-  now: Date,
-): Promise<{ created: boolean; items: number }> {
-  const req = parse(startCarePlanDaySchema, data);
-  return db.runTransaction(async (tx) => {
-    const { zone } = await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
-    const ref = dayRef(db, req.babyId, req.date);
-    const day = await tx.get(ref);
-    if (day.exists) {
-      const items = await tx.get(itemsOf(db, req.babyId, req.date));
-      return { created: false, items: items.size };
-    }
-    type Seed = {
-      task: string;
-      title: string | null;
-      time: string;
-      assignees: string[];
-      templateId: string | null;
-    };
-    let seeds: Seed[] = [];
-    if (req.from === 'everyday') {
-      const t = await tx.get(templateOf(db, req.babyId));
-      seeds = t.docs.map((d) => ({
+  tx: Transaction,
+  babyId: string,
+  zone: string,
+  date: string,
+): Promise<{ events: RhythmEvent[]; dates: string[]; feed: 'bottle' | 'breast' }> {
+  const dates = Array.from({ length: carePlanRhythmDays }, (_, i) =>
+    shiftDateKey(date, i - carePlanRhythmDays),
+  );
+  const start = dayBoundsIn(zone, dates[0]!).start;
+  const end = dayBoundsIn(zone, dates[dates.length - 1]!).end;
+  const snap = await tx.get(
+    db
+      .collection(`babies/${babyId}/records`)
+      .where('occurredAt', '>=', start)
+      .where('occurredAt', '<', end),
+  );
+  const clock = new Intl.DateTimeFormat('en-GB', {
+    timeZone: zone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+  const events: RhythmEvent[] = [];
+  let bottles = 0;
+  let breasts = 0;
+  for (const d of snap.docs) {
+    if (d.get('deleted') === true) continue;
+    const type = d.get('type') as string;
+    const at = d.get('occurredAt');
+    if (!(at instanceof Timestamp)) continue;
+    const kind =
+      type === 'bottle' || type === 'breast' ? 'feed' : type === 'sleep' ? 'sleep' : null;
+    if (!kind) continue;
+    if (type === 'bottle') bottles += 1;
+    if (type === 'breast') breasts += 1;
+    const [h, m] = clock.format(at.toDate()).split(':').map(Number);
+    events.push({ kind, date: dateKeyIn(zone, at.toDate()), minute: h! * 60 + m! });
+  }
+  return { events, dates, feed: breasts > bottles ? 'breast' : 'bottle' };
+}
+
+/**
+ * The tasks a day starts with by [method]. Throws `not-enough-data` (rhythm, D-136 #2) and
+ * `template-unavailable` (templates outside dev, D-136 #1).
+ */
+async function seedsFor(
+  db: Firestore,
+  tx: Transaction,
+  babyId: string,
+  date: string,
+  zone: string,
+  method: CarePlanMethod,
+): Promise<Seed[]> {
+  const plain = (t: { task: string; time: string }): Seed => ({
+    task: t.task,
+    title: null,
+    time: t.time,
+    assignees: [],
+    templateId: null,
+  });
+  switch (method) {
+    case 'everyday': {
+      const t = await tx.get(templateOf(db, babyId));
+      return t.docs.map((d) => ({
         task: d.get('task'),
         title: d.get('title') ?? null,
         time: d.get('time'),
         assignees: d.get('assignees') ?? [],
         templateId: d.id,
       }));
-    } else if (req.from === 'yesterday') {
-      const y = await tx.get(itemsOf(db, req.babyId, shiftDateKey(req.date, -1)));
-      seeds = y.docs.map((d) => ({
+    }
+    case 'yesterday': {
+      const y = await tx.get(itemsOf(db, babyId, shiftDateKey(date, -1)));
+      return y.docs.map((d) => ({
         task: d.get('task'),
         title: d.get('title') ?? null,
         time: d.get('time'),
@@ -242,52 +315,251 @@ export async function startCarePlanDay(
         templateId: d.get('templateId') ?? null,
       }));
     }
-    // Who left the family since is not carried over.
-    const people = [...new Set(seeds.flatMap((s) => s.assignees))];
-    const snaps = await Promise.all(
-      people.map((u) => tx.get(db.doc(`babies/${req.babyId}/members/${u}`))),
-    );
-    const still = new Set(
-      snaps
-        .filter((s) => isActiveMember(s, now) && carePlanAssignable(s.get('role')))
-        .map((s) => s.id),
-    );
-    seeds = seeds.slice(0, carePlanLimits.itemsPerDay);
-    const at = Timestamp.fromDate(now);
+    case 'empty':
+      return [];
+    case 'rhythm': {
+      const r = await rhythmEvents(db, tx, babyId, zone, date);
+      if (!rhythmReady(r.events, r.dates)) {
+        throw new CarePlanError('failed-precondition', 'not-enough-data');
+      }
+      return rhythmDraft(r.events, r.dates.length, r.feed).map(plain);
+    }
+    case 'basic':
+    case 'easy35':
+    case 'easy4': {
+      if (!carePlanTemplatesOffered()) {
+        throw new CarePlanError('failed-precondition', 'template-unavailable');
+      }
+      const [profile, r] = await Promise.all([
+        tx.get(db.doc(`babies/${babyId}/restricted/profile`)),
+        rhythmEvents(db, tx, babyId, zone, date),
+      ]);
+      const dob = profile.get('dateOfBirth');
+      const months =
+        typeof dob === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= date
+          ? ageInMonths(dob, date)
+          : 4;
+      return templateDraft(method, months, r.feed).map(plain);
+    }
+  }
+}
+
+/**
+ * Writes a new day (or replaces a draft's tasks) from [seeds]. A drafted method makes a draft:
+ * its tasks carry `draft: true` and are not reminded (N1) until "Dùng lịch này".
+ */
+async function writeDay(
+  db: Firestore,
+  tx: Transaction,
+  p: {
+    babyId: string;
+    date: string;
+    zone: string;
+    method: CarePlanMethod;
+    seeds: Seed[];
+    draft: boolean;
+    by: string;
+    now: Date;
+    replacing: DocumentSnapshot | null;
+  },
+): Promise<void> {
+  // Who left the family since is not carried over.
+  const people = [...new Set(p.seeds.flatMap((s) => s.assignees))];
+  const snaps = await Promise.all(
+    people.map((u) => tx.get(db.doc(`babies/${p.babyId}/members/${u}`))),
+  );
+  const still = new Set(
+    snaps
+      .filter((s) => isActiveMember(s, p.now) && carePlanAssignable(s.get('role')))
+      .map((s) => s.id),
+  );
+  const old = p.replacing ? await tx.get(itemsOf(db, p.babyId, p.date)) : null;
+  const seeds = p.seeds.slice(0, carePlanLimits.itemsPerDay);
+  const draft = p.draft;
+  const at = Timestamp.fromDate(p.now);
+  for (const d of old?.docs ?? []) tx.delete(d.ref);
+  const ref = dayRef(db, p.babyId, p.date);
+  if (p.replacing) {
+    tx.update(ref, {
+      source: p.method,
+      status: draft ? 'draft' : 'published',
+      revision: FieldValue.increment(1),
+      updatedAt: at,
+      updatedBy: p.by,
+    });
+  } else {
     tx.set(ref, {
-      babyId: req.babyId,
-      date: req.date,
-      source: req.from,
+      babyId: p.babyId,
+      date: p.date,
+      source: p.method,
+      status: draft ? 'draft' : 'published',
       revision: 1,
       createdAt: at,
-      createdBy: uid,
+      createdBy: p.by,
       updatedAt: at,
-      updatedBy: uid,
+      updatedBy: p.by,
     });
-    for (const s of seeds) {
-      const id = newId('pi');
-      tx.set(itemsOf(db, req.babyId, req.date).doc(id), {
-        id,
-        babyId: req.babyId,
-        date: req.date,
-        task: s.task,
-        title: s.title,
-        time: s.time,
-        dueAt: carePlanDueAt(zone, req.date, s.time),
-        revision: 1,
-        assignees: s.assignees.filter((u) => still.has(u)),
-        status: 'open',
-        templateId: s.templateId,
-        doneBy: null,
-        doneAt: null,
-        createdAt: at,
-        createdBy: uid,
-        updatedAt: at,
-        updatedBy: uid,
-      });
+  }
+  for (const s of seeds) {
+    const id = newId('pi');
+    tx.set(itemsOf(db, p.babyId, p.date).doc(id), {
+      id,
+      babyId: p.babyId,
+      date: p.date,
+      task: s.task,
+      title: s.title,
+      time: s.time,
+      dueAt: carePlanDueAt(p.zone, p.date, s.time),
+      revision: 1,
+      assignees: s.assignees.filter((u) => still.has(u)),
+      status: 'open',
+      templateId: s.templateId,
+      ...(draft ? { draft: true } : {}),
+      doneBy: null,
+      doneAt: null,
+      createdAt: at,
+      createdBy: p.by,
+      updatedAt: at,
+      updatedBy: p.by,
+    });
+  }
+}
+
+/**
+ * 04-0 / 01: start the day. A day that exists is returned as it is (retries, two parents), except
+ * a draft started again with another method ("Đổi cách khác"), whose tasks are replaced. The
+ * method (other than `empty`) is kept as the family's, for the morning draft.
+ */
+export async function startCarePlanDay(
+  db: Firestore,
+  uid: string,
+  data: unknown,
+  now: Date,
+): Promise<{ created: boolean; items: number; draft: boolean }> {
+  const req = parse(startCarePlanDaySchema, data);
+  return db.runTransaction(async (tx) => {
+    const { zone } = await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
+    const ref = dayRef(db, req.babyId, req.date);
+    const day = await tx.get(ref);
+    const isDraft = day.exists && day.get('status') === 'draft';
+    if (day.exists && (!isDraft || day.get('source') === req.from)) {
+      const items = await tx.get(itemsOf(db, req.babyId, req.date));
+      return { created: false, items: items.size, draft: isDraft };
+    }
+    const seeds = await seedsFor(db, tx, req.babyId, req.date, zone, req.from);
+    await writeDay(db, tx, {
+      babyId: req.babyId,
+      date: req.date,
+      zone,
+      method: req.from,
+      seeds,
+      draft: isDraftMethod(req.from),
+      by: uid,
+      now,
+      replacing: day.exists ? day : null,
+    });
+    if (req.from !== 'empty') {
+      tx.set(
+        carePlanSettingsRef(db, req.babyId),
+        { method: req.from, updatedAt: Timestamp.fromDate(now), updatedBy: uid },
+        { merge: true },
+      );
     }
     record(db, tx, req.babyId, uid, now, { action: 'start', date: req.date, from: req.from });
-    return { created: true, items: seeds.length };
+    return {
+      created: true,
+      items: Math.min(seeds.length, carePlanLimits.itemsPerDay),
+      draft: isDraftMethod(req.from),
+    };
+  });
+}
+
+/** 02 "Dùng lịch này": the draft becomes the plan; its tasks are reminded from now on. */
+export async function publishCarePlanDay(
+  db: Firestore,
+  uid: string,
+  data: unknown,
+  now: Date,
+): Promise<{ published: boolean }> {
+  const req = parse(publishCarePlanDaySchema, data);
+  return db.runTransaction(async (tx) => {
+    await caller(db, tx, req.babyId, req.date, uid, now, 'manage');
+    const day = await requireDay(db, tx, req.babyId, req.date);
+    // Already in use (a retry, or the other parent tapped first).
+    if (day.get('status') !== 'draft') return { published: false };
+    const items = await tx.get(itemsOf(db, req.babyId, req.date));
+    const at = Timestamp.fromDate(now);
+    for (const i of items.docs) {
+      if (i.get('draft') === true) tx.update(i.ref, { draft: FieldValue.delete(), updatedAt: at });
+    }
+    tx.update(day.ref, { status: 'published', publishedAt: at, publishedBy: uid });
+    bump(tx, day, uid, now);
+    record(db, tx, req.babyId, uid, now, { action: 'publish', date: req.date });
+    return { published: true };
+  });
+}
+
+/** 13 "Tự tạo lịch mỗi sáng" (D-136 #3): plan managers turn it on or off for the family. */
+export async function setCarePlanAutoDraft(
+  db: Firestore,
+  uid: string,
+  data: unknown,
+  now: Date,
+): Promise<{ on: boolean }> {
+  const req = parse(setCarePlanAutoDraftSchema, data);
+  const member = await db.doc(`babies/${req.babyId}/members/${uid}`).get();
+  if (!isActiveMember(member, now) || !carePlanCan(member.get('role'), 'manage')) {
+    throw new CarePlanError('permission-denied', 'not-allowed');
+  }
+  await carePlanSettingsRef(db, req.babyId).set(
+    { autoDraft: req.on, updatedAt: Timestamp.fromDate(now), updatedBy: uid },
+    { merge: true },
+  );
+  return { on: req.on };
+}
+
+/**
+ * The morning draft of one baby (`care-plan-morning.ts`): the family's method for [date], as a
+ * draft, unless the day exists. Returns how many tasks it holds and the first, or null when
+ * nothing was made (a day exists, no tasks, not enough data, templates not offered).
+ */
+export async function draftCarePlanDay(
+  db: Firestore,
+  babyId: string,
+  date: string,
+  zone: string,
+  method: CarePlanMethod,
+  now: Date,
+): Promise<{ items: number; first: { task: string; time: string } } | null> {
+  return db.runTransaction(async (tx) => {
+    const day = await tx.get(dayRef(db, babyId, date));
+    if (day.exists) return null;
+    let seeds: Seed[];
+    try {
+      seeds = await seedsFor(db, tx, babyId, date, zone, method);
+    } catch (e) {
+      if (e instanceof CarePlanError) return null;
+      throw e;
+    }
+    if (seeds.length === 0) return null;
+    // Always a draft in the morning, whatever the method (D-136 #3).
+    await writeDay(db, tx, {
+      babyId,
+      date,
+      zone,
+      method,
+      seeds,
+      draft: true,
+      by: 'system',
+      now,
+      replacing: null,
+    });
+    record(db, tx, babyId, 'system', now, { action: 'start', date, from: method });
+    const sorted = [...seeds].sort((a, b) => a.time.localeCompare(b.time));
+    return {
+      items: Math.min(seeds.length, carePlanLimits.itemsPerDay),
+      first: { task: sorted[0]!.task, time: sorted[0]!.time },
+    };
   });
 }
 
@@ -352,6 +624,8 @@ export async function saveCarePlanItem(
       assignees: req.assignees,
       status: existing.exists ? existing.get('status') : 'open',
       templateId,
+      // A task added to or edited in a draft waits for "Dùng lịch này" like the others.
+      ...(day.get('status') === 'draft' ? { draft: true } : {}),
       doneBy: existing.exists ? (existing.get('doneBy') ?? null) : null,
       doneAt: existing.exists ? (existing.get('doneAt') ?? null) : null,
       createdAt: existing.exists ? existing.get('createdAt') : at,

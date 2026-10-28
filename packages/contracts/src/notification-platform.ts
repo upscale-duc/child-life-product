@@ -47,6 +47,7 @@ export const notificationDestinationIds = [
   'FAMILY_MEMBERS',
   'CARE_HANDOVER',
   'CARE_TASK_DUE',
+  'CARE_PLAN_READY',
   'LUMI_INSIGHT',
   'INBOX',
 ] as const;
@@ -251,6 +252,16 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       permission: 'care_read',
       fallback: 'INBOX',
       completion: t('Đánh dấu việc đã làm', 'Mark the task done'),
+    },
+    // D-136 N5: the day's plan, a draft to look over and "Dùng lịch này".
+    CARE_PLAN_READY: {
+      id: 'CARE_PLAN_READY',
+      screen: t('Lịch chung trong ngày (Cùng Chăm Con)', 'The day’s shared plan (Shared care)'),
+      path: '/care/together',
+      params: [babyId, { key: 'date', pattern: /^\d{4}-\d{2}-\d{2}$/, required: true }],
+      permission: 'care_read',
+      fallback: 'INBOX',
+      completion: t('Xem và dùng lịch hôm nay', 'Review and use today’s plan'),
     },
     FAMILY_MESSAGES: {
       id: 'FAMILY_MESSAGES',
@@ -866,6 +877,31 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
     engagement: [],
     status: 'live',
   },
+  carePlanReady: {
+    kind: 'carePlanReady',
+    group: 'care',
+    producer: 'care.plan',
+    trigger: both(
+      'Mỗi 15 phút, từ 06:30 giờ của bé (sau giờ yên lặng mặc định): gia đình bật “Tự tạo lịch mỗi sáng”, hôm nay chưa có lịch; server tạo bản nháp theo cách gia đình dùng gần nhất',
+      'Every 15 min from 06:30 baby time (after the default quiet hours): the family turned on “Draft a plan every morning” and today has none; the server drafts it the family’s last way',
+    ),
+    recipients: both(
+      'Người quản lý lịch (Cùng nuôi đang hoạt động), mỗi người một thông báo',
+      'Plan managers (active co-parents), one notice each',
+    ),
+    priority: 'informational',
+    templates: ['care.plan_ready'],
+    destination: 'CARE_PLAN_READY',
+    setting: null,
+    quietHours: 'held',
+    dedup: both(
+      'Một bản nháp mỗi ngày (giao dịch); id thông báo theo bé + ngày',
+      'One draft per day (transaction); notice id by baby + date',
+    ),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
   test: {
     kind: 'test',
     group: 'other',
@@ -1163,6 +1199,7 @@ export const notificationTemplateIds = [
   'ai.handover_sent',
   'care.task_due',
   'ai.handover_family',
+  'care.plan_ready',
 ] as const;
 export type NotificationTemplateId = (typeof notificationTemplateIds)[number];
 
@@ -1802,6 +1839,29 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['actor_name'],
   ),
   // D-135 N1: catalogue task names and times only, never a typed title or a care value.
+  // D-136 N5: a count and the first catalogue task, never a typed title.
+  'care.plan_ready': tpl(
+    'care.plan_ready',
+    'carePlanReady',
+    ['Lịch trong ngày đã sẵn', 'The day’s plan is ready'],
+    ['count', 'task_line', 'baby_name'],
+    {
+      vi: {
+        title: 'Lịch của {{baby_name}} đã sẵn',
+        body: '{{count}} việc · bắt đầu {{task_line}}. Xem rồi chọn Dùng lịch này nhé.',
+      },
+      en: {
+        title: '{{baby_name}}’s plan is ready',
+        body: '{{count}} tasks · starting {{task_line}}. Look it over, then tap Use this plan.',
+      },
+    },
+    {
+      count: 8,
+      task_line: both('07:00 Bú bình', '07:00 Bottle'),
+      baby_name: both('Bin', 'Bin'),
+    },
+    ['task_line'],
+  ),
   'care.task_due': tpl(
     'care.task_due',
     'careTaskDue',

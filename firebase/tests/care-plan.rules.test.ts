@@ -39,6 +39,8 @@ const paths = [
   `babies/b1/carePlanDays/2026-10-28/items/${ITEM}`,
   `babies/b1/carePlanTemplate/pt_${'b'.repeat(32)}`,
   'babies/b1/carePlanHistory/h1',
+  // D-136: "Tự tạo lịch mỗi sáng" and the way last used.
+  'babies/b1/carePlanSettings/family',
 ];
 
 beforeAll(async () => {

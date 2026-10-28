@@ -1,3 +1,4 @@
+import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/care_plan/care_plan_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -120,18 +121,48 @@ class FakeCarePlanRepository implements CarePlanRepository {
   ));
 
   @override
+  Future<void> publishDay(String babyId, String date) async =>
+      calls.add(('publish', {'date': date}));
+
+  @override
+  Future<void> setAutoDraft(String babyId, {required bool on}) async =>
+      calls.add(('autoDraft', {'on': on}));
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 /// The plan as the screen reads it: [days] by date (null = no plan that day), the everyday
-/// count, this person's reminder [prefs], and [repo] for the calls. With [familyOverrides], pass
-/// it `carePlan: false`.
+/// count, this person's reminder [prefs], and [repo] for the calls. [drafts]: the dates whose
+/// plan is a draft (D-136); [loggedDays]: how many days before today have a feed and a sleep
+/// ("Theo nhịp của bé" needs 7), left to the care fixtures when null. With [familyOverrides],
+/// pass it `carePlan: false`.
 List<Override> carePlanOverrides({
   Map<String, List<CarePlanItem>?> days = const {},
   int everyday = 0,
   FakeCarePlanRepository? repo,
   CarePlanPrefs prefs = const CarePlanPrefs(),
+  Set<String> drafts = const {},
+  int? loggedDays,
+  CarePlanFamilySettings family = const CarePlanFamilySettings(),
 }) => [
+  carePlanFamilySettingsProvider.overrideWith(
+    (ref, babyId) => Stream.value(family),
+  ),
+  if (loggedDays != null)
+    dayMarksProvider.overrideWith(
+      (ref, key) => Stream.value({
+        for (var i = 1; i <= loggedDays; i++)
+          carePlanDateKey(
+            DateTime.parse(key.$3).subtract(Duration(days: i - 1)),
+          ): const DayMarks(
+            feeds: true,
+            sleep: true,
+            diapers: false,
+            other: false,
+          ),
+      }),
+    ),
   carePlanPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
   carePlanRepositoryProvider.overrideWithValue(
     repo ?? FakeCarePlanRepository(),
@@ -140,13 +171,37 @@ List<Override> carePlanOverrides({
     (ref, k) => Stream.value(
       days[k.$2] == null
           ? null
-          : CarePlanDay(date: k.$2, revision: 1, source: 'empty'),
+          : CarePlanDay(
+              date: k.$2,
+              revision: 1,
+              source: drafts.contains(k.$2) ? 'rhythm' : 'empty',
+              draft: drafts.contains(k.$2),
+            ),
     ),
   ),
   carePlanItemsProvider.overrideWith(
-    (ref, k) => Stream.value(days[k.$2] ?? const []),
+    (ref, k) => Stream.value([
+      for (final i in days[k.$2] ?? const <CarePlanItem>[])
+        drafts.contains(k.$2) ? i.asDraft() : i,
+    ]),
   ),
   carePlanEverydayCountProvider.overrideWith(
     (ref, babyId) => Stream.value(everyday),
   ),
 ];
+
+extension CarePlanItemDraft on CarePlanItem {
+  /// The same task inside a draft day (D-136).
+  CarePlanItem asDraft() => CarePlanItem(
+    id: id,
+    task: task,
+    title: title,
+    time: time,
+    assignees: assignees,
+    status: status,
+    templateId: templateId,
+    doneBy: doneBy,
+    doneAt: doneAt,
+    draft: true,
+  );
+}

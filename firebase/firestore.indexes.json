@@ -975,6 +975,20 @@
   ],
   "fieldOverrides": [
     {
+      "collectionGroup": "carePlanSettings",
+      "fieldPath": "autoDraft",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
       "collectionGroup": "dialogue",
       "fieldPath": "ttlAt",
       "ttl": true,

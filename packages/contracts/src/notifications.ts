@@ -140,6 +140,8 @@ export const notificationKinds = [
   'handoverSent',
   // D-135 N1: a Cùng Chăm Con task of this person is due soon.
   'careTaskDue',
+  // D-136 N5: the morning draft of the day's plan is ready (plan managers).
+  'carePlanReady',
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 
@@ -175,6 +177,7 @@ export const notificationCategoryOf: Record<NotificationKind, NotificationCatego
   memberRemoved: 'family',
   handoverSent: 'family',
   careTaskDue: 'reminders',
+  carePlanReady: 'reminders',
 };
 
 /**
@@ -212,6 +215,8 @@ export const notificationSettingOf: Record<NotificationKind, NotificationSetting
   // "Nhắc trước · Tắt" in the person's Cùng Chăm Con settings (`users/{uid}/settings/carePlan`)
   // is its switch: the producer does not send to someone who turned it off.
   careTaskDue: null,
+  // The family's "Tự tạo lịch mỗi sáng" (`carePlanSettings/family.autoDraft`) is its switch.
+  carePlanReady: null,
 };
 
 /**

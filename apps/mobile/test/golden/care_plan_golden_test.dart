@@ -14,7 +14,8 @@ import '../helpers/family_fixtures.dart';
 import '../helpers/router_pump.dart';
 
 // Cùng Chăm Con (D-135, step 1): 04 / 04b / 04-0, the one-time swipe hint, and the sheets
-// 05 Giao việc, 06 Thêm việc, 06b Sửa việc and the everyday delete confirm.
+// 05 Giao việc, 06 Thêm việc, 06b Sửa việc and the everyday delete confirm. Step 4 (D-136): the
+// ways to start a day (7 logged days, the dev-only sample plans), a draft and "Đổi cách khác".
 typedef _Case = ({
   Membership me,
   Map<String, List<dynamic>?> days,
@@ -67,7 +68,8 @@ final _cases = <String, _Case>{
     act: null,
     height: 1300,
   ),
-  // 04-0 for Mẹ: everyday tasks and yesterday to start from.
+  // 04-0 for Mẹ: her baby's rhythm (7 logged days), everyday tasks, yesterday, and on dev the
+  // sample plans in review.
   'start_parent': (
     me: mai,
     days: {'2026-10-27': planFresh()},
@@ -112,7 +114,32 @@ final _cases = <String, _Case>{
     act: (t, l) => _tap(t, find.text(l.cpTaskVitamin)),
     height: 1000,
   ),
+  // 02: a drafted day for Mẹ, "Dùng lịch này" on top, no rings yet.
+  'plan_draft': (
+    me: mai,
+    days: {carePlanToday: planFresh()},
+    everyday: 2,
+    hintDone: true,
+    act: null,
+    height: 1500,
+  ),
+  // "Đổi cách khác" on a draft made from the rhythm.
+  'change_way': (
+    me: mai,
+    days: {carePlanToday: planFresh(), '2026-10-27': planFresh()},
+    everyday: 2,
+    hintDone: true,
+    act: (t, l) => _tap(t, find.byKey(const Key('cp_draft_change'))),
+    height: 1000,
+  ),
 };
+
+/// Step 4 fixtures: the draft days and how many days before have a feed and a sleep.
+const _drafts = {
+  'plan_draft': {carePlanToday},
+  'change_way': {carePlanToday},
+};
+const _loggedDays = {'start_parent': 7, 'change_way': 7};
 
 void main() {
   for (final MapEntry(key: name, value: c) in _cases.entries) {
@@ -134,7 +161,12 @@ void main() {
               prefs: {if (c.hintDone) 'carePlan.swipeHint.done': true},
               overrides: <Override>[
                 ...familyOverrides(me: c.me, now: carePlanNow, carePlan: false),
-                ...carePlanOverrides(days: c.days.cast(), everyday: c.everyday),
+                ...carePlanOverrides(
+                  days: c.days.cast(),
+                  everyday: c.everyday,
+                  drafts: _drafts[name] ?? const {},
+                  loggedDays: _loggedDays[name] ?? 0,
+                ),
               ],
             );
             await tester.pumpAndSettle();

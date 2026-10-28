@@ -52,15 +52,65 @@ const assignees = z
   .max(carePlanLimits.assigneesPerItem)
   .refine((a) => new Set(a).size === a.length);
 
-/** 04-0 "Hôm nay chưa có lịch": start the day from the everyday tasks, yesterday, or empty. */
+/**
+ * How a day's plan is made (04-0, 01 Chọn cách lên lịch; D-136). The family's own tasks
+ * (`everyday`, `yesterday`, `empty`) start the day at once; the others make a **draft** the
+ * family looks over and edits before "Dùng lịch này": `rhythm` from the last 7 days of the care
+ * log, and the reference templates `basic` (by age), `easy35`, `easy4` (dev only until the owner
+ * reviews their content, D-136 #1).
+ */
+export const carePlanMethods = [
+  'everyday',
+  'yesterday',
+  'empty',
+  'rhythm',
+  'basic',
+  'easy35',
+  'easy4',
+] as const;
+export type CarePlanMethod = (typeof carePlanMethods)[number];
+
+export const carePlanDraftMethods = ['rhythm', 'basic', 'easy35', 'easy4'] as const;
+export type CarePlanDraftMethod = (typeof carePlanDraftMethods)[number];
+export type CarePlanTemplateMethod = Exclude<CarePlanDraftMethod, 'rhythm'>;
+
+export const isDraftMethod = (m: CarePlanMethod): m is CarePlanDraftMethod =>
+  (carePlanDraftMethods as readonly string[]).includes(m);
+
+/** D-136 #2: "Theo nhịp của bé" needs this many of the last days, each with a feed and a sleep. */
+export const carePlanRhythmDays = 7;
+
+/** A day is `draft` until someone taps "Dùng lịch này"; a day without `status` is published. */
+export const carePlanDayStatuses = ['draft', 'published'] as const;
+export type CarePlanDayStatus = (typeof carePlanDayStatuses)[number];
+
+/**
+ * 04-0 "Hôm nay chưa có lịch" / 01: start the day. A day that exists is kept, except a draft
+ * started again with another method ("Đổi cách khác"), which is replaced.
+ */
 export const startCarePlanDaySchema = z
   .object({
     babyId,
     date: carePlanDateSchema,
-    from: z.enum(['everyday', 'yesterday', 'empty']),
+    from: z.enum(carePlanMethods),
   })
   .strict();
 export type StartCarePlanDayRequest = z.infer<typeof startCarePlanDaySchema>;
+
+/** 02 "Dùng lịch này": a draft day becomes the family's plan (and is reminded, N1). */
+export const publishCarePlanDaySchema = z.object({ babyId, date: carePlanDateSchema }).strict();
+export type PublishCarePlanDayRequest = z.infer<typeof publishCarePlanDaySchema>;
+
+/**
+ * 13 "Tự tạo lịch mỗi sáng" (D-136 #3): per family, off by default, changed by plan managers.
+ * Stored with the method last used to start a day in `babies/{b}/carePlanSettings/family`
+ * (server-written); the morning draft uses that method.
+ */
+export const setCarePlanAutoDraftSchema = z.object({ babyId, on: z.boolean() }).strict();
+export type SetCarePlanAutoDraftRequest = z.infer<typeof setCarePlanAutoDraftSchema>;
+
+/** Baby-local time from which the morning draft is made, and the last one it is still made at. */
+export const carePlanMorningWindow = { from: '06:30', until: '11:00' } as const;
 
 /** 06 Thêm việc / 06b Sửa: create or edit one task, for today only or every day. */
 export const saveCarePlanItemSchema = z

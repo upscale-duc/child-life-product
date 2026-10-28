@@ -82,11 +82,18 @@ class CarePlanDay {
     required this.date,
     required this.revision,
     required this.source,
+    this.draft = false,
   });
 
   final String date;
   final int revision;
+
+  /// How the day was made (`CarePlanMethod`): everyday, yesterday, empty, rhythm, basic, …
   final String source;
+
+  /// A draft (D-136): looked over and edited by the plan managers, not anyone's to-do and not
+  /// reminded until "Dùng lịch này". A day without `status` is in use.
+  final bool draft;
 
   static CarePlanDay? fromJson(String date, Map<String, dynamic>? d) =>
       d == null
@@ -95,6 +102,7 @@ class CarePlanDay {
           date: date,
           revision: (d['revision'] as num?)?.toInt() ?? 0,
           source: d['source'] as String? ?? 'empty',
+          draft: d['status'] == 'draft',
         );
 }
 
@@ -110,6 +118,7 @@ class CarePlanItem {
     this.templateId,
     this.doneBy,
     this.doneAt,
+    this.draft = false,
   });
 
   final String id;
@@ -121,6 +130,9 @@ class CarePlanItem {
   final String? templateId;
   final String? doneBy;
   final DateTime? doneAt;
+
+  /// Part of a draft day (D-136): nobody's to-do yet.
+  final bool draft;
 
   bool get done => status == CarePlanStatus.done;
   bool get skipped => status == CarePlanStatus.skipped;
@@ -142,6 +154,7 @@ class CarePlanItem {
             ? doneBy
             : null,
         doneAt: doneAt,
+        draft: draft,
       );
 
   static CarePlanItem? fromJson(Map<String, dynamic> d) {
@@ -161,6 +174,7 @@ class CarePlanItem {
       templateId: d['templateId'] as String?,
       doneBy: d['doneBy'] as String?,
       doneAt: (d['doneAt'] as Timestamp?)?.toDate(),
+      draft: d['draft'] == true,
     );
   }
 }
@@ -241,4 +255,29 @@ int carePlanMinutes(String hhmm) {
   final p = hhmm.split(':');
   return (int.tryParse(p.first) ?? 0) * 60 +
       (p.length > 1 ? int.tryParse(p[1]) ?? 0 : 0);
+}
+
+/// D-136 #2: "Theo nhịp của bé" needs this many days before today, each with a feed and a sleep
+/// (mirrors `carePlanRhythmDays`).
+const carePlanRhythmDays = 7;
+
+/// The reference templates (D-136 #1), offered on dev only until the owner reviews them.
+const carePlanTemplateMethods = ['basic', 'easy35', 'easy4'];
+
+/// The family's plan settings (`babies/{b}/carePlanSettings/family`, server-written).
+@immutable
+class CarePlanFamilySettings {
+  const CarePlanFamilySettings({this.autoDraft = false, this.method});
+
+  /// "Tự tạo lịch mỗi sáng" (D-136 #3): off by default.
+  final bool autoDraft;
+
+  /// The way the family last started a day; the morning draft uses it.
+  final String? method;
+
+  static CarePlanFamilySettings fromJson(Map<String, dynamic>? d) =>
+      CarePlanFamilySettings(
+        autoDraft: d?['autoDraft'] == true,
+        method: d?['method'] as String?,
+      );
 }

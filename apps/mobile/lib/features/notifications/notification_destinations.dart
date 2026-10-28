@@ -210,6 +210,13 @@ const _registry = <NotificationDestination>[
     permission: DestinationPermission.careRead,
     fallback: 'INBOX',
   ),
+  // D-136 N5: the day's plan (a draft to look over and use).
+  NotificationDestination(
+    id: 'CARE_PLAN_READY',
+    params: [_babyId, DestinationParam('date', r'^\d{4}-\d{2}-\d{2}$')],
+    permission: DestinationPermission.careRead,
+    fallback: 'INBOX',
+  ),
   NotificationDestination(
     id: 'LUMI_INSIGHT',
     params: [_babyId, _engagementId],
@@ -301,6 +308,8 @@ const notificationKindGroups = <String, InboxGroup>{
   'handoverSent': InboxGroup.care,
   // D-135 N1.
   'careTaskDue': InboxGroup.care,
+  // D-136 N5.
+  'carePlanReady': InboxGroup.care,
   'test': InboxGroup.other,
 };
 
@@ -333,6 +342,7 @@ const notificationKindDestinations = <String, String>{
   'memberRemoved': 'INBOX',
   'handoverSent': 'CARE_HANDOVER',
   'careTaskDue': 'CARE_TASK_DUE',
+  'carePlanReady': 'CARE_PLAN_READY',
   'test': 'INBOX',
 };
 
@@ -811,6 +821,9 @@ Future<_Opened> _tryOpen(
         date: params['date']!,
         ids: params['items']!.split(','),
       ));
+    case 'CARE_PLAN_READY':
+      select();
+      open('${Routes.carePlan}?date=${params['date']}');
     case 'FAMILY_MEMBERS':
       // Gia đình lives in Tiện ích.
       select();
