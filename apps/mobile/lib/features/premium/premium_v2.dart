@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
+import '../../app/session.dart';
 
 /// Premium v2 (Figma 958:13863, D-101) on the phone: the family's plan with its limits and
 /// balances (`getFamilyPlan`), the usage history (`familyUsageHistory`, PV41) and the seat picker
@@ -419,8 +422,26 @@ final premiumV2ApiProvider = Provider<PremiumV2Api>(
 final familyPlanV2Provider = FutureProvider.autoDispose
     .family<FamilyPlanV2?, String>((ref, babyId) async {
       if (Firebase.apps.isEmpty) return null;
+      final session = ref.watch(sessionProvider);
+      if (session is! SessionSignedIn ||
+          session.membershipFor(babyId) == null) {
+        return null;
+      }
       try {
-        return await ref.watch(premiumV2ApiProvider).familyPlan(babyId);
+        final plan = await ref
+            .watch(premiumV2ApiProvider)
+            .familyPlan(babyId)
+            .timeout(const Duration(seconds: 12));
+        if (plan != null && ref.mounted) {
+          // Reopening Premium reuses a successful answer instead of restarting the read.
+          final link = ref.keepAlive();
+          final expiry = Timer(const Duration(minutes: 10), () {
+            link.close();
+            if (ref.mounted) ref.invalidateSelf();
+          });
+          ref.onDispose(expiry.cancel);
+        }
+        return plan;
       } on Object {
         return null;
       }

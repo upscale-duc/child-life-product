@@ -1,0 +1,539 @@
+{
+  "@@locale": "en",
+  "preview": "Preview · Shared care",
+  "@preview": {
+    "description": "Isolated care coordination design prototype; preview"
+  },
+  "overview": "Caring together",
+  "@overview": {
+    "description": "Isolated care coordination design prototype; overview"
+  },
+  "child": "Teddy · Today, 28 Oct",
+  "@child": {
+    "description": "Isolated care coordination design prototype; child"
+  },
+  "family": "Family",
+  "@family": {
+    "description": "Isolated care coordination design prototype; family"
+  },
+  "current": "Caring now",
+  "@current": {
+    "description": "Isolated care coordination design prototype; current"
+  },
+  "carer": "Lan",
+  "@carer": {
+    "description": "Isolated care coordination design prototype; carer"
+  },
+  "shift": "Since 07:00 · Caregiver",
+  "@shift": {
+    "description": "Isolated care coordination design prototype; shift"
+  },
+  "nextShift": "Next · Dad, planned for 18:00",
+  "@nextShift": {
+    "description": "Isolated care coordination design prototype; nextShift"
+  },
+  "awake": "Awake · Woke at 16:10",
+  "@awake": {
+    "description": "Isolated care coordination design prototype; awake"
+  },
+  "feedFact": "Last feed",
+  "@feedFact": {
+    "description": "Isolated care coordination design prototype; feedFact"
+  },
+  "feedValue": "16:30 · Bottle 120 ml",
+  "@feedValue": {
+    "description": "Isolated care coordination design prototype; feedValue"
+  },
+  "diaperFact": "Last diaper change",
+  "@diaperFact": {
+    "description": "Isolated care coordination design prototype; diaperFact"
+  },
+  "diaperValue": "16:00 · Wet diaper",
+  "@diaperValue": {
+    "description": "Isolated care coordination design prototype; diaperValue"
+  },
+  "next": "Up next",
+  "@next": {
+    "description": "Isolated care coordination design prototype; next"
+  },
+  "assign": "Assign care",
+  "@assign": {
+    "description": "Isolated care coordination design prototype; assign"
+  },
+  "bath": "Bath time",
+  "@bath": {
+    "description": "Isolated care coordination design prototype; bath"
+  },
+  "bathMeta": "18:30 · Dad · To do",
+  "@bathMeta": {
+    "description": "Isolated care coordination design prototype; bathMeta"
+  },
+  "story": "Read together",
+  "@story": {
+    "description": "Isolated care coordination design prototype; story"
+  },
+  "storyMeta": "19:30 · Unassigned",
+  "@storyMeta": {
+    "description": "Isolated care coordination design prototype; storyMeta"
+  },
+  "pending": "Still to do",
+  "@pending": {
+    "description": "Isolated care coordination design prototype; pending"
+  },
+  "prepare": "Prepare handover",
+  "@prepare": {
+    "description": "Isolated care coordination design prototype; prepare"
+  },
+  "routine": "Care routine",
+  "@routine": {
+    "description": "Isolated care coordination design prototype; routine"
+  },
+  "routineMeta": "Your family’s routine · View and edit",
+  "@routineMeta": {
+    "description": "Isolated care coordination design prototype; routineMeta"
+  },
+  "mine": "My care tasks",
+  "@mine": {
+    "description": "Isolated care coordination design prototype; mine"
+  },
+  "dayTime": "17:30 · Lan is caring",
+  "@dayTime": {
+    "description": "Isolated care coordination design prototype; dayTime"
+  },
+  "quickLog": "Log care",
+  "@quickLog": {
+    "description": "Isolated care coordination design prototype; quickLog"
+  },
+  "logBottle": "Log a feed",
+  "@logBottle": {
+    "description": "Isolated care coordination design prototype; logBottle"
+  },
+  "logBottleMeta": "Enter the amount actually fed",
+  "@logBottleMeta": {
+    "description": "Isolated care coordination design prototype; logBottleMeta"
+  },
+  "logDiaper": "Log a diaper change",
+  "@logDiaper": {
+    "description": "Isolated care coordination design prototype; logDiaper"
+  },
+  "logDiaperMeta": "Choose type and time",
+  "@logDiaperMeta": {
+    "description": "Isolated care coordination design prototype; logDiaperMeta"
+  },
+  "bathDo": "Mark as done",
+  "@bathDo": {
+    "description": "Isolated care coordination design prototype; bathDo"
+  },
+  "done": "Done · Marked by you just now",
+  "@done": {
+    "description": "Isolated care coordination design prototype; done"
+  },
+  "undo": "Undo",
+  "@undo": {
+    "description": "Isolated care coordination design prototype; undo"
+  },
+  "checkHandover": "View handover",
+  "@checkHandover": {
+    "description": "Isolated care coordination design prototype; checkHandover"
+  },
+  "assignTitle": "Assign a care task",
+  "@assignTitle": {
+    "description": "Isolated care coordination design prototype; assignTitle"
+  },
+  "what": "Care task",
+  "@what": {
+    "description": "Isolated care coordination design prototype; what"
+  },
+  "who": "Assigned to",
+  "@who": {
+    "description": "Isolated care coordination design prototype; who"
+  },
+  "dad": "Dad",
+  "@dad": {
+    "description": "Isolated care coordination design prototype; dad"
+  },
+  "mom": "Mom",
+  "@mom": {
+    "description": "Isolated care coordination design prototype; mom"
+  },
+  "unassigned": "Unassigned",
+  "@unassigned": {
+    "description": "Isolated care coordination design prototype; unassigned"
+  },
+  "when": "When",
+  "@when": {
+    "description": "Isolated care coordination design prototype; when"
+  },
+  "due": "Today · 18:30",
+  "@due": {
+    "description": "Isolated care coordination design prototype; due"
+  },
+  "notify": "Notification",
+  "@notify": {
+    "description": "Isolated care coordination design prototype; notify"
+  },
+  "notifyInfo": "Reminders are scheduled on the assignee’s devices after opening the app and syncing. Notifications must be enabled.",
+  "@notifyInfo": {
+    "description": "Isolated care coordination design prototype; notifyInfo"
+  },
+  "save": "Save assignment",
+  "@save": {
+    "description": "Isolated care coordination design prototype; save"
+  },
+  "assigned": "Assigned · Today at 18:30",
+  "@assigned": {
+    "description": "Isolated care coordination design prototype; assigned"
+  },
+  "outgoing": "Care handover",
+  "@outgoing": {
+    "description": "Isolated care coordination design prototype; outgoing"
+  },
+  "outMeta": "Mom to Dad · Planned for 18:00",
+  "@outMeta": {
+    "description": "Isolated care coordination design prototype; outMeta"
+  },
+  "facts": "Logged this shift",
+  "@facts": {
+    "description": "Isolated care coordination design prototype; facts"
+  },
+  "period": "07:00–17:30 · Updated 17:28",
+  "@period": {
+    "description": "Isolated care coordination design prototype; period"
+  },
+  "feeds": "4 bottle feeds · 480 ml",
+  "@feeds": {
+    "description": "Isolated care coordination design prototype; feeds"
+  },
+  "sleep": "3 sleeps · 3 hours 10 minutes",
+  "@sleep": {
+    "description": "Isolated care coordination design prototype; sleep"
+  },
+  "now": "Right now",
+  "@now": {
+    "description": "Isolated care coordination design prototype; now"
+  },
+  "note": "Note for the next carer",
+  "@note": {
+    "description": "Isolated care coordination design prototype; note"
+  },
+  "noteValue": "Clean towels are in the top drawer.",
+  "@noteValue": {
+    "description": "Isolated care coordination design prototype; noteValue"
+  },
+  "send": "Send to Dad",
+  "@send": {
+    "description": "Isolated care coordination design prototype; send"
+  },
+  "sent": "Sent · Waiting for Dad",
+  "@sent": {
+    "description": "Isolated care coordination design prototype; sent"
+  },
+  "sentBody": "Lan is still caring. Sending does not transfer care.",
+  "@sentBody": {
+    "description": "Isolated care coordination design prototype; sentBody"
+  },
+  "receive": "I’ve received the handover",
+  "@receive": {
+    "description": "Isolated care coordination design prototype; receive"
+  },
+  "receiveTitle": "Your handover",
+  "@receiveTitle": {
+    "description": "Isolated care coordination design prototype; receiveTitle"
+  },
+  "receiveMeta": "Sent by Mom at 17:30",
+  "@receiveMeta": {
+    "description": "Isolated care coordination design prototype; receiveMeta"
+  },
+  "receiveEffect": "Confirming shows you as the current carer. Reminder assignments stay the same.",
+  "@receiveEffect": {
+    "description": "Isolated care coordination design prototype; receiveEffect"
+  },
+  "received": "You’re caring now",
+  "@received": {
+    "description": "Isolated care coordination design prototype; received"
+  },
+  "receivedMeta": "Handover received · Since 18:00",
+  "@receivedMeta": {
+    "description": "Isolated care coordination design prototype; receivedMeta"
+  },
+  "receivedAction": "View my care tasks",
+  "@receivedAction": {
+    "description": "Isolated care coordination design prototype; receivedAction"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Isolated care coordination design prototype; back"
+  },
+  "routineTitle": "Your family’s care routine",
+  "@routineTitle": {
+    "description": "Isolated care coordination design prototype; routineTitle"
+  },
+  "routineInfo": "A draft chosen by your family. No reminders created yet.",
+  "@routineInfo": {
+    "description": "Isolated care coordination design prototype; routineInfo"
+  },
+  "evening": "Evening · 18:00–22:00",
+  "@evening": {
+    "description": "Isolated care coordination design prototype; evening"
+  },
+  "routineBath": "18:30 · Bath time",
+  "@routineBath": {
+    "description": "Isolated care coordination design prototype; routineBath"
+  },
+  "routineStory": "19:30 · Read together",
+  "@routineStory": {
+    "description": "Isolated care coordination design prototype; routineStory"
+  },
+  "reviewApply": "Use routine for today",
+  "@reviewApply": {
+    "description": "Isolated care coordination design prototype; reviewApply"
+  },
+  "routineApplied": "Routine applied for today",
+  "@routineApplied": {
+    "description": "Isolated care coordination design prototype; routineApplied"
+  },
+  "editTime": "Choose time",
+  "@editTime": {
+    "description": "Isolated care coordination design prototype; editTime"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Isolated care coordination design prototype; cancel"
+  },
+  "familyTitle": "Teddy’s care circle",
+  "@familyTitle": {
+    "description": "Isolated care coordination design prototype; familyTitle"
+  },
+  "owner": "Mom · Co-parent · Family owner",
+  "@owner": {
+    "description": "Isolated care coordination design prototype; owner"
+  },
+  "parentRole": "Dad · Co-parent",
+  "@parentRole": {
+    "description": "Isolated care coordination design prototype; parentRole"
+  },
+  "careRole": "Lan · Caregiver",
+  "@careRole": {
+    "description": "Isolated care coordination design prototype; careRole"
+  },
+  "relativeRole": "Hoa · Relative · View only",
+  "@relativeRole": {
+    "description": "Isolated care coordination design prototype; relativeRole"
+  },
+  "roleNotice": "Relationship and access role are separate settings.",
+  "@roleNotice": {
+    "description": "Isolated care coordination design prototype; roleNotice"
+  },
+  "invite": "Invite a member",
+  "@invite": {
+    "description": "Isolated care coordination design prototype; invite"
+  },
+  "familyLink": "View shared care",
+  "@familyLink": {
+    "description": "Isolated care coordination design prototype; familyLink"
+  },
+  "formBottle": "Log a bottle feed",
+  "@formBottle": {
+    "description": "Isolated care coordination design prototype; formBottle"
+  },
+  "amount": "Amount fed (ml)",
+  "@amount": {
+    "description": "Isolated care coordination design prototype; amount"
+  },
+  "logSave": "Save log",
+  "@logSave": {
+    "description": "Isolated care coordination design prototype; logSave"
+  },
+  "logged": "Saved on device · Not synced",
+  "@logged": {
+    "description": "Isolated care coordination design prototype; logged"
+  },
+  "notNow": "Not now",
+  "@notNow": {
+    "description": "Isolated care coordination design prototype; notNow"
+  },
+  "wash": "Wash the bottles",
+  "@wash": {
+    "description": "Isolated care coordination design prototype; wash"
+  },
+  "washMeta": "17:45 · Lan · To do",
+  "@washMeta": {
+    "description": "Isolated care coordination design prototype; washMeta"
+  },
+  "mai": "Mai",
+  "@mai": {
+    "description": "Isolated care coordination design prototype; mai"
+  },
+  "minh": "Minh",
+  "@minh": {
+    "description": "Isolated care coordination design prototype; minh"
+  },
+  "grandma": "Hoa",
+  "@grandma": {
+    "description": "Isolated care coordination design prototype; grandma"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Isolated care coordination design prototype; close"
+  },
+  "acceptTask": "Take this task",
+  "@acceptTask": {
+    "description": "Isolated care coordination design prototype; acceptTask"
+  },
+  "releaseTask": "Release task",
+  "@releaseTask": {
+    "description": "Isolated care coordination design prototype; releaseTask"
+  },
+  "acceptedTask": "You’ve taken this task",
+  "@acceptedTask": {
+    "description": "Isolated care coordination design prototype; acceptedTask"
+  },
+  "notificationTitle": "Care notifications",
+  "@notificationTitle": {
+    "description": "Isolated care coordination design prototype; notificationTitle"
+  },
+  "onlyMine": "Tasks assigned to me",
+  "@onlyMine": {
+    "description": "Isolated care coordination design prototype; onlyMine"
+  },
+  "handoverMine": "Handovers sent to me",
+  "@handoverMine": {
+    "description": "Isolated care coordination design prototype; handoverMine"
+  },
+  "quiet": "Quiet hours",
+  "@quiet": {
+    "description": "Isolated care coordination design prototype; quiet"
+  },
+  "quietRange": "22:00–06:00",
+  "@quietRange": {
+    "description": "Isolated care coordination design prototype; quietRange"
+  },
+  "quietNote": "Handovers and thanks wait until quiet hours end. Reminders you set keep their chosen time.",
+  "@quietNote": {
+    "description": "Isolated care coordination design prototype; quietNote"
+  },
+  "appreciationPush": "Thank-you notifications",
+  "@appreciationPush": {
+    "description": "Isolated care coordination design prototype; appreciationPush"
+  },
+  "appreciationOff": "Off · Still visible in the app",
+  "@appreciationOff": {
+    "description": "Isolated care coordination design prototype; appreciationOff"
+  },
+  "notificationExample": "Preview quick actions",
+  "@notificationExample": {
+    "description": "Isolated care coordination design prototype; notificationExample"
+  },
+  "notificationSaved": "Preferences saved",
+  "@notificationSaved": {
+    "description": "Isolated care coordination design prototype; notificationSaved"
+  },
+  "gratitude": "A little thanks",
+  "@gratitude": {
+    "description": "Isolated care coordination design prototype; gratitude"
+  },
+  "completedCare": "Lan washed the bottles",
+  "@completedCare": {
+    "description": "Isolated care coordination design prototype; completedCare"
+  },
+  "completedAt": "Today · 17:45",
+  "@completedAt": {
+    "description": "Isolated care coordination design prototype; completedAt"
+  },
+  "gratitudeText": "Thank you for caring together.",
+  "@gratitudeText": {
+    "description": "Isolated care coordination design prototype; gratitudeText"
+  },
+  "sendThanks": "Send thanks",
+  "@sendThanks": {
+    "description": "Isolated care coordination design prototype; sendThanks"
+  },
+  "sentThanks": "Thanks sent",
+  "@sentThanks": {
+    "description": "Isolated care coordination design prototype; sentThanks"
+  },
+  "noComparison": "Every little act of care matters.",
+  "@noComparison": {
+    "description": "Isolated care coordination design prototype; noComparison"
+  },
+  "quickActionTitle": "Quick actions",
+  "@quickActionTitle": {
+    "description": "Isolated care coordination design prototype; quickActionTitle"
+  },
+  "lockPreview": "Device unlocked",
+  "@lockPreview": {
+    "description": "Isolated care coordination design prototype; lockPreview"
+  },
+  "lockHelp": "Care details are hidden on the lock screen.",
+  "@lockHelp": {
+    "description": "Isolated care coordination design prototype; lockHelp"
+  },
+  "genericNotice": "A care task is due",
+  "@genericNotice": {
+    "description": "Isolated care coordination design prototype; genericNotice"
+  },
+  "openTask": "Open task",
+  "@openTask": {
+    "description": "Isolated care coordination design prototype; openTask"
+  },
+  "appName": "Child Life",
+  "@appName": {
+    "description": "Isolated care coordination design prototype; appName"
+  },
+  "pendingSync": "Waiting to sync · Not yet marked done for the family",
+  "@pendingSync": {
+    "description": "Isolated care coordination design prototype; pendingSync"
+  },
+  "savePreferences": "Save preferences",
+  "@savePreferences": {
+    "description": "Isolated care coordination design prototype; savePreferences"
+  },
+  "invalidAmount": "Enter an amount greater than 0 ml.",
+  "@invalidAmount": {
+    "description": "Isolated care coordination design prototype; invalidAmount"
+  },
+  "noAuto": "No one has taken over yet",
+  "@noAuto": {
+    "description": "Isolated care coordination design prototype; noAuto"
+  },
+  "inviteInfo": "Invite by code or link",
+  "@inviteInfo": {
+    "description": "Isolated care coordination design prototype; inviteInfo"
+  },
+  "noAccess": "View shared information only",
+  "@noAccess": {
+    "description": "Isolated care coordination design prototype; noAccess"
+  },
+  "empty": "No assigned care tasks",
+  "@empty": {
+    "description": "Isolated care coordination design prototype; empty"
+  },
+  "emptyBody": "Care logs are still available in history.",
+  "@emptyBody": {
+    "description": "Isolated care coordination design prototype; emptyBody"
+  },
+  "offline": "Offline · Last updated 17:28",
+  "@offline": {
+    "description": "Isolated care coordination design prototype; offline"
+  },
+  "offlineHelp": "Connect to send or receive a handover.",
+  "@offlineHelp": {
+    "description": "Isolated care coordination design prototype; offlineHelp"
+  },
+  "loadError": "Couldn’t load care tasks",
+  "@loadError": {
+    "description": "Isolated care coordination design prototype; loadError"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Isolated care coordination design prototype; retry"
+  },
+  "loading": "Loading care tasks…",
+  "@loading": {
+    "description": "Isolated care coordination design prototype; loading"
+  },
+  "declined": "You haven’t taken over. Lan is still caring.",
+  "@declined": {
+    "description": "Isolated care coordination design prototype; declined"
+  }
+}

@@ -68,7 +68,7 @@ class TodayQuickActions extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ClSectionHeader(title: l10n.sectionQuickActions),
-        const SizedBox(height: ClSpace.s3),
+        const SizedBox(height: ClSpace.s2),
         Row(
           children: [
             for (final (i, a) in actions.indexed) ...[
@@ -143,7 +143,7 @@ class TodayVaccineCard extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ClSectionHeader(title: l10n.sectionVaccine),
-        const SizedBox(height: ClSpace.s3),
+        const SizedBox(height: ClSpace.s2),
         _CardRow(
           key: const Key('todayVaccine'),
           icon: ClIcons.heart,
@@ -185,7 +185,7 @@ class TodaySpendingCard extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ClSectionHeader(title: l10n.sectionSpending),
-        const SizedBox(height: ClSpace.s3),
+        const SizedBox(height: ClSpace.s2),
         _CardRow(
           key: const Key('todaySpending'),
           icon: ClIcons.grid,

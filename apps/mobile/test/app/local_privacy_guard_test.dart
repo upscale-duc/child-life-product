@@ -28,7 +28,11 @@ void main() {
     'the root guard invalidates authority and local providers across accounts and sign-out',
     () async {
       final dir = Directory.systemTemp.createTempSync('privacy-guard');
-      SharedPreferences.setMockInitialValues({'privacy.migratedV2': true});
+      SharedPreferences.setMockInitialValues({
+        'privacy.migratedV2': true,
+        'care.quickAmounts.a.$teddyId': ['105', '80'],
+        'premium.prices.a.$teddyId.vn': '{}',
+      });
       final prefs = await SharedPreferences.getInstance();
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
@@ -82,6 +86,8 @@ void main() {
         throwsStateError,
       );
       expect(prefs.getString('privacy.owner'), 'b');
+      expect(prefs.getStringList('care.quickAmounts.a.$teddyId'), isNull);
+      expect(prefs.getString('premium.prices.a.$teddyId.vn'), isNull);
       c.read(_session.notifier).update(const SessionSignedOut());
       await pumpEventQueue();
       expect(localPrivacy.owner, isNull);

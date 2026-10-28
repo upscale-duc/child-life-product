@@ -1,6 +1,60 @@
 # Visual verification (Flutter goldens)
 
-All facts below were verified in the repository on 2026-10-25. §0 (freshness) comes first.
+Repository inventory below was verified on 2026-10-25. The visual evidence policy was updated
+on 2026-10-28; apply it before the freshness and inspection procedures.
+
+## Visual evidence policy (owner-approved 2026-10-28)
+
+This is the single authority for render frequency, image inspection scope and reuse across
+`senior-ui-ux` and all five `cl-*` skills. It supersedes earlier blanket requirements to open
+every PNG, repeat renders at each phase, or always render two structural prototypes. These are
+Flutter screenshots/goldens; this workflow does not require AI image generation.
+
+### Reuse evidence across phases
+
+- Produce one render set per relevant implementation and fixture configuration. Audit, review,
+  self-critique and reporting reuse that set and the observations already recorded. Do not
+  re-render or reopen an unchanged image just because another skill or phase asks for review.
+- Record paths, test command/result, relevant code (including shared widgets/tokens), fixture,
+  flags, fonts and viewport state, and which variants/regions were visually inspected. Reuse is valid while those inputs are unchanged; a relevant edit by
+  this or another session invalidates only the affected evidence. If freshness is uncertain,
+  run the comparison again. A passing comparison can validate a stored baseline as Current.
+- Render again after a relevant implementation/fixture change or to resolve an unanswered visual
+  question. Run automated checks once for the final relevant state; repeat after changes or failures,
+  not as a ritual at every phase. No UI renders are needed for documentation-only skill changes.
+
+### Separate automated coverage from visual inspection
+
+Keep automated vi/en × Light/Night coverage for the affected golden cases. Shared-widget changes
+still run the whole golden suite and attribute every diff; do not update unrelated baselines.
+Passing comparisons establish freshness/regression evidence, not a visual usability review.
+
+| Scope | Images to inspect |
+|---|---|
+| Small local fix (copy, spacing, icon, isolated colour) | The changed region in a representative current render, plus the variants affected by the change: both languages for visible copy, both palettes for colour/contrast. Expand for wrapping, overflow or unexpected diffs. No full-screen design ceremony or A/B prototypes. |
+| New screen or substantial layout change | Matched before/after where available; inspect all four locale/palette variants of the final main state. Add affected states, roles, text scale and long content based on the risk. |
+| Shared component or broad batch | Inspect distinct changed layouts and risky variants; group equivalent diffs with a stated reason and inspect representatives. Unexpected or unexplained differences require investigation and visual inspection. |
+| Audit-only | Inspect current renders needed for the requested questions. A whole-screen quality audit uses all four main variants; a focused audit follows the relevant row above. Never update baselines. |
+
+A/B prototypes are conditional even for RESTRUCTURE / REDESIGN: use them when two plausible
+compositions have a material unresolved trade-off. Record why a single direction suffices
+otherwise. Compare prototypes first in one representative locale/palette and only the extra
+variants that discriminate the directions; verify the chosen final screen as above.
+
+For changed layout constraints or longer copy that could clip essential content/actions, inspect
+a 200 % text probe where supported; add long-name or small-viewport probes when that is the risk.
+Reuse current probes. If unavailable, record the gap rather than claiming coverage.
+
+### Keep images readable and reports honest
+
+- Open only the selected evidence. Prefer a readable crop for a local question; inspect full-screen
+  context when hierarchy, navigation or action reachability is at issue. Retain original PNGs.
+- A small contact sheet is useful only if the relevant text remains readable. Avoid huge montages
+  that require reopening every original; do not open both a montage and its originals by default.
+- Report automated coverage separately from visual coverage, including representative sampling
+  and omitted variants. Uninspected variants are not visually verified. Missing text-scale,
+  long-name or device coverage remains Unverified; do not turn a test pass into an R finding.
+- Link the existing evidence in reports. Do not create duplicate image galleries for every phase.
 
 ## 0. Freshness first (D-111)
 
@@ -17,7 +71,7 @@ predate later code, and other sessions change shared code without always re-rend
 | **Unverified** | Can't tell which code produced it (screenshots in docs, PNGs without a test, images from another branch) | Context only; mark findings H and say "Unverified / potentially outdated" |
 | **Historical** | Kept on purpose for comparison or documentation (`docs/design/explorations/**`, `docs/design/reviews/**` assets, `docs/discovery/figma-extract/**`, Figma) | History; never the current production UI |
 
-### The freshness check (before every audit or redesign)
+### The freshness check (when reusable current evidence is unavailable)
 
 1. Read the current implementation: routes, screens, shared widgets, fixtures.
 2. Find the goldens for those screens (§1) and their test cases and fixtures.
@@ -114,10 +168,12 @@ audit-only mode. During any review:
 
 ## 3. Inspecting images
 
+Select images using the Visual evidence policy above; these checks apply to that selection.
+
 - **Open the PNGs themselves** (an image viewer, or Claude's Read tool on the `.png`), never just
   the test result.
-- **Look at the same screen in all four variants** (vi / en × Light / Night care). Scan the vi
-  variant for wrapping and the en variant for plurals and truncation.
+- **Inspect the variants selected by scope** (policy above). Scan vi for wrapping and en for
+  plurals and truncation; use all four main variants for substantial screen changes.
 - **Compare variants by state** (`…_offline`, `…_empty`, `…_first`, role variants such as
   `s4/12e_view_only`, `s6/12d_history_caregiver`).
 - **Read text in the image literally.** Quote truncated strings exactly ("còn 2 n…").

@@ -1,0 +1,13 @@
+{
+  "apps/mobile/lib/core/design/cl_theme.dart": "3b15cd698df28a4fb748bd7c4e057b0601c9bf5babfe3eb1d7ea46fb4d82a923",
+  "apps/mobile/lib/core/design/tokens.g.dart": "20c1b2f714e9c10496a26d3ff30fc4c42a882e65390e2e7fb7f43ebdd4183f28",
+  "apps/mobile/lib/core/widgets/cl_button.dart": "37cfc2e2a4ee2a7ff1ff7e64a27cde368235a7819200af6a6d3f29672a3b10d1",
+  "apps/mobile/lib/core/widgets/cl_inputs.dart": "a263cb7b77cc45df746f287e2650e6a0f61b2a266e6195af41df81b1ce559289",
+  "apps/mobile/lib/core/widgets/cl_rows.dart": "b1ea36cfe1d407f5948a37d7b87732742bf9ee6b87aff7d7c9eb35882bfad01f",
+  "apps/mobile/test/design_explorations/care_coordination/l10n/preview_en.arb": "3d41bfc8df7dbeff138e08f9babd912ad6e9f37e4d19e9e00f1d332c8cc5e2db",
+  "apps/mobile/test/design_explorations/care_coordination/l10n/preview_vi.arb": "6288ebe3f1cc639c5bdde2479bae44dec26f84efdab46f8aa57f99f7760a175c",
+  "apps/mobile/test/design_explorations/care_coordination/preview.dart": "858470125c4b57ecc3f9bb1ef5751dbbe1f43fd68a7fd444b9e913430e6cb803",
+  "apps/mobile/test/design_explorations/care_coordination/preview_copy.g.dart": "96f3b55e966c58c370f9f30069af7d9d463047993cacd8260bb7876b0a9d0284",
+  "apps/mobile/test/design_explorations/care_coordination/render_preview.dart": "c7d843837fea2ed6f19e0f84c1e5694226c2897c2ad5d9551468554c4f4fafce",
+  "apps/mobile/test/flutter_test_config.dart": "0b84cfc00b583f390e177887fafa66ac70ded80d51266c9cb28e47fd4b4f0f48"
+}

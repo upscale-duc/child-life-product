@@ -21,6 +21,7 @@ import '../memories/memory_repository.dart';
 import '../memories/memory_widgets.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import 'header_settings.dart';
+import 'header_photo_cache.dart';
 import 'living_header.dart';
 
 class HeaderAppearanceScreen extends ConsumerStatefulWidget {
@@ -66,13 +67,16 @@ class _HeaderAppearanceState extends ConsumerState<HeaderAppearanceScreen> {
                 child: SizedBox(
                   width: 375,
                   height: showDuty ? 320 : 224,
-                  child: IgnorePointer(
-                    child: ExcludeSemantics(
-                      child: MediaQuery.withNoTextScaling(
-                        child: TodayLivingHeader(
-                          showDuty: showDuty,
-                          settings: draft,
-                          preview: true,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: IgnorePointer(
+                      child: ExcludeSemantics(
+                        child: MediaQuery.withNoTextScaling(
+                          child: TodayLivingHeader(
+                            showDuty: showDuty,
+                            settings: draft,
+                            preview: true,
+                          ),
                         ),
                       ),
                     ),
@@ -165,6 +169,11 @@ class _HeaderAppearanceState extends ConsumerState<HeaderAppearanceScreen> {
                   setState(() => _saving = true);
                   try {
                     await ref.read(headerSettingsProvider.notifier).save(draft);
+                    // Resolve the applied selection, then finish any local image
+                    // write already started by the preview/loader before leaving.
+                    if (!mounted) return;
+                    ref.read(headerPhotoProvider(draft));
+                    await ref.read(headerPhotoCacheProvider).flush();
                     if (context.mounted) context.pop();
                   } catch (_) {
                     if (context.mounted) {

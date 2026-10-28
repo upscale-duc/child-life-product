@@ -21,14 +21,15 @@ If any of these differs, say so: the comparison is **Inconclusive** for the affe
 
 **How (no baseline overwrite):**
 
-- **Before** = the committed golden: `git show HEAD:apps/mobile/test/golden/goldens/<path>.png`
+- **Before** = the current pre-edit render. A committed golden may be historical; label it:
+  `git show HEAD:apps/mobile/test/golden/goldens/<path>.png`
   redirected into a scratch file outside the repo, or the PR's base image.
 - **After** = the golden produced by the change:
   - before the change updates baselines, run the comparison and open
     `apps/mobile/test/golden/failures/<name>_testImage.png`;
-  - after the implementation updates the touched baselines, use the new PNG (and open every diff the run produced).
-- **Show the pairs side by side,** per variant (vi / en × Light / Night care), plus any state
-  variants touched.
+  - after the implementation updates the touched baselines, use the new PNG (inspect and attribute differences under the central visual policy).
+- **Compare matched pairs** selected by `visual-verification.md` → Visual evidence policy.
+  Reuse existing images/observations and link evidence; no duplicate galleries per phase.
 
 ## 2. Evaluation questions (answer each with evidence)
 

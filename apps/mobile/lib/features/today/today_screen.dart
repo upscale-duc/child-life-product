@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../care/care_duty.dart';
+import '../care/bottle_suggestions.dart';
+import '../care/bottle_quick_memory.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
@@ -68,12 +70,16 @@ class TodayScreen extends ConsumerWidget {
     final readOnly = membership.role == MemberRole.relative;
     // v1.0 improvement 370:1525: the sections and tiles this device shows, in its order.
     final layout = ref.watch(todayLayoutProvider(babyId));
+    final firstRun =
+        ref.watch(adaptiveOnProvider) &&
+        ref.watch(todayFirstRunProvider(babyId));
     final recentAsync = ref.watch(recentRecordsProvider(babyId));
     final recent = recentAsync.value ?? const [];
     // SY-1 (D-127): until the records arrive the day is unknown, never "Chưa có"; a failed load
     // says so instead of reading as an empty day (a parent would log the same feed twice).
     final recentFailed = !recentAsync.hasValue && recentAsync.hasError;
-    final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
+    final growthAsync = ref.watch(growthRecordsProvider(babyId));
+    final growth = growthAsync.value ?? const [];
     final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
     final day = babyDayBounds(zone, now);
     // SY-3: deletes, undos, old edits and timers count too (the outbox), not only the records
@@ -118,149 +124,152 @@ class TodayScreen extends ConsumerWidget {
         ? growth.firstOrNull
         : recent.where((r) => r.type == type).firstOrNull;
 
+    var tilesLead = false;
     // The first adaptive widget sits closer to the greeting (owner, 2026-10-25).
-    WidgetId? lead;
-    List<Widget> sectionParts(TodaySection section) => switch (section) {
-      // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
-      TodaySection.forYou => [const TodayForBabySection()],
-      TodaySection.tiles => [
-        // AX10 / AX11 / AX40: the quick log has its own header in the adaptive Hôm nay.
-        if (ref.watch(adaptiveOnProvider)) ...[
-          SizedBox(height: lead == WidgetId.tiles ? ClSpace.s3 : ClSpace.s6),
-          // D-108: "Nhịp hôm nay · Xem lịch sử" for every band; no history yet on the first run.
-          ClSectionHeader(
-            title: ref.watch(todayFirstRunProvider(babyId))
-                ? l10n.axFirstLogTitle
-                : l10n.axRhythmToday,
-            linkLabel: ref.watch(todayFirstRunProvider(babyId))
-                ? null
-                : l10n.axSeeHistory,
-            onLink: () => context.push(Routes.history),
-          ),
-          const SizedBox(height: ClSpace.s3),
-        ] else
-          const SizedBox(height: ClSpace.s4),
-        // D-108 / SY-1: until the records load, tile-shaped skeletons, never "Chưa có".
-        if (recentFailed) ...[
-          CareLoadFailed(
-            body: l10n.todayLoadFailedBody,
-            onRetry: () => ref.invalidate(recentRecordsProvider(babyId)),
-          ),
-          const SizedBox(height: ClSpace.s3),
-        ],
-        if (!recentAsync.hasValue && !recentFailed)
-          const _TilesSkeleton()
-        else
-          // D-108: rows sized by their content (at least the old 166:156 tile), so the tiles grow
-          // with large text instead of overflowing a fixed-ratio grid.
-          _TileRows(
-            children: [
-              for (final kind in layout.tiles(trackers))
-                if (!layout.hiddenTiles.contains(kind))
-                  if (careTypeOf(kind) case final type?)
-                    KeyedSubtree(
-                      key: switch (type) {
-                        CareType.bottle => TourTargets.bottle,
-                        CareType.growth => TourTargets.growth,
-                        _ => null,
-                      },
-                      child: CareTile(
-                        type: type,
-                        last: last(type),
-                        unknown: recentFailed && type != CareType.growth,
-                        previousGrowth:
-                            type == CareType.growth && growth.length > 1
-                            ? growth[1]
-                            : null,
-                        myUid: membership.uid,
-                        now: now,
-                        readOnly: readOnly,
-                        firstLogPill: ref.watch(adaptiveOnProvider),
-                        timer: running(type),
-                        onTap: () => tap(type),
-                        onLongPress: last(type) == null
-                            ? null
-                            : () => context.push(
-                                '${Routes.record}/${last(type)!.id}',
-                              ),
-                      ),
-                    ),
+    List<Widget> sectionParts(TodaySection section) => [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: switch (section) {
+          // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
+          TodaySection.forYou => [const TodayForBabySection()],
+          TodaySection.tiles => [
+            // AX10 / AX11 / AX40: the quick log has its own header in the adaptive Hôm nay.
+            ...[
+              SizedBox(height: tilesLead ? 0 : ClSpace.s4),
+              // D-108: "Nhịp hôm nay · Xem lịch sử" for every band; no history yet on the first run.
+              ClSectionHeader(
+                title: firstRun ? l10n.axFirstLogTitle : l10n.axRhythmToday,
+                linkLabel: firstRun ? null : l10n.axSeeHistory,
+                onLink: () => context.push(Routes.history),
+              ),
+              const SizedBox(height: ClSpace.s2),
             ],
-          ),
-        // A care tool, with the tiles rather than among the suggestions (owner,
-        // 2026-10-15).
-        const TodayHandoverRow(),
-      ],
-      // ReminderPeek (128:665, R-094); not for relatives (D-018).
-      TodaySection.reminders => [
-        if (!readOnly) ...[
-          // A section like "Hôm nay" below: its own header, the same gap.
-          SizedBox(
-            height: !ref.watch(adaptiveOnProvider)
-                ? ClSpace.s6
-                : lead == WidgetId.reminders
-                ? ClSpace.s2
-                : ClSpace.s4,
-          ),
-          // AX10–AX13: one card with its header inside, in the adaptive Hôm nay.
-          ReminderPeek(ax: ref.watch(adaptiveOnProvider)),
-        ],
-      ],
-      // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
-      TodaySection.quickActions => [
-        if (!readOnly) ...[
-          const SizedBox(height: ClSpace.s6),
-          TodayQuickActions(layout: layout),
-        ],
-      ],
-      TodaySection.vaccine => [
-        const SizedBox(height: ClSpace.s6),
-        const TodayVaccineCard(),
-      ],
-      TodaySection.spending => [
-        if (SpendingAccess.of(membership).viewAll)
-          if (ref.watch(adaptiveOnProvider))
-            // AX12 / AX13 / AX42: total, stacked bar by category, "Thêm".
-            const AxSpending()
-          else ...[
-            const SizedBox(height: ClSpace.s6),
-            const TodaySpendingCard(),
+            // D-108 / SY-1: until the records load, tile-shaped skeletons, never "Chưa có".
+            if (recentFailed) ...[
+              CareLoadFailed(
+                body: l10n.todayLoadFailedBody,
+                onRetry: () => ref.invalidate(recentRecordsProvider(babyId)),
+              ),
+              const SizedBox(height: ClSpace.s2),
+            ],
+            if (!recentAsync.hasValue && !recentFailed)
+              _TilesSkeleton(
+                count: layout
+                    .tiles(trackers)
+                    .where((kind) => !layout.hiddenTiles.contains(kind))
+                    .length,
+              )
+            else
+              // D-108: rows sized by their content (at least the old 166:156 tile), so the tiles grow
+              // with large text instead of overflowing a fixed-ratio grid.
+              _TileRows(
+                children: [
+                  for (final kind in layout.tiles(trackers))
+                    if (!layout.hiddenTiles.contains(kind))
+                      if (careTypeOf(kind) case final type?)
+                        KeyedSubtree(
+                          key: switch (type) {
+                            CareType.bottle => TourTargets.bottle,
+                            CareType.growth => TourTargets.growth,
+                            _ => null,
+                          },
+                          child: CareTile(
+                            type: type,
+                            quickActions: true,
+                            last: last(type),
+                            unknown: type == CareType.growth
+                                ? !growthAsync.hasValue
+                                : recentFailed,
+                            previousGrowth:
+                                type == CareType.growth && growth.length > 1
+                                ? growth[1]
+                                : null,
+                            myUid: membership.uid,
+                            now: now,
+                            readOnly: readOnly,
+                            firstLogPill: ref.watch(adaptiveOnProvider),
+                            timer: running(type),
+                            onTap: () => tap(type),
+                            onLongPress: last(type) == null
+                                ? null
+                                : () => context.push(
+                                    '${Routes.record}/${last(type)!.id}',
+                                  ),
+                          ),
+                        ),
+                ],
+              ),
+            // A care tool, with the tiles rather than among the suggestions (owner,
+            // 2026-10-15).
+            const TodayHandoverRow(),
+            const AutoSaveTodayBanner(top: ClSpace.s4),
           ],
-      ],
-      // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
-      // nay" on (the card draws nothing otherwise).
-      TodaySection.solids => [
-        if (ref.watch(sdOnTodayProvider)) ...[
-          const SizedBox(height: ClSpace.s4),
-          const SdTodayCard(),
-        ],
-      ],
-      // SY-1: no "Chưa có ghi chép hôm nay" while loading; nothing on a failed load (the
-      // notice above the tiles says so).
-      TodaySection.rhythm => [
-        if (!recentFailed) ...[
-          const SizedBox(height: ClSpace.s6),
-          ClSectionHeader(
-            title: l10n.todayTitle,
-            linkLabel: l10n.todayHistory,
-            onLink: () => context.push(Routes.history),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          if (recentAsync.hasValue)
-            DayRhythm(
-              records: recent,
-              dayStart: day.start,
-              dayEnd: day.end,
-              now: now,
-            )
-          else
-            Semantics(
-              label: l10n.axTilesLoading,
-              child: const ClSkeleton(height: 132, radius: ClRadius.card),
-            ),
-        ],
-      ],
-    };
+          // ReminderPeek (128:665, R-094); not for relatives (D-018).
+          TodaySection.reminders => [
+            if (!readOnly) ...[
+              // A section like "Hôm nay" below: its own header, the same gap.
+              const SizedBox(height: ClSpace.s4),
+              // AX10–AX13: one card with its header inside, in the adaptive Hôm nay.
+              ReminderPeek(ax: ref.watch(adaptiveOnProvider)),
+            ],
+          ],
+          // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
+          TodaySection.quickActions => [
+            if (!readOnly) ...[
+              const SizedBox(height: ClSpace.s4),
+              TodayQuickActions(layout: layout),
+            ],
+          ],
+          TodaySection.vaccine => [
+            const SizedBox(height: ClSpace.s4),
+            const TodayVaccineCard(),
+          ],
+          TodaySection.spending => [
+            if (SpendingAccess.of(membership).viewAll)
+              if (ref.watch(adaptiveOnProvider))
+                // AX12 / AX13 / AX42: total, stacked bar by category, "Thêm".
+                const AxSpending()
+              else ...[
+                const SizedBox(height: ClSpace.s4),
+                const TodaySpendingCard(),
+              ],
+          ],
+          // 5h "Ăn dặm hôm nay" (D-085): only while tracking is on with "Hiện trên Hôm
+          // nay" on (the card draws nothing otherwise).
+          TodaySection.solids => [
+            if (ref.watch(sdOnTodayProvider)) ...[
+              const SizedBox(height: ClSpace.s4),
+              const SdTodayCard(),
+            ],
+          ],
+          // SY-1: no "Chưa có ghi chép hôm nay" while loading; nothing on a failed load (the
+          // notice above the tiles says so).
+          TodaySection.rhythm => [
+            if (!recentFailed) ...[
+              const SizedBox(height: ClSpace.s4),
+              ClSectionHeader(
+                title: l10n.todayTitle,
+                linkLabel: l10n.todayHistory,
+                onLink: () => context.push(Routes.history),
+              ),
+              const SizedBox(height: ClSpace.s2),
+              if (recentAsync.hasValue)
+                DayRhythm(
+                  records: recent,
+                  dayStart: day.start,
+                  dayEnd: day.end,
+                  now: now,
+                )
+              else
+                Semantics(
+                  label: l10n.axTilesLoading,
+                  child: const ClSkeleton(height: 132, radius: ClRadius.card),
+                ),
+            ],
+          ],
+        },
+      ),
+    ];
 
     // Adaptive Experience (Figma 930:11858, P-175): greeting by age band, ranked widgets,
     // "Tuỳ chỉnh Hôm nay" (AX14). Off: the layout this device kept (370:1525).
@@ -268,10 +277,16 @@ class TodayScreen extends ConsumerWidget {
     final ranked = adaptive
         ? ref.watch(adaptiveTodayProvider(babyId))
         : const <RankedWidget>[];
-    lead = ranked
-        .where((w) => w.visible && w.id != WidgetId.careDuty)
-        .firstOrNull
-        ?.id;
+    tilesLead = adaptive
+        ? ranked
+                  .where((w) => w.visible && w.id != WidgetId.careDuty)
+                  .firstOrNull
+                  ?.id ==
+              WidgetId.tiles
+        : layout.order.where(layout.shows).firstOrNull == TodaySection.tiles;
+    final tilesShown = adaptive
+        ? ranked.any((w) => w.id == WidgetId.tiles && w.visible)
+        : layout.shows(TodaySection.tiles);
 
     // Owner 27/10/2026: care duty is fixed in the header, with visibility only.
     final dutyEnabled = adaptive
@@ -318,15 +333,10 @@ class TodayScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                if (!adaptive && !readOnly)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: _CustomizePill(),
-                  ),
                 // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
                 const WhatsNewBanner(),
                 // AR02: new library photos that may show the baby (Tự lưu, D-066).
-                const AutoSaveTodayBanner(),
+
                 // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
                 // D-076 #1: "Hôm nay theo cách của nhà bạn" (559:57870) for who has not personalised,
                 // and EN01 right after this phone created the baby.
@@ -366,6 +376,12 @@ class TodayScreen extends ConsumerWidget {
                 ] else
                   for (final section in layout.order)
                     if (layout.shows(section)) ...sectionParts(section),
+                if (!tilesShown) const AutoSaveTodayBanner(top: ClSpace.s4),
+                if (!adaptive && !readOnly)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: _CustomizePill(),
+                  ),
                 const SizedBox(height: ClSpace.s4),
                 ClCardGroup(
                   children: [
@@ -544,10 +560,12 @@ class CareTile extends ConsumerStatefulWidget {
     this.onLongPress,
     this.firstLogPill = false,
     this.unknown = false,
+    this.quickActions = false,
     super.key,
   });
 
   final CareType type;
+  final bool quickActions;
   final CareRecord? last;
 
   /// SY-1: the diary did not load, so the last entry is unknown: "—", never "Chưa có".
@@ -571,6 +589,86 @@ class CareTile extends ConsumerStatefulWidget {
 
 class _CareTileState extends ConsumerState<CareTile>
     with SingleTickerProviderStateMixin {
+  CareRecord? _quickRecord;
+  DateTime? _lastQuickTap;
+
+  @override
+  void didUpdateWidget(CareTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.type != oldWidget.type ||
+        widget.myUid != oldWidget.myUid ||
+        (widget.last != oldWidget.last &&
+            widget.last != null &&
+            (_quickRecord == null ||
+                !widget.last!.occurredAt.isBefore(_quickRecord!.occurredAt)))) {
+      _quickRecord = null;
+      if (widget.type != oldWidget.type || widget.myUid != oldWidget.myUid) {
+        _lastQuickTap = null;
+      }
+    }
+  }
+
+  void _logDirect({int? amount, DiaperKind? diaper}) {
+    final me = ref.read(selectedMembershipProvider);
+    if (widget.readOnly ||
+        me == null ||
+        me.uid != widget.myUid ||
+        me.role == MemberRole.relative ||
+        !me.isActive) {
+      return;
+    }
+    if (widget.timer != null) return widget.onTap();
+    final tappedAt = DateTime.now();
+    // A second physical tap in the same second is a duplicate, not a second feed.
+    // No network spinner: Firestore queues locally even without connectivity.
+    if (_lastQuickTap != null &&
+        tappedAt.difference(_lastQuickTap!) < const Duration(seconds: 1)) {
+      return;
+    }
+    _lastQuickTap = tappedAt;
+    final memory = ref.read(careMemoryProvider);
+    final lastMilk =
+        (ref.read(recentRecordsProvider(me.babyId)).value ??
+                const <CareRecord>[])
+            .where((r) => r.type == CareType.bottle && r.createdBy == me.uid)
+            .firstOrNull
+            ?.milk;
+    final record = CareRecord.create(
+      id: newRecordId(),
+      babyId: me.babyId,
+      type: widget.type,
+      occurredAt: ref.read(timerClockProvider)(),
+      me: me,
+      amountMl: amount,
+      diaper: diaper,
+      milk: widget.type == CareType.bottle
+          ? memory.get(me.babyId, 'milk', MilkType.values) ??
+                lastMilk ??
+                MilkType.breastMilk
+          : null,
+    );
+    if (diaper != null) memory.set(me.babyId, 'diaper', diaper);
+    setState(() => _quickRecord = record);
+    void clear() {
+      if (mounted && _quickRecord?.id == record.id) {
+        setState(() {
+          _quickRecord = null;
+          _lastQuickTap = null;
+        });
+      }
+    }
+
+    commitRecord(
+      context,
+      ref,
+      record,
+      isEdit: false,
+      closeSheet: false,
+      onFailure: clear,
+      onUndo: clear,
+    );
+  }
+
   static final _bounce = TweenSequence<double>([
     TweenSequenceItem(
       tween: Tween(
@@ -602,6 +700,14 @@ class _CareTileState extends ConsumerState<CareTile>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(selectedMembershipProvider, (previous, next) {
+      if (previous?.uid != next?.uid || previous?.babyId != next?.babyId) {
+        setState(() {
+          _quickRecord = null;
+          _lastQuickTap = null;
+        });
+      }
+    });
     ref.listen(lastSavedProvider, (_, saved) {
       if (saved?.$1 == widget.type && !context.reduceMotion) {
         _glow.forward(from: 0);
@@ -612,7 +718,7 @@ class _CareTileState extends ConsumerState<CareTile>
     final locale = Localizations.localeOf(context).toLanguageTag();
     final care = careColor(context, widget.type);
     final label = careTypeLabel(l10n, widget.type);
-    final r = widget.last;
+    final r = _quickRecord ?? widget.last;
     final timer = widget.timer;
     final hm = DateFormat.Hm(locale);
     var lines = r == null ? null : _lines(l10n, locale, r);
@@ -656,115 +762,124 @@ class _CareTileState extends ConsumerState<CareTile>
               : '$label, ${l10n.todayTileEmpty}. ${l10n.todayTileTapToLog}')
         : '$label, $value, ${lines!.join(', ')}';
 
-    final card = Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: care.soft,
-        borderRadius: BorderRadius.circular(ClRadius.tile),
-        border: timer != null
-            ? Border.all(color: care.accent, width: 2)
-            : Border.all(color: cl.colors.cardEdge),
-        boxShadow: cl.shadows.tile,
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -14,
-            bottom: -12,
-            child: ClArt(careArt(widget.type), width: 76, height: 76),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(ClSpace.s4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    final card = widget.quickActions
+        ? _quickCard(context, care, label, value, lines)
+        : Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: care.soft,
+              borderRadius: BorderRadius.circular(ClRadius.tile),
+              border: timer != null
+                  ? Border.all(color: care.accent, width: 2)
+                  : Border.all(color: cl.colors.cardEdge),
+              boxShadow: cl.shadows.tile,
+            ),
+            child: Stack(
               children: [
-                Text(label, style: cl.text.label.copyWith(color: care.ink)),
-                const SizedBox(height: ClSpace.s1),
-                if (timer != null)
-                  _LiveClock(
-                    timer: timer,
-                    style: cl.text.title2.copyWith(color: cl.colors.ink),
-                  )
-                else
-                  // "Đã thức 2 giờ 36 phút" wraps rather than ending in "…" (owner, 2026-10-11).
-                  Text(
-                    value,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: cl.text.title2.copyWith(color: cl.colors.ink),
-                  ),
-                const SizedBox(height: ClSpace.s1),
-                if (lines == null) ...[
-                  const Spacer(),
-                  if (!widget.readOnly && widget.firstLogPill && !unknown)
-                    Container(
-                      key: const Key('tileFirstLog'),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
+                Positioned(
+                  right: -14,
+                  bottom: -12,
+                  child: ClArt(careArt(widget.type), width: 76, height: 76),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(ClSpace.s4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: cl.text.label.copyWith(color: care.ink),
                       ),
-                      decoration: BoxDecoration(
-                        color: cl.colors.surface,
-                        borderRadius: BorderRadius.circular(ClRadius.pill),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClIcon(ClIcons.plus, size: 12, color: care.ink),
-                          const SizedBox(width: 4),
-                          // Wraps at 200 % text instead of running past the tile (D-108).
-                          Flexible(
-                            child: Text(
-                              l10n.axLogFirst,
-                              style: cl.text.caption.copyWith(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: care.ink,
+                      const SizedBox(height: ClSpace.s1),
+                      if (timer != null)
+                        _LiveClock(
+                          timer: timer,
+                          style: cl.text.title2.copyWith(color: cl.colors.ink),
+                        )
+                      else
+                        // "Đã thức 2 giờ 36 phút" wraps rather than ending in "…" (owner, 2026-10-11).
+                        Text(
+                          value,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: cl.text.title2.copyWith(color: cl.colors.ink),
+                        ),
+                      const SizedBox(height: ClSpace.s1),
+                      if (lines == null) ...[
+                        const Spacer(),
+                        if (!widget.readOnly && widget.firstLogPill && !unknown)
+                          Container(
+                            key: const Key('tileFirstLog'),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: cl.colors.surface,
+                              borderRadius: BorderRadius.circular(
+                                ClRadius.pill,
                               ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClIcon(ClIcons.plus, size: 12, color: care.ink),
+                                const SizedBox(width: 4),
+                                // Wraps at 200 % text instead of running past the tile (D-108).
+                                Flexible(
+                                  child: Text(
+                                    l10n.axLogFirst,
+                                    style: cl.text.caption.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: care.ink,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else if (!widget.readOnly)
+                          Text(
+                            l10n.todayTileTapToLog,
+                            style: cl.text.label.copyWith(color: care.ink),
+                          ),
+                      ] else
+                        // Large text never overflows the tile: extra lines are clipped.
+                        Expanded(
+                          child: SingleChildScrollView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (final (i, line) in lines.indexed)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      right: ClSpace.s2,
+                                    ),
+                                    child: Text(
+                                      line,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: cl.text.label.copyWith(
+                                        color:
+                                            i == lines.length - 1 &&
+                                                (r?.pending ?? false)
+                                            ? cl.colors.pending
+                                            : cl.colors.inkMuted,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    )
-                  else if (!widget.readOnly)
-                    Text(
-                      l10n.todayTileTapToLog,
-                      style: cl.text.label.copyWith(color: care.ink),
-                    ),
-                ] else
-                  // Large text never overflows the tile: extra lines are clipped.
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (final (i, line) in lines.indexed)
-                            Padding(
-                              padding: const EdgeInsets.only(right: ClSpace.s2),
-                              child: Text(
-                                line,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: cl.text.label.copyWith(
-                                  color:
-                                      i == lines.length - 1 &&
-                                          (r?.pending ?? false)
-                                      ? cl.colors.pending
-                                      : cl.colors.inkMuted,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                        ),
+                    ],
                   ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
 
     return ClPressable(
       onPressed: widget.onTap,
@@ -823,6 +938,219 @@ class _CareTileState extends ConsumerState<CareTile>
           );
         },
         child: SizedBox.expand(child: card),
+      ),
+    );
+  }
+
+  Widget _quickCard(
+    BuildContext context,
+    ClCareColor care,
+    String label,
+    String value,
+    List<String>? lines,
+  ) {
+    final cl = context.cl;
+    final l = AppLocalizations.of(context);
+    final timer = widget.timer;
+    final me = ref.watch(selectedMembershipProvider);
+    final canLog =
+        !widget.readOnly && me != null && me.role != MemberRole.relative;
+    final dob = me != null && me.canViewBabyInfo
+        ? ref.watch(babyPrivateProfileProvider(me.babyId)).value?.dateOfBirth
+        : null;
+    final zone = me == null
+        ? 'Asia/Ho_Chi_Minh'
+        : ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
+              'Asia/Ho_Chi_Minh';
+    final ageDays = dob == null
+        ? null
+        : babyToday(
+            zone,
+            widget.now,
+          ).difference(DateUtils.dateOnly(dob)).inDays;
+    final amounts = widget.type != CareType.bottle || !canLog
+        ? const <int>[]
+        : homeBottlePicks(
+            ageDays: ageDays,
+            remembered: ref.watch(bottleQuickMemoryProvider),
+            recent:
+                (ref.watch(recentRecordsProvider(me.babyId)).value ??
+                        const <CareRecord>[])
+                    .where(
+                      (r) =>
+                          r.type == CareType.bottle &&
+                          r.createdBy == me.uid &&
+                          r.amountMl != null,
+                    )
+                    .map((r) => r.amountMl!),
+            table: ref.watch(bottleTableProvider),
+          );
+    final actions = <(String, VoidCallback)>[
+      if (timer != null)
+        (l.todayViewSession, widget.onTap)
+      else if (canLog)
+        ...switch (widget.type) {
+          CareType.bottle => [
+            for (final amount in amounts)
+              (l.amountMl(amount), () => _logDirect(amount: amount)),
+            (l.todayOtherAmount, widget.onTap),
+          ],
+          CareType.breast => [
+            (
+              l.sideLeftFull,
+              () =>
+                  openOrStartTimer(context, TimerType.breast, side: Side.left),
+            ),
+            (
+              l.sideRightFull,
+              () =>
+                  openOrStartTimer(context, TimerType.breast, side: Side.right),
+            ),
+          ],
+          CareType.diaper => [
+            (l.diaperWet, () => _logDirect(diaper: DiaperKind.wet)),
+            (l.diaperDirty, () => _logDirect(diaper: DiaperKind.dirty)),
+            (l.todayDiaperBoth, () => _logDirect(diaper: DiaperKind.both)),
+          ],
+          CareType.sleep => [
+            (
+              l.todayStartSleep,
+              () => openOrStartTimer(context, TimerType.sleep),
+            ),
+          ],
+          CareType.pump => [(l.pumpTitle, widget.onTap)],
+          CareType.growth => [(l.growthAdd, widget.onTap)],
+        },
+    ];
+    Widget action((String, VoidCallback) a) => ClPressable(
+      key: Key('care-${widget.type.name}-${a.$1}'),
+      onPressed: a.$2,
+      semanticLabel: '$label. ${a.$1}',
+      child: Container(
+        constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 0,
+          vertical: ClSpace.s2,
+        ),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+        ),
+        child: Text(
+          a.$1,
+          textAlign: TextAlign.center,
+          style: cl.text.label.copyWith(color: care.ink),
+        ),
+      ),
+    );
+    final largeValue =
+        widget.type == CareType.pump || widget.type == CareType.growth;
+    return Container(
+      padding: const EdgeInsets.all(ClSpace.s3),
+      decoration: BoxDecoration(
+        color: care.soft,
+        borderRadius: BorderRadius.circular(ClRadius.tile),
+        border: Border.all(
+          color: timer == null ? cl.colors.cardEdge : care.accent,
+        ),
+        // Keep the app's existing Light tile elevation; Night care remains flat.
+        boxShadow: cl.shadows.tile,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: ClSpace.s8 + ClSpace.s1,
+                height: ClSpace.s8 + ClSpace.s1,
+                decoration: BoxDecoration(
+                  color: cl.colors.surface,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: ClArt(
+                  careArt(widget.type),
+                  width: ClSpace.s6 + ClSpace.s1,
+                  height: ClSpace.s6 + ClSpace.s1,
+                ),
+              ),
+              const SizedBox(width: ClSpace.s2),
+              Expanded(child: Text(label, style: cl.text.bodyStrong)),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s2),
+          if (timer != null)
+            _LiveClock(timer: timer, style: cl.text.bodyStrong)
+          else if (largeValue && widget.last != null)
+            Wrap(
+              children: [
+                for (final word in value.split(" "))
+                  ClTabularText("$word ", style: cl.text.title2),
+              ],
+            )
+          else
+            Text(
+              value,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          if (lines != null)
+            Wrap(
+              spacing: ClSpace.s1,
+              children: [
+                for (final line in lines) ...[
+                  Text(
+                    line,
+                    style: cl.text.caption.copyWith(
+                      color:
+                          (_quickRecord ?? widget.last)?.pending == true &&
+                              line == l.carePending
+                          ? cl.colors.pending
+                          : cl.colors.inkMuted,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          const Spacer(),
+          if (actions.isNotEmpty) ...[
+            const SizedBox(height: ClSpace.s2),
+            Builder(
+              builder: (context) {
+                final available =
+                    (MediaQuery.sizeOf(context).width -
+                            ClSpace.s4 * 2 -
+                            ClSpace.s3) /
+                        2 -
+                    ClSpace.s3 * 2;
+                // Preserve full action labels and 44 pt targets at Dynamic Type.
+                if (MediaQuery.textScalerOf(context).scale(1) > 1.3 ||
+                    available <
+                        actions.length * ClSpace.tapMin +
+                            (actions.length - 1) * ClSpace.s1) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final (i, a) in actions.indexed) ...[
+                        if (i > 0) const SizedBox(height: ClSpace.s1),
+                        action(a),
+                      ],
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    for (final (i, a) in actions.indexed) ...[
+                      if (i > 0) const SizedBox(width: ClSpace.s1),
+                      Expanded(child: action(a)),
+                    ],
+                  ],
+                );
+              },
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -1187,17 +1515,18 @@ class _TileRows extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, box) {
-      final minHeight = (box.maxWidth - ClSpace.s3) / 2 * 156 / 166;
+      final columns = MediaQuery.textScalerOf(context).scale(1) > 1.3 ? 1 : 2;
+      const minHeight = ClSpace.buttonHeight * 2 + ClSpace.tapMin;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var i = 0; i < children.length; i += 2) ...[
+          for (var i = 0; i < children.length; i += columns) ...[
             if (i > 0) const SizedBox(height: ClSpace.s3),
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (var j = i; j < i + 2; j++) ...[
+                  for (var j = i; j < i + columns; j++) ...[
                     if (j > i) const SizedBox(width: ClSpace.s3),
                     Expanded(
                       child: j < children.length
@@ -1220,14 +1549,15 @@ class _TileRows extends StatelessWidget {
 
 /// Loading care tiles: four tile-shaped skeletons at the tile proportion (D-108).
 class _TilesSkeleton extends StatelessWidget {
-  const _TilesSkeleton();
+  const _TilesSkeleton({required this.count});
+  final int count;
 
   @override
   Widget build(BuildContext context) => Semantics(
     label: AppLocalizations.of(context).axTilesLoading,
     child: LayoutBuilder(
       builder: (context, box) {
-        final height = (box.maxWidth - ClSpace.s3) / 2 * 156 / 166;
+        const height = ClSpace.buttonHeight * 2 + ClSpace.tapMin;
         Widget row() => Row(
           children: [
             Expanded(
@@ -1241,9 +1571,10 @@ class _TilesSkeleton extends StatelessWidget {
         );
         return Column(
           children: [
-            row(),
-            const SizedBox(height: ClSpace.s3),
-            row(),
+            for (var i = 0; i < count; i += 2) ...[
+              if (i > 0) const SizedBox(height: ClSpace.s3),
+              row(),
+            ],
           ],
         );
       },

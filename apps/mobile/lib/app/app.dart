@@ -22,6 +22,10 @@ import '../core/design/tokens.g.dart';
 import '../core/widgets/cl_keyboard.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/care/bottle_suggestions.dart';
+import '../features/home/home_shell.dart' show selectedMembershipProvider;
+import '../features/premium/premium_repository.dart'
+    show selectedCapabilitiesProvider;
+import '../features/premium/premium_v2.dart' show familyPlanV2Provider;
 import '../features/care/growth_reference.dart';
 import '../features/vaccines/vaccine_reference.dart';
 import '../l10n/app_localizations.dart';
@@ -78,6 +82,16 @@ class _SessionAppState extends ConsumerState<_SessionApp>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    final me = ref.read(selectedMembershipProvider);
+    if (me != null &&
+        ref.read(selectedCapabilitiesProvider)?.features.premiumV2 == true) {
+      ref.invalidate(familyPlanV2Provider(me.babyId));
+    }
   }
 
   /// "Tự động" follows the system appearance (P-061).

@@ -21,6 +21,79 @@ import '../helpers/family_fixtures.dart';
 import '../helpers/router_pump.dart';
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    for (final showDuty in [true, false]) {
+      testWidgets(
+        'lift preserves artwork and greeting, scale=$scale duty=$showDuty',
+        (tester) async {
+          var taps = 0;
+          Future<({Rect art, Rect greeting, Rect? duty, Rect body})> measure(
+            double lift,
+          ) async {
+            await pumpRouted(
+              tester,
+              Scaffold(
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      LivingHeaderView(
+                        moment: HeaderMoment.afternoon,
+                        title: 'Một ngày của Teddy thế nào rồi?',
+                        topInset: 47,
+                        contentLift: lift,
+                        top: const SizedBox(height: 44),
+                        duty: showDuty
+                            ? TextButton(
+                                key: const Key('testDuty'),
+                                onPressed: () => taps++,
+                                child: const Text('Bạn đang trông bé'),
+                              )
+                            : null,
+                      ),
+                      TextButton(
+                        key: const Key('testBody'),
+                        onPressed: () => taps++,
+                        child: const Text('Xem & chọn ảnh'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              textScaler: TextScaler.linear(scale),
+            );
+            return (
+              art: tester.getRect(find.byKey(const Key('todayHeaderArtwork'))),
+              greeting: tester.getRect(find.byKey(const Key('axGreeting'))),
+              duty: showDuty
+                  ? tester.getRect(find.byKey(const Key('testDuty')))
+                  : null,
+              body: tester.getRect(find.byKey(const Key('testBody'))),
+            );
+          }
+
+          final before = await measure(0);
+          final after = await measure(24);
+          expect(after.art, before.art);
+          expect(after.greeting, before.greeting);
+          expect(before.body.top - after.body.top, inInclusiveRange(0, 24));
+          if (showDuty) {
+            expect(
+              after.duty!.top - after.greeting.bottom,
+              greaterThanOrEqualTo(12),
+            );
+            // Compact layout uses content height, without an empty spacer.
+            await tester.tap(find.byKey(const Key('testDuty')));
+          }
+          // The next content's real hit area moves too, including its portion
+          // painted over the decorative footer. No translated/sliver hit-test gap.
+          await tester.tapAt(Offset(after.body.center.dx, after.body.top + 4));
+          expect(taps, showDuty ? 2 : 1);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   testWidgets(
     'appearance previews without saving; Apply persists and Back discards the draft',
     (tester) async {
@@ -167,6 +240,9 @@ void main() {
       final shown = tester
           .getSize(find.byKey(const Key('todayLivingHeader')))
           .height;
+      final shownArt = tester
+          .getSize(find.byKey(const Key('todayHeaderArtwork')))
+          .height;
       container
           .read(experienceProvider(teddyId).notifier)
           .set(
@@ -179,7 +255,12 @@ void main() {
       final hidden = tester
           .getSize(find.byKey(const Key('todayLivingHeader')))
           .height;
-      expect(shown - hidden, 96);
+      final hiddenArt = tester
+          .getSize(find.byKey(const Key('todayHeaderArtwork')))
+          .height;
+      expect(shownArt - hiddenArt, greaterThanOrEqualTo(44));
+      // The compact foreground still leaves enough room for the greeting.
+      expect(shown, greaterThan(hidden));
     },
   );
 

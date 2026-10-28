@@ -45,7 +45,8 @@ Details: `references/ui-copy-patterns.md` §5.
 7. How would a native English app say it?
 8. Do both carry the same intent, action, state, certainty, tone and placeholders?
 9. How does it read in every state (empty, loading, error, partial, role, plural, long name)?
-10. Have I rendered both languages (goldens vi + en, 200 % text)?
+10. Have I checked affected copy under `cl-design-review/references/visual-verification.md` →
+    Visual evidence policy, reusing current evidence?
 
 ## Always
 
@@ -86,7 +87,7 @@ Details: `references/ui-copy-patterns.md` §5.
   - en uses ICU plurals when a count meets a noun;
   - no string concatenation in Dart;
   - add strings via a `tool/<topic>_strings.py` script, then `flutter gen-l10n`.
-- **Verify on rendered goldens** in vi and en: fit, truncation, plurals.
+- **Verify fit, truncation and plurals** using the central Visual evidence policy; reuse evidence.
 
 ## References (load what the task needs)
 
@@ -123,4 +124,4 @@ Details: `references/ui-copy-patterns.md` §5.
 - [ ] Technical terms only where they are clearer or more accurate; no guilt or pressure; no
       unsupported AI certainty.
 - [ ] Both ARB files and `@description`s updated via a script; `flutter gen-l10n` passes.
-- [ ] Rendered in vi and en (and 200 % where the text grew); nothing essential truncated.
+- [ ] Copy verified under the central visual policy; nothing essential truncated in inspected variants.

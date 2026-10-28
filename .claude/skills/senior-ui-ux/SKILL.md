@@ -1,6 +1,6 @@
 ---
 name: senior-ui-ux
-description: Master product-design skill for Child Life — work as a senior product designer before and while writing UI. Use whenever a Flutter screen, section, card, sheet, notification / push / toast copy, empty / loading / error state, ARB string or any user-facing number is added, changed, "improved" or reviewed in apps/mobile, and whenever the owner reports a screen is hard to read, confusing or "không tốt". Runs autonomously by default (Discover → Verify sources → Fresh render → Audit → Simplify → Structure → Design → Implement → Re-render → Review → Iterate → Verify, then Report; fresh renders, never stored screenshots, are the visual evidence), with a mandatory content-simplification stage (every visible element must earn its place) and structural evaluation (KEEP / REFINE / RESTRUCTURE / REDESIGN; rendered A / B prototypes when the layout itself is the problem — preserving behaviour never means preserving the layout) under the L1 / L2 / L3 autonomy policy: polish and redesign that preserve behaviour ship without routine owner approval; only product decisions stop for the owner. Handles single screens and multi-screen batches and routes to the five cl-* design skills (foundations, components, screen patterns, UX writing, design review), with cl-design-review as the final stage. Flutter is the UI and copy source of truth (D-104); Figma is optional history.
+description: Master product-design workflow for meaningful Flutter UI/UX changes and reviews in Child Life (apps/mobile). Routes to the five cl-* skills for screen structure, components, copy, foundations and rendered review. Small local fixes use targeted checks; screen work uses autonomous audit, simplify, design, implement and review with current visual evidence reused across phases. A/B prototypes are conditional on unresolved structural trade-offs. L1/L2 changes preserve behaviour and proceed autonomously; isolate L3 product decisions for the owner. Respect audit-only requests. Flutter is the current UI and copy authority; Figma is optional history.
 ---
 
 # Senior product design pass — master skill (Child Life)
@@ -76,7 +76,14 @@ Load the skills a task needs, in order, skipping any that are missing:
 
 ## 2. Autonomous workflow: Discover → Verify sources → Fresh render → Audit → Simplify → Structure → Design → Implement → Re-render → Review → Iterate → Verify
 
-This is the default for every UI/UX improvement task (D-109 … D-111). It ends with a Report.
+This is the default for meaningful UI/UX improvement tasks (D-109 … D-111). It ends with a Report.
+For a small local fix, use the relevant checks directly; no full screen audit, Simplify table
+or structural exploration is required. Keep essential content, behaviour and targeted rendered review.
+
+**Render and inspection authority:** `cl-design-review/references/visual-verification.md` →
+Visual evidence policy. Reuse one current render set across these phases; they are review
+activities, not instructions to repeat tool calls. Automated coverage and visual coverage are
+reported separately.
 **Simplify always runs before visual redesign:** decide what stays visible before deciding how
 it looks. **Source code is the implementation truth; a fresh render is the visual truth:** never
 audit or redesign from a stored screenshot alone.
@@ -100,7 +107,7 @@ the ARB keys (vi / en), the fixtures. Find the goldens and any other images of t
 classify each one **Current / Outdated / Unverified / Historical** (`cl-design-review` →
 `visual-verification.md` §0). Stored images are never assumed current.
 
-**Fresh render (mandatory whenever the environment can render).** Run
+**Fresh evidence (reuse first).** If no render set remains current for the relevant inputs, run
 `apps/mobile/tool/golden_freshness.sh <the screen's golden tests>` (no baseline is written):
 passing baselines are Current; for each failing one the fresh render is
 `test/golden/failures/<name>_testImage.png`. States without a golden: a probe test outside
@@ -110,7 +117,7 @@ If nothing can be rendered, mark the visual evidence Unverified and keep its fin
 
 Then inspect, fresh renders first:
 
-- **Fresh renders:** vi and en, Light and Night care, realistic data.
+- **Fresh renders:** select readable images and variants by the central Visual evidence policy.
 - **The code:** the screen and its components, the tokens, the ARB keys (vi / en).
 - **The rules:** the business decisions in `docs/product/business-map.md`.
 - **States and behaviour:** loading, empty and error states; permissions and interaction
@@ -152,9 +159,8 @@ grouping, progressive disclosure for genuinely contextual content, one dominant 
 ### E. Design (and explore when the structure is the problem)
 
 - **KEEP / REFINE:** design the fixes directly.
-- **RESTRUCTURE / REDESIGN:** render two real Flutter prototypes, **A** refined existing and **B**
-  a structural alternative, compare them on fresh renders with the weighted criteria, and select
-  autonomously (`references/structural-evaluation.md` §3).
+- **RESTRUCTURE / REDESIGN:** select a direction autonomously; render A/B prototypes only
+  for a material unresolved trade-off (`references/structural-evaluation.md` §3).
 
 Then build the selected solution with the specialised skills:
 
@@ -183,14 +189,15 @@ Build directly in Flutter with the design system (no Figma or HTML mockup needed
 
 ### G. Re-render
 
-- Regenerate the goldens of the screens you changed (`--update-goldens` on those tests only, as
-  part of the implementation) and **open the PNGs.**
-- Cover Light + Night care × vi + en; add 200 % text and long-name renders where a harness exists,
-  or mark them unverified.
-- Compare with the committed "before" images (`git show HEAD:…`).
+- Render the affected final state once and inspect the selection required by the central Visual
+  evidence policy. Reuse an already-current set; add text-scale/long-content checks when relevant.
+- Update only intended baselines after inspecting the selected fresh results. Keep automated
+  Light/Night × vi/en coverage, and report visual coverage separately.
+- Compare against current pre-edit evidence; committed images may be historical, so label them.
+  Missing variants remain unverified.
 
 Never update baselines during an audit-only request, and never update baselines you didn't mean
-to change. Look at every golden diff the run produced.
+to change. Attribute every golden diff; select visual inspection using the central policy.
 
 ### H. Review
 
@@ -203,7 +210,8 @@ Run `cl-design-review` on the rendered result:
 
 ### I. Iterate
 
-**Self-critique is mandatory (D-112):** re-render and answer the ten questions in
+**Self-critique is mandatory for meaningful screen changes (D-112):** reuse the current final
+render set and answer the ten questions in
 `references/structural-evaluation.md` §4 as an independent designer, including "is it
 meaningfully better than the original?" with the before / after side by side.
 
@@ -234,7 +242,7 @@ Use `cl-design-review`'s template, with a Vietnamese owner summary.
 - no unresolved Blocker or High introduced by the change;
 - every element on the changed screens passed the Simplify stage;
 - actions and destinations preserved;
-- vi / en and Light / Night care covered;
+- automated vi/en × Light/Night covered; visual selection and omissions recorded;
 - rendered images inspected;
 - relevant tests passing;
 - limitations documented;
@@ -383,8 +391,8 @@ after evaluation and the report template. Its quick check, in case it isn't load
 - [ ] Purpose, current state and next action are discoverable quickly. A hero isn't required,
       and not everything must fit above the fold.
 - [ ] One dominant primary; labels match destinations; modes (select vs add) visible.
-- [ ] vi + en and Light + Night care rendered and looked at; text scale and long names verified
-      or reported as unverified.
+- [ ] Rendered review follows the central Visual evidence policy; automated coverage, visual
+      coverage and unverified variants are distinguished.
 - [ ] Every finding has evidence (R / C / H) and a user consequence; nothing scored without
       evidence.
 

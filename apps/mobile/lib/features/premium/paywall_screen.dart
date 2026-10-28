@@ -25,6 +25,7 @@ import 'billing_models.dart';
 import 'billing_repository.dart';
 import 'family_plan_v2.dart';
 import 'paywall_v2.dart';
+import 'paywall_price_cache.dart';
 import 'premium_models.dart';
 import 'premium_style.dart';
 import 'premium_v2.dart';
@@ -114,6 +115,19 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
   /// Captured once: go_router may rebuild the page without its `extra`.
   late final bool _awaited = widget.awaited;
   var _sheetOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final me = ref.read(selectedMembershipProvider);
+    if (me != null &&
+        ref.read(selectedCapabilitiesProvider)?.features.premiumV2 == true) {
+      final plan = ref.read(familyPlanV2Provider(me.babyId));
+      if (!plan.isLoading && plan.value == null) {
+        ref.invalidate(familyPlanV2Provider(me.babyId));
+      }
+    }
+  }
 
   PurchaseController get _controller =>
       ref.read(purchaseControllerProvider.notifier);
@@ -245,7 +259,18 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
     bool storeFailed,
   ) {
     final entry = _v2Entry;
-    final plan = ref.watch(familyPlanV2Provider(babyId)).value;
+    final planAsync = ref.watch(familyPlanV2Provider(babyId));
+    final plan = planAsync.value;
+    final vnd = caps.country == null || caps.country == 'VN';
+    final price = ref.watch(paywallPriceProvider((babyId: babyId, vnd: vnd)));
+    if (owner && !premium && price == null) {
+      return _PlanUnknown(
+        loading: planAsync.isLoading,
+        pricePreparation: true,
+        onClose: () => context.pop(false),
+        onRetry: () => ref.invalidate(familyPlanV2Provider(babyId)),
+      );
+    }
     final baby = ref.watch(babyProvider(babyId)).value;
     final members = ref.watch(familyMembersProvider(babyId)).value ?? const [];
     final manager = members.where((m) => m.isOwner).firstOrNull?.displayName;
@@ -262,8 +287,9 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
       entry: entry,
       footer: footer,
       plan: plan,
+      preparedPrice: price,
       babyName: baby?.nickname ?? '',
-      vnd: caps.country == null || caps.country == 'VN',
+      vnd: vnd,
       storeName:
           (store.provider ??
                   (defaultTargetPlatform == TargetPlatform.android
@@ -657,7 +683,9 @@ class _PlanUnknown extends StatelessWidget {
     required this.loading,
     required this.onClose,
     required this.onRetry,
+    this.pricePreparation = false,
   });
+  final bool pricePreparation;
   final bool loading;
   final VoidCallback onClose;
   final VoidCallback onRetry;
@@ -684,6 +712,10 @@ class _PlanUnknown extends StatelessWidget {
               ),
               const SizedBox(height: ClSpace.s4),
               if (loading) ...[
+                if (pricePreparation) ...[
+                  Text(l10n.pv2LoadingPrices, style: cl.text.title),
+                  const SizedBox(height: ClSpace.s3),
+                ],
                 const ClSkeleton(width: 220, height: 32),
                 const SizedBox(height: ClSpace.s3),
                 const ClSkeleton(height: 120),
@@ -693,8 +725,12 @@ class _PlanUnknown extends StatelessWidget {
                 MeNotice(
                   tone: MeTone.warn,
                   icon: ClIcons.cloudOff,
-                  title: l10n.premiumPlanCheckFailed,
-                  body: l10n.premiumPlanCheckFailedBody,
+                  title: pricePreparation
+                      ? l10n.pv2PriceLoadFailed
+                      : l10n.premiumPlanCheckFailed,
+                  body: pricePreparation
+                      ? l10n.pv2PriceLoadFailedBody
+                      : l10n.premiumPlanCheckFailedBody,
                   child: ClButton(
                     label: l10n.actionRetry,
                     style: ClButtonStyle.outline,

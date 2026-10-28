@@ -73,6 +73,7 @@ Render and **look at**:
 - [ ] a long-name fixture (baby and member) where names appear;
 - [ ] the relevant empty, loading, error, offline and role states.
 
-Golden tests passing only proves the image didn't change. Open the PNGs. Where a check can't be
+Golden tests passing only proves the image didn't change. Image selection and reuse follow
+`cl-design-review/references/visual-verification.md` → Visual evidence policy. Where a check can't be
 rendered (e.g. no text-scale harness for that screen), say so in the report instead of claiming
 it passes.

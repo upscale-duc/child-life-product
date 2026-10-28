@@ -44,6 +44,8 @@ import '../reminders/reminder_notifications.dart'
 import '../family/save_account.dart';
 import '../onboarding/setup_draft.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../premium/premium_v2.dart' show familyPlanV2Provider;
+import '../premium/paywall_price_cache.dart';
 
 const _kSelectedBaby = 'today.selectedBabyId';
 
@@ -141,6 +143,21 @@ class HomeShell extends ConsumerWidget {
     final tabs = tabsFor(membership, v2: v2);
     final active = dockTabOf(shellTabs[shell.currentIndex], v2: v2);
     final babyId = membership.babyId;
+    // Prepare the actual configured price before any Premium entry is tapped.
+    final caps = ref.watch(selectedCapabilitiesProvider);
+    if (caps?.features.premiumV2 == true) {
+      ref.watch(
+        paywallPriceProvider((
+          babyId: babyId,
+          vnd: caps!.country == null || caps.country == 'VN',
+        )),
+      );
+      ref.listen(onlineProvider, (previous, next) {
+        if (previous?.value == false && next.value == true) {
+          ref.invalidate(familyPlanV2Provider(babyId));
+        }
+      });
+    }
     // D-098: the system notification prompt as soon as someone is in the app.
     ref.watch(notificationsLaunchAskProvider);
     final analytics = ref.watch(productAnalyticsReporterProvider);

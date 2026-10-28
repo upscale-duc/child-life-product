@@ -294,18 +294,18 @@ class ForYouSection extends ConsumerWidget {
           if (todayCards.isNotEmpty) ...[
             if (header case final h?) ...[
               h,
-              const SizedBox(height: ClSpace.s3),
+              const SizedBox(height: ClSpace.s2),
             ],
             for (final (i, c) in todayCards.indexed) ...[
-              if (i > 0) const SizedBox(height: ClSpace.s3),
+              if (i > 0) const SizedBox(height: ClSpace.s2),
               c,
             ],
           ],
           if (weekCard != null) ...[
             // A section of its own: the gap between Hôm nay's sections.
-            if (todayCards.isNotEmpty) const SizedBox(height: ClSpace.s6),
+            if (todayCards.isNotEmpty) const SizedBox(height: ClSpace.s4),
             ClSectionHeader(title: l10n.rhAgeHeading(name)),
-            const SizedBox(height: ClSpace.s3),
+            const SizedBox(height: ClSpace.s2),
             weekCard,
           ],
         ],

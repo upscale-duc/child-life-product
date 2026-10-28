@@ -45,7 +45,8 @@ final autoSaveTabDotProvider = Provider.autoDispose<bool>((ref) {
 
 /// AR02: "8 ảnh mới có thể có Teddy" on Hôm nay, above the care tiles.
 class AutoSaveTodayBanner extends ConsumerWidget {
-  const AutoSaveTodayBanner({super.key});
+  const AutoSaveTodayBanner({this.top = ClSpace.s3, super.key});
+  final double top;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +61,7 @@ class AutoSaveTodayBanner extends ConsumerWidget {
     final title = l10n.autoSaveBannerTitle(groups.length, name);
     final later = ref.read(autoSaveProvider.notifier).hideBanner;
     return Padding(
-      padding: const EdgeInsets.only(top: ClSpace.s3),
+      padding: EdgeInsets.only(top: top),
       child: Container(
         key: const Key('autoSaveBanner'),
         padding: const EdgeInsets.fromLTRB(14, 12, 4, 12),

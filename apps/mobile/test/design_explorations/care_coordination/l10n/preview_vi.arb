@@ -1,0 +1,539 @@
+{
+  "@@locale": "vi",
+  "preview": "Bản thử · Phối hợp chăm sóc",
+  "@preview": {
+    "description": "Isolated care coordination design prototype; preview"
+  },
+  "overview": "Cùng chăm bé",
+  "@overview": {
+    "description": "Isolated care coordination design prototype; overview"
+  },
+  "child": "Teddy · Hôm nay, 28/10",
+  "@child": {
+    "description": "Isolated care coordination design prototype; child"
+  },
+  "family": "Gia đình",
+  "@family": {
+    "description": "Isolated care coordination design prototype; family"
+  },
+  "current": "Đang chăm bé",
+  "@current": {
+    "description": "Isolated care coordination design prototype; current"
+  },
+  "carer": "Cô Lan",
+  "@carer": {
+    "description": "Isolated care coordination design prototype; carer"
+  },
+  "shift": "Từ 07:00 · Người chăm sóc",
+  "@shift": {
+    "description": "Isolated care coordination design prototype; shift"
+  },
+  "nextShift": "Tiếp theo · Ba, dự kiến 18:00",
+  "@nextShift": {
+    "description": "Isolated care coordination design prototype; nextShift"
+  },
+  "awake": "Đang thức · Dậy lúc 16:10",
+  "@awake": {
+    "description": "Isolated care coordination design prototype; awake"
+  },
+  "feedFact": "Cữ bú gần nhất",
+  "@feedFact": {
+    "description": "Isolated care coordination design prototype; feedFact"
+  },
+  "feedValue": "16:30 · Bú bình 120 ml",
+  "@feedValue": {
+    "description": "Isolated care coordination design prototype; feedValue"
+  },
+  "diaperFact": "Thay tã gần nhất",
+  "@diaperFact": {
+    "description": "Isolated care coordination design prototype; diaperFact"
+  },
+  "diaperValue": "16:00 · Tã ướt",
+  "@diaperValue": {
+    "description": "Isolated care coordination design prototype; diaperValue"
+  },
+  "next": "Việc tiếp theo",
+  "@next": {
+    "description": "Isolated care coordination design prototype; next"
+  },
+  "assign": "Phân việc",
+  "@assign": {
+    "description": "Isolated care coordination design prototype; assign"
+  },
+  "bath": "Tắm cho bé",
+  "@bath": {
+    "description": "Isolated care coordination design prototype; bath"
+  },
+  "bathMeta": "18:30 · Ba · Chưa xong",
+  "@bathMeta": {
+    "description": "Isolated care coordination design prototype; bathMeta"
+  },
+  "story": "Đọc sách cùng bé",
+  "@story": {
+    "description": "Isolated care coordination design prototype; story"
+  },
+  "storyMeta": "19:30 · Chưa phân công",
+  "@storyMeta": {
+    "description": "Isolated care coordination design prototype; storyMeta"
+  },
+  "pending": "Còn cần làm",
+  "@pending": {
+    "description": "Isolated care coordination design prototype; pending"
+  },
+  "prepare": "Chuẩn bị bàn giao",
+  "@prepare": {
+    "description": "Isolated care coordination design prototype; prepare"
+  },
+  "routine": "Lịch chăm sóc",
+  "@routine": {
+    "description": "Isolated care coordination design prototype; routine"
+  },
+  "routineMeta": "Lịch gia đình đã chọn · Xem và chỉnh",
+  "@routineMeta": {
+    "description": "Isolated care coordination design prototype; routineMeta"
+  },
+  "mine": "Việc của tôi",
+  "@mine": {
+    "description": "Isolated care coordination design prototype; mine"
+  },
+  "dayTime": "17:30 · Cô Lan đang chăm",
+  "@dayTime": {
+    "description": "Isolated care coordination design prototype; dayTime"
+  },
+  "quickLog": "Ghi chăm sóc",
+  "@quickLog": {
+    "description": "Isolated care coordination design prototype; quickLog"
+  },
+  "logBottle": "Ghi cữ bú",
+  "@logBottle": {
+    "description": "Isolated care coordination design prototype; logBottle"
+  },
+  "logBottleMeta": "Nhập lượng bé thực sự đã bú",
+  "@logBottleMeta": {
+    "description": "Isolated care coordination design prototype; logBottleMeta"
+  },
+  "logDiaper": "Ghi thay tã",
+  "@logDiaper": {
+    "description": "Isolated care coordination design prototype; logDiaper"
+  },
+  "logDiaperMeta": "Chọn loại tã và thời gian",
+  "@logDiaperMeta": {
+    "description": "Isolated care coordination design prototype; logDiaperMeta"
+  },
+  "bathDo": "Đánh dấu đã xong",
+  "@bathDo": {
+    "description": "Isolated care coordination design prototype; bathDo"
+  },
+  "done": "Đã xong · Bạn vừa đánh dấu",
+  "@done": {
+    "description": "Isolated care coordination design prototype; done"
+  },
+  "undo": "Hoàn tác",
+  "@undo": {
+    "description": "Isolated care coordination design prototype; undo"
+  },
+  "checkHandover": "Xem bàn giao",
+  "@checkHandover": {
+    "description": "Isolated care coordination design prototype; checkHandover"
+  },
+  "assignTitle": "Phân việc chăm bé",
+  "@assignTitle": {
+    "description": "Isolated care coordination design prototype; assignTitle"
+  },
+  "what": "Việc cần làm",
+  "@what": {
+    "description": "Isolated care coordination design prototype; what"
+  },
+  "who": "Người thực hiện",
+  "@who": {
+    "description": "Isolated care coordination design prototype; who"
+  },
+  "dad": "Ba",
+  "@dad": {
+    "description": "Isolated care coordination design prototype; dad"
+  },
+  "mom": "Mẹ",
+  "@mom": {
+    "description": "Isolated care coordination design prototype; mom"
+  },
+  "unassigned": "Chưa phân công",
+  "@unassigned": {
+    "description": "Isolated care coordination design prototype; unassigned"
+  },
+  "when": "Thời gian",
+  "@when": {
+    "description": "Isolated care coordination design prototype; when"
+  },
+  "due": "Hôm nay · 18:30",
+  "@due": {
+    "description": "Isolated care coordination design prototype; due"
+  },
+  "notify": "Thông báo",
+  "@notify": {
+    "description": "Isolated care coordination design prototype; notify"
+  },
+  "notifyInfo": "Nhắc việc được đặt trên thiết bị của người được phân công sau khi mở ứng dụng và đồng bộ. Cần bật thông báo.",
+  "@notifyInfo": {
+    "description": "Isolated care coordination design prototype; notifyInfo"
+  },
+  "save": "Lưu phân công",
+  "@save": {
+    "description": "Isolated care coordination design prototype; save"
+  },
+  "assigned": "Đã phân công · Hôm nay 18:30",
+  "@assigned": {
+    "description": "Isolated care coordination design prototype; assigned"
+  },
+  "outgoing": "Bàn giao ca chăm",
+  "@outgoing": {
+    "description": "Isolated care coordination design prototype; outgoing"
+  },
+  "outMeta": "Mẹ bàn giao cho Ba · Dự kiến 18:00",
+  "@outMeta": {
+    "description": "Isolated care coordination design prototype; outMeta"
+  },
+  "facts": "Đã ghi trong ca",
+  "@facts": {
+    "description": "Isolated care coordination design prototype; facts"
+  },
+  "period": "07:00–17:30 · Cập nhật 17:28",
+  "@period": {
+    "description": "Isolated care coordination design prototype; period"
+  },
+  "feeds": "4 cữ bú bình · 480 ml",
+  "@feeds": {
+    "description": "Isolated care coordination design prototype; feeds"
+  },
+  "sleep": "3 giấc ngủ · 3 giờ 10 phút",
+  "@sleep": {
+    "description": "Isolated care coordination design prototype; sleep"
+  },
+  "now": "Bây giờ",
+  "@now": {
+    "description": "Isolated care coordination design prototype; now"
+  },
+  "note": "Lời nhắn cho người chăm tiếp",
+  "@note": {
+    "description": "Isolated care coordination design prototype; note"
+  },
+  "noteValue": "Khăn tắm sạch để ở ngăn trên.",
+  "@noteValue": {
+    "description": "Isolated care coordination design prototype; noteValue"
+  },
+  "send": "Gửi cho Ba",
+  "@send": {
+    "description": "Isolated care coordination design prototype; send"
+  },
+  "sent": "Đã gửi · Chờ Ba nhận",
+  "@sent": {
+    "description": "Isolated care coordination design prototype; sent"
+  },
+  "sentBody": "Cô Lan vẫn đang chăm bé. Gửi bàn giao chưa chuyển ca.",
+  "@sentBody": {
+    "description": "Isolated care coordination design prototype; sentBody"
+  },
+  "receive": "Tôi đã nhận bàn giao",
+  "@receive": {
+    "description": "Isolated care coordination design prototype; receive"
+  },
+  "receiveTitle": "Bàn giao cho bạn",
+  "@receiveTitle": {
+    "description": "Isolated care coordination design prototype; receiveTitle"
+  },
+  "receiveMeta": "Mẹ gửi lúc 17:30",
+  "@receiveMeta": {
+    "description": "Isolated care coordination design prototype; receiveMeta"
+  },
+  "receiveEffect": "Khi xác nhận, bạn sẽ được hiển thị là người đang chăm bé. Phân công nhắc việc giữ nguyên.",
+  "@receiveEffect": {
+    "description": "Isolated care coordination design prototype; receiveEffect"
+  },
+  "received": "Bạn đang chăm bé",
+  "@received": {
+    "description": "Isolated care coordination design prototype; received"
+  },
+  "receivedMeta": "Đã nhận bàn giao · Từ 18:00",
+  "@receivedMeta": {
+    "description": "Isolated care coordination design prototype; receivedMeta"
+  },
+  "receivedAction": "Xem việc của tôi",
+  "@receivedAction": {
+    "description": "Isolated care coordination design prototype; receivedAction"
+  },
+  "back": "Quay lại",
+  "@back": {
+    "description": "Isolated care coordination design prototype; back"
+  },
+  "routineTitle": "Lịch chăm sóc của gia đình",
+  "@routineTitle": {
+    "description": "Isolated care coordination design prototype; routineTitle"
+  },
+  "routineInfo": "Bản nháp do gia đình chọn. Chưa tạo nhắc việc.",
+  "@routineInfo": {
+    "description": "Isolated care coordination design prototype; routineInfo"
+  },
+  "evening": "Buổi tối · 18:00–22:00",
+  "@evening": {
+    "description": "Isolated care coordination design prototype; evening"
+  },
+  "routineBath": "18:30 · Tắm cho bé",
+  "@routineBath": {
+    "description": "Isolated care coordination design prototype; routineBath"
+  },
+  "routineStory": "19:30 · Đọc sách cùng bé",
+  "@routineStory": {
+    "description": "Isolated care coordination design prototype; routineStory"
+  },
+  "reviewApply": "Dùng lịch cho hôm nay",
+  "@reviewApply": {
+    "description": "Isolated care coordination design prototype; reviewApply"
+  },
+  "routineApplied": "Đã dùng lịch cho hôm nay",
+  "@routineApplied": {
+    "description": "Isolated care coordination design prototype; routineApplied"
+  },
+  "editTime": "Chọn giờ",
+  "@editTime": {
+    "description": "Isolated care coordination design prototype; editTime"
+  },
+  "cancel": "Huỷ",
+  "@cancel": {
+    "description": "Isolated care coordination design prototype; cancel"
+  },
+  "familyTitle": "Cùng chăm Teddy",
+  "@familyTitle": {
+    "description": "Isolated care coordination design prototype; familyTitle"
+  },
+  "owner": "Mẹ · Cùng nuôi · Chủ gia đình",
+  "@owner": {
+    "description": "Isolated care coordination design prototype; owner"
+  },
+  "parentRole": "Ba · Cùng nuôi",
+  "@parentRole": {
+    "description": "Isolated care coordination design prototype; parentRole"
+  },
+  "careRole": "Cô Lan · Người chăm sóc",
+  "@careRole": {
+    "description": "Isolated care coordination design prototype; careRole"
+  },
+  "relativeRole": "Bà Hoa · Người thân · Chỉ xem",
+  "@relativeRole": {
+    "description": "Isolated care coordination design prototype; relativeRole"
+  },
+  "roleNotice": "Quan hệ với bé và quyền truy cập là hai mục riêng.",
+  "@roleNotice": {
+    "description": "Isolated care coordination design prototype; roleNotice"
+  },
+  "invite": "Mời thành viên",
+  "@invite": {
+    "description": "Isolated care coordination design prototype; invite"
+  },
+  "familyLink": "Xem phối hợp chăm sóc",
+  "@familyLink": {
+    "description": "Isolated care coordination design prototype; familyLink"
+  },
+  "formBottle": "Ghi bú bình",
+  "@formBottle": {
+    "description": "Isolated care coordination design prototype; formBottle"
+  },
+  "amount": "Lượng bé đã bú (ml)",
+  "@amount": {
+    "description": "Isolated care coordination design prototype; amount"
+  },
+  "logSave": "Lưu ghi nhận",
+  "@logSave": {
+    "description": "Isolated care coordination design prototype; logSave"
+  },
+  "logged": "Đã lưu trên thiết bị · Chưa đồng bộ",
+  "@logged": {
+    "description": "Isolated care coordination design prototype; logged"
+  },
+  "notNow": "Không phải lúc này",
+  "@notNow": {
+    "description": "Isolated care coordination design prototype; notNow"
+  },
+  "wash": "Rửa bình sữa",
+  "@wash": {
+    "description": "Isolated care coordination design prototype; wash"
+  },
+  "washMeta": "17:45 · Cô Lan · Chưa xong",
+  "@washMeta": {
+    "description": "Isolated care coordination design prototype; washMeta"
+  },
+  "mai": "Mai",
+  "@mai": {
+    "description": "Isolated care coordination design prototype; mai"
+  },
+  "minh": "Minh",
+  "@minh": {
+    "description": "Isolated care coordination design prototype; minh"
+  },
+  "grandma": "Bà Hoa",
+  "@grandma": {
+    "description": "Isolated care coordination design prototype; grandma"
+  },
+  "close": "Đóng",
+  "@close": {
+    "description": "Isolated care coordination design prototype; close"
+  },
+  "acceptTask": "Nhận việc",
+  "@acceptTask": {
+    "description": "Isolated care coordination design prototype; acceptTask"
+  },
+  "releaseTask": "Trả lại việc",
+  "@releaseTask": {
+    "description": "Isolated care coordination design prototype; releaseTask"
+  },
+  "acceptedTask": "Bạn đã nhận việc này",
+  "@acceptedTask": {
+    "description": "Isolated care coordination design prototype; acceptedTask"
+  },
+  "notificationTitle": "Thông báo chăm sóc",
+  "@notificationTitle": {
+    "description": "Isolated care coordination design prototype; notificationTitle"
+  },
+  "onlyMine": "Việc giao cho tôi",
+  "@onlyMine": {
+    "description": "Isolated care coordination design prototype; onlyMine"
+  },
+  "handoverMine": "Bàn giao gửi cho tôi",
+  "@handoverMine": {
+    "description": "Isolated care coordination design prototype; handoverMine"
+  },
+  "quiet": "Giờ yên tĩnh",
+  "@quiet": {
+    "description": "Isolated care coordination design prototype; quiet"
+  },
+  "quietRange": "22:00–06:00",
+  "@quietRange": {
+    "description": "Isolated care coordination design prototype; quietRange"
+  },
+  "quietNote": "Bàn giao và lời cảm ơn chờ hết giờ yên tĩnh. Nhắc việc bạn đặt vẫn theo giờ đã chọn.",
+  "@quietNote": {
+    "description": "Isolated care coordination design prototype; quietNote"
+  },
+  "appreciationPush": "Thông báo lời cảm ơn",
+  "@appreciationPush": {
+    "description": "Isolated care coordination design prototype; appreciationPush"
+  },
+  "appreciationOff": "Đang tắt · Vẫn xem được trong ứng dụng",
+  "@appreciationOff": {
+    "description": "Isolated care coordination design prototype; appreciationOff"
+  },
+  "notificationExample": "Xem thao tác nhanh",
+  "@notificationExample": {
+    "description": "Isolated care coordination design prototype; notificationExample"
+  },
+  "notificationSaved": "Đã lưu lựa chọn",
+  "@notificationSaved": {
+    "description": "Isolated care coordination design prototype; notificationSaved"
+  },
+  "gratitude": "Lời cảm ơn",
+  "@gratitude": {
+    "description": "Isolated care coordination design prototype; gratitude"
+  },
+  "completedCare": "Cô Lan đã rửa bình sữa",
+  "@completedCare": {
+    "description": "Isolated care coordination design prototype; completedCare"
+  },
+  "completedAt": "Hôm nay · 17:45",
+  "@completedAt": {
+    "description": "Isolated care coordination design prototype; completedAt"
+  },
+  "gratitudeText": "Cảm ơn bạn đã cùng chăm bé.",
+  "@gratitudeText": {
+    "description": "Isolated care coordination design prototype; gratitudeText"
+  },
+  "sendThanks": "Gửi lời cảm ơn",
+  "@sendThanks": {
+    "description": "Isolated care coordination design prototype; sendThanks"
+  },
+  "sentThanks": "Đã gửi lời cảm ơn",
+  "@sentThanks": {
+    "description": "Isolated care coordination design prototype; sentThanks"
+  },
+  "noComparison": "Mỗi việc nhỏ đều đáng được ghi nhận.",
+  "@noComparison": {
+    "description": "Isolated care coordination design prototype; noComparison"
+  },
+  "quickActionTitle": "Thao tác nhanh",
+  "@quickActionTitle": {
+    "description": "Isolated care coordination design prototype; quickActionTitle"
+  },
+  "lockPreview": "Thiết bị đã mở khoá",
+  "@lockPreview": {
+    "description": "Isolated care coordination design prototype; lockPreview"
+  },
+  "lockHelp": "Màn hình khoá ẩn chi tiết việc chăm sóc.",
+  "@lockHelp": {
+    "description": "Isolated care coordination design prototype; lockHelp"
+  },
+  "genericNotice": "Có việc chăm sóc đến giờ",
+  "@genericNotice": {
+    "description": "Isolated care coordination design prototype; genericNotice"
+  },
+  "openTask": "Mở việc",
+  "@openTask": {
+    "description": "Isolated care coordination design prototype; openTask"
+  },
+  "appName": "Child Life",
+  "@appName": {
+    "description": "Isolated care coordination design prototype; appName"
+  },
+  "pendingSync": "Chờ đồng bộ · Chưa báo đã xong cho gia đình",
+  "@pendingSync": {
+    "description": "Isolated care coordination design prototype; pendingSync"
+  },
+  "savePreferences": "Lưu lựa chọn",
+  "@savePreferences": {
+    "description": "Isolated care coordination design prototype; savePreferences"
+  },
+  "invalidAmount": "Nhập lượng sữa lớn hơn 0 ml.",
+  "@invalidAmount": {
+    "description": "Isolated care coordination design prototype; invalidAmount"
+  },
+  "noAuto": "Chưa có ai nhận ca tiếp theo",
+  "@noAuto": {
+    "description": "Isolated care coordination design prototype; noAuto"
+  },
+  "inviteInfo": "Mời bằng mã hoặc liên kết",
+  "@inviteInfo": {
+    "description": "Isolated care coordination design prototype; inviteInfo"
+  },
+  "noAccess": "Chỉ xem thông tin được chia sẻ",
+  "@noAccess": {
+    "description": "Isolated care coordination design prototype; noAccess"
+  },
+  "empty": "Chưa có việc được phân công",
+  "@empty": {
+    "description": "Isolated care coordination design prototype; empty"
+  },
+  "emptyBody": "Các ghi nhận chăm sóc vẫn có trong lịch sử.",
+  "@emptyBody": {
+    "description": "Isolated care coordination design prototype; emptyBody"
+  },
+  "offline": "Ngoại tuyến · Dữ liệu cập nhật 17:28",
+  "@offline": {
+    "description": "Isolated care coordination design prototype; offline"
+  },
+  "offlineHelp": "Kết nối mạng để gửi hoặc nhận bàn giao.",
+  "@offlineHelp": {
+    "description": "Isolated care coordination design prototype; offlineHelp"
+  },
+  "loadError": "Chưa tải được việc chăm sóc",
+  "@loadError": {
+    "description": "Isolated care coordination design prototype; loadError"
+  },
+  "retry": "Thử lại",
+  "@retry": {
+    "description": "Isolated care coordination design prototype; retry"
+  },
+  "loading": "Đang tải việc chăm sóc…",
+  "@loading": {
+    "description": "Isolated care coordination design prototype; loading"
+  },
+  "declined": "Bạn chưa nhận ca. Cô Lan vẫn đang chăm bé.",
+  "@declined": {
+    "description": "Isolated care coordination design prototype; declined"
+  }
+}

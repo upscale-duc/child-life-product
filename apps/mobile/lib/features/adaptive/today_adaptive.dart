@@ -227,7 +227,7 @@ class AxCard extends StatelessWidget {
               ],
             ],
           ),
-          if (child != null) ...[const SizedBox(height: ClSpace.s4), child!],
+          if (child != null) ...[const SizedBox(height: ClSpace.s2), child!],
         ],
       ),
     );
@@ -581,7 +581,7 @@ class AxCustomizeLink extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     return Padding(
-      padding: const EdgeInsets.only(top: ClSpace.s3),
+      padding: const EdgeInsets.only(top: ClSpace.s4),
       child: ClPressable(
         key: const Key('axCustomize'),
         onPressed: () => context.push(AdaptiveRoutes.customize),

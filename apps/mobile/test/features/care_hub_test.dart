@@ -357,6 +357,8 @@ void main() {
       expect(find.byType(CareTile), findsNWidgets(4));
       expect(find.byType(ReminderPeek), findsOneWidget);
 
+      await tester.ensureVisible(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
       expect(find.text('Tuỳ chỉnh Hôm nay'), findsOneWidget);
@@ -388,6 +390,8 @@ void main() {
         TrackerKind.bottle,
       });
 
+      await tester.ensureVisible(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Về mặc định'));
@@ -406,6 +410,8 @@ void main() {
         overrides: careOverrides(),
       );
       expect(find.byType(TodayQuickActions), findsNothing);
+      await tester.ensureVisible(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
       for (final part in [
@@ -462,6 +468,8 @@ void main() {
         const Scaffold(body: TodayScreen()),
         overrides: careOverrides(),
       );
+      await tester.ensureVisible(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
       Finder inGroup(String key, String text) =>

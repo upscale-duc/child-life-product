@@ -238,7 +238,11 @@ class _ToastHostState extends State<_ToastHost>
             ),
             decoration: BoxDecoration(
               color: cl.isNightCare ? cl.colors.surface2 : cl.colors.ink,
-              borderRadius: BorderRadius.circular(ClRadius.pill),
+              borderRadius: BorderRadius.circular(
+                MediaQuery.textScalerOf(context).scale(1) > 1.3
+                    ? ClRadius.card
+                    : ClRadius.pill,
+              ),
               boxShadow: cl.isNightCare ? null : cl.shadows.chip,
             ),
             child: Row(

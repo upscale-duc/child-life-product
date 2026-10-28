@@ -142,8 +142,11 @@ optional content slots: `cl-components/references/component-selection.md` §5; p
   owner.
 - **Implement** goes straight to Flutter, preserving behaviour (§6 protected systems), with
   strings through ARB.
-- **Render** regenerates only the touched goldens and opens every PNG (all four variants, plus
-  text scale and long names where a harness exists).
+- **Render / inspection** follow the single authority in
+  `cl-design-review/references/visual-verification.md` → Visual evidence policy (owner-approved
+  2026-10-28). Keep automated vi/en × Light/Night coverage; inspect by scope, reuse current
+  evidence across phases and use readable crops for local fixes. A/B is conditional on unresolved
+  structural trade-offs. Small local fixes use targeted checks rather than full-screen ceremony.
 - **Review** runs `cl-design-review` (gates, rubric, regression of destinations, roles and
   preferences, tests).
 - **Iterate** fixes what the change introduced; passing tests isn't completion.
@@ -186,7 +189,7 @@ optional content slots: `cl-components/references/component-selection.md` §5; p
 - no new gate failure;
 - no new Blocker or High;
 - actions and destinations preserved;
-- vi / en and Light / Night care covered;
+- automated vi/en × Light/Night covered; visual selection and omissions recorded;
 - rendered images inspected;
 - tests passing;
 - limits documented;

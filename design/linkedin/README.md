@@ -7,7 +7,7 @@ Ready-to-upload PNG assets:
 - `child-life-linkedin-logo.png`: square logo on white, 400 × 400.
 - `child-life-logo.svg`: original vector brand mark, copied unchanged from the app.
 
-The cover uses Child Life's mint/cloud/peach gradient, Be Vietnam Pro type, the original logo and website headline. Key text is inset from the edges, leaving the lower-left area clear. The illustration at the right is intentionally cropped brand artwork. LinkedIn may crop the cover differently by viewport; preview it in the upload editor before saving.
+The cover uses Child Life's mint/cloud gradient, Be Vietnam Pro type, the original logo and website headline. Key text is inset from the edges, leaving the lower-left area clear. The illustration at the right is intentionally cropped brand artwork. LinkedIn may crop the cover differently by viewport; preview it in the upload editor before saving.
 
 [Editable Figma kit](https://www.figma.com/design/sJLG1fAXKDnDr9YI6Yx8ex/Child-Life?node-id=1278-2749)
 

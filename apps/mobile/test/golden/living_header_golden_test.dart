@@ -25,7 +25,7 @@ void main() {
             ),
             palette: palette,
             locale: Locale(lang),
-            overrides: familyOverrides(),
+            overrides: familyOverrides(now: DateTime.utc(2026, 10, 8, 7)),
           );
           await expectLater(
             find.byKey(const Key('settings-golden')),

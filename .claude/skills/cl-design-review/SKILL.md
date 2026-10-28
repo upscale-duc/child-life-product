@@ -28,10 +28,10 @@ workflow, and the whole of an audit-only request.
 
 1. **Understand.** The parent's job first: screen, archetype, role, state, age band, rules, the
    expected next action, and the available evidence.
-2. **Inspect.** Freshness first (D-111): render the current code (`tool/golden_freshness.sh`) and
-   classify images Current / Outdated / Unverified / Historical; never assume a stored image is
-   current. Then all four variants (vi / en × Light / Night care), code, ARB and rules. Note what
-   can't be inspected.
+2. **Inspect.** Follow `references/visual-verification.md` → Visual evidence policy, the single
+   authority for render frequency, reuse and image selection. Reuse current evidence or run
+   `tool/golden_freshness.sh`; classify images Current / Outdated / Unverified / Historical.
+   Inspect selected variants, code, ARB and rules. Record automatic versus visual coverage.
 3. **Audit.** Critical gates, then **content necessity & information density** (dimension 11:
    what can be removed, merged or relocated; what Essential content must stay), then the rest of
    the rubric, then the specialised checks.
@@ -40,8 +40,8 @@ workflow, and the whole of an audit-only request.
 5. **Decide.** One concrete change per finding: what, why, the expected benefit, trade-offs, the
    owning skill. No menus of alternatives for the owner.
    Classify the screen KEEP / REFINE / RESTRUCTURE / REDESIGN (D-112,
-   `senior-ui-ux/references/structural-evaluation.md`); for a structural problem, compare two
-   rendered prototypes and choose, then self-critique the implemented result.
+   `senior-ui-ux/references/structural-evaluation.md`); for unresolved structural trade-offs, compare
+   rendered prototypes and choose; self-critique reuses the current final render set.
 6. **Classify.** L1 / L2: implement (or, in audit-only mode, mark "ready to implement"). L3:
    isolate, keep current behaviour, report as an owner decision with a recommendation.
 7. **Verify.** Before / after with identical fixtures and variants. Tests passing ≠ improved.
@@ -66,12 +66,13 @@ workflow, and the whole of an audit-only request.
   spacing", "cleaner", "more modern", "more premium".
 - **Verified business meaning:** don't reinterpret behaviour. If unsure, mark it
   `Needs behavior verification`.
-- **vi and en, Light and Night care** are both reviewed. Unrendered variants (text scale, long
-  names, small screens, devices) are reported as unverified.
+- **Coverage follows the central Visual evidence policy.** Keep automated vi/en × Light/Night
+  coverage; report visual selection, sampling and omissions separately. Missing variants remain
+  unverified.
 - **Audit-only never changes anything:** no production code, ARB, tokens or baselines, and no
   `--update-goldens`.
-- **Inside an implementation,** update only the goldens of the screens the change touches, then
-  open every diff.
+- **Inside an implementation,** update only the goldens of the screens the change touches, and
+  attribute every diff; visually inspect the selection required by the central policy.
 - **Fresh renders are the visual truth (D-111).** Findings from Outdated or Unverified images are
   H at most and say so.
 - **No invented metrics or test results.**
@@ -117,5 +118,5 @@ Today plus a six-screen calibration).
 - [ ] Proposals preserve verified meaning, or are marked `Needs behavior verification`.
 - [ ] vi / en and Light / Night care both covered or explicitly not.
 - [ ] Audit-only: nothing changed. Implementation: only the intended goldens changed, and every diff
-      was opened.
+      was attributed; visual coverage follows the central policy.
 - [ ] The Vietnamese owner summary, in plain words.

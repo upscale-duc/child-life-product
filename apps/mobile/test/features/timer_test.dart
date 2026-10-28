@@ -360,8 +360,9 @@ void main() {
       expect(value, findsOneWidget);
       final text = tester.widget<Text>(value);
       expect(text.data, contains('phút'));
-      // The test font is too wide to measure the wrap; the tile allows a second line.
-      expect(text.maxLines, 2);
+      // Home cards grow with their content; all elapsed time remains readable.
+      expect(text.maxLines, isNull);
+      expect(text.overflow, isNot(TextOverflow.ellipsis));
     });
 
     testWidgets('26: the end must follow the start; a valid sleep saves', (

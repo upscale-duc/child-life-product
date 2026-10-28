@@ -19164,7 +19164,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String aiSentNoPush(String name) {
-    return 'Đã gửi cho $name trong app, nhưng $name chưa bật thông báo. Gửi thêm qua Zalo?';
+    return 'Đã gửi bàn giao cho $name trong app. Có thể chưa có thông báo trên máy; bạn có thể chia sẻ thêm.';
   }
 
   @override
@@ -22896,4 +22896,25 @@ class AppLocalizationsVi extends AppLocalizations {
   String dutyYouSince(String time) {
     return 'Bạn đang trông · từ $time';
   }
+
+  @override
+  String get todayOtherAmount => 'Khác';
+
+  @override
+  String get todayDiaperBoth => 'Cả hai';
+
+  @override
+  String get todayStartSleep => 'Bắt đầu ngủ';
+
+  @override
+  String get todayViewSession => 'Xem phiên đang chạy';
+
+  @override
+  String get pv2LoadingPrices => 'Đang tải giá Premium…';
+
+  @override
+  String get pv2PriceLoadFailed => 'Chưa tải được giá Premium';
+
+  @override
+  String get pv2PriceLoadFailedBody => 'Kiểm tra kết nối rồi thử lại.';
 }

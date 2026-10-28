@@ -88,8 +88,8 @@ class TodayForBabySection extends ConsumerWidget {
         !dayState.hasError &&
         ref.watch(onlineProvider).value != false;
     return Padding(
-      // With ForYouSection's own 16: the 24 between Hôm nay's sections.
-      padding: const EdgeInsets.only(top: ClSpace.s2),
+      // ForYouSection owns the common 16 pt section spacing.
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

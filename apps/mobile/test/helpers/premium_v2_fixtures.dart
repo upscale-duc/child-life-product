@@ -204,6 +204,7 @@ List<Override> premiumV2Overrides({
   Membership? me,
   List<Membership>? members,
   FakePremiumV2Api? api,
+  Future<FamilyPlanV2?> Function()? loadPlan,
 }) {
   final fake = api ?? FakePremiumV2Api(plan);
   return [
@@ -214,7 +215,9 @@ List<Override> premiumV2Overrides({
     ),
     ...premiumOverrides(household: FakeHousehold(caps ?? v2Answer())),
     premiumV2ApiProvider.overrideWithValue(fake),
-    familyPlanV2Provider.overrideWith((ref, id) async => fake.plan),
+    familyPlanV2Provider.overrideWith(
+      (ref, id) => loadPlan?.call() ?? Future.value(fake.plan),
+    ),
     usageHistoryProvider.overrideWith(
       (ref, q) =>
           fake.usageHistory(q.babyId, filter: q.filter, everyone: q.everyone),

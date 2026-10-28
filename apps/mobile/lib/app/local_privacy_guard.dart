@@ -15,6 +15,7 @@ import '../features/memories/background_uploads.dart';
 import '../features/memories/memory_repository.dart';
 import '../features/memories/upload_queue.dart';
 import '../features/premium/purchase_resume.dart';
+import '../features/today/header_photo_cache.dart';
 import 'session.dart';
 
 /// FAM-01: bind before rendering child UI, including remote revocation/account changes.
@@ -124,6 +125,8 @@ int bindLocalPrivacy(Ref ref) {
               .getKeys()
               .where(
                 (k) =>
+                    k.startsWith('care.quickAmounts.$previous.') ||
+                    k.startsWith('premium.prices.$previous.') ||
                     k.startsWith('engagement.pending.$previous.') ||
                     k.startsWith('engagement.owns.$previous.') ||
                     k.startsWith('engagement.handoff.$previous.') ||
@@ -189,6 +192,9 @@ int bindLocalPrivacy(Ref ref) {
   }
   localPrivacy.cleanup = cleanup;
   if (previous != uid) {
+    if (previous != null) {
+      unawaited(ref.read(headerPhotoCacheProvider).forgetAccount(previous));
+    }
     ref.invalidate(babyRepositoryProvider);
     ref.invalidate(babyAvatarPhotoProvider);
     ref.invalidate(uploadQueueProvider);
@@ -205,11 +211,12 @@ int bindLocalPrivacy(Ref ref) {
     unawaited(() async {
       await BackgroundTransport.cancelDeviceWork();
       for (final id in {...removed, ...restricted}) {
+        await ref.read(headerPhotoCacheProvider).forget(uid!, id);
         await ref.read(uploadQueueProvider.notifier).forgetBaby(id);
         await ref.read(autoSaveProvider.notifier).removeBaby(id);
         ref.read(babyRepositoryProvider).forgetBaby(id);
         final cache = Directory(
-          '${(await getApplicationCacheDirectory()).path}/media-v2/${Uri.encodeComponent(uid!)}',
+          '${(await getApplicationCacheDirectory()).path}/media-v2/${Uri.encodeComponent(uid)}',
         );
         if (await cache.exists()) {
           await for (final file in cache.list()) {

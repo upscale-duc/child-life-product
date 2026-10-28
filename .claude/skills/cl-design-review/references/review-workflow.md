@@ -40,15 +40,15 @@ Write down, before looking for visual issues:
 
 ## B. Inspect
 
-- **Freshness first (D-111):** run `tool/golden_freshness.sh` on the screen's golden tests and
-  classify every image Current / Outdated / Unverified / Historical (`visual-verification.md`
-  §0). Audit on fresh renders; a stored image is never assumed current.
+- **Freshness first (D-111):** reuse current evidence or run `tool/golden_freshness.sh` when
+  needed. Render frequency and inspection scope follow `visual-verification.md` → Visual evidence
+  policy; classify images Current / Outdated / Unverified / Historical.
 
-1. **Rendered first:** list and open the goldens for the screen (`visual-verification.md` §1–2).
+1. **Rendered first:** list the goldens and inspect the selection required by the central policy (`visual-verification.md` §1–2).
    Note which locale × theme × state × role variants exist.
 2. **Code:** the screen file, its sections, the components used, how async data is read (`.when` vs
    `.value ??`), role branches, flags.
-3. **Copy:** the ARB keys used (`grep -n "l10n\.\w*" <file>`), vi + en values and descriptions.
+3. **Copy:** the ARB keys used (`rg "l10n\.\w*" <file>`), vi + en values and descriptions.
 4. **Rules:** the decisions that constrain behaviour.
 5. **Record what you could not inspect:** text scale, long names, small screens, devices, motion.
 

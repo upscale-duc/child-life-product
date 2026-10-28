@@ -98,6 +98,7 @@ label + value can become an en phrase, and vice versa.
 2. **Write en from the meaning,** not from the vi words. Read the en aloud on its own.
 3. **Compare against the parity table** (§1).
 4. **Check both against the glossary.**
-5. **Render both** (goldens vi + en) and check fit, wrapping and truncation.
+5. **Check fit, wrapping and truncation** in affected languages under
+   `cl-design-review/references/visual-verification.md` → Visual evidence policy; reuse current renders.
 6. **Note any en/vi structural difference** in the `@description` if a reviewer might think it is
    a mistranslation.

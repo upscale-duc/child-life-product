@@ -24,6 +24,8 @@ import '../keepsakes/keepsake_live.dart';
 import '../notifications/notification_destinations.dart';
 import '../notifications/notification_links.dart' show markPushRead;
 import '../reminders/device_identity.dart';
+import '../reminders/reminder_notifications.dart'
+    show notificationsEnabledProvider;
 import '../reminders/rule_notifications.dart';
 
 /// Registers this install under `users/{uid}/devices/{deviceId}` (13n device list) with its
@@ -36,6 +38,11 @@ import '../reminders/rule_notifications.dart';
 /// P-137: the first launch or return to the foreground on a local day also writes the activity
 /// heartbeat (`lastActiveAt`, coarse `model`, `osVersion`) on that row, and on Android the
 /// install source is reported once per account (`recordInstallSource`).
+// R-030 / D-093: a temporary invited member receives family notices too. Account
+// permanence gates engagement campaigns, not their family's handover delivery.
+bool canRegisterFamilyPush(Session session) =>
+    session is SessionSignedIn && session.hasBaby;
+
 class PushRegistration extends ConsumerStatefulWidget {
   const PushRegistration({required this.child, super.key});
   final Widget child;
@@ -208,16 +215,24 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     }
   }
 
-  Future<void> _register(String uid, String language) async {
-    final key = '$uid/$language';
+  Future<void> _register(
+    String uid,
+    String language, {
+    required bool temporary,
+  }) async {
+    final key = '$uid/$language/$temporary';
     if (_registeredFor == key) return;
     _registeredFor = key;
+    _save = null;
+    _heartbeat = null;
+    _tokenMissing = false;
     // Another account (or language): the old listener would write to the old row.
     await _refresh?.cancel();
     _refresh = null;
     try {
       final device = await ref.read(deviceIdentityProvider.future);
       final info = await PackageInfo.fromPlatform();
+      if (!mounted || _registeredFor != key) return;
       final db = ref.read(firestoreProvider);
       final doc = db.doc('users/$uid/devices/${device.id}');
       // 13n "Đăng xuất" from another device: this one leaves at once (S11).
@@ -230,6 +245,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
         onError: (Object _) {},
       );
       final traits = await readDeviceTraits();
+      if (!mounted || _registeredFor != key) return;
       // Rules (`validDevice`): `updatedAt` is the request time on every write; `lastActiveAt`
       // is the request time when sent, otherwise left as it is (merge).
       Future<void> save(String? token, {bool beat = false}) => doc.set({
@@ -248,18 +264,22 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
       _save = save;
-      _heartbeat = HeartbeatSchedule(
-        ref.read(sharedPreferencesProvider),
-        uid: uid,
-        deviceId: device.id,
-      );
+      // Temporary identities need a delivery endpoint, without expanding the
+      // activity heartbeat's existing registered-account scope (P-137).
+      _heartbeat = temporary
+          ? null
+          : HeartbeatSchedule(
+              ref.read(sharedPreferencesProvider),
+              uid: uid,
+              deviceId: device.id,
+            );
       // The row exists for "Thiết bị đang đăng nhập" even without push; on the first launch
       // of the day the same write is the heartbeat.
       if (!await _beat()) await save(null);
       _tokenMissing = true;
       await _pushToken();
     } on Object {
-      _registeredFor = null; // Try again on the next change.
+      if (_registeredFor == key) _registeredFor = null; // Retry on resume.
     }
   }
 
@@ -270,20 +290,37 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     _tokenBusy = true;
     try {
       final messaging = FirebaseMessaging.instance;
+      // Listen before polling: APNs/FCM can become ready after the initial wait.
+      // Previously this listener existed only after getToken had succeeded.
+      _refresh ??= messaging.onTokenRefresh.listen((token) async {
+        if (!mounted || !identical(save, _save)) return;
+        try {
+          await save(token);
+          if (identical(save, _save)) _tokenMissing = false;
+        } on Object {
+          if (identical(save, _save)) _tokenMissing = true;
+        }
+      });
       if (defaultTargetPlatform == TargetPlatform.iOS &&
           await _apnsToken(messaging) == null) {
         return; // No APNs (simulator, or push not allowed for this build).
       }
       final token = await messaging.getToken();
-      if (token == null || !identical(save, _save)) return;
+      if (token == null || !mounted || !identical(save, _save)) return;
       await save(token);
-      _tokenMissing = false;
-      await _refresh?.cancel();
-      _refresh = messaging.onTokenRefresh.listen((t) => unawaited(save(t)));
+      if (identical(save, _save)) _tokenMissing = false;
     } on Object {
       // Offline or no messaging: the next resume tries again.
     } finally {
       _tokenBusy = false;
+      // A new account may have started registration while the old token lookup
+      // was awaiting APNs. Retry its endpoint without touching the old account.
+      if (mounted &&
+          _tokenMissing &&
+          _save != null &&
+          !identical(save, _save)) {
+        unawaited(_pushToken());
+      }
     }
   }
 
@@ -308,6 +345,19 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
 
   Future<void> _resumed() async {
     try {
+      // A failed initial device-row write used to wait for an unrelated rebuild.
+      final session = ref.read(sessionProvider);
+      if (mounted && canRegisterFamilyPush(session)) {
+        final signedIn = session as SessionSignedIn;
+        final language = Localizations.localeOf(context).languageCode == 'en'
+            ? 'en'
+            : 'vi';
+        await _register(
+          signedIn.user.uid,
+          language,
+          temporary: signedIn.isAnonymous,
+        );
+      }
       await _beat();
     } on Object {
       // Offline or signed out meanwhile: the next launch or resume tries again.
@@ -355,6 +405,12 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(sessionProvider);
+    ref.listen(notificationsEnabledProvider, (before, after) {
+      // Permission may be granted inside the app, without a lifecycle resume.
+      if (after == true && before != true && _tokenMissing) {
+        unawaited(_pushToken());
+      }
+    });
     final pending = session is SessionSignedIn && !session.isAnonymous
         ? ref.read(engagementLaunchQueueProvider).take()
         : null;
@@ -389,9 +445,11 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       unawaited(const RuleNotificationChannel().refreshCategories());
       unawaited(_channels(AppLocalizations.of(context)));
     }
-    if (session is SessionSignedIn && session.hasBaby && !session.isAnonymous) {
+    if (session is SessionSignedIn && canRegisterFamilyPush(session)) {
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => unawaited(_register(session.user.uid, language)),
+        (_) => unawaited(
+          _register(session.user.uid, language, temporary: session.isAnonymous),
+        ),
       );
     }
     if (session is SessionSignedIn && _installFor != session.user.uid) {

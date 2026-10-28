@@ -43,8 +43,7 @@ goldens, not just the Dart.
   approximate; AI is labelled and kept apart from facts; no invented clinical thresholds.
 - **Density never comes from smaller text.**
 - **The current layout is not the design (D-112).** When grouping, order or composition causes
-  friction, compare compositions (grid vs grouped list vs timeline vs sections by frequency) as
-  rendered prototypes and pick on evidence (`senior-ui-ux/references/structural-evaluation.md`).
+  friction, choose a better composition; use rendered A/B only for unresolved trade-offs (`senior-ui-ux/references/structural-evaluation.md`).
   Equal visual weight for unequal importance or frequency is a hierarchy defect.
 - **Every element earns its place (D-110).** Simplify before structuring: no card inside a card,
   no decorative container around one row, no heading that repeats the title, no restating
@@ -59,7 +58,7 @@ goldens, not just the Dart.
 
 | Phase | Use |
 |---|---|
-| Inspect | A **fresh render** of the current screen (`apps/mobile/tool/golden_freshness.sh`; goldens are baselines, not proof of the current UI, D-111), then the archetype reference |
+| Inspect | Current rendered evidence, reused or freshly checked under `cl-design-review/references/visual-verification.md` → Visual evidence policy, then the archetype reference |
 | Simplify | `compact-and-decluttered.md` (structure) + `cl-ux-writing` → `simplifying-copy.md` (words) |
 | Structure | `information-hierarchy.md` + the archetype file |
 | Compose | `cl-components` for widgets |

@@ -34,7 +34,10 @@ accessibility.
 | Long content | Long names and 3+ babies don't break headers or chips | Usually Not evaluated (no fixtures) |
 | Night care | Readable, calm, no bright panels; warm (not red) attention | R (`*_nightCare_*`) |
 
-## 3. Required variants for substantial screen changes
+## 3. Coverage reporting for substantial screen changes
+
+Selection and reuse follow `visual-verification.md` → Visual evidence policy. Distinguish
+automated coverage from visual inspection in this table; a test pass alone is not visual verification.
 
 | Variant | Status to report |
 |---|---|

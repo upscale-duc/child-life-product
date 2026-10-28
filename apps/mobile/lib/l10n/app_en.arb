@@ -6279,7 +6279,7 @@
       }
     }
   },
-  "aiSentNoPush": "Sent to {name} in the app, but they haven't turned notifications on. Also share through Zalo?",
+  "aiSentNoPush": "Sent the handover to {name} in the app. A device notification may not arrive. You can also share it.",
   "@aiSentNoPush": {
     "description": "Toast when the recipient cannot get a push.",
     "placeholders": {
@@ -8626,5 +8626,21 @@
         "type": "String"
       }
     }
+  },
+  "todayOtherAmount": "Other",
+  "todayDiaperBoth": "Both",
+  "todayStartSleep": "Start sleep",
+  "todayViewSession": "View active session",
+  "pv2LoadingPrices": "Loading Premium prices…",
+  "@pv2LoadingPrices": {
+    "description": "Preparation before showing plan choices; no price is guessed."
+  },
+  "pv2PriceLoadFailed": "Couldn’t load Premium prices",
+  "@pv2PriceLoadFailed": {
+    "description": "Retry state before plan choices when no recent configured price is available."
+  },
+  "pv2PriceLoadFailedBody": "Check your connection and try again.",
+  "@pv2PriceLoadFailedBody": {
+    "description": "Recovery instruction when no valid Premium display prices are available."
   }
 }

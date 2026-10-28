@@ -23,6 +23,7 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
   Locale locale = const Locale('vi'),
   ClPalette palette = ClPalette.light,
   TextScaler? textScaler,
+  Size viewport = const Size(375, 812),
   List<Override> overrides = const [],
   Map<String, Object> prefs = const {},
 
@@ -60,17 +61,14 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
     ],
   );
   addTearDown(container.dispose);
-  tester.view.physicalSize = const Size(375, 812);
+  tester.view.physicalSize = viewport;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
     UncontrolledProviderScope(
       container: container,
       child: MediaQuery(
-        data: const MediaQueryData(
-          size: Size(375, 812),
-          disableAnimations: true,
-        ),
+        data: MediaQueryData(size: viewport, disableAnimations: true),
         child: MaterialApp.router(
           builder: (context, child) => textScaler == null
               ? child!

@@ -28341,9 +28341,9 @@
       }
     }
   },
-  "aiSentNoPush": "Đã gửi cho {name} trong app, nhưng {name} chưa bật thông báo. Gửi thêm qua Zalo?",
+  "aiSentNoPush": "Đã gửi bàn giao cho {name} trong app. Có thể chưa có thông báo trên máy; bạn có thể chia sẻ thêm.",
   "@aiSentNoPush": {
-    "description": "Toast when the recipient cannot get a push.",
+    "description": "Handover is stored in-app but recipient has no registered push endpoint or muted handovers. Never asserts OS notifications are disabled. name is the recipient.",
     "placeholders": {
       "name": {
         "type": "String"
@@ -33534,5 +33534,33 @@
         "type": "String"
       }
     }
+  },
+  "todayOtherAmount": "Khác",
+  "@todayOtherAmount": {
+    "description": "Home quick care action; opens the existing care flow, never saves a preset automatically."
+  },
+  "todayDiaperBoth": "Cả hai",
+  "@todayDiaperBoth": {
+    "description": "Home quick care action; opens the existing care flow, never saves a preset automatically."
+  },
+  "todayStartSleep": "Bắt đầu ngủ",
+  "@todayStartSleep": {
+    "description": "Home quick care action; opens the existing care flow, never saves a preset automatically."
+  },
+  "todayViewSession": "Xem phiên đang chạy",
+  "@todayViewSession": {
+    "description": "Home quick care action; opens the existing care flow, never saves a preset automatically."
+  },
+  "pv2LoadingPrices": "Đang tải giá Premium…",
+  "@pv2LoadingPrices": {
+    "description": "Preparation before showing plan choices; no price is guessed."
+  },
+  "pv2PriceLoadFailed": "Chưa tải được giá Premium",
+  "@pv2PriceLoadFailed": {
+    "description": "Retry state before plan choices when no recent configured price is available."
+  },
+  "pv2PriceLoadFailedBody": "Kiểm tra kết nối rồi thử lại.",
+  "@pv2PriceLoadFailedBody": {
+    "description": "Recovery instruction when no valid Premium display prices are available."
   }
 }

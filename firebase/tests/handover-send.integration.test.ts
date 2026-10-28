@@ -132,6 +132,20 @@ describe('sendHandover (D-093)', () => {
     ).toBe(false);
   });
 
+  it('enabled handover settings alone do not make a device reachable; registration does', async () => {
+    await db.doc('users/jun/settings/notifications').set({ handovers: true });
+    await db.doc('users/jun/devices/d_jun').delete();
+    const request = { babyId, summaryId, recipientUid: 'jun' };
+    const before = await sendHandover(db, 'mom', request, now);
+    expect(before.pushable).toBe(false);
+    // The handover exists even while the push endpoint is missing.
+    expect((await db.doc(`babies/${babyId}/handoverSends/${before.sendId}`).get()).exists).toBe(true);
+    await db.doc('users/jun/devices/d_jun').set({ token: 'new-token', language: 'vi' });
+    const after = await sendHandover(db, 'mom', request, now);
+    expect(after.pushable).toBe(true);
+    expect(after.sendId).toBe(before.sendId);
+  });
+
   it('the recipient marks it seen, then received; nobody else can', async () => {
     const { sendId } = await sendHandover(
       db,

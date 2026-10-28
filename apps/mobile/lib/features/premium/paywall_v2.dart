@@ -35,6 +35,7 @@ class PaywallV2View extends StatefulWidget {
     required this.babyName,
     required this.onClose,
     this.plan,
+    this.preparedPrice,
     this.vnd = true,
     this.storeName,
     this.managerName,
@@ -54,6 +55,9 @@ class PaywallV2View extends StatefulWidget {
   final PaywallFooter footer;
   final String babyName;
   final FamilyPlanV2? plan;
+
+  /// A recent configured display price while the family answer refreshes.
+  final PlanPrice? preparedPrice;
 
   final bool vnd;
   final String? storeName;
@@ -117,7 +121,7 @@ class _PaywallV2State extends State<PaywallV2View> {
     final free = plan?.free ?? PlanOffer.free;
     final premium = plan?.premiumOffer ?? PlanOffer.premium;
     // P-3: no configured price → no price shown and no CTA, never "0đ" or a guessed one.
-    final price = plan?.price(vnd: widget.vnd);
+    final price = widget.preparedPrice ?? plan?.price(vnd: widget.vnd);
     final bottom = MediaQuery.paddingOf(context).bottom;
     final benefits = _benefits(context, l10n, free, premium);
     final equivalent = price == null

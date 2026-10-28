@@ -21,9 +21,11 @@ reviews can stay in chat.
 | Source | Inspected |
 |---|---|
 | Code | <files:lines> |
-| Goldens | <paths> |
-| Locales | vi ✓/✗ · en ✓/✗ |
-| Themes | Light ✓/✗ · Night care ✓/✗ |
+| Automated golden coverage | <command/result, locale × palette × state> |
+| Visually inspected | <paths, variants and regions actually opened> |
+| Reused / sampled evidence | <current render set; sampling rationale and omissions> |
+| Visually inspected locales | vi ✓/✗ · en ✓/✗ |
+| Visually inspected themes | Light ✓/✗ · Night care ✓/✗ |
 | States | <loaded, first run, offline, …> |
 | Roles / age bands | <…> |
 | Not evaluated | <text scale, long names, small screen, device, screen reader, motion …> |

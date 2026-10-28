@@ -35,10 +35,10 @@ A fix to a shared piece is one change, verified everywhere it renders.
 
 Before changing anything:
 
-- run `tool/golden_freshness.sh <files>` (macOS, never writes baselines) to confirm which
+- reuse current evidence or run `tool/golden_freshness.sh <files>` (macOS, never writes baselines) to confirm which
   baselines match the code; audit on the fresh renders (`failures/*_testImage.png` for the
   Outdated ones) and classify every image Current / Outdated / Unverified / Historical;
-- open the current images;
+- inspect images selected by `cl-design-review/references/visual-verification.md` → Visual evidence policy;
 - score each screen quickly with the `cl-design-review` rubric (gates first).
 
 Note fixture artefacts (e.g. grey photos without image bytes) so they aren't mistaken for
@@ -73,8 +73,8 @@ Skip cosmetic consistency when it would cost usability.
 
 - **Size:** a batch is small enough to verify fully. Typically one screen, or one shared
   component with every screen it touches.
-- **Per batch:** Simplify (`content-simplification.md`) → Structure → Design → Implement → Render (the touched goldens, all four variants, plus
-  text-scale / long-name where possible) → Review (gates, rubric, regression of destinations,
+- **Per batch:** Simplify (`content-simplification.md`) → Structure → Design → Implement → Render (reuse current evidence or render affected code; automated matrix and visual selection
+  follow the central Visual evidence policy) → Review (gates, rubric, regression of destinations,
   roles, preferences) → Iterate → tests (`flutter analyze`, `flutter test`, the touched golden
   tests) → a short batch report.
 - **Traceable and reversible:** one batch = one commit (when committing is part of the task),

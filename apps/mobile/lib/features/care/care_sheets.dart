@@ -30,6 +30,7 @@ import '../onboarding/setup_screens.dart' show trackerArt;
 import '../solids/solids_sheet.dart' show openMealSheet;
 import '../solids/solids_today.dart' show SdQuickLogTile, sdQuickLogProvider;
 import 'bottle_suggestions.dart';
+import 'bottle_quick_memory.dart';
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
@@ -77,6 +78,9 @@ Future<void> openCareLog(
   CareType type, {
   CareRecord? edit,
   DateTime? at,
+  int? amountMl,
+  Side? side,
+  DiaperKind? diaper,
 }) {
   switch (type) {
     case CareType.growth:
@@ -87,7 +91,13 @@ Future<void> openCareLog(
     case CareType.bottle || CareType.breast:
       return showClSheet<void>(
         context: context,
-        builder: (_) => FeedSheet(initialType: type, edit: edit, at: at),
+        builder: (_) => FeedSheet(
+          initialType: type,
+          edit: edit,
+          at: at,
+          amountMl: amountMl,
+          side: side,
+        ),
       );
     case CareType.pump:
       return showClSheet<void>(
@@ -97,7 +107,7 @@ Future<void> openCareLog(
     case CareType.diaper:
       return showClSheet<void>(
         context: context,
-        builder: (_) => DiaperSheet(edit: edit, at: at),
+        builder: (_) => DiaperSheet(edit: edit, at: at, initialKind: diaper),
       );
   }
 }
@@ -109,6 +119,9 @@ void commitRecord(
   WidgetRef ref,
   CareRecord record, {
   required bool isEdit,
+  bool closeSheet = true,
+  VoidCallback? onFailure,
+  VoidCallback? onUndo,
 }) {
   final l10n = AppLocalizations.of(context);
   final locale = Localizations.localeOf(context).toLanguageTag();
@@ -120,6 +133,7 @@ void commitRecord(
   void Function(Object) failed(CareWrite write) => (e) {
     // FB5: no rating prompt after an error (D-065).
     ReviewSession.afterError = true;
+    if (write == CareWrite.create || write == CareWrite.edit) onFailure?.call();
     toaster.show(
       message: careWriteFailed(l10n, locale, write, e, record),
       error: true,
@@ -133,17 +147,22 @@ void commitRecord(
     // FB5: logs count towards "≥ 10 logs" and a full week of logs is a happy moment.
     unawaited(ref.read(reviewPrompterProvider).logged(DateTime.now()));
   }
+  if (record.type == CareType.bottle && record.amountMl != null) {
+    ref.read(bottleQuickMemoryProvider.notifier).remember(record.amountMl!);
+  }
   ClHaptics.success();
   ref.read(lastSavedProvider.notifier).mark(record.type);
-  Navigator.of(context).maybePop();
+  if (closeSheet) Navigator.of(context).maybePop();
   if (isEdit) {
     toaster.show(message: l10n.editedToast);
   } else {
     toaster.show(
       message: l10n.savedToast(recordSummary(l10n, locale, record)),
       actionLabel: l10n.undo,
-      onAction: () =>
-          repo.softDelete(record, me.uid, onError: failed(CareWrite.delete)),
+      onAction: () {
+        onUndo?.call();
+        repo.softDelete(record, me.uid, onError: failed(CareWrite.delete));
+      },
     );
   }
 }
@@ -634,7 +653,16 @@ String? _rangeError(
 
 /// 22 / 23 Ghi cữ bú: Bú bình | Bú mẹ, remembering the last type and milk (46:3141, 46:3234).
 class FeedSheet extends ConsumerStatefulWidget {
-  const FeedSheet({required this.initialType, this.edit, this.at, super.key});
+  const FeedSheet({
+    required this.initialType,
+    this.edit,
+    this.at,
+    this.amountMl,
+    this.side,
+    super.key,
+  });
+  final int? amountMl;
+  final Side? side;
   final CareType initialType;
   final CareRecord? edit;
 
@@ -661,6 +689,7 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
   var _built = false;
   bool get _prefilled =>
       widget.edit == null &&
+      widget.amountMl == null &&
       _lastBottle?.amountMl != null &&
       _amount.text == '${_lastBottle!.amountMl}';
 
@@ -675,8 +704,10 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
         edit?.milk ??
         memory.get(babyId, 'milk', MilkType.values) ??
         MilkType.breastMilk;
-    _side = edit?.side;
-    if (edit?.amountMl != null) _amount.text = '${edit!.amountMl}';
+    _side = edit?.side ?? widget.side;
+    if (edit?.amountMl ?? widget.amountMl case final amount?) {
+      _amount.text = '$amount';
+    }
     if (edit?.durationMin != null) _minutes.text = '${edit!.durationMin}';
     if (edit == null) {
       // "nhớ lần trước" (346:47151): start from the last bottle's amount, once the records
@@ -1056,7 +1087,8 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
 
 /// 24 Thay tã (46:3308): two taps — choose → Lưu; defaults to the last kind.
 class DiaperSheet extends ConsumerStatefulWidget {
-  const DiaperSheet({this.edit, this.at, super.key});
+  const DiaperSheet({this.edit, this.at, this.initialKind, super.key});
+  final DiaperKind? initialKind;
   final CareRecord? edit;
   final DateTime? at;
 
@@ -1074,6 +1106,7 @@ class _DiaperSheetState extends ConsumerState<DiaperSheet>
     initTime(widget.edit?.occurredAt ?? widget.at);
     _kind =
         widget.edit?.diaper ??
+        widget.initialKind ??
         memory.get(me?.babyId ?? '', 'diaper', DiaperKind.values) ??
         DiaperKind.wet;
   }

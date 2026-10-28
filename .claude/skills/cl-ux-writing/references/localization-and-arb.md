@@ -136,8 +136,9 @@ cd apps/mobile && flutter test --tags golden test/golden/<feature>_golden_test.d
 
 - **Parity check** (no dedicated test exists): compare the key sets of both ARB files (a 3-line
   `python3 -I` script) before committing.
-- **Goldens are the real check.** Look at the `*_vi.png` and `*_en.png` images for overflow,
-  truncation and wrong plurals.
+- **Visual fit needs rendered evidence.** Inspect affected copy for overflow, truncation and
+  plurals under `cl-design-review/references/visual-verification.md` → Visual evidence policy;
+  reuse current renders rather than creating a new set for this checklist.
 
 ## 9. Bilingual review checklist
 

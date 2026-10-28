@@ -147,6 +147,7 @@ ClCard.media({media, title?, meta?, onTap})
 Before building it:
 
 1. An owner decision on the compact radius.
-2. Goldens for each variant: Light / Night × vi / en, plus 200 % text.
+2. Automated golden coverage for each variant; image inspection and text-scale checks follow
+   `cl-design-review/references/visual-verification.md` → Visual evidence policy.
 3. A showcase section.
 4. Migration one feature at a time when touched (`component-evolution.md`).

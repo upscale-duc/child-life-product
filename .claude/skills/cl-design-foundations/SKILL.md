@@ -64,8 +64,8 @@ disagree, trust readability and accessibility, then record why.
    - `ClPressable` opacity press (D-048);
    - haptics only via `ClHaptics.selection` (tab switch) and `ClHaptics.success` (with a success
      toast).
-9. **Verify on images:** Light and Night care × vi and en goldens, plus one 200 % text render for
-   new or changed layouts.
+9. **Verify visual changes** under `cl-design-review/references/visual-verification.md` →
+   Visual evidence policy (scope, reuse and text-scale checks).
 
 ## Sanctioned exceptions (don't spread them)
 
@@ -97,8 +97,8 @@ When no token fits a legitimate need:
    - run `pnpm --filter @child-life/design-tokens run build` (Dart + `dist/tokens.css`), and
      `run check` to confirm the outputs are current;
    - add a D-xxx row to `docs/product/business-map.md`.
-8. **Verify the affected screens on goldens** (Light, Night, vi, en) and update the foundations
-   golden (`test/golden/showcase_golden_test.dart`).
+8. **Verify affected screens** under the central Visual evidence policy and update only intended
+   foundations baselines (`test/golden/showcase_golden_test.dart`).
 
 Candidates already documented, **not implemented**:
 
@@ -133,6 +133,6 @@ Never write them as if they existed.
 - [ ] Every foreground/background pair is from the safe list, or checked in Night care.
 - [ ] Hierarchy uses scale styles; numbers that change are tabular.
 - [ ] One elevated level per region; Night care still separates surfaces.
-- [ ] 44 pt targets; 200 % text renders; status not by colour alone.
+- [ ] 44 pt targets; text-scale coverage per central visual policy; status not by colour alone.
 - [ ] Motion uses tokens and `context.motion`; no new haptics.
 - [ ] Any new token went through the protocol with approval.

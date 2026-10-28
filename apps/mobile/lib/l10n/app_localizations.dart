@@ -31998,10 +31998,10 @@ abstract class AppLocalizations {
   /// **'Đã gửi cho {name}. {name} sẽ nhận được thông báo.'**
   String aiSentToast(String name);
 
-  /// Toast when the recipient cannot get a push.
+  /// Handover is stored in-app but recipient has no registered push endpoint or muted handovers. Never asserts OS notifications are disabled. name is the recipient.
   ///
   /// In vi, this message translates to:
-  /// **'Đã gửi cho {name} trong app, nhưng {name} chưa bật thông báo. Gửi thêm qua Zalo?'**
+  /// **'Đã gửi bàn giao cho {name} trong app. Có thể chưa có thông báo trên máy; bạn có thể chia sẻ thêm.'**
   String aiSentNoPush(String name);
 
   /// Toast when sending a handover failed.
@@ -38213,6 +38213,48 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bạn đang trông · từ {time}'**
   String dutyYouSince(String time);
+
+  /// Home quick care action; opens the existing care flow, never saves a preset automatically.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get todayOtherAmount;
+
+  /// Home quick care action; opens the existing care flow, never saves a preset automatically.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai'**
+  String get todayDiaperBoth;
+
+  /// Home quick care action; opens the existing care flow, never saves a preset automatically.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu ngủ'**
+  String get todayStartSleep;
+
+  /// Home quick care action; opens the existing care flow, never saves a preset automatically.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem phiên đang chạy'**
+  String get todayViewSession;
+
+  /// Preparation before showing plan choices; no price is guessed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải giá Premium…'**
+  String get pv2LoadingPrices;
+
+  /// Retry state before plan choices when no recent configured price is available.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được giá Premium'**
+  String get pv2PriceLoadFailed;
+
+  /// Recovery instruction when no valid Premium display prices are available.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra kết nối rồi thử lại.'**
+  String get pv2PriceLoadFailedBody;
 }
 
 class _AppLocalizationsDelegate

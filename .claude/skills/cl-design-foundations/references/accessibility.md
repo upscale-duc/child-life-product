@@ -94,9 +94,9 @@ or run it with a screen reader).
 - [V] The palette has its own values for every token. Shadows are removed from cards; the
   hierarchy is carried by `cloud` → `surface` → `surface2`.
 - [V] Traps: `onWarm` on soft fills (1.1); `ink` on `mint` (2.0). Raw `Colors.white` / `black` don't adapt.
-- [R] Every UI change renders its **Night care** goldens (vi + en) and is looked at. Night care
-  is used at 3 a.m. in a dark room: no bright full-white panels and no glowing highlights; keep
-  calm fills.
+- [R] Night care inspection follows `cl-design-review/references/visual-verification.md` →
+  Visual evidence policy; reuse current evidence and inspect affected palettes. Night care is
+  used at 3 a.m. in a dark room: no bright full-white panels or glowing highlights; keep calm fills.
 
 ## 8. Reduced Motion
 

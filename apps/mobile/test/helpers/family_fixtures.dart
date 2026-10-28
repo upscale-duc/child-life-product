@@ -201,6 +201,7 @@ ValidInvite invitePreview({
 
 /// Signed in as [me] with Teddy selected; the family list and pending invites are fixed.
 List<Override> familyOverrides({
+  Baby? baby,
   BabyPrivateProfile? profile,
   // Replaces [profile]'s stream: one that never arrives (AU-5 loading) or fails.
   Stream<BabyPrivateProfile?> Function()? profileStream,
@@ -291,7 +292,7 @@ List<Override> familyOverrides({
       ),
     ),
     myInvitesProvider.overrideWith((ref) async => myInvites),
-    babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
+    babyProvider.overrideWith((ref, id) => Stream.value(baby ?? teddy)),
     babyPrivateProfileProvider.overrideWith(
       (ref, id) =>
           profileStream?.call() ?? Stream.value(profile ?? teddyProfile()),

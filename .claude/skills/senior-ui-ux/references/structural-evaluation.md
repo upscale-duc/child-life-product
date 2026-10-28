@@ -14,8 +14,8 @@ redesigned autonomously when the evidence justifies it. The current widget tree 
 |---|---|---|
 | **KEEP** | The layout already serves the primary task well | Fix verified defects only |
 | **REFINE** | The structure is sound; spacing, type, alignment, copy, a11y, consistency or states need work | L1 / L2 fixes in place |
-| **RESTRUCTURE** | The information architecture or layout adds friction: wrong grouping or order, competing elements, weak action hierarchy, needless scrolling, poor density, wrong composition (grid vs list vs timeline) | Explore A / B (§3), pick, implement |
-| **REDESIGN** | The interaction model or composition substantially undermines usability | Explore A / B (§3) with a genuinely different structure, pick, implement |
+| **RESTRUCTURE** | The information architecture or layout adds friction: wrong grouping or order, competing elements, weak action hierarchy, needless scrolling, poor density, wrong composition (grid vs list vs timeline) | Choose a direction; conditional A/B (§3), implement |
+| **REDESIGN** | The interaction model or composition substantially undermines usability | Choose a different structure; conditional A/B (§3), implement |
 
 Never pick RESTRUCTURE or REDESIGN by default. Each decision names the observed problems (with
 fresh-render evidence) and the expected user benefit. A well-designed screen is kept: **don't
@@ -37,6 +37,12 @@ six dimensions are recorded in the report's before assessment.
 
 ## 3. Exploration (RESTRUCTURE / REDESIGN only)
 
+Use A/B only when two plausible compositions have a material unresolved trade-off. Otherwise
+record why one direction suffices and implement it. Render scope and evidence reuse follow
+`cl-design-review/references/visual-verification.md` → Visual evidence policy.
+
+When A/B is useful:
+
 - **Two meaningfully different directions:**
   - **A — Refined existing:** improve the current structure with minimal disruption;
   - **B — Structural alternative:** different grouping, hierarchy, component composition or
@@ -51,8 +57,8 @@ six dimensions are recorded in the report's before assessment.
   recommendation. Tests that assert an order usually cite the decision.
 - **Render real Flutter prototypes**, isolated from production, on production-like fixtures and
   the real providers (read-only): `apps/mobile/test/design_explorations/<topic>/` (pattern:
-  `today_v2/`), output in that folder. Render vi / en × Light / Night care, plus 200 % text for
-  the candidates. Open every image.
+  `today_v2/`), output in that folder. Inspect a representative configuration first; add only
+  variants that distinguish candidates. Verify the final chosen screen under the central policy.
 - **Select autonomously** (L1 / L2), using judgement aided by these weights:
 
   | Criterion | Weight |
@@ -73,7 +79,8 @@ six dimensions are recorded in the report's before assessment.
 
 ## 4. Self-critique after implementing (mandatory)
 
-Render the real screen again and review it as an independent designer:
+Reuse the current final render set and review it as an independent designer. Render again only
+after a relevant change or for an unanswered visual question:
 
 1. Is the primary task immediately clear?
 2. Is the most important content visually dominant?
@@ -91,5 +98,5 @@ A material issue means another iteration, even when the tests pass.
 ## 5. Report
 
 `cl-design-review` template plus, per screen: the main goal, problems, classification and
-reasoning; for structural changes the A / B renders, strengths, weaknesses and the selection;
+reasoning; when A/B was needed, its renders, strengths, weaknesses and selection; otherwise why one direction sufficed;
 before / after renders (vi / en, Light / Night care, relevant states, large text).

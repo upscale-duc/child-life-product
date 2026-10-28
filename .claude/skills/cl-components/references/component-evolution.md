@@ -41,7 +41,8 @@
     (`XxCard`), and never a `Cl` class inside a feature folder (`ClRedDot` in
     `features/family/my_invites.dart` is the one existing exception and should move).
   - When **promoting** an existing feature widget (`MeNotice` → core), move it, keep the API,
-    migrate imports, and keep goldens identical, or look at and accept every diff.
+    migrate imports, and keep goldens identical, or attribute differences and inspect them under
+    `cl-design-review/references/visual-verification.md` → Visual evidence policy.
 
 ### Step 4: Autonomy level (`senior-ui-ux` §3, D-109)
 
@@ -62,7 +63,8 @@
 - changes behaviour (what a control does, where it goes, who can use it);
 - introduces a new product capability.
 
-Show before / after goldens either way, and open every diff.
+Use before/after evidence under the central Visual evidence policy; reuse current images and
+inspect representative or risky diffs as required there.
 
 ## 2. Duplication audit (read-only, 2026-10-25)
 

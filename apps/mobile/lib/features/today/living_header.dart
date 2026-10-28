@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -12,10 +13,10 @@ import '../baby/baby_repository.dart';
 import '../care/care_duty.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
-import '../memories/media_bytes.dart';
 import '../memories/memory_repository.dart';
 import '../notifications/notification_bell.dart';
 import 'header_settings.dart';
+import 'header_photo_cache.dart';
 
 enum HeaderMoment { morning, afternoon, evening, birthday }
 
@@ -33,7 +34,8 @@ HeaderMoment headerMoment(DateTime localNow, {DateTime? birthday}) {
       : HeaderMoment.evening;
 }
 
-// Only resolves media still visible to this viewer. A deleted/revoked photo falls back to art.
+// Resolve the saved local image while metadata is loading; known deletion,
+// avatar replacement and permission changes invalidate it immediately.
 final headerPhotoProvider = Provider.family<ImageProvider?, HeaderSettings>((
   ref,
   settings,
@@ -42,29 +44,68 @@ final headerPhotoProvider = Provider.family<ImageProvider?, HeaderSettings>((
   if (me == null || settings.background == HeaderBackground.pattern) {
     return null;
   }
-  final baby = ref.watch(babyProvider(me.babyId)).value;
-  if (settings.background == HeaderBackground.avatar) {
-    if (baby?.avatar case PhotoAvatar(:final version)) {
-      final Uint8List? bytes = ref
-          .watch(babyAvatarPhotoProvider((me.babyId, version)))
-          .value;
-      if (bytes != null) return MemoryImage(bytes);
+  final cache = ref.watch(headerPhotoCacheProvider);
+  final choice = '${settings.background.name}:${settings.mediaId ?? ''}';
+  if (me.role == MemberRole.coParent) {
+    ref.watch(headerCachedPhotoProvider((me.uid, me.babyId)));
+  }
+  final cached = me.role == MemberRole.coParent
+      ? cache.read(me.uid, me.babyId, choice)
+      : null;
+  final saved = ref.watch(headerSettingsProvider);
+  final applied =
+      saved.background == settings.background &&
+      saved.mediaId == settings.mediaId;
+  ImageProvider? resolved(Uint8List? bytes, String source) {
+    if (bytes != null) {
+      if (applied && me.role == MemberRole.coParent) {
+        unawaited(
+          cache
+              .remember(me.uid, me.babyId, choice, source, bytes)
+              .catchError((Object _) {}),
+        );
+        final remembered = cache.read(me.uid, me.babyId, choice);
+        if (remembered?.source == source) return remembered?.image;
+      }
+      return MemoryImage(bytes);
     }
+    return cached?.source == source ? cached?.image : null;
+  }
+
+  void discard() {
+    if (applied) {
+      unawaited(cache.forget(me.uid, me.babyId).catchError((Object _) {}));
+    }
+  }
+
+  final baby = ref.watch(babyProvider(me.babyId));
+  if (settings.background == HeaderBackground.avatar) {
+    if (!baby.hasValue) return cached?.image;
+    if (baby.value?.avatar case PhotoAvatar(:final version)) {
+      return resolved(
+        ref.watch(babyAvatarPhotoProvider((me.babyId, version))).value,
+        'avatar:$version',
+      );
+    }
+    discard();
     return null;
   }
-  final items =
-      ref
-          .watch(mediaProvider((me.babyId, me.role == MemberRole.coParent)))
-          .value ??
-      const [];
-  final media = items
+  final media = ref.watch(
+    mediaProvider((me.babyId, me.role == MemberRole.coParent)),
+  );
+  if (!media.hasValue) return cached?.image;
+  final item = (media.value ?? const [])
       .where(
         (m) =>
             m.id == settings.mediaId && m.isReady && !m.deleted && !m.isVideo,
       )
       .firstOrNull;
-  final path = media?.displayPath;
-  return path == null ? null : StorageImage(path);
+  final path = item?.displayPath;
+  if (path == null) {
+    discard();
+    return null;
+  }
+  return resolved(ref.watch(headerMemoryBytesProvider(path)).value, path);
 });
 
 class TodayLivingHeader extends ConsumerWidget {
@@ -106,6 +147,7 @@ class TodayLivingHeader extends ConsumerWidget {
       title: title,
       photo: ref.watch(headerPhotoProvider(selected)),
       topInset: preview ? 0 : MediaQuery.paddingOf(context).top,
+      contentLift: 0,
       top: const BabyHeader(
         hero: true,
         actions: [
@@ -129,6 +171,7 @@ class LivingHeaderView extends StatelessWidget {
     this.duty,
     this.photo,
     this.topInset = 0,
+    this.contentLift = 0,
     super.key,
   });
   final HeaderMoment moment;
@@ -137,6 +180,10 @@ class LivingHeaderView extends StatelessWidget {
   final Widget? duty;
   final ImageProvider? photo;
   final double topInset;
+
+  /// Let following content overlap the faded footer without cropping the photo.
+  /// Only decorative paint overflows; controls retain their actual layout/hit areas.
+  final double contentLift;
 
   @override
   Widget build(BuildContext context) {
@@ -147,119 +194,149 @@ class LivingHeaderView extends StatelessWidget {
       HeaderMoment.evening => cl.care.sleep.soft,
       HeaderMoment.birthday => cl.colors.peachSoft,
     };
+    final visualMinHeight = (duty == null ? 164 : 208) + topInset;
     return ClipRect(
+      clipBehavior: Clip.none,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Positioned.fill(
             child: LayoutBuilder(
-              builder: (context, box) {
-                final scale = box.maxWidth / 375;
-                final (w, h) = switch (moment) {
-                  HeaderMoment.morning => (646.0, 522.0),
-                  HeaderMoment.afternoon => (630.0, 528.0),
-                  HeaderMoment.evening => (640.0, 522.0),
-                  HeaderMoment.birthday => (620.0, 528.0),
-                };
-                return ExcludeSemantics(
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: ColoredBox(color: base)),
-                      if (photo != null) ...[
-                        Positioned.fill(
-                          left: box.maxWidth * .28,
-                          child: Image(
-                            image: photo!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => ColoredBox(color: base),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: ColoredBox(color: base.withValues(alpha: .25)),
-                        ),
-                        Positioned.fill(
-                          child: ColoredBox(
-                            color: cl.colors.cloud.withValues(
-                              alpha: cl.isNightCare ? .35 : .28,
-                            ),
-                          ),
-                        ),
-                      ],
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Transform.scale(
-                          scale: scale,
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                            width: photo == null ? w : 375,
-                            height: photo == null ? h : 360,
-                            child: SvgPicture.asset(
-                              'assets/today/header-${photo == null ? moment.name : 'photo-stars'}.svg',
-                              colorMapper: _HeaderColors(cl),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: photo == null
-                                  ? [
-                                      base,
-                                      base,
-                                      base.withValues(alpha: 0),
-                                      base.withValues(alpha: 0),
-                                    ]
-                                  : [
-                                      for (final alpha
-                                          in cl.isNightCare
-                                              ? [
-                                                  1.0,
-                                                  1.0,
-                                                  .97,
-                                                  .82,
-                                                  .55,
-                                                  .18,
-                                                  0.0,
-                                                ]
-                                              : [
-                                                  1.0,
-                                                  1.0,
-                                                  .88,
-                                                  .6,
-                                                  .26,
-                                                  .04,
-                                                  0.0,
-                                                ])
-                                        (cl.isNightCare
-                                                ? cl.colors.cloud
-                                                : base)
-                                            .withValues(alpha: alpha),
-                                    ],
-                              stops: photo == null
-                                  ? const [0, .34, .58, 1]
-                                  : const [0, .28, .4, .55, .72, .9, 1],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                for (final a in [0.0, 0.0, .24, .65, 1.0])
-                                  cl.colors.cloud.withValues(alpha: a),
+              builder: (context, layout) {
+                // Preserve the previous photo/art height and crop. At large text
+                // sizes the foreground grows naturally and needs no overlap.
+                final artHeight = layout.maxHeight.clamp(
+                  visualMinHeight,
+                  double.infinity,
+                );
+                return OverflowBox(
+                  alignment: Alignment.topCenter,
+                  minHeight: artHeight,
+                  maxHeight: artHeight,
+                  child: ClipRect(
+                    key: const Key('todayHeaderArtwork'),
+                    child: LayoutBuilder(
+                      builder: (context, box) {
+                        final scale = box.maxWidth / 375;
+                        final (w, h) = switch (moment) {
+                          HeaderMoment.morning => (646.0, 522.0),
+                          HeaderMoment.afternoon => (630.0, 528.0),
+                          HeaderMoment.evening => (640.0, 522.0),
+                          HeaderMoment.birthday => (620.0, 528.0),
+                        };
+                        return ExcludeSemantics(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(child: ColoredBox(color: base)),
+                              if (photo != null) ...[
+                                Positioned.fill(
+                                  left: box.maxWidth * .28,
+                                  child: Image(
+                                    image: photo!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) =>
+                                        ColoredBox(color: base),
+                                  ),
+                                ),
+                                Positioned.fill(
+                                  child: ColoredBox(
+                                    color: base.withValues(alpha: .25),
+                                  ),
+                                ),
+                                Positioned.fill(
+                                  child: ColoredBox(
+                                    color: cl.colors.cloud.withValues(
+                                      alpha: cl.isNightCare ? .35 : .28,
+                                    ),
+                                  ),
+                                ),
                               ],
-                              stops: const [0, .45, .7, .88, 1],
-                            ),
+                              Positioned(
+                                left: 0,
+                                top: 0,
+                                child: Transform.scale(
+                                  scale: scale,
+                                  alignment: Alignment.topLeft,
+                                  child: SizedBox(
+                                    width: photo == null ? w : 375,
+                                    height: photo == null ? h : 360,
+                                    child: SvgPicture.asset(
+                                      'assets/today/header-${photo == null ? moment.name : 'photo-stars'}.svg',
+                                      colorMapper: _HeaderColors(cl),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: photo == null
+                                          ? [
+                                              base,
+                                              base,
+                                              base.withValues(alpha: 0),
+                                              base.withValues(alpha: 0),
+                                            ]
+                                          : [
+                                              for (final alpha
+                                                  in cl.isNightCare
+                                                      ? [
+                                                          1.0,
+                                                          1.0,
+                                                          .97,
+                                                          .82,
+                                                          .55,
+                                                          .18,
+                                                          0.0,
+                                                        ]
+                                                      : [
+                                                          1.0,
+                                                          1.0,
+                                                          .88,
+                                                          .6,
+                                                          .26,
+                                                          .04,
+                                                          0.0,
+                                                        ])
+                                                (cl.isNightCare
+                                                        ? cl.colors.cloud
+                                                        : base)
+                                                    .withValues(alpha: alpha),
+                                            ],
+                                      stops: photo == null
+                                          ? const [0, .34, .58, 1]
+                                          : const [0, .28, .4, .55, .72, .9, 1],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        for (final a in [
+                                          0.0,
+                                          0.0,
+                                          .24,
+                                          .65,
+                                          1.0,
+                                        ])
+                                          cl.colors.cloud.withValues(alpha: a),
+                                      ],
+                                      stops: const [0, .45, .7, .88, 1],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
                 );
               },
@@ -268,36 +345,38 @@ class LivingHeaderView extends StatelessWidget {
           ConstrainedBox(
             key: const Key('todayLivingHeader'),
             constraints: BoxConstraints(
-              minHeight: (duty == null ? 224 : 320) + topInset,
+              minHeight: visualMinHeight - contentLift,
             ),
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 ClSpace.s4,
-                topInset + ClSpace.s3,
+                topInset + ClSpace.s2,
                 ClSpace.s4,
-                ClSpace.s6,
+                ClSpace.s3,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       top,
-                      const SizedBox(height: ClSpace.s6),
+                      const SizedBox(height: ClSpace.s4),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
                           width: MediaQuery.textScalerOf(context).scale(1) > 1.3
                               ? double.infinity
-                              : 210,
+                              : MediaQuery.sizeOf(context).width * .56,
                           child: Semantics(
                             header: true,
                             child: Text(
                               title,
                               key: const Key('axGreeting'),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                               style: cl.text.title.copyWith(
                                 color: cl.colors.ink,
                               ),
@@ -309,7 +388,7 @@ class LivingHeaderView extends StatelessWidget {
                   ),
                   if (duty != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: ClSpace.s6),
+                      padding: const EdgeInsets.only(top: ClSpace.s3),
                       child: duty!,
                     ),
                 ],

@@ -107,6 +107,8 @@ void main() {
           repo: StampingRhythmRepository(preferences: personalized()),
         ),
       );
+      await tester.ensureVisible(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
       final group = find.byKey(const Key('customizeSections'));

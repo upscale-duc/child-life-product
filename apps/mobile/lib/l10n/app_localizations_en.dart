@@ -20386,7 +20386,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String aiSentNoPush(String name) {
-    return 'Sent to $name in the app, but they haven\'t turned notifications on. Also share through Zalo?';
+    return 'Sent the handover to $name in the app. A device notification may not arrive. You can also share it.';
   }
 
   @override
@@ -24251,4 +24251,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String dutyYouSince(String time) {
     return 'You’re caring · since $time';
   }
+
+  @override
+  String get todayOtherAmount => 'Other';
+
+  @override
+  String get todayDiaperBoth => 'Both';
+
+  @override
+  String get todayStartSleep => 'Start sleep';
+
+  @override
+  String get todayViewSession => 'View active session';
+
+  @override
+  String get pv2LoadingPrices => 'Loading Premium prices…';
+
+  @override
+  String get pv2PriceLoadFailed => 'Couldn’t load Premium prices';
+
+  @override
+  String get pv2PriceLoadFailedBody => 'Check your connection and try again.';
 }

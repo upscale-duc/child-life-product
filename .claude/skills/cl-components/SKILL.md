@@ -3,6 +3,9 @@ name: cl-components
 description: Choosing, composing, extending and creating Flutter UI components in Child Life (apps/mobile). Use when picking a widget for a screen, sheet, row, card, notice, button, form field, picker, toast, loading state or media tile; when about to write a new widget class, a private _XxxCard / _XxxRow, a feature-prefixed kit widget, or a Container+BoxDecoration "card"; when changing or adding anything in lib/core/widgets; and when deciding whether to reuse, extend or promote a component. Holds the verified component catalogue, selection trees, the proposed ClCard family spec (not implemented), the missing-component protocol and the duplication / migration audit. Routed from senior-ui-ux; visual values come from cl-design-foundations.
 ---
 
+Visual verification follows `cl-design-review/references/visual-verification.md` → Visual evidence
+policy. Reuse current evidence; selecting or reading about a component alone does not require renders.
+
 # Child Life components
 
 **Goal: a better experience for the parent. Reuse is how we get there, not the goal itself.** Use
