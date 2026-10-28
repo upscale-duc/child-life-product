@@ -24291,27 +24291,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String cpStarts(String time, String task) {
-    return 'Starts $time · $task';
-  }
-
-  @override
-  String cpNext(String time, String task) {
-    return 'Next $time · $task';
-  }
-
-  @override
-  String cpLeft(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count left',
-      one: '1 left',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get cpAllDone => 'Everything is done for today';
 
   @override
@@ -24350,11 +24329,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String cpDoneToast(String task) {
     return 'Done · $task';
-  }
-
-  @override
-  String cpDoneBy(String name) {
-    return '$name did it';
   }
 
   @override
@@ -24448,9 +24422,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cpEditTask => 'Edit task';
-
-  @override
   String get cpCustomName => 'Task name';
 
   @override
@@ -24497,9 +24468,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpSuggested => 'Common';
-
-  @override
-  String get cpMoreTasks => 'More';
 
   @override
   String get cpTaskBottle => 'Bottle';
@@ -24762,23 +24730,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cpStartRhythm => 'Follow your baby\'s rhythm';
-
-  @override
-  String get cpStartRhythmSub => 'Feeds and sleep, from the last 7 days logged';
-
-  @override
   String get cpRhythmNotReady =>
       'Not yet 7 days with both feeds and sleep logged';
-
-  @override
-  String get cpTemplatesSection => 'Sample plans (in review)';
-
-  @override
-  String get cpStartBasic => 'Basic plan for your baby\'s age';
-
-  @override
-  String get cpStartBasicSub => 'Feeds, sleep and a few gentle routines';
 
   @override
   String get cpStartEasy35 => 'EASY 3.5';
@@ -24787,24 +24740,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cpStartEasy4 => 'EASY 4';
 
   @override
-  String get cpStartEasySub => 'If your family follows EASY';
-
-  @override
   String get cpTemplatesNote =>
       'Sample plans are not medical schedules. Feeds and sleep can always differ from the plan.';
-
-  @override
-  String get cpChangeTitle => 'Choose another way';
-
-  @override
-  String get cpKeepDraft => 'Keep this draft';
-
-  @override
-  String get cpDraftTitle => 'Draft · nobody is reminded yet';
-
-  @override
-  String get cpDraftBody =>
-      'Edit, add or assign as you like. Use this plan so everyone sees it and gets reminders.';
 
   @override
   String get cpDraftUse => 'Use this plan';
@@ -24824,4 +24761,205 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cpAutoDraftHint =>
       'At 06:30, the way your family last made a plan. The draft is used only once someone taps Use this plan.';
+
+  @override
+  String cpTodayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks today',
+      one: '1 task today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpFirstTask(String time, String task) {
+    return 'First up $time · $task';
+  }
+
+  @override
+  String cpPersonCount(String name, int count) {
+    return '$name · $count';
+  }
+
+  @override
+  String cpPersonDone(String name, int count) {
+    return '$name did $count';
+  }
+
+  @override
+  String cpLeftCheer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Just $count more to go, you\'ve got this!',
+      one: 'Just 1 more to go, you\'ve got this!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpStartSub => 'One tap to start, change it any time';
+
+  @override
+  String cpStartRhythmOf(String name) {
+    return 'Follow $name\'s rhythm';
+  }
+
+  @override
+  String get cpChosen => 'Your pick';
+
+  @override
+  String get cpChosenSub => 'The way your family chose';
+
+  @override
+  String get cpCreateToday => 'Make today\'s plan';
+
+  @override
+  String get cpCreateDay => 'Make the plan';
+
+  @override
+  String cpChooseTitle(String name) {
+    return 'Plan the day for $name';
+  }
+
+  @override
+  String get cpSuggestBadge => 'Suggested';
+
+  @override
+  String get cpRhythmFrom => 'From the last 7 days logged';
+
+  @override
+  String get cpEasySection => 'EASY routines';
+
+  @override
+  String get cpEasy35Sub => '6 weeks – 4 months · 3–4 naps';
+
+  @override
+  String get cpEasy4Sub => '4 – 6 months · 3 naps';
+
+  @override
+  String get cpFitsAge => 'Fits the age';
+
+  @override
+  String get cpOtherSection => 'Other ways';
+
+  @override
+  String get cpByAge => 'By age';
+
+  @override
+  String cpByAgeSub(String age) {
+    return 'A usual day at $age';
+  }
+
+  @override
+  String get cpSelfMade => 'Make your own';
+
+  @override
+  String get cpSelfMadeSub => 'Set your own times and tasks';
+
+  @override
+  String get cpPreview => 'Preview the plan';
+
+  @override
+  String get cpTodayPlan => 'Today\'s plan';
+
+  @override
+  String cpDraftHeading(String name) {
+    return 'Suggested for $name';
+  }
+
+  @override
+  String get cpDraftFromRhythm => 'From the last 7 days';
+
+  @override
+  String cpDraftFrom(String way) {
+    return 'From $way';
+  }
+
+  @override
+  String get cpChangeShort => 'Change';
+
+  @override
+  String get cpDraftNote => 'Times are a guide; your baby leads';
+
+  @override
+  String cpTimelineA11y(int feeds, int sleeps) {
+    return 'The day: $feeds feeds, $sleeps sleeps';
+  }
+
+  @override
+  String cpAssignSpan(int count, String from, String to) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks',
+      one: '1 task',
+    );
+    return '$_temp0 · $from – $to';
+  }
+
+  @override
+  String cpMemberLine(String relation, String load) {
+    return '$relation · $load';
+  }
+
+  @override
+  String get cpManyPeople => 'Several people';
+
+  @override
+  String get cpManyPeopleGroup => 'Pick someone for each task';
+
+  @override
+  String get cpManyPeopleTask => 'Do this task together';
+
+  @override
+  String get cpAddToPlan => 'Add to the plan';
+
+  @override
+  String get cpSearchTask => 'Find a task, e.g. medicine';
+
+  @override
+  String cpSuggestedFor(String age) {
+    return 'Common at $age';
+  }
+
+  @override
+  String get cpCatFood => 'Food and drink';
+
+  @override
+  String get cpCatPlay => 'Play and movement';
+
+  @override
+  String get cpCatCare => 'Health and hygiene';
+
+  @override
+  String get cpCreateOwn => 'Create your own';
+
+  @override
+  String get cpNoTaskFound => 'No task matches. Create your own.';
+
+  @override
+  String cpShiftOf(String period) {
+    return '$period';
+  }
+
+  @override
+  String get cpDoer => 'Who';
+
+  @override
+  String get cpApply => 'Repeat';
+
+  @override
+  String get cpSkipOk => 'Fine to skip it today';
+
+  @override
+  String get cpSkipShort => 'Skip';
+
+  @override
+  String get cpUnskipShort => 'Undo skip';
+
+  @override
+  String get cpDeleteShort => 'Delete';
 }

@@ -38274,24 +38274,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, other{{count} việc}}'**
   String cpDayTasks(int count);
 
-  /// Cùng Chăm Con summary before anything is done: the first task. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bắt đầu {time} · {task}'**
-  String cpStarts(String time, String task);
-
-  /// Cùng Chăm Con summary once something is done: the next open task. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếp theo {time} · {task}'**
-  String cpNext(String time, String task);
-
-  /// Cùng Chăm Con summary: open tasks left today. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'{count, plural, other{Còn {count} việc}}'**
-  String cpLeft(int count);
-
   /// Cùng Chăm Con summary when every task is done or skipped. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
@@ -38325,7 +38307,7 @@ abstract class AppLocalizations {
   /// Cùng Chăm Con: give every task of this group (Sáng / Chiều / Tối) to the same people. A group is not a shift (D-135). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Giao cả buổi'**
+  /// **'Giao cả ca'**
   String get cpAssignGroup;
 
   /// Cùng Chăm Con: add a task (button, sheet title). EN is an engineering draft for owner review.
@@ -38357,12 +38339,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã làm · {task}'**
   String cpDoneToast(String task);
-
-  /// Cùng Chăm Con task line when done, who did it (may differ from who was assigned). EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'{name} đã làm'**
-  String cpDoneBy(String name);
 
   /// Cùng Chăm Con task line when skipped. EN is an engineering draft for owner review.
   ///
@@ -38445,19 +38421,19 @@ abstract class AppLocalizations {
   /// Cùng Chăm Con 05 title, group Sáng. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Giao việc buổi sáng cho ai?'**
+  /// **'Giao ca sáng cho ai?'**
   String get cpAssignWhoMorning;
 
   /// Cùng Chăm Con 05 title, group Chiều. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Giao việc buổi chiều cho ai?'**
+  /// **'Giao ca chiều cho ai?'**
   String get cpAssignWhoAfternoon;
 
   /// Cùng Chăm Con 05 title, group Tối. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Giao việc buổi tối cho ai?'**
+  /// **'Giao ca tối cho ai?'**
   String get cpAssignWhoEvening;
 
   /// Cùng Chăm Con 05 title, one task. EN is an engineering draft for owner review.
@@ -38495,12 +38471,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{first} và {count} người'**
   String cpNamesMore(String first, int count);
-
-  /// Cùng Chăm Con 06b sheet title. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sửa việc'**
-  String get cpEditTask;
 
   /// Cùng Chăm Con 06: the name of a custom task. EN is an engineering draft for owner review.
   ///
@@ -38585,12 +38555,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hay dùng'**
   String get cpSuggested;
-
-  /// Cùng Chăm Con 06: the rest of the tasks. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Việc khác'**
-  String get cpMoreTasks;
 
   /// Cùng Chăm Con task name. EN is an engineering draft for owner review.
   ///
@@ -38964,41 +38928,11 @@ abstract class AppLocalizations {
   /// **'{name} gửi cho cả nhà · {time}'**
   String hoSentToFamily(String name, String time);
 
-  /// Cùng Chăm Con 04-0: a draft from the usual feed and sleep times logged (D-136 #2). EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Theo nhịp của bé'**
-  String get cpStartRhythm;
-
-  /// Cùng Chăm Con 04-0: what "Theo nhịp của bé" is drafted from. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bú và ngủ, từ 7 ngày ghi gần đây'**
-  String get cpStartRhythmSub;
-
   /// Cùng Chăm Con: toast when the rhythm draft cannot be made (D-136 #2). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Chưa đủ 7 ngày có ghi cả bú và ngủ'**
   String get cpRhythmNotReady;
-
-  /// Cùng Chăm Con 04-0: the reference templates, shown on dev only until the owner reviews them (D-136 #1). EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lịch mẫu (chờ duyệt)'**
-  String get cpTemplatesSection;
-
-  /// Cùng Chăm Con 04-0: the age-based template. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lịch cơ bản theo tuổi'**
-  String get cpStartBasic;
-
-  /// Cùng Chăm Con 04-0: what the basic template holds. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bú, ngủ và vài việc nhẹ nhàng'**
-  String get cpStartBasicSub;
 
   /// Cùng Chăm Con 04-0: the EASY 3.5 template (a method name, not translated).
   ///
@@ -39012,41 +38946,11 @@ abstract class AppLocalizations {
   /// **'EASY 4'**
   String get cpStartEasy4;
 
-  /// Cùng Chăm Con 04-0: when an EASY template fits. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Khi nhà mình đang theo EASY'**
-  String get cpStartEasySub;
-
   /// Cùng Chăm Con 04-0: under the templates (FLOW §4). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến.'**
   String get cpTemplatesNote;
-
-  /// Cùng Chăm Con: the ways to start the day, in place of a draft. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đổi cách lên lịch'**
-  String get cpChangeTitle;
-
-  /// Cùng Chăm Con "Đổi cách khác": back to the draft unchanged. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giữ bản nháp này'**
-  String get cpKeepDraft;
-
-  /// Cùng Chăm Con: a drafted day, seen by plan managers only (D-136). EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bản nháp · chưa nhắc ai'**
-  String get cpDraftTitle;
-
-  /// Cùng Chăm Con: what the draft means and what using it does. EN is an engineering draft for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sửa, thêm hay giao việc tuỳ ý. Dùng lịch này để cả nhà thấy và được nhắc.'**
-  String get cpDraftBody;
 
   /// Cùng Chăm Con: put the draft in use (the primary action). EN is an engineering draft for owner review.
   ///
@@ -39083,6 +38987,312 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.'**
   String get cpAutoDraftHint;
+
+  /// Cùng Chăm Con 04: the day card before anything is done (Figma 1380:21966). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Hôm nay có {count} việc}}'**
+  String cpTodayCount(int count);
+
+  /// Cùng Chăm Con 04: the first task of the day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc đầu tiên {time} · {task}'**
+  String cpFirstTask(String time, String task);
+
+  /// Cùng Chăm Con 04: a person and how many tasks they have today.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {count}'**
+  String cpPersonCount(String name, int count);
+
+  /// Cùng Chăm Con 04b: thanks a person for the tasks they did (only people who did some). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} xong {count}'**
+  String cpPersonDone(String name, int count);
+
+  /// Cùng Chăm Con 04b: encouragement once something is done (Figma 1380:22470). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Còn {count} việc nữa thôi, cả nhà cố lên!}}'**
+  String cpLeftCheer(int count);
+
+  /// Cùng Chăm Con 04-0: under "Hôm nay chưa có lịch" (Figma 1390:21780). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhanh trong 1 chạm, sửa sau cũng được'**
+  String get cpStartSub;
+
+  /// Cùng Chăm Con 01 / 04-0: the rhythm draft with the baby's name. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo nhịp {name}'**
+  String cpStartRhythmOf(String name);
+
+  /// Cùng Chăm Con 04-0: badge on the way the family chose before. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn'**
+  String get cpChosen;
+
+  /// Cùng Chăm Con 04-0: under the remembered way. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách cả nhà chọn lúc đầu'**
+  String get cpChosenSub;
+
+  /// Cùng Chăm Con 04-0: primary action. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo lịch hôm nay'**
+  String get cpCreateToday;
+
+  /// Cùng Chăm Con 04-0 / 01c: primary action for another day, or Tự tạo. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo lịch'**
+  String get cpCreateDay;
+
+  /// Cùng Chăm Con 01: the page title (Figma 1377:21908). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lên lịch cho {name}'**
+  String cpChooseTitle(String name);
+
+  /// Cùng Chăm Con 01: badge on "Theo nhịp" (the family's own rhythm). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý'**
+  String get cpSuggestBadge;
+
+  /// Cùng Chăm Con 01: under "Theo nhịp" (D-136 #2: 7 of 7 days). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ 7 ngày ghi nhận'**
+  String get cpRhythmFrom;
+
+  /// Cùng Chăm Con 01: the EASY templates section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo EASY'**
+  String get cpEasySection;
+
+  /// Cùng Chăm Con 01: who EASY 3.5 is for (docs/design/explorations/cung-cham-con/templates-draft.md). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'6 tuần – 4 tháng · 3–4 giấc'**
+  String get cpEasy35Sub;
+
+  /// Cùng Chăm Con 01: who EASY 4 is for (D-136 #4: EASY only under 6 months). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'4 – 6 tháng · 3 giấc'**
+  String get cpEasy4Sub;
+
+  /// Cùng Chăm Con 01: badge on the EASY that fits the baby's age. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hợp tuổi'**
+  String get cpFitsAge;
+
+  /// Cùng Chăm Con 01: the other ways to start the day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get cpOtherSection;
+
+  /// Cùng Chăm Con 01: the age-based template (basic). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuổi'**
+  String get cpByAge;
+
+  /// Cùng Chăm Con 01: under "Theo tuổi"; age is "4 tháng" / "2 tuổi". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếp chuẩn cho bé {age}'**
+  String cpByAgeSub(String age);
+
+  /// Cùng Chăm Con 01: start with no tasks and add them. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự tạo'**
+  String get cpSelfMade;
+
+  /// Cùng Chăm Con 01: under "Tự tạo". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự đặt giờ và việc'**
+  String get cpSelfMadeSub;
+
+  /// Cùng Chăm Con 01: primary action for a way that makes a draft to check first. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước lịch'**
+  String get cpPreview;
+
+  /// Cùng Chăm Con 02: the bar title on a draft day (Figma 1388:21646). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch hôm nay'**
+  String get cpTodayPlan;
+
+  /// Cùng Chăm Con 02: a drafted day, before anyone uses it (D-136). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho {name}'**
+  String cpDraftHeading(String name);
+
+  /// Cùng Chăm Con 02: the draft came from the baby's own rhythm. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo nhịp 7 ngày qua'**
+  String get cpDraftFromRhythm;
+
+  /// Cùng Chăm Con 02: the draft came from a template ("Theo EASY 4", "Theo tuổi"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo {way}'**
+  String cpDraftFrom(String way);
+
+  /// Cùng Chăm Con 02: pick another way for the draft. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi cách'**
+  String get cpChangeShort;
+
+  /// Cùng Chăm Con 02: under the draft, above "Dùng lịch này". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ chỉ là gợi ý, con vẫn dẫn nhịp'**
+  String get cpDraftNote;
+
+  /// Cùng Chăm Con 02: what the day strip shows, for screen readers. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày của bé: {feeds} cữ bú, {sleeps} giấc ngủ'**
+  String cpTimelineA11y(int feeds, int sleeps);
+
+  /// Cùng Chăm Con 05: under "Giao ca sáng cho ai?", the part of the day being given (Figma 1381:22083). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} việc}} · {from} – {to}'**
+  String cpAssignSpan(int count, String from, String to);
+
+  /// Cùng Chăm Con 05: a person's relation and how many tasks they have ("Bà nội · 1 việc hôm nay").
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · {load}'**
+  String cpMemberLine(String relation, String load);
+
+  /// Cùng Chăm Con 05: give the task or the part of the day to more than one person. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhiều người'**
+  String get cpManyPeople;
+
+  /// Cùng Chăm Con 05: under "Nhiều người" for a part of the day: closes the sheet so each task is given on its own. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn người cho từng việc'**
+  String get cpManyPeopleGroup;
+
+  /// Cùng Chăm Con 05: under "Nhiều người" for one task: pick several people. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng làm việc này'**
+  String get cpManyPeopleTask;
+
+  /// Cùng Chăm Con 06: primary action (Figma 1381:22208). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào lịch'**
+  String get cpAddToPlan;
+
+  /// Cùng Chăm Con 06: search field placeholder. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm việc, vd: uống thuốc'**
+  String get cpSearchTask;
+
+  /// Cùng Chăm Con 06: the tasks a child of this age usually has; age is "4 tháng" / "2 tuổi". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hay dùng cho bé {age}'**
+  String cpSuggestedFor(String age);
+
+  /// Cùng Chăm Con 06: task group. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn uống'**
+  String get cpCatFood;
+
+  /// Cùng Chăm Con 06: task group. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chơi & vận động'**
+  String get cpCatPlay;
+
+  /// Cùng Chăm Con 06: task group. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sức khoẻ & vệ sinh'**
+  String get cpCatCare;
+
+  /// Cùng Chăm Con 06: a task with its own name (dashed chip). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo việc riêng'**
+  String get cpCreateOwn;
+
+  /// Cùng Chăm Con 06: the search found nothing. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có việc nào khớp. Tạo việc riêng nhé.'**
+  String get cpNoTaskFound;
+
+  /// Cùng Chăm Con 06b: under the task name ("Ca tối"); period is lower-case Sáng / Chiều / Tối. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ca {period}'**
+  String cpShiftOf(String period);
+
+  /// Cùng Chăm Con 06b: the row with who does the task (Figma 1360:23266). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người làm'**
+  String get cpDoer;
+
+  /// Cùng Chăm Con 06b: today only or every day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng'**
+  String get cpApply;
+
+  /// Cùng Chăm Con 06b: the gentle skip notice. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua hôm nay cũng được'**
+  String get cpSkipOk;
+
+  /// Cùng Chăm Con 06b: skip today (in the notice). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get cpSkipShort;
+
+  /// Cùng Chăm Con 06b: a skipped task is back on today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm lại'**
+  String get cpUnskipShort;
+
+  /// Cùng Chăm Con 06b: delete the task (beside Lưu). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get cpDeleteShort;
 }
 
 class _AppLocalizationsDelegate

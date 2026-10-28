@@ -119,6 +119,13 @@ The coloured card background and corner radius belong to the container in Figma 
 | mini-ruler.svg | Illustration/Mini/Ruler 25:356 | 56×56 | none | **Composed:** the MCP exported only the inner 52×20.8 group. It was rebuilt with the Figma transform `rotate(-10 28 28) translate(2 17.2)`. |
 | mini-wet-dirty.svg | Illustration/Mini/WetDirty 44:303 | 56×56 | none | — |
 | mini-pump.svg | Illustration/Mini/Pump 106:621 | 56×56 | none | — (mask converted to clipPath) |
+| mini-bath.svg | CCC/Art/Bath 1349:22061 | 48×48 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| mini-book.svg | CCC/Art/Book 1349:22070 | 48×48 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| person-ba.svg | CCC/Person/Ba 1349:22028 | 64×64 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| person-me.svg | CCC/Person/Mẹ 1349:22036 | 64×64 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| person-ba-noi.svg | CCC/Person/Bà 1349:22044 | 64×64 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| person-ong.svg | CCC/Person/Ông 1359:23221 | 64×64 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
+| person-helper.svg | CCC/Person/Cô Lan 1349:22053 | 64×64 | none | Cùng Chăm Con; Figma page canvas stripped from the export |
 | care.svg | Illustration/Care 24:221 | 343×408 | card-mint / 36 | Badge text "3" / "chạm" (centred at x≈290). FloatChips: "Bú bình · 120 ml", "Ngủ · 1 giờ 20", "Thay tã · Ướt" |
 | handover.svg | Illustration/Handover 24:251 | 343×408 | card-night #173D44 / 36 | Timer "Đang ngủ" + "01:24:08" (centred at x=171). FloatChips: "Đã đồng bộ", "Bú bình · 80 ml · Mẹ ghi", "Thay tã · Ướt · Ba ghi" |
 | growth-story.svg | Illustration/GrowthStory 24:278 | 343×408 | card-peach #FFA58D / 36 | FloatChips: "Thẻ kỷ niệm tức thì", "Nhật ký tuần 8" |

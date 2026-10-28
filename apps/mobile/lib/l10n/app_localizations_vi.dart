@@ -22935,26 +22935,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String cpStarts(String time, String task) {
-    return 'Bắt đầu $time · $task';
-  }
-
-  @override
-  String cpNext(String time, String task) {
-    return 'Tiếp theo $time · $task';
-  }
-
-  @override
-  String cpLeft(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Còn $count việc',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get cpAllDone => 'Xong hết việc hôm nay';
 
   @override
@@ -22972,7 +22952,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cpEvening => 'Tối';
 
   @override
-  String get cpAssignGroup => 'Giao cả buổi';
+  String get cpAssignGroup => 'Giao cả ca';
 
   @override
   String get cpAddTask => 'Thêm việc';
@@ -22993,11 +22973,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String cpDoneToast(String task) {
     return 'Đã làm · $task';
-  }
-
-  @override
-  String cpDoneBy(String name) {
-    return '$name đã làm';
   }
 
   @override
@@ -23040,13 +23015,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cpStartEmpty => 'Tự thêm việc';
 
   @override
-  String get cpAssignWhoMorning => 'Giao việc buổi sáng cho ai?';
+  String get cpAssignWhoMorning => 'Giao ca sáng cho ai?';
 
   @override
-  String get cpAssignWhoAfternoon => 'Giao việc buổi chiều cho ai?';
+  String get cpAssignWhoAfternoon => 'Giao ca chiều cho ai?';
 
   @override
-  String get cpAssignWhoEvening => 'Giao việc buổi tối cho ai?';
+  String get cpAssignWhoEvening => 'Giao ca tối cho ai?';
 
   @override
   String get cpAssignWhoTask => 'Ai làm việc này?';
@@ -23079,9 +23054,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String cpNamesMore(String first, int count) {
     return '$first và $count người';
   }
-
-  @override
-  String get cpEditTask => 'Sửa việc';
 
   @override
   String get cpCustomName => 'Tên việc';
@@ -23131,9 +23103,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpSuggested => 'Hay dùng';
-
-  @override
-  String get cpMoreTasks => 'Việc khác';
 
   @override
   String get cpTaskBottle => 'Bú bình';
@@ -23389,22 +23358,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get cpStartRhythm => 'Theo nhịp của bé';
-
-  @override
-  String get cpStartRhythmSub => 'Bú và ngủ, từ 7 ngày ghi gần đây';
-
-  @override
   String get cpRhythmNotReady => 'Chưa đủ 7 ngày có ghi cả bú và ngủ';
-
-  @override
-  String get cpTemplatesSection => 'Lịch mẫu (chờ duyệt)';
-
-  @override
-  String get cpStartBasic => 'Lịch cơ bản theo tuổi';
-
-  @override
-  String get cpStartBasicSub => 'Bú, ngủ và vài việc nhẹ nhàng';
 
   @override
   String get cpStartEasy35 => 'EASY 3.5';
@@ -23413,24 +23367,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cpStartEasy4 => 'EASY 4';
 
   @override
-  String get cpStartEasySub => 'Khi nhà mình đang theo EASY';
-
-  @override
   String get cpTemplatesNote =>
       'Lịch mẫu không phải lịch y tế. Bú và ngủ luôn có thể khác dự kiến.';
-
-  @override
-  String get cpChangeTitle => 'Đổi cách lên lịch';
-
-  @override
-  String get cpKeepDraft => 'Giữ bản nháp này';
-
-  @override
-  String get cpDraftTitle => 'Bản nháp · chưa nhắc ai';
-
-  @override
-  String get cpDraftBody =>
-      'Sửa, thêm hay giao việc tuỳ ý. Dùng lịch này để cả nhà thấy và được nhắc.';
 
   @override
   String get cpDraftUse => 'Dùng lịch này';
@@ -23450,4 +23388,202 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get cpAutoDraftHint =>
       'Lúc 06:30, theo cách nhà mình lên lịch gần nhất. Bản nháp chỉ được dùng khi có người chọn Dùng lịch này.';
+
+  @override
+  String cpTodayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hôm nay có $count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpFirstTask(String time, String task) {
+    return 'Việc đầu tiên $time · $task';
+  }
+
+  @override
+  String cpPersonCount(String name, int count) {
+    return '$name · $count';
+  }
+
+  @override
+  String cpPersonDone(String name, int count) {
+    return '$name xong $count';
+  }
+
+  @override
+  String cpLeftCheer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Còn $count việc nữa thôi, cả nhà cố lên!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpStartSub => 'Tạo nhanh trong 1 chạm, sửa sau cũng được';
+
+  @override
+  String cpStartRhythmOf(String name) {
+    return 'Theo nhịp $name';
+  }
+
+  @override
+  String get cpChosen => 'Đã chọn';
+
+  @override
+  String get cpChosenSub => 'Cách cả nhà chọn lúc đầu';
+
+  @override
+  String get cpCreateToday => 'Tạo lịch hôm nay';
+
+  @override
+  String get cpCreateDay => 'Tạo lịch';
+
+  @override
+  String cpChooseTitle(String name) {
+    return 'Lên lịch cho $name';
+  }
+
+  @override
+  String get cpSuggestBadge => 'Gợi ý';
+
+  @override
+  String get cpRhythmFrom => 'Từ 7 ngày ghi nhận';
+
+  @override
+  String get cpEasySection => 'Theo EASY';
+
+  @override
+  String get cpEasy35Sub => '6 tuần – 4 tháng · 3–4 giấc';
+
+  @override
+  String get cpEasy4Sub => '4 – 6 tháng · 3 giấc';
+
+  @override
+  String get cpFitsAge => 'Hợp tuổi';
+
+  @override
+  String get cpOtherSection => 'Khác';
+
+  @override
+  String get cpByAge => 'Theo tuổi';
+
+  @override
+  String cpByAgeSub(String age) {
+    return 'Nếp chuẩn cho bé $age';
+  }
+
+  @override
+  String get cpSelfMade => 'Tự tạo';
+
+  @override
+  String get cpSelfMadeSub => 'Tự đặt giờ và việc';
+
+  @override
+  String get cpPreview => 'Xem trước lịch';
+
+  @override
+  String get cpTodayPlan => 'Lịch hôm nay';
+
+  @override
+  String cpDraftHeading(String name) {
+    return 'Gợi ý cho $name';
+  }
+
+  @override
+  String get cpDraftFromRhythm => 'Theo nhịp 7 ngày qua';
+
+  @override
+  String cpDraftFrom(String way) {
+    return 'Theo $way';
+  }
+
+  @override
+  String get cpChangeShort => 'Đổi cách';
+
+  @override
+  String get cpDraftNote => 'Giờ chỉ là gợi ý, con vẫn dẫn nhịp';
+
+  @override
+  String cpTimelineA11y(int feeds, int sleeps) {
+    return 'Ngày của bé: $feeds cữ bú, $sleeps giấc ngủ';
+  }
+
+  @override
+  String cpAssignSpan(int count, String from, String to) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc',
+    );
+    return '$_temp0 · $from – $to';
+  }
+
+  @override
+  String cpMemberLine(String relation, String load) {
+    return '$relation · $load';
+  }
+
+  @override
+  String get cpManyPeople => 'Nhiều người';
+
+  @override
+  String get cpManyPeopleGroup => 'Chọn người cho từng việc';
+
+  @override
+  String get cpManyPeopleTask => 'Cùng làm việc này';
+
+  @override
+  String get cpAddToPlan => 'Thêm vào lịch';
+
+  @override
+  String get cpSearchTask => 'Tìm việc, vd: uống thuốc';
+
+  @override
+  String cpSuggestedFor(String age) {
+    return 'Hay dùng cho bé $age';
+  }
+
+  @override
+  String get cpCatFood => 'Ăn uống';
+
+  @override
+  String get cpCatPlay => 'Chơi & vận động';
+
+  @override
+  String get cpCatCare => 'Sức khoẻ & vệ sinh';
+
+  @override
+  String get cpCreateOwn => 'Tạo việc riêng';
+
+  @override
+  String get cpNoTaskFound => 'Không có việc nào khớp. Tạo việc riêng nhé.';
+
+  @override
+  String cpShiftOf(String period) {
+    return 'Ca $period';
+  }
+
+  @override
+  String get cpDoer => 'Người làm';
+
+  @override
+  String get cpApply => 'Áp dụng';
+
+  @override
+  String get cpSkipOk => 'Bỏ qua hôm nay cũng được';
+
+  @override
+  String get cpSkipShort => 'Bỏ qua';
+
+  @override
+  String get cpUnskipShort => 'Làm lại';
+
+  @override
+  String get cpDeleteShort => 'Xoá';
 }

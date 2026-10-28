@@ -23,6 +23,7 @@ Future<FakeCarePlanRepository> _pump(
   Set<String> drafts = const {},
   int loggedDays = 0,
   BabyPrivateProfile? profile,
+  CarePlanFamilySettings family = const CarePlanFamilySettings(),
 }) async {
   final repo = FakeCarePlanRepository();
   await pumpRouted(
@@ -43,6 +44,7 @@ Future<FakeCarePlanRepository> _pump(
         repo: repo,
         drafts: drafts,
         loggedDays: loggedDays,
+        family: family,
       ),
     ],
   );
@@ -112,24 +114,40 @@ void main() {
     // Tapping the card opens nothing.
     await tester.tap(find.text(l.cpTaskVitamin));
     await tester.pumpAndSettle();
-    expect(find.text(l.cpEditTask), findsNothing);
+    expect(find.byKey(const Key('cp_editor_save')), findsNothing);
     await _tap(tester, find.byKey(ValueKey('cp_ring_${plan[1].id}')));
     expect(repo.calls.single.$1, 'status');
   });
 
-  testWidgets('04-0: Mẹ starts from yesterday; Cô Lan only waits', (
-    tester,
-  ) async {
+  testWidgets('04-0: Mẹ makes today from yesterday in one tap', (tester) async {
     final repo = await _pump(
       tester,
       days: {'2026-10-27': planFresh()},
       everyday: 2,
     );
     expect(find.text(l.cpEmptyToday), findsOneWidget);
-    await _tap(tester, find.byKey(const ValueKey('cp_start_yesterday')));
+    // Only "Giống hôm qua" to offer: it is picked already.
+    await _tap(tester, find.byKey(const Key('cp_start')));
     _expectCall(repo.calls.single, 'start', {
       'date': carePlanToday,
       'from': 'yesterday',
+    });
+  });
+
+  testWidgets('04-0 leads with the way the family chose ("Đã chọn")', (
+    tester,
+  ) async {
+    final repo = await _pump(
+      tester,
+      days: {'2026-10-27': planFresh()},
+      loggedDays: 7,
+      family: const CarePlanFamilySettings(method: 'rhythm'),
+    );
+    expect(find.text(l.cpChosen), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('cp_start')));
+    _expectCall(repo.calls.single, 'start', {
+      'date': carePlanToday,
+      'from': 'rhythm',
     });
   });
 
@@ -164,29 +182,28 @@ void main() {
     expect(find.text(l.cpAddTask), findsWidgets);
   });
 
-  testWidgets(
-    '05: "Giao cả buổi" needs someone, then gives the whole morning',
-    (tester) async {
-      final plan = planFresh();
-      final repo = await _pump(tester, days: {carePlanToday: plan});
-      await _tap(tester, find.byKey(const ValueKey('cp_assign_morning')));
-      expect(
-        tester
-            .widget<ClButton>(find.byKey(const Key('cp_assign_confirm')))
-            .onPressed,
-        isNull,
-      );
-      await _tap(tester, find.byKey(ValueKey('cp_assign_${lan.uid}')));
-      await _tap(tester, find.byKey(const Key('cp_assign_confirm')));
-      final (name, args) = repo.calls.single;
-      expect(name, 'assign');
-      expect(args['assignees'], [lan.uid]);
-      expect(args['itemIds'], [
-        for (final i in plan)
-          if (i.period == CarePlanPeriod.morning) i.id,
-      ]);
-    },
-  );
+  testWidgets('05: "Giao cả ca" needs someone, then gives the whole morning', (
+    tester,
+  ) async {
+    final plan = planFresh();
+    final repo = await _pump(tester, days: {carePlanToday: plan});
+    await _tap(tester, find.byKey(const ValueKey('cp_assign_morning')));
+    expect(
+      tester
+          .widget<ClButton>(find.byKey(const Key('cp_assign_confirm')))
+          .onPressed,
+      isNull,
+    );
+    await _tap(tester, find.byKey(ValueKey('cp_assign_${lan.uid}')));
+    await _tap(tester, find.byKey(const Key('cp_assign_confirm')));
+    final (name, args) = repo.calls.single;
+    expect(name, 'assign');
+    expect(args['assignees'], [lan.uid]);
+    expect(args['itemIds'], [
+      for (final i in plan)
+        if (i.period == CarePlanPeriod.morning) i.id,
+    ]);
+  });
 
   testWidgets('06b: skip today from the edit sheet; delete an everyday task', (
     tester,
@@ -254,33 +271,39 @@ void main() {
         final el = lookupAppLocalizations(Locale(language));
         await _tap(tester, find.text(el.cpTaskVitamin));
         expect(tester.takeException(), isNull);
-        expect(find.text(el.cpEditTask), findsOneWidget);
+        expect(find.byKey(const Key('cp_editor_save')), findsOneWidget);
       }
     },
   );
 
   // ---------- Step 4 (D-136): how a day's plan is chosen, the draft ----------
 
-  testWidgets('04-0 offers "Theo nhịp của bé" only after 7 logged days', (
-    tester,
-  ) async {
+  testWidgets('01 offers "Theo nhịp" only after 7 logged days', (tester) async {
     await _pump(tester, days: const {}, loggedDays: 6);
-    expect(find.byKey(const ValueKey('cp_start_rhythm')), findsNothing);
+    await _tap(tester, find.byKey(const Key('cp_choose_way')));
+    expect(find.byKey(const ValueKey('cp_way_rhythm')), findsNothing);
     final repo = await _pump(tester, days: const {}, loggedDays: 7);
-    await _tap(tester, find.byKey(const ValueKey('cp_start_rhythm')));
+    await _tap(tester, find.byKey(const Key('cp_choose_way')));
+    // It leads and is picked; it makes a draft, so the action is "Xem trước lịch".
+    expect(find.text(l.cpPreview), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('cp_way_go')));
     _expectCall(repo.calls.single, 'start', {
       'date': carePlanToday,
       'from': 'rhythm',
     });
   });
 
-  testWidgets('04-0: the sample plans (dev, in review) start a draft', (
+  testWidgets('01: the sample plans (dev, in review) start a draft', (
     tester,
   ) async {
     final repo = await _pump(tester, days: const {});
-    expect(find.text(l.cpTemplatesSection), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('cp_choose_way')));
+    expect(find.text(l.cpEasySection), findsOneWidget);
     expect(find.text(l.cpTemplatesNote), findsOneWidget);
-    await _tap(tester, find.byKey(const ValueKey('cp_start_easy4')));
+    // Teddy is 5 weeks old: EASY 3.5 fits the age.
+    expect(find.text(l.cpFitsAge), findsOneWidget);
+    await _tap(tester, find.byKey(const ValueKey('cp_way_easy4')));
+    await _tap(tester, find.byKey(const Key('cp_way_go')));
     _expectCall(repo.calls.single, 'start', {
       'date': carePlanToday,
       'from': 'easy4',
@@ -298,9 +321,11 @@ void main() {
           gender: Gender.boy,
         ),
       );
-      expect(find.byKey(const ValueKey('cp_start_basic')), findsOneWidget);
-      expect(find.byKey(const ValueKey('cp_start_easy35')), findsNothing);
-      expect(find.byKey(const ValueKey('cp_start_easy4')), findsNothing);
+      await _tap(tester, find.byKey(const Key('cp_choose_way')));
+      expect(find.byKey(const ValueKey('cp_way_basic')), findsOneWidget);
+      expect(find.byKey(const ValueKey('cp_way_easy35')), findsNothing);
+      expect(find.byKey(const ValueKey('cp_way_easy4')), findsNothing);
+      expect(find.text(l.cpEasySection), findsNothing);
       expect(
         carePlanAgeMonths(DateTime(2026, 4, 30), DateTime(2026, 10, 28)),
         5,
@@ -321,7 +346,7 @@ void main() {
       days: {carePlanToday: plan},
       drafts: {carePlanToday},
     );
-    expect(find.text(l.cpDraftTitle), findsOneWidget);
+    expect(find.text(l.cpDraftHeading('Teddy')), findsOneWidget);
     expect(find.byKey(ValueKey('cp_ring_${plan.first.id}')), findsNothing);
     // Still editable like any plan.
     expect(find.byKey(const ValueKey('cp_add_morning')), findsOneWidget);
@@ -330,7 +355,7 @@ void main() {
     expect(find.text(l.cpDraftUsed), findsOneWidget);
   });
 
-  testWidgets('"Đổi cách khác" lists the other ways and keeps the draft', (
+  testWidgets('"Đổi cách khác" lists the other ways; back keeps the draft', (
     tester,
   ) async {
     final repo = await _pump(
@@ -340,13 +365,14 @@ void main() {
       loggedDays: 7,
     );
     await _tap(tester, find.byKey(const Key('cp_draft_change')));
-    expect(find.text(l.cpChangeTitle), findsOneWidget);
+    expect(find.text(l.cpChooseTitle('Teddy')), findsOneWidget);
     // The draft was made by rhythm: that way is not offered again.
-    expect(find.byKey(const ValueKey('cp_start_rhythm')), findsNothing);
-    await _tap(tester, find.byKey(const Key('cp_keep_draft')));
-    expect(find.text(l.cpDraftTitle), findsOneWidget);
+    expect(find.byKey(const ValueKey('cp_way_rhythm')), findsNothing);
+    await _tap(tester, find.bySemanticsLabel(l.a11yBack));
+    expect(find.text(l.cpDraftHeading('Teddy')), findsOneWidget);
     await _tap(tester, find.byKey(const Key('cp_draft_change')));
-    await _tap(tester, find.byKey(const ValueKey('cp_start_basic')));
+    await _tap(tester, find.byKey(const ValueKey('cp_way_basic')));
+    await _tap(tester, find.byKey(const Key('cp_way_go')));
     _expectCall(repo.calls.single, 'start', {
       'date': carePlanToday,
       'from': 'basic',
@@ -360,7 +386,7 @@ void main() {
       days: {carePlanToday: planFresh()},
       drafts: {carePlanToday},
     );
-    expect(find.text(l.cpDraftTitle), findsNothing);
+    expect(find.text(l.cpDraftHeading('Teddy')), findsNothing);
     expect(find.text(l.cpEmptyViewer), findsOneWidget);
     expect(find.text(l.cpTaskVitamin), findsNothing);
   });
@@ -395,6 +421,13 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
+        // 01, every way at once.
+        await _tap(
+          tester,
+          find.byKey(Key(drafts.isEmpty ? 'cp_choose_way' : 'cp_draft_change')),
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.byKey(const Key('cp_way_go')), findsOneWidget);
       }
     }
   });

@@ -3,6 +3,7 @@
 ## Source of truth
 
 - **Current UI and copy: the Flutter app** (D-104) — code in `apps/mobile/lib`, ARB in `apps/mobile/lib/l10n`, goldens in `apps/mobile/test/golden/goldens`. New screens are designed in code; no Figma frame is needed, and an outdated Figma look or copy is never restored just because it differs.
+- **D-137 scope:** D-104 applies only to screens already improved in Flutter before Figma caught up. A feature the owner designed in Figma afterwards (e.g. Cùng Chăm Con, section `1349:22026`) is built to match its frames (layout, components, art, copy); list any departure for the owner instead of simplifying it away, unless a D-xxx decision already overrides the frame.
 - **Figma `sJLG1fAXKDnDr9YI6Yx8ex` is history**: the original V1 feature scope and optional context for past decisions. **Read-only**: never call Figma write tools. The MCP is rate-limited per minute — batch reads, back off ~90 s, and prefer the saved extraction in `docs/discovery/figma-extract/`.
 - Owner decisions (D-xxx), rules (R-xxx), proposals (P-xxx), questions (Q-xxx) and gaps (G-xxx) live in `docs/product/business-map.md`; product requirements there stay valid unless superseded. Cite ids in code comments where a rule is enforced.
 - `docs/product/figma-coverage-checklist.md` tracks the historical V1 scope: never mark a row done unless it works end-to-end on dev Firebase, on iOS and Android, Light and Night care, with code and test paths filled in.

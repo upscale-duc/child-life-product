@@ -483,6 +483,10 @@ class CarePlanRemaining extends ConsumerWidget {
               people: i.assignees.isEmpty
                   ? const SizedBox.shrink()
                   : CarePlanPeople(
+                      people: [
+                        for (final u in i.assignees)
+                          ?members.where((m) => m.uid == u).firstOrNull,
+                      ],
                       names: [
                         for (final u in i.assignees)
                           ?carePlanPersonName(l10n, members, u, me.uid),

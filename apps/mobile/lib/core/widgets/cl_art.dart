@@ -26,7 +26,14 @@ enum ClIllustration {
   miniDiaper('mini-diaper'),
   miniRuler('mini-ruler'),
   miniWetDirty('mini-wet-dirty'),
-  miniPump('mini-pump');
+  miniPump('mini-pump'),
+  miniBath('mini-bath'),
+  miniBook('mini-book'),
+  personBa('person-ba'),
+  personMe('person-me'),
+  personBaNoi('person-ba-noi'),
+  personOng('person-ong'),
+  personHelper('person-helper');
 
   const ClIllustration(this.file);
   final String file;
