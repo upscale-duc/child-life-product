@@ -301,6 +301,7 @@ import {
   publishCarePlanDay as runPublishCarePlanDay,
   setCarePlanAutoDraft as runSetCarePlanAutoDraft,
   saveCarePlanItem as runSaveCarePlanItem,
+  onRecordForCarePlan,
   setCarePlanItemStatus as runSetCarePlanItemStatus,
   startCarePlanDay as runStartCarePlanDay,
 } from './care-plan.js';
@@ -837,6 +838,23 @@ export const onCareRecordForRules = onDocumentWritten(
       new Date(),
     );
     if (updated > 0) logger.debug('reminder rules moved', { updated });
+  },
+);
+
+/** D-138: a care log logged in Chăm sóc ticks the matching plan task (±1 hour). */
+export const onCareRecordForCarePlan = onDocumentWritten(
+  'babies/{babyId}/records/{recordId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { itemId } = await onRecordForCarePlan(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    if (itemId) logger.debug('care plan task ticked by a log');
   },
 );
 

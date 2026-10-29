@@ -1,12 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
-import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp, type Firestore } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   assignCarePlanItems,
   dateKeyIn,
   deleteCarePlanItem,
   editableDate,
+  onRecordForCarePlan,
   saveCarePlanItem,
   setCarePlanItemStatus,
   shiftDateKey,
@@ -338,5 +339,41 @@ describe('assigning (05) and the ring', () => {
       'start',
       'undone',
     ]);
+  });
+});
+
+describe('D-138: a log in Chăm sóc ticks the plan', () => {
+  beforeEach(async () => {
+    await startCarePlanDay(db, 'mom', { babyId, date: today, from: 'empty' }, now);
+    await saveCarePlanItem(db, 'mom', item(1, { time: '07:00' }), now);
+    await saveCarePlanItem(db, 'mom', item(2, { time: '13:00' }), now);
+    await saveCarePlanItem(db, 'mom', item(3, { time: '07:30', task: 'diaper' }), now);
+  });
+
+  const log = async (rid: string, type: string, at: Date, by = 'dad') => {
+    const ref = db.doc(`babies/${babyId}/records/${rid}`);
+    await ref.set({ type, occurredAt: Timestamp.fromDate(at), createdBy: by, deleted: false });
+    return onRecordForCarePlan(db, babyId, null, await ref.get(), now);
+  };
+
+  it('a bottle at 07:40 ticks the 07:00 bottle (not the diaper, not 13:00), done by who logged', async () => {
+    expect(await log('r1', 'bottle', vn(28, 7, 40))).toEqual({ itemId: id(1) });
+    const byId = Object.fromEntries((await items()).map((i) => [i.id, i]));
+    expect(byId[id(1)]).toMatchObject({ status: 'done', doneBy: 'dad', recordId: 'r1' });
+    expect(byId[id(2)]!.status).toBe('open');
+    expect(byId[id(3)]!.status).toBe('open');
+    expect((await history()).at(-1)).toMatchObject({ action: 'done', by: 'dad' });
+  });
+
+  it('more than an hour away, or a log from the plan itself, ticks nothing more', async () => {
+    expect(await log('r2', 'bottle', vn(28, 10, 0))).toEqual({ itemId: null });
+    // Ba ticked the 07:00 bottle from the plan; its log must not tick another one.
+    await setCarePlanItemStatus(
+      db,
+      'dad',
+      { babyId, date: today, itemId: id(1), status: 'done' },
+      now,
+    );
+    expect(await log('r3', 'bottle', vn(28, 12, 30))).toEqual({ itemId: null });
   });
 });

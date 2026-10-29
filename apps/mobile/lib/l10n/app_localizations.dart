@@ -39528,55 +39528,55 @@ abstract class AppLocalizations {
   /// **'Huy hiệu tuần này'**
   String get cpBadgesWeek;
 
-  /// Cùng Chăm Con 11 badge: 3 baths in a week (draft rule, owner review). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 3 baths in a week (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Siêu tắm'**
   String get cpBadgeBath;
 
-  /// Cùng Chăm Con 11 badge: 3 tasks between 22:00 and 05:00 (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 3 tasks between 22:00 and 05:00 (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Cú đêm'**
   String get cpBadgeNight;
 
-  /// Cùng Chăm Con 11 badge: 3 reading tasks (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 3 reading tasks (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Kể chuyện'**
   String get cpBadgeStory;
 
-  /// Cùng Chăm Con 11 badge: 10 feeds (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 10 feeds (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Bình sữa vàng'**
   String get cpBadgeBottle;
 
-  /// Cùng Chăm Con 11 badge: 10 diapers (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 10 diapers (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Tã thần tốc'**
   String get cpBadgeDiaper;
 
-  /// Cùng Chăm Con 11 badge: a grandparent did 5 tasks (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: a grandparent did 5 tasks (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Ông bà siêu sao'**
   String get cpBadgeGrand;
 
-  /// Cùng Chăm Con 11 badge: 7 days with every task on rhythm (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 7 days with every task on rhythm (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Đúng giờ 7 ngày'**
   String get cpBadgeOnTime;
 
-  /// Cùng Chăm Con 11 badge: 3 people did 3 tasks each (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: 3 people did 3 tasks each (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Đồng đội ăn ý'**
   String get cpBadgeTeam;
 
-  /// Cùng Chăm Con 11 badge: vitamin 7 days (draft rule). EN is an engineering draft for owner review.
+  /// Cùng Chăm Con 11 badge: vitamin 7 days (owner-approved rule, D-138). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Vitamin đều đặn'**

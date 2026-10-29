@@ -791,3 +791,89 @@ export async function setCarePlanItemStatus(
     return { status: req.status, doneBy: done ? uid : null };
   });
 }
+
+/** D-138: the plan task a care log stands for. */
+const carePlanTaskOfRecord: Record<string, string> = {
+  bottle: 'bottle',
+  breast: 'breast',
+  pump: 'pump',
+  diaper: 'diaper',
+  sleep: 'sleep',
+};
+
+/** How far from its planned time a log still answers a task (D-138, ±1 hour). */
+export const carePlanLogWindowMin = 60;
+
+/**
+ * D-138: a new care log (logged in Chăm sóc, not from the plan) ticks the open task of the same
+ * kind nearest its time on that day, within ±1 hour, as done by whoever logged it. A task of
+ * that kind this person ticked in the last 5 minutes means the log came from the plan itself,
+ * so nothing else is ticked. Drafts are nobody's to-do and are left alone.
+ */
+export async function onRecordForCarePlan(
+  db: Firestore,
+  babyId: string,
+  before: DocumentSnapshot | null,
+  after: DocumentSnapshot | null,
+  now: Date,
+): Promise<{ itemId: string | null }> {
+  if (before?.exists || !after?.exists || after.get('deleted') === true) return { itemId: null };
+  const task = carePlanTaskOfRecord[after.get('type') as string];
+  const at = after.get('occurredAt');
+  const by = after.get('createdBy');
+  if (!task || !(at instanceof Timestamp) || typeof by !== 'string') return { itemId: null };
+  const baby = await db.doc(`babies/${babyId}`).get();
+  const zone = (baby.get('timeZone.zone') as string | undefined) ?? 'Asia/Ho_Chi_Minh';
+  const date = dateKeyIn(zone, at.toDate());
+  const clock = new Intl.DateTimeFormat('en-GB', {
+    timeZone: zone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+  const [h, m] = clock.format(at.toDate()).split(':').map(Number);
+  const minute = h! * 60 + m!;
+  return db.runTransaction(async (tx) => {
+    const day = await tx.get(dayRef(db, babyId, date));
+    if (!day.exists || day.get('status') === 'draft') return { itemId: null };
+    const items = await tx.get(itemsOf(db, babyId, date).where('task', '==', task));
+    const recent = items.docs.some((d) => {
+      const doneAt = d.get('doneAt');
+      return (
+        d.get('status') === 'done' &&
+        d.get('doneBy') === by &&
+        doneAt instanceof Timestamp &&
+        now.getTime() - doneAt.toMillis() < 5 * 60_000
+      );
+    });
+    if (recent) return { itemId: null };
+    const minuteOf = (t: string) => {
+      const [hh, mm] = t.split(':').map(Number);
+      return hh! * 60 + mm!;
+    };
+    const best = items.docs
+      .filter((d) => d.get('status') === 'open' && d.get('draft') !== true)
+      .map((d) => ({ d, gap: Math.abs(minuteOf(d.get('time') as string) - minute) }))
+      .filter((x) => x.gap <= carePlanLogWindowMin)
+      .sort((a, b) => a.gap - b.gap)[0];
+    if (!best) return { itemId: null };
+    const stamp = Timestamp.fromDate(now);
+    tx.update(best.d.ref, {
+      status: 'done',
+      doneBy: by,
+      doneAt: stamp,
+      recordId: after.id,
+      updatedAt: stamp,
+      updatedBy: by,
+    });
+    bump(tx, day, by, now);
+    record(db, tx, babyId, by, now, {
+      action: 'done',
+      date,
+      itemIds: [best.d.id],
+      task,
+      time: best.d.get('time') as string,
+    });
+    return { itemId: best.d.id };
+  });
+}

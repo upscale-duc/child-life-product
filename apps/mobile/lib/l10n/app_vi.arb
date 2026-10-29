@@ -34759,39 +34759,39 @@
   },
   "cpBadgeBath": "Siêu tắm",
   "@cpBadgeBath": {
-    "description": "Cùng Chăm Con 11 badge: 3 baths in a week (draft rule, owner review). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 3 baths in a week (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeNight": "Cú đêm",
   "@cpBadgeNight": {
-    "description": "Cùng Chăm Con 11 badge: 3 tasks between 22:00 and 05:00 (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 3 tasks between 22:00 and 05:00 (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeStory": "Kể chuyện",
   "@cpBadgeStory": {
-    "description": "Cùng Chăm Con 11 badge: 3 reading tasks (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 3 reading tasks (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeBottle": "Bình sữa vàng",
   "@cpBadgeBottle": {
-    "description": "Cùng Chăm Con 11 badge: 10 feeds (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 10 feeds (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeDiaper": "Tã thần tốc",
   "@cpBadgeDiaper": {
-    "description": "Cùng Chăm Con 11 badge: 10 diapers (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 10 diapers (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeGrand": "Ông bà siêu sao",
   "@cpBadgeGrand": {
-    "description": "Cùng Chăm Con 11 badge: a grandparent did 5 tasks (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: a grandparent did 5 tasks (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeOnTime": "Đúng giờ 7 ngày",
   "@cpBadgeOnTime": {
-    "description": "Cùng Chăm Con 11 badge: 7 days with every task on rhythm (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 7 days with every task on rhythm (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeTeam": "Đồng đội ăn ý",
   "@cpBadgeTeam": {
-    "description": "Cùng Chăm Con 11 badge: 3 people did 3 tasks each (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: 3 people did 3 tasks each (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeVitamin": "Vitamin đều đặn",
   "@cpBadgeVitamin": {
-    "description": "Cùng Chăm Con 11 badge: vitamin 7 days (draft rule). EN is an engineering draft for owner review."
+    "description": "Cùng Chăm Con 11 badge: vitamin 7 days (owner-approved rule, D-138). EN is an engineering draft for owner review."
   },
   "cpBadgeLocked": "{name}, chưa đạt",
   "@cpBadgeLocked": {

@@ -136,7 +136,7 @@ class CarePlanReport {
   }
 }
 
-/// The badges of 11 / 12. Rules are engineering drafts for owner review (D-138).
+/// The badges of 11 / 12 (D-138; rules approved by the owner 2026-10-29).
 enum CarePlanBadge {
   bath,
   night,
@@ -149,7 +149,7 @@ enum CarePlanBadge {
   vitamin,
 }
 
-/// Draft thresholds for a week (D-138, owner review).
+/// Thresholds for the last 7 days (D-138, owner-approved 2026-10-29).
 abstract final class CarePlanBadgeRules {
   static const bath = 3;
   static const night = 3;

@@ -51,7 +51,7 @@ Figma: 11 `1353:22754`, 12 `1382:22199`, nút biểu đồ `1380:22479`, 20 `136
 - Đánh dấu xong hoặc bỏ đánh dấu không phải là sửa lịch, nên không hiện ở đây.
 - **Hoàn tác** có ở thay đổi mới nhất của một việc, nếu đó là thêm việc hoặc đổi giờ, trên hôm nay hoặc hôm qua, và chỉ người quản lý lịch thấy.
 
-## Luật huy hiệu (bản nháp, chờ duyệt)
+## Luật huy hiệu (chủ sản phẩm đã duyệt 29/10/2026)
 
 Tính trên 7 ngày gần nhất. Huy hiệu cá nhân trao cho người làm nhiều nhất trong số người đạt mốc. Code: `apps/mobile/lib/features/care_plan/care_plan_report_calc.dart` › `CarePlanBadgeRules`.
 
@@ -69,7 +69,7 @@ Tính trên 7 ngày gần nhất. Huy hiệu cá nhân trao cho người làm nh
 
 ## Còn lại và giới hạn
 
-- **Ghi ở Chăm sóc không tự đánh dấu xong việc trong lịch.** Chủ sản phẩm không yêu cầu chiều này.
+- **Ghi ở Chăm sóc tự đánh dấu xong việc trong lịch** (chủ sản phẩm duyệt 29/10): bản ghi Bú bình / Bú mẹ / Hút sữa / Tã / Ngủ đánh dấu xong việc cùng loại còn mở gần giờ nhất trong ngày, trong ±1 giờ, người làm là người ghi (`onRecordForCarePlan`). Nếu chính người đó vừa đánh dấu một việc cùng loại trong 5 phút (bản ghi đến từ lịch) thì không đánh dấu thêm.
 - **Bỏ đánh dấu xong không xoá bản ghi.** Muốn xoá thì dùng "Hoàn tác" trên thông báo hoặc xoá ở Lịch sử.
 - **Tim:** hiện 0 cho tới khi có tính năng thả tim (màn 10, bước 5).
 - **"Xem tất cả huy hiệu":** chưa có màn riêng nên chưa hiện liên kết.
