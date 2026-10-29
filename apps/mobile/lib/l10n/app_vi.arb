@@ -34516,5 +34516,403 @@
   "cpPlanSection": "Lịch",
   "@cpPlanSection": {
     "description": "Cùng Chăm Con 13: the family plan settings (plan managers). EN is an engineering draft for owner review."
+  },
+  "cpAmount": "Lượng",
+  "@cpAmount": {
+    "description": "Cùng Chăm Con 06 / 06b: the planned ml of a bottle or pumping (D-138). EN is an engineering draft for owner review."
+  },
+  "cpMl": "{ml} ml",
+  "@cpMl": {
+    "description": "Cùng Chăm Con: an amount in ml on a chip.",
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "cpTaskWithMl": "{task} · {ml} ml",
+  "@cpTaskWithMl": {
+    "description": "Cùng Chăm Con: a task with its planned amount (\"Bú bình · 120 ml\").",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "cpNoAmount": "Chưa định",
+  "@cpNoAmount": {
+    "description": "Cùng Chăm Con 06: no planned amount; the log asks. EN is an engineering draft for owner review."
+  },
+  "cpHistoryFrom": "Việc trong lịch",
+  "@cpHistoryFrom": {
+    "description": "Lịch sử: a finished Cùng Chăm Con task that is not a care log (Tắm, Nằm sấp…), D-138. EN is an engineering draft for owner review."
+  },
+  "cpHistoryFromBy": "Việc trong lịch · {who} làm",
+  "@cpHistoryFromBy": {
+    "description": "Lịch sử: a finished Cùng Chăm Con task and who did it, D-138. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistTitle": "Lịch sử thay đổi",
+  "@cpHistTitle": {
+    "description": "Cùng Chăm Con 20: page title and the 13 row (Figma 1360:23617). EN is an engineering draft for owner review."
+  },
+  "cpHistToday": "Hôm nay",
+  "@cpHistToday": {
+    "description": "Cùng Chăm Con 20: group header. EN is an engineering draft for owner review."
+  },
+  "cpHistYesterday": "Hôm qua",
+  "@cpHistYesterday": {
+    "description": "Cùng Chăm Con 20: group header. EN is an engineering draft for owner review."
+  },
+  "cpHistMoved": "{task} {from} → {to}",
+  "@cpHistMoved": {
+    "description": "Cùng Chăm Con 20: a task moved to another time.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistEdited": "Sửa “{task}” {time}",
+  "@cpHistEdited": {
+    "description": "Cùng Chăm Con 20: a task changed (not its time). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistAdded": "Thêm “{task}” {time}",
+  "@cpHistAdded": {
+    "description": "Cùng Chăm Con 20: a task added. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistDeleted": "Xoá “{task}” {time}",
+  "@cpHistDeleted": {
+    "description": "Cùng Chăm Con 20: a task deleted. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistEveryDay": "mọi ngày",
+  "@cpHistEveryDay": {
+    "description": "Cùng Chăm Con 20: after an add / edit / delete that keeps or removes it every day. EN is an engineering draft for owner review."
+  },
+  "cpHistThatDay": "chỉ ngày đó",
+  "@cpHistThatDay": {
+    "description": "Cùng Chăm Con 20: after a delete of one day. EN is an engineering draft for owner review."
+  },
+  "cpHistAssigned": "Giao “{task}” cho {who}",
+  "@cpHistAssigned": {
+    "description": "Cùng Chăm Con 20: one task given to people. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistAssignedMany": "{count, plural, other{Giao {count} việc cho {who}}}",
+  "@cpHistAssignedMany": {
+    "description": "Cùng Chăm Con 20: a part of the day given at once. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistUnassigned": "Bỏ người làm “{task}”",
+  "@cpHistUnassigned": {
+    "description": "Cùng Chăm Con 20: nobody on the task now. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistSkipped": "Bỏ qua “{task}” {time}",
+  "@cpHistSkipped": {
+    "description": "Cùng Chăm Con 20: a task skipped that day. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistStarted": "Lên lịch {way}",
+  "@cpHistStarted": {
+    "description": "Cùng Chăm Con 20: the day was started a way (\"Lên lịch Giống hôm qua\"). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "way": {
+        "type": "String"
+      }
+    }
+  },
+  "cpHistAutoDraft": "Tự tạo bản nháp buổi sáng",
+  "@cpHistAutoDraft": {
+    "description": "Cùng Chăm Con 20: the morning draft made by Child Life (D-136 #3). EN is an engineering draft for owner review."
+  },
+  "cpHistPublished": "Dùng lịch này",
+  "@cpHistPublished": {
+    "description": "Cùng Chăm Con 20: a draft put in use. EN is an engineering draft for owner review."
+  },
+  "cpHistUndo": "Hoàn tác",
+  "@cpHistUndo": {
+    "description": "Cùng Chăm Con 20: revert this change. EN is an engineering draft for owner review."
+  },
+  "cpHistUndone": "Đã hoàn tác",
+  "@cpHistUndone": {
+    "description": "Cùng Chăm Con 20: toast after Hoàn tác. EN is an engineering draft for owner review."
+  },
+  "cpHistEmpty": "Chưa có thay đổi nào",
+  "@cpHistEmpty": {
+    "description": "Cùng Chăm Con 20: nothing changed in the last 30 days. EN is an engineering draft for owner review."
+  },
+  "cpHistSomeone": "Một người đã rời nhà",
+  "@cpHistSomeone": {
+    "description": "Cùng Chăm Con 20: the author is no longer in the family. EN is an engineering draft for owner review."
+  },
+  "cpReportTitle": "Cùng nhau chăm",
+  "@cpReportTitle": {
+    "description": "Cùng Chăm Con 11: page title (Figma 1353:22754). EN is an engineering draft for owner review."
+  },
+  "cpReportOpen": "Xem báo cáo cùng chăm",
+  "@cpReportOpen": {
+    "description": "Cùng Chăm Con 04: the chart button in the bar (a11y). EN is an engineering draft for owner review."
+  },
+  "cpRangeWeek": "Tuần",
+  "@cpRangeWeek": {
+    "description": "Cùng Chăm Con 11: range. EN is an engineering draft for owner review."
+  },
+  "cpRangeMonth": "Tháng",
+  "@cpRangeMonth": {
+    "description": "Cùng Chăm Con 11: range. EN is an engineering draft for owner review."
+  },
+  "cpRangeYear": "Năm",
+  "@cpRangeYear": {
+    "description": "Cùng Chăm Con 11: range. EN is an engineering draft for owner review."
+  },
+  "cpReportTasks": "{count, plural, other{việc}}",
+  "@cpReportTasks": {
+    "description": "Cùng Chăm Con 11: under the number in the ring. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpReportHearts": "tim",
+  "@cpReportHearts": {
+    "description": "Cùng Chăm Con 11: thanks received (\"48 tim\"); counted once thả tim exists (step 5). EN is an engineering draft for owner review."
+  },
+  "cpReportStreak": "ngày liền",
+  "@cpReportStreak": {
+    "description": "Cùng Chăm Con 11: days in a row with a task done. EN is an engineering draft for owner review."
+  },
+  "cpReportOnTime": "đúng nhịp",
+  "@cpReportOnTime": {
+    "description": "Cùng Chăm Con 11: share of tasks done within 30 minutes of their time. EN is an engineering draft for owner review."
+  },
+  "cpReportEmpty": "Chưa có việc nào xong trong khoảng này",
+  "@cpReportEmpty": {
+    "description": "Cùng Chăm Con 11: nothing done yet. EN is an engineering draft for owner review."
+  },
+  "cpBadgesWeek": "Huy hiệu tuần này",
+  "@cpBadgesWeek": {
+    "description": "Cùng Chăm Con 11: badges section. EN is an engineering draft for owner review."
+  },
+  "cpBadgeBath": "Siêu tắm",
+  "@cpBadgeBath": {
+    "description": "Cùng Chăm Con 11 badge: 3 baths in a week (draft rule, owner review). EN is an engineering draft for owner review."
+  },
+  "cpBadgeNight": "Cú đêm",
+  "@cpBadgeNight": {
+    "description": "Cùng Chăm Con 11 badge: 3 tasks between 22:00 and 05:00 (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeStory": "Kể chuyện",
+  "@cpBadgeStory": {
+    "description": "Cùng Chăm Con 11 badge: 3 reading tasks (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeBottle": "Bình sữa vàng",
+  "@cpBadgeBottle": {
+    "description": "Cùng Chăm Con 11 badge: 10 feeds (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeDiaper": "Tã thần tốc",
+  "@cpBadgeDiaper": {
+    "description": "Cùng Chăm Con 11 badge: 10 diapers (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeGrand": "Ông bà siêu sao",
+  "@cpBadgeGrand": {
+    "description": "Cùng Chăm Con 11 badge: a grandparent did 5 tasks (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeOnTime": "Đúng giờ 7 ngày",
+  "@cpBadgeOnTime": {
+    "description": "Cùng Chăm Con 11 badge: 7 days with every task on rhythm (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeTeam": "Đồng đội ăn ý",
+  "@cpBadgeTeam": {
+    "description": "Cùng Chăm Con 11 badge: 3 people did 3 tasks each (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeVitamin": "Vitamin đều đặn",
+  "@cpBadgeVitamin": {
+    "description": "Cùng Chăm Con 11 badge: vitamin 7 days (draft rule). EN is an engineering draft for owner review."
+  },
+  "cpBadgeLocked": "{name}, chưa đạt",
+  "@cpBadgeLocked": {
+    "description": "Cùng Chăm Con 11: a badge not earned (a11y). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpBadgeBy": "{name}, của {who}",
+  "@cpBadgeBy": {
+    "description": "Cùng Chăm Con 11: who earned a badge (a11y). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShowFamily": "Khoe cả nhà",
+  "@cpShowFamily": {
+    "description": "Cùng Chăm Con 11: primary action, opens the share card. EN is an engineering draft for owner review."
+  },
+  "cpShareTitle": "Chia sẻ",
+  "@cpShareTitle": {
+    "description": "Cùng Chăm Con 12: sheet title (Figma 1382:22199). EN is an engineering draft for owner review."
+  },
+  "cpShareWeek": "Tuần {week}",
+  "@cpShareWeek": {
+    "description": "Cùng Chăm Con 12: the week number on the card.",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "cpShareMonth": "Tháng {month}",
+  "@cpShareMonth": {
+    "description": "Cùng Chăm Con 12: the month on the card.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "cpShareHeadline": "Tuần này cả nhà cùng chăm {name}",
+  "@cpShareHeadline": {
+    "description": "Cùng Chăm Con 12: card headline (week). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShareHeadlineMonth": "Tháng này cả nhà cùng chăm {name}",
+  "@cpShareHeadlineMonth": {
+    "description": "Cùng Chăm Con 12: card headline (month). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShareHeadlineYear": "Năm nay cả nhà cùng chăm {name}",
+  "@cpShareHeadlineYear": {
+    "description": "Cùng Chăm Con 12: card headline (year). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShareThanks": "{count} lời cảm ơn trong nhà tuần này",
+  "@cpShareThanks": {
+    "description": "Cùng Chăm Con 12: hearts line (hidden at 0). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpShareStory": "Story",
+  "@cpShareStory": {
+    "description": "Cùng Chăm Con 12: share the card image as a story."
+  },
+  "cpShareCopy": "Sao chép",
+  "@cpShareCopy": {
+    "description": "Cùng Chăm Con 12: copy the summary text. EN is an engineering draft for owner review."
+  },
+  "cpShareMore": "Khác",
+  "@cpShareMore": {
+    "description": "Cùng Chăm Con 12: the system share sheet. EN is an engineering draft for owner review."
+  },
+  "cpShareCopied": "Đã sao chép",
+  "@cpShareCopied": {
+    "description": "Cùng Chăm Con 12: toast after Sao chép. EN is an engineering draft for owner review."
+  },
+  "cpShareText": "{headline}: {count} việc. {people}",
+  "@cpShareText": {
+    "description": "Cùng Chăm Con 12: the copied summary. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "headline": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "people": {
+        "type": "String"
+      }
+    }
+  },
+  "cpShareFailed": "Chưa chia sẻ được. Thử lại nhé.",
+  "@cpShareFailed": {
+    "description": "Cùng Chăm Con 12: share failed. EN is an engineering draft for owner review."
+  },
+  "cpHistEmptyBody": "Ai sửa, thêm hay giao việc sẽ hiện ở đây.",
+  "@cpHistEmptyBody": {
+    "description": "Cùng Chăm Con 20: empty state body. EN is an engineering draft for owner review."
   }
 }

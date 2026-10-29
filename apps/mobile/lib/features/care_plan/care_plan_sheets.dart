@@ -430,6 +430,9 @@ class _EditorSheetState extends ConsumerState<_EditorSheet> {
       (widget.period ?? CarePlanPeriod.morning).defaultTime;
   late final _who = <String>{...?widget.item?.assignees};
   late bool _everyDay = widget.item?.everyDay ?? false;
+
+  /// D-138: the planned ml of a bottle or pumping; the log opens with it.
+  late int? _ml = widget.item?.amountMl;
   bool _saving = false;
 
   @override
@@ -463,6 +466,7 @@ class _EditorSheetState extends ConsumerState<_EditorSheet> {
                 if (_who.contains(m.uid)) m.uid,
             ],
             everyDay: _everyDay,
+            amountMl: carePlanAmountTasks.contains(_task) ? _ml : null,
           );
       nav.pop();
     } on Object {
@@ -535,6 +539,30 @@ class _EditorSheetState extends ConsumerState<_EditorSheet> {
         ),
       ],
     );
+  }
+
+  /// "Lượng": none (the log asks) or a planned ml, as chips.
+  Widget _amountChips() {
+    final l10n = AppLocalizations.of(context);
+    return Wrap(
+      spacing: ClSpace.s2,
+      runSpacing: ClSpace.s2,
+      children: [
+        for (final ml in <int?>[null, ...carePlanMlPresets, ?_customMl])
+          ClRelationChip(
+            key: ValueKey('cp_ml_${ml ?? 0}'),
+            label: ml == null ? l10n.cpNoAmount : l10n.cpMl(ml),
+            selected: _ml == ml,
+            onTap: () => setState(() => _ml = ml),
+          ),
+      ],
+    );
+  }
+
+  /// A planned ml from before that is not a preset stays choosable.
+  int? get _customMl {
+    final ml = widget.item?.amountMl;
+    return ml == null || carePlanMlPresets.contains(ml) ? null : ml;
   }
 
   Widget _applyChips() {
@@ -676,6 +704,10 @@ class _EditorSheetState extends ConsumerState<_EditorSheet> {
                 Container(height: 1, color: c.separator),
                 const SizedBox(height: ClSpace.s3),
                 _timeRow(),
+                if (carePlanAmountTasks.contains(_task)) ...[
+                  _label(l10n.cpAmount),
+                  _amountChips(),
+                ],
                 _label(l10n.cpWho),
                 Wrap(
                   spacing: ClSpace.s2,
@@ -871,6 +903,12 @@ class _EditorSheetState extends ConsumerState<_EditorSheet> {
                           }
                         },
                       ),
+                      if (carePlanAmountTasks.contains(item.task)) ...[
+                        separator,
+                        row(ClIcons.feed, l10n.cpAmount, const SizedBox()),
+                        _amountChips(),
+                        const SizedBox(height: ClSpace.s3),
+                      ],
                       separator,
                       row(ClIcons.retry, l10n.cpApply, const SizedBox()),
                       _applyChips(),

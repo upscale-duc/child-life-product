@@ -63,6 +63,7 @@ DateTime? carePlanShiftSince(WidgetRef ref, Membership me) {
 
 /// The ring on [item]: done, or open again ("Hoàn tác" by a second tap).
 Future<void> carePlanToggle(
+  BuildContext context,
   WidgetRef ref,
   ClToaster toaster,
   AppLocalizations l10n,
@@ -78,6 +79,7 @@ Future<void> carePlanToggle(
       babyId: me.babyId,
       date: date,
       items: [item],
+      context: context,
     );
   }
   final pend = ref.read(carePlanPendingProvider.notifier)
@@ -290,7 +292,14 @@ class CarePlanMyTasks extends ConsumerWidget {
                     ? l10n.cpMarkOpen(carePlanTaskName(l10n, i))
                     : l10n.cpMarkDone(carePlanTaskName(l10n, i)),
                 onPressed: () => unawaited(
-                  carePlanToggle(ref, ClToaster.of(context), l10n, me, i),
+                  carePlanToggle(
+                    context,
+                    ref,
+                    ClToaster.of(context),
+                    l10n,
+                    me,
+                    i,
+                  ),
                 ),
               ),
             ),
@@ -649,6 +658,7 @@ class CarePlanRemaining extends ConsumerWidget {
                           babyId: me.babyId,
                           date: date,
                           items: [i],
+                          context: context,
                         ),
                       ),
                     )

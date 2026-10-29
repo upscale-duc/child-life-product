@@ -190,6 +190,26 @@ describe('tasks (06, 06b)', () => {
     expect((await day())!.revision).toBe(4);
   });
 
+  it('D-138: a bottle carries its planned ml (kept every day); other tasks cannot', async () => {
+    await saveCarePlanItem(db, 'mom', item(1, { amountMl: 120, scope: 'everyDay' }), now);
+    expect((await items())[0]).toMatchObject({ amountMl: 120 });
+    const t = await db.collection(`babies/${babyId}/carePlanTemplate`).get();
+    expect(t.docs[0]!.get('amountMl')).toBe(120);
+    await expect(
+      saveCarePlanItem(db, 'mom', item(2, { task: 'bath', amountMl: 90 }), now),
+    ).rejects.toThrow();
+  });
+
+  it('20: an edit that moves a task keeps the old time in the history', async () => {
+    await saveCarePlanItem(db, 'mom', item(1), now);
+    await saveCarePlanItem(db, 'mom', item(1, { time: '07:30' }), now);
+    const h = await db
+      .collection(`babies/${babyId}/carePlanHistory`)
+      .where('action', '==', 'edit')
+      .get();
+    expect(h.docs[0]!.data()).toMatchObject({ time: '07:30', oldTime: '07:00', by: 'mom' });
+  });
+
   it('a custom task keeps its title; a known task never stores one', async () => {
     await saveCarePlanItem(db, 'mom', item(1, { task: 'custom', title: 'Nhỏ mũi' }), now);
     await saveCarePlanItem(db, 'mom', item(2, { task: 'bath', title: 'ignored' }), now);

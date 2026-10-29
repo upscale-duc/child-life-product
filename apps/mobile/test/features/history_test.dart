@@ -6,11 +6,13 @@ import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_screens.dart';
 import 'package:child_life/features/care/history_screen.dart';
 import 'package:child_life/features/care/stats_screens.dart';
+import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/care_fixtures.dart';
+import '../helpers/care_plan_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/router_pump.dart';
 
@@ -90,6 +92,42 @@ void main() {
       await tester.pumpAndSettle();
       expect(visits.single.location, Routes.sleepStats);
     });
+
+    testWidgets(
+      'D-138: a finished plan task that is not a log is a row of the day',
+      (tester) async {
+        final bath = planItem(
+          CarePlanTask.bath,
+          '18:30',
+          status: CarePlanStatus.done,
+          doneBy: minh.uid,
+        );
+        final bottle = planItem(
+          CarePlanTask.bottle,
+          '07:00',
+          status: CarePlanStatus.done,
+          doneBy: mai.uid,
+        );
+        await pumpRouted(
+          tester,
+          const HistoryScreen(),
+          overrides: [
+            ...careOverrides(carePlan: false),
+            ...carePlanOverrides(
+              days: {
+                '2026-10-08': [bath, bottle],
+              },
+            ),
+          ],
+        );
+        expect(find.byKey(Key('historyPlan_${bath.id}')), findsOneWidget);
+        // The bottle is in the day as its own record, not twice.
+        expect(find.byKey(Key('historyPlan_${bottle.id}')), findsNothing);
+        await tester.tap(_chip('Bú'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(Key('historyPlan_${bath.id}')), findsNothing);
+      },
+    );
 
     testWidgets('the day strip switches day', (tester) async {
       await pumpRouted(

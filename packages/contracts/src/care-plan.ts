@@ -113,6 +113,10 @@ export type SetCarePlanAutoDraftRequest = z.infer<typeof setCarePlanAutoDraftSch
 export const carePlanMorningWindow = { from: '06:30', until: '11:00' } as const;
 
 /** 06 Thêm việc / 06b Sửa: create or edit one task, for today only or every day. */
+/** D-138: tasks that carry a planned amount (ml), and its upper bound (as a bottle log). */
+export const carePlanAmountTasks: readonly string[] = ['bottle', 'pump'];
+export const carePlanMaxMl = 500;
+
 export const saveCarePlanItemSchema = z
   .object({
     babyId,
@@ -123,9 +127,12 @@ export const saveCarePlanItemSchema = z
     time: carePlanTimeSchema,
     assignees,
     scope: z.enum(['today', 'everyDay']),
+    /** D-138: the ml planned for a bottle or pumping ("Bú bình · 120 ml"); null for others. */
+    amountMl: z.number().int().min(1).max(carePlanMaxMl).nullable().optional(),
   })
   .strict()
-  .refine((r) => (r.task === 'custom' ? r.title !== null : true));
+  .refine((r) => (r.task === 'custom' ? r.title !== null : true))
+  .refine((r) => r.amountMl == null || carePlanAmountTasks.includes(r.task));
 export type SaveCarePlanItemRequest = z.infer<typeof saveCarePlanItemSchema>;
 
 /** 06b: delete a task (today only, or also from every day). */

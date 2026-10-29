@@ -188,6 +188,8 @@ interface HistoryEntry {
   scope?: 'today' | 'everyDay' | null;
   assignees?: string[] | null;
   from?: string | null;
+  /** 20 Lịch sử thay đổi: the time before an edit ("Bú bình 13:00 → 13:30"), for Hoàn tác. */
+  oldTime?: string | null;
 }
 
 function record(
@@ -210,6 +212,7 @@ function record(
     scope: e.scope ?? null,
     assignees: e.assignees ?? null,
     from: e.from ?? null,
+    oldTime: e.oldTime ?? null,
   });
 }
 
@@ -221,6 +224,8 @@ type Seed = {
   time: string;
   assignees: string[];
   templateId: string | null;
+  /** D-138: the planned ml of a bottle or pumping. */
+  amountMl?: number | null;
 };
 
 /** The reference templates are offered on dev only until the owner reviews them (D-136 #1). */
@@ -304,6 +309,7 @@ async function seedsFor(
         time: d.get('time'),
         assignees: d.get('assignees') ?? [],
         templateId: d.id,
+        amountMl: d.get('amountMl') ?? null,
       }));
     }
     case 'yesterday': {
@@ -314,6 +320,7 @@ async function seedsFor(
         time: d.get('time'),
         assignees: d.get('assignees') ?? [],
         templateId: d.get('templateId') ?? null,
+        amountMl: d.get('amountMl') ?? null,
       }));
     }
     case 'empty':
@@ -417,6 +424,7 @@ async function writeDay(
       dueAt: carePlanDueAt(p.zone, p.date, s.time),
       revision: 1,
       assignees: s.assignees.filter((u) => still.has(u)),
+      amountMl: s.amountMl ?? null,
       status: 'open',
       templateId: s.templateId,
       ...(draft ? { draft: true } : {}),
@@ -606,6 +614,7 @@ export async function saveCarePlanItem(
         title,
         time: req.time,
         assignees: req.assignees,
+        amountMl: req.amountMl ?? null,
         updatedAt: at,
         updatedBy: uid,
       });
@@ -627,6 +636,7 @@ export async function saveCarePlanItem(
       dueAt: carePlanDueAt(zone, req.date, req.time),
       revision: moved ? oldRevision + 1 : oldRevision,
       assignees: req.assignees,
+      amountMl: req.amountMl ?? null,
       // Who gave the task to its people ("Mẹ nhờ Ba nhé", Figma 15): kept until they change.
       assignedBy: sameMembers(existing.get('assignees') as string[] | undefined, req.assignees)
         ? (existing.get('assignedBy') ?? null)
@@ -654,6 +664,10 @@ export async function saveCarePlanItem(
       time: req.time,
       scope: req.scope,
       assignees: req.assignees,
+      oldTime:
+        existing.exists && existing.get('time') !== req.time
+          ? (existing.get('time') as string)
+          : null,
     });
     return { itemId: req.itemId, templateId };
   });

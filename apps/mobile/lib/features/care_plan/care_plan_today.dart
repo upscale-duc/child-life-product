@@ -27,6 +27,7 @@ import '../reminders/reminder_screens.dart' show assigneeName;
 import '../rhythm/rhythm_labels.dart' show memberLabel;
 import '../reminders/reminder_notifications.dart'
     show notificationsLaunchAskProvider;
+import 'care_plan_log.dart';
 import 'care_plan_models.dart';
 import 'care_plan_repository.dart';
 import 'care_plan_widgets.dart';
@@ -45,7 +46,9 @@ String carePlanTodayKey(WidgetRef ref, String babyId) {
 }
 
 /// [items] (of [date]) done by this person; one Hoàn tác for one task. The ring answers at once
-/// ([carePlanPendingProvider]); a failed call says so and the task comes back.
+/// ([carePlanPendingProvider]); a failed call says so and the task comes back. With [context],
+/// each task's care log comes first (D-138, [carePlanLogFor]); a log left unsaved leaves its
+/// task open, and a saved log says so itself ("Đã ghi · Bú bình 90 ml").
 Future<void> markCarePlanDone(
   WidgetRef ref,
   ClToaster toaster,
@@ -53,7 +56,19 @@ Future<void> markCarePlanDone(
   required String babyId,
   required String date,
   required List<CarePlanItem> items,
+  BuildContext? context,
 }) async {
+  var logged = false;
+  if (context != null) {
+    final kept = <CarePlanItem>[];
+    for (final i in items) {
+      if (!context.mounted) return;
+      if (carePlanLogType(i.task) != null) logged = true;
+      if (await carePlanLogFor(context, ref, i)) kept.add(i);
+    }
+    items = kept;
+    if (items.isEmpty) return;
+  }
   final repo = ref.read(carePlanRepositoryProvider);
   final pend = ref.read(carePlanPendingProvider.notifier);
   for (final i in items) {
@@ -64,6 +79,8 @@ Future<void> markCarePlanDone(
       for (final i in items)
         repo.setStatus(babyId, date, i.id, CarePlanStatus.done),
     ]);
+    // The log's own "Đã ghi … · Hoàn tác" stays on screen.
+    if (logged) return;
     toaster.show(
       message: items.length == 1
           ? l10n.cpDoneToast(carePlanTaskName(l10n, items.single))
@@ -140,6 +157,7 @@ class CarePlanTodaySection extends ConsumerWidget {
           babyId: me.babyId,
           date: date,
           items: [next],
+          context: context,
         ),
       ),
     );
@@ -513,6 +531,7 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
     _showing = false;
     switch (answer) {
       case _DueAnswer.done:
+        if (!mounted) return;
         await markCarePlanDone(
           ref,
           toaster,
@@ -520,6 +539,7 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
           babyId: me.babyId,
           date: date,
           items: items,
+          context: context,
         );
       case _DueAnswer.later:
         await memory.snooze(keys, now.add(const Duration(minutes: 10)));

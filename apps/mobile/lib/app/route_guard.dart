@@ -40,6 +40,12 @@ abstract final class Routes {
   /// The person's task reminders (N1, D-135 Q5): "Nhắc trước", quiet hours.
   static const carePlanSettings = '/care/together/settings';
 
+  /// 20 Lịch sử thay đổi: who changed the plan, with Hoàn tác.
+  static const carePlanHistory = '/care/together/history';
+
+  /// 11 Cùng nhau chăm: who cared how much, by week, month or year, and badges.
+  static const carePlanReport = '/care/together/report';
+
   /// Rule reminders (v1.0 1a–1h): `/new`, `/{id}`, `/{id}/edit`.
   static const ruleDetail = '/care/reminders/rules';
   static const ruleNew = '/care/reminders/rules/new';

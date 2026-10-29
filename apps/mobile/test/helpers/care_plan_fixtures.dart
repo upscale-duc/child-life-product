@@ -18,6 +18,7 @@ CarePlanItem planItem(
   String? doneBy,
   String? title,
   bool everyDay = false,
+  int? amountMl,
 }) => CarePlanItem(
   id: 'pi_${(++_seq).toRadixString(16).padLeft(32, '0')}',
   task: task,
@@ -27,11 +28,18 @@ CarePlanItem planItem(
   status: status,
   doneBy: doneBy,
   templateId: everyDay ? 'pt_${_seq.toRadixString(16).padLeft(32, '0')}' : null,
+  amountMl: amountMl,
 );
 
 /// 04: ten tasks, nothing done yet (Mai = Mẹ, Minh = Ba, Lan = Cô Lan).
 List<CarePlanItem> planFresh() => sortedPlan([
-  planItem(CarePlanTask.bottle, '07:00', who: [mai.uid], everyDay: true),
+  planItem(
+    CarePlanTask.bottle,
+    '07:00',
+    who: [mai.uid],
+    everyDay: true,
+    amountMl: 120,
+  ),
   planItem(CarePlanTask.sleep, '08:30', who: [lan.uid]),
   planItem(CarePlanTask.vitamin, '09:00', who: [minh.uid], everyDay: true),
   planItem(CarePlanTask.diaper, '10:30', who: [lan.uid]),
@@ -77,9 +85,11 @@ class FakeCarePlanRepository implements CarePlanRepository {
     required String time,
     required List<String> assignees,
     required bool everyDay,
+    int? amountMl,
   }) async => calls.add((
     'save',
     {
+      'amountMl': ?amountMl,
       'itemId': itemId,
       'task': task.name,
       'title': title,
@@ -145,7 +155,11 @@ List<Override> carePlanOverrides({
   Set<String> drafts = const {},
   int? loggedDays,
   CarePlanFamilySettings family = const CarePlanFamilySettings(),
+  List<CarePlanChange>? history,
 }) => [
+  carePlanHistoryProvider.overrideWith(
+    (ref, k) => Stream.value(history ?? planHistory()),
+  ),
   carePlanFamilySettingsProvider.overrideWith(
     (ref, babyId) => Stream.value(family),
   ),
@@ -203,5 +217,121 @@ extension CarePlanItemDraft on CarePlanItem {
     doneBy: doneBy,
     doneAt: doneAt,
     draft: true,
+    amountMl: amountMl,
   );
+}
+
+/// The plan history of the week to 28/10 (newest first): every day Ba bathes Teddy, Bà nội Hoa
+/// reads, Mẹ gives the vitamin and Cô Lan the feeds and diapers, all on time; and this week's
+/// changes (Mẹ moved a feed, Ba added "Đọc sách" every day, Mẹ gave the morning to Cô Lan).
+List<CarePlanChange> planHistory() {
+  final out = <CarePlanChange>[];
+  var n = 0;
+  CarePlanChange ch(
+    String date,
+    String time,
+    String by,
+    String action, {
+    CarePlanTask? task,
+    String? oldTime,
+    String? scope,
+    List<String>? assignees,
+    List<String>? ids,
+    String? from,
+    int lateMin = 0,
+  }) {
+    final d = DateTime.parse(date);
+    final p = time.split(':');
+    // Hồ Chí Minh is UTC+7.
+    final at = DateTime.utc(
+      d.year,
+      d.month,
+      d.day,
+      int.parse(p.first) - 7,
+      int.parse(p.last) + lateMin,
+    );
+    return CarePlanChange(
+      id: 'h${++n}',
+      at: at,
+      by: by,
+      action: action,
+      date: date,
+      itemIds: ids ?? ['pi_$date$time$action'],
+      task: task,
+      time: time,
+      oldTime: oldTime,
+      scope: scope,
+      assignees: assignees,
+      from: from,
+    );
+  }
+
+  for (var day = 22; day <= 28; day++) {
+    final date = '2026-10-$day';
+    if (day < 28) {
+      out
+        ..add(ch(date, '18:30', minh.uid, 'done', task: CarePlanTask.bath))
+        ..add(ch(date, '20:00', hoa.uid, 'done', task: CarePlanTask.read))
+        ..add(ch(date, '13:00', lan.uid, 'done', task: CarePlanTask.bottle))
+        ..add(ch(date, '15:30', lan.uid, 'done', task: CarePlanTask.diaper));
+    }
+    out
+      ..add(ch(date, '07:00', mai.uid, 'done', task: CarePlanTask.bottle))
+      ..add(ch(date, '09:00', mai.uid, 'done', task: CarePlanTask.vitamin))
+      ..add(ch(date, '08:30', lan.uid, 'done', task: CarePlanTask.sleep));
+  }
+  out
+    ..add(
+      ch(
+        '2026-10-28',
+        '06:30',
+        mai.uid,
+        'start',
+        from: 'rhythm',
+        ids: const [],
+      ),
+    )
+    ..add(
+      ch(
+        '2026-10-28',
+        '07:05',
+        mai.uid,
+        'assign',
+        assignees: [lan.uid],
+        ids: const ['a', 'b', 'c'],
+      ),
+    )
+    ..add(
+      ch(
+        '2026-10-28',
+        '08:40',
+        minh.uid,
+        'add',
+        task: CarePlanTask.read,
+        scope: 'everyDay',
+      ),
+    )
+    ..add(
+      ch(
+        '2026-10-28',
+        '13:30',
+        mai.uid,
+        'edit',
+        task: CarePlanTask.bottle,
+        oldTime: '13:00',
+        lateMin: -200,
+      ),
+    )
+    ..add(
+      ch(
+        '2026-10-27',
+        '15:30',
+        mai.uid,
+        'delete',
+        task: CarePlanTask.diaper,
+        scope: 'today',
+      ),
+    );
+  out.sort((a, b) => b.at.compareTo(a.at));
+  return out;
 }

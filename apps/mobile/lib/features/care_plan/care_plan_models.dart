@@ -120,6 +120,7 @@ class CarePlanItem {
     this.doneAt,
     this.draft = false,
     this.assignedBy,
+    this.amountMl,
   });
 
   final String id;
@@ -138,6 +139,9 @@ class CarePlanItem {
   /// Who gave it to [assignees] ("Mẹ nhờ Ba nhé", Figma 15); null for a day started from
   /// yesterday or a template.
   final String? assignedBy;
+
+  /// D-138: the ml planned for a bottle or pumping; the log opens with it.
+  final int? amountMl;
 
   bool get done => status == CarePlanStatus.done;
   bool get skipped => status == CarePlanStatus.skipped;
@@ -161,6 +165,7 @@ class CarePlanItem {
         doneAt: doneAt,
         draft: draft,
         assignedBy: assignedBy,
+        amountMl: amountMl,
       );
 
   static CarePlanItem? fromJson(Map<String, dynamic> d) {
@@ -182,6 +187,7 @@ class CarePlanItem {
       doneAt: (d['doneAt'] as Timestamp?)?.toDate(),
       draft: d['draft'] == true,
       assignedBy: d['assignedBy'] as String?,
+      amountMl: (d['amountMl'] as num?)?.toInt(),
     );
   }
 }
@@ -269,6 +275,10 @@ int carePlanMinutes(String hhmm) {
 const carePlanRhythmDays = 7;
 
 /// The reference templates (D-136 #1), offered on dev only until the owner reviews them.
+/// D-138: tasks that carry a planned amount (mirrors `carePlanAmountTasks`), and presets.
+const carePlanAmountTasks = {CarePlanTask.bottle, CarePlanTask.pump};
+const carePlanMlPresets = [60, 90, 120, 150, 180];
+
 const carePlanTemplateMethods = ['basic', 'easy35', 'easy4'];
 
 /// D-136 #4: EASY fits babies under this many months (mirrors `carePlanEasyMaxMonths`).
@@ -303,4 +313,77 @@ class CarePlanFamilySettings {
         autoDraft: d?['autoDraft'] == true,
         method: d?['method'] as String?,
       );
+}
+
+/// One line of `carePlanHistory` (20 Lịch sử thay đổi, and the report's done tasks): who did
+/// what to the plan, and when. Written only by the plan Functions.
+@immutable
+class CarePlanChange {
+  const CarePlanChange({
+    required this.id,
+    required this.at,
+    required this.by,
+    required this.action,
+    required this.date,
+    this.itemIds = const [],
+    this.task,
+    this.title,
+    this.time,
+    this.oldTime,
+    this.scope,
+    this.assignees,
+    this.from,
+  });
+
+  final String id;
+  final DateTime at;
+
+  /// A uid, or `system` (the morning draft, D-136 #3).
+  final String by;
+
+  /// start · publish · add · edit · delete · assign · done · undone · skip.
+  final String action;
+  final String date;
+  final List<String> itemIds;
+  final CarePlanTask? task;
+  final String? title;
+  final String? time;
+  final String? oldTime;
+
+  /// `today` / `everyDay` for add, edit and delete.
+  final String? scope;
+  final List<String>? assignees;
+
+  /// The way a day was started (start).
+  final String? from;
+
+  static CarePlanChange? fromJson(String id, Map<String, dynamic> d) {
+    final at = d['at'];
+    final by = d['by'];
+    final action = d['action'];
+    final date = d['date'];
+    if (at is! Timestamp ||
+        by is! String ||
+        action is! String ||
+        date is! String) {
+      return null;
+    }
+    return CarePlanChange(
+      id: id,
+      at: at.toDate(),
+      by: by,
+      action: action,
+      date: date,
+      itemIds: [
+        for (final i in (d['itemIds'] as List?) ?? const []) ?i as String?,
+      ],
+      task: CarePlanTask.of(d['task']),
+      title: d['title'] as String?,
+      time: d['time'] as String?,
+      oldTime: d['oldTime'] as String?,
+      scope: d['scope'] as String?,
+      assignees: (d['assignees'] as List?)?.whereType<String>().toList(),
+      from: d['from'] as String?,
+    );
+  }
 }

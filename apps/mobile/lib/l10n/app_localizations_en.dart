@@ -24967,4 +24967,249 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpPlanSection => 'Plan';
+
+  @override
+  String get cpAmount => 'Amount';
+
+  @override
+  String cpMl(int ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String cpTaskWithMl(String task, int ml) {
+    return '$task · $ml ml';
+  }
+
+  @override
+  String get cpNoAmount => 'Not set';
+
+  @override
+  String get cpHistoryFrom => 'From the plan';
+
+  @override
+  String cpHistoryFromBy(String who) {
+    return 'From the plan · done by $who';
+  }
+
+  @override
+  String get cpHistTitle => 'Change history';
+
+  @override
+  String get cpHistToday => 'Today';
+
+  @override
+  String get cpHistYesterday => 'Yesterday';
+
+  @override
+  String cpHistMoved(String task, String from, String to) {
+    return '$task $from → $to';
+  }
+
+  @override
+  String cpHistEdited(String task, String time) {
+    return 'Edited “$task” $time';
+  }
+
+  @override
+  String cpHistAdded(String task, String time) {
+    return 'Added “$task” $time';
+  }
+
+  @override
+  String cpHistDeleted(String task, String time) {
+    return 'Deleted “$task” $time';
+  }
+
+  @override
+  String get cpHistEveryDay => 'every day';
+
+  @override
+  String get cpHistThatDay => 'that day only';
+
+  @override
+  String cpHistAssigned(String task, String who) {
+    return 'Gave “$task” to $who';
+  }
+
+  @override
+  String cpHistAssignedMany(int count, String who) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Gave $count tasks to $who',
+      one: 'Gave 1 task to $who',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpHistUnassigned(String task) {
+    return 'Cleared who does “$task”';
+  }
+
+  @override
+  String cpHistSkipped(String task, String time) {
+    return 'Skipped “$task” $time';
+  }
+
+  @override
+  String cpHistStarted(String way) {
+    return 'Planned the day: $way';
+  }
+
+  @override
+  String get cpHistAutoDraft => 'Made the morning draft';
+
+  @override
+  String get cpHistPublished => 'Used this plan';
+
+  @override
+  String get cpHistUndo => 'Undo';
+
+  @override
+  String get cpHistUndone => 'Undone';
+
+  @override
+  String get cpHistEmpty => 'No changes yet';
+
+  @override
+  String get cpHistSomeone => 'Someone who left';
+
+  @override
+  String get cpReportTitle => 'Caring together';
+
+  @override
+  String get cpReportOpen => 'See the caring report';
+
+  @override
+  String get cpRangeWeek => 'Week';
+
+  @override
+  String get cpRangeMonth => 'Month';
+
+  @override
+  String get cpRangeYear => 'Year';
+
+  @override
+  String cpReportTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tasks',
+      one: 'task',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpReportHearts => 'hearts';
+
+  @override
+  String get cpReportStreak => 'days in a row';
+
+  @override
+  String get cpReportOnTime => 'on rhythm';
+
+  @override
+  String get cpReportEmpty => 'No tasks done in this period yet';
+
+  @override
+  String get cpBadgesWeek => 'This week\'s badges';
+
+  @override
+  String get cpBadgeBath => 'Bath star';
+
+  @override
+  String get cpBadgeNight => 'Night owl';
+
+  @override
+  String get cpBadgeStory => 'Storyteller';
+
+  @override
+  String get cpBadgeBottle => 'Golden bottle';
+
+  @override
+  String get cpBadgeDiaper => 'Diaper dash';
+
+  @override
+  String get cpBadgeGrand => 'Super grandparent';
+
+  @override
+  String get cpBadgeOnTime => 'On time all week';
+
+  @override
+  String get cpBadgeTeam => 'Great team';
+
+  @override
+  String get cpBadgeVitamin => 'Vitamin every day';
+
+  @override
+  String cpBadgeLocked(String name) {
+    return '$name, not yet';
+  }
+
+  @override
+  String cpBadgeBy(String name, String who) {
+    return '$name, earned by $who';
+  }
+
+  @override
+  String get cpShowFamily => 'Share with the family';
+
+  @override
+  String get cpShareTitle => 'Share';
+
+  @override
+  String cpShareWeek(int week) {
+    return 'Week $week';
+  }
+
+  @override
+  String cpShareMonth(int month) {
+    return 'Month $month';
+  }
+
+  @override
+  String cpShareHeadline(String name) {
+    return 'This week the whole family cared for $name';
+  }
+
+  @override
+  String cpShareHeadlineMonth(String name) {
+    return 'This month the whole family cared for $name';
+  }
+
+  @override
+  String cpShareHeadlineYear(String name) {
+    return 'This year the whole family cared for $name';
+  }
+
+  @override
+  String cpShareThanks(int count) {
+    return '$count thank-yous at home this week';
+  }
+
+  @override
+  String get cpShareStory => 'Story';
+
+  @override
+  String get cpShareCopy => 'Copy';
+
+  @override
+  String get cpShareMore => 'More';
+
+  @override
+  String get cpShareCopied => 'Copied';
+
+  @override
+  String cpShareText(String headline, int count, String people) {
+    return '$headline: $count tasks. $people';
+  }
+
+  @override
+  String get cpShareFailed => 'Couldn\'t share. Try again.';
+
+  @override
+  String get cpHistEmptyBody => 'Who edits, adds or gives tasks shows here.';
 }

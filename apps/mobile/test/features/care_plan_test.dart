@@ -89,21 +89,48 @@ void main() {
     'the ring marks a task done (who did it is the server’s) with undo',
     (tester) async {
       final plan = planFresh();
+      final vitamin = plan.firstWhere((i) => i.task == CarePlanTask.vitamin);
       final repo = await _pump(tester, days: {carePlanToday: plan});
-      await _tap(tester, find.byKey(ValueKey('cp_ring_${plan.first.id}')));
+      await _tap(tester, find.byKey(ValueKey('cp_ring_${vitamin.id}')));
       _expectCall(repo.calls.single, 'status', {
-        'itemId': plan.first.id,
+        'itemId': vitamin.id,
         'status': 'done',
       });
-      expect(find.text(l.cpDoneToast(l.cpTaskBottle)), findsOneWidget);
+      expect(find.text(l.cpDoneToast(l.cpTaskVitamin)), findsOneWidget);
       await tester.tap(find.text(l.undo));
       await tester.pumpAndSettle();
       _expectCall(repo.calls.last, 'status', {
-        'itemId': plan.first.id,
+        'itemId': vitamin.id,
         'status': 'open',
       });
     },
   );
+
+  testWidgets(
+    'D-138: a bottle task asks how much first; closing the log leaves it open',
+    (tester) async {
+      final plan = planFresh();
+      final repo = await _pump(tester, days: {carePlanToday: plan});
+      // "Bú bình · 120 ml": the planned amount shows on the task…
+      expect(find.text(l.cpTaskWithMl(l.cpTaskBottle, 120)), findsOneWidget);
+      await _tap(tester, find.byKey(ValueKey('cp_ring_${plan.first.id}')));
+      // …and the bottle log opens with it.
+      expect(find.text('120'), findsWidgets);
+      expect(repo.calls, isEmpty);
+      await tester.tapAt(const Offset(20, 20));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+    },
+  );
+
+  testWidgets('06: a bottle task carries its planned ml', (tester) async {
+    final repo = await _pump(tester, days: {carePlanToday: planFresh()});
+    await _tap(tester, find.byKey(const ValueKey('cp_add_evening')));
+    await _tap(tester, find.byKey(const ValueKey('cp_task_bottle')));
+    await _tap(tester, find.byKey(const ValueKey('cp_ml_150')));
+    await _tap(tester, find.byKey(const Key('cp_editor_save')));
+    expect(repo.calls.single.$2, containsPair('amountMl', 150));
+  });
 
   testWidgets('Người chăm sóc ticks tasks but cannot plan', (tester) async {
     final plan = planFresh();
@@ -115,7 +142,8 @@ void main() {
     await tester.tap(find.text(l.cpTaskVitamin));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('cp_editor_save')), findsNothing);
-    await _tap(tester, find.byKey(ValueKey('cp_ring_${plan[1].id}')));
+    final vitamin = plan.firstWhere((i) => i.task == CarePlanTask.vitamin);
+    await _tap(tester, find.byKey(ValueKey('cp_ring_${vitamin.id}')));
     expect(repo.calls.single.$1, 'status');
   });
 

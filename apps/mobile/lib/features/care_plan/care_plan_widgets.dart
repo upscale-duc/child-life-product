@@ -15,10 +15,13 @@ import '../reminders/reminder_screens.dart' show assigneeName;
 import 'care_plan_models.dart';
 
 /// The task's name: its own title for a custom task, else the catalogue name.
-String carePlanTaskName(AppLocalizations l10n, CarePlanItem item) =>
-    item.task == CarePlanTask.custom && (item.title ?? '').isNotEmpty
-    ? item.title!
-    : carePlanTaskLabel(l10n, item.task);
+String carePlanTaskName(AppLocalizations l10n, CarePlanItem item) {
+  final name = item.task == CarePlanTask.custom && (item.title ?? '').isNotEmpty
+      ? item.title!
+      : carePlanTaskLabel(l10n, item.task);
+  // D-138: "Bú bình · 120 ml" when an amount is planned.
+  return item.amountMl == null ? name : l10n.cpTaskWithMl(name, item.amountMl!);
+}
 
 String carePlanTaskLabel(AppLocalizations l10n, CarePlanTask t) => switch (t) {
   CarePlanTask.bottle => l10n.cpTaskBottle,
@@ -753,5 +756,35 @@ class CarePlanPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// The task's picture alone, without its tinted tile (badges, 11 / 12).
+class CarePlanArtBare extends StatelessWidget {
+  const CarePlanArtBare(this.task, {this.size = 48, super.key});
+
+  final CarePlanTask task;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final art = switch (task) {
+      CarePlanTask.bottle => ClIllustration.miniBottle,
+      CarePlanTask.breast || CarePlanTask.vitamin => ClIllustration.miniDrop,
+      CarePlanTask.pump => ClIllustration.miniPump,
+      CarePlanTask.sleep => ClIllustration.miniMoon,
+      CarePlanTask.diaper => ClIllustration.miniDiaper,
+      CarePlanTask.bath => ClIllustration.miniBath,
+      CarePlanTask.read => ClIllustration.miniBook,
+      _ => null,
+    };
+    if (art == null) {
+      return ClIcon(
+        ClIcons.star,
+        size: size * 0.6,
+        color: context.cl.colors.ink,
+      );
+    }
+    return ClArt(art, width: size, height: size);
   }
 }

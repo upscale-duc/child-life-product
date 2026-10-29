@@ -45,6 +45,12 @@ import '../solids/solids_routes.dart';
 import '../solids/solids_sheet.dart' show openMealSheet;
 import '../solids/solids_state.dart';
 import '../solids/solids_widgets.dart' show SdTag;
+import '../care_plan/care_plan_log.dart' show carePlanLogType;
+import '../care_plan/care_plan_models.dart';
+import '../care_plan/care_plan_repository.dart' show carePlanLiveItemsProvider;
+import '../care_plan/care_plan_widgets.dart'
+    show CarePlanArt, carePlanPersonName, carePlanTaskName;
+import '../family/family_repository.dart' show familyMembersProvider;
 
 /// Filter chips (single-select): Tất cả · Bú · Hút sữa · Ngủ · Tã · Tăng trưởng (20–20d), and
 /// "Ăn dặm" while solids tracking is on (D-085 #3: meal rows from `babies/{b}/meals`; "Tất cả"
@@ -184,6 +190,33 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           ?ref.watch(careTimerProvider((babyId, type))).value,
     ];
     final readOnly = me.role == MemberRole.relative;
+    // D-138: finished plan tasks that are not care logs (Tắm, Nằm sấp…) are rows of the day.
+    // Logs (bú, hút sữa, tã, ngủ) are already here as records.
+    final members =
+        ref.watch(familyMembersProvider(babyId)).value ?? const <Membership>[];
+    final planDone = filter == HistoryFilter.all
+        ? [
+            for (final i
+                in ref
+                        .watch(
+                          carePlanLiveItemsProvider((
+                            babyId,
+                            carePlanDateKey(day),
+                          )),
+                        )
+                        .value ??
+                    const <CarePlanItem>[])
+              if (i.done &&
+                  carePlanLogType(i.task) == null &&
+                  i.task != CarePlanTask.sleep)
+                (
+                  i,
+                  i.doneBy == null
+                      ? null
+                      : carePlanPersonName(l10n, members, i.doneBy!, me.uid),
+                ),
+          ]
+        : const <(CarePlanItem, String?)>[];
 
     final dateLabel = shortDate(context, day);
     final children = <Widget>[
@@ -293,7 +326,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           readOnly: readOnly,
         ),
       );
-    } else if (entries.isEmpty && timers.isEmpty && meals.isEmpty) {
+    } else if (entries.isEmpty &&
+        timers.isEmpty &&
+        meals.isEmpty &&
+        planDone.isEmpty) {
       children.add(
         _EmptyDay(
           filter: filter,
@@ -350,6 +386,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             dayEnd: bounds.end,
             timers: timers.whereType<CareTimer>().toList(),
             meals: meals,
+            planDone: planDone,
+            day: day,
             zone: zone,
             myUid: me.uid,
             now: now,
@@ -899,8 +937,30 @@ List<(DateTime, int, CarePeriod, Widget)> _timelineItems({
   required DateTime now,
   DateTime? dayEnd,
   Iterable<DateTime> laterSleeps = const [],
+  List<(CarePlanItem, String?)> planDone = const [],
+  DateTime? day,
 }) {
   final items = <(DateTime, int, CarePeriod, Widget)>[];
+  for (final (item, who) in planDone) {
+    // When it was ticked; else its planned time on that day.
+    final parts = item.time.split(':');
+    final at =
+        item.doneAt ??
+        (day == null
+            ? now
+            : babyDateBounds(zone, day).start.add(
+                Duration(
+                  hours: int.tryParse(parts.first) ?? 0,
+                  minutes: int.tryParse(parts.last) ?? 0,
+                ),
+              ));
+    items.add((
+      at,
+      1,
+      periodOfHour(inBabyZone(zone, at).hour),
+      _PlanTaskRow(item: item, who: who, at: at, zone: zone),
+    ));
+  }
   for (final e in entries) {
     items.add((
       e.startedBefore ? DateTime.utc(1970) : e.record.occurredAt,
@@ -971,10 +1031,16 @@ class _Timeline extends StatelessWidget {
     required this.now,
     this.dayEnd,
     this.meals = const [],
+    this.planDone = const [],
+    this.day,
   });
 
   /// The end of the shown day: a wake-up after it belongs to the next day.
   final DateTime? dayEnd;
+
+  /// D-138: finished plan tasks that are not care logs, and who did them.
+  final List<(CarePlanItem, String?)> planDone;
+  final DateTime? day;
 
   final List<TimelineEntry> entries;
   final List<CareTimer> timers;
@@ -1019,6 +1085,8 @@ class _Timeline extends StatelessWidget {
       myUid: myUid,
       now: now,
       dayEnd: dayEnd,
+      planDone: planDone,
+      day: day,
     );
     for (final (_, _, period, row) in items) {
       place(period, row);
@@ -1526,6 +1594,83 @@ class _MealTimelineRow extends ConsumerWidget {
                         const SizedBox(height: ClSpace.s1),
                         SdTag.signs(context),
                       ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// D-138: a finished Cùng Chăm Con task that is not a care log ("Tắm · Việc trong lịch · Ba
+/// làm"). Information only: it is changed in the plan.
+class _PlanTaskRow extends StatelessWidget {
+  const _PlanTaskRow({
+    required this.item,
+    required this.who,
+    required this.at,
+    required this.zone,
+  });
+
+  final CarePlanItem item;
+  final String? who;
+  final DateTime at;
+  final String zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final time = DateFormat.Hm(
+      Localizations.localeOf(context).toLanguageTag(),
+    ).format(inBabyZone(zone, at));
+    final title = carePlanTaskName(l10n, item);
+    final detail = who == null || who!.isEmpty
+        ? l10n.cpHistoryFrom
+        : l10n.cpHistoryFromBy(who!);
+    return Semantics(
+      key: Key('historyPlan_${item.id}'),
+      label: '$time, $title, $detail',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: ClSpace.s2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 48,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ClTabularText(
+                    time,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ),
+              ),
+              CarePlanArt(item.task, size: 40),
+              const SizedBox(width: ClSpace.s3),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: cl.text.bodyStrong,
+                      ),
+                      Text(
+                        detail,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ),

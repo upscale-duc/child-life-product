@@ -44,6 +44,20 @@ class CarePlanRepository {
     'updatedAt': FieldValue.serverTimestamp(),
   });
 
+  /// 20 Lịch sử thay đổi / 11 Báo cáo: the plan's changes since [since], newest first.
+  Stream<List<CarePlanChange>> watchHistory(String babyId, DateTime since) =>
+      _db
+          .collection('babies/$babyId/carePlanHistory')
+          .where('at', isGreaterThanOrEqualTo: Timestamp.fromDate(since))
+          .orderBy('at', descending: true)
+          .limit(5000)
+          .snapshots()
+          .map(
+            (s) => [
+              for (final d in s.docs) ?CarePlanChange.fromJson(d.id, d.data()),
+            ],
+          );
+
   /// How many tasks are kept "Mọi ngày" (04-0 offers to start from them).
   Stream<int> watchEverydayCount(String babyId) => _db
       .collection('babies/$babyId/carePlanTemplate')
@@ -87,6 +101,7 @@ class CarePlanRepository {
     required String time,
     required List<String> assignees,
     required bool everyDay,
+    int? amountMl,
   }) => _call('saveCarePlanItem', {
     'babyId': babyId,
     'date': date,
@@ -96,6 +111,7 @@ class CarePlanRepository {
     'time': time,
     'assignees': assignees,
     'scope': everyDay ? 'everyDay' : 'today',
+    if (carePlanAmountTasks.contains(task)) 'amountMl': amountMl,
   });
 
   Future<void> deleteItem(
@@ -172,6 +188,14 @@ final carePlanFamilySettingsProvider =
     StreamProvider.family<CarePlanFamilySettings, String>(
       (ref, babyId) =>
           ref.watch(carePlanRepositoryProvider).watchFamilySettings(babyId),
+    );
+
+typedef CarePlanSince = (String babyId, DateTime since);
+
+final carePlanHistoryProvider =
+    StreamProvider.family<List<CarePlanChange>, CarePlanSince>(
+      (ref, k) =>
+          ref.watch(carePlanRepositoryProvider).watchHistory(k.$1, k.$2),
     );
 
 final carePlanEverydayCountProvider = StreamProvider.family<int, String>(

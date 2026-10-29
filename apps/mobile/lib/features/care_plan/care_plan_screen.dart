@@ -32,6 +32,7 @@ import '../care/history_screen.dart' show weekdayShort;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
+import 'care_plan_log.dart';
 import 'care_plan_models.dart';
 import 'care_plan_repository.dart';
 import 'care_plan_sheets.dart';
@@ -220,13 +221,20 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
         final toaster = ClToaster.of(context);
         final taskName = carePlanTaskName(l10n, item);
         final old = item.status;
+        // D-138: a task that is a care log writes it first; unsaved, the task stays open.
+        if (status == CarePlanStatus.done && old == CarePlanStatus.open) {
+          if (!await carePlanLogFor(context, ref, item) || !mounted) return;
+        }
+        final logged =
+            status == CarePlanStatus.done && carePlanLogType(item.task) != null;
         final pend = ref.read(carePlanPendingProvider.notifier)
           ..set(item.id, status);
         try {
           await ref
               .read(carePlanRepositoryProvider)
               .setStatus(babyId, date, item.id, status);
-          if (status != CarePlanStatus.open) {
+          // A saved log has its own "Đã ghi … · Hoàn tác" on screen.
+          if (status != CarePlanStatus.open && !logged) {
             toaster.show(
               message: status == CarePlanStatus.done
                   ? l10n.cpDoneToast(taskName)
@@ -547,6 +555,13 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
     return CarePlanPage(
       title: l10n.cpTitle,
       actions: [
+        // 11 Cùng nhau chăm (D-138).
+        CarePlanIconButton(
+          key: const Key('cp_report'),
+          icon: ClIcons.chart,
+          semanticLabel: l10n.cpReportOpen,
+          onPressed: () => context.push(Routes.carePlanReport),
+        ),
         // N1: whoever can be given a task sets their own reminders.
         if (carePlanCanComplete(me))
           CarePlanIconButton(

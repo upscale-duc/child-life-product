@@ -24,6 +24,8 @@ import '../features/care/history_screen.dart';
 import '../features/care/stats_screens.dart';
 import '../features/care/timer_models.dart';
 import '../features/care/timer_screens.dart';
+import '../features/care_plan/care_plan_history.dart';
+import '../features/care_plan/care_plan_report.dart';
 import '../features/care_plan/care_plan_screen.dart';
 import '../features/care_plan/care_plan_settings.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
@@ -560,6 +562,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                       _route(
                         path: 'settings',
                         builder: (_, _) => const CarePlanSettingsScreen(),
+                      ),
+                      _route(
+                        path: 'history',
+                        builder: (_, _) => const CarePlanHistoryScreen(),
+                      ),
+                      _route(
+                        path: 'report',
+                        builder: (_, _) => const CarePlanReportScreen(),
                       ),
                     ],
                   ),

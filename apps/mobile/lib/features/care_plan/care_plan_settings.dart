@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_choices.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart' show selectedMembershipProvider;
@@ -166,9 +169,9 @@ class _CarePlanSettingsScreenState
                     unawaited(_save(uid, prefs.copyWith(quietHours: v))),
               ),
           ]),
-          if (manager && autoDraft != null) ...[
-            section(l10n.cpPlanSection),
-            card([
+          section(l10n.cpPlanSection),
+          card([
+            if (manager && autoDraft != null)
               _ToggleRow(
                 key: const Key('cp_auto_draft'),
                 icon: ClIcons.sunrise,
@@ -177,8 +180,28 @@ class _CarePlanSettingsScreenState
                 value: autoDraft,
                 onChanged: (v) => unawaited(_setAuto(member.babyId, v)),
               ),
-            ]),
-          ],
+            // 20 Lịch sử thay đổi.
+            ClPressable(
+              key: const Key('cp_history'),
+              onPressed: () => context.push(Routes.carePlanHistory),
+              semanticLabel: l10n.cpHistTitle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _IconLabel(
+                        icon: ClIcons.journal,
+                        tint: c.mintSoft,
+                        label: l10n.cpHistTitle,
+                      ),
+                    ),
+                    ClIcon(ClIcons.chevronRight, size: 18, color: c.inkMuted),
+                  ],
+                ),
+              ),
+            ),
+          ]),
         ],
       ],
     );

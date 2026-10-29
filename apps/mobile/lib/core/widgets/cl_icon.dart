@@ -18,6 +18,7 @@ enum ClIcons {
   bookmarkFill('bookmark-fill'),
   brandMark('brand-mark'),
   cake,
+  chart,
   camera,
 
   /// NavBar v1.0.1 Chăm sóc tab (engineering icon in the Figma line style).

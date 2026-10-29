@@ -23591,4 +23591,247 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpPlanSection => 'Lịch';
+
+  @override
+  String get cpAmount => 'Lượng';
+
+  @override
+  String cpMl(int ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String cpTaskWithMl(String task, int ml) {
+    return '$task · $ml ml';
+  }
+
+  @override
+  String get cpNoAmount => 'Chưa định';
+
+  @override
+  String get cpHistoryFrom => 'Việc trong lịch';
+
+  @override
+  String cpHistoryFromBy(String who) {
+    return 'Việc trong lịch · $who làm';
+  }
+
+  @override
+  String get cpHistTitle => 'Lịch sử thay đổi';
+
+  @override
+  String get cpHistToday => 'Hôm nay';
+
+  @override
+  String get cpHistYesterday => 'Hôm qua';
+
+  @override
+  String cpHistMoved(String task, String from, String to) {
+    return '$task $from → $to';
+  }
+
+  @override
+  String cpHistEdited(String task, String time) {
+    return 'Sửa “$task” $time';
+  }
+
+  @override
+  String cpHistAdded(String task, String time) {
+    return 'Thêm “$task” $time';
+  }
+
+  @override
+  String cpHistDeleted(String task, String time) {
+    return 'Xoá “$task” $time';
+  }
+
+  @override
+  String get cpHistEveryDay => 'mọi ngày';
+
+  @override
+  String get cpHistThatDay => 'chỉ ngày đó';
+
+  @override
+  String cpHistAssigned(String task, String who) {
+    return 'Giao “$task” cho $who';
+  }
+
+  @override
+  String cpHistAssignedMany(int count, String who) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Giao $count việc cho $who',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpHistUnassigned(String task) {
+    return 'Bỏ người làm “$task”';
+  }
+
+  @override
+  String cpHistSkipped(String task, String time) {
+    return 'Bỏ qua “$task” $time';
+  }
+
+  @override
+  String cpHistStarted(String way) {
+    return 'Lên lịch $way';
+  }
+
+  @override
+  String get cpHistAutoDraft => 'Tự tạo bản nháp buổi sáng';
+
+  @override
+  String get cpHistPublished => 'Dùng lịch này';
+
+  @override
+  String get cpHistUndo => 'Hoàn tác';
+
+  @override
+  String get cpHistUndone => 'Đã hoàn tác';
+
+  @override
+  String get cpHistEmpty => 'Chưa có thay đổi nào';
+
+  @override
+  String get cpHistSomeone => 'Một người đã rời nhà';
+
+  @override
+  String get cpReportTitle => 'Cùng nhau chăm';
+
+  @override
+  String get cpReportOpen => 'Xem báo cáo cùng chăm';
+
+  @override
+  String get cpRangeWeek => 'Tuần';
+
+  @override
+  String get cpRangeMonth => 'Tháng';
+
+  @override
+  String get cpRangeYear => 'Năm';
+
+  @override
+  String cpReportTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpReportHearts => 'tim';
+
+  @override
+  String get cpReportStreak => 'ngày liền';
+
+  @override
+  String get cpReportOnTime => 'đúng nhịp';
+
+  @override
+  String get cpReportEmpty => 'Chưa có việc nào xong trong khoảng này';
+
+  @override
+  String get cpBadgesWeek => 'Huy hiệu tuần này';
+
+  @override
+  String get cpBadgeBath => 'Siêu tắm';
+
+  @override
+  String get cpBadgeNight => 'Cú đêm';
+
+  @override
+  String get cpBadgeStory => 'Kể chuyện';
+
+  @override
+  String get cpBadgeBottle => 'Bình sữa vàng';
+
+  @override
+  String get cpBadgeDiaper => 'Tã thần tốc';
+
+  @override
+  String get cpBadgeGrand => 'Ông bà siêu sao';
+
+  @override
+  String get cpBadgeOnTime => 'Đúng giờ 7 ngày';
+
+  @override
+  String get cpBadgeTeam => 'Đồng đội ăn ý';
+
+  @override
+  String get cpBadgeVitamin => 'Vitamin đều đặn';
+
+  @override
+  String cpBadgeLocked(String name) {
+    return '$name, chưa đạt';
+  }
+
+  @override
+  String cpBadgeBy(String name, String who) {
+    return '$name, của $who';
+  }
+
+  @override
+  String get cpShowFamily => 'Khoe cả nhà';
+
+  @override
+  String get cpShareTitle => 'Chia sẻ';
+
+  @override
+  String cpShareWeek(int week) {
+    return 'Tuần $week';
+  }
+
+  @override
+  String cpShareMonth(int month) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String cpShareHeadline(String name) {
+    return 'Tuần này cả nhà cùng chăm $name';
+  }
+
+  @override
+  String cpShareHeadlineMonth(String name) {
+    return 'Tháng này cả nhà cùng chăm $name';
+  }
+
+  @override
+  String cpShareHeadlineYear(String name) {
+    return 'Năm nay cả nhà cùng chăm $name';
+  }
+
+  @override
+  String cpShareThanks(int count) {
+    return '$count lời cảm ơn trong nhà tuần này';
+  }
+
+  @override
+  String get cpShareStory => 'Story';
+
+  @override
+  String get cpShareCopy => 'Sao chép';
+
+  @override
+  String get cpShareMore => 'Khác';
+
+  @override
+  String get cpShareCopied => 'Đã sao chép';
+
+  @override
+  String cpShareText(String headline, int count, String people) {
+    return '$headline: $count việc. $people';
+  }
+
+  @override
+  String get cpShareFailed => 'Chưa chia sẻ được. Thử lại nhé.';
+
+  @override
+  String get cpHistEmptyBody => 'Ai sửa, thêm hay giao việc sẽ hiện ở đây.';
 }
