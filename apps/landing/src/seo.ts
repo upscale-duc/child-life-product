@@ -25,7 +25,7 @@ export function buildHead(route: Route, content: Content, environment: Environme
     `<link rel="canonical" href="${url}">`,
     `<link rel="alternate" hreflang="vi" href="${origin}${vi.path}">`,
     `<link rel="alternate" hreflang="en" href="${origin}${en.path}">`,
-    `<link rel="alternate" hreflang="x-default" href="${origin}${vi.path}">`,
+    `<link rel="alternate" hreflang="x-default" href="${origin}${en.path}">`,
     `<meta property="og:type" content="website">`,
     `<meta property="og:site_name" content="Child Life">`,
     `<meta property="og:locale" content="${route.locale === 'vi' ? 'vi_VN' : 'en_US'}">`,

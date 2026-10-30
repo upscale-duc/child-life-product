@@ -37,7 +37,7 @@ for (const route of routes) {
   console.log(`prerendered ${route.path}`);
 }
 
-// 404 page = home in Vietnamese with noindex.
+// 404 page = the English home (the root) with noindex.
 const notFound = render('/', environment);
 writeFileSync(
   join(dist, '404.html'),
@@ -56,7 +56,7 @@ const sitemap = [
           `    <xhtml:link rel="alternate" hreflang="${alt.locale}" href="${origin}${alt.path}"/>`,
       )
       .join('\n');
-    return `  <url>\n    <loc>${origin}${route.path}</loc>\n${alts}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}${alternates(route).find((a) => a.locale === 'vi').path}"/>\n  </url>`;
+    return `  <url>\n    <loc>${origin}${route.path}</loc>\n${alts}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}${alternates(route).find((a) => a.locale === 'en').path}"/>\n  </url>`;
   }),
   '</urlset>',
   '',

@@ -12,25 +12,27 @@ export interface Route {
   page: PageId;
 }
 
-/** Every prerendered page. Vietnamese lives at the root, English under /en/ (D-012).
- *  Stage slugs are an engineering proposal (15-landing-v3-stages §10). */
+/** Every prerendered page. English lives at the root and Vietnamese under /vi/ (owner,
+ *  2026-10-30; until then Vietnamese was at the root and English under /en/, D-012). The old
+ *  paths redirect in firebase.json. Stage slugs are an engineering proposal
+ *  (15-landing-v3-stages §10). */
 export const routes: Route[] = [
-  { path: '/', locale: 'vi', page: 'home' },
-  { path: '/en/', locale: 'en', page: 'home' },
-  { path: '/hanh-trinh/nhung-ngay-dau-doi/', locale: 'vi', page: 'stage1' },
-  { path: '/en/journey/first-days/', locale: 'en', page: 'stage1' },
-  { path: '/hanh-trinh/con-tap-kham-pha/', locale: 'vi', page: 'stage2' },
-  { path: '/en/journey/exploring/', locale: 'en', page: 'stage2' },
-  { path: '/hanh-trinh/to-mo-va-lon-khon/', locale: 'vi', page: 'stage3' },
-  { path: '/en/journey/curious/', locale: 'en', page: 'stage3' },
-  { path: '/hanh-trinh/the-gioi-rieng-cua-con/', locale: 'vi', page: 'stage4' },
-  { path: '/en/journey/own-world/', locale: 'en', page: 'stage4' },
-  { path: '/lumi/', locale: 'vi', page: 'lumi' },
-  { path: '/en/lumi/', locale: 'en', page: 'lumi' },
-  { path: '/quyen-rieng-tu/', locale: 'vi', page: 'privacy' },
-  { path: '/en/privacy/', locale: 'en', page: 'privacy' },
-  { path: '/dieu-khoan/', locale: 'vi', page: 'terms' },
-  { path: '/en/terms/', locale: 'en', page: 'terms' },
+  { path: '/', locale: 'en', page: 'home' },
+  { path: '/vi/', locale: 'vi', page: 'home' },
+  { path: '/journey/first-days/', locale: 'en', page: 'stage1' },
+  { path: '/vi/hanh-trinh/nhung-ngay-dau-doi/', locale: 'vi', page: 'stage1' },
+  { path: '/journey/exploring/', locale: 'en', page: 'stage2' },
+  { path: '/vi/hanh-trinh/con-tap-kham-pha/', locale: 'vi', page: 'stage2' },
+  { path: '/journey/curious/', locale: 'en', page: 'stage3' },
+  { path: '/vi/hanh-trinh/to-mo-va-lon-khon/', locale: 'vi', page: 'stage3' },
+  { path: '/journey/own-world/', locale: 'en', page: 'stage4' },
+  { path: '/vi/hanh-trinh/the-gioi-rieng-cua-con/', locale: 'vi', page: 'stage4' },
+  { path: '/lumi/', locale: 'en', page: 'lumi' },
+  { path: '/vi/lumi/', locale: 'vi', page: 'lumi' },
+  { path: '/privacy/', locale: 'en', page: 'privacy' },
+  { path: '/vi/quyen-rieng-tu/', locale: 'vi', page: 'privacy' },
+  { path: '/terms/', locale: 'en', page: 'terms' },
+  { path: '/vi/dieu-khoan/', locale: 'vi', page: 'terms' },
 ];
 
 export function isStage(page: PageId): page is StageId {

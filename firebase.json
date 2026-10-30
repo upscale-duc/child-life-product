@@ -22,6 +22,13 @@
       "public": "apps/landing/dist",
       "cleanUrls": true,
       "trailingSlash": true,
+      "redirects": [
+        { "source": "/en{,/}", "destination": "/", "type": 301 },
+        { "source": "/en/:rest*", "destination": "/:rest*/", "type": 301 },
+        { "source": "/hanh-trinh/:rest*", "destination": "/vi/hanh-trinh/:rest*/", "type": 301 },
+        { "source": "/quyen-rieng-tu{,/}", "destination": "/vi/quyen-rieng-tu/", "type": 301 },
+        { "source": "/dieu-khoan{,/}", "destination": "/vi/dieu-khoan/", "type": 301 }
+      ],
       "headers": [
         {
           "source": "**",

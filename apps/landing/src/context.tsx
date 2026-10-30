@@ -5,7 +5,7 @@ import type { Route } from './routes';
 export interface Site {
   c: Content;
   route: Route;
-  /** Home page of the current language ("/" or "/en/"). */
+  /** Home page of the current language ("/" or "/vi/"). */
   homePath: string;
   /** Shows a short message in the page toast. */
   notify: (message: string) => void;

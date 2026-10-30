@@ -58,11 +58,12 @@ describe('content catalogs (D-012)', () => {
 });
 
 describe('routes', () => {
-  it('every page exists in both languages, Vietnamese at the root', () => {
-    for (const page of ['home', ...stageIds, 'privacy', 'terms'] as const) {
-      expect(pathOf(page, 'vi').startsWith('/en/')).toBe(false);
-      expect(pathOf(page, 'en').startsWith('/en/')).toBe(true);
+  it('every page exists in both languages, English at the root', () => {
+    for (const page of ['home', ...stageIds, 'lumi', 'privacy', 'terms'] as const) {
+      expect(pathOf(page, 'vi').startsWith('/vi/')).toBe(true);
+      expect(pathOf(page, 'en').startsWith('/vi/')).toBe(false);
     }
+    expect(routeFor('/').locale).toBe('en');
     for (const route of routes) {
       const other = alternateOf(route, route.locale === 'vi' ? 'en' : 'vi');
       expect(alternateOf(other, route.locale)).toBe(route);
@@ -70,8 +71,9 @@ describe('routes', () => {
   });
 
   it('resolves paths with or without the trailing slash; unknown paths fall back to home', () => {
-    expect(routeFor('/en').path).toBe('/en/');
-    expect(routeFor('/en/privacy').page).toBe('privacy');
+    expect(routeFor('/vi').path).toBe('/vi/');
+    expect(routeFor('/vi/quyen-rieng-tu').page).toBe('privacy');
+    expect(routeFor('/privacy').locale).toBe('en');
     expect(routeFor('/nope/').path).toBe('/');
   });
 });
@@ -85,13 +87,13 @@ describe('SEO head', () => {
   });
 
   it('declares canonical, hreflang alternates and Open Graph per language', () => {
-    const head = buildHead(routeFor('/en/'), en, 'prod');
-    expect(head).toContain('<link rel="canonical" href="https://childlife.app/en/">');
-    expect(head).toContain('hreflang="vi" href="https://childlife.app/"');
-    expect(head).toContain('hreflang="en" href="https://childlife.app/en/"');
+    const head = buildHead(routeFor('/'), en, 'prod');
+    expect(head).toContain('<link rel="canonical" href="https://childlife.app/">');
+    expect(head).toContain('hreflang="vi" href="https://childlife.app/vi/"');
+    expect(head).toContain('hreflang="en" href="https://childlife.app/"');
     expect(head).toContain('hreflang="x-default" href="https://childlife.app/"');
     expect(head).toContain('og:image" content="https://childlife.app/og/en.png?v=4"');
-    const stage = buildHead(routeFor('/hanh-trinh/con-tap-kham-pha/'), viContent, 'prod');
+    const stage = buildHead(routeFor('/vi/hanh-trinh/con-tap-kham-pha/'), viContent, 'prod');
     expect(stage).toContain('og:image" content="https://childlife.app/og/vi-stage2.png?v=4"');
     expect(stage).toContain('<title>Con tập khám phá (1–3 tuổi) — Child Life</title>');
     expect(head).toContain('og:locale" content="en_US"');
@@ -171,12 +173,12 @@ describe('prerender', () => {
     const faq = json['@graph'].find((node: { '@type': string }) => node['@type'] === 'FAQPage');
     expect(faq.mainEntity).toHaveLength(viContent.lumiPage.faq.items.length);
     expect(
-      render('/', 'dev').html.match(new RegExp(`href="${lumi}"`, 'g'))!.length,
+      render('/vi/', 'dev').html.match(new RegExp(`href="${lumi}"`, 'g'))!.length,
     ).toBeGreaterThanOrEqual(2);
   });
 
   it('puts the FAQ answers in the HTML for search engines', () => {
-    const page = render('/en/', 'prod');
+    const page = render('/', 'prod');
     for (const item of en.homePage.trust.faq)
       expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));
   });
