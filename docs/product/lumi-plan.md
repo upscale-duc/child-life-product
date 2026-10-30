@@ -618,7 +618,7 @@ LUM-02 live eval on v2) is not repeated here.
 | L4 next steps + module entries | done 30/10: "Nhắc cữ tiếp" after a feed; "Hỏi Lumi: …" line above today's Lịch sử; sleep/growth/expense cards already open their day, growth panel and Chi tiêu | timer screen: no entry (its Kết thúc / Sửa giờ bắt đầu and L6 already do what Lumi would; owner may still want it); Ăn dặm entry waits for L5 meal writes |
 | L5 writes per module          | meals done 30/10 (Ăn dặm diary, dev); edit/undo partly via L7 | vaccine doses, Mốc, album, recurring reminders; a meal's amount / reaction / photo stay in the app's sheet |
 | L9b model tier                | **not started**                                  | `OPENAI_MODEL_UNDERSTANDING` exists, unset, unmeasured                                    |
-| L9c remove old readers       | part done 30/10: the v8 extraction request (prompt, schema, `buildExtractRequest`) removed; OpenAI reads only with `understand`; `extract` is for scripted fakes | the rule fast path and its guards (`careStatesIn`, `phaseCue`, `timerPlan`, `previousTurnOf`) stay: removing them sends every message to the model (slower, credits) — owner decision |
+| L9c remove old readers       | done 30/10: the v8 extraction request removed (`74c74ff4`); OpenAI reads only with `understand` | — the rule fast path and its guards stay (owner, D-145) |
 
 Tests: 310 e2e cases; `ga-11-rejected-output` fails at every slice and is **not** in
 `known-failures.json` (so the run exits 1); the 18 owner sentences passed live only on the L9
