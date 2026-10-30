@@ -59,6 +59,7 @@ class LocalReminder {
     required this.body,
     required this.payload,
     this.buttons = NotificationButtons.none,
+    this.silent = false,
   });
 
   final int id;
@@ -70,6 +71,9 @@ class LocalReminder {
   final String payload;
 
   final NotificationButtons buttons;
+
+  /// No sound or vibration (L6 in Night care).
+  final bool silent;
 }
 
 /// The buttons a local notification offers. On iOS they are categories registered with the
@@ -253,6 +257,7 @@ class PluginReminderNotifications implements ReminderNotifications {
         channelDescription: l10n.notifChannelDescription,
         importance: Importance.high,
         priority: Priority.high,
+        silent: d.silent,
         actions: switch (d.buttons) {
           NotificationButtons.none => null,
           NotificationButtons.wakeCheck ||
@@ -278,6 +283,8 @@ class PluginReminderNotifications implements ReminderNotifications {
           NotificationButtons.wakeCheck => 'CL_WAKE_CHECK',
           NotificationButtons.wakeCheckLast => 'CL_WAKE_CHECK_LAST',
         },
+        // Without sound the plugin leaves the content's sound empty: no sound, no vibration.
+        presentSound: d.silent ? false : null,
       ),
     ),
     // No exact-alarm permission: a few minutes' slack is fine for "Báo trước".
@@ -298,7 +305,11 @@ Future<void> notificationBackgroundAction(NotificationResponse r) async {
     final prefs = await SharedPreferences.getInstance();
     final at = await wakeCheckSnooze(prefs, r.payload, DateTime.now());
     if (at == null) return;
-    final plan = wakeCheckSecondPlan(r.payload, at);
+    final plan = wakeCheckSecondPlan(
+      r.payload,
+      at,
+      appearanceSettingsOf(prefs),
+    );
     if (plan == null) return;
     // The app's language (G-081), else the device's, as the app itself resolves it.
     final code = prefs.getString('app.locale');
@@ -810,6 +821,11 @@ class _ReminderNotificationSyncState
         final signature = [for (final d in desired) d.payload].join('\n');
         if (signature == _lastSignature) continue;
         await ref.read(reminderNotificationsProvider).sync(desired, l10n);
+        await wakeCheckRememberHint(
+          ref.read(sharedPreferencesProvider),
+          desired,
+          DateTime.now(),
+        );
         if (desired.any((d) => d.id == personalDigestNotificationId)) {
           personalEvent(ref, 'digestScheduled');
         }

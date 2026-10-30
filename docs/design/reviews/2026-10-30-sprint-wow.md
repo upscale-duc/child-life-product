@@ -49,7 +49,9 @@
 - **Vẫn ngủ**: không mở app. Hỏi lại **một lần** sau nửa thời lượng giấc thường của bé (ít nhất 30 phút), và chỉ khi lần đó vẫn chưa sang ban đêm hay giờ yên lặng. Lần hỏi thứ hai không có nút "Vẫn ngủ".
 - Nút chỉ tác động lên đúng giấc đã hỏi. Nếu giấc đó đã kết thúc hoặc đã bắt đầu giấc khác, app chỉ mở màn đếm giờ.
 - **iOS**: các nút được đăng ký cùng chỗ với nút nhắc theo quy tắc (`RuleNotifications.swift`), vì plugin thông báo sẽ xoá các nút đó nếu tự đăng ký. "Vẫn ngủ" chạy trong nền với hai plugin (thông báo, bộ nhớ máy).
-- **Chưa làm**: lần hỏi đầu nhắc rằng có thể tắt trong Cài đặt thông báo; không kêu, không rung khi đang bật Chăm đêm. Chưa thử trên máy thật.
+- **Lần hỏi đầu tiên** trên máy này thêm câu "Tắt lời hỏi này trong Hồ sơ › Thông báo." Chỉ một lần: nếu lời hỏi đó bị huỷ trước khi đến (bé dậy, đã dừng đếm), lần sau vẫn nhắc.
+- **Chăm đêm: không kêu, không rung** khi lời hỏi đến lúc đang chọn giao diện "Tối" hoặc trong lịch Chăm đêm. Không tính "Tự động" (không biết lúc đó máy sáng hay tối) và không tính việc đồng hồ ngủ đang chạy (lúc nào cũng đang chạy).
+- **Đã kiểm tra trên simulator iOS (30/10):** bản build iOS biên dịch được; ba nút được đăng ký (`CL_WAKE_CHECK`, `CL_WAKE_CHECK_LAST`); lời hỏi đầu được lên lịch kèm câu nhắc và hiện đủ trên màn khoá; huỷ đồng hồ thì lời hỏi cũng bị huỷ. **Chưa bấm được ba nút**: simulator không mở được menu nút của thông báo; cần thử trên máy thật.
 
 ## Ghi chú
 

@@ -39768,6 +39768,12 @@ abstract class AppLocalizations {
   /// **'Bé đã ngủ {duration}. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé.'**
   String wcBody(String duration);
 
+  /// L6 body of the first "Bé dậy chưa?" this phone shows (lumi-plan §7.1): wcBody, then where the switch is (EN07 "Hỏi khi đếm giấc ngủ còn chạy"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã ngủ {duration}. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé. Tắt lời hỏi này trong Hồ sơ › Thông báo.'**
+  String wcBodyFirst(String duration);
+
   /// L6 notification button (Android; iOS has the same title in RuleNotifications.swift): ends the sleep timer at the moment it is tapped and opens the app on the saved toast. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

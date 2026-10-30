@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/appearance/appearance.dart';
 import '../../core/appearance/appearance_providers.dart'
-    show sharedPreferencesProvider;
+    show appearanceSettingsProvider, sharedPreferencesProvider;
 import '../../app/session.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
@@ -59,7 +60,49 @@ typedef WakeCheckPlan = ({
   /// For the first ask: how long "Vẫn ngủ" waits, and the latest time it may ask again.
   int againMinutes,
   DateTime? until,
+
+  /// No sound or vibration: Night care at [fireAt].
+  bool silent,
+
+  /// Says where the switch is: the first ask this phone shows.
+  bool hint,
 });
+
+/// "No sound or vibration in Night care" (§7.1), for the time it rings: the "Tối" theme or the
+/// Night care schedule. Not "Tự động" (the system's look at that hour is unknown) nor the running
+/// timer that turns Night care on in the app: a sleep timer always runs here.
+bool wakeCheckSilent(AppearanceSettings s, DateTime at) =>
+    s.theme == ThemePreference.dark ||
+    (s.nightCareScheduleEnabled &&
+        isWithinDailyWindow(s.scheduleStart, s.scheduleEnd, at.toLocal()));
+
+const _hintKey = 'wakeCheck.hinted';
+
+/// Whether the next first ask still says where to turn it off: none was shown yet (the one
+/// remembered by [wakeCheckRememberHint] rings later, or was cancelled before it rang).
+bool wakeCheckHint(SharedPreferences prefs, DateTime now) {
+  final shown = prefs.getInt(_hintKey);
+  return shown == null || shown > now.millisecondsSinceEpoch;
+}
+
+/// After a sync: remembers when the ask with the hint rings, or forgets one that was cancelled
+/// before it rang, so the hint is shown once.
+Future<void> wakeCheckRememberHint(
+  SharedPreferences prefs,
+  Iterable<LocalReminder> scheduled,
+  DateTime now,
+) async {
+  final hinted = [
+    for (final d in scheduled)
+      if (_decode(d.payload)?['h'] == 1) d.fireAt.millisecondsSinceEpoch,
+  ]..sort();
+  final shown = prefs.getInt(_hintKey);
+  if (hinted.isNotEmpty) {
+    if (shown != hinted.first) await prefs.setInt(_hintKey, hinted.first);
+  } else if (shown != null && shown > now.millisecondsSinceEpoch) {
+    await prefs.remove(_hintKey);
+  }
+}
 
 /// The notification buttons (iOS categories in RuleNotifications.swift, same ids).
 const wakeCheckUp = 'WC_UP';
@@ -107,7 +150,11 @@ Future<DateTime?> wakeCheckSnooze(
 }
 
 /// The second ask for the first ask's [payload], once [wakeCheckSnooze] gave its time.
-WakeCheckPlan? wakeCheckSecondPlan(String? payload, DateTime at) {
+WakeCheckPlan? wakeCheckSecondPlan(
+  String? payload,
+  DateTime at,
+  AppearanceSettings appearance,
+) {
   final json = _decode(payload);
   final b = json?['b'], s = json?['s'], st = json?['st'];
   if (b is! String || s is! String || st is! int) return null;
@@ -119,6 +166,8 @@ WakeCheckPlan? wakeCheckSecondPlan(String? payload, DateTime at) {
     second: true,
     againMinutes: 0,
     until: null,
+    silent: wakeCheckSilent(appearance, at),
+    hint: false,
   );
 }
 
@@ -161,7 +210,9 @@ final wakeCheckPlanProvider = Provider.autoDispose<List<WakeCheckPlan>>((ref) {
     if (mine.isEmpty) return const [];
     final prefs = ref.watch(userPreferencesProvider(uid)).value;
     final again = ref.watch(wakeCheckAgainProvider);
+    final appearance = ref.watch(appearanceSettingsProvider);
     final now = DateTime.now();
+    final hint = wakeCheckHint(ref.read(sharedPreferencesProvider), now);
     final out = <WakeCheckPlan>[];
     for (final (m, timer) in mine) {
       final zone =
@@ -179,6 +230,8 @@ final wakeCheckPlanProvider = Provider.autoDispose<List<WakeCheckPlan>>((ref) {
             second: true,
             againMinutes: 0,
             until: null,
+            silent: wakeCheckSilent(appearance, at),
+            hint: false,
           ));
         }
         continue;
@@ -201,6 +254,8 @@ final wakeCheckPlanProvider = Provider.autoDispose<List<WakeCheckPlan>>((ref) {
           second: false,
           againMinutes: times.againMinutes,
           until: times.until,
+          silent: wakeCheckSilent(appearance, times.ask),
+          hint: hint,
         ));
       }
     }
@@ -217,13 +272,17 @@ LocalReminder wakeCheckNotification(AppLocalizations l10n, WakeCheckPlan p) {
     id: wakeCheckNotificationId(p.babyId),
     fireAt: p.fireAt,
     title: l10n.wcTitle,
-    body: l10n.wcBody(durationLabel(l10n, minutes)),
+    body: p.hint
+        ? l10n.wcBodyFirst(durationLabel(l10n, minutes))
+        : l10n.wcBody(durationLabel(l10n, minutes)),
     payload: jsonEncode({
       'k': 'wake_check',
       'b': p.babyId,
       's': p.sessionId,
       'st': p.start.millisecondsSinceEpoch,
       'at': p.fireAt.millisecondsSinceEpoch,
+      if (p.silent) 'q': 1,
+      if (p.hint) 'h': 1,
       if (p.second)
         'n': 2
       else ...{
@@ -234,6 +293,7 @@ LocalReminder wakeCheckNotification(AppLocalizations l10n, WakeCheckPlan p) {
     buttons: p.second
         ? NotificationButtons.wakeCheckLast
         : NotificationButtons.wakeCheck,
+    silent: p.silent,
   );
 }
 

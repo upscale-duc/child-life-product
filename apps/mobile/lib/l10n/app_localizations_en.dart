@@ -25272,6 +25272,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String wcBodyFirst(String duration) {
+    return 'Asleep for $duration. If your baby’s awake, tap to log the wake time. You can turn this off in Profile › Notifications.';
+  }
+
+  @override
   String get wcAwake => 'Awake now';
 
   @override

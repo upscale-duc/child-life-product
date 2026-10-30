@@ -23894,6 +23894,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String wcBodyFirst(String duration) {
+    return 'Bé đã ngủ $duration. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé. Tắt lời hỏi này trong Hồ sơ › Thông báo.';
+  }
+
+  @override
   String get wcAwake => 'Dậy rồi';
 
   @override

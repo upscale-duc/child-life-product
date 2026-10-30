@@ -19,6 +19,27 @@ const _kSchedule = 'appearance.nightCare.enabled';
 const _kStart = 'appearance.nightCare.start';
 const _kEnd = 'appearance.nightCare.end';
 
+/// The stored settings, also read outside the app (L6's background notification handler).
+AppearanceSettings appearanceSettingsOf(SharedPreferences prefs) {
+  const defaults = AppearanceSettings();
+  TimeOfDay? read(String key) {
+    final minutes = prefs.getInt(key);
+    return minutes == null
+        ? null
+        : TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
+  }
+
+  return AppearanceSettings(
+    theme:
+        ThemePreference.values.asNameMap()[prefs.getString(_kTheme)] ??
+        defaults.theme,
+    nightCareScheduleEnabled:
+        prefs.getBool(_kSchedule) ?? defaults.nightCareScheduleEnabled,
+    scheduleStart: read(_kStart) ?? defaults.scheduleStart,
+    scheduleEnd: read(_kEnd) ?? defaults.scheduleEnd,
+  );
+}
+
 final appearanceSettingsProvider =
     NotifierProvider<AppearanceController, AppearanceSettings>(
       AppearanceController.new,
@@ -29,25 +50,7 @@ class AppearanceController extends Notifier<AppearanceSettings> {
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
   @override
-  AppearanceSettings build() {
-    const defaults = AppearanceSettings();
-    TimeOfDay? read(String key) {
-      final minutes = _prefs.getInt(key);
-      return minutes == null
-          ? null
-          : TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
-    }
-
-    return AppearanceSettings(
-      theme:
-          ThemePreference.values.asNameMap()[_prefs.getString(_kTheme)] ??
-          defaults.theme,
-      nightCareScheduleEnabled:
-          _prefs.getBool(_kSchedule) ?? defaults.nightCareScheduleEnabled,
-      scheduleStart: read(_kStart) ?? defaults.scheduleStart,
-      scheduleEnd: read(_kEnd) ?? defaults.scheduleEnd,
-    );
-  }
+  AppearanceSettings build() => appearanceSettingsOf(_prefs);
 
   Future<void> update(AppearanceSettings next) async {
     state = next;

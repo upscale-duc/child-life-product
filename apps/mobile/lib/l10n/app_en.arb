@@ -8895,6 +8895,7 @@
   "cuAsleepSince": "Asleep since {time}",
   "wcTitle": "Is your baby awake?",
   "wcBody": "Asleep for {duration}. If your baby’s awake, tap to log the wake time.",
+  "wcBodyFirst": "Asleep for {duration}. If your baby’s awake, tap to log the wake time. You can turn this off in Profile › Notifications.",
   "wcAwake": "Awake now",
   "wcWokeAt": "Woke at…",
   "wcStillAsleep": "Still asleep",
