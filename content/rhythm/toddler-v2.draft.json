@@ -1,25 +1,33 @@
 [
   {
     "id": "act_v2_choose_book",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Cùng chọn sách",
-      "en": "Choose a book"
+      "vi": "Con chọn sách đêm nay",
+      "en": "Your pick tonight"
     },
     "summary": {
-      "vi": "Một bước nhỏ trước giờ ngủ.",
-      "en": "A small bedtime step."
+      "vi": "Được chọn giúp nhiều bé hợp tác hơn với giờ ngủ.",
+      "en": "Having a say often helps toddlers go along with bedtime."
     },
     "steps": {
-      "vi": ["Đưa hai sách tranh quen.", "Để con chọn, rồi đọc cùng."],
-      "en": ["Offer two familiar picture books.", "Let your child choose; read together."]
+      "vi": [
+        "Đưa hai cuốn sách tranh con quen.",
+        "Để con chỉ hoặc cầm cuốn con muốn.",
+        "Đọc chậm, rồi cất sách và tắt đèn."
+      ],
+      "en": [
+        "Hold up two picture books your child knows.",
+        "Let them point to or take the one they want.",
+        "Read it slowly, then put it away and dim the lights."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ chỗ ngủ an toàn như mọi đêm: nệm phẳng, chắc, không gối hay chăn dày quanh mặt con.",
+      "en": "Keep the usual safe sleep space: a firm, flat mattress, nothing thick or loose near your child’s face."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -31,33 +39,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Sleep and young children",
-        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Getting your baby to sleep",
+        "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_finish_play",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Khép lại trò chơi",
-      "en": "Finish playing calmly"
+      "vi": "Báo trước 5 phút",
+      "en": "A five-minute warning"
     },
     "summary": {
-      "vi": "Báo trước một chuyển tiếp.",
-      "en": "Preview a transition."
+      "vi": "Biết trước việc gì sắp đến, con chuyển sang giờ ngủ dễ hơn.",
+      "en": "Knowing what comes next can make the switch to bedtime easier."
     },
     "steps": {
-      "vi": ["Nói trò chơi sắp kết thúc.", "Cùng cất một món đồ."],
-      "en": ["Say playtime is ending.", "Put one toy away together."]
+      "vi": [
+        "Nói: “Chơi thêm một chút nữa rồi đi ngủ nhé.”",
+        "Khi hết giờ, cùng con cất một món đồ chơi.",
+        "Đi thẳng sang bước tiếp theo quen thuộc của nhà mình."
+      ],
+      "en": [
+        "Say: “A little more play, then it’s bedtime.”",
+        "When time is up, put one toy away together.",
+        "Move straight on to your family’s usual next step."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ chỗ ngủ an toàn như mọi đêm: nệm phẳng, chắc, không gối hay chăn dày quanh mặt con.",
+      "en": "Keep the usual safe sleep space: a firm, flat mattress, nothing thick or loose near your child’s face."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -69,31 +89,39 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Sleep and young children",
-        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_goodnight_words",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Lời chúc ngủ quen",
-      "en": "Familiar goodnight words"
+      "vi": "Chúc ngủ ngon mọi thứ",
+      "en": "Goodnight to everything"
     },
     "summary": {
-      "vi": "Một lời chào dịu dàng.",
-      "en": "A gentle closing moment."
+      "vi": "Một câu chào quen mỗi tối làm giờ ngủ dễ đoán hơn với con.",
+      "en": "The same little goodbye each night makes bedtime predictable."
     },
     "steps": {
-      "vi": ["Nói một câu chúc ngủ quen.", "Cho con thời gian đáp lại."],
-      "en": ["Say a familiar goodnight phrase.", "Allow time for a response."]
+      "vi": [
+        "Cùng con chúc ngủ ngon hai, ba đồ vật trong phòng.",
+        "Kết thúc bằng cùng một câu mỗi tối.",
+        "Giữ giọng nhỏ dần, rồi tắt đèn."
+      ],
+      "en": [
+        "Say goodnight to two or three things in the room together.",
+        "Finish with the same phrase every night.",
+        "Let your voice get quieter, then turn off the light."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ chỗ ngủ an toàn như mọi đêm: nệm phẳng, chắc, không gối hay chăn dày quanh mặt con.",
+      "en": "Keep the usual safe sleep space: a firm, flat mattress, nothing thick or loose near your child’s face."
     },
     "durationMin": 3,
     "ageDays": {
@@ -107,33 +135,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Sleep and young children",
-        "url": "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+        "label": "NHS: Helping your baby to sleep",
+        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Getting your baby to sleep",
+        "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_familiar_song",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Một bài hát quen",
-      "en": "A familiar song"
+      "vi": "Bài ru của nhà mình",
+      "en": "Your family’s lullaby"
     },
     "summary": {
-      "vi": "Một lúc gần con.",
-      "en": "A moment together."
+      "vi": "Một bài hát quen là tín hiệu dịu dàng rằng đã đến giờ ngủ.",
+      "en": "A familiar song is a gentle signal that it is time to sleep."
     },
     "steps": {
-      "vi": ["Hát nhỏ một bài quen.", "Dừng nếu con không thích."],
-      "en": ["Sing a familiar song quietly.", "Stop if your child dislikes it."]
+      "vi": [
+        "Chọn một bài ru hoặc bài hát quen và hát mỗi tối.",
+        "Hát chậm, nhỏ dần ở lần cuối.",
+        "Nếu con không thích, thử đổi sang ngâm nga không lời."
+      ],
+      "en": [
+        "Choose one lullaby or familiar song and sing it each night.",
+        "Sing slowly, softer on the last round.",
+        "If your child doesn’t like it, try humming instead."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ chỗ ngủ an toàn như mọi đêm: nệm phẳng, chắc, không gối hay chăn dày quanh mặt con.",
+      "en": "Keep the usual safe sleep space: a firm, flat mattress, nothing thick or loose near your child’s face."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -152,26 +192,34 @@
     "review": null
   },
   {
-    "id": "act_v2_quiet_book",
-    "version": 1,
+    "id": "act_v2_screens_off",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Xem tranh yên tĩnh",
-      "en": "Quiet picture time"
+      "vi": "Tắt màn hình trước giờ ngủ",
+      "en": "Screens off before bed"
     },
     "summary": {
-      "vi": "Chọn hoạt động nhẹ nhàng.",
-      "en": "Choose a quiet activity."
+      "vi": "WHO khuyên bé dưới 2 tuổi không ngồi xem màn hình, bé 2–3 tuổi không quá 1 giờ mỗi ngày; buổi tối yên tĩnh thường dễ ngủ hơn.",
+      "en": "WHO advises no sedentary screen time under 2 and no more than an hour a day at 2–3; a calm evening often helps sleep."
     },
     "steps": {
-      "vi": ["Cùng ngồi xem sách tranh.", "Để con chỉ trang thích."],
-      "en": ["Look at a picture book together.", "Let your child choose a page."]
+      "vi": [
+        "Tắt TV, điện thoại và máy tính bảng quanh con khoảng một giờ trước giờ ngủ.",
+        "Thay bằng một việc nhẹ: xếp đồ chơi, xem tranh, tắm.",
+        "Để điện thoại của người lớn ngoài tầm mắt con."
+      ],
+      "en": [
+        "Switch off the TV, phones and tablets around your child about an hour before bed.",
+        "Swap in something calm: tidying toys, a picture book, a bath.",
+        "Keep adults’ phones out of your child’s sight."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ chỗ ngủ an toàn như mọi đêm: nệm phẳng, chắc, không gối hay chăn dày quanh mặt con.",
+      "en": "Keep the usual safe sleep space: a firm, flat mattress, nothing thick or loose near your child’s face."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -183,33 +231,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Helping your baby to sleep",
-        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+        "label": "WHO: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years (2019)",
+        "url": "https://www.who.int/publications/i/item/9789241550536"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Getting your baby to sleep",
+        "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_next_bedtime_step",
-    "version": 1,
+    "id": "act_v2_milk_before_bed",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Bước tiếp theo quen thuộc",
-      "en": "A familiar next step"
+      "vi": "Uống sữa xong rồi lên giường",
+      "en": "Milk first, then bed"
     },
     "summary": {
-      "vi": "Giúp chuyển hoạt động từ tốn.",
-      "en": "Take transitions gently."
+      "vi": "Không ngậm bình khi ngủ giúp bảo vệ răng sữa.",
+      "en": "Not falling asleep with a bottle helps protect baby teeth."
     },
     "steps": {
-      "vi": ["Nói bước tiếp theo của nhà mình.", "Chờ con rồi cùng thực hiện."],
-      "en": ["Name your family’s next routine step.", "Pause, then do it together."]
+      "vi": [
+        "Cho con uống sữa ở ghế hoặc trong lòng, trước khi lên giường.",
+        "Chải răng sau cữ sữa cuối.",
+        "Lên giường mà không mang theo bình."
+      ],
+      "en": [
+        "Give milk on your lap or in a chair before bed.",
+        "Brush teeth after the last milk.",
+        "Go to bed without the bottle."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Bú mẹ ban đêm vẫn bình thường ở tuổi này. Không cho con ngủ với bình sữa hay nước ngọt; từ khoảng 12 tháng, chuyển dần sang cốc.",
+      "en": "Night breastfeeds are still normal at this age. Don’t put your child to sleep with a bottle of milk or sweet drinks; from about 12 months, move gradually to a cup."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -221,33 +281,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Helping your baby to sleep",
-        "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
+        "label": "AAP · HealthyChildren.org: Brushing up on oral health",
+        "url": "https://www.healthychildren.org/English/healthy-living/oral-health/Pages/Brushing-Up-on-Oral-Health-Never-Too-Early-to-Start.aspx"
+      },
+      {
+        "label": "NHS: Drinks and cups for babies and young children",
+        "url": "https://www.nhs.uk/baby/weaning-and-feeding/drinks-and-cups-for-babies-and-young-children/"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_eat_together",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Một bữa cùng nhau",
-      "en": "Eat together"
+      "vi": "Một bữa ngồi cùng con",
+      "en": "One meal together"
     },
     "summary": {
-      "vi": "Cùng hiện diện bên bàn ăn.",
-      "en": "Be present at mealtime."
+      "vi": "Ăn cùng người lớn giúp con học cách ăn bằng cách bắt chước.",
+      "en": "Eating with adults lets toddlers learn by copying."
     },
     "steps": {
-      "vi": ["Ngồi bên con trong bữa.", "Trò chuyện, không ép con ăn."],
-      "en": ["Sit with your child at mealtime.", "Talk without pressuring them to eat."]
+      "vi": [
+        "Ngồi ăn cùng con, ít nhất năm phút đầu của một bữa.",
+        "Ăn cùng món hoặc món gần giống, cắt nhỏ cho con.",
+        "Trò chuyện về màu, mùi, vị; không ép con ăn hết."
+      ],
+      "en": [
+        "Sit and eat with your child, at least for the first five minutes of a meal.",
+        "Eat the same or similar food, cut small for them.",
+        "Chat about colours, smells and tastes; don’t push them to finish."
+      ]
     },
     "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
+      "vi": "Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -259,33 +331,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Fussy eaters",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+        "label": "WHO: Guideline for complementary feeding of infants and young children 6–23 months (2023)",
+        "url": "https://www.who.int/publications/i/item/9789240081864"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Toddler nutrition",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_food_no_pressure",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Nhìn món không áp lực",
-      "en": "Food without pressure"
+      "vi": "Con được nói “không”",
+      "en": "It’s okay to say no"
     },
     "summary": {
-      "vi": "Tôn trọng phản hồi của con.",
-      "en": "Respect your child’s response."
+      "vi": "Ép ăn thường làm bữa ăn căng thẳng hơn; tôn trọng tín hiệu no giúp con tự điều chỉnh.",
+      "en": "Pressure tends to make meals harder; respecting “full” helps children self-regulate."
     },
     "steps": {
-      "vi": ["Nói tên món quen trên bàn.", "Cho phép con từ chối."],
-      "en": ["Name familiar food on the table.", "Allow your child to decline."]
+      "vi": [
+        "Đặt một ít món quen và một ít món mới lên đĩa.",
+        "Khi con đẩy ra hay lắc đầu, chỉ nói “Được rồi”.",
+        "Dọn bữa sau khoảng 20–30 phút, không cho ăn bù bằng bánh kẹo."
+      ],
+      "en": [
+        "Put a little familiar food and a little new food on the plate.",
+        "When they push it away or shake their head, just say “Okay”.",
+        "Clear up after about 20–30 minutes; no sweets to make up for it."
+      ]
     },
     "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
+      "vi": "Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -297,31 +381,93 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Fussy eaters",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+        "label": "UNICEF UK Baby Friendly: Responsive feeding infosheet",
+        "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/responsive-feeding-infosheet/"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Toddler nutrition",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_try_again_food",
+    "version": 2,
+    "status": "draft",
+    "title": {
+      "vi": "Món mới, mời lại nhiều lần",
+      "en": "New food, offered again"
+    },
+    "summary": {
+      "vi": "Nhiều bé cần gặp một món mới nhiều lần mới chịu nếm; lần từ chối đầu không có nghĩa là con ghét.",
+      "en": "Many toddlers need to meet a new food many times before tasting it; a first “no” doesn’t mean never."
+    },
+    "steps": {
+      "vi": [
+        "Chọn một món con từng từ chối.",
+        "Đặt một miếng nhỏ cạnh món con thích, vài ngày một lần.",
+        "Để con chạm, ngửi hay liếm; không cần nuốt."
+      ],
+      "en": [
+        "Pick one food your child has turned down before.",
+        "Put a small piece beside a favourite every few days.",
+        "Let them touch, smell or lick it; swallowing isn’t the goal."
+      ]
+    },
+    "safety": {
+      "vi": "Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
+    },
+    "durationMin": 5,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["feeding"],
+    "interests": ["feeding"],
+    "timeOfDay": "any",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "AAP · HealthyChildren.org: Toddler nutrition",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx"
+      },
+      {
+        "label": "WHO: Guideline for complementary feeding of infants and young children 6–23 months (2023)",
+        "url": "https://www.who.int/publications/i/item/9789240081864"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_notice_mealtime",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Để ý điều con thích",
-      "en": "Notice mealtime preferences"
+      "vi": "Ghi lại điều con thích ăn",
+      "en": "Note what your child enjoys"
     },
     "summary": {
-      "vi": "Ghi một quan sát cụ thể.",
-      "en": "Record one observation."
+      "vi": "Ghi lại giúp cả nhà thấy con đã thử bao nhiêu món, thay vì nhớ những bữa khó.",
+      "en": "A note helps the family see what your child has tried, not just the hard meals."
     },
     "steps": {
-      "vi": ["Quan sát bữa ăn của con.", "Ghi điều con thích, không phán xét."],
-      "en": ["Observe your child’s meal.", "Note preferences without judging."]
+      "vi": [
+        "Sau bữa, nhớ lại một món con ăn ngon miệng.",
+        "Ghi một dòng: món gì, ăn thế nào (bốc, xúc, cắn).",
+        "Không ghi lời chê; chỉ điều quan sát được."
+      ],
+      "en": [
+        "After a meal, think of one food your child enjoyed.",
+        "Write one line: the food and how they ate it (fingers, spoon, bites).",
+        "Leave out criticism; note only what you saw."
+      ]
     },
     "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
+      "vi": "Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
     },
     "durationMin": 3,
     "ageDays": {
@@ -335,31 +481,39 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Fussy eaters",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/"
+        "label": "UNICEF UK Baby Friendly: Responsive feeding infosheet",
+        "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/responsive-feeding-infosheet/"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_choose_bowl",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Cùng chọn bát",
-      "en": "Choose a bowl together"
+      "vi": "Con chọn bát",
+      "en": "Pick a bowl"
     },
     "summary": {
-      "vi": "Một việc chuẩn bị nhỏ.",
-      "en": "A small preparation task."
+      "vi": "Một việc nhỏ được tự quyết giúp con háo hức vào bữa.",
+      "en": "A small choice can make toddlers keener to come to the table."
     },
     "steps": {
-      "vi": ["Cho con chọn bát phù hợp.", "Người lớn chuẩn bị bữa."],
-      "en": ["Offer suitable bowls to choose from.", "An adult prepares the meal."]
+      "vi": [
+        "Đưa hai bát hoặc thìa an toàn cho con chọn.",
+        "Người lớn múc thức ăn vào bát con chọn.",
+        "Khen việc con chọn, không khen việc ăn hết."
+      ],
+      "en": [
+        "Offer two safe bowls or spoons to choose from.",
+        "An adult serves food into the chosen bowl.",
+        "Praise the choosing, not finishing the food."
+      ]
     },
     "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
+      "vi": "Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
     },
     "durationMin": 3,
     "ageDays": {
@@ -373,71 +527,41 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Your baby’s first solid foods",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
-      }
-    ],
-    "review": null
-  },
-  {
-    "id": "act_v2_stay_at_meal",
-    "version": 1,
-    "status": "draft",
-    "title": {
-      "vi": "Ngồi bên con",
-      "en": "Stay beside your child"
-    },
-    "summary": {
-      "vi": "Dành sự chú ý cho bữa.",
-      "en": "Give mealtime your attention."
-    },
-    "steps": {
-      "vi": ["Cất điện thoại khi chăm bữa.", "Ở bên, quan sát con ăn."],
-      "en": ["Put your phone away during care.", "Stay close and watch your child eat."]
-    },
-    "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
-    },
-    "durationMin": 3,
-    "ageDays": {
-      "from": 365,
-      "to": 1095
-    },
-    "needs": ["feeding"],
-    "interests": ["feeding"],
-    "timeOfDay": "any",
-    "locales": ["vi", "en"],
-    "regions": [],
-    "sources": [
-      {
-        "label": "NHS: Your baby’s first solid foods",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+        "label": "UNICEF UK Baby Friendly: Responsive feeding infosheet",
+        "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/responsive-feeding-infosheet/"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_prepare_table",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Cùng chuẩn bị bàn",
-      "en": "Prepare the table"
+      "vi": "Phụ dọn bàn",
+      "en": "Help set the table"
     },
     "summary": {
-      "vi": "Tham gia một bước an toàn.",
-      "en": "Join one safe step."
+      "vi": "Được giúp một việc an toàn làm con thấy mình là một phần của bữa cơm gia đình.",
+      "en": "A safe job helps toddlers feel part of the family meal."
     },
     "steps": {
-      "vi": ["Đưa con khăn sạch.", "Cùng đặt khăn trên bàn."],
-      "en": ["Offer a clean cloth.", "Place it on the table together."]
+      "vi": [
+        "Đưa con khăn sạch hoặc thìa nhựa.",
+        "Chỉ chỗ đặt: “Thìa của ba đây.”",
+        "Cảm ơn con khi xong, dù chưa ngay ngắn."
+      ],
+      "en": [
+        "Give your child a clean cloth or plastic spoons.",
+        "Show where they go: “Daddy’s spoon goes here.”",
+        "Thank them when done, even if it isn’t tidy."
+      ]
     },
     "safety": {
-      "vi": "Giám sát khi ăn; chỉ dùng món phù hợp với con.",
-      "en": "Supervise eating; use only food suitable for your child."
+      "vi": "Giữ con xa bếp, nồi nóng, dao và ấm nước. Con ngồi khi ăn, luôn có người lớn bên cạnh. Cắt dọc nho, cà chua bi, nhãn, vải thành miếng nhỏ; không cho hạt nguyên, bỏng ngô, kẹo cứng hay thạch cốc nhỏ.",
+      "en": "Keep your child away from the stove, hot pans, knives and kettles. Your child sits to eat with an adult beside them. Cut grapes, cherry tomatoes, longan and lychee lengthways into small pieces; no whole nuts, popcorn, hard sweets or mini jelly cups."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -449,33 +573,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "NHS: Your baby’s first solid foods",
-        "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+        "label": "WHO: Nurturing care for early childhood development (2018)",
+        "url": "https://www.who.int/publications/i/item/9789241514064"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Choking prevention",
+        "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_near_upset",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
       "vi": "Ở gần khi con buồn",
-      "en": "Stay nearby when upset"
+      "en": "Stay close when upset"
     },
     "summary": {
-      "vi": "Đồng hành với cảm xúc.",
-      "en": "Accompany their feelings."
+      "vi": "Bình tĩnh ở bên giúp con dịu lại nhanh hơn là nhiều lời giải thích.",
+      "en": "A calm adult nearby helps more than lots of explaining."
     },
     "steps": {
-      "vi": ["Giữ giọng nói bình tĩnh.", "Ở gần nếu con muốn."],
-      "en": ["Keep your voice calm.", "Stay nearby if your child wants."]
+      "vi": [
+        "Hít một hơi thật chậm trước khi nói.",
+        "Ngồi xuống ngang tầm con, nói ít, giọng nhỏ.",
+        "Mở tay mời ôm, nhưng để con quyết định."
+      ],
+      "en": [
+        "Take one slow breath before you speak.",
+        "Get down to their level; use few words, quietly.",
+        "Open your arms for a hug, and let them decide."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Không quát, đánh hay doạ. Nếu cơn khóc giận rất thường xuyên, con tự làm đau mình, nín thở đến tím tái hoặc ba mẹ thấy quá sức, hãy nói với bác sĩ của con.",
+      "en": "No shouting, smacking or threats. If outbursts are very frequent, your child hurts themselves, holds their breath until they turn blue, or you feel overwhelmed, talk to your child’s doctor."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -487,69 +623,93 @@
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Handling temper tantrums",
-        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+        "label": "NHS: Temper tantrums",
+        "url": "https://www.nhs.uk/baby/babys-development/behaviour/temper-tantrums/"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Temper tantrums",
+        "url": "https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Temper-Tantrums.aspx"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_name_feeling",
-    "version": 1,
+    "id": "act_v2_comfort_object",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Gọi tên cảm xúc",
-      "en": "Name the feeling"
+      "vi": "Một món đồ an ủi",
+      "en": "A comfort object"
     },
     "summary": {
-      "vi": "Một lời ngắn để lắng nghe.",
-      "en": "A short listening moment."
+      "vi": "Nhiều bé dịu lại nhanh hơn với một món đồ mềm quen thuộc khi xa ba mẹ hoặc trước khi ngủ.",
+      "en": "Many toddlers settle more easily with a familiar soft toy when apart from you or at bedtime."
     },
     "steps": {
-      "vi": ["Nói điều bạn quan sát được.", "Chờ phản hồi, không ép nói."],
-      "en": ["Describe what you observe.", "Wait without demanding words."]
+      "vi": [
+        "Để con chọn một gấu bông hay khăn nhỏ con hay ôm.",
+        "Dùng nó trong lúc ôm ấp, trước giờ ngủ hoặc khi đi gửi.",
+        "Có một món dự phòng giống hệt nếu được."
+      ],
+      "en": [
+        "Let your child choose a soft toy or small blanket they like to hold.",
+        "Use it during cuddles, before sleep or at childcare.",
+        "Keep an identical spare if you can."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Chỉ dùng đồ mềm nhỏ, không dây hay chi tiết rời; trước 12 tháng không để đồ mềm trong chỗ ngủ.",
+      "en": "Small soft items only, with no strings or loose parts; nothing soft in the sleep space before 12 months."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
     },
     "needs": ["soothing"],
     "interests": ["moments"],
-    "timeOfDay": "any",
+    "timeOfDay": "evening",
     "locales": ["vi", "en"],
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Handling temper tantrums",
-        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+        "label": "AAP · HealthyChildren.org: Getting your baby to sleep",
+        "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
+      },
+      {
+        "label": "AAP · HealthyChildren.org: Toddler (1–3 years)",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_pause_together",
-    "version": 1,
+    "id": "act_v2_blow_breath",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Một lúc yên tĩnh",
-      "en": "A quiet pause together"
+      "vi": "Thổi cho dịu lại",
+      "en": "Blow to calm down"
     },
     "summary": {
-      "vi": "Tạm giảm sự náo nhiệt.",
-      "en": "Take a quieter moment."
+      "vi": "Thở ra chậm là cách đơn giản để cả con và ba mẹ dịu lại.",
+      "en": "A long slow breath out can calm both of you."
     },
     "steps": {
-      "vi": ["Giảm tiếng ồn nếu được.", "Mời con ngồi gần bạn."],
-      "en": ["Reduce noise if possible.", "Invite your child to sit nearby."]
+      "vi": [
+        "Giả vờ thổi nến trên ngón tay, hoặc thổi bong bóng xà phòng.",
+        "Thổi thật chậm cùng con ba lần.",
+        "Sau đó mới nói chuyện về điều làm con buồn."
+      ],
+      "en": [
+        "Pretend to blow out a candle on your finger, or blow bubbles.",
+        "Blow slowly together three times.",
+        "Only then talk about what upset them."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Không để con tự cầm lọ nước bong bóng; tránh xà phòng dính mắt. Không quát, đánh hay doạ. Nếu cơn khóc giận rất thường xuyên, con tự làm đau mình, nín thở đến tím tái hoặc ba mẹ thấy quá sức, hãy nói với bác sĩ của con.",
+      "en": "Hold the bubble pot yourself; keep soap away from eyes. No shouting, smacking or threats. If outbursts are very frequent, your child hurts themselves, holds their breath until they turn blue, or you feel overwhelmed, talk to your child’s doctor."
     },
     "durationMin": 3,
     "ageDays": {
@@ -563,31 +723,39 @@
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Handling temper tantrums",
-        "url": "https://www.unicef.org/india/parentingtips/handling-temper-tantrums"
+        "label": "NHS: Temper tantrums",
+        "url": "https://www.nhs.uk/baby/babys-development/behaviour/temper-tantrums/"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_small_choices",
-    "version": 1,
+    "id": "act_v2_goodbye_ritual",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Hai lựa chọn nhỏ",
-      "en": "Two small choices"
+      "vi": "Chào tạm biệt rõ ràng",
+      "en": "A clear goodbye"
     },
     "summary": {
-      "vi": "Cho con tham gia quyết định.",
-      "en": "Include your child in choices."
+      "vi": "Lo khi xa ba mẹ là bình thường ở tuổi này; lời chào ngắn, quen giúp con tin ba mẹ sẽ quay lại.",
+      "en": "Separation worries are normal at this age; a short, familiar goodbye helps them trust that you come back."
     },
     "steps": {
-      "vi": ["Đưa hai lựa chọn phù hợp.", "Tôn trọng lựa chọn của con."],
-      "en": ["Offer two suitable choices.", "Respect your child’s choice."]
+      "vi": [
+        "Báo trước: “Mẹ đi làm, ăn chiều xong mẹ về.”",
+        "Ôm, nói câu tạm biệt quen rồi đi, không lén bỏ đi.",
+        "Khi về, nhắc lại: “Mẹ về rồi đây.”"
+      ],
+      "en": [
+        "Say it ahead: “I’m going to work; I’ll be back after your afternoon snack.”",
+        "Hug, say your usual goodbye and go; don’t sneak away.",
+        "When you return, say: “I’m back.”"
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Con có thể khóc lúc đầu; nếu con khó dịu kéo dài nhiều tuần, hãy trao đổi với người chăm và bác sĩ.",
+      "en": "Some crying at first is common; if it stays hard to settle for weeks, talk to the carer and your doctor."
     },
     "durationMin": 3,
     "ageDays": {
@@ -596,74 +764,48 @@
     },
     "needs": ["soothing"],
     "interests": ["moments"],
-    "timeOfDay": "any",
+    "timeOfDay": "day",
     "locales": ["vi", "en"],
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Positive parenting ages 0–5",
-        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
-      }
-    ],
-    "review": null
-  },
-  {
-    "id": "act_v2_wait_for_reply",
-    "version": 1,
-    "status": "draft",
-    "title": {
-      "vi": "Chờ con trả lời",
-      "en": "Wait for a response"
-    },
-    "summary": {
-      "vi": "Cho một cuộc trò chuyện thời gian.",
-      "en": "Give conversation time."
-    },
-    "steps": {
-      "vi": ["Nói một câu ngắn.", "Chờ con đáp bằng lời hoặc cử chỉ."],
-      "en": ["Say one short sentence.", "Wait for words or a gesture."]
-    },
-    "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
-    },
-    "durationMin": 3,
-    "ageDays": {
-      "from": 365,
-      "to": 1095
-    },
-    "needs": ["soothing"],
-    "interests": ["moments"],
-    "timeOfDay": "any",
-    "locales": ["vi", "en"],
-    "regions": [],
-    "sources": [
+        "label": "AAP · HealthyChildren.org: Toddler (1–3 years)",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx"
+      },
       {
-        "label": "UNICEF: Positive parenting ages 0–5",
-        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
+        "label": "UNICEF Parenting: Child development",
+        "url": "https://www.unicef.org/parenting/child-development"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_preview_change",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Báo trước việc sắp làm",
-      "en": "Preview what comes next"
+      "vi": "Nói trước việc sắp làm",
+      "en": "Say what comes next"
     },
     "summary": {
-      "vi": "Chuyển tiếp bằng lời quen.",
-      "en": "Use familiar transition words."
+      "vi": "Chuyển việc đột ngột hay làm con ăn vạ; nói trước bằng câu ngắn giúp con chuẩn bị.",
+      "en": "Sudden changes often trigger meltdowns; a short heads-up helps toddlers get ready."
     },
     "steps": {
-      "vi": ["Nói việc tiếp theo bằng câu ngắn.", "Cho con thời gian chuyển hoạt động."],
-      "en": ["Briefly name the next activity.", "Allow time to transition."]
+      "vi": [
+        "Trước khi đổi việc, gọi tên con và nói việc tiếp theo.",
+        "Dùng câu ngắn: “Xong tắm, mặc áo.”",
+        "Chờ vài giây rồi cùng làm."
+      ],
+      "en": [
+        "Before switching, say your child’s name and the next activity.",
+        "Keep it short: “Bath done, then pyjamas.”",
+        "Wait a few seconds, then do it together."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Không quát, đánh hay doạ. Nếu cơn khóc giận rất thường xuyên, con tự làm đau mình, nín thở đến tím tái hoặc ba mẹ thấy quá sức, hãy nói với bác sĩ của con.",
+      "en": "No shouting, smacking or threats. If outbursts are very frequent, your child hurts themselves, holds their breath until they turn blue, or you feel overwhelmed, talk to your child’s doctor."
     },
     "durationMin": 3,
     "ageDays": {
@@ -677,109 +819,195 @@
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Positive parenting ages 0–5",
-        "url": "https://www.unicef.org/asia-pacific/place-for-parents/positive-parenting-ages-0-5"
+        "label": "AAP · HealthyChildren.org: Temper tantrums",
+        "url": "https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Temper-Tantrums.aspx"
+      },
+      {
+        "label": "UNICEF Parenting: Child development",
+        "url": "https://www.unicef.org/parenting/child-development"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_point_name",
-    "version": 1,
+    "id": "act_v2_wait_for_reply",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Chỉ và gọi tên",
-      "en": "Point and name"
+      "vi": "Chờ con đáp lời",
+      "en": "Wait for a reply"
     },
     "summary": {
-      "vi": "Cùng chú ý đồ vật quen.",
-      "en": "Notice familiar objects together."
+      "vi": "Chờ lâu hơn một chút cho con cơ hội đáp bằng lời hay cử chỉ, nền tảng của việc tập nói.",
+      "en": "Pausing a little longer gives your child a turn to answer with words or gestures, the basis of talking."
     },
     "steps": {
-      "vi": ["Chỉ một đồ vật quen.", "Nói tên, chờ con đáp."],
-      "en": ["Point to a familiar object.", "Name it and pause."]
+      "vi": [
+        "Nói một câu ngắn về điều con đang nhìn.",
+        "Đếm thầm đến năm, nhìn con chờ đợi.",
+        "Đáp lại bất kỳ âm thanh hay cử chỉ nào con đưa ra."
+      ],
+      "en": [
+        "Say one short sentence about what your child is looking at.",
+        "Count to five silently and look at them expectantly.",
+        "Respond to any sound or gesture they make."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
     "durationMin": 3,
     "ageDays": {
       "from": 365,
       "to": 1095
     },
-    "needs": ["play"],
+    "needs": ["play", "milestone"],
     "interests": ["milestones"],
     "timeOfDay": "any",
     "locales": ["vi", "en"],
     "regions": [],
     "sources": [
       {
-        "label": "CDC: Milestones by 2 years",
-        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        "label": "NHS: Help your baby learn to talk",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+      },
+      {
+        "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+        "url": "https://www.cdc.gov/act-early/milestones/index.html"
       }
     ],
     "review": null
   },
   {
-    "id": "act_v2_picture_chat",
-    "version": 1,
+    "id": "act_v2_little_helper",
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Trò chuyện cùng tranh",
-      "en": "Talk about pictures"
+      "vi": "Phụ ba mẹ một việc nhỏ",
+      "en": "Little helper"
     },
     "summary": {
-      "vi": "Theo sự chú ý của con.",
-      "en": "Follow your child’s attention."
+      "vi": "Việc nhà đơn giản là trò chơi con thích và giúp con thấy mình có ích.",
+      "en": "Simple chores are play to toddlers and help them feel capable."
     },
     "steps": {
-      "vi": ["Để con chọn một hình.", "Nói về hình con đang nhìn."],
-      "en": ["Let your child choose a picture.", "Talk about what they notice."]
+      "vi": [
+        "Chọn một việc an toàn: bỏ tất vào giỏ, cất đồ chơi vào thùng.",
+        "Làm mẫu một lần, rồi đưa con làm.",
+        "Cảm ơn con bằng tên việc: “Con cất xe giỏi quá.”"
+      ],
+      "en": [
+        "Choose a safe job: socks into the basket, toys into the box.",
+        "Show it once, then hand it over.",
+        "Thank them for the job: “You put the cars away.”"
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Giữ con xa hoá chất tẩy rửa, túi ni lông, cửa sổ và cầu thang. Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Keep cleaning products, plastic bags, windows and stairs out of reach. Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
     },
-    "needs": ["play"],
+    "needs": ["play", "milestone"],
     "interests": ["milestones"],
     "timeOfDay": "any",
     "locales": ["vi", "en"],
     "regions": [],
     "sources": [
       {
-        "label": "CDC: Milestones by 2 years",
-        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        "label": "NHS: Baby and toddler safety",
+        "url": "https://www.nhs.uk/baby/first-aid-and-safety/safety/baby-and-toddler-safety/"
+      },
+      {
+        "label": "WHO: Nurturing care for early childhood development (2018)",
+        "url": "https://www.who.int/publications/i/item/9789241514064"
+      }
+    ],
+    "review": null
+  },
+  {
+    "id": "act_v2_dress_try",
+    "version": 2,
+    "status": "draft",
+    "title": {
+      "vi": "Tập tự cởi một món",
+      "en": "Take one thing off"
+    },
+    "summary": {
+      "vi": "Cởi đồ thường đến trước mặc đồ; tự làm được một bước giúp con tự tin.",
+      "en": "Undressing usually comes before dressing; managing one step builds confidence."
+    },
+    "steps": {
+      "vi": [
+        "Để con tự kéo tất hoặc mũ ra.",
+        "Giúp phần khó, để con làm phần cuối.",
+        "Đổi vai: con “mặc” cho gấu bông."
+      ],
+      "en": [
+        "Let your child pull off their socks or hat.",
+        "Help with the tricky part; let them finish it.",
+        "Swap roles: they “dress” a teddy."
+      ]
+    },
+    "safety": {
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
+    },
+    "durationMin": 5,
+    "ageDays": {
+      "from": 365,
+      "to": 1095
+    },
+    "needs": ["play", "milestone"],
+    "interests": ["milestones"],
+    "timeOfDay": "day",
+    "locales": ["vi", "en"],
+    "regions": [],
+    "sources": [
+      {
+        "label": "AAP · HealthyChildren.org: Toddler (1–3 years)",
+        "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx"
+      },
+      {
+        "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+        "url": "https://www.cdc.gov/act-early/milestones/index.html"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_taking_turns",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Tới lượt con",
-      "en": "Your turn"
+      "vi": "Lăn bóng tới lượt con",
+      "en": "Roll the ball, your turn"
     },
     "summary": {
-      "vi": "Một trò chơi thay phiên.",
-      "en": "A turn-taking moment."
+      "vi": "Trò thay phiên giúp con học chờ lượt, cũng là nhịp của một cuộc trò chuyện.",
+      "en": "Turn-taking games teach waiting for a turn, the rhythm of conversation."
     },
     "steps": {
-      "vi": ["Làm một cử chỉ vui.", "Mời con làm rồi đổi lượt."],
-      "en": ["Make a playful gesture.", "Invite a response; take turns."]
+      "vi": [
+        "Ngồi đối diện con, lăn một quả bóng mềm sang.",
+        "Nói “Tới lượt con!” và chờ con lăn lại.",
+        "Đổi kiểu: lăn chậm, lăn nhanh, lăn cho gấu."
+      ],
+      "en": [
+        "Sit facing your child and roll a soft ball over.",
+        "Say “Your turn!” and wait for them to roll it back.",
+        "Mix it up: slow, fast, roll it to a teddy."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -791,33 +1019,45 @@
     "regions": [],
     "sources": [
       {
-        "label": "CDC: Milestones by 2 years",
-        "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        "label": "NHS: Baby and toddler play ideas",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
+      },
+      {
+        "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+        "url": "https://www.cdc.gov/act-early/milestones/index.html"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_song_actions",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Hát cùng động tác",
-      "en": "Sing with gestures"
+      "vi": "Hát kèm động tác",
+      "en": "Songs with actions"
     },
     "summary": {
-      "vi": "Chơi theo hứng thú của con.",
-      "en": "Play with your child’s interests."
+      "vi": "Bài hát có động tác giúp con nhớ từ và vận động tay chân.",
+      "en": "Action songs help toddlers remember words and move."
     },
     "steps": {
-      "vi": ["Hát bài con thích.", "Thêm một động tác đơn giản."],
-      "en": ["Sing a song your child likes.", "Add one simple gesture."]
+      "vi": [
+        "Chọn bài con thích, như “Một con vịt” hay “Kìa con bướm vàng”.",
+        "Làm một động tác cho mỗi câu.",
+        "Dừng trước từ cuối, chờ con làm hoặc nói."
+      ],
+      "en": [
+        "Choose a song they like, such as “Wheels on the Bus”.",
+        "Add one gesture per line.",
+        "Pause before the last word and let them fill it in."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
@@ -829,69 +1069,93 @@
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Parenting tips for the first two years",
-        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+        "label": "NHS: Help your baby learn to talk",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+      },
+      {
+        "label": "NHS: Baby and toddler play ideas",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_short_story",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
-      "vi": "Kể một chuyện ngắn",
-      "en": "Tell a short story"
+      "vi": "Kể lại ngày hôm nay",
+      "en": "Tell today’s story"
     },
     "summary": {
-      "vi": "Nói về trải nghiệm quen.",
-      "en": "Talk about familiar experiences."
+      "vi": "Kể lại việc đã làm giúp con học từ mới và nhớ trải nghiệm.",
+      "en": "Retelling the day builds vocabulary and memory."
     },
     "steps": {
-      "vi": ["Kể lại một việc vừa làm.", "Chờ con bổ sung bằng cử chỉ."],
-      "en": ["Retell something you did together.", "Wait for your child’s contribution."]
+      "vi": [
+        "Chọn một việc vừa xảy ra: đi chợ, tắm, gặp bà.",
+        "Kể ba câu ngắn theo thứ tự.",
+        "Hỏi: “Rồi sao nữa?” và chờ con chỉ hoặc nói."
+      ],
+      "en": [
+        "Pick something that just happened: shopping, the bath, seeing Grandma.",
+        "Tell it in three short sentences, in order.",
+        "Ask “And then?” and wait for them to point or say a word."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
-    "durationMin": 3,
+    "durationMin": 5,
     "ageDays": {
       "from": 365,
       "to": 1095
     },
     "needs": ["play"],
     "interests": ["milestones"],
-    "timeOfDay": "any",
+    "timeOfDay": "evening",
     "locales": ["vi", "en"],
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Parenting tips for the first two years",
-        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+        "label": "NHS: Help your baby learn to talk",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+      },
+      {
+        "label": "UNICEF Parenting: Child development",
+        "url": "https://www.unicef.org/parenting/child-development"
       }
     ],
     "review": null
   },
   {
     "id": "act_v2_listen_sounds",
-    "version": 1,
+    "version": 2,
     "status": "draft",
     "title": {
       "vi": "Cùng nghe quanh nhà",
       "en": "Listen around the home"
     },
     "summary": {
-      "vi": "Chú ý âm thanh quen thuộc.",
-      "en": "Notice familiar sounds."
+      "vi": "Gọi tên âm thanh giúp con nối tiếng với từ.",
+      "en": "Naming sounds links what children hear to words."
     },
     "steps": {
-      "vi": ["Lắng nghe một âm thanh bình thường.", "Nói tên điều hai người nghe."],
-      "en": ["Listen to an everyday sound.", "Name what you both hear."]
+      "vi": [
+        "Dừng lại khi có âm thanh: chuông cửa, xe máy, chim hót.",
+        "Chỉ về hướng âm thanh và gọi tên.",
+        "Bắt chước tiếng đó cùng con."
+      ],
+      "en": [
+        "Stop when you hear something: the doorbell, a motorbike, birds.",
+        "Point towards it and name it.",
+        "Copy the sound together."
+      ]
     },
     "safety": {
-      "vi": "Có người lớn bên cạnh; dừng khi con không thoải mái.",
-      "en": "Stay nearby; stop if your child is uncomfortable."
+      "vi": "Có người lớn bên cạnh. Đồ chơi to hơn miệng con, không sắc cạnh, không pin cúc áo hay nam châm nhỏ.",
+      "en": "Stay with your child. Toys must be bigger than their mouth, with no sharp edges, button batteries or small magnets."
     },
     "durationMin": 3,
     "ageDays": {
@@ -905,8 +1169,12 @@
     "regions": [],
     "sources": [
       {
-        "label": "UNICEF: Parenting tips for the first two years",
-        "url": "https://www.unicef.org/parenting/child-development/baby-tips"
+        "label": "NHS: Help your baby learn to talk",
+        "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+      },
+      {
+        "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+        "url": "https://www.cdc.gov/act-early/milestones/index.html"
       }
     ],
     "review": null

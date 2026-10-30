@@ -1,0 +1,91 @@
+{
+  "group": "care.now",
+  "note": "Lumi L8 (lumi-plan §11.3 #3, sprint wow 2026-10-30): a completed log with no time words is now; words that place it elsewhere still ask.",
+  "cases": [
+    {
+      "id": "l8-01-bottle-no-time-is-now",
+      "title": "\"bé bú 120ml\" while holding the bottle: saved at the send time, no question, no model call",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [{ "k": "bottle", "f": { "amountMl": 120 }, "ev": { "amountMl": "120ml" } }]
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": { "0.occurredAt": "D0 14:20", "0.amountMl": 120 },
+        "saved": 1,
+        "credits": 0
+      }
+    },
+    {
+      "id": "l8-02-breast-length-ended-now",
+      "title": "\"bú mẹ 15 phút\" with no time ended just now: it started 15 minutes before the send time",
+      "anchor": "09:30",
+      "turns": [
+        {
+          "say": "bú mẹ 15 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": { "durationMin": 15 },
+                "ev": { "durationMin": "15 phút" },
+                "miss": ["time", "side"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "values": { "0.occurredAt": "D0 09:15", "0.durationMin": 15 },
+        "credits": 0
+      }
+    },
+    {
+      "id": "l8-03-earlier-words-still-ask",
+      "title": "\"sáng nay\" places the feed away from now: Lumi still asks when",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "sáng nay bé bú 120ml",
+          "model": {
+            "i": [{ "k": "bottle", "f": { "amountMl": 120 }, "ev": { "amountMl": "120ml" } }]
+          },
+          "check": { "outcome": "awaiting" }
+        }
+      ],
+      "expect": { "outcome": "awaiting", "asks": ["time.missing"], "credits": 0 }
+    },
+    {
+      "id": "l8-04-yesterday-still-asks",
+      "title": "\"hôm qua\" without a clock: a past day is never now",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "hôm qua thay tã ướt",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": { "diaper": "wet", "dayOffset": -1 },
+                "ev": { "diaper": "ướt" },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "check": { "outcome": "awaiting" }
+        }
+      ],
+      "expect": { "outcome": "awaiting", "asks": ["time.missing"], "credits": 0 }
+    }
+  ]
+}

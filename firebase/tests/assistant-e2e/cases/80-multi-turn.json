@@ -59,13 +59,7 @@
                 "miss": ["time"]
               }
             ]
-          },
-          "answers": [
-            {
-              "field": "time.missing",
-              "choice": 0
-            }
-          ]
+          }
         },
         {
           "confirm": "all"
@@ -74,17 +68,17 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["breast"],
-        "asks": ["time.missing"],
         "saved": 1,
         "credits": 0
       },
-      "group": "flow"
+      "group": "flow",
+      "title": "(L8: no time words → now, no question)"
     },
     {
       "id": "fl-03-typed-time-answer",
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {
@@ -116,7 +110,7 @@
           "0.occurredAt": "D0 13:00"
         },
         "saved": 1,
-        "credits": 0
+        "credits": 1
       },
       "group": "flow"
     },
@@ -537,7 +531,7 @@
       "anchor": "13:54",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -573,8 +567,8 @@
           "0.occurredAt": "D0 13:00"
         },
         "saved": 1,
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       },
       "group": "flow"
     },
@@ -584,7 +578,7 @@
       "anchor": "14:00",
       "turns": [
         {
-          "say": "Em bé đã thay tã ướt",
+          "say": "hồi nãy em bé đã thay tã ướt",
           "model": {
             "i": [
               {
@@ -621,8 +615,8 @@
           "0.occurredAt": "D0 14:00"
         },
         "saved": 1,
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       },
       "group": "flow"
     },

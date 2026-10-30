@@ -25220,4 +25220,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpPushSnooze10 => 'Remind me in 10 min';
+
+  @override
+  String get cuTitle => 'Coming up';
+
+  @override
+  String cuBasis(int days) {
+    return 'From the last $days days of the log';
+  }
+
+  @override
+  String get cuFeed => 'Next feed';
+
+  @override
+  String get cuSleep => 'Next sleep';
+
+  @override
+  String get cuWake => 'Waking';
+
+  @override
+  String cuWindow(String from, String to) {
+    return 'about $from–$to';
+  }
+
+  @override
+  String cuAround(String time) {
+    return 'about $time';
+  }
+
+  @override
+  String cuLastFeed(String time) {
+    return 'Last feed $time';
+  }
+
+  @override
+  String cuWokeAt(String time) {
+    return 'Woke at $time';
+  }
+
+  @override
+  String cuAsleepSince(String time) {
+    return 'Asleep since $time';
+  }
+
+  @override
+  String get wcTitle => 'Is your baby awake?';
+
+  @override
+  String wcBody(String duration) {
+    return 'Asleep for $duration. If your baby’s awake, tap to log the wake time.';
+  }
+
+  @override
+  String get ntWakeCheck => 'Ask when a sleep timer is still running';
+
+  @override
+  String get ntWakeCheckHint => 'Only on this phone, never in quiet hours';
+
+  @override
+  String get asNextFeedReminder => 'Remind me next feed';
 }

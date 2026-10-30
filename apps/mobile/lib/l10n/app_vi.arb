@@ -34927,5 +34927,103 @@
   "cpPushSnooze10": "Nhắc lại 10 phút",
   "@cpPushSnooze10": {
     "description": "Cùng Chăm Con N1: the task push's second button; it rings again in ten minutes (Figma 1353:22588). EN is an engineering draft for owner review."
+  },
+  "cuTitle": "Sắp tới",
+  "@cuTitle": {
+    "description": "Hôm nay \"Sắp tới\" card title: what usually comes next, from this baby's own log (sprint wow W1). EN is an engineering draft for owner review."
+  },
+  "cuBasis": "Theo nhật ký {days} ngày gần đây",
+  "@cuBasis": {
+    "description": "Hôm nay \"Sắp tới\": under the title, the basis of every range (descriptive, never a schedule). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cuFeed": "Cữ bú tiếp",
+  "@cuFeed": {
+    "description": "Hôm nay \"Sắp tới\": the next feed line. EN is an engineering draft for owner review."
+  },
+  "cuSleep": "Giấc ngủ tiếp",
+  "@cuSleep": {
+    "description": "Hôm nay \"Sắp tới\": the next nap line while the baby is awake. EN is an engineering draft for owner review."
+  },
+  "cuWake": "Bé dậy",
+  "@cuWake": {
+    "description": "Hôm nay \"Sắp tới\": while a daytime sleep timer runs, when the baby usually wakes. EN is an engineering draft for owner review."
+  },
+  "cuWindow": "khoảng {from}–{to}",
+  "@cuWindow": {
+    "description": "Hôm nay \"Sắp tới\": a usual range as clock times (the middle half of this baby's recent intervals). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "cuAround": "khoảng {time}",
+  "@cuAround": {
+    "description": "Hôm nay \"Sắp tới\": the usual range when both ends round to the same time. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cuLastFeed": "Cữ gần nhất {time}",
+  "@cuLastFeed": {
+    "description": "Hôm nay \"Sắp tới\": what the feed line counts from. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cuWokeAt": "Dậy lúc {time}",
+  "@cuWokeAt": {
+    "description": "Hôm nay \"Sắp tới\": what the next-sleep line counts from. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cuAsleepSince": "Ngủ từ {time}",
+  "@cuAsleepSince": {
+    "description": "Hôm nay \"Sắp tới\": what the waking line counts from (the running sleep timer). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wcTitle": "Bé dậy chưa?",
+  "@wcTitle": {
+    "description": "L6 local notification title, to the person who started a sleep timer that is still running (lumi-plan §7.1). No baby name on the lock screen (R-120). EN is an engineering draft for owner review."
+  },
+  "wcBody": "Bé đã ngủ {duration}. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé.",
+  "@wcBody": {
+    "description": "L6 notification body: words, never a verdict (no \"quá lâu\", no health language); opens the sleep timer. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ntWakeCheck": "Hỏi khi đếm giấc ngủ còn chạy",
+  "@ntWakeCheck": {
+    "description": "EN07 Cài đặt thông báo: the L6 \"Bé dậy chưa?\" switch, on by default, this phone only. EN is an engineering draft for owner review."
+  },
+  "ntWakeCheckHint": "Chỉ trên máy này, không hỏi trong giờ yên lặng",
+  "@ntWakeCheckHint": {
+    "description": "EN07: under the L6 switch; the exception to the group's \"kể cả trong giờ yên lặng\" (lumi-plan §7.1). EN is an engineering draft for owner review."
+  },
+  "asNextFeedReminder": "Nhắc cữ tiếp",
+  "@asNextFeedReminder": {
+    "description": "Lumi L4 (lumi-plan §7, sprint wow): on a feed just saved through Lumi, opens the \"after the last feed\" reminder with this baby's usual gap (Cùng nuôi only). EN is an engineering draft for owner review."
   }
 }

@@ -113,7 +113,7 @@
       "id": "br-04-missing-time-chip",
       "turns": [
         {
-          "say": "bú mẹ 20 phút bên phải",
+          "say": "hồi nãy bú mẹ 20 phút bên phải",
           "model": {
             "i": [
               {
@@ -146,7 +146,7 @@
         "values": {
           "0.occurredAt": "D0 14:00"
         },
-        "credits": 0
+        "credits": 1
       },
       "group": "care.breast"
     },
@@ -154,7 +154,7 @@
       "id": "br-05-missing-time-typed",
       "turns": [
         {
-          "say": "cho bú mẹ bên trái 10 phút",
+          "say": "hồi nãy cho bú mẹ bên trái 10 phút",
           "model": {
             "i": [
               {
@@ -185,7 +185,7 @@
         "values": {
           "0.occurredAt": "D0 13:30"
         },
-        "credits": 0
+        "credits": 1
       },
       "group": "care.breast"
     },

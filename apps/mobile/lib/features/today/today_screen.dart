@@ -37,6 +37,7 @@ import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../notifications/notification_bell.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../rhythm/coming_up_card.dart' show ComingUpCard;
 import '../rhythm/rhythm_labels.dart' show capitalized, memberLabel;
 import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
@@ -207,6 +208,9 @@ class TodayScreen extends ConsumerWidget {
                         ),
                 ],
               ),
+            // Sprint wow W1 (owner, 2026-10-30): what usually comes next, from this baby's
+            // own log, right under the tiles that log it. Draws nothing without a range.
+            if (recentAsync.hasValue) const ComingUpCard(),
             // A care tool, with the tiles rather than among the suggestions (owner,
             // 2026-10-15).
             if (!shiftHome) const TodayHandoverRow(),

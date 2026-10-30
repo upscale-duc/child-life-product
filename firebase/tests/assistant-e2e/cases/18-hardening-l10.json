@@ -8,7 +8,7 @@
       "anchor": "13:54",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -49,8 +49,8 @@
       "expect": {
         "asks": ["time.missing"],
         "saved": 1,
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       }
     },
     {
@@ -99,7 +99,7 @@
       "anchor": "13:54",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -149,8 +149,8 @@
       "expect": {
         "asks": ["time.missing"],
         "saved": 1,
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       }
     },
     {

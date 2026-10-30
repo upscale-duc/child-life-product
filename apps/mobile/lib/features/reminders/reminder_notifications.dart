@@ -22,6 +22,8 @@ import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
 import '../rhythm/try_reminders.dart';
+import '../care/timer_models.dart' show TimerType;
+import '../rhythm/wake_check.dart';
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/personalization_digest.dart';
 import '../rhythm/personalization_events.dart';
@@ -461,6 +463,24 @@ class _ReminderNotificationSyncState
     // yet and the tap was dropped.
     await untilInApp(ref);
     if (!mounted) return;
+    // L6 "Bé dậy chưa?": the running sleep timer of that baby, to end it at the right time.
+    final wakeBaby = wakeCheckOfPayload(payload);
+    if (wakeBaby != null && mounted) {
+      final session = ref.read(sessionProvider);
+      if (session is! SessionSignedIn ||
+          session.membershipFor(wakeBaby) == null) {
+        return;
+      }
+      ref.read(selectedBabyIdProvider.notifier).select(wakeBaby);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(routerProvider)
+              .pushSafe('${Routes.timer}/${TimerType.sleep.name}');
+        }
+      });
+      return;
+    }
     // Nhịp lớn lên weekly summary (EN07 → EN09): open the week of that baby.
     final weekBaby = rhythmWeekOfPayload(payload);
     if (weekBaby != null && mounted) {
@@ -653,6 +673,10 @@ class _ReminderNotificationSyncState
         ),
       );
     }
+    // L6 "Bé dậy chưa?" (lumi-plan §7.1): the sleep timers this person started.
+    for (final p in ref.read(wakeCheckPlanProvider)) {
+      out.add(wakeCheckNotification(l10n, p));
+    }
     return out;
   }
 
@@ -703,6 +727,7 @@ class _ReminderNotificationSyncState
     ref.watch(rhythmEveningPlanProvider);
     ref.watch(rhythmWeeklyPlanProvider);
     ref.watch(personalDigestPlanProvider);
+    ref.watch(wakeCheckPlanProvider);
     final ready = ref.watch(notificationSourcesReadyProvider);
     if (enabled == true && ready) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));

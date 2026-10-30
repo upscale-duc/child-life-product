@@ -233,6 +233,14 @@ const pastDayWords =
   /(?<![\p{L}])(?:hom qua|bua qua|toi qua|dem qua|sang qua|trua qua|chieu qua|hom kia|yesterday|last night)(?![\p{L}])/u;
 
 /**
+ * L8 (lumi-plan §11.3 #3, owner 2026-10-30 sprint wow): words that place a log away from now. A
+ * completed log whose message has no time and none of these is now ("bé bú 120ml" while the
+ * parent holds the bottle); with one of them Lumi still asks `time.missing`.
+ */
+export const notNowWords =
+  /(?<![\p{L}])(?:sang nay|trua nay|chieu nay|toi nay|dem nay|hoi nay|luc nay|ban nay|hoi sang|hoi trua|hoi chieu|hoi toi|hoi dem|earlier|this morning|this afternoon|this evening|tonight)(?![\p{L}])/u;
+
+/**
  * One stated clock time (LUMI-03 / LUMI-04): the hours its OWN words allow (contracts
  * `clockTokensIn`: "6h" → 6 or 18, "9h tối" → 21, "12h" → noon), checked against the model's
  * reading. A model hour the words do not allow is a misreading: the words win and the field is
@@ -300,6 +308,9 @@ export async function planTextIntents(
         Boolean(i.resolved && (i.resolved.at || i.resolved.endAt || i.resolved.timer))),
   ).length;
   const saysPastDay = pastDayWords.test(foldVi(ctx.text));
+  /** L8: no time words at all, so a single untimed completed log is now (not after an answer). */
+  const nowByDefault =
+    !saysPastDay && !notNowWords.test(foldVi(ctx.text)) && !ctx.answers.has('time.missing');
   // L1 (P-167 #3): the morning / evening answer, a chip or typed ("Sáng", "tối", "23:21").
   const ampmAnswer = ctx.answers.get('time.ampm');
   const ampm: DayHalf | null =
@@ -632,7 +643,10 @@ export async function planTextIntents(
     if (ago) return new Date(anchor.getTime() - ago.minutes * 60_000);
     if (base && 'occurredAt' in base && base.occurredAt) return new Date(base.occurredAt);
     const at = missingAt();
-    if (!at && timedLogs === 0) askOnce(timeMissingQuestion(ctx, null));
+    if (!at && timedLogs === 0) {
+      if (nowByDefault) return new Date(anchor.getTime());
+      askOnce(timeMissingQuestion(ctx, null));
+    }
     return at;
   };
 
@@ -974,7 +988,11 @@ export async function planTextIntents(
             at = new Date(anchor.getTime() - (Number(id.slice(4)) + durMin) * 60_000);
             link = { derived: 'occurredAt' };
           } else at = missingAt();
-          if (!at && timedLogs === 0) askOnce(timeMissingQuestion(ctx, durMin));
+          if (!at && timedLogs === 0 && nowByDefault) {
+            // L8: "bú mẹ 15 phút" with no time ended just now.
+            at = new Date(anchor.getTime() - (durMin ?? 0) * 60_000);
+            if (durMin) link = { derived: 'occurredAt' };
+          } else if (!at && timedLogs === 0) askOnce(timeMissingQuestion(ctx, durMin));
         }
         payload = {
           kind: 'breast',

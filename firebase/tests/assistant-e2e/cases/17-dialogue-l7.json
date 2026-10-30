@@ -8,7 +8,7 @@
       "anchor": "13:54",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -82,8 +82,8 @@
         "outcome": "answer",
         "asks": ["time.missing"],
         "saved": 0,
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       }
     },
     {
@@ -93,7 +93,7 @@
       "anchor": "13:54",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -133,7 +133,7 @@
         },
         { "confirm": "all" }
       ],
-      "expect": { "asks": ["time.missing"], "saved": 1, "credits": 0, "calls": 0 }
+      "expect": { "asks": ["time.missing"], "saved": 1, "credits": 1, "calls": 1 }
     },
     {
       "id": "dl-03-la-sao-while-asked",
@@ -141,7 +141,7 @@
       "anchor": "14:00",
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -171,7 +171,7 @@
         },
         { "confirm": "all" }
       ],
-      "expect": { "saved": 1, "credits": 0, "calls": 0 }
+      "expect": { "saved": 1, "credits": 1, "calls": 1 }
     },
     {
       "id": "dl-04-new-topic-sets-question-aside",
@@ -180,7 +180,7 @@
       "world": { "seed": ["day"] },
       "turns": [
         {
-          "say": "Bé đã bú bình 180ml",
+          "say": "hồi nãy bé đã bú bình 180ml",
           "model": {
             "i": [
               {
@@ -214,7 +214,7 @@
         },
         { "confirm": "all" }
       ],
-      "expect": { "saved": 1, "credits": 0, "calls": 0 }
+      "expect": { "saved": 1, "credits": 1, "calls": 1 }
     },
     {
       "id": "dl-05-continuation-keeps-the-day",

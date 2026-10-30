@@ -226,7 +226,7 @@ describe('rule-read routine logs (0 credits, no model)', () => {
 
   it('a missing time is asked; the answer runs in the same request and returns the card', async () => {
     const gw = fakeModelGateway({});
-    const r = await start('bé bú 120ml', gw);
+    const r = await start('sáng nay bé bú 120ml', gw);
     expect(r.data.task.state).toBe('awaiting_clarification');
     const cl = r.data.task.clarification!;
     expect(cl.field).toBe('time.missing');

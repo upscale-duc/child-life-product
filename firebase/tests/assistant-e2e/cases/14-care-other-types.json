@@ -235,19 +235,12 @@
                 "miss": ["time"]
               }
             ]
-          },
-          "answers": [
-            {
-              "field": "time.missing",
-              "choice": 0
-            }
-          ]
+          }
         }
       ],
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
-        "asks": ["time.missing"],
         "ready": true,
         "values": {
           "0.diaper": "wet",
@@ -255,7 +248,8 @@
         },
         "credits": 0
       },
-      "group": "care.types"
+      "group": "care.types",
+      "title": "(L8: no time words → now, no question)"
     },
     {
       "id": "pd-08-diaper-english",

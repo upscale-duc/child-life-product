@@ -39695,6 +39695,96 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhắc lại 10 phút'**
   String get cpPushSnooze10;
+
+  /// Hôm nay "Sắp tới" card title: what usually comes next, from this baby's own log (sprint wow W1). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get cuTitle;
+
+  /// Hôm nay "Sắp tới": under the title, the basis of every range (descriptive, never a schedule). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo nhật ký {days} ngày gần đây'**
+  String cuBasis(int days);
+
+  /// Hôm nay "Sắp tới": the next feed line. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú tiếp'**
+  String get cuFeed;
+
+  /// Hôm nay "Sắp tới": the next nap line while the baby is awake. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ tiếp'**
+  String get cuSleep;
+
+  /// Hôm nay "Sắp tới": while a daytime sleep timer runs, when the baby usually wakes. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé dậy'**
+  String get cuWake;
+
+  /// Hôm nay "Sắp tới": a usual range as clock times (the middle half of this baby's recent intervals). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'khoảng {from}–{to}'**
+  String cuWindow(String from, String to);
+
+  /// Hôm nay "Sắp tới": the usual range when both ends round to the same time. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'khoảng {time}'**
+  String cuAround(String time);
+
+  /// Hôm nay "Sắp tới": what the feed line counts from. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ gần nhất {time}'**
+  String cuLastFeed(String time);
+
+  /// Hôm nay "Sắp tới": what the next-sleep line counts from. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy lúc {time}'**
+  String cuWokeAt(String time);
+
+  /// Hôm nay "Sắp tới": what the waking line counts from (the running sleep timer). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ từ {time}'**
+  String cuAsleepSince(String time);
+
+  /// L6 local notification title, to the person who started a sleep timer that is still running (lumi-plan §7.1). No baby name on the lock screen (R-120). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé dậy chưa?'**
+  String get wcTitle;
+
+  /// L6 notification body: words, never a verdict (no "quá lâu", no health language); opens the sleep timer. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã ngủ {duration}. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé.'**
+  String wcBody(String duration);
+
+  /// EN07 Cài đặt thông báo: the L6 "Bé dậy chưa?" switch, on by default, this phone only. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi khi đếm giấc ngủ còn chạy'**
+  String get ntWakeCheck;
+
+  /// EN07: under the L6 switch; the exception to the group's "kể cả trong giờ yên lặng" (lumi-plan §7.1). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ trên máy này, không hỏi trong giờ yên lặng'**
+  String get ntWakeCheckHint;
+
+  /// Lumi L4 (lumi-plan §7, sprint wow): on a feed just saved through Lumi, opens the "after the last feed" reminder with this baby's usual gap (Cùng nuôi only). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc cữ tiếp'**
+  String get asNextFeedReminder;
 }
 
 class _AppLocalizationsDelegate

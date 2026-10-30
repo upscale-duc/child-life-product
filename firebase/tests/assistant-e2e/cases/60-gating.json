@@ -194,7 +194,7 @@
       "noProbe": true,
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {
@@ -229,7 +229,7 @@
       "noProbe": true,
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {
@@ -376,7 +376,7 @@
       "noProbe": true,
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {

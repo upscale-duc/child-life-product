@@ -19,7 +19,7 @@ import {
 } from '@child-life/contracts';
 import { careExtractionSchema, healthSignsExtractionSchema } from './assistant-care-model.js';
 import { intentFieldNames, type ModelExtraction, type ModelIntent } from './assistant-model.js';
-import type { PreviousTurn } from './assistant-text.js';
+import { notNowWords, type PreviousTurn } from './assistant-text.js';
 import { localClock, localInstant } from './assistant-tools.js';
 
 /**
@@ -123,6 +123,8 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
   const tokens = clockTokensIn(text);
   const periodSaid = hasDayPeriod(text);
   const saysPastDay = pastDayWords.test(folded);
+  /** L8: a log with no time is now only when no word places it elsewhere ("hồi nãy", "hôm qua"). */
+  const awayFromNow = saysPastDay || notNowWords.test(folded);
   const inst = (date: string, h: number, m: number) =>
     localInstant(zone, date, `${pad(((h % 24) + 24) % 24)}:${pad(m)}`);
   const ampmAnswer = x.answers.get('time.ampm');
@@ -506,20 +508,23 @@ export function resolveUnderstanding(x: ResolveInput): ResolvedUnderstanding {
         return { ...none, at: iso(end) };
       }
       const m = missingAt();
+      // As the planner reads `time.missing` (assistant-text.ts): a "Vừa xong" / "N phút trước"
+      // chip is when the feed ended, a typed clock is when it began (br-05).
+      const endedThen = /^ago_\d+$/.test(missingAnswer?.choiceId ?? '');
       if (m)
         return {
           ...none,
-          at: iso(dur !== null ? minus(m, dur) : m),
-          derived: dur ? 'start' : null,
+          at: iso(dur !== null && endedThen ? minus(m, dur) : m),
+          derived: dur && endedThen ? 'start' : null,
         };
-      if (timedElsewhere(e)) return none;
+      if (timedElsewhere(e) || awayFromNow) return none;
       if (dur !== null) return { ...none, at: iso(minus(anchor, dur)), derived: 'start' };
       return { ...none, at: iso(anchor) };
     }
     // bottle, diaper: a point log — its clock, "N phút trước", an answer, else now (§12.3 #2);
     // in a batch where another log has a time, left to fill ("7h 100ml rồi bú thêm 60ml").
     const said = startOf() ?? endOf() ?? missingAt();
-    if (!said && timedElsewhere(e)) return none;
+    if (!said && (timedElsewhere(e) || awayFromNow)) return none;
     return { ...none, at: iso(said ?? anchor) };
   };
 

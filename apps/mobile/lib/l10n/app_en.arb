@@ -8882,5 +8882,20 @@
   "cpShareFailed": "Couldn't share. Try again.",
   "cpHistEmptyBody": "Who edits, adds or gives tasks shows here.",
   "careAtTime": "at {time}",
-  "cpPushSnooze10": "Remind me in 10 min"
+  "cpPushSnooze10": "Remind me in 10 min",
+  "cuTitle": "Coming up",
+  "cuBasis": "From the last {days} days of the log",
+  "cuFeed": "Next feed",
+  "cuSleep": "Next sleep",
+  "cuWake": "Waking",
+  "cuWindow": "about {from}–{to}",
+  "cuAround": "about {time}",
+  "cuLastFeed": "Last feed {time}",
+  "cuWokeAt": "Woke at {time}",
+  "cuAsleepSince": "Asleep since {time}",
+  "wcTitle": "Is your baby awake?",
+  "wcBody": "Asleep for {duration}. If your baby’s awake, tap to log the wake time.",
+  "ntWakeCheck": "Ask when a sleep timer is still running",
+  "ntWakeCheckHint": "Only on this phone, never in quiet hours",
+  "asNextFeedReminder": "Remind me next feed"
 }

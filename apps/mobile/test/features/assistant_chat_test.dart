@@ -11,6 +11,9 @@ import 'package:child_life/features/assistant/assistant_models.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
 import 'package:child_life/features/assistant/assistant_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/care/care_repository.dart'
+    show recentRecordsProvider;
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/billing_repository.dart';
 import 'package:child_life/features/premium/paywall_screen.dart';
@@ -1833,5 +1836,72 @@ void main() {
         expect(_text('Lumi vẫn đang xử lý…'), findsNothing);
       },
     );
+  });
+
+  group('L4 next step (lumi-plan §7, sprint wow)', () {
+    /// Bottles every 3 h, 07:00–19:00 in Hà Nội, 10–14 Oct: a usual gap of 180 min.
+    final log = [
+      for (var d = 10; d <= 14; d++)
+        for (var m = 7 * 60; m <= 19 * 60; m += 180)
+          CareRecord(
+            id: 'r_${'$d$m'.padLeft(32, '0')}',
+            babyId: teddyId,
+            type: CareType.bottle,
+            occurredAt: DateTime.utc(
+              2026,
+              10,
+              d,
+              m ~/ 60,
+              m % 60,
+            ).subtract(const Duration(hours: 7)),
+            createdBy: 'u_mai',
+            author: CareAuthor.of(mai),
+          ),
+    ];
+    final recentFeed = {
+      ...batchSnapshot(),
+      'drafts': [
+        bottleDraftJson(at: '2026-10-15T07:00:00.000Z'),
+        sleepDraftJson(),
+      ],
+    };
+
+    testWidgets('a feed just saved offers "Nhắc cữ tiếp" with the usual gap', (
+      tester,
+    ) async {
+      final repo = FakeAssistantRepository(tasks: {taskA: recentFeed});
+      final (visits, _) = await _pump(
+        tester,
+        repo: repo,
+        prefs: _thread([taskA]),
+        extra: [
+          recentRecordsProvider(teddyId).overrideWith((_) => Stream.value(log)),
+        ],
+      );
+      expect(_text('Nhắc cữ tiếp'), findsNothing);
+      await tester.tap(_text('Lưu 2 mục'));
+      await tester.pumpAndSettle();
+      // Only on the feed, not on the sleep.
+      expect(_text('Nhắc cữ tiếp'), findsOneWidget);
+      await tester.tap(_text('Nhắc cữ tiếp'));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '/care/reminders/rules/new?interval=180');
+    });
+
+    testWidgets('no usual gap, or an older feed: no chip', (tester) async {
+      final repo = FakeAssistantRepository(tasks: {taskA: batchSnapshot()});
+      await _pump(
+        tester,
+        repo: repo,
+        prefs: _thread([taskA]),
+        extra: [
+          recentRecordsProvider(teddyId).overrideWith((_) => Stream.value(log)),
+        ],
+      );
+      await tester.tap(_text('Lưu 2 mục'));
+      await tester.pumpAndSettle();
+      // The batch's bottle was at 08:00, more than 3 h before now (14:20).
+      expect(_text('Nhắc cữ tiếp'), findsNothing);
+    });
   });
 }

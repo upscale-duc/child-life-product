@@ -135,7 +135,7 @@ const taskCount = async () => (await db.collection('assistantTasks').get()).size
 describe('L10: an answer routed from startTask', () => {
   it('A1: the retry of the same request is that answer again — never a new task', async () => {
     const gw = fakeModelGateway({});
-    const q = await start('bé bú 120ml', gw);
+    const q = await start('sáng nay bé bú 120ml', gw);
     expect(q.data.task.clarification?.field).toBe('time.missing');
     const id = randomUUID();
     const a = await start('8h sáng', gw, {}, { clientRequestId: id });
@@ -155,7 +155,7 @@ describe('L10: an answer routed from startTask', () => {
   it('A2: the routed answer runs under the request’s own start and timer (one timing line)', async () => {
     const lines: Record<string, unknown>[] = [];
     const gw = fakeModelGateway({});
-    const q = await start('bé bú 120ml', gw);
+    const q = await start('sáng nay bé bú 120ml', gw);
     await start('8h sáng', gw, { onTiming: (p) => lines.push(p) });
     expect(lines).toHaveLength(1);
     expect(lines[0]).toMatchObject({ op: 'startTask', taskId: q.taskId, path: 'answer' });
@@ -166,7 +166,7 @@ describe('L10: an answer routed from startTask', () => {
 
   it('A5: words longer than an answer may be read as a message of their own (no VALIDATION_FAILED)', async () => {
     const gw = fakeModelGateway({});
-    const q = await start('bé bú 120ml', gw);
+    const q = await start('sáng nay bé bú 120ml', gw);
     const long = `8h sáng nhé, ${'bé ngoan lắm, '.repeat(16)}`.trim();
     expect(long.length).toBeGreaterThan(200);
     const r = await start(long, gw);
@@ -178,7 +178,7 @@ describe('L10: an answer routed from startTask', () => {
 
 describe('L10 A6: the dialogue doc', () => {
   it('keeps the chips by id only, and goes with "Xoá cuộc trò chuyện"', async () => {
-    const q = await start('bé bú 120ml', fakeModelGateway({}));
+    const q = await start('sáng nay bé bú 120ml', fakeModelGateway({}));
     const d = await dialogueOf();
     expect(d?.state.question).toMatchObject({ taskId: q.taskId, field: 'time.missing' });
     expect(d?.state.question.choiceIds).toEqual(
@@ -196,7 +196,7 @@ describe('L10: "huỷ" while my question waits', () => {
   it('cancels the question only once the new task is recorded (a failed start leaves it open)', async () => {
     const gw = fakeModelGateway({});
     const id = randomUUID();
-    const q = await start('bé bú 120ml', gw, {}, { clientRequestId: id });
+    const q = await start('sáng nay bé bú 120ml', gw, {}, { clientRequestId: id });
     // The same request id with other words: the start transaction refuses it.
     expect(await reason(start('huỷ', gw, {}, { clientRequestId: id }))).toBe(
       'IDEMPOTENCY_CONFLICT',

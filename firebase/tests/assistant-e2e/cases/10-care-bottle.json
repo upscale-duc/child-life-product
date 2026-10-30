@@ -113,7 +113,7 @@
       "id": "bot-04-missing-time-chip",
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {
@@ -143,8 +143,8 @@
         "values": {
           "0.occurredAt": "D0 13:50"
         },
-        "credits": 0,
-        "calls": 0
+        "credits": 1,
+        "calls": 1
       },
       "group": "care.bottle"
     },
@@ -153,7 +153,7 @@
       "title": "The model follows the prompt and lists \"time\" in missingFields; the answered time must clear it",
       "turns": [
         {
-          "say": "bé bú 120ml",
+          "say": "hồi nãy bé bú 120ml",
           "model": {
             "i": [
               {
@@ -184,7 +184,7 @@
         "values": {
           "0.occurredAt": "D0 14:20"
         },
-        "credits": 0
+        "credits": 1
       },
       "group": "care.bottle"
     },
@@ -192,7 +192,7 @@
       "id": "bot-06-missing-time-typed",
       "turns": [
         {
-          "say": "bé bú 90ml",
+          "say": "hồi nãy bé bú 90ml",
           "model": {
             "i": [
               {
@@ -222,7 +222,7 @@
         "values": {
           "0.occurredAt": "D0 13:00"
         },
-        "credits": 0
+        "credits": 1
       },
       "group": "care.bottle"
     },
@@ -231,7 +231,7 @@
       "title": "An answer the server cannot read leaves the time to fill in (review), never a second question",
       "turns": [
         {
-          "say": "bé bú 90ml",
+          "say": "hồi nãy bé bú 90ml",
           "model": {
             "i": [
               {
@@ -257,7 +257,7 @@
         "outcome": "drafts",
         "kinds": ["bottle"],
         "review": ["occurredAt"],
-        "credits": 0
+        "credits": 1
       },
       "group": "care.bottle"
     },
@@ -674,7 +674,13 @@
             ]
           },
           "at": "+1",
-          "check": { "outcome": "drafts", "ops": ["update"], "values": { "0.amountMl": 100 } }
+          "check": {
+            "outcome": "drafts",
+            "ops": ["update"],
+            "values": {
+              "0.amountMl": 100
+            }
+          }
         },
         {
           "confirm": "all"
@@ -684,10 +690,15 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["bottle"],
-        "values": { "0.amountMl": 100, "0.occurredAt": "D0 09:00" },
+        "values": {
+          "0.amountMl": 100,
+          "0.occurredAt": "D0 09:00"
+        },
         "saved": 1,
         "credits": 0,
-        "recordData": { "bottle.amountMl": 100 }
+        "recordData": {
+          "bottle.amountMl": 100
+        }
       },
       "group": "care.bottle"
     },

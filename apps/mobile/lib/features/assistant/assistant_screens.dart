@@ -27,7 +27,7 @@ import '../baby/baby_models.dart';
 import '../home/home_shell.dart' show selectedBabyIdProvider;
 import '../baby/baby_repository.dart';
 import '../care/care_models.dart' show CareType;
-import '../care/care_repository.dart' show inBabyZone;
+import '../care/care_repository.dart' show inBabyZone, recentRecordsProvider;
 import '../care/care_sheets.dart' show openCareLog, showQuickLog;
 import '../care/timer_models.dart' show TimerType;
 import '../family/family_repository.dart' show familyMembersProvider;
@@ -36,6 +36,7 @@ import '../premium/billing_repository.dart' show videoQuotaProvider;
 import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_repository.dart'
     show capabilitiesProvider, selectedCapabilitiesProvider;
+import '../rhythm/coming_up.dart' show RoutineRange, feedIntervalRange;
 import '../rhythm/rhythm_access.dart' show FamilyAction, familyCan;
 import '../rhythm/rhythm_actions.dart' show activityLocation, healthLocation;
 import '../rhythm/rhythm_repository.dart'
@@ -780,6 +781,13 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
         final text = ctl.takeKept();
         if (text != null) _prefill(text);
       },
+      feedRange: me?.role == MemberRole.coParent
+          ? feedIntervalRange(
+              ref.watch(recentRecordsProvider(scope.babyId)).value ?? const [],
+              now,
+              zone,
+            )
+          : null,
     );
     final entries = <_Entry>[
       if (chat.empty)
@@ -1107,6 +1115,7 @@ class _ThreadView {
     required this.onRetake,
     required this.onTypeIn,
     required this.onEditKept,
+    this.feedRange,
   });
 
   /// A chat can be scoped to a different baby from the Home tab (CH03).
@@ -1128,6 +1137,9 @@ class _ThreadView {
   final bool viewer;
   final String zone;
   final DateTime now;
+
+  /// L4: this baby's usual gap between feeds (Cùng nuôi only), for "Nhắc cữ tiếp".
+  final RoutineRange? feedRange;
   final String babyName;
   final bool premium;
   final bool upsell;
@@ -2891,6 +2903,26 @@ class _ThreadView {
               label: l10n.asOpenRecord,
               onPressed: () => GoRouter.of(context).pushSafe(record),
             ),
+          // L4 (lumi-plan §7, sprint wow): a feed just logged → the "after the last feed"
+          // reminder with this baby's usual gap, as Nhịp riêng's A4 offers it.
+          if (feedRange case final range?)
+            if (switch (d.payload) {
+              BottlePayload(:final occurredAt) ||
+              BreastPayload(:final occurredAt) =>
+                occurredAt != null &&
+                    now.difference(occurredAt) < const Duration(hours: 3),
+              _ => false,
+            })
+              (
+                label: l10n.asNextFeedReminder,
+                onPressed: () {
+                  final mid = (range.lowMinutes + range.highMinutes) / 2;
+                  final interval = ((mid / 15).round() * 15).clamp(30, 720);
+                  GoRouter.of(
+                    context,
+                  ).push('${Routes.ruleNew}?interval=$interval');
+                },
+              ),
         ],
       ],
       if (canSaveAnyway(d) && canSave && !saving) ...[

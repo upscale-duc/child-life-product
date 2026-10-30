@@ -23842,4 +23842,64 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpPushSnooze10 => 'Nhắc lại 10 phút';
+
+  @override
+  String get cuTitle => 'Sắp tới';
+
+  @override
+  String cuBasis(int days) {
+    return 'Theo nhật ký $days ngày gần đây';
+  }
+
+  @override
+  String get cuFeed => 'Cữ bú tiếp';
+
+  @override
+  String get cuSleep => 'Giấc ngủ tiếp';
+
+  @override
+  String get cuWake => 'Bé dậy';
+
+  @override
+  String cuWindow(String from, String to) {
+    return 'khoảng $from–$to';
+  }
+
+  @override
+  String cuAround(String time) {
+    return 'khoảng $time';
+  }
+
+  @override
+  String cuLastFeed(String time) {
+    return 'Cữ gần nhất $time';
+  }
+
+  @override
+  String cuWokeAt(String time) {
+    return 'Dậy lúc $time';
+  }
+
+  @override
+  String cuAsleepSince(String time) {
+    return 'Ngủ từ $time';
+  }
+
+  @override
+  String get wcTitle => 'Bé dậy chưa?';
+
+  @override
+  String wcBody(String duration) {
+    return 'Bé đã ngủ $duration. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé.';
+  }
+
+  @override
+  String get ntWakeCheck => 'Hỏi khi đếm giấc ngủ còn chạy';
+
+  @override
+  String get ntWakeCheckHint =>
+      'Chỉ trên máy này, không hỏi trong giờ yên lặng';
+
+  @override
+  String get asNextFeedReminder => 'Nhắc cữ tiếp';
 }

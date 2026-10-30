@@ -23,6 +23,7 @@ import '../engagement/engagement_repository.dart' show engagementProvider;
 import '../engagement/engagement_widgets.dart' show engagementTitle;
 import '../me/me_widgets.dart';
 import '../reminders/reminder_notifications.dart';
+import '../rhythm/wake_check.dart' show wakeCheckSwitchProvider;
 import '../rhythm/rhythm_repository.dart' show userPreferencesProvider;
 import 'notification_repository.dart';
 
@@ -177,6 +178,19 @@ class _NotificationSettingsScreenState
           ClCardGroup(
             children: [
               toggle('reminders', l10n.ntCare),
+              // L6 "Bé dậy chưa?" (lumi-plan §7.1): this phone only, so not a server setting.
+              MeRow(
+                key: const Key('nt-wake-check'),
+                title: l10n.ntWakeCheck,
+                subtitle: l10n.ntWakeCheckHint,
+                trailing: ClToggle(
+                  value: ref.watch(wakeCheckSwitchProvider(uid)),
+                  semanticLabel: l10n.ntWakeCheck,
+                  onChanged: (v) => unawaited(
+                    ref.read(wakeCheckSwitchProvider(uid).notifier).set(v),
+                  ),
+                ),
+              ),
               // D-135 N1: one place for the task reminders (Cùng Chăm Con settings).
               MeRow(
                 key: const Key('nt-care-tasks'),

@@ -117,19 +117,12 @@
                 "miss": ["time", "side"]
               }
             ]
-          },
-          "answers": [
-            {
-              "field": "time.missing",
-              "choice": 0
-            }
-          ]
+          }
         }
       ],
       "expect": {
         "outcome": "drafts",
         "kinds": ["breast"],
-        "asks": ["time.missing"],
         "ready": true,
         "values": {
           "0.occurredAt": "D0 00:48",
@@ -137,7 +130,8 @@
         },
         "credits": 0
       },
-      "group": "device"
+      "group": "device",
+      "title": "(L8: no time words → now, no question)"
     },
     {
       "id": "dev-03a-thay-ta-uot",
@@ -159,19 +153,12 @@
                 "miss": ["time"]
               }
             ]
-          },
-          "answers": [
-            {
-              "field": "time.missing",
-              "choice": 0
-            }
-          ]
+          }
         }
       ],
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
-        "asks": ["time.missing"],
         "ready": true,
         "values": {
           "0.diaper": "wet",
@@ -179,7 +166,8 @@
         },
         "credits": 1
       },
-      "group": "device"
+      "group": "device",
+      "title": "(L8: no time words → now, no question)"
     },
     {
       "id": "dev-03b-hut-sua-120",
@@ -203,19 +191,12 @@
                 "miss": ["time"]
               }
             ]
-          },
-          "answers": [
-            {
-              "field": "time.missing",
-              "choice": 0
-            }
-          ]
+          }
         }
       ],
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
-        "asks": ["time.missing"],
         "ready": true,
         "values": {
           "0.amountMl": 120,
@@ -223,7 +204,8 @@
         },
         "credits": 1
       },
-      "group": "device"
+      "group": "device",
+      "title": "(L8: no time words → now, no question)"
     },
     {
       "id": "dev-03c-be-nang-5-2kg",
