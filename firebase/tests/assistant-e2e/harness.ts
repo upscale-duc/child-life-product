@@ -280,15 +280,10 @@ export function liveGateway(
     name: 'openai',
     model: real.model,
     promptVersion: real.promptVersion,
-    extract: async (i, s) => {
-      const out = await real.extract(i, s);
-      // Debugging a live run: the raw readings of the synthetic cases (never real data).
-      if (process.env.LUMI_E2E_DUMP) meter.raw = [...(meter.raw ?? []), out];
-      return out;
-    },
-    // L9: the understanding call (v9) — the worker's normal path.
+    // L9: the understanding call (v9) — the worker's only path (L9c).
     understand: async (i, s) => {
-      const out = await real.understand!(i, s);
+      const out = await real.understand(i, s);
+      // Debugging a live run: the raw readings of the synthetic cases (never real data).
       if (process.env.LUMI_E2E_DUMP) meter.raw = [...(meter.raw ?? []), out];
       return out;
     },

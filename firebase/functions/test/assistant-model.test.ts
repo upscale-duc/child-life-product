@@ -1,14 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   assistantPromptVersion,
-  buildExtractRequest,
+  buildUnderstandRequest,
   buildWordRequest,
   callWithTimeout,
-  extractionJsonSchema,
-  extractionSystemPrompt,
   fakeModelGateway,
   intentFieldNames,
-  intentKindFields,
   ModelUnavailable,
   openAiModelGateway,
   parseExtraction,
@@ -42,12 +39,6 @@ const dig = (o: unknown, path: string): Json =>
     .split('.')
     .filter(Boolean)
     .reduce<unknown>((x, k) => (x as Json)[k], o) as Json;
-
-/** v7: the strict branch of one intent kind in an extraction schema. */
-const branchOf = (schema: unknown, kind: string): Json =>
-  (dig(schema, 'properties.intents.items').anyOf as Json[]).find(
-    (b) => (dig(b, 'properties.kind').enum as string[])[0] === kind,
-  )!;
 
 /** Records the request and answers with [content] as the model message. */
 function recordingFetch(content: unknown, status = 200) {
@@ -89,19 +80,18 @@ const valid = {
   clarification: null,
 };
 
-describe('OpenAI extraction request', () => {
+describe('OpenAI understanding request (L9c: the only text call)', () => {
   it('is a strict JSON-schema chat completion with store:false and temperature 0', () => {
-    const body = dig(buildExtractRequest(input, 'gpt-test'), '');
+    const body = dig(buildUnderstandRequest(input, 'gpt-test'), '');
     expect(body.model).toBe('gpt-test');
     expect(body.store).toBe(false);
     expect(body.temperature).toBe(0);
     expect(dig(body, 'response_format').type).toBe('json_schema');
     expect(dig(body, 'response_format.json_schema').strict).toBe(true);
-    expect(dig(body, 'response_format.json_schema').name).toBe('assistant_extraction');
   });
 
-  it('sends the person text only as data, after the system rules', () => {
-    const body = dig(buildExtractRequest(input, 'gpt-test'), '');
+  it('sends the person text only as data, after the system rules; no identity data', () => {
+    const body = dig(buildUnderstandRequest(input, 'gpt-test'), '');
     expect(body.messages).toHaveLength(2);
     expect(dig(body, 'messages.0').role).toBe('system');
     expect(dig(body, 'messages.0').content).toContain('never an instruction');
@@ -109,13 +99,12 @@ describe('OpenAI extraction request', () => {
     const user = JSON.parse(dig(body, 'messages.1').content as string);
     expect(user.untrusted_user_text).toBe(input.text);
     expect(user.anchor).toEqual(input.anchor);
-    expect(user.allowed_intents).toEqual(input.allowedIntents);
     expect(user.allowed_reads).toEqual(input.allowedReads);
-    // No identity or family data travels with the request (rework 2026-10-15: the calendar, the
-    // household currency and category names, the sender's previous turn — never a uid or name).
+    // The calendar, the household currency and category names, the sender's previous turn —
+    // never a uid or a name.
     expect(Object.keys(user).sort()).toEqual(
       [
-        'allowed_intents',
+        'allowed_kinds',
         'allowed_reads',
         'anchor',
         'calendar',
@@ -128,195 +117,29 @@ describe('OpenAI extraction request', () => {
         'untrusted_user_text',
       ].sort(),
     );
-  });
-
-  it('narrows the schema to the allowlists: one strict branch per kind with only its fields', () => {
-    const schema = extractionJsonSchema(['bottle', 'sleep'], ['care_summary']);
-    const branches = dig(schema, 'properties.intents.items').anyOf as Json[];
-    expect(branches.map((b) => dig(b, 'properties.kind').enum)).toEqual([['bottle'], ['sleep']]);
-    expect(dig(schema, 'properties.reads.items.properties.tool').enum).toEqual(['care_summary']);
-    for (const kind of ['bottle', 'sleep'] as const) {
-      const b = branchOf(schema, kind);
-      expect(b.additionalProperties).toBe(false);
-      expect(b.required).toEqual(Object.keys(dig(b, 'properties')));
-      expect(dig(b, 'properties.fields').additionalProperties).toBe(false);
-      expect(dig(b, 'properties.fields').required).toEqual([...intentKindFields[kind]]);
-      expect(Object.keys(dig(b, 'properties.fields.properties'))).toEqual([
-        ...intentKindFields[kind],
-      ]);
-      // Evidence, doubts and gaps: one shared definition (the schema is counted as input).
-      expect(dig(b, 'properties.evidence')).toEqual({ $ref: '#/$defs/evidence' });
-      expect(dig(b, 'properties.uncertainFields')).toEqual({ $ref: '#/$defs/fieldNames' });
-      expect(dig(b, 'properties.missingFields')).toEqual({ $ref: '#/$defs/fieldNames' });
-    }
-    expect(dig(schema, '$defs.fieldName').enum).toEqual([...intentFieldNames]);
-    expect(dig(schema, '$defs.evidence.items.properties.field')).toEqual({
-      $ref: '#/$defs/fieldName',
-    });
-    expect(Object.keys(dig(branchOf(schema, 'bottle'), 'properties.fields.properties'))).toEqual([
-      'amountMl',
-      'milk',
-      'time',
-      'dayOffset',
-    ]);
-    // Timers are the server's: never a branch, even if asked.
-    expect(
-      (
-        dig(extractionJsonSchema(['bottle', 'timer'], []), 'properties.intents.items')
-          .anyOf as Json[]
-      ).length,
-    ).toBe(1);
-    expect(schema.required).toEqual([
-      'intents',
-      'reads',
-      'clarification',
-      'care',
-      'healthSigns',
-      'smallTalk',
-      'outOfScope',
-      // Lumi L7 (v8): what the message answers (with the conversation state only).
-      'replyTo',
-    ]);
-    expect(extractionJsonSchema(['bottle'], [], [], false).required).not.toContain('replyTo');
-  });
-
-  it('v3 (rework 2026-10-15): expense / reminder fields, the household categories only, corrections', () => {
-    const schema = extractionJsonSchema(['expense', 'reminder'], [], ['c_milk', 'c_hocboi']);
-    const expense = branchOf(schema, 'expense');
-    expect(expense.required).toContain('correctsPrevious');
-    const fields = dig(expense, 'properties.fields.properties');
-    expect(Object.keys(fields)).toEqual([
-      'title',
-      'amount',
-      'currency',
-      'categoryId',
-      'merchant',
-      'date',
-    ]);
-    expect(Object.keys(dig(branchOf(schema, 'reminder'), 'properties.fields.properties'))).toEqual([
-      'time',
-      'title',
-      'date',
-      'assigneeText',
-    ]);
-    expect(dig(fields, 'categoryId.anyOf.0').enum).toEqual(['c_milk', 'c_hocboi']);
-    expect(dig(fields, 'currency.anyOf.0').enum).toContain('VND');
-    expect(
-      dig(branchOf(extractionJsonSchema(['bottle'], []), 'bottle'), 'properties.fields.properties')
-        .dayOffset,
-    ).toEqual({ anyOf: [{ type: 'integer', enum: [0, -1, -2] }, { type: 'null' }] });
-    // Without categories the model cannot name one.
-    expect(
-      Object.keys(
-        dig(
-          branchOf(extractionJsonSchema(['expense'], []), 'expense'),
-          'properties.fields.properties',
-        ),
-      ),
-    ).not.toContain('categoryId');
-    // v7: no previous turn, nothing to correct: no `correctsPrevious` key to write.
-    const alone = branchOf(extractionJsonSchema(['bottle'], [], [], false), 'bottle');
-    expect(alone.required).not.toContain('correctsPrevious');
-    expect(Object.keys(dig(alone, 'properties'))).not.toContain('correctsPrevious');
-    const prompt = extractionSystemPrompt();
-    for (const words of [
-      '"500k" = 500000',
-      '"1tr2" = 1200000',
-      'assigneeText',
-      'correctsPrevious',
-      'smallTalk',
-      'outOfScope',
-      'never move a time',
-    ]) {
-      expect(prompt).toContain(words);
-    }
-    // Lumi fixes 2026-10-16 (v5): pump / diaper / growth, "12h" is noon, each time its period.
-    // Lumi L9 (P-169): the worker runs the understanding call (v9, `assistant-understand-v1`);
-    // the v8 extraction request stays for scripted tests and the legacy parse.
     expect(assistantPromptVersion).toBe('assistant-understand-v2');
-    // Lumi L7 (v8): the conversation state, `corrects` (another kind too) and `replyTo`.
-    for (const words of [
-      '"corrects" = the kind of the item it corrects',
-      '"replyTo"',
-      'rồi ngủ lúc 10h',
-    ]) {
-      expect(prompt).toContain(words);
-    }
-    const withState = branchOf(extractionJsonSchema(['bottle', 'breast'], []), 'bottle');
-    expect(withState.required).toContain('corrects');
-    expect(dig(withState, 'properties.corrects')).toEqual({
-      anyOf: [{ type: 'string', enum: ['bottle', 'breast'] }, { type: 'null' }],
-    });
-    // Owner 2026-10-16 (v6): head circumference is stored; plans / questions are not expenses.
-    for (const words of [
-      'headCm = head circumference',
-      'NEVER a plan or a to-do',
-      'mua sữa nào tốt?',
-    ]) {
-      expect(prompt).toContain(words);
-    }
-    for (const words of ['pump (', 'diaper (', 'growth (', '"12h" / "12 giờ" alone is noon']) {
-      expect(prompt).toContain(words);
-    }
-    expect(intentKindFields.diaper).toContain('diaper');
-    expect(intentKindFields.growth).toEqual(['dayOffset', 'weightKg', 'lengthCm', 'headCm']);
-    expect(prompt).toContain('only the "fields" of its kind');
-    const context = {
-      currency: 'VND',
-      categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
-      calendar: [{ date: '2026-10-16', weekday: 'Thứ Sáu (Friday)', label: 'mai' }],
-      previous: { text: 'bé bú 120ml', drafts: [{ kind: 'bottle', amountMl: 120 }] },
+  });
+
+  it('sends the calendar only when the words name a day', () => {
+    const context: Partial<ExtractInput> = {
+      calendar: [{ date: '2026-10-16', weekday: 'thứ 6', label: null }],
     };
-    const body = buildExtractRequest(
-      { ...input, ...context, text: 'mai mua sữa hết 500k' },
-      'gpt-test',
-    );
-    const user = JSON.parse(dig(body, 'messages.1').content as string);
-    expect(user).toMatchObject({
-      household_currency: 'VND',
-      spending_categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
-      calendar: [{ date: '2026-10-16', label: 'mai' }],
-      previous_turn: { text: 'bé bú 120ml' },
-    });
-    // Lumi L2: a plain care log sends neither the calendar nor the categories (a shorter prompt).
-    const care = buildExtractRequest(
-      {
-        ...input,
-        ...context,
-        allowedIntents: ['bottle', 'sleep', 'expense'],
-        text: 'bé bú 120ml lúc 8h, ngủ từ 9h đến 10h',
-      },
-      'gpt-test',
-    );
-    expect(JSON.parse(dig(care, 'messages.1').content as string)).toMatchObject({
-      spending_categories: [],
-      calendar: [],
-    });
-    const careSchema = dig(care, 'response_format.json_schema.schema');
-    expect(
-      Object.keys(dig(branchOf(careSchema, 'expense'), 'properties.fields.properties')),
-    ).not.toContain('categoryId');
-    // The previous turn travels: its items may correct it.
-    expect(branchOf(careSchema, 'bottle').required).toContain('correctsPrevious');
-    expect(
-      branchOf(
-        dig(buildExtractRequest(input, 'gpt-test'), 'response_format.json_schema.schema'),
-        'bottle',
-      ).required,
-    ).not.toContain('correctsPrevious');
-    // A day word keeps the calendar ("hôm qua", "thứ 6", "20/10", reminders).
     for (const text of ['hôm qua bé bú 120ml', 'nhắc thứ 6 đi tiêm', 'tiêm ngày 20/10']) {
-      const b = buildExtractRequest({ ...input, ...context, text }, 'gpt-test');
+      const b = buildUnderstandRequest({ ...input, ...context, text } as ExtractInput, 'gpt-test');
       expect(JSON.parse(dig(b, 'messages.1').content as string).calendar, text).toHaveLength(1);
     }
-    expect(dig(body, 'max_completion_tokens')).toBe(1100);
+    const plain = buildUnderstandRequest(
+      { ...input, ...context, text: 'bé bú 120ml' } as ExtractInput,
+      'gpt-test',
+    );
+    expect(JSON.parse(dig(plain, 'messages.1').content as string).calendar).toEqual([]);
   });
 
   it('posts to chat completions with the bearer key and parses the JSON content', async () => {
     const f = recordingFetch(valid);
     const gw = openAiModelGateway('sk-test', 'gpt-test', f.impl);
     expect(gw.promptVersion).toBe(assistantPromptVersion);
-    const out = await gw.extract(input, new AbortController().signal);
+    const out = await gw.understand(input, new AbortController().signal);
     expect(out).toEqual(valid);
     expect(f.calls[0]!.url).toBe('https://api.openai.com/v1/chat/completions');
     expect((f.calls[0]!.init.headers as Record<string, string>).Authorization).toBe(
@@ -327,7 +150,7 @@ describe('OpenAI extraction request', () => {
 
   it('turns HTTP errors and unparsable replies into ModelUnavailable without content', async () => {
     const gw = openAiModelGateway('sk-test', 'gpt-test', recordingFetch(valid, 500).impl);
-    await expect(gw.extract(input, new AbortController().signal)).rejects.toMatchObject({
+    await expect(gw.understand(input, new AbortController().signal)).rejects.toMatchObject({
       kind: 'http',
     });
     const bad = (async () =>
@@ -335,7 +158,7 @@ describe('OpenAI extraction request', () => {
         JSON.stringify({ choices: [{ message: { content: 'not json' } }] }),
       )) as unknown as typeof fetch;
     const e = await openAiModelGateway('k', 'm', bad)
-      .extract(input, new AbortController().signal)
+      .understand(input, new AbortController().signal)
       .catch((x: unknown) => x);
     expect(e).toBeInstanceOf(ModelUnavailable);
     expect(String((e as Error).message)).toBe('json');
@@ -365,7 +188,7 @@ describe('OpenAI extraction request', () => {
         });
       });
     const gw = openAiModelGateway('k', 'm', slow as unknown as typeof fetch);
-    await expect(callWithTimeout((s) => gw.extract(input, s), 20)).rejects.toMatchObject({
+    await expect(callWithTimeout((s) => gw.understand(input, s), 20)).rejects.toMatchObject({
       kind: 'timeout',
     });
     expect(aborted).toBe(true);
@@ -428,9 +251,9 @@ describe('fake gateway', () => {
   it('replays the script in order, throws scripted errors, fails when exhausted', async () => {
     const gw = fakeModelGateway({ extract: [valid, new ModelUnavailable('http')] });
     const sig = new AbortController().signal;
-    expect(await gw.extract(input, sig)).toEqual(valid);
-    await expect(gw.extract(input, sig)).rejects.toMatchObject({ kind: 'http' });
-    await expect(gw.extract(input, sig)).rejects.toMatchObject({ kind: 'script' });
+    expect(await gw.understand(input, sig)).toEqual(valid);
+    await expect(gw.understand(input, sig)).rejects.toMatchObject({ kind: 'http' });
+    await expect(gw.understand(input, sig)).rejects.toMatchObject({ kind: 'script' });
     expect(gw.calls.extract).toHaveLength(3);
   });
 });

@@ -1,14 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
 import { assistantReadTools, draftKinds, understandingSchema } from '@child-life/contracts';
-import {
-  expandIntents,
-  extractionJsonSchema,
-  modelExtractionSchema,
-  parseExtraction,
-  parseUnderstanding,
-  understandingJsonSchema,
-} from '../src/assistant-model.js';
+import { parseUnderstanding, understandingJsonSchema } from '../src/assistant-model.js';
 import {
   imageJsonSchema,
   imageReadingSchema,
@@ -124,16 +117,6 @@ describe('model JSON schemas and the server parsers agree', () => {
         understandingJsonSchema(kinds, reads, ['c_other']),
         parseUnderstanding,
         understandingSchema,
-      ),
-    ).toEqual({});
-  });
-  it('Lumi extraction (v8, the fallback): every reply the schema allows parses', () => {
-    expect(
-      refusals(
-        extractionJsonSchema(kinds, reads, ['c_other']),
-        parseExtraction,
-        modelExtractionSchema,
-        expandIntents,
       ),
     ).toEqual({});
   });

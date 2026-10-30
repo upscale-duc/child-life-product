@@ -595,8 +595,8 @@ async function process(
     }
     let raw: unknown;
     try {
-      // L9: the understanding call (v9); an older gateway still answers with `extract`.
-      const read = (gateway.understand ?? gateway.extract).bind(gateway);
+      // L9: the understanding call (v9).
+      const read = gateway.understand.bind(gateway);
       raw = await callWithTimeout(
         (signal) =>
           read(
@@ -957,40 +957,41 @@ async function process(
   // Prepare: typed drafts or ONE server question (morning / evening, a missing time, a start
   // for a duration, who does a reminder). Never a write. L10: a question the model read as a
   // read only ("Bé thay mấy tã hôm nay?") is no log for the backstops to add.
-  const readOnly = understood && ext.intents.length === 0 && reads.length > 0 && states.length === 0;
+  const readOnly =
+    understood && ext.intents.length === 0 && reads.length > 0 && states.length === 0;
   const plan: TextPlan = readOnly
     ? { kind: 'drafts', drafts: [], notices: [] }
     : await planTextIntents(
-    {
-      db,
-      s,
-      now,
-      anchor,
-      locale: t.locale,
-      text,
-      answerTexts: answers.map((a) => a.answer?.text ?? '').filter(Boolean),
-      answers: answerMap,
-      asked,
-      round: t.round ?? 0,
-      lastMilk: ext.intents.some((i) => i.kind === 'bottle')
-        ? await lastMilkEarly()
-        : 'breast_milk',
-      currency,
-      categories,
-      previous,
-      // Lumi 2026-10-16: "con đang ngủ" / "dậy rồi" / "đang cho bú" drive the app's timers.
-      timers: await timersEarly(),
-      nextBreastSide: await nextSideEarly(),
-      // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
-      lastPumpSide: await pumpSideEarly(),
-      clientKinds: clientDraftKindsOf(t.clientKinds),
-      // L7: "rồi ngủ lúc 10h" — after the item it follows (L9: or as the model read it).
-      ...(continueAfter ? { after: continueAfter } : {}),
-      // L9: the intents' times are the resolver's; the words are not re-read.
-      understood,
-    },
-    ext.intents,
-  );
+        {
+          db,
+          s,
+          now,
+          anchor,
+          locale: t.locale,
+          text,
+          answerTexts: answers.map((a) => a.answer?.text ?? '').filter(Boolean),
+          answers: answerMap,
+          asked,
+          round: t.round ?? 0,
+          lastMilk: ext.intents.some((i) => i.kind === 'bottle')
+            ? await lastMilkEarly()
+            : 'breast_milk',
+          currency,
+          categories,
+          previous,
+          // Lumi 2026-10-16: "con đang ngủ" / "dậy rồi" / "đang cho bú" drive the app's timers.
+          timers: await timersEarly(),
+          nextBreastSide: await nextSideEarly(),
+          // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
+          lastPumpSide: await pumpSideEarly(),
+          clientKinds: clientDraftKindsOf(t.clientKinds),
+          // L7: "rồi ngủ lúc 10h" — after the item it follows (L9: or as the model read it).
+          ...(continueAfter ? { after: continueAfter } : {}),
+          // L9: the intents' times are the resolver's; the words are not re-read.
+          understood,
+        },
+        ext.intents,
+      );
   if (plan.kind === 'ask') {
     return {
       outcome: { kind: 'clarification', clarification: plan.clarification },

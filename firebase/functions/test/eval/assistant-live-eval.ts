@@ -184,7 +184,6 @@ const gateway: ModelGateway = {
   name: 'openai',
   model: real.model,
   promptVersion: real.promptVersion,
-  extract: (i, s) => real.extract(i, s),
   word:
     process.env.EVAL_WORDING === '1'
       ? (i, s) => real.word(i, s)
