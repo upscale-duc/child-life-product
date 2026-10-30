@@ -29046,10 +29046,10 @@ abstract class AppLocalizations {
   /// **'Đã đặt nhắc ngày {date}'**
   String sdRemindToast(String date);
 
-  /// Reminder title in Nhắc nhở. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
+  /// Reminder title in Nhắc nhở, set months ahead for 5 months and 2 weeks, so it names no age (read early it must not say the baby is nearly 6 months). {name} is the baby. Older stored titles are matched in reminder_titles.dart. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'{name} gần 6 tháng: xem cách bắt đầu ăn dặm'**
+  /// **'Chuẩn bị cho {name} ăn dặm'**
   String sdReminderTitle(String name);
 
   /// Spoken label of a removable ingredient chip. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.

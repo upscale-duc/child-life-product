@@ -45,6 +45,7 @@ import '../rhythm/rhythm_local.dart'
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
+import 'reminder_titles.dart';
 import 'rule_notifications.dart' show RuleNotificationChannel;
 import '../me/me_repository.dart';
 import '../notifications/notification_destinations.dart' show untilInApp;
@@ -741,13 +742,14 @@ class _ReminderNotificationSyncState
               ).format(inBabyZone(zone, r.dueAt)),
       );
       final fireAt = r.fireAt(zone, allDayMinutes: allDayMinutes);
+      final title = reminderTitle(l10n, r.title);
       out.add(
         LocalReminder(
           id: notificationIdOf(r.id),
           fireAt: fireAt,
-          title: r.title,
+          title: title,
           body: body,
-          payload: reminderPayload(r, fireAt, r.title, body),
+          payload: reminderPayload(r, fireAt, title, body),
         ),
       );
     }

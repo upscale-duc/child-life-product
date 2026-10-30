@@ -37,6 +37,7 @@ import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_notifications.dart';
 import 'reminder_repository.dart';
+import 'reminder_titles.dart';
 import 'rule_repository.dart' show reminderRulesProvider;
 import 'rule_screens.dart'
     show RuleRemindersList, ruleIcon, ruleTint, ruleTitle, showRuleDueSheet;
@@ -544,7 +545,7 @@ class ReminderRow extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    r.title,
+                    reminderTitle(l10n, r.title),
                     style: cl.text.bodyStrong.copyWith(
                       color: done ? cl.colors.inkMuted : cl.colors.ink,
                     ),
@@ -694,7 +695,10 @@ class ReminderDetailScreen extends ConsumerWidget {
                   ),
                   Semantics(
                     header: true,
-                    child: Text(r.title, style: cl.text.largeTitle),
+                    child: Text(
+                      reminderTitle(l10n, r.title),
+                      style: cl.text.largeTitle,
+                    ),
                   ),
                   if (status == ReminderStatus.overdue)
                     Padding(
@@ -937,6 +941,15 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   late DateTime? _day = widget.edit?.dueDay;
   late String? _assignee = widget.edit?.assigneeUid;
   // ---- end D-075 #5 ----
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // An app-written title is edited in the reader's language (reminder_titles.dart).
+    if (widget.edit case final r? when _title.text == r.title) {
+      _title.text = reminderTitle(AppLocalizations.of(context), r.title);
+    }
+  }
 
   @override
   void dispose() {
@@ -1665,7 +1678,7 @@ class ReminderPeek extends ConsumerWidget {
           >[
             for (final r in [...groups.overdue, ...groups.upcoming])
               (
-                title: r.title,
+                title: reminderTitle(l10n, r.title),
                 at: r.dueAt,
                 overdue: r.statusAt(c.now, c.zone) == ReminderStatus.overdue,
                 icon: ClIcons.bell,

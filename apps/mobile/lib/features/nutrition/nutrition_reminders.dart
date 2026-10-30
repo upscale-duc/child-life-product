@@ -2,16 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../baby/baby_models.dart';
 import '../care/care_models.dart';
+import '../../l10n/app_localizations.dart';
 import '../reminders/device_identity.dart';
 import '../reminders/reminder_models.dart';
 import '../reminders/reminder_repository.dart';
+import '../reminders/reminder_titles.dart';
 
 /// One-time reminders made by Dinh dưỡng (P-163 #7, #13): ordinary reminders in Nhắc nhở,
 /// visible to the family (D-075 #5), written like the 8b sheet writes them (queued offline).
 
 /// The open (not done, not overdue) reminder titled [title], if there is one: the button then
-/// reads "Đã đặt nhắc · {date}".
+/// reads "Đã đặt nhắc · {date}". A title written in another language or an earlier wording
+/// counts too (reminder_titles.dart), so the button never makes a second one.
 Reminder? nuOpenReminder(
+  AppLocalizations l10n,
   Iterable<Reminder> all,
   String title,
   DateTime now,
@@ -19,7 +23,8 @@ Reminder? nuOpenReminder(
 ) => all
     .where(
       (r) =>
-          r.title == title && r.statusAt(now, zone) == ReminderStatus.upcoming,
+          reminderTitle(l10n, r.title) == title &&
+          r.statusAt(now, zone) == ReminderStatus.upcoming,
     )
     .firstOrNull;
 

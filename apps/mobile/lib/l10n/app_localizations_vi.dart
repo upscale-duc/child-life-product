@@ -17385,7 +17385,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String sdReminderTitle(String name) {
-    return '$name gần 6 tháng: xem cách bắt đầu ăn dặm';
+    return 'Chuẩn bị cho $name ăn dặm';
   }
 
   @override

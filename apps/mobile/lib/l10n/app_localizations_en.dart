@@ -18487,7 +18487,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String sdReminderTitle(String name) {
-    return '$name is nearly 6 months: how to start solids';
+    return 'Get ready for $name’s first solids';
   }
 
   @override

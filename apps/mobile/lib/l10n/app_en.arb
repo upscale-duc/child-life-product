@@ -4835,7 +4835,7 @@
   "sdRemindMe": "Remind me when baby is nearly 6 months",
   "sdRemindSet": "Reminder set · {date}",
   "sdRemindToast": "Reminder set for {date}",
-  "sdReminderTitle": "{name} is nearly 6 months: how to start solids",
+  "sdReminderTitle": "Get ready for {name}’s first solids",
   "sdRemoveFood": "Remove {food}",
   "sdSave": "Save meal",
   "sdSavedToast": "Logged · {meal}",

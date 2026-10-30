@@ -25731,9 +25731,9 @@
       }
     }
   },
-  "sdReminderTitle": "{name} gần 6 tháng: xem cách bắt đầu ăn dặm",
+  "sdReminderTitle": "Chuẩn bị cho {name} ăn dặm",
   "@sdReminderTitle": {
-    "description": "Reminder title in Nhắc nhở. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
+    "description": "Reminder title in Nhắc nhở, set months ahead for 5 months and 2 weeks, so it names no age (read early it must not say the baby is nearly 6 months). {name} is the baby. Older stored titles are matched in reminder_titles.dart. D-085 Ăn dặm (plan docs/product/solids-plan.md). EN is an engineering draft for owner review.",
     "placeholders": {
       "name": {
         "type": "String"

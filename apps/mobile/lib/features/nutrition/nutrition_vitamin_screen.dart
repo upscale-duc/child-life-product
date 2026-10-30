@@ -91,6 +91,7 @@ class VitaminScreen extends ConsumerWidget {
     final open = reminderTitle == null
         ? null
         : nuOpenReminder(
+            l10n,
             ref.watch(remindersProvider(b.babyId)).value ?? const [],
             reminderTitle,
             b.now,

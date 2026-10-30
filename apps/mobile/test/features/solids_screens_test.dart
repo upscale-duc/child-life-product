@@ -185,7 +185,7 @@ void main() {
       final r = reminders.created.single;
       expect(r.allDay, isTrue);
       expect(r.dueDate, '2026-12-15');
-      expect(r.title, 'Teddy gần 6 tháng: xem cách bắt đầu ăn dặm');
+      expect(r.title, 'Chuẩn bị cho Teddy ăn dặm');
       expect(find.text('Đã đặt nhắc ngày 15/12/2026'), findsOneWidget);
       await tester.pumpAndSettle(const Duration(seconds: 5));
     });

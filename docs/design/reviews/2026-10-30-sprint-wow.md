@@ -39,7 +39,7 @@
 | Lumi e2e với model giả                                                                 | Đạt hết (EXIT 0), gồm 4 ca L8 mới                                                                                       |
 | Contracts `personalization-v2` (gói 12–36 tháng)                                       | 10 đạt                                                                                                                  |
 | Portal                                                                                 | 729 đạt                                                                                                                 |
-| Model thật (live eval)                                                                 | **Chưa chạy**: cần anh/chị đồng ý chi phí (khoảng 4–6 lượt cho các ca mới)                                              |
+| Model thật (live eval)                                                                 | 9/9 đạt (30/10): 4 ca L8 mới + 5 ca được sửa cho L8. 2 lượt gọi `gpt-4.1-mini`, 14 000 token vào (6 784 từ cache), 212 ra, khoảng 0,004 USD |
 | Máy thật iOS/Android                                                                   | **Chưa chạy**                                                                                                           |
 
 ## L6 phần hai: nút trên thông báo (30/10)

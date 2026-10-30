@@ -72,6 +72,7 @@ class NutritionGrowthScreen extends ConsumerWidget {
     // "Nhắc đo lại sau N ngày" → "Đã đặt nhắc · {date}" while that reminder is open.
     final title = weight ? l10n.nuRemeasureWeight : l10n.nuRemeasureLength;
     final open = nuOpenReminder(
+      l10n,
       ref.watch(remindersProvider(b.babyId)).value ?? const [],
       title,
       b.now,

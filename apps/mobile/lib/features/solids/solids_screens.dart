@@ -300,6 +300,7 @@ class _StartPageState extends ConsumerState<_StartPage> {
     final day = sdReminderDay(dob, b.today);
     final title = l10n.sdReminderTitle(b.name);
     final open = nuOpenReminder(
+      l10n,
       ref.watch(remindersProvider(b.babyId)).value ?? const [],
       title,
       b.now,
