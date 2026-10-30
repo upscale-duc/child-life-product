@@ -89,6 +89,22 @@ class RuleNotificationChannel {
     }
   }
 
+  /// iOS: the pending local notifications the plugin scheduled (id, payload), leaving out the
+  /// native ones (a snoozed Cùng Chăm Con task) that break the plugin's own list; null elsewhere.
+  Future<List<({int id, String? payload})>?> pendingLocal() async {
+    try {
+      final r = await _channel.invokeListMethod<Object?>('pendingLocal');
+      if (r == null) return null;
+      return [
+        for (final p in r)
+          if (p case {'id': final int id})
+            (id: id, payload: p['payload'] as String?),
+      ];
+    } on Object {
+      return null; // Android, tests.
+    }
+  }
+
   Future<void> refreshCategories() async {
     try {
       await _channel.invokeMethod<void>('refreshCategories');

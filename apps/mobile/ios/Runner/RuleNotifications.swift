@@ -330,6 +330,18 @@ enum RuleNotifications {
       case "refreshCategories":
         registerCategories()
         result(nil)
+      case "pendingLocal":
+        // The plugin's own pending notifications only: its list also returns ours ("ctsnooze."),
+        // without the id its Dart side requires, which made every reminder sync throw.
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+          let mine: [[String: Any]] = requests.compactMap { r in
+            guard let id = r.content.userInfo["NotificationId"] as? NSNumber else { return nil }
+            var out: [String: Any] = ["id": id.intValue]
+            if let payload = r.content.userInfo["payload"] as? String { out["payload"] = payload }
+            return out
+          }
+          DispatchQueue.main.async { result(mine) }
+        }
       default:
         result(FlutterMethodNotImplemented)
       }

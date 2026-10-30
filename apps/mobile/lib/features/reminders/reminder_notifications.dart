@@ -146,7 +146,7 @@ class PluginReminderNotifications implements ReminderNotifications {
   /// User-configured Care notifications retain their ids and schedules.
   Future<bool> cancelEngagementLegacy(String babyId, String lane) async {
     if (!_ready) return false;
-    final pending = await _plugin.pendingNotificationRequests();
+    final pending = await _pending();
     for (final row in pending) {
       try {
         final data = jsonDecode(row.payload ?? 'null');
@@ -224,9 +224,18 @@ class PluginReminderNotifications implements ReminderNotifications {
     return await android?.requestNotificationsPermission() ?? false;
   }
 
+  /// What is pending, read natively on iOS: the plugin's list fails on a snoozed Cùng Chăm Con
+  /// task (no plugin id), which stopped every sync for its 10 minutes.
+  Future<List<({int id, String? payload})>> _pending() async =>
+      await const RuleNotificationChannel().pendingLocal() ??
+      [
+        for (final p in await _plugin.pendingNotificationRequests())
+          (id: p.id, payload: p.payload),
+      ];
+
   @override
   Future<void> sync(List<LocalReminder> desired, AppLocalizations l10n) async {
-    final pending = await _plugin.pendingNotificationRequests();
+    final pending = await _pending();
     final want = {for (final d in desired) d.id: d};
     final kept = <int>{};
     for (final p in pending) {
