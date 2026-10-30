@@ -108,10 +108,14 @@ void main() {
       tester,
     ) async {
       await pump(tester, AgeBand.b0_1);
-      expect(find.text('Gợi ý cho Teddy lúc này'), findsOneWidget);
-      double y(String k) => tester.getTopLeft(find.byKey(ValueKey(k))).dy;
-      expect(y('explore_care'), lessThan(y('explore_stats')));
-      expect(y('explore_stats'), lessThan(y('explore_growth')));
+      // D-139: Khám phá holds Chăm sóc; at 0–1 its daily care comes first (every suggestion is
+      // one of its rows, so no separate "Gợi ý" group repeats them).
+      expect(find.text('Gợi ý cho Teddy lúc này'), findsNothing);
+      expect(find.text('Chăm hằng ngày'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Lịch sử')).dy,
+        lessThan(tester.getTopLeft(find.text('Tiêm chủng')).dy),
+      );
       expect(
         find.text('Tìm tính năng, ví dụ: tiêm, chi tiêu, sơ cứu'),
         findsOneWidget,
@@ -124,12 +128,13 @@ void main() {
         await pump(tester, AgeBand.b3_6);
         double y(String k) => tester.getTopLeft(find.byKey(ValueKey(k))).dy;
         expect(y('explore_memories'), lessThan(y('explore_spending')));
+        // The Chăm sóc rows follow, inline (D-139).
         await tester.scrollUntilVisible(
-          find.byKey(const ValueKey('explore_care')),
+          find.text('Tiêm chủng'),
           200,
           scrollable: find.byType(Scrollable).first,
         );
-        expect(find.byKey(const ValueKey('explore_care')), findsOneWidget);
+        expect(find.text('Tiêm chủng'), findsOneWidget);
         expect(find.text('Giữ trẻ & học, quần áo…'), findsOneWidget);
       },
     );
@@ -140,7 +145,7 @@ void main() {
       await pump(tester, AgeBand.b3_6);
       await tester.enterText(find.byKey(const Key('exploreSearch')), 'tiem');
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('explore_vaccines')), findsOneWidget);
+      expect(find.text('Tiêm chủng'), findsOneWidget);
       expect(find.byKey(const ValueKey('explore_spending')), findsNothing);
 
       await tester.enterText(find.byKey(const Key('exploreSearch')), 'học tập');

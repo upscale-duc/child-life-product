@@ -23834,4 +23834,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get cpHistEmptyBody => 'Ai sửa, thêm hay giao việc sẽ hiện ở đây.';
+
+  @override
+  String careAtTime(String time) {
+    return 'Lúc $time';
+  }
 }

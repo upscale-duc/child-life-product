@@ -25212,4 +25212,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cpHistEmptyBody => 'Who edits, adds or gives tasks shows here.';
+
+  @override
+  String careAtTime(String time) {
+    return 'At $time';
+  }
 }

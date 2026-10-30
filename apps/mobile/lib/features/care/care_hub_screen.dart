@@ -29,6 +29,7 @@ import '../solids/solids_routes.dart';
 import '../solids/solids_state.dart';
 import '../utilities/utilities_screen.dart' show CareSoonBadge;
 import '../vaccines/vaccine_format.dart';
+import '../spending/spending_calc.dart' show foldVietnamese;
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
 
@@ -63,231 +64,14 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     super.dispose();
   }
 
-  bool _matches(String title, String? subtitle) =>
-      _query.isEmpty ||
-      title.toLowerCase().contains(_query) ||
-      (subtitle?.toLowerCase().contains(_query) ?? false);
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final me = ref.watch(selectedMembershipProvider);
     if (me == null) return ColoredBox(color: cl.colors.cloud);
-    final caregiver = me.role == MemberRole.caregiver;
-    final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    final reminders = ref.watch(remindersProvider(me.babyId)).value ?? const [];
-    final upcoming = reminders.where((r) => !r.done && r.dueAt.isAfter(now));
-    // Rule reminders that are on (v1.0 1a) plus the one-time ones still ahead.
-    final rules =
-        (ref.watch(reminderRulesProvider(me.babyId)).value ?? const []).where(
-          (r) => r.enabled,
-        );
-    // 370:2174: a caregiver sees the reminders assigned to them: on their device, or (D-075 #5)
-    // assigned to them.
-    final remindersLine = caregiver
-        ? l10n.careRemindersMine(
-            rules.where((r) => r.recipients.contains(me.uid)).length +
-                upcoming
-                    .where(
-                      (r) =>
-                          r.notifyDevice?.uid == me.uid ||
-                          r.assigneeUid == me.uid,
-                    )
-                    .length,
-          )
-        : l10n.careRemindersOn(rules.length + upcoming.length);
-
-    void soon() => showClToast(context, message: l10n.careSoonToast);
-    // Dinh dưỡng (9a, D-083): live once a published stage covers the baby's age, "Cần ngày sinh
-    // của bé" without a date of birth, a "Sớm ra mắt" teaser otherwise (P-163 #11).
-    final nutrition = ref.watch(nuTileProvider);
-    // D-113 (owner, 2026-10-26): ordered by how often a parent opens each one: History and
-    // Stats daily, Reminders and Vaccines when due, Growth monthly, then Ăn dặm and Dinh dưỡng.
-    // Groups stay as D-069; a "Sớm ra mắt" teaser (only before content is published) sinks to
-    // the end of its group (`_Grid`).
-    final daily = [
-      _Tile(
-        icon: ClIcons.journal,
-        tint: cl.care.diaper.soft,
-        // D-110: title only; "Mọi lần đã ghi" restated it.
-        title: l10n.careHistory,
-        onTap: () => context.push(Routes.history),
-      ),
-      _Tile(
-        icon: ClIcons.sliders,
-        tint: cl.care.sleep.soft,
-        title: l10n.careStats,
-        subtitle: l10n.careStatsSub,
-        onTap: () => _showStatsPicker(context),
-      ),
-      _Tile(
-        icon: ClIcons.clock,
-        tint: cl.colors.mintSoft,
-        title: l10n.careReminders,
-        subtitle: remindersLine,
-        onTap: () => context.push(Routes.reminders),
-      ),
-      // Sổ tiêm chủng (394:4451, caregivers too 394:4461): the next shot, or what needs doing.
-      _Tile(
-        icon: ClIcons.heart,
-        tint: cl.colors.peachSoft,
-        title: l10n.vxTile,
-        // Overdue shots are the one thing on this screen that needs attention: drawn warm.
-        attention: switch (ref.watch(vaccineBookProvider(me))) {
-          VaccineBookReady(:final book) => book.overdue.isNotEmpty,
-          _ => false,
-        },
-        subtitle: switch (ref.watch(vaccineBookProvider(me))) {
-          VaccineBookReady(:final book) when book.overdue.isNotEmpty =>
-            l10n.vxTileOverdue(book.overdue.length),
-          VaccineBookReady(:final book)
-              when !book.plan.setupDone &&
-                  me.role == MemberRole.coParent &&
-                  book.dueSoFar.isNotEmpty =>
-            l10n.vxTileSetup,
-          VaccineBookReady(:final book) => switch (book.nextGroup) {
-            final g? => l10n.vxTileNext(vxDay(g.date)),
-            null => l10n.vxTileAllDone,
-          },
-          _ => l10n.vxTileBook,
-        },
-        onTap: () => context.push(Routes.vaccines),
-      ),
-      if (!caregiver)
-        _Tile(
-          icon: ClIcons.ruler,
-          tint: cl.care.growth.soft,
-          // D-110: title only; "Cân nặng, chiều dài" restated it.
-          title: l10n.careGrowth,
-          onTap: () => context.push(
-            '${Routes.history}?filter=${HistoryFilter.growth.name}',
-          ),
-        ),
-      // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
-      // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).
-      _Tile(
-        key: const Key('careSolids'),
-        icon: ClIcons.feed,
-        tint: cl.colors.sunshineSoft,
-        title: l10n.careSolids,
-        subtitle: sdTileLine(
-          l10n,
-          ref.watch(sdStateProvider),
-          ref.watch(sdTodayProvider),
-        ),
-        onTap: () => context.push(SdRoutes.home),
-      ),
-      _Tile(
-        key: const Key('careNutrition'),
-        icon: ClIcons.feed,
-        tint: cl.care.bottle.soft,
-        title: l10n.careNutrition,
-        subtitle: switch (nutrition) {
-          NuTileLive(:final stage) => l10n.careNutritionStage(
-            nuAgeLabel(l10n, stage.age),
-          ),
-          NuTileNoDob() => l10n.careNutritionNoDob,
-          NuTileTeaser() => l10n.careNutritionSub,
-        },
-        soon: nutrition is NuTileTeaser,
-        onTap: nutrition is NuTileTeaser
-            ? soon
-            : () => context.push(NuRoutes.home),
-      ),
-    ].where((t) => _matches(t.title, t.subtitle)).toList();
-
-    // 450:6424: drawn like the live tiles, each with its own chip; only the badge marks them.
-    List<_Tile> teasers(List<(ClIcons, Color, String, String)> items) => [
-      for (final (icon, tint, title, subtitle) in items)
-        if (_matches(title, subtitle))
-          _Tile(
-            icon: icon,
-            tint: tint,
-            title: title,
-            subtitle: subtitle,
-            soon: true,
-            onTap: soon,
-          ),
-    ];
-    // Nhịp lớn lên (plan §7.1): the "Wonder Weeks" tile opens NL01 once the family's `rhythm`
-    // flag is on; until then it stays a teaser.
-    final rhythm =
-        ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false;
-    // Giai đoạn của bé and Thư viện chăm bé (D-076 #5, #7) open once something is published for
-    // this member; until then they stay teasers.
-    final stagesLive = (ref.watch(lbStagesProvider).value?.items ?? const [])
-        .any((s) => s.audience.contains(me.role));
-    final libraryLive =
-        (ref.watch(lbArticlesProvider).value?.items ?? const []).isNotEmpty;
-    final develop = [
-      if (rhythm && _matches(l10n.careWonderWeek, l10n.careWonderWeekSub))
-        _Tile(
-          icon: ClIcons.spark,
-          tint: cl.care.sleep.soft,
-          title: l10n.careWonderWeek,
-          subtitle: l10n.careWonderWeekSub,
-          onTap: () => context.push(Routes.rhythm),
-        ),
-      if (stagesLive && _matches(l10n.careAgeCards, l10n.careAgeCardsSub))
-        _Tile(
-          key: const Key('careStages'),
-          icon: ClIcons.cake,
-          tint: cl.colors.sunshineSoft,
-          title: l10n.careAgeCards,
-          subtitle: l10n.careAgeCardsSub,
-          onTap: () => context.push(LbRoutes.stages),
-        ),
-      // D-076 nav: Mốc phát triển (D-076 #6) is always live: the family's own milestones work
-      // without any published guide. It is a Tiện ích page, opened with `pushSafe`.
-      if (_matches(l10n.careMilestones, l10n.careMilestonesSub))
-        _Tile(
-          key: const Key('careMilestones'),
-          icon: ClIcons.star,
-          tint: cl.colors.peachSoft,
-          title: l10n.careMilestones,
-          subtitle: l10n.careMilestonesSub,
-          onTap: () => context.pushSafe(Routes.milestones),
-        ),
-      ...teasers([
-        if (!rhythm)
-          (
-            ClIcons.spark,
-            cl.care.sleep.soft,
-            l10n.careWonderWeek,
-            l10n.careWonderWeekSub,
-          ),
-        if (!stagesLive)
-          (
-            ClIcons.cake,
-            cl.colors.sunshineSoft,
-            l10n.careAgeCards,
-            l10n.careAgeCardsSub,
-          ),
-      ]),
-    ];
-    final knowledge = [
-      if (libraryLive && _matches(l10n.careLibrary, l10n.careLibrarySub))
-        _Tile(
-          key: const Key('careLibrary'),
-          icon: ClIcons.bookmark,
-          tint: cl.colors.mintSoft,
-          title: l10n.careLibrary,
-          subtitle: l10n.careLibrarySub,
-          onTap: () => context.push(LbRoutes.library),
-        ),
-      ...teasers([
-        if (!libraryLive)
-          (
-            ClIcons.bookmark,
-            cl.colors.mintSoft,
-            l10n.careLibrary,
-            l10n.careLibrarySub,
-          ),
-      ]),
-    ];
-
-    final nothing = daily.isEmpty && develop.isEmpty && knowledge.isEmpty;
+    final sections = careHubSections(context, ref, me, _query);
+    final nothing = sections.isEmpty;
     // Like Hôm nay: the baby header stays, with no collapsed title over it (it overlapped).
     return ClPinnedHeaderScaffold(
       header: const BabyHeader(),
@@ -339,19 +123,248 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
               style: cl.text.body.copyWith(color: cl.colors.inkMuted),
             ),
           ],
-          if (daily.isNotEmpty) ...[_Section(l10n.careDaily), _Grid(daily)],
-          if (develop.isNotEmpty) ...[
-            _Section(l10n.careDevelop),
-            _Grid(develop),
-          ],
-          if (knowledge.isNotEmpty) ...[
-            _Section(l10n.careKnowledge),
-            _Grid(knowledge),
-          ],
+          ...sections,
         ],
       ),
     );
   }
+}
+
+/// The Chăm sóc content (live tiles, Hiểu con & phát triển, Kiến thức) for [query]; empty when
+/// nothing matches. Used by Chăm sóc and, since the merge (owner, 2026-10-30: "gộp hai màn hình
+/// này thành 1 ở tabbar"), inline in Khám phá.
+List<Widget> careHubSections(
+  BuildContext context,
+  WidgetRef ref,
+  Membership me,
+  String query,
+) {
+  final l10n = AppLocalizations.of(context);
+  final cl = context.cl;
+  // Without Vietnamese marks, like Khám phá ("tiem" finds "Tiêm chủng").
+  final q = foldVietnamese(query);
+  bool matches(String title, String? subtitle) =>
+      q.isEmpty || foldVietnamese('$title ${subtitle ?? ''}').contains(q);
+  final caregiver = me.role == MemberRole.caregiver;
+  final now = ref.watch(careClockProvider).value ?? DateTime.now();
+  final reminders = ref.watch(remindersProvider(me.babyId)).value ?? const [];
+  final upcoming = reminders.where((r) => !r.done && r.dueAt.isAfter(now));
+  // Rule reminders that are on (v1.0 1a) plus the one-time ones still ahead.
+  final rules = (ref.watch(reminderRulesProvider(me.babyId)).value ?? const [])
+      .where((r) => r.enabled);
+  // 370:2174: a caregiver sees the reminders assigned to them: on their device, or (D-075 #5)
+  // assigned to them.
+  final remindersLine = caregiver
+      ? l10n.careRemindersMine(
+          rules.where((r) => r.recipients.contains(me.uid)).length +
+              upcoming
+                  .where(
+                    (r) =>
+                        r.notifyDevice?.uid == me.uid ||
+                        r.assigneeUid == me.uid,
+                  )
+                  .length,
+        )
+      : l10n.careRemindersOn(rules.length + upcoming.length);
+
+  void soon() => showClToast(context, message: l10n.careSoonToast);
+  // Dinh dưỡng (9a, D-083): live once a published stage covers the baby's age, "Cần ngày sinh
+  // của bé" without a date of birth, a "Sớm ra mắt" teaser otherwise (P-163 #11).
+  final nutrition = ref.watch(nuTileProvider);
+  // D-113 (owner, 2026-10-26): ordered by how often a parent opens each one: History and
+  // Stats daily, Reminders and Vaccines when due, Growth monthly, then Ăn dặm and Dinh dưỡng.
+  // Groups stay as D-069; a "Sớm ra mắt" teaser (only before content is published) sinks to
+  // the end of its group (`_Grid`).
+  final daily = [
+    _Tile(
+      icon: ClIcons.journal,
+      tint: cl.care.diaper.soft,
+      // D-110: title only; "Mọi lần đã ghi" restated it.
+      title: l10n.careHistory,
+      onTap: () => context.push(Routes.history),
+    ),
+    _Tile(
+      icon: ClIcons.sliders,
+      tint: cl.care.sleep.soft,
+      title: l10n.careStats,
+      subtitle: l10n.careStatsSub,
+      onTap: () => _showStatsPicker(context),
+    ),
+    _Tile(
+      icon: ClIcons.clock,
+      tint: cl.colors.mintSoft,
+      title: l10n.careReminders,
+      subtitle: remindersLine,
+      onTap: () => context.push(Routes.reminders),
+    ),
+    // Sổ tiêm chủng (394:4451, caregivers too 394:4461): the next shot, or what needs doing.
+    _Tile(
+      icon: ClIcons.heart,
+      tint: cl.colors.peachSoft,
+      title: l10n.vxTile,
+      // Overdue shots are the one thing on this screen that needs attention: drawn warm.
+      attention: switch (ref.watch(vaccineBookProvider(me))) {
+        VaccineBookReady(:final book) => book.overdue.isNotEmpty,
+        _ => false,
+      },
+      subtitle: switch (ref.watch(vaccineBookProvider(me))) {
+        VaccineBookReady(:final book) when book.overdue.isNotEmpty =>
+          l10n.vxTileOverdue(book.overdue.length),
+        VaccineBookReady(:final book)
+            when !book.plan.setupDone &&
+                me.role == MemberRole.coParent &&
+                book.dueSoFar.isNotEmpty =>
+          l10n.vxTileSetup,
+        VaccineBookReady(:final book) => switch (book.nextGroup) {
+          final g? => l10n.vxTileNext(vxDay(g.date)),
+          null => l10n.vxTileAllDone,
+        },
+        _ => l10n.vxTileBook,
+      },
+      onTap: () => context.push(Routes.vaccines),
+    ),
+    if (!caregiver)
+      _Tile(
+        icon: ClIcons.ruler,
+        tint: cl.care.growth.soft,
+        // D-110: title only; "Cân nặng, chiều dài" restated it.
+        title: l10n.careGrowth,
+        onTap: () => context.push(
+          '${Routes.history}?filter=${HistoryFilter.growth.name}',
+        ),
+      ),
+    // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
+    // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).
+    _Tile(
+      key: const Key('careSolids'),
+      icon: ClIcons.feed,
+      tint: cl.colors.sunshineSoft,
+      title: l10n.careSolids,
+      subtitle: sdTileLine(
+        l10n,
+        ref.watch(sdStateProvider),
+        ref.watch(sdTodayProvider),
+      ),
+      onTap: () => context.push(SdRoutes.home),
+    ),
+    _Tile(
+      key: const Key('careNutrition'),
+      icon: ClIcons.feed,
+      tint: cl.care.bottle.soft,
+      title: l10n.careNutrition,
+      subtitle: switch (nutrition) {
+        NuTileLive(:final stage) => l10n.careNutritionStage(
+          nuAgeLabel(l10n, stage.age),
+        ),
+        NuTileNoDob() => l10n.careNutritionNoDob,
+        NuTileTeaser() => l10n.careNutritionSub,
+      },
+      soon: nutrition is NuTileTeaser,
+      onTap: nutrition is NuTileTeaser
+          ? soon
+          : () => context.push(NuRoutes.home),
+    ),
+  ].where((t) => matches(t.title, t.subtitle)).toList();
+
+  // 450:6424: drawn like the live tiles, each with its own chip; only the badge marks them.
+  List<_Tile> teasers(List<(ClIcons, Color, String, String)> items) => [
+    for (final (icon, tint, title, subtitle) in items)
+      if (matches(title, subtitle))
+        _Tile(
+          icon: icon,
+          tint: tint,
+          title: title,
+          subtitle: subtitle,
+          soon: true,
+          onTap: soon,
+        ),
+  ];
+  // Nhịp lớn lên (plan §7.1): the "Wonder Weeks" tile opens NL01 once the family's `rhythm`
+  // flag is on; until then it stays a teaser.
+  final rhythm =
+      ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false;
+  // Giai đoạn của bé and Thư viện chăm bé (D-076 #5, #7) open once something is published for
+  // this member; until then they stay teasers.
+  final stagesLive = (ref.watch(lbStagesProvider).value?.items ?? const []).any(
+    (s) => s.audience.contains(me.role),
+  );
+  final libraryLive =
+      (ref.watch(lbArticlesProvider).value?.items ?? const []).isNotEmpty;
+  final develop = [
+    if (rhythm && matches(l10n.careWonderWeek, l10n.careWonderWeekSub))
+      _Tile(
+        icon: ClIcons.spark,
+        tint: cl.care.sleep.soft,
+        title: l10n.careWonderWeek,
+        subtitle: l10n.careWonderWeekSub,
+        onTap: () => context.push(Routes.rhythm),
+      ),
+    if (stagesLive && matches(l10n.careAgeCards, l10n.careAgeCardsSub))
+      _Tile(
+        key: const Key('careStages'),
+        icon: ClIcons.cake,
+        tint: cl.colors.sunshineSoft,
+        title: l10n.careAgeCards,
+        subtitle: l10n.careAgeCardsSub,
+        onTap: () => context.push(LbRoutes.stages),
+      ),
+    // D-076 nav: Mốc phát triển (D-076 #6) is always live: the family's own milestones work
+    // without any published guide. It is a Tiện ích page, opened with `pushSafe`.
+    if (matches(l10n.careMilestones, l10n.careMilestonesSub))
+      _Tile(
+        key: const Key('careMilestones'),
+        icon: ClIcons.star,
+        tint: cl.colors.peachSoft,
+        title: l10n.careMilestones,
+        subtitle: l10n.careMilestonesSub,
+        onTap: () => context.pushSafe(Routes.milestones),
+      ),
+    ...teasers([
+      if (!rhythm)
+        (
+          ClIcons.spark,
+          cl.care.sleep.soft,
+          l10n.careWonderWeek,
+          l10n.careWonderWeekSub,
+        ),
+      if (!stagesLive)
+        (
+          ClIcons.cake,
+          cl.colors.sunshineSoft,
+          l10n.careAgeCards,
+          l10n.careAgeCardsSub,
+        ),
+    ]),
+  ];
+  final knowledge = [
+    if (libraryLive && matches(l10n.careLibrary, l10n.careLibrarySub))
+      _Tile(
+        key: const Key('careLibrary'),
+        icon: ClIcons.bookmark,
+        tint: cl.colors.mintSoft,
+        title: l10n.careLibrary,
+        subtitle: l10n.careLibrarySub,
+        onTap: () => context.push(LbRoutes.library),
+      ),
+    ...teasers([
+      if (!libraryLive)
+        (
+          ClIcons.bookmark,
+          cl.colors.mintSoft,
+          l10n.careLibrary,
+          l10n.careLibrarySub,
+        ),
+    ]),
+  ];
+
+  return [
+    if (daily.isNotEmpty) ...[_Section(l10n.careDaily), _Grid(daily)],
+    if (develop.isNotEmpty) ...[_Section(l10n.careDevelop), _Grid(develop)],
+    if (knowledge.isNotEmpty) ...[
+      _Section(l10n.careKnowledge),
+      _Grid(knowledge),
+    ],
+  ];
 }
 
 /// "Thống kê" lands on a choice of feeding or sleep statistics (where it lands is not designed).

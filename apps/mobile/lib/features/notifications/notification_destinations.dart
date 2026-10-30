@@ -813,6 +813,11 @@ Future<_Opened> _tryOpen(
             ? Routes.rhythmHandover
             : '${Routes.rhythmHandover}?summary=${params['summaryId']}',
       );
+    case 'CARE_TASK_DUE' when surface == NotificationSurface.inbox:
+      // From the inbox (a page over Hôm nay) the "Đến giờ rồi" sheet waits for Hôm nay to be
+      // on top and never showed: the row did nothing (owner, 2026-10-30). Open that day's plan.
+      select();
+      open('${Routes.carePlan}?date=${params['date']}');
     case 'CARE_TASK_DUE':
       // Over whatever is showing, once nothing is in the way (care_plan_today.dart).
       select();

@@ -340,7 +340,6 @@ void main() {
       );
       expect(find.text('Đã thức 2 giờ'), findsOneWidget);
       expect(find.text('Dậy lúc 13:05'), findsOneWidget);
-      expect(find.text('Ba ghi'), findsWidgets);
     });
 
     testWidgets('19: a long "Đã thức …" wraps instead of ending in "…"', (

@@ -39683,6 +39683,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ai sửa, thêm hay giao việc sẽ hiện ở đây.'**
   String get cpHistEmptyBody;
+
+  /// Hôm nay Bú bình tile, the line under "45 phút trước": the clock time of the last feed. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lúc {time}'**
+  String careAtTime(String time);
 }
 
 class _AppLocalizationsDelegate

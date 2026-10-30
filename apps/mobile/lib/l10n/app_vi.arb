@@ -34914,5 +34914,14 @@
   "cpHistEmptyBody": "Ai sửa, thêm hay giao việc sẽ hiện ở đây.",
   "@cpHistEmptyBody": {
     "description": "Cùng Chăm Con 20: empty state body. EN is an engineering draft for owner review."
+  },
+  "careAtTime": "Lúc {time}",
+  "@careAtTime": {
+    "description": "Hôm nay Bú bình tile, the line under \"45 phút trước\": the clock time of the last feed. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

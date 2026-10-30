@@ -147,7 +147,7 @@ void main() {
   });
 
   group('screens', () {
-    testWidgets('19: tiles show the last entry, who logged it, and totals', (
+    testWidgets('19: tiles show the last entry and totals, not who logged it', (
       tester,
     ) async {
       await pumpRouted(
@@ -155,10 +155,11 @@ void main() {
         const Scaffold(body: TodayScreen()),
         overrides: careOverrides(),
       );
+      // The last bottle also says when by the clock; who logged it is not on the tile
+      // (owner, 2026-10-30).
       expect(find.text('45 phút trước'), findsOneWidget);
-      expect(find.text('Bạn ghi'), findsWidgets);
+      expect(find.textContaining('Lúc '), findsWidgets);
       expect(find.text('Tã ướt'), findsOneWidget);
-      expect(find.text('Cô Lan ghi'), findsOneWidget);
       expect(find.text('Kết thúc 3 giờ 20 phút trước'), findsOneWidget);
       // The day's totals sit under the reminders card, which lists up to 3 now.
       await tester.scrollUntilVisible(

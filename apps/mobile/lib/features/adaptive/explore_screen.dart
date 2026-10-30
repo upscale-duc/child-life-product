@@ -22,6 +22,7 @@ import '../baby/baby_repository.dart';
 import '../first_aid/first_aid_repository.dart' show firstAidPackProvider;
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_access.dart';
+import '../care/care_hub_screen.dart' show careHubSections;
 import '../memories/memories_screen.dart' show memoryCtx;
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../spending/spending_calc.dart' show foldVietnamese;
@@ -319,15 +320,22 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         key: ValueKey('explore_${i.name}'),
         onPressed: () => open(i),
         semanticLabel: '$title, $sub',
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        // One row style with the Chăm sóc rows now on the same screen (D-139).
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 60),
+          padding: const EdgeInsets.symmetric(
+            horizontal: ClSpace.s4,
+            vertical: ClSpace.s2,
+          ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(ClSpace.s2),
+                width: 36,
+                height: 36,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: chip,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(ClRadius.control),
                 ),
                 child: ClIcon(icon, size: 18, color: cl.colors.ink),
               ),
@@ -336,19 +344,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: cl.text.body.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: cl.colors.ink,
-                      ),
-                    ),
+                    Text(title, style: cl.text.body),
                     Text(
                       sub,
-                      style: cl.text.caption.copyWith(
-                        color: cl.colors.inkMuted,
-                      ),
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                     ),
                   ],
                 ),
@@ -374,7 +373,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                 ),
                 const SizedBox(width: ClSpace.s2),
               ],
-              ClIcon(ClIcons.chevronRight, size: 16, color: cl.colors.inkMuted),
+              ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
             ],
           ),
         ),
@@ -388,49 +387,66 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       return foldVietnamese('$title $sub').contains(q);
     }
 
+    // Khám phá and Chăm sóc are one screen (owner, 2026-10-30: "gộp hai màn hình này thành 1 ở
+    // tabbar", D-139): for whoever reads care, the Chăm sóc tiles (live counts) sit inline and
+    // the rows they cover are not listed twice.
+    final careInline = available.contains(ExploreItem.allCare);
+    const covered = {
+      ExploreItem.care,
+      ExploreItem.stats,
+      ExploreItem.growth,
+      ExploreItem.vaccines,
+      ExploreItem.reminders,
+      ExploreItem.milestones,
+      ExploreItem.allCare,
+    };
     final listed = [
       for (final i in ExploreItem.values)
-        if (available.contains(i)) i,
+        if (available.contains(i) && !(careInline && covered.contains(i))) i,
     ];
+    final careSections = careInline
+        ? careHubSections(context, ref, me, _query)
+        : const <Widget>[];
     final children = <Widget>[];
     void group(String title, List<ExploreItem> items, {Key? key}) {
       if (items.isEmpty) return;
-      children
-        ..add(const SizedBox(height: 20))
-        ..add(
-          Padding(
-            padding: const EdgeInsets.only(bottom: ClSpace.s2),
-            child: Text(
-              title,
-              style: cl.text.bodyStrong.copyWith(
-                fontSize: 17,
-                color: cl.colors.ink,
-              ),
-            ),
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(top: ClSpace.s6, bottom: ClSpace.s3),
+          child: Semantics(
+            header: true,
+            child: Text(title, style: cl.text.headline),
           ),
-        )
-        ..add(ClCardGroup(key: key, children: [for (final i in items) row(i)]));
+        ),
+      );
+      children.add(
+        ClCardGroup(key: key, children: [for (final i in items) row(i)]),
+      );
     }
 
     if (_query.isNotEmpty) {
       final found = listed.where(matches).toList();
-      if (found.isEmpty) {
+      if (found.isEmpty && careSections.isEmpty) {
         children.add(_NoResult(query: _query, name: name));
       } else {
-        children
-          ..add(const SizedBox(height: ClSpace.s4))
-          ..add(ClCardGroup(children: [for (final i in found) row(i)]));
+        children.addAll(careSections);
+        if (found.isNotEmpty) {
+          children
+            ..add(const SizedBox(height: ClSpace.s4))
+            ..add(ClCardGroup(children: [for (final i in found) row(i)]));
+        }
       }
     } else {
       final suggested = [
         for (final i in exploreSuggestions[band]!)
-          if (available.contains(i)) i,
+          if (listed.contains(i)) i,
       ];
       group(
         l10n.exForChild(name),
         suggested,
         key: const Key('exploreSuggested'),
       );
+      children.addAll(careSections);
       List<ExploreItem> rest(_Group g) => [
         for (final i in listed)
           if (_groupOf[i] == g && !suggested.contains(i)) i,

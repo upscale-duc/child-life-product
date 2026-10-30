@@ -209,10 +209,7 @@ class TodayScreen extends ConsumerWidget {
               ),
             // A care tool, with the tiles rather than among the suggestions (owner,
             // 2026-10-15).
-            if (!shiftHome) ...[
-              const TodayHandoverRow(),
-              const AutoSaveTodayBanner(top: ClSpace.s4),
-            ],
+            if (!shiftHome) const TodayHandoverRow(),
           ],
           // ReminderPeek (128:665, R-094); not for relatives (D-018).
           TodaySection.reminders => [
@@ -393,9 +390,6 @@ class TodayScreen extends ConsumerWidget {
                   ?.id ==
               WidgetId.tiles
         : layout.order.where(layout.shows).firstOrNull == TodaySection.tiles;
-    final tilesShown = adaptive
-        ? ranked.any((w) => w.id == WidgetId.tiles && w.visible)
-        : layout.shows(TodaySection.tiles);
 
     // D-135: the old "Ai đang trông bé" switch (`duty` / careDuty, visibility only) now shows
     // "n việc cần làm"; the chip left the header (Q1).
@@ -416,10 +410,12 @@ class TodayScreen extends ConsumerWidget {
                 ...statusBanners,
                 // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
                 const WhatsNewBanner(),
+                // AR02: new library photos that may show the baby (Tự lưu, D-066), first under
+                // the header (owner, 2026-10-30: "đưa gợi ý xem và chọn ảnh lên đầu tiên").
+                const AutoSaveTodayBanner(top: ClSpace.s4),
                 // D-135 (14): the viewer's shared Cùng Chăm Con tasks, first under the header;
                 // personal reminders stay in Nhắc việc below (Q4).
                 CarePlanTodaySection(enabled: tasksEnabled),
-                // AR02: new library photos that may show the baby (Tự lưu, D-066).
 
                 // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
                 // D-076 #1: "Hôm nay theo cách của nhà bạn" (559:57870) for who has not personalised,
@@ -460,7 +456,6 @@ class TodayScreen extends ConsumerWidget {
                 ] else
                   for (final section in layout.order)
                     if (layout.shows(section)) ...sectionParts(section),
-                if (!tilesShown) const AutoSaveTodayBanner(top: ClSpace.s4),
                 if (!adaptive && !readOnly)
                   Align(
                     alignment: Alignment.centerRight,
@@ -835,7 +830,7 @@ class _CareTileState extends ConsumerState<CareTile>
       value = l10n.awakeFor(durationLabel(l10n, awake < 0 ? 0 : awake));
       lines = [
         l10n.wokeAt(hm.format(r.endedAt!)),
-        r.pending ? l10n.carePending : loggedBy(l10n, r, widget.myUid),
+        if (r.pending) l10n.carePending,
       ];
     }
     final semantics = unknown && timer == null
@@ -1239,10 +1234,11 @@ class _CareTileState extends ConsumerState<CareTile>
     );
   }
 
-  /// "45 phút trước" / "Kết thúc 3 giờ 35 phút trước" / "54,5 cm" + "+0,4 kg · hôm nay",
-  /// then "Mẹ ghi" or, while pending, "Chờ đồng bộ" (9a).
+  /// "45 phút trước" / "Kết thúc 3 giờ 35 phút trước" / "54,5 cm" + "+0,4 kg · hôm nay", then,
+  /// while pending, "Chờ đồng bộ" (9a). Who logged it is not on the tile (owner, 2026-10-30:
+  /// "mấy cái card bỏ text là ai ghi đi"); it stays on the record and in Lịch sử.
   List<String> _lines(AppLocalizations l10n, String locale, CareRecord r) {
-    final who = r.pending ? l10n.carePending : loggedBy(l10n, r, widget.myUid);
+    final pending = [if (r.pending) l10n.carePending];
     switch (r.type) {
       case CareType.growth:
         final prev = widget.previousGrowth;
@@ -1266,12 +1262,22 @@ class _CareTileState extends ConsumerState<CareTile>
             )
           else
             whenLabel,
-          if (r.pending) who,
+          ...pending,
         ];
       case CareType.breast when r.endedAt != null:
-        return [l10n.endedAgo(relativeAgo(l10n, r.endedAt!, widget.now)), who];
+        return [
+          l10n.endedAgo(relativeAgo(l10n, r.endedAt!, widget.now)),
+          ...pending,
+        ];
+      // The last bottle also says when, by the clock (owner, 2026-10-30).
+      case CareType.bottle:
+        return [
+          relativeAgo(l10n, r.finishedAt, widget.now),
+          l10n.careAtTime(DateFormat.Hm(locale).format(r.finishedAt)),
+          ...pending,
+        ];
       default:
-        return [relativeAgo(l10n, r.finishedAt, widget.now), who];
+        return [relativeAgo(l10n, r.finishedAt, widget.now), ...pending];
     }
   }
 }

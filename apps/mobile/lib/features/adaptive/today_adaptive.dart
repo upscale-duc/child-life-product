@@ -872,6 +872,9 @@ class _AxCustomizeScreenState extends ConsumerState<AxCustomizeScreen> {
               Wrap(
                 spacing: ClSpace.s2,
                 runSpacing: ClSpace.s2,
+                // "Sửa" keeps its 44 pt tap area; centred, it no longer sits lower than the goal
+                // chips (owner, 2026-10-30: "button sửa bị lỗi").
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   for (final g in draft.goals)
                     _Chip(label: goalLabel(l10n, g), tinted: true),
