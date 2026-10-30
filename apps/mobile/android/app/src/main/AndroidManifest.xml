@@ -186,6 +186,43 @@
         <receiver
             android:name=".GlanceActionReceiver"
             android:exported="false" />
+        <!-- Cùng Chăm Con widgets (GlancePlan.kt): "Xong" ticks a task through PlanActionReceiver. -->
+        <receiver
+            android:name=".PlanNextWidget"
+            android:exported="false"
+            android:label="@string/widget_plan_mine_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_plan_next_info" />
+        </receiver>
+        <receiver
+            android:name=".PlanFamilyWidget"
+            android:exported="false"
+            android:label="@string/widget_plan_family_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_plan_family_info" />
+        </receiver>
+        <receiver
+            android:name=".PlanMineWidget"
+            android:exported="false"
+            android:label="@string/widget_plan_mine_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_plan_mine_info" />
+        </receiver>
+        <receiver
+            android:name=".PlanActionReceiver"
+            android:exported="false" />
         <!-- WorkManager's foreground service runs UploadWorker (10j, A3). -->
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"

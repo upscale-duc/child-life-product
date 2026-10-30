@@ -86,6 +86,36 @@ struct GlanceLogged: Codable, Hashable {
   var previous: GlanceLast?
 }
 
+/// A Cùng Chăm Con task on the plan widgets (lib/features/glance/glance_plan.dart).
+struct GlancePlanItem: Codable, Hashable {
+  var id: String
+  var time: String
+  var dueAt: Date
+  var task: String
+  var name: String
+  var mine: Bool
+  var done: Bool
+  /// "Xong" writes a care log or starts the sleep timer first (D-138): it opens the app.
+  var opensApp: Bool
+}
+
+/// Today's plan for the Cùng Chăm Con widgets (Figma 1356:23340).
+struct GlancePlan: Codable, Hashable {
+  var date: String
+  var helper: Bool
+  /// "Ba" in "Việc của Ba".
+  var me: String
+  /// Art names of the family on "Cả nhà 2/10".
+  var faces: [String]
+  /// Task names by key, for tasks added on another phone.
+  var names: [String: String]
+  var items: [GlancePlanItem]
+
+  var mine: [GlancePlanItem] { items.filter(\.mine) }
+  var open: [GlancePlanItem] { mine.filter { !$0.done } }
+  var doneCount: Int { items.filter(\.done).count }
+}
+
 struct GlanceSnapshot: Codable {
   var signedIn: Bool
   var canLog: Bool
@@ -116,6 +146,8 @@ struct GlanceSnapshot: Codable {
   var recent: [GlanceRecent]
   var logged: GlanceLogged?
   var pending: Int
+  /// Cùng Chăm Con; null without a plan this person can tick today.
+  var plan: GlancePlan? = nil
   var copy: [String: String]
   var generatedAt: Date
 

@@ -25457,4 +25457,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vrShare => 'Send to the doctor';
+
+  @override
+  String cpWidgetMine(String who) {
+    return '$who’s tasks';
+  }
+
+  @override
+  String cpWidgetFamily(String done, String total) {
+    return 'Family $done/$total';
+  }
+
+  @override
+  String cpWidgetLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count left',
+      one: '1 left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpWidgetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks',
+      one: '1 task',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpWidgetRest => 'Take a breather';
+
+  @override
+  String get cpWidgetNoPlan => 'No plan for today';
+
+  @override
+  String get glanceGalleryPlanMineName => 'My tasks';
+
+  @override
+  String get glanceGalleryPlanMineBlurb =>
+      'Your next task, ticked off from the Home Screen';
+
+  @override
+  String get glanceGalleryPlanFamilyName => 'Family care';
+
+  @override
+  String get glanceGalleryPlanFamilyBlurb =>
+      'How much the family has done today';
 }

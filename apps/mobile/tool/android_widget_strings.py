@@ -23,6 +23,9 @@ KEYS = [
     ("widget_today", "glanceGalleryToday"),
     ("widget_camera", "glanceGalleryCamera"),
     ("widget_library", "glanceGalleryLibrary"),
+    # Cùng Chăm Con (GlancePlan.kt): the medium and large share "Việc của tôi".
+    ("widget_plan_mine", "glanceGalleryPlanMine"),
+    ("widget_plan_family", "glanceGalleryPlanFamily"),
 ]
 
 

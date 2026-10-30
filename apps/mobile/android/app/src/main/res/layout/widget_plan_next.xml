@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cùng Chăm Con medium "Việc của tôi" (Figma 1356:23340): the next task of mine with its done
+     button, then "Cả nhà 2/10" and the family's faces; filled by GlancePlan.kt (iOS:
+     PlanNextView). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:orientation="vertical"
+    android:paddingStart="14dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="14dp"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/tile"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/widget_tile_neutral">
+
+            <ImageView
+                android:id="@+id/art"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/widget_art_baby" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/cl_ink"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/done"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/widget_plan_done"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/family_row"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/ring"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:indeterminate="false"
+            android:max="1"
+            android:progress="0"
+            android:progressDrawable="@drawable/widget_plan_ring" />
+
+        <TextView
+            android:id="@+id/family"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textColor="@color/cl_muted"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <!-- Up to four faces, each overlapping the one before by 6 dp. -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="22dp">
+
+            <ImageView
+                android:id="@+id/face1"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:background="@drawable/widget_plan_face_ring"
+                android:importantForAccessibility="no"
+                android:padding="1.5dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/face2"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/widget_plan_face_ring"
+                android:importantForAccessibility="no"
+                android:padding="1.5dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/face3"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="32dp"
+                android:background="@drawable/widget_plan_face_ring"
+                android:importantForAccessibility="no"
+                android:padding="1.5dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/face4"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="48dp"
+                android:background="@drawable/widget_plan_face_ring"
+                android:importantForAccessibility="no"
+                android:padding="1.5dp"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -8936,5 +8936,15 @@
   "vrQuestionAdd": "Add",
   "vrQuestionRemove": "Remove “{question}”",
   "vrDisclaimer": "From the family's log in Child Life. Not a substitute for a doctor's examination or advice.",
-  "vrShare": "Send to the doctor"
+  "vrShare": "Send to the doctor",
+  "cpWidgetMine": "{who}’s tasks",
+  "cpWidgetFamily": "Family {done}/{total}",
+  "cpWidgetLeft": "{count, plural, =1{1 left} other{{count} left}}",
+  "cpWidgetCount": "{count, plural, =1{1 task} other{{count} tasks}}",
+  "cpWidgetRest": "Take a breather",
+  "cpWidgetNoPlan": "No plan for today",
+  "glanceGalleryPlanMineName": "My tasks",
+  "glanceGalleryPlanMineBlurb": "Your next task, ticked off from the Home Screen",
+  "glanceGalleryPlanFamilyName": "Family care",
+  "glanceGalleryPlanFamilyBlurb": "How much the family has done today"
 }

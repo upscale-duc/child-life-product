@@ -17,4 +17,8 @@
     <string name="widget_camera_description">Mở camera để chụp ảnh hoặc quay video, rồi lưu vào Kỷ niệm.</string>
     <string name="widget_library_name">Thêm từ Ảnh</string>
     <string name="widget_library_description">Chọn ảnh, video trong máy để lưu vào Kỷ niệm.</string>
+    <string name="widget_plan_mine_name">Việc của tôi</string>
+    <string name="widget_plan_mine_description">Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính</string>
+    <string name="widget_plan_family_name">Cả nhà cùng chăm</string>
+    <string name="widget_plan_family_description">Cả nhà đã xong bao nhiêu việc hôm nay</string>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cùng Chăm Con widgets (GlancePlan.kt), Light: tokens.json sunshine for "Nghỉ chút nhé". -->
+<resources>
+    <color name="plan_rest_bg">#FFD166</color>
+    <color name="plan_hollow">#B9CFCF</color>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cùng Chăm Con widgets (GlancePlan.kt), Night care: sunshine-soft, so the card stays dark. -->
+<resources>
+    <color name="plan_rest_bg">#3A3115</color>
+    <color name="plan_hollow">#4A6266</color>
+</resources>

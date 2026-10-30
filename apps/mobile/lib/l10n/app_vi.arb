@@ -35284,5 +35284,68 @@
   "vrShare": "Gửi cho bác sĩ",
   "@vrShare": {
     "description": "U1 Chuẩn bị đi khám: primary action: shares the summary as text. EN is an engineering draft for owner review."
+  },
+  "cpWidgetMine": "Việc của {who}",
+  "@cpWidgetMine": {
+    "description": "Cùng Chăm Con widget: title over the person's next task or list. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpWidgetFamily": "Cả nhà {done}/{total}",
+  "@cpWidgetFamily": {
+    "description": "Cùng Chăm Con widget: the family's progress today. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "cpWidgetLeft": "{count, plural, other{Còn {count} việc}}",
+  "@cpWidgetLeft": {
+    "description": "Cùng Chăm Con small widget: tasks still open today. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpWidgetCount": "{count, plural, other{{count} việc}}",
+  "@cpWidgetCount": {
+    "description": "Cùng Chăm Con large widget: the chip with the person's open tasks. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpWidgetRest": "Nghỉ chút nhé",
+  "@cpWidgetRest": {
+    "description": "Cùng Chăm Con widget: nothing left for this person today. EN is an engineering draft for owner review."
+  },
+  "cpWidgetNoPlan": "Hôm nay chưa có lịch",
+  "@cpWidgetNoPlan": {
+    "description": "Cùng Chăm Con widget: no plan in use today. EN is an engineering draft for owner review."
+  },
+  "glanceGalleryPlanMineName": "Việc của tôi",
+  "@glanceGalleryPlanMineName": {
+    "description": "Widget gallery name: the person's Cùng Chăm Con tasks. EN is an engineering draft for owner review."
+  },
+  "glanceGalleryPlanMineBlurb": "Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính",
+  "@glanceGalleryPlanMineBlurb": {
+    "description": "Widget gallery blurb. EN is an engineering draft for owner review."
+  },
+  "glanceGalleryPlanFamilyName": "Cả nhà cùng chăm",
+  "@glanceGalleryPlanFamilyName": {
+    "description": "Widget gallery name: the family's progress today. EN is an engineering draft for owner review."
+  },
+  "glanceGalleryPlanFamilyBlurb": "Cả nhà đã xong bao nhiêu việc hôm nay",
+  "@glanceGalleryPlanFamilyBlurb": {
+    "description": "Widget gallery blurb. EN is an engineering draft for owner review."
   }
 }

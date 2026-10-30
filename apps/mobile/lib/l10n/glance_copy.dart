@@ -101,6 +101,17 @@ Map<String, String> glanceCopy(AppLocalizations l) => {
   'ct.done': l.actionDone,
   'ct.snooze': l.cpPushSnooze10,
   'cd.heart': l.cpReactHeart,
+  // Cùng Chăm Con widgets (Figma 1356:23340).
+  'plan.mine': l.cpWidgetMine('{name}'),
+  'plan.family': l.cpWidgetFamily('{done}', '{total}'),
+  // Plurals: the count goes in natively ("other" form with {n}, and the "one" form).
+  'plan.left': l.cpWidgetLeft(2).replaceFirst('2', '{n}'),
+  'plan.left.one': l.cpWidgetLeft(1),
+  'plan.count': l.cpWidgetCount(2).replaceFirst('2', '{n}'),
+  'plan.count.one': l.cpWidgetCount(1),
+  'plan.rest': l.cpWidgetRest,
+  'plan.none': l.cpWidgetNoPlan,
+  'plan.markDone': l.cpMarkDone('{task}'),
   'vx.view': l.notifVxView,
   'vx.snooze': l.notifVxSnooze,
   'vx.move': l.vxReschedule,

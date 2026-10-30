@@ -24,10 +24,16 @@ import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
 import '../care/timer_screens.dart' show showSleepChooser;
+import '../care_plan/care_plan_models.dart' show carePlanDateKey;
+import '../care_plan/care_plan_repository.dart'
+    show carePlanDayProvider, carePlanLiveItemsProvider;
+import '../care_plan/care_plan_today.dart' show carePlanDueRequestProvider;
+import '../family/family_repository.dart' show familyMembersProvider;
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
 import '../memories/background_uploads.dart' show emulatorHost;
 import '../memories/quick_add.dart';
+import 'glance_plan.dart';
 
 /// S8 glanceables (Figma W1–W5): keeps the iOS widgets and Live Activities in step with the app.
 /// It hands the native side the signed-in session (so widget and Live Activity buttons can write
@@ -96,6 +102,7 @@ Map<String, Object?> buildGlanceSnapshot({
   required List<CareRecord> records,
   required CareTimer? sleep,
   required CareTimer? breast,
+  Map<String, Object?>? plan,
 }) {
   final base = <String, Object?>{
     'signedIn': me != null,
@@ -190,6 +197,8 @@ Map<String, Object?> buildGlanceSnapshot({
     'diapersToday': today.where((r) => r.type == CareType.diaper).length,
     'sleep': sleep.let(timerJson),
     'breast': breast.let(timerJson),
+    // Cùng Chăm Con widgets (glance_plan.dart).
+    'plan': plan,
     'recent': [
       for (final r in records.where((r) => r.type != CareType.growth).take(3))
         {
@@ -277,6 +286,20 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
     if (add != null) {
       _pendingAdd = add;
       router.go(Routes.memories);
+      return;
+    }
+    // Cùng Chăm Con widget "Xong" on a task that writes a log (D-138): its log, over Hôm nay.
+    final planDone = uri.queryParameters['planDone'];
+    final planDate = uri.queryParameters['date'];
+    final me = ref.read(selectedMembershipProvider);
+    if (planDone != null && planDate != null && me != null) {
+      ref.read(carePlanDueRequestProvider.notifier).open((
+        babyId: me.babyId,
+        date: planDate,
+        ids: [planDone],
+        done: true,
+      ));
+      router.go(Routes.today);
       return;
     }
     final asked = widgetLogRequest(uri);
@@ -420,7 +443,22 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
     final breast = usable
         ? ref.watch(careTimerProvider((me.babyId, TimerType.breast))).value
         : null;
-    ref.watch(careClockProvider);
+    final clock = ref.watch(careClockProvider).value ?? DateTime.now();
+    final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
+    final planDate = carePlanDateKey(inBabyZone(zone, clock));
+    final planKey = (me?.babyId ?? '', planDate);
+    final plan = usable
+        ? glancePlanJson(
+            l10n: AppLocalizations.of(context),
+            me: me,
+            zone: zone,
+            date: planDate,
+            day: ref.watch(carePlanDayProvider(planKey)).value,
+            items: ref.watch(carePlanLiveItemsProvider(planKey)).value,
+            members:
+                ref.watch(familyMembersProvider(me.babyId)).value ?? const [],
+          )
+        : null;
     // Wait for the first answer rather than showing an empty Today on the widgets.
     if (usable && records == null) return widget.child;
 
@@ -436,10 +474,11 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
       emulatorHost: _useEmulators ? emulatorHost : null,
       me: usable ? me : null,
       nickname: baby?.nickname,
-      zone: baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh',
+      zone: zone,
       records: records ?? const [],
       sleep: sleep,
       breast: breast,
+      plan: plan,
     );
     final stable = jsonEncode({...json, 'generatedAt': 0});
     if (stable != _sentSnapshot) {

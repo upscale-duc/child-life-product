@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- From assets/illustrations/mini-bath.svg (Cùng Chăm Con widgets, GlancePlan.kt). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:pathData="M37 12.5C38.3807 12.5 39.5 11.3807 39.5 10C39.5 8.61929 38.3807 7.5 37 7.5C35.6193 7.5 34.5 8.61929 34.5 10C34.5 11.3807 35.6193 12.5 37 12.5Z"
+        android:fillColor="#FFFFD966" />
+    <path
+        android:pathData="M31 7.5C31.8284 7.5 32.5 6.82843 32.5 6C32.5 5.17157 31.8284 4.5 31 4.5C30.1716 4.5 29.5 5.17157 29.5 6C29.5 6.82843 30.1716 7.5 31 7.5Z"
+        android:fillColor="#FFFFD966" />
+    <path
+        android:pathData="M6 24H42V29C42 38 36.5 41 24 41C11.5 41 6 38 6 29V24Z"
+        android:fillColor="#FF2DBCB0" />
+    <path
+        android:pathData="M41.5 21H6.5C4.84315 21 3.5 22.3431 3.5 24C3.5 25.6569 4.84315 27 6.5 27H41.5C43.1569 27 44.5 25.6569 44.5 24C44.5 22.3431 43.1569 21 41.5 21Z"
+        android:fillColor="#FF85DED3" />
+    <path
+        android:pathData="M12 39.5V43.5M36 39.5V43.5"
+        android:strokeColor="#FF164B4D"
+        android:strokeWidth="5"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M24 21C19.5 21 17.5 19 17.5 16C17.5 13 19.5 11 22.5 11C25.5 11 27.5 13 27.5 16L33 17.5C33 20 29.5 22 24 21Z"
+        android:fillColor="#FFFFD966" />
+    <path
+        android:pathData="M23.5 15.5C24.0523 15.5 24.5 15.0523 24.5 14.5C24.5 13.9477 24.0523 13.5 23.5 13.5C22.9477 13.5 22.5 13.9477 22.5 14.5C22.5 15.0523 22.9477 15.5 23.5 15.5Z"
+        android:fillColor="#FF164B4D" />
+</vector>

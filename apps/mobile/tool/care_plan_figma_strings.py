@@ -206,6 +206,18 @@ s('cpTeamTitle', 'Khi người khác làm xong', 'When someone else finishes',
   'Cùng Chăm Con 13: switch for N2 and N3 (per person, on by default).' + NOTE)
 s('cpHeartA11y', 'Thả tim cho {who}', 'Send {who} a heart', 'Cùng Chăm Con 10: heart button label for screen readers.' + NOTE, who='String')
 
+# Widgets (Figma 1356:23340)
+s('cpWidgetMine', 'Việc của {who}', '{who}’s tasks', 'Cùng Chăm Con widget: title over the person\'s next task or list.' + NOTE, who='String')
+s('cpWidgetFamily', 'Cả nhà {done}/{total}', 'Family {done}/{total}', 'Cùng Chăm Con widget: the family\'s progress today.' + NOTE, done='String', total='String')
+s('cpWidgetLeft', '{count, plural, other{Còn {count} việc}}', '{count, plural, =1{1 left} other{{count} left}}', 'Cùng Chăm Con small widget: tasks still open today.' + NOTE, count='int')
+s('cpWidgetCount', '{count, plural, other{{count} việc}}', '{count, plural, =1{1 task} other{{count} tasks}}', 'Cùng Chăm Con large widget: the chip with the person\'s open tasks.' + NOTE, count='int')
+s('cpWidgetRest', 'Nghỉ chút nhé', 'Take a breather', 'Cùng Chăm Con widget: nothing left for this person today.' + NOTE)
+s('cpWidgetNoPlan', 'Hôm nay chưa có lịch', 'No plan for today', 'Cùng Chăm Con widget: no plan in use today.' + NOTE)
+s('glanceGalleryPlanMineName', 'Việc của tôi', 'My tasks', 'Widget gallery name: the person\'s Cùng Chăm Con tasks.' + NOTE)
+s('glanceGalleryPlanMineBlurb', 'Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính', 'Your next task, ticked off from the Home Screen', 'Widget gallery blurb.' + NOTE)
+s('glanceGalleryPlanFamilyName', 'Cả nhà cùng chăm', 'Family care', 'Widget gallery name: the family\'s progress today.' + NOTE)
+s('glanceGalleryPlanFamilyBlurb', 'Cả nhà đã xong bao nhiêu việc hôm nay', 'How much the family has done today', 'Widget gallery blurb.' + NOTE)
+
 # Existing ids whose Vietnamese copy now follows Figma (English unchanged).
 VI = {
     'cpAssignGroup': 'Giao cả ca',

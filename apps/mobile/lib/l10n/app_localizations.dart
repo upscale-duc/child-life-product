@@ -40019,6 +40019,66 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Gửi cho bác sĩ'**
   String get vrShare;
+
+  /// Cùng Chăm Con widget: title over the person's next task or list. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc của {who}'**
+  String cpWidgetMine(String who);
+
+  /// Cùng Chăm Con widget: the family's progress today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà {done}/{total}'**
+  String cpWidgetFamily(String done, String total);
+
+  /// Cùng Chăm Con small widget: tasks still open today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Còn {count} việc}}'**
+  String cpWidgetLeft(int count);
+
+  /// Cùng Chăm Con large widget: the chip with the person's open tasks. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} việc}}'**
+  String cpWidgetCount(int count);
+
+  /// Cùng Chăm Con widget: nothing left for this person today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghỉ chút nhé'**
+  String get cpWidgetRest;
+
+  /// Cùng Chăm Con widget: no plan in use today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay chưa có lịch'**
+  String get cpWidgetNoPlan;
+
+  /// Widget gallery name: the person's Cùng Chăm Con tasks. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc của tôi'**
+  String get glanceGalleryPlanMineName;
+
+  /// Widget gallery blurb. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính'**
+  String get glanceGalleryPlanMineBlurb;
+
+  /// Widget gallery name: the family's progress today. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng chăm'**
+  String get glanceGalleryPlanFamilyName;
+
+  /// Widget gallery blurb. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà đã xong bao nhiêu việc hôm nay'**
+  String get glanceGalleryPlanFamilyBlurb;
 }
 
 class _AppLocalizationsDelegate

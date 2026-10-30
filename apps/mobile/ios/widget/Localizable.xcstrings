@@ -273,6 +273,74 @@
         }
       }
     },
+    "glanceGalleryPlanFamilyBlurb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How much the family has done today"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cả nhà đã xong bao nhiêu việc hôm nay"
+          }
+        }
+      }
+    },
+    "glanceGalleryPlanFamilyName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Family care"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cả nhà cùng chăm"
+          }
+        }
+      }
+    },
+    "glanceGalleryPlanMineBlurb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your next task, ticked off from the Home Screen"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính"
+          }
+        }
+      }
+    },
+    "glanceGalleryPlanMineName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My tasks"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Việc của tôi"
+          }
+        }
+      }
+    },
     "glanceGalleryQuickBlurb": {
       "extractionState": "manual",
       "localizations": {

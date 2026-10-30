@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- From assets/illustrations/mini-book.svg (Cùng Chăm Con widgets, GlancePlan.kt). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:pathData="M24 13.0019C18 8.50191 10 9.00191 5 11.0019V37.0019C12 34.5019 19 36.0019 24 40.0019C29 36.0019 36 34.5019 43 37.0019V11.0019C38 9.00191 30 8.50191 24 13.0019Z"
+        android:fillColor="#FFF7B7AE" />
+    <path
+        android:pathData="M24 13V40M10 18C14 17 17 18 19.5 19.5M10 23.5C14 22.5 17 23.5 19.5 25M28.5 19.5C31.5 18 34.5 17 38.5 18M28.5 25C31.5 23.5 34.5 22.5 38.5 23.5"
+        android:strokeColor="#FF164B4D"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M34.5 4L35.5 6.5L38 7.5L35.5 8.5L34.5 11L33.5 8.5L31 7.5L33.5 6.5L34.5 4Z"
+        android:fillColor="#FFFFD966" />
+</vector>

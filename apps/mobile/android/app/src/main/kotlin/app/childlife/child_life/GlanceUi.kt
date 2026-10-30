@@ -58,6 +58,10 @@ object GlanceUi {
         each(TodayWidget::class.java) { today(app, it, now) }
         each(CameraWidget::class.java) { shortcut(app, "camera", it) }
         each(LibraryWidget::class.java) { shortcut(app, "library", it) }
+        // Cùng Chăm Con (GlancePlan.kt): a widget "Xong" redraws all three at once.
+        each(PlanNextWidget::class.java) { PlanUi.next(app, it) }
+        each(PlanFamilyWidget::class.java) { PlanUi.family(app, it) }
+        each(PlanMineWidget::class.java) { PlanUi.mine(app, it) }
         runCatching { TimerNotice.sync(app, snap) }
     }
 

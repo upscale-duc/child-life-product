@@ -17,4 +17,8 @@
     <string name="widget_camera_description">Open the camera for a photo or a video, then save it to Memories.</string>
     <string name="widget_library_name">Add from Photos</string>
     <string name="widget_library_description">Pick photos and videos on this phone to save to Memories.</string>
+    <string name="widget_plan_mine_name">My tasks</string>
+    <string name="widget_plan_mine_description">Your next task, ticked off from the Home Screen</string>
+    <string name="widget_plan_family_name">Family care</string>
+    <string name="widget_plan_family_description">How much the family has done today</string>
 </resources>

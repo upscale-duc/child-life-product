@@ -24079,4 +24079,54 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get vrShare => 'Gửi cho bác sĩ';
+
+  @override
+  String cpWidgetMine(String who) {
+    return 'Việc của $who';
+  }
+
+  @override
+  String cpWidgetFamily(String done, String total) {
+    return 'Cả nhà $done/$total';
+  }
+
+  @override
+  String cpWidgetLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Còn $count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cpWidgetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count việc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpWidgetRest => 'Nghỉ chút nhé';
+
+  @override
+  String get cpWidgetNoPlan => 'Hôm nay chưa có lịch';
+
+  @override
+  String get glanceGalleryPlanMineName => 'Việc của tôi';
+
+  @override
+  String get glanceGalleryPlanMineBlurb =>
+      'Việc sắp tới của bạn, đánh dấu xong ngay trên màn hình chính';
+
+  @override
+  String get glanceGalleryPlanFamilyName => 'Cả nhà cùng chăm';
+
+  @override
+  String get glanceGalleryPlanFamilyBlurb =>
+      'Cả nhà đã xong bao nhiêu việc hôm nay';
 }

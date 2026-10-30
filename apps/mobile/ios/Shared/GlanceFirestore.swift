@@ -132,6 +132,37 @@ enum GlanceFirestore {
     return .some(json["fields"] as? [String: Any])
   }
 
+  /// Today's plan tasks as stored now (others may have ticked or changed them since the app
+  /// last wrote the snapshot); nil when they cannot be read.
+  static func planItems(_ s: GlanceSnapshot, babyId: String, date: String) async -> [[String: Any]]? {
+    guard let token = try? await GlanceAuth.idToken(s).token,
+      let url = URL(string: "\(base(s))/\(root(s))/babies/\(babyId)/carePlanDays/\(date)/items?pageSize=60")
+    else { return nil }
+    var req = URLRequest(url: url)
+    req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    req.timeoutInterval = 10
+    guard let (data, response) = try? await URLSession.shared.data(for: req),
+      let http = response as? HTTPURLResponse, http.statusCode == 200,
+      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+    else { return nil }
+    return ((json["documents"] as? [[String: Any]]) ?? []).compactMap { doc in
+      guard var f = doc["fields"] as? [String: Any], let name = doc["name"] as? String else { return nil }
+      f["__id"] = ["stringValue": String(name.split(separator: "/").last ?? "")]
+      return f
+    }
+  }
+
+  static func string(_ v: Any?) -> String? { (v as? [String: Any])?["stringValue"] as? String }
+
+  static func strings(_ v: Any?) -> [String] {
+    let values = (((v as? [String: Any])?["arrayValue"] as? [String: Any])?["values"] as? [Any]) ?? []
+    return values.compactMap(string)
+  }
+
+  static func int(_ v: Any?) -> Int? {
+    ((v as? [String: Any])?["integerValue"] as? String).flatMap { Int($0) }
+  }
+
   // MARK: Reading REST values
 
   static func date(_ v: Any?) -> Date? {

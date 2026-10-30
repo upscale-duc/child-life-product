@@ -147,3 +147,27 @@ Khác Figma:
 - Bỏ "sớm 5 phút" dưới giờ làm, vì lịch không chấm giờ giấc (D-135 Q8).
 - Nhãn nút chính không có trong metadata, nên tôi đặt là "Gửi cho Ba".
 - Lời nhắn là các câu chọn sẵn, không có ô gõ tự do. Nhờ vậy thông báo chỉ trích câu của app.
+
+## Widget Cùng Chăm Con (30/10/2026, Figma `1356:23340` theo ảnh chủ sản phẩm gửi)
+
+- **Việc của Ba (vừa, 4×2):**
+  - Việc kế tiếp của mình ("09:00 · Vitamin D3"), có nút ✓.
+  - Dưới cùng: vòng tiến độ "Cả nhà 2/10" và mặt cả nhà.
+  - Hết việc của mình thì hiện "Nghỉ chút nhé".
+- **Cả nhà cùng chăm (nhỏ, 2×2):**
+  - Vòng "2/10 · Còn 8 việc".
+  - Khi mình không còn việc nào: nền vàng, em bé ngủ, "Nghỉ chút nhé".
+- **Việc của Cô Lan (lớn, 4×4):**
+  - Tối đa 5 việc còn mở của mình, kèm số việc. Việc đầu được tô màu.
+  - Mỗi dòng có vòng tròn để đánh dấu xong.
+- **Người hỗ trợ chưa có việc:** dùng widget "Ghi nhanh" đã có, đúng như hình thứ tư.
+- **Nút ✓:**
+  - Việc không cần ghi thì xong ngay trên widget.
+  - Bú bình, Bú mẹ, Hút sữa, Thay tã thì mở app vào màn ghi; Ngủ thì mở hẹn giờ (D-138).
+- **Cập nhật:**
+  - iOS đọc lại lịch từ Firestore mỗi lần widget làm mới, nên thấy được việc người khác vừa đánh dấu.
+  - Android cập nhật khi app ghi lại dữ liệu hoặc khi bấm trên widget.
+
+Cách hiểu thiết kế, chờ chủ sản phẩm xem:
+- Ô vàng "Nghỉ chút nhé" là trạng thái của widget nhỏ khi mình không còn việc, không phải một widget riêng.
+- Widget lớn dùng cho bất kỳ ai được giao việc, không chỉ người hỗ trợ.

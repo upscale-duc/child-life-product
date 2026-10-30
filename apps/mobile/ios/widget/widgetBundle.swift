@@ -13,6 +13,10 @@ struct ChildLifeWidgets: WidgetBundle {
     DiaperWidget()
     QuickLogWidget()
     TodayWidget()
+    // Cùng Chăm Con (Figma 1356:23340).
+    PlanNextWidget()
+    PlanFamilyWidget()
+    PlanListWidget()
     LockWidget()
     LockSleepWidget()
     LockFeedWidget()

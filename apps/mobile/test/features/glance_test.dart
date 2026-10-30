@@ -134,7 +134,7 @@ void main() {
           r'smallConfiguration\("[^"]+", "[a-z]+", "([A-Za-z]+)", "([A-Za-z]+)"\)',
         ),
       };
-      expect(used, hasLength(22));
+      expect(used, hasLength(26));
       expect(used.difference(strings.keys.toSet()), isEmpty);
     });
   });

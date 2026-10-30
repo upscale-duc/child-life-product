@@ -310,3 +310,74 @@ enum GlanceActions {
     return finish(outcome)
   }
 }
+
+// MARK: Cùng Chăm Con (Figma 1356:23340)
+
+extension GlanceActions {
+  /// "Xong" on a task that needs nothing written: ticked at once on the widget, then by the
+  /// `setCarePlanItemStatus` Function as this person; put back if the Function says no.
+  static func planDone(_ itemId: String) async -> Result {
+    guard let s = GlanceSnapshot.load(), s.signedIn, s.canLog, let babyId = s.babyId,
+      let plan = s.plan
+    else { return .signedOut }
+    func mark(_ done: Bool) {
+      GlanceSnapshot.update { snap in
+        guard let i = snap.plan?.items.firstIndex(where: { $0.id == itemId }) else { return }
+        snap.plan?.items[i].done = done
+      }
+      reload()
+    }
+    mark(true)
+    let ok = await callFunction(
+      s, "setCarePlanItemStatus",
+      ["babyId": babyId, "date": plan.date, "itemId": itemId, "status": "done"])
+    if !ok { mark(false) }
+    return ok ? .done : .notAllowed
+  }
+
+  /// Today's tasks as stored now, so the widgets show what others ticked while the app was
+  /// closed. Names come from the snapshot (the app's strings).
+  static func refreshPlan() async {
+    guard let s = GlanceSnapshot.load(), let babyId = s.babyId, let uid = s.uid, let plan = s.plan,
+      let docs = await GlanceFirestore.planItems(s, babyId: babyId, date: plan.date)
+    else { return }
+    let known = Dictionary(plan.items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+    let items: [GlancePlanItem] = docs.compactMap { f in
+      guard let id = GlanceFirestore.string(f["__id"]), let time = GlanceFirestore.string(f["time"]),
+        let task = GlanceFirestore.string(f["task"]), GlanceFirestore.string(f["status"]) != "skipped"
+      else { return nil }
+      let status = GlanceFirestore.string(f["status"])
+      let base = known[id]
+      var name = base?.name ?? GlanceFirestore.string(f["title"]) ?? plan.names[task] ?? task
+      if base == nil, let ml = GlanceFirestore.int(f["amountMl"]) { name += " · \(ml) ml" }
+      return GlancePlanItem(
+        id: id, time: time,
+        dueAt: GlanceFirestore.date(f["dueAt"]) ?? base?.dueAt ?? Date(),
+        task: task, name: name,
+        mine: GlanceFirestore.strings(f["assignees"]).contains(uid),
+        done: status == "done",
+        opensApp: base?.opensApp ?? ["bottle", "breast", "pump", "diaper", "sleep"].contains(task))
+    }
+    .sorted { ($0.time, $0.id) < ($1.time, $1.id) }
+    GlanceSnapshot.update { $0.plan?.items = items }
+  }
+
+  /// A callable Function as the signed-in person (the widgets' shared session).
+  static func callFunction(_ s: GlanceSnapshot, _ name: String, _ data: [String: Any]) async -> Bool {
+    guard let token = try? await GlanceAuth.idToken(s).token else { return false }
+    let region = "asia-southeast1"
+    let base = s.emulatorHost.map { "http://\($0):5001/\(s.projectId)/\(region)" }
+      ?? "https://\(region)-\(s.projectId).cloudfunctions.net"
+    guard let url = URL(string: "\(base)/\(name)") else { return false }
+    var req = URLRequest(url: url)
+    req.httpMethod = "POST"
+    req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    req.httpBody = try? JSONSerialization.data(withJSONObject: ["data": data])
+    req.timeoutInterval = 20
+    guard let (_, response) = try? await URLSession.shared.data(for: req),
+      let http = response as? HTTPURLResponse
+    else { return false }
+    return http.statusCode == 200
+  }
+}
